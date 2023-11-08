@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35A97E4F79
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E76EC7E4F7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343983AbjKHDaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 22:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
+        id S1344161AbjKHDaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 22:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343997AbjKHD37 (ORCPT
+        with ESMTP id S1343997AbjKHDaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 22:29:59 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14E210FC;
-        Tue,  7 Nov 2023 19:29:57 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-6b44befac59so273307b3a.0;
-        Tue, 07 Nov 2023 19:29:57 -0800 (PST)
+        Tue, 7 Nov 2023 22:30:05 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FED518C;
+        Tue,  7 Nov 2023 19:30:03 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1cc3c51f830so49288765ad.1;
+        Tue, 07 Nov 2023 19:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699414197; x=1700018997; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699414203; x=1700019003; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9T4iCnxkiZ/SMsg0Y/BS/6F5TpeSE2Kxr8J84ltCywo=;
-        b=W9BmafPu6pCEthiDHnihCl3GsmZow+U8fnhhXaFp7mT0S4prH4Qte/6usrR3ZD9GjY
-         9v1Jy7BL9oOAtsJVkc7qhJBlS0ClfHiuXkC7TX0Ts9BcQcSjafoMRAAHuwpQgGDUM74v
-         CpYWBFEpOQ0m43L9Zw/lZNLhNpyIJlvr4C/6ycKdyqrvpOU7kqaTaPBSRBIgi9+q9pn2
-         ouKgj/99FtPjbSOk2DrJ5jC5Wrh7dH4s7YBotJVwBcrQnOKFZTymwusFghG6QdrUdukV
-         YYBGdkeSYcdYz21JEWOPZRUSMktpv6ypMVPDKzcHtR6TQxHk1yVaPDNDiTH3BwefHGSe
-         dcIA==
+        bh=CYqUdI5rzRnSrUaIGt2bwdu6BD89bQLHImnO8wMrByw=;
+        b=MGBIlxboTyIycX8QzW/rpwK5fRjZb8MeR7Ff7Ikxz1Sk/G0xhLXFbZCO5edL8OVVgQ
+         oSjrZkMEk17ZsQn4yx0QLcy87nq+FgpsQ84yGbQTyvjtcutBkI5ovecMoVjASbSH92+G
+         DeCD5CzJe/urtEvXGfmJb8/pQz6uhq1iwa1kZluxStUsLFV2ccsh3TH8QT8CTRBrpY6d
+         XRzju5El6EV1KqN7aUIFIT08+VrJEDnQeoXKqiRgPgkl46XeNiKVQA9aKamAQAGsFsgB
+         SHA0Rgq60PfcAGTgYgiWese6TLfFiNmP2bUIhfxhXTpXw4JaBoqnpYn63wGAtN1ZtiTg
+         k+rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699414197; x=1700018997;
+        d=1e100.net; s=20230601; t=1699414203; x=1700019003;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9T4iCnxkiZ/SMsg0Y/BS/6F5TpeSE2Kxr8J84ltCywo=;
-        b=eevDW23Dig/DqqdO5vrfnEnrmEN2urXEyYg9S02FnMWDb2mOOJ1awfYS9QsuPgZEfv
-         9oOZpthoUmwO+28dC3g0TRJ8Q/UD8bO1YwV+r4EDcmSnik7PPY/UMnv6vab1VkWlYLqg
-         NJ8dpYal0zbaWPFHdq6rYLYwMoXhZGKw6kGUi9ueOgsy0S+NnGWKzFDUEF4Fb/rZQn9v
-         kuaBgH8BrjK0ZEY3UFUuY1mm17lEtkA6O6YJXpydfSXiMlSCBLw/Rk27Z6iFy35/RWJ1
-         qTolq1CraLN7jhGebcHgbxbUTzPAPe1GD732oG0Xhqyt0XfxDdYWXNXAAzAL4WSY82JF
-         FI6g==
-X-Gm-Message-State: AOJu0Yxf0JvciY1zaJ5lWKpzaVaekGT49ZgjRhJxuuqyMH+UWGZso/Yb
-        CDumfBZ1nWuLNYBlmP1Difk=
-X-Google-Smtp-Source: AGHT+IEIbOtVFuN6QkODRaiBuBKuoIrWVj1FNhSExT1xy3xjcIowEJHHSKysm6vqN74XNX2LDSaTEw==
-X-Received: by 2002:a05:6a20:a127:b0:159:c07d:66f0 with SMTP id q39-20020a056a20a12700b00159c07d66f0mr1112196pzk.6.1699414197028;
-        Tue, 07 Nov 2023 19:29:57 -0800 (PST)
+        bh=CYqUdI5rzRnSrUaIGt2bwdu6BD89bQLHImnO8wMrByw=;
+        b=Rg1Ewsj4UYdJc1KymNSOnPgu+bpA/CXMi6cUFrtjmiUaVsiuvjNE0uE+KXmjy+kp04
+         EFQVpqDv+r82IIYWDeMF3gWjlalnc7bURAPGm8n2UjHYg3eO/wX90XhsuouHK5XXZJef
+         tiBeCeP2k2E/9irBI3ukC01+RPWCFmuaocrlTzuLhxIdn+uO3hKMP7ePBypcHXTAY8s6
+         pRljZ6kiQW2eSg3U3e+tMStlGzNE5goblmQPGzGXPRKVg1Pk1tSWOJWxVFnnCOwy2Jug
+         Rl6eDiZL4uDWpHDWOwOSsJA6tNEad4yQ0dEtm3plEFlmJYd848aEVT+30ZLsqDERpqNj
+         aUSQ==
+X-Gm-Message-State: AOJu0YyZ5fcKKYB4SZbKqQc/defDBuJPAGi+gbMYDdBT6ag4caPp9IA1
+        ydfldGKl5pQHDkMJzkYbzws=
+X-Google-Smtp-Source: AGHT+IFZAwHP8x1XmwBHPS16STe/tN99XrgOAIGzw2/t4e5hkHduEObaGcfF76um/yjWPRZzxJuYJg==
+X-Received: by 2002:a17:903:24c:b0:1cc:9781:4782 with SMTP id j12-20020a170903024c00b001cc97814782mr997425plh.62.1699414202633;
+        Tue, 07 Nov 2023 19:30:02 -0800 (PST)
 Received: from localhost ([115.192.116.120])
-        by smtp.gmail.com with ESMTPSA id p24-20020aa78618000000b006be5e537b6csm7960768pfn.63.2023.11.07.19.29.56
+        by smtp.gmail.com with ESMTPSA id h1-20020a170902f7c100b001cc2a6196b3sm551842plw.197.2023.11.07.19.30.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 19:29:56 -0800 (PST)
+        Tue, 07 Nov 2023 19:30:02 -0800 (PST)
 From:   Yuxi Wang <wyx137120466@gmail.com>
 To:     pavel@ucw.cz, lee@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         wyx137120466@gmail.com, Yuxi.Wang@monolithicpower.com
 Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] dt-bindings: leds: add mps mp3326 LED
-Date:   Wed,  8 Nov 2023 11:29:20 +0800
-Message-Id: <20231108032921.3134115-2-wyx137120466@gmail.com>
+Subject: [PATCH 2/2] leds: add mp3326 driver
+Date:   Wed,  8 Nov 2023 11:29:21 +0800
+Message-Id: <20231108032921.3134115-3-wyx137120466@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231108032921.3134115-1-wyx137120466@gmail.com>
 References: <20231108032921.3134115-1-wyx137120466@gmail.com>
@@ -68,204 +68,679 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document mps mp3326 LED driver devicetree bindings.
+This patch adds mp3326 led driver.
 
 Signed-off-by: Yuxi Wang <wyx137120466@gmail.com>
 ---
- .../devicetree/bindings/leds/leds-mp3326.yaml | 184 ++++++++++++++++++
- 1 file changed, 184 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+ drivers/leds/Kconfig       |   7 +
+ drivers/leds/Makefile      |   1 +
+ drivers/leds/leds-mp3326.c | 627 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 635 insertions(+)
+ create mode 100644 drivers/leds/leds-mp3326.c
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-mp3326.yaml b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index b92208eccdea..ac8115bffc2e 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -260,6 +260,13 @@ config LEDS_MIKROTIK_RB532
+ 	  This option enables support for the so called "User LED" of
+ 	  Mikrotik's Routerboard 532.
+ 
++config LEDS_MP3326
++	tristate "LED Support for MPS MP3326"
++	depends on LEDS_CLASS
++	help
++	  This option enables support for on-chip LED drivers found on
++	  MPS MP3326.
++
+ config LEDS_MT6323
+ 	tristate "LED Support for Mediatek MT6323 PMIC"
+ 	depends on LEDS_CLASS
+diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+index d7348e8bc019..196befb56278 100644
+--- a/drivers/leds/Makefile
++++ b/drivers/leds/Makefile
+@@ -63,6 +63,7 @@ obj-$(CONFIG_LEDS_MENF21BMC)		+= leds-menf21bmc.o
+ obj-$(CONFIG_LEDS_MIKROTIK_RB532)	+= leds-rb532.o
+ obj-$(CONFIG_LEDS_MLXCPLD)		+= leds-mlxcpld.o
+ obj-$(CONFIG_LEDS_MLXREG)		+= leds-mlxreg.o
++obj-$(CONFIG_LEDS_MP3326)		+= leds-mp3326.o
+ obj-$(CONFIG_LEDS_MT6323)		+= leds-mt6323.o
+ obj-$(CONFIG_LEDS_NET48XX)		+= leds-net48xx.o
+ obj-$(CONFIG_LEDS_NETXBIG)		+= leds-netxbig.o
+diff --git a/drivers/leds/leds-mp3326.c b/drivers/leds/leds-mp3326.c
 new file mode 100644
-index 000000000000..899cf568f647
+index 000000000000..c6b6398d9dc1
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
-@@ -0,0 +1,184 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mps,mp3326.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/leds/leds-mp3326.c
+@@ -0,0 +1,627 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * MP3326 Led driver
++ *
++ * Copyright 2023 Monolithic Power Systems, Inc
++ *
++ * Author: Yuxi Wang <wyx137120466@gmail.com>
++ */
++#include <linux/bits.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++#include <linux/i2c.h>
++#include <linux/of.h>
++#include <linux/slab.h>
++#include <linux/interrupt.h>
++#include <linux/mutex.h>
++#include <linux/leds.h>
++#include <linux/device.h>
++#include <linux/led-class-multicolor.h>
 +
-+title: MPS MP3326 RGB/White LED Driver
++#define MP3326_PWM_DIM_FREQUENCY_CONFIG			0x00
++#define MP3326_PWM_CTRL							0x01
++#define MP3326_PWM_DIM_FREQUENCY_CONFIG			0x00
++#define MP3326_PWM_CTRL_CHANNEL_9_16			0x04
++#define MP3326_PWM_CTRL_CHANNEL_1_8				0x05
++#define MP3326_PWM_OPEN_FAULT_CHANNEL_9_16		0x06
++#define MP3326_PWM_OPEN_FAULT_CHANNEL_1_8		0x07
++#define MP3326_PWM_SHORT_FAULT_CHANNEL_9_16		0x08
++#define MP3326_PWM_SHORT_FAULT_CHANNEL_1_8		0x09
++#define MP3326_PWM_CURRENT_SET_CHANNEL1			0x0A
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL1		0x0B
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL1		0x0C
++#define MP3326_PWM_CURRENT_SET_CHANNEL2			0x0D
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL2		0x0E
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL2		0x0F
++#define MP3326_PWM_CURRENT_SET_CHANNEL3			0x10
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL3		0x11
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL3		0x12
++#define MP3326_PWM_CURRENT_SET_CHANNEL4			0x13
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL4		0x14
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL4		0x15
++#define MP3326_PWM_CURRENT_SET_CHANNEL5			0x16
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL5		0x17
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL5		0x18
++#define MP3326_PWM_CURRENT_SET_CHANNEL6			0x19
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL6		0x1A
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL6		0x1B
++#define MP3326_PWM_CURRENT_SET_CHANNEL7			0x1C
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL7		0x1D
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL7		0x1E
++#define MP3326_PWM_CURRENT_SET_CHANNEL8			0x1F
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL8		0x20
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL8		0x21
++#define MP3326_PWM_CURRENT_SET_CHANNEL9			0x22
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL9		0x23
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL9		0x24
++#define MP3326_PWM_CURRENT_SET_CHANNEL10		0x25
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL10		0x26
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL10		0x27
++#define MP3326_PWM_CURRENT_SET_CHANNEL11		0x28
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL11		0x29
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL11		0x2A
++#define MP3326_PWM_CURRENT_SET_CHANNEL12		0x2B
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL12		0x2C
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL12		0x2D
++#define MP3326_PWM_CURRENT_SET_CHANNEL13		0x2E
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL13		0x2F
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL13		0x30
++#define MP3326_PWM_CURRENT_SET_CHANNEL14		0x31
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL14		0x32
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL14		0x33
++#define MP3326_PWM_CURRENT_SET_CHANNEL15		0x34
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL15		0x35
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL15		0x36
++#define MP3326_PWM_CURRENT_SET_CHANNEL16		0x37
++#define MP3326_PWM_DUTY_LSB_SET_CHANNEL16		0x38
++#define MP3326_PWM_DUTY_MSB_SET_CHANNEL16		0x39
++#define MAX_BRIGHTNESS	63
 +
-+maintainers:
-+  - Yuxi Wang <wyx137120466@gmail.com>
++enum led_ctrl {
++	ENABLE = 0,
++	BRIGHTNESS,
++	COLOR_L4,
++	COLOR_H8,
++	OPEN_FAULT,
++	SHORT_FAULT,
++	MAX_CTRL,
++};
 +
-+description: |
-+  The MP3326 is a RGB/White LED driver with I2C interface.
++enum mp3326_channel {
++	CHANNEL1,
++	CHANNEL2,
++	CHANNEL3,
++	CHANNEL4,
++	CHANNEL5,
++	CHANNEL6,
++	CHANNEL7,
++	CHANNEL8,
++	CHANNEL9,
++	CHANNEL10,
++	CHANNEL11,
++	CHANNEL12,
++	CHANNEL13,
++	CHANNEL14,
++	CHANNEL15,
++	CHANNEL16,
++	MAX_CHANNEL,
++};
 +
-+  For more product information please see the link below:
-+  https://www.monolithicpower.com/en/products/mp3326.html
++#define MP3326_REG_CONNECT_INNER(prefix, range)	prefix##range
++#define MP3326_REG_CONNECT(prefix, range)		MP3326_REG_CONNECT_INNER(prefix, range)
++#define MP3326_REG_FIELD(reg, minbit, maxbit)	REG_FIELD(reg, minbit, maxbit)
++#define RANGE(a, b) MP3326_REG_CONNECT_INNER(a, b)
 +
-+properties:
-+  compatible:
-+    - const: mps,mp3326
++#define MP3326_CHANNEL_FIELD(bit, num, range) { \
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_CTRL_CHANNEL, range), bit, bit),	\
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_CURRENT_SET_CHANNEL, num), 0, 5),	\
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_DUTY_LSB_SET_CHANNEL, num), 0, 3),	\
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_DUTY_MSB_SET_CHANNEL, num), 0, 7),	\
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_OPEN_FAULT_CHANNEL, range), bit, bit),	\
++	MP3326_REG_FIELD(MP3326_REG_CONNECT(MP3326_PWM_SHORT_FAULT_CHANNEL, range), bit, bit), \
++	}
++struct mp3326_led {
++	struct mp3326 *private_data;
++	struct led_classdev cdev;
++	struct mc_subled *subled_info;
++	int num_colors;
++};
 +
-+  "#address-cells":
-+    const: 1
++struct mp3326 {
++	struct i2c_client *client;
++	struct regmap *regmap;
++	struct regmap_field *regmap_fields[MAX_CHANNEL][MAX_CTRL];
++	int num_of_leds;
++	struct mp3326_led leds[];
++};
 +
-+  "#size-cells":
-+    const: 0
++static const struct regmap_config MP3326_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++};
 +
-+  reg:
-+    maxItems: 1
++static const struct reg_field channels_reg_fields[MAX_CHANNEL][MAX_CTRL] = {
++	[CHANNEL1] = MP3326_CHANNEL_FIELD(0, 1, RANGE(_1, _8)),
++	[CHANNEL2] = MP3326_CHANNEL_FIELD(1, 2, RANGE(_1, _8)),
++	[CHANNEL3] = MP3326_CHANNEL_FIELD(2, 3, RANGE(_1, _8)),
++	[CHANNEL4] = MP3326_CHANNEL_FIELD(3, 4, RANGE(_1, _8)),
++	[CHANNEL5] = MP3326_CHANNEL_FIELD(4, 5, RANGE(_1, _8)),
++	[CHANNEL6] = MP3326_CHANNEL_FIELD(5, 6, RANGE(_1, _8)),
++	[CHANNEL7] = MP3326_CHANNEL_FIELD(6, 7, RANGE(_1, _8)),
++	[CHANNEL8] = MP3326_CHANNEL_FIELD(7, 8, RANGE(_1, _8)),
++	[CHANNEL9] = MP3326_CHANNEL_FIELD(0, 9, RANGE(_9, _16)),
++	[CHANNEL10] = MP3326_CHANNEL_FIELD(1, 10, RANGE(_9, _16)),
++	[CHANNEL11] = MP3326_CHANNEL_FIELD(2, 11, RANGE(_9, _16)),
++	[CHANNEL12] = MP3326_CHANNEL_FIELD(3, 12, RANGE(_9, _16)),
++	[CHANNEL13] = MP3326_CHANNEL_FIELD(4, 13, RANGE(_9, _16)),
++	[CHANNEL14] = MP3326_CHANNEL_FIELD(5, 14, RANGE(_9, _16)),
++	[CHANNEL15] = MP3326_CHANNEL_FIELD(6, 15, RANGE(_9, _16)),
++	[CHANNEL16] = MP3326_CHANNEL_FIELD(7, 16, RANGE(_9, _16)),
++};
 +
-+  mps,led-protect:
-+    description: |
-+      LED short protection threshold.
-+    enum: [0, 1, 2, 3]
++static int led_brightness_set(struct led_classdev *led_cdev, enum led_brightness brightness)
++{
++	struct mp3326_led *led = container_of(led_cdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	int ret;
++	int i;
 +
-+  multi-led:
-+    type: object
++	if (brightness > led_cdev->max_brightness)
++		brightness = led_cdev->max_brightness;
++	if (brightness < 0)
++		brightness = 0;
++	for (i = 0; i < led->num_colors; i++) {
++		ret = regmap_field_write(
++			chip->regmap_fields[led->subled_info[i].channel][BRIGHTNESS],
++			brightness);
++		if (ret)
++			return ret;
++		led->subled_info[i].brightness = brightness;
++	}
++	led_cdev->brightness = brightness;
++	return 0;
++}
 +
-+    properties:
-+      "#address-cells":
-+        const: 1
-+      "#size-cells":
-+        const: 0
++static ssize_t led_pwm_store(struct device *dev, struct device_attribute *attr,
++			 const char *buf, size_t count)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	ssize_t ret;
++	int r_val, g_val, b_val;
++	int i;
 +
-+      color:
-+        description: RGB module
-+        const: LED_COLOR_ID_RGB
++	ret = sscanf(buf, "%i %i %i", &r_val, &g_val, &b_val);
++	if (ret != 3 && ret != 1)
++		return ret;
++	r_val = r_val * 4095 / 255 + (r_val * 4095 % 255) / (255 / 2);
++	g_val = g_val * 4095 / 255 + (g_val * 4095 % 255) / (255 / 2);
++	b_val = b_val * 4095 / 255 + (b_val * 4095 % 255) / (255 / 2);
++	for (i = 0; i < led->num_colors; i++) {
++		switch (led->subled_info[i].color_index) {
++		case LED_COLOR_ID_RED:
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4],
++				r_val & 0x0f);
++			if (ret)
++				return ret;
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8],
++				r_val >> 4);
++			if (ret)
++				return ret;
++			break;
++		case LED_COLOR_ID_GREEN:
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4],
++				g_val & 0x0f);
++			if (ret)
++				return ret;
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8],
++				g_val >> 4);
++			if (ret)
++				return ret;
++			break;
++		case LED_COLOR_ID_BLUE:
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4],
++				b_val & 0x0f);
++			if (ret)
++				return ret;
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8],
++				b_val >> 4);
++			if (ret)
++				return ret;
++			break;
++		default:
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4],
++				r_val & 0x0f);
++			if (ret)
++				return ret;
++			ret = regmap_field_write(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8],
++				r_val >> 4);
++			if (ret)
++				return ret;
++			break;
++		}
++	}
++	return count;
++}
 +
-+      led_r:
-+        type: object
++static ssize_t led_pwm_show(struct device *dev, struct device_attribute *attr,
++			char *buf)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	ssize_t ret;
++	int r_val = 0, g_val = 0, b_val = 0, val;
++	int i;
 +
-+        properties:
-+          "#address-cells":
-+            const: 1
-+          "#size-cells":
-+            const: 0
-+          reg:
-+            description: Index of the LED.
-+            minimum: 1
-+            maximum: 16
-+          color:
-+            description: Red.
-+            const: LED_COLOR_ID_RED
-+          required:
-+            - reg
-+            - color
++	for (i = 0; i < led->num_colors; i++) {
++		switch (led->subled_info[i].color_index) {
++		case LED_COLOR_ID_RED:
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4], &val);
++			if (ret)
++				return ret;
++			r_val |= val;
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8], &val);
++			if (ret)
++				return ret;
++			r_val |= val << 4;
++			break;
++		case LED_COLOR_ID_GREEN:
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4], &val);
++			if (ret)
++				return ret;
++			g_val |= val;
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8], &val);
++			if (ret)
++				return ret;
++			g_val |= val << 4;
++			break;
++		case LED_COLOR_ID_BLUE:
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4], &val);
++			if (ret)
++				return ret;
++			b_val |= val;
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8], &val);
++			if (ret)
++				return ret;
++			b_val |= val << 4;
++			break;
++		default:
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_L4], &val);
++			if (ret)
++				return ret;
++			r_val |= val;
++			ret = regmap_field_read(
++				chip->regmap_fields[led->subled_info[i].channel][COLOR_H8], &val);
++			if (ret)
++				return ret;
++			r_val |= val << 4;
++			break;
++		}
++	}
++	r_val = r_val * 255 / 4095 + (r_val * 255 % 4095) / (4095 / 2);
++	g_val = g_val * 255 / 4095 + (g_val * 255 % 4095) / (4095 / 2);
++	b_val = b_val * 255 / 4095 + (b_val * 255 % 4095) / (4095 / 2);
++	if (led->num_colors == 1)
++		return sysfs_emit(buf, "0x%x\n", r_val);
++	else
++		return sysfs_emit(buf, "0x%x 0x%x 0x%x\n", r_val, g_val, b_val);
++}
 +
-+      led_g:
-+        type: object
++static ssize_t led_enable_store(struct device *dev, struct device_attribute *attr,
++			 const char *buf, size_t count)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	ssize_t ret;
++	uint val, i;
 +
-+        properties:
-+          "#address-cells":
-+            const: 1
-+          "#size-cells":
-+            const: 0
-+        reg:
-+          description: Index of the LED.
-+          minimum: 1
-+          maximum: 16
-+        color:
-+          description: Green.
-+          const: LED_COLOR_ID_GREEN
-+        required:
-+          - reg
-+          - color
++	ret = kstrtouint(buf, 0, &val);
++	if (ret)
++		return ret;
++	for (i = 0; i < led->num_colors; i++) {
++		ret = regmap_field_write(
++			chip->regmap_fields[led->subled_info[i].channel][BRIGHTNESS],
++			led->subled_info[i].brightness);
++		if (ret)
++			return ret;
++		ret = regmap_field_write(
++			chip->regmap_fields[led->subled_info[i].channel][ENABLE], !!val);
++		if (ret)
++			return ret;
++	}
 +
-+      led_b:
-+        type: object
++	return count;
++}
 +
-+        properties:
-+          "#address-cells":
-+            const: 1
-+          "#size-cells":
-+            const: 0
-+        reg:
-+          description: Index of the LED.
-+          minimum: 1
-+          maximum: 16
-+        color:
-+          description: Blue.
-+          const: LED_COLOR_ID_BLUE
-+        required:
-+          - reg
-+          - color
++static ssize_t led_enable_show(struct device *dev, struct device_attribute *attr,
++			char *buf)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	uint val, rval = 0;
++	int i, ret;
 +
-+  patternProperties:
-+    "^led@[0-3]$":
-+      type: object
++	for (i = 0; i < led->num_colors; i++) {
++		ret = regmap_field_read(
++			chip->regmap_fields[led->subled_info[i].channel][ENABLE], &val);
 +
-+      properties:
-+        reg:
-+          description: Index of the LED.
-+          minimum: 1
-+          maximum: 16
++		rval |= val << i;
++		if (ret)
++			return ret;
++	}
 +
-+        required:
-+          - reg
-+          - color
++	if (rval)
++		return sysfs_emit(buf, "%s\n", "True");
++	else
++		return sysfs_emit(buf, "%s\n", "False");
++}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/leds/common.h>
++static ssize_t led_short_fault_show(struct device *dev, struct device_attribute *attr,
++			char *buf)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	uint val, rval = 0, i;
++	int ret;
 +
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++	for (i = 0; i < led->num_colors; i++) {
++		ret = regmap_field_read(
++			chip->regmap_fields[led->subled_info[i].channel][SHORT_FAULT], &val);
++		rval |= val << i;
++		if (ret)
++			return ret;
++	}
 +
-+        mp3326@30 {
-+            compatible = "mps,mp3326";
-+            reg = <0x30>;
-+            led-protect =<3>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
++	if (rval)
++		return sysfs_emit(buf, "%s\n", "Occur");
++	else
++		return sysfs_emit(buf, "%s\n", "None");
++}
 +
-+            multi-led {
-+              color = <LED_COLOR_ID_RGB>;
-+              #address-cells = <1>;
-+              #size-cells = <0>;
++static ssize_t led_open_fault_show(struct device *dev, struct device_attribute *attr,
++			char *buf)
++{
++	struct led_classdev *lcdev = dev_get_drvdata(dev);
++	struct mp3326_led *led = container_of(lcdev, struct mp3326_led, cdev);
++	struct mp3326 *chip = led->private_data;
++	uint val, rval = 0, i;
++	int ret;
 +
-+              rgb_r@1 {
-+                  #address-cells = <1>;
-+                  #size-cells = <0>;
-+                  reg  = <1>;
-+                  color = <LED_COLOR_ID_RED>;
-+              };
-+              rgb_g@2 {
-+                  #address-cells = <1>;
-+                  #size-cells = <0>;
-+                  reg = <2>;
-+                  color = <LED_COLOR_ID_GREEN>;
-+              };
-+              rgb_b@3 {
-+                  #address-cells = <1>;
-+                  #size-cells = <0>;
-+                  reg = <3>;
-+                  color = <LED_COLOR_ID_BLUE>;
-+              };
-+            };
-+        };
-+    };
++	for (i = 0; i < led->num_colors; i++) {
++		ret = regmap_field_read(
++			chip->regmap_fields[led->subled_info[i].channel][OPEN_FAULT], &val);
++		rval |= val << i;
++		if (ret)
++			return ret;
++	}
 +
-+  - |
-+    #include <dt-bindings/leds/common.h>
++	if (rval)
++		return sysfs_emit(buf, "%s\n", "Occur");
++	else
++		return sysfs_emit(buf, "%s\n", "None");
++}
 +
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++static DEVICE_ATTR_RW(led_pwm);
++static DEVICE_ATTR_RW(led_enable);
++static DEVICE_ATTR_RO(led_short_fault);
++static DEVICE_ATTR_RO(led_open_fault);
 +
-+        mp3326@30 {
-+            compatible = "mps,mp3326";
-+            reg = <0x30>;
-+            led-protect =<3>;
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            led0@0 {
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                reg= <5>;
-+                color = <LED_COLOR_ID_WHITE>;
-+            };
-+        };
-+    };
++static struct attribute *led_sysfs_attrs[] = {
++	&dev_attr_led_pwm.attr,
++	&dev_attr_led_enable.attr,
++	&dev_attr_led_short_fault.attr,
++	&dev_attr_led_open_fault.attr,
++	NULL,
++};
 +
-+...
++ATTRIBUTE_GROUPS(led_sysfs);
++
++static int mp3326_add_led(struct mp3326 *chip, struct device_node *np, int index)
++{
++	struct mp3326_led *led = &chip->leds[index];
++	struct mc_subled *info;
++	struct device_node *child;
++	struct led_classdev *cdev;
++	struct led_init_data init_data = {};
++	int ret;
++	int i;
++	int count;
++	u32 color = 0;
++	u32 reg = 0;
++
++	ret = of_property_read_u32(np, "color", &color);
++	if (ret) {
++		dev_err(&chip->client->dev, "Miss color in the node\n");
++		return ret;
++	}
++	led->private_data = chip;
++	if (color == LED_COLOR_ID_RGB) {
++		count = of_get_child_count(np);
++		if (count != 3) {
++			dev_err(&chip->client->dev, "RGB must have three node.\n");
++			return -EINVAL;
++		}
++
++		info = devm_kcalloc(&chip->client->dev, 3, sizeof(*info), GFP_KERNEL);
++		if (!info)
++			return -ENOMEM;
++
++		for_each_available_child_of_node(np, child) {
++			ret = of_property_read_u32(child, "reg", &reg);
++			if (ret || reg > MAX_CHANNEL) {
++				dev_err(&chip->client->dev,
++				"reg must less or equal than %d\n", MAX_CHANNEL);
++				return -EINVAL;
++			}
++
++			ret = of_property_read_u32(child, "color", &color);
++			if (ret) {
++				dev_err(&chip->client->dev, "color must have value\n");
++				return ret;
++			}
++
++			if (color > 3 || !color) {
++				dev_err(&chip->client->dev,
++				"color must be Red, Green and Blue. The color is %d\n", color);
++				return ret;
++			}
++			info[i].color_index = color;
++			info[i].channel = reg - 1;
++			info[i].brightness = 0;
++			i++;
++		}
++
++		led->subled_info = info;
++		led->num_colors = 3;
++		cdev = &led->cdev;
++		cdev->max_brightness = MAX_BRIGHTNESS;
++		cdev->brightness_set_blocking = led_brightness_set;
++		cdev->groups = led_sysfs_groups;
++		init_data.fwnode = &np->fwnode;
++
++		ret = devm_led_classdev_register_ext(&chip->client->dev, &led->cdev, &init_data);
++
++		if (ret) {
++			dev_err(&chip->client->dev, "Unable register multicolor:%s\n", cdev->name);
++			return ret;
++		}
++	} else {
++		ret = of_property_read_u32(np, "reg", &reg);
++		if (ret || reg > MAX_CHANNEL) {
++			dev_err(&chip->client->dev,
++			"reg must less or equal than %d\n", MAX_CHANNEL);
++			return -EINVAL;
++		}
++		info = devm_kcalloc(&chip->client->dev, 1, sizeof(*info), GFP_KERNEL);
++		led->num_colors = 1;
++		info[i].color_index = LED_COLOR_ID_WHITE;
++		info[i].channel = reg - 1;
++		info[i].brightness = 0;
++		led->subled_info = info;
++		cdev = &led->cdev;
++		cdev->max_brightness = MAX_BRIGHTNESS;
++		cdev->brightness_set_blocking = led_brightness_set;
++		cdev->groups = led_sysfs_groups;
++		init_data.fwnode = &np->fwnode;
++		ret = devm_led_classdev_register_ext(&chip->client->dev, &led->cdev, &init_data);
++		if (ret) {
++			dev_err(&chip->client->dev, "Unable register led:%s\n", cdev->name);
++			return ret;
++		}
++	}
++	return ret;
++}
++
++static int mp3326_parse_dt(struct mp3326 *chip)
++{
++	struct device_node *np = dev_of_node(&chip->client->dev);
++	struct device_node *child;
++	int ret;
++	int i;
++	int val;
++
++	for_each_available_child_of_node(np, child) {
++		ret = mp3326_add_led(chip, child, i);
++		if (ret)
++			return ret;
++		i++;
++	}
++	ret = of_property_read_u32(np, "led-protect", &val);
++	if (ret)
++		return ret;
++
++	ret = regmap_update_bits(chip->regmap, 0x01, BIT(4) | BIT(5), val << 4);
++
++	ret = regmap_write(chip->regmap, MP3326_PWM_CTRL_CHANNEL_9_16, 0);
++	if (ret)
++		return ret;
++	ret = regmap_write(chip->regmap, MP3326_PWM_CTRL_CHANNEL_1_8, 0);
++	if (ret)
++		return ret;
++	return 0;
++}
++
++static int mp3326_leds_probe(struct i2c_client *client)
++{
++	struct mp3326 *chip;
++	const struct reg_field *reg_fields;
++	int count, i, j;
++
++	count = device_get_child_node_count(&client->dev);
++	if (!count) {
++		return dev_err_probe(&client->dev, -EINVAL,
++				"Incorrect number of leds (%d)", count);
++	}
++	chip = devm_kzalloc(&client->dev, struct_size(chip, leds, count), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++
++	chip->client = client;
++	chip->num_of_leds = count;
++	i2c_set_clientdata(client, chip);
++	chip->regmap = devm_regmap_init_i2c(client, &MP3326_regmap_config);
++	if (IS_ERR(chip->regmap))
++		return PTR_ERR(chip->regmap);
++
++	for (i = 0; i < MAX_CHANNEL; i++) {
++		reg_fields = channels_reg_fields[i];
++		for (j = 0; j < MAX_CTRL; j++) {
++			chip->regmap_fields[i][j] = devm_regmap_field_alloc(&client->dev,
++			chip->regmap, reg_fields[j]);
++			if (IS_ERR(chip->regmap_fields[i][j]))
++				return PTR_ERR(chip->regmap_fields[i][j]);
++		}
++	}
++	if (mp3326_parse_dt(chip))
++		return 1;
++	else
++		return 0;
++}
++
++static const struct i2c_device_id mp3326_id[] = {
++	{"mp3326", 0},
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, mp3326_id);
++
++static const struct of_device_id mp3326_of_match[] = {
++	{ .compatible = "mps,mp3326" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, mp3326_of_match);
++
++static struct i2c_driver mp3326_driver = {
++	.probe_new = mp3326_leds_probe,
++	.driver = {
++			.name = "mp3326_led",
++			.of_match_table = mp3326_of_match,
++		   },
++	.id_table = mp3326_id,
++};
++
++module_i2c_driver(mp3326_driver);
++MODULE_AUTHOR("Yuxi Wang <wyx137120466@gmail.com>");
++MODULE_DESCRIPTION("MPS MP3326 LED driver");
++MODULE_LICENSE("GPL");
 -- 
 2.25.1
 
