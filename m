@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4B97E4DE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECAB7E4DE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbjKHAN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:13:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
+        id S1343676AbjKHAOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235261AbjKHANz (ORCPT
+        with ESMTP id S235408AbjKHAOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:13:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EED10EC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:13:13 -0800 (PST)
+        Tue, 7 Nov 2023 19:14:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4229D10EB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699402392;
+        s=mimecast20190719; t=1699402393;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1lD0COgBfwH5UYAd332SA45aE7haVTJhuDDmzsBJW6I=;
-        b=LPZX32ejYTYOs+h8HEUlDcywROLF3yb/6xPGcRAhoaVZWh2aX5eauZzfrkK/jcvnW4zfIt
-        PnP7Upjxs+MZuIhWxaIS3CtZwdXGUQpuwmFpVTQURX5iCkO99cYAo8dSl8TxqumKtz1IpV
-        PclaednWXNpjezRkHG1ZVOrG3kE8TTE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=4ctUbNYpz6tzYpOeogS+HZIyW2krgJWmH5IZy1f/TTs=;
+        b=UTVAWsKTyd0S0AIS1Cq/2T7F1Cmfyc5iF7g/+LLdp5G9dRAqMIgBoNq7qKY7lNeRmuxwU1
+        wLXLkBded5aK2R5G18SwcmJaHLzzeZPPRCEeRrId1bRUO72g6T8UO+dX/EigYy/FE79yEy
+        E639w81uHOiUuQCGN4CaW1hHh6e08fY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-267-ssFLEtEcPGORHd7ooVs7hw-1; Tue, 07 Nov 2023 19:13:08 -0500
-X-MC-Unique: ssFLEtEcPGORHd7ooVs7hw-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-53fa5cd4480so4904903a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:13:08 -0800 (PST)
+ us-mta-652-2Tf6Qnt2MXuqVd9lX8z8hg-1; Tue, 07 Nov 2023 19:13:12 -0500
+X-MC-Unique: 2Tf6Qnt2MXuqVd9lX8z8hg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9de267de2a0so273019766b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:13:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699402387; x=1700007187;
+        d=1e100.net; s=20230601; t=1699402391; x=1700007191;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1lD0COgBfwH5UYAd332SA45aE7haVTJhuDDmzsBJW6I=;
-        b=UPCZbecbBYFjhLPtPlT+xHcaRuVM1YNTQUcFxhJ7bGCGFv2eE325FubVyjY7ZRlOXL
-         Y+9AmgxxK0irvvTn6v5nLmD6y0uD3gEHixboapsQgTIBzFBrcJNrtgsuET7bqIC1jHgP
-         XA2VCFYnQm1MGK+j3ZCfCyQ3hH647bxkXcvKvhhb5mHvMn6Fp1ZBe4cXJbQD7tsJBxBX
-         IJJ5SSwTA5YfBO6nNfDR+6lUqvLatDjpoFXvsYSMXJpEIW7MbztYTS7MP672FRK7JXpB
-         T8rxNYyrVqLMEHwSY9qR4mjQySc4oXATwvdJgULrJOLhrzZhdq2C8iB/1DJd+0enobIM
-         9Cqw==
-X-Gm-Message-State: AOJu0Ywv+TXNJDVlRo/Na5Y56459Yn/LP3zDRHR6VfVxXhjZQcL1ZIPo
-        IAcBnheQSp+hUF9KKa8xOurpAtRVghe9bYKWlUsXSaF3BjGH/gXSfEVYjYyZ78w0M+UFFCEwoDu
-        zrXQsqAvld7uG9qwlht89NtnS
-X-Received: by 2002:a17:906:c104:b0:9b2:b786:5e9c with SMTP id do4-20020a170906c10400b009b2b7865e9cmr165784ejc.28.1699402387472;
-        Tue, 07 Nov 2023 16:13:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFrzULTPpXs8WCiZuuhxDp8DvsiT0VB2rLu0DcbI5dyw/AXwLIVKOHLrfzPiLWFIzNNkdLGiQ==
-X-Received: by 2002:a17:906:c104:b0:9b2:b786:5e9c with SMTP id do4-20020a170906c10400b009b2b7865e9cmr165766ejc.28.1699402387236;
-        Tue, 07 Nov 2023 16:13:07 -0800 (PST)
+        bh=4ctUbNYpz6tzYpOeogS+HZIyW2krgJWmH5IZy1f/TTs=;
+        b=GAtzfDl4OBcfYBdNdPOViR8UnPRfyE65H4Gbwk9HyT1lccyymqFLMkQpkQPxQGTHi5
+         m44TNLGWs71kucV1MX0AnjIyjg9JRLpnAmbeLQdh9uFZqByloGUJH/DkShHPd8IqEKm2
+         k31Z10XR367cVAFXM6nrxtszbF0iPGIznRsHM1fx6okwuAioTsSL2wSMle7UUyT6hrfb
+         dJCOjpvCamcKp0eIqHionxMbKix8AtAgtq75UeDqqBLjKIaWam20T4WDzewAg/+WZNcM
+         bsSd917jXBZ9OHM7X86f2ecL/r5j6bOW6RhZlhI+WKiYozGngXDk2lUwcuIUCXtuI7jo
+         9EaA==
+X-Gm-Message-State: AOJu0Yx4TAB97yC6fg5MDG6KLMQJUOAxnkGgFkyeTXnmSNaqIE7nEoyl
+        l6mXqZRjfEF/gr/+qTMP72tQhm5IqDeYw1h8TXAW39qoakVsMYnd2wm9xOu+P3nqbJ2ssw+ZSO0
+        EybU8BLwmdHwDvfcJpQUfQU9r
+X-Received: by 2002:a17:907:72c2:b0:9b2:6d09:847c with SMTP id du2-20020a17090772c200b009b26d09847cmr128991ejc.10.1699402391141;
+        Tue, 07 Nov 2023 16:13:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5mZIJaXlXK5+6Ct9x6+zYmd4wQssrYGMVAP+petiYpgw5Audt1XmkpV1U3GDZmm9qpuS4MA==
+X-Received: by 2002:a17:907:72c2:b0:9b2:6d09:847c with SMTP id du2-20020a17090772c200b009b26d09847cmr128975ejc.10.1699402390838;
+        Tue, 07 Nov 2023 16:13:10 -0800 (PST)
 Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id qx11-20020a170906fccb00b009b2f2451381sm169643ejb.182.2023.11.07.16.13.06
+        by smtp.gmail.com with ESMTPSA id f4-20020a170906048400b00988e953a586sm177311eja.61.2023.11.07.16.13.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 16:13:06 -0800 (PST)
+        Tue, 07 Nov 2023 16:13:10 -0800 (PST)
 From:   Danilo Krummrich <dakr@redhat.com>
 To:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
         thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
@@ -63,9 +63,9 @@ To:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
         christian.koenig@amd.com, faith@gfxstrand.net
 Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next v9 01/12] drm/gpuvm: convert WARN() to drm_WARN() variants
-Date:   Wed,  8 Nov 2023 01:12:31 +0100
-Message-ID: <20231108001259.15123-2-dakr@redhat.com>
+Subject: [PATCH drm-misc-next v9 02/12] drm/gpuvm: don't always WARN in drm_gpuvm_check_overflow()
+Date:   Wed,  8 Nov 2023 01:12:32 +0100
+Message-ID: <20231108001259.15123-3-dakr@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231108001259.15123-1-dakr@redhat.com>
 References: <20231108001259.15123-1-dakr@redhat.com>
@@ -76,167 +76,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use drm_WARN() and drm_WARN_ON() variants to indicate drivers the
-context the failing VM resides in.
+Don't always WARN in drm_gpuvm_check_overflow() and separate it into a
+drm_gpuvm_check_overflow() and a dedicated
+drm_gpuvm_warn_check_overflow() variant.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+This avoids printing warnings due to invalid userspace requests.
+
 Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
 Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 ---
- drivers/gpu/drm/drm_gpuvm.c            | 32 ++++++++++++++------------
- drivers/gpu/drm/nouveau/nouveau_uvmm.c |  3 ++-
- include/drm/drm_gpuvm.h                |  7 ++++++
- 3 files changed, 26 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/drm_gpuvm.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-index 08c088319652..d7367a202fee 100644
+index d7367a202fee..445767f8fbc4 100644
 --- a/drivers/gpu/drm/drm_gpuvm.c
 +++ b/drivers/gpu/drm/drm_gpuvm.c
-@@ -614,12 +614,12 @@ static int __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+@@ -614,12 +614,18 @@ static int __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
  static void __drm_gpuva_remove(struct drm_gpuva *va);
  
  static bool
--drm_gpuvm_check_overflow(u64 addr, u64 range)
-+drm_gpuvm_check_overflow(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
+-drm_gpuvm_check_overflow(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
++drm_gpuvm_check_overflow(u64 addr, u64 range)
  {
  	u64 end;
  
--	return WARN(check_add_overflow(addr, range, &end),
--		    "GPUVA address limited to %zu bytes.\n", sizeof(end));
-+	return drm_WARN(gpuvm->drm, check_add_overflow(addr, range, &end),
-+			"GPUVA address limited to %zu bytes.\n", sizeof(end));
+-	return drm_WARN(gpuvm->drm, check_add_overflow(addr, range, &end),
+-			"GPUVA address limited to %zu bytes.\n", sizeof(end));
++	return check_add_overflow(addr, range, &end);
++}
++
++static bool
++drm_gpuvm_warn_check_overflow(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
++{
++	return drm_WARN(gpuvm->drm, drm_gpuvm_check_overflow(addr, range),
++			"GPUVA address limited to %zu bytes.\n", sizeof(addr));
  }
  
  static bool
-@@ -647,7 +647,7 @@ static bool
+@@ -647,7 +653,7 @@ static bool
  drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
  		      u64 addr, u64 range)
  {
--	return !drm_gpuvm_check_overflow(addr, range) &&
-+	return !drm_gpuvm_check_overflow(gpuvm, addr, range) &&
+-	return !drm_gpuvm_check_overflow(gpuvm, addr, range) &&
++	return !drm_gpuvm_check_overflow(addr, range) &&
  	       drm_gpuvm_in_mm_range(gpuvm, addr, range) &&
  	       !drm_gpuvm_in_kernel_node(gpuvm, addr, range);
  }
-@@ -656,6 +656,7 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
-  * drm_gpuvm_init() - initialize a &drm_gpuvm
-  * @gpuvm: pointer to the &drm_gpuvm to initialize
-  * @name: the name of the GPU VA space
-+ * @drm: the &drm_device this VM resides in
-  * @start_offset: the start offset of the GPU VA space
-  * @range: the size of the GPU VA space
-  * @reserve_offset: the start of the kernel reserved GPU VA area
-@@ -668,8 +669,8 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
-  * &name is expected to be managed by the surrounding driver structures.
-  */
- void
--drm_gpuvm_init(struct drm_gpuvm *gpuvm,
--	       const char *name,
-+drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
-+	       struct drm_device *drm,
- 	       u64 start_offset, u64 range,
- 	       u64 reserve_offset, u64 reserve_range,
- 	       const struct drm_gpuvm_ops *ops)
-@@ -677,20 +678,20 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
- 	gpuvm->rb.tree = RB_ROOT_CACHED;
- 	INIT_LIST_HEAD(&gpuvm->rb.list);
- 
--	drm_gpuvm_check_overflow(start_offset, range);
--	gpuvm->mm_start = start_offset;
--	gpuvm->mm_range = range;
--
- 	gpuvm->name = name ? name : "unknown";
+@@ -682,7 +688,7 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
  	gpuvm->ops = ops;
-+	gpuvm->drm = drm;
+ 	gpuvm->drm = drm;
  
--	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
-+	drm_gpuvm_check_overflow(gpuvm, start_offset, range);
-+	gpuvm->mm_start = start_offset;
-+	gpuvm->mm_range = range;
+-	drm_gpuvm_check_overflow(gpuvm, start_offset, range);
++	drm_gpuvm_warn_check_overflow(gpuvm, start_offset, range);
+ 	gpuvm->mm_start = start_offset;
+ 	gpuvm->mm_range = range;
  
-+	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
- 	if (reserve_range) {
+@@ -691,8 +697,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
  		gpuvm->kernel_alloc_node.va.addr = reserve_offset;
  		gpuvm->kernel_alloc_node.va.range = reserve_range;
  
--		if (likely(!drm_gpuvm_check_overflow(reserve_offset,
-+		if (likely(!drm_gpuvm_check_overflow(gpuvm, reserve_offset,
- 						     reserve_range)))
+-		if (likely(!drm_gpuvm_check_overflow(gpuvm, reserve_offset,
+-						     reserve_range)))
++		if (likely(!drm_gpuvm_warn_check_overflow(gpuvm, reserve_offset,
++							  reserve_range)))
  			__drm_gpuva_insert(gpuvm, &gpuvm->kernel_alloc_node);
  	}
-@@ -712,8 +713,8 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
- 	if (gpuvm->kernel_alloc_node.va.range)
- 		__drm_gpuva_remove(&gpuvm->kernel_alloc_node);
- 
--	WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
--	     "GPUVA tree is not empty, potentially leaking memory.");
-+	drm_WARN(gpuvm->drm, !RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
-+		 "GPUVA tree is not empty, potentially leaking memory.\n");
  }
- EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
- 
-@@ -795,7 +796,8 @@ drm_gpuva_remove(struct drm_gpuva *va)
- 	struct drm_gpuvm *gpuvm = va->vm;
- 
- 	if (unlikely(va == &gpuvm->kernel_alloc_node)) {
--		WARN(1, "Can't destroy kernel reserved node.\n");
-+		drm_WARN(gpuvm->drm, 1,
-+			 "Can't destroy kernel reserved node.\n");
- 		return;
- 	}
- 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-index 5cf892c50f43..aaf5d28bd587 100644
---- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-@@ -1808,6 +1808,7 @@ int
- nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
- 		  u64 kernel_managed_addr, u64 kernel_managed_size)
- {
-+	struct drm_device *drm = cli->drm->dev;
- 	int ret;
- 	u64 kernel_managed_end = kernel_managed_addr + kernel_managed_size;
- 
-@@ -1836,7 +1837,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
- 	uvmm->kernel_managed_addr = kernel_managed_addr;
- 	uvmm->kernel_managed_size = kernel_managed_size;
- 
--	drm_gpuvm_init(&uvmm->base, cli->name,
-+	drm_gpuvm_init(&uvmm->base, cli->name, drm,
- 		       NOUVEAU_VA_SPACE_START,
- 		       NOUVEAU_VA_SPACE_END,
- 		       kernel_managed_addr, kernel_managed_size,
-diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-index bdfafc4a7705..687fd5893624 100644
---- a/include/drm/drm_gpuvm.h
-+++ b/include/drm/drm_gpuvm.h
-@@ -29,6 +29,7 @@
- #include <linux/rbtree.h>
- #include <linux/types.h>
- 
-+#include <drm/drm_device.h>
- #include <drm/drm_gem.h>
- 
- struct drm_gpuvm;
-@@ -201,6 +202,11 @@ struct drm_gpuvm {
- 	 */
- 	const char *name;
- 
-+	/**
-+	 * @drm: the &drm_device this VM lives in
-+	 */
-+	struct drm_device *drm;
-+
- 	/**
- 	 * @mm_start: start of the VA space
- 	 */
-@@ -241,6 +247,7 @@ struct drm_gpuvm {
- };
- 
- void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
-+		    struct drm_device *drm,
- 		    u64 start_offset, u64 range,
- 		    u64 reserve_offset, u64 reserve_range,
- 		    const struct drm_gpuvm_ops *ops);
 -- 
 2.41.0
 
