@@ -2,191 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118577E5898
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97827E588E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjKHOWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S233745AbjKHOUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbjKHOWe (ORCPT
+        with ESMTP id S232220AbjKHOUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:22:34 -0500
-Received: from m1563.mail.126.com (m1563.mail.126.com [220.181.15.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 996171FC2;
-        Wed,  8 Nov 2023 06:22:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=ETzSHXEE7w/Yufa7DZyCIIqAzyabzEzJwUezfaNJedA=; b=I
-        qBRb8AGzeW3c4z1jeW6MVFHDUuiYSFcFaDKSRupgN2YmVvuQI5reiBBzHzHBEoPy
-        k3Qen0YPdScP3pKKpYz2veejlcdpqt9L8W/UZfH8BkymcnGlqMAvztSIseIJEgXb
-        WLQNFVGwI9NvfHbtzI1qgqTtx/cUFnoZdxsCWSzr6c=
-Received: from figure1802$126.com ( [183.193.16.145] ) by
- ajax-webmail-wmsvr63 (Coremail) ; Wed, 8 Nov 2023 22:20:09 +0800 (CST)
-X-Originating-IP: [183.193.16.145]
-Date:   Wed, 8 Nov 2023 22:20:09 +0800 (CST)
-From:   Ben <figure1802@126.com>
-To:     "Anup Patel" <apatel@ventanamicro.com>
-Cc:     "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Frank Rowand" <frowand.list@gmail.com>,
-        "Conor Dooley" <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        "Saravana Kannan" <saravanak@google.com>,
-        "Marc Zyngier" <maz@kernel.org>,
-        "Anup Patel" <anup@brainfault.org>, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        "Atish Patra" <atishp@atishpatra.org>,
-        linux-riscv@lists.infradead.org,
-        "Andrew Jones" <ajones@ventanamicro.com>
-Subject: Re:Re:[PATCH v11 12/14] irqchip/riscv-aplic: Add support for
- MSI-mode
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 126com
-In-Reply-To: <22d5d9e9.258.18b97d65ce7.Coremail.figure1802@126.com>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-13-apatel@ventanamicro.com>
- <22d5d9e9.258.18b97d65ce7.Coremail.figure1802@126.com>
-X-NTES-SC: AL_QuySC/ievEor7yOYZ+kfm08Xhew/XsK1vfkm3I5QN5FwjD3n4xE7X2FoJUnu1MCENR2ViTO8Sz5zwOFVdqtZZr8S8+CyQJdKJrlBrPGvK1p2iw==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 8 Nov 2023 09:20:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD018171B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:20:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BD8DC433C8
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 14:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699453239;
+        bh=44I87NxHimpYa4+A22pdvojzN0g88SEJqsaIONesthE=;
+        h=From:Date:Subject:To:Cc:From;
+        b=LkD8nd5CVXkrlSnPwVV8gV1flDM7jtU+cEPeuG0R/I9cmafn+EOWzAcjGOK8nQI6d
+         ECab/RNDaSRZ5yGRXGqpi4aSLLupCsz+H0FoOkcDxnbU6HrBC+TgNl31Vo48AsDsLj
+         H5XZbCzwIizfstMDvU54P2zJObkzMF64tbPU6oa8YF1+FzoQQga/+9D8c9S2Tfxzsu
+         9sXJkrflEDNVBozf+UC+aMcuHL3pwQwBqxufJZuAtuiM1bbsYpn1hPXYiEEJjxvjYN
+         mPnJcj6t8JT1Zhk4b2xIS1Zo02pdGicIjoxGgm/+IFjOwjs0ATaxXndcgFQhjWYlQu
+         tGO4PUGIM2sMA==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ce2d4567caso3908148a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:20:39 -0800 (PST)
+X-Gm-Message-State: AOJu0YwpFrOI5Xugkhc0JnfWEA/zTv3QhzeHAu8zY5OOjXlruFIo3iuC
+        lQ8VZmGwy+rzYKbHmxNODNN7mF+hiFgS0/3IUbk=
+X-Google-Smtp-Source: AGHT+IHu3N0N3UWQd+1bXKRwyhqCNmYSrVhDDziZ/mIxs9/zCq5bH3xktdXs2HXw5YMBJlsxUzBjdGQXCk/kREZhSB4=
+X-Received: by 2002:a9d:6942:0:b0:6bc:cd0d:427e with SMTP id
+ p2-20020a9d6942000000b006bccd0d427emr1834767oto.38.1699453238694; Wed, 08 Nov
+ 2023 06:20:38 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <246db5c.5817.18baf4e0ad9.Coremail.figure1802@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: P8qowAD3f9MamUtlOHAcAA--.29571W
-X-CM-SenderInfo: pilj32bhryija6rslhhfrp/1tbiuR8iXlpECjIOvgACsO
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Received: by 2002:ac9:67d1:0:b0:506:a3fc:1021 with HTTP; Wed, 8 Nov 2023
+ 06:20:37 -0800 (PST)
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Wed, 8 Nov 2023 23:20:37 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
+Message-ID: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
+Subject: [GIT PULL] exfat fixes for 6.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgoKQXQgMjAyMy0xMS0wNCAwODo1ODoxMCwgIkJlbiIgPGZpZ3VyZTE4MDJAMTI2LmNvbT4gd3Jv
-dGU6Cj5BdCAyMDIzLTEwLTI0IDAxOjI3OjU4LCAiQW51cCBQYXRlbCIgPGFwYXRlbEB2ZW50YW5h
-bWljcm8uY29tPiB3cm90ZToKPj5UaGUgUklTQy1WIGFkdmFuY2VkIHBsYXRmb3JtLWxldmVsIGlu
-dGVycnVwdCBjb250cm9sbGVyIChBUExJQykgaGFzCj4+dHdvIG1vZGVzIG9mIG9wZXJhdGlvbjog
-MSkgRGlyZWN0IG1vZGUgYW5kIDIpIE1TSSBtb2RlLgo+PihGb3IgbW9yZSBkZXRhaWxzLCByZWZl
-ciBodHRwczovL2dpdGh1Yi5jb20vcmlzY3YvcmlzY3YtYWlhKQo+Pgo+PkluIEFQTElDIE1TSS1t
-b2RlLCB3aXJlZCBpbnRlcnJ1cHRzIGFyZSBmb3J3YXJlZCBhcyBtZXNzYWdlIHNpZ25hbGVkCj4+
-aW50ZXJydXB0cyAoTVNJcykgdG8gQ1BVcyB2aWEgSU1TSUMuCj4+Cj4+V2UgZXh0ZW5kIHRoZSBl
-eGlzdGluZyBBUExJQyBpcnFjaGlwIGRyaXZlciB0byBzdXBwb3J0IE1TSS1tb2RlIGZvcgo+PlJJ
-U0MtViBwbGF0Zm9ybXMgaGF2aW5nIGJvdGggd2lyZWQgaW50ZXJydXB0cyBhbmQgTVNJcy4KPj4K
-Pj5TaWduZWQtb2ZmLWJ5OiBBbnVwIFBhdGVsIDxhcGF0ZWxAdmVudGFuYW1pY3JvLmNvbT4KPj4t
-LS0KPj4gZHJpdmVycy9pcnFjaGlwL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDYgKwo+PiBk
-cml2ZXJzL2lycWNoaXAvTWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgMSArCj4+IGRyaXZlcnMv
-aXJxY2hpcC9pcnEtcmlzY3YtYXBsaWMtbWFpbi5jIHwgICAyICstCj4+IGRyaXZlcnMvaXJxY2hp
-cC9pcnEtcmlzY3YtYXBsaWMtbWFpbi5oIHwgICA4ICsKPj4gZHJpdmVycy9pcnFjaGlwL2lycS1y
-aXNjdi1hcGxpYy1tc2kuYyAgfCAyODUgKysrKysrKysrKysrKysrKysrKysrKysrKwo+PiA1IGZp
-bGVzIGNoYW5nZWQsIDMwMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4+IGNyZWF0ZSBt
-b2RlIDEwMDY0NCBkcml2ZXJzL2lycWNoaXAvaXJxLXJpc2N2LWFwbGljLW1zaS5jCj4+Cj4+ZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvaXJxY2hpcC9LY29uZmlnIGIvZHJpdmVycy9pcnFjaGlwL0tjb25m
-aWcKPj5pbmRleCAxOTk2Y2M2ZjY2NmEuLjdhZGM0ZGJlMDdmZiAxMDA2NDQKPj4tLS0gYS9kcml2
-ZXJzL2lycWNoaXAvS2NvbmZpZwo+PisrKyBiL2RyaXZlcnMvaXJxY2hpcC9LY29uZmlnCj4+QEAg
-LTU1MSw2ICs1NTEsMTIgQEAgY29uZmlnIFJJU0NWX0FQTElDCj4+IAlkZXBlbmRzIG9uIFJJU0NW
-Cj4+IAlzZWxlY3QgSVJRX0RPTUFJTl9ISUVSQVJDSFkKPj4gCj4+K2NvbmZpZyBSSVNDVl9BUExJ
-Q19NU0kKPj4rCWJvb2wKPj4rCWRlcGVuZHMgb24gUklTQ1ZfQVBMSUMKPj4rCXNlbGVjdCBHRU5F
-UklDX01TSV9JUlEKPj4rCWRlZmF1bHQgUklTQ1ZfQVBMSUMKPj4rCj4+IGNvbmZpZyBSSVNDVl9J
-TVNJQwo+PiAJYm9vbAo+PiAJZGVwZW5kcyBvbiBSSVNDVgo+PmRpZmYgLS1naXQgYS9kcml2ZXJz
-L2lycWNoaXAvTWFrZWZpbGUgYi9kcml2ZXJzL2lycWNoaXAvTWFrZWZpbGUKPj5pbmRleCA3Zjgy
-ODk3OTBlZDguLjQ3OTk1ZmRiMmM2MCAxMDA2NDQKPj4tLS0gYS9kcml2ZXJzL2lycWNoaXAvTWFr
-ZWZpbGUKPj4rKysgYi9kcml2ZXJzL2lycWNoaXAvTWFrZWZpbGUKPj5AQCAtOTYsNiArOTYsNyBA
-QCBvYmotJChDT05GSUdfQ1NLWV9NUElOVEMpCQkrPSBpcnEtY3NreS1tcGludGMubwo+PiBvYmot
-JChDT05GSUdfQ1NLWV9BUEJfSU5UQykJCSs9IGlycS1jc2t5LWFwYi1pbnRjLm8KPj4gb2JqLSQo
-Q09ORklHX1JJU0NWX0lOVEMpCQkrPSBpcnEtcmlzY3YtaW50Yy5vCj4+IG9iai0kKENPTkZJR19S
-SVNDVl9BUExJQykJCSs9IGlycS1yaXNjdi1hcGxpYy1tYWluLm8gaXJxLXJpc2N2LWFwbGljLWRp
-cmVjdC5vCj4+K29iai0kKENPTkZJR19SSVNDVl9BUExJQ19NU0kpCQkrPSBpcnEtcmlzY3YtYXBs
-aWMtbXNpLm8KPj4gb2JqLSQoQ09ORklHX1JJU0NWX0lNU0lDKQkJKz0gaXJxLXJpc2N2LWltc2lj
-LXN0YXRlLm8gaXJxLXJpc2N2LWltc2ljLWVhcmx5Lm8gaXJxLXJpc2N2LWltc2ljLXBsYXRmb3Jt
-Lm8KPj4gb2JqLSQoQ09ORklHX1NJRklWRV9QTElDKQkJKz0gaXJxLXNpZml2ZS1wbGljLm8KPj4g
-b2JqLSQoQ09ORklHX0lNWF9JUlFTVEVFUikJCSs9IGlycS1pbXgtaXJxc3RlZXIubwo+PmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2lycWNoaXAvaXJxLXJpc2N2LWFwbGljLW1haW4uYyBiL2RyaXZlcnMv
-aXJxY2hpcC9pcnEtcmlzY3YtYXBsaWMtbWFpbi5jCj4+aW5kZXggODc0NTA3MDhhNzMzLi5kMWIz
-NDJiNjY1NTEgMTAwNjQ0Cj4+LS0tIGEvZHJpdmVycy9pcnFjaGlwL2lycS1yaXNjdi1hcGxpYy1t
-YWluLmMKPj4rKysgYi9kcml2ZXJzL2lycWNoaXAvaXJxLXJpc2N2LWFwbGljLW1haW4uYwo+PkBA
-IC0yMDUsNyArMjA1LDcgQEAgc3RhdGljIGludCBhcGxpY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
-ZGV2aWNlICpwZGV2KQo+PiAJCW1zaV9tb2RlID0gb2ZfcHJvcGVydHlfcHJlc2VudCh0b19vZl9u
-b2RlKGRldi0+Zndub2RlKSwKPj4gCQkJCQkJIm1zaS1wYXJlbnQiKTsKPj4gCWlmIChtc2lfbW9k
-ZSkKPj4tCQlyYyA9IC1FTk9ERVY7Cj4+KwkJcmMgPSBhcGxpY19tc2lfc2V0dXAoZGV2LCByZWdz
-KTsKPj4gCWVsc2UKPj4gCQlyYyA9IGFwbGljX2RpcmVjdF9zZXR1cChkZXYsIHJlZ3MpOwo+PiAJ
-aWYgKHJjKSB7Cj4+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvaXJxY2hpcC9pcnEtcmlzY3YtYXBsaWMt
-bWFpbi5oIGIvZHJpdmVycy9pcnFjaGlwL2lycS1yaXNjdi1hcGxpYy1tYWluLmgKPj5pbmRleCA0
-NzRhMDQyMjkzMzQuLjc4MjY3ZWM1ODA5OCAxMDA2NDQKPj4tLS0gYS9kcml2ZXJzL2lycWNoaXAv
-aXJxLXJpc2N2LWFwbGljLW1haW4uaAo+PisrKyBiL2RyaXZlcnMvaXJxY2hpcC9pcnEtcmlzY3Yt
-YXBsaWMtbWFpbi5oCj4+QEAgLTQxLDUgKzQxLDEzIEBAIHZvaWQgYXBsaWNfaW5pdF9od19nbG9i
-YWwoc3RydWN0IGFwbGljX3ByaXYgKnByaXYsIGJvb2wgbXNpX21vZGUpOwo+PiBpbnQgYXBsaWNf
-c2V0dXBfcHJpdihzdHJ1Y3QgYXBsaWNfcHJpdiAqcHJpdiwgc3RydWN0IGRldmljZSAqZGV2LAo+
-PiAJCSAgICAgdm9pZCBfX2lvbWVtICpyZWdzKTsKPj4gaW50IGFwbGljX2RpcmVjdF9zZXR1cChz
-dHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgX19pb21lbSAqcmVncyk7Cj4+KyNpZmRlZiBDT05GSUdf
-UklTQ1ZfQVBMSUNfTVNJCj4+K2ludCBhcGxpY19tc2lfc2V0dXAoc3RydWN0IGRldmljZSAqZGV2
-LCB2b2lkIF9faW9tZW0gKnJlZ3MpOwo+PisjZWxzZQo+PitzdGF0aWMgaW5saW5lIGludCBhcGxp
-Y19tc2lfc2V0dXAoc3RydWN0IGRldmljZSAqZGV2LCB2b2lkIF9faW9tZW0gKnJlZ3MpCj4+K3sK
-Pj4rCXJldHVybiAtRU5PREVWOwo+Pit9Cj4+KyNlbmRpZgo+PiAKPj4gI2VuZGlmCj4+ZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvaXJxY2hpcC9pcnEtcmlzY3YtYXBsaWMtbXNpLmMgYi9kcml2ZXJzL2ly
-cWNoaXAvaXJxLXJpc2N2LWFwbGljLW1zaS5jCj4+bmV3IGZpbGUgbW9kZSAxMDA2NDQKPj5pbmRl
-eCAwMDAwMDAwMDAwMDAuLjA4NmQwMGUwNDI5ZQo+Pi0tLSAvZGV2L251bGwKPj4rKysgYi9kcml2
-ZXJzL2lycWNoaXAvaXJxLXJpc2N2LWFwbGljLW1zaS5jCj4+QEAgLTAsMCArMSwyODUgQEAKPj4r
-Ly8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPj4rLyoKPj4rICogQ29weXJpZ2h0
-IChDKSAyMDIxIFdlc3Rlcm4gRGlnaXRhbCBDb3Jwb3JhdGlvbiBvciBpdHMgYWZmaWxpYXRlcy4K
-Pj4rICogQ29weXJpZ2h0IChDKSAyMDIyIFZlbnRhbmEgTWljcm8gU3lzdGVtcyBJbmMuCj4+KyAq
-Lwo+PisKPj4rI2luY2x1ZGUgPGxpbnV4L2JpdG9wcy5oPgo+PisjaW5jbHVkZSA8bGludXgvY3B1
-Lmg+Cj4+KyNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQuaD4KPj4rI2luY2x1ZGUgPGxpbnV4L2ly
-cWNoaXAuaD4KPj4rI2luY2x1ZGUgPGxpbnV4L2lycWNoaXAvcmlzY3YtYXBsaWMuaD4KPj4rI2lu
-Y2x1ZGUgPGxpbnV4L2lycWNoaXAvcmlzY3YtaW1zaWMuaD4KPj4rI2luY2x1ZGUgPGxpbnV4L21v
-ZHVsZS5oPgo+PisjaW5jbHVkZSA8bGludXgvbXNpLmg+Cj4+KyNpbmNsdWRlIDxsaW51eC9vZl9p
-cnEuaD4KPj4rI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgo+PisjaW5jbHVkZSA8
-bGludXgvcHJpbnRrLmg+Cj4+KyNpbmNsdWRlIDxsaW51eC9zbXAuaD4KPj4rCj4+KyNpbmNsdWRl
-ICJpcnEtcmlzY3YtYXBsaWMtbWFpbi5oIgo+PisKPj4rc3RhdGljIHZvaWQgYXBsaWNfbXNpX2ly
-cV91bm1hc2soc3RydWN0IGlycV9kYXRhICpkKQo+Pit7Cj4+KwlhcGxpY19pcnFfdW5tYXNrKGQp
-Owo+PisJaXJxX2NoaXBfdW5tYXNrX3BhcmVudChkKTsKPj4rfQo+PisKPj4rc3RhdGljIHZvaWQg
-YXBsaWNfbXNpX2lycV9tYXNrKHN0cnVjdCBpcnFfZGF0YSAqZCkKPj4rewo+PisJYXBsaWNfaXJx
-X21hc2soZCk7Cj4+KwlpcnFfY2hpcF9tYXNrX3BhcmVudChkKTsKPj4rfQo+PisKPj4rc3RhdGlj
-IHZvaWQgYXBsaWNfbXNpX2lycV9lb2koc3RydWN0IGlycV9kYXRhICpkKQo+Pit7Cj4+KwlzdHJ1
-Y3QgYXBsaWNfcHJpdiAqcHJpdiA9IGlycV9kYXRhX2dldF9pcnFfY2hpcF9kYXRhKGQpOwo+PisJ
-dTMyIHJlZ19vZmYsIHJlZ19tYXNrOwo+PisKPj4rCS8qCj4+KwkgKiBFT0kgaGFuZGxpbmcgb25s
-eSByZXF1aXJlZCBvbmx5IGZvciBsZXZlbC10cmlnZ2VyZWQKPj4rCSAqIGludGVycnVwdHMgaW4g
-QVBMSUMgTVNJIG1vZGUuCj4+KwkgKi8KPj4rCj4+KwlyZWdfb2ZmID0gQVBMSUNfQ0xSSVBfQkFT
-RSArICgoZC0+aHdpcnEgLyBBUExJQ19JUlFCSVRTX1BFUl9SRUcpICogNCk7Cj4+KwlyZWdfbWFz
-ayA9IEJJVChkLT5od2lycSAlIEFQTElDX0lSUUJJVFNfUEVSX1JFRyk7Cj4+Kwlzd2l0Y2ggKGly
-cWRfZ2V0X3RyaWdnZXJfdHlwZShkKSkgewo+PisJY2FzZSBJUlFfVFlQRV9MRVZFTF9MT1c6Cj4+
-KwkJaWYgKCEocmVhZGwocHJpdi0+cmVncyArIHJlZ19vZmYpICYgcmVnX21hc2spKQo+PisJCQl3
-cml0ZWwoZC0+aHdpcnEsIHByaXYtPnJlZ3MgKyBBUExJQ19TRVRJUE5VTV9MRSk7Cj4+KwkJYnJl
-YWs7Cj4+KwljYXNlIElSUV9UWVBFX0xFVkVMX0hJR0g6Cj4+KwkJaWYgKHJlYWRsKHByaXYtPnJl
-Z3MgKyByZWdfb2ZmKSAmIHJlZ19tYXNrKQo+PisJCQl3cml0ZWwoZC0+aHdpcnEsIHByaXYtPnJl
-Z3MgKyBBUExJQ19TRVRJUE5VTV9MRSk7Cj4+KwkJYnJlYWs7Cj4+Kwl9Cj4+K30KPj4rCj4+K3N0
-YXRpYyBzdHJ1Y3QgaXJxX2NoaXAgYXBsaWNfbXNpX2NoaXAgPSB7Cj4+KwkubmFtZQkJPSAiQVBM
-SUMtTVNJIiwKPj4rCS5pcnFfbWFzawk9IGFwbGljX21zaV9pcnFfbWFzaywKPj4rCS5pcnFfdW5t
-YXNrCT0gYXBsaWNfbXNpX2lycV91bm1hc2ssCj4+KwkuaXJxX3NldF90eXBlCT0gYXBsaWNfaXJx
-X3NldF90eXBlLAo+PisJLmlycV9lb2kJPSBhcGxpY19tc2lfaXJxX2VvaSwKPj4rI2lmZGVmIENP
-TkZJR19TTVAKPj4rCS5pcnFfc2V0X2FmZmluaXR5ID0gaXJxX2NoaXBfc2V0X2FmZmluaXR5X3Bh
-cmVudCwKPj4rI2VuZGlmCj4+KwkuZmxhZ3MJCT0gSVJRQ0hJUF9TRVRfVFlQRV9NQVNLRUQgfAo+
-PisJCQkgIElSUUNISVBfU0tJUF9TRVRfV0FLRSB8Cj4+KwkJCSAgSVJRQ0hJUF9NQVNLX09OX1NV
-U1BFTkQsCj4+K307Cj4+Kwo+PitzdGF0aWMgaW50IGFwbGljX21zaV9pcnFkb21haW5fdHJhbnNs
-YXRlKHN0cnVjdCBpcnFfZG9tYWluICpkLAo+PisJCQkJCSBzdHJ1Y3QgaXJxX2Z3c3BlYyAqZndz
-cGVjLAo+PisJCQkJCSB1bnNpZ25lZCBsb25nICpod2lycSwKPj4rCQkJCQkgdW5zaWduZWQgaW50
-ICp0eXBlKQo+Pit7Cj4+KwlzdHJ1Y3QgYXBsaWNfcHJpdiAqcHJpdiA9IHBsYXRmb3JtX21zaV9n
-ZXRfaG9zdF9kYXRhKGQpOwo+PisKPj4rCXJldHVybiBhcGxpY19pcnFkb21haW5fdHJhbnNsYXRl
-KGZ3c3BlYywgcHJpdi0+Z3NpX2Jhc2UsIGh3aXJxLCB0eXBlKTsKPj4rfQo+PisKPj4rc3RhdGlj
-IGludCBhcGxpY19tc2lfaXJxZG9tYWluX2FsbG9jKHN0cnVjdCBpcnFfZG9tYWluICpkb21haW4s
-Cj4+KwkJCQkgICAgIHVuc2lnbmVkIGludCB2aXJxLCB1bnNpZ25lZCBpbnQgbnJfaXJxcywKPj4r
-CQkJCSAgICAgdm9pZCAqYXJnKQo+Pit7Cj4+KwlpbnQgaSwgcmV0Owo+PisJdW5zaWduZWQgaW50
-IHR5cGU7Cj4+KwlpcnFfaHdfbnVtYmVyX3QgaHdpcnE7Cj4+KwlzdHJ1Y3QgaXJxX2Z3c3BlYyAq
-ZndzcGVjID0gYXJnOwo+PisJc3RydWN0IGFwbGljX3ByaXYgKnByaXYgPSBwbGF0Zm9ybV9tc2lf
-Z2V0X2hvc3RfZGF0YShkb21haW4pOwo+PisKPj4rCXJldCA9IGFwbGljX2lycWRvbWFpbl90cmFu
-c2xhdGUoZndzcGVjLCBwcml2LT5nc2lfYmFzZSwgJmh3aXJxLCAmdHlwZSk7Cj4+KwlpZiAocmV0
-KQo+PisJCXJldHVybiByZXQ7Cj4KPkluIHlvdXIgcGF0Y2hzZXQsIHRoZSB3aXJlZCBJUlEgYW5k
-IElSUSBvZiBwbGF0Zm9ybSBkZXZpY2Ugd2lsbCBnbyBpbnRvIEFQTElDLU1TSSBkb21haW4gZmly
-c3RseS4KPkxldCBtZSBhc3N1bWUgaGVyZSBpcyBhIE1TSSBJUlEgbm90IHdpcmVkIElSUSBvbiBh
-IGRldmljZSwgYW5kIGl0IGlzIGEgcGxhdGZvcm0gZGV2aWNlIGluIHN5c3RlbS4KPnNvIGluIGFw
-bGljX2lycWRvbWFpbl90cmFuc2xhdGUoKSBmdW5jdGlvbiwgaXQgd2lsbCBwYXJzZSB0aGUgQVBM
-SUMgcGh5c2ljYWwgSVJRIG51bWJlciBieSBmd3NwZWMtPnBhcmFtWzBdLAo+YnV0IHRoaXMgaXMg
-bm90IGEgd3JpZWQgSVJRLCBpdCBpcyBhIE1TSSBJUlEsIGl0IHNob3VsZCBub3QgaGFzIGEgQVBM
-SUMgcGh5c2ljYWwgSVJRIG51bWJlciwgdGhlIGh3aXJxIG51bWJlciBzaG91bGQgYmUgYWxsb2Nh
-dGVkIGJ5IE1TSSBiaXRtYXAsCj53aGF0IHZhbHVlIHdpbGwgYmUgcGFyc2UgYnkgRFRTPyB6ZXJv
-IG9yIG5lZ2F0aXZlPyAKPgo+aWYgdGhpcyBpcyBhIG5vbmV4aXN0ZW50IHBoeXNpY2FsIElSUSBu
-dW1iZXIgZm9yIEFQTElDLCBpbiBhcGxpY19tc2lfaXJxX3VubWFzaygpLT5hcGxpY19pcnFfdW5t
-YXNrKCksIGhvdyBpdCB3b3Jrcz8KPgo+d3JpdGVsKGQtPmh3aXJxLCBwcml2LT5yZWdzICsgQVBM
-SUNfU0VUSUVOVU0pOwoKaGkgQW51cCwKQW55IGNvbW1lbnRzIGFib3V0IHRoaXMgcXVlc3Rpb24g
-Zm9yIGFuIE1TSSBpbnRlcnJ1cHQgKG5vdCB3aXJlZCBpbnRlcnJ1cHQpIG9mIG5vbi1QQ0kgZGV2
-aWNlPwoKVGhhbmtzLApCZW4KCgo=
+Hi Linus,
+
+This is exfat fixes pull request for v6.7-rc1. I add description of
+this pull request on below. Please pull exfat with following fixes.
+
+Thanks!
+
+The following changes since commit 8f6f76a6a29f36d2f3e4510d0bde5046672f6924:
+
+  Merge tag 'mm-nonmm-stable-2023-11-02-14-08' of
+git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm (2023-11-02
+20:53:31 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git
+tags/exfat-for-6.7-rc1-part2
+
+for you to fetch changes up to 1373ca10ec04afba9199de1fab01fde91338a78b:
+
+  exfat: fix ctime is not updated (2023-11-03 22:24:11 +0900)
+
+----------------------------------------------------------------
+Description for this pull request:
+  - Fix an issue that exfat timestamps are not updated caused by
+    new timestamp accessor function patch.
+
+----------------------------------------------------------------
+Yuezhang Mo (2):
+      exfat: fix setting uninitialized time to ctime/atime
+      exfat: fix ctime is not updated
+
+ fs/exfat/file.c  | 1 +
+ fs/exfat/inode.c | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
