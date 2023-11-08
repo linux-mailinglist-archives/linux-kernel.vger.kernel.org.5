@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 004A87E5C09
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F8F7E5C05
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbjKHRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        id S232444AbjKHRLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbjKHRL4 (ORCPT
+        with ESMTP id S232442AbjKHRLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:11:56 -0500
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8E51FFB;
-        Wed,  8 Nov 2023 09:11:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1699463514; x=1730999514;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6cb/isVwYpy7SG+g9mvglOgKJl2fHKbFOFR6QXMe2MM=;
-  b=eA7azvDO7xqJ3yYVMfc/7IjPcxPXBnIICWCyRqpGY84L+5eHd9NxP4Yd
-   llp+lwQrTOJkLTnR4xtOSZY/qxhchsU4G/K8CkJSBlL/8uhz3Y3lRKLEY
-   Yijb6lLklgdMy2fNvt+IzCQQP9Qk676VGAVjYR4Xgl8ewxyzik578mPJs
-   E=;
-X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
-   d="scan'208";a="42072586"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-b5bd57cf.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 17:11:46 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1a-m6i4x-b5bd57cf.us-east-1.amazon.com (Postfix) with ESMTPS id BEBB248DB1;
-        Wed,  8 Nov 2023 17:11:42 +0000 (UTC)
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:15788]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.1.121:2525] with esmtp (Farcaster)
- id e2b71a98-94b7-4b71-82ed-2cb1b7312c2f; Wed, 8 Nov 2023 17:11:41 +0000 (UTC)
-X-Farcaster-Flow-ID: e2b71a98-94b7-4b71-82ed-2cb1b7312c2f
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 8 Nov 2023 17:11:40 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 17:11:36 +0000
-Message-ID: <4eb50ee5-fd5e-4dc1-bee1-629da687bdb5@amazon.com>
-Date:   Wed, 8 Nov 2023 18:11:34 +0100
+        Wed, 8 Nov 2023 12:11:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D10D4F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:11:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBD6C433C7;
+        Wed,  8 Nov 2023 17:11:35 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 12:11:38 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        David Ahern <dsahern@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Matthieu Baerts <matttbe@kernel.org>,
+        Mat Martineau <martineau@kernel.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Martin Schiller <ms@dev.tdt.de>
+Subject: Re: [RFC PATCH 79/86] treewide: net: remove cond_resched()
+Message-ID: <20231108121138.114f0f15@gandalf.local.home>
+In-Reply-To: <CANn89i+b3=N1gT7rrrxU+zOMN_VzzHjyYW=TeE5AMSoKcdLvyg@mail.gmail.com>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+        <20231107230822.371443-1-ankur.a.arora@oracle.com>
+        <20231107230822.371443-23-ankur.a.arora@oracle.com>
+        <CANn89i+b3=N1gT7rrrxU+zOMN_VzzHjyYW=TeE5AMSoKcdLvyg@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 29/33] KVM: VMX: Save instruction length on EPT violation
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-        <pbonzini@redhat.com>, <vkuznets@redhat.com>, <anelkz@amazon.com>,
-        <dwmw@amazon.co.uk>, <jgowans@amazon.com>, <corbert@lwn.net>,
-        <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <decui@microsoft.com>, <x86@kernel.org>,
-        <linux-doc@vger.kernel.org>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
- <20231108111806.92604-30-nsaenz@amazon.com>
- <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
- <ZUu0FzbW5tr2Werz@google.com>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <ZUu0FzbW5tr2Werz@google.com>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D038UWB002.ant.amazon.com (10.13.139.185) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDA4LjExLjIzIDE3OjE1LCBTZWFuIENocmlzdG9waGVyc29uIHdyb3RlOgo+Cj4gT24gV2Vk
-LCBOb3YgMDgsIDIwMjMsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBPbiAwOC4xMS4yMyAxMjox
-OCwgTmljb2xhcyBTYWVueiBKdWxpZW5uZSB3cm90ZToKPj4+IFNhdmUgdGhlIGxlbmd0aCBvZiB0
-aGUgaW5zdHJ1Y3Rpb24gdGhhdCB0cmlnZ2VyZWQgYW4gRVBUIHZpb2xhdGlvbiBpbgo+Pj4gc3Ry
-dWN0IGt2bV92Y3B1X2FyY2guIFRoaXMgd2lsbCBiZSB1c2VkIHRvIHBvcHVsYXRlIEh5cGVyLVYg
-VlNNIG1lbW9yeQo+Pj4gaW50ZXJjZXB0IG1lc3NhZ2VzLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6
-IE5pY29sYXMgU2FlbnogSnVsaWVubmUgPG5zYWVuekBhbWF6b24uY29tPgo+Pgo+PiBJbiB2MSwg
-cGxlYXNlIGRvIHRoaXMgZm9yIFNWTSBhcyB3ZWxsIDopCj4gV2h5PyAgS1ZNIGNhY2hlcyB2YWx1
-ZXMgb24gVk1YIGJlY2F1c2UgVk1SRUFEIGlzIG1lYXN1cmFibGUgc2xvd2VyIHRoYW4gbWVtb3J5
-Cj4gYWNjZXNzZXMsIGVzcGVjaWFsbHkgd2hlbiBydW5uaW5nIG5lc3RlZC4gIFNWTSBoYXMgbm8g
-c3VjaCBwcm9ibGVtcy4gIEkgd291bGRuJ3QKPiBiZSBzdXJwcmlzZWQgaWYgYWRkaW5nIGEgImNh
-Y2hlIiBpcyBhY3R1YWxseSBsZXNzIHBlcmZvcm1hbnQgZHVlIHRvIGluY3JlYXNlZAo+IHByZXNz
-dXJlIGFuZCBtaXNzZXMgb24gdGhlIGhhcmR3YXJlIGNhY2hlLgoKCk15IHVuZGVyc3RhbmRpbmcg
-d2FzIHRoYXQgdGhpcyBwYXRjaCB3YXNuJ3QgYWJvdXQgY2FjaGluZyBpdCwgaXQgd2FzIAphYm91
-dCBzdG9yaW5nIGl0IHNvbWV3aGVyZSBnZW5lcmljYWxseSBzbyB3ZSBjYW4gdXNlIGl0IGZvciB0
-aGUgZmF1bHQgCmluamVjdGlvbiBjb2RlIHBhdGggaW4gdGhlIGZvbGxvd2luZyBwYXRjaC4gQW5k
-IGlmIHdlIGRvbid0IHNldCB0aGlzIAp2YXJpYWJsZSBmb3IgU1ZNLCBpdCBqdXN0IG1lYW5zIENy
-ZWRlbnRpYWwgR3VhcmQgZmF1bHQgaW5qZWN0aW9uIHdvdWxkIApiZSBicm9rZW4gdGhlcmUuCgoK
-QWxleAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0
-ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdl
-ciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1
-cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5
-CgoK
+On Wed, 8 Nov 2023 13:16:17 +0100
+Eric Dumazet <edumazet@google.com> wrote:
 
+> > Most of the uses here are in set-1 (some right after we give up a
+> > lock or enable bottom-halves, causing an explicit preemption check.)
+> >
+> > We can remove all of them.  
+> 
+> A patch series of 86 is not reasonable.
+
+Agreed. The removal of cond_resched() wasn't needed for the RFC, as there's
+really no comments needed once we make cond_resched obsolete.
+
+I think Ankur just wanted to send all the work for the RFC to let people
+know what he has done. I chalk that up as a Noobie mistake.
+
+Ankur, next time you may want to break things up to get RFCs for each step
+before going to the next one.
+
+Currently, it looks like the first thing to do is to start with Thomas's
+patch, and get the kinks out of NEED_RESCHED_LAZY, as Thomas suggested.
+
+Perhaps work on separating PREEMPT_RCU from PREEMPT.
+
+Then you may need to work on handling the #ifndef PREEMPTION parts of the
+kernel.
+
+And so on. Each being a separate patch series that will affect the way the
+rest of the changes will be done.
+
+I want this change too, so I'm willing to help you out on this. If you
+didn't start it, I would have ;-)
+
+-- Steve
