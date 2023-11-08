@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E597E56B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B407E56C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344643AbjKHM7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        id S1344686AbjKHM7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:59:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344608AbjKHM7Z (ORCPT
+        with ESMTP id S1344652AbjKHM7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:59:25 -0500
+        Wed, 8 Nov 2023 07:59:36 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5AB1FE5;
-        Wed,  8 Nov 2023 04:59:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3926BC43397;
-        Wed,  8 Nov 2023 12:59:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1FF1BF8;
+        Wed,  8 Nov 2023 04:59:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39357C433B6;
+        Wed,  8 Nov 2023 12:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448359;
-        bh=PTPvyroKGj+bJmSOqebpW9CjBUzzYiO7xPn/MeixGLs=;
+        s=k20201202; t=1699448374;
+        bh=w3e3vSy+dHuW0iMFl7dLNVwwYiDbkIqHnziwStvFkIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eo+O+Ra7srTu+On3QQnq/N++K7ym/+DV18SMdaTrABGNUzrRLwQC0fZWUwnUmP2m9
-         03GGSOOxBDpUh1SnKnHfQIRAM5JbcK3dblElozw2pHDIUs0OgSd7V25PtKOnpfKd5B
-         ts/1MWesnyRTSvykInN6RylsMn3Tkva9Cp2A8nEiGeBxvFfiZgNMM7wUQmT2YKB6MD
-         rgiEGRUKVtpOWlIW6JzYkBpGb4XYcwzO9cqV/KKgvWkGi2Bu37oOsVO4jE2FAuzTNH
-         7cV9H3GFgEuYrRFUrqTlVL41RvYWtBCTXikkZVsjPVybwJ/SSzdZZMBt7cobfVGWGY
-         okzJnlFcKtiAA==
+        b=WqSAojx2n+cA1D0CxG4xdTo0Xob9TNPBSPzPSbe44dUXaXEKew/nmtmhByCzSiVPt
+         91NL7l7RH2w4Ulruyi4WG7OER3441P5yFvf22DoHriuVAIAFr6MlSDWlQyhBs+rS8W
+         1z0T1FI8E8q7PFOhdY6zObV2EyCiPHp2syfRVoL2tWJQcWR1wCeLHPu1OvYvmI0+FS
+         fg6PEOGtiY6bsyDM1UbDxM0XTG+ZQWWn++7aD3gDeHsoHGU033ou3oHZCD4OR8cXKU
+         Oo+bIaFM/rUM/pfx0FTNUwxkj+6j1aNmHD8jBYzQZTrFCERSYf8KTDOyhRXCA/Uc5v
+         K2bZ5HDIqp5YQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
@@ -87,10 +87,11 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
         netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH 01/22] [RESEND^2] ida: make 'ida_dump' static
-Date:   Wed,  8 Nov 2023 13:58:22 +0100
-Message-Id: <20231108125843.3806765-2-arnd@kernel.org>
+        linux-mtd@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: [PATCH 02/22] [RESEND^2] jffs2: mark __jffs2_dbg_superblock_counts() static
+Date:   Wed,  8 Nov 2023 13:58:23 +0100
+Message-Id: <20231108125843.3806765-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -102,30 +103,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-There is no global declaration for ida_dump() and no other
-callers, so make it static to avoid this warning:
+This function is only called locally and does not need to be
+global. Since there is no external prototype, gcc warns about
+the non-static definition:
 
-lib/test_ida.c:16:6: error: no previous prototype for 'ida_dump'
+fs/jffs2/debug.c:160:6: error: no previous prototype for '__jffs2_dbg_superblock_counts' [-Werror=missing-prototypes]
 
-Fixes: 8ab8ba38d488 ("ida: Start new test_ida module")
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/test_ida.c | 2 +-
+ fs/jffs2/debug.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_ida.c b/lib/test_ida.c
-index b06880625961..f946c80ced8b 100644
---- a/lib/test_ida.c
-+++ b/lib/test_ida.c
-@@ -13,7 +13,7 @@ static unsigned int tests_run;
- static unsigned int tests_passed;
+diff --git a/fs/jffs2/debug.c b/fs/jffs2/debug.c
+index 9d26b1b9fc01..0925caab23c4 100644
+--- a/fs/jffs2/debug.c
++++ b/fs/jffs2/debug.c
+@@ -157,7 +157,7 @@ __jffs2_dbg_prewrite_paranoia_check(struct jffs2_sb_info *c,
+ 	kfree(buf);
+ }
  
- #ifdef __KERNEL__
--void ida_dump(struct ida *ida) { }
-+static void ida_dump(struct ida *ida) { }
- #endif
- #define IDA_BUG_ON(ida, x) do {						\
- 	tests_run++;							\
+-void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
++static void __jffs2_dbg_superblock_counts(struct jffs2_sb_info *c)
+ {
+ 	struct jffs2_eraseblock *jeb;
+ 	uint32_t free = 0, dirty = 0, used = 0, wasted = 0,
 -- 
 2.39.2
 
