@@ -2,205 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AEF7E5083
+	by mail.lfdr.de (Postfix) with ESMTP id B54537E5084
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 07:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjKHGyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 01:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S232197AbjKHGyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 01:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjKHGyU (ORCPT
+        with ESMTP id S230084AbjKHGyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 01:54:20 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953BE1A5
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 22:54:18 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5bdc185c449so966692a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 22:54:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699426458; x=1700031258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dhuw+/MAxDH+LKhW5lk+dQwqwTtU9a6DQq89FiNybxI=;
-        b=U5YWUgwOcQAMnaKtQpvgPL3txkIXtcYFcus9Bsatotq17pVNQifsyEYUuid8VddTPh
-         cQQ3v3m1NykTdvunLATz5sMlEDEzyBRhjLgvZNQOhDhOvx8UoobxWbLyyO0A8bAfqg9u
-         MGx0ygGpbCs1fhJ/PZqdmGllkf6Tjz+UxuZMAf+K7TGMq/viOAP2rgf6W3vPjsOb0yPN
-         k8NJ237+NT4fFjyeAD+NXY6sbYCJd4h+JDjgZb28VBZnRY/3P3Hl3Gj10duGWQN6d0rR
-         NNIVU5I3QcEs3+9Z4+MFduitI3xuWz5Gw4zQKGNfpLaWkwdcgmX99F3svnjPWg9brYk9
-         HsRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699426458; x=1700031258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dhuw+/MAxDH+LKhW5lk+dQwqwTtU9a6DQq89FiNybxI=;
-        b=weQtL1LiVEIgVmXmEofgDoDe+AcmCkbHhYnJ5PnNlGjKQ/fbiuie1GL++VIRCMcy90
-         SR6feb5PW4gqkMhM+FNQnGOIF0nFhkHAEsfKupm77vBusom9fOgv+e6wdbE85FVX7BQJ
-         MLkMdfFCCanNoWLrJT9AZx940Do0ZMAJmbX8uBb7pXWdPDyXDQpUrdnVpScqDWsNMLHm
-         B4+oGnez5ouS2acAFay9trIhRwhXOtw+20ceSfRtkj36DI6cQWZCyM1snTrqv+ennfQx
-         k/40Mf7d0/zSVEtkaXeCLLO/2NFqWkLKvvNvdHfRPih4KuLLz8+mtOuToKtU1ynC+C6t
-         GzDQ==
-X-Gm-Message-State: AOJu0YzTK4HKfXI0zG9mPgedXwOTnVieZDulOzv5Wr0CV4QLCRGwfOzn
-        Ci65ck+ij+sPrp6njBy1nb7sga2XCPYDL47SpJGzygSUeW5CvviWpvwryw==
-X-Google-Smtp-Source: AGHT+IGZgMOdX8wFdlvM+x1nbzazDDLCnOraMyZxEso0/KY16E2sWkauS1+5+pz2tHuJieKwCBP0vEgjJwlWV4CVXPI=
-X-Received: by 2002:a05:6a20:72a0:b0:183:e7bb:5911 with SMTP id
- o32-20020a056a2072a000b00183e7bb5911mr1385320pzk.17.1699426457599; Tue, 07
- Nov 2023 22:54:17 -0800 (PST)
+        Wed, 8 Nov 2023 01:54:23 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2137.outbound.protection.outlook.com [40.107.255.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBC81A5
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 22:54:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aNTTU2Sz3ISOUk2WEJ+V9APMeBuNaCvIX7Y5M5uu0UnS5VcoD3d3trM9gzL0vF4BH90hsLq3n3upOxMbCKm/tMoH/qBw6REJ/nqrKluCbOGvzcpsbWVKNXHOuWHWH8uvu2QkYl9sOseLCub/iS2/dioYnYoDh0DsGcqaQn0IxItfhE/NOCVBjQh/J/kdN35475vQmhTwX/Q/5wfdgaKKYDsyqxbosyQ/RGaJHotRz6DwxAfbGES812F8X/HAz8vAg1no30L/z4npaqXGEcdiTnhj0n5juZ2y1rH5zVeZFtor1wsk0OsPuaCxv1Uaf2PCfG/yrIvu02pMEreOSgYp4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gTKL6hv9rnjKa07vZUoUXnRqrAT19zfXagwRqdx46IY=;
+ b=TuwFVgUWdYHYG4pFoQdUboB5RxOIQhGuhTjLYnu/jr/LjQpYt2C19Py5ygx1N+03xfr95lIANYCNrojzYRMfs+tEsfMcllABsoHmnz9Z7MpfZD7LTueGxPkiyIEo+ujoqASfbJmg1p9ETL6mUpAQKi8XFltghwBX8xoHBBzRB/YiaeIx+uQPyK7mizsE7tN41y0HmVaOgUH8KGxmrGQ+xVsqUUozB18QfQHmT7yjPkAABHePAJgev9a8J+Awrho2Et2xg4o7FdYuU0D9Syeo/UHZnMIZhX+6D1EYRLQOaMmoCQ11hBpVQ9dqqku9OoUKvcCnP6pTmHKAqvkDqkZKOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gTKL6hv9rnjKa07vZUoUXnRqrAT19zfXagwRqdx46IY=;
+ b=NXQO2lpOgDWDz+ZYI9wqkSuWsfCMyjoE+X59irMumpZ0m0E5JjmBFom32SGzUabwKi/czi7zXEMckHuLfrmWUvfjdp5uO5xbP3Y2AvetHGwUdL9YrK+lCJmuEOluQ5mZHjry3JDuvJy3L3XP3INKV4w8gwlLRNNbK+61XU6Cj8FZQwZR60Pzks39fg5dNvMxkEwQYmq1W3JdcVUxo0g+RnpGiQDI2fA8gKWN8waAhD1hqbBBQB7Vsd6ZN03uLPOUTC5sHxlcXS8Zxa/lcfeV33PXu/rWn17AByUXR4oqM3Apkb+0E0gQMuOG5FehcwaDHjsoLfJttRruJDWEWArwkw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by TYSPR06MB6314.apcprd06.prod.outlook.com (2603:1096:400:417::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
+ 2023 06:54:17 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb%4]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
+ 06:54:16 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, opensource.kernel@vivo.com,
+        Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm:ALLOC_HIGHATOMIC flag allocation issuse
+Date:   Wed,  8 Nov 2023 14:54:07 +0800
+Message-ID: <20231108065408.1861-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0059.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::19) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
 MIME-Version: 1.0
-References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
- <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu> <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
- <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
-In-Reply-To: <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
-From:   Esker Wong <esker@google.com>
-Date:   Wed, 8 Nov 2023 14:53:41 +0800
-Message-ID: <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
-To:     nicolas@ndufresne.ca, Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Esker Wong <esker@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|TYSPR06MB6314:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4652b093-a020-4652-483a-08dbe0278668
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z4FKmdvHRal29dYb5glis9m+7JAObOxJq2/Ex4GdOkMbLl5uRD8ENg/a3eZdsCZ+Vdi1jvBVOlAwYCdMM+DnnxLeji8dgXTnuZ/E4FkNIUGj8cx4+SmFwXprmoT1aS7ogMc8/eLkuvHf8C/mDXwIc45i8MEvjAKeE67lG6QGIrTn9TiXqTTZzpeOwtvLSJ6tQOjsQMn2mXDo386zsaDg4JC0wv4Ck+Pf81P2Dxf0KUzbGycahDmJUWiCnaJxAdC9kJSc3+LnsM9rdbjD6uxOmglioR6LSk2NpVQUhPYJeF0A79eUiHAcQyk2ap8jEzByeoHFlgiRESEcRD16pGXnGeCg4g6dDYwMx4iiSGXJGiyNsl7gUbxy0YwkgjFjIHqRKDpyTSaYMcdn3NDIh05wZWOF82cydx+ke4OAMnSFh1U2IUorYxjh7vpgifCF3alo30GpIRkfgINCQkke7Z3u2prq69LWR+RC4/PeJQhL1JXqKExR2a1u7STF9Ni7foNhdomO42twY/XfD6AYAsGWzsM8Muk+JXg22wfTG65RTO/YpebH/A3y4+Ygpf6Ess6LUyOd20of1JUFamFDCxLkD65f/O+HWh0THpW7Oi6yR1371MDYPAkV9T9+naDmvtF8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(136003)(376002)(346002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(41300700001)(83380400001)(38100700002)(316002)(5660300002)(478600001)(107886003)(52116002)(6486002)(6666004)(6506007)(2616005)(66476007)(66556008)(66946007)(26005)(6512007)(54906003)(1076003)(2906002)(36756003)(86362001)(8676002)(8936002)(38350700005)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Tc/7EH7STe7hiXNVhjLt8LLhNT5lJCg4vW9Tt7tE6Oco5tWLbQezUzofVVi1?=
+ =?us-ascii?Q?ap/jw4BJp/i0p9yhiVyxOptljfmKwzyzkwCAK0ehaR72I9bZ4XWq2no/3crR?=
+ =?us-ascii?Q?6q/XyrUjF3tvAUKRZ5uIJV9bhmW3eLd1OsmPy5EbRsV98Y0Z9n5HWLsCsoli?=
+ =?us-ascii?Q?oe02TMWj37rH+bFFy6ZVZR4dYBUHCeWkUJ6iDKUxtXk+Lqp6UcRMKiJp87XH?=
+ =?us-ascii?Q?UXPfgcIFPdICHxiJk/fDPA7vAlbOrXEEE87Zp3pjju5A+l7cFDS2tEOLDAeb?=
+ =?us-ascii?Q?Xd82S1/QmxXUJhI5BScLcr7iABAuJRuJVdELwb9jKzeSvGxuy/WATPkJajfS?=
+ =?us-ascii?Q?nDvckUDW90IvcFrasgDWMVqTQj0yfkrVpyMGEXRqMVcRlg/qJTdplftEnAcH?=
+ =?us-ascii?Q?AQlawycuZLR/fcU7DNwga+psna9PNzzAtI34r3h5AGFxrcjDgvnm6F+XOlZ/?=
+ =?us-ascii?Q?jfhlgObzUKG7ZJ0a44btKQT4JlzpFh2gmvjRlhdcBNxZRp8WpwZqGDIbAhAh?=
+ =?us-ascii?Q?NvOFhzpPD4uGgzVMymkrjw/espeVmBkNh3PQfwdQqH1+N01wycV/t624rJ7y?=
+ =?us-ascii?Q?/vYRaEp6i0Db+3SJvuRveg4sDXZjEDKLCNap79GmEiX+/Kog9RM9a908Znr7?=
+ =?us-ascii?Q?QEAB3hPXyYJMMteX3V4i41Qw8IIgrJJIA2rspW1rTXpYeLaqSNhx5++u6q+p?=
+ =?us-ascii?Q?kN/xcC0G782B1NQAHR1n1thJvgxvoHDzRmi9V9+9yQ35GmjyoPinje7C1c9F?=
+ =?us-ascii?Q?QF3ATikVlJ7oI22vjnWYBe2Nu0no0r4M+MqYvuwCivfDRquHTO8fKVy8Up49?=
+ =?us-ascii?Q?FJ+Uv82LbZXZj8xrX4JEqJ1PPSm0S9zjZDYKagLd6KpJC9bC+4nSA3vI8M/Z?=
+ =?us-ascii?Q?SbQD0xyZAnspxWpt9yF23PEHypkcBQiVuzJOtJXRU7BG6jjJqJ57QtmB/A/N?=
+ =?us-ascii?Q?hVfXY58O3WY04Sqb7Fur4c1Lke1adef2DyaRxdRcaF/9LbYIbVYVwWaZlFQ7?=
+ =?us-ascii?Q?GVfU/QeFNeo0F7BLHE/lCfy933A1TwEYEnZgg0gKDlwlNrLv3kZlPPayfUe9?=
+ =?us-ascii?Q?7iQcdYZ6e8KyEa+ONspPu7tla3Qs6WEsGe9nAlqHswCZ0mZgW3IS32nB1n/X?=
+ =?us-ascii?Q?4ycBD0GEU3S21cCEA4AcgY0KJ248x7U8b/iE/2MH6UCVrn7lX2+0nK3z7y4Q?=
+ =?us-ascii?Q?YMIZIUOAbp3v5ub8ScVN3OE1Sp+8hw/28WuIq2af4WEUbw4THz5HQUTxf4aE?=
+ =?us-ascii?Q?zVOT/AlkoMCbpwe+2iJ0KQafyll0+btoYJ0sQ5TMxPJeUGvbW1UnOeR7KZ8G?=
+ =?us-ascii?Q?JiTZwyO9v4J4emSOBcMzTEIosOGwUWF1AithISBmKCKlVZMK+1eoGfO9Q50q?=
+ =?us-ascii?Q?QihQLAgUohUfzIwNTanY/WyAXp9sgUgojIsxf29pneFKKcN/iRXYLc3omE9g?=
+ =?us-ascii?Q?kMWc/BY7bC4iNfvRda7h26qMTUVfXoPYiQW+ZGUZfbqFmBwSvMiGEJ11cqxM?=
+ =?us-ascii?Q?ClUHcVvp2QVfLnhEydm2MYs80uqUvdVlVotk04WZvTEjXdjqVX6QokXMAs9w?=
+ =?us-ascii?Q?7XGPjVC0tvmPjIBUgcyS4ReC3PcHiLx2DHMMc2h9?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4652b093-a020-4652-483a-08dbe0278668
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 06:54:16.7935
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2t317KZ+gsRZJ5hXE/wlzbj1McFYoT1lGxMH7y1j/+z9CI6QMxtxSpNQNSyOKvcf4rm/BVCw3MXCpjFtJ9ZN+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6314
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicholas and Sakari,
+In case that alloc_flags contains ALLOC_HIGHATOMIC and alloc order
+is order1/2/3/10 in rmqueue(), if pages are alloced successfully
+from pcplist, a free pageblock will be also moved from the alloced
+migratetype freelist to MIGRATE_HIGHATOMIC freelist, rather than
+alloc from MIGRATE_HIGHATOMIC freelist firstly, so this will result
+in an increasing number of pages on the MIGRATE_HIGHATOMIC freelist,
+pages in other migratetype freelist are reduced and more likely to
+allocation failure.
 
-We need it as precise as possible. Currently the earliest time of a
-frame we can have in userspace  is the dqbuf.
+Currently the sequence of ALLOC_HIGHATOMIC allocation is:
+pcplist --> rmqueue_bulk() --> rmqueue_buddy() MIGRATE_HIGHATOMIC
+--> rmqueue_buddy() allocation migratetype.
 
-And for UVC timestamp, it is somewhat awkward for us to use. Since
-other functions in our stacks do not necessarily contain such
-timestamps. So we want some event to be trigger and we can get the
-system time directly.
+Due to the fact that requesting pages from the pcplist is faster than
+buddy, the sequence of modifying the ALLOC_HIGHATOMIC allocation is:
+pcplist --> rmqueue_buddy() MIGRATE_HIGHATOMIC --> rmqueue_buddy()
+allocation migratetype.
 
-If the V4L2_EVENT_FRAME_SYNC will be earlier then V4L2_EVENT_VSYNC,
-then it has value. We would want to know the delay of a frame being
-captured to the time it is displayed.
+This patch can solve the failure problem of allocating other types of
+pages due to excessive MIGRATE_HIGHATOMIC freelist reservations.
 
-I'm not sure for bulk is the V4L2_EVENT_VSYNC more accurate?
+In comparative testing, cat /proc/pagetypeinfo and the HighAtomic
+freelist size is:
+Test without this patch:
+Node 0, zone Normal, type HighAtomic 2369 771 138 15 0 0 0 0 0 0 0
+Test with this patch:
+Node 0, zone Normal, type HighAtomic 206 82 4 2 1 0 0 0 0 0 0 
 
-Esker
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+---
+ mm/internal.h   |  1 +
+ mm/page_alloc.c | 21 ++++++++++++++-------
+ 2 files changed, 15 insertions(+), 7 deletions(-)
+ mode change 100644 => 100755 mm/internal.h
+ mode change 100644 => 100755 mm/page_alloc.c
 
+diff --git a/mm/internal.h b/mm/internal.h
+index b61034bd50f5..f523242baf0c
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -905,6 +905,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ #endif
+ #define ALLOC_HIGHATOMIC	0x200 /* Allows access to MIGRATE_HIGHATOMIC */
+ #define ALLOC_KSWAPD		0x800 /* allow waking of kswapd, __GFP_KSWAPD_RECLAIM set */
++#define ALLOC_PCPLIST		0x1000 /* Allocations from pcplist */
+ 
+ /* Flags that allow allocations below the min watermark. */
+ #define ALLOC_RESERVES (ALLOC_NON_BLOCK|ALLOC_MIN_RESERVE|ALLOC_HIGHATOMIC|ALLOC_OOM)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b8544f08cc36..67cec88164b1
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2854,11 +2854,15 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 			int batch = nr_pcp_alloc(pcp, zone, order);
+ 			int alloced;
+ 
++			if (alloc_flags & ALLOC_HIGHATOMIC)
++				goto out;
++
+ 			alloced = rmqueue_bulk(zone, order,
+ 					batch, list,
+ 					migratetype, alloc_flags);
+ 
+ 			pcp->count += alloced << order;
++out:
+ 			if (unlikely(list_empty(list)))
+ 				return NULL;
+ 		}
+@@ -2921,7 +2925,7 @@ __no_sanitize_memory
+ static inline
+ struct page *rmqueue(struct zone *preferred_zone,
+ 			struct zone *zone, unsigned int order,
+-			gfp_t gfp_flags, unsigned int alloc_flags,
++			gfp_t gfp_flags, unsigned int *alloc_flags,
+ 			int migratetype)
+ {
+ 	struct page *page;
+@@ -2934,17 +2938,19 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 
+ 	if (likely(pcp_allowed_order(order))) {
+ 		page = rmqueue_pcplist(preferred_zone, zone, order,
+-				       migratetype, alloc_flags);
+-		if (likely(page))
++				       migratetype, *alloc_flags);
++		if (likely(page)) {
++			*alloc_flags |= ALLOC_PCPLIST;
+ 			goto out;
++		}
+ 	}
+ 
+-	page = rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
++	page = rmqueue_buddy(preferred_zone, zone, order, *alloc_flags,
+ 							migratetype);
 
-On Wed, Nov 8, 2023 at 3:27=E2=80=AFAM <nicolas@ndufresne.ca> wrote:
->
-> Hi,
->
-> Le mardi 07 novembre 2023 =C3=A0 13:06 +0800, Esker Wong a =C3=A9crit :
-> > [send again in text mode]
-> > Hi Sakari,
-> >
-> > Sequence number is important to us. We need it to measure the latency
-> > from this event to the time we display the frame.
->
-> how much precision do you expect, because as described, this number
-> will be completely false for bulk.
->
-> Aren't UVC timestamp support to allow measuring latency properly ?
->
-> Nicolas
->
-> >
-> > Regards,
-> > Esker
-> >
-> >
-> > On Mon, Nov 6, 2023 at 7:06=E2=80=AFPM Sakari Ailus <sakari.ailus@iki.f=
-i> wrote:
-> > >
-> > > Hi Ricardo,
-> > >
-> > > On Mon, Nov 06, 2023 at 10:52:27AM +0000, Ricardo Ribalda wrote:
-> > > > Add support for the frame_sync event, so user-space can become awar=
-e
-> > > > earlier of new frames.
-> > > >
-> > > > Suggested-by: Esker Wong <esker@chromium.org>
-> > > > Tested-by: Esker Wong <esker@chromium.org>
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > ---
-> > > > We have measured a latency of around 30msecs between frame sync
-> > > > and dqbuf.
-> > > > ---
-> > > > Changes in v2:
-> > > > - Suggested by Laurent. Split sequence++ and event init.
-> > > > - Link to v1: https://lore.kernel.org/r/20231020-uvc-event-v1-1-3ba=
-a0e9f6952@chromium.org
-> > > > ---
-> > > >  drivers/media/usb/uvc/uvc_v4l2.c  | 2 ++
-> > > >  drivers/media/usb/uvc/uvc_video.c | 7 +++++++
-> > > >  2 files changed, 9 insertions(+)
-> > > >
-> > > > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/u=
-vc/uvc_v4l2.c
-> > > > index f4988f03640a..9f3fb5fd2375 100644
-> > > > --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> > > > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> > > > @@ -1352,6 +1352,8 @@ static int uvc_ioctl_subscribe_event(struct v=
-4l2_fh *fh,
-> > > >       switch (sub->type) {
-> > > >       case V4L2_EVENT_CTRL:
-> > > >               return v4l2_event_subscribe(fh, sub, 0, &uvc_ctrl_sub=
-_ev_ops);
-> > > > +     case V4L2_EVENT_FRAME_SYNC:
-> > > > +             return v4l2_event_subscribe(fh, sub, 0, NULL);
-> > > >       default:
-> > > >               return -EINVAL;
-> > > >       }
-> > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/=
-uvc/uvc_video.c
-> > > > index 28dde08ec6c5..4f3a510ca4fe 100644
-> > > > --- a/drivers/media/usb/uvc/uvc_video.c
-> > > > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > > > @@ -1073,9 +1073,16 @@ static int uvc_video_decode_start(struct uvc=
-_streaming *stream,
-> > > >        * that discontinuous sequence numbers always indicate lost f=
-rames.
-> > > >        */
-> > > >       if (stream->last_fid !=3D fid) {
-> > > > +             struct v4l2_event event =3D {
-> > > > +                     .type =3D V4L2_EVENT_FRAME_SYNC,
-> > > > +             };
-> > > > +
-> > > >               stream->sequence++;
-> > > >               if (stream->sequence)
-> > > >                       uvc_video_stats_update(stream);
-> > > > +
-> > > > +             event.u.frame_sync.frame_sequence =3D stream->sequenc=
-e,
-> > > > +             v4l2_event_queue(&stream->vdev, &event);
-> > >
-> > > uvc_video_decode_start() is called when the reception of the entire f=
-rame
-> > > has been completed. However, the documentation for V4L2_EVENT_FRAME_S=
-YNC
-> > > says that the event is "Triggered immediately when the reception of a=
- frame
-> > > has begun.". The functionality here doesn't seem to fit to this patch=
-.
-> > >
-> > > Wouldn't V4L2_EVENT_VSYNC be a better fit, even if we don't really ha=
-ve a
-> > > concept of vertical sync in the case of USB? That event doesn't have =
-the
-> > > sequence though but I guess it's not an issue at least if your case.
-> > >
-> > > Another technically correct option could be to create a new event for=
- this
-> > > but I'm not sure it's worth it.
-> > >
-> > > >       }
-> > > >
-> > > >       uvc_video_clock_decode(stream, buf, data, len);
-> > > >
-> > >
-> > > --
-> > > Regards,
-> > >
-> > > Sakari Ailus
->
+ out:
+ 	/* Separate test+clear to avoid unnecessary atomics */
+-	if ((alloc_flags & ALLOC_KSWAPD) &&
++	if ((*alloc_flags & ALLOC_KSWAPD) &&
+ 	    unlikely(test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags))) {
+ 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
+ 		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
+@@ -3343,7 +3349,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 
+ try_this_zone:
+ 		page = rmqueue(ac->preferred_zoneref->zone, zone, order,
+-				gfp_mask, alloc_flags, ac->migratetype);
++				gfp_mask, &alloc_flags, ac->migratetype);
+ 		if (page) {
+ 			prep_new_page(page, order, gfp_mask, alloc_flags);
+ 
+@@ -3351,7 +3357,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 			 * If this is a high-order atomic allocation then check
+ 			 * if the pageblock should be reserved for the future
+ 			 */
+-			if (unlikely(alloc_flags & ALLOC_HIGHATOMIC))
++			if (unlikely(alloc_flags & ALLOC_HIGHATOMIC) &&
++				unlikely(!(alloc_flags & ALLOC_PCPLIST)))
+ 				reserve_highatomic_pageblock(page, zone);
+ 
+ 			return page;
+-- 
+2.39.0
+
