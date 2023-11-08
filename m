@@ -2,100 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7AB7E561B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E687E561F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjKHMTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
+        id S229520AbjKHMUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjKHMTu (ORCPT
+        with ESMTP id S229924AbjKHMUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:19:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489441BCC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:19:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699445944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qvMbksH7c6ZcEvPYTegmnIug2dODLV7SHYglfVWxD9g=;
-        b=fqSHjTVRXluNKA9aZlPr8jR2ZrmK7ne3BrchfCP9JJptLIvFlRPBJnHwPiJYXW7qZqQupv
-        nbVzUZFJsmobTBDO3jZaYnHnOgJHpEuAqk7D4gSuM6NVzivuEdATpXRpsJU8t2rssEUheG
-        kpyaSFg/KxznBo8a30w/ovX+geryh7U=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-594-ZN6LUCchPgy7vtuvrFhsGA-1; Wed, 08 Nov 2023 07:19:03 -0500
-X-MC-Unique: ZN6LUCchPgy7vtuvrFhsGA-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5bd0c909c50so4068967a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 04:19:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699445942; x=1700050742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qvMbksH7c6ZcEvPYTegmnIug2dODLV7SHYglfVWxD9g=;
-        b=GQJsAUmY8wmdQ0CcF5RWZ9nbYhwf7cW6ZscVG4GKwwkVGi7apaNy3mUBTW/BqZOAIg
-         0FQBfRRamOVTLdmI87/BG+4JgG/xojqmR+5mO9rUAuvnB2WiABl5lY5Jzqj7YalS5Lg3
-         zbCrp3Szdy0XLy1A+RzL5QyiHxi+N61eXkwXL7tTMTvIyeuuXL/L+LTaWiHbQ4XrLHWr
-         TKa4PrW9huDP2cN3EzpCykvA2gDuRghszMv2ACUaUnNmy9bWmoThXqjR0rfm8ETJknPx
-         tq65Dn+Qxt9cQb21kisxjtQY1fBn+QbUYoFuinVk2jzihpOBvj9lGwEf0y40ifq4g+1C
-         Neag==
-X-Gm-Message-State: AOJu0YyqIalnieBlf6VA7UQsuO9n4+GZiSdgSotlOXe46XofjJPqgjiQ
-        Ax8sypu2IYVCd6K9iEMy4y6gGD9f6MICFBg4ZMpe1ZU1GxhBb/OfhqWEiSY5QCH5klm7TJ1Iq2s
-        LWn0VTOrZ0M+GD27Adijn2i/xQbkmuaqZc+WliYvy
-X-Received: by 2002:a05:6a20:938a:b0:181:90eb:6b24 with SMTP id x10-20020a056a20938a00b0018190eb6b24mr2095807pzh.22.1699445942415;
-        Wed, 08 Nov 2023 04:19:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMbLzr20JSxrzK1NYa1Vhm0XM23Nhag0peMzgZJ1k+N4/hUlCW39pruQ7YMOM5nxoc/XiYAkMlMh4BRGJ1gqM=
-X-Received: by 2002:a05:6a20:938a:b0:181:90eb:6b24 with SMTP id
- x10-20020a056a20938a00b0018190eb6b24mr2095525pzh.22.1699445937280; Wed, 08
- Nov 2023 04:18:57 -0800 (PST)
+        Wed, 8 Nov 2023 07:20:46 -0500
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2C019A5;
+        Wed,  8 Nov 2023 04:20:44 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 6D9283F6DC;
+        Wed,  8 Nov 2023 12:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1699446043;
+        bh=E9tPQVwzEhlooRe4K4Q7wJl4JNG7qDs+SM/Us4/qStU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=j6+GfkbJEKd30I/ExzPH+erSfujCAlTYCzF5l1oJIE7vbNa2ZxRpjNrHGnV4PFapP
+         v+tRR0AOcsUQqm5PmHMKvOkvTobTqQs+gfVdg+ab2GA6OmqWWMe4r5vY7b2KRYx+V7
+         w6n4lcUaftoWYhdb0QGWJxgoZHxbNO/T7szw4BVcOBgakNmT9CIERutKOXCg6Ju6nA
+         wl/XfL++SlUflfDR2K7NI+w9FJ3k5dOEXIY7Zf1/XRvh7Abj182fjN6QP5aycKgpDA
+         cIjQuiuLaGv+NAZNT9BWoUdWsya1jFDzy+dQKzlTez5ui28G8zNOWaRzJXDLFAoUuh
+         X6cMt063Cx1aQ==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     srinivas.pandruvada@linux.intel.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jian Hui Lee <jianhui.lee@canonical.com>,
+        Even Xu <even.xu@intel.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+Date:   Wed,  8 Nov 2023 14:19:39 +0200
+Message-Id: <20231108121940.288005-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com> <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
- <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com> <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
- <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com> <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
- <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info> <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
- <2023102731-wobbly-glimpse-97f5@gregkh> <CAOssrKfNkMmHB2oHHO8gWbzDX27vS--e9dZoh_Mjv-17mSUTBw@mail.gmail.com>
- <2023102740-think-hatless-ab87@gregkh> <CAOssrKd-O1JKEPzvnM1VkQ0-oTpDv0RfY6B5oF5p63AtQ4HoqA@mail.gmail.com>
- <689f677b84b484636b673b362b17a6501a056968.camel@linaro.org>
- <CAOssrKfP+t-cy322ujizQofgZkPZsBu1H4+zfbWNEFCmTsXwug@mail.gmail.com>
- <afe378bf254f6c4ac73bb55be3fa7422f2da3f5f.camel@linaro.org>
- <CAOssrKeJB7BZ7fA6Uqo6rHohybmgovc6rVwDeHbegvweSyZeeA@mail.gmail.com>
- <7df24b0e-ea98-4dc7-9e1b-dfc29d0fa1b1@leemhuis.info> <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
-In-Reply-To: <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Wed, 8 Nov 2023 13:18:46 +0100
-Message-ID: <CAOssrKeUbmEUWnT_JoRRAb0asttB3FfMva121D+sXFYEuFTV8w@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the FUSE_INIT_EXT"
-To:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        Alessio Balsini <balsini@android.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Bernd Schubert <bschubert@ddn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 11:31=E2=80=AFAM Andr=C3=A9 Draszik <andre.draszik@l=
-inaro.org> wrote:
+Since PCI core and ACPI core already handles PCI PME wake and GPE wake
+when the device has wakeup capability, use device_init_wakeup() to let
+them do the wakeup setting work.
 
-> We are using the Android kernel in all cases and Android applies
-> patches on top of Linus' tree, yes (as does everybody else). The
-> previous Android kernel worked, the current Android kernel doesn't
-> because of the patch in question.
+Also add a shutdown callback which uses pci_prepare_to_sleep() to let
+PCI and ACPI set OOB wakeup for S5.
 
-Why don't you revert the patch in question in the Android kernel?
+Cc: Jian Hui Lee <jianhui.lee@canonical.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v2:
+ Rebase on ("HID: intel-ish-hid: ipc: Disable and reenable ACPI GPE bit")
 
-Thanks,
-Miklos
+ drivers/hid/intel-ish-hid/ipc/pci-ish.c | 67 ++++++-------------------
+ 1 file changed, 15 insertions(+), 52 deletions(-)
+
+diff --git a/drivers/hid/intel-ish-hid/ipc/pci-ish.c b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+index 710fda5f19e1..65e7eeb2fa64 100644
+--- a/drivers/hid/intel-ish-hid/ipc/pci-ish.c
++++ b/drivers/hid/intel-ish-hid/ipc/pci-ish.c
+@@ -119,50 +119,6 @@ static inline bool ish_should_leave_d0i3(struct pci_dev *pdev)
+ 	return !pm_resume_via_firmware() || pdev->device == CHV_DEVICE_ID;
+ }
+ 
+-static int enable_gpe(struct device *dev)
+-{
+-#ifdef CONFIG_ACPI
+-	acpi_status acpi_sts;
+-	struct acpi_device *adev;
+-	struct acpi_device_wakeup *wakeup;
+-
+-	adev = ACPI_COMPANION(dev);
+-	if (!adev) {
+-		dev_err(dev, "get acpi handle failed\n");
+-		return -ENODEV;
+-	}
+-	wakeup = &adev->wakeup;
+-
+-	/*
+-	 * Call acpi_disable_gpe(), so that reference count
+-	 * gpe_event_info->runtime_count doesn't overflow.
+-	 * When gpe_event_info->runtime_count = 0, the call
+-	 * to acpi_disable_gpe() simply return.
+-	 */
+-	acpi_disable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+-
+-	acpi_sts = acpi_enable_gpe(wakeup->gpe_device, wakeup->gpe_number);
+-	if (ACPI_FAILURE(acpi_sts)) {
+-		dev_err(dev, "enable ose_gpe failed\n");
+-		return -EIO;
+-	}
+-
+-	return 0;
+-#else
+-	return -ENODEV;
+-#endif
+-}
+-
+-static void enable_pme_wake(struct pci_dev *pdev)
+-{
+-	if ((pci_pme_capable(pdev, PCI_D0) ||
+-	     pci_pme_capable(pdev, PCI_D3hot) ||
+-	     pci_pme_capable(pdev, PCI_D3cold)) && !enable_gpe(&pdev->dev)) {
+-		pci_pme_active(pdev, true);
+-		dev_dbg(&pdev->dev, "ish ipc driver pme wake enabled\n");
+-	}
+-}
+-
+ /**
+  * ish_probe() - PCI driver probe callback
+  * @pdev:	pci device
+@@ -233,7 +189,7 @@ static int ish_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	/* Enable PME for EHL */
+ 	if (pdev->device == EHL_Ax_DEVICE_ID)
+-		enable_pme_wake(pdev);
++		device_init_wakeup(dev, true);
+ 
+ 	ret = ish_init(ishtp);
+ 	if (ret)
+@@ -256,6 +212,19 @@ static void ish_remove(struct pci_dev *pdev)
+ 	ish_device_disable(ishtp_dev);
+ }
+ 
++
++/**
++ * ish_shutdown() - PCI driver shutdown callback
++ * @pdev:	pci device
++ *
++ * This function sets up wakeup for S5
++ */
++static void ish_shutdown(struct pci_dev *pdev)
++{
++	if (pdev->device == EHL_Ax_DEVICE_ID)
++		pci_prepare_to_sleep(pdev);
++}
++
+ static struct device __maybe_unused *ish_resume_device;
+ 
+ /* 50ms to get resume response */
+@@ -378,13 +347,6 @@ static int __maybe_unused ish_resume(struct device *device)
+ 	struct pci_dev *pdev = to_pci_dev(device);
+ 	struct ishtp_device *dev = pci_get_drvdata(pdev);
+ 
+-	/* add this to finish power flow for EHL */
+-	if (dev->pdev->device == EHL_Ax_DEVICE_ID) {
+-		pci_set_power_state(pdev, PCI_D0);
+-		enable_pme_wake(pdev);
+-		dev_dbg(dev->devc, "set power state to D0 for ehl\n");
+-	}
+-
+ 	ish_resume_device = device;
+ 	dev->resume_flag = 1;
+ 
+@@ -400,6 +362,7 @@ static struct pci_driver ish_driver = {
+ 	.id_table = ish_pci_tbl,
+ 	.probe = ish_probe,
+ 	.remove = ish_remove,
++	.shutdown = ish_shutdown,
+ 	.driver.pm = &ish_pm_ops,
+ };
+ 
+-- 
+2.34.1
 
