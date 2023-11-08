@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2990A7E598F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741717E5993
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbjKHO5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:57:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37730 "EHLO
+        id S233166AbjKHO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbjKHO5W (ORCPT
+        with ESMTP id S230139AbjKHO6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:57:22 -0500
+        Wed, 8 Nov 2023 09:58:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D841BE6
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:57:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6465FC433C8;
-        Wed,  8 Nov 2023 14:57:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41AD1BE4;
+        Wed,  8 Nov 2023 06:58:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72196C433C8;
+        Wed,  8 Nov 2023 14:58:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699455440;
-        bh=LKL1hs/khI8hKTDotLj4TlzooB07x3t7D/CuzzZG+Oo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q3j5TevN8fsXBPvYnztlof7HiDniQcTKHv3coqsz0QT785G+eoPCtqqMYWpbFO96M
-         gMvkHunctwfdJGhNwCe8dw1uq3Yxe5U9MJ3CYnAM4u2jwcGEtl5NnZSs1PNQJTdjzj
-         qv1n3tARR6K9+GS2VGWHJS/G/+j7qLxDQg/RFlUal9qLJVdqA1pCnOGhrkpsKjIfR4
-         3AZi5nGl5SRtY9i92JjRacjWwn2fyh9kLusChllojkFy1489ygIO8+CGvotGnX8rcZ
-         JVOwoZxO4xvjiKsPRZgJTqaqAV9w0BFyxaEvM/rSYEudhIiDJ2x2sDxIINRNh4+0ji
-         +R8XiS//Kmy4w==
-Date:   Wed, 8 Nov 2023 14:57:15 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>,
-        Samuel Ortiz <sameo@rivosinc.com>
-Subject: Re: [PATCH v3 05/20] dt-bindings: riscv: add scalar crypto ISA
- extensions description
-Message-ID: <20231108-grower-handwash-63526d449e9c@spud>
-References: <20231107105556.517187-1-cleger@rivosinc.com>
- <20231107105556.517187-6-cleger@rivosinc.com>
+        s=k20201202; t=1699455509;
+        bh=n/5YMcECTbkGb6OIl60kw0HV/aeCmVYYSLfcJLtQke0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BxaxzQlzzgzah4q3Rh46fm22Wea2D6PMhRF+M/Z6V7P9WdTCxzDZLAh1/afga9Pf3
+         mbVZkmuG7VjCjasBW+5ZpOjJ+KcRXp5kDm4Z4a5TY04isCKUXs5vcnNmo7xmQi1HD9
+         r+OYjsa7WqOPqoQkQ6H1M/JuVQyCInIN/F3NBX1/xZqHtnCrrO5Syq2Otr1+dDNPTf
+         P5XRwtNiT9egVLCUCdShArCvTZy555+hvNn+KgGgdXpAa8/fA0AbBpl9QE7UxjQI8b
+         J2diMU8BzAaoIYNgH9gGgVM1XTWM9s4YoGpKBMDsoAAHR1KUojHLGXwtOSudivEzQ4
+         EyOh/wEQ655Ag==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        linux-hyperv@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fbdev: hyperv_fb: fix uninitialized local variable use
+Date:   Wed,  8 Nov 2023 15:58:13 +0100
+Message-Id: <20231108145822.3955219-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IXI5peX4j7nYK3nr"
-Content-Disposition: inline
-In-Reply-To: <20231107105556.517187-6-cleger@rivosinc.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---IXI5peX4j7nYK3nr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When CONFIG_SYSFB is disabled, the hyperv_fb driver can now run into
+undefined behavior on a gen2 VM, as indicated by this smatch warning:
 
-Yo,
+drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized symbol 'base'.
+drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized symbol 'size'.
 
-On Tue, Nov 07, 2023 at 11:55:41AM +0100, Cl=E9ment L=E9ger wrote:
-> +        - const: zkr
-> +          description:
-> +            The standard Zkr entropy source extension as ratified in ver=
-sion
-> +            1.0 of RISC-V Cryptography Extensions Volume I specification.
+Since there is no way to know the actual framebuffer in this configuration,
+just return an allocation failure here, which should avoid the build
+warning and the undefined behavior.
 
-So the topic of the seed CSR came up on the U-Boot ML in the last few
-days:
-https://lore.kernel.org/u-boot/20231107212431.GP6601@bill-the-cat
-I think we need to document that having zkr in riscv,isa-extensions
-means that the CSR is accessible at the privilege level to which that
-devicetree has been provided.
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202311070802.YCpvehaz-lkp@intel.com/
+Fixes: a07b50d80ab6 ("hyperv: avoid dependency on screen_info")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/video/fbdev/hyperv_fb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---IXI5peX4j7nYK3nr
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index bf59daf862fc..a80939fe2ee6 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -1013,6 +1013,8 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 	} else if (IS_ENABLED(CONFIG_SYSFB)) {
+ 		base = screen_info.lfb_base;
+ 		size = screen_info.lfb_size;
++	} else {
++		goto err1;
+ 	}
+ 
+ 	/*
+-- 
+2.39.2
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUuhugAKCRB4tDGHoIJi
-0jq9AQCA7EiDhuy9EermqoTOWmWVVqY7W1Mxzc1nVYddhZ9YVAEA5v5PcwTZ0QpO
-ppUXycCAScJGAc/3pFd+DuL0WqaXxAc=
-=fV9h
------END PGP SIGNATURE-----
-
---IXI5peX4j7nYK3nr--
