@@ -2,98 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EC57E5BAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CFB7E5BB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbjKHQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
+        id S232290AbjKHQrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjKHQqz (ORCPT
+        with ESMTP id S231843AbjKHQrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:46:55 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0E21FD6;
-        Wed,  8 Nov 2023 08:46:53 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0ADEF6607699;
-        Wed,  8 Nov 2023 16:46:50 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699462012;
-        bh=EeyG48ihoO4SEA/8XzhcTQbxRY9L7eiinHyNA69xzNY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ESr6pT+f5UmHQxoH5B2QL2SWWHnZ3IDW3t+g85ghsXjBSK8T1+8jENSXLV7GixsAj
-         BPAyBa40TM2XvyZyx3j3dohE3PERlH12LjHWvZHG7YeKWNNo2csckKlKC4nImAoh35
-         mVHK3UfT0f4ZLj4Bq+BksGnA+bn0TdudzD4MOUmBsOh0UgMenEcXaImIkN3o9qZVps
-         xVrCGMG1mC5FBV/kc9Ky+Fu5aHKRWni0vczlYaMhosT55ux5n7pINuig5s/nCKQ94K
-         TbM4X/KVNP/FxBp46aJntEZZTvCi7rQ245Pv7oQ+cnZsu3zz2i/foJOTsWC/f5LGzD
-         /zMuhB7rJQ1KA==
-Message-ID: <03557323-0a03-4833-b2de-6011e3d3acee@collabora.com>
-Date:   Wed, 8 Nov 2023 17:46:48 +0100
+        Wed, 8 Nov 2023 11:47:43 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7011FD7
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:47:41 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c6b5841f61so11802071fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 08:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699462060; x=1700066860; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Pz2ORLk0kX13nQ9ymAHGPqfg2j02tcbAp1xY9AcNr8=;
+        b=Wsk0mvb+++jYYpJRH5d9QYK+7m5JaYNt14xFvgWKk39rKxkX2dKUSyJ3QBwQe9UL5D
+         0HhwcASaS4ZvNWqgUVAc5PORbuFJhifL4lgQL+yQJ9BuCXEgw3aCAW5XdY0951MeqrDY
+         zLPs4YKJ8BwnoSw8unZ+u5coswxssq7tp1NSjL870tEQAO7V9Gmhln3jjcVW+la7MwNo
+         agjQV5oeVqx72Mkf6xsZYZm4Aj/eg8NF+I22qZonPdKaQp4suHx2bAs/AtnesHbLWvk9
+         lbeh0fQ1gC9FRogEQItWxQECEpasa5W9w4GSNSqv+1J/rXQVyGE5A7OctO8seFlPE7nR
+         3chQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699462060; x=1700066860;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Pz2ORLk0kX13nQ9ymAHGPqfg2j02tcbAp1xY9AcNr8=;
+        b=qTJ9pok29WZ2aOUSmX9WjX5gYqoTv6MmNkY4pyUmzbhXz7E7Yy8NiOc+MccX+J4sl/
+         L3EKYzhIhAiBqsArNA0LBP552/lpWDhnSlnK5BBW2G5GIrZEbV8i+E06wTMimMIbS6e3
+         XRuBQuMl/z5ShdkXVjktIBv4o1VrDlkUaf/eftZoUMEJapmB+F/A9Xpu7TYdY7q+VR9P
+         e8Pmo+/8Czx8nYTK21/bsfeb1cb30B2GIXfm+QnuedBIT5AvTlHwQDPY+pPFyfCdm6ud
+         +Xk66ZwuIFk3T/dihjzjUyjZyqJ8WtJ7Pkmz+oVOeq0U5V4pvBSiOFKRmDdKy/Xulcf6
+         0Dzg==
+X-Gm-Message-State: AOJu0YybWL5yX1IB80EiuK5faaqTFq2TtrmAdct7TG6FE+ta2u0RnwjY
+        xVp7Q8sY9cfwqxAW3yygVs81zrot6Ql6Fn68YlWpAg==
+X-Google-Smtp-Source: AGHT+IHBCyQWRfYTEPjqwNF0fuyXBQboVtUT0QSKTvFHtdwWCwfNgS48bDg/2CrmRAaZ6Qxp9Zsv/5d253cYjFPsk5w=
+X-Received: by 2002:a2e:9d0e:0:b0:2c3:c4b8:19ec with SMTP id
+ t14-20020a2e9d0e000000b002c3c4b819ecmr984244lji.18.1699462059646; Wed, 08 Nov
+ 2023 08:47:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 06/56] media: videobuf2: Remove duplicated index vs
- q->num_buffers check
-Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-7-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231031163104.112469-7-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CGME20231108112923eucas1p27474e921565e3f175e27e6598f0b71c3@eucas1p2.samsung.com>
+ <20231108112909.591987-1-m.szyprowski@samsung.com>
+In-Reply-To: <20231108112909.591987-1-m.szyprowski@samsung.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Wed, 8 Nov 2023 08:47:03 -0800
+Message-ID: <CALs-Hst6fmesQy6g=ZxfKFs5W85quWQRcwP_=okBWKqMA3CQsw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: fix potential panic during CPU hot-plug
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
-> vb2_get_buffer() already checks if the requested index is valid.
-> Stop duplicating this kind of check everywhere.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+On Wed, Nov 8, 2023 at 3:29=E2=80=AFAM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Commit 584ea6564bca ("RISC-V: Probe for unaligned access speed") added a
+> test for unaligned access speed. It is being performed when given CPU is
+> onlined. Then, another test for misaligned access emulation has been
+> added in commit 71c54b3d169d ("riscv: report misaligned accesses
+> emulation to hwprobe"). This unaligned access speed doesn't really change
+> after the boot, so it is sufficient to do this test only once. This has
+> been partially added by commit c20d36cc2a20 ("riscv: don't probe
+> unaligned access speed if already done"), but this optimisation works
+> only if RISCV_HWPROBE_MISALIGNED_EMULATED is returned by the latter
+> check. Otherwise the 'misaligned_access_speed' pcpu varliable is
+> overwritten with RISCV_HWPROBE_MISALIGNED_UNKNOWN value, what makes the
+> first check to be always performed.
+>
+> Recently I've noticed that the first check introduced a regression in the
+> CPU hot-plug mechanism. This can be observed as a following panic on
+> QEmu:
+>
+> CPU1: off
+> cpu1: Ratio of byte access time to unaligned word access is 7.00, unalign=
+ed accesses are fast
+> CPU1: off
+> CPU1: failed to come online
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 215 at kernel/smp.c:437 __flush_smp_call_function_qu=
+eue+0x90/0x292
+> Modules linked in:
+> CPU: 0 PID: 215 Comm: bash Not tainted 6.5.0-rc1+ #7524
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : __flush_smp_call_function_queue+0x90/0x292
+>  ra : smpcfd_dying_cpu+0xe/0x1c
+> ...
+> [<ffffffff800c904a>] __flush_smp_call_function_queue+0x90/0x292
+> [<ffffffff800c9ae8>] smpcfd_dying_cpu+0xe/0x1c
+> [<ffffffff80012b2e>] cpuhp_invoke_callback+0x124/0x322
+> [<ffffffff800142f8>] _cpu_up+0x218/0x322
+> [<ffffffff8001445e>] cpu_up+0x5c/0x98
+> [<ffffffff80014bb8>] cpu_device_up+0x14/0x1c
+> [<ffffffff8066d68e>] cpu_subsys_online+0x10/0x18
+> [<ffffffff806680e8>] device_online+0x56/0x72
+> [<ffffffff80668190>] online_store+0x8c/0xae
+> [<ffffffff80662dde>] dev_attr_store+0xe/0x1a
+> [<ffffffff802b53bc>] sysfs_kf_write+0x2e/0x4c
+> [<ffffffff802b4750>] kernfs_fop_write_iter+0xe8/0x14e
+> [<ffffffff80230170>] vfs_write+0x2a4/0x3e0
+> [<ffffffff802303e8>] ksys_write+0x5e/0xc8
+> [<ffffffff80230460>] sys_write+0xe/0x16
+> [<ffffffff80a4a8de>] do_trap_ecall_u+0xe0/0xf4
+> [<ffffffff80003e8c>] ret_from_exception+0x0/0x64
+> irq event stamp: 12335
+> hardirqs last  enabled at (12335): [<ffffffff8007e542>] console_unlock+0x=
+156/0x186
+> hardirqs last disabled at (12334): [<ffffffff8007e52c>] console_unlock+0x=
+140/0x186
+> softirqs last  enabled at (12154): [<ffffffff80a560d0>] __do_softirq+0x3b=
+0/0x470
+> softirqs last disabled at (12147): [<ffffffff80019340>] __irq_exit_rcu+0x=
+a6/0xd0
+> ---[ end trace 0000000000000000 ]---
+> ------------[ cut here ]------------
+> kernel BUG at kernel/irq_work.c:245!
+> Kernel BUG [#1]
+> Modules linked in:
+> CPU: 0 PID: 215 Comm: bash Tainted: G        W          6.5.0-rc1+ #7524
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : irq_work_run_list+0x30/0x32
+>  ra : irq_work_run+0x2a/0x4c
+> ...
+> [<ffffffff8011a346>] irq_work_run_list+0x30/0x32
+> [<ffffffff8011a372>] irq_work_run+0x2a/0x4c
+> [<ffffffff800c9aec>] smpcfd_dying_cpu+0x12/0x1c
+> [<ffffffff80012b2e>] cpuhp_invoke_callback+0x124/0x322
+> [<ffffffff800142f8>] _cpu_up+0x218/0x322
+> [<ffffffff8001445e>] cpu_up+0x5c/0x98
+> [<ffffffff80014bb8>] cpu_device_up+0x14/0x1c
+> [<ffffffff8066d68e>] cpu_subsys_online+0x10/0x18
+> [<ffffffff806680e8>] device_online+0x56/0x72
+> [<ffffffff80668190>] online_store+0x8c/0xae
+> [<ffffffff80662dde>] dev_attr_store+0xe/0x1a
+> [<ffffffff802b53bc>] sysfs_kf_write+0x2e/0x4c
+> [<ffffffff802b4750>] kernfs_fop_write_iter+0xe8/0x14e
+> [<ffffffff80230170>] vfs_write+0x2a4/0x3e0
+> [<ffffffff802303e8>] ksys_write+0x5e/0xc8
+> [<ffffffff80230460>] sys_write+0xe/0x16
+> [<ffffffff80a4a8de>] do_trap_ecall_u+0xe0/0xf4
+> [<ffffffff80003e8c>] ret_from_exception+0x0/0x64
+> Code: 8526 6084 f0ef f71f fce5 60e2 6442 64a2 6105 8082 (9002) 1101
+> ---[ end trace 0000000000000000 ]---
+> Kernel panic - not syncing: Fatal exception in interrupt
+> SMP: stopping secondary CPUs
+> SMP: failed to stop secondary CPUs 0-1
+> ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+>
+> To avoid calling those checks in the CPU hot-plug paths again and again,
+> simply move the check at the beginning of the check_unaligned_access()
+> function and rely on the value determined during the system boot.
+>
+> Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
+> Fixes: c20d36cc2a20 ("riscv: don't probe unaligned access speed if alread=
+y done")
+> Fixes: 71c54b3d169d ("riscv: report misaligned accesses emulation to hwpr=
+obe")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-> ---
->   drivers/media/common/videobuf2/videobuf2-v4l2.c | 8 --------
->   1 file changed, 8 deletions(-)
-> 
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index 2ffb097bf00a..c6ebc8d2c537 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -823,10 +823,6 @@ int vb2_qbuf(struct vb2_queue *q, struct media_device *mdev,
->   		return -EBUSY;
->   	}
->   
-> -	if (b->index >= q->num_buffers) {
-> -		dprintk(q, 1, "buffer index out of range\n");
-> -		return -EINVAL;
-> -	}
->   	vb = vb2_get_buffer(q, b->index);
->   	if (!vb) {
->   		dprintk(q, 1, "can't find the requested buffer %u\n", b->index);
-> @@ -898,10 +894,6 @@ int vb2_expbuf(struct vb2_queue *q, struct v4l2_exportbuffer *eb)
->   {
->   	struct vb2_buffer *vb;
->   
-> -	if (eb->index >= q->num_buffers) {
-> -		dprintk(q, 1, "buffer index out of range\n");
-> -		return -EINVAL;
-> -	}
->   	vb = vb2_get_buffer(q, eb->index);
->   	if (!vb) {
->   		dprintk(q, 1, "can't find the requested buffer %u\n", eb->index);
+Hi Marek,
+Thanks for the patch. I happened to spot that bug too
+(check_unaligned_access_emulated() clobbering the per-cpu variable
+back to unknown). Since I was rearranging that code to try to run the
+speed measurements in parallel, I moved that check around to hopefully
+solve the same issue you're reporting. Can you see if this patch also
+fixes your issue:
+https://lore.kernel.org/lkml/20231106225855.3121724-1-evan@rivosinc.com/
+. It's also in Palmer's for-next tree as 55e0bf49a0d0 ("RISC-V: Probe
+misaligned access speed in parallel").
 
+-Evan
