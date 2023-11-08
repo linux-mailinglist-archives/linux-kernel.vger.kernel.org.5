@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C127E554D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693687E5579
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbjKHLYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        id S1344385AbjKHL0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:26:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344874AbjKHLX6 (ORCPT
+        with ESMTP id S1344373AbjKHLZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:23:58 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0FF2599;
-        Wed,  8 Nov 2023 03:23:47 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8BIXjd005362;
-        Wed, 8 Nov 2023 11:23:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=jtWIZGyRTnMfkGH9XQM+li0IZT1L/GHYJT26KII8tH4=;
- b=fXFFj9EvWZDQA6eYDjwMrkByFIwPeB5P/zqke8Fkr5DFqGGOe9G3L4XQqf9KoaZveO+R
- F7/Vonbu8Xff82wxMCFSHtpYW4eMPGrU9WQ7z3t9jEuWqgfAc6tR3l235cCGIH2WwWOe
- uZzXISBJ1tABFZZSGcafFZt6u9EvTMZ8tfpRf9YRuZs1WOo3RUR4KcittkRHynqEVx0N
- 24QaZEIBj0aWeirW1zmjFCfdCMav926ed/WTJVqvHhpo4yBsH3GuIOyW/ocP8X4Vq4SD
- aye+2niyWcjqmvoRkLA7dRuXwsNGaqaCRqaI6X6mUu6JNsAHoXnesVCSaUc98Rr5FsLm KA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqt903-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 11:23:46 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8BJBFH011564;
-        Wed, 8 Nov 2023 11:23:46 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqt8xg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 11:23:46 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8BHcaY014372;
-        Wed, 8 Nov 2023 11:23:44 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w21vam1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 11:23:43 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8BNeuR19202686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 11:23:40 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2812320040;
-        Wed,  8 Nov 2023 11:23:40 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC47220043;
-        Wed,  8 Nov 2023 11:23:39 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 11:23:39 +0000 (GMT)
-Date:   Wed, 8 Nov 2023 12:23:38 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v2 2/4] KVM: s390: vsie: Fix length of facility list
- shadowed
-Message-ID: <20231108122338.0ff2052e@p-imbrenda>
-In-Reply-To: <20231107123118.778364-3-nsg@linux.ibm.com>
-References: <20231107123118.778364-1-nsg@linux.ibm.com>
-        <20231107123118.778364-3-nsg@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 8 Nov 2023 06:25:56 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338D01BFA;
+        Wed,  8 Nov 2023 03:25:54 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SQN3h1ypLzrTq2;
+        Wed,  8 Nov 2023 19:22:40 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 8 Nov
+ 2023 19:25:17 +0800
+Subject: Re: [RFC PATCH v3 08/12] net: support non paged skb frags
+To:     Mina Almasry <almasrymina@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-9-almasrymina@google.com>
+ <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
+ <CAHS8izPGa99LyEc=AeqNaK8X68b7dovxCHOLbR=hnbaybN_zgQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <e9c9b58d-4b78-fe2d-4511-b0ffa744a994@huawei.com>
+Date:   Wed, 8 Nov 2023 19:25:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CAHS8izPGa99LyEc=AeqNaK8X68b7dovxCHOLbR=hnbaybN_zgQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: GxDAHOQa6n4JoM46DkxvLLCBTAf_3boB
-X-Proofpoint-ORIG-GUID: 1YW4mzqluCbKw_l2-51fxetIjt6yvfcd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=727 clxscore=1015 adultscore=0 mlxscore=0
- spamscore=0 suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080095
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Nov 2023 13:31:16 +0100
-Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+On 2023/11/8 5:19, Mina Almasry wrote:
+>>
+>>
+> 
+> My personal immediate reaction is that this may just introduce code
+> churn without significant benefit. If an unsuspecting caller call
+> skb_frag_page() on devmem frag and doesn't correctly handle NULL
+> return, it will crash or error out anyway, and likely in some obvious
+> way, so maybe the BUG_ON() isn't so useful that it's worth changing
 
-[...]
+If it will always crash or error out, then I agree that BUG_ON() is
+unnecessary.
 
-> diff --git a/arch/s390/kernel/facility.c b/arch/s390/kernel/facility.c
-> new file mode 100644
-> index 000000000000..5e80a4f65363
-> --- /dev/null
-> +++ b/arch/s390/kernel/facility.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright IBM Corp. 2023
-> + */
-> +
-> +#include <asm/facility.h>
-> +
-> +unsigned int stfle_size(void)
-> +{
-> +	static unsigned int size;
-> +	u64 dummy;
-> +	unsigned int r;
+> all the call sites. But if there is consensus on adding a change like
+> you propose, I have no problem adding it.
 
-reverse Christmas tree please :)
+One obvious benefit I forget to mention is that, it provides a better
+semantic that if a caller need to do the return checking:
+1. For the old helper, the semantic is not to do the checking if the caller
+   has ensure that it has passed a readable frag to skb_frag_page(), which
+   avoid adding some overhead for non-devmen supported drivers.
+2. For the new helper, the semantic is to do the checking and we may provide
+   a compiler '__must_check' function-attribute to ensure the caller to do
+   the checking.
 
 
-with that fixed:
-
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-
-[...]
+> 
