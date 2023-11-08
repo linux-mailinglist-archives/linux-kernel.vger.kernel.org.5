@@ -2,119 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F887E5D2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAD37E5D27
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjKHS0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 13:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S231628AbjKHSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHS0m (ORCPT
+        with ESMTP id S229583AbjKHSZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 13:26:42 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663DB1FF5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 10:26:40 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so4826734f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 10:26:40 -0800 (PST)
+        Wed, 8 Nov 2023 13:25:24 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387851FFD
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 10:25:22 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a66aa8ebb7so284670539f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 10:25:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699467999; x=1700072799; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=l1kERn6BqrTYSq/wcLvk2u9/EuVMFvU8+Uv0uPnlNwM=;
-        b=JzvHVeCU/0vLUfD36ItqZFEDy5oh1COhRxdaB04wXclirhgrRJnsuAICd7c9pOpt68
-         7VfCnabICLDm74jZ2DlsVfTKjGiMiW5G8emONcYcdJUJrjr27AGVYs3cmQseJY6GSAKG
-         kY3h66Xpeaq7PjR/+cdoiDchr1cYBAFk1ElEniDxHoeobQzOTPvq2PFVL5kZ7cXROeyF
-         0a4wdsXa2slL2028IZ2BDdrtsRbYNnBp/8rJ5rgVcL9hubAdRCgkWbtF9v1ITgEkHDpT
-         V+IxUKvg2wbEoB/4vLIA+aeob88sduaYmemMhdZYiQIkLZwKD1Qcp3uZHYNy9rXViG+1
-         6uYg==
+        d=joelfernandes.org; s=google; t=1699467921; x=1700072721; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1RX3+j4H1LZ9VGKq/u5AJmWjNVd+q5xbY7KEqXQdkMs=;
+        b=aGRLcYUdkNa2hK0g1KaVjgDpcn8Ld1DlJGvqCfNF5URP5mZsXhGcmvMiTnACGpFeWm
+         +iod8yD6teypdAJDjbRXMi3Ca5ai97738Xkp8eM8G/p4rWpwEgbGNlp98R/fOiy5QlAv
+         esYzLYqTQePDMuqsGPytxNmciINRar7fFjOJ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699467999; x=1700072799;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l1kERn6BqrTYSq/wcLvk2u9/EuVMFvU8+Uv0uPnlNwM=;
-        b=T3qNbC8FSEcgqQrD+2nJQKgFpotwzVfkhJoC86klWnB23ggffrWxCYr7UmG6cztKFk
-         sfmY8X0MuLLwAqxF1SoGw2NNmCUi2F6dju5AmicPbYlRPmX8SaeMxmLvC5Y9cnHq0My0
-         oGmL6GVgrUbcGe8MRH4M48ij3ZiaKf4A+J4C0v55Ceqe46BjdBH5BD3pWgFNQ7Cb9PQH
-         u5Hr5dxBiLUlFL1JxFI+gOIotKUVF7NtS52IFNE2nzDxcApsd9XgHxB0y/Cq1nAjsdQW
-         tMUoC1kijptdd7IvXJ1paGD/DLIojTmJGx+OrMpUdP/NuhfhxfIeP9qQZ1q2ToOPiFOt
-         qp0Q==
-X-Gm-Message-State: AOJu0YzVHp5+uecxMO8UvvDGGvEGCuMgsItL19KfLr/dAUPaktijPS+B
-        +bVDyTQnBnZdn451VWCVs9z3Zzn+VkE=
-X-Google-Smtp-Source: AGHT+IHgXWrzbdDq4xZ1jianfBnc7JjgrzvZzvkwkFcw3xZB1748V+kWLOAfOqeV34xJCJ56Am7bTg==
-X-Received: by 2002:a5d:6d8a:0:b0:32f:9511:9795 with SMTP id l10-20020a5d6d8a000000b0032f95119795mr2190812wrs.11.1699467998439;
-        Wed, 08 Nov 2023 10:26:38 -0800 (PST)
-Received: from ALPER-PC.. ([178.233.24.52])
-        by smtp.gmail.com with ESMTPSA id v5-20020adfa1c5000000b0032d81837433sm5542596wrv.30.2023.11.08.10.26.36
+        d=1e100.net; s=20230601; t=1699467921; x=1700072721;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1RX3+j4H1LZ9VGKq/u5AJmWjNVd+q5xbY7KEqXQdkMs=;
+        b=RonosTucdG17lWEOxeH4pz8+KUV8PjLNUkWFJYOFqozQ11wAhZ+GOb+VTv3ntD+BNI
+         wvH1ZJn4M+fdl5eH6ShIuM3kU2VyFOYsmUr5f93Ort6kVB5IRfV1rJqHXbe7tp2GQDb5
+         Ho7jpD+whSFirfZpNPd7pkBlATM2fqlkiub/CQyhxh6Fs4MagmpgyCEGqWDcEp3XXmbI
+         Qrm8q2OVYsi1k/mXr1vbKLTUejDQIYkHm79QClYTw1hdffHHWkCb/9Gy7SuIfbUdhmc4
+         6otr3rLvAXtZkDRiE+A2PpsZcb3TRFqzbYguefrpMgNHq3ZN6gSNLMkK3vCy3vIq5Oam
+         dHSA==
+X-Gm-Message-State: AOJu0YxWgubDRUr20D3ARBG1K99CO7dk0Y2kGZW10dFDSyan84nc9FmP
+        vSeh1Vm156SAyfKAksJUMla9ow==
+X-Google-Smtp-Source: AGHT+IFDGfBjC0DoVmppKMHmtXnvp8MRqJTflWZah7YfhYKhkAdeoKqQQTGD5/CpveBRBkm4PNhuzw==
+X-Received: by 2002:a05:6602:3812:b0:786:25a3:ef30 with SMTP id bb18-20020a056602381200b0078625a3ef30mr3712415iob.7.1699467921466;
+        Wed, 08 Nov 2023 10:25:21 -0800 (PST)
+Received: from localhost (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
+        by smtp.gmail.com with ESMTPSA id g37-20020a028528000000b00463f8b3e34asm3090404jai.23.2023.11.08.10.25.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 10:26:37 -0800 (PST)
-From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     chrome-platform@lists.linux.dev,
-        Patrick Georgi <pgeorgi@chromium.org>,
-        Julius Werner <jwerner@chromium.org>,
-        Tzung-Bi Shih <tzungbi@kernel.org>,
-        Samuel Holland <samuel@sholland.org>, coreboot@coreboot.org,
-        Brian Norris <briannorris@chromium.org>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Subject: [PATCH] firmware: coreboot: framebuffer: Avoid invalid zero physical address
-Date:   Wed,  8 Nov 2023 21:25:13 +0300
-Message-ID: <20231108182625.46563-1-alpernebiyasak@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 08 Nov 2023 10:25:21 -0800 (PST)
+Date:   Wed, 8 Nov 2023 18:25:20 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20231108182520.GD2992223@google.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+ <20231107114732.5dd350ec@gandalf.local.home>
+ <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
+ <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
+ <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
+ <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On ARM64 systems coreboot defers framebuffer allocation to its payload,
-to be done by a libpayload function call. In this case, coreboot tables
-still include a framebuffer entry with display format details, but the
-physical address field is set to zero (as in [1], for example).
+On Wed, Nov 08, 2023 at 09:01:17AM +0100, Daniel Bristot de Oliveira wrote:
+> On 11/8/23 04:20, Joel Fernandes wrote:
+> > Hi Daniel,
+> > 
+> > On Tue, Nov 7, 2023 at 1:50 PM Daniel Bristot de Oliveira
+> > <bristot@kernel.org> wrote:
+> >>
+> >>> The code is not doing what I intended because I thought it was doing overload
+> >>> control on the replenishment, but it is not (my bad).
+> >>>
+> >>
+> >> I am still testing but... it is missing something like this (famous last words).
+> >>
+> >> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> >> index 1092ca8892e0..6e2d21c47a04 100644
+> >> --- a/kernel/sched/deadline.c
+> >> +++ b/kernel/sched/deadline.c
+> >> @@ -842,6 +842,8 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+> >>   * runtime, or it just underestimated it during sched_setattr().
+> >>   */
+> >>  static int start_dl_timer(struct sched_dl_entity *dl_se);
+> >> +static bool dl_entity_overflow(struct sched_dl_entity *dl_se, u64 t);
+> >> +
+> >>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+> >>  {
+> >>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+> >> @@ -852,9 +854,18 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+> >>         /*
+> >>          * This could be the case for a !-dl task that is boosted.
+> >>          * Just go with full inherited parameters.
+> >> +        *
+> >> +        * Or, it could be the case of a zerolax reservation that
+> >> +        * was not able to consume its runtime in background and
+> >> +        * reached this point with current u > U.
+> >> +        *
+> >> +        * In both cases, set a new period.
+> >>          */
+> >> -       if (dl_se->dl_deadline == 0)
+> >> -               replenish_dl_new_period(dl_se, rq);
+> >> +       if (dl_se->dl_deadline == 0 ||
+> >> +               (dl_se->dl_zerolax_armed && dl_entity_overflow(dl_se, rq_clock(rq)))) {
+> >> +                       dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
+> >> +                       dl_se->runtime = pi_of(dl_se)->dl_runtime;
+> >> +       }
+> >>
+> >>         if (dl_se->dl_yielded && dl_se->runtime > 0)
+> >>                 dl_se->runtime = 0;
+> > 
+> > I was wondering does this mean GRUB needs to be enabled? Otherwise I
+> > can see that "runtime / (deadline - t) > dl_runtime / dl_deadline"
+> > will be true almost all the time due to the constraint of executing at
+> > the 0-lax time.
+> 
+> No grub needed. It will only happen if the fair server did not have any chance to run.
+> 
+> If it happens, it is not a problem, see that timeline I replied in the previous
+> email.
 
-Unfortunately, this field is not automatically updated when the
-framebuffer is initialized through libpayload, citing that doing so
-would invalidate checksums over the entire coreboot table [2].
+Ah you're right, I mistakenly read your diff assuming you were calling
+replenish_dl_new_period() on dl_entity_overflow(). Indeed the diff is needed
+(I was actually wondering about why that was not done in my initial review as
+well -- so its good we found it in discussion).
 
-This can be observed on ARM64 Chromebooks with stock firmware. On a
-Google Kevin (RK3399), trying to use coreboot framebuffer driver as
-built-in to the kernel results in a benign error. But on Google Hana
-(MT8173) and Google Cozmo (MT8183) it causes a hang.
+> We do not want a zerolax scheduler, because it breaks everything else. It is
+> a deferred EDF, that looking from wall clock, composes an "zerolaxish" timeline.
 
-When the framebuffer physical address field in the coreboot table is
-zero, we have no idea where coreboot initialized a framebuffer, or even
-if it did. Instead of trying to set up a framebuffer located at zero,
-return ENODEV to indicate that there isn't one.
+Indeed. I was not intending that we do zerolax scheduler, I was merely
+misreading the diff assuming you were throttling the DL-server once again at
+the zerolax time.
 
-[1] https://review.coreboot.org/c/coreboot/+/17109
-[2] https://review.coreboot.org/c/coreboot/+/8797
+thanks,
 
-Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
----
-(I was previously told on #coreboot IRC that I could add coreboot
-mailing list to CC for kernel patches related to coreboot.)
-
- drivers/firmware/google/framebuffer-coreboot.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/firmware/google/framebuffer-coreboot.c b/drivers/firmware/google/framebuffer-coreboot.c
-index c323a818805c..5c84bbebfef8 100644
---- a/drivers/firmware/google/framebuffer-coreboot.c
-+++ b/drivers/firmware/google/framebuffer-coreboot.c
-@@ -36,6 +36,9 @@ static int framebuffer_probe(struct coreboot_device *dev)
- 		.format = NULL,
- 	};
- 
-+	if (!fb->physical_address)
-+		return -ENODEV;
-+
- 	for (i = 0; i < ARRAY_SIZE(formats); ++i) {
- 		if (fb->bits_per_pixel     == formats[i].bits_per_pixel &&
- 		    fb->red_mask_pos       == formats[i].red.offset &&
-
-base-commit: 2220f68f4504aa1ccce0fac721ccdb301e9da32f
--- 
-2.42.0
+ - Joel
 
