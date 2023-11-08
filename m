@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23A97E58A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8FE7E58AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbjKHOYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S232738AbjKHOZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbjKHOYv (ORCPT
+        with ESMTP id S233384AbjKHOZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:24:51 -0500
+        Wed, 8 Nov 2023 09:25:03 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EC11BFA
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:24:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31C90C433C7;
-        Wed,  8 Nov 2023 14:24:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4051FC9
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:25:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F3B0C433C8;
+        Wed,  8 Nov 2023 14:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699453489;
-        bh=C7bH1hbWj8YrBfom6n8ilePk5KjymNF9xGwzwSVwNXo=;
+        s=k20201202; t=1699453500;
+        bh=EOdwMS7vJXCXxyNePs9bFMY5mRinN5nN+9oKZfWkeWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrtIxDVHCOf0bu7JTKatkcA1ju3b4gZ5Vq2cFTvDyE2hler0OWBAWZiYjwlq/XTFW
-         cOQRUyVfmG0PW8gKTTT+y8ELQduQW2nrpD7ZDyRatTmEMe0n8c87whRGPQQkf4aQmQ
-         soFdmpFj9Udi095GJApvsV4kFZI0j0dFBMK5gD2M9ZaPFqkkUhzskZfCXyFuOk2arW
-         SNodYq316Vv+wsG5ot4CFf7UolCyxFSJcyfYmOQAVb1dQV/GbQNeCak+xYgTIc832o
-         wsPQd8exyei5fNIzk9xPzKv0eWvtirfrrNUe/gQcKIbSPxdMXwACfDpw5MCX9pTkDI
-         B1lMlio7rEaMw==
+        b=pq/L0QIuPS6c36rUuYEpModmDqSsMnMj6rd7FfSDmMmvsR83JA+1gr4f459TTHxaE
+         8jAfy8Ou3yT1rhtf+JaAXVd1xhKJdvDu0xARIIX9V7cprjH1FQF66QEbz6gWZf0HeL
+         BunIb/yDaukNxi0d4pw1/V4Mw7XGlDqsTPIZlM6aAxj8UNEqUjhipg2gQT942ZmTR/
+         6qiuajPQFF6fGWWjH6q6F5uTOXpkQ/V4ESTNCi40qFiYNCVHy4rrYq1WtCGvb9o0es
+         6PlH5SyM6OFH8kMGz7OmJaIRQ5ceAiG4VzLCdC8GAczMG/geWRTKNfkgb2dkdmP/oW
+         pvPodc8wJtmBg==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -44,9 +44,9 @@ Cc:     linux-trace-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH v2 02/31] x86: tracing: Add ftrace_regs definition in the header
-Date:   Wed,  8 Nov 2023 23:24:43 +0900
-Message-Id: <169945348320.55307.17578137376868880969.stgit@devnote2>
+Subject: [RFC PATCH v2 03/31] seq_buf: Export seq_buf_puts()
+Date:   Wed,  8 Nov 2023 23:24:55 +0900
+Message-Id: <169945349504.55307.11956579566800344063.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169945345785.55307.5003201137843449313.stgit@devnote2>
 References: <169945345785.55307.5003201137843449313.stgit@devnote2>
@@ -58,34 +58,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Add ftrace_regs definition for x86_64 in the ftrace header to
-clarify what register will be accessible from ftrace_regs.
+Mark seq_buf_puts() which is part of the seq_buf API to be exported to
+kernel loadable GPL modules.
 
+Link: https://lkml.kernel.org/r/b9e3737f66ec2450221b492048ce0d9c65c84953.1698861216.git.christophe.jaillet@wanadoo.fr
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- Changes in v2:
-  - Newly added.
----
- arch/x86/include/asm/ftrace.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ lib/seq_buf.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 897cf02c20b1..fc60974a1d89 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -36,6 +36,12 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+index 45c450f423fa..46a1b00c3815 100644
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -189,6 +189,7 @@ int seq_buf_puts(struct seq_buf *s, const char *str)
+ 	seq_buf_set_overflow(s);
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(seq_buf_puts);
  
- #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- struct ftrace_regs {
-+	/*
-+	 * On the x86_64, the ftrace_regs saves;
-+	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp and rsp.
-+	 * Also orig_ax is used for passing direct trampoline address.
-+	 * x86_32 doesn't support ftrace_regs.
-+	 */
- 	struct pt_regs		regs;
- };
- 
+ /**
+  * seq_buf_putc - sequence printing of simple character
 
