@@ -2,257 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869ED7E5634
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4017E5639
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344555AbjKHM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
+        id S1344584AbjKHM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjKHM3C (ORCPT
+        with ESMTP id S231611AbjKHM3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:29:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AEB19B3;
-        Wed,  8 Nov 2023 04:29:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699446540; x=1730982540;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=AbPjrC15KoIrVygM+C69qKqJfjGe0PLwD5qi0KsO+9c=;
-  b=cLz8luxjFwil5Ahns8vNUnD06o8d76xyFaLfo95/fukRd6FZq1gKFH6r
-   hok4Qtkq+CvmgQ0R7bOu/VWfYSPibHY7f7/35AUzQbw6HweMk7kIiuMS7
-   67meVippaEl6Q75L3041lG3koBMDVwRxNG4JMeAxGjKJdniGaHB/wNUm8
-   13WoIlLGeSww0sqS4nrjb8+i+EXJn5YZq701uWAgro6kxbppKLBsrvR+D
-   4iba43tyBZAQL3ThlaYXjCIb9iZA0RwE2TdgmkHcm1Im/lc/PcsSvwccO
-   ioQhTCsCun0km3dhicti+Lo6Xeyghh3eEjtRYcdUoGP9F8aPmjuC8kSVw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="374793911"
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="374793911"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 04:29:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="880193932"
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="880193932"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Nov 2023 04:28:59 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 8 Nov 2023 04:28:59 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 8 Nov 2023 04:28:59 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 8 Nov 2023 04:28:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GzB/lcnrhYoOfTNTLtWK8SHR6nlDy5/kYvU2xDATxstizQA/Y3Kc0WTdXDBhFwS4VIhkhpgOLqHloHEDf9jv+GBw8e6GHwSCCOSFJx84WtDIomsg9hoBfwqy9EZKYaunZdz/Vb6pgj3psP7OtjXsxmNOyoy76ARB7QDY707FENS+S+gboDHMmk1x2gwtk4P8FeS7WzUOPhi0h5cuW9cO1mT8zOJ+VqZXBOuSagEB8sZQwP9QhTmrLmaCGHnBM+5h1uPjxXzA2AK1A6JhgzBwT5NGvM0MqXIv+W9JnTnT3PGYDybxXLK9I8AYn8V9yNC3ZjxE0zlsru0OhlqUPTFz7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=H3L0+6R6/O2rxn8FtiDT4isVNwfJFrXVuI4c752v6UU=;
- b=XVUsbGG4uW7W0Nx3zIolXZA50p1MNEg5p8LE6hJMuyFfdlXQhdidY1ksduxDJAmvQtoZODwL9XnHukc4gqo7dmsqaEudiLoc2yW8t8Sp8mPWxuJwK9zsv/SR5syzjzQlT3JpgVBoR8n0iFNP6AU72VlXwxPeZuoPM5oyCMbQCzASUCId9r+KVgWyBHPPi0iw8mW1QLdituudyIBssJ25H+4thh1njbKkhcKXml3CiFdYm7jbReHr9QSiLl+ZLncXsTYsKeqjgqdWoPMz0ZhihYX9CIuhoD3+q8I03+MnShyZWwtBimjz+xSF1PlLNylE7XTfxgiRbv5QyiG6w43HCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by CH0PR11MB5474.namprd11.prod.outlook.com (2603:10b6:610:d5::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
- 2023 12:28:57 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80%7]) with mapi id 15.20.6954.029; Wed, 8 Nov 2023
- 12:28:57 +0000
-Message-ID: <2a1d3097-b8e7-4007-b98b-5b111c4b7702@intel.com>
-Date:   Wed, 8 Nov 2023 13:28:52 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [alobakin:pfcp 11/19] include/linux/bitmap.h:642:17: warning:
- array subscript [1, 1024] is outside array bounds of 'long unsigned int[1]'
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>
-CC:     Alexander Potapenko <glider@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        <oe-kbuild-all@lists.linux.dev>, <linux-hardening@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <202310170708.fJzLlgDM-lkp@intel.com>
- <bd7fe929-c6fc-42be-9d2f-3f53ec21fd10@intel.com>
- <ZUkvOCxyiin_77qd@smile.fi.intel.com>
- <0a29df6b-bc27-43e9-a97d-57ecabb29a9e@intel.com>
- <CAG_fn=VtA6e3oGm4WVnxmy9yMBab780-U_4VoHSqm4tcd2UTzQ@mail.gmail.com>
- <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
- <e3b4b1a6-5383-4bfb-ba83-ab27d58dae29@intel.com>
- <ZUqCpmDgKFbscRgW@yury-ThinkPad>
- <457b9cbb-9a5f-47ef-9eac-3e4f135d6a96@intel.com>
- <ZUqPAZC4sS455xtx@yury-ThinkPad>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <ZUqPAZC4sS455xtx@yury-ThinkPad>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DB9PR05CA0004.eurprd05.prod.outlook.com
- (2603:10a6:10:1da::9) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        Wed, 8 Nov 2023 07:29:48 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524D319B3
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:29:46 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-409299277bbso47522445e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 04:29:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699446585; x=1700051385; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WEwxhVkZ+suZRCLepHPEDyEGjw0C04lFSj6Fq9O+qQ0=;
+        b=cIur9H3fZ6yXOAIgryFFFYA88qA2JtmMkNRXpWzMKG6wmhDOnC33AJZv5az26UW8mt
+         K/KvWU4v2f3L4Fwo50AhBgHig2n8xy5yQFipTFV+14IbygnN5a9xUOnKmT9puhc8dqU7
+         GDPXSZD3QMYdqgCiAYqi5xajXYDHJp21zvg2bhwFv5ROEE72XyoMN9OMfuETQKVPpx/U
+         SBmT32iX1C5HcfSTOlW4wVBtNU8y4+wvELZNLq3CqqA8tqy3aOY9NZp+N1bVLqKtD3cn
+         XGeGxGXXsq+ZXDEJpk1aCccRBVbm0lGFljt4DHmrS26oYp1FZHKyBUwdmPXEhWPYRm/d
+         FWkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699446585; x=1700051385;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WEwxhVkZ+suZRCLepHPEDyEGjw0C04lFSj6Fq9O+qQ0=;
+        b=k9ySFIMTTPi8/QLHt8+FR+xH/D8wK21k2Jyaf4oNr7V1AHXHtQ6ofaoVbbBK+c+A6Q
+         RUsLcF55vo/mJLYIZauTj4Q2sVJebDlNzXxKoguvMM5KfckbYqoVnpo5CzoFa9eL63S3
+         aWXgSgg83b/Ltuq7YzA4OnTfM8sVUKC2DDdU6d14SIalzGUlit34/lapjnBWY6UPldIV
+         fXd7mo5/UM0/ItFQB4i7yYQO3uOV8oAN9QGWo/Lu/joOCbQQBmSvmvwZaQds1Jrq1+AC
+         h6h3eDdbOt/oQ+Wp1GQ3TTMqsuVSZQn4QtddEs0LBBHdv9a6yLifpIlqsfe0maLQMcac
+         T2og==
+X-Gm-Message-State: AOJu0YzNOtcQW7VFwfq6bVa44OaND1yjDFocU1lbXHxkkhgMezbf85Ih
+        egiwtuQ+ZWt8TNmfnzq+u2JWBOxg6TwopHGZ1cw=
+X-Google-Smtp-Source: AGHT+IGtvteu6oY5MW/lFPUmgAUSn2VrQkswaslGXVnER/rgoZB80sOS5KVjqmC4mIFBHB7BCdNOlw==
+X-Received: by 2002:a05:600c:4e86:b0:40a:20f3:d126 with SMTP id f6-20020a05600c4e8600b0040a20f3d126mr1515948wmq.6.1699446584659;
+        Wed, 08 Nov 2023 04:29:44 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id jg2-20020a05600ca00200b004065daba6casm19287874wmb.46.2023.11.08.04.29.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 04:29:44 -0800 (PST)
+Message-ID: <6f654341-a9c0-4412-ac87-5800d6122023@linaro.org>
+Date:   Wed, 8 Nov 2023 13:29:42 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CH0PR11MB5474:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8001767c-e112-4c55-c137-08dbe056475c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: REMRo2tLkVWG/LAIM2knJ1VLv7FlF7KKJP3uyXBeOVVnimaPj87fIX+HYOBa1igziaLdN2oG5FeoSip23jmT6DEagvxSiGkM8MRamebvZY7unIF3SHMaG2KRiFsyw2XSGfHlO/LcjedfG9mx6gBJgZlfLyZJVYwoi472EppbisUPKqsPIXH8FkeaSzbhKa5EaBH2tOfKSyYfcdMaOH5VKPVw8241kJCdW8FEUYPLur7MmNBo/OWKirSPL1jMero4QVu2HUg0I3+hqNhTsSPtDddwxWsYm7zYPpgaT8ZlI0XLeGdTglnj6az05odJMZMV6dPljMModUM0nbvoau3MQTCsrMs9G+bsvYbCVCXwkIkce+rBh9bJszXhWFGH2CR2iNvsQprp3u6gSaLjK+miQScWfZIPc3BSmJbkkhy2TaoLY9a837olaohqUYOSNRf2xy1HBE47EwvfappVB/Hq2brJTFVrYEgXKObOHJib9XghnCuaqgyR7BOye1H8gL8fFCTA5GDRp5hHd0eOBM4VejAvVaKsXTo12mh+rFNDLbf6E/skppyQq1YyiixhDDgeN6Zc9Is52E/wnxHJK74941wrrzsZ6LsO+vUFX29Vsg/eVoDNzAiKcKf9XQYdke8moMSMJO2GHCfC5p1DWbKXdX8Ojp2eSRweJ7fcv7dDyHWDGdl75t4ywRMZcqEtJtFN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(39860400002)(136003)(366004)(230173577357003)(230922051799003)(230273577357003)(451199024)(1800799009)(186009)(64100799003)(31686004)(6506007)(53546011)(478600001)(6512007)(6486002)(2616005)(66556008)(38100700002)(36756003)(6916009)(6666004)(86362001)(82960400001)(31696002)(26005)(66946007)(2906002)(41300700001)(83380400001)(5660300002)(8676002)(66476007)(316002)(54906003)(8936002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VThKOGorVFVMaTBmVlBUMWVxTXVkbDdURi8rcjQ3YUtIWnU0eE0yTjcvQ25z?=
- =?utf-8?B?NTJOWm0zYVcxOXdNK01FUGZCSTRDejF2MnhOc1BBZTdNak5kaDBzNUhNWTRz?=
- =?utf-8?B?OE8ydGZObWVDTGtPUmxqN01UKzZSWHZKVW5mMDh4WjZ0ZEtSci9Jc2tGQlhC?=
- =?utf-8?B?VjVGZTA0WE5jMVk5dFpYWkNmMnlDREdVQkZnNm90SjEvUUlzNUsvZ1RlK3Vt?=
- =?utf-8?B?eXZjOEhtYnp4MGhLRk9WTlhtbzlTTnhlUnB5bGlJOFl0SFN3RXFqTUs2MVl2?=
- =?utf-8?B?TUJYRWxib2tsc245WlFnalozRDFjWk90bis1Y3JTWExxTFhIUWlVTEo2MGcr?=
- =?utf-8?B?SVpGaElCZmdJOWVQc3FLVkZJYkFpdEJtb3EreTRtRTV4d0ZVK3haZENac2ha?=
- =?utf-8?B?R1Z0bGJXZnZjckxMd0J3MDMwenNFajdqREhIcVRpa2l2ZGRObFBuQ1pCZVZo?=
- =?utf-8?B?SjhOOEdiRWRlZFVwL1l3OUo3TlY4YWRJUkVjUElLeTlTOGgxSnJhUXJLSXhX?=
- =?utf-8?B?S3J2MU5MZHFCZkxHOTJaVlRzRzVRTE1NK203Ry9xMUhSVW1yd09sUm9uWEhG?=
- =?utf-8?B?cGhXQU1sVHZERTV5TC81Y0gyTngyVWxLaG9pY3RqQVRNRWxoTHlDVXhOeGVU?=
- =?utf-8?B?T0FGWTVjSDR1QXViaFduNE5Gd0hXMUVvMXAvN2FBL2hTbzcrYXcxei8yQ1lR?=
- =?utf-8?B?cWRxTWM3cGg2cDlrbGxYNGx5cUdPaUIyVEF3V3hzdXhOeldwRWRlbHJTbWc3?=
- =?utf-8?B?TlNtRFcxU2ZLR2FlaXdIdW40YUZWSmxLRkthVllsZG5EWTFJUVJsSzFMUW53?=
- =?utf-8?B?aWhSS1k4MGF1T0NMeCtPOWt0eGxEUFdPNnpZZklZdGtTcCtTTk9aUkNueHFD?=
- =?utf-8?B?blJsN0g3bXFZci83S1B3aGhlbng1NE54WGNpeWU1MHM0Y1hHMmlvc1AwQzJS?=
- =?utf-8?B?N3lNQjZpajFiSGdlcVZCVWNrQnNVK2FQamExMmRGSDdPbjJyU0l1WVFMU09i?=
- =?utf-8?B?amsrS2FGcWwwMGptUGNPTzRUaDU4RUtyQUE1b0IrRVZ3KzNhdys3NFFYckVQ?=
- =?utf-8?B?bGh5ZUNqYUNNT2pBSTJGY0NjZDBzSUxVQjgxUXU2alJyWC9EY1NDL3dhTjNI?=
- =?utf-8?B?Uit0VTRDWU1NR3VHV2NidFVEQUM2NlpHNURpeVBieUFyeHVtU0FVQlFwWHdt?=
- =?utf-8?B?VXBjSUJjRHR2M2lLQmh4S0FyQjMyd1lkVDhEeUgxWGJVdGYrMnZlVFlHTkhk?=
- =?utf-8?B?YS95UDdoUFhxUjlQR2NTdGMzSmFCcEw3eDZ4eFhwbnROM0ZWdkVObHRyUlZE?=
- =?utf-8?B?aytKeFhTT3RXSDlieXhlbXpLbnIybXhZYVZiRG0zVHBPbVh4Y3hoSmJDYS9h?=
- =?utf-8?B?bWZ5dkhlWlV0elVwV3pvTHpUZmxnUVJraGg1RmV0aWhTSDlNdktpU0MyM1Np?=
- =?utf-8?B?dHZDZG02bFpzUkF6T21RajZ4NzJYN2UwcjZXbVFaU2xtc0JCNDB6amhxVFM1?=
- =?utf-8?B?MDRqc29XTWhPb0NUTk9UWUJBc0RtVHVvSkQ5RW1VUnpwK3BBU0hUYmhkMitL?=
- =?utf-8?B?Y0NtalhPRTMyM0g4OWlRYVhiNzVncHNnUkJ1TXIzOXBsSmVCeWFpWmpYdEVX?=
- =?utf-8?B?dXhBZlg2cjBhVUZ4c05xZDJFc00venBySzkrYnBIWTdYZldyd2hjMGQrRmpE?=
- =?utf-8?B?OGVvdnNDaFNqQjhaWmY4ak8yOTBUWGZaNUpyRmdia2pmSjdYYkZTbXdCdmVI?=
- =?utf-8?B?SVUySWkzTUpsNXdKRTFOQ0tZdmJQbTQ1Nzg0THpwS2RTRHNJK1kxUktqTmNa?=
- =?utf-8?B?UlRSUWozRXBiRGJJbVVlWXd0SlhZQW1kRTh4ZXVXekNZdWgvT01MQWVMaWll?=
- =?utf-8?B?M0NPRWR1SExzZmNlb3l0aE9PYmNKTTZ4MHQzSVFRVU5WajJVY0IyZlY5aGht?=
- =?utf-8?B?UzU4U2hlenUxRWVpVjJXTWx4M0QxTTJPVitpb2VQY2ZmQ3RiTHRYLy93VzhO?=
- =?utf-8?B?ZFJEZWdUdEdGbzR4NFlsQWIrWFhyOFBMS3ZKVldCbkRVVStGeXduT2p2N1JC?=
- =?utf-8?B?NUVtY3lpdHUzdWw5RE9QM3VIbVFoS2ZVcWN1UVlOdVNXNGY5SXZSdHN2MSs0?=
- =?utf-8?B?dDdPR3BlZ3h6YzhzanJnNWU0UUN0cmZ5R2Jtb0NBdHBsdHBjSkt0VFh3cU5Q?=
- =?utf-8?B?UWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8001767c-e112-4c55-c137-08dbe056475c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 12:28:57.4534
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dAVbzSExbU/gC3EX52OSEFtPyzOEKnE/tF1Dul0Lwv/Kp+vXGQ3euhkeCStJCYrov4Z+g0XjBGhbsJiPxrulwRC7rHJjRtO12g0b9kZ6WVw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5474
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: trivial-devices: add asair,ags02ma
+Content-Language: en-US
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231107173100.62715-1-anshulusr@gmail.com>
+ <20231107173100.62715-2-anshulusr@gmail.com>
+ <1d5d1357-0b53-4639-add9-2b3f38aae744@linaro.org>
+ <90cacd34-4812-4792-9bf0-362200431452@gmail.com>
+ <77e1d308-6ac3-4200-b72a-6d5717869b06@linaro.org>
+ <7501036c-4e1f-4993-97a7-6c36c7cc8358@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7501036c-4e1f-4993-97a7-6c36c7cc8358@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yury Norov <yury.norov@gmail.com>
-Date: Tue, 7 Nov 2023 11:24:49 -0800
-
-> On Tue, Nov 07, 2023 at 07:52:19PM +0100, Alexander Lobakin wrote:
->> From: Yury Norov <yury.norov@gmail.com>
->> Date: Tue, 7 Nov 2023 10:32:06 -0800
+On 08/11/2023 13:15, Anshul Dalal wrote:
+> On 11/8/23 17:31, Krzysztof Kozlowski wrote:
+>> On 08/11/2023 12:54, Anshul Dalal wrote:
+>>>
+>>> Hello Krzysztof,
+>>>
+>>> On 11/7/23 23:17, Krzysztof Kozlowski wrote:
+>>>> On 07/11/2023 18:30, Anshul Dalal wrote:
+>>>>> Add bindings for Asair AGS02MA TVOC sensor to trivial devices.
+>>>>>
+>>>>> The sensor communicates over i2c with the default address 0x1a.
+>>>>> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
+>>>>>
+>>>>> Datasheet:
+>>>>>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+>>>>> Product-Page:
+>>>>>   http://www.aosong.com/m/en/products-33.html
+>>>>>
+>>>>> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>>>>>  1 file changed, 2 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+>>>>> index cd58179ae337..9cd67b758a88 100644
+>>>>> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+>>>>> @@ -47,6 +47,8 @@ properties:
+>>>>>            - adi,lt7182s
+>>>>>              # AMS iAQ-Core VOC Sensor
+>>>>>            - ams,iaq-core
+>>>>> +            # TVOC (Total Volatile Organic Compounds) i2c sensor
+>>>>> +          - asair,ags02ma
+>>>>
+>>>> I think you miss VDD supply.
+>>>
+>>> I am sorry but I'm not sure what you meant. Are you referring to the
+>>> addition of some information in the commit description?
 >>
->>> On Tue, Nov 07, 2023 at 06:24:04PM +0100, Alexander Lobakin wrote:
->>>> From: Alexander Lobakin <aleksander.lobakin@intel.com>
->>>> Date: Tue, 7 Nov 2023 17:44:00 +0100
->>>>
->>>>> From: Alexander Potapenko <glider@google.com>
->>>>> Date: Tue, 7 Nov 2023 17:33:56 +0100
->>>>>
->>>>>> On Tue, Nov 7, 2023 at 2:23 PM Alexander Lobakin
->>>>>> <aleksander.lobakin@intel.com> wrote:
->>>>
->>>> [...]
->>>>
->>>>> I tested it on GCC 9 using modified make.cross from lkp and it triggers
->>>>> on one more file:
->>>>>
->>>>> drivers/thermal/intel/intel_soc_dts_iosf.c: In function 'sys_get_curr_temp':
->>>>> ./include/linux/bitmap.h:601:18: error: array subscript [1,
->>>>> 288230376151711744] is outside array bounds of 'long unsigned int[1]'
->>>>> [-Werror=array-bounds]
->>>>>
->>>>>> to give the compiler some hints about the range of values passed to
->>>>>> bitmap_write() rather than suppressing the optimizations.
->>>>>
->>>>> OPTIMIZER_HIDE_VAR() doesn't disable optimizations if I get it
->>>>> correctly, rather shuts up the compiler in cases like this one.
->>>>>
->>>>> I've been thinking of using __member_size() from fortify-string.h, we
->>>>> could probably optimize the object code even a bit more while silencing
->>>>> this warning.
->>>>> Adding Kees, maybe he'd like to participate in sorting this out as well.
->>>>
->>>> This one seems to work. At least previously mad GCC 9.3.0 now sits
->>>> quietly, as if I added OPTIMIZER_HIDE_VAR() as Yury suggested.
->>>  
->>> What's wrong with OPTIMIZER_HIDE_VAR()? The problem is clearly on GCC
->>> side, namely - it doesn't realize that the map[index+1] fetch is
->>> conditional.
->>
->> It's totally fine for me to use it, this one is just an alternative
->> (well, a bit broken as per below).
+>> I meant that your device might not be trivial. Your device takes VDD
+>> supply, which is now not described in the bindings. Do you want to say
+>> that VDD supply in all possible designs is hard-wired to
+>> non-controllable regulator supply?
 > 
-> OK, guys, that's even worse. The 12 and 13 don't fire the warning
-> because Warray-bounds is explicitly disabled for gcc-11+. Check
-> 0da6e5fd6c372 ("gcc: disable '-Warray-bounds' for gcc-13 too"). I'll
-> test how gcc-10 builds it, and if it's broken too, it's worth to shift
-> the threshold in init/Kconfig.
+> I can't speak for all possible designs but for testing this driver I had
+> just connected the VDD pin to 5V out of the Raspberry Pi. I have since
+> verified 3.3V to also work.
+> Could you explain why `vdd-supply` is a property or point me to further
+> sources. Wouldn't almost all devices have a VDD/VCC pin for power in?
 
-OPTIMIZER_HIDE_VAR() silences GCC 11 on my side (`-Warray-bounds` is
-enabled via KCFLAGS), but now I'm wondering if it could possibly hide
-really incorrect cases like you mentioned before (reading 8 bits
-starting at 60 from a 64-bit bitmap).
+Most of the devices have such pin. For most of the devices we include it
+in the bindings.
 
-> 
-> Let me check it later today.
-> 
-> [...]
-> 
->> Oh you're right, I didn't think about this. Your approach seems optimal
->> unless hardening folks have anything else.
->>
->> I don't see bitmap_{read,write}() mini-series applied anywhere in your
-> 
-> I'll not take the code unless there are real kernel users for it. Your
-> compressor is still under development AFAIK, so I'm going to pull
-> bitmap_read/write with ip_tunnel series, if it comes first. 
-> 
->> tree, maybe Alex could incorporate your patch into it and resubmit?
-> 
-> Yes, that's what I asked him to do. But let's put it on hold while I'm
-> testing different compilers.
+git grep regulator_get -- drivers/iio/
+git grep vdd -- drivers/iio/
 
-So now I feel like it's a matter of extending the Kconfig threshold like
-you said. The code is clearly valid.
+If you do not describe it in the bindings, then your device will have to
+be supplied by always-on regulators (and marking controllable regulator
+as always-on because of this is not correct).
 
-Alternatively, we could trigger a build bug manually when offset, width
-and map size are compile-time constants and suppress it otherwise. But
-sounds pretty hacky.
+If you are unsure and you just work on some sensor not used for final
+product, I think it's fine as is, so to add the regulator later if ever
+needed.
 
-> 
-> Thanks,
-> Yury
+Best regards,
+Krzysztof
 
-Thanks,
-Olek
