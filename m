@@ -2,175 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98467E5820
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46897E5828
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbjKHNuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S232501AbjKHNyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:54:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbjKHNuJ (ORCPT
+        with ESMTP id S230258AbjKHNyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:50:09 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2049.outbound.protection.outlook.com [40.107.6.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E25F1BEC;
-        Wed,  8 Nov 2023 05:50:07 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DIhbSaX9U/1QwK8w7t+i78DBxGtChXAnt0wPQ37xy9/+GuA7BzIJ0V640T0FgjX1uoJQGcmNDQ976QtK1RhR0xIKO8x1g7ewz3FIz6meWd+JfS3hZU5BUEwG0ccVi7/55qKEMGQSOYY7O8VFD0ZqupvvPE6okL91G3Iq2fTSfxVjct9n0Seh8f2ada6Vx8w6eSYA4n6SQx9EJGeWnSiKq7o+i3wk4yLBzVfUj3Nwa+SFJj8uIm5aosLUCt9WuZFnMPzdtYplVQDUCG0yWMakz9Cy5Y2lUMU08JaZkBWmuDCUeA5bJ742NkkvsNZJC7XlS6Er5CR5CDmAcaQXRAXPLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jtdHq8M52MEIfPdA2+hFBZyYlSil/cX6NVXpyCoBd5A=;
- b=LmeI9NRQ7n2yP3Evg70uzQ+depF8466/+rLDEvC/ejRpHnQi191URZ2V+8W+W5425cG3UwYfBj4tyro2KMlK/CpPbZMLIGVwirBNDD3XSdYcOTeZ3NPic53RnTaRHfd3hqQ3dwh2mJzL/4B9a//MBK/J+uMP3CIJq43OwrfyNLO1kXNgwKQhII6K8O5Cm6qsu8An6Xfpp6zO/Snxd8xzt4PCYVHgHBmTkcxSFoXcQFBaRnyNmdKJs0bhNNrqKuvmJr/97KbGzPeVoxmq7Rp7BC45ISf9NNSYh5FJfpY640rsV6Jg1ljNVjmDeHQ9OeWoY33YfyuLogNWweRNcoqNBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jtdHq8M52MEIfPdA2+hFBZyYlSil/cX6NVXpyCoBd5A=;
- b=l304vIhXh0NCsh4DdivW7X/arrd+euV3FBiEm81dIOf6Xlh8PcnAWHYyH9ue0IwPeBzAlLvpM4CJRJb7z4OIkDgCiMIRCkUYLbhQIVUqzwO0r+6NrHzlPhC2GrylhBp1LaxX9lI07O40iWO3+UTN78Q6mN/gxwtZJenhgS0uyAI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
- by PAXPR04MB8221.eurprd04.prod.outlook.com (2603:10a6:102:1cd::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Wed, 8 Nov
- 2023 13:50:04 +0000
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e083:450:470f:fb48]) by AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e083:450:470f:fb48%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 13:50:04 +0000
-Message-ID: <1424ab1c-8e4e-47da-bacd-5b30b6d10c60@oss.nxp.com>
-Date:   Wed, 8 Nov 2023 15:50:02 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 5/7] net: phy: nxp-c45-tja11xx: add MACsec
- support
-Content-Language: en-US
-To:     Sabrina Dubroca <sd@queasysnail.net>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, richardcochran@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sebastian.tobuschat@oss.nxp.com
-References: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
- <20231023094327.565297-6-radu-nicolae.pirea@oss.nxp.com>
- <ZTuE99jyr9gW3O1S@hog>
-From:   "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
-In-Reply-To: <ZTuE99jyr9gW3O1S@hog>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS4P190CA0037.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d1::18) To AM9PR04MB8954.eurprd04.prod.outlook.com
- (2603:10a6:20b:409::7)
+        Wed, 8 Nov 2023 08:54:13 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0171F1BEC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 05:54:10 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9beb865a40so7155126276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 05:54:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699451650; x=1700056450; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYboRq+M35wTbNdJL0FSmCOtXkJVGVeyh5BMqgRujHI=;
+        b=3OC/NhOIj4Z2kwmiCBER6fYoRAlexEMhRPjup4Dz0H3uApIzD5DyKeW+/moN/yAx0Y
+         dhjvixP145CfXpdZ56xu8YvzeFn14sQMMdW7UNxfGrxzWVVYGtA6o68yYdzSgcfQ0E0c
+         AMSAlEVc9NvETacEVWwl4S6gceSwVWFF9BpJb1F3h/0iX+Y38n7ctM9LWAb/E8eGLiLJ
+         RW51s/DyezOf6zsjJeobfMtkHT6b2uylSJHpFTao15aNxTajk9lT15Oja6IzHsjrjSyM
+         Jj3Yuq6GU8Wyh5XRf1GRrUrlCNPycaqUBBug/+J9YHcETQoGQ5NGfQWOro7K1bOmcEW1
+         UtnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699451650; x=1700056450;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cYboRq+M35wTbNdJL0FSmCOtXkJVGVeyh5BMqgRujHI=;
+        b=ToA/1wpQqMVElNc8Vvus4A7iyUYkOb7bpVgSK3oKpWpZlmLUXsmYHp8oscAH5602IV
+         7W6IEd2tWwjHltJpa6jZVOzYyuhqESLnqUFk6y9iZmlDLNf8tfOcQRlrUEfv6CErLgwt
+         9A6ZJlcWNX+Ng+EfYYCRFbRztcq2nXx9/WH+9Ci14vUnBaKdMzXHWXL5VL/ZSG1PWZ5/
+         GFQz/73OjeV7FkKVeJXJKw1HEGklRgjdhHL3KVNS5ABp+QGOWS9gDvD9IV5GVcPN0QSN
+         fDgG4t+6YMUNtS0JH34ID2c0dxnxrmkP09YAgOgBChJkC4Jc11ihPy+z2NIuSxRW4zHY
+         SQxQ==
+X-Gm-Message-State: AOJu0YxI58SV5X9UAwR1r/Sca8YZb7b2rz76kIS0YsazC7ocPwk+OZay
+        FzCqt2XIJ218LnmHsdmJwZUWk1jpvYX4RlD3rPPjSg==
+X-Google-Smtp-Source: AGHT+IE/5LhVQQJ7BrUnlkoyqQVtwMmGFBnAPQTR2KeI68Zg6nxzYvWq6ObNLk5J1YbEMRHVl5t3Mw7HsFdFbw5gLrk=
+X-Received: by 2002:a25:2b01:0:b0:da0:84b2:5e3e with SMTP id
+ r1-20020a252b01000000b00da084b25e3emr1440011ybr.21.1699451649844; Wed, 08 Nov
+ 2023 05:54:09 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|PAXPR04MB8221:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0cc5237-0b80-4c21-43f2-08dbe0619c52
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 580jwoicWju+ayzDcvUIsiRkAw6pRnMJbD8OQGZMsIpCLbsHjY4rUyKJgdvhqCqZWZeViOgEqtooZbqhzEe87k+fPg6gaZETlJTRFwJepSADua2Vt597Kysr6OL8SyXrTnvzrq3givN0QDDA7XcMVApMogmG14VHJPU4cWnGWAZOfwQDrAAWK6qAmhULeVS1Jdrm8BY74PpTMebRB3felpCoXt/wfejRTpJtMcMwR6zSRBoDKABWrbFLfNCr5VoZcjNRi1HlkMPihJd4bYjyrJcbC1XptcPZA9s8Lyk29iLE8Z+TFZqh9NFiII093+3dSJfdJRygrSMkBU6WRFTSA9QqEuGnJP3Ti/cuKk549/B66YpF6wmXp169yu2JJvd9uvecyxIZxwyaUOjM+HmC5xHihaNbIJYlLdz2VDLkmWMkbHkDoOEfJk8spflrYpC4QJS7XoOIGgqnFBnL0215+qZ+KYqswWp+ksg1kg9xdOO+KlkNSFZ/CpWkJmXmouLb+QLwaF3wMrBtXuW7pkNPaD2YfuQjLod/WC2jMAkcAeIDD5h0bhiIedBtQElL/Zj8lXbFAztsDB57W0OmLDXqRaavZYxRrgJBh/9VkcNZrQWM09HfOzFAHF241FSs8UMND1IOrqfZBH3t/2DJB+tY2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(26005)(2616005)(66946007)(66476007)(66556008)(83380400001)(6506007)(53546011)(478600001)(6486002)(6512007)(4326008)(8676002)(8936002)(2906002)(7416002)(38100700002)(41300700001)(31696002)(6916009)(316002)(31686004)(86362001)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUowZHE2MVlNK3lObTlZbTI3OHFva1VFcERBVEFhMnBxUWQ5SFNMZEVZWGtQ?=
- =?utf-8?B?ZEUyUWhQVXhQTWlHcGRUcjI3SzJ2eFVDcWJiQml3NmRYcmlGNmdwemJTZ29O?=
- =?utf-8?B?WU9FcEVGSjVORHJBMUUxRXV6RG9RcnY1ZEhMMzdyb2NoVW5kczhpKzdzRHJI?=
- =?utf-8?B?Z2RYTmtWb0JublNHNXRQVmRCbFltNHQxaUlqRW96dDhHSXZRR2NkdElSbCtF?=
- =?utf-8?B?b0Y3cUNpaGRhb1dzcFJ0OHdJdnk2VzlGM3VFZjdGNjRybUxMQUVnQ3NZNkU2?=
- =?utf-8?B?U3NjcGN3aVFHVHo0YUZNeld5SEpiSG5Gd2VOMWgwRFN1b3A0ekt1ZGkvRmhF?=
- =?utf-8?B?azFJNjJUNXdqaUZhR2JXZFd4RVZiTUtObTZReFpyWGVqeURxK0piK0tiUnYv?=
- =?utf-8?B?S0gvV1Z1dXgyT2srT1c2eDlaa0ZvWDdNV2lMV1R0dEY3SGtucGFZcEF2clFz?=
- =?utf-8?B?eGw2WlV1dk5yZDJpS1U5NmhWTDZVT0pGQjBhalNUa3RDWVM5VGZkWUZvcFdv?=
- =?utf-8?B?YitENEtOajg5ZjhjTnRJT1V5eUNRY2I0MWUwdkpmajJHNVJJK2lJSENLL3VX?=
- =?utf-8?B?RytIRjZXYzlSekpYY2pTSXBRM2h3cTF6TjRXM1BwWERxZ1FWQVcydDhHMGw0?=
- =?utf-8?B?QjJ0Tjl0akFJNFFLRTBMWGVjVDNLYjJUSklhdmlZckpLQTdRdmx1Nk1GN3BR?=
- =?utf-8?B?bU5RZVE2N1oreFVjL2EzMzBVNEVoUnQ5dDkrdWtGbEMxQzF3RXFCVFBXbjQr?=
- =?utf-8?B?L0wrR3pQc0dtREJ6OXFtQ3U2V1lqTnBnVjR6cUNOSmNrY2dpS29jaTJRdDN4?=
- =?utf-8?B?a1dUVWE3aGlXL2hvOThRRDRxd0lmMUhzNS9zV3ZVWkNpUXI5Ny9OQlNySEh1?=
- =?utf-8?B?dkRzUkVaOURvYWFxcFBFSFNHZzV5SDRiajBmSlFpN0pDN010WEJ2SXNLazNo?=
- =?utf-8?B?ZDZyQ0VXdW0xL2F1YzhWTUUvNlFJWmYxNXdUQ01GbDhIUlRjYkhhL3hnaVJI?=
- =?utf-8?B?M1UvZVpLRnhVeVJrenNFWk93cndMNXl2UDA0Y2RBanNMV21FcnMxekFDZFBQ?=
- =?utf-8?B?MEh6NTdUdVIvaEszS0VpQnBWLzUzYk5PdExjQkNVczJvenZDelhldlNQRnI1?=
- =?utf-8?B?L0FlaGhaM3VQem9IMXZnTVlrQVM0NXdTN0xQU2FHTjNLZys5bTZrczFaa3FP?=
- =?utf-8?B?eE9hVGpIZER1UHZaMVpXQ1BNMVZ6ZmxwUGl5TXNRUTk1bzZwZTV0di9DekJv?=
- =?utf-8?B?K3dnNnY1R0xtTEtYWnVqY1MyRy9PcFlKeFZPSmZTVE0wajNOSGNReXFJcGdu?=
- =?utf-8?B?TkF0TUxZcHpEcUZCYzdZY2ZQeXRmU0NCWHFLTnVEY1JMN3E4ejN5NUtEMkJo?=
- =?utf-8?B?S3V1eEVUY21teGFNZ0Fha2sxUVBPT1YxeGdEUEZjQld6Mzg5QXhScmk1eDFQ?=
- =?utf-8?B?aWpUY3RWSFQyaHM0ZnR2SVRkMmUxN1RVSEtjS2FFWTFJZ0hUMjdITEROeEhH?=
- =?utf-8?B?Q2dHQ1YxdFJ3YURtUFFQWTRjV2txSmphdUdHTlNmOWpYanFmbkZVRm1EaTF5?=
- =?utf-8?B?eTRaWWhmdDRVMmlOeElQak55Ry9tZlYrSDFBMkYvVXBKODd6elVGM0JrSVNC?=
- =?utf-8?B?MVVOUlRUbG40RVRTYzNkQytYZ0lEOXd4REV2eTgrSmowRjFtTDJDQzljYnN2?=
- =?utf-8?B?ZUYwQkptanNvS0huZ3dBV3ZwVGRpNExYRVlDMHYvMlZ3N3JlZWNjdU5reHRJ?=
- =?utf-8?B?M004cmJHcFFZRWx1WUg4K2kxWlBZN2RkbzNFdldPOVJBVktQVUp5SHlBYnJa?=
- =?utf-8?B?c2lNMTROTW56Z1EwZHpBZ0ZsUTZvRU42MUl6dmgreG9XRXpwR1QzWHNHVFl5?=
- =?utf-8?B?N28zSWFJeE5SUEsvMGNic2lRQndNcFNpSTVDRHlJYUNXZHg1V1FYM2laWkRE?=
- =?utf-8?B?ZGtVM2dJcGFvUDlNUE9NeDV0cVdFR3FTMXphL2FKdXRpU1dNcXlpWXZmZHZt?=
- =?utf-8?B?UjFoalJMUkxuSnp4cWsrc2FkeDM2R092OHAyelhRZGZLMnM4WE12T0dJRWVN?=
- =?utf-8?B?RUF3M3lHOXQvakV5OHJBQVRDeW90QlBRRVNoVk4vRWlkeVBadzhYb1VMUTdX?=
- =?utf-8?B?d2kvTFNaemlWWFptMGc0a09UZUFibEdQRjRHR3o4a21YSHJ1MWtkSzVzdktY?=
- =?utf-8?B?R0E9PQ==?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0cc5237-0b80-4c21-43f2-08dbe0619c52
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 13:50:04.4555
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g7Tb9eujI3ttCXXuLOfyNx0kiF25sjIOQrfpTXGVD3h9XvZ9pvCIqXa12jk31Z1/kTat1F+v/c3QMIQXVMSapiOmxAVQghgzZsodp1+Ed3I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8221
+References: <20231103160335.2464561-1-glider@google.com> <20231103160335.2464561-4-glider@google.com>
+ <ZUVulBKVYK7cq2rJ@yury-ThinkPad>
+In-Reply-To: <ZUVulBKVYK7cq2rJ@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 8 Nov 2023 14:53:29 +0100
+Message-ID: <CAG_fn=Vz9ihxLpkT9rxJB=3UfBdsn6HqYCn7aME6xz1SW1YSMg@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] arm64: mte: add compression support to mteswap.c
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
+        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.10.2023 12:37, Sabrina Dubroca wrote:
->> +static int nxp_c45_mdo_add_secy(struct macsec_context *ctx)
->> +{
-> [...]
->> +	phy_secy = kzalloc(sizeof(*phy_secy), GFP_KERNEL);
->> +	if (!phy_secy)
->> +		return -ENOMEM;
->> +
->> +	INIT_LIST_HEAD(&phy_secy->sa_list);
->> +	phy_secy->secy = ctx->secy;
->> +	phy_secy->secy_id = idx;
->> +
->> +	/* If the point to point mode should be enabled, we should have only
->> +	 * one SecY enabled, respectively the new one.
->> +	 */
->> +	can_rx_sc0_impl = list_count_nodes(&priv->macsec->secy_list) == 0;
->> +	if (!nxp_c45_secy_valid(phy_secy, can_rx_sc0_impl)) {
->> +		kfree_sensitive(phy_secy);
-> 
-> kfree is enough here, no keying information has been stored in
-> phy_secy.
+> >
+> > If CONFIG_ARM64_MTE_COMP is enabled, mteswap.c will attemt to compress
+>
+> attempt?
 
-Agreed. No key is stored in the driver. Changed kfree_sensitive calls to 
-kfree calls.
+Good catch!
 
-> 
->> +		return -EINVAL;
->> +	}
->> +
->> +	nxp_c45_select_secy(phydev, phy_secy->secy_id);
->> +	nxp_c45_set_sci(phydev, MACSEC_TXSC_SCI_1H, ctx->secy->sci);
->> +	nxp_c45_tx_sc_set_flt(phydev, phy_secy);
->> +	nxp_c45_tx_sc_update(phydev, phy_secy);
->> +	if (phy_interrupt_is_valid(phydev))
->> +		nxp_c45_secy_irq_en(phydev, phy_secy, true);
-> 
-> Can macsec be used reliably in case we skip enabling the IRQ?
-> 
+> >
+> >   # cat /sys/kernel/debug/mteswap/stats
+> >   8 bytes: 102496 allocations, 67302 deallocations
+> >   128 bytes: 212234 allocations, 178278 deallocations
+> >   uncompressed tag storage size: 8851200
+> >   compressed tag storage size: 4346368
+>
+> Can you align them like this:
+>
+>    # cat /sys/kernel/debug/mteswap/stats
+>    8 bytes:      102496 allocations,    67302 deallocations
+>    128 bytes:    212234 allocations,   178278 deallocations
+>    uncompressed tag storage size:    8851200
+>    compressed tag storage size:      4346368
 
-IMO yes. macsec_pn_wrapped will not be called anymore if the TX PN 
-overflows and no frame will go out via controlled port reusing the PNs, 
-but this should not be an issue. The MKA should not wait until 
-macsec_pn_wrapped is called and should change the keys before the PN 
-overflow happens.
+Ok, will do in v9.
 
--- 
-Radu P.
+> And also, can you mention a new file in the documentation?
+
+Sure.
+
+> IIRC, it was my suggestion to measure some stats... If so, can you add:
+>
+> Suggested-by: Yury Norov <yury.norov@gmail.com> # for stats
+
+Will do.
+
+
+> > +static atomic_long_t alloc_counters[MTESWAP_CTR_SIZE];
+> > +static atomic_long_t dealloc_counters[MTESWAP_CTR_SIZE];
+>
+> I think it's worth to add them and all the book keeping code in
+> a separate patch? Also can you consider making them configurable,
+> maybe depending on CONFIG_ARM64_MTE_SWAP_STAT?..
+
+Sounds fine, I'll split this code into a separate patch.
+
+> >  static DEFINE_XARRAY(mte_pages);
+> >
+> >  void *mte_allocate_tag_storage(void)
+> >  {
+> > -     /* tags granule is 16 bytes, 2 tags stored per byte */
+> > -     return kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
+> > +     void *ret;
+> > +
+> > +     ret = kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
+> > +     if (ret)
+> > +             atomic_long_inc(&alloc_counters[MTESWAP_CTR_NOINLINE]);
+> > +     return ret;
+> >  }
+> >
+> >  void mte_free_tag_storage(char *storage)
+>
+> If you use a term 'free' here, the counter name should probably
+> reflect that.
+
+I still want to keep the terms "allocation/deallocation" in the
+user-facing code (in the /sys/ file) though.
+So renaming the counter here will cause a mismatch between its name
+and the stats output.
+
+>
+> >  {
+> > -     kfree(storage);
+> > +     if (!mte_is_compressed(storage)) {
+> > +             kfree(storage);
+> > +             atomic_long_dec(&alloc_counters[MTESWAP_CTR_NOINLINE]);
+>
+> s/NOINLINE/OUTLINE ?
+
+Done.
+
+> >       mte_save_page_tags(page_address(page), tag_storage);
+> > +     compressed = mte_compress(tag_storage);
+> > +     if (compressed) {
+> > +             mte_free_tag_storage(tag_storage);
+> > +             tag_storage = (void *)compressed;
+>
+> But 'compressed' is already 'void *', what for typecasting?
+
+Yeah, it used to be unsigned long or something like that. Removed the cast.
+
+> Also, it's a bad naming - adjective implies bool type. I'd name it
+> 'compressed_tag', or similar.
+>
+> > +             atomic_long_inc(&alloc_counters[MTESWAP_CTR_INLINE]);
+> > +     }
+>
+> Is it possible to move all this conditional inside the function call?
+> I feel like it should be a single-line:
+>
+>         tag_storage = mte_compress(tag_storage);
+>
+> So that client code will be free of housekeeping details.
+
+The problem is that this assignment destroys the current value of
+tag_storage, which means mte_compress() will have to deal with memory
+deallocation.
+That, in turn, will introduce an unnecessary dependency between
+mtecomp.c and mteswap.c (so that the former can call
+mte_free_tag_storage()).
+Given that we still have to deal with allocations in mteswap.c, I
+don't think it's worth the hassle.
+
+>
+> >
+> >       /* lookup the swap entry.val from the page */
+> >       ret = xa_store(&mte_pages, page_swap_entry(page).val, tag_storage,
+> > @@ -50,13 +76,20 @@ int mte_save_tags(struct page *page)
+> >  void mte_restore_tags(swp_entry_t entry, struct page *page)
+> >  {
+> >       void *tags = xa_load(&mte_pages, entry.val);
+> > +     void *tag_storage = NULL;
+> >
+> >       if (!tags)
+> >               return;
+> >
+> >       if (try_page_mte_tagging(page)) {
+> > +             if (mte_is_compressed(tags)) {
+> > +                     tag_storage = mte_allocate_tag_storage();
+> > +                     mte_decompress(tags, tag_storage);
+> > +                     tags = tag_storage;
+> > +             }
+>
+> Same here, if it's possible, I'd prefer a single line call instead of
+> the above chunk:
+>
+>         tags = mte_decompress(tags);
+>         if (!tags)
+>                 return;
+
+Same here, we'd have to make mte_decompress() allocate/deallocate
+memory in a way consistent with mteswap.c allocations.
