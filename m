@@ -2,228 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630827E5D5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5966C7E5D61
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjKHSif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 13:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
+        id S231894AbjKHSjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHSid (ORCPT
+        with ESMTP id S229460AbjKHSjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 13:38:33 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE282105;
-        Wed,  8 Nov 2023 10:38:31 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7b91faf40so185527b3.1;
-        Wed, 08 Nov 2023 10:38:31 -0800 (PST)
+        Wed, 8 Nov 2023 13:39:51 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC2A2107
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 10:39:48 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-5094cb3a036so9289212e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 10:39:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699468711; x=1700073511; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=gnRY8hgDaxFo76ZgJWjN69ov12zpJHTXkWZBmrfUhmM=;
-        b=CQ3pGXf8uFHpi780DRUOkvxfTuMl4TRfdA3mJFutpf2t8zLFhKYvva6pOnjJ7K2Si9
-         wFmTCgj4/C7Nqd36oSOZ/EBs62bYSVFUtPegzRC/D1KHO+FgTtcVCcv4IZskAPHQuxl+
-         IE8+WYQiWAG6QDZZxc8b++FZ68OXiiLsodLt+M7zO4HJA/6C30mE8cDUFHsPwe3wdE36
-         irk4wJZNJmPYgo5xVLxQZG3LpVEY31xeqbvnGw3sassV9NpBHKQa9kMurhjw4LHW6/R4
-         kIH2pUrueGwtpAWNqKuvARMfP1UC/GQMxnPJwZipmQoju6UNuKkuXVCfBJCMsgGCzAbZ
-         Hz2g==
+        d=broadcom.com; s=google; t=1699468787; x=1700073587; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s6Zb3+kBxD5wLG1lKQh8LxWXQGW8k91NV5iyAITNNk8=;
+        b=B7dSsW6E06oacrpQ/efBOlHS2lhXWgFkoBX+q0IDwElrcHCPhDOJZ0ZSl+fqvpBy8T
+         DROpBaWeOmm7UFmPxtf7VBbSC/C+Twu8qCwYc9kAxCQHXnoFBTpUDK/WmlKF+4oKLcWS
+         D7uLpbRLYb8a5sBd5qsJpRSLNzwyca/OLmbrE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699468711; x=1700073511;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1699468787; x=1700073587;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=gnRY8hgDaxFo76ZgJWjN69ov12zpJHTXkWZBmrfUhmM=;
-        b=BSGBPuaGKQ/VlEX8u15RgEqlKWUNiKYoUA72oVn7AwKscLxPQQAESS3djcq8WWCqbd
-         4jvHQKWD9wCDU1dKFA1QAswLGluGEpsUQc+UJtbdvSHAT36HSeUiwWl+bU1TQ5HZUu9f
-         9nwNbFrmZgmusGueliA0mzExiZtiTdpo325+uIBYfXf7dl3MIAyqk6HgOu60Decv0QR8
-         4M07oY9cEbCM0eCS6b0U7woSjoTr8tMW8douALGSq5uaoHQO4MyZUUcDdQwFJqBuJNi8
-         ZYJX8FhTGAqzG5B1O6B/e/exPWLev8xUdXBN9yXpCdwzSBp7aP8JBTGnfoyS8FFRZCo3
-         XUrA==
-X-Gm-Message-State: AOJu0YyK+1BwSd4meZp5gcjfzt1aB/OkeKExS4+M5D4YwODpgQ9P5oyI
-        ZM+yCGIU0Y91cIDqP8a5G/0=
-X-Google-Smtp-Source: AGHT+IF5UCiZdRU27t6uGR6Xd3CxkQN829PGDg05me1nIK2Rmn3euTUJlk/yBnlm83LSrqEfb7D+wA==
-X-Received: by 2002:a0d:f301:0:b0:583:b186:d817 with SMTP id c1-20020a0df301000000b00583b186d817mr2454238ywf.27.1699468710710;
-        Wed, 08 Nov 2023 10:38:30 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x184-20020a814ac1000000b0057a8de72338sm7119235ywa.68.2023.11.08.10.38.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 10:38:30 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d3204361-2d4c-41f9-8365-5826195aa884@roeck-us.net>
-Date:   Wed, 8 Nov 2023 10:38:27 -0800
+        bh=s6Zb3+kBxD5wLG1lKQh8LxWXQGW8k91NV5iyAITNNk8=;
+        b=vR0sRZ+/+fqblfwNaiMNLhbIl0eH5mc0WLhfnqCu9UWVrznXRPTTLYMixhSn5uPzkw
+         Q6E+8acW1VIprar0eE3eVfbvpH3472DR1NBAbGTOXKjeAyfWWanegLRFxEQEfK948Suz
+         +MomZEhMgnHqnIXg/ezueU9PAj/5we/PJRoxj/OGwRNgjmU0qesB+soM5wM23roGMeqj
+         J/c21fMhKFy07LIs7o4VaJ7/rGPuxeI036ugwQVE6P/6k9CcaDIKNDRBpDOvpWNNSmbU
+         Ns2BD3n1MzzbC4dYv+Ui+vC9mNeUSoP6kntpOb/29hhWap76scVHnHdW09C7uq+qTzKj
+         sdPA==
+X-Gm-Message-State: AOJu0Yxb0ic16tEMVTA40jDu+dzHv2Njwp2JLx9X0WoDAUN1Rbwxj/pr
+        IXhLj2x8V9pILDcswvo8R1kKIphyOdzGkjhWhTLteg==
+X-Google-Smtp-Source: AGHT+IGDO2j+B5bilMlhR2eSH0VEDePWuhc+ZMjDJzxKAc3bg2dfUbGBwD5tt1olDPHaLpqf9yTYfV9czMMndPzrqXg=
+X-Received: by 2002:a05:6512:2248:b0:509:44cd:241c with SMTP id
+ i8-20020a056512224800b0050944cd241cmr2618237lfu.32.1699468786562; Wed, 08 Nov
+ 2023 10:39:46 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v10 1/3] dt-bindings: hwmon: fan: Add fan binding
- to schema
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     jdelvare@suse.com, krzysztof.kozlowski+dt@linaro.org,
-        joel@jms.id.au, andrew@aj.id.au, corbet@lwn.net,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        p.zabel@pengutronix.de, naresh.solanki@9elements.com,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-References: <20231107105025.1480561-1-billy_tsai@aspeedtech.com>
- <20231107105025.1480561-2-billy_tsai@aspeedtech.com>
- <20231108181654.GA2664986-robh@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231108181654.GA2664986-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CACKFLi=VL8kHH-Q4UQF60tGaK2dk7NgH_9-yJpP7hgn_NE9e7Q@mail.gmail.com>
+ <20231108181809.2405257-1-alexey.pakhunov@spacex.com>
+In-Reply-To: <20231108181809.2405257-1-alexey.pakhunov@spacex.com>
+From:   Michael Chan <michael.chan@broadcom.com>
+Date:   Wed, 8 Nov 2023 10:39:34 -0800
+Message-ID: <CACKFLi=R+yRa-Y5jr=jf9cJmB-rkWSjyHSZOppFMPXb9wTGCTw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
+To:     Alex Pakhunov <alexey.pakhunov@spacex.com>
+Cc:     linux-kernel@vger.kernel.org, mchan@broadcom.com,
+        netdev@vger.kernel.org, prashant@broadcom.com,
+        siva.kallam@broadcom.com, vincent.wong2@spacex.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000005cbe910609a86914"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 10:16, Rob Herring wrote:
-> On Tue, Nov 07, 2023 at 06:50:23PM +0800, Billy Tsai wrote:
->> From: Naresh Solanki <naresh.solanki@9elements.com>
->>
->> Add common fan properties bindings to a schema.
->>
->> Bindings for fan controllers can reference the common schema for the
->> fan
->>
->> child nodes:
->>
->>    patternProperties:
->>      "^fan@[0-2]":
->>        type: object
->>        $ref: fan-common.yaml#
->>        unevaluatedProperties: false
->>
->> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
->> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
->> ---
->>   .../devicetree/bindings/hwmon/fan-common.yaml | 78 +++++++++++++++++++
->>   1 file changed, 78 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
-> 
-> Looking pretty good to me. It's disappointing that no one else
-> interested in upstreaming their fan controller can be bothered to
-> comment.
-> 
+--0000000000005cbe910609a86914
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-FWIW, I declined to comment since it basically looks ok to me
-and because at this point I'd rather have something (whatever it is)
-instead of nothing.
+On Wed, Nov 8, 2023 at 10:18=E2=80=AFAM Alex Pakhunov
+<alexey.pakhunov@spacex.com> wrote:
+>
+> Hi,
+>
+> > I think here we need to keep these counters accumulate across a reset:
+> >
+> > stats->rx_dropped =3D old_stats->rx_dropped + rx_dropped;
+> > stats->tx_dropped =3D old_stats->tx_dropped + tx_dropped;
+>
+> Hm, tg3_halt() explicitly resets the HW counters:
+>
+> ```
+>         if (tp->hw_stats) {
+>                 /* Save the stats across chip resets... */
+>                 tg3_get_nstats(tp, &tp->net_stats_prev);
+>                 tg3_get_estats(tp, &tp->estats_prev);
+>
+>                 /* And make sure the next sample is new data */
+>                 memset(tp->hw_stats, 0, sizeof(struct tg3_hw_stats));
+>         }
 
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/fan-common.yaml b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
->> new file mode 100644
->> index 000000000000..be4ce3bd7f22
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
->> @@ -0,0 +1,78 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/hwmon/fan-common.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Common Fan Properties
->> +
->> +maintainers:
->> +  - Naresh Solanki <naresh.solanki@9elements.com>
->> +  - Billy Tsai <billy_tsai@aspeedtech.com>
->> +
->> +properties:
->> +  max-rpm:
->> +    description:
->> +      Max RPM supported by fan.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 100000
->> +
->> +  min-rpm:
->> +    description:
->> +      Min RPM supported by fan.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 1000
->> +
->> +  pulses-per-revolution:
->> +    description:
->> +      The number of pulse from fan sensor per revolution.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    maximum: 4
->> +
->> +  tach-div:
->> +    description:
->> +      Divisor for the tach sampling clock, which determines the sensitivity of the tach pin.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  target-rpm:
->> +    description:
->> +      The default desired fan speed in RPM.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  fan-driving-mode:
->> +    description:
->> +      Select the driving mode of the fan.(DC, PWM and so on)
->> +    $ref: /schemas/types.yaml#/definitions/string
-> 
-> You need to define the possible values. I assume it's:
-> 
-> enum:
->    - dc
->    - pwm
->    - anything else???
-> 
+Right, we reset the hardware counters but only after we save a
+snapshot first.  The snapshot will be added to the new counters after
+reset.
 
-I am not aware of any other possible method. dc and pwm is all
-I have ever seen.
+> ```
+>
+> We sort of doing the same thing with clearing [tr]x_dropped in
+> tg3_init_rings() but it seems more confusing than helpful. First, why do =
+we
+> handle different counters differently? Second, tg3_halt() is not always
+> followed by tg3_init_rings(), so the logic is not consistent.
+>
+> Instead I think we should just not touch [tr]x_dropped in tg3_init_rings(=
+).
+> The counters will be set to zero when tg3 is allocated in tg3_init_one().
+> Hardware resets will not change tg3_napi::[tr]x_dropped since they are
+> purely software counters.
+>
 
-Guenter
+Not resetting the tnapi->rx_dropped and tnapi->tx_dropped counters is
+an option, but the number of queues (tp->irq_cnt) can change after
+reset.  So to always keep the count accurate, we'll have to sum over
+all the array entries (TG3_IRQ_MAX_VECS).  I think this will be
+confusing and is not consistent with the existing scheme of saving a
+snapshot of all counters before reset and then starting from zero
+after reset.  Thanks.
 
-> With that,
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+--0000000000005cbe910609a86914
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDil2k9EOe+6/nR8025D6MLueROcZHXS
+uxifbra8jY0tMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEw
+ODE4Mzk0N1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQCz/adPYgtCWThwz1Q4Lc9P0uGr4GeZklbmVAqpSDb7OMXuGQUn
+z6uSFZl3VtuRE2ZxElwnynXUy9Z4pFu+0AXOYQBqS9h6rLxJTop7KLUfhDWyRhA/UqXZFSkMB4Xw
+O2U8lxnBEqBfzoyID/cblRNBFn0r81gWImoqhOhXVhn8b7ub5IOAHA57hdXbPaesutkNa2bVcEOZ
+OqxbBRVdmHoocH5eC7lVFl17pZgMZQPHnDdpY+hGks/xzWQQLKSODWBvwYGObXUxVPHDzNkXhBPM
+NP/FMS6tW5nzhAd+bneYaH9jTPypFBPtx7KEBc7Ig2w6k3rLeXWzr09A/VhkMur4
+--0000000000005cbe910609a86914--
