@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FC97E516C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFC97E516D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbjKHHxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:53:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S233105AbjKHHyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:54:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234423AbjKHHxm (ORCPT
+        with ESMTP id S231674AbjKHHyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:53:42 -0500
+        Wed, 8 Nov 2023 02:54:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496D6172E;
-        Tue,  7 Nov 2023 23:53:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15CD9C433C7;
-        Wed,  8 Nov 2023 07:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699430017;
-        bh=EO6SIeq3IRVmtcKnhSZW5myz/GbmhWsorKkfsMWlq0s=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0175BD41
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:54:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B2AEC433C7;
+        Wed,  8 Nov 2023 07:54:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699430047;
+        bh=772PrGqUMV5ONmuvUTo5sx1NVLn/lFjsmcoErE/9xPg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aSnRQY4BD1Zt326N3ax1KgytTnQmiA7/5HwRTE9BjxrlM6t57aKI5tDLxjWKbsBCG
-         XpmFBhlpZeeOmTQIcJ7TJYUyuhSL0UOs32vU80NdjTgdfPbEjznC54ZKN+KyoNxTdw
-         ECKKUhFw5qPTj7Z2WU6umcUrUp1qOnGIBzY2Qj+kt42o3TivB/T7wdWVIWbzGL0hEh
-         NrVwKVfnb/BFKTzlSNBaiF80d63DFH+3cZOvK1fYQKhmhvxSCQTegZP3o8BYTEtzEV
-         9iXBC4GTjo3HtNqAyVYWlcgcfxx0pKXN86hO+VdXnW0v28QiiCYVFQSSgjtosqRI6D
-         ofbIH/INlerDQ==
-Date:   Wed, 8 Nov 2023 08:53:30 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-Message-ID: <20231108-redakteur-zuschauen-a9aeafaf4fad@brauner>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
- <87il6d1cmu.fsf@meer.lwn.net>
+        b=BF6nImAi8TiB0t2cUUbYzbvixL9fPJEhgK/tg3LoqHPkrL1bICOVk1CON1/P+X399
+         utNMqkC25BReE+5jF6qlLB37dLuqquDSYmjX+zyLflhEZfYi3AHDEnMIznUaoqf09b
+         3aDAQpi3T9kAIDS/LInQAp71HtXwijUx8j4O+39M=
+Date:   Wed, 8 Nov 2023 08:54:04 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5p+z6I+B5bOw?= <liujingfeng@qianxin.com>
+Cc:     Marco Elver <elver@google.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "security@kernel.org" <security@kernel.org>,
+        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>
+Subject: Re: Reply: A null-ptr crash in linux-6.4 usb driver
+Message-ID: <2023110809-headache-heaving-3472@gregkh>
+References: <043105feee62401f833a06ea480a3b1b@qianxin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87il6d1cmu.fsf@meer.lwn.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <043105feee62401f833a06ea480a3b1b@qianxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Why use struct __mount_arg (or struct mnt_id_req :) here rather than
-> just passing in the mount ID directly?  You don't use the request_mask
+On Wed, Nov 08, 2023 at 07:40:08AM +0000, 柳菁峰 wrote:
+> I have made a patch that simply checks for null pointer, but I am not sure if this will affect certain functions or logic. I hope you can check it carefully.
+> 
+> 1006c1006
+> <       if (dev->p->dead) {
+> ---
+> >       if (!dev->p||dev->p->dead) {
 
-Please see Arnd's detailed summary here:
-https://lore.kernel.org/lkml/44631c05-6b8a-42dc-b37e-df6776baa5d4@app.fastmail.com
+Can you take a look at the file,
+Documentation/process/submitting-patches.rst for how to properly
+generate a patch?  This does not give us any context to even know what
+file you are changing.
+
+Also, we have no context at all to even know what this is about at all,
+what is this for?
+
+confused,
+
+greg k-h
