@@ -2,100 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 235A17E5304
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DBF7E5308
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344004AbjKHKGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:06:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
+        id S1344174AbjKHKG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHKGV (ORCPT
+        with ESMTP id S235592AbjKHKGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:06:21 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E101723
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:06:19 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77a453eb01cso436284185a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:06:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699437979; x=1700042779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rr7gS752VmDAnEEC2uCNu6BHcbWN9XZEmhatGiJJf1A=;
-        b=oWFkTutFxvQq6N86TQjSF5P/JEESnp0OXvRK+kS4lbEIQcoNBum9JQT1+l2DHKmYc7
-         iUlY8QqpuWk1bst4hsNbgFo0fNVfuzdDW56NZXL64Fr1nm5lKANcKOtQe58/RH6sILIn
-         x5d3rQExSc3wvwzteygysIb3M8sD6IYUAQmSMCZIWPWUrsWq4Tol/vws/KkumnGhphOw
-         dsaEI9GUW5kpykmWu/F69yrVUlVcb1r+nfxni1T1VS251ioWmZa5k+PfAfaxPjx1Nfia
-         rvC0JjQnyEmo9WPfCz/vuRF92bbKABSc+8B2SmoJz2jpkBVa0VeSSa+8zo2x28ONVJKm
-         YYlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699437979; x=1700042779;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rr7gS752VmDAnEEC2uCNu6BHcbWN9XZEmhatGiJJf1A=;
-        b=DfMKQBT1HJOl6Cey2Ekg81CwS4KC0MjD6MqTxUajvbZc+llrwuyPtbIceCe9anypHA
-         VNrFz6z4vQU54KRQOg4+VHVYiP1rNZqDpplBoj5omHwZYO+pbS7Li+2o3WNcIk1VrUjV
-         x2ZgKUAzHCvJOg41dyhwI0dfSJIKcFfPY6G93m4qkDjNOlYfBHhn4/huFVSMfVqktVnB
-         AjKpPYlb3ydbomwELFj3uftGjmw1aWHhPOQZpD08w3ZffVjhcl/ndM923F9luzBXwvI7
-         nS4uduJfb+A704HSL8jq9wBGDMpH9rcqjzXJm6rL3AHjTng0HDLN4ZVicQc768ZMeofF
-         VCVA==
-X-Gm-Message-State: AOJu0YzvPVWjeIFyCbO4pUuDxVh9XCbzF1ob6lKmuFxeNg3FdVWnan8z
-        D9YBc6VQ600RdZuBLScSnmDs23mJB78xKiIbH+izfA==
-X-Google-Smtp-Source: AGHT+IGx7lgqtx9S/oyIp/5xMeMdu5UbG0dUZcFvMTcnc6s3J0nohJbZResltcIJRIscBeM3h7M0qQ==
-X-Received: by 2002:a05:620a:4055:b0:77b:9a8c:b0b5 with SMTP id i21-20020a05620a405500b0077b9a8cb0b5mr1278087qko.57.1699437978763;
-        Wed, 08 Nov 2023 02:06:18 -0800 (PST)
-Received: from [172.30.205.23] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id w2-20020a05620a0e8200b007789a3499casm858664qkm.115.2023.11.08.02.06.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 02:06:18 -0800 (PST)
-Message-ID: <8f7db00f-aae0-43d9-bd6a-47374a91d546@linaro.org>
-Date:   Wed, 8 Nov 2023 11:06:12 +0100
+        Wed, 8 Nov 2023 05:06:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E81172A;
+        Wed,  8 Nov 2023 02:06:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699438007; x=1730974007;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5m833ab3qSVu/sdk+jLw4K1ZbcbfYPcfhbGlcXhvGCA=;
+  b=Nd3gSf9hoi462HroX1EuPpNKSTAvKCFkWLNeQVXuQx+dmD1s7GfZYl9f
+   zleIDOF4niWMPqLS2eAMc5RWefzShvotZVixkbkyw0ik5XOuwwCAFmJvf
+   cR14cq20gO5RADdrgpm3IPjIdxMvT8vBGGQL/8frT1sQYCTeU97WupYge
+   Pqmdfzd0UrguAwynnmHbEHw6aH9K2WGgPEWD63jUoQzSalrZAbT5Uet41
+   9VuifoANNeqJ+TW6NxeXKitZgudhJ6BZ6XB/rwi4DnlBSk/43xV/wYvl9
+   0gbjeEdGP03Tn7Tq2lrugJ863qOM1k63UAtZMEDOCdNxutuwPbB7O9Tps
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="11286602"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="11286602"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 02:06:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="828921816"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="828921816"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.9.145]) ([10.93.9.145])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 02:06:42 -0800
+Message-ID: <0ee32216-e285-406f-b20d-dd193b791d2b@intel.com>
+Date:   Wed, 8 Nov 2023 18:06:40 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom: Add LPG LED device description
+Subject: Re: [PATCH v2 2/2] KVM: selftests: Add logic to detect if ioctl()
+ failed because VM was killed
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        quic_huliu@quicinc.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        quic_uchheda@quicinc.com, kamalw@qti.qualcomm.com
-References: <20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com>
- <CAA8EJpogiYXVPCNXSu+kq29nbn1uxGDAYMn9+qk8CwDz0bfyjg@mail.gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAA8EJpogiYXVPCNXSu+kq29nbn1uxGDAYMn9+qk8CwDz0bfyjg@mail.gmail.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michal Luczaj <mhal@rbox.co>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Colton Lewis <coltonlewis@google.com>
+References: <20231108010953.560824-1-seanjc@google.com>
+ <20231108010953.560824-3-seanjc@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <20231108010953.560824-3-seanjc@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/8/23 07:59, Dmitry Baryshkov wrote:
-> On Wed, 8 Nov 2023 at 08:05, Hui Liu via B4 Relay
-> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
->>
->> From: Hui Liu <quic_huliu@quicinc.com>
->>
->> Add LPG LED device description.
+On 11/8/2023 9:09 AM, Sean Christopherson wrote:
+> Add yet another macro to the VM/vCPU ioctl() framework to detect when an
+> ioctl() failed because KVM killed/bugged the VM, i.e. when there was
+> nothing wrong with the ioctl() itself.  If KVM kills a VM, e.g. by way of
+> a failed KVM_BUG_ON(), all subsequent VM and vCPU ioctl()s will fail with
+> -EIO, which can be quite misleading and ultimately waste user/developer
+> time.
 > 
-> No. You are not adding "LPG LED device description". You are adding
-> definition for three LEDs.
+> Use KVM_CHECK_EXTENSION on KVM_CAP_USER_MEMORY to detect if the VM is
+> dead and/or bug, as KVM doesn't provide a dedicated ioctl().  Using a
+> heuristic is obviously less than ideal, but practically speaking the logic
+> is bulletproof barring a KVM change, and any such change would arguably
+> break userspace, e.g. if KVM returns something other than -EIO.
+
+We hit similar issue when testing TDX VMs. Most failure of SEMCALL is 
+handled with a KVM_BUG_ON(), which leads to vm dead. Then the following 
+IOCTL from userspace (QEMU) and gets -EIO.
+
+Can we return a new KVM_EXIT_VM_DEAD on KVM_REQ_VM_DEAD? and replace 
+-EIO with 0? yes, it's a ABI change. But I'm wondering if any userspace 
+relies on -EIO behavior for VM DEAD case.
+
+> Without the detection, tearing down a bugged VM yields a cryptic failure
+> when deleting memslots:
 > 
->>
->> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
->> ---
-Aside from Dmitry's valid comments, the subject is wrong.
+>    ==== Test Assertion Failure ====
+>    lib/kvm_util.c:689: !ret
+>    pid=45131 tid=45131 errno=5 - Input/output error
+>       1	0x00000000004036c3: __vm_mem_region_delete at kvm_util.c:689
+>       2	0x00000000004042f0: kvm_vm_free at kvm_util.c:724 (discriminator 12)
+>       3	0x0000000000402929: race_sync_regs at sync_regs_test.c:193
+>       4	0x0000000000401cab: main at sync_regs_test.c:334 (discriminator 6)
+>       5	0x0000000000416f13: __libc_start_call_main at libc-start.o:?
+>       6	0x000000000041855f: __libc_start_main_impl at ??:?
+>       7	0x0000000000401d40: _start at ??:?
+>    KVM_SET_USER_MEMORY_REGION failed, rc: -1 errno: 5 (Input/output error)
+> 
+> Which morphs into a more pointed error message with the detection:
+> 
+>    ==== Test Assertion Failure ====
+>    lib/kvm_util.c:689: false
+>    pid=80347 tid=80347 errno=5 - Input/output error
+>       1	0x00000000004039ab: __vm_mem_region_delete at kvm_util.c:689 (discriminator 5)
+>       2	0x0000000000404660: kvm_vm_free at kvm_util.c:724 (discriminator 12)
+>       3	0x0000000000402ac9: race_sync_regs at sync_regs_test.c:193
+>       4	0x0000000000401cb7: main at sync_regs_test.c:334 (discriminator 6)
+>       5	0x0000000000418263: __libc_start_call_main at libc-start.o:?
+>       6	0x00000000004198af: __libc_start_main_impl at ??:?
+>       7	0x0000000000401d90: _start at ??:?
+>    KVM killed/bugged the VM, check the kernel log for clues
+> 
+> Suggested-by: Michal Luczaj <mhal@rbox.co>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: Colton Lewis <coltonlewis@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   .../selftests/kvm/include/kvm_util_base.h     | 39 ++++++++++++++++---
+>   tools/testing/selftests/kvm/lib/kvm_util.c    |  2 +-
+>   2 files changed, 35 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> index 1f6193dc7d3a..c7717942ddbb 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -282,11 +282,40 @@ static __always_inline void static_assert_is_vm(struct kvm_vm *vm) { }
+>   	kvm_do_ioctl((vm)->fd, cmd, arg);			\
+>   })
+>   
+> +/*
+> + * Assert that a VM or vCPU ioctl() succeeded, with extra magic to detect if
+> + * the ioctl() failed because KVM killed/bugged the VM.  To detect a dead VM,
+> + * probe KVM_CAP_USER_MEMORY, which (a) has been supported by KVM since before
+> + * selftests existed and (b) should never outright fail, i.e. is supposed to
+> + * return 0 or 1.  If KVM kills a VM, KVM returns -EIO for all ioctl()s for the
+> + * VM and its vCPUs, including KVM_CHECK_EXTENSION.
+> + */
+> +#define __TEST_ASSERT_VM_VCPU_IOCTL(cond, name, ret, vm)				\
+> +do {											\
+> +	int __errno = errno;								\
+> +											\
+> +	static_assert_is_vm(vm);							\
+> +											\
+> +	if (cond)									\
+> +		break;									\
+> +											\
+> +	if (errno == EIO &&								\
+> +	    __vm_ioctl(vm, KVM_CHECK_EXTENSION, (void *)KVM_CAP_USER_MEMORY) < 0) {	\
+> +		TEST_ASSERT(errno == EIO, "KVM killed the VM, should return -EIO");	\
+> +		TEST_FAIL("KVM killed/bugged the VM, check the kernel log for clues");	\
+> +	}										\
+> +	errno = __errno;								\
+> +	TEST_ASSERT(cond, __KVM_IOCTL_ERROR(name, ret));				\
+> +} while (0)
+> +
+> +#define TEST_ASSERT_VM_VCPU_IOCTL(cond, cmd, ret, vm)		\
+> +	__TEST_ASSERT_VM_VCPU_IOCTL(cond, #cmd, ret, vm)
+> +
+>   #define vm_ioctl(vm, cmd, arg)					\
+>   ({								\
+>   	int ret = __vm_ioctl(vm, cmd, arg);			\
+>   								\
+> -	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
+> +	__TEST_ASSERT_VM_VCPU_IOCTL(!ret, #cmd, ret, vm);		\
+>   })
+>   
+>   static __always_inline void static_assert_is_vcpu(struct kvm_vcpu *vcpu) { }
+> @@ -301,7 +330,7 @@ static __always_inline void static_assert_is_vcpu(struct kvm_vcpu *vcpu) { }
+>   ({								\
+>   	int ret = __vcpu_ioctl(vcpu, cmd, arg);			\
+>   								\
+> -	TEST_ASSERT(!ret, __KVM_IOCTL_ERROR(#cmd, ret));	\
+> +	__TEST_ASSERT_VM_VCPU_IOCTL(!ret, #cmd, ret, (vcpu)->vm);	\
+>   })
+>   
+>   /*
+> @@ -312,7 +341,7 @@ static inline int vm_check_cap(struct kvm_vm *vm, long cap)
+>   {
+>   	int ret =  __vm_ioctl(vm, KVM_CHECK_EXTENSION, (void *)cap);
+>   
+> -	TEST_ASSERT(ret >= 0, KVM_IOCTL_ERROR(KVM_CHECK_EXTENSION, ret));
+> +	TEST_ASSERT_VM_VCPU_IOCTL(ret >= 0, KVM_CHECK_EXTENSION, ret, vm);
+>   	return ret;
+>   }
+>   
+> @@ -371,7 +400,7 @@ static inline int vm_get_stats_fd(struct kvm_vm *vm)
+>   {
+>   	int fd = __vm_ioctl(vm, KVM_GET_STATS_FD, NULL);
+>   
+> -	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_GET_STATS_FD, fd));
+> +	TEST_ASSERT_VM_VCPU_IOCTL(fd >= 0, KVM_GET_STATS_FD, fd, vm);
+>   	return fd;
+>   }
+>   
+> @@ -583,7 +612,7 @@ static inline int vcpu_get_stats_fd(struct kvm_vcpu *vcpu)
+>   {
+>   	int fd = __vcpu_ioctl(vcpu, KVM_GET_STATS_FD, NULL);
+>   
+> -	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_GET_STATS_FD, fd));
+> +	TEST_ASSERT_VM_VCPU_IOCTL(fd >= 0, KVM_CHECK_EXTENSION, fd, vcpu->vm);
+>   	return fd;
+>   }
+>   
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 7a8af1821f5d..c847f942cd38 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -1227,7 +1227,7 @@ struct kvm_vcpu *__vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id)
+>   	vcpu->vm = vm;
+>   	vcpu->id = vcpu_id;
+>   	vcpu->fd = __vm_ioctl(vm, KVM_CREATE_VCPU, (void *)(unsigned long)vcpu_id);
+> -	TEST_ASSERT(vcpu->fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_VCPU, vcpu->fd));
+> +	TEST_ASSERT_VM_VCPU_IOCTL(vcpu->fd >= 0, KVM_CREATE_VCPU, vcpu->fd, vm);
+>   
+>   	TEST_ASSERT(vcpu_mmap_sz() >= sizeof(*vcpu->run), "vcpu mmap size "
+>   		"smaller than expected, vcpu_mmap_sz: %i expected_min: %zi",
 
-ARM points to arch/arm/ (arm32) and you're missing the name of
-the file that you're modifying. Check the git log for that file
-to get a grasp of it.
-
-Konrad
