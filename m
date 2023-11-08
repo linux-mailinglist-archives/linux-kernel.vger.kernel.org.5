@@ -2,140 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F44A7E5B57
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E99C7E5B74
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbjKHQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
+        id S231953AbjKHQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHQhX (ORCPT
+        with ESMTP id S229558AbjKHQjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:37:23 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2080.outbound.protection.outlook.com [40.107.92.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491321FCF;
-        Wed,  8 Nov 2023 08:37:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bSBaHv0nLG5FExZ5erMTsOl6y8UNf75WOvobcRZR0rwM/uAq786GK2INdKuVCyG6vlqcml6235Ef7pnrFMIuUFFRMmCEGoCw8E3csbbUD8EmZZ75dn/i4rjWLbmUixHlibxOGEGfyHVcs2uwaMSok8VqKsfNLtZtL9P/vKrLwy290gmBfWakRVSN11DVMv3DSvjsj5VevmDqeh7AimPe00cO5nPp9OkbA/ST1X/EbMPNY38bK55u9EovRmshRe/b3YM5s+QHhqI2UjHRNOSKGfSgEw7M3mYFikewdo/Z3VsbFPOTvyUIExEVM7EDX7DQ0Fp+GbHPYONDkrwAh7NjkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uFgYkix3kzEBUGk8p9+9eP7k5GjL3g9OzhKxFkVHZP0=;
- b=JephHjt33VdusecPAr0JDPVmePRtScu/enE6vYbD7tS7ruY4tneygT7wTaEGcH+vaDGU2aC+mS7qvbyhVO6bsTcg/qWlOmvXTFUMZ6gKbybVERFWcZH0VK1sDtTTKWPJqoaSLKfKXVNBCpLVOm/zaBoCRRQlkkPycKXXoN13DxRtpfqRReAhDTYbiulQa0obYm4XyQyNMc89Ys5UVPauNLxkyr1Ur80d9ZL4p4zvmjn3pWz8DfQ9bTYBW0wU01wZ9YpZ2gqXUReVGFWqG8Xz4k/KMs8N5V2VAh/MhYEVmhDXJNLS/GTzLDgv0ahl3DwXX+QLtcSyldgPlYpr8nCW7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uFgYkix3kzEBUGk8p9+9eP7k5GjL3g9OzhKxFkVHZP0=;
- b=JrFA600iNxxeiwUxhLoQIA+2p/WqHfhdXSF153LmRlGzG4Wo/hh7LDQnMwz+bHsgevirYcUQKZFHCtv0PYuQungI15n4vF3hWP7MAvotX0RtA8MZQ8W9k4Iy99tT+8b3QaTzzb9Ui3fu62tehqeh/Je0VneaCZtsHe0fOMTsP9U=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3407.namprd12.prod.outlook.com (2603:10b6:208:c5::18)
- by PH0PR12MB7470.namprd12.prod.outlook.com (2603:10b6:510:1e9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 8 Nov
- 2023 16:37:15 +0000
-Received: from MN2PR12MB3407.namprd12.prod.outlook.com
- ([fe80::8b27:b871:419:2466]) by MN2PR12MB3407.namprd12.prod.outlook.com
- ([fe80::8b27:b871:419:2466%4]) with mapi id 15.20.6954.028; Wed, 8 Nov 2023
- 16:37:14 +0000
-Message-ID: <52270fa5-4a7d-4894-9142-9b7697f0335a@amd.com>
-Date:   Wed, 8 Nov 2023 09:37:10 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: w1: Add YAML DT schema for AMD AXI w1
- host and MAINTAINERS entry
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Cc:     thomas.delev@amd.com, michal.simek@amd.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        git@amd.com, Conor Dooley <conor.dooley@microchip.com>
-References: <20231107180814.615933-1-kris.chaplin@amd.com>
- <20231107180814.615933-2-kris.chaplin@amd.com>
- <20231108155905.GA2198732-robh@kernel.org>
- <7f547afe-74a2-49f9-8547-3c315d982018@linaro.org>
-Content-Language: en-GB
-From:   Kris Chaplin <kris.chaplin@amd.com>
-In-Reply-To: <7f547afe-74a2-49f9-8547-3c315d982018@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0010.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::15) To MN2PR12MB3407.namprd12.prod.outlook.com
- (2603:10b6:208:c5::18)
+        Wed, 8 Nov 2023 11:39:05 -0500
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15B11FE8;
+        Wed,  8 Nov 2023 08:39:02 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 843C720011;
+        Wed,  8 Nov 2023 16:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699461541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TU1a41gXL6RUEu7SJx1Qw2MByKdK1QVTbxrGudfqw9U=;
+        b=So11/CUNWU5Hp2ZhsiG24HX6Tp8NEnQNPUZiymuKsndxZnF2FACmBu0GONEvas9Y/dRuJl
+        Qebdr61P43lPXmdPGPSnE8D5mr9W5NoULnhLpranPsERwgIQQHYA4kVRELx+fewyeZ/g4k
+        rjpIHISOiiEmP7ZjExXT8DxbOYz4ZAlc7tghsGojEEJUR2jWP+a/Z17Gq9M+33ap8EKgJA
+        QYpvcdhiRxJNajXd0hrxbYwLRpftn/STltUqhuIHReA+TEbtIxppjTwaJQf787VxoKjprT
+        iXm4oRUXmFyFo2KlrNY+KH2xTq/ClNew3/4hW0DlyifQ0VTk26nw3imtp8OINg==
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com, michael.riesch@wolfvision.net,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: [PATCH v10 0/3] media: rockchip: Add a driver for Rockchip's camera interface
+Date:   Wed,  8 Nov 2023 17:38:55 +0100
+Message-ID: <cover.1699460637.git.mehdi.djait@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3407:EE_|PH0PR12MB7470:EE_
-X-MS-Office365-Filtering-Correlation-Id: d22b4e98-c9af-409a-0afc-08dbe078f67f
-X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0sVGF3Ti0JYZr0I2jW4Vf34BaE/tinxewAktFboqeS9e4Z0lurLvft1EUKDvUBZd5+JXSnnjwO5zjiT8NqpPTFOkw40qXC5PBsj1Kuj7AmIhIsLOtyGe4IS0Ln47qO1rtQdypCqz1sBjs/QsZej3/ZhULfKGhQpcCo7kNd00DLvkSvPm23It07gvNwHqRIKYj3rdsy7UtevLkpdCUT0mnrWl3gdJW2aRB4Uc9rXGyFQbtZwHhgS5D4jcpqrbl1veQjkGXlb2pMMV688uJ2lYohV/tOmZV3VDZv4ODhw8TsQUbPby2iuBf6XEGc48Gua7skz8h4GhwtTu6LqGKRdPQ9o5O75RHg1kKTkSBxfPM9oWHrBupLfeJCZdBW+suxUf4ALcOJ00d9h6Cw6J2LEF4NvJ1tnYa7x7FEebjzo0GgKdr8Y/kqVmsl87HDyGRyPBuyVptBmHOEzSLFgw9O3pDthRAM/PkL1PqVnHBgSooGfam1Q+mITZ38lnd+ledsGV+N2CqGHQqQo+fW/RVIfmx5DajQJ3eZptRq04vsk+eIiWHIKnbTJTcsZbr+6/8v3gnB3TsJV/1+oz6D1W2+Gz6StI0RdJEXHz6ldXAqkGTrCu5tEzw1S2brWa7DF0hCXJ/BRZbPF5ScmFvnx+bKuU4A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3407.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(346002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(4744005)(2906002)(41300700001)(478600001)(316002)(66946007)(66476007)(38100700002)(8676002)(4326008)(36756003)(66556008)(110136005)(8936002)(6486002)(31686004)(86362001)(5660300002)(44832011)(31696002)(2616005)(6506007)(6666004)(26005)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVR6dXpySWZMNFMva1A5UHRXYTV2ekpnbW9XMm00M3F6Skw2Zmc0V0ZicW9t?=
- =?utf-8?B?K2dYM2FxbEZvejVQSDd2dGxOc0ZobEtrQzlPcnJ6YzF0Z1VhR1dIcXZlZVRG?=
- =?utf-8?B?UjYyRFBjSXdhUjIrd2wxUzV5ckg4WG1yaHBtYU9ieW1hR2FNdkI3aU12eXFW?=
- =?utf-8?B?RHZJckkzdUZuVjVlTFYrakUvMU16cVNrMm5VKytVNHNFTURLMjNidmh2SWFR?=
- =?utf-8?B?VVhaSENQTnJjWUhnQTByczZXaVVZQnhYQ3RWTjBNQnR2QlRtY1JOamhBT2NV?=
- =?utf-8?B?bENLLytVNkltQ1FNRUp2REQwOXhSVWt1M3VnSXdLdFJaSnlpMHUzYWhiMEZj?=
- =?utf-8?B?bkVWZWZ4eGVZeTlNeXRlaFdxb0lkTSs2d2t2TFNrVFM4Z01SWGhRZTFDQ3Iy?=
- =?utf-8?B?SjlSbkR6ZWxkYnpUSjhqSDhLT2s3OHZTWmlwNURHOUZJZ0x3bUNDazJIM0I3?=
- =?utf-8?B?VzA5UU9LbVFJK2RjM0JBak9rYW5xK2NoNHJTVkVEcTNTaGZLZmRDbThwLzd5?=
- =?utf-8?B?TFhyQ2MyQXNGUzREbVJyUWQ3SUpTdDU4cjNMR1N3WVhyQzQ4WEZ3MmZ0VGRG?=
- =?utf-8?B?dFJ4YnpGbnVwNzBFZkVmbXpLeW5qY1ZrbXU2MVNUM0QwVXp3M29zelBIRXpz?=
- =?utf-8?B?ZDU0L3A0SmtzRHpJaDlNcDhJNXl3TlFrNmwvaEl5WmtkeTlxamp2UnRUWFJM?=
- =?utf-8?B?a1BtdUcwaGN0WitQLys0N1BZa3F0Zy9MUmgxWDVEa0s4VC9Xd2gzejV0VXc2?=
- =?utf-8?B?MFJHT3NZR3RXSnFYVVpPL0krdVhWQU5zTXIyTkd5TWRBZDdIcm90NmFGaU02?=
- =?utf-8?B?Y2UxUitoSFlIeEgybXYveFlwT0lxQnBrd0dqY1Z1MmE2bFlkR1UzOHNYU0ZI?=
- =?utf-8?B?ckhOWU50ejV5ZGlLT2RxUjJ4d0NGc0JlVzlWcXZGMXZMRVhvRStNQk8xM3Fi?=
- =?utf-8?B?ZzgyZGRtL3hRMTRUTEF6QUx0d2hYUjF2aUtWODUvdmw4QW11QWV2aHVYemUy?=
- =?utf-8?B?NEsrWENJaDZLem0vYm1ycUM3N1JUTnFPVXJnZGhXRGZpbXRmQmJkTFZGNmdF?=
- =?utf-8?B?YlpjQk1BMTFlQy94RC84ejJ3YjZBdXlmYmZsNXpWNmYrZXY5TXp5QS9obldq?=
- =?utf-8?B?ZXpSS1BBU3pWTlc5Z2Zza2FRL1plNXRhL3F2Z0VRNVJKMjh2VWxOWUo1cVpN?=
- =?utf-8?B?TVFnZWJLSk9BbTJQelp3MkI0ZXFOMkZkRUFFTW9YMHEvenlUT3hwOTU1RzVX?=
- =?utf-8?B?YVVHeStFRWFZb2tLVTRNb2xlVU9Ccmh4SGlTQ004MVpiVW5VaDZyMHVpNGRI?=
- =?utf-8?B?a2RlT2hvRlZoRXhVNzlCN0d4ZzhvcGd1Q2c3RFRidTZyc0ZVL0VJa0ZwN3JL?=
- =?utf-8?B?TjloMlJlSDRZQTdsdk1ONEhoVWdzY3ZyRWtacTNuV0dMSlAxNFBua1U0VHlS?=
- =?utf-8?B?MDNRcUIvcThrMXhyYUtUTFZMRVdQb0lwWkZMQk5SK05zc2d1RWFkYkw1UkxQ?=
- =?utf-8?B?ck9SMzI1QTdMQlprd1RydUFXenBDV3k0cFB5Slk3bGhmRHZJMDhwVFJodlJa?=
- =?utf-8?B?TTZNRzZxY3lRYUJwbHlNM2tMOVBoaFJsZVRFaUV6YVBqQURQUjRsamxCT01u?=
- =?utf-8?B?WlkyS05rd0ZUVkRmVEUxcE5vRVhjVE54TFFQUXVnNEFSQW94K25JcFd3VUp2?=
- =?utf-8?B?UTRCclNQbDNndmhRY0FqUFNUcENHb2hreWQvVVFLdTZQdFFCb1AvcVRPeEps?=
- =?utf-8?B?K2RHSHFHS2VWMlo0Q2laS0c4L1Z4ZnMzTnVmSHJGWVAyRSthNU8vbDFDKzN4?=
- =?utf-8?B?bC9qVTBaT3ZBeGxnWWdFc2JrdUlIL2dmaldlcWNrcmlGU3FoZVFqQXBObGRL?=
- =?utf-8?B?UzFPNGhHVjNlSW1ISVRwdU01VkNYOFRWa1pzQXpEaUhsbXVXbWdzL2VxaXhh?=
- =?utf-8?B?dTd0SCtWaXdMMnFNRitDbmp4OWtGLzFmTC8rRjBDL2s4aEtXYWh5MGlmOHoy?=
- =?utf-8?B?TUpaMjFKY2dJTEhLUjRMeUszNDJqRzU4VGZNbERUOVJrTHhUblZaR2JJdEYw?=
- =?utf-8?B?TzlEVjFTR3FHbTVxVXh5YS96QVFqUk1pVzdnMzRQVTI4U1F3ZUJ6S1BpZi9Z?=
- =?utf-8?Q?8ijE=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d22b4e98-c9af-409a-0afc-08dbe078f67f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3407.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 16:37:14.1787
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /uduTIr9Zcx/smlBjmDipyuBOEZb0doQZaNHkKyMmLFzbaxhGamYRXnM0wGt0e5u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7470
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: mehdi.djait@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> Sorry for not noticing earlier, but if there's another spin, drop 'YAML
->> DT schema for ' from the subject. You already said that with
->> 'dt-bindings'.
->>
->> Acked-by: Rob Herring <robh@kernel.org>
-> 
-> I can fix it while applying. No need to resend, unless there will be
-> more things to fix.
+Hello everyone,
 
-Thank you Krzysztof and Rob.  I'll amend locally and if we have any 
-other fixes re-send otherwise hold off.
+V10 for basic support of the Camera Interface found on the Rockchip PX30 SoC
 
-Regards
-Kris
+Most of this driver was written following the BSP driver from rockchip,
+removing the parts that either didn't fit correctly the guidelines, or
+that couldn't be tested.
+
+In the BSP, this driver is known as the "cif" driver, but this
+controller was renamed to "vip" in the datasheet.
+
+This version of the driver supports ONLY the parallel interface BT656
+and was tested/implemented using an SDTV video decoder.
+
+media_tree, base-commit: 94e27fbeca27d8c772fc2bc807730aaee5886055
+
+V9 => V10:
+cif/capture.c cif/dev.c cif/dev.h:
+as suggested by Paul:
+- ensured that the lock is still being held when accessing
+  stream->buffs[0,1]
+- adjusted the comment explaining why the spinlock is used
+
+as suggested by Michael:
+- made the IRQ requested SHARED: the cif shares the IRQ with the io_mmu
+
+rockchip,rk3066-cif.yaml:
+- dropped the rk3066-cif compatible but kept the name and added the
+  reason for this in the commit msg: the name of the file rk3066 is the first
+  Rockchip SoC generation that uses cif instead of the px30 which is just one
+  of the many iterations of the unit.
+
+V8 => V9:
+cif/capture.c cif/dev.c cif/dev.h:
+as suggested by Paul:
+- changed the name from "vip" back to "cif"
+- removed the scratch buffer and added frame dropping
+- removed mplane, only single plane formats are supported anyway
+- adjusted the Kconfig
+- added the match_data to the stream struct
+- some cosmetics, and error return codes changes
+
+as suggested by Michael:
+- changed the writel and readl helpers to be inline functions and
+  changed the name
+- fixed typos in the commit message
+- changed the cif_device struct element "sensor" to "remote"
+
+rockchip,rk3066-cif.yaml:
+- changed the compatible rockchip,px30-vip to rockchip,rk3066-cif:
+  rk3066 is the earliest Rockchip SoC that uses cif and it is the
+  first model starting the RK30 lineup.
+- changed the node name to video-capture
+- adjusted the description
+
+V7 => V8:
+vip/capture.c:
+- fixed a warning: unused variable reported by the kernel test robot
+
+V6 => V7:
+vip/capture.c vip/dev.c vip/dev.h
+- renamed all struct rk_vip_dev dev => struct rk_vip_dev vip_dev
+- added some error when rk_vip_get_buffer() returns NULL
+- removed a WARN_ON
+- made the irq NOT shared
+- dropped of_match_ptr
+- added the rk_vip_get_resource() function
+
+rockchip,px30-vip.yaml:
+- changed filename to match the compatible
+- dropped the mention of the other rockchip SoC in the dt-binding
+  description and added a more detailed description of VIP
+- removed unused labels in the example
+
+V5[1] => V6:
+vip/capture.c vip/dev.c vip/dev.h
+- added a video g_input_status subdev call, V4L2_IN_CAP_STD and the
+  supported stds in rk_vip_enum_input callback
+- added rk_vip_g_std, rk_vip_s_std and rk_vip_querystd callbacks
+- added the supported video_device->tvnorms
+- s_std will now update the format as this depends on the standard
+  NTSC/PAL (as suggested by Hans in [1])
+- removed STD_ATSC
+- moved the colorimetry information to come from the subdev
+- removed the core s_power subdev calls
+- dropped cropping in rk_vip_stream struct
+
+rockchip-vip.yaml:
+- fixed a mistake in the name of third clock plckin -> plck
+- changed the reg maxItems 2 -> 1
+
+[1] https://lore.kernel.org/linux-media/20201229161724.511102-1-maxime.chevallier@bootlin.com/
+
+I used v4l-utils with HEAD: commit 3d6682746de535d1f7aa71b43a30af40d52a539c
+
+# v4l2-compliance 
+v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
+
+Compliance test for rockchip-cif device /dev/video0:
+
+Driver Info:
+        Driver name      : rockchip-cif
+        Card type        : rockchip-cif
+        Bus info         : platform:ff490000.video-capture
+        Driver version   : 6.6.0
+        Capabilities     : 0x84200001
+                Video Capture
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04200001
+                Video Capture
+                Streaming
+                Extended Pix Format
+Media Driver Info:
+        Driver name      : rockchip-cif
+        Model            : cif
+        Serial           : 
+        Bus info         : platform:ff490000.video-capture
+        Media version    : 6.6.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 6.6.0
+Interface Info:
+        ID               : 0x03000003
+        Type             : V4L Video
+Entity Info:
+        ID               : 0x00000001 (1)
+        Name             : rockchip_cif
+        Function         : V4L2 I/O
+        Pad 0x01000002   : 0: Sink
+          Link 0x02000009: from remote pad 0x1000006 of entity 'tw9900 2-0044' (Digital Video Decoder): Data, Enabled
+
+Required ioctls:
+        test MC information (see 'Media Driver Info' above): OK
+        test VIDIOC_QUERYCAP: OK
+        test invalid ioctls: OK
+
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
+
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+        test VIDIOC_QUERYCTRL: OK (Not Supported)
+        test VIDIOC_G/S_CTRL: OK (Not Supported)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 0 Private Controls: 0
+
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+
+Total for rockchip-cif device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
+
+Mehdi Djait (3):
+  media: dt-bindings: media: add bindings for Rockchip CIF
+  media: rockchip: Add a driver for Rockchip's camera interface
+  arm64: dts: rockchip: Add the camera interface
+
+ .../bindings/media/rockchip,rk3066-cif.yaml   |   94 ++
+ MAINTAINERS                                   |    7 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/rockchip/Kconfig       |    1 +
+ drivers/media/platform/rockchip/Makefile      |    1 +
+ drivers/media/platform/rockchip/cif/Kconfig   |   13 +
+ drivers/media/platform/rockchip/cif/Makefile  |    3 +
+ drivers/media/platform/rockchip/cif/capture.c | 1152 +++++++++++++++++
+ drivers/media/platform/rockchip/cif/dev.c     |  289 +++++
+ drivers/media/platform/rockchip/cif/dev.h     |  139 ++
+ drivers/media/platform/rockchip/cif/regs.h    |  192 +++
+ 11 files changed, 1903 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+ create mode 100644 drivers/media/platform/rockchip/cif/Kconfig
+ create mode 100644 drivers/media/platform/rockchip/cif/Makefile
+ create mode 100644 drivers/media/platform/rockchip/cif/capture.c
+ create mode 100644 drivers/media/platform/rockchip/cif/dev.c
+ create mode 100644 drivers/media/platform/rockchip/cif/dev.h
+ create mode 100644 drivers/media/platform/rockchip/cif/regs.h
+
+-- 
+2.41.0
+
