@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2A37E6003
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B257E6015
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjKHVe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S230437AbjKHVpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjKHVe1 (ORCPT
+        with ESMTP id S229611AbjKHVpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:34:27 -0500
+        Wed, 8 Nov 2023 16:45:09 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D8A1FCE;
-        Wed,  8 Nov 2023 13:34:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6EC12C433C7;
-        Wed,  8 Nov 2023 21:34:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD462586;
+        Wed,  8 Nov 2023 13:45:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A8FF4C433C8;
+        Wed,  8 Nov 2023 21:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699479265;
-        bh=gLxSowCsfCRzMHFEn1leBol01qkTRz7p9BJBOhTwo34=;
+        s=k20201202; t=1699479906;
+        bh=QSSdx472jFekopqxWHdmfqwnGekLUnXV5ePAN6sIqZA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=TswYzn34SR5HVKR1FkGsf2MDp5rUMTWplRaV02YCarNi7PPmpw8xqaUolCdq+EXjL
-         QG+e7CZGu7nauDfHOzkk3UvnX0yEBWqeQA3txWySANhWiRImV0iGl4zfk8JQjRKYeW
-         SBpi7W+1HLSAzJBfYjsi0L8Tm9Cwfcd3yAUD+7mzbKg8K9sMhfq0p3SsSdks+Z8zmU
-         +F1dKJU/ulwxM4UQepnas3D+QqSlJmw3USDGSgl+pGhi0ZIARvjBGs8xSeoDKUZDcZ
-         dFkFwALK9RmaOSaqNnhEJV01XX9HCwh5ZuGZdRa5x7TGJ2iVouk0J/iD5t85h4QbWs
-         LuSdlXPiLGdiA==
+        b=Gzdkp9f6qnWyn5pF86GTmO/SokWOLXKknnDj+R0+wgZNcREHd6JOO49SU+tNJkBjk
+         DBRnuTiD6crzNkQ5hvMGvm9X5DDI1g1pF0agnJunl8icOG+FVO94UeZY9kY6ouJWiF
+         4rogODhHkKiJtJAUkoXrk5uUgax6vRcIUbCSkGmM0sm5P6lbvZ5tUmJ16mgHgPZ9sz
+         6cfhMmgxkHPRJJUqQbM4ANzINXyLHTm2ZCwNe0Pqf0ZRXsJUem+tvNYuYoHsPCvUcG
+         X81LVAG71uDedB1+Fsbo8cfx1MusyooDy/DYMSIYvaMJz0/Cz0g6ylA7Z5lfJol8jn
+         XTInRCJT4aP4w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D8ABE00081;
-        Wed,  8 Nov 2023 21:34:25 +0000 (UTC)
-Subject: Re: [GIT PULL] more s390 updates for 6.7 merge window
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 940EBE00081;
+        Wed,  8 Nov 2023 21:45:06 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull NFS client updates for Linux 6.7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01699475581-ext-3562@work.hours>
-References: <your-ad-here.call-01699475581-ext-3562@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01699475581-ext-3562@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.7-2
-X-PR-Tracked-Commit-Id: 02e790ee3077c0571794d0ab8f71413edbe129cc
+In-Reply-To: <0c5dc383d262d49f842a76893b1efc2545cfe9ce.camel@hammerspace.com>
+References: <0c5dc383d262d49f842a76893b1efc2545cfe9ce.camel@hammerspace.com>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <0c5dc383d262d49f842a76893b1efc2545cfe9ce.camel@hammerspace.com>
+X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.7-1
+X-PR-Tracked-Commit-Id: f003a717ae9086b1e8a4663124a96862df7282e7
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1995a536702921f000acda2bed645f1fe0e7ee5b
-Message-Id: <169947926537.28494.9947968642163792352.pr-tracker-bot@kernel.org>
-Date:   Wed, 08 Nov 2023 21:34:25 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+X-PR-Merge-Commit-Id: 6bc986ab839c844e78a2333a02e55f02c9e57935
+Message-Id: <169947990658.4309.16944282634253739549.pr-tracker-bot@kernel.org>
+Date:   Wed, 08 Nov 2023 21:45:06 +0000
+To:     Trond Myklebust <trondmy@hammerspace.com>
+Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 8 Nov 2023 21:33:01 +0100:
+The pull request you sent on Wed, 8 Nov 2023 20:23:18 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.7-2
+> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.7-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1995a536702921f000acda2bed645f1fe0e7ee5b
+https://git.kernel.org/torvalds/c/6bc986ab839c844e78a2333a02e55f02c9e57935
 
 Thank you!
 
