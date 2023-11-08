@@ -2,214 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FFE7E5E75
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116467E5E7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbjKHTTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 14:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S229907AbjKHTY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 14:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjKHTTm (ORCPT
+        with ESMTP id S229558AbjKHTYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 14:19:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D17210E;
-        Wed,  8 Nov 2023 11:19:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699471180; x=1731007180;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9LP5XzsexOTRXF8If2u9iDZg0YN5GJpyCU4qN42T1QY=;
-  b=eviq/k9LPhVcTii1OITJOUS0ntBXtTF2ll3vzkbumC7Lmrugxvh27JXG
-   /+PF1wIxedc/kZPoXyXJV312GAo+q4495ltXVTGK0aBo2EPPHmqhD+hza
-   D8B7A99lrbfL4J2fbNg3lItPvcj1854Xm4ilgITfafXnHX9Jc7tnLvXPq
-   YXnp2cnc2xBJAfCXA3CizIkihjIVtnypGwQK8Yyrv3LcP1W+nbY6xsyiu
-   gBmqnNXD3cqrnAKJuWqF8SVH5UhD8o41BDkbMKhUNC2Ut2qGyskGvhBZr
-   M63a33whpaZR0H4wIyFftzcLYH92T3WRZcMdGxurnG747pK/8D9nK6/eo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="454142437"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="454142437"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:19:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="766735234"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="766735234"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:19:39 -0800
-Date:   Wed, 8 Nov 2023 11:19:37 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v10 4/8] x86/resctrl: Split the rdt_domain and
- rdt_hw_domain structures
-Message-ID: <ZUvfSbnOY+niAr+e@agluck-desk3>
-References: <20231020213100.123598-1-tony.luck@intel.com>
- <20231031211708.37390-1-tony.luck@intel.com>
- <20231031211708.37390-5-tony.luck@intel.com>
- <51332bf8-d641-4a89-bcec-60b849fc6a34@intel.com>
+        Wed, 8 Nov 2023 14:24:24 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2051.outbound.protection.outlook.com [40.107.9.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4D92110
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 11:24:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nwMe9LIUrRY+MtHLNfmphTmkrn9/0XCazHhu4wdNh4rJEZ7it1WQ6p1xo6X7Ay3xKOOb/ZHiKCE2Fjt8Cf4uGZ4CJ72iFeIYKOoYuhrEVg3A4w76ahlAW4zp/YdzOYuZg9LTYUZvwGFV9iQTvs1mar/1MBjMRj0jxIkIswbSWMCloxHPxEIOs+kB0CgH39XzRwkoOgD6rCkQiOfYuN4E1zD2hRUYOcwsD7rZsAg2klZQAdaJIP86ANTRwGhKohQC6RtYxWe8EazdJzKzFwpsZeQqb5zI4BqP0NrHzyeY5hS+2jCfQNW3rN1pZStJmkvU6Nc2P6pGxBATHOhZLivQGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6DwVb8YhuxsuY/xYee1qwV/5adninlJEEhT+pd7LjBg=;
+ b=BGwWet8GYCndVDesaKhXAtVYcAvmI9tpOxj1ImsAInO62+y5qjQzJETNsFKIG8nq+oVdTRkYVAPNDdNGbSwlMKspS6Nq++sMqRe873DQYINNR6FFXfNfpxLcpHLQREbtnG0Pm4E4vhpnXoEvlNFx1Q69T0XYnkOdU1gk8DcC4GDdaMecJsQm1tpgz85eDsCwMZNcqHDlzQMY+1RSr1kPz7rMSyLpyPYC1+czvIFwBYJip24WgamdFNEsSEObi18mLLlnrdGyYRU9EuRJV0/RXjYWBx5DII45kKzWxpq9myd+fdpZezGt+Yjkb9r1kkfCT0WWa6lVyCCroR7ZIQTVsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6DwVb8YhuxsuY/xYee1qwV/5adninlJEEhT+pd7LjBg=;
+ b=EJWUjvvtSiBUxYpMhRFNmYHpP17LmJjp37alMl4WFOCh7LCXM1U2B48Vjve/6OiJPiWT8GfpWG4BA+AtL9Mnz8qyZGRCotJjDb4JTHZPwCqQF+amt4YGKYSQbjL8F979/3AlJSzcREBxYiaxmzCPx1+MxYLDaVAmu9+hFmsY9tu9v1+hVKO5jgvbnainUWLzbFtQIX4iFfiwICQrNvQTjM8984slp5cXXMDSz9G8thHWToj7y3l5bU20ak4G/PiBf9YKZ66QS1cHfFeDdsX6MHIjWt5V1pLjNA+W95P09O0d8DSSYv36Wrt6zXhs/IBTiiNDOkcFhCUYM/4mO1a7ng==
+Received: from MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:3d::7) by
+ PR1P264MB3430.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:181::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.18; Wed, 8 Nov 2023 19:24:19 +0000
+Received: from MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::e5c9:fb7b:3f79:6420]) by MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::e5c9:fb7b:3f79:6420%4]) with mapi id 15.20.7002.007; Wed, 8 Nov 2023
+ 19:24:19 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] powerpc: Fix signature of pfn_to_kaddr()
+Thread-Topic: [PATCH] powerpc: Fix signature of pfn_to_kaddr()
+Thread-Index: AQHaELdeM9zt+kl/UkGgrMvMv/szTbBuXTMAgAJzsoA=
+Date:   Wed, 8 Nov 2023 19:24:18 +0000
+Message-ID: <f759f7c1-7795-f444-f531-c76a9f0ef8a2@csgroup.eu>
+References: <20231106-virt-to-pfn-fix-ppc-v1-1-93197a7ccab4@linaro.org>
+ <87ttpyw1ez.fsf@mail.lhotse>
+In-Reply-To: <87ttpyw1ez.fsf@mail.lhotse>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MR1P264MB2980:EE_|PR1P264MB3430:EE_
+x-ms-office365-filtering-correlation-id: 3ae0d7ee-435c-4331-e18a-08dbe0904df7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gZThWTyJ3paxmqA6uvKwg3FspBlYA3cwqygCWgWJQKQO9nkd/X+E7LB/KKCk6KOJhNi6G+mtuoWfV7RPWPO2Ts7xNvN+46+aVwMGe1EJUThcJpzoGcIh7qBFhYEqXPTD2nEv8U0XQuQoQmSEb7u1MYoJnaz6GrniXQF0URUQiDgKYJg3zewHQwgxRot7PFVMShoYMRuQ9yIz/8cW+wD/4/W4s8ZoAVXKaBbbKRXiYui+6lTQ8RZE3ZccohqS1xsH6ZtWgkVvieOIUFizHVl5ODCZPrWT1qsFHerr0VPeMAoXibQ42GoJFeBVqIRhQ2sUJf0BVsC9+gkrARbWY4sUbplcnMm6CcFD7uTm6ZhZj0Q3xsdXIGITyKoCllSln3IrfAm/Dmtrgf8gB+gy5MttnXldZjy4I6ev1uZuYU7ty/3rKNl5z/f7Qf8A4NiE7TXvft9YyE//FWAyxqOnmS8jfkkX/RB1+JI1m1butoomS/UwlAsia/hn4GoeUHUwIjtP0eIGhrqvCkDXC2TKp5u69hqIjalI0gD17lzx6u2r016FVCEZnoJ9hnUK/B9vNMnDbUNs9ncdixQtmu8mawJ6xfdVySwEf+kEeqGOH6FWYe43vCF+aG333Dap+Y3q4oj5L8Pam5uTnZkkNQIUPv+CclqY4qwxtMHYd5mKrZwMFGKgue9OJcpKdBf7WwO55J0foxiGrMc0peDN45yLUjwKVA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(366004)(396003)(136003)(230273577357003)(230173577357003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(8676002)(31686004)(6486002)(478600001)(966005)(4326008)(2906002)(8936002)(5660300002)(41300700001)(110136005)(91956017)(64756008)(54906003)(71200400001)(122000001)(316002)(38100700002)(86362001)(83380400001)(31696002)(6506007)(44832011)(26005)(66556008)(76116006)(66946007)(36756003)(2616005)(66476007)(66446008)(38070700009)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RkJjcWlNaXNVbnkxSzRMYlc0bzd3VE93dkRIcTJWTWNyNkJuWXMySUtrak9S?=
+ =?utf-8?B?ai9IS2dyU0E0SUFwY3piYlByMzlCRER6dHVkMkl5a2NmVXA2bHBacXRQMzhI?=
+ =?utf-8?B?VDYwMXMyS2c3c1NZYUlFU2VSSTlSMlQzZkRsQ21zUVpiV2c5blIzZ09QYVpL?=
+ =?utf-8?B?aVJqc0YyVkJlbmhXR2hlV3N0bGI1RVR0bW0yeFRTa29SK3YyYmt2Mk12NG1Q?=
+ =?utf-8?B?VkFMTHVadFhnTStCcDA3N0hQMHgxNWJkd2RRd0orcysrS2FtUmd4Y21BcTBi?=
+ =?utf-8?B?b0QwSnZVMjhOL1RxUTdNZGNRK2gwREN1eURBUUZBYnZCMm92VFhCMUJTaUs1?=
+ =?utf-8?B?YjNyNkdBajRTMFEzRG1KTDJzMkJiTmVadVhoYmUvTzRNcWVmL3J4SnBnUjVl?=
+ =?utf-8?B?a2pLcndrRk04am1MTjRNOXdzNVVpT0x0am5zd2Jkc2Q3RW5RMURrT1NNdFpk?=
+ =?utf-8?B?NFNxbWtQQWpsd1d3dGRMSnZDNW9QYkRlZEhCOHdDU016OEg0RjlLcU02Vm15?=
+ =?utf-8?B?ZFg4QjNZWiszcDFWcU9JUGhUNmJJRUNUUTZnVFpWeDZZWlE1ZGhZVkZPalJs?=
+ =?utf-8?B?dTFtNnFnZkhiYjRvSzN4dlZ2V2lrb0FJSDg1KzVneHBwUVpXbmdIQ09GYkJs?=
+ =?utf-8?B?MlMzemI0eUtCRU0vYzdpYUpqWVM4eGZUajVBbktGUlhrbXNGN1N2dEU3dnU3?=
+ =?utf-8?B?VXpuRXNjYjdJM3VSeG4wZy83WTdYTS9nR0kzdjRqMFZxRGFhekJCRXRLeTM3?=
+ =?utf-8?B?UHVmUmJ3MUJBZVNCTC9LZjNnUGNleVZ1N3NYTVZCRW43VDRxTjdYVGNJL2JS?=
+ =?utf-8?B?bG5YRjVuY29QQ1hVMnI2bHQyUFpUSnNBeFBlN2tjNTlKOEFUMmJBZzdZZlBS?=
+ =?utf-8?B?YVlMNTdvd0Y5aEU3Nk1pOS9yajNrbGZCTXZ0SENBU2tJWVBsOC9VVU9vTHZP?=
+ =?utf-8?B?VWZCUFB3Nk0zY3ZBOUtLMG0vcDB0b2JFMnJFcWNNNVdISjZJRFJhQW5DWEFk?=
+ =?utf-8?B?eDJMR2IxT0RRMnA1Rk1HUG8wcmV1S010M1BIdVlPKzcxOU5CQkg1NHFoTnpC?=
+ =?utf-8?B?U3VERE0vK2xubnE3bmdsMWFpRjdTU1pIVW83aVdLRjVMK3NKVFIwVXVSeC9R?=
+ =?utf-8?B?aHhPNXVKTXFBVUQxeGtKalNFdUJMWVZ6UTZySVJhRkhGVGw0L0RsY3Fld1Rk?=
+ =?utf-8?B?TEtnbHZzZzFmQ1Y3K3FLcUVCTnB2T3I1bzRUNlltRkp3eHY0OUk0N2o4RzRv?=
+ =?utf-8?B?bWNhTThHUHFic0VjNnlXYVNvMmpPRHJ3WEd2WXN0N2Z4VEg3ZHJzb0VIY2R2?=
+ =?utf-8?B?QkUxcGZzT2lXZXlYZFAyL1hpZTNXdVNaMFBEZnZLWjFaL2xPVVcxTnAzU0V3?=
+ =?utf-8?B?K0dCOGNQK2hCa2pCREg3eVpud3psVi9MTVdEbXJNVDEvV1ovbVhrWnIyajdh?=
+ =?utf-8?B?REp4allEWmN0VGtXZ2YzamFPMDZ5S0dia3ZoTFpTVEhocDdlSlozckk2Zmpq?=
+ =?utf-8?B?aU05OE41VG1IMU9wZmhlMGFKbTNGVVBRcmVkMXJTQnhmeDJBblFqLzhDc1VR?=
+ =?utf-8?B?akExeFNwa0JpLzVoUThFREI4YWNHY3A1OUM1aXhkTndXbFY2ZEpmRUNockdz?=
+ =?utf-8?B?Tmg4M0lBTkpqa1h5TlRpalM5NzAyaDdzVnQ2Q2c4Kzd5d3NlbGdzL0VIYjdC?=
+ =?utf-8?B?Rk82SStaUkMxdVM0OEZyaXgrd1dTekczeTZ4M0Njd0R3ZnQrZitNeUhVTlJo?=
+ =?utf-8?B?cjZKbWVDbE50RTJXOUxMclZrNHp6S1hFT2kzS1NzUDZSQ3phSFIyYlp5emhx?=
+ =?utf-8?B?YzYwR0k4aDNVL0lIRUlBSW5hY01Ed05ZRlNyODd2SEdjRjBxaGtxYmx0N0Rj?=
+ =?utf-8?B?STdiT2M4WlUvRHJQVkJ1SW9NVmVRcDl5OE13WjdmOFk3aURmYmh2SFVFRk5t?=
+ =?utf-8?B?S0NGd2ZCNjJ5aTNvTTdiNkIvNXFWOE02RTU4TEtheTQ0aFpFNm15Z3VSRENK?=
+ =?utf-8?B?UGVsM29NYkx4WFV2TTY1c1daSm5mUGxIT0w4NFlMUGdjdnZjTVozdzFEVHJw?=
+ =?utf-8?B?eHNnWWs2Wk0zT05SRVg4NWo0NUtLZDZhTzFQQ2k0NnJ1TXNkVzQrSmFIaG9M?=
+ =?utf-8?B?Z0tkUW5iTW1SQzcxNm1lUEdiTGtqYjJsSXo3YnYxcFdXWGVOWXd6anJLZDhI?=
+ =?utf-8?B?Nnc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C21D789BB6617C4E87FBBBF8D16DDAFE@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51332bf8-d641-4a89-bcec-60b849fc6a34@intel.com>
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB2980.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ae0d7ee-435c-4331-e18a-08dbe0904df7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2023 19:24:19.0307
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: i/laF2jsvb9zXug3+l2JLT9/aNRmVzkQDPstnIdxV5kXDkSD3lKZwCsCeyHw/u112RtAiKSti//jzq540lvs27r1fcx3UouzeDWVLjf/rtU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 04:32:56PM -0800, Reinette Chatre wrote:
-> Hi Tony,
-> 
-> On 10/31/2023 2:17 PM, Tony Luck wrote:
-> > The same rdt_domain structure is used for both control and monitor
-> > functions. But this results in wasted memory as some of the fields are
-> > only used by control functions, while most are only used for monitor
-> > functions.
-> > 
-> > Split into separate rdt_ctrl_domain and rdt_mon_domain structures with
-> > just the fields required for control and monitoring respectively.
-> > 
-> > Similar split of the rdt_hw_domain structure into rdt_hw_ctrl_domain
-> > and rdt_hw_mon_domain.
-> > 
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> > Changes since v9
-> > Comment against patch 4, but now fixed in patch #2. cpu_mask
-> > is included in common header.
-> > 
-> >  include/linux/resctrl.h                   | 50 +++++++------
-> >  arch/x86/kernel/cpu/resctrl/internal.h    | 60 ++++++++++------
-> >  arch/x86/kernel/cpu/resctrl/core.c        | 87 ++++++++++++-----------
-> >  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 32 ++++-----
-> >  arch/x86/kernel/cpu/resctrl/monitor.c     | 40 +++++------
-> >  arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  6 +-
-> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 62 ++++++++--------
-> >  7 files changed, 184 insertions(+), 153 deletions(-)
-> > 
-> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> > index 35e700edc6e6..36503e8870cd 100644
-> > --- a/include/linux/resctrl.h
-> > +++ b/include/linux/resctrl.h
-> > @@ -72,7 +72,25 @@ struct rdt_domain_hdr {
-> >  };
-> >  
-> >  /**
-> > - * struct rdt_domain - group of CPUs sharing a resctrl resource
-> > + * struct rdt_ctrl_domain - group of CPUs sharing a resctrl control resource
-> > + * @hdr:		common header for different domain types
-> > + * @cpu_mask:		which CPUs share this resource
-> > + * @plr:		pseudo-locked region (if any) associated with domain
-> > + * @staged_config:	parsed configuration to be applied
-> > + * @mbps_val:		When mba_sc is enabled, this holds the array of user
-> > + *			specified control values for mba_sc in MBps, indexed
-> > + *			by closid
-> > + */
-> > +struct rdt_ctrl_domain {
-> > +	struct rdt_domain_hdr		hdr;
-> > +	struct cpumask			cpu_mask;
-> 
-> This patch did not change what it said it changed.
-
-Reinette,
-
-I'm not sure of the problem. The commit said the patch is splitting the
-rdt_domain structure into rdt_ctrl_domain and rdt_mon_domain.
-
-The piece of the patch where you gave this comment changed like this:
-
-------- Before -------
-/**
- * struct rdt_domain - group of CPUs sharing a resctrl resource
- * @hdr:		common header for different domain types
- * @rmid_busy_llc:	bitmap of which limbo RMIDs are above threshold
- * @mbm_total:		saved state for MBM total bandwidth
- * @mbm_local:		saved state for MBM local bandwidth
- * @mbm_over:		worker to periodically read MBM h/w counters
- * @cqm_limbo:		worker to periodically read CQM h/w counters
- * @mbm_work_cpu:	worker CPU for MBM h/w counters
- * @cqm_work_cpu:	worker CPU for CQM h/w counters
- * @plr:		pseudo-locked region (if any) associated with domain
- * @staged_config:	parsed configuration to be applied
- * @mbps_val:		When mba_sc is enabled, this holds the array of user
- *			specified control values for mba_sc in MBps, indexed
- *			by closid
- */
-struct rdt_domain {
-	struct rdt_domain_hdr		hdr;
-	unsigned long			*rmid_busy_llc;
-	struct mbm_state		*mbm_total;
-	struct mbm_state		*mbm_local;
-	struct delayed_work		mbm_over;
-	struct delayed_work		cqm_limbo;
-	int				mbm_work_cpu;
-	int				cqm_work_cpu;
-	struct pseudo_lock_region	*plr;
-	struct resctrl_staged_config	staged_config[CDP_NUM_TYPES];
-	u32				*mbps_val;
-};
-------- After -------
-/**
- * struct rdt_ctrl_domain - group of CPUs sharing a resctrl control resource
- * @hdr:		common header for different domain types
- * @cpu_mask:		which CPUs share this resource
- * @plr:		pseudo-locked region (if any) associated with domain
- * @staged_config:	parsed configuration to be applied
- * @mbps_val:		When mba_sc is enabled, this holds the array of user
- *			specified control values for mba_sc in MBps, indexed
- *			by closid
- */
-struct rdt_ctrl_domain {
-	struct rdt_domain_hdr		hdr;
-	struct cpumask			cpu_mask;
-	struct pseudo_lock_region	*plr;
-	struct resctrl_staged_config	staged_config[CDP_NUM_TYPES];
-	u32				*mbps_val;
-};
-
-/**
- * struct rdt_mon_domain - group of CPUs sharing a resctrl control resource
- * @hdr:		common header for different domain types
- * @rmid_busy_llc:	bitmap of which limbo RMIDs are above threshold
- * @mbm_total:		saved state for MBM total bandwidth
- * @mbm_local:		saved state for MBM local bandwidth
- * @mbm_over:		worker to periodically read MBM h/w counters
- * @cqm_limbo:		worker to periodically read CQM h/w counters
- * @mbm_work_cpu:	worker CPU for MBM h/w counters
- * @cqm_work_cpu:	worker CPU for CQM h/w counters
- */
-struct rdt_mon_domain {
-	struct rdt_domain_hdr		hdr;
-	unsigned long			*rmid_busy_llc;
-	struct mbm_state		*mbm_total;
-	struct mbm_state		*mbm_local;
-	struct delayed_work		mbm_over;
-	struct delayed_work		cqm_limbo;
-	int				mbm_work_cpu;
-	int				cqm_work_cpu;
-};
------
-
-Which to my eyes looks like exactly what the commit comment says I
-was going to do the in this patch. The old rdt_domain structure has
-been replaced with two structures, with names as described in the commit
-comment. The fields of the orginal structure have been distributed
-betweeen the two new structures based on whether they are used for
-control or monitor functions.
-
-
-What am I missing? (Apart from a silly cut & paste error in the comments
-that I just noticed and will fix now).
-
--Tony
+DQoNCkxlIDA3LzExLzIwMjMgw6AgMDY6NTcsIE1pY2hhZWwgRWxsZXJtYW4gYSDDqWNyaXTCoDoN
+Cj4gTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPiB3cml0ZXM6DQo+PiBU
+aGVyZSBpcyBhIGNvbnN0IGluIHRoZSByZXR1cm5lZCB2YWx1ZSBmcm9tIHBmbl90b19rYWRkcigp
+DQo+PiBidXQgdGhlcmUgYXJlIGNvbnN1bWVycyB0aGF0IHdhbnQgdG8gbW9kaWZ5IHRoZSByZXN1
+bHQNCj4+IGFuZCB0aGUgZ2VuZXJpYyBmdW5jdGlvbiBwZm5fdG9fdmlydCgpIGluIDxhc20tZ2Vu
+ZXJpYy9wYWdlLmg+DQo+PiBkb2VzIGFsbG93IHRoaXMsIHNvIGxldCdzIHJlbGF4IHRoaXMgcmVx
+dWlyZW1lbnQgYW5kIGRvIG5vdA0KPj4gbWFrZSB0aGUgcmV0dXJuZWQgdmFsdWUgY29uc3QuDQo+
+Pg0KPj4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPj4g
+Q2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIwMjMxMTA2MTk0
+MC40cEJybTQ0dS1sa3BAaW50ZWwuY29tLw0KPiAgIA0KPiBJJ20gc3RydWdnbGluZyB0byBjb25u
+ZWN0IHRoZSByZW1vdmFsIG9mIGNvbnN0IHdpdGggdGhvc2UgYnVnIHJlcG9ydHMuDQo+IEl0IGxv
+b2tzIGxpa2UgYWxsIHRob3NlIHdhcm5pbmdzIGFyZSBhYm91dCAweGMwMDAwMDAwMDAwMDAwMDAg
+YmVpbmcNCj4gb3V0c2lkZSB0aGUgcmFuZ2Ugb2YgdW5zaWduZWQgbG9uZyB3aGVuIGJ1aWxkaW5n
+IDMyLWJpdC4NCj4gDQo+IElzIGl0IHRoZSByaWdodCBidWcgcmVwb3J0IGxpbms/DQo+IA0KPiBU
+aGUgY3VycmVudCBzaWduYXR1cmUgb2Y6DQo+IA0KPiAgICBzdGF0aWMgaW5saW5lIGNvbnN0IHZv
+aWQgKnBmbl90b19rYWRkcih1bnNpZ25lZCBsb25nIHBmbikgLi4uDQo+IA0KPiBzZWVtcyBPSyB0
+byBtZS4NCj4gDQo+IEl0IGFsbG93cyBjb2RlIGxpa2U6DQo+IA0KPiAgICBjb25zdCB2b2lkICpw
+ID0gcGZuX3RvX2thZGRyKHBmbik7DQo+ICAgIHArKzsNCj4gDQo+IEJ1dCBlcnJvcnMgZm9yOg0K
+PiANCj4gICAgY29uc3Qgdm9pZCAqcCA9IHBmbl90b19rYWRkcihwZm4pOw0KPiAgICB1bnNpZ25l
+ZCBsb25nICpxID0gcDsNCj4gICAgKnEgPSAwOw0KPiANCj4gICAgZXJyb3I6IGluaXRpYWxpemF0
+aW9uIGRpc2NhcmRzIOKAmGNvbnN04oCZIHF1YWxpZmllciBmcm9tIHBvaW50ZXIgdGFyZ2V0IHR5
+cGUNCj4gDQo+IA0KPiBIYXZpbmcgc2FpZCB0aGF0IGl0IGxvb2tzIGxpa2UgYWxtb3N0IGV2ZXJ5
+IGNhbGxlciBvZiBwZm5fdG9fa2FkZHIoKQ0KPiBjYXN0cyB0aGUgcmVzdWx0IHRvIHVuc2lnbmVk
+IGxvbmcsIHNvIHBvc3NpYmx5IHRoYXQgd291bGQgYmUgdGhlIGJldHRlcg0KPiByZXR1cm4gdHlw
+ZSBpbiB0ZXJtcyBvZiB0aGUgYWN0dWFsIHVzYWdlLiBBbHRob3VnaCB0aGF0IHdvdWxkIGNvbmZs
+aWN0DQo+IHdpdGggX192YSgpIHdoaWNoIHJldHVybnMgdm9pZCAqIDovDQoNCkkgdGhpbmsgdGhl
+IHJldHVybiB0eXBlIGlzIHJpZ2h0LCBhbmQgY2FsbGVycyBzaG91bGQgYmUgZml4ZWQgdG8gYXZv
+aWQgDQp0aGUgY2FzdCB0byB1bnNpZ25lZCBsb25nLg0KDQpBcyBhbiBleGVtcGxlLCB0aGUgb25s
+eSBjb3JlIGdlbmVyaWMgY2FsbGVyIGlzIGthc2FuLCB3aXRoIHRoZSBmb2xsb3dpbmc6DQoNCglz
+dGFydF9rYWRkciA9ICh1bnNpZ25lZCBsb25nKXBmbl90b19rYWRkcihtZW1fZGF0YS0+c3RhcnRf
+cGZuKTsNCglzaGFkb3dfc3RhcnQgPSAodW5zaWduZWQgbG9uZylrYXNhbl9tZW1fdG9fc2hhZG93
+KCh2b2lkICopc3RhcnRfa2FkZHIpOw0KCS4uLg0KCWlmIChXQVJOX09OKG1lbV9kYXRhLT5ucl9w
+YWdlcyAlIEtBU0FOX0dSQU5VTEVfU0laRSkgfHwNCgkJV0FSTl9PTihzdGFydF9rYWRkciAlIEtB
+U0FOX01FTU9SWV9QRVJfU0hBRE9XX1BBR0UpKQ0KCQlyZXR1cm4gTk9USUZZX0JBRDsNCg0KSSB0
+aGluayBzdGFydF9rYWRkciBzaG91bGQgYmUgZGVjbGFyZWQgYXMgdm9pZCogaW5zdGVhZCBvZiAN
+CnVuc2lnbmVkX2xvbmcsIGFuZCB0aGUgY2FzdCBzaG91bGQgb25seSBiZSBwZXJmb3JtZWQgaW5z
+aWRlIHRoZSBXQVJOX09OKCkNCg0KDQpJbiBwb3dlcnBjIHdlIGhhdmUgdm1hbGxvY190b19waHlz
+KCkgd2l0aDoNCg0KCXJldHVybiBfX3BhKHBmbl90b19rYWRkcihwZm4pKSArIG9mZnNldF9pbl9w
+YWdlKHZhKTsNCg0KIEZyb20gbXkgcG9pbnQgb2YgdmlldyB0aGF0J3MgdGhlIGNvcnJlY3Qgd2F5
+IHRvIGdvLCB3aXRoIG5vIGNhc3RzLg0KDQoNCkNocmlzdG9waGUNCg==
