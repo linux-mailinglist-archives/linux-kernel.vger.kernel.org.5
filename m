@@ -2,169 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7827E5F05
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A96DC7E5F0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbjKHUNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 15:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
+        id S229705AbjKHUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 15:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKHUNt (ORCPT
+        with ESMTP id S229554AbjKHUTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 15:13:49 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FE6D7;
-        Wed,  8 Nov 2023 12:13:47 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8K1tG3031733;
-        Wed, 8 Nov 2023 20:13:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=aZOnCNe/MOGyD1ea9B1x0UiaTyqSVLrTMWnFnwhgRBY=;
- b=s/q/FNKne8ZAR8qRwjF2gAaVVa8uZGbznq6l9/7rTD6pwXbFHXw4K4b5toXXL6pvPrlO
- t9npu0+iTZpBfgUI3e7P50rKywz8192LQr6p8bnvD+WiyQNHLxQm/yRM7eqVa2EMmCKp
- g+NnPDGxsvqMcVE9deKGkgFZXQyyDaHuXRba/UWzTAFxtIuWQkbBkVk2mtSnyFcq1FnP
- Ub1jNU/1AwGH/GWcwRxy+lFOrlg1JlUi3LvZ7SiNj5CYy7cTKYmff2zwrT0Dc/NVTDbB
- /JiP3V5mo8k6NdP0KOnoT/Mqx/nMIBIQe8VOTdnnMN0MjYbvpoJTGalR3RnzuPevtsgc Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8h0n0868-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 20:13:45 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8K2kZN001544;
-        Wed, 8 Nov 2023 20:13:32 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8h0n07yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 20:13:32 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8J85RT028363;
-        Wed, 8 Nov 2023 20:11:37 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w22f90y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 20:11:37 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8KBa7921627582
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 20:11:37 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB14558056;
-        Wed,  8 Nov 2023 20:11:36 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BAA05803F;
-        Wed,  8 Nov 2023 20:11:36 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.74.193])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 20:11:35 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Harald Freudenberger <freude@linux.ibm.com>
-Subject: [PATCH v2] s390/vfio-ap: fix sysfs status attribute for AP queue devices
-Date:   Wed,  8 Nov 2023 15:11:30 -0500
-Message-ID: <20231108201135.351419-1-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 8 Nov 2023 15:19:31 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794EE2126;
+        Wed,  8 Nov 2023 12:19:29 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 28E6940E014B;
+        Wed,  8 Nov 2023 20:19:27 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id s5bZ6vUXjwC1; Wed,  8 Nov 2023 20:19:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699474764; bh=p3oNlV39zW+VkL07Q/wVe7gatTo8JHkNdexu2jQ6/hw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KaaFW83vgNee41ulVZxpEViUksXxIlY5aDDMYQRhwTFo+0WzrIyKqsnHhW7fs+PKe
+         lu2Mm3p9D1fQaFMLcPhsXhk9mksRX34/yj27ov71NrfDbYlJNsxdX5GwzUyLEj5Ih9
+         w1UdfcrLxCvLzeSTV7gyozY2LIg5d2+xMg16mgxdO3ZKZwL/QuX7UwUHokNkIw3qaT
+         yyds7aWs+vhOwC5CxgFz4/CDsdUt7BYNqj0letNrkktNL6fSUrRb+kDZppHvLV0/UK
+         mEB/efv3OP/30SH7OhkQjBcxVHJ0xAe4g+PjhnSxKPAdfTg+VXDPnTbx6r0OpnkoMF
+         /arK6Nc5L+THFi+wNAaHAJp4q4IOUR2zoWpcD9b8AtqphVcfWO0kIM2swyv/9jM3qF
+         InZVaXEUMoK+6yWK71vnoHGew2wk1Mb3U5za/UYewnd6FOcgLqogROjhIUv2Xjdby6
+         0f+gFtDc1amRnRzsXO08xbKlx2tMdv8pzC/MCOCLOu1S1aNoqdjTl5d9k/Y3v1BIj3
+         np31c5Nvzp7Cdk6qRAU+N0hLduMJUxFeRQ9f8hf40v1G7Aip1JwoJQmLlqOT2B55np
+         6cuN6BOE2QK6eKwFk8fehDWDEmKg84vtsBsOuXiJIUiwTrqzKLagUqgVPqNobZB2GU
+         azPoapBxqnSmgpobzmpPw27Y=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EFB0440E0031;
+        Wed,  8 Nov 2023 20:19:11 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 21:19:05 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Avadhut Naik <avadhut.naik@amd.com>
+Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
+        james.morse@arm.com, tony.luck@intel.com,
+        gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alexey.kardashevskiy@amd.com,
+        yazen.ghannam@amd.com, avadnaik@amd.com
+Subject: Re: [RESEND v5 1/4] ACPI: APEI: EINJ: Refactor
+ available_error_type_show()
+Message-ID: <20231108201905.GCZUvtOSDkVqFPBmfk@fat_crate.local>
+References: <20231107213647.1405493-1-avadhut.naik@amd.com>
+ <20231107213647.1405493-2-avadhut.naik@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zBsYuOn8gNwAkXyetzopGQaEtx5Z8XVr
-X-Proofpoint-GUID: Kn2tOCvN-1ImytAvbTpdIpLJljF_Qrcp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_09,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 suspectscore=0 bulkscore=0 impostorscore=0 malwarescore=0
- phishscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080166
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231107213647.1405493-2-avadhut.naik@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'status' attribute for AP queue devices bound to the vfio_ap device
-driver displays incorrect status when the mediated device is attached to a
-guest, but the queue device is not passed through. In the current
-implementation, the status displayed is 'in_use' which is not correct; it
-should be 'assigned'. This can happen if one of the queue devices
-associated with a given adapter is not bound to the vfio_ap device driver.
-For example:
+On Tue, Nov 07, 2023 at 03:36:44PM -0600, Avadhut Naik wrote:
+> +static struct { u32 mask; const char *str; } const einj_error_type_string[] = {
+> +	{BIT(0), "Processor Correctable"},
+> +	{BIT(1), "Processor Uncorrectable non-fatal"},
+> +	{BIT(2), "Processor Uncorrectable fatal"},
+> +	{BIT(3), "Memory Correctable"},
+> +	{BIT(4), "Memory Uncorrectable non-fatal"},
+> +	{BIT(5), "Memory Uncorrectable fatal"},
+> +	{BIT(6), "PCI Express Correctable"},
+> +	{BIT(7), "PCI Express Uncorrectable non-fatal"},
+> +	{BIT(8), "PCI Express Uncorrectable fatal"},
+> +	{BIT(9), "Platform Correctable"},
+> +	{BIT(10), "Platform Uncorrectable non-fatal"},
+> +	{BIT(11), "Platform Uncorrectable fatal"},
+> +	{BIT(12), "CXL.cache Protocol Correctable"},
+> +	{BIT(13), "CXL.cache Protocol Uncorrectable non-fatal"},
+> +	{BIT(14), "CXL.cache Protocol Uncorrectable fatal"},
+> +	{BIT(15), "CXL.mem Protocol Correctable"},
+> +	{BIT(16), "CXL.mem Protocol Uncorrectable non-fatal"},
+> +	{BIT(17), "CXL.mem Protocol Uncorrectable fatal"},
 
-Queues listed in /sys/bus/ap/drivers/vfio_ap:
-14.0005
-14.0006
-14.000d
-16.0006
-16.000d
+Might as well put spaces between the '{' and '}' brackets for better
+readability.
 
-Queues listed in /sys/devices/vfio_ap/matrix/$UUID/matrix
-14.0005
-14.0006
-14.000d
-16.0005
-16.0006
-16.000d
+>  static int available_error_type_show(struct seq_file *m, void *v)
+> @@ -607,8 +607,9 @@ static int available_error_type_show(struct seq_file *m, void *v)
+>  	if (rc)
+>  		return rc;
+>  	for (int pos = 0; pos < ARRAY_SIZE(einj_error_type_string); pos++)
+> -		if (available_error_type & BIT(pos))
+> -			seq_puts(m, einj_error_type_string[pos]);
+> +		if (available_error_type & einj_error_type_string[pos].mask)
 
-Queues listed in /sys/devices/vfio_ap/matrix/$UUID/guest_matrix
-14.0005
-14.0006
-14.000d
+Call that variable simply "error_type". Those are simple functions, one
+can see that it is the available error type.
 
-The reason no queues for adapter 0x16 are listed in the guest_matrix is
-because queue 16.0005 is not bound to the vfio_ap device driver, so no
-queue associated with the adapter is passed through to the guest;
-therefore, each queue device for adapter 0x16 should display 'assigned'
-instead of 'in_use', because those queues are not in use by a guest, but
-only assigned to the mediated device.
+> +			seq_printf(m, "0x%08x\t%s\n", einj_error_type_string[pos].mask,
+> +				   einj_error_type_string[pos].str);
+>  
+>  	return 0;
 
-Let's check the AP configuration for the guest to determine whether a
-queue device is passed through before displaying a status of 'in_use'.
+But those are just nitpicks.
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Acked-by: Halil Pasic <pasic@linux.ibm.com>
-Acked-by: Harald Freudenberger <freude@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 4db538a55192..6e0a79086656 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1976,6 +1976,7 @@ static ssize_t status_show(struct device *dev,
- {
- 	ssize_t nchars = 0;
- 	struct vfio_ap_queue *q;
-+	unsigned long apid, apqi;
- 	struct ap_matrix_mdev *matrix_mdev;
- 	struct ap_device *apdev = to_ap_dev(dev);
- 
-@@ -1983,8 +1984,21 @@ static ssize_t status_show(struct device *dev,
- 	q = dev_get_drvdata(&apdev->device);
- 	matrix_mdev = vfio_ap_mdev_for_queue(q);
- 
-+	/* If the queue is assigned to the matrix mediated device, then
-+	 * determine whether it is passed through to a guest; otherwise,
-+	 * indicate that it is unassigned.
-+	 */
- 	if (matrix_mdev) {
--		if (matrix_mdev->kvm)
-+		apid = AP_QID_CARD(q->apqn);
-+		apqi = AP_QID_QUEUE(q->apqn);
-+		/*
-+		 * If the queue is passed through to the guest, then indicate
-+		 * that it is in use; otherwise, indicate that it is
-+		 * merely assigned to a matrix mediated device.
-+		 */
-+		if (matrix_mdev->kvm &&
-+		    test_bit_inv(apid, matrix_mdev->shadow_apcb.apm) &&
-+		    test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm))
- 			nchars = scnprintf(buf, PAGE_SIZE, "%s\n",
- 					   AP_QUEUE_IN_USE);
- 		else
+Thx.
+
 -- 
-2.41.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
