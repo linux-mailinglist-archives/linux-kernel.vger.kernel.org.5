@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912387E5361
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C89217E5364
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjKHKah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:30:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
+        id S1344193AbjKHKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbjKHKae (ORCPT
+        with ESMTP id S233518AbjKHKbK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:30:34 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E0A1BD5;
-        Wed,  8 Nov 2023 02:30:32 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8AGWAD013720;
-        Wed, 8 Nov 2023 10:30:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=JxD6UsZLe36ltZ0rNgJGKFFWHZcKzNR731kYjwylHyI=;
- b=lRc5JuB61Um9cI4HX3B2T9yFh4HsRazaBA4v2Uy3Cv9Px26aMil6fEiIfKSdUHR2jkMq
- pLqYOZfDlI4xI61Wr5DfAo8+1qrWoZVVbChP/6t9Xi81j3r4p5IWFc88dOaaozXlII5e
- b1m56M5Nt1Hut+mwyPCfpMP9rMtngyVeR5dqWO1E+6UDulv7iT2f0L+iwidE+adSke28
- kDNmNKLiSFPOPp3K/n2BaIVK9OiIy4XIzYhBlSXiTl5H4FU66rFUUcsRXlrV45BNJsKh
- yR/PfAZURcpqR8ZfPIIkk1QWjSu/0wRKAHsbwiQQi0FIrsrQYSAL2iOzi/rznh89+Tf9 Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87xb1k64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:30:31 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8AGmFo015381;
-        Wed, 8 Nov 2023 10:30:31 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87xb1k56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:30:31 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88aJi6014346;
-        Wed, 8 Nov 2023 10:30:29 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w21v2hh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:30:29 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8AUQlq16712262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 10:30:26 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E21920043;
-        Wed,  8 Nov 2023 10:30:26 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0082D20040;
-        Wed,  8 Nov 2023 10:30:26 +0000 (GMT)
-Received: from li-978a334c-2cba-11b2-a85c-a0743a31b510.ibm.com (unknown [9.171.7.102])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 10:30:25 +0000 (GMT)
-Message-ID: <2fb17d9dd20078bc995887a3699dd008403b50ff.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 2/4] KVM: s390: vsie: Fix length of facility list
- shadowed
-From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
-Date:   Wed, 08 Nov 2023 11:30:09 +0100
-In-Reply-To: <20231107181105.3143f8f7@p-imbrenda>
-References: <20231107123118.778364-1-nsg@linux.ibm.com>
-         <20231107123118.778364-3-nsg@linux.ibm.com>
-         <20231107181105.3143f8f7@p-imbrenda>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: CWqPo0BzzopFjjGXcga64nJgDxYb6cCD
-X-Proofpoint-GUID: uKiAAS3c2GRpL9iGBVEc7Vd1gtaLD-Bo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=606
- bulkscore=0 malwarescore=0 adultscore=0 impostorscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080087
+        Wed, 8 Nov 2023 05:31:10 -0500
+Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FDA1BD9
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:31:08 -0800 (PST)
+Received: by mail-lj1-x249.google.com with SMTP id 38308e7fff4ca-2c50cec5d29so56504831fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:31:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699439466; x=1700044266; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VkbdBisJ/PG8hxDlR5ZTMvNYc0Onf1/wmRPSUcltkmk=;
+        b=MhCPuiUTLIZN3/OohpOZYQS2TAfVZkSxpgJO1bwPgAk6jXusf9S8IshTewsSbHnHMr
+         o5Qepf2wi8GpcZC57HM5lalPtnWFtNjvPOSqcyFtqEMgE7ghr4oGab/drnS9LTpruDYC
+         RTkyONK4f5SwA/l5JW3N4qo0SiTmgdEl3md0MPsENkEhyeH0sFNCHvcgxavdOm2NjORd
+         lub4AQHrTtEkaGR42YYpmoHjnLfj3k32ATQF6fH/3Nqhe8ck7N/eyuRx6udawTzcv/Ff
+         MG2kYNNOkFtF1vfYr2SGenaQ6BdqdGnKXQ0C6IxA03lGpRFaroO3P0HjUY0qpCoN1lqs
+         O2ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699439466; x=1700044266;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VkbdBisJ/PG8hxDlR5ZTMvNYc0Onf1/wmRPSUcltkmk=;
+        b=f7Uc022pCvZEQL9t+pF5waHvTI8J2tHvy6rNP8Fnu0y6uun6ZHjyJc1NsObmHXtj4x
+         30eWFzJdpZH23phZmbWoKfueqzUCpp9wZuZySoPcBh+2JFEwMnM6UXtjA2G7vNP6FfrJ
+         +BxlNqQP2p4D06qN3RNI7y0dAQMwgYyN5e6Vo1Iy/aWoxFdoCUjrnAjcQ9YCvytqaOFv
+         QtLCtrPRsGI8YHDlq9lzowBscCxy476m5cqV7ZSfUZqamtZ3nCH4umWSulqRZ3YfGOV9
+         3hy5kwChFRSlPNBdBVGspp91Vp3cFCD96vt659e0Pdl5DFffueZxGr4fHPkY1ZH/aVi1
+         bo4g==
+X-Gm-Message-State: AOJu0YzFKKkyw6/VHE6RdXzeKuhv9WQH8JwQMd+bRpomoAktVr0B/F1u
+        9SwhCH4RS1M9npLllCOB3mdv2ATe+O3QoEU=
+X-Google-Smtp-Source: AGHT+IHiOejIJB4j/kMYXEAKBS0CqfRXqP6xxVZUu/o248ye6eosevondyHOb53GUXWo9jGNKcFm8W9c1/Efo7o=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a2e:b011:0:b0:2bc:b74e:b4a1 with SMTP id
+ y17-20020a2eb011000000b002bcb74eb4a1mr10314ljk.7.1699439466457; Wed, 08 Nov
+ 2023 02:31:06 -0800 (PST)
+Date:   Wed,  8 Nov 2023 10:31:03 +0000
+In-Reply-To: <B4D1A3E2-1AD9-434A-90AC-8D33532D4A1B@kloenk.de>
+Mime-Version: 1.0
+References: <B4D1A3E2-1AD9-434A-90AC-8D33532D4A1B@kloenk.de>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231108103103.524922-1-aliceryhl@google.com>
+Subject: Re: [PATCH RFC 02/20] rust_binder: add binderfs support to Rust binder
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     me@kloenk.de
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org,
+        cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org,
+        jeffv@google.com, joel@joelfernandes.org,
+        linux-kernel@vger.kernel.org, maco@android.com,
+        mattgilbride@google.com, mmaurer@google.com, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, surenb@google.com,
+        tkjos@android.com, wedsonaf@gmail.com
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-07 at 18:11 +0100, Claudio Imbrenda wrote:
-> On Tue,  7 Nov 2023 13:31:16 +0100
-> Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
->=20
-> [...]
->=20
-> > -obj-y	+=3D smp.o text_amode31.o stacktrace.o abs_lowcore.o
-> > +obj-y	+=3D smp.o text_amode31.o stacktrace.o abs_lowcore.o facility.o
-> > =20
-> >  extra-y				+=3D vmlinux.lds
-> > =20
-> > diff --git a/arch/s390/kernel/facility.c b/arch/s390/kernel/facility.c
-> > new file mode 100644
-> > index 000000000000..5e80a4f65363
-> > --- /dev/null
-> > +++ b/arch/s390/kernel/facility.c
->=20
-> I wonder if this is the right place for this?
+Finn Behrens <finn@kloenk.de> writes:
+> On 1 Nov 2023, at 19:01, Alice Ryhl wrote:
+>> +macro_rules! decl_wrapper {
+>> +    ($newname:ident, $wrapped:ty) => {
+>> +        #[derive(Copy, Clone, Default)]
+>> +        #[repr(transparent)]
+>> +        pub(crate) struct $newname($wrapped);
+>> +        // SAFETY: This macro is only used with types where this is ok.
+> 
+> Would it make sense so also annotade this safety requirement on the
+> macro itself?
+> 
+> It is only file private, but could help not overlook it, when using for
+> something new in the same file.
 
-I've wondered the same :D
->=20
-> This function seems to be used only for vsie, maybe you can just move
-> it to vsie.c? or do you think it will be used elsewhere too?
+Sure, I can move the comment.
 
-It's a general STFLE function and if I put it into vsie.c I'm not sure
-that, if the same functionality was required somewhere else, it would be
-found and moved to a common location.
-
-I was also somewhat resistant to calling a double underscore function from
-vsie.c. Of course I could implement it with my own inline asm...
-
-The way I did it seemed nicest, but if someone else has a strong opinion
-I'll defer to that.
->=20
-> [...]
+Alice
 
