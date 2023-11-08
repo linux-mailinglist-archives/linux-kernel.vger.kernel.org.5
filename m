@@ -2,246 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB5C7E5C2A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24567E5C32
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbjKHRQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S232467AbjKHRRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:17:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjKHRQs (ORCPT
+        with ESMTP id S232460AbjKHRRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:16:48 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7291D198D;
-        Wed,  8 Nov 2023 09:16:46 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3A8HGOeO108995;
-        Wed, 8 Nov 2023 11:16:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1699463784;
-        bh=pC2PHqTj6EjEXD7n3F7w1pC0GCTt4w4rj9lwdcAWRw8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=W+ppcYQ24zDbCDfaKQF6R7hKHnAODSd8q3o8SuoFz/Q9KwEFnIwhW6RAo18SCkRqj
-         X5LVgqMBS2bjpEwIVfsMQ80UC5kb+lnv6VLnuaQTuuAAPqIwyLWQlNsRZoNQa2hQya
-         yxE5nzFKcDxXJ3A5WAxnARTuYxUEygYweWiVIeo8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3A8HGOKD031756
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Nov 2023 11:16:24 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 8
- Nov 2023 11:16:23 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 8 Nov 2023 11:16:23 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3A8HGNGS000559;
-        Wed, 8 Nov 2023 11:16:23 -0600
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     DRI Development List <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Jai Luthra <j-luthra@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
-Subject: [PATCH v3 2/2] drivers/tidss: Add support for AM62A7 DSS
-Date:   Wed, 8 Nov 2023 22:46:19 +0530
-Message-ID: <20231108171619.978438-3-a-bhatia1@ti.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231108171619.978438-1-a-bhatia1@ti.com>
-References: <20231108171619.978438-1-a-bhatia1@ti.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Wed, 8 Nov 2023 12:17:22 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CBC1BC3
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:17:20 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7c97d5d5aso95430617b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699463840; x=1700068640; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kCSj1UbyzOjbXH0R7m4jBj84lYAM/3W5HkH+znvBSNE=;
+        b=FN79mwA+PlK/qRWM/hzURoAvQxVOESXTyJdLlVKOdyeR8tVTuvLFEC1P7YMNYZeSYk
+         e0ViiAqHh/6vxBdUos5L0n+SwC+hk6v6OFh6eY3cb6xybDU7aOnw40DEfoI0PLxI7g5N
+         iGT5qqbMt+koELziBN+Rvpy8puwvJ6pawyJox5LMnBXASrhpYP/Oi04AQQgp1XAYq9g1
+         BedZegABFINDPUy+BCkcdVEqUyml2EFIGuQ+q3ECmBWMbWSSpSwihxYoz2gWi7lh6dOA
+         /aFWfBOL4ekumO0c9FQrS1BFPVUunSR7kh5v0bneTCRBL8uejIDsqeB9GBSwBqUSwMfL
+         5DYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699463840; x=1700068640;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kCSj1UbyzOjbXH0R7m4jBj84lYAM/3W5HkH+znvBSNE=;
+        b=sGo5CmgIyd2jG2W6C5XJ6ztXlGeuEXKiycJ4oDFOCFs1pIeHw/gV1QlKd9tgcFq9ic
+         aJyrbOLArXX2qU8rpvbyRPMOrq5svQ5TaS2FoGULVSBvegGAc5eppTUDU4vxHGzctJN7
+         NjIxoKLjVNdGbfkwpNFvWE0gGJ650JZkrbdMkJ6kG4NPLxS5lXj921CJsV4wHdmflxuq
+         jqFA7QJwnWqv8dKE2PocgoZ0rQZhIqVetPFTMnpFCiA90wxC/FeUVPa5ta6ZU+tfKgO9
+         VHAFftaOkAL1q6HWt8NO5JnYNZzRT/2CIX8g1J8TvX9sn8otgKOAMpk3/YbRAjU1/SlS
+         jcFQ==
+X-Gm-Message-State: AOJu0YxB9kedZH4C9amSz5qNwQ4f2FcYjax0aQ4U1eT4nZRdIQg6GxyM
+        SCYqw0KJdc+Zfhcn+HtHyZljD/4UhXX68g==
+X-Google-Smtp-Source: AGHT+IHg8OnCalu393KWNHpQLi1XI+R5dXnCEz2PeSSEdLfES5yxGyVCjHtobXjcKh3wugUZ+PaIL84lnC65OA==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a25:424f:0:b0:da0:cbe9:6bac with SMTP id
+ p76-20020a25424f000000b00da0cbe96bacmr40310yba.11.1699463839917; Wed, 08 Nov
+ 2023 09:17:19 -0800 (PST)
+Date:   Wed,  8 Nov 2023 17:16:56 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231108171656.3444702-1-jackmanb@google.com>
+Subject: [PATCH v3] x86/entry: Avoid redundant CR3 write on paranoid returns
+From:   Brendan Jackman <jackmanb@google.com>
+To:     luto@kernel.org, tglx@linutronix.de, peterz@infradead.org,
+        dave.hansen@linux.intel.com
+Cc:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, laijs@linux.alibaba.com,
+        yosryahmed@google.com, reijiw@google.com, oweisse@google.com,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the DSS controller on TI's AM62A7 SoC in the tidss
-driver.
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-This controller has 2 video pipelines that can render 2 video planes on
-over a screen, using the overlay managers. The output of the DSS comes
-from video port 2 (VP2) in the form of RGB88 DPI signals, while the VP1
-is tied off inside the SoC.
+This path gets used called from:
 
-Also add and use a new type of VP, DISPC_VP_TIED_OFF, for the tied-off
-VP1 of AM62A DSS.
+1. #NMI return.
+2. paranoid_exit (i.e. #MCE, #VC, #DB and #DF return)
 
-Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+Contrary to the implication in commit 21e94459110252 ("x86/mm: Optimize
+RESTORE_CR3"), the kernel never modifies CR3 in any of these exceptions,
+except for switching from user to kernel pagetables under PTI. That
+means that most of the time when returning from an exception that
+interrupted the kernel no CR3 restore is necessary. Writing CR3 is
+expensive on some machines, so this commit avoids redundant writes.
+
+I said "most of the time" because the interrupt might have come during
+kernel entry before the user->kernel CR3 switch or the during exit after
+the kernel->user switch. In the former case skipping the restore might
+actually be fine, but definitely not the latter. So we do still need to
+check the saved CR3 and restore it if it's a user CR3.
+
+Note this code is ONLY used for returning _to kernel code_. So the only
+times where the CR3 write is necessary are in those rather special cases
+mentioned above where we are in kernel _code_ but a userspace CR3.
+
+While changing this logic the macro is given a new name to clarify its
+usage, and a comment that was describing its behaviour at the call site
+is removed.  We can also simplify the code around the SET_NOFLUSH_BIT
+invocation as we no longer need to branch to it from above.
+
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+[Rewrote commit message; responded to review comments]
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
+
 Notes:
-       Changes from V2:
-       * Add new DISPC_VP_TIED_OFF for tied-off video-ports.
+    v1: https://lore.kernel.org/lkml/20230817121513.1382800-1-jackmanb@google.com/
 
-       Changes from V1:
-       * Correctly sort DISPC_AM62A7 macro after DISPC_AM625.
+    v1->v2: Rewrote some comments, added a proper commit message, cleaned up
+        the code per tglx's suggestion.
 
- drivers/gpu/drm/tidss/tidss_dispc.c | 59 +++++++++++++++++++++++++++++
- drivers/gpu/drm/tidss/tidss_dispc.h |  3 ++
- drivers/gpu/drm/tidss/tidss_drv.c   |  1 +
- 3 files changed, 63 insertions(+)
+        I've kept Lai as the Author. If you prefer for the blame to
+        record the last person that touched it then that's also fine
+        though, I can credit Lai as Co-developed-by.
 
-diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
-index 9d9dee7abaef..7af416457c57 100644
---- a/drivers/gpu/drm/tidss/tidss_dispc.c
-+++ b/drivers/gpu/drm/tidss/tidss_dispc.c
-@@ -322,6 +322,60 @@ const struct dispc_features dispc_am625_feats = {
- 	.vid_order = { 1, 0 },
- };
+    v2: https://lore.kernel.org/lkml/20230920150443.1789000-1-jackmanb@google.com/
+
+    v2->v3: Clarified the commit message per Dave's suggestion and renamed the
+        macro. I did not carry PeterZ's ack since I have made some changes.
+
+Thanks for the reviews :)
+
+ arch/x86/entry/calling.h  | 26 ++++++++++----------------
+ arch/x86/entry/entry_64.S |  7 +++----
+ 2 files changed, 13 insertions(+), 20 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index f6907627172b..25cbfba1fe46 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -233,17 +233,19 @@ For 32-bit we have the following conventions - kernel is built with
+ .Ldone_\@:
+ .endm
  
-+const struct dispc_features dispc_am62a7_feats = {
-+	/*
-+	 * if the code reaches dispc_mode_valid with VP1,
-+	 * it should return MODE_BAD.
-+	 */
-+	.max_pclk_khz = {
-+		[DISPC_VP_TIED_OFF] = 0,
-+		[DISPC_VP_DPI] = 165000,
-+	},
-+
-+	.scaling = {
-+		.in_width_max_5tap_rgb = 1280,
-+		.in_width_max_3tap_rgb = 2560,
-+		.in_width_max_5tap_yuv = 2560,
-+		.in_width_max_3tap_yuv = 4096,
-+		.upscale_limit = 16,
-+		.downscale_limit_5tap = 4,
-+		.downscale_limit_3tap = 2,
-+		/*
-+		 * The max supported pixel inc value is 255. The value
-+		 * of pixel inc is calculated like this: 1+(xinc-1)*bpp.
-+		 * The maximum bpp of all formats supported by the HW
-+		 * is 8. So the maximum supported xinc value is 32,
-+		 * because 1+(32-1)*8 < 255 < 1+(33-1)*4.
-+		 */
-+		.xinc_max = 32,
-+	},
-+
-+	.subrev = DISPC_AM62A7,
-+
-+	.common = "common",
-+	.common_regs = tidss_am65x_common_regs,
-+
-+	.num_vps = 2,
-+	.vp_name = { "vp1", "vp2" },
-+	.ovr_name = { "ovr1", "ovr2" },
-+	.vpclk_name =  { "vp1", "vp2" },
-+	/* VP1 of the DSS in AM62A7 SoC is tied off internally */
-+	.vp_bus_type = { DISPC_VP_TIED_OFF, DISPC_VP_DPI },
-+
-+	.vp_feat = { .color = {
-+			.has_ctm = true,
-+			.gamma_size = 256,
-+			.gamma_type = TIDSS_GAMMA_8BIT,
-+		},
-+	},
-+
-+	.num_planes = 2,
-+	/* note: vid is plane_id 0 and vidl1 is plane_id 1 */
-+	.vid_name = { "vid", "vidl1" },
-+	.vid_lite = { false, true, },
-+	.vid_order = { 1, 0 },
-+};
-+
- static const u16 *dispc_common_regmap;
+-.macro RESTORE_CR3 scratch_reg:req save_reg:req
++/* Restore CR3 from a kernel context. May restore a user CR3 value. */
++.macro PARANOID_RESTORE_CR3 scratch_reg:req save_reg:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
  
- struct dss_vp_data {
-@@ -824,6 +878,7 @@ dispc_irq_t dispc_read_and_clear_irqstatus(struct dispc_device *dispc)
- 	case DISPC_K2G:
- 		return dispc_k2g_read_and_clear_irqstatus(dispc);
- 	case DISPC_AM625:
-+	case DISPC_AM62A7:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
- 		return dispc_k3_read_and_clear_irqstatus(dispc);
-@@ -840,6 +895,7 @@ void dispc_set_irqenable(struct dispc_device *dispc, dispc_irq_t mask)
- 		dispc_k2g_set_irqenable(dispc, mask);
- 		break;
- 	case DISPC_AM625:
-+	case DISPC_AM62A7:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
- 		dispc_k3_set_irqenable(dispc, mask);
-@@ -1331,6 +1387,7 @@ void dispc_ovr_set_plane(struct dispc_device *dispc, u32 hw_plane,
- 					x, y, layer);
- 		break;
- 	case DISPC_AM625:
-+	case DISPC_AM62A7:
- 	case DISPC_AM65X:
- 		dispc_am65x_ovr_set_plane(dispc, hw_plane, hw_videoport,
- 					  x, y, layer);
-@@ -2250,6 +2307,7 @@ static void dispc_plane_init(struct dispc_device *dispc)
- 		dispc_k2g_plane_init(dispc);
- 		break;
- 	case DISPC_AM625:
-+	case DISPC_AM62A7:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
- 		dispc_k3_plane_init(dispc);
-@@ -2357,6 +2415,7 @@ static void dispc_vp_write_gamma_table(struct dispc_device *dispc,
- 		dispc_k2g_vp_write_gamma_table(dispc, hw_videoport);
- 		break;
- 	case DISPC_AM625:
-+	case DISPC_AM62A7:
- 	case DISPC_AM65X:
- 		dispc_am65x_vp_write_gamma_table(dispc, hw_videoport);
- 		break;
-diff --git a/drivers/gpu/drm/tidss/tidss_dispc.h b/drivers/gpu/drm/tidss/tidss_dispc.h
-index 33ac5ad7a423..086327d51a90 100644
---- a/drivers/gpu/drm/tidss/tidss_dispc.h
-+++ b/drivers/gpu/drm/tidss/tidss_dispc.h
-@@ -54,12 +54,14 @@ enum dispc_vp_bus_type {
- 	DISPC_VP_DPI,		/* DPI output */
- 	DISPC_VP_OLDI,		/* OLDI (LVDS) output */
- 	DISPC_VP_INTERNAL,	/* SoC internal routing */
-+	DISPC_VP_TIED_OFF,	/* Tied off / Unavailable */
- 	DISPC_VP_MAX_BUS_TYPE,
- };
+-	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+-
+ 	/*
+-	 * KERNEL pages can always resume with NOFLUSH as we do
+-	 * explicit flushes.
++	 * If CR3 contained the kernel page tables at the paranoid exception
++	 * entry, then there is nothing to restore as CR3 is not modified while
++	 * handling the exception.
+ 	 */
+ 	bt	$PTI_USER_PGTABLE_BIT, \save_reg
+-	jnc	.Lnoflush_\@
++	jnc	.Lend_\@
++
++	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
  
- enum dispc_dss_subrevision {
- 	DISPC_K2G,
- 	DISPC_AM625,
-+	DISPC_AM62A7,
- 	DISPC_AM65X,
- 	DISPC_J721E,
- };
-@@ -88,6 +90,7 @@ struct dispc_features {
+ 	/*
+ 	 * Check if there's a pending flush for the user ASID we're
+@@ -251,20 +253,12 @@ For 32-bit we have the following conventions - kernel is built with
+ 	 */
+ 	movq	\save_reg, \scratch_reg
+ 	andq	$(0x7FF), \scratch_reg
+-	bt	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+-	jnc	.Lnoflush_\@
+-
+ 	btr	\scratch_reg, THIS_CPU_user_pcid_flush_mask
+-	jmp	.Lwrcr3_\@
++	jc	.Lwrcr3_\@
  
- extern const struct dispc_features dispc_k2g_feats;
- extern const struct dispc_features dispc_am625_feats;
-+extern const struct dispc_features dispc_am62a7_feats;
- extern const struct dispc_features dispc_am65x_feats;
- extern const struct dispc_features dispc_j721e_feats;
+-.Lnoflush_\@:
+ 	SET_NOFLUSH_BIT \save_reg
  
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-index 4d063eb9cd0b..edf69d020544 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.c
-+++ b/drivers/gpu/drm/tidss/tidss_drv.c
-@@ -231,6 +231,7 @@ static void tidss_shutdown(struct platform_device *pdev)
- static const struct of_device_id tidss_of_table[] = {
- 	{ .compatible = "ti,k2g-dss", .data = &dispc_k2g_feats, },
- 	{ .compatible = "ti,am625-dss", .data = &dispc_am625_feats, },
-+	{ .compatible = "ti,am62a7-dss", .data = &dispc_am62a7_feats, },
- 	{ .compatible = "ti,am65x-dss", .data = &dispc_am65x_feats, },
- 	{ .compatible = "ti,j721e-dss", .data = &dispc_j721e_feats, },
- 	{ }
+ .Lwrcr3_\@:
+-	/*
+-	 * The CR3 write could be avoided when not changing its value,
+-	 * but would require a CR3 read *and* a scratch register.
+-	 */
+ 	movq	\save_reg, %cr3
+ .Lend_\@:
+ .endm
+@@ -279,7 +273,7 @@ For 32-bit we have the following conventions - kernel is built with
+ .endm
+ .macro SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg:req save_reg:req
+ .endm
+-.macro RESTORE_CR3 scratch_reg:req save_reg:req
++.macro PARANOID_RESTORE_CR3 scratch_reg:req save_reg:req
+ .endm
+ 
+ #endif
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index de6469dffe3a..d65182500bfe 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -957,14 +957,14 @@ SYM_CODE_START_LOCAL(paranoid_exit)
+ 	IBRS_EXIT save_reg=%r15
+ 
+ 	/*
+-	 * The order of operations is important. RESTORE_CR3 requires
++	 * The order of operations is important. PARANOID_RESTORE_CR3 requires
+ 	 * kernel GSBASE.
+ 	 *
+ 	 * NB to anyone to try to optimize this code: this code does
+ 	 * not execute at all for exceptions from user mode. Those
+ 	 * exceptions go through error_return instead.
+ 	 */
+-	RESTORE_CR3	scratch_reg=%rax save_reg=%r14
++	PARANOID_RESTORE_CR3 scratch_reg=%rax save_reg=%r14
+ 
+ 	/* Handle the three GSBASE cases */
+ 	ALTERNATIVE "jmp .Lparanoid_exit_checkgs", "", X86_FEATURE_FSGSBASE
+@@ -1393,8 +1393,7 @@ end_repeat_nmi:
+ 	/* Always restore stashed SPEC_CTRL value (see paranoid_entry) */
+ 	IBRS_EXIT save_reg=%r15
+ 
+-	/* Always restore stashed CR3 value (see paranoid_entry) */
+-	RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
++	PARANOID_RESTORE_CR3 scratch_reg=%r15 save_reg=%r14
+ 
+ 	/*
+ 	 * The above invocation of paranoid_entry stored the GSBASE
 -- 
-2.42.0
+2.42.0.869.gea05f2083d-goog
 
