@@ -2,171 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 311AB7E4F1A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0B47E4F28
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbjKHCuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55546 "EHLO
+        id S1343946AbjKHCw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKHCuA (ORCPT
+        with ESMTP id S235423AbjKHCwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:50:00 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F8D10EC;
-        Tue,  7 Nov 2023 18:49:58 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fu2vXQ35s/JMESXaBGvNSFFKlQ5PbhoWkmAlk5rL+Zn9tEDy+SAyNGF/BZ8anICqZq2gwmF9ay6YgppbAgznf2Oe7m32WNHZWJwIn8mCRZhGAe0YQdzZfrnvIIZBVoBZvqBUfsyaBx9KUMrTV6XXp8aWTkFlr0i57oP7/l8CyW/Ulxhq5Uqu6QfVQTu7VPIeetqhhXWcbE4z1RVw+1QUn+f6b//IPBNJiC/w7oMNtuAc6R7I3P7SOa7eAbO4lMrgUVsODXbaAUMaqkzxl0qch3jiPjU/OD66b+4uebKIbji0V//2EWbRunh77NELQCR7LvR4MV/0TGE1UniVExalIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=klElYUjkY11fNWEaqmhB0gVXXtnDl52y/H7rh+A/Vgw=;
- b=CqSjUHwzkfSWT95tNp2KaRDvJs76OVq/lChAwCi+0l+vWFM5nt7OZYtyijgkk6pTvitarkRO9nkayOAmuoMcqNC3FnVrtXoQr8k8u6kdXgCXNp9pd0b+R8Df1FtEK6B/2bTwGdEI9y5dub4ZSfR2kXl9AgWIsQSZPsk6oG6X2+Q9+0KQXipfIqClCfAElcKzRKI0dJ21DgiYVFoKvZkS9WhF6yDMHwuFTpoVvEk3iEuym3lLu6buNANc3/KZqrtuq+p/DxIoUIDFxqKD9ucAG9QC4YHUP1r1Pn4+Mp7bMJgqAtN4igGSTCsv7J8Bo6hXPN20FKD69+nsDT8WC7JpKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=klElYUjkY11fNWEaqmhB0gVXXtnDl52y/H7rh+A/Vgw=;
- b=J3sMlaYoW2iKii9e+vKAat6m5bRV7EsnWjTkAXQg4/7EjVuMXak2dGxUFMq1olEGft2JiTPSqnxzd+0idJ0nnND35kukpv/ne0gXVeka/twLTUBjj8g9RqNui7z15IqD97FbUanmG2l4BtFfOV9AcKoTAEQytkenwxfzNHojjbS/aiwqDAxp+zyP/0PK6DQSLa13LSU9uf/0fQIkcZ4LVigFI9qA5ijEcLZUMGfMXL6nJ/b/1qi8T32VSuVq9oxplnovNhTOC2HWcccD0QxV7Rgnd8r5W4W8CVTUCmAAQdSEVCnChASY5gGkXahcJdSxubSoRaY6fauabJa0fqxgAg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN0PR12MB5859.namprd12.prod.outlook.com (2603:10b6:208:37a::17)
- by DS7PR12MB5933.namprd12.prod.outlook.com (2603:10b6:8:7c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Wed, 8 Nov
- 2023 02:49:56 +0000
-Received: from MN0PR12MB5859.namprd12.prod.outlook.com
- ([fe80::7d0e:720a:6192:2e6b]) by MN0PR12MB5859.namprd12.prod.outlook.com
- ([fe80::7d0e:720a:6192:2e6b%5]) with mapi id 15.20.6954.029; Wed, 8 Nov 2023
- 02:49:56 +0000
-Date:   Tue, 7 Nov 2023 22:49:53 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [RFC PATCH V3 00/26] vfio/pci: Back guest interrupts from
- Interrupt Message Store (IMS)
-Message-ID: <20231108024953.GR4488@nvidia.com>
-References: <cover.1698422237.git.reinette.chatre@intel.com>
- <BL1PR11MB52710EAB683507AD7FAD6A5B8CA0A@BL1PR11MB5271.namprd11.prod.outlook.com>
- <20231101120714.7763ed35.alex.williamson@redhat.com>
- <BN9PR11MB52769292F138F69D8717BE8D8CA6A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231102151352.1731de78.alex.williamson@redhat.com>
- <BN9PR11MB5276BCEA3275EC7203E06FDA8CA5A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231103095119.63aa796f.alex.williamson@redhat.com>
- <BN9PR11MB52765E82CB809DA7C04A3EF18CA9A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <7f8b89c7-7ae0-4f2d-9e46-e15a6db7f6d9@intel.com>
- <20231107160641.45aee2e0.alex.williamson@redhat.com>
+        Tue, 7 Nov 2023 21:52:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5691734;
+        Tue,  7 Nov 2023 18:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699411932; x=1730947932;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UjDq3aK7BBV9YtcRKon7ZDWKovhxfGEGI88OP8yJpdQ=;
+  b=Yjv6Oha5N/uuzSz5+XJSyiItviNmggLk507Wkf2DL3yWilLU0Lxb4cPk
+   Yn/pRsAy/JGP+B9vjGrkPbHPD7e7uOwBnz3t5tlLByhquvd7cbp6ZH6nX
+   w7dhd7zUpXTrCiEwzyuT0lt55AbfYATxZYtGn+uQLkWzCw/t5ZUlL0VKu
+   g5sxWSVbbPfnnkBjgGZgk1bWFpNqftRdGqiOn0kWpfZ2OvgAqMgxB6RxQ
+   iayyn/EpgjvjtBaJU/qmlMoivRfPTELOepX9SAi4fhCjdDezE194RR6Im
+   hVkMxjglZ6MJ8UZifkeM4T0gbQFOUVOKdFglBq01BNmxdC3xAbgvzHOv8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="392547047"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="392547047"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 18:52:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="792047435"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="792047435"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 07 Nov 2023 18:52:09 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0Yfm-0007bD-2q;
+        Wed, 08 Nov 2023 02:52:06 +0000
+Date:   Wed, 8 Nov 2023 10:50:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Esteban Blanc <eblanc@baylibre.com>, linus.walleij@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, andy.shevchenko@gmail.com,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        jpanis@baylibre.com, jneanne@baylibre.com, eblanc@baylibre.com,
+        u-kumar1@ti.com
+Subject: Re: [PATCH v9] pinctrl: tps6594: Add driver for TPS6594 pinctrl and
+ GPIOs
+Message-ID: <202311081058.CGIfVQNO-lkp@intel.com>
+References: <20231107094720.2223541-1-eblanc@baylibre.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231107160641.45aee2e0.alex.williamson@redhat.com>
-X-ClientProxiedBy: SN1PR12CA0073.namprd12.prod.outlook.com
- (2603:10b6:802:20::44) To MN0PR12MB5859.namprd12.prod.outlook.com
- (2603:10b6:208:37a::17)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB5859:EE_|DS7PR12MB5933:EE_
-X-MS-Office365-Filtering-Correlation-Id: 673d5cf8-e33f-45f4-4a60-08dbe00563d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MSlzquzc7AnPrQedGz1yubur+0vVybKEyUHokbExgEbJYo7+aOTqsiw3tyYtWH3eETY05zLi4dIKykdT4ztGSypJLL0uw5LnNTh4yEwPiFY8P1hlQMs7TB0+D+K3TQZGpt+OqGCdo/cSAEreU3UhJlTKoWaYVuWx9RUxBZMhVxgUrkYiOY16CRrz/jDt8xcUEQ306fyfDN64bdWSlApf/QQfTT8GyJtKiWE+jZcZc+0scKfzfU+zdVZFA2GXn66nKpZdlsdkYTjhw0RZhrJcyKUyJzCKP8GjS8OHpOt9ZWoST1zrCY0Lua7hkxfI56wLgtnO3dKskIRgXdXEknzStGepU0kCiYW6mbjLwAi0J2yUuskO/Lm/T11bx666+zgYohgbqoh9w6B+9ZneedExYHh5cQE44y6KqiMhpeVK3NzFdcwCB4zEV/bJUhjywR0hxP/mi+rYN2qScgn6YLnuizG8X5F0WNkJht2sVl6QOrvZ2TMcdbdzICl5VtFG7FdR5xdmq1AKQMyo6WoZf6XUbcxLy72G515NyT3S+AIVmXmJx5617PPZ3vI2BGOyywD2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB5859.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(396003)(376002)(136003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(26005)(2906002)(66899024)(41300700001)(8936002)(8676002)(6666004)(4326008)(6486002)(86362001)(6506007)(478600001)(66946007)(66556008)(316002)(54906003)(66476007)(6916009)(33656002)(7416002)(2616005)(5660300002)(1076003)(6512007)(38100700002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pKNOj3HP/2TQrZuQNJQVoZLgxZTHjXHkVi8WroeGnjBoW6QXKM3AF9GrrtkB?=
- =?us-ascii?Q?epOb8J/URGyZ6A02PJL46BhPZIjaECENSGTtZK3s4mTDEt0cWheeSGUZqmCp?=
- =?us-ascii?Q?k9BpWpF1H/yIWURkvQDDtzhi/de5Pc6acvMzpVEcOYNoSSDRMthtiVQX522C?=
- =?us-ascii?Q?4F80Y1r0xeBiowhKEc74NVV06cs3LLc3viYZ3gLDIEhHYQNHVI0W8xZ+f8EO?=
- =?us-ascii?Q?51j+JKngs4EJZCPFF8d1nKMPFmjHctLpXqKuMedNutuzpffAYDLRs7lz+3kM?=
- =?us-ascii?Q?jI2idJ34FvSb69voPn7rGc7J77zjv+Xq/Vau+oIYQcOWmSinIR2icAdI4C0K?=
- =?us-ascii?Q?Lt1ggAj12Q0OuW1ZP3EcycjauHgLr81/lFc257W7SKqw53LHj1tNuPQPv4yt?=
- =?us-ascii?Q?h8EmFczwpV2IwH+IGjv+2vZlZH2qsTC87myXuAd4Px2QOC68tyUjBv7BedWy?=
- =?us-ascii?Q?BhAlaxAYkl2lai/8XXFEkO7ecKRjFv5a6cCnfJtIM1s+/QqsFNFg0dThiUlf?=
- =?us-ascii?Q?OM2DecQR/6BtL2Iq/gOqSSznI/E3FqGw3nBxTH5tXKSad8Riw82Pb42cUbrt?=
- =?us-ascii?Q?VO5byY+zX/OTGyehf4IGcDbQgTXaNH4N5Cx5AnLGRpxGZuW67Vk6NofEEKjT?=
- =?us-ascii?Q?Ciro98C3ZuWdZVHYmDTGcndmYBsAo45NRxm7IuPEWJeMWtA1aNLbuUtyVAn8?=
- =?us-ascii?Q?UFV4S6+NA8eMWJS3/Qz63NTqGZ3tmQobbFjfiOLbVJUBP7+ytep4jGIhxZkV?=
- =?us-ascii?Q?hezoxfCUVd5vZzcsWSTdnzFZZrBMmAlPDLVHhSE/mkezcKh5OAMjng+7OTfr?=
- =?us-ascii?Q?OLv/PdqQkVa5gkmICXeB2A4UNoV0m50bdYSzCV6Rf1VKwic8f38AU+3tA85z?=
- =?us-ascii?Q?hpBXDR0PTaO5vTXJc+X+rsxdkHBfB0SOyxeGTt8SYGg8BLZ08MZfy1BgRvqx?=
- =?us-ascii?Q?5JuzgVPniH7hMW3flZJZiPo8yg612HCH/dDtbCbr5D0Cc7HrMFgSI/FIfrtJ?=
- =?us-ascii?Q?+ntjbvm3VYxm2dhXyz+aB5iX/PG+/kLpfFQjqkwP2+JcIbX7DCyidxmopRk1?=
- =?us-ascii?Q?UoESqonbcVuMyi04xeqvwSrEVOaBGz4AcDhtW9L+kfLw92qsgDRiLZflYAqu?=
- =?us-ascii?Q?or1DWCStxLLhW6jJ9xB0mVG8qHmyo0Scof4+vPv5fQ0FZ/A+AOVhnLK/7O7t?=
- =?us-ascii?Q?laYvV/F2rC2DPwd/kQDJ9oJLL9pW8Q9qSLZgdYWEeJTndmQBXejJeQdm8A/0?=
- =?us-ascii?Q?RmHS41ptbaw67pwhjmMcGGvgBlU3ogEk023Z5PXaVg4pnxgLegZL9SpGgD1o?=
- =?us-ascii?Q?3DETVHRFuJnxP3fhnjJNQmBLQ1NvuDK8yxggu4QshqZ1F302bq/rKjl83xkI?=
- =?us-ascii?Q?F/VgRW/rUR1vIUXw0UtfgDbj3UfoSIOpWFtqmwQn7BDGM75AB70QPo39vivn?=
- =?us-ascii?Q?lUEqVjfqVR/YpPaJ/dwFABmtmrDfcnktr2VlhHPphiAtLNlB57YsV10lQ8g9?=
- =?us-ascii?Q?J7CQqRe0oGSRMi3FnIPKEn/eVCKBVlQdLRbjzahH68mZZczyqPDKXaFidWHE?=
- =?us-ascii?Q?XGR5UqTH4mSbBJAY7SE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 673d5cf8-e33f-45f4-4a60-08dbe00563d3
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5859.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 02:49:55.8534
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XznIaexpsxNf3efbHacc7zUHzRUD8SkKVjOK95DXNJYjtcZwNydZkyr9xdpJpDd4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5933
+In-Reply-To: <20231107094720.2223541-1-eblanc@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 04:06:41PM -0700, Alex Williamson wrote:
+Hi Esteban,
 
-> A vfio-pci variant driver is specifically a driver that leverages
-> portions of vfio-pci-core for implementing vfio_device_ops and binds to
-> a PCI device.  It might actually be the wrong term here, but I jumped
-> to that since the series tries to generalize portions of one of the
-> vfio-pci-core code paths. You might very well be intending to use this
-> with something more like an mdev driver, which is fine.
+kernel test robot noticed the following build errors:
 
-IDXD will be a SIOV device and we need to have a serious talk about
-how SIOV device lifecycle will work..
+[auto build test ERROR on linusw-pinctrl/devel]
+[also build test ERROR on linusw-pinctrl/for-next v6.6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> That also sort of illustrates the point though that this series is
-> taking a pretty broad approach to slicing up vfio-pci-core's SET_IRQS
-> ioctl code path, enabling support for IMS backed interrupts, but in
-> effect complicating the whole thing without any actual consumer to
-> justify the complication.  Meanwhile I think the goal is to reduce
-> complication to a driver that doesn't exist yet.  So it currently seems
-> like a poor trade-off.
+url:    https://github.com/intel-lab-lkp/linux/commits/Esteban-Blanc/pinctrl-tps6594-Add-driver-for-TPS6594-pinctrl-and-GPIOs/20231107-180907
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
+patch link:    https://lore.kernel.org/r/20231107094720.2223541-1-eblanc%40baylibre.com
+patch subject: [PATCH v9] pinctrl: tps6594: Add driver for TPS6594 pinctrl and GPIOs
+config: um-randconfig-001-20231107 (https://download.01.org/0day-ci/archive/20231108/202311081058.CGIfVQNO-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311081058.CGIfVQNO-lkp@intel.com/reproduce)
 
-I think we need to see some draft of the IDXD driver to really
-understand this
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311081058.CGIfVQNO-lkp@intel.com/
 
-> This driver that doesn't exist yet could implement its own SET_IRQS
-> ioctl that backs MSI-X with IMS as a starting point.  Presumably we
-> expect multiple drivers to require this behavior, so common code makes
-> sense, but the rest of us in the community can't really evaluate how
-> much it makes sense to slice the common code without seeing that
-> implementation and how it might leverage, if not directly use, the
-> existing core code.
+All errors (new ones prefixed by >>):
 
-I've been seeing a general interest in taking something that is not
-MSI-X (eg "IMS" for IDXD) and converting it into MSI-X for the vPCI
-function. I think this will be a durable need in this space.
+   /usr/bin/ld: drivers/pinctrl/pinctrl-tps6594.o: in function `pinconf_generic_dt_node_to_map_group':
+   pinctrl-tps6594.c:(.text+0x289): undefined reference to `pinconf_generic_dt_node_to_map'
+>> /usr/bin/ld: drivers/pinctrl/pinctrl-tps6594.o:(.rodata+0x68): undefined reference to `pinconf_generic_dt_free_map'
+   collect2: error: ld returned 1 exit status
 
-Ideally it will be overtaken by simply teaching the guest, vfio and
-the hypervisor interrupt logic how to directly generate interrupts
-with a guest controlled addr/data pair without requiring MSI-X
-trapping. That is the fundamental reason why this has to be done this
-convoluted way.
-
-Jason
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
