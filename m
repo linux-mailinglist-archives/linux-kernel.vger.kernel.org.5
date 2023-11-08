@@ -2,153 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC8A7E4DB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88DA7E4DB4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbjKHADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S231192AbjKHAEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjKHADg (ORCPT
+        with ESMTP id S229844AbjKHAEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:03:36 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7425310E4;
-        Tue,  7 Nov 2023 16:03:34 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6ce2eaf7c2bso4035424a34.0;
-        Tue, 07 Nov 2023 16:03:34 -0800 (PST)
+        Tue, 7 Nov 2023 19:04:42 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E72310E4
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:04:40 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5437269a661so490465a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:04:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699401814; x=1700006614; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w5LBcj9Ai/IS8fLRfhiYfHqRvqJUefGN2W7PjES7Bxo=;
-        b=hwo8FdzT4fVOd03VAgREecm9Kux3V4U6P1wcjfbjTjhumNpd4Cx6d8ZheUiFYnSUbd
-         PgAMEuZrigCyvS+3Hgn26UDNS/pzbE6PPNzytqqBqemNQMCErcTPhZ/bLZB8bGIuqsfk
-         yk2XqUc4cDkuw94/9t2+ordrNsPIkXZ0LECMAXX0hdSarKh+Vm08zh8xAGG9UwthTJ0Z
-         IgVPoPzqQeDc60hzKRkIeLQgrcPcXMOPZfIJB0QuZRwVuRLmE/dLwNKtHTXYgWP10OC5
-         kq4+mmJrefqhPE1ZzQ0yJ8z36KinOgmwM6A81fN7wmonDH8mA/kB590UGUZhEBlkxUJe
-         7gUA==
+        d=linux-foundation.org; s=google; t=1699401878; x=1700006678; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M1gFsj3ZQRKq2XSC6mkK8HfxUGZGy5exG2oL8DwFzoo=;
+        b=IOOZs+Pl6ljyHcuHuoHFKCMZOe19v7u/pG8eCMcAffrxlquoh3xilJVcmQqZjYWWOf
+         RsRWONKKhaw9n1UpbmrSEyUS0TOxol14HEU7N23Arj9OiPLzZgKXqCc5Fdz8tV1nkJ4v
+         zmjPVyYvOe2PIi+IeH9lHL95d1pkIs0YG6Usg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699401814; x=1700006614;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w5LBcj9Ai/IS8fLRfhiYfHqRvqJUefGN2W7PjES7Bxo=;
-        b=IWpTHGj66Ic23F15hIuhcuLB1lStAq5DKkvFcImgoEe6h06cIMfRJL9auJDZDsB7dt
-         lUXxtJsvoUYTtvk5n2prOEJw4VULG4xBWmdeRH8GoCm5vYGTg9TWsxAeIWk7QaQES3n6
-         9zTplNHZKzh2LFnoBe7bWTr6+0UmdzXwHrCYg0+0ZdN/b1X6JEXXm7cNqZMYXhMLIHmV
-         r8+C0hW40cTl5mhOJPFbuDzjHfoNlWRbJO0Hh9+S8R7+jwDJE8rJamxMIISoXuq5huez
-         hK8VKAqV67/oWbET7+tOhef5HO5V4jDxiRcEq1jk6KobwjYQIwMjcJNTmNEudn+bXpS3
-         /mVA==
-X-Gm-Message-State: AOJu0YxhOGnamhrAAccQIqKrZwP48Gi709pYrhpMXJ07tm0A+tl9Wjjl
-        qE8q7Y9mztAurIzOIGEe3PQEX8U2d2Gcn4Nq9mQAqyRW
-X-Google-Smtp-Source: AGHT+IEqZhTaX29JcgF6ONXkh2J4MIBuyEqTF1/MoCB/3c+YA7OhLsdvXIckAeQ2wusUzs9RSqXWYxO0oNDet6dw0CE=
-X-Received: by 2002:a05:6830:2b25:b0:6d3:1212:15ab with SMTP id
- l37-20020a0568302b2500b006d3121215abmr396732otv.20.1699401813768; Tue, 07 Nov
- 2023 16:03:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699401878; x=1700006678;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M1gFsj3ZQRKq2XSC6mkK8HfxUGZGy5exG2oL8DwFzoo=;
+        b=b5UtS7KiA4mM0yt3hjhfleKISFZ8TfbE4yaQIiyWgT525H0W2bwIpXsdWq9iKr/gsA
+         1Qw3W/md1Ib9Tt1zi2V3RIL0WLoGGW6/kVp+/1FIe3vDGQ8Idd4/u5fANyhWdPblkiuU
+         XCBljN3Fpzm/Y2xixSr7zzI0Dc7S+hCshI2KgurCUSafbPfQulR7HS80JDmJjyzZeJSr
+         +ZoBguTK8WJqD1BW2P+WObfy9WU1L7XnbX7XNfcaJgOJotsi68BWKxtfJipgclhy3pGZ
+         JHjuFgVG8vMqUnDYOwVImOHs4Ru0f0kMl97Xwv+edIC2jL8cwi8+KZmDrzzKT5kvByOI
+         yzxw==
+X-Gm-Message-State: AOJu0YxkAWLlylFZoN/KFC1JKnmhc69Aq+jx//xmqGnUAjJMFzdEM5MB
+        0+CyTe02FaNrMgpmkXU0LWRZAnm7kj47QhutI/9XKA==
+X-Google-Smtp-Source: AGHT+IF0QlWf0ufWIpT0rd/wyWdY+QoaUPsEEGKuvHTV2bIzyRYV84r95KdlFHu1ox2T3ycH1Jc+VQ==
+X-Received: by 2002:a17:906:1d05:b0:9ae:5879:78dd with SMTP id n5-20020a1709061d0500b009ae587978ddmr3602140ejh.1.1699401878636;
+        Tue, 07 Nov 2023 16:04:38 -0800 (PST)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id f25-20020a170906085900b009c758b6cdefsm161294ejd.128.2023.11.07.16.04.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 16:04:38 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9c3aec5f326so45972366b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:04:37 -0800 (PST)
+X-Received: by 2002:a17:907:7784:b0:9bd:81c3:2a85 with SMTP id
+ ky4-20020a170907778400b009bd81c32a85mr3252018ejc.32.1699401877597; Tue, 07
+ Nov 2023 16:04:37 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a8a:158f:0:b0:4f0:1250:dd51 with HTTP; Tue, 7 Nov 2023
- 16:03:33 -0800 (PST)
-In-Reply-To: <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org>
-References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
- <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
- <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
- <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
- <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 8 Nov 2023 01:03:33 +0100
-Message-ID: <CAGudoHESNDTAAOGB3riYjU3tgHTXVLRdB7tknfVBem38yqkJEA@mail.gmail.com>
-Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
- allocating mm
-To:     Kees Cook <kees@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231107142154.613991-1-agruenba@redhat.com> <CAHk-=wie7WsYHkEChV0hpcf7CRRJQw9-E8O8RxrFGKF6mEJ73g@mail.gmail.com>
+ <CAHpGcM+u=77p_k8dZ6gKu84wnkdvGYA4E6=MXqNw=ZY+ejjiaw@mail.gmail.com>
+In-Reply-To: <CAHpGcM+u=77p_k8dZ6gKu84wnkdvGYA4E6=MXqNw=ZY+ejjiaw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Nov 2023 16:04:19 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiN4e_C+tONr6p+f51ae8QoXB8tvoN8zQFdyiRi1DzO1A@mail.gmail.com>
+Message-ID: <CAHk-=wiN4e_C+tONr6p+f51ae8QoXB8tvoN8zQFdyiRi1DzO1A@mail.gmail.com>
+Subject: Re: [GIT PULL] gfs2 fixes
+To:     =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>, gfs2@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23, Kees Cook <kees@kernel.org> wrote:
+On Tue, 7 Nov 2023 at 14:18, Andreas Gr=C3=BCnbacher
+<andreas.gruenbacher@gmail.com> wrote:
 >
->
-> On November 7, 2023 3:08:47 PM PST, Mateusz Guzik <mjguzik@gmail.com>
-> wrote:
->>On 11/7/23, Kees Cook <keescook@chromium.org> wrote:
->>> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
->>>> If the patch which dodges second lookup still somehow appears slower a
->>>> flamegraph or other profile would be nice. I can volunteer to take a
->>>> look at what's going on provided above measurements will be done and
->>>> show funkyness.
->>>
->>> When I looked at this last, it seemed like all the work done in
->>> do_filp_open() (my patch, which moved the lookup earlier) was heavier
->>> than the duplicate filename_lookup().
->>>
->>> What I didn't test was moving the sched_exec() before the mm creation,
->>> which Peter confirmed shouldn't be a problem, but I think that might be
->>> only a tiny benefit, if at all.
->>>
->>> If you can do some comparisons, that would be great; it always takes me
->>> a fair bit of time to get set up for flame graph generation, etc. :)
->>>
->>
->>So I spawned *one* process executing one statocally linked binary in a
->>loop, test case from http://apollo.backplane.com/DFlyMisc/doexec.c .
->>
->>The profile is definitely not what I expected:
->>   5.85%  [kernel]           [k] asm_exc_page_fault
->>   5.84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
->>[snip]
->>
->>I'm going to have to recompile with lock profiling, meanwhile
->>according to bpftrace
->>(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] =
->> count(); }')
->>top hits would be:
->>
->>@[
->>    __pv_queued_spin_lock_slowpath+1
->>    _raw_spin_lock+37
->>    __schedule+192
->>    schedule_idle+38
->>    do_idle+366
->>    cpu_startup_entry+38
->>    start_secondary+282
->>    secondary_startup_64_no_verify+381
->>]: 181
->>@[
->>    __pv_queued_spin_lock_slowpath+1
->>    _raw_spin_lock_irq+43
->>    wait_for_completion+141
->>    stop_one_cpu+127
->>    sched_exec+165
->
-> There's the suspicious sched_exec() I was talking about! :)
->
-> I think it needs to be moved, and perhaps _later_ instead of earlier?
-> Hmm...
->
+> I apologize for referring to the entire set of commits as fixes when
+> it's really fixes and various other things. I've said so in the tag
+> description, but I realize now that that's not good enough. Lying
+> about what those commits are wasn't my intention though.
 
-I'm getting around 3.4k execs/s. However, if I "taskset -c 3
-./static-doexec 1" the number goes up to about 9.5k and lock
-contention disappears from the profile. So off hand looks like the
-task is walking around the box when it perhaps could be avoided -- it
-is idle apart from running the test. Again this is going to require a
-serious look instead of ad hoc pokes.
+.. and hey, sorry about my outburst.
 
-Side note I actually read your patch this time around instead of
-skimming through it and assuming it did what I thought.
+Your pull request was the first one this merge window where I reacted
+to how many of the commits weren't in my copy of the linux-next tree,
+and there wasn't any reason why in the description. So I reacted very
+strongly.
 
-do_filp_open is of course very expensive and kmalloc + kfree are slow.
-On top of it deallocating a file object even after a failed open was
-very expensive due to delegation to task_work (recently fixed).
+It didn't help that I had a headache. Rather than look at how many
+other of the pending pull requests I have that ended up coming in in
+the last 24 hours have the same issue, I decided to lie down in a dark
+room for a few hours.
 
-What I claim should be clear-cut faster is that lookup as in the
-original patch and only messing with file allocation et al if it
-succeeds.
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+                  Linus
