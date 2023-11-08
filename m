@@ -2,131 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1545B7E6051
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6716C7E6059
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjKHWGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 17:06:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        id S230381AbjKHWK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 17:10:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHWGa (ORCPT
+        with ESMTP id S229460AbjKHWK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 17:06:30 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97B87B4;
-        Wed,  8 Nov 2023 14:06:28 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 01F8A20B74C0; Wed,  8 Nov 2023 14:06:28 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 01F8A20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1699481188;
-        bh=9XdLVz2db7rfFcQe7ydvfN6yR+cFs5DgiBaH3dFhqe0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q/0i7DvFkAU9jaANRYw/QGHvJB7DnbNDBYo36YbgGK63T0kzWjXvLzcfJb4GIQV75
-         i7wj8+jahcnorcv+paMcpCAw3CxnIA/Q3rrVe+uTh97FBeZFrpQ0qTN7yley5gGPgi
-         GQyiYntLZgG1P+tYyS3Cb+OkD3W3owBtSKC4ReA8=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [PATCH net v3] hv_netvsc: Mark VF as slave before exposing it to user-mode
-Date:   Wed,  8 Nov 2023 14:06:20 -0800
-Message-Id: <1699481180-17511-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 8 Nov 2023 17:10:26 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CCD258A;
+        Wed,  8 Nov 2023 14:10:24 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F18F99CC;
+        Wed,  8 Nov 2023 23:09:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699481399;
+        bh=TcWlArFT+z2NAsDcr8LONGkSMaY5LyN8tJsNXYDYl0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=unPHtO56c8M3koePY2oufdbYmdX0ZAdDuoiDmVsJA8zgPP3TAfCSaYXVljZGTmZaw
+         N1aY6HvNOf1OOZSzosQ2LRS3j8ZNG/S1M1QU63ilrrQ4gSBWab6XhP00ENSD37Mb7J
+         mFN/olq7m59TyBWaoosQNhHUV/aV4CReKCG+3w/o=
+Date:   Thu, 9 Nov 2023 00:10:25 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     nicolas@ndufresne.ca
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Esker Wong <esker@google.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Esker Wong <esker@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
+Message-ID: <20231108221025.GD21616@pendragon.ideasonboard.com>
+References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
+ <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu>
+ <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
+ <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
+ <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
+ <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
+ <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+Hello,
 
-When a VF is being exposed form the kernel, it should be marked as "slave"
-before exposing to the user-mode. The VF is not usable without netvsc running
-as master. The user-mode should never see a VF without the "slave" flag.
+On Wed, Nov 08, 2023 at 03:32:23PM -0500, nicolas@ndufresne.ca wrote:
+> Le mercredi 08 novembre 2023 à 08:04 +0100, Ricardo Ribalda a écrit :
+> > On Wed, 8 Nov 2023 at 07:54, Esker Wong wrote:
+> > > 
+> > > Hi Nicholas and Sakari,
+> > > 
+> > > We need it as precise as possible. Currently the earliest time of a
+> > > frame we can have in userspace  is the dqbuf.
+> > > 
+> > > And for UVC timestamp, it is somewhat awkward for us to use. Since
+> > > other functions in our stacks do not necessarily contain such
+> > > timestamps. So we want some event to be trigger and we can get the
+> > > system time directly.
+> 
+> The fact that you interpret the time from FRAME_SYNC to DQBUF (well the
+> READ IO notification) as the actual latency is yours of course. It
+> assumes that the camera on the other end does not introduce other
+> source of latency (or that these are negligible). You are also going to
+> introduce a lot of jitter, since it relies on when the OS decides to
+> wake up your process.
+> 
+> I think my opinion resides in if you can accurately *enough* implement
+> what the spec says for FRAME_SYNC then do it, otherwise just don't lie.
+> I think for ISO, "after the first chunk" i a small lie, but acceptable.
+> But for BULK, the way it was explained is that it will be always very
+> close to DQBUF time. and it should not emit FRAME_SYNC for this type of
+> UVC device. If it fits other events fine of course, I'm just making a
+> judgment on if its fits V4L2_EVENT_FRAME_SYNC or not.
 
-An example of a user-mode program depending on this flag is cloud-init
-(https://github.com/canonical/cloud-init/blob/19.3/cloudinit/net/__init__.py)
-When scanning interfaces, it checks on if this interface has a master to
-decide if it should be configured. There are other user-mode programs perform
-similar checks.
+I agree. V4L2_EVENT_FRAME_SYNC should be fine for isoc-based devices as
+it should be "close enough" to the start of frame. For bulk it woul dbe
+too much of a lie, so I would not emit it for bulk-based devices.
 
-This commit moves the code of setting the slave flag to the time before VF is
-exposed to user-mode.
+> In term of accuracy, if timestamp was passed with the FRAME_SYNC event,
+> it would not matter how fast your process the event anymore and greatly
+> improve accuracy.
+> 
+> > Not to mention that the UVC timestamping requires a bit of love.
+> > 
+> > @Laurent Pinchart, @Kieran Bingham  any progress reviewing :P :
+> > https://patchwork.linuxtv.org/project/linux-media/list/?series=10083
+> 
+> Thanks for working on this by the way, hope someone will find the time
+> to review this. The timestamps should in theory provide a jitter free
+> measurement of the delay Esker is trying to measure, and if it wasn't
+> of bugs (and crazy complexity) it would in the worst case match the
+> transfer time.
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
+Assuming the device firmware isn't too buggy, the UVC timestamps should
+indeed provide much better accuracy than when V4L2_EVENT_FRAME_SYNC
+could give. I think the biggest problem will be to figure out if a
+particular device can be trusted.
 
-Change since v1:
-Use a new function to handle NETDEV_POST_INIT.
+> > > If the V4L2_EVENT_FRAME_SYNC will be earlier then V4L2_EVENT_VSYNC,
+> > > then it has value. We would want to know the delay of a frame being
+> > > captured to the time it is displayed.
+> > > 
+> > > I'm not sure for bulk is the V4L2_EVENT_VSYNC more accurate?
+> > 
+> >  V4L2_EVENT_VSYNC wont be more accurate than V4L2_EVENT_FRAME_SYNC.
+> > 
+> > My understanding is that Sakari thinks that the description of
+> > V4L2_EVENT_FRAME_SYNC
+> > https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-dqevent.html#description
+> >  does not match the current implementation, and suggests using
+> > V4L2_EVENT_VSYNC instead.
+> > 
+> > > On Wed, Nov 8, 2023 at 3:27 AM <nicolas@ndufresne.ca> wrote:
+> > > > Le mardi 07 novembre 2023 à 13:06 +0800, Esker Wong a écrit :
+> > > > > [send again in text mode]
+> > > > > Hi Sakari,
+> > > > > 
+> > > > > Sequence number is important to us. We need it to measure the latency
+> > > > > from this event to the time we display the frame.
+> > > > 
+> > > > how much precision do you expect, because as described, this number
+> > > > will be completely false for bulk.
+> > > > 
+> > > > Aren't UVC timestamp support to allow measuring latency properly ?
+> > > > 
+> > > > > On Mon, Nov 6, 2023 at 7:06 PM Sakari Ailus wrote:
+> > > > > > On Mon, Nov 06, 2023 at 10:52:27AM +0000, Ricardo Ribalda wrote:
+> > > > > > > Add support for the frame_sync event, so user-space can become aware
+> > > > > > > earlier of new frames.
+> > > > > > > 
+> > > > > > > Suggested-by: Esker Wong <esker@chromium.org>
+> > > > > > > Tested-by: Esker Wong <esker@chromium.org>
+> > > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > > > > ---
+> > > > > > > We have measured a latency of around 30msecs between frame sync
+> > > > > > > and dqbuf.
+> > > > > > > ---
+> > > > > > > Changes in v2:
+> > > > > > > - Suggested by Laurent. Split sequence++ and event init.
+> > > > > > > - Link to v1: https://lore.kernel.org/r/20231020-uvc-event-v1-1-3baa0e9f6952@chromium.org
+> > > > > > > ---
+> > > > > > >  drivers/media/usb/uvc/uvc_v4l2.c  | 2 ++
+> > > > > > >  drivers/media/usb/uvc/uvc_video.c | 7 +++++++
+> > > > > > >  2 files changed, 9 insertions(+)
+> > > > > > > 
+> > > > > > > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> > > > > > > index f4988f03640a..9f3fb5fd2375 100644
+> > > > > > > --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> > > > > > > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> > > > > > > @@ -1352,6 +1352,8 @@ static int uvc_ioctl_subscribe_event(struct v4l2_fh *fh,
+> > > > > > >       switch (sub->type) {
+> > > > > > >       case V4L2_EVENT_CTRL:
+> > > > > > >               return v4l2_event_subscribe(fh, sub, 0, &uvc_ctrl_sub_ev_ops);
+> > > > > > > +     case V4L2_EVENT_FRAME_SYNC:
+> > > > > > > +             return v4l2_event_subscribe(fh, sub, 0, NULL);
+> > > > > > >       default:
+> > > > > > >               return -EINVAL;
+> > > > > > >       }
+> > > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > index 28dde08ec6c5..4f3a510ca4fe 100644
+> > > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > > @@ -1073,9 +1073,16 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+> > > > > > >        * that discontinuous sequence numbers always indicate lost frames.
+> > > > > > >        */
+> > > > > > >       if (stream->last_fid != fid) {
+> > > > > > > +             struct v4l2_event event = {
+> > > > > > > +                     .type = V4L2_EVENT_FRAME_SYNC,
+> > > > > > > +             };
+> > > > > > > +
+> > > > > > >               stream->sequence++;
+> > > > > > >               if (stream->sequence)
+> > > > > > >                       uvc_video_stats_update(stream);
+> > > > > > > +
+> > > > > > > +             event.u.frame_sync.frame_sequence = stream->sequence,
+> > > > > > > +             v4l2_event_queue(&stream->vdev, &event);
+> > > > > > 
+> > > > > > uvc_video_decode_start() is called when the reception of the entire frame
+> > > > > > has been completed. However, the documentation for V4L2_EVENT_FRAME_SYNC
+> > > > > > says that the event is "Triggered immediately when the reception of a frame
+> > > > > > has begun.". The functionality here doesn't seem to fit to this patch.
+> > > > > > 
+> > > > > > Wouldn't V4L2_EVENT_VSYNC be a better fit, even if we don't really have a
+> > > > > > concept of vertical sync in the case of USB? That event doesn't have the
+> > > > > > sequence though but I guess it's not an issue at least if your case.
+> > > > > > 
+> > > > > > Another technically correct option could be to create a new event for this
+> > > > > > but I'm not sure it's worth it.
+> > > > > > 
+> > > > > > >       }
+> > > > > > > 
+> > > > > > >       uvc_video_clock_decode(stream, buf, data, len);
+> > > > > > > 
 
-Change since v2:
-Add "net" in subject. Add more details on the user-mode program behavior.
-
- drivers/net/hyperv/netvsc_drv.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index ec77fb9dcf89..fdad58dcc6a8 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2206,9 +2206,6 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
- 		goto upper_link_failed;
- 	}
- 
--	/* set slave flag before open to prevent IPv6 addrconf */
--	vf_netdev->flags |= IFF_SLAVE;
--
- 	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
- 
- 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
-@@ -2320,11 +2317,9 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
- 	 */
- 	list_for_each_entry(ndev_ctx, &netvsc_dev_list, list) {
- 		ndev = hv_get_drvdata(ndev_ctx->device_ctx);
--		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr)) {
--			netdev_notice(vf_netdev,
--				      "falling back to mac addr based matching\n");
-+		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr) ||
-+		    ether_addr_equal(vf_netdev->dev_addr, ndev->perm_addr))
- 			return ndev;
--		}
- 	}
- 
- 	netdev_notice(vf_netdev,
-@@ -2332,6 +2327,19 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
- 	return NULL;
- }
- 
-+static int netvsc_prepare_slave(struct net_device *vf_netdev)
-+{
-+	struct net_device *ndev;
-+
-+	ndev = get_netvsc_byslot(vf_netdev);
-+	if (!ndev)
-+		return NOTIFY_DONE;
-+
-+	/* set slave flag before open to prevent IPv6 addrconf */
-+	vf_netdev->flags |= IFF_SLAVE;
-+	return NOTIFY_DONE;
-+}
-+
- static int netvsc_register_vf(struct net_device *vf_netdev)
- {
- 	struct net_device_context *net_device_ctx;
-@@ -2753,6 +2761,8 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 		return NOTIFY_DONE;
- 
- 	switch (event) {
-+	case NETDEV_POST_INIT:
-+		return netvsc_prepare_slave(event_dev);
- 	case NETDEV_REGISTER:
- 		return netvsc_register_vf(event_dev);
- 	case NETDEV_UNREGISTER:
 -- 
-2.34.1
+Regards,
 
+Laurent Pinchart
