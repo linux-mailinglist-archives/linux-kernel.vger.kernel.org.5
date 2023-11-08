@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD7B7E5AC2
+	by mail.lfdr.de (Postfix) with ESMTP id E15AD7E5AC3
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232241AbjKHQCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:02:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
+        id S232724AbjKHQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:02:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjKHQCC (ORCPT
+        with ESMTP id S229521AbjKHQCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:02:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1FC1BD7
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:01:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699459273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=rQ51b9eM0IFRwZBnxfiG5qJhLYeuJ0C09QIPA+aM9L8=;
-        b=fAihju2MQ0Jq7f/+fCZ7Gjhu2di3FL0HbYqDuIK1L/TG1FIaWPyaIqihuFwgd15I3VVZWZ
-        ee/Y412Jkfk73/fvNMjFNPWhpUqSZhnT2kDKvX+zscy9wNXYHAesKFZtOaWeB5Wb/y2xuZ
-        UfUpguQnmAtZl5nTT0RINOCjHdoDw2s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-104-3s9y6T4AMICaPuwOeGB2SA-1; Wed,
- 08 Nov 2023 11:01:08 -0500
-X-MC-Unique: 3s9y6T4AMICaPuwOeGB2SA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A634A3810D35;
-        Wed,  8 Nov 2023 16:01:06 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.110])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C75042166B27;
-        Wed,  8 Nov 2023 16:01:04 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Neerav Parikh <neerav.parikh@intel.com>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH iwl-net] i40e: Fix waiting for queues of all VSIs to be disabled
-Date:   Wed,  8 Nov 2023 17:01:03 +0100
-Message-ID: <20231108160104.86140-1-ivecera@redhat.com>
+        Wed, 8 Nov 2023 11:02:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808991BC3
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:02:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E19F4C433C9;
+        Wed,  8 Nov 2023 16:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699459322;
+        bh=JLwYuFK4M7vyPsXdMDw7ENdR++WIDDZ3oikeo1rQ96g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rnMZhLzT0cjJZN1K2lZYk952u5KEWRThBai27SG+8zMTX1uYraQhza1hBobcLq26z
+         KnKFPLstsQO6RgsvBJlNBUAC4/bdbEDRWH8Gwp5TpQFNl08QWWM7yyaE1l1T1ewA7C
+         vWo5TVo1x5u4W5FlvONzqGzdvOTvI8MVYA36tZzzo4x04mJyB+u0xAv1m+RertK6dA
+         WsfNp5nLb2ZbEw5PJ/Auca71S/heuQMJ3RlpuEj63Tdj5xKADU7ijqL9K3vdJrJ1B0
+         BWHeOxXfDrz1RBjabWcvAkw7Y6Wcz7S37bsffMB/nMKex60FZwn+P1XYt67onqqWIL
+         J24iHyiIIK0NQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 24C0C4035D; Wed,  8 Nov 2023 13:01:59 -0300 (-03)
+Date:   Wed, 8 Nov 2023 13:01:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 02/53] perf record: Lazy load kernel symbols
+Message-ID: <ZUuw9zDRLXPvCI5k@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-3-irogers@google.com>
+ <0d232518-4bac-46cc-8635-d834fa232f85@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d232518-4bac-46cc-8635-d834fa232f85@intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function i40e_pf_wait_queues_disabled() iterates all PF's VSIs
-up to 'pf->hw.func_caps.num_vsis' but this is incorrect because
-the real number of VSIs can be up to 'pf->num_alloc_vsi' that
-can be higher. Fix this loop.
+Em Mon, Nov 06, 2023 at 01:00:14PM +0200, Adrian Hunter escreveu:
+> On 2/11/23 19:56, Ian Rogers wrote:
+> > Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
+> > changed it so that loading a kernel dso would cause the symbols for
+> > the dso to be eagerly loaded. For perf record this is overhead as the
+> > symbols won't be used. Add a symbol_conf to control the behavior and
+> > disable it for perf record and perf inject.
 
-Fixes: 69129dc39fac ("i40e: Modify Tx disable wait flow in case of DCB reconfiguration")
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 6a2907674583..de19d753ba83 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5340,7 +5340,7 @@ static int i40e_pf_wait_queues_disabled(struct i40e_pf *pf)
- {
- 	int v, ret = 0;
+> > Signed-off-by: Ian Rogers <irogers@google.com>
  
--	for (v = 0; v < pf->hw.func_caps.num_vsis; v++) {
-+	for (v = 0; v < pf->num_alloc_vsi; v++) {
- 		if (pf->vsi[v]) {
- 			ret = i40e_vsi_wait_queues_disabled(pf->vsi[v]);
- 			if (ret)
--- 
-2.41.0
+> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+
+Thanks, applied to perf-tools-next.
+
+- Arnaldo
 
