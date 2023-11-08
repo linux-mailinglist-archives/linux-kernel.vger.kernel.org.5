@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E27F7E55AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724267E55B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjKHLkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:40:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
+        id S231698AbjKHLld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:41:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHLkN (ORCPT
+        with ESMTP id S229924AbjKHLlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:40:13 -0500
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615921988;
-        Wed,  8 Nov 2023 03:40:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1699443611; x=1730979611;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0Jgcv6m+dF2aXJkYUEQ0LNm7BqJp5LjYq5iFq0Bblbs=;
-  b=fwF4aqSpl+cS0BFVkskMh0GRemTUK/H1egaYQbN9Dh1FZi/vzAcgsqHx
-   FP3YZfVaORPFVI25KGibIpBduQ+7ysFNsUIEnqjave+W88658drRY79gv
-   wtpMnDenKt5vDrSGeX0ABmue1FG+RrxcPceXMavxFJin4gvB/ZWQRfDur
-   4=;
-X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
-   d="scan'208";a="42023927"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-5eae960a.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:40:09 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2c-m6i4x-5eae960a.us-west-2.amazon.com (Postfix) with ESMTPS id 2273140D96;
-        Wed,  8 Nov 2023 11:40:09 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:13613]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.33.241:2525] with esmtp (Farcaster)
- id 4d944fab-ae9e-4c2a-a996-73171ba7a68a; Wed, 8 Nov 2023 11:40:08 +0000 (UTC)
-X-Farcaster-Flow-ID: 4d944fab-ae9e-4c2a-a996-73171ba7a68a
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 8 Nov 2023 11:40:08 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 11:40:05 +0000
-Message-ID: <a8da9071-68ee-42e6-810a-eac95aff317d@amazon.com>
-Date:   Wed, 8 Nov 2023 12:40:02 +0100
+        Wed, 8 Nov 2023 06:41:32 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A5C1A5;
+        Wed,  8 Nov 2023 03:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+        Resent-Message-ID:In-Reply-To:References;
+        bh=bmLEr1pWb19NVnljsUvllcFFWGCCprF2QCo+mitQriY=; t=1699443690; x=1700653290; 
+        b=imExegtKaubsD2HuITWfhDle5a+vz34HZTTr8YXUHPvHmfKWNqbcBkCQ4yjrnn5nNz7URZC+C+C
+        lYrvFj6PfwxqIJdrT+I0FN9Pdmqj33LGOhuha+68ClzuCt3xx6jdBvD4cPpeg8Zfy+JceoWiDcbWP
+        GSMpbHPHhSR1iQpgx09QB1NbiTCKXrZbAyFDwH47kmmS4zJNVyDTNHw1MJWl7KjuUXeLDg355p1zW
+        DDmmRPKuhjSq8DvieSn7BdwsfuOTj3bncqEvARlG/msyZSoEdli4khNFN6TKBLhSsSP8WgI0aQ0ri
+        Q09XHCcZ/OiQsCadj90pYwrRYb4gOLWwF5vw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r0gw2-00000000Trk-2CuE;
+        Wed, 08 Nov 2023 12:41:26 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>
+Subject: [PATCH] Documentation: locking: mutex-design: fix atomic_dec_and_mutex_lock()
+Date:   Wed,  8 Nov 2023 12:41:24 +0100
+Message-ID: <20231108124123.51c4a7339b7b.Id71e81d75d102fff30d5cd33e39d27caefbf83b7@changeid>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/33] KVM: x86: hyperv: Introduce VSM support
-Content-Language: en-US
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
-        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
-        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <decui@microsoft.com>, <x86@kernel.org>,
-        <linux-doc@vger.kernel.org>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <20231108111806.92604-1-nsaenz@amazon.com>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D040UWB001.ant.amazon.com (10.13.138.82) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGV5IE5pY29sYXMsCgpPbiAwOC4xMS4yMyAxMjoxNywgTmljb2xhcyBTYWVueiBKdWxpZW5uZSB3
-cm90ZToKPiBIeXBlci1WJ3MgVmlydHVhbCBTZWN1cmUgTW9kZSAoVlNNKSBpcyBhIHZpcnR1YWxp
-c2F0aW9uIHNlY3VyaXR5IGZlYXR1cmUKPiB0aGF0IGxldmVyYWdlcyB0aGUgaHlwZXJ2aXNvciB0
-byBjcmVhdGUgc2VjdXJlIGV4ZWN1dGlvbiBlbnZpcm9ubWVudHMKPiB3aXRoaW4gYSBndWVzdC4g
-VlNNIGlzIGRvY3VtZW50ZWQgYXMgcGFydCBvZiBNaWNyb3NvZnQncyBIeXBlcnZpc29yIFRvcAo+
-IExldmVsIEZ1bmN0aW9uYWwgU3BlY2lmaWNhdGlvbiBbMV0uIFNlY3VyaXR5IGZlYXR1cmVzIHRo
-YXQgYnVpbGQgdXBvbgo+IFZTTSwgbGlrZSBXaW5kb3dzIENyZWRlbnRpYWwgR3VhcmQsIGFyZSBl
-bmFibGVkIGJ5IGRlZmF1bHQgb24gV2luZG93cyAxMSwKPiBhbmQgYXJlIGJlY29taW5nIGEgcHJl
-cmVxdWlzaXRlIGluIHNvbWUgaW5kdXN0cmllcy4KPgo+IFRoaXMgUkZDIHNlcmllcyBpbnRyb2R1
-Y2VzIHRoZSBuZWNlc3NhcnkgaW5mcmFzdHJ1Y3R1cmUgdG8gZW11bGF0ZSBWU00KPiBlbmFibGVk
-IGd1ZXN0cy4gSXQgaXMgYSBzbmFwc2hvdCBvZiB0aGUgcHJvZ3Jlc3Mgd2UgbWFkZSBzbyBmYXIs
-IGFuZCBpdHMKPiBtYWluIGdvYWwgaXMgdG8gZ2F0aGVyIGRlc2lnbiBmZWVkYmFjay4gU3BlY2lm
-aWNhbGx5IG9uIHRoZSBLVk0gQVBJcyB3ZQo+IGludHJvZHVjZS4gRm9yIGEgaGlnaCBsZXZlbCBk
-ZXNpZ24gb3ZlcnZpZXcsIHNlZSB0aGUgZG9jdW1lbnRhdGlvbiBpbgo+IHBhdGNoIDMzLgo+Cj4g
-QWRkaXRpb25hbGx5LCB0aGlzIHRvcGljIHdpbGwgYmUgZGlzY3Vzc2VkIGFzIHBhcnQgb2YgdGhl
-IEtWTQo+IE1pY3JvLWNvbmZlcmVuY2UsIGluIHRoaXMgeWVhcidzIExpbnV4IFBsdW1iZXJzIENv
-bmZlcmVuY2UgWzJdLgoKCkF3ZXNvbWUsIGxvb2tpbmcgZm9yd2FyZCB0byB0aGUgc2Vzc2lvbiEg
-OikKCgo+IFRoZSBzZXJpZXMgaXMgYWNjb21wYW5pZWQgYnkgdHdvIHJlcG9zaXRvcmllczoKPiAg
-IC0gQSBQb0MgUUVNVSBpbXBsZW1lbnRhdGlvbiBvZiBWU00gWzNdLgo+ICAgLSBWU00ga3ZtLXVu
-aXQtdGVzdHMgWzRdLgo+Cj4gTm90ZSB0aGF0IHRoaXMgaXNuJ3QgYSBmdWxsIFZTTSBpbXBsZW1l
-bnRhdGlvbi4gRm9yIG5vdyBpdCBvbmx5IHN1cHBvcnRzCj4gMiBWVExzLCBhbmQgb25seSBydW5z
-IG9uIHVuaXByb2Nlc3NvciBndWVzdHMuIEl0IGlzIGNhcGFibGUgb2YgYm9vdGluZwo+IFdpbmRv
-d3MgU2V2ZXIgMjAxNi8yMDE5LCBidXQgaXMgdW5zdGFibGUgZHVyaW5nIHJ1bnRpbWUuCgoKSG93
-IG11Y2ggb2YgdGhlc2UgbGltaXRhdGlvbnMgYXJlIGluaGVyZW50IGluIHRoZSBjdXJyZW50IHNl
-dCBvZiAKcGF0Y2hlcz8gV2hhdCBpcyBtaXNzaW5nIHRvIGdvIGJleW9uZCAyIFZUTHMgYW5kIGlu
-dG8gU01QIGxhbmQ/IEFueXRoaW5nIAp0aGF0IHdpbGwgcmVxdWlyZSBBUEkgY2hhbmdlcz8KCgpB
-bGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3Ry
-LiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2Vy
-LCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVy
-ZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkK
-Cgo=
+From: Johannes Berg <johannes.berg@intel.com>
+
+Since atomic_dec_and_mutex_lock() uses mutex_lock() it is indeed not
+interruptible. Fix the documentation.
+
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Fixes: 9161f5409798 ("locking/mutexes: Documentation update/rewrite")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ Documentation/locking/mutex-design.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/locking/mutex-design.rst b/Documentation/locking/mutex-design.rst
+index 78540cd7f54b..9d75661a60fc 100644
+--- a/Documentation/locking/mutex-design.rst
++++ b/Documentation/locking/mutex-design.rst
+@@ -124,7 +124,7 @@ Acquire the mutex, interruptible::
+ 				       unsigned int subclass);
+    int mutex_lock_interruptible(struct mutex *lock);
+ 
+-Acquire the mutex, interruptible, if dec to 0::
++Acquire the mutex, uninterruptible, if dec to 0::
+ 
+    int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
+ 
+-- 
+2.41.0
 
