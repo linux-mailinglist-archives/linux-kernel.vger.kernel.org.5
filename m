@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E137E57C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5D37E57CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344645AbjKHNHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:07:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S1344630AbjKHNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbjKHNHU (ORCPT
+        with ESMTP id S229940AbjKHNJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:07:20 -0500
+        Wed, 8 Nov 2023 08:09:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B5D1AE;
-        Wed,  8 Nov 2023 05:07:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFAAEC433C8;
-        Wed,  8 Nov 2023 13:07:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448838;
-        bh=oi5w46XUUj+5eCHt5HUP0e7A7OgjsfNv+uqws1harcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=USgbXuQE+ahS0wMNzK3GZRWrt2o4EadreHpU54UrkxxsZTTz0+LAe6fX8RvlykKp3
-         GnmJtzyZD1B5KT90EnuOrpS45Wn4Ug2QUbGzOlIaMw4h8TYxXniEVURlDAPEFofnAA
-         iULsGnxGgZ2r3S/txUvuyAC4NfimqV7S5ugviXvv/bC9zlMCTAI9ifoFUl0qap50eK
-         8xnqTE2LkaSAP45eLgiKG3jc+Tl0L9OlmfUcmBV78/c8SmRpnZH7a47rwrNZWy6prh
-         1BOu/wADh/rVR70guv/oGFc/pjZ9rrdvWZkVYr2T0XYKkEeW2YWOsyGVWaKdWKHEcO
-         jUDvq/YygN9Fw==
-Date:   Wed, 8 Nov 2023 13:07:14 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 11/17] ASoC: dt-bindings: samsung-i2s: add specific
- compatibles for existing SoC
-Message-ID: <ZUuIAihzcOqkVsWG@finisterre.sirena.org.uk>
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
- <20231108104343.24192-12-krzysztof.kozlowski@linaro.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAA0198D;
+        Wed,  8 Nov 2023 05:09:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05ABFC433C8;
+        Wed,  8 Nov 2023 13:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699448994;
+        bh=z8N3D1mOIbdvSmQNPFl82JkSxxX0USW9mYG6Fe/7eXw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mvMGauBwaDo1LjaDr/ykBkemQGU1lI8LVEjsySkiVBBe5GcnYv+ZdQJdjNKZ0aitK
+         bGCnjFxx5qErp3RcWpvIJ2nEkNylil95EOpcyVUA6wiIK39AHu1f0NdUImZz/it1wh
+         twt44T9cNIusDdrJJQ6VtWxtMrseSeMO2swulMsM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 6.6.1
+Date:   Wed,  8 Nov 2023 14:09:49 +0100
+Message-ID: <2023110849-sandy-unlinked-4f41@gregkh>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="X+QegD6ebh8cp8W3"
-Content-Disposition: inline
-In-Reply-To: <20231108104343.24192-12-krzysztof.kozlowski@linaro.org>
-X-Cookie: Slow day.  Practice crawling.
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm announcing the release of the 6.6.1 kernel.
 
---X+QegD6ebh8cp8W3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+All users of the 6.6 kernel series must upgrade.
 
-On Wed, Nov 08, 2023 at 11:43:37AM +0100, Krzysztof Kozlowski wrote:
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine
-> and there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
+The updated 6.6.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.6.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Acked-by: Mark Brown <broonie@kernel.org>
+thanks,
 
---X+QegD6ebh8cp8W3
-Content-Type: application/pgp-signature; name="signature.asc"
+greg k-h
 
------BEGIN PGP SIGNATURE-----
+------------
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVLh/wACgkQJNaLcl1U
-h9D+/Af+MyEPu0I4eqVGYfK3Bo/6Rvq3LXEhL2x1vksJCKJjNwBBvQHqRWRTBZXL
-VEhtg6O887bE4a7Hy4RErRnb978JM4kG0mM4qBPhwgv9YoqD9Ymr7jFfp8dRru28
-hGY35dYXNXlC3LMJ1CdSVnubfo0QPHIzRYwWO4xpz0/BqNtsJlELPaU2s1q0wDHO
-v/nMVrIE3Xzjp4iQEXcyfZa4k73XOYHmSqxR0H9xiDayBgMuUkypOeDs/qGpO+mW
-Bp4IbvvgVJr9ifLmpCMlZWSQryHbiOR3cpJHR6Tb3UhjJKUgccQLyGHgBfAgiSqJ
-x6Tc2OIcYB5l2yn9+JONwgLPLMiALg==
-=Ypqx
------END PGP SIGNATURE-----
+ Documentation/devicetree/bindings/serial/rs485.yaml |    4 
+ Makefile                                            |    2 
+ drivers/bluetooth/hci_bcm4377.c                     |    5 
+ drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c       |    3 
+ drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c       |    3 
+ drivers/misc/pci_endpoint_test.c                    |    4 
+ drivers/pci/quirks.c                                |    8 
+ drivers/power/supply/power_supply_core.c            |    8 
+ drivers/tty/n_gsm.c                                 |    2 
+ drivers/tty/serial/8250/8250_pci.c                  |  327 +++++++++++++++++++-
+ drivers/tty/serial/serial_core.c                    |    2 
+ drivers/usb/gadget/legacy/raw_gadget.c              |   26 -
+ drivers/usb/storage/unusual_cypress.h               |    2 
+ drivers/usb/typec/tcpm/tcpm.c                       |    5 
+ fs/tracefs/event_inode.c                            |  288 ++++++++++-------
+ include/linux/pci_ids.h                             |    1 
+ include/linux/power_supply.h                        |    2 
+ include/linux/trace_events.h                        |    4 
+ kernel/trace/trace.c                                |   15 
+ kernel/trace/trace.h                                |    3 
+ kernel/trace/trace_events.c                         |   31 +
+ kernel/trace/trace_events_filter.c                  |    3 
+ sound/hda/intel-dsp-config.c                        |    6 
+ sound/soc/sof/sof-pci-dev.c                         |    7 
+ sound/usb/quirks.c                                  |    2 
+ tools/perf/util/evlist.c                            |    5 
+ 26 files changed, 623 insertions(+), 145 deletions(-)
 
---X+QegD6ebh8cp8W3--
+Andrey Konovalov (1):
+      usb: raw-gadget: properly handle interrupted requests
+
+Badhri Jagan Sridharan (1):
+      usb: typec: tcpm: Add additional checks for contaminant
+
+Cameron Williams (9):
+      tty: 8250: Remove UC-257 and UC-431
+      tty: 8250: Add support for additional Brainboxes UC cards
+      tty: 8250: Add support for Brainboxes UP cards
+      tty: 8250: Add support for Intashield IS-100
+      tty: 8250: Fix port count of PX-257
+      tty: 8250: Fix up PX-803/PX-857
+      tty: 8250: Add support for additional Brainboxes PX cards
+      tty: 8250: Add support for Intashield IX cards
+      tty: 8250: Add Brainboxes Oxford Semiconductor-based quirks
+
+Daniel Starke (1):
+      tty: n_gsm: fix race condition in status line change on dead connections
+
+Francesco Dolcini (1):
+      dt-bindings: serial: rs485: Add rs485-rts-active-high
+
+Greg Kroah-Hartman (1):
+      Linux 6.6.1
+
+Ian Rogers (1):
+      perf evlist: Avoid frequency mode for the dummy event
+
+Janne Grunau (1):
+      Bluetooth: hci_bcm4377: Mark bcm4378/bcm4387 as BROKEN_LE_CODED
+
+Jimmy Hu (1):
+      usb: typec: tcpm: Fix NULL pointer dereference in tcpm_pd_svdm()
+
+Kai-Heng Feng (1):
+      power: supply: core: Use blocking_notifier_call_chain to avoid RCU complaint
+
+LihaSika (1):
+      usb: storage: set 1.50 as the lower bcdDevice for older "Super Top" compatibility
+
+Mark Hasemeyer (2):
+      ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
+      ASoC: SOF: sof-pci-dev: Fix community key quirk detection
+
+Max McCarthy (1):
+      ALSA: usb-audio: add quirk flag to enable native DSD for McIntosh devices
+
+Nicholas Kazlauskas (1):
+      drm/amd/display: Don't use fsleep for PSR exit waits
+
+Siddharth Vadapalli (1):
+      misc: pci_endpoint_test: Add deviceID for J721S2 PCIe EP device support
+
+Steven Rostedt (Google) (5):
+      tracing: Have trace_event_file have ref counters
+      eventfs: Remove "is_freed" union with rcu head
+      eventfs: Save ownership and mode
+      eventfs: Delete eventfs_inode when the last dentry is freed
+      eventfs: Use simple_recursive_removal() to clean up dentries
+
+Tony Lindgren (1):
+      serial: core: Fix runtime PM handling for pending tx
+
+Vicki Pfau (1):
+      PCI: Prevent xHCI driver from claiming AMD VanGogh USB3 DRD device
+
