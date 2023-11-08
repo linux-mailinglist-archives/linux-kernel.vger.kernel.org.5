@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1089E7E5AEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89A47E5AEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjKHQPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S229903AbjKHQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:15:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHQPA (ORCPT
+        with ESMTP id S229769AbjKHQPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:15:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797921BDD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:14:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA4DC433C7;
-        Wed,  8 Nov 2023 16:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699460098;
-        bh=x9AiqdNABhWJBcn7lN0wvEkWHm5XpvpOL/ArzqLMP9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WWfCzv8HYv2DyvNATYj4ofVaqohC/6tedx5T/306ICURUF6V4mr9osCeL+OFF90Nj
-         9M2KONYWc1JNr/9CD+S8pqb06rK0PHwr1qduPll26oqHtVnaCGGY5sXyRWdNOQhUwJ
-         i5NULg7MOto7TR3Mu5Z9k8DLcWXHLHm/3/CabGP5MnHudnCEMW/4/QGqWLY62t95F1
-         So3pPGvQNQ0IdazUo9ncxKXl95DevKuT/M51gvrFwjDGob9hYyQmR6CAOgWa6qlzoH
-         OSNRLfaNT3cd25HUgfStpJfepEMYQm6Vt5HBnV0CYyeHXTDROf/0pTQw08b5Tc+VGC
-         551ohL8ajEYrg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D4C074035D; Wed,  8 Nov 2023 13:14:55 -0300 (-03)
-Date:   Wed, 8 Nov 2023 13:14:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v4 12/53] perf bpf: Don't synthesize BPF events when
- disabled
-Message-ID: <ZUuz/8EC0orXCffn@kernel.org>
-References: <20231102175735.2272696-1-irogers@google.com>
- <20231102175735.2272696-13-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231102175735.2272696-13-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+        Wed, 8 Nov 2023 11:15:23 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD631FE1
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:15:21 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc5ef7e815so49798385ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 08:15:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699460121; x=1700064921; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hkv2aSpFw25Sjc2pDxCz5exBlHcYk4gTYVmkV2GOyQs=;
+        b=jmM381QoHM6/g0FB4YGETIBR5O3J1Dych7X+lotMdYThzDNuBSm38Bvy2TsfZPUuBz
+         LzlpsoZeXenCsP0R9cO1z5mCRUWbfMliqX3Z3O7dCfsTunpZ30Cgf3LrGqt/mpzbZSbW
+         O46em/jCPUWIkZdsHEfghHGMlEzU+D2q9+JXzOIJcLoFDjOuitCNXbMB6+FW+S0LNsxc
+         F5WUZwqo/HTJJeTLt/A3/SNIOAkpsY83aURbgEu8jX3rhG1CNmCXmqlv5kG2IL5HBNiD
+         v9M9nQ6x4wQbc3Uuw3RJHsDPVCYkYFT/ksNlNSKDpcP6VV1dYHtf7ofUP8DUxJg0LVXp
+         aDpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699460121; x=1700064921;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hkv2aSpFw25Sjc2pDxCz5exBlHcYk4gTYVmkV2GOyQs=;
+        b=DGszCAcm7vopUaP2MhM9qvNeC2r5fwp+tGcRzxZVYkrg5XETDPLT4kg0WK5XMm7ni0
+         x/B5XxTj9Jtr2WlvFgeLrbCZeLhzHYFAADNCOsnEJP/DR0zWh4AR+BRjOYzMUVhoCPFx
+         QGsuz1MQ2zFAZCS1TmGNW21rif7jC5LEKOlGE/C68l7Fb9VcSxf0nLJtT4YhDNFWnPoO
+         mqsLzsbndxL2BMpfTK7eHIUeE8kaYEHMLO8twerEDjljqSoQ0A8Gg9nSIxvkwrHUKj0d
+         4x7AJG55cG9HjDGdciAjSpluAOordXlw/JNPRUmXFDP6ojh676kXx4sadOAAFweS1Bw9
+         IK5w==
+X-Gm-Message-State: AOJu0YyMUYzJUmoVQytod9p/EjYASKPTlxx8xh6miYsRD08m3FQWKWqm
+        JfM8+wWjjG8G9Pt25KdZW5iIS5qgiio=
+X-Google-Smtp-Source: AGHT+IFTaQxuB68rES3N/Ouf34zgkF8c8VJFXOJJTqeB2NI7Tbr2np/f2yCXpxs97M+wYFrZ4r8BXQsnFFA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:1386:b0:1cc:5674:9177 with SMTP id
+ jx6-20020a170903138600b001cc56749177mr37933plb.11.1699460120994; Wed, 08 Nov
+ 2023 08:15:20 -0800 (PST)
+Date:   Wed, 8 Nov 2023 08:15:19 -0800
+In-Reply-To: <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
+Mime-Version: 1.0
+References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-30-nsaenz@amazon.com>
+ <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
+Message-ID: <ZUu0FzbW5tr2Werz@google.com>
+Subject: Re: [RFC 29/33] KVM: VMX: Save instruction length on EPT violation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, anelkz@amazon.com,
+        dwmw@amazon.co.uk, jgowans@amazon.com, corbert@lwn.net,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        x86@kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 02, 2023 at 10:56:54AM -0700, Ian Rogers escreveu:
-> If BPF sideband events are disabled on the command line, don't
-> synthesize BPF events too.
-
-
-Interesting, in 71184c6ab7e60fd5 ("perf record: Replace option
---bpf-event with --no-bpf-event") we checked that, but only down at
-perf_event__synthesize_one_bpf_prog(), where we have:
-
-        if (!opts->no_bpf_event) {
-                /* Synthesize PERF_RECORD_BPF_EVENT */
-                *bpf_event = (struct perf_record_bpf_event)
-
-
-So we better remove that, now redundant check? I'll apply your patch as
-is and then we can remove that other check.
-
-Song, can I have your Acked-by or Reviewed-by, please?
-
-- Arnaldo
-
-
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/bpf-event.c | 3 +++
->  1 file changed, 3 insertions(+)
+On Wed, Nov 08, 2023, Alexander Graf wrote:
 > 
-> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-> index 38fcf3ba5749..830711cae30d 100644
-> --- a/tools/perf/util/bpf-event.c
-> +++ b/tools/perf/util/bpf-event.c
-> @@ -386,6 +386,9 @@ int perf_event__synthesize_bpf_events(struct perf_session *session,
->  	int err;
->  	int fd;
->  
-> +	if (opts->no_bpf_event)
-> +		return 0;
-> +
->  	event = malloc(sizeof(event->bpf) + KSYM_NAME_LEN + machine->id_hdr_size);
->  	if (!event)
->  		return -1;
-> -- 
-> 2.42.0.869.gea05f2083d-goog
+> On 08.11.23 12:18, Nicolas Saenz Julienne wrote:
+> > Save the length of the instruction that triggered an EPT violation in
+> > struct kvm_vcpu_arch. This will be used to populate Hyper-V VSM memory
+> > intercept messages.
+> > 
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
 > 
+> 
+> In v1, please do this for SVM as well :)
 
--- 
-
-- Arnaldo
+Why?  KVM caches values on VMX because VMREAD is measurable slower than memory
+accesses, especially when running nested.  SVM has no such problems.  I wouldn't
+be surprised if adding a "cache" is actually less performant due to increased
+pressure and misses on the hardware cache.
