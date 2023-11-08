@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94437E5702
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B31C7E570E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344698AbjKHNA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S1344712AbjKHNBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:01:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbjKHNAu (ORCPT
+        with ESMTP id S235605AbjKHNBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:00:50 -0500
+        Wed, 8 Nov 2023 08:01:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123B41FC2;
-        Wed,  8 Nov 2023 05:00:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C32BFC433C7;
-        Wed,  8 Nov 2023 13:00:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905D61FDD;
+        Wed,  8 Nov 2023 05:01:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F78FC433C9;
+        Wed,  8 Nov 2023 13:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448446;
-        bh=AsWQYHzG9sipb7sEr1JLntaPFi93f1pC9EyAKGQfMYU=;
+        s=k20201202; t=1699448462;
+        bh=CmRepuXtCWO3se21RGbBczVot1x9lXrw/JImB152n/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IVsQ8P2dntVCqOp290JiIjSeAiJc+VMO2pw8M5wXect2MBBRk+jOoldL7GU96ZMeA
-         HuTE9Cemzwdgusy0jqMNAGrkZljxwDe/bga3g2m7k9eEuDPGq3KBsmaI6dmPkl/wlE
-         2sJ8x5zpsds68NNoBAImql8aGu/sRESukQSJx2yQtofDYlD6qoDUcqJIsRbgMEAgD5
-         pBWkZwSHNGyEjrYKkBLIDiDk/X/C6tnjuGAPAvyQxIP+Clu91AntgrZdhbNIFgmOBm
-         NDqic6B3ehDAmy+JcPX7W+ZFcv2EJF1l6Qv/grGtIBAqxH+1Q7icIKEapV1+6GP4HA
-         hAP9sw3MNsZDA==
+        b=E65Buqqtg3lh+yZ8dGJXfxqe4r7c2aJ6WWs6txRNetSC9i7qYUTF5/5DaeCYGQ4cY
+         0jGiM83xBMrGLssPEI++c5mrm/kQGWhVeBiJBWsThNBlOO6QQTeNTRmUJT3AtGf1jF
+         /Yr9oHZ8DPccZJ4MmJHmuumNtunQC2hxlcemeZF5A1IMfMhnUCHVecYgcr94lU1pr2
+         2yiEN6qmCazHRLm9zpObnBzHeb+I3fY3PmugiZ/YabiJNHOMEX0YqJGpPZCoyKaqL7
+         b9MkEIKIMvVEJcf1q9I8uyEQodn1AvvI0/EwhqcqOZLOJlCuOG7oZ7mzCN1dw41esy
+         kE0Lpy2S+DwyA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
@@ -87,10 +87,12 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
         netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH 07/22] [RESEND] sched: fair: move unused stub functions to header
-Date:   Wed,  8 Nov 2023 13:58:28 +0100
-Message-Id: <20231108125843.3806765-8-arnd@kernel.org>
+        linux-mtd@lists.infradead.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: [PATCH 08/22] [v2] arch: consolidate arch_irq_work_raise prototypes
+Date:   Wed,  8 Nov 2023 13:58:29 +0100
+Message-Id: <20231108125843.3806765-9-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -102,82 +104,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-These four functions have a normal definition for CONFIG_FAIR_GROUP_SCHED,
-and empty one that is only referenced when FAIR_GROUP_SCHED is disabled
-but CGROUP_SCHED is still enabled. If both are turned off, the functions
-are still defined but the misisng prototype causes a W=1 warning:
+The prototype was hidden in an #ifdef on x86, which causes a warning:
 
-kernel/sched/fair.c:12544:6: error: no previous prototype for 'free_fair_sched_group'
-kernel/sched/fair.c:12546:5: error: no previous prototype for 'alloc_fair_sched_group'
-kernel/sched/fair.c:12553:6: error: no previous prototype for 'online_fair_sched_group'
-kernel/sched/fair.c:12555:6: error: no previous prototype for 'unregister_fair_sched_group'
+kernel/irq_work.c:72:13: error: no previous prototype for 'arch_irq_work_raise' [-Werror=missing-prototypes]
 
-Move the alternatives into the header as static inline functions with
-the correct combination of #ifdef checks to avoid the warning without
-adding even more complexity.
+Some architectures have a working prototype, while others don't.
+Fix this by providing it in only one place that is always visible.
 
-[A different patch with the same description got applied by accident
- and was later reverted, but the original patch is still missing]
-
-Fixes: 7aa55f2a5902 ("sched/fair: Move unused stub functions to header")
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Guo Ren <guoren@kernel.org>
+Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-A patch with the same commit log has
+v2: clarify changelog text
 ---
- kernel/sched/fair.c  | 13 -------------
- kernel/sched/sched.h | 11 +++++++++++
- 2 files changed, 11 insertions(+), 13 deletions(-)
+ arch/arm/include/asm/irq_work.h     | 2 --
+ arch/arm64/include/asm/irq_work.h   | 2 --
+ arch/csky/include/asm/irq_work.h    | 2 +-
+ arch/powerpc/include/asm/irq_work.h | 1 -
+ arch/riscv/include/asm/irq_work.h   | 2 +-
+ arch/s390/include/asm/irq_work.h    | 2 --
+ arch/x86/include/asm/irq_work.h     | 1 -
+ include/linux/irq_work.h            | 3 +++
+ 8 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 2048138ce54b..82b82fa1d81b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12927,19 +12927,6 @@ int sched_group_set_idle(struct task_group *tg, long idle)
- 	return 0;
+diff --git a/arch/arm/include/asm/irq_work.h b/arch/arm/include/asm/irq_work.h
+index 3149e4dc1b54..8895999834cc 100644
+--- a/arch/arm/include/asm/irq_work.h
++++ b/arch/arm/include/asm/irq_work.h
+@@ -9,6 +9,4 @@ static inline bool arch_irq_work_has_interrupt(void)
+ 	return is_smp();
  }
  
--#else /* CONFIG_FAIR_GROUP_SCHED */
+-extern void arch_irq_work_raise(void);
 -
--void free_fair_sched_group(struct task_group *tg) { }
--
--int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
--{
--	return 1;
--}
--
--void online_fair_sched_group(struct task_group *tg) { }
--
--void unregister_fair_sched_group(struct task_group *tg) { }
--
- #endif /* CONFIG_FAIR_GROUP_SCHED */
+ #endif /* _ASM_ARM_IRQ_WORK_H */
+diff --git a/arch/arm64/include/asm/irq_work.h b/arch/arm64/include/asm/irq_work.h
+index 81bbfa3a035b..a1020285ea75 100644
+--- a/arch/arm64/include/asm/irq_work.h
++++ b/arch/arm64/include/asm/irq_work.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_IRQ_WORK_H
+ #define __ASM_IRQ_WORK_H
  
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2e5a95486a42..8f5df5250b8d 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -436,10 +436,21 @@ static inline int walk_tg_tree(tg_visitor down, tg_visitor up, void *data)
- 
- extern int tg_nop(struct task_group *tg, void *data);
- 
-+#ifdef CONFIG_FAIR_GROUP_SCHED
- extern void free_fair_sched_group(struct task_group *tg);
- extern int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent);
- extern void online_fair_sched_group(struct task_group *tg);
- extern void unregister_fair_sched_group(struct task_group *tg);
-+#else
-+static inline void free_fair_sched_group(struct task_group *tg) { }
-+static inline int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
-+{
-+       return 1;
-+}
-+static inline void online_fair_sched_group(struct task_group *tg) { }
-+static inline void unregister_fair_sched_group(struct task_group *tg) { }
-+#endif
+-extern void arch_irq_work_raise(void);
+-
+ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return true;
+diff --git a/arch/csky/include/asm/irq_work.h b/arch/csky/include/asm/irq_work.h
+index 33aaf39d6f94..d39fcc1f5395 100644
+--- a/arch/csky/include/asm/irq_work.h
++++ b/arch/csky/include/asm/irq_work.h
+@@ -7,5 +7,5 @@ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return true;
+ }
+-extern void arch_irq_work_raise(void);
 +
- extern void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
- 			struct sched_entity *se, int cpu,
- 			struct sched_entity *parent);
+ #endif /* __ASM_CSKY_IRQ_WORK_H */
+diff --git a/arch/powerpc/include/asm/irq_work.h b/arch/powerpc/include/asm/irq_work.h
+index b8b0be8f1a07..c6d3078bd8c3 100644
+--- a/arch/powerpc/include/asm/irq_work.h
++++ b/arch/powerpc/include/asm/irq_work.h
+@@ -6,6 +6,5 @@ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return true;
+ }
+-extern void arch_irq_work_raise(void);
+ 
+ #endif /* _ASM_POWERPC_IRQ_WORK_H */
+diff --git a/arch/riscv/include/asm/irq_work.h b/arch/riscv/include/asm/irq_work.h
+index b53891964ae0..b27a4d64fc6a 100644
+--- a/arch/riscv/include/asm/irq_work.h
++++ b/arch/riscv/include/asm/irq_work.h
+@@ -6,5 +6,5 @@ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return IS_ENABLED(CONFIG_SMP);
+ }
+-extern void arch_irq_work_raise(void);
++
+ #endif /* _ASM_RISCV_IRQ_WORK_H */
+diff --git a/arch/s390/include/asm/irq_work.h b/arch/s390/include/asm/irq_work.h
+index 603783766d0a..f00c9f610d5a 100644
+--- a/arch/s390/include/asm/irq_work.h
++++ b/arch/s390/include/asm/irq_work.h
+@@ -7,6 +7,4 @@ static inline bool arch_irq_work_has_interrupt(void)
+ 	return true;
+ }
+ 
+-void arch_irq_work_raise(void);
+-
+ #endif /* _ASM_S390_IRQ_WORK_H */
+diff --git a/arch/x86/include/asm/irq_work.h b/arch/x86/include/asm/irq_work.h
+index 800ffce0db29..6b4d36c95165 100644
+--- a/arch/x86/include/asm/irq_work.h
++++ b/arch/x86/include/asm/irq_work.h
+@@ -9,7 +9,6 @@ static inline bool arch_irq_work_has_interrupt(void)
+ {
+ 	return boot_cpu_has(X86_FEATURE_APIC);
+ }
+-extern void arch_irq_work_raise(void);
+ #else
+ static inline bool arch_irq_work_has_interrupt(void)
+ {
+diff --git a/include/linux/irq_work.h b/include/linux/irq_work.h
+index 8cd11a223260..136f2980cba3 100644
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -66,6 +66,9 @@ void irq_work_sync(struct irq_work *work);
+ void irq_work_run(void);
+ bool irq_work_needs_cpu(void);
+ void irq_work_single(void *arg);
++
++void arch_irq_work_raise(void);
++
+ #else
+ static inline bool irq_work_needs_cpu(void) { return false; }
+ static inline void irq_work_run(void) { }
 -- 
 2.39.2
 
