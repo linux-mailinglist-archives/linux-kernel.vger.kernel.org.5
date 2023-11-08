@@ -2,134 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6997E548C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8D77E549A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344480AbjKHKxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:53:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
+        id S1344412AbjKHK5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235702AbjKHKxA (ORCPT
+        with ESMTP id S235663AbjKHK4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:53:00 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23547C6;
-        Wed,  8 Nov 2023 02:52:46 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8AjBmp006482;
-        Wed, 8 Nov 2023 10:52:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Y6n9Wq/1lf6ns5MR5hkNe3aObEjXjSgg3FSfX8KTZQs=;
- b=j9YzRz0uUiZGyCnQWMsCL8++tgBaXnTK6G5twhpJ8v4h4EcIAI3KGQ6aOd73/6KJ9LUf
- Vs0MSWfIUztqahWCSZOtYN/+VLzO8ImiOHbaLXA7IUimQvIn3FWD5ni05QDvY6E7AEhf
- HewSIQRWIkWkx0UklD6gmf8l24ZUrCh/fKaaMCskdWcUrpKZ6/SB0PYgdSULgChTWhFQ
- oxZCRkuzcYGDuph7aYI2Suh46WYA512dzTN9KlgVMSlEZbTJC2mBcWY+TlB6tG6UM84u
- pFznS6nqlPSn2CtSqSexw3MgEQ/cGGDnAbv35lZG2fZ1NQzlH8Uk9AmB7Ss2q5jgFkqQ Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqrf9a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:52:16 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8AjQxd009025;
-        Wed, 8 Nov 2023 10:52:15 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqrf7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:52:15 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88V7pS019256;
-        Wed, 8 Nov 2023 10:52:12 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w23v4ms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:52:12 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8Aq9eM41484886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 10:52:09 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40B2420043;
-        Wed,  8 Nov 2023 10:52:09 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E87A520040;
-        Wed,  8 Nov 2023 10:52:08 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 10:52:08 +0000 (GMT)
-Date:   Wed, 8 Nov 2023 11:52:07 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Message-ID: <20231108115207.791a30d8.pasic@linux.ibm.com>
-In-Reply-To: <20231103195949.0af884d0@meshulam.tesarici.cz>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
- <20231103195949.0af884d0@meshulam.tesarici.cz>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 8 Nov 2023 05:56:30 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5A019A5;
+        Wed,  8 Nov 2023 02:56:16 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SQMSz45TJzfb2h;
+        Wed,  8 Nov 2023 18:56:03 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 8 Nov
+ 2023 18:56:12 +0800
+Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-8-almasrymina@google.com>
+ <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
+ <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com>
+Date:   Wed, 8 Nov 2023 18:56:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qK8Ky8dtByMWS9pE01Wz3idCdL0ui5So
-X-Proofpoint-ORIG-GUID: LT_y2TRDzFp56vukj3DHi7MXpkTZAqPi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 mlxscore=0
- spamscore=0 suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080090
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 19:59:49 +0100
-Petr Tesařík <petr@tesarici.cz> wrote:
-
-> > Not sure how to properly fix this as the different alignment
-> > requirements get pretty complex quickly. So would appreciate your
-> > input.  
+On 2023/11/8 5:56, Mina Almasry wrote:
+> On Tue, Nov 7, 2023 at 12:00 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/11/6 10:44, Mina Almasry wrote:
+>>> Overload the LSB of struct page* to indicate that it's a page_pool_iov.
+>>>
+>>> Refactor mm calls on struct page* into helpers, and add page_pool_iov
+>>> handling on those helpers. Modify callers of these mm APIs with calls to
+>>> these helpers instead.
+>>>
+>>> In areas where struct page* is dereferenced, add a check for special
+>>> handling of page_pool_iov.
+>>>
+>>> Signed-off-by: Mina Almasry <almasrymina@google.com>
+>>>
+>>> ---
+>>>  include/net/page_pool/helpers.h | 74 ++++++++++++++++++++++++++++++++-
+>>>  net/core/page_pool.c            | 63 ++++++++++++++++++++--------
+>>>  2 files changed, 118 insertions(+), 19 deletions(-)
+>>>
+>>> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+>>> index b93243c2a640..08f1a2cc70d2 100644
+>>> --- a/include/net/page_pool/helpers.h
+>>> +++ b/include/net/page_pool/helpers.h
+>>> @@ -151,6 +151,64 @@ static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
+>>>       return NULL;
+>>>  }
+>>>
+>>> +static inline int page_pool_page_ref_count(struct page *page)
+>>> +{
+>>> +     if (page_is_page_pool_iov(page))
+>>> +             return page_pool_iov_refcount(page_to_page_pool_iov(page));
+>>
+>> We have added a lot of 'if' for the devmem case, it would be better to
+>> make it more generic so that we can have more unified metadata handling
+>> for normal page and devmem. If we add another memory type here, do we
+>> need another 'if' here?
 > 
-> I don't think it's possible to improve the allocation logic without
-> modifying the page allocator and/or the DMA atomic pool allocator to
-> take additional constraints into account.
+> Maybe, not sure. I'm guessing new memory types will either be pages or
+> iovs, so maybe no new if statements needed.
+> 
+>> That is part of the reason I suggested using a more unified metadata for
+>> all the types of memory chunks used by page_pool.
+> 
+> I think your suggestion was to use struct pages for devmem. That was
+> thoroughly considered and intensely argued about in the initial
+> conversations regarding devmem and the initial RFC, and from the
+> conclusions there it's extremely clear to me that devmem struct pages
+> are categorically a no-go.
 
-I don't understand. What speaks against calculating the amount of space
-needed, so that with the waste we can still fit the bounce-buffer in the
-pool?
+Not exactly, I was wondering if adding a more abstract structure specificly
+for page pool makes any sense, and each mem type can add its own specific
+fields, net stack only see and handle the common fields so that it does not
+care about specific mem type, and each provider only see the and handle the
+specific fields belonging to it most of the time.
 
-I believe alloc_size + combined_mask is a trivial upper bound, but we can
-do slightly better since we know that we allocate pages.
+Ideally something like beleow:
 
-For the sake of simplicity let us assume we only have the min_align_mask
-requirement. Then I believe the worst case is that we need 
-(orig_addr & min_align_mask & PAGE_MASK)  + (min_align_mask & ~PAGE_MASK)
-extra space to fit.
+struct netmem {
+	/* common fields */
+	refcount_t refcount;
+	struct page_pool *pp;
+	......
 
-Depending on how the semantics pan out one may be able to replace
-min_align_mask with combined_mask.
+	union {
+		struct devmem{
+			struct dmabuf_genpool_chunk_owner *owner;
+		};
 
-Is your point that for large combined_mask values 
-_get_free_pages(GFP_NOWAIT | __GFP_NOWARN, required_order) is not
-likely to complete successfully?
+		struct other_mem{
+			...
+			...
+		};
+	};
+};
 
-Regards,
-Halil
+But untill we completely decouple the 'struct page' from the net stack,
+the above seems undoable in the near term.
+But we might be able to do something as folio is doing now, mm subsystem
+is still seeing 'struct folio/page', but other subsystem like slab is using
+'struct slab', and there is still some common fields shared between
+'struct folio' and 'struct slab'.
 
+As the netmem patchset, is devmem able to reuse the below 'struct netmem'
+and rename it to 'struct page_pool_iov'? So that 'struct page' for normal
+memory and 'struct page_pool_iov' for devmem share the common fields used
+by page pool and net stack? And we might be able to reuse the 'flags',
+'_pp_mapping_pad' and '_mapcount' for specific mem provider, which is enough
+for the devmem only requiring a single pointer to point to it's
+owner?
 
+https://lkml.kernel.org/netdev/20230105214631.3939268-2-willy@infradead.org/
 
++/**
++ * struct netmem - A memory allocation from a &struct page_pool.
++ * @flags: The same as the page flags.  Do not use directly.
++ * @pp_magic: Magic value to avoid recycling non page_pool allocated pages.
++ * @pp: The page pool this netmem was allocated from.
++ * @dma_addr: Call netmem_get_dma_addr() to read this value.
++ * @dma_addr_upper: Might need to be 64-bit on 32-bit architectures.
++ * @pp_frag_count: For frag page support, not supported in 32-bit
++ *   architectures with 64-bit DMA.
++ * @_mapcount: Do not access this member directly.
++ * @_refcount: Do not access this member directly.  Read it using
++ *   netmem_ref_count() and manipulate it with netmem_get() and netmem_put().
++ *
++ * This struct overlays struct page for now.  Do not modify without a
++ * good understanding of the issues.
++ */
++struct netmem {
++	unsigned long flags;
++	unsigned long pp_magic;
++	struct page_pool *pp;
++	/* private: no need to document this padding */
++	unsigned long _pp_mapping_pad;	/* aliases with folio->mapping */
++	/* public: */
++	unsigned long dma_addr;
++	union {
++		unsigned long dma_addr_upper;
++		atomic_long_t pp_frag_count;
++	};
++	atomic_t _mapcount;
++	atomic_t _refcount;
++};
 
+If we do that, it seems we might be able to allow net stack and page pool to see
+the metadata for devmem chunk as 'struct page', and may be able to aovid most of
+the 'if' checking in net stack and page pool?
+
+> 
+> --
+> Thanks,
+> Mina
+> 
+> .
+> 
