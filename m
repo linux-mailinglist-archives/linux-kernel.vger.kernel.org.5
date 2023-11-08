@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF4F7E4F97
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCAA7E4F9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbjKHD6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 22:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S230389AbjKHEFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 23:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHD6j (ORCPT
+        with ESMTP id S229449AbjKHEFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 22:58:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D265E10C9;
-        Tue,  7 Nov 2023 19:58:37 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2802d218242so6030607a91.1;
-        Tue, 07 Nov 2023 19:58:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699415917; x=1700020717; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oW6+TAcsgkVX2L728YvNO81hwlzTKV4x5733S3mNdBs=;
-        b=bglv6N8DuJitXWrUptcBK8WcyKnGYo4TA1XyIylhx1WElnLpleGVemLVqSbUWUGBz7
-         tkiPILMkjTNAvcCUMNStW7YtHupXNTvckIgSNbR5ktHs6YHB9qeR9ANdwSi4f+pDbWsW
-         6X97FormUxyGIJpGlZu5PTO3L+ZN1UKHo2AglFl0rRrddsNnmgUhx1Ydn+aq3ZRZGUme
-         x1ugRebRbFoj5s2ubfd5A6ibMra9mtkJIZFeuBc07SwK9OajaEZUOdUeDjrqMr16WLd6
-         iRm/mpIzOWe4SfkZ/4OEHzR2OcNnnLkWLnB3mIMjbJRxVLDktKFNBHPmZwefWinSI+Pf
-         0LzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699415917; x=1700020717;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oW6+TAcsgkVX2L728YvNO81hwlzTKV4x5733S3mNdBs=;
-        b=Y4L9MS5kl277gtsdN20hTtFfi03Gii15tbR7InrLo8VzjnVKAU6zAO+tiOVXG4UraC
-         PiphLmQdtNGndH8k795f3WOTJR+0osOHsaInOHJcd7q6TUb94nN7KiJes4Xs84y1tLPe
-         tMPls1M/+Ggft0OCOqsBtyVkTt5j4fu72LwfARSYxL0xNYbobo+nLZGrx3gCN6KxH6qz
-         YwShDg8FtXB+a78YYtUmKqvMdZsNJ9TEKHlguP3RxaVqMsnJbzN3ae8Ghpoee7g7BeZ9
-         ap0hVuC/Qth93RD2NcOp+DcUHa3g37WFR/XsBXZRv01jnXqTeZGdKlxADp8oGGtQlf6u
-         RM6Q==
-X-Gm-Message-State: AOJu0YwmPVlSqf7cd3/jhAvv3kt5UJyuzO7fIc99LaxCXbsCXCnTP644
-        yZ0GwKmCvDMEA115/5xl5A0=
-X-Google-Smtp-Source: AGHT+IGxy8UqGEjSjO7aF6ymfbOkLNMyr0HazzEN6S/9GhcKtZvRfqbDP14jdiEY+DyyheZBAIs3sw==
-X-Received: by 2002:a17:90b:2250:b0:27d:b811:2fe4 with SMTP id hk16-20020a17090b225000b0027db8112fe4mr794680pjb.26.1699415917046;
-        Tue, 07 Nov 2023 19:58:37 -0800 (PST)
-Received: from localhost.localdomain ([115.99.190.148])
-        by smtp.gmail.com with ESMTPSA id 9-20020a17090a018900b002635db431a0sm628102pjc.45.2023.11.07.19.58.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 19:58:36 -0800 (PST)
-From:   Jagath Jog J <jagathjog1996@gmail.com>
-To:     jic23@kernel.org, andriy.shevchenko@linux.intel.com
-Cc:     oe-kbuild-all@lists.linux.dev, lkp@intel.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: imu: bmi323: Make the local structures static
-Date:   Wed,  8 Nov 2023 09:28:31 +0530
-Message-Id: <20231108035831.5889-1-jagathjog1996@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Tue, 7 Nov 2023 23:05:36 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20E6610D8;
+        Tue,  7 Nov 2023 20:05:32 -0800 (PST)
+Received: from loongson.cn (unknown [112.22.233.25])
+        by gateway (Coremail) with SMTP id _____8DxRvEJCUtlOOw3AA--.44432S3;
+        Wed, 08 Nov 2023 12:05:29 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.22.233.25])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxL90ECUtleMA7AA--.1906S2;
+        Wed, 08 Nov 2023 12:05:27 +0800 (CST)
+From:   WANG Rui <wangrui@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, Xi Ruoyao <xry111@xry111.site>,
+        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev,
+        loongson-kernel@lists.loongnix.cn, WANG Rui <wangrui@loongson.cn>
+Subject: [PATCH] LoongArch: Disable module from accessing external data directly
+Date:   Wed,  8 Nov 2023 12:04:47 +0800
+Message-ID: <20231108040447.288870-1-wangrui@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxL90ECUtleMA7AA--.1906S2
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Gry5XFWxCw47CrW7ArW3twc_yoW8JF17pF
+        Z7ur1DGws5ur4vvFnFyFWxXa90yr4DJr4fZa4Ikr45ZFW3uryFvw4Fyrs0g3W2kw4kX34x
+        Ww4fCF9rtFW5JwbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the local structures static within their respective driver files.
+The distance between vmlinux and the module is too far so that PC-REL
+cannot be accessed directly, only GOT.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311070530.qKhLTz1Y-lkp@intel.com/
-Fixes: b512c767e7bc ("iio: imu: Add driver for BMI323 IMU")
-Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
+When compiling module with GCC, the option `-mdirect-extern-access` is
+disabled by default. The Clang option `-fdirect-access-external-data`
+is enabled by default, so it needs to be explicitly disabled.
+
+Signed-off-by: WANG Rui <wangrui@loongson.cn>
 ---
- drivers/iio/imu/bmi323/bmi323_i2c.c | 2 +-
- drivers/iio/imu/bmi323/bmi323_spi.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/loongarch/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/iio/imu/bmi323/bmi323_i2c.c b/drivers/iio/imu/bmi323/bmi323_i2c.c
-index 0008e186367d..20a8001b9956 100644
---- a/drivers/iio/imu/bmi323/bmi323_i2c.c
-+++ b/drivers/iio/imu/bmi323/bmi323_i2c.c
-@@ -66,7 +66,7 @@ static struct regmap_bus bmi323_regmap_bus = {
- 	.write = bmi323_regmap_i2c_write,
- };
- 
--const struct regmap_config bmi323_i2c_regmap_config = {
-+static const struct regmap_config bmi323_i2c_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
- 	.max_register = BMI323_CFG_RES_REG,
-diff --git a/drivers/iio/imu/bmi323/bmi323_spi.c b/drivers/iio/imu/bmi323/bmi323_spi.c
-index 6dc3352dd714..7b1e8127d0dd 100644
---- a/drivers/iio/imu/bmi323/bmi323_spi.c
-+++ b/drivers/iio/imu/bmi323/bmi323_spi.c
-@@ -41,7 +41,7 @@ static struct regmap_bus bmi323_regmap_bus = {
- 	.write = bmi323_regmap_spi_write,
- };
- 
--const struct regmap_config bmi323_spi_regmap_config = {
-+static const struct regmap_config bmi323_spi_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 16,
- 	.pad_bits = 8,
+diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+index b86f2ff31659..9eeb0c05f3f4 100644
+--- a/arch/loongarch/Makefile
++++ b/arch/loongarch/Makefile
+@@ -68,6 +68,8 @@ LDFLAGS_vmlinux			+= -static -n -nostdlib
+ ifdef CONFIG_AS_HAS_EXPLICIT_RELOCS
+ cflags-y			+= $(call cc-option,-mexplicit-relocs)
+ KBUILD_CFLAGS_KERNEL		+= $(call cc-option,-mdirect-extern-access)
++KBUILD_AFLAGS_MODULE		+= $(call cc-option,-fno-direct-access-external-data)
++KBUILD_CFLAGS_MODULE		+= $(call cc-option,-fno-direct-access-external-data)
+ KBUILD_AFLAGS_MODULE		+= $(call cc-option,-mno-relax) $(call cc-option,-Wa$(comma)-mno-relax)
+ KBUILD_CFLAGS_MODULE		+= $(call cc-option,-mno-relax) $(call cc-option,-Wa$(comma)-mno-relax)
+ else
 -- 
-2.20.1
+2.42.1
 
