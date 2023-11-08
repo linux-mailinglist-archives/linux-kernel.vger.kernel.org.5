@@ -2,215 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C9F7E5B8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB227E5B8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbjKHQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
+        id S232254AbjKHQlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjKHQlh (ORCPT
+        with ESMTP id S232099AbjKHQlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:41:37 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAFC1FCF;
-        Wed,  8 Nov 2023 08:41:35 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8FsulJ018150;
-        Wed, 8 Nov 2023 16:41:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=BWglFymHg1liVWA5NJtT1j88vv+K1ZPdlO3rVZfrHXA=;
- b=YsdPduLdhS/UkDoYN6J0KKicXX7SYVq3M/8vXvWTMXPOGdAKgJ4rRihF/WIW9iTLytwk
- q1W/TDK79e4P0Acf67HyXKGh0aaPVbT0xBwC2trRM/Zm9V+ptXfFpW2qk2vKMwahFAiN
- gKirRSW4i1iBGEWC8NNmcqdBwmZMIZY7MCoOcDio8e7NcgzlWT8jLtLshTwNbTAUwcHc
- P5HTF3bPcX35rAMxYmjLHZio3a8e4KctAZ0OKmqyJ4bk+b26VcrP3jet8zeH/NuXPhih
- FO3lIvtu1Mz4PaWV4Q2L0tKQzTIRZvSV7ncQVnDnlvFDPBtFLoCIzoUyc2mAL/F3NabK pQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7w33t78p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 16:41:25 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A8GfOvB030928
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 8 Nov 2023 16:41:24 GMT
-Received: from [10.216.50.84] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 08:41:19 -0800
-Message-ID: <88f42dfa-37d8-543a-1b0b-df1bc640cd86@quicinc.com>
-Date:   Wed, 8 Nov 2023 22:11:01 +0530
+        Wed, 8 Nov 2023 11:41:16 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DB11FE7;
+        Wed,  8 Nov 2023 08:41:14 -0800 (PST)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6ce31c4a653so4337188a34.3;
+        Wed, 08 Nov 2023 08:41:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699461673; x=1700066473;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TSxL3MDH/hHWV3cRZwmMwvNKyaUEVCBXJu1BFVWJHwQ=;
+        b=RkyqA0d943HOlowoJM5a1xsc3QJ/P5gDxrCg8PEar94aEy1CQsANQ1b4zkl+pH/CcV
+         DEec0c6zlgX78rIyZdO5N4UxyNr1jQyF6OyBYKX9AHYmpM/lWKjALrKPOOYma+5ctKxQ
+         t+fDobhcL8XAUGND4ASxBFxZCaYKBCG3pLzER6hZBO8IbVWIhU7WZA8YNe4aZBrlV7Nj
+         DKcOiyd8Quywp43DXTc3YMgE3Pn27y4GB6dkklYc0uCRWQuhNp1+N8rziANRy1I15hBd
+         0rZviilmqptBJ8+RzlFrp23FZE4yOu+xCTJD9q8ZkN0cAsqN40fDHB8xuZUat0X2K95K
+         d1Xg==
+X-Gm-Message-State: AOJu0YwwKnXRNQiZniYhdBYlYq9vCmgfjuCu9r+2mihxRGXWTDqphrsu
+        8tc8Q8/oL9hYZULD7SBWmA==
+X-Google-Smtp-Source: AGHT+IEf+6ItAebPYovhnFoCTcGgM9HQB5LAxzETm5MftRlfTvL6If9mI5W6oa4ALafvno12x6nzlw==
+X-Received: by 2002:a9d:744e:0:b0:6b7:43eb:c1a with SMTP id p14-20020a9d744e000000b006b743eb0c1amr2306497otk.36.1699461673654;
+        Wed, 08 Nov 2023 08:41:13 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id e2-20020a9d7302000000b006ce32816a35sm1940528otk.81.2023.11.08.08.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 08:41:13 -0800 (PST)
+Received: (nullmailer pid 2364307 invoked by uid 1000);
+        Wed, 08 Nov 2023 16:41:11 -0000
+Date:   Wed, 8 Nov 2023 10:41:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Julius Werner <jwerner@chromium.org>,
+        linux-watchdog@vger.kernel.org,
+        Justin Chen <justinpopo6@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-sunxi@lists.linux.dev, Evan Benn <evanbenn@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        asahi@lists.linux.dev, Sven Peter <sven@svenpeter.dev>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Baruch Siach <baruch@tkos.co.il>, linux-kernel@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?B?77+9ZWNraQ==?= <rafal@milecki.pl>,
+        Samuel Holland <samuel@sholland.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] dt-bindings: watchdog: intel,keembay: reference
+ common watchdog schema
+Message-ID: <169946167110.2364244.9399282289978694454.robh@kernel.org>
+References: <20231105184154.43700-1-krzysztof.kozlowski@linaro.org>
+ <20231105184154.43700-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: timer list corruption in devfreq
-Content-Language: en-US
-To:     <myungjoo.ham@samsung.com>, <kyungmin.park@samsung.com>,
-        <cw00.choi@samsung.com>, <jstultz@google.com>,
-        <tglx@linutronix.de>, <sboyd@kernel.org>, <tj@kernel.org>,
-        <jiangshanlai@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-References: <1699459797-21703-1-git-send-email-quic_mojha@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <1699459797-21703-1-git-send-email-quic_mojha@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DVY269ZZv8V9dUMrdPEkjhb21oOVodFB
-X-Proofpoint-GUID: DVY269ZZv8V9dUMrdPEkjhb21oOVodFB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_05,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- suspectscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=788 bulkscore=0 spamscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311080137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231105184154.43700-2-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On Sun, 05 Nov 2023 19:41:54 +0100, Krzysztof Kozlowski wrote:
+> Reference common watchdog.yaml schema to allow "timeout-sec" property
+> and enforce proper device node name.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/watchdog/intel,keembay-wdt.yaml      | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-On 11/8/2023 9:39 PM, Mukesh Ojha wrote:
-> Hi,
-> 
-> We are facing an issue on 6.1 kernel while using devfreq framework
-> and looks like the devfreq_monitor_stop()/devfreq_monitor_start is
-> vulnerable if frequent governor change is being done from user space
-> in a loop.
-> 
-> echo simple_ondemand > /sys/class/devfreq/1d84000.ufshc/governor
-> echo performance > /sys/class/devfreq/1d84000.ufshc/governor
-> 
-> Here, we are using ufs device, but could be any device.
-> 
-> Issue is because same instance of timer is being queued from two
-> places one from devfreq_monitor() and one from devfreq_monitor_start() as
-> cancel_delayed_work_sync() from devfreq_monitor_stop() was not
-> able to delete the delayed work time completely due to which
-> devfreq_monitor() work rearmed the same timer.
-> 
-> But there looks to be issue in the timer framework where
-> it was initially discussed in [1] and later fixed in [2]
-> but not sure being whether is it issue in cancel_delayed_work_sync()
-> where del_timer() inside try_to_grab_pending() need to be replaced
-> with timer_delete[_sync]() or devfreq_monitor_stop() need to use
-> this api's and then delete the work.
+Acked-by: Rob Herring <robh@kernel.org>
 
-I meant, timer_shutdown_sync().
-Well, i am not sure as these patches[2] are not available on LTS kernel.
-
--Mukesh
-> 
-> [1]
-> https://lore.kernel.org/all/20220407161745.7d6754b3@gandalf.local.home/
-> 
-> [2]
-> https://lore.kernel.org/all/20221123201306.823305113@linutronix.de/
-> 
-> In the below ftraces, last two are back to back two timer cancel
-> operations one from devfreq_monitor_stop() and other from expire_timer().
-> 
-> devfreq_monitor_stop
->   cancel_delayed_work_sync
->    __cancel_work_timer
->      try_to_grab_pending
->        del_timer()
-> 
-> 00|__hlist_del(inline) == list corruption
-> -000|detach_timer(inline)
-> -000|expire_timers(inline) ==>
-> -000|__run_timers(base = 0xFFFFFF8A70F31240)
-> -001|run_timer_softirq()
-> -002|__do_softirq()
-> -003|____do_softirq()
-> -004|call_on_irq_stack(asm)
-> -005|do_softirq_own_stack()
-> -006|invoke_softirq(inline)
-> 
-> kworker/u16:2-5133    [002]   9436.089773:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da0d  now=0x10022d9fe  flags=56623106
-> <idle>-0    [002]   9436.149664:  timer_cancel   timer=0xffffff80444f0428
-> <idle>-0    [002]   9436.149666:  timer_expire_entry   timer=0xffffff80444f0428  now=0x10022da0d  function=__typeid__ZTSFvP10timer_listE_global_addr  baseclk=0x10022da0d
-> <idle>-0    [002]   9436.149705:  timer_expire_exit   timer=0xffffff80444f0428
-> kworker/u16:6-14217    [003]   9436.149776:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da1c  now=0x10022da0d  flags=119537667
-> vendor.xxxyyy.ha-1593    [006]   9436.182730:  timer_init   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [006]   9436.182731:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da24  now=0x10022da15  flags=153092102
-> vendor.xxxyyy.ha-1593    [004]   9436.188128:  timer_cancel   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.193456:  timer_init   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.193458:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da26  now=0x10022da17  flags=161480708
-> vendor.xxxyyy.ha-1593    [005]   9436.199602:  timer_cancel   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.205410:  timer_init   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.205412:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da29  now=0x10022da1a  flags=174063620
-> <idle>-0    [003]   9436.209662:  timer_cancel   timer=0xffffff80444f0428
-> <idle>-0    [003]   9436.209664:  timer_expire_entry   timer=0xffffff80444f0428  now=0x10022da1c  function=__typeid__ZTSFvP10timer_listE_global_addr  baseclk=0x10022da1c
-> <idle>-0    [003]   9436.209718:  timer_expire_exit   timer=0xffffff80444f0428
-> kworker/u16:6-14217    [003]   9436.209863:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2b  now=0x10022da1c  flags=182452227
-> vendor.xxxyyy.ha-1593    [004]   9436.209888:  timer_cancel   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.216390:  timer_init   timer=0xffffff80444f0428
-> vendor.xxxyyy.ha-1593    [004]   9436.216392:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2c  now=0x10022da1d  flags=186646532
-> vendor.xxxyyy.ha-1593    [005]   9436.220992:  timer_cancel   timer=0xffffff80444f0428
-> xxxyyyTraceManag-7795    [004]   9436.261641:  timer_cancel   timer=0xffffff80444f0428
-> 
-> <1>[10278.515522] [cpu:   0] Unable to handle kernel paging request at virtual address dead00000000012a
-> 
-> -000|__hlist_del(inline)
-> -000|detach_timer(inline)
-> -000|expire_timers(inline)
-> -000|__run_timers(base = 0xFFFFFF8A70F31240)
-> -001|run_timer_softirq()
-> -002|__do_softirq()
-> -003|____do_softirq()
-> -004|call_on_irq_stack(asm)
-> -005|do_softirq_own_stack()
-> -006|invoke_softirq(inline)
-> -006|__irq_exit_rcu()
-> -007|irq_exit_rcu()
-> -008|__el1_irq(inline)
-> -008|el1_interrupt(regs = 0xFFFFFFC0410FB680, handler = 0xFFFFFFE5222100F8)
-> -009|el1h_64_irq_handler(regs = ?)
-> -010|el1h_64_irq(asm)
->   -->|exception
-> -011|arch_local_irq_enable(inline)
-> -011|raw_spin_rq_unlock_irq(inline)
-> -011|finish_lock_switch(inline)
-> -011|finish_task_switch(prev = 0xFFFFFF88D30D8000)
-> -012|context_switch(inline)
-> -012|__schedule(:sched_mode = 1091549328)
-> -013|schedule()
-> -014|schedule_hrtimeout_range_clock(expires = ?, delta = ?, mode = ?, clock_id = ?)
-> -015|schedule_hrtimeout_range(expires = 0x0, delta = 0, mode = 1091549520)
-> -016|poll_schedule_timeout(inline)
-> -016|do_poll(inline)
-> -016|do_sys_poll(:ufds = 0x00000072B4397BD8, :nfds = 2, :end_time = 0x0)
-> -017|__do_sys_ppoll(inline)
-> -017|__se_sys_ppoll(inline)
-> -017|__arm64_sys_ppoll(:regs = 0xFFFFFFC0410FBEB0)
-> -018|__invoke_syscall(inline)
-> -018|invoke_syscall(:regs = 0xFFFFFFC0410FBEB0, scno = ?, sc_nr = ?, :syscall_table = 0xFFFFFFE5231E0D20)
-> -019|el0_svc_common(regs = 0xFFFFFFC0410FBEB0, scno = ?, sc_nr = ?, syscall_table = 0xFFFFFFE5231E0D20)
-> -020|do_el0_svc(regs = 0xFFFFFFC0410FBEB0)
-> -021|el0_svc(regs = 0xFFFFFFC0410FBEB0)
-> -022|el0t_64_sync_handler(regs = ?)
-> -023|el0t_64_sync(asm)
->   -->|exception
-> -024|NUX:0x736F8F15FC(asm)
->   ---|end of frame
-> expire_timers(inline)
-> expires = 4297461926,
->    function = 0xFFFFFFE262CD6E18,
->   base = 0xFFFFFF8975713240
->   baseclk = 4297461926
->   fn = 0x0
->   timer = 0xFFFFFF8044AA5430 ->
-> ( entry = (next = 0xDEAD000000000122, pprev = 0xFFFFFFC008003EA0 -> 0xDEAD000000000122 ->
-> next = 0x0,pprev = 0x0)),
->    expires = 4297461926,
->    function = 0xFFFFFFE262CD6E18, //delayed_work_timer_fn
-> 
-> 
