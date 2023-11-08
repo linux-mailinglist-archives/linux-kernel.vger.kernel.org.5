@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1437E5C03
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004A87E5C09
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjKHRLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:11:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S232460AbjKHRL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbjKHRL2 (ORCPT
+        with ESMTP id S232470AbjKHRL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:11:28 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9095E1FFA
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:11:26 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4079ed65582so52976415e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:11:26 -0800 (PST)
+        Wed, 8 Nov 2023 12:11:56 -0500
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8E51FFB;
+        Wed,  8 Nov 2023 09:11:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699463484; x=1700068284; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUTx16xBPwlSZNLX67xZHVAtRWSJgwxGWbgEGrxHA48=;
-        b=KSlPFqeU+33VZ1dFlE2WWrdFXM0P6lbqgbQ7vfc5k58c1pngtRkB6bH5TQKNt1tmr8
-         +sWTQL6lV3ZpXgJGExQxfXvdWBNOudd4mTp86VgTlCVfxGALtxpjvrMAXx0VwIMVPOT6
-         Ft+w9Yq16jxOXR3wg2A8GIm68DhVdGLyGfO7rae+qnIt1DJEz30TGSfUWS27zN/ulQMc
-         6oXFOdKbugyZH490PrdyFlenogS6yzdDNauyOCXYfSKrFSsKdZHhAaAsvRzq+5NQz6ip
-         DZzri90KQLGvFboq2Dxo9lIljsILVuv1+ukhFMI4yU50vADeXBnURtEVAWfXbWRl0LYn
-         MvJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699463484; x=1700068284;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eUTx16xBPwlSZNLX67xZHVAtRWSJgwxGWbgEGrxHA48=;
-        b=NT/m71RTLF/wUVWbspVUGhbfOqfyFf2PrfCxGhYnaYamZOXY5DE0WwcDFMHqwYt5YZ
-         RC834a15aDsrqA5p+SIQQzHYyGpX7Ye2CGatL2hNbpfDV79KxB8IiwreIJ3QUxoNknDD
-         Bl7HddJEgstoGI8nRC5kxYiPuIiyhVTg2mkYSftE3kSMt01B2SGADnYBC0p9M1OOiXXf
-         InjRmQ0ejmTJgDMy7KzkHccBq0Hquvmohaxiwp5RnFt+PPRL9DVgdv0r6pBDPkhmQUf1
-         HsdnS8mBK5YVX/cSr/gS7d/QBec3LEi98I1xDY1CPTOzvpDl6sVW+3tKDEqmwLFT9a3W
-         hcUQ==
-X-Gm-Message-State: AOJu0YzHd09W327j5/l0xkW9Fg/tjp1cQ0aLGt3X3EnGsOf54aCGERQn
-        i+5Cshbs/jz+kZuuhKkwW+tlVg==
-X-Google-Smtp-Source: AGHT+IHkXUfrA1tiasSTEFj1aoP6Rt1HVyFxHeX293YAedpxpxcOfIUTWQPEe2dFIo4RSBo5O6hgVw==
-X-Received: by 2002:a05:600c:3544:b0:404:72fe:ed5c with SMTP id i4-20020a05600c354400b0040472feed5cmr2402712wmq.29.1699463484552;
-        Wed, 08 Nov 2023 09:11:24 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:dfaa:8961:ce90:9db0])
-        by smtp.gmail.com with ESMTPSA id l2-20020a5d4bc2000000b0032da319a27asm5373005wrt.9.2023.11.08.09.11.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 09:11:24 -0800 (PST)
-References: <20231106103259.703417-1-jbrunet@baylibre.com>
- <20231106103259.703417-3-jbrunet@baylibre.com>
- <20231108170621.GA2417622-robh@kernel.org>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org,
-        JunYi Zhao <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH 2/6] dt-bindings: pwm: amlogic: add new compatible for
- meson8 pwm type
-Date:   Wed, 08 Nov 2023 18:10:56 +0100
-In-reply-to: <20231108170621.GA2417622-robh@kernel.org>
-Message-ID: <1j7cmscgqs.fsf@starbuckisacylon.baylibre.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699463514; x=1730999514;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6cb/isVwYpy7SG+g9mvglOgKJl2fHKbFOFR6QXMe2MM=;
+  b=eA7azvDO7xqJ3yYVMfc/7IjPcxPXBnIICWCyRqpGY84L+5eHd9NxP4Yd
+   llp+lwQrTOJkLTnR4xtOSZY/qxhchsU4G/K8CkJSBlL/8uhz3Y3lRKLEY
+   Yijb6lLklgdMy2fNvt+IzCQQP9Qk676VGAVjYR4Xgl8ewxyzik578mPJs
+   E=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="42072586"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-b5bd57cf.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 17:11:46 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1a-m6i4x-b5bd57cf.us-east-1.amazon.com (Postfix) with ESMTPS id BEBB248DB1;
+        Wed,  8 Nov 2023 17:11:42 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:15788]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.1.121:2525] with esmtp (Farcaster)
+ id e2b71a98-94b7-4b71-82ed-2cb1b7312c2f; Wed, 8 Nov 2023 17:11:41 +0000 (UTC)
+X-Farcaster-Flow-ID: e2b71a98-94b7-4b71-82ed-2cb1b7312c2f
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 17:11:40 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 17:11:36 +0000
+Message-ID: <4eb50ee5-fd5e-4dc1-bee1-629da687bdb5@amazon.com>
+Date:   Wed, 8 Nov 2023 18:11:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 29/33] KVM: VMX: Save instruction length on EPT violation
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+CC:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <vkuznets@redhat.com>, <anelkz@amazon.com>,
+        <dwmw@amazon.co.uk>, <jgowans@amazon.com>, <corbert@lwn.net>,
+        <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-30-nsaenz@amazon.com>
+ <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
+ <ZUu0FzbW5tr2Werz@google.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <ZUu0FzbW5tr2Werz@google.com>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D038UWB002.ant.amazon.com (10.13.139.185) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ck9uIDA4LjExLjIzIDE3OjE1LCBTZWFuIENocmlzdG9waGVyc29uIHdyb3RlOgo+Cj4gT24gV2Vk
+LCBOb3YgMDgsIDIwMjMsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBPbiAwOC4xMS4yMyAxMjox
+OCwgTmljb2xhcyBTYWVueiBKdWxpZW5uZSB3cm90ZToKPj4+IFNhdmUgdGhlIGxlbmd0aCBvZiB0
+aGUgaW5zdHJ1Y3Rpb24gdGhhdCB0cmlnZ2VyZWQgYW4gRVBUIHZpb2xhdGlvbiBpbgo+Pj4gc3Ry
+dWN0IGt2bV92Y3B1X2FyY2guIFRoaXMgd2lsbCBiZSB1c2VkIHRvIHBvcHVsYXRlIEh5cGVyLVYg
+VlNNIG1lbW9yeQo+Pj4gaW50ZXJjZXB0IG1lc3NhZ2VzLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6
+IE5pY29sYXMgU2FlbnogSnVsaWVubmUgPG5zYWVuekBhbWF6b24uY29tPgo+Pgo+PiBJbiB2MSwg
+cGxlYXNlIGRvIHRoaXMgZm9yIFNWTSBhcyB3ZWxsIDopCj4gV2h5PyAgS1ZNIGNhY2hlcyB2YWx1
+ZXMgb24gVk1YIGJlY2F1c2UgVk1SRUFEIGlzIG1lYXN1cmFibGUgc2xvd2VyIHRoYW4gbWVtb3J5
+Cj4gYWNjZXNzZXMsIGVzcGVjaWFsbHkgd2hlbiBydW5uaW5nIG5lc3RlZC4gIFNWTSBoYXMgbm8g
+c3VjaCBwcm9ibGVtcy4gIEkgd291bGRuJ3QKPiBiZSBzdXJwcmlzZWQgaWYgYWRkaW5nIGEgImNh
+Y2hlIiBpcyBhY3R1YWxseSBsZXNzIHBlcmZvcm1hbnQgZHVlIHRvIGluY3JlYXNlZAo+IHByZXNz
+dXJlIGFuZCBtaXNzZXMgb24gdGhlIGhhcmR3YXJlIGNhY2hlLgoKCk15IHVuZGVyc3RhbmRpbmcg
+d2FzIHRoYXQgdGhpcyBwYXRjaCB3YXNuJ3QgYWJvdXQgY2FjaGluZyBpdCwgaXQgd2FzIAphYm91
+dCBzdG9yaW5nIGl0IHNvbWV3aGVyZSBnZW5lcmljYWxseSBzbyB3ZSBjYW4gdXNlIGl0IGZvciB0
+aGUgZmF1bHQgCmluamVjdGlvbiBjb2RlIHBhdGggaW4gdGhlIGZvbGxvd2luZyBwYXRjaC4gQW5k
+IGlmIHdlIGRvbid0IHNldCB0aGlzIAp2YXJpYWJsZSBmb3IgU1ZNLCBpdCBqdXN0IG1lYW5zIENy
+ZWRlbnRpYWwgR3VhcmQgZmF1bHQgaW5qZWN0aW9uIHdvdWxkIApiZSBicm9rZW4gdGhlcmUuCgoK
+QWxleAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0
+ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdl
+ciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1
+cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5
+CgoK
 
-On Wed 08 Nov 2023 at 11:06, Rob Herring <robh@kernel.org> wrote:
-
-> On Mon, Nov 06, 2023 at 11:32:49AM +0100, Jerome Brunet wrote:
->> Add a new compatible for the pwm found in the meson8 to sm1 Amlogic SoCs.
->> 
->> The previous clock bindings for these SoCs described the driver and not the
->> HW itself. The clock provided was used to set the parent of the input clock
->> mux among the possible parents hard-coded in the driver.
->> 
->> The new bindings allows to describe the actual clock inputs of the PWM in
->> DT, like most bindings do, instead of relying of hard-coded data.
->> 
->> The new bindings make the old one deprecated.
->> 
->> There is enough experience on this HW to know that the PWM is exactly the
->> same all the supported SoCs. There is no need for a per-SoC compatible.
->> 
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>  .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 35 +++++++++++++++++--
->>  1 file changed, 33 insertions(+), 2 deletions(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> index 754b70fc2db0..3aa522c4cae4 100644
->> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->> @@ -22,6 +22,7 @@ properties:
->>            - amlogic,meson-g12a-ao-pwm-ab
->>            - amlogic,meson-g12a-ao-pwm-cd
->>            - amlogic,meson-s4-pwm
->> +          - amlogic,meson8-pwm-v2
->>        - items:
->>            - const: amlogic,meson-gx-pwm
->>            - const: amlogic,meson-gxbb-pwm
->> @@ -37,7 +38,7 @@ properties:
->>  
->>    clocks:
->>      minItems: 1
->> -    maxItems: 2
->> +    maxItems: 4
->>  
->>    clock-names:
->>      minItems: 1
->> @@ -70,11 +71,14 @@ allOf:
->>                - amlogic,meson-gx-pwm
->>                - amlogic,meson-gx-ao-pwm
->>      then:
->> -      # Historic bindings tied to the driver implementation
->> +      # Obsolete historic bindings tied to the driver implementation
->>        # The clocks provided here are meant to be matched with the input
->>        # known (hard-coded) in the driver and used to select pwm clock
->>        # source. Currently, the linux driver ignores this.
->> +      deprecated: true
->>        properties:
->> +        clocks:
->> +          maxItems: 2
->>          clock-names:
->>            oneOf:
->>              - items:
->> @@ -83,6 +87,26 @@ allOf:
->>                  - const: clkin0
->>                  - const: clkin1
->>  
->> +  # Newer binding where clock describe the actual clock inputs of the pwm
->> +  # block. These are necessary but some inputs may be grounded.
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - amlogic,meson8b-pwm-v2
->> +    then:
->> +      properties:
->> +        clocks:
->> +          minItems: 1
->> +          items:
->> +            - description: input clock 0 of the pwm block
->> +            - description: input clock 1 of the pwm block
->> +            - description: input clock 2 of the pwm block
->> +            - description: input clock 3 of the pwm block
->> +      required:
->> +        - clocks
->
-> Again, clock-names?
-
-yes, same thing
