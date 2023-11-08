@@ -2,191 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A4E7E5FB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F2B7E5FBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbjKHVKX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 16:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
+        id S231986AbjKHVKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:10:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKHVKV (ORCPT
+        with ESMTP id S231935AbjKHVKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:10:21 -0500
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8524D2580;
-        Wed,  8 Nov 2023 13:10:19 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5b499b18b28so2133447b3.0;
-        Wed, 08 Nov 2023 13:10:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699477818; x=1700082618;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bav5/FGayyEQonBNC4kdS6ICDtnFE4p01QngumR4dg4=;
-        b=ipwWhpKRdtmh+Uh6VvmrxWywQK9Q9c1fyFkHq6ayzI/hoFkgARWPYRg7X4Xr3FzFLR
-         c4G6aiTPD+wkruVmz3pRfMeLBmbpqO1HbwzQp4tUQVnIizUPo3zNjom/4AuV0V7+Lg1Q
-         1q2cR3Bc7acbJnBJAdgxckR6G4u8qQqFdLJQUhvqW9CnjOyzfYL5qlagBwnqD3iSFzxX
-         hLlVOnE+vbEnX/JObB4UNFIFfF1D3iTiEXAcT7nrWqwHy5qDkup5xZtILGCe101g17cK
-         ZlFVoDUFUg/44K/H2HkkdNaJ+cf8Lf6IaDGVg6jg8le3yrun8Gaw6WQCOZvtSmRDk7oS
-         KPQg==
-X-Gm-Message-State: AOJu0Ywm+iqe0tYvEdAkpz+r3ecFqCmZWws2QYyTyarGcn3EjMhys9Br
-        ncbDEwLWhmrkVazpI4Yn0jrK87BUX3QC0w==
-X-Google-Smtp-Source: AGHT+IF0f+EnWpL39uPcb0Isgr8GcwJ2K7wJjaLgpat0Vo/euboSWtRuvVqOY1mQa+U4sJvOqCYELw==
-X-Received: by 2002:a0d:c042:0:b0:5a7:ba51:9c1b with SMTP id b63-20020a0dc042000000b005a7ba519c1bmr2761143ywd.37.1699477818216;
-        Wed, 08 Nov 2023 13:10:18 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id o14-20020a81de4e000000b005956b451fb8sm7201882ywl.100.2023.11.08.13.10.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 13:10:16 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5b31c5143a0so1848457b3.3;
-        Wed, 08 Nov 2023 13:10:16 -0800 (PST)
-X-Received: by 2002:a0d:f3c2:0:b0:59b:54b5:7d66 with SMTP id
- c185-20020a0df3c2000000b0059b54b57d66mr2960037ywf.34.1699477816210; Wed, 08
- Nov 2023 13:10:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20231108125843.3806765-1-arnd@kernel.org> <20231108125843.3806765-11-arnd@kernel.org>
- <CAMuHMdXgdn_cMq0YeqPu3sUeM5cEYbCoodxu8XwCGiRJ-vFsyw@mail.gmail.com> <e7753f82-c3de-48fc-955d-59773222aaa9@app.fastmail.com>
-In-Reply-To: <e7753f82-c3de-48fc-955d-59773222aaa9@app.fastmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 8 Nov 2023 22:10:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV7VfiSA9+wSJYYQkBN2=4E9HsFJRV6j8ffioe0=MFd8A@mail.gmail.com>
-Message-ID: <CAMuHMdV7VfiSA9+wSJYYQkBN2=4E9HsFJRV6j8ffioe0=MFd8A@mail.gmail.com>
-Subject: Re: [PATCH 10/22] microblaze: include linux/cpu.h for trap_init() prototype
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        guoren <guoren@kernel.org>,
+        Wed, 8 Nov 2023 16:10:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCD42589
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:10:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFD49C433C9;
+        Wed,  8 Nov 2023 21:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699477841;
+        bh=4V4gwYzW6WrEDZYZ4cGclrG2pSCRVMcxcKoOTJdlYiw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nPbQ2L6OVN3Ugh1UvF/H67QH7+FycLOWs+ctKmBklhhpSfhBqyuEFwYzWWjMKtQQo
+         Tzl44I0vyemwrrjjUFb4WBeyJlEIYkjHrr9ftY1+w2vYFANt2rtBY+6wLI7SXBBN0V
+         6d6naAvdvhub7WNzYSzwn+42X8cfXuMFdrK4E6ukABCncwLaxMng+aSGeAIVHwzu9A
+         arfzO5BLqIft0lbRAnaAD9BF96qMbyvkI3cJtBvbVQ3H7s109BundsBBz0eA2N0IRB
+         iQ7oUNRgltKt1HgdxfflWfEMO38hR4YxwMOvtFFVlWzdLj/QoSUnwQ1Q9SMu2gs9N4
+         yFz7kOQtx8ogg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2260B40094; Wed,  8 Nov 2023 18:10:39 -0300 (-03)
+Date:   Wed, 8 Nov 2023 18:10:39 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
         Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Geoff Levand <geoff@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Helge Deller <deller@gmx.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Timur Tabi <timur@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-trace-kernel@vger.kernel.org,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        Netdev <netdev@vger.kernel.org>, linux-parisc@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
-        linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Tom Rix <trix@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Fangrui Song <maskray@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v2 2/2] perf test: Add support for setting objdump binary
+ via perf config
+Message-ID: <ZUv5T0moQara4CId@kernel.org>
+References: <20231106151051.129440-1-james.clark@arm.com>
+ <20231106151051.129440-3-james.clark@arm.com>
+ <ZUv1TgveArYdvTsl@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUv1TgveArYdvTsl@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Em Wed, Nov 08, 2023 at 05:53:34PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Nov 06, 2023 at 03:10:49PM +0000, James Clark escreveu:
+> > Add a perf config variable that does the same thing as "perf test
+> > --objdump <x>".
+> > 
+> > Also update the man page.
+> 
+> That is ok, if one wants to change objdump just for testing, as a
+> followup improvement it may be interesting to allow that for the other
+> tools that have --objdump as well as to add this as a global option,
+> that affects all tools, no?
+> 
+> Anyway, applied both patches.
 
-On Wed, Nov 8, 2023 at 10:07 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Wed, Nov 8, 2023, at 21:42, Geert Uytterhoeven wrote:
-> > On Wed, Nov 8, 2023 at 2:01 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> Microblaze runs into a single -Wmissing-prototypes warning when that is
-> >> enabled:
-> >>
-> >> arch/microblaze/kernel/traps.c:21:6: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
-> >>
-> >> Include the right header to avoid this.
-> >>
-> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Thanks for your patch!
-> >
-> >>  arch/alpha/kernel/traps.c      | 1 +
-> >>  arch/csky/include/asm/traps.h  | 2 --
-> >>  arch/csky/kernel/traps.c       | 1 +
-> >>  arch/m68k/coldfire/vectors.c   | 3 +--
-> >>  arch/m68k/coldfire/vectors.h   | 3 ---
-> >
-> > Ah, so this is where the m68k changes listed in the cover letter are
-> > hiding ;-)
-> >
-> >>  arch/microblaze/kernel/traps.c | 1 +
-> >>  arch/sparc/kernel/traps_32.c   | 1 +
-> >>  arch/sparc/kernel/traps_64.c   | 1 +
-> >>  arch/x86/include/asm/traps.h   | 1 -
-> >>  arch/x86/kernel/traps.c        | 1 +
-> >>  10 files changed, 7 insertions(+), 8 deletions(-)
-> >>  delete mode 100644 arch/m68k/coldfire/vectors.h
-> >
-> > Obviously the non-microblaze changes should be spun off in separate
-> > patches.
->
-> I messed up one of my rebases here and accidentally sent
-> the wrong changelog text. My intention was to have the
-> combined patch but with this text:
->
->     arch: include linux/cpu.h for trap_init() prototype
->
->     some architectures run into a -Wmissing-prototypes warning
->     for trap_init()
->
->     arch/microblaze/kernel/traps.c:21:6: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
->
->     Include the right header to avoid this consistently, removing
->     the extra declarations on m68k and x86 that were added as local
->     workarounds already.
->
->     Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+And added this to the last one:
 
-That makes sense, although it's hard to combine this with "my preference
-would be for the patches to make it through the respective subsystem
-maintainer trees"...
+Committer testing:
 
-Gr{oetje,eeting}s,
+  # perf config test.objdump
+  # perf test "object code reading"
+   26: Object code reading                                             : Ok
+  # perf config test.objdump=blah
+  # perf config test.objdump
+  test.objdump=blah
+  # perf test "object code reading"
+   26: Object code reading                                             : FAILED!
+  # perf test -v "object code reading"
+   26: Object code reading                                             :
+  --- start ---
+  test child forked, pid 600599
+  Looking at the vmlinux_path (8 entries long)
+  Using /proc/kcore for kernel data
+  Using /proc/kallsyms for symbols
+  Parsing event 'cycles'
+  Using CPUID AuthenticAMD-25-21-0
+  mmap size 528384B
+  Reading object code for memory address: 0x4d9a02
+  File is: /home/acme/bin/perf
+  On file address is: 0xd9a02
+  Objdump command is: blah -z -d --start-address=0x4d9a02 --stop-address=0x4d9a82 /home/acme/bin/perf
+  objdump read too few bytes: 128
+  Bytes read differ from those read by objdump
+  buf1 (dso):
+  0x48 0x85 0xff 0x74 0x29 0xe8 0x94 0xdf 0x07 0x00 0x8b 0x73 0x1c 0x48 0x8b 0x43 
+  0x08 0xeb 0xa5 0x0f 0x1f 0x00 0x48 0x8b 0x45 0xe8 0x64 0x48 0x2b 0x04 0x25 0x28 
+  0x00 0x00 0x00 0x75 0x0f 0x48 0x8b 0x5d 0xf8 0xc9 0xc3 0x0f 0x1f 0x00 0x48 0x8b 
+  0x43 0x08 0xeb 0x84 0xe8 0xc5 0x3e 0xf3 0xff 0x0f 0x1f 0x44 0x00 0x00 0x55 0x48 
+  0x89 0xe5 0x41 0x56 0x41 0x55 0x49 0x89 0xd5 0x41 0x54 0x49 0x89 0xfc 0x53 0x48 
+  0x89 0xf3 0x48 0x83 0xec 0x30 0x48 0x8b 0x7e 0x20 0x64 0x48 0x8b 0x04 0x25 0x28 
+  0x00 0x00 0x00 0x48 0x89 0x45 0xd8 0x31 0xc0 0x48 0x89 0x75 0xb0 0x48 0xc7 0x45 
+  0xb8 0x00 0x00 0x00 0x00 0x48 0xc7 0x45 0xc0 0x00 0x00 0x00 0x00 0xe8 0xad 0xfa 
+  
+  buf2 (objdump):
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 
+  
+  test child finished with -1
+  ---- end ----
+  Object code reading: FAILED!
+  # perf config test.objdump=/usr/bin/objdump
+  # perf config test.objdump
+  test.objdump=/usr/bin/objdump
+  # perf test "object code reading"
+   26: Object code reading                                             : Ok
+  #
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Signed-off-by: James Clark <james.clark@arm.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
