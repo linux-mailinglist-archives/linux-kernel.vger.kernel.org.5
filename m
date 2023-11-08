@@ -2,116 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3754C7E52B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981127E52B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbjKHJg7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 04:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        id S235157AbjKHJht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHJg5 (ORCPT
+        with ESMTP id S229924AbjKHJhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:36:57 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7296E199
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:36:54 -0800 (PST)
-Received: from loongson.cn (unknown [209.85.219.181])
-        by gateway (Coremail) with SMTP id _____8CxLOuzVktlw_83AA--.39042S3;
-        Wed, 08 Nov 2023 17:36:52 +0800 (CST)
-Received: from mail-yb1-f181.google.com (unknown [209.85.219.181])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxjd6xVktlPfA7AA--.2220S3;
-        Wed, 08 Nov 2023 17:36:50 +0800 (CST)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso6081632276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 01:36:50 -0800 (PST)
-X-Gm-Message-State: AOJu0YzVQSQpIp8TCw1R0p806bK2Wi2+0IDndMW/8R0OaCDcsd95lnfL
-        zKAu1WPylUfqxGxgLvpXDVeCB7ABB1JZTOFCWNg/iw==
-X-Google-Smtp-Source: AGHT+IF7Egb8RiUObh7jAE8iM4wFRrqgo9bG5b8f2JcO57JxfoqZyKyA977e/ECC4xVaAtAw/8f7y7/RheUTwoNIqyA=
-X-Received: by 2002:a05:6902:1008:b0:da0:5933:c62d with SMTP id
- w8-20020a056902100800b00da05933c62dmr1369671ybt.28.1699436208883; Wed, 08 Nov
- 2023 01:36:48 -0800 (PST)
+        Wed, 8 Nov 2023 04:37:48 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB12199
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:37:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7UGEVbPDKW86arlOpWMG5o+CcD0Juo30JkEeKJv9V3M=; b=afZpI7csGSh+SqgCIhXY62tgk8
+        AV51dYsaKnNvbumqESqqM6q7ZTecUoeACxWM8jVxgJMh9SB5rZN9ybqDkbPqsDxm62G3HgzgAD5cm
+        19DI9HU9tnX6wuu/vXCfvEWd8ZfnF0cy0hnQiLdfymfdClt6J90mRV+/2olQbiBzLsntQ8uQyarjT
+        nnRF66smjzoSuAo8QtNoE+ZM+2KVOl/YSEnoLilmyS3ZmYgRnlUoSLbk8DtdwrOjZDb1HEXXnqaX/
+        B+Gj+OtOaK9wKQuNSRyDWdHy+Q3lKvCC1lbg+HjadBN7rgr3DDlzOJltLzrrODV0kztlLYSoV5hgk
+        FZ2wAZPg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r0ezN-00DNKk-2K;
+        Wed, 08 Nov 2023 09:36:45 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 61EEB30049D; Wed,  8 Nov 2023 10:36:45 +0100 (CET)
+Date:   Wed, 8 Nov 2023 10:36:45 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        torvalds@linux-foundation.org, paulmck@kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 41/86] sched: handle resched policy in resched_curr()
+Message-ID: <20231108093645.GL8262@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-42-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-References: <20231108040447.288870-1-wangrui@loongson.cn> <d32d8a26dcd75a840727cdb50546b621d34d326b.camel@xry111.site>
- <CAHirt9jQHTRGdv4rShgvWHEbG1vzuLkNDbxLP7x4eMtuB3BB5g@mail.gmail.com> <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
-In-Reply-To: <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
-From:   WANG Rui <wangrui@loongson.cn>
-Date:   Wed, 8 Nov 2023 17:36:38 +0800
-X-Gmail-Original-Message-ID: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
-Message-ID: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Disable module from accessing external data directly
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-CM-TRANSID: AQAAf8Cxjd6xVktlPfA7AA--.2220S3
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7ury5CF4xXw4kJF1xGw4xXwc_yoW8Xr4kpa
-        97GF1rKws7Xry8ZrnavFn7Z3Wa9a1xCrWxKFy8Cw15Zas0kr9rXa13tr4agFnFqrZ0gw12
-        krs2ga47uryUXagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG
-        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
-        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-        14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
-        WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqW
-        UUUUU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107215742.363031-42-ankur.a.arora@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 5:26 PM Xi Ruoyao <xry111@xry111.site> wrote:
->
-> On Wed, 2023-11-08 at 17:20 +0800, WANG Rui wrote:
-> > > then the linked binary triggers a SIGBUS.  Ideally this should be
-> > > detected by the linker at link time, but currently the BFD linker
-> > > fails
-> > > to detect this error (FWIW this flaw is caused by a really nasty
-> > > method
-> > > for the medium code model implementation).  So to me -fno-direct-
-> > > access-
-> > > external-data is the default.  I also grepped for -fdirect-access-
-> > > external-data in the kernel building system but I've not found any
-> > > match.
-> > >
-> > > Are you using a different version of Clang, or maybe Clang has some
-> > > configuration-time option to make -fdirect-access-external-data the
-> > > default?
-> >
-> > The clang enables `direct-access-external-data` by default in PIC and
-> > disables it by default in no-PIC. This also applies to PIE. [1]
->
-> Oh sh*t:
->
-> xry111@nanmen2 ~ $ clang t1.c -O2 -fno-pie -no-pie
-> xry111@nanmen2 ~ $ ./a.out
-> Bus error (core dumped)
->
-> I'll consider it a Clang bug then.
+On Tue, Nov 07, 2023 at 01:57:27PM -0800, Ankur Arora wrote:
 
-That's it, no copy relocations. As far as I know, copying relocations
-has some issues and is not recommended by Fangrui.
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1027,13 +1027,13 @@ void wake_up_q(struct wake_q_head *head)
+>  }
+>  
+>  /*
+> - * resched_curr - mark rq's current task 'to be rescheduled now'.
+> + * __resched_curr - mark rq's current task 'to be rescheduled'.
+>   *
+> - * On UP this means the setting of the need_resched flag, on SMP it
+> - * might also involve a cross-CPU call to trigger the scheduler on
+> - * the target CPU.
+> + * On UP this means the setting of the need_resched flag, on SMP, for
+> + * eager resched it might also involve a cross-CPU call to trigger
+> + * the scheduler on the target CPU.
+>   */
+> -void resched_curr(struct rq *rq)
+> +void __resched_curr(struct rq *rq, resched_t rs)
+>  {
+>  	struct task_struct *curr = rq->curr;
+>  	int cpu;
+> @@ -1046,17 +1046,77 @@ void resched_curr(struct rq *rq)
+>  	cpu = cpu_of(rq);
+>  
+>  	if (cpu == smp_processor_id()) {
+> -		set_tsk_need_resched(curr, RESCHED_eager);
+> -		set_preempt_need_resched();
+> +		set_tsk_need_resched(curr, rs);
+> +		if (rs == RESCHED_eager)
+> +			set_preempt_need_resched();
+>  		return;
+>  	}
+>  
+> -	if (set_nr_and_not_polling(curr, RESCHED_eager))
+> -		smp_send_reschedule(cpu);
+> -	else
+> +	if (set_nr_and_not_polling(curr, rs)) {
+> +		if (rs == RESCHED_eager)
+> +			smp_send_reschedule(cpu);
 
-For modules, if distance is not a problem, `no-pic` and
-`direct-access-external-data` can be together because the code is
-writable. Does it seem reasonable to exist?
+I think you just broke things.
 
->
-> --
-> Xi Ruoyao <xry111@xry111.site>
-> School of Aerospace Science and Technology, Xidian University
->
+Not all idle threads have POLLING support, in which case you need that
+IPI to wake them up, even if it's LAZY.
+
+> +	} else if (rs == RESCHED_eager)
+>  		trace_sched_wake_idle_without_ipi(cpu);
+>  }
 
 
--- 
-WANG Rui
 
+>  
+> +/*
+> + * resched_curr - mark rq's current task 'to be rescheduled' eagerly
+> + * or lazily according to the current policy.
+> + *
+> + * Always schedule eagerly, if:
+> + *
+> + *  - running under full preemption
+> + *
+> + *  - idle: when not polling (or if we don't have TIF_POLLING_NRFLAG)
+> + *    force TIF_NEED_RESCHED to be set and send a resched IPI.
+> + *    (the polling case has already set TIF_NEED_RESCHED via
+> + *     set_nr_if_polling()).
+> + *
+> + *  - in userspace: run to completion semantics are only for kernel tasks
+> + *
+> + * Otherwise (regardless of priority), run to completion.
+> + */
+> +void resched_curr(struct rq *rq)
+> +{
+> +	resched_t rs = RESCHED_lazy;
+> +	int context;
+> +
+> +	if (IS_ENABLED(CONFIG_PREEMPT) ||
+> +	    (rq->curr->sched_class == &idle_sched_class)) {
+> +		rs = RESCHED_eager;
+> +		goto resched;
+> +	}
+> +
+> +	/*
+> +	 * We might race with the target CPU while checking its ct_state:
+> +	 *
+> +	 * 1. The task might have just entered the kernel, but has not yet
+> +	 * called user_exit(). We will see stale state (CONTEXT_USER) and
+> +	 * send an unnecessary resched-IPI.
+> +	 *
+> +	 * 2. The user task is through with exit_to_user_mode_loop() but has
+> +	 * not yet called user_enter().
+> +	 *
+> +	 * We'll see the thread's state as CONTEXT_KERNEL and will try to
+> +	 * schedule it lazily. There's obviously nothing that will handle
+> +	 * this need-resched bit until the thread enters the kernel next.
+> +	 *
+> +	 * The scheduler will still do tick accounting, but a potentially
+> +	 * higher priority task waited to be scheduled for a user tick,
+> +	 * instead of execution time in the kernel.
+> +	 */
+> +	context = ct_state_cpu(cpu_of(rq));
+> +	if ((context == CONTEXT_USER) ||
+> +	    (context == CONTEXT_GUEST)) {
+> +
+> +		rs = RESCHED_eager;
+> +		goto resched;
+> +	}
+
+Like said, this simply cannot be. You must not rely on the remote CPU
+being in some state or not. Also, it's racy, you could observe USER and
+then it enters KERNEL.
+
+> +
+> +resched:
+> +	__resched_curr(rq, rs);
+> +}
+> +
+>  void resched_cpu(int cpu)
+>  {
+>  	struct rq *rq = cpu_rq(cpu);
