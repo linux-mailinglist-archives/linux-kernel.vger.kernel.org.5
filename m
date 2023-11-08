@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB407E4EA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1389C7E4EA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbjKHBlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 20:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        id S232991AbjKHBmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 20:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbjKHBlh (ORCPT
+        with ESMTP id S229753AbjKHBmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 20:41:37 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315D5129
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 17:41:35 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SQ7411xhZzMmgY;
-        Wed,  8 Nov 2023 09:37:05 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 8 Nov 2023 09:41:32 +0800
-Message-ID: <9cb900f1-6b49-4160-adc2-cdeae1b00b17@huawei.com>
-Date:   Wed, 8 Nov 2023 09:41:32 +0800
+        Tue, 7 Nov 2023 20:42:36 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA65BAF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 17:42:33 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc9784dbc1so39540265ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 17:42:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699407753; x=1700012553; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uRaBsOVzYONI9pogErmQ9X03ygbaDdU6U4Qoxn4y618=;
+        b=kidAwMyTVazSg+VUFr99Bprtz/I7aJ7dNixfjiVXuvjvWp1Nh/5HfZ6sDGdGUendNK
+         II3Q1xKIqRPzBFMbGclHe5zLNWLAq1vC2MXDpmWL9lxiVAjN/H3WoS4xhThYDBSvt+dw
+         g513OONJ5aJlhdexqmWQ9hOeP4L1AKBHrQE7s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699407753; x=1700012553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uRaBsOVzYONI9pogErmQ9X03ygbaDdU6U4Qoxn4y618=;
+        b=Q2E3L/bkMX7IHJwFOB9TMXJ2XaZ5ewG/XwoRwxc4TttcMvO4HFw4Bk/ukp/pJat10Q
+         /dWqhRe5SvNqsdAKLh8cV8DbypuomBBEsS/ltghS2kkN6002zLvfPcOIVf/ntoqeY4X6
+         5hhgWYo7SNxA104UYgKocp5KRNumQ+peqbtKo9YrwnrKfOivm8+1e1lTBS3hx02niOo1
+         OIElh1lBuQ7xxdI3kaixGdkVKtpSj2W4AmYJklVIgjJ3muptd2lGmMlJoqksjOTfp4fS
+         ub+hC+FOCJmLUpCXO3+02ijMFDJ+H1fyPKFqzLrJCNS8RsO726iFOyjz+eXlvzkcIJJL
+         3WiQ==
+X-Gm-Message-State: AOJu0YwdkO3Itah/z0KBwGRwB/w9+I3MbuyfZKR6GPKZ2W62MKlZtbLm
+        K75VZxIPDU2RbhpUaoX2AyFulw==
+X-Google-Smtp-Source: AGHT+IEiX3OQXe/Bpr16powrllKhPlWEmq4Fndw9pepmzaQ/R+ZOIvuD5AuOqCc8KrphNFU1/9C7Aw==
+X-Received: by 2002:a17:902:7407:b0:1c5:d8a3:8789 with SMTP id g7-20020a170902740700b001c5d8a38789mr747226pll.4.1699407753200;
+        Tue, 07 Nov 2023 17:42:33 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:2fe:d436:c346:6fcf])
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902c14c00b001cc79f3c60csm457816plj.31.2023.11.07.17.42.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 17:42:32 -0800 (PST)
+Date:   Wed, 8 Nov 2023 10:42:29 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Vasily Averin <vasily.averin@linux.dev>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH] zram: unsafe zram_get_element call in zram_read_page()
+Message-ID: <20231108014229.GE11577@google.com>
+References: <d10cdf1d-4a67-48df-b389-3a51f60e9431@linux.dev>
+ <20231107073911.GB11577@google.com>
+ <20231107104041.GC11577@google.com>
+ <c57eb649-c573-4e41-85f4-870d08cf88b9@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] mm: memory: use a folio in do_cow_page()
-Content-Language: en-US
-To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>
-References: <20231107135216.415926-1-wangkefeng.wang@huawei.com>
- <20231107135216.415926-5-wangkefeng.wang@huawei.com>
- <ff007e3a-9951-bd6e-2780-e46e70321665@oracle.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <ff007e3a-9951-bd6e-2780-e46e70321665@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c57eb649-c573-4e41-85f4-870d08cf88b9@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (23/11/07 21:19), Vasily Averin wrote:
+> On 11/7/23 13:40, Sergey Senozhatsky wrote:
+> > On (23/11/07 16:39), Sergey Senozhatsky wrote:
+> >> Hmmm,
+> >> We may want to do more here. Basically, we probably need to re-confirm
+> >> after read_from_bdev() that the entry at index still has ZRAM_WB set
+> >> and, if so, that it points to the same blk_idx. IOW, check that it has
+> >> not been free-ed and re-used under us.
+> > --- a/drivers/block/zram/zram_drv.c
+> > +++ b/drivers/block/zram/zram_drv.c
+> > @@ -1364,14 +1364,21 @@ static int zram_read_page(struct zram *zram, struct page *page, u32 index,
+> >  		ret = zram_read_from_zspool(zram, page, index);
+> >  		zram_slot_unlock(zram, index);
+> >  	} else {
+> > +		unsigned long idx = zram_get_element(zram, index);
+> >  		/*
+> >  		 * The slot should be unlocked before reading from the backing
+> >  		 * device.
+> >  		 */
+> >  		zram_slot_unlock(zram, index);
+> >  
+> > -		ret = read_from_bdev(zram, page, zram_get_element(zram, index),
+> > -				     parent);
+> > +		ret = read_from_bdev(zram, page, idx, parent);
+> > +		if (ret == 0) {
+> > +			zram_slot_lock(zram, index);
+> > +			if (!zram_test_flag(zram, index, ZRAM_WB) ||
+> > +			    idx != zram_get_element(zram, index))
+> > +				ret = -EINVAL;
+> > +			zram_slot_unlock(zram, index);
+> > +		}
+> 
+> Why overwritten page can not be pushed to WB to the same blk_idx? 
 
-
-On 2023/11/8 2:27, Sidhartha Kumar wrote:
-> On 11/7/23 5:52 AM, Kefeng Wang wrote:
->> Use folio_prealloc() helper and convert to use a folio in
->> do_cow_page(), which save five compound_head() calls.
->>
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   mm/memory.c | 16 ++++++----------
->>   1 file changed, 6 insertions(+), 10 deletions(-)
->>
->> diff --git a/mm/memory.c b/mm/memory.c
->> index 062136d25da3..5ecee3eac29d 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -4648,6 +4648,7 @@ static vm_fault_t do_read_fault(struct vm_fault 
->> *vmf)
->>   static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->>   {
->>       struct vm_area_struct *vma = vmf->vma;
->> +    struct folio *folio;
->>       vm_fault_t ret;
->>       ret = vmf_can_call_fault(vmf);
->> @@ -4656,16 +4657,11 @@ static vm_fault_t do_cow_fault(struct vm_fault 
->> *vmf)
->>       if (ret)
->>           return ret;
->> -    vmf->cow_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, 
->> vmf->address);
->> -    if (!vmf->cow_page)
->> +    folio = folio_prealloc(vma->vm_mm, vma, vmf->address, false);
->> +    if (!folio)
->>           return VM_FAULT_OOM;
->> -    if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
->> -                GFP_KERNEL)) {
->> -        put_page(vmf->cow_page);
->> -        return VM_FAULT_OOM;
->> -    }
->> -    folio_throttle_swaprate(page_folio(vmf->cow_page), GFP_KERNEL);
-> 
-> Hi Kefeng,
-> 
-> I was wondering why this block of code is no longer needed after using a 
-> folio?
-
-folio_prealloc(previous page_copy_prealloc) already with above code.
-
-> 
-> Thanks,
-> Sidhartha Kumar
-> 
->> +    vmf->cow_page = &folio->page;
->>       ret = __do_fault(vmf);
->>       if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | 
->> VM_FAULT_RETRY)))
->> @@ -4674,7 +4670,7 @@ static vm_fault_t do_cow_fault(struct vm_fault 
->> *vmf)
->>           return ret;
->>       copy_user_highpage(vmf->cow_page, vmf->page, vmf->address, vma);
->> -    __SetPageUptodate(vmf->cow_page);
->> +    __folio_mark_uptodate(folio);
->>       ret |= finish_fault(vmf);
->>       unlock_page(vmf->page);
->> @@ -4683,7 +4679,7 @@ static vm_fault_t do_cow_fault(struct vm_fault 
->> *vmf)
->>           goto uncharge_out;
->>       return ret;
->>   uncharge_out:
->> -    put_page(vmf->cow_page);
->> +    folio_put(folio);
->>       return ret;
->>   }
-> 
+Yeah, so I thought about it too but didn't want to go too deep into it.
+We probably can only address it if we synchronize free_page (?), read_page()
+and writeback(), so that we never have concurrent bitmap modifications when
+one of the operations is in progress.
