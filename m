@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDFF7E5FFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E997E7E600B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjKHVbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S230317AbjKHViR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:38:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKHVbM (ORCPT
+        with ESMTP id S229460AbjKHViP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:31:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2611BE2
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:31:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9369DC433C7;
-        Wed,  8 Nov 2023 21:31:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699479069;
-        bh=u6jgzAOvfO5IfdY8HzC+ARaK2eNrw+SWbTrYWqkMkzo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UiHIrHHDXtSrau7d3yBq2LUkTbFuCwjCj9tZzYwp1fXLUt3WNwIOB6hzPXlYEBB4b
-         Zoi7biAudiqa63ADXJw5FDgmQrnC57doUU8WYlgEfAkxDoP14+p6WL+XCTdO8Jf4Pq
-         1j82tbgnaUcaI9sK4Z2Hf02ENBQJfwjfYlxwOPbGF3uUXMQmtVNs2ltkpcBWA3VHOx
-         WJ41kZjYk9w+3xPUcRkT4RzXBq8ToAPDEeCRWRG6a3RFVSz03Kfkn16byyNa0inB3t
-         8vl+Leyk0iF2bAZ+XnfmDELiI2kred0hyrtZ//E2lD+egw9TPPPsLKRqICAsk51o8x
-         TVE/AWjkWFb4g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 52C2540094; Wed,  8 Nov 2023 18:31:07 -0300 (-03)
-Date:   Wed, 8 Nov 2023 18:31:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
-Subject: Re: [PATCH V5 2/8] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK
- flag
-Message-ID: <ZUv+G+w5EvJgQS45@kernel.org>
-References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
- <20231025201626.3000228-2-kan.liang@linux.intel.com>
- <ZUlWuROfYcYJlRn4@kernel.org>
- <fb1ebf48-ac2f-499a-b480-ba8474b12200@linux.intel.com>
- <ZUpTtoCzJFHhnSdh@kernel.org>
+        Wed, 8 Nov 2023 16:38:15 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47C12585;
+        Wed,  8 Nov 2023 13:38:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4079ed65471so771055e9.1;
+        Wed, 08 Nov 2023 13:38:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699479491; x=1700084291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BOY/4TbWJlIh9l54tUoY6OQMnJji9pbyz4aczXm5Onw=;
+        b=S/5/GOx25f/cpSqx2ALbnlXIESL4uoWXxHdzjAUljfQ6z4AwCUCKE5plnVF0SG2IOE
+         /rmxVt0BzB0E/P+DiX5O2IXiv9hgBJ/F3BHz0uIcvCzdUnjRKSwMcYWjBzdNEcM2RmAt
+         14VXcVs6E3ZERKlEs7iCQ4M8u7NFhlq6yV+CjgSjRgcvMa3o7fgFD7hucF97bQBkRWmw
+         HBpVl6+od7rY0m6sqGjp3eVT/S+rVdT3DsS84hrQhEiXNyd4uVimSGekGBPpHShWotuX
+         WaPhSWsRMnC8/X0T9O1YacMFSAZssGygPXmcaSmKz9nVXQ6Zmq8fHjol3oCSKCFb0sH2
+         0OMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699479491; x=1700084291;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BOY/4TbWJlIh9l54tUoY6OQMnJji9pbyz4aczXm5Onw=;
+        b=YFKQbBqKpqVAKsMflYbqXGG53kzZJJEf6WOJIupAblWrBbNRPRhC9L2XHeyrMALiD8
+         yuhbE7NcTPMurAwdXQVbBI6+Pf/JFscGP72BNQlN6Ra4PH3EbkgKxuP8jWL9Upx1MdmZ
+         +SNTA3D/XWiwH/MGojc691Vw56A/BYdlPpY1skiRG5XLewdWPC1ZN0DVp1DbxdnWRhLa
+         Phz9V/kg6PbTYerG875uXxsULh6s5mrDYE4VDULTY8TTRrpnkTtjAwN6fe2K0xhk9i4F
+         jw4hil/QO/Y0IkwnPhlnxyFLgvb7a1Ipi9BZtTw0zyU4GcUcDo2TDrqsN0TWa0F0fZI5
+         psag==
+X-Gm-Message-State: AOJu0Yy1kq4buDm5TYehAE6pNC3OaYZr7kohBRMt/p+YNvq9RsfoLPmg
+        5Bu30HE9M39I/gNQPPyNpIq9yHsXrSI=
+X-Google-Smtp-Source: AGHT+IFaK9xQ+DloNi+NZ+EUiBL2JKwDO76WCe7486uq9CoBenof/WNhhVDU4HR5MYDs/OR/q7vAHw==
+X-Received: by 2002:a05:600c:3b96:b0:407:8ee2:997e with SMTP id n22-20020a05600c3b9600b004078ee2997emr2777339wms.27.1699479491088;
+        Wed, 08 Nov 2023 13:38:11 -0800 (PST)
+Received: from ALPER-PC.. ([178.233.24.52])
+        by smtp.gmail.com with ESMTPSA id u8-20020a05600c138800b004075d5664basm22032wmf.8.2023.11.08.13.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 13:38:10 -0800 (PST)
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+        linux-clk@vger.kernel.org, Chen-Yu Tsai <wenst@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Subject: [PATCH] clock: mediatek: mt8173: Handle unallocated infracfg clock data
+Date:   Thu,  9 Nov 2023 00:33:43 +0300
+Message-ID: <20231108213734.140707-1-alpernebiyasak@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZUpTtoCzJFHhnSdh@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Nov 07, 2023 at 12:11:50PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Mon, Nov 06, 2023 at 04:19:13PM -0500, Liang, Kan escreveu:
-> > On 2023-11-06 4:12 p.m., Arnaldo Carvalho de Melo wrote:
-> > > Em Wed, Oct 25, 2023 at 01:16:20PM -0700, kan.liang@linux.intel.com e=
-screveu:
-> > Ian has already reviewed the tool parts.
+The MT8173 infracfg clock driver does initialization in two steps, via a
+CLK_OF_DECLARE_DRIVER declaration. However its early init function
+doesn't get to run when it's built as a module, presumably since it's
+not loaded by the time it would have been called by of_clk_init(). This
+causes its second-step probe() to return -ENOMEM when trying to register
+clocks, as the necessary clock_data struct isn't initialized by the
+first step.
 
-> > But I still owe a test case for the feature. I will post a patch later.
-> > https://lore.kernel.org/lkml/acbb895a-475e-4679-98fc-6b90c05a00af@linux=
-=2Eintel.com/
+MT2701 and MT6797 clock drivers also use this mechanism, but they try to
+allocate the necessary clock_data structure if missing in the second
+step. Mimic that for the MT8173 infracfg clock as well to make it work
+as a module.
 
-> I saw Ian's suggestion, and agree with it, we need to pair new features
-> with regression tests in 'perf test', thanks for working on it!
+Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+---
+I've tried adding cpumux support to clk-mtk.c then switching this over
+to simple probe functions and it appears to work for me, though I don't
+know clock systems enough to recognize if it's subtly broken instead.
+That'd remove this piece of code, but this might still be worth applying
+to backport to stable kernels.
 
-Kan,
+If I'm reading things correctly, it looks like it would be possible to
+add cpumux & pll & pllfh support to clk-mtk.c, then move most if not
+every driver to simple probe, with one file per clock and module
+support. How much of that is desirable? In what order do the parts need
+to be registered?
 
-	I still have to bisect, but can you check if this works for you?
+ drivers/clk/mediatek/clk-mt8173-infracfg.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/clk/mediatek/clk-mt8173-infracfg.c b/drivers/clk/mediatek/clk-mt8173-infracfg.c
+index 2f2f074e231a..ecc8b0063ea5 100644
+--- a/drivers/clk/mediatek/clk-mt8173-infracfg.c
++++ b/drivers/clk/mediatek/clk-mt8173-infracfg.c
+@@ -98,7 +98,17 @@ CLK_OF_DECLARE_DRIVER(mtk_infrasys, "mediatek,mt8173-infracfg",
+ static int clk_mt8173_infracfg_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *node = pdev->dev.of_node;
+-	int r;
++	int r, i;
++
++	if (!infra_clk_data) {
++		infra_clk_data = mtk_alloc_clk_data(CLK_INFRA_NR_CLK);
++		if (!infra_clk_data)
++			return -ENOMEM;
++	} else {
++		for (i = 0; i < CLK_INFRA_NR_CLK; i++)
++			if (infra_clk_data->hws[i] == ERR_PTR(-EPROBE_DEFER))
++				infra_clk_data->hws[i] = ERR_PTR(-ENOENT);
++	}
+ 
+ 	r = mtk_clk_register_gates(&pdev->dev, node, infra_gates,
+ 				   ARRAY_SIZE(infra_gates), infra_clk_data);
 
-(gdb) run test -F -v 27
-Starting program: /root/bin/perf test -F -v 27
-
- 27: Sample parsing                                                  :
---- start ---
-
-Program received signal SIGSEGV, Segmentation fault.
-0x00000000004e4aa6 in evsel.parse_sample ()
-Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.0.8-13=
-=2Efc38.x86_64 cyrus-sasl-lib-2.1.28-9.fc38.x86_64 elfutils-debuginfod-clie=
-nt-0.189-3.fc38.x86_64 elfutils-libelf-0.189-3.fc38.x86_64 elfutils-libs-0.=
-189-3.fc38.x86_64 glib2-2.76.5-2.fc38.x86_64 glibc-2.37-13.fc38.x86_64 keyu=
-tils-libs-1.6.1-6.fc38.x86_64 krb5-libs-1.21-3.fc38.x86_64 libbabeltrace-1.=
-5.11-2.fc38.x86_64 libbrotli-1.0.9-11.fc38.x86_64 libcap-2.48-6.fc38.x86_64=
- libcom_err-1.46.5-4.fc38.x86_64 libcurl-8.0.1-5.fc38.x86_64 libevent-2.1.1=
-2-8.fc38.x86_64 libgcc-13.2.1-4.fc38.x86_64 libidn2-2.3.4-2.fc38.x86_64 lib=
-nghttp2-1.52.0-2.fc38.x86_64 libpfm-4.11.0-11.fc38.x86_64 libpsl-0.21.2-2.f=
-c38.x86_64 libselinux-3.5-1.fc38.x86_64 libssh-0.10.5-1.fc38.x86_64 libstdc=
-++-13.2.1-4.fc38.x86_64 libtraceevent-1.7.2-1.fc38.x86_64 libunistring1.0-1=
-=2E0-1.fc38.x86_64 libunwind-1.6.2-7.fc38.x86_64 libuuid-2.38.1-4.fc38.x86_=
-64 libxcrypt-4.4.36-1.fc38.x86_64 libzstd-1.5.5-1.fc38.x86_64 opencsd-1.3.3=
--1.fc38.x86_64 openldap-2.6.6-1.fc38.x86_64 openssl-libs-3.0.9-2.fc38.x86_6=
-4 perl-libs-5.36.1-497.fc38.x86_64 popt-1.19-2.fc38.x86_64 python3-libs-3.1=
-1.6-1.fc38.x86_64 slang-2.3.3-3.fc38.x86_64 zlib-1.2.13-3.fc38.x86_64
-(gdb) bt
-#0  0x00000000004e4aa6 in evsel.parse_sample ()
-#1  0x00000000004b28dc in do_test ()
-#2  0x00000000004b2acd in test.sample_parsing ()
-#3  0x0000000000495348 in test_and_print.isra ()
-#4  0x0000000000495f5d in cmd_test ()
-#5  0x00000000004c2a29 in run_builtin ()
-#6  0x000000000041053f in main ()
-(gdb)
+base-commit: 2220f68f4504aa1ccce0fac721ccdb301e9da32f
+-- 
+2.42.0
 
