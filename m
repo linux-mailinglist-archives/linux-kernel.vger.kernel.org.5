@@ -2,74 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7267E5EFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F0E7E5EFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjKHUK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 15:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
+        id S229933AbjKHULH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 15:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbjKHUKY (ORCPT
+        with ESMTP id S229635AbjKHULF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 15:10:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00202121
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 12:10:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DCCDC433C8;
-        Wed,  8 Nov 2023 20:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699474222;
-        bh=J25KUy86NfApZ0qWpYlZcp82HfO5i4wtIPpaV2apC5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F58oEApuCiR9Ul+qxxkzzzJLijYO6ROIj5DIlTxjrW8VkenFlFJItHBB6X5KvtNr5
-         Aozn8mM8MTBp0fOn4WkgO2b0WUea/dP7sLK1IAl+ZH2J2vc7/IIOOuh2kXng3UaZF/
-         +EH3+aRjz+IuPSgEmEi3ujOFjWArpRX5pTtIwn1PJtNZzQwnO5mW1yOapZ7Upw2KAR
-         /nDvpEk1OMayjfw+90UWMr5iRZMSlL6VoExiDR6tLISBssJyivC26SjtilJl0BELOK
-         057c405lKiBPXglVrsL0KhoY5XPsibymUMp1TeB/sZ+hl86FJp1SpExosY1uNqDZXr
-         /Tw+KkejaLDkw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1298C4035D; Wed,  8 Nov 2023 17:10:18 -0300 (-03)
-Date:   Wed, 8 Nov 2023 17:10:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        James Clark <james.clark@arm.com>
-Subject: Re: [PATCH v2] perf test: Simplify object code reading test
-Message-ID: <ZUvrKT0TjGeSi98K@kernel.org>
-References: <20231103195541.67788-1-namhyung@kernel.org>
- <c1aedc2e-e51b-4b17-a05e-cd347f56d83b@intel.com>
+        Wed, 8 Nov 2023 15:11:05 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA007211B
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 12:11:02 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d84c24a810dso105148276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 12:11:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1699474262; x=1700079062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WdQXlJuW20JcGlaQadU7ZgL5w1/h84E2psVd7Y2aHT4=;
+        b=MZfSCdNv2PsxTeE75RiHAs/7KpUpwUrLsoi1dFjiDdIrDZhH70j9DCrJDUPEBr9IhX
+         k7gZMoJE1XPHOhvol4wxo7YxFnOFUVUxI7qgdvUuovss16SEqcZsK0viE5E7insB/olb
+         w2Ub/lJ8oeIEY8g2whWPsIFTchDQ2wo4Jx5VTOcRvECQdoHjLBNq2i/UrNUdBt/tLuvi
+         ncdkEFM88s27g6Bhd6EfrJ3NhwxK9AfPzT0C1NE8B9ITcgSEup4zX1OHLwsJ6r6fWWDp
+         VaLgVrHdENifBIUAvZtoUKQQYsi/x5aYeJhCWMpHuqbNiRms6pcmmrq5kaKKWigrfSRD
+         e7zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699474262; x=1700079062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WdQXlJuW20JcGlaQadU7ZgL5w1/h84E2psVd7Y2aHT4=;
+        b=JnmJ9/L6pWJQQxMmUAiRNK/J8CIbgbL0Ku+voiAuqhGKYyQO9g1ZyiaagKyUVXG6fF
+         XZTL6kzP1gPNoy8B+2GI9vbTNs9a3r+dQkMT/igzhC8IQXWzOmt8pEFkz3Tw0546uh1O
+         3EBINIusBc/sHpXpeN+LPzpdsDNflrnZwnfD33cLLlBa/3fIKdA01H4Gu24RSt7EkyzW
+         kyb4zBBXbkaLZhnET1klR1/HzaQxqeajAqJLXkB+HFnvAex+ol/v8NU3LwQEIggD2sKu
+         ey2TT0SyjT58l/fx238l+upDpRxnqwL85KtJLezqLSvzlBfMKNfRL1eYYLrnEtFCRhq6
+         XueQ==
+X-Gm-Message-State: AOJu0YyRK8/QqpledW+myh+DJiIy5dTWWTt8p+VkW6gNCmx8G45/Lmvk
+        Y7HKb9W5LBIQ/57+2Di2GrsEoUsbYIq+jb2PsM+l
+X-Google-Smtp-Source: AGHT+IGx24XRQweoz1EaCe+kSiqvIrqmyKZE1dlffO9Wgq6HodmUotEUsJYVWiUyZ7p7+YFh1nttrYhrBU0rClZtQF0=
+X-Received: by 2002:a25:680c:0:b0:d9c:aa29:6180 with SMTP id
+ d12-20020a25680c000000b00d9caa296180mr2811921ybc.46.1699474262093; Wed, 08
+ Nov 2023 12:11:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1aedc2e-e51b-4b17-a05e-cd347f56d83b@intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20231025140205.3586473-5-mszeredi@redhat.com> <4ab327f80c4f98dffa5736a1acba3e0d.paul@paul-moore.com>
+ <20231108-zwerge-unheil-b3f48a84038d@brauner>
+In-Reply-To: <20231108-zwerge-unheil-b3f48a84038d@brauner>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 8 Nov 2023 15:10:50 -0500
+Message-ID: <CAHC9VhSLGyFRSbeZXE7z61Y2aDJi_1Dedjw0ioFOckRCs0CRaA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] add statmount(2) syscall
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        Ian Kent <raven@themaw.net>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Nov 06, 2023 at 10:15:07AM +0200, Adrian Hunter escreveu:
-> On 3/11/23 21:55, Namhyung Kim wrote:
-> > It tries cycles (or cpu-clock on s390) event with exclude_kernel bit to
-> > open.  But other arch on a VM can fail with the hardware event and need
-> > to fallback to the software event in the same way.
-> > 
-> > So let's get rid of the cpuid check and use generic fallback mechanism
-> > using an array of event candidates.  Now event in the odd index excludes
-> > the kernel so use that for the return value.
-> > 
-> > Cc: Thomas Richter <tmricht@linux.ibm.com>
-> > Tested-by: James Clark <james.clark@arm.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+On Wed, Nov 8, 2023 at 2:58=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
+> > > +static int do_statmount(struct stmt_state *s)
+> > > +{
+> > > +   struct statmnt *sm =3D &s->sm;
+> > > +   struct mount *m =3D real_mount(s->mnt);
+> > > +   size_t copysize =3D min_t(size_t, s->bufsize, sizeof(*sm));
+> > > +   int err;
+> > > +
+> > > +   err =3D security_sb_statfs(s->mnt->mnt_root);
+> > > +   if (err)
+> > > +           return err;
+> > > +
+> > > +   if (!capable(CAP_SYS_ADMIN) &&
+> > > +       !is_path_reachable(m, m->mnt.mnt_root, &s->root))
+> > > +           return -EPERM;
+> >
+> > In order to be consistent with our typical access control ordering,
+> > please move the security_sb_statfs() call down to here, after the
+> > capability checks.
+>
+> I've moved the security_sb_statfs() calls accordingly.
 
-Thanks, applied to perf-tools-next.
+Okay, good.  Did I miss a comment or a patch where that happened?  I
+looked over the patchset and comments yesterday and didn't recall
+seeing anything about shuffling the access control checks.
 
-- Arnaldo
-
+--=20
+paul-moore.com
