@@ -2,139 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838507E4DB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611247E4DC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjKHAHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S234818AbjKHAKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjKHAHx (ORCPT
+        with ESMTP id S234790AbjKHAKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:07:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5A610EB;
-        Tue,  7 Nov 2023 16:07:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D41C433C7;
-        Wed,  8 Nov 2023 00:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699402071;
-        bh=0EH+T/QEjc38AnUu2TmGCCAb/82ws/TY3BHNT4h27nM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZitqmFPOpSqYYDPJdCzHPGwQGYA3xxIpV+oGvzQPLr0ARf+0BgklNPKlOp0TvthDr
-         GfTAVMSuGtYBJSLR5fURRYT8aVf1wjiERIxlb4qkO4j5kQz99TGwv0TGL6CPtUPvdu
-         oTe/BOsjbTjN/MaJJhokCGmS7DtlsWiALPWtF8sptikg/rGks9pmi8gHl4REawWi23
-         sC4e2DugDTlsMxHMvgBa9hkk4/1FRQZLIFyA6+Ijw5Q5v5o42gwpXUsKvJY3FHyteq
-         IevAG+llj2HyKKbxYbHRM6Vo5VwrATSNe4QpaaPvPblnCrQakBZvn/SOx6zBpUcuiD
-         W/G64nIdKDAaw==
-Date:   Tue, 7 Nov 2023 17:07:49 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     dcavalca@meta.com
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rpm-pkg: simplify installkernel %post
-Message-ID: <20231108000749.GA3723879@dev-arch.thelio-3990X>
-References: <20231103-rpmpost-v1-1-9c18afab47f4@meta.com>
+        Tue, 7 Nov 2023 19:10:23 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEAAA10EB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:10:20 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7Nv90Y014602;
+        Wed, 8 Nov 2023 00:10:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ZkuHY7TMDpAvO5cRBI+Mbiw3Asbur26xbF4ZcXY/PWo=;
+ b=a5xp9U4EpvDGq/jcmu9elFh62Mhtc1iWLDxO9WxdRWyciqYPEY7lPc8rWX2mGeYzpi86
+ +5s+HtC/Ef5cYDxq96TrT9sQjubRtxhmBbQRM+JAYEIUu1SR4qnxs0Kc51gXF+OEWlxt
+ dyS81hzUnB0etglegNx5FmCTLEi3DFSGs8N7y6ktmbuXtSY3kS4LOUB+gwoMgzOiO3fh
+ YLCcgs33mTjW4f2OeUlsfoj2KSEmp4i/8JboyKC/a+phf/j04kq0pFjW5lzFGEeQCvQP
+ iFnpRZrHdZ+T0LXDsQalnJBoEy2PZFVEAcUk0MDjfoYPuKx1lB7BmGk/CFi/4I4pXs6o 2g== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7w3g88wr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 00:10:15 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A80AE05025965
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 8 Nov 2023 00:10:14 GMT
+Received: from [10.110.90.101] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 16:10:14 -0800
+Message-ID: <aa112fd1-478a-43b2-8e8f-cef72c930bb2@quicinc.com>
+Date:   Tue, 7 Nov 2023 16:10:01 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103-rpmpost-v1-1-9c18afab47f4@meta.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
+Content-Language: en-US
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+To:     Helen Koike <helen.koike@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <robdclark@chromium.org>, <quic_abhinavk@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <freedreno@lists.freedesktop.org>
+References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
+ <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
+ <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
+In-Reply-To: <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ppv1dAPo5ZeUTDy7oroBsUrWTkffX7DO
+X-Proofpoint-GUID: ppv1dAPo5ZeUTDy7oroBsUrWTkffX7DO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_14,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ suspectscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311070198
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Davide,
 
-On Fri, Nov 03, 2023 at 11:33:42PM +0000, Davide Cavalca via B4 Relay wrote:
-> From: Davide Cavalca <dcavalca@meta.com>
+
+On 11/6/2023 9:35 AM, Jessica Zhang wrote:
 > 
-> The %post currently does a shuffling dance before calling installkernel.
-> This isn't actually necessary afaict, and the current implementation
-> ends up triggering downstream issues such as
-> https://github.com/systemd/systemd/issues/29568
 > 
-> This commit simplifies the logic to remove the shuffling. For reference,
-> the original logic was added in commit 3c9c7a14b627("rpm-pkg: add %post
-> section to create initramfs and grub hooks").
+> On 11/4/2023 6:02 AM, Helen Koike wrote:
+>> Hi Jessica,
+>>
+>> On 10/10/2023 19:25, Jessica Zhang wrote:
+>>> Recently, we've registered a Gitlab runner for a Qualcomm RB5 device 
+>>> that will be
+>>> hosted and maintained in Qualcomm labs.
+>>>
+>>> This series will add a corresponding CI job for testing SM8250 
+>>> devices and add the
+>>> skip/fails/flakes list. We were able to complete a successful run [1] 
+>>> with these
+>>> changes.
+>>>
+>>> For now, we will keep the job as manual trigger only and drop that 
+>>> rule later
+>>> after we stabilize the tests.
+>>>
+>>> [1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
+>>>
+>>> ---
+>>
+>> Thank you for you patchset.
+>>
+>> I'm getting the following error:
+>>
+>> "serial.serialutil.SerialException: [Errno 2] could not open port 
+>> /dev/ttyUSB0: [Errno 2] No such file or directory: '/dev/ttyUSB0'"
+>>
+>> https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51193215#L146
+>>
+>> I'm wondering if I'm missing some configuration.
+>>
+>> I tested on top of drm-misc-next.
 > 
-> Signed-off-by: Davide Cavalca <dcavalca@meta.com>
-
-I took this for a spin in a Fedora 38 virtual machine while I wait for
-Fedora 39 to make sure that this does not regress older installkernel
-implementations and I think that this patch does just that. With Fedora
-38, I see the following error during installation that I did not see
-prior to applying your patch:
-
-  cp: cannot stat '/boot/System.map-6.6.0-15157-gefb5302e6ea5': No such file or directory
-
-and when attempting to boot the newly installed kernel, I see:
-
-  error: ../../grub-core/loader/efi/linux.c:47:kernel is too small.
-  error: ../../grub-core/loader/efi/linux.c:47:kernel is too small.
-  error: ../../grub-core/loader/i386/efi/linux.c:258:you need to load the kernel
-  first.
-  error: ../../grub-core/loader/i386/efi/linux.c:258:you need to load the kernel first.
-
-before I get kicked back to the grub menu. The /boot folder after
-installing the rpm package with your patch in it looks like:
-
-  $ ls -al /boot
-  total 240012
-  dr-xr-xr-x.  5 root root      4096 Nov  7 17:04 .
-  dr-xr-xr-x. 18 root root       235 Nov  7 16:24 ..
-  -rw-r--r--.  1 root root    268497 Nov  7 15:43 config-6.6.0-15156-g13d88ac54ddd
-  -rw-r--r--.  1 root root    268497 Nov  7 15:50 config-6.6.0-15157-gefb5302e6ea5
-  drwx------.  3 root root      4096 Dec 31  1969 efi
-  drwx------.  3 root root        50 Nov  7 17:03 grub2
-  -rw-------.  1 root root 114164610 Nov  7 16:26 initramfs-0-rescue-01cdbeade0ec4c07828d9f3919ec2772.img
-  -rw-------.  1 root root  36334410 Nov  7 16:40 initramfs-6.6.0-15156-g13d88ac54ddd.img
-  -rw-------.  1 root root  36174736 Nov  7 17:04 initramfs-6.6.0-15157-gefb5302e6ea5.img
-  drwxr-xr-x.  3 root root        21 Nov  7 16:25 loader
-  lrwxrwxrwx.  1 root root        42 Nov  7 17:04 System.map -> /boot/System.map-6.6.0-15157-gefb5302e6ea5
-  -rw-r--r--.  1 root root   8968631 Nov  7 16:40 System.map-6.6.0-15156-g13d88ac54ddd
-  -rw-r--r--.  1 root root   8968631 Nov  7 15:50 System.map-6.6.0-15157-gefb5302e6ea5.old
-  lrwxrwxrwx.  1 root root        39 Nov  7 17:04 vmlinuz -> /boot/vmlinuz-6.6.0-15157-gefb5302e6ea5
-  -rwxr-xr-x.  1 root root  14577352 Nov  7 16:25 vmlinuz-0-rescue-01cdbeade0ec4c07828d9f3919ec2772
-  -rw-r--r--.  1 root root  13012992 Nov  7 16:40 vmlinuz-6.6.0-15156-g13d88ac54ddd
-  -rw-r--r--.  1 root root         0 Nov  7 17:04 vmlinuz-6.6.0-15157-gefb5302e6ea5
-  -rw-r--r--.  1 root root  13012992 Nov  7 15:50 vmlinuz-6.6.0-15157-gefb5302e6ea5.old
-
-That zero sized vmlinuz-6.6.0-15157-gefb5302e6ea5 is likely the cause of
-the grub error. It seems like this logic is likely still necessary for
-older distributions.
-
-Cheers,
-Nathan
-
-> ---
->  scripts/package/kernel.spec | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> Hi Helen,
 > 
-> diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
-> index 3eee0143e0c5..cc4292c03ea2 100644
-> --- a/scripts/package/kernel.spec
-> +++ b/scripts/package/kernel.spec
-> @@ -77,11 +77,7 @@ rm -rf %{buildroot}
->  
->  %post
->  if [ -x /sbin/installkernel -a -r /boot/vmlinuz-%{KERNELRELEASE} -a -r /boot/System.map-%{KERNELRELEASE} ]; then
-> -cp /boot/vmlinuz-%{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm
-> -cp /boot/System.map-%{KERNELRELEASE} /boot/.System.map-%{KERNELRELEASE}-rpm
-> -rm -f /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
-> -/sbin/installkernel %{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
-> -rm -f /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
-> +/sbin/installkernel %{KERNELRELEASE} /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
->  fi
->  
->  %preun
+> Sorry for the inconvenience, but I had to temporarily take down the 
+> runner last Friday to physically move the setup (as part of a 
+> reorganization of our lab here).
 > 
-> ---
-> base-commit: e392ea4d4d00880bf94550151b1ace4f88a4b17a
-> change-id: 20231103-rpmpost-f5c99552919f
+> I'll update this thread as soon as the runner is back up -- the move 
+> will be complete by the end of this week.
+The RB5 runner is back up -- please let me know if you run into any 
+issues with it.
+
+Thanks,
+
+Jessica Zhang
+
 > 
-> Best regards,
-> -- 
-> Davide Cavalca <dcavalca@meta.com>
+>>
+>> Also, I'd like to add in the docs an entry about the devices we have, 
+>> which tag they need, which dts they correspond to, which farm they are 
+>> located, who to contact if there is any problem and maybe some comment 
+>> about the device (how it is hooked up, the logs comes from uart or 
+>> ssh, does it use fastboot, etc) if you find it useful.
+>> Would you mind adding an entry in the docs with this information for 
+>> the sm8250? (Than I'll add the info of the other devices after yours).
 > 
+> Sure, sounds good.
+> 
+>>
+>>
+>>> Jessica Zhang (3):
+>>>        drm/ci: Add SM8250 job to CI
+>>
+>> I would also move this patch to last, so we don't have a commit where 
+>> things shouldn't work properly.
+>> Or maybe squash them all.
+> 
+> Acked -- I'll move this patch to the end.
+> 
+> Thanks,
+> 
+> Jessica Zhang
+> 
+>>
+>> Regards,
+>> Helen
+>>
+>>>        drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
+>>>        drm/ci: Add skips, fails and flakes for SM8250
+>>>
+>>>   drivers/gpu/drm/ci/arm64.config                 |  1 +
+>>>   drivers/gpu/drm/ci/build.sh                     |  1 +
+>>>   drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
+>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 
+>>> +++++++++++++++++++++++++
+>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
+>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
+>>>   6 files changed, 57 insertions(+)
+>>> ---
+>>> base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
+>>> change-id: 20230919-rb5-runner-77ec32bd61e7
+>>>
+>>> Best regards,
