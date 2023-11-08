@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC917E54D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8195B7E54D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344402AbjKHLP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:15:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        id S1344385AbjKHLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:18:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234092AbjKHLP4 (ORCPT
+        with ESMTP id S230045AbjKHLSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:15:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D632119B3
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 03:15:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E732C433C8;
-        Wed,  8 Nov 2023 11:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699442154;
-        bh=9vSG7HGCOMlTVvwxD3z5KGQGOs/uBAQpqQz6PsNzUOc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KELedhSb1ggZIE5lSHcxdyePAcQohLzvKDPj1AfkXtcO+iEvN41Z56Tsiie86P1s6
-         YXyTaRL/8dV2BNl/ECqEPUvQuXNVv90Oaffelbsp/MMJFDv2TJw2uL4vuXzUCKtnNo
-         7iSoAGbC73dffDoE7zOD0YFbad5D9uvgackPTs0iUrq/MWEevnRdILKBspDQufTUdN
-         gVFJRNCIJcFtbWtSOOY01/IicBipWofNuij+tzQ46LGKap1imtzYD7SB3+G1hLGfGT
-         WcM3z8ZVg9x9n3CJ42bPf34mShn8O67Ur64PvLG4jvfPoBPBGclczSM35acpyU+owq
-         9sl7FFTTDWS2w==
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: [PATCH] firmware: arm_ffa: Fix ffa_notification_info_get() IDs handling
-Date:   Wed,  8 Nov 2023 12:15:49 +0100
-Message-Id: <20231108111549.155974-1-lpieralisi@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 8 Nov 2023 06:18:32 -0500
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C83101;
+        Wed,  8 Nov 2023 03:18:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699442311; x=1730978311;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=YhNiCY6Yx16hIA8ic6bDnU8CklxIVvoOxjYhmVU762I=;
+  b=KFXFH01+WyKZVuGXSf+Ano1t5HqH4ywbQheqAJa6homt8uBTBLEo7NpO
+   mG65UaJQHbEmtZp6YhIXHpCCp/+Exe8ozrAhXA+i4sQ+O66EPO1Hsr+DZ
+   ftf8HaracbQVHh+VARBIggQLgn81310Sh/zYUHrSX+7HOACPx8iVcyWjr
+   o=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="683505176"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-f05d30a1.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:18:25 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1d-m6i4x-f05d30a1.us-east-1.amazon.com (Postfix) with ESMTPS id 74C1080D5F;
+        Wed,  8 Nov 2023 11:18:21 +0000 (UTC)
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:31015]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.43.105:2525] with esmtp (Farcaster)
+ id b8d2a861-c97a-4ec8-b470-7641a9da532f; Wed, 8 Nov 2023 11:18:20 +0000 (UTC)
+X-Farcaster-Flow-ID: b8d2a861-c97a-4ec8-b470-7641a9da532f
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 11:18:20 +0000
+Received: from dev-dsk-nsaenz-1b-189b39ae.eu-west-1.amazon.com (10.13.235.138)
+ by EX19D004EUC001.ant.amazon.com (10.252.51.190) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 11:18:15 +0000
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     <kvm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <graf@amazon.com>, <dwmw@amazon.co.uk>,
+        <jgowans@amazon.com>, <corbert@lwn.net>, <kys@microsoft.com>,
+        <haiyangz@microsoft.com>, <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+Subject: [RFC 0/33] KVM: x86: hyperv: Introduce VSM support
+Date:   Wed, 8 Nov 2023 11:17:33 +0000
+Message-ID: <20231108111806.92604-1-nsaenz@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D037UWC004.ant.amazon.com (10.13.139.254) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To parse the retrieved ID lists appropriately in
-ffa_notification_info_get() the ids_processed variable should not
-be pre-incremented - we are dropping an identifier at the
-beginning of the list.
+Hyper-V's Virtual Secure Mode (VSM) is a virtualisation security feature
+that leverages the hypervisor to create secure execution environments
+within a guest. VSM is documented as part of Microsoft's Hypervisor Top
+Level Functional Specification [1]. Security features that build upon
+VSM, like Windows Credential Guard, are enabled by default on Windows 11,
+and are becoming a prerequisite in some industries.
 
-Fix it by using the post-increment operator to increment the number
-of processed IDs.
+This RFC series introduces the necessary infrastructure to emulate VSM
+enabled guests. It is a snapshot of the progress we made so far, and its
+main goal is to gather design feedback. Specifically on the KVM APIs we
+introduce. For a high level design overview, see the documentation in
+patch 33.
 
-Fixes: 3522be48d82b ("firmware: arm_ffa: Implement the NOTIFICATION_INFO_GET interface")
-Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/firmware/arm_ffa/driver.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Additionally, this topic will be discussed as part of the KVM
+Micro-conference, in this year's Linux Plumbers Conference [2].
 
-diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index 07b72c679247..ccf91a795c3d 100644
---- a/drivers/firmware/arm_ffa/driver.c
-+++ b/drivers/firmware/arm_ffa/driver.c
-@@ -782,7 +782,7 @@ static void ffa_notification_info_get(void)
- 			if (ids_processed >= max_ids - 1)
- 				break;
- 
--			part_id = packed_id_list[++ids_processed];
-+			part_id = packed_id_list[ids_processed++];
- 
- 			if (!ids_count[list]) { /* Global Notification */
- 				__do_sched_recv_cb(part_id, 0, false);
-@@ -794,7 +794,7 @@ static void ffa_notification_info_get(void)
- 				if (ids_processed >= max_ids - 1)
- 					break;
- 
--				vcpu_id = packed_id_list[++ids_processed];
-+				vcpu_id = packed_id_list[ids_processed++];
- 
- 				__do_sched_recv_cb(part_id, vcpu_id, true);
- 			}
--- 
-2.34.1
+The series is accompanied by two repositories:
+ - A PoC QEMU implementation of VSM [3].
+ - VSM kvm-unit-tests [4].
+
+Note that this isn't a full VSM implementation. For now it only supports
+2 VTLs, and only runs on uniprocessor guests. It is capable of booting
+Windows Sever 2016/2019, but is unstable during runtime.
+
+The series is based on the v6.6 kernel release, and depends on the
+introduction of KVM memory attributes, which is being worked on
+independently in "KVM: guest_memfd() and per-page attributes" [5]. A full
+Linux tree is also made available [6].
+
+Series rundown:
+ - Patch 2 introduces the concept of APIC ID groups.
+ - Patches 3-12 introduce the VSM capability and basic VTL awareness into
+   Hyper-V emulation.
+ - Patch 13 introduces vCPU polling support.
+ - Patches 14-31 use KVM's memory attributes to implement VTL memory
+   protections. Introduces the VTL KMV device and secure memory
+   intercepts.
+ - Patch 32 is a temporary implementation of
+   HVCALL_TRANSLATE_VIRTUAL_ADDRESS necessary to boot Windows 2019.
+ - Patch 33 introduces documentation.
+
+Our intention is to integrate feedback gathered in the RFC and LPC while
+we finish the VSM implementation. In the future, we will split the series
+into distinct feature patch sets and upstream these independently.
+
+Thanks,
+Nicolas
+
+[1] https://raw.githubusercontent.com/Microsoft/Virtualization-Documentation/master/tlfs/Hypervisor%20Top%20Level%20Functional%20Specification%20v6.0b.pdf
+[2] https://lpc.events/event/17/sessions/166/#20231114
+[3] https://github.com/vianpl/qemu/tree/vsm-rfc-v1
+[4] https://github.com/vianpl/kvm-unit-tests/tree/vsm-rfc-v1
+[5] https://lore.kernel.org/lkml/20231105163040.14904-1-pbonzini@redhat.com/.
+[6] Full tree: https://github.com/vianpl/linux/tree/vsm-rfc-v1. 
+    There are also two small dependencies with
+    https://marc.info/?l=kvm&m=167887543028109&w=2 and
+    https://lkml.org/lkml/2023/10/17/972
+
 
