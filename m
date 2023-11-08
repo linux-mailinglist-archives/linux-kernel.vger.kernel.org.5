@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AF77E52F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4E97E52FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjKHKBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S1343956AbjKHKDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHKBm (ORCPT
+        with ESMTP id S229924AbjKHKDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:01:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80ED1722
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:01:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E75D9C433C8;
-        Wed,  8 Nov 2023 10:01:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699437699;
-        bh=c26pV7uu7/MezlnwE49nnT69zyOHtMIPvZ6cQacoyxU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4vsctcNNKAZO8V02D/+/2cT2LB3Cxy6duxIKPb+IbiyHHheVfH50qOG5Ot8uEorb
-         DqS7SiFp89i9HizLvrD06U+UwwXhyvBfqv6DAf3sVrQ72aB0udxPGWSFfsTePm5oSD
-         i8DOsNqH3iZ5TCUr94dS946Q+nTYTAOmnh1YVEC0MyTOL6ZO1MDeaL7y0HEm4AgyRH
-         LfWsi03i3Tbow1nOJhb+KPG7OyV7/q3wyDmyejY3+R2BouqPPYCvYIy7SpoB+VkL27
-         gtgxn+vl29bYmYaYxQJ8f92kSodttuGn1y1W82TAHqrzynPkXqsuAAabtpEDU1+F6x
-         cLMq42CM2IdCA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        viro@zeniv.linux.org.uk, dan.j.williams@intel.com,
-        willy@infradead.org, jack@suse.cz
-Subject: Re: [PATCH] fs : Fix warning using plain integer as NULL
-Date:   Wed,  8 Nov 2023 11:01:29 +0100
-Message-Id: <20231108-rasur-zugute-1f2c148eae10@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231108044550.1006555-1-singhabhinav9051571833@gmail.com>
-References: <20231108044550.1006555-1-singhabhinav9051571833@gmail.com>
+        Wed, 8 Nov 2023 05:03:19 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DF6171F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:03:17 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5b383b4184fso80647527b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:03:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699437796; x=1700042596; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+hHQVK2U6/kZAUYO7M6ukUkQi1h7K41srJttLODmFqQ=;
+        b=rujnSOcBArl0FiVttRREX0ihVoTFt25sawGwTJlPWseCWecqyHoc07q5ApSSzTveaf
+         e/Qo/hBRYGnPz512k0jCPOxPU7DPdSMGydXC7VNPjPqA+NaJ3Z0u/IfSxhLPdos1EInG
+         LJLGqsiV0ot+LYcA31EuQvvy0bFn9ASjxfdOqbNIIteIrSLmIQh5z2NmhS1pozq7eNxQ
+         RWLeeMHWSQKiQjS3qbiysTQOh5aN7MB5ccnIaFJ5cDvNUEfjvZwVSWpeLIdYJpjW5o6d
+         kqqJCxrkmg4wSTZSk+glx+Rj+NMLPKk35L6R2nDA7yyXTUbSngke8Sdlm+lXoBp77Wni
+         4vkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699437796; x=1700042596;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+hHQVK2U6/kZAUYO7M6ukUkQi1h7K41srJttLODmFqQ=;
+        b=ESW+HtzJaq7tW/8y5VVMB7VKhI8jKjZUwamuP+MnU3JkRBm8F0iyF0wGmaDMVg8dgM
+         Ygl0WL+pC1h2D8Wi5/MT8E9uc1PjW5LP2WZoieXNW539+EauK29MHQZYpEATu5gn93h5
+         GfVl6hkAKUSvWfLrosWgqVyDkVb+pZx7XaRd3BvGdEP/4/AwDNzyxVTU/S6zv/1W1wY+
+         RPI8g4ca34kP5oWXkYj1oKEhxnv9pEASRW3KGTHxKkkez7+2dQ6DmssAQNx0afUYuchW
+         LVRZ+A1WzeGq27aYV4IZ47/jXV6ji71Uy0KQL13McTuAyT+UVXYr14XQI7TUStyktkFB
+         0VdA==
+X-Gm-Message-State: AOJu0YxeXUUkdM+KBe/zN+WBomlAKs03dDSNTJ1JGW0sJmZujhuX7jyY
+        MIKvf6TDf4QYB8OqHDw9Jt5G8g==
+X-Google-Smtp-Source: AGHT+IFic12v75dCBwbm4Rz+UAC0cBlweltnHJyTInK6P+k7Nbnogudom9am8MvSpwal/ROHctaSsA==
+X-Received: by 2002:a81:a549:0:b0:59f:5361:d18c with SMTP id v9-20020a81a549000000b0059f5361d18cmr1415761ywg.41.1699437796322;
+        Wed, 08 Nov 2023 02:03:16 -0800 (PST)
+Received: from [172.30.205.23] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id o16-20020a056214109000b006717ddb4d47sm888826qvr.28.2023.11.08.02.03.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 02:03:16 -0800 (PST)
+Message-ID: <bd268e9f-2e41-443f-ba29-163a552b5b09@linaro.org>
+Date:   Wed, 8 Nov 2023 11:03:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1056; i=brauner@kernel.org; h=from:subject:message-id; bh=c26pV7uu7/MezlnwE49nnT69zyOHtMIPvZ6cQacoyxU=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaR6x8RnfJuaclg56tObSdPfS+7Zzjrz5JHft365bYp6F3cn +NUhzo5SFgYxLgZZMUUWh3aTcLnlPBWbjTI1YOawMoEMYeDiFICJpE5h+O/aeHr2evn8gG/3D1tF/n 6lutWlZenM23deM4T8qH2v0beT4Z/tjNsPk2RaTPSDDTJfzm9oSN4dy2AxYdVlpuAtswSYH7MCAA==
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: qcom: sdm850-lenovo-yoga: Add
+ wakeup-sources
+To:     steev@kali.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231107-wakeup-source-v2-1-bf1562ef9367@kali.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231107-wakeup-source-v2-1-bf1562ef9367@kali.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Nov 2023 10:15:50 +0530, Abhinav Singh wrote:
-> Sparse static analysis tools generate a warning with this message
-> "Using plain integer as NULL pointer". In this case this warning is
-> being shown because we are trying to initialize  pointer to NULL using
-> integer value 0.
+
+
+On 11/8/23 06:17, Steev Klimaszewski via B4 Relay wrote:
+> From: Steev Klimaszewski <steev@kali.org>
 > 
+> The keyboard and touchpad can be used to wake the machine
+> up from sleep, so mark them as such in the dts file.
 > 
+> Signed-off-by: Steev Klimaszewski <steev@kali.org>
+> ---
+> It would be nice to wake up the Lenovo Yoga C630 from suspend by hitting
+> the keyboard or touchpad, so this patch enables that
+> ability.
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] fs : Fix warning using plain integer as NULL
-      https://git.kernel.org/vfs/vfs/c/372bfbd2ea43
+Konrad
