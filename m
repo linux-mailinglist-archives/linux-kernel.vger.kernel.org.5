@@ -2,134 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE737E4DE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:14:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145767E4DE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbjKHAOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38268 "EHLO
+        id S1344426AbjKHAOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235411AbjKHAOD (ORCPT
+        with ESMTP id S1344133AbjKHAOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:14:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC6C10EF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:13:17 -0800 (PST)
+        Tue, 7 Nov 2023 19:14:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443FB10F1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699402397;
+        s=mimecast20190719; t=1699402402;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=o8SDnTCCAUagBqwFi699zbRWD/Ita66vYyPOS4r45G4=;
-        b=LRspZPh1oxjDfNPES0hD1UQ2+ZNdkRcC+xu7YdS7eB1JgDDnO4wCS72c+4Re8o+ODOLDhe
-        NmFwrR49+X9qsjvURyhtpNRwA4Ypf/bQmvYw0InmuH+QK7HhWDabBPEv2itrxhGxob84BG
-        1jTKjkjqQ8MGcQ8RRyESxh4pqr9tVQg=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=s6qqEPqKINJozX4kiVm6oeIhikVcMg+GmtiPQ0sRpWA=;
+        b=Wc97O2eqaBihmI38/4glVdf1I3kMr/+2+vrDXNNx6Ph6zmrv+2yDI8ZQimi3K8nP8mCctr
+        loD9SAtRnGnRivDFwseMAoD7CFKN2mxq+qo+kwBOWbUQStHFLRiKn+NawePssCkXVu6K97
+        SNMxTUb+7gQcPQIrTeXtdHvwQtiP8ok=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-39-gWuAg5X7MTChvr0r7I5adg-1; Tue, 07 Nov 2023 19:13:15 -0500
-X-MC-Unique: gWuAg5X7MTChvr0r7I5adg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9c15543088aso26037966b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:13:15 -0800 (PST)
+ us-mta-186-ZS7Cl2dJMeiLYZx82wsOhA-1; Tue, 07 Nov 2023 19:13:19 -0500
+X-MC-Unique: ZS7Cl2dJMeiLYZx82wsOhA-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c5161838d8so63107361fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:13:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699402394; x=1700007194;
+        d=1e100.net; s=20230601; t=1699402398; x=1700007198;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o8SDnTCCAUagBqwFi699zbRWD/Ita66vYyPOS4r45G4=;
-        b=nv5nGxFO7cfbXsu6g8QWDy1NXRIjoDgbR4I3T7VrpvK2N8lEWYlYE3aDaWNPBz9FSH
-         HC7woGvH8JtuLx8R7YcM0cg7LUVH6n/weroS8zURBvRu6+uaAx1sv/kbffMijFC4iO3F
-         dSc9UIdEIjH9dQmarVmj81Fzmd8uBdhM59nFX0eDICqsvClx9+fesvp7z6dhC3cMJ3+z
-         c3YAzIqMKDRB9zuGuWIoNdc2kemvXYBiaGUXoNMxiBDk74mh+QOgx2HO0JNHxPok3yUL
-         XsjcaW6ZbvFZ7hJtkTO704bLj2jvr27C+5WkEaAPDgwP219ZzIOdeeT35L/D5sUrI06B
-         V7lQ==
-X-Gm-Message-State: AOJu0YwkGlsYOqi+Cumsksnt2tSUHAMfegxGKbiEaTL8js+EYwMXR4dH
-        pDwh/+9Egb1QvSm8SUDyz8RcF3Fr6XF0sbEVts+PM/L+Yzs2N3dF+Zye/Ui2Cqe8uYN8jdU2KPL
-        p67iYgQjnvJ+O+xv2lBLsPvVj
-X-Received: by 2002:a17:906:2258:b0:9a5:c38d:6b75 with SMTP id 24-20020a170906225800b009a5c38d6b75mr4113004ejr.15.1699402394474;
-        Tue, 07 Nov 2023 16:13:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGRmvK8nA/uEcCB9cIfOPEZPKuXcT5Nc6lJ5Zp5gtTkKr1sxSbHkWwmpuv2Jl1wMWCa5deuAg==
-X-Received: by 2002:a17:906:2258:b0:9a5:c38d:6b75 with SMTP id 24-20020a170906225800b009a5c38d6b75mr4112996ejr.15.1699402394324;
-        Tue, 07 Nov 2023 16:13:14 -0800 (PST)
+        bh=s6qqEPqKINJozX4kiVm6oeIhikVcMg+GmtiPQ0sRpWA=;
+        b=iLnamZOzFglYpvY4i8dkilpRVCSg55GGjbvdwWbywO2qIrpr54Y4u0UsH5sTOU2kZ0
+         QcpIr/z651S+PeouCmO/OVqksbMFMT/W7AQOFgDduEs/pAeWPR6d+RuFxFEYqIjNnfZq
+         JpuJSlGiwuIJRYy7OBO00zrevAH+F/PBODTEqPA75aw0ycAfqFgAEJD3Sw7U/XlUutu7
+         U81OF0ocF/s5ix3cFX/kdIrrRQIABESoTTkPOA9egtRMzeH4+HM7qPMS/4xn0b+1TBi7
+         Ny4oIbwJyobTX16yFQjwD/FKXIk0+uDbHGcIT8pzF5oFTauYOESmphJDd9Ky0FFNWCEq
+         18Rw==
+X-Gm-Message-State: AOJu0Yy631rYvXnVc64kxALjheKQJ0RbKSw/gep7FQ213164sawI+NR2
+        B2sBTY+EVQfj0cwbd+L0yzQRG7Zkiet+iymqeqwZywcTm4SeAWiapgno+u/xjXzREMpRc7possJ
+        XsQEqcYzDavc4w4XPgx0kUds4
+X-Received: by 2002:ac2:5104:0:b0:507:a58f:79ad with SMTP id q4-20020ac25104000000b00507a58f79admr97839lfb.61.1699402398210;
+        Tue, 07 Nov 2023 16:13:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHD+Xkq0u6oAI8m3oyiBP2SEe6J/IOUMaiSjmHPhK06TZq3qINW3kr5HPMHObx1V1vCSwDkRQ==
+X-Received: by 2002:ac2:5104:0:b0:507:a58f:79ad with SMTP id q4-20020ac25104000000b00507a58f79admr97816lfb.61.1699402397864;
+        Tue, 07 Nov 2023 16:13:17 -0800 (PST)
 Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id ba26-20020a0564021ada00b00533dad8a9c5sm5885593edb.38.2023.11.07.16.13.13
+        by smtp.gmail.com with ESMTPSA id m9-20020a1709060d8900b0099cd1c0cb21sm168299eji.129.2023.11.07.16.13.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 16:13:14 -0800 (PST)
+        Tue, 07 Nov 2023 16:13:17 -0800 (PST)
 From:   Danilo Krummrich <dakr@redhat.com>
 To:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
         thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
         donald.robson@imgtec.com, boris.brezillon@collabora.com,
         christian.koenig@amd.com, faith@gfxstrand.net
 Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH drm-misc-next v9 03/12] drm/gpuvm: export drm_gpuvm_range_valid()
-Date:   Wed,  8 Nov 2023 01:12:33 +0100
-Message-ID: <20231108001259.15123-4-dakr@redhat.com>
+        linux-kernel@vger.kernel.org, Danilo Krummrich <dakr@redhat.com>,
+        Dave Airlie <airlied@redhat.com>
+Subject: [PATCH drm-misc-next v9 04/12] drm/nouveau: make use of drm_gpuvm_range_valid()
+Date:   Wed,  8 Nov 2023 01:12:34 +0100
+Message-ID: <20231108001259.15123-5-dakr@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231108001259.15123-1-dakr@redhat.com>
 References: <20231108001259.15123-1-dakr@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers may use this function to validate userspace requests in advance,
-hence export it.
+Use drm_gpuvm_range_valid() in order to validate userspace requests.
 
-Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Reviewed-by: Dave Airlie <airlied@redhat.com>
 Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 ---
- drivers/gpu/drm/drm_gpuvm.c | 14 +++++++++++++-
- include/drm/drm_gpuvm.h     |  1 +
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/nouveau_uvmm.c | 17 +----------------
+ drivers/gpu/drm/nouveau/nouveau_uvmm.h |  3 ---
+ 2 files changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-index 445767f8fbc4..2669f9bbc377 100644
---- a/drivers/gpu/drm/drm_gpuvm.c
-+++ b/drivers/gpu/drm/drm_gpuvm.c
-@@ -649,7 +649,18 @@ drm_gpuvm_in_kernel_node(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
- 	return krange && addr < kend && kstart < end;
- }
- 
--static bool
-+/**
-+ * drm_gpuvm_range_valid() - checks whether the given range is valid for the
-+ * given &drm_gpuvm
-+ * @gpuvm: the GPUVM to check the range for
-+ * @addr: the base address
-+ * @range: the range starting from the base address
-+ *
-+ * Checks whether the range is within the GPUVM's managed boundaries.
-+ *
-+ * Returns: true for a valid range, false otherwise
-+ */
-+bool
- drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
- 		      u64 addr, u64 range)
+diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+index aaf5d28bd587..641a911528db 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+@@ -929,25 +929,13 @@ nouveau_uvmm_sm_unmap_cleanup(struct nouveau_uvmm *uvmm,
+ static int
+ nouveau_uvmm_validate_range(struct nouveau_uvmm *uvmm, u64 addr, u64 range)
  {
-@@ -657,6 +668,7 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
- 	       drm_gpuvm_in_mm_range(gpuvm, addr, range) &&
- 	       !drm_gpuvm_in_kernel_node(gpuvm, addr, range);
- }
-+EXPORT_SYMBOL_GPL(drm_gpuvm_range_valid);
+-	u64 end = addr + range;
+-	u64 kernel_managed_end = uvmm->kernel_managed_addr +
+-				 uvmm->kernel_managed_size;
+-
+ 	if (addr & ~PAGE_MASK)
+ 		return -EINVAL;
  
- /**
-  * drm_gpuvm_init() - initialize a &drm_gpuvm
-diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-index 687fd5893624..13eac6f70061 100644
---- a/include/drm/drm_gpuvm.h
-+++ b/include/drm/drm_gpuvm.h
-@@ -253,6 +253,7 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
- 		    const struct drm_gpuvm_ops *ops);
- void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
+ 	if (range & ~PAGE_MASK)
+ 		return -EINVAL;
  
-+bool drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
- bool drm_gpuvm_interval_empty(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
+-	if (end <= addr)
+-		return -EINVAL;
+-
+-	if (addr < NOUVEAU_VA_SPACE_START ||
+-	    end > NOUVEAU_VA_SPACE_END)
+-		return -EINVAL;
+-
+-	if (addr < kernel_managed_end &&
+-	    end > uvmm->kernel_managed_addr)
++	if (!drm_gpuvm_range_valid(&uvmm->base, addr, range))
+ 		return -EINVAL;
  
- static inline struct drm_gpuva *
+ 	return 0;
+@@ -1834,9 +1822,6 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
+ 		goto out_unlock;
+ 	}
+ 
+-	uvmm->kernel_managed_addr = kernel_managed_addr;
+-	uvmm->kernel_managed_size = kernel_managed_size;
+-
+ 	drm_gpuvm_init(&uvmm->base, cli->name, drm,
+ 		       NOUVEAU_VA_SPACE_START,
+ 		       NOUVEAU_VA_SPACE_END,
+diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.h b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
+index a308c59760a5..06a0c36de392 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_uvmm.h
++++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.h
+@@ -14,9 +14,6 @@ struct nouveau_uvmm {
+ 	struct mutex mutex;
+ 	struct dma_resv resv;
+ 
+-	u64 kernel_managed_addr;
+-	u64 kernel_managed_size;
+-
+ 	bool disabled;
+ };
+ 
 -- 
 2.41.0
 
