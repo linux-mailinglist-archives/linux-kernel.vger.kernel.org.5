@@ -2,115 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72297E60D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D167E60E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbjKHXDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
+        id S229659AbjKHXNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:13:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjKHXDc (ORCPT
+        with ESMTP id S229551AbjKHXM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:03:32 -0500
+        Wed, 8 Nov 2023 18:12:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399A82593
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:03:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF95C433CC;
-        Wed,  8 Nov 2023 23:03:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D875925A0
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:12:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 810C8C433B8
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 23:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699484609;
-        bh=nmaljvz0PnnRaP8W7sX81UDwg5XIwLqZI1EBeujjgIc=;
+        s=k20201202; t=1699485176;
+        bh=XVBBiYvFcflt3RBN3rGd9qpfbzxVloqDfLv4DULg6ok=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hl22Q7FWtf3y0NQcWPokcYaGOs9Rzp0XhSFS3Vz9gj0qoInDtkTu3FsfUZ9bPndyY
-         pjQB22z7vCX+t9BYUocqOyPSTppCyQttpADUsnIk7miGzpDMjrW/iu9wWCQG+MIKwi
-         h0SS7rlcefX0qWlmLvOexdPRIyxO8t8mGwvSQduPGa2HTYjmznul1M24hgHAI8QlqX
-         e/AXFRWoVDl3QvL9mvmbFc7UqC2WEmkV31+csE+yo4Eaz1bjO/F4HpZCnLSHLITmfi
-         CVZdZYIxDW8OeJsiiWaE4rX+afegxhB2a3bcpRqLXuYezsG5byW9FQ7Qb5cdNeeGxf
-         O6+h9znWGewZQ==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-507be298d2aso273027e87.1;
-        Wed, 08 Nov 2023 15:03:29 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy6IZxGNA4dFrg4MmftUa+ae/sakNePx63UcjhnJosRG8adbW8W
-        FDQuB2Jya1+CKVe9Jj+S0o1AMV7dn5j6RKCkcGw=
-X-Google-Smtp-Source: AGHT+IFTADxY+4prtXvEX3F8f2PZC2sZeoqhH9Kzi4yYj3yj5hc+Qo+8YRNgyXu99HvcAMkxuuLBqR7217UazajGNx8=
-X-Received: by 2002:a19:5f4d:0:b0:509:4a02:49f7 with SMTP id
- a13-20020a195f4d000000b005094a0249f7mr153lfj.44.1699484607851; Wed, 08 Nov
- 2023 15:03:27 -0800 (PST)
+        b=GhEUATI6mZs1fF6smM1OF1+SECjnJXs8PTbY8lZlXnwUzfrIaMjVcZrna4tyfEssS
+         MvGlJnycjYJACcUMvu25sl5LhY0BU6ev9+T2BDMC2URKAOJMBfb7nsl3dq4dFrDqaY
+         X/HaXRuMCbaH4+k6CzGCidmqxStSSbTkgY54qUJ9GS/aq4bQe50tzUSp/SzQ2govLx
+         pDgv0xsqdjqqQkJ4t9vx7+31QS9SI3mT6XwaztXOr2IJCO/29AvnjwYogapTP0s0Nq
+         Ok2g9gBp2XnLp3GlK5mFynSBAbjX0JkPLH6IwcRVIfujHgnpbPDDnEbFsm3ibR4FJU
+         hnJJ39niADs1w==
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2802c41b716so185365a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:12:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YxWZtKGnAPFY6jTyxx1h7tkcv8o6bdyRzn9+LxxZMHh8EqMsAjK
+        EJJYlRVH7M5GOpASAai0Hev0COEM+PvwZLpEDE3H0Q==
+X-Google-Smtp-Source: AGHT+IG7AbhTVdHwxHa1Gbw/9I7xiut+l21ol4va4G64SojHtO9SqVeRdBniOkqWY5kzkdi8uhNp/WPljLmSit11Y9w=
+X-Received: by 2002:a17:90b:350b:b0:27d:20ca:1156 with SMTP id
+ ls11-20020a17090b350b00b0027d20ca1156mr2355pjb.34.1699485175679; Wed, 08 Nov
+ 2023 15:12:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-13-irogers@google.com>
- <ZUuz/8EC0orXCffn@kernel.org>
-In-Reply-To: <ZUuz/8EC0orXCffn@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 8 Nov 2023 15:03:15 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
-Message-ID: <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
-Subject: Re: [PATCH v4 12/53] perf bpf: Don't synthesize BPF events when disabled
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
+References: <20231106183159.3562879-1-nphamcs@gmail.com> <CAF8kJuMsXUm9=kiL8qPNVfYPzfyq-JWYSH3KraZadjF+myW-2A@mail.gmail.com>
+ <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
+In-Reply-To: <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Wed, 8 Nov 2023 15:12:44 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
+Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] workload-specific and memory pressure-driven zswap writeback
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
+        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
+        muchun.song@linux.dev, linux-mm <linux-mm@kvack.org>,
+        kernel-team@meta.com, LKML <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 8:15=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> Em Thu, Nov 02, 2023 at 10:56:54AM -0700, Ian Rogers escreveu:
-> > If BPF sideband events are disabled on the command line, don't
-> > synthesize BPF events too.
->
->
-> Interesting, in 71184c6ab7e60fd5 ("perf record: Replace option
-> --bpf-event with --no-bpf-event") we checked that, but only down at
-> perf_event__synthesize_one_bpf_prog(), where we have:
->
->         if (!opts->no_bpf_event) {
->                 /* Synthesize PERF_RECORD_BPF_EVENT */
->                 *bpf_event =3D (struct perf_record_bpf_event)
->
->
-> So we better remove that, now redundant check? I'll apply your patch as
-> is and then we can remove that other check.
->
-> Song, can I have your Acked-by or Reviewed-by, please?
->
-> - Arnaldo
->
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+Hi Nhat,
 
-Good catch!
+On Wed, Nov 8, 2023 at 1:15=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> Ah that was meant to be a fixlet - so that on top of the original
+> "zswap: make shrinking memcg-aware" patch. The intention was
+> to eventually squash it...
+>
+> But this is getting a bit annoyingly confusing, I admit. I just rebased t=
+o
+> mm-unstable + squashed it all again, then sent one single replacement
+> patch:
+>
+> [PATCH v5 3/6 REPLACE] zswap: make shrinking memcg-aware
 
-Acked-by: Song Liu <song@kernel.org>
+Thank you for the quick response.
+
+Yes, I am able to download your replacement version of patch 3.
+Just FYI, I am using "git mailsplit" to split up the mbox into 6
+separate patch files.
+On mm-unstable, I am able to apply your replacement patch 3 cleanly.
+I also need some help on the patch 0005, it does not apply cleanly either.
+
+$ git mailsplit -ozswap-pool-lru
+v5_20231106_nphamcs_workload_specific_and_memory_pressure_driven_zswap_writ=
+eback.mbx
+$ git am patches/zswap-pool-lru/0001
+Applying: list_lru: allows explicit memcg and NUMA node selection
+$ git am patches/zswap-pool-lru/0002
+Applying: memcontrol: allows mem_cgroup_iter() to check for onlineness
+$ git am patches/zswap-pool-lru/3.replace
+Applying: zswap: make shrinking memcg-aware
+$ git am patches/zswap-pool-lru/0004
+Applying: mm: memcg: add per-memcg zswap writeback stat
+$ git am patches/zswap-pool-lru/0005
+Applying: selftests: cgroup: update per-memcg zswap writeback selftest
+error: patch failed: tools/testing/selftests/cgroup/test_zswap.c:50
+error: tools/testing/selftests/cgroup/test_zswap.c: patch does not apply
+Patch failed at 0001 selftests: cgroup: update per-memcg zswap
+writeback selftest
+hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
+>
+> Let me know if this still fails to apply. If not, I'll send the whole thi=
+ng
+> again as v6! My sincerest apologies for the troubles and confusion :(
+
+No problem at all. Thanks for your help on patch 3.
+
+Chris
