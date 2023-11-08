@@ -2,87 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97827E588E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE527E5890
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:20:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbjKHOUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:20:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        id S232286AbjKHOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbjKHOUl (ORCPT
+        with ESMTP id S232220AbjKHOUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:20:41 -0500
+        Wed, 8 Nov 2023 09:20:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD018171B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:20:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BD8DC433C8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 14:20:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A88B1FC4
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:20:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED9BCC43397;
+        Wed,  8 Nov 2023 14:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699453239;
-        bh=44I87NxHimpYa4+A22pdvojzN0g88SEJqsaIONesthE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=LkD8nd5CVXkrlSnPwVV8gV1flDM7jtU+cEPeuG0R/I9cmafn+EOWzAcjGOK8nQI6d
-         ECab/RNDaSRZ5yGRXGqpi4aSLLupCsz+H0FoOkcDxnbU6HrBC+TgNl31Vo48AsDsLj
-         H5XZbCzwIizfstMDvU54P2zJObkzMF64tbPU6oa8YF1+FzoQQga/+9D8c9S2Tfxzsu
-         9sXJkrflEDNVBozf+UC+aMcuHL3pwQwBqxufJZuAtuiM1bbsYpn1hPXYiEEJjxvjYN
-         mPnJcj6t8JT1Zhk4b2xIS1Zo02pdGicIjoxGgm/+IFjOwjs0ATaxXndcgFQhjWYlQu
-         tGO4PUGIM2sMA==
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ce2d4567caso3908148a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:20:39 -0800 (PST)
-X-Gm-Message-State: AOJu0YwpFrOI5Xugkhc0JnfWEA/zTv3QhzeHAu8zY5OOjXlruFIo3iuC
-        lQ8VZmGwy+rzYKbHmxNODNN7mF+hiFgS0/3IUbk=
-X-Google-Smtp-Source: AGHT+IHu3N0N3UWQd+1bXKRwyhqCNmYSrVhDDziZ/mIxs9/zCq5bH3xktdXs2HXw5YMBJlsxUzBjdGQXCk/kREZhSB4=
-X-Received: by 2002:a9d:6942:0:b0:6bc:cd0d:427e with SMTP id
- p2-20020a9d6942000000b006bccd0d427emr1834767oto.38.1699453238694; Wed, 08 Nov
- 2023 06:20:38 -0800 (PST)
+        s=k20201202; t=1699453252;
+        bh=E82DmwfH2dcxbs9xwMmLiAaOTn5D4Ow/0Cpeotwv8Tc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rWV9Xw8NQwgrRa5bh7nxobt3EqPIBdZysZTWWrerABqOhIeuc1Jnby1BN2RDe6jSo
+         wMC3krMIgAV9h8cHBuiFMh3OnoC3PvFNYfXcFr8asqoC8PUIh9NLWF0HfK/5X9PJna
+         FtNp1qyXtzlxe51KM8v9HXKo949wd8TvzBYHFjWrIpr/fJT718UUvyZZYNHdr9Gz87
+         lpBiEXfyw04EV1dbr6WISFxIDQcdQfSpYgg7s8OXdUzU7Wl5EHf9NVIujRA8jtvOAS
+         4hYRkewHrL2b9sIIiuVIjloxGRyoSp0Rqw3Z1EVhordXWA9/lMH6d3wK30okromWFX
+         DblWljL7w3jaw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c594196344so92025811fa.3;
+        Wed, 08 Nov 2023 06:20:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YxNzAwn+kyozMipu4tA12kmdCNAdHxh7r8QxGe5Sh4I3n4PM3Zb
+        qugjZEhxUfrsFar4RObmLehup1eEX7JbHoVBkGQ=
+X-Google-Smtp-Source: AGHT+IF3AlqJpBLUhu1DTarhTz6FDwvlN0RLFjtbhZO/9hXihKmHvPiQC4/ncAP2kR3ROp5UFGC31vCUAe8Gj7r8AZQ=
+X-Received: by 2002:a2e:8e3c:0:b0:2c6:eaf8:49ff with SMTP id
+ r28-20020a2e8e3c000000b002c6eaf849ffmr1584451ljk.37.1699453250122; Wed, 08
+ Nov 2023 06:20:50 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ac9:67d1:0:b0:506:a3fc:1021 with HTTP; Wed, 8 Nov 2023
- 06:20:37 -0800 (PST)
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Wed, 8 Nov 2023 23:20:37 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
-Message-ID: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
-Subject: [GIT PULL] exfat fixes for 6.7-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>
+References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
+ <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
+ <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
+ <CAPnjgZ2SEby-ndrs=W_afBJH56eqc=-mhp1F1nwkvWks+=B54Q@mail.gmail.com>
+ <CAMj1kXED3S+0cq+VT7naBrmWrUwT=HZAaZOBRMv8Ui1Pey1QNQ@mail.gmail.com>
+ <CAPnjgZ0LrsJ2_ENTYoBrnyFaH3UKdHs3D2XWY=TzBuBpBoTXZA@mail.gmail.com>
+ <CAL_Jsq+DQugkEDESW5wySFbLLN8HNqGDJCio8Wpi6fe0LeHKUA@mail.gmail.com>
+ <CAPnjgZ0cmKP5hoGCyQ_Rp8ZQXUVwaPYJMWyidXuOOjMVkDoMDw@mail.gmail.com>
+ <CAL_JsqJH=vJ40PNTg_i0LoKA-c0hhMJkL8zCC3_bB-tOkFWWsw@mail.gmail.com>
+ <CAPnjgZ1FrdGKjGAxUbkQoL2vHwhC_2Oa2KT+0cm25dQAuAjxAQ@mail.gmail.com>
+ <CAPnjgZ19-xR6QxS=fR53skz0VuAty2Z2w2vQTjP7g=tbTFpaqw@mail.gmail.com>
+ <CAL_JsqL+X1DatsGk_Cn1HsbG2GV9AngFWXVysWTiNRu_d9tDqw@mail.gmail.com>
+ <CAMj1kXHfh40wxerZGjOn2JJ5Skm5C--Rz2jy8p3XZ2UXKGjw+g@mail.gmail.com> <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
+In-Reply-To: <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 8 Nov 2023 15:20:38 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHPVXB2ojzhKbAO47+EDMDzODqjLZ+iOKw=u=Bc7=HPCQ@mail.gmail.com>
+Message-ID: <CAMj1kXHPVXB2ojzhKbAO47+EDMDzODqjLZ+iOKw=u=Bc7=HPCQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+To:     Rob Herring <robh@kernel.org>
+Cc:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        Maximilian Brune <maximilian.brune@9elements.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        Guo Dong <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
+        ron minnich <rminnich@gmail.com>, Gua Guo <gua.guo@intel.com>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        linux-acpi@vger.kernel.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, 8 Nov 2023 at 14:57, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Nov 8, 2023 at 5:38=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> w=
+rote:
+> >
+> > On Tue, 7 Nov 2023 at 19:07, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > >
+> > > All of this:
+> > >
+> >
+> > > > On Mon, 16 Oct 2023 at 15:54, Simon Glass <sjg@chromium.org> wrote:
+> > > > >
+> > > > > It is not specific to EDK2. Imagine this boot sequence:
+> > > > >
+> > > > > - Platform Init (U-Boot) starts up
+> > > > > - U-Boot uses its platform knowledge to sets some ACPI tables and=
+ put
+> > > > > various things in memory
+> > > > > - U-Boot sets up some runtime code and data for the OS
+> > > > > - U-Boot jumps to the Tianocore payload **
+> > > > > - Payload (Tianocore) wants to know where the ACPI tables are, fo=
+r example
+> > > > > - Tianocore needs to provide boot services to the OS, so needs to=
+ know
+> > > > > the memory map, etc.
+> > > > >
+> > > > > ** At this point we want to use DT to pass the required informati=
+on.
+> > > > >
+> > > > > Of course, Platform Init could be coreboot or Tianocore or some
+> > > > > strange private binary. Payload could be U-Boot or something else=
+.
+> > > > > That is the point of this effort, to build interoperability.
+> > >
+> > > [...]
+> > >
+> > > > > Perhaps the problem here is that Linux has tied itself up in knot=
+s
+> > > > > with its EFI stuff and DT fixups and what-not. But this is not th=
+at.
+> > > > > It is a simple handoff between two pieces of firmware, Platform I=
+nit
+> > > > > and Payload. It has nothing to do with the OS. With Tianocore the=
+y are
+> > > > > typically combined, but with this usage they are split, and we ca=
+n
+> > > > > swap out one project for another on either side of the DT interfa=
+ce.
+> > >
+> > > Is perhaps the clearest description of the problem you want to solve.
+> > > It's clearly related to EFI though not the interface to the OS. IIRC,
+> > > "platform init" and "payload" are terms in the UEFI spec, right?
+> >
+> > No they are not. This is from the universal payload specification that
+> > is being drafted here
+> >
+> > https://universalpayload.github.io/spec/index.html
+> >
+> > but the UEFI specification does not use this terminology.
+>
+> Then I'm confused as to what this is:
+>
+> https://uefi.org/specs/PI/1.8/index.html
+>
 
-This is exfat fixes pull request for v6.7-rc1. I add description of
-this pull request on below. Please pull exfat with following fixes.
+The PI and UEFI specifications are both maintained by the UEFI forum.
 
-Thanks!
+The UEFI specification covers external APIs for firmware
+implementations, i.e., the OS visible interface and the public API for
+UEFI device drivers that are not tightly integrated with system
+firmware (for example, the GPU boot time driver in the ROM of an
+add-in card)
 
-The following changes since commit 8f6f76a6a29f36d2f3e4510d0bde5046672f6924:
+The UEFI forum's PI spec describes system firmware internals, and
+defines the SEC, PEI DXE and BDS boot phases, among other things.
 
-  Merge tag 'mm-nonmm-stable-2023-11-02-14-08' of
-git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm (2023-11-02
-20:53:31 -1000)
+It is possible to implement UEFI without PI (which is what uboot does,
+for instance), but Tianocore/EDK2 is the reference implementation for
+both PI and UEFI, and sadly, there is no discernible distinction
+between the two (e.g., both PI and UEFI use identifiers with EFI_ type
+and enum identifier prefixes)
 
-are available in the Git repository at:
+'platform init' in the context of this discussion is something
+completely separate, and has zero bearing on the PI<->UEFI handover in
+Tianocore (which is not really a handover to begin with).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git
-tags/exfat-for-6.7-rc1-part2
-
-for you to fetch changes up to 1373ca10ec04afba9199de1fab01fde91338a78b:
-
-  exfat: fix ctime is not updated (2023-11-03 22:24:11 +0900)
-
-----------------------------------------------------------------
-Description for this pull request:
-  - Fix an issue that exfat timestamps are not updated caused by
-    new timestamp accessor function patch.
-
-----------------------------------------------------------------
-Yuezhang Mo (2):
-      exfat: fix setting uninitialized time to ctime/atime
-      exfat: fix ctime is not updated
-
- fs/exfat/file.c  | 1 +
- fs/exfat/inode.c | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+There is code in Tianocore which allows it to run as a 'payload',
+which means [presumably] that only the DXE and subsequent phases are
+launched from a 'platform init' component that describes the platform
+using some of the DT bindings that are under discussion here. In this
+case, I can see how some of the ACPI descriptions provided by the
+'platform init' might be inherited by the 'payload'. However, I don't
+see how such a Tianocore payload would make meaningful use of
+boot/runtime code/data described in general terms using this proposed
+binding, which is why I keep asking for an example scenario.
