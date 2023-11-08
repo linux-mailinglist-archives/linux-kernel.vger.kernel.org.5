@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90D57E5255
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641627E5258
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbjKHJDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55352 "EHLO
+        id S235397AbjKHJEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232634AbjKHJDl (ORCPT
+        with ESMTP id S232634AbjKHJET (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:03:41 -0500
+        Wed, 8 Nov 2023 04:04:19 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F6C10A
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:03:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5476710A
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:04:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ckGypnwi80MyxU18wHr89u6t2atgr47NVJClcRkTyPY=; b=i/NNDAE0uKEPYCVQXGIrRvQwdn
-        TuptosTcXKhEmXv3B93+BQ/GvNj8Dbbm2xdIfG1JKPRDGXl8pREUK/Dcpu67RyBMMKw0i8E5+waDL
-        GQCVZ4YCiyH1N/JsEOnSZBaa2A0KVMdJyokcQd0QxokWUC696ru8IURSSY3bnbGxC/8GrI+ffynxc
-        0aVj7xlx/FWF3lXfE2BC7U/OpiBH20HnTsLnk5+RsDPUBoG/7OSZ5qShIFSqWwDZAnOsi0aVyPMdA
-        R3lwivBupGPGrkh8o2IZtVViB3ccfjugIGQyE8bS0+ndnhA4tG7ImzfGsBRuLx+FDWCH5JOJzGgU4
-        IMSne5gA==;
+        bh=DwKMrZEJqJWyb1iBNiRoOym1/rT8hlneyKBBreukvKY=; b=eWtfMsEVUfu3st4uo/Ysp7hJuh
+        /SLVqHjLFQGPjGeNt2JGCWk+5JrNdlgb4HdLTUDlL4+qRLYUllYFWVrzEYzN5tG3Nq5sZX5b6PtXB
+        NuVFNWKWcdssAEA/Y07Jp+leufgCPmizUk/Ow2ZGRNKmHibvJceCi3e/3tt9zqLF6H50VTGzE0vAZ
+        pGRqMPekzCxjrxrs9HYym6AWm06Ks6DOMMV5QfG+IBQlvQxsKB+Rl9NSspVENRkCT1EgBhc8+L7e/
+        vRD+Hh4ok5twbF8V7rV8n1uJH9pZ9qgup7sAYSIaaOnbvEe3ox/FNJ9yd22nq/FQ2Zwbu+6IUi1ll
+        2pqpVMTg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r0eSY-0005Dw-Hb; Wed, 08 Nov 2023 09:02:51 +0000
+        id 1r0eTE-0005fY-P5; Wed, 08 Nov 2023 09:03:33 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DC5ED30049D; Wed,  8 Nov 2023 10:02:50 +0100 (CET)
-Date:   Wed, 8 Nov 2023 10:02:50 +0100
+        id 2085330049D; Wed,  8 Nov 2023 10:03:33 +0100 (CET)
+Date:   Wed, 8 Nov 2023 10:03:33 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Ankur Arora <ankur.a.arora@oracle.com>
 Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
@@ -47,74 +47,29 @@ Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
         anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
         David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 37/86] sched: make test_*_tsk_thread_flag() return
- bool
-Message-ID: <20231108090250.GH8262@noisy.programming.kicks-ass.net>
+Subject: Re: [RFC PATCH 38/86] sched: *_tsk_need_resched() now takes resched_t
+Message-ID: <20231108090333.GI8262@noisy.programming.kicks-ass.net>
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-38-ankur.a.arora@oracle.com>
+ <20231107215742.363031-39-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231107215742.363031-38-ankur.a.arora@oracle.com>
+In-Reply-To: <20231107215742.363031-39-ankur.a.arora@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 01:57:23PM -0800, Ankur Arora wrote:
-> All users of test_*_tsk_thread_flag() treat the result value
-> as boolean. This is also true for the underlying test_and_*_bit()
-> operations.
+On Tue, Nov 07, 2023 at 01:57:24PM -0800, Ankur Arora wrote:
+> *_tsk_need_resched() need to test for the specific need-resched
+> flag.
 > 
-> Change the return type to bool.
-> 
-> Originally-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> The only users are RCU and the scheduler. For RCU we always want
+> to schedule at the earliest opportunity and that is always
+> RESCHED_eager.
 
-You're sending 86 patches, I'm thinking you should do everything humanly
-possible to reduce this patch count, so perhaps keep these in a separate
-series.
+Why ?
 
-This is irrelevant to the issue at hand. So send it as a separate
-cleanup or whatever.
+> 
+> For the scheduler, keep everything as RESCHED_eager for now.
 
-> ---
->  include/linux/sched.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 5f0d7341cb88..12d0626601a0 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -2045,17 +2045,17 @@ static inline void update_tsk_thread_flag(struct task_struct *tsk, int flag,
->  	update_ti_thread_flag(task_thread_info(tsk), flag, value);
->  }
->  
-> -static inline int test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
-> +static inline bool test_and_set_tsk_thread_flag(struct task_struct *tsk, int flag)
->  {
->  	return test_and_set_ti_thread_flag(task_thread_info(tsk), flag);
->  }
->  
-> -static inline int test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
-> +static inline bool test_and_clear_tsk_thread_flag(struct task_struct *tsk, int flag)
->  {
->  	return test_and_clear_ti_thread_flag(task_thread_info(tsk), flag);
->  }
->  
-> -static inline int test_tsk_thread_flag(struct task_struct *tsk, int flag)
-> +static inline bool test_tsk_thread_flag(struct task_struct *tsk, int flag)
->  {
->  	return test_ti_thread_flag(task_thread_info(tsk), flag);
->  }
-> @@ -2070,7 +2070,7 @@ static inline void clear_tsk_need_resched(struct task_struct *tsk)
->  	clear_tsk_thread_flag(tsk,TIF_NEED_RESCHED);
->  }
->  
-> -static inline int test_tsk_need_resched(struct task_struct *tsk)
-> +static inline bool test_tsk_need_resched(struct task_struct *tsk)
->  {
->  	return unlikely(test_tsk_thread_flag(tsk,TIF_NEED_RESCHED));
->  }
-> -- 
-> 2.31.1
-> 
+Why ?
