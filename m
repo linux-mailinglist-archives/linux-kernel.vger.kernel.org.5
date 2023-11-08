@@ -2,167 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7077E5950
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D84207E595B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbjKHOje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S232680AbjKHOmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233419AbjKHOjc (ORCPT
+        with ESMTP id S231262AbjKHOmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:39:32 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ECD1FCC
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:39:30 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7b9e83b70so6597697b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:39:30 -0800 (PST)
+        Wed, 8 Nov 2023 09:42:08 -0500
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF20E172E;
+        Wed,  8 Nov 2023 06:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699454369; x=1700059169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tJbNnPajjokoZi+trDlI5nj+dX/8FMyM+8HOHunxhb4=;
-        b=o2wC9CqeJsDHSdQ5E0CbB9gWiu1J3UYfKeoxt6uvTIUOxlz6PqMN+4ysTWK/SYHJSV
-         FENAaVnZnydB66/A/KeQ5Y6YzwRBX1xop76a35dZrqhj4zAUOUUZLEStKq0hlzVqfyYx
-         NvGwxHnCAv/jVdB11jid9jzyE6ydq9x2rj1MuQrfOOPVb5s7R61k7+tDF1Qrd1f6maoN
-         Z7Pz3Pe+FFQzb/DIWO4Vx/MQwYQGFQ1JI9ltTi4s3vSBtTB+JMDXZO9Dmyl6FxlBxim7
-         MuSaOMsYWbRcBUyOzoWXUFdklqAYl1DTN6S/DT5eI9Cwktq3h+yAjLf1he2q9RBhI2Kq
-         5DMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699454369; x=1700059169;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=tJbNnPajjokoZi+trDlI5nj+dX/8FMyM+8HOHunxhb4=;
-        b=EZxE+f1ttVjspYkHrwF9zKlwA2UcO4DyXmrXcIL50iLzYnurO8Z3CAj5DOQVJT2GT8
-         hbIeoxScT5u+WYkrhIsCB8aWMVMYAUQUzfSUU1LwN6PpofrVIPKmYrflOtu8F/0FOuXl
-         QvOVSjRhEOJuzghLWei1VGFPHFbVoItLzKM8uHMOO6mwlxd2Ai5l/R/JqnYkSLYsb+0v
-         rMADObYsbRDr3ygp+/Cb8WYpy1kZzV86FR2DSTpbkW4l+H4oINW1yoCHi8m9ssPO9Nq1
-         OBp7znkXdJi3x556mDAlZfcW2y2XuLbhMbpMOZTsfEQ85k6MwflVabTcL+QSXVjay7My
-         oFTQ==
-X-Gm-Message-State: AOJu0YwT831EBC2RmWl0eF/qct3/pR5kag8t+bbb1s38+xCfjx+UBk/2
-        8RqTLZMQkY5W7eGi4OwsvdX/PLacpgI=
-X-Google-Smtp-Source: AGHT+IEGOUAM6lrblcS31XPUoikg+vPg8XVBrcbYRDe8dMIFcTXwqPSRn4QNRed/6pKUIjZ9T95v5jnE62o=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:93:b0:5be:baac:54e4 with SMTP id
- be19-20020a05690c009300b005bebaac54e4mr37620ywb.5.1699454369670; Wed, 08 Nov
- 2023 06:39:29 -0800 (PST)
-Date:   Wed, 8 Nov 2023 06:39:28 -0800
-In-Reply-To: <CALMp9eRcBi19yGS3+t+Hm0fLSB5+ESDGAygjwE_CYs-jWtU9Cg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231108003135.546002-1-seanjc@google.com> <20231108003135.546002-5-seanjc@google.com>
- <CALMp9eRcBi19yGS3+t+Hm0fLSB5+ESDGAygjwE_CYs-jWtU9Cg@mail.gmail.com>
-Message-ID: <ZUudoEyqtf5ZPtPp@google.com>
-Subject: Re: [PATCH v7 04/19] KVM: x86/pmu: Setup fixed counters' eventsel
- during PMU initialization
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-Content-Type: text/plain; charset="utf-8"
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699454526; x=1730990526;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:subject:from:to:references:in-reply-to;
+  bh=m5j5x7nNAFVyRYtdkX1gMrUVJ3IBvqYpFYgMswAfYXw=;
+  b=SCmW0XVjef4+FFJ7VSHSAXoQZINhQwriry2rzIDhgxiv9wJFPbV4PRnL
+   V0BwBluHWYkfkkjnJNyJ2L6gg7mOmp8fqlw7MiXmh62OkSHgOVd5Mar6J
+   zml/+KgWVeyrFSAqsiuLrhZqMr6gS4tsWRGNgQY8QXIDQzgBYQMQy9uFL
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="593847629"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 14:42:03 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com (Postfix) with ESMTPS id 0A99C8049A;
+        Wed,  8 Nov 2023 14:42:00 +0000 (UTC)
+Received: from EX19MTAEUA001.ant.amazon.com [10.0.17.79:56026]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.22.222:2525] with esmtp (Farcaster)
+ id e7c875e3-d454-4710-a698-3611a062b2a8; Wed, 8 Nov 2023 14:41:59 +0000 (UTC)
+X-Farcaster-Flow-ID: e7c875e3-d454-4710-a698-3611a062b2a8
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 14:41:59 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 14:41:55 +0000
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 8 Nov 2023 14:41:51 +0000
+Message-ID: <CWTICGO95L4K.2DL1G1DZ9EW3H@amazon.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+Subject: Re: [RFC 0/33] KVM: x86: hyperv: Introduce VSM support
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Alexander Graf <graf@amazon.com>, <kvm@vger.kernel.org>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <a8da9071-68ee-42e6-810a-eac95aff317d@amazon.com>
+In-Reply-To: <a8da9071-68ee-42e6-810a-eac95aff317d@amazon.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D037UWC001.ant.amazon.com (10.13.139.197) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023, Jim Mattson wrote:
-> On Tue, Nov 7, 2023 at 4:31=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
+On Wed Nov 8, 2023 at 11:40 AM UTC, Alexander Graf wrote:
+> Hey Nicolas,
+
+[...]
+
+> > The series is accompanied by two repositories:
+> >   - A PoC QEMU implementation of VSM [3].
+> >   - VSM kvm-unit-tests [4].
 > >
-> > Set the eventsel for all fixed counters during PMU initialization, the
-> > eventsel is hardcoded and consumed if and only if the counter is suppor=
-ted,
-> > i.e. there is no reason to redo the setup every time the PMU is refresh=
-ed.
-> >
-> > Configuring all KVM-supported fixed counter also eliminates a potential
-> > pitfall if/when KVM supports discontiguous fixed counters, in which cas=
-e
-> > configuring only nr_arch_fixed_counters will be insufficient (ignoring =
-the
-> > fact that KVM will need many other changes to support discontiguous fix=
-ed
-> > counters).
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  arch/x86/kvm/vmx/pmu_intel.c | 14 ++++----------
-> >  1 file changed, 4 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.=
-c
-> > index c4f2c6a268e7..5fc5a62af428 100644
-> > --- a/arch/x86/kvm/vmx/pmu_intel.c
-> > +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> > @@ -409,7 +409,7 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu,=
- struct msr_data *msr_info)
-> >   * Note, reference cycles is counted using a perf-defined "psuedo-enco=
-ding",
-> >   * as there is no architectural general purpose encoding for reference=
- cycles.
-> >   */
-> > -static void setup_fixed_pmc_eventsel(struct kvm_pmu *pmu)
-> > +static u64 intel_get_fixed_pmc_eventsel(int index)
-> >  {
-> >         const struct {
-> >                 u8 eventsel;
-> > @@ -419,17 +419,11 @@ static void setup_fixed_pmc_eventsel(struct kvm_p=
-mu *pmu)
-> >                 [1] =3D { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CP=
-U_CYCLES. */
-> >                 [2] =3D { 0x00, 0x03 }, /* Reference Cycles / PERF_COUN=
-T_HW_REF_CPU_CYCLES*/
-> >         };
-> > -       int i;
-> >
-> >         BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) !=3D KVM_PMC_MAX_FIXE=
-D);
-> >
-> > -       for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++) {
-> > -               int index =3D array_index_nospec(i, KVM_PMC_MAX_FIXED);
-> > -               struct kvm_pmc *pmc =3D &pmu->fixed_counters[index];
-> > -
-> > -               pmc->eventsel =3D (fixed_pmc_events[index].unit_mask <<=
- 8) |
-> > -                                fixed_pmc_events[index].eventsel;
-> > -       }
-> > +       return (fixed_pmc_events[index].unit_mask << 8) |
-> > +               fixed_pmc_events[index].eventsel;
->=20
-> Can I just say that it's really confusing that the value returned by
-> intel_get_fixed_pmc_eventsel() is the concatenation of an 8-bit "unit
-> mask" and an 8-bit "eventsel"?
+> > Note that this isn't a full VSM implementation. For now it only support=
+s
+> > 2 VTLs, and only runs on uniprocessor guests. It is capable of booting
+> > Windows Sever 2016/2019, but is unstable during runtime.
+>
+> How much of these limitations are inherent in the current set of=20
+> patches? What is missing to go beyond 2 VTLs and into SMP land? Anything=
+=20
+> that will require API changes?
 
-Heh, blame the SDM for having an "event select" field in "event select" MSR=
-s.
+The main KVM concepts introduced by this series are ready to deal with
+any number of VTLs (APIC ID groups, VTL KVM device).
 
-Is this better?
+KVM_HV_GET_VSM_STATE should provide a copy of 'vsm_code_page_offsets'
+per-VTL, since the hypercall page is partition wide but per-VTL.
+Attaching that information as a VTL KVM device attribute fits that
+requirement nicely. I'd prefer going that way especially if the VTL KVM
+device has a decent reception. Also, the secure memory intecepts and
+HVCALL_TRANSLATE_VIRTUAL_ADDRESS take some VTL related shortcuts, but
+those are going away. Otherwise, I don't see any necessary in-kernel
+changes.
 
-	const struct {
-		u8 event;
-		u8 unit_mask;
-	} fixed_pmc_events[] =3D {
-		[0] =3D { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIO=
-NS. */
-		[1] =3D { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
-		[2] =3D { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLE=
-S*/
-	};
+When virtualizing Windows with VSM I've never seen usages that go beyond
+VTL1. So enabling VTL > 1 will be mostly a kvm-unit-tests effort. As for
+SMP, it just a matter of work. Notably HvStartVirtualProcessor and
+HvGetVpIndexFromApicId need to be implemented, and making sure the QEMU
+VTL scheduling code holds up.
 
-	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) !=3D KVM_PMC_MAX_FIXED);
-
-	return (fixed_pmc_events[index].unit_mask << 8) |
-		fixed_pmc_events[index].event;
-
-
-Or are you complaining about the fact that they're split at all?  I'm open =
-to any
-format, though I personally found the seperate umask and event values helpf=
-ul
-when trying to understand what's going on.
+Nicolas
