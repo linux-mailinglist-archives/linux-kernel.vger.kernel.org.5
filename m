@@ -2,219 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D30247E6133
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE187E6135
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjKHXtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:49:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S229703AbjKHXwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKHXtV (ORCPT
+        with ESMTP id S229473AbjKHXwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:49:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF78625B5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:48:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699487314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IP8wbH5v3RFTRMGuEbmVq1QmCj9XqYX84MFeNvSej60=;
-        b=DFHfFJDZxn2X5Q6gVkB48VPZlfH1i9dH9PWs8FhNidWmJIYmETvxwpxnEF9X9CgcDJFgW7
-        la0uk5LamivqlONrkzQhStlVk+Yhk28OBVURYmNzEBBPk4n2P9d6bPBkWfvWZ0toQ6H9wu
-        ZDSdBugM67OIJ1sKlLUFPcDtV5zjMPE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-439-j3j0poSgPtWyBgSAk1FN6w-1; Wed, 08 Nov 2023 18:48:33 -0500
-X-MC-Unique: j3j0poSgPtWyBgSAk1FN6w-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32f798bc811so103416f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:48:33 -0800 (PST)
+        Wed, 8 Nov 2023 18:52:06 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A674625BC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:52:04 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cc209561c3so60585ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:52:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699487524; x=1700092324; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E9/j9I5xmRGr2xQ/85BVxrHK3DvRzWkvXiC6XBWsxsE=;
+        b=tTzYqdwZMximB8t3UJu1rHO+i78BXw6YKWjK737WNix+66ViUDoon1g2ji3vcGgv7x
+         snLozbkJ6K48D6ZHC6oIU8gkQd9bShXjkgdhEfHbBW+zpUqOq4SzaE4DbgWEvBrYBU9R
+         yWEc36k1S4kax44WI9O/DbE3j/B6CoR7+ubmIOVNbvgFLG/XjPdiJcE3apjHNY027aZq
+         QjBdvMv9n/edY+u2n9+FFf69TkB6jBYZVklMqTRH0ZZBOCXOuGOFXYPznGUeI3sGUQBX
+         2yNKAd7eS8DJw4KrWAXxzSK+GM8Kx4TedKwH62C8s3DwJpoUKrZ6MqU240UizCPw092p
+         7piQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699487312; x=1700092112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IP8wbH5v3RFTRMGuEbmVq1QmCj9XqYX84MFeNvSej60=;
-        b=tQqBsYuotmRprk7z7OaOr+VTcXJUk9Cd+ZMdK/Ey4LPZO6aRKJP0trAno/41WSS6e0
-         q5aLUBVhmP9H/LZhXRdKohG0MNZ4lsZjTz9kUuxcmzNYUHiiW2yqbqZa3i5VoI3kcAHK
-         vXGOpHRF61zInUxfYWrbFxmjSNbaHshmFqo6Xy5ySKW72a+7K+ALoqv3vhguuSXNmXkw
-         ZAVWO9ENoezoQ62DysVXvNiV/9v++MVu3EBFK6DpLqSifcilp7AE0D/Ak+292cjCfwSI
-         AlFVumxrKX8n5i91LTJnLWmhWZRqIhhQ/ahnljN1DN2gQ3B0cL83Kewuc+CSTu3WgosS
-         9lsQ==
-X-Gm-Message-State: AOJu0YxuP5oHaKx8X15OP79zQNvLyebAv0h9USWdpH7vRZoIerOoinx4
-        k+uioU7tnagr4VCpjszO5bYrWbgIJ+yosfkF8Ctt7hJGA+63DtzwqxJFTOLzlq8Xi+wFvaBljy0
-        VfLNhAoHUmwzD21WFb+AWQamUuH4gr4rx
-X-Received: by 2002:adf:d1cf:0:b0:32d:d2ef:b0e4 with SMTP id b15-20020adfd1cf000000b0032dd2efb0e4mr2588640wrd.0.1699487312161;
-        Wed, 08 Nov 2023 15:48:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFkKb07P7NHzLxLvXkt4f6tEsys3qOth6k77j7hZZ1vEF+4YwIERwZ7anMUdO8vcdR91SInRw==
-X-Received: by 2002:adf:d1cf:0:b0:32d:d2ef:b0e4 with SMTP id b15-20020adfd1cf000000b0032dd2efb0e4mr2588630wrd.0.1699487311860;
-        Wed, 08 Nov 2023 15:48:31 -0800 (PST)
-Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id n17-20020a5d6611000000b003142e438e8csm6001346wru.26.2023.11.08.15.48.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 15:48:31 -0800 (PST)
-Date:   Thu, 9 Nov 2023 00:48:29 +0100
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Philipp Stanner <pstanner@redhat.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <htejun@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>, jeff@garzik.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: Implementation details of PCI Managed (devres) Functions
-Message-ID: <ZUweTfT7ehduedf9@pollux>
-References: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
- <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
+        d=1e100.net; s=20230601; t=1699487524; x=1700092324;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E9/j9I5xmRGr2xQ/85BVxrHK3DvRzWkvXiC6XBWsxsE=;
+        b=Bl43ci+k71e27N2/mjkbxYKbal49xQ6bQPaWb1+y+zAVA10Pi0I6BYkYcrf82N0v6u
+         n8HzP8k7nNMmRxCoWsviyZ51SQG4NGcBXySvABdTnptUeZQ6BdGhTklKtfuZPG0Qg5ci
+         syDDXJMNCvibTnpvAxt0ZLyK0tazW2f5IpHwaFEhmbfBbzui+Hinj9dP+9IrJqPMdq93
+         o6QbChMwc9yJODX15A19TMAUrCQfrrgOUB3ZpjqeREqMYbi75MU2pxmhsMd38YcTZV85
+         W3j/iUqwKfOPPLywAOxt6hF98qu51adJ3LSAADT8WhISzzYp0t51jHdwr9tiVia39A8t
+         XCCg==
+X-Gm-Message-State: AOJu0Yy4S61sEMf9dA63Uq89Svj6Evu4oDHShcsf3qnSVWSmLngRTBJ/
+        llugzbK6VSZCbeS1GOwxWxJRBFOw0DHsHhz/kBVkqg==
+X-Google-Smtp-Source: AGHT+IF2Rk1OnLoBlh4G5q0gviP55oQbuaIOMFh/BsYlOySzTGEITwUFg0K4+ckuaQiXzvwkDol0fP1lFjP26SgmBhA=
+X-Received: by 2002:a17:902:758d:b0:1cc:2c43:9061 with SMTP id
+ j13-20020a170902758d00b001cc2c439061mr95651pll.21.1699487523896; Wed, 08 Nov
+ 2023 15:52:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
+References: <20231108164920.3401565-1-jackmanb@google.com>
+In-Reply-To: <20231108164920.3401565-1-jackmanb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 8 Nov 2023 15:51:51 -0800
+Message-ID: <CALvZod4Uj9rR3OL7CYfq5t8gsRLAa7b2wa3m26nyDhfvQaWQ+g@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/page_alloc: Dedupe some memcg uncharging logic
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 10:02:29PM +0100, Philipp Stanner wrote:
-> So, today I stared at the code for a while and come to a somewhat
-> interesting insight:
-> 
-> 
-> On Tue, 2023-11-07 at 20:38 +0100, Philipp Stanner wrote:
-> > Hi all,
-> > 
-> > I'm currently working on porting more drivers in DRM to managed pci-
-> > functions. During this process I discovered something that might be
-> > called an inconsistency in the implementation.
-> 
-> I think I figured out why not all pci_ functions have a pcim_
-> counterpart.
-> 
-> I was interested in implementing pcim_iomap_range(), since we could use
-> that for some drivers.
+On Wed, Nov 8, 2023 at 8:49=E2=80=AFAM Brendan Jackman <jackmanb@google.com=
+> wrote:
+>
+> The duplication makes it seem like some work is required before
+> uncharging in the !PageHWPoison case. But it isn't, so we can simplify
+> the code a little.
+>
+> Note the PageMemcgKmem check is redundant, but I've left it in as it
+> avoids an unnecessary function call.
+>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-I think you don't need all the "per bar" stuff below for that. You can just use
-the existing pci_iomap_range() (which simply uses ioremap() internally) and
-connect it to devres.
+Thanks for the patch. Actually the PageMemcgKmem/folio_memcg_kmem
+check should be in memcg_kmem_uncharge_page() and not in
+__memcg_kmem_uncharge_page(). Anyways, that is orthogonal to this
+patch.
 
-> 
-> It turns out, that implementing this would be quite complicated (if I'm
-> not mistaken).
-> 
-> lib/devres.c:
-> 
-> struct pcim_iomap_devres {
-> 	void __iomem *table[PCIM_IOMAP_MAX];
-> };
-> 
-> void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
-> {
-> 	struct pcim_iomap_devres *dr, *new_dr;
-> 
-> 	dr = devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
-> 	if (dr)
-> 		return dr->table;
-> 
-> 	new_dr = devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERNEL,
-> 				   dev_to_node(&pdev->dev));
-> 	if (!new_dr)
-> 		return NULL;
-> 	dr = devres_get(&pdev->dev, new_dr, NULL, NULL);
-> 	return dr->table;
-> }
-> 
-> That struct keeps track of the requested BARs. That's why there can
-> only be one mapping per BAR, because that table is statically allocated
-> and is indexed with the bar-number.
-> pcim_iomap_table() now only ever returns the table with the pointers to
-> the BARs. Adding tables to that struct that keep track of which
-> mappings exist in which bars would be a bit tricky and require probably
-> an API change for everyone who currently uses pcim_iomap_table(), and
-> that's more than 100 C-files.
-> 
-> So, it seems that a concern back in 2007 was to keep things simple and
-> skip the more complex data structures necessary for keeping track of
-> the various mappings within a bar.
-> In theory, there could be an almost unlimited number of such mappings
-> of various sizes, almost forcing you to do book-keeping with the help
-> of heap-allocations.
-> 
-> I guess one way to keep things extensible would have been to name the
-> function pcim_iomap_bar_table(), so you could later implement one like
-> pcim_iomap_range_table() or something.
-> But now it is what it is..
-> 
-> That still doesn't explain why there's no pcim_request_region(),
-> though...
-> 
-> 
-> P.
-> 
-> > 
-> > First, there would be the pcim_ functions being scattered across
-> > several files. Some are implemented in drivers/pci/pci.c, others in
-> > lib/devres.c, where they are guarded by #ifdef CONFIG_PCI
-> > – this originates from an old cleanup, done in
-> > 5ea8176994003483a18c8fed580901e2125f8a83
-> > 
-> > Additionally, there is lib/pci_iomap.c, which contains the non-
-> > managed
-> > pci_iomap() functions.
-> > 
-> > At first and second glance it's not obvious to me why these pci-
-> > functions are scattered. Hints?
-> > 
-> > 
-> > Second, it seems there are two competing philosophies behind managed
-> > resource reservations. Some pci_ functions have pcim_ counterparts,
-> > such as pci_iomap() <-> pcim_iomap(). So the API-user might expect
-> > that
-> > relevant pci_ functions that do not have a managed counterpart do so
-> > because no one bothered implementing them so far.
-> > 
-> > However, it turns out that for pci_request_region(), there is no
-> > counterpart because a different mechanism / semantic was used to make
-> > the function _sometimes_ managed:
-> > 
-> >    1. If you use pcim_enable_device(), the member is_managed in
-> > struct
-> >       pci_dev is set to 1.
-> >    2. This value is then evaluated in pci_request_region()'s call to
-> >       find_pci_dr()
-> > 
-> > Effectively, this makes pci_request_region() sometimes managed.
-> > Why has it been implemented that way and not as a separate function –
-> > like, e.g., pcim_iomap()?
-> > 
-> > That's where an inconsistency lies. For things like iomappings there
-> > are separate managed functions, for the region-request there's a
-> > universal function doing managed or unmanaged, respectively.
-> > 
-> > Furthermore, look at pcim_iomap_regions() – that function uses a mix
-> > between the obviously managed function pcim_iomap() and
-> > pci_request_region(), which appears unmanaged judging by the name,
-> > but,
-> > nevertheless, is (sometimes) managed below the surface.
-> > Consequently, pcim_iomap_regions() could even be a little buggy: When
-> > someone uses pci_enable_device() + pcim_iomap_regions(), wouldn't
-> > that
-> > leak the resource regions?
-> > 
-> > The change to pci_request_region() hasn't grown historically but was
-> > implemented that way in one run with the first set of managed
-> > functions
-> > in commit 9ac7849e35f70. So this implies it has been implemented that
-> > way on purpose.
-> > 
-> > What was that purpose?
-> > 
-> > Would be great if someone can give some hints :)
-> > 
-> > Regards,
-> > P.
-> > 
-> 
-
+Acked-by: Shakeel Butt <shakeelb@google.com>
