@@ -2,268 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EC97E5F12
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C8A7E5F14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjKHUVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 15:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
+        id S230118AbjKHUVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 15:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjKHUVF (ORCPT
+        with ESMTP id S230445AbjKHUV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 15:21:05 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03F62212C
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 12:21:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D50961476;
-        Wed,  8 Nov 2023 12:21:46 -0800 (PST)
-Received: from [10.57.72.173] (unknown [10.57.72.173])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A3433F6C4;
-        Wed,  8 Nov 2023 12:20:59 -0800 (PST)
-Message-ID: <2c98be67-657e-4c65-bf6b-3d70ff596c64@arm.com>
-Date:   Wed, 8 Nov 2023 20:20:58 +0000
+        Wed, 8 Nov 2023 15:21:27 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F152134;
+        Wed,  8 Nov 2023 12:21:24 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8KFWNO007888;
+        Wed, 8 Nov 2023 20:21:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JWLjtEDsbu9pQezW8V3iE5wEiBaU0MWE30c+dgKsRU4=;
+ b=KGL1jXLwtWr3iWohog/wEZhBrM8GoluuvcdEdNE4mnpEXmD7nmV73twEgBJ1ZSot/mOx
+ StCFyLKycBzfbNm3PDVafkEGDJDy3MuU1/zCXrxktDeY5d5r98EF8GW5jhvQccBUYnV/
+ yPk8YWCRDW6RiISX1vXifv1rDVj9FVnUkg43ZWQwb90w7fHmFn06KBHYmcSNqSWa9R9k
+ ZDQDtfCJFAn74GPR/kdo7JGgHTrn9mEerrWeKR+7wUP09+oT3Zb6YUTEdCRP+GXJMmOd
+ E94YFScCrTYv3i+gf4LV1WOiDGrn7JK7FgqfHXyyxwITpCjise+nJdR3bNXubrxdMK20 4w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8fyf2fru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 20:21:23 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8KFwS8010853;
+        Wed, 8 Nov 2023 20:21:23 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8fyf2fra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 20:21:23 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8J2k0q014372;
+        Wed, 8 Nov 2023 20:21:22 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w21ybqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 20:21:22 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8KLLur25362986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Nov 2023 20:21:22 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3D185805F;
+        Wed,  8 Nov 2023 20:21:21 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE7AB58062;
+        Wed,  8 Nov 2023 20:21:20 +0000 (GMT)
+Received: from [9.61.74.193] (unknown [9.61.74.193])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Nov 2023 20:21:20 +0000 (GMT)
+Message-ID: <17ef8d76-5dec-46a3-84e1-1b92fadd27b0@linux.ibm.com>
+Date:   Wed, 8 Nov 2023 15:21:20 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     steven.price@arm.com, akpm@linux-foundation.org, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        shy828301@gmail.com, wangkefeng.wang@huawei.com,
-        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
-        yuzhao@google.com, Barry Song <v-songbaohua@oppo.com>, nd@arm.com
-References: <2fe5ce7e-9c5c-4df4-b4fc-9fd3d9b2dccb@arm.com>
- <20231104093423.170054-1-v-songbaohua@oppo.com>
- <b0e4257e-b094-40b6-adb3-923c0d008309@arm.com>
- <CAGsJ_4zntZ4Drm5jndXamy_4VoVQ3qbCpUqCR9k4vdxLdmMO4Q@mail.gmail.com>
- <CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] s390/vfio-ap: fix sysfs status attribute for AP queue
+ devices
+Content-Language: en-US
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Harald Freudenberger <freude@linux.ibm.com>
+References: <20231108201135.351419-1-akrowiak@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <20231108201135.351419-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Knz054HCiTxFwKUszYpj6N7jesrU_sJZ
+X-Proofpoint-ORIG-GUID: aTanNe0nwYMzlVTApE8mmgOKt61P-bZ4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_09,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 clxscore=1015 phishscore=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2023 11:23, Barry Song wrote:
-> On Wed, Nov 8, 2023 at 2:05 AM Barry Song <21cnbao@gmail.com> wrote:
->>
->> On Tue, Nov 7, 2023 at 8:46 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>
->>> On 04/11/2023 09:34, Barry Song wrote:
->>>>> Yes that's right. mte_save_tags() needs to allocate memory so can fail
->>>>> and if failing then arch_prepare_to_swap() would need to put things back
->>>>> how they were with calls to mte_invalidate_tags() (although I think
->>>>> you'd actually want to refactor to create a function which takes a
->>>>> struct page *).
->>>>>
->>>>> Steve
->>>>
->>>> Thanks, Steve. combining all comments from You and Ryan, I made a v2.
->>>> One tricky thing is that we are restoring one page rather than folio
->>>> in arch_restore_swap() as we are only swapping in one page at this
->>>> stage.
->>>>
->>>> [RFC v2 PATCH] arm64: mm: swap: save and restore mte tags for large folios
->>>>
->>>> This patch makes MTE tags saving and restoring support large folios,
->>>> then we don't need to split them into base pages for swapping on
->>>> ARM64 SoCs with MTE.
->>>>
->>>> This patch moves arch_prepare_to_swap() to take folio rather than
->>>> page, as we support THP swap-out as a whole. And this patch also
->>>> drops arch_thp_swp_supported() as ARM64 MTE is the only one who
->>>> needs it.
->>>>
->>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>>> ---
->>>>  arch/arm64/include/asm/pgtable.h | 21 +++------------
->>>>  arch/arm64/mm/mteswap.c          | 44 ++++++++++++++++++++++++++++++++
->>>>  include/linux/huge_mm.h          | 12 ---------
->>>>  include/linux/pgtable.h          |  2 +-
->>>>  mm/page_io.c                     |  2 +-
->>>>  mm/swap_slots.c                  |  2 +-
->>>>  6 files changed, 51 insertions(+), 32 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index b19a8aee684c..d8f523dc41e7 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -45,12 +45,6 @@
->>>>       __flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
->>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>>
->>>> -static inline bool arch_thp_swp_supported(void)
->>>> -{
->>>> -     return !system_supports_mte();
->>>> -}
->>>> -#define arch_thp_swp_supported arch_thp_swp_supported
->>>> -
->>>>  /*
->>>>   * Outside of a few very special situations (e.g. hibernation), we always
->>>>   * use broadcast TLB invalidation instructions, therefore a spurious page
->>>> @@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->>>>  #ifdef CONFIG_ARM64_MTE
->>>>
->>>>  #define __HAVE_ARCH_PREPARE_TO_SWAP
->>>> -static inline int arch_prepare_to_swap(struct page *page)
->>>> -{
->>>> -     if (system_supports_mte())
->>>> -             return mte_save_tags(page);
->>>> -     return 0;
->>>> -}
->>>> +#define arch_prepare_to_swap arch_prepare_to_swap
->>>> +extern int arch_prepare_to_swap(struct folio *folio);
->>>>
->>>>  #define __HAVE_ARCH_SWAP_INVALIDATE
->>>>  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
->>>> @@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(int type)
->>>>  }
->>>>
->>>>  #define __HAVE_ARCH_SWAP_RESTORE
->>>> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
->>>> -{
->>>> -     if (system_supports_mte())
->>>> -             mte_restore_tags(entry, &folio->page);
->>>> -}
->>>> +#define arch_swap_restore arch_swap_restore
->>>> +extern void arch_swap_restore(swp_entry_t entry, struct folio *folio);
->>>>
->>>>  #endif /* CONFIG_ARM64_MTE */
->>>>
->>>> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
->>>> index a31833e3ddc5..14a479e4ea8e 100644
->>>> --- a/arch/arm64/mm/mteswap.c
->>>> +++ b/arch/arm64/mm/mteswap.c
->>>> @@ -68,6 +68,12 @@ void mte_invalidate_tags(int type, pgoff_t offset)
->>>>       mte_free_tag_storage(tags);
->>>>  }
->>>>
->>>> +static inline void __mte_invalidate_tags(struct page *page)
->>>> +{
->>>> +     swp_entry_t entry = page_swap_entry(page);
->>>> +     mte_invalidate_tags(swp_type(entry), swp_offset(entry));
->>>> +}
->>>> +
->>>>  void mte_invalidate_tags_area(int type)
->>>>  {
->>>>       swp_entry_t entry = swp_entry(type, 0);
->>>> @@ -83,3 +89,41 @@ void mte_invalidate_tags_area(int type)
->>>>       }
->>>>       xa_unlock(&mte_pages);
->>>>  }
->>>> +
->>>> +int arch_prepare_to_swap(struct folio *folio)
->>>> +{
->>>> +     int err;
->>>> +     long i;
->>>> +
->>>> +     if (system_supports_mte()) {
->>>> +             long nr = folio_nr_pages(folio);
->>>
->>> nit: there should be a clear line between variable declarations and logic.
->>
->> right.
->>
->>>
->>>> +             for (i = 0; i < nr; i++) {
->>>> +                     err = mte_save_tags(folio_page(folio, i));
->>>> +                     if (err)
->>>> +                             goto out;
->>>> +             }
->>>> +     }
->>>> +     return 0;
->>>> +
->>>> +out:
->>>> +     while (--i)
->>>
->>> If i is initially > 0, this will fail to invalidate page 0. If i is initially 0
->>> then it will wrap and run ~forever. I think you meant `while (i--)`?
->>
->> nop. if i=0 and we goto out, that means the page0 has failed to save tags,
->> there is nothing to revert. if i=3 and we goto out, that means 0,1,2 have
->> saved, we restore 0,1,2 and we don't restore 3.
-> 
-> I am terribly sorry for my previous noise. You are right, Ryan. i
-> actually meant i--.
+Christian,
+Can this be pushed with the Acks by Halil and Harald?
 
-No problem - it saves me from writing a long response explaining why --i is
-wrong, at least!
-
+On 11/8/23 15:11, Tony Krowiak wrote:
+> The 'status' attribute for AP queue devices bound to the vfio_ap device
+> driver displays incorrect status when the mediated device is attached to a
+> guest, but the queue device is not passed through. In the current
+> implementation, the status displayed is 'in_use' which is not correct; it
+> should be 'assigned'. This can happen if one of the queue devices
+> associated with a given adapter is not bound to the vfio_ap device driver.
+> For example:
 > 
->>
->>>
->>>> +             __mte_invalidate_tags(folio_page(folio, i));
->>>> +     return err;
->>>> +}
->>>> +
->>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
->>>> +{
->>>> +     if (system_supports_mte()) {
->>>> +             /*
->>>> +              * We don't support large folios swap in as whole yet, but
->>>> +              * we can hit a large folio which is still in swapcache
->>>> +              * after those related processes' PTEs have been unmapped
->>>> +              * but before the swapcache folio  is dropped, in this case,
->>>> +              * we need to find the exact page which "entry" is mapping
->>>> +              * to. If we are not hitting swapcache, this folio won't be
->>>> +              * large
->>>> +              */
->>>
->>> So the currently defined API allows a large folio to be passed but the caller is
->>> supposed to find the single correct page using the swap entry? That feels quite
->>> nasty to me. And that's not what the old version of the function was doing; it
->>> always assumed that the folio was small and passed the first page (which also
->>> doesn't feel 'nice'). If the old version was wrong, I suggest a separate commit
->>> to fix that. If the old version is correct, then I guess this version is wrong.
->>
->> the original version(mainline) is wrong but it works as once we find the SoCs
->> support MTE, we will split large folios into small pages. so only small pages
->> will be added into swapcache successfully.
->>
->> but now we want to swap out large folios even on SoCs with MTE as a whole,
->> we don't split, so this breaks the assumption do_swap_page() will always get
->> small pages.
+> Queues listed in /sys/bus/ap/drivers/vfio_ap:
+> 14.0005
+> 14.0006
+> 14.000d
+> 16.0006
+> 16.000d
 > 
-> let me clarify this more. The current mainline assumes
-> arch_swap_restore() always
-> get a folio with only one page. this is true as we split large folios
-> if we find SoCs
-> have MTE. but since we are dropping the split now, that means a large
-> folio can be
-> gotten by do_swap_page(). we have a chance that try_to_unmap_one() has been done
-> but folio is not put. so PTEs will have swap entry but folio is still
-> there, and do_swap_page()
-> to hit cache directly and the folio won't be released.
+> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/matrix
+> 14.0005
+> 14.0006
+> 14.000d
+> 16.0005
+> 16.0006
+> 16.000d
 > 
-> but after getting the large folio in do_swap_page, it still only takes
-> one basepage particularly
-> for the faulted PTE and maps this 4KB PTE only. so it uses the faulted
-> swap_entry and
-> the folio as parameters to call arch_swap_restore() which can be something like:
+> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/guest_matrix
+> 14.0005
+> 14.0006
+> 14.000d
 > 
-> do_swap_page()
-> {
->         arch_swap_restore(the swap entry for the faulted 4KB PTE, large folio);
-> }
-
-OK, I understand what's going on, but it seems like a bad API decision. I think
-Steve is saying the same thing; If its only intended to operate on a single
-page, it would be much clearer to pass the actual page rather than the folio;
-i.e. leave the complexity of figuring out the target page to the caller, which
-understands all this.
-
-As a side note, if the folio is still in the cache, doesn't that imply that the
-tags haven't been torn down yet? So perhaps you can avoid even making the call
-in this case?
-
->>
->>>
->>> Thanks,
->>> Ryan
+> The reason no queues for adapter 0x16 are listed in the guest_matrix is
+> because queue 16.0005 is not bound to the vfio_ap device driver, so no
+> queue associated with the adapter is passed through to the guest;
+> therefore, each queue device for adapter 0x16 should display 'assigned'
+> instead of 'in_use', because those queues are not in use by a guest, but
+> only assigned to the mediated device.
 > 
-> Thanks
-> Barry
-
+> Let's check the AP configuration for the guest to determine whether a
+> queue device is passed through before displaying a status of 'in_use'.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+> Acked-by: Harald Freudenberger <freude@linux.ibm.com>
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 16 +++++++++++++++-
+>   1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 4db538a55192..6e0a79086656 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -1976,6 +1976,7 @@ static ssize_t status_show(struct device *dev,
+>   {
+>   	ssize_t nchars = 0;
+>   	struct vfio_ap_queue *q;
+> +	unsigned long apid, apqi;
+>   	struct ap_matrix_mdev *matrix_mdev;
+>   	struct ap_device *apdev = to_ap_dev(dev);
+>   
+> @@ -1983,8 +1984,21 @@ static ssize_t status_show(struct device *dev,
+>   	q = dev_get_drvdata(&apdev->device);
+>   	matrix_mdev = vfio_ap_mdev_for_queue(q);
+>   
+> +	/* If the queue is assigned to the matrix mediated device, then
+> +	 * determine whether it is passed through to a guest; otherwise,
+> +	 * indicate that it is unassigned.
+> +	 */
+>   	if (matrix_mdev) {
+> -		if (matrix_mdev->kvm)
+> +		apid = AP_QID_CARD(q->apqn);
+> +		apqi = AP_QID_QUEUE(q->apqn);
+> +		/*
+> +		 * If the queue is passed through to the guest, then indicate
+> +		 * that it is in use; otherwise, indicate that it is
+> +		 * merely assigned to a matrix mediated device.
+> +		 */
+> +		if (matrix_mdev->kvm &&
+> +		    test_bit_inv(apid, matrix_mdev->shadow_apcb.apm) &&
+> +		    test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm))
+>   			nchars = scnprintf(buf, PAGE_SIZE, "%s\n",
+>   					   AP_QUEUE_IN_USE);
+>   		else
