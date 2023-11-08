@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1851B7E5B1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D9A7E5B20
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbjKHQXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:23:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S229640AbjKHQZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKHQXw (ORCPT
+        with ESMTP id S229579AbjKHQZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:23:52 -0500
+        Wed, 8 Nov 2023 11:25:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B41A1FE4;
-        Wed,  8 Nov 2023 08:23:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4246DC433C7;
-        Wed,  8 Nov 2023 16:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699460630;
-        bh=5fCZ7rfSZquKbxbTGp5RqeJxHmLnbRIpmC4Rako2Cbw=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26D81BFA
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:25:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E05C433C8;
+        Wed,  8 Nov 2023 16:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699460721;
+        bh=QDP2PkpuNljZi5l7VgltxnPr6lgtd/xesU719E+bNwQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QYeExoDLkAvqSJ4k1lO/O2P+CeHBKbCD4mJ4+iKYa38HxVDUPABfB68PaWmLFU1e9
-         3W2uEdfmcCBTcynPc7mmK7ncwGZ2M+xB5QXbYdjYAyVGtOROdV/bUaDVoWrvuPhIU7
-         e517oi+/Qz8DJJmx5ueVxPfwspRnATj51B1MT7AGfCKJSuZO+8ZDfoXAQOqt48b16O
-         tn1JLWnWGtW0PJhhOVRxryTAw2y4TIQritCcjVEINSv2lCL9esiXJE209MDtHxO1n6
-         rfR+RkLs6iQwXnTXoS8cAM01JNeG4lkE4xHA6PoVVmmM+xatQZTQQl7a88jMyCUnye
-         SV8juozs13ORQ==
-Date:   Wed, 8 Nov 2023 17:23:43 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-Message-ID: <20231108-grinsen-entfachen-f04195b92e7d@brauner>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
- <87il6d1cmu.fsf@meer.lwn.net>
- <20231108-redakteur-zuschauen-a9aeafaf4fad@brauner>
- <87o7g4xlmb.fsf@meer.lwn.net>
+        b=Q24sJpFEgQcM0ZojLTFo7kRKdEfZ8kLMHPyttUjcyqoszAhE9uS54Yo1gjsw3wcD7
+         6UHYintdG8EEsSFJd6O1qEnM3CsGueWEWwHZ+e5Xr3VGU6bVOJvmUnooAwbshgshq1
+         hAQFWrAManfQFuXZpagDiJPjorzzfKxNIogIdC6Y=
+Date:   Wed, 8 Nov 2023 17:25:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Ayush Singh <ayushdevel1325@gmail.com>,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] greybus: beagleplay: select CONFIG_CRC_CCITT
+Message-ID: <2023110809-splendor-debtor-b073@gregkh>
+References: <20231108153429.1072732-1-arnd@kernel.org>
+ <d242c2e8-85a8-43b7-8438-d83f1b90c8b2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o7g4xlmb.fsf@meer.lwn.net>
+In-Reply-To: <d242c2e8-85a8-43b7-8438-d83f1b90c8b2@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 09:20:28AM -0700, Jonathan Corbet wrote:
-> Christian Brauner <brauner@kernel.org> writes:
+On Wed, Nov 08, 2023 at 08:12:57AM -0800, Randy Dunlap wrote:
 > 
-> >> Why use struct __mount_arg (or struct mnt_id_req :) here rather than
-> >> just passing in the mount ID directly?  You don't use the request_mask
-> >
-> > Please see Arnd's detailed summary here:
-> > https://lore.kernel.org/lkml/44631c05-6b8a-42dc-b37e-df6776baa5d4@app.fastmail.com
 > 
-> Ah, makes sense, I'd missed that.
+> On 11/8/23 07:34, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > Without the CRC_CCITT code, the new greybus driver fails to link:
+> > 
+> > aarch64-linux-ld: drivers/greybus/gb-beagleplay.o: in function `hdlc_append_tx_u8':
+> > gb-beagleplay.c:(.text+0x158): undefined reference to `crc_ccitt'
+> > aarch64-linux-ld: drivers/greybus/gb-beagleplay.o: in function `gb_tty_receive':
+> > gb-beagleplay.c:(.text+0x5c4): undefined reference to `crc_ccitt'
+> > 
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/greybus/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/greybus/Kconfig b/drivers/greybus/Kconfig
+> > index 033d31dbf3b8..ab81ceceb337 100644
+> > --- a/drivers/greybus/Kconfig
+> > +++ b/drivers/greybus/Kconfig
+> > @@ -20,6 +20,7 @@ if GREYBUS
+> >  config GREYBUS_BEAGLEPLAY
+> >  	tristate "Greybus BeaglePlay driver"
+> >  	depends on SERIAL_DEV_BUS
+> > +	select CRC_CCITT
+> >  	help
+> >  	  Select this option if you have a BeaglePlay where CC1352
+> >  	  co-processor acts as Greybus SVC.
 > 
-> Given this, though, it seems like maybe sys_listmount() should enforce
-> that req->request_mask==0 ?
+> Yes, same as my patch:
+> https://lore.kernel.org/lkml/20231031040909.21201-1-rdunlap@infradead.org/
+> 
+> I expect that Greg just hasn't gotten around to applying new patches/fixes yet.
 
-Good catch, it does now:
+Nope, waiting until -rc1 is out, sorry.
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index ae09321b0f72..21edddd75532 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -5030,6 +5030,8 @@ SYSCALL_DEFINE4(listmount, const struct mnt_id_req __user *, req,
-
-        if (copy_from_user(&kreq, req, sizeof(kreq)))
-                return -EFAULT;
-+       if (kreq.request_mask != 0)
-+               return -EINVAL;
-        mnt_id = kreq.mnt_id;
-
-        down_read(&namespace_sem);
+greg k-h
