@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8388A7E4FC4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651FC7E4FC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjKHEku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 23:40:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
+        id S229645AbjKHEqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 23:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjKHEks (ORCPT
+        with ESMTP id S229550AbjKHEqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 23:40:48 -0500
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB23810D8
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 20:40:45 -0800 (PST)
-Message-ID: <b43c5a9b-7ac4-46d9-989e-f64a49366ef4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699418443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t30KbwaE7h3kWx6mo7ZJFQVtoWDbP/VUr5Sr5JAB/E8=;
-        b=sN9Z7hL21x1KmhapFkhJxaeY6ARjhg3LPWEFoEvd70Sb0o/Z4jvctZ52ZCUsZAe52id20H
-        Df43S7Brxdy53K2C7kWOv7uMFd8iHKAubKuVb/zuFl1nEYekbLCTGwXzsPuIOfbhU7SCEz
-        W1Ul4lkNF+PuQPo9MJQwtOrEwSoQsWE=
-Date:   Wed, 8 Nov 2023 07:40:39 +0300
+        Tue, 7 Nov 2023 23:46:07 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147629C;
+        Tue,  7 Nov 2023 20:46:05 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc4d306fe9so13908995ad.0;
+        Tue, 07 Nov 2023 20:46:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699418764; x=1700023564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AccMyh+RlaZEsXK1ML+1emsIzpOUjcybMBaau+EZXEI=;
+        b=kp1xYs8KSwaefefmuV50oj4qLTm2LOIdOUcEqGCQ9dJ2AxLv4zBnlw2i9TEVacpbF2
+         XOg1LKZa8AmXXFsEoWKgsXHjMmJucPutWDNI7M9P1AH6CrM3b8jEKdzmHCDGjlxhmJRx
+         Z7p6bVRGzAxmWeO/2f6AROL+7GLBPCcD3uAcCDth4pAw2ZiRx8OD+j0oDaaDI7bEx8rp
+         TSRbBNnK70+7EuwaT7yprSQQSrL6dv+QzXRooN3CDyToInfuJMpTpOyTnrs7sbUKqgpP
+         AMHAmwuWVlH2KXs8zzSOCziWFWk+/T3jPT8Ou8tU9HGD/yt8IeH16Sv08509lBghKW09
+         Wtog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699418764; x=1700023564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AccMyh+RlaZEsXK1ML+1emsIzpOUjcybMBaau+EZXEI=;
+        b=F6JStSv5bUuLt3MXMMofvAMbVlyH84X7wlioYEsbr2W3k+VwLxqk+h906bDmSkHQft
+         rb5BHgQPSBa1Ncpk1fa5SGq0i2iJdTHJKcaWy1tul/SWLaevKSdbE+VQLSwaLC57ybti
+         Sv3hj295q0KsRs8Gc1Bfwqn8w9YkSs1bsIs8QJCYekA3qzIUvxsZOw6uqZJ952q7F1v5
+         2rPYaYDjcjlFofzMowhgwSFpJaLe6avBb4Q3o+JPO+64XgcvJVvyL9K+Qr7RIqOH9K/W
+         UzY+ofgH63WzXDhniCg2m1vCRs298zGIZQB6+c79+sPbLE6JbU3Nqpx74BxP6X+a4h9U
+         HTRA==
+X-Gm-Message-State: AOJu0YyrWOEtTsC8ujNC3R5Q6xaV/1wJ0Sv/IafqcgbQEyxGcQbMWMRG
+        C0aMJzJ82ujJ9boxGJqeAc8=
+X-Google-Smtp-Source: AGHT+IHTBdEucosqnOg7K+garwd4Fwx8/Q/fzzgOpu7ehbtJq8I2JmalwcBjZ5QvjkrmGKJFEj/H8g==
+X-Received: by 2002:a17:902:d2c4:b0:1cc:277f:b4f6 with SMTP id n4-20020a170902d2c400b001cc277fb4f6mr1000152plc.6.1699418764403;
+        Tue, 07 Nov 2023 20:46:04 -0800 (PST)
+Received: from abhinav.. ([103.75.161.208])
+        by smtp.gmail.com with ESMTPSA id n15-20020a170903110f00b001cc32261bdcsm666079plh.248.2023.11.07.20.46.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 20:46:04 -0800 (PST)
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>
+Subject: [PATCH] fs : Fix warning using plain integer as NULL
+Date:   Wed,  8 Nov 2023 10:15:50 +0530
+Message-Id: <20231108044550.1006555-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vasily Averin <vasily.averin@linux.dev>
-Subject: Re: [PATCH] zram: extra zram_get_element call in
- zram_read_from_zspool()
-Content-Language: en-US
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, zhouxianrong <zhouxianrong@huawei.com>
-References: <ec494d90-3f04-4ab4-870b-bb4f015eb0ed@linux.dev>
- <20231108024924.GG11577@google.com>
- <b87ff5e2-156f-4bf8-9001-9cfbb79871ae@linux.dev>
- <20231108033244.GH11577@google.com>
-In-Reply-To: <20231108033244.GH11577@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 06:32, Sergey Senozhatsky wrote:
-> On (23/11/08 06:16), Vasily Averin wrote:
->> On 11/8/23 05:49, Sergey Senozhatsky wrote:
->>> On (23/11/06 22:55), Vasily Averin wrote:
->>>>
->>>> 'element' and 'handle' are union in struct zram_table_entry.
->>>>
->>>> Fixes: 8e19d540d107 ("zram: extend zero pages to same element pages")
->>>
->>> Sorry, what exactly does it fix?
->>
->> It removes unneeded call of zram_get_element() and unneeded variable 'value'.
-> 
-> Yes, what the patch does is pretty clear. It doesn't *fix* anything per se.
+Sparse static analysis tools generate a warning with this message
+"Using plain integer as NULL pointer". In this case this warning is
+being shown because we are trying to initialize  pointer to NULL using
+integer value 0.
 
-Ok, I'm sorry for miscommunication.
-I'm agree, it is just minor cleanup.
-"Fixes:" tag just here was pointed to the patch added this problem.
-Perhaps it was better to specify something like "Introduced-by:" tag instead.
+Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+---
+ fs/dax.c       | 2 +-
+ fs/direct-io.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
->> zram_get_element() == zram_get_handle(), they both access the same field of the same struct zram_table_entry,
->> no need to read it 2nd time. 
->> 'value' variable is not required, 'handle' can be used instead.
->>
->> I hope this explain why element/handle union should be removed: it confuses reviewers.
-> 
-> I do not agree with "union should be removed" part.
-> 
-> In this particular case - using handle as the page pattern (element)
-> is in fact quite confusing. The visual separation of `handle` and `element`
-> is helpful.
-
-It's at your discretion, you know better.
-
-Thank you,
-	Vasily Averin
-
+diff --git a/fs/dax.c b/fs/dax.c
+index 3380b43cb6bb..423fc1607dfa 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -1128,7 +1128,7 @@ static int dax_iomap_copy_around(loff_t pos, uint64_t length, size_t align_size,
+ 	/* zero the edges if srcmap is a HOLE or IOMAP_UNWRITTEN */
+ 	bool zero_edge = srcmap->flags & IOMAP_F_SHARED ||
+ 			 srcmap->type == IOMAP_UNWRITTEN;
+-	void *saddr = 0;
++	void *saddr = NULL;
+ 	int ret = 0;
+ 
+ 	if (!zero_edge) {
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index 20533266ade6..60456263a338 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -1114,7 +1114,7 @@ ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+ 	loff_t offset = iocb->ki_pos;
+ 	const loff_t end = offset + count;
+ 	struct dio *dio;
+-	struct dio_submit sdio = { 0, };
++	struct dio_submit sdio = { NULL, };
+ 	struct buffer_head map_bh = { 0, };
+ 	struct blk_plug plug;
+ 	unsigned long align = offset | iov_iter_alignment(iter);
+-- 
+2.39.2
 
