@@ -2,182 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C649D7E526D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B47E5270
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjKHJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:11:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
+        id S235509AbjKHJMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235501AbjKHJLu (ORCPT
+        with ESMTP id S235460AbjKHJMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:11:50 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9920D1A7;
-        Wed,  8 Nov 2023 01:11:48 -0800 (PST)
-Received: from [IPV6:2a02:a420:40:b6ea:bd47:84b4:35b0:c3f1] (77-63-99-98.mobile.kpn.net [77.63.99.98])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BC45120B74C0;
-        Wed,  8 Nov 2023 01:11:37 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BC45120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1699434708;
-        bh=fSNLSSBG95PkWpM5rxlYaA3C46U8XXsKOZIEDIAiboE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=n5/hAEXf2dzieMftcO0zozxDGKiOud7ouqdRWRPbYAjhcj9YDX3kLItujrlDhh2Px
-         IumdNzPkTleQsQKkPXu9ABOj7og39wtcOiR1e4DDBJsrI7sD+nqGZ6ATkTCM5UjjoV
-         P0i0NRIhvFLS18I+cPLvv7OxYeP4osdJV2s5dz78=
-Message-ID: <ec53f4fb-5b87-42db-8751-d7e7224c79ec@linux.microsoft.com>
-Date:   Wed, 8 Nov 2023 10:11:35 +0100
-MIME-Version: 1.0
+        Wed, 8 Nov 2023 04:12:33 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2095.outbound.protection.outlook.com [40.107.255.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157641A7;
+        Wed,  8 Nov 2023 01:12:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhgwiTCm6IIETE9rT6/aXwj5Lr+NZgQ8hYVA50x5mSOvzi9549fdwLzZfKy7eEYa80jbFu91qS64eSbGev5Fj9P3NU8vFa6YbaX/dj0s95Z3Hzg2v+kvAU4rgX1UAEqk16JDyUSpmg7UAqOLvaza28HcWk4Z6yDEUMMb0L+1lY37d2GFzlR3nGlyhS2sWcktbVBUdHHkVO3LyRQlR54YrZobdXNqrWQyQ3qglfVluaETJxoPC4FePfn6JX1EzTLFHjSDHIeT/JvdFH45EbwUkQLNnRHi7IIgHgWqWDRjiP5F5skwVn9M3Dy50OQgoVZaK1VicrHzZSHDyx1a7uu8yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cubfbL8yZwMGSX8M8II3GwbdxgDJ8oTk7RmwY0Mhep8=;
+ b=oIHyzoUdnmR/rhAHCzEnKLS65Py7y5wWUKj/VZZEg25ppKhltzyTgFGRJ4jKNDjbTuFJS6a3gkho+EdkKRg9VLjbZXLkjibHsSnEj63T3qicyIn+iPWSTyxfmSsCK4NLOQpEpWgcTJojqQQAvffri/Xz3SfK3WZytES9MKisSy1XT1LEPyByhe7FUt5heXHts3XTbUbB2fs/qOXeDZjW1+3yEN3zcHzqddCdLk3N/gyvzT0Gh3sdH8ntQJkd2qtmGEziueZ7S6gq47JentyDlnBEQ84ruFbq1Sc8bMBiXwWExx6nBPj2mjvTlKvd6AzA95vbRM3bazcaTPkJwCsBgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cubfbL8yZwMGSX8M8II3GwbdxgDJ8oTk7RmwY0Mhep8=;
+ b=p17qpL3k7423g760MMvSgBxLzyr5pF2zC/TtQH6gDkUbi6Rg+JfU582RUEhY51M3bDf56M7iWLbXd6ovmccJYL9kj76R1M2ghDOGWFe5mmUzYDuBR3l48jnyv+KwbvrhkCQuNXv7hSACjWwawhJpzLOJzjWgBrMAYombr0HY5bLp5V96KU37B5UvdhboTpcEzijirUGXoU4t3UVDMO3ilURvbkQVIG5Ybbs3spp/c8YoWkpZiAD9ORLtYDnFiNA+I5bjqjiTLst6jgtek8B4yRFveq9vgwUs9Np+XUbmZepB+uMdDuxitXhzfNKgdrWBvGKwPDPIAv5V+jwGAoZ7cw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by KL1PR0601MB4180.apcprd06.prod.outlook.com (2603:1096:820:29::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
+ 2023 09:12:26 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
+ 09:12:26 +0000
+Message-ID: <f952117e-cc7f-41b9-9571-1d32b157cc82@vivo.com>
+Date:   Wed, 8 Nov 2023 17:12:19 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
- support
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-7-michael.roth@amd.com>
- <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
- <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
- <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
- <20231107202757.GEZUqdzYyzVBHTBhZX@fat_crate.local>
- <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
- <20231107212740.GFZUqrzK7yzy41dRKp@fat_crate.local>
- <20231107220852.GGZUq1dHJ2q9LYV2oG@fat_crate.local>
- <4b68fd05-5d21-0472-42c3-6cf6f1f9f967@amd.com>
- <20231108061413.GAZUsnNVcmYZNMw2Kr@fat_crate.local>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231108061413.GAZUsnNVcmYZNMw2Kr@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Wei Xu <weixugc@google.com>, David Rientjes <rientjes@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+References: <20231108065818.19932-1-link@vivo.com>
+ <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
+ <4c7db101-a34f-47ff-ba64-952516cc193a@vivo.com>
+ <CAJD7tkZ2cnp6tSr6jb2Xpt4J-5oeTmAq1KNw6f7KBWPfjca8gA@mail.gmail.com>
+From:   Huan Yang <link@vivo.com>
+In-Reply-To: <CAJD7tkZ2cnp6tSr6jb2Xpt4J-5oeTmAq1KNw6f7KBWPfjca8gA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0189.apcprd04.prod.outlook.com
+ (2603:1096:4:14::27) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|KL1PR0601MB4180:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25287e41-a999-47bb-4b2e-08dbe03ad397
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FDbup8Eu8mOpSLKjPqva5O0L5n3PJXj7r/ZzKOflouecBt2CO8ZBntTsPvU5kku37cpbFBLmWtMS/djxPS0o3u6a7xXSrAW7QvV5Ok9JcQM6CP4oBnTW1iwatsWlI2hYgIXl8s8KTvLG2wx7NVARMUP6/lXFcYYsg+1VRhX1gkS5NGJdpXWIfTpAT83oDisgSL3TCmCSmNMdFK9tgj8hIEKyJN7d0H0bp2+AKl+26HAp0EmNriWHXQELB6P0AzW+q+SzGPA+ufO/Xlw3MK1kKOPZ3GX+nb19sWFz4wlvev50rAlusClR+fqCZVW6IcfGBuE5eSCTspzoSR6mBoDnyr2Ue8ogBIfqT3iIN525nGtkTL8XwOydgj6EW9CW1LSpiqx6d1WVW1Y7UwZ5Q9e8ehsE+xEabkSkUk5MwyKZSWyNu5VLnDYA7ziXcxDdmZfHgQcGlMeb10B8FKFOQDCwHwrN5RW2m//B33809xQeXQfwGFc8ANN5g9XZsanrkTnHkU1Vg9NXq07ocdSDkE4lT7FngXjYMX5JunNQBP4XMoj/is9l9t3oUhCzgFRZlghnqpEPKCtDVsrw+t+McMS9+Q1njetWk321uTcQAP+1M85ON0j5br10gDNrbXj8/8thGA+Ipz7N2xYz+tfk7ggrSv7KicUxVW/UDYVhpLK6IYk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(366004)(396003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(2616005)(6512007)(107886003)(478600001)(26005)(6486002)(86362001)(8936002)(5660300002)(31696002)(36756003)(4326008)(41300700001)(2906002)(7416002)(966005)(8676002)(54906003)(66556008)(66476007)(316002)(66946007)(38350700005)(6916009)(52116002)(53546011)(6666004)(6506007)(45080400002)(38100700002)(31686004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UTZScmEybWFSZXlKOVh1Yk9kcFQ5a1dhUnJkamVXaVg5Z0JuSEQvbDROMThC?=
+ =?utf-8?B?UDU3TVVGYlBXcTQzMkdkNU12WGhRMlZGSEExMXBNNEtFVTF4MnpBTGx1aVJx?=
+ =?utf-8?B?T2QvS3o1U1hPdVluVisrSFhDdlFvWG1WNHJsL3lLZElpb0NBTC80RklNR2tV?=
+ =?utf-8?B?MGZJT2RWSWRRdW13NlF2SU1ud2ppYW53RU1uZnN4a2tURGh4YVdJN1kzZHox?=
+ =?utf-8?B?di9wYnJRdkVNTkhKWHNyaytrWm9xYzI0eHV1aGh3TDNpV3BlT3EwZWY4RlNs?=
+ =?utf-8?B?eTh1cS9SMS85Z2pQdjNVb29JREtvb1k1L1U1clBIMVRCU0VTWHBTekw1ZGls?=
+ =?utf-8?B?WlZvRyt5K241ZGJxbnpIUzFaS0JDZnNGc2tjc05uS2ovaUR4SFFMOHAyaUtS?=
+ =?utf-8?B?TFN1SGlENG5FNzhFZFVUd04rRWg4ejhjNnhZeGNEYVNhK2RaeFB0TmtSdVph?=
+ =?utf-8?B?Sms2WVJNTnRlci9EdDNyRVVneDFJcnh4ZWVYU0FkNHdRYXZmeTBoRFplTnBL?=
+ =?utf-8?B?V1F2L0tKWmZ2OS90YWZwV1h5UEUvN0prYlVWMGhaU2F2am9pa0xXMXh2LzZJ?=
+ =?utf-8?B?eVRQR1R2MDllNE5ETisyQlB4VmhOaW8vR1FRUiswMXdjQkFWaHJkVWxUOGtV?=
+ =?utf-8?B?aU9ibWxmTmRmTW5nYjZ1UVhZZ2hsZUVGdTRmZUowemN3RmxrNGMxUnZPTFhD?=
+ =?utf-8?B?dk5sOGhnTStQU1A3L0x1K3E1QXcxS3Vvc1c2QlVpY0J5VnYvR0dMUG12a2tG?=
+ =?utf-8?B?cWIwMno2dkNYRzJnWW9sQzRmSlZjTkJPcnRubHBrWXJEVmdLa01FSStZclVo?=
+ =?utf-8?B?MEhKUjRic003S0RCeG9ldmZmN1B6S29YcHRzU3ovMDVkcjhLcFp2eHFPRkJ6?=
+ =?utf-8?B?V0FJNEhUVlR3QVNjSzVFOUltL2xDNDhGSnFycjdvSnFXYlByWWh2WFVOR3NN?=
+ =?utf-8?B?SFNoTmtxcTZFSlBuNUhOYTZpTFhnVHFhaGZYbUV4S1llR2hEZlZYeTdqSHBS?=
+ =?utf-8?B?bndBSUszdENPd3Vrd2hwWGQ2d3Ywbkl5ZGZ2WHNLS0tJY0YrVXpZOTlaZExZ?=
+ =?utf-8?B?ZHhtYkpSOVl3MVlHbHl3MXMza0NzK2s2UmIySmRVc3c2MjNOanRVSGdWU1p3?=
+ =?utf-8?B?YlJzQWZtV25NVHBGMXJlMEJNVEVFbHMzMHhPTWp6MXhJK2VHKzRYR3F3WDYw?=
+ =?utf-8?B?czB5RTJSQlZ0Zm5VSytxZDAwZFJ3WnFlRjRsY2Y3K05tSzVQZGZVTGJieXN4?=
+ =?utf-8?B?eFFWMnE5bEtsZlRBOTZlRTRMUlppZndNNy9tN1lhRXpzSWh3MzFpdW9FZWZX?=
+ =?utf-8?B?K0xhakpJWVd2QVJCR3JVaEREMUFNdHp2ZmtwQWo4YTljSFBYcE9uNWlaU3Jh?=
+ =?utf-8?B?RHFnRGZUYVhvSHMvWDV3bDNaY3p4LzlRUjBhOVFUYXJlSUpZY0dpQ0EvVVRx?=
+ =?utf-8?B?bzVkRE16ZjJBVlord1ZCeXRpVHJoN2dZeW5vOXpBZlFRblhPRXNFdlg5VzJp?=
+ =?utf-8?B?SjIzcVhWNWFNVjJYNWZ4TW8xU2VBdWdMaE03ZjgrUjI2aGdObG9ZRnhtZElV?=
+ =?utf-8?B?SXBxQ25DYUVseFZQWDRCcVdYdFM3MGZTS0t4YXlyTU5naDNHak15dVE4TzE5?=
+ =?utf-8?B?VFQ3eU5Ub05SWVFla2FoZDFnMG9QV3V2a1dVOEl5U1ozb3ZjbDdSVjhod3gx?=
+ =?utf-8?B?c1gwc2hEa0liQzdKOFhhNXhFQ09qamR0U0ZZWHozbEpCM1BiSmdrcVgwU3Ny?=
+ =?utf-8?B?clE3dGd6TURURS94cE5FVGo3Q2ZOUm5KN0VwWVlNUjJvelZiVnlSYjAvMGhZ?=
+ =?utf-8?B?RGdDOXNIUWtweU9GM0JmMlFYVFJpdW1QcFh0QXI3RGk3dW5BRGkrWG8xVzVj?=
+ =?utf-8?B?K1lONlE4YTVSVGhrOXEyQ1ZzQmdLeHNzY1pEU1dLQTJrRUxkZHM4Yy9qemgz?=
+ =?utf-8?B?NWxkc2RiaU4vcUp6c3B4MWRZZ0JUcU0yNkNDanNEQTZ3MHVpY3dwSjNtdjQ4?=
+ =?utf-8?B?cGwzdWFnUVIxNkkzdUdzYVBUQUxXMDBka3hhRjJGRU1McE94V2krYzljeGFD?=
+ =?utf-8?B?cW1UTktPcDZMTkxwNFoxTXRDU1hDeDV2cDNwMmRHY3NmSk5HZ0tqSmU4L3ps?=
+ =?utf-8?Q?hM2ICx/lUiFpIxcw6vU4b2cNI?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25287e41-a999-47bb-4b2e-08dbe03ad397
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 09:12:26.8329
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d+XlpSIqQ3UDBJ389oO1vC/F03pbMHVVyWCuwLyr4ynqFVgFuqKSvwC2WfD9jb1yGYOWd6If6Er0bfy3H/nH9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2023 07:14, Borislav Petkov wrote:
-> On Tue, Nov 07, 2023 at 04:33:41PM -0600, Kalra, Ashish wrote:
->> We will still need some method to tell the IOMMU driver if SNP
->> support/feature is disabled by this function, for example, when CPU family
->> and model is not supported by SNP and we jump to no_snp label.
-> 
-> See below.
-> 
->> The reliable way for this to work is to ensure snp_rmptable_init() is called
->> before IOMMU initialization and then IOMMU initialization depends on SNP
->> feature flag setup by snp_rmptable_init() to enable SNP support on IOMMU or
->> not.
-> 
-> Yes, this whole SNP initialization needs to be reworked and split this
-> way:
 
-I agree with Borislav and have some comments of my own.
+在 2023/11/8 16:59, Yosry Ahmed 写道:
+> On Wed, Nov 8, 2023 at 12:26 AM Huan Yang <link@vivo.com> wrote:
+>>
+>> 在 2023/11/8 16:00, Yosry Ahmed 写道:
+>>> +Wei Xu +David Rientjes
+>>>
+>>> On Tue, Nov 7, 2023 at 10:59 PM Huan Yang <link@vivo.com> wrote:
+>>>> In some cases, we need to selectively reclaim file pages or anonymous
+>>>> pages in an unbalanced manner.
+>>>>
+>>>> For example, when an application is pushed to the background and frozen,
+>>>> it may not be opened for a long time, and we can safely reclaim the
+>>>> application's anonymous pages, but we do not want to touch the file pages.
+>>>>
+>>>> This patchset extends the proactive reclaim interface to achieve
+>>>> unbalanced reclamation. Users can control the reclamation tendency by
+>>>> inputting swappiness under the original interface. Specifically, users
+>>>> can input special values to extremely reclaim specific pages.
+>>> I proposed this a while back:
+>>>
+>>> https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
+>> Well to know this, proactive reclaim single type is usefull in our
+>> production too.
+>>> The takeaway from the discussion was that swappiness is not the right
+>>> way to do this. We can add separate arguments to specify types of
+>>> memory to reclaim, as Roman suggested in that thread. I had some
+>>> patches lying around to do that at some point, I can dig them up if
+>>> that's helpful, but they are probably based on a very old kernel now,
+>>> and before MGLRU landed. IIRC it wasn't very difficult, I think I
+>>> added anon/file/shrinkers bits to struct scan_control and then plumbed
+>>> them through to memory.reclaim.
+>>>
+>>>> Example:
+>>>>           echo "1G" 200 > memory.reclaim (only reclaim anon)
+>>>>             echo "1G" 0  > memory.reclaim (only reclaim file)
+>>>>             echo "1G" 1  > memory.reclaim (only reclaim file)
+>>> The type of interface here is nested-keyed, so if we add arguments
+>>> they need to be in key=value format. Example:
+>>>
+>>> echo 1G swappiness=200 > memory.reclaim
+>> Yes, this is better.
+>>> As I mentioned above though, I don't think swappiness is the right way
+>>> of doing this. Also, without swappiness, I don't think there's a v1 vs
+>>> v2 dilemma here. memory.reclaim can work as-is in cgroup v1, it just
+>>> needs to be exposed there.
+>> Cgroupv1 can't use memory.reclaim, so, how to exposed it? Reclaim this by
+>> pass memcg's ID?
+> That was mainly about the idea that cgroup v2 does not have per-memcg
+> swappiness, so this proposal seems to be inclined towards v1, at least
+I seem current comments of mem_cgroup_swappiness it is believed that
+per-memcg swappiness can be added.
 
-> 
-> - early detection work which needs to be done once goes to
->   bsp_init_amd(): that's basically your early_detect_mem_encrypt() stuff
->   which needs to happen exactly only once and early.
-> 
-> - Any work like:
-> 
-> 	 c->x86_phys_bits -= (cpuid_ebx(0x8000001f) >> 6) & 0x3f;
-> 
->   and the like which needs to happen on each AP, gets put in a function
->   which gets called by init_amd().
-> 
-> By the time IOMMU gets to init, you already know whether it should
-> enable SNP and check X86_FEATURE_SEV_SNP.
-
-This flow would suit me better too. In SNP-host capable Hyper-V VMs there
-is no IOMMU and I've had to resort to early return from amd_iommu_snp_enable()
-to prevent it from disabling SNP [1]. In addition to what Borislav posted,
-you'd just need to enforce that if IOMMU is detected it actually gets enabled.
-
-[1]: https://lore.kernel.org/lkml/20230213103402.1189285-6-jpiotrowski@linux.microsoft.com/
-
-> 
-> Finally, you call __snp_rmptable_init() which does the *per-CPU* init
-> work which is still pending.
-
-Yes please, and the only rmp thing left to do per-CPU would be to check that the MSRs are
-set the same as the value read from CPU0.
-
-Running the early_rmptable_check() from early_detect_mem_encrypt() and on every CPU
-makes it difficult to support a kernel allocated RMP table. If you look at what I did
-for the mentioned Hyper-V SNP-host VMs [2] (which I think is reasonable) the RMP table
-is allocated in init_mem_mapping() and the addresses are propagated to other CPUs through 
-hv_cpu_init(), which is called from cpuhp_setup_state(CPUHP_AP_HYPERV_ONLINE, ...). So
-it would be great if any init works plays nice with cpu hotplug notifiers.
-
-[2]: https://lore.kernel.org/lkml/20230213103402.1189285-2-jpiotrowski@linux.microsoft.com/
-
-Thanks,
-Jeremi
-
-> 
-> Ok?
-> 
-> Ontop of the previous ontop patch:
-> 
-> ---
-> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-> index 6cc2074fcea3..a9c95e5d6b06 100644
-> --- a/arch/x86/kernel/cpu/amd.c
-> +++ b/arch/x86/kernel/cpu/amd.c
-> @@ -674,8 +674,19 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
->  		if (!(msr & MSR_K7_HWCR_SMMLOCK))
->  			goto clear_sev;
->  
-> -		if (cpu_has(c, X86_FEATURE_SEV_SNP) && !early_rmptable_check())
-> -			goto clear_snp;
-> +		if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
-> +			/*
-> +			 * RMP table entry format is not architectural and it can vary by processor
-> +			 * and is defined by the per-processor PPR. Restrict SNP support on the known
-> +			 * CPU model and family for which the RMP table entry format is currently
-> +			 * defined for.
-> +			 */
-> +			if (c->x86 != 0x19 || c->x86_model > 0xaf)
-> +				goto clear_snp;
-> +
-> +			if (!early_rmptable_check())
-> +				goto clear_snp;
-> +		}
->  
->  		return;
->  
-> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-> index 9237c327ad6d..5a71df9ae4cb 100644
-> --- a/arch/x86/virt/svm/sev.c
-> +++ b/arch/x86/virt/svm/sev.c
-> @@ -199,14 +199,6 @@ static int __init snp_rmptable_init(void)
->  	if (!amd_iommu_snp_en)
->  		return 0;
->  
-> -	/*
-> -	 * RMP table entry format is not architectural and it can vary by processor and
-> -	 * is defined by the per-processor PPR. Restrict SNP support on the known CPU
-> -	 * model and family for which the RMP table entry format is currently defined for.
-> -	 */
-> -	if (boot_cpu_data.x86 != 0x19 || boot_cpu_data.x86_model > 0xaf)
-> -		goto nosnp;
-> -
->  	if (__snp_rmptable_init())
->  		goto nosnp;
->  
-
+But, we first need to explain that using swappiness is a very useful way.
+And in the discussions of your patchset, end that not use it.
+> conceptually. Either way, we need to add memory.reclaim to the v1
+> files to get it to work on v1. Whether this is acceptable or not is up
+> to the maintainers. I personally don't think it's a problem, it should
+Yes, but, I understand that cgroup v2 is a trend, so it is 
+understandable that no
+new interfaces are added to v1. :)
+Maybe you can promoting the use of cgroupv2 on Android?
+> work as-is for v1.
