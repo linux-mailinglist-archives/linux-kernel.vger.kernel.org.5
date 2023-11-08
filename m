@@ -2,175 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496337E5CA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA077E5C94
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbjKHRuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        id S230245AbjKHRps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjKHRuN (ORCPT
+        with ESMTP id S229974AbjKHRpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:50:13 -0500
-X-Greylist: delayed 320 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Nov 2023 09:50:10 PST
-Received: from mailscanner06.zoner.fi (mailscanner06.zoner.fi [5.44.246.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0A01FC8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:50:10 -0800 (PST)
-Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-        by mailscanner06.zoner.fi (Postfix) with ESMTPS id C975621215;
-        Wed,  8 Nov 2023 19:44:48 +0200 (EET)
-Received: from mail.zoner.fi ([84.34.147.244])
-        by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
-        (envelope-from <lasse.collin@tukaani.org>)
-        id 1r0mbg-00089D-21;
-        Wed, 08 Nov 2023 19:44:48 +0200
-Date:   Wed, 8 Nov 2023 19:44:48 +0200
-From:   Lasse Collin <lasse.collin@tukaani.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] lib/xz: Add ARM64 BCJ filter
-Message-ID: <20231108194448.674cd0ad@kaneli>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Wed, 8 Nov 2023 12:45:45 -0500
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CDD1BD4;
+        Wed,  8 Nov 2023 09:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699465544; x=1731001544;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=AK1H4ZliE+KrTVct4+YI0xIeUq39oi6R9KO0Gwj6lOo=;
+  b=Vfuj33OKkbs6ipC97GixWiJ3Su5TZWbNQ4T5m+nzYivLe3lvss6jWn2b
+   hyCp0hbc0S5KWHM5mViwa97kjXJailXhJ9aykQA5W5on4Qy4hbI/CJ28n
+   2fLPTYhml+wZzdirPq02IpcKu2VGgOe3Sf+cVMhvO+vUQY3oFYgCbFSi9
+   E=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="369205610"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 17:45:40 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-f253a3a3.us-west-2.amazon.com (Postfix) with ESMTPS id 3CE9A80728;
+        Wed,  8 Nov 2023 17:45:38 +0000 (UTC)
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.38.20:5790]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.33.241:2525] with esmtp (Farcaster)
+ id c63ccabf-3b4a-4598-82c4-8b129f1bdbfb; Wed, 8 Nov 2023 17:45:37 +0000 (UTC)
+X-Farcaster-Flow-ID: c63ccabf-3b4a-4598-82c4-8b129f1bdbfb
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 17:45:37 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.100.12) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
+ Wed, 8 Nov 2023 17:45:34 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <dw@davidwei.uk>
+CC:     <avagin@gmail.com>, <davem@davemloft.net>, <dsahern@kernel.org>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>,
+        <syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] [net?] WARNING in inet_csk_get_port (2)
+Date:   Wed, 8 Nov 2023 09:45:25 -0800
+Message-ID: <20231108174525.1452-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <1d1f7518-6ff9-4402-a874-5c0138bedefd@davidwei.uk>
+References: <1d1f7518-6ff9-4402-a874-5c0138bedefd@davidwei.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.106.100.12]
+X-ClientProxiedBy: EX19D045UWC002.ant.amazon.com (10.13.139.230) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lasse Collin <lasse.collin@tukaani.org>
+From: David Wei <dw@davidwei.uk>
+Date: Wed, 8 Nov 2023 08:11:56 -0800
+> On 2023-09-20 11:59, Kuniyuki Iwashima wrote:
+> > From: syzbot <syzbot+71e724675ba3958edb31@syzkaller.appspotmail.com>
+> > Date: Wed, 20 Sep 2023 11:02:55 -0700
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    2cf0f7156238 Merge tag 'nfs-for-6.6-2' of git://git.linux-..
+> >> git tree:       upstream
+> >> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17405ab0680000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=71e724675ba3958edb31
+> >> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> >> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b2e118680000
+> >> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127b55c4680000
+> >>
+> >> Downloadable assets:
+> >> disk image: https://storage.googleapis.com/syzbot-assets/456b02029fa8/disk-2cf0f715.raw.xz
+> >> vmlinux: https://storage.googleapis.com/syzbot-assets/9f9ff0c00454/vmlinux-2cf0f715.xz
+> >> kernel image: https://storage.googleapis.com/syzbot-assets/0ede19fba30f/bzImage-2cf0f715.xz
+> >>
+> >> The issue was bisected to:
+> >>
+> >> commit c48ef9c4aed3632566b57ba66cec6ec78624d4cb
+> >> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+> >> Date:   Mon Sep 11 18:36:57 2023 +0000
+> >>
+> >>     tcp: Fix bind() regression for v4-mapped-v6 non-wildcard address.
+> >>
+> > 
+> > We need this condition to put v4 sk and v4-mapped-v6 sk into
+> > the same bucket.
+> > 
+> > ---8<---
+> > diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
+> > index dfb1c61c0c2b..6487357d1ddd 100644
+> > --- a/net/ipv4/inet_hashtables.c
+> > +++ b/net/ipv4/inet_hashtables.c
+> > @@ -822,7 +823,8 @@ static bool inet_bind2_bucket_match(const struct inet_bind2_bucket *tb,
+> >  			return ipv6_addr_v4mapped(&tb->v6_rcv_saddr) &&
+> >  				tb->v6_rcv_saddr.s6_addr32[3] == sk->sk_rcv_saddr;
+> >  
+> > -		return false;
+> > +		return ipv6_addr_v4mapped(&sk->sk_v6_rcv_saddr) &&
+> > +			sk->sk_v6_rcv_saddr.s6_addr32[3] == tb->rcv_saddr;
+> >  	}
+> >  
+> >  	if (sk->sk_family == AF_INET6)
+> > ---8<---
+> > 
+> > Scenario is like
+> > 
+> >   1) bind(v4) creates a tb2 bucket
+> >   2) bind(v4-mapped-v6) creates another tb2 bucket
+> >   3) listen(v4) finds the second tb2 and trigger warning
+> > 
+> > ---8<---
+> > from socket import *
+> > 
+> > s = socket()
+> > s.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+> > s.bind(('255.255.255.255', 0))
+> > 
+> > s2 = socket(AF_INET6, SOCK_STREAM)
+> > s2.setsockopt(SOL_SOCKET, SO_REUSEPORT, 1)
+> > s2.bind(('::ffff:255.255.255.255', s.getsockname()[1]))
+> > s.listen()
+> > ---8<---
+> > 
+> > Will post a formal patch after doing more tests with SO_REUSEPORT.
+> > 
+> > Thanks!
+> 
+> Hi Kuniyuki, did you get around to fixing and posting this patch? I
+> couldn't find anything on the mailing list.
+> 
+> Would you like help fixing this?
 
-ARM64 kernel decompression is done by bootloaders but
-the filter can still be useful, for example, for Squashfs.
+Hi,
 
-A duplicated check for XZ_DEC_ARM in xz_private.h was omitted too.
+It's fixed by this patch.
+https://lore.kernel.org/netdev/20231010013814.70571-1-kuniyu@amazon.com/
 
-Signed-off-by: Lasse Collin <lasse.collin@tukaani.org>
----
-
- lib/xz/Kconfig      |    5 +++++
- lib/xz/xz_dec_bcj.c |   50 +++++++++++++++++++++++++++++++++++++++++++++++++-
- lib/xz/xz_private.h |    7 +++++--
- 3 files changed, 59 insertions(+), 3 deletions(-)
-
-diff -rup linux-6.6.orig/lib/xz/Kconfig linux-6.6/lib/xz/Kconfig
---- linux-6.6.orig/lib/xz/Kconfig	2023-10-30 04:31:08.000000000 +0200
-+++ linux-6.6/lib/xz/Kconfig	2023-11-08 16:27:17.661462876 +0200
-@@ -34,6 +34,11 @@ config XZ_DEC_ARMTHUMB
- 	default y
- 	select XZ_DEC_BCJ
- 
-+config XZ_DEC_ARM64
-+	bool "ARM64 BCJ filter decoder" if EXPERT
-+	default y
-+	select XZ_DEC_BCJ
-+
- config XZ_DEC_SPARC
- 	bool "SPARC BCJ filter decoder" if EXPERT
- 	default y
-diff -rup linux-6.6.orig/lib/xz/xz_dec_bcj.c linux-6.6/lib/xz/xz_dec_bcj.c
---- linux-6.6.orig/lib/xz/xz_dec_bcj.c	2023-10-30 04:31:08.000000000 +0200
-+++ linux-6.6/lib/xz/xz_dec_bcj.c	2023-11-08 16:29:37.949475877 +0200
-@@ -24,7 +24,8 @@ struct xz_dec_bcj {
- 		BCJ_IA64 = 6,       /* Big or little endian */
- 		BCJ_ARM = 7,        /* Little endian only */
- 		BCJ_ARMTHUMB = 8,   /* Little endian only */
--		BCJ_SPARC = 9       /* Big or little endian */
-+		BCJ_SPARC = 9,      /* Big or little endian */
-+		BCJ_ARM64 = 10      /* AArch64 */
- 	} type;
- 
- 	/*
-@@ -334,6 +335,45 @@ static size_t bcj_sparc(struct xz_dec_bc
- }
- #endif
- 
-+#ifdef XZ_DEC_ARM64
-+static size_t bcj_arm64(struct xz_dec_bcj *s, uint8_t *buf, size_t size)
-+{
-+	size_t i;
-+	uint32_t instr;
-+	uint32_t addr;
-+
-+	for (i = 0; i + 4 <= size; i += 4) {
-+		instr = get_unaligned_le32(buf + i);
-+
-+		if ((instr >> 26) == 0x25) {
-+			/* BL instruction */
-+			addr = instr - ((s->pos + (uint32_t)i) >> 2);
-+			instr = 0x94000000 | (addr & 0x03FFFFFF);
-+			put_unaligned_le32(instr, buf + i);
-+
-+		} else if ((instr & 0x9F000000) == 0x90000000) {
-+			/* ADRP instruction */
-+			addr = ((instr >> 29) & 3) | ((instr >> 3) & 0x1FFFFC);
-+
-+			/* Only convert values in the range +/-512 MiB. */
-+			if ((addr + 0x020000) & 0x1C0000)
-+				continue;
-+
-+			addr -= (s->pos + (uint32_t)i) >> 12;
-+
-+			instr &= 0x9000001F;
-+			instr |= (addr & 3) << 29;
-+			instr |= (addr & 0x03FFFC) << 3;
-+			instr |= (0U - (addr & 0x020000)) & 0xE00000;
-+
-+			put_unaligned_le32(instr, buf + i);
-+		}
-+	}
-+
-+	return i;
-+}
-+#endif
-+
- /*
-  * Apply the selected BCJ filter. Update *pos and s->pos to match the amount
-  * of data that got filtered.
-@@ -381,6 +421,11 @@ static void bcj_apply(struct xz_dec_bcj
- 		filtered = bcj_sparc(s, buf, size);
- 		break;
- #endif
-+#ifdef XZ_DEC_ARM64
-+	case BCJ_ARM64:
-+		filtered = bcj_arm64(s, buf, size);
-+		break;
-+#endif
- 	default:
- 		/* Never reached but silence compiler warnings. */
- 		filtered = 0;
-@@ -554,6 +599,9 @@ XZ_EXTERN enum xz_ret xz_dec_bcj_reset(s
- #ifdef XZ_DEC_SPARC
- 	case BCJ_SPARC:
- #endif
-+#ifdef XZ_DEC_ARM64
-+	case BCJ_ARM64:
-+#endif
- 		break;
- 
- 	default:
-diff -rup linux-6.6.orig/lib/xz/xz_private.h linux-6.6/lib/xz/xz_private.h
---- linux-6.6.orig/lib/xz/xz_private.h	2023-10-30 04:31:08.000000000 +0200
-+++ linux-6.6/lib/xz/xz_private.h	2023-11-08 16:31:17.155717209 +0200
-@@ -37,6 +37,9 @@
- #		ifdef CONFIG_XZ_DEC_SPARC
- #			define XZ_DEC_SPARC
- #		endif
-+#		ifdef CONFIG_XZ_DEC_ARM64
-+#			define XZ_DEC_ARM64
-+#		endif
- #		ifdef CONFIG_XZ_DEC_MICROLZMA
- #			define XZ_DEC_MICROLZMA
- #		endif
-@@ -98,9 +101,9 @@
-  */
- #ifndef XZ_DEC_BCJ
- #	if defined(XZ_DEC_X86) || defined(XZ_DEC_POWERPC) \
--			|| defined(XZ_DEC_IA64) || defined(XZ_DEC_ARM) \
-+			|| defined(XZ_DEC_IA64) \
- 			|| defined(XZ_DEC_ARM) || defined(XZ_DEC_ARMTHUMB) \
--			|| defined(XZ_DEC_SPARC)
-+			|| defined(XZ_DEC_SPARC) || defined(XZ_DEC_ARM64)
- #		define XZ_DEC_BCJ
- #	endif
- #endif
+Thanks
