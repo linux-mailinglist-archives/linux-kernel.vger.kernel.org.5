@@ -2,123 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18F57E500D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632F87E500F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbjKHFe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 00:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S234799AbjKHFfC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 00:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjKHFe1 (ORCPT
+        with ESMTP id S229835AbjKHFe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 00:34:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7EA1A4;
-        Tue,  7 Nov 2023 21:34:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD713C433C7;
-        Wed,  8 Nov 2023 05:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699421665;
-        bh=QCMb8LNvrw0v1n2WKL+qqMTAtgJkKYzYKLDoK7dEVho=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=INFPOU7QgqLQwfvrQ2zSmvcDkpJuMTs/mqrdkxsp5CJh3g4qm6cPnm7zqAv6AaJXC
-         /slMj1Ht504mIuErcYlVfbIWwxPzRF+WGeIHYZCcFGZkNjikncQShyQ7AfZVr/2BLL
-         27mIl+jpDNxTpJCAweeSX4ICRZJnuOmdOueyTmgr9VFJdbfeqyGYXjX+fvZgkH/ya1
-         jW/Eo+5Kcz1Go/uRsCU51gHMhvjvQ+1Sr2URUMV2VduBebwh4z/3ckrXLQbUWbaBcs
-         TusYJpgcxgeXwo5pcRx+dUd2HRBaRaHWhQ4J6lB011K+aW1JOAxRKm5cxXLyZZqP1d
-         Uu5FryDZ9/pjQ==
-Date:   Wed, 8 Nov 2023 11:04:15 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <cang@qti.qualcomm.com>
-Cc:     quic_cang@quicinc.com, bvanassche@acm.org,
-        stanley.chu@mediatek.com, adrian.hunter@intel.com,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/7] scsi: ufs: ufs-qcom: Set initial PHY gear to max
- HS gear for HW ver 5 and newer
-Message-ID: <20231108053415.GE3296@thinkpad>
-References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
- <1699332374-9324-6-git-send-email-cang@qti.qualcomm.com>
+        Wed, 8 Nov 2023 00:34:59 -0500
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1350D1A4;
+        Tue,  7 Nov 2023 21:34:57 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28014fed9efso5201343a91.0;
+        Tue, 07 Nov 2023 21:34:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699421696; x=1700026496;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aj8+KDGZnfeN+8vQSl4+O0eA16A22y/CzIXhddtooPI=;
+        b=chiOmGcCvmay3WnHKRgdSBIs/runRq8AxloMCPfSWWfvM43YI/CWvQQ0zUuGfdVAFp
+         P15/mmZKH/RWCclnNWmKE2BspVQ3tyirYkq8lPUs5VEX9sp06IBs7rieyLtvCLceX0wT
+         9wsMfXwhCqArT/XvW9Z04PzlxS9MshS/DvTSnEGQkXRzSyPwqLV3Jie7djKS+4/3khhh
+         6ocICQgE0r/1/oDmvPJTYHT6OOJnRi+cH2bXIfqJrgKuMQ+c7FeESNNM2u+IQqLV21z3
+         drFt5l75CbwZDMKuQ8Cg1CVE0i8FFvbxQyvMKchsglpSFwylqL7UZ4uRaQzPN+brG6EM
+         X7nA==
+X-Gm-Message-State: AOJu0Yyy4eLcnT5dHKtQLzsqqd/B3OohFE6H6/M+eRaAasWsMePk5mzf
+        a44RX3w6NdRiFwICGvueNmfc+YiSWo5EN8IRCdonL2cP
+X-Google-Smtp-Source: AGHT+IHm0pTIf2r+NoqJKkrRqkdT1E+A2wxNwpGxOCzkgbJykuseWPI4yruowkm/BHxXXY7fUJTQBmLSTBPTGAXUV0k=
+X-Received: by 2002:a17:90b:1b0e:b0:27c:ef18:d270 with SMTP id
+ nu14-20020a17090b1b0e00b0027cef18d270mr755936pjb.20.1699421696369; Tue, 07
+ Nov 2023 21:34:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699332374-9324-6-git-send-email-cang@qti.qualcomm.com>
+References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-34-namhyung@kernel.org>
+ <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
+In-Reply-To: <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 7 Nov 2023 21:34:45 -0800
+Message-ID: <CAM9d7chtQ7EUracK9f87NN-Er=u+rvKWShbqpvy=De7jyjauEQ@mail.gmail.com>
+Subject: Re: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 08:46:11PM -0800, Can Guo wrote:
-> From: Can Guo <quic_cang@quicinc.com>
-> 
-> Set the initial PHY gear to max HS gear for hosts with HW ver 5 and newer.
-> 
+On Tue, Nov 7, 2023 at 1:32 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> On Wed, 11 Oct 2023 20:50:56 -0700
+> Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> > The DWARF location expression can be fairly complex and it'd be hard
+> > to match it with the condition correctly.  So let's be conservative
+> > and only allow simple expressions.  For now it just checks the first
+> > operation in the list.  The following operations looks ok:
+> >
+> >  * DW_OP_stack_value
+> >  * DW_OP_deref_size
+> >  * DW_OP_deref
+> >  * DW_OP_piece
+> >
+> > To refuse complex (and unsupported) location expressions, add
+> > check_allowed_ops() to compare the rest of the list.  It seems earlier
+> > result contained those unsupported expressions.  For example, I found
+> > some local struct variable is placed like below.
+> >
+> >  <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
+> >     <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
+> >         (DW_OP_fbreg: -48; DW_OP_piece: 8;
+> >          DW_OP_fbreg: -8; DW_OP_piece: 4;
+> >          DW_OP_piece: 1028;
+> >          DW_OP_fbreg: -24; DW_OP_piece: 4)
+> >
+> > Another example is something like this.
+> >
+> >     0057c8be ffffffffffffffff ffffffff812109f0 (base address)
+> >     0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
+> >                                                 DW_OP_constu: 18446744073709551612;
+> >                                                 DW_OP_and;
+> >                                                 DW_OP_stack_value)
+> >
+> > It should refuse them.  After the change, the stat shows:
+> >
+> >   Annotate data type stats:
+> >   total 294, ok 158 (53.7%), bad 136 (46.3%)
+> >   -----------------------------------------------------------
+> >           30 : no_sym
+> >           32 : no_mem_ops
+> >           53 : no_var
+> >           14 : no_typeinfo
+> >            7 : bad_offset
+> >
+>
+> The code itself looks good to me.
+>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-How about,
+Thanks!
 
-"For UFSHC >= 5.0, set the initial PHY gear based on the gear value returned by
-ufs_qcom_get_hs_gear(). For the rest, use the existing default value of G2."
+>
+> If this fixes the previous patch in the same series (this seems a fix for the
+> main usecase), please make it to a single patch.
 
-> This patch is not changing any functionalities or logic but only a
-> preparation patch for the next patch in this series.
-> 
+Well.. I think it's a fix and also a quality issue.  And I'd like to
+have this separately to document and confirm which operations
+are safe or acceptable.  I listed 4 operations here based on my
+local tests but I may miss something.
 
-You are also moving the default phy_gear code to ufs_qcom_set_host_params(). So
-it should be mentioned in the commit message.
+Thanks,
+Namhyung
 
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> ---
->  drivers/ufs/host/ufs-qcom.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 55ee31d..94d34b5 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1069,6 +1069,14 @@ static void ufs_qcom_set_host_params(struct ufs_hba *hba)
->  
->  	/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
->  	host_params->hs_tx_gear = host_params->hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> +	host->phy_gear = host_params->hs_tx_gear;
-> +
-> +	/*
-> +	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
-> +	 * Switching to max gear will be performed during reinit if supported.
-> +	 */
 
-This comment should be moved inside the "if" condition here as done in the next
-patch.
-
-- Mani
-
-> +	if (host->hw_ver.major < 0x5)
-> +		host->phy_gear = UFS_HS_G2;
->  }
->  
->  static void ufs_qcom_set_caps(struct ufs_hba *hba)
-> @@ -1313,12 +1321,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->  		dev_warn(dev, "%s: failed to configure the testbus %d\n",
->  				__func__, err);
->  
-> -	/*
-> -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
-> -	 * Switching to max gear will be performed during reinit if supported.
-> -	 */
-> -	host->phy_gear = UFS_HS_G2;
-> -
->  	return 0;
->  
->  out_variant_clear:
-> -- 
-> 2.7.4
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
+> >  1 file changed, 40 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> > index 7f3822d08ab7..093d7e82b333 100644
+> > --- a/tools/perf/util/dwarf-aux.c
+> > +++ b/tools/perf/util/dwarf-aux.c
+> > @@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
+> >       return true;
+> >  }
+> >
+> > +static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
+> > +{
+> > +     /* The first op is checked separately */
+> > +     ops++;
+> > +     nops--;
+> > +
+> > +     /*
+> > +      * It needs to make sure if the location expression matches to the given
+> > +      * register and offset exactly.  Thus it rejects any complex expressions
+> > +      * and only allows a few of selected operators that doesn't change the
+> > +      * location.
+> > +      */
+> > +     while (nops) {
+> > +             switch (ops->atom) {
+> > +             case DW_OP_stack_value:
+> > +             case DW_OP_deref_size:
+> > +             case DW_OP_deref:
+> > +             case DW_OP_piece:
+> > +                     break;
+> > +             default:
+> > +                     return false;
+> > +             }
+> > +             ops++;
+> > +             nops--;
+> > +     }
+> > +     return true;
+> > +}
+> > +
+> >  /* Only checks direct child DIEs in the given scope. */
+> >  static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+> >  {
+> > @@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+> >               /* Local variables accessed using frame base register */
+> >               if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
+> >                   data->offset >= (int)ops->number &&
+> > +                 check_allowed_ops(ops, nops) &&
+> >                   match_var_offset(die_mem, data, data->offset, ops->number))
+> >                       return DIE_FIND_CB_END;
+> >
+> >               /* Only match with a simple case */
+> >               if (data->reg < DWARF_OP_DIRECT_REGS) {
+> > -                     if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
+> > +                     /* pointer variables saved in a register 0 to 31 */
+> > +                     if (ops->atom == (DW_OP_reg0 + data->reg) &&
+> > +                         check_allowed_ops(ops, nops))
+> >                               return DIE_FIND_CB_END;
+> >
+> >                       /* Local variables accessed by a register + offset */
+> >                       if (ops->atom == (DW_OP_breg0 + data->reg) &&
+> > +                         check_allowed_ops(ops, nops) &&
+> >                           match_var_offset(die_mem, data, data->offset, ops->number))
+> >                               return DIE_FIND_CB_END;
+> >               } else {
+> > +                     /* pointer variables saved in a register 32 or above */
+> >                       if (ops->atom == DW_OP_regx && ops->number == data->reg &&
+> > -                         nops == 1)
+> > +                         check_allowed_ops(ops, nops))
+> >                               return DIE_FIND_CB_END;
+> >
+> >                       /* Local variables accessed by a register + offset */
+> >                       if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
+> > +                         check_allowed_ops(ops, nops) &&
+> >                           match_var_offset(die_mem, data, data->offset, ops->number2))
+> >                               return DIE_FIND_CB_END;
+> >               }
+> > @@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+> >               if (data->addr < ops->number)
+> >                       continue;
+> >
+> > -             if (match_var_offset(die_mem, data, data->addr, ops->number))
+> > +             if (check_allowed_ops(ops, nops) &&
+> > +                 match_var_offset(die_mem, data, data->addr, ops->number))
+> >                       return DIE_FIND_CB_END;
+> >       }
+> >       return DIE_FIND_CB_SIBLING;
+> > @@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
+> >               return -1;
+> >
+> >       if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
+> > -         !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
+> > +         !dwarf_frame_cfa(frame, &ops, &nops) &&
+> > +         check_allowed_ops(ops, nops)) {
+> >               *preg = reg_from_dwarf_op(ops);
+> >               *poffset = offset_from_dwarf_op(ops);
+> >               return 0;
+> > --
+> > 2.42.0.655.g421f12c284-goog
+> >
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
