@@ -2,292 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4577E5238
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595BE7E5239
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235452AbjKHIzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        id S1343870AbjKHIzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbjKHIzd (ORCPT
+        with ESMTP id S235217AbjKHIzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:55:33 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A54ED4A
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:55:31 -0800 (PST)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88kxNs014855;
-        Wed, 8 Nov 2023 08:54:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=0bPOtEPKUqm7jw8seOqH9PY63Lv+Ex/Snix2PANv5rY=;
- b=vxKXjZr+5aA/CJ/r2/va0n3JPzSs/mJ48wil9ME8yjLk1Ki8RRgLFPMdpU29Lf9226VZ
- ZK58IcgkfatV3B+JPdAdCJ+NlYdhLGTXMg8vag92F1RAslcm5TgSKJUiE8a1lfqW9HOX
- io+ex9CPiDbVd0vK0fFfheTw7JEaX880rWeQtQhpWRgHDM5FHl2AePcL3t2bywZ2M/Q9
- pdKFfxBEykPPFmd8kStdJG4czU7vI4jg6DJgi4D1NvRf4nEuNSb36kZvvV/D6KB0mYqG
- b3lP5zYdMi8TP8K/N9szMuy8gPxpWDM4XIZUwrPnScuHkNm1ziqq2fDESyH4TsuAjQYF /A== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w26ry10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Nov 2023 08:54:27 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A882aF7023844;
-        Wed, 8 Nov 2023 08:54:25 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w24nshb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Nov 2023 08:54:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AUGq1811U8feBaSU7M4YUn1fR7wtwzIvAIykZ1IorH10gyKjdnY3uSEoNL1oFg/vtrgvPBSrR8NJLaa3wehmF3jH7gmT+VsahSl2r47IWGwofYbschAT3zobpRXfEhE9cJc87gn8klzaWGwt96owFf8DrKq0xIb8s2dclZJKec986mT+RiEcDga40ELm3XUOt3EEewEbgRU/+b+9FnvOewOwMuYVeryoLCUFY1+6Q12O1KaBt1VehJXx5b5tI2lkdYvzEzXcCmADMA9pBIQ4H9D9ZW7wWAzHaRwP3QqZ+g0IYiFs42Qf0rILJUVIS/4ZDcWC+GRueEVQXV2xHYdlYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0bPOtEPKUqm7jw8seOqH9PY63Lv+Ex/Snix2PANv5rY=;
- b=PIzLrPhifd2PsF9n5CeGzTmGf/bFz6NQH/UOTN4UMbcrPHHnoWxb9A2ZkeDL4QaGm+MKOla2TSaPCCjJH9xVysnrQMarLHGduhTcvZaMsfxOqC4lsmY02X7LV3QPMlU3r5L8UGrrkrR77Emy+4zWYTVbP3BcNdhLyMuJ56yL5ROgEB4aH1d9JpERwX/MtrV6ixxd5yxWbd38HxU/1S9zX3PakRr8iEsAfZ3ZeXxRiZqdnLuTOgIWZOvQ85npfa4qDtSCdmBf4lWLYu2e98oL+ezzojNiWb0U44z/95qunFFrwptU5R60Vugv7PqZLW9A+Dvrn+CfBDtDcQlq/1FicA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 8 Nov 2023 03:55:35 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E818DD4A
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:55:32 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c5056059e0so94977981fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:55:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0bPOtEPKUqm7jw8seOqH9PY63Lv+Ex/Snix2PANv5rY=;
- b=h9S5aQBgCw3SnfEde8Rnz3TzszK8D6hfTLzl3BO7iPlb4ixEidv/bjN6DCJFdnNi/n6wlrUoDyylGgeISDOAbyi1tHPpl/qxubNsjwgrKvEIHF2dyf1waDRKThuaLMbhbulzVtzk39FZmD7i7GuODAEpcxW6mlYLI8cMX4jy0Zw=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by DM4PR10MB7451.namprd10.prod.outlook.com (2603:10b6:8:18e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 8 Nov
- 2023 08:54:22 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::10fc:975b:65bf:1d76]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::10fc:975b:65bf:1d76%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 08:54:22 +0000
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-12-ankur.a.arora@oracle.com>
- <20231108012823.GD11577@google.com>
- <7155f21f-a7e5-cc36-89e5-c1ce257b9420@suse.cz>
- <CAJD7tkYYqqYT361pbeqTFxoAep2qtTAWSQx4SzFCcEEOZgRT3Q@mail.gmail.com>
-User-agent: mu4e 1.4.10; emacs 27.2
-From:   Ankur Arora <ankur.a.arora@oracle.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
-        SeongJae Park <sj@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Hugh Dickins <hughd@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>
-Subject: Re: [RFC PATCH 68/86] treewide: mm: remove cond_resched()
-In-reply-to: <CAJD7tkYYqqYT361pbeqTFxoAep2qtTAWSQx4SzFCcEEOZgRT3Q@mail.gmail.com>
-Date:   Wed, 08 Nov 2023 00:54:19 -0800
-Message-ID: <87sf5gocas.fsf@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: MN2PR20CA0002.namprd20.prod.outlook.com
- (2603:10b6:208:e8::15) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+        d=gmail.com; s=20230601; t=1699433731; x=1700038531; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y5Neyzo+yXODi+LxgmmxsXAP91xo9G/2gVdE30ohYlc=;
+        b=c1DpzliuL3P/OS+Fpp/oWoetqikYOfFLGUQfFd+SCIWrMFBTOC1Etcu12v4D970/2i
+         /bZHGojCEvL0/3C4tGinmQM2F21NXIX79Nle8FwDM4QOmWBbon7N1DIy9ecuY1+ttFcy
+         qhAjdM9arlpDggJD3p6PEi4ikFtmonxoljiDiFzFTmRynX1h7a0vKR8ZEAKzRbIQHAHI
+         79EXocN6QwPddPMkMUVNYRkx3sO7k9RP2uj93w53/Mbsll8vqTmz11mMEKkzUyuR6rTs
+         ZbFcTDc0ESyE2wOXOJZZRgJCe+w2X5eBD9vbiBs/7J6NPH9sKFDj63T19RGlQ7g5AU57
+         ZyTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699433731; x=1700038531;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y5Neyzo+yXODi+LxgmmxsXAP91xo9G/2gVdE30ohYlc=;
+        b=UsgsTt4kMeID3UvXpwZIBX0Yfscj+975P1zE6TmZUuSTROfwPcAfG+ZbNRQAChH8i4
+         n3nnyjCjYiU6PCHIajkCwijNDkW5ZB8CTAvcLit8ykJKnwgaFS7rdEpsXHtkBMzM1jbA
+         Uwbqr/0wVR79GWoCoq+0btIkXVvAfpQfEGqYxun5qucyPYSXrGVqTuC/YCbOYR3j7VtU
+         GMmCWKGryYSv2yQJAP2urkDcqdwxPjIYPd4cZ2ozoyEVbMartOQPp3Y/govO8oia8AU3
+         8Mbr6nt+iQJwCyVNOBh0DCrafVT5Omz30hVKTEzeC0a5oi6Eyao6Hh+JvJqwXmIaUfjV
+         3bGw==
+X-Gm-Message-State: AOJu0YyvsTaDlzDzXio2/eh8OK378FM2UHXm1vB7b0ySuMOjEvMHYylq
+        IxXFGzkjS397xQAhD1NOJUrqEcD8JShQBTBof2nbTZ/EOUI=
+X-Google-Smtp-Source: AGHT+IEhGkbnw+DdnnIHh1LEcmqDkwpQfE1G3mZkSvugcfSpqjW2g7mGAOqEJpcf6kQYikqM7O/X0VqLJeCi7ScgS/o=
+X-Received: by 2002:a05:651c:11c6:b0:2be:54b4:ff90 with SMTP id
+ z6-20020a05651c11c600b002be54b4ff90mr890530ljo.53.1699433730681; Wed, 08 Nov
+ 2023 00:55:30 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|DM4PR10MB7451:EE_
-X-MS-Office365-Filtering-Correlation-Id: 673cfd77-8d62-4112-e22b-08dbe0384d13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RLuM7u9OdZg6IrYR2DYmfR5/3qoLy2HOQiFs4eUoSiq4EsSHJky1i8u7aXbVvuWrrwLUi9uAHoLvs7WUtfzketmy9B+oZmMcnpyrP2c6zVrYbAC0vV+oce6Jh8nhxNAipcxmkN1P/GEGCU9NGhdn/LYBzpevklDoNHQWfh8fWJgLm+2ZX7PR66dRnme08mLZnRsKqzANJbqjvB2P0p6tUpGvur1ty86Y1UBpfvy+s8K6NHMnrjbiBPaLF2/g4VHAby44lF1OAbyabQXQFBztCSd2+wzQW7Gnds8g/R8uPJsRUzIoDyGY8d0/rbrjE5bJSieO3nRTyt7wgTFmXwviWUel166yfjjs9sjDOtUEhI7rDG2mt6rdSudoNU/EiA3KGcwdWlKRmeMZEQUH+dnXo05ISP1BKhmlOEkfTJWxcJCx0rhhJ+5LYoHY9qMDG7iE79Im3dvOw/qyVrcIHNbm2zTE3X7wDKXYIFlkqr4EUPe5a+bNsw+grFBzXxEMhSs+BW6ThBFhIyrfg5dVwdHhNoEPt+Cdb5AYDYO+6yUbGXHRfp3p0Fo4g3Qica38AYpw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(346002)(136003)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(83380400001)(4326008)(6666004)(8676002)(8936002)(6506007)(66946007)(6486002)(54906003)(66476007)(6916009)(66556008)(38100700002)(316002)(53546011)(36756003)(478600001)(26005)(2906002)(86362001)(5660300002)(7406005)(2616005)(7416002)(7366002)(41300700001)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NlhrcHZEWFphdkk2cFJSRE1GdnlMY1lRMHltWGlmd0dudlhzTkUrNmtsVWJD?=
- =?utf-8?B?eHRtRERnbTRhd2E3c2V4dkxzWDBvdW5veHBZQUZkMFpwM0tVY1BTSDQ0cisy?=
- =?utf-8?B?bHNJQ3Vid0YxeWRXWVQ5cUZqUnB5YlZUMGg5akwwVXVvMDRTdGhrbUFqYTg0?=
- =?utf-8?B?QjFZaFFtY0Y2NmRhc0dSWUtQbTUvQXBlMkZrUXl1aUtlMkVtZ0xoL2VyTVFh?=
- =?utf-8?B?QkNrLzUwL1VpMHFZSkp1ekNuelQrQ2F2cExrR3BrRU01b0krd29oUkRBbUg0?=
- =?utf-8?B?UHpCYmtXWURFOWlDdk1UeDBQcFFIUlRFRlVkZWJldVhocE00TDdQYXBua1Jx?=
- =?utf-8?B?dUZBNDVncHZZb2pCWGhUeGltLzRRbDZXMDcweWdqSkVnU3kwZzRReTNMVXFG?=
- =?utf-8?B?azA5Vkp6THgrbE1CMkF1M0paRWNPQUp2eUZXcU4wUG84L2dielNZUHdRTUc2?=
- =?utf-8?B?SmdlR0xya1l2eGQ4b0c5WUpTNzNlR0lyQm1md2FaVFUvY040bHF6MGdiMUw4?=
- =?utf-8?B?RG5lNkFtWnBzdVdha3ZhNTVhdjVzR1V5QnN6MDUxSDY2L2NpSDAzWm8zK3ps?=
- =?utf-8?B?SUFGTjJUamVJeUx0R2FpV1VwdGNyVEhrd1UxZU5ZTzdmNGxyTjMxbWtUSGFI?=
- =?utf-8?B?dEF2M09BUDJ1aHBvOS8wdjJsQUZVYzk0T1IzM0liL2dES3d1UEIvTTZYZTEy?=
- =?utf-8?B?T0pYQVg4Ky80QnFHdWFWQ09qUFA2QVJlOENUc1BMZm91KzBHZU1XcmdoQ1dD?=
- =?utf-8?B?S20wWnpJbFpybmVabW5hRFV1UGFiWmVEVXUwZ2VyUkIxR3JVWDJCL2RCQ0pz?=
- =?utf-8?B?cjNlT2I2TXhZQWhZdFhIT0dtb2YyK1Y1ZDNteXd5bGFnWFNKVzZCN20rY2hq?=
- =?utf-8?B?elhHTjlkQm9XSmtkTjlqTStEQmhJS2RTWnhQSkJZeTdLQUxoVjRyQWtsL0po?=
- =?utf-8?B?SnBnWldwN1k2ZnJrZXpCWFVuNDhIMDNibmY5dEI2TzJUMGlHNjZyWTZJTXVn?=
- =?utf-8?B?VkFjRjJTTk9yLzZpNkpabG9McHFBb2FubDZBelZ1Rk14c1NTcFFFZGVXc2g0?=
- =?utf-8?B?OHZQQ2tQaDZmT1JRdVFXSGoxS0JkWkdNMER6R1dHMEJMMGt5dDNRZUVoN3Ey?=
- =?utf-8?B?TTErN0ZlN2VQOEMrQXBTSnVvZGdhRHZhY0Rhb1FFRXZXMkVNSGw1azlsMmlK?=
- =?utf-8?B?ZG9PREpCeC93Z2xLTWZnL3JSU0JUSHdrTkVFOTRONGJ5Y1R3b1ZtRERYdldQ?=
- =?utf-8?B?a1B6ak45Zy9vaE1HbXlSVGg2aTJKaUJYajVGKzFyQ2pTWVltUnFUeEcrb3FI?=
- =?utf-8?B?azdld2ltWDlBaFlyQWxjcE9odlI2SkVuZ2R4a1l6eGp5dDhOSTNabXdyemRC?=
- =?utf-8?B?bFlYM2l5OHZTNUFua25qaStZeE1vcE1vcjU2eFlKbTFwbmpjSCtrSUpKQ3pG?=
- =?utf-8?B?K3B0NVNFVjRlakpEV1VDWjBoU2FMUUpvNXYvUk1XVzNrandaS1ZWL1VYVEcw?=
- =?utf-8?B?Q3dMZWlWeTdaSVVGODBpdS9DTTRuYTdTUk0zSThZclc1RTk4S3VBYlBDVXhR?=
- =?utf-8?B?SmxQREpSSGVtWnBPbUhlYjRsTjFuaXQ0NnlMRmpiQUwyR2dHcERwSVJWNGVu?=
- =?utf-8?B?bHdUODYwKzFGblBEai96QzhXZ3IvamtiajJEelBwa2srVDhTaXFUVDNOMy9D?=
- =?utf-8?B?dUIvTVdxWWVzYjB6TTh6TWpzNEVWUFppcEFOcXB3aUZHUVlxOTh0ODR4MkR5?=
- =?utf-8?B?WGdnVlNaQjh5QjFLWEE0akp3Nm9RdzFIN004cGFhd0RrN1lCV0MrM1N4Z1Zs?=
- =?utf-8?B?Mkdua0V4Z1phWWVzY2JEUGZXS3A3ZWZWYldlQ0h5SDIzNkU3MXVCRHl4TTZW?=
- =?utf-8?B?Q2RldEpNWWsxNHkzanZ3VnR6cUdLSGtROHpVYUxHcTk3N1FIeDlFNjdFaEww?=
- =?utf-8?B?VHBUZ2R6RnJCcmN6aTNVSklIWTZ1ZXg1Y0lGbmVyb1AzckxvQlptMlhyNGRu?=
- =?utf-8?B?Z3dtYWJOa09kbmVrWmhCVUxOcklBUHVtalJCbWxIdjZHNjZ5TlpwUjVkVEh3?=
- =?utf-8?B?N1NIMWpTM2VvL2dnSVBzQ25BRDZBQjdoVStPOHhIUDN1MnVMdUlEWGdUdWwy?=
- =?utf-8?B?L015dWNta3RKemxuYXMyeDIvbm1veXFuWWh0cVZhL1dNdXhLeFZWQlRrM1Js?=
- =?utf-8?B?L0E9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?TlZLODN2dnFPQkxqOXdoZ3VtNmwxMGVnS1lHMU5FODducnovMnBGR2srU0U5?=
- =?utf-8?B?R1BkYnZ6bG16cmVMM1U0dTA2c3lkbWtCUUpRZjlja3BjN0RVbEExbXlxS2pv?=
- =?utf-8?B?MnZsOEkzWDlNR21wekQ5a1FKbm14bWxwdTNRU3VoaFZFc2FyaGIzQVpHVklX?=
- =?utf-8?B?UmdhemZIY0V0UGhRbkkxc3lNNEhOUnF1R3hka2tQWGl0TGVEQXdoa1BpWktT?=
- =?utf-8?B?NzlnbmFUM0dNTVlzWklXWG81MG4wMWtNQllFZE5NcitGM1hQVVl1MDlLTjc0?=
- =?utf-8?B?N1dRR01ORFZKOFlmbHhaakpHSFNuUjV1eWFJWXVCMFlOSUNJekFkbzBRdi9a?=
- =?utf-8?B?Z01ueHR3UW1QODNHQ0hKYXRjbThZbHVsTVBEaXZQTGZ3OTBrVXl0Z25Qbk10?=
- =?utf-8?B?MXdPUncvMjZzU1NXNzVJZDBXMTlOTXVRS0FFeThnU1BkNFB4dEtYSkplZ3Iz?=
- =?utf-8?B?dnRVK0pORkxEN0d1ME51dzh2RkxJZ1A0S2Y0V1NSWFdEM2lXL0VzbEdyWmE2?=
- =?utf-8?B?RlpiQlJ6RGU3SkVSTlc4bmVQd09tRzlNdjg3aDFhZnBaSTVkdEpYOVBjSUNB?=
- =?utf-8?B?LzhmRjlsRkxlaUJpZzVWalJlRUlIZGtLVHVyQkMzcXVNTWw1TXNrbEJGM0o3?=
- =?utf-8?B?cjI3Z3QxdnM1WDdaZ29iU0phcStlQ0VxWmpSTE5ESDZrbEl5c3FEUm95T1du?=
- =?utf-8?B?R0FjY3hJbERrcElDdmdvYUlLeC9ra2FOekZUVVliNmJuejUwZlc3TEYvR2h4?=
- =?utf-8?B?ZUN5Y2RWK29XMzFlRkxWMWNBY2tQMWduajNsdTd6VUoyRnlvSTVvSDBmN0Q0?=
- =?utf-8?B?YTgwdWNkSVI1OFhvMmRpTWplZ0lVRVRLN3FHTHN3R3FnR2IvOE14bkwwaktH?=
- =?utf-8?B?MTN0Nm0wMnE2ZEZpajlFSHMrNzRoYTQwdG1sZk5qZmUzK0xlSHVELzZrSkxH?=
- =?utf-8?B?Z3VNUm1abnNlVGVoV1JpUUlWUmpXa1F6cUdJTVlKOUhzZWJnMXRpaFoycGFX?=
- =?utf-8?B?WTczK0JITWVGQVNsQm53S21PTE4ycDRTSHpaTmZSeXNlbU9XUmRiWTY0Wk5z?=
- =?utf-8?B?VHpMS3EwQkliV2hCZXBwb2YvWkJNdFg4K1pDWHRoSGl6TVYvbXNEUUZsdnZE?=
- =?utf-8?B?UzNmUi9acE9KeDdKSEtLdG1MTkdIRTdST0Y0TkpLeGlpditJUCtNekkrekRw?=
- =?utf-8?B?R1pLTC9FdEp5Q1NEWW9GbnJGMzNBbVJpQjVZR3lXOTRQU1JNUldZTUFHRXVt?=
- =?utf-8?B?OTBIUVBFRE9hUnZFZG9JWXNua3dXNmJaTDRTZjA4c09yK0lpcVpBcTNkY3pI?=
- =?utf-8?B?S0kzMEpzaGhJZmczYVU5ZktHcjdRLzArOC9WWEFsSmt6Q3MvZVhDZnNsUW42?=
- =?utf-8?B?ZXhEZFlHNXlVcFhDM1A3bWxLdzBlSmFMWmR0Ti96UVpieGc0dUZ1VDloelZp?=
- =?utf-8?B?bnNmalA5RThCazZ5b0J4THhIc2VJd1JhZXREWkd3b0N2dzZEcG9TNmtnRGdI?=
- =?utf-8?B?Yzc4cm1iRTlFYzNSMGJsa0tramVGdDVGaTVhMWI0amhlUllabzgrMTlkbVlj?=
- =?utf-8?B?YnhmK2ZxOWhicEhtNjBSeEQ5WkF5OUJxT0JOTGNYbGlEM1MzdFdLMTBiQ3B3?=
- =?utf-8?B?Uld6U3AzTzVzT29ZOTROR2ZwdU1kZ21vVHRhYUZ1VTFsVERIVmo3NGc4K01q?=
- =?utf-8?B?ZFdRRG5BQ2I0T0xwMFdjNGNJV25xYitVZXNoNjFWVGFhS3RtRkFHNkRIQmor?=
- =?utf-8?B?WDF1NTdPQml2WFFOSUVIdzBJTWszSVJWTENkUCtmcTc5VHZya2l5Q2hnZDFY?=
- =?utf-8?B?NGlNdXMxenBRTk1NckpzWmdTV3ZNaWJobEE2WFEvLzRBRlB4RENVTWdpUzRo?=
- =?utf-8?B?aXNOMDBMZytNTlhPcXlmN1dJaERmK3JFNytxMG5MWkxsQmNKMUMzb2huTnBU?=
- =?utf-8?B?c0tWZjgxZFlVYkN6TU41elorMDNob0FlK0ZHQjNqZGNRa2dJM3ZiNHAxcUUz?=
- =?utf-8?B?cm83SWJacTlVZmprdm5qd1B6N0F2K0I3RTNEVHU2UmJ0dU5mSGFFcEdUNEpO?=
- =?utf-8?B?WDJ2VXlkSE1FdWxWVHRIYmtpaWtZL2dPaDJyTHRjNGJvL0RFOUdCUmhzZVRC?=
- =?utf-8?B?TFhjV1MvZVpFamhZUWt2VngwbVBrZGJ6bjQ0cG15V1htalpmZ3Z5S1A2RVp3?=
- =?utf-8?B?Y0hSQVE4emRJVmVVNUNsWFVqRHBtSlpzczJxdWJPbHNqS09QUVRjaVFibUs3?=
- =?utf-8?B?R3pTaWRhczk1a0NzQSsrVWUwU0Z3YUc0UU1pYTRhUGZTdDQrbHlRdDc1MGZu?=
- =?utf-8?B?VERuMFRDc1hqVVJEVm1VYWVoc3BSUk5LVFRwbUh3YXV2Ui9icm5mVnlLUHY2?=
- =?utf-8?Q?BZP4k6AiLDKH4Y1VfCTXRaScNY+6nVCJYhsfiu39mQpno?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: mrNbZkyxinTfD11kLQdBur7ziGAquY93eTrxMBkS2vd0LncEucMqvXo4HMrYAnv+oLRWOTIWxF55N9rrd/EE61zgMMnfSt5Q111vtShKMZv0FFZy6M9+cFxX
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 673cfd77-8d62-4112-e22b-08dbe0384d13
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 08:54:22.0952
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Nq7nyNZe4F5M6W326Y3xK4tI3NUIAjXsfmxxndS0Ic8g966alKRTfOaNKLfCKgk+kyeMOiIX6L12BW3oalpnu7ptRrDYe76U8B+jHjeJkmU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB7451
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=960 phishscore=0
- spamscore=0 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080073
-X-Proofpoint-GUID: uhZSP4S10oWnlNHB_yYn-2zj-Ss1uojN
-X-Proofpoint-ORIG-GUID: uhZSP4S10oWnlNHB_yYn-2zj-Ss1uojN
+References: <20231016071245.2865233-1-zhaoyang.huang@unisoc.com> <20231107172820.GA3745089@cmpxchg.org>
+In-Reply-To: <20231107172820.GA3745089@cmpxchg.org>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Wed, 8 Nov 2023 16:55:19 +0800
+Message-ID: <CAGWkznGbGciTocrqMowepCc=aStYFHPt8RPGYjWxQ4TRG1ZqXQ@mail.gmail.com>
+Subject: Re: [PATCHv6 1/1] mm: optimization on page allocation when CMA enabled
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, steve.kang@unisoc.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Yosry Ahmed <yosryahmed@google.com> writes:
-
-> On Tue, Nov 7, 2023 at 11:49=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> =
-wrote:
->>
->> On 11/8/23 02:28, Sergey Senozhatsky wrote:
->> > On (23/11/07 15:08), Ankur Arora wrote:
->> > [..]
->> >> +++ b/mm/zsmalloc.c
->> >> @@ -2029,7 +2029,6 @@ static unsigned long __zs_compact(struct zs_poo=
-l *pool,
->> >>                      dst_zspage =3D NULL;
->> >>
->> >>                      spin_unlock(&pool->lock);
->> >> -                    cond_resched();
->> >>                      spin_lock(&pool->lock);
->> >>              }
->> >>      }
->> >
->> > I'd personally prefer to have a comment explaining why we do that
->> > spin_unlock/spin_lock sequence, which may look confusing to people.
->>
->> Wonder if it would make sense to have a lock operation that does the
->> unlock/lock as a self-documenting thing, and maybe could also be optimiz=
-ed
->> to first check if there's a actually a need for it (because TIF_NEED_RES=
-CHED
->> or lock is contended).
+On Wed, Nov 8, 2023 at 1:28=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 >
-> +1, I was going to suggest this as well. It can be extended to other
-> locking types that disable preemption as well like RCU. Something like
-> spin_lock_relax() or something.
+> On Mon, Oct 16, 2023 at 03:12:45PM +0800, zhaoyang.huang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > According to current CMA utilization policy, an alloc_pages(GFP_USER)
+> > could 'steal' UNMOVABLE & RECLAIMABLE page blocks via the help of
+> > CMA(pass zone_watermark_ok by counting CMA in but use U&R in rmqueue),
+> > which could lead to following alloc_pages(GFP_KERNEL) fail.
+> > Solving this by introducing second watermark checking for GFP_MOVABLE,
+> > which could have the allocation use CMA when proper.
+> >
+> > -- Free_pages(30MB)
+> > |
+> > |
+> > -- WMARK_LOW(25MB)
+> > |
+> > -- Free_CMA(12MB)
+> > |
+> > |
+> > --
+>
+> We're running into the same issue in production and had an incident
+> over the weekend because of it. The hosts have a raised
+> vm.min_free_kbytes for network rx reliability, which makes the
+> mismatch between free pages and what's actually allocatable by regular
+> kernel requests quite pronounced. It wasn't OOMing this time, but we
+> saw very high rates of thrashing while CMA had plenty of headroom.
+>
+> I had raised the broader issue around poor CMA utilization before:
+> https://lore.kernel.org/lkml/20230726145304.1319046-1-hannes@cmpxchg.org/
+>
+> For context, we're using hugetlb_cma at several gigabytes to allow
+> sharing hosts between jobs that use hugetlb and jobs that don't.
+>
+> > @@ -2078,6 +2078,43 @@ __rmqueue_fallback(struct zone *zone, int order,=
+ int start_migratetype,
+> >
+> >  }
+> >
+> > +#ifdef CONFIG_CMA
+> > +/*
+> > + * GFP_MOVABLE allocation could drain UNMOVABLE & RECLAIMABLE page blo=
+cks via
+> > + * the help of CMA which makes GFP_KERNEL failed. Checking if zone_wat=
+ermark_ok
+> > + * again without ALLOC_CMA to see if to use CMA first.
+> > + */
+> > +static bool use_cma_first(struct zone *zone, unsigned int order, unsig=
+ned int alloc_flags)
+> > +{
+> > +     unsigned long watermark;
+> > +     bool cma_first =3D false;
+> > +
+> > +     watermark =3D wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+> > +     /* check if GFP_MOVABLE pass previous zone_watermark_ok via the h=
+elp of CMA */
+> > +     if (zone_watermark_ok(zone, order, watermark, 0, alloc_flags & (~=
+ALLOC_CMA))) {
+> > +             /*
+> > +              * Balance movable allocations between regular and CMA ar=
+eas by
+> > +              * allocating from CMA when over half of the zone's free =
+memory
+> > +              * is in the CMA area.
+> > +              */
+ok, thanks for point out.
+Could we simple it like this, which will mis-judge kmalloc within
+ioctl as GFP_USER. I think it is ok as it is rare
+             if (current_is_kswapd() || !current->mm)
+                 gfp_flags =3D GFP_KERNEL;
+             else
+                 gfp_flags =3D GFP_USER;
+            free_pages =3D zone_page_state(zone, NR_FREE_PAGES);
+            free_pages -=3D zone->lowmem_reserve[gfp_zone(gfp_flags)];
+            free_pages -=3D wmark_pages(zone, alloc_flags & ALLOC_WMARK_MAS=
+K);
+            cma_first =3D free_pages > zone_page_state(zone, NR_FREE_PAGES)=
+ / 2);
 
-Good point. We actually do have exactly that: cond_resched_lock(). (And
-similar RW lock variants.)
+> > +             cma_first =3D (zone_page_state(zone, NR_FREE_CMA_PAGES) >
+> > +                             zone_page_state(zone, NR_FREE_PAGES) / 2)=
+;
+> > +     } else {
+> > +             /*
+> > +              * watermark failed means UNMOVABLE & RECLAIMBLE is not e=
+nough
+> > +              * now, we should use cma first to keep them stay around =
+the
+> > +              * corresponding watermark
+> > +              */
+> > +             cma_first =3D true;
+> > +     }
+> > +     return cma_first;
+>
+> I think it's a step in the right direction. However, it doesn't take
+> the lowmem reserves into account. With DMA32 that can be an additional
+> multiple gigabytes of "free" memory not available to GFP_KERNEL. It
+> also has a knee in the balancing curve because it doesn't take
+> reserves into account *until* non-CMA is depleted - at which point it
+> would already be below the use-CMA threshold by the full reserves and
+> watermarks.
+>
+> A more complete solution would have to plumb the highest_zoneidx
+> information through the rmqueue family of functions somehow, and
+> always take unavailable free memory into account:
+>
+> ---
+> Subject: [PATCH] mm: page_alloc: use CMA when kernel allocations are begi=
+nning
+>  to fail
+>
+> We can get into a situation where kernel allocations are starting to
+> fail on watermarks, but movable allocations still don't use CMA
+> because they make up more than half of the free memory. This can
+> happen in particular with elevated vm.min_free_kbytes settings, where
+> the remaining free pages aren't available to non-atomic requests.
+>
+> Example scenario:
+>
+>       Free: 3.0G
+> Watermarks: 2.0G
+>        CMA: 1.4G
+> -> non-CMA: 1.6G
+>
+> CMA isn't used because CMA <=3D free/2. Kernel allocations fail due to
+> non-CMA < watermarks. If memory is mostly unreclaimable (e.g. anon
+> without swap), the kernel is more likely to OOM prematurely.
+>
+> Reduce the probability of that happening by taking reserves and
+> watermarks into account when deciding whether to start using CMA.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  mm/page_alloc.c | 93 +++++++++++++++++++++++++++++++------------------
+>  1 file changed, 59 insertions(+), 34 deletions(-)
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 733732e7e0ba..b9273d7f23b8 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2079,30 +2079,52 @@ __rmqueue_fallback(struct zone *zone, int order, =
+int start_migratetype,
+>
+>  }
+>
+> +static bool should_try_cma(struct zone *zone, unsigned int order,
+> +                          gfp_t gfp_flags, unsigned int alloc_flags)
+> +{
+> +       long free_pages;
+> +
+> +       if (!IS_ENABLED(CONFIG_CMA) || !(alloc_flags & ALLOC_CMA))
+> +               return false;
+> +
+> +       /*
+> +        * CMA regions can be used by movable allocations while
+> +        * they're not otherwise in use. This is a delicate balance:
+> +        * Filling CMA too soon poses a latency risk for actual CMA
+> +        * allocations (think camera app startup). Filling CMA too
+> +        * late risks premature OOMs from non-movable allocations.
+> +        *
+> +        * Start using CMA once it dominates the remaining free
+> +        * memory. Be sure to take watermarks and reserves into
+> +        * account when considering what's truly "free".
+> +        *
+> +        * free_pages can go negative, but that's okay because
+> +        * NR_FREE_CMA_PAGES should not.
+> +        */
+> +
+> +       free_pages =3D zone_page_state(zone, NR_FREE_PAGES);
+> +       free_pages -=3D zone->lowmem_reserve[gfp_zone(gfp_flags)];
+> +       free_pages -=3D wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK)=
+;
+> +
+> +       return zone_page_state(zone, NR_FREE_CMA_PAGES) > free_pages / 2;
+> +}
+> +
+>  /*
+>   * Do the hard work of removing an element from the buddy allocator.
+>   * Call me with the zone->lock already held.
+>   */
+>  static __always_inline struct page *
+> -__rmqueue(struct zone *zone, unsigned int order, int migratetype,
+> -                                               unsigned int alloc_flags)
+> +__rmqueue(struct zone *zone, unsigned int order, gfp_t gfp_flags,
+> +         int migratetype, unsigned int alloc_flags)
+>  {
+>         struct page *page;
+>
+> -       if (IS_ENABLED(CONFIG_CMA)) {
+> -               /*
+> -                * Balance movable allocations between regular and CMA ar=
+eas by
+> -                * allocating from CMA when over half of the zone's free =
+memory
+> -                * is in the CMA area.
+> -                */
+> -               if (alloc_flags & ALLOC_CMA &&
+> -                   zone_page_state(zone, NR_FREE_CMA_PAGES) >
+> -                   zone_page_state(zone, NR_FREE_PAGES) / 2) {
+> -                       page =3D __rmqueue_cma_fallback(zone, order);
+> -                       if (page)
+> -                               return page;
+> -               }
+> +       if (should_try_cma(zone, order, gfp_flags, alloc_flags)) {
+> +               page =3D __rmqueue_cma_fallback(zone, order);
+> +               if (page)
+> +                       return page;
+>         }
+> +
+>  retry:
+>         page =3D __rmqueue_smallest(zone, order, migratetype);
+>         if (unlikely(!page)) {
+> @@ -2121,7 +2143,7 @@ __rmqueue(struct zone *zone, unsigned int order, in=
+t migratetype,
+>   * a single hold of the lock, for efficiency.  Add them to the supplied =
+list.
+>   * Returns the number of new pages which were placed at *list.
+>   */
+> -static int rmqueue_bulk(struct zone *zone, unsigned int order,
+> +static int rmqueue_bulk(struct zone *zone, unsigned int order, gfp_t gfp=
+_flags,
+>                         unsigned long count, struct list_head *list,
+>                         int migratetype, unsigned int alloc_flags)
+>  {
+> @@ -2130,8 +2152,8 @@ static int rmqueue_bulk(struct zone *zone, unsigned=
+ int order,
+>
+>         spin_lock_irqsave(&zone->lock, flags);
+>         for (i =3D 0; i < count; ++i) {
+> -               struct page *page =3D __rmqueue(zone, order, migratetype,
+> -                                                               alloc_fla=
+gs);
+> +               struct page *page =3D __rmqueue(zone, order, gfp_flags,
+> +                                             migratetype, alloc_flags);
+>                 if (unlikely(page =3D=3D NULL))
+>                         break;
+>
+> @@ -2714,8 +2736,8 @@ static inline void zone_statistics(struct zone *pre=
+ferred_zone, struct zone *z,
+>
+>  static __always_inline
+>  struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zon=
+e,
+> -                          unsigned int order, unsigned int alloc_flags,
+> -                          int migratetype)
+> +                          unsigned int order, gfp_t gfp_flags,
+> +                          unsigned int alloc_flags, int migratetype)
+>  {
+>         struct page *page;
+>         unsigned long flags;
+> @@ -2726,7 +2748,8 @@ struct page *rmqueue_buddy(struct zone *preferred_z=
+one, struct zone *zone,
+>                 if (alloc_flags & ALLOC_HIGHATOMIC)
+>                         page =3D __rmqueue_smallest(zone, order, MIGRATE_=
+HIGHATOMIC);
+>                 if (!page) {
+> -                       page =3D __rmqueue(zone, order, migratetype, allo=
+c_flags);
+> +                       page =3D __rmqueue(zone, order, migratetype,
+> +                                        gfp_flags, alloc_flags);
+>
+>                         /*
+>                          * If the allocation fails, allow OOM handling ac=
+cess
+> @@ -2806,10 +2829,10 @@ static int nr_pcp_alloc(struct per_cpu_pages *pcp=
+, struct zone *zone, int order)
+>  /* Remove page from the per-cpu list, caller must protect the list */
+>  static inline
+>  struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+> -                       int migratetype,
+> -                       unsigned int alloc_flags,
+> -                       struct per_cpu_pages *pcp,
+> -                       struct list_head *list)
+> +                              gfp_t gfp_flags, int migratetype,
+> +                              unsigned int alloc_flags,
+> +                              struct per_cpu_pages *pcp,
+> +                              struct list_head *list)
+>  {
+>         struct page *page;
+>
+> @@ -2818,7 +2841,7 @@ struct page *__rmqueue_pcplist(struct zone *zone, u=
+nsigned int order,
+>                         int batch =3D nr_pcp_alloc(pcp, zone, order);
+>                         int alloced;
+>
+> -                       alloced =3D rmqueue_bulk(zone, order,
+> +                       alloced =3D rmqueue_bulk(zone, order, gfp_flags,
+>                                         batch, list,
+>                                         migratetype, alloc_flags);
+>
+> @@ -2837,8 +2860,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, u=
+nsigned int order,
+>
+>  /* Lock and remove page from the per-cpu list */
+>  static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+> -                       struct zone *zone, unsigned int order,
+> -                       int migratetype, unsigned int alloc_flags)
+> +                                   struct zone *zone, unsigned int order=
+,
+> +                                   gfp_t gfp_flags, int migratetype,
+> +                                   unsigned int alloc_flags)
+>  {
+>         struct per_cpu_pages *pcp;
+>         struct list_head *list;
+> @@ -2860,7 +2884,8 @@ static struct page *rmqueue_pcplist(struct zone *pr=
+eferred_zone,
+>          */
+>         pcp->free_count >>=3D 1;
+>         list =3D &pcp->lists[order_to_pindex(migratetype, order)];
+> -       page =3D __rmqueue_pcplist(zone, order, migratetype, alloc_flags,=
+ pcp, list);
+> +       page =3D __rmqueue_pcplist(zone, order, gfp_flags, migratetype,
+> +                                alloc_flags, pcp, list);
+>         pcp_spin_unlock(pcp);
+>         pcp_trylock_finish(UP_flags);
+>         if (page) {
+> @@ -2898,13 +2923,13 @@ struct page *rmqueue(struct zone *preferred_zone,
+>
+>         if (likely(pcp_allowed_order(order))) {
+>                 page =3D rmqueue_pcplist(preferred_zone, zone, order,
+> -                                      migratetype, alloc_flags);
+> +                                      gfp_flags, migratetype, alloc_flag=
+s);
+>                 if (likely(page))
+>                         goto out;
+>         }
+>
+> -       page =3D rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
+> -                                                       migratetype);
+> +       page =3D rmqueue_buddy(preferred_zone, zone, order, gfp_flags,
+> +                            alloc_flags, migratetype);
+>
+>  out:
+>         /* Separate test+clear to avoid unnecessary atomics */
+> @@ -4480,8 +4505,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int pre=
+ferred_nid,
+>                         continue;
+>                 }
+>
+> -               page =3D __rmqueue_pcplist(zone, 0, ac.migratetype, alloc=
+_flags,
+> -                                                               pcp, pcp_=
+list);
+> +               page =3D __rmqueue_pcplist(zone, 0, gfp, ac.migratetype,
+> +                                        alloc_flags, pcp, pcp_list);
+>                 if (unlikely(!page)) {
+>                         /* Try and allocate at least one page */
+>                         if (!nr_account) {
+> --
+> 2.42.0
 
->> > Maybe would make sense to put a nice comment in all similar cases.
->> > For instance:
->> >
->> >       rcu_read_unlock();
->> >  -    cond_resched();
->> >       rcu_read_lock();
-
-And we have this construct as well: cond_resched_rcu().
-
-I can switch to the alternatives when I send out the next version of
-the series.
-
-Thanks
-
---
-ankur
+>
