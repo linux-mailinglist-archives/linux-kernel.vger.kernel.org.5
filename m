@@ -2,375 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED717E5F9A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2987E5FA4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbjKHVEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S231970AbjKHVH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjKHVEc (ORCPT
+        with ESMTP id S231881AbjKHVHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:04:32 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8152113
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:04:30 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4abf8ba3e4fso70808e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699477469; x=1700082269; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ewM9PTqPdI3B1hKS5lr5GhB5pSwRt9mQhtmf5QhLeMs=;
-        b=DAj5Ds0ht0F8M05XgtnjQNi5PqoT0TI3gte6a+XLE6opCyA8c+ddi6oQu6nK/mAbV4
-         rLNhjyP5FwF4itjkwyqX14QouPe96UpO/ifrwwvOMb8ulmBdCgDgCzQiJ/wPBZ1VtB2S
-         nBC1MU2TH86lhcCUGUlAy5JlwGvFx0qFOtegOWJXEksaqY/T55e59I2WWMpCTNEegyTr
-         e+l441Z8bKKQzPivi9yqk1uBGgXZY5krOsmNvV1hx/BDormUONq5aZJx+sxEOlkGy8JS
-         bvdbrKhdvbn4x16LZglu+rANZDGB9QRrUvpM55VZ/BxKQvjLIqnAi/hYph5RGjKkkj/Q
-         ab8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699477469; x=1700082269;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ewM9PTqPdI3B1hKS5lr5GhB5pSwRt9mQhtmf5QhLeMs=;
-        b=ISbA4qVOnzWf6lBhHfdFMfPu01BiJMnfvRUy8j5jTMg857g81dl16FCcgDm+QeCUqa
-         URxko1DcvG1BuDoDHz7wYGjoha9B88RZvGVOPUfse8D8RxWJjZyNGieI1IBcwmI07jrm
-         y89FAWPnGK6YoPbl7UZygjeQwPZdB4ar1SlC2kgmE7f/chQD8GpYMKYdl4h+XyTFfGZb
-         aqYAdWZhBURxkzOyAzTrzevLTrimdMyMaz+u/HJMzRiVfs4N12QqmiSAgLrvGxS0fY/v
-         9lWiAHStAach2dTZM8kUXIpnv+MuZUo3H2FR7DE+yijP5uU4iuUCx7KYGhmjfeROXbEL
-         n1hA==
-X-Gm-Message-State: AOJu0YzID0PXxp86vEyQwKSEKCADWO0sUW5ukLSMRgsBSrypO5fjiTsl
-        +XK9JnjYYY8HXrX2zEu16xF+9K/Gz7AH/DWaoXQ=
-X-Google-Smtp-Source: AGHT+IFXzuUlwphGdjnCmvGUz2HQ8DpSimrXJ60fBe9GegI1mRrvGZNQcokCgFwJGh+Xcz3rAAqKo8pE0DT1j624Tao=
-X-Received: by 2002:a1f:244f:0:b0:496:248e:43fc with SMTP id
- k76-20020a1f244f000000b00496248e43fcmr3140932vkk.8.1699477469046; Wed, 08 Nov
- 2023 13:04:29 -0800 (PST)
+        Wed, 8 Nov 2023 16:07:53 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D772584;
+        Wed,  8 Nov 2023 13:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699477671; x=1731013671;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=b6UoMOuB9Vc+Ox/xONoBAd6Z0ZkA6LvZweCBIByPU6I=;
+  b=nqmKSTtAyx8uO4rUfxYFejL31VoPgsoctzN6L8G7dviVAm3EnfNRwIVT
+   KYcdiRX5Ykm+SlF5RhC1z7EAI5Q01JE0DPS8jvEqgcHMPc2GQkr3Ub+An
+   MHoHi43vI+SbWqls0FLHhX7Y5EeRXa0qT1FkJeboe9GryiS8AUyscxnSN
+   2ViWTYUifmMuIqSYL5E9ldOX1BzyENYLFPFbjQ3wBQ4rBxVdh2TCuC0MQ
+   jqibnyHcbnwAdrNElXMgTgte0kOVY5vbHzGiFFWsz5c3zMAJTxJAjfctt
+   NZBwzSjXhyxT3cIwgwIXrpd3qvuIVE+I9L769d14HmkuphLBwSyZrI62D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="392735140"
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="392735140"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 13:07:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="756665102"
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="756665102"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 08 Nov 2023 13:07:44 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0pm1-0008Bo-21;
+        Wed, 08 Nov 2023 21:07:41 +0000
+Date:   Thu, 9 Nov 2023 05:06:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huan Yang <link@vivo.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
+Subject: Re: [PATCH 4/4] mm: memcg: apply proactive reclaim into cgroupv1
+Message-ID: <202311090446.NKFRnuGv-lkp@intel.com>
+References: <20231108065818.19932-5-link@vivo.com>
 MIME-Version: 1.0
-References: <2fe5ce7e-9c5c-4df4-b4fc-9fd3d9b2dccb@arm.com> <20231104093423.170054-1-v-songbaohua@oppo.com>
- <b0e4257e-b094-40b6-adb3-923c0d008309@arm.com> <CAGsJ_4zntZ4Drm5jndXamy_4VoVQ3qbCpUqCR9k4vdxLdmMO4Q@mail.gmail.com>
- <CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com> <2c98be67-657e-4c65-bf6b-3d70ff596c64@arm.com>
-In-Reply-To: <2c98be67-657e-4c65-bf6b-3d70ff596c64@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 9 Nov 2023 05:04:17 +0800
-Message-ID: <CAGsJ_4zG1iVoa-O9f--YLVoNou9XZSY7Qe7Fxq9eToDmWFOUJA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     steven.price@arm.com, akpm@linux-foundation.org, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        shy828301@gmail.com, wangkefeng.wang@huawei.com,
-        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
-        yuzhao@google.com, Barry Song <v-songbaohua@oppo.com>, nd@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108065818.19932-5-link@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 4:21=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
-wrote:
->
-> On 08/11/2023 11:23, Barry Song wrote:
-> > On Wed, Nov 8, 2023 at 2:05=E2=80=AFAM Barry Song <21cnbao@gmail.com> w=
-rote:
-> >>
-> >> On Tue, Nov 7, 2023 at 8:46=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>>
-> >>> On 04/11/2023 09:34, Barry Song wrote:
-> >>>>> Yes that's right. mte_save_tags() needs to allocate memory so can f=
-ail
-> >>>>> and if failing then arch_prepare_to_swap() would need to put things=
- back
-> >>>>> how they were with calls to mte_invalidate_tags() (although I think
-> >>>>> you'd actually want to refactor to create a function which takes a
-> >>>>> struct page *).
-> >>>>>
-> >>>>> Steve
-> >>>>
-> >>>> Thanks, Steve. combining all comments from You and Ryan, I made a v2=
-.
-> >>>> One tricky thing is that we are restoring one page rather than folio
-> >>>> in arch_restore_swap() as we are only swapping in one page at this
-> >>>> stage.
-> >>>>
-> >>>> [RFC v2 PATCH] arm64: mm: swap: save and restore mte tags for large =
-folios
-> >>>>
-> >>>> This patch makes MTE tags saving and restoring support large folios,
-> >>>> then we don't need to split them into base pages for swapping on
-> >>>> ARM64 SoCs with MTE.
-> >>>>
-> >>>> This patch moves arch_prepare_to_swap() to take folio rather than
-> >>>> page, as we support THP swap-out as a whole. And this patch also
-> >>>> drops arch_thp_swp_supported() as ARM64 MTE is the only one who
-> >>>> needs it.
-> >>>>
-> >>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> >>>> ---
-> >>>>  arch/arm64/include/asm/pgtable.h | 21 +++------------
-> >>>>  arch/arm64/mm/mteswap.c          | 44 +++++++++++++++++++++++++++++=
-+++
-> >>>>  include/linux/huge_mm.h          | 12 ---------
-> >>>>  include/linux/pgtable.h          |  2 +-
-> >>>>  mm/page_io.c                     |  2 +-
-> >>>>  mm/swap_slots.c                  |  2 +-
-> >>>>  6 files changed, 51 insertions(+), 32 deletions(-)
-> >>>>
-> >>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/a=
-sm/pgtable.h
-> >>>> index b19a8aee684c..d8f523dc41e7 100644
-> >>>> --- a/arch/arm64/include/asm/pgtable.h
-> >>>> +++ b/arch/arm64/include/asm/pgtable.h
-> >>>> @@ -45,12 +45,6 @@
-> >>>>       __flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
-> >>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> >>>>
-> >>>> -static inline bool arch_thp_swp_supported(void)
-> >>>> -{
-> >>>> -     return !system_supports_mte();
-> >>>> -}
-> >>>> -#define arch_thp_swp_supported arch_thp_swp_supported
-> >>>> -
-> >>>>  /*
-> >>>>   * Outside of a few very special situations (e.g. hibernation), we =
-always
-> >>>>   * use broadcast TLB invalidation instructions, therefore a spuriou=
-s page
-> >>>> @@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_=
-area_struct *vma,
-> >>>>  #ifdef CONFIG_ARM64_MTE
-> >>>>
-> >>>>  #define __HAVE_ARCH_PREPARE_TO_SWAP
-> >>>> -static inline int arch_prepare_to_swap(struct page *page)
-> >>>> -{
-> >>>> -     if (system_supports_mte())
-> >>>> -             return mte_save_tags(page);
-> >>>> -     return 0;
-> >>>> -}
-> >>>> +#define arch_prepare_to_swap arch_prepare_to_swap
-> >>>> +extern int arch_prepare_to_swap(struct folio *folio);
-> >>>>
-> >>>>  #define __HAVE_ARCH_SWAP_INVALIDATE
-> >>>>  static inline void arch_swap_invalidate_page(int type, pgoff_t offs=
-et)
-> >>>> @@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(=
-int type)
-> >>>>  }
-> >>>>
-> >>>>  #define __HAVE_ARCH_SWAP_RESTORE
-> >>>> -static inline void arch_swap_restore(swp_entry_t entry, struct foli=
-o *folio)
-> >>>> -{
-> >>>> -     if (system_supports_mte())
-> >>>> -             mte_restore_tags(entry, &folio->page);
-> >>>> -}
-> >>>> +#define arch_swap_restore arch_swap_restore
-> >>>> +extern void arch_swap_restore(swp_entry_t entry, struct folio *foli=
-o);
-> >>>>
-> >>>>  #endif /* CONFIG_ARM64_MTE */
-> >>>>
-> >>>> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-> >>>> index a31833e3ddc5..14a479e4ea8e 100644
-> >>>> --- a/arch/arm64/mm/mteswap.c
-> >>>> +++ b/arch/arm64/mm/mteswap.c
-> >>>> @@ -68,6 +68,12 @@ void mte_invalidate_tags(int type, pgoff_t offset=
-)
-> >>>>       mte_free_tag_storage(tags);
-> >>>>  }
-> >>>>
-> >>>> +static inline void __mte_invalidate_tags(struct page *page)
-> >>>> +{
-> >>>> +     swp_entry_t entry =3D page_swap_entry(page);
-> >>>> +     mte_invalidate_tags(swp_type(entry), swp_offset(entry));
-> >>>> +}
-> >>>> +
-> >>>>  void mte_invalidate_tags_area(int type)
-> >>>>  {
-> >>>>       swp_entry_t entry =3D swp_entry(type, 0);
-> >>>> @@ -83,3 +89,41 @@ void mte_invalidate_tags_area(int type)
-> >>>>       }
-> >>>>       xa_unlock(&mte_pages);
-> >>>>  }
-> >>>> +
-> >>>> +int arch_prepare_to_swap(struct folio *folio)
-> >>>> +{
-> >>>> +     int err;
-> >>>> +     long i;
-> >>>> +
-> >>>> +     if (system_supports_mte()) {
-> >>>> +             long nr =3D folio_nr_pages(folio);
-> >>>
-> >>> nit: there should be a clear line between variable declarations and l=
-ogic.
-> >>
-> >> right.
-> >>
-> >>>
-> >>>> +             for (i =3D 0; i < nr; i++) {
-> >>>> +                     err =3D mte_save_tags(folio_page(folio, i));
-> >>>> +                     if (err)
-> >>>> +                             goto out;
-> >>>> +             }
-> >>>> +     }
-> >>>> +     return 0;
-> >>>> +
-> >>>> +out:
-> >>>> +     while (--i)
-> >>>
-> >>> If i is initially > 0, this will fail to invalidate page 0. If i is i=
-nitially 0
-> >>> then it will wrap and run ~forever. I think you meant `while (i--)`?
-> >>
-> >> nop. if i=3D0 and we goto out, that means the page0 has failed to save=
- tags,
-> >> there is nothing to revert. if i=3D3 and we goto out, that means 0,1,2=
- have
-> >> saved, we restore 0,1,2 and we don't restore 3.
-> >
-> > I am terribly sorry for my previous noise. You are right, Ryan. i
-> > actually meant i--.
->
-> No problem - it saves me from writing a long response explaining why --i =
-is
-> wrong, at least!
->
-> >
-> >>
-> >>>
-> >>>> +             __mte_invalidate_tags(folio_page(folio, i));
-> >>>> +     return err;
-> >>>> +}
-> >>>> +
-> >>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
-> >>>> +{
-> >>>> +     if (system_supports_mte()) {
-> >>>> +             /*
-> >>>> +              * We don't support large folios swap in as whole yet,=
- but
-> >>>> +              * we can hit a large folio which is still in swapcach=
-e
-> >>>> +              * after those related processes' PTEs have been unmap=
-ped
-> >>>> +              * but before the swapcache folio  is dropped, in this=
- case,
-> >>>> +              * we need to find the exact page which "entry" is map=
-ping
-> >>>> +              * to. If we are not hitting swapcache, this folio won=
-'t be
-> >>>> +              * large
-> >>>> +              */
-> >>>
-> >>> So the currently defined API allows a large folio to be passed but th=
-e caller is
-> >>> supposed to find the single correct page using the swap entry? That f=
-eels quite
-> >>> nasty to me. And that's not what the old version of the function was =
-doing; it
-> >>> always assumed that the folio was small and passed the first page (wh=
-ich also
-> >>> doesn't feel 'nice'). If the old version was wrong, I suggest a separ=
-ate commit
-> >>> to fix that. If the old version is correct, then I guess this version=
- is wrong.
-> >>
-> >> the original version(mainline) is wrong but it works as once we find t=
-he SoCs
-> >> support MTE, we will split large folios into small pages. so only smal=
-l pages
-> >> will be added into swapcache successfully.
-> >>
-> >> but now we want to swap out large folios even on SoCs with MTE as a wh=
-ole,
-> >> we don't split, so this breaks the assumption do_swap_page() will alwa=
-ys get
-> >> small pages.
-> >
-> > let me clarify this more. The current mainline assumes
-> > arch_swap_restore() always
-> > get a folio with only one page. this is true as we split large folios
-> > if we find SoCs
-> > have MTE. but since we are dropping the split now, that means a large
-> > folio can be
-> > gotten by do_swap_page(). we have a chance that try_to_unmap_one() has =
-been done
-> > but folio is not put. so PTEs will have swap entry but folio is still
-> > there, and do_swap_page()
-> > to hit cache directly and the folio won't be released.
-> >
-> > but after getting the large folio in do_swap_page, it still only takes
-> > one basepage particularly
-> > for the faulted PTE and maps this 4KB PTE only. so it uses the faulted
-> > swap_entry and
-> > the folio as parameters to call arch_swap_restore() which can be someth=
-ing like:
-> >
-> > do_swap_page()
-> > {
-> >         arch_swap_restore(the swap entry for the faulted 4KB PTE, large=
- folio);
-> > }
->
-> OK, I understand what's going on, but it seems like a bad API decision. I=
- think
-> Steve is saying the same thing; If its only intended to operate on a sing=
-le
-> page, it would be much clearer to pass the actual page rather than the fo=
-lio;
-> i.e. leave the complexity of figuring out the target page to the caller, =
-which
-> understands all this.
+Hi Huan,
 
-right.
+kernel test robot noticed the following build warnings:
 
->
-> As a side note, if the folio is still in the cache, doesn't that imply th=
-at the
-> tags haven't been torn down yet? So perhaps you can avoid even making the=
- call
-> in this case?
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on tj-cgroup/for-next linus/master v6.6 next-20231108]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-right. but it is practically very hard as arch_swap_restore() is
-always called unconditionally.
-it is hard to find a decent condition before calling
-arch_swap_restore(). That is why we
-actually have been doing redundant arch_swap_restore() lots of times right =
-now.
+url:    https://github.com/intel-lab-lkp/linux/commits/Huan-Yang/mm-vmscan-LRU-unbalance-cgroup-reclaim/20231108-151757
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231108065818.19932-5-link%40vivo.com
+patch subject: [PATCH 4/4] mm: memcg: apply proactive reclaim into cgroupv1
+reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090446.NKFRnuGv-lkp@intel.com/reproduce)
 
-For example, A forks B,C,D,E,F,G. now A,B,C,D,E,F,G will share one
-page before CoW. After
-the page is swapped out, if B is the first process to swap in, B will
-add the page to swapcache,
-and restore MTE. After that, A, C, D, E, F,G will directly hit the
-page swapped in by B, now they
-restore MTE again. so the MTE is restored 7 times but actually only B
-needs to do it.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311090446.NKFRnuGv-lkp@intel.com/
 
-so it seems we can put a condition to only let B do restore.  But it
-won't work because we can't
-guarrent B is the first process who will do PTE mapping.  A, C, D, E,
-F, G can map PTEs earlier than B
-even if B is the one who did the I/O swapin. swapin/add swapcache and
-PTE mapping are
-not done atomically. PTE mapping needs to take PTL. so After B has
-done swapin, A, C,E,F,G
-can still begin to use the page earlier than B. So it turns out anyone
-who first maps the page
-should restore MTE, but the question is that: How could A,B,C,D,E,F,G
-know if it is the first
-one mapping the page to PTE?
+All warnings (new ones prefixed by >>):
 
->
-> >>
-> >>>
-> >>> Thanks,
-> >>> Ryan
-> >
-> > Thanks
-> > Barry
->
+>> Documentation/admin-guide/cgroup-v1/memory.rst:93: WARNING: Malformed table.
+>> Documentation/admin-guide/cgroup-v1/memory.rst:977: WARNING: Title underline too short.
 
-Thanks
-Barry
+vim +93 Documentation/admin-guide/cgroup-v1/memory.rst
+
+    62	
+    63	==================================== ==========================================
+    64	 tasks				     attach a task(thread) and show list of
+    65					     threads
+    66	 cgroup.procs			     show list of processes
+    67	 cgroup.event_control		     an interface for event_fd()
+    68					     This knob is not available on CONFIG_PREEMPT_RT systems.
+    69	 memory.usage_in_bytes		     show current usage for memory
+    70					     (See 5.5 for details)
+    71	 memory.memsw.usage_in_bytes	     show current usage for memory+Swap
+    72					     (See 5.5 for details)
+    73	 memory.limit_in_bytes		     set/show limit of memory usage
+    74	 memory.memsw.limit_in_bytes	     set/show limit of memory+Swap usage
+    75	 memory.failcnt			     show the number of memory usage hits limits
+    76	 memory.memsw.failcnt		     show the number of memory+Swap hits limits
+    77	 memory.max_usage_in_bytes	     show max memory usage recorded
+    78	 memory.memsw.max_usage_in_bytes     show max memory+Swap usage recorded
+    79	 memory.soft_limit_in_bytes	     set/show soft limit of memory usage
+    80					     This knob is not available on CONFIG_PREEMPT_RT systems.
+    81	 memory.stat			     show various statistics
+    82	 memory.use_hierarchy		     set/show hierarchical account enabled
+    83	                                     This knob is deprecated and shouldn't be
+    84	                                     used.
+    85	 memory.force_empty		     trigger forced page reclaim
+    86	 memory.pressure_level		     set memory pressure notifications
+    87	 memory.swappiness		     set/show swappiness parameter of vmscan
+    88					     (See sysctl's vm.swappiness)
+    89	 memory.move_charge_at_immigrate     set/show controls of moving charges
+    90	                                     This knob is deprecated and shouldn't be
+    91	                                     used.
+    92	 memory.oom_control		     set/show oom controls.
+  > 93	 memory.memory		     proactive reclaim.
+    94	 memory.numa_stat		     show the number of memory usage per numa
+    95					     node
+    96	 memory.kmem.limit_in_bytes          Deprecated knob to set and read the kernel
+    97	                                     memory hard limit. Kernel hard limit is not
+    98	                                     supported since 5.16. Writing any value to
+    99	                                     do file will not have any effect same as if
+   100	                                     nokmem kernel parameter was specified.
+   101	                                     Kernel memory is still charged and reported
+   102	                                     by memory.kmem.usage_in_bytes.
+   103	 memory.kmem.usage_in_bytes          show current kernel memory allocation
+   104	 memory.kmem.failcnt                 show the number of kernel memory usage
+   105					     hits limits
+   106	 memory.kmem.max_usage_in_bytes      show max kernel memory usage recorded
+   107	
+   108	 memory.kmem.tcp.limit_in_bytes      set/show hard limit for tcp buf memory
+   109	 memory.kmem.tcp.usage_in_bytes      show current tcp buf memory allocation
+   110	 memory.kmem.tcp.failcnt             show the number of tcp buf memory usage
+   111					     hits limits
+   112	 memory.kmem.tcp.max_usage_in_bytes  show max tcp buf memory usage recorded
+   113	==================================== ==========================================
+   114	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
