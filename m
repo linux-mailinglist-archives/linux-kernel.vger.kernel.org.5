@@ -2,215 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B707E533F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331427E5342
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344129AbjKHKYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        id S1344068AbjKHKYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235540AbjKHKYj (ORCPT
+        with ESMTP id S235217AbjKHKYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:24:39 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2072.outbound.protection.outlook.com [40.107.94.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19CA1BD4;
-        Wed,  8 Nov 2023 02:24:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aiQWrSkQMru0Zftjvpytdy28aP73SwICKo7PEh8PKzPbu4aVwd1TWnKcIY+MSR/EiW6QYH+chZpGlUnX3sZ4n6u/OA3heQ7euLWegILzNJnEygX/IisGOERd+JflCzdYnRln5VRZHR9lpgZpPzv+v6p4qcrhNOGrb9Bx6uyfq1VB6RubDBnKRyKxtdoR4AX8UnTEWFy2EfFVY1m5GvoXMpd4GEyYM1sJsy/+dIuVfqrQ+2D9GxxAUF7NNxYVe7Bu9GZJhV8NIDYcZAw9jVJI09XDd2KNdRXECM53mCqfgzbp2O4pW5OeRc4gHVCUIR5QcOM9xTAPrUEa7HGtjLTjeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b8pUVidsV3NJ7tIc2EmnLurc7ZcTQXNT5byMQpTV5oA=;
- b=lFJnjpurwNTwDi4PfOsYP0z9ITdMJtlZn2p8fjcbCHbNXVvUNko/ANCPED7iI2QPxrcCm1Ob/B3zxq5Dn+ufeJutnE60Iwn8pITBSPHVe5i4Re2ci10a3WjFUj1Xx5weTdGG3t6CntPUBApFl3hblcbz//WRS/sZEyUGQdVMscjbSg9QzhBGKFnNAX9IyYK/OcknmsiX1LXI9Z54+ErYr3hyDfq0ZbjRJJp3Z3uwxJlN+PwemBIwMtvFEgN+qywGKnB5urkWKGB0Zq0+YpC9neDlygVSlKj6uq5No2IPyRso9NdW8b48RGm4u45BOrDO6PN55wAyZRVa5UBnEI8MDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b8pUVidsV3NJ7tIc2EmnLurc7ZcTQXNT5byMQpTV5oA=;
- b=nlxgLU1+w5cqLO4zM5jbgPeA0B3tBGEV6JvdpVhrQIorsugRRuQ4MWTe1mcZ+o6Gsh4Bk6s8rHQC+eANO3NYQ51FNSr6qPoe+skWUwpku5DvEVjhf/C7QUruni+npb0+zwKvklQh42WRXo4a6Y0Gge52GJcAxb1fod36xNT5Fho=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com (2603:10b6:a03:a5::28)
- by IA0PR12MB8696.namprd12.prod.outlook.com (2603:10b6:208:48f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
- 2023 10:24:34 +0000
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::1d07:c316:b830:70c9]) by BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::1d07:c316:b830:70c9%4]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
- 10:24:34 +0000
-Message-ID: <5a26431a-22bd-43f7-a9bc-d167fb8fc32c@amd.com>
-Date:   Wed, 8 Nov 2023 11:24:20 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: soc: Add new board description for
- MicroBlaze V
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-References: <50c277c92c41a582ef171fb75efc6a6a4f860be2.1699271616.git.michal.simek@amd.com>
- <20231106-hangnail-prankster-a04e713bed35@spud>
- <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
- <20231107-expensive-jitters-92e454f77ea8@spud>
- <8b17622b-de1a-4075-9527-8755f5e4dc14@amd.com>
- <20231108-five-womankind-6ee2462c93b9@spud>
-From:   Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <20231108-five-womankind-6ee2462c93b9@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VE1PR08CA0005.eurprd08.prod.outlook.com
- (2603:10a6:803:104::18) To BYAPR12MB4758.namprd12.prod.outlook.com
- (2603:10b6:a03:a5::28)
+        Wed, 8 Nov 2023 05:24:51 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9A11BD5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:24:49 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6ce2cf67be2so4029552a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699439088; x=1700043888; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dSHpWDlAyfJyOGsIApYR9Ror/UYeRgH6DP/oCc5ghJA=;
+        b=BKMspyipgJKmLoER2rKfLHudRcuAxqHGUF/smrf7LZ2KyV+h20O0S424sZzcBIFJHV
+         Jpct3u636qWvb4L81m+xSidS6nXiarbyQYmaRNXdNqbdn6jdQ4nd7Ry2NBKbUDENspFg
+         qQ4g+8nmPPRCNL0pu/pYmZu3lFeCEe8yKEOF8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699439088; x=1700043888;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dSHpWDlAyfJyOGsIApYR9Ror/UYeRgH6DP/oCc5ghJA=;
+        b=tex4rdhqdvXt5NJdY6fJxNeNsCf0RuNzf0kk94OTyjHUHhupM2lNHg1XbwmRlxsxHI
+         ImHNNdWfB+/R/td24wo2j7NcwX1SXqdVb7HLP6cxVzfq1+ODgO4SGRztAOf/VLUVJx8l
+         tMNRndd+s+6jUgxiKRjSpXDr1DqZrtfxsmeUm5kkajych6mzj7YKmMtH6K+Gs3zP/e3i
+         1h8pZQ2oiXedry6ACPmKK9zTo8g9O7XQ0kF4rKD1YIhpaIyhe0eisorvJ71nbk6KK3T3
+         pBOOQ7mJrMgt9mu8whHr2lT0qcB2dJKA6zu3zj3xZmSUsS3DDliLGM6Xuya4CkfJvQzd
+         P81w==
+X-Gm-Message-State: AOJu0Yw1K5zsBr/+q/r1PmxFYcF5EOfUUz6RUi7fZIbaqVKdJlrL23i+
+        UjhJAXxSXFR/wMB+i/X+WQw6wk+eYPumbTion6WOcw==
+X-Google-Smtp-Source: AGHT+IFC4arPwc7Ao+r49qVHskOHs0pQDlbxHhN99WlxfDDWkvA/EGgTU6FSwYze80/m+Anmlsedpg==
+X-Received: by 2002:a9d:5e13:0:b0:6c6:18c7:7ca2 with SMTP id d19-20020a9d5e13000000b006c618c77ca2mr1574486oti.12.1699439088694;
+        Wed, 08 Nov 2023 02:24:48 -0800 (PST)
+Received: from chromium.org (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+        by smtp.gmail.com with ESMTPSA id 83-20020a630256000000b005aa800c149bsm2838329pgc.39.2023.11.08.02.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 02:24:48 -0800 (PST)
+Date:   Wed, 8 Nov 2023 10:24:44 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+Subject: Re: [PATCH v14.1] media: videobuf2: Be more flexible on the number
+ of queue stored buffers
+Message-ID: <20231108102444.4yp7y7mgsociy725@chromium.org>
+References: <20231106143940.324020-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4758:EE_|IA0PR12MB8696:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17908d63-b3e6-48a7-5082-08dbe044e6ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QxKycSk5GgqxbWlbDittDoLsoHdm8JIGqnmQDZZZEJqOilHZPuXo5RhygxU1fSWEFjPjLWvO8MrY2wnv+vcM9bnEes6XLNzMHFh7l7jHb2q08XROcukAi6LHowEhynkxkrS2oULSRh5nQ4uLpBYW9UIEKESGi+MckqJB65V+81LFDIN0LtMFE2nUCBqubdYkS5h+9Bd9iln0VpzWPWBRXeSY+gSH/nJLXOk/RUidV7MCB1G3pC2ubqjcOHlTOUma6HOOsF16YD/uOioSfOrIij8a/QtoT1LZ2ELmzSNRj/ozhNQaKtXUMYlbYsn0/PZ53A/6J69gWczcKgzdalDCwjc7Ja27nI/3iQZKFRredh1COCwgmLCjVjN0sjOs6n5n8sc2iLIXd1TS9DuUMv4R0yDU0VFVevcdiyQcqY2UWW5N9bRO9S1fqqerpKpw790TJvtu5Mz90dXQHqr0X2oqBPWaObs5tsE7miRqfjYc03xYbQ1PZ6LCuJ/mfAC30k2TX7G+gnULJ5b4cQv0HOsT7tNIF/KANUJ2+iRmmDN6+oOBwQg/Vb4LfXmGwH70qqdo8xoRVe5uHaUIDJNcxr0PAHNSeT6sHIZ6b51tnNpBdEId171Lgn18k5QUsYBhOFlwsHb0lqhHir4/orjNDmDuIg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4758.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(366004)(39860400002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(5660300002)(31696002)(2906002)(86362001)(8936002)(316002)(54906003)(6916009)(66946007)(66556008)(4326008)(44832011)(8676002)(36756003)(66476007)(41300700001)(6506007)(26005)(2616005)(53546011)(6666004)(6512007)(38100700002)(31686004)(478600001)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Uld3M2x0RjJHbjY1Y1VSdk1mWllsVGVXTmt4YkJNYi9Xc1RpSjhpc2M4SFJ0?=
- =?utf-8?B?STNOMmRma2hWUC9TK2VvcWhEaU16NTU3cXNIcUNjSnZmRUlLTklwWEkrdDZz?=
- =?utf-8?B?MXY3bmprMFVGVU9YN0FKY3pvbVVmc1dPa0FhWEQxdHJRUkNrOHFILzJ3a2Jo?=
- =?utf-8?B?YWlUNVdGTzFwU0ZrU0h3WkZWd2lNNW5Ecm5YWWVTMVRCYU1jemZ6LzBtYTJl?=
- =?utf-8?B?ZWNEdXdwQ3RJclRZRzRmdmUrSGJNZ2VrYk0vSUR1QjZ4ckRKNE1JMnN0TFVj?=
- =?utf-8?B?T3hNTFc4dGNGb1EyMXdhMktrVms0OU10ZS9FRTM3Zzc4RUdVbTBJV1dpU0xi?=
- =?utf-8?B?L3owT0JQNE10VDJDMkdhQ0VlYytPOVFEZGVQYzlUVy9DbHljb3NWcjhYUXN0?=
- =?utf-8?B?WUlSVjRLNFJrN3NnK29JWkdBWkEwdDFMcTBEZTNHazdNcmxxa2N6cS9NUU1r?=
- =?utf-8?B?c3J5WTBaeFdNLzl0VW9CZXNDZTIwc2FFOGZ2Y0RYWFo1aTI2WW1yNWpUeDA5?=
- =?utf-8?B?cDZtOHNNekxQZVEySTA2VEZPdmRkWmVxQnJqRWZrUWdUUnZFRGJpWGxBQnBM?=
- =?utf-8?B?dnp5b0poekFXQk41dEEydnBVUVIxeXlpRDdmNkd5c3Y5eHJ5OG9aWkRsSGtj?=
- =?utf-8?B?NGFsZVVSSXA2TWpKbDJPcTY3WkZENzBveWsyNDVHOFhHM1ZhMzFyQU9YYUk0?=
- =?utf-8?B?cmcweHg0UkU3YWlIMzgwN0daRFY3Rmg4eHU1bkV6blJvK1cyd1JOK0tzR29H?=
- =?utf-8?B?RE51MzVLQ0JIc1ZNZVpoeEx3UDFhNlRJTU1MYUlSbWpEZVlkdDd0ejNjcjMw?=
- =?utf-8?B?NU9XMTlNcWlPQ2NsMnU5YlBOayt6ei9aQlVOT2dMY3kxMWFXZmsrTU9qK2Fm?=
- =?utf-8?B?YlpZWStiaWFJbFBKUDBFeHN0aUZKdDRSdy8wSzRkaGVqM3NYWUd1Yll1T0RV?=
- =?utf-8?B?M05DcUIySHNiZkhuSzErM04rTmM4dHN6NG1TcDc5MFNhQldwZEpBaTA3TWtI?=
- =?utf-8?B?R1dvNjFNVUhWclRaa0IrQ0g5eVJQemI0TmNidThEaEtsTVpvWEpwS24vMjRQ?=
- =?utf-8?B?QWRKemVlcHlqa015cWxYc3RPbjRXb0NrUnJSUjVtNGtHV05nR3lXWDJrcjl2?=
- =?utf-8?B?RDV1ajg0YU54Y0Y4alFMcFlVMEo4TGRSamhnTDdBQUo2RXk1OU9lL25SZ1Mz?=
- =?utf-8?B?bGgrdmswYTZVQlNXNjRiaHoxc2lZdW80L29lSy9WNVdXZW1zQUdvN2ZtT3Nt?=
- =?utf-8?B?cDlVVHNiVVZFQ0pXOGZkL0dyZ3hsZkp4cG0wUVFDdmhlZm13dTZFSzgrVW1Z?=
- =?utf-8?B?eVJjc3crdWk0MWhrakljbzdKdE84anhiTCtiaUlLVHcxUi9WY2RwRW4rOXJo?=
- =?utf-8?B?bm5nUEpQVFI2TmRGOGFodkNCRGRtbHQ3RHN2Zm1qV2FVazNZVlBHSkltUElT?=
- =?utf-8?B?NHBkOVBkbDhqRUNaWHB0T3AxbTRtcWNLbWRDTFRnQks3K3ZHdHZKWHpwU3FM?=
- =?utf-8?B?MDBVMm9DaHhSQjB5eFJlVUlVOGs5OWJubkYrQXFDWEdCRllOdVRPU3RPWGpV?=
- =?utf-8?B?TTU1NnpIa2w0ZGxJb0poZWhldlltVzNIR2FwM3dkUFo0eDByVEl1VE5MTzJu?=
- =?utf-8?B?bWZYRHVDVk4wckRVcCtqeXprV21MMTRNSWJ1NVVDcHRBNURzUUYwblRldFJL?=
- =?utf-8?B?dHBCRW0xQmlWQjRkdkxjQk9JejdZMkE0VWZwci9uRzhxNTNRSWZPRUlXdnZO?=
- =?utf-8?B?cENkYXNLOWs2SXREWGdlM1FGWmlXQk1GNlRMbTZ2UXFSVGY5cVRyTVdmUlhN?=
- =?utf-8?B?a2FYa29IeDVpSW1Ec2dTcXJ3cnd6bktCNVdQaEwzc0w2aHBvMVd3OEc3UUZx?=
- =?utf-8?B?dWZBVEJONkwzWjNBcTBvUTczYkkrcjcrQkV6YWViMUQ1TGRVdWk3aXkweUhx?=
- =?utf-8?B?cXBsK3p4MTRiRnkveUcvdDZTSXNocEJ1a1o5VER1WEZsRlZUWmRKajg1b0RM?=
- =?utf-8?B?MlAwUVpBanJpaWU4R3ExU1dNMEpGSTFPQWZISjgrV2RDTUt6d3dCQWFIZTFX?=
- =?utf-8?B?b3UxZlVlaUVUNmsxdndEYmxteTJoUkk0YkRUMm1lT3VYUml0ODlPZFc4cUg3?=
- =?utf-8?Q?ayJxNYKfTc0TjEN3tGyODlACh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17908d63-b3e6-48a7-5082-08dbe044e6ad
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4758.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 10:24:33.9937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cckPI2ww8FjkkcDdVliHZkLB/LhdZ32XFO9KZLlGvK3yiqyC4ngkixZGQUtHFodw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8696
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106143940.324020-1-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/8/23 11:12, Conor Dooley wrote:
-> On Wed, Nov 08, 2023 at 11:06:53AM +0100, Michal Simek wrote:
->>
->>
->> On 11/7/23 22:18, Conor Dooley wrote:
->>> On Tue, Nov 07, 2023 at 12:09:58PM +0100, Michal Simek wrote:
->>>>
->>>>
->>>> On 11/6/23 18:07, Conor Dooley wrote:
->>>>> On Mon, Nov 06, 2023 at 12:53:40PM +0100, Michal Simek wrote:
->>>>>> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
->>>>>> It is hardware compatible with classic MicroBlaze processor. Processor can
->>>>>> be used with standard AMD/Xilinx IPs including interrupt controller and
->>>>>> timer.
->>>>>>
->>>>>> Signed-off-by: Michal Simek <michal.simek@amd.com>
->>>>>> ---
->>>>>>
->>>>>>     .../devicetree/bindings/soc/amd/amd.yaml      | 26 +++++++++++++++++++
->>>>>
->>>>> Bindings for SoCs (and by extension boards with them) usually go to in
->>>>> $arch/$vendor.yaml not into soc/$vendor/$vendor.yaml. Why is this any
->>>>> different?
->>>>
->>>> I actually found it based on tracking renesas.yaml which describes one of
->>>> risc-v board. No problem to move it under bindings/riscv/
->>>
->>> That one is kinda a special case, as it contains arm/arm64/riscv.
->>
->> If they are kinda a special case then what are we?
->> All AMD/Xilinx platforms(ZynqMP/Versal/Versal NET) can have
->> arm/arm64/riscv/microblaze cpus(riscv/microblaze as soft cores) in the same
->> board (IIRC I have also seen xtensa soft core on our chips too).
+On Mon, Nov 06, 2023 at 03:39:40PM +0100, Benjamin Gaignard wrote:
+> Add 'max_num_buffers' field in vb2_queue struct to let drivers decide
+> how many buffers could be stored in a queue.
+> This require 'bufs' array to be allocated at queue init time and freed
+> when releasing the queue.
+> By default VB2_MAX_FRAME remains the limit.
 > 
-> That would be an argument iff you had all of those in a single file, not
-> when you only have a single compatible for a riscv "soc" in it.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> ---
+> version 14.1:
+> - Do not change the number of freed buffers in vb2_core_queue_release().
+> 
+>  .../media/common/videobuf2/videobuf2-core.c   | 39 +++++++++++++++----
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |  6 +--
+>  include/media/videobuf2-core.h                | 10 ++++-
+>  3 files changed, 43 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index c5c5ae4d213d..5711c6a130fd 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -416,7 +416,7 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
+>   */
+>  static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, unsigned int index)
+>  {
+> -	WARN_ON(index >= VB2_MAX_FRAME || q->bufs[index]);
+> +	WARN_ON(index >= q->max_num_buffers || q->bufs[index]);
+>  
+>  	q->bufs[index] = vb;
+>  	vb->index = index;
+> @@ -449,9 +449,9 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+>  	struct vb2_buffer *vb;
+>  	int ret;
+>  
+> -	/* Ensure that q->num_buffers+num_buffers is below VB2_MAX_FRAME */
+> +	/* Ensure that the number of already queue + num_buffers is below q->max_num_buffers */
 
-But DT (compare to System DT) is all the time describing system from cpu point 
-of view. Or are they describing all that 3 different cpus via the same DT?
+Perhaps "the number of buffers already in the queue"?
 
-Thanks,
-Michal
+>  	num_buffers = min_t(unsigned int, num_buffers,
+> -			    VB2_MAX_FRAME - q_num_buffers);
+> +			    q->max_num_buffers - q_num_buffers);
+>  
+>  	for (buffer = 0; buffer < num_buffers; ++buffer) {
+>  		/* Allocate vb2 buffer structures */
+> @@ -813,7 +813,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	unsigned plane_sizes[VB2_MAX_PLANES] = { };
+>  	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
+>  	unsigned int i;
+> -	int ret;
+> +	int ret = 0;
+>  
+>  	if (q->streaming) {
+>  		dprintk(q, 1, "streaming active\n");
+> @@ -857,17 +857,22 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	/*
+>  	 * Make sure the requested values and current defaults are sane.
+>  	 */
+> -	WARN_ON(q->min_buffers_needed > VB2_MAX_FRAME);
+
+Do we really want to remove this warning completely?
+
+>  	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
+> -	num_buffers = min_t(unsigned int, num_buffers, VB2_MAX_FRAME);
+> +	num_buffers = min_t(unsigned int, num_buffers, q->max_num_buffers);
+>  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
+>  	/*
+>  	 * Set this now to ensure that drivers see the correct q->memory value
+>  	 * in the queue_setup op.
+>  	 */
+>  	mutex_lock(&q->mmap_lock);
+> +	if (!q->bufs)
+> +		q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+
+Shouldn't this happen in core code rather than the v4l2-specific ioctl
+helper? Since we just allocate the maximum possible size, then maybe
+vb2_core_queue_init()?
+
+> +	if (!q->bufs)
+> +		ret = -ENOMEM;
+>  	q->memory = memory;
+>  	mutex_unlock(&q->mmap_lock);
+> +	if (ret)
+> +		return ret;
+>  	set_queue_coherency(q, non_coherent_mem);
+>  
+>  	/*
+> @@ -976,7 +981,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	bool no_previous_buffers = !q_num_bufs;
+>  	int ret = 0;
+>  
+> -	if (q_num_bufs == VB2_MAX_FRAME) {
+> +	if (q->num_buffers == q->max_num_buffers) {
+>  		dprintk(q, 1, "maximum number of buffers already allocated\n");
+>  		return -ENOBUFS;
+>  	}
+> @@ -993,7 +998,13 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  		 */
+>  		mutex_lock(&q->mmap_lock);
+>  		q->memory = memory;
+> +		if (!q->bufs)
+> +			q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+
+Ditto.
+
+> +		if (!q->bufs)
+> +			ret = -ENOMEM;
+>  		mutex_unlock(&q->mmap_lock);
+> +		if (ret)
+> +			return ret;
+>  		q->waiting_for_buffers = !q->is_output;
+>  		set_queue_coherency(q, non_coherent_mem);
+>  	} else {
+> @@ -1005,7 +1016,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  			return -EINVAL;
+>  	}
+>  
+> -	num_buffers = min(*count, VB2_MAX_FRAME - q_num_bufs);
+> +	num_buffers = min(*count, q->max_num_buffers - q_num_bufs);
+>  
+>  	if (requested_planes && requested_sizes) {
+>  		num_planes = requested_planes;
+> @@ -2465,6 +2476,12 @@ int vb2_core_queue_init(struct vb2_queue *q)
+>  	/*
+>  	 * Sanity check
+>  	 */
+> +	if (!q->max_num_buffers)
+> +		q->max_num_buffers = VB2_MAX_FRAME;
+
+Can we add a comment here to explain that this is for backwards
+compatibility with drivers which don't support more buffers?
+
+Actually, we should probably document in kerneldoc for vb2_queue that 0 is
+an allowed and special value.
+
+> +
+> +	/* The maximum is limited by offset cookie encoding pattern */
+> +	q->max_num_buffers = min_t(unsigned int, q->max_num_buffers, MAX_BUFFER_INDEX);
+> +
+>  	if (WARN_ON(!q)			  ||
+>  	    WARN_ON(!q->ops)		  ||
+>  	    WARN_ON(!q->mem_ops)	  ||
+> @@ -2474,6 +2491,10 @@ int vb2_core_queue_init(struct vb2_queue *q)
+>  	    WARN_ON(!q->ops->buf_queue))
+>  		return -EINVAL;
+>  
+> +	if (WARN_ON(q->max_num_buffers > MAX_BUFFER_INDEX) ||
+
+Hmm, how is this possible?
+
+> +	    WARN_ON(q->min_buffers_needed > q->max_num_buffers))
+> +		return -EINVAL;
+
+I have a loose recollection that it's allowed for a driver to change this
+value depending on the configuration. You may want to double check if any
+driver doesn't do so already if we want to disallow that. (and also
+document that it's not allowed)
+
+> +
+>  	if (WARN_ON(q->requires_requests && !q->supports_requests))
+>  		return -EINVAL;
+>  
+> @@ -2520,6 +2541,8 @@ void vb2_core_queue_release(struct vb2_queue *q)
+>  	__vb2_queue_cancel(q);
+>  	mutex_lock(&q->mmap_lock);
+>  	__vb2_queue_free(q, vb2_get_num_buffers(q));
+> +	kfree(q->bufs);
+> +	q->bufs = NULL;
+>  	q->num_buffers = 0;
+>  	mutex_unlock(&q->mmap_lock);
+>  }
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 7d798fb15c0b..f3cf4b235c1f 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -627,7 +627,7 @@ struct vb2_buffer *vb2_find_buffer(struct vb2_queue *q, u64 timestamp)
+>  	 * This loop doesn't scale if there is a really large number of buffers.
+>  	 * Maybe something more efficient will be needed in this case.
+>  	 */
+> -	for (i = 0; i < vb2_get_num_buffers(q); i++) {
+> +	for (i = 0; i < q->max_num_buffers; i++) {
+>  		vb2 = vb2_get_buffer(q, i);
+>  
+>  		if (!vb2)
+> @@ -1142,7 +1142,7 @@ int _vb2_fop_release(struct file *file, struct mutex *lock)
+>  
+>  	if (lock)
+>  		mutex_lock(lock);
+> -	if (file->private_data == vdev->queue->owner) {
+> +	if (!vdev->queue->owner || file->private_data == vdev->queue->owner) {
+>  		vb2_queue_release(vdev->queue);
+>  		vdev->queue->owner = NULL;
+>  	}
+> @@ -1270,7 +1270,7 @@ void vb2_video_unregister_device(struct video_device *vdev)
+>  	 */
+>  	get_device(&vdev->dev);
+>  	video_unregister_device(vdev);
+> -	if (vdev->queue && vdev->queue->owner) {
+> +	if (vdev->queue) {
+>  		struct mutex *lock = vdev->queue->lock ?
+>  			vdev->queue->lock : vdev->lock;
+>  
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 8f9d9e4af5b1..e77a397195f2 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -558,6 +558,7 @@ struct vb2_buf_ops {
+>   * @dma_dir:	DMA mapping direction.
+>   * @bufs:	videobuf2 buffer structures
+>   * @num_buffers: number of allocated/used buffers
+> + * @max_num_buffers: upper limit of number of allocated/used buffers
+>   * @queued_list: list of buffers currently queued from userspace
+>   * @queued_count: number of buffers queued and ready for streaming.
+>   * @owned_by_drv_count: number of buffers owned by the driver
+> @@ -619,8 +620,9 @@ struct vb2_queue {
+>  	struct mutex			mmap_lock;
+>  	unsigned int			memory;
+>  	enum dma_data_direction		dma_dir;
+> -	struct vb2_buffer		*bufs[VB2_MAX_FRAME];
+> +	struct vb2_buffer		**bufs;
+>  	unsigned int			num_buffers;
+> +	unsigned int			max_num_buffers;
+>  
+>  	struct list_head		queued_list;
+>  	unsigned int			queued_count;
+> @@ -1248,6 +1250,12 @@ static inline void vb2_clear_last_buffer_dequeued(struct vb2_queue *q)
+>  static inline struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q,
+>  						unsigned int index)
+>  {
+> +	if (!q->bufs)
+> +		return NULL;
+> +
+> +	if (index >= q->max_num_buffers)
+
+Wouldn't this be already prevented by the condition below?
+
+> +		return NULL;
+> +
+>  	if (index < q->num_buffers)
+>  		return q->bufs[index];
+>  	return NULL;
+> -- 
+> 2.39.2
+> 
+
+Best regards,
+Tomasz
