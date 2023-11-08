@@ -2,141 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C407E5610
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297687E5617
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjKHMR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:17:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S1344568AbjKHMSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjKHMR0 (ORCPT
+        with ESMTP id S230314AbjKHMSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:17:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ED41BEF;
-        Wed,  8 Nov 2023 04:17:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A168C433C8;
-        Wed,  8 Nov 2023 12:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699445843;
-        bh=7V/UrnIoKR1hXQNmM3fHYk4TXHGghxFBDI9RetIrR3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lTnF/3EunAy/n/EtkQHaJx3vItL4cSDVDLs/F9tkv5i7pc0qpx9Ljy0DdpI9RNMUj
-         y+4ePbrg5HnrgO1qS6jnxhqG7uAnuxEN5M85JJg+3cO6OIM0QseItr2gK/riow4nYO
-         GtyTOe6EKUEw+3c0A2sGr6ANhuzP9MDpdxttFp07scZCfMVYn7V81E9oUMoD9asPJZ
-         LE5BxKejmYHkTjJ1BSpXqScS1UW/gu9/YXbBr4KN4f7QHEHq8PYzAE7tUw40KifrKV
-         loQGxwzW062JR+Bic9nBu+j+mvNX/LyMtwzCcdQbvRmGB29igTeQJ2q5BRz+CpznHE
-         ckiETsNNJvO5Q==
-Date:   Wed, 8 Nov 2023 12:17:16 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ryan Lee <ryans.lee@analog.com>, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: use "soundwire" as controller's node
- name in examples
-Message-ID: <20231108-outback-composed-c620cd86c234@spud>
-References: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
+        Wed, 8 Nov 2023 07:18:49 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E553F1BCC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:18:46 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7bb4b7eb808so1027002241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 04:18:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699445926; x=1700050726; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gtleK5+B+iSrGADJfvBkG6jHsi6KD2PrLC0HlWzUmbI=;
+        b=twAmtZDEGGTQmKFaCGxLqdnRqlaSMMn9H+QvctK3yxbOmFAPPt7c2BiAQAVozw1WFR
+         FFCXy3C3/yPRvQ5RG4rAaey3qTRh4y4U38vscrWQFlydcb0xE3F+IzSaurxeuBomwVo3
+         BOnomRT8hTWkF5H/NUKk2beawOXlZ6wcsZ1WiUviwT4UkzJKNIdRTNcwC43XfmC5bAt7
+         AUalAwu8lAH7YdBpNYkhM77hYMdlKs5PNS0BSo2rf83a24aoxHnp5I57qDlsCzesLl4N
+         YF6cYHAda4FqEkneVg2m+jDZr7t5Jmq4ISJWUG0zGRwbkzTzkf8n6iBB4bnNsz1Yo9Yw
+         YAeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699445926; x=1700050726;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gtleK5+B+iSrGADJfvBkG6jHsi6KD2PrLC0HlWzUmbI=;
+        b=WqGKlRJE3ZK0xiGvCvoi1KjQnvvFbwT2BG7tA8X4ONzaGFmRdpEAc01AGLw59rFGlg
+         /QZuMnrI0js17Vl6waESUEBR4nZfwPTg2Yy7rkMoX3v26MkLiSY3pymaLiaUiPX0shsG
+         S9iym7g4JOhQMmJSanRrcSk6tKxGA2A2nbylVUPw0qITteGiS+f8HDG1Olete3+dB2Bq
+         BZc9VfjqfVW6P103IGbg2vv+EWppZhqqBiLPJGrPmnEEUTNXWnIiTrT7V/Jt9um2xTaI
+         JdQrUcy2QwCL6Qf7SEJHXX9alh1jDpnYewpdPUzHw8YuYeH1kfLzQXD67+n0i5UELehM
+         QajQ==
+X-Gm-Message-State: AOJu0YzjzhfE8ssJsM2Qn4EBX9ykEVLjgJ40oueBrCBn/UfihhEmJmtr
+        PtXKZ6bYheJ+fga2pPf4bIsVyihDtupnuJNp1M2++Q==
+X-Google-Smtp-Source: AGHT+IHqU66uAC3lXdc4sKllRsYweIpdsltZ/i8A/zB8EvIJhiRjXgx+94NX2hrKqiHu8SVCcxUAv+Ep/J0zfypORRM=
+X-Received: by 2002:a67:c182:0:b0:45d:92e7:76d9 with SMTP id
+ h2-20020a67c182000000b0045d92e776d9mr1361581vsj.21.1699445925844; Wed, 08 Nov
+ 2023 04:18:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6PrPU5pOkEEUIIG5"
-Content-Disposition: inline
-In-Reply-To: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
+References: <20231107202324.434534294@linuxfoundation.org>
+In-Reply-To: <20231107202324.434534294@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 8 Nov 2023 17:48:34 +0530
+Message-ID: <CA+G9fYuOvAtZwtvyaUCA4P-pzdjop0=XqL13-f-ibSM_Eu3S+Q@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/125] 5.15.138-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 8 Nov 2023 at 01:54, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.138 release.
+> There are 125 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 09 Nov 2023 20:22:58 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.138-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---6PrPU5pOkEEUIIG5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 07, 2023 at 11:16:10AM +0100, Krzysztof Kozlowski wrote:
-> Soundwire Devicetree bindings expect the Soundwire controller device
-> node to be named just "soundwire".  Correct examples, so the incorrect
-> code will not be re-used.
->=20
-> Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-FWIW, there are a few instances of "soundwire-controller" in qcom
-devicetrees that you might also want to change.
+## Build
+* kernel: 5.15.138-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: f3efa02c9542a1de453a56c6ad9913f699a45737
+* git describe: v5.15.137-126-gf3efa02c9542
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+.137-126-gf3efa02c9542
 
-> ---
->  Documentation/devicetree/bindings/sound/adi,max98363.yaml | 2 +-
->  Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml | 2 +-
->  Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/=
-Documentation/devicetree/bindings/sound/adi,max98363.yaml
-> index a844b63f3930..c388cda56011 100644
-> --- a/Documentation/devicetree/bindings/sound/adi,max98363.yaml
-> +++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
-> @@ -39,7 +39,7 @@ unevaluatedProperties: false
-> =20
->  examples:
->    - |
-> -    soundwire-controller@3250000 {
-> +    soundwire@3250000 {
->          #address-cells =3D <2>;
->          #size-cells =3D <0>;
->          reg =3D <0x3250000 0x2000>;
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/=
-Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-> index ba572a7f4f3c..8e462cdf0018 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-> @@ -52,7 +52,7 @@ examples:
->    - |
->      #include <dt-bindings/gpio/gpio.h>
-> =20
-> -    soundwire-controller@3250000 {
-> +    soundwire@3250000 {
->          #address-cells =3D <2>;
->          #size-cells =3D <0>;
->          reg =3D <0x3250000 0x2000>;
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/=
-Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-> index e6723c9e312a..d717017b0fdb 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-> @@ -48,7 +48,7 @@ examples:
->    - |
->      #include <dt-bindings/gpio/gpio.h>
-> =20
-> -    soundwire-controller {
-> +    soundwire {
->          #address-cells =3D <2>;
->          #size-cells =3D <0>;
-> =20
-> --=20
-> 2.34.1
->=20
+## Test Regressions (compared to v5.15.137)
 
---6PrPU5pOkEEUIIG5
-Content-Type: application/pgp-signature; name="signature.asc"
+## Metric Regressions (compared to v5.15.137)
 
------BEGIN PGP SIGNATURE-----
+## Test Fixes (compared to v5.15.137)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUt8TAAKCRB4tDGHoIJi
-0jpSAP48y9NqKH1qbbnEmCHyS9qNSJNgiOaoUevxsgcpPscGzwEAqFquFreorzyT
-zAoJ1HXSZDG4PAhSwyJDUwtZ/wPGhQE=
-=CPNX
------END PGP SIGNATURE-----
+## Metric Fixes (compared to v5.15.137)
 
---6PrPU5pOkEEUIIG5--
+## Test result summary
+total: 93104, pass: 73581, fail: 2547, skip: 16923, xfail: 53
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 117 total, 117 passed, 0 failed
+* arm64: 44 total, 44 passed, 0 failed
+* i386: 34 total, 34 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 26 total, 26 passed, 0 failed
+* riscv: 11 total, 11 passed, 0 failed
+* s390: 11 total, 11 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
