@@ -2,215 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134C87E6121
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207627E6127
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjKHXlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:41:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S230320AbjKHXoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKHXlR (ORCPT
+        with ESMTP id S229508AbjKHXoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:41:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA6625B5;
-        Wed,  8 Nov 2023 15:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699486875; x=1731022875;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=dT4WQCUdQprCWd3G6FCRdYNt6S9bUj4wPnLHTTo5DBg=;
-  b=NZDPZYHNKSiixvkINN75IMHf8xmGQSI9esmtK0wmdQGIQ0Tl8mXXG+RC
-   8OorF60zIOD6NV/JKfu2a7kgvkEMBoEGSBIaI+KlBfyOJEGwECi/1/Svp
-   eaeOjc0HvqjTZXKE+ITDSDLsaNYOSVo/z9+DHHkVzCZSezMJw0ZlNluhy
-   aamfP9ejQTBG3zjWKtwCt6ye+ah0vWQbB2JDbMY4LXgYbtcOwLWgOUbgY
-   lwm4/ybI7szptMC20Yo+EgW+xYKocTECe/Pd6VUX97ufI/uSwnUQjdhcu
-   7iqqi/G+zjkGe2CvEUk7nqTZRAESqZ/Kt5h8LDOiD+E8h5+e7p62L5Rng
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="8533115"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="8533115"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 15:41:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="853907440"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="853907440"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 15:41:13 -0800
-Date:   Wed, 8 Nov 2023 15:41:13 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH 2/2] KVM: X86: Add a capability to configure bus
- frequency for APIC timer
-Message-ID: <20231108234113.GA1132821@ls.amr.corp.intel.com>
-References: <cover.1699383993.git.isaku.yamahata@intel.com>
- <70c2a2277f57b804c715c5b4b4aa0b3561ed6a4f.1699383993.git.isaku.yamahata@intel.com>
- <CALMp9eTG8CbWZaDumKsBsr0qQgrre-_=Fn5jzs7GqHB+MZ-E_A@mail.gmail.com>
+        Wed, 8 Nov 2023 18:44:24 -0500
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5B82102
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:44:22 -0800 (PST)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b2f43c4853so347753b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:44:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699487062; x=1700091862;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=omOPkzFOgHujhTqR136cEFG8vnTdihPbkd8WFXv4dFg=;
+        b=ErwFXKeH5Z6g5BpjsBWgojMeEhtgyLIb6QZPxK+dUPn7qlNwEEcGBvp7n6+686xb76
+         dnJUMf061FlUvZ9nltS3n47vB3jzl+T8ig6G3CPWJDIEKSxuj5fej4XllachzpFj46Ml
+         05gOuxdekh6FFkJxnqRiOsniIfFDLIGI8B0mapjffotSZ+hPCDUn4y7EDYceKvUtNrHw
+         ImfLSMnRU/wHfNJmSqL8WCl1EIRbUoQ4MqgZ8Hjq/nrWsKwzTPT5eb22xUsTlYWd+lPh
+         lEXnOebv60hLFrFK/1XOPxsM3AmKd65NzPTq2kfbb1bBpzlvCerz/zDeiQeQZoVSXiox
+         0Skw==
+X-Gm-Message-State: AOJu0YyeP3AENb5pUAhiRc9ALlFPhb9mCgadRx0c7iuPEbQIKn4EHTEr
+        mlA379q4Az16CfP8xd1mLcqxoBaSf6xz7b7BL4B7vqVT5otG
+X-Google-Smtp-Source: AGHT+IH8aLmqQLsGNTdroA2ZGENBSlGH3Kfq7L6wzTA2W0YLF3ESChu2j6nowvN6/kmPNHZrupMI9zOhidOYKsqo5KfV8j2kLNYH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALMp9eTG8CbWZaDumKsBsr0qQgrre-_=Fn5jzs7GqHB+MZ-E_A@mail.gmail.com>
+X-Received: by 2002:a05:6808:1799:b0:3b2:e45a:7475 with SMTP id
+ bg25-20020a056808179900b003b2e45a7475mr10745oib.11.1699487061898; Wed, 08 Nov
+ 2023 15:44:21 -0800 (PST)
+Date:   Wed, 08 Nov 2023 15:44:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009ffc470609acaa3a@google.com>
+Subject: [syzbot] Monthly ext4 report (Nov 2023)
+From:   syzbot <syzbot+list07d69efc5e1d32eac754@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 11:59:35AM -0800,
-Jim Mattson <jmattson@google.com> wrote:
+Hello ext4 maintainers/developers,
 
-> On Tue, Nov 7, 2023 at 11:24 AM <isaku.yamahata@intel.com> wrote:
-> >
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> > Add KVM_CAP_X86_BUS_FREQUENCY_CONTROL capability to configure the core
-> > crystal clock (or processor's bus clock) for APIC timer emulation.  Allow
-> > KVM_ENABLE_CAPABILITY(KVM_CAP_X86_BUS_FREUQNCY_CONTROL) to set the
-> Nit: FREQUENCY
-> > frequency.  When using this capability, the user space VMM should configure
-> > CPUID[0x15] to advertise the frequency.
-> 
-> Is it necessary to advertise the frequency in CPUID.15H? No hardware
-> that I know of has a 1 GHz crystal clock, but the current
-> implementation works fine without CPUID.15H.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-It's not necessary. When the kernel can't determine the frequency based on
-cpuid (or cpu model), it determines the frequency based on other known
-frequency. e.g. TSC, cmos. I'll drop the sentence.
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 41 issues are still open and 118 have been fixed so far.
 
+Some of the still happening issues:
 
-> > TDX virtualizes CPUID[0x15] for the core crystal clock to be 25MHz.  The
-> > x86 KVM hardcodes its freuqncy for APIC timer to be 1GHz.  This mismatch
-> Nit: frequency
-> > causes the vAPIC timer to fire earlier than the guest expects. [1] The KVM
-> > APIC timer emulation uses hrtimer, whose unit is nanosecond.  Make the
-> > parameter configurable for conversion from the TMICT value to nanosecond.
-> >
-> > This patch doesn't affect the TSC deadline timer emulation.  The TSC
-> > deadline emulation path records its expiring TSC value and calculates the
-> > expiring time in nanoseconds.  The APIC timer emulation path calculates the
-> > TSC value from the TMICT register value and uses the TSC deadline timer
-> > path.  This patch touches the APIC timer-specific code but doesn't touch
-> > common logic.
-> >
-> > [1] https://lore.kernel.org/lkml/20231006011255.4163884-1-vannapurve@google.com/
-> > Reported-by: Vishal Annapurve <vannapurve@google.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >  arch/x86/kvm/x86.c       | 14 ++++++++++++++
-> >  include/uapi/linux/kvm.h |  1 +
-> >  2 files changed, 15 insertions(+)
-> >
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index a9f4991b3e2e..20849d2cd0e8 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -4625,6 +4625,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> >         case KVM_CAP_ENABLE_CAP:
-> >         case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
-> >         case KVM_CAP_IRQFD_RESAMPLE:
-> > +       case KVM_CAP_X86_BUS_FREQUENCY_CONTROL:
-> 
-> This capability should be documented in Documentation/virtual/kvm/api.txt.
-> 
-> >                 r = 1;
-> >                 break;
-> >         case KVM_CAP_EXIT_HYPERCALL:
-> > @@ -6616,6 +6617,19 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
-> >                 }
-> >                 mutex_unlock(&kvm->lock);
-> >                 break;
-> > +       case KVM_CAP_X86_BUS_FREQUENCY_CONTROL: {
-> > +               u64 bus_frequency = cap->args[0];
-> > +               u64 bus_cycle_ns;
-> > +
-> 
-> To avoid potentially bizarre behavior, perhaps we should disallow
-> changing the APIC bus frequency once a vCPU has been created?
-> 
-> > +               if (!bus_frequency)
-> > +                       return -EINVAL;
-> > +               bus_cycle_ns = 1000000000UL / bus_frequency;
-> > +               if (!bus_cycle_ns)
-> > +                       return -EINVAL;
-> > +               kvm->arch.apic_bus_cycle_ns = bus_cycle_ns;
-> > +               kvm->arch.apic_bus_frequency = bus_frequency;
-> > +               return 0;
-> 
-> Should this be disallowed if !lapic_in_kernel?
+Ref  Crashes Repro Title
+<1>  51606   Yes   possible deadlock in console_flush_all (2)
+                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
+<2>  10182   Yes   KASAN: slab-out-of-bounds Read in generic_perform_write
+                   https://syzkaller.appspot.com/bug?extid=4a2376bc62e59406c414
+<3>  5928    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<4>  470     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<5>  207     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<6>  150     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<7>  101     Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<8>  30      Yes   kernel BUG in ext4_write_inline_data_end
+                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
+<9>  16      No    possible deadlock in start_this_handle (4)
+                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
+<10> 13      Yes   INFO: rcu detected stall in sys_unlink (3)
+                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
 
-That makes sense. How about this?
-It's difficult to check if vcpu has been created because vcpu may be destroyed.
-Check if the vm has vcpus now instead.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 7025b3751027..cc976df2651e 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -7858,6 +7858,20 @@ This capability is aimed to mitigate the threat that malicious VMs can
- cause CPU stuck (due to event windows don't open up) and make the CPU
- unavailable to host or other VMs.
- 
-+7.34 KVM_CAP_X86_BUS_FREQUENCY_CONTROL
-+--------------------------------------
-+
-+:Architectures: x86
-+:Target: VM
-+:Parameters: args[0] is the value of apic bus clock frequency
-+:Returns: 0 on success, -EINVAL if args[0] contains invalid value for the
-+          frequency, or -ENXIO if virtual local APIC isn't enabled by
-+          KVM_CREATE_IRQCHIP, or -EBUSY if any vcpu is created.
-+
-+This capability sets the APIC bus clock frequency (or core crystal clock
-+frequency) for kvm to emulate APIC in the kernel.  The default value is 1000000
-+(1GHz).
-+
- 8. Other capabilities.
- ======================
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 20849d2cd0e8..388a9989ef7c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -6626,9 +6626,25 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
- 		bus_cycle_ns = 1000000000UL / bus_frequency;
- 		if (!bus_cycle_ns)
- 			return -EINVAL;
--		kvm->arch.apic_bus_cycle_ns = bus_cycle_ns;
--		kvm->arch.apic_bus_frequency = bus_frequency;
--		return 0;
-+
-+		r = 0;
-+		mutex_lock(&kvm->lock);
-+		/*
-+		 * Don't allow to change the frequency dynamically during vcpu
-+		 * running to avoid potentially bizarre behavior.
-+		 */
-+		if (kvm->created_vcpus)
-+			r = -EBUSY;
-+		/* This is for in-kernel vAPIC emulation. */
-+		else if (!irqchip_in_kernel(kvm))
-+			r = ENXIO;
-+
-+		if (!r) {
-+			kvm->arch.apic_bus_cycle_ns = bus_cycle_ns;
-+			kvm->arch.apic_bus_frequency = bus_frequency;
-+		}
-+		mutex_unlock(&kvm->lock);
-+		return r;
- 	}
- 	default:
- 		r = -EINVAL;
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-
-
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+You may send multiple commands in a single email message.
