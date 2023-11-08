@@ -2,94 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAC47E5F8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAB67E5F98
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbjKHVBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
+        id S231935AbjKHVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjKHVA6 (ORCPT
+        with ESMTP id S229885AbjKHVDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:00:58 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A3D2113
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:00:56 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6ce2b6b3cb6so48073a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:00:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1699477256; x=1700082056; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h7liRufg49/RU3WhlB+//eXGJe7JD0FPNb3R1JhYvKc=;
-        b=a2iNtPfVtnq8V8pyeUR0Ws20fuOBnneSVB5f62PcOknnhWShE5E8s3HDtLp5eD3eXc
-         +dSca1TMlnDZVX0tE6TewIf6iugtXHSzIMXsa3CqqCf4j/LaRHYoHQW8FuPyz554Qmfx
-         UiYDFSInrksEVPPgpIJHWvwwtbP+42UqT190G6a+ArIAsIBmDl2/4i7Tz7IyVbp2JvN4
-         1O8/p0fK45bJn5Olh9SxoiFfqr7HbQm6KwRq0W6G9QD2u0S876Au2Sz/GLDPDX1rfAIt
-         sbg4XI/6TxhoRo2McdJ4ktehUfpYug1DPl2PxPV76DkN1xLKe/g22C7Eck3vuId+DgM6
-         +wyQ==
+        Wed, 8 Nov 2023 16:03:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30052EA
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699477355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TP4HWuqc6+S21p7XlOM2ZGKm5NH8oXRqzhuYxPqLszo=;
+        b=GBZ1CSTF3kD50/1WzHpgVT6V11lt6PFkS4aD08vjBX5h5eLqpym4shPuohO9cyE6iA/vTo
+        bdJ/aawchhgIMXtxnRu3xzKWFOmc0M2TugjCx2G1K5CAOpGUwo/Ycd1T2eNMnrLShukPFf
+        Rq5TYGDy/DCdeGuSErbg1XyAqiNCjxU=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-XcvMrFvCO5SmIyKqkJaU_w-1; Wed, 08 Nov 2023 16:02:34 -0500
+X-MC-Unique: XcvMrFvCO5SmIyKqkJaU_w-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b6aa594943so22311b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:02:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699477256; x=1700082056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h7liRufg49/RU3WhlB+//eXGJe7JD0FPNb3R1JhYvKc=;
-        b=p3ZTM8dYi3X1tQq5j9rTFkuwihGpxJ9KWLVh1XUEDyJ+9vlxb0+TiKMK3IPbFB9xfe
-         SO+GbRXbY5wl+tO34oA8gpXBC6AMgNU3tzYUvhB/UuX3/qIfQ2qXaMCFABaeEpny5hzr
-         va/bbx61jQc50WdvxMsQR6ccGnqQAWMYdq9W52MNh0wZNfQJ18lZqwDCKWYFtGKzfqlm
-         hiNJKu+8abM0kFt14YqGP7NGUKCVpxvqJP4XxHSLDPtxKhg8hJgKzPMRuNYA2bsM+7cX
-         0YK05DomwchX3DzCrWcexK6DBUlnzAq3/VZv4i6uTAwflWFnBihzMe2UXYu6dyYAjbn1
-         wVgQ==
-X-Gm-Message-State: AOJu0YwyGJXc/P2PvajHSDc4EJEx9sWMfPMpCn+ZmRI5ULAKWJWHlwqa
-        5C5tqnPdOIChYDzWtdkE//8mAjAa2JZQl+G7yIba
-X-Google-Smtp-Source: AGHT+IEd0ZpMRgMDPqDg2Wh7KFXuaegxDDPWKJU3cYRlMeKgIo3eiH2A2tq9nK03p6GlcKcB7RZEC20oMr/OtISugh0=
-X-Received: by 2002:a05:6870:20a:b0:1f0:630c:a589 with SMTP id
- j10-20020a056870020a00b001f0630ca589mr3530034oad.46.1699477256059; Wed, 08
- Nov 2023 13:00:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20231031123207.758655-1-omosnace@redhat.com> <CAHC9VhRo2GzW0jSqmm0Sv3z_-q9PTsvScV5oQwF5uNh+ZcWreA@mail.gmail.com>
- <CAFqZXNtFfZ3FEoVAfM5r_a-mTqphz7qw=F3_Em87dRz6ca4EaQ@mail.gmail.com>
-In-Reply-To: <CAFqZXNtFfZ3FEoVAfM5r_a-mTqphz7qw=F3_Em87dRz6ca4EaQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 8 Nov 2023 16:00:45 -0500
-Message-ID: <CAHC9VhRO=s9yt+3xcDa1y7E4csz_7mOhuf51VFkMr+sN=Ez+Vg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] lsm: fix default return values for some hooks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        Benjamin Coddington <bcodding@redhat.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        d=1e100.net; s=20230601; t=1699477353; x=1700082153;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TP4HWuqc6+S21p7XlOM2ZGKm5NH8oXRqzhuYxPqLszo=;
+        b=Blw50t6Nbn/tXpZnc9hySll47cqM7zLxU/JVhqL5WwPQfhvVuet4g1A09aU1MmIqyy
+         69ZrJ1A9eb9PsYa//4UoJQipht0bh0XSeSH/UvkdgrldFrnZgdqSYpVp6V/Ltp2B2cvR
+         a4xrsv/BaG8XLn9cVUhWsT1FCTRxW/1/qpEInStetGOnSQlHBbBKc7BOwWlazTX1/TT2
+         mXgJa4ZhfUSJ4odL3yEBMU/houVl0UgpU1qruB2x4eL/FwnML4vmtrlHac01OcPReoqg
+         z0pKZUEb5lok9vuCi5gG/J2kZZHzTRtrmxXdAQXCl/AvZi0lSa0dGyGbMk1WanmOlAfw
+         HFKg==
+X-Gm-Message-State: AOJu0Yz9nuljSviwp9tpnXw1UdwIdLp7GLkXw83a5Ep6kPNs7D/eTX2p
+        +kxpbZjjM8f4mbndAtNZo70e+t8oStiGBIcUPDf6091MFxT+jUMMVRPC0yaD4E+/cxjbLzNP0KC
+        +MshYS/0pyYOdWHZT4yVO3yaptT0Z3Aph
+X-Received: by 2002:a05:6808:1784:b0:3b2:ec6d:edcd with SMTP id bg4-20020a056808178400b003b2ec6dedcdmr3320181oib.3.1699477353257;
+        Wed, 08 Nov 2023 13:02:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHAL0yQhQ9JQfPSl0eGzmMtITWMMnl/qAqqjK6shV9GeqY4L6d39bDSLxUZw0J7Wy/8e1h6jw==
+X-Received: by 2002:a05:6808:1784:b0:3b2:ec6d:edcd with SMTP id bg4-20020a056808178400b003b2ec6dedcdmr3320155oib.3.1699477352900;
+        Wed, 08 Nov 2023 13:02:32 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32cc:4f00:227b:d2ff:fe26:2a7a])
+        by smtp.gmail.com with ESMTPSA id pp25-20020a056214139900b00655e428604esm1450673qvb.137.2023.11.08.13.02.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 13:02:32 -0800 (PST)
+Message-ID: <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
+Subject: Re: Implementation details of PCI Managed (devres) Functions
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tejun Heo <htejun@gmail.com>, dakr@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>, jeff@garzik.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Date:   Wed, 08 Nov 2023 22:02:29 +0100
+In-Reply-To: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
+References: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 4:30=E2=80=AFAM Ondrej Mosnacek <omosnace@redhat.com=
-> wrote:
-> On Wed, Nov 8, 2023 at 4:12=E2=80=AFAM Paul Moore <paul@paul-moore.com> w=
-rote:
-> > On Tue, Oct 31, 2023 at 8:32=E2=80=AFAM Ondrej Mosnacek <omosnace@redha=
-t.com> wrote:
-> > >
-> > > Some of the default return values listed in <linux/lsm_hook_defs.h>
-> > > don't match the actual no-op value and can be trivially fixed.
-> > >
-> > > Ondrej Mosnacek (2):
-> > >   lsm: fix default return value for vm_enough_memory
-> > >   lsm: fix default return value for inode_getsecctx
-> > >
-> > >  include/linux/lsm_hook_defs.h | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > These both look like reasonable -stable candidates to me, what do you t=
-hink?
->
-> Yes, that would be my assessment as well.
+So, today I stared at the code for a while and come to a somewhat
+interesting insight:
 
-Okay, good.  I've just gone ahead and merged these into lsm/stable-6.7
-and I'll plan to send them up to Linus on Thursday or Friday this
-week.  Thanks.
 
---=20
-paul-moore.com
+On Tue, 2023-11-07 at 20:38 +0100, Philipp Stanner wrote:
+> Hi all,
+>=20
+> I'm currently working on porting more drivers in DRM to managed pci-
+> functions. During this process I discovered something that might be
+> called an inconsistency in the implementation.
+
+I think I figured out why not all pci_ functions have a pcim_
+counterpart.
+
+I was interested in implementing pcim_iomap_range(), since we could use
+that for some drivers.
+
+It turns out, that implementing this would be quite complicated (if I'm
+not mistaken).
+
+lib/devres.c:
+
+struct pcim_iomap_devres {
+	void __iomem *table[PCIM_IOMAP_MAX];
+};
+
+void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
+{
+	struct pcim_iomap_devres *dr, *new_dr;
+
+	dr =3D devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
+	if (dr)
+		return dr->table;
+
+	new_dr =3D devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERN=
+EL,
+				   dev_to_node(&pdev->dev));
+	if (!new_dr)
+		return NULL;
+	dr =3D devres_get(&pdev->dev, new_dr, NULL, NULL);
+	return dr->table;
+}
+
+That struct keeps track of the requested BARs. That's why there can
+only be one mapping per BAR, because that table is statically allocated
+and is indexed with the bar-number.
+pcim_iomap_table() now only ever returns the table with the pointers to
+the BARs. Adding tables to that struct that keep track of which
+mappings exist in which bars would be a bit tricky and require probably
+an API change for everyone who currently uses pcim_iomap_table(), and
+that's more than 100 C-files.
+
+So, it seems that a concern back in 2007 was to keep things simple and
+skip the more complex data structures necessary for keeping track of
+the various mappings within a bar.
+In theory, there could be an almost unlimited number of such mappings
+of various sizes, almost forcing you to do book-keeping with the help
+of heap-allocations.
+
+I guess one way to keep things extensible would have been to name the
+function pcim_iomap_bar_table(), so you could later implement one like
+pcim_iomap_range_table() or something.
+But now it is what it is..
+
+That still doesn't explain why there's no pcim_request_region(),
+though...
+
+
+P.
+
+>=20
+> First, there would be the pcim_ functions being scattered across
+> several files. Some are implemented in drivers/pci/pci.c, others in
+> lib/devres.c, where they are guarded by #ifdef CONFIG_PCI
+> =E2=80=93 this originates from an old cleanup, done in
+> 5ea8176994003483a18c8fed580901e2125f8a83
+>=20
+> Additionally, there is lib/pci_iomap.c, which contains the non-
+> managed
+> pci_iomap() functions.
+>=20
+> At first and second glance it's not obvious to me why these pci-
+> functions are scattered. Hints?
+>=20
+>=20
+> Second, it seems there are two competing philosophies behind managed
+> resource reservations. Some pci_ functions have pcim_ counterparts,
+> such as pci_iomap() <-> pcim_iomap(). So the API-user might expect
+> that
+> relevant pci_ functions that do not have a managed counterpart do so
+> because no one bothered implementing them so far.
+>=20
+> However, it turns out that for pci_request_region(), there is no
+> counterpart because a different mechanism / semantic was used to make
+> the function _sometimes_ managed:
+>=20
+> =C2=A0=C2=A0 1. If you use pcim_enable_device(), the member is_managed in
+> struct
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_dev is set to 1.
+> =C2=A0=C2=A0 2. This value is then evaluated in pci_request_region()'s ca=
+ll to
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 find_pci_dr()
+>=20
+> Effectively, this makes pci_request_region() sometimes managed.
+> Why has it been implemented that way and not as a separate function =E2=
+=80=93
+> like, e.g., pcim_iomap()?
+>=20
+> That's where an inconsistency lies. For things like iomappings there
+> are separate managed functions, for the region-request there's a
+> universal function doing managed or unmanaged, respectively.
+>=20
+> Furthermore, look at pcim_iomap_regions() =E2=80=93 that function uses a =
+mix
+> between the obviously managed function pcim_iomap() and
+> pci_request_region(), which appears unmanaged judging by the name,
+> but,
+> nevertheless, is (sometimes) managed below the surface.
+> Consequently, pcim_iomap_regions() could even be a little buggy: When
+> someone uses pci_enable_device() + pcim_iomap_regions(), wouldn't
+> that
+> leak the resource regions?
+>=20
+> The change to pci_request_region() hasn't grown historically but was
+> implemented that way in one run with the first set of managed
+> functions
+> in commit 9ac7849e35f70. So this implies it has been implemented that
+> way on purpose.
+>=20
+> What was that purpose?
+>=20
+> Would be great if someone can give some hints :)
+>=20
+> Regards,
+> P.
+>=20
+
