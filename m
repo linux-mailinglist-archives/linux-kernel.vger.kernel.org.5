@@ -2,97 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D897E52E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4CA7E52E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343932AbjKHJvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:51:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        id S1343971AbjKHJxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235406AbjKHJvi (ORCPT
+        with ESMTP id S235406AbjKHJx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:51:38 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C45E198;
-        Wed,  8 Nov 2023 01:51:35 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A89pHot020550;
-        Wed, 8 Nov 2023 09:51:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : content-transfer-encoding : in-reply-to : references : from
- : subject : cc : to : message-id : date; s=pp1;
- bh=GJS+lfx698uo4dMAPAezpADnQYOz/Lk64FPPBIDsaQI=;
- b=WSi+JL9t/aczZMwq9Em9WbmcYXbiTAYNLv/aOGAZmff4/7Mg/aP1i5CdlTwEmD7lWIYz
- W58SLFRWAfTFWRgjWtRrsqWt7PmcbZjTVx63IRPIQQU4Q+SPOYnJ8wz2JcHgB7nxx9Yh
- eLX3xi890cGNS5N6xgg0CXfAQGtz86nvzWpXuOYj+jfbTqWxOMaRrA/QmTfJxJ4h31cd
- 5h9xUF2HOu7bRtvd8X3BDZYJiJWHMio6sN4oMCzUqESVxHXGijq/C0kEyvKu8x5aFHmf
- 3wgJcEW2+NcrZ3JMw56LTmHt97ami7mJ4/byI02bpyVYoz5UpUKO5dcuaBbDpeY1TmSN qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87werarb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 09:51:33 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A89erKE019920;
-        Wed, 8 Nov 2023 09:51:33 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87weraqd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 09:51:33 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88iYPc000667;
-        Wed, 8 Nov 2023 09:51:31 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w22uvg2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 09:51:31 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A89pTNW22544970
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 09:51:29 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8DE020040;
-        Wed,  8 Nov 2023 09:51:29 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D4AA2004B;
-        Wed,  8 Nov 2023 09:51:29 +0000 (GMT)
-Received: from t14-nrb (unknown [9.171.59.93])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 09:51:29 +0000 (GMT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 8 Nov 2023 04:53:29 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A9C1BB
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:53:27 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6c311ca94b4so5690482b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 01:53:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1699437206; x=1700042006; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=juZI1n0aMz+KCog5r3XPutHhgq5o1lm8dusNtuYCGmE=;
+        b=l4+BwGgY2FKriVF/7CpzeLjOonahsX0UZ+iRlPfKa5SCMWP3uOmqqSvDaHQXXn97Nl
+         CaRsML0xSTtH4bN1IDXI1yeVyQRl8O0vFVZx0oVVL7f4wTYykEtD75oLJem13+2Pj46r
+         dE+B+f7R8+YlrjLV6Np5COFcnaVwXxSAZEEjDm/pwCulNSkBh4VogF8RucBzCftg1CqK
+         sd1E8gnivGkhxH9jYMz+VZbhnnThdzq9ssdHSLDhH94pXHWioa32JWxiWlJhRx0ls7/t
+         Lnxg3mput54c1cqplbmUFgOXLaaXlRyzH7+neGhNDUxqYiALdscsQQIHKXhvSIdktCn0
+         094A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699437206; x=1700042006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=juZI1n0aMz+KCog5r3XPutHhgq5o1lm8dusNtuYCGmE=;
+        b=Ioy0HWJTmWqc0dhjHPwlXfX50w8Iv0D/yYrtHac0tVAA9XH2TNLktI2hcjnBzyEF7D
+         +PHXvBgoQLuOE7pdHmuMo/RS6Gnjn0fA3K9jBuE1b8GEJKM4Dk02zxYMZzgStbU8ciyO
+         IoXPTT9iHEQOrTQtA//r+lXvqZep539STofydhUgRqzczzUOUZ+IAD4mppb4PDiYPPf7
+         H8LDGp+t757iiaVaAGPa5gAY1QZYu+rtAjBc7eZ2S0uZlCnl9nYEA19fq9+NRZO5jjKY
+         N+lFmXRe3J/SJB18KhHBlyoysnyoCS6fe+EddYJ5Rz5ZgmIspnnf08idfEZzUpYQ/Q9P
+         Tq4A==
+X-Gm-Message-State: AOJu0YyU3QUcCImeY6ejU6lkxaoidEG86X+UISqxHjXA0qh9Z6J66ro5
+        6Ycbqkw/nzkD+twJCZMpOGLv2w==
+X-Google-Smtp-Source: AGHT+IEEgxtG4vAOOXAzU0cQ43q+y/GuzULUrpgSTtLmSEOIhXbF+HzsEiLo0Th7PmwROQ6HsMZIlg==
+X-Received: by 2002:a05:6a20:7495:b0:14e:43b0:5f99 with SMTP id p21-20020a056a20749500b0014e43b05f99mr1462760pzd.52.1699437206593;
+        Wed, 08 Nov 2023 01:53:26 -0800 (PST)
+Received: from sunil-laptop ([106.51.188.78])
+        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b001c728609574sm1346631plz.6.2023.11.08.01.53.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 01:53:25 -0800 (PST)
+Date:   Wed, 8 Nov 2023 15:23:14 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Kumar Patra <atishp@rivosinc.com>,
+        Haibo Xu <haibo1.xu@intel.com>, Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC PATCH v2 06/21] RISC-V: Kconfig: Select deferred GSI probe
+ for ACPI systems
+Message-ID: <ZUtailOcozI9xIou@sunil-laptop>
+References: <ZTuzJ1nsicZYp+uh@sunil-laptop>
+ <20231106221606.GA264641@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231108094055.221234-1-pbonzini@redhat.com>
-References: <20231108094055.221234-1-pbonzini@redhat.com>
-From:   Nico Boehr <nrb@linux.ibm.com>
-Subject: Re: [PATCH] selftests: kvm/s390x: use vm_create_barebones()
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <169943708853.84865.14594024975699715241@t14-nrb>
-User-Agent: alot/0.8.1
-Date:   Wed, 08 Nov 2023 10:51:28 +0100
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nSt93xc_8hrk9K8UXsBKUZPRHLZ0Qms7
-X-Proofpoint-GUID: Qm-C5q9JlYI1LbPaEFjvduwe_L3OA5TN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=760 clxscore=1011 malwarescore=0 suspectscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106221606.GA264641@bhelgaas>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Paolo Bonzini (2023-11-08 10:40:55)
-> This function does the same but makes it clearer why one would use
-> the "____"-prefixed version of vm_create().
->=20
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Hi Bjorn,
 
-Thanks!
+On Mon, Nov 06, 2023 at 04:16:06PM -0600, Bjorn Helgaas wrote:
+> On Fri, Oct 27, 2023 at 06:25:03PM +0530, Sunil V L wrote:
+> > On Thu, Oct 26, 2023 at 12:04:08PM -0500, Bjorn Helgaas wrote:
+> > > On Thu, Oct 26, 2023 at 01:53:29AM +0530, Sunil V L wrote:
+> > > > On RISC-V platforms, apart from root interrupt controllers (which
+> > > > provide local interrupts and IPI), other interrupt controllers in the
+> > > > hierarchy are probed late. Enable this select this CONFIG option for
+> > > > RISC-V platforms so that device drivers which connect to deferred
+> > > > interrupt controllers can take appropriate action.
+> > > 
+> > > Quite a bit of this series seems related to the question of interrupt
+> > > controllers being probed "late".
+> > > 
+> > > I don't see anything specific about *how* late this might be, but from
+> > > the use of -EPROBE_DEFER in individual drivers (8250_pnp explicitly,
+> > > and acpi_register_gsi() and pnp_irq() and acpi_pci_irq_enable(), which
+> > > are called from driver .probe() paths) it seems like interrupt
+> > > controllers might be detected even after devices that use them.
+> > > 
+> > > That seems like a fairly invasive change to the driver probe flow.
+> > > If we really need to do that, I think it might merit a little more
+> > > background as justification since we haven't had to do it for any
+> > > other arch yet.
+> > 
+> > In RISC-V, the APLIC can be a converter from wired (GSI) to MSI interrupts.
+> > Hence, especially in this mode, it has to be a platform device to use
+> > device MSI domain. Also, according to Marc Zyngier there is no reason to
+> > probe interrupt controllers early apart from root controller. So, the
+> > device drivers which use wired interrupts need to be probed after APLIC.
+> > 
+> > The PNP devices and PCI INTx GSI links use either
+> > acpi_dev_resource_interrupt() (PNP) or acpi_register_gsi() directly
+> > (PCI). The approach taken here is to follow the example of
+> > acpi_irq_get() which is enhanced to return EPROBE_DEFER and several
+> > platform device drivers which use platform_get_irq() seem to be handling
+> > this already.
+> 
+> This series (patch 04/21 "ACPI: irq: Add support for deferred probe in
+> acpi_register_gsi()" [1]) makes acpi_register_gsi() return
+> -EPROBE_DEFER, which percolates up through pci_enable_device().
+> 
+> Maybe that's ok, but this affects *all* PCI drivers, and it's a new
+> case that did not occur before.  Many drivers emit warning or error
+> messages for any pci_enable_device() failure, which you probably don't
+> want in this case, since -EPROBE_DEFER is not really a "failure";
+> IIUC, it just means "probe again later."
+>
+Yeah, I think all the drivers which need to be supported on RISC-V
+ACPI based systems will have to support deferred probe with this scheme.
 
-Tested-by: Nico Boehr <nrb@linux.ibm.com>
-Reviewed-by: Nico Boehr <nrb@linux.ibm.com>
+> > Using ResourceSource dependency (mbigen uses) in the namespace as part of
+> > Extended Interrupt Descriptor will not ensure the order since PNP/INTx
+> > GSI devices don't work with that.
+> 
+> Are these PNP/INTx GSI devices described in ACPI?  In the namespace?
+> Or in a static table?
+> 
+Yes, these are standard devices in the namespace. For ex: PNP0501(16550)
+or PNP0C0F (PCI interrupt link devices) are in the namespace.
+
+> > Is there any other better way to create dependency between IO devices
+> > and the interrupt controllers when interrupt controller itself is a
+> > platform device? While using core_initcall() for interrupt controllers
+> > seem to work which forces the interrupt controller to be probed first,
+> > Marc is not in favor of that approach since it is fragile.
+> 
+> I guess PCI interrupts from the PCI host bridges (PNP0A03 devices)
+> feed into the APLIC?  And APLIC is described via MADT?  Based on this
+> series, it looks like this:
+> 
+>     acpi_init
+>   +   acpi_riscv_init
+>   +     riscv_acpi_aplic_platform_init
+>   +       acpi_table_parse_madt(ACPI_MADT_TYPE_APLIC, aplic_parse_madt, 0)
+>       acpi_scan_init
+>         acpi_pci_root_init
+>         acpi_pci_link_init
+> 	acpi_bus_scan             # add PCI host bridges, etc
+> 
+> If that's the sequence, it looks like aplic_parse_madt() should be
+> called before the PCI host bridges are added.
+> 
+> Or maybe this isn't how the APLICs are enumerated?
+> 
+That's partly correct. APLIC platform devices are created prior to PCI
+host bridges added. But the actual APLIC driver which creates the
+irqdomain will be probed as a regular platform driver for the APLIC
+device. The platform driver probe will happen using DD framework and
+devices don't have any dependency on APLIC which can cause device probe
+prior to APLIC driver probe.
+
+DT supports fw_devlink framework which makes it easier for IRQ devices
+to use regular platform drivers and produces-consumers are probed in the
+order without requiring drivers to do deferred probe. But I don't see
+that supported for ACPI framework.  Also, the way PNP devices get added
+there is an assumption that interrupt controller is already setup fully.
+
+With this new use case in RISC-V, here are the alternatives I am aware of.
+
+1) Use core_initcall() in the APLIC drivers which makes APLIC driver to
+be probed prior to PNP or PCI INTx devices. But this was ruled out in
+the context of DT from Marc.
+
+2) Like the approach tried in this series, add support for deferred
+probe in drivers. This will be invasive change requiring many drivers to
+change like you pointed.
+
+I don't know which is less evil or if there is any other alternative
+which I am not aware of.
+
+Thomas/Marc, could you allow APLIC (and PLIC) irqchip drivers to use
+core_initcall() for ACPI?
+
+Thanks,
+Sunil
