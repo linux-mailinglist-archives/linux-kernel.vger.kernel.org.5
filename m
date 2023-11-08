@@ -2,205 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4647E526B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C649D7E526D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235384AbjKHJLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
+        id S235526AbjKHJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:11:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbjKHJLu (ORCPT
+        with ESMTP id S235501AbjKHJLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Nov 2023 04:11:50 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F1C1725
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:11:47 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so11345485a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 01:11:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699434706; x=1700039506; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EaqDXaOs/op7942EK7D9FQA0DqV6BEYWAfqEkv2slqY=;
-        b=GQNJ3uiUO0QCM7eZYCuuXDOu3YLUr3zKRaDCJol5RjYQyaaIaxdzr0IhNe4NC9GcWn
-         4piGVC8WATcLD6Fqb3WXO26bDzYe0L5oD8o+4C0HxIlHwNvCnKPQvVjbx+d6R5aYAUU7
-         EIbmP1oCsSuzHdAAX9HAX5qrs0UcE0ua5vTKI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699434706; x=1700039506;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EaqDXaOs/op7942EK7D9FQA0DqV6BEYWAfqEkv2slqY=;
-        b=Som5WfL6mLTbzMKFcZOUREhM5pCfBLnHKWsZLI3m4ulCYLIi8/KF4yGAyH2g1itTUQ
-         NtnAar6Zvw6DXMkcwhM6mvRGb8ZjlLg5r4O3F/V5IIuZjff8IzwQTCrlnskT+gQsutNW
-         c+g9w5lL2MbMY5LgV4AkPykcKPngf7YqBFp3DQ6tYFn/7iwSHbxQBKADgmf8HF+dLu/9
-         kpEIw92lawp93lRS9aYS3KvjmgpMQ428AW/Fq+L8nHYVAIEEUPVHnfMctYeTlHOwqufj
-         nWu68UvI/qy6s0eiGbL1RTuALxKTU80sGVn/7YK52XMqmKhwwQfmKFAydBNXiIpbCghG
-         jYkA==
-X-Gm-Message-State: AOJu0Yw11o2N9zRF6KdXvV3xg0EpimOsjRNIHF2Z2sYisjsYKEzBi6+Z
-        fcrDwQAqldvicAMUZA6yraXftGmHgPFdz1C7LldxJQ==
-X-Google-Smtp-Source: AGHT+IFT2SFJTGzzr8nvrwYJuArjzQOPkb9wjA7bseEogcFh7rn13hpWlbHZ69aMtM4D4lyhZXsSZFXzukFpYmmB53I=
-X-Received: by 2002:a50:9303:0:b0:543:566f:2e89 with SMTP id
- m3-20020a509303000000b00543566f2e89mr891741eda.37.1699434705567; Wed, 08 Nov
- 2023 01:11:45 -0800 (PST)
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9920D1A7;
+        Wed,  8 Nov 2023 01:11:48 -0800 (PST)
+Received: from [IPV6:2a02:a420:40:b6ea:bd47:84b4:35b0:c3f1] (77-63-99-98.mobile.kpn.net [77.63.99.98])
+        by linux.microsoft.com (Postfix) with ESMTPSA id BC45120B74C0;
+        Wed,  8 Nov 2023 01:11:37 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BC45120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1699434708;
+        bh=fSNLSSBG95PkWpM5rxlYaA3C46U8XXsKOZIEDIAiboE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=n5/hAEXf2dzieMftcO0zozxDGKiOud7ouqdRWRPbYAjhcj9YDX3kLItujrlDhh2Px
+         IumdNzPkTleQsQKkPXu9ABOj7og39wtcOiR1e4DDBJsrI7sD+nqGZ6ATkTCM5UjjoV
+         P0i0NRIhvFLS18I+cPLvv7OxYeP4osdJV2s5dz78=
+Message-ID: <ec53f4fb-5b87-42db-8751-d7e7224c79ec@linux.microsoft.com>
+Date:   Wed, 8 Nov 2023 10:11:35 +0100
 MIME-Version: 1.0
-References: <20231108010129.2009947-1-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231108010129.2009947-1-alexey.pakhunov@spacex.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Wed, 8 Nov 2023 01:11:33 -0800
-Message-ID: <CACKFLi=VL8kHH-Q4UQF60tGaK2dk7NgH_9-yJpP7hgn_NE9e7Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
-To:     alexey.pakhunov@spacex.com
-Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        siva.kallam@broadcom.com, prashant@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fa98310609a079a0"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
+ support
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-7-michael.roth@amd.com>
+ <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
+ <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+ <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
+ <20231107202757.GEZUqdzYyzVBHTBhZX@fat_crate.local>
+ <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
+ <20231107212740.GFZUqrzK7yzy41dRKp@fat_crate.local>
+ <20231107220852.GGZUq1dHJ2q9LYV2oG@fat_crate.local>
+ <4b68fd05-5d21-0472-42c3-6cf6f1f9f967@amd.com>
+ <20231108061413.GAZUsnNVcmYZNMw2Kr@fat_crate.local>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20231108061413.GAZUsnNVcmYZNMw2Kr@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000fa98310609a079a0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On 08/11/2023 07:14, Borislav Petkov wrote:
+> On Tue, Nov 07, 2023 at 04:33:41PM -0600, Kalra, Ashish wrote:
+>> We will still need some method to tell the IOMMU driver if SNP
+>> support/feature is disabled by this function, for example, when CPU family
+>> and model is not supported by SNP and we jump to no_snp label.
+> 
+> See below.
+> 
+>> The reliable way for this to work is to ensure snp_rmptable_init() is called
+>> before IOMMU initialization and then IOMMU initialization depends on SNP
+>> feature flag setup by snp_rmptable_init() to enable SNP support on IOMMU or
+>> not.
+> 
+> Yes, this whole SNP initialization needs to be reworked and split this
+> way:
 
-On Tue, Nov 7, 2023 at 5:01=E2=80=AFPM <alexey.pakhunov@spacex.com> wrote:
->
-> From: Alex Pakhunov <alexey.pakhunov@spacex.com>
->
-> This change moves [rt]x_dropped counters to tg3_napi so that they can be
-> updated by a single writer, race-free.
->
-> Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-> Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
+I agree with Borislav and have some comments of my own.
+
+> 
+> - early detection work which needs to be done once goes to
+>   bsp_init_amd(): that's basically your early_detect_mem_encrypt() stuff
+>   which needs to happen exactly only once and early.
+> 
+> - Any work like:
+> 
+> 	 c->x86_phys_bits -= (cpuid_ebx(0x8000001f) >> 6) & 0x3f;
+> 
+>   and the like which needs to happen on each AP, gets put in a function
+>   which gets called by init_amd().
+> 
+> By the time IOMMU gets to init, you already know whether it should
+> enable SNP and check X86_FEATURE_SEV_SNP.
+
+This flow would suit me better too. In SNP-host capable Hyper-V VMs there
+is no IOMMU and I've had to resort to early return from amd_iommu_snp_enable()
+to prevent it from disabling SNP [1]. In addition to what Borislav posted,
+you'd just need to enforce that if IOMMU is detected it actually gets enabled.
+
+[1]: https://lore.kernel.org/lkml/20230213103402.1189285-6-jpiotrowski@linux.microsoft.com/
+
+> 
+> Finally, you call __snp_rmptable_init() which does the *per-CPU* init
+> work which is still pending.
+
+Yes please, and the only rmp thing left to do per-CPU would be to check that the MSRs are
+set the same as the value read from CPU0.
+
+Running the early_rmptable_check() from early_detect_mem_encrypt() and on every CPU
+makes it difficult to support a kernel allocated RMP table. If you look at what I did
+for the mentioned Hyper-V SNP-host VMs [2] (which I think is reasonable) the RMP table
+is allocated in init_mem_mapping() and the addresses are propagated to other CPUs through 
+hv_cpu_init(), which is called from cpuhp_setup_state(CPUHP_AP_HYPERV_ONLINE, ...). So
+it would be great if any init works plays nice with cpu hotplug notifiers.
+
+[2]: https://lore.kernel.org/lkml/20230213103402.1189285-2-jpiotrowski@linux.microsoft.com/
+
+Thanks,
+Jeremi
+
+> 
+> Ok?
+> 
+> Ontop of the previous ontop patch:
+> 
 > ---
-...
-> @@ -11895,6 +11898,9 @@ static void tg3_get_nstats(struct tg3 *tp, struct=
- rtnl_link_stats64 *stats)
->  {
->         struct rtnl_link_stats64 *old_stats =3D &tp->net_stats_prev;
->         struct tg3_hw_stats *hw_stats =3D tp->hw_stats;
-> +       unsigned long rx_dropped =3D 0;
-> +       unsigned long tx_dropped =3D 0;
-> +       int i;
->
->         stats->rx_packets =3D old_stats->rx_packets +
->                 get_stat64(&hw_stats->rx_ucast_packets) +
-> @@ -11941,8 +11947,23 @@ static void tg3_get_nstats(struct tg3 *tp, struc=
-t rtnl_link_stats64 *stats)
->         stats->rx_missed_errors =3D old_stats->rx_missed_errors +
->                 get_stat64(&hw_stats->rx_discards);
->
-> -       stats->rx_dropped =3D tp->rx_dropped;
-> -       stats->tx_dropped =3D tp->tx_dropped;
-> +       /* Aggregate per-queue counters. The per-queue counters are updat=
-ed
-> +        * by a single writer, race-free. The result computed by this loo=
-p
-> +        * might not be 100% accurate (counters can be updated in the mid=
-dle of
-> +        * the loop) but the next tg3_get_nstats() will recompute the cur=
-rent
-> +        * value so it is acceptable.
-> +        */
-> +       for (i =3D 0; i < tp->irq_cnt; i++) {
-> +               struct tg3_napi *tnapi =3D &tp->napi[i];
+> diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+> index 6cc2074fcea3..a9c95e5d6b06 100644
+> --- a/arch/x86/kernel/cpu/amd.c
+> +++ b/arch/x86/kernel/cpu/amd.c
+> @@ -674,8 +674,19 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+>  		if (!(msr & MSR_K7_HWCR_SMMLOCK))
+>  			goto clear_sev;
+>  
+> -		if (cpu_has(c, X86_FEATURE_SEV_SNP) && !early_rmptable_check())
+> -			goto clear_snp;
+> +		if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
+> +			/*
+> +			 * RMP table entry format is not architectural and it can vary by processor
+> +			 * and is defined by the per-processor PPR. Restrict SNP support on the known
+> +			 * CPU model and family for which the RMP table entry format is currently
+> +			 * defined for.
+> +			 */
+> +			if (c->x86 != 0x19 || c->x86_model > 0xaf)
+> +				goto clear_snp;
 > +
-> +               rx_dropped +=3D tnapi->rx_dropped;
-> +               tx_dropped +=3D tnapi->tx_dropped;
-> +       }
-> +
-> +       /* The counters wrap around at 4G on 32bit machines. */
-> +       stats->rx_dropped =3D rx_dropped;
-> +       stats->tx_dropped =3D tx_dropped;
+> +			if (!early_rmptable_check())
+> +				goto clear_snp;
+> +		}
+>  
+>  		return;
+>  
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index 9237c327ad6d..5a71df9ae4cb 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -199,14 +199,6 @@ static int __init snp_rmptable_init(void)
+>  	if (!amd_iommu_snp_en)
+>  		return 0;
+>  
+> -	/*
+> -	 * RMP table entry format is not architectural and it can vary by processor and
+> -	 * is defined by the per-processor PPR. Restrict SNP support on the known CPU
+> -	 * model and family for which the RMP table entry format is currently defined for.
+> -	 */
+> -	if (boot_cpu_data.x86 != 0x19 || boot_cpu_data.x86_model > 0xaf)
+> -		goto nosnp;
+> -
+>  	if (__snp_rmptable_init())
+>  		goto nosnp;
+>  
 
-I think here we need to keep these counters accumulate across a reset:
-
-stats->rx_dropped =3D old_stats->rx_dropped + rx_dropped;
-stats->tx_dropped =3D old_stats->tx_dropped + tx_dropped;
-
-> +
->  }
->
-
---000000000000fa98310609a079a0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOvqVP23Dn9/POnZoYnqqairy+j9908o
-2trpN46/BSVrMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEw
-ODA5MTE0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQAHq6xFPbRSQMfFGvqC8YRbKbFdAV10uWuyD54WSADMYArn9Ia2
-+o2GSCP6i7qQJjYY+qg/9Rv7Ce7HgUYwhQbEo0mR304qjOYnryPd+nCN4GEQghnOuWHBfcDuDxuY
-L2Fn3PBqWrouHCFG18zqjJQGrM7Oyfwk6BSfy+FVLz8WeP7/HtaOBrk3uLOPDL4LHH+p37IPGqzb
-hj3G2b+23uTYDgIrJrLz1KpQ9V+HNep3M/CUCn/qfUolraNq0T4K9w67sKeFOUN1FSKcnCmmI6BG
-MBhHaUJbTGXmad6iWiEnuhug2dhepnh3GnYWU7Kc071Pwc/cuoODfuEJle0cefwx
---000000000000fa98310609a079a0--
