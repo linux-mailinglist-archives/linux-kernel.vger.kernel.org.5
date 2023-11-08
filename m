@@ -2,226 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5837E52D7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315247E52DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjKHJuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:50:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S1343956AbjKHJu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHJuH (ORCPT
+        with ESMTP id S229924AbjKHJu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:50:07 -0500
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9641B3
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=HhxaM+9ct1KAcw8VIeJ+z4oy49b3afWo4vOTwZzrlic=;
-  b=g7Roo5ZyuocALj/3t3rO+3JAJsUh4HFvENaoQ+tK7ClXtLZlJAVtWNcC
-   8o8mQ/F9d8MrSwwp0nvHkjz/6lSP9qBeYJ3TVHiI83qKG9zJdReepaaiW
-   jpeaqHjn9CGTVoL2kd0ADtxykV2AUwzzNU+JYr4VEy7/2z9tbw4JoGYd1
-   M=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.03,285,1694728800"; 
-   d="scan'208";a="135214412"
-Received: from 71-219-23-58.chvl.qwest.net (HELO hadrien) ([71.219.23.58])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 10:49:54 +0100
-Date:   Wed, 8 Nov 2023 04:49:52 -0500 (EST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, peterz@infradead.org,
-        torvalds@linux-foundation.org, paulmck@kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Subject: Re: [RFC PATCH 57/86] coccinelle: script to remove cond_resched()
-In-Reply-To: <875y2cr6ll.fsf@oracle.com>
-Message-ID: <43db286-7c8f-5c4-3f11-b8c103092c@inria.fr>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com> <20231107230822.371443-1-ankur.a.arora@oracle.com> <f55cbce4-42c6-f49a-482-88ec7b893dea@inria.fr> <875y2cr6ll.fsf@oracle.com>
+        Wed, 8 Nov 2023 04:50:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5A9199;
+        Wed,  8 Nov 2023 01:50:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5618DC433C9;
+        Wed,  8 Nov 2023 09:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699437025;
+        bh=d2gSTy+vkT+31H7XELYbOwZiriPnni4XDCQCXWXVTrQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=rmaJLzq9K6LWU0TbEY9k20In79eVvajZ22oEEq8TGY4P8tnVxWKySpBAm/W5C7x9t
+         PzbMuqPOiFFZhKr9lDQAcdlCA28tlCo22V1JEjFn/OnhqlqfK9skepSUO5JsYOP8BT
+         wI8xH74EUD39nUm/9TbEadQqP/Huf6JrYwDpkyT/L5K9DIHfUESpeP3ofn7ioJfQUF
+         GSUVxHEukp005F8DHWfwcffv3CGdLhkn7i0HYTnllanWV6aWSDSClJBtulljiQQGku
+         K3yxHk7MKRRfZVRYmtagBRs6PWlErPd//eBNuUQrqtahssNTbhImQcRs3Bk0f7vwN9
+         SDX1GraA1AHkw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3B6CEE00084;
+        Wed,  8 Nov 2023 09:50:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] drivers/net/ppp: use standard array-copy-function
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169943702523.25861.15308203568486315499.git-patchwork-notify@kernel.org>
+Date:   Wed, 08 Nov 2023 09:50:25 +0000
+References: <20231106091559.14419-2-pstanner@redhat.com>
+In-Reply-To: <20231106091559.14419-2-pstanner@redhat.com>
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, sdf@google.com, gregkh@linuxfoundation.org,
+        benjamin.tissoires@redhat.com, viro@zeniv.linux.org.uk,
+        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, airlied@redhat.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon,  6 Nov 2023 10:16:00 +0100 you wrote:
+> In ppp_generic.c, memdup_user() is utilized to copy a userspace array.
+> This is done without an overflow-check, which is, however, not critical
+> because the multiplicands are an unsigned short and struct sock_filter,
+> which is currently of size 8.
+> 
+> Regardless, string.h now provides memdup_array_user(), a wrapper for
+> copying userspace arrays in a standardized manner, which has the
+> advantage of making it more obvious to the reader that an array is being
+> copied.
+> The wrapper additionally performs an obligatory overflow check, saving
+> the reader the effort of analyzing the potential for overflow, and
+> making the code a bit more robust in case of future changes to the
+> multiplicands len * size.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] drivers/net/ppp: use standard array-copy-function
+    https://git.kernel.org/netdev/net/c/caf3100810f4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On Wed, 8 Nov 2023, Ankur Arora wrote:
-
->
-> Julia Lawall <julia.lawall@inria.fr> writes:
->
-> > On Tue, 7 Nov 2023, Ankur Arora wrote:
-> >
-> >> Rudimentary script to remove the straight-forward subset of
-> >> cond_resched() and allies:
-> >>
-> >> 1)  if (need_resched())
-> >> 	  cond_resched()
-> >>
-> >> 2)  expression*;
-> >>     cond_resched();  /* or in the reverse order */
-> >>
-> >> 3)  if (expression)
-> >> 	statement
-> >>     cond_resched();  /* or in the reverse order */
-> >>
-> >> The last two patterns depend on the control flow level to ensure
-> >> that the complex cond_resched() patterns (ex. conditioned ones)
-> >> are left alone and we only pick up ones which are only minimally
-> >> related the neighbouring code.
-> >>
-> >> Cc: Julia Lawall <Julia.Lawall@inria.fr>
-> >> Cc: Nicolas Palix <nicolas.palix@imag.fr>
-> >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> >> ---
-> >>  scripts/coccinelle/api/cond_resched.cocci | 53 +++++++++++++++++++++++
-> >>  1 file changed, 53 insertions(+)
-> >>  create mode 100644 scripts/coccinelle/api/cond_resched.cocci
-> >>
-> >> diff --git a/scripts/coccinelle/api/cond_resched.cocci b/scripts/coccinelle/api/cond_resched.cocci
-> >> new file mode 100644
-> >> index 000000000000..bf43768a8f8c
-> >> --- /dev/null
-> >> +++ b/scripts/coccinelle/api/cond_resched.cocci
-> >> @@ -0,0 +1,53 @@
-> >> +// SPDX-License-Identifier: GPL-2.0-only
-> >> +/// Remove naked cond_resched() statements
-> >> +///
-> >> +//# Remove cond_resched() statements when:
-> >> +//#   - executing at the same control flow level as the previous or the
-> >> +//#     next statement (this lets us avoid complicated conditionals in
-> >> +//#     the neighbourhood.)
-> >> +//#   - they are of the form "if (need_resched()) cond_resched()" which
-> >> +//#     is always safe.
-> >> +//#
-> >> +//# Coccinelle generally takes care of comments in the immediate neighbourhood
-> >> +//# but might need to handle other comments alluding to rescheduling.
-> >> +//#
-> >> +virtual patch
-> >> +virtual context
-> >> +
-> >> +@ r1 @
-> >> +identifier r;
-> >> +@@
-> >> +
-> >> +(
-> >> + r = cond_resched();
-> >> +|
-> >> +-if (need_resched())
-> >> +-	cond_resched();
-> >> +)
-> >
-> > This rule doesn't make sense.  The first branch of the disjunction will
-> > never match a a place where the second branch matches.  Anyway, in the
-> > second branch there is no assignment, so I don't see what the first branch
-> > is protecting against.
-> >
-> > The disjunction is just useless.  Whether it is there or or whether only
-> > the second brancha is there, doesn't have any impact on the result.
-> >
-> >> +
-> >> +@ r2 @
-> >> +expression E;
-> >> +statement S,T;
-> >> +@@
-> >> +(
-> >> + E;
-> >> +|
-> >> + if (E) S
-> >
-> > This case is not needed.  It will be matched by the next case.
-> >
-> >> +|
-> >> + if (E) S else T
-> >> +|
-> >> +)
-> >> +-cond_resched();
-> >> +
-> >> +@ r3 @
-> >> +expression E;
-> >> +statement S,T;
-> >> +@@
-> >> +-cond_resched();
-> >> +(
-> >> + E;
-> >> +|
-> >> + if (E) S
-> >
-> > As above.
-> >
-> >> +|
-> >> + if (E) S else T
-> >> +)
-> >
-> > I have the impression that you are trying to retain some cond_rescheds.
-> > Could you send an example of one that you are trying to keep?  Overall,
-> > the above rules seem a bit ad hoc.  You may be keeping some cases you
-> > don't want to, or removing some cases that you want to keep.
->
-> Right. I was trying to ensure that the script only handled the cases
-> that didn't have any "interesting" connections to the surrounding code.
->
-> Just to give you an example of the kind of constructs that I wanted
-> to avoid:
->
-> mm/memoy.c::zap_pmd_range():
->
->                 if (addr != next)
->                         pmd--;
->         } while (pmd++, cond_resched(), addr != end);
->
-> mm/backing-dev.c::cleanup_offline_cgwbs_workfn()
->
->                 while (cleanup_offline_cgwb(wb))
->                         cond_resched();
->
->
->                 while (cleanup_offline_cgwb(wb))
->                         cond_resched();
->
-> But from a quick check the simplest coccinelle script does a much
-> better job than my overly complex (and incorrect) one:
->
-> @r1@
-> @@
-> -       cond_resched();
->
-> It avoids the first one. And transforms the second to:
->
->                 while (cleanup_offline_cgwb(wb))
->                         {}
->
-> which is exactly what I wanted.
-
-Perfect!
-
-It could be good to run both scripts and compare the results.
-
-julia
-
->
-> > Of course, if you are confident that the job is done with this semantic
-> > patch as it is, then that's fine too.
->
-> Not at all. Thanks for pointing out the mistakes.
->
->
->
-> --
-> ankur
->
