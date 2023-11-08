@@ -2,102 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518727E5BF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B02F7E5C00
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbjKHRIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        id S232401AbjKHRK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbjKHRIu (ORCPT
+        with ESMTP id S232249AbjKHRKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:08:50 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682B9D4F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:08:48 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81e9981ff4so7291460276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:08:48 -0800 (PST)
+        Wed, 8 Nov 2023 12:10:55 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31785EA
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:10:53 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c6b30aca06so94167251fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:10:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699463327; x=1700068127; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TmuUCnmsxcWhKpY6PDAYvg4ZjDKBI8XOwGtY/GkMtWw=;
-        b=rq1GDaZvMQJUd33Hq5d6Us3A4F4ZekFGSJ6IzgZpzJIAIPZ3y08u7g/iVrrLonT6WW
-         VzwqgFXM2E4wfrgQ03/oYPpTYE4VjFgTx2wo/d6vceDRMeypuSXIh0tiUlJkW4av5DZE
-         yANznrED3vp6sgWDdQP5ZpPqPwws4m4al9M6OivFnH43oInVTaJ6p95tLCxFu4hye7NM
-         wUEGjkpO5zjRg8n6yVzBUu9oZIqfAkKxe8ABPjHjupEKtKvuQEHWpi079k5tpELH01Uy
-         UL9+mc4ynZ9QuTVKXrB6kiXAs4P/qxfVSQD4u4e65PBZ0n4GtZamXqO0rpuqXruet8ni
-         Cegg==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699463451; x=1700068251; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFz0eNLwTOarw1Cn3vCdHlCb5O2fB0yCDsA3mDW0SnA=;
+        b=wrojkBZ1W6WGuxTxhjpbqyeOPLthD+qqotCXSWbZ695RsGgb3vQgYufN6feEJrhWQE
+         4w34LOyILjc9jq2jj5wEfZ7Hx9gFFJALHlGSrFpoZAHMLamh0VguP7rqG2QUI/tcQDo3
+         HiIrm+SRu+aPu4Q4VbUsBxdQGD4FN7vUR1trZatSucL6zGcQlwb4Tjm/32DFEErWoI+B
+         B34OhV5c5ehHqSB5ntal3A4caXaRVAE4AkC370SfTXE0SEU1uaLH9v/PuZNx0tw4YAye
+         5+Ysa0WBN6h2KPGb5LohxVi1Kn+om1kfezZPBBXw2QYsl4iYCyNTnC/qo5PkwGSkKpvG
+         hljw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699463327; x=1700068127;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TmuUCnmsxcWhKpY6PDAYvg4ZjDKBI8XOwGtY/GkMtWw=;
-        b=ULMLWjzG8L8GMSa60VmIbD9M0qS9oeVYSYpxM+9LnufZviaLO3NProNwtesSt4Lm+j
-         fBIxRs5G643NVuWKtMIQIsjWEqTsjENvEz0DqtthC9zmMdoeDpFjLEABuZfZlo412i+N
-         lsvCLVrEdBedvhEvQQnKRwHSq2BApXNuf+N2Xxr2IQBGPthbVSLSloPZxbFxkTspX2kR
-         20zEkBjJrRlvpmSKQE3JnzLRSW2Y29oy93sCCqqOXQ/QYNW+T4OeY6hl8114XZczPE7y
-         275bcb9WX4YEcSgs67MUthIloRd1PxtxjzQbdwKPIVFf61m7rnrQftgfKzeceoEFXmXn
-         rT1A==
-X-Gm-Message-State: AOJu0YyXDRvnKG7yTbfDR1t3MLiS7r/A7MoSR96Ac7hPZaMfVeM5iM85
-        qZerYklCUglDeQdnMqsgHuZebGoffTk=
-X-Google-Smtp-Source: AGHT+IEUvQLF3BVsFAZtA/Akz9sUImZwW9cQuy2q9jQLuaSZdFfOebS0qYWIrABn6SnaGvlvWkhzzZxT0yQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:102:b0:da3:723b:b2a4 with SMTP id
- o2-20020a056902010200b00da3723bb2a4mr43586ybh.7.1699463327583; Wed, 08 Nov
- 2023 09:08:47 -0800 (PST)
-Date:   Wed, 8 Nov 2023 09:08:46 -0800
-In-Reply-To: <20231108111806.92604-22-nsaenz@amazon.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-22-nsaenz@amazon.com>
-Message-ID: <ZUvAnqAIsUP4Vd0J@google.com>
-Subject: Re: [RFC 21/33] KVM: Pass memory attribute array as a MMU notifier argument
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, anelkz@amazon.com, graf@amazon.com,
-        dwmw@amazon.co.uk, jgowans@amazon.com, corbert@lwn.net,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1699463451; x=1700068251;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFz0eNLwTOarw1Cn3vCdHlCb5O2fB0yCDsA3mDW0SnA=;
+        b=vA3dNi0eZUCL1wA5RAYikZ9nUkaTGV/lTm93kqX0VB9lqD0btH4V6ouWzlX1YKBomZ
+         R1LgVwaFnuISzwEH99j8IWeXentBPFnkyoAQibNKShnZ24ptiBTveXNcGWkSz6anUYtr
+         uS6erpQc08hPw0QAOOlGyeOxhbHB9B7I9Q95JvR2dYGYKOCBxZPb2KzapzRSSFcKV5X8
+         O6ixu9Wdeo567qcZgVewdRU+iN+NA8ejVYSXt5DQY/XEMyzZCTwqx6IWYvYeoGgsjBtR
+         696YJ7CzPgY5XF9D+luVP0s42GpATqDRgqBXwdcHF024IPWEpLB7zcJPfSGKRmuNYlYD
+         CV+Q==
+X-Gm-Message-State: AOJu0YzDNLtPkRSU+SWQ07NIuDtul/DUHeHqCcUNPg8tVEAysRAwLHAq
+        vdstni/KS4+UxkZVaBMxfNxJyg==
+X-Google-Smtp-Source: AGHT+IF1FSTZDOkyqqQddRNlqkjWeUassJy7xXc1gtYTXwCTvhN31qmjvUL0EtDj8GuAWMzO/KdJqg==
+X-Received: by 2002:a2e:9617:0:b0:2c5:1388:e370 with SMTP id v23-20020a2e9617000000b002c51388e370mr2282793ljh.30.1699463451176;
+        Wed, 08 Nov 2023 09:10:51 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:dfaa:8961:ce90:9db0])
+        by smtp.gmail.com with ESMTPSA id az25-20020a05600c601900b004095874f6d3sm20477052wmb.28.2023.11.08.09.10.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 09:10:50 -0800 (PST)
+References: <20231106103259.703417-1-jbrunet@baylibre.com>
+ <20231106103259.703417-2-jbrunet@baylibre.com>
+ <20231108170448.GA2388329-robh@kernel.org>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org,
+        JunYi Zhao <junyi.zhao@amlogic.com>
+Subject: Re: [PATCH 1/6] dt-bindings: pwm: amlogic: fix s4 bindings
+Date:   Wed, 08 Nov 2023 18:08:55 +0100
+In-reply-to: <20231108170448.GA2388329-robh@kernel.org>
+Message-ID: <1jbkc4cgrp.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023, Nicolas Saenz Julienne wrote:
-> Pass the memory attribute array through struct kvm_mmu_notifier_arg and
-> use it in kvm_arch_post_set_memory_attributes() instead of defaulting on
-> kvm->mem_attr_array.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c   | 8 ++++----
->  include/linux/kvm_host.h | 5 ++++-
->  virt/kvm/kvm_main.c      | 1 +
->  3 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index c0fd3afd6be5..c2bec2be2ba9 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -7311,6 +7311,7 @@ static bool hugepage_has_attrs(struct xarray *mem_attr_array,
->  bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
->  					 struct kvm_gfn_range *range)
->  {
-> +	struct xarray *mem_attr_array = range->arg.mem_attr_array;
->  	unsigned long attrs = range->arg.attributes;
->  	struct kvm_memory_slot *slot = range->slot;
->  	int level;
-> @@ -7344,8 +7345,8 @@ bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
->  			 * misaligned address regardless of memory attributes.
->  			 */
->  			if (gfn >= slot->base_gfn) {
-> -				if (hugepage_has_attrs(&kvm->mem_attr_array,
-> -						       slot, gfn, level, attrs))
-> +				if (hugepage_has_attrs(mem_attr_array, slot,
-> +						       gfn, level, attrs))
 
-This is wildly broken.  The hugepage tracking is per VM, whereas the attributes
-here are per-VTL.  I.e. KVM will (dis)allow hugepages based on whatever VTL last
-changed its protections.
+On Wed 08 Nov 2023 at 11:04, Rob Herring <robh@kernel.org> wrote:
+
+> On Mon, Nov 06, 2023 at 11:32:48AM +0100, Jerome Brunet wrote:
+>> s4 has been added to the compatible list while converting the Amlogic PWM
+>> binding documentation from txt to yaml.
+>> 
+>> However, on the s4, the clock bindings have different meaning compared to
+>> previous SoCs.
+>> 
+>> On previous SoCs the clock bindings used to describe which input the PWM
+>> channel multiplexer should pick among its possible parents.
+>> 
+>> This is very much tied to the driver implementation, instead of describing
+>> the HW for what it is. When support for the Amlogic PWM was first added,
+>> how to deal with clocks through DT was not as clear as it nowadays.
+>> The Linux driver now ignores this DT setting, but still relies on the
+>> hard-coded list of clock sources.
+>> 
+>> On the s4, the input multiplexer is gone. The clock bindings actually
+>> describe the clock as it exists, not a setting. The property has a
+>> different meaning, even if it is still 2 clocks and it would pass the check
+>> when support is actually added.
+>> 
+>> Also the s4 cannot work if the clocks are not provided, so the property no
+>> longer optional.
+>> 
+>> Finally, for once it makes sense to see the input as being numbered
+>> somehow. No need to bother with clock-names on the s4 type of PWM.
+>> 
+>> Fixes: 43a1c4ff3977 ("dt-bindings: pwm: Convert Amlogic Meson PWM binding")
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> ---
+>>  .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 68 ++++++++++++++++---
+>>  1 file changed, 59 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> index 527864a4d855..754b70fc2db0 100644
+>> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+>> @@ -9,9 +9,6 @@ title: Amlogic PWM
+>>  maintainers:
+>>    - Heiner Kallweit <hkallweit1@gmail.com>
+>>  
+>> -allOf:
+>> -  - $ref: pwm.yaml#
+>> -
+>>  properties:
+>>    compatible:
+>>      oneOf:
+>> @@ -43,12 +40,8 @@ properties:
+>>      maxItems: 2
+>>  
+>>    clock-names:
+>> -    oneOf:
+>> -      - items:
+>> -          - enum: [clkin0, clkin1]
+>> -      - items:
+>> -          - const: clkin0
+>> -          - const: clkin1
+>> +    minItems: 1
+>> +    maxItems: 2
+>>  
+>>    "#pwm-cells":
+>>      const: 3
+>> @@ -57,6 +50,56 @@ required:
+>>    - compatible
+>>    - reg
+>>  
+>> +allOf:
+>> +  - $ref: pwm.yaml#
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - amlogic,meson8-pwm
+>> +              - amlogic,meson8b-pwm
+>> +              - amlogic,meson-gxbb-pwm
+>> +              - amlogic,meson-gxbb-ao-pwm
+>> +              - amlogic,meson-axg-ee-pwm
+>> +              - amlogic,meson-axg-ao-pwm
+>> +              - amlogic,meson-g12a-ee-pwm
+>> +              - amlogic,meson-g12a-ao-pwm-ab
+>> +              - amlogic,meson-g12a-ao-pwm-cd
+>> +              - amlogic,meson-gx-pwm
+>> +              - amlogic,meson-gx-ao-pwm
+>> +    then:
+>> +      # Historic bindings tied to the driver implementation
+>> +      # The clocks provided here are meant to be matched with the input
+>> +      # known (hard-coded) in the driver and used to select pwm clock
+>> +      # source. Currently, the linux driver ignores this.
+>> +      properties:
+>> +        clock-names:
+>> +          oneOf:
+>> +            - items:
+>> +                - enum: [clkin0, clkin1]
+>> +            - items:
+>> +                - const: clkin0
+>> +                - const: clkin1
+>> +
+>> +  # Newer IP block take a single input per channel, instead of 4 inputs
+>> +  # for both channels
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - amlogic,meson-s4-pwm
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          items:
+>> +            - description: input clock of PWM channel A
+>> +            - description: input clock of PWM channel B
+>> +      required:
+>> +        - clocks
+>
+> What are the 'clock-names' in this case? Because it's still allowed.
+>
+
+Indeed, it should not be.
+I should add 'clock-names: false' , right ?
+
+> Rob
+
