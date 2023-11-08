@@ -2,204 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207AA7E5132
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C18B7E523A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343704AbjKHHiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S235478AbjKHI4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:56:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235179AbjKHHiA (ORCPT
+        with ESMTP id S235460AbjKHIzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:38:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3391710;
-        Tue,  7 Nov 2023 23:37:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699429078; x=1730965078;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=TpGd3HGFIDIBnfCapFtkocNEgRH8g9vMjuBQGrRQR0M=;
-  b=Q9h86v1awSG09m3j9c/gb2ndWh6v/mkvdL8O7vrdIICCAV7ockpj6lUL
-   dGj51C8dXqQkgUi6Rd/PCNnUE2+1JZexOUEOoRxwk61aChaumf63AZs6G
-   ece9nCdIpR/fvaDOVRCbjRjAYRiQE5W4ZJnhTyn99g0NKPyKpKP+GfM8G
-   Qr+KMby23OiOlJi9gKYWVwtuPi48SyEDZIKTu3rN4vW6SnDsy/sLdLA0D
-   isVvo/5O9my3F5ST97L1V/2d4rGrRSUGSrRjcyBb3lERFtC6rtpsbwpCc
-   Ah3PRd/1C0FuPq0Kbzb/tNWF7Cq3hz9MP9/Qi2OgMYVYfWTi0qa9x8IiZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="454012833"
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="454012833"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 23:37:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="853651335"
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="853651335"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 23:37:50 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Liu Shixin" <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, <cgroups@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <opensource.kernel@vivo.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-In-Reply-To: <20231108065818.19932-1-link@vivo.com> (Huan Yang's message of
-        "Wed, 8 Nov 2023 14:58:11 +0800")
-References: <20231108065818.19932-1-link@vivo.com>
-Date:   Wed, 08 Nov 2023 15:35:50 +0800
-Message-ID: <87v8ack889.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 8 Nov 2023 03:55:55 -0500
+Received: from 2.mo583.mail-out.ovh.net (2.mo583.mail-out.ovh.net [178.33.109.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A70D171C
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:55:51 -0800 (PST)
+Received: from director6.ghost.mail-out.ovh.net (unknown [10.108.16.135])
+        by mo583.mail-out.ovh.net (Postfix) with ESMTP id D5BC427AB7
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:36:15 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-k8mr2 (unknown [10.110.103.34])
+        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 1CE1B1FE9A;
+        Wed,  8 Nov 2023 07:36:15 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-k8mr2 with ESMTPSA
+        id t3ULBm86S2VjUxQAdDy9bg
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 08 Nov 2023 07:36:15 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Date:   Wed, 08 Nov 2023 09:36:14 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com,
+        skhan@linuxfoundation.org, airlied@gmail.com, daniel@ffwll.ch,
+        qingqing.zhuo@amd.com, Jun.Lei@amd.com, alex.hung@amd.com,
+        Zhongwei.Zhang@amd.com, sunran001@208suo.com, Yao.Wang1@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] drm/amd/display: remove duplicated argument
+In-Reply-To: <d56cd927-49fc-cb4e-8abd-abc539e4d276@amd.com>
+References: <20231029093926.137766-1-jose.pekkarinen@foxhound.fi>
+ <d56cd927-49fc-cb4e-8abd-abc539e4d276@amd.com>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <e095fae915d44ccc186d5e5ee74ec119@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 185.220.101.156
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 4210584177794590374
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddukedguddtjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepkefhgeduudefgedvleegtddvffeghedvtdekveekjeevvdegiedtfeelhedtiedtnecukfhppeduvdejrddtrddtrddupddukeehrddvvddtrddutddurdduheeipdduhedurdektddrvdelrddvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekfedpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huan Yang <link@vivo.com> writes:
+On 2023-10-30 15:54, Aurabindo Pillai wrote:
+> On 10/29/2023 5:39 AM, José Pekkarinen wrote:
+>> Spotted by coccicheck, there is a redundant check for
+>> v->SourcePixelFormat[k] != dm_444_16. This patch will
+>> remove it. The corresponding output follows.
+>> 
+>> drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c:5130:86-122: 
+>> duplicated argument to && or ||
+>> 
+>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>> ---
+>>   drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c | 2 
+>> +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git 
+>> a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c 
+>> b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+>> index ad741a723c0e..3686f1e7de3a 100644
+>> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+>> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn30/display_mode_vba_30.c
+>> @@ -5128,7 +5128,7 @@ void 
+>> dml30_ModeSupportAndSystemConfigurationFull(struct display_mode_lib 
+>> *mode_l
+>>   			ViewportExceedsSurface = true;
+>>     		if (v->SourcePixelFormat[k] != dm_444_64 && 
+>> v->SourcePixelFormat[k] != dm_444_32 && v->SourcePixelFormat[k] != 
+>> dm_444_16
+>> -				&& v->SourcePixelFormat[k] != dm_444_16 && 
+>> v->SourcePixelFormat[k] != dm_444_8 && v->SourcePixelFormat[k] != 
+>> dm_rgbe) {
+>> +				&& v->SourcePixelFormat[k] != dm_444_8 && v->SourcePixelFormat[k] 
+>> != dm_rgbe) {
+>>   			if (v->ViewportWidthChroma[k] > v->SurfaceWidthC[k] || 
+>> v->ViewportHeightChroma[k] > v->SurfaceHeightC[k]) {
+>>   				ViewportExceedsSurface = true;
+>>   			}
+> 
+> Thanks for catching.
+> 
+> Reviewed-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
 
-> In some cases, we need to selectively reclaim file pages or anonymous
-> pages in an unbalanced manner.
->
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages.
->
-> This patchset extends the proactive reclaim interface to achieve
-> unbalanced reclamation. Users can control the reclamation tendency by
-> inputting swappiness under the original interface. Specifically, users
-> can input special values to extremely reclaim specific pages.
+     Sorry to bring this up, I just wanted to check whether this
+has been applied in the following pulls or not.
 
-From mem_cgroup_swappiness(), cgroupv2 doesn't have per-cgroup
-swappiness.  So you need to add that firstly?
+     Thanks!
 
-> Example:
->   	echo "1G" 200 > memory.reclaim (only reclaim anon)
-> 	  echo "1G" 0  > memory.reclaim (only reclaim file)
-> 	  echo "1G" 1  > memory.reclaim (only reclaim file)
->
-> Note that when performing unbalanced reclamation, the cgroup swappiness
-> will be temporarily adjusted dynamically to the input value. Therefore,
-> if the cgroup swappiness is further modified during runtime, there may
-> be some errors.
-
-If cgroup swappiness will be adjusted temporarily, why not just change
-it via a script before/after proactive reclaiming?
-
-> However, this is acceptable because the interface is dynamically called
-> by the user and the timing should be controlled by the user.
->
-> This patchset did not implement the type-based reclamation as expected
-> in the documentation.(anon or file) Because in addition to extreme unbalanced
-> reclamation, this patchset can also adapt to the reclamation tendency
-> allocated according to swappiness, which is more flexible.
->
-> Self test
-> ========
-> After applying the following patches and myself debug patch, my self-test
-> results are as follows:
->
-> 1. LRU test
-> ===========
->   a. Anon unbalance reclaim
->   ```
->   cat memory.stat | grep anon
->     inactive_anon 7634944
->     active_anon 7741440
->
->   echo "200M" 200 > memory.reclaim
->
->   cat memory.stat | grep anon
->     inactive_anon 0
->     active_anon 0
->
->   cat memory.reclaim_stat_summary(self debug interface)
->     [22368]sh total reclaimed 0 file, 3754 anon, covered item=0
->   ```
->
->   b. File unbalance reclaim
->   ```
->   cat memory.stat | grep file
->     inactive_file 82862080
->     active_file 48664576
->
->   echo "100M" 0 > memory.reclaim
->   cat memory.stat | grep file
->     inactive_file 34164736
->     active_file 18370560
->
->   cat memory.reclaim_stat_summary(self debug interface)
->     [22368]sh total reclaimed 13732 file, 0 anon, covered item=0
->   ```
->
-> 2. MGLRU test
-> ============
-> a. Anon unbalance reclaim
-> ```
-> echo y > /sys/kernel/mm/lru_gen/enabled
-> cat /sys/kernel/mm/lru_gen/enabled
->   0x0003
->
-> cat memory.stat | grep anon
->   inactive_anon 17653760
->   active_anon 1740800
->
-> echo "100M" 200 > memory.reclaim
->
-> cat memory.reclaim_stat_summary
->   [8251]sh total reclaimed 0 file, 5393 anon, covered item=0
-> ```
->
-> b. File unbalance reclaim
-> ```
-> cat memory.stat | grep file
->   inactive_file 17858560
->   active_file 5943296
->
-> echo "100M" 0 > memory.reclaim
->
-> cat memory.stat | grep file
->   inactive_file 491520
->   active_file 2764800
-> cat memory.reclaim_stat_summary
->   [8251]sh total reclaimed 5230 file, 0 anon, covered item=0
-> ```
->
-> Patch 1-3 implement the functionality described above.
-> Patch 4 aims to implement proactive reclamation to the cgroupv1 interface
-> for use on Android.
->
-> Huan Yang (4):
->   mm: vmscan: LRU unbalance cgroup reclaim
->   mm: multi-gen LRU: MGLRU unbalance reclaim
->   mm: memcg: implement unbalance proactive reclaim
->   mm: memcg: apply proactive reclaim into cgroupv1
-
-We will not add new features to cgroupv1 in upstream.
-
->  .../admin-guide/cgroup-v1/memory.rst          |  38 +++++-
->  Documentation/admin-guide/cgroup-v2.rst       |  16 ++-
->  include/linux/swap.h                          |   1 +
->  mm/memcontrol.c                               | 126 ++++++++++++------
->  mm/vmscan.c                                   |  38 +++++-
->  5 files changed, 169 insertions(+), 50 deletions(-)
-
---
-Best Regards,
-Huang, Ying
+     José.
