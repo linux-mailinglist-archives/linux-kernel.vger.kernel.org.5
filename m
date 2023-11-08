@@ -2,130 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88AD37E4F29
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4B27E4F1E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344036AbjKHCw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        id S1343943AbjKHCvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235625AbjKHCwS (ORCPT
+        with ESMTP id S229503AbjKHCvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:52:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9420010FE
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699411936; x=1730947936;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ic2PifihHMw92O/FRVfICjOpNVYui/Aoj90HmnbW4YI=;
-  b=UWaanYbu1rkVZFJsvWe8NicNpgonZvSUHbNfmgKsNIUXqmD+UWZQf5CE
-   CkCBP3W9Z2ehSV9KQIE2PQjVk2Ho4AYSxfViGMaEgzcoFl8zme4r/p7tV
-   42sbngHDfZLY03lltthFNrHhpE4+S5JMG8bbu4+ax/7CaQU40jYZ0Km72
-   umirKLzMsB8E2CY63AHyDN+ZQgoMH+7Uz3bImpExtk4VEMRC708+DwIwP
-   IyxUumAfb/oo+2vRMiY0jUZ/FBmocUFP0XeHYNM9pDg4UPhj8IG6d0K+H
-   UtFhrw9vFaWzY70lXcQ15VNzTdBKWil1/aWIM5Y82RJnFQ53mqtO45tH0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="475905409"
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="475905409"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 18:52:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="756409496"
-X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
-   d="scan'208";a="756409496"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 07 Nov 2023 18:52:11 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0Yfo-0007bG-0o;
-        Wed, 08 Nov 2023 02:52:08 +0000
-Date:   Wed, 8 Nov 2023 10:51:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v6 15/20] sched: Add proxy deactivate helper
-Message-ID: <202311081028.yDLmCWgr-lkp@intel.com>
-References: <20231106193524.866104-16-jstultz@google.com>
+        Tue, 7 Nov 2023 21:51:38 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF1F310EC;
+        Tue,  7 Nov 2023 18:51:35 -0800 (PST)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8BxNui190pljuc3AA--.56195S3;
+        Wed, 08 Nov 2023 10:51:33 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3tyy90plX7U7AA--.63786S2;
+        Wed, 08 Nov 2023 10:51:30 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
+        zhaotianrui@loongson.cn, Sean Christopherson <seanjc@google.com>
+Subject: [PATCH v4 0/4] KVM: selftests: Add LoongArch support
+Date:   Wed,  8 Nov 2023 10:51:30 +0800
+Message-Id: <20231108025134.2592663-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231106193524.866104-16-jstultz@google.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax3tyy90plX7U7AA--.63786S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+We add LoongArch support into KVM selftests and there are some KVM
+test cases we have passed:
+	demand_paging_test
+	dirty_log_perf_test
+	dirty_log_test
+	guest_print_test
+	kvm_binary_stats_test
+	kvm_create_max_vcpus
+	kvm_page_table_test
+	memslot_modification_stress_test
+	memslot_perf_test
+	set_memory_region_test
 
-kernel test robot noticed the following build warnings:
+Changes for v4:
+1. Remove the based-on flag, as the LoongArch KVM patch series
+have been accepted by Linux kernel, so this can be applied directly
+in kernel.
 
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on v6.6]
-[cannot apply to tip/sched/core tip/master linus/master tip/auto-latest next-20231107]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Changes for v3:
+1. Improve implementation of LoongArch VM page walk.
+2. Add exception handler for LoongArch.
+3. Add dirty_log_test, dirty_log_perf_test, guest_print_test
+test cases for LoongArch.
+4. Add __ASSEMBLER__ macro to distinguish asm file and c file.
+5. Move ucall_arch_do_ucall to the header file and make it as
+static inline to avoid function calls.
+6. Change the DEFAULT_GUEST_TEST_MEM base addr for LoongArch.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20231107-033946
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20231106193524.866104-16-jstultz%40google.com
-patch subject: [PATCH v6 15/20] sched: Add proxy deactivate helper
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231108/202311081028.yDLmCWgr-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311081028.yDLmCWgr-lkp@intel.com/reproduce)
+Changes for v2:
+1. We should use ".balign 4096" to align the assemble code with 4K in
+exception.S instead of "align 12".
+2. LoongArch only supports 3 or 4 levels page tables, so we remove the
+hanlders for 2-levels page table.
+3. Remove the DEFAULT_LOONGARCH_GUEST_STACK_VADDR_MIN and use the common
+DEFAULT_GUEST_STACK_VADDR_MIN to allocate stack memory in guest.
+4. Reorganize the test cases supported by LoongArch.
+5. Fix some code comments.
+6. Add kvm_binary_stats_test test case into LoongArch KVM selftests.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311081028.yDLmCWgr-lkp@intel.com/
+changes for v1:
+1. Add kvm selftests header files for LoongArch.
+2. Add processor tests for LoongArch KVM.
+3. Add ucall tests for LoongArch KVM.
+4. Add LoongArch tests into makefile.
 
-All warnings (new ones prefixed by >>):
+All of the test cases results:
+1..10
+# timeout set to 120
+# selftests: kvm: demand_paging_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Finished creating vCPUs and starting uffd threads
+# Started all vCPUs
+# All vCPU threads joined
+# Total guest execution time: 0.200804700s
+# Overall demand paging rate: 326366.862927 pgs/sec
+ok 1 selftests: kvm: demand_paging_test
+# timeout set to 120
+# selftests: kvm: dirty_log_perf_test
+# Test iterations: 2
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Random seed: 1
+# Populate memory time: 0.201452560s
+# Enabling dirty logging time: 0.000451670s
+# 
+# Iteration 1 dirty memory time: 0.051582140s
+# Iteration 1 get dirty log time: 0.000010510s
+# Iteration 1 clear dirty log time: 0.000421730s
+# Iteration 2 dirty memory time: 0.046593760s
+# Iteration 2 get dirty log time: 0.000002110s
+# Iteration 2 clear dirty log time: 0.000418020s
+# Disabling dirty logging time: 0.002948490s
+# Get dirty log over 2 iterations took 0.000012620s. (Avg 0.000006310s/iteration)
+# Clear dirty log over 2 iterations took 0.000839750s. (Avg 0.000419875s/iteration)
+ok 2 selftests: kvm: dirty_log_perf_test
+# timeout set to 120
+# selftests: kvm: dirty_log_test
+# Test iterations: 32, interval: 10 (ms)
+# Testing Log Mode 'dirty-log'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory offset: 0xfbfff0000
+# Dirtied 453632 pages
+# Total bits checked: dirty (436564), clear (1595145), track_next (70002)
+# Testing Log Mode 'clear-log'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory offset: 0xfbfff0000
+# Dirtied 425984 pages
+# Total bits checked: dirty (414397), clear (1617312), track_next (68152)
+# Testing Log Mode 'dirty-ring'
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# dirty ring count: 0x10000
+# guest physical test memory offset: 0xfbfff0000
+# vcpu stops because vcpu is kicked out...
+# Notifying vcpu to continue
+# vcpu continues now.
+# Iteration 1 collected 3201 pages
+# vcpu stops because dirty ring is full...
+# vcpu continues now.
+# vcpu stops because dirty ring is full...
+# Notifying vcpu to continue
+# Iteration 2 collected 65472 pages
+# ......
+# vcpu continues now.
+# vcpu stops because vcpu is kicked out...
+# vcpu continues now.
+# vcpu stops because vcpu is kicked out...
+# Notifying vcpu to continue
+# vcpu continues now.
+# Iteration 31 collected 12642 pages
+# vcpu stops because dirty ring is full...
+# vcpu continues now.
+# Dirtied 7275520 pages
+# Total bits checked: dirty (1165675), clear (866034), track_next (811358)
+ok 3 selftests: kvm: dirty_log_test
+# timeout set to 120
+# selftests: kvm: guest_print_test
+ok 4 selftests: kvm: guest_print_test
+# timeout set to 120
+# selftests: kvm: kvm_binary_stats_test
+# TAP version 13
+# 1..4
+# ok 1 vm0
+# ok 2 vm1
+# ok 3 vm2
+# ok 4 vm3
+# # Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
+ok 5 selftests: kvm: kvm_binary_stats_test
+# timeout set to 120
+# selftests: kvm: kvm_create_max_vcpus
+# KVM_CAP_MAX_VCPU_ID: 256
+# KVM_CAP_MAX_VCPUS: 256
+# Testing creating 256 vCPUs, with IDs 0...255.
+ok 6 selftests: kvm: kvm_create_max_vcpus
+# timeout set to 120
+# selftests: kvm: kvm_page_table_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# Testing memory backing src type: anonymous
+# Testing memory backing src granularity: 0x4000
+# Testing memory size(aligned): 0x40000000
+# Guest physical test memory offset: 0xfbfffc000
+# Host  virtual  test memory offset: 0x7fffb0860000
+# Number of testing vCPUs: 1
+# Started all vCPUs successfully
+# KVM_CREATE_MAPPINGS: total execution time: 0.200919330s
+# 
+# KVM_UPDATE_MAPPINGS: total execution time: 0.051182930s
+# 
+# KVM_ADJUST_MAPPINGS: total execution time: 0.010083590s
+# 
+ok 7 selftests: kvm: kvm_page_table_test
+# timeout set to 120
+# selftests: kvm: memslot_modification_stress_test
+# Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+# guest physical test memory: [0xfbfffc000, 0xfffffc000)
+# Finished creating vCPUs
+# Started all vCPUs
+# All vCPU threads joined
+ok 8 selftests: kvm: memslot_modification_stress_test
+# timeout set to 120
+# selftests: kvm: memslot_perf_test
+# Testing map performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 2053)
+# 
+# Testing unmap performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 8197)
+# 
+# Testing unmap chunked performance with 1 runs, 5 seconds each
+# Memslot count too high for this test, decrease the cap (max is 8197)
+# 
+# Testing move active area performance with 1 runs, 5 seconds each
+# Test took 0.761678900s for slot setup + 5.000014460s all iterations
+# Done 120167 iterations, avg 0.000041608s each
+# Best runtime result was 0.000041608s per iteration (with 120167 iterations)
+# 
+# Testing move inactive area performance with 1 runs, 5 seconds each
+# Test took 0.771796550s for slot setup + 5.000018520s all iterations
+# Done 136354 iterations, avg 0.000036669s each
+# Best runtime result was 0.000036669s per iteration (with 136354 iterations)
+# 
+# Testing RW performance with 1 runs, 5 seconds each
+# Test took 0.763568840s for slot setup + 5.002233800s all iterations
+# Done 649 iterations, avg 0.007707602s each
+# Best runtime result was 0.007707602s per iteration (with 649 iterations)
+# Best slot setup time for the whole test area was 0.761678900s
+ok 9 selftests: kvm: memslot_perf_test
+# timeout set to 120
+# selftests: kvm: set_memory_region_test
+# Allowed number of memory slots: 32767
+# Adding slots 0..32766, each memory region with 2048K size
+ok 10 selftests: kvm: set_memory_region_test
 
->> kernel/sched/core.c:6616:6: warning: no previous prototype for 'proxy_deactivate' [-Wmissing-prototypes]
-    6616 | bool proxy_deactivate(struct rq *rq, struct task_struct *next)
-         |      ^~~~~~~~~~~~~~~~
+Tianrui Zhao (4):
+  KVM: selftests: Add KVM selftests header files for LoongArch
+  KVM: selftests: Add core KVM selftests support for LoongArch
+  KVM: selftests: Add ucall test support for LoongArch
+  KVM: selftests: Add test cases for LoongArch
 
-
-vim +/proxy_deactivate +6616 kernel/sched/core.c
-
-  6615	
-> 6616	bool proxy_deactivate(struct rq *rq, struct task_struct *next)
-  6617	{
-  6618		unsigned long state = READ_ONCE(next->__state);
-  6619	
-  6620		/* Don't deactivate if the state has been changed to TASK_RUNNING */
-  6621		if (!state)
-  6622			return false;
-  6623		if (!try_to_deactivate_task(rq, next, state, true))
-  6624			return false;
-  6625		put_prev_task(rq, next);
-  6626		rq_set_selected(rq, rq->idle);
-  6627		resched_curr(rq);
-  6628		return true;
-  6629	}
-  6630	
+ tools/testing/selftests/kvm/Makefile          |  15 +
+ .../selftests/kvm/include/kvm_util_base.h     |   5 +
+ .../kvm/include/loongarch/processor.h         | 133 +++++++
+ .../selftests/kvm/include/loongarch/ucall.h   |  20 ++
+ .../testing/selftests/kvm/include/memstress.h |  10 +
+ .../selftests/kvm/lib/loongarch/exception.S   |  59 ++++
+ .../selftests/kvm/lib/loongarch/processor.c   | 333 ++++++++++++++++++
+ .../selftests/kvm/lib/loongarch/ucall.c       |  38 ++
+ 8 files changed, 613 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/ucall.h
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.1
+
