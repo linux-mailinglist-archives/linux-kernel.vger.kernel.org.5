@@ -2,599 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 288817E51F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7458C7E51FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbjKHI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S235306AbjKHIaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbjKHI2i (ORCPT
+        with ESMTP id S232606AbjKHIak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:28:38 -0500
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD52F170A;
-        Wed,  8 Nov 2023 00:28:35 -0800 (PST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231108082834euoutp0189dd510b70738062471ec931c2ba57e9~VmIEOKno61176811768euoutp01g;
-        Wed,  8 Nov 2023 08:28:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231108082834euoutp0189dd510b70738062471ec931c2ba57e9~VmIEOKno61176811768euoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699432114;
-        bh=D7nTEhKxxoPR3KSL5fDC8KjdNN6ncouOX5FUB916ulg=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=MC7T4kfheCs+i0yHEuDpcTJM55ZgtaXJ7N945/Qv8xwK+v21Hhq9uOPuWHPF76Uot
-         tHJcyKy0v6xfjkd2yN7EcAuTvNkrreBAv4ciat0on2seTpPTGHCkPKcZs556sTpD0O
-         r9D/tPU0QSIcOrEW0PuWQDJ6lzMLZRgQsqez/Pzo=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20231108082834eucas1p1f240d828ab1cfafe595054d67529e070~VmID-oXYD2116521165eucas1p1_;
-        Wed,  8 Nov 2023 08:28:34 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id FE.63.11320.1B64B456; Wed,  8
-        Nov 2023 08:28:34 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231108082833eucas1p1611d66cce2ef830b348b27d580ac6b55~VmIDYy0Gu2307623076eucas1p1c;
-        Wed,  8 Nov 2023 08:28:33 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231108082833eusmtrp2273c28d0e7e9b65047612a9e83dc87da~VmIDXa4dq0657206572eusmtrp2V;
-        Wed,  8 Nov 2023 08:28:33 +0000 (GMT)
-X-AuditID: cbfec7f4-97dff70000022c38-c7-654b46b1a532
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 9D.9D.10549.1B64B456; Wed,  8
-        Nov 2023 08:28:33 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231108082833eusmtip11d33afe59e3ace4e741845504db5ad63~VmIC9q2Sg1310013100eusmtip1C;
-        Wed,  8 Nov 2023 08:28:33 +0000 (GMT)
-Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Wed, 8 Nov 2023 08:28:32 +0000
-Date:   Wed, 8 Nov 2023 09:28:31 +0100
-From:   Joel Granados <j.granados@samsung.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-CC:     Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
-        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, <coda@cs.cmu.edu>,
-        <linux-cachefs@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
-        <linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        <ocfs2-devel@lists.linux.dev>, <fsverity@lists.linux.dev>,
-        <linux-xfs@vger.kernel.org>, <codalist@telemann.coda.cs.cmu.edu>
-Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
- from ctl_table array
-Message-ID: <20231108082831.ch2nw22fk5ki66fq@localhost>
+        Wed, 8 Nov 2023 03:30:40 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF381715
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:30:37 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88JxVX029132;
+        Wed, 8 Nov 2023 08:29:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
+ to : cc : subject : in-reply-to : date : message-id : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=baZUkrWkZa0jVuImrgCCGcF8eXi8+KxLHPox5asR7sw=;
+ b=RUuc8c9jYRPy5DH+LAR4tHCZWrzD/Ag+aovM7vtuASo3quYzx8IGWyArzg70envqKp3w
+ jXgPLzlzq3/nhfeAQmE2ExlqQHWPE77VUhs6m2VWE4tkzEX+RuCrs2fj4RW8rLzlAJSs
+ 95Kg1xroWZJtTJ6Bxwx+uAVeLob8QmNmsELKiF15pSXOh95uQY6a5PzVew6FQJQ1rjaG
+ 0j+A9LiUJxp2wgFHcw9ScsgKFXgyaMi4C/wP7u5eH54GO3EbEKLMaGwhljpXLzMRUH4J
+ 79gWdfL1cYNcSGRWWkox7WdTg1wEz7h7Z48Cr5HtsR92ZQnFjr19SYvx+d8P7Rim+fVX aA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w230wh1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Nov 2023 08:29:15 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88CsJc000440;
+        Wed, 8 Nov 2023 08:29:14 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2041.outbound.protection.outlook.com [104.47.74.41])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vvy5t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Nov 2023 08:29:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oRxyG1Uwd35plnfgyfnhDAsHsqNFRRm6KUYhjx/ptHa0xNo+nXm72edRnIvqDvlyG94C0dSVryUbyahEJdx87XQl05paEf0HRVzkRk/S6wmesmXt4m7Nzo49eos+1HwXAIRmxWe9HCSmxG3AbB2SjTK8CIGYAB47AZKpEIy2ik9gCG1f0oqdRAAWhdHdhrZFAMQJbY9A8Jjg987yV3Uw7O2a5meSs/BUdwyYAMdr4YgmwLNr+NaGokb7YT+Az7746gRTWppjxtdDv1YYKZEYW12r59PQJByKmVkx9t+LLOtZm0ubyIOxL77mPvcEj7LdwR70d8n525WtDd+KwesbGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=baZUkrWkZa0jVuImrgCCGcF8eXi8+KxLHPox5asR7sw=;
+ b=Icys028qbE3K6k7JUb/DdtyWqqqSvky/TnDG5qTMa9jRgXCrhLFG537kvs2c3ARu+NXuyf2hVzmZ/gz6oQ2BO+pe1jvQatn6JRCmnN4jGkh3EFE6m8OY59guOREpwCODzOB5TPQx10Bn4qrlesFoS4P0chp1JaM24EcLaznEW652GjWe7UTjBh7By9Thl3r4wTWnoUnBwQGfGqdTcwkRQahzgyS3CWoYpQBVB0jPLnkCnYJSi0WaAUtSYZxYOfs1gZ1MYSoT9rFflGL3JZMIUQRh0mNSeQxUcA/fKA3mZzbVKWXRQ5Ldj7NLk3edzDcXJYE8ar2NYRDv0tLMD72hjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=baZUkrWkZa0jVuImrgCCGcF8eXi8+KxLHPox5asR7sw=;
+ b=J4OeMndNJeFk95RGBU3fEh371Ot4uhuOFDuHXxs7k9V4MDgbzYUFAlsSUwpsd/i6g0Dd7TmtVcaHsq1lqw4wg5AYQDS0zZy8N3yQNC0oqaY2IB4KZ159I6uj4IWaf+r+pg0qbgNDybqxcAKSq0+ost3x/amkuFRUtRoII+KzhuU=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by SJ0PR10MB5648.namprd10.prod.outlook.com (2603:10b6:a03:3e0::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Wed, 8 Nov
+ 2023 08:29:12 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
+ 08:29:11 +0000
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com>
+ <f55cbce4-42c6-f49a-482-88ec7b893dea@inria.fr>
+User-agent: mu4e 1.4.10; emacs 27.2
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Subject: Re: [RFC PATCH 57/86] coccinelle: script to remove cond_resched()
+In-reply-to: <f55cbce4-42c6-f49a-482-88ec7b893dea@inria.fr>
+Date:   Wed, 08 Nov 2023 00:29:10 -0800
+Message-ID: <875y2cr6ll.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR03CA0283.namprd03.prod.outlook.com
+ (2603:10b6:303:b5::18) To CO6PR10MB5409.namprd10.prod.outlook.com
+ (2603:10b6:5:357::14)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="tnwrscd4kofkwoer"
-Content-Disposition: inline
-In-Reply-To: <20231107162251.GL1205143@frogsfrogsfrogs>
-X-Originating-IP: [106.110.32.133]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe0xTVxzeufe2t8Cq10L0DAgkTFjGcxs6jhEBs0UvmXFGk829cI1ckA1a
-        0oJTF7LKRN5LZUxGwVEmD6GArgXGowgUgfEYojKoaNkGOAkPGU8pLe2A1miy/77zPX75vj8O
-        B+dVkY6cKEEcIxLwo93YtkRth77PR3ngPeYNUypA/VUKgJLqzQSqV1azUJqpmkBTbfMA3W13
-        QWbdYwwtV2gx1Fj1BEMFP6vY6EmigUD3xrcgc+0FElWqjThKHTWzUV7OtxgqfpDKQvqSchJ1
-        9S0TqKxkhURmuRD1psegOt04gS5dLsZR9uVEgOaKukmkbupaP9aQz0YjFWYW6m/pYaHklHyA
-        Gox1JEq/lEMirfQRQE0FEgJpRv5gocQrzSzUvdqNIbM2GCVl6El0e62ThQwr60dK6g+HeNF5
-        kjsELb91iH505yh9/X4Wm66X6UharoynjZpfSFp1zZMentpHK8tT2bRyPouk6//eQ0+ocgHd
-        KF/A6MTedpz+cX6RfcTxY9vAcCY66jQj8gv63PbUokrGis2PO/PD2ApbApaOpwEbDqR2wfHk
-        KTIN2HJ41DUAm9K1hOWxCODMULNVWQBQPnoTexa5P3YTWIRSABV96c9dycmPrYoKwAF1K74R
-        IaidcEam3sRsyhvenn64iR2o1+Gt5cHNszh1ww6azA5pgMOxp/iwoNVjg+ZSAXChZwRY8DbY
-        lTtOWOxnoK5fh2/YccoJlpo4G7TNut2UWUNairrBpelMlgUnwO7qYWyjGqSG7GDp1T6r8C6s
-        rKy1LrOHk53V1rAzNNcXWAPfA9hs+pe0PBQAlpxfsib2wgsD49bEfvi0VIptNILUFqid2WYp
-        ugVm1ebgFpoLUy7yLG4PqBiZJqTgVdkL02QvTJM9n2ahvaG8cZ79P9oLlhRO4Ra8D1ZVzRJy
-        QJaDHUy8OCaSEb8lYL7yFfNjxPGCSN+TwhglWP9GPabOxTpQOjnnqwEYB2jAzvXw6A1FP3Ak
-        BEIB4+bAXQumGR43nH/2HCMSnhDFRzNiDXDiEG47uO7hrgyPiuTHMV8yTCwjeqZiHBtHCRZg
-        kO4eS8Lbhjq0NezaVyqyGe7W11wmUlxn5a3q4ff9/nI68GGWMbGzxceY4P3T0x7D9oqhgYO5
-        L2Gr7tDAPvZB/lUfXlHogDC0t4Fs6W+/nhYY+7AqzGXNb7eiKChm0HPSpSyoxfBdRdf4hP/F
-        wCS0a3g0w47652zdgm/Nfq8Hhxe28k/bvHzFY8w49RvHtj3/7e6jZv9vXD4q7NHfbXMuVKND
-        0SGDi5+elORV2ueGfS3QdxT/6n0vKnRV5CmN/CziyBcNrjPv+GcUOp//88TxsE9a3SU+e5aa
-        I34PmBPw9woaNbMDUn61vY/6mI1KOi0s0wWvnIvQO49k+maHqbYnhDS5EeJT/Dc9cZGY/x8Q
-        3xsAwQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe0xTVxzOuff23uLAldd27MzmGt0DWKFQ4LCAmhHlDtziUHSBLdjJpTCh
-        rX0wJnsQHlFeKohFK0K3CdsAebTAaIFNEOZ4ZOAmpiiQoDB1IIyHDKTQFeoyk/33ne/3fd/v
-        y8k5bNyph+Sy4yVKRi4RJfDIDUTP6rXhN+p2hzFeJ5tdUH91JUCZBguBDLp6FsperSfQxNVZ
-        gH7rfBFZhu9haKHKhKHm6ikMlX6tJ9FU2jKBfh/biCyNGRS63GLGUdYdC4kuFKVjqOx2Fgst
-        lVdQqOvXBQJ9X75IIYtWinpzElHT8BiB8tVlOCpUpwE0c6mbQi2tXdYwYzGJRqosLNR/pYeF
-        jp8oBshobqJQTn4RhUynxwFqLU0lUPvIAAulXfyJhbofd2PIYtqBMnOXKNS3co2FlhetIeWG
-        d3e60xdSrxO0tmMPPX49nK4ZLCBpg2aYorU6FW1ur6No/Xdu9K2JIFpXkUXSutkCijaMBtD3
-        9ecB3aydw+i03k6cPjc7T+7lRvID5VKVktkSJ1Uog3hRAuTNFwQgvrcwgC/w8f/wTW9fnuf2
-        wBgmIT6JkXtuP8SPG6tqIGUaZbJ65T6VCubezwZ2bMgRwsG7P4JssIHtxCkD0FTbC2yDzbBu
-        foBlw87QfDObtIlmAGw6eQ6zHfQAzjQeJ9ZUBGcrfKhpwdcwyfGAfZND69iF8zrsWLi5bsA5
-        tc/AIU2F1cBmO3NEsLTtlTWNA8cfzvWMPKmhxeCtfhNuGzjCrvNj6wtwThIsSNdja16c8wL8
-        dpW9RttZvat5DZStKQ8+msx70vpzOLfyBzgNnDVPJWmeStL8l2Sj3aBp9cH/aXdY/tUEbsNB
-        sLp6mtACqgK4MCpFojhRIeArRIkKlUTMPyxN1AHrS278eUnfBEr+nOG3A4wN2sFWq/NObWU/
-        4BISqYThuTis7KAZJ4cY0afHGLk0Wq5KYBTtwNd6i/k41/Ww1PotJMpogZ+Xr0DoF+DlG+Dn
-        w3ve4W3ZCZETRyxSMkcYRsbI//VhbDtuKiYbyovdu/HloMoDGH4q3t8nxSMsIdsceaCuInnp
-        722Xa3rnRwqDWRkMFeEYm/MFTzYQmfvBO1exG7vC5ETPwTPFTMLO1pdyvXerHxZsulK56Yxh
-        X/Klt0qmjSmlqt6j4915/rLgjm1q7rOPM0OCUVuD8dh4YfpZzDN0f/S9vvw9n5mLPZMuhnkk
-        RST9Jf9h2b5hPO5UiM+geMuD10p0o68yg3GhXre/nAo/1OEw2tZWiFztQxvH5j86mOW4YFw0
-        xu4vFG+uvGFybdrXf1Ttynx899H0c9+U+gmEKxn8iChhZqe92PKLThieMilVukcFnpVo3tPU
-        f+JKc4+c8AsuiqkJyQziEYo4kcANlytE/wCAMOowXgQAAA==
-X-CMS-MailID: 20231108082833eucas1p1611d66cce2ef830b348b27d580ac6b55
-X-Msg-Generator: CA
-X-RootMTR: 20231107162257eucas1p15a82c78ef55c1e6864627fb213fd1522
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231107162257eucas1p15a82c78ef55c1e6864627fb213fd1522
-References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
-        <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
-        <CGME20231107162257eucas1p15a82c78ef55c1e6864627fb213fd1522@eucas1p1.samsung.com>
-        <20231107162251.GL1205143@frogsfrogsfrogs>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|SJ0PR10MB5648:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4393b0dc-0783-4057-c0a3-08dbe034c8ec
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FDLLfNNezpLSabxFwUzOZFx+G9477+gAg4h4si+QN+nt9wcGrkma4jJUrnoU4pwn8DhI9sx0f+ImXA4xU2Ci0DmApSKv4kuBJF6ro077PaZS+tAbVxX7w6oUsEcJzv9AZshovOVZZ5h6xi/r56K+IrtFrj7wM5i7dtDvP7fJnO+Ceu6Ctd23xGU5Rz3bLoyzDJNE0sVPuFCJpfOCW4ozBt6vRrP3cHigil/8NUbuymnMeFRPTVM/myRMSjtJd0gQ7dfXD4ygHrjBdogWhglNBbuXgwb2CokyHb3xZsum8OGaiSBdTfCgDcRzPsTpbG40BNiXP69pS5r0+CLanUYQgenQQc6vRuXdNyZ/gG7bi/bu7uQKxLJYW8doJxh2cHV/rvd+4K3iH7ZD1D5N5EgsdUbJBmcw522kNCGUO3iZHA3TqfvcP43LfFUBsaPM8+cFOENuQZIdgFyQkFgGr59He/Rbm7lhMNtS/95SjFIboSH7sef6RTi0GCyVicVZIblOYRrW8bCpBZYTgOPiW3IEbGG43HLFWzpp0KaE7kqxWg6hOOSZNjKCPQ2wS39Uf99W
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(376002)(346002)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(2906002)(26005)(41300700001)(83380400001)(5660300002)(7406005)(2616005)(7416002)(6512007)(6486002)(6506007)(36756003)(38100700002)(478600001)(8936002)(86362001)(4326008)(8676002)(66556008)(316002)(54906003)(6916009)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0m7xxwkBqlApH5HL9c6jme/ZEFGFWX/W28Ud7/2eG64yYpgMmCYJwPCg8T9t?=
+ =?us-ascii?Q?1wtlyELAzSkc9aQ1+WYqYXIIyi7UDg9QoWHu1cptDPcRVddEeiC1X7Wj+DWQ?=
+ =?us-ascii?Q?RQvrs1ZgdD66MwVFw0xxyieWz+oao8F7iPrVsG1vjCbxvjYbaajy46XmBgmz?=
+ =?us-ascii?Q?rUIZscM56/iirzLecYAOH43S4YHflnSMK/7lgyfTUAFhM/TsG4WBWPE4NpCa?=
+ =?us-ascii?Q?FwPauuBOvpVM/844cdAadvo5FE8UCHuGtUTcS5kWjo2M74KUH95ywsijz+hK?=
+ =?us-ascii?Q?aVZ28D/ZMjA7pBf7zdJRdWWh6u7XpTSqr6ghjiW9+vS6FqDXbuYVJtWbaToK?=
+ =?us-ascii?Q?6bPOfuvIs/As+4x1DJ94iTbfvALvf08VhKKe3hqHoiC4vBjsEaM9ExfWbxoL?=
+ =?us-ascii?Q?dyVgwrory16mpkT04GGQt5YAWTw1EQWRj3AqAb9M7mkIxI3azl2QTUVwqRDE?=
+ =?us-ascii?Q?GlUVa8bj/6fb1/e7d7uEV4eb0SRpLt1BF8erCtNKZMff3aBX6Bho1X0y2ckK?=
+ =?us-ascii?Q?p9N/mr8BAcB8AaigcpQbXbIHfUtOKut4abfzsqoFrvuWOCLBwKVtedFKHKwh?=
+ =?us-ascii?Q?aYFcz5I3MWS8lfoUWfoq7uqIkZy3z6qOt2B3PTfQ+8PmP88nzv/KizV2Kzkh?=
+ =?us-ascii?Q?Alhxwh6eMjIR/3neSM6iY4rYsGc+Tq+K2mBETSuCyw17vv8hPwn1j03X/7uL?=
+ =?us-ascii?Q?Nq9dYKLmGvUOLa8C8FMA5eBV2vMbmkcqrzJWFk07FwkxnasodNy05NaWmGBD?=
+ =?us-ascii?Q?YNuHVj/kyXF8YYmsW+b5DUcFZxj4OhFUHF+jV5Cp2Se0gaCFXSe6uvg3bOBs?=
+ =?us-ascii?Q?DePt2K30wWhMDd/NViNLaiPcm+Ctt+x8BrrbNU6yB5TLaS1+083dUtQ0cPuI?=
+ =?us-ascii?Q?/7KfV2LUFES6u0RDqq6B/43PO6Lr+ujy7uIV/p6VRrmpYp4teSR99dLF4Ew6?=
+ =?us-ascii?Q?Meu5QvFBBAv6BCDkNIFeNAYvmcQ7o7n3pDpzejvAGL462RKDEIHk/4F79pKx?=
+ =?us-ascii?Q?mBWOsAE84Ax59vX9EVVjhZqTVAkcxKXqNiiF+DojIgneS5iV4EUFczE+eh/H?=
+ =?us-ascii?Q?Nxmq054kqA3jYhwXOsoAGZiS7oRsm9D3UDB9JWDr0o/y1UKK0kEFn5li5bmQ?=
+ =?us-ascii?Q?LXWzAfNgNdk1hvvUeiGoe6ZNg6kD4QR4TurtRXnSQf3KviShhNh3VbzCA/Wl?=
+ =?us-ascii?Q?9gtE0SVHLB/yOtas9KDAIB8nd0et8pyRT9gxODTYbilH7AnlY81FH0nsirFA?=
+ =?us-ascii?Q?Y/mBRD3cLTtx6VOEixaWHGG3YXwZ6V7R2wwGmamCI6uk3ajwajs6qh4fUG8C?=
+ =?us-ascii?Q?X17IaUPiba3MSm6Fxc+6qR4Fu+HsIT0QEHKng6pvS0ibey6zH92PPVTCkFGq?=
+ =?us-ascii?Q?+RGlZELGPDO/54PaLxPjT7LudntUei2IWJkOTVgoC8MSOdyPj5Vh/QAbCpGo?=
+ =?us-ascii?Q?2suTYdyF8ZP2yQRYwqJXqCJAHpG8u3NC51fNSf9d2meQxLsOF1ZhUhDwM+eg?=
+ =?us-ascii?Q?hJUAbXWKe5yAEQhA+2hyKG4nO0UNn+vVtiRooT4TcU8+8tSEolpTnMHDuc2M?=
+ =?us-ascii?Q?e9XiwiZMQ0OT8huYYXXSaXCGbf1k/rCxn5FNySVEMy30IvfFi97N9tQHTOEU?=
+ =?us-ascii?Q?Gg=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?RYY+lU5kKtxhhB5uy0P6wF5TOqcqvqWSz96W3vvwbBRncsTtFqdgarYDtBVu?=
+ =?us-ascii?Q?0p+EQyy4o1afpsANYBGv271ydvuZhuZeQ5MPVLuWPXSFOgfF+CmeQ+ZABtEL?=
+ =?us-ascii?Q?0kRfyhGU4QxMqwNMZujFzORE1muXQT4xnXMK0j7hrSQ1M+Rn4loqbmQxA2Pk?=
+ =?us-ascii?Q?hpPbTUyB80FLpjc7/6EYJrbnzITRKntMc4bX3AtKxvVAYVY8CIUvAu/ZB+ky?=
+ =?us-ascii?Q?8dsXL4fwxUANfcHBl3BDkffHOzirWfeScBLYxIxL11wbOCxmc5CH/CUNDp+Z?=
+ =?us-ascii?Q?WT/MYWE3D1eJXw3Stn3TltF6ppXna3mOCSUP6cr2RK6jAWAF6qjmTt0xtBDP?=
+ =?us-ascii?Q?J9f7qNRpXrrSSoLQryGocgBZppDn/boZDX28jyHINkJ7AW7yWDGtrGJTqcQe?=
+ =?us-ascii?Q?S0Eza2dw+Cl2P2eDIUsObe2Lk020ItcwftrHK2lioFa8rL7mZXJXMnfVzaeF?=
+ =?us-ascii?Q?MM+IejNxgxLYHurXGH1cE25A3tBp0Baqr0CETZfv/sopwAvwRikYm6QAVcYI?=
+ =?us-ascii?Q?o1Xu3FoZXvwGe3cGESUTnms2oFGQF4F3k0M+oVLS8syns3oj0ZEkN2kr5HiW?=
+ =?us-ascii?Q?deF+001fJVxzQ5+RGSHZboJlumb1K0d+WlwT9fFuyqXdf2mwTweY8B/nxN6L?=
+ =?us-ascii?Q?qlZpfSJ6d+7Ip2tNPC4kBsDT8hM03A2SONDVNQIRR8YQYZECBFABtEBRT/eJ?=
+ =?us-ascii?Q?gAjdh48hvbf40I/jeLUnkc+N+NXyPhlxJ45iXRi43bNdISuc8K7u60bl0nb6?=
+ =?us-ascii?Q?GGuQy4zGROTqIieYskB1dhRyDt9JYbEcOPKZz3+FYpB6bwQJGt5dYFo1NkRv?=
+ =?us-ascii?Q?7HS3JOs4UgLM2zZsjMMD1mmW7/NakxF2L6uu1a2ztEcgs43olmTAA1nVs1dw?=
+ =?us-ascii?Q?0d1tAUzP2y+h0AS2JKEE1kRZXQI67wtdcr4FNJDXNHg/dhjrnJwszvN/JxIr?=
+ =?us-ascii?Q?/qkNQn4LpPFTrQLIwBrO5uBhW2zCRQ0ZWTjeyPImVlajPxB4cKLVt5CHypQB?=
+ =?us-ascii?Q?TE5Bk7enS+XXvMYbCTOJ0ua0eLEZpQ4LXKCYK9fWZ/TnoQKDyC7oo/njsDva?=
+ =?us-ascii?Q?5fCmVHu+xctOoHI49jw0DeipnrGXhk7H5pusYPU5R37k7It2mTKknL7e09ta?=
+ =?us-ascii?Q?ZDpHYBh+YTIvKEBXTSSzOfBtD11QcT/LmddHstgvdTr5bzRyfZEOEJE7pn5L?=
+ =?us-ascii?Q?VAZS6EtISYqv95hRDdYgPunk7CaY4AyYmS5ZNcSXUAhi06MaxxNnGAOd3Blo?=
+ =?us-ascii?Q?xz/XEIvWvk/UdQVJ8WHWPcXXIKDhE2dHYlEaSiDVtCEU+NOnUc3nCj2sRutY?=
+ =?us-ascii?Q?0zWC3KsKy5FFbLsoyRN8qVZ3dziYWb1UUvwwqMdWqALtmlynzk76xcb0gVIi?=
+ =?us-ascii?Q?Bd6tTekKODN5Wlx3DXh2phLfeHgyZjDUXyW4AuMtI2sspGMfzJ2Pfi6kVXIE?=
+ =?us-ascii?Q?SLkrDUIEvo/RtgwqYYP75lN3I5741Dw73eeOTk9axTntK81K0HsH9m2RNewz?=
+ =?us-ascii?Q?IFZfz9h34W312+EaRYl1nUGd1hV9KEd62yCDao7kPo9QB9pWmCTpmiJ4XFFx?=
+ =?us-ascii?Q?4+dc+QuDkkYXMiMbUOwEeKiAVef4qCASRubJgiUW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4393b0dc-0783-4057-c0a3-08dbe034c8ec
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 08:29:11.8521
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UMEw0InByscWU28GvJnFbXIx4mE5Ls6k4EAmhbd19DV9nnq5ItKis0skIt3nd0dp9hL5qpJXvRdKbYZ5a0kd92q9KdjTZbj2SI0QokZ3+k0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5648
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080070
+X-Proofpoint-GUID: -M1-knBjHyC8IqlEtclul-4OPHpseJWN
+X-Proofpoint-ORIG-GUID: -M1-knBjHyC8IqlEtclul-4OPHpseJWN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---tnwrscd4kofkwoer
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 07, 2023 at 08:22:51AM -0800, Darrick J. Wong wrote:
-> On Tue, Nov 07, 2023 at 02:44:21PM +0100, Joel Granados via B4 Relay wrot=
-e:
-> > From: Joel Granados <j.granados@samsung.com>
-> >=20
-> > This commit comes at the tail end of a greater effort to remove the
-> > empty elements at the end of the ctl_table arrays (sentinels) which
-> > will reduce the overall build time size of the kernel and run time
-> > memory bloat by ~64 bytes per sentinel (further information Link :
-> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> >=20
-> > Remove sentinel elements ctl_table struct. Special attention was placed=
- in
-> > making sure that an empty directory for fs/verity was created when
-> > CONFIG_FS_VERITY_BUILTIN_SIGNATURES is not defined. In this case we use=
- the
-> > register sysctl call that expects a size.
-> >=20
-> > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > ---
-> >  fs/aio.c                           | 1 -
-> >  fs/coredump.c                      | 1 -
-> >  fs/dcache.c                        | 1 -
-> >  fs/devpts/inode.c                  | 1 -
-> >  fs/eventpoll.c                     | 1 -
-> >  fs/exec.c                          | 1 -
-> >  fs/file_table.c                    | 1 -
-> >  fs/inode.c                         | 1 -
-> >  fs/lockd/svc.c                     | 1 -
-> >  fs/locks.c                         | 1 -
-> >  fs/namei.c                         | 1 -
-> >  fs/namespace.c                     | 1 -
-> >  fs/nfs/nfs4sysctl.c                | 1 -
-> >  fs/nfs/sysctl.c                    | 1 -
-> >  fs/notify/dnotify/dnotify.c        | 1 -
-> >  fs/notify/fanotify/fanotify_user.c | 1 -
-> >  fs/notify/inotify/inotify_user.c   | 1 -
-> >  fs/ntfs/sysctl.c                   | 1 -
-> >  fs/ocfs2/stackglue.c               | 1 -
-> >  fs/pipe.c                          | 1 -
-> >  fs/proc/proc_sysctl.c              | 1 -
-> >  fs/quota/dquot.c                   | 1 -
-> >  fs/sysctls.c                       | 1 -
-> >  fs/userfaultfd.c                   | 1 -
-> >  fs/verity/fsverity_private.h       | 2 +-
-> >  fs/verity/init.c                   | 8 +++++---
-> >  fs/xfs/xfs_sysctl.c                | 2 --
->=20
-> Not sure why an xfs change came in on a patch tagged "aio:"; I would
-> have expected "fs:" or "vfs:" or something.  For the XFS part:
-This was the same comment as Eric. will address it in my V2 and add your
-reviewed tag.
+Julia Lawall <julia.lawall@inria.fr> writes:
 
-Thx
+> On Tue, 7 Nov 2023, Ankur Arora wrote:
+>
+>> Rudimentary script to remove the straight-forward subset of
+>> cond_resched() and allies:
+>>
+>> 1)  if (need_resched())
+>> 	  cond_resched()
+>>
+>> 2)  expression*;
+>>     cond_resched();  /* or in the reverse order */
+>>
+>> 3)  if (expression)
+>> 	statement
+>>     cond_resched();  /* or in the reverse order */
+>>
+>> The last two patterns depend on the control flow level to ensure
+>> that the complex cond_resched() patterns (ex. conditioned ones)
+>> are left alone and we only pick up ones which are only minimally
+>> related the neighbouring code.
+>>
+>> Cc: Julia Lawall <Julia.Lawall@inria.fr>
+>> Cc: Nicolas Palix <nicolas.palix@imag.fr>
+>> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+>> ---
+>>  scripts/coccinelle/api/cond_resched.cocci | 53 +++++++++++++++++++++++
+>>  1 file changed, 53 insertions(+)
+>>  create mode 100644 scripts/coccinelle/api/cond_resched.cocci
+>>
+>> diff --git a/scripts/coccinelle/api/cond_resched.cocci b/scripts/coccinelle/api/cond_resched.cocci
+>> new file mode 100644
+>> index 000000000000..bf43768a8f8c
+>> --- /dev/null
+>> +++ b/scripts/coccinelle/api/cond_resched.cocci
+>> @@ -0,0 +1,53 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/// Remove naked cond_resched() statements
+>> +///
+>> +//# Remove cond_resched() statements when:
+>> +//#   - executing at the same control flow level as the previous or the
+>> +//#     next statement (this lets us avoid complicated conditionals in
+>> +//#     the neighbourhood.)
+>> +//#   - they are of the form "if (need_resched()) cond_resched()" which
+>> +//#     is always safe.
+>> +//#
+>> +//# Coccinelle generally takes care of comments in the immediate neighbourhood
+>> +//# but might need to handle other comments alluding to rescheduling.
+>> +//#
+>> +virtual patch
+>> +virtual context
+>> +
+>> +@ r1 @
+>> +identifier r;
+>> +@@
+>> +
+>> +(
+>> + r = cond_resched();
+>> +|
+>> +-if (need_resched())
+>> +-	cond_resched();
+>> +)
+>
+> This rule doesn't make sense.  The first branch of the disjunction will
+> never match a a place where the second branch matches.  Anyway, in the
+> second branch there is no assignment, so I don't see what the first branch
+> is protecting against.
+>
+> The disjunction is just useless.  Whether it is there or or whether only
+> the second brancha is there, doesn't have any impact on the result.
+>
+>> +
+>> +@ r2 @
+>> +expression E;
+>> +statement S,T;
+>> +@@
+>> +(
+>> + E;
+>> +|
+>> + if (E) S
+>
+> This case is not needed.  It will be matched by the next case.
+>
+>> +|
+>> + if (E) S else T
+>> +|
+>> +)
+>> +-cond_resched();
+>> +
+>> +@ r3 @
+>> +expression E;
+>> +statement S,T;
+>> +@@
+>> +-cond_resched();
+>> +(
+>> + E;
+>> +|
+>> + if (E) S
+>
+> As above.
+>
+>> +|
+>> + if (E) S else T
+>> +)
+>
+> I have the impression that you are trying to retain some cond_rescheds.
+> Could you send an example of one that you are trying to keep?  Overall,
+> the above rules seem a bit ad hoc.  You may be keeping some cases you
+> don't want to, or removing some cases that you want to keep.
 
->=20
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
->=20
-> --D
->=20
-> >  27 files changed, 6 insertions(+), 30 deletions(-)
-> >=20
-> > diff --git a/fs/aio.c b/fs/aio.c
-> > index a4c2a6bac72c..da069d6b6c66 100644
-> > --- a/fs/aio.c
-> > +++ b/fs/aio.c
-> > @@ -239,7 +239,6 @@ static struct ctl_table aio_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_doulongvec_minmax,
-> >  	},
-> > -	{}
-> >  };
-> > =20
-> >  static void __init aio_sysctl_init(void)
-> > diff --git a/fs/coredump.c b/fs/coredump.c
-> > index 9d235fa14ab9..f258c17c1841 100644
-> > --- a/fs/coredump.c
-> > +++ b/fs/coredump.c
-> > @@ -981,7 +981,6 @@ static struct ctl_table coredump_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_coredump_sysctls(void)
-> > diff --git a/fs/dcache.c b/fs/dcache.c
-> > index 25ac74d30bff..bafdd455b0fe 100644
-> > --- a/fs/dcache.c
-> > +++ b/fs/dcache.c
-> > @@ -191,7 +191,6 @@ static struct ctl_table fs_dcache_sysctls[] =3D {
-> >  		.mode		=3D 0444,
-> >  		.proc_handler	=3D proc_nr_dentry,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_dcache_sysctls(void)
-> > diff --git a/fs/devpts/inode.c b/fs/devpts/inode.c
-> > index 299c295a27a0..a4de1612b1db 100644
-> > --- a/fs/devpts/inode.c
-> > +++ b/fs/devpts/inode.c
-> > @@ -69,7 +69,6 @@ static struct ctl_table pty_table[] =3D {
-> >  		.data		=3D &pty_count,
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> > -	{}
-> >  };
-> > =20
-> >  struct pts_mount_opts {
-> > diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> > index 1d9a71a0c4c1..975fc5623102 100644
-> > --- a/fs/eventpoll.c
-> > +++ b/fs/eventpoll.c
-> > @@ -322,7 +322,6 @@ static struct ctl_table epoll_table[] =3D {
-> >  		.extra1		=3D &long_zero,
-> >  		.extra2		=3D &long_max,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static void __init epoll_sysctls_init(void)
-> > diff --git a/fs/exec.c b/fs/exec.c
-> > index 6518e33ea813..7a18bde22f25 100644
-> > --- a/fs/exec.c
-> > +++ b/fs/exec.c
-> > @@ -2167,7 +2167,6 @@ static struct ctl_table fs_exec_sysctls[] =3D {
-> >  		.extra1		=3D SYSCTL_ZERO,
-> >  		.extra2		=3D SYSCTL_TWO,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_exec_sysctls(void)
-> > diff --git a/fs/file_table.c b/fs/file_table.c
-> > index ee21b3da9d08..544f7d4f166f 100644
-> > --- a/fs/file_table.c
-> > +++ b/fs/file_table.c
-> > @@ -137,7 +137,6 @@ static struct ctl_table fs_stat_sysctls[] =3D {
-> >  		.extra1		=3D &sysctl_nr_open_min,
-> >  		.extra2		=3D &sysctl_nr_open_max,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_stat_sysctls(void)
-> > diff --git a/fs/inode.c b/fs/inode.c
-> > index 35fd688168c5..ce16e3cda7bf 100644
-> > --- a/fs/inode.c
-> > +++ b/fs/inode.c
-> > @@ -129,7 +129,6 @@ static struct ctl_table inodes_sysctls[] =3D {
-> >  		.mode		=3D 0444,
-> >  		.proc_handler	=3D proc_nr_inodes,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_inode_sysctls(void)
-> > diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
-> > index 6579948070a4..f784ff58bfd3 100644
-> > --- a/fs/lockd/svc.c
-> > +++ b/fs/lockd/svc.c
-> > @@ -474,7 +474,6 @@ static struct ctl_table nlm_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  #endif	/* CONFIG_SYSCTL */
-> > diff --git a/fs/locks.c b/fs/locks.c
-> > index 76ad05f8070a..6ecfc422fb37 100644
-> > --- a/fs/locks.c
-> > +++ b/fs/locks.c
-> > @@ -111,7 +111,6 @@ static struct ctl_table locks_sysctls[] =3D {
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> >  #endif /* CONFIG_MMU */
-> > -	{}
-> >  };
-> > =20
-> >  static int __init init_fs_locks_sysctls(void)
-> > diff --git a/fs/namei.c b/fs/namei.c
-> > index 567ee547492b..fb552161c981 100644
-> > --- a/fs/namei.c
-> > +++ b/fs/namei.c
-> > @@ -1070,7 +1070,6 @@ static struct ctl_table namei_sysctls[] =3D {
-> >  		.extra1		=3D SYSCTL_ZERO,
-> >  		.extra2		=3D SYSCTL_TWO,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_namei_sysctls(void)
-> > diff --git a/fs/namespace.c b/fs/namespace.c
-> > index e157efc54023..e95d4328539d 100644
-> > --- a/fs/namespace.c
-> > +++ b/fs/namespace.c
-> > @@ -5008,7 +5008,6 @@ static struct ctl_table fs_namespace_sysctls[] =
-=3D {
-> >  		.proc_handler	=3D proc_dointvec_minmax,
-> >  		.extra1		=3D SYSCTL_ONE,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_namespace_sysctls(void)
-> > diff --git a/fs/nfs/nfs4sysctl.c b/fs/nfs/nfs4sysctl.c
-> > index e776200e9a11..886a7c4c60b3 100644
-> > --- a/fs/nfs/nfs4sysctl.c
-> > +++ b/fs/nfs/nfs4sysctl.c
-> > @@ -34,7 +34,6 @@ static struct ctl_table nfs4_cb_sysctls[] =3D {
-> >  		.mode =3D 0644,
-> >  		.proc_handler =3D proc_dointvec,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  int nfs4_register_sysctl(void)
-> > diff --git a/fs/nfs/sysctl.c b/fs/nfs/sysctl.c
-> > index f39e2089bc4c..e645be1a3381 100644
-> > --- a/fs/nfs/sysctl.c
-> > +++ b/fs/nfs/sysctl.c
-> > @@ -29,7 +29,6 @@ static struct ctl_table nfs_cb_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  int nfs_register_sysctl(void)
-> > diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
-> > index ebdcc25df0f7..8151ed5ddefc 100644
-> > --- a/fs/notify/dnotify/dnotify.c
-> > +++ b/fs/notify/dnotify/dnotify.c
-> > @@ -29,7 +29,6 @@ static struct ctl_table dnotify_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> > -	{}
-> >  };
-> >  static void __init dnotify_sysctl_init(void)
-> >  {
-> > diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fa=
-notify_user.c
-> > index f69c451018e3..80539839af0c 100644
-> > --- a/fs/notify/fanotify/fanotify_user.c
-> > +++ b/fs/notify/fanotify/fanotify_user.c
-> > @@ -86,7 +86,6 @@ static struct ctl_table fanotify_table[] =3D {
-> >  		.proc_handler	=3D proc_dointvec_minmax,
-> >  		.extra1		=3D SYSCTL_ZERO
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static void __init fanotify_sysctls_init(void)
-> > diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inoti=
-fy_user.c
-> > index 1c4bfdab008d..3e222a271da6 100644
-> > --- a/fs/notify/inotify/inotify_user.c
-> > +++ b/fs/notify/inotify/inotify_user.c
-> > @@ -85,7 +85,6 @@ static struct ctl_table inotify_table[] =3D {
-> >  		.proc_handler	=3D proc_dointvec_minmax,
-> >  		.extra1		=3D SYSCTL_ZERO
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static void __init inotify_sysctls_init(void)
-> > diff --git a/fs/ntfs/sysctl.c b/fs/ntfs/sysctl.c
-> > index 174fe536a1c0..4e980170d86a 100644
-> > --- a/fs/ntfs/sysctl.c
-> > +++ b/fs/ntfs/sysctl.c
-> > @@ -28,7 +28,6 @@ static struct ctl_table ntfs_sysctls[] =3D {
-> >  		.mode		=3D 0644,			/* Mode, proc handler. */
-> >  		.proc_handler	=3D proc_dointvec
-> >  	},
-> > -	{}
-> >  };
-> > =20
-> >  /* Storage for the sysctls header. */
-> > diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
-> > index a8d5ca98fa57..20aa37b67cfb 100644
-> > --- a/fs/ocfs2/stackglue.c
-> > +++ b/fs/ocfs2/stackglue.c
-> > @@ -658,7 +658,6 @@ static struct ctl_table ocfs2_nm_table[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_dostring,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static struct ctl_table_header *ocfs2_table_header;
-> > diff --git a/fs/pipe.c b/fs/pipe.c
-> > index 6c1a9b1db907..6bc1c4ae81d5 100644
-> > --- a/fs/pipe.c
-> > +++ b/fs/pipe.c
-> > @@ -1492,7 +1492,6 @@ static struct ctl_table fs_pipe_sysctls[] =3D {
-> >  		.mode		=3D 0644,
-> >  		.proc_handler	=3D proc_doulongvec_minmax,
-> >  	},
-> > -	{ }
-> >  };
-> >  #endif
-> > =20
-> > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> > index de484195f49f..4e06c4d69906 100644
-> > --- a/fs/proc/proc_sysctl.c
-> > +++ b/fs/proc/proc_sysctl.c
-> > @@ -71,7 +71,6 @@ static struct ctl_table root_table[] =3D {
-> >  		.procname =3D "",
-> >  		.mode =3D S_IFDIR|S_IRUGO|S_IXUGO,
-> >  	},
-> > -	{ }
-> >  };
-> >  static struct ctl_table_root sysctl_table_root =3D {
-> >  	.default_set.dir.header =3D {
-> > diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> > index 9e72bfe8bbad..69b03e13e6f2 100644
-> > --- a/fs/quota/dquot.c
-> > +++ b/fs/quota/dquot.c
-> > @@ -2949,7 +2949,6 @@ static struct ctl_table fs_dqstats_table[] =3D {
-> >  		.proc_handler	=3D proc_dointvec,
-> >  	},
-> >  #endif
-> > -	{ },
-> >  };
-> > =20
-> >  static int __init dquot_init(void)
-> > diff --git a/fs/sysctls.c b/fs/sysctls.c
-> > index 76a0aee8c229..8dbde9a802fa 100644
-> > --- a/fs/sysctls.c
-> > +++ b/fs/sysctls.c
-> > @@ -26,7 +26,6 @@ static struct ctl_table fs_shared_sysctls[] =3D {
-> >  		.extra1		=3D SYSCTL_ZERO,
-> >  		.extra2		=3D SYSCTL_MAXOLDUID,
-> >  	},
-> > -	{ }
-> >  };
-> > =20
-> >  static int __init init_fs_sysctls(void)
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index 56eaae9dac1a..7668285779c1 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -45,7 +45,6 @@ static struct ctl_table vm_userfaultfd_table[] =3D {
-> >  		.extra1		=3D SYSCTL_ZERO,
-> >  		.extra2		=3D SYSCTL_ONE,
-> >  	},
-> > -	{ }
-> >  };
-> >  #endif
-> > =20
-> > diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-> > index d071a6e32581..8191bf7ad706 100644
-> > --- a/fs/verity/fsverity_private.h
-> > +++ b/fs/verity/fsverity_private.h
-> > @@ -122,8 +122,8 @@ void __init fsverity_init_info_cache(void);
-> > =20
-> >  /* signature.c */
-> > =20
-> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> >  extern int fsverity_require_signatures;
-> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> >  int fsverity_verify_signature(const struct fsverity_info *vi,
-> >  			      const u8 *signature, size_t sig_size);
-> > =20
-> > diff --git a/fs/verity/init.c b/fs/verity/init.c
-> > index a29f062f6047..e31045dd4f6c 100644
-> > --- a/fs/verity/init.c
-> > +++ b/fs/verity/init.c
-> > @@ -13,7 +13,6 @@
-> >  static struct ctl_table_header *fsverity_sysctl_header;
-> > =20
-> >  static struct ctl_table fsverity_sysctl_table[] =3D {
-> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> >  	{
-> >  		.procname       =3D "require_signatures",
-> >  		.data           =3D &fsverity_require_signatures,
-> > @@ -23,14 +22,17 @@ static struct ctl_table fsverity_sysctl_table[] =3D=
- {
-> >  		.extra1         =3D SYSCTL_ZERO,
-> >  		.extra2         =3D SYSCTL_ONE,
-> >  	},
-> > -#endif
-> > -	{ }
-> >  };
-> > =20
-> >  static void __init fsverity_init_sysctl(void)
-> >  {
-> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> >  	fsverity_sysctl_header =3D register_sysctl("fs/verity",
-> >  						 fsverity_sysctl_table);
-> > +#else
-> > +	fsverity_sysctl_header =3D register_sysctl_sz("fs/verity",
-> > +						 fsverity_sysctl_table, 0);
-> > +#endif
-> >  	if (!fsverity_sysctl_header)
-> >  		panic("fsverity sysctl registration failed");
-> >  }
-> > diff --git a/fs/xfs/xfs_sysctl.c b/fs/xfs/xfs_sysctl.c
-> > index fade33735393..a191f6560f98 100644
-> > --- a/fs/xfs/xfs_sysctl.c
-> > +++ b/fs/xfs/xfs_sysctl.c
-> > @@ -206,8 +206,6 @@ static struct ctl_table xfs_table[] =3D {
-> >  		.extra2		=3D &xfs_params.stats_clear.max
-> >  	},
-> >  #endif /* CONFIG_PROC_FS */
-> > -
-> > -	{}
-> >  };
-> > =20
-> >  int
-> >=20
-> > --=20
-> > 2.30.2
-> >=20
+Right. I was trying to ensure that the script only handled the cases
+that didn't have any "interesting" connections to the surrounding code.
 
---=20
+Just to give you an example of the kind of constructs that I wanted
+to avoid:
 
-Joel Granados
+mm/memoy.c::zap_pmd_range():
 
---tnwrscd4kofkwoer
-Content-Type: application/pgp-signature; name="signature.asc"
+                if (addr != next)
+                        pmd--;
+        } while (pmd++, cond_resched(), addr != end);
 
------BEGIN PGP SIGNATURE-----
+mm/backing-dev.c::cleanup_offline_cgwbs_workfn()
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVLRq8ACgkQupfNUreW
-QU/Jqwv+K1w0FpZcv0HBnAeHLCtveM9mAFkL+qQUZS2GWzB569sbdbxsz2+0lZWo
-ljmdA0ou2wA6i4MrM8gYJD7PjhOEeN6VNQU1K9bHbQGyTeS1CelsRNgeyXzGXaC6
-KOc1zigE06aC3K+QYZ2lfHpp/Q+qNWi6tapj7Wu0Vc4e/tZdK0FVlrNxrVQRe2vY
-ISD+PsJ6QoykDDU0KMah+RmwSX8KS0mowyGrpuCIqz2OswophDo3TXT0/vQbefL8
-B29eRO/wWCon08adSAkpY4wAsEQOHyjFb8ScfCUn57AokDe8QBi89HHjjl5WPE0v
-P/NN3SFcFBN4LgKAi6cmyj//P453KLzvFPonnwQy7LymWqKTbHvG9+cIgZToRZfW
-JPdRfF3tjVVxFs6US+wAFd9DHsESz1jbNCkOm8V+0/FUow86JiCV6vCSupagYgxk
-TfcFQpQkhy8SnaetutCFAC0GtFz+GI24CKMdNAqpLj3hTY3x0IMd90g8YuCkUU4G
-+Ti8Dg9U
-=/8dn
------END PGP SIGNATURE-----
+                while (cleanup_offline_cgwb(wb))
+                        cond_resched();
 
---tnwrscd4kofkwoer--
+
+                while (cleanup_offline_cgwb(wb))
+                        cond_resched();
+
+But from a quick check the simplest coccinelle script does a much
+better job than my overly complex (and incorrect) one:
+
+@r1@
+@@
+-       cond_resched();
+
+It avoids the first one. And transforms the second to:
+
+                while (cleanup_offline_cgwb(wb))
+                        {}
+
+which is exactly what I wanted.
+
+> Of course, if you are confident that the job is done with this semantic
+> patch as it is, then that's fine too.
+
+Not at all. Thanks for pointing out the mistakes.
+
+
+
+--
+ankur
