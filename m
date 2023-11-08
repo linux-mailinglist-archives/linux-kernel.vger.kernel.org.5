@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 140D27E5935
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9037E594A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbjKHOho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S233281AbjKHOjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjKHOhn (ORCPT
+        with ESMTP id S230132AbjKHOjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:37:43 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406C81BC3
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:37:41 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7c011e113so85382767b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:37:41 -0800 (PST)
+        Wed, 8 Nov 2023 09:39:15 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3881D1BDD
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:39:13 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-da0359751dbso833195276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:39:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699454260; x=1700059060; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699454352; x=1700059152; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5pLSEcA2VjED8h8cG+iJ0qpM0EKkiOxsur6HDc4UGXc=;
-        b=ORh2+4K988j+MAmJWIUWRmvI6fBRKSTeI851p/58f5nqTcfM1y67km1wUMJW3iWiL7
-         s46pV2O4/mNCdiO1iMop0taAEbkTVKA2RIaMv0Abh70MqDdKqFV3XbbwpFk6xeEdKANx
-         9fINI+jZwldgd045rTGFBC6GpDep3PJJ9JUWl5N49UQaz6Z0CL0DJrKjwA91oJmrCSyr
-         aYhjM7y2O0v1P7rOpYDWYRSn6PtzxNOEw72cNofQ0iqnFsM9TSS2qLmZv8Mh4MRvxyKq
-         5c9eMh/6C5EtG6wLPeV3taimaWo3rXmJUHHxvtxZt0KUbi1bWyQuAncM/Li7FIcjDwle
-         mtpg==
+        bh=PQU3hqMMYcYs/SCmGDlKPzxbDtOph1I+oD4U8+UogTs=;
+        b=LKYi4hP1XQiTq/TC86wAlhCVXGr5Y52kOrp56ImzzXJnWRVzean26NU41UfLhWnybF
+         DkQcOd+jLLab6r+cFNx+jCBVxv9ShlEmArG6yltanPTT8q+tZHQ5C+WCAZheANuxY7Uo
+         FPTmwzaTy5uSMTlC5ZMCy4m/nfm1/8jCEoFhufVIETFyAaSwF2PYlFGRp8JHdxYoc3EG
+         2hZfDe8Zwix+UfI2sPWXbIIzxdearItJ6llIF5sge11KiNsifzB0Y8VscYlWKGD4hC3H
+         1dp3y2QIz0tq8IMeuqPSDInnqJepoRvMS5LmNwV1LjzEW4+gtdkkCG7lv5hgv3llMFgX
+         6+GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699454260; x=1700059060;
+        d=1e100.net; s=20230601; t=1699454352; x=1700059152;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5pLSEcA2VjED8h8cG+iJ0qpM0EKkiOxsur6HDc4UGXc=;
-        b=iXdDfX3pOQrQLfg3C8ShSN3J1nrgwjgFu4vjXuPhU96uNKuCrEyUxpdwhbH4WpwIsQ
-         qq6t+y0gqcfxV/NkICkYdzQzF6mGyUwqDmazYCFkWQeKLsluqwn5gAmkuv7YZxWL1XFf
-         4y4nd4Wl/2gb+4BftQqT/D1kw/T+UUFjVh/nYnaEER01qsJNCbEPrCseQnzBcsCewPrw
-         xFWBSgrmqhDL31R7Fd9NDWnhbo2WiOL8DL+KBzMSotNeIDRaUhQdgrK09C9WMlA0IItN
-         Affu7reUCtMYdS3BMzAOoZzjTQYMPfSylbGdoj1n52ZdcvuwGKa0u/Ymh1IatmfGBi2h
-         01sQ==
-X-Gm-Message-State: AOJu0YzM0kTB8Vjq8Q8jLJqYZFZkKG68T4luSXkZrQlNG6K+lUzM9Xtt
-        +/oUlFpHPrn7hIb15wMVfIERibInaJ06/wNnbVzBJQ==
-X-Google-Smtp-Source: AGHT+IF55MrY2C8gUy5UEgkOtPKa6Oi8mTKtSV1L4rKV0gjIZlPg1ZoEvJYa2FVQjNUppNOqvXM7P0/6857Jez9ndOc=
-X-Received: by 2002:a81:48ca:0:b0:5a7:a81d:e410 with SMTP id
- v193-20020a8148ca000000b005a7a81de410mr1971187ywa.18.1699454260465; Wed, 08
- Nov 2023 06:37:40 -0800 (PST)
+        bh=PQU3hqMMYcYs/SCmGDlKPzxbDtOph1I+oD4U8+UogTs=;
+        b=Oap0TfMX9kjwnezyYvB2xxE5YrxUoBYquwfaAjDwgHR/+277KM4gZVjtK/Qa3+dw9M
+         xsgEJPYwSnFSt2lkeYLFeGcR7gGKSeMUy9GuPRk+5ZnboTd/pfy7CG5Gn7xX5mNUFPKC
+         rRzWWM1WKkmjBylKeR5Oabk3FnNSDRWaU1wECeudUm6/8K5yexj3yiYS4bZpi4WCySYL
+         r+NVOVo65lkD4JS4k8nWzz92lHwHJdNP1OPjMUiiyapt4yFoBr+bX35uhELHUsoBm7PR
+         TWfVNfWq3Pm3BJdgYT3CqRL2nDDYcDaG/Imx29mSiYzhP2vYey3J6Ghh6utY8nvkdQS8
+         8TYQ==
+X-Gm-Message-State: AOJu0YzAJWpeLvKUP5Z3XHHA6znPoWIGWEWKFezo+0V0u4IGfclOTsA0
+        zH9OMYdLXOt2zeOm85QH6bc+ES708FgTv60cDuk9YQ==
+X-Google-Smtp-Source: AGHT+IFTCIwDBjEMYpwNJ8pCD6O9DyvdbbX4a7hqAkZOe5VRqRtPaWWQozp69ojbFtC4cQ7kVpXUNe0BHNJc/LPtYy4=
+X-Received: by 2002:a25:aa73:0:b0:da3:f2c0:dcd4 with SMTP id
+ s106-20020a25aa73000000b00da3f2c0dcd4mr1399160ybi.9.1699454352307; Wed, 08
+ Nov 2023 06:39:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20231107-gemini-largeframe-fix-v3-0-e3803c080b75@linaro.org>
- <20231107-gemini-largeframe-fix-v3-1-e3803c080b75@linaro.org> <20231108142640.tmly4ifgsoeo7m3e@skbuf>
-In-Reply-To: <20231108142640.tmly4ifgsoeo7m3e@skbuf>
+References: <20231108141637.119497-1-yann.gautier@foss.st.com>
+In-Reply-To: <20231108141637.119497-1-yann.gautier@foss.st.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 8 Nov 2023 15:37:28 +0100
-Message-ID: <CACRpkdZ0zH6i8xuZGXq2VEd7brp-dmY89KXmKfxMTk=9eX1EQw@mail.gmail.com>
-Subject: Re: [PATCH net v3 1/4] net: ethernet: cortina: Fix MTU max setting
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrew Lunn <andrew@lunn.ch>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Wed, 8 Nov 2023 15:39:00 +0100
+Message-ID: <CACRpkda+JjXKO-HS4XHciiTm6GfViCV1vLQ8T1VNtNzK=qe3hA@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: mmci: stm32: add SDIO in-band interrupt mode
+To:     Yann Gautier <yann.gautier@foss.st.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-mmc@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Ben Wolsieffer <Ben.Wolsieffer@hefring.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Christophe Kerello <christophe.kerello@foss.st.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 3:26=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com> =
-wrote:
-> On Tue, Nov 07, 2023 at 10:54:26AM +0100, Linus Walleij wrote:
+On Wed, Nov 8, 2023 at 3:18=E2=80=AFPM Yann Gautier <yann.gautier@foss.st.c=
+om> wrote:
 
-> > The RX max frame size is over 10000 for the Gemini ethernet,
-> > but the TX max frame size is actually just 2047 (0x7ff after
-> > checking the datasheet). Reflect this in what we offer to Linux,
-> > cap the MTU at the TX max frame minus ethernet headers.
-> >
-> > Use the BIT() macro for related bit flags so these TX settings
-> > are consistent.
+> From: Christophe Kerello <christophe.kerello@foss.st.com>
 >
-> What does this second paragraph intend to say? The patch doesn't use the
-> BIT() macro.
+> Add the support of SDIO in-band interrupt mode for STM32 and Ux500
+> variants.
+> It allows the SD I/O card to interrupt the host on SDMMC_D1 data line.
+> It is not enabled by default on Ux500 variant as this is unstable and
+> Ux500 users should use out-of-band IRQs.
+>
+> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
+> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
 
-Ah it's a leftover from v1 where I did some unrelated cleanup using
-BIT() but Andrew remarked on it so I dropped it.
-
-Maybe this twoliner in the commit message can be deleted when
-applying?
+Still looks good to me!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
