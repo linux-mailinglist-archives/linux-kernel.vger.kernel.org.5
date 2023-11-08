@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABB27E5686
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA557E568B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344503AbjKHMt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:49:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        id S1344402AbjKHMux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344373AbjKHMtZ (ORCPT
+        with ESMTP id S229654AbjKHMuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:49:25 -0500
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4779A1BF4;
-        Wed,  8 Nov 2023 04:49:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1699447764; x=1730983764;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hj4kKItmy717X2Mt8TEVpr5/Nab+Gw3L9gWPEgJENgE=;
-  b=pK3+yyPOY/zVLO82K+Umqv3Uz/rde3jsZKg67myyymfZCTJvwCpdss93
-   n2uLcejSYIuuIbAYet+pMql9rAU8FN86/eyrFB1ECHIlizZaedzP2XQ3r
-   fbHrtrzq1A+XOriXU9O9NtSeZpaPufMVZHasjGMnQGIWfJ4enMb1lYSJ+
-   E=;
-X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
-   d="scan'208";a="164975405"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 12:49:22 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1a-m6i4x-edda28d4.us-east-1.amazon.com (Postfix) with ESMTPS id 7C2868052F;
-        Wed,  8 Nov 2023 12:49:19 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:1753]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.225:2525] with esmtp (Farcaster)
- id 964dc4eb-de72-4eec-8c95-e76cdf299137; Wed, 8 Nov 2023 12:49:18 +0000 (UTC)
-X-Farcaster-Flow-ID: 964dc4eb-de72-4eec-8c95-e76cdf299137
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 8 Nov 2023 12:49:18 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 12:49:14 +0000
-Message-ID: <5ac466d6-ea71-472d-a09b-5bd54e88a398@amazon.com>
-Date:   Wed, 8 Nov 2023 13:49:12 +0100
+        Wed, 8 Nov 2023 07:50:52 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFB31BF5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5rQmqHyq28sTTx41SOIqjCjlEAdR533KDLfge20GJyA=; b=NvLDaPEObNlQZ7/0u1uC02f+nj
+        DtroOR/1+yb6jRjXuKyms6rhG80O4ap5jN6IfZOLPGroo/dS611lZWyrlMWeyPBhfG3ayEoiB+E9K
+        locsP9xtG+ZKLvaHcarIa2VVPq2u2++trb6Cp8Ar3PXys1IYmx/jgrTUGzhYhI/U+KNhaDxGQOuf7
+        b7vhoHzjbAaWWlsNCKqu8NFmJtuQnLJPs+H8lYxSfLFT2SQbRAiK8H9JbuhA0dY1O4y45Ti9O5A/W
+        bqitrYXZjB+CJF6ehczO6Ahx4z+kun1wdo/zM5QU1ZDjXb+L1omhK8RE86nZW1zmyAnVYI1nlkvqE
+        3GSVzkxw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0i0y-0013wa-92; Wed, 08 Nov 2023 12:50:37 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9EB5B30049D; Wed,  8 Nov 2023 13:50:36 +0100 (CET)
+Date:   Wed, 8 Nov 2023 13:50:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20231108125036.GD4779@noisy.programming.kicks-ass.net>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+ <20231107114732.5dd350ec@gandalf.local.home>
+ <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
+ <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
+ <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 32/33] KVM: x86: hyper-v: Implement
- HVCALL_TRANSLATE_VIRTUAL_ADDRESS
-Content-Language: en-US
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
-        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
-        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
-        <decui@microsoft.com>, <x86@kernel.org>,
-        <linux-doc@vger.kernel.org>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
- <20231108111806.92604-33-nsaenz@amazon.com>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <20231108111806.92604-33-nsaenz@amazon.com>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D040UWB002.ant.amazon.com (10.13.138.89) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDA4LjExLjIzIDEyOjE4LCBOaWNvbGFzIFNhZW56IEp1bGllbm5lIHdyb3RlOgo+IEludHJv
-ZHVjZSBIVkNBTExfVFJBTlNMQVRFX1ZJUlRVQUxfQUREUkVTUywgdGhlIGh5cGVyY2FsbCByZWNl
-aXZlcyBhCj4gR1ZBLCBnZW5lcmFsbHkgZnJvbSBhIGxlc3MgcHJpdmlsZWdlZCBWVEwsIGFuZCBy
-ZXR1cm5zIHRoZSBHUEEgYmFja2luZwo+IGl0LiBUaGUgR1ZBIC0+IEdQQSBjb252ZXJzaW9uIGlz
-IGRvbmUgYnkgd2Fsa2luZyB0aGUgdGFyZ2V0IFZUTCdzIHZDUFUKPiBNTVUuCj4KPiBOT1RFOiBU
-aGUgaHlwZXJjYWxsIGltcGxlbWVudGF0aW9uIGlzIGluY29tcGxldGUgYW5kIG9ubHkgc2hhcmVk
-IGZvcgo+IGNvbXBsZXRpb24uIEFkZGl0aW9uYWxseSB3ZSdkIGxpa2UgdG8gbW92ZSB0aGUgVlRM
-IGF3YXJlIHBhcnRzIHRvCj4gdXNlci1zcGFjZS4KCgpZZXMsIHBsZWFzZSA6KS4gV2Ugc2hvdWxk
-IGhhbmRsZSB0aGUgY29tcGxldGUgaHlwZXJjYWxsIGluIHVzZXIgc3BhY2UgaWYgCnBvc3NpYmxl
-LiBJZiB5b3UncmUgYWZyYWlkIHRoYXQgZ3ZhIC0+IGdwYSBjb252ZXJzaW9uIG1heSBydW4gb3V0
-IG9mIApzeW5jIGJldHdlZW4gYSB1c2VyIHNwYWNlIGFuZCB0aGUga3ZtIGltcGxlbWVudGF0aW9u
-cywgbGV0J3MgaW50cm9kdWNlIAphbiBpb2N0bCB0aGF0IGFsbG93cyB5b3UgdG8gcGVyZm9ybSB0
-aGF0IGNvbnZlcnNpb24uCgoKQWxleAoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJt
-YW55IEdtYkgKS3JhdXNlbnN0ci4gMzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzog
-Q2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dl
-cmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3Qt
-SUQ6IERFIDI4OSAyMzcgODc5CgoK
+On Wed, Nov 08, 2023 at 01:44:01PM +0100, Peter Zijlstra wrote:
 
+> Should we rather not cap the runtime, something like so?
+> 
+
+Clearly I should've done the patch against a tree that includes the
+changes... 
+
+> ---
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index 58b542bf2893..1453a2cd0680 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -829,10 +829,12 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+>   */
+>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>  {
+> +	struct sched_dl_entity *pi_se = pi_of(dl_se);
+>  	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+>  	struct rq *rq = rq_of_dl_rq(dl_rq);
+> +	u64 dl_runtime = pi_se->dl_runtime;
+>  
+> -	WARN_ON_ONCE(pi_of(dl_se)->dl_runtime <= 0);
+> +	WARN_ON_ONCE(dl_runtime <= 0);
+>  
+>  	/*
+>  	 * This could be the case for a !-dl task that is boosted.
+> @@ -851,10 +853,13 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>  	 * arbitrary large.
+>  	 */
+>  	while (dl_se->runtime <= 0) {
+> -		dl_se->deadline += pi_of(dl_se)->dl_period;
+> -		dl_se->runtime += pi_of(dl_se)->dl_runtime;
+> +		dl_se->deadline += pi_se->dl_period;
+> +		dl_se->runtime += dl_runtime;
+>  	}
+>  
+> +	if (dl_se->zerolax && dl_se->runtime > dl_runtime)
+> +		dl_se->runtime = dl_runtime;
+> +
+
+This should ofcourse go in the if (dl_se->dl_zerolax_armed) branch a
+little down from here.
+
+>  	/*
+>  	 * At this point, the deadline really should be "in
+>  	 * the future" with respect to rq->clock. If it's
