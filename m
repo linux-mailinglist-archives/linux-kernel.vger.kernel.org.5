@@ -2,167 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC187E5A41
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB717E5A44
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjKHPiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
+        id S233784AbjKHPjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234739AbjKHPiP (ORCPT
+        with ESMTP id S232792AbjKHPjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:38:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222CD1FE1
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:38:13 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699457891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18UXkYkGm08AQHZBxS21cLjRT0YoIXe2siFB63ueLa0=;
-        b=bCHL0UzoqJ4k+ydiCqDSGPqPJk1wUNFPASj3NywFEUtwqv3YAgQgmza2shT9fwGWz4dSLf
-        Z47yBjsBmo4xTShOD953CfYU6WeU9iYOa32v04j4K7e71oWQxN4bZ5ops6ySLFi0PboAqF
-        7+oBln+ji5AXRmrwT7LXevHuY42IMgcOgLtb6uE8yQ8NwA5EBpqkSc8yZajxkATB069U05
-        FC6m3hTwoyC3wyFG8hWCOl12LOC+x6gXW/KP17XQZfdlrPimDTrUQBzWlc2w1RygMPXGdW
-        06kgKW5NgVkFArzzednxNhbmALGRJvCRv79LVSG28eofYlglCyoIDzN/BqaGAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699457891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18UXkYkGm08AQHZBxS21cLjRT0YoIXe2siFB63ueLa0=;
-        b=IiM8I42Oi9ibnNKbFzDNnHjXg2zB7ZBR8wakKl39Y2K3ylt3Glo4UPGTNrWoNgYvRHdAJK
-        9woTxhafpSOZwGCA==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
-In-Reply-To: <20231108101330.GK3818@noisy.programming.kicks-ass.net>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231108085156.GD8262@noisy.programming.kicks-ass.net>
- <87bkc4lfxp.fsf@oracle.com>
- <20231108101330.GK3818@noisy.programming.kicks-ass.net>
-Date:   Wed, 08 Nov 2023 16:38:11 +0100
-Message-ID: <877cmsgsrg.ffs@tglx>
+        Wed, 8 Nov 2023 10:39:18 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8D6138;
+        Wed,  8 Nov 2023 07:39:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1699457920; x=1700062720; i=deller@gmx.de;
+        bh=RQou+busEXK1el5zagRtSD2v4f/DHN4LUnOWxuImoNc=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=MVoryq9aaD0lgknM+UykwFhr5H8QWMEsO8Ivs+H0RX38+Yoq2lpvcwUXRqsP4ssp
+         9MyqRQGuza8yUUkXHpWXCtYrXg22Hu15Qq9iWRXemfFi4zVLnC+KBn7ZMtNBXXR5l
+         x9pf8UpCCfscsNVfFfa3z69nbq2HrtBg/cjPdZBWEFY0LdPAOxv+rrj8b4cveEjqI
+         6rGj0uUD3ALOkGv5F9goOa9RP4CyGYtqom0+nUnSHconA2EYThZYAXWBvh4vRX1te
+         agHhUOmuhj+02AoOOFDTeJ6z4j8hBt18x/ShQ7AOeIg7JFS5y0kHd9hQN/T4+r5jR
+         RWQ+QOf51XI4dy7DtA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.158.7]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M59C8-1r1r6K0dUa-0017cZ; Wed, 08
+ Nov 2023 16:38:40 +0100
+Message-ID: <a320ae82-24ce-4c0d-bae3-b14e43c1f512@gmx.de>
+Date:   Wed, 8 Nov 2023 16:38:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fbdev: hyperv_fb: fix uninitialized local variable use
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        linux-hyperv@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231108145822.3955219-1-arnd@kernel.org>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20231108145822.3955219-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FZdTMf13wFxPAhxWZWg2c1R3JIZiLXzi/PpA4Y686kMa4OeoiGp
+ x6GgrfU4s0EUvilEfSxrx4rA7HQ8K2+0QusK1x0dx3F+fm3PUWMiVRNNlX/ynD4svy7cwYb
+ yftFBOfAyxH9/5V5gJ/2mULmAaO/J57ltXHmoB8AmvWOAWu8n1wfw2Q+AZlu9JTvcP8LY8T
+ 262qXyYAdhsFVuANvXxsg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:hE/kDwUmU60=;TSD0lDDHyPmTJmerdbCVP0c9oNq
+ 6s+JIPQ12n+ya4EhCeunURrxv4I63E656WsUxI7rfjk8ARQp+yhm94wvcOT/p6PFqqMkU0PM0
+ DgmboqYbkD80qovpuVrg90hNBK3T+AzRPw1A9HS/x2NhyA4y75Rfk+hIqU1OFw9cA5AqsZ+H1
+ lCuN34bxMFVpj+PAaGFHPBgQPlbXM5SpLmPiu/5nrjIBKSnpZBsEecNKqdaC/jd7ONzLOcLoP
+ yXE6EoMq7KnnRDrEhUrg+dRXwDbb372t+SdhCbi2n//gMs6+DzPdj7YfCfd0phTO15EJoweiZ
+ BlBgnLNrV/gpSP+tyxqpFrDdAVan1v1g4P5sRHWmEgkVyLPouz2nAArjZqPffs1l081/34TGq
+ aQUR0GU7HYzHxzM+GblqI55RlGlyd72a/+wBzy7MGocW2Lv23Z8PSRmsLACncV7UymPiyCpXk
+ hYM1oTJkcO9sk4u9Z4zdmBEdB7ULZ4pWYW2SfocwqV1gKgX9DnJBt53G3jXSzEFVMYPnEYcTa
+ W0Tr2ur5C1OYdA8izMCxUWCKevB9xJ8MXerz0FwQHIU+lJUL1zuOCmJs+rpjFj0/0S/n/UtbF
+ qN3xctWBFI0U7atNq8XaW3owvweBiHje3LLudMg9dDNaAYxM8of+SJSihRyEVhB3w55B61m3i
+ mas4m21VMuowLihJnaraz0lJZvh+A8fdEi/z9z7xNbd9iI2QuJObRoJPouhZkqp6iEOBfP4zC
+ LJwHwAGXX9pfMUSHew9WF5zRx5Pl1SQlXvTduA0Uf3VuDqXjmPQpXLvR65PJaD2xdbqn1fI/S
+ jrJfhqiptQoW3I1aMmOjiqdBDZvHGLdOfj/hxKD+OmD9zHYJuiQ7NXax2t2niWLdEXl2hT7vf
+ tmWfTARiAuxGpyZ4RsCI/InRvA+vQBHAFTyjdk2gPj1/JOXSCn5Ss7EMpB71+Qv9lZZUpTaj6
+ tM8Ia6NUFaedoGUX3e4H+TJSrpI=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08 2023 at 11:13, Peter Zijlstra wrote:
-> On Wed, Nov 08, 2023 at 02:04:02AM -0800, Ankur Arora wrote:
-> I'm not understanding, those should stay obviously.
+On 11/8/23 15:58, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> The current preempt_dynamic stuff has 5 toggles:
+> When CONFIG_SYSFB is disabled, the hyperv_fb driver can now run into
+> undefined behavior on a gen2 VM, as indicated by this smatch warning:
 >
-> /*
->  * SC:cond_resched
->  * SC:might_resched
->  * SC:preempt_schedule
->  * SC:preempt_schedule_notrace
->  * SC:irqentry_exit_cond_resched
->  *
->  *
->  * NONE:
->  *   cond_resched               <- __cond_resched
->  *   might_resched              <- RET0
->  *   preempt_schedule           <- NOP
->  *   preempt_schedule_notrace   <- NOP
->  *   irqentry_exit_cond_resched <- NOP
->  *
->  * VOLUNTARY:
->  *   cond_resched               <- __cond_resched
->  *   might_resched              <- __cond_resched
->  *   preempt_schedule           <- NOP
->  *   preempt_schedule_notrace   <- NOP
->  *   irqentry_exit_cond_resched <- NOP
->  *
->  * FULL:
->  *   cond_resched               <- RET0
->  *   might_resched              <- RET0
->  *   preempt_schedule           <- preempt_schedule
->  *   preempt_schedule_notrace   <- preempt_schedule_notrace
->  *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
->  */
+> drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized =
+symbol 'base'.
+> drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized =
+symbol 'size'.
 >
-> If you kill voluntary as we know it today, you can remove cond_resched
-> and might_resched, but the remaining 3 are still needed to switch
-> between NONE and FULL.
+> Since there is no way to know the actual framebuffer in this configurati=
+on,
+> just return an allocation failure here, which should avoid the build
+> warning and the undefined behavior.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/r/202311070802.YCpvehaz-lkp@intel.com/
+> Fixes: a07b50d80ab6 ("hyperv: avoid dependency on screen_info")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-No. The whole point of LAZY is to keep preempt_schedule(),
-preempt_schedule_notrace(), irqentry_exit_cond_resched() always enabled.
+applied.
 
-Look at my PoC: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
+Thanks!
+Helge
 
-The idea is to always enable preempt count and keep _all_ preemption
-points enabled.
 
-For NONE/VOLUNTARY mode let the scheduler set TIF_NEED_RESCHED_LAZY
-instead of TIF_NEED_RESCHED. In full mode set TIF_NEED_RESCHED.
+> ---
+>   drivers/video/fbdev/hyperv_fb.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyper=
+v_fb.c
+> index bf59daf862fc..a80939fe2ee6 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -1013,6 +1013,8 @@ static int hvfb_getmem(struct hv_device *hdev, str=
+uct fb_info *info)
+>   	} else if (IS_ENABLED(CONFIG_SYSFB)) {
+>   		base =3D screen_info.lfb_base;
+>   		size =3D screen_info.lfb_size;
+> +	} else {
+> +		goto err1;
+>   	}
+>
+>   	/*
 
-Here is where the regular and the lazy flags are evaluated:
-
-                Ret2user        Ret2kernel      PreemptCnt=0  need_resched()
-
-NEED_RESCHED       Y                Y               Y         Y
-LAZY_RESCHED       Y                N               N         Y
-
-The trick is that LAZY is not folded into preempt_count so a 1->0
-counter transition won't cause preempt_schedule() to be invoked because
-the topmost bit (NEED_RESCHED) is set.
-
-The scheduler can still decide to set TIF_NEED_RESCHED which will cause
-an immediate preemption at the next preemption point.
-
-This allows to force out a task which loops, e.g. in a massive copy or
-clear operation, as it did not reach a point where TIF_NEED_RESCHED_LAZY
-is evaluated after a time which is defined by the scheduler itself.
-
-For my PoC I did:
-
-    1) Set TIF_NEED_RESCHED_LAZY
-
-    2) Set TIF_NEED_RESCHED when the task did not react on
-       TIF_NEED_RESCHED_LAZY within a tick
-
-I know that's crude but it just works and obviously requires quite some
-refinement.
-
-So the way how you switch between preemption modes is to select when the
-scheduler sets TIF_NEED_RESCHED/TIF_NEED_RESCHED_LAZY. No static call
-switching at all.
-
-In full preemption mode it sets always TIF_NEED_RESCHED and otherwise it
-uses the LAZY bit first, grants some time and then gets out the hammer
-and sets TIF_NEED_RESCHED when the task did not reach a LAZY preemption
-point.
-
-Which means once the whole thing is in place then the whole
-PREEMPT_DYNAMIC along with NONE, VOLUNTARY, FULL can go away along with
-the cond_resched() hackery.
-
-So I think this series is backwards.
-
-It should add the LAZY muck with a Kconfig switch like I did in my PoC
-_first_. Once that is working and agreed on, the existing muck can be
-removed.
-
-Thanks,
-
-        tglx
