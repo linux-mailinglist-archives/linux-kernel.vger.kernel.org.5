@@ -2,182 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99CC7E51EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4982D7E51F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234723AbjKHI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S235072AbjKHI1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbjKHI03 (ORCPT
+        with ESMTP id S231397AbjKHI05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:26:29 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2139.outbound.protection.outlook.com [40.107.215.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D867A10C0;
-        Wed,  8 Nov 2023 00:26:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iTdafOk0kH1pS3RZZRlXOyjHE8nWxZcVn/CmZ++qG3FW0j5ZgD1f1vD1iXPhvMKDUNiP2X8EpAhY5oaLARz8uZUJoFiimx2fum6zKydBIxmSYmgMTR0T5nO2427ERdFHm494qt8AGQcIoRFb2XkbQbQ3wUTBA0nqVxKveUM5/FdonZhqsnzwNDxa5HB22CFiAgbPrXcimYFLqKR67BuOH6vQg0wB6yEWs/c7ZOXt1SFcz63B48PgtVY81rwLg/S1yBXuJVFc/r2sD/iBzmHNmMFrOJGtGtRbpKIBlRg6w71xCq4y14lTVCg7Si4aVYj7HHR9JoqjF/RgX0Z3SY59sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C0cXq8Vxqak80mxA5UzUMzilyeWNh23z6yXwE/bhGu4=;
- b=Irph7ns/GzFZcYKxhmI5qZyWaMrJBY8SUUqAPazPTnSmav8s3ZxtdYYDlCyLcNu0h9+BbZAjbLUDDbQfMCv5Xl+DiTQqm2I95fef0gSyrqnpWl+rMPvWk0ZqnPW5bBcnREr5idmbfvrAqZ7vxnJ9Kuf1t1jWSqsFcC6gdf4aF4bdqgWAAIr1w86TOaUtTEHj7V4m3YYAFdrL4mwJFCI6e11TBrX5L3HjxY6t5WiULCGKKtZkj3JCg/Cg680V6M3eSX9ttmbkyDU07mkXxpcrs1kALZ5igNtmWxRcKAPEEMMRgKCr6KMdXFyK2XxcCO62M90OeCxs9coS3R4sOJwcuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C0cXq8Vxqak80mxA5UzUMzilyeWNh23z6yXwE/bhGu4=;
- b=gdeF60aAk9ELlRHjoCxlZjxdkb+5ioAna7/bU4PD0d+VABjcs9mq/aRBOXmwOA1GZfXFZ3yp+vT5sWjp3g15I7ojeyb+rO1tiCcboQv+iQbyIzUTt1/QKL3nwyNm4goQhZJicgx+jM+jP8QKxq3YKB11QO8eNcsvaR7sc7NOgxQBbTk0I6mby7H/Qy/Rh7lYUWj2QmTg/HGWjrs3cUFGtMjpkHVmMaWmzACve29bMTDjVwRM5NAvS6S2dXl6n6yANI44zG7M0StwIRpaqvsOCS/0mUFIsJ5VB8CZjuEkFag2rtfRbRpOVmpOMHhwnR9zXJPSQIWBPV/1M3wk804o2g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by KL1PR06MB6672.apcprd06.prod.outlook.com (2603:1096:820:101::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Wed, 8 Nov
- 2023 08:26:22 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Wed, 8 Nov 2023
- 08:26:21 +0000
-Message-ID: <4c7db101-a34f-47ff-ba64-952516cc193a@vivo.com>
-Date:   Wed, 8 Nov 2023 16:26:14 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To:     Yosry Ahmed <yosryahmed@google.com>, Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-References: <20231108065818.19932-1-link@vivo.com>
- <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
-From:   Huan Yang <link@vivo.com>
-In-Reply-To: <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0181.apcprd04.prod.outlook.com
- (2603:1096:4:14::19) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Wed, 8 Nov 2023 03:26:57 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A3B10DA;
+        Wed,  8 Nov 2023 00:26:55 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231108082651euoutp01322a31e30a1949a58485448ad136f3ee~VmGkvKJK-1292912929euoutp01S;
+        Wed,  8 Nov 2023 08:26:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231108082651euoutp01322a31e30a1949a58485448ad136f3ee~VmGkvKJK-1292912929euoutp01S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699432012;
+        bh=eMo1TU5p3NXnSXpc6X1V4mK9zZsurYCuwe1XJ0Pu4Pk=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=uwECrOZYFI5jFdAU0t1qbP0QvYCIRinqIPlTTisFdWjCJC8PSwgECKcBl+ZsH6MV0
+         RVT+W4Ih3xJaXQbIE83w06j0PYNLbidpPo6W4/PjwpDYNCmj6qhwzENO/CjU4h21W1
+         bBH9Vu+ZugsS550igy4H9zVrKaZyRYU7tBsHEzJ0=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231108082651eucas1p2c4f8104c585a909712d9bda5c0a07e4e~VmGkcUxwv1343713437eucas1p2L;
+        Wed,  8 Nov 2023 08:26:51 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id C0.03.11320.B464B456; Wed,  8
+        Nov 2023 08:26:51 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231108082650eucas1p112dd45481f2cea4037e10dd0f78b3b33~VmGj3dXLl2116521165eucas1p1e;
+        Wed,  8 Nov 2023 08:26:50 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231108082650eusmtrp27043ee302523962dd6adc1db39206447~VmGj0u9lQ0509305093eusmtrp2U;
+        Wed,  8 Nov 2023 08:26:50 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-5e-654b464b4a1d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 33.5D.10549.A464B456; Wed,  8
+        Nov 2023 08:26:50 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231108082650eusmtip2bceb4048c302fc101d6873288cb4c03a~VmGjfQ1VV0818708187eusmtip2-;
+        Wed,  8 Nov 2023 08:26:50 +0000 (GMT)
+Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Wed, 8 Nov 2023 08:26:49 +0000
+Date:   Wed, 8 Nov 2023 09:26:48 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
+        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
+        David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, <coda@cs.cmu.edu>,
+        <linux-cachefs@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
+        <linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        <ocfs2-devel@lists.linux.dev>, <fsverity@lists.linux.dev>,
+        <linux-xfs@vger.kernel.org>, <codalist@telemann.coda.cs.cmu.edu>
+Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
+ from ctl_table array
+Message-ID: <20231108082648.nne6k2unowzhhg5m@localhost>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|KL1PR06MB6672:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d1b456e-fec5-4f17-9cbf-08dbe0346388
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MJ+50OhM+EwDL5WVFck2/VBPF4S+Q7Wx3ltzpoGWmlB7DCYKJsAqHjaWdT1nhIKBJFtgArYTfqk4tahA/S6mKo8y46hKCp3PJmS671rzP7pbNpa/RKGkoWRDPNM+ALLibG2U3KpwuYhv7NnaDqaZNSBYV9WbuJhNRTU/S4Zo71WbZiM3FFA/29mjH+otxpaEy6KcS1gGVGdlZT10ciqHT4q3FKJN6CRjUTRfwCXiu/YgT3thzo9uiNK+qbbW8RvJo6o3uNTh/40CdzSg2swl7FBmCO/bHJmQLZT2UgOkbyHMkUF/Ob8NjdNEpG9WCqYpfky/iDUBqRsR/mnobjWx6M4S1rxvEvLGGQX/5+AbYmBNsveivWHbrROAqrnWeVd0RX/wwBNqeHzwBBctugezpwCmWi/sEHGKgOSVh3zVAVlqkyo38fdDWo+3YTG7ox0I5Yk6bnFrbKxV2GwxGQtzsXD12x+HcSG+LK8Y9JOif8u0au9MX0UTeue67zOhPqoxmKfQgjHJs/Cyh1CbvU19hSoyizhK5Tt6LMAiTJf6U7Xg8OaW3VQY+iOIaVzmRi2QJIWKmynYa7Pm+hF1EaoI2+Uck2EDOARCXUQwKCf+e/7j4qYtyDo2rK+aHkfXqpc6yORJbsVCQsjmWNrF6u9NKheP211IKFi5KhY4huSBYqQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(8676002)(45080400002)(4326008)(7416002)(31686004)(86362001)(2906002)(38100700002)(41300700001)(5660300002)(31696002)(6512007)(2616005)(6486002)(107886003)(316002)(110136005)(66946007)(6666004)(66476007)(38350700005)(66556008)(6506007)(54906003)(52116002)(53546011)(8936002)(966005)(26005)(36756003)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S3p4UUJXdUJxclE2UmVjbGkyZTh2MXRkR1RKME5TeWc0THNJTGxYNUUzRlIr?=
- =?utf-8?B?Qm53N0pYVllBZXZsN2ZuMTNEV29hU1dLck10MnVPOGVvZFRWanJGQVdoN3VT?=
- =?utf-8?B?QWRGVlQ4YjdpT0JkMHliUjZBZ2drdlFBTGl0UFhBS3c2VUdWTkFSR2RFZVg5?=
- =?utf-8?B?N0dPcGN5QkNjNXNDcTl0bmorRVBPd3J3eXRza00vL0RQeS8xRGlsMzZWbGll?=
- =?utf-8?B?MkQvYkFRL1hmRUhQS094c0RYNHNKbW96T0pBd2ZCSjZtSFIxNFBITC8zaXFz?=
- =?utf-8?B?NzFlNkZGRkVldnQ2eVZMY2RGQ2piZ2ZYT2luSlNybDNiYXd5cDRIUUdteWRM?=
- =?utf-8?B?TXZWSHgxUEJsWnZzazA3K1pGYVc2WHFaVFNhcFJ4Rllxdk5TMkRtWkxvY1Fy?=
- =?utf-8?B?alV4bXlVNkxxeXQvUmVSVHBLM3VIR2xSR0w1L3BlcDkzekdmNTJxdTlvYzh3?=
- =?utf-8?B?cTdobDhLanEyU0VSYkN3SXd3UCt2U0xWWkZXeVdpbEJOS000Z21lc1U4MGgw?=
- =?utf-8?B?OVZlcXYrQTdHTDEwQzd6OUtpV0tLWmE4N2VvNlJhSzNIenE4L3VZdHdDMnVT?=
- =?utf-8?B?VmpQRHdxOThrZFpMaUNnekU5RWg4aUJEd2hyaEhVNzNDRWlLQnB6aHMvVFd6?=
- =?utf-8?B?V3NTbXRTS0tMSmVIOE9hdmRmNW9WQWE1bGZ6azlTOUpiUEM2TUpRcElKaEg4?=
- =?utf-8?B?alY2L0k1RG0zbklmZzRCRTNKcm9ZcTk5ODRTbUpPM0pUSWJaNHBHa0NjcEtC?=
- =?utf-8?B?MFFzWnI1M0xiTTFEVjF0NHRYbTRoaTVDZXoxaUR6WllpWjNycFRyTDdjM3Vp?=
- =?utf-8?B?aTBYNkFVRHBacnVYUlhidnZVMEVSU2c5SEl1R000cjZMaGN1UnVpZlJsM29O?=
- =?utf-8?B?NDNENFMvWWNwajdYZTFrQVUveWFrcWUzNjEvd2l4a2hpQzdKVUs4dEhxWVpy?=
- =?utf-8?B?dE1vQy91YnlqdXZTZmM5VXdxbnFiaUFDcitoR1R0TjdVQVVFSFpwcTFNNHp5?=
- =?utf-8?B?ci9mTTQ4Q2hYdExScnJHNFZnakk4V2NxV2RvT2dJaDdJRHVJM1g5eDJCb1Fn?=
- =?utf-8?B?TFlZSlJydnNSME5nMlVvM01DcWVSaGJjUjJpMjZyZ2xuamtVbUpRNzhOK1RP?=
- =?utf-8?B?R3ZwU2hzeWU0c1FpOUc2cHI1bCtlUUc4ZUIvc2dpZkttM2laMzlnRUdWV2Jr?=
- =?utf-8?B?Zlg0UEJYZ0VvN0x5OXBpdUpEbmRJQVJnSDRYenk5UUJPMUx3d1VnbzhTZjUz?=
- =?utf-8?B?dFhWNmRKRFAxUU5NOWg3V1AveEd1cFRRcXIwK2YwTS9rQlM2N2JwQmcyayti?=
- =?utf-8?B?LzROTll6WGlaMXFYaHhjY29JUWsyK0MxSU4va25FWWFHNG1Rb040UE5nbU9W?=
- =?utf-8?B?a0hqM29LdysreENYNTE0OWJsN2pBenNJZjNSbW1KZlEzM0RBK083T2FvVWxv?=
- =?utf-8?B?aEhYWGRFekJUYVV0VVJlOC80Ui8wd2xERlZLckhBWngwN0lDVzNlaENMRFA0?=
- =?utf-8?B?WGdXL29IRTdWd2tnRlExRWJwbEU4SEUrQThFem0ydXJHamJHZ0NyOVNsbE9F?=
- =?utf-8?B?UDU1aFdqblRxZ2RtTFZadVVYOU84TGdtR2I3Q01QUk0xNTBXK09xcHdDdSsz?=
- =?utf-8?B?V25xNTlqMzJUNXF2U1NxRksyZTlGRk83WGQwNERHb0ZMbkc1aVExZU04UW9a?=
- =?utf-8?B?MFlzSW9kc2JJeVBXK3RoMjV4ZDRwa01hcjhoakpXUzYzb0hZY1puUGxBdThE?=
- =?utf-8?B?WEVoTm9JeWVvaWIxZTNLUDVOTTV4c2h2REtOMFZVOUdhWXplTDNDcGZFZlhF?=
- =?utf-8?B?ZzNZemNnbjBJYWt5aHJjZzNnZ1Q5VFJnQjljTjRqSlhydE5yb0RMdW8vd3Qx?=
- =?utf-8?B?MWxmM3hSVEp3QnBEWkN3UDNTY0FSbGpUcDg4MEhwQjJWeEFmRm1aUmRBQndV?=
- =?utf-8?B?bXRTdmgwZS9wNituTFEvbFY2NC9kWFFwSjdYSzNPTTR4aXQ5U20zdlJ2dm11?=
- =?utf-8?B?bXlJM3MwSkE1NTZROFA2Y1dEY2k0ZDRrakttRXNiUU5LMUlMSGxIQjFhbnJT?=
- =?utf-8?B?MlkwZ1FjeHduU3lNWnRSR3pPNERwa3RKaktFUGsrM1NKSU05K2x2UVpEejcz?=
- =?utf-8?Q?+ERLaeZ0kCiGlA1AIzJ8vw3g5?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d1b456e-fec5-4f17-9cbf-08dbe0346388
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 08:26:21.9163
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bvb6u8iaMTC0QRMbSnEGtTGkAl7H+jCbNYI5ZLP52tBaWvrpszLdpSrgpGLkq50QhJn4Nu174YQ4EXawoSjAig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6672
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="qdy4sfallzzqrze5"
+Content-Disposition: inline
+In-Reply-To: <20231108034231.GB2482@sol.localdomain>
+X-Originating-IP: [106.110.32.133]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2VTf1CTdRzu++7d3gGNexkefp0a1wLKH2ERnd8uDEjTN/XI9LrOOKqdvAHF
+        NtlYYHcUESQMUFghMLEtlKGAiBsh48cBQyB+nPzSnPzYKYIUkMjP48dkMV8s7/rveZ7P83zv
+        ef74cln8UkLAjZBE0zKJKFLIccQrmhdvvHpg7wH6tf7+DairtBigJKMNR0Z9ORspV8pxNN44
+        DVBP0wvINjiKofkSM4aqSx9iSJNv4KCHCcs46h12RraKRAJdrrGyUMqQjYPOZv+AoYL+FDZa
+        1BURqPXGPI4u6RYIZNNKUUeqGFUODuMo80wBC/18JgGgqQttBKqpbV19rCqPgywlNjbqqm9n
+        o5PJeQBVWSsJlJqZTSBzxghAtZp4HJkst9go4VwdG7UttWHIZvZHSWmLBOp83MJGywurj+iM
+        QQHbqLPx3TilvX6QGuk+TF25o+JQRvUgQWn1CspqukpQhotbqb7xXZS+KIVD6adVBGW89xb1
+        pyEXUNXaGYxK6GhiUTnTs5xDgk8c/ULpyIivadmOdz53DO98dJk4fsc9tqhpmBMPcgVK4MCF
+        pC9szLuKK4Ejl09eBHClU8VhyCyAy/VZGENmADQOqPCnkeGSkTVXIYAZjefZ/7qS1SlrxADg
+        qK6HsEdw0gOeyukBdswht8POiQGWEnC560gv2Fzwgd3PIg1OUDnUgNl1V1IENQ1edjuP3AlH
+        cjIJBrvA1tzhJy1YZCysUC2x7XYWuREWrnDtssNqub4LZYApKoRzE+lsBsfBtvK+J2sgedsJ
+        an6fYDGHPVAzdh9jsCscayknGLwJ2oyatcBPANatPCIYUgyg7vu5tcTbMPHm8FoiEGYqT+P2
+        RpB0hua/XZiizlBVkc1iZB5M/pHPuL1gsWUCzwAvqZ+Zpn5mmvq/aYy8HWqrpzn/k7dB3a/j
+        LAbvgqWlk7gWEEVgPa2Qi8NouY+EjvGWi8RyhSTM+5hUrAer36h9pWW2EhSOTXmbAMYFJuCx
+        Gh4qK+4CAlwildDCdbzH/hTN54WKTnxDy6SfyRSRtNwENnJx4XqeZ6g7zSfDRNH0VzR9nJY9
+        vWJcB0E8ZkgX7pXetWzYUXbkoNuHLwe4djxI+CVIEXX92LniQ6Z7IaalgORRd0n20dQp979C
+        90U1u4z+oUmq3/+cb+t9hWmuN+5LrOZ06Amxnvfubr/iEMkRtW/EYa3fkvANeqT9TYnYrXYm
+        2vnSHvM+n/mGsOUVT6fN7dK+nUPBSc13358LnJRbv9is6tnS2a8dS/z2vMLtRfBA+tHkplf2
+        O81mhXl8pwytjuHnx3QHX8uzDqRmnYoNPLnQULDbxzf+Y92n4/lRHK9bgvEC/zqx52zaleW4
+        wOcn0oIWZFaLf0BIekbVTcw7q22LydzdS4f/VmRlW5oypyyuVjLGcNTU/J4VWINvXxPi8nDR
+        61tZMrnoH1QLzKDBBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTVxzHPbe3vQXDuLQYj51OVp3bYBbKy1MG6LJsu6JjBF1iXAg2cgdE
+        aKGloMYZVsRRQCKPABaEagS1vKRlrEVUZDwGGEEWZn3QbUJ1ikN5jPHuWuoyk/33zff3+37O
+        73dyDpvB6WHx2PGSFFomESfwWc5433K3eWvYp7toH0OdLxqorwEo02jFkVHXxETZy004Gvtx
+        EqDBzreQdfgJhmZqTRi6Wj+OocrzehYaVy7g6OfRN5C1+QSB6loXGUj1yMpCZSUZGKp6oGKi
+        uWotgXpuz+DocvUsgawaKbqVk4gMw6M4yi+uYqCiYiVAExd6CdR6rccGaylnIXOtlYkG2vqY
+        6LuscoBaFg0EyskvIZDptAWga5XpOGo3DzGR8uwNJuqd78WQ1bQdZebOEah/qZuJFmZtkGpj
+        +A4vqiz9Dk5pOnZTljuRVMO9AhZlVA8TlEanoBbbGwlKf8mTuj8WQum0KhalmywgKOPvIuoP
+        /RlAXdVMYZTyVieDKp2cZkXw9guCZVJFCu0RJ5WnhPC/EiJfgVCEBL7+IoHQb1tUkG8A3zs0
+        OIZOiE+lZd6hBwRxyzmnmEl3Nx5W/d2ApYMSXjZwYkPSH47WWljZwJnNIasA1H1fjTkK62Hj
+        9BDToblw8ZfsV00TAJqG5nF7gUPqAeycW2fXOLkZ5pUOArtmkR/A/ucPGdmAzXYnt8Cuqi/s
+        WQapXw2LfjWu+FxSDCtvbrG3u5DboKU0n3Dwz2KwOeMu01Fwgz1nRlfOYpCpMP1b5UqWQb4J
+        Ly6z7baTbYH7F64Ax5x8+NfzU69m/gZOLT0GpwFX/RpJ/RpJ/R/JYXtC0/JT7H+2F6w+N8Zw
+        6BBYX/8C1wBCC9xphTwxNlEuFMjFiXKFJFZwUJqoA7Z33Nw1pzeAimcTgnaAsUE72GxLPrpS
+        MwB4uEQqofnuLkvbKZrjEiM+cpSWSaNligRa3g4CbJeYz+CtOSi1fQpJSrQw0CdA6B8o8gkQ
+        Bfrx17rsTMoSc8hYcQp9iKaTaNm/OYztxEvHvvYAnL2d7yZ8PpKX25hQyJvXYHuvB1uoxfLZ
+        ix/HHFp1buFGcv9xXZv8oyepvVFfDiZ/MjuvXiq7PCdd3xrJyezymzcc1lpUPwwfD9og2bP/
+        3nR3UZvZ7bdVq28a1GkROx5jL7m9Xmk7+8K2RnwWzPEuHOBSFQXBD7oD9l13mQqJP2pqfP/k
+        UyeqheVKKVzXfRgzHZ3n5he057bzO8SSJHpDUfhu9oJ6xjUW+QX1c8OPZYQfyHJ/+Oz8e3Vr
+        Rio2mSnE6RvpmDkCJ4c8IlXKtfvM6pqXUdrOnpywE2k+2tym1LcVG0OLO06q8/9six3nYsf6
+        LmWBZFEDapQqXuhyfirk4/I4sdCTIZOL/wENyV5RXAQAAA==
+X-CMS-MailID: 20231108082650eucas1p112dd45481f2cea4037e10dd0f78b3b33
+X-Msg-Generator: CA
+X-RootMTR: 20231108034239eucas1p2e5dacae548e47694184df217ee168da9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231108034239eucas1p2e5dacae548e47694184df217ee168da9
+References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
+        <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
+        <CGME20231108034239eucas1p2e5dacae548e47694184df217ee168da9@eucas1p2.samsung.com>
+        <20231108034231.GB2482@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--qdy4sfallzzqrze5
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/11/8 16:00, Yosry Ahmed 写道:
-> +Wei Xu +David Rientjes
->
-> On Tue, Nov 7, 2023 at 10:59 PM Huan Yang <link@vivo.com> wrote:
->> In some cases, we need to selectively reclaim file pages or anonymous
->> pages in an unbalanced manner.
->>
->> For example, when an application is pushed to the background and frozen,
->> it may not be opened for a long time, and we can safely reclaim the
->> application's anonymous pages, but we do not want to touch the file pages.
->>
->> This patchset extends the proactive reclaim interface to achieve
->> unbalanced reclamation. Users can control the reclamation tendency by
->> inputting swappiness under the original interface. Specifically, users
->> can input special values to extremely reclaim specific pages.
-> I proposed this a while back:
->
-> https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
-Well to know this, proactive reclaim single type is usefull in our 
-production too.
->
-> The takeaway from the discussion was that swappiness is not the right
-> way to do this. We can add separate arguments to specify types of
-> memory to reclaim, as Roman suggested in that thread. I had some
-> patches lying around to do that at some point, I can dig them up if
-> that's helpful, but they are probably based on a very old kernel now,
-> and before MGLRU landed. IIRC it wasn't very difficult, I think I
-> added anon/file/shrinkers bits to struct scan_control and then plumbed
-> them through to memory.reclaim.
->
->> Example:
->>          echo "1G" 200 > memory.reclaim (only reclaim anon)
->>            echo "1G" 0  > memory.reclaim (only reclaim file)
->>            echo "1G" 1  > memory.reclaim (only reclaim file)
-> The type of interface here is nested-keyed, so if we add arguments
-> they need to be in key=value format. Example:
->
-> echo 1G swappiness=200 > memory.reclaim
-Yes, this is better.
->
-> As I mentioned above though, I don't think swappiness is the right way
-> of doing this. Also, without swappiness, I don't think there's a v1 vs
-> v2 dilemma here. memory.reclaim can work as-is in cgroup v1, it just
-> needs to be exposed there.
-Cgroupv1 can't use memory.reclaim, so, how to exposed it? Reclaim this by
-pass memcg's ID?
+On Tue, Nov 07, 2023 at 07:42:31PM -0800, Eric Biggers wrote:
+> On Tue, Nov 07, 2023 at 02:44:21PM +0100, Joel Granados via B4 Relay wrot=
+e:
+> > [PATCH 2/4] aio: Remove the now superfluous sentinel elements from ctl_=
+table array
+>=20
+> The commit prefix should be "fs:".
+Will do
+
+>=20
+> > Remove sentinel elements ctl_table struct. Special attention was placed=
+ in
+> > making sure that an empty directory for fs/verity was created when
+> > CONFIG_FS_VERITY_BUILTIN_SIGNATURES is not defined. In this case we use=
+ the
+> > register sysctl call that expects a size.
+> [...]
+> > diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+> > index d071a6e32581..8191bf7ad706 100644
+> > --- a/fs/verity/fsverity_private.h
+> > +++ b/fs/verity/fsverity_private.h
+> > @@ -122,8 +122,8 @@ void __init fsverity_init_info_cache(void);
+> > =20
+> >  /* signature.c */
+> > =20
+> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  extern int fsverity_require_signatures;
+> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  int fsverity_verify_signature(const struct fsverity_info *vi,
+> >  			      const u8 *signature, size_t sig_size);
+> > =20
+> > diff --git a/fs/verity/init.c b/fs/verity/init.c
+> > index a29f062f6047..e31045dd4f6c 100644
+> > --- a/fs/verity/init.c
+> > +++ b/fs/verity/init.c
+> > @@ -13,7 +13,6 @@
+> >  static struct ctl_table_header *fsverity_sysctl_header;
+> > =20
+> >  static struct ctl_table fsverity_sysctl_table[] =3D {
+> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  	{
+> >  		.procname       =3D "require_signatures",
+> >  		.data           =3D &fsverity_require_signatures,
+> > @@ -23,14 +22,17 @@ static struct ctl_table fsverity_sysctl_table[] =3D=
+ {
+> >  		.extra1         =3D SYSCTL_ZERO,
+> >  		.extra2         =3D SYSCTL_ONE,
+> >  	},
+> > -#endif
+> > -	{ }
+> >  };
+> > =20
+> >  static void __init fsverity_init_sysctl(void)
+> >  {
+> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  	fsverity_sysctl_header =3D register_sysctl("fs/verity",
+> >  						 fsverity_sysctl_table);
+> > +#else
+> > +	fsverity_sysctl_header =3D register_sysctl_sz("fs/verity",
+> > +						 fsverity_sysctl_table, 0);
+> > +#endif
+> >  	if (!fsverity_sysctl_header)
+> >  		panic("fsverity sysctl registration failed");
+>=20
+> This does not make sense, and it causes a build error when CONFIG_FS_VERI=
+TY=3Dy
+> and CONFIG_FS_VERITY_BUILTIN_SIGNATURES=3Dn.
+>=20
+> I think all you need to do is delete the sentinel element, the same as
+> everywhere else.  I just tested it, and it works fine.
+Indeed. good catch and thx for testing. I'll adjust it on my V2.
+
+>=20
+> BTW, the comments for register_sysctl_sz() and __register_sysctl_table() =
+are
+> outdated, as they still say "A completely 0 filled entry terminates the t=
+able."
+For now this is still "technically" correct. However, this will be
+removed on the last patchset when we actually delete the check for the
+sentinel element.
+For now I'll leave it like it is, but I'll double check to make sure
+that I remove it at the end.
+
+Best
+>=20
+> - Eric
+
+--=20
+
+Joel Granados
+
+--qdy4sfallzzqrze5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVLRjsACgkQupfNUreW
+QU/+QQv+JAZ2egwDryj1fBPctk+jcFkv5AFT95mMW0Hy10yYejq2clAC6/4VpFPL
+Zw7EKmOW7gx/ZH4lLvjKbK0w9MZyUigYGBml+WQjyHoVFnm9Lij3PZ2nUEbZHMbC
+xYYt3TfWlMd9EKSsZu248QyT1QYUqdVsPadtMciHeLOHJUKwbq16BUgkIQ2uL7yw
++rNN7XjYxwwdHhOdOW9+CaqzKkTTxYm3jwCUB1g/Lb01yhky+pgOlnKSGRj11WSo
+mVOSdQmMiN90KkTYfqF8pXi7snELIRo6Bjfp2v3pa6ea6DFkj4IA8Eh0SMu9eDOL
+yffPi1tzs7GHx87Rz4Xw3HL+PGsKwE5jVh+WI/NOR3ECMieTEHyeBP0b6CctG1Qz
+Y1cX1rzSae8Y+NfQ/uML6S+L6d++SbVUuNFim3hAslWjQzSfp6OxsD/3YJpQvWNU
+H6yInkAYVBv9kXJdpylR0tiRthbrKul+NEjL1/FvJVi2460ZC3QzEThsT/wNhLJ2
+cXMro6Zk
+=sgbZ
+-----END PGP SIGNATURE-----
+
+--qdy4sfallzzqrze5--
