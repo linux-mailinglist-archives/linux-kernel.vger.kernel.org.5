@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D167E60E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C959F7E60E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjKHXNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
+        id S230405AbjKHXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKHXM6 (ORCPT
+        with ESMTP id S229473AbjKHXP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:12:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D875925A0
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:12:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 810C8C433B8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 23:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699485176;
-        bh=XVBBiYvFcflt3RBN3rGd9qpfbzxVloqDfLv4DULg6ok=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GhEUATI6mZs1fF6smM1OF1+SECjnJXs8PTbY8lZlXnwUzfrIaMjVcZrna4tyfEssS
-         MvGlJnycjYJACcUMvu25sl5LhY0BU6ev9+T2BDMC2URKAOJMBfb7nsl3dq4dFrDqaY
-         X/HaXRuMCbaH4+k6CzGCidmqxStSSbTkgY54qUJ9GS/aq4bQe50tzUSp/SzQ2govLx
-         pDgv0xsqdjqqQkJ4t9vx7+31QS9SI3mT6XwaztXOr2IJCO/29AvnjwYogapTP0s0Nq
-         Ok2g9gBp2XnLp3GlK5mFynSBAbjX0JkPLH6IwcRVIfujHgnpbPDDnEbFsm3ibR4FJU
-         hnJJ39niADs1w==
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2802c41b716so185365a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:12:56 -0800 (PST)
-X-Gm-Message-State: AOJu0YxWZtKGnAPFY6jTyxx1h7tkcv8o6bdyRzn9+LxxZMHh8EqMsAjK
-        EJJYlRVH7M5GOpASAai0Hev0COEM+PvwZLpEDE3H0Q==
-X-Google-Smtp-Source: AGHT+IG7AbhTVdHwxHa1Gbw/9I7xiut+l21ol4va4G64SojHtO9SqVeRdBniOkqWY5kzkdi8uhNp/WPljLmSit11Y9w=
-X-Received: by 2002:a17:90b:350b:b0:27d:20ca:1156 with SMTP id
- ls11-20020a17090b350b00b0027d20ca1156mr2355pjb.34.1699485175679; Wed, 08 Nov
- 2023 15:12:55 -0800 (PST)
+        Wed, 8 Nov 2023 18:15:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C89A25AC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:15:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699485356; x=1731021356;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=wUmqP+oDtGBrV+UjvWyuDtlzdyzFwj1xFBVs9StwJgo=;
+  b=RPxnWjRaFLJmp5Z4iW/TidXKlPc08G9oQ81i+MxahyMHbZvEhuQG6ZIj
+   fCvxOipJrxpFlSc9+g2+AelS9jvm69aBDHAHbDSZIP/WiLJtwNbiTW6Rx
+   aSzvpjymr3vk8sgHH3xIrm98bsT4Wv68Weo7/QS2fvI9Fs26gBot0G/Mg
+   HZ4PzeKekqJ2G1HB/XdAyvgAJlELz9fPCnjK319NfjvyGcOxdB7aqVpw4
+   wQT+gN4dWJVV+sUWccmXgsH8dxenCsh4CxKBGld9w6Pubb3m+DAjxGwHO
+   ru2MRo3BGZ1DGoLc8iCU3uc9smYW/yuidjDO8WtBwFu9idYE/OjjuyrZ5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="2904055"
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="2904055"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 15:15:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="4347406"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 08 Nov 2023 15:15:53 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0rm3-0008HZ-12;
+        Wed, 08 Nov 2023 23:15:51 +0000
+Date:   Thu, 9 Nov 2023 07:14:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
+ incorrect type in argument 1 (different address spaces)
+Message-ID: <202311090723.YcSXRd1T-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231106183159.3562879-1-nphamcs@gmail.com> <CAF8kJuMsXUm9=kiL8qPNVfYPzfyq-JWYSH3KraZadjF+myW-2A@mail.gmail.com>
- <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
-In-Reply-To: <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Wed, 8 Nov 2023 15:12:44 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
-Message-ID: <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] workload-specific and memory pressure-driven zswap writeback
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
-        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
-        muchun.song@linux.dev, linux-mm <linux-mm@kvack.org>,
-        kernel-team@meta.com, LKML <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nhat,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   90450a06162e6c71ab813ea22a83196fe7cff4bc
+commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
+date:   4 months ago
+config: powerpc-randconfig-r113-20231106 (https://download.01.org/0day-ci/archive/20231109/202311090723.YcSXRd1T-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090723.YcSXRd1T-lkp@intel.com/reproduce)
 
-On Wed, Nov 8, 2023 at 1:15=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
->
-> Ah that was meant to be a fixlet - so that on top of the original
-> "zswap: make shrinking memcg-aware" patch. The intention was
-> to eventually squash it...
->
-> But this is getting a bit annoyingly confusing, I admit. I just rebased t=
-o
-> mm-unstable + squashed it all again, then sent one single replacement
-> patch:
->
-> [PATCH v5 3/6 REPLACE] zswap: make shrinking memcg-aware
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311090723.YcSXRd1T-lkp@intel.com/
 
-Thank you for the quick response.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *d @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *d
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *s @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *s
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
 
-Yes, I am able to download your replacement version of patch 3.
-Just FYI, I am using "git mailsplit" to split up the mbox into 6
-separate patch files.
-On mm-unstable, I am able to apply your replacement patch 3 cleanly.
-I also need some help on the patch 0005, it does not apply cleanly either.
+vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
 
-$ git mailsplit -ozswap-pool-lru
-v5_20231106_nphamcs_workload_specific_and_memory_pressure_driven_zswap_writ=
-eback.mbx
-$ git am patches/zswap-pool-lru/0001
-Applying: list_lru: allows explicit memcg and NUMA node selection
-$ git am patches/zswap-pool-lru/0002
-Applying: memcontrol: allows mem_cgroup_iter() to check for onlineness
-$ git am patches/zswap-pool-lru/3.replace
-Applying: zswap: make shrinking memcg-aware
-$ git am patches/zswap-pool-lru/0004
-Applying: mm: memcg: add per-memcg zswap writeback stat
-$ git am patches/zswap-pool-lru/0005
-Applying: selftests: cgroup: update per-memcg zswap writeback selftest
-error: patch failed: tools/testing/selftests/cgroup/test_zswap.c:50
-error: tools/testing/selftests/cgroup/test_zswap.c: patch does not apply
-Patch failed at 0001 selftests: cgroup: update per-memcg zswap
-writeback selftest
-hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+    12	
+    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
+    14					 struct lsdc_bo *dst_bo,
+    15					 unsigned int size,
+    16					 int n);
+    17	
+    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
+    19					      struct lsdc_bo *dst_bo,
+    20					      unsigned int size,
+    21					      int n)
+    22	{
+    23		lsdc_bo_kmap(src_bo);
+    24		lsdc_bo_kmap(dst_bo);
+    25	
+    26		while (n--)
+  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
+    28	
+    29		lsdc_bo_kunmap(src_bo);
+    30		lsdc_bo_kunmap(dst_bo);
+    31	}
+    32	
+    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
+    34					      struct lsdc_bo *dst_bo,
+    35					      unsigned int size,
+    36					      int n)
+    37	{
+    38		lsdc_bo_kmap(src_bo);
+    39		lsdc_bo_kmap(dst_bo);
+    40	
+    41		while (n--)
+  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
+    43	
+    44		lsdc_bo_kunmap(src_bo);
+    45		lsdc_bo_kunmap(dst_bo);
+    46	}
+    47	
 
->
-> Let me know if this still fails to apply. If not, I'll send the whole thi=
-ng
-> again as v6! My sincerest apologies for the troubles and confusion :(
-
-No problem at all. Thanks for your help on patch 3.
-
-Chris
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
