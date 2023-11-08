@@ -2,114 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309D17E5A28
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173BA7E5A2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbjKHPgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
+        id S234099AbjKHPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbjKHPgI (ORCPT
+        with ESMTP id S233778AbjKHPg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:36:08 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD541FD6;
-        Wed,  8 Nov 2023 07:36:05 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4083f613272so59686965e9.1;
-        Wed, 08 Nov 2023 07:36:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699457764; x=1700062564; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LPt/CJC1g4tSFhf5KGS0Ry+DiQk0RfMMoZGIrEp0lNY=;
-        b=cgRIo7tFRG51UgAn5hZTT7RzajjyoIuwVkr6SD3Z1Am7HYjnO4rDsIBAoBOQjH4geI
-         owMAbU06GvQNwW6L2hUEZ6bnD1idnPdMsr7GLI79cynDGcFKg0oOR93+neMjxoAlaeqi
-         Dxj3OCcMjde2I5yWdZ4LqeB7ZtGbIiFrzMu6byJRExBX8wQSWyM9M5hCH0ymZ33+bH/A
-         /GqRlYy+iuTdWg9lFEqmBa5zHH2VfuvG8cFcBvKqF7Cs/fNc8/tO21cNpwRAXy3aI3Gi
-         qwuPdgT5bn+ZylXocXJUOoAOjDPAZ37cp3IbIrIN0y72MWDXnBNCJtXAKgZAaAgoSWfF
-         Ddvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699457764; x=1700062564;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LPt/CJC1g4tSFhf5KGS0Ry+DiQk0RfMMoZGIrEp0lNY=;
-        b=rp/DJR0UW9ZSIC4nMkYGgfYm7L36EIWU10QkSod5xdvXBeZ3Sd32mlneDBGrJUWcZX
-         0+3XfXOXhlOj0AUd5+VSfvmZLMAuGaR/tszj0lnBVIe8Sv3+nX0CkRZLoUnmtTlKWnfN
-         dLNJiFO6pPq7H6jYl+hhtv+wV0Zrzyxv2njIv1LZCXEtwhIFTl0Tj1BdhIUOfDzN5QRC
-         THFv+skR2Fsbws8wW282kq2geBDihhkSSBT/MSBUXtP1BPUEk3csDPoEloq8qBtoFuTX
-         qoBXCt4hgXQldL+IFPCCPlH5oTkcKWyvCbTrJkdBhvvcfZXlu+zdJK34PfgX7b6pEl4L
-         ljwA==
-X-Gm-Message-State: AOJu0YxRM1X4ZKli9Yryg2xop4OqJcifnrmjPIzH71bxsIEZp+oQf88v
-        d0p+Duby3gNEYm4qw6nnpOg=
-X-Google-Smtp-Source: AGHT+IF6+XqFcBsSe+xR2tBlGaQkYvldRjjMgYC5UQUH7LHHSh48/KBJVp9rOPyfhw3iYoFPLS35kA==
-X-Received: by 2002:a05:600c:1c92:b0:405:1bbd:aa9c with SMTP id k18-20020a05600c1c9200b004051bbdaa9cmr2058164wms.34.1699457763824;
-        Wed, 08 Nov 2023 07:36:03 -0800 (PST)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040651505684sm19790325wmn.29.2023.11.08.07.36.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 07:36:03 -0800 (PST)
-Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
-To:     Stanislav Fomichev <sdf@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-11-almasrymina@google.com>
- <ZUk0FGuJ28s1d9OX@google.com>
- <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
- <ZUlYB99GK1Q8is-I@google.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <08a6e65a-92fb-4a94-2627-6c03e65f2509@gmail.com>
-Date:   Wed, 8 Nov 2023 15:36:01 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <ZUlYB99GK1Q8is-I@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+        Wed, 8 Nov 2023 10:36:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6BB1FD6;
+        Wed,  8 Nov 2023 07:36:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D095C433C9;
+        Wed,  8 Nov 2023 15:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699457785;
+        bh=ZNwyEHHUEwE32sPJEr2cy/zvLd4Oa0Y44mvEx4uVdC0=;
+        h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
+        b=N+C+Mm9DOvW41xQlHZ2TVmIysLX42LJ/xl/PTNFiruH2Wu4ATYa4k2Jmpv/MAIV0f
+         JANa/WnumUmKQNSBxLJwIR9sUeFXiRNwMFy/HhmYIK1TQmfxq4MgfutVxD/BrUNpF2
+         gdMutlmGlJ5GqOQ4+Hw72DgbNIdVOTpzsJ/k3wv9PeGVJSsfK9EeHuUEKr6yLBthag
+         TARWGt52CUMc2URaFLJV1QXt8K3WE59YxhNHBAAE6F9EKHGmDggCNU0n9C6bb5PrWY
+         Y0COjbc32pM1Stb6a/svq9+UnG+z+49ttg52dv9b22VQijktsXe7br3iblISUX57po
+         53QHjv6k/7OcA==
+Message-ID: <3fb0760a9066c33947b64ec415d9baea.mripard@kernel.org>
+Date:   Wed, 08 Nov 2023 15:36:22 +0000
+From:   "Maxime Ripard" <mripard@kernel.org>
+To:     "Hsin-Yi Wang" <hsinyi@chromium.org>
+Subject: Re: [PATCH v6 3/5] drm/panel-edp: drm/panel-edp: Add several
+ generic edp panels
+In-Reply-To: <20231107204611.3082200-4-hsinyi@chromium.org>
+References: <20231107204611.3082200-4-hsinyi@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, "Daniel Vetter" <daniel@ffwll.ch>,
+        "David Airlie" <airlied@gmail.com>,
+        "Douglas Anderson" <dianders@chromium.org>,
+        "Jessica Zhang" <quic_jesszhan@quicinc.com>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Neil Armstrong" <neil.armstrong@linaro.org>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 21:17, Stanislav Fomichev wrote:
-> I guess I'm just wondering whether other people have any suggestions
-> here. Not sure Jonathan's way was better, but we fundamentally
-> have two queues between the kernel and the userspace:
-> - userspace receiving tokens (recvmsg + magical flag)
-> - userspace refilling tokens (setsockopt + magical flag)
+On Tue, 7 Nov 2023 12:41:53 -0800, Hsin-Yi Wang wrote:
+> Add a few generic edp panels used by mt8186 chromebooks.
 > 
-> So having some kind of shared memory producer-consumer queue feels natural.
-> And using 'classic' socket api here feels like a stretch, idk.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Do 'refilled tokens' (returned memory areas) get used for anything other
- than subsequent RX?  If not then surely the way to return a memory area
- in an io_uring idiom is just to post a new read sqe ('RX descriptor')
- pointing into it, rather than explicitly returning it with setsockopt.
-(Being async means you can post lots of these, unlike recvmsg(), so you
- don't need any kernel management to keep the RX queue filled; it can
- just be all handled by the userland thus simplifying APIs overall.)
-Or I'm misunderstanding something?
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
--e
+Thanks!
+Maxime
