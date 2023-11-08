@@ -2,90 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CAD7E538C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428AE7E538F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344348AbjKHKm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:42:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S1344352AbjKHKm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:42:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344335AbjKHKmY (ORCPT
+        with ESMTP id S1344242AbjKHKmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:42:24 -0500
-Received: from mail-lf1-x149.google.com (mail-lf1-x149.google.com [IPv6:2a00:1450:4864:20::149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1E11BD8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:42:22 -0800 (PST)
-Received: by mail-lf1-x149.google.com with SMTP id 2adb3069b0e04-50985abb63eso1066708e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:42:22 -0800 (PST)
+        Wed, 8 Nov 2023 05:42:55 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B721BD5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:42:53 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32fdd0774d9so1330253f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:42:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699440141; x=1700044941; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQH+j/QSCCrpDgYqCyOzAk5c+h/nVFiuOw7/pOXGj/Q=;
-        b=KlP4Ae/uQHoe/jWuQz/73BpkF9kLYRY5TcP+fmx7OqmzbJiRtQRiHlXb6EKKryje4j
-         kC8iAtLha4agWtCtbnKaaTkzb+sjWniWXhZW1PZGz/8ofks2Cs3mjDUtHV6eYUS3lxUg
-         uAJ4AJ2sKW3ckZ7Iqy+B/OgQ+ntkOexpq/Hl8wvipYyaHnfg7vnXcQY0SaqBTBZzbKyv
-         SxnEymlOfgFzOpGi6zpOvux341+dNkkEtrzgu+3dHvG0cVbk34P0+afrNTyqpznjvLBK
-         OhxnWNph2bIyx9Hu7ibCFx0MD9Vo8eFUzhHg+iHnqmjNGvADNkKPgJkcspLWsbchkxsC
-         1vCg==
+        d=linaro.org; s=google; t=1699440172; x=1700044972; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uBVY3LXBI0SP1Yr01Ro9ySuR+Ox+MEZVyCv79ogrTPI=;
+        b=y9DQVui5vcvcuRj7Gb+AFKxe2ydDdI0bA7rXkqM3EaBHyU6KMNv7Iv9Dc6q/ZwkpbW
+         K5xxfzNxnwrm7PgrkDt4jzRRvgH9VUFpkswPjoC5iHzkoz6TofPxwTfhwb36BTWLmteR
+         gj4TgqyXa2Z5aTQFpSiTZH9L5Ywq4vDguxz5xWvwxPTjt1V38uh/7M/gp+xsfRQxrgwU
+         2iutUzE7qg2NpE5m2vGNbZe/IuOlZDAqZeuheX2b1rXMuv/+IR92QiDpU2AX3Sqddo9K
+         TJKJVFPNecDE96GwnFYiI8agCovgDdQESucsAwHeuWZMdAIvKAkz5L5Y9Wt5elFt6oqR
+         GZRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440141; x=1700044941;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQH+j/QSCCrpDgYqCyOzAk5c+h/nVFiuOw7/pOXGj/Q=;
-        b=mHQ0T5G+yB32aamXJK0CC+Og729co6rnSJMFbW+PcBYaIZPco309irBw2xeCqk8O0d
-         4nYFRhu75O6NOAQrLbfOfLB/9HdrII4Fs1j6hSWZpa1OXa0+9Sir/cjHvhTDoGPgiBRe
-         c5ujcLPOFrwX/NT5o0bxSe1B5zfQbjMEH3vkk8BADk7olFLW5k0uaIUCGjnkwe61v1EF
-         AxB44XMTHleJb99Pabx4L7/1kXjgd/qIL0Y7Gsa1aVRkcU9FN+DUovfcLIL+KJO52TTu
-         5z9W2TU+GmYY+UXXsVQel2By/+2QLOdpqHQgsx70z4kO3vgxyahgcGskrGe8Imb1/P0B
-         eJXQ==
-X-Gm-Message-State: AOJu0Yw+UbE0GeuJPW076jVLTS+ZGfw2fD8cfryhXy/l4PA87b22XtDf
-        KXx9jhbpGag30M9MwTxgh+hbmXI9woyIEA0=
-X-Google-Smtp-Source: AGHT+IFGFmAQ6/yq8JKqx80lksqY1Gqdf4HF789jU/G56yLAr/6PJvXS68fpeR9Vi4z2+6Kyiv6nXxA57tdMqbk=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:2036:b0:509:4ad6:95f6 with SMTP
- id s22-20020a056512203600b005094ad695f6mr6988lfs.9.1699440140861; Wed, 08 Nov
- 2023 02:42:20 -0800 (PST)
-Date:   Wed,  8 Nov 2023 10:42:18 +0000
-In-Reply-To: <2023110124-enunciate-hypnotize-2ae9@gregkh>
-Mime-Version: 1.0
-References: <2023110124-enunciate-hypnotize-2ae9@gregkh>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231108104218.527321-1-aliceryhl@google.com>
-Subject: Re: [PATCH RFC 02/20] rust_binder: add binderfs support to Rust binder
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     gregkh@linuxfoundation.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org,
-        cmllamas@google.com, gary@garyguo.net, jeffv@google.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        maco@android.com, mattgilbride@google.com, mmaurer@google.com,
-        ojeda@kernel.org, rust-for-linux@vger.kernel.org,
-        surenb@google.com, tkjos@android.com, wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1699440172; x=1700044972;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBVY3LXBI0SP1Yr01Ro9ySuR+Ox+MEZVyCv79ogrTPI=;
+        b=jakzqHxfNW0VUsbBZbRb/CZbwt48sk4pmR3ZcAe2d5XFbj/clxR4xijvIPs/kjwbkw
+         +mAZ2yW6MdC+gOKgqGbfLU7+LHHVI5kEDR3gimNtpo2UPQf3Mvnk/NAM2VhSG7A4EiHU
+         KUvMi48/fP+7/hXnzNTK+OewyFhmKDXrF8OmGbTNb4JFdlYkUwnXcm2fOcaduBZF3I6z
+         NqYyTTIYQT/nqpPg2Vvetq1UCEIaO+tYCFQtJpEvk6wX1R3pdfC05USg2moYVNyvsNJQ
+         E++sHQLwwgmoxmUmkp2uRmc6m7Sh6PaN0eRAZ7NzAKANnoyyOA2Vo3neQjnCpiXc2Sc/
+         /X+Q==
+X-Gm-Message-State: AOJu0Yy4eMDSeYLpMLnBrdgaSFN+uPPW6tewro74PBiledCe4k1Hf+lN
+        Zo4tvvOemhh7Bhxb/Jm7yPHL2ulW33yVx7FVvkQ=
+X-Google-Smtp-Source: AGHT+IGuQTcTqK6ErXO0p56cpARMFFFZtoLTyFX7OciwEg0uR158efzAha+3P1o3UwO44wQ/XeFTnA==
+X-Received: by 2002:a05:6000:18a1:b0:32f:78dc:ecd7 with SMTP id b1-20020a05600018a100b0032f78dcecd7mr928005wri.48.1699440171710;
+        Wed, 08 Nov 2023 02:42:51 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id d7-20020adffd87000000b0032fb7b4f191sm4578729wrr.91.2023.11.08.02.42.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 02:42:50 -0800 (PST)
+Message-ID: <7951ebd9-821f-4592-8381-ceec5b01e1e7@linaro.org>
+Date:   Wed, 8 Nov 2023 11:42:48 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: leds: add mps mp3326 LED
+Content-Language: en-US
+To:     "Yuxi (Yuxi) Wang" <Yuxi.Wang@monolithicpower.com>,
+        Yuxi Wang <wyx137120466@gmail.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>
+Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231108032921.3134115-1-wyx137120466@gmail.com>
+ <20231108032921.3134115-2-wyx137120466@gmail.com>
+ <e63fbf69-fe21-45cc-ae46-7b95dae9151e@linaro.org>
+ <BY5PR13MB4487AE8D2319B5F022C53343F6A8A@BY5PR13MB4487.namprd13.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <BY5PR13MB4487AE8D2319B5F022C53343F6A8A@BY5PR13MB4487.namprd13.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> On Wed, Nov 01, 2023 at 06:01:32PM +0000, Alice Ryhl wrote:
->> +config ANDROID_BINDERFS_RUST
->> +	bool "Android Binderfs filesystem in Rust"
->> +	depends on ANDROID_BINDER_IPC_RUST
->> +	default n
+On 08/11/2023 10:30, Yuxi (Yuxi) Wang wrote:
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  mps,led-protect:
+>>> +    description: |
+>>> +      LED short protection threshold.
+>>
+>> threshold? So in some units? What does it mean? What do the values mean?
+>>
+> Yes, it indicates short protection threshold in mp3326.
+> But they do not have the units. They just indicate the corresponding bits value of register which can configure short protection value.
+
+I meant, what are the real, not how you wrote it here, values?
+
+What do the values mean? Description should state that and according to
+this, you might have to use standard unit suffixes so these will be real
+values.
+
 > 
-> Nit, the default is always 'n', so no need for this line.
+>>> +    enum: [0, 1, 2, 3]
+>>> +
+>>> +  multi-led:
+>>> +    type: object
+>>> +
+>>> +    properties:
+>>> +      "#address-cells":
+>>> +        const: 1
+>>> +      "#size-cells":
+>>> +        const: 0
+>>> +
+>>> +      color:
+>>> +        description: RGB module
+>>> +        const: LED_COLOR_ID_RGB
+>>> +
+>>> +      led_r:
+>>
+>> Nope. First, no underscores in names. Second, please open existing
+>> bindings and look how it is done there.
+>>
+> Thank you for pointing out this, I will Fixed it in the next version.
+>>> +        type: object
+>>> +
+>>> +        properties:
+>>> +          "#address-cells":
+>>> +            const: 1
+>>> +          "#size-cells":
+>>> +            const: 0
+>>
+>> Why do you have the,?
+>>
+> 
+> Sorry,  here in no , .
+> what do you mean?
 
-Got it. I'll remove it.
+s/the,/them/
 
-> Also, it's the middle of the merge window, many of us are busy with
-> other things and can't review new code until a few weeks from now,
-> sorry.
+Why do you need these?
 
-That's fine. I had hoped to send it earlier to avoid this, but we wanted
-performance numbers from real hardware instead of just from an emulator,
-which delayed it.
+> 
+>>> +          reg:
+>>> +            description: Index of the LED.
+>>> +            minimum: 1
+>>> +            maximum: 16
+>>
 
-Alice
+
+Best regards,
+Krzysztof
 
