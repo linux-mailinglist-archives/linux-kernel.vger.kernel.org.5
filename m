@@ -2,149 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C35D7E6050
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1545B7E6051
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjKHWGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 17:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S230351AbjKHWGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 17:06:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjKHWGH (ORCPT
+        with ESMTP id S229460AbjKHWGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 17:06:07 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62C2258A
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 14:06:04 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8Log4F018204;
-        Wed, 8 Nov 2023 22:05:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=8XM3Il8HYsQ2qd9FOOZ30uZ5RS/gFPFqqAXbAdthgDQ=;
- b=ly2Noa/8ULMRu4h4oWInTahEucEFmtyfMuERD1tH6Mar4fY42O37dPefJGUS6zevDoU7
- VD084S1CnW+Q1AzH3lTWlC8pynTcVGr9lPNsaEEShI/sctit/tqVANLdSY9BqhxUnjrl
- cDbbAdwwmqpm0YGTUUvujKpLeFUOWFH0JmGDmVN+HXS6AFEtcwXXQIy9oMe6JNHI0sXE
- aOA2zK2t2lJnKZzSvQMiNZ3on3OezeJqgW1yxFQcjGR2aa2IMu8aSTHikdHI6wmSZsxd
- reTd/gNz4EKIEFQZkGOAC+GD5KrJ3d1kXSIf2H3bV+Aqu09NagH8hTd3tubKjNfOrkyJ sg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8jkpgcef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 22:05:59 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8M1ONT019231;
-        Wed, 8 Nov 2023 22:05:58 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w23yte2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 22:05:58 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8M5vMY18285170
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 22:05:58 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A89EF58058;
-        Wed,  8 Nov 2023 22:05:57 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58DAD58057;
-        Wed,  8 Nov 2023 22:05:57 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  8 Nov 2023 22:05:57 +0000 (GMT)
-Message-ID: <b74ea810-5b6c-404d-8cee-7d3d3922205e@linux.ibm.com>
-Date:   Wed, 8 Nov 2023 17:05:56 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] fix rootfstype=tmpfs
-Content-Language: en-US
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     Rob Landley <rob@landley.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-References: <b455394f-9faa-1f1a-f171-0b9d5e9ada35@landley.net>
- <8244c75f-445e-b15b-9dbf-266e7ca666e2@landley.net>
- <f9d57ae7-6dd6-4854-b9cf-1eec4cfa2a92@linux.ibm.com>
-In-Reply-To: <f9d57ae7-6dd6-4854-b9cf-1eec4cfa2a92@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6_4SsUENmoQ1-CKZyz2cZeGXN_vGFbTf
-X-Proofpoint-ORIG-GUID: 6_4SsUENmoQ1-CKZyz2cZeGXN_vGFbTf
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_10,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080181
+        Wed, 8 Nov 2023 17:06:30 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97B87B4;
+        Wed,  8 Nov 2023 14:06:28 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 01F8A20B74C0; Wed,  8 Nov 2023 14:06:28 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 01F8A20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1699481188;
+        bh=9XdLVz2db7rfFcQe7ydvfN6yR+cFs5DgiBaH3dFhqe0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q/0i7DvFkAU9jaANRYw/QGHvJB7DnbNDBYo36YbgGK63T0kzWjXvLzcfJb4GIQV75
+         i7wj8+jahcnorcv+paMcpCAw3CxnIA/Q3rrVe+uTh97FBeZFrpQ0qTN7yley5gGPgi
+         GQyiYntLZgG1P+tYyS3Cb+OkD3W3owBtSKC4ReA8=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [PATCH net v3] hv_netvsc: Mark VF as slave before exposing it to user-mode
+Date:   Wed,  8 Nov 2023 14:06:20 -0800
+Message-Id: <1699481180-17511-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Long Li <longli@microsoft.com>
 
+When a VF is being exposed form the kernel, it should be marked as "slave"
+before exposing to the user-mode. The VF is not usable without netvsc running
+as master. The user-mode should never see a VF without the "slave" flag.
 
-On 11/1/23 09:10, Stefan Berger wrote:
-> 
-> 
-> On 2/21/23 16:04, Rob Landley wrote:
->> Wire up rootfstype=tmpfs to force rootfs to be tmpfs even when you 
->> specify root=
->>
->> Initramfs automatically uses tmpfs (if available) when you DON'T 
->> specify a
->> root= fallback root to mount over initramfs, but some people can't NOT do
+An example of a user-mode program depending on this flag is cloud-init
+(https://github.com/canonical/cloud-init/blob/19.3/cloudinit/net/__init__.py)
+When scanning interfaces, it checks on if this interface has a master to
+decide if it should be configured. There are other user-mode programs perform
+similar checks.
 
-can't NOT -> cannot
+This commit moves the code of setting the slave flag to the time before VF is
+exposed to user-mode.
 
->> that for some reason (old bootloaders), so let rootfstype=tmpfs 
->> override it.
->>
->> My original code tried to do this 10 years ago but got the test wrong,
->> and nobody's corrected it since, so here you go...
+Signed-off-by: Long Li <longli@microsoft.com>
+---
 
-I think this sentence can be dropped.
+Change since v1:
+Use a new function to handle NETDEV_POST_INIT.
 
->>
->> Signed-off-by: Rob Landley <rob@landley.net>
-> 
-> I would like to be able to have this for some work with OpenBMC and 
-> ideally it would propagate to one of the recent kernels with a Fixes tag 
-> like this?
-> 
+Change since v2:
+Add "net" in subject. Add more details on the user-mode program behavior.
 
-Can you repost this patch or should I do it?
+ drivers/net/hyperv/netvsc_drv.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-Regards,
-    Stefan
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index ec77fb9dcf89..fdad58dcc6a8 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -2206,9 +2206,6 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
+ 		goto upper_link_failed;
+ 	}
+ 
+-	/* set slave flag before open to prevent IPv6 addrconf */
+-	vf_netdev->flags |= IFF_SLAVE;
+-
+ 	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
+ 
+ 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
+@@ -2320,11 +2317,9 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
+ 	 */
+ 	list_for_each_entry(ndev_ctx, &netvsc_dev_list, list) {
+ 		ndev = hv_get_drvdata(ndev_ctx->device_ctx);
+-		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr)) {
+-			netdev_notice(vf_netdev,
+-				      "falling back to mac addr based matching\n");
++		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr) ||
++		    ether_addr_equal(vf_netdev->dev_addr, ndev->perm_addr))
+ 			return ndev;
+-		}
+ 	}
+ 
+ 	netdev_notice(vf_netdev,
+@@ -2332,6 +2327,19 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
+ 	return NULL;
+ }
+ 
++static int netvsc_prepare_slave(struct net_device *vf_netdev)
++{
++	struct net_device *ndev;
++
++	ndev = get_netvsc_byslot(vf_netdev);
++	if (!ndev)
++		return NOTIFY_DONE;
++
++	/* set slave flag before open to prevent IPv6 addrconf */
++	vf_netdev->flags |= IFF_SLAVE;
++	return NOTIFY_DONE;
++}
++
+ static int netvsc_register_vf(struct net_device *vf_netdev)
+ {
+ 	struct net_device_context *net_device_ctx;
+@@ -2753,6 +2761,8 @@ static int netvsc_netdev_event(struct notifier_block *this,
+ 		return NOTIFY_DONE;
+ 
+ 	switch (event) {
++	case NETDEV_POST_INIT:
++		return netvsc_prepare_slave(event_dev);
+ 	case NETDEV_REGISTER:
+ 		return netvsc_register_vf(event_dev);
+ 	case NETDEV_UNREGISTER:
+-- 
+2.34.1
 
-> Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root= 
-> specified")
-> 
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Stefan Berger <stefanb@linux.ibm.com>
-
-
-> 
->>
->> See https://lkml.iu.edu/hypermail/linux/kernel/2207.3/06939.html
->> ---
->>   init/do_mounts.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/init/do_mounts.c b/init/do_mounts.c
->> index 811e94daf0a8..01d80fb828fd 100644
->> --- a/init/do_mounts.c
->> +++ b/init/do_mounts.c
->> @@ -665,7 +665,7 @@ struct file_system_type rootfs_fs_type = {
->>   void __init init_rootfs(void)
->>   {
->> -    if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
->> -        (!root_fs_names || strstr(root_fs_names, "tmpfs")))
->> +    if (IS_ENABLED(CONFIG_TMPFS) && (!root_fs_names ? 
->> !saved_root_name[0] :
->> +        !!strstr(root_fs_names, "tmpfs")))
->>           is_tmpfs = true;
->>   }
