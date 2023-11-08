@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207627E6127
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6F27E612B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjKHXoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        id S230500AbjKHXo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKHXoY (ORCPT
+        with ESMTP id S229962AbjKHXoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:44:24 -0500
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5B82102
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:44:22 -0800 (PST)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b2f43c4853so347753b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:44:22 -0800 (PST)
+        Wed, 8 Nov 2023 18:44:25 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F332102
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:44:23 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1e98a9dd333so214011fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:44:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1699487062; x=1700091862;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=omOPkzFOgHujhTqR136cEFG8vnTdihPbkd8WFXv4dFg=;
-        b=ErwFXKeH5Z6g5BpjsBWgojMeEhtgyLIb6QZPxK+dUPn7qlNwEEcGBvp7n6+686xb76
-         dnJUMf061FlUvZ9nltS3n47vB3jzl+T8ig6G3CPWJDIEKSxuj5fej4XllachzpFj46Ml
-         05gOuxdekh6FFkJxnqRiOsniIfFDLIGI8B0mapjffotSZ+hPCDUn4y7EDYceKvUtNrHw
-         ImfLSMnRU/wHfNJmSqL8WCl1EIRbUoQ4MqgZ8Hjq/nrWsKwzTPT5eb22xUsTlYWd+lPh
-         lEXnOebv60hLFrFK/1XOPxsM3AmKd65NzPTq2kfbb1bBpzlvCerz/zDeiQeQZoVSXiox
-         0Skw==
-X-Gm-Message-State: AOJu0YyeP3AENb5pUAhiRc9ALlFPhb9mCgadRx0c7iuPEbQIKn4EHTEr
-        mlA379q4Az16CfP8xd1mLcqxoBaSf6xz7b7BL4B7vqVT5otG
-X-Google-Smtp-Source: AGHT+IH8aLmqQLsGNTdroA2ZGENBSlGH3Kfq7L6wzTA2W0YLF3ESChu2j6nowvN6/kmPNHZrupMI9zOhidOYKsqo5KfV8j2kLNYH
+        bh=P3MIuqtOUaUUvCAVhPpwvBtF/xEEkEYNSxamyo/s0No=;
+        b=hIZyBHvrK/D0xoMVLxjpWQsAIZb53KwgTQcmwmeguwGWsh6CLnPMORlDGJPoC4SnMD
+         2Xri7oU463odDmkjcrMWeq5o0sWBxchLM8w07I93DV9XSEqYzV29UVWKw3pzpXOjAX/C
+         mJ2Iff3zUozq7Yx9AhgsxLA0yQwN218vywdj6W+QVOE/2PPDvZ+P8+C7yQSHt0pocQVR
+         69pTi+QxlDjN/eOhTkvlxKI9XKMf3O/dchWTTdzAhaHYK/n60T9iqwZqxLo/crgWjgWs
+         4vVy/JzchNaW490Nekh4xnzEcrKnjkMbCaoomxYY3ZItf8WVra9QRRM3u+YcTjHnR6MH
+         IzwQ==
+X-Gm-Message-State: AOJu0YwyQmV1G8gXdRMVq3f6+JgRMmSpC9eyA1nVjuMoVZiVCHVWThe9
+        AgSzzQprFrhVtXUP57ZQUVKqZlpqDfNZyHMIN9L6N8DgXvjX
+X-Google-Smtp-Source: AGHT+IE8SL0QgK42yQHJpF+znFr95YwvVpwFgj3qIWqIqQTHf6Oa6yFQrYe/JeoxOBOFnyTXG5+w/BLWJ1YBiC0wbNqgbyMy10XI
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1799:b0:3b2:e45a:7475 with SMTP id
- bg25-20020a056808179900b003b2e45a7475mr10745oib.11.1699487061898; Wed, 08 Nov
- 2023 15:44:21 -0800 (PST)
-Date:   Wed, 08 Nov 2023 15:44:21 -0800
+X-Received: by 2002:a05:6871:296:b0:1e9:b0fa:de72 with SMTP id
+ i22-20020a056871029600b001e9b0fade72mr1214290oae.9.1699487062144; Wed, 08 Nov
+ 2023 15:44:22 -0800 (PST)
+Date:   Wed, 08 Nov 2023 15:44:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009ffc470609acaa3a@google.com>
-Subject: [syzbot] Monthly ext4 report (Nov 2023)
-From:   syzbot <syzbot+list07d69efc5e1d32eac754@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Message-ID: <000000000000a3bd1e0609acaa04@google.com>
+Subject: [syzbot] Monthly xfs report (Nov 2023)
+From:   syzbot <syzbot+list614ad8fd5d6c3f525723@syzkaller.appspotmail.com>
+To:     chandan.babu@oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ext4 maintainers/developers,
+Hello xfs maintainers/developers,
 
-This is a 31-day syzbot report for the ext4 subsystem.
+This is a 31-day syzbot report for the xfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+https://syzkaller.appspot.com/upstream/s/xfs
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 41 issues are still open and 118 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 13 issues are still open and 18 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  51606   Yes   possible deadlock in console_flush_all (2)
-                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
-<2>  10182   Yes   KASAN: slab-out-of-bounds Read in generic_perform_write
-                   https://syzkaller.appspot.com/bug?extid=4a2376bc62e59406c414
-<3>  5928    Yes   WARNING: locking bug in ext4_move_extents
-                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-<4>  470     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<5>  207     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<6>  150     No    possible deadlock in evict (3)
-                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
-<7>  101     Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<8>  30      Yes   kernel BUG in ext4_write_inline_data_end
-                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
-<9>  16      No    possible deadlock in start_this_handle (4)
-                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
-<10> 13      Yes   INFO: rcu detected stall in sys_unlink (3)
-                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
+Ref Crashes Repro Title
+<1> 8235    No    KMSAN: uninit-value in __crc32c_le_base (3)
+                  https://syzkaller.appspot.com/bug?extid=a6d6b8fffa294705dbd8
+<2> 291     Yes   KASAN: stack-out-of-bounds Read in xfs_buf_lock
+                  https://syzkaller.appspot.com/bug?extid=0bc698a422b5e4ac988c
+<3> 147     Yes   INFO: task hung in xfs_buf_item_unpin
+                  https://syzkaller.appspot.com/bug?extid=3f083e9e08b726fcfba2
+<4> 134     Yes   WARNING in print_bfs_bug (2)
+                  https://syzkaller.appspot.com/bug?extid=630f83b42d801d922b8b
+<5> 101     Yes   INFO: task hung in sync_inodes_sb (5)
+                  https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<6> 4       Yes   WARNING: Reset corrupted AGFL on AG NUM. NUM blocks leaked. Please unmount and run xfs_repair.
+                  https://syzkaller.appspot.com/bug?extid=9d0b0d54a8bd799f6ae4
 
 ---
 This report is generated by a bot. It may contain errors.
