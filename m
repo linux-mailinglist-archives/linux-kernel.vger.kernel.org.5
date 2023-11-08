@@ -2,175 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100DC7E4FD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355DE7E4FD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjKHFDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 00:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
+        id S231192AbjKHFHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 00:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjKHFDw (ORCPT
+        with ESMTP id S229449AbjKHFHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 00:03:52 -0500
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D59E193;
-        Tue,  7 Nov 2023 21:03:50 -0800 (PST)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1f084cb8b54so3119756fac.1;
-        Tue, 07 Nov 2023 21:03:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699419829; x=1700024629;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+mXIe3ow1mFEMt04rvTqBGGASGscS5l/XOeHbFK93js=;
-        b=Yr96nqVp7B1aLdDOSTrWLLMgdSZpJLSbQkZk6YwX/a4y759L8DA0hPhFnknUdjkHSV
-         X04rfk7X/BExrT8+kFHWg/e2m4kDpu7NzqcNoF/wNV/EQaeFn4wTHdqJQ/sUPFJTl/hB
-         qPAuJxIfKtRgltNk+aDiO/xgQ2ZaM8HBiIDghzlPGAl4v/n4TdNqVO31n5uMoYy0L9SU
-         ZqY1DnVd5/gLVB553ZuGkuONRIR1MsU6uTFC8Vk2pCm5dSG0zexwcBW6S1E2gQJzJT2y
-         U6ltSm4ZVmvYz3SsXmND3YveBXVBKM0L6CpXiJygsiXCaqDf9xf3bJjVtT6s8wZ8xjei
-         oVjw==
-X-Gm-Message-State: AOJu0YyNDB6dE5gnT8/hbjd4v8QI25DUBMYdd6SnG6KfVjY1rSV9f88w
-        oi5DVKTH3lzouDjF6Xnbr+IUB6/2vbVyBOiGscFKLGYtcNg=
-X-Google-Smtp-Source: AGHT+IGobaHBjxJLeayKmXGfu42hh/r4EY3452A+r0Rm+imGMJdTaYEM+XIsp7nExNHYn72iv24l8Ob10tzwet5DPzQ=
-X-Received: by 2002:a05:6870:1699:b0:1e9:bba3:4902 with SMTP id
- j25-20020a056870169900b001e9bba34902mr709700oae.37.1699419829348; Tue, 07 Nov
- 2023 21:03:49 -0800 (PST)
+        Wed, 8 Nov 2023 00:07:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF71198;
+        Tue,  7 Nov 2023 21:07:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18490C433C8;
+        Wed,  8 Nov 2023 05:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699420060;
+        bh=T+5cW3D4tAaO3IaJl4GhQCISyR4UsA5zyjkxg/vQH7M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h2CSg6RNo/JMuR+m1JQnR+ZejSHnnUD6p4h0omBhAUR8tNHWukDqLuvuwSDjhCsCQ
+         I17EzBWg4lsbjYBO+YLMX8TB70jYTmetb7B8ZowEBmEJDww2NZpdXyv5uKQbxH3B1e
+         CXD9Zvk2IW8g9HspjIUO8wSQcIRg9O244L8TshZEnemV134RJ/PALESuJFF2eWeQHf
+         zDl5jmt+H+4UOeeyr6AGpD534duauloqsToct/yElq/mkSvJkiasQUxNQn5YdMdcp8
+         8KCY0bbCEEbwfd4LSBYw0gVMjkqTVNsxstxt6xDpiSJj7dH6rAXZbVlIvZlJXG5lB0
+         nIMF9lY3Iq4Cg==
+Date:   Wed, 8 Nov 2023 10:37:29 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <cang@qti.qualcomm.com>
+Cc:     quic_cang@quicinc.com, bvanassche@acm.org,
+        stanley.chu@mediatek.com, adrian.hunter@intel.com,
+        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        "Bao D . Nguyen" <quic_nguyenb@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/7] scsi: ufs: ufs-qcom: Setup host power mode during
+ init
+Message-ID: <20231108050729.GA3296@thinkpad>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-3-git-send-email-cang@qti.qualcomm.com>
 MIME-Version: 1.0
-From:   Len Brown <lenb@kernel.org>
-Date:   Wed, 8 Nov 2023 00:03:38 -0500
-Message-ID: <CAJvTdKn-xtmin9OjnzHg8wy4PM8Lc3Per=3y3UWORhjdroYP3w@mail.gmail.com>
-Subject: [GIT PULL] turbostat for Linux-6.7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1699332374-9324-3-git-send-email-cang@qti.qualcomm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Nov 06, 2023 at 08:46:08PM -0800, Can Guo wrote:
+> From: Can Guo <quic_cang@quicinc.com>
+> 
+> Setup host power mode and its limitations during UFS host driver init to
+> avoid repetitive work during every power mode change.
+> 
+> Co-developed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
+> Signed-off-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 22 ++++++++++++++--------
+>  drivers/ufs/host/ufs-qcom.h |  1 +
+>  2 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index aee66a3..cc0eb37 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -898,7 +898,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+>  				struct ufs_pa_layer_attr *dev_req_params)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> -	struct ufs_host_params host_params;
+> +	struct ufs_host_params *host_params = &host->host_params;
+>  	int ret = 0;
+>  
+>  	if (!dev_req_params) {
+> @@ -908,13 +908,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+>  
+>  	switch (status) {
+>  	case PRE_CHANGE:
+> -		ufshcd_init_host_param(&host_params);
+> -		host_params.hs_rate = UFS_QCOM_LIMIT_HS_RATE;
 
-Please pull these turbostat patches.
+As Andrew spotted, this gets removed without explanation. So, I'd also suggest
+doing it in a separate patch.
 
-Turbostat features are now table-driven (Rui Zhang)
-Add support for some new platforms (Sumeet Pawnikar, Rui Zhang)
-Gracefully run in configs when CPUs are limited (Rui Zhang, Srinivas Pandruvada)
-misc minor fixes.
+- Mani
 
-thanks!
-Len Brown, Intel Open Source Technology Center
+> -
+> -		/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
+> -		host_params.hs_tx_gear = host_params.hs_rx_gear = ufs_qcom_get_hs_gear(hba);
+> -
+> -		ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
+> +		ret = ufshcd_negotiate_pwr_param(host_params, dev_max_params, dev_req_params);
+>  		if (ret) {
+>  			dev_err(hba->dev, "%s: failed to determine capabilities\n",
+>  					__func__);
+> @@ -1049,6 +1043,17 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
+>  		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+>  }
+>  
+> +static void ufs_qcom_set_host_params(struct ufs_hba *hba)
+> +{
+> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> +	struct ufs_host_params *host_params = &host->host_params;
+> +
+> +	ufshcd_init_host_param(host_params);
+> +
+> +	/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
+> +	host_params->hs_tx_gear = host_params->hs_rx_gear = ufs_qcom_get_hs_gear(hba);
+> +}
+> +
+>  static void ufs_qcom_set_caps(struct ufs_hba *hba)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> @@ -1273,6 +1278,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>  
+>  	ufs_qcom_set_caps(hba);
+>  	ufs_qcom_advertise_quirks(hba);
+> +	ufs_qcom_set_host_params(hba);
+>  
+>  	err = ufs_qcom_ice_init(host);
+>  	if (err)
+> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> index 9950a00..ab94c54 100644
+> --- a/drivers/ufs/host/ufs-qcom.h
+> +++ b/drivers/ufs/host/ufs-qcom.h
+> @@ -240,6 +240,7 @@ struct ufs_qcom_host {
+>  
+>  	struct gpio_desc *device_reset;
+>  
+> +	struct ufs_host_params host_params;
+>  	u32 phy_gear;
+>  
+>  	bool esi_enabled;
+> -- 
+> 2.7.4
+> 
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
-
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
-
-for you to fetch changes up to b8337e6a780dad9505f9d44da07c0a5c52fa0a04:
-
-  tools/power turbostat: version 2023.11.07 (2023-11-07 23:28:30 -0500)
-
-----------------------------------------------------------------
-Chen Yu (1):
-      tools/power/turbostat: Enable the C-state Pre-wake printing
-
-Len Brown (2):
-      tools/power/turbostat: bugfix "--show IPC"
-      tools/power turbostat: version 2023.11.07
-
-Srinivas Pandruvada (1):
-      tools/power/turbostat: Move process to root cgroup
-
-Sumeet Pawnikar (2):
-      tools/power/turbostat: Add initial support for ArrowLake
-      tools/power/turbostat: Add initial support for LunarLake
-
-Zhang Rui (80):
-      tools/power/turbostat: Fix failure with new uncore sysfs
-      tools/power/turbostat: Fix a knl bug
-      tools/power/turbostat: Enable TCC Offset on more models
-      tools/power/turbostat: Support alternative graphics sysfs knobs
-      tools/power/turbostat: Replace raw value cpu model with Macro
-      tools/power/turbostat: Remove redundant duplicates
-      tools/power/turbostat: Remove pseudo check for two models
-      tools/power/turbostat: Add skeleton support for table driven
-feature enumeration
-      tools/power/turbostat: Abstract MSR_MISC_FEATURE_CONTROL support
-      tools/power/turbostat: Abstract MSR_MISC_PWR_MGMT support
-      tools/power/turbostat: Abstract BCLK frequency support
-      tools/power/turbostat: Abstract Package cstate limit decoding support
-      tools/power/turbostat: Abstract Nehalem MSRs support
-      tools/power/turbostat: Remove a redundant check
-      tools/power/turbostat: Rename some functions
-      tools/power/turbostat: Abstract Turbo Ratio Limit MSRs support
-      tools/power/turbostat: Rename some TRL functions
-      tools/power/turbostat: Abstract Config TDP MSRs support
-      tools/power/turbostat: Abstract TCC Offset bits support
-      tools/power/turbostat: Abstract Perf Limit Reasons MSRs support
-      tools/power/turbostat: Abstract Automatic Cstate Conversion support
-      tools/power/turbostat: Abstract hardcoded Crystal Clock frequency
-      tools/power/turbostat: Redefine RAPL macros
-      tools/power/turbostat: Simplify the logic for RAPL enumeration
-      tools/power/turbostat: Abstract RAPL MSRs support
-      tools/power/turbostat: Abstract Per Core RAPL support
-      tools/power/turbostat: Abstract RAPL divisor support
-      tools/power/turbostat: Abstract fixed DRAM Energy unit support
-      tools/power/turbostat: Abstract hardcoded TDP value
-      tools/power/turbostat: Remove unused family/model parameters for
-RAPL functions
-      tools/power/turbostat: Abstract TSC tweak support
-      tools/power/turbostat: Add skeleton support for cstate enumeration
-      tools/power/turbostat: Adjust cstate for models with .has_nhm_msrs set
-      tools/power/turbostat: Adjust cstate for has_snb_msrs() models
-      tools/power/turbostat: Adjust cstate for models with .cst_limit set
-      tools/power/turbostat: Adjust cstate for has_snb_msrs() models
-      tools/power/turbostat: Adjust cstate for has_slv_msrs() models
-      tools/power/turbostat: Adjust cstate for is_jvl() models
-      tools/power/turbostat: Adjust cstate for is_dnv() models
-      tools/power/turbostat: Adjust cstate for is_skx()/is_icx()/is_spr() models
-      tools/power/turbostat: Adjust cstate for is_bdx() models
-      tools/power/turbostat: Adjust cstate for has_c8910_msrs() models
-      tools/power/turbostat: Adjust cstate for
-is_slm()/is_knl()/is_cnl()/is_ehl() models
-      tools/power/turbostat: Use fine grained IRTL output
-      tools/power/turbostat: Abstract IRTL support
-      tools/power/turbostat: Abstract MSR_CORE_C1_RES support
-      tools/power/turbostat: Abstract MSR_MODULE_C6_RES_MS support
-      tools/power/turbostat: Abstract MSR_CC6/MC6_DEMOTION_POLICY_CONFIG support
-      tools/power/turbostat: Abstract MSR_ATOM_PKG_C6_RESIDENCY support
-      tools/power/turbostat: Abstract MSR_KNL_CORE_C6_RESIDENCY support
-      tools/power/turbostat: Abstract extended cstate MSRs support
-      tools/power/turbostat: Abstract aperf/mperf multiplier support
-      tools/power/turbostat: Abstract cstate prewake bit support
-      tools/power/turbostat: Delete intel_model_duplicates()
-      tools/power/turbostat: Improve probe_platform_features() logic
-      tools/power/turbostat: Relocate cstate probing code
-      tools/power/turbostat: Relocate pstate probing code
-      tools/power/turbostat: Rename uncore probing function
-      tools/power/turbostat: Rename rapl probing function
-      tools/power/turbostat: Relocate graphics probing code
-      tools/power/turbostat: Relocate lpi probing code
-      tools/power/turbostat: Relocate thermal probing code
-      tools/power/turbostat: Reorder some functions
-      tools/power/turbostat: Relocate more probing related code
-      tools/power/turbostat: Introduce probe_pm_features()
-      tools/power/turbostat: Enable MSR_CORE_C1_RES on recent Intel
-client platforms
-      tools/power/turbostat: Remove PC7/PC9 support on ADL/RPL
-      tools/power/turbostat: Introduce cpu_allowed_set
-      tools/power/turbostat: Obey allowed CPUs when accessing CPU counters
-      tools/power/turbostat: Obey allowed CPUs during startup
-      tools/power/turbostat: Abstract several functions
-      tools/power/turbostat: Obey allowed CPUs for primary thread/core detection
-      tools/power/turbostat: Obey allowed CPUs for system summary
-      tools/power/turbostat: Handle offlined CPUs in cpu_subset
-      tools/power/turbostat: Abstrct function for parsing cpu string
-      tools/power/turbostat: Handle cgroup v2 cpu limitation
-      tools/power/turbostat: Add MSR_CORE_C1_RES support for spr_features
-      tools/power/turbostat: Add initial support for GraniteRapids
-      tools/power/turbostat: Add initial support for SierraForest
-      tools/power/turbostat: Add initial support for GrandRidge
-
- tools/power/x86/turbostat/turbostat.c | 3074 ++++++++++++++++-----------------
- 1 file changed, 1537 insertions(+), 1537 deletions(-)
+-- 
+மணிவண்ணன் சதாசிவம்
