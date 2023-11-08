@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 424487E533A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E2E7E533D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjKHKWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:22:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S1344022AbjKHKY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:24:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKHKWy (ORCPT
+        with ESMTP id S229579AbjKHKY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:22:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2049E1BD5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:22:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDEDC433C8;
-        Wed,  8 Nov 2023 10:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699438971;
-        bh=JGmlL0KgwRDqiQzXzq/RBHugjS46fQ4CpIjGxsM+Uuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jFhpgRSNJqU6Nh/RWEkc0vMD13+y2eepajbN5iM89ys/pfDaFWmWj5dVkKOXe+/b1
-         WxBEEH0Xyqt0G5/tNgiZRYNutglEmB377IuXRhsML8UPY4kqUgTBhlpoibaNmf087Z
-         aKhdk8hKAtiA/WJVHHLLJ977UOVrb/VqXhwAxK3HgxT3GnlJMjcWdZ9xAbET6hnREJ
-         POXWJLjxuNa4e8AOkt3kCNJEsMZhOvtugswmikdfZbnqkwOcXFC+mE33Wobmd8b35c
-         pU+cVu82OKmIW7RK5vnyU3UBDRM2Y44Fc0iFBGYtoo5m+53LCUC0IhTvmvVqsYXy3n
-         FeuECdMj3bV4Q==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1r0fio-0007El-0Z;
-        Wed, 08 Nov 2023 11:23:42 +0100
-Date:   Wed, 8 Nov 2023 11:23:42 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Victor Fragoso <victorffs@hotmail.com>
-Cc:     "dcbw@redhat.com" <dcbw@redhat.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: serial: option: add Fibocom L7xx modules
-Message-ID: <ZUthrrt4WkYXTTZD@hovoldconsulting.com>
-References: <9315051ae981aaad1d46724641defc6e5f79d12b.camel@hotmail.com>
- <8a8d4a7787e9d8b4f7f3c119b057ec4a8a6b1a91.camel@redhat.com>
- <a389548ccffa29ff58f30262410c535bf9137c49.camel@hotmail.com>
+        Wed, 8 Nov 2023 05:24:27 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C59B1BD4;
+        Wed,  8 Nov 2023 02:24:25 -0800 (PST)
+Received: from [100.98.136.55] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2DE406607479;
+        Wed,  8 Nov 2023 10:24:23 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699439064;
+        bh=1WvgVc1+K2XUROLlhm8g5+A8m40Jn66cUsAkrEjr3jQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=inly/7/eYOOZIZyr4l+rz7Bn/JzCmL/k2f/YftO/dPe8S0VNL7c3+YfALP2E75l4V
+         Z8+JPFIeDksI97R07f4kJ539z4bpyUM1P5Kl58n2CwuNj15KtSb+dS8kr8janniR7o
+         aTxOZL9Ty1wvkNfJs/1RKZlTe5zs5+8+pom6nGUAPl0I8iWEFvP84Ryhd9xFc9MrCW
+         9PelD/WyxYauwICjNkrksg/MNL5AdKlsPlzMBuypLRZM/ly+HkCK9nFH7ByV+HxksI
+         fSey8d+1kG+b6Yhf1+USE7KudoMO4r1exbPug/Kk9YeP2zJDwfBArh34cB/9VCzG/o
+         8WX8OSP2EnyGg==
+Message-ID: <795ef94f-23d3-433e-b5a3-0a2e0ab7a18c@collabora.com>
+Date:   Wed, 8 Nov 2023 11:24:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 05/56] media: videobuf2: Access vb2_queue bufs array
+ through helper functions
+Content-Language: en-US
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-6-benjamin.gaignard@collabora.com>
+ <20231108085016.3kmhmdroh4qs53f5@chromium.org>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <20231108085016.3kmhmdroh4qs53f5@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <a389548ccffa29ff58f30262410c535bf9137c49.camel@hotmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 05:55:27PM +0000, Victor Fragoso wrote:
-> On Thu, 2023-10-26 at 08:49 -0500, Dan Williams wrote:
-> > On Thu, 2023-10-26 at 01:24 +0000, Victor Fragoso wrote:
-> > > Add support for Fibocom L7xx module series and variants.
-> > > 
-> > > L716-EU-60 (ECM):
 
-> > > A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
-> > > I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
-> > > E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
-> > > I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> > > I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
-> > > E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> > > E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> > > E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> > > E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-> > > E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
-> > > E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> > > E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+Le 08/11/2023 à 09:50, Tomasz Figa a écrit :
+> On Tue, Oct 31, 2023 at 05:30:13PM +0100, Benjamin Gaignard wrote:
+>> This patch adds 2 helpers functions to add and remove vb2 buffers
+>> from a queue. With these 2 and vb2_get_buffer(), bufs field of
+>> struct vb2_queue becomes like a private member of the structure.
+>>
+>> After each call to vb2_get_buffer() we need to be sure that we get
+>> a valid pointer in preparation for when buffers can be deleted.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   .../media/common/videobuf2/videobuf2-core.c   | 151 +++++++++++++-----
+>>   .../media/common/videobuf2/videobuf2-v4l2.c   |  50 ++++--
+>>   2 files changed, 149 insertions(+), 52 deletions(-)
+>>
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>> index 968b7c0e7934..b406a30a9b35 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>> @@ -408,6 +408,31 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
+>>   		vb->skip_cache_sync_on_finish = 1;
+>>   }
+>>   
+>> +/**
+>> + * vb2_queue_add_buffer() - add a buffer to a queue
+>> + * @q:	pointer to &struct vb2_queue with videobuf2 queue.
+>> + * @vb:	pointer to &struct vb2_buffer to be added to the queue.
+>> + * @index: index where add vb2_buffer in the queue
+>> + */
+>> +static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, unsigned int index)
+>> +{
+>> +	WARN_ON(index >= VB2_MAX_FRAME || q->bufs[index]);
+> nit: Would it make sense to also ensure that vb->vb2_queue is NULL?
 
-> > Also, are you at all able to give hints in the comments about what kind
-> > of ports these are? AT? GPS? PPP? etc?  That's usually described in the
-> > driver documentation or in the Windows drivers themselves.
+Since vb->vb2_queue and q->bufs[index] are always set and clear in the same
+functions I don't think it is useful to test the both here.
 
-> About the hints on comments (AT, PPP, etc) I am not so sure if I should
-> add other hints.
-> As I've mentioned on the other email to Lars:
-> I am a Field Application Enginner at Fibocom Brazil and I am using the
-> IDs from our internal and official documentation.
-> This IDs will guarantee that can be used on all the variants devices
-> from L71x series.
-> For example, the 0x2cb7 0x0001 can be used by L716-EU on RNDIS, L716-
-> EU-10 on ECM and L710 too. While 19d2 0579 can be used by L716-EU-60 on
-> ECM and probably other variants.
-> 
-> So, to avoid any misunderstand I prefer to keep it simple and mention
-> just as L71x series.
+>
+>> +
+>> +	q->bufs[index] = vb;
+>> +	vb->index = index;
+>> +	vb->vb2_queue = q;
+>> +}
+> [snip]
+>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>> index d19d82a75ac6..2ffb097bf00a 100644
+>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>> @@ -377,6 +377,12 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> +	vb = vb2_get_buffer(q, b->index);
+>> +	if (!vb) {
+>> +		dprintk(q, 1, "%s: buffer %u is NULL\n", opname,  b->index);
+>> +		return -EINVAL;
+>> +	}
+>> +
+> Is this a leftover from earlier revisions? I think it shouldn't be
+> needed anymore after the previous patch which changed the function to
+> get vb as an argument.
 
-For the device entry comment I think you should use the model you've
-tested, and if there are multiple modules you can possibly list more
-than one if that makes sense.
- 
-But I think Dan was asking you to say something about what the
-individual interfaces are used for. That's better added to the commit
-message (i.e. describing which port is which).
+You are right I will fix it.
 
-Johan
+>
+> Best regards,
+> Tomasz
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
