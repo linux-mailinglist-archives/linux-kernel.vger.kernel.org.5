@@ -2,200 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB437E548A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6997E548C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344307AbjKHKxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
+        id S1344480AbjKHKxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344565AbjKHKwx (ORCPT
+        with ESMTP id S235702AbjKHKxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:52:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7912126;
-        Wed,  8 Nov 2023 02:52:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76F0C433C7;
-        Wed,  8 Nov 2023 10:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699440730;
-        bh=t69XfdiHhJahtVbVhsn1LHGQM/HRauoe8VYClKKVkqI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=F/R7fBAZhpriEEiaQnueNxy3EqSxEY6to0uIwAImHY5kP8o8dWaAiZaqq1zsOwMsq
-         Gg6JYYGK79+ZCTDiFChbbgYlQMIGAhnZFip2wFOPNuf0CrhIAmAt6NPX3GRz0mjOtL
-         EktXEtAkYvF5S/qunlrvb07PUiYcYtr6Jm1S8AqRxBSZNByN1zjp9YIZBN/brk4oAw
-         s+HVokS5Gl215Ydg6yGrgFAi37RmpFzrCFutfYXi2d7mb6Aajgd6gJ5WgqQmsRU4v3
-         V2Rx5GAJA1QZjqxPX+F/5fsI3wCa2o08nWH1mhdm7CzHXvpdmIW/uCUUG/7CDsL7gX
-         P9LAp5kYGeOOg==
-Date:   Wed, 8 Nov 2023 19:52:04 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 34/48] perf dwarf-aux: Add die_collect_vars()
-Message-Id: <20231108195204.a3ddfe5965e9c33661460ff4@kernel.org>
-In-Reply-To: <20231012035111.676789-35-namhyung@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
-        <20231012035111.676789-35-namhyung@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Wed, 8 Nov 2023 05:53:00 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23547C6;
+        Wed,  8 Nov 2023 02:52:46 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8AjBmp006482;
+        Wed, 8 Nov 2023 10:52:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Y6n9Wq/1lf6ns5MR5hkNe3aObEjXjSgg3FSfX8KTZQs=;
+ b=j9YzRz0uUiZGyCnQWMsCL8++tgBaXnTK6G5twhpJ8v4h4EcIAI3KGQ6aOd73/6KJ9LUf
+ Vs0MSWfIUztqahWCSZOtYN/+VLzO8ImiOHbaLXA7IUimQvIn3FWD5ni05QDvY6E7AEhf
+ HewSIQRWIkWkx0UklD6gmf8l24ZUrCh/fKaaMCskdWcUrpKZ6/SB0PYgdSULgChTWhFQ
+ oxZCRkuzcYGDuph7aYI2Suh46WYA512dzTN9KlgVMSlEZbTJC2mBcWY+TlB6tG6UM84u
+ pFznS6nqlPSn2CtSqSexw3MgEQ/cGGDnAbv35lZG2fZ1NQzlH8Uk9AmB7Ss2q5jgFkqQ Ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqrf9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 10:52:16 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8AjQxd009025;
+        Wed, 8 Nov 2023 10:52:15 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u88uqrf7s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 10:52:15 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88V7pS019256;
+        Wed, 8 Nov 2023 10:52:12 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w23v4ms-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 10:52:12 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8Aq9eM41484886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Nov 2023 10:52:09 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 40B2420043;
+        Wed,  8 Nov 2023 10:52:09 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E87A520040;
+        Wed,  8 Nov 2023 10:52:08 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Nov 2023 10:52:08 +0000 (GMT)
+Date:   Wed, 8 Nov 2023 11:52:07 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
+Message-ID: <20231108115207.791a30d8.pasic@linux.ibm.com>
+In-Reply-To: <20231103195949.0af884d0@meshulam.tesarici.cz>
+References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
+ <20231103195949.0af884d0@meshulam.tesarici.cz>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qK8Ky8dtByMWS9pE01Wz3idCdL0ui5So
+X-Proofpoint-ORIG-GUID: LT_y2TRDzFp56vukj3DHi7MXpkTZAqPi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 mlxscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 20:50:57 -0700
-Namhyung Kim <namhyung@kernel.org> wrote:
+On Fri, 3 Nov 2023 19:59:49 +0100
+Petr Tesařík <petr@tesarici.cz> wrote:
 
-> The die_collect_vars() is to find all variable information in the scope
-> including function parameters.  The struct die_var_type is to save the
-> type of the variable with the location (reg and offset) as well as where
-> it's defined in the code (addr).
+> > Not sure how to properly fix this as the different alignment
+> > requirements get pretty complex quickly. So would appreciate your
+> > input.  
 > 
+> I don't think it's possible to improve the allocation logic without
+> modifying the page allocator and/or the DMA atomic pool allocator to
+> take additional constraints into account.
 
-This looks good to me.
+I don't understand. What speaks against calculating the amount of space
+needed, so that with the waste we can still fit the bounce-buffer in the
+pool?
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I believe alloc_size + combined_mask is a trivial upper bound, but we can
+do slightly better since we know that we allocate pages.
 
-BTW, I did similar thing in collect_variables_cb()@probe-finder.c, maybe
-this can simplify that too.
+For the sake of simplicity let us assume we only have the min_align_mask
+requirement. Then I believe the worst case is that we need 
+(orig_addr & min_align_mask & PAGE_MASK)  + (min_align_mask & ~PAGE_MASK)
+extra space to fit.
 
-Thank you,
+Depending on how the semantics pan out one may be able to replace
+min_align_mask with combined_mask.
 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/dwarf-aux.c | 60 +++++++++++++++++++++++++++++++++++++
->  tools/perf/util/dwarf-aux.h | 17 +++++++++++
->  2 files changed, 77 insertions(+)
-> 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 093d7e82b333..16e63d8caf83 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1545,6 +1545,66 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
->  	return -1;
->  }
->  
-> +static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
-> +{
-> +	struct die_var_type **var_types = arg;
-> +	Dwarf_Die type_die;
-> +	int tag = dwarf_tag(die_mem);
-> +	Dwarf_Attribute attr;
-> +	Dwarf_Addr base, start, end;
-> +	Dwarf_Op *ops;
-> +	size_t nops;
-> +	struct die_var_type *vt;
-> +
-> +	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	/*
-> +	 * Only collect the first location as it can reconstruct the
-> +	 * remaining state by following the instructions.
-> +	 * start = 0 means it covers the whole range.
-> +	 */
-> +	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	if (die_get_real_type(die_mem, &type_die) == NULL)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	vt = malloc(sizeof(*vt));
-> +	if (vt == NULL)
-> +		return DIE_FIND_CB_END;
-> +
-> +	vt->die_off = dwarf_dieoffset(&type_die);
-> +	vt->addr = start;
-> +	vt->reg = reg_from_dwarf_op(ops);
-> +	vt->offset = offset_from_dwarf_op(ops);
-> +	vt->next = *var_types;
-> +	*var_types = vt;
-> +
-> +	return DIE_FIND_CB_SIBLING;
-> +}
-> +
-> +/**
-> + * die_collect_vars - Save all variables and parameters
-> + * @sc_die: a scope DIE
-> + * @var_types: a pointer to save the resulting list
-> + *
-> + * Save all variables and parameters in the @sc_die and save them to @var_types.
-> + * The @var_types is a singly-linked list containing type and location info.
-> + * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
-> + *
-> + * Callers should free @var_types.
-> + */
-> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
-> +{
-> +	Dwarf_Die die_mem;
-> +
-> +	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
-> +}
-> +
->  #endif
->  
->  /*
-> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-> index dc7e98678216..d0ef41738abd 100644
-> --- a/tools/perf/util/dwarf-aux.h
-> +++ b/tools/perf/util/dwarf-aux.h
-> @@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
->  /* Get the list of including scopes */
->  int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
->  
-> +/* Variable type information */
-> +struct die_var_type {
-> +	struct die_var_type *next;
-> +	u64 die_off;
-> +	u64 addr;
-> +	int reg;
-> +	int offset;
-> +};
-> +
->  #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
->  
->  /* Get byte offset range of given variable DIE */
-> @@ -153,6 +162,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
->  /* Get the frame base information from CFA */
->  int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset);
->  
-> +/* Save all variables and parameters in this scope */
-> +void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
-> +
->  #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
->  
->  static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-> @@ -187,6 +199,11 @@ static inline int die_get_cfa(Dwarf *dwarf __maybe_unused, u64 pc __maybe_unused
->  	return -1;
->  }
->  
-> +static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
-> +				    struct die_var_type **var_types __maybe_unused)
-> +{
-> +}
-> +
->  #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
->  
->  #endif /* _DWARF_AUX_H */
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
+Is your point that for large combined_mask values 
+_get_free_pages(GFP_NOWAIT | __GFP_NOWARN, required_order) is not
+likely to complete successfully?
+
+Regards,
+Halil
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
