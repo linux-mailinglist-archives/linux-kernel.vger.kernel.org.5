@@ -2,207 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE52B7E5277
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE597E5279
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235438AbjKHJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S235393AbjKHJOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbjKHJN5 (ORCPT
+        with ESMTP id S232723AbjKHJOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:13:57 -0500
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE2410A;
-        Wed,  8 Nov 2023 01:13:54 -0800 (PST)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id 5FDED184639;
-        Wed,  8 Nov 2023 10:13:51 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1699434831; bh=8YvlJP4iehF5VC4lYo9yr3Gk1KOKmHeLrYZG+pdLVxc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zQpYhRcZSsQhsdYt6OAMWjWj/1XvjsMN6ErRHy5DsAcVuH/fDLaBQHivbO9laMGOg
-         2l85K13CiAFz0ifJan0FYClLvJ4MdyM3QMgKJvnIckZr7af1Y4dShgg3YbLsluuUBj
-         VFggBmKgfCCmzHdzASRGg4uBDynoa3fATMSvLSKGZ5lj4DJMSanfaZBXvasKhuVOHr
-         ak/inXItCQaK7proFvieb6/oI8qOZC9siRHqWp7czMu4J1L48W5mPM370dM84klnWh
-         +r3Z65N2Uxq2ZPhi/7myR/u6xsbh0kA1YRgPRnelz9XmiTlnsgGQou1xggb6UFfPuZ
-         gUiOfBkWe8ogg==
-Date:   Wed, 8 Nov 2023 10:13:47 +0100
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Jianxiong Gao <jxgao@google.com>
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Message-ID: <20231108101347.77cab795@meshulam.tesarici.cz>
-In-Reply-To: <20231107182420.0bd8c211.pasic@linux.ibm.com>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
-        <20231103171447.02759771.pasic@linux.ibm.com>
-        <20231103214831.26d29f4d@meshulam.tesarici.cz>
-        <20231107182420.0bd8c211.pasic@linux.ibm.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Wed, 8 Nov 2023 04:14:33 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C18A9F;
+        Wed,  8 Nov 2023 01:14:30 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3A87iZwv009134;
+        Wed, 8 Nov 2023 10:14:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=L87qA+hYUUDc7ZNyh0QZSpVsf4kh59NIKRQqk2meU7g=; b=uW
+        JC1fMJ51nVxjQ2k2AIX62Q66xtDCjQtMyyLDI4KtCVaJwfzjsX/jsK1yt3KKq8eP
+        OzGokXBpfgExFYZl94HFY2vP1WzSUNMhrHMpxkfzLyaJ/zcnkhakQYLP8JisE1PE
+        J2tGoKIlWOa5RxhxVNenQITGpgsTaJPlP31gMUghYJX/DdimnNTnFVRYFcno92dp
+        BsUXvGq7esDYzQ9VRhj87spuCoDg+CMDstQ9PJItatAhIFuGjPKu+U9ldSeBb+Wn
+        7Zry7oy4LBFUoTpMqRytGdJn8OzqLtVobnk9zMc9podODXLny0WhPN4tfJdpipTu
+        Qzi/Hj4ctYKhGtdvhd/A==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u7w21j8ga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 10:14:05 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7B463100051;
+        Wed,  8 Nov 2023 10:14:04 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 681A121A21E;
+        Wed,  8 Nov 2023 10:14:04 +0100 (CET)
+Received: from [10.201.21.240] (10.201.21.240) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 8 Nov
+ 2023 10:14:03 +0100
+Message-ID: <fbd4e006-606c-456a-97de-f74e69e90f3b@foss.st.com>
+Date:   Wed, 8 Nov 2023 10:13:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: stm32: add clocks and reset binding for
+ stm32mp25 platform
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231106141845.102648-1-gabriel.fernandez@foss.st.com>
+ <20231106141845.102648-2-gabriel.fernandez@foss.st.com>
+ <a0231a23-89be-4b44-aae0-ee0bb332f2ae@kernel.org>
+Content-Language: en-US
+From:   Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+In-Reply-To: <a0231a23-89be-4b44-aae0-ee0bb332f2ae@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.201.21.240]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 18:24:20 +0100
-Halil Pasic <pasic@linux.ibm.com> wrote:
+Hi Krzysztof,
 
-> On Fri, 3 Nov 2023 21:50:53 +0100
-> Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> wrote:
->=20
-> > > In our opinion the first step towards getting this right is to figure=
- out what
-> > > the different kinds of alignments are really supposed to mean. For ea=
-ch of the
-> > > mechanisms we need to understand and document, whether making sure th=
-at the
-> > > bounce buffer does not stretch over more of certain units of memory (=
-like,
-> > > pages, iova granule size, whatever), or is it about preserving offset=
- within a
-> > > certain unit of memory, and if yes to what extent (the least signific=
-ant n-bits
-> > > of the orig_addr dictated by the respective mask, or something differ=
-ent).   =20
-> >=20
-> >=20
-> > Seconded. I have also been struggling with the various alignment
-> > constraints. I have even written (but not yet submitted) a patch to
-> > calculate the combined alignment mask in swiotlb_tbl_map_single() and
-> > pass it down to all other functions, just to make it clear what
-> > alignment mask is used. =20
->=20
-> Can you cc me when posting that rework?
+Thank you very much for your review.
 
-Absolutely. I mean, if it still makes sense after we clarify the
-intended goals of the various alignment parameters. Because I believe
-you have indeed found something!
 
-> > My understanding is that buffer alignment may be required by:
-> >=20
-> > 1. hardware which cannot handle an unaligned base address (presumably
-> >    because the chip performs a simple OR operation to get the addresses
-> >    of individual fields); =20
->=20
-> I'm not sure I understood this properly. What is "base address" in this
-> context? Is for swiotlb "base address" basically the return value
-> of swiotlb_tbl_map_single() -- I referred to this as tlb_addr previously?
+On 11/7/23 08:27, Krzysztof Kozlowski wrote:
+> On 06/11/2023 15:18, gabriel.fernandez@foss.st.com wrote:
+>> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>>
+>> Adds clock and reset binding entries for STM32MP25 SoC family
+>>
+>> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+> This was based on some very old tree. Please work on latest release,
+> maintainer's tree or linux-next. Otherwise we need to point the same
+> issues we already fixed. This would be quite a waste of time, don't you
+> think?
+
+To make sure I understood the problem and wouldn't repeat it, I pushed 
+my series starting from the tag 'next-20231031.
+
+Or is it related to the content of the YAML file?
+
+
 >
-> If yes, I understand that  satisfying 1 means satisfying=20
-> tlb_addr & combined_mask =3D=3D 0, where combined_mask describes the
-> combined alignment requirement (i.e. combined_mask =3D=3D min_align_mask |
-> alloc_align_mask | (alloc_size < PAGE_SIZE ? 0 : (PAGE_SIZE-1)). Does
-> that sound about right?
->=20
-> Can we assume that if 1. then the start address of the mapping
-> that is orig_addr needs to be already aligned?
+>> ---
+>>   .../bindings/clock/st,stm32mp25-rcc.yaml      | 116 +++++
+>>   include/dt-bindings/clock/stm32mp25-clks.h    | 492 ++++++++++++++++++
+>>   include/dt-bindings/reset/stm32mp25-resets.h  | 167 ++++++
+>>   3 files changed, 775 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>>   create mode 100644 include/dt-bindings/clock/stm32mp25-clks.h
+>>   create mode 100644 include/dt-bindings/reset/stm32mp25-resets.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> new file mode 100644
+>> index 000000000000..27c60f3231ba
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> @@ -0,0 +1,116 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/clock/st,stm32mp25-rcc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: STM32MP25 Reset Clock Controller
+>> +
+>> +maintainers:
+>> +  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> +
+>> +description: |
+>> +  The RCC IP is both a reset and a clock controller.
+>> +  RCC makes also power management (resume/supend and wakeup interrupt).
+>> +  Please also refer to reset.txt for common reset controller binding usage.
+> Sorry, what TXT?
+>
+>> +
+>> +  This binding uses common clock bindings
+>> +  Documentation/devicetree/bindings/clock/clock-bindings.txt
+> Please drop all unrelevant, 5 year old links.
+>
+>> +
+>> +  Specifying clocks
+>> +  =================
+>> +
+>> +  All available clocks are defined as preprocessor macros in
+>> +  dt-bindings/clock/stm32mp25-clks.h header and can be used in device
+> Not even proper path :/
+>
+>> +  tree sources.
+>> +  This file implements defines like:
+>> +      #define CK_BUS_SDMMC1 245
+>> +      #define CK_KER_SDMMC1 313
+> Open other bindings to see how it is done. We expect full path only.
+> Drop all this irrelevant parts.
+>
+>> +
+>> +  Specifying softreset control of devices
+>> +  =======================================
+>> +
+>> +  Device nodes should specify the reset channel required in their "resets"
+>> +  property, containing a phandle to the reset device node and an index
+>> +  specifying which channel to use.
+> Are you now describing how DT and Linux work? Drop.
+>
+>> +  The index is the bit number within the RCC registers bank, starting from RCC
+>> +  base address.
+> No, it should not be. Use IDs. You will get NAK below anyway.
+>
+>> +  It is calculated as: index = register_offset / 4 * 32 + bit_offset.
+>> +  Where bit_offset is the bit offset within the register.
+>> +
+>> +  For example on STM32MP25, for LTDC reset:
+>> +     ltdc = RCC_LTDCCFGR offset / 4 * 32 + LTDC_bit_offset
+>> +          = 0x840 / 4 * 32 + 0 = 16896
+>> +
+>> +  The list of valid indices for STM32MP25 is available in:
+>> +  include/dt-bindings/reset-controller/stm32mp25-resets.h
+>> +
+>> +  This file implements defines like:
+>> +  #define LTDC_R	16896
+> ? I have no clue what you are saying here.
+>
+>> +
+>> +properties:
+>> +  "#clock-cells":
+>> +    const: 1
+>> +
+>> +  "#reset-cells":
+>> +    const: 1
+>> +
+>> +  compatible:
+>> +    items:
+>> +      - enum:
+>> +          - st,stm32mp25-rcc
+> Compatible is always first.
+>
+>> +  clocks: true
+>> +  clock-names: true
+> NAK, missing constraints.
+>
+> This does not look at all like any decent bindings. Start from scratch
+> from recently reviewed bindings.
+>
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - "#clock-cells"
+>> +  - "#reset-cells"
+>> +  - compatible
+>> +  - reg
+>> +
+>> +if:
+>> +  properties:
+>> +    compatible:
+>> +      contains:
+>> +        enum:
+>> +          - st,stm32mp25-rcc
+>> +then:
+>> +  properties:
+>> +    clocks:
+>> +      description: Specifies oscillators.
+>> +      maxItems: 5
+>> +
+>> +    clock-names:
+>> +      items:
+>> +        - const: hse
+>> +        - const: hsi
+>> +        - const: msi
+>> +        - const: lse
+>> +        - const: lsi
+>> +  required:
+>> +    - clocks
+>> +    - clock-names
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/stm32mp25-clks.h>
+>> +    #include <dt-bindings/reset/stm32mp25-resets.h>
+>> +
+>> +    rcc: rcc@44200000 {
+>> +        compatible = "st,stm32mp25-rcc";
+>> +        reg = <0x44200000 0x10000>;
+>> +        #clock-cells = <1>;
+>> +        #reset-cells = <1>;
+>> +        clock-names = "hse", "hsi", "msi", "lse", "lsi";
+>> +        clocks = <&scmi_clk CK_SCMI_HSE>,
+>> +                 <&scmi_clk CK_SCMI_HSI>,
+>> +                 <&scmi_clk CK_SCMI_MSI>,
+>> +                 <&scmi_clk CK_SCMI_LSE>,
+>> +                 <&scmi_clk CK_SCMI_LSI>;
+>> +    };
+>> +...
+>> diff --git a/include/dt-bindings/clock/stm32mp25-clks.h b/include/dt-bindings/clock/stm32mp25-clks.h
+>> new file mode 100644
+>> index 000000000000..9876ee0dd1e4
+>> --- /dev/null
+>> +++ b/include/dt-bindings/clock/stm32mp25-clks.h
+> Same filename as bindings.
+>
+>> @@ -0,0 +1,492 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+>> +/*
+>> + * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+>> + * Author: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> + */
+>> +
+>> +#ifndef _DT_BINDINGS_STM32MP25_CLKS_H_
+>> +#define _DT_BINDINGS_STM32MP25_CLKS_H_
+>> +
+>
+> ...
+>
+>> +#endif /* _DT_BINDINGS_STM32MP25_CLKS_H_ */
+>> diff --git a/include/dt-bindings/reset/stm32mp25-resets.h b/include/dt-bindings/reset/stm32mp25-resets.h
+>> new file mode 100644
+>> index 000000000000..3a4a9eef6a95
+>> --- /dev/null
+>> +++ b/include/dt-bindings/reset/stm32mp25-resets.h
+> Filename matching compatible format.
+
+Okay, I will fix all the remarks mentioned above
 
 
-No, not really. A very nice diagram can be found in commit 5f89468e2f06
-("swiotlb: manipulate orig_addr when tlb_addr has offset"):
+>> @@ -0,0 +1,167 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause */
+>> +/*
+>> + * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+>> + * Author(s): Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> + */
+>> +
+>> +#ifndef _DT_BINDINGS_STM32MP25_RESET_H_
+>> +#define _DT_BINDINGS_STM32MP25_RESET_H_
+>> +
+>> +#define SYS_R		8192
+> NAK, don't put register values into the bindings. There is no single
+> need of it. Use IDs (which start from 0 and are incremented by 1) or
+> drop it.
+>
+My STM32MP25 driver is based on the same binding as the STM32MP13, which 
+is already upstreamed last year.
 
-"""
-  1. Get dma_addr_t from dma_map_single()
+I will update also  the YAML file of the STM32MP13 for the above remarks.
 
-  dma_addr_t tlb_addr =3D dma_map_single(dev, vaddr, vsize, DMA_TO_DEVICE);
+But should I update the binding values of the STM32MP13 and try a 
+solution about backward compatible ?
 
-      |<---------------vsize------------->|
-      +-----------------------------------+
-      |                                   | original buffer
-      +-----------------------------------+
-    vaddr
+The idea was to have the same reset driver for all STM32MP platforms
 
-   swiotlb_align_offset
-       |<----->|<---------------vsize------------->|
-       +-------+-----------------------------------+
-       |       |                                   | swiotlb buffer
-       +-------+-----------------------------------+
-	    tlb_addr
-"""
+Best regards
 
-Here, the aligned address is outside the original buffer at
-[vadddr; vaddr+vsize). This is what I referred to as "base
-address". The N lowest bits of this address are zero. It may not
-even be mapped in the SWIOTLB if N is greater than IO_TLB_SHIFT.
-However, the exact values of the N lowest bits of the original
-buffer's physical start address are preserved in tlb_addr.
+Gabriel.
 
-> > 2. isolation of untrusted devices, where no two bounce buffers should
-> >    end up in the same iova granule;
-> >=20
-> > 3. allocation size; I could not find an explanation, so this might be
-> >    merely an attempt at reducing SWIOTLB internal fragmentation. =20
->=20
->=20
-> Assumed I understood 1 correctly, I think we are missing something.
->=20
-> 4. preserve the n (0 <=3D n <=3D 31) lowest bits of all addresses within =
-the
-> mapping.
->=20
-> Was it just 1, 2 and 3 then we wouldn't need the whole offsetting
-> business introduced by commit 1f221a0d0dbf ("swiotlb: respect
-> min_align_mask"). Let me cite from its commit message:
->=20
-> """
->     Respect the min_align_mask in struct device_dma_parameters in swiotlb.
->    =20
->     There are two parts to it:
->      1) for the lower bits of the alignment inside the io tlb slot, just
->         extent the size of the allocation and leave the start of the slot
->          empty
->      2) for the high bits ensure we find a slot that matches the high bits
->         of the alignment to avoid wasting too much memory
->    =20
->     Based on an earlier patch from Jianxiong Gao <jxgao@google.com>.
-> """
->=20
-> Do we agree, that 4. needs to be added to the list? Or was it supposed
-> to be covered by 1.?
 
-That's it. It's what case 1 is supposed to be. However, IIUC cases
-2 and 3 don't need to preserve any lowest bits.
-
-At least for case 3, I'm now quite confident that the intention
-was to start big buffers on a page-aligned slot, leaving the gaps
-for buffers smaller than a page.
-
-Case 2 is not clear to me. Some comments suggest that it should
-prevent exposing a single iova granule to multiple untrusted
-devices. What the code really does now is prevent crossing an iova
-granule boundary if the original buffer did not cross one. I'm not
-sure whether it achieves the goal, because commit e81e99bacc9f
-("swiotlb: Support aligned swiotlb buffers") also references
-PAGE_SIZE, but AFAICS it should use the same logic as case 3
-(page-aligned allocations).
-
-To sum it up, there are two types of alignment:
-
-1. specified by a device's min_align_mask; this says how many low
-   bits of a buffer's physical address must be preserved,
-
-2. specified by allocation size and/or the alignment parameter;
-   this says how many low bits in the first IO TLB slot's physical
-   address must be zero.
-
-I hope somebody can confirm or correct this summary before I go
-and break something. You know, it's not like cleanups in SWIOTLB
-have never broken anything.  ;-)
-
-Petr T
+>
+> Best regards,
+> Krzysztof
+>
