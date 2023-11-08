@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1209D7E518C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E859C7E518F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbjKHIBW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 03:01:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S235044AbjKHIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:01:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjKHIBS (ORCPT
+        with ESMTP id S234954AbjKHIBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:01:18 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC66BAF;
-        Wed,  8 Nov 2023 00:01:15 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SQHHp0p1cz9xFPp;
-        Wed,  8 Nov 2023 15:47:50 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAnFXUqQEtlDKtDAA--.34S2;
-        Wed, 08 Nov 2023 09:00:54 +0100 (CET)
-Message-ID: <110badd28083322d8895730bcd353d6d398f2db2.camel@huaweicloud.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>,
-        jack@suse.cz, jeffm@suse.com, hdanton@sina.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com,
-        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
-        linux-security-module@vger.kernel.org
-Date:   Wed, 08 Nov 2023 09:00:38 +0100
-In-Reply-To: <CAHC9VhSH-WED1kM4UQrttJb6-ZQHpB0VceW0YGX1rz8NsZrVHA@mail.gmail.com>
-References: <000000000000cfe6f305ee84ff1f@google.com>
-         <000000000000a8d8e7060977b741@google.com>
-         <CAHC9VhTFs=AHtsdzas-XXq2-Ub4V9Tbkcp4_HBspmGaARzWanw@mail.gmail.com>
-         <b560ed9477d9d03f0bf13af2ffddfeebbbf7712b.camel@huaweicloud.com>
-         <CAHC9VhSH-WED1kM4UQrttJb6-ZQHpB0VceW0YGX1rz8NsZrVHA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Wed, 8 Nov 2023 03:01:22 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D74EF0
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:01:20 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so11236858a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:01:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699430479; x=1700035279; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
+        b=gcATRfuZwPQuaMDXVN2zDuOrndRmF2UiI+D7rRbBhUXsxpmla4rBOKmW9ptzlL+lhm
+         79Jkv8o7dWQyn6g4osleydpNdMRyHBQer3YuWS28GXp/LvcQu1vSrgPyru6MrltpsRGZ
+         ZdwFsKiAZiQA6u90NCjLLnTSVa2Y4qV+LRzveJ0KKyowkR6qK4L2K3T/rNymhBL0C5+h
+         NoQKsDr73A//t+hTx0O/77sCl081ZGSDOR1R+uEtNLpGssPZn54gorRJpelNFDzKevex
+         gA7TAhYg24TK0p2+FfQIsk+ek3tKti2gmaoMsGiUovoUH9U6Oz/zFPVxSz7EbninUnE8
+         Dw5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699430479; x=1700035279;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
+        b=llzBAlmYCRrBZpAHSV3wecv+s79aYZA4dNfacnfdPKbXP4Rpc1JC3Q35fZAVua0W6b
+         WWBr+GPg5Ydzo2+vKsrbm3CoUlLZba6aF2JKVjMOTVknRO402hdqNnUAfzEDsEvgAat+
+         reanMqtRUvmEM33ybY7d/Pc8MdS611bMvFsTAVjmYBDmGfM1mnZPvFENW9g064+RLYjT
+         0B1sKxRoTEw3iRk1dFIHC6ciWYcAV2SDG2jCGlsM6tcW5peFP2DjZl623N6n7IArWd5l
+         /5dXe+Xd289kwIRDq5BJuUGav4tARpS/M/lc3I6KvTlFWkv2Cg4tyeVuXk8EFV8A3HmF
+         Fk+w==
+X-Gm-Message-State: AOJu0Yw6pokzNxcy0Hzb8sEtId6d80zc4sAGQiboOE8i/zH6HWjYLTs6
+        X2rscVqUOp61mT3ipqPYqoBCNRkTUS18y7VWOoWdig==
+X-Google-Smtp-Source: AGHT+IF9zLVkQKgYnQFEJtbLFMGxGUHm/ggdeeQ390qH4xEE1KzKzMRdaKCiHY6k9DQcMexREYD80V4ZtE1hNp9Thbc=
+X-Received: by 2002:a17:907:60d4:b0:9ad:e298:a5d with SMTP id
+ hv20-20020a17090760d400b009ade2980a5dmr789580ejc.19.1699430478750; Wed, 08
+ Nov 2023 00:01:18 -0800 (PST)
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwAnFXUqQEtlDKtDAA--.34S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWkXFyfuFWxKw1rZw15CFg_yoW5JF4fpF
-        W5KFW5KF4vvr4xJrn2yw13Ga4I9wnxXFy7X3s3Kw1DAFW5XFyIvr4xKr43uFyY9rs3Kr1j
-        qanrKas8C3srAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5YirwACsi
-X-CFilter-Loop: Reflected
+References: <20231108065818.19932-1-link@vivo.com>
+In-Reply-To: <20231108065818.19932-1-link@vivo.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 8 Nov 2023 00:00:39 -0800
+Message-ID: <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+To:     Huan Yang <link@vivo.com>, Wei Xu <weixugc@google.com>,
+        David Rientjes <rientjes@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-07 at 17:26 -0500, Paul Moore wrote:
-> On Tue, Nov 7, 2023 at 6:03 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Mon, 2023-11-06 at 17:53 -0500, Paul Moore wrote:
-> > > Hi Roberto,
-> > > 
-> > > I know you were looking at this over the summer[1], did you ever find
-> > > a resolution to this?  If not, what do you think of just dropping
-> > > security xattr support on reiserfs?  Normally that wouldn't be
-> > > something we could consider, but given the likelihood that this hadn't
-> > > been working in *years* (if ever), and reiserfs is deprecated, I think
-> > > this is a viable option if there isn't an obvious fix.
-> > > 
-> > > [1] https://lore.kernel.org/linux-security-module/CAHC9VhTM0a7jnhxpCyonepcfWbnG-OJbbLpjQi68gL2GVnKSRg@mail.gmail.com/
-> > 
-> > Hi Paul
-> > 
-> > at the time, I did some investigation and came with a patch that
-> > (likely) solves some of the problems:
-> > 
-> > https://lore.kernel.org/linux-fsdevel/4aa799a0b87d4e2ecf3fa74079402074dc42b3c5.camel@huaweicloud.com/#t
-> 
-> Ah, thanks for the link, it looks like that was swallowed by my inbox.
-> In general if you feel it is worth adding my email to a patch, you
-> should probably also CC the LSM list.  If nothing else there is a
-> patchwork watching the LSM list that I use to make sure I don't
-> miss/forget about patches.
-> 
-> > I did a more advanced patch (to be validated), trying to fix the root
-> > cause:
-> > 
-> > https://lore.kernel.org/linux-fsdevel/ffde7908-be73-cc56-2646-72f4f94cb51b@huaweicloud.com/
-> > 
-> > However, Jeff Mahoney (that did a lot of work in this area) suggested
-> > that maybe we should not try invasive changes, as anyway reiserfs will
-> > be removed from the kernel in 2025.
-> 
-> I tend to agree with Jeff, which is one of the reasons I was
-> suggesting simply removing LSM xattr support from reiserfs, although
-> depending on what that involves it might be a big enough change that
-> we are better off simply leaving it broken.  I think we need to see
-> what that patch would look like first.
-> 
-> > It wouldn't be a problem to move the first patch forward.
-> 
-> I worry that the first patch you mentioned above doesn't really solve
-> anything, it only makes it the responsibility of the user to choose
-> either A) a broken system where LSM xattrs don't work or B) a system
-> that will likely deadlock/panic.  I think I would rather revert the
-> original commit and just leave the LSM xattrs broken than ask a user
-> to make that choice.
++Wei Xu +David Rientjes
 
-Ok, that would be fine for me.
+On Tue, Nov 7, 2023 at 10:59=E2=80=AFPM Huan Yang <link@vivo.com> wrote:
+>
+> In some cases, we need to selectively reclaim file pages or anonymous
+> pages in an unbalanced manner.
+>
+> For example, when an application is pushed to the background and frozen,
+> it may not be opened for a long time, and we can safely reclaim the
+> application's anonymous pages, but we do not want to touch the file pages=
+.
+>
+> This patchset extends the proactive reclaim interface to achieve
+> unbalanced reclamation. Users can control the reclamation tendency by
+> inputting swappiness under the original interface. Specifically, users
+> can input special values to extremely reclaim specific pages.
 
-Thanks
+I proposed this a while back:
 
-Roberto
+https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yK=
+SNgD7aGdg@mail.gmail.com/
 
+The takeaway from the discussion was that swappiness is not the right
+way to do this. We can add separate arguments to specify types of
+memory to reclaim, as Roman suggested in that thread. I had some
+patches lying around to do that at some point, I can dig them up if
+that's helpful, but they are probably based on a very old kernel now,
+and before MGLRU landed. IIRC it wasn't very difficult, I think I
+added anon/file/shrinkers bits to struct scan_control and then plumbed
+them through to memory.reclaim.
+
+>
+> Example:
+>         echo "1G" 200 > memory.reclaim (only reclaim anon)
+>           echo "1G" 0  > memory.reclaim (only reclaim file)
+>           echo "1G" 1  > memory.reclaim (only reclaim file)
+
+The type of interface here is nested-keyed, so if we add arguments
+they need to be in key=3Dvalue format. Example:
+
+echo 1G swappiness=3D200 > memory.reclaim
+
+As I mentioned above though, I don't think swappiness is the right way
+of doing this. Also, without swappiness, I don't think there's a v1 vs
+v2 dilemma here. memory.reclaim can work as-is in cgroup v1, it just
+needs to be exposed there.
