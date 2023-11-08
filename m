@@ -2,82 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBFC7E5C46
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B50B67E5C47
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjKHRU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
+        id S232460AbjKHRUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKHRU1 (ORCPT
+        with ESMTP id S231926AbjKHRUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:20:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E2F1BC3
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:20:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D62EDC433C9;
-        Wed,  8 Nov 2023 17:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699464024;
-        bh=prYzLaZu06WtQmNg4/UT6PWTH9U6sgDBvBDcv1Ulv/8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JvZes0SyVw4VZJlD4zFojOe2NBOedMICGWUUbV7VYo4k58CokiZWkkcipReuSdsNn
-         VKlEcNHWaR+GOLRUs3gGoFR3tmk7uhJACdbJHYkKvKs17gnNNkBAhm88MjiFJzvZed
-         kF1jaHgGTAqgRHWq71DYq8Ougef2P5sR/Wcd2mi6m+Y7NkQLZDPQIoSTN9DggqhQ3z
-         PunUnQuLe+KIozqk1SvZQsioWbgX3LoVNI/hbXmNJMJhj2EGfCI2Tu3EazDtQRBI6F
-         PbYUuPW+3uwX8Wr2Q6N+Ov2TOIlyOC0uD3nakVfFff5T12qDGt09EJyAn4MXwO6IIM
-         oOuA3gSJxuLHA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BBA39E00086;
-        Wed,  8 Nov 2023 17:20:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH RESEND v2 0/2] riscv: Fix set_memory_XX() and
- set_direct_map_XX()
-From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169946402476.8523.11934307334970092099.git-patchwork-notify@kernel.org>
-Date:   Wed, 08 Nov 2023 17:20:24 +0000
-References: <20231108075930.7157-1-alexghiti@rivosinc.com>
-In-Reply-To: <20231108075930.7157-1-alexghiti@rivosinc.com>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, rppt@kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+        Wed, 8 Nov 2023 12:20:42 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549962101
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:20:40 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b59662ff67so8119597b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699464039; x=1700068839; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBbKC3JkdJ0oQ9YroQVJM/5WimY0jXaEi0yPTCtmdW4=;
+        b=KRvVLLMtR/ldoVMkhZYwEz3RWr0mpd3q5HfMo6E1eymtRVrr5IAbiIZ8LsF395Qram
+         8U7JFDCycq8uKe7RzwefkyuCukw8fzhErpmZOdil+naNZKM6sWGRZ4WpaNQnXMtqSikb
+         3ty2xBNBcEriOWRl9OxHVD6pPajuEE5knKH6S57r17BoprX44Gl/rSR3TRYqZeFJ62Il
+         bVm9palqUFrSLRAzw1ZLo8ogkmXmYd8/NIfuwIu3ROmq/vKmqEfI+u1Fnrk/hLMeJP6e
+         bXpibw2MNE18Tn2o7decAmTzFWU4qYSlMGPyDZIplL2U4Ray5FKt58c/+Iawd+2d/tL5
+         FsMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699464039; x=1700068839;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBbKC3JkdJ0oQ9YroQVJM/5WimY0jXaEi0yPTCtmdW4=;
+        b=Iq9KdtiQglYUvbUhRoTRFr2YbTJDr5ZuR+jgz4XCpsNfQZpAH27RHT1z0CBZo6jSJZ
+         P4yC1XZnlw3CrJ/vGC4HXDhx6Kqlc3QdvmwOTGlKwubj0MysaY8JsOg2+XHO3h2FYo21
+         H+Q86DvVA+7vfCPo5FZEFycv35ycMpQe4UK79T/XtUCypoicgsg0LKr9yaG6MpOiYvia
+         Ad4XXGIsOlaalXGPs/mzBspQxKPcrcII3sVFGBW8Z97yos44jfbPPO/Gu5W26PBd50p6
+         OxCMYOWfbapnOGZkpt5c3F8/HYrSjpPq/7P6XyusaeC/XvvfBgqnwWOF3IcZww6Sk1h8
+         GuTA==
+X-Gm-Message-State: AOJu0Yyrz3YTUXhSjWpJjoFkWP6l1UrQ+x+2lgOMYDj4Mb9N77u3AfzG
+        b6El4D2gdS1aLdIaRBoUK6AtcM+K7UM=
+X-Google-Smtp-Source: AGHT+IGphpWQHHEDy2ukCPCGjyPMd0Bw17ZH9MJZhu3SATwjM2+XVm/rjVukAqXpoj9DXdfpGc+wU3Ua940=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:4047:b0:59b:b0b1:d75a with SMTP id
+ ga7-20020a05690c404700b0059bb0b1d75amr122541ywb.4.1699464039546; Wed, 08 Nov
+ 2023 09:20:39 -0800 (PST)
+Date:   Wed, 8 Nov 2023 09:20:37 -0800
+In-Reply-To: <20231108111806.92604-30-nsaenz@amazon.com>
+Mime-Version: 1.0
+References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-30-nsaenz@amazon.com>
+Message-ID: <ZUvDZUbUR4s_9VNG@google.com>
+Subject: Re: [RFC 29/33] KVM: VMX: Save instruction length on EPT violation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, anelkz@amazon.com, graf@amazon.com,
+        dwmw@amazon.co.uk, jgowans@amazon.com, corbert@lwn.net,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        x86@kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Nov 08, 2023, Nicolas Saenz Julienne wrote:
+> Save the length of the instruction that triggered an EPT violation in
+> struct kvm_vcpu_arch. This will be used to populate Hyper-V VSM memory
+> intercept messages.
 
-This series was applied to riscv/linux.git (for-next)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+This is silly and unnecessarily obfuscates *why* (as my response regarding SVM
+shows), i.e. that this is "needed" becuase the value is consumed by a *different*
+vCPU, not because of performance concerns.
 
-On Wed,  8 Nov 2023 08:59:28 +0100 you wrote:
-> Those 2 patches fix the set_memory_XX() and set_direct_map_XX() APIs, which
-> in turn fix STRICT_KERNEL_RWX and memfd_secret(). Those were broken since the
-> permission changes were not applied to the linear mapping because the linear
-> mapping is mapped using hugepages and walk_page_range_novma() does not split
-> such mappings.
-> 
-> To fix that, patch 1 disables PGD mappings in the linear mapping as it is
-> hard to propagate changes at this level in *all* the page tables, this has the
-> downside of disabling PMD mapping for sv32 and PUD (1GB) mapping for sv39 in
-> the linear mapping (for specific kernels, we could add a Kconfig to enable
-> ARCH_HAS_SET_DIRECT_MAP and STRICT_KERNEL_RWX if needed, I'm pretty sure we'll
-> discuss that).
-> 
-> [...]
+It's also broken, AFAICT nothing prevents the intercepted vCPU from hitting a
+different EPT violation before the target vCPU consumes exit_instruction_len.
 
-Here is the summary with links:
-  - [RESEND,v2,1/2] riscv: Don't use PGD entries for the linear mapping
-    https://git.kernel.org/riscv/c/629db01c64ff
-  - [RESEND,v2,2/2] riscv: Fix set_memory_XX() and set_direct_map_XX() by splitting huge linear mappings
-    https://git.kernel.org/riscv/c/311cd2f6e253
+Holy cow.  All of deliver_gpa_intercept() is wildly unsafe.  Aside from race
+conditions, which in and of themselves are a non-starter, nothing guarantees that
+the intercepted vCPU actually cached all of the information that is held in its VMCS.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+The sane way to do this is to snapshot *all* information on the intercepted vCPU,
+and then hand that off as a payload to the target vCPU.  That is, assuming the
+cross-vCPU stuff is actually necessary.  At a glance, I don't see anything that
+explains *why*.
