@@ -2,174 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31CA7E5F3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D453D7E5F3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjKHUdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 15:33:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
+        id S229722AbjKHUfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 15:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKHUdK (ORCPT
+        with ESMTP id S229473AbjKHUfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 15:33:10 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA3010D5;
-        Wed,  8 Nov 2023 12:33:08 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8KGKvJ002263;
-        Wed, 8 Nov 2023 20:33:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=IYwZ9SivaHS+MljhzK6A4ysjL11f9Bp7kqoMlkC090E=;
- b=tLTKV7W7rwMcJQTVVuRPWHHZJ6SBe6A1jJv7f5sc6tHSxeQoyUTxMfgN8OzR1K0JYlRb
- BJscQAtc+3NdNAUCv/CUID7LpRlSIpu4mGkLb3KmQ/oHfLa4bKPPDJcGsiHYVqTW8Q8j
- f5bIOQiV25YzK71kmP/0En5T1UzFmtx0qqpRSRG62tr5kk3BfDRR0bUiXgg+KHzhaihA
- YkV+Q8MG579US5Fi03stmzyW18JYLME4KhoX6TbMiQ5OVfVbTCxiFyM5EXRH5FZfH5OC
- AJJ5zjWzrUs4khbfkLpv+oLvJcpc8I+iVPe8Ek24kEMyXEwCIqtufWRuEXpACJONzrzg Gg== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8h7gghxf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 20:33:07 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8J3O43014506;
-        Wed, 8 Nov 2023 20:33:06 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w21ydga-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 20:33:06 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8KX3Xw3080852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 20:33:03 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E6C120043;
-        Wed,  8 Nov 2023 20:33:03 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C422A20040;
-        Wed,  8 Nov 2023 20:33:02 +0000 (GMT)
-Received: from localhost (unknown [9.171.18.100])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  8 Nov 2023 20:33:02 +0000 (GMT)
-Date:   Wed, 8 Nov 2023 21:33:01 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] more s390 updates for 6.7 merge window
-Message-ID: <your-ad-here.call-01699475581-ext-3562@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: D8ta2JOGByfSHIxTBZ3yfxUWgK95E0Yy
-X-Proofpoint-GUID: D8ta2JOGByfSHIxTBZ3yfxUWgK95E0Yy
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 8 Nov 2023 15:35:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB24D10D5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 12:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699475663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dFXXJ4iJ1CFY4HPtPmC8ieq/tgarKy+p6y1wSuxcM04=;
+        b=blLBBNaBPeBc/KLQuG2jpdqVlf5RQhE03/XNLB22/jeWGQT4WMoVHvQNf9I1iYBvMhwP/4
+        j0hQv9YSQZNkIwAQyDdJQWT9sneasbWKg6yrsM+MdOxtGzEj124ceydb1g7V4AGEIt//ZY
+        O8HI9EVJuhdpRdjlev2p+JbiuZAzBw8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-556-Ia7l1zzIM064-VjzNRa1EQ-1; Wed, 08 Nov 2023 15:34:21 -0500
+X-MC-Unique: Ia7l1zzIM064-VjzNRa1EQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-99bca0b9234so9282266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 12:34:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699475660; x=1700080460;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dFXXJ4iJ1CFY4HPtPmC8ieq/tgarKy+p6y1wSuxcM04=;
+        b=sP7mvJdQgLM9122ANvhYTp5wlM7E6P7foyAxrJR7orARR9kzIU02dUP4e1dheUaCq3
+         1XwwpdRCLVAJOEpwcuMqRrZLriuRbgXe0lNT9F/5hMDKic4MtSi3SEBeBeS/bBaGtyNj
+         NxiZ3ZzfIrOxKc9O+NDM82GU17Ityy4dpyW8YOIqFMgXBO9vi29skTVq0CayV7GmS5ZW
+         1x9H3N7wUllNTjVQwr5LsTB6VbczO/xKdbSwuEj3/Ax27NcgZBhpxvKBx7Q72jSWf4vn
+         cTbXAUTPrYZP9Zma00I0eqmubNzX0tXN0/vmwqwjn7/sxLxFX6eLsQh95uw7KST00VRD
+         dEaA==
+X-Gm-Message-State: AOJu0Yz0usKzL5DI5IKDAqhEvfisHtIJv5KoWWXi6p7zlGXlS1LQYLin
+        3oVeyzA7tA5JOijdOFq40FjH4GWaOAJPn8h84oie6i4j7I7EPYON7Blvcn7g76EWnbaMPACD3Gx
+        BP34/cLMq91sEBn10xDnmcj9kq7ky5eVNFOVc9AoJ
+X-Received: by 2002:a17:907:c5c6:b0:9e3:b88c:d735 with SMTP id ts6-20020a170907c5c600b009e3b88cd735mr3049345ejc.61.1699475660012;
+        Wed, 08 Nov 2023 12:34:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGtgzC0Ez0CFIIAF50p/Vlbu8Dk51oR/oGP9e+6leQLD9WcjLWGWl4lB5teFMNB3Aq1UUudO2YSVbK6KmGeqro=
+X-Received: by 2002:a17:907:c5c6:b0:9e3:b88c:d735 with SMTP id
+ ts6-20020a170907c5c600b009e3b88cd735mr3049329ejc.61.1699475659712; Wed, 08
+ Nov 2023 12:34:19 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_09,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 clxscore=1015 mlxscore=0
- phishscore=0 adultscore=0 mlxlogscore=675 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080168
+References: <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
+ <20231108194051.279435-2-nils@nilsfuhler.de>
+In-Reply-To: <20231108194051.279435-2-nils@nilsfuhler.de>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 8 Nov 2023 21:34:07 +0100
+Message-ID: <CAO-hwJ+b4q+8g=Cg5MRJQT2EsxkFZrK_XgJqmHWm=GBHskhDqQ@mail.gmail.com>
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
+To:     Nils Fuhler <nils@nilsfuhler.de>
+Cc:     davidrevoy@protonmail.com, folays@gmail.com,
+        jason.gerecke@wacom.com, jkosina@suse.cz,
+        jose.exposito89@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ostapyshyn@sra.uni-hannover.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Wed, Nov 8, 2023 at 8:41=E2=80=AFPM Nils Fuhler <nils@nilsfuhler.de> wro=
+te:
+>
+> Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
+>
+> > So, to me:
+> > - 276e14e6c3993317257e1787e93b7166fbc30905 is wrong: this is a
+> > firmware bug (reporting invert through eraser) and should not be
+> > tackled at the generic level, thus it should be reverted
+>
+> Surely that can't be the solution.  [1] is not a specification but a
+> suggestion that many manufacturers seem to follow.  Apparently, there
+> are devices that directly report "erasing" for the upper button,
+> skipping the whole "intent to erase" business.  A questionable decision,
+> but clearly intended.
 
-please pull more s390 updates for 6.7 merge window.
+How many of such devices do we have? Are they all UGTablet like the
+XP-PEN? Are they behaving properly on Windows without a proprietary
+driver?
+We can try to make the code work based on suppositions, but this is
+the first time I see such a behavior, so I'd prefer fix it when I see
+it rather than adding complexity in the driver where changing anything
+is hard. I'm writing regression tests for that exact same purpose.
 
-Thank you,
-Vasily
+>
+> The evdev input protocol represents the erasing action as BTN_TOUCH with
+> BTN_TOOL_RUBBER being active.  Previously, it was assumed that there is
+> an Invert usage that would toggle BTN_TOOL_RUBBER.  XP-Pen Artist 24
+> (and possibly other devices) does not have Invert in its report
+> descriptor, resulting in missing BTN_TOOL_RUBBER.  BTN_TOUCH without an
+> active tool has no meaning in the input stream.
+>
+> 276e14e6c3 adds a quirk for this and sends the required BTN_TOOL_RUBBER
+> events *only* for styli not doing it themselves via Invert.  In fact,
+> 276e14e6c3 does not even affect the "two-eraser" XP-Pen Artist Pro 16
+> Gen 2 and all other devices having Invert in their report descriptors.
+> The quirk is not set, the behavior is unchanged [2].
 
-The following changes since commit e392ea4d4d00880bf94550151b1ace4f88a4b17a:
+Yes. That quirk only affects the device clearly not following the
+specification. Which is why it wasn't noticed that it was wrong.
 
-  Merge tag 's390-6.7-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2023-11-03 10:17:22 -1000)
+>
+> As Illia already described, the *real problem* is the missing
+> compatibility of the whole hidinput_hid_event state machine with
+> hidinput_setkeycode, invoked from userspace via the EVIOCSKEYCODE ioctl.
+> In David's case, this is done by hwdb.
 
-are available in the Git repository at:
+Sorry but I tend to disagree. Relying on the ioctl EVIOCSKEYCODE for
+tuning the behavior of a state machine is just plain wrong. When
+people do that, they are doing it at the wrong level and introducing
+further bugs.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.7-2
+The whole pen and touch HID protocols rely on a state machine. You
+just can not change the meaning of it because your hardware maker
+produced a faulty hardware.
+The correct solution is to submit a fix here, so that everyone gets
+the benefit of it. But that fix can now be a HID-BPF program, which
+will be eventually integrated in the kernel tree as soon as I manage
+to get enough time to work on it.
 
-for you to fetch changes up to 02e790ee3077c0571794d0ab8f71413edbe129cc:
+>
+> This has been the case at least since the refactoring and even affects
+> styli *completely* adhering to [1]: remapping Invert to something other
+> than BTN_TOOL_RUBBER borks the device.  If you replay the recording [3]
+> (with or without 276e14e6c3) and remap [4] 0xd003c (Invert) to something
+> other than BTN_TOOL_RUBBER, you can observe that:
 
-  s390/mm: make pte_free_tlb() similar to pXd_free_tlb() (2023-11-05 22:34:58 +0100)
+In the same way, if you remap Tip Switch to KEY-A, you won't get
+clicks from your pen. Assuming you can do that with any event on any
+HID device is just plain wrong.
+That ioctl is OK-ish for "remapping" simple things like keys. In our
+case, the whole firmware follows a state machine, so we can not change
+it. It has to be remapped in a later layer, in libinput, your
+compositor, or in your end user application.
 
-----------------------------------------------------------------
-more s390 updates for 6.7 merge window
+>
+> (1) Remapped Invert does not trigger the event it was remapped to -- this
+>     is due to hardcoded BTN_TOOL_RUBBER and BTN_TOUCH in hidinput_hid_eve=
+nt
+>
+> (2) After triggering Invert once, BTN_TOOL_PEN and BTN_TOUCH never appear
+>     in the event stream again -- remapping Invert masks BTN_TOOL_RUBBER,
+>     causing it to get permanently stuck in report->tool.
+>
+> 276e14e6c3 does extend this issue onto Eraser remappings for devices
+> without Invert, resulting in this regression.  However, the solution is
+> to fix 276e14e6c3 (and the whole function, while we're at it), not to
+> revert it.
 
-- Get rid of s390 specific use of two PTEs per 4KB page with complex
-  half-used pages tracking. Using full 4KB pages for 2KB PTEs increases
-  the memory footprint of page tables but drastically simplify mm code,
-  removing a common blocker for common code changes and adaptations
+Again, you convinced me that this commit was wrong. If people needs to
+also use an ioctl to "fix" it, then there is something wrong.
 
-- Simplify and rework "cmma no-dat" handling. This is a follow up
-  for recent fixes which prevent potential incorrect guest TLB flushes
+>
+> > - both of these tablets are forwarding the useful information, but not
+> > correctly, which confuses the kernel
+> > - I should now be able to write regression tests
+> > - I should be able to provide HID-BPF fixes for those tablets so that
+> > we can keep them working with or without
+> > 276e14e6c3993317257e1787e93b7166fbc30905
+> > reverted (hopefully)
+> > - problem is I still don't have the mechanics to integrate the HID-BPF
+> > fixes directly in the kernel tree, so maybe I'll have to write a
+> > driver for XP-Pen while these internals are set (it shouldn't
+> > interfere with the HID-BPF out of the tree).
+>
+> As you can see, there is no need for rewriting anything.  The generic
+> solution for "invertless" digitizers is already in place and has no
+> impact on other devices.  IMHO, it would be wiser to fix the regression
+> by making hidinput_hid_event compatible with EVIOCSKEYCODE, than to miss
+> the point of what is actually broken and write device-specific drivers.
 
-- Add perf user stack unwinding as well as USER_STACKTRACE support for
-  user space built with -mbackchain compile option
+EVIOCSKEYCODE is called by userspace *after* the kernel parsed the
+device and is ready to accept events. There is no way we can make this
+consistent with the event stream. If you need to call that ioctl to
+fix your device, it's a bug in the kernel, and it needs to be fixed
+there before being presented to the userspace.
 
-- Add few missing conversion from tlb_remove_table to tlb_remove_ptdesc
+I might buy the "invertless" devices are a thing if I can get more
+data about it. So far there are only 2 of them, and they add extra
+complexity in the code when we can just patch the devices to do the
+right thing.
 
-- Fix crypto cards vanishing in a secure execution environment due to
-  asynchronous errors
+>
+> [1] https://learn.microsoft.com/en-us/windows-hardware/design/component-g=
+uidelines/windows-pen-states
+>
+> [2] David confirms it in his blog post: "I now know it is there for a
+>     long time, because even with the "old" kernel, my newer XPPen 16 Pro
+>     (gen2) also reacts this way."
+>     https://www.davidrevoy.com/article995/how-a-kernel-update-broke-my-st=
+ylus-need-help
 
-- Avoid reporting crypto cards or queues in check-stop state as online
+New hardware isn't supposed to be supported on an old kernel and is
+not considered as a regression. However, David mentioned that the
+device was "working" on 6.5.0 but broke in 6.5.8 with the patch
+mentioned above. This is a regression that needs to be tackled.
+Especially because it was introduced in 6.6 but backported into 6.5.
 
-- Fix null-ptr deference in AP bus code triggered by early config change
-  via SCLP
+Cheers,
+Benjamin
 
-- Couple of stability improvements in AP queue interrupt handling
+>
+> [3] https://dl.uni-h.de/?t=3D6b2cabd8f15ac8ff281b52e25920c0a9
+>
+> [4] https://github.com/iostapyshyn/evmap is a handy EVIOCSKEYCODE wrapper
+>     for remapping.
+>
 
-----------------------------------------------------------------
-Alexander Gordeev (4):
-      s390/mm: add missing conversion to use ptdescs
-      s390/mm: use full 4KB page for 2KB PTE
-      s390/mm: use compound page order to distinguish page tables
-      s390/mm: make pte_free_tlb() similar to pXd_free_tlb()
-
-Harald Freudenberger (4):
-      s390/ap: rework to use irq info from ap queue status
-      s390/ap: re-enable interrupt for AP queues
-      s390/ap: fix AP bus crash on early config change callback invocation
-      s390/ap: fix vanishing crypto cards in SE environment
-
-Heiko Carstens (7):
-      s390/perf: implement perf_callchain_user()
-      s390: add USER_STACKTRACE support
-      s390/cmma: cleanup inline assemblies
-      s390/cmma: move parsing of cmma kernel parameter to early boot code
-      s390/cmma: move set_page_stable() and friends to header file
-      s390/cmma: move arch_set_page_dat() to header file
-      s390/cmma: rework no-dat handling
-
-Ingo Franzki (1):
-      s390/zcrypt: don't report online if card or queue is in check-stop state
-
- arch/s390/Kconfig                   |   1 +
- arch/s390/boot/ipl_parm.c           |   8 +
- arch/s390/boot/startup.c            |  44 ++++++
- arch/s390/boot/vmem.c               |  17 ++
- arch/s390/include/asm/mmu.h         |   2 -
- arch/s390/include/asm/mmu_context.h |   1 -
- arch/s390/include/asm/page-states.h |  59 +++++++
- arch/s390/include/asm/page.h        |   1 -
- arch/s390/include/asm/pgalloc.h     |   1 -
- arch/s390/include/asm/setup.h       |   3 -
- arch/s390/include/asm/stacktrace.h  |   7 +
- arch/s390/include/asm/tlb.h         |  13 +-
- arch/s390/kernel/early.c            |   1 +
- arch/s390/kernel/perf_event.c       |  41 +++++
- arch/s390/kernel/stacktrace.c       |  43 ++++++
- arch/s390/mm/gmap.c                 |   4 +-
- arch/s390/mm/init.c                 |   4 -
- arch/s390/mm/page-states.c          | 213 +-------------------------
- arch/s390/mm/pgalloc.c              | 298 ++++--------------------------------
- arch/s390/mm/vmem.c                 |   4 +-
- drivers/s390/crypto/ap_bus.c        |  47 +++---
- drivers/s390/crypto/ap_bus.h        |   1 -
- drivers/s390/crypto/ap_queue.c      |  36 +++--
- drivers/s390/crypto/zcrypt_card.c   |   4 +-
- drivers/s390/crypto/zcrypt_queue.c  |   5 +-
- 25 files changed, 320 insertions(+), 538 deletions(-)
