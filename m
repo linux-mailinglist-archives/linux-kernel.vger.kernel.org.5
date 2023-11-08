@@ -2,169 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055337E565D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E07217E5660
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344588AbjKHMfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:35:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        id S1344584AbjKHMhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjKHMfh (ORCPT
+        with ESMTP id S229520AbjKHMhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:35:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF76F1BF2;
-        Wed,  8 Nov 2023 04:35:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699446935; x=1730982935;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Oh/p14wVpiK4vO4Z0TdtqDDkwu7eO/RsM3cVxkN0aNU=;
-  b=RLUAajSfldQSdipsNswpZXsqZdt7RkizHRXANaCFQq57PsV+bUPPTRMK
-   e2EK+QORXT/B1aWIeHiRLtBNXF/Sm1Kd30g5uNm995U2QmvENl0Dr5TVG
-   upWpGEuTEDUTGYbx43H7pjoZXlEQAANFcIiLDsX946qnIvlj0rXDFYtjP
-   rmXTKlKa3+hLzvSLFIyRAJtvNCVlGldkS38w72poY3jCGZp8AcV5HteeF
-   Lim9Aa8CWK9St6ywobsWPxpssr+oa/34oHsfrcU1olp4qlvfUS74pLS9G
-   kv5DY5YWROfhO+zTPPtG2wpSGQyIxZzgk+YZgbWvewJDUFcqKRTPH3ccP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="392622808"
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="392622808"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 04:35:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="4174110"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 08 Nov 2023 04:35:30 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0hmH-0007vc-2R;
-        Wed, 08 Nov 2023 12:35:25 +0000
-Date:   Wed, 8 Nov 2023 20:34:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Huan Yang <link@vivo.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
-Subject: Re: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
-Message-ID: <202311082048.zacOzITP-lkp@intel.com>
-References: <20231108065818.19932-3-link@vivo.com>
+        Wed, 8 Nov 2023 07:37:22 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F72B1BF1;
+        Wed,  8 Nov 2023 04:37:20 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3A29040E014B;
+        Wed,  8 Nov 2023 12:37:18 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ylmaVhlMjPnP; Wed,  8 Nov 2023 12:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699447035; bh=JGXN64F+EUfo32di/qzr7XJX6YhtI0kCKBdmlkk0BD4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TvJ0WBDn88XZJSOLPKeBzSaIg4ZPz1IduqLQr53XH3ovVo/hZmQ/7qnmiswO7BGtx
+         PMCIoJ9WO6nDiyOoV/02KzCX7x1Q0/crkvUE7T1VRyZPIeDgVlwG5/yNhE8kbjOjSh
+         7YDP4FcWDCaCLP368K++Tc4DVUfAc8/ffhEyDp4cjDx7tiEGmplWqUT5viSviZKOpt
+         XpkoDDXjdUu8/LvFpKPzbUljp1FrwuFV9MIjmXD7X+ePTvaWXU8bkdtkjs+TNo5+5l
+         +qK+kMmFvo80J94vCmGjAff4kKG9bGyib+5sSirNQZHKKeoKY/RjVWOAjh0BIcqWRi
+         b5t+bmnFsOhw6MfZxre9u7/yNmNIEBRbFxetQsXqI2NIgToEIMlLwpWwx5Fs3pVc16
+         j/h/DqBPvi1p/I1ogjoiFljq/w/BKBx+JlwsRlWuhff58qS68dmQemA8xadsZ7rB//
+         kgcM9kzbjOjVwqT71Z0F3DllCOlZJ902Ql3HPIQaG/Fb+e3XPqqbzu69KJ5ZGsS+eE
+         dpsW8IQpabr8hL1zD9ChK+gb2V4dZG7RzK5NHSZi6dF6JnBXV5eZB/gysZW1mjy2Y6
+         /5wqnnIVI6bDU93P9+RGZ6da6x+ciyDbamihhSLWCGr7q/fpqQCm6Wa4aj7HSuZkG3
+         DoN6cZcFKtxhzRrn+xkPfql4=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31DC540E0032;
+        Wed,  8 Nov 2023 12:36:53 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 13:36:47 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
+        nik.borisov@suse.com
+Subject: Re: [PATCH v12 01/37] x86/cpufeatures: Add the cpu feature bit for
+ WRMSRNS
+Message-ID: <20231108123647.GBZUuA31zntox0W0gu@fat_crate.local>
+References: <20231003062458.23552-1-xin3.li@intel.com>
+ <20231003062458.23552-2-xin3.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231108065818.19932-3-link@vivo.com>
+In-Reply-To: <20231003062458.23552-2-xin3.li@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huan,
+On Mon, Oct 02, 2023 at 11:24:22PM -0700, Xin Li wrote:
+> Subject: Re: [PATCH v12 01/37] x86/cpufeatures: Add the cpu feature bit for WRMSRNS
+							  ^^^^
 
-kernel test robot noticed the following build warnings:
+For all your text:
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on tj-cgroup/for-next linus/master v6.6 next-20231108]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+s/cpu/CPU/g
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Huan-Yang/mm-vmscan-LRU-unbalance-cgroup-reclaim/20231108-151757
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231108065818.19932-3-link%40vivo.com
-patch subject: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
-config: x86_64-randconfig-011-20231108 (https://download.01.org/0day-ci/archive/20231108/202311082048.zacOzITP-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311082048.zacOzITP-lkp@intel.com/reproduce)
+> WRMSRNS is an instruction that behaves exactly like WRMSR, with
+> the only difference being that it is not a serializing instruction
+> by default. Under certain conditions, WRMSRNS may replace WRMSR to
+> improve performance.
+> 
+> Add the CPU feature bit for WRMSRNS.
+> 
+> Tested-by: Shan Kang <shan.kang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h       | 1 +
+>  tools/arch/x86/include/asm/cpufeatures.h | 1 +
+>  2 files changed, 2 insertions(+)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311082048.zacOzITP-lkp@intel.com/
+It looks to me like you can merge the first three patches into one as
+all they do is add that insn support.
 
-All warnings (new ones prefixed by >>):
+Then, further down in the patchset, it says:
 
-   mm/vmscan.c: In function 'isolate_folios':
->> mm/vmscan.c:4518:29: warning: 'unbalance' is used uninitialized [-Wuninitialized]
-    4518 |                 if (scanned || unbalance)
-         |                     ~~~~~~~~^~~~~~~~~~~~
-   mm/vmscan.c:4488:14: note: 'unbalance' was declared here
-    4488 |         bool unbalance;
-         |              ^~~~~~~~~
++	if (cpu_feature_enabled(X86_FEATURE_FRED)) {
++		/* WRMSRNS is a baseline feature for FRED. */
 
+but WRMSRNS is not mentioned in the FRED spec "Document Number:
+346446-005US, Revision: 5.0" which, according to
 
-vim +/unbalance +4518 mm/vmscan.c
+https://www.intel.com/content/www/us/en/content-details/780121/flexible-return-and-event-delivery-fred-specification.html
 
-  4480	
-  4481	static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int swappiness,
-  4482				  int *type_scanned, struct list_head *list)
-  4483	{
-  4484		int i;
-  4485		int type;
-  4486		int scanned;
-  4487		int tier = -1;
-  4488		bool unbalance;
-  4489		DEFINE_MIN_SEQ(lruvec);
-  4490	
-  4491		/*
-  4492		 * Try to make the obvious choice first. When anon and file are both
-  4493		 * available from the same generation, interpret swappiness 1 as file
-  4494		 * first and 200 as anon first.
-  4495		 */
-  4496		if (unlikely(unbalance_file_reclaim(sc, swappiness))) {
-  4497			unbalance = true;
-  4498			type = LRU_GEN_FILE;
-  4499		} else if (unlikely(unbalance_anon_reclaim(sc, swappiness))) {
-  4500			unbalance = true;
-  4501			type = LRU_GEN_ANON;
-  4502		} else if (!swappiness)
-  4503			type = LRU_GEN_FILE;
-  4504		else if (min_seq[LRU_GEN_ANON] < min_seq[LRU_GEN_FILE])
-  4505			type = LRU_GEN_ANON;
-  4506		else if (swappiness == 1)
-  4507			type = LRU_GEN_FILE;
-  4508		else if (swappiness == 200)
-  4509			type = LRU_GEN_ANON;
-  4510		else
-  4511			type = get_type_to_scan(lruvec, swappiness, &tier);
-  4512	
-  4513		for (i = !swappiness; i < ANON_AND_FILE; i++) {
-  4514			if (tier < 0)
-  4515				tier = get_tier_idx(lruvec, type);
-  4516	
-  4517			scanned = scan_folios(lruvec, sc, type, tier, list);
-> 4518			if (scanned || unbalance)
-  4519				break;
-  4520	
-  4521			type = !type;
-  4522			tier = -1;
-  4523		}
-  4524	
-  4525		*type_scanned = type;
-  4526	
-  4527		return scanned;
-  4528	}
-  4529	
+is the latest.
+
+Am I looking at the wrong one?
+
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 58cb9495e40f..330876d34b68 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -322,6 +322,7 @@
+>  #define X86_FEATURE_FSRS		(12*32+11) /* "" Fast short REP STOSB */
+>  #define X86_FEATURE_FSRC		(12*32+12) /* "" Fast short REP {CMPSB,SCASB} */
+>  #define X86_FEATURE_LKGS		(12*32+18) /* "" Load "kernel" (userspace) GS */
+> +#define X86_FEATURE_WRMSRNS		(12*32+19) /* "" Non-Serializing Write to Model Specific Register instruction */
+
+						  /* "" Non-serializing WRMSR */
+
+is more than enough.
+
+And now I'm wondering: when you're adding a separate CPUID bit, then the
+above should be
+
++       if (cpu_feature_enabled(X86_FEATURE_WRMSRNS)) {
++               /* WRMSRNS is a baseline feature for FRED. */
+
+I see that you're adding a dependency:
+
++	{ X86_FEATURE_FRED,			X86_FEATURE_WRMSRNS   },
+
+which then means you don't need the X86_FEATURE_WRMSRNS definition at
+all and can use X86_FEATURE_FRED only.
+
+So, what's up?
+
+Thx.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
