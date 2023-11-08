@@ -2,144 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 768427E530D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B58F7E5CD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344022AbjKHKHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:07:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
+        id S229989AbjKHSCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbjKHKHf (ORCPT
+        with ESMTP id S229907AbjKHSCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:07:35 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA691728;
-        Wed,  8 Nov 2023 02:07:31 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SQLNv0lyNz4f3l7g;
-        Wed,  8 Nov 2023 18:07:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 2F9731A0199;
-        Wed,  8 Nov 2023 18:07:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDX2xHeXUtlKTpyAQ--.15863S4;
-        Wed, 08 Nov 2023 18:07:27 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     xni@redhat.com, song@kernel.org, maan@systemlinux.org,
-        neilb@suse.de
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next] md: synchronize flush io with array reconfiguration
-Date:   Thu,  9 Nov 2023 02:02:10 +0800
-Message-Id: <20231108180210.3657203-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 8 Nov 2023 13:02:22 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100DC1FEE;
+        Wed,  8 Nov 2023 10:02:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1699466538;
+        bh=oVI4E1E503tiEKnFFx1fu9Zgo9P6FmDAij15ysIFqCI=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ITM95mZ0R98xrwMllIAGM4aTkz9RpOnDBQFfC4l9z3aqLn0kPl7rdojZTz6wnsmaH
+         81BFl2GXc0lhkNizNBDcDHbRVteMxLOwjxsg98tEGu+BVsFEDZuHoPQZHyqN5SgSHd
+         z7h9lqZVSP5Dyy2lEO7JY4+deJzjmPv7akEfaFNQ=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Wed, 08 Nov 2023 19:02:15 +0100
+Subject: [PATCH] tools/nolibc: mips: add support for PIC
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDX2xHeXUtlKTpyAQ--.15863S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxWry8uFW5Kw1DZw4xZr1UZFb_yoW5XFy7p3
-        yFq3Zxtr4UJFW3KwsxJaykGr1rWw1jvay0yFW3u347uw13Xrn8G3yftF95Xry5AFyfC3y3
-        ur1qgw4Dua4jqFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9S14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
-        YI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4I
-        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
-        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UYxBIdaVFxhVjvjDU0xZFpf9x0pRQo7tUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Message-Id: <20231108-nolibc-pic-v1-1-9b7a429d5a6d@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIACbNS2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDc3MDS0MT3bz8nMykZN2CzGRdYwMDE+O0tCQDEwNjJaCGgqLUtMwKsGHRsbW
+ 1AAuPPcdcAAAA
+To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699466537; l=2549;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=oVI4E1E503tiEKnFFx1fu9Zgo9P6FmDAij15ysIFqCI=;
+ b=2gCm4nqeWgBEcDY06yaRYS5bCsQIzXe5Z/7aQ0x6Cd04XMNq1mDSMP5mt0oPpsnfsScLEsj2p
+ FaXsh6BAzjdBKMjnCbHYn4X5yJltV64lkZX6Xqx3y1ICJE0j/98TSrX
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+MIPS requires some extra instructions to set up the $gp register for the
+with a pointer to the global data area.
 
-Currently rcu is used to protect iterating rdev from submit_flushes():
+This isn't needed for non-PIC builds, but this patch enables the code
+unconditionally to prevent bitrot.
 
-submit_flushes			remove_and_add_spares
-				 synchronize_rcu
-				 pers->hot_remove_disk()
- rcu_read_lock()
- rdev_for_each_rcu
-  if (rdev->raid_disk >= 0)
-				 rdev->radi_disk = -1;
-   atomic_inc(&rdev->nr_pending)
-   rcu_read_unlock()
-   bi = bio_alloc_bioset()
-   bi->bi_end_io = md_end_flush
-   bi->private = rdev
-   submit_bio
-   // issue io for removed rdev
+Also enable PIC in one of the test configurations for ongoing
+validation.
 
-Fix this problem by grabbing 'acive_io' before iterating rdev, make sure
-that remove_and_add_spares() won't concurrent with submit_flushes().
-
-Fixes: a2826aa92e2e ("md: support barrier requests on all personalities.")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/md/md.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ tools/include/nolibc/arch-mips.h        | 7 ++++++-
+ tools/testing/selftests/nolibc/Makefile | 2 +-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 4ee4593c874a..eb3e455bcbae 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -529,6 +529,9 @@ static void md_end_flush(struct bio *bio)
- 	rdev_dec_pending(rdev, mddev);
- 
- 	if (atomic_dec_and_test(&mddev->flush_pending)) {
-+		/* The pair is percpu_ref_tryget() from md_flush_request() */
-+		percpu_ref_put(&mddev->active_io);
-+
- 		/* The pre-request flush has finished */
- 		queue_work(md_wq, &mddev->flush_work);
- 	}
-@@ -548,12 +551,8 @@ static void submit_flushes(struct work_struct *ws)
- 	rdev_for_each_rcu(rdev, mddev)
- 		if (rdev->raid_disk >= 0 &&
- 		    !test_bit(Faulty, &rdev->flags)) {
--			/* Take two references, one is dropped
--			 * when request finishes, one after
--			 * we reclaim rcu_read_lock
--			 */
- 			struct bio *bi;
--			atomic_inc(&rdev->nr_pending);
-+
- 			atomic_inc(&rdev->nr_pending);
- 			rcu_read_unlock();
- 			bi = bio_alloc_bioset(rdev->bdev, 0,
-@@ -564,7 +563,6 @@ static void submit_flushes(struct work_struct *ws)
- 			atomic_inc(&mddev->flush_pending);
- 			submit_bio(bi);
- 			rcu_read_lock();
--			rdev_dec_pending(rdev, mddev);
- 		}
- 	rcu_read_unlock();
- 	if (atomic_dec_and_test(&mddev->flush_pending))
-@@ -617,6 +615,17 @@ bool md_flush_request(struct mddev *mddev, struct bio *bio)
- 	/* new request after previous flush is completed */
- 	if (ktime_after(req_start, mddev->prev_flush_start)) {
- 		WARN_ON(mddev->flush_bio);
-+		/*
-+		 * Grab a reference to make sure mddev_suspend() will wait for
-+		 * this flush to be done.
-+		 *
-+		 * md_flush_reqeust() is called under md_handle_request() and
-+		 * 'active_io' is already grabbed, hence percpu_ref_tryget()
-+		 * won't fail, percpu_ref_tryget_live() can't be used because
-+		 * percpu_ref_kill() can be called by mddev_suspend()
-+		 * concurrently.
-+		 */
-+		percpu_ref_tryget(&mddev->active_io);
- 		mddev->flush_bio = bio;
- 		bio = NULL;
- 	}
+diff --git a/tools/include/nolibc/arch-mips.h b/tools/include/nolibc/arch-mips.h
+index 3a2c76716b83..e9a01847c2b8 100644
+--- a/tools/include/nolibc/arch-mips.h
++++ b/tools/include/nolibc/arch-mips.h
+@@ -184,10 +184,15 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
+ 	__asm__ volatile (
+ 		".set push\n"
+ 		".set noreorder\n"
+-		".option pic0\n"
++		"bal 1f\n"               /* prime $ra for .cpload                            */
++		"nop\n"
++		"1:\n"
++		".cpload $ra\n"
+ 		"move  $a0, $sp\n"       /* save stack pointer to $a0, as arg1 of _start_c */
+ 		"li    $t0, -8\n"
+ 		"and   $sp, $sp, $t0\n"  /* $sp must be 8-byte aligned                     */
++		"addiu $sp, $sp, -4\n"   /* space for .cprestore to store $gp              */
++		".cprestore 0\n"
+ 		"addiu $sp, $sp, -16\n"  /* the callee expects to save a0..a3 there        */
+ 		"jal   _start_c\n"       /* transfer to c runtime                          */
+ 		" nop\n"                 /* delayed slot                                   */
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 508435b8ac2a..484bb02d8e6c 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -144,7 +144,7 @@ CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
+ CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
+ CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
+ CFLAGS_s390 = -m64
+-CFLAGS_mips32le = -EL -mabi=32
++CFLAGS_mips32le = -EL -mabi=32 -fPIC
+ CFLAGS_mips32be = -EB -mabi=32
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+ CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra \
+
+---
+base-commit: ba335752620565c25c3028fff9496bb8ef373602
+change-id: 20770914-nolibc-pic-30043ffb0403
+
+Best regards,
 -- 
-2.39.2
+Thomas Weißschuh <linux@weissschuh.net>
 
