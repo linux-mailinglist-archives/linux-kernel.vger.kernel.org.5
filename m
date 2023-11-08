@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A89A47E5AEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A447E5AF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjKHQPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
+        id S230088AbjKHQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjKHQPX (ORCPT
+        with ESMTP id S229579AbjKHQRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:15:23 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD631FE1
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:15:21 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc5ef7e815so49798385ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 08:15:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699460121; x=1700064921; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkv2aSpFw25Sjc2pDxCz5exBlHcYk4gTYVmkV2GOyQs=;
-        b=jmM381QoHM6/g0FB4YGETIBR5O3J1Dych7X+lotMdYThzDNuBSm38Bvy2TsfZPUuBz
-         LzlpsoZeXenCsP0R9cO1z5mCRUWbfMliqX3Z3O7dCfsTunpZ30Cgf3LrGqt/mpzbZSbW
-         O46em/jCPUWIkZdsHEfghHGMlEzU+D2q9+JXzOIJcLoFDjOuitCNXbMB6+FW+S0LNsxc
-         F5WUZwqo/HTJJeTLt/A3/SNIOAkpsY83aURbgEu8jX3rhG1CNmCXmqlv5kG2IL5HBNiD
-         v9M9nQ6x4wQbc3Uuw3RJHsDPVCYkYFT/ksNlNSKDpcP6VV1dYHtf7ofUP8DUxJg0LVXp
-         aDpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699460121; x=1700064921;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkv2aSpFw25Sjc2pDxCz5exBlHcYk4gTYVmkV2GOyQs=;
-        b=DGszCAcm7vopUaP2MhM9qvNeC2r5fwp+tGcRzxZVYkrg5XETDPLT4kg0WK5XMm7ni0
-         x/B5XxTj9Jtr2WlvFgeLrbCZeLhzHYFAADNCOsnEJP/DR0zWh4AR+BRjOYzMUVhoCPFx
-         QGsuz1MQ2zFAZCS1TmGNW21rif7jC5LEKOlGE/C68l7Fb9VcSxf0nLJtT4YhDNFWnPoO
-         mqsLzsbndxL2BMpfTK7eHIUeE8kaYEHMLO8twerEDjljqSoQ0A8Gg9nSIxvkwrHUKj0d
-         4x7AJG55cG9HjDGdciAjSpluAOordXlw/JNPRUmXFDP6ojh676kXx4sadOAAFweS1Bw9
-         IK5w==
-X-Gm-Message-State: AOJu0YyMUYzJUmoVQytod9p/EjYASKPTlxx8xh6miYsRD08m3FQWKWqm
-        JfM8+wWjjG8G9Pt25KdZW5iIS5qgiio=
-X-Google-Smtp-Source: AGHT+IFTaQxuB68rES3N/Ouf34zgkF8c8VJFXOJJTqeB2NI7Tbr2np/f2yCXpxs97M+wYFrZ4r8BXQsnFFA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:1386:b0:1cc:5674:9177 with SMTP id
- jx6-20020a170903138600b001cc56749177mr37933plb.11.1699460120994; Wed, 08 Nov
- 2023 08:15:20 -0800 (PST)
-Date:   Wed, 8 Nov 2023 08:15:19 -0800
-In-Reply-To: <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-30-nsaenz@amazon.com>
- <2573d04d-feff-4119-a79c-dbf9b85e62fd@amazon.com>
-Message-ID: <ZUu0FzbW5tr2Werz@google.com>
-Subject: Re: [RFC 29/33] KVM: VMX: Save instruction length on EPT violation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, anelkz@amazon.com,
-        dwmw@amazon.co.uk, jgowans@amazon.com, corbert@lwn.net,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+        Wed, 8 Nov 2023 11:17:00 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA74C6
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HQBcuS6yynl+Xfotv8WVzOrBYwQy2vL25amr6eMARVY=; b=h9bhuwShSjT5j1fkk4MZczqB8z
+        HfLwgnd9msTJSp9dw2tR9kzySqbfyg7v3aN+xtjbR+/jp8jUAm1irqQuRR7Mnjd+4fw1WxSFmCWSG
+        iTdn9D7DCqdl07LtkC4IKvTyG+dh18oTHkIFD5pY2ZVmzZIaOJJzOLD/QpTJdWClCinmaInGnOVEO
+        4SiRqxsBaHReCi9fBod7QUPljDBd2+9bPCoLON3h22BNT1CXB7k8HkC/kr/7NFaPbLoC9H4eL5UNv
+        yjmQpKZ5Gen3NcmUI7JtV3ZlkCiImVYzbbjGudQyw69w6xKMg0BHLpEKJteoeHXvfqC64x5Guquu/
+        W8xzPniQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r0lDg-00DbhO-1v;
+        Wed, 08 Nov 2023 16:15:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4485030049D; Wed,  8 Nov 2023 17:15:56 +0100 (CET)
+Date:   Wed, 8 Nov 2023 17:15:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
+Message-ID: <20231108161556.GL3818@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231108085156.GD8262@noisy.programming.kicks-ass.net>
+ <87bkc4lfxp.fsf@oracle.com>
+ <20231108101330.GK3818@noisy.programming.kicks-ass.net>
+ <877cmsgsrg.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877cmsgsrg.ffs@tglx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023, Alexander Graf wrote:
-> 
-> On 08.11.23 12:18, Nicolas Saenz Julienne wrote:
-> > Save the length of the instruction that triggered an EPT violation in
-> > struct kvm_vcpu_arch. This will be used to populate Hyper-V VSM memory
-> > intercept messages.
-> > 
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> 
-> 
-> In v1, please do this for SVM as well :)
+On Wed, Nov 08, 2023 at 04:38:11PM +0100, Thomas Gleixner wrote:
 
-Why?  KVM caches values on VMX because VMREAD is measurable slower than memory
-accesses, especially when running nested.  SVM has no such problems.  I wouldn't
-be surprised if adding a "cache" is actually less performant due to increased
-pressure and misses on the hardware cache.
+> No. The whole point of LAZY is to keep preempt_schedule(),
+> preempt_schedule_notrace(), irqentry_exit_cond_resched() always enabled.
+
+Yeah, I got that. What wasn't at all clear is that it also wanted to
+replace NONE.
+
+0/n didn't even mention none.
