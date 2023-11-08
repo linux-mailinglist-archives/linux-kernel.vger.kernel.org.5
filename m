@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6232D7E6083
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72297E60D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbjKHW5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 17:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S230433AbjKHXDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjKHW5E (ORCPT
+        with ESMTP id S229554AbjKHXDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 17:57:04 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 15CDD2593;
-        Wed,  8 Nov 2023 14:57:02 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 7869120B74C0; Wed,  8 Nov 2023 14:57:01 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7869120B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1699484221;
-        bh=7KYB4AGHIgeUyjEG3r33fMLYHpsuUr24nqIpPaxvALs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gmeLGiqvhMbZMueKyf0oZCuXCNcMPao+Y5KJTtTUBNXAMeus2JyaCLqJCmxtbhl+a
-         Z6zVoiq70QfWZeOqFrj7qvAbSrRGn95H3lxjcIFrI6RN+/rWsX10ALLVxBXsj3Zkji
-         9HjAqZFCeNKWJ1o5oVINYSAxbRUvmzU+GNyiv/jY=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [PATCH net-next v4] hv_netvsc: Mark VF as slave before exposing it to user-mode
-Date:   Wed,  8 Nov 2023 14:56:52 -0800
-Message-Id: <1699484212-24079-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 8 Nov 2023 18:03:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399A82593
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:03:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEF95C433CC;
+        Wed,  8 Nov 2023 23:03:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699484609;
+        bh=nmaljvz0PnnRaP8W7sX81UDwg5XIwLqZI1EBeujjgIc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hl22Q7FWtf3y0NQcWPokcYaGOs9Rzp0XhSFS3Vz9gj0qoInDtkTu3FsfUZ9bPndyY
+         pjQB22z7vCX+t9BYUocqOyPSTppCyQttpADUsnIk7miGzpDMjrW/iu9wWCQG+MIKwi
+         h0SS7rlcefX0qWlmLvOexdPRIyxO8t8mGwvSQduPGa2HTYjmznul1M24hgHAI8QlqX
+         e/AXFRWoVDl3QvL9mvmbFc7UqC2WEmkV31+csE+yo4Eaz1bjO/F4HpZCnLSHLITmfi
+         CVZdZYIxDW8OeJsiiWaE4rX+afegxhB2a3bcpRqLXuYezsG5byW9FQ7Qb5cdNeeGxf
+         O6+h9znWGewZQ==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-507be298d2aso273027e87.1;
+        Wed, 08 Nov 2023 15:03:29 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy6IZxGNA4dFrg4MmftUa+ae/sakNePx63UcjhnJosRG8adbW8W
+        FDQuB2Jya1+CKVe9Jj+S0o1AMV7dn5j6RKCkcGw=
+X-Google-Smtp-Source: AGHT+IFTADxY+4prtXvEX3F8f2PZC2sZeoqhH9Kzi4yYj3yj5hc+Qo+8YRNgyXu99HvcAMkxuuLBqR7217UazajGNx8=
+X-Received: by 2002:a19:5f4d:0:b0:509:4a02:49f7 with SMTP id
+ a13-20020a195f4d000000b005094a0249f7mr153lfj.44.1699484607851; Wed, 08 Nov
+ 2023 15:03:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-13-irogers@google.com>
+ <ZUuz/8EC0orXCffn@kernel.org>
+In-Reply-To: <ZUuz/8EC0orXCffn@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 8 Nov 2023 15:03:15 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
+Message-ID: <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
+Subject: Re: [PATCH v4 12/53] perf bpf: Don't synthesize BPF events when disabled
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On Wed, Nov 8, 2023 at 8:15=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> Em Thu, Nov 02, 2023 at 10:56:54AM -0700, Ian Rogers escreveu:
+> > If BPF sideband events are disabled on the command line, don't
+> > synthesize BPF events too.
+>
+>
+> Interesting, in 71184c6ab7e60fd5 ("perf record: Replace option
+> --bpf-event with --no-bpf-event") we checked that, but only down at
+> perf_event__synthesize_one_bpf_prog(), where we have:
+>
+>         if (!opts->no_bpf_event) {
+>                 /* Synthesize PERF_RECORD_BPF_EVENT */
+>                 *bpf_event =3D (struct perf_record_bpf_event)
+>
+>
+> So we better remove that, now redundant check? I'll apply your patch as
+> is and then we can remove that other check.
+>
+> Song, can I have your Acked-by or Reviewed-by, please?
+>
+> - Arnaldo
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 
-When a VF is being exposed form the kernel, it should be marked as "slave"
-before exposing to the user-mode. The VF is not usable without netvsc running
-as master. The user-mode should never see a VF without the "slave" flag.
+Good catch!
 
-An example of a user-mode program depending on this flag is cloud-init
-(https://github.com/canonical/cloud-init/blob/19.3/cloudinit/net/__init__.py)
-When scanning interfaces, it checks on if this interface has a master to
-decide if it should be configured. There are other user-mode programs perform
-similar checks.
-
-This commit moves the code of setting the slave flag to the time before VF is
-exposed to user-mode.
-
-Signed-off-by: Long Li <longli@microsoft.com>
----
-
-Change since v1:
-Use a new function to handle NETDEV_POST_INIT.
-
-Change since v2:
-Add "net" in subject. Add more details on the user-mode program behavior.
-
-Change since v3:
-Change target to net-next.
-
- drivers/net/hyperv/netvsc_drv.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index ec77fb9dcf89..fdad58dcc6a8 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2206,9 +2206,6 @@ static int netvsc_vf_join(struct net_device *vf_netdev,
- 		goto upper_link_failed;
- 	}
- 
--	/* set slave flag before open to prevent IPv6 addrconf */
--	vf_netdev->flags |= IFF_SLAVE;
--
- 	schedule_delayed_work(&ndev_ctx->vf_takeover, VF_TAKEOVER_INT);
- 
- 	call_netdevice_notifiers(NETDEV_JOIN, vf_netdev);
-@@ -2320,11 +2317,9 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
- 	 */
- 	list_for_each_entry(ndev_ctx, &netvsc_dev_list, list) {
- 		ndev = hv_get_drvdata(ndev_ctx->device_ctx);
--		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr)) {
--			netdev_notice(vf_netdev,
--				      "falling back to mac addr based matching\n");
-+		if (ether_addr_equal(vf_netdev->perm_addr, ndev->perm_addr) ||
-+		    ether_addr_equal(vf_netdev->dev_addr, ndev->perm_addr))
- 			return ndev;
--		}
- 	}
- 
- 	netdev_notice(vf_netdev,
-@@ -2332,6 +2327,19 @@ static struct net_device *get_netvsc_byslot(const struct net_device *vf_netdev)
- 	return NULL;
- }
- 
-+static int netvsc_prepare_slave(struct net_device *vf_netdev)
-+{
-+	struct net_device *ndev;
-+
-+	ndev = get_netvsc_byslot(vf_netdev);
-+	if (!ndev)
-+		return NOTIFY_DONE;
-+
-+	/* set slave flag before open to prevent IPv6 addrconf */
-+	vf_netdev->flags |= IFF_SLAVE;
-+	return NOTIFY_DONE;
-+}
-+
- static int netvsc_register_vf(struct net_device *vf_netdev)
- {
- 	struct net_device_context *net_device_ctx;
-@@ -2753,6 +2761,8 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 		return NOTIFY_DONE;
- 
- 	switch (event) {
-+	case NETDEV_POST_INIT:
-+		return netvsc_prepare_slave(event_dev);
- 	case NETDEV_REGISTER:
- 		return netvsc_register_vf(event_dev);
- 	case NETDEV_UNREGISTER:
--- 
-2.34.1
-
+Acked-by: Song Liu <song@kernel.org>
