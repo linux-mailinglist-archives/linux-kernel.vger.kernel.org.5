@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB167E5A64
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9497E5A66
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234182AbjKHPp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:45:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        id S234744AbjKHPpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbjKHPpS (ORCPT
+        with ESMTP id S234670AbjKHPp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:45:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432101FDA
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699458268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9pfTamduDuXvj1ycdmEqtqmHUJQLMXtDuZ7PUu6n6YA=;
-        b=jREken/xfshM5fckfCQh7onDDbyjPRPAdvl1S909c91VnU4tZ5Y66O8+1LuN5p51ipLVzO
-        Ubm4Jga0iIBfZko18dX5cLrfMWp0d7/SEwTOy+rpqZJJ/Z/negrBpXpDNA+rQnpxmYPKaw
-        Ft/y1pSFE9gd4MZSEaKN/Vkhcfw9YkY=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-Xlh4_8-ROE-tRAOkbIkl0w-1; Wed, 08 Nov 2023 10:44:27 -0500
-X-MC-Unique: Xlh4_8-ROE-tRAOkbIkl0w-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6b1f7baa5ceso4960315b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 07:44:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699458266; x=1700063066;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9pfTamduDuXvj1ycdmEqtqmHUJQLMXtDuZ7PUu6n6YA=;
-        b=FXrH0Ew9vUGmGxr2mvM5OCdA4WNWrd/Uu9LNsecVf+vNpdl9YB/Yg3tRhtHd9rAyCq
-         uVVVCmYWGMat6FkPP+PImxx5Gr8hIvc1A0SVrer8Zij4jXgBt6U3slZ94VdidNbCewOv
-         Vr5Tho7Mz7tK8AWTnxtZxH8tKUTmKHAfbDQ173PEdJYNPfkFrirNIro4nd4Jn/vHSL9r
-         CKi1NsvHF3SEIv2s1FXLHP8iBDxG73dLUcgj6I5HjH/TX4RN9s7A8DHt79evYtElvz8m
-         TMB4PDfWJ95QR37ZcyFalRu8ctkJj1kTiMOisEJKLySjKf1lo+OLXgZ+20zx678TTHG6
-         xKSQ==
-X-Gm-Message-State: AOJu0YzRcfZCkApfu8f9cPsI1udf0LVPrFClmFRYr9bu1fLv1rul5OCz
-        1e4n1wgpLO+3d7dN1FtvhNE3O2zGPWIge0i1M/IQR3iU7L/bpMiy5mAnDoUgqJBF+9atUIi7GNy
-        kpofva/qljKHnMgBfNKBIp9HN
-X-Received: by 2002:a05:6a20:7349:b0:181:7aa7:de46 with SMTP id v9-20020a056a20734900b001817aa7de46mr1945368pzc.8.1699458265961;
-        Wed, 08 Nov 2023 07:44:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEyrfKU4MqxbyH9BApHxfTp6hLteN1T9QI82b/UtxOmPvpYED3KgY/5w5B3MEUMr1rMniNAeg==
-X-Received: by 2002:a05:6a20:7349:b0:181:7aa7:de46 with SMTP id v9-20020a056a20734900b001817aa7de46mr1945350pzc.8.1699458265661;
-        Wed, 08 Nov 2023 07:44:25 -0800 (PST)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id ei4-20020a056a0080c400b006c31b4d5e57sm9161068pfb.184.2023.11.08.07.44.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 07:44:25 -0800 (PST)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shigeru Yoshida <syoshida@redhat.com>
-Subject: [PATCH net] tty: Fix uninit-value access in ppp_sync_receive()
-Date:   Thu,  9 Nov 2023 00:44:20 +0900
-Message-ID: <20231108154420.1474853-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 8 Nov 2023 10:45:27 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 095C01FEF
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:45:25 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39CF11476;
+        Wed,  8 Nov 2023 07:46:09 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.37.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 819713F64C;
+        Wed,  8 Nov 2023 07:45:19 -0800 (PST)
+Date:   Wed, 8 Nov 2023 15:44:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 08/86] Revert "arm64: Support PREEMPT_DYNAMIC"
+Message-ID: <ZUus3jr6gXV6ZG1T@FVFF77S0Q05N>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-9-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107215742.363031-9-ankur.a.arora@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN reported the following uninit-value access issue:
+On Tue, Nov 07, 2023 at 01:56:54PM -0800, Ankur Arora wrote:
+> This reverts commit 1b2d3451ee50a0968cb9933f726e50b368ba5073.
 
-=====================================================
-BUG: KMSAN: uninit-value in ppp_sync_input drivers/net/ppp/ppp_synctty.c:690 [inline]
-BUG: KMSAN: uninit-value in ppp_sync_receive+0xdc9/0xe70 drivers/net/ppp/ppp_synctty.c:334
- ppp_sync_input drivers/net/ppp/ppp_synctty.c:690 [inline]
- ppp_sync_receive+0xdc9/0xe70 drivers/net/ppp/ppp_synctty.c:334
- tiocsti+0x328/0x450 drivers/tty/tty_io.c:2295
- tty_ioctl+0x808/0x1920 drivers/tty/tty_io.c:2694
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0x211/0x400 fs/ioctl.c:857
- __x64_sys_ioctl+0x97/0xe0 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+As the author of the commit being reverted, I'd appreciate being Cc'd on
+subsequent versions of this patch (and ideally, for the series as a whole).
 
-Uninit was created at:
- __alloc_pages+0x75d/0xe80 mm/page_alloc.c:4591
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- __page_frag_cache_refill+0x9a/0x2c0 mm/page_alloc.c:4691
- page_frag_alloc_align+0x91/0x5d0 mm/page_alloc.c:4722
- page_frag_alloc include/linux/gfp.h:322 [inline]
- __netdev_alloc_skb+0x215/0x6d0 net/core/skbuff.c:728
- netdev_alloc_skb include/linux/skbuff.h:3225 [inline]
- dev_alloc_skb include/linux/skbuff.h:3238 [inline]
- ppp_sync_input drivers/net/ppp/ppp_synctty.c:669 [inline]
- ppp_sync_receive+0x237/0xe70 drivers/net/ppp/ppp_synctty.c:334
- tiocsti+0x328/0x450 drivers/tty/tty_io.c:2295
- tty_ioctl+0x808/0x1920 drivers/tty/tty_io.c:2694
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0x211/0x400 fs/ioctl.c:857
- __x64_sys_ioctl+0x97/0xe0 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Mark.
 
-CPU: 0 PID: 12950 Comm: syz-executor.1 Not tainted 6.6.0-14500-g1c41041124bd #10
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
-=====================================================
-
-ppp_sync_input() checks the first 2 bytes of the data are PPP_ALLSTATIONS
-and PPP_UI. However, if the data length is 1 and the first byte is
-PPP_ALLSTATIONS, an access to an uninitialized value occurs when checking
-PPP_UI. This patch resolves this issue by checking the data length.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
- drivers/net/ppp/ppp_synctty.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
-index ebcdffdf4f0e..ea261a628786 100644
---- a/drivers/net/ppp/ppp_synctty.c
-+++ b/drivers/net/ppp/ppp_synctty.c
-@@ -687,7 +687,7 @@ ppp_sync_input(struct syncppp *ap, const u8 *buf, const u8 *flags, int count)
- 
- 	/* strip address/control field if present */
- 	p = skb->data;
--	if (p[0] == PPP_ALLSTATIONS && p[1] == PPP_UI) {
-+	if (skb->len >= 2 && p[0] == PPP_ALLSTATIONS && p[1] == PPP_UI) {
- 		/* chop off address/control */
- 		if (skb->len < 3)
- 			goto err;
--- 
-2.41.0
-
+> 
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  arch/arm64/Kconfig               |  1 -
+>  arch/arm64/include/asm/preempt.h | 19 ++-----------------
+>  arch/arm64/kernel/entry-common.c | 10 +---------
+>  3 files changed, 3 insertions(+), 27 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 78f20e632712..856d7be2ee45 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -221,7 +221,6 @@ config ARM64
+>  	select HAVE_PERF_EVENTS_NMI if ARM64_PSEUDO_NMI
+>  	select HAVE_PERF_REGS
+>  	select HAVE_PERF_USER_STACK_DUMP
+> -	select HAVE_PREEMPT_DYNAMIC_KEY
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
+>  	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+>  	select HAVE_FUNCTION_ARG_ACCESS_API
+> diff --git a/arch/arm64/include/asm/preempt.h b/arch/arm64/include/asm/preempt.h
+> index 0159b625cc7f..e83f0982b99c 100644
+> --- a/arch/arm64/include/asm/preempt.h
+> +++ b/arch/arm64/include/asm/preempt.h
+> @@ -2,7 +2,6 @@
+>  #ifndef __ASM_PREEMPT_H
+>  #define __ASM_PREEMPT_H
+>  
+> -#include <linux/jump_label.h>
+>  #include <linux/thread_info.h>
+>  
+>  #define PREEMPT_NEED_RESCHED	BIT(32)
+> @@ -81,24 +80,10 @@ static inline bool should_resched(int preempt_offset)
+>  }
+>  
+>  #ifdef CONFIG_PREEMPTION
+> -
+>  void preempt_schedule(void);
+> +#define __preempt_schedule() preempt_schedule()
+>  void preempt_schedule_notrace(void);
+> -
+> -#ifdef CONFIG_PREEMPT_DYNAMIC
+> -
+> -DECLARE_STATIC_KEY_TRUE(sk_dynamic_irqentry_exit_cond_resched);
+> -void dynamic_preempt_schedule(void);
+> -#define __preempt_schedule()		dynamic_preempt_schedule()
+> -void dynamic_preempt_schedule_notrace(void);
+> -#define __preempt_schedule_notrace()	dynamic_preempt_schedule_notrace()
+> -
+> -#else /* CONFIG_PREEMPT_DYNAMIC */
+> -
+> -#define __preempt_schedule()		preempt_schedule()
+> -#define __preempt_schedule_notrace()	preempt_schedule_notrace()
+> -
+> -#endif /* CONFIG_PREEMPT_DYNAMIC */
+> +#define __preempt_schedule_notrace() preempt_schedule_notrace()
+>  #endif /* CONFIG_PREEMPTION */
+>  
+>  #endif /* __ASM_PREEMPT_H */
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 0fc94207e69a..5d9c9951562b 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -225,17 +225,9 @@ static void noinstr arm64_exit_el1_dbg(struct pt_regs *regs)
+>  		lockdep_hardirqs_on(CALLER_ADDR0);
+>  }
+>  
+> -#ifdef CONFIG_PREEMPT_DYNAMIC
+> -DEFINE_STATIC_KEY_TRUE(sk_dynamic_irqentry_exit_cond_resched);
+> -#define need_irq_preemption() \
+> -	(static_branch_unlikely(&sk_dynamic_irqentry_exit_cond_resched))
+> -#else
+> -#define need_irq_preemption()	(IS_ENABLED(CONFIG_PREEMPTION))
+> -#endif
+> -
+>  static void __sched arm64_preempt_schedule_irq(void)
+>  {
+> -	if (!need_irq_preemption())
+> +	if (!IS_ENABLED(CONFIG_PREEMPTION))
+>  		return;
+>  
+>  	/*
+> -- 
+> 2.31.1
+> 
