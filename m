@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9CB7E5813
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A31357E5816
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjKHNoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        id S232187AbjKHNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjKHNoo (ORCPT
+        with ESMTP id S230467AbjKHNpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:44:44 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B6C1BFE
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 05:44:42 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so1053854566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 05:44:42 -0800 (PST)
+        Wed, 8 Nov 2023 08:45:16 -0500
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA5D1FC1;
+        Wed,  8 Nov 2023 05:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1699451080; x=1700055880; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IVv5mcW5zUgVSiSOauQHcHZhJPg5UCLoWJRDvmkhj7k=;
-        b=b1YwFl1N0rh28F9ndwx1VKdwqN7JVkUNnJL2HRiTWVsaqG9xjSomQWBarF3j4Evojx
-         lhyUROga4guIUM85JJEScrWyltJwqlw6y2xNAu5hWI33OtNnqyOWu8vxIW0kdrsJ7ni9
-         GOEivr5H/1hxC9NtsiFuCsZi71RyZNBqN4AOY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699451080; x=1700055880;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IVv5mcW5zUgVSiSOauQHcHZhJPg5UCLoWJRDvmkhj7k=;
-        b=REzYYXMYXDYkiy1TkFU7aW7rQAZKuOQHk4/cKc4CpSCuQRUZ+qMUYQqzszPKNCDt7D
-         6ZPVehnYFL/juz+drx/5Q7k8aCWY5Aqlb+d8c9jpMFBfNiuvNkLUc9xZMgHllp2anC/k
-         zx6UQC4WXAtjZrC/JTaVAWohhLSgrgZsCQusmQkD3r4tO9m/H1rBX5EqzzLqSj5JSndY
-         Da0HtD1fLDDDb0I1+b1yuZu4y3u8QCQ8E5i21szfKcvk7lDLjG33jP42z2g0E1yMxy3R
-         WPVVGTaedd8jID+1jFoDGWnLY9GvN/oktXnPdfv75Q4Pzx3SyQeo7DuxxAm2ig7ly7h/
-         yaPw==
-X-Gm-Message-State: AOJu0YxHwOUoe8DTwiEjFIQdRxZWfEvEX2ZVCjTgpp2saq1qtLulwdry
-        1cmBm8aM6LON68gs9yta0zKLZb0hEjtP7tCwpc6s2cj9
-X-Google-Smtp-Source: AGHT+IEn/7ehRYp2n2E4vkCWEuoVxQ7nZKTWTIBc8HV+mV3MsZL6jh3kxXkuRcD9ZyWoygMo5iN7MA==
-X-Received: by 2002:a17:907:987:b0:9e0:4910:1649 with SMTP id bf7-20020a170907098700b009e049101649mr1775121ejc.8.1699451080611;
-        Wed, 08 Nov 2023 05:44:40 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-79-20-97-182.retail.telecomitalia.it. [79.20.97.182])
-        by smtp.gmail.com with ESMTPSA id kj3-20020a170907764300b009bf7a4d591csm1091457ejc.11.2023.11.08.05.44.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 05:44:40 -0800 (PST)
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-amarula@amarulasolutions.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [RESEND PATCH] ARM: dts: stm32f469-disco: use the same 3v3 for SD and DSI nodes
-Date:   Wed,  8 Nov 2023 14:44:06 +0100
-Message-ID: <20231108134426.4174699-1-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.42.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699451114; x=1730987114;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   from:to:cc:subject:references:in-reply-to;
+  bh=7oMcXvDRRH2hCXgdSGg2nocFc8nVKulZe07SW3+JZuY=;
+  b=nbngAOkvDFnx+3tz2BFHOJ50EANDEeFf2DhpXBU5/jTyarGnzlWtAe8h
+   DnKh8u9L7bLWC0NizFNp5hmLrTQAsNKGcRWq65zTAqY9o8zGS8uI/lTf/
+   9PvicqNPeGjSLx86LFcwHVk41w8Yib2qVed8z6wuHW3M0KT2ST+chSeto
+   g=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="250910628"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 13:44:54 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+        by email-inbound-relay-pdx-2c-m6i4x-fad5e78e.us-west-2.amazon.com (Postfix) with ESMTPS id 6FB02A0C4A;
+        Wed,  8 Nov 2023 13:44:52 +0000 (UTC)
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.17.79:29498]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.12.6:2525] with esmtp (Farcaster)
+ id f76ffc02-2573-451f-b3a0-5e9c3913a883; Wed, 8 Nov 2023 13:44:52 +0000 (UTC)
+X-Farcaster-Flow-ID: f76ffc02-2573-451f-b3a0-5e9c3913a883
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 13:44:51 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 13:44:47 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 8 Nov 2023 13:44:43 +0000
+Message-ID: <CWTH4PZBQV0P.IEML0UZUVPZY@amazon.com>
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Alexander Graf <graf@amazon.com>, <kvm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+Subject: Re: [RFC 32/33] KVM: x86: hyper-v: Implement
+ HVCALL_TRANSLATE_VIRTUAL_ADDRESS
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-33-nsaenz@amazon.com>
+ <5ac466d6-ea71-472d-a09b-5bd54e88a398@amazon.com>
+In-Reply-To: <5ac466d6-ea71-472d-a09b-5bd54e88a398@amazon.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D037UWB003.ant.amazon.com (10.13.138.115) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the board schematic, the power supply for the SD card is the same 3.3
-volts used to power the LCD panel and other peripherals. By generalizing
-the name of the voltage regulator, it simplifies the device tree and makes
-it more readable.
+On Wed Nov 8, 2023 at 12:49 PM UTC, Alexander Graf wrote:
+>
+> On 08.11.23 12:18, Nicolas Saenz Julienne wrote:
+> > Introduce HVCALL_TRANSLATE_VIRTUAL_ADDRESS, the hypercall receives a
+> > GVA, generally from a less privileged VTL, and returns the GPA backing
+> > it. The GVA -> GPA conversion is done by walking the target VTL's vCPU
+> > MMU.
+> >
+> > NOTE: The hypercall implementation is incomplete and only shared for
+> > completion. Additionally we'd like to move the VTL aware parts to
+> > user-space.
+>
+>
+> Yes, please :). We should handle the complete hypercall in user space if=
+=20
+> possible. If you're afraid that gva -> gpa conversion may run out of=20
+> sync between a user space and the kvm implementations, let's introduce=20
+> an ioctl that allows you to perform that conversion.
 
-Link: https://www.st.com/en/evaluation-tools/32f469idiscovery.html#cad-resources
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+I'll look into introducing a generic API that performs MMU walks. The
+devil is in the details though, the hypercall introduces flags like:
 
----
+=E2=80=A2 HV_TRANSLATE_GVA_TLB_FLUSH_INHIBIT: Indicates that the TlbFlushIn=
+hibit
+  flag in the virtual processor=E2=80=99s HvRegisterInterceptSuspend regist=
+er
+  should be set as a consequence of a successful return. This prevents
+  other virtual processors associated with the target partition from
+  flushing the stage 1 TLB of the specified virtual processor until
+  after the TlbFlushInhibit flag is cleared.
 
- arch/arm/boot/dts/st/stm32f469-disco.dts | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Which make things trickier.
 
-diff --git a/arch/arm/boot/dts/st/stm32f469-disco.dts b/arch/arm/boot/dts/st/stm32f469-disco.dts
-index cbbd521bf010..8a4f8ddd083d 100644
---- a/arch/arm/boot/dts/st/stm32f469-disco.dts
-+++ b/arch/arm/boot/dts/st/stm32f469-disco.dts
-@@ -69,16 +69,9 @@ aliases {
- 		serial0 = &usart3;
- 	};
- 
--	mmc_vcard: mmc_vcard {
-+	vcc_3v3: vcc-3v3 {
- 		compatible = "regulator-fixed";
--		regulator-name = "mmc_vcard";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
--	};
--
--	vdd_dsi: vdd-dsi {
--		compatible = "regulator-fixed";
--		regulator-name = "vdd_dsi";
-+		regulator-name = "vcc_3v3";
- 		regulator-min-microvolt = <3300000>;
- 		regulator-max-microvolt = <3300000>;
- 	};
-@@ -164,7 +157,7 @@ panel@0 {
- 		compatible = "orisetech,otm8009a";
- 		reg = <0>; /* dsi virtual channel (0..3) */
- 		reset-gpios = <&gpioh 7 GPIO_ACTIVE_LOW>;
--		power-supply = <&vdd_dsi>;
-+		power-supply = <&vcc_3v3>;
- 		status = "okay";
- 
- 		port {
-@@ -219,7 +212,7 @@ timer@2 {
- 
- &sdio {
- 	status = "okay";
--	vmmc-supply = <&mmc_vcard>;
-+	vmmc-supply = <&vcc_3v3>;
- 	cd-gpios = <&gpiog 2 GPIO_ACTIVE_LOW>;
- 	broken-cd;
- 	pinctrl-names = "default", "opendrain";
--- 
-2.42.0
-
+Nicolas
