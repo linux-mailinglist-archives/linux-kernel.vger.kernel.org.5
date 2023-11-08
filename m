@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A177E4E5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6887E4E62
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbjKHBC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 20:02:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S1343498AbjKHBDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 20:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjKHBC5 (ORCPT
+        with ESMTP id S229712AbjKHBDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 20:02:57 -0500
+        Tue, 7 Nov 2023 20:03:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF310E;
-        Tue,  7 Nov 2023 17:02:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A23C433C8;
-        Wed,  8 Nov 2023 01:02:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFC0101;
+        Tue,  7 Nov 2023 17:03:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC996C433C7;
+        Wed,  8 Nov 2023 01:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699405375;
-        bh=ZEcloge7EvcLciwxWbJyUqAK3+uw3aSKssS3rdqKcW0=;
+        s=k20201202; t=1699405409;
+        bh=FhuUtj4Vli4JUQLTpu9zmfbY9d6phMLcbPPqo75tvlw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uCKJOlaPPiAsb3hjysLpyMF41K+ef7+yYrBxLUm1WAIj3099aNHo4EkCPdeh4tDk0
-         VeEVVdJCqzXceYtRXU0ToKjiDpojWlOjWfy58365MVFwUc1VBcPCXe8xrlxbBUTR6P
-         KBoH+BWOxinsiV9SrxfwJ84gQMGF3iJRNBl9Qt2QFCtzN1pCMLPAvbNjs+TN/Wvtb9
-         tQy1HH7D6dr/H6erkEeOlktdCsRg7yLIOsI/4KdPFdqkRVjYa3dsRS/W6YThKyO7X8
-         JuFRlhDJZK0o1OOz4+lrIliNlXL/5b/G7ImphrGhx54MwBQLxF/QhtT58M44l/4LRw
-         X4yggtgrv2vNQ==
-Date:   Wed, 8 Nov 2023 10:02:48 +0900
+        b=lqf7oMoEtheco4hmoHN5t08uEwJpvPetjmMKlRC7aPRnbcSay0n04O+dmA9ifts7B
+         giswChG53tAVKDO+OagzQF8T/DZzzBLMar5XCJlhVYWFoTfZr1dcrrzXhXEATNGL8h
+         RuZYoylX6+hyh3+8LdntBU7IrCmuUSHO7QTW98vLpVCAA0u1H3QVtzash3Gku+GPHb
+         vvsgBELDYFvBl4F9m4yjWT5tlCIJsNao0rQZv5CFhqJnmyi6OtRVeM6Cxfg7ABc241
+         oxxfXf9xlBpjxtGJoTaz2IABfaZfC0EFbIqTmhZhpIQbVeWhORg1MLUf0ZkLniV1h0
+         EXQOVSkXauVRQ==
+Date:   Wed, 8 Nov 2023 10:03:22 +0900
 From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
 Cc:     vgupta@kernel.org, bcain@quicinc.com, jonas@southpole.se,
@@ -38,12 +38,12 @@ Cc:     vgupta@kernel.org, bcain@quicinc.com, jonas@southpole.se,
         linux-kernel@vger.kernel.org, linux-hexagon@vger.kernel.org,
         linux-openrisc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         mattwu@163.com, linux@roeck-us.ne
-Subject: Re: [PATCH v2 2/4] locking/atomic: arc: arch_cmpxchg[64]_local
+Subject: Re: [PATCH v2 3/4] locking/atomic: openrisc: arch_cmpxchg[64]_local
  undefined
-Message-Id: <20231108100248.5376b99c62a1b24fb0ce62c0@kernel.org>
-In-Reply-To: <20231104091615.4884-3-wuqiang.matt@bytedance.com>
+Message-Id: <20231108100322.06cc58b4fd142ccbb8d3751e@kernel.org>
+In-Reply-To: <20231104091615.4884-4-wuqiang.matt@bytedance.com>
 References: <20231104091615.4884-1-wuqiang.matt@bytedance.com>
-        <20231104091615.4884-3-wuqiang.matt@bytedance.com>
+        <20231104091615.4884-4-wuqiang.matt@bytedance.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -52,63 +52,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  4 Nov 2023 17:16:13 +0800
+On Sat,  4 Nov 2023 17:16:14 +0800
 "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
 > For architectures that support native cmpxchg, we'd like to
 > implement arch_cmpxchg[64]_local with the native variants of
 > supported data size. If not, the generci_cmpxchg[64]_local
 > will be used.
-> 
+
 
 Looks good to me.
 
 Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
+> 
 > Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
 > ---
->  arch/arc/include/asm/cmpxchg.h | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+>  arch/openrisc/include/asm/cmpxchg.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
-> index bf46514f6f12..91429f2350df 100644
-> --- a/arch/arc/include/asm/cmpxchg.h
-> +++ b/arch/arc/include/asm/cmpxchg.h
-> @@ -80,6 +80,34 @@
->  
->  #endif
->  
-> +/*
-> + * always make arch_cmpxchg[64]_local available, native cmpxchg
-> + * will be used if available, then generic_cmpxchg[64]_local
-> + */
+> diff --git a/arch/openrisc/include/asm/cmpxchg.h b/arch/openrisc/include/asm/cmpxchg.h
+> index 8ee151c072e4..f1ffe8b6f5ef 100644
+> --- a/arch/openrisc/include/asm/cmpxchg.h
+> +++ b/arch/openrisc/include/asm/cmpxchg.h
+> @@ -139,6 +139,12 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+>  					       (unsigned long)(n),	\
+>  					       sizeof(*(ptr)));		\
+>  	})
+> +#define arch_cmpxchg_local arch_cmpxchg
+> +
+> +/* always make arch_cmpxchg64_local available for openrisc */
 > +#include <asm-generic/cmpxchg-local.h>
-> +static inline unsigned long __cmpxchg_local(volatile void *ptr,
-> +				      unsigned long old,
-> +				      unsigned long new, int size)
-> +{
-> +	switch (size) {
-> +#ifdef CONFIG_ARC_HAS_LLSC
-> +	case 4:
-> +		return __cmpxchg_32((int32_t *)ptr, old, new);
-> +#endif
-> +	default:
-> +		return __generic_cmpxchg_local(ptr, old, new, size);
-> +	}
 > +
-> +	return old;
-> +}
-> +#define arch_cmpxchg_local(ptr, o, n) ({				\
-> +	(__typeof__(*ptr))__cmpxchg_local((ptr),			\
-> +					(unsigned long)(o),		\
-> +					(unsigned long)(n),		\
-> +					sizeof(*(ptr)));		\
-> +})
 > +#define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
-> +
+>  
 >  /*
->   * xchg
->   */
+>   * This function doesn't exist, so you'll get a linker error if
 > -- 
 > 2.40.1
 > 
