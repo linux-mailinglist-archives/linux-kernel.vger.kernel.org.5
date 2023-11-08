@@ -2,115 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8977E531B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31FB7E5320
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344064AbjKHKMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:12:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S1343889AbjKHKOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:14:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235502AbjKHKM2 (ORCPT
+        with ESMTP id S229924AbjKHKOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:12:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A4E1728
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:12:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46B69C433C8;
-        Wed,  8 Nov 2023 10:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699438346;
-        bh=AbtY/mFze6zgK8MQbZQ6ERWatOJKIZmTR+VQEQ/f2fk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dpHxRraXzWcp9um51jU45WFFZQyJNdH6TXDUCXJKhrQL3JvgVMthksJk0u5yCegYL
-         TwbEkteBlMWLK7d0z7ZzKKtUASfpRPXfOVV2fIHFShKsL5jyH3tzHLg6gt013enPim
-         up9rdqE1IgC0AYoDr/XTsJxa4whKZX1fw+xpQulf6g8M8lsXfTvymrL9TqJj4ygRLh
-         sv3vTHe3ETfB12VYOwjoQx9d2pyA6q+sKdguWiDBxb42N31V0iP8jZrvuZ1YYJawzc
-         +h6+PSfHUahKHR1UEMWyhb22WlnBw1glKLTA3252lERdAHhL3q6Sd0N7erRtrdiNLt
-         XMj5+2+Gj1ZPA==
-Date:   Wed, 8 Nov 2023 10:12:21 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: soc: Add new board description for
- MicroBlaze V
-Message-ID: <20231108-five-womankind-6ee2462c93b9@spud>
-References: <50c277c92c41a582ef171fb75efc6a6a4f860be2.1699271616.git.michal.simek@amd.com>
- <20231106-hangnail-prankster-a04e713bed35@spud>
- <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
- <20231107-expensive-jitters-92e454f77ea8@spud>
- <8b17622b-de1a-4075-9527-8755f5e4dc14@amd.com>
+        Wed, 8 Nov 2023 05:14:20 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5A01725
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2h5F5cEqywAQejXftRJY11d82vM8zMGKqSMTRf5CE1g=; b=UFiQLvmS4+Gx8p6q0/VylFwpkR
+        gAZnD7BP2yOefLqEVD/mEF0J6cpnr/kK5A6SDPZyNJshyNEEMmwywe78YxjlFSlXFEXZUkQ/FTexc
+        Qj163Z4gt8LbS3U4q6FZF7GDfMqT+EG18J7RAI0nUgsHgnPbbWvXQ/Xi+bO2HmF7S9S1eRrWCGzTA
+        WnEsqJopdy1UuNwVEBd+5u+LoyrjDGJt8zXt3Cnky9HRB9K85QaP94yPU+uHsNO6xlVBMj97ccmaN
+        X56maLqZf8UjyyOb24fS0is8nfuK0Cc84W7nzbdw9QvRQNRUh7489ghUynDeQeRStOmjYO+rRYz2Q
+        MAEdip3w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0fYw-000OYq-OK; Wed, 08 Nov 2023 10:13:31 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A45F30049D; Wed,  8 Nov 2023 11:13:31 +0100 (CET)
+Date:   Wed, 8 Nov 2023 11:13:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        torvalds@linux-foundation.org, paulmck@kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
+Message-ID: <20231108101330.GK3818@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231108085156.GD8262@noisy.programming.kicks-ass.net>
+ <87bkc4lfxp.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="G1+2ugXbEtPAn3nK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b17622b-de1a-4075-9527-8755f5e4dc14@amd.com>
+In-Reply-To: <87bkc4lfxp.fsf@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 08, 2023 at 02:04:02AM -0800, Ankur Arora wrote:
 
---G1+2ugXbEtPAn3nK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >>   Revert "riscv: support PREEMPT_DYNAMIC with static keys"
+> >>   Revert "livepatch,sched: Add livepatch task switching to
+> >>     cond_resched()"
+> >>   Revert "arm64: Support PREEMPT_DYNAMIC"
+> >>   Revert "sched/preempt: Add PREEMPT_DYNAMIC using static keys"
+> 
+> What's the best way to handle these? With the lazy bit, cond_resched()
+> and might_resched() are gone. So we don't need all of the static
+> key inftrastructure for toggling etc.
+> 
+> The part of preempt_dynamic that makes sense to me is the one that
+> switches dynamically between none/voluntary/full. Here it would need
+> to be wired onto controls of the lazy bit.
+> (Right now the preemption policy is controlled by sched_feat in
+> patches 43, and 44 but sched/preempt is a much better interface.)
 
-On Wed, Nov 08, 2023 at 11:06:53AM +0100, Michal Simek wrote:
->=20
->=20
-> On 11/7/23 22:18, Conor Dooley wrote:
-> > On Tue, Nov 07, 2023 at 12:09:58PM +0100, Michal Simek wrote:
-> > >=20
-> > >=20
-> > > On 11/6/23 18:07, Conor Dooley wrote:
-> > > > On Mon, Nov 06, 2023 at 12:53:40PM +0100, Michal Simek wrote:
-> > > > > MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor I=
-P.
-> > > > > It is hardware compatible with classic MicroBlaze processor. Proc=
-essor can
-> > > > > be used with standard AMD/Xilinx IPs including interrupt controll=
-er and
-> > > > > timer.
-> > > > >=20
-> > > > > Signed-off-by: Michal Simek <michal.simek@amd.com>
-> > > > > ---
-> > > > >=20
-> > > > >    .../devicetree/bindings/soc/amd/amd.yaml      | 26 +++++++++++=
-++++++++
-> > > >=20
-> > > > Bindings for SoCs (and by extension boards with them) usually go to=
- in
-> > > > $arch/$vendor.yaml not into soc/$vendor/$vendor.yaml. Why is this a=
-ny
-> > > > different?
-> > >=20
-> > > I actually found it based on tracking renesas.yaml which describes on=
-e of
-> > > risc-v board. No problem to move it under bindings/riscv/
-> >=20
-> > That one is kinda a special case, as it contains arm/arm64/riscv.
->=20
-> If they are kinda a special case then what are we?
-> All AMD/Xilinx platforms(ZynqMP/Versal/Versal NET) can have
-> arm/arm64/riscv/microblaze cpus(riscv/microblaze as soft cores) in the sa=
-me
-> board (IIRC I have also seen xtensa soft core on our chips too).
+I'm not understanding, those should stay obviously.
 
-That would be an argument iff you had all of those in a single file, not
-when you only have a single compatible for a riscv "soc" in it.
+The current preempt_dynamic stuff has 5 toggles:
 
---G1+2ugXbEtPAn3nK
-Content-Type: application/pgp-signature; name="signature.asc"
+/*
+ * SC:cond_resched
+ * SC:might_resched
+ * SC:preempt_schedule
+ * SC:preempt_schedule_notrace
+ * SC:irqentry_exit_cond_resched
+ *
+ *
+ * NONE:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * VOLUNTARY:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- __cond_resched
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * FULL:
+ *   cond_resched               <- RET0
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- preempt_schedule
+ *   preempt_schedule_notrace   <- preempt_schedule_notrace
+ *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+ */
 
------BEGIN PGP SIGNATURE-----
+If you kill voluntary as we know it today, you can remove cond_resched
+and might_resched, but the remaining 3 are still needed to switch
+between NONE and FULL.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUtfBQAKCRB4tDGHoIJi
-0oGkAQCOlynYcqYzbJW9/y5wv3scanv4SU3OnBIPS1V6IlHuhAD+JMDO7E6DuVN1
-D6r49nat9xH3V3kodZUw/6bTGeR/ug4=
-=+/Bj
------END PGP SIGNATURE-----
+Additionally, you'll get one new state to enable/disable the LAZY stuff.
+Neither NONE nor FULL want the LAZY thing on.
 
---G1+2ugXbEtPAn3nK--
+You'll then end up with something like:
+
+/*
+ * SK:preempt_lazy
+ * SC:preempt_schedule
+ * SC:preempt_schedule_notrace
+ * SC:irqentry_exit_cond_resched
+ *
+ *
+ * NONE:
+ *   preempt_lazy		<- OFF
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * VOLUNTARY:
+ *   preempt_lazy		<- ON
+ *   preempt_schedule           <- preempt_schedule
+ *   preempt_schedule_notrace   <- preempt_schedule_notrace
+ *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+ *
+ * FULL:
+ *   preempt_lazy		<- OFF
+ *   preempt_schedule           <- preempt_schedule
+ *   preempt_schedule_notrace   <- preempt_schedule_notrace
+ *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+ */
+
+For the architectures that do not have static_call but instead use
+static_key for everything, the SC's are obviously static_key based
+wrappers around the function calls -- like now.
