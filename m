@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D7C7E52CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EC37E52D0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234965AbjKHJqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S235406AbjKHJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:46:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHJqb (ORCPT
+        with ESMTP id S229924AbjKHJqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:46:31 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C07C199
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:46:29 -0800 (PST)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SQKqV1w8kzMmdW;
-        Wed,  8 Nov 2023 17:41:58 +0800 (CST)
-Received: from [10.174.185.210] (10.174.185.210) by
- kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 8 Nov 2023 17:45:52 +0800
-Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
-To:     Marc Zyngier <maz@kernel.org>, <dongli.zhang@oracle.com>,
-        <cohuck@redhat.com>, <jasowang@redhat.com>, <stefanha@redhat.com>,
-        <mst@redhat.com>
-CC:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <wanghaibin.wang@huawei.com>
-References: <20231102143507.840-1-jiangkunkun@huawei.com>
- <87msvt6cc7.wl-maz@kernel.org>
- <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com>
- <86edh228xx.wl-maz@kernel.org>
-From:   Kunkun Jiang <jiangkunkun@huawei.com>
-Message-ID: <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com>
-Date:   Wed, 8 Nov 2023 17:45:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 8 Nov 2023 04:46:53 -0500
+Received: from xry111.site (xry111.site [89.208.246.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBE8199;
+        Wed,  8 Nov 2023 01:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1699436811;
+        bh=JsqArwf7i++16JZaeUV8Vxl01WJB/F/dSilTsgJ3HE4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FYh3YR16sty+E4UnANyNklB7fjB7TwklI07azkSD7QGZzMtxCpPcJj0bUYQM/y2Ad
+         lb2ns8kIn6SVUJWG6nKWoE8YIaLdZw65c4Fmg37yGlAX1vCmd1a4rzDNyJmjQe+xj4
+         KCqLM5+EbiWxESWRx5Z2ejAW57z6AB7bp16rFtEs=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id 446CA66A03;
+        Wed,  8 Nov 2023 04:46:48 -0500 (EST)
+Message-ID: <de7c80a1e297fb1cddbca3972fe8c09a3b551b7a.camel@xry111.site>
+Subject: Re: [PATCH] LoongArch: Disable module from accessing external data
+ directly
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     WANG Rui <wangrui@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn,
+        Fangrui Song <maskray@google.com>
+Date:   Wed, 08 Nov 2023 17:46:46 +0800
+In-Reply-To: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
+References: <20231108040447.288870-1-wangrui@loongson.cn>
+         <d32d8a26dcd75a840727cdb50546b621d34d326b.camel@xry111.site>
+         <CAHirt9jQHTRGdv4rShgvWHEbG1vzuLkNDbxLP7x4eMtuB3BB5g@mail.gmail.com>
+         <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
+         <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-In-Reply-To: <86edh228xx.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.185.210]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm000007.china.huawei.com (7.193.23.189)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+On Wed, 2023-11-08 at 17:36 +0800, WANG Rui wrote:
+> > xry111@nanmen2 ~ $ clang t1.c -O2 -fno-pie -no-pie
+> > xry111@nanmen2 ~ $ ./a.out
+> > Bus error (core dumped)
+> >=20
+> > I'll consider it a Clang bug then.
 
-On 2023/11/6 23:33, Marc Zyngier wrote:
-> On Mon, 06 Nov 2023 14:59:01 +0000,
-> Kunkun Jiang <jiangkunkun@huawei.com> wrote:
->> The virtio-pci driver write entry1-6
->> massage.data in the msix-table and trap to QEMU for processing. The
->> massage.data is as follow:
->>> entry-0 0
->>> entry-1 1
->>> entry-2 1
->>> entry-3 1
->>> entry-4 1
->>> entry-5 1
->>> entry-6 1
-> Urgh... is vp_modern_queue_vector() used in your configuration? This
-> is ... terrible.
-I encountered this problem using the 4.19 version kernel, but not the
-5.10 version. This vp_modern_queue_vector() function does not exist
-in 4.19, but it uses 'vp_iowrite16(msix_vec, &cfg->queue_msix_vector)',
-the same as vp_modern_queue_vector().
+https://github.com/llvm/llvm-project/issues/71645
 
-In the past two days, I learned about the virtio driver and made some
-new discoveries. When 'num_queues' is greater than maxcpus, it will
-fall back into MSI-X with one shared for queues. The two patches[1],
-submitted by Dongli, limits the number of hw queues used by
-virtio-blk/virtio-scsi by 'nr_cpu_ids'. The two patches were merged
-in 5.1-rc2. And the patch related virtio-blk was merged into the 4.19
-stable branch.The patch related virtio-scsi was not merged.
-[1] 
-https://lore.kernel.org/all/1553682995-5682-1-git-send-email-dongli.zhang@oracle.com/
+> That's it, no copy relocations. As far as I know, copying relocations
+> has some issues and is not recommended by Fangrui.
+>=20
+> For modules, if distance is not a problem, `no-pic` and
+> `direct-access-external-data` can be together because the code is
+> writable. Does it seem reasonable to exist?
 
-This is the earliest discussion.
-https://lore.kernel.org/all/e4afe4c5-0262-4500-aeec-60f30734b4fc@default/
+It may be usable, but the result is generally worse than relying on GOT.
 
-I don't know if there are other circumstances that would cause it to
-fall back into MSI-X with one shared for queues. At least the hack
-method is possible.
-> I wonder if PCIe actually allows this sort of thing.
-Do you think the virtio driver should be modified?
-> In any case, this sort of behaviour breaks so many thing in KVM's
-> implementation that I'd recommend you disable GICv4 until we have a
-> good solution for that.
-There seems to be no restriction in the GIC specification that multiple
-host irqs cannot be mapped to the same vlpi. Or maybe I didn't notice.
-Do you think there are any risks?
+For example, consider a module referring two data symbols in vmlinux,
+foo and bar.  The symbol foo is referred 10 times and bar is referred 8
+times.
 
-GICv3 does not have this issue, but is this configuration legal?
+With the current GOT-based approach, the total space usage is (2 GOT
+entry * (8 bytes / GOT entry)) + ((10 + 8) * 2 instruction * 4 (bytes /
+instruction)) =3D 160 bytes.
 
-Thanks,
-Kunkun Jiang
+With -fdirect-access-external-data, we must add -mcmodel=3Dextreme too
+because the modules are too far away from vmlinux in the kernel address
+space, then the total space usage will be (10 + 8) * 5 instruction * 4
+(bytes / instruction) =3D 360 bytes.
+
+One possible approach to resolve the issue is relocating vmlinux from
+XKPRANGE to XKVRANGE and fit vmlinux + all modules into a 2GiB range.=20
+Then the total space usage will be (10 + 8) * 2 instruction * 4 (bytes /
+instruction) =3D 144 bytes.  But I don't know how to implement this, and
+running vmlinux in XKVRANGE may have a performance penalty.
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
