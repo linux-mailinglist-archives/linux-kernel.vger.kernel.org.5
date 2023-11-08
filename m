@@ -2,171 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE527E5890
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD627E58A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjKHOU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
+        id S232262AbjKHOYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232220AbjKHOUy (ORCPT
+        with ESMTP id S232268AbjKHOY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:20:54 -0500
+        Wed, 8 Nov 2023 09:24:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A88B1FC4
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:20:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED9BCC43397;
-        Wed,  8 Nov 2023 14:20:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED1D1FC2
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:24:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85F64C433C7;
+        Wed,  8 Nov 2023 14:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699453252;
-        bh=E82DmwfH2dcxbs9xwMmLiAaOTn5D4Ow/0Cpeotwv8Tc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rWV9Xw8NQwgrRa5bh7nxobt3EqPIBdZysZTWWrerABqOhIeuc1Jnby1BN2RDe6jSo
-         wMC3krMIgAV9h8cHBuiFMh3OnoC3PvFNYfXcFr8asqoC8PUIh9NLWF0HfK/5X9PJna
-         FtNp1qyXtzlxe51KM8v9HXKo949wd8TvzBYHFjWrIpr/fJT718UUvyZZYNHdr9Gz87
-         lpBiEXfyw04EV1dbr6WISFxIDQcdQfSpYgg7s8OXdUzU7Wl5EHf9NVIujRA8jtvOAS
-         4hYRkewHrL2b9sIIiuVIjloxGRyoSp0Rqw3Z1EVhordXWA9/lMH6d3wK30okromWFX
-         DblWljL7w3jaw==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c594196344so92025811fa.3;
-        Wed, 08 Nov 2023 06:20:51 -0800 (PST)
-X-Gm-Message-State: AOJu0YxNzAwn+kyozMipu4tA12kmdCNAdHxh7r8QxGe5Sh4I3n4PM3Zb
-        qugjZEhxUfrsFar4RObmLehup1eEX7JbHoVBkGQ=
-X-Google-Smtp-Source: AGHT+IF3AlqJpBLUhu1DTarhTz6FDwvlN0RLFjtbhZO/9hXihKmHvPiQC4/ncAP2kR3ROp5UFGC31vCUAe8Gj7r8AZQ=
-X-Received: by 2002:a2e:8e3c:0:b0:2c6:eaf8:49ff with SMTP id
- r28-20020a2e8e3c000000b002c6eaf849ffmr1584451ljk.37.1699453250122; Wed, 08
- Nov 2023 06:20:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
- <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
- <CAPnjgZ2SEby-ndrs=W_afBJH56eqc=-mhp1F1nwkvWks+=B54Q@mail.gmail.com>
- <CAMj1kXED3S+0cq+VT7naBrmWrUwT=HZAaZOBRMv8Ui1Pey1QNQ@mail.gmail.com>
- <CAPnjgZ0LrsJ2_ENTYoBrnyFaH3UKdHs3D2XWY=TzBuBpBoTXZA@mail.gmail.com>
- <CAL_Jsq+DQugkEDESW5wySFbLLN8HNqGDJCio8Wpi6fe0LeHKUA@mail.gmail.com>
- <CAPnjgZ0cmKP5hoGCyQ_Rp8ZQXUVwaPYJMWyidXuOOjMVkDoMDw@mail.gmail.com>
- <CAL_JsqJH=vJ40PNTg_i0LoKA-c0hhMJkL8zCC3_bB-tOkFWWsw@mail.gmail.com>
- <CAPnjgZ1FrdGKjGAxUbkQoL2vHwhC_2Oa2KT+0cm25dQAuAjxAQ@mail.gmail.com>
- <CAPnjgZ19-xR6QxS=fR53skz0VuAty2Z2w2vQTjP7g=tbTFpaqw@mail.gmail.com>
- <CAL_JsqL+X1DatsGk_Cn1HsbG2GV9AngFWXVysWTiNRu_d9tDqw@mail.gmail.com>
- <CAMj1kXHfh40wxerZGjOn2JJ5Skm5C--Rz2jy8p3XZ2UXKGjw+g@mail.gmail.com> <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
-In-Reply-To: <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 8 Nov 2023 15:20:38 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHPVXB2ojzhKbAO47+EDMDzODqjLZ+iOKw=u=Bc7=HPCQ@mail.gmail.com>
-Message-ID: <CAMj1kXHPVXB2ojzhKbAO47+EDMDzODqjLZ+iOKw=u=Bc7=HPCQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To:     Rob Herring <robh@kernel.org>
-Cc:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        s=k20201202; t=1699453466;
+        bh=/oUyVsjDTKel8BdMGwQETEhmuxZimn58gjaDy60fhis=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YLobGbb1DwvBXe+SkW+eqV/xATEwOB5m0BHuKd7p1KQZNJwTZNVXg3GJ2P7VGH3bn
+         j+EOFLZKe5Ab9rlrrRmRnQxWXB01ncUwPuG1w4ddXs6fDj1ydD/A1YwUJYT7DhH802
+         3g2oqlAHnZCw3TQMCRYv563oDdADOWAAkGfTgHWPG4JKO68pHDSfCr/mVXGQTm8IKX
+         nlSwLDrWYviisr2r+pqJrw/VRGC9PwnKnQyPZGTVigxZx7fo/KWsoCwrs+YO5oFmV9
+         3C+Zsu/n4Oeec2OqINkkheb6PtcgZqo/nUVQzej4YZEpEM/7JUhwjQh7P7BDLgeMlQ
+         8qut+ttC/kVrw==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dhaval Sharma <dhaval@rivosinc.com>,
-        Maximilian Brune <maximilian.brune@9elements.com>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        Guo Dong <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
-        ron minnich <rminnich@gmail.com>, Gua Guo <gua.guo@intel.com>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        linux-acpi@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: [RFC PATCH v2 00/31] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date:   Wed,  8 Nov 2023 23:24:19 +0900
+Message-Id: <169945345785.55307.5003201137843449313.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023 at 14:57, Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Nov 8, 2023 at 5:38=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> w=
-rote:
-> >
-> > On Tue, 7 Nov 2023 at 19:07, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > >
-> > > All of this:
-> > >
-> >
-> > > > On Mon, 16 Oct 2023 at 15:54, Simon Glass <sjg@chromium.org> wrote:
-> > > > >
-> > > > > It is not specific to EDK2. Imagine this boot sequence:
-> > > > >
-> > > > > - Platform Init (U-Boot) starts up
-> > > > > - U-Boot uses its platform knowledge to sets some ACPI tables and=
- put
-> > > > > various things in memory
-> > > > > - U-Boot sets up some runtime code and data for the OS
-> > > > > - U-Boot jumps to the Tianocore payload **
-> > > > > - Payload (Tianocore) wants to know where the ACPI tables are, fo=
-r example
-> > > > > - Tianocore needs to provide boot services to the OS, so needs to=
- know
-> > > > > the memory map, etc.
-> > > > >
-> > > > > ** At this point we want to use DT to pass the required informati=
-on.
-> > > > >
-> > > > > Of course, Platform Init could be coreboot or Tianocore or some
-> > > > > strange private binary. Payload could be U-Boot or something else=
-.
-> > > > > That is the point of this effort, to build interoperability.
-> > >
-> > > [...]
-> > >
-> > > > > Perhaps the problem here is that Linux has tied itself up in knot=
-s
-> > > > > with its EFI stuff and DT fixups and what-not. But this is not th=
-at.
-> > > > > It is a simple handoff between two pieces of firmware, Platform I=
-nit
-> > > > > and Payload. It has nothing to do with the OS. With Tianocore the=
-y are
-> > > > > typically combined, but with this usage they are split, and we ca=
-n
-> > > > > swap out one project for another on either side of the DT interfa=
-ce.
-> > >
-> > > Is perhaps the clearest description of the problem you want to solve.
-> > > It's clearly related to EFI though not the interface to the OS. IIRC,
-> > > "platform init" and "payload" are terms in the UEFI spec, right?
-> >
-> > No they are not. This is from the universal payload specification that
-> > is being drafted here
-> >
-> > https://universalpayload.github.io/spec/index.html
-> >
-> > but the UEFI specification does not use this terminology.
->
-> Then I'm confused as to what this is:
->
-> https://uefi.org/specs/PI/1.8/index.html
->
+Hi,
 
-The PI and UEFI specifications are both maintained by the UEFI forum.
+Here is the 2nd version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-The UEFI specification covers external APIs for firmware
-implementations, i.e., the OS visible interface and the public API for
-UEFI device drivers that are not tightly integrated with system
-firmware (for example, the GPU boot time driver in the ROM of an
-add-in card)
+https://lore.kernel.org/all/169920038849.482486.15796387219966662967.stgit@devnote2/
 
-The UEFI forum's PI spec describes system firmware internals, and
-defines the SEC, PEI DXE and BDS boot phases, among other things.
+In this version I merged the fixes to appropriate patches and fix
+some typos/bugs, and fix some issues.
+I also add some commentary patches for ftrace_regs.
 
-It is possible to implement UEFI without PI (which is what uboot does,
-for instance), but Tianocore/EDK2 is the reference implementation for
-both PI and UEFI, and sadly, there is no discernible distinction
-between the two (e.g., both PI and UEFI use identifiers with EFI_ type
-and enum identifier prefixes)
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
 
-'platform init' in the context of this discussion is something
-completely separate, and has zero bearing on the PI<->UEFI handover in
-Tianocore (which is not really a handover to begin with).
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
 
-There is code in Tianocore which allows it to run as a 'payload',
-which means [presumably] that only the DXE and subsequent phases are
-launched from a 'platform init' component that describes the platform
-using some of the DT bindings that are under discussion here. In this
-case, I can see how some of the ACPI descriptions provided by the
-'platform init' might be inherited by the 'payload'. However, I don't
-see how such a Tianocore payload would make meaningful use of
-boot/runtime code/data described in general terms using this proposed
-binding, which is why I keep asking for an example scenario.
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+
+The purpose of latter change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design:
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Series:
+- Patch [1/31] and [2/31] are adding a comment for ftrace_regs.
+- Patch [3/31] to [18/31] are the multiple function-graph support.
+- Patch [19/31] and [21/31] adds new function-graph callbacks with
+  ftrace_regs and x86-64 implementation.
+- Patch [22/31] to [25/31] are preparation (adding util functions) of
+  the new fprobe and its user.
+- Patch [26/31] to [30/31] rewrites fprobes and updates its users.
+- Patch [31/31] is a documentation update.
+
+This series can be applied against the probes-fixes-v6.6-rc7 on linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Christophe JAILLET (1):
+      seq_buf: Export seq_buf_puts()
+
+Masami Hiramatsu (Google) (15):
+      tracing: Add a comment about ftrace_regs definition
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      Documentation: probes: Update fprobe on function-graph tracer
+
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
+
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/include/asm/ftrace.h                    |   18 
+ arch/arm64/kernel/ftrace.c                         |    8 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    6 
+ arch/powerpc/include/asm/ftrace.h                  |    7 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    5 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   15 
+ arch/x86/kernel/ftrace.c                           |   50 +
+ arch/x86/kernel/ftrace_64.S                        |   36 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  159 +++
+ include/linux/sched.h                              |    2 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              |  943 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  637 ++++++++++----
+ kernel/trace/ftrace.c                              |   13 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 ++
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 ++++
+ lib/seq_buf.c                                      |    1 
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 36 files changed, 1965 insertions(+), 698 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
