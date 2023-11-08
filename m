@@ -2,169 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3267E5144
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D9D7E514D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbjKHHlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:41:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40774 "EHLO
+        id S231397AbjKHHpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:45:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235198AbjKHHlU (ORCPT
+        with ESMTP id S229566AbjKHHps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:41:20 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05761715
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:41:17 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5094727fa67so8891766e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 23:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699429276; x=1700034076; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=xAVJQGMahyQJ+vUaijsu5jSTkgGVFRKYtfQ7bY1/nHE=;
-        b=OCDp3wG6X8jWC2az/1iHP8jDjG62W+Jd0R4MEDinUleyjMk0iaUZryGDgjRnfhQPEI
-         n3qGeeUYSHL6aAPTX1tqdVAo2JJUkOh885zP/Jeg8SbxqeApmVgk9ms/yiUUOWvsfhdz
-         bZSHRgYm6ERhcgZ3nE+3xHo+fz7eCHnstb7UFtHmyoOgnVRXizlJFLwNiza88fUN0Svc
-         4sNG1Cmt/ZymzTA7CZfTTFrbwXNMyT32WyvzLpQ7rjhPGxEo6IvAIWlZvMwvHp6Aea1l
-         qPEdJ9Zl6ytnh511escQTyKDIJYBSRZearTMWYCYRHCiKGJi+nGhgH1wF3i3tHU/kAPS
-         ToaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699429276; x=1700034076;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xAVJQGMahyQJ+vUaijsu5jSTkgGVFRKYtfQ7bY1/nHE=;
-        b=g1sUACnJfckqWKFeqAuvh5BwJ7Sm/RecRlWjfKAWkJPFsD8Tf6cP1+lwqPKQ5ENmrQ
-         rU95tNIbP3G5VEQsi4sZeR2Y0wEUvQHKNtOv2Y2vhEjHwASjnTF/nQOyktVPRCeCELm2
-         LaMsewkumBU/A+HemjrqzCBOnnP1uAfJKHMF/jpd/k4R9xfeSsdRsMfEdH3+wwG/RHGG
-         s6M1QIquU3tns484aIlnT6C/kB+oYbVLZO7It4YqFeLMgJhe5WqaPcf1v6YkDnPwCeDJ
-         yvjkLDYmzfCz+6h8zhp9A9ZV/Z3lq7IObIuuawS4IN6APgnmf1GOSUIeHPtIqqUeAkxI
-         TVJA==
-X-Gm-Message-State: AOJu0Yx160+jGdJZ8UmOM1EMCUcQYbM2cxLKFEqmu8mMFKrvXP5VNh9U
-        jhrNIe8c5iYzmcnVGKjj4mogow==
-X-Google-Smtp-Source: AGHT+IFp/54hyENmbirygl3DIuQlELRkeZ96Z7JT6deS0tkIXAAjEJ74kO7NXPsGwY34zdvSxOOfag==
-X-Received: by 2002:a05:6512:3046:b0:504:7e90:e05b with SMTP id b6-20020a056512304600b005047e90e05bmr779232lfb.14.1699429275892;
-        Tue, 07 Nov 2023 23:41:15 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id a1-20020adfe5c1000000b0032f7cfac0fesm4215099wrn.51.2023.11.07.23.41.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 23:41:15 -0800 (PST)
-Message-ID: <41036a02-1ae6-44c5-a0b4-a5d3a33cdce4@linaro.org>
-Date:   Wed, 8 Nov 2023 08:41:12 +0100
+        Wed, 8 Nov 2023 02:45:48 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15411706;
+        Tue,  7 Nov 2023 23:45:46 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A86Gk58009326;
+        Wed, 8 Nov 2023 07:44:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=oGKLdo3NPJ5cRCFZ+eE7FWQBivkD2Wt2J//M4dNAs/s=;
+ b=kz3HEavag4zn6s677HTpkQTx00RiNurPkmS/Q1ACbgPCk1FnlVj9X9DVVP1RQNlG/KUO
+ xxqtQsbkQ4I7u4Lkg03kzGO6q6TQSj3ssMpUCsGIFV3u0kTNZqqetqDp/OAoRe8tTl2F
+ DVe8rbIUO3swkT4+W1pwDkeyobbROnoQLPaCUItY3dVQXuev6aycBQuoy8/OI190/Tmb
+ 47GNJY/E2Jkf+Ne4A8/LdgqJLLhRN7xpf1mL9lwtBzY4amROdcxE9JDkTHIk3GmNuIyM
+ f6T0TH/EmXGyf7vOjYS0SYZHZwwAX/kxsj6iivIi5oCKuy5CyDEBaN8dH14580tdWEVG Yw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7xyu0sex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 07:44:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A87ivZs002711
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 8 Nov 2023 07:44:57 GMT
+Received: from [10.253.34.202] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 23:44:51 -0800
+Message-ID: <cbe26ea4-07b9-9922-07f5-d4b96f910b56@quicinc.com>
+Date:   Wed, 8 Nov 2023 15:44:49 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10] dt-bindings: soc: samsung: exynos-sysreg: add
- exynosautov920 sysreg
-To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/7] scsi: ufs: host: Rename structure ufs_dev_params
+ to ufs_host_params
+To:     Andrew Halaney <ahalaney@redhat.com>,
+        Can Guo <cang@qti.qualcomm.com>
+CC:     <bvanassche@acm.org>, <mani@kernel.org>,
+        <stanley.chu@mediatek.com>, <adrian.hunter@intel.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>,
         Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231031094852.118677-1-jaewon02.kim@samsung.com>
- <CGME20231031095015epcas2p3cc52b365b99a00bef3f75bea38ea91e9@epcas2p3.samsung.com>
- <20231031094852.118677-2-jaewon02.kim@samsung.com>
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Brian Masney <bmasney@redhat.com>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-arm-msm@vger.kernel.org>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-2-git-send-email-cang@qti.qualcomm.com>
+ <fcovysoo6vxvqdrypfbnfyclrmifibio46rne5zhiqnmqhzd7k@5ltemasdhfxp>
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231031094852.118677-2-jaewon02.kim@samsung.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <fcovysoo6vxvqdrypfbnfyclrmifibio46rne5zhiqnmqhzd7k@5ltemasdhfxp>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Zg3DmZ3qNhekEerDGSpqD2-ivhjgznXo
+X-Proofpoint-GUID: Zg3DmZ3qNhekEerDGSpqD2-ivhjgznXo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
+ suspectscore=0 clxscore=1011 malwarescore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 10:47, Jaewon Kim wrote:
-> Add compatible for ExynosAutov920 sysreg controllers.
-> 
-> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
-> ---
->  .../bindings/soc/samsung/samsung,exynos-sysreg.yaml        | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
-> index 163e912e9cad..aa2a29ec6072 100644
-> --- a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
-> +++ b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
-> @@ -35,6 +35,7 @@ properties:
->                - samsung,exynos5433-sysreg
->                - samsung,exynos850-sysreg
->                - samsung,exynosautov9-sysreg
-> +              - samsung,exynosautov920-sysreg
+Hi Andrew,
 
-New devices should not be deprecated by default. Drop.
+On 11/8/2023 3:36 AM, Andrew Halaney wrote:
+> On Mon, Nov 06, 2023 at 08:46:07PM -0800, Can Guo wrote:
+>> From: Can Guo <quic_cang@quicinc.com>
+>>
+>> Structure ufs_dev_params is actually used in UFS host vendor drivers to
+>> declare host specific power mode parameters, like ufs_<vendor>_params or
+>> host_cap, which makes the code not very straightforward to read. Rename the
+>> structure ufs_dev_params to ufs_host_params and unify the declarations in
+>> all vendor drivers to host_params.
+>>
+>> In addition, rename the two functions ufshcd_init_dev_pwr_param() and
+> nit: s/ufshcd_init_dev_pwr_param/ufshcd_init_pwr_dev_param/
+sure
+>
+>> ufshcd_get_dev_pwr_param() which work based on the ufs_host_params to
+> nit: s/ufshcd_get_dev_pwr_param/ufshcd_get_pwr_dev_param/
+sure
+>
+>> ufshcd_init_host_param() and ufshcd_negotiate_pwr_param() respectively to
+>> avoid confusions.
+>>
+>> This change does not change any functionalities or logic.
+>>
+>> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+>> ---
+>>   drivers/ufs/host/ufs-exynos.c    |  7 +++---
+>>   drivers/ufs/host/ufs-hisi.c      | 11 ++++-----
+>>   drivers/ufs/host/ufs-mediatek.c  | 12 ++++------
+>>   drivers/ufs/host/ufs-qcom.c      | 12 ++++------
+>>   drivers/ufs/host/ufshcd-pltfrm.c | 49 ++++++++++++++++++++--------------------
+>>   drivers/ufs/host/ufshcd-pltfrm.h | 10 ++++----
+>>   6 files changed, 47 insertions(+), 54 deletions(-)
+>>
+> <snip>
+>
+>> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+>> index da2558e..6e65b61 100644
+>> --- a/drivers/ufs/host/ufshcd-pltfrm.c
+>> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
+>> @@ -285,17 +285,17 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+>>   }
+>>   
+>>   /**
+>> - * ufshcd_get_pwr_dev_param - get finally agreed attributes for
+>> + * ufshcd_negotiate_pwr_param - get finally agreed attributes for
+>>    *                            power mode change
+>> - * @pltfrm_param: pointer to platform parameters
+>> + * @host_param: pointer to platform parameters
+>>    * @dev_max: pointer to device attributes
+>>    * @agreed_pwr: returned agreed attributes
+>>    *
+>>    * Return: 0 on success, non-zero value on failure.
+>>    */
+>> -int ufshcd_get_pwr_dev_param(const struct ufs_dev_params *pltfrm_param,
+>> -			     const struct ufs_pa_layer_attr *dev_max,
+>> -			     struct ufs_pa_layer_attr *agreed_pwr)
+>> +int ufshcd_negotiate_pwr_param(const struct ufs_host_params *host_param,
+>> +			       const struct ufs_pa_layer_attr *dev_max,
+>> +			       struct ufs_pa_layer_attr *agreed_pwr)
+>>   {
+>>   	int min_pltfrm_gear;
+> If you're going to change pltfrm -> host, maybe do so for
+> min_pltfrm_gear too? I think this all reads nicer with the functions
+> changed as is, but the consistency would be nice in my opinion.
 
->            - const: syscon
->          deprecated: true
->        - items:
-> @@ -50,6 +51,12 @@ properties:
->                - samsung,exynosautov9-peric1-sysreg
->            - const: samsung,exynosautov9-sysreg
->            - const: syscon
-> +      - items:
-> +          - enum:
-> +              - samsung,exynosautov920-peric0-sysreg
-> +              - samsung,exynosautov920-peric1-sysreg
-> +          - const: samsung,exynosautov920-sysreg
-> +          - const: syscon
->  
->    reg:
->      maxItems: 1
+Sure, will address in next version.
 
-Best regards,
-Krzysztof
+>
+> Outside of those nits, I think this reads nicer now as well.
+>
+> Acked-by: Andrew Halaney <ahalaney@redhat.com>
+
+
+Thanks,
+
+Can Guo
 
