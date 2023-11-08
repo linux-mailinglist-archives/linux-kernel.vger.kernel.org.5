@@ -2,156 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA887E4E46
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0E7E4E47
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234706AbjKHAvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        id S233299AbjKHAwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234348AbjKHAvP (ORCPT
+        with ESMTP id S232160AbjKHAwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:51:15 -0500
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B91A1702;
-        Tue,  7 Nov 2023 16:51:12 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VvvcIdY_1699404667;
-Received: from 30.240.112.123(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VvvcIdY_1699404667)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Nov 2023 08:51:09 +0800
-Message-ID: <98b1dbba-3b82-4fe3-bb72-7447c8118bf2@linux.alibaba.com>
-Date:   Wed, 8 Nov 2023 08:51:06 +0800
+        Tue, 7 Nov 2023 19:52:08 -0500
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3DE101
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:52:06 -0800 (PST)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d30af2399bso8301656a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:52:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699404725; x=1700009525;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dfwHW3L0bIpD4ONa1LZUh7k23zc2aXO/LvIUJYEwzHs=;
+        b=uYINCXQSDgrVGh956Xx9hSjNgfYsCtspNc/4s8LPqvaDGJiEez6xr0Sfj+A52fse6E
+         TUdY12MA7SKpvCWa3I06gzqx2pidYKLJNLyZr7SqR+nvXxIHQK8D79QKAdBRdSCLVyXJ
+         H5A0CgPGIlfjT7UKRGgcjdQtrQELc3wFs48fIcCj9PeyGzhTZkGe4DRe4EpzOjK3oEyZ
+         irU2iGu2pSLd5W8oy1uKGL/gC0HmD3f2R/5WaFz7B9pHx3Cp6wTYmBqtq+F+S8qC/JsP
+         WJnMOBHaEt27LwJmtljntweHe9jQdQGfe4HaNa+bzreutr1O7FHwQ1AZ/MeFzHQJrtUu
+         r8oQ==
+X-Gm-Message-State: AOJu0Yw48MbHzImom89J368GHhp7IKcQGkI7LNOFMwAkkXRkHtU1TXE6
+        EAI7DWG0OXN2YVZX8Fsk9TXa5kX0vTYB17ZvdG/rbM1jufpY
+X-Google-Smtp-Source: AGHT+IGRY6JgD+lpzYeLkEjSnhiqTXZ/gOrOQUNR4DMZO4rb2qjyqW+aYS+bao2N1ii5JmeGgUaCCVxDMgtIrxVh35gktCHmzYcR
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 3/5] PCI: move pci_clear_and_set_dword helper to pci
- header
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     kaishen@linux.alibaba.com, yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, chengyou@linux.alibaba.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com
-References: <20231107150342.GA288219@bhelgaas>
-Content-Language: en-US
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231107150342.GA288219@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6870:8291:b0:1e9:c362:a397 with SMTP id
+ q17-20020a056870829100b001e9c362a397mr130982oae.10.1699404725619; Tue, 07 Nov
+ 2023 16:52:05 -0800 (PST)
+Date:   Tue, 07 Nov 2023 16:52:05 -0800
+In-Reply-To: <tencent_C325838DE11216DD9C5DAA192E4FCA0DD207@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000014460609997fa2@google.com>
+Subject: Re: [syzbot] [block?] WARNING in blk_mq_start_request
+From:   syzbot <syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 2023/11/7 23:03, Bjorn Helgaas wrote:
-> On Sat, Nov 04, 2023 at 09:32:14PM +0800, Shuai Xue wrote:
->> The clear and set pattern is commonly used for accessing pci config,
->> move the helper pci_clear_and_set_dword from aspm.c into pci header.
-> 
-> s/move/Move/ (in subject, capitalize first word)
-> s/pci/PCI/ (capitalize in English text)
-> s/pci_clear_and_set_dword/pci_clear_and_set_dword()/ (add parens to
-> function names, also in subject)
-> 
-> With the fixes here and below:
-> 
->   Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Reported-and-tested-by: syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
 
-Hi, Bjorn,
+Tested on:
 
-Thank you for comments, will fix them in next version.
+commit:         4652b8e4 Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1629a00f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5316ad879647e3c5
+dashboard link: https://syzkaller.appspot.com/bug?extid=fcc47ba2476570cbbeb0
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=107e3ac0e80000
 
-Best Regards,
-Shuai
-
-> 
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> ---
->>  drivers/pci/access.c    | 12 ++++++++++++
->>  drivers/pci/pcie/aspm.c | 11 -----------
->>  include/linux/pci.h     |  2 ++
->>  3 files changed, 14 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
->> index 6554a2e89d36..526360481d99 100644
->> --- a/drivers/pci/access.c
->> +++ b/drivers/pci/access.c
->> @@ -598,3 +598,15 @@ int pci_write_config_dword(const struct pci_dev *dev, int where,
->>  	return pci_bus_write_config_dword(dev->bus, dev->devfn, where, val);
->>  }
->>  EXPORT_SYMBOL(pci_write_config_dword);
->> +
->> +void pci_clear_and_set_dword(const struct pci_dev *dev, int pos,
->> +				    u32 clear, u32 set)
-> 
-> Rename to pci_clear_and_set_config_dword() to retain the "config"
-> information and match the other accessors.
-
-Got it. Will rename it.
-
-> 
-> Align "u32 clear" under "const struct ...".  pci_write_config_dword()
-> above is an anomaly.
-> 
-
-Got it. Will align it.
-
->> +{
->> +	u32 val;
->> +
->> +	pci_read_config_dword(dev, pos, &val);
->> +	val &= ~clear;
->> +	val |= set;
->> +	pci_write_config_dword(dev, pos, val);
->> +}
->> +EXPORT_SYMBOL(pci_clear_and_set_dword);
->> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
->> index 1bf630059264..f4e64fedc048 100644
->> --- a/drivers/pci/pcie/aspm.c
->> +++ b/drivers/pci/pcie/aspm.c
->> @@ -423,17 +423,6 @@ static void pcie_aspm_check_latency(struct pci_dev *endpoint)
->>  	}
->>  }
->>  
->> -static void pci_clear_and_set_dword(struct pci_dev *pdev, int pos,
->> -				    u32 clear, u32 set)
->> -{
->> -	u32 val;
->> -
->> -	pci_read_config_dword(pdev, pos, &val);
->> -	val &= ~clear;
->> -	val |= set;
->> -	pci_write_config_dword(pdev, pos, val);
->> -}
->> -
->>  /* Calculate L1.2 PM substate timing parameters */
->>  static void aspm_calc_l12_info(struct pcie_link_state *link,
->>  				u32 parent_l1ss_cap, u32 child_l1ss_cap)
->> diff --git a/include/linux/pci.h b/include/linux/pci.h
->> index 8c7c2c3c6c65..271f30fd7ca4 100644
->> --- a/include/linux/pci.h
->> +++ b/include/linux/pci.h
->> @@ -1213,6 +1213,8 @@ int pci_read_config_dword(const struct pci_dev *dev, int where, u32 *val);
->>  int pci_write_config_byte(const struct pci_dev *dev, int where, u8 val);
->>  int pci_write_config_word(const struct pci_dev *dev, int where, u16 val);
->>  int pci_write_config_dword(const struct pci_dev *dev, int where, u32 val);
->> +void pci_clear_and_set_dword(const struct pci_dev *dev, int pos,
->> +				    u32 clear, u32 set);
-> 
-> Align "u32 clear" again.
-
-Thank you. Will align it.
-
-> 
->>  int pcie_capability_read_word(struct pci_dev *dev, int pos, u16 *val);
->>  int pcie_capability_read_dword(struct pci_dev *dev, int pos, u32 *val);
->> -- 
->> 2.39.3
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Note: testing is done by a robot and is best-effort only.
