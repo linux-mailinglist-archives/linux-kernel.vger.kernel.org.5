@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F4F7E567D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F06F7E5680
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344524AbjKHMpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:45:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        id S1344529AbjKHMqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbjKHMp3 (ORCPT
+        with ESMTP id S1344373AbjKHMqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:45:29 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600A81BF0
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:45:26 -0800 (PST)
+        Wed, 8 Nov 2023 07:46:11 -0500
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825861BF2;
+        Wed,  8 Nov 2023 04:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1699447526; x=1730983526;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mp0cZhN3AA8YDI2rLb/AqW/Ftccy17dW1aTL8NsNu+0=;
-  b=oRu+wqkgoNsI0LhGhYE6gkfx23YDjMoDeUlnLhOgGYO53c6GwaUJBc6Y
-   Q7gwV5XwXCaUcQ9Z9wyhkAzuOLQAPvsfphQvQipnGCrbZ6BROJCFrE1h0
-   qY/q1zcLNv5akvSiXqUDqEub70dxUWBDdBnIxwMzhhrI8miR5Z0oLQHhC
-   X0VXOgRxC8TPl2+7YR7A1G67Ib9mHpJZ9Z61JOTSfNUgFgQl40Bjuvy+i
-   0afb1gt4kD40mG9Uk1elL2jf5hOlaPpreAW+gC8NcTDYyPh14DAq99687
-   ciVk+2H/PqD9k667vWBjGaQzVbESNf1SrwftZmJW3LaPnthj2lE+JUdhB
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,286,1694728800"; 
-   d="scan'208";a="33875585"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Nov 2023 13:45:23 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 69BB028007F;
-        Wed,  8 Nov 2023 13:45:19 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix DRM_BRIDGE_ATTACH_NO_CONNECTOR case
-Date:   Wed, 08 Nov 2023 13:45:20 +0100
-Message-ID: <3537389.iIbC2pHGDl@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
-References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699447569; x=1730983569;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=IMs3Jzbr/vq41dM8w9vnjLZzo+zDotJHPcWCxMB6uUE=;
+  b=LxkkFqJ1WYK3Zf0f4L/7l6orz0EObPwspi+16hv4GvE5Y3oUKrkiqPy9
+   kpMeI7TUCACbzUq5QX1n/69n+ffyRHwVxzn2RzUcC2alMQTnJ5wZKkqsQ
+   BEP8/90wEn3pq8opgwX5/VjWUmOh8lTFRzmfsOIvMiFifT4JSRK7+QOwu
+   o=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="369131464"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 12:45:58 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1a-m6i4x-9fe6ad2f.us-east-1.amazon.com (Postfix) with ESMTPS id A4E6880E33;
+        Wed,  8 Nov 2023 12:45:54 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:19714]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.30.134:2525] with esmtp (Farcaster)
+ id e7d7ba6d-66b4-4fac-9ac6-77ed28c7a2e1; Wed, 8 Nov 2023 12:45:53 +0000 (UTC)
+X-Farcaster-Flow-ID: e7d7ba6d-66b4-4fac-9ac6-77ed28c7a2e1
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 12:45:44 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 12:45:40 +0000
+Message-ID: <c1e85d8a-7f59-4c75-ada1-8a80d79c2b4e@amazon.com>
+Date:   Wed, 8 Nov 2023 13:45:38 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 30/33] KVM: x86: hyper-v: Introduce
+ KVM_REQ_HV_INJECT_INTERCEPT request
+Content-Language: en-US
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-31-nsaenz@amazon.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <20231108111806.92604-31-nsaenz@amazon.com>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D041UWA002.ant.amazon.com (10.13.139.121) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
-
-Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
-> These two patches are needed to make tc358767 work in the
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP connector.
->=20
-> I have tested this with TI AM654 EVM with a tc358767 add-on card
-> connected to a DP monitor.
-
-Just a question regarding the usage of this DSI-DP bridge.
-What is the state of the DSI lanes after the DSI host has been initialized,=
-=20
-but before calling atomic_pre_enable? AFAIK this bridge requires LP-11 on D=
-SI=20
-at any time for accessing the AUX channel.
-
-Best regards,
-Alexander
-
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
-> Changes in v2:
-> - Update the format negotiation patch as discussed in
-> https://lore.kernel.org/all/7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com/ -
-> Link to v1:
-> https://lore.kernel.org/r/20231031-tc358767-v1-0-392081ad9f4b@ideasonboar=
-d.
-> com
->=20
-> ---
-> Aradhya Bhatia (1):
->       drm/bridge: tc358767: Add format negotiation hooks for DPI/DSI to
-> (e)DP
->=20
-> Tomi Valkeinen (1):
->       drm/bridge: tc358767: Fix link properties discovery
->=20
->  drivers/gpu/drm/bridge/tc358767.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> ---
-> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
-> change-id: 20231031-tc358767-58e3ebdf95f0
->=20
-> Best regards,
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+Ck9uIDA4LjExLjIzIDEyOjE4LCBOaWNvbGFzIFNhZW56IEp1bGllbm5lIHdyb3RlOgo+IEludHJv
+ZHVjZSBhIG5ldyByZXF1ZXN0IHR5cGUsIEtWTV9SRVFfSFZfSU5KRUNUX0lOVEVSQ0VQVCB3aGlj
+aCBhbGxvd3MKPiBpbmplY3Rpbmcgb3V0LW9mLWJhbmQgSHlwZXItViBzZWN1cmUgaW50ZXJjZXB0
+cy4gRm9yIG5vdyBvbmx5IG1lbW9yeQo+IGFjY2VzcyBpbnRlcmNlcHRzIGFyZSBzdXBwb3J0ZWQu
+IFRoZXNlIGFyZSB0cmlnZ2VyZWQgd2hlbiBhY2Nlc3MgYSBHUEEKPiBwcm90ZWN0ZWQgYnkgYSBo
+aWdoZXIgVlRMLiBUaGUgbWVtb3J5IGludGVyY2VwdCBtZXRhZGF0YSBpcyBmaWxsZWQgYmFzZWQK
+PiBvbiB0aGUgR1BBIHByb3ZpZGVkIHRocm91Z2ggc3RydWN0IGt2bV92Y3B1X2h2X2ludGVyY2Vw
+dF9pbmZvLCBhbmQKPiBpbmplY3RlZCBpbnRvIHRoZSBndWVzdCB0aHJvdWdoIFN5bklDIG1lc3Nh
+Z2UuCj4KPiBTaWduZWQtb2ZmLWJ5OiBOaWNvbGFzIFNhZW56IEp1bGllbm5lIDxuc2FlbnpAYW1h
+em9uLmNvbT4KCgpJTUhPIG1lbW9yeSBwcm90ZWN0aW9uIHZpb2xhdGlvbnMgc2hvdWxkIHJlc3Vs
+dCBpbiBhIHVzZXIgc3BhY2UgZXhpdC4gClVzZXIgc3BhY2UgY2FuIHRoZW4gdmFsaWRhdGUgd2hh
+dCB0byBkbyB3aXRoIHRoZSB2aW9sYXRpb24gYW5kIGlmIApuZWNlc3NhcnkgaW5qZWN0IGFuIGlu
+dGVyY2VwdC4KClRoYXQgbWVhbnMgZnJvbSBhbiBBUEkgcG9pbnQgb2YgdmlldywgeW91IHdhbnQg
+YSBuZXcgZXhpdCByZWFzb24gCih2aW9sYXRpb24pIGFuZCBhbiBpb2N0bCB0aGF0IGFsbG93cyB5
+b3UgdG8gdHJhbnNtaXQgdGhlIHZpb2xhdGluZyBDUFUgCnN0YXRlIGludG8gdGhlIHRhcmdldCB2
+Q1BVLiBJIGRvbid0IHRoaW5rIHRoZSBpbmplY3Rpb24gc2hvdWxkIGV2ZW4ga25vdyAKdGhhdCB0
+aGUgc291cmNlIG9mIGRhdGEgZm9yIHRoZSB2aW9sYXRpb24gd2FzIGEgdkNQVS4KCgoKQWxleAoK
+CgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4gMzgK
+MTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9u
+YXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50
+ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
