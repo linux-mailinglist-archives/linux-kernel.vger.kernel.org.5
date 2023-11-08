@@ -2,139 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0505C7E59F6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890107E59F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbjKHP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
+        id S232444AbjKHP07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKHP0I (ORCPT
+        with ESMTP id S229579AbjKHP06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:26:08 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3901BF7
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:26:06 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-3593d2018bfso5447265ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 07:26:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1699457166; x=1700061966; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8vEsnau1atbcuYTR+ZyZFHwkMorYown74B1nldk+VG0=;
-        b=N+oQfRKi40b+2jTB5XXVI9331gXMLWuBQdAPA3AndpLNVT1qNCbGtZbMEtPUkXT4xL
-         qy7D47dAUzmsmFG5ynsjVUg3LDmh9aMtSkEtrUYjlC63OvOseKPLkVLBLmbe+tieAYic
-         XO/h574J82V4ql9Bvy7Mn1I1IOlunB4dr1Tt4/M2uNlfU/JPErCJE9tMZWg9K9YVkHPi
-         YLNr7cE18gE0/rs4dVxzsNs8aZof+73IfGP2XPFNNK5sRiVeimPQHVf2XG6zklBp25ju
-         aKXDgZOP5l7BtCehkv3+traC8uLO8skVK8sHQo0DSNp4oQrcBSP3I4rEHiUSETvarRmF
-         SKQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699457166; x=1700061966;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8vEsnau1atbcuYTR+ZyZFHwkMorYown74B1nldk+VG0=;
-        b=tURX2QYfTMwMATZDzHnxgIUez4sI/py/2KZQrlbX8O3XhxZOEP9MowtvLsxv502x3g
-         3y7TjGiRuMiJIYTsoAf8kVXFN1ZOFZubKWGkI7TFmXhm2lehyOOo8iFPZJYI4rREHWTf
-         3YTKKhVvqTeKVL2FcWJMOyxce2q2rUhSlXGtQCBPstBSt3f6n/6biuBX+oAOTin2pXkI
-         z5T5gL9G7OSTxYz7WdBJdUaWYyFCTzuAkKOvMqw8tEZ+YDdDhREt0dpu21/jZZULvKfr
-         w691muRF3alYz/Qj8kj+NRBYjnHE/CVLBdxqVOiuX0wZHPChIoDX7lWYog7BA2gwBRTb
-         sNig==
-X-Gm-Message-State: AOJu0YxfaNLp+szNlBtMxTuTCH6n+ip2wseZfGy7UWnAzgtfM7Da9Hsi
-        osgIwwUjS2uvGN5pM9lu8/uZsA==
-X-Google-Smtp-Source: AGHT+IGUb/rKQUf4kclHmjx/WEMJwIf+c33LzZDIXunhASIhp7wLEYXiRc8lc6x/f0lyOOdyctM/Hg==
-X-Received: by 2002:a05:6602:c87:b0:790:958e:a667 with SMTP id fp7-20020a0566020c8700b00790958ea667mr2514722iob.2.1699457165784;
-        Wed, 08 Nov 2023 07:26:05 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id dk10-20020a0566384bca00b0043978165d54sm3385277jab.104.2023.11.08.07.26.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 07:26:05 -0800 (PST)
-Message-ID: <60464608-a9b7-4cf8-bd6d-c982210c6f83@kernel.dk>
-Date:   Wed, 8 Nov 2023 08:26:04 -0700
+        Wed, 8 Nov 2023 10:26:58 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476231AE;
+        Wed,  8 Nov 2023 07:26:56 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AF8A6660768F;
+        Wed,  8 Nov 2023 15:26:53 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699457214;
+        bh=QqlLL9kNrk/fbeVq2Dqeqlod3Fg3sLGKscFWcTHXcHM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=djJXzGdnzSXimNfjLl5Qq7zcOFrzuXbckNeGqyn/cx6amD5E2DCW9Ogn/QqWjal9G
+         hAjYq0elviVxHaE8IpVZzAhs6qQlHXyYWRMOTV3TKY758VD66dAFaUesdsSjalhgGb
+         8RCVBe6fOuIrNY7xpuR+QpvliOXqKL3o1TkXVuCECGBvzNCs7+Jfogo5gtPwD9jC5t
+         l/RiBmUA0u2/ibdRE7muc0U4fTJNzLMfpb7UslrXOvJxUorVVmwHz28zhnEWlAIZeh
+         gQIELt6IrzXAa2MeG3J5aqdMBfnVQdGuCAa2ll+1a2dJb3RrgG8bV8Pc4V5wjlXMUn
+         GHDTJxBJWuYSw==
+Message-ID: <c460d3d0-792a-4daf-8f95-9005e24261a1@collabora.com>
+Date:   Wed, 8 Nov 2023 16:26:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: [PATCH v14 03/56] media: videobuf2: Stop spamming kernel log with
+ all queue counter
 Content-Language: en-US
-To:     Xiaobing Li <xiaobing.li@samsung.com>, asml.silence@gmail.com
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com
-References: <CGME20231108081516epcas5p442a11004e3b4e6339972fd6da4c6692b@epcas5p4.samsung.com>
- <20231108080732.15587-1-xiaobing.li@samsung.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231108080732.15587-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-4-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-4-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 1:07 AM, Xiaobing Li wrote:
-> Since the sq thread has a while(1) structure, during this process, there
-> may be a lot of time that is not processing IO but does not exceed the
-> timeout period, therefore, the sqpoll thread will keep running and will
-> keep occupying the CPU. Obviously, the CPU is wasted at this time;Our
-> goal is to count the part of the time that the sqpoll thread actually
-> processes IO, so as to reflect the part of the CPU it uses to process
-> IO, which can be used to help improve the actual utilization of the CPU
-> in the future.
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Only report unbalanced queue counters do avoid spamming kernel log
+> with useless information.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-There should be an explanation in here on what 'work' and 'total' mean.
-
-> The test results are as follows:
-> cat /proc/11440/fdinfo/6
-> pos:    0
-> flags:  02000002
-> mnt_id: 16
-> ino:    94449
-> SqMask: 0xf
-> SqHead: 1845170
-> SqTail: 1845170
-> CachedSqHead:   1845170
-> CqMask: 0xf
-> CqHead: 1845154
-> CqTail: 1845154
-> CachedCqTail:   1845154
-> SQEs:   0
-> CQEs:   0
-> SqThread:       -1
-> SqThreadCpu:    -1
-> UserFiles:      1
-> UserBufs:       0
-> PollList:
-> CqOverflowList:
-> PID:    11440
-> work:   18794
-> total:  19123
-
-These should go with the other Sq thread related ones, eg be SqWork and
-SqTotal. It's counted in jiffies right now which is a bit odd in terms
-of being exposed, as you'd need to know what the base of that unit is.
-But probably not much of a concern, as work/total is really the metric
-you care about. Maybe it'd be better to expose it as a percentage, and
-get rid of total? Eg just have SqBusy: xx% be the output.
-
-> diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
-> index f04a43044d91..f0b79c533062 100644
-> --- a/io_uring/fdinfo.c
-> +++ b/io_uring/fdinfo.c
-> @@ -213,6 +213,12 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->  
->  	}
->  
-> +	if (ctx->sq_data) {
-> +		seq_printf(m, "PID:\t%d\n", task_pid_nr(ctx->sq_data->thread));
-> +		seq_printf(m, "work:\t%lu\n", ctx->sq_data->work);
-> +		seq_printf(m, "total:\t%lu\n", ctx->sq_data->total);
-> +	}
-> +
-
-This doesn't work, it needs proper locking. See how we get the other sq
-values.
-
--- 
-Jens Axboe
+> ---
+>   .../media/common/videobuf2/videobuf2-core.c   | 79 +++++++++++--------
+>   1 file changed, 44 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 09be8e026044..47dba2a20d73 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -533,25 +533,26 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>   
+>   #ifdef CONFIG_VIDEO_ADV_DEBUG
+>   	/*
+> -	 * Check that all the calls were balances during the life-time of this
+> -	 * queue. If not (or if the debug level is 1 or up), then dump the
+> -	 * counters to the kernel log.
+> +	 * Check that all the calls were balanced during the life-time of this
+> +	 * queue. If not then dump the counters to the kernel log.
+>   	 */
+>   	if (q->num_buffers) {
+>   		bool unbalanced = q->cnt_start_streaming != q->cnt_stop_streaming ||
+>   				  q->cnt_prepare_streaming != q->cnt_unprepare_streaming ||
+>   				  q->cnt_wait_prepare != q->cnt_wait_finish;
+>   
+> -		if (unbalanced || debug) {
+> -			pr_info("counters for queue %p:%s\n", q,
+> -				unbalanced ? " UNBALANCED!" : "");
+> -			pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
+> -				q->cnt_queue_setup, q->cnt_start_streaming,
+> -				q->cnt_stop_streaming);
+> -			pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
+> -				q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
+> -			pr_info("     wait_prepare: %u wait_finish: %u\n",
+> -				q->cnt_wait_prepare, q->cnt_wait_finish);
+> +		if (unbalanced) {
+> +			pr_info("unbalanced counters for queue %p:\n", q);
+> +			if (q->cnt_start_streaming != q->cnt_stop_streaming)
+> +				pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
+> +					q->cnt_queue_setup, q->cnt_start_streaming,
+> +					q->cnt_stop_streaming);
+> +			if (q->cnt_prepare_streaming != q->cnt_unprepare_streaming)
+> +				pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
+> +					q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
+> +			if (q->cnt_wait_prepare != q->cnt_wait_finish)
+> +				pr_info("     wait_prepare: %u wait_finish: %u\n",
+> +					q->cnt_wait_prepare, q->cnt_wait_finish);
+>   		}
+>   		q->cnt_queue_setup = 0;
+>   		q->cnt_wait_prepare = 0;
+> @@ -572,29 +573,37 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>   				  vb->cnt_buf_prepare != vb->cnt_buf_finish ||
+>   				  vb->cnt_buf_init != vb->cnt_buf_cleanup;
+>   
+> -		if (unbalanced || debug) {
+> -			pr_info("   counters for queue %p, buffer %d:%s\n",
+> -				q, buffer, unbalanced ? " UNBALANCED!" : "");
+> -			pr_info("     buf_init: %u buf_cleanup: %u buf_prepare: %u buf_finish: %u\n",
+> -				vb->cnt_buf_init, vb->cnt_buf_cleanup,
+> -				vb->cnt_buf_prepare, vb->cnt_buf_finish);
+> -			pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
+> -				vb->cnt_buf_out_validate, vb->cnt_buf_queue,
+> -				vb->cnt_buf_done, vb->cnt_buf_request_complete);
+> -			pr_info("     alloc: %u put: %u prepare: %u finish: %u mmap: %u\n",
+> -				vb->cnt_mem_alloc, vb->cnt_mem_put,
+> -				vb->cnt_mem_prepare, vb->cnt_mem_finish,
+> -				vb->cnt_mem_mmap);
+> -			pr_info("     get_userptr: %u put_userptr: %u\n",
+> -				vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
+> -			pr_info("     attach_dmabuf: %u detach_dmabuf: %u map_dmabuf: %u unmap_dmabuf: %u\n",
+> -				vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf,
+> -				vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+> -			pr_info("     get_dmabuf: %u num_users: %u vaddr: %u cookie: %u\n",
+> +		if (unbalanced) {
+> +			pr_info("unbalanced counters for queue %p, buffer %d:\n",
+> +				q, buffer);
+> +			if (vb->cnt_buf_init != vb->cnt_buf_cleanup)
+> +				pr_info("     buf_init: %u buf_cleanup: %u\n",
+> +					vb->cnt_buf_init, vb->cnt_buf_cleanup);
+> +			if (vb->cnt_buf_prepare != vb->cnt_buf_finish)
+> +				pr_info("     buf_prepare: %u buf_finish: %u\n",
+> +					vb->cnt_buf_prepare, vb->cnt_buf_finish);
+> +			if (vb->cnt_buf_queue != vb->cnt_buf_done)
+> +				pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
+> +					vb->cnt_buf_out_validate, vb->cnt_buf_queue,
+> +					vb->cnt_buf_done, vb->cnt_buf_request_complete);
+> +			if (vb->cnt_mem_alloc != vb->cnt_mem_put)
+> +				pr_info("     alloc: %u put: %u\n",
+> +					vb->cnt_mem_alloc, vb->cnt_mem_put);
+> +			if (vb->cnt_mem_prepare != vb->cnt_mem_finish)
+> +				pr_info("     prepare: %u finish: %u\n",
+> +					vb->cnt_mem_prepare, vb->cnt_mem_finish);
+> +			if (vb->cnt_mem_get_userptr != vb->cnt_mem_put_userptr)
+> +				pr_info("     get_userptr: %u put_userptr: %u\n",
+> +					vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
+> +			if (vb->cnt_mem_attach_dmabuf != vb->cnt_mem_detach_dmabuf)
+> +				pr_info("     attach_dmabuf: %u detach_dmabuf: %u\n",
+> +					vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf);
+> +			if (vb->cnt_mem_map_dmabuf != vb->cnt_mem_unmap_dmabuf)
+> +				pr_info("     map_dmabuf: %u unmap_dmabuf: %u\n",
+> +					vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+> +			pr_info("     get_dmabuf: %u num_users: %u\n",
+>   				vb->cnt_mem_get_dmabuf,
+> -				vb->cnt_mem_num_users,
+> -				vb->cnt_mem_vaddr,
+> -				vb->cnt_mem_cookie);
+> +				vb->cnt_mem_num_users);
+>   		}
+>   	}
+>   #endif
 
