@@ -2,272 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 438CA7E4E3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6C07E4E40
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjKHAtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
+        id S234072AbjKHAtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKHAs7 (ORCPT
+        with ESMTP id S233299AbjKHAtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:48:59 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F140101;
-        Tue,  7 Nov 2023 16:48:57 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc2f17ab26so47273225ad.0;
-        Tue, 07 Nov 2023 16:48:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699404536; x=1700009336; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=18JM1b7xLIQkGXOSDK5xxBygzDFioarE6h8s0jDKM+I=;
-        b=QPl3nUdv8is+Kk4ugbrBedDOj7Mk+1AFDlGy1HshYhrwEHtlO1iB1Dq5QN+GNyX7hd
-         woJ0T801yr1bt1++2wU2eNLXjNOvg2rwCVmtJi/9EgsJGQtjbXtrCKhDDzo1maqBUz7E
-         qlJOzn5KAIy9FH7V2cze+sVYbLn+bJuSBbPfUD+D5Xk/aPhkjnJzPvddIQY/Dpw2y4eo
-         kOt0YJlA9IHFENlUhOSrbfRbIsoE97CyV5WyvVrJAFD/rHPPxaivd5INUtn2kJY7HIUk
-         uPQIsDqknf5Wcq1h/1kxJS7evob4v0JyfgZg5rxSKyRxPOY6CLhKELmC6ZzmRH3u3GbR
-         hPdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699404536; x=1700009336;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=18JM1b7xLIQkGXOSDK5xxBygzDFioarE6h8s0jDKM+I=;
-        b=UYRXZ60bY6TgvS5/D3hPeBvff2XuVSuPSJmIDeUbFeRZX1/+c2Vlh78L7AeRAUa/SN
-         +cOgUXXTs/sdQ2faratW2Q+wfwg/N7NlY+dDwmQ5Cbh77LFloRJf6I6R2x1nHmXeOs6y
-         m+JLGsXbKuEI/JLeEC0Gsi8M/kKevQEITbtprjbkz8r75DzF+iUKTROP4Yr30gu+3ygp
-         bLlgcAhpL8YY60h7yGauYUm6vG+ReoDKU1lZi0NYrlQHPnuxrTrZYNKIKCQiPzk2yEt4
-         Vj/Ix+AkVTBzIWaeD0ywB7IXSuUuFKcpkaAmu9B99hfx7jaLgjLn+0QSo8gerCF2Ly0i
-         11FQ==
-X-Gm-Message-State: AOJu0Yw2mgLYOhipJJjOuxU66Aew4B9wlU2LT59AfJo4BatA8n9AnXeA
-        N3LTdqzXpnwSS+BUYIuv5UI=
-X-Google-Smtp-Source: AGHT+IG96hzG2AKirC4O7eyjqxCTKaKtvWQtVmb+bCuNcRu92pj6zIRSFuqq8E0AYCSe+LCImFmTIQ==
-X-Received: by 2002:a17:902:f806:b0:1ca:3e40:beae with SMTP id ix6-20020a170902f80600b001ca3e40beaemr658898plb.38.1699404536433;
-        Tue, 07 Nov 2023 16:48:56 -0800 (PST)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id k18-20020a170902c41200b001cc41059a11sm405990plk.196.2023.11.07.16.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 16:48:56 -0800 (PST)
-Date:   Tue, 7 Nov 2023 16:48:51 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        oe-kbuild-all@lists.linux.dev, linux-hardening@vger.kernel.org,
+        Tue, 7 Nov 2023 19:49:05 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6659C10FE
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:49:02 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 2AD1F2C02AF;
+        Wed,  8 Nov 2023 13:48:58 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1699404538;
+        bh=c9kEsRHJ/s1C8bQDoGuyud9dLRswXEwXkU467AUOB80=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=AGNS9aOQQvadKoCo0jXLU4MsT8JoA4xfwgwHyu0v506UCjB/CWkzqqtTLxnVIT41i
+         bdbHToxrSTDpwzjRjBR6lWm3I036Rg7O0WFxfzN1Yu34M86SyI451G4OtUNyh7IbJZ
+         vTkRY3HTX1y8F6QLQItEsUeuLPeK3lAkKIAnT2TBDEDn6eh+92HK1HG587SAe+sU1x
+         E5o3agfqBd8qXeX59FXAWIsn4knaTVe5x5XJfmOmVatB7zPBFCwQKjdnW3AUidAe+u
+         9OTIdwyLMA+2eaC7c1Tijo01jgOVuV9Sc6YaIpuTyi5f8gtrUbdCXnB07IvNoy0NGs
+         4gnY7vLOECBPw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B654adafa0000>; Wed, 08 Nov 2023 13:48:58 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 13:48:57 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.48; Wed, 8 Nov 2023 13:48:57 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.039; Wed, 8 Nov 2023 13:48:57 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Ankur Arora <ankur.a.arora@oracle.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [alobakin:pfcp 11/19] include/linux/bitmap.h:642:17: warning:
- array subscript [1, 1024] is outside array bounds of 'long unsigned int[1]'
-Message-ID: <ZUra8/56s5ozTayN@yury-ThinkPad>
-References: <202310170708.fJzLlgDM-lkp@intel.com>
- <bd7fe929-c6fc-42be-9d2f-3f53ec21fd10@intel.com>
- <ZUkvOCxyiin_77qd@smile.fi.intel.com>
- <0a29df6b-bc27-43e9-a97d-57ecabb29a9e@intel.com>
- <CAG_fn=VtA6e3oGm4WVnxmy9yMBab780-U_4VoHSqm4tcd2UTzQ@mail.gmail.com>
- <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
- <202311071521.099CAEA58@keescook>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "luto@kernel.org" <luto@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "jon.grimm@amd.com" <jon.grimm@amd.com>,
+        "bharata@amd.com" <bharata@amd.com>,
+        "raghavendra.kt@amd.com" <raghavendra.kt@amd.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "bristot@kernel.org" <bristot@kernel.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "glaubitz@physik.fu-berlin.de" <glaubitz@physik.fu-berlin.de>,
+        "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
+        "mattst88@gmail.com" <mattst88@gmail.com>,
+        "krypton@ulrich-teichert.org" <krypton@ulrich-teichert.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "David.Laight@ACULAB.COM" <David.Laight@ACULAB.COM>,
+        "richard@nod.at" <richard@nod.at>,
+        "mjguzik@gmail.com" <mjguzik@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Sudip Mukherjee" <sudipm.mukherjee@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Amit Shah <amit@kernel.org>, Gonglei <arei.gonglei@huawei.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ira Weiny" <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Sumit Semwal" <sumit.semwal@linaro.org>,
+        =?utf-8?B?Q2hyaXN0aWFuIEvDtm5pZw==?= <christian.koenig@amd.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Junxian Huang <huangjunxian6@hisilicon.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?utf-8?B?SWxwbyBKw6RydmluZW4=?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Mark Brown <broonie@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        "Jens Wiklander" <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC PATCH 85/86] treewide: drivers: remove cond_resched()
+Thread-Topic: [RFC PATCH 85/86] treewide: drivers: remove cond_resched()
+Thread-Index: AQHaEc/B2vp6BRv7CUGqn9A8fU5GHLBuvSQA
+Date:   Wed, 8 Nov 2023 00:48:57 +0000
+Message-ID: <739dd8ac-cbc9-434d-9726-584ccdf83afb@alliedtelesis.co.nz>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-29-ankur.a.arora@oracle.com>
+In-Reply-To: <20231107230822.371443-29-ankur.a.arora@oracle.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.30]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BD15A0E71CED9E4890B42E8CE5F87FC0@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202311071521.099CAEA58@keescook>
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=W6Mp-hZi8bXipRmhoHAA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 03:25:01PM -0800, Kees Cook wrote:
-> On Tue, Nov 07, 2023 at 05:44:00PM +0100, Alexander Lobakin wrote:
-> > From: Alexander Potapenko <glider@google.com>
-> > Date: Tue, 7 Nov 2023 17:33:56 +0100
-> > 
-> > > On Tue, Nov 7, 2023 at 2:23 PM Alexander Lobakin
-> > > <aleksander.lobakin@intel.com> wrote:
-> > >>
-> > >> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >> Date: Mon, 6 Nov 2023 20:23:52 +0200
-> > >>
-> > >>> On Mon, Nov 06, 2023 at 05:31:34PM +0100, Alexander Lobakin wrote:
-> > >>>
-> > >>>>> | Reported-by: kernel test robot <lkp@intel.com>
-> > >>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202310170708.fJzLlgDM-lkp@intel.com/
-> > >>>
-> > >>>> Not sure how to approach this :z It was also captured on the version you
-> > >>>> sent 2 weeks ago, so this could've been resolved already.
-> > >>>
-> > >>> Is it in the repository already? if so, we should revert it.
-> > >>> Otherwise you have time to think and fix.
-> > >>
-> > >> Nah, neither Alex' series nor mine. And I'd say this should rather be
-> > >> resolved in the functions Alex introduce.
-> > >>
-> > >> Thanks,
-> > >> Olek
-> > > 
-> > > Sorry, I couldn't reproduce the problem using the instructions at
-> > > https://download.01.org/0day-ci/archive/20231017/202310170708.fJzLlgDM-lkp@intel.com/reproduce
-> > > locally, maybe that's because I only have gcc-11 and higher.
-> > > 
-> > > But if I'm understanding correctly what's going on, then GCC will be
-> > > reporting the same issue in the following code:
-> > > 
-> > > =======================================================
-> > > #include <stddef.h>
-> > > #include <stdbool.h>
-> > > 
-> > > #define BITS_PER_LONG 64
-> > > #define unlikely(x) x
-> > > #define UL(x) (x##UL)
-> > > #define GENMASK(h, l) \
-> > >         (((~UL(0)) - (UL(1) << (l)) + 1) & \
-> > >          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> > > 
-> > > #define BIT_WORD(nr)            ((nr) / BITS_PER_LONG)
-> > > #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
-> > > #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
-> > > 
-> > > inline void bitmap_write(unsigned long *map,
-> > >                                 unsigned long value,
-> > >                                 unsigned long start, unsigned long nbits)
-> > > {
-> > >         size_t index;
-> > >         unsigned long offset;
-> > >         unsigned long space;
-> > >         unsigned long mask;
-> > >         bool fit;
-> > > 
-> > >         if (unlikely(!nbits))
-> > >                 return;
-> > > 
-> > >         mask = BITMAP_LAST_WORD_MASK(nbits);
-> > >         value &= mask;
-> > >         offset = start % BITS_PER_LONG;
-> > >         space = BITS_PER_LONG - offset;
-> > >         fit = space >= nbits;
-> > >         index = BIT_WORD(start);
-> > > 
-> > >         map[index] &= (fit ? (~(mask << offset)) :
-> > > ~BITMAP_FIRST_WORD_MASK(start));
-> > >         map[index] |= value << offset;
-> > >         if (fit)
-> > >                 return;
-> > > 
-> > >         map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
-> > >         map[index + 1] |= (value >> space);
-> > > }
-> > > 
-> > > unsigned long foo(unsigned int n) {
-> > >     unsigned long bm[1] = {0};
-> > >     bitmap_write(bm, 1, n, 2);
-> > >     return bm[0];
-> > > }
-> > > =======================================================
-> > > (see also https://godbolt.org/z/GfGfYje53)
-> > > 
-> > > If so, the problem is not specific to GCC 9, trunk GCC also barks on this code:
-> > > 
-> > > =======================================================
-> > > In function 'bitmap_write',
-> > >     inlined from 'bitmap_write' at <source>:15:13,
-> > >     inlined from 'foo' at <source>:47:7:
-> > > <source>:40:12: warning: array subscript 1 is outside array bounds of
-> > > 'long unsigned int[1]' [-Warray-bounds=]
-> > >    40 |         map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
-> > >       |         ~~~^~~~~~~~~~~
-> > > =======================================================
-> > > 
-> > > If this is true for the code in drivers/gpio/gpio-pca953x.c,
-> > > suppressing the report for GCC 9 won't help for other versions.
-> > > Given that this report is isolated in a single file, we probably need
-> > 
-> > I tested it on GCC 9 using modified make.cross from lkp and it triggers
-> > on one more file:
-> > 
-> > drivers/thermal/intel/intel_soc_dts_iosf.c: In function 'sys_get_curr_temp':
-> > ./include/linux/bitmap.h:601:18: error: array subscript [1,
-> > 288230376151711744] is outside array bounds of 'long unsigned int[1]'
-> > [-Werror=array-bounds]
-> > 
-> > > to give the compiler some hints about the range of values passed to
-> > > bitmap_write() rather than suppressing the optimizations.
-> > 
-> > OPTIMIZER_HIDE_VAR() doesn't disable optimizations if I get it
-> > correctly, rather shuts up the compiler in cases like this one.
-> > 
-> > I've been thinking of using __member_size() from fortify-string.h, we
-> > could probably optimize the object code even a bit more while silencing
-> > this warning.
-> > Adding Kees, maybe he'd like to participate in sorting this out as well.
-> 
-> I'm trying to find all the pieces for this code, so I might be working
-> from the wrong version or something, but I think this is the change:
-> https://github.com/alobakin/linux/commit/66808fb20fed014a522b868322d54daef14a6bd8
-
-This is the series:
-
-https://www.spinics.net/lists/kernel/msg4985590.html
-
-The relevant part of the function is:
-
-+	offset = start % BITS_PER_LONG;
-+	space = BITS_PER_LONG - offset;
-+	fit = space >= nbits; // true if offset + nbits <= BITS_PER_LONG
-+	index = BIT_WORD(start);
-+
-+	map[index] &= XXX;
-+	map[index] |= value << offset;
-+	if (fit)
-+		return;
-+
-+	map[index + 1] = YYY;
- 
-Some background for you:
-
-'fit' means that the requested part of bitmap fits into a single
-machine word. For example, on 64-bit machine:
-
-        DECLARE_BITMAP(map, 64); // unsigned long val[1];
-        bitmap_write(map, val, 60, 4) // fit == true
-        bitmap_write(map, val, 60, 8) // fit == false
-
-It's possible that user may overrun the array boundary, like in the
-2nd case, and compiler may correctly warn about it.
-
-But in this case...
-
-The code in question is:
-
-        #define bitmap_set_value8(map, value, start)           \
-                bitmap_write(map, value, start, BITS_PER_BYTE)
-        #define BANK_SZ 8
-
-        for (i = 0; i < NBANK(chip); i++)
-                bitmap_set_value8(val, value[i], i * BANK_SZ);
-
-Here nbits is always 8, and start is multiple of 8. With that, we're
-always writing into a single word (fit == true), and 'idx + 1' path
-is never hit. This makes me think that it the warning here is false
-positive. Is that correct?
-
-> and the induced warning is correctly analyzed in this thread (i.e. GCC
-> can't convince itself that it'll never reach the out of bounds access).
-> Does this work?
-> 
-> -	if (fit)
-> +	if (fit || index + 1 >= __member_size(map))
->  		return;
-
-I already commented this in the other email in this thread - this would
-silence a true warning where people break the boundary:
-
-        bitmap_write(map, val, 60, 8);
-
-And as far as I can see, __member_size() implies some runtime
-overhead, which I'd like to avoid.
-
-Thanks,
-Yury
-
+DQpPbiA4LzExLzIzIDEyOjA4LCBBbmt1ciBBcm9yYSB3cm90ZToNCj4gVGhlcmUgYXJlIGJyb2Fk
+bHkgdGhyZWUgc2V0cyBvZiB1c2VzIG9mIGNvbmRfcmVzY2hlZCgpOg0KPg0KPiAxLiAgQ2FsbHMg
+dG8gY29uZF9yZXNjaGVkKCkgb3V0IG9mIHRoZSBnb29kbmVzcyBvZiBvdXIgaGVhcnQsDQo+ICAg
+ICAgb3RoZXJ3aXNlIGtub3duIGFzIGF2b2lkaW5nIGxvY2t1cCBzcGxhdHMuDQo+DQo+IDIuICBP
+cGVuIGNvZGVkIHZhcmlhbnRzIG9mIGNvbmRfcmVzY2hlZF9sb2NrKCkgd2hpY2ggY2FsbA0KPiAg
+ICAgIGNvbmRfcmVzY2hlZCgpLg0KPg0KPiAzLiAgUmV0cnkgb3IgZXJyb3IgaGFuZGxpbmcgbG9v
+cHMsIHdoZXJlIGNvbmRfcmVzY2hlZCgpIGlzIHVzZWQgYXMgYQ0KPiAgICAgIHF1aWNrIGFsdGVy
+bmF0aXZlIHRvIHNwaW5uaW5nIGluIGEgdGlnaHQtbG9vcC4NCj4NCj4gV2hlbiBydW5uaW5nIHVu
+ZGVyIGEgZnVsbCBwcmVlbXB0aW9uIG1vZGVsLCB0aGUgY29uZF9yZXNjaGVkKCkgcmVkdWNlcw0K
+PiB0byBhIE5PUCAobm90IGV2ZW4gYSBiYXJyaWVyKSBzbyByZW1vdmluZyBpdCBvYnZpb3VzbHkg
+Y2Fubm90IG1hdHRlci4NCj4NCj4gQnV0IGNvbnNpZGVyaW5nIG9ubHkgdm9sdW50YXJ5IHByZWVt
+cHRpb24gbW9kZWxzIChmb3Igc2F5IGNvZGUgdGhhdA0KPiBoYXMgYmVlbiBtb3N0bHkgdGVzdGVk
+IHVuZGVyIHRob3NlKSwgZm9yIHNldC0xIGFuZCBzZXQtMiB0aGUNCj4gc2NoZWR1bGVyIGNhbiBu
+b3cgcHJlZW1wdCBrZXJuZWwgdGFza3MgcnVubmluZyBiZXlvbmQgdGhlaXIgdGltZQ0KPiBxdWFu
+dGEgYW55d2hlcmUgdGhleSBhcmUgcHJlZW1wdGlibGUoKSBbMV0uIFdoaWNoIHJlbW92ZXMgYW55
+IG5lZWQNCj4gZm9yIHRoZXNlIGV4cGxpY2l0bHkgcGxhY2VkIHNjaGVkdWxpbmcgcG9pbnRzLg0K
+Pg0KPiBUaGUgY29uZF9yZXNjaGVkKCkgY2FsbHMgaW4gc2V0LTMgYXJlIGEgbGl0dGxlIG1vcmUg
+ZGlmZmljdWx0Lg0KPiBUbyBzdGFydCB3aXRoLCBnaXZlbiBpdCdzIE5PUCBjaGFyYWN0ZXIgdW5k
+ZXIgZnVsbCBwcmVlbXB0aW9uLCBpdA0KPiBuZXZlciBhY3R1YWxseSBzYXZlZCB1cyBmcm9tIGEg
+dGlnaHQgbG9vcC4NCj4gV2l0aCB2b2x1bnRhcnkgcHJlZW1wdGlvbiwgaXQncyBub3QgYSBOT1As
+IGJ1dCBpdCBtaWdodCBhcyB3ZWxsIGJlIC0tDQo+IGZvciBtb3N0IHdvcmtsb2FkcyB0aGUgc2No
+ZWR1bGVyIGRvZXMgbm90IGhhdmUgYW4gaW50ZXJtaW5hYmxlIHN1cHBseQ0KPiBvZiBydW5uYWJs
+ZSB0YXNrcyBvbiB0aGUgcnVucXVldWUuDQo+DQo+IFNvLCBjb25kX3Jlc2NoZWQoKSBpcyB1c2Vm
+dWwgdG8gbm90IGdldCBzb2Z0bG9ja3VwIHNwbGF0cywgYnV0IG5vdA0KPiB0ZXJyaWJseSBnb29k
+IGZvciBlcnJvciBoYW5kbGluZy4gSWRlYWxseSwgdGhlc2Ugc2hvdWxkIGJlIHJlcGxhY2VkDQo+
+IHdpdGggc29tZSBraW5kIG9mIHRpbWVkIG9yIGV2ZW50IHdhaXQuDQo+IEZvciBub3cgd2UgdXNl
+IGNvbmRfcmVzY2hlZF9zdGFsbCgpLCB3aGljaCB0cmllcyB0byBzY2hlZHVsZSBpZg0KPiBwb3Nz
+aWJsZSwgYW5kIGV4ZWN1dGVzIGEgY3B1X3JlbGF4KCkgaWYgbm90Lg0KPg0KPiBUaGUgY29uZF9y
+ZXNjaGVkKCkgY2FsbHMgaGVyZSBhcmUgYWxsIGtpbmRzLiBUaG9zZSBmcm9tIHNldC0xDQo+IG9y
+IHNldC0yIGFyZSBxdWl0ZSBzdHJhaWdodC1mb3J3YXJkIHRvIGhhbmRsZS4NCj4NCj4gVGhlcmUg
+YXJlIHF1aXRlIGEgZmV3IGZyb20gc2V0LTMsIHdoZXJlIGFzIG5vdGVkIGFib3ZlLCB3ZQ0KPiB1
+c2UgY29uZF9yZXNjaGVkKCkgYXMgaWYgaXQgd2VyZSBhIGFtdWxlbnQuIFdoaWNoIEkgc3VwcHBv
+c2UNCj4gaXQgaXMsIGluIHRoYXQgaXQgd2FyZHMgb2ZmIHNvZnRsb2NrdXAgb3IgUkNVIHNwbGF0
+cy4NCj4NCj4gVGhvc2UgYXJlIG5vdyBjb25kX3Jlc2NoZWRfc3RhbGwoKSwgYnV0IGluIG1vc3Qg
+Y2FzZXMsIGdpdmVuDQo+IHRoYXQgdGhlIHRpbWVvdXRzIGFyZSBpbiBtaWxsaXNlY29uZHMsIHRo
+ZXkgY291bGQgYmUgZWFzaWx5DQo+IHRpbWVkIHdhaXRzLg0KDQpGb3IgaTJjLW1wYy5jOg0KDQpJ
+dCBsb29rcyBhcyB0aGUgY29kZSBpbiBxdWVzdGlvbiBjb3VsZCBwcm9iYWJseSBiZSBjb252ZXJ0
+ZWQgdG8gDQpyZWFkYl9wb2xsX3RpbWVvdXQoKS4gSWYgSSBmaW5kIHN1ZmZpY2llbnQgcm91bmQt
+dHVpdHMgSSBtaWdodCBsb29rIGF0IA0KdGhhdC4gUmVnYXJkbGVzcyBpbiB0aGUgY29udGV4dCBv
+ZiB0aGUgdHJlZS13aWRlIGNoYW5nZSAuLi4NCg0KUmV2aWV3ZWQtYnk6IENocmlzIFBhY2toYW0g
+PGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCg0K
