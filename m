@@ -2,153 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 762A77E5F33
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5C57E5F36
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 21:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbjKHUbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 15:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
+        id S231549AbjKHUc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 15:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjKHUb3 (ORCPT
+        with ESMTP id S229555AbjKHUc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 15:31:29 -0500
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2080.outbound.protection.outlook.com [40.107.15.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C591213B;
-        Wed,  8 Nov 2023 12:31:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hHvk+jwiwKdDRUoAl5u6sf0L+AV6hzOPLmSOv83LztwfS/yNLLPvTFsHQMxE6+fS8VURN466KwMjiQgfsAfk22WopYS8p0wHr9GD167cyvDvmrKEIgF/gpxPb54D6fw8/tSnyg8STAt+zqnypHoHgJzsAAKkPuA/6q/296+sSUIqOwQOiKZUBv4Ao80Z47wAnzBXsOuTTz63LbyRmTMUoLb6uXJBSYGzfMdAIyD2c0el8jPclwKgJxMSa5q8vAFw3stQ55rt/rT+eO31mhEabGlLIEL4cOxqJckdr3XrtGeth5KthGaQHRrs7ZAK6lIXocWy2rYzca/xmIa1i3EUiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TJ9d12Bx8q67/mohVsIrHsxEbwqc+/4VT3WJl+eCF5E=;
- b=FQrZnau22DCy6JBc+vIlK7m5eyIKXrNotrpMC5hLMUGQCnsVOs3GYuGdTB0lPhH9xBNyixL21762Pfr74S7gysoMduQr4LvwcTad8MB6YDV82y21dGvTkO6uxBK73r8xP8yyVFDe3dV440jUrginxXWOf6umpYknG9qaoWLlA3tDypgSLmSTRwf9jekh4fJrXgkvp+6b6DjYauBhXfG/7J+saHyxTxZlq/v7wRRWbQwPWSJgJTU+HUkzIEr43axecrCE7hkyEnL9I7XLfevKsjlSKlTiefm2Q9VKM5DujUYnnKbrozhQYh7MkJXtbIGL6dz9dBzNqU4ER9h/M0oUNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kuleuven.be; dmarc=pass action=none header.from=kuleuven.be;
- dkim=pass header.d=kuleuven.be; arc=none
+        Wed, 8 Nov 2023 15:32:28 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233E92132
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 12:32:26 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-778925998cbso6253685a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 12:32:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=KULeuven.onmicrosoft.com; s=selector2-KULeuven-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TJ9d12Bx8q67/mohVsIrHsxEbwqc+/4VT3WJl+eCF5E=;
- b=LBCCFySyPptOmCx52Xr1MqIbJr8HinI9fRQAL5W91ryT4zGtNV3GaQX8EpNlTPqYeDVhOTKQv1XRrFTDA5Vz0HHlN8o1vRoYwaSJOquzAfd/VPR5LsrTcnwIMYAlZvPKgZfC8y65P9f7B+9MEwtq/aR+wzWNd/LTbdLnWf5Hu48=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kuleuven.be;
-Received: from DB4PR08MB9334.eurprd08.prod.outlook.com (2603:10a6:10:3f5::20)
- by DB9PR08MB7794.eurprd08.prod.outlook.com (2603:10a6:10:399::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Wed, 8 Nov
- 2023 20:31:23 +0000
-Received: from DB4PR08MB9334.eurprd08.prod.outlook.com
- ([fe80::5891:9155:ec39:7e34]) by DB4PR08MB9334.eurprd08.prod.outlook.com
- ([fe80::5891:9155:ec39:7e34%6]) with mapi id 15.20.6954.029; Wed, 8 Nov 2023
- 20:31:23 +0000
-Message-ID: <55d6aa33-4ffd-4a0c-a449-63b136f5a1a9@kuleuven.be>
-Date:   Wed, 8 Nov 2023 21:31:33 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
-Content-Language: en-US
-To:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
- <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
- <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
- <7e729488e2f841f384b719d0509a4f78f491d477.camel@kernel.org>
- <be63771f-080e-4832-955e-13f5b06b2010@kuleuven.be>
- <CWG522A78YHD.37CO0T9F3FVXB@suppilovahvero>
-From:   Jo Van Bulck <jo.vanbulck@kuleuven.be>
-In-Reply-To: <CWG522A78YHD.37CO0T9F3FVXB@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AS4P192CA0009.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:20b:5da::16) To DB4PR08MB9334.eurprd08.prod.outlook.com
- (2603:10a6:10:3f5::20)
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1699475545; x=1700080345; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=arsZQPA2RZXUjCJmEFmYkqL9RPQkiSEQdhIguF//Kn4=;
+        b=3GvZraNVoluGhkP+Z3Y35I6XItw6KO6u1mQ7KXOJp8y7Ces1vMbpO/cjQ05OUhFJXC
+         cKbVghjCMpKXUKIt1Sdl2HzOlndffZ34c821MjRJRlWoKQpJxmrBYx7Mxkg2zA1aTDEv
+         lHRRkn7XJIgz+7ZsTtDNX+XrMWsqgDyhRCjssN4QY6DDjWR8MHw2PIxFhnEVU3+AONOg
+         Q39oo7gTkdLYdcVulIWBN0DR8fIjDW+Rq72+avMwOPRLtWmBZ3kppztn1rxrdJ0N0Sob
+         vU+au6BWt3T5bDkRi8jY6nJjWhG5ZZBF/3Yr0J5ZCEe9SbPw5Fnn/BXYI9oRf5Ee8FKT
+         WuTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699475545; x=1700080345;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=arsZQPA2RZXUjCJmEFmYkqL9RPQkiSEQdhIguF//Kn4=;
+        b=X/ZeWlMf7K/r9lUUKZI91dWPgST9g19Rf4xWI/cXhQ6mPOeG6UlIRV6TI5AUjg4Lfd
+         KjiyNpg1+YER5TEZMOJOHOjTi7j3PaDczgNdVSZ6h7UAS4YPg4pwuA8R7ip0C3ZS599j
+         eGThz5xC1VDCNLgAqFGCqnJNaKnE4lKgvhbj7Q4UPVKDb8pZD1UVc2GqDeF1RKasZXNy
+         jydTvVebF4suq4RablQXhc6p+J5J4asi8sYAgFhUougmaO/0smVOjZEL3he6hvXivilw
+         cwKxl/TY2NfgRXEJ/T2Cs6i4jzSBteEXgJ7iWWd6MQGJ38rzbCcAfGuXv2TVqu38QemA
+         /IQA==
+X-Gm-Message-State: AOJu0YxoOLsCGOjQmKDgj1SrR5wbj7jeThxRG3RzlC8xbBevEftlVrue
+        DSjX0Xiq8FswYjQshdMeGIHGkw==
+X-Google-Smtp-Source: AGHT+IGBqGUcpAiMYcvzEd3qf5FRqvRSHQytfpVmoG2JSlNJ/d3VqMavVbb6p4+mmsKy/L5SxAXOpQ==
+X-Received: by 2002:a05:620a:8394:b0:770:72c3:dbbc with SMTP id pb20-20020a05620a839400b0077072c3dbbcmr2925381qkn.18.1699475545168;
+        Wed, 08 Nov 2023 12:32:25 -0800 (PST)
+Received: from ?IPv6:2606:6d00:17:6dc0::c73? ([2606:6d00:17:6dc0::c73])
+        by smtp.gmail.com with ESMTPSA id c26-20020a05620a135a00b007742c2ad7dfsm1401055qkl.73.2023.11.08.12.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 12:32:24 -0800 (PST)
+Message-ID: <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
+Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
+From:   nicolas@ndufresne.ca
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Esker Wong <esker@google.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
+        Esker Wong <esker@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 08 Nov 2023 15:32:23 -0500
+In-Reply-To: <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
+References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
+         <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu>
+         <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
+         <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
+         <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
+         <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB4PR08MB9334:EE_|DB9PR08MB7794:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8a97025-499e-4bfc-3bb2-08dbe099ac74
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HrIekoao29h5Nw5bzWpqezx1n5Nix4hozNON2fDv+JNwoc1p0U+H56OVbaRufG8kejwVP+ekKXtg+jxJS5UuGnsf+H93jg3uQlVLYPfDAiNAqlGdIm6+pFNNvUfUWdwaaMrZe0/xiI60No8obgDNhjmznhUqKi2l19om6qxvihVksYElXP9gLxQ/gs4OT/A5k4oV+hBXectJZvJ4LyP24J5xrvzWCNY8te4aanGYfPCc2K79Yscx0szABJPo79a9lFCD27Id6XbOHpFwdax3s1CSKdbLSsn5x03kP61aDzapFzZiubKFkq6kLWuSG24tuVlpcX0zNDi1wj1PwsII4X0BLinPiGcTJGBrmlbzMIe1kGDnb/uaR81MArPFdb+WLDBtqyNDXM1yU2FWnuwUoGV2H8VrEQlMfzxgeuQaUMzRiY+b3hGtbdBGQkdBGkAlUeoeg+2HW/MPz4Y0iiBo+heJyx2J3NDlG/+jcJ4zkiYYjm3nBxpwHwPatdT+yQy/y9ff4bVfNYub4r8X02SXvrOiECYR3En+Pgr3b0MipHbvUpkQmCE1aK95A3OHFDpU7VfaST/9aFjhk5fplGwgwT8OAQJVALlR7q+us+2X+NusRpsdULI4uV3emSIS/dGFNsX8xoIsTas9RSXChGxFrg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB4PR08MB9334.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(366004)(376002)(396003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(31686004)(6512007)(6666004)(2616005)(6506007)(41300700001)(53546011)(38100700002)(6486002)(36756003)(86362001)(31696002)(66476007)(316002)(5660300002)(4744005)(8676002)(2906002)(8936002)(66556008)(66946007)(786003)(478600001)(110136005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SnROcHVMVmZrNFBKbnJCcFVWQ1JEQmZ5d0NzNWJTTVVPb2lhR012NDUzM0NS?=
- =?utf-8?B?MVJPTVREOWt2YUNxMExzeVFoTkRBblArWWFkT1BXOFNOY1pDaTJLYzFJTFNt?=
- =?utf-8?B?eS9Ib2ZHeVFRd1lsTHRCMUJiSW9aTERrUncxMEY0OE9jc0MwRkNVMXBsKzQz?=
- =?utf-8?B?UzN3aWJLdmFNNWdoaFlBZ1dzVHBoL1RqaytKQjFmak9PSTRMWFIvRlhnQmY4?=
- =?utf-8?B?Q2lEU3JpWFV5Kys1TWsrcGRlMS9MK2tEM2hDNDN2ZmwwamkzNTN0RXA5RCtH?=
- =?utf-8?B?ZzhrdVM4S21YZVptR2g5dXF1dVNiVUZBd1M1T3RmbEtBd25GUm54SFpmVDFG?=
- =?utf-8?B?S05zY21JV2xyM05LZElHTjlGQ3UwQklFbVB3Y1JFQkdqanFHYmp6MkxyNklz?=
- =?utf-8?B?bXh2MXc0TVNPdDR6amtKcUdTMVJ3WUxLSkYwa0w0Ty9kbUpiUFY2QjdlOVBl?=
- =?utf-8?B?ZzZVL0xKNnpCRWtqU3AyK1gzenp3eWpHMGMvUlRsYmxlUTZiT1VZUkd2TXh2?=
- =?utf-8?B?Q3hZODVpdGVTamE1T3BJWG5yVXh3WWV4eHMrT08zaVNJYU1hejFLMjVJbzg0?=
- =?utf-8?B?dXBCWWVrMEYzejM3SFhEMWdBa0c3VjBIelVKOWRrTFJwV2NYU1RJQVBqZWdE?=
- =?utf-8?B?Zk5yVm1pb3d5UGQxMjBnWEtJS0VRZlRNckQrdDhVM2RjTXUvR3dIazd2SUN5?=
- =?utf-8?B?dUFqWUsrRlZobGRjTzFHTTZ2MTJ1ZGZ3L0lTWnNQbDc3T2Q1SDNGQk5EcUc0?=
- =?utf-8?B?eG10ZmNtVE1MbzFBY3ZCQ2RINUJaSU53TmVncHdjd2prRGVIa0JrcFZuSndh?=
- =?utf-8?B?Mm1XRXlCV0YreVVMZ0tsbFZobE1sVVZGbGN6dWNOV296YU9YSUErSjZBUDBp?=
- =?utf-8?B?eEFBUHBXczlOUk9UU2J2bGlMb2RiNmNjeG40WU5sS1pwZ2M5RUliemFNb3BD?=
- =?utf-8?B?OVRFNlB5VFlOemVRV1dYMTBXa2RGZ1VNN0ZWT3VSYVlpR0ZRT1lpa0dJV1U0?=
- =?utf-8?B?WGY3cGU4ZTZjQytrS3d1Q20ybEY4TmhJN1phUzRKMmtqZkVyUVFFQUZGM1lC?=
- =?utf-8?B?bVNYOFN4RFVERmxlOTl2V2E0UzlWK2tFU1kwMUtML0F5NkN1V2tCRVJPSGpQ?=
- =?utf-8?B?M3VpWGp3TWVQeFovZEFnS3ZjMzRETFFrcTBCTnVhakg0cXRYSDJMNXpYMGlh?=
- =?utf-8?B?MG1icFhtcTJyUzhBcElyNlVHaVg4RVdpeDFPejBnWmpXaGRDbmVzbmF1ZklT?=
- =?utf-8?B?ZTQydEhRZXBzY3RkUzE5RVhLazVoRUFLc2N1WnhCb09Dd044RzlZd082bVRw?=
- =?utf-8?B?ZW1MQk1qWW1xYUR2cDFMZlhYUkVBZU9wQzNhSGtncFg2djRpVjJPdUt1RUVk?=
- =?utf-8?B?RDVURjdULzNXN0w5Yko1cXdDbDdjRkZ0QmozZWlQMEh2MVExUTJXWjdIOGQz?=
- =?utf-8?B?eUJOR2tuNzYwejJobkdyRUdFakU3Y1hSRCtGMEhTMnY2d2twR3ZzWlhzTm1F?=
- =?utf-8?B?ZFY2UlFqV0RycEplOFNaejFTaVl6TENQTEhZMmZPem11bG5LTmVhQ2F5RG9D?=
- =?utf-8?B?cVluekF0cnF0R3dLRG5IaHdhUW1TWGhlRTVNcEhxaGVGMTdPRDZtTkFSNGZJ?=
- =?utf-8?B?UExqZkwzc2R2R1p1c282c1NZdElyY1EwRGlDeld4M1JwQ2J0anR4S2N0VWJa?=
- =?utf-8?B?OXYzV0RmUW5XN1ZwSno1dFJxK04zV1lPZExKb1BQL25sUFpWMk9JOGJJRlNC?=
- =?utf-8?B?US9QVEYrY054RVNDN0lhbWdjRC9jSUk2THBXY29kVi82aWJTMkw0YnFxbm1k?=
- =?utf-8?B?Vm5sVThrV0E3U3FEdUpPV05mK005VSsvbWtDcisvZHlvQkt6ZTI2M0s1M0Y5?=
- =?utf-8?B?MUtRV2RqeXRYOEVIU3kvektqMWFMU3g3bWxyMWMvT2F3U2M1Qm5KcWNOcWc2?=
- =?utf-8?B?N3Rlb2h0TFd6WmlIUnY0ZURpbEQwNHBWWWtaOU1HN0Q4UER6eE40c1lDQkVu?=
- =?utf-8?B?a1p6a0VzZ2YyWnlDNnZtMTZjRWlPSjF3ZU5vY1pCNkd6NWtzaHdNNmhhUXlh?=
- =?utf-8?B?NTdDNnNKaXpIODBKVERLcUtGNHdISEtNdkVEbUNWSG9QaTk0c2QzOEx3WXp2?=
- =?utf-8?B?YXA5SXZhTm80bk1WdmpucnB5Y1pReFlYK3NldHdUUHJ6WUtjSnNUWDdFNWtU?=
- =?utf-8?B?T2IzK1FtcUNDeG51YkFUTHJkL0ZwT0tMSlZZem1jRjhZMDhnZjdLeHBVNE0z?=
- =?utf-8?B?aTliNnk3SGZTenpTRllYOTNRR21nPT0=?=
-X-OriginatorOrg: kuleuven.be
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8a97025-499e-4bfc-3bb2-08dbe099ac74
-X-MS-Exchange-CrossTenant-AuthSource: DB4PR08MB9334.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 20:31:23.2430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3973589b-9e40-4eb5-800e-b0b6383d1621
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BWHkb3nIflVVWDTNmRql9mfrBm57mmMQT6Jbk9rRT5VhteCoFhkUTXsIjbcbxHPWOt+zWLfQJ2eF359NqxWOXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR08MB7794
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.10.23 23:32, Jarkko Sakkinen wrote:
-> On Fri Oct 13, 2023 at 2:45 PM EEST, Jo Van Bulck wrote:
->> On 10.10.23 11:44, Jarkko Sakkinen wrote:
->>> Folks (sorry for top posting): I've now taken my old NUC7 out of the
->>> dust and tested the series :-)
->>>
->>> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
->>
->> Thanks for testing this Jarkko! Not sure on next steps, do you want me
->> to re-post the series with the Tested-by tag for all commits or will you
->> add that? Let me know if something from my side is needed.
-> 
-> Dave, can you pick these patches to the x86 tree with my tested-by
-> added? Sorry for latency. It is flu season in Finland and I've been
-> functional varying last week because of that.
+Le mercredi 08 novembre 2023 =C3=A0 08:04 +0100, Ricardo Ribalda a =C3=A9cr=
+it=C2=A0:
+> Hi Esker
+>=20
+> On Wed, 8 Nov 2023 at 07:54, Esker Wong <esker@google.com> wrote:
+> >=20
+> > Hi Nicholas and Sakari,
+> >=20
+> > We need it as precise as possible. Currently the earliest time of a
+> > frame we can have in userspace  is the dqbuf.
+> >=20
+> > And for UVC timestamp, it is somewhat awkward for us to use. Since
+> > other functions in our stacks do not necessarily contain such
+> > timestamps. So we want some event to be trigger and we can get the
+> > system time directly.
 
-Just a kind follow-up: from what I can see, this series has not been 
-merged into the x86/sgx branch of tip yet (assuming that's where it 
-should go next)?
+The fact that you interpret the time from FRAME_SYNC to DQBUF (well the
+READ IO notification) as the actual latency is yours of course. It
+assumes that the camera on the other end does not introduce other
+source of latency (or that these are negligible). You are also going to
+introduce a lot of jitter, since it relies on when the OS decides to
+wake up your process.
 
-Apologies if I've overlooked anything, and please let me know if there's 
-something on my end that can help!
+I think my opinion resides in if you can accurately *enough* implement
+what the spec says for FRAME_SYNC then do it, otherwise just don't lie.
+I think for ISO, "after the first chunk" i a small lie, but acceptable.
+But for BULK, the way it was explained is that it will be always very
+close to DQBUF time. and it should not emit FRAME_SYNC for this type of
+UVC device. If it fits other events fine of course, I'm just making a
+judgment on if its fits V4L2_EVENT_FRAME_SYNC or not.
 
-Best,
-Jo
+In term of accuracy, if timestamp was passed with the FRAME_SYNC event,
+it would not matter how fast your process the event anymore and greatly
+improve accuracy.
+
+>=20
+> Not to mention that the UVC timestamping requires a bit of love.
+>=20
+> @Laurent Pinchart, @Kieran Bingham  any progress reviewing :P :
+> https://patchwork.linuxtv.org/project/linux-media/list/?series=3D10083
+
+Thanks for working on this by the way, hope someone will find the time
+to review this. The timestamps should in theory provide a jitter free
+measurement of the delay Esker is trying to measure, and if it wasn't
+of bugs (and crazy complexity) it would in the worst case match the
+transfer time.
+
+Nicolas
+
+> Esker
+>=20
+>=20
+> >=20
+> > If the V4L2_EVENT_FRAME_SYNC will be earlier then V4L2_EVENT_VSYNC,
+> > then it has value. We would want to know the delay of a frame being
+> > captured to the time it is displayed.
+> >=20
+> > I'm not sure for bulk is the V4L2_EVENT_VSYNC more accurate?
+>=20
+>  V4L2_EVENT_VSYNC wont be more accurate than V4L2_EVENT_FRAME_SYNC.
+>=20
+> My understanding is that Sakari thinks that the description of
+> V4L2_EVENT_FRAME_SYNC
+> https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/vidioc-dqevent.html#d=
+escription
+>  does not match the current implementation, and suggests using
+> V4L2_EVENT_VSYNC instead.
+>=20
+>=20
+> >=20
+> > Esker
+> >=20
+> >=20
+> > On Wed, Nov 8, 2023 at 3:27=E2=80=AFAM <nicolas@ndufresne.ca> wrote:
+> > >=20
+> > > Hi,
+> > >=20
+> > > Le mardi 07 novembre 2023 =C3=A0 13:06 +0800, Esker Wong a =C3=A9crit=
+ :
+> > > > [send again in text mode]
+> > > > Hi Sakari,
+> > > >=20
+> > > > Sequence number is important to us. We need it to measure the laten=
+cy
+> > > > from this event to the time we display the frame.
+> > >=20
+> > > how much precision do you expect, because as described, this number
+> > > will be completely false for bulk.
+> > >=20
+> > > Aren't UVC timestamp support to allow measuring latency properly ?
+> > >=20
+> > > Nicolas
+> > >=20
+> > > >=20
+> > > > Regards,
+> > > > Esker
+> > > >=20
+> > > >=20
+> > > > On Mon, Nov 6, 2023 at 7:06=E2=80=AFPM Sakari Ailus <sakari.ailus@i=
+ki.fi> wrote:
+> > > > >=20
+> > > > > Hi Ricardo,
+> > > > >=20
+> > > > > On Mon, Nov 06, 2023 at 10:52:27AM +0000, Ricardo Ribalda wrote:
+> > > > > > Add support for the frame_sync event, so user-space can become =
+aware
+> > > > > > earlier of new frames.
+> > > > > >=20
+> > > > > > Suggested-by: Esker Wong <esker@chromium.org>
+> > > > > > Tested-by: Esker Wong <esker@chromium.org>
+> > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > > > > ---
+> > > > > > We have measured a latency of around 30msecs between frame sync
+> > > > > > and dqbuf.
+> > > > > > ---
+> > > > > > Changes in v2:
+> > > > > > - Suggested by Laurent. Split sequence++ and event init.
+> > > > > > - Link to v1: https://lore.kernel.org/r/20231020-uvc-event-v1-1=
+-3baa0e9f6952@chromium.org
+> > > > > > ---
+> > > > > >  drivers/media/usb/uvc/uvc_v4l2.c  | 2 ++
+> > > > > >  drivers/media/usb/uvc/uvc_video.c | 7 +++++++
+> > > > > >  2 files changed, 9 insertions(+)
+> > > > > >=20
+> > > > > > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/u=
+sb/uvc/uvc_v4l2.c
+> > > > > > index f4988f03640a..9f3fb5fd2375 100644
+> > > > > > --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> > > > > > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> > > > > > @@ -1352,6 +1352,8 @@ static int uvc_ioctl_subscribe_event(stru=
+ct v4l2_fh *fh,
+> > > > > >       switch (sub->type) {
+> > > > > >       case V4L2_EVENT_CTRL:
+> > > > > >               return v4l2_event_subscribe(fh, sub, 0, &uvc_ctrl=
+_sub_ev_ops);
+> > > > > > +     case V4L2_EVENT_FRAME_SYNC:
+> > > > > > +             return v4l2_event_subscribe(fh, sub, 0, NULL);
+> > > > > >       default:
+> > > > > >               return -EINVAL;
+> > > > > >       }
+> > > > > > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/=
+usb/uvc/uvc_video.c
+> > > > > > index 28dde08ec6c5..4f3a510ca4fe 100644
+> > > > > > --- a/drivers/media/usb/uvc/uvc_video.c
+> > > > > > +++ b/drivers/media/usb/uvc/uvc_video.c
+> > > > > > @@ -1073,9 +1073,16 @@ static int uvc_video_decode_start(struct=
+ uvc_streaming *stream,
+> > > > > >        * that discontinuous sequence numbers always indicate lo=
+st frames.
+> > > > > >        */
+> > > > > >       if (stream->last_fid !=3D fid) {
+> > > > > > +             struct v4l2_event event =3D {
+> > > > > > +                     .type =3D V4L2_EVENT_FRAME_SYNC,
+> > > > > > +             };
+> > > > > > +
+> > > > > >               stream->sequence++;
+> > > > > >               if (stream->sequence)
+> > > > > >                       uvc_video_stats_update(stream);
+> > > > > > +
+> > > > > > +             event.u.frame_sync.frame_sequence =3D stream->seq=
+uence,
+> > > > > > +             v4l2_event_queue(&stream->vdev, &event);
+> > > > >=20
+> > > > > uvc_video_decode_start() is called when the reception of the enti=
+re frame
+> > > > > has been completed. However, the documentation for V4L2_EVENT_FRA=
+ME_SYNC
+> > > > > says that the event is "Triggered immediately when the reception =
+of a frame
+> > > > > has begun.". The functionality here doesn't seem to fit to this p=
+atch.
+> > > > >=20
+> > > > > Wouldn't V4L2_EVENT_VSYNC be a better fit, even if we don't reall=
+y have a
+> > > > > concept of vertical sync in the case of USB? That event doesn't h=
+ave the
+> > > > > sequence though but I guess it's not an issue at least if your ca=
+se.
+> > > > >=20
+> > > > > Another technically correct option could be to create a new event=
+ for this
+> > > > > but I'm not sure it's worth it.
+> > > > >=20
+> > > > > >       }
+> > > > > >=20
+> > > > > >       uvc_video_clock_decode(stream, buf, data, len);
+> > > > > >=20
+> > > > >=20
+> > > > > --
+> > > > > Regards,
+> > > > >=20
+> > > > > Sakari Ailus
+> > >=20
+>=20
+>=20
+>=20
+
