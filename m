@@ -2,143 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE177E5585
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E147E5586
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344475AbjKHL2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:28:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56672 "EHLO
+        id S1344508AbjKHL3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHL2u (ORCPT
+        with ESMTP id S229924AbjKHL3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:28:50 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2063.outbound.protection.outlook.com [40.107.102.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB2A186;
-        Wed,  8 Nov 2023 03:28:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FGSDTp22P/rnb/nk3oI/vou0g67NXYX9UH95ADDV1b3Mhj7+7p5oCFNkBypVx6xrBGSOmWNIcGI8pdNgp+/CoeITEhlTEK11XdoduszDFhkAT6SLcXD9Jb03ZtrZ8Eua3dHzVQKLI5mThRlAkwJ9pQNVWmskCCUmyxA/2t5ILFzxSwQ6FeyDmsshaJJnAbYmKWPjBqyoLFY1xMNmtO87N5xxsGb3V/ooa5dFTcJwHhwwmqXDhSt+MUpS9JnkSptsyt9du0QGSHLtwaJHGr3tsz236iP+QdHV5yZ7JT10jEIH6JqqWaHlAbhnrh1AE/bLTnZ9ShfOPis/BcI4VbZ/2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y+IyskLYpiRZPEjQJhZjKfql1fqdsvcMyV7MNfCEO+g=;
- b=h3eHHv8KgXHDryPRujOPiUoY6kJsikM2eO8iIQJiKjSD9twqlEYE2bU2S2TwFYjVLlUIcDDhbLFtCfTgIBej6PBLb7+EvYxCsLccfefxjNWPGb+lzrY5FTXZkcpppsrqMOO+jakB5IOcUJ9cL2DoUlbydVwBCcjgaNFHDnRoh/Y/FdrgibuMNUiD2vFhyno+CD1aZ6bKN4X+qk+ZngKRQvlkVR5SVXEJT2Sv5LaJzzS4oVogcsW09eFHGVZvr6/Zgy5foxf4es0h9802pycsBLP8OWuWZxvRamrrfNfl8MpxO4x7pKqkSprbonNJfJHYvYwOzbgs4NCPScB7/DPtCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y+IyskLYpiRZPEjQJhZjKfql1fqdsvcMyV7MNfCEO+g=;
- b=RMUMCLJqZp6yQVXv4mwvjUjVo45KdgyPNUNQRXpHCMnVV5LRWWx07PHkdl0Sgk8XSakmpyQV5xmzi7UvatqAmy2LrmLhCkdIVUIS/CtbquUvpTgpDz8+hFoCnCSIn87x21y7YfU7ONRN64+6j157H3BPX3C3OJFAkeLtlCscQWn/dE8zEq6msOYY/SC6PSMd7Ts95x9h71YdP8jQnTOnBLfkW4pMdxjZNaZtgqDOhzkVy15TEeacmK2gmhgsRapNl76wJAtgW6w1hO7DorYZG0x8X0lqv0X2otio5OKuQoWiT979YF8bGbwIOgXEjZM+a5EM99aDCATu0YI2GtSHQg==
-Received: from BL1PR13CA0241.namprd13.prod.outlook.com (2603:10b6:208:2ba::6)
- by MW4PR12MB5604.namprd12.prod.outlook.com (2603:10b6:303:18d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.25; Wed, 8 Nov
- 2023 11:28:45 +0000
-Received: from BL02EPF0001A0FA.namprd03.prod.outlook.com
- (2603:10b6:208:2ba:cafe::b0) by BL1PR13CA0241.outlook.office365.com
- (2603:10b6:208:2ba::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.17 via Frontend
- Transport; Wed, 8 Nov 2023 11:28:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- BL02EPF0001A0FA.mail.protection.outlook.com (10.167.242.101) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.16 via Frontend Transport; Wed, 8 Nov 2023 11:28:45 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 8 Nov 2023
- 03:28:30 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 8 Nov 2023 03:28:29 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Wed, 8 Nov 2023 03:28:29 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/125] 5.15.138-rc2 review
-In-Reply-To: <20231107202324.434534294@linuxfoundation.org>
-References: <20231107202324.434534294@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 8 Nov 2023 06:29:03 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 549E7B0
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 03:29:01 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 830001477;
+        Wed,  8 Nov 2023 03:29:45 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.37.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6ADF3F703;
+        Wed,  8 Nov 2023 03:28:58 -0800 (PST)
+Date:   Wed, 8 Nov 2023 11:28:55 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        James Morse <james.morse@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 1/2] arm64: Move Mediatek GIC quirk handling from
+ irqchip to core
+Message-ID: <ZUtw95AZ4sCbvqBk@FVFF77S0Q05N>
+References: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
 MIME-Version: 1.0
-Message-ID: <d05ea994-03be-475e-afa9-f60ba862dc90@drhqmail202.nvidia.com>
-Date:   Wed, 8 Nov 2023 03:28:29 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FA:EE_|MW4PR12MB5604:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15eb89c0-65f8-4f93-0c1f-08dbe04dde84
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kvOPCPHlRvgXUQQHIgJCqXOiJgYwz6I5qqfTVwW7ni7XsXUEVhIrGiHPjBXSzpk/zxJfCGgciH4uZJcZrhy2UGhUE05n+j9bRDv67DSyOjTU+CKNvy2ZAAJ+noSA81bYiOuFKHzEzafB2ReOwvp5af9fC+dHc0iO2KI08LDGAs8RBWmQV0PgktKW7kXK8yWsi8t/C64DBs2RHxGwQ5zm153qKn347KuVn/rZDdUevdMSdZxrFwq1wzfkTB+FmuwUKH+9JzkEVlzmz5dLuoFUM/COcHxrWTE8dUtDdlAAhlkkOGl6aA8ztOHart5pnXE1ut53/vPqC0UZdHzR6Z/6yvuG7+w+8BhmP4ucxFc+ipfwbNoz+xTP15WXZkJs791BiwrKxKtW1QCrnuo4tPyBgHGgf7p4m/r7pk5kOYs5Kerfz6kxln6pOuc+NbL37MmyX6gP3JIyEcrpO8a93FllTRiuyaQ09XshjHgfPQG2IEWsRnyRN3siY0uVDtODDSRTqqLeW9PV6zJv11RuQS0rpzEn/pJWlpjzJ2PPP7RxmD/KYqqyOfHbTanJ8e8SSbjhoCe/BH8nPyUMtd1EoVtkS75JH/g5E8MoqPYhwqR8SA6Se7UTV/lIUTv2m1SyvFtGveVdcV0Rk3SmSNjhjFVDUZinvTyCxECmG3bwo7RKwpiyWBCZnNQ5/93TVf/oXmcZKyHuXnpMnFsL/A4NWmUJNGVvWdNTQa/Y6iKzGiyWYM2BbGKZED7Y/FHQWhpvNmG9PiUOmcMsa0Vp7sEq/5/2J2tkxw9EdbTXnTbCFuyiWwc=
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(376002)(136003)(230922051799003)(1800799009)(82310400011)(186009)(451199024)(64100799003)(36840700001)(40470700004)(46966006)(40460700003)(26005)(426003)(5660300002)(2906002)(336012)(36860700001)(47076005)(8676002)(4326008)(7416002)(8936002)(478600001)(41300700001)(966005)(316002)(70586007)(7636003)(54906003)(70206006)(82740400003)(356005)(86362001)(31696002)(6916009)(31686004)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 11:28:45.1637
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15eb89c0-65f8-4f93-0c1f-08dbe04dde84
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A0FA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5604
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 21:24:45 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.138 release.
-> There are 125 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Nov 07, 2023 at 07:26:56AM -0800, Douglas Anderson wrote:
+> In commit 44bd78dd2b88 ("irqchip/gic-v3: Disable pseudo NMIs on
+> Mediatek devices w/ firmware issues") we added a method for detecting
+> Mediatek devices with broken firmware and disabled pseudo-NMI. While
+> that worked, it didn't address the problem at a deep enough level.
 > 
-> Responses should be made by Thu, 09 Nov 2023 20:22:58 +0000.
-> Anything received after that time might be too late.
+> The fundamental issue with this broken firmware is that it's not
+> saving and restoring several important GICR registers. The current
+> list is believed to be:
+> * GICR_NUM_IPRIORITYR
+> * GICR_CTLR
+> * GICR_ISPENDR0
+> * GICR_ISACTIVER0
+> * GICR_NSACR
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.138-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
+> Pseudo-NMI didn't work because it was the only thing (currently) in
+> the kernel that relied on the broken registers, so forcing pseudo-NMI
+> off was an effective fix. However, it could be observed that calling
+> system_uses_irq_prio_masking() on these systems still returned
+> "true". That caused confusion and led to the need for
+> commit a07a59415217 ("arm64: smp: avoid NMI IPIs with broken MediaTek
+> FW"). It's worried that the incorrect value returned by
+> system_uses_irq_prio_masking() on these systems will continue to
+> confuse future developers.
 > 
-> thanks,
+> Let's fix the issue a little more completely by disabling IRQ
+> priorities at a deeper level in the kernel. Once we do this we can
+> revert some of the other bits of code dealing with this quirk.
 > 
-> greg k-h
+> This includes a partial revert of commit 44bd78dd2b88
+> ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware
+> issues"). This isn't a full revert because it leaves some of the
+> changes to the "quirks" structure around in case future code needs it.
+> 
+> Suggested-by: Mark Rutland <mark.rutland@arm.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-All tests passing for Tegra ...
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Test results for stable-v5.15:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    102 tests:	102 pass, 0 fail
+Mark.
 
-Linux version:	5.15.138-rc2-gf3efa02c9542
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
+> ---
+> 
+> Changes in v2:
+> - Just detect the quirk once at init time.
+> - Fixed typo in subject: s/GiC/GIC.
+> - Squash in ("Remove Mediatek pseudo-NMI firmware quirk handling").
+> 
+>  arch/arm64/kernel/cpufeature.c | 46 ++++++++++++++++++++++++++++------
+>  drivers/irqchip/irq-gic-v3.c   | 22 +---------------
+>  2 files changed, 39 insertions(+), 29 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index f6b2e2906fc9..928124ea2e96 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -999,6 +999,37 @@ static void init_32bit_cpu_features(struct cpuinfo_32bit *info)
+>  	init_cpu_ftr_reg(SYS_MVFR2_EL1, info->reg_mvfr2);
+>  }
+>  
+> +#ifdef CONFIG_ARM64_PSEUDO_NMI
+> +static bool enable_pseudo_nmi;
+> +
+> +static int __init early_enable_pseudo_nmi(char *p)
+> +{
+> +	return kstrtobool(p, &enable_pseudo_nmi);
+> +}
+> +early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
+> +
+> +static __init void detect_system_supports_pseudo_nmi(void)
+> +{
+> +	struct device_node *np;
+> +
+> +	if (!enable_pseudo_nmi)
+> +		return;
+> +
+> +	/*
+> +	 * Detect broken Mediatek firmware that doesn't properly save and
+> +	 * restore GIC priorities.
+> +	 */
+> +	np = of_find_compatible_node(NULL, NULL, "arm,gic-v3");
+> +	if (np && of_property_read_bool(np, "mediatek,broken-save-restore-fw")) {
+> +		pr_info("Pseudo-NMI disabled due to Mediatek Chromebook GICR save problem\n");
+> +		enable_pseudo_nmi = false;
+> +	}
+> +	of_node_put(np);
+> +}
+> +#else /* CONFIG_ARM64_PSEUDO_NMI */
+> +static inline void detect_system_supports_pseudo_nmi(void) { }
+> +#endif
+> +
+>  void __init init_cpu_features(struct cpuinfo_arm64 *info)
+>  {
+>  	/* Before we start using the tables, make sure it is sorted */
+> @@ -1057,6 +1088,13 @@ void __init init_cpu_features(struct cpuinfo_arm64 *info)
+>  	 */
+>  	init_cpucap_indirect_list();
+>  
+> +	/*
+> +	 * Detect broken pseudo-NMI. Must be called _before_ the call to
+> +	 * setup_boot_cpu_capabilities() since it interacts with
+> +	 * can_use_gic_priorities().
+> +	 */
+> +	detect_system_supports_pseudo_nmi();
+> +
+>  	/*
+>  	 * Detect and enable early CPU capabilities based on the boot CPU,
+>  	 * after we have initialised the CPU feature infrastructure.
+> @@ -2085,14 +2123,6 @@ static void cpu_enable_e0pd(struct arm64_cpu_capabilities const *cap)
+>  #endif /* CONFIG_ARM64_E0PD */
+>  
+>  #ifdef CONFIG_ARM64_PSEUDO_NMI
+> -static bool enable_pseudo_nmi;
+> -
+> -static int __init early_enable_pseudo_nmi(char *p)
+> -{
+> -	return kstrtobool(p, &enable_pseudo_nmi);
+> -}
+> -early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
+> -
+>  static bool can_use_gic_priorities(const struct arm64_cpu_capabilities *entry,
+>  				   int scope)
+>  {
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 68d11ccee441..1ba674367ee3 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -39,8 +39,7 @@
+>  
+>  #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
+>  #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
+> -#define FLAGS_WORKAROUND_MTK_GICR_SAVE		(1ULL << 2)
+> -#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 3)
+> +#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 2)
+>  
+>  #define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
+>  
+> @@ -1779,15 +1778,6 @@ static bool gic_enable_quirk_msm8996(void *data)
+>  	return true;
+>  }
+>  
+> -static bool gic_enable_quirk_mtk_gicr(void *data)
+> -{
+> -	struct gic_chip_data *d = data;
+> -
+> -	d->flags |= FLAGS_WORKAROUND_MTK_GICR_SAVE;
+> -
+> -	return true;
+> -}
+> -
+>  static bool gic_enable_quirk_cavium_38539(void *data)
+>  {
+>  	struct gic_chip_data *d = data;
+> @@ -1888,11 +1878,6 @@ static const struct gic_quirk gic_quirks[] = {
+>  		.compatible = "asr,asr8601-gic-v3",
+>  		.init	= gic_enable_quirk_asr8601,
+>  	},
+> -	{
+> -		.desc	= "GICv3: Mediatek Chromebook GICR save problem",
+> -		.property = "mediatek,broken-save-restore-fw",
+> -		.init	= gic_enable_quirk_mtk_gicr,
+> -	},
+>  	{
+>  		.desc	= "GICv3: HIP06 erratum 161010803",
+>  		.iidr	= 0x0204043b,
+> @@ -1959,11 +1944,6 @@ static void gic_enable_nmi_support(void)
+>  	if (!gic_prio_masking_enabled())
+>  		return;
+>  
+> -	if (gic_data.flags & FLAGS_WORKAROUND_MTK_GICR_SAVE) {
+> -		pr_warn("Skipping NMI enable due to firmware issues\n");
+> -		return;
+> -	}
+> -
+>  	rdist_nmi_refs = kcalloc(gic_data.ppi_nr + SGI_NR,
+>  				 sizeof(*rdist_nmi_refs), GFP_KERNEL);
+>  	if (!rdist_nmi_refs)
+> -- 
+> 2.42.0.869.gea05f2083d-goog
+> 
