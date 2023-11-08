@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A340C7E523E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D997E5243
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbjKHI4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S1343756AbjKHI7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjKHI4t (ORCPT
+        with ESMTP id S232723AbjKHI7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:56:49 -0500
-Received: from hmat.qianxin.com (hmat.qianxin.com [220.181.41.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AB998
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:56:43 -0800 (PST)
-Received: from hmat.qianxin.com (unknown [10.44.121.99])
-        by hmat.qianxin.com (SkyGuard) with ESMTPS id 4SQJqC6C03z2LZqQ;
-        Wed,  8 Nov 2023 16:56:39 +0800 (CST)
-Received: from qax-bjmail06.ESG.360ES.CN
- (2402:d040:0:8425:2849:52e7:3abe:7096) by qax-bjmail05.ESG.360ES.CN
- (2402:d040:0:8425:2585:1d54:99a8:80b6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 8 Nov 2023 16:56:40 +0800
-Received: from qax-bjmail06.ESG.360ES.CN ([fe80::2849:52e7:3abe:7096]) by
- qax-bjmail06.ESG.360ES.CN ([fe80::2849:52e7:3abe:7096%5]) with mapi id
- 15.01.2507.031; Wed, 8 Nov 2023 16:56:39 +0800
-From:   =?utf-8?B?5p+z6I+B5bOw?= <liujingfeng@qianxin.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     Marco Elver <elver@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "security@kernel.org" <security@kernel.org>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>
-Subject: Reply: A null-ptr crash in linux-6.4 usb driver
-Thread-Topic: Reply: A null-ptr crash in linux-6.4 usb driver
-Thread-Index: AdoSHgQD1k6mzw3BS0uprngBXtwXzg==
-Date:   Wed, 8 Nov 2023 08:56:39 +0000
-Message-ID: <01a265f7bb654e948485c1d0ddc14954@qianxin.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.110.178.148]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 8 Nov 2023 03:59:46 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7291E1716
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:59:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gVg/BkXKsNwGudM+L56Wgnqmj1mUU2FtDJSXo8eK0ks=; b=YobceBSdYvBf+I9XqFS2+lDBB/
+        /lddbiLSi4YJgRp2Ac9zK66IcKqnkd8AbBV4pBlXTA9rv4kvcok7lLgBtAiO1Mv4cDXKRVPYRtGzK
+        v71ArJyCb+nanfXTfTrjaEVPI+C7ShICzHwXCAlERvF0pmWIJPaW5fV5WxPpmhulX0egyrzpIg3c8
+        TINdSKSBMsDxDn/6nT7/1/BMkrY94/hB88ZJORIh0K1Zd8rKs8/Nmpwt1j4NbAkZ09Os0bkRYmfB/
+        c6pGJYMJR6GiQ9KsaXPXq9iZn2IRT/ijyUifGBk35FnduplWymvk5FoIKY4Za6ED1Y0uf6L7B/8oa
+        EdyEyMoQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r0eOJ-00DMoq-20;
+        Wed, 08 Nov 2023 08:58:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4C31D30049D; Wed,  8 Nov 2023 09:58:27 +0100 (CET)
+Date:   Wed, 8 Nov 2023 09:58:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        torvalds@linux-foundation.org, paulmck@kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 34/86] thread_info: accessors for TIF_NEED_RESCHED*
+Message-ID: <20231108085827.GE8262@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-35-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107215742.363031-35-ankur.a.arora@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QSBudWxsLXB0ciBjcmFzaCB3YXMgZm91bmQgaW4gdXNiIGRyaXZlciBhbmQgaXQgY3Jhc2hlZCB3
-aXRoIGZhdWx0LWluamVjdC4gSSBoYXZlIG1hZGUgYSBwYXRjaCB0aGF0IHNpbXBseSBjaGVja3Mg
-Zm9yIHRoaXMgbnVsbCBwb2ludGVyLCBidXQgSSBhbSBub3Qgc3VyZSBpZiB0aGlzIHdpbGwgYWZm
-ZWN0IGNlcnRhaW4gZnVuY3Rpb25zIG9yIGxvZ2ljLiBJIGhvcGUgeW91IGNhbiBjaGVjayBpdCBj
-YXJlZnVsbHkgcGxlYXNlIGFuZCB0aGUgZm9ybWF0IG1lZXRzIHRoZSByZXF1aXJlbWVudHMgdGhp
-cyB0aW1lLg0KDQoNCg0KVGhlIGNyYXNoIGluZm86DQpnZW5lcmFsIHByb3RlY3Rpb24gZmF1bHQs
-IHByb2JhYmx5IGZvciBub24tY2Fub25pY2FsIGFkZHJlc3MgMHhkZmZmZmMwMDAwMDAwMDIxOiAw
-MDAwIFsjMV0gUFJFRU1QVCBTTVAgS0FTQU4gTk9QVEkNCktBU0FOOiBudWxsLXB0ci1kZXJlZiBp
-biByYW5nZSBbMHgwMDAwMDAwMDAwMDAwMTA4LTB4MDAwMDAwMDAwMDAwMDEwZl0NCkNQVTogMCBQ
-SUQ6IDQyODAgQ29tbTogc3l6LWV4ZWN1dG9yLjMgTm90IHRhaW50ZWQgNi40LjAgIzgNCkhhcmR3
-YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TIDEu
-MTMuMC0xdWJ1bnR1MS4xIDA0LzAxLzIwMTQNClJJUDogMDAxMDpfX2RldmljZV9hdHRhY2grMHhh
-OS8weDQ1MA0KQ29kZTogZTggMDMgNDIgODAgM2MgMjAgMDAgMGYgODUgM2YgMDMgMDAgMDAgNDgg
-YjggMDAgMDAgMDAgMDAgMDAgZmMgZmYgZGYgNGMgOGIgNjUgNDggNDkgOGQgYmMgMjQgMDggMDEg
-MDAgMDAgNDggODkgZmEgNDggYzEgZWEgMDMgPDBmPiBiNiAwNCAwMiA4NCBjMCA3NCAwNiAwZiA4
-ZSBmOCAwMiAwMCAwMCA0MSBmNiA4NCAyNCAwOCAwMSAwMCAwMA0KUlNQOiAwMDE4OmZmZmY4ODgx
-MTY5MjdiOTggRUZMQUdTOiAwMDAxMDIwNg0KUkFYOiBkZmZmZmMwMDAwMDAwMDAwIFJCWDogMWZm
-ZmYxMTAyMmQyNGY3MyBSQ1g6IDAwMDAwMDAwMDAwMDAwMDANClJEWDogMDAwMDAwMDAwMDAwMDAy
-MSBSU0k6IGZmZmZmZmZmODQ3YzMzMDAgUkRJOiAwMDAwMDAwMDAwMDAwMTA4DQpSQlA6IGZmZmY4
-ODgxMTk1OWIwNzggUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogZmZmZmZmZmY4NjBhMDA5Nw0K
-UjEwOiBmZmZmODg4MTE2OTI3Yjk4IFIxMTogMDAwMDAwMDAwMDAwMDAwMSBSMTI6IDAwMDAwMDAw
-MDAwMDAwMDANClIxMzogZmZmZjg4ODExOTU5YjBmOCBSMTQ6IDAwMDAwMDAwZmZmZmZmZjAgUjE1
-OiAwMDAwMDAwMDAwMDAwMDAwDQpGUzogIDAwMDA3ZjAwMjMyYTM3MDAoMDAwMCkgR1M6ZmZmZjg4
-ODExYWUwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpDUzogIDAwMTAgRFM6IDAw
-MDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6IDAwMDA3ZmZmNzk4NTlmYjAg
-Q1IzOiAwMDAwMDAwMTBhMThhMDA1IENSNDogMDAwMDAwMDAwMDc3MGVmMA0KRFIwOiAwMDAwMDAw
-MDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCkRS
-MzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAwMDAw
-MDAwNDAwDQpQS1JVOiA1NTU1NTU1NA0KQ2FsbCBUcmFjZToNCiAgPFRBU0s+DQogID8gZGllX2Fk
-ZHIrMHgzOC8weGEwDQogID8gZXhjX2dlbmVyYWxfcHJvdGVjdGlvbisweDE0NC8weDIyMA0KICA/
-IGFzbV9leGNfZ2VuZXJhbF9wcm90ZWN0aW9uKzB4MjIvMHgzMA0KICA/IF9fZGV2aWNlX2F0dGFj
-aCsweGE5LzB4NDUwDQogID8gX19kZXZpY2VfYXR0YWNoKzB4NzYvMHg0NTANCiAgPyBfX3BmeF9f
-X2RldmljZV9hdHRhY2grMHgxMC8weDEwDQogID8gdXNiX2lmbnVtX3RvX2lmKzB4MTQwLzB4MWQw
-DQogIHByb2NfaW9jdGwucGFydC4wKzB4M2ZmLzB4NGEwDQogIHVzYmRldl9pb2N0bCsweDE3OGEv
-MHgzZjcwDQogID8gX19wZnhfdXNiZGV2X2lvY3RsKzB4MTAvMHgxMA0KICA/IF9fcGZ4X19fbG9j
-a19hY3F1aXJlKzB4MTAvMHgxMA0KICA/IGRvX3Zmc19pb2N0bCsweDEyMC8weDE0ODANCiAgPyBf
-X3BmeF9kb192ZnNfaW9jdGwrMHgxMC8weDEwDQogID8gZmluZF9oZWxkX2xvY2srMHgyYy8weDEx
-MA0KICA/IF9fZmdldF9maWxlcysweDFmOC8weDQyMA0KICA/IGxvY2tfcmVsZWFzZSsweDNjMy8w
-eDZhMA0KICA/IF9fcGZ4X2xvY2tfcmVsZWFzZSsweDEwLzB4MTANCiAgPyBsb2NrX3JlbGVhc2Ur
-MHgzYzMvMHg2YTANCiAgPyBfX2ZnZXRfZmlsZXMrMHgyMWEvMHg0MjANCiAgPyBfX3BmeF91c2Jk
-ZXZfaW9jdGwrMHgxMC8weDEwDQogIF9feDY0X3N5c19pb2N0bCsweDE3MS8weDFlMA0KICBkb19z
-eXNjYWxsXzY0KzB4MzgvMHg5MA0KICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg3
-Mi8weGRjDQpSSVA6IDAwMzM6MHg0Njk5Y2QNCkNvZGU6IDAyIGI4IGZmIGZmIGZmIGZmIGMzIDY2
-IDBmIDFmIDQ0IDAwIDAwIGYzIDBmIDFlIGZhIDQ4IDg5IGY4IDQ4IDg5IGY3IDQ4IDg5IGQ2IDQ4
-IDg5IGNhIDRkIDg5IGMyIDRkIDg5IGM4IDRjIDhiIDRjIDI0IDA4IDBmIDA1IDw0OD4gM2QgMDEg
-ZjAgZmYgZmYgNzMgMDEgYzMgNDggYzcgYzEgYmMgZmYgZmYgZmYgZjcgZDggNjQgODkgMDEgNDgN
-ClJTUDogMDAyYjowMDAwN2YwMDIzMmEyYzU4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAw
-MDAwMDAwMDAwMDAwMTANClJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDAwMDAwMDA1N2Mw
-MDggUkNYOiAwMDAwMDAwMDAwNDY5OWNkDQpSRFg6IDAwMDAwMDAwMjAwMDAxODAgUlNJOiAwMDAw
-MDAwMGMwMTA1NTEyIFJESTogMDAwMDAwMDAwMDAwMDAwMw0KUkJQOiAwMDAwMDAwMDAwNGQ0YTE3
-IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMDANClIxMDogMDAwMDAw
-MDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwNTdjMDA4DQpS
-MTM6IDAwMDA3ZmZlOTNjNzViMWYgUjE0OiAwMDAwN2ZmZTkzYzc1Y2MwIFIxNTogMDAwMDdmMDAy
-MzJhMmRjMA0KICA8L1RBU0s+DQoNCg0KDQotLS0NCmRyaXZlcnMvYmFzZS9kZC5jIHwgMiArLQ0K
-IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KDQoNCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2Jhc2UvZGQuYyBiL2RyaXZlcnMvYmFzZS9kZC5jDQppbmRleCA5YzA5
-Y2E1YzQuLmZjZDgzMjI2YSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvYmFzZS9kZC5jDQorKysgYi9k
-cml2ZXJzL2Jhc2UvZGQuYw0KQEAgLTEwMDMsNyArMTAwMyw3IEBAIHN0YXRpYyBpbnQgX19kZXZp
-Y2VfYXR0YWNoKHN0cnVjdCBkZXZpY2UgKmRldiwgYm9vbCBhbGxvd19hc3luYykNCiAgICAgICAg
-Ym9vbCBhc3luYyA9IGZhbHNlOw0KDQogICAgICAgIGRldmljZV9sb2NrKGRldik7DQotICAgICAg
-IGlmIChkZXYtPnAtPmRlYWQpIHsNCisgICAgICAgaWYgKCFkZXYtPnB8fGRldi0+cC0+ZGVhZCkg
-ew0KICAgICAgICAgICAgICAgIGdvdG8gb3V0X3VubG9jazsNCiAgICAgICAgfSBlbHNlIGlmIChk
-ZXYtPmRyaXZlcikgew0KICAgICAgICAgICAgICAgIGlmIChkZXZpY2VfaXNfYm91bmQoZGV2KSkg
-eyANCg0KYmFzZS1jb21taXQ6IDY5OTVlMmRlNjg5MWM3MjRiZmViMmRiMzNkN2I4Nzc3NWY5MTNh
-ZDEgKGdyYWZ0ZWQsIEhFQUQsIHRhZzogdjYuNCkNCg==
+On Tue, Nov 07, 2023 at 01:57:20PM -0800, Ankur Arora wrote:
+> Add tif_resched() which will be used as an accessor for TIF_NEED_RESCHED
+> and TIF_NEED_RESCHED_LAZY. The intent is to force the caller to make an
+> explicit choice of how eagerly they want a reschedule.
+> 
+> This interface will be used almost entirely from core kernel code, so
+> forcing a choice shouldn't be too onerous.
+> 
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+
+> ---
+>  include/linux/thread_info.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/include/linux/thread_info.h b/include/linux/thread_info.h
+> index 9ea0b28068f4..4eb22b13bf64 100644
+> --- a/include/linux/thread_info.h
+> +++ b/include/linux/thread_info.h
+> @@ -59,6 +59,27 @@ enum syscall_work_bit {
+>  
+>  #include <asm/thread_info.h>
+>  
+> +#ifndef TIF_NEED_RESCHED_LAZY
+> +#error "Arch needs to define TIF_NEED_RESCHED_LAZY"
+> +#endif
+> +
+> +#define TIF_NEED_RESCHED_LAZY_OFFSET	(TIF_NEED_RESCHED_LAZY - TIF_NEED_RESCHED)
+> +
+> +typedef enum {
+> +	RESCHED_eager = 0,
+> +	RESCHED_lazy = TIF_NEED_RESCHED_LAZY_OFFSET,
+> +} resched_t;
+> +
+> +static inline int tif_resched(resched_t r)
+> +{
+> +	return TIF_NEED_RESCHED + r;
+> +}
+> +
+> +static inline int _tif_resched(resched_t r)
+> +{
+> +	return 1 << tif_resched(r);
+> +}
+
+So either I'm confused or I'm thinking this is wrong. If you want to
+preempt eagerly you want to preempt more than when you're not eager to
+preempt, right?
+
+So an eager preemption site wants to include the LAZY bit.
+
+Whereas a site that wants to lazily preempt would prefer to not preempt
+until forced, and hence would not include LAZY bit.
+
+
