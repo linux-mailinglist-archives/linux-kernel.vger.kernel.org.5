@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EC17E4EFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2BD7E4F00
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbjKHCjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
+        id S235286AbjKHCmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:42:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKHCjn (ORCPT
+        with ESMTP id S229503AbjKHCmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:39:43 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11B5184;
-        Tue,  7 Nov 2023 18:39:40 -0800 (PST)
-Received: from [100.84.166.245] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 86D4C66074D3;
-        Wed,  8 Nov 2023 02:39:37 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699411179;
-        bh=zYUxwIVC181tVu7mNwksNSP41rm0sl9mrVBWCUqnO6I=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PFw0auo1y+h+7KgUS5KUqWWaOxKO/LcWyvSCeyu2dmyN7gal+rv3bukc0ucp85LBU
-         QnC7QTSxbVYLJO4PF0c9AtJon8R47f5kPcw9Tkf5KLmcEQVd5XO1wteXvvHxkiC6mx
-         mkzwOz55QEhHqvjC4R6ZZmTUmBNMN6h1mgC5xCPzIKb4iFOufjTcsmJjWiPfY0Jesn
-         RT8TCO31wtDdyg3Cjm5jY4FMSYOIUwfptgLdtIvclJgR1AGDP0956LnF0UNAckRCf3
-         6eMPjIG85Q92oCmwpZ966hH/n6uoMhnP8mRlA0m7DCINB1vKfyey+6zwM9yKDsWDDv
-         6BW4W9PNuzKDg==
-Message-ID: <f69345217c21af63cf873bfb4a16ae1363b05875.camel@collabora.com>
-Subject: Re: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at
- streaming start
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 07 Nov 2023 21:39:27 -0500
-In-Reply-To: <bfabc182-4113-46fb-85e9-8550c97d132b@kwiboo.se>
-References: <20231105165521.3592037-1-jonas@kwiboo.se>
-         <20231105165521.3592037-6-jonas@kwiboo.se>
-         <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
-         <bfabc182-4113-46fb-85e9-8550c97d132b@kwiboo.se>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 7 Nov 2023 21:42:20 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28371184
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:42:18 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7ad501764f4so118943539f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 18:42:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1699411337; x=1700016137; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l0/YVAel4Gttz4i2ZT43a1gG1mnikYVH5WxWUT8rkkA=;
+        b=X3IRmnQBd3UijRz2S8HIOYIOvuFYHMaBGZ+mKP2ErA9xJfEcCS1TXT9nCWTg+ZpHnm
+         mfB5bAYgVi8+GOGCFgvY3cune1fTdlNXgl+17em80ChbNeU8AtBOGOVTQ9lSCF+7rP1/
+         dRftoH/NELbyQ66eXUFMTMNKv4EIPSHe1itP4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699411337; x=1700016137;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l0/YVAel4Gttz4i2ZT43a1gG1mnikYVH5WxWUT8rkkA=;
+        b=VhDcjAFibo32+4OAjWc4RvejicmgTRMN6yVOnRX1hgCb7NT0ZTMol2vC/CNHS5jY10
+         zAX/oIDXKiMc6PMNsunIUSqD1NFFBuhJQNQCpclwJqCjvAL776tceQXP0lIAmHEn7KcZ
+         ALlgRzsdGsFCK5Uea9HTaAPcp9lVTssJ463UCaGbfXzvWovrSg8Ze59z4CO8Tas+CxoO
+         LMCvC4epk6g/D0O5h83ssyeBWLasAFWtLh3aVwcvsLWqi9xX1C0Ul2qcxgv5u8YNoaFg
+         0Xjh/oQX8/rUQhzMydzUIYXCHic8SN88vT/a6yv4nQI4LkLW0NNNUROeMdT4HUlyXyKH
+         B3tw==
+X-Gm-Message-State: AOJu0Yyn5CcCjpjwuif58gb9vyoLn/s5TRfkRGNyPdWXxfIbOWEIY0pn
+        InSr9aX9MFVXqINfT2lwdJMdbA==
+X-Google-Smtp-Source: AGHT+IGIIe2W7d5LVTX6AoRFW05ZsrY22EQeoefXPK016WTBYYH6khHyH8shA8THqOmVsKy3XSIzLw==
+X-Received: by 2002:a5d:9282:0:b0:794:efb0:83d6 with SMTP id s2-20020a5d9282000000b00794efb083d6mr742434iom.12.1699411337472;
+        Tue, 07 Nov 2023 18:42:17 -0800 (PST)
+Received: from localhost (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
+        by smtp.gmail.com with ESMTPSA id ft8-20020a056638660800b00452e02e784fsm3052078jab.144.2023.11.07.18.42.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 18:42:16 -0800 (PST)
+Date:   Wed, 8 Nov 2023 02:42:16 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20231108024216.GB2992223@google.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+ <d6811957-1cb7-489d-a3da-f38622d7f515@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6811957-1cb7-489d-a3da-f38622d7f515@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 07 novembre 2023 =C3=A0 23:56 +0100, Jonas Karlman a =C3=A9crit=C2=
-=A0:
-> On 2023-11-07 23:01, Nicolas Dufresne wrote:
-> > Le dimanche 05 novembre 2023 =C3=A0 16:55 +0000, Jonas Karlman a =C3=A9=
-crit=C2=A0:
-> > > SPS parameters is validated in try_ctrl() ops so there is no need to
-> >=20
-> >                  are
-> >=20
-> > > re-validate when streaming starts.
-> > >=20
-> > > Remove the unnecessary call to validate sps at streaming start.
-> >=20
-> > This patch is not working since user may change the format after the
-> > control have been set. The proper fix should actually reset the SPS
-> > (well all header controls) to match the the newly set format. Then this
-> > validation won't be needed anymore.
-> >=20
-> > The sequence that is problematic after this patch is:
-> >=20
-> > S_FMT (OUTPUT, width, height);
-> > S_CTRL (SPS) // valid
-> > S_FMT(OUTPUT, width', height'); // SPS is no longer valid
-> >=20
-> > One suggestion I may make is to add a ops so that each codec
-> > implementation can reset their header controls to make it valid against
-> > the new resolution. With that in place you'll be able drop the check.
->=20
-> According to the Initialization section of the V4L2 stateless
-> documentation a client is supposed to S_CTRL(SPS) after S_FMT(OUTPUT).
+On Tue, Nov 07, 2023 at 12:58:48PM +0100, Daniel Bristot de Oliveira wrote:
+[...]
+> >> One more consideration I guess is, because the server is throttled
+> >> till 0-laxity time, it is possible that if CFS sleeps even a bit
+> >> (after the DL-server is unthrottled), then it will be pushed out to a
+> >> full current deadline + period due to CBS. In such a situation,  if
+> >> CFS-server is the only DL task running, it might starve RT for a bit
+> >> more time.
+> >>
+> >> Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
+> >> timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
+> >> at 0.295s (its remaining runtime is 0.01s at this point which is < the
+> >> "time till deadline" of 0.005s). Now the runtime of the CFS-server
+> >> will be replenished to the full 3s (due to CBS) and the deadline
+> >> pushed out. The end result is the total runtime that the CFS-server
+> >> actually gets is 0.0595s (though yes it did sleep for 5ms in between,
+> >> still that's tiny -- say if it briefly blocked on a kernel mutex).
+> > 
+> > Blah, I got lost in decimal points. Here's the example again:
+> > 
+> > Say CFS-server runtime is 0.3s and period is 1s.
+> > 
+> > At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
+> > 0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
+> > point which is < the "time till deadline" of 0.005s)
+> > 
+> > Now the runtime of the CFS-server will be replenished to the full 0.3s
+> > (due to CBS) and the deadline
+> > pushed out.
+> > 
+> > The end result is, the total runtime that the CFS-server actually gets
+> > is 0.595s (though yes it did sleep for 5ms in between, still that's
+> > tiny -- say if it briefly blocked on a kernel mutex). That's almost
+> > double the allocated runtime.
+> 
+> I think I got what you mean, and I think I took for granted that we were
+> doing overload control on the replenishment, but it seems that we are not..
+> 
+> I just got back from a doct appt, I will do a proper reply later today.
 
-Yes, but other part of the spec prevents us from failing if the
-userspace restart in the middle of the process.
+Ah ok! Thanks Daniel! And hope the appointment went well.
 
->=20
-> https://docs.kernel.org/userspace-api/media/v4l/dev-stateless-decoder.htm=
-l#initialization
->=20
-> I guess that all stateless decoders probably should reset all ctrls to
-> default value on S_FMT(OUTPUT) or decoders may end up in an unexpected
-> state?
->=20
-> Is resetting a ctrl value back to default something that is supported by
-> v4l2 ctrl core? Did not find any obvious way to reset a ctrl value.
-
-In order to avoid having to do this, Hantro driver just ignores these
-values from SPS control and do the following:
-
-	reg =3D G1_REG_DEC_CTRL1_PIC_MB_WIDTH(MB_WIDTH(ctx->src_fmt.width)) |
-	      G1_REG_DEC_CTRL1_PIC_MB_HEIGHT_P(MB_HEIGHT(ctx->src_fmt.height)) |
-	      G1_REG_DEC_CTRL1_REF_FRAMES(sps->max_num_ref_frames);
-
-Then all they do is reset the CAPTURE format whenever needed, matching
-the bit depth that was previously set. The SPS is unfortunatly not
-guarantied to be valid, but at first sight its safe in regard to
-picture dimensions.
-
->=20
-> Will probably just drop this patch in v5.
-
-That or do like in Hantro driver. What is scary though is that some of
-the feature enabled by SPS may requires an auxiliary chunk of memory to
-be allocated, and then this method falls appart. I think it would be
-nice to fix that properly in all drivers in a future patchset.
-
->=20
-> Regards,
-> Jonas
->=20
-> >=20
-> > Nicolas
-> >=20
-> > p.s. you can also just drop this patch from the series and revisit it
-> > later, though I think its worth fixing.
-> >=20
-> > >=20
-> > > Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> > > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> > > ---
-> > > v4:
-> > > - No change
-> > >=20
-> > > v3:
-> > > - New patch
-> > >=20
-> > >  drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
-> > >  1 file changed, 2 insertions(+), 17 deletions(-)
-> > >=20
-> > > diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/sta=
-ging/media/rkvdec/rkvdec-h264.c
-> > > index 8bce8902b8dd..815d5359ddd5 100644
-> > > --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> > > +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> > > @@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx=
- *ctx)
-> > >  	struct rkvdec_dev *rkvdec =3D ctx->dev;
-> > >  	struct rkvdec_h264_priv_tbl *priv_tbl;
-> > >  	struct rkvdec_h264_ctx *h264_ctx;
-> > > -	struct v4l2_ctrl *ctrl;
-> > > -	int ret;
-> > > -
-> > > -	ctrl =3D v4l2_ctrl_find(&ctx->ctrl_hdl,
-> > > -			      V4L2_CID_STATELESS_H264_SPS);
-> > > -	if (!ctrl)
-> > > -		return -EINVAL;
-> > > -
-> > > -	ret =3D rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
-> > > -	if (ret)
-> > > -		return ret;
-> > > =20
-> > >  	h264_ctx =3D kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
-> > >  	if (!h264_ctx)
-> > > @@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx =
-*ctx)
-> > >  	priv_tbl =3D dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
-> > >  				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
-> > >  	if (!priv_tbl) {
-> > > -		ret =3D -ENOMEM;
-> > > -		goto err_free_ctx;
-> > > +		kfree(h264_ctx);
-> > > +		return -ENOMEM;
-> > >  	}
-> > > =20
-> > >  	h264_ctx->priv_tbl.size =3D sizeof(*priv_tbl);
-> > > @@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx=
- *ctx)
-> > > =20
-> > >  	ctx->priv =3D h264_ctx;
-> > >  	return 0;
-> > > -
-> > > -err_free_ctx:
-> > > -	kfree(h264_ctx);
-> > > -	return ret;
-> > >  }
-> > > =20
-> > >  static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
-> >=20
->=20
+ - Joel
 
