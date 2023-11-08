@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B910A7E5191
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7277E5195
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235150AbjKHIBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S231397AbjKHIDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:03:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235297AbjKHIBb (ORCPT
+        with ESMTP id S229975AbjKHID2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:01:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6570E171C
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:01:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79CABC433C7;
-        Wed,  8 Nov 2023 08:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699430485;
-        bh=2Ar5lwZ3jRVtbJoyQHH2BdyH1s8Wjtev0WxE6Qz6fPs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N0Stv+RZZDpfRwJciq2L6ecGlaWd5NDrxceUAHJd9//HLZ1wudPbnMP1lGlNeLW2A
-         EHLFQvOMnNpzAIY10AOQvDbH/O7v1tRKcJipkvzch8V1sq0ge4Orb7yPaNgmAU9NU/
-         rMAvC+ZSpnZo7Dd/b/ynAeQmiI6v6P4AL7NGaBl15VB4lxN4kCb0e0m9Uumr5ZlDbS
-         CrbVGR/0XXBiINztr9fJ7NNUmH0qWuFplEPI8yiUSDE8ijHq63z52KUMCTc4dWZWYI
-         Xg2s/4LFy4PrDP3ZePIBX6tpdp6Ndn6kxmfj2ef7evnmz8kWAVggoD5IJJPmNCJTVI
-         N3zCp7gRIiPdQ==
-Message-ID: <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
-Date:   Wed, 8 Nov 2023 09:01:17 +0100
+        Wed, 8 Nov 2023 03:03:28 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41941F0
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:03:26 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so8904813a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:03:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699430604; x=1700035404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u03bBF5XTgqdtGIM3zyfPEZoFwKNJ1YwlMaCH9sfDoo=;
+        b=Y7+6LmEr/hkmt+uHFXcj+OlruLkb+Vpg5EfdNp26pWeoFdA4XjVhnx2EzgLsfMak4n
+         taWubwaC+awkW88MVQDRRvcGucvfwjSR62ZWcxgCthuKHS9M++5j0wQVUjVZmpFoaMhp
+         AW6m7YjG84UZW3sB/205wN3zEGHVetatps9AtGmdopiHiY055fBvSZ98/0WZzK/rgDq8
+         lsq4qw4zNGaT5BagB9S4Yo9XbTem+DqYnXxHpaHxZrqVkw/nCDqdaXz1Q4f/KJr9lyha
+         WiUwY8xNZ2kvHru6TMDf8rjkYPrOBalHuQVu/fbcR/RMEaoPEV7uY6+4yOHVi6nEqYVf
+         olKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699430604; x=1700035404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u03bBF5XTgqdtGIM3zyfPEZoFwKNJ1YwlMaCH9sfDoo=;
+        b=XMat0V7iDsFnp2NLCD3XXBWPx1wqi+J4Jh9fw3J9/hox1+oTwJ9haFMa5sys+2nhZ0
+         iil4u8BZXVVTlAXkPEzPh/hy0tVIppbKV9RwEaaWknRl2MpOZKoIBVd7PRDZOghGfVFj
+         WzIGdJwK5jh0pVJVxoJOZgPkJ6r6FgnLls7Kd3J0Yjqr1um51E1gePzeRiWgKbkU8z9M
+         yvLRXHUp7XRdpkD35SbBJ6d+IG/hVmasY1Xf+z4mJIZ84GV94JmhB7LVaxsRhrwaKDHS
+         ZOG38w+hMsrjk3Zmt6m4S5NzKDXWU4XJRjmZkeYQ0GH0X4xHfDlvOkne31Dat22eBMiY
+         IBfA==
+X-Gm-Message-State: AOJu0Yycp+ntHqoLq0i7pNJvRyinEyReiDh7GwWZVLuEAyOt6gIBeQtd
+        Dz1prUfSiRbDEZXYLReQSLkaAypxBTFIo38DboKZTA==
+X-Google-Smtp-Source: AGHT+IGpoJahX9MYqYyUr8cff+FX+d565D7YmTwSdBq7YDbFEiiO5nn+wOCfTSnrl9lBIftYjQoYo7ZvnPqS5R/9RXM=
+X-Received: by 2002:a17:907:741:b0:9bf:77ae:3aa9 with SMTP id
+ xc1-20020a170907074100b009bf77ae3aa9mr759862ejb.24.1699430602521; Wed, 08 Nov
+ 2023 00:03:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
- <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
- <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
- <20231107114732.5dd350ec@gandalf.local.home>
- <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
- <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
- <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
-Content-Language: en-US, pt-BR, it-IT
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com> <20231107230822.371443-12-ankur.a.arora@oracle.com>
+ <20231108012823.GD11577@google.com> <7155f21f-a7e5-cc36-89e5-c1ce257b9420@suse.cz>
+In-Reply-To: <7155f21f-a7e5-cc36-89e5-c1ce257b9420@suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 8 Nov 2023 00:02:46 -0800
+Message-ID: <CAJD7tkYYqqYT361pbeqTFxoAep2qtTAWSQx4SzFCcEEOZgRT3Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 68/86] treewide: mm: remove cond_resched()
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+        SeongJae Park <sj@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Hugh Dickins <hughd@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 04:20, Joel Fernandes wrote:
-> Hi Daniel,
-> 
-> On Tue, Nov 7, 2023 at 1:50 PM Daniel Bristot de Oliveira
-> <bristot@kernel.org> wrote:
->>
->>> The code is not doing what I intended because I thought it was doing overload
->>> control on the replenishment, but it is not (my bad).
->>>
->>
->> I am still testing but... it is missing something like this (famous last words).
->>
->> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
->> index 1092ca8892e0..6e2d21c47a04 100644
->> --- a/kernel/sched/deadline.c
->> +++ b/kernel/sched/deadline.c
->> @@ -842,6 +842,8 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
->>   * runtime, or it just underestimated it during sched_setattr().
->>   */
->>  static int start_dl_timer(struct sched_dl_entity *dl_se);
->> +static bool dl_entity_overflow(struct sched_dl_entity *dl_se, u64 t);
->> +
->>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->>  {
->>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
->> @@ -852,9 +854,18 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->>         /*
->>          * This could be the case for a !-dl task that is boosted.
->>          * Just go with full inherited parameters.
->> +        *
->> +        * Or, it could be the case of a zerolax reservation that
->> +        * was not able to consume its runtime in background and
->> +        * reached this point with current u > U.
->> +        *
->> +        * In both cases, set a new period.
->>          */
->> -       if (dl_se->dl_deadline == 0)
->> -               replenish_dl_new_period(dl_se, rq);
->> +       if (dl_se->dl_deadline == 0 ||
->> +               (dl_se->dl_zerolax_armed && dl_entity_overflow(dl_se, rq_clock(rq)))) {
->> +                       dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
->> +                       dl_se->runtime = pi_of(dl_se)->dl_runtime;
->> +       }
->>
->>         if (dl_se->dl_yielded && dl_se->runtime > 0)
->>                 dl_se->runtime = 0;
-> 
-> I was wondering does this mean GRUB needs to be enabled? Otherwise I
-> can see that "runtime / (deadline - t) > dl_runtime / dl_deadline"
-> will be true almost all the time due to the constraint of executing at
-> the 0-lax time.
+On Tue, Nov 7, 2023 at 11:49=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 11/8/23 02:28, Sergey Senozhatsky wrote:
+> > On (23/11/07 15:08), Ankur Arora wrote:
+> > [..]
+> >> +++ b/mm/zsmalloc.c
+> >> @@ -2029,7 +2029,6 @@ static unsigned long __zs_compact(struct zs_pool=
+ *pool,
+> >>                      dst_zspage =3D NULL;
+> >>
+> >>                      spin_unlock(&pool->lock);
+> >> -                    cond_resched();
+> >>                      spin_lock(&pool->lock);
+> >>              }
+> >>      }
+> >
+> > I'd personally prefer to have a comment explaining why we do that
+> > spin_unlock/spin_lock sequence, which may look confusing to people.
+>
+> Wonder if it would make sense to have a lock operation that does the
+> unlock/lock as a self-documenting thing, and maybe could also be optimize=
+d
+> to first check if there's a actually a need for it (because TIF_NEED_RESC=
+HED
+> or lock is contended).
 
-No grub needed. It will only happen if the fair server did not have any chance to run.
++1, I was going to suggest this as well. It can be extended to other
+locking types that disable preemption as well like RCU. Something like
+spin_lock_relax() or something.
 
-If it happens, it is not a problem, see that timeline I replied in the previous
-email.
-
-We do not want a zerolax scheduler, because it breaks everything else. It is
-a deferred EDF, that looking from wall clock, composes an "zerolaxish" timeline.
-
-> Because at the 0-lax time, AFAICS this will be 100% > 30% (say if CFS
-> has a 30% reservation).
-> 
-> And I think even if GRUB is enabled, it is possible other DL task may
-> have reserved bandwidth.
-> 
-> Or is there a subtlety that makes that not possible?
-> 
-> thanks,
-> 
->  - Joel
-
+>
+> > Maybe would make sense to put a nice comment in all similar cases.
+> > For instance:
+> >
+> >       rcu_read_unlock();
+> >  -    cond_resched();
+> >       rcu_read_lock();
+>
+>
