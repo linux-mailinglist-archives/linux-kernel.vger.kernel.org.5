@@ -2,232 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF227E562D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F265C7E562E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:26:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344578AbjKHMYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        id S1344555AbjKHM0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjKHMYs (ORCPT
+        with ESMTP id S229520AbjKHM0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:24:48 -0500
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23EE19A5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:24:46 -0800 (PST)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-45da062101bso2037894137.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 04:24:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699446286; x=1700051086; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MiOpIPoDsnfyvPjFEUKPnA5vH0+qMvf/QyeKJ8E4xVM=;
-        b=C6DBwYCUYhOICDmJwwKPPZ7lnR4189dBCGJhmYK0oRZD6hsixAGWX8k2afD4Kg33cr
-         TyfSMH+fXMocQmRqWN8LaubDEQwLCFiet3Z4Ds4ecd9Wzr6XQ7+Dsehy/SHnXsi+Pstl
-         tJmGSpjUmLsNmTFLJi6y9+CI8GQucPTj+8zApAgmST9h4m/t7vRiDyWxUGNtpSRzEIav
-         QMMs4e2KKefdAG4T/XsJFpgYPqkGpNFKxDsQvDJiypydtugV+3QNBSnAROSnMoYTapj3
-         jENE1bbFVf+qaG7QbTUEHHVnQLmZ6/blY390hiKcudhDTwh5erJev8Es74DGrLiGTQ3m
-         7CjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699446286; x=1700051086;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MiOpIPoDsnfyvPjFEUKPnA5vH0+qMvf/QyeKJ8E4xVM=;
-        b=v+r4FwBWnK/VD2nFpJA6tLP1lkctImBnWGaM3hwVzP+4iIimjw2RflhqjUT63AwfYc
-         76iynokEun7TzFY64vV1+UnosHXYhm5sfCOLuty5VVbzNWMgmC5EFhNiqIztt1ZFR/KO
-         W1z9D9/WsewZm130Qx+hS9cuQrqcs4/Cw3r+Z0pyUbYzs4ZmrpI91u3jOU1UIABXfQxC
-         mk9b0LCN42l40qjsFByLsdDYTrhuXdg11lL2xkcuztJS/0bLuzKrfZVotuPHEPINNG/t
-         GqRzC+hRkdF0IzowFdgxQOJ+Qgl4a+RW+gx8Ny6FoMkRpfgYbYD8ZtZ7tpO/6gjnk5Ul
-         8taA==
-X-Gm-Message-State: AOJu0YyW1lFgJCmn5LRexAZkU31iz/sWpulFLxXwMXA5zxRJDbPZAcad
-        Ktz2Yjs3st5m8Zp96fWnYoRyH8axyzUr/3O8gZqsoQ==
-X-Google-Smtp-Source: AGHT+IFd7GkvmqFIxpoIQDHg/JnC+ZA7xe9r52CaI9YuKxbc0XQzMnE2FSb0OyceIy1YEqOc/WAa0zrp6rTVMPZ+34g=
-X-Received: by 2002:a67:e09b:0:b0:45f:8b65:28f0 with SMTP id
- f27-20020a67e09b000000b0045f8b6528f0mr1389594vsl.12.1699446285778; Wed, 08
- Nov 2023 04:24:45 -0800 (PST)
+        Wed, 8 Nov 2023 07:26:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA1E19A5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:26:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01F02C433C8;
+        Wed,  8 Nov 2023 12:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699446378;
+        bh=IAfCCDkyoqMwRgNhZZHV9D9EdJkD+fp8NviqqTM9R0o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CWJaa7vP/INIn8Y/fc9tSougRzydXlE+zcbYQV/yVWuoIQQkU88oDF3J8rgluf1w4
+         o3Y918+q/6luxGdfVnKL98mUvhEGzRZCv9NCzm7LOQqwP4eGrGEAuRrJhr8w4qQuzz
+         XvnP2NewCKvmW3KIqU0IGZSmTDw3iyZDufsEVDwo+noFH9jRybMEhDc8SfVIUVvLns
+         kiqRu7dWltgp/UGQ9AAooKDDGL0NR87CUM+3MVSbIT2rxwZ1b2LtA2i7EUQZMwuyRj
+         ULyIpLI+kJU9MYwSuxO2ScQf+slsvZK3RJWFP1tbawO705pVaOCwjdMOa1ydyYB8Vf
+         coQGki1WJMKqQ==
+Date:   Wed, 8 Nov 2023 12:26:13 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: cache: qcom,llcc: correct QDU1000 reg
+ entries
+Message-ID: <20231108-hurricane-carefully-d9d3c1348f8c@spud>
+References: <20231107080436.16747-1-krzysztof.kozlowski@linaro.org>
+ <0f76a5c1-14ce-cbfa-bbd9-b2826c4bbbdb@quicinc.com>
 MIME-Version: 1.0
-References: <20231107202447.670990820@linuxfoundation.org>
-In-Reply-To: <20231107202447.670990820@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 8 Nov 2023 17:54:34 +0530
-Message-ID: <CA+G9fYuZj2SVDKszZMsqU9HFqxaHJyTs8B7FCbECa+jNG6=WOA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/91] 5.10.200-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3PXY0uOgYwGgqLR6"
+Content-Disposition: inline
+In-Reply-To: <0f76a5c1-14ce-cbfa-bbd9-b2826c4bbbdb@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023 at 01:55, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.200 release.
-> There are 91 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 09 Nov 2023 20:24:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.200-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
+--3PXY0uOgYwGgqLR6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Tue, Nov 07, 2023 at 02:25:25PM +0530, Mukesh Ojha wrote:
+>=20
+>=20
+> On 11/7/2023 1:34 PM, Krzysztof Kozlowski wrote:
+> > Qualcomm QDU1000 DTSI comes with one LLCC0 base address as pointed by
+> > dtbs_check:
+> >=20
+> >    qdu1000-idp.dtb: system-cache-controller@19200000: reg-names:2: 'llc=
+c2_base' was expected
+> >=20
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >=20
+> > ---
+> >=20
+> > Recent LLCC patches were not tested on QDU1000 thus the LLCC is there
+> > broken.  This patch at least tries to bring some sense according to
+> > DTSI, but I have no clue what is here correct: driver, DTS or bindings.
+> > ---
+> >   Documentation/devicetree/bindings/cache/qcom,llcc.yaml | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/cache/qcom,llcc.yaml b/D=
+ocumentation/devicetree/bindings/cache/qcom,llcc.yaml
+> > index 580f9a97ddf7..d610b0be262c 100644
+> > --- a/Documentation/devicetree/bindings/cache/qcom,llcc.yaml
+> > +++ b/Documentation/devicetree/bindings/cache/qcom,llcc.yaml
+> > @@ -64,6 +64,7 @@ allOf:
+> >           compatible:
+> >             contains:
+> >               enum:
+> > +              - qcom,qdu1000-llcc
+> >                 - qcom,sc7180-llcc
+> >                 - qcom,sm6350-llcc
+>=20
+> Thanks, again.
+>=20
+> Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I'm assuming given your employer, this ack means that there is no
+llcc2_base on the qdu1000.
 
-## Build
-* kernel: 5.10.200-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: c4863380dfbff55489d2e3ba476730a03f0f2376
-* git describe: v5.10.199-92-gc4863380dfbf
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.199-92-gc4863380dfbf
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-## Test Regressions (compared to v5.10.199)
+Cheers,
+Conor.
 
-## Metric Regressions (compared to v5.10.199)
+--3PXY0uOgYwGgqLR6
+Content-Type: application/pgp-signature; name="signature.asc"
 
-## Test Fixes (compared to v5.10.199)
+-----BEGIN PGP SIGNATURE-----
 
-## Metric Fixes (compared to v5.10.199)
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUt+ZQAKCRB4tDGHoIJi
+0u8iAP9Q5Ny4RSfKFakhQaf6p2q2ELHTZhnirexsH3kgpTx2xwEAgyelTaZCZv2D
+JaOhjbkF1boR3VmcF8YGORNiZXMeVAY=
+=L4Oy
+-----END PGP SIGNATURE-----
 
-## Test result summary
-total: 91328, pass: 72188, fail: 2160, skip: 16922, xfail: 58
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 117 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 25 total, 25 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 37 total, 37 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+--3PXY0uOgYwGgqLR6--
