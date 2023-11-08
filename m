@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B3E7E4F37
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2617E4F3A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbjKHC61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S1343896AbjKHC63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjKHC60 (ORCPT
+        with ESMTP id S235032AbjKHC61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:58:26 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B1210EC
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:58:24 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66fbcaf03c6so41940986d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 18:58:24 -0800 (PST)
+        Tue, 7 Nov 2023 21:58:27 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA5910FE
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:58:25 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-7788f513872so413282785a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 18:58:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1699412303; x=1700017103; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1699412304; x=1700017104; darn=vger.kernel.org;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=WmDd3a7XDaEOynqO0NdlMTkWs1KZhBdEsZhUk0mMIQE=;
-        b=gozgtdngxtn+MbVy0gkYYAOmxHWu3c0oKNXdvpW09Ur/8p8kE0cwBMEsKuVPNO63Ue
-         kW6kvff5n0seipXtUAATcm+Ep8LystjwIutFo9K4nflNDBOfFmxR+m7WFEXju/vudOuG
-         LclB2+GgiOG7hmAQwSSYIa9RrHHavVvNg7Bi0/KGm2leSM5s5wIhy0MjHNdjOB2g98K3
-         P5pToxapDKjKUoQ2bXGVHNPyjNEBAdc7IsgBeKnPUlHYel2gL5Ce25LHzg6sNb55GxTF
-         IBT0Eb6ERUe7BUzqG9GRlyrym6Svffv8Ag3mjvGP7nplq9QS8wXuXokWYiyiHILm9HAp
-         kQZg==
+        bh=nzWNvEllLOWjoieBIl2eE6QMomxBf/8hz+/afBXKkOM=;
+        b=BkG4zlNOe3dcnPJl63CCIj8LfPp3BOObHbuKDqblU1ZkP8hUf0HZ1/MtZ7wz16iwD3
+         BQKZNtBj7B+tTyarMlj+XXP4gtx1vfya1ulFtbvbk7NfyJ4B+tncXfLj1lvaSgJRt+3P
+         tMpu9wMww9kzk9mBb1DKFqRuDWSpMdUbAAJry1k1i08FbuyvpsVw9PbXNex4qOfFMbuK
+         uNypEmpVrerySWiaqj1E2HssadRmlpcfZ2Z1M10gdxpZMQvinPckqW4UdVy0Kvbb9HTi
+         qvVsHTX0wQQj7iAkZNi5Do7gBd5uo1aNglnXokLS/jyHuKDpRTF720VIuE0Z+W0cdPJH
+         Iy5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699412303; x=1700017103;
+        d=1e100.net; s=20230601; t=1699412304; x=1700017104;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WmDd3a7XDaEOynqO0NdlMTkWs1KZhBdEsZhUk0mMIQE=;
-        b=i/1WJoabejURqujmlX+qxL1hKVGeCdNXtUhESZrYGJ5m6U+oTkwRNPy48EaAeysHKr
-         qhJ3q9OvbH7Ct/SQvZheEPFBlsDXtnCRI5AmmR82y1iUbG/B4NLmIOFpTxBYHqXpyza9
-         5f1nVg9taAI6NDu24jh+OkgAbg03DabbkGsqSMrKm3SUnnCETTnidXwFyk77irfxzJa1
-         lUL5FkcJK/ZXzyvlPbfu2PW5pg7EQT3xlsCXuQFA1N0NWlyqbMgf8tMGHSMR5z0byEuh
-         QgYX/5R9Dq+G53iClnOQGfSssEveD8NQUywaWJxml4AvanhOQJjxgY0s7YS/gGw/ExiS
-         ByhA==
-X-Gm-Message-State: AOJu0YxcI1Ty0rZPbICdvsye6fNObtdlx5mxVKBlzxVy7/vj4SQKX8yi
-        eyNcugspbqhgewEfqsOfXOR2
-X-Google-Smtp-Source: AGHT+IEn+yudFEwDIL+DtxHIKeAQ7qYkzHdoISAe2kEAYnAEgQ/fq5NVbk9MaBpXm92ECYZTvdhL1g==
-X-Received: by 2002:ad4:5969:0:b0:672:ab2:d9ec with SMTP id eq9-20020ad45969000000b006720ab2d9ecmr693217qvb.28.1699412303363;
-        Tue, 07 Nov 2023 18:58:23 -0800 (PST)
+        bh=nzWNvEllLOWjoieBIl2eE6QMomxBf/8hz+/afBXKkOM=;
+        b=f4/UZu6KhGaUrifF8d8Xj1qZ9SUu2ru5FzVZ+NIexMWnNc7msX6ctEAUuLL5rKgjk7
+         PTGjXVVmJqSCd1080t+wY7C+vmvtP24hNZJbHxblKsyJVDki4JmmlX+Qj8ZG0jXqvkSD
+         VyB+7Q6c2CtZQ9T3me2VgQVAFyYKQolR9f5mPxsNDssSIAShzLLLX2quXUQ9crQvCoo0
+         9ZcJ8vLMsQqvd8Dpl8AdGvX9RZr9D5Cmsa9GxAxzFAYu+mdjrQTZD5r8EwIN7iQs1suk
+         bgF81d0ImmMyua5FLDxCTDvQ71HOYevjMwI9ZQ7wvxwvdui/FZdAarCg+0/b1WMgXv5a
+         DCdQ==
+X-Gm-Message-State: AOJu0YzfQHoD2MpdP9dYDgSgiK0ErvT9P4Se6Mb9dEN7pLjM/r8WaOib
+        tK9pSknvQNxwLMwXDMEOGeVQ
+X-Google-Smtp-Source: AGHT+IEKdmc2nsSq+Is+TUp8xhak7RVs7LNnJraNn4pxrM3/s0fMxmipRfQfJN5klC8msfrNiHUbNw==
+X-Received: by 2002:a05:620a:4591:b0:773:a9f7:eaf1 with SMTP id bp17-20020a05620a459100b00773a9f7eaf1mr528210qkb.21.1699412304264;
+        Tue, 07 Nov 2023 18:58:24 -0800 (PST)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id mh21-20020a056214565500b00641899958efsm579705qvb.130.2023.11.07.18.58.22
+        by smtp.gmail.com with ESMTPSA id r12-20020a05620a298c00b0077407e3d68asm559832qkp.111.2023.11.07.18.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 18:58:22 -0800 (PST)
-Date:   Tue, 07 Nov 2023 21:58:22 -0500
-Message-ID: <4ab327f80c4f98dffa5736a1acba3e0d.paul@paul-moore.com>
+        Tue, 07 Nov 2023 18:58:23 -0800 (PST)
+Date:   Tue, 07 Nov 2023 21:58:23 -0500
+Message-ID: <b25f34cd259322582cd1b927a9e50235.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
@@ -63,87 +63,105 @@ Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
         Matthew House <mattlloydhouse@gmail.com>,
         Florian Weimer <fweimer@redhat.com>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 4/6] add statmount(2) syscall
-References: <20231025140205.3586473-5-mszeredi@redhat.com>
-In-Reply-To: <20231025140205.3586473-5-mszeredi@redhat.com>
+Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
+References: <20231025140205.3586473-6-mszeredi@redhat.com>
+In-Reply-To: <20231025140205.3586473-6-mszeredi@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Oct 25, 2023 Miklos Szeredi <mszeredi@redhat.com> wrote:
 > 
-> Add a way to query attributes of a single mount instead of having to parse
-> the complete /proc/$PID/mountinfo, which might be huge.
+> Add way to query the children of a particular mount.  This is a more
+> flexible way to iterate the mount tree than having to parse the complete
+> /proc/self/mountinfo.
 > 
-> Lookup the mount the new 64bit mount ID.  If a mount needs to be queried
+> Allow listing either
+> 
+>  - immediate child mounts only, or
+> 
+>  - recursively all descendant mounts (depth first).
+> 
+> Lookup the mount by the new 64bit mount ID.  If a mount needs to be queried
 > based on path, then statx(2) can be used to first query the mount ID
 > belonging to the path.
 > 
-> Design is based on a suggestion by Linus:
+> Return an array of new (64bit) mount ID's.  Without privileges only mounts
+> are listed which are reachable from the task's root.
 > 
->   "So I'd suggest something that is very much like "statfsat()", which gets
->    a buffer and a length, and returns an extended "struct statfs" *AND*
->    just a string description at the end."
-> 
-> The interface closely mimics that of statx.
-> 
-> Handle ASCII attributes by appending after the end of the structure (as per
-> above suggestion).  Pointers to strings are stored in u64 members to make
-> the structure the same regardless of pointer size.  Strings are nul
-> terminated.
-> 
-> Link: https://lore.kernel.org/all/CAHk-=wh5YifP7hzKSbwJj94+DZ2czjrZsczy6GBimiogZws=rg@mail.gmail.com/
 > Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 > Reviewed-by: Ian Kent <raven@themaw.net>
 > ---
->  fs/namespace.c             | 277 +++++++++++++++++++++++++++++++++++++
->  include/linux/syscalls.h   |   5 +
->  include/uapi/linux/mount.h |  56 ++++++++
->  3 files changed, 338 insertions(+)
+>  fs/namespace.c             | 93 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/syscalls.h   |  3 ++
+>  include/uapi/linux/mount.h |  9 ++++
+>  3 files changed, 105 insertions(+)
 > 
 > diff --git a/fs/namespace.c b/fs/namespace.c
-> index 7a33ea391a02..a980c250a3a6 100644
+> index a980c250a3a6..0afe2344bba6 100644
 > --- a/fs/namespace.c
 > +++ b/fs/namespace.c
-
-...
-
-> +static int do_statmount(struct stmt_state *s)
+> @@ -4958,6 +4958,99 @@ SYSCALL_DEFINE4(statmount, const struct __mount_arg __user *, req,
+>  	return ret;
+>  }
+>  
+> +static struct mount *listmnt_first(struct mount *root)
 > +{
-> +	struct statmnt *sm = &s->sm;
-> +	struct mount *m = real_mount(s->mnt);
-> +	size_t copysize = min_t(size_t, s->bufsize, sizeof(*sm));
+> +	return list_first_entry_or_null(&root->mnt_mounts, struct mount, mnt_child);
+> +}
+> +
+> +static struct mount *listmnt_next(struct mount *curr, struct mount *root, bool recurse)
+> +{
+> +	if (recurse)
+> +		return next_mnt(curr, root);
+> +	if (!list_is_head(curr->mnt_child.next, &root->mnt_mounts))
+> +		return list_next_entry(curr, mnt_child);
+> +	return NULL;
+> +}
+> +
+> +static long do_listmount(struct vfsmount *mnt, u64 __user *buf, size_t bufsize,
+> +			 const struct path *root, unsigned int flags)
+> +{
+> +	struct mount *r, *m = real_mount(mnt);
+> +	struct path rootmnt = {
+> +		.mnt = root->mnt,
+> +		.dentry = root->mnt->mnt_root
+> +	};
+> +	long ctr = 0;
+> +	bool reachable_only = true;
+> +	bool recurse = flags & LISTMOUNT_RECURSIVE;
 > +	int err;
 > +
-> +	err = security_sb_statfs(s->mnt->mnt_root);
+> +	err = security_sb_statfs(mnt->mnt_root);
 > +	if (err)
 > +		return err;
 > +
-> +	if (!capable(CAP_SYS_ADMIN) &&
-> +	    !is_path_reachable(m, m->mnt.mnt_root, &s->root))
-> +		return -EPERM;
+> +	if (flags & LISTMOUNT_UNREACHABLE) {
+> +		if (!capable(CAP_SYS_ADMIN))
+> +			return -EPERM;
+> +		reachable_only = false;
+> +	}
 
-In order to be consistent with our typical access control ordering,
-please move the security_sb_statfs() call down to here, after the
-capability checks.
+Similar to my comment in patch 4/6, please move the LSM call after the
+capability check.
 
-> +	stmt_numeric(s, STMT_SB_BASIC, stmt_sb_basic);
-> +	stmt_numeric(s, STMT_MNT_BASIC, stmt_mnt_basic);
-> +	stmt_numeric(s, STMT_PROPAGATE_FROM, stmt_propagate_from);
-> +	stmt_string(s, STMT_FS_TYPE, stmt_fs_type, &sm->fs_type);
-> +	stmt_string(s, STMT_MNT_ROOT, stmt_mnt_root, &sm->mnt_root);
-> +	stmt_string(s, STMT_MNT_POINT, stmt_mnt_point, &sm->mnt_point);
+> +	if (reachable_only && !is_path_reachable(m, mnt->mnt_root, &rootmnt))
+> +		return capable(CAP_SYS_ADMIN) ? 0 : -EPERM;
 > +
-> +	if (s->err)
-> +		return s->err;
+> +	for (r = listmnt_first(m); r; r = listmnt_next(r, m, recurse)) {
+> +		if (reachable_only &&
+> +		    !is_path_reachable(r, r->mnt.mnt_root, root))
+> +			continue;
 > +
-> +	/* Return the number of bytes copied to the buffer */
-> +	sm->size = copysize + s->pos;
-> +
-> +	if (copy_to_user(s->buf, sm, copysize))
-> +		return -EFAULT;
-> +
-> +	return 0;
+> +		if (ctr >= bufsize)
+> +			return -EOVERFLOW;
+> +		if (put_user(r->mnt_id_unique, buf + ctr))
+> +			return -EFAULT;
+> +		ctr++;
+> +		if (ctr < 0)
+> +			return -ERANGE;
+> +	}
+> +	return ctr;
 > +}
 
 --
