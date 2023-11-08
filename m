@@ -2,41 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 188BA7E5605
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5267E5606
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbjKHMQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:16:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        id S1344296AbjKHMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHMQM (ORCPT
+        with ESMTP id S231696AbjKHMQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:16:12 -0500
-Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D658B1BE8
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:16:09 -0800 (PST)
-Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id D10539DAF;
-        Wed,  8 Nov 2023 14:16:06 +0200 (EET)
-Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
-        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id ADE729DAE;
-        Wed,  8 Nov 2023 14:16:06 +0200 (EET)
-Received: from ja.ssi.bg (unknown [213.16.62.126])
-        by ink.ssi.bg (Postfix) with ESMTPSA id 88EDA3C0435;
-        Wed,  8 Nov 2023 14:15:47 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
-        t=1699445752; bh=5kNA2HkWJxRHfepizP/TtO0jMzvdoMXBRNQU3AzLFWQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References;
-        b=j6kgrfQx3GupUvw4PE6I5VuJ2Bluj/hWn4oJ2DFeMNVykVWlJ7EAtZDz35EF215Yv
-         F+inDYsAp7u+xSV79P6MDGBAVFBf1k880pzyR00upfIzZn716JcqvNfE+Nz/HynRdT
-         xkopQWlfLjo2QR6iiKrbIZ7v7/dqlvy8uOY81Vcc=
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 3A8CFZqh016691;
-        Wed, 8 Nov 2023 14:15:36 +0200
-Date:   Wed, 8 Nov 2023 14:15:35 +0200 (EET)
-From:   Julian Anastasov <ja@ssi.bg>
+        Wed, 8 Nov 2023 07:16:35 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66B1BE4
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:16:33 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so13490a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 04:16:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699445791; x=1700050591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Eih6T1QKUdzbWftoLZKbxzh3vZlf5WfPj/69P8AwcBM=;
+        b=RuzCe10drsIdC9ejr4s+AxkC8YZXhoStz/bBWvA6sUIeMc3nwZ+/neh3U9tfA41Igj
+         yXG1F9iNbxkqo54I0gthKfx/o9EqEPhHWickw14KQpR/pSNsmxqLGtDEpnwhrjrHJkwv
+         hWEUdcgTW81Gip/zY1zZRlveAngQscXZBG1QC23U2CpQJuHcOodXeyjcbBUEdUGWLKwz
+         sUCyM9zuSpXab2qV/aCOHhdmbl1oBQ3llV8d36HMxzKrfatl4BvTGqzzf7MbKdaYaJa9
+         RPmu8z2qTW0WfZeJlXwXDZF/uOTq/ETeSEYDBfWinJI8XTc4ZkEBPRnBqADeeB5zZk0P
+         OpGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699445791; x=1700050591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Eih6T1QKUdzbWftoLZKbxzh3vZlf5WfPj/69P8AwcBM=;
+        b=GW/Ufwan0tyeO99n/x9F4nZ6VftjvcYnmmpYkuKtFdiB7X1gaN27oaPdfxi+caoxr5
+         gk/ZTDC3uPKm/LZa+6FJksZydDwi9UU+0TTwB1nJ2WAEe+KirU659Me7Tbaczn4rCWLU
+         phGyhBSE9rpiq/0Ax1JWgHnuuCAkZRF+yLvxXRBEZG1JJ0YxRpf8o+DuglAvyXwFCONG
+         olLvyTTS7kWKrrpr8FycUA+T9wFd3LSWVI/ndBnpuZ2m8GI1CRTEMmMoHEC6lY0XLqzV
+         jI1J2kokPlJWfXtJJDNpB2X7c0BvqLuxrd097WG9JjUY6gfNDnVsjCNnDYVsYLrP9ZGE
+         Hfxw==
+X-Gm-Message-State: AOJu0YytPd6YPsr4mcquui3FWmtw6QzU/GQWe0ZCLvp/IwnXD+boE/SF
+        ChGqd6QzBd/wc/NDiuu4lv1yk3AdF7EVPevA+c3WcA==
+X-Google-Smtp-Source: AGHT+IFBqcWVcXbeWVdYU+5QWKDwce1Q7jwMeN9FTTGoz3Sj6+w3rpciGJdvCu5o5z1HqGkOlbvdLWc23EcpzzPGbLI=
+X-Received: by 2002:aa7:d281:0:b0:545:3a48:ebab with SMTP id
+ w1-20020aa7d281000000b005453a48ebabmr26889edq.5.1699445791385; Wed, 08 Nov
+ 2023 04:16:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com> <20231107230822.371443-23-ankur.a.arora@oracle.com>
+In-Reply-To: <20231107230822.371443-23-ankur.a.arora@oracle.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 8 Nov 2023 13:16:17 +0100
+Message-ID: <CANn89i+b3=N1gT7rrrxU+zOMN_VzzHjyYW=TeE5AMSoKcdLvyg@mail.gmail.com>
+Subject: Re: [RFC PATCH 79/86] treewide: net: remove cond_resched()
 To:     Ankur Arora <ankur.a.arora@oracle.com>
-cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
         peterz@infradead.org, torvalds@linux-foundation.org,
         paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
         akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
@@ -50,57 +70,97 @@ cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
         geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
         anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
-In-Reply-To: <20231107215742.363031-48-ankur.a.arora@oracle.com>
-Message-ID: <ed7c9c16-1f66-4c96-e532-ae74e52c270b@ssi.bg>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com> <20231107215742.363031-48-ankur.a.arora@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+        Marek Lindner <mareklindner@neomailbox.ch>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
+        Antonio Quartulli <a@unstable.cc>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        David Ahern <dsahern@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Matthieu Baerts <matttbe@kernel.org>,
+        Mat Martineau <martineau@kernel.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Martin Schiller <ms@dev.tdt.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 8, 2023 at 12:09=E2=80=AFAM Ankur Arora <ankur.a.arora@oracle.c=
+om> wrote:
+>
+> There are broadly three sets of uses of cond_resched():
+>
+> 1.  Calls to cond_resched() out of the goodness of our heart,
+>     otherwise known as avoiding lockup splats.
+>
+> 2.  Open coded variants of cond_resched_lock() which call
+>     cond_resched().
+>
+> 3.  Retry or error handling loops, where cond_resched() is used as a
+>     quick alternative to spinning in a tight-loop.
+>
+> When running under a full preemption model, the cond_resched() reduces
+> to a NOP (not even a barrier) so removing it obviously cannot matter.
+>
+> But considering only voluntary preemption models (for say code that
+> has been mostly tested under those), for set-1 and set-2 the
+> scheduler can now preempt kernel tasks running beyond their time
+> quanta anywhere they are preemptible() [1]. Which removes any need
+> for these explicitly placed scheduling points.
 
-	Hello,
+What about RCU callbacks ? cond_resched() was helping a bit.
 
-On Tue, 7 Nov 2023, Ankur Arora wrote:
+>
+> The cond_resched() calls in set-3 are a little more difficult.
+> To start with, given it's NOP character under full preemption, it
+> never actually saved us from a tight loop.
+> With voluntary preemption, it's not a NOP, but it might as well be --
+> for most workloads the scheduler does not have an interminable supply
+> of runnable tasks on the runqueue.
+>
+> So, cond_resched() is useful to not get softlockup splats, but not
+> terribly good for error handling. Ideally, these should be replaced
+> with some kind of timed or event wait.
+> For now we use cond_resched_stall(), which tries to schedule if
+> possible, and executes a cpu_relax() if not.
+>
+> Most of the uses here are in set-1 (some right after we give up a
+> lock or enable bottom-halves, causing an explicit preemption check.)
+>
+> We can remove all of them.
 
-> With PREEMPTION being always-on, some configurations might prefer
-> the stronger forward-progress guarantees provided by PREEMPT_RCU=n
-> as compared to PREEMPT_RCU=y.
-> 
-> So, select PREEMPT_RCU=n for PREEMPT_VOLUNTARY and PREEMPT_NONE and
-> enabling PREEMPT_RCU=y for PREEMPT or PREEMPT_RT.
-> 
-> Note that the preemption model can be changed at runtime (modulo
-> configurations with ARCH_NO_PREEMPT), but the RCU configuration
-> is statically compiled.
-> 
-> Cc: Simon Horman <horms@verge.net.au>
-> Cc: Julian Anastasov <ja@ssi.bg>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> 
-> ---
-> CC-note: Paul had flagged some code that might be impacted
-> with the proposed RCU changes:
-> 
-> 1. My guess is that the IPVS_EST_TICK_CHAINS heuristic remains
->    unchanged, but I must defer to the include/net/ip_vs.h people.
+A patch series of 86 is not reasonable.
 
-	Yes, IPVS_EST_TICK_CHAINS depends on the rcu_read_unlock()
-and rcu_read_lock() calls in cond_resched_rcu(), so just removing
-the cond_resched() call there is ok for us. Same for the other
-cond_resched() calls in ipvs/
+596 files changed, 881 insertions(+), 2813 deletions(-)
 
-Regards
+If really cond_resched() becomes a nop (Nice !) ,
+make this at the definition of cond_resched(),
+and add there nice debugging.
 
---
-Julian Anastasov <ja@ssi.bg>
+Whoever needs to call a "real" cond_resched(), could call a
+cond_resched_for_real()
+(Please change the name, this is only to make a point)
 
+Then let the removal happen whenever each maintainer decides, 6 months
+later, without polluting lkml.
+
+Imagine we have to revert this series in 1 month, how painful this
+would be had we removed
+~1400 cond_resched() calls all over the place, with many conflicts.
+
+Thanks
