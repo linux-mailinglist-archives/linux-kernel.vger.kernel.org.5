@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F39377E5852
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451557E585E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjKHOGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:06:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        id S232220AbjKHOKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:10:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjKHOGx (ORCPT
+        with ESMTP id S231676AbjKHOKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:06:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65CF1BEF;
-        Wed,  8 Nov 2023 06:06:50 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E884C21941;
-        Wed,  8 Nov 2023 14:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699452408; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LaClYnaw6igUxX7esICB56ZTaW9lZv4RiLl36XDtkh8=;
-        b=CTsg3fLLzBHl2568mWukL8T40aLJF31TtuAhYR2Jcpfw/k32BffM1bMFFvdei6L2mS4B5g
-        cTnaeoB1LPbVjfBLO7WedjjyNuiUnin5QykKZyH9JGPnRS8i7GqRAvMGikKGEYK1a0NpWD
-        tjCqQvf45TTzHllizF6QAnVTW+wCqFo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5233133F5;
-        Wed,  8 Nov 2023 14:06:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id uvYvLfiVS2U7XAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 08 Nov 2023 14:06:48 +0000
-Date:   Wed, 8 Nov 2023 15:06:47 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-ID: <ZUuV9xOZ5k7Ia_V2@tiehlicka>
-References: <20231108065818.19932-1-link@vivo.com>
+        Wed, 8 Nov 2023 09:10:33 -0500
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23EC81BF9;
+        Wed,  8 Nov 2023 06:10:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699452630; x=1730988630;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   subject:from:to:cc:references:in-reply-to;
+  bh=MFQWqbJrx3q4UkY+AjnTnmXALeaOK7/a+F2/vcRtMtA=;
+  b=J1PLexpsx/77udTFv1760Z8EnhF07k3kqFn99pRsOHD9/GvqdSGc8zZF
+   QxKLUASBnr1Qt8u7Dd3mMDo1TsQ2jpGut9fwHNUFTZTxY+Rt0zOcSaFMi
+   z+QAEv89k5D1aHNHlDwkSrC4LyjZ0nsb0gtbR97IsuImkNqFu96TRjEOm
+   g=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="366846401"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-189d700f.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 14:10:27 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+        by email-inbound-relay-pdx-2b-m6i4x-189d700f.us-west-2.amazon.com (Postfix) with ESMTPS id 06AFE40BB6;
+        Wed,  8 Nov 2023 14:10:25 +0000 (UTC)
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.10.100:25152]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.10.247:2525] with esmtp (Farcaster)
+ id f28800e5-7aba-421e-8c7f-cbf093c0af36; Wed, 8 Nov 2023 14:10:24 +0000 (UTC)
+X-Farcaster-Flow-ID: f28800e5-7aba-421e-8c7f-cbf093c0af36
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 14:10:24 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 14:10:19 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231108065818.19932-1-link@vivo.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 8 Nov 2023 14:10:16 +0000
+Message-ID: <CWTHOA1Z96FB.16IGGD2MN12OS@amazon.com>
+Subject: Re: [RFC 05/33] KVM: x86: hyper-v: Introduce VTL call/return
+ prologues in hypercall page
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Alexander Graf <graf@amazon.com>, <kvm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-6-nsaenz@amazon.com>
+ <5fcefdf3-d1ff-4244-8b58-1da0cd7e4a4f@amazon.com>
+In-Reply-To: <5fcefdf3-d1ff-4244-8b58-1da0cd7e4a4f@amazon.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D031UWA004.ant.amazon.com (10.13.139.19) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 08-11-23 14:58:11, Huan Yang wrote:
-> In some cases, we need to selectively reclaim file pages or anonymous
-> pages in an unbalanced manner.
-> 
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages.
+On Wed Nov 8, 2023 at 11:53 AM UTC, Alexander Graf wrote:
 
-Could you explain why? And also why do you need to swap out in that
-case?
- 
-> This patchset extends the proactive reclaim interface to achieve
-> unbalanced reclamation. Users can control the reclamation tendency by
-> inputting swappiness under the original interface. Specifically, users
-> can input special values to extremely reclaim specific pages.
+[...]
 
-Other have already touched on this in other replies but v2 doesn't have
-a per-memcg swappiness
+> > @@ -285,6 +286,81 @@ static int patch_hypercall_page(struct kvm_vcpu *v=
+cpu, u64 data)
+> >   	/* ret */
+> >   	((unsigned char *)instructions)[i++] =3D 0xc3;
+> >  =20
+> > +	/* VTL call/return entries */
+> > +	if (!kvm_xen_hypercall_enabled(kvm) && kvm_hv_vsm_enabled(kvm)) {
+>
+>
+> You don't introduce kvm_hv_vsm_enabled() before. Please do a quick test=
+=20
+> build of all individual commits of your patch set for v1 :).
 
-> Example:
->   	echo "1G" 200 > memory.reclaim (only reclaim anon)
-> 	  echo "1G" 0  > memory.reclaim (only reclaim file)
-> 	  echo "1G" 1  > memory.reclaim (only reclaim file)
-> 
-> Note that when performing unbalanced reclamation, the cgroup swappiness
-> will be temporarily adjusted dynamically to the input value. Therefore,
-> if the cgroup swappiness is further modified during runtime, there may
-> be some errors.
+Yes, sorry for that. This happens for a couple of helpers, I'll fix it.
 
-In general this is a bad semantic. The operation shouldn't have side
-effect that are potentially visible for another operation.
--- 
-Michal Hocko
-SUSE Labs
+> Why do you need the ifdef here? is_long_mode() already has an ifdef that=
+=20
+> will always return false for is_64_bit_mode() on 32bit hosts.
+
+Noted, will remove.
+
+> > +		if (is_64_bit_mode(vcpu)) {
+> > +			/*
+> > +			 * VTL call 64-bit entry prologue:
+> > +			 * 	mov %rcx, %rax
+> > +			 * 	mov $0x11, %ecx
+> > +			 * 	jmp 0:
+> > +			 */
+> > +			hv->vsm_code_page_offsets.vtl_call_offset =3D i;
+> > +			instructions[i++] =3D 0x48;
+> > +			instructions[i++] =3D 0x89;
+> > +			instructions[i++] =3D 0xc8;
+> > +			instructions[i++] =3D 0xb9;
+> > +			instructions[i++] =3D 0x11;
+> > +			instructions[i++] =3D 0x00;
+> > +			instructions[i++] =3D 0x00;
+> > +			instructions[i++] =3D 0x00;
+> > +			instructions[i++] =3D 0xeb;
+> > +			instructions[i++] =3D 0xe0;
+>
+>
+> I think it would be a lot easier to read (because it's denser) if you=20
+> move the opcodes into a character array:
+>
+> char vtl_entry[] =3D { 0x48, 0x89, 0xc8, 0xb9, 0x11, 0x00, 0x00, 0x00.=20
+> 0xeb, 0xe0 };
+>
+> and then just memcpy().
+
+Works for me, I'll rework it.
+
+Nicolas
