@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02007E590C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD417E5917
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbjKHOdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56914 "EHLO
+        id S233462AbjKHOeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjKHOdV (ORCPT
+        with ESMTP id S1344607AbjKHOeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:33:21 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F621BC3;
-        Wed,  8 Nov 2023 06:33:19 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8EQjYw007176;
-        Wed, 8 Nov 2023 14:32:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=iVZQPSQlxOZFIinRyegJybgwuwvN5FJQ3+IaimML/+c=;
- b=OaHcGP0XZ+RG1HLCUOqf7lBEOcDfpbxjSbna+bem7P7/V7o6EGEkwbj+RlV9UBSxQ8j1
- k5IoWHAfjjqI/ER5X39hB+DuJa4krjJgKmqbJ3Eif1w1zLzrbxwAoKzrRAbP4cIKVAuJ
- ZBx7qY/tlJGsT1zpgPnuikHjF0kWN2dwaJhUY2ukge3BVUyY0xj9C2NWLiIcLP0DwZKr
- EL0sKkSZGIsOglQkb0QalgVlZ1CMZ2PW6NH9w5l61uWa/ExObiIuTfRYmNv1j/nn2dEt
- FLOqV88cPAvDi2meaMX0hnCpfCKtOzPO5PD16TZ2aezI7Uu6qhHTsckPMrCtUeui/bUG zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8bvw0m40-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 14:32:36 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8ERb35010952;
-        Wed, 8 Nov 2023 14:32:36 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8bvw0m38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 14:32:36 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8E937K019252;
-        Wed, 8 Nov 2023 14:32:35 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w23waa8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 14:32:35 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8EWWRt35848650
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 14:32:32 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C0312004B;
-        Wed,  8 Nov 2023 14:32:32 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 246B920040;
-        Wed,  8 Nov 2023 14:32:32 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 14:32:32 +0000 (GMT)
-Date:   Wed, 8 Nov 2023 15:32:30 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Cc:     Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Message-ID: <20231108153230.6491acaa.pasic@linux.ibm.com>
-In-Reply-To: <41c0baf6-ba4d-4876-b692-279307265466@huawei-partners.com>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
-        <20231103195949.0af884d0@meshulam.tesarici.cz>
-        <20231108115207.791a30d8.pasic@linux.ibm.com>
-        <41c0baf6-ba4d-4876-b692-279307265466@huawei-partners.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 8 Nov 2023 09:34:01 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B831BC3
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:33:59 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso9463784e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:33:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699454037; x=1700058837; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YcULZ9PGcbiz4pOSYdWqK1KBS4j8l5GIDZ+NaSWycPw=;
+        b=zvKBXC5mGb15nr6GNShso8tgMsgpfhx1kHY/rv2v7yVw3RJwDRmTQiDu6WQ+j4UY5N
+         j1AG0Pd4DRPcJjypqJk9r2zsve8IWmNDYFjoZhawTw2V0ubnmZWtv8eyCbHRjl+WrGz4
+         lZmy5tYqAF/2nueJ4Qz41Mnpk0rYl/NqWHtYjCE9pkmCMrtTEc8afZes4/J/W1wbpD54
+         D6sgIzOL/yFlDDWQJiwlaUsuwKvwi8NquNGbkfyWioKEgQ7kE2NVb34MP+J5ExOwiTQX
+         3aj6BoDaJMos1dj8rO8Udy4BAIkUolOrr4SnZsawG12kSfUeiutzGnSGrUSH9cyluPSC
+         4fTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699454037; x=1700058837;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YcULZ9PGcbiz4pOSYdWqK1KBS4j8l5GIDZ+NaSWycPw=;
+        b=KyXjMr+0x5l6+ni9irblMVayVFV71OLVBG0ygCFaBUEgzEI9iu2EeZpBR/2QclPdTQ
+         p7ghdIxa5mYmBS/nWLxI8HMQmVaRCulxiptfh5PMHXiqpFJyJJmmuiTSoPTsZRaeIqyq
+         EmxTx/bxUjcMfT1izblBcGlrD/El7wzE5gx1Pb7UJtLjfwVk/1uIq5iVn30PxLFz0Z5x
+         n1ZZcsiFcbZ/lf/8SovaqfNvhPO+X17+JlW+lXmv3SXvG+DcoESlRewy8VMLHLc8lzhn
+         Xgv2nhFG0IOJVoLWBmhvIW6Cw1SOxUtBz7qyQh2is88vsfjHd9UcgZpgxKTzrpc197eU
+         TmSQ==
+X-Gm-Message-State: AOJu0YyS76o3x7449WHI3G6+u3MP0vcCvPYcG5tlyuDPsugoqT+3/vAe
+        NZkVhsLOp9acdDY3YEz4WMIObg==
+X-Google-Smtp-Source: AGHT+IHfdWgUd7peX98jM5hIRx+rFXqSbrGst/IoGRVbU4s1SKmlHEwnM062t9jx1mAFjSR1p5D80Q==
+X-Received: by 2002:a05:6512:31d0:b0:509:2b81:fc40 with SMTP id j16-20020a05651231d000b005092b81fc40mr1835669lfe.9.1699454037158;
+        Wed, 08 Nov 2023 06:33:57 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id q10-20020ac24a6a000000b00507a3b8b007sm686773lfp.110.2023.11.08.06.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 06:33:56 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/6] Fix polarity and bindings for GPIO-based NAND drivers
+Date:   Wed, 08 Nov 2023 15:33:48 +0100
+Message-Id: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7hWnKvoaWTdQirWACccrbSjT6L0jMbwT
-X-Proofpoint-ORIG-GUID: T6ZtTqmIdT7xJV2AKSQwEDoIWxM12PPM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_03,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- impostorscore=0 malwarescore=0 spamscore=0 bulkscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=805 mlxscore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311080120
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEycS2UC/x2MQQqAIBAAvyJ7bkGtoPpKdDBdaw+ZKEQg/j3pO
+ DAzBTIlpgyLKJDo4cx3aKA6AfY04SBk1xi01L1SckTPL14cMwYTHNpZ0e4m6c3goTUxURP+37r
+ V+gEN+7w/XwAAAA==
+To:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Howard Harte <hharte@magicandroidapps.com>
+X-Mailer: b4 0.12.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023 12:04:12 +0100
-Petr Tesarik <petr.tesarik1@huawei-partners.com> wrote:
-[..]
-> > 
-> > For the sake of simplicity let us assume we only have the min_align_mask
-> > requirement. Then I believe the worst case is that we need 
-> > (orig_addr & min_align_mask & PAGE_MASK)  + (min_align_mask & ~PAGE_MASK)
-> > extra space to fit.
-> > 
-> > Depending on how the semantics pan out one may be able to replace
-> > min_align_mask with combined_mask.
-> > 
-> > Is your point that for large combined_mask values 
-> > _get_free_pages(GFP_NOWAIT | __GFP_NOWARN, required_order) is not
-> > likely to complete successfully?  
-> 
-> Yes, that's the reason. OTOH it's probably worth a try. The point is
-> that mapping a DMA buffer is allowed to fail, so callers should be
-> prepared anyway.
-> 
-> And for the case you reported initially, I don't think there is any need
-> to preserve bit 11 (0x800) from the original buffer's physical address,
-> which is enough to fix it. See also my other email earlier today.
+The AMD Delta and generic GPIO-based NAND drivers are using GPIO lines
+extensively to communicate with a raw NAND flash.
 
-Hm. Do you mean "[PATCH 1/1] swiotlb: fix out-of-bounds TLB allocations
-with CONFIG_SWIOTLB_DYNAMIC" or a different one?
+Some confusion has crept into the naming leading to the two drivers using
+inversed semantics differently for pins with the same name.
 
-I only see "[PATCH 1/1] swiotlb: fix out-of-bounds TLB allocations
-with CONFIG_SWIOTLB_DYNAMIC" but I don't think that one takes
-care of "I don't think there is any need to preserve bit 11 (0x800)
-from the original buffer's physical address". But it should take care of
-the corruption, I agree with that. I hope to provide review for that
-patch by the end of the day.
+Fix the situation by naming the pins consistently without any inversion
+names (such as nce for a negative active chip enable).
 
-Regards,
-Halil
+Fix up all in-tree users.
 
+Next rewrite the device tree bindings in YAML schema, and fix up the
+single in-tree DTS file (MIPS) to use the new bindings where each signal
+is specified explicitly instead of an array with some "blanks" for unused
+lines.
 
+Last clean up the GPIO NAND driver to drop use of board file provided
+data as no boards using this remain, and use device properties removing
+the explicit reliance on device tree.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (6):
+      mtd: rawnand: ams-delta/gpio: Unify polarity
+      dt-bindings: mtd: Rewrite gpio-control-nand in schema
+      MIPS: NI 169445: Fix NAND GPIOs
+      mtd: rawnand: gpio: Use device properties
+      mtd: rawnand: gpio: Support standard nand width
+      mtd: rawnand: gpio: Rename file
+
+ .../devicetree/bindings/mtd/gpio-control-nand.txt  |  47 ------
+ .../devicetree/bindings/mtd/gpio-control-nand.yaml | 168 +++++++++++++++++++++
+ Documentation/devicetree/bindings/mtd/mtd.yaml     |   2 +-
+ arch/arm/mach-omap1/board-ams-delta.c              |   8 +-
+ arch/mips/boot/dts/ni/169445.dts                   |  13 +-
+ drivers/mtd/nand/raw/Makefile                      |   2 +-
+ drivers/mtd/nand/raw/ams-delta.c                   |  60 ++++----
+ drivers/mtd/nand/raw/{gpio.c => nand-gpio.c}       | 120 +++++----------
+ 8 files changed, 251 insertions(+), 169 deletions(-)
+---
+base-commit: be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+change-id: 20231105-fix-mips-nand-c91ebd80fa4f
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
