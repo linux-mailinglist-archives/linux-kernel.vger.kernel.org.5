@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE3A7E5B7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088CD7E5B82
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjKHQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        id S230082AbjKHQkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbjKHQjJ (ORCPT
+        with ESMTP id S229579AbjKHQkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:39:09 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11A21FEF;
-        Wed,  8 Nov 2023 08:39:06 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DD42220009;
-        Wed,  8 Nov 2023 16:39:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699461545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O38TB7h/YzOAey2sGfW287IT4IVL6B3BrPOAPkm8UIo=;
-        b=V+Gj4tCz2OotO94/nfO+PTY03jVAVfgYrInWDpHBYMhfYcj7EdxHL3059WLbcYcI8gDY2W
-        sHl3PT1xYIHp5ep17a6wr+IJ4MJvBGxAkOQMQ7PkXMQdufytaGyd2pK/2N3hY+VgHGXmcK
-        pH5mxjIyJBjPqEYEmIZsMq5kp6XT1Q6cZ82AFByJNN8lo2vjIxaCJIkm5fbwgLdMbGLE1v
-        1YP4NlrKQvTFjtkvoeJcRJ6IPVuyPQXFokova8p6+0FFYryGHB+FG0L6XtMeOZaTFC6qb7
-        tzguKKquTrIrlzbjzOIEqey5ooTnMrrgci2dfkxcw4wO2IikK4ZQMtzmz4LZQw==
-From:   Mehdi Djait <mehdi.djait@bootlin.com>
-To:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
-        paul.kocialkowski@bootlin.com, michael.riesch@wolfvision.net,
-        Mehdi Djait <mehdi.djait@bootlin.com>
-Subject: [PATCH v10 3/3] arm64: dts: rockchip: Add the camera interface
-Date:   Wed,  8 Nov 2023 17:38:58 +0100
-Message-ID: <1636a0cdf39b711cead6f8815588fe720c44ed1d.1699460637.git.mehdi.djait@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1699460637.git.mehdi.djait@bootlin.com>
-References: <cover.1699460637.git.mehdi.djait@bootlin.com>
+        Wed, 8 Nov 2023 11:40:17 -0500
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698891BFA;
+        Wed,  8 Nov 2023 08:40:15 -0800 (PST)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b5aee410f2so1605585b6e.1;
+        Wed, 08 Nov 2023 08:40:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699461614; x=1700066414;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ssuYxHfN9GAnFK7fIA31znw/q0iB6aLpzguCXmB/ycM=;
+        b=UO742Jwt9di7z6jW99hOFKYH7KvCdVo/Js6ecvILRRY8gBTI+FYorMeu37YXZKRqmT
+         IPt+4EDOSly1H1yWz1Rvm0W6T8aMtU/qb0c9mpXsQy85d6fp/rRZXReHYCk2celRqLHN
+         nZlvhqGcS6S6/TYR1R7mhIkJMs9mMQVnAUSN0yFQuevNZirVTLfg648JKcqbSWMeP4am
+         9LAQl+2D7hVbKEGzzmYd9BsKCLtPKBiZ9ejimivFuvgMtoZEHeLFHczwJqsIbn1RoozD
+         qV78cJrywDIuDxa35D7x6F4L8zLe9vRzTrzMTGwMRaM4OimAKXVs6qFCi+/Vr4Dbov5E
+         j1hQ==
+X-Gm-Message-State: AOJu0YwbGC40gP4Rb2ZyqMpzYuvTnvHBnmrILY284PPaUWp/W6AWoAa/
+        wSD11hoDrmeZjo8HNdhwpg==
+X-Google-Smtp-Source: AGHT+IGXYQ4NWuhknPwkgNGSEQUWD6c5qRqqAmhMQTB6tTEvVpofwZw28IPC+YMCrYLivbXk6k+J5g==
+X-Received: by 2002:aca:905:0:b0:3af:26e3:92e with SMTP id 5-20020aca0905000000b003af26e3092emr2345076oij.28.1699461614688;
+        Wed, 08 Nov 2023 08:40:14 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bk31-20020a0568081a1f00b003a7a34a4ed8sm1940758oib.33.2023.11.08.08.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 08:40:14 -0800 (PST)
+Received: (nullmailer pid 2362820 invoked by uid 1000);
+        Wed, 08 Nov 2023 16:40:12 -0000
+Date:   Wed, 8 Nov 2023 10:40:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Julius Werner <jwerner@chromium.org>,
+        Evan Benn <evanbenn@chromium.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Justin Chen <justinpopo6@gmail.com>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jamie Iles <jamie@jamieiles.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+Subject: Re: [PATCH 1/2] dt-bindings: watchdog: re-order entries to match
+ coding convention
+Message-ID: <20231108164012.GA2336524-robh@kernel.org>
+References: <20231105184154.43700-1-krzysztof.kozlowski@linaro.org>
+ <300293570c0d29d5d4a39762121b5bef@milecki.pl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: mehdi.djait@bootlin.com
+In-Reply-To: <300293570c0d29d5d4a39762121b5bef@milecki.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PX30 has a video capture component, supporting the BT.656
-parallel interface. Add a DT description for it.
+On Mon, Nov 06, 2023 at 09:10:44AM +0100, Rafał Miłecki wrote:
+> On 2023-11-05 19:41, Krzysztof Kozlowski wrote:
+> > The Devicetree bindings coding convention, as used in most of the files
+> > and expressed in Documentation/devicetree/bindings/example-schema.yaml,
+> > expects:
+> > 1. "allOf:" block just before "properties:" (or after "required:" for
+> >    more complex cases),
+> > 2. additionalProperties/unevaluatedProperties at the end of the file,
+> >    just before the examples section.
+> > 
+> > Re-order few schemas to match the convention to avoid repeating review
+> > comments for new patches using existing code as template.  No functional
+> > changes.
+> 
+> It's surely going to help a bit but for a long time solution maybe you
+> could consider adding proper check to Rob's bot and/or checkpatch.pl.
 
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
----
- arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+I have such a check I wrote long ago. tools/yaml-format in dtschema. It 
+just does a ruamel read and write back out so you get exactly how ruamel 
+is configured or defaults to for things not configurable. Primarily, the 
+non-configurable part is multi-line text without a '|'. So lots of 
+'description' paragraphs are reformatted. It ends up being too strict 
+IMO.
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 42ce78beb413..3a4e859e5a49 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -1281,6 +1281,18 @@ isp_mmu: iommu@ff4a8000 {
- 		#iommu-cells = <0>;
- 	};
- 
-+	cif: video-capture@ff490000 {
-+		compatible = "rockchip,px30-vip";
-+		reg = <0x0 0xff490000 0x0 0x200>;
-+		interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-+		clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
-+		clock-names = "aclk", "hclk", "pclk";
-+		power-domains = <&power PX30_PD_VI>;
-+		resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-+		reset-names = "axi", "ahb", "pclkin";
-+		status = "disabled";
-+	};
-+
- 	qos_gmac: qos@ff518000 {
- 		compatible = "rockchip,px30-qos", "syscon";
- 		reg = <0x0 0xff518000 0x0 0x20>;
--- 
-2.41.0
+The key order is checked, but not fixed. Probably could add reordering.
 
+Adding this by default (and to the bot) means fixing *every* file in 
+tree first. That's not something I care to do and enforce.
+
+Rob
