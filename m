@@ -2,171 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0B17E4E3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438CA7E4E3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbjKHArK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
+        id S232991AbjKHAtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjKHArI (ORCPT
+        with ESMTP id S229665AbjKHAs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:47:08 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D0410FE
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:47:05 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c5087d19a6so85263431fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:47:05 -0800 (PST)
+        Tue, 7 Nov 2023 19:48:59 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F140101;
+        Tue,  7 Nov 2023 16:48:57 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc2f17ab26so47273225ad.0;
+        Tue, 07 Nov 2023 16:48:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699404424; x=1700009224; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fxXEGNqHkCROwSi+05eOdPd8Sd9PO1LMoRgHN4n0oAM=;
-        b=y/Qro9zRaSnMG3SCFs1GFHbyC+dMggpAFRn8Dhtyi3Gjwfn31KdPGzuCmhslqTGmrI
-         h2nW1gDzNNCLs0p0RlG51QCd4E36LSDJuhw1IbMaCaWJN+ZYaR7akDGR6x3jVzKhpv6n
-         yoSHRfcqXt4U1FA5pdReWrCcK9Ay58dmphYttG9nt1JGZefcCZMzfCc7SPB1Dgo8zhlH
-         xBwKmzzlxIR3oAwOwzKoE1PAyTjeECz6zeivD1tduDJT3pQPilVYRSamnaOWQHf66FZc
-         0IW2KfV4Uu0ZQdfqrRk2rPzGfDQix8XEeFDPUTcbSlx/BeLsvfADMcTGSQ+mqQaTnYLG
-         G8lQ==
+        d=gmail.com; s=20230601; t=1699404536; x=1700009336; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=18JM1b7xLIQkGXOSDK5xxBygzDFioarE6h8s0jDKM+I=;
+        b=QPl3nUdv8is+Kk4ugbrBedDOj7Mk+1AFDlGy1HshYhrwEHtlO1iB1Dq5QN+GNyX7hd
+         woJ0T801yr1bt1++2wU2eNLXjNOvg2rwCVmtJi/9EgsJGQtjbXtrCKhDDzo1maqBUz7E
+         qlJOzn5KAIy9FH7V2cze+sVYbLn+bJuSBbPfUD+D5Xk/aPhkjnJzPvddIQY/Dpw2y4eo
+         kOt0YJlA9IHFENlUhOSrbfRbIsoE97CyV5WyvVrJAFD/rHPPxaivd5INUtn2kJY7HIUk
+         uPQIsDqknf5Wcq1h/1kxJS7evob4v0JyfgZg5rxSKyRxPOY6CLhKELmC6ZzmRH3u3GbR
+         hPdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699404424; x=1700009224;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1699404536; x=1700009336;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fxXEGNqHkCROwSi+05eOdPd8Sd9PO1LMoRgHN4n0oAM=;
-        b=HxfNX8/Dzpq7gWsP9WnKLTNeFE6yOfDmHNu7iYa2nVl9PuxSP4DhXq2F5M14rLdh8B
-         7pQxINmGFXpLczRzJ+PcKbVMPA7q+GAMjMFGz9Q6tdGf90domPEH5cs16Tnh0VUAbDr9
-         US99xciQ7DWg6oJItzyU4RZ6CDY5YMity/Kcnrdv7ssEfaFN5n1DfpGrkxHhvh9ktNQd
-         0oavAQY4lFrTs6bByfKs4fk7QSx8Jk7Yhu1oVrMkh8m6rNrp9a2iJNzneepKVQLB1Itx
-         aWzD49zaRRqVlaQCmame58usLQ7FNcnLAeJk+ytKLMyzlRIxKUurvzOgHnkhKQ3QSaH4
-         AN7A==
-X-Gm-Message-State: AOJu0YzTWqqNqrmNKQLHyNuO8B6IUNIX+cI6JPy9v7uZ+ZKhTnvM/zCl
-        9WdEan32kmRFxNIBYxWV/P2s0g==
-X-Google-Smtp-Source: AGHT+IGMIX8wFIZGEr49kMo8SuWeyfpquE8WvWyM8NzCa8/zQ6brjMQRGNEGtiBTC651CY1T3J8NVw==
-X-Received: by 2002:a05:651c:8b:b0:2c5:f1a:1f31 with SMTP id 11-20020a05651c008b00b002c50f1a1f31mr491337ljq.1.1699404424023;
-        Tue, 07 Nov 2023 16:47:04 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id c14-20020a05600c0a4e00b004030e8ff964sm17960914wmq.34.2023.11.07.16.47.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 16:47:03 -0800 (PST)
-Message-ID: <9601c3ca-c7a1-4c90-878d-feeccd9e6610@linaro.org>
-Date:   Wed, 8 Nov 2023 00:47:01 +0000
+        bh=18JM1b7xLIQkGXOSDK5xxBygzDFioarE6h8s0jDKM+I=;
+        b=UYRXZ60bY6TgvS5/D3hPeBvff2XuVSuPSJmIDeUbFeRZX1/+c2Vlh78L7AeRAUa/SN
+         +cOgUXXTs/sdQ2faratW2Q+wfwg/N7NlY+dDwmQ5Cbh77LFloRJf6I6R2x1nHmXeOs6y
+         m+JLGsXbKuEI/JLeEC0Gsi8M/kKevQEITbtprjbkz8r75DzF+iUKTROP4Yr30gu+3ygp
+         bLlgcAhpL8YY60h7yGauYUm6vG+ReoDKU1lZi0NYrlQHPnuxrTrZYNKIKCQiPzk2yEt4
+         Vj/Ix+AkVTBzIWaeD0ywB7IXSuUuFKcpkaAmu9B99hfx7jaLgjLn+0QSo8gerCF2Ly0i
+         11FQ==
+X-Gm-Message-State: AOJu0Yw2mgLYOhipJJjOuxU66Aew4B9wlU2LT59AfJo4BatA8n9AnXeA
+        N3LTdqzXpnwSS+BUYIuv5UI=
+X-Google-Smtp-Source: AGHT+IG96hzG2AKirC4O7eyjqxCTKaKtvWQtVmb+bCuNcRu92pj6zIRSFuqq8E0AYCSe+LCImFmTIQ==
+X-Received: by 2002:a17:902:f806:b0:1ca:3e40:beae with SMTP id ix6-20020a170902f80600b001ca3e40beaemr658898plb.38.1699404536433;
+        Tue, 07 Nov 2023 16:48:56 -0800 (PST)
+Received: from localhost ([216.228.127.130])
+        by smtp.gmail.com with ESMTPSA id k18-20020a170902c41200b001cc41059a11sm405990plk.196.2023.11.07.16.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 16:48:56 -0800 (PST)
+Date:   Tue, 7 Nov 2023 16:48:51 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        oe-kbuild-all@lists.linux.dev, linux-hardening@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [alobakin:pfcp 11/19] include/linux/bitmap.h:642:17: warning:
+ array subscript [1, 1024] is outside array bounds of 'long unsigned int[1]'
+Message-ID: <ZUra8/56s5ozTayN@yury-ThinkPad>
+References: <202310170708.fJzLlgDM-lkp@intel.com>
+ <bd7fe929-c6fc-42be-9d2f-3f53ec21fd10@intel.com>
+ <ZUkvOCxyiin_77qd@smile.fi.intel.com>
+ <0a29df6b-bc27-43e9-a97d-57ecabb29a9e@intel.com>
+ <CAG_fn=VtA6e3oGm4WVnxmy9yMBab780-U_4VoHSqm4tcd2UTzQ@mail.gmail.com>
+ <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
+ <202311071521.099CAEA58@keescook>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/6] media: qcom: camss: Add sc8280xp resource details
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231105-b4-camss-sc8280xp-v3-0-4b3c372ff0f4@linaro.org>
- <20231105-b4-camss-sc8280xp-v3-4-4b3c372ff0f4@linaro.org>
- <871e668a-1732-4ed6-9d12-818504296464@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <871e668a-1732-4ed6-9d12-818504296464@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <202311071521.099CAEA58@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/2023 21:48, Konrad Dybcio wrote:
+On Tue, Nov 07, 2023 at 03:25:01PM -0800, Kees Cook wrote:
+> On Tue, Nov 07, 2023 at 05:44:00PM +0100, Alexander Lobakin wrote:
+> > From: Alexander Potapenko <glider@google.com>
+> > Date: Tue, 7 Nov 2023 17:33:56 +0100
+> > 
+> > > On Tue, Nov 7, 2023 at 2:23 PM Alexander Lobakin
+> > > <aleksander.lobakin@intel.com> wrote:
+> > >>
+> > >> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > >> Date: Mon, 6 Nov 2023 20:23:52 +0200
+> > >>
+> > >>> On Mon, Nov 06, 2023 at 05:31:34PM +0100, Alexander Lobakin wrote:
+> > >>>
+> > >>>>> | Reported-by: kernel test robot <lkp@intel.com>
+> > >>>>> | Closes: https://lore.kernel.org/oe-kbuild-all/202310170708.fJzLlgDM-lkp@intel.com/
+> > >>>
+> > >>>> Not sure how to approach this :z It was also captured on the version you
+> > >>>> sent 2 weeks ago, so this could've been resolved already.
+> > >>>
+> > >>> Is it in the repository already? if so, we should revert it.
+> > >>> Otherwise you have time to think and fix.
+> > >>
+> > >> Nah, neither Alex' series nor mine. And I'd say this should rather be
+> > >> resolved in the functions Alex introduce.
+> > >>
+> > >> Thanks,
+> > >> Olek
+> > > 
+> > > Sorry, I couldn't reproduce the problem using the instructions at
+> > > https://download.01.org/0day-ci/archive/20231017/202310170708.fJzLlgDM-lkp@intel.com/reproduce
+> > > locally, maybe that's because I only have gcc-11 and higher.
+> > > 
+> > > But if I'm understanding correctly what's going on, then GCC will be
+> > > reporting the same issue in the following code:
+> > > 
+> > > =======================================================
+> > > #include <stddef.h>
+> > > #include <stdbool.h>
+> > > 
+> > > #define BITS_PER_LONG 64
+> > > #define unlikely(x) x
+> > > #define UL(x) (x##UL)
+> > > #define GENMASK(h, l) \
+> > >         (((~UL(0)) - (UL(1) << (l)) + 1) & \
+> > >          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+> > > 
+> > > #define BIT_WORD(nr)            ((nr) / BITS_PER_LONG)
+> > > #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+> > > #define BITMAP_LAST_WORD_MASK(nbits) (~0UL >> (-(nbits) & (BITS_PER_LONG - 1)))
+> > > 
+> > > inline void bitmap_write(unsigned long *map,
+> > >                                 unsigned long value,
+> > >                                 unsigned long start, unsigned long nbits)
+> > > {
+> > >         size_t index;
+> > >         unsigned long offset;
+> > >         unsigned long space;
+> > >         unsigned long mask;
+> > >         bool fit;
+> > > 
+> > >         if (unlikely(!nbits))
+> > >                 return;
+> > > 
+> > >         mask = BITMAP_LAST_WORD_MASK(nbits);
+> > >         value &= mask;
+> > >         offset = start % BITS_PER_LONG;
+> > >         space = BITS_PER_LONG - offset;
+> > >         fit = space >= nbits;
+> > >         index = BIT_WORD(start);
+> > > 
+> > >         map[index] &= (fit ? (~(mask << offset)) :
+> > > ~BITMAP_FIRST_WORD_MASK(start));
+> > >         map[index] |= value << offset;
+> > >         if (fit)
+> > >                 return;
+> > > 
+> > >         map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
+> > >         map[index + 1] |= (value >> space);
+> > > }
+> > > 
+> > > unsigned long foo(unsigned int n) {
+> > >     unsigned long bm[1] = {0};
+> > >     bitmap_write(bm, 1, n, 2);
+> > >     return bm[0];
+> > > }
+> > > =======================================================
+> > > (see also https://godbolt.org/z/GfGfYje53)
+> > > 
+> > > If so, the problem is not specific to GCC 9, trunk GCC also barks on this code:
+> > > 
+> > > =======================================================
+> > > In function 'bitmap_write',
+> > >     inlined from 'bitmap_write' at <source>:15:13,
+> > >     inlined from 'foo' at <source>:47:7:
+> > > <source>:40:12: warning: array subscript 1 is outside array bounds of
+> > > 'long unsigned int[1]' [-Warray-bounds=]
+> > >    40 |         map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
+> > >       |         ~~~^~~~~~~~~~~
+> > > =======================================================
+> > > 
+> > > If this is true for the code in drivers/gpio/gpio-pca953x.c,
+> > > suppressing the report for GCC 9 won't help for other versions.
+> > > Given that this report is isolated in a single file, we probably need
+> > 
+> > I tested it on GCC 9 using modified make.cross from lkp and it triggers
+> > on one more file:
+> > 
+> > drivers/thermal/intel/intel_soc_dts_iosf.c: In function 'sys_get_curr_temp':
+> > ./include/linux/bitmap.h:601:18: error: array subscript [1,
+> > 288230376151711744] is outside array bounds of 'long unsigned int[1]'
+> > [-Werror=array-bounds]
+> > 
+> > > to give the compiler some hints about the range of values passed to
+> > > bitmap_write() rather than suppressing the optimizations.
+> > 
+> > OPTIMIZER_HIDE_VAR() doesn't disable optimizations if I get it
+> > correctly, rather shuts up the compiler in cases like this one.
+> > 
+> > I've been thinking of using __member_size() from fortify-string.h, we
+> > could probably optimize the object code even a bit more while silencing
+> > this warning.
+> > Adding Kees, maybe he'd like to participate in sorting this out as well.
 > 
+> I'm trying to find all the pieces for this code, so I might be working
+> from the wrong version or something, but I think this is the change:
+> https://github.com/alobakin/linux/commit/66808fb20fed014a522b868322d54daef14a6bd8
+
+This is the series:
+
+https://www.spinics.net/lists/kernel/msg4985590.html
+
+The relevant part of the function is:
+
++	offset = start % BITS_PER_LONG;
++	space = BITS_PER_LONG - offset;
++	fit = space >= nbits; // true if offset + nbits <= BITS_PER_LONG
++	index = BIT_WORD(start);
++
++	map[index] &= XXX;
++	map[index] |= value << offset;
++	if (fit)
++		return;
++
++	map[index + 1] = YYY;
+ 
+Some background for you:
+
+'fit' means that the requested part of bitmap fits into a single
+machine word. For example, on 64-bit machine:
+
+        DECLARE_BITMAP(map, 64); // unsigned long val[1];
+        bitmap_write(map, val, 60, 4) // fit == true
+        bitmap_write(map, val, 60, 8) // fit == false
+
+It's possible that user may overrun the array boundary, like in the
+2nd case, and compiler may correctly warn about it.
+
+But in this case...
+
+The code in question is:
+
+        #define bitmap_set_value8(map, value, start)           \
+                bitmap_write(map, value, start, BITS_PER_BYTE)
+        #define BANK_SZ 8
+
+        for (i = 0; i < NBANK(chip); i++)
+                bitmap_set_value8(val, value[i], i * BANK_SZ);
+
+Here nbits is always 8, and start is multiple of 8. With that, we're
+always writing into a single word (fit == true), and 'idx + 1' path
+is never hit. This makes me think that it the warning here is false
+positive. Is that correct?
+
+> and the induced warning is correctly analyzed in this thread (i.e. GCC
+> can't convince itself that it'll never reach the out of bounds access).
+> Does this work?
 > 
-> On 11/5/23 18:45, Bryan O'Donoghue wrote:
->> This commit describes the hardware layout for the sc8280xp for the
->> following hardware blocks:
->>
->> - 4 x VFE, 4 RDI per VFE
->> - 4 x VFE Lite, 4 RDI per VFE
->> - 4 x CSID
->> - 4 x CSID Lite
->> - 4 x CSI PHY
->>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
->>   drivers/media/platform/qcom/camss/camss.c | 383 
->> ++++++++++++++++++++++++++++++
->>   1 file changed, 383 insertions(+)
->>
->> diff --git a/drivers/media/platform/qcom/camss/camss.c 
->> b/drivers/media/platform/qcom/camss/camss.c
->> index 8778fdc1ee342..51619842f3925 100644
->> --- a/drivers/media/platform/qcom/camss/camss.c
->> +++ b/drivers/media/platform/qcom/camss/camss.c
->> @@ -941,6 +941,374 @@ static const struct resources_icc 
->> icc_res_sm8250[] = {
->>       },
->>   };
->> +static const struct camss_subdev_resources csiphy_res_sc8280xp[] = {
->> +    /* CSIPHY0 */
->> +    {
->> +        .regulators = {},
->> +        .clock = { "csiphy0", "csiphy0_timer" },
->> +        .clock_rate = { { 400000000 },
->> +                { 300000000 } },
->> +        .reg = { "csiphy0" },
->> +        .interrupt = { "csiphy0" },
->> +        .ops = &csiphy_ops_3ph_1_0
->> +    },
->> +    /* CSIPHY1 */
->> +    {
->> +        .regulators = {},
->> +        .clock = { "csiphy1", "csiphy1_timer" },
->> +        .clock_rate = { { 400000000 },
->> +                { 300000000 } },
->> +        .reg = { "csiphy1" },
->> +        .interrupt = { "csiphy1" },
->> +        .ops = &csiphy_ops_3ph_1_0
->> +    },
->> +    /* CSIPHY2 */
->> +    {
->> +        .regulators = {},
->> +        .clock = { "csiphy2", "csiphy2_timer" },
->> +        .clock_rate = { { 400000000 },
->> +                { 300000000 } },
->> +        .reg = { "csiphy2" },
->> +        .interrupt = { "csiphy2" },
->> +        .ops = &csiphy_ops_3ph_1_0
->> +    },
->> +    /* CSIPHY3 */
->> +    {
->> +        .regulators = {},
->> +        .clock = { "csiphy3", "csiphy3_timer" },
->> +        .clock_rate = { { 400000000 },
->> +                { 300000000 } },
->> +        .reg = { "csiphy3" },
->> +        .interrupt = { "csiphy3" },
->> +        .ops = &csiphy_ops_3ph_1_0
->> +    },
->> +};
->> +
->> +static const struct camss_subdev_resources csid_res_sc8280xp[] = {
->> +    /* CSID0 */
->> +    {
->> +        .regulators = { "vdda-phy", "vdda-pll" },
->> +        .clock = { "vfe0_csid_src", "vfe0_csid", "cphy_rx_src",
->> +               "vfe0_cphy_rx", "vfe0_src", "vfe0", "vfe0_axi" },
-> This looks like downstream hack copypasta.. All the _src clocks
-> should be axed from here, from the camss bindings and simply be
-> enabled with CLK_OPS_PARENT_ENABLE on their children (which should
-> be the default for all branch clocks anyway eh)
+> -	if (fit)
+> +	if (fit || index + 1 >= __member_size(map))
+>  		return;
 
-This is a legitimate comment though, at least in principle,.
+I already commented this in the other email in this thread - this would
+silence a true warning where people break the boundary:
 
-I ought to be able to drop vfe0_src and vfe0_csid_src since they should 
-be the roots for vfe0 and vfe0_csid.
+        bitmap_write(map, val, 60, 8);
 
-I will see what can be rationalised in this list tomorrow.
+And as far as I can see, __member_size() implies some runtime
+overhead, which I'd like to avoid.
 
----
-bod
+Thanks,
+Yury
+
