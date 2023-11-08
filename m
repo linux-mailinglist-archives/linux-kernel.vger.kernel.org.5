@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1087E5833
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42B37E583A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbjKHN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
+        id S233745AbjKHN6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:58:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbjKHN5b (ORCPT
+        with ESMTP id S232187AbjKHN6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:57:31 -0500
+        Wed, 8 Nov 2023 08:58:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43091BEF
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 05:57:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E97CC43391;
-        Wed,  8 Nov 2023 13:57:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CFB1BEF
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 05:58:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B92DC433C7;
+        Wed,  8 Nov 2023 13:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699451849;
-        bh=oAMyGLNvlEk2Z3kcyrMLZHtZ2K7CmXV47NgxDhyFDAI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TLLvN3zbeCodFityx/4ypnt/Ii/fLaigJHu+596F82grUSxrOKhUp5VnJ10ovHhGv
-         TQVt+OifIzv1INb3RTscv+PKfnTR/VZ8VqSq7/ZL66e4nDpmbbBAPs7YOBrYmZnGlO
-         qF/ZUayfqAma1ZWC5m63Ga58DPZ99AmzuijezXivJABvO1R0GUBdOomF7mVGJ5DcPD
-         SatYDtXoRSRvA2oZRCgQjl+dEgpfDW1nV+g1uZLgS2hEEu8CerEmr+rFNBtjpTaqsv
-         XzS65rJj1xOOVKWSPvaaJUKjsWRz/XhhvcYjMSAefJnHMH/E/5ioxrSdzr1Td/5o/U
-         AmTn32Jy6Wjfg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-507ad511315so9991958e87.0;
-        Wed, 08 Nov 2023 05:57:29 -0800 (PST)
-X-Gm-Message-State: AOJu0YwHrkJ5csqhd4zb3ihEruA5yGxTE5EufmxkrNjMbvsscjqt2ms7
-        3tpZxYznzF8FEarKSW2IStkf1vUk1rc6Wtq9Cw==
-X-Google-Smtp-Source: AGHT+IGuwHUp+aEG6CZkAVv9OagCbfM3Ciyh9iJ50ppoxMFJJ3ItGNnVmTiHOsiB5o//EA7YPSpGzVzEkTMc7343V6w=
-X-Received: by 2002:ac2:5397:0:b0:507:b9db:61dc with SMTP id
- g23-20020ac25397000000b00507b9db61dcmr1259652lfh.48.1699451847501; Wed, 08
- Nov 2023 05:57:27 -0800 (PST)
+        s=k20201202; t=1699451897;
+        bh=/a9FgUe/BIr5zHWkGLlCKL2qwlPru5dGvvCfOaHtyzo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Lyt7u1CJ/ZF3jsfCB0gqngfio8ZQvFpDGerYJS8sdsRoF8vnn1XTJtrz4zY/WXT+D
+         i1+80WpXejxv+DwgjnJmwBdyU8n6VihzENfNWN4Q6z9a7xbzMTPPAAYaqca/Ag71UY
+         /cPxP6kqg5ZqA2wmmd5cPzzbj+bkI6nROqrub9GNFTPq2jkqbowZRYsTtTgIIzyH7S
+         WrGYp5z4pTrIbgaJKUCDJyfsrG3ZEKQLBIQGdjc79rD2IMOSYaBWh/GJwZ7Y+0qKhH
+         W0LBmhU4nXzXecfTwVKuqUk+QVJXWQcbiAfM6J7wxJDburOpQ1FRE+A/Lvbll6/vXd
+         CMcVeEzi39wuw==
+Message-ID: <be487754-5073-467b-8c73-6727e8dc3530@kernel.org>
+Date:   Wed, 8 Nov 2023 14:58:12 +0100
 MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <CAPnjgZ0Xf3U1aj32LbU-xiU1AqwnM3JL1F8xX-wZ18oEmg+irw@mail.gmail.com>
- <CAMj1kXEXcX7BkDyfy-6_5Vnch=N+onza-yfWfsVaGLE93h2c+Q@mail.gmail.com>
- <CAPnjgZ2SEby-ndrs=W_afBJH56eqc=-mhp1F1nwkvWks+=B54Q@mail.gmail.com>
- <CAMj1kXED3S+0cq+VT7naBrmWrUwT=HZAaZOBRMv8Ui1Pey1QNQ@mail.gmail.com>
- <CAPnjgZ0LrsJ2_ENTYoBrnyFaH3UKdHs3D2XWY=TzBuBpBoTXZA@mail.gmail.com>
- <CAL_Jsq+DQugkEDESW5wySFbLLN8HNqGDJCio8Wpi6fe0LeHKUA@mail.gmail.com>
- <CAPnjgZ0cmKP5hoGCyQ_Rp8ZQXUVwaPYJMWyidXuOOjMVkDoMDw@mail.gmail.com>
- <CAL_JsqJH=vJ40PNTg_i0LoKA-c0hhMJkL8zCC3_bB-tOkFWWsw@mail.gmail.com>
- <CAPnjgZ1FrdGKjGAxUbkQoL2vHwhC_2Oa2KT+0cm25dQAuAjxAQ@mail.gmail.com>
- <CAPnjgZ19-xR6QxS=fR53skz0VuAty2Z2w2vQTjP7g=tbTFpaqw@mail.gmail.com>
- <CAL_JsqL+X1DatsGk_Cn1HsbG2GV9AngFWXVysWTiNRu_d9tDqw@mail.gmail.com> <CAMj1kXHfh40wxerZGjOn2JJ5Skm5C--Rz2jy8p3XZ2UXKGjw+g@mail.gmail.com>
-In-Reply-To: <CAMj1kXHfh40wxerZGjOn2JJ5Skm5C--Rz2jy8p3XZ2UXKGjw+g@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 8 Nov 2023 07:57:15 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
-Message-ID: <CAL_JsqLpea+FU4gXpaSUSeBP70szJ+mRjJtFei=QW2VoHCFOuA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dhaval Sharma <dhaval@rivosinc.com>,
-        Maximilian Brune <maximilian.brune@9elements.com>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        Guo Dong <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
-        ron minnich <rminnich@gmail.com>, Gua Guo <gua.guo@intel.com>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        linux-acpi@vger.kernel.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Content-Language: en-US, pt-BR, it-IT
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+ <20231107114732.5dd350ec@gandalf.local.home>
+ <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
+ <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
+ <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 5:38=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org> wro=
-te:
->
-> On Tue, 7 Nov 2023 at 19:07, Rob Herring <robh@kernel.org> wrote:
-> >
-> >
-> > All of this:
-> >
->
-> > > On Mon, 16 Oct 2023 at 15:54, Simon Glass <sjg@chromium.org> wrote:
-> > > >
-> > > > It is not specific to EDK2. Imagine this boot sequence:
-> > > >
-> > > > - Platform Init (U-Boot) starts up
-> > > > - U-Boot uses its platform knowledge to sets some ACPI tables and p=
-ut
-> > > > various things in memory
-> > > > - U-Boot sets up some runtime code and data for the OS
-> > > > - U-Boot jumps to the Tianocore payload **
-> > > > - Payload (Tianocore) wants to know where the ACPI tables are, for =
-example
-> > > > - Tianocore needs to provide boot services to the OS, so needs to k=
-now
-> > > > the memory map, etc.
-> > > >
-> > > > ** At this point we want to use DT to pass the required information=
-.
-> > > >
-> > > > Of course, Platform Init could be coreboot or Tianocore or some
-> > > > strange private binary. Payload could be U-Boot or something else.
-> > > > That is the point of this effort, to build interoperability.
-> >
-> > [...]
-> >
-> > > > Perhaps the problem here is that Linux has tied itself up in knots
-> > > > with its EFI stuff and DT fixups and what-not. But this is not that=
-.
-> > > > It is a simple handoff between two pieces of firmware, Platform Ini=
-t
-> > > > and Payload. It has nothing to do with the OS. With Tianocore they =
-are
-> > > > typically combined, but with this usage they are split, and we can
-> > > > swap out one project for another on either side of the DT interface=
-.
-> >
-> > Is perhaps the clearest description of the problem you want to solve.
-> > It's clearly related to EFI though not the interface to the OS. IIRC,
-> > "platform init" and "payload" are terms in the UEFI spec, right?
->
-> No they are not. This is from the universal payload specification that
-> is being drafted here
->
-> https://universalpayload.github.io/spec/index.html
->
-> but the UEFI specification does not use this terminology.
+On 11/8/23 13:44, Peter Zijlstra wrote:
+> Should we rather not cap the runtime, something like so?
+> 
+> Because the above also causes period drift, which we do not want.
 
-Then I'm confused as to what this is:
+like in the example I showed before:
 
-https://uefi.org/specs/PI/1.8/index.html
+- 3/10 reservation (30%).
+- w=waiting
+- r=running
+- s=sleeping
+- T=throttled
+- fair server dispatched at 0, starvation from RT.
 
-Rob
+
+|wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww|rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr|TTTTTTTTTT[...]TTTTTTTTTTT|rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr|TTTTTTT
+|___________________________period 1_________________________________|_________period 2________________________[...]___________|___period 3____________________|[.... internal-period
+0---------1---------2---------3---------4---------5---------6--------7--------8---------9----------10.......11.[...]16.........17........18........19........20|[.... < Real-time
+---------------------------------------------------------------------+---------------------------------------------------------|
+                                                                     |                                                         +new period
+
+From "real-world/wall clock" the internal period shift produces the
+"zerolax" timeline. It runs 3 units of time before the 10's.
+
+If one has a mix of DL and FIFO task, and want to enforce
+a given response time to the fair server, they can reduce the
+fair server period to achieve that.
+
+-- Daniel
