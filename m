@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFBB7E5A75
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396AC7E5A7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbjKHPv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:51:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S232466AbjKHPwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:52:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjKHPvy (ORCPT
+        with ESMTP id S232016AbjKHPwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:51:54 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2048.outbound.protection.outlook.com [40.107.7.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07E61BC3;
-        Wed,  8 Nov 2023 07:51:51 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gSKD3g/a3ia5q1orqeK6UBNS/cYfcL7c/RmIfsvQipCYy+/jRAKNRKDZktl6N9tWpZ8qltaSNVG3/jB2/dU7BdrqwLPD6wlt3BnlMXozd+BQ01neQNsZXLZ639AG8gjoJmeukO+95DptXz02TcPAc1LMGmIqHxyTEMqANuoQLjd5qdEnG40Wm1l/h1A1w4VUqyieD5kL11VpxJZGlmUAXDOH6LP6/yNfYmP8On3riKrf1+bQ5qdjRlN6BDSB03VUX+2Yiy8C32AgFIHQ2WipJWlpY2rH1UyNAFig75eW8j8Ug4sy8x+aTgrZIvFVQkULna2/TOEDe9Um6ebIFZMLEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/7bgvZaibOPzNTUAcql2w3jrXnvVVRRMmtgwexf4yD4=;
- b=CVTDEi+kkiFWlesjlt395wjoVdAXD4v9VN3mPS6Xv0+nVuIi+McBFFyhvCnXoIJ64wgvAHE/Rt1t9IY8VODVOxReuCziVUJGQarPLAEbo2MaPfKajXwYjVFSXQyr7mcllDk0bLQjKYeunErtYhmHBCntV+Yn/C2uPsvja7GAQIxYVa8RBA4Wwj1CRI5fgarKhTjLUhkcYbAIWe7kmKji8NI6dYo7pRENRWqpGlptuaHPvbFCnnNJQlT+VunY91dWUwR8z9mOnvA2CRjyLZ9WKW+f2TGVeEZkPJtLqc82sEZtCocgRBhSc1BCo7A/5y1bu470G7y6LsFRBN5M2NIqGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7bgvZaibOPzNTUAcql2w3jrXnvVVRRMmtgwexf4yD4=;
- b=UiC0P1BOLo6gq/+w7bBoIkeX/J4DbdlYjr/fTeoxrSyHxJVAVeaVvKeQBFJTa4UEt9EZF7FlDa7V1xVIeEsR54xysoKACtT3a+z6bFpQ5lLkGzN2mp4IkG4tLFi1kGLK3Q3627VJPv4Ak0coI2i3jH+iFLHyoFZ2PdLZGht0lko=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DB9PR04MB8394.eurprd04.prod.outlook.com (2603:10a6:10:244::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Wed, 8 Nov
- 2023 15:51:48 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%6]) with mapi id 15.20.6977.017; Wed, 8 Nov 2023
- 15:51:48 +0000
-Date:   Wed, 8 Nov 2023 17:51:44 +0200
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net 0/7] qbv cycle time extension/truncation
-Message-ID: <20231108155144.xadpltcdw2rhdpkv@skbuf>
-References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+        Wed, 8 Nov 2023 10:52:14 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75EE91BC3;
+        Wed,  8 Nov 2023 07:52:12 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8FeaMC011786;
+        Wed, 8 Nov 2023 15:52:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=M2q8vwHaki+jn0C1mY1Z/X+t7bLixbQI5D79jPq2rpc=;
+ b=VFfWVN505WRmgApN3tci+BCEbV5eX+pwNqmKiFuH0Sdoi+KwiNvVyvfdoYeEk0wOFWhP
+ HZ1FykCgTuBXlkT/96eW3x9GtngCbVxBl7/F+s41VelWxfiKazQ6a0bv5Q6W6kTH0FRy
+ gXNxmhPRFNwff7XcVzCuJD2wovC9USXjCgtjIVCu5tvVA5rpoxRdup8gs3p4eI0y3prh
+ OQMOn7tKq6FHyw7sZVG7hjMegt3Hu9wxx68GpY1xJC6QpuFvPu2cePH/CsIe4iqNf61d
+ P3FaSFYa4Q4Hx4wXpfZi1XlEZgz7P/zmBPByF4STyiCHgR0GBYlRejKlejORfk99WFPf qQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8d65recx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 15:52:11 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8FegTh012095;
+        Wed, 8 Nov 2023 15:52:10 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8d65rech-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 15:52:10 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8EMZFx028371;
+        Wed, 8 Nov 2023 15:52:10 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w22dsh8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 15:52:09 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8Fq6Xu15401508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Nov 2023 15:52:07 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D95A420043;
+        Wed,  8 Nov 2023 15:52:06 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D53C20040;
+        Wed,  8 Nov 2023 15:52:06 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed,  8 Nov 2023 15:52:06 +0000 (GMT)
+Date:   Wed, 8 Nov 2023 16:52:04 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v2 2/4] KVM: s390: vsie: Fix length of facility list
+ shadowed
+Message-ID: <20231108155204.7251-C-hca@linux.ibm.com>
+References: <20231107123118.778364-1-nsg@linux.ibm.com>
+ <20231107123118.778364-3-nsg@linux.ibm.com>
+ <20231108122338.0ff2052e@p-imbrenda>
+ <2c15b9a6b97666805491a06deee4bac497ed88cd.camel@linux.ibm.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
-X-ClientProxiedBy: AM0PR10CA0027.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:17c::37) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DB9PR04MB8394:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1290d4ce-3166-4ce6-acf6-08dbe0729dfd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1BOBlXtYd9vIQtw9ubG6v8iV76K69S0fcpVl06Te8zwHIQoGcgSevdjj0MErudIu7qBkMNyiiq/f/99ZxunTFd1r5ahGLKSKUlfME6sEtoKZtGWOucaugxcVw0SwBErNMzgD0+Xvn35Z6ljKsHVloVOf3SWuy0inlIZ9rH2wkORwYouobmAIZO30/QYBo24k1rSSO4r6aiNVsUCJHt/nIxPqOkFJELUYgecICWK6HSCjngNOEKTqmsvuIqihrZtePAebQHH8MwBdTLFzaQgRv0UzHZsPxLVjU6uq6H4lSfmIR8ZVkXQhr78ljIlLrLXbaiBU88VNb9iNPcWIN/1fMks9DFaiHu3MGIZ2tfb+MNmcUBjRLG38m9rq/4BCT76kig35ATDBAvSFJz2nes/lFFiSVID3TpffdQAKQAfDTGtDxen2hH8wS5mluVXOSLivbKeEPC4zyvGaGw2UhuV5V1fF/8455/10ak6WyLYjDSiZ7vW2EKUtdDeHTLnf51YZR+t4MpdBhAXRSj7+fcDd0qyNuItxqh9uVoLqprkuJBQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(366004)(396003)(376002)(136003)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(33716001)(2906002)(8676002)(8936002)(83380400001)(4326008)(26005)(66946007)(54906003)(66476007)(66556008)(6916009)(316002)(7416002)(5660300002)(44832011)(478600001)(9686003)(966005)(6486002)(6512007)(6506007)(6666004)(1076003)(86362001)(38100700002)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eLjIzBVRNFgpDFbIdPWn7V890bM/V1lqD09CDA3PzogGenV6tqcMKz7m4ncq?=
- =?us-ascii?Q?FZG9UTYnyQu7urSK7/hiKrWLQW2lkh4OwCJMVRzVpyUkbBNFUpT/09IHozzM?=
- =?us-ascii?Q?gRdEMGFBUMSOqXeqozO/hZPZDyvHWOP5cbXZeTBEnMibs/sCCVp8Q3vd3/7u?=
- =?us-ascii?Q?S3yfzRx2sep4bMSxZjx2KMWbiQMlGuAJeiQBJBrWiSfeSa3HX2d1UPWEcWWc?=
- =?us-ascii?Q?kQ38Kvd0PjSsmtyfS05bYEsjZL86fqwHQbZS1x+Dl56zf7wKcJn63TpB7KHJ?=
- =?us-ascii?Q?b5NCVsXQJO7gC/TlZStLuEf3/sgOrWdvmeWyNbg5SsKjcXzzxb30LVE0PN0W?=
- =?us-ascii?Q?YPdnvR/5OK5HBGObGKwOSjMzqPYWDz+vD8WyPwtGppBmkEifvla+T6a8o31q?=
- =?us-ascii?Q?nj5SqmuCZg1ysfNiTUfNipDbtFQ0uc9hy6iVeXvo4xsIHEf9WG/L/e6Oyna5?=
- =?us-ascii?Q?fxvFOVZy9jnLzTxRUZtv4jDVZPQTRst1jR9005MU40pywekPOAEPhQpODnxT?=
- =?us-ascii?Q?usFihH9DJL8IzyZO+6hQCStbxjo4F3/Nbb0rcNnmDV7RsjzAaa/nP697MKeB?=
- =?us-ascii?Q?O1mNAsuMSEU64Phj74JOr66qf0jbFi12wWjDuhsKoHJXyVTSGnY84xeze5fd?=
- =?us-ascii?Q?D7+HD35TL5EwfGNme8pXvX92U/OdrbufYjv6l+rXh14gF0aWfwRGteP0UduT?=
- =?us-ascii?Q?TY7vIOytk6lQSzivx0YNphL9P2ib4CRGrq52nsZ3N0qJO6wB0t5pSSd9tsid?=
- =?us-ascii?Q?0BaKwu6LvdXDmBTWMKTk2Yksf7LRQddp0TzEJHugld1EzjEhgxMLb+PUbQ9c?=
- =?us-ascii?Q?4tMO+uzBacXMd6JdgIp9NNHRgwUMKaf7LjpeGMC00LNLCXkSHUz98gM1CAS5?=
- =?us-ascii?Q?4PLMhE0npzre10VgL78rOshxB9l4Uhz0jnILl8m5EE7jUu4iDob1yvWeu0V+?=
- =?us-ascii?Q?I7jfxDKn3tzDKYW6cHy268bYJlw5BUfl7owCIhsc5g8Ew2FY5hRHDKZkYMaA?=
- =?us-ascii?Q?Xo2nc5GxGYG4rnS6nShk3Yze1yHWa1LGF3YRHUXKmWc/gMTTQVNWl96OQYhH?=
- =?us-ascii?Q?crxzTAbjIRCIPOlEgRo2A/jL+Mia02GHHqlIQcKvGD1R9ALcC3jslF8VKnQL?=
- =?us-ascii?Q?zXRMC8oYsZt6CX5kZwhKzkSNI1TfH69IGc5QEsGAxGTn/lCv5bPSj4MdeYb6?=
- =?us-ascii?Q?jBQC1jiSU9bhSiTAto5bEjhwk4E/BlYmpCE5Q2+jYmvo6DbYPQiT/QtyWjQa?=
- =?us-ascii?Q?KGzTHvoGluduhLEaeQgx+0ySWpo2SKB8ClbXfcrKbNAgEiosJOJsYnNdyAWx?=
- =?us-ascii?Q?20rON4czEDTY8qcc7wDCAPIGfaWHwDRxDldMh3I2fVQ5cL6J7aIYBVgpz8sc?=
- =?us-ascii?Q?kkZuClbf7wTL/E8NlPY1sVkFR7vSyOEHvoxoWYTqEt/hs1M3EhWZiI8n9ieL?=
- =?us-ascii?Q?UmK34KuyaRh3SpJOAx7AvBbuojxidZeJHTdIgegbk/+UmfcbHYW01SpRe6Ub?=
- =?us-ascii?Q?EsA59K341NqJnwwE2zkhhtT1nY0/RSqizjuYhmdr/JkGzjcnUJ4gf1N6PCAT?=
- =?us-ascii?Q?rqCpSLKPfpGDga8WjwcZtFtX4zrfm9gS5DuIdI2B85AZ3y0Ki1mCf63TvmV3?=
- =?us-ascii?Q?9g=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1290d4ce-3166-4ce6-acf6-08dbe0729dfd
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 15:51:48.6111
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DDA1KETtm0kjprYztZ+Be9D/xSAc+KhqrCRuGsl25kyzdqaAb/WiwYuFgDlLQNceRrha7eckW+vbS3ZBpZg2BQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8394
+In-Reply-To: <2c15b9a6b97666805491a06deee4bac497ed88cd.camel@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ER2F6Keo-RvyQSYBOB9RtbMA6mh2fDxD
+X-Proofpoint-ORIG-GUID: bl7-Gh1NH-mOcO90T6dNiSyfDdwY_RLL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_04,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ phishscore=0 impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=457 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Faizal,
+On Wed, Nov 08, 2023 at 12:49:21PM +0100, Nina Schoetterl-Glausch wrote:
+> On Wed, 2023-11-08 at 12:23 +0100, Claudio Imbrenda wrote:
+> > On Tue,  7 Nov 2023 13:31:16 +0100
+> > Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+> > 
+> > [...]
+> > > +unsigned int stfle_size(void)
+> > > +{
+> > > +	static unsigned int size;
+> > > +	u64 dummy;
+> > > +	unsigned int r;
+> > 
+> > reverse Christmas tree please :)
+> 
+> Might be an opportunity to clear that up for me.
+> AFAIK reverse christmas tree isn't universally enforced in the kernel.
+> Do we do it in generic s390 code? I know we do for s390 kvm.
+> Personally I don't quite get the rational, but I don't care much either :)
+> Heiko?
 
-On Tue, Nov 07, 2023 at 06:20:16AM -0500, Faizal Rahim wrote:
-> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension,
-> the Cycle Time Extension variable allows this extension of the last old
-> cycle to be done in a defined way. If the last complete old cycle would
-> normally end less than OperCycleTimeExtension nanoseconds before the new
-> base time, then the last complete cycle before AdminBaseTime is reached
-> is extended so that it ends at AdminBaseTime.
-> 
-> Changes in v2:
-> 
-> - Added 's64 cycle_time_correction' in 'sched_gate_list struct'.
-> - Removed sched_changed created in v1 since the new cycle_time_correction
->   field can also serve to indicate the need for a schedule change.
-> - Added 'bool correction_active' in 'struct sched_entry' to represent
->   the correction state from the entry's perspective and return corrected
->   interval value when active.
-> - Fix cycle time correction logics for the next entry in advance_sched()
-> - Fix and implement proper cycle time correction logics for current
->   entry in taprio_start_sched()
-> 
-> v1 at:
-> https://lore.kernel.org/lkml/20230530082541.495-1-muhammad.husaini.zulkifli@intel.com/
-
-I like what came of this patch series. Thanks for following up and
-taking over. I have some comments on individual patches.
+We do that for _new_ code in s390 code, yes.
