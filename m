@@ -2,143 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB037E5B31
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6F77E5B34
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjKHQ3w convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 11:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        id S230493AbjKHQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHQ3v (ORCPT
+        with ESMTP id S229460AbjKHQav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:29:51 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204A0131
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:29:48 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-202-TeiFwQDsO6-x3H0sA3xebA-1; Wed, 08 Nov 2023 16:29:45 +0000
-X-MC-Unique: TeiFwQDsO6-x3H0sA3xebA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 8 Nov
- 2023 16:29:40 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 8 Nov 2023 16:29:40 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>
-CC:     'Ankur Arora' <ankur.a.arora@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "luto@kernel.org" <luto@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "jon.grimm@amd.com" <jon.grimm@amd.com>,
-        "bharata@amd.com" <bharata@amd.com>,
-        "raghavendra.kt@amd.com" <raghavendra.kt@amd.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "bristot@kernel.org" <bristot@kernel.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "glaubitz@physik.fu-berlin.de" <glaubitz@physik.fu-berlin.de>,
-        "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
-        "mattst88@gmail.com" <mattst88@gmail.com>,
-        "krypton@ulrich-teichert.org" <krypton@ulrich-teichert.org>,
-        "richard@nod.at" <richard@nod.at>,
-        "mjguzik@gmail.com" <mjguzik@gmail.com>
-Subject: RE: [RFC PATCH 00/86] Make the kernel preemptible
-Thread-Topic: [RFC PATCH 00/86] Make the kernel preemptible
-Thread-Index: AQHaEcV0+BoURT5JbUqhFq41r7bm+rBwJNlwgABkiACAAAiUQA==
-Date:   Wed, 8 Nov 2023 16:29:40 +0000
-Message-ID: <19a53508f44049a39272e5bd89ade4ab@AcuMS.aculab.com>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
-        <f97b7506a84e43ea82eb0b947324e835@AcuMS.aculab.com>
- <20231108101552.7ebbb52d@gandalf.local.home>
-In-Reply-To: <20231108101552.7ebbb52d@gandalf.local.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 8 Nov 2023 11:30:51 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369E5131;
+        Wed,  8 Nov 2023 08:30:48 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 734F540007;
+        Wed,  8 Nov 2023 16:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699461046;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VLbjMm8CapA/rh6ea6MaxhFQiWRqSIGNi9ooV+XSXQA=;
+        b=H5RcxR+gyjvPBRicNUXoyZogtVKqafMoV4GpEPPSbKVgjHLAgpKUtwjbwf4VBCZ3KXL378
+        H3XTfZiJ7R3PoIf/Tuwk80t5DQ1lW41yelvn/L9EyeWlFBgTXNPL34mzfl4bCHWacad8jW
+        Nmdo4+OlrFSynigCkq0QfcdJTWsLcziTLA00xNqXsWHOLwG7A3kU7Vh9BzOa5ZpYfmamJa
+        Qg62h3GAdcVzmKQ50MWbA9SRUKZoTXhkKlA5hUJPCWSC+E+e32DegCENV4M4ogtFRHqmCD
+        QFYFIW6r3RJebjhatR87lXd10VOalIhY5R6ZjOLqbccVwWhlIldO9QX+NdYT5A==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        vladimir.kondratiev@intel.com,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH v2 05/10] MIPS: Refactor mips_cps_core_entry implementation
+In-Reply-To: <20231027221106.405666-6-jiaxun.yang@flygoat.com>
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+ <20231027221106.405666-6-jiaxun.yang@flygoat.com>
+Date:   Wed, 08 Nov 2023 17:30:46 +0100
+Message-ID: <87o7g46wcp.fsf@BL-laptop>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt
-> Sent: 08 November 2023 15:16
+Hello Jiaxun,
+
+> Now the exception vector for CPS systems are allocated on-fly
+> with memblock as well.
+>
+> It will try to allocate from KSEG1 first, and then try to allocate
+> in low 4G if possible.
+>
+> The main reset vector is now generated by uasm, to avoid tons
+> of patches to the code. Other vectors are copied to the location
+> later.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+
+> +
+> +static int __init setup_cps_vecs(void)
+> +{
+[...]
+> +
+> +	/* We want to ensure cache is clean before writing uncached mem */
+> +	blast_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) +
+> BEV_VEC_SIZE);
+
+In my case this call failed because when setup_cps_vecs is called, the
+cache information are not initialized yet!
+
+As a workaround I moved the cpu_cache_init() call before
+plat_smp_setup() in the /arch/mips/kernel/setup.c file.
+
+Obviously it is not the right thing to do, but it shows that the cache
+related function are called too early. For example, in
+blast_dcache_range, the value returned by cpu_dcache_line_size was 0
+instead of 64, because the value cpu_data[0].dcache.linesz was not set
+yet.
+
+So I wonder who it managed to work in your setup. What is the machine
+running in QEMU ?
+
+Does it use someting like the following line ?
+#define cpu_dcache_line_size()       32
+
+
+> +	bc_wback_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
+> +	__sync();
+> +
+> +	cps_vec = (void *)TO_UNCAC(cps_vec_pa);
+> +	mips_cps_build_core_entry(cps_vec);
+> +
+> +	memcpy(cps_vec + 0x200, &excep_tlbfill, 0x80);
+> +	memcpy(cps_vec + 0x280, &excep_xtlbfill, 0x80);
+> +	memcpy(cps_vec + 0x300, &excep_cache, 0x80);
+> +	memcpy(cps_vec + 0x380, &excep_genex, 0x80);
+> +	memcpy(cps_vec + 0x400, &excep_intex, 0x80);
+> +	memcpy(cps_vec + 0x480, &excep_ejtag, 0x80);
+> +
+> +	/* Make sure no prefetched data in cache */
+> +	blast_inv_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZE);
+> +	bc_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
+> +	__sync();
+> +
+> +	return 0;
+> +}
+
+[...]
+
+>  	/* If we have an FPU, enroll ourselves in the FPU-full mask */
+> @@ -110,10 +241,14 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+>  {
+>  	unsigned ncores, core_vpes, c, cca;
+>  	bool cca_unsuitable, cores_limited;
+> -	u32 *entry_code;
+>  
+>  	mips_mt_set_cpuoptions();
+>  
+> +	if (!core_entry_reg) {
+> +		pr_err("core_entry address unsuitable, disabling smp-cps\n");
+> +		goto err_out;
+> +	}
+> +
+>  	/* Detect whether the CCA is unsuited to multi-core SMP */
+>  	cca = read_c0_config() & CONF_CM_CMASK;
+>  	switch (cca) {
+> @@ -145,20 +280,6 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
+>  			(cca_unsuitable && cpu_has_dc_aliases) ? " & " : "",
+>  			cpu_has_dc_aliases ? "dcache aliasing" : "");
+>  
+> -	/*
+> -	 * Patch the start of mips_cps_core_entry to provide:
+> -	 *
+> -	 * s0 = kseg0 CCA
+> -	 */
+> -	entry_code = (u32 *)&mips_cps_core_entry;
+> -	uasm_i_addiu(&entry_code, 16, 0, cca);
+> -	UASM_i_LA(&entry_code, 17, (long)mips_gcr_base);
+> -	BUG_ON((void *)entry_code > (void *)&mips_cps_core_entry_patch_end);
+> -	blast_dcache_range((unsigned long)&mips_cps_core_entry,
+> -			   (unsigned long)entry_code);
+> -	bc_wback_inv((unsigned long)&mips_cps_core_entry,
+> -		     (void *)entry_code - (void *)&mips_cps_core_entry);
+> -	__sync();
+
+The original code here was called later during boot from
+kernel_init_freeable() which is called by kernel_init() after all the
+calls in start_kernel. That's why there were no issue before the move.
+
+Gregory
+
+>  
+>  	/* Allocate core boot configuration structs */
+>  	ncores = mips_cps_numcores(0);
+> @@ -213,7 +334,7 @@ static void boot_core(unsigned int core, unsigned int vpe_id)
+>  	mips_cm_lock_other(0, core, 0, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+>  
+>  	/* Set its reset vector */
+> -	write_gcr_co_reset_base(CKSEG1ADDR((unsigned long)mips_cps_core_entry));
+> +	write_gcr_co_reset_base(core_entry_reg);
+>  
+>  	/* Ensure its coherency is disabled */
+>  	write_gcr_co_coherence(0);
+> @@ -290,7 +411,6 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
+>  	unsigned vpe_id = cpu_vpe_id(&cpu_data[cpu]);
+>  	struct core_boot_config *core_cfg = &mips_cps_core_bootcfg[core];
+>  	struct vpe_boot_config *vpe_cfg = &core_cfg->vpe_config[vpe_id];
+> -	unsigned long core_entry;
+>  	unsigned int remote;
+>  	int err;
 > 
-> On Wed, 8 Nov 2023 09:43:10 +0000
-> David Laight <David.Laight@ACULAB.COM> wrote:
-> 
-> > > Policies:
-> > >
-> > > A - preemption=none: run to completion
-> > > B - preemption=voluntary: run to completion, unless a task of higher
-> > >     sched-class awaits
-> > > C - preemption=full: optimized for low-latency. Preempt whenever a higher
-> > >     priority task awaits.
-> >
-> > If you remove cond_resched() then won't both B and C require an extra IPI.
-> > That is probably OK for RT tasks but could get expensive for
-> > normal tasks that aren't bound to a specific cpu.
-> 
-> What IPI is extra?
-
-I was thinking that you wouldn't currently need an IPI if the target cpu
-was running in-kernel because nothing would happen until cond_resched()
-was called.
-
-> > I suspect C could also lead to tasks being pre-empted just before
-> > they sleep (eg after waking another task).
-> > There might already be mitigation for that, I'm not sure if
-> > a voluntary sleep can be done in a non-pre-emptible section.
-> 
-> No, voluntary sleep can not be done in a preemptible section.
-
-I'm guessing you missed out a negation in that (or s/not/only/).
-
-I was thinking about sequences like:
-	wake_up();
-	...
-	set_current_state(TASK_UNINTERRUPTIBLE)
-	add_wait_queue();
-	spin_unlock();
-	schedule();
-
-Where you really don't want to be pre-empted by the woken up task.
-For non CONFIG_RT the lock might do it - if held long enough.
-Otherwise you'll need to have pre-emption disabled and enable
-it just after the set_current_state().
-And then quite likely disable again after the schedule()
-to balance things out.
-
-So having the scheduler save the pre-empt disable count might
-be useful.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
