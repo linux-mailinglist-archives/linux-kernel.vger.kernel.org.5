@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0347E516F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39937E5172
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbjKHHyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S232404AbjKHH4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbjKHHym (ORCPT
+        with ESMTP id S229975AbjKHH4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:54:42 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED871712
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:54:40 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-778925998cbso423510285a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 23:54:40 -0800 (PST)
+        Wed, 8 Nov 2023 02:56:12 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2DD199
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:56:09 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7789cb322deso423522885a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 23:56:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699430079; x=1700034879; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699430169; x=1700034969; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ygNz6QaSQr8C1JwBdK820eTxi+sSDA3kL8cf+f1Y6x8=;
-        b=UagEPHwoGn1cw7pvkgp2eJ6xAnmhX/aRnm25RpjTSVbUJ/8AQdK6Bbh2CJbrHIamsy
-         6bhTy/VEm5/578iHDGUDWeNyvg1SY+u/gCfX3NA4ozrSskiuulNJKlKz4CgESPsmYNW8
-         xrOrf6NWix0vxsv6qfd6WmVMYejw+wLv7lCQOuBTmBUaKcJyOg9aebQxSqDdMiRrZyI8
-         +N9RihfaRB4L3nF+8dIje8gLMCVeLZPUY6Jz/5Of5KehN7YmCkLl8XtL1zwQLPGBT6bZ
-         TG6qcwbQqF2hNEkpupuLaYHZPESBOJqaHIPD99uBv1NFYs4MGJ2ococ8HW+16x7oYgno
-         K41A==
+        bh=H8w1oUIV6klkbpaooYBF8vQv1FOMQ0nxRBBCHhuNDO0=;
+        b=nBX4z5F0s8vIxiiROnrnG9Moai/yIzsYdq53wjqC5E7t4IsEG0b/Qaynhp69m5YUtf
+         7sZbF1sixXp1sbT2rcacArku5e4K7OGM7rUe2DSJKsNNVWsTWp+gjVJzTrm/sjw9ak/Z
+         o5D/32WtcG2tQ5o2lC6djoETOoUCejCba/zzIWw0IGK+LDjEn937ozPPE7FUkhXGhz4w
+         x6V1sKYyLJPn7Mj0Jt1KRKXPdv3yqN4VlVVfh05N6L4Kb0WVi8vo/2Je7w9Nz6fq4fJz
+         V0KxTzYgvvi3+YYrmnp/Nb+DzD+uzcebHnTD2GbxuaWSqmSnUlF9QC78PLkueJJuCqib
+         /A/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699430079; x=1700034879;
+        d=1e100.net; s=20230601; t=1699430169; x=1700034969;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ygNz6QaSQr8C1JwBdK820eTxi+sSDA3kL8cf+f1Y6x8=;
-        b=nFFb8f/yid7RKFxuiR4Y1gZmbR7tRVp5y9NDFHU7q9iw73L5Q3VXnJreM22VRjxQ6A
-         iljZpI1TQ++SLT5iW64Qv0aJJdn062ZVHSqpvdaAqGaCqJ3auQH4CHkkAFxJoiFsR+bW
-         cZjsdKED1vBGTzb9miGd3tfoqcD3GlUWfu/1eXGa9tQr7S3vrfgsrsu1HduH/DwbVSw7
-         KJ6UFQnxFpEYw+qCePZ5Wa7iUDyieYghweqX6CcisA2LD0EyeGvRKk1vtYdOnptNZKUA
-         X3VuEby/SqcnhwlO0N00hGQCa4vQP8z70Zm+Tfs8aRCJVpEziX2puUPgv9Er/0COG2Qk
-         exMw==
-X-Gm-Message-State: AOJu0YyQaJmt8tnLeMmy7pXyvmSJSnV5Fa7cbVtGh4asEhQPXQJ0Q1CW
-        bfNfzWKz4yX+hSWtjdubLShTUes6AQ3xlOqaGZtolvA8BP9p5VTn
-X-Google-Smtp-Source: AGHT+IH6cPAsrd3WC4bAwpwc11Q1TdPFwhf/pnW+2buoTZN3PIWXydcyrG1UcoT4jj32qxmHEZTzkOtQ6hXJsT/oSqE=
-X-Received: by 2002:a05:6214:2622:b0:670:fa29:eb51 with SMTP id
- gv2-20020a056214262200b00670fa29eb51mr1104915qvb.12.1699430079490; Tue, 07
- Nov 2023 23:54:39 -0800 (PST)
+        bh=H8w1oUIV6klkbpaooYBF8vQv1FOMQ0nxRBBCHhuNDO0=;
+        b=ihOH4F9bHwC079n2nx0HX+F+hDDeFI1XW4ubbKYNnRTv5e9mCXN7HGH9F9xY8iRKB2
+         hTQsYBmPkCmzJrlyDRdIj0IGG6SUr2CmRiyXTOU6oiZ+lsScM9gJLJzOnhdsX9xq1LmJ
+         1EFoVnzNnoRmADQt/04kKRjGdn7Y8rM7wixYxCAt8bNaJqRLNMcO9DuUFFh5FnOmhlJd
+         Vyx31r2Ncsf7Kk0tYB2EBLF0hllYmGdvHrP4hj6W246ySTMs9bldRoab3Y04HPcED3Tu
+         onL81UUZ3VojGILCG3yxOirUMA5o+2f2p6c9rYz6Yv6EX4lVrFzmjWQIlkn1mc5l/RoR
+         IDXw==
+X-Gm-Message-State: AOJu0Yz7BeTCp6mX12JPRxC2Lq0AMhbnbn63mTm7go1v5BovNBn8RzXW
+        lQffDtfa/cCSp8InQ2CNJ/ZSOQqCafVp6ZaHSlgMgQ==
+X-Google-Smtp-Source: AGHT+IGsdkg8STwLENrBsDgchNZNRsDeHm7bYpswSBdNOg3DTtiOOrLlcmATTww2OJz8gxU7EvanRomYrspFYydQcSU=
+X-Received: by 2002:ad4:5d4b:0:b0:675:b8fd:b544 with SMTP id
+ jk11-20020ad45d4b000000b00675b8fdb544mr1305574qvb.54.1699430169056; Tue, 07
+ Nov 2023 23:56:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20231030085515.907123-1-etienne.carriere@foss.st.com> <CAFA6WYO4m5n9oTzP1zJdJXASCwXdhVaa_tMN2EhDTNDMmxwaJg@mail.gmail.com>
-In-Reply-To: <CAFA6WYO4m5n9oTzP1zJdJXASCwXdhVaa_tMN2EhDTNDMmxwaJg@mail.gmail.com>
+References: <20231030084812.905549-1-etienne.carriere@foss.st.com>
+In-Reply-To: <20231030084812.905549-1-etienne.carriere@foss.st.com>
 From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Wed, 8 Nov 2023 08:54:28 +0100
-Message-ID: <CAHUa44G2=tVXTqJxSx_bBf22FDp2LVBP1zk2bzGp+EvcUkTUrQ@mail.gmail.com>
-Subject: Re: [PATCH] optee: add missing description of RPC argument reference
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Etienne Carriere <etienne.carriere@foss.st.com>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        kernel test robot <lkp@intel.com>
+Date:   Wed, 8 Nov 2023 08:55:57 +0100
+Message-ID: <CAHUa44F+vGOWP-D2Jy+v5iQqDwV6q5uf_ZHt3FaoR7aX9R-oUA@mail.gmail.com>
+Subject: Re: [PATCH v12 0/4] tee: introduce TEE system sssion
+To:     Etienne Carriere <etienne.carriere@foss.st.com>
+Cc:     linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 10:06=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org>=
- wrote:
+On Mon, Oct 30, 2023 at 9:48=E2=80=AFAM Etienne Carriere
+<etienne.carriere@foss.st.com> wrote:
 >
-> On Mon, 30 Oct 2023 at 14:25, Etienne Carriere
-> <etienne.carriere@foss.st.com> wrote:
-> >
-> > Adds missing inline description comment for RPC optional arguments
-> > reference.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/lkml/202310192021.fvb6JDOY-lkp@intel.co=
-m/
-> > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
-> > ---
-> >  drivers/tee/optee/smc_abi.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
+> This series introduces TEE system sessions for TEE service sessions that
+> require TEE to provision resources to prevent deadlock when clients call
+> the TEE.
 >
-> Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+> This deadlock situation can happen when a TEE service is used by low
+> level system resources as for example when Linux kernel uses SCMI
+> service embedded in TEE for clock, reset, regulator, etc... controls.
+> This case is detailled in patch 2/4:
+>
+> > This feature is needed to prevent a system deadlock when several TEE
+> > client applications invoke TEE, consuming all TEE thread contexts
+> > available in the secure world. The deadlock can happen in the OP-TEE
+> > driver for example if all these TEE threads issue an RPC call from TEE
+> > to Linux OS to access an eMMC RPMB partition (TEE secure storage) which
+> > device clock or regulator controller is accessed through an OP-TEE SCMI
+> > services. In that case, Linux SCMI driver must reach OP-TEE SCMI
+> > service without waiting until one of the consumed TEE threads is freed.
+>
+> Etienne Carriere (4):
+>   tee: optee: system call property
+>   tee: system session
+>   tee: optee: support tracking system threads
+>   firmware: arm_scmi: optee: use optee system invocation
+>
+>  drivers/firmware/arm_scmi/optee.c |   4 +
+>  drivers/tee/optee/call.c          | 130 ++++++++++++++++++++++++++++--
+>  drivers/tee/optee/core.c          |   5 +-
+>  drivers/tee/optee/ffa_abi.c       |  14 ++--
+>  drivers/tee/optee/optee_private.h |  29 ++++++-
+>  drivers/tee/optee/smc_abi.c       |  32 +++++---
+>  drivers/tee/tee_core.c            |   8 ++
+>  include/linux/tee_drv.h           |  16 ++++
+>  8 files changed, 211 insertions(+), 27 deletions(-)
+> ---
+> Changes since v11:
+> - Fixed inline description comments in patch 1/3 and 3/4, other patches
+>   are unchanged.
+>
+> Changes since v10:
+> - Changes patch 3/4, other are unchanged.
+> --
+> 2.25.1
+>
 
 I'm picking up this.
 
 Thanks,
 Jens
-
->
-> -Sumit
->
-> > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> > index d5b28fd35d66..67bfa25d6302 100644
-> > --- a/drivers/tee/optee/smc_abi.c
-> > +++ b/drivers/tee/optee/smc_abi.c
-> > @@ -806,6 +806,7 @@ static void handle_rpc_func_cmd(struct tee_context =
-*ctx, struct optee *optee,
-> >  /**
-> >   * optee_handle_rpc() - handle RPC from secure world
-> >   * @ctx:       context doing the RPC
-> > + * @rpc_arg:   pointer to RPC arguments if any, or NULL if none
-> >   * @param:     value of registers for the RPC
-> >   * @call_ctx:  call context. Preserved during one OP-TEE invocation
-> >   *
-> > --
-> > 2.25.1
-> >
