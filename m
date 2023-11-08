@@ -2,51 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4097E5CA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BEA7E5CBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjKHRsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:48:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        id S232646AbjKHRwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjKHRsT (ORCPT
+        with ESMTP id S232254AbjKHRwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:48:19 -0500
+        Wed, 8 Nov 2023 12:52:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419201BEF
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:48:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39BDC433C9;
-        Wed,  8 Nov 2023 17:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1699465696;
-        bh=B3D8kn+YAuTi2y8lgXrgSAq8tNXjJQV5oZRUhMOzh4I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KpYEkL08STie+f6FHsECybos+SkhZy/VhqZCt0AROESLGuTCGXX1in2v2Ct2RB7pq
-         HLLMMct+beCFwVVqoA4CM+YkEfd52io5bYbvx2GwXdu0mEmlUxQxtcakhIy+Je3HkT
-         3rL6/O9GdaMx+b9IshEs013pU1Ak/DuBlWXnhSwE=
-Date:   Wed, 8 Nov 2023 09:48:16 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Lasse Collin <lasse.collin@tukaani.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/xz: Add ARM64 BCJ filter
-Message-Id: <20231108094816.5532cac69a4b8541952f44c5@linux-foundation.org>
-In-Reply-To: <20231108194448.674cd0ad@kaneli>
-References: <20231108194448.674cd0ad@kaneli>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E1F1BEF
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:52:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3BB83C433C8;
+        Wed,  8 Nov 2023 17:52:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699465931;
+        bh=P42P0iDGouK6Q27sLtECRb2Vri+EHlfqNGdPFa+Tplg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PqRjbgQPHdowN6f8MCREM7ULHxH7xkM1H4nKsWfVi6xjvFmltq0yjSZ+LzAf/Ht9A
+         jXPVEUPgU+0FCXMlVRMNySvHEoA6sY54Cypw1FytNOoFuDRStrxv5Z1nRZxhSi3LrV
+         I3Pm+Oh9VLsUuEPCgJ0Q1/gqHNKQz/EB04PB4qwczwrNVy6+ZlC8xW8d+5QEmHOPuT
+         oCaM/ZaXcoTJPqCyskVxA9uAWYB5MKPWzPeyShBC0vi3zRuALbpk9KcMvsrr60Z/a4
+         G9cIm37NOmLafVSoEGpDdJQrwmJ160/hWm5T9UnLeuYmidiWTwcGgboVs48Nki4Q1X
+         id6cfyAlFPQ8A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2086BE00081;
+        Wed,  8 Nov 2023 17:52:11 +0000 (UTC)
+Subject: Re: [GIT PULL] memblock update for v6.7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231106183258.GP2824@kernel.org>
+References: <20231106183258.GP2824@kernel.org>
+X-PR-Tracked-List-Id: <linux-mm.kvack.org>
+X-PR-Tracked-Message-Id: <20231106183258.GP2824@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock tags/memblock-v6.7-rc1
+X-PR-Tracked-Commit-Id: e96c6b8f212a510c9b22362de519f6e1d7920de5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 447cec034b7896f4b19dbfe3ce6c366ce7c7602a
+Message-Id: <169946593112.29156.11429922784947978854.pr-tracker-bot@kernel.org>
+Date:   Wed, 08 Nov 2023 17:52:11 +0000
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Shuai <songshuaishuai@tinylab.org>,
+        Mike Rapoport <rppt@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023 19:44:48 +0200 Lasse Collin <lasse.collin@tukaani.org> wrote:
+The pull request you sent on Mon, 6 Nov 2023 20:32:58 +0200:
 
-> ARM64 kernel decompression is done by bootloaders but
-> the filter can still be useful, for example, for Squashfs.
-> 
-> A duplicated check for XZ_DEC_ARM in xz_private.h was omitted too.
+> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock tags/memblock-v6.7-rc1
 
-There's nothing here that uses the new functionality?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/447cec034b7896f4b19dbfe3ce6c366ce7c7602a
 
-Is a squashfs patch expected?
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
