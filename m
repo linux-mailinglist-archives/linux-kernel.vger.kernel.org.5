@@ -2,175 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FF47E5BEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F187E5BF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbjKHRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S232328AbjKHREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:04:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHRDc (ORCPT
+        with ESMTP id S229816AbjKHREa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:03:32 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E90E1FF5;
-        Wed,  8 Nov 2023 09:03:30 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a6190af24aso1111698566b.0;
-        Wed, 08 Nov 2023 09:03:30 -0800 (PST)
+        Wed, 8 Nov 2023 12:04:30 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19583E8
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:04:28 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c41e95efcbso1076894166b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:04:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699463008; x=1700067808; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1699463063; x=1700067863; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
-        b=MmEdigN87e0BF5FA4sxqDyz29RE5zh2+IVO310sVGK/8mPJkkNTzREXnNrgn8lKMKT
-         A8YhsJ7HRzzF9itCgW9IjhJIBJsi51sy9J7ACcCPs/JCKfi1SPa7DwUV1Qoy2mDG11TS
-         ho5fl/tq8kbqhDAF2RLYosNUhNdtUUW6QaXzlqYQ10k2goGlvTr90lQ3CUc4oO/SqBSE
-         xMVV/H/qJHLRLigtdKQcp8Ib6LxMPzKB7Y5vsKqpGOtoxCtLjMyZBEnyDY/1GwscKa9s
-         cwC3gRGZW8OMXBYT/3dYn4xVoaWnWRSW/UXcX/w3rmEujBpiLWPIACgAA682gRImW0CA
-         2Bqw==
+        bh=LDcupbe+5qAO0hhDSEHW5GSzZCVe/uaRnl7TSsp+HAs=;
+        b=c+mj0HTRDTOZsSPLdBU/bRSzOqDm45aOl/QVkXiYrkZpNsqrJoIkXx+cCCUDUbp92o
+         HNl2oTYR7fJEelj6pAeHxDy+0tnU7KEmMP9PER6RvOYHGavNzmUHZDg/N3KISbeiwclF
+         45jIy3vRKO4pRjtFImsbTDP5NCIWtxAFEBAms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699463008; x=1700067808;
+        d=1e100.net; s=20230601; t=1699463063; x=1700067863;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
-        b=wz8tKERUDVrXGqexEZLHtvqYVGVUhwdjjr7HnG4PQrwXc4QplWDibhGPI8yRkZ8WZt
-         iJ8ZMxS4WX0EohWMrFNnygER2qysRAqlcIoP+r56To6wIR4BXARBIy7NeMZQQ2Zfk/Be
-         Ojx3ZJ2Z/+/7w/d+c3GW5XmwSEiNUgC2lR30iNgokflt32Q9hZrqAEVUC5XUnfoYUfgZ
-         NsT2tv/SA+0Ui6OtUYhxD1Iq+NxrPrbP0iFDl+oFTBdY8RVhroU3hu8OtnExID2WaExY
-         QVKfKxVETb3IC/PQa05mGrXDO38DnQ/ST+P+VmbfwDX/38NGy8RigBns4Pn4gNq0wQP+
-         zznQ==
-X-Gm-Message-State: AOJu0Yx0dwDh5+eFjpmnwpCEx4oM8SEn+tnZCCQLSK8c5vggfkJA37IV
-        juTZ4DI0sBJgguMqn/pL6NVUcD1i/NpP3PluI/U=
-X-Google-Smtp-Source: AGHT+IGT0WqJGvLBjAdabk5bYNm3hDWuM/paOADIY+4ELcAhc+CPTYvUGcejY38H6jJNeeNIbd+FhuBcsmh6K3wdG5g=
-X-Received: by 2002:a17:906:4fd5:b0:9c6:19ea:cdd6 with SMTP id
- i21-20020a1709064fd500b009c619eacdd6mr2326618ejw.50.1699463008052; Wed, 08
- Nov 2023 09:03:28 -0800 (PST)
+        bh=LDcupbe+5qAO0hhDSEHW5GSzZCVe/uaRnl7TSsp+HAs=;
+        b=iuy+5DuZajHvvHGGKKR3nMV4FCO2XgF3LmoAo+Hn1UCGDpTb/dkxIeztlviYg5XNO+
+         QpCCHMRiJSOStU2aXUd7sYXOT4Z1VHZxxH5CLoaKJDYCABoH7RN0LnLqGMy+17AEcIT9
+         qJ5ySJZ7IdhpS35SBPtEsHLUV1Fr79HrL/Qay/v7F+3rjBWmILm/eyUHJxYYxjb8H2FH
+         YpJxOlnAxJZqt956IJr8RDqyPr3BrbYOakFJuSvpbxtgqCtRorF89E3AuRXphzsGYx0u
+         9kxOMzS6e9in7Jdn1x5ui/edW7uemvFyVYvRzmYz5HsygBegiQS96CURRQ7M+kotIHLR
+         ONGQ==
+X-Gm-Message-State: AOJu0YwsxgzV1DwU3G2ZNadgA3FUlDTKSwxF/i5iFNgxQQCSKk/ba8/J
+        7H4925DVM74nmDpzo3QPvVI96dLFq+PtLNm9WsmtJRre
+X-Google-Smtp-Source: AGHT+IEo1Ro0fHnIcdrJBw+bV+WqwAci7y6R9OBEf/47Y0P81aVgxWZ0eGOqrUFF08Rq0GJwTub3FQ==
+X-Received: by 2002:a17:906:c115:b0:9c2:2d0a:320c with SMTP id do21-20020a170906c11500b009c22d0a320cmr1999825ejc.46.1699463063348;
+        Wed, 08 Nov 2023 09:04:23 -0800 (PST)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id mj24-20020a170906af9800b00992e265495csm1310289ejb.212.2023.11.08.09.04.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 09:04:23 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-408c6ec1fd1so75605e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:04:22 -0800 (PST)
+X-Received: by 2002:a05:600c:3110:b0:405:320a:44f9 with SMTP id
+ g16-20020a05600c311000b00405320a44f9mr219580wmo.5.1699463062323; Wed, 08 Nov
+ 2023 09:04:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20231108110048.1988128-1-anders.roxell@linaro.org>
-In-Reply-To: <20231108110048.1988128-1-anders.roxell@linaro.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 8 Nov 2023 09:03:16 -0800
-Message-ID: <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
-Subject: Re: [PATCHv2] selftests: bpf: xskxceiver: ksft_print_msg: fix format
- type error
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231107204611.3082200-1-hsinyi@chromium.org> <20231107204611.3082200-5-hsinyi@chromium.org>
+ <xnyf3ul7pwsgrmxgbareh5lhhmpfuvfksj3nyd4zmup7khaer2@fbwgbrq4vywb>
+In-Reply-To: <xnyf3ul7pwsgrmxgbareh5lhhmpfuvfksj3nyd4zmup7khaer2@fbwgbrq4vywb>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 8 Nov 2023 09:04:09 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WuwJGsDraFt=i0NbN-HkocsYgL=kCrZTxqVN+Oo1u8pg@mail.gmail.com>
+Message-ID: <CAD=FV=WuwJGsDraFt=i0NbN-HkocsYgL=kCrZTxqVN+Oo1u8pg@mail.gmail.com>
+Subject: Re: [PATCH v6 4/5] drm/panel-edp: Add override_edid_mode quirk for
+ generic edp
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 3:00=E2=80=AFAM Anders Roxell <anders.roxell@linaro.=
-org> wrote:
->
-> Crossbuilding selftests/bpf for architecture arm64, format specifies
-> type error show up like.
->
-> xskxceiver.c:912:34: error: format specifies type 'int' but the argument
-> has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
->  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
->                                                                 ~~
->                                                                 %llu
->                 __func__, pkt->pkt_nb, meta->count);
->                                        ^~~~~~~~~~~
-> xskxceiver.c:929:55: error: format specifies type 'unsigned long long' bu=
-t
->  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
->  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
->                                     ~~~~             ^~~~
->
-> Fixing the issues by casting to (unsigned long long) and changing the
-> specifiers to be %llx, since with u64s it might be %llx or %lx,
-> depending on architecture.
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
->  tools/testing/selftests/bpf/xskxceiver.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
-ftests/bpf/xskxceiver.c
-> index 591ca9637b23..1ab9512f5aa2 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -908,8 +908,9 @@ static bool is_metadata_correct(struct pkt *pkt, void=
- *buffer, u64 addr)
->         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
->
->         if (meta->count !=3D pkt->pkt_nb) {
-> -               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
-ount [%d]\n",
-> -                              __func__, pkt->pkt_nb, meta->count);
-> +               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
-ount [%llx]\n",
+Hi,
 
-why hex? %llu?
+On Wed, Nov 8, 2023 at 7:45=E2=80=AFAM Maxime Ripard <mripard@kernel.org> w=
+rote:
+>
+> > @@ -575,9 +599,18 @@ static int panel_edp_get_modes(struct drm_panel *p=
+anel,
+> >
+> >               if (!p->edid)
+> >                       p->edid =3D drm_get_edid(connector, p->ddc);
+> > -
+> > -             if (p->edid)
+> > -                     num +=3D drm_add_edid_modes(connector, p->edid);
+> > +             if (p->edid) {
+> > +                     if (has_override_edid_mode) {
+>
+> It's not clear to me why the override mechanism is only there when
+> there's a ddc bus?
 
-> +                              __func__, pkt->pkt_nb,
-> +                              (unsigned long long)meta->count);
->                 return false;
->         }
->
-> @@ -926,11 +927,13 @@ static bool is_frag_valid(struct xsk_umem_info *ume=
-m, u64 addr, u32 len, u32 exp
->
->         if (addr >=3D umem->num_frames * umem->frame_size ||
->             addr + len > umem->num_frames * umem->frame_size) {
-> -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr,=
- len);
-> +               ksft_print_msg("Frag invalid addr: %llx len: %u\n",
-> +                              (unsigned long long)addr, len);
->                 return false;
->         }
->         if (!umem->unaligned_mode && addr % umem->frame_size + len > umem=
-->frame_size) {
-> -               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
-n: %u\n", addr, len);
-> +               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
-n: %u\n",
-> +                              (unsigned long long)addr, len);
->                 return false;
->         }
->
-> @@ -1029,7 +1032,8 @@ static int complete_pkts(struct xsk_socket_info *xs=
-k, int batch_size)
->                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->umem=
-->cq, idx + rcvd - 1);
->
->                         ksft_print_msg("[%s] Too many packets completed\n=
-", __func__);
-> -                       ksft_print_msg("Last completion address: %llx\n",=
- addr);
-> +                       ksft_print_msg("Last completion address: %llx\n",
-> +                                      (unsigned long long)addr);
->                         return TEST_FAILURE;
->                 }
->
-> @@ -1513,8 +1517,9 @@ static int validate_tx_invalid_descs(struct ifobjec=
-t *ifobject)
->         }
->
->         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_pkt=
-s / 2) {
-> -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%u]=
- expected [%u]\n",
-> -                              __func__, stats.tx_invalid_descs,
-> +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%ll=
-x] expected [%u]\n",
+I think you're confusing the two different (but related) issues
+addressed by this series. One is when you're using the generic
+"edp-panel" compatible string. In that case the mode comes from the
+EDID and only the EDID since there's no hardcoded mode. We need a mode
+override there since some EDIDs shipped with a bad mode. That's the
+subject of ${SUBJECT} patch.
 
-should this be %llu? Or the switch to the hex was intentional?
+The second issue is what to do with a hardcoded mode. That's the
+subject of the next patch in the series (patch #5). Previously we
+merged the hardcoded and EDID modes. Now (in the next patch) we use
+only the hardcoded mode. There's no need for a fixup because the mode
+is hardcoded in the kernel.
 
-> +                              __func__,
-> +                              (unsigned long long)stats.tx_invalid_descs=
-,
->                                ifobject->xsk->pkt_stream->nb_pkts);
->                 return TEST_FAILURE;
->         }
-> --
-> 2.42.0
+
+> You mentioned before that you were following panel-simple,
+
+As of the newest version of the patch, it's no longer following
+panel-simple in response to your feedback on previous versions.
+
+> but that's a
+> clear deviation from what I can see. If there's a reason for that
+> deviation, that's fine by me, but it should at least be documented in
+> the commit log.
+
+I think the commit log is OK. I suspect the confusion is only because
+you've reviewed previous versions of the series. Please shout if
+things still look confusing.
+
+
+> > @@ -950,6 +983,19 @@ static const struct panel_desc auo_b101ean01 =3D {
+> >       },
+> >  };
+> >
+> > +static const struct drm_display_mode auo_b116xa3_mode =3D {
+> > +     .clock =3D 70589,
+> > +     .hdisplay =3D 1366,
+> > +     .hsync_start =3D 1366 + 40,
+> > +     .hsync_end =3D 1366 + 40 + 40,
+> > +     .htotal =3D 1366 + 40 + 40 + 32,
+> > +     .vdisplay =3D 768,
+> > +     .vsync_start =3D 768 + 10,
+> > +     .vsync_end =3D 768 + 10 + 12,
+> > +     .vtotal =3D 768 + 10 + 12 + 6,
+> > +     .flags =3D DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+> > +};
 >
+> That should be a separate patch
+
+That's fair. I didn't think it was a huge deal, but I agree that it's
+slightly cleaner.
+
+-Doug
