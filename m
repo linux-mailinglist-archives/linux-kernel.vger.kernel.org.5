@@ -2,261 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F127E5B54
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F44A7E5B57
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbjKHQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S231890AbjKHQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHQfn (ORCPT
+        with ESMTP id S229460AbjKHQhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:35:43 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D741BD5;
-        Wed,  8 Nov 2023 08:35:40 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso11924815a12.0;
-        Wed, 08 Nov 2023 08:35:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699461339; x=1700066139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fvouIN0YpD/yy/djLXDg6nn9IovU0Wm0hli2iufjcKA=;
-        b=m+MXCZUV/8bOZKKOunH60EhC6c/t4JNJblQPCseqsc4HdNMO6tdu10Z/CZwH9pslkC
-         Xc2AgC8GS1cgXIBJ2/A94o6j/KwMxlnFLu8tR/DTQkVa2V82BLL6D76D98HThoHaUQmp
-         EvJAUDpqDB79F+p6SutGKCYrdQtTeUnrupPWRzSYK14zFk+yJlRAINzempMj+WOu+5e+
-         orqlXimlK+hi/9/cXaqPVXXNhbsFN2LSAhHiqEEsUp0aQ6P8kJyzxIeULmiAiqeCsHsj
-         vSU+ZTErARn4ve2jnd6MJcC0U6rC0wsb8SkovY/cALcS9EC/6KyiP7ikh2+Ard5C/HOV
-         oxcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699461339; x=1700066139;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fvouIN0YpD/yy/djLXDg6nn9IovU0Wm0hli2iufjcKA=;
-        b=C+qD5HFURKrIdcxtG8lfU/UKGoYJ1nRrbpQoKKiddyNglta0u2z4gW33i4ir1Uijnu
-         hNyoB14qen8GDaBJzoS5EWd7lEkg3PUinQ9XnnINnINh7Dr5bdgKOKGU5RiFmhS1F8CI
-         O0n3r23fF96zD4GyL4PP91LF/Zlp8amv4heW6lXeOugKg2hIYAMViUZYpkx5khcbxAhG
-         o9YddsVOxMsgtRNNSBkNTnUMBiwMDuhnpmxV3Yzx/Gxwkwg/vkNCdjM+Cr/Kyl10fIEq
-         dibzBeq0jQRAQ6grEjfGjN85z4zhh5Zwurlt/PWgstyFv3fP52tjp0J5t5sJlvGJmaIL
-         jzHw==
-X-Gm-Message-State: AOJu0YyeNChJ7kH/yNs2pSx+gjpbZ2fnb2YaOu/LprQInqOmBEDZ8+xE
-        X6/F5NDNy3+KWoJTpD9WCWo=
-X-Google-Smtp-Source: AGHT+IFd/I774pG5xdTfFweEK6MrxA5t/byqxrO/VrHSbCnaAaaskp1vo/lKOiFn0N8EOXvliS+oUw==
-X-Received: by 2002:a50:ab10:0:b0:540:346c:7b2f with SMTP id s16-20020a50ab10000000b00540346c7b2fmr1836190edc.40.1699461338679;
-        Wed, 08 Nov 2023 08:35:38 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:840c:82c6:68fb:9a49? (2a02-8389-41cf-e200-840c-82c6-68fb-9a49.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:840c:82c6:68fb:9a49])
-        by smtp.gmail.com with ESMTPSA id i14-20020aa7c9ce000000b0053fa13e27dcsm6869714edt.48.2023.11.08.08.35.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 08:35:38 -0800 (PST)
-Message-ID: <285ec1d8-d277-403c-961f-3de523fc799f@gmail.com>
-Date:   Wed, 8 Nov 2023 17:35:36 +0100
-MIME-Version: 1.0
+        Wed, 8 Nov 2023 11:37:23 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2080.outbound.protection.outlook.com [40.107.92.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491321FCF;
+        Wed,  8 Nov 2023 08:37:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bSBaHv0nLG5FExZ5erMTsOl6y8UNf75WOvobcRZR0rwM/uAq786GK2INdKuVCyG6vlqcml6235Ef7pnrFMIuUFFRMmCEGoCw8E3csbbUD8EmZZ75dn/i4rjWLbmUixHlibxOGEGfyHVcs2uwaMSok8VqKsfNLtZtL9P/vKrLwy290gmBfWakRVSN11DVMv3DSvjsj5VevmDqeh7AimPe00cO5nPp9OkbA/ST1X/EbMPNY38bK55u9EovRmshRe/b3YM5s+QHhqI2UjHRNOSKGfSgEw7M3mYFikewdo/Z3VsbFPOTvyUIExEVM7EDX7DQ0Fp+GbHPYONDkrwAh7NjkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uFgYkix3kzEBUGk8p9+9eP7k5GjL3g9OzhKxFkVHZP0=;
+ b=JephHjt33VdusecPAr0JDPVmePRtScu/enE6vYbD7tS7ruY4tneygT7wTaEGcH+vaDGU2aC+mS7qvbyhVO6bsTcg/qWlOmvXTFUMZ6gKbybVERFWcZH0VK1sDtTTKWPJqoaSLKfKXVNBCpLVOm/zaBoCRRQlkkPycKXXoN13DxRtpfqRReAhDTYbiulQa0obYm4XyQyNMc89Ys5UVPauNLxkyr1Ur80d9ZL4p4zvmjn3pWz8DfQ9bTYBW0wU01wZ9YpZ2gqXUReVGFWqG8Xz4k/KMs8N5V2VAh/MhYEVmhDXJNLS/GTzLDgv0ahl3DwXX+QLtcSyldgPlYpr8nCW7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uFgYkix3kzEBUGk8p9+9eP7k5GjL3g9OzhKxFkVHZP0=;
+ b=JrFA600iNxxeiwUxhLoQIA+2p/WqHfhdXSF153LmRlGzG4Wo/hh7LDQnMwz+bHsgevirYcUQKZFHCtv0PYuQungI15n4vF3hWP7MAvotX0RtA8MZQ8W9k4Iy99tT+8b3QaTzzb9Ui3fu62tehqeh/Je0VneaCZtsHe0fOMTsP9U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com (2603:10b6:208:c5::18)
+ by PH0PR12MB7470.namprd12.prod.outlook.com (2603:10b6:510:1e9::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 8 Nov
+ 2023 16:37:15 +0000
+Received: from MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::8b27:b871:419:2466]) by MN2PR12MB3407.namprd12.prod.outlook.com
+ ([fe80::8b27:b871:419:2466%4]) with mapi id 15.20.6954.028; Wed, 8 Nov 2023
+ 16:37:14 +0000
+Message-ID: <52270fa5-4a7d-4894-9142-9b7697f0335a@amd.com>
+Date:   Wed, 8 Nov 2023 09:37:10 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] hwmon: Add support for Amphenol ChipCap 2
-Content-Language: en-US
+Subject: Re: [PATCH v3 1/2] dt-bindings: w1: Add YAML DT schema for AMD AXI w1
+ host and MAINTAINERS entry
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v1-0-087e21d4b1ed@gmail.com>
- <20231020-topic-chipcap2-v1-3-087e21d4b1ed@gmail.com>
- <e58cdedb-1825-4713-9d3f-5239bb182230@linaro.org>
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <e58cdedb-1825-4713-9d3f-5239bb182230@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+        Rob Herring <robh@kernel.org>
+Cc:     thomas.delev@amd.com, michal.simek@amd.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com, Conor Dooley <conor.dooley@microchip.com>
+References: <20231107180814.615933-1-kris.chaplin@amd.com>
+ <20231107180814.615933-2-kris.chaplin@amd.com>
+ <20231108155905.GA2198732-robh@kernel.org>
+ <7f547afe-74a2-49f9-8547-3c315d982018@linaro.org>
+Content-Language: en-GB
+From:   Kris Chaplin <kris.chaplin@amd.com>
+In-Reply-To: <7f547afe-74a2-49f9-8547-3c315d982018@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0010.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::15) To MN2PR12MB3407.namprd12.prod.outlook.com
+ (2603:10b6:208:c5::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3407:EE_|PH0PR12MB7470:EE_
+X-MS-Office365-Filtering-Correlation-Id: d22b4e98-c9af-409a-0afc-08dbe078f67f
+X-LD-Processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0sVGF3Ti0JYZr0I2jW4Vf34BaE/tinxewAktFboqeS9e4Z0lurLvft1EUKDvUBZd5+JXSnnjwO5zjiT8NqpPTFOkw40qXC5PBsj1Kuj7AmIhIsLOtyGe4IS0Ln47qO1rtQdypCqz1sBjs/QsZej3/ZhULfKGhQpcCo7kNd00DLvkSvPm23It07gvNwHqRIKYj3rdsy7UtevLkpdCUT0mnrWl3gdJW2aRB4Uc9rXGyFQbtZwHhgS5D4jcpqrbl1veQjkGXlb2pMMV688uJ2lYohV/tOmZV3VDZv4ODhw8TsQUbPby2iuBf6XEGc48Gua7skz8h4GhwtTu6LqGKRdPQ9o5O75RHg1kKTkSBxfPM9oWHrBupLfeJCZdBW+suxUf4ALcOJ00d9h6Cw6J2LEF4NvJ1tnYa7x7FEebjzo0GgKdr8Y/kqVmsl87HDyGRyPBuyVptBmHOEzSLFgw9O3pDthRAM/PkL1PqVnHBgSooGfam1Q+mITZ38lnd+ledsGV+N2CqGHQqQo+fW/RVIfmx5DajQJ3eZptRq04vsk+eIiWHIKnbTJTcsZbr+6/8v3gnB3TsJV/1+oz6D1W2+Gz6StI0RdJEXHz6ldXAqkGTrCu5tEzw1S2brWa7DF0hCXJ/BRZbPF5ScmFvnx+bKuU4A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3407.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(346002)(376002)(136003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(4744005)(2906002)(41300700001)(478600001)(316002)(66946007)(66476007)(38100700002)(8676002)(4326008)(36756003)(66556008)(110136005)(8936002)(6486002)(31686004)(86362001)(5660300002)(44832011)(31696002)(2616005)(6506007)(6666004)(26005)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVR6dXpySWZMNFMva1A5UHRXYTV2ekpnbW9XMm00M3F6Skw2Zmc0V0ZicW9t?=
+ =?utf-8?B?K2dYM2FxbEZvejVQSDd2dGxOc0ZobEtrQzlPcnJ6YzF0Z1VhR1dIcXZlZVRG?=
+ =?utf-8?B?UjYyRFBjSXdhUjIrd2wxUzV5ckg4WG1yaHBtYU9ieW1hR2FNdkI3aU12eXFW?=
+ =?utf-8?B?RHZJckkzdUZuVjVlTFYrakUvMU16cVNrMm5VKytVNHNFTURLMjNidmh2SWFR?=
+ =?utf-8?B?VVhaSENQTnJjWUhnQTByczZXaVVZQnhYQ3RWTjBNQnR2QlRtY1JOamhBT2NV?=
+ =?utf-8?B?bENLLytVNkltQ1FNRUp2REQwOXhSVWt1M3VnSXdLdFJaSnlpMHUzYWhiMEZj?=
+ =?utf-8?B?bkVWZWZ4eGVZeTlNeXRlaFdxb0lkTSs2d2t2TFNrVFM4Z01SWGhRZTFDQ3Iy?=
+ =?utf-8?B?SjlSbkR6ZWxkYnpUSjhqSDhLT2s3OHZTWmlwNURHOUZJZ0x3bUNDazJIM0I3?=
+ =?utf-8?B?VzA5UU9LbVFJK2RjM0JBak9rYW5xK2NoNHJTVkVEcTNTaGZLZmRDbThwLzd5?=
+ =?utf-8?B?TFhyQ2MyQXNGUzREbVJyUWQ3SUpTdDU4cjNMR1N3WVhyQzQ4WEZ3MmZ0VGRG?=
+ =?utf-8?B?dFJ4YnpGbnVwNzBFZkVmbXpLeW5qY1ZrbXU2MVNUM0QwVXp3M29zelBIRXpz?=
+ =?utf-8?B?ZDU0L3A0SmtzRHpJaDlNcDhJNXl3TlFrNmwvaEl5WmtkeTlxamp2UnRUWFJM?=
+ =?utf-8?B?a1BtdUcwaGN0WitQLys0N1BZa3F0Zy9MUmgxWDVEa0s4VC9Xd2gzejV0VXc2?=
+ =?utf-8?B?MFJHT3NZR3RXSnFYVVpPL0krdVhWQU5zTXIyTkd5TWRBZDdIcm90NmFGaU02?=
+ =?utf-8?B?Y2UxUitoSFlIeEgybXYveFlwT0lxQnBrd0dqY1Z1MmE2bFlkR1UzOHNYU0ZI?=
+ =?utf-8?B?ckhOWU50ejV5ZGlLT2RxUjJ4d0NGc0JlVzlWcXZGMXZMRVhvRStNQk8xM3Fi?=
+ =?utf-8?B?ZzgyZGRtL3hRMTRUTEF6QUx0d2hYUjF2aUtWODUvdmw4QW11QWV2aHVYemUy?=
+ =?utf-8?B?NEsrWENJaDZLem0vYm1ycUM3N1JUTnFPVXJnZGhXRGZpbXRmQmJkTFZGNmdF?=
+ =?utf-8?B?YlpjQk1BMTFlQy94RC84ejJ3YjZBdXlmYmZsNXpWNmYrZXY5TXp5QS9obldq?=
+ =?utf-8?B?ZXpSS1BBU3pWTlc5Z2Zza2FRL1plNXRhL3F2Z0VRNVJKMjh2VWxOWUo1cVpN?=
+ =?utf-8?B?TVFnZWJLSk9BbTJQelp3MkI0ZXFOMkZkRUFFTW9YMHEvenlUT3hwOTU1RzVX?=
+ =?utf-8?B?YVVHeStFRWFZb2tLVTRNb2xlVU9Ccmh4SGlTQ004MVpiVW5VaDZyMHVpNGRI?=
+ =?utf-8?B?a2RlT2hvRlZoRXhVNzlCN0d4ZzhvcGd1Q2c3RFRidTZyc0ZVL0VJa0ZwN3JL?=
+ =?utf-8?B?TjloMlJlSDRZQTdsdk1ONEhoVWdzY3ZyRWtacTNuV0dMSlAxNFBua1U0VHlS?=
+ =?utf-8?B?MDNRcUIvcThrMXhyYUtUTFZMRVdQb0lwWkZMQk5SK05zc2d1RWFkYkw1UkxQ?=
+ =?utf-8?B?ck9SMzI1QTdMQlprd1RydUFXenBDV3k0cFB5Slk3bGhmRHZJMDhwVFJodlJa?=
+ =?utf-8?B?TTZNRzZxY3lRYUJwbHlNM2tMOVBoaFJsZVRFaUV6YVBqQURQUjRsamxCT01u?=
+ =?utf-8?B?WlkyS05rd0ZUVkRmVEUxcE5vRVhjVE54TFFQUXVnNEFSQW94K25JcFd3VUp2?=
+ =?utf-8?B?UTRCclNQbDNndmhRY0FqUFNUcENHb2hreWQvVVFLdTZQdFFCb1AvcVRPeEps?=
+ =?utf-8?B?K2RHSHFHS2VWMlo0Q2laS0c4L1Z4ZnMzTnVmSHJGWVAyRSthNU8vbDFDKzN4?=
+ =?utf-8?B?bC9qVTBaT3ZBeGxnWWdFc2JrdUlIL2dmaldlcWNrcmlGU3FoZVFqQXBObGRL?=
+ =?utf-8?B?UzFPNGhHVjNlSW1ISVRwdU01VkNYOFRWa1pzQXpEaUhsbXVXbWdzL2VxaXhh?=
+ =?utf-8?B?dTd0SCtWaXdMMnFNRitDbmp4OWtGLzFmTC8rRjBDL2s4aEtXYWh5MGlmOHoy?=
+ =?utf-8?B?TUpaMjFKY2dJTEhLUjRMeUszNDJqRzU4VGZNbERUOVJrTHhUblZaR2JJdEYw?=
+ =?utf-8?B?TzlEVjFTR3FHbTVxVXh5YS96QVFqUk1pVzdnMzRQVTI4U1F3ZUJ6S1BpZi9Z?=
+ =?utf-8?Q?8ijE=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d22b4e98-c9af-409a-0afc-08dbe078f67f
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3407.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 16:37:14.1787
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /uduTIr9Zcx/smlBjmDipyuBOEZb0doQZaNHkKyMmLFzbaxhGamYRXnM0wGt0e5u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7470
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08.11.23 13:41, Krzysztof Kozlowski wrote:
-> On 08/11/2023 13:29, Javier Carrasco wrote:
->> The Telaire ChipCap 2 is a capacitive polymer humidity and temperature
->> sensor with an integrated EEPROM and minimum/maximum humidity alarms.
 >>
->> All device variants offer an I2C interface and depending on the part
->> number, two different output modes:
->> - CC2D: digital output
->> - CC2A: analog (PDM) output
+>> Sorry for not noticing earlier, but if there's another spin, drop 'YAML
+>> DT schema for ' from the subject. You already said that with
+>> 'dt-bindings'.
+>>
+>> Acked-by: Rob Herring <robh@kernel.org>
 > 
-> Thank you for your patch. There is something to discuss/improve.
-> 
-> 
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index dd5de540ec0b..63361104469f 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -21572,6 +21572,14 @@ F:	Documentation/devicetree/bindings/media/i2c/ti,ds90*
->>  F:	drivers/media/i2c/ds90*
->>  F:	include/media/i2c/ds90*
->>  
->> +TI CHIPCAP 2 HUMIDITY-TEMPERATURE IIO DRIVER
-> 
-> Why this is TI?
-> 
-> Bindings say Amphenol. Subject as well. Commit msg says Telaire. Here
-> you write Texas Instruments.
-> 
-> Three different companies used. How possibly we could understand this?
-> 
-> 
->> +M:	Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> +L:	linux-hwmon@vger.kernel.org
->> +S:	Maintained
-> 
-> ...
-> 
->> +
->> +/* Command mode is only accessible in the first 10 ms after power-up, but the
->> + * device does not provide any kind of reset. In order to access the command
->> + * mode during normal operation, a power cycle must be triggered.
->> + */
-> 
-> 
-> Please use full comment style, as described in Coding Style document.
-> 
-> ...
-> 
->> +
->> +static const struct hwmon_ops cc2_hwmon_ops = {
->> +	.is_visible = cc2_is_visible,
->> +	.read = cc2_read,
->> +	.write = cc2_write,
->> +};
->> +
->> +static const struct hwmon_chip_info cc2_chip_info = {
->> +	.ops = &cc2_hwmon_ops,
->> +	.info = cc2_info,
->> +};
->> +
->> +static const struct cc2_config cc2dxx_config = {
->> +	.measurement = cc2dxx_meas,
->> +};
->> +
->> +static const struct cc2_config cc2dxxs_config = {
->> +	.measurement = cc2dxxs_meas,
->> +};
->> +
->> +static const struct of_device_id cc2_of_match[] = {
->> +	{ .compatible = "amphenol,cc2dxx",
->> +	  .data = &cc2dxx_config,
->> +	},
->> +	{ .compatible = "amphenol,cc2dxxs",
-> 
-> Format it as in other sources. Don't introduce your own codings style.
-> 
->> +	  .data = &cc2dxxs_config,
->> +	},
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(of, cc2_of_match);
-> 
-> Keep ID tables together.
-> 
->> +
->> +static int cc2_probe(struct i2c_client *client)
->> +{
->> +	struct cc2_data *data;
->> +	struct device *dev = &client->dev;
->> +	const struct of_device_id *match;
->> +	int ret;
->> +
->> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
->> +		return -EOPNOTSUPP;
->> +
->> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	i2c_set_clientdata(client, data);
->> +
->> +	mutex_init(&data->i2c_lock);
->> +	mutex_init(&data->alarm_lock);
->> +
->> +	data->client = client;
->> +
->> +	match = i2c_of_match_device(cc2_of_match, client);
->> +	if (!match)
->> +		return -ENODEV;
->> +
->> +	data->config = match->data;
->> +
->> +	ret = cc2_request_ready_irq(data, dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	data->regulator = devm_regulator_get_optional(dev, "vdd");
->> +	if (!IS_ERR(data->regulator)) {
->> +		ret = cc2_retrive_alarm_config(data);
->> +		if (ret)
->> +			goto cleanup;
->> +	} else {
->> +		/* No access to EEPROM without regulator: no alarm control */
-> 
-> Test your code with deferred probe. Are you sure you handle it
-> correctly? To me, it looks like you handle deferred probe the same as
-> any error.
-> 
-The -EPROBE_DEFER is propagated to the probe function and it is the
-returned value. I clarified the error path in v2 so no error messages
-are displayed in that case, going directly to the dev_err_probe in the
-probe cleanup.
-When the EPROBE_DEFER error is returned, the probe function is deferred
-and called again later on, which is the desired behavior.
+> I can fix it while applying. No need to resend, unless there will be
+> more things to fix.
 
->> +		goto dev_register;
->> +	}
->> +
->> +	ret = cc2_request_alarm_irqs(data, dev);
->> +	if (ret)
->> +		goto cleanup;
->> +
->> +dev_register:
->> +	data->hwmon = devm_hwmon_device_register_with_info(dev, client->name,
->> +							   data, &cc2_chip_info,
->> +							   NULL);
->> +	if (IS_ERR(data->hwmon))
->> +		return dev_err_probe(dev, PTR_ERR(data->hwmon),
->> +				     "Unable to register hwmon device\n");
->> +
->> +	return 0;
->> +
->> +cleanup:
->> +	if (cc2_disable(data))
->> +		dev_dbg(dev, "Failed to disable device");
->> +
->> +	return ret;
->> +}
->> +
->> +static void cc2_remove(struct i2c_client *client)
->> +{
->> +	struct cc2_data *data = i2c_get_clientdata(client);
->> +	int ret = cc2_disable(data);
->> +
->> +	if (ret)
->> +		dev_dbg(&client->dev, "Failed to disable device");
->> +}
->> +
->> +static const struct i2c_device_id cc2_id[] = { { "chipcap2", 0 }, {} };
-> 
-> Use style like in other files.
-> git grep i2c_device_id
-> 
-> BTW, having mismatched entries looks error-prone. Why do you even need
-> i2c_device_id if it is not matching of_device_id?
-> 
-> Best regards,
-> Krzysztof
-> 
+Thank you Krzysztof and Rob.  I'll amend locally and if we have any 
+other fixes re-send otherwise hold off.
+
+Regards
+Kris
