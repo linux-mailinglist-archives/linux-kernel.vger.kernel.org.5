@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B462A7E5726
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111397E5732
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbjKHNBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        id S1344697AbjKHNBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:01:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235652AbjKHNBg (ORCPT
+        with ESMTP id S1344551AbjKHNBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:01:36 -0500
+        Wed, 8 Nov 2023 08:01:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6563A1FD3;
-        Wed,  8 Nov 2023 05:01:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F555C433CC;
-        Wed,  8 Nov 2023 13:01:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE10D1FC2;
+        Wed,  8 Nov 2023 05:01:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3EAC433C8;
+        Wed,  8 Nov 2023 13:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448493;
-        bh=8DpN0VlV8K0lsnX0jmMrJn6Kymi6tbSMkafnHnRNAHg=;
+        s=k20201202; t=1699448507;
+        bh=e+QnAKFOR6wNf8AU7caaDk1G44zPUvTIPn9eqgvKtVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DibXsoaTqClDsrfxEF6YTCHmf235I4T7HCqVtaKAjpPv8VgPEU3X4AUaF1ASprk/m
-         weD+C7Ay/0NB6yjSr50XXvaJ5uTmd+LY00KBbUnVkEX7yF5CwlNDuaqYEOmUpdQRC8
-         fx5xBIsRtMo/aqDY0+zoYmD+5w9Fiqhy9IIhFJSgdWz6H2xuqbrvux8ZIcp8+EMwoT
-         JpiE4JyUZmE9fBObjEeuKItp5JK71O3s7lLVEvMpV/TsKTME/wbTew8fpQcfi2Rx2b
-         5fTvleCWpucJRTv0OM5lInLKMpnGhVyH3Cxd8iUqz4UTYm+qzeRi5SjUZgPgXeaAW+
-         aI/4daUSnxQJw==
+        b=kO32INjV4cycAjhgsoiS/RTxNc9orDpYCk0+4tO1+Gt7qOwlHokDC691On3AEseRz
+         yvvl3zTgVmsU4g0YVZaPw04fP+l56az3y5afylAuLQHL9pIQUNqDJKA/O5oXB2GOE9
+         kpTcKOXyRU8YRPtt7PmtoecXVPG0n6OLKr1MBZnj5Lgdm9FThiDsgfc7354TFlTL23
+         x4CyaJL3qAHmnf7+elMxEoKG20yxElbtDB+BUoKG6yoDK+xe+uwUqwQsziTDjj5y4A
+         IK/HwA9zBREWFPvH+XiApEACEGXb9lNAvDnPf1BVZeZvwi5m/tlIWU87hjbxo2nAjR
+         LT7tJIi+z+jFg==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
@@ -88,9 +88,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
         linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
         linux-mtd@lists.infradead.org
-Subject: [PATCH 10/22] microblaze: include linux/cpu.h for trap_init() prototype
-Date:   Wed,  8 Nov 2023 13:58:31 +0100
-Message-Id: <20231108125843.3806765-11-arnd@kernel.org>
+Subject: [PATCH 11/22] x86: sta2x11: include header for sta2x11_get_instance() prototype
+Date:   Wed,  8 Nov 2023 13:58:32 +0100
+Message-Id: <20231108125843.3806765-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -102,152 +102,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Microblaze runs into a single -Wmissing-prototypes warning when that is
-enabled:
+sta2x11_get_instance() is a global function declared in asm/sta2x11.h,
+but this header is not included before the definition, causing a warning:
 
-arch/microblaze/kernel/traps.c:21:6: warning: no previous prototype for 'trap_init' [-Wmissing-prototypes]
+arch/x86/pci/sta2x11-fixup.c:95:26: error: no previous prototype for 'sta2x11_get_instance' [-Werror=missing-prototypes]
 
-Include the right header to avoid this.
+Add the missing #include.
 
+Fixes: 83125a3a189e ("x86, platform: Initial support for sta2x11 I/O hub")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/alpha/kernel/traps.c      | 1 +
- arch/csky/include/asm/traps.h  | 2 --
- arch/csky/kernel/traps.c       | 1 +
- arch/m68k/coldfire/vectors.c   | 3 +--
- arch/m68k/coldfire/vectors.h   | 3 ---
- arch/microblaze/kernel/traps.c | 1 +
- arch/sparc/kernel/traps_32.c   | 1 +
- arch/sparc/kernel/traps_64.c   | 1 +
- arch/x86/include/asm/traps.h   | 1 -
- arch/x86/kernel/traps.c        | 1 +
- 10 files changed, 7 insertions(+), 8 deletions(-)
- delete mode 100644 arch/m68k/coldfire/vectors.h
+ arch/x86/pci/sta2x11-fixup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/alpha/kernel/traps.c b/arch/alpha/kernel/traps.c
-index d9a67b370e04..7fc72aeb7398 100644
---- a/arch/alpha/kernel/traps.c
-+++ b/arch/alpha/kernel/traps.c
-@@ -9,6 +9,7 @@
-  * This file initializes the trap entry points
-  */
+diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
+index 7368afc03998..8c8ddc4dcc08 100644
+--- a/arch/x86/pci/sta2x11-fixup.c
++++ b/arch/x86/pci/sta2x11-fixup.c
+@@ -14,6 +14,7 @@
+ #include <linux/dma-map-ops.h>
+ #include <linux/swiotlb.h>
+ #include <asm/iommu.h>
++#include <asm/sta2x11.h>
  
-+#include <linux/cpu.h>
- #include <linux/jiffies.h>
- #include <linux/mm.h>
- #include <linux/sched/signal.h>
-diff --git a/arch/csky/include/asm/traps.h b/arch/csky/include/asm/traps.h
-index 732c4aaa2e26..495ce318d569 100644
---- a/arch/csky/include/asm/traps.h
-+++ b/arch/csky/include/asm/traps.h
-@@ -55,6 +55,4 @@ asmlinkage void trap_c(struct pt_regs *regs);
- asmlinkage void do_notify_resume(struct pt_regs *regs,
- 			unsigned long thread_info_flags);
+ #define STA2X11_SWIOTLB_SIZE (4*1024*1024)
  
--void trap_init(void);
--
- #endif /* __ASM_CSKY_TRAPS_H */
-diff --git a/arch/csky/kernel/traps.c b/arch/csky/kernel/traps.c
-index 6e426fba0119..c2246b07cc9c 100644
---- a/arch/csky/kernel/traps.c
-+++ b/arch/csky/kernel/traps.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (C) 2018 Hangzhou C-SKY Microsystems co.,ltd.
- 
-+#include <linux/cpu.h>
- #include <linux/sched.h>
- #include <linux/signal.h>
- #include <linux/kernel.h>
-diff --git a/arch/m68k/coldfire/vectors.c b/arch/m68k/coldfire/vectors.c
-index c26c255b530d..4321fd89d83e 100644
---- a/arch/m68k/coldfire/vectors.c
-+++ b/arch/m68k/coldfire/vectors.c
-@@ -12,14 +12,13 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/irq.h>
-+#include <linux/cpu.h>
- #include <asm/traps.h>
- #include <asm/machdep.h>
- #include <asm/coldfire.h>
- #include <asm/mcfsim.h>
- #include <asm/mcfwdebug.h>
- 
--#include "vectors.h"
--
- /***************************************************************************/
- 
- #ifdef TRAP_DBG_INTERRUPT
-diff --git a/arch/m68k/coldfire/vectors.h b/arch/m68k/coldfire/vectors.h
-deleted file mode 100644
-index 0b01450a4353..000000000000
---- a/arch/m68k/coldfire/vectors.h
-+++ /dev/null
-@@ -1,3 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--
--void trap_init(void);
-diff --git a/arch/microblaze/kernel/traps.c b/arch/microblaze/kernel/traps.c
-index 94b6fe93147d..080aa769218d 100644
---- a/arch/microblaze/kernel/traps.c
-+++ b/arch/microblaze/kernel/traps.c
-@@ -8,6 +8,7 @@
-  * for more details.
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
- #include <linux/kallsyms.h>
-diff --git a/arch/sparc/kernel/traps_32.c b/arch/sparc/kernel/traps_32.c
-index 179aabfa712e..bb149f6cc34b 100644
---- a/arch/sparc/kernel/traps_32.c
-+++ b/arch/sparc/kernel/traps_32.c
-@@ -10,6 +10,7 @@
-  * I hate traps on the sparc, grrr...
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/sched/mm.h>
- #include <linux/sched/debug.h>
- #include <linux/mm_types.h>
-diff --git a/arch/sparc/kernel/traps_64.c b/arch/sparc/kernel/traps_64.c
-index 08ffd17d5ec3..3631899f2394 100644
---- a/arch/sparc/kernel/traps_64.c
-+++ b/arch/sparc/kernel/traps_64.c
-@@ -9,6 +9,7 @@
-  * I like traps on v9, :))))
-  */
- 
-+#include <linux/cpu.h>
- #include <linux/extable.h>
- #include <linux/sched/mm.h>
- #include <linux/sched/debug.h>
-diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
-index b1c9cea6ba88..1f1deaecd364 100644
---- a/arch/x86/include/asm/traps.h
-+++ b/arch/x86/include/asm/traps.h
-@@ -14,7 +14,6 @@
- asmlinkage __visible notrace struct pt_regs *sync_regs(struct pt_regs *eregs);
- asmlinkage __visible notrace
- struct pt_regs *fixup_bad_iret(struct pt_regs *bad_regs);
--void __init trap_init(void);
- asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *eregs);
- #endif
- 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index c876f1d36a81..b0737a15c470 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -37,6 +37,7 @@
- #include <linux/nmi.h>
- #include <linux/mm.h>
- #include <linux/smp.h>
-+#include <linux/cpu.h>
- #include <linux/io.h>
- #include <linux/hardirq.h>
- #include <linux/atomic.h>
 -- 
 2.39.2
 
