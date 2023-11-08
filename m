@@ -2,212 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E12C7E5BE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FF47E5BEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbjKHRCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S232298AbjKHRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjKHRCh (ORCPT
+        with ESMTP id S229581AbjKHRDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:02:37 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED2D1FF5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:02:35 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40859c464daso52370045e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 09:02:35 -0800 (PST)
+        Wed, 8 Nov 2023 12:03:32 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E90E1FF5;
+        Wed,  8 Nov 2023 09:03:30 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a6190af24aso1111698566b.0;
+        Wed, 08 Nov 2023 09:03:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1699462953; x=1700067753; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tQ2+XV4dBu1cq9f+RwORT9M+/7K1LwjMn+kEqhK7XD4=;
-        b=hL46yKXQL6033kRQFAjsQ3SsJCwaPVDRnBuJlLTfjPWYFnPLsOtYpDCOjTZ0Ph+1dF
-         nrn1wwLPRl/S6+MznrXuae17KRuK/r+HFLEi5Yoh9KhCBg6lm9NCQz8CxH2ZoUeoZSO9
-         pIZFZ/CURnl/kLmmVt0DOikOx5pTBK/fSxl/s=
+        d=gmail.com; s=20230601; t=1699463008; x=1700067808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
+        b=MmEdigN87e0BF5FA4sxqDyz29RE5zh2+IVO310sVGK/8mPJkkNTzREXnNrgn8lKMKT
+         A8YhsJ7HRzzF9itCgW9IjhJIBJsi51sy9J7ACcCPs/JCKfi1SPa7DwUV1Qoy2mDG11TS
+         ho5fl/tq8kbqhDAF2RLYosNUhNdtUUW6QaXzlqYQ10k2goGlvTr90lQ3CUc4oO/SqBSE
+         xMVV/H/qJHLRLigtdKQcp8Ib6LxMPzKB7Y5vsKqpGOtoxCtLjMyZBEnyDY/1GwscKa9s
+         cwC3gRGZW8OMXBYT/3dYn4xVoaWnWRSW/UXcX/w3rmEujBpiLWPIACgAA682gRImW0CA
+         2Bqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699462953; x=1700067753;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQ2+XV4dBu1cq9f+RwORT9M+/7K1LwjMn+kEqhK7XD4=;
-        b=vkBJ72UjrdCHmV1YOTGulE+cCd7guoUcb2Opm34weXYSFYcPRgqTOzvupRPVODCy2+
-         l5EgLfZdTVzGlEwklZC+50yYjL5MzoLvDiMvrlOJdrozlFs7pkTgzn48cDrLhnPUnzpG
-         5DFpe31PhksfId2QLjUCWq+XHJXMR9pe74B9fyy76IbQH3XUYFJDGSKyqRQKRoUBr9uQ
-         H3Y2iGS/Aqo1sxRJlLIxsbvCYlKKKxjxbTmtPeJZ9z+U6USVOGMUjbEPXWq62biLMIwZ
-         J9ucq6mcRCERrMX9dtN1R2yYzjnMMvFVl06i0i+4YWDYdq4Gvnbp+yCjlTZcsn3FrvfJ
-         otmw==
-X-Gm-Message-State: AOJu0Yzsz4gffx+ld+vhGwtrc/oOKNdYittGLShvaEE04BMJ+7N/vTV5
-        v//S9jGX60nZ3pe7g9gVAE06OQ==
-X-Google-Smtp-Source: AGHT+IF5jqoBvi3qd1BxebWpXp5A0mscq2ySxXLD1o1w5SUmf63SxVEduVpYLNEyclnDzEn5dh7HMg==
-X-Received: by 2002:a05:600c:314d:b0:409:85d:5a6e with SMTP id h13-20020a05600c314d00b00409085d5a6emr2390628wmo.29.1699462953571;
-        Wed, 08 Nov 2023 09:02:33 -0800 (PST)
-Received: from localhost (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id z11-20020a05600c0a0b00b00407460234f9sm20298514wmp.21.2023.11.08.09.02.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 09:02:33 -0800 (PST)
-Date:   Wed, 8 Nov 2023 17:02:32 +0000
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Jason Andryuk <jandryuk@gmail.com>
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        michal.wilczynski@intel.com, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v4] acpi/processor: sanitize _OSC/_PDC capabilities for
- Xen dom0
-Message-ID: <ZUu-hAiqCie4wIO1@macbook>
-References: <20231101134154.18336-1-jandryuk@gmail.com>
+        d=1e100.net; s=20230601; t=1699463008; x=1700067808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
+        b=wz8tKERUDVrXGqexEZLHtvqYVGVUhwdjjr7HnG4PQrwXc4QplWDibhGPI8yRkZ8WZt
+         iJ8ZMxS4WX0EohWMrFNnygER2qysRAqlcIoP+r56To6wIR4BXARBIy7NeMZQQ2Zfk/Be
+         Ojx3ZJ2Z/+/7w/d+c3GW5XmwSEiNUgC2lR30iNgokflt32Q9hZrqAEVUC5XUnfoYUfgZ
+         NsT2tv/SA+0Ui6OtUYhxD1Iq+NxrPrbP0iFDl+oFTBdY8RVhroU3hu8OtnExID2WaExY
+         QVKfKxVETb3IC/PQa05mGrXDO38DnQ/ST+P+VmbfwDX/38NGy8RigBns4Pn4gNq0wQP+
+         zznQ==
+X-Gm-Message-State: AOJu0Yx0dwDh5+eFjpmnwpCEx4oM8SEn+tnZCCQLSK8c5vggfkJA37IV
+        juTZ4DI0sBJgguMqn/pL6NVUcD1i/NpP3PluI/U=
+X-Google-Smtp-Source: AGHT+IGT0WqJGvLBjAdabk5bYNm3hDWuM/paOADIY+4ELcAhc+CPTYvUGcejY38H6jJNeeNIbd+FhuBcsmh6K3wdG5g=
+X-Received: by 2002:a17:906:4fd5:b0:9c6:19ea:cdd6 with SMTP id
+ i21-20020a1709064fd500b009c619eacdd6mr2326618ejw.50.1699463008052; Wed, 08
+ Nov 2023 09:03:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231101134154.18336-1-jandryuk@gmail.com>
+References: <20231108110048.1988128-1-anders.roxell@linaro.org>
+In-Reply-To: <20231108110048.1988128-1-anders.roxell@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Nov 2023 09:03:16 -0800
+Message-ID: <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: bpf: xskxceiver: ksft_print_msg: fix format
+ type error
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 09:41:52AM -0400, Jason Andryuk wrote:
-> From: Roger Pau Monne <roger.pau@citrix.com>
-> 
-> The Processor capability bits notify ACPI of the OS capabilities, and
-> so ACPI can adjust the return of other Processor methods taking the OS
-> capabilities into account.
-> 
-> When Linux is running as a Xen dom0, the hypervisor is the entity
-> in charge of processor power management, and hence Xen needs to make
-> sure the capabilities reported by _OSC/_PDC match the capabilities of
-> the driver in Xen.
-> 
-> Introduce a small helper to sanitize the buffer when running as Xen
-> dom0.
-> 
-> When Xen supports HWP, this serves as the equivalent of commit
-> a21211672c9a ("ACPI / processor: Request native thermal interrupt
-> handling via _OSC") to avoid SMM crashes.  Xen will set bit
-> ACPI_PROC_CAP_COLLAB_PROC_PERF (bit 12) in the capability bits and the
-> _OSC/_PDC call will apply it.
-> 
-> [ jandryuk: Mention Xen HWP's need.  Support _OSC & _PDC ]
-> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+On Wed, Nov 8, 2023 at 3:00=E2=80=AFAM Anders Roxell <anders.roxell@linaro.=
+org> wrote:
+>
+> Crossbuilding selftests/bpf for architecture arm64, format specifies
+> type error show up like.
+>
+> xskxceiver.c:912:34: error: format specifies type 'int' but the argument
+> has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
+>  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
+>                                                                 ~~
+>                                                                 %llu
+>                 __func__, pkt->pkt_nb, meta->count);
+>                                        ^~~~~~~~~~~
+> xskxceiver.c:929:55: error: format specifies type 'unsigned long long' bu=
+t
+>  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
+>  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
+>                                     ~~~~             ^~~~
+>
+> Fixing the issues by casting to (unsigned long long) and changing the
+> specifiers to be %llx, since with u64s it might be %llx or %lx,
+> depending on architecture.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 > ---
-> v4:
-> Use xen_santize_proc_cap_bits() name - Michal
-> Rephrase comment - Michal
-> 
-> v3:
-> Move xen_sanitize_pdc() call to arch_acpi_set_proc_cap_bits() to cover
-> _OSC and _PDC.
-> drivers/xen/pcpu.c is CONFIG_DOM0 && CONFIG_X86
-> 
-> v2:
-> Move local variables in acpi_processor_eval_pdc() to reuse in both conditions.
-> ---
->  arch/x86/include/asm/acpi.h           | 14 ++++++++++++++
->  arch/x86/include/asm/xen/hypervisor.h |  9 +++++++++
->  drivers/xen/pcpu.c                    | 21 +++++++++++++++++++++
->  3 files changed, 44 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/acpi.h b/arch/x86/include/asm/acpi.h
-> index c8a7fc23f63c..f896eed4516c 100644
-> --- a/arch/x86/include/asm/acpi.h
-> +++ b/arch/x86/include/asm/acpi.h
-> @@ -16,6 +16,9 @@
->  #include <asm/x86_init.h>
->  #include <asm/cpufeature.h>
->  #include <asm/irq_vectors.h>
-> +#include <asm/xen/hypervisor.h>
-> +
-> +#include <xen/xen.h>
->  
->  #ifdef CONFIG_ACPI_APEI
->  # include <asm/pgtable_types.h>
-> @@ -127,6 +130,17 @@ static inline void arch_acpi_set_proc_cap_bits(u32 *cap)
->  	if (!cpu_has(c, X86_FEATURE_MWAIT) ||
->  	    boot_option_idle_override == IDLE_NOMWAIT)
->  		*cap &= ~(ACPI_PROC_CAP_C_C1_FFH | ACPI_PROC_CAP_C_C2C3_FFH);
-> +
-> +	if (xen_initial_domain()) {
-> +		/*
-> +		 * When Linux is running as Xen dom0, the hypervisor is the
-> +		 * entity in charge of the processor power management, and so
-> +		 * Xen needs to check the OS capabilities reported in the
-> +		 * processor capabilities buffer matches what the hypervisor
-> +		 * driver supports.
-> +		 */
-> +		xen_sanitize_proc_cap_bits(cap);
-> +	}
->  }
->  
->  static inline bool acpi_has_cpu_in_madt(void)
-> diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
-> index 7048dfacc04b..a9088250770f 100644
-> --- a/arch/x86/include/asm/xen/hypervisor.h
-> +++ b/arch/x86/include/asm/xen/hypervisor.h
-> @@ -100,4 +100,13 @@ static inline void leave_lazy(enum xen_lazy_mode mode)
->  
->  enum xen_lazy_mode xen_get_lazy_mode(void);
->  
-> +#if defined(CONFIG_XEN_DOM0) && defined(CONFIG_ACPI)
-> +void xen_sanitize_proc_cap_bits(uint32_t *buf);
-> +#else
-> +static inline void xen_sanitize_proc_cap_bits(uint32_t *buf)
-> +{
-> +	BUG();
-> +}
-> +#endif
-> +
->  #endif /* _ASM_X86_XEN_HYPERVISOR_H */
-> diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
-> index b3e3d1bb37f3..7000701dff8f 100644
-> --- a/drivers/xen/pcpu.c
-> +++ b/drivers/xen/pcpu.c
-> @@ -47,6 +47,9 @@
->  #include <asm/xen/hypervisor.h>
->  #include <asm/xen/hypercall.h>
->  
-> +#ifdef CONFIG_ACPI
-> +#include <acpi/processor.h>
-> +#endif
->  
->  /*
->   * @cpu_id: Xen physical cpu logic number
-> @@ -400,4 +403,22 @@ bool __init xen_processor_present(uint32_t acpi_id)
->  
->  	return online;
->  }
-> +
-> +void xen_sanitize_proc_cap_bits(uint32_t *cap)
-> +{
-> +	struct xen_platform_op op = {
-> +		.cmd			= XENPF_set_processor_pminfo,
-> +		.u.set_pminfo.id	= -1,
-> +		.u.set_pminfo.type	= XEN_PM_PDC,
-> +	};
-> +	u32 buf[3] = { ACPI_PDC_REVISION_ID, 1, *cap };
-> +	int ret;
-> +
-> +	set_xen_guest_handle(op.u.set_pminfo.pdc, buf);
-> +	ret = HYPERVISOR_platform_op(&op);
-> +	if (ret)
-> +		pr_err("sanitize of _PDC buffer bits from Xen failed: %d\n",
-> +		       ret);
-> +	*cap = buf[2];
+>  tools/testing/selftests/bpf/xskxceiver.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
+ftests/bpf/xskxceiver.c
+> index 591ca9637b23..1ab9512f5aa2 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -908,8 +908,9 @@ static bool is_metadata_correct(struct pkt *pkt, void=
+ *buffer, u64 addr)
+>         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
+>
+>         if (meta->count !=3D pkt->pkt_nb) {
+> -               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
+ount [%d]\n",
+> -                              __func__, pkt->pkt_nb, meta->count);
+> +               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
+ount [%llx]\n",
 
-FWIW, we might want to only update cap if the hypercall has been
-successful, otherwise there's no guarantee of what's in the buffer, so
-I would recommend to put the updating of cap in an else branch.
+why hex? %llu?
 
-Anyway, not a strong opinion, as I think in practice even if the
-hypercall fails it wouldn't corrupt the data in the buffer, but seems
-more robust.
+> +                              __func__, pkt->pkt_nb,
+> +                              (unsigned long long)meta->count);
+>                 return false;
+>         }
+>
+> @@ -926,11 +927,13 @@ static bool is_frag_valid(struct xsk_umem_info *ume=
+m, u64 addr, u32 len, u32 exp
+>
+>         if (addr >=3D umem->num_frames * umem->frame_size ||
+>             addr + len > umem->num_frames * umem->frame_size) {
+> -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr,=
+ len);
+> +               ksft_print_msg("Frag invalid addr: %llx len: %u\n",
+> +                              (unsigned long long)addr, len);
+>                 return false;
+>         }
+>         if (!umem->unaligned_mode && addr % umem->frame_size + len > umem=
+->frame_size) {
+> -               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
+n: %u\n", addr, len);
+> +               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
+n: %u\n",
+> +                              (unsigned long long)addr, len);
+>                 return false;
+>         }
+>
+> @@ -1029,7 +1032,8 @@ static int complete_pkts(struct xsk_socket_info *xs=
+k, int batch_size)
+>                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->umem=
+->cq, idx + rcvd - 1);
+>
+>                         ksft_print_msg("[%s] Too many packets completed\n=
+", __func__);
+> -                       ksft_print_msg("Last completion address: %llx\n",=
+ addr);
+> +                       ksft_print_msg("Last completion address: %llx\n",
+> +                                      (unsigned long long)addr);
+>                         return TEST_FAILURE;
+>                 }
+>
+> @@ -1513,8 +1517,9 @@ static int validate_tx_invalid_descs(struct ifobjec=
+t *ifobject)
+>         }
+>
+>         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_pkt=
+s / 2) {
+> -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%u]=
+ expected [%u]\n",
+> -                              __func__, stats.tx_invalid_descs,
+> +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%ll=
+x] expected [%u]\n",
 
-Thanks, Roger.
+should this be %llu? Or the switch to the hex was intentional?
+
+> +                              __func__,
+> +                              (unsigned long long)stats.tx_invalid_descs=
+,
+>                                ifobject->xsk->pkt_stream->nb_pkts);
+>                 return TEST_FAILURE;
+>         }
+> --
+> 2.42.0
+>
