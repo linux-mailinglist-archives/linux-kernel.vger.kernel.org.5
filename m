@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E859C7E518F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B910A7E5191
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:01:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235044AbjKHIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:01:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34636 "EHLO
+        id S235150AbjKHIBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234954AbjKHIBW (ORCPT
+        with ESMTP id S235297AbjKHIBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:01:22 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D74EF0
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:01:20 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so11236858a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:01:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699430479; x=1700035279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
-        b=gcATRfuZwPQuaMDXVN2zDuOrndRmF2UiI+D7rRbBhUXsxpmla4rBOKmW9ptzlL+lhm
-         79Jkv8o7dWQyn6g4osleydpNdMRyHBQer3YuWS28GXp/LvcQu1vSrgPyru6MrltpsRGZ
-         ZdwFsKiAZiQA6u90NCjLLnTSVa2Y4qV+LRzveJ0KKyowkR6qK4L2K3T/rNymhBL0C5+h
-         NoQKsDr73A//t+hTx0O/77sCl081ZGSDOR1R+uEtNLpGssPZn54gorRJpelNFDzKevex
-         gA7TAhYg24TK0p2+FfQIsk+ek3tKti2gmaoMsGiUovoUH9U6Oz/zFPVxSz7EbninUnE8
-         Dw5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699430479; x=1700035279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HNi4fClCOjk3xdFXZ5yiVbLFHsXzEYt3ZKrZiBMxjyw=;
-        b=llzBAlmYCRrBZpAHSV3wecv+s79aYZA4dNfacnfdPKbXP4Rpc1JC3Q35fZAVua0W6b
-         WWBr+GPg5Ydzo2+vKsrbm3CoUlLZba6aF2JKVjMOTVknRO402hdqNnUAfzEDsEvgAat+
-         reanMqtRUvmEM33ybY7d/Pc8MdS611bMvFsTAVjmYBDmGfM1mnZPvFENW9g064+RLYjT
-         0B1sKxRoTEw3iRk1dFIHC6ciWYcAV2SDG2jCGlsM6tcW5peFP2DjZl623N6n7IArWd5l
-         /5dXe+Xd289kwIRDq5BJuUGav4tARpS/M/lc3I6KvTlFWkv2Cg4tyeVuXk8EFV8A3HmF
-         Fk+w==
-X-Gm-Message-State: AOJu0Yw6pokzNxcy0Hzb8sEtId6d80zc4sAGQiboOE8i/zH6HWjYLTs6
-        X2rscVqUOp61mT3ipqPYqoBCNRkTUS18y7VWOoWdig==
-X-Google-Smtp-Source: AGHT+IF9zLVkQKgYnQFEJtbLFMGxGUHm/ggdeeQ390qH4xEE1KzKzMRdaKCiHY6k9DQcMexREYD80V4ZtE1hNp9Thbc=
-X-Received: by 2002:a17:907:60d4:b0:9ad:e298:a5d with SMTP id
- hv20-20020a17090760d400b009ade2980a5dmr789580ejc.19.1699430478750; Wed, 08
- Nov 2023 00:01:18 -0800 (PST)
+        Wed, 8 Nov 2023 03:01:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6570E171C
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:01:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79CABC433C7;
+        Wed,  8 Nov 2023 08:01:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699430485;
+        bh=2Ar5lwZ3jRVtbJoyQHH2BdyH1s8Wjtev0WxE6Qz6fPs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N0Stv+RZZDpfRwJciq2L6ecGlaWd5NDrxceUAHJd9//HLZ1wudPbnMP1lGlNeLW2A
+         EHLFQvOMnNpzAIY10AOQvDbH/O7v1tRKcJipkvzch8V1sq0ge4Orb7yPaNgmAU9NU/
+         rMAvC+ZSpnZo7Dd/b/ynAeQmiI6v6P4AL7NGaBl15VB4lxN4kCb0e0m9Uumr5ZlDbS
+         CrbVGR/0XXBiINztr9fJ7NNUmH0qWuFplEPI8yiUSDE8ijHq63z52KUMCTc4dWZWYI
+         Xg2s/4LFy4PrDP3ZePIBX6tpdp6Ndn6kxmfj2ef7evnmz8kWAVggoD5IJJPmNCJTVI
+         N3zCp7gRIiPdQ==
+Message-ID: <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
+Date:   Wed, 8 Nov 2023 09:01:17 +0100
 MIME-Version: 1.0
-References: <20231108065818.19932-1-link@vivo.com>
-In-Reply-To: <20231108065818.19932-1-link@vivo.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 8 Nov 2023 00:00:39 -0800
-Message-ID: <CAJD7tkYVtaX=W5XWhn-Y+d==mbHs5AZG-7sAaYmo7FDONpoQ7g@mail.gmail.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To:     Huan Yang <link@vivo.com>, Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+ <20231107114732.5dd350ec@gandalf.local.home>
+ <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
+ <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
+ <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
+Content-Language: en-US, pt-BR, it-IT
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Wei Xu +David Rientjes
+On 11/8/23 04:20, Joel Fernandes wrote:
+> Hi Daniel,
+> 
+> On Tue, Nov 7, 2023 at 1:50 PM Daniel Bristot de Oliveira
+> <bristot@kernel.org> wrote:
+>>
+>>> The code is not doing what I intended because I thought it was doing overload
+>>> control on the replenishment, but it is not (my bad).
+>>>
+>>
+>> I am still testing but... it is missing something like this (famous last words).
+>>
+>> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+>> index 1092ca8892e0..6e2d21c47a04 100644
+>> --- a/kernel/sched/deadline.c
+>> +++ b/kernel/sched/deadline.c
+>> @@ -842,6 +842,8 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+>>   * runtime, or it just underestimated it during sched_setattr().
+>>   */
+>>  static int start_dl_timer(struct sched_dl_entity *dl_se);
+>> +static bool dl_entity_overflow(struct sched_dl_entity *dl_se, u64 t);
+>> +
+>>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>>  {
+>>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+>> @@ -852,9 +854,18 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>>         /*
+>>          * This could be the case for a !-dl task that is boosted.
+>>          * Just go with full inherited parameters.
+>> +        *
+>> +        * Or, it could be the case of a zerolax reservation that
+>> +        * was not able to consume its runtime in background and
+>> +        * reached this point with current u > U.
+>> +        *
+>> +        * In both cases, set a new period.
+>>          */
+>> -       if (dl_se->dl_deadline == 0)
+>> -               replenish_dl_new_period(dl_se, rq);
+>> +       if (dl_se->dl_deadline == 0 ||
+>> +               (dl_se->dl_zerolax_armed && dl_entity_overflow(dl_se, rq_clock(rq)))) {
+>> +                       dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
+>> +                       dl_se->runtime = pi_of(dl_se)->dl_runtime;
+>> +       }
+>>
+>>         if (dl_se->dl_yielded && dl_se->runtime > 0)
+>>                 dl_se->runtime = 0;
+> 
+> I was wondering does this mean GRUB needs to be enabled? Otherwise I
+> can see that "runtime / (deadline - t) > dl_runtime / dl_deadline"
+> will be true almost all the time due to the constraint of executing at
+> the 0-lax time.
 
-On Tue, Nov 7, 2023 at 10:59=E2=80=AFPM Huan Yang <link@vivo.com> wrote:
->
-> In some cases, we need to selectively reclaim file pages or anonymous
-> pages in an unbalanced manner.
->
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages=
-.
->
-> This patchset extends the proactive reclaim interface to achieve
-> unbalanced reclamation. Users can control the reclamation tendency by
-> inputting swappiness under the original interface. Specifically, users
-> can input special values to extremely reclaim specific pages.
+No grub needed. It will only happen if the fair server did not have any chance to run.
 
-I proposed this a while back:
+If it happens, it is not a problem, see that timeline I replied in the previous
+email.
 
-https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yK=
-SNgD7aGdg@mail.gmail.com/
+We do not want a zerolax scheduler, because it breaks everything else. It is
+a deferred EDF, that looking from wall clock, composes an "zerolaxish" timeline.
 
-The takeaway from the discussion was that swappiness is not the right
-way to do this. We can add separate arguments to specify types of
-memory to reclaim, as Roman suggested in that thread. I had some
-patches lying around to do that at some point, I can dig them up if
-that's helpful, but they are probably based on a very old kernel now,
-and before MGLRU landed. IIRC it wasn't very difficult, I think I
-added anon/file/shrinkers bits to struct scan_control and then plumbed
-them through to memory.reclaim.
+> Because at the 0-lax time, AFAICS this will be 100% > 30% (say if CFS
+> has a 30% reservation).
+> 
+> And I think even if GRUB is enabled, it is possible other DL task may
+> have reserved bandwidth.
+> 
+> Or is there a subtlety that makes that not possible?
+> 
+> thanks,
+> 
+>  - Joel
 
->
-> Example:
->         echo "1G" 200 > memory.reclaim (only reclaim anon)
->           echo "1G" 0  > memory.reclaim (only reclaim file)
->           echo "1G" 1  > memory.reclaim (only reclaim file)
-
-The type of interface here is nested-keyed, so if we add arguments
-they need to be in key=3Dvalue format. Example:
-
-echo 1G swappiness=3D200 > memory.reclaim
-
-As I mentioned above though, I don't think swappiness is the right way
-of doing this. Also, without swappiness, I don't think there's a v1 vs
-v2 dilemma here. memory.reclaim can work as-is in cgroup v1, it just
-needs to be exposed there.
