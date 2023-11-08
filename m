@@ -2,127 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 412227E5211
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB737E5214
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235044AbjKHIn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S235149AbjKHIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjKHIn1 (ORCPT
+        with ESMTP id S232723AbjKHIoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:43:27 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E74D1710;
-        Wed,  8 Nov 2023 00:43:25 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A87N8iF006330;
-        Wed, 8 Nov 2023 08:42:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=fMjvdbcTN+mM1stRhX8y1SgEAH+2W4UOL/UD/yX8wXA=;
- b=UEcIzoMJOwYBfiHi85XoYxknJ9oBVVapJnHlvXUwjXw3acFE4vsePXS5kvAVuzKlxDS+
- 2ihgxctaK6COxd2kUe/oZXLpQP/EY5/1EpNGWQIS506xDt6W27hh+xYpKN/ManNiAY/8
- d2SrvtB8R3n1jkcJVGKtPem7K2kCrNmxKnvpzi7Mi4Kl91gimZMBu7Ygga5ahLoHf+pf
- DRKYaKf25ht119BeEFvAS+o2kmuAPQMrnWJGHmlTmX+8Hp2CZWsp2KZErbEo2otteB38
- yvCWXxv5ceXe2LUeAVphtM8esTwhleDqHphUu2L5u4F/MzLMLp8g9lF5z/JuA/p2WRqw Ew== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7xyu0vw7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 08:42:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A88gnCU020751
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 8 Nov 2023 08:42:49 GMT
-Received: from [10.253.34.202] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 00:42:45 -0800
-Message-ID: <59f83fcd-6c2d-6b8a-55e6-0db07bfb5744@quicinc.com>
-Date:   Wed, 8 Nov 2023 16:42:42 +0800
+        Wed, 8 Nov 2023 03:44:39 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2071716
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:44:37 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so6964a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:44:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699433076; x=1700037876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3qu6xuDhGJ5JPWC5oSGyyY7P53x8jjCQYiy8YEQLeeo=;
+        b=R8QooS0vDNoKoV3XJANVjelsz9aaQFjE/CtumDCIubPSnH27LQd+D7oCwCNc1wbCxn
+         fpyO/eIINl6muOmwwfmuv/yxtkTsBpf0ssKOX8Ceabhnr0Lh4qeWw914gNco4azDtiu9
+         oA3tZeLm1s5UVBfdbcz+Z3OpXsOsTZDxCErgnydcH2AI3iYhmH7163uMiQHV8JDlH8BW
+         R3Uwpi2hm1K3IVCl1Lm1Gnz+v19c0/PzurB9oPBfxDIAnf0PzmronhrJtlW+DPUK4DIn
+         v0xyTXaiVsAoh1WVDeGrtrQ5zUBupX4MW+vM3D2ZvH/AFHp96EWGhFTS7VKJ8F/gQJCs
+         v8PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699433076; x=1700037876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3qu6xuDhGJ5JPWC5oSGyyY7P53x8jjCQYiy8YEQLeeo=;
+        b=cjTLpHb0+or/Ddp5TN6YQnn6Q0OywjXzJzfj+TdbBR1SZm9H9ixBpOI6pnXPc+euRP
+         YOdIF70qktnxWb1QeGc1z48qMxYxWovRWdAy7Sn4WfKvMCNFcjM0DC1mliEijf+/H7BV
+         1DwkHtYujRHeiRynRzf7FcN1DucT2Udmr3KkohjlRkQ6aUg2a8h2glkYn+pTY+eRa6Vj
+         kgG72NHr83ACdrO9F1cafQs515uVPoEd00rF8nd4rWsAtLHwgsjSiTrZ36UOqUpZDe6f
+         lTz19Vqx3dmAXZIvH256w+yGDzTGaEdiiRryMF4iIYBNzMKr55TpnayGgaOpgOP68USA
+         D7lQ==
+X-Gm-Message-State: AOJu0YxY+18ZC5tDD9p5u9mz9PPuTViIrJ35m7bcWczArrsrFKV+/lC6
+        5weTOY6m+9+/CqmiCAmhUjg11dpivStHLslDKqQWHA==
+X-Google-Smtp-Source: AGHT+IGyWNKdsQPn0juqLKFUlvmF17TwBL6KgBg6m2mliS9T29mVwbiqFgwdC+K06dLDG1APWCHyg0Dmv5+/5eV19Dg=
+X-Received: by 2002:a50:9eeb:0:b0:544:4762:608 with SMTP id
+ a98-20020a509eeb000000b0054447620608mr246797edf.2.1699433075593; Wed, 08 Nov
+ 2023 00:44:35 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 4/7] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to hosts
- with HW version 5
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Can Guo <cang@qti.qualcomm.com>
-CC:     <bvanassche@acm.org>, <stanley.chu@mediatek.com>,
-        <adrian.hunter@intel.com>, <beanhuo@micron.com>,
-        <avri.altman@wdc.com>, <junwoo80.lee@samsung.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
- <1699332374-9324-5-git-send-email-cang@qti.qualcomm.com>
- <20231108052555.GD3296@thinkpad>
-From:   Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231108052555.GD3296@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: tMRjIEwacoyZnb3pbBjRcNL9tnXyxnVD
-X-Proofpoint-GUID: tMRjIEwacoyZnb3pbBjRcNL9tnXyxnVD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- impostorscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
- suspectscore=0 clxscore=1015 malwarescore=0 phishscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080071
+References: <20231031093921.755204-1-guanyulin@google.com> <2023103133-kelp-copartner-8e9c@gregkh>
+In-Reply-To: <2023103133-kelp-copartner-8e9c@gregkh>
+From:   Guan-Yu Lin <guanyulin@google.com>
+Date:   Wed, 8 Nov 2023 16:44:24 +0800
+Message-ID: <CAOuDEK3x95u6+68e=fkejnjWhRrA5Yt1qTaAG3Prje8C-+6dmw@mail.gmail.com>
+Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        stern@rowland.harvard.edu, heikki.krogerus@linux.intel.com,
+        mkl@pengutronix.de, hadess@hadess.net, mailhol.vincent@wanadoo.fr,
+        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pumahsu@google.com, raychi@google.com, albertccwang@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+On Tue, Oct 31, 2023 at 5:48=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Tue, Oct 31, 2023 at 05:38:55PM +0800, Guan-Yu Lin wrote:
+> > Introducing PM_RPM_EXCEPTION config flag, which may alter the priority
+> > between system power management and runtime power management. In
+> > suspend-to-idle flow, PM core will suspend all devices to avoid device
+> > interact with the system. However, chances are devices might be used by
+> > other systems rather than a single system. In this case, PM core should=
+n't
+> > suspend the devices. One may use PM_RPM_EXCEPTION config flag to mark
+> > such exception, and determine the power state of a device with runtime
+> > power management rather than system power management.
+> >
+> > Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
+> > ---
+> >  drivers/usb/core/generic.c |  6 ++++++
+> >  drivers/usb/core/usb.h     | 16 ++++++++++++++++
+> >  kernel/power/Kconfig       |  8 ++++++++
+> >  3 files changed, 30 insertions(+)
+> >
+> > diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
+> > index 740342a2812a..bb0dfcfc9764 100644
+> > --- a/drivers/usb/core/generic.c
+> > +++ b/drivers/usb/core/generic.c
+> > @@ -266,6 +266,9 @@ int usb_generic_driver_suspend(struct usb_device *u=
+dev, pm_message_t msg)
+> >  {
+> >       int rc;
+> >
+> > +     if (usb_runtime_pm_exception(udev))
+> > +             return 0;
+> > +
+> >       /* Normal USB devices suspend through their upstream port.
+> >        * Root hubs don't have upstream ports to suspend,
+> >        * so we have to shut down their downstream HC-to-USB
+> > @@ -294,6 +297,9 @@ int usb_generic_driver_resume(struct usb_device *ud=
+ev, pm_message_t msg)
+> >  {
+> >       int rc;
+> >
+> > +     if (usb_runtime_pm_exception(udev))
+> > +             return 0;
+> > +
+> >       /* Normal USB devices resume/reset through their upstream port.
+> >        * Root hubs don't have upstream ports to resume or reset,
+> >        * so we have to start up their downstream HC-to-USB
+> > diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
+> > index 60363153fc3f..14a054f814a2 100644
+> > --- a/drivers/usb/core/usb.h
+> > +++ b/drivers/usb/core/usb.h
+> > @@ -90,6 +90,22 @@ extern void usb_major_cleanup(void);
+> >  extern int usb_device_supports_lpm(struct usb_device *udev);
+> >  extern int usb_port_disable(struct usb_device *udev);
+> >
+> > +#ifdef       CONFIG_PM_RPM_EXCEPTION
+> > +
+> > +static inline int usb_runtime_pm_exception(struct usb_device *udev)
+> > +{
+> > +     return atomic_read(&udev->dev.power.usage_count);
+> > +}
+> > +
+> > +#else
+> > +
+> > +static inline int usb_runtime_pm_exception(struct usb_device *udev)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +#endif
+> > +
+> >  #ifdef       CONFIG_PM
+> >
+> >  extern int usb_suspend(struct device *dev, pm_message_t msg);
+> > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+> > index 4b31629c5be4..beba7a0f3947 100644
+> > --- a/kernel/power/Kconfig
+> > +++ b/kernel/power/Kconfig
+> > @@ -193,6 +193,14 @@ config PM
+> >         responsible for the actual handling of device suspend requests =
+and
+> >         wake-up events.
+> >
+> > +config PM_RPM_EXCEPTION
+> > +     bool "Prioritize Runtime Power Management more than Power Managem=
+ent"
+> > +     default n
+>
+> The default is always 'n' so no need to specify it.
+>
 
-On 11/8/2023 1:25 PM, Manivannan Sadhasivam wrote:
-> On Mon, Nov 06, 2023 at 08:46:10PM -0800, Can Guo wrote:
->> From: Can Guo <quic_cang@quicinc.com>
->>
->> Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
->> HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
->> to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
->>
->> Signed-off-by: Can Guo <quic_cang@quicinc.com>
->> ---
->>   drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
->>   1 file changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
->> index 60b35ca..55ee31d 100644
->> --- a/drivers/ufs/host/ufs-qcom.c
->> +++ b/drivers/ufs/host/ufs-qcom.c
->> @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
->>   static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> +	struct ufs_host_params *host_params = &host->host_params;
->>   	struct phy *phy = host->generic_phy;
->> +	enum phy_mode mode;
->>   	int ret;
->>   
->> +	/*
->> +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
-> 
-> Does this limitation apply to future targets as well or just to SM8550? If
-> it's the latter, then we need to use a flag.
-> 
-> - ManiUFS host controller HW ver (major) 5 IPs (they may have different 
-minor/step verions) can be used by many QCOM chipsets, so it applies to 
-several available targets and future targets which are going to have HW 
-ver 5 UFS host controller. This limitation goes away since HW ver 6.
+Thanks, I will include this in the next version.
+
+> > +     help
+> > +     Provides a way to prioritize Runtime Power Management more than P=
+ower
+> > +     Management. This way system can suspnd with maintaining specific
+> > +     components in operation.
+>
+> This really doesn't give me a good description of why someone would ever
+> want to enable this at all.
+>
+> And why does this have to be a build option?  That feels very heavy, why
+> not make it changable at runtime?
+>
+> If this is a build option, how are you going to get all the distros and
+> all of the Android/ChromeOS systems in the world to enable it?
+>
+> thanks,
+>
+> greg k-h
+
+Let's reach a consensus on what this patch should do first. I'll then
+change the description and implementation accordingly if needed. Please
+see the next reply for an explanation of my idea.
 
 Thanks,
-Can Guo.
+Guan-Yu
