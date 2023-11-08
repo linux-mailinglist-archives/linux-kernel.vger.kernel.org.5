@@ -2,200 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8347E5B3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE957E5B3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbjKHQbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        id S230082AbjKHQcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230023AbjKHQbx (ORCPT
+        with ESMTP id S229816AbjKHQcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:31:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE851BE5;
-        Wed,  8 Nov 2023 08:31:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699461111; x=1730997111;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=W5+W0MbpeueWgouPv4A6SSCPEnnFW1r8WRLh3ymAvzU=;
-  b=gtOa1l+v8q71aNGkjpTsvNiZ9SxkstK3EnX80QxdhADMSILK2foOFcA8
-   ycA5br5Wqs9ukNkChcI94YC8Isciuk4PN+GYjwmYdSSh5qKGOFP0l/hVA
-   MnNrXGFkELyjhejmkBrQSffRZYWOaCldazSuq6Ojy4UZFvhvK2YJh+rvm
-   LOa0o9h+kZQeBxUY9OXPOZOl5LBrE5R7mLAo9BTPgCv3pw35TSP7gLJt0
-   CaBdXF+IroONd72d3vthQ/gm78SQSjtwG8Pjb0/+NC5E+dC1Y0Jlz3ARo
-   xJxo8sMLoSAPt1mKXPCcmOpBZQQHByTGB2uZjs0VN8wf4TR56Ludn75Hn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="456296366"
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="456296366"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 08:31:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="763106225"
-X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
-   d="scan'208";a="763106225"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Nov 2023 08:31:50 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 8 Nov 2023 08:31:50 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 8 Nov 2023 08:31:50 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 8 Nov 2023 08:31:50 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 8 Nov 2023 08:31:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z6d/skxhIWbOJ+6/AskAeXG6lsiM6tL/2SjsOB9tOUljqrj/fpn6wPdORgJ7Pv279lutLGUVTaVfrId7uiXfqukFsqzGdRxMhUp2wDfuPacGgG2tNfbmMg0B+5txDy4giuT5r3pcbsVplcCtDsYnEbCy214iu/GrSq+Su21/K4b2jZ3iRgsr8jwr7CIJAYffr5h3X11LTAiWYDsxFoHtj7jqIfsAXvDuhGIn6GITXEi3lAIRtUa2wVZeXhFB+aia/Ldw0xSKHjGj7WlFByVZhvpjfrkAkoHY8tp4y5/cZAEqxouyMWnKYzbO5qOYEYFjAHX22iOmZSIg0dHCpTb70w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PIVeXPBGedI/7MrTlPO0gNmGLfhIqyvU03lBf5CW/GY=;
- b=iFq99flcV2d7sxd85aP/NUoaklh3w35E3LZuj5/8ag9aFv+1U0ca0ML89vGEab7diTDmlqW1YyA0mb1+dpq3Q0Wk3xcBB59xwhcZfSQQ2VWNwitYbrS8lmfSBsMnK3iyarcTQEulzIiABvdhbrbCAOjk+HKjZ11hzH1PLSJFaGCAFKAF23z7MgsmPLLvvMP4EVcQgMOitzUuDHC4u+tF2DJ94WpQBqBt+FwoPKvO66WQ1ziGc8nTS7MXUepvAWUYsEeURiNTLveEzmcWy1AmVmUJHY+t6ym48+2DiIfFCjqYkpw9mQuXXc6yUQVOz0Z4JRG2/7oGTBGiEcM/3nP9ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SA1PR11MB8317.namprd11.prod.outlook.com (2603:10b6:806:38d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
- 2023 16:31:48 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.029; Wed, 8 Nov 2023
- 16:31:48 +0000
-Message-ID: <b9f7c227-7d64-453e-8ec6-6c20ad3881c7@intel.com>
-Date:   Wed, 8 Nov 2023 08:31:46 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 23/24] selftests/resctrl: Add L2 CAT test
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
- <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com>
- <8051f3ef-1126-41fb-b6cc-f48441936dd7@intel.com>
- <2514e73e-2419-7c88-3f22-469db4b2fa25@linux.intel.com>
- <48c6795b-554a-4019-bb8d-a2ca0f6fbb2b@intel.com>
- <4008929-d12b-793e-dce8-eb5ba03b4ebb@linux.intel.com>
- <755ed028-f73a-47ed-a58a-65f4f48eaee3@intel.com>
- <af68ec80-7511-4861-b4ec-0fb9c7284513@intel.com>
- <d3dc1393-f51d-1fea-2787-4063abdc7c33@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <d3dc1393-f51d-1fea-2787-4063abdc7c33@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0014.namprd03.prod.outlook.com
- (2603:10b6:303:8f::19) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Wed, 8 Nov 2023 11:32:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67651BE5;
+        Wed,  8 Nov 2023 08:32:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E826C433C7;
+        Wed,  8 Nov 2023 16:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699461136;
+        bh=CioOew5i6J+K6juHdQXUPp6fgE/eDqEx3FtH5y7cH9A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QM/bjnENkwpJevXr5WK4b3vyvUZM5XXihW/DY3787/e+sB5OFLkIMKBPmc0JjrTVm
+         r2z3MJxrdTi9CO3KQJtGziEO0l/VKPd/W0x+Ttjmm6w0IodGgf8ClJbsuwvKhk+Gk3
+         XeE+rDQLwce+gfoSL9DRKtR3mVywXWUuZkfi6sZw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.200
+Date:   Wed,  8 Nov 2023 17:32:12 +0100
+Message-ID: <2023110812-unenvied-trout-8b02@gregkh>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA1PR11MB8317:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cc613d9-d21f-471e-6659-08dbe0783443
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: esDZybcndkV/M7LJCG8GkhMUaYWijqVbjocwnCcRSjFA10grviO6YMDichiRFZWLKKLZ+yaI0fszOqRlJGS/N9Jx0AU8qC9mczAL3s+0+YHIzWgR5x1isyq/BaLmy1Kz+hv/SAvRzr2kkKTeib3B6+PMPhzrDMzU2ZmeYrHvwE03Cz1rLoP64/XmMQRJ0Kv5lGldJqW8gOnEAH7NRR2BV2d8jnPeXQVFXiJoBiLBSyjxcbCcqNvIh6so8yHq4piyAzNwtE9JyyYeSu82GGHaA7G1HsucOkmjET7SpLryLYStr3pClErEFalv/aEQPNF3DwZ3VjGPdCfAZTb2gxgdWTLrWljjwNxJEpCdvURYo4aqU4AoYjDOFeaP0XqF+lPyiraqCWbunetMsANWIcz4AoDkafr1ghC/hrgK52RB/crorN937l0QkRIR3Ig5KPv9Oqs4mMB84tvgkWy/6aTB9QMh48B72yUI/Ct14VVHvoIzr6YX7umnz3oGLsAYuqkS0AfiFTrrxy6iq6yli81gUULmSOrvgYwEWb+TRh1pQLqsZTuYh9Cb9N4w3VtAiCvud1GBAufHzH7voOgiJvC4onB6TOZmJoZe5sj+6R/R537PDo14kbIDWYokwuxi5Ng0PEbQ7cf228Yd5FVo5aRmOiqYdvJYWtmiLTDGw9VF2SV0cH8MRgopORXL9NQ3Uq43
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(8936002)(41300700001)(6916009)(8676002)(4326008)(36756003)(2906002)(38100700002)(5660300002)(31696002)(6486002)(53546011)(966005)(66556008)(6512007)(316002)(31686004)(66476007)(86362001)(44832011)(66899024)(26005)(66946007)(66574015)(83380400001)(54906003)(82960400001)(2616005)(478600001)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QndGNTJUKzdGUjczTHJJVHBGLzZlUG5ERzZjZEtVNXNLbWFqWHQvd0ZkdGV3?=
- =?utf-8?B?U1lFQ2V2NVRwNzBUZXBpR0lvYWw0K2t1ZFVZWVV2UHpDaGUza0t1NkNYRU1C?=
- =?utf-8?B?bzZ1VnJtc0FKb1A2M2ZGRmZLVnVjSFNwUzRad1NIK3ROZnJ6OUFTazFSTlpZ?=
- =?utf-8?B?Mm4yTUxyTHN6N3BhYnRJZ2xyRWFHM1llSUVLUm1qSXhFWWtvTlE5V1E2SUtY?=
- =?utf-8?B?c1ErZEx4Wk5jL3JWcnYvdjF5bk1WdGFmWjM4THhsZy8yTjE1REdTYXhpdkVo?=
- =?utf-8?B?QVRnMWxiY0VWTVg4cWxWQUpuN3lFM2I0RE9hWVQrT2hFck9Wb0xuU3hOVURw?=
- =?utf-8?B?K3hnQXI1eHpiQTFUV2NjTEFZWHpMTUJidXk4aU8zb1N4ejFPTnk4MVJwSzZa?=
- =?utf-8?B?MDl4MG5nSjBlY0hFREE4MWpscW0xNEtuZEZ5MVFKV1ZWckRuN01pL1Y4NmEx?=
- =?utf-8?B?Z3lNSXhFeVZXanFOSWZySXF1RWVPb0FVbEs2MkVLeGdWSldUa0dhZk9mTUFl?=
- =?utf-8?B?Mkg1WXBKZTB2c1ZMdnJKRUFQSXhoVmVhNFZhd1M0UTRnSDNJdklJby8ydEEw?=
- =?utf-8?B?dDZibXhmYXZhR1VYVkNlSTZrOTYrRm94cHdKTW1yUnRGVlROUEExbHIxdHRT?=
- =?utf-8?B?TnB3Sk9DWFR2UG5BWGZoQUo0WjViSkxRVFZacjJyekJ5TzF3UEM0emdqVDJ5?=
- =?utf-8?B?UzJ6ZHR2U2xpRmJEblJlZ0ZKRUxjMGlxMW15UUE5TWoxZktsM0dEb29YVGhk?=
- =?utf-8?B?YzFlc2REQi9XTG84em52TFlzNEZ4YVZpbE03WkFIWjJybjlEcWt0V0hlT2NP?=
- =?utf-8?B?MEk3UkdPajFGcDZFSFdiamRCWWxBRk5pSmkzOXRud2RZUXkzV2lyU3lEQ2Rp?=
- =?utf-8?B?dlJ4cU5MQXVYQTRTTDkrNnFvWEV3Skx2OWRDUVg0b2xYak53RlRhMncxTDNp?=
- =?utf-8?B?ZSt6VXJVbGhvTUJjSG5XU09QQ3ZXUUp3QXBpL2JxUTNmWU4wRFFHSWtDcWVW?=
- =?utf-8?B?bEExR2pnajVqcWVudWFpTkNGODFmYVRUV2o5K1l6NXVIcVQ2MlhwVDlzWWsx?=
- =?utf-8?B?alc5c0V2V1N6Z3ZPQTVlTnV2RXJZYTR0RXY0ZzRzRUFlc3dERDFNMW9qRW16?=
- =?utf-8?B?NVR4M0o2NTNnMCsveVgvZW0rZm5JSnlyUnhldkU1VkF2ZDN4c2o4bW1YUFdl?=
- =?utf-8?B?YlM0ZXg3SjBmNngzd1BLM3AvcGg3MHBlQmhORW1kT0ZvOHd2bmU5RElEVmF1?=
- =?utf-8?B?SVliL1lmSDhIN1Z2SEc2L0N0UnBDZUlrMEVNVjAvWXk5N3FvclpJQU1SQmpL?=
- =?utf-8?B?TmkrVzMrUUFuUnc2alJsWVZUL1hhSEROWk1ZdHBBSVFBeWJDby9MZFVnd2dm?=
- =?utf-8?B?RWVFSEtFaEU3NFRuaGVEblVFbFEzVGUvZXhGNDB2MExpc09FZThvM0dEalcw?=
- =?utf-8?B?YThZWGdjVmhiRHlQSXV5c3BmMEVDZGFMcVdtcnUzM2lieGdxUkZXQlN0ME9H?=
- =?utf-8?B?WUJUR2xOSmtNYTU1TVp2VjBrSmU3OFlDQll2S29oT0s1MUpuNkt4VnZ0Wmp0?=
- =?utf-8?B?TnZrNTNZbS9sdERHOUhHMmN1bGpNVDNGRVNiYkloSmlnWkExQ2R3U0xVRkRL?=
- =?utf-8?B?czNwdmYzNVZreFFGVE41ZVNVVE8vRUlYUG9JSktHeVFhWFNtY2FrdUhrdnB4?=
- =?utf-8?B?R2tlWitDRWU1MW1tWitTNDd4UjJHdEhDK24xemo0elU0emRzc08xdkp6K21I?=
- =?utf-8?B?eXIvQ1E0VHlySkUwV1dWcE5talNQdVhJc1VNTkhva1hTR0NGbEZ2dnVVNkFq?=
- =?utf-8?B?VkFwS3dDQ2hXQ1EzUkRidFlnN2VBdWNHWitBSk5CZ1pKNUNnWkJYSU13M1BH?=
- =?utf-8?B?WlVpeFBYR3IzMTZPb2xxMzJ5T2VuekF4Q1NIb0hXTjRrbzFQZ3RSNmhPTjlD?=
- =?utf-8?B?dGRtZjZMN2tDNy9DTTFLbVJLUmFzVkh5OVZNQURCR2VWb1p3eDEwZ2hZN3Rm?=
- =?utf-8?B?Q3pYMVVUcHd4OHBqMjJPZjltNmFMSWJBekgrRmpYaVFmZW15eUFreWlIN2pW?=
- =?utf-8?B?d1B6c0V1aVBZaHBJRHZkS0lDS3A0VkZ0VVNYc2NaVDhHYmNITFFidFZ1eWZX?=
- =?utf-8?B?UUpZbjlBN0pzdzYwMHl6YWVWeXhWRGo2SWhnU3B5dHJGZmpqcUptWUUzWkxC?=
- =?utf-8?B?Rmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cc613d9-d21f-471e-6659-08dbe0783443
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 16:31:48.3193
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nYAquYOctmAPwNtUFavNlca57RRldyq5TmhvYM1NLp9kQ0GwygGCvCRwq6rkH2q8wClOoU4zj4kY2N1Qk4CJutuNBfx0ZnZu73qI53tYGl4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8317
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+I'm announcing the release of the 5.10.200 kernel.
 
-On 11/7/2023 1:33 AM, Ilpo Järvinen wrote:
-> man perf_event_open() says this:
-> 
-> "If type is PERF_TYPE_RAW, then a custom "raw" config  value  is  needed.
-> Most  CPUs  support  events  that  are  not covered by the "generalized"
-> events.  These are implementation defined; see your CPU manual (for  ex-
-> ample  the  Intel Volume 3B documentation or the AMD BIOS and Kernel De-
-> veloper Guide).  The libpfm4 library can be used to translate  from  the
-> name in the architectural manuals to the raw hex value perf_event_open()
-> expects in this field."
-> 
-> ...I've not come across libpfm myself either but to me it looks libpfm 
-> bridges between those architecture specific tables and perf_event_open(). 
-> That is, it could provide the binary value necessary in constructing the 
-> perf_event_attr struct.
-> 
-> I think this is probably the function which maps string -> 
-> perf_event_attr:
-> 
-> https://man7.org/linux/man-pages/man3/pfm_get_os_event_encoding.3.html
-> 
+All users of the 5.10 kernel series must upgrade.
 
-This sounds promising. If this works out I think that it would be ideal if
-the L2 CAT test is not blocked by absence of libpfm. That is, the resctrl
-tests should not fail to build if libpfm is not present but instead
-L2 CAT just turns into a simple functional test. To accomplish this it looks
-like tools/build/Makefile.feature can be helpful and already has a check
-for libpfm.
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Reinette
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                                               |    2 
+ arch/powerpc/kernel/setup-common.c                                     |    2 
+ arch/powerpc/mm/mem.c                                                  |    1 
+ arch/sparc/lib/checksum_32.S                                           |    2 
+ arch/x86/include/asm/i8259.h                                           |    2 
+ arch/x86/include/asm/setup.h                                           |   46 -
+ arch/x86/kernel/acpi/boot.c                                            |    3 
+ arch/x86/kernel/i8259.c                                                |   38 
+ arch/x86/kernel/setup.c                                                |    5 
+ arch/x86/kernel/vmlinux.lds.S                                          |    2 
+ drivers/base/driver.c                                                  |   69 +
+ drivers/base/platform.c                                                |   28 
+ drivers/clk/clk.c                                                      |   21 
+ drivers/dma/ste_dma40.c                                                |    1 
+ drivers/gpu/drm/drm_dp_mst_topology.c                                  |    6 
+ drivers/i2c/busses/i2c-aspeed.c                                        |    3 
+ drivers/i2c/busses/i2c-stm32f7.c                                       |    9 
+ drivers/i2c/muxes/i2c-demux-pinctrl.c                                  |    2 
+ drivers/i2c/muxes/i2c-mux-gpmux.c                                      |    2 
+ drivers/i2c/muxes/i2c-mux-pinctrl.c                                    |    2 
+ drivers/iio/adc/exynos_adc.c                                           |   24 
+ drivers/iio/adc/xilinx-xadc-core.c                                     |  179 +---
+ drivers/input/mouse/synaptics.c                                        |    1 
+ drivers/input/rmi4/rmi_smbus.c                                         |   50 -
+ drivers/irqchip/irq-stm32-exti.c                                       |    1 
+ drivers/mcb/mcb-lpc.c                                                  |   35 
+ drivers/mcb/mcb-parse.c                                                |   15 
+ drivers/misc/fastrpc.c                                                 |   10 
+ drivers/mmc/host/renesas_sdhi_core.c                                   |    3 
+ drivers/mmc/host/tmio_mmc.h                                            |    2 
+ drivers/net/ethernet/chelsio/cxgb4/t4_hw.c                             |    2 
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c                            |    2 
+ drivers/net/ethernet/intel/igb/igb_ethtool.c                           |    6 
+ drivers/net/ethernet/intel/igc/igc_ethtool.c                           |   35 
+ drivers/net/ethernet/realtek/r8169_main.c                              |    4 
+ drivers/net/ethernet/toshiba/ps3_gelic_wireless.c                      |    2 
+ drivers/net/gtp.c                                                      |    5 
+ drivers/net/ieee802154/adf7242.c                                       |    5 
+ drivers/net/usb/r8152.c                                                |   11 
+ drivers/net/usb/smsc95xx.c                                             |    4 
+ drivers/nvmem/imx-ocotp.c                                              |    6 
+ drivers/pci/quirks.c                                                   |    8 
+ drivers/platform/mellanox/mlxbf-tmfifo.c                               |   21 
+ drivers/rpmsg/qcom_glink_native.c                                      |    2 
+ drivers/rpmsg/rpmsg_core.c                                             |   37 
+ drivers/rpmsg/rpmsg_internal.h                                         |    5 
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c                                   |    4 
+ drivers/spi/spi-npcm-fiu.c                                             |    5 
+ drivers/tty/serial/8250/8250_pci.c                                     |  122 ++
+ drivers/usb/gadget/legacy/raw_gadget.c                                 |   26 
+ drivers/usb/storage/unusual_cypress.h                                  |    2 
+ drivers/video/fbdev/aty/atyfb_base.c                                   |    4 
+ drivers/video/fbdev/uvesafb.c                                          |    2 
+ drivers/virtio/virtio_balloon.c                                        |    6 
+ drivers/virtio/virtio_mmio.c                                           |   19 
+ fs/cifs/smbdirect.c                                                    |   14 
+ fs/ext4/mballoc.c                                                      |   51 -
+ fs/ext4/mballoc.h                                                      |   14 
+ fs/f2fs/gc.c                                                           |    3 
+ include/linux/device/driver.h                                          |    2 
+ include/linux/kasan.h                                                  |    6 
+ include/linux/pci_ids.h                                                |    1 
+ include/linux/platform_device.h                                        |    6 
+ include/linux/rpmsg.h                                                  |   14 
+ include/uapi/linux/can/isotp.h                                         |   25 
+ include/uapi/linux/gtp.h                                               |    2 
+ kernel/events/core.c                                                   |    3 
+ kernel/trace/trace_kprobe.c                                            |    4 
+ lib/kobject.c                                                          |   12 
+ mm/kasan/report.c                                                      |    4 
+ mm/page_alloc.c                                                        |    2 
+ net/can/isotp.c                                                        |  434 ++++++----
+ net/core/neighbour.c                                                   |   67 -
+ net/ipv4/tcp_input.c                                                   |    9 
+ net/netfilter/nfnetlink_log.c                                          |    2 
+ net/sched/cls_u32.c                                                    |    2 
+ sound/hda/intel-dsp-config.c                                           |    6 
+ sound/soc/codecs/rt5645.c                                              |    2 
+ tools/objtool/check.c                                                  |    2 
+ tools/testing/selftests/ftrace/test.d/kprobe/kprobe_non_uniq_symbol.tc |   13 
+ 80 files changed, 1046 insertions(+), 565 deletions(-)
+
+Al Viro (1):
+      sparc32: fix a braino in fault handling in csum_and_copy_..._user()
+
+Alain Volmat (1):
+      i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
+
+Alessandro Carminati (1):
+      clk: Sanitize possible_parent_show to Handle Return Value of of_clk_get_parent_name
+
+Andrey Konovalov (1):
+      usb: raw-gadget: properly handle interrupted requests
+
+Arnd Bergmann (1):
+      fbdev: atyfb: only use ioremap_uc() on i386 and ia64
+
+Baokun Li (3):
+      ext4: add two helper functions extent_logical_end() and pa_logical_end()
+      ext4: fix BUG in ext4_mb_new_inode_pa() due to overflow
+      ext4: avoid overlapping preallocations due to overflow
+
+Bartosz Golaszewski (3):
+      iio: adc: xilinx: use helper variable for &pdev->dev
+      iio: adc: xilinx: use devm_krealloc() instead of kfree() + kcalloc()
+      iio: adc: xilinx: use more devres helpers and remove remove()
+
+Ben Wolsieffer (1):
+      irqchip/stm32-exti: add missing DT IRQ flag translation
+
+Bjorn Andersson (1):
+      rpmsg: glink: Release driver_override
+
+Cameron Williams (4):
+      tty: 8250: Remove UC-257 and UC-431
+      tty: 8250: Add support for additional Brainboxes UC cards
+      tty: 8250: Add support for Brainboxes UP cards
+      tty: 8250: Add support for Intashield IS-100
+
+Chao Yu (1):
+      f2fs: fix to do sanity check on inode type during garbage collection
+
+Christophe JAILLET (1):
+      net: ieee802154: adf7242: Fix some potential buffer overflow in adf7242_stats_show()
+
+Dmitry Torokhov (1):
+      Input: synaptics-rmi4 - handle reset delay when using SMBus trsnsport
+
+Douglas Anderson (4):
+      r8152: Increase USB control msg timeout to 5000ms as per spec
+      r8152: Run the unload routine if we have errors during probe
+      r8152: Cancel hw_phy_work if we have an error in probe
+      r8152: Release firmware if we have an error in probe
+
+Ekansh Gupta (1):
+      misc: fastrpc: Clean buffers on remote invocation failures
+
+Eric Dumazet (1):
+      neighbour: fix various data-races
+
+Florian Westphal (1):
+      netfilter: nfnetlink_log: silence bogus compiler warning
+
+Francis Laniel (1):
+      selftests/ftrace: Add new test case which checks non unique symbol
+
+Fred Chen (1):
+      tcp: fix wrong RTO timeout when received SACK reneging
+
+Gavin Shan (1):
+      virtio_balloon: Fix endless deflation and inflation on arm64
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.200
+
+Gustavo A. R. Silva (1):
+      net: sched: cls_u32: Fix allocation size in u32_init()
+
+Haibo Li (1):
+      kasan: print the original fault addr when access invalid shadow
+
+Hangyu Hua (1):
+      rpmsg: Fix possible refcount leak in rpmsg_register_device_override()
+
+Herve Codina (3):
+      i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
+
+Ivan Vecera (1):
+      i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
+
+Jian Zhang (1):
+      i2c: aspeed: Fix i2c bus hang in slave read
+
+John Sperbeck (1):
+      objtool/x86: add missing embedded_insn check
+
+Jorge Maidana (1):
+      fbdev: uvesafb: Call cn_del_callback() at the end of uvesafb_exit()
+
+Josh Poimboeuf (2):
+      x86/mm: Simplify RESERVE_BRK()
+      x86/mm: Fix RESERVE_BRK() for older binutils
+
+Juergen Gross (1):
+      x86: Fix .brk attribute in linker script
+
+Kemeng Shi (1):
+      mm/page_alloc: correct start page when guard page debug is enabled
+
+Krzysztof Kozlowski (4):
+      driver: platform: Add helper for safer setting of driver_override
+      rpmsg: Constify local variable in field store macro
+      rpmsg: Fix kfree() of static memory on setting driver_override
+      rpmsg: Fix calling device_lock() on non-initialized device
+
+Kunwu Chan (1):
+      treewide: Spelling fix in comment
+
+LihaSika (1):
+      usb: storage: set 1.50 as the lower bcdDevice for older "Super Top" compatibility
+
+Liming Sun (1):
+      platform/mellanox: mlxbf-tmfifo: Fix a warning message
+
+Lukas Magel (1):
+      can: isotp: isotp_sendmsg(): fix TX state detection and wait behavior
+
+Lukasz Majczak (1):
+      drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
+
+Marek Szyprowski (1):
+      iio: exynos-adc: request second interupt only when touchscreen mode is used
+
+Mark Hasemeyer (1):
+      ALSA: hda: intel-dsp-config: Fix JSL Chromebook quirk detection
+
+Mateusz Palczewski (1):
+      igb: Fix potential memory leak in igb_add_ethtool_nfc_entry
+
+Maximilian Heyne (1):
+      virtio-mmio: fix memory leak of vm_dev
+
+Michael Ellerman (1):
+      powerpc/mm: Fix boot crash with FLATMEM
+
+Mirsad Goran Todorovac (2):
+      r8169: fix the KCSAN reported data-race in rtl_tx while reading TxDescArray[entry].opts1
+      r8169: fix the KCSAN reported data race in rtl_rx while reading desc->opts1
+
+Oliver Hartkopp (6):
+      can: isotp: set max PDU size to 64 kByte
+      can: isotp: isotp_bind(): return -EINVAL on incorrect CAN ID formatting
+      can: isotp: check CAN address family in isotp_bind()
+      can: isotp: handle wait_event_interruptible() return values
+      can: isotp: add local echo tx processing and tx without FC
+      can: isotp: isotp_bind(): do not validate unused address information
+
+Pablo Neira Ayuso (2):
+      gtp: uapi: fix GTPA_MAX
+      gtp: fix fragmentation needed check with gso
+
+Patrick Menschel (3):
+      can: isotp: change error format from decimal to symbolic error names
+      can: isotp: add symbolic error message to isotp_module_init()
+      can: isotp: Add error message if txqueuelen is too small
+
+Peng Fan (3):
+      nvmem: imx: correct nregs for i.MX6ULL
+      nvmem: imx: correct nregs for i.MX6SLL
+      nvmem: imx: correct nregs for i.MX6UL
+
+Peter Zijlstra (1):
+      perf/core: Fix potential NULL deref
+
+Robert Hancock (1):
+      iio: adc: xilinx-xadc: Don't clobber preset voltage/temperature thresholds
+
+Rodríguez Barbarin, José Javier (2):
+      mcb: Return actual parsed size when reading chameleon table
+      mcb-lpc: Reallocate memory region to avoid memory overlapping
+
+Sasha Neftin (1):
+      igc: Fix ambiguity in the ethtool advertising
+
+Shigeru Yoshida (1):
+      net: usb: smsc95xx: Fix uninit-value access in smsc95xx_read_reg
+
+Shuming Fan (1):
+      ASoC: rt5650: fix the wrong result of key button
+
+Steve French (1):
+      smbdirect: missing rc checks while waiting for rdma events
+
+Su Hui (1):
+      net: chelsio: cxgb4: add an error code check in t4_load_phy_fw
+
+Thomas Gleixner (1):
+      x86/i8259: Skip probing when ACPI/MADT advertises PCAT compatibility
+
+Tomas Henzl (1):
+      scsi: mpt3sas: Fix in error path
+
+Vicki Pfau (1):
+      PCI: Prevent xHCI driver from claiming AMD VanGogh USB3 DRD device
+
+Wang Hai (1):
+      kobject: Fix slab-out-of-bounds in fill_kobj_path()
+
+William A. Kennington III (1):
+      spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
+
+Wolfram Sang (1):
+      mmc: renesas_sdhi: use custom mask for TMIO_MASK_ALL
+
+Yujie Liu (1):
+      tracing/kprobes: Fix the description of variable length arguments
+
+Zhang Shurong (1):
+      dmaengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
 
