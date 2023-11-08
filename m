@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5368C7E4DBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24E17E4DC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbjKHAKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:10:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
+        id S231551AbjKHALw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjKHAKN (ORCPT
+        with ESMTP id S229844AbjKHALv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:10:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD8710C3;
-        Tue,  7 Nov 2023 16:10:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CBF6C433C7;
-        Wed,  8 Nov 2023 00:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699402210;
-        bh=49/18eui175XW6NzFUiZghmKR051RlPOSAcbSznIRN0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ICoTurgjXoU7vBaB5nU3XnpCuGXUGM/Lg+7nx9Zg5c9Vx2xHyr8NmLns0KLqXONdI
-         R8LCfCS/mHRDjwxTSoVe+sj1cDEttA8Y0JuKSpm6lLw1n/qSIvaHCleQRX+/QjqfLB
-         9Bnfw+85Cc/QjVXk/VLdQ1jhn6eKkRkQigB0ZLL0MOdSoiV/erOA1zHYVxiYbjmu34
-         FBxFuBnpvV+HFTIqWMpFB8XBpikQNZwbiRDQ+p87uOEkTycDU3xckJomKwbrGlJPDI
-         Tua1FNCNa4KtRmoEEFxhCTAEpwuhMRfvnw4geJfz4mItNfTxdevbQPqdoQT+SaaD4C
-         6UXbF+jG51x8A==
-Message-ID: <674f6ae2-d88e-4203-83f9-e9a9322393d9@kernel.org>
-Date:   Tue, 7 Nov 2023 17:10:09 -0700
+        Tue, 7 Nov 2023 19:11:51 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFF110E5
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:11:49 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2809b4d648bso5025341a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:11:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699402308; x=1700007108; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o5FTMnIkfAnWQrINqJsE9vGOX5Y79juiKePAWCBp2xQ=;
+        b=OAe3iG1uwVtJhZrYhNJylZ5P3AqQtBaJi2cBiuQuwALU5Vg1tc5A2BxZlYFHEwWIqk
+         yY3Na/BIaFhBeM5SPAvAu3p5JU1h0Pik0Y1I6X8+sjinYZqFG5xi2VI8N/4fwuYZyIC3
+         xNSjtVVlBkeBPu6Up2VeC2pPk9roIVzabNRysmgjMoBBgMf1ZU7O+vhQ37qzIZH/itg9
+         yiluxFr6hijBI/bJm1Ev2yd8RtiVKNeZgr3LwdDbVcz29zhio45cFZVD3ST757teD40R
+         7OYdeY9OZiljB09OQ2JvbvnAXJHPmtJ7nltTtz8XXs6lsoDqpxKA/vs3WZcz5Zot6me3
+         I8yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699402308; x=1700007108;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=o5FTMnIkfAnWQrINqJsE9vGOX5Y79juiKePAWCBp2xQ=;
+        b=dW6HFqbyJo95BRuq9/B2kaYtjMsDCYyAfjj5uOH/tPbLZ1JpuyrtCaCtxyhY9R7m8t
+         mUrMjXdgMNW546ddmE4HQFwTqPtembkRmiaS3OoIWko9uMZGmYsVNMVMfwmh/kQHqmqc
+         L05iFhntShZYVhcJbLbvdj0QjUlajLV04tCYWBXthmCSOrhOcpFgrESTb913FuXqrMQj
+         dCHU+qtleZOls7XcwBmKkv0Vm33VA/5scwzsGE1ijJeI8h17ouW4S2N89xRahWlyG5Cx
+         HUHigqgLCLxIoeGp1NCN8xug+06dmFEYzC6ZUOL1eNJhXwZ2g2hrH5Wbdj1FEMhNY8n5
+         vTIA==
+X-Gm-Message-State: AOJu0YzY42RV0VpTgc+IEPgXZPGtCPhCG8Ppb2c9+hQzNmtn7mjFC8Fx
+        Iqdpk4UWBGFf+3PMhcgnlUo+LxZHfn8=
+X-Google-Smtp-Source: AGHT+IFKm49M/VNzE67GA8NDQr1TupQFHjgD/NPr5R/pbLEg4jII8BqgTf96Oyl2ntsD/3uIsg4c6A==
+X-Received: by 2002:a17:90b:4a88:b0:280:1a19:6dd5 with SMTP id lp8-20020a17090b4a8800b002801a196dd5mr219806pjb.36.1699402308282;
+        Tue, 07 Nov 2023 16:11:48 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id w7-20020a17090aad4700b00280fcbbe774sm352767pjv.10.2023.11.07.16.11.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 16:11:47 -0800 (PST)
+Message-ID: <ad48a0bf-0454-44ee-ae00-eff3f8b66ca6@gmail.com>
+Date:   Wed, 8 Nov 2023 07:11:36 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 06/12] memory-provider: dmabuf devmem memory
- provider
 Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-7-almasrymina@google.com>
- <583db67b-96c6-4e17-bea0-b5a14799db4a@kernel.org>
- <CAHS8izME7NixQrrh+qKnMR4+FyTzKW=B2pYyNffJ+igiehe-7g@mail.gmail.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <CAHS8izME7NixQrrh+qKnMR4+FyTzKW=B2pYyNffJ+igiehe-7g@mail.gmail.com>
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Christian Hergert <chergert@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, bluescreen_avenger@verizon.net
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: 01f05940a9a75e11a2be64993c44ad8dd06e6e26 causes Wayland servers
+ to flicker in non-gl virtio QEMU cards
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 5:02 PM, Mina Almasry wrote:
-> On Mon, Nov 6, 2023 at 1:02 PM Stanislav Fomichev <sdf@google.com> wrote:
->>
->> On 11/05, Mina Almasry wrote:
->>> +static inline bool page_is_page_pool_iov(const struct page *page)
->>> +{
->>> +     return (unsigned long)page & PP_DEVMEM;
->>> +}
->>
->> Speaking of bpf: one thing that might be problematic with this PP_DEVMEM
->> bit is that it will make debugging with bpftrace a bit (more)
->> complicated. If somebody were trying to get to that page_pool_iov from
->> the frags, they will have to do the equivalent of page_is_page_pool_iov,
->> but probably not a big deal? (thinking out loud)
-> 
-> Good point, but that doesn't only apply to bpf I think. I'm guessing
-> even debugger drgn access to the bv_page in the frag will have trouble
-> if it's actually accessing an iov with LSB set.
-> 
-> But this is not specific to this use for LSB pointer trick. I think
-> all code that currently uses LSB pointer trick will have similar
-> troubles. In this context my humble vote is that we get such big
-> upside from reducing code churn that it's reasonable to tolerate such
-> side effects.
+Hi,
 
-+1
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
+> It seems that commit 01f05940a9a75e11a2be64993c44ad8dd06e6e26 introduced an issue impacting wlroots and Weston (possibly others) on QEMU with the virtio card. happens on QEMU, and it happens in virt-manager when I do NOT enable GL. (When GL is ENABLED it seems to be fine oddly)
 > 
-> I could alleviate some of the issues by teaching drgn to do the right
-> thing for devmem/iovs... time permitting.
+> It introduces odd flickering, Weston's desktop shell flashes when a new window opens, wlroots also acts odd.
+> This is QEMU 8.0.4
 > 
-Tools like drgn and crash have to know when the LSB trick is used  -
-e.g., dst_entry - and handle it when dereferencing pointers.
+> I have narrowed it down to 01f05940a9a75e11a2be64993c44ad8dd06e6e26. Reverting the commit (it still reverts cleanly), and the flicking goes away on a rebuild and this is on Linux 6.6.
+
+See Bugzilla for the full thread.
+
+Anyway, I'm adding this regression to regzbot:
+
+#regzbot introduced: 01f05940a9a75e https://bugzilla.kernel.org/show_bug.cgi?id=218115
+#regzbot title: fb damage clips property enablement causes Wayland non-GL flickering on QEMU
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218115
+
+-- 
+An old man doll... just what I always wanted! - Clara
