@@ -2,214 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAB67E5F98
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED717E5F9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbjKHVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        id S231549AbjKHVEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:04:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjKHVDU (ORCPT
+        with ESMTP id S229554AbjKHVEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:03:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30052EA
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699477355;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TP4HWuqc6+S21p7XlOM2ZGKm5NH8oXRqzhuYxPqLszo=;
-        b=GBZ1CSTF3kD50/1WzHpgVT6V11lt6PFkS4aD08vjBX5h5eLqpym4shPuohO9cyE6iA/vTo
-        bdJ/aawchhgIMXtxnRu3xzKWFOmc0M2TugjCx2G1K5CAOpGUwo/Ycd1T2eNMnrLShukPFf
-        Rq5TYGDy/DCdeGuSErbg1XyAqiNCjxU=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-52-XcvMrFvCO5SmIyKqkJaU_w-1; Wed, 08 Nov 2023 16:02:34 -0500
-X-MC-Unique: XcvMrFvCO5SmIyKqkJaU_w-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b6aa594943so22311b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:02:34 -0800 (PST)
+        Wed, 8 Nov 2023 16:04:32 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8152113
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:04:30 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4abf8ba3e4fso70808e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699477469; x=1700082269; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ewM9PTqPdI3B1hKS5lr5GhB5pSwRt9mQhtmf5QhLeMs=;
+        b=DAj5Ds0ht0F8M05XgtnjQNi5PqoT0TI3gte6a+XLE6opCyA8c+ddi6oQu6nK/mAbV4
+         rLNhjyP5FwF4itjkwyqX14QouPe96UpO/ifrwwvOMb8ulmBdCgDgCzQiJ/wPBZ1VtB2S
+         nBC1MU2TH86lhcCUGUlAy5JlwGvFx0qFOtegOWJXEksaqY/T55e59I2WWMpCTNEegyTr
+         e+l441Z8bKKQzPivi9yqk1uBGgXZY5krOsmNvV1hx/BDormUONq5aZJx+sxEOlkGy8JS
+         bvdbrKhdvbn4x16LZglu+rANZDGB9QRrUvpM55VZ/BxKQvjLIqnAi/hYph5RGjKkkj/Q
+         ab8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699477353; x=1700082153;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TP4HWuqc6+S21p7XlOM2ZGKm5NH8oXRqzhuYxPqLszo=;
-        b=Blw50t6Nbn/tXpZnc9hySll47cqM7zLxU/JVhqL5WwPQfhvVuet4g1A09aU1MmIqyy
-         69ZrJ1A9eb9PsYa//4UoJQipht0bh0XSeSH/UvkdgrldFrnZgdqSYpVp6V/Ltp2B2cvR
-         a4xrsv/BaG8XLn9cVUhWsT1FCTRxW/1/qpEInStetGOnSQlHBbBKc7BOwWlazTX1/TT2
-         mXgJa4ZhfUSJ4odL3yEBMU/houVl0UgpU1qruB2x4eL/FwnML4vmtrlHac01OcPReoqg
-         z0pKZUEb5lok9vuCi5gG/J2kZZHzTRtrmxXdAQXCl/AvZi0lSa0dGyGbMk1WanmOlAfw
-         HFKg==
-X-Gm-Message-State: AOJu0Yz9nuljSviwp9tpnXw1UdwIdLp7GLkXw83a5Ep6kPNs7D/eTX2p
-        +kxpbZjjM8f4mbndAtNZo70e+t8oStiGBIcUPDf6091MFxT+jUMMVRPC0yaD4E+/cxjbLzNP0KC
-        +MshYS/0pyYOdWHZT4yVO3yaptT0Z3Aph
-X-Received: by 2002:a05:6808:1784:b0:3b2:ec6d:edcd with SMTP id bg4-20020a056808178400b003b2ec6dedcdmr3320181oib.3.1699477353257;
-        Wed, 08 Nov 2023 13:02:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHAL0yQhQ9JQfPSl0eGzmMtITWMMnl/qAqqjK6shV9GeqY4L6d39bDSLxUZw0J7Wy/8e1h6jw==
-X-Received: by 2002:a05:6808:1784:b0:3b2:ec6d:edcd with SMTP id bg4-20020a056808178400b003b2ec6dedcdmr3320155oib.3.1699477352900;
-        Wed, 08 Nov 2023 13:02:32 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32cc:4f00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id pp25-20020a056214139900b00655e428604esm1450673qvb.137.2023.11.08.13.02.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 13:02:32 -0800 (PST)
-Message-ID: <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
-Subject: Re: Implementation details of PCI Managed (devres) Functions
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tejun Heo <htejun@gmail.com>, dakr@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>, jeff@garzik.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Date:   Wed, 08 Nov 2023 22:02:29 +0100
-In-Reply-To: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
-References: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
+        d=1e100.net; s=20230601; t=1699477469; x=1700082269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ewM9PTqPdI3B1hKS5lr5GhB5pSwRt9mQhtmf5QhLeMs=;
+        b=ISbA4qVOnzWf6lBhHfdFMfPu01BiJMnfvRUy8j5jTMg857g81dl16FCcgDm+QeCUqa
+         URxko1DcvG1BuDoDHz7wYGjoha9B88RZvGVOPUfse8D8RxWJjZyNGieI1IBcwmI07jrm
+         y89FAWPnGK6YoPbl7UZygjeQwPZdB4ar1SlC2kgmE7f/chQD8GpYMKYdl4h+XyTFfGZb
+         aqYAdWZhBURxkzOyAzTrzevLTrimdMyMaz+u/HJMzRiVfs4N12QqmiSAgLrvGxS0fY/v
+         9lWiAHStAach2dTZM8kUXIpnv+MuZUo3H2FR7DE+yijP5uU4iuUCx7KYGhmjfeROXbEL
+         n1hA==
+X-Gm-Message-State: AOJu0YzID0PXxp86vEyQwKSEKCADWO0sUW5ukLSMRgsBSrypO5fjiTsl
+        +XK9JnjYYY8HXrX2zEu16xF+9K/Gz7AH/DWaoXQ=
+X-Google-Smtp-Source: AGHT+IFXzuUlwphGdjnCmvGUz2HQ8DpSimrXJ60fBe9GegI1mRrvGZNQcokCgFwJGh+Xcz3rAAqKo8pE0DT1j624Tao=
+X-Received: by 2002:a1f:244f:0:b0:496:248e:43fc with SMTP id
+ k76-20020a1f244f000000b00496248e43fcmr3140932vkk.8.1699477469046; Wed, 08 Nov
+ 2023 13:04:29 -0800 (PST)
+MIME-Version: 1.0
+References: <2fe5ce7e-9c5c-4df4-b4fc-9fd3d9b2dccb@arm.com> <20231104093423.170054-1-v-songbaohua@oppo.com>
+ <b0e4257e-b094-40b6-adb3-923c0d008309@arm.com> <CAGsJ_4zntZ4Drm5jndXamy_4VoVQ3qbCpUqCR9k4vdxLdmMO4Q@mail.gmail.com>
+ <CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com> <2c98be67-657e-4c65-bf6b-3d70ff596c64@arm.com>
+In-Reply-To: <2c98be67-657e-4c65-bf6b-3d70ff596c64@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Thu, 9 Nov 2023 05:04:17 +0800
+Message-ID: <CAGsJ_4zG1iVoa-O9f--YLVoNou9XZSY7Qe7Fxq9eToDmWFOUJA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     steven.price@arm.com, akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        shy828301@gmail.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+        yuzhao@google.com, Barry Song <v-songbaohua@oppo.com>, nd@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So, today I stared at the code for a while and come to a somewhat
-interesting insight:
+On Thu, Nov 9, 2023 at 4:21=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> On 08/11/2023 11:23, Barry Song wrote:
+> > On Wed, Nov 8, 2023 at 2:05=E2=80=AFAM Barry Song <21cnbao@gmail.com> w=
+rote:
+> >>
+> >> On Tue, Nov 7, 2023 at 8:46=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.=
+com> wrote:
+> >>>
+> >>> On 04/11/2023 09:34, Barry Song wrote:
+> >>>>> Yes that's right. mte_save_tags() needs to allocate memory so can f=
+ail
+> >>>>> and if failing then arch_prepare_to_swap() would need to put things=
+ back
+> >>>>> how they were with calls to mte_invalidate_tags() (although I think
+> >>>>> you'd actually want to refactor to create a function which takes a
+> >>>>> struct page *).
+> >>>>>
+> >>>>> Steve
+> >>>>
+> >>>> Thanks, Steve. combining all comments from You and Ryan, I made a v2=
+.
+> >>>> One tricky thing is that we are restoring one page rather than folio
+> >>>> in arch_restore_swap() as we are only swapping in one page at this
+> >>>> stage.
+> >>>>
+> >>>> [RFC v2 PATCH] arm64: mm: swap: save and restore mte tags for large =
+folios
+> >>>>
+> >>>> This patch makes MTE tags saving and restoring support large folios,
+> >>>> then we don't need to split them into base pages for swapping on
+> >>>> ARM64 SoCs with MTE.
+> >>>>
+> >>>> This patch moves arch_prepare_to_swap() to take folio rather than
+> >>>> page, as we support THP swap-out as a whole. And this patch also
+> >>>> drops arch_thp_swp_supported() as ARM64 MTE is the only one who
+> >>>> needs it.
+> >>>>
+> >>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> >>>> ---
+> >>>>  arch/arm64/include/asm/pgtable.h | 21 +++------------
+> >>>>  arch/arm64/mm/mteswap.c          | 44 +++++++++++++++++++++++++++++=
++++
+> >>>>  include/linux/huge_mm.h          | 12 ---------
+> >>>>  include/linux/pgtable.h          |  2 +-
+> >>>>  mm/page_io.c                     |  2 +-
+> >>>>  mm/swap_slots.c                  |  2 +-
+> >>>>  6 files changed, 51 insertions(+), 32 deletions(-)
+> >>>>
+> >>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/a=
+sm/pgtable.h
+> >>>> index b19a8aee684c..d8f523dc41e7 100644
+> >>>> --- a/arch/arm64/include/asm/pgtable.h
+> >>>> +++ b/arch/arm64/include/asm/pgtable.h
+> >>>> @@ -45,12 +45,6 @@
+> >>>>       __flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+> >>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> >>>>
+> >>>> -static inline bool arch_thp_swp_supported(void)
+> >>>> -{
+> >>>> -     return !system_supports_mte();
+> >>>> -}
+> >>>> -#define arch_thp_swp_supported arch_thp_swp_supported
+> >>>> -
+> >>>>  /*
+> >>>>   * Outside of a few very special situations (e.g. hibernation), we =
+always
+> >>>>   * use broadcast TLB invalidation instructions, therefore a spuriou=
+s page
+> >>>> @@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_=
+area_struct *vma,
+> >>>>  #ifdef CONFIG_ARM64_MTE
+> >>>>
+> >>>>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> >>>> -static inline int arch_prepare_to_swap(struct page *page)
+> >>>> -{
+> >>>> -     if (system_supports_mte())
+> >>>> -             return mte_save_tags(page);
+> >>>> -     return 0;
+> >>>> -}
+> >>>> +#define arch_prepare_to_swap arch_prepare_to_swap
+> >>>> +extern int arch_prepare_to_swap(struct folio *folio);
+> >>>>
+> >>>>  #define __HAVE_ARCH_SWAP_INVALIDATE
+> >>>>  static inline void arch_swap_invalidate_page(int type, pgoff_t offs=
+et)
+> >>>> @@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(=
+int type)
+> >>>>  }
+> >>>>
+> >>>>  #define __HAVE_ARCH_SWAP_RESTORE
+> >>>> -static inline void arch_swap_restore(swp_entry_t entry, struct foli=
+o *folio)
+> >>>> -{
+> >>>> -     if (system_supports_mte())
+> >>>> -             mte_restore_tags(entry, &folio->page);
+> >>>> -}
+> >>>> +#define arch_swap_restore arch_swap_restore
+> >>>> +extern void arch_swap_restore(swp_entry_t entry, struct folio *foli=
+o);
+> >>>>
+> >>>>  #endif /* CONFIG_ARM64_MTE */
+> >>>>
+> >>>> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> >>>> index a31833e3ddc5..14a479e4ea8e 100644
+> >>>> --- a/arch/arm64/mm/mteswap.c
+> >>>> +++ b/arch/arm64/mm/mteswap.c
+> >>>> @@ -68,6 +68,12 @@ void mte_invalidate_tags(int type, pgoff_t offset=
+)
+> >>>>       mte_free_tag_storage(tags);
+> >>>>  }
+> >>>>
+> >>>> +static inline void __mte_invalidate_tags(struct page *page)
+> >>>> +{
+> >>>> +     swp_entry_t entry =3D page_swap_entry(page);
+> >>>> +     mte_invalidate_tags(swp_type(entry), swp_offset(entry));
+> >>>> +}
+> >>>> +
+> >>>>  void mte_invalidate_tags_area(int type)
+> >>>>  {
+> >>>>       swp_entry_t entry =3D swp_entry(type, 0);
+> >>>> @@ -83,3 +89,41 @@ void mte_invalidate_tags_area(int type)
+> >>>>       }
+> >>>>       xa_unlock(&mte_pages);
+> >>>>  }
+> >>>> +
+> >>>> +int arch_prepare_to_swap(struct folio *folio)
+> >>>> +{
+> >>>> +     int err;
+> >>>> +     long i;
+> >>>> +
+> >>>> +     if (system_supports_mte()) {
+> >>>> +             long nr =3D folio_nr_pages(folio);
+> >>>
+> >>> nit: there should be a clear line between variable declarations and l=
+ogic.
+> >>
+> >> right.
+> >>
+> >>>
+> >>>> +             for (i =3D 0; i < nr; i++) {
+> >>>> +                     err =3D mte_save_tags(folio_page(folio, i));
+> >>>> +                     if (err)
+> >>>> +                             goto out;
+> >>>> +             }
+> >>>> +     }
+> >>>> +     return 0;
+> >>>> +
+> >>>> +out:
+> >>>> +     while (--i)
+> >>>
+> >>> If i is initially > 0, this will fail to invalidate page 0. If i is i=
+nitially 0
+> >>> then it will wrap and run ~forever. I think you meant `while (i--)`?
+> >>
+> >> nop. if i=3D0 and we goto out, that means the page0 has failed to save=
+ tags,
+> >> there is nothing to revert. if i=3D3 and we goto out, that means 0,1,2=
+ have
+> >> saved, we restore 0,1,2 and we don't restore 3.
+> >
+> > I am terribly sorry for my previous noise. You are right, Ryan. i
+> > actually meant i--.
+>
+> No problem - it saves me from writing a long response explaining why --i =
+is
+> wrong, at least!
+>
+> >
+> >>
+> >>>
+> >>>> +             __mte_invalidate_tags(folio_page(folio, i));
+> >>>> +     return err;
+> >>>> +}
+> >>>> +
+> >>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> >>>> +{
+> >>>> +     if (system_supports_mte()) {
+> >>>> +             /*
+> >>>> +              * We don't support large folios swap in as whole yet,=
+ but
+> >>>> +              * we can hit a large folio which is still in swapcach=
+e
+> >>>> +              * after those related processes' PTEs have been unmap=
+ped
+> >>>> +              * but before the swapcache folio  is dropped, in this=
+ case,
+> >>>> +              * we need to find the exact page which "entry" is map=
+ping
+> >>>> +              * to. If we are not hitting swapcache, this folio won=
+'t be
+> >>>> +              * large
+> >>>> +              */
+> >>>
+> >>> So the currently defined API allows a large folio to be passed but th=
+e caller is
+> >>> supposed to find the single correct page using the swap entry? That f=
+eels quite
+> >>> nasty to me. And that's not what the old version of the function was =
+doing; it
+> >>> always assumed that the folio was small and passed the first page (wh=
+ich also
+> >>> doesn't feel 'nice'). If the old version was wrong, I suggest a separ=
+ate commit
+> >>> to fix that. If the old version is correct, then I guess this version=
+ is wrong.
+> >>
+> >> the original version(mainline) is wrong but it works as once we find t=
+he SoCs
+> >> support MTE, we will split large folios into small pages. so only smal=
+l pages
+> >> will be added into swapcache successfully.
+> >>
+> >> but now we want to swap out large folios even on SoCs with MTE as a wh=
+ole,
+> >> we don't split, so this breaks the assumption do_swap_page() will alwa=
+ys get
+> >> small pages.
+> >
+> > let me clarify this more. The current mainline assumes
+> > arch_swap_restore() always
+> > get a folio with only one page. this is true as we split large folios
+> > if we find SoCs
+> > have MTE. but since we are dropping the split now, that means a large
+> > folio can be
+> > gotten by do_swap_page(). we have a chance that try_to_unmap_one() has =
+been done
+> > but folio is not put. so PTEs will have swap entry but folio is still
+> > there, and do_swap_page()
+> > to hit cache directly and the folio won't be released.
+> >
+> > but after getting the large folio in do_swap_page, it still only takes
+> > one basepage particularly
+> > for the faulted PTE and maps this 4KB PTE only. so it uses the faulted
+> > swap_entry and
+> > the folio as parameters to call arch_swap_restore() which can be someth=
+ing like:
+> >
+> > do_swap_page()
+> > {
+> >         arch_swap_restore(the swap entry for the faulted 4KB PTE, large=
+ folio);
+> > }
+>
+> OK, I understand what's going on, but it seems like a bad API decision. I=
+ think
+> Steve is saying the same thing; If its only intended to operate on a sing=
+le
+> page, it would be much clearer to pass the actual page rather than the fo=
+lio;
+> i.e. leave the complexity of figuring out the target page to the caller, =
+which
+> understands all this.
 
+right.
 
-On Tue, 2023-11-07 at 20:38 +0100, Philipp Stanner wrote:
-> Hi all,
->=20
-> I'm currently working on porting more drivers in DRM to managed pci-
-> functions. During this process I discovered something that might be
-> called an inconsistency in the implementation.
+>
+> As a side note, if the folio is still in the cache, doesn't that imply th=
+at the
+> tags haven't been torn down yet? So perhaps you can avoid even making the=
+ call
+> in this case?
 
-I think I figured out why not all pci_ functions have a pcim_
-counterpart.
+right. but it is practically very hard as arch_swap_restore() is
+always called unconditionally.
+it is hard to find a decent condition before calling
+arch_swap_restore(). That is why we
+actually have been doing redundant arch_swap_restore() lots of times right =
+now.
 
-I was interested in implementing pcim_iomap_range(), since we could use
-that for some drivers.
+For example, A forks B,C,D,E,F,G. now A,B,C,D,E,F,G will share one
+page before CoW. After
+the page is swapped out, if B is the first process to swap in, B will
+add the page to swapcache,
+and restore MTE. After that, A, C, D, E, F,G will directly hit the
+page swapped in by B, now they
+restore MTE again. so the MTE is restored 7 times but actually only B
+needs to do it.
 
-It turns out, that implementing this would be quite complicated (if I'm
-not mistaken).
+so it seems we can put a condition to only let B do restore.  But it
+won't work because we can't
+guarrent B is the first process who will do PTE mapping.  A, C, D, E,
+F, G can map PTEs earlier than B
+even if B is the one who did the I/O swapin. swapin/add swapcache and
+PTE mapping are
+not done atomically. PTE mapping needs to take PTL. so After B has
+done swapin, A, C,E,F,G
+can still begin to use the page earlier than B. So it turns out anyone
+who first maps the page
+should restore MTE, but the question is that: How could A,B,C,D,E,F,G
+know if it is the first
+one mapping the page to PTE?
 
-lib/devres.c:
+>
+> >>
+> >>>
+> >>> Thanks,
+> >>> Ryan
+> >
+> > Thanks
+> > Barry
+>
 
-struct pcim_iomap_devres {
-	void __iomem *table[PCIM_IOMAP_MAX];
-};
-
-void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
-{
-	struct pcim_iomap_devres *dr, *new_dr;
-
-	dr =3D devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
-	if (dr)
-		return dr->table;
-
-	new_dr =3D devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERN=
-EL,
-				   dev_to_node(&pdev->dev));
-	if (!new_dr)
-		return NULL;
-	dr =3D devres_get(&pdev->dev, new_dr, NULL, NULL);
-	return dr->table;
-}
-
-That struct keeps track of the requested BARs. That's why there can
-only be one mapping per BAR, because that table is statically allocated
-and is indexed with the bar-number.
-pcim_iomap_table() now only ever returns the table with the pointers to
-the BARs. Adding tables to that struct that keep track of which
-mappings exist in which bars would be a bit tricky and require probably
-an API change for everyone who currently uses pcim_iomap_table(), and
-that's more than 100 C-files.
-
-So, it seems that a concern back in 2007 was to keep things simple and
-skip the more complex data structures necessary for keeping track of
-the various mappings within a bar.
-In theory, there could be an almost unlimited number of such mappings
-of various sizes, almost forcing you to do book-keeping with the help
-of heap-allocations.
-
-I guess one way to keep things extensible would have been to name the
-function pcim_iomap_bar_table(), so you could later implement one like
-pcim_iomap_range_table() or something.
-But now it is what it is..
-
-That still doesn't explain why there's no pcim_request_region(),
-though...
-
-
-P.
-
->=20
-> First, there would be the pcim_ functions being scattered across
-> several files. Some are implemented in drivers/pci/pci.c, others in
-> lib/devres.c, where they are guarded by #ifdef CONFIG_PCI
-> =E2=80=93 this originates from an old cleanup, done in
-> 5ea8176994003483a18c8fed580901e2125f8a83
->=20
-> Additionally, there is lib/pci_iomap.c, which contains the non-
-> managed
-> pci_iomap() functions.
->=20
-> At first and second glance it's not obvious to me why these pci-
-> functions are scattered. Hints?
->=20
->=20
-> Second, it seems there are two competing philosophies behind managed
-> resource reservations. Some pci_ functions have pcim_ counterparts,
-> such as pci_iomap() <-> pcim_iomap(). So the API-user might expect
-> that
-> relevant pci_ functions that do not have a managed counterpart do so
-> because no one bothered implementing them so far.
->=20
-> However, it turns out that for pci_request_region(), there is no
-> counterpart because a different mechanism / semantic was used to make
-> the function _sometimes_ managed:
->=20
-> =C2=A0=C2=A0 1. If you use pcim_enable_device(), the member is_managed in
-> struct
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pci_dev is set to 1.
-> =C2=A0=C2=A0 2. This value is then evaluated in pci_request_region()'s ca=
-ll to
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 find_pci_dr()
->=20
-> Effectively, this makes pci_request_region() sometimes managed.
-> Why has it been implemented that way and not as a separate function =E2=
-=80=93
-> like, e.g., pcim_iomap()?
->=20
-> That's where an inconsistency lies. For things like iomappings there
-> are separate managed functions, for the region-request there's a
-> universal function doing managed or unmanaged, respectively.
->=20
-> Furthermore, look at pcim_iomap_regions() =E2=80=93 that function uses a =
-mix
-> between the obviously managed function pcim_iomap() and
-> pci_request_region(), which appears unmanaged judging by the name,
-> but,
-> nevertheless, is (sometimes) managed below the surface.
-> Consequently, pcim_iomap_regions() could even be a little buggy: When
-> someone uses pci_enable_device() + pcim_iomap_regions(), wouldn't
-> that
-> leak the resource regions?
->=20
-> The change to pci_request_region() hasn't grown historically but was
-> implemented that way in one run with the first set of managed
-> functions
-> in commit 9ac7849e35f70. So this implies it has been implemented that
-> way on purpose.
->=20
-> What was that purpose?
->=20
-> Would be great if someone can give some hints :)
->=20
-> Regards,
-> P.
->=20
-
+Thanks
+Barry
