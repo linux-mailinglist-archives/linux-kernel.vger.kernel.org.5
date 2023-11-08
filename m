@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501E07E4FAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1D07E4FAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjKHEMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 23:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S229753AbjKHEQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 23:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHEMU (ORCPT
+        with ESMTP id S229574AbjKHEQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 23:12:20 -0500
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BD8210CF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 20:12:17 -0800 (PST)
-X-AuditID: a67dfc5b-d6dff70000001748-42-654b0a9d8f88
-Date:   Wed, 8 Nov 2023 13:12:08 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        "hughd@google.com" <hughd@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <20231108041208.GA40954@system.software.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <20231030072540.38631-3-byungchul@sk.com>
- <63C530D3-3A1D-4BE9-8AA7-EFF5B895BE80@vmware.com>
- <20231030125129.GD81877@system.software.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Tue, 7 Nov 2023 23:16:03 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3171C1B8;
+        Tue,  7 Nov 2023 20:16:01 -0800 (PST)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ce353df504so3675595a34.3;
+        Tue, 07 Nov 2023 20:16:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699416960; x=1700021760;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nKgsZ+Eseabfl1OWusfWxjl7x3m5wmowJcnJqg8xyXY=;
+        b=j88bj+iZn/enUEL/sv6OOq5vR+1g22UK4gGnmntzWdxRLW2VVtZlhJO5isb+XsROBw
+         Qh502MydrWbGrBjPgFfxH8GLx+G/Zq7MUl42+FVsqJMCZCVztZ4ev8PWtckGJVcmR9vb
+         YTYrRoGBVlWHyHG2iWiOFih0ubNudB9ia6tkeVhH7xUtiLArgh9J3M+fkkw+hThPCc92
+         J67N/i9Pn/FSycdiNsKKGal5AD5LMKr4Iw6cQXpFsW6pOFQxVWabSiWwY89Ym4gQ5G7e
+         fCT4VWhzMxarR+1IAhUfRRc/4hQF6Wd/amyv1D4E53zyoVmYJ5rs8W/OxVCUTyNSCxpi
+         PLDw==
+X-Gm-Message-State: AOJu0Ywee3x9YQQgfVOc+oFiLO0TuzAcPhsTmnJqrmdhbDO9FLRLPBU4
+        Ub/dSq/S2PYtHlA+9Q5PqQ==
+X-Google-Smtp-Source: AGHT+IGOhnYnbqats/IQfTcB3RV+0w4aVKCUmapLobVvEWF3InX51kLKZoglMoj9/S5nLNbBdv/kTA==
+X-Received: by 2002:a05:6830:1683:b0:6d3:1a0e:a7aa with SMTP id k3-20020a056830168300b006d31a0ea7aamr974997otr.3.1699416960241;
+        Tue, 07 Nov 2023 20:16:00 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id j9-20020a9d7389000000b006cd0a847138sm1799271otk.2.2023.11.07.20.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 20:15:59 -0800 (PST)
+Received: (nullmailer pid 118424 invoked by uid 1000);
+        Wed, 08 Nov 2023 04:15:58 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231030125129.GD81877@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMIsWRmVeSWpSXmKPExsXC9ZZnoe5cLu9Ug7+zdCzmrF/DZvF5wz82
-        ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeL6roeMFsd7DzBZ
-        bN40ldni9w+gujlTrCxOzprM4iDg8b21j8VjwaZSj80rtDwW73nJ5LFpVSebx6ZPk9g93p07
-        x+5xYsZvFo+dDy095p0M9Hi/7yqbx9Zfdh6fN8l5vJv/li2AL4rLJiU1J7MstUjfLoEro7P9
-        GnvBN66KJ9/vszcwruLoYuTkkBAwkfjQPZkJxv7U8QzMZhFQkVh05QsziM0moC5x48ZPMFtE
-        QFHi0P57jCA2s8A7VonvnzRBbGGBaIlPe1+xg9i8AhYSC+c/AprDxSEkcIRRYuudXSwQCUGJ
-        kzOfsEA0q0v8mXcJaCgHkC0tsfwfB0RYXqJ562ywXZwClhLfVxwG2yUqoCxxYNtxsJkSAtvY
-        JX4t/gB1tKTEwRU3WCYwCs5CsmIWkhWzEFbMQrJiASPLKkahzLyy3MTMHBO9jMq8zAq95Pzc
-        TYzAqF1W+yd6B+OnC8GHGAU4GJV4eF94eqUKsSaWFVfmHmKU4GBWEuH9a++RKsSbklhZlVqU
-        H19UmpNafIhRmoNFSZzX6Ft5ipBAemJJanZqakFqEUyWiYNTqoExTezjfzeBU2mv+JNuTG++
-        0qjFeqrin+2m7RJuLnkePZvfcU9X5RP68f7Tm8Kizm3dWcYXdthv7rimYfkx+zbHJLdYhbUf
-        dtgv17h4Ofr1DPnTcWFB31zbzf4fTomUCw830buz60146TmLLO6rt4u7TzwTtL62o3RH9dxD
-        yYvfbFtgsrZap+2hEktxRqKhFnNRcSIA2bMZMNYCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsXC5WfdrDuXyzvVYOk2MYs569ewWXze8I/N
-        4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
-        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
-        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPxS8+MHls/WXn8XmTnMe7+W/ZAvijuGxSUnMy
-        y1KL9O0SuDI626+xF3zjqnjy/T57A+Mqji5GTg4JAROJTx3PmEBsFgEViUVXvjCD2GwC6hI3
-        bvwEs0UEFCUO7b/HCGIzC7xjlfj+SRPEFhaIlvi09xU7iM0rYCGxcP4joDlcHEICRxgltt7Z
-        xQKREJQ4OfMJC0SzusSfeZeAhnIA2dISy/9xQITlJZq3zgbbxSlgKfF9xWGwXaICyhIHth1n
-        msDINwvJpFlIJs1CmDQLyaQFjCyrGEUy88pyEzNzTPWKszMq8zIr9JLzczcxAmNwWe2fiTsY
-        v1x2P8QowMGoxMP7wtMrVYg1say4MvcQowQHs5II7197j1Qh3pTEyqrUovz4otKc1OJDjNIc
-        LErivF7hqQlCAumJJanZqakFqUUwWSYOTqkGxnsiss9i/PSeMNSsjD1VWPus9lKu0qn9VbmX
-        m51YOb3LTbic1lifrTkgc0ZkHtvfG3O+rZXmibkVVWYxV/4Af993h4N1sYlKMz+Ee+s4X/G7
-        FlDycOm7r5735K9/KJnZf2tDZc3W1S/12y/sy47QN90/5dN6PqatZ1qsjinEv1OYFvRW9BR/
-        hhJLcUaioRZzUXEiABSiR+69AgAA
-X-CFilter-Loop: Reflected
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Yuxi Wang <wyx137120466@gmail.com>
+Cc:     linux-leds@vger.kernel.org, Yuxi.Wang@monolithicpower.com,
+        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, pavel@ucw.cz
+In-Reply-To: <20231108032921.3134115-2-wyx137120466@gmail.com>
+References: <20231108032921.3134115-1-wyx137120466@gmail.com>
+ <20231108032921.3134115-2-wyx137120466@gmail.com>
+Message-Id: <169941695839.118408.11939642206111290913.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: leds: add mps mp3326 LED
+Date:   Tue, 07 Nov 2023 22:15:58 -0600
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 09:51:30PM +0900, Byungchul Park wrote:
-> > > diff --git a/mm/memory.c b/mm/memory.c
-> > > index 6c264d2f969c..75dc48b6e15f 100644
-> > > --- a/mm/memory.c
-> > > +++ b/mm/memory.c
-> > > @@ -3359,6 +3359,19 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
-> > > 	if (vmf->page)
-> > > 		folio = page_folio(vmf->page);
-> > > 
-> > > +	/*
-> > > +	 * This folio has its read copy to prevent inconsistency while
-> > > +	 * deferring TLB flushes. However, the problem might arise if
-> > > +	 * it's going to become writable.
-> > > +	 *
-> > > +	 * To prevent it, give up the deferring TLB flushes and perform
-> > > +	 * TLB flush right away.
-> > > +	 */
-> > > +	if (folio && migrc_pending_folio(folio)) {
-> > > +		migrc_unpend_folio(folio);
-> > > +		migrc_try_flush_free_folios(NULL);
-> > 
-> > So many potential function calls… Probably they should have been combined
-> > into one and at least migrc_pending_folio() should have been an inline
-> > function in the header.
-> 
-> I will try to change it as you mention.
-> 
-> > > +	}
-> > > +
-> > 
-> > What about mprotect? I thought David has changed it so it can set writable
-> > PTEs.
-> 
-> I will check it out.
 
-I found mprotect stuff is already performing TLB flushes needed for it.
-So some redundant TLB flushes might happen by migrc but it's not that
-harmful I think. Thanks.
+On Wed, 08 Nov 2023 11:29:20 +0800, Yuxi Wang wrote:
+> Document mps mp3326 LED driver devicetree bindings.
+> 
+> Signed-off-by: Yuxi Wang <wyx137120466@gmail.com>
+> ---
+>  .../devicetree/bindings/leds/leds-mp3326.yaml | 184 ++++++++++++++++++
+>  1 file changed, 184 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+> 
 
-	Byungchul
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties:required: ['reg', 'color'] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:compatible: [{'const': 'mps,mp3326'}] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties: 'patternProperties' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found instead of a DT property name.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties: 'required' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found instead of a DT property name.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_r:properties:required: ['reg', 'color'] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'anyOf' conditional failed, one must be fixed:
+	'reg' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'anyOf' conditional failed, one must be fixed:
+	'color' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'anyOf' conditional failed, one must be fixed:
+	'reg' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'anyOf' conditional failed, one must be fixed:
+	'color' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:compatible: [{'const': 'mps,mp3326'}] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:patternProperties: 'anyOf' conditional failed, one must be fixed:
+	'^led@[0-3]$' is not one of ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'dependentRequired', 'dependentSchemas', 'deprecated', 'description', 'else', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'items', 'if', 'minItems', 'minimum', 'maxItems', 'maximum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'required', 'then', 'typeSize', 'unevaluatedProperties', 'uniqueItems']
+	'type' was expected
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: 'oneOf' conditional failed, one must be fixed:
+	'unevaluatedProperties' is a required property
+	'additionalProperties' is a required property
+	hint: Either unevaluatedProperties or additionalProperties must be present
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'reg' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_g: 'color' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'reg' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: properties:multi-led:properties:led_b: 'color' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'not', 'allOf', 'anyOf', 'oneOf', '$ref']
+	from schema $id: http://devicetree.org/meta-schemas/nodes.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
+ 	 $id: http://devicetree.org/schemas/mps,mp3326.yaml
+ 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: mps,led-protect: missing type definition
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/leds/leds-mp3326.yaml: patternProperties: missing type definition
+Documentation/devicetree/bindings/leds/leds-mp3326.example.dtb: /example-0/i2c/mp3326@30: failed to match any schema with compatible: ['mps,mp3326']
+Documentation/devicetree/bindings/leds/leds-mp3326.example.dtb: /example-1/i2c/mp3326@30: failed to match any schema with compatible: ['mps,mp3326']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231108032921.3134115-2-wyx137120466@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
