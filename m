@@ -2,81 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0277E5ADE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44AA7E5AE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbjKHQMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S230514AbjKHQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjKHQMH (ORCPT
+        with ESMTP id S229694AbjKHQMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:12:07 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id C4B671BDD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:12:04 -0800 (PST)
-Received: (qmail 1022492 invoked by uid 1000); 8 Nov 2023 11:12:04 -0500
-Date:   Wed, 8 Nov 2023 11:12:04 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     syzbot <syzbot+b6f11035e572f08bc20f@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [usb?] INFO: task hung in hub_port_init (3)
-Message-ID: <bd9c6508-0a99-432a-bf59-33440c5e12e4@rowland.harvard.edu>
-References: <000000000000704d6305fdb75642@google.com>
- <88cc734c-2a88-4495-aa1e-f16294eb6cea@collabora.com>
- <ff0083c2-249e-4c1e-9546-0b81cf2c6e6f@rowland.harvard.edu>
- <722c5417-d76a-44f3-b6d4-f585f54a3e02@collabora.com>
+        Wed, 8 Nov 2023 11:12:37 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7670D19A5;
+        Wed,  8 Nov 2023 08:12:34 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 667A94000C;
+        Wed,  8 Nov 2023 16:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699459952;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UkJQ7GDDcqGNmdP1cyiXZEQfrc5evDlkv29wrBp07Cc=;
+        b=gzcREKerJc4rsIRxBIX6K0zNm8Zf/0FbCJIZTbQ5jyiqeQxxI5Kw6sgXX+SxVYXSfxqyHO
+        z9EXhUPM4zDjjO2J60eMBmiLWoIwaRAuiQIlj4vfvfrW2nu4hLjge5YUWjs89W/BSXNcRT
+        Ig7D0IUvKOAxXzj6V1RUVz5/bI6LWr5jNdMdNUA4yv7wGlZe0vMNtmmMDfVL2tq0wLwZll
+        LU3v0qJPEgjp8DdbIbkYxx21NZLJDfUpFR9uqiE5qtL/zv7fBDtUSRUvCttS0AiVViv0S3
+        JeC+UaE6IJQe0heR6POU28366f2KZiTQH/1OiNbwM2tJY+vmxo0uYJL2qX08vA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        vladimir.kondratiev@intel.com,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH v2 00/10] MIPS: Fix kernel in XKPHYS
+In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+Date:   Wed, 08 Nov 2023 17:12:31 +0100
+Message-ID: <87r0l06x74.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <722c5417-d76a-44f3-b6d4-f585f54a3e02@collabora.com>
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 04:25:45PM +0500, Muhammad Usama Anjum wrote:
-> I've confirmed locally again that the logs belong to same urb. This kworker
-> gets stuck:
-> 
-> [  131.064283] usb_control_msg
-> [  131.065326] usb_internal_control_msg, urb: FFFF88814CC2AE00
-> urb->use_count: 0
-> [  131.066320] usb_start_wait_urb urb: FFFF88814CC2AE00 urb->use_count: 0
-> [  131.069988] usb_submit_urb urb: FFFF88814CC2AE00 urb->use_count: 0
-> [  131.070881] usb_hcd_submit_urb urb: FFFF88814CC2AE00 urb->use_count 1
-> [  131.072268] usb_submit_urb 0 urb: FFFF88814CC2AE00 urb->use_count: 1
-> [  131.073186] usb_start_wait_urb urb: FFFF88814CC2AE00 urb->use_count: 1
-> [  136.151750] usb_start_wait_urb wait_for_completion
-> [  136.153286] usb_kill_urb might_sleep
-> [  136.153859] vhci_hcd: vhci_urb_dequeue:875: vhci_urb_dequeue
-> [  136.154853] vhci_hcd: vhci_urb_dequeue:952: vhci_urb_dequeue return
-> [  136.155773] usb_kill_urb usb_hcd_unlink_urb use_count: 1
-> [  285.831355] INFO: task kworker/0:4:1586 blocked for more than 143 seconds.
+Hello Jiaxun,
 
-Of course.  It's waiting for the vhci_urb_dequeue() call to finish 
-unlinking the URB.
+> Hi all,
+>
+> This series fixes support for loading kernel to XKPHYS space.
+> It is derived from "MIPS: use virtual addresses from xkphys for MIPS64" [1].
+>
 
-> > If you want to fix this problem (and probably a bunch of other ones in
-> > syzbot's list of pending bugs), figure out what's wrong with the
-> > ->urb_dequeue() callback routine in the usbip driver and fix it.
-> I'm looking at it, haven't found anything yet.
+Thanks for this new series, I was able to test it this week and I have a
+few comments.
 
-I took a very quick look just now, and one thing stands out.  If 
-vhci_urb_dequeue() is unable to allocate a vhci_unlink structure, it 
-calls usbip_event_add() and then returns without doing anything else.  
 
-But one of the things usbip_event_add() does is try to allocate a 
-usbip_event structure, and if that allocation fails then it returns 
-without doing anything.  Now, if the memory allocation attempt in 
-vhci_urb_dequeue() fails then it seems quite likely that the attempt in 
-usbip_event_add() will also fail.  Which means that nothing will happen 
--- and that is a bug.  URB-dequeue calls are not allowed to fail because 
-of memory pressure.
+> Boot tested on boston and QEMU with loading address set to 0xa800000090000000.
+> QEMU patch on the way.
+>
+> For EyeQ5's memory layout, I think you just need to write devicetree memory
+> node as:
+>
+> memory@0 {
+> 	device_type = "memory";
+> 	reg = < 0x0 0x08000000 0x0 0x08000000
+> 		0x8 0x08000000 0x0 0x78000000>;
+> };
+>
+> And set kernel load addesss to somewhere in RAM, everything should
+> work.
 
-Now, I don't know if this is the cause of the trouble in the syzbot 
-test.  You should trace what's going on in vhci_urb_dequeue() to see 
-exactly what it does.
+With this setup and a workaround that I had to do and I will comment in
+for the patch "MIPS: Refactor mips_cps_core_entry implementation", I
+managed to boot the kernel and the 8 core of my setup are detected.
 
-Alan Stern
+>
+> It makes me a little bit confused that in EyeQ5 enablement patch, you set
+> load address to:
+>> +else
+>> +load-$(CONFIG_MIPS_GENERIC)	+= 0xa800000080100000
+>> +endif
+> Where does not have memory aviailable.
+>
+> I guess you might want to set it to 0xa800000800100000?
+> Though I would suggest you to set it to 0xa800000808000000, to avoid
+> collisions with low mem and reserved mem.
+
+Indeed I used CONFIG_PHYSICAL_START=0xa800000808000000
+
+Gregory
+>
+> Gregory and Vladimir, do let me know if I missed anything.
+>
+> Thanks
+> - Jiaxun
+>
+> [1]: https://lore.kernel.org/lkml/20231004161038.2818327-3-gregory.clement@bootlin.com/
+>
+> Jiaxun Yang (10):
+>   MIPS: Export higher/highest relocation functions in uasm
+>   MIPS: spaces: Define a couple of handy macros
+>   MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+>   MIPS: Fix set_uncached_handler for ebase in XKPHYS
+>   MIPS: Refactor mips_cps_core_entry implementation
+>   MIPS: Allow kernel base to be set from Kconfig for all platforms
+>   MIPS: traps: Handle CPU with non standard vint offset
+>   MIPS: Avoid unnecessary reservation of exception space
+>   MIPS: traps: Enhance memblock ebase allocation process
+>   MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
+>
+>  arch/mips/Kconfig                           |  27 ++--
+>  arch/mips/include/asm/addrspace.h           |   5 +
+>  arch/mips/include/asm/mach-generic/spaces.h |   5 +-
+>  arch/mips/include/asm/mips-cm.h             |   1 +
+>  arch/mips/include/asm/smp-cps.h             |   4 +-
+>  arch/mips/include/asm/traps.h               |   1 -
+>  arch/mips/include/asm/uasm.h                |   2 +
+>  arch/mips/kernel/cps-vec.S                  | 110 +++++--------
+>  arch/mips/kernel/cpu-probe.c                |   5 -
+>  arch/mips/kernel/cpu-r3k-probe.c            |   2 -
+>  arch/mips/kernel/genex.S                    |  19 ++-
+>  arch/mips/kernel/head.S                     |   7 +-
+>  arch/mips/kernel/smp-cps.c                  | 167 +++++++++++++++++---
+>  arch/mips/kernel/traps.c                    |  85 +++++++---
+>  arch/mips/mm/uasm.c                         |   6 +-
+>  15 files changed, 293 insertions(+), 153 deletions(-)
+>
+> -- 
+> 2.34.1
+>
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
