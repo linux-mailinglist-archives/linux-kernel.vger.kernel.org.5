@@ -2,64 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192BB7E6016
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BC57E601C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 22:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbjKHVpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 16:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        id S232113AbjKHVpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 16:45:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjKHVpM (ORCPT
+        with ESMTP id S231958AbjKHVp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 16:45:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB902585
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:45:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 68D6BC433C8;
-        Wed,  8 Nov 2023 21:45:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699479910;
-        bh=ogs20+9YwoXvsdGziktpDf3CVAmo3y6a3BjMo7EJKLI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mT0PkV8u6DBie+MZSCDD/3+Tf6Jr5Jq5UJk5xJSM3xWzVNaRlAzNmx/ienUAszbtj
-         hE7p/49RutVfdbIB6MloSB1YixGAZHqTzuHkhVJCSi4jUyODOn0fYRYbwp0eUr502N
-         aXEn21c25SnY67v+FSuYKhcUofJkFuhl7wl57mxnbxKDXmcEjKnQo6Yj7Oo1Jq0LNM
-         ixgyZNDjFtrx7OzcOcUGWDiKeCKaRt4GwhD9dZd53D6fQiIg6u1Yeu3z+6aSGHeTck
-         v+J4e1vHyki+2qxiY4HRuZa5NaUXWVBZZXX0w2wHd4QtsTpQ5uj0yLrMxDRMl7B9ZB
-         btgo+qdpxtkyQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4F35CC3274D;
-        Wed,  8 Nov 2023 21:45:10 +0000 (UTC)
-Subject: Re: [GIT PULL] exfat fixes for 6.7-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
-References: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAKYAXd-rB+hXUVbCgnRebSsRMH8AK0XzOGJRLqAPX9GFa_9_Kg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-6.7-rc1-part2
-X-PR-Tracked-Commit-Id: 1373ca10ec04afba9199de1fab01fde91338a78b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 67c0afb6424fee94238d9a32b97c407d0c97155e
-Message-Id: <169947991031.4309.14376787408300740216.pr-tracker-bot@kernel.org>
-Date:   Wed, 08 Nov 2023 21:45:10 +0000
-To:     Namjae Jeon <linkinjeon@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>
+        Wed, 8 Nov 2023 16:45:27 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7862591
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 13:45:25 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-59b5484fbe6so2335337b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 13:45:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699479924; x=1700084724; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uNZCsb+J0tCXIr/CtNET2AcsXu2SaYf1CY84TShlm6Q=;
+        b=GdXWk7r/Ww0irC7aIsHcw7wDikNbFo3tRY3z+MPolck9u3bmv9yN23/z52w3m3460W
+         RGIKDGXc6mHT+IlxrCECRrX729Zoxl0AOKSZ/qdy/dKS/QyiPw8If7/gOXI/N9CTJ6hd
+         o1wgAF+pHv8PA3b9FHohHi5b/mRMt3lCOOwPQNjPQaXf9sH9EKz2xlAQI55UGYRrb0Xg
+         PAJfT4PXMmh37cXNfYIA3v2Xq7RzphXqFnprFrnz8ZNCI51SBt27fMPB0aXwjWE15qYR
+         rrJGGjPYJDfQPbxHRAIoAzQ2Q7mZM+RHaETChVl2CmOmh5GWqqpoOKxwdq5OJGWjjude
+         RTPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699479924; x=1700084724;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uNZCsb+J0tCXIr/CtNET2AcsXu2SaYf1CY84TShlm6Q=;
+        b=Y7f5Oc4nxWeGfXWMwRIcWBcmC1A+/zNxmC64jdxknKTFisPllnsBsp55XtpF1/G5bv
+         nqxsZ4FTiewXRbyClqBssIYVW0KqDSvHqoJ1X6QICrw9VXZiq1DBcvRh9kU7N3WW4Mtt
+         P0sp2DnCf3srKgP8NmXtGdzYRJzXktwEfWOn73pvmziJIqQLvJZrX98+UgzMVYRxYsZE
+         r4Ki1E/P7w5HFz+jeYI+rQJni1R3ETkJpTUBjH5xRDX6pSQAqSDNIzLlSKa2cII8Bp5H
+         zaH4tYeaCC7HOUlyn1jVMKoLbHsZmZ1Gsu28HSOpNu487ArLVdts4oJ9JMJZWEF2NuOO
+         kq2w==
+X-Gm-Message-State: AOJu0Yw3U5131MljGolp6K2+3UfkBWG1NJWPcASO4zUTe3cc0CQm/oqn
+        zYazeBSCHh6EA4NNtZb5PpN0qTA1K8EOXvhNOOxd4w==
+X-Google-Smtp-Source: AGHT+IFY9jFZdG7cvJAasqldeYVJV1lp20ykF6CM/T97HTYZUi8l1zfwxOIgQ7l5PF/miWNeoGVOLOXt0F0G6C0TYx8=
+X-Received: by 2002:a81:6cd6:0:b0:5a7:f002:4fe4 with SMTP id
+ h205-20020a816cd6000000b005a7f0024fe4mr3127115ywc.23.1699479924475; Wed, 08
+ Nov 2023 13:45:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
+ <20231108-fix-mips-nand-v1-2-5fc5586d04de@linaro.org> <20231108191125.GA2754195-robh@kernel.org>
+In-Reply-To: <20231108191125.GA2754195-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 8 Nov 2023 22:45:11 +0100
+Message-ID: <CACRpkdZx9icF7s5HoS2r40Wuj4sPbEZPiaPsD9GZ94J4LKY5+g@mail.gmail.com>
+Subject: Re: [PATCH 2/6] dt-bindings: mtd: Rewrite gpio-control-nand in schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Howard Harte <hharte@magicandroidapps.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 8 Nov 2023 23:20:37 +0900:
+On Wed, Nov 8, 2023 at 8:11=E2=80=AFPM Rob Herring <robh@kernel.org> wrote:
+> On Wed, Nov 08, 2023 at 03:33:50PM +0100, Linus Walleij wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-6.7-rc1-part2
+> > This creates a schema for GPIO controlled NAND. The txt
+> > schema was old and wrong.
+> >
+> > Mark the old way of passing GPIOs in a long array as
+> > deprecated and encourage per-pin GPIO assignments with
+> > the named nnn-gpios phandles.
+>
+> We have 1 user upstream with only a single commit adding it in 2017.
+> This doesn't seem like something that's going to gain new users either.
+> Is it really worth modernizing this binding?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/67c0afb6424fee94238d9a32b97c407d0c97155e
+The whole ordeal was actually prompted by the emergence of a
+new user who wants to add a device tree for a new device.
+So I don't want to add new users for the old bindings.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Yours,
+Linus Walleij
