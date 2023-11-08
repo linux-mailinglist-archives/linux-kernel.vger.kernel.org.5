@@ -2,106 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDCE7E503E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 07:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08367E503F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 07:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbjKHGNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 01:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45020 "EHLO
+        id S230156AbjKHGPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 01:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKHGNO (ORCPT
+        with ESMTP id S229566AbjKHGPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 01:13:14 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC30CD41
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 22:13:12 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5bd5809f63aso2685763a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 22:13:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699423992; x=1700028792; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UqET+/tUbFu2Jp9wRy1DEiP4GTn/JAUINR9zHqa/AlU=;
-        b=XbChFd9FlVs4t7/Ef3yRcPeuy9eaEGk8gnV/0p6ge8WpN9MzBFWI+T2xKEpzjt2osY
-         LRGST6BC3rg4rzSqrQ+wuSA8Hdr4WAPy7k2Yhy6WmR+WMF0hdGs22WM1Zi6e8YOAH4EF
-         rTmi2R6m6BZVRwLSVpCSkCYiUBFCcuD+tGEYZA0Yuo7mbo6N83CkA6J99m0XjzWjYOnG
-         egVlhX62YrLop+ozjPvqLTKHau7IIiMETQ1ETlL4uwK8gKVEkdkJGfn7wV1A+CLxvqS1
-         WassyDNeo4u1ljpf1lP53H2u7ngVJvFbOzHXMxQy/ZtNNSE6S/qr8vx25l49ivU9jvgG
-         /cxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699423992; x=1700028792;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UqET+/tUbFu2Jp9wRy1DEiP4GTn/JAUINR9zHqa/AlU=;
-        b=gmm9N/t+7UrZchD3pI37QPnK+vrZr6Y867FY986oVhAHovqehGDCLfA1qdIZQgsvwW
-         0VTxvBIVkuhEcYJOWbQNAyE7nrJrYfb0FQRa7jXiqeG9laajg4mg8nQMwGCPSJWdLmFe
-         RrLGncmxENlBvpgOL34DovXRPnoxIT/9QWg2kItVC7RlFN/2V0DW1BMzKHHxk7fe/c2w
-         bABBeZbDqd8EVfYNNOEqbwo+o0nHw8SitkrzSNlXZK5Nyo942sRv414fCjt2B8JpXX6k
-         07fVFnJ60J0AtsltVGxiRZVdyOBzZub77eu82sYPAzQbG3dhXvYf0Mw+ptA/TWQ2sRes
-         vs9g==
-X-Gm-Message-State: AOJu0YwEuZnHi5p5pLzflUPM57TwCD9jHT58nDpjYHBB+MmRI4Xi3aO1
-        d86i4I2ivldCFatylZ1H0NIsG9HS2mzhOREJVq0=
-X-Google-Smtp-Source: AGHT+IHpdE+SHUhlg41LDgR83N6jNh0Bs3AiiFpPYiktqU9+a3AFWX5KM2j0MLP9vhd632/I6QaBjA==
-X-Received: by 2002:a05:6a20:1608:b0:161:ffbf:d949 with SMTP id l8-20020a056a20160800b00161ffbfd949mr1253550pzj.3.1699423992235;
-        Tue, 07 Nov 2023 22:13:12 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id rr5-20020a17090b2b4500b002804af3afb7sm792350pjb.49.2023.11.07.22.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 22:13:11 -0800 (PST)
-Date:   Wed, 8 Nov 2023 11:43:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: drivers/opp/debugfs.c:48:54: warning: '%d' directive output may
- be truncated writing between 1 and 11 bytes into a region of size 8
-Message-ID: <20231108061308.jcoj4bjzv4m5pilx@vireshk-i7>
-References: <202311061847.BOtfUmbQ-lkp@intel.com>
+        Wed, 8 Nov 2023 01:15:07 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2397FD41;
+        Tue,  7 Nov 2023 22:15:05 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 544A240E01AA;
+        Wed,  8 Nov 2023 06:15:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id EHip46odZLin; Wed,  8 Nov 2023 06:14:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699424099; bh=Siw88j4EN9rm3CCkm9p9kBj7DtmN6TqUD8LWLvzmcHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IUXL2eqk5iLpWnofHuVYCsP6OCPH/V28fpddsfAb1c80YKs4+RqnST/ctXMB+LDRV
+         U7+qji0J1fuqA6tKsG2M6v716OrADMZPIAq1BRaI6qT4sycj6JuLU8m36R2DGMVFKO
+         mUwDg1kOt6pFcSoG7armcB4E7RNcE4K7qxrnIQzfqD46dRfPYkdPu1eiKCzD9Ky2sY
+         tMm9AqRCnBlw6mVVL48rRg3HEM3dM+KssgEJ5sYV9Z7b3d9fyVg4+AusCxTs/wb54b
+         bOyvODvw7C1CIGk8ZO3Rhn7/eyk3IMdtf2JtQtLaF4ExnhEizRrChjG6sPgudGPn+B
+         JzidoulbJu60FTJfRqNgAdNCYgl3Pqguk/tKWjdnwRf1NfEfKXkk/qh69Bcwr50/QJ
+         dickcZ2iV1b4J/TskV2N4ne4jPBWPGJSWkZGq4LdPlYS/11VmkkySj9Y0kLF6F7EQZ
+         OCQIT5lXqmwhRFg1iDeev1s8oH56rmw68ft3k+5kSmwtyuz64DjhD8lld0DNMqdtnN
+         8QArxkMPMKTDT8PEuMhAHhFqyV5XGB10heb5B4VDJrjWb57AnINBp8n0PZHuERbWzl
+         M0hg+46dZ44U8KcNNwqw4OgKxla8lzhR86yKCpqV1ku9qkzZY2UpHkPY5zCBfF+A5/
+         /3q8YGTcgTjG23Z2bCwe9PPU=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D946840E014B;
+        Wed,  8 Nov 2023 06:14:18 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 07:14:13 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
+ support
+Message-ID: <20231108061413.GAZUsnNVcmYZNMw2Kr@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-7-michael.roth@amd.com>
+ <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
+ <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+ <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
+ <20231107202757.GEZUqdzYyzVBHTBhZX@fat_crate.local>
+ <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
+ <20231107212740.GFZUqrzK7yzy41dRKp@fat_crate.local>
+ <20231107220852.GGZUq1dHJ2q9LYV2oG@fat_crate.local>
+ <4b68fd05-5d21-0472-42c3-6cf6f1f9f967@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202311061847.BOtfUmbQ-lkp@intel.com>
+In-Reply-To: <4b68fd05-5d21-0472-42c3-6cf6f1f9f967@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06-11-23, 18:41, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d2f51b3516dade79269ff45eae2a7668ae711b25
-> commit: 46f48aca2e5aef3f430e95d1a5fb68227ec8ec85 OPP: Fix missing debugfs supply directory for OPPs
-> date:   4 years, 11 months ago
+On Tue, Nov 07, 2023 at 04:33:41PM -0600, Kalra, Ashish wrote:
+> We will still need some method to tell the IOMMU driver if SNP
+> support/feature is disabled by this function, for example, when CPU family
+> and model is not supported by SNP and we jump to no_snp label.
 
-This is a really old commit, are we running the test over it ? Or it is what git
-bisect reported ?
+See below.
 
-> config: x86_64-randconfig-r025-20230725 (https://download.01.org/0day-ci/archive/20231106/202311061847.BOtfUmbQ-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311061847.BOtfUmbQ-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311061847.BOtfUmbQ-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    drivers/opp/debugfs.c: In function 'opp_debug_create_one':
-> >> drivers/opp/debugfs.c:48:54: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Wformat-truncation=]
->       48 |                 snprintf(name, sizeof(name), "supply-%d", i);
->          |                                                      ^~
->    In function 'opp_debug_create_supplies',
->        inlined from 'opp_debug_create_one' at drivers/opp/debugfs.c:119:7:
->    drivers/opp/debugfs.c:48:46: note: directive argument in the range [-2147483644, 2147483646]
->       48 |                 snprintf(name, sizeof(name), "supply-%d", i);
->          |                                              ^~~~~~~~~~~
->    drivers/opp/debugfs.c:48:17: note: 'snprintf' output between 9 and 19 bytes into a destination of size 15
->       48 |                 snprintf(name, sizeof(name), "supply-%d", i);
->          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> The reliable way for this to work is to ensure snp_rmptable_init() is called
+> before IOMMU initialization and then IOMMU initialization depends on SNP
+> feature flag setup by snp_rmptable_init() to enable SNP support on IOMMU or
+> not.
 
-I tried to reproduce it for ARM and don't see the warning locally. I saw a
-similar one earlier (reported by the bot), which is already fixed:
+Yes, this whole SNP initialization needs to be reworked and split this
+way:
 
-make ARCH=arm64 O=../barm64/ -j8 CROSS_COMPILE=aarch64-linux-gnu- W=1 CONFIG_DEBUG_SECTION_MISMATCH=y
+- early detection work which needs to be done once goes to
+  bsp_init_amd(): that's basically your early_detect_mem_encrypt() stuff
+  which needs to happen exactly only once and early.
 
+- Any work like:
+
+	 c->x86_phys_bits -= (cpuid_ebx(0x8000001f) >> 6) & 0x3f;
+
+  and the like which needs to happen on each AP, gets put in a function
+  which gets called by init_amd().
+
+By the time IOMMU gets to init, you already know whether it should
+enable SNP and check X86_FEATURE_SEV_SNP.
+
+Finally, you call __snp_rmptable_init() which does the *per-CPU* init
+work which is still pending.
+
+Ok?
+
+Ontop of the previous ontop patch:
+
+---
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 6cc2074fcea3..a9c95e5d6b06 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -674,8 +674,19 @@ static void early_detect_mem_encrypt(struct cpuinfo_x86 *c)
+ 		if (!(msr & MSR_K7_HWCR_SMMLOCK))
+ 			goto clear_sev;
+ 
+-		if (cpu_has(c, X86_FEATURE_SEV_SNP) && !early_rmptable_check())
+-			goto clear_snp;
++		if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
++			/*
++			 * RMP table entry format is not architectural and it can vary by processor
++			 * and is defined by the per-processor PPR. Restrict SNP support on the known
++			 * CPU model and family for which the RMP table entry format is currently
++			 * defined for.
++			 */
++			if (c->x86 != 0x19 || c->x86_model > 0xaf)
++				goto clear_snp;
++
++			if (!early_rmptable_check())
++				goto clear_snp;
++		}
+ 
+ 		return;
+ 
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index 9237c327ad6d..5a71df9ae4cb 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -199,14 +199,6 @@ static int __init snp_rmptable_init(void)
+ 	if (!amd_iommu_snp_en)
+ 		return 0;
+ 
+-	/*
+-	 * RMP table entry format is not architectural and it can vary by processor and
+-	 * is defined by the per-processor PPR. Restrict SNP support on the known CPU
+-	 * model and family for which the RMP table entry format is currently defined for.
+-	 */
+-	if (boot_cpu_data.x86 != 0x19 || boot_cpu_data.x86_model > 0xaf)
+-		goto nosnp;
+-
+ 	if (__snp_rmptable_init())
+ 		goto nosnp;
+ 
 -- 
-viresh
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
