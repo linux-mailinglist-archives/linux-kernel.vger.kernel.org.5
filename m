@@ -2,127 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4DA7E4FA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF4F7E4F97
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbjKHEK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 23:10:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S234529AbjKHD6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 22:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKHEK1 (ORCPT
+        with ESMTP id S229581AbjKHD6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 23:10:27 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D236129;
-        Tue,  7 Nov 2023 20:10:25 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SQBMj57xdzMmh5;
-        Wed,  8 Nov 2023 12:05:53 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 8 Nov
- 2023 11:48:49 +0800
-Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
-To:     Mina Almasry <almasrymina@google.com>,
-        David Ahern <dsahern@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-6-almasrymina@google.com>
- <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
- <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6c629d6d-6927-3857-edaa-1971a94b6e93@huawei.com>
-Date:   Wed, 8 Nov 2023 11:48:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 7 Nov 2023 22:58:39 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D265E10C9;
+        Tue,  7 Nov 2023 19:58:37 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2802d218242so6030607a91.1;
+        Tue, 07 Nov 2023 19:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699415917; x=1700020717; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oW6+TAcsgkVX2L728YvNO81hwlzTKV4x5733S3mNdBs=;
+        b=bglv6N8DuJitXWrUptcBK8WcyKnGYo4TA1XyIylhx1WElnLpleGVemLVqSbUWUGBz7
+         tkiPILMkjTNAvcCUMNStW7YtHupXNTvckIgSNbR5ktHs6YHB9qeR9ANdwSi4f+pDbWsW
+         6X97FormUxyGIJpGlZu5PTO3L+ZN1UKHo2AglFl0rRrddsNnmgUhx1Ydn+aq3ZRZGUme
+         x1ugRebRbFoj5s2ubfd5A6ibMra9mtkJIZFeuBc07SwK9OajaEZUOdUeDjrqMr16WLd6
+         iRm/mpIzOWe4SfkZ/4OEHzR2OcNnnLkWLnB3mIMjbJRxVLDktKFNBHPmZwefWinSI+Pf
+         0LzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699415917; x=1700020717;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oW6+TAcsgkVX2L728YvNO81hwlzTKV4x5733S3mNdBs=;
+        b=Y4L9MS5kl277gtsdN20hTtFfi03Gii15tbR7InrLo8VzjnVKAU6zAO+tiOVXG4UraC
+         PiphLmQdtNGndH8k795f3WOTJR+0osOHsaInOHJcd7q6TUb94nN7KiJes4Xs84y1tLPe
+         tMPls1M/+Ggft0OCOqsBtyVkTt5j4fu72LwfARSYxL0xNYbobo+nLZGrx3gCN6KxH6qz
+         YwShDg8FtXB+a78YYtUmKqvMdZsNJ9TEKHlguP3RxaVqMsnJbzN3ae8Ghpoee7g7BeZ9
+         ap0hVuC/Qth93RD2NcOp+DcUHa3g37WFR/XsBXZRv01jnXqTeZGdKlxADp8oGGtQlf6u
+         RM6Q==
+X-Gm-Message-State: AOJu0YwmPVlSqf7cd3/jhAvv3kt5UJyuzO7fIc99LaxCXbsCXCnTP644
+        yZ0GwKmCvDMEA115/5xl5A0=
+X-Google-Smtp-Source: AGHT+IGxy8UqGEjSjO7aF6ymfbOkLNMyr0HazzEN6S/9GhcKtZvRfqbDP14jdiEY+DyyheZBAIs3sw==
+X-Received: by 2002:a17:90b:2250:b0:27d:b811:2fe4 with SMTP id hk16-20020a17090b225000b0027db8112fe4mr794680pjb.26.1699415917046;
+        Tue, 07 Nov 2023 19:58:37 -0800 (PST)
+Received: from localhost.localdomain ([115.99.190.148])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a018900b002635db431a0sm628102pjc.45.2023.11.07.19.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 19:58:36 -0800 (PST)
+From:   Jagath Jog J <jagathjog1996@gmail.com>
+To:     jic23@kernel.org, andriy.shevchenko@linux.intel.com
+Cc:     oe-kbuild-all@lists.linux.dev, lkp@intel.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: imu: bmi323: Make the local structures static
+Date:   Wed,  8 Nov 2023 09:28:31 +0530
+Message-Id: <20231108035831.5889-1-jagathjog1996@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/8 6:10, Mina Almasry wrote:
-> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
->>
->> On 11/5/23 7:44 PM, Mina Almasry wrote:
->>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>> index eeeda849115c..1c351c138a5b 100644
->>> --- a/include/linux/netdevice.h
->>> +++ b/include/linux/netdevice.h
->>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
->>>  };
->>>
->>>  #ifdef CONFIG_DMA_SHARED_BUFFER
->>> +struct page_pool_iov *
->>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
->>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
->>
->> netdev_{alloc,free}_dmabuf?
->>
-> 
-> Can do.
-> 
->> I say that because a dmabuf can be host memory, at least I am not aware
->> of a restriction that a dmabuf is device memory.
->>
-> 
-> In my limited experience dma-buf is generally device memory, and
-> that's really its use case. CONFIG_UDMABUF is a driver that mocks
-> dma-buf with a memfd which I think is used for testing. But I can do
-> the rename, it's more clear anyway, I think.
-> 
-> On Mon, Nov 6, 2023 at 11:45 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/11/6 10:44, Mina Almasry wrote:
->>> +
->>> +void netdev_free_devmem(struct page_pool_iov *ppiov)
->>> +{
->>> +     struct netdev_dmabuf_binding *binding = page_pool_iov_binding(ppiov);
->>> +
->>> +     refcount_set(&ppiov->refcount, 1);
->>> +
->>> +     if (gen_pool_has_addr(binding->chunk_pool,
->>> +                           page_pool_iov_dma_addr(ppiov), PAGE_SIZE))
->>
->> When gen_pool_has_addr() returns false, does it mean something has gone
->> really wrong here?
->>
-> 
-> Yes, good eye. gen_pool_has_addr() should never return false, but then
-> again, gen_pool_free()  BUG_ON()s if it doesn't find the address,
-> which is an extremely severe reaction to what can be a minor bug in
-> the accounting. I prefer to leak rather than crash the machine. It's a
-> bit of defensive programming that is normally frowned upon, but I feel
-> like in this case it's maybe warranted due to the very severe reaction
-> (BUG_ON).
+Make the local structures static within their respective driver files.
 
-I would argue that why is the above defensive programming not done in the
-gen_pool core:)
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311070530.qKhLTz1Y-lkp@intel.com/
+Fixes: b512c767e7bc ("iio: imu: Add driver for BMI323 IMU")
+Signed-off-by: Jagath Jog J <jagathjog1996@gmail.com>
+---
+ drivers/iio/imu/bmi323/bmi323_i2c.c | 2 +-
+ drivers/iio/imu/bmi323/bmi323_spi.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> 
+diff --git a/drivers/iio/imu/bmi323/bmi323_i2c.c b/drivers/iio/imu/bmi323/bmi323_i2c.c
+index 0008e186367d..20a8001b9956 100644
+--- a/drivers/iio/imu/bmi323/bmi323_i2c.c
++++ b/drivers/iio/imu/bmi323/bmi323_i2c.c
+@@ -66,7 +66,7 @@ static struct regmap_bus bmi323_regmap_bus = {
+ 	.write = bmi323_regmap_i2c_write,
+ };
+ 
+-const struct regmap_config bmi323_i2c_regmap_config = {
++static const struct regmap_config bmi323_i2c_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 	.max_register = BMI323_CFG_RES_REG,
+diff --git a/drivers/iio/imu/bmi323/bmi323_spi.c b/drivers/iio/imu/bmi323/bmi323_spi.c
+index 6dc3352dd714..7b1e8127d0dd 100644
+--- a/drivers/iio/imu/bmi323/bmi323_spi.c
++++ b/drivers/iio/imu/bmi323/bmi323_spi.c
+@@ -41,7 +41,7 @@ static struct regmap_bus bmi323_regmap_bus = {
+ 	.write = bmi323_regmap_spi_write,
+ };
+ 
+-const struct regmap_config bmi323_spi_regmap_config = {
++static const struct regmap_config bmi323_spi_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 16,
+ 	.pad_bits = 8,
+-- 
+2.20.1
+
