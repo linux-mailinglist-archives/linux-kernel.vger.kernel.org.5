@@ -2,220 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0097E57BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825B87E57BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344521AbjKHNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60252 "EHLO
+        id S1344551AbjKHNGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235217AbjKHNGR (ORCPT
+        with ESMTP id S229940AbjKHNGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:06:17 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4B01AE;
-        Wed,  8 Nov 2023 05:06:15 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9d224dca585so1057884766b.1;
-        Wed, 08 Nov 2023 05:06:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699448774; x=1700053574; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWAV8M55Kittmu+4ULL3DdwAYWn4eS/wf3YZpZSaDko=;
-        b=kepoKz3JkBSFG4DcfXW4txoTIE+opj2fljln0Dst42qUopzEywoxMGe334ALD9G11h
-         +NSxB72hd2df3IoFyOuIH9a53X50KCWQ44Sht/g/ISJ4nCa52HMI96NYTCVn7iAEhilI
-         2SrmtjERX+5i1cjb33zPSkcIpcwjMVTqGJ0EJCND4hMhpZAHrY6O94Q7I7zdPvM+IUdp
-         N0cn4uXIzRdhU7XlXK9155W3WGmBglpDVaG/mAWDzrflfozmiVDTbDAHNISZG2gUzm1u
-         mHWWP0a8AbV9Q3OkroQ95mavgGbQOVMJ7BO8NRhLM4rG2J+sKAbmEqWSyVglOjihWF69
-         vb0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699448774; x=1700053574;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nWAV8M55Kittmu+4ULL3DdwAYWn4eS/wf3YZpZSaDko=;
-        b=O67Wlp6r1hSAk0ZeT/7NwTUcP9xSRPYNkJTvUP9ZDNjYyCQsyPFXdO7Q9b6NWIy2Fe
-         DohPfe4mcUtdgH9MPXPoqY91KCyLZyBPPWEwNAtz5UmM7siN3Hkn98SsxnQ2g81+t75C
-         wMHFo4EKhYxjPXSl+69G3QQwimYyC+mXgLPzRe3Bg5Wul42LWvxmAJppJWxEqJbmOZQb
-         30xBLwsHzDrcrUQtZ2zW12Fa98bHuUJRRfBUGI9oHyGpCbnyPjytiz9AQCnnJLskKqUm
-         1lQKBr0Y2AaJgO584bGH6Qn91jvapB0Xy2zxIdAsaI3SgKLKEzM29b5mfKH52DZFrbjr
-         Yqew==
-X-Gm-Message-State: AOJu0YxVWEQRs4Hl6foA/PQZnffA28BnnxIhZB4krmeaiKcwQJFnNxfT
-        WS0l69r6IiZwB9xCaVQjSzo=
-X-Google-Smtp-Source: AGHT+IEZx4ikGOsR7/dmiPdHYizVS4JlsQal08HFEcscNPxUFKfDVNdyh7BapejmRXQMHioTmZCX6Q==
-X-Received: by 2002:a17:907:72d4:b0:9be:6395:6b0f with SMTP id du20-20020a17090772d400b009be63956b0fmr1488756ejc.29.1699448773450;
-        Wed, 08 Nov 2023 05:06:13 -0800 (PST)
-Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id gf23-20020a170906e21700b009920a690cd9sm1014113ejb.59.2023.11.08.05.06.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 05:06:13 -0800 (PST)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] pwm: Changes for v6.7-rc1
-Date:   Wed,  8 Nov 2023 14:06:07 +0100
-Message-ID: <20231108130608.1321166-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 8 Nov 2023 08:06:51 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B0293
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 05:06:48 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 70C98836;
+        Wed,  8 Nov 2023 14:06:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699448784;
+        bh=YEjqE9tsszYXx18rnhj04XlCaipKaJceZ5Pzn7627W8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=O54Po5/5R4ZGR4hbv04GnJ/Yq5tMrCy1j+Q7P8WTz+ot8gUdb0b9HC7w/phbcV3cJ
+         ZmEtTKiphSk8q9degipPVZ8UvHSxnHdVPmKj+7k/VcqrAIJMRKLy2/41STpgLWabva
+         ce5WuSRdEYPhm2EOxiIUZlh05qy8VFtSPvvm4Qug=
+Message-ID: <5afdf107-9063-4eec-a88c-0ca3e722e0bc@ideasonboard.com>
+Date:   Wed, 8 Nov 2023 15:06:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR case
+Content-Language: en-US
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
+ <3537389.iIbC2pHGDl@steina-w>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
+ wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
+ Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
+ eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
+ LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
+ G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
+ DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
+ 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
+ rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
+ Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
+ aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
+ ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
+ PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
+ VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
+ 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
+ uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
+ R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
+ sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
+ Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
+ PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
+ dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
+ qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
+ hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
+ DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
+ KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
+ 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
+ xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
+ UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
+ /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
+ 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
+ 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
+ mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
+ 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
+ suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
+ xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
+ m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
+ CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
+ CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
+ 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
+ ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
+ yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
+ 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
+In-Reply-To: <3537389.iIbC2pHGDl@steina-w>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 08/11/2023 14:45, Alexander Stein wrote:
+> Hi Tomi,
+> 
+> Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
+>> These two patches are needed to make tc358767 work in the
+>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP connector.
+>>
+>> I have tested this with TI AM654 EVM with a tc358767 add-on card
+>> connected to a DP monitor.
+> 
+> Just a question regarding the usage of this DSI-DP bridge.
+> What is the state of the DSI lanes after the DSI host has been initialized,
+> but before calling atomic_pre_enable? AFAIK this bridge requires LP-11 on DSI
+> at any time for accessing the AUX channel.
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+Good question. I don't know, as we use it in DPI mode (DPI-DP bridge). I 
+guess the DSI state is undefined, as it might well be that the DSI host 
+driver's (pre-)enable is the place where the DSI is powered up and 
+initialized.
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+So you think in DSI mode this might fail, as AUX (possibly) won't work 
+when calling tc_get_edid()? We could add a check there, and skip the 
+tc_get_display_props() if in DSI mode. But tc_get_edid() surely won't 
+work then.
 
-are available in the Git repository at:
+It would be good if someone with a board where tc358767 is used in DSI 
+mode could test this. But, of course, it'll only be testing that 
+particular DSI host behavior...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-6.7-rc1
+  Tomi
 
-for you to fetch changes up to 40592064a1a536adcced4ffea435c392eb9e7192:
+> 
+> Best regards,
+> Alexander
+> 
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>> Changes in v2:
+>> - Update the format negotiation patch as discussed in
+>> https://lore.kernel.org/all/7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com/ -
+>> Link to v1:
+>> https://lore.kernel.org/r/20231031-tc358767-v1-0-392081ad9f4b@ideasonboard.
+>> com
+>>
+>> ---
+>> Aradhya Bhatia (1):
+>>        drm/bridge: tc358767: Add format negotiation hooks for DPI/DSI to
+>> (e)DP
+>>
+>> Tomi Valkeinen (1):
+>>        drm/bridge: tc358767: Fix link properties discovery
+>>
+>>   drivers/gpu/drm/bridge/tc358767.c | 32 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 32 insertions(+)
+>> ---
+>> base-commit: 9d7c8c066916f231ca0ed4e4fce6c4b58ca3e451
+>> change-id: 20231031-tc358767-58e3ebdf95f0
+>>
+>> Best regards,
+> 
+> 
 
-  pwm: samsung: Document new member .channel in struct samsung_pwm_chip (2023-11-03 12:00:41 +0100)
-
-Thanks,
-Thierry
-
-----------------------------------------------------------------
-pwm: Changes for v6.7-rc1
-
-This contains a few fixes and a bunch of cleanups, a lot of which is in
-preparation for Uwe's character device support that may be ready in time
-for the next merge window.
-
-----------------------------------------------------------------
-Ben Dooks (3):
-      pwm: dwc: split pci out of core driver
-      pwm: dwc: make timer clock configurable
-      pwm: dwc: add PWM bit unset in get_state call
-
-Conor Dooley (1):
-      pwm: microchip-core: Convert SOC_MICROCHIP_POLARFIRE to ARCH_MICROCHIP_POLARFIRE
-
-Fabio Estevam (2):
-      dt-bindings: pwm: mxs: Document fsl,imx28-pwm
-      dt-bindings: pwm: mxs: Document the clocks property
-
-Florian Fainelli (3):
-      pwm: brcmstb: Utilize appropriate clock APIs in suspend/resume
-      pwm: brcmstb: Checked clk_prepare_enable() return value
-      pwm: bcm2835: Add support for suspend/resume
-
-Rob Herring (1):
-      pwm: pxa: Explicitly include correct DT includes
-
-Ruan Jinjie (2):
-      pwm: atmel: Remove redundant of_match_ptr()
-      pwm: omap-dmtimer: Remove redundant of_match_ptr()
-
-Uwe Kleine-König (25):
-      pwm: jz4740: Consistently name driver data "jz"
-      pwm: Manage owner assignment implicitly for drivers
-      pwm: crc: Allow compilation as module and with COMPILE_TEST
-      pwm: berlin: Put per-channel config into driver data
-      pwm: samsung: Put per-channel data into driver data
-      pwm: jz4740: Put per-channel clk into driver data
-      pwm: lp3943: Drop usage of pwm_[gs]et_chip_data()
-      pwm: renesas: Drop usage of pwm_[gs]et_chip_data()
-      pwm: sti: Reduce number of allocations and drop usage of chip_data
-      pwm: cros-ec: Put per-channel data into driver data
-      pwm: Drop pwm_[sg]et_chip_data()
-      pwm: berlin: Simplify using devm functions
-      pwm: Adapt sysfs API documentation to reality
-      pwm: bcm-iproc: Simplify using devm functions
-      pwm: bcm2835: Simplify using devm functions
-      pwm: brcmstb: Simplify using devm functions
-      pwm: imx-tpm: Simplify using devm functions
-      pwm: mtk-disp: Simplify using devm_pwmchip_add()
-      pwm: spear: Simplify using devm functions
-      pwm: sprd: Provide a helper to cast a chip to driver data
-      pwm: sprd: Simplify using devm_pwmchip_add() and dev_err_probe()
-      pwm: vt8500: Simplify using devm functions
-      pwm: samsung: Consistently use the same name for driver data
-      pwm: cros-ec: Simplify using devm_pwmchip_add() and dev_err_probe()
-      pwm: samsung: Document new member .channel in struct samsung_pwm_chip
-
- Documentation/devicetree/bindings/pwm/mxs-pwm.yaml |  13 +-
- Documentation/driver-api/pwm.rst                   |   6 +-
- drivers/gpio/gpio-mvebu.c                          |   1 -
- drivers/gpu/drm/bridge/ti-sn65dsi86.c              |   1 -
- drivers/leds/rgb/leds-qcom-lpg.c                   |   1 -
- drivers/pwm/Kconfig                                |  20 ++-
- drivers/pwm/Makefile                               |   1 +
- drivers/pwm/core.c                                 |  55 ++----
- drivers/pwm/pwm-ab8500.c                           |   1 -
- drivers/pwm/pwm-apple.c                            |   1 -
- drivers/pwm/pwm-atmel-hlcdc.c                      |   1 -
- drivers/pwm/pwm-atmel-tcb.c                        |   1 -
- drivers/pwm/pwm-atmel.c                            |   3 +-
- drivers/pwm/pwm-bcm-iproc.c                        |  38 +---
- drivers/pwm/pwm-bcm-kona.c                         |   1 -
- drivers/pwm/pwm-bcm2835.c                          |  36 ++--
- drivers/pwm/pwm-berlin.c                           |  63 ++-----
- drivers/pwm/pwm-brcmstb.c                          |  49 ++---
- drivers/pwm/pwm-clk.c                              |   1 -
- drivers/pwm/pwm-clps711x.c                         |   1 -
- drivers/pwm/pwm-crc.c                              |   5 +-
- drivers/pwm/pwm-cros-ec.c                          |  67 ++-----
- drivers/pwm/pwm-dwc-core.c                         | 184 +++++++++++++++++++
- drivers/pwm/pwm-dwc.c                              | 197 +--------------------
- drivers/pwm/pwm-dwc.h                              |  60 +++++++
- drivers/pwm/pwm-ep93xx.c                           |   1 -
- drivers/pwm/pwm-fsl-ftm.c                          |   1 -
- drivers/pwm/pwm-hibvt.c                            |   1 -
- drivers/pwm/pwm-img.c                              |   1 -
- drivers/pwm/pwm-imx-tpm.c                          |  30 +---
- drivers/pwm/pwm-imx1.c                             |   1 -
- drivers/pwm/pwm-imx27.c                            |   1 -
- drivers/pwm/pwm-intel-lgm.c                        |   1 -
- drivers/pwm/pwm-iqs620a.c                          |   1 -
- drivers/pwm/pwm-jz4740.c                           |  46 ++---
- drivers/pwm/pwm-keembay.c                          |   1 -
- drivers/pwm/pwm-lp3943.c                           |  22 +--
- drivers/pwm/pwm-lpc18xx-sct.c                      |   1 -
- drivers/pwm/pwm-lpc32xx.c                          |   1 -
- drivers/pwm/pwm-lpss.c                             |   1 -
- drivers/pwm/pwm-mediatek.c                         |   1 -
- drivers/pwm/pwm-meson.c                            |   1 -
- drivers/pwm/pwm-microchip-core.c                   |   1 -
- drivers/pwm/pwm-mtk-disp.c                         |  25 +--
- drivers/pwm/pwm-mxs.c                              |   1 -
- drivers/pwm/pwm-ntxec.c                            |   1 -
- drivers/pwm/pwm-omap-dmtimer.c                     |   3 +-
- drivers/pwm/pwm-pca9685.c                          |   1 -
- drivers/pwm/pwm-pxa.c                              |   3 +-
- drivers/pwm/pwm-raspberrypi-poe.c                  |   1 -
- drivers/pwm/pwm-rcar.c                             |   1 -
- drivers/pwm/pwm-renesas-tpu.c                      |  23 ++-
- drivers/pwm/pwm-rockchip.c                         |   1 -
- drivers/pwm/pwm-rz-mtu3.c                          |   1 -
- drivers/pwm/pwm-samsung.c                          | 152 ++++++++--------
- drivers/pwm/pwm-sifive.c                           |   1 -
- drivers/pwm/pwm-sl28cpld.c                         |   1 -
- drivers/pwm/pwm-spear.c                            |  41 ++---
- drivers/pwm/pwm-sprd.c                             |  29 ++-
- drivers/pwm/pwm-sti.c                              |  30 ++--
- drivers/pwm/pwm-stm32-lp.c                         |   1 -
- drivers/pwm/pwm-stm32.c                            |   1 -
- drivers/pwm/pwm-stmpe.c                            |   1 -
- drivers/pwm/pwm-sun4i.c                            |   1 -
- drivers/pwm/pwm-sunplus.c                          |   1 -
- drivers/pwm/pwm-tegra.c                            |   1 -
- drivers/pwm/pwm-tiecap.c                           |   1 -
- drivers/pwm/pwm-tiehrpwm.c                         |   1 -
- drivers/pwm/pwm-twl-led.c                          |   2 -
- drivers/pwm/pwm-twl.c                              |   2 -
- drivers/pwm/pwm-visconti.c                         |   1 -
- drivers/pwm/pwm-vt8500.c                           |  43 +----
- drivers/pwm/pwm-xilinx.c                           |   1 -
- drivers/staging/greybus/pwm.c                      |   1 -
- include/linux/pwm.h                                |  24 +--
- 75 files changed, 539 insertions(+), 778 deletions(-)
- create mode 100644 drivers/pwm/pwm-dwc-core.c
- create mode 100644 drivers/pwm/pwm-dwc.h
