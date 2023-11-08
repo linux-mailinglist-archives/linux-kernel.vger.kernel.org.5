@@ -2,97 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EC37E52D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5837E52D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235406AbjKHJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:46:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
+        id S1343896AbjKHJuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 04:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHJqx (ORCPT
+        with ESMTP id S229924AbjKHJuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:46:53 -0500
-Received: from xry111.site (xry111.site [89.208.246.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBE8199;
-        Wed,  8 Nov 2023 01:46:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1699436811;
-        bh=JsqArwf7i++16JZaeUV8Vxl01WJB/F/dSilTsgJ3HE4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=FYh3YR16sty+E4UnANyNklB7fjB7TwklI07azkSD7QGZzMtxCpPcJj0bUYQM/y2Ad
-         lb2ns8kIn6SVUJWG6nKWoE8YIaLdZw65c4Fmg37yGlAX1vCmd1a4rzDNyJmjQe+xj4
-         KCqLM5+EbiWxESWRx5Z2ejAW57z6AB7bp16rFtEs=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 446CA66A03;
-        Wed,  8 Nov 2023 04:46:48 -0500 (EST)
-Message-ID: <de7c80a1e297fb1cddbca3972fe8c09a3b551b7a.camel@xry111.site>
-Subject: Re: [PATCH] LoongArch: Disable module from accessing external data
- directly
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     WANG Rui <wangrui@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn,
-        Fangrui Song <maskray@google.com>
-Date:   Wed, 08 Nov 2023 17:46:46 +0800
-In-Reply-To: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
-References: <20231108040447.288870-1-wangrui@loongson.cn>
-         <d32d8a26dcd75a840727cdb50546b621d34d326b.camel@xry111.site>
-         <CAHirt9jQHTRGdv4rShgvWHEbG1vzuLkNDbxLP7x4eMtuB3BB5g@mail.gmail.com>
-         <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
-         <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Wed, 8 Nov 2023 04:50:07 -0500
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9641B3
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=HhxaM+9ct1KAcw8VIeJ+z4oy49b3afWo4vOTwZzrlic=;
+  b=g7Roo5ZyuocALj/3t3rO+3JAJsUh4HFvENaoQ+tK7ClXtLZlJAVtWNcC
+   8o8mQ/F9d8MrSwwp0nvHkjz/6lSP9qBeYJ3TVHiI83qKG9zJdReepaaiW
+   jpeaqHjn9CGTVoL2kd0ADtxykV2AUwzzNU+JYr4VEy7/2z9tbw4JoGYd1
+   M=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,285,1694728800"; 
+   d="scan'208";a="135214412"
+Received: from 71-219-23-58.chvl.qwest.net (HELO hadrien) ([71.219.23.58])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 10:49:54 +0100
+Date:   Wed, 8 Nov 2023 04:49:52 -0500 (EST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, peterz@infradead.org,
+        torvalds@linux-foundation.org, paulmck@kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Subject: Re: [RFC PATCH 57/86] coccinelle: script to remove cond_resched()
+In-Reply-To: <875y2cr6ll.fsf@oracle.com>
+Message-ID: <43db286-7c8f-5c4-3f11-b8c103092c@inria.fr>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com> <20231107230822.371443-1-ankur.a.arora@oracle.com> <f55cbce4-42c6-f49a-482-88ec7b893dea@inria.fr> <875y2cr6ll.fsf@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-08 at 17:36 +0800, WANG Rui wrote:
-> > xry111@nanmen2 ~ $ clang t1.c -O2 -fno-pie -no-pie
-> > xry111@nanmen2 ~ $ ./a.out
-> > Bus error (core dumped)
-> >=20
-> > I'll consider it a Clang bug then.
 
-https://github.com/llvm/llvm-project/issues/71645
 
-> That's it, no copy relocations. As far as I know, copying relocations
-> has some issues and is not recommended by Fangrui.
->=20
-> For modules, if distance is not a problem, `no-pic` and
-> `direct-access-external-data` can be together because the code is
-> writable. Does it seem reasonable to exist?
+On Wed, 8 Nov 2023, Ankur Arora wrote:
 
-It may be usable, but the result is generally worse than relying on GOT.
+>
+> Julia Lawall <julia.lawall@inria.fr> writes:
+>
+> > On Tue, 7 Nov 2023, Ankur Arora wrote:
+> >
+> >> Rudimentary script to remove the straight-forward subset of
+> >> cond_resched() and allies:
+> >>
+> >> 1)  if (need_resched())
+> >> 	  cond_resched()
+> >>
+> >> 2)  expression*;
+> >>     cond_resched();  /* or in the reverse order */
+> >>
+> >> 3)  if (expression)
+> >> 	statement
+> >>     cond_resched();  /* or in the reverse order */
+> >>
+> >> The last two patterns depend on the control flow level to ensure
+> >> that the complex cond_resched() patterns (ex. conditioned ones)
+> >> are left alone and we only pick up ones which are only minimally
+> >> related the neighbouring code.
+> >>
+> >> Cc: Julia Lawall <Julia.Lawall@inria.fr>
+> >> Cc: Nicolas Palix <nicolas.palix@imag.fr>
+> >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> >> ---
+> >>  scripts/coccinelle/api/cond_resched.cocci | 53 +++++++++++++++++++++++
+> >>  1 file changed, 53 insertions(+)
+> >>  create mode 100644 scripts/coccinelle/api/cond_resched.cocci
+> >>
+> >> diff --git a/scripts/coccinelle/api/cond_resched.cocci b/scripts/coccinelle/api/cond_resched.cocci
+> >> new file mode 100644
+> >> index 000000000000..bf43768a8f8c
+> >> --- /dev/null
+> >> +++ b/scripts/coccinelle/api/cond_resched.cocci
+> >> @@ -0,0 +1,53 @@
+> >> +// SPDX-License-Identifier: GPL-2.0-only
+> >> +/// Remove naked cond_resched() statements
+> >> +///
+> >> +//# Remove cond_resched() statements when:
+> >> +//#   - executing at the same control flow level as the previous or the
+> >> +//#     next statement (this lets us avoid complicated conditionals in
+> >> +//#     the neighbourhood.)
+> >> +//#   - they are of the form "if (need_resched()) cond_resched()" which
+> >> +//#     is always safe.
+> >> +//#
+> >> +//# Coccinelle generally takes care of comments in the immediate neighbourhood
+> >> +//# but might need to handle other comments alluding to rescheduling.
+> >> +//#
+> >> +virtual patch
+> >> +virtual context
+> >> +
+> >> +@ r1 @
+> >> +identifier r;
+> >> +@@
+> >> +
+> >> +(
+> >> + r = cond_resched();
+> >> +|
+> >> +-if (need_resched())
+> >> +-	cond_resched();
+> >> +)
+> >
+> > This rule doesn't make sense.  The first branch of the disjunction will
+> > never match a a place where the second branch matches.  Anyway, in the
+> > second branch there is no assignment, so I don't see what the first branch
+> > is protecting against.
+> >
+> > The disjunction is just useless.  Whether it is there or or whether only
+> > the second brancha is there, doesn't have any impact on the result.
+> >
+> >> +
+> >> +@ r2 @
+> >> +expression E;
+> >> +statement S,T;
+> >> +@@
+> >> +(
+> >> + E;
+> >> +|
+> >> + if (E) S
+> >
+> > This case is not needed.  It will be matched by the next case.
+> >
+> >> +|
+> >> + if (E) S else T
+> >> +|
+> >> +)
+> >> +-cond_resched();
+> >> +
+> >> +@ r3 @
+> >> +expression E;
+> >> +statement S,T;
+> >> +@@
+> >> +-cond_resched();
+> >> +(
+> >> + E;
+> >> +|
+> >> + if (E) S
+> >
+> > As above.
+> >
+> >> +|
+> >> + if (E) S else T
+> >> +)
+> >
+> > I have the impression that you are trying to retain some cond_rescheds.
+> > Could you send an example of one that you are trying to keep?  Overall,
+> > the above rules seem a bit ad hoc.  You may be keeping some cases you
+> > don't want to, or removing some cases that you want to keep.
+>
+> Right. I was trying to ensure that the script only handled the cases
+> that didn't have any "interesting" connections to the surrounding code.
+>
+> Just to give you an example of the kind of constructs that I wanted
+> to avoid:
+>
+> mm/memoy.c::zap_pmd_range():
+>
+>                 if (addr != next)
+>                         pmd--;
+>         } while (pmd++, cond_resched(), addr != end);
+>
+> mm/backing-dev.c::cleanup_offline_cgwbs_workfn()
+>
+>                 while (cleanup_offline_cgwb(wb))
+>                         cond_resched();
+>
+>
+>                 while (cleanup_offline_cgwb(wb))
+>                         cond_resched();
+>
+> But from a quick check the simplest coccinelle script does a much
+> better job than my overly complex (and incorrect) one:
+>
+> @r1@
+> @@
+> -       cond_resched();
+>
+> It avoids the first one. And transforms the second to:
+>
+>                 while (cleanup_offline_cgwb(wb))
+>                         {}
+>
+> which is exactly what I wanted.
 
-For example, consider a module referring two data symbols in vmlinux,
-foo and bar.  The symbol foo is referred 10 times and bar is referred 8
-times.
+Perfect!
 
-With the current GOT-based approach, the total space usage is (2 GOT
-entry * (8 bytes / GOT entry)) + ((10 + 8) * 2 instruction * 4 (bytes /
-instruction)) =3D 160 bytes.
+It could be good to run both scripts and compare the results.
 
-With -fdirect-access-external-data, we must add -mcmodel=3Dextreme too
-because the modules are too far away from vmlinux in the kernel address
-space, then the total space usage will be (10 + 8) * 5 instruction * 4
-(bytes / instruction) =3D 360 bytes.
+julia
 
-One possible approach to resolve the issue is relocating vmlinux from
-XKPRANGE to XKVRANGE and fit vmlinux + all modules into a 2GiB range.=20
-Then the total space usage will be (10 + 8) * 2 instruction * 4 (bytes /
-instruction) =3D 144 bytes.  But I don't know how to implement this, and
-running vmlinux in XKVRANGE may have a performance penalty.
-
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+>
+> > Of course, if you are confident that the job is done with this semantic
+> > patch as it is, then that's fine too.
+>
+> Not at all. Thanks for pointing out the mistakes.
+>
+>
+>
+> --
+> ankur
+>
