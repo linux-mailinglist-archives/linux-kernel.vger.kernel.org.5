@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13FF7E5621
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E5A7E5622
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344558AbjKHMV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 07:21:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S1344565AbjKHMWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:22:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjKHMV2 (ORCPT
+        with ESMTP id S230045AbjKHMWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 07:21:28 -0500
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7226B19A5;
-        Wed,  8 Nov 2023 04:21:25 -0800 (PST)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id CD3F91843CD;
-        Wed,  8 Nov 2023 13:21:21 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1699446082; bh=cXTYXJuCKJSS8YA7h7LVgaTMvx8Dmk0utMJe5g35Yps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J7GpROVo6TRRazgizq4HuwI6ns5kp9jtnmPGP0sxz7X8dk5a7PrwiTafGDx7jsGBx
-         uMCGEtEW2iHZJBQBMwqHQVFgYTT3aMu59kKLJHM0jazBsLAaJ7nWERKS/VwX98jgnC
-         WLvdpMH99Y2sZQRPerGk1liuTzAmqnAdXrKDjfum6gfnICwkv/dX8WafTl+XfKDYUa
-         Qf3YneQq4GWKgzpPCDWfeihAGQreZwNxYd9/Lln0t+dPh5y8YezvtbCmVtbFRbUtdE
-         Q5IJIIAsmQuvNYKN85y8eTa+z/70tXT94z3J4QEJyJwNoWax0EUyCcysau0TOhalPk
-         JOe0yjtVZRXGg==
-Date:   Wed, 8 Nov 2023 13:21:20 +0100
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
-        linux-kernel@vger.kernel.org (open list),
-        Wangkefeng <wangkefeng.wang@huawei.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] swiotlb: fix out-of-bounds TLB allocations with
- CONFIG_SWIOTLB_DYNAMIC
-Message-ID: <20231108132120.0538a778@meshulam.tesarici.cz>
-In-Reply-To: <20231108111249.261-1-petrtesarik@huaweicloud.com>
-References: <20231108111249.261-1-petrtesarik@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Wed, 8 Nov 2023 07:22:13 -0500
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A852E1BCC;
+        Wed,  8 Nov 2023 04:22:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699446132; x=1730982132;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2w92xJO7yQtloooQVQG0sgNUimuLo8mk6LsFIZtZ3ZE=;
+  b=cNsGUBT4Dv28mNlrqID5F9GS4VE3PcRuT18lIjiIMMB1rju9uB35JYZ2
+   7ttDtbD51BDcB1pRDwmQyNEkVefHptja0hUd5K2puIo0kfiZBPKARuRn1
+   TowcRM1IMwQJaI9adBwP/E8Al3DMEK3dTcFj/txH+Uf6E9t5o4YZvbZ17
+   g=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="164970657"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 12:22:00 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+        by email-inbound-relay-pdx-2a-m6i4x-8a14c045.us-west-2.amazon.com (Postfix) with ESMTPS id B161B87A25;
+        Wed,  8 Nov 2023 12:21:57 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:61631]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.60:2525] with esmtp (Farcaster)
+ id 5bb84aa9-ab3c-40d4-8eb5-0b6fee687587; Wed, 8 Nov 2023 12:21:57 +0000 (UTC)
+X-Farcaster-Flow-ID: 5bb84aa9-ab3c-40d4-8eb5-0b6fee687587
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 12:21:52 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 12:21:49 +0000
+Message-ID: <2a8fddbb-d1d9-4639-a79d-0d32c06d309e@amazon.com>
+Date:   Wed, 8 Nov 2023 13:21:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 09/33] KVM: x86: hyper-v: Introduce per-VTL vcpu helpers
+Content-Language: en-US
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, <kvm@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-10-nsaenz@amazon.com>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <20231108111806.92604-10-nsaenz@amazon.com>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D037UWC001.ant.amazon.com (10.13.139.197) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  8 Nov 2023 12:12:49 +0100
-Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
-
-> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> 
-> Limit the free list length to the size of the IO TLB. Transient pool can be
-> smaller than IO_TLB_SEGSIZE, but the free list is initialized with the
-> assumption that the total number of slots is a multiple of IO_TLB_SEGSIZE.
-> As a result, swiotlb_area_find_slots() may allocate slots past the end of
-> a transient IO TLB buffer.
-
-Just to make it clear, this patch addresses only the memory corruption
-reported by Niklas, without addressing the underlying issues. Where
-corruption happened before, allocations will fail with this patch.
-
-I am still looking into improving the allocation strategy itself.
-
-Petr T
-
-> Reported-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> Closes: https://lore.kernel.org/linux-iommu/104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com/
-> Fixes: 79636caad361 ("swiotlb: if swiotlb is full, fall back to a transient memory pool")
-> Cc: Halil Pasic <pasic@linux.ibm.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> ---
->  kernel/dma/swiotlb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 26202274784f..ec82524ba902 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -283,7 +283,8 @@ static void swiotlb_init_io_tlb_pool(struct io_tlb_pool *mem, phys_addr_t start,
->  	}
->  
->  	for (i = 0; i < mem->nslabs; i++) {
-> -		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
-> +		mem->slots[i].list = min(IO_TLB_SEGSIZE - io_tlb_offset(i),
-> +					 mem->nslabs - i);
->  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->  		mem->slots[i].alloc_size = 0;
->  	}
+Ck9uIDA4LjExLjIzIDEyOjE3LCBOaWNvbGFzIFNhZW56IEp1bGllbm5lIHdyb3RlOgo+IEludHJv
+ZHVjZSB0d28gaGVscGVyIGZ1bmN0aW9ucy4gVGhlIGZpcnN0IG9uZSBxdWVyaWVzIGEgdkNQVSdz
+IFZUTAo+IGxldmVsLCB0aGUgc2Vjb25kIG9uZSwgZ2l2ZW4gYSBzdHJ1Y3Qga3ZtX3ZjcHUgYW5k
+IFZUTCBwYWlyLCByZXR1cm5zIHRoZQo+IGNvcnJlc3BvbmRpbmcgJ3NpYmxpbmcnIHN0cnVjdCBr
+dm1fdmNwdSBhdCB0aGUgcmlnaHQgVlRMLgo+Cj4gV2Uga2VlcCB0cmFjayBvZiBlYWNoIFZUTCdz
+IHN0YXRlIGJ5IGhhdmluZyBhIGRpc3RpbmN0IHN0cnVjdCBrdm1fdnBjdQo+IGZvciBlYWNoIGxl
+dmVsLiBWVEwtdkNQVXMgdGhhdCBiZWxvbmcgdG8gdGhlIHNhbWUgZ3Vlc3QgQ1BVIHNoYXJlIHRo
+ZQo+IHNhbWUgcGh5c2ljYWwgQVBJQyBpZCwgYnV0IGJlbG9uZyB0byBkaWZmZXJlbnQgQVBJQyBn
+cm91cHMgd2hlcmUgdGhlCj4gYXBpYyBncm91cCByZXByZXNlbnRzIHRoZSB2Q1BVJ3MgVlRMLgo+
+Cj4gU2lnbmVkLW9mZi1ieTogTmljb2xhcyBTYWVueiBKdWxpZW5uZSA8bnNhZW56QGFtYXpvbi5j
+b20+Cj4gLS0tCj4gICBhcmNoL3g4Ni9rdm0vaHlwZXJ2LmggfCAxOCArKysrKysrKysrKysrKysr
+KysKPiAgIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0IGEv
+YXJjaC94ODYva3ZtL2h5cGVydi5oIGIvYXJjaC94ODYva3ZtL2h5cGVydi5oCj4gaW5kZXggMmJm
+ZWQ2OWJhMGRiLi41NDMzMTA3ZTdjYzggMTAwNjQ0Cj4gLS0tIGEvYXJjaC94ODYva3ZtL2h5cGVy
+di5oCj4gKysrIGIvYXJjaC94ODYva3ZtL2h5cGVydi5oCj4gQEAgLTIzLDYgKzIzLDcgQEAKPiAg
+IAo+ICAgI2luY2x1ZGUgPGxpbnV4L2t2bV9ob3N0Lmg+Cj4gICAjaW5jbHVkZSAieDg2LmgiCj4g
+KyNpbmNsdWRlICJsYXBpYy5oIgo+ICAgCj4gICAvKiAiSHYjMSIgc2lnbmF0dXJlICovCj4gICAj
+ZGVmaW5lIEhZUEVSVl9DUFVJRF9TSUdOQVRVUkVfRUFYIDB4MzEyMzc2NDgKPiBAQCAtODMsNiAr
+ODQsMjMgQEAgc3RhdGljIGlubGluZSBzdHJ1Y3Qga3ZtX2h2X3N5bmRiZyAqdG9faHZfc3luZGJn
+KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkKPiAgIAlyZXR1cm4gJnZjcHUtPmt2bS0+YXJjaC5oeXBl
+cnYuaHZfc3luZGJnOwo+ICAgfQo+ICAgCj4gK3N0YXRpYyBpbmxpbmUgc3RydWN0IGt2bV92Y3B1
+ICprdm1faHZfZ2V0X3Z0bF92Y3B1KHN0cnVjdCBrdm1fdmNwdSAqdmNwdSwgaW50IHZ0bCkKPiAr
+ewo+ICsJc3RydWN0IGt2bSAqa3ZtID0gdmNwdS0+a3ZtOwo+ICsJdTMyIHRhcmdldF9pZCA9IGt2
+bV9hcGljX2lkKHZjcHUpOwo+ICsKPiArCWt2bV9hcGljX2lkX3NldF9ncm91cChrdm0sIHZ0bCwg
+JnRhcmdldF9pZCk7Cj4gKwlpZiAodmNwdS0+dmNwdV9pZCA9PSB0YXJnZXRfaWQpCj4gKwkJcmV0
+dXJuIHZjcHU7Cj4gKwo+ICsJcmV0dXJuIGt2bV9nZXRfdmNwdV9ieV9pZChrdm0sIHRhcmdldF9p
+ZCk7Cj4gK30KPiArCj4gK3N0YXRpYyBpbmxpbmUgdTgga3ZtX2h2X2dldF9hY3RpdmVfdnRsKHN0
+cnVjdCBrdm1fdmNwdSAqdmNwdSkKPiArewo+ICsJcmV0dXJuIGt2bV9hcGljX2dyb3VwKHZjcHUp
+OwoKClNob3VsZG4ndCB0aGlzIGNoZWNrIHdoZXRoZXIgVlRMIGlzIGFjdGl2ZT8gSWYgc29tZW9u
+ZSB3YW50cyB0byB1c2UgQVBJQyAKZ3JvdXBzIGZvciBhIGRpZmZlcmVudCBwdXJwb3NlIGluIHRo
+ZSBmdXR1cmUsIHRoZXknZCBzdWRkZW5seSBmaW5kIAp0aGVtc2VsdmVzIGluIFZUTCBjb2RlIHBh
+dGhzIGluIG90aGVyIGNvZGUgKHN1Y2ggYXMgbWVtb3J5IHByb3RlY3Rpb25zKSwgbm8/CgpBbGV4
+CgoKCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKS3JhdXNlbnN0ci4g
+MzgKMTAxMTcgQmVybGluCkdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwg
+Sm9uYXRoYW4gV2Vpc3MKRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcg
+dW50ZXIgSFJCIDE0OTE3MyBCClNpdHo6IEJlcmxpbgpVc3QtSUQ6IERFIDI4OSAyMzcgODc5CgoK
 
