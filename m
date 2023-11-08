@@ -2,145 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA1F7E5CEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3A27E5CED
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjKHSKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 13:10:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S230436AbjKHSLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:11:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjKHSKr (ORCPT
+        with ESMTP id S229460AbjKHSLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 13:10:47 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CF61FEB;
-        Wed,  8 Nov 2023 10:10:45 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8E15Y8005641;
-        Wed, 8 Nov 2023 18:10:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=2dDaqrLyD6bgBMl0XHyCu6Dr2G0wgU+OOOC2HymfpiQ=;
- b=eIzoqse1eFYoOEi+9rIM1h3RevrobYkdQCJBXrF9Cx9QXtyVI01+Zjbg10r3di43HBIu
- GG0bnnqJmZHJe87u9LEb+oZI40gfvGG4f/gylyEP98bxX2dW0UOG48SS5CGf9FRUwcFE
- y0XP84rLYEuQUve1Idh+2tHp/wpAlHxc8T06MoQE7NbbWE8EuxtdMULUf/fp6ThIWY9F
- l56y/mqtkDCoL/aqbPAfZ8ukXnLuHTmwNkMLm0OnavGsm5BTQAxdzUZnYn4kwWWZ8CWM
- bD5AoGy8MXb4kRGK4Zbj73aJXUCzVEjiq1go4cWQaT35XdLNVv0vAOOA7rqLeqH9v8je UQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7w7rag6k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 18:10:35 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A8IAXpF023228
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 8 Nov 2023 18:10:33 GMT
-Received: from [10.71.110.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
- 2023 10:10:32 -0800
-Message-ID: <b708df07-6812-df43-1313-cf6f1289fd47@quicinc.com>
-Date:   Wed, 8 Nov 2023 10:10:32 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 0/7] incorporate pm runtime framework and eDP clean up
+        Wed, 8 Nov 2023 13:11:08 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2049.outbound.protection.outlook.com [40.107.220.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03051FEB;
+        Wed,  8 Nov 2023 10:11:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oP6hbzKEt94RF91qr7yEKUZPGtID03YCFc2DGMZXW4f1GFx/NfMlVgAt/KvXS9pdGZ4wWn7AqMrK1I08teeGvaJCkV3RZR9aCNlFEs4URp4gfJE37siXDR384E1inO7VIlJQwQtAY1hR/Ngyh/TIoZDHrM5KPWJQmJMP77MbE4LiVFYB1O0PPtRZdL9T1cOfYl2nVBwG6TWCtP8b7wAtqHXbjXy4OCQ85R16TzW4IUnUTWZoZl3hyPOpp1C1dP0gdgBDzMC96xz3YPGCwVEprHG+bMBxARThB3iUHw4GArIeFqxSX3PmTwciWx8COwazfa6pVtmRgiymblPGmum9iQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3NGUrDccQkRFpTCihMotrCkJcwQY68NbYQwV4BJgL0I=;
+ b=NQMP1qHQY46cl4Pr8gyVjBLgjALisXnimcFXjC3yGzyNcFx23MXwYL4Zg5q8Sgn703Bz5+xBKBpCQgHlBIlXh/EAaj3RxCB5MrPcR5mzgoymasR9d7df6jDgTCalTqY+N+U1Z1eHLdbMrYcdXU1XBxqdk4g5aF+2CSXVWgXdbmO7Uhzzf7xYOODVORvpPSP+RwcKKQlgeeUcpLGTxoT6kZJn7pJA1V4hOxvckfkr8NStEBfnjJV9zlTsez8EOsmXPLl4rXfDuml2WX6i4nbGkn1vEcOtoPN9G1/Lb4Gd+XOWYysMBBzPHG/Du52q3bInzekw4fteH4UV2U25bmG+6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3NGUrDccQkRFpTCihMotrCkJcwQY68NbYQwV4BJgL0I=;
+ b=1j1VH3h64Ryre+ulj5cjGzIzjvZ6ghcckjcHTR2Rw14GsueDSgN0gXX/BtXU1c3l4hckXMaXmoLl1oEmvlOOmcQeQxR6w+keAfBBHgI5kh01SJXS4fE8elNcXfWFbF0pu53EaWEkpuRgEteCc/awhIBcAykeTv4yWemeE+9Dv+c=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by PH7PR12MB7986.namprd12.prod.outlook.com (2603:10b6:510:27d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.25; Wed, 8 Nov
+ 2023 18:11:03 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::51d7:e9ef:b57b:f4f2]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::51d7:e9ef:b57b:f4f2%3]) with mapi id 15.20.6954.028; Wed, 8 Nov 2023
+ 18:11:03 +0000
+Message-ID: <02d731da-5012-43ca-9b79-cbb7b5a55e8d@amd.com>
+Date:   Wed, 8 Nov 2023 12:11:02 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND v5 3/4] platform/chrome: cros_ec_debugfs: Fix permissions
+ for panicinfo
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1696632910-21942-1-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com>
- <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
- <CAA8EJpo9CFf-Z3eiuKPvwf-y6eGkSibro-q-=SBxKK_L-zFOBA@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJpo9CFf-Z3eiuKPvwf-y6eGkSibro-q-=SBxKK_L-zFOBA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Avadhut Naik <avadhut.naik@amd.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Cc:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alexey.kardashevskiy@amd.com" <alexey.kardashevskiy@amd.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>
+References: <20231107213647.1405493-1-avadhut.naik@amd.com>
+ <20231107213647.1405493-4-avadhut.naik@amd.com>
+ <SJ1PR11MB60835765F536429966023B01FCA9A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+From:   Avadhut Naik <avadnaik@amd.com>
+In-Reply-To: <SJ1PR11MB60835765F536429966023B01FCA9A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Am_BIKSb7zh0kfSKvK4xO3IHTv373wpf
-X-Proofpoint-ORIG-GUID: Am_BIKSb7zh0kfSKvK4xO3IHTv373wpf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_07,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 malwarescore=0 spamscore=0 impostorscore=0
- mlxscore=0 mlxlogscore=625 priorityscore=1501 suspectscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080149
+X-ClientProxiedBy: SA1P222CA0158.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c3::18) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|PH7PR12MB7986:EE_
+X-MS-Office365-Filtering-Correlation-Id: 556287ed-7123-4c33-1cbe-08dbe08611c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O2YBwMRcFVz88OK1pVpG/a70uSrmdsg+9OmTospsM7j7PhdXbwzHUEMupUoaAnTV5xeI18g+/4/VwqAAK/SVaE6iaIJaF8y52XwGkWWVbD5JXo3zOkWev54oSHG45h3ApqIFhjuY9ajRYaUiJeXVXg5sixdFoY34lSNPUsm/8R6Pux3d0R1aU/Z2xK5h/YV7GUyeP72v1jQ78+qDQwXkflPFDrdHGSs9TAzQA0tbCP8EidJBS0WLi/RJKFnl8PjX7L3QDI+drSUoD35cZGCVN63bnmjnUWCOw8FwhTGgx8hLuFrCteAgR9RzMo01yJpVLNQUwf6f0dIqd7mho4Gs8ZuSnTFmVNpYLzrmpPIY3tEwh2VqcLdbQxTPgTLr+q1Cv99jkoilLxuGC+ysWUwW3RZ+MpwtTFpJxVOWuJSV8k7IvZ74Z+j+uyp7ReKPVwvir1cYMzBxyTXXugjva9Rowf6MpCUIlCaNjyNTRPOKl4JC8NSa53TzpaR19AI72/8MN/zZQLiYFHIqFpdTlMSvnVbSDohumHfSeEYOwTvrrQa9OMCOLBTqdKHmZXKnjpu7N2CIEf9yslxj7uG1vftMyIre1QxnsqQ4nVIoWkFbtcaAvg2Dx42dolgYsXqH8LdT+OugTOC/XHjnGmyKlIor2Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(136003)(396003)(376002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(2616005)(6506007)(6486002)(6512007)(478600001)(66946007)(4744005)(5660300002)(2906002)(316002)(110136005)(8676002)(66556008)(66476007)(4326008)(8936002)(36756003)(53546011)(38100700002)(31696002)(54906003)(41300700001)(26005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Qm11YWJER24zRG9DSStUTGY2aUMzd2QwRG1TVDgrTnpERzAzVklaU1pjYUd5?=
+ =?utf-8?B?eEFSeGRidTQzZDZ2emYrSVVnMXpGOVl1amFldWZjSHBrdlcwcmd0c3lFWlJh?=
+ =?utf-8?B?SzNJbWExM0dNRkgzdW94ZE9KTVJMWUNRTmtWL1pEVXVsKzJrRy83SU0wQjRF?=
+ =?utf-8?B?QTJBZnA2dWxMUW5UUlpQSjlSMTFPZkNPSnhIdEhGNUEzakV2U2JmeE9RZXhV?=
+ =?utf-8?B?MktjZEFOakY3SS9NK0Jma2Q3cHdrYTFnTGl2d0NyYVdqc05OK05ncmtqQ3lF?=
+ =?utf-8?B?a0NTSWVQaEZ6U2RveVFFbXo4RGp0NjhhMWxzY2laenFHZStuRVBqU0Eyd3Z5?=
+ =?utf-8?B?N2Z4NGNraEw2SVNObDZxSXB4T0NNZWRDYlJYbmN5bnZzM21yTkFnN0g5S1l6?=
+ =?utf-8?B?QmRSVmFkMkRCV2ZMeUd3Z2YxbUZya1FzU0hTaTRZNFMzeXdCMFp6NXlCSTNZ?=
+ =?utf-8?B?bUF4QUh5YWZxeUhFQlV6d2kyMzhrWW1MVm5OTUhST0ZEWTRCZnVtMUI0VjNy?=
+ =?utf-8?B?YlU3bGlRMkt6UWd5c0FtYUovU2R6RFF4YmpIaEpiZnB3eU9sdE1DTkQ3bm9Y?=
+ =?utf-8?B?OE94bjhNaHdTZlY2eGVsOGhZRmtLQnNPdlZGUFZlY2hNcU1hU1hFVkczZ0VI?=
+ =?utf-8?B?eGFZd2Vtb1gxaGhDdWxCckEwV25XS1hoc2NlOVdsM2ViT2QvaklIUlJxV0xw?=
+ =?utf-8?B?cGc1VjBnTEk3cTEvMDlCL3RjeXZaMkFvVnVmSkZhMEExZGxVaVBMZXRBU0Iy?=
+ =?utf-8?B?RHpHVS9waEE2Yzg1SWFjNTFRUmxabWJtSllQb1k5NTBhVjB6VEZpZDlENGxB?=
+ =?utf-8?B?RDRqd1J3SWNWSUVYZFFveTc2QXRQUmowaTVRamVpVjV2ejlXUTA2N0JjajdY?=
+ =?utf-8?B?cGRmaHhGQUVsRVR1OGx5UXlRaUY2dTFmYU9maW1QZTQwdVlqanZsVW15SVZO?=
+ =?utf-8?B?RUlKT0g1MHFtbWVZczBXOFMvMEpCRGoxd1plV2VsekNJQ0dBaWM1SERXa1d4?=
+ =?utf-8?B?L3JCUEVjRkhXTFVMcGZZYi9uR0ViY2pxNGJSU091QVRaaUZEL3RTOHVMNjJE?=
+ =?utf-8?B?ajN6NnQ0azJxSnk3c2g0WVFwWmhHak90NHBjN0JSTWUwU25vd1lCVXN6czNL?=
+ =?utf-8?B?dzM0eEFkeXE1VGxlZVZkaGFISGVuVHVtYnNtRjNMRkhzUGlwQTdOVjVBaTBM?=
+ =?utf-8?B?U3ozWXB0T3dzMnlRNm9sUEFweWFtMlVIam9DRWZxaGxWRmhFdjNrWXVBSENj?=
+ =?utf-8?B?QjVLOHdCYi9uK0x0YXBmZGtDN2E4S0U4L3lWc1J0alRHZGVJcEZIbjY4VXhI?=
+ =?utf-8?B?VXRuSkd0SWV0b09zck9sbm5hTDZjbjlSc1NzSVZ3NFh3azN3NmxycHJxUjVU?=
+ =?utf-8?B?bHBjNm4zd2IwQ0xYNVNTY1BZeTlDZ1BlcmRtak5wOHZINHNnbi9ubUNDRE4y?=
+ =?utf-8?B?ZndISE5nSUlMV0tzQXhJV0wwa090TXVLMTU2b1VmY2V5ZHJMWmZkaE1TZXUv?=
+ =?utf-8?B?aDFpZnFzRU1jK0VyYUc5ZUt5cGZJUU9WcXV6NU8veFZNT005Q1JzV1JhWVZV?=
+ =?utf-8?B?TXhiSm54OGQ5MFJyQjkrRFdQeHk4c0RkbEdKd3pVbmF2WEl3MEdlb2x5S3Rm?=
+ =?utf-8?B?LzFIbFN2L1U2QjVJTWxSaHI2QkxaSVdYbHdzMjE5SXBTMDNpejF0c3lYT09w?=
+ =?utf-8?B?cW1LL1RHb3VyenZWQmc2YUF6dzJzY3Q4bkRaaE13ZHVyeFhnZnVaVElXa3RQ?=
+ =?utf-8?B?K2lrQVB6a3lVWTJaUlJxZWhYTXN1bW5hSERpODFWVHJROTBObnFhZGN0alY0?=
+ =?utf-8?B?VEtjSjFVTnROWFFUWEw3ZzFyc0dlOFJYeTg5L0YvNkFocG5xNUFQZmtkNUlZ?=
+ =?utf-8?B?dGhaZlFybmEyTU00VjVFU2dVSTkvQS8zVFplR3cwSXEzRGd3eFNPR3NJWkdt?=
+ =?utf-8?B?bzRURGdOejBIYnNkUno4QW5CUVNEeWlUQU4zb0pNUXV3WmttcE1neGp0bmFm?=
+ =?utf-8?B?RWtuV1ZleE9DSzZueG9aNkhKZVBPWlRWWkVUYmpJWklxRXFDU3BSRzVvejlZ?=
+ =?utf-8?B?RXc5aFc2aS80aGZRVnJ4dDNBM0kxR1R3OThCN3FsUlpIZGk4ajJxK0EzblZs?=
+ =?utf-8?Q?xJKiItyNyCcgZxu/sqPkx/Y/q?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 556287ed-7123-4c33-1cbe-08dbe08611c3
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 18:11:03.3263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L0BQGMubiOCfknt814UthS8PES7xSCyhZnf9GrhtoB+U2eeV1HkY9T1WdD+9JnPxwVn3WO2rwaXJYtFEFuJDZg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7986
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 11/7/2023 1:23 PM, Dmitry Baryshkov wrote:
-> On Tue, 7 Nov 2023 at 23:01, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+On 11/7/2023 16:35, Luck, Tony wrote:
+>> @@ -454,7 +454,7 @@ static int cros_ec_create_panicinfo(struct cros_ec_debugfs *debug_info)
+>>       debug_info->panicinfo_blob.data = data;
+>>       debug_info->panicinfo_blob.size = ret;
 >>
->> On 11/6/2023 5:55 PM, Dmitry Baryshkov wrote:
->>> On Sat, 7 Oct 2023 at 01:55, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->>>> The purpose of this patch series is to incorporate pm runtime framework
->>>> into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP panel
->>>> driver during system probe time. During incorporating procedure, original
->>>> customized pm realted fucntions, such as dp_pm_prepare(), dp_pm_suspend(),
->>>> dp_pm_resume() and dp_pm_prepare(), are removed and replaced with functions
->>>> provided by pm runtiem framework such as pm_runtime_force_suspend() and
->>>> pm_runtime_force_resume(). In addition, both eDP aux-bus and irq handler
->>>> are bound at system probe time too.
->>> With this patchset in place I can crash the board using the following
->>> sequence (SM8350-HDK):
->>>
->>> - plug the USBC DP dongle
->>> - run modetest at any mode, don't press Enter yet
->>> - unplug the dongle
->>> - press Enter to stop modetest
->>>
->>> => the board resets to Sahara.
->>>
->>> Please ping me if you need any additional information from my side.
->> questiosn,
+>> -     debugfs_create_blob("panicinfo", S_IFREG | 0444, debug_info->dir,
+>> +     debugfs_create_blob("panicinfo", 0444, debug_info->dir,
+>>                           &debug_info->panicinfo_blob);
 >>
->> 1) which dongle are you used?
-> I have used several Dell and Hama USB-C dongles.
->
->> 2) what code branch shoud I used to duplicate this problem.
-> I have pushed my kernel tree to
-> git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm
-> I had several UCSI patches on top, but they should not be relevant.
-git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm <== I 
-synced out his branch and it is still work at my chromebook Kodiak DUT.
->
->> I can not duplicate  system crash problem at my setup kodiak (SM7325)
->> chrome book with my PM runtime patch series.
->>
->> my code base is Linux 6.6-rc2 + pm runtime patch series (7 patches)
->>
->> I did:
->>
->> 1) plugin either apple dongle (DP-to-HDMI) + 1080p display or DP typeC
->> cable directly to 1080p display
->>
->> 2)  stop ui
->>
->> 3) /usr/bin/modetest -M msm -s 34:1920x1080 (see test pattern show at
->> display)
->>
->> 4) unplug apple dongle or DP typeC cable
->>
->> 5) hit enter key
->>
->> 6) start ui
->>
->> 7) display back to login page of chrome book
->>
->>
->
+> 
+> This just looks like a bug that S_IFREG was passed in the "mode" argument.
+> 
+> Your change in part 2 doesn't really affect much here.
+> 
+>   debugfs_create_blob()
+>     debugfs_create_file_unsafe()
+>       __debugfs_create_file()
+> 
+> which does:
+> 
+> 	if (!(mode & S_IFMT))
+>                 	mode |= S_IFREG;
+>         	BUG_ON(!S_ISREG(mode));
+> 
+> So this is a fine cleanup. But your patch description about ensuring that
+> the file remains read-only isn't accurate. Your change didn't affect the mode
+> of this file.
+> 
+Noted. Thanks for the explanation. Will change the patch description accordingly.
+
+> -Tony
+> 
+> 	
+
+-- 
+Thanks,
+Avadhut Naik
