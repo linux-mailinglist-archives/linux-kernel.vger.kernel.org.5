@@ -2,166 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC5F7E4E66
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B4F7E4E79
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbjKHBE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 20:04:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S235249AbjKHBLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 20:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjKHBE5 (ORCPT
+        with ESMTP id S230158AbjKHBLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 20:04:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3839C101;
-        Tue,  7 Nov 2023 17:04:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA94C433C7;
-        Wed,  8 Nov 2023 01:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699405494;
-        bh=Bb9XKa7jIR6VwQRh41pyRMgtodshR4fjkkH7tV2ml4A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nPTtD48BSRmCkDgS/RfJsFIi1sKbGzyo4h5xtQs7N7j5AVgSDYZ0T0CpL9g/GTRsK
-         ewIh/QniSRBH8KRH+wUNUYe9upNv6TaotXCP1xqp5PF+Md67uxzNtEt9E1+GECdI4E
-         wHph6U8H7Z/IFbYDb/13oWXXC6Hv25qX5f81fFCsAkGNV92zWYlAXmDiXiGOXDKwvX
-         91t4Gqnxzi9fnAahSAw5IfBX3MOqNuXyJnyXDt1V4ye53MFp96sHVpiRxCyA4gMVvs
-         X5lbRBW3IWsxSgK9E1ZedLDmIYCoQlFwQT9HmI7HlFzVTf1wrK1Y10freRG4la9t4/
-         X8dDgdFJU3Kew==
-Date:   Wed, 8 Nov 2023 10:04:47 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Cc:     vgupta@kernel.org, bcain@quicinc.com, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        geert@linux-m68k.org, andi.shyti@linux.intel.com, mingo@kernel.org,
-        palmer@rivosinc.com, andrzej.hajda@intel.com, arnd@arndb.de,
-        peterz@infradead.orgm, linux-snps-arc@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        mattwu@163.com, linux@roeck-us.ne,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 4/4] locking/atomic: hexagon: arch_cmpxchg[64]_local
- undefined
-Message-Id: <20231108100447.8bd6ff06f59f4b41a8f3d0ec@kernel.org>
-In-Reply-To: <20231104091615.4884-5-wuqiang.matt@bytedance.com>
-References: <20231104091615.4884-1-wuqiang.matt@bytedance.com>
-        <20231104091615.4884-5-wuqiang.matt@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 7 Nov 2023 20:11:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEA7E7
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 17:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699405859; x=1730941859;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=EKS17sYaDCEyWkiDk5EsTfJpaqXNTvXg8O5cE3E3W40=;
+  b=i3MN/nNp4SafIkUnk+iNwTmUOGPJUzACgdxY1radTEMsZu39IK/L98dI
+   qug1Obwpy/P1YrvEc3P8OUvLqmXCssRn38Xb+1M+uwcJ5BRwP6pGsTqhn
+   nnlcGtmoBoul0dE56rmea7djKPT+0g7zp20vJYUsbKMTEuXxfdXyPXj30
+   XrTnHU6Z+fUqJcUgK+FVc10LYQ4brh/Z31Qav40FH7chBZPNfyR4mLGwD
+   HiE1Z1pJCIkq+CMEP2BjVsKU1OxzMSW1ocwguxJEw2gCCRUP/3ZO7poqV
+   GLWGN7rusPEAP7Xovb5dqkg0uxWyC/5y/yW8grdRiSPaD5gtyhn60NlMc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="475891258"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="475891258"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 17:10:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="10623719"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 07 Nov 2023 17:10:40 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0X5a-0007XX-0j;
+        Wed, 08 Nov 2023 01:10:38 +0000
+Date:   Wed, 8 Nov 2023 09:04:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Subject: drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202311080824.j8FQFyrT-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  4 Nov 2023 17:16:15 +0800
-"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+Hi Arnd,
 
-> For architectures that support native cmpxchg, we'd like to
-> implement arch_cmpxchg[64]_local with the native variants of
-> supported data size. If not, the generci_cmpxchg[64]_local
-> will be used.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310272207.tLPflya4-lkp@intel.com/
-> 
+First bad commit (maybe != root cause):
 
-Looks good to me.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   13d88ac54ddd1011b6e94443958e798aa06eb835
+commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
+date:   5 months ago
+config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231108/202311080824.j8FQFyrT-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080824.j8FQFyrT-lkp@intel.com/reproduce)
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311080824.j8FQFyrT-lkp@intel.com/
 
-But I need hexagon's maintainer's comment too.
+sparse warnings: (new ones prefixed by >>)
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     expected void *va
+   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
+>> drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got void *va @@
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     expected void const volatile [noderef] __iomem *addr
+   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     got void *va
+   drivers/remoteproc/stm32_rproc.c:644:17: sparse: sparse: cast removes address space '__iomem' of expression
 
-Thank you,
+vim +139 drivers/remoteproc/stm32_rproc.c
 
-> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
-> ---
->  arch/hexagon/include/asm/cmpxchg.h | 51 +++++++++++++++++++++++++++++-
->  1 file changed, 50 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/hexagon/include/asm/cmpxchg.h b/arch/hexagon/include/asm/cmpxchg.h
-> index bf6cf5579cf4..2b5e5bbaf807 100644
-> --- a/arch/hexagon/include/asm/cmpxchg.h
-> +++ b/arch/hexagon/include/asm/cmpxchg.h
-> @@ -8,6 +8,8 @@
->  #ifndef _ASM_CMPXCHG_H
->  #define _ASM_CMPXCHG_H
->  
-> +#include <linux/build_bug.h>
-> +
->  /*
->   * __arch_xchg - atomically exchange a register and a memory location
->   * @x: value to swap
-> @@ -51,13 +53,15 @@ __arch_xchg(unsigned long x, volatile void *ptr, int size)
->   *  variable casting.
->   */
->  
-> -#define arch_cmpxchg(ptr, old, new)				\
-> +#define __cmpxchg_32(ptr, old, new)				\
->  ({								\
->  	__typeof__(ptr) __ptr = (ptr);				\
->  	__typeof__(*(ptr)) __old = (old);			\
->  	__typeof__(*(ptr)) __new = (new);			\
->  	__typeof__(*(ptr)) __oldval = 0;			\
->  								\
-> +	BUILD_BUG_ON(sizeof(*(ptr)) != 4);			\
-> +								\
->  	asm volatile(						\
->  		"1:	%0 = memw_locked(%1);\n"		\
->  		"	{ P0 = cmp.eq(%0,%2);\n"		\
-> @@ -72,4 +76,49 @@ __arch_xchg(unsigned long x, volatile void *ptr, int size)
->  	__oldval;						\
->  })
->  
-> +#define __cmpxchg(ptr, old, val, size)				\
-> +({								\
-> +	__typeof__(*(ptr)) oldval;				\
-> +								\
-> +	switch (size) {						\
-> +	case 4:							\
-> +		oldval = __cmpxchg_32(ptr, old, val);		\
-> +		break;						\
-> +	default:						\
-> +		BUILD_BUG();					\
-> +		oldval = val;					\
-> +		break;						\
-> +	}							\
-> +								\
-> +	oldval;							\
-> +})
-> +
-> +#define arch_cmpxchg(ptr, o, n)	__cmpxchg((ptr), (o), (n), sizeof(*(ptr)))
-> +
-> +/*
-> + * always make arch_cmpxchg[64]_local available, native cmpxchg
-> + * will be used if available, then generic_cmpxchg[64]_local
-> + */
-> +#include <asm-generic/cmpxchg-local.h>
-> +
-> +#define arch_cmpxchg_local(ptr, old, val)			\
-> +({								\
-> +	__typeof__(*(ptr)) retval;				\
-> +	int size = sizeof(*(ptr));				\
-> +								\
-> +	switch (size) {						\
-> +	case 4:							\
-> +		retval = __cmpxchg_32(ptr, old, val);		\
-> +		break;						\
-> +	default:						\
-> +		retval = __generic_cmpxchg_local(ptr, old,	\
-> +						 val, size);	\
-> +		break;						\
-> +	}							\
-> +								\
-> +	retval;							\
-> +})
-> +
-> +#define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
-> +
->  #endif /* _ASM_CMPXCHG_H */
-> -- 
-> 2.40.1
-> 
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  114  
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  115  static int stm32_rproc_mem_alloc(struct rproc *rproc,
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  116  				 struct rproc_mem_entry *mem)
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  117  {
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  118  	struct device *dev = rproc->dev.parent;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  119  	void *va;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  120  
+03bd158e1535e68 Arnd Bergmann   2023-06-09  121  	dev_dbg(dev, "map memory: %pad+%zx\n", &mem->dma, mem->len);
+13140de09cc2dd5 Fabien Dessenne 2019-05-14 @122  	va = ioremap_wc(mem->dma, mem->len);
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  123  	if (IS_ERR_OR_NULL(va)) {
+03bd158e1535e68 Arnd Bergmann   2023-06-09  124  		dev_err(dev, "Unable to map memory region: %pad+0x%zx\n",
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  125  			&mem->dma, mem->len);
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  126  		return -ENOMEM;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  127  	}
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  128  
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  129  	/* Update memory entry va */
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  130  	mem->va = va;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  131  
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  132  	return 0;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  133  }
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  134  
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  135  static int stm32_rproc_mem_release(struct rproc *rproc,
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  136  				   struct rproc_mem_entry *mem)
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  137  {
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  138  	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
+13140de09cc2dd5 Fabien Dessenne 2019-05-14 @139  	iounmap(mem->va);
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  140  
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  141  	return 0;
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  142  }
+13140de09cc2dd5 Fabien Dessenne 2019-05-14  143  
 
+:::::: The code at line 139 was first introduced by commit
+:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
+
+:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
+:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
