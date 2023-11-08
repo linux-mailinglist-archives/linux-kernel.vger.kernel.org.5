@@ -2,157 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB517E57F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C33A7E5800
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344686AbjKHN1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        id S232426AbjKHNi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:38:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344673AbjKHN1v (ORCPT
+        with ESMTP id S229520AbjKHNi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:27:51 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B94F1BFC;
-        Wed,  8 Nov 2023 05:27:49 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45ef8c21e8aso1572649137.1;
-        Wed, 08 Nov 2023 05:27:49 -0800 (PST)
+        Wed, 8 Nov 2023 08:38:56 -0500
+Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1C319A3;
+        Wed,  8 Nov 2023 05:38:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699450068; x=1700054868; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2aO1ctuOAgiwaAMkZHyV4dmKWIc2NuQImrqw1sRY6dY=;
-        b=PKKwar93s6vd61HowxYoZfR1gmNzmuc1bVoglgqUDA90OK0MzwAM5rT1p3HwhHP9my
-         WaNMK6kERrJ90VDzVjI7iritgUsiQ3R2nkCOhLqgYQ53uCuEm6f/4BJT6ts5YldUUZla
-         KPHFTuIQtYAov1SY/5OPW7MtDxrpRDoyGxJqNh/WP1XxqfSc+OcwjpxxGbcYgIh4aePK
-         nv03hSO8QCGVkaAHapF4OgXKy13JYwbpISjm9sGUCHcKxB8uAxd0iZhOgRUJcmhIhQ4r
-         Mu10eLNP3ORmhMNditag0HjUQ/YtT18LWiw+md01ktPrtpeZES7p4gVk7EwRUjVR+74j
-         JcBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699450068; x=1700054868;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2aO1ctuOAgiwaAMkZHyV4dmKWIc2NuQImrqw1sRY6dY=;
-        b=wk7OXFeywWzCNgptmwVlGishpNQydjOzDll8/RpspftBbLvjzhZDUsitaEQkxpeM5l
-         T3rFeWrsBO80cigysHzA1inZ9MZ7NuK7k8kAlqDPh7clc3zAYoTWNfG8K3rCd42XeXxL
-         CNWGqAVIY9wzbvNfqDw+PXYC+n/6VkKzogy5UYA1pNYoE6pYOT4R72gyUOLTmGHXJeMG
-         NObctOZPPJQspJAlyiUnFP0oHoXsqDsbjagy0am+zjeAb+g+egbPPPrHzoW9TQxgQ227
-         AGXUwir1oEukAatN15MgGlVjchs2G72poebGWOGA2NWXvkrkzkUkPLv5uuckOA32Kbty
-         +aAA==
-X-Gm-Message-State: AOJu0YyJLf8hmZhx4arBVlM/LHS30P+UyZlJj/DXarupfBQ2UiCSmXNY
-        U49jV5pCYehegEUXTwmcbuzYN7M/9Q6NrhV9b/4=
-X-Google-Smtp-Source: AGHT+IECittYtjWU1L+BZtshd86+NTZrnIQlq2JL7WzMlisn5WjMLgavfIgIQtmfP45xuDoRkfOSP47k4ChEuBNw2Qg=
-X-Received: by 2002:a67:ef43:0:b0:45f:18:b2d6 with SMTP id k3-20020a67ef43000000b0045f0018b2d6mr1588218vsr.5.1699450068584;
- Wed, 08 Nov 2023 05:27:48 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699450734; x=1730986734;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:subject:from:to:references:in-reply-to;
+  bh=a5e6wNSZiK4JDaQiFEGl7KqwDS/i2MZnnQlv70olvvw=;
+  b=DDJ9ZTYpl1Jp+Z+H4cxBqp9Us4sf069NMFkLVioISsQgWLN/kuAdZxUh
+   AHkrXUGzZQXP+hNRl9Z5NEdMCfjJ4YHBROrpVTEO7M3LHfmwCIZywpqdb
+   nmFYfHz2wPZoi1clP5nWFFU1aOrqNYUUki7/IfwTEKDXI09aeE4YPy8L2
+   g=;
+X-IronPort-AV: E=Sophos;i="6.03,286,1694736000"; 
+   d="scan'208";a="312105881"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-0ec33b60.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 13:38:47 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-0ec33b60.us-west-2.amazon.com (Postfix) with ESMTPS id 3A796A0F26;
+        Wed,  8 Nov 2023 13:38:45 +0000 (UTC)
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:6240]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.17.103:2525] with esmtp (Farcaster)
+ id 0325e4a2-3eaf-4ce9-95af-c1bca8ed9983; Wed, 8 Nov 2023 13:38:43 +0000 (UTC)
+X-Farcaster-Flow-ID: 0325e4a2-3eaf-4ce9-95af-c1bca8ed9983
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 8 Nov 2023 13:38:43 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 13:38:38 +0000
 MIME-Version: 1.0
-References: <20230913151606.69494-1-romain.perier@gmail.com>
- <20230913151606.69494-3-romain.perier@gmail.com> <20230913-depress-bootlace-6b88bfd83966@spud>
- <CABgxDoK2T3xkKYDVeqRuDXMHfVEJcRkkBOBBkMJ5=XUv9Y5MsQ@mail.gmail.com> <20230914-coagulant-unbroken-2461d32274a1@wendy>
-In-Reply-To: <20230914-coagulant-unbroken-2461d32274a1@wendy>
-From:   Romain Perier <romain.perier@gmail.com>
-Date:   Wed, 8 Nov 2023 14:27:37 +0100
-Message-ID: <CABgxDoJhfKQesDtV3WJ=C-DPB8P+0LDmzbY9Zy909yr3v1FQKQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: rtc: Add Mstar SSD202D RTC
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 8 Nov 2023 13:38:35 +0000
+Message-ID: <CWTH00RO3SCI.31S210JQ8XP8J@amazon.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>, <vkuznets@redhat.com>,
+        <anelkz@amazon.com>, <dwmw@amazon.co.uk>, <jgowans@amazon.com>,
+        <corbert@lwn.net>, <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+Subject: Re: [RFC 30/33] KVM: x86: hyper-v: Introduce
+ KVM_REQ_HV_INJECT_INTERCEPT request
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Alexander Graf <graf@amazon.com>, <kvm@vger.kernel.org>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-31-nsaenz@amazon.com>
+ <c1e85d8a-7f59-4c75-ada1-8a80d79c2b4e@amazon.com>
+In-Reply-To: <c1e85d8a-7f59-4c75-ada1-8a80d79c2b4e@amazon.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D032UWA002.ant.amazon.com (10.13.139.81) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Alexandre seems to be okay with the current (merged) dt-binding, what
-do I do ? I can send a v3 for trivial-rtc.yaml that's not a problem
-for me but both of you seem to
-be disagree :)
-
-Regards,
-Romain
-
-
-Le jeu. 14 sept. 2023 =C3=A0 10:28, Conor Dooley
-<conor.dooley@microchip.com> a =C3=A9crit :
+On Wed Nov 8, 2023 at 12:45 PM UTC, Alexander Graf wrote:
 >
-> On Thu, Sep 14, 2023 at 09:08:52AM +0200, Romain Perier wrote:
-> > Le mer. 13 sept. 2023 =C3=A0 20:30, Conor Dooley <conor@kernel.org> a =
-=C3=A9crit :
-> > >
-> > > On Wed, Sep 13, 2023 at 05:16:05PM +0200, Romain Perier wrote:
-> > > > Add YAML bindings for Mstar SSD202D RTC.
-> > > >
-> > > > Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> > > > ---
-> > > >  .../bindings/rtc/mstar,ssd202d-rtc.yaml       | 35 +++++++++++++++=
-++++
-> > > >  1 file changed, 35 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/rtc/mstar,ssd=
-202d-rtc.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/rtc/mstar,ssd202d-rt=
-c.yaml b/Documentation/devicetree/bindings/rtc/mstar,ssd202d-rtc.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..4c1f22ef5a2c
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/rtc/mstar,ssd202d-rtc.yaml
-> > > > @@ -0,0 +1,35 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/rtc/mstar,ssd202d-rtc.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Mstar SSD202D Real Time Clock
-> > > > +
-> > > > +maintainers:
-> > > > +  - Daniel Palmer <daniel@0x0f.com>
-> > > > +  - Romain Perier <romain.perier@gmail.com>
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: rtc.yaml#
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - mstar,ssd202d-rtc
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > >
+> On 08.11.23 12:18, Nicolas Saenz Julienne wrote:
+> > Introduce a new request type, KVM_REQ_HV_INJECT_INTERCEPT which allows
+> > injecting out-of-band Hyper-V secure intercepts. For now only memory
+> > access intercepts are supported. These are triggered when access a GPA
+> > protected by a higher VTL. The memory intercept metadata is filled base=
+d
+> > on the GPA provided through struct kvm_vcpu_hv_intercept_info, and
+> > injected into the guest through SynIC message.
 > >
-> > Hi,
-> >
-> > > So, this seems fine to me in isolation, but isn't this now the sort o=
-f
-> > > thing that can be documented in trivial-rtc.yaml?
-> > > Its only got compatible & reg, which seems to fit the bill for that.
-> > >
-> >
-> > With the current state, it might make sense. However, currently, the
-> > RTC hw block is mostly
-> > reverse-engineered, the driver is not complete yet, things like
-> > external irq or wakeup irq might arrive later (once we know how it is
-> > wired up and used).
-> > So the content of the dt-bindings might change and differ from a
-> > simple "compatible & reg" requirement.
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
 >
-> It's always possible to move from that to a fully fledged binding at a
-> later date. re: interrupts, trivial-rtc permits a single interrupt, so
-> it'd still be suitable if the device only has one.
 >
-> Thanks,
-> Conor.
+> IMHO memory protection violations should result in a user space exit.=20
+
+It already does, it's not very explicit from the patch itself, since the
+functionality was introduced in through the "KVM: guest_memfd() and
+per-page attributes" series [1].
+
+See this snippet in patch #27:
+
++	if (kvm_hv_vsm_enabled(vcpu->kvm)) {
++		if (kvm_hv_faultin_pfn(vcpu, fault)) {
++			kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
++			return -EFAULT;
++		}
++	}
+
+Otherwise the doc in patch #33 also mentions this. :)
+
+> User space can then validate what to do with the violation and if=20
+> necessary inject an intercept.
+
+I do agree that secure intercept injection should be moved into to
+user-space, and happen as a reaction to a user-space memory fault exit.
+I was unable to do so yet, since the intercepts require a level of
+introspection that is not yet available to QEMU. For example, providing
+the length of the instruction that caused the fault. I'll work on
+exposing the necessary information to user-space and move the whole
+intercept concept there.
+
+Nicolas
+
+[1] https://lore.kernel.org/lkml/20231105163040.14904-1-pbonzini@redhat.com=
+/.
