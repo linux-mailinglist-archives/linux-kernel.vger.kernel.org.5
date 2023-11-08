@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F50D7E52B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3754C7E52B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 10:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234175AbjKHJf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 04:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S235217AbjKHJg7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 04:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKHJf4 (ORCPT
+        with ESMTP id S229924AbjKHJg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 04:35:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF0D1A6
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:35:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699436107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M+MRVaoubCsfZL2xAOUYnuM3Xqs25BNegkvVAxeKkpQ=;
-        b=Y0HVQgs8tjNCq5XQ0zH3RumnbdNvt5EjojVfLgTGkiH6YV3lrMtK0BciN1tNoYMIYAS6rX
-        xvPJx6je5yXZYiIrOYfcgNsXmQMaunXliN0tHkMQtTkU4sKzts/rhY+l9d3Rwqq8Cq02uk
-        TD27N9S1Km2XoY3zEE+cfDIc74BJGYI=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-323-JI9I9BFmMSanUeyHuE7oUg-1; Wed, 08 Nov 2023 04:35:05 -0500
-X-MC-Unique: JI9I9BFmMSanUeyHuE7oUg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9bf1047cb28so493770566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 01:35:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699436104; x=1700040904;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M+MRVaoubCsfZL2xAOUYnuM3Xqs25BNegkvVAxeKkpQ=;
-        b=pymuTjZB25nJgtNXwYAGXxi8JLenKpn0CyhJUrc7UnlzBylsF8gR7ifT+wxX9LRnGw
-         XVaZcJNbCCVB6dNymClPgKk5Ye9KZSpgKhwY4hTBWCGdH+4m96rOxhUSZ/1awYF63UzG
-         M9GQhb2pTc62tIfUNGpzSlwWdWOVAKm7yNWrK7c7iC+7J73akM+XwoWqL34vKM2VJZnE
-         DqRp8RBrzaKc4haZU7SaxICWK70LJHDgURX2vmCrZ2WWgXQflCov13XXF+k77JSO7Q4U
-         4W6V2rKyYlkDXRSm52jfb5P/bCdWlFfYt8wo7sv9DdkavcBe9YHGyscQNksdUG+Nl0W8
-         g/Bg==
-X-Gm-Message-State: AOJu0YzHCuftV2MXckFrqRW+V2YPvWJXhfnh1fT3lDXn5RGJxJ9o8bON
-        aN5lzVwJfwR+xbHY8OkX/erQ4ujZonrAO4y9Im6u14I9zf6g4f0IrI3riC0BB0i3saDg1KVQvxn
-        YT2ot3QPt6gzOGHvhVOO9RAr3817gCcEvt+eWGFeK
-X-Received: by 2002:a17:907:d1f:b0:9e2:af56:c375 with SMTP id gn31-20020a1709070d1f00b009e2af56c375mr978701ejc.52.1699436104721;
-        Wed, 08 Nov 2023 01:35:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHZZprx1+rT4HrMuiEotWLpZSzqUWjQ82jb9o/I+V6JpuyK+TuW+mRyd2O+u8rJk89XZKOhv/kJ9IaM7i/zvUM=
-X-Received: by 2002:a17:907:d1f:b0:9e2:af56:c375 with SMTP id
- gn31-20020a1709070d1f00b009e2af56c375mr978685ejc.52.1699436104435; Wed, 08
- Nov 2023 01:35:04 -0800 (PST)
+        Wed, 8 Nov 2023 04:36:57 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7296E199
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 01:36:54 -0800 (PST)
+Received: from loongson.cn (unknown [209.85.219.181])
+        by gateway (Coremail) with SMTP id _____8CxLOuzVktlw_83AA--.39042S3;
+        Wed, 08 Nov 2023 17:36:52 +0800 (CST)
+Received: from mail-yb1-f181.google.com (unknown [209.85.219.181])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxjd6xVktlPfA7AA--.2220S3;
+        Wed, 08 Nov 2023 17:36:50 +0800 (CST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso6081632276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 01:36:50 -0800 (PST)
+X-Gm-Message-State: AOJu0YzVQSQpIp8TCw1R0p806bK2Wi2+0IDndMW/8R0OaCDcsd95lnfL
+        zKAu1WPylUfqxGxgLvpXDVeCB7ABB1JZTOFCWNg/iw==
+X-Google-Smtp-Source: AGHT+IF7Egb8RiUObh7jAE8iM4wFRrqgo9bG5b8f2JcO57JxfoqZyKyA977e/ECC4xVaAtAw/8f7y7/RheUTwoNIqyA=
+X-Received: by 2002:a05:6902:1008:b0:da0:5933:c62d with SMTP id
+ w8-20020a056902100800b00da05933c62dmr1369671ybt.28.1699436208883; Wed, 08 Nov
+ 2023 01:36:48 -0800 (PST)
 MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
- <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de> <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
- <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
- <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
- <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
- <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
- <ZUtTpKyP0oxWhnn8@fedora>
-In-Reply-To: <ZUtTpKyP0oxWhnn8@fedora>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 8 Nov 2023 10:34:52 +0100
-Message-ID: <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com>
-Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
-To:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
-Cc:     Eric GOUYER <folays@gmail.com>,
-        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
-        David Revoy <davidrevoy@protonmail.com>, jkosina@suse.cz,
-        jason.gerecke@wacom.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231108040447.288870-1-wangrui@loongson.cn> <d32d8a26dcd75a840727cdb50546b621d34d326b.camel@xry111.site>
+ <CAHirt9jQHTRGdv4rShgvWHEbG1vzuLkNDbxLP7x4eMtuB3BB5g@mail.gmail.com> <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
+In-Reply-To: <4075b4dad9bedbc3def5dfe75f66f3e5d49ce6d5.camel@xry111.site>
+From:   WANG Rui <wangrui@loongson.cn>
+Date:   Wed, 8 Nov 2023 17:36:38 +0800
+X-Gmail-Original-Message-ID: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
+Message-ID: <CAHirt9jRH1CKE=BUWpML_jNgTBvMfJiYoAYPnVS3E=89oBUVyw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Disable module from accessing external data directly
+To:     Xi Ruoyao <xry111@xry111.site>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn,
+        Fangrui Song <maskray@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-CM-TRANSID: AQAAf8Cxjd6xVktlPfA7AA--.2220S3
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ury5CF4xXw4kJF1xGw4xXwc_yoW8Xr4kpa
+        97GF1rKws7Xry8ZrnavFn7Z3Wa9a1xCrWxKFy8Cw15Zas0kr9rXa13tr4agFnFqrZ0gw12
+        krs2ga47uryUXagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG
+        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
+        14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+        WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqW
+        UUUUU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 10:23=E2=80=AFAM Jos=C3=A9 Exp=C3=B3sito <jose.expos=
-ito89@gmail.com> wrote:
+On Wed, Nov 8, 2023 at 5:26 PM Xi Ruoyao <xry111@xry111.site> wrote:
 >
-> Hi Benjamin,
->
-> On Wed, Nov 08, 2023 at 10:04:30AM +0100, Benjamin Tissoires wrote:
-[...]
-> >
+> On Wed, 2023-11-08 at 17:20 +0800, WANG Rui wrote:
+> > > then the linked binary triggers a SIGBUS.  Ideally this should be
+> > > detected by the linker at link time, but currently the BFD linker
+> > > fails
+> > > to detect this error (FWIW this flaw is caused by a really nasty
+> > > method
+> > > for the medium code model implementation).  So to me -fno-direct-
+> > > access-
+> > > external-data is the default.  I also grepped for -fdirect-access-
+> > > external-data in the kernel building system but I've not found any
+> > > match.
 > > >
-> > > So, the behavior probably breaks the specs, but sincerely I'm happy t=
-o
-> > > have the "eraser" button independent of the "rubber eraser", which
-> > > makes the stylus a somewhat 4-buttons stylus (tip, button1, button2,
-> > > rubber), and I would like to keep this.
+> > > Are you using a different version of Clang, or maybe Clang has some
+> > > configuration-time option to make -fdirect-access-external-data the
+> > > default?
 > >
-> > Yes, and I'd like to keep it that way, even if 6.6 and 6.5.8
-> > apparently broke it.
-> >
-> > So, to me:
-> > - 276e14e6c3993317257e1787e93b7166fbc30905 is wrong: this is a
-> > firmware bug (reporting invert through eraser) and should not be
-> > tackled at the generic level, thus it should be reverted
-> > - both of these tablets are forwarding the useful information, but not
-> > correctly, which confuses the kernel
-> > - I should now be able to write regression tests
-> > - I should be able to provide HID-BPF fixes for those tablets so that
-> > we can keep them working with or without
-> > 276e14e6c3993317257e1787e93b7166fbc30905
-> > reverted (hopefully)
-> > - problem is I still don't have the mechanics to integrate the HID-BPF
-> > fixes directly in the kernel tree, so maybe I'll have to write a
-> > driver for XP-Pen while these internals are set (it shouldn't
-> > interfere with the HID-BPF out of the tree).
+> > The clang enables `direct-access-external-data` by default in PIC and
+> > disables it by default in no-PIC. This also applies to PIE. [1]
 >
-> I already added support for a few XP-Pen devices on the UCLogic driver
-> and I was planning to start working on this one during the weekend in
-> my DIGImend fork (to simplify testing).
+> Oh sh*t:
 >
-> Let me know if you prefer to add it yourself or if you want me to ping
-> you in the DIGImend discussion.
+> xry111@nanmen2 ~ $ clang t1.c -O2 -fno-pie -no-pie
+> xry111@nanmen2 ~ $ ./a.out
+> Bus error (core dumped)
+>
+> I'll consider it a Clang bug then.
+
+That's it, no copy relocations. As far as I know, copying relocations
+has some issues and is not recommended by Fangrui.
+
+For modules, if distance is not a problem, `no-pic` and
+`direct-access-external-data` can be together because the code is
+writable. Does it seem reasonable to exist?
+
+>
+> --
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
 >
 
-So far, I really have to work on this now. It's a good use case for
-HID-BPF and it's a regression that I'd like to be fixed ASAP.
-I'd appreciate any reviews :)
 
-Also, good to know that I can probably piggyback on hid-uclogic for
-fixing those 2 devices in the kernel.
-
-Cheers,
-Benjamin
+-- 
+WANG Rui
 
