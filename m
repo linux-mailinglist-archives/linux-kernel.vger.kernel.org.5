@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65C57E5232
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F547E5237
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343838AbjKHIwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S235457AbjKHIxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234954AbjKHIwJ (ORCPT
+        with ESMTP id S1343628AbjKHIx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:52:09 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098CC170F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:51:43 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6ce37683cf6so3961870a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699433502; x=1700038302; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DPnUSXZSuFsVDyxEjkbmOaLUrQp90gv12AHBoiXvvgk=;
-        b=h3Yiz0NdawrqKrspxjVfpOeChlD0fXLIO/2VujQoWnHEW0tZa4tgRfRmWe9FFmTrXJ
-         gSel3absClZ7/CyxVxOvowBPmvG7TtCtZLjcpwd/oKPRepIjbVBxAqyyQnW1Exawcb7E
-         xk9BrpM4agfwWJCqPsJqiRJLeGwgbMt9SCPvhDnTyXKH89oGCSV/9ulSOVaMIyDO/W1x
-         u8QcqFnQ5iGL9DhC3VSkbCm/xe/f13X9T3WdrJCtIAookzKGDp7xpXWBlU2vydsFo+QR
-         UXg3iiJW08UwZUTzXl0Te2gYJfMnYc+CziysYmckMTaiTXtWFWKwRLsPZOuhLSmByej8
-         OGDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699433502; x=1700038302;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPnUSXZSuFsVDyxEjkbmOaLUrQp90gv12AHBoiXvvgk=;
-        b=LmarXxj3o+LsQ6NAiNdDzII28m3xKmee6HqdIRf7cfeWXE4Ns2qQ8ONYpccstyV6Rh
-         ip1OGRotlRqt8/WHsC9FPtk6HmofqH3njze+C6X0XDLLHgHssAdLiVcsOvtxwcg22H2q
-         cgWgIoZpCCry23WHY0gx+QqmBYcxvnc3FHlioqliSTBhJZ63fsHFB5qPV7I5MWxQxjTP
-         kA1ls2fjcs5xjt7xyf4UXm0njQ0XcRn40qVD3U7sA03T+4Uqo6mr9zteOaHFl5IIwW1S
-         SuSjxKM3ZtguJ9Pj3t9J2OtGmjwoTLtzovsNHR7GnAaQ2oHTjPOZjfZ29tnoZz25j+rK
-         ioiA==
-X-Gm-Message-State: AOJu0YwwekKY4LukhTuyWUr1Flv8lNfEOe5dylHV1PkGT9pzmMPD5aPo
-        61jmgWYw+s/9kVULHkdecAnbMA==
-X-Google-Smtp-Source: AGHT+IEGCm4Lxktzfn6pIMapfG4JXoFXiNnAi45UGeekdFw737LxG7HKddI8fCg14nQhQ6GxujrfPA==
-X-Received: by 2002:a05:6870:1782:b0:1f0:811a:4027 with SMTP id r2-20020a056870178200b001f0811a4027mr1382275oae.8.1699433502220;
-        Wed, 08 Nov 2023 00:51:42 -0800 (PST)
-Received: from [10.84.153.152] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d11-20020a63fd0b000000b005b82611378bsm2680657pgh.52.2023.11.08.00.51.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 00:51:41 -0800 (PST)
-Message-ID: <917f6c3f-33b6-4161-af30-f8bbd99a8720@bytedance.com>
-Date:   Wed, 8 Nov 2023 16:51:32 +0800
+        Wed, 8 Nov 2023 03:53:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31D11717
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:53:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ew0pjkTaVlRlSlP9yHv6pHGhMc/rPDL4MInWiMJucXU=; b=ogS2QB56Sr7RRY2Q+ZZjJz4fYi
+        wyQJfhGRqsA+LFwTVUe92NlR6V1fCOvnMoVNPyPEOhmhtwBH6a9qoMOi7TAB3j8ZV4Xupuu/iKbH7
+        RUJPLlSGzMRWHX2d/kBHcstuORZwpB/moRxuf18/L9C6krlo+qzCnIFSgEh687eLEVc7HwIcOZBq9
+        GpkIYEpk+Rd5vohQFm9FEVpuFZUBGKl/vCvYLBQH7qOUWu9wCFtz+maMwD2sQQhl4w9ylWnal6lgr
+        BTlI1J9NDjIm2ymdUMadaAxGH4AvpeA4qO8/keANPhdOcHCVR3G6R5e3WRJSTqdkIL0ovEjbSH3v4
+        2v6FAghQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0eI0-0000cp-Az; Wed, 08 Nov 2023 08:51:57 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AAF6130049D; Wed,  8 Nov 2023 09:51:56 +0100 (CET)
+Date:   Wed, 8 Nov 2023 09:51:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        torvalds@linux-foundation.org, paulmck@kernel.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
+Message-ID: <20231108085156.GD8262@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH 2/4] sched/eevdf: Sort the rbtree by virtual deadline
-Content-Language: en-US
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Barry Song <21cnbao@gmail.com>, Chen Yu <yu.c.chen@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Qais Yousef <qyousef@layalina.io>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@huawei.com>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        linux-kernel@vger.kernel.org
-References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
- <20231107090510.71322-3-wuyun.abel@bytedance.com>
- <xm26h6lxuovd.fsf@google.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <xm26h6lxuovd.fsf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107215742.363031-1-ankur.a.arora@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 7:26 AM, Benjamin Segall Wrote:
-> Abel Wu <wuyun.abel@bytedance.com> writes:
+On Tue, Nov 07, 2023 at 01:56:46PM -0800, Ankur Arora wrote:
+> Hi,
 > 
->> Sort the task timeline by virtual deadline and keep the min_vruntime
->> in the augmented tree, so we can avoid doubling the worst case cost
->> and make full use of the cached leftmost node to enable O(1) fastpath
->> picking in next patch.
->>
->> This patch also cleans up the unused max_vruntime() and adjusts pos
->> for some functions.
->>
->> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
->> ---
-> 
-> I've run this through my tester and it agrees that it does fulfil the
-> EEVDF pick (though this implementation is trivial enough that that's
-> fairly obvious just by reading the code, which is a nice bonus upgrade).
-> 
-> And it makes sense that this would help for performance, and the
-> fastpath seems likely to trigger most of the time for even better
-> results.
+> We have two models of preemption: voluntary and full 
 
-Thanks, Benjamin!
+3, also none (RT is not actually a preemption model).
+
+> (and RT which is
+> a fuller form of full preemption.)
+
+It is not in fact a different preemption model, it is the same full
+preemption, the difference with RT is that it makes a lot more stuff
+preemptible, but the fundamental preemption model is the same -- full.
+
+> In this series -- which is based
+> on Thomas' PoC (see [1]), we try to unify the two by letting the
+> scheduler enforce policy for the voluntary preemption models as well.
+
+Well, you've also taken out preempt_dynamic for some obscure reason :/
+
+
+> Please review.
+
+> Ankur Arora (86):
+>   Revert "riscv: support PREEMPT_DYNAMIC with static keys"
+>   Revert "sched/core: Make sched_dynamic_mutex static"
+>   Revert "ftrace: Use preemption model accessors for trace header
+>     printout"
+>   Revert "preempt/dynamic: Introduce preemption model accessors"
+>   Revert "kcsan: Use preemption model accessors"
+>   Revert "entry: Fix compile error in
+>     dynamic_irqentry_exit_cond_resched()"
+>   Revert "livepatch,sched: Add livepatch task switching to
+>     cond_resched()"
+>   Revert "arm64: Support PREEMPT_DYNAMIC"
+>   Revert "sched/preempt: Add PREEMPT_DYNAMIC using static keys"
+>   Revert "sched/preempt: Decouple HAVE_PREEMPT_DYNAMIC from
+>     GENERIC_ENTRY"
+>   Revert "sched/preempt: Simplify irqentry_exit_cond_resched() callers"
+>   Revert "sched/preempt: Refactor sched_dynamic_update()"
+>   Revert "sched/preempt: Move PREEMPT_DYNAMIC logic later"
+>   Revert "preempt/dynamic: Fix setup_preempt_mode() return value"
+>   Revert "preempt: Restore preemption model selection configs"
+>   Revert "sched: Provide Kconfig support for default dynamic preempt
+>     mode"
+>   sched/preempt: remove PREEMPT_DYNAMIC from the build version
+>   Revert "preempt/dynamic: Fix typo in macro conditional statement"
+>   Revert "sched,preempt: Move preempt_dynamic to debug.c"
+>   Revert "static_call: Relax static_call_update() function argument
+>     type"
+>   Revert "sched/core: Use -EINVAL in sched_dynamic_mode()"
+>   Revert "sched/core: Stop using magic values in sched_dynamic_mode()"
+>   Revert "sched,x86: Allow !PREEMPT_DYNAMIC"
+>   Revert "sched: Harden PREEMPT_DYNAMIC"
+>   Revert "sched: Add /debug/sched_preempt"
+>   Revert "preempt/dynamic: Support dynamic preempt with preempt= boot
+>     option"
+>   Revert "preempt/dynamic: Provide irqentry_exit_cond_resched() static
+>     call"
+>   Revert "preempt/dynamic: Provide preempt_schedule[_notrace]() static
+>     calls"
+>   Revert "preempt/dynamic: Provide cond_resched() and might_resched()
+>     static calls"
+>   Revert "preempt: Introduce CONFIG_PREEMPT_DYNAMIC"
+
+NAK
+
+Even if you were to remove PREEMPT_NONE, which should be a separate
+series, but that isn't on the table at all afaict, removing
+preempt_dynamic doesn't make sense.
+
+You still want the preempt= boot time argument and the
+/debug/sched/preempt things to dynamically switch between the models.
+
+Please, focus on the voluntary thing, gut that and then replace it with
+the lazy thing, but leave everything else in place.
+
+Re dynamic preempt, gutting the current voluntary preemption model means
+getting rid of the cond_resched and might_resched toggles but you'll
+gain a switch to kill the lazy stuff.
