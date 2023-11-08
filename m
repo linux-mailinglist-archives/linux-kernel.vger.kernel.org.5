@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6257E4FCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 05:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5D27E4FD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjKHE4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 23:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S230015AbjKHFBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 00:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjKHE4v (ORCPT
+        with ESMTP id S229554AbjKHFBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 23:56:51 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4062193;
-        Tue,  7 Nov 2023 20:56:49 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LK59G026459;
-        Wed, 8 Nov 2023 04:55:20 GMT
+        Wed, 8 Nov 2023 00:01:06 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492B813A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 21:01:04 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJm2J000897;
+        Wed, 8 Nov 2023 04:59:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
  to : cc : subject : in-reply-to : date : message-id : content-type :
  mime-version; s=corp-2023-03-30;
- bh=B1RHbsTgbGkdMWW9XQzTP6Czmxdfpcq3zj0/EhwPhds=;
- b=X3G7tUu6i0bUpPlNGDcnSpmax55D3penTrDiRjo9tfA853JKhGRiHGXkcVepLtq8dED5
- P1+e3rKZvR8/FkbjEsNFi0S81AAnKKkHqYo1KxwWXMyoVMwvsLFGLpJYFaFW1JtWg0k4
- KNbZPj1pTC+lnP//1gGW8zZStDBKrf5rmg21S9A24Km/deV+xFHlntvttRI23mEtRGPV
- 6Kb/Airb9NsJ+RqfMbSlP1XsvfgBO5MhXYKzIlRqHZyTvVsQHEF9SFDe3k9FJMw21TWc
- gaUzUuuCZDrCncL20V/Lz29U6kUtPFY8AiV+nHZGP2WeWcZJ6o27fRz+ZaVo9OZUWUdm 5Q== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w210kvd-1
+ bh=vBoxiu66tbBBb3RQjriH+Rf46F1A9j0SyUIDTk6/WuI=;
+ b=JGCLP1OCcMldHmBPsCkeCjMb6eRJjUs3Zyc6ey0VhiqglJ6W62ruN3dUlJ/bd8McoW/y
+ JDmZEvw7/EHwmG/9CPu0vsm9rQYeCV97HXlEdQZjHMdCn9ShbdNaUxnfovBHCf75dsUp
+ R+HXKWq9LVvTKMEF1nVQB6rZaObD94kDmjoZ9jEa1wCSg95uTMij3Ek/Jsa27b9YbvbE
+ Yo1XcUK/NvoQ7UrRsRtXd8g4EOgBMiu2V77nn/c2Bw9fqXiQUPvCiuzSBn9v7zLaZm3j
+ e6xSSkfAyeiiAnS68z1bNi4VohGYSiW0vAdSnv4v2QEJ0Kigus1RBekc+gwnPcMWsbmT 9g== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w23gju2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Nov 2023 04:55:20 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A840Uj0003805;
-        Wed, 8 Nov 2023 04:55:19 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1w5s73-1
+        Wed, 08 Nov 2023 04:59:46 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A842We9000644;
+        Wed, 8 Nov 2023 04:59:44 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vp1ap-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Nov 2023 04:55:19 +0000
+        Wed, 08 Nov 2023 04:59:44 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fo2SZONBkkYtWCwBQWw5u/4S3JPpK2jGx+z+6SX5s6ZkssRBIjmx5/mzrAaLuhEnsM/LZjnyJZFQB/OieRgZ3k6jwcfSPXeMqB1/1upopASAEEod1PksA6ooU19ZUQQeWTm/xnS2/LyOQJAKyc9PFahhcjJTHppqBmyrbe3IC/VdbrCJ+nLTdZzKDykZC7o6ztpcp9WoRj6lXe6rqJhFmA5zsyki5eDJZCb9EthvRDNiiukEzQH2cZQFUi7qlLDt0LmIbAKoozUBZVEm++/XvhglkAwwX/Fl6oKjeplE+XE3cMfagS3hQykg3LLmLngp+DaptLXiJBOuX2xwJHmbZQ==
+ b=I+X1BN3dPZhKw9zbgcaLtleS0/0OFNKdzkffVDaD4m8Qzr6eypsMROLzvfnraz1RXrcd/bw5lC9xK93Cry++rOr8NxLCBKLArKS91xKT1THjIes1ZVuwvW8spJXc4aNZWTc5UA2ut98pUsYbdxBRqLN5bSYotijHYrbTA4uQpK7BQ1NjECGEGqGp8qiVg5k1qmyLS2g9hAmdW4mM+qdv4bdjxiPG9Qbz9GwI9BxBNO4y85FYLirVyrrW6xzkd34tZBTwNbAKBmt1Cc3ypjiE9MAFAnTNUE3cI/8h5NyghNQo6twsoVjr6L6TafamO8ZBYKX3j5By6bf7gqFd9LSjWQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B1RHbsTgbGkdMWW9XQzTP6Czmxdfpcq3zj0/EhwPhds=;
- b=CMjiQTnGueUt7HMRHfPTY8oHozv/GA0kMH3qGWX3Wb/54tyblwceQCR35YhvOGO6+Z2TPth/lm8zPuZ1uiY8bof9MRWLJUFyP8t0iuh40QatLn0Gnkn7vsQ7iPVmxUvIVhr/7fLA2mh71LEeqrNXY5OxK/WK+e172J+gRHJ72Lcw0cI2Xy1RROGb3sXrnSbvJLg4EjiC8Uz97/JNYMX/ZRLHdLGG4+U8qpYypWiv9ZAVap4/jxWJohR75Ap38Dh9FaqikJw8enVu13OtnMY4CwD9Gck5CqWyDBzepN2nzpVRrOlJaPxClJoOoZcDokxwgOjtFLg72smO+kqfnuymug==
+ bh=vBoxiu66tbBBb3RQjriH+Rf46F1A9j0SyUIDTk6/WuI=;
+ b=PVThb63XQTi9SaByaQFwG0sgU97HTQIJEq1hj54HduXKBLA+48+pXGUVxLdSvW3bho8xloRGytxlEzfeQ2LFpKdx8frJeNrE0y8nei504jkKfdv2PoOxuUviRJ3ycfbCxnLT7iI6unQtINnze7I2Dxf0h4zStDhj9+2ZuZLyf7OFqqfwe1ggFPzknYwx1zfkGBPlpLH2ze56Pg/+bk5dODGnNTwJRY6GkDNFOYLX1YWRk9nBe8PPdXnf2k75fs0BTDTdz9Wy1lwu2nEWNiEJ1tcOpBmDPHdStq4yEbBYSk44leGACNXker/Jdd90wkmSYJ/VxaIYecwRFjxYQvrFQQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B1RHbsTgbGkdMWW9XQzTP6Czmxdfpcq3zj0/EhwPhds=;
- b=hnJbY7m6f8oRNQ5mfElYPiofmnIBWul6YZNzh8QGJlitQ8L9q7/hP0doNAhR10VJmIcXddg4DxgDtchc+I7+Rkooctpw0cZfdEOtLPnZl3OEAeXY00OgOKKBRs7UO+L1yn+BLp8OgJ9r1IsxjE5Mxte1uFaJBK54XmdllFzByBM=
+ bh=vBoxiu66tbBBb3RQjriH+Rf46F1A9j0SyUIDTk6/WuI=;
+ b=vn+3wLDPZpzZcuLNunHmUQJL4afsG0ueYKuqpgwzC11n4dn2orgpZt9YdnXxwmKPQNeSPpCf3bg9oJyVq4lBNpDh3ko9sg+z403lE91dbi8ZJm5uQq5AoPzzdid/zvqt73VZyJKdTzDZ/C2k9FBOf9Hf7tSZ3p9DcSSN6ODJn5g=
 Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by CYXPR10MB7976.namprd10.prod.outlook.com (2603:10b6:930:df::22) with
+ by PH0PR10MB4807.namprd10.prod.outlook.com (2603:10b6:510:3f::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Wed, 8 Nov
- 2023 04:55:16 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Wed, 8 Nov
+ 2023 04:59:42 +0000
 Received: from CO6PR10MB5409.namprd10.prod.outlook.com
  ([fe80::10fc:975b:65bf:1d76]) by CO6PR10MB5409.namprd10.prod.outlook.com
  ([fe80::10fc:975b:65bf:1d76%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 04:55:16 +0000
+ 04:59:42 +0000
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-8-ankur.a.arora@oracle.com>
- <20231107181609.7e9e9dcc@gandalf.local.home>
+ <20231107215742.363031-5-ankur.a.arora@oracle.com>
+ <20231107181232.26dcdf61@gandalf.local.home>
 User-agent: mu4e 1.4.10; emacs 27.2
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
@@ -83,108 +83,102 @@ Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
         geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
         anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
         krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
-        richard@nod.at, mjguzik@gmail.com,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        "Petr Mladek" <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 07/86] Revert "livepatch,sched: Add livepatch task
- switching to cond_resched()"
-In-reply-to: <20231107181609.7e9e9dcc@gandalf.local.home>
-Date:   Tue, 07 Nov 2023 20:55:14 -0800
-Message-ID: <874jhwvo7h.fsf@oracle.com>
+        richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 04/86] Revert "preempt/dynamic: Introduce preemption
+ model accessors"
+In-reply-to: <20231107181232.26dcdf61@gandalf.local.home>
+Date:   Tue, 07 Nov 2023 20:59:39 -0800
+Message-ID: <87ttpwu9fo.fsf@oracle.com>
 Content-Type: text/plain
-X-ClientProxiedBy: BY3PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:a03:39a::13) To CO6PR10MB5409.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4P222CA0008.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::13) To CO6PR10MB5409.namprd10.prod.outlook.com
  (2603:10b6:5:357::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CYXPR10MB7976:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3281ad45-4740-40a8-44e1-08dbe016e66f
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|PH0PR10MB4807:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82a3136c-488d-4b4b-9d4f-08dbe01784ce
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SOvloYDL3UnnqcuZL9v64/+PJJwvLhn/y0FqXFGVeMBARlbg761KJhDTwv60LiEWsHWJBwIZ3ipuOkxdeXzR5YDQgd1clgLlN+st4OsLdpoIBg1hQkRYtMmICjjg6xIm/qj9LKYvPgsWQmMOPiZ+L7FLH9hBd0qSLJzr4ym3N1pldbuwh3qWccr/nrk43n5FNfdwnQY05SLp+7ftj5SH52hHFb3Cowcp5uR2Zsg1m79lxTPmn7UpB/4pR0bWW3oK7zKtUTeEqP4DGJwzbDdusjBLq5cf6J0SP0G1RaaGLzEVo9xLk2roMHRomKAwm/xh4xic3l69WkftxbR+YBR+7/XzbqXtRb0M0IbPoAPDXkkW4PvUz2d4mRQNUbPhXZv2kWv/4291fmMEUMKGCdqgL+UdJ417tDFg/DNIJ7hDPHXiJgG7IOR3CvfZaapBcyZyNs2KxWiWX0pV5VXgEkIWY7qYo5PkcSO1W2gWLe7WKkKBjoBUYspIdWMES8m9Kmv4AgyBr5AjLW72Edq4GgfqelrSOLwKmWFSgKh81BcWqOKhG7nND207uuf5xvdww1tT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(396003)(376002)(136003)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(26005)(2906002)(83380400001)(41300700001)(8936002)(8676002)(478600001)(4326008)(6486002)(86362001)(6506007)(66556008)(66946007)(316002)(66476007)(54906003)(6916009)(7416002)(7406005)(2616005)(5660300002)(30864003)(6512007)(38100700002)(36756003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: yVzg0OX6dtPYRtMBT+fpDde5kzEl37v/vVZ8mmRTdZ1WTCE4Ap5WU2CLqDABoampPG5elxNYlUY24UnY6fpyuSY2OP9DJMHkP6rV16tZaDitx2D9aUijPJ3d52FaaYBPh64ALc1qDWkqXaPHI7X4L3QiRO/LwjA8l6LBVLR8al/UkmflFfuUqCeV3gkUZC34RHB0Ppji+iVa7FTZP2V4Lf6h5iy5rVfyLmP/LnRmYJ9is04nfAe1LBB6zHvTxt3ZqiA6VzZkWjZB00tb+2ifDPDpXU9olNvesyPyJgZW3EAofL215xIMpdyWvHdeDi/GHH4U4I5yZKWVH7qlnI2oovo/tvdaGkqu3PGMi6wexWOo0Yt9XQdOe7nW4Ey3fSB+WXHdxYp7iKlay0mpHLxdveUq4BkPcR3xQGEZuItN5v6ygiQsHAu0TIJ5fLzwL2hHFpCbDVREacGBrNZlxxelBjZfKfygpKLjs7PN6Mg0dnrVan2kTUFS1e/8uF9rvHkYc4vB4a9nAu6ZzUX0uXwoMhppEYwrqOH90+sr0OeDW2TWeOEOOIR4s2ffZldEvG/Z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(136003)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(4326008)(6916009)(316002)(38100700002)(478600001)(6506007)(6666004)(6486002)(66946007)(6512007)(66476007)(66556008)(2616005)(26005)(7416002)(7406005)(5660300002)(8676002)(4744005)(41300700001)(36756003)(86362001)(8936002)(2906002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1/pYi76CbS+hD0mNC7IVEf6e+JGUPoToro8+dufkTv6LDoJoyLsCkD8NTOYO?=
- =?us-ascii?Q?rgWcfAeG7nSJoP0rKp8cVf8QycXz5jAVSh8JNXfarIOuHbVajvy8vS5pYae2?=
- =?us-ascii?Q?3VFfmXjqYkwWj2tnA2nbMo8GL9VB+r+FcRHb9oh2OF/Y78G42/VSfsRnioDo?=
- =?us-ascii?Q?50X1UuLHmq/LURgiKRIfeb5X3HWpcaG273GZkltNC2OHwFJxRfo1lHJ8riJX?=
- =?us-ascii?Q?fKaxC/ENOAz6kdjVE+ZbTfFti61NN8pqiPk+oCbGQqA4h+VWqjJM3MJ6db67?=
- =?us-ascii?Q?zGSIMkEGzIJTa+bOwaCFy/Z1JakYzsllk37tgwKRwcfjuAJsbEkmmllA3aS6?=
- =?us-ascii?Q?2WqVNj50oZ0EN6QY3LfSG0yUerY4Y6PX+wTZ/P8O3nkzx1CMVPPo3hD0odnP?=
- =?us-ascii?Q?5lMR29AkwXSow7N7WQqPM+O43Q+nHs9yDba4+zMaLZvlIdz71thIiXNg0PxR?=
- =?us-ascii?Q?eoRhXmMei/PHkiwS52RcOSFD7K70CG3v9h4UpIt7bQh83ZbBaX2jFFWkOVL6?=
- =?us-ascii?Q?fzwVqf6tOs3g2VkENRt5kvTZwJnZgMPN6JWNT9QUHKurT4nlXDopJ/csdcCy?=
- =?us-ascii?Q?aJshYIQfQe+11z5z6bJ1vGrJ3BcoZn0dAycp6l0ly0z01NuqNoJOyKiN3DCi?=
- =?us-ascii?Q?DO4OSdN8+qo5J9p4XKm0RMe1imHrX5ZIYjgKxDCoXso8yJD0p3ftuPOk7Tch?=
- =?us-ascii?Q?8mf3OxGsbuHg7hOQPo5LOQYdcDHwYICOktxHvGF1ccsEg7b1czjJofZSCg0e?=
- =?us-ascii?Q?BCUSzlHWleaQpTN0UwQNnEHgcJa3nNSozJzdCY3x5CrDyjrlVSFfoYBIO9PG?=
- =?us-ascii?Q?JHktCH4h64ONNMTd4XuMgN70u8BNnVhJDnJjuQFFxTTsTeIaRd2HbL7dyP0l?=
- =?us-ascii?Q?jcBkYZBHu4zPnvrC9f5PXLdgIl8/AT3BAC4hPLJNN+vTvZaXXdZGHWKkyjCk?=
- =?us-ascii?Q?Toup/uozEMJ88It0BWJzEKxifmZqYrIHWBlavA4f2ezWvmCYk7kpqe5OwLoS?=
- =?us-ascii?Q?XwwyGFTB4uk2cYoY4QWY/UF3r2AFE9Mer6o7zUVLFFMLKdyEiE9c+xQ5A1Nv?=
- =?us-ascii?Q?0ChtCGLlIwvfS9gudrC5EbTRQP1IXRktl9Dw/r37EeY2GiA1kjCV+E7cAS2n?=
- =?us-ascii?Q?cP426k2jGvWHYTw0qaDZuLsdYsm6NXksIozzj4mQY+/igJoozpkshlRUrOT1?=
- =?us-ascii?Q?v5lCUrmFKKXRXzv2CXyqq6eSujnMrHo4pX22RtzfbvPsaIG/sBSkf7BMw+v8?=
- =?us-ascii?Q?yzhFUpaIwQGNdYh+ZFkOxPxWFoRJ7MXN+dGGqroxliAqprQbqxBiUYHET6rl?=
- =?us-ascii?Q?B87XWCFdL9citnvHCLFXxFEUnE1z1eL/nyjO04+oT176t7Dn/tNRIXNqvymt?=
- =?us-ascii?Q?3cJ3WP7NOb3/YtNxexHTHyh32P3yWCXLpz++0CA0wzb6FHr9eysPEs9iH4ui?=
- =?us-ascii?Q?fgMaPXbzOCt2v6W3EtHGvdn/4z8PO4YqxaYTcOU7KR2aQDY/E31dM0y1TnX5?=
- =?us-ascii?Q?YGN+YO1hTIL5CDY8xskXax4gL2o8WSTckswkr4RP3HGUpsodyWghBxfn3EEe?=
- =?us-ascii?Q?cAFt+FCt5iv6XPZeMexcImACG4mjPfRqiLJUq1A0VOkT38OQrnXd3XHXygnY?=
- =?us-ascii?Q?MA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vjzv0K3g43XsstpH7ugy5TUxPQTsNmdwFuyl3zkTpz+iV4XhXVXgD3gFWegM?=
+ =?us-ascii?Q?PsQrBtNFeoagtloesG78b1Uw19VRa67nKXX/9rbW+OvVlxXC7pI+VCIjem7a?=
+ =?us-ascii?Q?/8DDspTiqWlxLnvU+bHRUzYrtCGUCv0TOfhCrxGXj1Qx1bFJCuw4zot7HgNL?=
+ =?us-ascii?Q?Dv3rZMmNJgaIYq7QeAnfWfhnDYrqeTds80s/LTCW2QF34iJbjiZQOK3nspBo?=
+ =?us-ascii?Q?R0hJuE3TZvuu8upIN6NlMK0oibTt5jb5MAbhG6H57NnKd2HZN6kPszcnUy8w?=
+ =?us-ascii?Q?hrvk02nUcALOpSJR2u3DcaNenkSYUY9UNhGHPTYIlxAvXtvocdQhhKPQQ/gQ?=
+ =?us-ascii?Q?nQSG/S8mQ5HHdZsM2KGz5fWj/JFafzHixzU1biBtAkD58R72FkGlDeAV5BSj?=
+ =?us-ascii?Q?hVgy2L4klZ2U7lKLJaRbywUv0iaqsjM59D0hEgcGJ+SVQE0Krn2qZ2ZP5pOu?=
+ =?us-ascii?Q?Lv93BOmN33w7uS+z851YgIlvLgYH7e8cVMx7Fywdf4AWOSECQdmG38ksaDCS?=
+ =?us-ascii?Q?2GEHsFv5YhYX9Q6NG0IvhBuygfL3K1O2dXUyaNgeRA/aVeGXnTsMSEuErdHH?=
+ =?us-ascii?Q?7hgSk2IX9/20mDhcQ5ZvyGm6aEND3s2HAsxNkc3zSJ7jt+y6/mgYgTEFpURu?=
+ =?us-ascii?Q?9+6cDRNixDvNo1jRDoKg0pdmWcXhr/vegnu0hwN29UiNHbzxCbn8+H8vtNeR?=
+ =?us-ascii?Q?2CcV76tnpMdvw6YO4YhfQJqzGotHzXPvjUu9lWn5an3o9MaVHUIGVQLpwOxF?=
+ =?us-ascii?Q?VhMPkuevmjhNOvN+SjTqrSn49w9xWfB0Ubd6eG/HQQdJ/d7G44T4mZAybgdg?=
+ =?us-ascii?Q?zHGLamg6EYn2JZiZ+GuX9DMYnx7sRn87bkMzsxMzd4hfNn294fSA9VqzlS3+?=
+ =?us-ascii?Q?WHApept/2sXYwDhSBtDG5hUiIoUYuGFS6XTwt45/3KpMuGM+jSQsjqjUQpBC?=
+ =?us-ascii?Q?ZN9AXzZvoOOjqL5M8SuCrvRZ/QLT6ywk4LdSSMle7pQzosJwbsX/CE6NJW5O?=
+ =?us-ascii?Q?g+h9JCMo+Or2g4yT57+V12zt1xT9ljBp9nUzn8CHYU13BhIKvgH0bQNKrmhH?=
+ =?us-ascii?Q?272QlUszN9g9FE1EP4jrRuMpe9ucrRRj1+ojEVxenVlEu7+l0WWOHqD2B9oZ?=
+ =?us-ascii?Q?9i8xDjUbenM8iQr33X0aO+/7lfdqvWUsf8y9LXXeoDMo+2SrMe9ECCjqyood?=
+ =?us-ascii?Q?mcev9VjPqCZT1VPlJ1iILmnuSnEaW+YiklRbk+gnnp1w0eoFpnRaVE+iA63k?=
+ =?us-ascii?Q?vJAT5YLcYjCjPHDq+sRcyMRu+4gsJ0pi7eWKnOkCwEYQ+XeqoYlB88g65plQ?=
+ =?us-ascii?Q?YIhp5Z6Xqe5T74lW1I+A1Y70C1c0vqQXoV2h5Y9Zj6YFlQt8YIqGvDXCs0Fu?=
+ =?us-ascii?Q?lBj5URNCd6KINyGDAVHeK/WPR/WboGmJ9f2RhnO6Y5rsCR+YJt0F3QIr/w7J?=
+ =?us-ascii?Q?zecnyz3TIvs+6KmRt3+VzYMHk4BI6dpR9ZSvEb2Phgm2Nkd2EkQoQhVWhJA5?=
+ =?us-ascii?Q?k4ChQf1rttzxVP2IwUYvk20u3oVGgaLK7rGIpTK9FEgTEouCt/G2RMDea6jH?=
+ =?us-ascii?Q?R54z3OV39Y9t2ACuPBBD3dZDlS34vXrsxHp2Bfs3V8O/NmbdEZTezLKlJU2I?=
+ =?us-ascii?Q?zA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?UzgJB0Fw9QBZ9Mpk5+QWK9vfn7v+sISrWvauBX2UWs/qBWsBr9v0iizEHcPK?=
- =?us-ascii?Q?3BhH7IWuvhumxAVnJLKgizS1qGnIszMxuJvm4kSxzHNMw/infQGfbDIOYCiB?=
- =?us-ascii?Q?iOgygqhqFfN3bPDr2vbpdCJaR5EsP3fu6txUXNKuxaf31pW13sjsnuNtBnO3?=
- =?us-ascii?Q?q8Mk0HBrjnWe0DeLHd3NeZWzh7rxUEzOhVm4R/zPsZKU9SYxjjyklGmL/YmT?=
- =?us-ascii?Q?Gt4b4Yd4d3APxaKT5bxPlaETPAeZmgH96EanNxa15OP8XPcVygeoFrE/2QJh?=
- =?us-ascii?Q?Lgse/IzR5Qwc+uPmodu5eBthhP8j9F1Mmva7/4AXLwJgQpFu6+hmEcbwgRdB?=
- =?us-ascii?Q?oDz01FGSdyw+RWTDloOWELQvroYqkRrfaOTpBZHCyGLxYhPLWJSSxl8328bI?=
- =?us-ascii?Q?jUzt9DtVZmfsX+BA/Ex0dH9OU1p0z2Bmm19cRKFAzpRni81zi1Z13rq2WpN9?=
- =?us-ascii?Q?EnCNv6m+0gB5+u5hMl7DW0Ww85tjRkMiBsab9Fzb0GqqLLN+NRxK7guwKFeM?=
- =?us-ascii?Q?IPco5lQpunAdfMDSsWP6icGzTUBsMbFOep8Pht+xui03mpWKyIhZE3b0BFLr?=
- =?us-ascii?Q?Hu3hpwNM2nT8nToMA7Yw1i6Nl8QvQT1PtBxqrGj1ej87vli8CJXrQCjF5xwl?=
- =?us-ascii?Q?vkXU+2+jDpHf0ePG3ss74RlW5PvKXyj0JGVm2TgZkNj5uvSNZuMXszXXo6aL?=
- =?us-ascii?Q?iAzVfqnwvrQOiJwj2CjYcAmeeKzO6JXDmE6/055prwsJVHMRiWGAvb0o2BQa?=
- =?us-ascii?Q?CcdXplQHTfNahAFKKryMz5x7exKSBBrB1qWABr1i3hvhagf9VFM+SQQOFi95?=
- =?us-ascii?Q?1kjp2RCH5hmdQrZFCurXpg/B5fvGy2M1wSJ2KJU17Tvf7Q6AfP0+0AyzzOfM?=
- =?us-ascii?Q?VrVm5VUA30jUjs1jv7s4+L5i+hHyLbaZFsVdjNBEHGX/Hr8q56+6YXdbCwpR?=
- =?us-ascii?Q?WaX8pFcCrOlMYk2LsEiYbyxahW2qay3RLD6uhLJvet/1/uNPbjEx1AuS6sUM?=
- =?us-ascii?Q?p0t2tIPlH7beWb8Q9nF8RJZ/h+DCADajpCf5yBlD/unqzBuk+POxOHaya2yx?=
- =?us-ascii?Q?EyBOjbRem8I5MxPfH6UmheqGR2HdR15XiQ712Uo9ARiAuENInNNGi91zthMq?=
- =?us-ascii?Q?7aVz5ph196zk79l6/nS3AZbIMJu3YzHi4zOVdG4osSlJ4FLyytLPz+7vZWep?=
- =?us-ascii?Q?5cATlJnWXkbJxlieIbsTqVY6Pv/FJqXKhqTtajZVZ/kjWlqe25ayEd6M6ABe?=
- =?us-ascii?Q?+Ri2e87pc8a6/gWWRXAq19qYQAM13BohO9gESbiIX7RrHyfeAcOtBCLAETM+?=
- =?us-ascii?Q?eczrlVvIRggDvmk/b+35cxtNXURmFxdd7OwbV5LpfSV1lj9hYh77B183WsRG?=
- =?us-ascii?Q?ZwHL6Qxf7BH+PmZWAbpszs8635XBGAv8Sbx0PNaFBiEJREdOkPiw2QUTYx0T?=
- =?us-ascii?Q?WFpO/ijr279u5GOZVBCueFsYWVyB9UqRXWAHbEU1D3sHMl5Xp/ujiOl0cHtp?=
- =?us-ascii?Q?zHC83PE/0gt7jFWdQVWeLHpn2e842Gz4NS5AzUznsy82noILIlxHbyc0QTLg?=
- =?us-ascii?Q?C5ckP9kQ3/cC8fP+j08=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?dBYWfVgfZu8yJ0k9qSbbC3UlpcIeE2CMFeGa1np1ESieZOW3V3Mi6JvlRVpe?=
+ =?us-ascii?Q?+aDa989GCF5dx4EQmx1E26LpLF4uFlT7zV1S80ry1b+kXqYSKuXaaYyM6wDW?=
+ =?us-ascii?Q?ySj9EGx88Y+tKJL6D+361ezaRT+eCauBjYBmB0ViebeyzQX6F/AsmSLakeUL?=
+ =?us-ascii?Q?JTLx6qnv+g3HbZsigjBLepgmD2rBzbag0TciXbvRyxBgLz6A7r4ftgD1YKUS?=
+ =?us-ascii?Q?/wvVYLHyltbzWhhZTfK1Yf3k9s6BUt2h1otiVBOEFQR5tHFK5srz49HvH60H?=
+ =?us-ascii?Q?cRt1AhC/yg7cLG0rISyv3ZhVzsXULOqz4hduF+N3YXxocfsnIi2VVz6Pmfr5?=
+ =?us-ascii?Q?4y5jwqDnU8gackQykpml2ht77VG8VmeTGJ8P6LeWwH4imQBrYbBQfAu1S5Ig?=
+ =?us-ascii?Q?WUAbNVUM3hpGHMAAkwYz3jlj66xUSprVHQHgKW7780KjT1AJZhPhWBl1pQyT?=
+ =?us-ascii?Q?gizziwdLfyXXjodMluESFxBDrht8rcKauEuPWrt/z1euD0a8fuHxirHxw8wI?=
+ =?us-ascii?Q?GYFdlEbE7ftNeOj9OTETrcTW0nZSabgWTgziVu0ZAEb8IopJIe9bF0mkkA1V?=
+ =?us-ascii?Q?oU2heQyj7mhtiC9XVEko5J9Wi8T3OiOOZXTUJRgD0k3M5mKbZJi2gS/f2elD?=
+ =?us-ascii?Q?Bwy/QXpdQ/wFk3Nt2GF4uXtB0MXp1q1lMcK882MrGRut1I4vHSiDyn1uR5iP?=
+ =?us-ascii?Q?Q+MYyJxxifb/Hs0D2PCz6yi2wjnB197aQHQz14wcPf6mG8nbOmjmbVTKNHkK?=
+ =?us-ascii?Q?5DApNTWxJHauqyhWSdgBpFWdwo17gqTQelXz41PCDRqpTVDFaGo1OgbkANXr?=
+ =?us-ascii?Q?UbBJQOqvBWpxcTSR9/qex6NFC9QEI+cVNW04tgONZMfa/yj9Ki/eLZZeAv/w?=
+ =?us-ascii?Q?Sk47mKnvA3i9w2JZHJpmn1KG8gLAvSrI2Nuz+m4Ljw7ZtDgOiu65LNDLxjtP?=
+ =?us-ascii?Q?GtSoihlql1PFiBlTS0ixVKGNlnsiwfxM71aIHSp4/14F9UzESytIlL2Ei5Us?=
+ =?us-ascii?Q?tuUqd+/7E1ILy670N7Rj4gu2TzDeafvJjlIjYYBrtXSU0K59/0vimgqmzlkN?=
+ =?us-ascii?Q?PlAi4ZBol2lalbuUoLkT52vp7l6SjRF6MZX/doEdxDYKx2TFXVLAklJCex+/?=
+ =?us-ascii?Q?Q0mTJjGuPAyLr8ukMMgIeG+EtD02HvXrFKut6jKx44bgM+lzAAZaZfMJdJnl?=
+ =?us-ascii?Q?hkYOfXK0lSI+smavMbyxnMcFFce20WmYsuJn1q2kGEKIWZ8CXIwhjI3SuBlQ?=
+ =?us-ascii?Q?57NE/OBgZ5Myz625di3iDWz1A+ytTPKQZluVWr3U9E8xQFuYYfiqiKkQ6dgF?=
+ =?us-ascii?Q?a+PiQlH63aA3cC92WZeMXnxgVdnZ+EDZUSEyliiX5gDHXeaWx9ppwpzs8Bci?=
+ =?us-ascii?Q?oIPwv2lCcWbQUBWbqcGYdbDicH0SRQVH7cvS/Ma993f5ykHSamvK2Pcwn6io?=
+ =?us-ascii?Q?o0AlcDquCoQQGrsITK2QNxHBIxASAE0whaul+mV0WS3ggOjUU5Y3EAD4BTEL?=
+ =?us-ascii?Q?QANwU4eVNm8/wwD6wnGp7ra6tcs1GEadb1SFMroomNGuC6BcAqqzJlFmIQ?=
+ =?us-ascii?Q?=3D=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3281ad45-4740-40a8-44e1-08dbe016e66f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82a3136c-488d-4b4b-9d4f-08dbe01784ce
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 04:55:16.4606
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 04:59:42.1928
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uJEpdePM37WMjBSDnqWFn3g1hMeG3zgRX2t2dtb4eCdp5ZDuvef8UYbr8BjVHcpWhYWOKj7nc/lsYi8Rp20iE1lGUs5MgGOLIEJLQr4ynLY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR10MB7976
+X-MS-Exchange-CrossTenant-UserPrincipalName: UW12bdGWtYsx5oB29ltWvS0S4C0pGbht8IxwNuNDvFH+1oVHZqZcuulM7TyExCeKag5yGk7xjzx1UFpqwybygtQTRcfzg5RgbS5+y9GCnbg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4807
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 phishscore=0 suspectscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311080039
-X-Proofpoint-GUID: ktjL2-RF9ulqELfiNRVeFB5PGwZULBko
-X-Proofpoint-ORIG-GUID: ktjL2-RF9ulqELfiNRVeFB5PGwZULBko
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080039
+X-Proofpoint-ORIG-GUID: 33g7lbq0W6_oFGScoVXpgzwL9DwOjh32
+X-Proofpoint-GUID: 33g7lbq0W6_oFGScoVXpgzwL9DwOjh32
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -192,459 +186,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Steven Rostedt <rostedt@goodmis.org> writes:
 
-> On Tue,  7 Nov 2023 13:56:53 -0800
+> On Tue,  7 Nov 2023 13:56:50 -0800
 > Ankur Arora <ankur.a.arora@oracle.com> wrote:
 >
->> This reverts commit e3ff7c609f39671d1aaff4fb4a8594e14f3e03f8.
->>
->> Note that removing this commit reintroduces "live patches failing to
->> complete within a reasonable amount of time due to CPU-bound kthreads."
->>
->> Unfortunately this fix depends quite critically on PREEMPT_DYNAMIC and
->> existence of cond_resched() so this will need an alternate fix.
->>
->
-> Then it would probably be a good idea to Cc the live patching maintainers!
+> I know this is an RFC but I'll state it here just so that it is stated. All
+> reverts need a change log description to why a revert happened, even if you
+> are just cut and pasting the reason for every commit. That's because git
+> commits need to be stand alone and not depend on information in other git
+> commit change logs.
 
-Indeed. Could have sworn that I had. But clearly not.
+Ack. I will also take your suggestion in the other email and remove the
+relevant code instead. Reverting is clearly the wrong mechanism for this.
 
-Apologies and thanks for adding them.
-
->> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
->> ---
->>  include/linux/livepatch.h       |   1 -
->>  include/linux/livepatch_sched.h |  29 ---------
->>  include/linux/sched.h           |  20 ++----
->>  kernel/livepatch/core.c         |   1 -
->>  kernel/livepatch/transition.c   | 107 +++++---------------------------
->>  kernel/sched/core.c             |  64 +++----------------
->>  6 files changed, 28 insertions(+), 194 deletions(-)
->>  delete mode 100644 include/linux/livepatch_sched.h
->>
->> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
->> index 9b9b38e89563..293e29960c6e 100644
->> --- a/include/linux/livepatch.h
->> +++ b/include/linux/livepatch.h
->> @@ -13,7 +13,6 @@
->>  #include <linux/ftrace.h>
->>  #include <linux/completion.h>
->>  #include <linux/list.h>
->> -#include <linux/livepatch_sched.h>
->>
->>  #if IS_ENABLED(CONFIG_LIVEPATCH)
->>
->> diff --git a/include/linux/livepatch_sched.h b/include/linux/livepatch_sched.h
->> deleted file mode 100644
->> index 013794fb5da0..000000000000
->> --- a/include/linux/livepatch_sched.h
->> +++ /dev/null
->> @@ -1,29 +0,0 @@
->> -/* SPDX-License-Identifier: GPL-2.0-or-later */
->> -#ifndef _LINUX_LIVEPATCH_SCHED_H_
->> -#define _LINUX_LIVEPATCH_SCHED_H_
->> -
->> -#include <linux/jump_label.h>
->> -#include <linux/static_call_types.h>
->> -
->> -#ifdef CONFIG_LIVEPATCH
->> -
->> -void __klp_sched_try_switch(void);
->> -
->> -#if !defined(CONFIG_PREEMPT_DYNAMIC) || !defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
->> -
->> -DECLARE_STATIC_KEY_FALSE(klp_sched_try_switch_key);
->> -
->> -static __always_inline void klp_sched_try_switch(void)
->> -{
->> -	if (static_branch_unlikely(&klp_sched_try_switch_key))
->> -		__klp_sched_try_switch();
->> -}
->> -
->> -#endif /* !CONFIG_PREEMPT_DYNAMIC || !CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
->> -
->> -#else /* !CONFIG_LIVEPATCH */
->> -static inline void klp_sched_try_switch(void) {}
->> -static inline void __klp_sched_try_switch(void) {}
->> -#endif /* CONFIG_LIVEPATCH */
->> -
->> -#endif /* _LINUX_LIVEPATCH_SCHED_H_ */
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index 5bdf80136e42..c5b0ef1ecfe4 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -36,7 +36,6 @@
->>  #include <linux/seqlock.h>
->>  #include <linux/kcsan.h>
->>  #include <linux/rv.h>
->> -#include <linux/livepatch_sched.h>
->>  #include <asm/kmap_size.h>
->>
->>  /* task_struct member predeclarations (sorted alphabetically): */
->> @@ -2087,9 +2086,6 @@ extern int __cond_resched(void);
->>
->>  #if defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
->>
->> -void sched_dynamic_klp_enable(void);
->> -void sched_dynamic_klp_disable(void);
->> -
->>  DECLARE_STATIC_CALL(cond_resched, __cond_resched);
->>
->>  static __always_inline int _cond_resched(void)
->> @@ -2098,7 +2094,6 @@ static __always_inline int _cond_resched(void)
->>  }
->>
->>  #elif defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
->> -
->>  extern int dynamic_cond_resched(void);
->>
->>  static __always_inline int _cond_resched(void)
->> @@ -2106,25 +2101,20 @@ static __always_inline int _cond_resched(void)
->>  	return dynamic_cond_resched();
->>  }
->>
->> -#else /* !CONFIG_PREEMPTION */
->> +#else
->>
->>  static inline int _cond_resched(void)
->>  {
->> -	klp_sched_try_switch();
->>  	return __cond_resched();
->>  }
->>
->> -#endif /* PREEMPT_DYNAMIC && CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
->> +#endif /* CONFIG_PREEMPT_DYNAMIC */
->>
->> -#else /* CONFIG_PREEMPTION && !CONFIG_PREEMPT_DYNAMIC */
->> +#else
->>
->> -static inline int _cond_resched(void)
->> -{
->> -	klp_sched_try_switch();
->> -	return 0;
->> -}
->> +static inline int _cond_resched(void) { return 0; }
->>
->> -#endif /* !CONFIG_PREEMPTION || CONFIG_PREEMPT_DYNAMIC */
->> +#endif /* !defined(CONFIG_PREEMPTION) || defined(CONFIG_PREEMPT_DYNAMIC) */
->>
->>  #define cond_resched() ({			\
->>  	__might_resched(__FILE__, __LINE__, 0);	\
->> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
->> index 61328328c474..fc851455740c 100644
->> --- a/kernel/livepatch/core.c
->> +++ b/kernel/livepatch/core.c
->> @@ -33,7 +33,6 @@
->>   *
->>   * - klp_ftrace_handler()
->>   * - klp_update_patch_state()
->> - * - __klp_sched_try_switch()
->>   */
->>  DEFINE_MUTEX(klp_mutex);
->>
->> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
->> index e54c3d60a904..70bc38f27af7 100644
->> --- a/kernel/livepatch/transition.c
->> +++ b/kernel/livepatch/transition.c
->> @@ -9,7 +9,6 @@
->>
->>  #include <linux/cpu.h>
->>  #include <linux/stacktrace.h>
->> -#include <linux/static_call.h>
->>  #include "core.h"
->>  #include "patch.h"
->>  #include "transition.h"
->> @@ -27,25 +26,6 @@ static int klp_target_state = KLP_UNDEFINED;
->>
->>  static unsigned int klp_signals_cnt;
->>
->> -/*
->> - * When a livepatch is in progress, enable klp stack checking in
->> - * cond_resched().  This helps CPU-bound kthreads get patched.
->> - */
->> -#if defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
->> -
->> -#define klp_cond_resched_enable() sched_dynamic_klp_enable()
->> -#define klp_cond_resched_disable() sched_dynamic_klp_disable()
->> -
->> -#else /* !CONFIG_PREEMPT_DYNAMIC || !CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
->> -
->> -DEFINE_STATIC_KEY_FALSE(klp_sched_try_switch_key);
->> -EXPORT_SYMBOL(klp_sched_try_switch_key);
->> -
->> -#define klp_cond_resched_enable() static_branch_enable(&klp_sched_try_switch_key)
->> -#define klp_cond_resched_disable() static_branch_disable(&klp_sched_try_switch_key)
->> -
->> -#endif /* CONFIG_PREEMPT_DYNAMIC && CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
->> -
->>  /*
->>   * This work can be performed periodically to finish patching or unpatching any
->>   * "straggler" tasks which failed to transition in the first attempt.
->> @@ -194,8 +174,8 @@ void klp_update_patch_state(struct task_struct *task)
->>  	 * barrier (smp_rmb) for two cases:
->>  	 *
->>  	 * 1) Enforce the order of the TIF_PATCH_PENDING read and the
->> -	 *    klp_target_state read.  The corresponding write barriers are in
->> -	 *    klp_init_transition() and klp_reverse_transition().
->> +	 *    klp_target_state read.  The corresponding write barrier is in
->> +	 *    klp_init_transition().
->>  	 *
->>  	 * 2) Enforce the order of the TIF_PATCH_PENDING read and a future read
->>  	 *    of func->transition, if klp_ftrace_handler() is called later on
->> @@ -363,44 +343,6 @@ static bool klp_try_switch_task(struct task_struct *task)
->>  	return !ret;
->>  }
->>
->> -void __klp_sched_try_switch(void)
->> -{
->> -	if (likely(!klp_patch_pending(current)))
->> -		return;
->> -
->> -	/*
->> -	 * This function is called from cond_resched() which is called in many
->> -	 * places throughout the kernel.  Using the klp_mutex here might
->> -	 * deadlock.
->> -	 *
->> -	 * Instead, disable preemption to prevent racing with other callers of
->> -	 * klp_try_switch_task().  Thanks to task_call_func() they won't be
->> -	 * able to switch this task while it's running.
->> -	 */
->> -	preempt_disable();
->> -
->> -	/*
->> -	 * Make sure current didn't get patched between the above check and
->> -	 * preempt_disable().
->> -	 */
->> -	if (unlikely(!klp_patch_pending(current)))
->> -		goto out;
->> -
->> -	/*
->> -	 * Enforce the order of the TIF_PATCH_PENDING read above and the
->> -	 * klp_target_state read in klp_try_switch_task().  The corresponding
->> -	 * write barriers are in klp_init_transition() and
->> -	 * klp_reverse_transition().
->> -	 */
->> -	smp_rmb();
->> -
->> -	klp_try_switch_task(current);
->> -
->> -out:
->> -	preempt_enable();
->> -}
->> -EXPORT_SYMBOL(__klp_sched_try_switch);
->> -
->>  /*
->>   * Sends a fake signal to all non-kthread tasks with TIF_PATCH_PENDING set.
->>   * Kthreads with TIF_PATCH_PENDING set are woken up.
->> @@ -507,8 +449,7 @@ void klp_try_complete_transition(void)
->>  		return;
->>  	}
->>
->> -	/* Done!  Now cleanup the data structures. */
->> -	klp_cond_resched_disable();
->> +	/* we're done, now cleanup the data structures */
->>  	patch = klp_transition_patch;
->>  	klp_complete_transition();
->>
->> @@ -560,8 +501,6 @@ void klp_start_transition(void)
->>  			set_tsk_thread_flag(task, TIF_PATCH_PENDING);
->>  	}
->>
->> -	klp_cond_resched_enable();
->> -
->>  	klp_signals_cnt = 0;
->>  }
->>
->> @@ -617,9 +556,8 @@ void klp_init_transition(struct klp_patch *patch, int state)
->>  	 * see a func in transition with a task->patch_state of KLP_UNDEFINED.
->>  	 *
->>  	 * Also enforce the order of the klp_target_state write and future
->> -	 * TIF_PATCH_PENDING writes to ensure klp_update_patch_state() and
->> -	 * __klp_sched_try_switch() don't set a task->patch_state to
->> -	 * KLP_UNDEFINED.
->> +	 * TIF_PATCH_PENDING writes to ensure klp_update_patch_state() doesn't
->> +	 * set a task->patch_state to KLP_UNDEFINED.
->>  	 */
->>  	smp_wmb();
->>
->> @@ -655,10 +593,14 @@ void klp_reverse_transition(void)
->>  		 klp_target_state == KLP_PATCHED ? "patching to unpatching" :
->>  						   "unpatching to patching");
->>
->> +	klp_transition_patch->enabled = !klp_transition_patch->enabled;
->> +
->> +	klp_target_state = !klp_target_state;
->> +
->>  	/*
->>  	 * Clear all TIF_PATCH_PENDING flags to prevent races caused by
->> -	 * klp_update_patch_state() or __klp_sched_try_switch() running in
->> -	 * parallel with the reverse transition.
->> +	 * klp_update_patch_state() running in parallel with
->> +	 * klp_start_transition().
->>  	 */
->>  	read_lock(&tasklist_lock);
->>  	for_each_process_thread(g, task)
->> @@ -668,28 +610,9 @@ void klp_reverse_transition(void)
->>  	for_each_possible_cpu(cpu)
->>  		clear_tsk_thread_flag(idle_task(cpu), TIF_PATCH_PENDING);
->>
->> -	/*
->> -	 * Make sure all existing invocations of klp_update_patch_state() and
->> -	 * __klp_sched_try_switch() see the cleared TIF_PATCH_PENDING before
->> -	 * starting the reverse transition.
->> -	 */
->> +	/* Let any remaining calls to klp_update_patch_state() complete */
->>  	klp_synchronize_transition();
->>
->> -	/*
->> -	 * All patching has stopped, now re-initialize the global variables to
->> -	 * prepare for the reverse transition.
->> -	 */
->> -	klp_transition_patch->enabled = !klp_transition_patch->enabled;
->> -	klp_target_state = !klp_target_state;
->> -
->> -	/*
->> -	 * Enforce the order of the klp_target_state write and the
->> -	 * TIF_PATCH_PENDING writes in klp_start_transition() to ensure
->> -	 * klp_update_patch_state() and __klp_sched_try_switch() don't set
->> -	 * task->patch_state to the wrong value.
->> -	 */
->> -	smp_wmb();
->> -
->>  	klp_start_transition();
->>  }
->>
->> @@ -703,9 +626,9 @@ void klp_copy_process(struct task_struct *child)
->>  	 * the task flag up to date with the parent here.
->>  	 *
->>  	 * The operation is serialized against all klp_*_transition()
->> -	 * operations by the tasklist_lock. The only exceptions are
->> -	 * klp_update_patch_state(current) and __klp_sched_try_switch(), but we
->> -	 * cannot race with them because we are current.
->> +	 * operations by the tasklist_lock. The only exception is
->> +	 * klp_update_patch_state(current), but we cannot race with
->> +	 * that because we are current.
->>  	 */
->>  	if (test_tsk_thread_flag(current, TIF_PATCH_PENDING))
->>  		set_tsk_thread_flag(child, TIF_PATCH_PENDING);
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 0e8764d63041..b43fda3c5733 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -8597,7 +8597,6 @@ EXPORT_STATIC_CALL_TRAMP(might_resched);
->>  static DEFINE_STATIC_KEY_FALSE(sk_dynamic_cond_resched);
->>  int __sched dynamic_cond_resched(void)
->>  {
->> -	klp_sched_try_switch();
->>  	if (!static_branch_unlikely(&sk_dynamic_cond_resched))
->>  		return 0;
->>  	return __cond_resched();
->> @@ -8746,17 +8745,13 @@ int sched_dynamic_mode(const char *str)
->>  #error "Unsupported PREEMPT_DYNAMIC mechanism"
->>  #endif
->>
->> -DEFINE_MUTEX(sched_dynamic_mutex);
->> -static bool klp_override;
->> -
->> -static void __sched_dynamic_update(int mode)
->> +void sched_dynamic_update(int mode)
->>  {
->>  	/*
->>  	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
->>  	 * the ZERO state, which is invalid.
->>  	 */
->> -	if (!klp_override)
->> -		preempt_dynamic_enable(cond_resched);
->> +	preempt_dynamic_enable(cond_resched);
->>  	preempt_dynamic_enable(might_resched);
->>  	preempt_dynamic_enable(preempt_schedule);
->>  	preempt_dynamic_enable(preempt_schedule_notrace);
->> @@ -8764,79 +8759,36 @@ static void __sched_dynamic_update(int mode)
->>
->>  	switch (mode) {
->>  	case preempt_dynamic_none:
->> -		if (!klp_override)
->> -			preempt_dynamic_enable(cond_resched);
->> +		preempt_dynamic_enable(cond_resched);
->>  		preempt_dynamic_disable(might_resched);
->>  		preempt_dynamic_disable(preempt_schedule);
->>  		preempt_dynamic_disable(preempt_schedule_notrace);
->>  		preempt_dynamic_disable(irqentry_exit_cond_resched);
->> -		if (mode != preempt_dynamic_mode)
->> -			pr_info("Dynamic Preempt: none\n");
->> +		pr_info("Dynamic Preempt: none\n");
->>  		break;
->>
->>  	case preempt_dynamic_voluntary:
->> -		if (!klp_override)
->> -			preempt_dynamic_enable(cond_resched);
->> +		preempt_dynamic_enable(cond_resched);
->>  		preempt_dynamic_enable(might_resched);
->>  		preempt_dynamic_disable(preempt_schedule);
->>  		preempt_dynamic_disable(preempt_schedule_notrace);
->>  		preempt_dynamic_disable(irqentry_exit_cond_resched);
->> -		if (mode != preempt_dynamic_mode)
->> -			pr_info("Dynamic Preempt: voluntary\n");
->> +		pr_info("Dynamic Preempt: voluntary\n");
->>  		break;
->>
->>  	case preempt_dynamic_full:
->> -		if (!klp_override)
->> -			preempt_dynamic_disable(cond_resched);
->> +		preempt_dynamic_disable(cond_resched);
->>  		preempt_dynamic_disable(might_resched);
->>  		preempt_dynamic_enable(preempt_schedule);
->>  		preempt_dynamic_enable(preempt_schedule_notrace);
->>  		preempt_dynamic_enable(irqentry_exit_cond_resched);
->> -		if (mode != preempt_dynamic_mode)
->> -			pr_info("Dynamic Preempt: full\n");
->> +		pr_info("Dynamic Preempt: full\n");
->>  		break;
->>  	}
->>
->>  	preempt_dynamic_mode = mode;
->>  }
->>
->> -void sched_dynamic_update(int mode)
->> -{
->> -	mutex_lock(&sched_dynamic_mutex);
->> -	__sched_dynamic_update(mode);
->> -	mutex_unlock(&sched_dynamic_mutex);
->> -}
->> -
->> -#ifdef CONFIG_HAVE_PREEMPT_DYNAMIC_CALL
->> -
->> -static int klp_cond_resched(void)
->> -{
->> -	__klp_sched_try_switch();
->> -	return __cond_resched();
->> -}
->> -
->> -void sched_dynamic_klp_enable(void)
->> -{
->> -	mutex_lock(&sched_dynamic_mutex);
->> -
->> -	klp_override = true;
->> -	static_call_update(cond_resched, klp_cond_resched);
->> -
->> -	mutex_unlock(&sched_dynamic_mutex);
->> -}
->> -
->> -void sched_dynamic_klp_disable(void)
->> -{
->> -	mutex_lock(&sched_dynamic_mutex);
->> -
->> -	klp_override = false;
->> -	__sched_dynamic_update(preempt_dynamic_mode);
->> -
->> -	mutex_unlock(&sched_dynamic_mutex);
->> -}
->> -
->> -#endif /* CONFIG_HAVE_PREEMPT_DYNAMIC_CALL */
->> -
->>  static int __init setup_preempt_mode(char *str)
->>  {
->>  	int mode = sched_dynamic_mode(str);
-
+And thanks for helping me with all of the process related issues.
+Appreciate it.
 
 --
 ankur
