@@ -2,168 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB907E4DAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC8A7E4DB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 01:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjKHACy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 19:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
+        id S234130AbjKHADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 19:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbjKHACw (ORCPT
+        with ESMTP id S229844AbjKHADg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 19:02:52 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D03D10C6
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 16:02:50 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-45d968e3f92so1793672137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 16:02:50 -0800 (PST)
+        Tue, 7 Nov 2023 19:03:36 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7425310E4;
+        Tue,  7 Nov 2023 16:03:34 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6ce2eaf7c2bso4035424a34.0;
+        Tue, 07 Nov 2023 16:03:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699401769; x=1700006569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qhGCgNMMnqKk3D3DcXRS957yq5a/Kz42rRw6Zd9CW+U=;
-        b=1PSMIJXl9RupistbaT8e/WtduGUftDhNnA3/ee/wMeOwhoMNOOj9ofAuaMycpyNXZu
-         zQJU9nyZMQr5dKjNqV6QRFNriGNno6PhYtvUVv76CQ0jp2z/+gRiYrUcxHn0vMZ5lbSI
-         LJfi6+7WUffhmSpa6GLqI8h0oOayhDKapd1MPeFnCq7HvpuJYKbIqQlR0WIekKHgRCRO
-         TyTisICSI9vyzZMvq852e3Dv7udplOnciSR2hLACULPoRb5HPZduAarn+m0UNTX50gND
-         HHzJG45PV7yNkrIObg3EkvqXVeL3k3AO+ADdYal7GVMDi7pR3lsFUmopzGIaERRw2PCl
-         hnOw==
+        d=gmail.com; s=20230601; t=1699401814; x=1700006614; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=w5LBcj9Ai/IS8fLRfhiYfHqRvqJUefGN2W7PjES7Bxo=;
+        b=hwo8FdzT4fVOd03VAgREecm9Kux3V4U6P1wcjfbjTjhumNpd4Cx6d8ZheUiFYnSUbd
+         PgAMEuZrigCyvS+3Hgn26UDNS/pzbE6PPNzytqqBqemNQMCErcTPhZ/bLZB8bGIuqsfk
+         yk2XqUc4cDkuw94/9t2+ordrNsPIkXZ0LECMAXX0hdSarKh+Vm08zh8xAGG9UwthTJ0Z
+         IgVPoPzqQeDc60hzKRkIeLQgrcPcXMOPZfIJB0QuZRwVuRLmE/dLwNKtHTXYgWP10OC5
+         kq4+mmJrefqhPE1ZzQ0yJ8z36KinOgmwM6A81fN7wmonDH8mA/kB590UGUZhEBlkxUJe
+         7gUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699401769; x=1700006569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qhGCgNMMnqKk3D3DcXRS957yq5a/Kz42rRw6Zd9CW+U=;
-        b=B+qtln7tiFE2cVRcorVpYE7HxMo+5filERANg1tIEUBHjXr8Om3HXGRpj5/Bitjp1Y
-         RgqASL5gMfkLjWzhbpYJ2SxDl6iAb2QFS9qPsvoQRBI89hqQhcINnGK+UQyGwGuNBsT4
-         L9HVlUD4yWQ0iUWLqbpko3Xhei0oUC27ivlfYM/yST6qFY30VcV26iFrtuWZhPGDGf6M
-         cfXnD7ZR86xSVksBD6Fp8I+waEA334mwqO2CWRjevzNSpXYVXvx4WWFgUa2DaPpLT5iU
-         GIfMvOUVeq99TnRHOIl55GQUEDBL865cZz36ufTwScbt2hSByvIo076qKML6tmpnP1EP
-         flqw==
-X-Gm-Message-State: AOJu0YwBX1swPserdxKMg4xu8zuZP9uvNGeWp+z7KbnFF4wF4AdDjTWh
-        YKag7XTomKdpBmZU+NyhKr31t0n/K/cDfEFld6hWmw==
-X-Google-Smtp-Source: AGHT+IFms8ZvtGXtemkp+mi4ABPteesfsjhExnDKjmFJ+Eb3POz3AZg+/vWO+o8o1uY0zVVc5E9w65kScoa/ixFh4MU=
-X-Received: by 2002:a05:6102:20de:b0:45f:57b4:c20d with SMTP id
- i30-20020a05610220de00b0045f57b4c20dmr259111vsr.2.1699401769314; Tue, 07 Nov
- 2023 16:02:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699401814; x=1700006614;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w5LBcj9Ai/IS8fLRfhiYfHqRvqJUefGN2W7PjES7Bxo=;
+        b=IWpTHGj66Ic23F15hIuhcuLB1lStAq5DKkvFcImgoEe6h06cIMfRJL9auJDZDsB7dt
+         lUXxtJsvoUYTtvk5n2prOEJw4VULG4xBWmdeRH8GoCm5vYGTg9TWsxAeIWk7QaQES3n6
+         9zTplNHZKzh2LFnoBe7bWTr6+0UmdzXwHrCYg0+0ZdN/b1X6JEXXm7cNqZMYXhMLIHmV
+         r8+C0hW40cTl5mhOJPFbuDzjHfoNlWRbJO0Hh9+S8R7+jwDJE8rJamxMIISoXuq5huez
+         hK8VKAqV67/oWbET7+tOhef5HO5V4jDxiRcEq1jk6KobwjYQIwMjcJNTmNEudn+bXpS3
+         /mVA==
+X-Gm-Message-State: AOJu0YxhOGnamhrAAccQIqKrZwP48Gi709pYrhpMXJ07tm0A+tl9Wjjl
+        qE8q7Y9mztAurIzOIGEe3PQEX8U2d2Gcn4Nq9mQAqyRW
+X-Google-Smtp-Source: AGHT+IEqZhTaX29JcgF6ONXkh2J4MIBuyEqTF1/MoCB/3c+YA7OhLsdvXIckAeQ2wusUzs9RSqXWYxO0oNDet6dw0CE=
+X-Received: by 2002:a05:6830:2b25:b0:6d3:1212:15ab with SMTP id
+ l37-20020a0568302b2500b006d3121215abmr396732otv.20.1699401813768; Tue, 07 Nov
+ 2023 16:03:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-7-almasrymina@google.com> <583db67b-96c6-4e17-bea0-b5a14799db4a@kernel.org>
-In-Reply-To: <583db67b-96c6-4e17-bea0-b5a14799db4a@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 7 Nov 2023 16:02:38 -0800
-Message-ID: <CAHS8izME7NixQrrh+qKnMR4+FyTzKW=B2pYyNffJ+igiehe-7g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 06/12] memory-provider: dmabuf devmem memory provider
-To:     David Ahern <dsahern@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
+Received: by 2002:a8a:158f:0:b0:4f0:1250:dd51 with HTTP; Tue, 7 Nov 2023
+ 16:03:33 -0800 (PST)
+In-Reply-To: <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org>
+References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
+ <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
+ <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
+ <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
+ <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Wed, 8 Nov 2023 01:03:33 +0100
+Message-ID: <CAGudoHESNDTAAOGB3riYjU3tgHTXVLRdB7tknfVBem38yqkJEA@mail.gmail.com>
+Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
+ allocating mm
+To:     Kees Cook <kees@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 1:02=E2=80=AFPM Stanislav Fomichev <sdf@google.com> =
-wrote:
->
-> On 11/05, Mina Almasry wrote:
-> > +static inline bool page_is_page_pool_iov(const struct page *page)
-> > +{
-> > +     return (unsigned long)page & PP_DEVMEM;
-> > +}
->
-> Speaking of bpf: one thing that might be problematic with this PP_DEVMEM
-> bit is that it will make debugging with bpftrace a bit (more)
-> complicated. If somebody were trying to get to that page_pool_iov from
-> the frags, they will have to do the equivalent of page_is_page_pool_iov,
-> but probably not a big deal? (thinking out loud)
-
-Good point, but that doesn't only apply to bpf I think. I'm guessing
-even debugger drgn access to the bv_page in the frag will have trouble
-if it's actually accessing an iov with LSB set.
-
-But this is not specific to this use for LSB pointer trick. I think
-all code that currently uses LSB pointer trick will have similar
-troubles. In this context my humble vote is that we get such big
-upside from reducing code churn that it's reasonable to tolerate such
-side effects.
-
-I could alleviate some of the issues by teaching drgn to do the right
-thing for devmem/iovs... time permitting.
-
-On Mon, Nov 6, 2023 at 3:49=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
-te:
->
-> On 11/5/23 7:44 PM, Mina Almasry wrote:
-> > diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/he=
-lpers.h
-> > index 78cbb040af94..b93243c2a640 100644
-> > --- a/include/net/page_pool/helpers.h
-> > +++ b/include/net/page_pool/helpers.h
-> > @@ -111,6 +112,45 @@ page_pool_iov_binding(const struct page_pool_iov *=
-ppiov)
-> >       return page_pool_iov_owner(ppiov)->binding;
-> >  }
-> >
-> > +static inline int page_pool_iov_refcount(const struct page_pool_iov *p=
-piov)
-> > +{
-> > +     return refcount_read(&ppiov->refcount);
-> > +}
-> > +
-> > +static inline void page_pool_iov_get_many(struct page_pool_iov *ppiov,
-> > +                                       unsigned int count)
-> > +{
-> > +     refcount_add(count, &ppiov->refcount);
-> > +}
-> > +
-> > +void __page_pool_iov_free(struct page_pool_iov *ppiov);
-> > +
-> > +static inline void page_pool_iov_put_many(struct page_pool_iov *ppiov,
-> > +                                       unsigned int count)
-> > +{
-> > +     if (!refcount_sub_and_test(count, &ppiov->refcount))
-> > +             return;
-> > +
-> > +     __page_pool_iov_free(ppiov);
-> > +}
-> > +
-> > +/* page pool mm helpers */
-> > +
-> > +static inline bool page_is_page_pool_iov(const struct page *page)
-> > +{
-> > +     return (unsigned long)page & PP_DEVMEM;
->
-> This is another one where the code can be more generic to not force a
-> lot changes later.  e.g., PP_CUSTOM or PP_NO_PAGE. Then io_uring use
-> case with host memory can leverage the iov pool in a similar manner.
->
-> That does mean skb->devmem needs to be a flag on the page pool and not
-> just assume iov =3D=3D device memory.
+On 11/8/23, Kees Cook <kees@kernel.org> wrote:
 >
 >
+> On November 7, 2023 3:08:47 PM PST, Mateusz Guzik <mjguzik@gmail.com>
+> wrote:
+>>On 11/7/23, Kees Cook <keescook@chromium.org> wrote:
+>>> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
+>>>> If the patch which dodges second lookup still somehow appears slower a
+>>>> flamegraph or other profile would be nice. I can volunteer to take a
+>>>> look at what's going on provided above measurements will be done and
+>>>> show funkyness.
+>>>
+>>> When I looked at this last, it seemed like all the work done in
+>>> do_filp_open() (my patch, which moved the lookup earlier) was heavier
+>>> than the duplicate filename_lookup().
+>>>
+>>> What I didn't test was moving the sched_exec() before the mm creation,
+>>> which Peter confirmed shouldn't be a problem, but I think that might be
+>>> only a tiny benefit, if at all.
+>>>
+>>> If you can do some comparisons, that would be great; it always takes me
+>>> a fair bit of time to get set up for flame graph generation, etc. :)
+>>>
+>>
+>>So I spawned *one* process executing one statocally linked binary in a
+>>loop, test case from http://apollo.backplane.com/DFlyMisc/doexec.c .
+>>
+>>The profile is definitely not what I expected:
+>>   5.85%  [kernel]           [k] asm_exc_page_fault
+>>   5.84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
+>>[snip]
+>>
+>>I'm going to have to recompile with lock profiling, meanwhile
+>>according to bpftrace
+>>(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] =
+>> count(); }')
+>>top hits would be:
+>>
+>>@[
+>>    __pv_queued_spin_lock_slowpath+1
+>>    _raw_spin_lock+37
+>>    __schedule+192
+>>    schedule_idle+38
+>>    do_idle+366
+>>    cpu_startup_entry+38
+>>    start_secondary+282
+>>    secondary_startup_64_no_verify+381
+>>]: 181
+>>@[
+>>    __pv_queued_spin_lock_slowpath+1
+>>    _raw_spin_lock_irq+43
+>>    wait_for_completion+141
+>>    stop_one_cpu+127
+>>    sched_exec+165
+>
+> There's the suspicious sched_exec() I was talking about! :)
+>
+> I think it needs to be moved, and perhaps _later_ instead of earlier?
+> Hmm...
 >
 
+I'm getting around 3.4k execs/s. However, if I "taskset -c 3
+./static-doexec 1" the number goes up to about 9.5k and lock
+contention disappears from the profile. So off hand looks like the
+task is walking around the box when it perhaps could be avoided -- it
+is idle apart from running the test. Again this is going to require a
+serious look instead of ad hoc pokes.
 
---=20
-Thanks,
-Mina
+Side note I actually read your patch this time around instead of
+skimming through it and assuming it did what I thought.
+
+do_filp_open is of course very expensive and kmalloc + kfree are slow.
+On top of it deallocating a file object even after a failed open was
+very expensive due to delegation to task_work (recently fixed).
+
+What I claim should be clear-cut faster is that lookup as in the
+original patch and only messing with file allocation et al if it
+succeeds.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
