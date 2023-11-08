@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C417E50B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 07:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5987E50DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234544AbjKHG70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 01:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S234528AbjKHHVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbjKHG7Y (ORCPT
+        with ESMTP id S232634AbjKHHVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 01:59:24 -0500
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D88170C
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 22:59:21 -0800 (PST)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5ac376d311aso76273887b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 22:59:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699426761; x=1700031561; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DVTIO8c7GDpbBUI5Au96zNg85/4FppbjNNWZjh3ilek=;
-        b=LKtcPnic6Ev+LKTVbdL6G4hsHjrDDD2+oozlgKOMsrHLKJxQ+yhnUPNj9hl57MSdE6
-         bxElxJyBHoxRUiOH/M7RPlZxrlUDTEPnhxAP4lVgZVkCmReWsRZa5XDOgujCwMvMtGQN
-         s008oKYPaOPkcvLP02CMqn9WXT5GBy6nqmapwr/Q+gTrbeLc+lvQpWqhVEaSFzDJLGCW
-         6SesNurG7Ghj5HX5ymRktmqoo7bQHl+PN4/EhOiZ64kjA450WBvrhwa3UaF82C+/g304
-         Qs1BVbslSMhg3yQyMRjPHJu4eGIT5LX9AOrlgXmxXielcPxTR2A2w24dDMqtsrNpEBQP
-         uKIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699426761; x=1700031561;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DVTIO8c7GDpbBUI5Au96zNg85/4FppbjNNWZjh3ilek=;
-        b=Z/s3ruUM7PwQUU/3j5Zfx9IfJejSDLvDWCkKjbXxaLnla0sjbHEpmjTpYulM63AG9U
-         p8UMe2ToqXRaGaNzs42QuglkI9yPqcyZrKHdkfTBWjrMSJgxSDX9W29rDJ9eP6XXNQFR
-         YDN6S1m/AwO8XGMv4aE3QdAy6MkWnd/cJlfH/fOQd2tk14sPv8MEn8w3AM55wKZA7Now
-         iJhBVhP+odPyJncMdCd6szvdaMS7qCGQeq6urF0RpNuVs2Nr81EvvpMDnXBUd0ra72Tn
-         S9fkj9syX83nHxTfnCdnmbiWE3D/z/NtoV8yIWNd5uwxs2KcCjhh7PVW63zHk0q+nGEP
-         +fIQ==
-X-Gm-Message-State: AOJu0Yz0NoxotRH5ZVZ97/NZYz9OnxPgXd08fcfPasqqnNI4pi58Q5+U
-        tPOVjrpdap85ahESRwEEgl42IBO8+WfVBEYRTo2lWg==
-X-Google-Smtp-Source: AGHT+IHMTyWcF003jwFaQ1bAeHP9M6YrhPGc1QmKasSSTMAJrurijP6q4ahDeWynBpe7JlLmpcc5pLYWoxPytUliSF0=
-X-Received: by 2002:a0d:c7c4:0:b0:5a7:fd05:2af2 with SMTP id
- j187-20020a0dc7c4000000b005a7fd052af2mr847380ywd.2.1699426761166; Tue, 07 Nov
- 2023 22:59:21 -0800 (PST)
+        Wed, 8 Nov 2023 02:21:00 -0500
+Received: from 17.mo583.mail-out.ovh.net (17.mo583.mail-out.ovh.net [46.105.56.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEAC10F9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:20:58 -0800 (PST)
+Received: from director8.ghost.mail-out.ovh.net (unknown [10.108.1.146])
+        by mo583.mail-out.ovh.net (Postfix) with ESMTP id 6CDA428FE2
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:02:58 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-lkwnp (unknown [10.110.115.9])
+        by director8.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 9A5291FD24;
+        Wed,  8 Nov 2023 07:02:57 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-lkwnp with ESMTPSA
+        id nOucGqEyS2V5+woArb8c/A
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 08 Nov 2023 07:02:57 +0000
 MIME-Version: 1.0
-References: <20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com>
-In-Reply-To: <20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 8 Nov 2023 08:59:10 +0200
-Message-ID: <CAA8EJpogiYXVPCNXSu+kq29nbn1uxGDAYMn9+qk8CwDz0bfyjg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: qcom: Add LPG LED device description
-To:     quic_huliu@quicinc.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
-        quic_uchheda@quicinc.com, kamalw@qti.qualcomm.com
-Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 08 Nov 2023 09:02:56 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     evan.quan@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com,
+        skhan@linuxfoundation.org, airlied@gmail.com, daniel@ffwll.ch,
+        jdelvare@suse.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel-mentees@lists.linux.dev
+Subject: Re: [PATCH] drm/amd/pm: clean up redundant comparisons with 0
+In-Reply-To: <f98d840d-f3ff-47e1-b609-2cfe33c65cb5@roeck-us.net>
+References: <20231107082910.92508-1-jose.pekkarinen@foxhound.fi>
+ <98e8490e-6608-47a8-890c-f1fe894dac7f@roeck-us.net>
+ <65d132b0dbef66039fd6938ecbc2bf68@foxhound.fi>
+ <f98d840d-f3ff-47e1-b609-2cfe33c65cb5@roeck-us.net>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <b15e6759f51beed255036b9b3c7c6740@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 192.42.116.216
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 3648478649106343617
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddukedguddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeekhfeguddufeegvdelgedtvdffgeehvddtkeevkeejvedvgeeitdefleehtdeitdenucfkphepuddvjedrtddrtddruddpudelvddrgedvrdduudeirddvudeipdduhedurdektddrvdelrddvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekfedpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023 at 08:05, Hui Liu via B4 Relay
-<devnull+quic_huliu.quicinc.com@kernel.org> wrote:
->
-> From: Hui Liu <quic_huliu@quicinc.com>
->
-> Add LPG LED device description.
+On 2023-11-07 20:03, Guenter Roeck wrote:
+> On 11/7/23 09:26, José Pekkarinen wrote:
+>> On 2023-11-07 16:08, Guenter Roeck wrote:
+>>> On 11/7/23 00:29, José Pekkarinen wrote:
+>>>> There is a couple of function return checks of functions that return
+>>>> unsigned values, and local variables to hold them are also unsigned, 
+>>>> so
+>>>> checking if they are negative will always return false. This patch 
+>>>> will
+>>>> remove them, as well as the never reached code.
+>>>> 
+>>>> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2801:5-8: WARNING: Unsigned 
+>>>> expression compared with zero: val < 0
+>>>> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2814:5-8: WARNING: Unsigned 
+>>>> expression compared with zero: val < 0
+>>>> 
+>>>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>>>> ---
+>>>>   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ----
+>>>>   1 file changed, 4 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c 
+>>>> b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>>>> index 8bb2da13826f..e7bb1d324084 100644
+>>>> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>>>> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+>>>> @@ -2798,8 +2798,6 @@ static ssize_t 
+>>>> amdgpu_hwmon_show_power_avg(struct device *dev,
+>>>>       unsigned int val;
+>>>>         val = amdgpu_hwmon_get_power(dev, 
+>>>> AMDGPU_PP_SENSOR_GPU_AVG_POWER);
+>>>> -    if (val < 0)
+>>>> -        return val;
+>>>> 
+>>> 
+>>> This is reporting errors returned from amdgpu_hwmon_get_power() as
+>>> large integers.
+>> 
+>>      Alright, that case it is a false positive, thanks for the 
+>> comment!
+>> 
+> 
+> 
+> No, it isn't a false positive. The fix is wrong. The variable should be 
+> declared
+> 'int val', not 'unsigned int val'.
 
-No. You are not adding "LPG LED device description". You are adding
-definition for three LEDs.
+     Sorry I may have missunderstood your comment, I certainly can do the
+minor fix then.
 
->
-> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> index f28e71487d5c..11b9f384d99c 100644
-> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
-> @@ -4,6 +4,7 @@
->   */
->
->  #include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/leds/common.h>
->  #include <dt-bindings/spmi/spmi.h>
->
->  &spmi_bus {
-> @@ -34,6 +35,27 @@ pm8350c_pwm: pwm {
->                         compatible = "qcom,pm8350c-pwm";
->                         #pwm-cells = <2>;
->                         status = "disabled";
-> +
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +
-> +                       led@1 {
-> +                               reg = <1>;
-> +                               color = <LED_COLOR_ID_RED>;
-> +                               label = "red";
-> +                       };
-> +
-> +                       led@2 {
-> +                               reg = <2>;
-> +                               color = <LED_COLOR_ID_GREEN>;
-> +                               label = "green";
-> +                       };
-> +
-> +                       led@3 {
-> +                               reg = <3>;
-> +                               color = <LED_COLOR_ID_BLUE>;
-> +                               label = "blue";
+     Thanks!
 
-... and these particular LEDs are board-specific. Please fill them in
-the board file instead.
-
-> +                       };
->                 };
->         };
->  };
->
-> ---
-> base-commit: b9604be241587fb29c0f40450e53d0a37dc611b5
-> change-id: 20231108-qcom_leds-c3b0b7029008
->
-> Best regards,
-> --
-> Hui Liu <quic_huliu@quicinc.com>
->
->
-
-
--- 
-With best wishes
-Dmitry
+     José.
