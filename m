@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61A27E57AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E277E57B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344805AbjKHNEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:04:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        id S1344767AbjKHNEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344775AbjKHNEL (ORCPT
+        with ESMTP id S230088AbjKHNE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:04:11 -0500
+        Wed, 8 Nov 2023 08:04:26 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73451FE1;
-        Wed,  8 Nov 2023 05:04:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51A7C4339A;
-        Wed,  8 Nov 2023 13:03:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA695B7;
+        Wed,  8 Nov 2023 05:04:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9689C433C9;
+        Wed,  8 Nov 2023 13:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448648;
-        bh=Nx8Vn2zgScg8dIFdjbuCnuMwcXn8NC4yH/1zIRuXFKU=;
+        s=k20201202; t=1699448663;
+        bh=kegMIl+DMnSqVAHEcD2O4VmQR89XR3LaLbspvw04Tng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jM23eUv5FMlKZU6BTGV1ePPaE3RTcAWRXDzcXAcjOqA/ZqCE81ar4bVn2a2r75AKm
-         jflHQH/BYiBETTY3g9IoyJRr+2hYEdyLCZV96oyvyWq2ogp98/QmGboBx7Dt00jY3G
-         T2yyCpZ97F+U44qiklj3/qmthIoQi+rfc2I6iwn29l6Yx1Aa4hEPyXCWRNDvKN7BVm
-         RRHAmCXQIZv6jYLGfTgwkeOX1UsnUHrOOm9LQLQaG/WsU1PiIR54QxRx9rzy3qyX5I
-         LvmxOxUIQrgDSPyInQ9FstpMGLBcD5o3qVnRy4F0RrfTjaf20bD3r98NBPFpzpVdby
-         bdKtp2p5lyJ8Q==
+        b=eNsPlZDJtmEkAPMbBG5R4qhHte1qNJj5hivdXnhMnQEYxjWoPW4joiDtxOU68W74A
+         xYdGgBhCICOT3rUTOeUYm0Hc/0LeKHn3J/Gekc8+KTnNnPXVjHuBsHwOaN69BFuuvL
+         wN1TtfsrekXIsK010uWdjCGU5Ld5U7BPhDH+yIeFwi0DnKAb/YUl2oaW2yuZulDgnz
+         pUDyk70EhXQiruCjugsUuCxET23RnQ3wREunYYRXMrJO64AqO0M74uvMADhK6JM0RJ
+         aJLD9+iPedZDT4sOV2VEhIsUeQxuPkYhEBdNhQp3p2/UHNMVvYSvjwsw+1CsJtL+wm
+         Cl+RPNk7mv6uQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
@@ -87,10 +87,15 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
         netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH 21/22] fbdev/fsl-diu-fb: mark wr_reg_wa() static
-Date:   Wed,  8 Nov 2023 13:58:42 +0100
-Message-Id: <20231108125843.3806765-22-arnd@kernel.org>
+        linux-mtd@lists.infradead.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH 22/22] Makefile.extrawarn: turn on missing-prototypes globally
+Date:   Wed,  8 Nov 2023 13:58:43 +0100
+Message-Id: <20231108125843.3806765-23-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -102,30 +107,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-wr_reg_wa() is not an appropriate name for a global function, and doesn't need
-to be global anyway, so mark it static and avoid the warning:
+Over the years we went from > 1000 of warnings to under 100 earlier
+this year, and I sent patches to address all the ones that I saw with
+compile testing randcom configs on arm64, arm and x86 kernels. This is a
+really useful warning, as it catches real bugs when there are mismatched
+prototypes. In particular with kernel control flow integrity enabled,
+those are no longer allowed.
 
-drivers/video/fbdev/fsl-diu-fb.c:493:6: error: no previous prototype for 'wr_reg_wa' [-Werror=missing-prototypes]
+I have done extensive testing to ensure that there are no new build
+errors or warnings on any configuration of x86, arm and arm64 builds.
+I also made sure that at least the both the normal defconfig and an
+allmodconfig build is clean for arc, csky, loongarch, m68k, microblaze,
+openrisc, parisc, powerpc, riscv, s390, and xtensa, with the respective
+maintainers doing most of the patches.
 
-Fixes: 0d9dab39fbbe ("powerpc/5121: fsl-diu-fb: fix issue with re-enabling DIU area descriptor")
+At this point, there are five architectures with a number of known
+regressions: alpha, nios2, mips, sh and sparc. In the previous version
+of this patch, I had turned off the missing prototype warnings for the 15
+architectures that still had issues, but since there are only five left,
+I think we can leave the rest to the maintainers (Cc'd here) as well.
+
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Link: https://lore.kernel.org/lkml/20230810141947.1236730-1-arnd@kernel.org/
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/video/fbdev/fsl-diu-fb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/Makefile.extrawarn | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/fsl-diu-fb.c b/drivers/video/fbdev/fsl-diu-fb.c
-index 7fbd9f069ac2..0bced82fa494 100644
---- a/drivers/video/fbdev/fsl-diu-fb.c
-+++ b/drivers/video/fbdev/fsl-diu-fb.c
-@@ -490,7 +490,7 @@ static enum fsl_diu_monitor_port fsl_diu_name_to_port(const char *s)
-  * Workaround for failed writing desc register of planes.
-  * Needed with MPC5121 DIU rev 2.0 silicon.
-  */
--void wr_reg_wa(u32 *reg, u32 val)
-+static void wr_reg_wa(u32 *reg, u32 val)
- {
- 	do {
- 		out_be32(reg, val);
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index 2fe6f2828d37..c9725685aa76 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -17,6 +17,8 @@ KBUILD_CFLAGS += -Wno-format-security
+ KBUILD_CFLAGS += -Wno-trigraphs
+ KBUILD_CFLAGS += $(call cc-disable-warning,frame-address,)
+ KBUILD_CFLAGS += $(call cc-disable-warning, address-of-packed-member)
++KBUILD_CFLAGS += -Wmissing-declarations
++KBUILD_CFLAGS += -Wmissing-prototypes
+ 
+ ifneq ($(CONFIG_FRAME_WARN),0)
+ KBUILD_CFLAGS += -Wframe-larger-than=$(CONFIG_FRAME_WARN)
+@@ -95,10 +97,8 @@ export KBUILD_EXTRA_WARN
+ ifneq ($(findstring 1, $(KBUILD_EXTRA_WARN)),)
+ 
+ KBUILD_CFLAGS += -Wextra -Wunused -Wno-unused-parameter
+-KBUILD_CFLAGS += -Wmissing-declarations
+ KBUILD_CFLAGS += $(call cc-option, -Wrestrict)
+ KBUILD_CFLAGS += -Wmissing-format-attribute
+-KBUILD_CFLAGS += -Wmissing-prototypes
+ KBUILD_CFLAGS += -Wold-style-definition
+ KBUILD_CFLAGS += -Wmissing-include-dirs
+ KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
 -- 
 2.39.2
 
