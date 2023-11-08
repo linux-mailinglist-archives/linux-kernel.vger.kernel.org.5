@@ -2,142 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925BB7E546A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583B57E543E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344656AbjKHKsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:48:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
+        id S1344688AbjKHKqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344655AbjKHKrD (ORCPT
+        with ESMTP id S1344687AbjKHKqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:47:03 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517A830EE
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:45:00 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso49506255e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:45:00 -0800 (PST)
+        Wed, 8 Nov 2023 05:46:10 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942781BF6
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:44:44 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so6936880b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 02:44:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699440299; x=1700045099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YQ+G5s8RPHyPJsrBFGNZYZXOAO3f3klrHmjNTSjaK6I=;
-        b=W2x3r7qu6kvAoa6YNUPIxT0E6KPjTAYklsVnKTofKbvAg98XR3knJImbMSgo8hvKwD
-         8LPnlco7wqZc3KdQicPsuekNV4vgonbicgUT/H53JS0/P/QvrNlvG1eSi2OePM7I5hBi
-         K0CXhuHss8MvHXmw+sfOkMh3fetSIT7KhOE1xg10HLX1eKVCxy5o01+PWijCDAsNkCCh
-         t9awT+KNIKzM6znauX5Pccw990RIB6oZWUMb4DZb1vFwumRUWWCM0QtHALYoYeI0gZBZ
-         e3Z0tjmeqCngooyJFnIvo8IW24JaVkqJVRV34uVnhTkFDRByRlLirP6uwwJcpumE/8k1
-         ydQQ==
+        d=chromium.org; s=google; t=1699440284; x=1700045084; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=gKTyWokpX5cgue49QDtZFQPjUpwVAu8TbIboU5lRKS0=;
+        b=QN7qWsTUCLuv2mb9MZds0fFM3GEB87l8mGOk+Pmc3zWMZcDFPwJNlapjPEgyQ/1Llf
+         KGTIQ9BDQqTO/PztuDKjG77xoQoQ6P+pQEkCY8OojWfc1cCVwjdsfoA5zs6DPTdWOIAR
+         N5TkXxe/qKJicNQIQnNbQ601auELYBC7OaB8k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699440299; x=1700045099;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YQ+G5s8RPHyPJsrBFGNZYZXOAO3f3klrHmjNTSjaK6I=;
-        b=FUAc6Rd0fX/CE91hyki5Gd1LYbXkegE53jn3leP50dVJgVjOtvgxtzbDsRg+K2uCvO
-         9aZPVcx8MTzz6TYEKvSF/19eJ53JIdCS6VHOiCoBE9lV1q9IZssbmplQJA9H0yO+2Of/
-         qmSjOsCeDUcaZ678PIGcvlH5JAwVbSwC358Cg7QdggSkwz+/MXV6wZZ81gZX4ZG2LKff
-         KPc6QuOtWPuBJltjiqVGYXSUUAPq+Coifa5/15dcTc9vqBIbn6nKTZZ8TMd5N5J532cj
-         dblhiWblk9NsuYkn/nsQ50zKzEQVhT0XeafaM+/azRHjexT6siK+ASQ8g0m5LB54CphR
-         r81g==
-X-Gm-Message-State: AOJu0YxzA+dudl7uG0KgbaJ1pQsToTpIftRN65i6C3o+X2fD+nCW7XjG
-        kyA0HL8MlbYrdbz1UaBxOijuaw==
-X-Google-Smtp-Source: AGHT+IFp84xxfo5QRAF0wCrKdORFx4iJmSqJoRpd/lOk7txHM8S/A55ohRCToPiG6pukjYjCgaIN3w==
-X-Received: by 2002:a05:600c:3b15:b0:405:95ae:4a94 with SMTP id m21-20020a05600c3b1500b0040595ae4a94mr1341542wms.5.1699440298865;
-        Wed, 08 Nov 2023 02:44:58 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id fj12-20020a05600c0c8c00b004094c5d92bdsm19377377wmb.31.2023.11.08.02.44.55
+        d=1e100.net; s=20230601; t=1699440284; x=1700045084;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gKTyWokpX5cgue49QDtZFQPjUpwVAu8TbIboU5lRKS0=;
+        b=gjkBo2qy3iM4nisCaLAiENUYMk/FXBpR1rqrxZXgzBphayCH7caUd7OdA56a3RZzva
+         6tzqrbaK6h7txOQqI5nbrOtYc7yGG6KcSGJNd8gUUqnzLDCM/g4XzPbZ3tob3NUKpdX/
+         Z4lNWi2asAYeYgH1PR2MaUS+ZcuPQXBK0DJrSBkP5evTkoEqUrfH3gBuq68oMdp9Z7IZ
+         y2XXaZCGrdDYOMUfyGsvziVvLEoSClVP/4E70XSXFmwqyH63naPJM5HDi+HNdgzuHJ2e
+         VL7JEtmqhrKeMWCeVmyL8sBJxmy5Ggzt/EXkaExnxHehudYkWXyYdnUI7XGpr9vDHjXK
+         VVog==
+X-Gm-Message-State: AOJu0Yz1dEJW2x1/ahs8SoPZfymt9bn1SiQuGgtaHmjQVqadhxirwHqR
+        klcpUDSxRz5+XQqw3LWu4p61Vw==
+X-Google-Smtp-Source: AGHT+IEzqy1BibD2RC0l4kCSPsKsVPKvQCQxco2ue8t7SCmmOXz1P0lkP95g4IaHmCfbUqjrwn7xKw==
+X-Received: by 2002:a05:6a20:7f97:b0:14c:daa9:5e22 with SMTP id d23-20020a056a207f9700b0014cdaa95e22mr1989536pzj.45.1699440283822;
+        Wed, 08 Nov 2023 02:44:43 -0800 (PST)
+Received: from chromium.org (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+        by smtp.gmail.com with ESMTPSA id w12-20020a170902e88c00b001bb3beb2bc6sm1450272plg.65.2023.11.08.02.44.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 02:44:58 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Wed, 08 Nov 2023 02:44:43 -0800 (PST)
+Date:   Wed, 8 Nov 2023 10:44:39 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 17/17] arm64: dts: exynosautov9: add specific compatibles to several blocks
-Date:   Wed,  8 Nov 2023 11:43:43 +0100
-Message-Id: <20231108104343.24192-18-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+Subject: Re: [PATCH v14 52/56] media: core: Add bitmap manage bufs array
+ entries
+Message-ID: <20231108104439.oxpbbd2yro7u57t4@chromium.org>
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-53-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031163104.112469-53-benjamin.gaignard@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ExynosAutov9 reuses several devices from older designs, thus historically
-we kept the old (block's) compatible only.  This works fine and there is
-no bug here, however guidelines expressed in
-Documentation/devicetree/bindings/writing-bindings.rst state that:
-1. Compatibles should be specific.
-2. We should add new compatibles in case of bugs or features.
+On Tue, Oct 31, 2023 at 05:31:00PM +0100, Benjamin Gaignard wrote:
+> Add a bitmap field to know which of bufs array entries are
+> used or not.
+> Remove no more used num_buffers field from queue structure.
+> Use bitmap_find_next_zero_area() to find the first possible
+> range when creating new buffers to fill the gaps.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  .../media/common/videobuf2/videobuf2-core.c   | 42 +++++++++++++++----
+>  include/media/videobuf2-core.h                | 15 ++++---
+>  2 files changed, 42 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 2c8cf479a962..6e88406fcae9 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -416,11 +416,12 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
+>   */
+>  static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, unsigned int index)
+>  {
+> -	WARN_ON(index >= q->max_num_buffers || q->bufs[index]);
+> +	WARN_ON(index >= q->max_num_buffers || test_bit(index, q->bufs_bitmap));
+>  
+>  	q->bufs[index] = vb;
+>  	vb->index = index;
+>  	vb->vb2_queue = q;
+> +	set_bit(index, q->bufs_bitmap);
+>  }
+>  
+>  /**
+> @@ -429,6 +430,7 @@ static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, uns
+>   */
+>  static void vb2_queue_remove_buffer(struct vb2_buffer *vb)
+>  {
+> +	clear_bit(vb->index, vb->vb2_queue->bufs_bitmap);
+>  	vb->vb2_queue->bufs[vb->index] = NULL;
+>  	vb->vb2_queue = NULL;
+>  }
+> @@ -450,11 +452,12 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+>  	unsigned long index;
+>  	int ret;
+>  
+> -	/* Ensure that the number of already queue + num_buffers is below q->max_num_buffers */
+> +	/* Ensure that vb2_get_num_buffers(q) + num_buffers is no more than q->max_num_buffers */
+>  	num_buffers = min_t(unsigned int, num_buffers,
+>  			    q->max_num_buffers - vb2_get_num_buffers(q));
+>  
+> -	index = vb2_get_num_buffers(q);
+> +	index = bitmap_find_next_zero_area(q->bufs_bitmap, q->max_num_buffers,
+> +					   0, num_buffers, 0);
+>  
+>  	*first_index = index;
+>  
+> @@ -656,7 +659,6 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>  		kfree(vb);
+>  	}
+>  
+> -	q->num_buffers -= buffers;
+>  	if (!vb2_get_num_buffers(q)) {
+>  		q->memory = VB2_MEMORY_UNKNOWN;
+>  		INIT_LIST_HEAD(&q->queued_list);
+> @@ -874,6 +876,14 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  		q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+>  	if (!q->bufs)
+>  		ret = -ENOMEM;
+> +
+> +	if (!q->bufs_bitmap)
+> +		q->bufs_bitmap = bitmap_zalloc(q->max_num_buffers, GFP_KERNEL);
+> +	if (!q->bufs_bitmap) {
+> +		ret = -ENOMEM;
+> +		kfree(q->bufs);
+> +		q->bufs = NULL;
+> +	}
+>  	q->memory = memory;
+>  	mutex_unlock(&q->mmap_lock);
+>  	if (ret)
+> @@ -943,7 +953,6 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	}
+>  
+>  	mutex_lock(&q->mmap_lock);
+> -	q->num_buffers = allocated_buffers;
+>  
+>  	if (ret < 0) {
+>  		/*
+> @@ -970,6 +979,10 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	mutex_lock(&q->mmap_lock);
+>  	q->memory = VB2_MEMORY_UNKNOWN;
+>  	mutex_unlock(&q->mmap_lock);
+> +	kfree(q->bufs);
+> +	q->bufs = NULL;
+> +	bitmap_free(q->bufs_bitmap);
+> +	q->bufs_bitmap = NULL;
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
+> @@ -1006,9 +1019,19 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  		q->memory = memory;
+>  		if (!q->bufs)
+>  			q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+> -		if (!q->bufs)
+> +		if (!q->bufs) {
+>  			ret = -ENOMEM;
+> +			goto unlock;
+> +		}
+> +		if (!q->bufs_bitmap)
+> +			q->bufs_bitmap = bitmap_zalloc(q->max_num_buffers, GFP_KERNEL);
 
-Add compatibles specific to ExynosAutov9 in front of all old-SoC-like
-compatibles.  This will also help reviews of new code using existing
-DTS as template.  No functional impact on Linux drivers behavior.
+Same as with the kcalloc(). Why not just allocate this in the core code,
+e.g. vb2_core_queue_init()?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/exynos/exynosautov9.dtsi | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Actually, is it because we want to avoid allocating
+resources early, before the need to actually use the vb2 queue?
+If so, could this go to some other core function that runs later, e.g. __vb2_queue_alloc()?
 
-diff --git a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-index b228cd7e351e..417aa56a81f6 100644
---- a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-@@ -166,7 +166,8 @@ soc: soc@0 {
- 		ranges = <0x0 0x0 0x0 0x20000000>;
- 
- 		chipid@10000000 {
--			compatible = "samsung,exynos850-chipid";
-+			compatible = "samsung,exynosautov9-chipid",
-+				     "samsung,exynos850-chipid";
- 			reg = <0x10000000 0x24>;
- 		};
- 
-@@ -349,7 +350,8 @@ pinctrl_peric1: pinctrl@10830000 {
- 		};
- 
- 		pmu_system_controller: system-controller@10460000 {
--			compatible = "samsung,exynos7-pmu", "syscon";
-+			compatible = "samsung,exynosautov9-pmu",
-+				     "samsung,exynos7-pmu", "syscon";
- 			reg = <0x10460000 0x10000>;
- 
- 			reboot: syscon-reboot {
--- 
-2.34.1
+> +		if (!q->bufs_bitmap) {
+> +			ret = -ENOMEM;
+> +			kfree(q->bufs);
+> +			q->bufs = NULL;
+> +		}
+>  		mutex_unlock(&q->mmap_lock);
+> +unlock:
+>  		if (ret)
+>  			return ret;
+>  		q->waiting_for_buffers = !q->is_output;
+> @@ -1070,7 +1093,6 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	}
+>  
+>  	mutex_lock(&q->mmap_lock);
+> -	q->num_buffers += allocated_buffers;
+>  
+>  	if (ret < 0) {
+>  		/*
+> @@ -2549,7 +2571,9 @@ void vb2_core_queue_release(struct vb2_queue *q)
+>  	__vb2_queue_free(q, q->max_num_buffers);
+>  	kfree(q->bufs);
+>  	q->bufs = NULL;
+> -	q->num_buffers = 0;
+> +	bitmap_free(q->bufs_bitmap);
+> +	q->bufs_bitmap = NULL;
+> +
+>  	mutex_unlock(&q->mmap_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_queue_release);
+> @@ -2904,7 +2928,7 @@ static size_t __vb2_perform_fileio(struct vb2_queue *q, char __user *data, size_
+>  	 * Check if we need to dequeue the buffer.
+>  	 */
+>  	index = fileio->cur_index;
+> -	if (index >= q->num_buffers) {
+> +	if (!test_bit(index, q->bufs_bitmap)) {
 
+I don't like this low level manipulation of queue internals here (after all
+the work other patches did to use helpers). Why not just keep
+vb2_get_num_buffers() here?
+
+>  		struct vb2_buffer *b;
+>  
+>  		/*
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 6986ff4b77cd..288477075a0e 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -346,7 +346,7 @@ struct vb2_buffer {
+>   *			describes the requested number of planes and sizes\[\]
+>   *			contains the requested plane sizes. In this case
+>   *			\*num_buffers are being allocated additionally to
+> - *			q->num_buffers. If either \*num_planes or the requested
+> + *			queue buffers. If either \*num_planes or the requested
+
+Perhaps "the buffers already in the queue"?
+
+>   *			sizes are invalid callback must return %-EINVAL.
+>   * @wait_prepare:	release any locks taken while calling vb2 functions;
+>   *			it is called before an ioctl needs to wait for a new
+> @@ -557,7 +557,7 @@ struct vb2_buf_ops {
+>   * @memory:	current memory type used
+>   * @dma_dir:	DMA mapping direction.
+>   * @bufs:	videobuf2 buffer structures
+> - * @num_buffers: number of allocated/used buffers
+> + * @bufs_bitmap: bitmap to manage bufs entries.
+
+Perhaps "bitmap tracking whether each bufs[] entry is used"?
+
+>   * @max_num_buffers: upper limit of number of allocated/used buffers
+>   * @queued_list: list of buffers currently queued from userspace
+>   * @queued_count: number of buffers queued and ready for streaming.
+> @@ -621,7 +621,7 @@ struct vb2_queue {
+>  	unsigned int			memory;
+>  	enum dma_data_direction		dma_dir;
+>  	struct vb2_buffer		**bufs;
+> -	unsigned int			num_buffers;
+> +	unsigned long			*bufs_bitmap;
+>  	unsigned int			max_num_buffers;
+>  
+>  	struct list_head		queued_list;
+> @@ -1150,7 +1150,10 @@ static inline bool vb2_fileio_is_active(struct vb2_queue *q)
+>   */
+>  static inline unsigned int vb2_get_num_buffers(struct vb2_queue *q)
+>  {
+> -	return q->num_buffers;
+> +	if (!q->bufs_bitmap)
+> +		return 0;
+> +
+> +	return bitmap_weight(q->bufs_bitmap, q->max_num_buffers);
+
+Hmm, could we just cache the number of buffers we have, so that we don't
+have to go over the entire bitmap every time? (Basically just keep the
+code that we had for handling q->num_buffers before this patch.)
+
+>  }
+>  
+>  /**
+> @@ -1253,13 +1256,13 @@ static inline void vb2_clear_last_buffer_dequeued(struct vb2_queue *q)
+>  static inline struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q,
+>  						unsigned int index)
+>  {
+> -	if (!q->bufs)
+> +	if (!q->bufs_bitmap)
+>  		return NULL;
+>  
+>  	if (index >= q->max_num_buffers)
+>  		return NULL;
+>  
+> -	if (index < q->num_buffers)
+> +	if (test_bit(index, q->bufs_bitmap))
+
+Aha, I see why we need the extra condition above now. Perhaps it should've
+been added in this patch instead?
+
+>  		return q->bufs[index];
+>  	return NULL;
+>  }
+> -- 
+> 2.39.2
+> 
+
+Best regards,
+Tomasz
