@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A007E4ED9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365AE7E4EE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbjKHCZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S234935AbjKHC2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbjKHCZv (ORCPT
+        with ESMTP id S230389AbjKHC2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:25:51 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8773010C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:25:49 -0800 (PST)
-Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SQ8823GSSzfb2R;
-        Wed,  8 Nov 2023 10:25:38 +0800 (CST)
-Received: from [10.174.176.88] (10.174.176.88) by
- dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 8 Nov 2023 10:25:46 +0800
-Message-ID: <53ec0dd3-a873-455e-b4df-652ef2cf381b@huawei.com>
-Date:   Wed, 8 Nov 2023 10:25:46 +0800
+        Tue, 7 Nov 2023 21:28:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ECE10F9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:27:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699410444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B3DL0Vft98Gq2vq6RutJxBknUxdBNOODfG1hAxtLDfY=;
+        b=BAK6VOXBVV30gXMwFuppfSa17AnQbIdnC1ECUQ9z+J6UIE+nU3gdF8n5g6+NG0ckIEIH37
+        iVKOyAlFg5nqWtUyiZxL+SABq1dw5aqIjsGRcj71dUH86I90RXZdYsIlWcrMzNzlThTRa/
+        78FyGnCXWiNKBbo59PyNB8Roal5IiCs=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-641-2kOUYiDqMOmBCiKXhtJjtA-1; Tue, 07 Nov 2023 21:27:21 -0500
+X-MC-Unique: 2kOUYiDqMOmBCiKXhtJjtA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-53df4385dccso5053577a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 18:27:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699410440; x=1700015240;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B3DL0Vft98Gq2vq6RutJxBknUxdBNOODfG1hAxtLDfY=;
+        b=vyJh+MDLr/MRsrdMhmEKOFgXpR8gQUoHMmOXY3XFZ+R4Eiu5xoRELrg8XJ1T2SJJWh
+         a2JTgIZ2hhjti595B4KbtPhC3NUOekjV9hQPrQAzxc7cDqqGIgFZMagBdajXCOekapUM
+         2tvnZ53wrr8eVScCu1u4JpPkt6YusTfXvhiN8qrSaY9m7Fk0S3Oj8OSgqCYf5poxr+h9
+         Nxhm3WCUBUmiyiH2DkiK5RM1eqwgIEfpAcy0lcLtjlb6Mn/Sl9RuygBmoz4EVye/65zm
+         BoJVIEjg1xZuodefk8cZwT3IrTeyo5D9nDXCi/YFM/jxLqMV/9mMzEBE0agP8zpt/WzX
+         KMpQ==
+X-Gm-Message-State: AOJu0YyKxTIlRhhyvXJi9l2bYhKsWmA4Ny+DVfjUpsqLkFBdWxuGOZSU
+        s9KD6NjLezQ1vb68GAuRgKYnJocYImK4koSJ1uHf8PubHvLir97jjZopWBZbn/L9rEb3mjaukL0
+        hcPyglfdN+n2WAZfXfiMm2N5x
+X-Received: by 2002:a50:d555:0:b0:540:b0ec:bcd5 with SMTP id f21-20020a50d555000000b00540b0ecbcd5mr357602edj.15.1699410440221;
+        Tue, 07 Nov 2023 18:27:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG9Cp1VyYPjw3gjL38WhjvNs3AyxxiTpwYPuWjALttn8dwms8ZMyFDJwb9VJPRjdtsqUpNKCw==
+X-Received: by 2002:a50:d555:0:b0:540:b0ec:bcd5 with SMTP id f21-20020a50d555000000b00540b0ecbcd5mr357590edj.15.1699410439971;
+        Tue, 07 Nov 2023 18:27:19 -0800 (PST)
+Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
+        by smtp.gmail.com with ESMTPSA id m6-20020a50ef06000000b00543525d9fddsm5922217eds.21.2023.11.07.18.27.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 18:27:19 -0800 (PST)
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     airlied@gmail.com, daniel@ffwll.ch, christian.koenig@amd.com,
+        luben.tuikov@amd.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Danilo Krummrich <dakr@redhat.com>
+Subject: [PATCH] drm/sched: fix potential page fault in drm_sched_job_init()
+Date:   Wed,  8 Nov 2023 03:26:07 +0100
+Message-ID: <20231108022716.15250-1-dakr@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next,V2] fscache: support to disable assert macro
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>, <dhowells@redhat.com>
-CC:     <linux-cachefs@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <yangerkun@huawei.com>
-References: <20231101163414.2105727-1-wozizhi@huawei.com>
- <d3a50c46-93c9-4b60-8609-9465e1605f77@huawei.com>
- <32abf57d-d3bc-d812-c70f-bba8356162ff@linux.alibaba.com>
-From:   Zizhi Wo <wozizhi@huawei.com>
-In-Reply-To: <32abf57d-d3bc-d812-c70f-bba8356162ff@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.88]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500020.china.huawei.com (7.185.36.49)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable
+number of run-queues") introduces drm_err() in drm_sched_job_init(), in
+order to indicate that the given entity has no runq, however at this
+time job->sched is not yet set, likely to be NULL initialized, and hence
+shouldn't be used.
 
+Replace the corresponding drm_err() call with pr_err() to avoid a
+potential page fault.
 
-在 2023/11/7 20:39, Gao Xiang 写道:
-> 
-> 
-> On 2023/11/7 18:16, Zizhi Wo wrote:
->> friendly ping
->>
->> 在 2023/11/2 0:34, WoZ1zh1 写道:
->>> In fs/fscache/internal.h, ASSERT macro is enabled by default and can not
->>> be disabled, then assert failure will crash the kernel as the BUG() is
->>> included in the ASSERT macro. Therefore, add FSCACHE_ASSERT to 
->>> control it.
-> 
-> Personally it looks good to me, yet we could also turn
-> them into WARN_ON_ONCE case by case? Anyway, it depends
-> on how David thinks...
->
-Thank you for your recognition!
+While at it, extend the documentation of drm_sched_job_init() to
+indicate that job->sched is not a valid pointer until
+drm_sched_job_arm() has been called.
 
-Thanks,
-Zizhi Wo
+Fixes: 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable number of run-queues")
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+---
+ drivers/gpu/drm/scheduler/sched_main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> Thanks,
-> Gao Xiang
-> 
->>>
->>> Signed-off-by: WoZ1zh1 <wozizhi@huawei.com>
->>> ---
->>>   fs/fscache/Kconfig    | 10 ++++++++++
->>>   fs/fscache/internal.h |  2 +-
->>>   2 files changed, 11 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/fscache/Kconfig b/fs/fscache/Kconfig
->>> index b313a978ae0a..7ff844038bc3 100644
->>> --- a/fs/fscache/Kconfig
->>> +++ b/fs/fscache/Kconfig
->>> @@ -38,3 +38,13 @@ config FSCACHE_DEBUG
->>>         enabled by setting bits in /sys/modules/fscache/parameter/debug.
->>>         See Documentation/filesystems/caching/fscache.rst for more 
->>> information.
->>> +
->>> +config FSCACHE_ASSERT
->>> +    bool "FSCACHE asserts"
->>> +    default n
->>> +    depends on FSCACHE
->>> +    help
->>> +      Support the ASSERT mode for failure behavior.
->>> +      Say N here to disable the ASSERT by default.
->>> +      Say Y to add assertion checks in some places. But the assertion
->>> +      failure will result in fatal errors that BUG() the kernel.
->>> diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
->>> index 1336f517e9b1..951166ed772f 100644
->>> --- a/fs/fscache/internal.h
->>> +++ b/fs/fscache/internal.h
->>> @@ -225,7 +225,7 @@ do {                        \
->>>   /*
->>>    * assertions
->>>    */
->>> -#if 1 /* defined(__KDEBUGALL) */
->>> +#ifdef CONFIG_FSCACHE_ASSERT
->>>   #define ASSERT(X)                            \
->>>   do {                                    \
-> 
+diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+index 27843e37d9b7..dd28389f0ddd 100644
+--- a/drivers/gpu/drm/scheduler/sched_main.c
++++ b/drivers/gpu/drm/scheduler/sched_main.c
+@@ -680,6 +680,9 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
+  * This function returns -ENOENT in this case (which probably should be -EIO as
+  * a more meanigful return value).
+  *
++ * Note that job->sched is not a valid pointer until drm_sched_job_arm() has
++ * been called.
++ *
+  * Returns 0 for success, negative error code otherwise.
+  */
+ int drm_sched_job_init(struct drm_sched_job *job,
+@@ -691,7 +694,7 @@ int drm_sched_job_init(struct drm_sched_job *job,
+ 		 * or worse--a blank screen--leave a trail in the
+ 		 * logs, so this can be debugged easier.
+ 		 */
+-		drm_err(job->sched, "%s: entity has no rq!\n", __func__);
++		pr_err("%s: entity has no rq!\n", __func__);
+ 		return -ENOENT;
+ 	}
+ 
+
+base-commit: c015fb6d01adb616fb54824feb55ce5ab18e8ca1
+-- 
+2.41.0
+
