@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C327E5CFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5723D7E5D04
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjKHSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 13:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        id S229705AbjKHSRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:17:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjKHSO7 (ORCPT
+        with ESMTP id S229460AbjKHSQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 13:14:59 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C5B1FEE;
-        Wed,  8 Nov 2023 10:14:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1699467295;
-        bh=BwZjAK9qEtDtquMpNAzCqMoIeUdxSwsVoif00t8/fG0=;
-        h=From:Date:Subject:To:Cc:From;
-        b=stTvblAtssYrgSehAYvzjjGwocbrT13FfDCn2Z6Ycic6PkW++ZXYbikwU67CxzJ9C
-         NFHm2gE0dUOIR+3a9O+hKImJBKcbPvfWW63uAvNpaDGDzBzAdlmcrFkOx4vHy7VtXT
-         Jy6uyMZ1CP0c2y3QAFRROs3rDCjP8hAtNEvq7cQM=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Wed, 08 Nov 2023 19:14:43 +0100
-Subject: [PATCH v2] tools/nolibc: mips: add support for PIC
+        Wed, 8 Nov 2023 13:16:59 -0500
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC47C1FF3;
+        Wed,  8 Nov 2023 10:16:57 -0800 (PST)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b565722c0eso4225893b6e.2;
+        Wed, 08 Nov 2023 10:16:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699467417; x=1700072217;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rDMXHrCNHotVlfHJTukvHxKiw+LRe2nJBe8uVVsPODE=;
+        b=AJLw2WO6nzQiq1U+LsjSws/FH/bJId6MK6h/6VniVZLBkn7jRdT6JEo3M8UOdZVgJM
+         wJ6XLr5RTA+pCupHZ8RXU/cMVFvVNFNJJaGLQwNTJvAk8QWaZlTfaspk4nH7NqnP42Yy
+         Lzb6e5/sNuvg/zwXTcwj4s43p85t6Bxqc3crsUNy5+yKQuG/Hg4zuegbDyc3IjLtQtP7
+         hUssaaUCHChiO/dwSiLCOh+y3RVXcep5KUZMpnhmZoL3gD6L0y5424XAbzILcjePWQqP
+         Pp5BQwPVlhwkb1XbTd1oFd6c+NxqlkQ1RTVrkqEEtmz/2PCODsoEl+37BwfQUsXIL3K5
+         mukg==
+X-Gm-Message-State: AOJu0Yy52JB4wuJ5V9IZZxlXfB0KWQYrMhuMKoF1viZnLSZYHifFL2Q4
+        93pxKy4erYQGfkrwUJP6vQ==
+X-Google-Smtp-Source: AGHT+IG8jY8GfwEmq1IF9uXyhmf+3vLAsgL0KuuTgiy5XZG6/I66+r21zbsN2TLNHOOJD0uL9WcRyA==
+X-Received: by 2002:a05:6808:181c:b0:3a7:500a:a491 with SMTP id bh28-20020a056808181c00b003a7500aa491mr3345541oib.28.1699467416982;
+        Wed, 08 Nov 2023 10:16:56 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id u6-20020a056808150600b003af6eeed9b6sm1976108oiw.27.2023.11.08.10.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 10:16:56 -0800 (PST)
+Received: (nullmailer pid 2697492 invoked by uid 1000);
+        Wed, 08 Nov 2023 18:16:54 -0000
+Date:   Wed, 8 Nov 2023 12:16:54 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        corbet@lwn.net, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
+        naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
+Subject: Re: [PATCH RESEND v10 1/3] dt-bindings: hwmon: fan: Add fan binding
+ to schema
+Message-ID: <20231108181654.GA2664986-robh@kernel.org>
+References: <20231107105025.1480561-1-billy_tsai@aspeedtech.com>
+ <20231107105025.1480561-2-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231108-nolibc-pic-v2-1-4fb0d6284757@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIABLQS2UC/03Myw6CMBCF4Vchs7ZmelGEle9hWEAZ7CSmkA6ih
- vDuVlYu/5OcbwWhxCRQFyskWlh4jDnMoQAf2ngnxX1uMFiWWGmn4vjgzquJvbKIzg5Dhw4t5MO
- UaOD3jt2a3IFlHtNntxf9WzNjrNZ4+WcWrbSqurJ1pupP7bm/vohFxIdnOEaaodm27QvZSD9Jq
- QAAAA==
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699467293; l=2546;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=BwZjAK9qEtDtquMpNAzCqMoIeUdxSwsVoif00t8/fG0=;
- b=/2x+alqOzCUKEQdtzFYWNM/8F+3apyB7ma/lHuuYrz7usvWzgNEaTpwBX0e9Y2HEyWJnRfgO5
- qxmOJz5CbrJCWz9TTeHE0EjVYklXN9KaqfMUFLQkGoYnl9BBNxSHBfW
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107105025.1480561-2-billy_tsai@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPS requires some extra instructions to set up the $gp register for the
-with a pointer to the global data area.
+On Tue, Nov 07, 2023 at 06:50:23PM +0800, Billy Tsai wrote:
+> From: Naresh Solanki <naresh.solanki@9elements.com>
+> 
+> Add common fan properties bindings to a schema.
+> 
+> Bindings for fan controllers can reference the common schema for the
+> fan
+> 
+> child nodes:
+> 
+>   patternProperties:
+>     "^fan@[0-2]":
+>       type: object
+>       $ref: fan-common.yaml#
+>       unevaluatedProperties: false
+> 
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/hwmon/fan-common.yaml | 78 +++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
 
-This isn't needed for non-PIC builds, but this patch enables the code
-unconditionally to prevent bitrot.
+Looking pretty good to me. It's disappointing that no one else 
+interested in upstreaming their fan controller can be bothered to 
+comment.
 
-Also enable PIC in one of the test configurations for ongoing
-validation.
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/fan-common.yaml b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> new file mode 100644
+> index 000000000000..be4ce3bd7f22
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> @@ -0,0 +1,78 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/fan-common.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common Fan Properties
+> +
+> +maintainers:
+> +  - Naresh Solanki <naresh.solanki@9elements.com>
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
+> +
+> +properties:
+> +  max-rpm:
+> +    description:
+> +      Max RPM supported by fan.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 100000
+> +
+> +  min-rpm:
+> +    description:
+> +      Min RPM supported by fan.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 1000
+> +
+> +  pulses-per-revolution:
+> +    description:
+> +      The number of pulse from fan sensor per revolution.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 4
+> +
+> +  tach-div:
+> +    description:
+> +      Divisor for the tach sampling clock, which determines the sensitivity of the tach pin.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  target-rpm:
+> +    description:
+> +      The default desired fan speed in RPM.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  fan-driving-mode:
+> +    description:
+> +      Select the driving mode of the fan.(DC, PWM and so on)
+> +    $ref: /schemas/types.yaml#/definitions/string
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Changes in v2:
-- Preserver 8-byte alignment of stack pointer
-- Link to v1: https://lore.kernel.org/r/20231108-nolibc-pic-v1-1-9b7a429d5a6d@weissschuh.net
----
- tools/include/nolibc/arch-mips.h        | 7 ++++++-
- tools/testing/selftests/nolibc/Makefile | 2 +-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+You need to define the possible values. I assume it's:
 
-diff --git a/tools/include/nolibc/arch-mips.h b/tools/include/nolibc/arch-mips.h
-index 3a2c76716b83..62cc50ef3288 100644
---- a/tools/include/nolibc/arch-mips.h
-+++ b/tools/include/nolibc/arch-mips.h
-@@ -184,8 +184,13 @@ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_
- 	__asm__ volatile (
- 		".set push\n"
- 		".set noreorder\n"
--		".option pic0\n"
-+		"bal 1f\n"               /* prime $ra for .cpload                            */
-+		"nop\n"
-+		"1:\n"
-+		".cpload $ra\n"
- 		"move  $a0, $sp\n"       /* save stack pointer to $a0, as arg1 of _start_c */
-+		"addiu $sp, $sp, -4\n"   /* space for .cprestore to store $gp              */
-+		".cprestore 0\n"
- 		"li    $t0, -8\n"
- 		"and   $sp, $sp, $t0\n"  /* $sp must be 8-byte aligned                     */
- 		"addiu $sp, $sp, -16\n"  /* the callee expects to save a0..a3 there        */
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 508435b8ac2a..484bb02d8e6c 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -144,7 +144,7 @@ CFLAGS_ppc = -m32 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
- CFLAGS_s390 = -m64
--CFLAGS_mips32le = -EL -mabi=32
-+CFLAGS_mips32le = -EL -mabi=32 -fPIC
- CFLAGS_mips32be = -EB -mabi=32
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
- CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra \
+enum:
+  - dc
+  - pwm
+  - anything else???
 
----
-base-commit: ba335752620565c25c3028fff9496bb8ef373602
-change-id: 20770914-nolibc-pic-30043ffb0403
+With that,
 
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Reviewed-by: Rob Herring <robh@kernel.org>
