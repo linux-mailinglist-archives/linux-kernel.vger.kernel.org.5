@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28ED37E5337
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424487E533A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344004AbjKHKUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        id S235492AbjKHKWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbjKHKUN (ORCPT
+        with ESMTP id S229579AbjKHKWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:20:13 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413E71BD6;
-        Wed,  8 Nov 2023 02:20:11 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A89F3xr017923;
-        Wed, 8 Nov 2023 10:20:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=MpBJpGijZohx3AcywvI1ehabXiYb/3V44jpSJazdoAY=;
- b=l4Y+SGy1ZUcB+2YWXfb0NyREjgWE23n+ukjagfqrZdc+eQOwxqCLf+hrQFE4fOfcAH4N
- ES3fHm9y303dm/zGjWzCXbA2BzcPtw3ofL67lEuBe/qsFAgP3G+D+M0+tCCX2XWG8nIC
- mZiXhGy1Mz/7p+vhl93M+4T/xIO/BQPYB7gCL0t00ytgueFXSHk1/8aEAMswmSic9iNx
- JSjV/MPJWddwXwRRQ0yUc+3DaZvJ6q/ML+fjOPxyjERgjq8FrjUnYBRagrtlOVYn7jXJ
- KElcIXGxAUw/37tKaZYJu9K1vbNbBLbvBmnbL9hC/UP0QTK4gro5L24krYXWHmfOxbV6 tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87hfj85x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:20:10 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8AFM0t006684;
-        Wed, 8 Nov 2023 10:20:09 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u87hfj84q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:20:09 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A88YJtn014332;
-        Wed, 8 Nov 2023 10:20:08 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w21v151-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 10:20:08 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8AK6FN37355804
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Nov 2023 10:20:06 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 738D22004F;
-        Wed,  8 Nov 2023 10:20:06 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57BB22004E;
-        Wed,  8 Nov 2023 10:20:06 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Nov 2023 10:20:06 +0000 (GMT)
-Date:   Wed, 8 Nov 2023 11:20:05 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] selftests: kvm/s390x: use vm_create_barebones()
-Message-ID: <20231108112005.54e86585@p-imbrenda>
-In-Reply-To: <20231108094055.221234-1-pbonzini@redhat.com>
-References: <20231108094055.221234-1-pbonzini@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 8 Nov 2023 05:22:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2049E1BD5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 02:22:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEDEDC433C8;
+        Wed,  8 Nov 2023 10:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699438971;
+        bh=JGmlL0KgwRDqiQzXzq/RBHugjS46fQ4CpIjGxsM+Uuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jFhpgRSNJqU6Nh/RWEkc0vMD13+y2eepajbN5iM89ys/pfDaFWmWj5dVkKOXe+/b1
+         WxBEEH0Xyqt0G5/tNgiZRYNutglEmB377IuXRhsML8UPY4kqUgTBhlpoibaNmf087Z
+         aKhdk8hKAtiA/WJVHHLLJ977UOVrb/VqXhwAxK3HgxT3GnlJMjcWdZ9xAbET6hnREJ
+         POXWJLjxuNa4e8AOkt3kCNJEsMZhOvtugswmikdfZbnqkwOcXFC+mE33Wobmd8b35c
+         pU+cVu82OKmIW7RK5vnyU3UBDRM2Y44Fc0iFBGYtoo5m+53LCUC0IhTvmvVqsYXy3n
+         FeuECdMj3bV4Q==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1r0fio-0007El-0Z;
+        Wed, 08 Nov 2023 11:23:42 +0100
+Date:   Wed, 8 Nov 2023 11:23:42 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Victor Fragoso <victorffs@hotmail.com>
+Cc:     "dcbw@redhat.com" <dcbw@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: serial: option: add Fibocom L7xx modules
+Message-ID: <ZUthrrt4WkYXTTZD@hovoldconsulting.com>
+References: <9315051ae981aaad1d46724641defc6e5f79d12b.camel@hotmail.com>
+ <8a8d4a7787e9d8b4f7f3c119b057ec4a8a6b1a91.camel@redhat.com>
+ <a389548ccffa29ff58f30262410c535bf9137c49.camel@hotmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: KAjCfeo6K7RSch_bhh7m6CVvIIeIMptn
-X-Proofpoint-ORIG-GUID: jFvB63MgjZ08D_h3RChgzVkAMs4UEMo7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 phishscore=0 priorityscore=1501
- suspectscore=0 bulkscore=0 clxscore=1015 adultscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080085
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a389548ccffa29ff58f30262410c535bf9137c49.camel@hotmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  8 Nov 2023 04:40:55 -0500
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Fri, Oct 27, 2023 at 05:55:27PM +0000, Victor Fragoso wrote:
+> On Thu, 2023-10-26 at 08:49 -0500, Dan Williams wrote:
+> > On Thu, 2023-10-26 at 01:24 +0000, Victor Fragoso wrote:
+> > > Add support for Fibocom L7xx module series and variants.
+> > > 
+> > > L716-EU-60 (ECM):
 
-> This function does the same but makes it clearer why one would use
-> the "____"-prefixed version of vm_create().
+> > > A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=06 Prot=00
+> > > I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=06 Prot=00 Driver=cdc_ether
+> > > E:  Ad=87(I) Atr=03(Int.) MxPS=  16 Ivl=32ms
+> > > I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> > > I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> > > E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> > > E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > I:* If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> > > E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> > > E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > I:* If#= 5 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> > > E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > I:* If#= 6 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=usbfs
+> > > E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> > > E:  Ad=06(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+
+> > Also, are you at all able to give hints in the comments about what kind
+> > of ports these are? AT? GPS? PPP? etc?  That's usually described in the
+> > driver documentation or in the Windows drivers themselves.
+
+> About the hints on comments (AT, PPP, etc) I am not so sure if I should
+> add other hints.
+> As I've mentioned on the other email to Lars:
+> I am a Field Application Enginner at Fibocom Brazil and I am using the
+> IDs from our internal and official documentation.
+> This IDs will guarantee that can be used on all the variants devices
+> from L71x series.
+> For example, the 0x2cb7 0x0001 can be used by L716-EU on RNDIS, L716-
+> EU-10 on ECM and L710 too. While 19d2 0579 can be used by L716-EU-60 on
+> ECM and probably other variants.
 > 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> So, to avoid any misunderstand I prefer to keep it simple and mention
+> just as L71x series.
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+For the device entry comment I think you should use the model you've
+tested, and if there are multiple modules you can possibly list more
+than one if that makes sense.
+ 
+But I think Dan was asking you to say something about what the
+individual interfaces are used for. That's better added to the commit
+message (i.e. describing which port is which).
 
-> ---
->  tools/testing/selftests/kvm/s390x/cmma_test.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/s390x/cmma_test.c b/tools/testing/selftests/kvm/s390x/cmma_test.c
-> index c8e0a6495a63..626a2b8a2037 100644
-> --- a/tools/testing/selftests/kvm/s390x/cmma_test.c
-> +++ b/tools/testing/selftests/kvm/s390x/cmma_test.c
-> @@ -94,11 +94,6 @@ static void guest_dirty_test_data(void)
->  	);
->  }
->  
-> -static struct kvm_vm *create_vm(void)
-> -{
-> -	return ____vm_create(VM_MODE_DEFAULT);
-> -}
-> -
->  static void create_main_memslot(struct kvm_vm *vm)
->  {
->  	int i;
-> @@ -157,7 +152,7 @@ static struct kvm_vm *create_vm_two_memslots(void)
->  {
->  	struct kvm_vm *vm;
->  
-> -	vm = create_vm();
-> +	vm = vm_create_barebones();
->  
->  	create_memslots(vm);
->  
-> @@ -276,7 +271,7 @@ static void assert_exit_was_hypercall(struct kvm_vcpu *vcpu)
->  
->  static void test_migration_mode(void)
->  {
-> -	struct kvm_vm *vm = create_vm();
-> +	struct kvm_vm *vm = vm_create_barebones();
->  	struct kvm_vcpu *vcpu;
->  	u64 orig_psw;
->  	int rc;
-> @@ -670,7 +665,7 @@ struct testdef {
->   */
->  static int machine_has_cmma(void)
->  {
-> -	struct kvm_vm *vm = create_vm();
-> +	struct kvm_vm *vm = vm_create_barebones();
->  	int r;
->  
->  	r = !__kvm_has_device_attr(vm->fd, KVM_S390_VM_MEM_CTRL, KVM_S390_VM_MEM_ENABLE_CMMA);
-
+Johan
