@@ -2,118 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A9F7E5C9E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4097E5CA3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbjKHRr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        id S231555AbjKHRsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:48:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjKHRrZ (ORCPT
+        with ESMTP id S230202AbjKHRsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:47:25 -0500
+        Wed, 8 Nov 2023 12:48:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E221FFB;
-        Wed,  8 Nov 2023 09:47:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E69C433C7;
-        Wed,  8 Nov 2023 17:47:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699465643;
-        bh=VWAV8TJNKJJ0IbDxtEuU9YxgDI9IVEGPNAVjz5f6VoQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Pgci0tSfVkzCySV69SUTmOjy/TKsWu4WocWENSzMtM/ICfZ/fZa4OgqGRxVDy6P9M
-         z2qszBt+JRDJrkBMjtGNFcD4Pw/tu4fpmHA6SSqYnzQ3QE26bZ9eQD76C0He5v5/L0
-         ayKoNt5SZMM3H1f1h8Bc3URqWlQPZYj7MMSII5nTXiAgHrVi6TXLSszxzYyZQyluOz
-         JzU59I+/VNNkS+3sKvFCotAae5vC87GE7Ez2YdosCGoFDDInH7Aly8bVBbcDh8/zeX
-         clU6ECJ/q9SiUO8KZcogoE75ahWlm2WOVIuLSplXi+u1t9HppBTjCnDdVFR3iM/6qC
-         BugL83RnzFQUg==
-Date:   Wed, 8 Nov 2023 11:47:21 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Tomasz Pala <gotar@polanet.pl>
-Cc:     linux-pci@vger.kernel.org,
-        Dan J Williams <dan.j.williams@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        David E Box <david.e.box@intel.com>,
-        Yunying Sun <yunying.sun@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Florent DELAHAYE <linuxkernelml@undead.fr>,
-        Konrad J Hambrick <kjhambrick@gmail.com>,
-        Matt Hansen <2lprbe78@duck.com>,
-        Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
-        Benoit =?utf-8?B?R3LDqWdvaXJl?= <benoitg@coeus.ca>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        mumblingdrunkard@protonmail.com, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH 2/2] x86/pci: Treat EfiMemoryMappedIO as reservation of
- ECAM space
-Message-ID: <20231108174721.GA421447@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012153347.GA26695@polanet.pl>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419201BEF
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 09:48:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39BDC433C9;
+        Wed,  8 Nov 2023 17:48:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1699465696;
+        bh=B3D8kn+YAuTi2y8lgXrgSAq8tNXjJQV5oZRUhMOzh4I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KpYEkL08STie+f6FHsECybos+SkhZy/VhqZCt0AROESLGuTCGXX1in2v2Ct2RB7pq
+         HLLMMct+beCFwVVqoA4CM+YkEfd52io5bYbvx2GwXdu0mEmlUxQxtcakhIy+Je3HkT
+         3rL6/O9GdaMx+b9IshEs013pU1Ak/DuBlWXnhSwE=
+Date:   Wed, 8 Nov 2023 09:48:16 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Lasse Collin <lasse.collin@tukaani.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/xz: Add ARM64 BCJ filter
+Message-Id: <20231108094816.5532cac69a4b8541952f44c5@linux-foundation.org>
+In-Reply-To: <20231108194448.674cd0ad@kaneli>
+References: <20231108194448.674cd0ad@kaneli>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 12, 2023 at 05:33:47PM +0200, Tomasz Pala wrote:
-> On Tue, Jan 10, 2023 at 12:02:43 -0600, Bjorn Helgaas wrote:
-> 
-> > Normally we reject ECAM space unless it is reported as reserved in the E820
-> > table or via a PNP0C02 _CRS method (PCI Firmware, r3.3, sec 4.1.2).  This
-> > means PCI extended config space (offsets 0x100-0xfff) may not be accessible.
-> > 
-> > Some firmware doesn't report ECAM space via PNP0C02 _CRS methods, but does
-> > mention it as an EfiMemoryMappedIO region via EFI GetMemoryMap(), which is
-> > normally converted to an E820 entry by a bootloader or EFI stub.
-> > 
-> > 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map"), removes
-> > E820 entries that correspond to EfiMemoryMappedIO regions because some
-> > other firmware uses EfiMemoryMappedIO for PCI host bridge windows, and the
-> > E820 entries prevent Linux from allocating BAR space for hot-added devices.
-> > 
-> > Allow use of ECAM for extended config space when the region is covered by
-> > an EfiMemoryMappedIO region, even if it's not included in E820 or PNP0C02
-> > _CRS.
-> 
-> I'm still having a problem initializing ixgbe NICs with pristine 6.5.7 kernel.
-> 
-> efi: Remove mem63: MMIO range=[0x80000000-0x8fffffff] (256MB) from e820 map
-> [...]
-> [mem 0x7f800000-0xfed1bfff] available for PCI devices
-> [...]
-> PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0x80000000-0x8fffffff] (base 0x80000000)
-> [Firmware Info]: PCI: MMCONFIG at [mem 0x80000000-0x8fffffff] not reserved in ACPI motherboard resources
-> PCI: MMCONFIG at [mem 0x80000000-0x8fffffff] reserved as EfiMemoryMappedIO
-> [...]
-> ixgbe 0000:02:00.0: enabling device (0140 -> 0142)
-> ixgbe 0000:02:00.0: BAR 0: can't reserve [mem 0x80000000-0x8007ffff 64bit]
-> ixgbe 0000:02:00.0: pci_request_selected_regions failed 0xfffffff0
-> ixgbe: probe of 0000:02:00.0 failed with error -16
-> 
-> 
-> After disabling the code causing this (using always-false condition:
-> 		if (size >= 256*1024 && 0) {
-> ) in the chunk:
-> 
-> https://lore.kernel.org/lkml/20221208190341.1560157-2-helgaas@kernel.org/
-> 
-> the BAR starts at 0x90000000 (not 0x80000000):
-> 
-> efi: Not removing mem63: MMIO range=[0x80000000-0x8fffffff] (262144KB) from e820 map
-> [...]
-> [mem 0x90000000-0xfed1bfff] available for PCI devices
-> [...]
-> PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0x80000000-0x8fffffff] (base 0x80000000)
-> PCI: MMCONFIG at [mem 0x80000000-0x8fffffff] reserved as E820 entry
-> 
-> and everything seems to work again.
+On Wed, 8 Nov 2023 19:44:48 +0200 Lasse Collin <lasse.collin@tukaani.org> wrote:
 
-Adding to regression tracking:
+> ARM64 kernel decompression is done by bootloaders but
+> the filter can still be useful, for example, for Squashfs.
+> 
+> A duplicated check for XZ_DEC_ARM in xz_private.h was omitted too.
 
-#regzbot ^introduced: 07eab0901ede ("efi/x86: Remove EfiMemoryMappedIO from E820 map")
-#regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=218107
+There's nothing here that uses the new functionality?
+
+Is a squashfs patch expected?
