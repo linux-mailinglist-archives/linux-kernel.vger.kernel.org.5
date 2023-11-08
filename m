@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7F27E5004
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD297E5006
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbjKHF0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 00:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        id S234154AbjKHF0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 00:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjKHF0I (ORCPT
+        with ESMTP id S229574AbjKHF0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 00:26:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E37D79;
-        Tue,  7 Nov 2023 21:26:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C12EC433C8;
-        Wed,  8 Nov 2023 05:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699421165;
-        bh=6XsO4oPWRbENbVTxo0tFgjVMF1113wwAH94yp91iZYw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r/qmN1cUwEur5A73ezFFDUidlST90QTC5khaFYwwgArL7cQBHOr4nQ2U/UKEr9I0M
-         EWXJexK7a6apFSN0yRch7zrqzB/JrPH5GTkKeO/zpNCuWRjw/j/B5XjIELP0bdWL0h
-         ptP/sUxQyt195JQl1duaFrCHfYpM2rlbfDJJgL/AglEHhPXk0Zc2HZ2Efg1FdDQhIu
-         JB7MvjANCkLySdsaVaCbrvAoT0cHVHKB3EphCKjL8P0S00dfwBH1x4wP/yv1u5UabJ
-         8Lzcl1OIaXestaLkerRsQRSaz8KQthc9D97aSBMeAbyt8IRkh1BeB83zDT4drMYHvs
-         3nReP4w5PrXKA==
-Date:   Wed, 8 Nov 2023 10:55:55 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <cang@qti.qualcomm.com>
-Cc:     quic_cang@quicinc.com, bvanassche@acm.org,
-        stanley.chu@mediatek.com, adrian.hunter@intel.com,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/7] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to hosts
- with HW version 5
-Message-ID: <20231108052555.GD3296@thinkpad>
-References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
- <1699332374-9324-5-git-send-email-cang@qti.qualcomm.com>
+        Wed, 8 Nov 2023 00:26:37 -0500
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147D498;
+        Tue,  7 Nov 2023 21:26:35 -0800 (PST)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5b9a7357553so5025712a12.0;
+        Tue, 07 Nov 2023 21:26:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699421194; x=1700025994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RetVwMMps3v0wuYvBP5PRz6XNs49BLOh+F6Kj2NY2i4=;
+        b=J0f8t9yrd7wcaFw3SNV4MriaiZqbjcJhCQZuMOzm5suzQ+j4IGp5nWKDEUkfRAA/9B
+         jWO2Rqk3dN2StHpdPokJnfIDiB0+/Q72mw3rq/3/V+w9aFE7AVcU4xDIjSqqNqEI4YIE
+         QbEMw/EB2wcYIab189b79Y8QDehubpsYFu75r4Ejb/eirGL1fHENji+G2YxcT33vLR2y
+         65AvEsZuFcrrPvqp14bE7A9Yn28KmEw1xRYTayFibq6aHVaG2vQFZFdEghpde0F8AxE5
+         Q+Be1a1Wvw+VdqUgj/p85hE4MwkCcA1yMVAm0K1VWwajmhZyyT1nMF+nxC6uM1t+mZq3
+         I23A==
+X-Gm-Message-State: AOJu0YyU59UvNNeOBN/zLRxTnr4MzPxNnZKL9rdMjUCK6YAzfGxtfqGb
+        rdw+ZP5zjxqbZD0c6mHhAMo=
+X-Google-Smtp-Source: AGHT+IG6r/xsxVWQjB8Trj0a2s94siLsxt+R7G2yf3eYYClkPjWYNhRjMsrSNaVLbA/3OxVfkyigpQ==
+X-Received: by 2002:a17:90b:805:b0:27d:6dd:fb7d with SMTP id bk5-20020a17090b080500b0027d06ddfb7dmr900492pjb.17.1699421194228;
+        Tue, 07 Nov 2023 21:26:34 -0800 (PST)
+Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
+        by smtp.gmail.com with ESMTPSA id em16-20020a17090b015000b0026b12768e46sm695943pjb.42.2023.11.07.21.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 21:26:33 -0800 (PST)
+Message-ID: <25a94b23-b42b-49fc-a1c8-3e635f536aae@acm.org>
+Date:   Tue, 7 Nov 2023 21:26:32 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699332374-9324-5-git-send-email-cang@qti.qualcomm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] null_blk: fix warning in blk_mq_start_request
+Content-Language: en-US
+To:     Edward Adam Davis <eadavis@qq.com>,
+        syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000000e6aac06098aee0c@google.com>
+ <tencent_03A5938DE6921DDDE9DD921956CFAD0DE007@qq.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <tencent_03A5938DE6921DDDE9DD921956CFAD0DE007@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 08:46:10PM -0800, Can Guo wrote:
-> From: Can Guo <quic_cang@quicinc.com>
+On 11/7/23 18:46, Edward Adam Davis wrote:
+> Before call blk_mq_start_request() in null_queue_rq(), initialize rq->state to
+> MQ_RQ_IDLE.
 > 
-> Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
-> HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
-> to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
-> 
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> Reported-and-tested-by: syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 > ---
->  drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+>   drivers/block/null_blk/main.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 60b35ca..55ee31d 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
->  static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_host_params *host_params = &host->host_params;
->  	struct phy *phy = host->generic_phy;
-> +	enum phy_mode mode;
->  	int ret;
->  
-> +	/*
-> +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
+> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+> index 22a3cf7f32e2..0726534a5a24 100644
+> --- a/drivers/block/null_blk/main.c
+> +++ b/drivers/block/null_blk/main.c
+> @@ -1724,6 +1724,8 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
+>   	cmd->fake_timeout = should_timeout_request(rq) ||
+>   		blk_should_fake_timeout(rq->q);
+>   
+> +	if (READ_ONCE(rq->state))
+> +		WRITE_ONCE(rq->state, MQ_RQ_IDLE);
+>   	blk_mq_start_request(rq);
+>   
+>   	if (should_requeue_request(rq)) {
 
-Does this limitation apply to future targets as well or just to SM8550? If
-it's the latter, then we need to use a flag.
+All code that changes rq->state should occur in the block layer
+core. Block drivers must not modify rq->state directly.
 
-- Mani
-
-> +	 * If the HS-G5 PHY gear is used, update host_params->hs_rate to Rate-A,
-> +	 * so that the subsequent power mode change shall stick to Rate-A.
-> +	 */
-> +	if (host->hw_ver.major == 0x5) {
-> +		if (host->phy_gear == UFS_HS_G5)
-> +			host_params->hs_rate = PA_HS_MODE_A;
-> +		else
-> +			host_params->hs_rate = PA_HS_MODE_B;
-> +	}
-> +
-> +	mode = host_params->hs_rate == PA_HS_MODE_B ? PHY_MODE_UFS_HS_B : PHY_MODE_UFS_HS_A;
-> +
->  	/* Reset UFS Host Controller and PHY */
->  	ret = ufs_qcom_host_reset(hba);
->  	if (ret)
-> @@ -459,7 +475,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
->  		return ret;
->  	}
->  
-> -	phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);
-> +	phy_set_mode_ext(phy, mode, host->phy_gear);
->  
->  	/* power on phy - start serdes and phy's power and clocks */
->  	ret = phy_power_on(phy);
-> -- 
-> 2.7.4
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+Bart.
