@@ -2,105 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1389C7E4EA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31147E4EA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 02:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjKHBmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 20:42:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
+        id S235126AbjKHBnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 20:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjKHBmg (ORCPT
+        with ESMTP id S229753AbjKHBnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 20:42:36 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA65BAF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 17:42:33 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc9784dbc1so39540265ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 17:42:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699407753; x=1700012553; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uRaBsOVzYONI9pogErmQ9X03ygbaDdU6U4Qoxn4y618=;
-        b=kidAwMyTVazSg+VUFr99Bprtz/I7aJ7dNixfjiVXuvjvWp1Nh/5HfZ6sDGdGUendNK
-         II3Q1xKIqRPzBFMbGclHe5zLNWLAq1vC2MXDpmWL9lxiVAjN/H3WoS4xhThYDBSvt+dw
-         g513OONJ5aJlhdexqmWQ9hOeP4L1AKBHrQE7s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699407753; x=1700012553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uRaBsOVzYONI9pogErmQ9X03ygbaDdU6U4Qoxn4y618=;
-        b=Q2E3L/bkMX7IHJwFOB9TMXJ2XaZ5ewG/XwoRwxc4TttcMvO4HFw4Bk/ukp/pJat10Q
-         /dWqhRe5SvNqsdAKLh8cV8DbypuomBBEsS/ltghS2kkN6002zLvfPcOIVf/ntoqeY4X6
-         5hhgWYo7SNxA104UYgKocp5KRNumQ+peqbtKo9YrwnrKfOivm8+1e1lTBS3hx02niOo1
-         OIElh1lBuQ7xxdI3kaixGdkVKtpSj2W4AmYJklVIgjJ3muptd2lGmMlJoqksjOTfp4fS
-         ub+hC+FOCJmLUpCXO3+02ijMFDJ+H1fyPKFqzLrJCNS8RsO726iFOyjz+eXlvzkcIJJL
-         3WiQ==
-X-Gm-Message-State: AOJu0YwdkO3Itah/z0KBwGRwB/w9+I3MbuyfZKR6GPKZ2W62MKlZtbLm
-        K75VZxIPDU2RbhpUaoX2AyFulw==
-X-Google-Smtp-Source: AGHT+IEiX3OQXe/Bpr16powrllKhPlWEmq4Fndw9pepmzaQ/R+ZOIvuD5AuOqCc8KrphNFU1/9C7Aw==
-X-Received: by 2002:a17:902:7407:b0:1c5:d8a3:8789 with SMTP id g7-20020a170902740700b001c5d8a38789mr747226pll.4.1699407753200;
-        Tue, 07 Nov 2023 17:42:33 -0800 (PST)
-Received: from google.com ([2401:fa00:8f:203:2fe:d436:c346:6fcf])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c14c00b001cc79f3c60csm457816plj.31.2023.11.07.17.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 17:42:32 -0800 (PST)
-Date:   Wed, 8 Nov 2023 10:42:29 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Vasily Averin <vasily.averin@linux.dev>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH] zram: unsafe zram_get_element call in zram_read_page()
-Message-ID: <20231108014229.GE11577@google.com>
-References: <d10cdf1d-4a67-48df-b389-3a51f60e9431@linux.dev>
- <20231107073911.GB11577@google.com>
- <20231107104041.GC11577@google.com>
- <c57eb649-c573-4e41-85f4-870d08cf88b9@linux.dev>
+        Tue, 7 Nov 2023 20:43:05 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04190129;
+        Tue,  7 Nov 2023 17:43:02 -0800 (PST)
+Received: from [100.84.166.245] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8BE6B66074D9;
+        Wed,  8 Nov 2023 01:42:59 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699407781;
+        bh=J8F5Q7ucdMDs/e825oZPhe28Q01sYQtT6UezG1I9+Zk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=gPvdItBkqnp1eFGQfq7ZAnizTv5HNNT2uUN0dWG3KHtRuXZOS61TXHufhP+L1bnw7
+         RpoTmfGbd7jiSHeR8IIIJllJBdj3RDpGN8ktvtcTO4YgFEqxuokLWqxPpYMNYbUVDj
+         vjKrxgb/PFvX1DaMdz2twer8S8FnY9kG8buVVa9hcUbR5rN8nQUuu9qX2oz4F+XMJ5
+         //YIacAyIKhCnoRHJgWCb/YLBbv+Bg41MlJKmMaOILI9qAygqf+zxR0jz6GXwF6Lx8
+         8JbxmytCy3taORa7JOqnKvlIHgGCsqk9qBFVXoKo57/Rx4lqpvwTA6MtaoAyA627lQ
+         CppVPfx7TA4FQ==
+Message-ID: <7461e7b7cc9abc4cee027a950550192fea8ff972.camel@collabora.com>
+Subject: Re: [PATCH v4 07/11] media: rkvdec: Move rkvdec_reset_decoded_fmt
+ helper
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alex Bee <knaerzche@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Date:   Tue, 07 Nov 2023 20:42:49 -0500
+In-Reply-To: <20231105165521.3592037-8-jonas@kwiboo.se>
+References: <20231105165521.3592037-1-jonas@kwiboo.se>
+         <20231105165521.3592037-8-jonas@kwiboo.se>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c57eb649-c573-4e41-85f4-870d08cf88b9@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/11/07 21:19), Vasily Averin wrote:
-> On 11/7/23 13:40, Sergey Senozhatsky wrote:
-> > On (23/11/07 16:39), Sergey Senozhatsky wrote:
-> >> Hmmm,
-> >> We may want to do more here. Basically, we probably need to re-confirm
-> >> after read_from_bdev() that the entry at index still has ZRAM_WB set
-> >> and, if so, that it points to the same blk_idx. IOW, check that it has
-> >> not been free-ed and re-used under us.
-> > --- a/drivers/block/zram/zram_drv.c
-> > +++ b/drivers/block/zram/zram_drv.c
-> > @@ -1364,14 +1364,21 @@ static int zram_read_page(struct zram *zram, struct page *page, u32 index,
-> >  		ret = zram_read_from_zspool(zram, page, index);
-> >  		zram_slot_unlock(zram, index);
-> >  	} else {
-> > +		unsigned long idx = zram_get_element(zram, index);
-> >  		/*
-> >  		 * The slot should be unlocked before reading from the backing
-> >  		 * device.
-> >  		 */
-> >  		zram_slot_unlock(zram, index);
-> >  
-> > -		ret = read_from_bdev(zram, page, zram_get_element(zram, index),
-> > -				     parent);
-> > +		ret = read_from_bdev(zram, page, idx, parent);
-> > +		if (ret == 0) {
-> > +			zram_slot_lock(zram, index);
-> > +			if (!zram_test_flag(zram, index, ZRAM_WB) ||
-> > +			    idx != zram_get_element(zram, index))
-> > +				ret = -EINVAL;
-> > +			zram_slot_unlock(zram, index);
-> > +		}
-> 
-> Why overwritten page can not be pushed to WB to the same blk_idx? 
+Le dimanche 05 novembre 2023 =C3=A0 16:55 +0000, Jonas Karlman a =C3=A9crit=
+=C2=A0:
+> Move rkvdec_reset_decoded_fmt() and the called rkvdec_reset_fmt() helper
+> functions in preparation for adding a new caller in an upcoming patch.
+>=20
+> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 
-Yeah, so I thought about it too but didn't want to go too deep into it.
-We probably can only address it if we synchronize free_page (?), read_page()
-and writeback(), so that we never have concurrent bitmap modifications when
-one of the operations is in progress.
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+
+> ---
+> v4:
+> - No change
+>=20
+> v3:
+> - New patch
+>=20
+>  drivers/staging/media/rkvdec/rkvdec.c | 46 +++++++++++++--------------
+>  1 file changed, 23 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/medi=
+a/rkvdec/rkvdec.c
+> index 0570c790ad08..7a79840470e1 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -37,6 +37,29 @@ static void rkvdec_fill_decoded_pixfmt(struct rkvdec_c=
+tx *ctx,
+>  		DIV_ROUND_UP(pix_mp->height, 16);
+>  }
+> =20
+> +static void rkvdec_reset_fmt(struct rkvdec_ctx *ctx, struct v4l2_format =
+*f,
+> +			     u32 fourcc)
+> +{
+> +	memset(f, 0, sizeof(*f));
+> +	f->fmt.pix_mp.pixelformat =3D fourcc;
+> +	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
+> +	f->fmt.pix_mp.colorspace =3D V4L2_COLORSPACE_REC709;
+> +	f->fmt.pix_mp.ycbcr_enc =3D V4L2_YCBCR_ENC_DEFAULT;
+> +	f->fmt.pix_mp.quantization =3D V4L2_QUANTIZATION_DEFAULT;
+> +	f->fmt.pix_mp.xfer_func =3D V4L2_XFER_FUNC_DEFAULT;
+> +}
+> +
+> +static void rkvdec_reset_decoded_fmt(struct rkvdec_ctx *ctx)
+> +{
+> +	struct v4l2_format *f =3D &ctx->decoded_fmt;
+> +
+> +	rkvdec_reset_fmt(ctx, f, ctx->coded_fmt_desc->decoded_fmts[0]);
+> +	f->type =3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> +	f->fmt.pix_mp.width =3D ctx->coded_fmt.fmt.pix_mp.width;
+> +	f->fmt.pix_mp.height =3D ctx->coded_fmt.fmt.pix_mp.height;
+> +	rkvdec_fill_decoded_pixfmt(ctx, &f->fmt.pix_mp);
+> +}
+> +
+>  static int rkvdec_try_ctrl(struct v4l2_ctrl *ctrl)
+>  {
+>  	struct rkvdec_ctx *ctx =3D container_of(ctrl->handler, struct rkvdec_ct=
+x, ctrl_hdl);
+> @@ -169,18 +192,6 @@ rkvdec_find_coded_fmt_desc(u32 fourcc)
+>  	return NULL;
+>  }
+> =20
+> -static void rkvdec_reset_fmt(struct rkvdec_ctx *ctx, struct v4l2_format =
+*f,
+> -			     u32 fourcc)
+> -{
+> -	memset(f, 0, sizeof(*f));
+> -	f->fmt.pix_mp.pixelformat =3D fourcc;
+> -	f->fmt.pix_mp.field =3D V4L2_FIELD_NONE;
+> -	f->fmt.pix_mp.colorspace =3D V4L2_COLORSPACE_REC709;
+> -	f->fmt.pix_mp.ycbcr_enc =3D V4L2_YCBCR_ENC_DEFAULT;
+> -	f->fmt.pix_mp.quantization =3D V4L2_QUANTIZATION_DEFAULT;
+> -	f->fmt.pix_mp.xfer_func =3D V4L2_XFER_FUNC_DEFAULT;
+> -}
+> -
+>  static void rkvdec_reset_coded_fmt(struct rkvdec_ctx *ctx)
+>  {
+>  	struct v4l2_format *f =3D &ctx->coded_fmt;
+> @@ -196,17 +207,6 @@ static void rkvdec_reset_coded_fmt(struct rkvdec_ctx=
+ *ctx)
+>  		ctx->coded_fmt_desc->ops->adjust_fmt(ctx, f);
+>  }
+> =20
+> -static void rkvdec_reset_decoded_fmt(struct rkvdec_ctx *ctx)
+> -{
+> -	struct v4l2_format *f =3D &ctx->decoded_fmt;
+> -
+> -	rkvdec_reset_fmt(ctx, f, ctx->coded_fmt_desc->decoded_fmts[0]);
+> -	f->type =3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> -	f->fmt.pix_mp.width =3D ctx->coded_fmt.fmt.pix_mp.width;
+> -	f->fmt.pix_mp.height =3D ctx->coded_fmt.fmt.pix_mp.height;
+> -	rkvdec_fill_decoded_pixfmt(ctx, &f->fmt.pix_mp);
+> -}
+> -
+>  static int rkvdec_enum_framesizes(struct file *file, void *priv,
+>  				  struct v4l2_frmsizeenum *fsize)
+>  {
+
