@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B5D7E5AE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1089E7E5AEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjKHQOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        id S230405AbjKHQPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:15:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjKHQOX (ORCPT
+        with ESMTP id S229581AbjKHQPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:14:23 -0500
+        Wed, 8 Nov 2023 11:15:00 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578E819A5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:14:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7C6C433C7;
-        Wed,  8 Nov 2023 16:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1699460061;
-        bh=qYaMUn5duRraHp6jr8ZuuZE1fl2gs0KU/LKQTez8o9k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Whrwu6GIg7SpMw2mJOf96NBOwMy7GL3oSYCWku834BMQQcIPlQ10b2+HTcu9rEVyJ
-         defOtH86G8m6qmQ3/CBDHcfF23pf8xJ0+euljpncO6exp+kIJxzHvn3tV7j+fy/E4k
-         460UFKjuVzm+Wz3jaa1LWlb9kfB6vzZ9URKq41tI=
-Date:   Wed, 8 Nov 2023 08:14:19 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Huan Yang <link@vivo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-Id: <20231108081419.1c31f74de8e7fce24f85c967@linux-foundation.org>
-In-Reply-To: <20231108065818.19932-1-link@vivo.com>
-References: <20231108065818.19932-1-link@vivo.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797921BDD
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:14:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA4DC433C7;
+        Wed,  8 Nov 2023 16:14:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699460098;
+        bh=x9AiqdNABhWJBcn7lN0wvEkWHm5XpvpOL/ArzqLMP9I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WWfCzv8HYv2DyvNATYj4ofVaqohC/6tedx5T/306ICURUF6V4mr9osCeL+OFF90Nj
+         9M2KONYWc1JNr/9CD+S8pqb06rK0PHwr1qduPll26oqHtVnaCGGY5sXyRWdNOQhUwJ
+         i5NULg7MOto7TR3Mu5Z9k8DLcWXHLHm/3/CabGP5MnHudnCEMW/4/QGqWLY62t95F1
+         So3pPGvQNQ0IdazUo9ncxKXl95DevKuT/M51gvrFwjDGob9hYyQmR6CAOgWa6qlzoH
+         OSNRLfaNT3cd25HUgfStpJfepEMYQm6Vt5HBnV0CYyeHXTDROf/0pTQw08b5Tc+VGC
+         551ohL8ajEYrg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D4C074035D; Wed,  8 Nov 2023 13:14:55 -0300 (-03)
+Date:   Wed, 8 Nov 2023 13:14:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 12/53] perf bpf: Don't synthesize BPF events when
+ disabled
+Message-ID: <ZUuz/8EC0orXCffn@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-13-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102175735.2272696-13-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  8 Nov 2023 14:58:11 +0800 Huan Yang <link@vivo.com> wrote:
+Em Thu, Nov 02, 2023 at 10:56:54AM -0700, Ian Rogers escreveu:
+> If BPF sideband events are disabled on the command line, don't
+> synthesize BPF events too.
 
-> For example, when an application is pushed to the background and frozen,
-> it may not be opened for a long time, and we can safely reclaim the
-> application's anonymous pages, but we do not want to touch the file pages.
 
-This paragraph is key to the entire patchset and it would benefit from
-some expanding upon.
+Interesting, in 71184c6ab7e60fd5 ("perf record: Replace option
+--bpf-event with --no-bpf-event") we checked that, but only down at
+perf_event__synthesize_one_bpf_prog(), where we have:
 
-If the application is dormant, why on earth would we want to evict its
-text but keep its data around?
+        if (!opts->no_bpf_event) {
+                /* Synthesize PERF_RECORD_BPF_EVENT */
+                *bpf_event = (struct perf_record_bpf_event)
+
+
+So we better remove that, now redundant check? I'll apply your patch as
+is and then we can remove that other check.
+
+Song, can I have your Acked-by or Reviewed-by, please?
+
+- Arnaldo
+
+
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/bpf-event.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
+> index 38fcf3ba5749..830711cae30d 100644
+> --- a/tools/perf/util/bpf-event.c
+> +++ b/tools/perf/util/bpf-event.c
+> @@ -386,6 +386,9 @@ int perf_event__synthesize_bpf_events(struct perf_session *session,
+>  	int err;
+>  	int fd;
+>  
+> +	if (opts->no_bpf_event)
+> +		return 0;
+> +
+>  	event = malloc(sizeof(event->bpf) + KSYM_NAME_LEN + machine->id_hdr_size);
+>  	if (!event)
+>  		return -1;
+> -- 
+> 2.42.0.869.gea05f2083d-goog
+> 
+
+-- 
+
+- Arnaldo
