@@ -2,671 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3617E612E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30247E6133
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 00:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjKHXr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 18:47:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
+        id S230462AbjKHXtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 18:49:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjKHXrz (ORCPT
+        with ESMTP id S229473AbjKHXtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 18:47:55 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1C125B5
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:47:53 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc5fa0e4d5so2092675ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:47:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1699487273; x=1700092073; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+IvnU9qdnd1cU9uLDy6TRQLEoRFzd3xp2aOytPCevCQ=;
-        b=Ax7ppKC8RcOco1VbSEbRmbMheLjzNspbZKohieW6Q7wNjo08iwm0HjZ8jLn2td2nD9
-         1vk3GACHmyQcE23Aa+R5wBuNJTeskXvn/fxktaaH6WYCKaTb/iEvMjjVOdMfZqsPScuw
-         WFNuYTVsshsStx4po1prLLZ3SwmFjQfcv7f8rIgPCP0IDTZR0lD1Tv/pxWsOkFcy2SJU
-         hdVgCn1gLxqHMfK60mmfg7gdKHhjRqGRFcl9gyskHBGEw67wAekBce24xVVYeRM8mo5/
-         DS/PIbyvpcEjHOz5JSREnsEj/Rg9KBe7nY3pvbTfthSZvStxrnGaKUpwfPHIr17cybG4
-         IsRg==
+        Wed, 8 Nov 2023 18:49:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF78625B5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 15:48:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699487314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IP8wbH5v3RFTRMGuEbmVq1QmCj9XqYX84MFeNvSej60=;
+        b=DFHfFJDZxn2X5Q6gVkB48VPZlfH1i9dH9PWs8FhNidWmJIYmETvxwpxnEF9X9CgcDJFgW7
+        la0uk5LamivqlONrkzQhStlVk+Yhk28OBVURYmNzEBBPk4n2P9d6bPBkWfvWZ0toQ6H9wu
+        ZDSdBugM67OIJ1sKlLUFPcDtV5zjMPE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-j3j0poSgPtWyBgSAk1FN6w-1; Wed, 08 Nov 2023 18:48:33 -0500
+X-MC-Unique: j3j0poSgPtWyBgSAk1FN6w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32f798bc811so103416f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 15:48:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699487273; x=1700092073;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1699487312; x=1700092112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+IvnU9qdnd1cU9uLDy6TRQLEoRFzd3xp2aOytPCevCQ=;
-        b=DDnf+RPZE139hBcyDH+SQ3tgjycJJIYO2vqQKUE7rixGQJwDu+fbvEthUA7+6Mhlo/
-         S6cd/RxLzmDryBJwoO6/pRoivymByDd81a0WvpUT/AJr2e37w83BPeP7yiFlsIRdh3rV
-         bPp9xpAmeX5pWWm7cHnp2r8bg4mzN2NYAVEwBPhhrbIAHQ+P+lVyq0LVBk00xk5dF0Ek
-         yN45/odPPiN+KA/EA4/B0JNXVcaS6WgcD9R727STPTuyYrPM582Beypk6/mH8XvFNFtE
-         43ng2dqR7m+1igbtsKOfcK3cSiMGUdB9hjXWsc9LLGLpLF88TztmrE9XHXYiiK+wSUDM
-         ArLw==
-X-Gm-Message-State: AOJu0YyOiDN9vX4U6nivFGTORzr8vZYdrSefEzVdA9DsSlKl/KTLJZgz
-        bhKwb2Dgeq+HHjAqQ2d/70Rd+A==
-X-Google-Smtp-Source: AGHT+IGTt11vcMFqMOQfTuSVCx5TwuNb8uSZ7RQdxA3Rg7MI28/KHHKH1KO4GcEzuJ8mpvCgVJ9ojQ==
-X-Received: by 2002:a17:902:ed53:b0:1ca:b26a:9729 with SMTP id y19-20020a170902ed5300b001cab26a9729mr3651815plb.38.1699487272742;
-        Wed, 08 Nov 2023 15:47:52 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1256:2:c51:2090:e106:83fa? ([2620:10d:c090:500::5:887f])
-        by smtp.gmail.com with ESMTPSA id u13-20020a17090341cd00b001bdb85291casm2223663ple.208.2023.11.08.15.47.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 15:47:52 -0800 (PST)
-Message-ID: <7769b74d-dd23-41de-8e11-434a0acabf72@davidwei.uk>
-Date:   Wed, 8 Nov 2023 15:47:48 -0800
+        bh=IP8wbH5v3RFTRMGuEbmVq1QmCj9XqYX84MFeNvSej60=;
+        b=tQqBsYuotmRprk7z7OaOr+VTcXJUk9Cd+ZMdK/Ey4LPZO6aRKJP0trAno/41WSS6e0
+         q5aLUBVhmP9H/LZhXRdKohG0MNZ4lsZjTz9kUuxcmzNYUHiiW2yqbqZa3i5VoI3kcAHK
+         vXGOpHRF61zInUxfYWrbFxmjSNbaHshmFqo6Xy5ySKW72a+7K+ALoqv3vhguuSXNmXkw
+         ZAVWO9ENoezoQ62DysVXvNiV/9v++MVu3EBFK6DpLqSifcilp7AE0D/Ak+292cjCfwSI
+         AlFVumxrKX8n5i91LTJnLWmhWZRqIhhQ/ahnljN1DN2gQ3B0cL83Kewuc+CSTu3WgosS
+         9lsQ==
+X-Gm-Message-State: AOJu0YxuP5oHaKx8X15OP79zQNvLyebAv0h9USWdpH7vRZoIerOoinx4
+        k+uioU7tnagr4VCpjszO5bYrWbgIJ+yosfkF8Ctt7hJGA+63DtzwqxJFTOLzlq8Xi+wFvaBljy0
+        VfLNhAoHUmwzD21WFb+AWQamUuH4gr4rx
+X-Received: by 2002:adf:d1cf:0:b0:32d:d2ef:b0e4 with SMTP id b15-20020adfd1cf000000b0032dd2efb0e4mr2588640wrd.0.1699487312161;
+        Wed, 08 Nov 2023 15:48:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFkKb07P7NHzLxLvXkt4f6tEsys3qOth6k77j7hZZ1vEF+4YwIERwZ7anMUdO8vcdR91SInRw==
+X-Received: by 2002:adf:d1cf:0:b0:32d:d2ef:b0e4 with SMTP id b15-20020adfd1cf000000b0032dd2efb0e4mr2588630wrd.0.1699487311860;
+        Wed, 08 Nov 2023 15:48:31 -0800 (PST)
+Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id n17-20020a5d6611000000b003142e438e8csm6001346wru.26.2023.11.08.15.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 15:48:31 -0800 (PST)
+Date:   Thu, 9 Nov 2023 00:48:29 +0100
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <htejun@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>, jeff@garzik.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Implementation details of PCI Managed (devres) Functions
+Message-ID: <ZUweTfT7ehduedf9@pollux>
+References: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
+ <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 04/12] netdev: support binding dma-buf to netdevice
-Content-Language: en-GB
-To:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-5-almasrymina@google.com>
-From:   David Wei <dw@davidwei.uk>
-In-Reply-To: <20231106024413.2801438-5-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-05 18:44, Mina Almasry wrote:
-> Add a netdev_dmabuf_binding struct which represents the
-> dma-buf-to-netdevice binding. The netlink API will bind the dma-buf to
-> rx queues on the netdevice. On the binding, the dma_buf_attach
-> & dma_buf_map_attachment will occur. The entries in the sg_table from
-> mapping will be inserted into a genpool to make it ready
-> for allocation.
+On Wed, Nov 08, 2023 at 10:02:29PM +0100, Philipp Stanner wrote:
+> So, today I stared at the code for a while and come to a somewhat
+> interesting insight:
 > 
-> The chunks in the genpool are owned by a dmabuf_chunk_owner struct which
-> holds the dma-buf offset of the base of the chunk and the dma_addr of
-> the chunk. Both are needed to use allocations that come from this chunk.
 > 
-> We create a new type that represents an allocation from the genpool:
-> page_pool_iov. We setup the page_pool_iov allocation size in the
-> genpool to PAGE_SIZE for simplicity: to match the PAGE_SIZE normally
-> allocated by the page pool and given to the drivers.
+> On Tue, 2023-11-07 at 20:38 +0100, Philipp Stanner wrote:
+> > Hi all,
+> > 
+> > I'm currently working on porting more drivers in DRM to managed pci-
+> > functions. During this process I discovered something that might be
+> > called an inconsistency in the implementation.
 > 
-> The user can unbind the dmabuf from the netdevice by closing the netlink
-> socket that established the binding. We do this so that the binding is
-> automatically unbound even if the userspace process crashes.
+> I think I figured out why not all pci_ functions have a pcim_
+> counterpart.
 > 
-> The binding and unbinding leaves an indicator in struct netdev_rx_queue
-> that the given queue is bound, but the binding doesn't take effect until
-> the driver actually reconfigures its queues, and re-initializes its page
-> pool.
-> 
-> The netdev_dmabuf_binding struct is refcounted, and releases its
-> resources only when all the refs are released.
-> 
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> RFC v3:
-> - Support multi rx-queue binding
-> 
-> ---
->  include/linux/netdevice.h     |  80 ++++++++++++++
->  include/net/netdev_rx_queue.h |   1 +
->  include/net/page_pool/types.h |  27 +++++
->  net/core/dev.c                | 203 ++++++++++++++++++++++++++++++++++
->  net/core/netdev-genl.c        | 116 ++++++++++++++++++-
->  5 files changed, 425 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index b8bf669212cc..eeeda849115c 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -52,6 +52,8 @@
->  #include <net/net_trackers.h>
->  #include <net/net_debug.h>
->  #include <net/dropreason-core.h>
-> +#include <linux/xarray.h>
-> +#include <linux/refcount.h>
->  
->  struct netpoll_info;
->  struct device;
-> @@ -808,6 +810,84 @@ bool rps_may_expire_flow(struct net_device *dev, u16 rxq_index, u32 flow_id,
->  #endif
->  #endif /* CONFIG_RPS */
->  
-> +struct netdev_dmabuf_binding {
-> +	struct dma_buf *dmabuf;
-> +	struct dma_buf_attachment *attachment;
-> +	struct sg_table *sgt;
-> +	struct net_device *dev;
-> +	struct gen_pool *chunk_pool;
-> +
-> +	/* The user holds a ref (via the netlink API) for as long as they want
-> +	 * the binding to remain alive. Each page pool using this binding holds
-> +	 * a ref to keep the binding alive. Each allocated page_pool_iov holds a
-> +	 * ref.
-> +	 *
-> +	 * The binding undos itself and unmaps the underlying dmabuf once all
-> +	 * those refs are dropped and the binding is no longer desired or in
-> +	 * use.
-> +	 */
-> +	refcount_t ref;
-> +
-> +	/* The portid of the user that owns this binding. Used for netlink to
-> +	 * notify us of the user dropping the bind.
-> +	 */
-> +	u32 owner_nlportid;
-> +
-> +	/* The list of bindings currently active. Used for netlink to notify us
-> +	 * of the user dropping the bind.
-> +	 */
-> +	struct list_head list;
-> +
-> +	/* rxq's this binding is active on. */
-> +	struct xarray bound_rxq_list;
-> +};
-> +
-> +#ifdef CONFIG_DMA_SHARED_BUFFER
-> +void __netdev_devmem_binding_free(struct netdev_dmabuf_binding *binding);
-> +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
-> +		       struct netdev_dmabuf_binding **out);
-> +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding);
-> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +				struct netdev_dmabuf_binding *binding);
-> +#else
-> +static inline void
-> +__netdev_devmem_binding_free(struct netdev_dmabuf_binding *binding)
-> +{
-> +}
-> +
-> +static inline int netdev_bind_dmabuf(struct net_device *dev,
-> +				     unsigned int dmabuf_fd,
-> +				     struct netdev_dmabuf_binding **out)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +static inline void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding)
-> +{
-> +}
-> +
-> +static inline int
-> +netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +			    struct netdev_dmabuf_binding *binding)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +#endif
-> +
-> +static inline void
-> +netdev_devmem_binding_get(struct netdev_dmabuf_binding *binding)
-> +{
-> +	refcount_inc(&binding->ref);
-> +}
-> +
-> +static inline void
-> +netdev_devmem_binding_put(struct netdev_dmabuf_binding *binding)
-> +{
-> +	if (!refcount_dec_and_test(&binding->ref))
-> +		return;
-> +
-> +	__netdev_devmem_binding_free(binding);
-> +}
-> +
->  /* XPS map type and offset of the xps map within net_device->xps_maps[]. */
->  enum xps_map_type {
->  	XPS_CPUS = 0,
-> diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.h
-> index cdcafb30d437..1bfcf60a145d 100644
-> --- a/include/net/netdev_rx_queue.h
-> +++ b/include/net/netdev_rx_queue.h
-> @@ -21,6 +21,7 @@ struct netdev_rx_queue {
->  #ifdef CONFIG_XDP_SOCKETS
->  	struct xsk_buff_pool            *pool;
->  #endif
-> +	struct netdev_dmabuf_binding *binding;
+> I was interested in implementing pcim_iomap_range(), since we could use
+> that for some drivers.
 
-@Pavel - They are using struct netdev_rx_queue to hold the binding,
-which is an object that holds the state and is mapped 1:1 to an rxq.
-This object is similar to our "interface queue". I wonder if we should
-re-visit using this generic struct, instead of driver specific structs
-e.g. bnxt_rx_ring_info?
+I think you don't need all the "per bar" stuff below for that. You can just use
+the existing pci_iomap_range() (which simply uses ioremap() internally) and
+connect it to devres.
 
->  } ____cacheline_aligned_in_smp;
->  
->  /*
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index d4bea053bb7e..64386325d965 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -133,6 +133,33 @@ struct pp_memory_provider_ops {
->  	bool (*release_page)(struct page_pool *pool, struct page *page);
->  };
->  
-> +/* page_pool_iov support */
-> +
-> +/* Owner of the dma-buf chunks inserted into the gen pool. Each scatterlist
-> + * entry from the dmabuf is inserted into the genpool as a chunk, and needs
-> + * this owner struct to keep track of some metadata necessary to create
-> + * allocations from this chunk.
-> + */
-> +struct dmabuf_genpool_chunk_owner {
-> +	/* Offset into the dma-buf where this chunk starts.  */
-> +	unsigned long base_virtual;
-> +
-> +	/* dma_addr of the start of the chunk.  */
-> +	dma_addr_t base_dma_addr;
-> +
-> +	/* Array of page_pool_iovs for this chunk. */
-> +	struct page_pool_iov *ppiovs;
-> +	size_t num_ppiovs;
-> +
-> +	struct netdev_dmabuf_binding *binding;
-> +};
-> +
-> +struct page_pool_iov {
-> +	struct dmabuf_genpool_chunk_owner *owner;
-> +
-> +	refcount_t refcount;
-> +};
-> +
->  struct page_pool {
->  	struct page_pool_params p;
->  
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index a37a932a3e14..c8c3709d42c8 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -153,6 +153,9 @@
->  #include <linux/prandom.h>
->  #include <linux/once_lite.h>
->  #include <net/netdev_rx_queue.h>
-> +#include <linux/genalloc.h>
-> +#include <linux/dma-buf.h>
-> +#include <net/page_pool/types.h>
->  
->  #include "dev.h"
->  #include "net-sysfs.h"
-> @@ -2040,6 +2043,206 @@ static int call_netdevice_notifiers_mtu(unsigned long val,
->  	return call_netdevice_notifiers_info(val, &info.info);
->  }
->  
-> +/* Device memory support */
-> +
-> +#ifdef CONFIG_DMA_SHARED_BUFFER
-> +static void netdev_devmem_free_chunk_owner(struct gen_pool *genpool,
-> +					   struct gen_pool_chunk *chunk,
-> +					   void *not_used)
-> +{
-> +	struct dmabuf_genpool_chunk_owner *owner = chunk->owner;
-> +
-> +	kvfree(owner->ppiovs);
-> +	kfree(owner);
-> +}
-> +
-> +void __netdev_devmem_binding_free(struct netdev_dmabuf_binding *binding)
-> +{
-> +	size_t size, avail;
-> +
-> +	gen_pool_for_each_chunk(binding->chunk_pool,
-> +				netdev_devmem_free_chunk_owner, NULL);
-> +
-> +	size = gen_pool_size(binding->chunk_pool);
-> +	avail = gen_pool_avail(binding->chunk_pool);
-> +
-> +	if (!WARN(size != avail, "can't destroy genpool. size=%lu, avail=%lu",
-> +		  size, avail))
-> +		gen_pool_destroy(binding->chunk_pool);
-> +
-> +	dma_buf_unmap_attachment(binding->attachment, binding->sgt,
-> +				 DMA_BIDIRECTIONAL);
-> +	dma_buf_detach(binding->dmabuf, binding->attachment);
-> +	dma_buf_put(binding->dmabuf);
-> +	kfree(binding);
-> +}
-> +
-> +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding)
-> +{
-> +	struct netdev_rx_queue *rxq;
-> +	unsigned long xa_idx;
-> +
-> +	if (!binding)
-> +		return;
-> +
-> +	list_del_rcu(&binding->list);
-> +
-> +	xa_for_each(&binding->bound_rxq_list, xa_idx, rxq)
-> +		if (rxq->binding == binding)
-> +			/* We hold the rtnl_lock while binding/unbinding
-> +			 * dma-buf, so we can't race with another thread that
-> +			 * is also modifying this value. However, the driver
-> +			 * may read this config while it's creating its
-> +			 * rx-queues. WRITE_ONCE() here to match the
-> +			 * READ_ONCE() in the driver.
-> +			 */
-> +			WRITE_ONCE(rxq->binding, NULL);
-> +
-> +	netdev_devmem_binding_put(binding);
-> +}
-> +
-> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> +				struct netdev_dmabuf_binding *binding)
-> +{
-> +	struct netdev_rx_queue *rxq;
-> +	u32 xa_idx;
-> +	int err;
-> +
-> +	rxq = __netif_get_rx_queue(dev, rxq_idx);
-> +
-> +	if (rxq->binding)
-> +		return -EEXIST;
-> +
-> +	err = xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit_32b,
-> +		       GFP_KERNEL);
-> +	if (err)
-> +		return err;
-> +
-> +	/*We hold the rtnl_lock while binding/unbinding dma-buf, so we can't
-> +	 * race with another thread that is also modifying this value. However,
-> +	 * the driver may read this config while it's creating its * rx-queues.
-> +	 * WRITE_ONCE() here to match the READ_ONCE() in the driver.
-> +	 */
-> +	WRITE_ONCE(rxq->binding, binding);
-> +
-> +	return 0;
-> +}
-> +
-> +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
-> +		       struct netdev_dmabuf_binding **out)
+> 
+> It turns out, that implementing this would be quite complicated (if I'm
+> not mistaken).
+> 
+> lib/devres.c:
+> 
+> struct pcim_iomap_devres {
+> 	void __iomem *table[PCIM_IOMAP_MAX];
+> };
+> 
+> void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
+> {
+> 	struct pcim_iomap_devres *dr, *new_dr;
+> 
+> 	dr = devres_find(&pdev->dev, pcim_iomap_release, NULL, NULL);
+> 	if (dr)
+> 		return dr->table;
+> 
+> 	new_dr = devres_alloc_node(pcim_iomap_release, sizeof(*new_dr), GFP_KERNEL,
+> 				   dev_to_node(&pdev->dev));
+> 	if (!new_dr)
+> 		return NULL;
+> 	dr = devres_get(&pdev->dev, new_dr, NULL, NULL);
+> 	return dr->table;
+> }
+> 
+> That struct keeps track of the requested BARs. That's why there can
+> only be one mapping per BAR, because that table is statically allocated
+> and is indexed with the bar-number.
+> pcim_iomap_table() now only ever returns the table with the pointers to
+> the BARs. Adding tables to that struct that keep track of which
+> mappings exist in which bars would be a bit tricky and require probably
+> an API change for everyone who currently uses pcim_iomap_table(), and
+> that's more than 100 C-files.
+> 
+> So, it seems that a concern back in 2007 was to keep things simple and
+> skip the more complex data structures necessary for keeping track of
+> the various mappings within a bar.
+> In theory, there could be an almost unlimited number of such mappings
+> of various sizes, almost forcing you to do book-keeping with the help
+> of heap-allocations.
+> 
+> I guess one way to keep things extensible would have been to name the
+> function pcim_iomap_bar_table(), so you could later implement one like
+> pcim_iomap_range_table() or something.
+> But now it is what it is..
+> 
+> That still doesn't explain why there's no pcim_request_region(),
+> though...
+> 
+> 
+> P.
+> 
+> > 
+> > First, there would be the pcim_ functions being scattered across
+> > several files. Some are implemented in drivers/pci/pci.c, others in
+> > lib/devres.c, where they are guarded by #ifdef CONFIG_PCI
+> > – this originates from an old cleanup, done in
+> > 5ea8176994003483a18c8fed580901e2125f8a83
+> > 
+> > Additionally, there is lib/pci_iomap.c, which contains the non-
+> > managed
+> > pci_iomap() functions.
+> > 
+> > At first and second glance it's not obvious to me why these pci-
+> > functions are scattered. Hints?
+> > 
+> > 
+> > Second, it seems there are two competing philosophies behind managed
+> > resource reservations. Some pci_ functions have pcim_ counterparts,
+> > such as pci_iomap() <-> pcim_iomap(). So the API-user might expect
+> > that
+> > relevant pci_ functions that do not have a managed counterpart do so
+> > because no one bothered implementing them so far.
+> > 
+> > However, it turns out that for pci_request_region(), there is no
+> > counterpart because a different mechanism / semantic was used to make
+> > the function _sometimes_ managed:
+> > 
+> >    1. If you use pcim_enable_device(), the member is_managed in
+> > struct
+> >       pci_dev is set to 1.
+> >    2. This value is then evaluated in pci_request_region()'s call to
+> >       find_pci_dr()
+> > 
+> > Effectively, this makes pci_request_region() sometimes managed.
+> > Why has it been implemented that way and not as a separate function –
+> > like, e.g., pcim_iomap()?
+> > 
+> > That's where an inconsistency lies. For things like iomappings there
+> > are separate managed functions, for the region-request there's a
+> > universal function doing managed or unmanaged, respectively.
+> > 
+> > Furthermore, look at pcim_iomap_regions() – that function uses a mix
+> > between the obviously managed function pcim_iomap() and
+> > pci_request_region(), which appears unmanaged judging by the name,
+> > but,
+> > nevertheless, is (sometimes) managed below the surface.
+> > Consequently, pcim_iomap_regions() could even be a little buggy: When
+> > someone uses pci_enable_device() + pcim_iomap_regions(), wouldn't
+> > that
+> > leak the resource regions?
+> > 
+> > The change to pci_request_region() hasn't grown historically but was
+> > implemented that way in one run with the first set of managed
+> > functions
+> > in commit 9ac7849e35f70. So this implies it has been implemented that
+> > way on purpose.
+> > 
+> > What was that purpose?
+> > 
+> > Would be great if someone can give some hints :)
+> > 
+> > Regards,
+> > P.
+> > 
+> 
 
-I'm not entirely familiar with the Netlink API. Mina, do you know if we
-can call into netdev_bind_dmabuf or netdev_nl_bind_rx_doit directly,
-without needing to call send/recv on a Netlink socket? We likely want
-io_uring to do the registration of a dmabuf fd and keep ownership over
-it.
-
-> +{
-> +	struct netdev_dmabuf_binding *binding;
-> +	struct scatterlist *sg;
-> +	struct dma_buf *dmabuf;
-> +	unsigned int sg_idx, i;
-> +	unsigned long virtual;
-> +	int err;
-> +
-> +	if (!capable(CAP_NET_ADMIN))
-> +		return -EPERM;
-> +
-> +	dmabuf = dma_buf_get(dmabuf_fd);
-> +	if (IS_ERR_OR_NULL(dmabuf))
-> +		return -EBADFD;
-> +
-> +	binding = kzalloc_node(sizeof(*binding), GFP_KERNEL,
-> +			       dev_to_node(&dev->dev));
-> +	if (!binding) {
-> +		err = -ENOMEM;
-> +		goto err_put_dmabuf;
-> +	}
-> +
-> +	xa_init_flags(&binding->bound_rxq_list, XA_FLAGS_ALLOC);
-> +
-> +	refcount_set(&binding->ref, 1);
-> +
-> +	binding->dmabuf = dmabuf;
-> +
-> +	binding->attachment = dma_buf_attach(binding->dmabuf, dev->dev.parent);
-> +	if (IS_ERR(binding->attachment)) {
-> +		err = PTR_ERR(binding->attachment);
-> +		goto err_free_binding;
-> +	}
-> +
-> +	binding->sgt = dma_buf_map_attachment(binding->attachment,
-> +					      DMA_BIDIRECTIONAL);
-> +	if (IS_ERR(binding->sgt)) {
-> +		err = PTR_ERR(binding->sgt);
-> +		goto err_detach;
-> +	}
-> +
-> +	/* For simplicity we expect to make PAGE_SIZE allocations, but the
-> +	 * binding can be much more flexible than that. We may be able to
-> +	 * allocate MTU sized chunks here. Leave that for future work...
-> +	 */
-> +	binding->chunk_pool = gen_pool_create(PAGE_SHIFT,
-> +					      dev_to_node(&dev->dev));
-> +	if (!binding->chunk_pool) {
-> +		err = -ENOMEM;
-> +		goto err_unmap;
-> +	}
-> +
-> +	virtual = 0;
-> +	for_each_sgtable_dma_sg(binding->sgt, sg, sg_idx) {
-> +		dma_addr_t dma_addr = sg_dma_address(sg);
-> +		struct dmabuf_genpool_chunk_owner *owner;
-> +		size_t len = sg_dma_len(sg);
-> +		struct page_pool_iov *ppiov;
-> +
-> +		owner = kzalloc_node(sizeof(*owner), GFP_KERNEL,
-> +				     dev_to_node(&dev->dev));
-> +		owner->base_virtual = virtual;
-> +		owner->base_dma_addr = dma_addr;
-> +		owner->num_ppiovs = len / PAGE_SIZE;
-> +		owner->binding = binding;
-> +
-> +		err = gen_pool_add_owner(binding->chunk_pool, dma_addr,
-> +					 dma_addr, len, dev_to_node(&dev->dev),
-> +					 owner);
-> +		if (err) {
-> +			err = -EINVAL;
-> +			goto err_free_chunks;
-> +		}
-> +
-> +		owner->ppiovs = kvmalloc_array(owner->num_ppiovs,
-> +					       sizeof(*owner->ppiovs),
-> +					       GFP_KERNEL);
-> +		if (!owner->ppiovs) {
-> +			err = -ENOMEM;
-> +			goto err_free_chunks;
-> +		}
-> +
-> +		for (i = 0; i < owner->num_ppiovs; i++) {
-> +			ppiov = &owner->ppiovs[i];
-> +			ppiov->owner = owner;
-> +			refcount_set(&ppiov->refcount, 1);
-> +		}
-> +
-> +		dma_addr += len;
-> +		virtual += len;
-> +	}
-> +
-> +	*out = binding;
-> +
-> +	return 0;
-> +
-> +err_free_chunks:
-> +	gen_pool_for_each_chunk(binding->chunk_pool,
-> +				netdev_devmem_free_chunk_owner, NULL);
-> +	gen_pool_destroy(binding->chunk_pool);
-> +err_unmap:
-> +	dma_buf_unmap_attachment(binding->attachment, binding->sgt,
-> +				 DMA_BIDIRECTIONAL);
-> +err_detach:
-> +	dma_buf_detach(dmabuf, binding->attachment);
-> +err_free_binding:
-> +	kfree(binding);
-> +err_put_dmabuf:
-> +	dma_buf_put(dmabuf);
-> +	return err;
-> +}
-> +#endif
-> +
->  #ifdef CONFIG_NET_INGRESS
->  static DEFINE_STATIC_KEY_FALSE(ingress_needed_key);
->  
-> diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
-> index 59d3d512d9cc..2c2a62593217 100644
-> --- a/net/core/netdev-genl.c
-> +++ b/net/core/netdev-genl.c
-> @@ -129,10 +129,89 @@ int netdev_nl_dev_get_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
->  	return skb->len;
->  }
->  
-> -/* Stub */
-> +static LIST_HEAD(netdev_rbinding_list);
-> +
->  int netdev_nl_bind_rx_doit(struct sk_buff *skb, struct genl_info *info)
->  {
-> -	return 0;
-> +	struct netdev_dmabuf_binding *out_binding;
-> +	u32 ifindex, dmabuf_fd, rxq_idx;
-> +	struct net_device *netdev;
-> +	struct sk_buff *rsp;
-> +	int rem, err = 0;
-> +	void *hdr;
-> +	struct nlattr *attr;
-> +
-> +	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_DEV_IFINDEX) ||
-> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_DMABUF_FD) ||
-> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_QUEUES))
-> +		return -EINVAL;
-> +
-> +	ifindex = nla_get_u32(info->attrs[NETDEV_A_DEV_IFINDEX]);
-> +	dmabuf_fd = nla_get_u32(info->attrs[NETDEV_A_BIND_DMABUF_DMABUF_FD]);
-> +
-> +	rtnl_lock();
-> +
-> +	netdev = __dev_get_by_index(genl_info_net(info), ifindex);
-> +	if (!netdev) {
-> +		err = -ENODEV;
-> +		goto err_unlock;
-> +	}
-> +
-> +	err = netdev_bind_dmabuf(netdev, dmabuf_fd, &out_binding);
-> +	if (err)
-> +		goto err_unlock;
-> +
-> +	nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
-> +			  genlmsg_len(info->genlhdr), rem) {
-> +		switch (nla_type(attr)) {
-> +		case NETDEV_A_BIND_DMABUF_QUEUES:
-> +			rxq_idx = nla_get_u32(attr);
-> +
-> +			if (rxq_idx >= netdev->num_rx_queues) {
-> +				err = -ERANGE;
-> +				goto err_unbind;
-> +			}
-> +
-> +			err = netdev_bind_dmabuf_to_queue(netdev, rxq_idx,
-> +							  out_binding);
-> +			if (err)
-> +				goto err_unbind;
-> +
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	out_binding->owner_nlportid = info->snd_portid;
-> +	list_add_rcu(&out_binding->list, &netdev_rbinding_list);
-> +
-> +	rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
-> +	if (!rsp) {
-> +		err = -ENOMEM;
-> +		goto err_unbind;
-> +	}
-> +
-> +	hdr = genlmsg_put(rsp, info->snd_portid, info->snd_seq,
-> +			  &netdev_nl_family, 0, info->genlhdr->cmd);
-> +	if (!hdr) {
-> +		err = -EMSGSIZE;
-> +		goto err_genlmsg_free;
-> +	}
-> +
-> +	genlmsg_end(rsp, hdr);
-> +
-> +	rtnl_unlock();
-> +
-> +	return genlmsg_reply(rsp, info);
-> +
-> +err_genlmsg_free:
-> +	nlmsg_free(rsp);
-> +err_unbind:
-> +	netdev_unbind_dmabuf(out_binding);
-> +err_unlock:
-> +	rtnl_unlock();
-> +	return err;
->  }
->  
->  static int netdev_genl_netdevice_event(struct notifier_block *nb,
-> @@ -155,10 +234,37 @@ static int netdev_genl_netdevice_event(struct notifier_block *nb,
->  	return NOTIFY_OK;
->  }
->  
-> +static int netdev_netlink_notify(struct notifier_block *nb, unsigned long state,
-> +				 void *_notify)
-> +{
-> +	struct netlink_notify *notify = _notify;
-> +	struct netdev_dmabuf_binding *rbinding;
-> +
-> +	if (state != NETLINK_URELEASE || notify->protocol != NETLINK_GENERIC)
-> +		return NOTIFY_DONE;
-> +
-> +	rcu_read_lock();
-> +
-> +	list_for_each_entry_rcu(rbinding, &netdev_rbinding_list, list) {
-> +		if (rbinding->owner_nlportid == notify->portid) {
-> +			netdev_unbind_dmabuf(rbinding);
-> +			break;
-> +		}
-> +	}
-> +
-> +	rcu_read_unlock();
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
->  static struct notifier_block netdev_genl_nb = {
->  	.notifier_call	= netdev_genl_netdevice_event,
->  };
->  
-> +static struct notifier_block netdev_netlink_notifier = {
-> +	.notifier_call = netdev_netlink_notify,
-> +};
-
-Is this mechamism what cleans up TCP devmem in case userspace crashes
-and the associated Netlink socket is closed?
-
-> +
->  static int __init netdev_genl_init(void)
->  {
->  	int err;
-> @@ -171,8 +277,14 @@ static int __init netdev_genl_init(void)
->  	if (err)
->  		goto err_unreg_ntf;
->  
-> +	err = netlink_register_notifier(&netdev_netlink_notifier);
-> +	if (err)
-> +		goto err_unreg_family;
-> +
->  	return 0;
->  
-> +err_unreg_family:
-> +	genl_unregister_family(&netdev_nl_family);
->  err_unreg_ntf:
->  	unregister_netdevice_notifier(&netdev_genl_nb);
->  	return err;
