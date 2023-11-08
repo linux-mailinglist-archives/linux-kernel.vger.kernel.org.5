@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA9C7E5BB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345977E5BB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjKHQta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S229581AbjKHQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbjKHQt2 (ORCPT
+        with ESMTP id S230021AbjKHQuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:49:28 -0500
-Received: from mail-ej1-x64a.google.com (mail-ej1-x64a.google.com [IPv6:2a00:1450:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04FA1FD6
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:49:26 -0800 (PST)
-Received: by mail-ej1-x64a.google.com with SMTP id a640c23a62f3a-9d216597f5fso533101766b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 08:49:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699462165; x=1700066965; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=f+htJKZ/Y85O1839RGUSFWieIBLrRpnb2wXiA69z2nI=;
-        b=IMchypkkkkIeAyHe+k80g0EDc8tDHxpxZYSNZzFLqP1SwPod/sEp2mXwuKa4zqoIFg
-         Q0qeZydacv3HIK5omOUxb69VVKalvzRyhBKMKErcrl8UnGoFz/kLLlossqfF5YZNNwJE
-         EWQzl/CGX7S4sXDxofLQZJzHmjrZyRbPudvopJTEyWtHngWQUuUNWqlONh9yqRZsthRF
-         +P2JrRDY8pikBVRN0GGb1cs+uZihWhD530oAlcc/wHtp9uklGXQstxqqyoA8snpW8ISP
-         R0IKPRpLK13TrXLe/cQVW0TdPknV3aVXN05m7s0UkqQSGlEDDL22M11+tVUQwGw1u5Ku
-         2ntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699462165; x=1700066965;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f+htJKZ/Y85O1839RGUSFWieIBLrRpnb2wXiA69z2nI=;
-        b=Ygsndwus/2mdNaw6Y8LJbk/ooXpD39GIPovdkdi044W4GT7Q9Axu4cEu7Is+M+EkZO
-         gKfBdgbsm7jps0HSJWL+956n9oSy9q4lOWsLzIKDQrcMdjekaSGIRUPmhuhGkFW4os5R
-         d0XBsDYBnJI+lAXgCrKG5reLuwSLNFiM7Ykj+ytw2dVkWq3X/OHPz8ZWx4X3to6fd473
-         PPKu1OcZ2idBo5TI7LXgHfMqT9ArHAYY5UclyTcSStKfxlllx01yjH5FjJB+YN7CrybP
-         Lv6n3H1aZfPeHBZobI6mZaLe2DzXybMaNuesG7OVrFWbScVEEFi+hooQOSAOD5XKH2L2
-         XZKA==
-X-Gm-Message-State: AOJu0YwxCQp9Mt/jGBuLJy/ZWsrkPLdaWxfe21vmEjE2sVSrcUf+6vBE
-        MMxwSEsgSzUlS2GdfIv1MkkbmA0ReHEFvw==
-X-Google-Smtp-Source: AGHT+IFXD7JBU7Ih4GN9dRKagmjiX/0+G1ettC7JnYtPW36ZDnFm+K0UN+rGEj+e/pp9dXcfNvFb0HPFeWQLvQ==
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a17:906:dfe6:b0:9be:dbea:42a2 with SMTP
- id lc6-20020a170906dfe600b009bedbea42a2mr15361ejc.8.1699462165146; Wed, 08
- Nov 2023 08:49:25 -0800 (PST)
-Date:   Wed,  8 Nov 2023 16:49:20 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231108164920.3401565-1-jackmanb@google.com>
-Subject: [PATCH v2] mm/page_alloc: Dedupe some memcg uncharging logic
-From:   Brendan Jackman <jackmanb@google.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 8 Nov 2023 11:50:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0A11FF1
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 08:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699462219; x=1730998219;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=w4UecrG/xe8Gp2x6WkT7Z6cLoxSuMPKXewORdOV6Lk4=;
+  b=HQxI+Z2EL4dQaKojqCmzHVvoodMtj7bCxJccTp+1lV7oCmk9WEhzV4+j
+   I5EhmoZrdjuQKzYYdYSWfGQVZU3T34AOx2HghDiHJ7vlrAF0S88OtWdJx
+   AcZEVGG4JUtuMUyEIac73bBDblW2iwuJBRf+EXhI0oPbB3ahPWWE//Rur
+   1hjWlcaO5K8e30PT+X/BIxChTP02C/oP/R5nP5QlixcnF8YUBPNTQ2E36
+   mF/00+ftptw46azvqgSG8Yf8ABQxLS8qsrT/idhCtPAuErH2IM17IWWbV
+   j74hNm3ByaY1CVbSbFRl0szVrguZxtEenAjgT8LAxRCZh2rPycCgOTPKh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="380199977"
+X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
+   d="scan'208";a="380199977"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 08:50:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="833536645"
+X-IronPort-AV: E=Sophos;i="6.03,286,1694761200"; 
+   d="scan'208";a="833536645"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Nov 2023 08:50:16 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0lkt-000838-0s;
+        Wed, 08 Nov 2023 16:50:15 +0000
+Date:   Thu, 9 Nov 2023 00:49:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jun Yi <yijun@loongson.cn>
+Subject: drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202311090011.Vf8aIXTo-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The duplication makes it seem like some work is required before
-uncharging in the !PageHWPoison case. But it isn't, so we can simplify
-the code a little.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   305230142ae0637213bf6e04f6d9f10bbcb74af8
+commit: a275a82dcd4024c75337db15d59ed039c31e21da LoongArch: Use alternative to optimize libraries
+date:   11 months ago
+config: loongarch-randconfig-r133-20231107 (https://download.01.org/0day-ci/archive/20231109/202311090011.Vf8aIXTo-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090011.Vf8aIXTo-lkp@intel.com/reproduce)
 
-Note the PageMemcgKmem check is redundant, but I've left it in as it
-avoids an unnecessary function call.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311090011.Vf8aIXTo-lkp@intel.com/
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- mm/page_alloc.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got void * @@
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     expected char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     got void *
+>> drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *__s @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     expected void *__s
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 733732e7e0ba..dd5e8a759d27 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1086,13 +1086,11 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 	trace_mm_page_free(page, order);
- 	kmsan_free_page(page, order);
- 
-+	if (memcg_kmem_online() && PageMemcgKmem(page))
-+		__memcg_kmem_uncharge_page(page, order);
-+
- 	if (unlikely(PageHWPoison(page)) && !order) {
--		/*
--		 * Do not let hwpoison pages hit pcplists/buddy
--		 * Untie memcg state and reset page's owner
--		 */
--		if (memcg_kmem_online() && PageMemcgKmem(page))
--			__memcg_kmem_uncharge_page(page, order);
-+		/* Do not let hwpoison pages hit pcplists/buddy */
- 		reset_page_owner(page, order);
- 		page_table_check_free(page, order);
- 		return false;
-@@ -1123,8 +1121,6 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 	}
- 	if (PageMappingFlags(page))
- 		page->mapping = NULL;
--	if (memcg_kmem_online() && PageMemcgKmem(page))
--		__memcg_kmem_uncharge_page(page, order);
- 	if (is_check_pages_enabled()) {
- 		if (free_page_is_bad(page))
- 			bad++;
+vim +362 drivers/video/fbdev/atmel_lcdfb.c
+
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  336  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  337  /**
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  338   *	atmel_lcdfb_alloc_video_memory - Allocate framebuffer memory
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  339   *	@sinfo: the frame buffer to allocate memory for
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  340   * 	
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  341   * 	This function is called only from the atmel_lcdfb_probe()
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  342   * 	so no locking by fb_info->mm_lock around smem_len setting is needed.
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  343   */
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  344  static int atmel_lcdfb_alloc_video_memory(struct atmel_lcdfb_info *sinfo)
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  345  {
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  346  	struct fb_info *info = sinfo->info;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  347  	struct fb_var_screeninfo *var = &info->var;
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  348  	unsigned int smem_len;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  349  
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  350  	smem_len = (var->xres_virtual * var->yres_virtual
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  351  		    * ((var->bits_per_pixel + 7) / 8));
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  352  	info->fix.smem_len = max(smem_len, sinfo->smem_len);
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  353  
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  354  	info->screen_base = dma_alloc_wc(info->device, info->fix.smem_len,
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  355  					 (dma_addr_t *)&info->fix.smem_start,
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  356  					 GFP_KERNEL);
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  357  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  358  	if (!info->screen_base) {
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  359  		return -ENOMEM;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  360  	}
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  361  
+01d3a5e7fab773 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28 @362  	memset(info->screen_base, 0, info->fix.smem_len);
+01d3a5e7fab773 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28  363  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  364  	return 0;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  365  }
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  366  
+
+:::::: The code at line 362 was first introduced by commit
+:::::: 01d3a5e7fab7732cfc5d5d4533e9378ea435295a atmel_lcdfb: don't initialize a pre-allocated framebuffer
+
+:::::: TO: Haavard Skinnemoen <hskinnemoen@atmel.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+
 -- 
-2.42.0.869.gea05f2083d-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
