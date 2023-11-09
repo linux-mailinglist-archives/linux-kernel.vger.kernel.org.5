@@ -2,215 +2,722 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527C97E6223
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6A07E6227
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjKICZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 21:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
+        id S232008AbjKIC0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 21:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKICZJ (ORCPT
+        with ESMTP id S231514AbjKIC0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 21:25:09 -0500
-Received: from esa19.fujitsucc.c3s2.iphmx.com (esa19.fujitsucc.c3s2.iphmx.com [216.71.158.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DC28E;
-        Wed,  8 Nov 2023 18:25:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1699496708; x=1731032708;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=TQ6lHEOhufO9u7B7OxtOBP4dmHkaqnc15OO1zsBnTpQ=;
-  b=WTfHhAxZSJChCaabzKmFDrjRuMQYKMr7qz/1KyHSHKduzK4jux/7s+6D
-   pbot18TmiiTL9FVPp6g9dqf7ApebKtJdU9MouOIAnJBBOvcitV/ZAj/Dn
-   Oxb5kInbgK+XUWW31mFJLlmAcM5h3g90NbFfFi+l73qX2/u81P7zEVeG8
-   XMBFBzJXfLG6yfrBXZcOiEZxtagQL5j2W5dYepsb55wOXXiXLXMc3wFZs
-   LFMuSQBFa9s48N08qq9s7fPRFdNuW5queW3k5+lQT249aaC9CeNqFNMNU
-   9/BSNLRqbtlT8ZViKT1oGM9MTC/C4yA18XgepZpvNnJpnUMi4dp7VJH0V
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="101439082"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694703600"; 
-   d="scan'208";a="101439082"
-Received: from mail-os0jpn01lp2105.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.105])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 11:25:03 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g3qRsbTNqMTihKh7hA/jbxcVgQkEX8VDKJ6CkNgvnuO945cpOfKjP/I/uEkcBdtBqNzqGuhB2GC0n33uM2GpeFVOb2ol2+YlgzWeSnEtjumua+wiUFzD785MxXWGEicBdEKhNEA4k4AUwGkUI1u0XMcXnWdofRrDwfF2qOabGmyp1Du6gir3EZoee0NUuvQcBPsIx6GKnjrbEeOoR49aYYMqUyt0DBYxz1hwu7K+R2b97oWaHf9m1mu7RmtlEAwlVRRjZc/wnrT1CAgfhwMcFO5s4HEkGnS/FhbzffjCXcYxFIV6HsG90nkH4UmvYQlmyhEbH/S3mHVhXk7d+BcpfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TQ6lHEOhufO9u7B7OxtOBP4dmHkaqnc15OO1zsBnTpQ=;
- b=HBIo8GH/i1n+p3W6tETkc39Vm3BydQT/1K5fez+mx15Cm7OZ/VPKzVHLdI3vZjIovrqFEAv/5tdJVqE+vNFjnXXW21gpnrHc70n0zCgvqVNa5Bcl/GfDQEDzlcpBuAl6izRhmj/H8CRjwpw7IK+YiUD80HmgV3017ybtjxanWcqJmoize7HJ8OaTUeaSM5ZFnozH+MESLWlzZnV9ECjSrm/peFhGnuI8WIkc1xXzXlWHQ8WUmqhq5jpfGVHO/vUQ1Y5K8DnayQJMTcRZ2pEmUa4QXgbstaZ44AiMF3Gw0yvH3n/1eTOOHSWDgDqkGaBGwU7k6LHKxGqPUaw+fDSzNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com (2603:1096:604:a6::10)
- by TYWPR01MB9327.jpnprd01.prod.outlook.com (2603:1096:400:1a0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 02:24:59 +0000
-Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com
- ([fe80::16d1:f1e:a08:dd5c]) by OS0PR01MB5442.jpnprd01.prod.outlook.com
- ([fe80::16d1:f1e:a08:dd5c%4]) with mapi id 15.20.6977.018; Thu, 9 Nov 2023
- 02:24:59 +0000
-From:   "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-To:     Zhu Yanjun <yanjun.zhu@linux.dev>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
-Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
-Thread-Topic: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
-Thread-Index: AQHaDjvxgnGsUlf/nk+PthrgEoRwxrBojwMAgAQh+4CAAKUOgIAD9VmA
-Date:   Thu, 9 Nov 2023 02:24:59 +0000
-Message-ID: <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
-References: <20231103095549.490744-1-lizhijian@fujitsu.com>
- <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
- <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
- <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
-In-Reply-To: <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5442:EE_|TYWPR01MB9327:EE_
-x-ms-office365-filtering-correlation-id: ea5f65ad-6de1-43da-7d12-08dbe0cb122c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eoGPUpgLOkn6W6gDROnWL01/cQy8/AYna1IYRrXvuwL+KvP0+c4PgeiA4ofvV3w9XfaiKwgLSr0/tLn7yuNpmtEQ4t0ZMtlQMXXOg6DpT0ayWNyhRD7jfCRA/8mWNcD1r/gK1RzpGgtQTzOhbV+v8cIpfFcOxMdbNJnnlLAC4AUQ7FQMttvalTjPUe+cxs8RWTGD8DobrPfb5BmflFsBEItZBHyAj9r6g43PvV8zHDrtz+9PUHiECGF587R5E+49vurN/w8I5A5unLift377as8HJRGP0R3V5e73J/C79Gh8wluJB3uQOLSOG0jNISDUQu+Hq+N9weenG5QI2vI5CkjmdIfmbUdEnwfVyo1L0aoZ3GHbWpKRtYmr4aSa12Lkp26W0wdWX/DIulPVseB8WoMjqiXWrxWNA6AFkQWsVql9O/Zx5aq8rE0AG6HhvB/DWWHi/twu7oiS1CF4PP/1U9XcOBl8v55jky25PgSpuo6Yl7UsODD01IbPAM1230m28Ln7uG8QSEII4t+9aZ8dcIPATW5Mg3PX4aR1/mYC5akykOsTX58BPiz+sJeeFt8peou47A+oaiGTuo2gDR73XDv6ln5uTzTdcwj4QICXTXDBeZ0yoW3dTbPzuq3G/GP60neqnXG0q/luAMhNjVEU5e7mD1PnUAcq/fyKCjxrF/AM5zEfCkpC7YRxJjfZQsc+ws4vE8fl+KEIOB5gaNaDbw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5442.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(366004)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1590799021)(1800799009)(451199024)(71200400001)(83380400001)(122000001)(6512007)(6506007)(53546011)(26005)(82960400001)(2616005)(966005)(478600001)(6486002)(31686004)(38100700002)(8936002)(66556008)(316002)(66476007)(66446008)(66946007)(64756008)(76116006)(110136005)(54906003)(91956017)(4326008)(1580799018)(2906002)(31696002)(86362001)(5660300002)(41300700001)(8676002)(85182001)(38070700009)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Wk43S0c3Uk1POForWmpPOVdpQXcwM0xLMFMvQTRISXB0UUhFa2tkcldGdEJG?=
- =?utf-8?B?ZTNacm9HNE1sZHB1cE56R1EzRllteVpEek11Mkx0ekNoSnFQOE9HYmhWbHhK?=
- =?utf-8?B?WlRBRmVrKzJ0K0hvMGFpOEpkOFUwd3FCMXlyQXhuNEhnSFUvZXBXUG5wMDFw?=
- =?utf-8?B?Vi81MVI0bnNxcGlPSllvc0ZEVzNleDhPMWVNdEQ2SWRQMWRjWnZxcTkrSEVn?=
- =?utf-8?B?cGtQN1hjdWQzTy9lUWF2T0pCMHUzN2NDYVNWWFpKMjJOSkF4QWRmSEdIZjcr?=
- =?utf-8?B?ZGNUb1QwamVyYTU3Vmg2Uys3UWR5KytaM2pVSzErNHRhUjZoVUN5WnNCaUZj?=
- =?utf-8?B?UGxYRW4xS0tScGI1TXBiUVpIQ1lSWWdGMmdXTEt1TmdnUENBUVMyZEd2Z0ZS?=
- =?utf-8?B?UkJIZndlRzJkN21ONUpGVmxRVUpLWkt5dzZxSFFYN0FZUzBvVDI3Nzg0QW5D?=
- =?utf-8?B?NFVQQmkzQ3BpUW1Ick5YYkROMzF0bGNWT3FmQ2RBNlBGRk9FVHluNFNQSGJq?=
- =?utf-8?B?YXNrOTRLeWJHQkl0elRic05vTzhYWmI5NUVJbnJ2YmVpcW9McGRNVzYrZ3RZ?=
- =?utf-8?B?ZmI4NFpNRmo4WXNwQjZMbWRZSnFDSGpRS0VIUEYzNlZ5eUFIUGoxUEhmd2Jo?=
- =?utf-8?B?QlhVbzhweEZTMXlSN1Btc3EwRTZhZjM0enhZejFjNXp1bGgyMDNWbUo2a2xB?=
- =?utf-8?B?Q3RHa1pPTkpTUkh5NVNVRzg0YnRJWFZRMUtPUkMrRWJ3bi9TUlJ5VDFHbXRR?=
- =?utf-8?B?UjNYL0VZdVZUL2I2UGNqOUZYRGFhTkxZNDNycVpYc1F2dlZSZE9lZzRwOHlE?=
- =?utf-8?B?WWYvenIzZGV1YUpZKzl1bGhYMzdhZlNRSzlnbGQ3QmoxeGRSTDlBQzNuVFlH?=
- =?utf-8?B?eXdwOUpiWG9LSmxnMzBhTWxqaTJTRXhid1FDWXpMelYweHMxemMwL2d4WG9n?=
- =?utf-8?B?dHdPTU9GOWhYb3NBZ05TN3hrMlJvNkVTZ2Z0WU9vUDJOMlNPa0g3RmUxejdN?=
- =?utf-8?B?NWlpZlpPM0IxZTFhK0J4VjdxKzRiSVZ6Q3B3aGhrOVA5N3B5eTMrTVFyR1l3?=
- =?utf-8?B?Z2VvYTBlNzBtRDdRcXF1V3hUL3loV0NxNGFZTVk3cFUzbEtlbVIzUjg5RUc0?=
- =?utf-8?B?cXI0R0ZNVFpTSVVZWVhjdWcwc3YrbUxOTUVpSnlZaXl1Vm04V01mWEVRaTRy?=
- =?utf-8?B?aEUyV2tIZTA4eHM0T2ZvRnlKeUVZclZZZ2c3aVJmbHVSc1ozUE5aVG5TOXhZ?=
- =?utf-8?B?Rk5CVmkvdFNNWGV5ZFlGSUVaT2ttUkpPNkR1Mk1MS005RHRmTHNCZWd1MmJC?=
- =?utf-8?B?alNxeDFJU2NqTEtJMWx5aHR6TEREOTNRN1R3QUh4ZWtkRk1ZbWZoeFlDd1Nq?=
- =?utf-8?B?YU1zRktZL2xIeTN6U2dXWWtEOGx0Sm1LTVZzY01ORWtKYVk2L3h3WE8rZFY5?=
- =?utf-8?B?ZEpGb3RIS2RkVjViaUhhWGc4ckRwS2NrZFpEc0U0cjVDQUUvUlc2YmVJaURE?=
- =?utf-8?B?MU1KRkNrelQ4WVZMQWhMY2hIS3dBb2RibDdiMURLZ3orbkRGZGVSdTAxZ0Zs?=
- =?utf-8?B?TVhjQjVpaGp5VXJLU0dxRzFoallUdXBxM0phNCtXVVpDSmM2U0lpdFFoelhU?=
- =?utf-8?B?OEtXZjhhKzE1TjRiTjBBQU5iRjdxWHFMdVhuclYxWTZNcll0NHNGRVQ1U2RE?=
- =?utf-8?B?WmQxNWVWUzZYUSs4ZENOTk9TaE1hazdFMm16VkxDbGRGSWhBN0tLRXpzM09O?=
- =?utf-8?B?NFgyd0dzbTRRQVlpYTVvWHpwUDYzd2lIT0tqcHo4dWYzVkVyM005bko4RjNU?=
- =?utf-8?B?T0pHRTNVaHZGczBIdmJFQmJXNkdUSkZxTC9UQ2hOclhuMDQxOGVhRWxIc1lY?=
- =?utf-8?B?YlRWQlR6RjlWYzdJRk5sTGJIU0tTV1N5MEtKditqaFlGYnNFVkJFV3ZWaTZ6?=
- =?utf-8?B?aEhQNlRPRmw4NUZybHF0bDZLNTFSaWhJcld4bW5kYmJpc0F1cXNLQTlZYWp2?=
- =?utf-8?B?QVV6OTYwU2JDVXcwZVhQK1pUNnJscmRPZEpvc2pTZVpkNjBYSGZjSDQzY2pj?=
- =?utf-8?B?YmZiZHZnYVYvV0trM09TS1l2bVc5b3N0dmVIeWpGRVVhS1gzd0xxS0I5Mmta?=
- =?utf-8?B?RWIrYmtQWWpWM2c4OUxRNUdydzVlcml1WlRqUXltdmxtNkNzRjdqbzJ6dWhQ?=
- =?utf-8?B?U2c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1ADA4FA61D68144489A4A6AA253566B1@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 8 Nov 2023 21:26:10 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8602129
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 18:26:08 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7ba6a0bada9so124494241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 18:26:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699496767; x=1700101567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S642ghwKa1S5u8UTGDoa5xcpqvArsmfYKLa6bCOl7fs=;
+        b=By7i+n3t9vDBM1JdkwEj1Ye1Qp0Q14kvupSgeLRjgHC29T9mJv1++SDTXS9di7VZOT
+         uvh3CvJYGqj/Cezc83sWBE05LafyZsBffdrJHaIKwqGp+YIg7Wydq3otTFrIwF+QagLL
+         NhpWNR68daeYzGxc5tyLIilLlYrikVVY6s0xkJes3nHjUiP49QxAMbo8YSrpnTIT/IWJ
+         andB/4sk7VQ/rm2NI43PMhHAesxSvju0lnbz1G0T+UJd01VeK7l4AynqVyCs4C54z9VO
+         wiKskhMBKUU+DusxbY9EnQH5yZQeW6EJXoeJm3BUFsPGlTuKnhy1F9wuiD078TaF4HgF
+         PoPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699496767; x=1700101567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S642ghwKa1S5u8UTGDoa5xcpqvArsmfYKLa6bCOl7fs=;
+        b=mu/Na7ibiLSGCg1o1+q6EYeWPJbvW+bq3e2z2cXMWdM4nSdv4QJUbAlAuJEqL85Dvb
+         zc4MDsJJVkYuytjQ6Yk+8QV+gjPBz/YNVvqPhTievkzFGF00R31UNG5PUdLVVeSdmTRX
+         d2PmqcTrFPh45G7ltZFKLr9nzxJStWcAvZ2fyQyDHy7NU/ub4mqB7j5vhy7o+rKNXwOb
+         kyXW/YRiGt+L1g7ekg3N7BbVSqIQZ4wNMF3SSAWAOVIb4eFiJTXPvWakUkoFf2qyCECd
+         /4Z9RLFKa028Vcl0bnYEJy2h49/LeV4ePQNKLpnWqlpU8djzsLlpgQGK+aDfYOs5LmyU
+         PnCg==
+X-Gm-Message-State: AOJu0YyEwCfuYzfxvuqFdFGufGaiqpGUcltDX7zHIhqufzIh8W5+vsjw
+        LerEI+X2sgd4uLNrwbJyGXUTRGzwEfIfhaTvEyf0rw==
+X-Google-Smtp-Source: AGHT+IGWVTCEhd4Qj7IXYGQACJHPQykZiLCn/QCPXH0Z3KnY18PQNIz7NGmM591iuH3iex8lIc6hKQrI7QWuKqlfk20=
+X-Received: by 2002:a67:b20a:0:b0:45e:9611:7b71 with SMTP id
+ b10-20020a67b20a000000b0045e96117b71mr3482559vsf.27.1699496767464; Wed, 08
+ Nov 2023 18:26:07 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: lLz2LNkttEKftBanfVaNoEeN0kbSYNnewIbN/hoh/u9v7cTv9X3w7+URmTW4cC2etm8Yc/fTrVLNcxq+suxyR4EaNdw0ZhEgano+Rgc/cgkbdPv9Q0rMUMZg4+PTLzKdE5NJ3gJHYgTS4jUAZ0XCHk6dsKpm74aaq9cX010h1EfiZDGLkJ2I2T0NMcGI7+plrOzJMFMpWMBn15M5byJlL2LAOfkoXXqZ0Jr+6Q6DffMvprpFAxPvwsMX+DBawY0mWr9H8+jscoibSF565kogF68mNHNcFexobJE4tZE978pdB4ktsI2AM3QZyWuymLzCwCvfilIlAd0vftXw7xAKEV7mSLiH/s3/C2Lt1LmeSgA1DmpGNKW6JOosNrc97ci3OMdZKUIidxA3OYy995FcLkfqSDAiOt7o+mLRX0vsdK2SK2W+4x04jQPvkAyxihZJj33Wr+2wHCbvDLHCGjlvGLke6eHNKgzNe93uPafBDCqT5zA7+Cii6KkiXlEZ5JuNxhORAYUqLPpryw6nf9QDJ1kHQMWuiHx7jOhI0ELn8TEPJSbGpZxpfAjOGbcvQuEi5nqUT7iRqa8/sE26kjsWPcXX791H5zi9ynklkQ77GjPC1h8DVAui3+tDjUgufSbXju++xvQZ5PB1hUnmqNUKaDb6D3xLy8iw4rMsSFgTnmJpGMFJQA6v2goY28VlB/Rpi6/s7J4Pc7lDQ6Jat7zPCiS3rilkYPY9XfpvP+cpVuDutlJNgw6EKlUr82LnBaQyfpTY3Ac0m2Tbpf58ZlqxbSomqGbckdrFgFEDotlIvhnGT4W2xaNccXqn5lBSXFJB7QD6qsNvNAMAzulTzMvdP2Vtdlo9pFxH2c/tlk6X62IIV4YbmPehLBZ3itYflo4zS547HcHi4IoV7JZ/wCctB+gSdC0/A//uTqIxoAfTrII=
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5442.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea5f65ad-6de1-43da-7d12-08dbe0cb122c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2023 02:24:59.0886
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fMetR4UuJMpJv20X535iHf/E8uKvenvckyo/kGzjn53Xw4T9fVlo2vtuMTynfztBuyRIAjN5LXSrPf2y8v7BFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB9327
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-5-almasrymina@google.com> <7769b74d-dd23-41de-8e11-434a0acabf72@davidwei.uk>
+In-Reply-To: <7769b74d-dd23-41de-8e11-434a0acabf72@davidwei.uk>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 8 Nov 2023 18:25:56 -0800
+Message-ID: <CAHS8izO1p==W+ppDqwEE9ugehN4OL9J3+fdrY+UJch9s8uShOg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 04/12] netdev: support binding dma-buf to netdevice
+To:     David Wei <dw@davidwei.uk>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDA2LzExLzIwMjMgMjE6NTgsIFpodSBZYW5qdW4gd3JvdGU6DQo+IOWcqCAyMDIzLzEx
-LzYgMTI6MDcsIFpoaWppYW4gTGkgKEZ1aml0c3UpIOWGmemBkzoNCj4+DQo+Pg0KPj4gT24gMDMv
-MTEvMjAyMyAyMTowMCwgWmh1IFlhbmp1biB3cm90ZToNCj4+PiDlnKggMjAyMy8xMS8zIDE3OjU1
-LCBMaSBaaGlqaWFuIOWGmemBkzoNCj4+Pj4gSSBkb24ndCBjb2xsZWN0IHRoZSBSZXZpZXdlZC1i
-eSB0byB0aGUgcGF0Y2gxLTIgdGhpcyB0aW1lLCBzaW5jZSBpDQo+Pj4+IHRoaW5rIHdlIGNhbiBt
-YWtlIGl0IGJldHRlci4NCj4+Pj4NCj4+Pj4gUGF0Y2gxLTI6IEZpeCBrZXJuZWwgcGFuaWNbMV0g
-YW5kIGJlbmlmaXQgdG8gbWFrZSBzcnAgd29yayBhZ2Fpbi4NCj4+Pj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBBbG1vc3Qgbm90aGluZyBjaGFuZ2UgZnJvbSBWMS4NCj4+Pj4gUGF0Y2gzLTU6IGNs
-ZWFudXBzICMgbmV3bHkgYWRkDQo+Pj4+IFBhdGNoNjogbWFrZSBSWEUgc3VwcG9ydCBQQUdFX1NJ
-WkUgYWxpZ25lZCBtciAjIG5ld2x5IGFkZCwgYnV0IG5vdCBmdWxseSB0ZXN0ZWQNCj4+Pj4NCj4+
-Pj4gTXkgYmFkIGFybTY0IG1lY2hpbmUgb2ZmdGVuIGhhbmdzIHdoZW4gZG9pbmcgYmxrdGVzdHMg
-ZXZlbiB0aG91Z2ggaSB1c2UgdGhlDQo+Pj4+IGRlZmF1bHQgc2l3IGRyaXZlci4NCj4+Pj4NCj4+
-Pj4gLSBudm1lIGFuZCBVTFBzKHJ0cnMsIGlzZXIpIGFsd2F5cyByZWdpc3RlcnMgNEsgbXIgc3Rp
-bGwgZG9uJ3Qgc3VwcG9ydGVkIHlldC4NCj4+Pg0KPj4+IFpoaWppYW4NCj4+Pg0KPj4+IFBsZWFz
-ZSByZWFkIGNhcmVmdWxseSB0aGUgd2hvbGUgZGlzY3Vzc2lvbiBhYm91dCB0aGlzIHByb2JsZW0u
-IFlvdSB3aWxsIGZpbmQgYSBsb3Qgb2YgdmFsdWFibGUgc3VnZ2VzdGlvbnMsIGVzcGVjaWFsbHkg
-c3VnZ2VzdGlvbnMgZnJvbSBKYXNvbi4NCj4+DQo+PiBPa2F5LCBpIHdpbGwgcmVhZCBpdCBhZ2Fp
-bi4gSWYgeW91IGNhbiB0ZWxsIG1lIHdoaWNoIHRocmVhZCwgdGhhdCB3b3VsZCBiZSBiZXR0ZXIu
-DQo+Pg0KPj4NCj4+Pg0KPj4+IMKgIEZyb20gdGhlIHdob2xlIGRpc2N1c3Npb24sIGl0IHNlZW1z
-IHRoYXQgdGhlIHJvb3QgY2F1c2UgaXMgdmVyeSBjbGVhci4NCj4+PiBXZSBuZWVkIHRvIGZpeCB0
-aGlzIHByb2xlbS4gUGxlYXNlIGRvIG5vdCBzZW5kIHRoaXMga2luZCBvZiBjb21taXRzIGFnYWlu
-Lg0KPj4+DQo+Pg0KPj4gTGV0J3MgdGhpbmsgYWJvdXQgd2hhdCdzIG91ciBnb2FsIGZpcnN0Lg0K
-Pj4NCj4+IC0gMSkgRml4IHRoZSBwYW5pY1sxXSBhbmQgb25seSBzdXBwb3J0IFBBR0VfU0laRSBN
-Ug0KPj4gLSAyKSBzdXBwb3J0IFBBR0VfU0laRSBhbGlnbmVkIE1SDQo+PiAtIDMpIHN1cHBvcnQg
-YW55IHBhZ2Vfc2l6ZSBNUi4NCj4+DQo+PiBJJ20gc29ycnkgaSdtIG5vdCBmYW1pbGlhciB3aXRo
-IHRoZSBsaW51eCBNTSBzdWJzeXN0ZW0uIEl0IHNlZW0gaXQncyBzYWZlL2NvcnJlY3QgdG8gYWNj
-ZXNzDQo+PiBhZGRyZXNzL21lbW9yeSBhY3Jvc3MgcGFnZXMgc3RhcnQgZnJvbSB0aGUgcmV0dXJu
-IG9mIGttYXBfbG9jYV9wYWdlKHBhZ2UpLg0KPj4gSW4gb3RoZXIgd29yZHMsIDIpIGlzIGFscmVh
-ZHkgbmF0aXZlIHN1cHBvcnRlZCwgcmlnaHQ/DQo+IA0KPiBZZXMuIFBsZWFzZSByZWFkIHRoZSBj
-b21tZW50cyBmcm9tIEphc29uLCBMZW9uIGFuZCBCYXJ0LiBUaGV5IHNoYXJlZCBhIGxvdCBvZiBn
-b29kIGFkdmljZS4gDQoNCkkgcmVhZCB0aGUgd2hvbGUgZGlzY3Vzc2lvbiBhZ2FpbiwgYnV0IEkg
-YmVsaWV2ZWQgaSBzdGlsbCBtaXNzZWQgYSBsb3N0Lg0KDQoNCj4gRnJvbSB0aGVtLCB3ZSBjYW4g
-a25vdyB0aGUgcm9vdCBjYXVzZSBhbmQgaG93IHRvIGZpeCB0aGlzIHByb2JsZW0uDQoNCkkgZG9u
-J3QgdGhpbmsgaSBtaXN1bmRlcnN0b29kIHRoZSByb290IGNhdXNlOg0KUlhFIHNwbGl0cyBtZW1v
-cnkgaW50byBQQUdFX1NJWkUgdW5pdHMgaW4gdGhlIHhhcnJheS4gQXMgYSByZXN1bHQsIHdoZW4g
-d2UgZXh0cmFjdCBhbiBhZGRyZXNzIGZyb20gdGhlIHhhcnJheSwNCndlIHNob3VsZCBub3QgYWNj
-ZXNzIGFkZHJlc3MgYmV5b25kIGEgUEFHRV9TSVpFIHdpbmRvdy4NCg0KSUlVQywgdGhlbiBob3cg
-dG8gZml4IGl0Pw0KLSBJJ20gbm90IGdvaW5nIHRvICJyZW1vdmluZyBwYWdlX3NpemUgc2V0Iiwg
-aXQncyBvdXQgb2YgdGhpcyBwYXRjaCBzY29wZS4NCiAgIEZlZWwgZnJlZSB0byBkbyB0aGUgY2xl
-YW51cCBzZXBhcmF0ZWx5Lg0KLSBJJ20gbm90IGdvaW5nIHRvIGZpeCB0aGUgTlZNZS9ydHJzIGV0
-YyBwcm9ibGVtcyBpbiB0aGlzIHBhdGNoIHNldCB3aGVuIDY0SyBwYWdlIGlzIGVuYWJsZWQuDQog
-ICBCdXQgUlhFIHdpbGwgdGVsbCBpdHMgY2FsbGVycyBleHBsaWNpdGx5ICJSWEUgZG9uJ3QgZG9u
-J3Qgc3VwcG9ydCBzdWNoIHBhZ2Vfc2l6ZSINCi0gSSBkaWRuJ3Qgc3RhdGUgUlhFIHN1cHBvcnRz
-IFBBR0VfU0laRSBhbGlnbmVkIHBhZ2Vfc2l6ZSBNUiBiZWZvcmUgcmVmYWN0b3JpbmcgcnhlX21h
-cF9tcl9zZygpLA0KICAgYmVjYXVzZSBJIHdvcnJ5IGFib3V0IGl0IHdhcyBub3QgY29ycmVjdCB0
-byBhY2Nlc3MgYWRkcmVzcyBiZXlvbmQgdGhlIFBBR0VfU0laRSB3aW5kb3cuDQoNCldoYXQgSSBz
-aG91bGQgZG8gbmV4dD8NCkp1c3Qgc3RhdGUgIlJYRSBzdXBwb3J0IFBBR0VfU0laRSBhbGlnbmVk
-IE1SIiA/IFRoZW4gcGF0Y2hlcyBiZWNvbWUNClJETUEvcnhlOiBSRE1BL3J4ZTogZG9uJ3QgYWxs
-b3cgcmVnaXN0ZXJpbmcgIVBBR0VfU0laRSBhbGlnbmVkIE1SDQpSRE1BL3J4ZTogc2V0IFJYRV9Q
-QUdFX1NJWkVfQ0FQIHRvIHN0YXJ0aW5nIGZyb20gUEFHRV9TSVpFDQoNCk9yIGp1c3Qga2VlcCB3
-ZSBoYXZlIGRvbmUgaW4gdGhlIFYxDQoNClRoYW5rcw0KDQoNCj4gDQo+IEdvb2QgTHVjay4NCj4g
-DQo+IFpodSBZYW5qdW4NCj4gDQo+Pg0KPj4gSSBnZXQgdG90YWxseSBjb25mdXNlZCBub3cuDQo+
-Pg0KPj4NCj4+DQo+Pj4gWmh1IFlhbmp1bg0KPj4+DQo+Pj4+DQo+Pj4+IFsxXSBodHRwczovL2xv
-cmUua2VybmVsLm9yZy9hbGwvQ0FIajRjczlYUnFFMjVqeVZ3OXJqOVl1Z2ZmTG41K2Y9MXpuYUJF
-bnUxdXNMT2NpRCtnQG1haWwuZ21haWwuY29tL1QvDQo+Pj4+DQo+Pj4+IExpIFpoaWppYW4gKDYp
-Og0KPj4+PiDCoMKgwqAgUkRNQS9yeGU6IFJETUEvcnhlOiBkb24ndCBhbGxvdyByZWdpc3Rlcmlu
-ZyAhUEFHRV9TSVpFIG1yDQo+Pj4+IMKgwqDCoCBSRE1BL3J4ZTogc2V0IFJYRV9QQUdFX1NJWkVf
-Q0FQIHRvIFBBR0VfU0laRQ0KPj4+PiDCoMKgwqAgUkRNQS9yeGU6IHJlbW92ZSB1bnVzZWQgcnhl
-X21yLnBhZ2Vfc2hpZnQNCj4+Pj4gwqDCoMKgIFJETUEvcnhlOiBVc2UgUEFHRV9TSVpFIGFuZCBQ
-QUdFX1NISUZUIHRvIGV4dHJhY3QgYWRkcmVzcyBmcm9tDQo+Pj4+IMKgwqDCoMKgwqAgcGFnZV9s
-aXN0DQo+Pj4+IMKgwqDCoCBSRE1BL3J4ZTogY2xlYW51cCByeGVfbXIue3BhZ2Vfc2l6ZSxwYWdl
-X3NoaWZ0fQ0KPj4+PiDCoMKgwqAgUkRNQS9yeGU6IFN1cHBvcnQgUEFHRV9TSVpFIGFsaWduZWQg
-TVINCj4+Pj4NCj4+Pj4gwqDCoCBkcml2ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV9tci5jwqDC
-oMKgIHwgODAgKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tDQo+Pj4+IMKgwqAgZHJpdmVycy9p
-bmZpbmliYW5kL3N3L3J4ZS9yeGVfcGFyYW0uaCB8wqAgMiArLQ0KPj4+PiDCoMKgIGRyaXZlcnMv
-aW5maW5pYmFuZC9zdy9yeGUvcnhlX3ZlcmJzLmggfMKgIDkgLS0tDQo+Pj4+IMKgwqAgMyBmaWxl
-cyBjaGFuZ2VkLCA0OCBpbnNlcnRpb25zKCspLCA0MyBkZWxldGlvbnMoLSkNCj4+Pj4NCj4g
+On Wed, Nov 8, 2023 at 3:47=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
+>
+> On 2023-11-05 18:44, Mina Almasry wrote:
+> > Add a netdev_dmabuf_binding struct which represents the
+> > dma-buf-to-netdevice binding. The netlink API will bind the dma-buf to
+> > rx queues on the netdevice. On the binding, the dma_buf_attach
+> > & dma_buf_map_attachment will occur. The entries in the sg_table from
+> > mapping will be inserted into a genpool to make it ready
+> > for allocation.
+> >
+> > The chunks in the genpool are owned by a dmabuf_chunk_owner struct whic=
+h
+> > holds the dma-buf offset of the base of the chunk and the dma_addr of
+> > the chunk. Both are needed to use allocations that come from this chunk=
+.
+> >
+> > We create a new type that represents an allocation from the genpool:
+> > page_pool_iov. We setup the page_pool_iov allocation size in the
+> > genpool to PAGE_SIZE for simplicity: to match the PAGE_SIZE normally
+> > allocated by the page pool and given to the drivers.
+> >
+> > The user can unbind the dmabuf from the netdevice by closing the netlin=
+k
+> > socket that established the binding. We do this so that the binding is
+> > automatically unbound even if the userspace process crashes.
+> >
+> > The binding and unbinding leaves an indicator in struct netdev_rx_queue
+> > that the given queue is bound, but the binding doesn't take effect unti=
+l
+> > the driver actually reconfigures its queues, and re-initializes its pag=
+e
+> > pool.
+> >
+> > The netdev_dmabuf_binding struct is refcounted, and releases its
+> > resources only when all the refs are released.
+> >
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > RFC v3:
+> > - Support multi rx-queue binding
+> >
+> > ---
+> >  include/linux/netdevice.h     |  80 ++++++++++++++
+> >  include/net/netdev_rx_queue.h |   1 +
+> >  include/net/page_pool/types.h |  27 +++++
+> >  net/core/dev.c                | 203 ++++++++++++++++++++++++++++++++++
+> >  net/core/netdev-genl.c        | 116 ++++++++++++++++++-
+> >  5 files changed, 425 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index b8bf669212cc..eeeda849115c 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -52,6 +52,8 @@
+> >  #include <net/net_trackers.h>
+> >  #include <net/net_debug.h>
+> >  #include <net/dropreason-core.h>
+> > +#include <linux/xarray.h>
+> > +#include <linux/refcount.h>
+> >
+> >  struct netpoll_info;
+> >  struct device;
+> > @@ -808,6 +810,84 @@ bool rps_may_expire_flow(struct net_device *dev, u=
+16 rxq_index, u32 flow_id,
+> >  #endif
+> >  #endif /* CONFIG_RPS */
+> >
+> > +struct netdev_dmabuf_binding {
+> > +     struct dma_buf *dmabuf;
+> > +     struct dma_buf_attachment *attachment;
+> > +     struct sg_table *sgt;
+> > +     struct net_device *dev;
+> > +     struct gen_pool *chunk_pool;
+> > +
+> > +     /* The user holds a ref (via the netlink API) for as long as they=
+ want
+> > +      * the binding to remain alive. Each page pool using this binding=
+ holds
+> > +      * a ref to keep the binding alive. Each allocated page_pool_iov =
+holds a
+> > +      * ref.
+> > +      *
+> > +      * The binding undos itself and unmaps the underlying dmabuf once=
+ all
+> > +      * those refs are dropped and the binding is no longer desired or=
+ in
+> > +      * use.
+> > +      */
+> > +     refcount_t ref;
+> > +
+> > +     /* The portid of the user that owns this binding. Used for netlin=
+k to
+> > +      * notify us of the user dropping the bind.
+> > +      */
+> > +     u32 owner_nlportid;
+> > +
+> > +     /* The list of bindings currently active. Used for netlink to not=
+ify us
+> > +      * of the user dropping the bind.
+> > +      */
+> > +     struct list_head list;
+> > +
+> > +     /* rxq's this binding is active on. */
+> > +     struct xarray bound_rxq_list;
+> > +};
+> > +
+> > +#ifdef CONFIG_DMA_SHARED_BUFFER
+> > +void __netdev_devmem_binding_free(struct netdev_dmabuf_binding *bindin=
+g);
+> > +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
+> > +                    struct netdev_dmabuf_binding **out);
+> > +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding);
+> > +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> > +                             struct netdev_dmabuf_binding *binding);
+> > +#else
+> > +static inline void
+> > +__netdev_devmem_binding_free(struct netdev_dmabuf_binding *binding)
+> > +{
+> > +}
+> > +
+> > +static inline int netdev_bind_dmabuf(struct net_device *dev,
+> > +                                  unsigned int dmabuf_fd,
+> > +                                  struct netdev_dmabuf_binding **out)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +static inline void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *=
+binding)
+> > +{
+> > +}
+> > +
+> > +static inline int
+> > +netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> > +                         struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     return -EOPNOTSUPP;
+> > +}
+> > +#endif
+> > +
+> > +static inline void
+> > +netdev_devmem_binding_get(struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     refcount_inc(&binding->ref);
+> > +}
+> > +
+> > +static inline void
+> > +netdev_devmem_binding_put(struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     if (!refcount_dec_and_test(&binding->ref))
+> > +             return;
+> > +
+> > +     __netdev_devmem_binding_free(binding);
+> > +}
+> > +
+> >  /* XPS map type and offset of the xps map within net_device->xps_maps[=
+]. */
+> >  enum xps_map_type {
+> >       XPS_CPUS =3D 0,
+> > diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queu=
+e.h
+> > index cdcafb30d437..1bfcf60a145d 100644
+> > --- a/include/net/netdev_rx_queue.h
+> > +++ b/include/net/netdev_rx_queue.h
+> > @@ -21,6 +21,7 @@ struct netdev_rx_queue {
+> >  #ifdef CONFIG_XDP_SOCKETS
+> >       struct xsk_buff_pool            *pool;
+> >  #endif
+> > +     struct netdev_dmabuf_binding *binding;
+>
+> @Pavel - They are using struct netdev_rx_queue to hold the binding,
+> which is an object that holds the state and is mapped 1:1 to an rxq.
+> This object is similar to our "interface queue". I wonder if we should
+> re-visit using this generic struct, instead of driver specific structs
+> e.g. bnxt_rx_ring_info?
+>
+> >  } ____cacheline_aligned_in_smp;
+> >
+> >  /*
+> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
+s.h
+> > index d4bea053bb7e..64386325d965 100644
+> > --- a/include/net/page_pool/types.h
+> > +++ b/include/net/page_pool/types.h
+> > @@ -133,6 +133,33 @@ struct pp_memory_provider_ops {
+> >       bool (*release_page)(struct page_pool *pool, struct page *page);
+> >  };
+> >
+> > +/* page_pool_iov support */
+> > +
+> > +/* Owner of the dma-buf chunks inserted into the gen pool. Each scatte=
+rlist
+> > + * entry from the dmabuf is inserted into the genpool as a chunk, and =
+needs
+> > + * this owner struct to keep track of some metadata necessary to creat=
+e
+> > + * allocations from this chunk.
+> > + */
+> > +struct dmabuf_genpool_chunk_owner {
+> > +     /* Offset into the dma-buf where this chunk starts.  */
+> > +     unsigned long base_virtual;
+> > +
+> > +     /* dma_addr of the start of the chunk.  */
+> > +     dma_addr_t base_dma_addr;
+> > +
+> > +     /* Array of page_pool_iovs for this chunk. */
+> > +     struct page_pool_iov *ppiovs;
+> > +     size_t num_ppiovs;
+> > +
+> > +     struct netdev_dmabuf_binding *binding;
+> > +};
+> > +
+> > +struct page_pool_iov {
+> > +     struct dmabuf_genpool_chunk_owner *owner;
+> > +
+> > +     refcount_t refcount;
+> > +};
+> > +
+> >  struct page_pool {
+> >       struct page_pool_params p;
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index a37a932a3e14..c8c3709d42c8 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -153,6 +153,9 @@
+> >  #include <linux/prandom.h>
+> >  #include <linux/once_lite.h>
+> >  #include <net/netdev_rx_queue.h>
+> > +#include <linux/genalloc.h>
+> > +#include <linux/dma-buf.h>
+> > +#include <net/page_pool/types.h>
+> >
+> >  #include "dev.h"
+> >  #include "net-sysfs.h"
+> > @@ -2040,6 +2043,206 @@ static int call_netdevice_notifiers_mtu(unsigne=
+d long val,
+> >       return call_netdevice_notifiers_info(val, &info.info);
+> >  }
+> >
+> > +/* Device memory support */
+> > +
+> > +#ifdef CONFIG_DMA_SHARED_BUFFER
+> > +static void netdev_devmem_free_chunk_owner(struct gen_pool *genpool,
+> > +                                        struct gen_pool_chunk *chunk,
+> > +                                        void *not_used)
+> > +{
+> > +     struct dmabuf_genpool_chunk_owner *owner =3D chunk->owner;
+> > +
+> > +     kvfree(owner->ppiovs);
+> > +     kfree(owner);
+> > +}
+> > +
+> > +void __netdev_devmem_binding_free(struct netdev_dmabuf_binding *bindin=
+g)
+> > +{
+> > +     size_t size, avail;
+> > +
+> > +     gen_pool_for_each_chunk(binding->chunk_pool,
+> > +                             netdev_devmem_free_chunk_owner, NULL);
+> > +
+> > +     size =3D gen_pool_size(binding->chunk_pool);
+> > +     avail =3D gen_pool_avail(binding->chunk_pool);
+> > +
+> > +     if (!WARN(size !=3D avail, "can't destroy genpool. size=3D%lu, av=
+ail=3D%lu",
+> > +               size, avail))
+> > +             gen_pool_destroy(binding->chunk_pool);
+> > +
+> > +     dma_buf_unmap_attachment(binding->attachment, binding->sgt,
+> > +                              DMA_BIDIRECTIONAL);
+> > +     dma_buf_detach(binding->dmabuf, binding->attachment);
+> > +     dma_buf_put(binding->dmabuf);
+> > +     kfree(binding);
+> > +}
+> > +
+> > +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     struct netdev_rx_queue *rxq;
+> > +     unsigned long xa_idx;
+> > +
+> > +     if (!binding)
+> > +             return;
+> > +
+> > +     list_del_rcu(&binding->list);
+> > +
+> > +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq)
+> > +             if (rxq->binding =3D=3D binding)
+> > +                     /* We hold the rtnl_lock while binding/unbinding
+> > +                      * dma-buf, so we can't race with another thread =
+that
+> > +                      * is also modifying this value. However, the dri=
+ver
+> > +                      * may read this config while it's creating its
+> > +                      * rx-queues. WRITE_ONCE() here to match the
+> > +                      * READ_ONCE() in the driver.
+> > +                      */
+> > +                     WRITE_ONCE(rxq->binding, NULL);
+> > +
+> > +     netdev_devmem_binding_put(binding);
+> > +}
+> > +
+> > +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> > +                             struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     struct netdev_rx_queue *rxq;
+> > +     u32 xa_idx;
+> > +     int err;
+> > +
+> > +     rxq =3D __netif_get_rx_queue(dev, rxq_idx);
+> > +
+> > +     if (rxq->binding)
+> > +             return -EEXIST;
+> > +
+> > +     err =3D xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_limit=
+_32b,
+> > +                    GFP_KERNEL);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     /*We hold the rtnl_lock while binding/unbinding dma-buf, so we ca=
+n't
+> > +      * race with another thread that is also modifying this value. Ho=
+wever,
+> > +      * the driver may read this config while it's creating its * rx-q=
+ueues.
+> > +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> > +      */
+> > +     WRITE_ONCE(rxq->binding, binding);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
+> > +                    struct netdev_dmabuf_binding **out)
+>
+> I'm not entirely familiar with the Netlink API. Mina, do you know if we
+> can call into netdev_bind_dmabuf or netdev_nl_bind_rx_doit directly,
+> without needing to call send/recv on a Netlink socket? We likely want
+> io_uring to do the registration of a dmabuf fd and keep ownership over
+> it.
+>
+
+You can likely call into netdev_bind_dmabuf(), but not
+netdev_nl_bind_rx_doit. The latter is very netlink specific.
+
+> > +{
+> > +     struct netdev_dmabuf_binding *binding;
+> > +     struct scatterlist *sg;
+> > +     struct dma_buf *dmabuf;
+> > +     unsigned int sg_idx, i;
+> > +     unsigned long virtual;
+> > +     int err;
+> > +
+> > +     if (!capable(CAP_NET_ADMIN))
+> > +             return -EPERM;
+> > +
+> > +     dmabuf =3D dma_buf_get(dmabuf_fd);
+> > +     if (IS_ERR_OR_NULL(dmabuf))
+> > +             return -EBADFD;
+> > +
+> > +     binding =3D kzalloc_node(sizeof(*binding), GFP_KERNEL,
+> > +                            dev_to_node(&dev->dev));
+> > +     if (!binding) {
+> > +             err =3D -ENOMEM;
+> > +             goto err_put_dmabuf;
+> > +     }
+> > +
+> > +     xa_init_flags(&binding->bound_rxq_list, XA_FLAGS_ALLOC);
+> > +
+> > +     refcount_set(&binding->ref, 1);
+> > +
+> > +     binding->dmabuf =3D dmabuf;
+> > +
+> > +     binding->attachment =3D dma_buf_attach(binding->dmabuf, dev->dev.=
+parent);
+> > +     if (IS_ERR(binding->attachment)) {
+> > +             err =3D PTR_ERR(binding->attachment);
+> > +             goto err_free_binding;
+> > +     }
+> > +
+> > +     binding->sgt =3D dma_buf_map_attachment(binding->attachment,
+> > +                                           DMA_BIDIRECTIONAL);
+> > +     if (IS_ERR(binding->sgt)) {
+> > +             err =3D PTR_ERR(binding->sgt);
+> > +             goto err_detach;
+> > +     }
+> > +
+> > +     /* For simplicity we expect to make PAGE_SIZE allocations, but th=
+e
+> > +      * binding can be much more flexible than that. We may be able to
+> > +      * allocate MTU sized chunks here. Leave that for future work...
+> > +      */
+> > +     binding->chunk_pool =3D gen_pool_create(PAGE_SHIFT,
+> > +                                           dev_to_node(&dev->dev));
+> > +     if (!binding->chunk_pool) {
+> > +             err =3D -ENOMEM;
+> > +             goto err_unmap;
+> > +     }
+> > +
+> > +     virtual =3D 0;
+> > +     for_each_sgtable_dma_sg(binding->sgt, sg, sg_idx) {
+> > +             dma_addr_t dma_addr =3D sg_dma_address(sg);
+> > +             struct dmabuf_genpool_chunk_owner *owner;
+> > +             size_t len =3D sg_dma_len(sg);
+> > +             struct page_pool_iov *ppiov;
+> > +
+> > +             owner =3D kzalloc_node(sizeof(*owner), GFP_KERNEL,
+> > +                                  dev_to_node(&dev->dev));
+> > +             owner->base_virtual =3D virtual;
+> > +             owner->base_dma_addr =3D dma_addr;
+> > +             owner->num_ppiovs =3D len / PAGE_SIZE;
+> > +             owner->binding =3D binding;
+> > +
+> > +             err =3D gen_pool_add_owner(binding->chunk_pool, dma_addr,
+> > +                                      dma_addr, len, dev_to_node(&dev-=
+>dev),
+> > +                                      owner);
+> > +             if (err) {
+> > +                     err =3D -EINVAL;
+> > +                     goto err_free_chunks;
+> > +             }
+> > +
+> > +             owner->ppiovs =3D kvmalloc_array(owner->num_ppiovs,
+> > +                                            sizeof(*owner->ppiovs),
+> > +                                            GFP_KERNEL);
+> > +             if (!owner->ppiovs) {
+> > +                     err =3D -ENOMEM;
+> > +                     goto err_free_chunks;
+> > +             }
+> > +
+> > +             for (i =3D 0; i < owner->num_ppiovs; i++) {
+> > +                     ppiov =3D &owner->ppiovs[i];
+> > +                     ppiov->owner =3D owner;
+> > +                     refcount_set(&ppiov->refcount, 1);
+> > +             }
+> > +
+> > +             dma_addr +=3D len;
+> > +             virtual +=3D len;
+> > +     }
+> > +
+> > +     *out =3D binding;
+> > +
+> > +     return 0;
+> > +
+> > +err_free_chunks:
+> > +     gen_pool_for_each_chunk(binding->chunk_pool,
+> > +                             netdev_devmem_free_chunk_owner, NULL);
+> > +     gen_pool_destroy(binding->chunk_pool);
+> > +err_unmap:
+> > +     dma_buf_unmap_attachment(binding->attachment, binding->sgt,
+> > +                              DMA_BIDIRECTIONAL);
+> > +err_detach:
+> > +     dma_buf_detach(dmabuf, binding->attachment);
+> > +err_free_binding:
+> > +     kfree(binding);
+> > +err_put_dmabuf:
+> > +     dma_buf_put(dmabuf);
+> > +     return err;
+> > +}
+> > +#endif
+> > +
+> >  #ifdef CONFIG_NET_INGRESS
+> >  static DEFINE_STATIC_KEY_FALSE(ingress_needed_key);
+> >
+> > diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
+> > index 59d3d512d9cc..2c2a62593217 100644
+> > --- a/net/core/netdev-genl.c
+> > +++ b/net/core/netdev-genl.c
+> > @@ -129,10 +129,89 @@ int netdev_nl_dev_get_dumpit(struct sk_buff *skb,=
+ struct netlink_callback *cb)
+> >       return skb->len;
+> >  }
+> >
+> > -/* Stub */
+> > +static LIST_HEAD(netdev_rbinding_list);
+> > +
+> >  int netdev_nl_bind_rx_doit(struct sk_buff *skb, struct genl_info *info=
+)
+> >  {
+> > -     return 0;
+> > +     struct netdev_dmabuf_binding *out_binding;
+> > +     u32 ifindex, dmabuf_fd, rxq_idx;
+> > +     struct net_device *netdev;
+> > +     struct sk_buff *rsp;
+> > +     int rem, err =3D 0;
+> > +     void *hdr;
+> > +     struct nlattr *attr;
+> > +
+> > +     if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_DEV_IFINDEX) ||
+> > +         GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_DMABUF_FD) ||
+> > +         GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_QUEUES))
+> > +             return -EINVAL;
+> > +
+> > +     ifindex =3D nla_get_u32(info->attrs[NETDEV_A_DEV_IFINDEX]);
+> > +     dmabuf_fd =3D nla_get_u32(info->attrs[NETDEV_A_BIND_DMABUF_DMABUF=
+_FD]);
+> > +
+> > +     rtnl_lock();
+> > +
+> > +     netdev =3D __dev_get_by_index(genl_info_net(info), ifindex);
+> > +     if (!netdev) {
+> > +             err =3D -ENODEV;
+> > +             goto err_unlock;
+> > +     }
+> > +
+> > +     err =3D netdev_bind_dmabuf(netdev, dmabuf_fd, &out_binding);
+> > +     if (err)
+> > +             goto err_unlock;
+> > +
+> > +     nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
+> > +                       genlmsg_len(info->genlhdr), rem) {
+> > +             switch (nla_type(attr)) {
+> > +             case NETDEV_A_BIND_DMABUF_QUEUES:
+> > +                     rxq_idx =3D nla_get_u32(attr);
+> > +
+> > +                     if (rxq_idx >=3D netdev->num_rx_queues) {
+> > +                             err =3D -ERANGE;
+> > +                             goto err_unbind;
+> > +                     }
+> > +
+> > +                     err =3D netdev_bind_dmabuf_to_queue(netdev, rxq_i=
+dx,
+> > +                                                       out_binding);
+> > +                     if (err)
+> > +                             goto err_unbind;
+> > +
+> > +                     break;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     out_binding->owner_nlportid =3D info->snd_portid;
+> > +     list_add_rcu(&out_binding->list, &netdev_rbinding_list);
+> > +
+> > +     rsp =3D genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
+> > +     if (!rsp) {
+> > +             err =3D -ENOMEM;
+> > +             goto err_unbind;
+> > +     }
+> > +
+> > +     hdr =3D genlmsg_put(rsp, info->snd_portid, info->snd_seq,
+> > +                       &netdev_nl_family, 0, info->genlhdr->cmd);
+> > +     if (!hdr) {
+> > +             err =3D -EMSGSIZE;
+> > +             goto err_genlmsg_free;
+> > +     }
+> > +
+> > +     genlmsg_end(rsp, hdr);
+> > +
+> > +     rtnl_unlock();
+> > +
+> > +     return genlmsg_reply(rsp, info);
+> > +
+> > +err_genlmsg_free:
+> > +     nlmsg_free(rsp);
+> > +err_unbind:
+> > +     netdev_unbind_dmabuf(out_binding);
+> > +err_unlock:
+> > +     rtnl_unlock();
+> > +     return err;
+> >  }
+> >
+> >  static int netdev_genl_netdevice_event(struct notifier_block *nb,
+> > @@ -155,10 +234,37 @@ static int netdev_genl_netdevice_event(struct not=
+ifier_block *nb,
+> >       return NOTIFY_OK;
+> >  }
+> >
+> > +static int netdev_netlink_notify(struct notifier_block *nb, unsigned l=
+ong state,
+> > +                              void *_notify)
+> > +{
+> > +     struct netlink_notify *notify =3D _notify;
+> > +     struct netdev_dmabuf_binding *rbinding;
+> > +
+> > +     if (state !=3D NETLINK_URELEASE || notify->protocol !=3D NETLINK_=
+GENERIC)
+> > +             return NOTIFY_DONE;
+> > +
+> > +     rcu_read_lock();
+> > +
+> > +     list_for_each_entry_rcu(rbinding, &netdev_rbinding_list, list) {
+> > +             if (rbinding->owner_nlportid =3D=3D notify->portid) {
+> > +                     netdev_unbind_dmabuf(rbinding);
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     rcu_read_unlock();
+> > +
+> > +     return NOTIFY_OK;
+> > +}
+> > +
+> >  static struct notifier_block netdev_genl_nb =3D {
+> >       .notifier_call  =3D netdev_genl_netdevice_event,
+> >  };
+> >
+> > +static struct notifier_block netdev_netlink_notifier =3D {
+> > +     .notifier_call =3D netdev_netlink_notify,
+> > +};
+>
+> Is this mechamism what cleans up TCP devmem in case userspace crashes
+> and the associated Netlink socket is closed?
+>
+
+Correct.
+
+> > +
+> >  static int __init netdev_genl_init(void)
+> >  {
+> >       int err;
+> > @@ -171,8 +277,14 @@ static int __init netdev_genl_init(void)
+> >       if (err)
+> >               goto err_unreg_ntf;
+> >
+> > +     err =3D netlink_register_notifier(&netdev_netlink_notifier);
+> > +     if (err)
+> > +             goto err_unreg_family;
+> > +
+> >       return 0;
+> >
+> > +err_unreg_family:
+> > +     genl_unregister_family(&netdev_nl_family);
+> >  err_unreg_ntf:
+> >       unregister_netdevice_notifier(&netdev_genl_nb);
+> >       return err;
+
+
+
+--=20
+Thanks,
+Mina
