@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ED77E6E9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71F37E6E9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343842AbjKIQXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S1343911AbjKIQXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjKIQXT (ORCPT
+        with ESMTP id S1343900AbjKIQX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:23:19 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD12735A9;
-        Thu,  9 Nov 2023 08:23:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=IgIWkKpvGMvUKj92YCRYLOy8UePNcQyB18TDcSyhxoE=; b=esslbwfVGfDyH5J4Z1pPOHI+8G
-        XKEVlcHOinNAydE2xp/gTDlnHfg/SVLmso1tcIvdsnCftiD4FIzZW10F5SOvIOKATlTMOHU8D/iH/
-        vZQk62wqQFHPlS8fpv6jnU1Vj9reEIH7hXnGYKl922iB5KK5mORtBUMCvOC0h8cnQJQM=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r17o2-001DYh-UI; Thu, 09 Nov 2023 17:22:58 +0100
-Date:   Thu, 9 Nov 2023 17:22:58 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Gan Yi Fang <yi.fang.gan@intel.com>
-Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Simon Horman <horms@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Johannes Zink <j.zink@pengutronix.de>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: Re: [PATCH net-next 1/1] net: stmmac: Add support for HW-accelerated
- VLAN stripping
-Message-ID: <b197865d-8905-497c-8fe0-d6e122b0d9f7@lunn.ch>
-References: <20231109053831.2572699-1-yi.fang.gan@intel.com>
+        Thu, 9 Nov 2023 11:23:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3616C35B5;
+        Thu,  9 Nov 2023 08:23:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1A8BC433CA;
+        Thu,  9 Nov 2023 16:23:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699547003;
+        bh=aePtJT7WZA8ttpok02zN1PeRQSCh1RDBZ95u1jYBnzo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ke+SaWDQtXbP9Tyl3sK4r/Ial5r7s/CKpJsmhLHN3qyYhReR6LOfFBT31k72kXku/
+         swCbvX368DR4M3u5wSWPqx0d3ur3zRrLy+A4nqUINZfmO8B4Dy+BHLCaAYM1EKmo+X
+         kANAktvKSoLk77NTUKuEunuC6dxaJxhOtYgnw/giK82UNqg78m26sH736ZHeM+ACUI
+         DncwowPeCHCBZer+qofUSdp5dVjzc8eCjVj//4lx/tvzSLlaU/ZR6c1z68G0qmb6Jh
+         nk4JG9AVOhwpjmnEv1rrXOeb4AWSiHmB5nNoRsk8H1QFhPxO+rfPONp2P6lFNW7JBf
+         7H9Ns9umIw4ng==
+Date:   Thu, 9 Nov 2023 21:53:10 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Qiang Yu <quic_qianyu@quicinc.com>
+Cc:     quic_jhugo@quicinc.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, quic_mrana@quicinc.com,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
+Message-ID: <20231109162310.GJ3752@thinkpad>
+References: <1699341365-47737-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699341365-47737-2-git-send-email-quic_qianyu@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231109053831.2572699-1-yi.fang.gan@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1699341365-47737-2-git-send-email-quic_qianyu@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static void dwmac4_rx_hw_vlan(struct mac_device_info *hw,
-> +			      struct dma_desc *rx_desc, struct sk_buff *skb)
-> +{
-> +	if (hw->desc->get_rx_vlan_valid(rx_desc)) {
-> +		u16 vid = (u16)hw->desc->get_rx_vlan_tci(rx_desc);
+On Tue, Nov 07, 2023 at 03:16:02PM +0800, Qiang Yu wrote:
+> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> 
+> Protect WP accesses such that multiple threads queueing buffers for
+> incoming data do not race.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+- Mani
+
+> ---
+>  drivers/bus/mhi/host/main.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index 6cf1145..c9415b0 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -1205,6 +1205,9 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>  	int eot, eob, chain, bei;
+>  	int ret;
+>  
+> +	/* Protect accesses for reading and incrementing WP */
+> +	write_lock_bh(&mhi_chan->lock);
 > +
-> +		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vid);
-> +	}
-> +}
+>  	buf_ring = &mhi_chan->buf_ring;
+>  	tre_ring = &mhi_chan->tre_ring;
+>  
+> @@ -1222,8 +1225,10 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>  
+>  	if (!info->pre_mapped) {
+>  		ret = mhi_cntrl->map_single(mhi_cntrl, buf_info);
+> -		if (ret)
+> +		if (ret) {
+> +			write_unlock_bh(&mhi_chan->lock);
+>  			return ret;
+> +		}
+>  	}
+>  
+>  	eob = !!(flags & MHI_EOB);
+> @@ -1240,6 +1245,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>  	mhi_add_ring_element(mhi_cntrl, tre_ring);
+>  	mhi_add_ring_element(mhi_cntrl, buf_ring);
+>  
+> +	write_unlock_bh(&mhi_chan->lock);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.7.4
+> 
+> 
 
-> +static inline int dwmac4_wrback_get_rx_vlan_tci(struct dma_desc *p)
-> +{
-> +	return (le32_to_cpu(p->des0) & RDES0_VLAN_TAG_MASK);
-> +}
-
-A tci is a u16. If you make this function return a u16, you can avoid
-the cast.
-
-  Andrew
+-- 
+மணிவண்ணன் சதாசிவம்
