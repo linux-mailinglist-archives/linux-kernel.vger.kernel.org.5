@@ -2,125 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F043D7E61A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F15A7E61A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231661AbjKIBAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 20:00:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S231268AbjKIBAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbjKIBAM (ORCPT
+        with ESMTP id S230451AbjKIBAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 20:00:12 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9C258A
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:00:10 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b44befac59so1094653b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:00:10 -0800 (PST)
+        Wed, 8 Nov 2023 20:00:46 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C08258F
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:00:44 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc3bc5df96so2306815ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:00:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699491610; x=1700096410; darn=vger.kernel.org;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1699491643; x=1700096443; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=85crlNpRBk7PCnm2srRrO/tBT8MDdkwM/1UpT6izcog=;
-        b=Z6iRT4JHu6+3N+c+fhaLOE5UhbFY5dyt5m14u0VKTRx+ptNSsToHr1UKMneKL4iMzA
-         X4zaIACj2GL67DAW+hw1mPAfQ6rLSmLBNI3oHfX3tDCbNrJe8B5lGFGkhFIhMBL4NQHU
-         d2h11/Z/WLMRZZYxFyjaVMWH5RrjxJvleWnsW4XmIzQpCYIqEzJ7XaA5MHX9NFibf5Rh
-         bFD7urGH3usM2rrbZ4HzRCs/R47qp/5rL13/5ALPckOGDpr0n8kHV3mYIw7sXtkHw1/P
-         e07XIfgRWGjjCmih0yxF1L4nrr7WznxhhgR2OkP6Sf0jm+xlUjY9IOoWbfNbyp3KOUtp
-         TEQg==
+        bh=g+m1/eec3BAI+VxQgeWP5nozlTdhs+GvhhRREFgPtnw=;
+        b=twBcydj177gEe6trQmjXVoEAVUA814gQxanP2tNi0bC3WYu6GFBi1NTJRuGFMc7qcb
+         N1KFTTsThKZvuYzaT5/e43BdLn98gA4KcYLDiodnOM9uamizS8mZ9pXr73tQHJjWEjHi
+         g9H1P6xpegWWj9yuDLHtWitsfInUyguJwyoGEy8ZNIbkP0BgIllWYEhtXdtsjPAqaAV7
+         5jjzjuj9NNgm7m2bXKd8/ghLRdWG1Lf80THlMHFiVTNR9MpuDFRZUIrpZDMmqvafM0jH
+         rzsw88LY2cGiakpGyVwhgep1rMZP8RoXur38b63NkiS9x71ETQvVDbUGwbahhix27iXP
+         W6Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699491610; x=1700096410;
+        d=1e100.net; s=20230601; t=1699491643; x=1700096443;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=85crlNpRBk7PCnm2srRrO/tBT8MDdkwM/1UpT6izcog=;
-        b=O4NsBTWZxCCAygztdcaNzylT84cW+9TVukXpREPou6Vx807ilOEkR4sZUaILAHgnuY
-         BYB79DdqQbHOWpGaZM6wkyLQrS9JD8icaM3nxpG/p/O4SBLn8lnqQFnnPYlDpr9awDR6
-         yY3U20cqMiHYsW572OtR6vxK1Ra95pa+qFB3l595j+Sb7Dz7NLePwfEE25+cYNNQ+UNO
-         1Gvu396hdxeliPCkT1WemYmtTyK2TSK85FpUfwmC1ZjT74RFNBXAr0RnInwkB3twLVcj
-         IHQJnkhViDXaxq7XB/LmW1k9Lw/T0JuVM695Qsl/oz30jRD+vUSpCkMxnzHoKx8dKa/Q
-         K74g==
-X-Gm-Message-State: AOJu0YwXhQQImNPnP5dlByXScClaWZJ5hLVvb3o5qJjjR1iYMxlISvza
-        NyOIDn4fA+ywygLfHlQnSvAq+Q==
-X-Google-Smtp-Source: AGHT+IFZ+A+V9efdpst3RKcmTzNFKjnU6fZAcVh9Gggf3QKcHciEceqFp7u+2xG/6WA0k0W4Mavqug==
-X-Received: by 2002:a05:6a20:914b:b0:13f:13cb:bc50 with SMTP id x11-20020a056a20914b00b0013f13cbbc50mr5525792pzc.25.1699491608958;
-        Wed, 08 Nov 2023 17:00:08 -0800 (PST)
-Received: from [192.168.60.239] (183.43.230.35.bc.googleusercontent.com. [35.230.43.183])
-        by smtp.gmail.com with ESMTPSA id f29-20020a056a000b1d00b006c03fa6300dsm9528921pfu.117.2023.11.08.17.00.08
+        bh=g+m1/eec3BAI+VxQgeWP5nozlTdhs+GvhhRREFgPtnw=;
+        b=R+Y3rPqWrvoJVf+wsdbS/Nvs5J/40bMoluzAM8GoP7nhyxbCbIWrjw7vdVHC+9nNvl
+         AbifwfFB6kfFmwSF9CVwC2J9h5rFq4Al90qNmjAczSy9bgUB2UR+Y2zmSbU2AIykpyeS
+         KAj6KyWXyld88Lk2YjUslwU/WKAfbd+PnpqI52DQakAHWjKBZHyKmATB7mVCIwvD82d9
+         4Zru5WojMPaS/J9P4a+7qMihV1S3QotAytBYclDDu550FCc93dXTPnlvN/hG3DDd1nuQ
+         zv0mXYXskqGf8wfvaTVEh1bxnUR7NNphKxC0Gc7RSflAnI9v6u61suBwzMpoezQTiJwx
+         A8lw==
+X-Gm-Message-State: AOJu0Yw7zZEUywTzuGU/sUuCmTFWbxpazU5xQCPNCZoGbGFIgHM5qlFC
+        OVe/V5lvGDdiluZX1Ff3iGR2YA==
+X-Google-Smtp-Source: AGHT+IGqOk5pLGreahWyU5Tyhch5OGepp+ms2LPYRQxo1oPkx1W4LYvgzN77Bieh5CFVk1MoPdYbhQ==
+X-Received: by 2002:a17:902:d2cf:b0:1cc:6acc:8fa4 with SMTP id n15-20020a170902d2cf00b001cc6acc8fa4mr4025647plc.32.1699491643400;
+        Wed, 08 Nov 2023 17:00:43 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1256:2:c51:2090:e106:83fa? ([2620:10d:c090:500::5:887f])
+        by smtp.gmail.com with ESMTPSA id g10-20020a170902934a00b001b0358848b0sm2287468plp.161.2023.11.08.17.00.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 17:00:08 -0800 (PST)
-Message-ID: <e29802cf-8387-41d1-a5b1-ab77254cd5cc@google.com>
-Date:   Wed, 8 Nov 2023 17:00:07 -0800
+        Wed, 08 Nov 2023 17:00:43 -0800 (PST)
+Message-ID: <b1476f8e-1b4b-497a-9e80-aff679ca8b4b@davidwei.uk>
+Date:   Wed, 8 Nov 2023 17:00:39 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 4/4] usb: gadget: uvc: Fix use-after-free for inflight
- usb_requests
-Content-Language: en-US
-To:     Dan Scally <dan.scally@ideasonboard.com>,
-        gregkh@linuxfoundation.org
-Cc:     etalvala@google.com, jchowdhary@google.com,
-        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, m.grzeschik@pengutronix.de
-References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
- <20231102201939.4171214-1-arakesh@google.com>
- <20231102201939.4171214-4-arakesh@google.com>
- <93e26d61-49ca-443d-9044-32e73243c3b7@ideasonboard.com>
-From:   Avichal Rakesh <arakesh@google.com>
-In-Reply-To: <93e26d61-49ca-443d-9044-32e73243c3b7@ideasonboard.com>
+Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
+Content-Language: en-GB
+To:     David Ahern <dsahern@kernel.org>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-6-almasrymina@google.com>
+ <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
+ <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
+ <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
+From:   David Wei <dw@davidwei.uk>
+In-Reply-To: <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/8/23 06:15, Dan Scally wrote:
-> Hi Avichal
-> 
-> On 02/11/2023 20:19, Avichal Rakesh wrote:
->> Currently, the uvc gadget driver allocates all uvc_requests as one array
->> and deallocates them all when the video stream stops. This includes
->> de-allocating all the usb_requests associated with those uvc_requests.
->> This can lead to use-after-free issues if any of those de-allocated
->> usb_requests were still owned by the usb controller.
+On 2023-11-07 14:55, David Ahern wrote:
+> On 11/7/23 3:10 PM, Mina Almasry wrote:
+>> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
+>>>
+>>> On 11/5/23 7:44 PM, Mina Almasry wrote:
+>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>>> index eeeda849115c..1c351c138a5b 100644
+>>>> --- a/include/linux/netdevice.h
+>>>> +++ b/include/linux/netdevice.h
+>>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
+>>>>  };
+>>>>
+>>>>  #ifdef CONFIG_DMA_SHARED_BUFFER
+>>>> +struct page_pool_iov *
+>>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
+>>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
+>>>
+>>> netdev_{alloc,free}_dmabuf?
+>>>
 >>
->> This is patch 2 of 2 in fixing the use-after-free issue. It adds a new
->> flag to uvc_video to track when frames and requests should be flowing.
->> When disabling the video stream, the flag is tripped and, instead
->> of de-allocating all uvc_requests and usb_requests, the gadget
->> driver only de-allocates those usb_requests that are currently
->> owned by it (as present in req_free). Other usb_requests are left
->> untouched until their completion handler is called which takes care
->> of freeing the usb_request and its corresponding uvc_request.
+>> Can do.
 >>
->> Now that uvc_video does not depends on uvc->state, this patch removes
->> unnecessary upates to uvc->state that were made to accommodate uvc_video
->> logic. This should ensure that uvc gadget driver never accidentally
->> de-allocates a usb_request that it doesn't own.
+>>> I say that because a dmabuf can be host memory, at least I am not aware
+>>> of a restriction that a dmabuf is device memory.
+>>>
 >>
->> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
->> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
->> Signed-off-by: Avichal Rakesh <arakesh@google.com>
->> ---
+>> In my limited experience dma-buf is generally device memory, and
+>> that's really its use case. CONFIG_UDMABUF is a driver that mocks
+>> dma-buf with a memfd which I think is used for testing. But I can do
+>> the rename, it's more clear anyway, I think.
+> 
+> config UDMABUF
+>         bool "userspace dmabuf misc driver"
+>         default n
+>         depends on DMA_SHARED_BUFFER
+>         depends on MEMFD_CREATE || COMPILE_TEST
+>         help
+>           A driver to let userspace turn memfd regions into dma-bufs.
+>           Qemu can use this to create host dmabufs for guest framebuffers.
 > 
 > 
-> Thanks for the update. Let's leave the locking as it is; I think albeit not strictly necessary on that occasion it certainly is necessary to take the lock to protect the flags elsewhere, and probably better to be consistent with it.
+> Qemu is just a userspace process; it is no way a special one.
 > 
-> 
-> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+> Treating host memory as a dmabuf should radically simplify the io_uring
+> extension of this set. That the io_uring set needs to dive into
+> page_pools is just wrong - complicating the design and code and pushing
+> io_uring into a realm it does not need to be involved in.
 
-Thank you for reviewing, Dan!
+I think our io_uring proposal will already be vastly simplified once we
+rebase onto Kuba's page pool memory provider API. Using udmabuf means
+depending on a driver designed for testing, vs io_uring's registered
+buffers API that's been tried and tested.
 
-Greg, I just sent out v12 with the Reviewed-by tag:
-https://lore.kernel.org/all/20231109004104.3467968-1-arakesh@google.com/ 
-They should be ready to submit now. Thank you!
-
-Regards,
-Avi.
+I don't have an intuitive understanding of the trade offs yet, and would
+need to try out udmabuf and compare vs say using our own page pool
+memory provider.
 
 > 
->> <snip>
+> Most (all?) of this patch set can work with any memory; only device
+> memory is unreadable.
+> 
+> 
