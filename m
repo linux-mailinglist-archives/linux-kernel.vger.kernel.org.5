@@ -2,135 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDCB7E6495
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:45:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E627E649F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbjKIHp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:45:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S232841AbjKIHql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 02:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjKIHpZ (ORCPT
+        with ESMTP id S231439AbjKIHqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:45:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8906B268D;
-        Wed,  8 Nov 2023 23:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699515923; x=1731051923;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=CQXefVxHkEVXDq9bg6d3WKLLq6LhFUtDc30/jArcaq0=;
-  b=n1W4wyBGPCoS4L615eKQxLGYeYiQm7G+/x4yOZEqC/kfIcklwaJg10a/
-   4TlponTkPQS/A2h1Z0vMOpsMguqf2Y4cEPQWIF9mp3gc3u+zwG5Mm0NjZ
-   2AnEI++eT4f5b8J+MG1YTCWe/AjyfmxNYJ/yVsTfrk319pFQ3G2KPi8S4
-   gVKLvY5dpYzYR5+IAV5FZQkmepSKj3RV7SfKTjZmw8NignTE5kUsJhDg2
-   apNFr4Fkg1lox2zB1q2WKf7gh+2dUeZlWLbRXVEClUFvE7L5/vf98EJB/
-   YLq2att9rM52JqVc3rxXUCDxWdIs/xgu+pbOcV/i0LzhV3yKfZFzy2GTt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="370137927"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="370137927"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:45:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="853999242"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="853999242"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:45:20 -0800
-Message-ID: <94011a6d-fc3e-4cd7-a025-a00222ef4d98@linux.intel.com>
-Date:   Thu, 9 Nov 2023 15:45:18 +0800
+        Thu, 9 Nov 2023 02:46:40 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B134268D
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 23:46:38 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1f0f94a08a0so332592fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 23:46:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699515997; x=1700120797; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/+JlupkDMkqoU5uCh+PzR+ir4Ss/6wqjM2z/ZkKVT8=;
+        b=LzvQSO+CgLZL3JP9JqE92Dfgrfry3wxqJ+rAa/fI2m1mqLvCTa0s8hvzfDn4eIMTtU
+         RKdNRUPfDdykEzPQ6lICerqtFS3BHIbskFIriykqvodSWb8e79MuEPavnY/B7oMezvjD
+         ukHS0zZWPoItpbZq0GETdc+lpgponbnzkIntz92CaD3qmvmvgJOe6fsXo+S7PbGbhbHw
+         0CtDlds9tQ9tPuZmuP/H4Kv70/6UiLpTM8IM5tbug06hQgISMpiUkjpnm5U6KVdXXddu
+         /46UQdBAbJ3FdbKpUOuFsdtKtkCvjMa/KGD4ndFF4cMPghfa5645Y2+Y/mLq7XrMj7TN
+         a3Dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699515997; x=1700120797;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/+JlupkDMkqoU5uCh+PzR+ir4Ss/6wqjM2z/ZkKVT8=;
+        b=LBj11447waEO9nwF9QLVvJv0dqYDQx2ZfDVHSSgPffsbUDveOJoOoup9MsnqC/aefb
+         FzmQ3G467Ro0JH3sIOOlVRkVlYBDfcipEILD5LccpLNSe5Tt598bjGsElpr47Y5rcIGz
+         Q+LQfJbSZenSrAUQzR0ei+zUyU0VTqWcx5/KaXAWGRFtE5eS2Wk1VFAfDZsLQwFznqiB
+         5Mh4pVBAd3j4rqTveq1wUXys8/yMB5F/z/g/GZPAH/0MJahyQ98trc9hXfvzd6ibIFN+
+         1PMSyAcpl0WXq2wW8juDEx0LFmMwtN3LSMnr0ZTn1/QvTEGRzpxxDhNLBQNlQ7bOjMn6
+         rNxA==
+X-Gm-Message-State: AOJu0Yw7fKFMs47Ft/HnH/fN0Lx5M9GrIMjasUjrfU8d57Tp+JLtvpC+
+        KCM/k4lmrSdVV1hLfxIv5biqDxvHAssUczAkZxVDrg==
+X-Google-Smtp-Source: AGHT+IFcvxX9FePStob/4xGAqXiLZnp72OF2HSNFxQO6szCfZH6z4KkXFDHNv0NB60K8V2ew2JbakA==
+X-Received: by 2002:a05:6870:11c4:b0:1ef:f14e:6f4c with SMTP id 4-20020a05687011c400b001eff14e6f4cmr4149504oav.2.1699515997237;
+        Wed, 08 Nov 2023 23:46:37 -0800 (PST)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g21-20020a056870a71500b001d6e9bb67d2sm629396oam.7.2023.11.08.23.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 23:46:36 -0800 (PST)
+Date:   Wed, 8 Nov 2023 23:46:25 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Omkar Wagle <ov.wagle@gmail.com>
+cc:     Matthew Wilcox <willy@infradead.org>, hughd@google.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MM: shmem: Remove code sytle warnings
+In-Reply-To: <20231109062228.10227-1-ov.wagle@gmail.com>
+Message-ID: <134bb70e-db8a-0892-0a3c-d00ad57fcece@google.com>
+References: <20231109062228.10227-1-ov.wagle@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 15/19] KVM: selftests: Add a helper to query if the PMU
- module param is enabled
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231108003135.546002-1-seanjc@google.com>
- <20231108003135.546002-16-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231108003135.546002-16-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+mm not MM, style not sytle.
 
-On 11/8/2023 8:31 AM, Sean Christopherson wrote:
-> Add a helper to problem KVM's "enable_pmu" param, open coding strings in
-> multiple places is just asking for a false negatives and/or runtime errors
-> due to typos.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Wed, 8 Nov 2023, Omkar Wagle wrote:
+
+> Remove most of the code style warnings
+> 
+> Signed-off-by: Omkar Wagle<ov.wagle@gmail.com>
 > ---
->   tools/testing/selftests/kvm/include/x86_64/processor.h     | 5 +++++
->   tools/testing/selftests/kvm/x86_64/pmu_counters_test.c     | 2 +-
->   tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c | 2 +-
->   tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c     | 2 +-
->   4 files changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-> index 64aecb3dcf60..c261e0941dfe 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-> @@ -1216,6 +1216,11 @@ static inline uint8_t xsetbv_safe(uint32_t index, uint64_t value)
->   
->   bool kvm_is_tdp_enabled(void);
->   
-> +static inline bool kvm_is_pmu_enabled(void)
-> +{
-> +	return get_kvm_param_bool("enable_pmu");
-> +}
-> +
->   uint64_t *__vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr,
->   				    int *level);
->   uint64_t *vm_get_page_table_entry(struct kvm_vm *vm, uint64_t vaddr);
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index 90381382c51f..d775cc7e8fab 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -537,7 +537,7 @@ static void test_intel_counters(void)
->   
->   int main(int argc, char *argv[])
->   {
-> -	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-> +	TEST_REQUIRE(kvm_is_pmu_enabled());
->   
->   	TEST_REQUIRE(host_cpu_is_intel);
->   	TEST_REQUIRE(kvm_cpu_has_p(X86_PROPERTY_PMU_VERSION));
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> index 7ec9fbed92e0..fa407e2ccb2f 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> @@ -867,7 +867,7 @@ int main(int argc, char *argv[])
->   	struct kvm_vcpu *vcpu, *vcpu2 = NULL;
->   	struct kvm_vm *vm;
->   
-> -	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-> +	TEST_REQUIRE(kvm_is_pmu_enabled());
->   	TEST_REQUIRE(kvm_has_cap(KVM_CAP_PMU_EVENT_FILTER));
->   	TEST_REQUIRE(kvm_has_cap(KVM_CAP_PMU_EVENT_MASKED_EVENTS));
->   
-> diff --git a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-> index ebbcb0a3f743..562b0152a122 100644
-> --- a/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c
-> @@ -237,7 +237,7 @@ int main(int argc, char *argv[])
->   {
->   	union perf_capabilities host_cap;
->   
-> -	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-> +	TEST_REQUIRE(kvm_is_pmu_enabled());
->   	TEST_REQUIRE(kvm_cpu_has(X86_FEATURE_PDCM));
->   
->   	TEST_REQUIRE(kvm_cpu_has_p(X86_PROPERTY_PMU_VERSION));
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>  mm/shmem.c | 51 +++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 33 insertions(+), 18 deletions(-)
+
+Thanks for trying, but I'm sorry: very little of this is an improvement.
+
+Almost all of it is just adding a blank line in between declaration and
+code in some small block (including at least one from Linus himself).
+
+checkpatch does a good job of encouraging tidy patches, but it makes no
+claim to being right; and that particular nag annoys me more often than
+any other (though I often grudgingly give in to it, just for a quiet life
+- Cc'ing Matthew because I suspect he resents it even more than I do).
+
+And look at those fsparams: Al and others have gone to the trouble of
+lining them up nicely, but you've decided to undo their work.
+
+I believe it's explained somewhere (but admit that a quick look in
+Documentation didn't show me where), that checkpatch is something to run
+to tidy up your patches, or new source files (or perhaps even staging);
+but please don't send its advice on well-established source files.
+
+Hugh
