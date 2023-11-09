@@ -2,202 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698EF7E71D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2BA7E71DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345063AbjKITA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
+        id S1345053AbjKITDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:03:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKITA4 (ORCPT
+        with ESMTP id S231478AbjKITDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:00:56 -0500
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E193D3C17
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:00:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-        d=auristor.com; s=MDaemon; r=y; t=1699556452; x=1700161252;
-        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-        References:From:Organization:In-Reply-To:Content-Type; bh=4oSa9I
-        lvd2HE7kX8fsHqYKniS3PmVskNJz9yRmAHXgQ=; b=GGU/S6IS1yPpA7XUp+VhEr
-        m1qPFZGViSQVjAkGW3fYQU4+gPJe4G774ZvW063w/XfK8rVHmo8iwm2hZp3Qx96b
-        e+HTW9Ct3KrVfO+u+QObR0N4bPQvAjxLrnpJXIVrmua8B5yiwOT3YrJtmhTZsX4a
-        DKy3h4W13DRUVeajk1ReA=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 14:00:52 -0500
-Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1c) 
-        with ESMTPSA id md5001003742356.msg; Thu, 09 Nov 2023 14:00:49 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 14:00:49 -0500
-        (not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
-X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
-X-MDArrival-Date: Thu, 09 Nov 2023 14:00:49 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1677793fa9=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <45c0918e-5948-408e-a928-f764f3b1a42b@auristor.com>
-Date:   Thu, 9 Nov 2023 14:00:45 -0500
+        Thu, 9 Nov 2023 14:03:39 -0500
+Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2522D57;
+        Thu,  9 Nov 2023 11:03:35 -0800 (PST)
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+        (authenticated user m.brock@vanmierlo.com)
+        by connect.vanmierlo.com (Kerio Connect 10.0.2 patch 1) with ESMTPA;
+        Thu, 9 Nov 2023 20:03:31 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 39/41] afs: Overhaul invalidation handling to better
- support RO volumes
-Content-Language: en-US
-To:     David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231109154004.3317227-1-dhowells@redhat.com>
- <20231109154004.3317227-40-dhowells@redhat.com>
-From:   Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <20231109154004.3317227-40-dhowells@redhat.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms060709030808090502020405"
-X-MDCFSigsAdded: auristor.com
+Date:   Thu, 09 Nov 2023 20:03:31 +0100
+From:   m.brock@vanmierlo.com
+To:     Florian Eckert <fe@dev.tdt.de>
+Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
+        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [Patch v8 6/6] leds: ledtrig-tty: add additional line state
+ evaluation
+In-Reply-To: <20231109085038.371977-7-fe@dev.tdt.de>
+References: <20231109085038.371977-1-fe@dev.tdt.de>
+ <20231109085038.371977-7-fe@dev.tdt.de>
+Message-ID: <39e7c892299c74821b1105a0967063ca@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Florian Eckert schreef op 2023-11-09 09:50:
+> The serial tty interface also supports additional input signals, that
+> can also be evaluated within this trigger. This change is adding the
+> following additional input sources, which could be controlled
+> via the '/sys/class/<leds>/' sysfs interface.
+> 
+> Explanation:
+> DCE = Data Communication Equipment (Modem)
+> DTE = Data Terminal Equipment (Computer)
+> 
+> - cts:
+>   DCE is ready to accept data from the DTE (CTS = Clear To Send). If
+>   the line state is detected, the LED is switched on.
+>   If set to 0 (default), the LED will not evaluate CTS.
+>   If set to 1, the LED will evaluate CTS.
+> 
+> - dsr:
+>   DCE is ready to receive and send data (DSR = Data Set Ready). If the
+>   line state is detected, the LED is switched on.
+>   If set to 0 (default), the LED will not evaluate DSR.
+>   If set to 1, the LED will evaluate DSR.
+> 
+> - dcd:
+>   DTE is receiving a carrier from the DCE (DCD = Data Carrier Detect).
+>   If the line state is detected, the LED is switched on.
+>   If set to 0 (default), the LED will not evaluate DCD.
+>   If set to 1, the LED will evaluate DCD.
+> 
+> - rng:
+>   DCE has detected an incoming ring signal on the telephone line
+>   (RNG = Ring Indicator). If the line state is detected, the LED is
+>   switched on.
+>   If set to 0 (default), the LED will not evaluate RNG.
+>   If set to 1, the LED will evaluate RNG.
+> 
+> Also add an invert flag on LED blink, so that the LED blinks in the
+> correct order.
+> 
+> * If one off the new enabled input signals are evaluatet as 'enabled',
+>   and data are transmitted, then the LED should first blink 'off' and
+>   then 'on' (invert).
+> * If all the new enabled input signals are evaluatet as 'disabled',
+>   and data are transmitted, then the LED should first blink 'on' and
+>   then 'off'.
+> 
+> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+> ---
+>  .../ABI/testing/sysfs-class-led-trigger-tty   | 40 ++++++++++
+>  drivers/leds/trigger/ledtrig-tty.c            | 77 ++++++++++++++++++-
+>  2 files changed, 116 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> index 504dece151b8..30cef9ac0f49 100644
+> --- a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> +++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> @@ -20,3 +20,43 @@ Description:
+>  		Signal transmission (tx) of data on the named tty device.
+>  		If set to 0, the LED will not blink on transmission.
+>  		If set to 1 (default), the LED will blink on transmission.
+> +
+> +What:		/sys/class/leds/<led>/cts
+> +Date:		February 2024
+> +KernelVersion:	6.8
+> +Description:
+> +		CTS = Clear To Send
+> +		DCE is ready to accept data from the DTE.
+> +		If the line state is detected, the LED is switched on.
+> +		If set to 0 (default), the LED will not evaluate CTS.
+> +		If set to 1, the LED will evaluate CTS.
+> +
+> +What:		/sys/class/leds/<led>/dsr
+> +Date:		February 2024
+> +KernelVersion:	6.8
+> +Description:
+> +		DSR = Data Set Ready
+> +		DCE is ready to receive and send data.
+> +		If the line state is detected, the LED is switched on.
+> +		If set to 0 (default), the LED will not evaluate DSR.
+> +		If set to 1, the LED will evaluate DSR.
+> +
+> +What:		/sys/class/leds/<led>/dcd
+> +Date:		February 2024
+> +KernelVersion:	6.8
+> +Description:
+> +		DCD = Data Carrier Detect
+> +		DTE is receiving a carrier from the DCE.
+> +		If the line state is detected, the LED is switched on.
+> +		If set to 0 (default), the LED will not evaluate CAR (DCD).
+> +		If set to 1, the LED will evaluate CAR (DCD).
+> +
+> +What:		/sys/class/leds/<led>/rng
+> +Date:		February 2024
+> +KernelVersion:	6.8
+> +Description:
+> +		RNG = Ring Indicator
+> +		DCE has detected an incoming ring signal on the telephone
+> +		line. If the line state is detected, the LED is switched on.
+> +		If set to 0 (default), the LED will not evaluate RNG.
+> +		If set to 1, the LED will evaluate RNG.
+> diff --git a/drivers/leds/trigger/ledtrig-tty.c
+> b/drivers/leds/trigger/ledtrig-tty.c
+> index 1a40a78bf1ee..7291b2d970c6 100644
+> --- a/drivers/leds/trigger/ledtrig-tty.c
+> +++ b/drivers/leds/trigger/ledtrig-tty.c
+> @@ -19,17 +19,26 @@ struct ledtrig_tty_data {
+>  	int rx, tx;
+>  	bool mode_rx;
+>  	bool mode_tx;
+> +	bool mode_cts;
+> +	bool mode_dsr;
+> +	bool mode_dcd;
+> +	bool mode_rng;
+>  };
+> 
+>  /* Indicates which state the LED should now display */
+>  enum led_trigger_tty_state {
+>  	TTY_LED_BLINK,
+> +	TTY_LED_ENABLE,
+>  	TTY_LED_DISABLE,
+>  };
+> 
+>  enum led_trigger_tty_modes {
+>  	TRIGGER_TTY_RX = 0,
+>  	TRIGGER_TTY_TX,
+> +	TRIGGER_TTY_CTS,
+> +	TRIGGER_TTY_DSR,
+> +	TRIGGER_TTY_DCD,
+> +	TRIGGER_TTY_RNG,
+>  };
+> 
+>  static int ledtrig_tty_waitforcompletion(struct device *dev)
+> @@ -118,6 +127,18 @@ static ssize_t ledtrig_tty_attr_show(struct
+> device *dev, char *buf,
+>  	case TRIGGER_TTY_TX:
+>  		state = trigger_data->mode_tx;
+>  		break;
+> +	case TRIGGER_TTY_CTS:
+> +		state = trigger_data->mode_cts;
+> +		break;
+> +	case TRIGGER_TTY_DSR:
+> +		state = trigger_data->mode_dsr;
+> +		break;
+> +	case TRIGGER_TTY_DCD:
+> +		state = trigger_data->mode_dcd;
+> +		break;
+> +	case TRIGGER_TTY_RNG:
+> +		state = trigger_data->mode_rng;
+> +		break;
+>  	}
+> 
+>  	return sysfs_emit(buf, "%u\n", state);
+> @@ -147,6 +168,18 @@ static ssize_t ledtrig_tty_attr_store(struct
+> device *dev, const char *buf,
+>  	case TRIGGER_TTY_TX:
+>  		trigger_data->mode_tx = state;
+>  		break;
+> +	case TRIGGER_TTY_CTS:
+> +		trigger_data->mode_cts = state;
+> +		break;
+> +	case TRIGGER_TTY_DSR:
+> +		trigger_data->mode_dsr = state;
+> +		break;
+> +	case TRIGGER_TTY_DCD:
+> +		trigger_data->mode_dcd = state;
+> +		break;
+> +	case TRIGGER_TTY_RNG:
+> +		trigger_data->mode_rng = state;
+> +		break;
+>  	}
+> 
+>  	return size;
+> @@ -167,6 +200,10 @@ static ssize_t ledtrig_tty_attr_store(struct
+> device *dev, const char *buf,
+> 
+>  DEFINE_TTY_TRIGGER(rx, TRIGGER_TTY_RX);
+>  DEFINE_TTY_TRIGGER(tx, TRIGGER_TTY_TX);
+> +DEFINE_TTY_TRIGGER(cts, TRIGGER_TTY_CTS);
+> +DEFINE_TTY_TRIGGER(dsr, TRIGGER_TTY_DSR);
+> +DEFINE_TTY_TRIGGER(dcd, TRIGGER_TTY_DCD);
+> +DEFINE_TTY_TRIGGER(rng, TRIGGER_TTY_RNG);
+> 
+>  static void ledtrig_tty_work(struct work_struct *work)
+>  {
+> @@ -175,6 +212,8 @@ static void ledtrig_tty_work(struct work_struct 
+> *work)
+>  	struct led_classdev *led_cdev = trigger_data->led_cdev;
+>  	enum led_trigger_tty_state state = TTY_LED_DISABLE;
+>  	unsigned long interval = LEDTRIG_TTY_INTERVAL;
+> +	bool invert = false;
+> +	int status;
+>  	int ret;
+> 
+>  	if (!trigger_data->ttyname)
+> @@ -202,6 +241,33 @@ static void ledtrig_tty_work(struct work_struct 
+> *work)
+>  		trigger_data->tty = tty;
+>  	}
+> 
+> +	status = tty_get_tiocm(trigger_data->tty);
+> +	if (status > 0) {
+> +		if (trigger_data->mode_cts) {
+> +			if (status & TIOCM_CTS)
+> +				state = TTY_LED_ENABLE;
+> +		}
+> +
+> +		if (trigger_data->mode_dsr) {
+> +			if (status & TIOCM_DSR)
+> +				state = TTY_LED_ENABLE;
+> +		}
+> +
+> +		if (trigger_data->mode_dcd) {
+> +			if (status & TIOCM_CAR)
+> +				state = TTY_LED_ENABLE;
+> +		}
+> +
+> +		if (trigger_data->mode_rng) {
+> +			if (status & TIOCM_RNG)
+> +				state = TTY_LED_ENABLE;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * The evaluation of rx/tx must be done after the evaluation
+> +	 * of TIOCM_*, because rx/tx has priority.
+> +	 */
+>  	if (trigger_data->mode_rx || trigger_data->mode_tx) {
+>  		struct serial_icounter_struct icount;
+> 
+> @@ -211,11 +277,13 @@ static void ledtrig_tty_work(struct work_struct 
+> *work)
+> 
+>  		if (trigger_data->mode_tx && (icount.tx != trigger_data->tx)) {
+>  			trigger_data->tx = icount.tx;
+> +			invert = state == TTY_LED_ENABLE;
+>  			state = TTY_LED_BLINK;
+>  		}
+> 
+>  		if (trigger_data->mode_rx && (icount.rx != trigger_data->rx)) {
+>  			trigger_data->rx = icount.rx;
+> +			invert = state == TTY_LED_ENABLE;
+>  			state = TTY_LED_BLINK;
+>  		}
+>  	}
+> @@ -223,7 +291,10 @@ static void ledtrig_tty_work(struct work_struct 
+> *work)
+>  out:
+>  	switch (state) {
+>  	case TTY_LED_BLINK:
+> -		led_blink_set_oneshot(led_cdev, &interval, &interval, 0);
+> +		led_blink_set_oneshot(led_cdev, &interval, &interval, invert);
+> +		break;
+> +	case TTY_LED_ENABLE:
+> +		led_set_brightness(led_cdev, led_cdev->blink_brightness);
+>  		break;
+>  	case TTY_LED_DISABLE:
+>  		fallthrough;
+> @@ -241,6 +312,10 @@ static struct attribute *ledtrig_tty_attrs[] = {
+>  	&dev_attr_ttyname.attr,
+>  	&dev_attr_rx.attr,
+>  	&dev_attr_tx.attr,
+> +	&dev_attr_cts.attr,
+> +	&dev_attr_dsr.attr,
+> +	&dev_attr_dcd.attr,
+> +	&dev_attr_rng.attr,
+>  	NULL
+>  };
+>  ATTRIBUTE_GROUPS(ledtrig_tty);
 
---------------ms060709030808090502020405
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-On 11/9/2023 10:40 AM, David Howells wrote:
-> This allows better handling of RO (and Backup) volumes.  Since these are
-> snapshot of a RW volume that are updated atomically simultantanously across
-> all servers that host them, they only require a single callback promise for
-> the entire volume.
-
-The atomic visibility of a volume cloning operation is limited to 
-individual volume locations.
-It is untrue that a "vos release" updates all RO volume locations 
-simultaneously.  If that were
-to occur then there would be the potential for all volume locations to 
-be offline simultaneously
-causing an outage.  Instead, the traditional "volume release" process 
-updates the RO volume
-site co-located with the RW volume site and makes that version visible 
-to cache managers.
-Then 50% of the remaining sites are updated in parallel followed by the 
-remaining sites.
-
-Each time a site is updated to the new version the volume location entry 
-is updated to flag
-the site as VLSF_NEWREPSITE.  However, changes to the volume location 
-site flags might
-not be known to the cache manager.   Prior to completion of the "volume 
-release" process
-it is possible for a cache manager to failover from a newer snapshot to 
-an older one.
-
-> The currently upstream code assumes that RO volumes
-> operate in the same manner as RW volumes, and that each file has its own
-> individual callback - which means that it does a status fetch for *every*
-> file in a RO volume, whether or not the volume got "released" (volume
-> callback breaks can occur for other reasons too, such as the volumeserver
-> taking ownership of a volume from a fileserver).
-Knowledge that the volume snapshot has not changed can be used to avoid 
-individual
-FetchStatus queries when accessing vnodes anonymously.   In that case 
-the vnode's
-FetchStatus.AnonymousAccess can be trusted to be unchanged. However, for 
-authenticated
-access the individual FetchStatus or InlineBulkStat queries must still 
-be issued because
-the FetchStatus.CallerAccess rights are determined not only by the 
-access control list
-contents but the caller identity's group memberships which might have 
-changed.  This
-distinction only matters when evaluating authorization decisions.
-
-Jeffrey Altman
-
-
-
---------------ms060709030808090502020405
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
-MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
-xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
-fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
-EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
-9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
-IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
-gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
-eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
-WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
-utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
-Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
-a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
-AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
-Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
-wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
-15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
-o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
-3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
-VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
-CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
-dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
-L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
-5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
-dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
-eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
-YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
-dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
-Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
-dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
-bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
-CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
-bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
-0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
-6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
-QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
-Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
-db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
-rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
-UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
-p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
-MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
-A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
-ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEwOTE5
-MDA0NVowLwYJKoZIhvcNAQkEMSIEIMfi7pZLhBSUDeoS4rqmwbiuXRDV2cBFdyFjAGEIWbTv
-MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
-MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
-AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
-dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
-AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAOcfD
-WBoWN00V3XcY61qPs2sO33KGhgqnRwoIm7n1gaqr069pIo95GDDuxE+RccqM+IPqVfT2DU+y
-PNxdDF8Te+S/HEtZi42RzwykmrNFe0CilqfdHzzyMALApuk+wViqzJTd9NtjIaMxpQ2IXby5
-WFH4OAFUfFJfkjrS4r/y+NGZsMIYSijLKQYm6bJiH/ff9jaz/AGN5JAA5CYNTeE3Few9xq6R
-WdPqdLPc5ZisPr+tJLnVpYVWPrJAMwmv3PlXlkz7axZJONdM91+T1U+Y/PDKb9MjzR+Q6cgu
-fNyoEJDL3R/Ic0KKU4x2jZ/h9NbBDJ45Jh7rrnQbjQyMr/XkMQAAAAAAAA==
---------------ms060709030808090502020405--
+Reviewed-by: Maarten Brock <m.brock@vanmierlo.com>
 
