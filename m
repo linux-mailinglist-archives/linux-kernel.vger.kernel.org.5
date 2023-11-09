@@ -2,224 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF6D7E721C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FCB7E721F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344592AbjKITTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        id S230185AbjKITT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:19:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKITTG (ORCPT
+        with ESMTP id S229613AbjKITT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:19:06 -0500
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E269E3C11
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:19:03 -0800 (PST)
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5b62a669d61so1076216a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:19:03 -0800 (PST)
+        Thu, 9 Nov 2023 14:19:27 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861BE3A84
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:19:25 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b40d5ea323so715145b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:19:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699557565; x=1700162365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ydcfllMEeEZX6H39u2ZgHbnzb4EW6sJnHz8YiR+XiJg=;
+        b=lLhuHNBiTyr/0bSv4R4McFpn3VhEO6iS69qgdS3rFu1FWQ1fwRSuOGTVATbbTkXXOm
+         gSKP5aB/LsokgEtr+uiVFGqx2CM+G7PtnvejuB2AH1MHcAcD+k6gqlbjvYBDFVHT9NH3
+         qW6ZBxunwT3BXgL2m8eEPeiIoEVAj1XqjS9fI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699557543; x=1700162343;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LAtLnb72EkhhuFO4ZV5fL7VkmsX9UfW8s8n3qZp2iBU=;
-        b=rGiGOJUUc+2XswXdjVPvbfgOvJTWBmMihAfH7en9zEJkdQyww/eqCXlBfZ38uK6W94
-         X2OXtW5VuC3Sw6dXwTrM80Pc+1cgtNC/QFn4TXYLg0bzGo/Qc0/eilUDsry0P9jAvw9x
-         HvB59Eo+Ropt+PY+FOQKn6X1OTGe0y7CQT/k3a0Me5D6ppUWrcIphyZpvZQfQ5yAJWft
-         V3i1xtYOFondBVbYdeKkr8Yuxka8sq9qFM3UzD4OFjCHoi5Ob425cjmtYx8Q5ZxQjVpa
-         Jcy8wuw8H9b5zHwixhqm5kWCxd812N4CAVtc6I9jXHd92MIvSfqGYLJSGvZpJ7HYHsTa
-         +PVw==
-X-Gm-Message-State: AOJu0YyXs5fjfLdsoRF/WAbUXfhhOgD9XvcDtpf2UXzz5vOVaffvTRjT
-        VZ4CZDPwojU46E8U4QdBI+o4RKjNeYiAEbtOEy/tnF8dNyIY
-X-Google-Smtp-Source: AGHT+IHKb+19U+ZmmFPlZshuQVUWzVrT9RNn1wL6q7iFrWwTv0TIxac2wXeuYlTQRJHLMx9SToRgEDfecxHG6yMAzT8E//H83HWV
+        d=1e100.net; s=20230601; t=1699557565; x=1700162365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ydcfllMEeEZX6H39u2ZgHbnzb4EW6sJnHz8YiR+XiJg=;
+        b=W7w+xmX8MAQLDIbIXp8fnx1OZ8DQc5DrRwvYBD/ukpF9OoCYU4sf+/kFjbK73hmYQ2
+         WoOHJAvCqr0vZt5E0w9vIPr758bbrmC3xg/oX5zB7JD/AltxC5RqC2ORhEQYr/1zxQMI
+         T5MdDGB/i6COfRCmFPUsZNsZm4gwNntIwfCFZGC8Vbzy0l66w1/Iojt60UA/Bo/PPaya
+         UhT7iglDRZlHfH7SDDfehQufaLUHzo5vR0ywOa1j5hNC6eeVe3FePPqnW1/BSSzZ44rP
+         zeES/X0pdQFadHjSD51hyxCA7e9PH20m1tpGZglg8u8qJMMbbTVRBWuc3FEetAWdqHzN
+         X19g==
+X-Gm-Message-State: AOJu0YzDOfFzzNF3WMSlno4J4/naa984PpJhdFQgc7y0Pm0ICBSbke6B
+        0i6I5odZRmnzDBCrNioxW0G7m1M/Rr+SnyhLe0EXEw==
+X-Google-Smtp-Source: AGHT+IE6FBhCU6plmujlP1Eh9ePsZAHoNYSchpX4ZhmLAVcLjEgfUJRSYDpY2XXMcrUnJr2O60Mx/W5En8+Y4MgS7ow=
+X-Received: by 2002:a05:6808:2017:b0:3b6:cadf:be06 with SMTP id
+ q23-20020a056808201700b003b6cadfbe06mr768113oiw.23.1699557564771; Thu, 09 Nov
+ 2023 11:19:24 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a65:5a44:0:b0:5bd:bc9c:7bc4 with SMTP id
- z4-20020a655a44000000b005bdbc9c7bc4mr683178pgs.12.1699557543466; Thu, 09 Nov
- 2023 11:19:03 -0800 (PST)
-Date:   Thu, 09 Nov 2023 11:19:03 -0800
-In-Reply-To: <20231109190331.107211-1-kdipendra88@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a75acb0609bd13f0@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     kdipendra88@gmail.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231109111934.4172565-1-korneld@chromium.org>
+In-Reply-To: <20231109111934.4172565-1-korneld@chromium.org>
+From:   Sven van Ashbrook <svenva@chromium.org>
+Date:   Thu, 9 Nov 2023 14:19:14 -0500
+Message-ID: <CAG-rBijqw2VO8AQbwBh5Cu47gBbDsOGwPgw-8hSXMWCHXi6GLw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Disable LPM during initialization
+To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jason Lai <jasonlai.genesyslogic@gmail.com>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        =?UTF-8?Q?Stanis=C5=82aw_Kardach?= <skardach@google.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Kornel, see below.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+On Thu, Nov 9, 2023 at 6:20=E2=80=AFAM Kornel Dul=C4=99ba <korneld@chromium=
+.org> wrote:
+>
+> To address IO performance commit f9e5b33934ce
+> ("mmc: host: Improve I/O read/write performance for GL9763E")
+> limited LPM negotiation to runtime suspend state.
+> The problem is that it only flips the switch in the runtime PM
+> resume/suspend logic.
+>
+> Disable LPM negotiation in gl9763e_add_host.
+> This helps in two ways:
+> 1. It was found that the LPM switch stays in the same position after
+>    warm reboot. Having it set in init helps with consistency.
+> 2. Disabling LPM during the first runtime resume leaves us susceptible
+>    to the performance issue in the time window between boot and the
+>    first runtime suspend.
+>
+> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for G=
+L9763E")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pc=
+i-gli.c
+> index d83261e857a5..ce91d1e63a8e 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -220,6 +220,9 @@
+>
+>  #define GLI_MAX_TUNING_LOOP 40
+>
+> +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slo=
+t,
+> +                                             bool enable);
+> +
+>  /* Genesys Logic chipset */
+>  static inline void gl9750_wt_on(struct sdhci_host *host)
+>  {
+> @@ -1281,6 +1284,9 @@ static int gl9763e_add_host(struct sdhci_pci_slot *=
+slot)
+>         if (ret)
+>                 goto cleanup;
+>
+> +       /* Disable LPM negotiation to avoid entering L1 state. */
+> +       gl9763e_set_low_power_negotiation(slot, false);
+> +
+>         return 0;
 
-==================================================================
-BUG: KASAN: slab-use-after-free in nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
-Read of size 4 at addr ffff88806a407548 by task syz-executor.0/5449
+What happens if the bridge is not driving the system rootfs? Imagine
+the case where
+the bridge is used to drive an auxiliary eMMC, unused until a few hours
+after boot. After this patch, the bridge may remain active (not-L1)
+for the entire time,
+although it's not being used...
 
-CPU: 1 PID: 5449 Comm: syz-executor.0 Not tainted 6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
- nfc_llcp_send_ui_frame+0x2ac/0x670 net/nfc/llcp_commands.c:766
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x592/0x890 net/socket.c:2558
- ___sys_sendmsg net/socket.c:2612 [inline]
- __sys_sendmmsg+0x3b2/0x730 net/socket.c:2698
- __do_sys_sendmmsg net/socket.c:2727 [inline]
- __se_sys_sendmmsg net/socket.c:2724 [inline]
- __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2724
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7efdd1e7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007efdd2b050c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007efdd1f9bf80 RCX: 00007efdd1e7cae9
-RDX: 0000000000000001 RSI: 00000000200013c0 RDI: 0000000000000004
-RBP: 00007efdd1ec847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007efdd1f9bf80 R15: 00007ffcb9f3b548
- </TASK>
+I suspect we want the following:
+1. consistency - LPM register setting and runtime_pm state must agree
+2. power-efficient initial state - bridge must come out of probe
+runtime-suspended
+and LPM must be enabled
 
-Allocated by task 5449:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- nfc_allocate_device+0x12f/0x520 net/nfc/core.c:1065
- nci_allocate_device+0x1e2/0x360 net/nfc/nci/core.c:1179
- virtual_ncidev_open+0x75/0x1b0 drivers/nfc/virtual_ncidev.c:136
- misc_open+0x30b/0x380 drivers/char/misc.c:165
- chrdev_open+0x551/0x630 fs/char_dev.c:414
- do_dentry_open+0x80f/0x1430 fs/open.c:929
- do_open fs/namei.c:3640 [inline]
- path_openat+0x27bb/0x3180 fs/namei.c:3797
- do_filp_open+0x234/0x490 fs/namei.c:3824
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1448
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+I suspect the above will be fulfilled if we do
 
-Freed by task 5448:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
- device_release+0x95/0x1c0
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1ee/0x430 lib/kobject.c:733
- nfc_free_device include/net/nfc/nfc.h:213 [inline]
- nci_free_device+0x38/0x50 net/nfc/nci/core.c:1209
- virtual_ncidev_close+0x70/0x90 drivers/nfc/virtual_ncidev.c:164
- __fput+0x3f8/0x910 fs/file_table.c:384
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close+0x15f/0x220 fs/open.c:1557
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
++ /* Bring to consistent runtime suspended state with LPM negotiation enabl=
+ed */
++ gl9763e_set_low_power_negotiation(slot, false);
++ pm_runtime_set_suspended(dev);
 
-The buggy address belongs to the object at ffff88806a407000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1352 bytes inside of
- freed 2048-byte region [ffff88806a407000, ffff88806a407800)
+WDYT?
 
-The buggy address belongs to the physical page:
-page:ffffea0001a90000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x6a400
-head:ffffea0001a90000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012842000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 5382, tgid 5382 (syz-executor.0), ts 87391067310, free_ts 58677729993
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1025 [inline]
- __kmalloc+0xa8/0x230 mm/slab_common.c:1039
- kmalloc include/linux/slab.h:603 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- ipt_alloc_initial_table+0x6c/0x570 net/ipv4/netfilter/ip_tables.c:36
- iptable_mangle_table_init+0x1c/0x60 net/ipv4/netfilter/iptable_mangle.c:88
- xt_find_table_lock+0x2d0/0x3b0 net/netfilter/x_tables.c:1259
- xt_request_find_table_lock+0x26/0x100 net/netfilter/x_tables.c:1284
- get_info net/ipv4/netfilter/ip_tables.c:963 [inline]
- do_ipt_get_ctl+0x885/0x18c0 net/ipv4/netfilter/ip_tables.c:1651
- nf_getsockopt+0x292/0x2c0 net/netfilter/nf_sockopt.c:116
- ip_getsockopt+0x21e/0x2e0 net/ipv4/ip_sockglue.c:1788
- tcp_getsockopt+0x160/0x1c0 net/ipv4/tcp.c:4278
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
- vfree+0x186/0x2e0 mm/vmalloc.c:2842
- kcov_put kernel/kcov.c:429 [inline]
- kcov_close+0x2b/0x50 kernel/kcov.c:525
- __fput+0x3f8/0x910 fs/file_table.c:384
- task_work_run+0x24a/0x300 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa2c/0x2650 kernel/exit.c:874
- do_group_exit+0x206/0x2c0 kernel/exit.c:1024
- get_signal+0x175d/0x1840 kernel/signal.c:2892
- arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop+0x6a/0x100 kernel/entry/common.c:168
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88806a407400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88806a407480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88806a407500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                              ^
- ffff88806a407580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88806a407600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
-Tested on:
-
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1617ab37680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f0d47f0e0359e88e
-dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11005d0f680000
-
+>
+>  cleanup:
+> @@ -1323,7 +1329,6 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *=
+slot)
+>         pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+>  }
+>
+> -#ifdef CONFIG_PM
+>  static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slo=
+t, bool enable)
+>  {
+>         struct pci_dev *pdev =3D slot->chip->pdev;
+> @@ -1349,6 +1354,7 @@ static void gl9763e_set_low_power_negotiation(struc=
+t sdhci_pci_slot *slot, bool
+>         pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+>  }
+>
+> +#ifdef CONFIG_PM
+>  static int gl9763e_runtime_suspend(struct sdhci_pci_chip *chip)
+>  {
+>         struct sdhci_pci_slot *slot =3D chip->slots[0];
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
