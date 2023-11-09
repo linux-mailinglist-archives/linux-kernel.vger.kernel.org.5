@@ -2,104 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE527E7436
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD0A7E7427
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345422AbjKIWHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51096 "EHLO
+        id S232308AbjKIWHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbjKIWHm (ORCPT
+        with ESMTP id S229629AbjKIWHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:07:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3AF1FF6
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 14:06:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699567614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vTCrETe33lMmrS3iamQBvHr88tXqZxqdutyVeBzQWY0=;
-        b=ESjqQoMuZEf4gIxXEiaJJ7sDoiAjo3l2NFYmB83eQfXGW0kOGaKi/i+rtfg/vKlKLvh/Lv
-        1uufcebAc91N8Jcf6rO7HnWbHtRNITJzsJdi5/KPuu5vjaijuQzWxCjruJIUZB0zrMfPAf
-        slrxZiH9Ut3Tm+dfxFaCYvRy8oIGMLk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-623-Goh8HWQaMEyXDt1PmNGdJw-1; Thu,
- 09 Nov 2023 17:06:50 -0500
-X-MC-Unique: Goh8HWQaMEyXDt1PmNGdJw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0CE3C1C068C1;
-        Thu,  9 Nov 2023 22:06:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 38367C1290F;
-        Thu,  9 Nov 2023 22:06:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <6fadc6aa-4078-4f12-a4c7-235267d6e0b1@auristor.com>
-References: <6fadc6aa-4078-4f12-a4c7-235267d6e0b1@auristor.com> <20231109154004.3317227-1-dhowells@redhat.com> <20231109154004.3317227-2-dhowells@redhat.com>
-To:     Jeffrey E Altman <jaltman@auristor.com>
-Cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/41] rxrpc: Fix RTT determination to use PING ACKs as a source
+        Thu, 9 Nov 2023 17:07:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02BB386A;
+        Thu,  9 Nov 2023 14:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699567640; x=1731103640;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=vFDM721BmWzXCAqHdUJ+uv7GGpaz4QADTyvOIolr30k=;
+  b=NgS5+1gx44kDB+l+TKQFsT2J6v34kjb21H7C0XbvDs5ywsA9+GK+grtr
+   RNNyocj6kduZU2ETbtwm9UWsPQ9nj2r5vuu5FApjRuzRnEsZClG3wzfTX
+   uASmJz1KeNYERH2jNsp/w5kZAmNyX79SkDeJZg69FWL9SIczvPmq75js0
+   dP5cfR4zYOvm79f1PP9fErQnfyyxpNo495pwwkfILvLWS0M0Z+DQDZAPK
+   WEEM6x6jNT0en4rry51+ejIHoANJfODSV7aFsRYNoyoabc97UIWNJKJW4
+   LiVr1FaQoSMI/qmq6mnCZVX21wimkM4Odwracyc3y7y78zIZmgAqoWqfm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375124156"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="375124156"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:07:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713453293"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="713453293"
+Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.16.95])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:07:18 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH RFC v4 0/6] efi/cxl-cper: Report CPER CXL component events
+ through trace events
+Date:   Thu, 09 Nov 2023 14:07:13 -0800
+Message-Id: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3327952.1699567608.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 09 Nov 2023 22:06:48 +0000
-Message-ID: <3327953.1699567608@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABJYTWUC/3XNywrCMBAF0F8pWRvJo6aNK0HwA9yKi3Q6sYG+S
+ EqplP67aVeidHln5sydSUDvMJBzMhOPowuua2NIDwmByrQvpK6MmQgmJFOMU5hqCj16KpS1kEs
+ NChSJ54UJSAtvWqhW0JgwoF8XvUfrpq3jQe63K3nGYeXC0Pn31jvybfVfMXLKqNaFSaXNbZaxi
+ 2sHrI/QNduTUexBEaHkaalBKlMw8QvlHpQRMp7rUnGb6ZP6hsuyfABtQIidMAEAAA==
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-0f7f0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699567638; l=2895;
+ i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
+ bh=vFDM721BmWzXCAqHdUJ+uv7GGpaz4QADTyvOIolr30k=;
+ b=DzTHT08LnyJc6N7Hlb4DmGBrqHRVJx1508rCKWsyBphr3Ysg6NhjdOs+NycdlQJdgReQ4689i
+ kn3JxBda30LAKb4/oaYqwo4kD79mJFvED3UbDIY3zplfZIRH9IxpcS5
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm going to drop this patch from this series for now and send it separate=
-ly.
+Series status/background
+========================
 
-> I do not believe the ack_reason matters within rxrpc_input_ack(). As lon=
-g as
-> the acked_serial is non-zero,
-> rxrpc_complete_rtt_probe() can be called to attempt to compute an RTT.  =
- If
-> there is an exact match for the
-> acked_serial then an RTT can be computed and if acked_serial is later th=
-an the
-> pending rtt probe, the probe
-> can be abandoned with the following caveats.
-> =
+This RFC should be very close to done but I'm still working on getting a
+system to test on.  Therefore, the CPER code remains compile tested
+only.  The modified event log code continues to pass cxl-test.
 
-> 1. Receiving an acked_serial that is later than the serial of the
->    transmitted probe indicates that a packet
->    transmitted after the probe was received first.  Or that reordering
->    of the transmitted packets occurred.
->    Or that the probe was never received by the peer; or that the peer's
->    response to the probe was lost in
->    transit.
-> 2. The serial number namespace is unsigned 32-bit shared across all of
->    the call channels of the associated
->    rx connection.  As the serial numbers will wrap the use of after()
->    within rxrpc_complete_rtt_probe to
->    compare their values is questionable.   If serial numbers will be
->    compared in this manner then they
->    need to be locally tracked and compared as unsigned 64-bit values
->    where only the low 32-bits are
->    transmitted on the wire and any wire serial number equal to zero is
->    ignored.
+Cover letter
+============
 
-I do ignore ack.serial =3D=3D 0 for this purpose.
+CXL Component Events, as defined by EFI 2.10 Section N.2.14, wrap a
+mostly CXL event payload in an EFI Common Platform Error Record (CPER)
+record.  If a device is configured for firmware first CXL event records
+are not sent directly to the host.
 
-I'm not sure how expanding it internally to 64-bits actually helps since t=
-he
-upper 32 bits is not visible to the peer.
+The CXL sub-system uniquely has DPA to HPA translation information.  It
+also already has event format tracing.  Restructure the code to make
+sharing the data between CPER/event logs most efficient.  Then send the
+CXL CPER records to the CXL sub-system for processing.
 
-David
+With event logs the events interrupt the driver directly.  In the EFI
+case events are wrapped with device information which needs to be
+matched with memdev devices.  A number of alternatives were considered
+to match the memdev with the CPER record.  The most robust was to find
+the PCI device via Bus, Device, Function and match it to the memdev
+driver data.
+
+CPER records are identified with GUID's while CXL event logs contain
+UUID's.  The UUID is reported for all events.  While the UUID is
+redundant for the known events the UUID's are already used by rasdaemon.
+To keep compatibility UUIDs are injected for CPER records based on the
+record type.
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+Changes in v4:
+- Jonathan/Shiju: Put UUID back in trace points.
+- Smita: Fix packed structure
+- Smita: use PCI_DEVFN() properly
+- iweiny: update cover letter/commit messages
+- Link to v3: https://lore.kernel.org/r/20230601-cxl-cper-v3-0-0189d61f7956@intel.com
+
+---
+Ira Weiny (6):
+      cxl/trace: Pass uuid explicitly to event traces
+      cxl/events: Promote CXL event structures to a core header
+      cxl/events: Separate UUID from event structures
+      cxl/events: Create a CXL event union
+      firmware/efi: Process CXL Component Events
+      cxl/memdev: Register for and process CPER events
+
+ drivers/cxl/core/mbox.c         |  65 ++++++++++------
+ drivers/cxl/core/trace.h        |  34 ++++----
+ drivers/cxl/cxlmem.h            |  96 ++---------------------
+ drivers/cxl/pci.c               |  58 +++++++++++++-
+ drivers/firmware/efi/cper.c     |  15 ++++
+ drivers/firmware/efi/cper_cxl.c |  40 ++++++++++
+ drivers/firmware/efi/cper_cxl.h |  29 +++++++
+ include/linux/cxl-event.h       | 160 ++++++++++++++++++++++++++++++++++++++
+ tools/testing/cxl/test/mem.c    | 166 +++++++++++++++++++++++-----------------
+ 9 files changed, 461 insertions(+), 202 deletions(-)
+---
+base-commit: 1c8b86a3799f7e5be903c3f49fcdaee29fd385b5
+change-id: 20230601-cxl-cper-26ffc839c6c6
+
+Best regards,
+-- 
+Ira Weiny <ira.weiny@intel.com>
 
