@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4147E696D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B5D7E696F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbjKILTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        id S233857AbjKILTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjKILTj (ORCPT
+        with ESMTP id S233767AbjKILTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:19:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7292D5E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:19:37 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699528775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ARFYRZtJ6JOcPNLZxUHFjYKm8iYuaCTaRJaLSU6X0OU=;
-        b=AsQoiKZW+wBQTzPvvHzqHA4iZ6B+zH0uqo/NLzBosq+d6mCkO1lSM9NGw1h9XiHGq3r42h
-        1YiE+zIfe5haoE3vXJ6IQfAWob9enS5W2FI+ik0h7AkQlFTkYqs8pPCL+sB7RC6st9y/9J
-        uJvqwFhWHUg+YYMG6RPQ+3uwhrj7LH/CFlRlzek6LII1YDP8ACprFyP0L6gqdOK8f0XHla
-        dPS8uQ5RUWKiOKSYYVefCqZpA7ZXSNc2PAOa4W5p9H/EPr/RCQSIvWxemXwLiGU682Mjrp
-        tmaGBemGjfXZ5geSTkNQ3FDbFNmwvCLan3mVn2UK0h5QK2wAGBtgBujOYEB5Ow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699528775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ARFYRZtJ6JOcPNLZxUHFjYKm8iYuaCTaRJaLSU6X0OU=;
-        b=wcjPJI03vhFC3DvSrk9NFzTiVoVaq5A9h4g1/Pg5f93lbpwGOuqmolJJQ9kVL/PIFYxvV+
-        fqz0xFpYFUd7xNAw==
-To:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
-        Ankur Arora <ankur.a.arora@oracle.com>
-Subject: Re: [RFC PATCH 54/86] sched: add cond_resched_stall()
-In-Reply-To: <20231107215742.363031-55-ankur.a.arora@oracle.com>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-55-ankur.a.arora@oracle.com>
-Date:   Thu, 09 Nov 2023 12:19:34 +0100
-Message-ID: <87cywjfa2h.ffs@tglx>
+        Thu, 9 Nov 2023 06:19:49 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7410C2D69;
+        Thu,  9 Nov 2023 03:19:47 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0F597660745F;
+        Thu,  9 Nov 2023 11:19:44 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699528786;
+        bh=n5ME7SmWZNZRvgb0w3nunEyLQd4iUQAOH5nCJG6H6ik=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MHJMl57VTOZfvON/Jp8Vvh0d3D0I2lnpz0lA/SZHcMhZTPxcKOwBQJFW4fVzLcrpS
+         McA9j84OjxTAJSEjibqMq8qdWfYbJTJT/I4+ksSJhRMngy7vUr9bJJbEkP5rdxGqnF
+         NX7TCLKHwe2QyCQ8gexteKddZ5poBYKdmq9PcOc9aptXnWiZbpO7JOJBkRsTwipSw3
+         5JUIAieQyeH+uM1rF1IN3UQWTO8T+TCg60qGufgYfQ11NExnXuDVD1VM1q4hF4jb+v
+         Om4itFV4xodHJkKXkN1VkJC8Wcae93BgNuSgj4U75MYrjhV3MJ19UkuwCJth7XkpM9
+         jfTrL0VrRLdrg==
+Message-ID: <705dfab2-dbb5-44f2-b40b-c7d56945ba22@collabora.com>
+Date:   Thu, 9 Nov 2023 12:19:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 34/56] sample: v4l: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-35-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-35-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07 2023 at 13:57, Ankur Arora wrote:
-> The kernel has a lot of intances of cond_resched() where it is used
-> as an alternative to spinning in a tight-loop while waiting to
-> retry an operation, or while waiting for a device state to change.
->
-> Unfortunately, because the scheduler is unlikely to have an
-> interminable supply of runnable tasks on the runqueue, this just
-> amounts to spinning in a tight-loop with a cond_resched().
-> (When running in a fully preemptible kernel, cond_resched()
-> calls are stubbed out so it amounts to even less.)
->
-> In sum, cond_resched() in error handling/retry contexts might
-> be useful in avoiding softlockup splats, but not very good at
-> error handling. Ideally, these should be replaced with some kind
-> of timed or event wait.
->
-> For now add cond_resched_stall(), which tries to schedule if
-> possible, and failing that executes a cpu_relax().
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> future.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-What's the point of this new variant of cond_resched()? We really do not
-want it at all. 
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-> +int __cond_resched_stall(void)
-> +{
-> +	if (tif_need_resched(RESCHED_eager)) {
-> +		__preempt_schedule();
+> ---
+>   samples/v4l/v4l2-pci-skeleton.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+> index a61f94db18d9..a65aa9d1e9da 100644
+> --- a/samples/v4l/v4l2-pci-skeleton.c
+> +++ b/samples/v4l/v4l2-pci-skeleton.c
+> @@ -155,6 +155,7 @@ static int queue_setup(struct vb2_queue *vq,
+>   		       unsigned int sizes[], struct device *alloc_devs[])
+>   {
+>   	struct skeleton *skel = vb2_get_drv_priv(vq);
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   
+>   	skel->field = skel->format.field;
+>   	if (skel->field == V4L2_FIELD_ALTERNATE) {
+> @@ -167,8 +168,8 @@ static int queue_setup(struct vb2_queue *vq,
+>   		skel->field = V4L2_FIELD_TOP;
+>   	}
+>   
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	if (*nplanes)
+>   		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
 
-Under the new model TIF_NEED_RESCHED is going to reschedule if the
-preemption counter goes to zero.
-
-So the typical
-
-   while (readl(mmio) & BUSY)
-   	cpu_relax();
-
-will just be preempted like any other loop, no?
-
-Confused.
