@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C227E6E3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0747E6E7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343770AbjKIQHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S1343797AbjKIQSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjKIQHV (ORCPT
+        with ESMTP id S1343567AbjKIQSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:07:21 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFB9325A;
-        Thu,  9 Nov 2023 08:07:19 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so666291f8f.0;
-        Thu, 09 Nov 2023 08:07:19 -0800 (PST)
+        Thu, 9 Nov 2023 11:18:35 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235D1358C
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:18:33 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32fa7d15f4eso658154f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 08:18:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699546038; x=1700150838; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bLnVRYPlFfc13GAjjN2Xsp7jGpHoZsbxAdnsHea6XjM=;
-        b=S1PdBEEbQjC//UPEJlQzyAeUAkuHeKKJJ9YxSwGJsBWIinlJkTs+futdHjvOEVf1FC
-         i1Lq84/hnwkn4XeC5I0BBN/0oIHI5af7Fi3x6itpWXj6tG56p2o+2ARGn2y3UatsLXoM
-         2BRCpof7VunFpfVP3P0nRrTARM2YsPO0VE0dPjXa8wqDzjKgoixES1wF4kmsqRx0ezw9
-         h3fikdiuHtuXCTH3ejazBRyAvX0r13K29IX5G5vNdpNq2cBxgpRFb+JkL0Tem9jL0+K7
-         pAhZsBr6i3kJ2w4D3MLLjQvI1ypeSrlzcBEEphirMcF7RjNd0iiclyA2FqT68ZsCnMv5
-         hM3A==
+        d=gmail.com; s=20230601; t=1699546711; x=1700151511; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQTXl6Zu6Uy1kHuaX8me13xEm3/yUTPeeI94ANaTAbI=;
+        b=lBfb5K8R2lrCeSk/gEWICZEFcyaZsZymvPamcg0BdxTHImcGbUW76znPypNMCW7iaT
+         w67ySEG29zeOpZGTEPjA++1LHACPwLBGDxkIHBTCrbnn3Sd0+Iyyrb5Fg1GxhmJuWwnj
+         DydeaGnUBFf2fy5GPnxzTD3BVBLsD1LH4Ie3Fz9+qQsrx/j9FrT+M4f/q0/nvKMrqSwM
+         dv7k12Jv1CIYbZoAYjlVqlIW4VfKxs/rtwaYWGPhNJieopTv5K96bFV/ugoB2bf/E1GI
+         ueoBCYutD1NLof9BjiPmCuh1TAjP3l4cW2WRbERLV5ypm+qSwVq0AV3zEX0Ek893d8kW
+         VaUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699546038; x=1700150838;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bLnVRYPlFfc13GAjjN2Xsp7jGpHoZsbxAdnsHea6XjM=;
-        b=R/MbwkS/v8iIbH06fbpsFkDdZD9+AYldSwwIVdg6X9PNPW5NkpenkDc9jDsYzVHhTT
-         J7VrGwVPZB1LflTmKfBY70EhNcRqlMD+LA/5rW2XJg0SdxntYLDp1NQWRunqbhaJU1xL
-         R/nOoJEzR6nzeRqBGN8bC1Qmhe4pReIQ4u/3QvTL83ZSyyHXzyc1nsSFDuwXSgRTlGQ5
-         AEwJ/V44dN0PXF/XYwUkQOkK0XgXxazJi4TwIMlWcGFERrmzfY9SWsBHzBRfbMqkQzfv
-         4Sz63UHyC5/kfLXFw0DSlEyRgW4+jh2nSoqU/uXcTN16mJVwgTt1V7mIz/OjCDpj+naD
-         /Osw==
-X-Gm-Message-State: AOJu0YwiZkdiOR1l2yn/EgV10xBCIJqDIqkgH4smPRNFKS8MUyVbibSC
-        xeGsTXVc6tTg8V3ClCJS6Yk=
-X-Google-Smtp-Source: AGHT+IGVRroWe9+M86SBSGyIl3Qj9MvOmsO9RPSIFo66Ff8BWlVF0jn+QQTFhXSBQi9W892f6tI7Bg==
-X-Received: by 2002:a05:6000:1888:b0:32f:87e8:707d with SMTP id a8-20020a056000188800b0032f87e8707dmr7113717wri.5.1699546037464;
-        Thu, 09 Nov 2023 08:07:17 -0800 (PST)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id t10-20020a5d42ca000000b0032f7fab0712sm7577069wrr.52.2023.11.09.08.07.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 08:07:17 -0800 (PST)
-Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
-To:     Mina Almasry <almasrymina@google.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-11-almasrymina@google.com>
- <ZUk0FGuJ28s1d9OX@google.com>
- <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
- <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
- <ZUlp8XutSAScKs_0@google.com>
- <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
- <CAKH8qBueYgpxQTvTwngOs6RNjy9yvLF92s1p5nFrobw_UprNMQ@mail.gmail.com>
- <93eb6a2b-a991-40ca-8f26-f520c986729a@kernel.org>
- <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
- <CAHS8izOU06ceKyc5oVZhdCKJqmeRdcRyJBFpjGe=u2yh=V52dQ@mail.gmail.com>
- <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
- <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <6f853286-e463-b684-cc1e-405119528697@gmail.com>
-Date:   Thu, 9 Nov 2023 16:07:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        d=1e100.net; s=20230601; t=1699546711; x=1700151511;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hQTXl6Zu6Uy1kHuaX8me13xEm3/yUTPeeI94ANaTAbI=;
+        b=cjQjtxur9pwrlwpDvNWFYuJqtskKnRnySLEFydwfFKtte+IEPNu+zUwG8E5ePlx/NL
+         gU0CIs1vEJPldjiNpO1ulUx+zAcwvrMEmgk/AFnqH+qSXViCmECSLfBA3f8gdvxTTden
+         IFgazIZrGH9vLUBSpT5WUhHDm5hbBnWXMV6cCJw8N5uLxVdKhVhiD6ui3oycb3pO3OZt
+         I0f1haS1R9f46KLCI0OXn9mDsqP4SxMu02Np2owktisaK8Zyyumm/1vRoCwIYt6JMEip
+         aTRfhpEH/MNhbtjmRhg09pzZPDgteODlJ3YONLVHUuuVmvIlBd+5BDn7cwb/BzMAcMQN
+         AtCw==
+X-Gm-Message-State: AOJu0Yza09UF8hattyz7KJM3RX4kC6JkozgqqoBLXa8pzVQdBRPwktTc
+        XDBge1ZNReBh40Oxk9ymZbf/cXXzo/8=
+X-Google-Smtp-Source: AGHT+IHexaKgLQ/GGGhfb5Y28I8HrRRB5wZXhQW61rrmynZ6/h89ybsaD3BBKLw89E3WOB2OvdQDtg==
+X-Received: by 2002:adf:e10b:0:b0:317:393f:8633 with SMTP id t11-20020adfe10b000000b00317393f8633mr4298453wrz.58.1699546711199;
+        Thu, 09 Nov 2023 08:18:31 -0800 (PST)
+Received: from localhost.localdomain ([212.187.182.165])
+        by smtp.gmail.com with ESMTPSA id h6-20020adfe986000000b003200c918c81sm7593363wrm.112.2023.11.09.08.18.30
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 09 Nov 2023 08:18:30 -0800 (PST)
+From:   Levi Yun <ppbuk5246@gmail.com>
+To:     Liam.Howlett@oracle.com
+Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Levi Yun <ppbuk5246@gmail.com>
+Subject: [PATCH] maple_tree: change return type of mas_split_final_node as void.
+Date:   Thu,  9 Nov 2023 16:08:22 +0000
+Message-ID: <20231109160821.16248-2-ppbuk5246@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 02:39, Mina Almasry wrote:
-> On Wed, Nov 8, 2023 at 7:36 AM Edward Cree <ecree.xilinx@gmail.com> wrote:
->>  If not then surely the way to return a memory area
->>  in an io_uring idiom is just to post a new read sqe ('RX descriptor')
->>  pointing into it, rather than explicitly returning it with setsockopt.
-> 
-> We're interested in using this with regular TCP sockets, not
-> necessarily io_uring.
-Fair.  I just wanted to push against the suggestion upthread that "oh,
- since io_uring supports setsockopt() we can just ignore it and it'll
- all magically work later" (paraphrased).
-If you can keep the "allocate buffers out of a devmem region" and "post
- RX descriptors built on those buffers" APIs separate (inside the
- kernel; obviously both triggered by a single call to the setsockopt()
- uAPI) that'll likely make things simpler for the io_uring interface I
- describe, which will only want the latter.
+mas_split_final_node always returns true and there is no usage
+for checking return value.
 
--ed
+change return type as void.
 
-PS: Here's a crazy idea that I haven't thought through at all: what if
- you allow device memory to be mmap()ed into process address space
- (obviously with none of r/w/x because it's unreachable), so that your
- various uAPIs can just operate on pointers (e.g. the setsockopt
- becomes the madvise it's named after; recvmsg just uses or populates
- the iovec rather than needing a cmsg).  Then if future devices have
- their memory CXL accessible that can potentially be enabled with no
- change to the uAPI (userland just starts being able to access the
- region without faulting).
-And you can maybe add a semantic flag to recvmsg saying "if you don't
- use all the buffers in my iovec, keep hold of the rest of them for
- future incoming traffic, and if I post new buffers with my next
- recvmsg, add those to the tail of the RXQ rather than replacing the
- ones you've got".  That way you can still have the "userland
- directly fills the RX ring" behaviour even with TCP sockets.
+Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+---
+ lib/maple_tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+index bb24d84a4922..9389a631483a 100644
+--- a/lib/maple_tree.c
++++ b/lib/maple_tree.c
+@@ -3167,7 +3167,7 @@ static inline void mas_destroy_rebalance(struct ma_state *mas, unsigned char end
+  * @mas: The maple state
+  * @height: The height of the tree in case it's a new root.
+  */
+-static inline bool mas_split_final_node(struct maple_subtree_state *mast,
++static inline void mas_split_final_node(struct maple_subtree_state *mast,
+ 					struct ma_state *mas, int height)
+ {
+ 	struct maple_enode *ancestor;
+@@ -3191,7 +3191,6 @@ static inline bool mas_split_final_node(struct maple_subtree_state *mast,
+ 	mast->l->node = ancestor;
+ 	mab_mas_cp(mast->bn, 0, mt_slots[mast->bn->type] - 1, mast->l, true);
+ 	mas->offset = mast->bn->b_end - 1;
+-	return true;
+ }
+
+ /*
+--
+2.39.2
