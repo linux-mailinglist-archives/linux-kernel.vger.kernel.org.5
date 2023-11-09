@@ -2,84 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C1B7E6C74
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463157E6C75
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbjKIOdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:33:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        id S234046AbjKIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:33:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjKIOc6 (ORCPT
+        with ESMTP id S231659AbjKIOdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:32:58 -0500
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC372D7C
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:32:56 -0800 (PST)
-Received: by mail-vs1-xe41.google.com with SMTP id ada2fe7eead31-45d9d28142fso411271137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:32:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699540375; x=1700145175; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e3StzxvUkjhfa1ajC4GTcwNAzHX77fyRLBmo5btSYVQ=;
-        b=hwSe1i7jFrFB+gQJ6TiipwlXPGZMKgXsxWssoEEhIsP+BTsNvCcSS0ghlwM7Q8dl89
-         vJ0jh3ZDityhKZUsERxqsbYG8WRXeT2uVPI2IQvguuUYf2IA3xIjoWA5yyDGlscKo3TL
-         pZTxAcJcjElv58/Bo06PjUcG76wY1v3R47JKqybUn/TUL7rkqWOgDXJGkAz8djmIL+wR
-         TzIAjwF+amiTFiKr0hI3m2dTQehFF3JoCj+SlTWXdloNdYJr5ZaarUvYIEvLLi6oHXlY
-         obg3sLGPIRjATPGtNgUW4vv7Svh4elqKxHh6Ofb/AjDc1mLz9KZfKkENZch0qzT/lnFq
-         EYDA==
+        Thu, 9 Nov 2023 09:33:11 -0500
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924192D78
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:33:09 -0800 (PST)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc70f8a58fso9190225ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:33:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699540375; x=1700145175;
-        h=to:subject:message-id:date:from:sender:mime-version
+        d=1e100.net; s=20230601; t=1699540389; x=1700145189;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e3StzxvUkjhfa1ajC4GTcwNAzHX77fyRLBmo5btSYVQ=;
-        b=M50lTwliKVWqdwBzh5bSgCpcAhvCbiclcHunPFlF/MVI4Lyz55BQktEZ268XaeC0/u
-         WcpET2dLGRpd88PQWDwEOAN4Rd5+RBxXEIoJH+YhfJtYkS7z1lObvE/8VlxJyLhYzZrb
-         UB75mBPptz180WoO9RazVIvsrqegCpumqTPcRWQ9gHSEHXcubaFq7/XwNmgEUW1WoWNP
-         4VqmdkBMAYjgzgLD4wMwSfXgcVrZOsspM/8gRshXZHBJ8w4oOcCEZ4yHtIEiUW57CDew
-         cEiK79+98CB0Wo8thyWVU28U9ERF6vmkjKbOP6uBYoFK224lzLrFPYKWbibgVEl7xIcr
-         pkOQ==
-X-Gm-Message-State: AOJu0Yyv7RZR4oKQioyYVAXJRvPjrztt3wqSKO7kA/pCF1Vprh0TegU0
-        cmmnp28V2yv3+sj71Q/4kvsvnmfPIBN23FHo/Kg=
-X-Google-Smtp-Source: AGHT+IHYf4SlojwwLZNOLgEYrV+v0l84bizPNuKmHgKidiAR8hagfAYjqkEokBTyqlIkIi76FBWN9UktY4rSRM3hYlY=
-X-Received: by 2002:a67:e107:0:b0:45d:9113:328b with SMTP id
- d7-20020a67e107000000b0045d9113328bmr4754504vsl.24.1699540375055; Thu, 09 Nov
- 2023 06:32:55 -0800 (PST)
+        bh=eGY9Xnk8q9hi/Itl0v8kUP3AlbePOGS7UZt+UfLezIo=;
+        b=XphRFBo93HOzvhspwc0OgzkLwGDn2YwzJ4g7PmH8qMVb86BTGhDlFfbyQJ0779pHhj
+         PNQUfGFLbLeVfQ9Fug0DSBYI/AF8tayS65qlcCnyjovB1rGw87yBv8HwfyVRbZ+1ouCU
+         bxbZQ63+sJ4MYP18rFIoCVWEjjzbsHELfQXnDDBpt0HbkDH9fTEI14eelPo6C9H0NbGn
+         p9dNwBW+U7JEXo1hgEL4I+V+EH859ZesTttQxkRmGP9q+at3NND7d2cILoo+ltgFVA8v
+         cCwtf4sQwdRSs19hpnpvGK1HqUnS3eNGL0UYmJNh2Un94l/uK/pxd/eW8L16vIriXmw9
+         CXDQ==
+X-Gm-Message-State: AOJu0YxTSeIVZYPWQrPnKQE1PnnqlrYxsm/wGZlqL4LKmJ/s1HGAUk6K
+        9MYNozTC9glKMgT+HT+PdvuBaUT1j5h7RS1WJIn0PmZvha9Oev4=
+X-Google-Smtp-Source: AGHT+IEwXTpEkcPGasTVOXHdo+MiK0UWkmKuTIE6CCelIke2fCuVu0LxiUqjHZlqMXstLEADgDd+DHgYweun4/I55DgcmbwJhCNI
 MIME-Version: 1.0
-Sender: edithibrahim2011@gmail.com
-Received: by 2002:a59:abca:0:b0:42c:351d:1a92 with HTTP; Thu, 9 Nov 2023
- 06:32:54 -0800 (PST)
-From:   Aisha Gaddafi <aishagaddaf02@gmail.com>
-Date:   Thu, 9 Nov 2023 06:32:54 -0800
-X-Google-Sender-Auth: HLZfNdj--ccHU0B8INCzB_AiMDw
-Message-ID: <CAP4+oU=Vq1Gh4t6T2-fMNxKht1NRsANaC7CJWPiA_fr-YuEYYA@mail.gmail.com>
-Subject: Your Urgent Reply Will Be Appreciated
-To:     undisclosed-recipients:;
+X-Received: by 2002:a17:903:328e:b0:1cc:408e:1b0c with SMTP id
+ jh14-20020a170903328e00b001cc408e1b0cmr441465plb.5.1699540389190; Thu, 09 Nov
+ 2023 06:33:09 -0800 (PST)
+Date:   Thu, 09 Nov 2023 06:33:09 -0800
+In-Reply-To: <0000000000007323f20609b7cfbb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002de46e0609b915a0@google.com>
+Subject: Re: [syzbot] [PATCH] Test for aea6bf908d73
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inquiry for Investment.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Dear Friend,
+***
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. My name is Aisha Gaddafi a single Mother and a
-Widow with three Children. I am the only biological Daughter of late
-Libyan President (Late Colonel Muammar Gaddafi).
+Subject: [PATCH] Test for aea6bf908d73
+Author: eadavis@qq.com
 
-I have an investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27,500,000.00 ) and i need an
-investment Manager/Partner and because of the asylum status i will
-authorize you the ownership of the funds, however, I am interested in
-you for investment project assistance in your country, may be from
-there, we can build a business relationship in the near future.
+please test uaf in nfc_alloc_send_skb
 
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git aea6bf908d73
 
-If you are willing to handle this project kindly reply urgent.
 
-Regards
-Mrs Aisha Gaddafi
+From d6bab181339771591ed9519dced29a8eb20ddadc Mon Sep 17 00:00:00 2001
+From: Lizhi Xu <lizhi.xu@windriver.com>
+Date: Thu, 9 Nov 2023 21:31:26 +0800
+Subject: [PATCH] nfc/nci: fix uaf in nfc_alloc_send_skb
+
+After releasing the nfc/nci device, nfc_llcp_sock->local should be set to null
+to avoid referencing expired devices.
+
+Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+---
+ net/nfc/llcp_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
+index 1dac28136e6a..024cbba26fc8 100644
+--- a/net/nfc/llcp_core.c
++++ b/net/nfc/llcp_core.c
+@@ -102,6 +102,7 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
+ 				accept_sk->sk_state_change(sk);
+ 
+ 				bh_unlock_sock(accept_sk);
++				lsk->local = NULL;
+ 			}
+ 		}
+ 
+@@ -113,6 +114,7 @@ static void nfc_llcp_socket_release(struct nfc_llcp_local *local, bool device,
+ 		bh_unlock_sock(sk);
+ 
+ 		sk_del_node_init(sk);
++		llcp_sock->local = NULL;
+ 	}
+ 
+ 	write_unlock(&local->sockets.lock);
+-- 
+2.25.1
+
