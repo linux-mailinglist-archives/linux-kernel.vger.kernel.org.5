@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CAE7E7102
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CCE7E710E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344896AbjKISAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        id S1344795AbjKISD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:03:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjKISAP (ORCPT
+        with ESMTP id S231478AbjKISD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:00:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC403AAA;
-        Thu,  9 Nov 2023 10:00:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699552812; x=1731088812;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LMqRwHvlxfT+69m21hUtWTOQqN1NjhHG7xWSmRFOxcI=;
-  b=DlmjAxZjAtzW4AEEqNMMRcxIxB5cOLwhdxCp26HzCE6iGXgAUmRjwUSC
-   z8mPG0Z7gL5OgZ3gBx5wN2DSLC0C0HvbiwPtT2AyAw7ZaRfcZmDSPAlYm
-   jCMov/yN0IXK7I0G2rhq0RjzxOSzolSukwWW/UFLU2vGqd16kg2EsJBs1
-   JzmXiWbYlYtm+OIluOmjNaF7qOoTt4TCCI0QV0+t8WJfYqWc0dhJE5Au1
-   kv3tufgTBt3YRqzKYKowpZBt/mB4KmQooFz472T38esDMKZ/DvJ5Qi2lE
-   MeF6JVUOKmdkfcDZGeWYs22mBe5KQiWQTRiHMxNZyyHzsGDsjv3goZb9V
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="421134611"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="421134611"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 10:00:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="798385876"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="798385876"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 10:00:09 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r19K2-0000000CeoU-1MW2;
-        Thu, 09 Nov 2023 20:00:06 +0200
-Date:   Thu, 9 Nov 2023 20:00:05 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jan Bottorff <janb@os.amperecomputing.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] i2c: designware: Fix corrupted memory seen in the ISR
-Message-ID: <ZU0eJdwHXEoQ7mj2@smile.fi.intel.com>
-References: <20231109031927.1990570-1-janb@os.amperecomputing.com>
+        Thu, 9 Nov 2023 13:03:26 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D86A3A92
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:03:24 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so15335a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 10:03:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699553002; x=1700157802; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wAQNSa46FGuB0h3uAi5/LZq5ypqo1lqwzPUkOnFCUXA=;
+        b=gd6Mtr+c+Oj0QZfeDiB/vbhX4I6pxbU6Aw5AcXaSZ7S3UnlFEhqkTXCoH4jlzzTC1B
+         Y1l1umqUroZxqKpMl1AlIydyVOS/f79EkdxDvn8lDGe3gqi76J1BwtDvE+BHlhyZhsJW
+         a753xYv+kr/Zq3g1FF+KxTlqoAaNviTuBVbIo/qoFyExGHE231vWSocB9vCILz/oxodf
+         HjhU2/kcUcRSkPzc6LMJSpiE0tzv+l8cocACqm65E34/chy2s8cIHLECgxtezi2E/kQm
+         2efxVnhc1wxwIO4o1jti4n+HKzfpknEdc7HfZqmLNF2c16jI7QivQ9sieecb8flFu+uF
+         40Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699553002; x=1700157802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wAQNSa46FGuB0h3uAi5/LZq5ypqo1lqwzPUkOnFCUXA=;
+        b=YB7pNL8UY1ZkqQq2bxjmHhex08ACUGtoC9Rk0wjTwIwsEY+7a7LMAwqqPQ4MgLe9dg
+         BQQTsiU3JpcBu69siqIPB+4/sd+R9Wl9+s1c3J1PFbv+JPqNAvhZUlE7GVHFzxIzNJ9p
+         kfhFOlXTjOpckR+vXZ2bIo28QlkdmkmKP9tK4cRbp7rYY54zFjGlNHq4tHMRLhM7tlbQ
+         Z8NTajzSkpb8w2+BD7FQPFROKv7nPnWo6vYyhhpbmKR5FVRaH9wsPoMP8aGEcpqbtWFR
+         uVtahPDH5QXgmJAmDBZKrUIIc+hn4xn2/zYcOE0o/LzQRRMU+GU9NwodvUkRI6Gluchd
+         foIw==
+X-Gm-Message-State: AOJu0YxfL802R0IvzwuJxHQmOyCw/2z4DX7GKR27sTGM+4IAD8NLdpoS
+        RdnsmA2W0McYCGkXf+wAfwaFh4yc1ogFeDBmcia0hQ==
+X-Google-Smtp-Source: AGHT+IFfa79r8JzdQtFx04Q0jSwJe+vq28O9bpW9OFC3zu3+PTnIGjWO8f+PDCS9NTgGvNiqIhAC7w7EsVeTZsDdYBE=
+X-Received: by 2002:a05:6402:1518:b0:544:f741:62f4 with SMTP id
+ f24-20020a056402151800b00544f74162f4mr210881edw.0.1699553001661; Thu, 09 Nov
+ 2023 10:03:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109031927.1990570-1-janb@os.amperecomputing.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231108064641.65209-1-haifeng.xu@shopee.com> <20231109095502.5a03bfd5@hermes.local>
+In-Reply-To: <20231109095502.5a03bfd5@hermes.local>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 9 Nov 2023 19:03:07 +0100
+Message-ID: <CANn89iJqVtN9icrqO-L0fiFNcVRYp7gdu6o8E5q=EUhHHE9WdA@mail.gmail.com>
+Subject: Re: [PATCH] boning: use a read-write lock in bonding_show_bonds()
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     Haifeng Xu <haifeng.xu@shopee.com>, j.vosburgh@gmail.com,
+        andy@greyhouse.net, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 03:19:27AM +0000, Jan Bottorff wrote:
-> When running on a many core ARM64 server, errors were
-> happening in the ISR that looked like corrupted memory. These
-> corruptions would fix themselves if small delays were inserted
-> in the ISR. Errors reported by the driver included "i2c_designware
-> APMC0D0F:00: i2c_dw_xfer_msg: invalid target address" and
-> "i2c_designware APMC0D0F:00:controller timed out" during
-> in-band IPMI SSIF stress tests.
-> 
-> The problem was determined to be memory writes in the driver were not
-> becoming visible to all cores when execution rapidly shifted between
-> cores, like when a register write immediately triggers an ISR.
-> Processors with weak memory ordering, like ARM64, make no
-> guarantees about the order normal memory writes become globally
-> visible, unless barrier instructions are used to control ordering.
-> 
-> To solve this, regmap accessor functions configured by this driver
-> were changed to use non-relaxed forms of the low-level register
-> access functions, which include a barrier on platforms that require
-> it. This assures memory writes before a controller register access are
-> visible to all cores. The community concluded defaulting to correct
-> operation outweighed defaulting to the small performance gains from
-> using relaxed access functions. Being a low speed device added weight to
-> this choice of default register access behavior.
+On Thu, Nov 9, 2023 at 6:55=E2=80=AFPM Stephen Hemminger
+<stephen@networkplumber.org> wrote:
 
-...
+> Reader-writer locks are slower than spin locks and should be discouraged.
+> Would it be possible to use RCU here instead?
 
-> v3->v4: add missing changelog
+I doubt there is a case for repeatedly reading this file ?
 
-Side note: Usually it's enough to just reply to the patch with the changelog.
-
-...
-
-> -	*val = swab32(readl_relaxed(dev->base + reg));
-> +	*val = swab32(readl(dev->base + reg));
-
-> -	writel_relaxed(swab32(val), dev->base + reg);
-> +	writel(swab32(val), dev->base + reg);
-
-I'm wondering why ioread32be() / iowrite32be() can't be used here...
-
-Probably it would require to switch entire IO to use ioreadXX() /
-iowriteXX() APIs and since we touch all of them (?) may be it makes
-sense convert to use them at the same time. Dunno.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+This 'lock' is only for slow paths, it doesn't really matter what it is.
