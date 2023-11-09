@@ -2,168 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AE37E71FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721807E71FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:10:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345104AbjKITK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
+        id S1345111AbjKITKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345096AbjKITKZ (ORCPT
+        with ESMTP id S1345114AbjKITKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:10:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750123C26
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:09:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699556976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ZS+ED1OtV7jojhpooYSza/QLYPRRicMYxwVIrlFhEc=;
-        b=Jw6GaiFRP84D3MdL9pPzeYbQQ55bybop0kBwlDGBIJ87g2F6fDr/Ooxnlr5+PGrh6yNao1
-        NQ1BfZli9V/32JWbRJG0umhzO8lebz/zkbC5qaz1rBYiFHQJW+k9EURfEgyGOzfweNIjN2
-        +WBOJxi88uRsSeVFJgZoWQpTKyVY9DE=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-V8g9hX5SOLuHy68xi6dMGg-1; Thu, 09 Nov 2023 14:09:34 -0500
-X-MC-Unique: V8g9hX5SOLuHy68xi6dMGg-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c503af866dso12296031fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:09:33 -0800 (PST)
+        Thu, 9 Nov 2023 14:10:06 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026203C25
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:10:04 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso956363a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:10:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura.hr; s=sartura; t=1699557003; x=1700161803; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qGIHHIyIj/eQKklLFt+o4EC73VgMtqD7AwmKgpBlOOs=;
+        b=ZrXeMrLMk/DpvkWwQft0y1/i2cj2Mz133uHSnJ/xQwN35n4nBoSiEmdRR7x4QNaSVm
+         j+sMy9gsPFJxmis6QeVdwIr0ugj9fztOzehA0mTKC9a1SGFo5JZb3hWfB8lyC1DV5SGS
+         /V/IerznE1hdrkKmIGWHV58wmT8H71RbG+Sggv2sKGO/gxtYgMLa1d76Wahk9v1RZdO/
+         idShgEQnTi6z/Vp0PWzy+RS7dzplKIs21KPc2U0YNnumC1cvRDsOlD0DRGM3AjjzxIpq
+         gZEQ/g1P0cMvqahRQjHTZ7j4yVdDkXNticT1evChhVBp6/VVXA9Im8i4II3WNGjvNTdc
+         wY+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699556972; x=1700161772;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7ZS+ED1OtV7jojhpooYSza/QLYPRRicMYxwVIrlFhEc=;
-        b=QxYYrK+5156GSXO7craj2hzwnlt8ViNKBdR0lV0zMMkbOqHQ2QSUWLl0E+yPYu0o4s
-         vkB+TDM8BPEslVfaNXHZ0pDg390DPIuRUhMIW8lCqVVnm8CIqwU9ouqLTBpcTEap9ZXj
-         ZQ+pDbeu43oHU3cjej8mNEzaC2M+BGO1ZINrqLVcHXp9AuxT4C+IiBin8LKkcaHLmSnC
-         owzFkBE8272QRZ8djLGucw4PWnE1xUlAN9Zo/us/s0z8NR0n7owv9XywUSpw4WgCH0hD
-         wLNm2ZaIX2DdKQAkPt8tHdos8e0lFmUHT9CRa5XuK/qEkeYvHCXNc7lMB9udKy+7Aiwo
-         kW7w==
-X-Gm-Message-State: AOJu0Yyaz2O/teM3MJ/Aq+L3kO4SvaTU0lNiyx9pnol6/PXdlEzqFIpi
-        HGtkqdRbWqNRY7Ni+7B2jHNsKXtIDg2Ovew0tovhcv1hpZ+DAbuw+Vhr0AWD0GHQE29yfUxuMUI
-        Ov/OMiCjHIW/2bEnN+BpFpkrQ
-X-Received: by 2002:a05:651c:198c:b0:2c7:f55:eb61 with SMTP id bx12-20020a05651c198c00b002c70f55eb61mr5890363ljb.6.1699556972724;
-        Thu, 09 Nov 2023 11:09:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGJB7bAWkQ9HmCg37l+NjNNrOqdgAwf1ZCoNz0tmnIi7/Y87j6+eGNa72dXpiUB31g87oqFFg==
-X-Received: by 2002:a05:651c:198c:b0:2c7:f55:eb61 with SMTP id bx12-20020a05651c198c00b002c70f55eb61mr5890340ljb.6.1699556972326;
-        Thu, 09 Nov 2023 11:09:32 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id v29-20020adfa1dd000000b0032dab20e773sm298621wrv.69.2023.11.09.11.09.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 11:09:31 -0800 (PST)
-Message-ID: <96200931-fb3f-40a2-8c0d-5a3609c11207@redhat.com>
-Date:   Thu, 9 Nov 2023 20:09:30 +0100
+        d=1e100.net; s=20230601; t=1699557003; x=1700161803;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qGIHHIyIj/eQKklLFt+o4EC73VgMtqD7AwmKgpBlOOs=;
+        b=AMvebqwKfWsK9hGmgmakdn8MHLkRyZiUkoNbzvK0gtQNcYinqUCTYcnXR/TfjRv1qQ
+         D6e7CyF8gMeT+HOSkvQklPm+2Ma+OtyFa93PpgEL8GwXin1AU7qU3Hw2WN2GkpqY7+VR
+         /izt+GowH8KqmhKK75hA2E9i9oJDN43/p1gM4UkfM4V9D/j3K7zZ/f6QFpAmWEwAogIv
+         BROlrtT5GWlAvoLoFcX0Qovjcil2rmFc0+WJqoSxmHNxTsjHYBLbzXjSnGQVFZeqQYC5
+         wAPyb3j7HUoAZ3c/JUWSvzEplyWlrMZHoXg+OwsPF65pRB80Q/uJmRQ0lpEn4ZjwclUj
+         Z2OA==
+X-Gm-Message-State: AOJu0Yx80mu2dU7E13pr5fzRP4BD51jzEfOonmaRRIJ7U/zxjcwK29Dp
+        ZXFlrTyNBuSj+GMN9OnH3tCbWyHE60Fbrx03sj0ohw==
+X-Google-Smtp-Source: AGHT+IF9rha3ZSgE/rr2Azs/075zCXghyG37VPOmh3714TVhwE0iJCVtFlVvOvJABF3bbGC33AZ04bGX6NegZNkuZGk=
+X-Received: by 2002:a17:90b:3b8b:b0:280:3772:5c2e with SMTP id
+ pc11-20020a17090b3b8b00b0028037725c2emr2345785pjb.25.1699557003421; Thu, 09
+ Nov 2023 11:10:03 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/sched: fix potential page fault in
- drm_sched_job_init()
-Content-Language: en-US
-To:     Luben Tuikov <ltuikov89@gmail.com>, airlied@gmail.com,
-        daniel@ffwll.ch, christian.koenig@amd.com
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20231108022716.15250-1-dakr@redhat.com>
- <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
- <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
- <4c64c9f2-78b4-4309-8cca-5dbd0e5b445e@gmail.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <4c64c9f2-78b4-4309-8cca-5dbd0e5b445e@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230926160255.330417-1-robert.marko@sartura.hr> <CACRpkdZem9Gtd==gQM4EQ9R8MN2ZQ0JCyMCoTjg0kqCNDjuFMA@mail.gmail.com>
+In-Reply-To: <CACRpkdZem9Gtd==gQM4EQ9R8MN2ZQ0JCyMCoTjg0kqCNDjuFMA@mail.gmail.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Thu, 9 Nov 2023 20:09:52 +0100
+Message-ID: <CA+HBbNFeVmc2CJeo+u9jbZrzsrDTOttW_4+aeLJFcOjDJ8DwyQ@mail.gmail.com>
+Subject: Re: [PATCH] i2c: core: dont change pinmux state to GPIO during
+ recovery setup
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     wsa@kernel.org, codrin.ciubotariu@microchip.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 05:23, Luben Tuikov wrote:
-> On 2023-11-08 19:09, Danilo Krummrich wrote:
->> On 11/8/23 06:46, Luben Tuikov wrote:
->>> Hi,
->>>
->>> Could you please use my gmail address, the one one I'm responding from--I don't want
->>> to miss any DRM scheduler patches. BTW, the luben.tuikov@amd.com email should bounce
->>> as undeliverable.
->>>
->>> On 2023-11-07 21:26, Danilo Krummrich wrote:
->>>> Commit 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable
->>>> number of run-queues") introduces drm_err() in drm_sched_job_init(), in
->>>> order to indicate that the given entity has no runq, however at this
->>>> time job->sched is not yet set, likely to be NULL initialized, and hence
->>>> shouldn't be used.
->>>>
->>>> Replace the corresponding drm_err() call with pr_err() to avoid a
->>>> potential page fault.
->>>>
->>>> While at it, extend the documentation of drm_sched_job_init() to
->>>> indicate that job->sched is not a valid pointer until
->>>> drm_sched_job_arm() has been called.
->>>>
->>>> Fixes: 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable number of run-queues")
->>>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->>>> ---
->>>>    drivers/gpu/drm/scheduler/sched_main.c | 5 ++++-
->>>>    1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
->>>> index 27843e37d9b7..dd28389f0ddd 100644
->>>> --- a/drivers/gpu/drm/scheduler/sched_main.c
->>>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
->>>> @@ -680,6 +680,9 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
->>>>     * This function returns -ENOENT in this case (which probably should be -EIO as
->>>>     * a more meanigful return value).
->>>>     *
->>>> + * Note that job->sched is not a valid pointer until drm_sched_job_arm() has
->>>> + * been called.
->>>> + *
->>>
->>> Good catch!
->>>
->>> Did you actually get this to page-fault and have a kernel log?
->>
->> No, I just found it because I was about to make the same mistake.
->>
->>>
->>> I'm asking because we see it correctly set in this kernel log coming from AMD,
->>
->> I think that's because amdgpu just sets job->sched to *some* scheduler instance after
->> job allocation [1].
->>
->> [1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c#L108
->>
->>>
->>> [   11.886024] amdgpu 0000:0a:00.0: [drm] *ERROR* drm_sched_job_init: entity has no rq!
->>>
->>> in this email,
->>> https://lore.kernel.org/r/CADnq5_PS64jYS_Y3kGW27m-kuWP+FQFiaVcOaZiB=JLSgPnXBQ@mail.gmail.com
->>>
->>>>     * Returns 0 for success, negative error code otherwise.
->>>>     */
->>>>    int drm_sched_job_init(struct drm_sched_job *job,
->>>> @@ -691,7 +694,7 @@ int drm_sched_job_init(struct drm_sched_job *job,
->>>>    		 * or worse--a blank screen--leave a trail in the
->>>>    		 * logs, so this can be debugged easier.
->>>>    		 */
->>>> -		drm_err(job->sched, "%s: entity has no rq!\n", __func__);
->>>> +		pr_err("%s: entity has no rq!\n", __func__);
->>>
->>> Is it feasible to do something like the following?
->>>
->>> 		dev_err(job->sched ? job->sched->dev : NULL, "%s: entity has no rq!\n", __func__);
->>
->> I don't think that's a good idea. Although I'd assume that every driver zero-initializes its job
->> structures, I can't see a rule enforcing that. Hence, job->sched can be a random value until
->> drm_sched_job_arm() is called.
-> 
-> Okay. However, when using pr_err() we're losing "[drm] *ERROR* " prefix and we scan for that
-> in the logs to quickly find the cause of the error.
-> 
-> Perhaps we can define pr_fmt() and also include "*ERROR*" so that we can get the desired result
-> as the attached patch shows?
+On Thu, Sep 28, 2023 at 11:11=E2=80=AFPM Linus Walleij <linus.walleij@linar=
+o.org> wrote:
+>
+> On Tue, Sep 26, 2023 at 6:03=E2=80=AFPM Robert Marko <robert.marko@sartur=
+a.hr> wrote:
+>
+> > @@ -359,13 +359,6 @@ static int i2c_gpio_init_generic_recovery(struct i=
+2c_adapter *adap)
+> >         if (bri->recover_bus && bri->recover_bus !=3D i2c_generic_scl_r=
+ecovery)
+> >                 return 0;
+> >
+> > -       /*
+> > -        * pins might be taken as GPIO, so we should inform pinctrl abo=
+ut
+> > -        * this and move the state to GPIO
+> > -        */
+> > -       if (bri->pinctrl)
+> > -               pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
+> > -
+>
+> But this might be absolutely necessary for other i2c drivers and this is
+> set in generic code.
+>
+> My first question is: why is this platform even defining the "gpio" pin
+> control state for this i2c device if it is so dangerous to use?
+> If it can't be used, you just give it too much rope, delete the "gpio"
+> state for this group from the device tree: problem solved.
+>
+> (This can be done with the specific /delete-node/ directive if
+> necessary, e.g. if you want to use the "gpio" state on other boards.)
 
-Sure, I'd add the pr_fmt() in a separate patch though.
+Hi,
+Sorry for the late reply.
 
+GPIO function is being defined as I2C recovery itself requires it, it
+will switch
+the pins to GPIO mode and then pulse SCL for a predefined number of pulses
+in order to try and recover the bus.
+So we cannot remove it from DTS and have I2C recovery working.
+
+Also, GPIO is a fully valid option for this pin group according to the
+datasheet,
+it is even the default until you switch them to I2C.
+
+>
+> Second: do you even want to do recovery on this platform then?
+> Is it necessary? What happens electronically in this case, if we don't
+> switch the pins to GPIO mode? Is it something akin to the "strict"
+> property in struct pinmux: that the GPIO block and the device can
+> affect the same pins at the same time? That warrants an explanation
+> and a comment.
+
+Yes, I2C recovery is required on this board as otherwise the I2C bus will
+get stuck after a certain number of SFP module plug/unplug events or
+sometimes even just randomly, I2C recovery allows the bus to recover
+and continue working.
+
+Maybe my commit message was confusing, so I will try and explain further.
+I2C recovery did work on Armada 3720 just fine until the driver was convert=
+ed
+to use the generic I2C recovery which is now part of the I2C core.
+
+After it was converted to it, the I2C bus completely stopped working
+on Armada 3720
+if I2C recovery is enabled by making the recovery pinctrl available in DTS.
+
+I then spent quite a while trying to bisect the exact change that
+causes this issue
+in the conversion as code is almost identical to what the driver was
+doing previously,
+and have bisected it down to pinctrl_select_state(bri->pinctrl,
+bri->pins_gpio) being
+called before SDA and SCL pins are obtained via devm_gpiod_get().
+
+Then I thought that maybe there was a HW bug in the Armada 3720 as the
+pin function
+was being set to GPIO twice via register write so I made sure the
+register was being
+written to only if the desired value is different than the current one
+but that did not help
+at all.
+For whatever reason calling pinctrl_select_state(bri->pinctrl,
+bri->pins_gpio) causes
+the pins to basically lock up, but the weird thing is that calling
+devm_gpiod_get() will
+also end up with the kernel changing the pin function to GPIO and this
+works, hence
+this patch.
+
+This is basically the only change in the old driver behavior which would do=
+:
+
+pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
+return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
+
+After obtaining the SDA and SCL pins via devm_gpiod_get() and this somehow
+works while the generic I2C code will first call:
+pinctrl_select_state(bri->pinctrl, bri->pins_gpio)
+Then it obtains the SDA and SCL pins via devm_gpiod_get() and
+eventually at the end of i2c_gpio_init_generic_recovery() call
+pinctrl_select_state(bri->pinctrl, bri->pins_default);
+to return the pins back to I2C state.
+
+Hopefully, this all makes more sense.
+
+>
+> If you can't delete the "gpio" pin control state, I would add a
+> bool pinctrl_stay_in_device_mode;
+> to
+> struct i2c_bus_recovery_info
+> in include/linux/i2c.h
+>
+> And just:
+>
+> if (bri->pinctrl && !bri->pinctrl_stay_in_device_mode)
+>     pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
+>
+> (Also the switch to the "default" state further down could be
+> contitional !bri->pinctrl_stay_in_device_mode)
+>
+> But mostly I wonder why the "gpio" pin control state is defined, if it's
+> not to be used.
+
+Well, that is the thing, it is being used, it just somehow got broken with
+the move to generic I2C recovery.
+
+I hope to have explained the issue and symptoms more clearly now
+as I have ran out of ideas why a call to pinctrl_select_state() to
+change to GPIO
+state breaks things, but then devm_gpio_get() also eventually makes a call =
+to
+the pinctrl driver to change the pin function to GPIO but that works.
+
+Regards,
+Robert
+>
+> Yours,
+> Linus Walleij
+
+
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
