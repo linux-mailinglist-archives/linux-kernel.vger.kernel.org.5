@@ -2,55 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458347E7107
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9217E7062
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344903AbjKISBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:01:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S1344550AbjKIRfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344773AbjKISBN (ORCPT
+        with ESMTP id S234646AbjKIRe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:01:13 -0500
-X-Greylist: delayed 1592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Nov 2023 10:01:10 PST
-Received: from force.fredarmour.com (force.fredarmour.com [88.209.206.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D93A92
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:01:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=fredarmour.com;
- h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=tara@fredarmour.com;
- bh=5mQuYswmo6GusGP6QUatuJ3vz5k=;
- b=S6uloHbGEm5It1u/L9DQlzm1Hs1KvqmnEFxSQHHW3Z43Q5iXwM9hxJByT3FH8jRHe2MJEEWpzM9C
-   66R6DTh5ym/YEgKKKGmCt0fevWk5RL0GTqbE1y9l9S0u7Gg8PEV8IMwkrdsaD4y3kaf+2Z9kikPn
-   5CmT2X9yOfbbOnN12RGlIv1W0YDjNrc1SVnFCj9YKSaTCuLd1QiX09bGHLC3mXaQpTTHqguc1Ri/
-   urAuy47aDNOpSPMiAIu1/TiN/Tu3CEQV1pZ2Y9CaejQzqmuP/bOkVNCBUWvmh6pj/cyyfsjNb8VL
-   j6nc9rQcTIOo9rZz4W9tJ78yw6MxyDUyfdxtLQ==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=fredarmour.com;
- b=ERfrOjK2QaVkakrofXqjERD80Efjz8/gB1WGGQWLvIHeBZYIf0iVyQkji/dR1ysNVHmA/M26z+j3
-   X96TZlqfHtVIw8T3in2xks5NKzb3QHHE9hSjSjhaWZCsvPztrVIyZeG/5xCejyxidWWIkEJGPOvp
-   N9Nbbp/qgRJMKyBV/rt+yBIiAePttiPjIuxbAIwFNpZSPnmL2cc5d6VswIWaL38AL0JuluI2HNAb
-   z2dbiDJLIE98h+VXlO3BVTbBWF6hjb+fsfL5i7xh+TZoaOlPOcbUJqH5uxtfznuMTQTEVnMWinYG
-   vADagCQpphJnPLeAxp+ZgKYRm59l0j6jugBh3w==;
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 9 Nov 2023 12:34:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDE01991
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:34:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 446C9C433C8;
+        Thu,  9 Nov 2023 17:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699551297;
+        bh=veQWpyDM4onYmh1xiPJAD0ivfDvih3X2s70cbv5GcvM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R2MS1QwT+Zqp6WDAybXlZ7u9BeEQIBbtcbs+uG5F7GbZzNgzyp1cxENY4a0RMc2Ba
+         fDX8qxTGvQlIfsGKUPHTUJtT9aPtABpmcFhgCDWzbn6C5sL3phfs+4YMu0/yOrFP0y
+         QeL3+/YjuSrTDGgD/tqUQOk4JuxOvpJ5sT848d+a1mOsbCzrq3mrXCzI7qqm+jCbXc
+         8YibFddiyPWDzcM+Jb87cj8Pfeo6YfEDvtPGoiE1QLmgn2VaCIlIWuyvAk9AvsisKb
+         BK13LmhwP0amZ6L/zg/VSUp9SxuMYEJQV1R8pwwIgQYL5+2i1Ckv5vi4ipdjLrgM2U
+         x0sIK1xls0s0w==
+Date:   Thu, 9 Nov 2023 17:34:50 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 02/12] dt-bindings: soc: amlogic,meson-gx-hhi-sysctrl:
+ add example covering meson-axg-hhi-sysctrl
+Message-ID: <20231109-dictator-hedging-94b0dec505b5@spud>
+References: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-0-81e4aeeda193@linaro.org>
+ <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-2-81e4aeeda193@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Proposal to Partner with You
-To:     me <tara@fredarmour.com>
-From:   "Mr. Jim" <tara@fredarmour.com>
-Date:   Thu, 09 Nov 2023 12:34:34 -0500
-Reply-To: a.wafager1@gmail.com
-Message-ID: <0.0.1.15.1DA133301BBF5A8.0@force.fredarmour.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="sZblbYTITPv0dWts"
+Content-Disposition: inline
+In-Reply-To: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-2-81e4aeeda193@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Friend, =
 
+--sZblbYTITPv0dWts
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My name is Jim Jones, I am a Laboratory Scientist in a leading multinationa=
-l Pharmaceutical company and I have a business proposal for you. You do not=
- need experience or expertise to participate and make good returns. Kindly =
-respond if interested and I will provide details. =
+On Thu, Nov 09, 2023 at 10:00:03AM +0100, Neil Armstrong wrote:
+> Add a thirst example covering the meson-axg-hhi-sysctrl variant and more
 
+What on earth is a thirst example? Some sort of "hysterical raisins"
+type of thing?
 
-Jim
+My confusion about that word aside,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> importantly the phy subnode.
+>=20
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  .../soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml  | 41 ++++++++++++++++=
+++++++
+>  1 file changed, 41 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-=
+gx-hhi-sysctrl.yaml b/Documentation/devicetree/bindings/soc/amlogic/amlogic=
+,meson-gx-hhi-sysctrl.yaml
+> index 16977e4e4357..2edf4ccea845 100644
+> --- a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-=
+sysctrl.yaml
+> +++ b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-=
+sysctrl.yaml
+> @@ -158,3 +158,44 @@ examples:
+>              };
+>          };
+>      };
+> +
+> +    bus@ff63c000 {
+> +        compatible =3D "simple-bus";
+> +        reg =3D <0xff63c000 0x1c00>;
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <1>;
+> +        ranges =3D <0x0 0xff63c000 0x1c00>;
+> +
+> +        system-controller@0 {
+> +            compatible =3D "amlogic,meson-axg-hhi-sysctrl", "simple-mfd"=
+, "syscon";
+> +            reg =3D <0 0x400>;
+> +
+> +            clock-controller {
+> +                compatible =3D "amlogic,axg-clkc";
+> +                #clock-cells =3D <1>;
+> +                clocks =3D <&xtal>;
+> +                clock-names =3D "xtal";
+> +            };
+> +
+> +            power-controller {
+> +                compatible =3D "amlogic,meson-axg-pwrc";
+> +                #power-domain-cells =3D <1>;
+> +                amlogic,ao-sysctrl =3D <&sysctrl_AO>;
+> +
+> +                resets =3D <&reset_viu>,
+> +                         <&reset_venc>,
+> +                         <&reset_vcbus>,
+> +                         <&reset_vencl>,
+> +                         <&reset_vid_lock>;
+> +                reset-names =3D "viu", "venc", "vcbus", "vencl", "vid_lo=
+ck";
+> +                clocks =3D <&clk_vpu>, <&clk_vapb>;
+> +                clock-names =3D "vpu", "vapb";
+> +            };
+> +
+> +            phy {
+> +                compatible =3D "amlogic,axg-mipi-pcie-analog-phy";
+> +                #phy-cells =3D <0>;
+> +                status =3D "disabled";
+> +            };
+> +        };
+> +    };
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--sZblbYTITPv0dWts
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU0YOgAKCRB4tDGHoIJi
+0uT6AP0d47elZ0SGrlap1u+Eghh/HJKast4ARo3Asny2i7xKDQEAuoscsk9XDXKL
+6UJ5EqFhBaW1Jp3Azcaxaou/fLGf4AQ=
+=dC1C
+-----END PGP SIGNATURE-----
+
+--sZblbYTITPv0dWts--
