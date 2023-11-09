@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F17B7E684E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15AD7E685D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjKIKhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        id S233286AbjKIKiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKIKhF (ORCPT
+        with ESMTP id S230055AbjKIKiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:37:05 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C79F1FEA;
-        Thu,  9 Nov 2023 02:37:03 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc131e52f1so14697965ad.0;
-        Thu, 09 Nov 2023 02:37:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699526223; x=1700131023; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j4upJP2Fg5H/4Bb05iQ23yejvTGPnKm3BWZ8iv5K1f0=;
-        b=M7JFx3736V4HxdvN4TkOORkzQ6fDLYCVClWwkYXS+xpKYxNVuK3r7WrV7TZzeYNZhY
-         aRT0az6MiiC94pOVjeyHc+L1OhY4ySt+sXauH7+cOkGKYXyeNnQjHhp48imrrMRpVe2T
-         xXIqtqXqSaVrapfozJMZ2m564qVFQ3E7wnPzZVFCjZMcidIG7XttXUPoEiJytLAdbZ4g
-         aqMw+YJHWarjAWze1uryPiVki3KadP8+HcFQtUa1Cynl+Kq49ajnAewNk+byOIwcOkej
-         tbrfsUkCwiCk8xthNXdbYeFvsYYLzIlvhmJgWO/QIL5OOHaf/8HTFrVN6kd8yoqGh+MR
-         UcXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699526223; x=1700131023;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j4upJP2Fg5H/4Bb05iQ23yejvTGPnKm3BWZ8iv5K1f0=;
-        b=F2D7a296ipVIyRWRWx/dXS3Y+JSaOMx67c0d7sa2XncqZANlPpHKB/RYTBLCNobPEF
-         e3iVv7HyL+qRElKQP3T9VvCdpRMyBr3wi/p0cBK/lgC590mi7A7x2D+L6ruI6EmeZJc6
-         8fTPt0ey782e26MiSP39JzsK0/ozEW9UOkobI6nWK90q4LFNOT5rirI/IIUfxaAU8H4y
-         V8kKvs0uX85f74aINMJgyc1G1/uPMxIJqQORxSii714PgX5tLPqkX1cyfDT8E3/Q1etc
-         7CI1/NVrr/MDTmL3MgpMTFeQXo52m5pYtAZRKbQmoLN0I/mKuzpOgFfY1qNUTrWTJuAt
-         04pA==
-X-Gm-Message-State: AOJu0YzSZw50Fr7OB5yFy+6HjSOIVy2zksa5MLRg+Mc4KMh4v6C+CIJk
-        T4yt/XZ0D6po5dn6I7pT5YYx+pBk5jkTm/3Z
-X-Google-Smtp-Source: AGHT+IEhHqHsa1Dl5340outMycvmGWx1r/7lCTKlGNoYQzJLvjRGNpI9+HJVQ4a2LrhxC0BzPLclFw==
-X-Received: by 2002:a17:90a:7346:b0:280:735:bece with SMTP id j6-20020a17090a734600b002800735becemr1826896pjs.16.1699526222670;
-        Thu, 09 Nov 2023 02:37:02 -0800 (PST)
-Received: from [100.127.18.209] ([49.37.136.118])
-        by smtp.gmail.com with ESMTPSA id w16-20020a17090a15d000b00280202c092fsm1079008pjd.33.2023.11.09.02.36.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 02:37:02 -0800 (PST)
-Message-ID: <844937f1-b3f7-4156-b60a-e9e17d8aed6e@gmail.com>
-Date:   Thu, 9 Nov 2023 16:05:33 +0530
+        Thu, 9 Nov 2023 05:38:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C84210E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:38:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699526283; x=1731062283;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=6Mh79SSY0i2vgDbPJPkXco1TojP7hq5jyCTwgZsgy4k=;
+  b=n0mdbdHeSzkbbPD61tSsW61rSn/ifyY2suiJDUqdhOqm2e+ckmyAe1rQ
+   rOEIr/eZHh2AHTAI4RvO1JtuV6yfYWsvvB++uzJBQxA10HW4givpR/n6u
+   46YrnI8KaiXjgV4VVB19sQar/PkNdgMzPD4GIxH3mYIWvTG2NU7odwXWx
+   fvzxY16JFvIWGQbY+Ignu90tx1w6mHE+MSuPL0xUmTs4wLTrHux1yZonS
+   BuxbEN53yAKKwGjLUY41aGeUITwMbr7rjD1/X+49NeZz1lrVhNhYlaDfh
+   /QGhhR+cOA35ZmgjbhtyMpU07XoC4/NH48MsvhAe6DO1UUBt/Orb2mKp/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="389763725"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="389763725"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 02:38:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="792499887"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="792499887"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2023 02:38:01 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r12QA-0008fM-2k;
+        Thu, 09 Nov 2023 10:37:58 +0000
+Date:   Thu, 9 Nov 2023 18:35:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: sound/soc/codecs/cs42l43.c:2253:1: sparse: sparse: symbol
+ 'cs42l43_codec_pm_ops' was not declared. Should it be static?
+Message-ID: <202311091824.5z6PROGZ-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: iio: light: add ltr390
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20231109090456.814230-1-anshulusr@gmail.com>
- <f7fea4d1-c1ae-4ab5-bcbd-30683ad7a349@linaro.org>
-From:   Anshul Dalal <anshulusr@gmail.com>
-In-Reply-To: <f7fea4d1-c1ae-4ab5-bcbd-30683ad7a349@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+Hi Charles,
 
-On 11/9/23 15:57, Krzysztof Kozlowski wrote:
-> On 09/11/2023 10:04, Anshul Dalal wrote:
->> Add binding for Lite-On LTR390 which is an Ambient/UV light sensor that
->> communicates over i2c with an address of 0x53.
->>
->> Datasheet:
->>   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
->>
->> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> 
-> 
->> +  interrupts:
->> +    maxItems: 1
->> +    description: |
->> +      Level interrupt pin with open drain output.
->> +      The sensor pulls this pin low when the measured reading is greater than
->> +      some configured threshold.
->> +
->> +  vdd-supply: true
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        light-sensor@53 {
->> +            compatible = "liteon,ltr390";
->> +            reg = <0x53>;
-> 
-> Please extend the example to be complete - interrupts and vdd-supply.
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-Could the following be used as a suitable example.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6bc986ab839c844e78a2333a02e55f02c9e57935
+commit: 2b59332ead54870ed0f1a8b122a1d640a4865fdc ASoC: cs42l43: Use new-style PM runtime macros
+date:   3 months ago
+config: x86_64-randconfig-123-20230907 (https://download.01.org/0day-ci/archive/20231109/202311091824.5z6PROGZ-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311091824.5z6PROGZ-lkp@intel.com/reproduce)
 
-#include <dt-bindings/interrupt-controller/irq.h>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311091824.5z6PROGZ-lkp@intel.com/
 
-i2c {
-    #address-cells = <1>;
-    #size-cells = <0>;
+sparse warnings: (new ones prefixed by >>)
+>> sound/soc/codecs/cs42l43.c:2253:1: sparse: sparse: symbol 'cs42l43_codec_pm_ops' was not declared. Should it be static?
 
-    light-sensor@53 {
-        compatible = "liteon,ltr390";
-        reg = <0x53>;
-        interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
-        vdd-supply = <&vdd_regulator>;
-    };
-};
+vim +/cs42l43_codec_pm_ops +2253 sound/soc/codecs/cs42l43.c
 
-Thanks for the review.
+  2252	
+> 2253	DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
+  2254				  cs42l43_codec_runtime_resume, NULL);
+  2255	
 
-Best regards,
-Anshul
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
