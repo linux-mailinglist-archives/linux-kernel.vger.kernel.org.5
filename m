@@ -2,228 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B29857E69E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301747E69E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjKILrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        id S233079AbjKILs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjKILrI (ORCPT
+        with ESMTP id S233968AbjKILs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:47:08 -0500
+        Thu, 9 Nov 2023 06:48:56 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD11819E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:46:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B321FEA
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699530380;
+        s=mimecast20190719; t=1699530487;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Xx9vhxDzXDx3FeqkfjvNzmV81Ex2XQnYZudM398Ndgc=;
-        b=URytDEnQ1nl+jc46bmZmfRz+DXeS9RMmj5Xd3JuImzspcs0QxnH57Y+N7XzHjtk6ZRukLh
-        s0/qpLDfB0/SiqI/uXdcn1raQizSeThji8CyWbfDrGXQxU2uoYNy2pTPX5rA9o/Gi5hyje
-        8qGOJxKHTYHafs9nfJngjrKW5ZynrLQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ouPBDpRxc5cEOBjMwovayc5MQYZY8bX6UAk2LVNeErc=;
+        b=D1fQEBkBj092blq5H3oBQe5bMuTG8+NfrxvnZi0D7HZ1UZ5AFdISZaYDMOgKUEn4CimkSr
+        cEnYmaoELRh55AVHvNePM+q5nO+MckM3gN9l6xuRAW6sJZNz8FZhE4fHGnp/nS+FZoa4iB
+        kMGJeqyW0g3XfTJDnSOrmqplLlIWjoI=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-503-de_L-BgkMNy8AafYv3jrVg-1; Thu, 09 Nov 2023 06:46:19 -0500
-X-MC-Unique: de_L-BgkMNy8AafYv3jrVg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9c749c28651so64417866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 03:46:19 -0800 (PST)
+ us-mta-641-Rub7SUkXOb6zXCJO2G1_Mg-1; Thu, 09 Nov 2023 06:48:06 -0500
+X-MC-Unique: Rub7SUkXOb6zXCJO2G1_Mg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9e1020e2996so61764166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 03:48:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699530378; x=1700135178;
+        d=1e100.net; s=20230601; t=1699530484; x=1700135284;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xx9vhxDzXDx3FeqkfjvNzmV81Ex2XQnYZudM398Ndgc=;
-        b=YGUTczwkX96poCYMtcIMlbyFdDj+tHLdVD46SQBjk5bniYdkSetQxbkuWNdP/rrStv
-         hJ9wW2aYYBIfGV5tIn6myyinqx3Ga5bplbnTI9r925GTP98b0YGOVy0DSMdiCy49cjJj
-         u30jCvyWtvq7KxzDffnRV1Ce6LygWz2/PX9xIwMi4KU1siiJipozdZsN/frDqxsrYV6W
-         KgzEtsBDXIHQpSoAzgwyvaaDQagPJXAxQl9TucTZt0N0oKp40SkZXmKvlILo9g76VWsV
-         nhqVkQC0JkMeR/ccGzkIGSufeVevzXzdlqwOQWRHkGG+uTyrgMyPrK4Kk1bBeLvbfF0z
-         iu/g==
-X-Gm-Message-State: AOJu0Ywn6nHV6bivy9VsC61UdZuE8dcNp8a8dcqTtUIvB74m7eQEMYxc
-        KxPBU5Jthf2jMwP4eiYhODsv+amXWDfe19gT8dmnbo0ahmICfMYneYleGx9NXJYuWu53wCBn8ua
-        xmp/hu+wJgE8MXVGe++bq6C6rcVL0+w0mLTWYxzQu
-X-Received: by 2002:a17:907:3e81:b0:9c3:1d7e:f5b5 with SMTP id hs1-20020a1709073e8100b009c31d7ef5b5mr3869802ejc.20.1699530378469;
-        Thu, 09 Nov 2023 03:46:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEJhwyykRuVv/L8SJga/nU+RHtyHjpDDz9uPB8KSXhUziWnNTPl03QiW2qPbkNK9V/EjcEv28gPLcZQdqB8Uds=
-X-Received: by 2002:a17:907:3e81:b0:9c3:1d7e:f5b5 with SMTP id
- hs1-20020a1709073e8100b009c31d7ef5b5mr3869785ejc.20.1699530378150; Thu, 09
- Nov 2023 03:46:18 -0800 (PST)
+        bh=ouPBDpRxc5cEOBjMwovayc5MQYZY8bX6UAk2LVNeErc=;
+        b=ALtZWS6mtiejbK7ZscUZ/J3Ia5QDw/6lVPTAaZuIB2ERpjtn4iKL9Cn0GHZ9cNDktu
+         u8nI0xnPGiiR9QNXYO/Rtg6+JU5XztTxUpPeJWAk7D/xVvfuRUiPBCuaFHWS+yAPLcLw
+         2c+pJoR5slk3yncMtBk899myoUDplUiS9naF4kJb4o4+nO2Gre3GvhytsSQAMWyVeZL5
+         2tykGmzVpJZOovx7KonXO85KP6+iQH1XguYAKqi9+Giw7Mn9jfQu4FWx9uX060kfbGdu
+         bn+IrI36FNBD7hAJzdGktbcCtjz20C06jRUdhGoLtAqrQzdreBiWT1SFH9Z7ZiHl2VEw
+         H5kA==
+X-Gm-Message-State: AOJu0YxCXVVtV82ML46QvOkny0KCf3dtYFlIH9lHtRBi1RKJtI2REu7X
+        M/qX/4XQrxQA4vnjW3TUORlXZ5PyNXWPTrkU54YQiaLKj/bhbG36C2W9lT4VXR6QS4KTqkbUwd6
+        Ilb7B7jN3G9C164XDQ/v8QuJnlks05djIHS4Td7BUxWRKJBfU
+X-Received: by 2002:a17:907:ea6:b0:9e1:46a2:b827 with SMTP id ho38-20020a1709070ea600b009e146a2b827mr4357065ejc.29.1699530484714;
+        Thu, 09 Nov 2023 03:48:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEAEH2uL1uOIqy1J9TKIH6vxPugMmWZqnXzhJ/jMbyp5T5l5mx/gtw6f5M2GYsMMlZS84z6zB97BjxSfj21T/8=
+X-Received: by 2002:a17:907:ea6:b0:9e1:46a2:b827 with SMTP id
+ ho38-20020a1709070ea600b009e146a2b827mr4357043ejc.29.1699530484394; Thu, 09
+ Nov 2023 03:48:04 -0800 (PST)
 MIME-Version: 1.0
-References: <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
- <20231108194051.279435-2-nils@nilsfuhler.de> <CAO-hwJ+b4q+8g=Cg5MRJQT2EsxkFZrK_XgJqmHWm=GBHskhDqQ@mail.gmail.com>
- <87zfzndghj.fsf@sra.uni-hannover.de>
-In-Reply-To: <87zfzndghj.fsf@sra.uni-hannover.de>
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de> <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
+ <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
+ <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+ <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com> <A01KgwZWh8vP1ux3J92E572eCVMfYPzBcHLuuGfSTYntQMVErkqIcPhJtWRxJsinbI_AfHvD_GcnGvQ1kFtxR36ozCPj_VH8Ys8OlA02MZQ=@protonmail.com>
+In-Reply-To: <A01KgwZWh8vP1ux3J92E572eCVMfYPzBcHLuuGfSTYntQMVErkqIcPhJtWRxJsinbI_AfHvD_GcnGvQ1kFtxR36ozCPj_VH8Ys8OlA02MZQ=@protonmail.com>
 From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 9 Nov 2023 12:46:05 +0100
-Message-ID: <CAO-hwJ+xMc2O0d1JJdQt4f3BAd+ASSv9hA4SH+3WS4iTNpU61w@mail.gmail.com>
+Date:   Thu, 9 Nov 2023 12:47:52 +0100
+Message-ID: <CAO-hwJJ3jxoWq0bcAZkVrDTySdYrkHs30NDGdMwTp2KPbJDmEg@mail.gmail.com>
 Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
-To:     ostapyshyn@sra.uni-hannover.de
-Cc:     Nils Fuhler <nils@nilsfuhler.de>, davidrevoy@protonmail.com,
-        folays@gmail.com, jason.gerecke@wacom.com, jkosina@suse.cz,
-        jose.exposito89@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     David Revoy <davidrevoy@protonmail.com>
+Cc:     Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>, jkosina@suse.cz,
+        jason.gerecke@wacom.com, jose.exposito89@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nils@nilsfuhler.de, peter.hutterer@who-t.net, ping.cheng@wacom.com,
+        bagasdotme@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 11:32=E2=80=AFPM <ostapyshyn@sra.uni-hannover.de> wr=
-ote:
+On Thu, Nov 9, 2023 at 12:19=E2=80=AFAM David Revoy <davidrevoy@protonmail.=
+com> wrote:
 >
-> On 11/8/23 21:34, Benjamin Tissoires wrote:
+> > BTW, David, were you able to do a revert of 276e14e6c3?
 >
-> > Again, you convinced me that this commit was wrong. If people needs to
-> > also use an ioctl to "fix" it, then there is something wrong.
->
-> I don't think we're on the same page here.  Nobody needs to use an ioctl
-> to fix 276e14e6c3.  Rather, the _exact opposite_: the bug reporter used
-> an ioctl to remap Eraser to BTN_STYLUS2.  It stopped working after
-> 276e14e6c3 and broke his workflow.  He reported it as a regression,
-> starting this whole thread.
+> I'm sorry Benjamin: I did some research on how to build a kernel [1], on =
+how to revert a commit (easy, I know a bit of Git), and started following i=
+t step by step. Result: I failed and concluded that it probably requires to=
+o much computer knowledge compared to what I can do now. I'm afraid I won't=
+ be able to build a custom kernel for testing.
 
-After more thoughts about Niels' email, the whole thread and a
-not-so-good night's sleep, I think I now understand what is the
-problem.
-
-And yes, most of the problem comes from that remap *after* the kernel
-parsed the device and made a decision based on what was provided to
-it.
-
->
-> > Sorry but I tend to disagree. Relying on the ioctl EVIOCSKEYCODE for
-> > tuning the behavior of a state machine is just plain wrong. When
-> > people do that, they are doing it at the wrong level and introducing
-> > further bugs.
-> >
-> > The whole pen and touch HID protocols rely on a state machine. You
-> > just can not change the meaning of it because your hardware maker
-> > produced a faulty hardware.
-> >
-> > [...]
-> >
-> > In the same way, if you remap Tip Switch to KEY-A, you won't get
-> > clicks from your pen. Assuming you can do that with any event on any
-> > HID device is just plain wrong.
-> > That ioctl is OK-ish for "remapping" simple things like keys. In our
-> > case, the whole firmware follows a state machine, so we can not change
-> > it. It has to be remapped in a later layer, in libinput, your
-> > compositor, or in your end user application.
->
-> I don't disagree.  Forbidding EVIOCSKEYCODE ioctls for pen and touch HID
-> is a legitimate way to resolve this (an appealing one too -- accounting
-> for it in hidinput_hid_event might be a hellish task).
-
-I think it would be best not to require the need for the ioctl in the
-first place.
-
-Looking at David's blog, I'm starting to wonder if we actually need to
-report BTN_TOOL_RUBBER after all in the case where there is no Invert
-usage.
-
->
-> Should we forbid remapping Eraser too?  If your answer is yes, then we
-> can finish this conversation here and leave the code as it is now,
-> because __the regression__ is a user not being able to use an ioctl to
-> remap Eraser after 276e14e6c3.  Otherwise, if we do make an exemption for
-> David's Eraser, the fix is as simple as replacing BTN_TOUCH with
-> usage->code on line 1594 of hid-input.c.
->
-> > How many of such devices do we have? Are they all UGTablet like the
-> > XP-PEN? Are they behaving properly on Windows without a proprietary
-> > driver?
-> >
-> > [...]
-> >
-> > I might buy the "invertless" devices are a thing if I can get more
-> > data about it. So far there are only 2 of them, and they add extra
-> > complexity in the code when we can just patch the devices to do the
-> > right thing.
->
-> There might or might not be more devices like this in the wild.  It looks
-> like BarrelSwitch2 was added only 2013 [1], which is why so many styli
-> use Eraser for the second button.  Setting two bits for a single button
-> just to adhere to Microsoft's *recommendation* is nice for compatibility,
-> but I can imagine vendors taking a shortcut and omitting Invert
-> altogether.  The HID specification alone just lists the usages and says
-> nothing about how they relate to each other.
-
-Right. So maybe instead of trying to force the "no Invert" pens into
-the "oh, this looks like an eraser", maybe we should remap in that
-case the eraser usage into a secondary barrel switch.
-We then need to filter the proximity out event that is sent when the
-user presses it, but all in all it should be doable (hopefully).
-
-
->
-> XP-Pen Artist 24 does work on Windows with the generic driver.  The
-> Eraser engages as soon as the button is pressed, without touching the
-> screen.
-
-OK, thanks for the confirmation.
-
-I just had a meeting with Peter Hutterer, and he told me it would be
-best if the kernel doesn't follow the entire "this button is an eraser
-mode". But that requires some filtering of the events because some
-hardware (like the Artist 24 here) partially implements the
-"specification" by sending a proximity out event when the button is
-pressed.
-
-So my idea would be to do that change in HID-BPF, so that it's only
-included when libinput supports it (no regressions then), and we can
-actually change the heuristics more easily than having to patch the
-kernel.
-
-I'd also need to get the behavior of:
-- stylus is in range -> second button is pressed -> stylus touches the
-surface with the button still pressed -> button is released -> stylus
-leaves the surface and goes out of proximity.
-- stylus is in range -> stylus touches the surface without any button
-pressed -> second button is pressed -> stylus leaves the surface and
-goes out of proximity
-- stylus is in range -> stylus touches the surface without any button
-pressed -> second button is pressed -> second button is released ->
-stylus leaves the surface and goes out of proximity
-
-And probably some other weird corner cases.
-
-If we get the "eraser" event being set to 0/1 when the button is
-pressed whether the stylus touches the surface or not, it would be
-simple enough to change the purpose of the button in HID-BPF and
-filter the eventual prox out events.
-
-
->
-> > New hardware isn't supposed to be supported on an old kernel and is
-> > not considered as a regression. However, David mentioned that the
-> > device was "working" on 6.5.0 but broke in 6.5.8 with the patch
-> > mentioned above. This is a regression that needs to be tackled.
-> > Especially because it was introduced in 6.6 but backported into 6.5.
->
-> To make sure we're talking about the same thing:
->
-> 1. "Broke" in this context means that the ioctl remapping from Eraser to
->    right-click stopped working.
-
-Yeah, you're correct. This isn't a regression, it's a user tempering
-with the kernel and the kernel can't deal with it.
-But the use case is still valid. It's the way it was done that was wrong.
-
->
-> 2. XPPen 16 Pro Gen2 is a whole different topic, untouched by 276e14e6c3.
-
-I still need to figure out what is wrong after my HID-BPF changes. But
-yeah, it is orthogonal.
+No worries. And I'm actually happy, because you definitely fit into
+the HID-BPF model where I want to fix a user's device without
+requiring kernel compilation, and fixing the device in a reliable way
+that we can do the general fix without impacting the reporter.
 
 Cheers,
 Benjamin
 
 >
-> [1] https://www.usb.org/sites/default/files/hutrr46e.txt
+> [1] https://docs.fedoraproject.org/en-US/quick-docs/kernel-build-custom/#=
+_building_a_vanilla_upstream_kernel
+>
+>
+> On Tuesday, November 7th, 2023 at 08:59, Benjamin Tissoires <benjamin.tis=
+soires@redhat.com> wrote:
+>
+>
+> > On Mon, Nov 6, 2023 at 9:06=E2=80=AFPM Illia Ostapyshyn
+> > ostapyshyn@sra.uni-hannover.de wrote:
+> >
+> > > On 11/6/23 17:59, Benjamin Tissoires wrote:
+> > >
+> > > > If the pen has 2 buttons, and an eraser side, it would be a serious
+> > > > design flow for XPPEN to report both as eraser.
+> > > >
+> > > > Could you please use sudo hid-recorder from hid-tools[1] on any ker=
+nel
+> > > > version and send us the logs here?
+> > > > I'll be able to replay the events locally, and understand why the
+> > > > kernel doesn't work properly.
+> > > >
+> > > > And if there is a design flaw that can be fixed, we might even be a=
+ble
+> > > > to use hid-bpf to change it :)
+> > >
+> > > My wild guess is that XP-Pen 16 Artist Pro reports an Eraser usage
+> > > without Invert for the upper button and Eraser with Invert for the
+> > > eraser tip. A device-specific driver could work with that, but there
+> > > seems to be no way to incorporate two different erasers (thus, allowi=
+ng
+> > > userspace to map them to different actions arbitrarily) in the generi=
+c
+> > > driver currently.
+> >
+> >
+> > That's exactly why I want to see the exact event flow. We can not do
+> > "wild guesses" unfortunately (not meaning any offenses).
+> > And I am very suspicious about the fact that the stylus reports 2
+> > identical erasers. Because in the past David seemed to be able to have
+> > 2 distincts behaviors for the 2 "buttons" (physical button and eraser
+> > tail).
+> >
+> > > > Generally speaking, relying on X to fix your hardware is going to b=
+e a
+> > > > dead end. When you switch to wayland, you'll lose all of your fixes=
+,
+> > > > which isn't great.
+> > >
+> > > > AFAIU, the kernel now "merges" both buttons, which is a problem. It
+> > > > seems to be a serious regression. This case is also worrying becaus=
+e I
+> > > > added regression tests on hid, but I don't have access to all of th=
+e
+> > > > various tablets, so I implemented them from the Microsoft
+> > > > specification[0]. We need a special case for you here.
+> > >
+> > > The issue preventing David from mapping HID_DG_ERASER to BTN_STYLUS2 =
+is
+> > > that the hidinput_hid_event is not compatible with hidinput_setkeycod=
+e.
+> > > If usage->code is no longer BTN_TOUCH after remapping, it won't be
+> > > released when Eraser reports 0. A simple fix is:
+> >
+> >
+> > I must confess, being the one who refactored everything, I still don't
+> > believe this is as simple as it may seem. I paged out all of the
+> > special cases, and now, without seeing the event flow I just can not
+> > understand why this would fix the situation.
+> >
+> > And BTW, if you have a tool affected by 276e14e6c3, I'd be curious to
+> > get a hid-recorder sample for it so I can get regression tests for it.
+> >
+> > > --- a/drivers/hid/hid-input.c
+> > > +++ b/drivers/hid/hid-input.c
+> > > @@ -1589,7 +1589,7 @@ void hidinput_hid_event(struct hid_device *hid,
+> > > struct hid_field field, struct
+> > > / value is off, tool is not rubber, ignore */
+> > > return;
+> > > else if (*quirks & HID_QUIRK_NOINVERT &&
+> > > - !test_bit(BTN_TOUCH, input->key)) {
+> > > + !test_bit(usage->code, input->key)) {
+> >
+> >
+> > I don't want to be rude, but this feels very much like black magic,
+> > especially because there is a comment just below and it is not
+> > updated. So either the explanation was wrong, or it's not explaining
+> > the situation (I also understand that this is not a formal submission,
+> > so maybe that's the reason why the comment is not updated).
+> >
+> > > /*
+> > > * There is no invert to release the tool, let hid_input
+> > > * send BTN_TOUCH with scancode and release the tool after.
+> > >
+> > > This change alone fixes David's problem and the right-click mapping i=
+n
+> > > hwdb works again. However, the tool switches to rubber for the remapp=
+ed
+> > > eraser (here BTN_STYLUS2) events, both for devices with and without
+> > > Invert. This does no harm but is not useful either. A cleaner solutio=
+n
+> > > for devices without Invert would be to omit the whole tool switching
+> > > logic in this case:
+> > >
+> > > @@ -1577,6 +1577,9 @@ void hidinput_hid_event(struct hid_device *hid,
+> > > struct hid_field *field, struct
+> > >
+> > > switch (usage->hid) {
+> > > case HID_DG_ERASER:
+> > > + if (*quirks & HID_QUIRK_NOINVERT && usage->code !=3D BTN_TOUCH)
+> > > + break;
+> > > +
+> > > report->tool_active |=3D !!value;
+> > >
+> > > Remapping Invert does not work anyway as the Invert tool is hardcoded=
+ in
+> > > hidinput_hid_event. Even worse, I guess (not tested) trying to do so
+> > > would mask BTN_TOOL_RUBBER from dev->keybit and could cause weird
+> > > behavior similar to one between 87562fcd1342 and 276e14e6c3. This
+> > > raises the question: should users be able to remap Invert after all?
+> >
+> >
+> > The kernel is supposed to transfer what the device is. So if it says
+> > this is an eraser, we should not try to change it. Users can then
+> > tweak their own device if they wish through hid-bpf or through
+> > libinput quirks, but when you install a fresh kernel without tweaks,
+> > we should be as accurate as possible.
+> >
+> > My main concern is that now we have a device which exports 2 different
+> > interactions as being the same. So either the firmware is wrong, and
+> > we need to quirk it, or the kernel is wrong and merges both, and this
+> > needs fixes as well.
+> >
+> > Once every interaction on the device gets its own behavior, userspace
+> > can do whatever they want. It's not the kernel's concern anymore.
+> >
+> > BTW, David, were you able to do a revert of 276e14e6c3?
+> >
+> > Cheers,
+> > Benjamin
 >
 
