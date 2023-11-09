@@ -2,255 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C07C7E73C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932C27E73C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345261AbjKIVjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        id S1345300AbjKIVkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbjKIVj0 (ORCPT
+        with ESMTP id S1345280AbjKIVkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:39:26 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187314211;
-        Thu,  9 Nov 2023 13:39:24 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso237902466b.1;
-        Thu, 09 Nov 2023 13:39:24 -0800 (PST)
+        Thu, 9 Nov 2023 16:40:36 -0500
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CEF2139
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 13:40:34 -0800 (PST)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66fa16092c0so8800256d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 13:40:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699565962; x=1700170762; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7mivFoTsyzu5D3ktYakV/iPJjqNTQ6vxhMqnx19AOq4=;
-        b=Pd2jM6QtX35Iqp+ALpamDOuMRu9JJCF2TeYvGiN9FdwPzQyT7CQmZuSuYvoQ3Ss+z5
-         GZLAdGvX2c/YaFYb5XLzePD2Qmaqgz2xINb8UX8xJwnPYAL6rohSfgiAsT5zCnZBpfXt
-         Rj69pO/AtA45FHEwGwqymEHix+tne3moyHHScGLBU59q43t9NOKkIu0ecqhujDI9cgoK
-         D2P+XSAFRbRiJC9BTJ7kk3eHsKH/HASzpv2S6o2hXe2gPpqqRO3lsQ4ISv1xJSzwDs4H
-         TQ6UT+Dad+mBo7gheLTC24nSroK5Xv1+3UPnmch0tegCWZ7AEKPe4ytI+R3DvdAxfGoP
-         s9dw==
+        d=gmail.com; s=20230601; t=1699566033; x=1700170833; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dqZ8eGZ8Pp8FeE7q6r74GQLeHAO1e/AKYL8uZYPenT8=;
+        b=iWEdObJybXBAHsNL3bQKXRX6ynRNlXKbOqLDpme0EHz1aWWFsECKzBtoUy2/BvN+eJ
+         oSjZ0D9G/M1qhxOlsm8KulWi5jMn0kD2Ksb5agm+WaNyQWxZ1yICfk0knSydEBmUp6gr
+         MTm2m8fG5bVzE4LXGrJKSWhad1/kSrhPgKjhtndIfmki0OzAfwiOYzoqjOqiEgkhP9hw
+         BB1SIduww+a9ojwlY1q83XIQmS0WQ3OqMvuwAgnCaxeY9SkkKKJBIcXTEygTHsFInoFC
+         5/d7HXaTCUv5o/ipiGWmo0iiL+40rik9sxX9KwpzSYvTcRk6JmKYFTnehWXr8lvYyy2l
+         CJKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699565962; x=1700170762;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7mivFoTsyzu5D3ktYakV/iPJjqNTQ6vxhMqnx19AOq4=;
-        b=jgdx+uqRrXGbTHwwNdM6FmLF20j+lbQshQM3ExoICrTxa3vgQBdzQg71j4zQgAniKL
-         UNzuuOdGsXsSUnNkrkfpRwF0KdHRG7JJHO82xfyi8W7xya5+tRM6rR8ArIyAlNGXhy+d
-         Hzn8IP+JMgBHW8wpuYcIzTIHQ39qdVRlhBueErftl5yhvvpPr5fWxr6uuZ3VK72ECqPa
-         tAKrOnZArFnPnErmCcqJeIVuHFztkZxmddflLkyhBgJoA5cUOvSSSj89FWOjPDftOFbX
-         hIp7Ao2pLklEMaVFwlP2tIWNNMvl+b//WBgbX+edZvzOWkjPYgERFK/vuW16N7tCtWrA
-         ymIg==
-X-Gm-Message-State: AOJu0YyUYvTQL2df4FXwLDYaIE1nCcSU9gAO1hkxGJwlLsQPjYPEfW53
-        oPicMan4OEKx4EAeW9e/gWs=
-X-Google-Smtp-Source: AGHT+IGX3N5iX5LSKJ95LCTzhUOw3nwL5273uioZrF9b4UvDKOmdcXT+cZl5S1QF5kdiE4gl0U5Yxw==
-X-Received: by 2002:a17:907:910a:b0:9e4:e405:27b4 with SMTP id p10-20020a170907910a00b009e4e40527b4mr1447235ejq.53.1699565962160;
-        Thu, 09 Nov 2023 13:39:22 -0800 (PST)
-Received: from krava ([83.240.60.131])
-        by smtp.gmail.com with ESMTPSA id gy8-20020a170906f24800b0099c53c44083sm3057499ejb.79.2023.11.09.13.39.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 13:39:21 -0800 (PST)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 9 Nov 2023 22:39:14 +0100
-To:     Lee Jones <lee@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, x86@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [REPORT] BPF: Reproducible triggering of BUG() from userspace PoC
-Message-ID: <ZU1RgvcM0FFXunOA@krava>
-References: <20231108154626.GB8909@google.com>
+        d=1e100.net; s=20230601; t=1699566033; x=1700170833;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dqZ8eGZ8Pp8FeE7q6r74GQLeHAO1e/AKYL8uZYPenT8=;
+        b=O5PbRW/ol63v5PcorQdoNZsIoOqKdIV7zwa8iF9V3uAs14vbFBnH2Zoc7WleRs7gv4
+         p9H/VLFpfY0jwvWk1r5nBKMAR4urOeqcD0L8bf6OObjJyNbQF5djHc6YFijUhg7wZNjA
+         2WHWiZdFClmLdXQNGHdtpJR/KVyV7IBLcHNaj6hcTgigZ4RYEi8zq4a14FyQWVFFdzRN
+         TePFxblYjf7U8n6w6QY19NKDRV9dMpG0UODWpFvzORePvK+moS9hr7yok4TghH99K4kl
+         CAUG+Jjar6RWUhcuEI2sK+iFllpHEWksVerHiVwRLr66cvGtqsZv5S0rFdtVGe7xfCvf
+         QxYg==
+X-Gm-Message-State: AOJu0YyP2kgbCq9WMbwtBUbDgqmaAKQ1aA0HYQvCPW/UQjXvNgqLdtCz
+        OVDmgrM5bxgNXn/c11GSi98K8VcZLlw3/nr+3fc=
+X-Google-Smtp-Source: AGHT+IH3YltxlweWDrZvXZm8ZC5Jic0g3A91lLs5H9oZ86bc9SWw0LcBSTx5Cag+vFjgRJk08vHEOQ==
+X-Received: by 2002:a05:6214:490:b0:66d:182a:c083 with SMTP id pt16-20020a056214049000b0066d182ac083mr7899275qvb.9.1699566033249;
+        Thu, 09 Nov 2023 13:40:33 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id q10-20020a0cfa0a000000b0065d05c8bb5dsm2392508qvn.64.2023.11.09.13.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 13:40:32 -0800 (PST)
+Message-ID: <01603866-26bd-4020-8999-948718b75ad2@gmail.com>
+Date:   Thu, 9 Nov 2023 16:40:23 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231108154626.GB8909@google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.4.2
+Subject: Re: [PATCH] drm/sched: fix potential page fault in
+ drm_sched_job_init()
+Content-Language: en-CA, en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, christian.koenig@amd.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20231108022716.15250-1-dakr@redhat.com>
+ <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
+ <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
+ <c2c4a1e3-9a8c-4922-aecc-8894d13a8054@redhat.com>
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <c2c4a1e3-9a8c-4922-aecc-8894d13a8054@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------7B0Iy6KD7AleabuDKfTGjEH1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 03:46:26PM +0000, Lee Jones wrote:
-> Good afternoon,
-> 
-> After coming across a recent Syzkaller report [0] I thought I'd take
-> some time to firstly reproduce the issue, then see if there was a
-> trivial way to mitigate it.  The report suggests that a BUG() in
-> prog_array_map_poke_run() [1] can be trivially and reliably triggered
-> from userspace using the PoC provided [2].
-> 
->         ret = bpf_arch_text_poke(poke->tailcall_bypass,
->                                  BPF_MOD_JUMP,
->                                  old_bypass_addr,
->                                  poke->bypass_addr);
->         BUG_ON(ret < 0 && ret != -EINVAL);
-> 
-> Indeed the PoC does seem to be able to consistently trigger the BUG(),
-> not only on the reported kernel (v6.1), but also on linux-next.  I went
-> to the trouble of checking LORE, but failed to find any patches which
-> may be attempting to fix this.
-> 
->     kernel BUG at kernel/bpf/arraymap.c:1094!
->     invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->     CPU: 5 PID: 45 Comm: kworker/5:0 Not tainted 6.6.0-rc3-next-20230929-dirty #74
->     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
->     Workqueue: events prog_array_map_clear_deferred
->     RIP: 0010:prog_array_map_poke_run+0x6b4/0x6d0
->     Code: ff 0f 0b e8 1e 27 e1 ff 48 c7 c7 60 80 93 85 48 c7 c6 00 7f 93 85 48 c7 c2 bb c2 39 86 b9 45 04 00 00 45 89 f8 e8 9c 890
->     RSP: 0018:ffffc9000036fb50 EFLAGS: 00010246
->     RAX: 0000000000000044 RBX: ffff88811f337490 RCX: 63af48a1314f9900
->     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
->     RBP: ffffc9000036fbe8 R08: ffffffff815c23c5 R09: 1ffff11084c14eba
->     R10: dfffe91084c14ebc R11: ffffed1084c14ebb R12: ffff888116517800
->     R13: dffffc0000000000 R14: ffff888125a1a400 R15: 00000000fffffff0
->     FS:  0000000000000000(0000) GS:ffff888426080000(0000) knlGS:0000000000000000
->     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->     CR2: 00000000004ab678 CR3: 0000000122ac4000 CR4: 0000000000350eb0
->     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->     Call Trace:
->      <TASK>
->      ? __die_body+0x92/0xf0
->      ? die+0xa2/0xe0
->      ? do_trap+0x12f/0x370
->      ? handle_invalid_op+0xa6/0x140
->      ? handle_invalid_op+0xdf/0x140
->      ? prog_array_map_poke_run+0x6b4/0x6d0
->      ? prog_array_map_poke_run+0x6b4/0x6d0
->      ? exc_invalid_op+0x32/0x50
->      ? asm_exc_invalid_op+0x1b/0x20
->      ? __wake_up_klogd+0xd5/0x110
->      ? prog_array_map_poke_run+0x6b4/0x6d0
->      ? bpf_prog_6781ebc2dae4bad9+0xb/0x53
->      fd_array_map_delete_elem+0x152/0x250
->      prog_array_map_clear_deferred+0xf6/0x210
->      ? __bpf_array_map_seq_show+0xa40/0xa40
->      ? kick_pool+0x164/0x350
->      ? process_one_work+0x57a/0xd00
->      process_one_work+0x5e4/0xd00
->      worker_thread+0x9cf/0xea0
->      kthread+0x2b4/0x350
->      ? pr_cont_work+0x580/0x580
->      ? kthread_blkcg+0xd0/0xd0
->      ret_from_fork+0x4a/0x80
->      ? kthread_blkcg+0xd0/0xd0
->      ret_from_fork_asm+0x11/0x20
->      </TASK>
->     Modules linked in:
->     ---[ end trace 0000000000000000 ]---
-> 
-> However, with my very limited BPF subsystem knowledge I was unable to
-> trivially fix the issue.  Hopefully some knowledgable person would be
-> kind enough to provide me with some pointers.
-> 
-> bpf_arch_text_poke() seems to be returning -EBUSY due to a negative
-> memcmp() result from [3].
-> 
->         ret = -EBUSY;
->         mutex_lock(&text_mutex);
->         if (memcmp(ip, old_insn, X86_PATCH_SIZE)) {
->                 goto out;
->         [...]
-> 
-> When spitting out the memory at those locations, this is the result:
-> 
->     ip:        e9 06 00 00 00
->     old_insn:  0f 1f 44 00 00
->     nop_insn:  0f 1f 44 00 00
-> 
-> As you can see, the information stored in 'ip' does not match that of
-> the data stored in 'old_insn', causing bpf_arch_text_poke() to return
-> early with the error -EBUSY, suggesting that the data pointed to by
-> 'old_insn', and by extension 'prog' should have been changed when
-> emit_call()ing, to the value of 'ip', but wasn't.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------7B0Iy6KD7AleabuDKfTGjEH1
+Content-Type: multipart/mixed; boundary="------------0qlI3FtQGuUpqb5S8L603S6K";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com, daniel@ffwll.ch,
+ christian.koenig@amd.com
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Message-ID: <01603866-26bd-4020-8999-948718b75ad2@gmail.com>
+Subject: Re: [PATCH] drm/sched: fix potential page fault in
+ drm_sched_job_init()
+References: <20231108022716.15250-1-dakr@redhat.com>
+ <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
+ <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
+ <c2c4a1e3-9a8c-4922-aecc-8894d13a8054@redhat.com>
+In-Reply-To: <c2c4a1e3-9a8c-4922-aecc-8894d13a8054@redhat.com>
 
-hi,
-thanks for the report.. I can reproduce that easily with [2]
+--------------0qlI3FtQGuUpqb5S8L603S6K
+Content-Type: multipart/mixed; boundary="------------DpMs4nwdBTrqFWkcSPu520Ma"
 
-AFAICS it looks like previous update fails because we use bpf_arch_text_poke,
-which can't find poke->tailcall_bypass value as bpf program symbol and fails
-with -EINVAL
+--------------DpMs4nwdBTrqFWkcSPu520Ma
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-then the following update fails to find expected jmp/nop because it was never
-updated.. I think we should use __bpf_arch_text_poke like we do in
-bpf_tail_call_direct_fixup and skip the bpf symbol check
+On 2023-11-09 14:55, Danilo Krummrich wrote:
+> On 11/9/23 01:09, Danilo Krummrich wrote:
+>> On 11/8/23 06:46, Luben Tuikov wrote:
+>>> Hi,
+>>>
+>>> Could you please use my gmail address, the one one I'm responding fro=
+m--I don't want
+>>> to miss any DRM scheduler patches. BTW, the luben.tuikov@amd.com emai=
+l should bounce
+>>> as undeliverable.
+>>>
+>>> On 2023-11-07 21:26, Danilo Krummrich wrote:
+>>>> Commit 56e449603f0a ("drm/sched: Convert the GPU scheduler to variab=
+le
+>>>> number of run-queues") introduces drm_err() in drm_sched_job_init(),=
+ in
+>>>> order to indicate that the given entity has no runq, however at this=
 
-with the patch below I can't reproduce the issue anymore, I'll do some more
-checking though
+>>>> time job->sched is not yet set, likely to be NULL initialized, and h=
+ence
+>>>> shouldn't be used.
+>>>>
+>>>> Replace the corresponding drm_err() call with pr_err() to avoid a
+>>>> potential page fault.
+>>>>
+>>>> While at it, extend the documentation of drm_sched_job_init() to
+>>>> indicate that job->sched is not a valid pointer until
+>>>> drm_sched_job_arm() has been called.
+>>>>
+>>>> Fixes: 56e449603f0a ("drm/sched: Convert the GPU scheduler to variab=
+le number of run-queues")
+>>>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>>>> ---
+>>>> =C2=A0 drivers/gpu/drm/scheduler/sched_main.c | 5 ++++-
+>>>> =C2=A0 1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/dr=
+m/scheduler/sched_main.c
+>>>> index 27843e37d9b7..dd28389f0ddd 100644
+>>>> --- a/drivers/gpu/drm/scheduler/sched_main.c
+>>>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+>>>> @@ -680,6 +680,9 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
+>>>> =C2=A0=C2=A0 * This function returns -ENOENT in this case (which pro=
+bably should be -EIO as
+>>>> =C2=A0=C2=A0 * a more meanigful return value).
+>>>> =C2=A0=C2=A0 *
+>>>> + * Note that job->sched is not a valid pointer until drm_sched_job_=
+arm() has
+>>>> + * been called.
+>>>> + *
+>>>
+>>> Good catch!
+>>>
+>>> Did you actually get this to page-fault and have a kernel log?
+>>
+>> No, I just found it because I was about to make the same mistake.
+>>
+>>>
+>>> I'm asking because we see it correctly set in this kernel log coming =
+from AMD,
+>>
+>> I think that's because amdgpu just sets job->sched to *some* scheduler=
+ instance after
+>> job allocation [1].
+>>
+>> [1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd=
+/amdgpu/amdgpu_job.c#L108
+>>
+>>>
+>>> [=C2=A0=C2=A0 11.886024] amdgpu 0000:0a:00.0: [drm] *ERROR* drm_sched=
+_job_init: entity has no rq!
+>>>
+>>> in this email,
+>>> https://lore.kernel.org/r/CADnq5_PS64jYS_Y3kGW27m-kuWP+FQFiaVcOaZiB=3D=
+JLSgPnXBQ@mail.gmail.com
+>>>
+>>>> =C2=A0=C2=A0 * Returns 0 for success, negative error code otherwise.=
 
-jirka
+>>>> =C2=A0=C2=A0 */
+>>>> =C2=A0 int drm_sched_job_init(struct drm_sched_job *job,
+>>>> @@ -691,7 +694,7 @@ int drm_sched_job_init(struct drm_sched_job *job=
+,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * or wo=
+rse--a blank screen--leave a trail in the
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * logs,=
+ so this can be debugged easier.
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 drm_err(job->sched, "%s:=
+ entity has no rq!\n", __func__);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_err("%s: entity has n=
+o rq!\n", __func__);
+>>>
+>>> Is it feasible to do something like the following?
+>>>
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_err(job->sched ? job->=
+sched->dev : NULL, "%s: entity has no rq!\n", __func__);
+>>
+>> I don't think that's a good idea. Although I'd assume that every drive=
+r zero-initializes its job
+>> structures, I can't see a rule enforcing that. Hence, job->sched can b=
+e a random value until
+>> drm_sched_job_arm() is called.
+>>
+>> However, I notice there are quite a view more fields of struct drm_sch=
+ed_job that are never
+>> initialized, hence there are either a couple more potential bugs or mi=
+ssing documentation that
+>> drivers *must* ensure that a job is zero-initialized.
+>=20
+> Any opinions on that? Otherwise I'd probably go ahead and send a fix fo=
+r the other bugs too.
 
+Send the patches.
 
----
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 8c10d9abc239..35c2988caf29 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -391,8 +391,8 @@ static int emit_jump(u8 **pprog, void *func, void *ip)
- 	return emit_patch(pprog, func, ip, 0xE9);
- }
- 
--static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
--				void *old_addr, void *new_addr)
-+int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-+			 void *old_addr, void *new_addr)
- {
- 	const u8 *nop_insn = x86_nops[5];
- 	u8 old_insn[X86_PATCH_SIZE];
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index eb84caf133df..0d7b8311fada 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -3172,6 +3172,8 @@ enum bpf_text_poke_type {
- 
- int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		       void *addr1, void *addr2);
-+int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-+			 void *old_addr, void *new_addr);
- 
- void *bpf_arch_text_copy(void *dst, void *src, size_t len);
- int bpf_arch_text_invalidate(void *dst, size_t len);
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 2058e89b5ddd..4ab5864746ce 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1073,33 +1073,33 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 			new_addr = new ? (u8 *)new->bpf_func + poke->adj_off : NULL;
- 
- 			if (new) {
--				ret = bpf_arch_text_poke(poke->tailcall_target,
-+				ret = __bpf_arch_text_poke(poke->tailcall_target,
- 							 BPF_MOD_JUMP,
- 							 old_addr, new_addr);
- 				BUG_ON(ret < 0 && ret != -EINVAL);
- 				if (!old) {
--					ret = bpf_arch_text_poke(poke->tailcall_bypass,
-+					ret = __bpf_arch_text_poke(poke->tailcall_bypass,
- 								 BPF_MOD_JUMP,
- 								 poke->bypass_addr,
- 								 NULL);
--					BUG_ON(ret < 0 && ret != -EINVAL);
-+					BUG_ON(ret < 0);
- 				}
- 			} else {
--				ret = bpf_arch_text_poke(poke->tailcall_bypass,
-+				ret = __bpf_arch_text_poke(poke->tailcall_bypass,
- 							 BPF_MOD_JUMP,
- 							 old_bypass_addr,
- 							 poke->bypass_addr);
--				BUG_ON(ret < 0 && ret != -EINVAL);
-+				BUG_ON(ret < 0);
- 				/* let other CPUs finish the execution of program
- 				 * so that it will not possible to expose them
- 				 * to invalid nop, stack unwind, nop state
- 				 */
- 				if (!ret)
- 					synchronize_rcu();
--				ret = bpf_arch_text_poke(poke->tailcall_target,
-+				ret = __bpf_arch_text_poke(poke->tailcall_target,
- 							 BPF_MOD_JUMP,
- 							 old_addr, NULL);
--				BUG_ON(ret < 0 && ret != -EINVAL);
-+				BUG_ON(ret < 0);
- 			}
- 		}
- 	}
+Will those patches also add pr_fmt() for DRM?
+
+I'm asking because you said you'll add pr_fmt() in a "separate" patch, an=
+d I thought it was
+okay being self-contained in your patch as per the version I sent.
+--=20
+Regards,
+Luben
+
+--------------DpMs4nwdBTrqFWkcSPu520Ma
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------DpMs4nwdBTrqFWkcSPu520Ma--
+
+--------------0qlI3FtQGuUpqb5S8L603S6K--
+
+--------------7B0Iy6KD7AleabuDKfTGjEH1
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZU1RyAUDAAAAAAAKCRBMFUeUMaM0r0k0
+AQCcGTC4Vtvvhndwb05I5fLaVFY8QhEF4q+QFKqYtPEnSQD/VdiCb8GF5hopoeUPvfqlpAgXWubG
+7blef35iOQWiPgM=
+=ovIz
+-----END PGP SIGNATURE-----
+
+--------------7B0Iy6KD7AleabuDKfTGjEH1--
