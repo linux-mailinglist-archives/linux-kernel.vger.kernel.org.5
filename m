@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F487E7332
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D057E7339
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345271AbjKIVDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S1345288AbjKIVDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:03:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345247AbjKIVD3 (ORCPT
+        with ESMTP id S1345219AbjKIVDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:03:29 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECC24239;
-        Thu,  9 Nov 2023 13:03:27 -0800 (PST)
+        Thu, 9 Nov 2023 16:03:33 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A8F44B9;
+        Thu,  9 Nov 2023 13:03:30 -0800 (PST)
 Received: from umang.jain (unknown [103.251.226.64])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 55B4416F9;
-        Thu,  9 Nov 2023 22:03:01 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1501B17E1;
+        Thu,  9 Nov 2023 22:03:03 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699563783;
-        bh=oK58tgcoyg38J0Dq4OGc76mXK/hbRlzuovhuQYajoWg=;
+        s=mail; t=1699563786;
+        bh=L5uUeEI49HNVFYwxk8rxZx0KdDywdDcRTLGlX/7Cyz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puu+jPwPfZFvKJNfQICRdZQm0DdIaZZlPMzqvOXstUdy3EydTpu/sOmMZqTp1/q1P
-         cYLpsotW8oMll7X7oWV20x7T/hM07tm3mCgsOqlDsTb/gotV/YB9dulNgeuUrGENoL
-         JBFfEey3DytCml2huYbLGvvMmoa/aFpjxOO/QepM=
+        b=NVXfxrvgtvfaRYgrLzFDkoZruGEcISb11wJpOfanjHlD2Jhl4CkpTkPpRbWwAgly0
+         gAlXR3hc1Q5Dkho8CCy3NjrF0qzLWuZIdiUqLr4xMVyRZKx03mC/R61uB5r7xG27Us
+         /thfhXiMgdbrgg5ShwroQf/9uRi0aQg4GoFwNHBQ=
 From:   Umang Jain <umang.jain@ideasonboard.com>
 To:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
         linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
@@ -37,9 +37,9 @@ Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Stefan Wahren <stefan.wahren@i2se.com>,
         Dave Stevenson <dave.stevenson@raspberrypi.org>,
         Umang Jain <umang.jain@ideasonboard.com>
-Subject: [PATCH v2 03/15] media: videobuf2: Allow exporting of a struct dmabuf
-Date:   Thu,  9 Nov 2023 16:02:55 -0500
-Message-ID: <20231109210309.638594-4-umang.jain@ideasonboard.com>
+Subject: [PATCH v2 04/15] staging: mmal-vchiq: Add support for event callbacks
+Date:   Thu,  9 Nov 2023 16:02:56 -0500
+Message-ID: <20231109210309.638594-5-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231109210309.638594-1-umang.jain@ideasonboard.com>
 References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
@@ -51,136 +51,364 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Stevenson <dave.stevenson@raspberrypi.org>
 
-videobuf2 only allowed exporting a dmabuf as a file descriptor,
-but there are instances where having the struct dma_buf is
-useful within the kernel.
+The bcm2835-isp will use the event mechanism to report things such as
+stream start event. It is signalled by the cmd field of the buffer
+being non-zero.
 
-Split the current implementation into two, one step which
-exports a struct dma_buf, and the second which converts that
-into an fd.
+Add support for passing this information out to the client.
 
 Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
 Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 36 +++++++++++++------
- include/media/videobuf2-core.h                | 15 ++++++++
- 2 files changed, 40 insertions(+), 11 deletions(-)
+ .../vc04_services/vchiq-mmal/mmal-common.h    |   1 +
+ .../vc04_services/vchiq-mmal/mmal-msg.h       |  35 ++++
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 169 ++++++++++++++++--
+ .../vc04_services/vchiq-mmal/mmal-vchiq.h     |   4 +
+ 4 files changed, 195 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index 27aee92f3eea..8ba85c2db375 100644
---- a/drivers/media/common/videobuf2/videobuf2-core.c
-+++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -2229,49 +2229,49 @@ static int __find_plane_by_offset(struct vb2_queue *q, unsigned long off,
- 	return -EINVAL;
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
+index b33129403a30..0443be8198ea 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
+@@ -50,6 +50,7 @@ struct mmal_buffer {
+ 
+ 	struct mmal_msg_context *msg_context;
+ 
++	u32 cmd;		/* MMAL command. 0=data. */
+ 	unsigned long length;
+ 	u32 mmal_flags;
+ 	s64 dts;
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
+index 471413248a14..ef84b4e35608 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-msg.h
+@@ -346,6 +346,41 @@ struct mmal_msg_port_parameter_get_reply {
+ /* event messages */
+ #define MMAL_WORKER_EVENT_SPACE 256
+ 
++/* Four CC's for events */
++#define MMAL_FOURCC(a, b, c, d) ((a) | (b << 8) | (c << 16) | (d << 24))
++
++#define MMAL_EVENT_ERROR		MMAL_FOURCC('E', 'R', 'R', 'O')
++#define MMAL_EVENT_EOS			MMAL_FOURCC('E', 'E', 'O', 'S')
++#define MMAL_EVENT_FORMAT_CHANGED	MMAL_FOURCC('E', 'F', 'C', 'H')
++#define MMAL_EVENT_PARAMETER_CHANGED	MMAL_FOURCC('E', 'P', 'C', 'H')
++
++/* Structs for each of the event message payloads */
++struct mmal_msg_event_eos {
++	u32 port_type;	/**< Type of port that received the end of stream */
++	u32 port_index;	/**< Index of port that received the end of stream */
++};
++
++/** Format changed event data. */
++struct mmal_msg_event_format_changed {
++	/* Minimum size of buffers the port requires */
++	u32 buffer_size_min;
++	/* Minimum number of buffers the port requires */
++	u32 buffer_num_min;
++	/* Size of buffers the port recommends for optimal performance.
++	 * A value of zero means no special recommendation.
++	 */
++	u32 buffer_size_recommended;
++	/* Number of buffers the port recommends for optimal
++	 * performance. A value of zero means no special recommendation.
++	 */
++	u32 buffer_num_recommended;
++
++	u32 es_ptr;
++	struct mmal_es_format format;
++	union mmal_es_specific_format es;
++	u8 extradata[MMAL_FORMAT_EXTRADATA_MAX_SIZE];
++};
++
+ struct mmal_msg_event_to_host {
+ 	u32 client_component;	/* component context */
+ 
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index 258aa0e37f55..6a270f308cf7 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -143,6 +143,8 @@ struct mmal_msg_context {
+ 			/* Presentation and Decode timestamps */
+ 			s64 pts;
+ 			s64 dts;
++			/* MMAL buffer command flag */
++			u32 cmd;
+ 
+ 			int status;	/* context status */
+ 
+@@ -230,18 +232,6 @@ release_msg_context(struct mmal_msg_context *msg_context)
+ 	kfree(msg_context);
  }
  
--int vb2_core_expbuf(struct vb2_queue *q, int *fd, unsigned int type,
--		unsigned int index, unsigned int plane, unsigned int flags)
-+struct dma_buf *vb2_core_expbuf_dmabuf(struct vb2_queue *q, unsigned int type,
-+				       unsigned int index, unsigned int plane,
-+				       unsigned int flags)
- {
- 	struct vb2_buffer *vb = NULL;
- 	struct vb2_plane *vb_plane;
--	int ret;
- 	struct dma_buf *dbuf;
+-/* deals with receipt of event to host message */
+-static void event_to_host_cb(struct vchiq_mmal_instance *instance,
+-			     struct mmal_msg *msg, u32 msg_len)
+-{
+-	pr_debug("unhandled event\n");
+-	pr_debug("component:%u port type:%d num:%d cmd:0x%x length:%d\n",
+-		 msg->u.event_to_host.client_component,
+-		 msg->u.event_to_host.port_type,
+-		 msg->u.event_to_host.port_num,
+-		 msg->u.event_to_host.cmd, msg->u.event_to_host.length);
+-}
+-
+ /* workqueue scheduled callback
+  *
+  * we do this because it is important we do not call any other vchiq
+@@ -263,13 +253,18 @@ static void buffer_work_cb(struct work_struct *work)
+ 	buffer->mmal_flags = msg_context->u.bulk.mmal_flags;
+ 	buffer->dts = msg_context->u.bulk.dts;
+ 	buffer->pts = msg_context->u.bulk.pts;
++	buffer->cmd = msg_context->u.bulk.cmd;
  
- 	if (q->memory != VB2_MEMORY_MMAP) {
- 		dprintk(q, 1, "queue is not currently set up for mmap\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
+-	atomic_dec(&msg_context->u.bulk.port->buffers_with_vpu);
++	if (!buffer->cmd)
++		atomic_dec(&msg_context->u.bulk.port->buffers_with_vpu);
  
- 	if (!q->mem_ops->get_dmabuf) {
- 		dprintk(q, 1, "queue does not support DMA buffer exporting\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	if (flags & ~(O_CLOEXEC | O_ACCMODE)) {
- 		dprintk(q, 1, "queue does support only O_CLOEXEC and access mode flags\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	if (type != q->type) {
- 		dprintk(q, 1, "invalid buffer type\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	if (index >= q->num_buffers) {
- 		dprintk(q, 1, "buffer index out of range\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	vb = q->bufs[index];
- 
- 	if (plane >= vb->num_planes) {
- 		dprintk(q, 1, "buffer plane out of range\n");
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
- 	if (vb2_fileio_is_active(q)) {
- 		dprintk(q, 1, "expbuf: file io in progress\n");
--		return -EBUSY;
-+		return ERR_PTR(-EBUSY);
- 	}
- 
- 	vb_plane = &vb->planes[plane];
-@@ -2283,9 +2283,23 @@ int vb2_core_expbuf(struct vb2_queue *q, int *fd, unsigned int type,
- 	if (IS_ERR_OR_NULL(dbuf)) {
- 		dprintk(q, 1, "failed to export buffer %d, plane %d\n",
- 			index, plane);
--		return -EINVAL;
-+		return ERR_PTR(-EINVAL);
- 	}
- 
-+	return dbuf;
-+}
-+EXPORT_SYMBOL_GPL(vb2_core_expbuf_dmabuf);
+ 	msg_context->u.bulk.port->buffer_cb(msg_context->u.bulk.instance,
+ 					    msg_context->u.bulk.port,
+ 					    msg_context->u.bulk.status,
+ 					    msg_context->u.bulk.buffer);
 +
-+int vb2_core_expbuf(struct vb2_queue *q, int *fd, unsigned int type,
-+		    unsigned int index, unsigned int plane, unsigned int flags)
++	if (buffer->cmd)
++		mutex_unlock(&msg_context->u.bulk.port->event_context_mutex);
+ }
+ 
+ /* workqueue scheduled callback to handle receiving buffers
+@@ -347,6 +342,7 @@ static int bulk_receive(struct vchiq_mmal_instance *instance,
+ 	msg_context->u.bulk.buffer_used = rd_len;
+ 	msg_context->u.bulk.dts = msg->u.buffer_from_host.buffer_header.dts;
+ 	msg_context->u.bulk.pts = msg->u.buffer_from_host.buffer_header.pts;
++	msg_context->u.bulk.cmd = msg->u.buffer_from_host.buffer_header.cmd;
+ 
+ 	queue_work(msg_context->instance->bulk_wq,
+ 		   &msg_context->u.bulk.buffer_to_host_work);
+@@ -449,6 +445,102 @@ buffer_from_host(struct vchiq_mmal_instance *instance,
+ 	return ret;
+ }
+ 
++/* deals with receipt of event to host message */
++static void event_to_host_cb(struct vchiq_mmal_instance *instance,
++			     struct mmal_msg *msg, u32 msg_len)
 +{
-+	struct dma_buf *dbuf;
-+	int ret;
++	int comp_idx = msg->u.event_to_host.client_component;
++	struct vchiq_mmal_component *component =
++					&instance->component[comp_idx];
++	struct vchiq_mmal_port *port = NULL;
++	struct mmal_msg_context *msg_context;
++	u32 port_num = msg->u.event_to_host.port_num;
 +
-+	dbuf = vb2_core_expbuf_dmabuf(q, type, index, plane, flags);
-+	if (IS_ERR(dbuf))
-+		return PTR_ERR(dbuf);
++	if (msg->u.buffer_from_host.drvbuf.magic == MMAL_MAGIC) {
++		pr_err("%s: MMAL_MSG_TYPE_BUFFER_TO_HOST with bad magic\n",
++		       __func__);
++		return;
++	}
 +
- 	ret = dma_buf_fd(dbuf, flags & ~O_ACCMODE);
- 	if (ret < 0) {
- 		dprintk(q, 3, "buffer %d, plane %d failed to export (%d)\n",
-diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-index 4b6a9d2ea372..cba4e495f6a2 100644
---- a/include/media/videobuf2-core.h
-+++ b/include/media/videobuf2-core.h
-@@ -925,6 +925,21 @@ int vb2_core_streamon(struct vb2_queue *q, unsigned int type);
-  */
- int vb2_core_streamoff(struct vb2_queue *q, unsigned int type);
++	switch (msg->u.event_to_host.port_type) {
++	case MMAL_PORT_TYPE_CONTROL:
++		if (port_num) {
++			pr_err("%s: port_num of %u >= number of ports 1",
++			       __func__, port_num);
++			return;
++		}
++		port = &component->control;
++		break;
++	case MMAL_PORT_TYPE_INPUT:
++		if (port_num >= component->inputs) {
++			pr_err("%s: port_num of %u >= number of ports %u",
++			       __func__, port_num,
++			       port_num >= component->inputs);
++			return;
++		}
++		port = &component->input[port_num];
++		break;
++	case MMAL_PORT_TYPE_OUTPUT:
++		if (port_num >= component->outputs) {
++			pr_err("%s: port_num of %u >= number of ports %u",
++			       __func__, port_num,
++			       port_num >= component->outputs);
++			return;
++		}
++		port = &component->output[port_num];
++		break;
++	case MMAL_PORT_TYPE_CLOCK:
++		if (port_num >= component->clocks) {
++			pr_err("%s: port_num of %u >= number of ports %u",
++			       __func__, port_num,
++			       port_num >= component->clocks);
++			return;
++		}
++		port = &component->clock[port_num];
++		break;
++	default:
++		break;
++	}
++
++	if (!mutex_trylock(&port->event_context_mutex)) {
++		pr_err("dropping event 0x%x\n", msg->u.event_to_host.cmd);
++		return;
++	}
++	msg_context = port->event_context;
++
++	if (msg->h.status != MMAL_MSG_STATUS_SUCCESS) {
++		/* message reception had an error */
++		pr_err("%s: error %d in reply\n", __func__, msg->h.status);
++
++		msg_context->u.bulk.status = msg->h.status;
++	} else if (msg->u.event_to_host.length > MMAL_WORKER_EVENT_SPACE) {
++		/* data is not in message, queue a bulk receive */
++		pr_err("%s: payload not in message - bulk receive??! NOT SUPPORTED\n",
++		       __func__);
++		msg_context->u.bulk.status = -1;
++	} else {
++		memcpy(msg_context->u.bulk.buffer->buffer,
++		       msg->u.event_to_host.data,
++		       msg->u.event_to_host.length);
++
++		msg_context->u.bulk.buffer_used =
++		    msg->u.event_to_host.length;
++
++		msg_context->u.bulk.mmal_flags = 0;
++		msg_context->u.bulk.dts = MMAL_TIME_UNKNOWN;
++		msg_context->u.bulk.pts = MMAL_TIME_UNKNOWN;
++		msg_context->u.bulk.cmd = msg->u.event_to_host.cmd;
++
++		pr_debug("event component:%u port type:%d num:%d cmd:0x%x length:%d\n",
++			 msg->u.event_to_host.client_component,
++			 msg->u.event_to_host.port_type,
++			 msg->u.event_to_host.port_num,
++			 msg->u.event_to_host.cmd, msg->u.event_to_host.length);
++	}
++
++	schedule_work(&msg_context->u.bulk.work);
++}
++
+ /* deals with receipt of buffer to host message */
+ static void buffer_to_host_cb(struct vchiq_mmal_instance *instance,
+ 			      struct mmal_msg *msg, u32 msg_len)
+@@ -1329,6 +1421,7 @@ static int port_disable(struct vchiq_mmal_instance *instance,
+ 				mmalbuf->mmal_flags = 0;
+ 				mmalbuf->dts = MMAL_TIME_UNKNOWN;
+ 				mmalbuf->pts = MMAL_TIME_UNKNOWN;
++				mmalbuf->cmd = 0;
+ 				port->buffer_cb(instance,
+ 						port, 0, mmalbuf);
+ 			}
+@@ -1630,6 +1723,43 @@ int mmal_vchi_buffer_cleanup(struct mmal_buffer *buf)
+ }
+ EXPORT_SYMBOL_GPL(mmal_vchi_buffer_cleanup);
  
-+/**
-+ * vb2_core_expbuf_dmabuf() - Export a buffer as a dma_buf structure
-+ * @q:         videobuf2 queue
-+ * @type:      buffer type
-+ * @index:     id number of the buffer
-+ * @plane:     index of the plane to be exported, 0 for single plane queues
-+ * @flags:     flags for newly created file, currently only O_CLOEXEC is
-+ *             supported, refer to manual of open syscall for more details
-+ *
-+ * Return: Returns the dmabuf pointer
-+ */
-+struct dma_buf *vb2_core_expbuf_dmabuf(struct vb2_queue *q, unsigned int type,
-+				       unsigned int index, unsigned int plane,
-+				       unsigned int flags);
++static void init_event_context(struct vchiq_mmal_instance *instance,
++			       struct vchiq_mmal_port *port)
++{
++	struct mmal_msg_context *ctx = get_msg_context(instance);
 +
- /**
-  * vb2_core_expbuf() - Export a buffer as a file descriptor.
-  * @q:		pointer to &struct vb2_queue with videobuf2 queue.
++	mutex_init(&port->event_context_mutex);
++
++	port->event_context = ctx;
++	ctx->u.bulk.instance = instance;
++	ctx->u.bulk.port = port;
++	ctx->u.bulk.buffer =
++		kzalloc(sizeof(*ctx->u.bulk.buffer), GFP_KERNEL);
++	if (!ctx->u.bulk.buffer)
++		goto release_msg_context;
++	ctx->u.bulk.buffer->buffer = kzalloc(MMAL_WORKER_EVENT_SPACE,
++					     GFP_KERNEL);
++	if (!ctx->u.bulk.buffer->buffer)
++		goto release_buffer;
++
++	INIT_WORK(&ctx->u.bulk.work, buffer_work_cb);
++	return;
++
++release_buffer:
++	kfree(ctx->u.bulk.buffer);
++release_msg_context:
++	release_msg_context(ctx);
++}
++
++static void free_event_context(struct vchiq_mmal_port *port)
++{
++	struct mmal_msg_context *ctx = port->event_context;
++
++	kfree(ctx->u.bulk.buffer->buffer);
++	kfree(ctx->u.bulk.buffer);
++	release_msg_context(ctx);
++}
++
+ /* Initialise a mmal component and its ports
+  *
+  */
+@@ -1679,6 +1809,7 @@ int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
+ 	ret = port_info_get(instance, &component->control);
+ 	if (ret < 0)
+ 		goto release_component;
++	init_event_context(instance, &component->control);
+ 
+ 	for (idx = 0; idx < component->inputs; idx++) {
+ 		component->input[idx].type = MMAL_PORT_TYPE_INPUT;
+@@ -1689,6 +1820,7 @@ int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
+ 		ret = port_info_get(instance, &component->input[idx]);
+ 		if (ret < 0)
+ 			goto release_component;
++		init_event_context(instance, &component->input[idx]);
+ 	}
+ 
+ 	for (idx = 0; idx < component->outputs; idx++) {
+@@ -1700,6 +1832,7 @@ int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
+ 		ret = port_info_get(instance, &component->output[idx]);
+ 		if (ret < 0)
+ 			goto release_component;
++		init_event_context(instance, &component->output[idx]);
+ 	}
+ 
+ 	for (idx = 0; idx < component->clocks; idx++) {
+@@ -1711,6 +1844,7 @@ int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
+ 		ret = port_info_get(instance, &component->clock[idx]);
+ 		if (ret < 0)
+ 			goto release_component;
++		init_event_context(instance, &component->clock[idx]);
+ 	}
+ 
+ 	*component_out = component;
+@@ -1736,7 +1870,7 @@ EXPORT_SYMBOL_GPL(vchiq_mmal_component_init);
+ int vchiq_mmal_component_finalise(struct vchiq_mmal_instance *instance,
+ 				  struct vchiq_mmal_component *component)
+ {
+-	int ret;
++	int ret, idx;
+ 
+ 	if (mutex_lock_interruptible(&instance->vchiq_mutex))
+ 		return -EINTR;
+@@ -1748,6 +1882,13 @@ int vchiq_mmal_component_finalise(struct vchiq_mmal_instance *instance,
+ 
+ 	component->in_use = false;
+ 
++	for (idx = 0; idx < component->inputs; idx++)
++		free_event_context(&component->input[idx]);
++	for (idx = 0; idx < component->outputs; idx++)
++		free_event_context(&component->output[idx]);
++	for (idx = 0; idx < component->clocks; idx++)
++		free_event_context(&component->clock[idx]);
++
+ 	mutex_unlock(&instance->vchiq_mutex);
+ 
+ 	return ret;
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+index 09f030919d4e..7be26cb39165 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+@@ -79,6 +79,10 @@ struct vchiq_mmal_port {
+ 	vchiq_mmal_buffer_cb buffer_cb;
+ 	/* callback context */
+ 	void *cb_ctx;
++
++	/* ensure serialised use of the one event context structure */
++	struct mutex event_context_mutex;
++	struct mmal_msg_context *event_context;
+ };
+ 
+ struct vchiq_mmal_component {
 -- 
 2.41.0
 
