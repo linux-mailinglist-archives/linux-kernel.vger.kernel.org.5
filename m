@@ -2,128 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143A87E7124
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD797E715A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344941AbjKISGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:06:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S1344974AbjKISYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344811AbjKISGH (ORCPT
+        with ESMTP id S1344983AbjKISYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:06:07 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E4C3A92;
-        Thu,  9 Nov 2023 10:06:05 -0800 (PST)
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so1222813b3a.1;
-        Thu, 09 Nov 2023 10:06:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699553165; x=1700157965;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fcU3cqWmeYEc8M7LFBLc/ovxLDKr3wrjLBH6khDlR80=;
-        b=ppgkg8p3lM4trJQgE7ygUJ5hH4qYke4/GX5MsjYuu2aD47Cx7tl9R4oOB5CX+dySDK
-         cgvUnXY6RLnHhBuKgDrGYhHJ0f2b6INEQm/r6VGVJabfnpWTQdedkhpa/tT6w3YY4m48
-         GicUblmABnAnx3QajR3ngVupp/1PMypaMbZBqwuvwBsEh6uqWFz6rNeIrT/W7amNSFae
-         9i3WKP22QsLyBUyYwCgGZzU4gLUeqQki3HoCySSjCmp2NhSqDYwmtxvOn9Ez/wq1VKhM
-         P3Wx9X3UTxNZDxOhR9bmXaNinuhv2T2G2Eb1hwABUhbtfJOg/JGR3KXqE1+SsqkI6msQ
-         oTfQ==
-X-Gm-Message-State: AOJu0Yw1j7Rt6icsr75/x2WeFzoil2KnYgc9Ugv78JMwhiwDSi9i4pjq
-        cpjqQiI3D48CqCUPAjnYR5TphkfhBCY=
-X-Google-Smtp-Source: AGHT+IEp/GRnR0EqiboCHXyJC9BVAybeW22IUjOUYtV8AGykHa9A1xMf+HwtdNCtPfmVWkAGjnPaZg==
-X-Received: by 2002:a05:6a20:8f13:b0:15e:d84:1c5e with SMTP id b19-20020a056a208f1300b0015e0d841c5emr6868531pzk.38.1699553164679;
-        Thu, 09 Nov 2023 10:06:04 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:3dcd:f87f:1890:c48e? ([2620:0:1000:8411:3dcd:f87f:1890:c48e])
-        by smtp.gmail.com with ESMTPSA id ff24-20020a056a002f5800b0069337938be8sm10932129pfb.110.2023.11.09.10.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 10:06:04 -0800 (PST)
-Message-ID: <e1ac57a7-920f-44c4-92d3-960811edede9@acm.org>
-Date:   Thu, 9 Nov 2023 10:06:02 -0800
+        Thu, 9 Nov 2023 13:24:12 -0500
+Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A69F3C03;
+        Thu,  9 Nov 2023 10:24:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Message-Id:Date:Subject
+        :From; bh=H5OnRjJeb6gay/TORf53unMu50DnfuG1IYkUYrSoZq4=; b=XAEafdd739TYXpVF0uR
+        oyS11WZe9uo/3GT4ILgXWcCSTyuTc8DIpq1lcd5CfT1gDgkfEoRphwzc+67iYbPX6d8pUTX6YYvy2
+        lkIfrhXqvLl/y7ViYnGBY+f4XiHAeLBNlm6PRsCkFLTInZNon/zPe8wO0MZsUI3apSJAQvlUMrNqi
+        9fwODGETaKOV3KySoaEil+wZ1T9v320l82kCTSE+SNjEqk5fQVLfRPRWvOxzSEqJgSLfMmuXD5y9h
+        aum0sRct/i+nPYei8sVgxTn5/ZkyiAJIJ8T+jF59qdnGnzYZN5ynUOPeWAIT40IbWV8g2byAYvs6F
+        T20rNl83eEzN4UA==;
+Received: from [130.117.225.1] (helo=finist-alma9.sw.ru)
+        by relay.virtuozzo.com with esmtp (Exim 4.96)
+        (envelope-from <khorenko@virtuozzo.com>)
+        id 1r19Pe-00Eo8U-2X;
+        Thu, 09 Nov 2023 19:06:46 +0100
+From:   Konstantin Khorenko <khorenko@virtuozzo.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        "Denis V. Lunev" <den@virtuozzo.com>
+Subject: [PATCH 0/1] KVM: x86/vPMU: Speed up vmexit for AMD Zen 4 CPUs
+Date:   Thu,  9 Nov 2023 21:06:45 +0300
+Message-Id: <20231109180646.2963718-1-khorenko@virtuozzo.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/2] scsi: ufs: core: Add UFS RTC support
-Content-Language: en-US
-To:     Bean Huo <beanhuo@iokpp.de>, avri.altman@wdc.com,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        mani@kernel.org, quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
-        beanhuo@micron.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikebi@micron.com, lporzio@micron.com
-References: <20231109125217.185462-1-beanhuo@iokpp.de>
- <20231109125217.185462-2-beanhuo@iokpp.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231109125217.185462-2-beanhuo@iokpp.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 04:52, Bean Huo wrote:
-> The objective of this patch is to incorporate Real Time Clock (RTC) support in Universal
-> Flash Storage (UFS) device. This enhancement is crucial for the internal maintenance
-> operations of the UFS device.
+We have detected significant performance drop of our atomic test which
+checks the rate of CPUID instructions rate inside an L1 VM on an AMD
+node.
 
-That sounds vague. Please explain why a UFS device should know the real
-time since other storage devices don't need to know the real time.
+Investigation led to 2 mainstream patches which have introduced extra
+events accounting:
 
-> +		dev_info->rtc_time_baseline = mktime64(2010, 1, 1, 0, 0, 0) -
-> +								mktime64(1970, 1, 1, 0, 0, 0);
+   018d70ffcfec ("KVM: x86: Update vPMCs when retiring branch instructions")
+   9cd803d496e7 ("KVM: x86: Update vPMCs when retiring instructions")
 
-The formatting of the above code is not compliant with the kernel coding
-style. Please consider reformatting this patch with e.g.
-git clang-format HEAD^.
+And on an AMD Zen 3 CPU that resulted in immediate 43% drop in the CPUID
+rate.
 
-> +	schedule_delayed_work(&hba->ufs_rtc_delayed_work,
-> +							msecs_to_jiffies(UFS_RTC_UPDATE_EVERY_MS));
+Checking latest mainsteam kernel the performance difference is much less
+but still quite noticeable: 13.4% and shows up on AMD CPUs only.
 
-The formatting of the above code is not compliant with the style guide
-either.
+Looks like iteration over all PMCs in kvm_pmu_trigger_event() is cheap
+on Intel and expensive on AMD CPUs.
 
-> @@ -9746,6 +9834,8 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   	ret = ufshcd_vops_suspend(hba, pm_op, POST_CHANGE);
->   	if (ret)
->   		goto set_link_active;
-> +
-> +	cancel_delayed_work(&hba->ufs_rtc_delayed_work);
+So the idea behind this patch is to skip iterations over PMCs at all in
+case PMU is disabled for a VM completely or PMU is enabled for a VM, but
+there are no active PMCs at all.
 
-Why cancel_delayed_work() instead of cancel_delayed_work_sync()?
+Unfortunately
+ * current kernel code does not differentiate if PMU is globally enabled
+   for a VM or not (pmu->version is always 1)
+ * AMD CPUs older than Zen 4 do not support PMU v2 and thus efficient
+   check for enabled PMCs is not possible
 
-> @@ -9840,6 +9930,8 @@ static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->   		if (ret)
->   			goto set_old_link_state;
->   		ufshcd_set_timestamp_attr(hba);
-> +		schedule_delayed_work(&hba->ufs_rtc_delayed_work,
-> +							msecs_to_jiffies(UFS_RTC_UPDATE_EVERY_MS));
+=> the patch speeds up vmexit for AMD Zen 4 CPUs only, this is sad.
+   but the patch does not hurt other CPUs - and this is fortunate!
 
-The name of the constant "UFS_RTC_UPDATE_EVERY_MS" suggests that the
-real-time clock is updated 1000 times per second while the comment above
-the UFS_RTC_UPDATE_EVERY_MS constant says that it is updated once every
-ten seconds. Please choose a better name for UFS_RTC_UPDATE_EVERY_MS,
-e.g. UFS_RTC_UPDATE_INTERVAL_MS.
+i have no access to a node with AMD Zen 4 CPU, so i had to test on
+AMD Zen 3 CPU and i hope my expectations are right for AMD Zen 4.
 
-> diff --git a/include/ufs/ufs.h b/include/ufs/ufs.h
-> index e77ab1786856..18b39c6b3a97 100644
-> --- a/include/ufs/ufs.h
-> +++ b/include/ufs/ufs.h
-> @@ -14,6 +14,7 @@
->   #include <linux/bitops.h>
->   #include <linux/types.h>
->   #include <uapi/scsi/scsi_bsg_ufs.h>
-> +#include <linux/rtc.h>
+i would appreciate if anyone perform the test of a real AMD Zen 4 node.
 
-The include/ufs/ufs.h header file does not depend on anything declared
-in <linux/rtc.h> so please move the above include directive into a .c
-file.
+AMD performance results:
+CPU: AMD Zen 3 (three!): AMD EPYC 7443P 24-Core Processor
 
-> +	struct delayed_work ufs_rtc_delayed_work;
+ * The test binary is run inside an AlmaLinux 9 VM with their stock kernel
+   5.14.0-284.11.1.el9_2.x86_64.
+ * Test binary checks the CPUID instractions rate (instructions per sec).
+ * Default VM config (PMU is off, pmu->version is reported as 1).
+ * The Host runs the kernel under test.
 
-Please change the name of this structure member into
-ufs_rtc_update_work.
+ # for i in 1 2 3 4 5 ; do ./at_cpu_cpuid.pub ; done | \
+   awk -e '{print $4;}' | \
+   cut -f1 --delimiter='.' | \
+   ./avg.sh
 
-Thanks,
+Measurements:
+1. Host runs stock latest mainstream kernel commit 305230142ae0.
+2. Host runs same mainstream kernel + current patch.
+3. Host runs same mainstream kernel + current patch + force
+   guest_pmu_is_enabled() to always return "false" using following change:
 
-Bart.
+   -       if (pmu->version >= 2 && !(pmu->global_ctrl & ~pmu->global_ctrl_mask))
+   +       if (pmu->version == 1 && !(pmu->global_ctrl & ~pmu->global_ctrl_mask))
+
+   -----------------------------------------
+   | Kernels       | CPUID rate            |
+   -----------------------------------------
+   | 1.            | 1360250               |
+   | 2.            | 1365536 (+ 0.4%)      |
+   | 3.            | 1541850 (+13.4%)      |
+   -----------------------------------------
+
+Measurement (2) gives some fluctuation, the performance is not increased
+because the test was done on a Zen 3 CPU, so we are unable to use fast
+check for active PMCs.
+Measurement (3) shows expected performance boost on a Zen 4 CPU under
+the same test.
+
+The test used:
+# cat at_cpu_cpuid.pub.cpp
+/*
+ * The test executes CPUID instruction in a loop and reports the calls rate.
+ */
+
+#include <stdio.h>
+#include <time.h>
+
+/* #define CPUID_EAX            0x80000002 */
+#define CPUID_EAX               0x29a
+#define CPUID_ECX               0
+
+#define TEST_EXEC_SECS          30      // in seconds
+#define LOOPS_APPROX_RATE       1000000
+
+static inline void cpuid(unsigned int _eax, unsigned int _ecx)
+{
+        unsigned int regs[4] = {_eax, 0, _ecx, 0};
+
+        asm __volatile__(
+                "cpuid"
+                : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
+                :  "0" (regs[0]),  "1" (regs[1]),  "2" (regs[2]),  "3" (regs[3])
+                : "memory");
+}
+
+double cpuid_rate_loops(int loops_num)
+{
+        int i;
+        clock_t start_time, end_time;
+        double spent_time, rate;
+
+        start_time = clock();
+
+        for (i = 0; i < loops_num; i++)
+                cpuid((unsigned int)CPUID_EAX, (unsigned int)CPUID_ECX);
+
+        end_time = clock();
+        spent_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+        rate = (double)loops_num / spent_time;
+
+        return rate;
+}
+
+int main(int argc, char* argv[])
+{
+        double approx_rate, rate;
+        int loops;
+
+        /* First we detect approximate CPUIDs rate. */
+        approx_rate = cpuid_rate_loops(LOOPS_APPROX_RATE);
+
+        /*
+         * How many loops there should be in order to run the test for
+         * TEST_EXEC_SECS seconds?
+         */
+        loops = (int)(approx_rate * TEST_EXEC_SECS);
+
+        /* Get the precise instructions rate. */
+        rate = cpuid_rate_loops(loops);
+
+        printf( "CPUID instructions rate: %f instructions/second\n", rate);
+
+        return 0;
+}
+
+Konstantin Khorenko (1):
+  KVM: x86/vPMU: Check PMU is enabled for vCPU before searching for PMC
+
+ arch/x86/kvm/pmu.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+-- 
+2.39.3
 
