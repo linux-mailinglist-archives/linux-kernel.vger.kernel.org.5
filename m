@@ -2,175 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE107E6AC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77AD7E6AC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjKIMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:44:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
+        id S231214AbjKIMqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjKIMom (ORCPT
+        with ESMTP id S230006AbjKIMqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:44:42 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C0AE8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 04:44:40 -0800 (PST)
-Received: from [100.116.205.35] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 9 Nov 2023 07:46:02 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F51B3;
+        Thu,  9 Nov 2023 04:45:59 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 20D4B66074AC;
-        Thu,  9 Nov 2023 12:44:35 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699533878;
-        bh=8aZTpXv059m0WrMHiogmcRnmZfrI6GVeXOICP1uiu9E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VEvXfsptEeNlxrznjcN6qd8PPpdRNEa00wrYBn2Ei0vnA45ZKukRVQyOIsj0PNr4R
-         yEZn5dWdD5Icfv7MxAnVeMlj9VQ2Sq6th9wSLHsEsmwcVM85lt9mdc774buWEHmzHa
-         IZ4VosGckt6ADyTgdqq5pJWOlxP+GJvrfTstxlYQ8rSjoTdLk13MUOQ5ZrbcWrbrEV
-         meI0y9vPbTVqjPfz4W9QTPmYkx72h/2a9SSI4ArRDz5nBU2dda63hC06933VRQzw4s
-         O8GvtdTbpnKpiXOYAhym8YLmoSceiUEXmHR4xMYiWniGUguHr87ej0sC+g2tcgdXWi
-         nk6pDvp8uXG+w==
-Message-ID: <5c803b76-9baf-4328-9b64-7c7277fe987e@collabora.com>
-Date:   Thu, 9 Nov 2023 09:44:29 -0300
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3B72521977;
+        Thu,  9 Nov 2023 12:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699533958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HXBYSsMM7dNCINQinGuxS5CHJRB8whseQnR30IMhhnw=;
+        b=E7t/vPPRub+eIl262tzN7R6DYYa5adyHslyO4SnBBHWCvgs/u4Yv6naj2zbRUDhRpESqpL
+        yT554ZVm2uY8YacmJIIxlFIBLCIeiBKJBOkHSQ9k98nHsJ/QrTlgwddzOs3Rn2Nq5ZKr1M
+        skoOCwSO7iWgcP1MBa6UCo0xeVjstUY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 22CB413524;
+        Thu,  9 Nov 2023 12:45:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id o5bfB4bUTGXfOwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 09 Nov 2023 12:45:58 +0000
+Date:   Thu, 9 Nov 2023 13:45:57 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+Message-ID: <ZUzUhWsrzDQwMKQ-@tiehlicka>
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+ <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+ <ZUysGhwqo_XZSV-M@tiehlicka>
+ <d49acb29-c1e6-429b-8d94-a5a8e1e2f548@vivo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
-Content-Language: en-US
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     robdclark@chromium.org, freedreno@lists.freedesktop.org,
-        quic_abhinavk@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
- <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
- <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
- <aa112fd1-478a-43b2-8e8f-cef72c930bb2@quicinc.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <aa112fd1-478a-43b2-8e8f-cef72c930bb2@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <d49acb29-c1e6-429b-8d94-a5a8e1e2f548@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07/11/2023 21:10, Jessica Zhang wrote:
+On Thu 09-11-23 18:55:09, Huan Yang wrote:
 > 
+> 在 2023/11/9 17:53, Michal Hocko 写道:
+> > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > On Thu 09-11-23 09:56:46, Huan Yang wrote:
+> > > 在 2023/11/8 22:06, Michal Hocko 写道:
+> > > > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > > > 
+> > > > On Wed 08-11-23 14:58:11, Huan Yang wrote:
+> > > > > In some cases, we need to selectively reclaim file pages or anonymous
+> > > > > pages in an unbalanced manner.
+> > > > > 
+> > > > > For example, when an application is pushed to the background and frozen,
+> > > > > it may not be opened for a long time, and we can safely reclaim the
+> > > > > application's anonymous pages, but we do not want to touch the file pages.
+> > > > Could you explain why? And also why do you need to swap out in that
+> > > > case?
+> > > When an application is frozen, it usually means that we predict that
+> > > it will not be used for a long time. In order to proactively save some
+> > > memory, our strategy will choose to compress the application's private
+> > > data into zram. And we will also select some of the cold application
+> > > data that we think is in zram and swap it out.
+> > > 
+> > > The above operations assume that anonymous pages are private to the
+> > > application.  After the application is frozen, compressing these pages
+> > > into zram can save memory to some extent without worrying about
+> > > frequent refaults.
+> > Why don't you rely on the default reclaim heuristics? In other words do
+> As I mentioned earlier, the madvise approach may not be suitable for my
+> needs.
+
+I was asking about default reclaim behavior not madvise here.
+
+> > you have any numbers showing that a selective reclaim results in a much
 > 
-> On 11/6/2023 9:35 AM, Jessica Zhang wrote:
->>
->>
->> On 11/4/2023 6:02 AM, Helen Koike wrote:
->>> Hi Jessica,
->>>
->>> On 10/10/2023 19:25, Jessica Zhang wrote:
->>>> Recently, we've registered a Gitlab runner for a Qualcomm RB5 device 
->>>> that will be
->>>> hosted and maintained in Qualcomm labs.
->>>>
->>>> This series will add a corresponding CI job for testing SM8250 
->>>> devices and add the
->>>> skip/fails/flakes list. We were able to complete a successful run 
->>>> [1] with these
->>>> changes.
->>>>
->>>> For now, we will keep the job as manual trigger only and drop that 
->>>> rule later
->>>> after we stabilize the tests.
->>>>
->>>> [1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
->>>>
->>>> ---
->>>
->>> Thank you for you patchset.
->>>
->>> I'm getting the following error:
->>>
->>> "serial.serialutil.SerialException: [Errno 2] could not open port 
->>> /dev/ttyUSB0: [Errno 2] No such file or directory: '/dev/ttyUSB0'"
->>>
->>> https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51193215#L146
->>>
->>> I'm wondering if I'm missing some configuration.
->>>
->>> I tested on top of drm-misc-next.
->>
->> Hi Helen,
->>
->> Sorry for the inconvenience, but I had to temporarily take down the 
->> runner last Friday to physically move the setup (as part of a 
->> reorganization of our lab here).
->>
->> I'll update this thread as soon as the runner is back up -- the move 
->> will be complete by the end of this week.
-> The RB5 runner is back up -- please let me know if you run into any 
-> issues with it.
+> In the mobile field, we have a core metric called application residency.
 
-It worked now, I runned on drm-tip-next, I got several UnexpectedPass, 
-except for kms_color@ctm-green-to-red,Fail, could you check if those are 
-flakes or things got fixed and we can remove them from -fails.txt?
+As already pointed out in other reply, make sure you explain this so
+that we, who are not active in mobile field, can understand the metric,
+how it is affected by the tooling relying on this interface.
 
-https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51385345#L23356
-
-
-Thanks!
-
-Regards,
-Helen
-
+> This mechanism can help us improve the application residency if we can
+> provide a good freeze detection and proactive reclamation policy.
 > 
-> Thanks,
+> I can only provide specific data from our internal tests, and it may
+> be older data, and it tested using cgroup v1:
 > 
-> Jessica Zhang
-> 
->>
->>>
->>> Also, I'd like to add in the docs an entry about the devices we have, 
->>> which tag they need, which dts they correspond to, which farm they 
->>> are located, who to contact if there is any problem and maybe some 
->>> comment about the device (how it is hooked up, the logs comes from 
->>> uart or ssh, does it use fastboot, etc) if you find it useful.
->>> Would you mind adding an entry in the docs with this information for 
->>> the sm8250? (Than I'll add the info of the other devices after yours).
->>
->> Sure, sounds good.
->>
->>>
->>>
->>>> Jessica Zhang (3):
->>>>        drm/ci: Add SM8250 job to CI
->>>
->>> I would also move this patch to last, so we don't have a commit where 
->>> things shouldn't work properly.
->>> Or maybe squash them all.
->>
->> Acked -- I'll move this patch to the end.
->>
->> Thanks,
->>
->> Jessica Zhang
->>
->>>
->>> Regards,
->>> Helen
->>>
->>>>        drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
->>>>        drm/ci: Add skips, fails and flakes for SM8250
->>>>
->>>>   drivers/gpu/drm/ci/arm64.config                 |  1 +
->>>>   drivers/gpu/drm/ci/build.sh                     |  1 +
->>>>   drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
->>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 
->>>> +++++++++++++++++++++++++
->>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
->>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
->>>>   6 files changed, 57 insertions(+)
->>>> ---
->>>> base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
->>>> change-id: 20230919-rb5-runner-77ec32bd61e7
->>>>
->>>> Best regards,
+> In 12G ram phone, app residency improve from 29 to 38.
+
+cgroup v1 is in maintenance mode and new extension would need to pass
+even a higher feasibility test than v2 based interface. Also make sure
+that you are testing the current upstream kernel.
+
+Also let me stress out that you are proposing an extension to the user
+visible API and we will have to maintain that for ever. So make sure
+your justification is solid and understandable. 
+-- 
+Michal Hocko
+SUSE Labs
