@@ -2,96 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7157E6AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB427E6B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbjKINKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60942 "EHLO
+        id S233395AbjKINKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjKINKW (ORCPT
+        with ESMTP id S231658AbjKINKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:10:22 -0500
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931642D7E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:10:20 -0800 (PST)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1ea48ef2cbfso456968fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 05:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1699535420; x=1700140220; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JV11+ry9ypgOvB/ueYEXD6cjewziQve6/VjwutqezbA=;
-        b=V1TjwSuSI184o/ZSmeSxQA3SzQmtg51QKYVm2alQQM71+PMrfYRFQqr+rQxk5OY2If
-         T4/+rggHDLzIN8bOxGfsh/NKchCq9cJcG2mi4igUnioxOY4nOf9G4MSqVoKNeMNRdOSV
-         FXgsYuq55LUpksS/BRpO8SC68thZt4Wu6F7b9CC5pWncOKuB3K+MmmuhB1zatDO0I4XP
-         RPS2X1HC/r1ee7lO7UOMmNZ7OE8huGysLHJU9ygYUG0F15P8nhtvqOlmcQFtFtSdzJ5d
-         GGuRxLtkeNQZJ1VxHT4pNgnjU2jmrV0YRtf64DMzpFvK/App3jlxXDQke7qW794aNlV7
-         NZlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699535420; x=1700140220;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JV11+ry9ypgOvB/ueYEXD6cjewziQve6/VjwutqezbA=;
-        b=NxwcQiIgRQ/x2vr0Fd8DORBfylXAlbWDsZsqrciqaYPOOJPtSPslJDlHzGYm3tc6Tj
-         6OnSxbmq5cIsUGXIK/f+r2zo2oeoXXilj95Xp0HPPmGY/DEAjxCuQ3VzTLuIBqX31/6c
-         q3A4CNrn2mKgpkzXhksuBxE+wgN5xvx+GTB/zkgmFYlXb9ZGb98TcRzUZ+H0M8mX6juD
-         SjSzpIILNwa7N3wFmYQQzg2byI6/o8FY4ayUtjwWHinaFbNk7mUcdNRnZWMUFyfmxz6u
-         G0hWU7/FbCqssqiVZ35SV1m5rCYWvP5+VLTkjw+qLwaqqhcm8AH+Z7r8dUPP+z37kt76
-         rEkw==
-X-Gm-Message-State: AOJu0YyrT/KnDgsoOC9mG1d0R2nkXzGt8zLQjL2trtH3aun1upxfvPS1
-        0SNJqk5+qSIlUjVDMOTSfE8HLg==
-X-Google-Smtp-Source: AGHT+IFqF1bMZkPqeN+dmQ9Z4ggdvclWepSRJQyOP72MVAgw9o7dLLTcY9Eng1IkZcmcvlxEi3YJMg==
-X-Received: by 2002:a05:6870:1189:b0:1d5:a58d:1317 with SMTP id 9-20020a056870118900b001d5a58d1317mr4249746oau.10.1699535419810;
-        Thu, 09 Nov 2023 05:10:19 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id dx45-20020a05687076ad00b001cd1a628c40sm692089oab.52.2023.11.09.05.10.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 05:10:19 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r14nZ-001nDU-MP;
-        Thu, 09 Nov 2023 09:10:17 -0400
-Date:   Thu, 9 Nov 2023 09:10:17 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg Sword <gregsword0@gmail.com>
-Cc:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        Zhu Yanjun <yanjun.zhu@linux.dev>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
-Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
-Message-ID: <20231109131017.GH4634@ziepe.ca>
-References: <20231103095549.490744-1-lizhijian@fujitsu.com>
- <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
- <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
- <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
- <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
- <CAEz=LcvVEBgW3f4q=ucuhLwNvD0xcunKLw+fLWSFbp14SUVNyg@mail.gmail.com>
+        Thu, 9 Nov 2023 08:10:38 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2130.outbound.protection.outlook.com [40.107.255.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118E630C2;
+        Thu,  9 Nov 2023 05:10:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MlMkA0l+SEnGj4Zt/8mHcgI5u11EaT8oQ0c+g9Wo5WEm+yFi6rUCQ2y4dAGA4jDzewwOA4o8AcWDBQQhlKrAOCYvAGuFMue3yqku8zNTJXimdcZqnrizbh6eenXoLsIsZ3KLCRVSWPHWbP96OGfL5+KmdcJ5ufLP0WFHZQzpoSt0q5MbQXSIdf8rMK0N/Qw9ZWwv/dEpEGtwexK8y58zkRCQ9d0RPK5ZLGe5tUFGmYCgS/BbA1tv2qRNAS9fO0KA0Ai2cqvHdG0uBcZ8N3SnQuStoEOBKWEzof3Edpo2anpDuHz7QGLqM3OKtHvvc5dNpoCoNlcAT/AgJMdN1YdIyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/nyT3QMpelmI1rg46wdJGUWZNmdUq7FFmGRdVV7SSuk=;
+ b=GcTBMzcmlfb2aOExcEkLgKjxModfu9/NbVFQdqba213MBnrGTH/nJoOi61YiGKB93rK0JpdDuDLNhHdmSLfuDQsVu1+vvk69Ckmw/V7fD8RL5b4FEWjUVw6dfg7AoLeBJlpneoKnllDCYsZ+SPGZjEGZd9+05b1ZQRswMiuAvoKv0sSXAfi5QmrRGS+PLkbeVHKaAMuWqkRGSRING0U21PYZc52tQ45t2rsE199LZw6QarkZxyLNklc1ccilyQU4qdzrAnD9I4li75P0mDKDVrDwYhn1tYkf482bXBxAs8OMTOUYHwd8TWFQd1cEHl4drN0VlJ697jy69PN0Pw/zkw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/nyT3QMpelmI1rg46wdJGUWZNmdUq7FFmGRdVV7SSuk=;
+ b=ozwYTQKzOBBiIpkFnvA7YZSoftmBHyuicIgfHu8rXteFE1uiJR48Q06bejwHs90l9zbm0E/lzBptuMhVgUgnKQR5FAiTZBA6zhtapxQgy6OCXAu9khmvkpjIy6uuBj22gepMABvA2isbkJTc86Wwv6DZPAdEQJPQ+Ixy6lrNRkxN9SEI0ewPXlOE6Q/wbu/PY9A7QENWfMRjMIxu43UjVBiLJEC2t3PoZ+ON4TV92Z8WQwxN56xAUT7zRq63TIZSP4HqKY5BurOEf+4eeuOz7J+QJN/It9qKeOVRr1XRSI94Dkzhqj6wbNjgxy2bATCg15qmdFqmp70r97HfUKADXw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 13:10:33 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Thu, 9 Nov 2023
+ 13:10:32 +0000
+Message-ID: <dd209adc-e14b-4760-846b-cea2c625f21f@vivo.com>
+Date:   Thu, 9 Nov 2023 21:10:26 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka> <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+ <ZUysGhwqo_XZSV-M@tiehlicka> <d49acb29-c1e6-429b-8d94-a5a8e1e2f548@vivo.com>
+ <ZUzUhWsrzDQwMKQ-@tiehlicka>
+From:   Huan Yang <link@vivo.com>
+In-Reply-To: <ZUzUhWsrzDQwMKQ-@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0195.apcprd04.prod.outlook.com
+ (2603:1096:4:14::33) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEz=LcvVEBgW3f4q=ucuhLwNvD0xcunKLw+fLWSFbp14SUVNyg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB4173:EE_
+X-MS-Office365-Filtering-Correlation-Id: 176bb945-1a33-49c9-595a-08dbe1254123
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d+xf0Rxbq5cbr2Kc8KmlsIIiqV25+l3djVDyJt8HJPimNdTs+zREKVnZWE6Hn647bU/0DLRqh14dqC+b3FBvdIOQW88Aa6Z37tFh9GJj6Lrc4KU0Zrl+ssxfIgsbrH94nha43DOFJWfFpj+mbDzX8UKsdSPn0JScusRHMp7GIudFBbBF+ZHFz2VrcDfoWhwfXxqlGukfutQkJXb4AG2uFqg0k9G7nr4NsulkEWZgQaoRggx2mKhDXllAFUfQ4EAE9cAjw912WvPusaLxXp7OJWcrQiA12F9iOTXdBFm91HwtFHCGodJ8IeylJdBrTlpq+kmyzbGnVyJc19gmmMS3tTzAEghX1t4I4fXztnpwP03cvauys4NcgkAcOWqcGv5mQClK8Jx12s1JRcw8lSc+WX+Y+N95rd38snukXS+jQugEV4yvMYVW0VgJQKMLjhoksQdg2TytpP21ABnxrim7dXKYXiEQBKIkVZ42wf+TJfDS/kOuudNCPwVISB7VP6XKggGWh1L+ESTivqVi1cDbBgzBUq73sui8XQFR7xUKSMqhQ5whfFbMxTIFdFnZOY6d2GtN7HEWd/9lKuQthwvdrhzc4hG4KJJPR/N3+LtarHby6RPSV6XLni7i9tGf2QuuUNcUpvdZ2sqzR7Wq8fcw6YsIkDtzldDrJ3oKVjOen1tlarGekZw5j0x+tuFtAIR+Lb6GvJVLf2JhncTWQ4t1lzDkE0ussVVyr8u8D5r2k/I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(39850400004)(136003)(346002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(2906002)(38100700002)(31686004)(4326008)(8676002)(41300700001)(83380400001)(7416002)(86362001)(31696002)(316002)(6512007)(8936002)(5660300002)(107886003)(2616005)(66946007)(66556008)(66476007)(38350700005)(6916009)(6506007)(52116002)(54906003)(6666004)(478600001)(966005)(6486002)(26005)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?di9sZVNyeXBXdlB1RmR5QTU1V1A3VEV6WENFR0RZdkdCL3c3VVQ3eFE1Qk9M?=
+ =?utf-8?B?cHhjK3EvVFVwZFJyR0UzclVXWHgzMGlyZld5R0dDYlEzL0RnK2hra2ZHTkZE?=
+ =?utf-8?B?eUw1MUJwdTN0b0MyV0dGL3NKSkZkcWVQMS94THFpUWZ1cHdhYTZrSXFhSmwr?=
+ =?utf-8?B?NFd5Uks3YklEUE1ib3QvYURKemQyUkpkV3VOK2NIYmlvVDhKb0JzOElvQisz?=
+ =?utf-8?B?Y0RlNkQwell6SDF5dTZmWUx3VS9CeU5JYTJ5R1kwMmVkYkIvRGZMdnd2TTVU?=
+ =?utf-8?B?VFo2U1lPeUc0cVNNbjJ6cXpCUjVRRlBoOVBBMnRaYzM5VjR0RldQcWFIWnJ1?=
+ =?utf-8?B?R25WRjZCckFBVjd6TWdHeVA3Q1JFUTJ6WXNQRWxUZEFjNzRkYmlHbzBTSGVq?=
+ =?utf-8?B?d3dmSXJRL2VPUHltK3dlSUVQWU1ROVRUcFpndTVTVktnVy9mZDRYcTJtOHNk?=
+ =?utf-8?B?OXA2d0hlT0xOVU5lY1NIWHMzeC93WEhSSnBEdEsydm40TGhJa1BQYjZSWUdD?=
+ =?utf-8?B?SDBBcU9uM21aaTdmZFdMeXdWTEg2dHM5Mm5mUk5WQ3dFaXBhU0pDVjI5RGtC?=
+ =?utf-8?B?eWg1N3dmRmtZT2REOVR1VGVqRloxU2NUam9BVVdGUnBJMjdDT25sTnE4Vkd1?=
+ =?utf-8?B?bDJBeVNhamkzdThUQUdRbU4xdWNNaEFUMmJEK1NxQno3SHFhTVlnRWl5T3ky?=
+ =?utf-8?B?R3NleFdPL3NpZC9qbzZyY2ZzMTdwYTVMSWJZdU1sL21XRkVpZUMvZks4MXNy?=
+ =?utf-8?B?UWg0dmZNZ0pGcThTclE2U2IrZFhYd2pqdGN1OVo3VzlTelJGU3gwbE5jSXBl?=
+ =?utf-8?B?VWx5bk5aQlVQTitGY3UvQTJKQmFGRnlKSUVjSENNWHBQK1dnUEUweUo2YzEy?=
+ =?utf-8?B?b0REWk94M280YWtzMldvdW1lcUlPVVNyZVpkRVFEbkJqUjBFa3RkZnhlbTBN?=
+ =?utf-8?B?Vkw3ZDgvblF4REVPQ1dlTGtCemZHdVJjMnpYb0lRcnZuK1FLUnZJUC9xSVRR?=
+ =?utf-8?B?OXMybTByMGFOWmV0RElBY01KbStGYnQyODQ2ak52RWJzYW9LZ2ZRdkgrYmpi?=
+ =?utf-8?B?VHRSSU4zenlPQ25hSTM5Y09WWXpPVGN5aU9ac2JOTldJOTZucGZxTHVvMktz?=
+ =?utf-8?B?ZDl4ZnBEK29NSmNuM1Qvc3BGVzlvUVRsUXkzSExUWGRvUzA2VTVyS3dpT0ZX?=
+ =?utf-8?B?ZmtYM1lMQkhqM1NlaDNIZzZMSGpOYkh1eGNYRVhOMTRtbVJoVmlDUG4ydnVJ?=
+ =?utf-8?B?dnkxc0FSeHFJU0x2ZkxHTnV0NkhLN3BYVy9PY2hQdFFpdStsUkJzd2NSL1d1?=
+ =?utf-8?B?VWMzU2N2dWtXZ2lzdUpXeFZkODgyQTFlT1gvQXA1QnVGbExiV0NTV0hwekJQ?=
+ =?utf-8?B?YWt4cW5PM282ZTBjM29LSDRxTXJJaElsNWtGaExTMDhNWEh4UUVKUk1xejZx?=
+ =?utf-8?B?WkFwemF4QXZYaU0vVGI2K1hzRGZlMHBWaEhTNDZiU2tYY09RZFc4REViZ09I?=
+ =?utf-8?B?TWtUQ1I0UWx6Y2dvRmJDYndleHhSbUdCdFJDUWhqa29JN0ZmTk1tR1R4TTNx?=
+ =?utf-8?B?Q0pCdXcrazQ3dkVmQ2ppRnZheEdTRHROTjR0cFo4dUhtQzVDcndnZXVjYldh?=
+ =?utf-8?B?ZVRCMUk4bS9aa2lVQlRQT0lhN2x2WTl3V0VzS2c0RDRqU0xkSmFiYnV3ci8z?=
+ =?utf-8?B?SWdIaVBUMG1lS2Z3UmY2ckhjRTJnUTR3clV1STVzejVRVjRkb3VLYWhseW80?=
+ =?utf-8?B?a0o0WENQVzR3Y0xKY2tVUnlwN3Z6WFc3ZEhRSFdmdzdrME9kdktvZ0x3ckx4?=
+ =?utf-8?B?cDJwMjkwY201alRTN250cXNJMnlnZTRpaWYzSkc5REExdkkzR1RHMk5oWmlT?=
+ =?utf-8?B?bEV3UXpTUEw4dk9zamhLM0FRK1FFd3Y1aEdEQ2pHdlJ2VGJJMlRsOHpySm5m?=
+ =?utf-8?B?OFdOalRENlhRcWJjMTFXRXIxYjdZQ28xMXl0SUMyRVlaRkFFZzdsWTJ2VHR2?=
+ =?utf-8?B?Tlp2bDVGeVR0QXJvUTZtaFVRQ0xyMVdXbmtFVmxpRVpaVG1MSVNBWWF1dVY4?=
+ =?utf-8?B?ODFMTXNydnB2TDJ4Sk8zUWwzaVk2bjJ0WXJ2TXJzYVNZRXgrNU56WFpJbmxE?=
+ =?utf-8?Q?8TurOdrbVb8BzNRX1crLpDdsK?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 176bb945-1a33-49c9-595a-08dbe1254123
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 13:10:32.8142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Sy2JHs7Bq6nybhQgbxkSFsveNi0sYIqeVrhmp2h5sE16t5Sy2tN0Y3U/HZF4Icvz9gKeam5Yj3ZiHmkgthU2zA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 03:16:58PM +0800, Greg Sword wrote:
-> > What I should do next?
-> > Just state "RXE support PAGE_SIZE aligned MR" ? Then patches become
-> > RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE aligned MR
-> > RDMA/rxe: set RXE_PAGE_SIZE_CAP to starting from PAGE_SIZE
-> 
-> What do you take rdma maillist for? Your bugzilla, jira? or your dev
-> program launch? Or your play ground?
 
-We have a code of conduct on these mailing lists, please follow it or
-stop posting.
+在 2023/11/9 20:45, Michal Hocko 写道:
+> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+> On Thu 09-11-23 18:55:09, Huan Yang wrote:
+>> 在 2023/11/9 17:53, Michal Hocko 写道:
+>>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>>>
+>>> On Thu 09-11-23 09:56:46, Huan Yang wrote:
+>>>> 在 2023/11/8 22:06, Michal Hocko 写道:
+>>>>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>>>>>
+>>>>> On Wed 08-11-23 14:58:11, Huan Yang wrote:
+>>>>>> In some cases, we need to selectively reclaim file pages or anonymous
+>>>>>> pages in an unbalanced manner.
+>>>>>>
+>>>>>> For example, when an application is pushed to the background and frozen,
+>>>>>> it may not be opened for a long time, and we can safely reclaim the
+>>>>>> application's anonymous pages, but we do not want to touch the file pages.
+>>>>> Could you explain why? And also why do you need to swap out in that
+>>>>> case?
+>>>> When an application is frozen, it usually means that we predict that
+>>>> it will not be used for a long time. In order to proactively save some
+>>>> memory, our strategy will choose to compress the application's private
+>>>> data into zram. And we will also select some of the cold application
+>>>> data that we think is in zram and swap it out.
+>>>>
+>>>> The above operations assume that anonymous pages are private to the
+>>>> application.  After the application is frozen, compressing these pages
+>>>> into zram can save memory to some extent without worrying about
+>>>> frequent refaults.
+>>> Why don't you rely on the default reclaim heuristics? In other words do
+>> As I mentioned earlier, the madvise approach may not be suitable for my
+>> needs.
+> I was asking about default reclaim behavior not madvise here.
+Sorry for the misunderstand.
+>
+>>> you have any numbers showing that a selective reclaim results in a much
+>> In the mobile field, we have a core metric called application residency.
+> As already pointed out in other reply, make sure you explain this so
+> that we, who are not active in mobile field, can understand the metric,
+> how it is affected by the tooling relying on this interface.
+OK.
+>
+>> This mechanism can help us improve the application residency if we can
+>> provide a good freeze detection and proactive reclamation policy.
+>>
+>> I can only provide specific data from our internal tests, and it may
+>> be older data, and it tested using cgroup v1:
+>>
+>> In 12G ram phone, app residency improve from 29 to 38.
+> cgroup v1 is in maintenance mode and new extension would need to pass
+> even a higher feasibility test than v2 based interface. Also make sure
+> that you are testing the current upstream kernel.
+OK, if patchset v2 expect, I will change work into cgroup v2 and give 
+test data.
+>
+> Also let me stress out that you are proposing an extension to the user
+> visible API and we will have to maintain that for ever. So make sure
+> your justification is solid and understandable.
+Thank you very much for your explanation. Let's focus on these 
+discussions in
+another email.
+> --
+> Michal Hocko
+> SUSE Labs
 
-Jason
+-- 
+Thanks,
+Huan Yang
+
