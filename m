@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15AD7E685D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E9E7E6862
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbjKIKiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37034 "EHLO
+        id S233420AbjKIKiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKIKiF (ORCPT
+        with ESMTP id S233305AbjKIKiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:38:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C84210E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:38:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699526283; x=1731062283;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=6Mh79SSY0i2vgDbPJPkXco1TojP7hq5jyCTwgZsgy4k=;
-  b=n0mdbdHeSzkbbPD61tSsW61rSn/ifyY2suiJDUqdhOqm2e+ckmyAe1rQ
-   rOEIr/eZHh2AHTAI4RvO1JtuV6yfYWsvvB++uzJBQxA10HW4givpR/n6u
-   46YrnI8KaiXjgV4VVB19sQar/PkNdgMzPD4GIxH3mYIWvTG2NU7odwXWx
-   fvzxY16JFvIWGQbY+Ignu90tx1w6mHE+MSuPL0xUmTs4wLTrHux1yZonS
-   BuxbEN53yAKKwGjLUY41aGeUITwMbr7rjD1/X+49NeZz1lrVhNhYlaDfh
-   /QGhhR+cOA35ZmgjbhtyMpU07XoC4/NH48MsvhAe6DO1UUBt/Orb2mKp/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="389763725"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="389763725"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 02:38:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="792499887"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="792499887"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2023 02:38:01 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r12QA-0008fM-2k;
-        Thu, 09 Nov 2023 10:37:58 +0000
-Date:   Thu, 9 Nov 2023 18:35:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: sound/soc/codecs/cs42l43.c:2253:1: sparse: sparse: symbol
- 'cs42l43_codec_pm_ops' was not declared. Should it be static?
-Message-ID: <202311091824.5z6PROGZ-lkp@intel.com>
+        Thu, 9 Nov 2023 05:38:20 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93311211B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:38:18 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso584220a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:38:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1699526298; x=1700131098; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SmFf27EdTViei+rx09X875KNUOWxvPdfwYwyu2/XAyU=;
+        b=fDSN9AKO1rJ6J4ztpZFQxvSn0Lyxz04kwZmLqjvmLrWBisJ0SfUdpdqDhwnm3k27Rh
+         z4U17dDV54PnaT19NlV0Y8tWbMpFXwH0kFpFAU693ssuh7Gdq/TU5/2QjWNGChc+UDC3
+         jPaKD28DJlj56SpGFvIthXh8YfmXrs/j/o8wjqRY62lKXAcEN1HvpmcZGfO61oyaid3h
+         cM9TWhu+QBapFt9/PBEWH09vn+r28fMa5LHj2ihKW3WoHejsKvq9w9hQgxO3h+CUkm4I
+         fCOzl73Qzc1uME078PiUhu5uCgjbBWRGmZY8I2W5ehfLte74jnai9i1Igkw99XYxqy6m
+         T4TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699526298; x=1700131098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SmFf27EdTViei+rx09X875KNUOWxvPdfwYwyu2/XAyU=;
+        b=Cpa6SMxUEos+oLPk0PWn+B1iPwcA4muWWlQ9FlVYArF9Y1UTfQOq2tDuvSco0PtT1B
+         8XAJlAaBaM3IJUF/Q6/wRyqYljGCXtGbqA3wIMHjlxzumBQL4q4hVc+flD+BZFicFY/q
+         dukphkjyT+59O9KNow+j4e43nN/F1N6PyUZZLMC6sWu4xUDOR0JL6BPAjCQNfCbKSv+b
+         tKPmKgWSZY0RJaobaGVjv054fOFFIBfc4OwUSJPEUPN0T01A4IFy/qgAOseeIthu5P4F
+         lsSGyGp4TN3U/8Cdz78p1GxILBt6cOCdSA8SfJLfrhAGQoxMSpE2JMB1qmS7gbEqYV9N
+         1oNw==
+X-Gm-Message-State: AOJu0YyiYKhnBrJdDqaAkNcAoIkPcR9xxjqwOiuVc/73GXFqqm1ZtyJ6
+        YuNl0ngvf7k+BQFBrrPeNxT1FfGaKnLlWaahBwBIpQ==
+X-Google-Smtp-Source: AGHT+IEoOyiZ9nU5Ns70/ZXOsQC2eTmJROwHvQ2lU5+FPSfwRLrrvWwlNdBg8x89QOGGNa2hlECIq2feY7jHc26h/h0=
+X-Received: by 2002:a17:90b:4a85:b0:27d:8ad:c4e1 with SMTP id
+ lp5-20020a17090b4a8500b0027d08adc4e1mr1268664pjb.19.1699526298042; Thu, 09
+ Nov 2023 02:38:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231005133059.917577-1-naresh.solanki@9elements.com>
+ <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk> <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
+ <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk> <CABqG17h949R+3NFgA1MvPLZFc6zkBi+WRPSE9qP4fCBv5gdXHw@mail.gmail.com>
+ <c2dd0533-3a60-4481-8621-86578e62aab6@sirena.org.uk> <CABqG17h0OnMD-L1vYkJobji+Z=QPuYrd=ra1d7DncAN0_TO23A@mail.gmail.com>
+ <f5829ebc-b3ab-409b-9271-e066c08aec6e@sirena.org.uk>
+In-Reply-To: <f5829ebc-b3ab-409b-9271-e066c08aec6e@sirena.org.uk>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 9 Nov 2023 16:08:06 +0530
+Message-ID: <CABqG17iBsEO-NnRvgFJ9e5PvT7q+HgLyiDDfO5GcvXh4ueySsA@mail.gmail.com>
+Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
+To:     Mark Brown <broonie@kernel.org>
+Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Charles,
+Hi Mark,
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+On Thu, 2 Nov 2023 at 22:20, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Nov 02, 2023 at 09:03:40PM +0530, Naresh Solanki wrote:
+> > On Thu, 2 Nov 2023 at 20:31, Mark Brown <broonie@kernel.org> wrote:
+>
+> > > That's the opposite sense to what I was thinking of - we're reporting
+> > > voltage changes and enables to userspace rather than just errors.  My
+> > > concern here is that this could generate an awful lot of notificaiton=
+s
+> > > for normal operation on systems that don't use the uevents, I was
+> > > expecting this to be used for errors.  Could you remind me what the u=
+se
+> > > case is here, I think I might've got myself confused sorry?
+>
+> > Sorry for confusion caused because I should first described my applicat=
+ion
+> > requirements.
+> > Currently my application is interested in know regulator status i.e.,
+> > ENABLE, DISABLE or ERROR.
+> > Also events are needed specifically to get them logged like
+> > UNDER_VOLTAGE, OVER_CURRENT, REGULATION_OUT,
+> > OVER_TEMP.
+>
+> Ah, right.  Everything except for the enable and disable there looks
+> like it should be OK since they should normally just not happen but the
+> enables and disables might get a bit frequent with runtime PM - not
+> *super* frequent like voltage scaling but enough that people could have
+> an issue with it.
+I aim for a straightforward implementation.
+Using attributes such as status or state seems ideal for receiving
+notifications.
+In my case, the application focuses on status changes=E2=80=94whether it's =
+on, off,
+or encountering an error.
+These changes are driven by events originating from the regulator.
+So below change is what I see fit well.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: 2b59332ead54870ed0f1a8b122a1d640a4865fdc ASoC: cs42l43: Use new-style PM runtime macros
-date:   3 months ago
-config: x86_64-randconfig-123-20230907 (https://download.01.org/0day-ci/archive/20231109/202311091824.5z6PROGZ-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311091824.5z6PROGZ-lkp@intel.com/reproduce)
+        status_events =3D REGULATOR_EVENT_DISABLE;
+        status_events |=3D REGULATOR_EVENT_ENABLE;
+        status_events |=3D REGULATOR_EVENT_FAIL;
+        status_events |=3D REGULATOR_EVENT_FORCE_DISABLE;
+        status_events |=3D REGULATOR_EVENT_ABORT_DISABLE;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311091824.5z6PROGZ-lkp@intel.com/
+        if (event & status_events) {
+                name =3D dev_attr_status.attr.name;
+                sysfs_notify(&rdev->dev.kobj, NULL, name);
+        }
 
-sparse warnings: (new ones prefixed by >>)
->> sound/soc/codecs/cs42l43.c:2253:1: sparse: sparse: symbol 'cs42l43_codec_pm_ops' was not declared. Should it be static?
+Let me know if this can be further tuned to be better..
 
-vim +/cs42l43_codec_pm_ops +2253 sound/soc/codecs/cs42l43.c
+Regards,
+Naresh
 
-  2252	
-> 2253	DEFINE_RUNTIME_DEV_PM_OPS(cs42l43_codec_pm_ops, NULL,
-  2254				  cs42l43_codec_runtime_resume, NULL);
-  2255	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Netlink feels like it might be a better fit?  Not really looked at the
+> kernel side of implementing that and how sensible that ends up looking.
