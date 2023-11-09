@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C527E756E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C425A7E756F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:00:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345593AbjKJAAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S1345469AbjKJAA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345456AbjKJAAi (ORCPT
+        with ESMTP id S1345502AbjKJAAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:00:38 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA1346AD;
-        Thu,  9 Nov 2023 16:00:29 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2809fb0027cso1296222a91.2;
-        Thu, 09 Nov 2023 16:00:29 -0800 (PST)
+        Thu, 9 Nov 2023 19:00:39 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E23246B2;
+        Thu,  9 Nov 2023 16:00:30 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28023eadc70so1291767a91.2;
+        Thu, 09 Nov 2023 16:00:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699574428; x=1700179228; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699574430; x=1700179230; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S9f6IvIGwymLkdOL1VpLPLvQfPskawajHqhT5uorupU=;
-        b=UCdg3e68NYEq57mahG9/zkSU9YMBeP7Fcu0gDadBbRx5BmblawvIJvbMJBhGF1BVay
-         6RBPvTPYdQDb1uKDQ4SVuAzO+Y7Uyew2MFhhNNQ9OKfe5pvlB4zliIhSgNVq8rR+ZXAB
-         6/q7X3IPYbmac4H96Oz+gcuhzYopqDr7CjcyrfCzFMzXP79Fs8PFQwZDdUAeMrpKuu/O
-         4Tt+uJPzkhkYV/A+kTaNk+1ABR93SAypDNIVsgPL4jiLmCt24PvzjAU/8CH8OmWPW1c1
-         f8IdxaFTffyuWkrdsZEh6TprrjWlYKpeDUSAV3wbi3Uis4/vg3uf7is/CHiYH5ceZvxD
-         9asw==
+        bh=+X4K8d8Dew6reLn4C0dstRYrhu2d/Re9BWl7Yzp4hOo=;
+        b=fc+0U4Gy18sRK/DkuJub7OLhE5u9XNZ9Y+wievEjZg8ShRmRC50Rpw3/o0YO/SuLK8
+         WHm4i7vw2FEkCQDnDx3LxTdnp4yS10p2GuFycCK8kwMKJcpdrNXqKsbvOaGfORLjwrN7
+         uU4JNfPpuKTeP+5fy6Mo/p9n8JA2zC8e2OAN6ERwl4+Ij7B3vWNGOC0XrbJVqNYntrDp
+         bY0hRK2aJBi2wRSNkN0ixByHQgq3UvZ48uuzyglHZ/CMOWYDbzJbSYG59wSMkMqo4Eqr
+         Z35a/FTmuvcMejv5w1FCJrD+4qNBAAYve7keLNNTstJZ4dp8x4PvQAssJAweIheY/1So
+         qF9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699574428; x=1700179228;
+        d=1e100.net; s=20230601; t=1699574430; x=1700179230;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=S9f6IvIGwymLkdOL1VpLPLvQfPskawajHqhT5uorupU=;
-        b=vesNb6W5MHdj91ovOuLx4mXO1Shx9mNjF4PHl+YoBdurvJMU5DBn1P4A6j6Zm+twX/
-         TJTo6r04h7cYbJ4+1lpP/4WkKMspzZfRbxXwx8VI58GXlLNNw62tLr2h/aYD32zjnlM3
-         LYAYeZToYw5Hcsqp8QbGIlg3BEpoiipNNsAWvgeqaQP2NvBz2kVpjuxk3kNIFNXR5XSp
-         d7ndYrhqp4Um3bfMhZoZlNgu1fVo/3TkjjccX/qR95S6RDT24Ju9F6ziwhB3BbZd5EO+
-         OEVuRhftIlyJ/Ken4u1dzvIwfk+wxpxq2HsvS+UCkwhZfCORiTEnUCKUR8wjim8uwJl8
-         9/Hw==
-X-Gm-Message-State: AOJu0Yz3KcSRvtZh6TNC7HTNwHr0MGG/nlDbJ/5io+uaYIn97YsI7XeQ
-        EvDk6P3axYMaJi1GQ8qgrmo=
-X-Google-Smtp-Source: AGHT+IF1NAQhLh0Co6ml9PpkL9EAkduXrR3OwA0e3PBB9zj5VsdjZpAJI29AnNpmoYHl2M2vtwtUaA==
-X-Received: by 2002:a17:90b:4f88:b0:27d:75f2:a3ee with SMTP id qe8-20020a17090b4f8800b0027d75f2a3eemr3118306pjb.10.1699574428251;
-        Thu, 09 Nov 2023 16:00:28 -0800 (PST)
+        bh=+X4K8d8Dew6reLn4C0dstRYrhu2d/Re9BWl7Yzp4hOo=;
+        b=Xb55HhLdCEexIoXSXF7phdpjvy9tfXkxrJybItYVH8ULWrNGiRYiNq0kUfFav04aPv
+         awLVRZqKLgZFCsLyJ0MUoL4H32Vq7tJ8FKKBL4lLzsg2DiMTL2/ebqtJk32umwY91+dd
+         pCMU/xAK0Xni4SO/vyKxholVUBA71OptPXsvJNOoB25kJfxMObptc0kIjWSP3XVj3kdp
+         3db2seZ+944CT+VNMEtWc+FzhVzTQuufL6DYU/2v28tjljVMRTikRvPh2ZqcFHVNzkz9
+         1gqlO8jx1SMnijeVstPgkWqrJAnqP84VfY4sbsQUCP+VVIdx841rv1xOrW9zbtO9C8BI
+         vAZA==
+X-Gm-Message-State: AOJu0YyjBzOFKoOIEGN2e3H8GwEBW3FkynBZ4L+8ESGF0YOaY80Zfjz+
+        BUEN26SGd9m3JbrThGsIFVc=
+X-Google-Smtp-Source: AGHT+IFuj0VFdBbVA2ARzozLQpDa3u3jgJF4Egr2pmAoU4tq/yDacLFFrbHVbVYvgHfRIEfm9YXbaA==
+X-Received: by 2002:a17:90b:33c3:b0:27d:839:52ae with SMTP id lk3-20020a17090b33c300b0027d083952aemr3235984pjb.32.1699574429713;
+        Thu, 09 Nov 2023 16:00:29 -0800 (PST)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:d45c:ae16:d959:a5f1])
-        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.27
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 16:00:27 -0800 (PST)
+        Thu, 09 Nov 2023 16:00:29 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Subject: [PATCH 08/52] perf build: Add feature check for dwarf_getcfi()
-Date:   Thu,  9 Nov 2023 15:59:27 -0800
-Message-ID: <20231110000012.3538610-9-namhyung@kernel.org>
+Subject: [PATCH 09/52] perf probe: Convert to check dwarf_getcfi feature
+Date:   Thu,  9 Nov 2023 15:59:28 -0800
+Message-ID: <20231110000012.3538610-10-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231110000012.3538610-1-namhyung@kernel.org>
 References: <20231110000012.3538610-1-namhyung@kernel.org>
@@ -77,68 +77,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dwarf_getcfi() is available on libdw 0.142+.  Instead of just
-checking the version number, it'd be nice to have a config item to check
-the feature at build time.
+Now it has a feature check for the dwarf_getcfi(), use it and convert
+the code to check HAVE_DWARF_CFI_SUPPORT definition.
 
 Suggested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/build/Makefile.feature            | 1 +
- tools/build/feature/Makefile            | 4 ++++
- tools/build/feature/test-dwarf_getcfi.c | 9 +++++++++
- 3 files changed, 14 insertions(+)
- create mode 100644 tools/build/feature/test-dwarf_getcfi.c
+ tools/perf/Makefile.config     | 5 +++++
+ tools/perf/util/probe-finder.c | 8 ++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 934e2777a2db..64df118376df 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -32,6 +32,7 @@ FEATURE_TESTS_BASIC :=                  \
-         backtrace                       \
-         dwarf                           \
-         dwarf_getlocations              \
-+        dwarf_getcfi                    \
-         eventfd                         \
-         fortify-source                  \
-         get_current_dir_name            \
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index dad79ede4e0a..37722e509eb9 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -7,6 +7,7 @@ FILES=                                          \
-          test-bionic.bin                        \
-          test-dwarf.bin                         \
-          test-dwarf_getlocations.bin            \
-+         test-dwarf_getcfi.bin                  \
-          test-eventfd.bin                       \
-          test-fortify-source.bin                \
-          test-get_current_dir_name.bin          \
-@@ -154,6 +155,9 @@ endif
- $(OUTPUT)test-dwarf_getlocations.bin:
- 	$(BUILD) $(DWARFLIBS)
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 8b6cffbc4858..aa55850fbc21 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -476,6 +476,11 @@ else
+       else
+         CFLAGS += -DHAVE_DWARF_GETLOCATIONS_SUPPORT
+       endif # dwarf_getlocations
++      ifneq ($(feature-dwarf_getcfi), 1)
++        msg := $(warning Old libdw.h, finding variables at given 'perf probe' point will not work, install elfutils-devel/libdw-dev >= 0.142);
++      else
++        CFLAGS += -DHAVE_DWARF_CFI_SUPPORT
++      endif # dwarf_getcfi
+     endif # Dwarf support
+   endif # libelf support
+ endif # NO_LIBELF
+diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+index 8d3dd85f9ff4..c8923375e30d 100644
+--- a/tools/perf/util/probe-finder.c
++++ b/tools/perf/util/probe-finder.c
+@@ -604,7 +604,7 @@ static int call_probe_finder(Dwarf_Die *sc_die, struct probe_finder *pf)
+ 	ret = dwarf_getlocation_addr(&fb_attr, pf->addr, &pf->fb_ops, &nops, 1);
+ 	if (ret <= 0 || nops == 0) {
+ 		pf->fb_ops = NULL;
+-#if _ELFUTILS_PREREQ(0, 142)
++#ifdef HAVE_DWARF_CFI_SUPPORT
+ 	} else if (nops == 1 && pf->fb_ops[0].atom == DW_OP_call_frame_cfa &&
+ 		   (pf->cfi_eh != NULL || pf->cfi_dbg != NULL)) {
+ 		if ((dwarf_cfi_addrframe(pf->cfi_eh, pf->addr, &frame) != 0 &&
+@@ -615,7 +615,7 @@ static int call_probe_finder(Dwarf_Die *sc_die, struct probe_finder *pf)
+ 			free(frame);
+ 			return -ENOENT;
+ 		}
+-#endif
++#endif /* HAVE_DWARF_CFI_SUPPORT */
+ 	}
  
-+$(OUTPUT)test-dwarf_getcfi.bin:
-+	$(BUILD) $(DWARFLIBS)
-+
- $(OUTPUT)test-libelf-getphdrnum.bin:
- 	$(BUILD) -lelf
+ 	/* Call finder's callback handler */
+@@ -1140,7 +1140,7 @@ static int debuginfo__find_probes(struct debuginfo *dbg,
  
-diff --git a/tools/build/feature/test-dwarf_getcfi.c b/tools/build/feature/test-dwarf_getcfi.c
-new file mode 100644
-index 000000000000..50e7d7cb7bdf
---- /dev/null
-+++ b/tools/build/feature/test-dwarf_getcfi.c
-@@ -0,0 +1,9 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <elfutils/libdw.h>
-+
-+int main(void)
-+{
-+	Dwarf *dwarf = NULL;
-+	return dwarf_getcfi(dwarf) == NULL;
-+}
+ 	pf->machine = ehdr.e_machine;
+ 
+-#if _ELFUTILS_PREREQ(0, 142)
++#ifdef HAVE_DWARF_CFI_SUPPORT
+ 	do {
+ 		GElf_Shdr shdr;
+ 
+@@ -1150,7 +1150,7 @@ static int debuginfo__find_probes(struct debuginfo *dbg,
+ 
+ 		pf->cfi_dbg = dwarf_getcfi(dbg->dbg);
+ 	} while (0);
+-#endif
++#endif /* HAVE_DWARF_CFI_SUPPORT */
+ 
+ 	ret = debuginfo__find_probe_location(dbg, pf);
+ 	return ret;
 -- 
 2.42.0.869.gea05f2083d-goog
 
