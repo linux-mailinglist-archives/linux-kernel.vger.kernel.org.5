@@ -2,244 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A697E636E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 06:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B68FB7E637D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 07:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjKIFux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 00:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S232433AbjKIF6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 00:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbjKIFum (ORCPT
+        with ESMTP id S229697AbjKIF6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 00:50:42 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170542590
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 21:50:39 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A95lIfN009122;
-        Thu, 9 Nov 2023 05:50:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=0fF3Up0tvVC7FwVj/u5EG0pFt2dXz/KpTcdk+vueGz8=;
- b=cY4eZ3sWu1dLgMV1W8Il4oNVbmcH7/4UIlBVCG4fNMPgkMNpF+mck+iaOfdBqKiOZtOU
- s6gF1hteGu/7MQZ5aIgK52DPc+JqV23Y2BpxO7E6lpgHW3Q3tvXYuvWMj5gxcZGfjb9v
- LJAjQWmSzHSnB6cw6k2ZTT/QK0yliBGxEQKQX8OIZ/OVD2FwRWz40aBLxmYNqkmB7zQl
- h/tfGRU2l5L/SwvGk7DlFW0wmTNbrwziqgyvuE0lOo5mFQHg/d6jGLRjK78ubTGvNBdl
- eLAlLUDVFVBCMoLvEcAia/w0IwHGVODuQ3CeU5o7NleWZo5+pam8tCAiUTblWNutTZkP bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8sk6g3s7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 05:50:18 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A95n63M015669;
-        Thu, 9 Nov 2023 05:50:17 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8sk6g3r1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 05:50:17 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A951ue3000675;
-        Thu, 9 Nov 2023 05:50:16 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w231tw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 05:50:16 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A95oEJI51249464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Nov 2023 05:50:14 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E8DD20043;
-        Thu,  9 Nov 2023 05:50:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDD4420040;
-        Thu,  9 Nov 2023 05:50:11 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.109.198.19])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Nov 2023 05:50:11 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>
-Subject: [PATCH v4 5/5] powerpc/smp: Dynamically build Powerpc topology
-Date:   Thu,  9 Nov 2023 11:19:33 +0530
-Message-ID: <20231109054938.26589-6-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
-References: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
+        Thu, 9 Nov 2023 00:58:03 -0500
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E462584
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 21:58:00 -0800 (PST)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id 149FF1853C7;
+        Thu,  9 Nov 2023 06:57:57 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1699509477; bh=MqstqUFo3qRv+8y+mXLmx8o+smjOl1Gu/3uTh1tvguk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SuUObiBlSA+XEm5UZOimSToNBpZfq9DztUUstHKz+4/E2RThJkDBa2wJufa9yW/HU
+         IRzuGND92QCaB3roo+xW9l59udkTQ+vMAdqp1NMWmB41bypMbv5gTpZ8bmyXJ/ouQv
+         NIDg5Jh8vp1wc5dzJdOQjKptEmd7hX5NtS6uvsE9Ae4voxU89AZyj1hUR6/ICJ7NDv
+         wlWAEJ3928JqvdcpAkW0kUgixAApSBDpgwqwwXLvOI0xZT4rsjO6ruwAC/tW3yGekW
+         bDIjGR/pk7hxzcRT5xTpSPA1oZdfSDVKbzYHAIS5GGz+Z/CwAB/XbCjMOlHVdOr9hq
+         iYkfvEQokAKew==
+Date:   Thu, 9 Nov 2023 06:57:56 +0100
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Baruch Siach <baruch@tkos.co.il>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ramon Fried <ramon@neureality.ai>, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] arm64: DMA zone above 4GB
+Message-ID: <20231109065756.01e7272a@meshulam.tesarici.cz>
+In-Reply-To: <9af8a19c3398e7dc09cfc1fbafed98d795d9f83e.1699464622.git.baruch@tkos.co.il>
+References: <9af8a19c3398e7dc09cfc1fbafed98d795d9f83e.1699464622.git.baruch@tkos.co.il>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LSpB3Rpm9-YZ9TM0Ml6nODh5cjw5hnkn
-X-Proofpoint-GUID: irbLnf1ZnOzrwVdp3G4s0XQHNTHLcr-I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_04,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 clxscore=1015 impostorscore=0
- suspectscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090045
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there are four Powerpc specific sched topologies.  These are
-all statically defined.  However not all these topologies are used by
-all Powerpc systems.
+Hello Baruch,
 
-To avoid unnecessary degenerations by the scheduler, masks and flags
-are compared. However if the sched topologies are build dynamically then
-the code is simpler and there are greater chances of avoiding
-degenerations.
+On Wed,  8 Nov 2023 19:30:22 +0200
+Baruch Siach <baruch@tkos.co.il> wrote:
 
-Note:
-Even X86 builds its sched topologies dynamically and proposed changes
-are very similar to the way X86 is building its topologies.
+> My platform RAM starts at 32GB. It has no RAM under 4GB. zone_sizes_init()
+> puts the entire RAM in the DMA zone as follows:
+> 
+> [    0.000000] Zone ranges:
+> [    0.000000]   DMA      [mem 0x0000000800000000-0x00000008bfffffff]
+> [    0.000000]   DMA32    empty
+> [    0.000000]   Normal   empty
+> 
+> Consider a bus with this 'dma-ranges' property:
+> 
+>   #address-cells = <2>;
+>   #size-cells = <2>;
+>   dma-ranges = <0x00000000 0xc0000000 0x00000008 0x00000000 0x0 0x40000000>;
+> 
+> Devices under this bus can see 1GB of DMA range between 3GB-4GB. This
+> range is mapped to CPU memory at 32GB-33GB.
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog:
-v3 -> v4:
-- Conflict resolution due to rebase
-	(DIE changed to PKG)
+Thank you for this email. I have recently expressed my concerns about
+the possibility of such setups in theory (physical addresses v. DMA
+addresses). Now it seems we have a real-world example where this is
+actually happening.
 
- arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
- 1 file changed, 28 insertions(+), 50 deletions(-)
+> Current zone_sizes_init() code considers 'dma-ranges' only when it maps
+> to RAM under 4GB, because zone_dma_bits is limited to 32. In this case
+> 'dma-ranges' is ignored in practice, since DMA/DMA32 zones are both
+> assumed to be located under 4GB. The result is that the stmmac driver
+> DMA buffers allocation GFP_DMA32 flag has no effect. As a result DMA
+> buffer allocations fail.
+> 
+> The patch below is a crude workaround hack. It makes the  DMA zone
+> cover the 1GB memory area that is visible to stmmac DMA as follows:
+> 
+> [    0.000000] Zone ranges:
+> [    0.000000]   DMA      [mem 0x0000000800000000-0x000000083fffffff]
+> [    0.000000]   DMA32    empty
+> [    0.000000]   Normal   [mem 0x0000000840000000-0x0000000bffffffff]
+> ...
+> [    0.000000] software IO TLB: mapped [mem 0x000000083bfff000-0x000000083ffff000] (64MB)
+> 
+> With this hack the stmmac driver works on my platform with no
+> modification.
+> 
+> Clearly this can't be the right solutions. zone_dma_bits is now wrong for
+> one. It probably breaks other code as well.
+> 
+> Is there any better suggestion to make DMA buffer allocations work on
+> this hardware?
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index a84931c37246..6631659cfb38 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -93,15 +93,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
- EXPORT_PER_CPU_SYMBOL(cpu_core_map);
- EXPORT_SYMBOL_GPL(has_big_cores);
- 
--enum {
--#ifdef CONFIG_SCHED_SMT
--	smt_idx,
--#endif
--	cache_idx,
--	mc_idx,
--	die_idx,
--};
--
- #define MAX_THREAD_LIST_SIZE	8
- #define THREAD_GROUP_SHARE_L1   1
- #define THREAD_GROUP_SHARE_L2_L3 2
-@@ -1064,16 +1055,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
- 	return cpu_coregroup_mask(cpu);
- }
- 
--static struct sched_domain_topology_level powerpc_topology[] = {
--#ifdef CONFIG_SCHED_SMT
--	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
--#endif
--	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
--	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
--	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(PKG) },
--	{ NULL, },
--};
--
- static int __init init_big_cores(void)
- {
- 	int cpu;
-@@ -1701,9 +1682,11 @@ void start_secondary(void *unused)
- 	BUG();
- }
- 
--static void __init fixup_topology(void)
-+static struct sched_domain_topology_level powerpc_topology[6];
-+
-+static void __init build_sched_topology(void)
- {
--	int i;
-+	int i = 0;
- 
- 	if (is_shared_processor() && has_big_cores)
- 		static_branch_enable(&splpar_asym_pack);
-@@ -1714,36 +1697,33 @@ static void __init fixup_topology(void)
- 
- 	if (has_big_cores) {
- 		pr_info("Big cores detected but using small core scheduling\n");
--		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			smallcore_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
-+	} else {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
- 	}
- #endif
-+	if (shared_caches) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE)
-+		};
-+	}
-+	if (has_coregroup_support()) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC)
-+		};
-+	}
-+	powerpc_topology[i++] = (struct sched_domain_topology_level){
-+		cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(PKG)
-+	};
- 
--	if (!has_coregroup_support())
--		powerpc_topology[mc_idx].mask = powerpc_topology[cache_idx].mask;
--
--	/*
--	 * Try to consolidate topology levels here instead of
--	 * allowing scheduler to degenerate.
--	 * - Dont consolidate if masks are different.
--	 * - Dont consolidate if sd_flags exists and are different.
--	 */
--	for (i = 1; i <= die_idx; i++) {
--		if (powerpc_topology[i].mask != powerpc_topology[i - 1].mask)
--			continue;
--
--		if (powerpc_topology[i].sd_flags && powerpc_topology[i - 1].sd_flags &&
--				powerpc_topology[i].sd_flags != powerpc_topology[i - 1].sd_flags)
--			continue;
--
--		if (!powerpc_topology[i - 1].sd_flags)
--			powerpc_topology[i - 1].sd_flags = powerpc_topology[i].sd_flags;
-+	/* There must be one trailing NULL entry left.  */
-+	BUG_ON(i >= ARRAY_SIZE(powerpc_topology) - 1);
- 
--		powerpc_topology[i].mask = powerpc_topology[i + 1].mask;
--		powerpc_topology[i].sd_flags = powerpc_topology[i + 1].sd_flags;
--#ifdef CONFIG_SCHED_DEBUG
--		powerpc_topology[i].name = powerpc_topology[i + 1].name;
--#endif
--	}
-+	set_sched_topology(powerpc_topology);
- }
- 
- void __init smp_cpus_done(unsigned int max_cpus)
-@@ -1758,9 +1738,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
- 		smp_ops->bringup_done();
- 
- 	dump_numa_cpu_topology();
--
--	fixup_topology();
--	set_sched_topology(powerpc_topology);
-+	build_sched_topology();
- }
- 
- /*
--- 
-2.31.1
+Yes, but not any time soon. My idea was to abandon the various DMA
+zones in the MM subsystem and replace them with a more flexible system
+based on "allocation constraints".
+
+I'm afraid there's not much the current Linux kernel can do for you.
+
+Petr T
+
+> Thanks
+> ---
+>  arch/arm64/mm/init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 74c1db8ce271..5fe826ac3a5f 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -136,13 +136,13 @@ static void __init zone_sizes_init(void)
+>  	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
+>  	unsigned int __maybe_unused acpi_zone_dma_bits;
+>  	unsigned int __maybe_unused dt_zone_dma_bits;
+> -	phys_addr_t __maybe_unused dma32_phys_limit = max_zone_phys(32);
+> +	phys_addr_t __maybe_unused dma32_phys_limit = DMA_BIT_MASK(32) + 1;
+>  
+>  #ifdef CONFIG_ZONE_DMA
+>  	acpi_zone_dma_bits = fls64(acpi_iort_dma_get_max_cpu_address());
+>  	dt_zone_dma_bits = fls64(of_dma_get_max_cpu_address(NULL));
+>  	zone_dma_bits = min3(32U, dt_zone_dma_bits, acpi_zone_dma_bits);
+> -	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
+> +	arm64_dma_phys_limit = of_dma_get_max_cpu_address(NULL) + 1;
+>  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
+>  #endif
+>  #ifdef CONFIG_ZONE_DMA32
 
