@@ -2,95 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BCB7E6E21
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F4A7E6E24
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjKIQB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        id S1343679AbjKIQDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjKIQBz (ORCPT
+        with ESMTP id S229925AbjKIQDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:01:55 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57EF26A0;
-        Thu,  9 Nov 2023 08:01:52 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32d9effe314so601929f8f.3;
-        Thu, 09 Nov 2023 08:01:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699545711; x=1700150511; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mSx7z5v7XTjfY6/QhDDRIxNlklKpSZP0x3V/EKSMDNY=;
-        b=hbX/giorFMWHh8WZrP4ce6pg+gNOVJlmQc56JWbb6CIXOqpzAwC4nazGvd4RZXO6Li
-         u9mSRR4mWxmHPKNcty7eQbD0DjO3e8zpJk0N8X/ajPaG9kT1No7vWdaF6JuXWiV163QR
-         k8lp2vkSlD6usNKU1BzJUtoXf0bYy6lvu7ghxiwHZp2oNGUf7aAflQbP0EIW1bM6eaPA
-         p4X1ng9q6ISenlt0kQmQb6QyoTxcPmFfgOxVNj5vbBybmVOLVCVjNBgpfXDiqKQQUABP
-         cIQpl0I6o7NP2kR1wltX30RimF+Rkmihn+hGdyoyYe3EdA4FJh9bDsMNb6LNBtqIbdrw
-         PGbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699545711; x=1700150511;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mSx7z5v7XTjfY6/QhDDRIxNlklKpSZP0x3V/EKSMDNY=;
-        b=G2TQdwF5PsPNPcTPUGuLV+YqCul2yTPUeeeZG75W1z1DzTL8WFYa2uN0vLcbEVq2Vf
-         FIabPm8xNN9E/YQPnkNSXUHAYJKwLu9oBOn57b5LZenAnl21FoGISu1JGKwcRz6VKxF6
-         /FrfjaKqtYWmRGoO891FKW1fdZ6KtvcWPig3GJKNOGz1qDP3q0wsQyy7n79+HVSybnHl
-         5o22caYwcS3vxhKkHhMxsdoxvcllrJ063uHH+qYgPJgg7/kAsIXec7zQQU/+BKyd54dO
-         WR7wYu+FUwZROj/v2dw0dgO7sOXjx6iDyI13DfhK7aOEI/wv+8nSlOkrDjkgt09QoLNZ
-         arSA==
-X-Gm-Message-State: AOJu0YzSKZlo1Rk59/kE9kGQn2gADaWnjNF3Jpu6vkV53l++mSOTrI7H
-        9GIeXp0mWlSH+OknkavDqVci6W+T/GmYUqgjxH0=
-X-Google-Smtp-Source: AGHT+IF8QKby4UVhITeo5lye/fsa7ODWM9oNW+OBF1idjQdM/e56+6qE0dI4KbouMxXeyAmwHsUXqTflYEC+VUn7lC0=
-X-Received: by 2002:adf:ec91:0:b0:32d:af58:b4e9 with SMTP id
- z17-20020adfec91000000b0032daf58b4e9mr4938478wrn.24.1699545710891; Thu, 09
- Nov 2023 08:01:50 -0800 (PST)
+        Thu, 9 Nov 2023 11:03:49 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2064.outbound.protection.outlook.com [40.107.244.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B39C19A5
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:03:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nnTcbZZv48zAOHpMdP1sJ7qTtbg15TSmIyOmx4w1DLS1U1SXReW8XCjcJTkz0fcQdIQLCp+v1K09FhlYNC/bNYCSQKP3dSWjd7isqOO/wEoQDLxmE0RiZgu7iN9JhE+tVisrCm0dHbnA4Q/zlVp3bIsgbNvBShaJheeNk13Sq+UK4dLi2dQ+DfJRLsSI9pUsJQHOtSZqZGAZtar11lfbgNwEjm3/9xknaotG01mjCknt+BRCXvw7Pqwpu+qpl5sy5UMh019Jb42+H8vrqKRCOke0Sd1ppTIZsnla7N0eMi87PK+kUWJd+GMQaRhKMfhXNvzLWrykV0G6n0CUhmvuRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ai3NSAU94V9acQ8U00gIcZQ/PZGAfB0yzeVoW7QZbxM=;
+ b=XtTPXSKmhtLSiAlPebFSVncrSZb9LiVDysTBCa2q+1EOP59/ePlKqZgjpw3KZIfEVv5gqvVBtbW1zyOg1Vxn+iocShaOcnYWSGdJ4f6+WkKw/armP3r9Uo7Cnkk0frP6lYOefTaB2Hu8rpVcJFajP9A2XSRp1xIF+b5o/vUmO08CiSaQYpE+0vBdd1VyfaVfS2fxts0ezSrYMYWNWCRrlnkJVx8ccDw1KmJTT096NOPzhppT+qwmIFpmRlp0bQoFcEZqempsJU6C2nj5XzHewnP4emCxLDa7TYTCESMUgpT0pXSIEvU7+GCBg4Ot1j4iwjx/kcI226AHXGhZZPgNkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ai3NSAU94V9acQ8U00gIcZQ/PZGAfB0yzeVoW7QZbxM=;
+ b=SAUDoyw/sxozlGxYBXxMffXUUPUlHNsDFbFCtsECbxaHHkJm3NDS9+p0MKznRFSjS3kN8i/sFMO8h8D6GT9HxdkgVPntUmdpkD92BG83Lvyp3HbztvlNrTx78EGBQMzu/JqxeUilSIAfvNwPqQyj3N6bc8rdJa0Tl2+jgXJrDXA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by MW4PR12MB6875.namprd12.prod.outlook.com (2603:10b6:303:209::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Thu, 9 Nov
+ 2023 16:03:43 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3%6]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
+ 16:03:43 +0000
+Message-ID: <6c536c94-7072-403c-9c63-d932252fd66b@amd.com>
+Date:   Thu, 9 Nov 2023 17:03:37 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        sarah.walker@imgtec.com, donald.robson@imgtec.com,
+        boris.brezillon@collabora.com, faith@gfxstrand.net,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231101233113.8059-10-dakr@redhat.com>
+ <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com> <ZUTyGTxcH7WlHKsv@pollux>
+ <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
+ <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
+ <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com> <ZUjZFFtLM435tTxJ@pollux>
+ <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com> <ZUj0DdYZUgjhcvf5@pollux>
+ <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com> <ZUkXkJ+zT7OFGosC@pollux>
+ <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0104.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:cb::7) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-References: <20231028011741.2400327-1-kuba@kernel.org> <20231031210948.2651866-1-kuba@kernel.org>
- <20231109154934.4saimljtqx625l3v@box.shutemov.name>
-In-Reply-To: <20231109154934.4saimljtqx625l3v@box.shutemov.name>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Nov 2023 08:01:39 -0800
-Message-ID: <CAADnVQJnMQaFoWxj165GZ+CwJbVtPQBss80o7zYVQwg5MVij3g@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Networking for 6.7
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hou Tao <houtao1@huawei.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|MW4PR12MB6875:EE_
+X-MS-Office365-Filtering-Correlation-Id: c75e4cdc-f897-405c-6521-08dbe13d7244
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HiBjyUejvx7yeoS42jkx8+Fdi0AF37XoB2UqB+Q/iZYP84TgLrCu2yrCfpUwa0doAKgmEOv21rff5yp7++URWaN4X4vtX9kI/j1j7YYjlzvfwSJ7hxRQqXYBsLBbewOIDeQ/YLXY62cnNlHzPHQgZkhnF0VGGFMLHhRpX9jsB6dp41FQd3qfENd3pFd6Gpdy+R6t658tqeBnNiQC+aE3OxY5VL7VDvQiOR4lUWgd/Rh97bknWkzIpd859Qb78WOM5XTjRgOcUGaivNa4YYSMpLjQMW3AIpu1Rd1vre1y3X+DceBTGYJctoJEfLKuVr7ApR17Itf1UM1MfNy9tWkEDQrB5BZkTG4x1bv9t9cq5j/+yc5EHwGW9jfhxVJSSEEhAidkq5hFYMewJ+9FnpQWbukPP25D/UJmNZKt+dbhMbyiLWEMox7Ee9i1XAHZCQkDEgCGLpsLYVMSu/lN9R1mtaPu4bEEox2pl/11dVU4G2JAYI4iSBN5L/JIMo5boSlbJEwMwU7fBwiK1BXnk4RKU8/jjPJ06xL7lj/ZcLSWNbIarp+n7RsqqNUapBnWiDMFKJWG1cDxtpFcUw0ooe0BSzAQy9Oxo3+C9+Wd9cF8V6eil1aZolcYPBisJ0ilm0QJu7cCH4od3HMDGmMM84W3qg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(5660300002)(31686004)(6666004)(6486002)(2616005)(6512007)(6506007)(478600001)(38100700002)(36756003)(31696002)(86362001)(110136005)(66946007)(66556008)(316002)(66476007)(7416002)(26005)(66574015)(2906002)(41300700001)(83380400001)(8676002)(4326008)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVVpakI2bEZBNDdUbElvK2lTSHBYS0d0Ymh1Ylp0RFVXQW5HT0xyeVVTZTl3?=
+ =?utf-8?B?OXEwbHM5MnhLUDc1SEw5NWM2ZW12NHhkcWxweVZEN3crYjl3a0pyRWl1OU9I?=
+ =?utf-8?B?L1hxb1hXUjBXTElHcjhHeHU1RmRQZmRyLzN1S0g0UCtwT1FvU0Zma2Y2K2xE?=
+ =?utf-8?B?UFRKYlVPT0FvU1l0WHcrdG1PM1RQaTlyOE4vdGdaNGtkd3ZMN3Nnb1R6SVBm?=
+ =?utf-8?B?V1BBbFo3U09BbzNCU0FpWFlSd2RpSnpLVnBYWVJ3Q0cwR09JSXN3dkpPcmRq?=
+ =?utf-8?B?TytKYURSR09BRFF1Zk1oZTJaeWpzNFU1cGdreDdXL0cxYXpqU09xclB6a2Vj?=
+ =?utf-8?B?OGEzU1VpQ2R0WXhkck13OFVJcVNxYUNNNS8vTlZMRktmWXZYKzRJYldOVHZ3?=
+ =?utf-8?B?Vnk0cmh6ZUdqOTRwQ1NZMG1aeTgxdHMzS1lVSTB3dDFvSkhxNkZRUDgvWWNn?=
+ =?utf-8?B?RjZWUG85aXorZlRRenBnQnhyTGF0TmUxUE8vRWh2VE45cmtQTWxlbFZHaGli?=
+ =?utf-8?B?TDFSMUlDUVNpdk1ZOVp3UGNGUjAwelAyUGhDcFM4Q1Z2cHgzUTFKUy9keHNB?=
+ =?utf-8?B?ZS9xZk1ibUxGbTQ0RmRmcCt3aDhpcy9aTXlJMEltUnRpZENqVGVnUDNDSGJ0?=
+ =?utf-8?B?RE1hc2pMTmxBS2VwUDcyRTF1M1BPRWJXOFVBOFVPUVFhOEZrUzVSR1h2aVhP?=
+ =?utf-8?B?UGVCNzZpSk53TUtqaEs2NUF5VjhrcWNzbi9JSCt6cjdYWk1hOVp4TDdyay8w?=
+ =?utf-8?B?bE1sM2lJR0N4Ry9TcXhSY1hpcnVzeG8rZ3YzM0FWODJ3Nlp5eTdkTlhSMlRK?=
+ =?utf-8?B?OWxXZDJiaWEvSHFZU1FicGFIaFJKeVdnUk1laGREbEZ6akJMNURGTlVscnRS?=
+ =?utf-8?B?aTdTVGxYQ3JsNnBVdURvVDlJRk1XN0pua1JXRGl5OFh5TjloTlFKUEpid2J4?=
+ =?utf-8?B?UlFRS0RmV01qUDNvbTJ0S013OEpjRXpMVUJZWnhILzZNb05xSSswNlBTZGJ4?=
+ =?utf-8?B?ZXZwWk1ZRTRkREFxNnM3YldkMjJuak1DZGptaHpEaDgzc2t0STM3clFweGds?=
+ =?utf-8?B?VVhLQm1MbzNabkFXU2JGTHVScEtCZ2dkMkZSUjBvUiswSENvNGRpdVdBN1Qv?=
+ =?utf-8?B?VVF1SmMvZEpJaE9qR3QyeEZUWGxycGJiUHExWUxsN0p4MkJvKzQ5ZjVxUit3?=
+ =?utf-8?B?OXFxYk1tSmxiTStvU3o3VTJWQTg3My9EL0pvc3FZMGJtenkxUFk3QXlQMnY0?=
+ =?utf-8?B?RmI4bGFldlVyeGxtQi9GRGJvODZZL2dNeS9yNFRXVnJjSG9pV3J4WVRXb2s0?=
+ =?utf-8?B?WXJGTWlaRWMrMVlMOEhzMy9kd1RLTVRUVGZGS1FZVnZwMjl0L3FUTTJWL1ly?=
+ =?utf-8?B?NlkvNVY4QXZZT3VPZWdSYjNQK0RUWnEyQ1g3QjFhWk43WHVXU2JSQy9IRnlW?=
+ =?utf-8?B?NytqSmZSWkxOd3pCWkdIWGxCazRxWXYwbWFCWXl3TFlSK0llUUYyczh4OU1p?=
+ =?utf-8?B?U2hHRzhjTHVpc0p6STF2THpJMG16Q0RYOUZuSUMySTU3MkZQcUNqUFV6RzZZ?=
+ =?utf-8?B?N09hZFd3ejRacFkyUFBNdHNRUnFHeDZpRzkyQTlyV2FCcG9SSU56NWxkRHdn?=
+ =?utf-8?B?NkxrV0xaMHdHcjhyTy9Ha0NXQ2QwMjhHc25helpZcTltL3pQQ1BmblpqM1dG?=
+ =?utf-8?B?bWtFbXkwN3JtSjJEM2o3eG5NN2Y4OUNOTlhJWlhQaXNMZlVHWi9ITE1GeGdl?=
+ =?utf-8?B?N1U4bFY2K3RPSkN2MWNua28vblJUellNR0ZiTkI5ZmUxVHAyZDlzVFJVOUNM?=
+ =?utf-8?B?VHVHUjdZeUUzTHZPU3FqQ0ZXbzgxRDVidXNsT3pQVWlQamEyVEJSWDJCNDJa?=
+ =?utf-8?B?WFVQV0xDRXlKTERoOFZDU1Uwc3VqSjlMM01DaXg1cjd0dnVNRFZ1ekdCUjZL?=
+ =?utf-8?B?YXFOQ0hwN2EyV1lkRUhJNy9yWFBzK1REYUtJZkhONVZNclV3R3dzMmJPdHRs?=
+ =?utf-8?B?cmx4TVplS01ycVVnOU01c3hQRkZseDZlZTd2bUVPZWp4RmlsQWNwTG11SmdT?=
+ =?utf-8?B?ckdIazBzemhXelA4RklFWGFVV2NaeStyV2ZuVzIwaW9pRTRsOS85akRRUHpH?=
+ =?utf-8?Q?h8zWcS6hLUnoqmiDYHv08nx5m?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c75e4cdc-f897-405c-6521-08dbe13d7244
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 16:03:43.1643
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HqSro/YXLZL1iEf5BzKN6PkE+JEdOcbJJxz6tZg9MdRAtDkVUr26VV6hTXf28enx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6875
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 7:49=E2=80=AFAM Kirill A. Shutemov <kirill@shutemov.=
-name> wrote:
+Am 09.11.23 um 16:50 schrieb Thomas Hellström:
+> [SNIP]
+>>>
+> Did we get any resolution on this?
 >
-> On Tue, Oct 31, 2023 at 02:09:48PM -0700, Jakub Kicinski wrote:
-> >       bpf: Add support for non-fix-size percpu mem allocation
+> FWIW, my take on this is that it would be possible to get GPUVM to 
+> work both with and without internal refcounting; If with, the driver 
+> needs a vm close to resolve cyclic references, if without that's not 
+> necessary. If GPUVM is allowed to refcount in mappings and vm_bos, 
+> that comes with a slight performance drop but as Danilo pointed out, 
+> the VM lifetime problem iterating over a vm_bo's mapping becomes much 
+> easier and the code thus becomes easier to maintain moving forward. 
+> That convinced me it's a good thing.
+
+I strongly believe you guys stumbled over one of the core problems with 
+the VM here and I think that reference counting is the right answer to 
+solving this.
+
+The big question is that what is reference counted and in which 
+direction does the dependency points, e.g. we have here VM, BO, BO_VM 
+and Mapping objects.
+
+Those patches here suggest a counted Mapping -> VM reference and I'm 
+pretty sure that this isn't a good idea. What we should rather really 
+have is a BO -> VM or BO_VM ->VM reference. In other words that each BO 
+which is part of the VM keeps a reference to the VM.
+
+BTW: At least in amdgpu we can have BOs which (temporary) doesn't have 
+any mappings, but are still considered part of the VM.
+
 >
-> Recent changes in BPF increased per-CPU memory consumption a lot.
+> Another issue Christian brought up is that something intended to be 
+> embeddable (a base class) shouldn't really have its own refcount. I 
+> think that's a valid point. If you at some point need to derive from 
+> multiple such structs each having its own refcount, things will start 
+> to get weird. One way to resolve that would be to have the driver's 
+> subclass provide get() and put() ops, and export a destructor for the 
+> base-class, rather than to have the base-class provide the refcount 
+> and a destructor  ops.
+
+Well, I have never seen stuff like that in the kernel. Might be that 
+this works, but I would rather not try if avoidable.
+
 >
-> On virtual machine with 288 CPUs, per-CPU consumtion increased from 111 M=
-B
-> to 969 MB, or 8.7x.
+> That would also make it possible for the driver to decide the context 
+> for the put() call: If the driver needs to be able to call put() from 
+> irq / atomic context but the base-class'es destructor doesn't allow 
+> atomic context, the driver can push freeing out to a work item if needed.
 >
-> I've bisected it to the commit 41a5db8d8161 ("bpf: Add support for
-> non-fix-size percpu mem allocation"), which part of the pull request.
+> Finally, the refcount overflow Christian pointed out. Limiting the 
+> number of mapping sounds like a reasonable remedy to me.
 
-Hmm. This is unexpected. Thank you for reporting.
+Well that depends, I would rather avoid having a dependency for mappings.
 
-How did you measure this 111 MB vs 969 MB ?
-Pls share the steps to reproduce.
+Taking the CPU VM handling as example as far as I know vm_area_structs 
+doesn't grab a reference to their mm_struct either. Instead they get 
+automatically destroyed when the mm_struct is destroyed.
 
-Yonghong, Hou,
+Which makes sense in that case because when the mm_struct is gone the 
+vm_area_struct doesn't make sense any more either.
 
-please take a look as well.
+What we clearly need is a reference to prevent the VM or at least the 
+shared resv to go away to early.
+
+Regards,
+Christian.
+
+>
+> But I think all of this is fixable as follow-ups if needed, unless I'm 
+> missing something crucial.
+>
+> Just my 2 cents.
+>
+> /Thomas
+>
+>
+
