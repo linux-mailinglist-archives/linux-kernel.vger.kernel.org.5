@@ -2,119 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC097E6E16
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3503A7E6E1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343570AbjKIPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 10:55:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S1343688AbjKIQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbjKIPzu (ORCPT
+        with ESMTP id S229925AbjKIQAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 10:55:50 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A7FD5A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:55:48 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5af592fed43so13397847b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699545347; x=1700150147; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LIV0OIBtO/qEXjcwFa8rlo/bkTpqYyvIzQur9Hu2Qhs=;
-        b=elmMbCuHGjmMGTYLrs9pdF/CJ9097pLAy+R7TYoStB/mA5LnEMcQqefeUu+cR4DaDw
-         dNIDJpPIkqFORFySnj2KZ0bpmw8AdWdCuq9IK8VSLikNaNApOr9XzMCVFrbwFMlrYOyb
-         d8afeYo0We9B/Jt6gVOQDGQ9JpNt/imEEezhIEcFfYXi8Pyv45NCN2qapcAYPXOnrK+Q
-         g8cERphO/Jp20EYPeOlfKaexzJysIg0OlfexqhaFLWwdHNlAeHaCE0E9ZsoqBZ/IunC8
-         dxH0pAiPycB3Z7IOEiMbGar/gpMascpfsM13FZCkvMD0zPVIw9N9Ym7RuMQYdWuo/70I
-         Q1gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699545347; x=1700150147;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LIV0OIBtO/qEXjcwFa8rlo/bkTpqYyvIzQur9Hu2Qhs=;
-        b=eHu1UdkyRkxI1J/y4GHDQl2cLha0JKWp352gcjXipQT21EM93T6V1SytHu4vHP0u3R
-         /suabVT2JeF39iGnsvNxaWeX0g/98KkAEcWCCfh/EhvENvfMohxfMU1vwcXK3PxLug1y
-         OtGMHg43rxwo0rEWxxkVbunYdKEkq7DxjtNrqBMIwYMvS73/dI40roOPobto4kM+j/3i
-         lw2Ej+N3Sz/9N99jjb+/fyBsS7QmtwMkJ6mmB0kTIYNeHfrnkTBrE9dKUubNsR3Ez6p9
-         D5/VQuNok5r4dOz4dEVtIjarY3tR1dtvtVF9t7uXBRBVbKuLJCav38N0Fj0hkwYYra43
-         cC4w==
-X-Gm-Message-State: AOJu0YxqSWiy+0iCws5WHH3I1oUAQOccwducR3tHgKGRswuS0iSP6nEA
-        FKNFOyhovgxX8THiwff9jdsW5ahXq7w=
-X-Google-Smtp-Source: AGHT+IEMEShf0mykk0aG8QQsdHk7vwrzkzv/Ox7kVvv3Xl7bbuRdh2hiw2H6Gx6DhoX5AbdU/WOx4VMJWVk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:310:b0:5bf:6098:58dc with SMTP id
- bg16-20020a05690c031000b005bf609858dcmr88627ywb.9.1699545347576; Thu, 09 Nov
- 2023 07:55:47 -0800 (PST)
-Date:   Thu, 9 Nov 2023 07:55:45 -0800
-In-Reply-To: <20231108235456.GB1132821@ls.amr.corp.intel.com>
-Mime-Version: 1.0
-References: <cover.1699383993.git.isaku.yamahata@intel.com>
- <20231107192933.GA1102144@ls.amr.corp.intel.com> <CALMp9eR8Jnn0g0XBpTKTfKKOtRmFwAWuLAKcozuOs6KAGZ6MQQ@mail.gmail.com>
- <20231108235456.GB1132821@ls.amr.corp.intel.com>
-Message-ID: <ZU0BASXWcck85r90@google.com>
-Subject: Re: KVM: X86: Make bus clock frequency for vapic timer (bus lock ->
- bus clock) (was Re: [PATCH 0/2] KVM: X86: Make bus lock frequency for vapic
- timer) configurable
-From:   Sean Christopherson <seanjc@google.com>
-To:     Isaku Yamahata <isaku.yamahata@linux.intel.com>
-Cc:     Jim Mattson <jmattson@google.com>, isaku.yamahata@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>
-Content-Type: text/plain; charset="us-ascii"
+        Thu, 9 Nov 2023 11:00:48 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A143254;
+        Thu,  9 Nov 2023 08:00:45 -0800 (PST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231109160043euoutp02b19c5109a8f1c47c44ad0f5a4f7de09a~V-8IZmgC53069030690euoutp02k;
+        Thu,  9 Nov 2023 16:00:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231109160043euoutp02b19c5109a8f1c47c44ad0f5a4f7de09a~V-8IZmgC53069030690euoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699545643;
+        bh=pa+bEWDjIl0GN9JmokWdsk4Q7Gcs1efzNkFal1HDZTc=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=ra0/TNGjJ+Y2pndDRS6b2Vt2aHroEen4QKszrw7BGp1sf6O41F6YGLZgB0Q8iUlsa
+         pDmQPV5PoG6lo/3tFp4jQ1ZEU45QFWk96kxc5gnx2TnVtRliL0R2sbX0jCXuE74txt
+         Occ9f7vltx0BrriT5gXeKPwTiUudqSIHbR7kHwzk=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231109160043eucas1p296ace87297fe35b2e35e618a3f216a7a~V-8ILuzLy2854228542eucas1p21;
+        Thu,  9 Nov 2023 16:00:43 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 28.C3.11320.B220D456; Thu,  9
+        Nov 2023 16:00:43 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231109160042eucas1p2b119336f287d1d59325a03009cce1e84~V-8HvkAUf2327723277eucas1p2n;
+        Thu,  9 Nov 2023 16:00:42 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231109160042eusmtrp1e151f7a0d35f6031c55f46a4929927ba~V-8HuPi7e0589505895eusmtrp1X;
+        Thu,  9 Nov 2023 16:00:42 +0000 (GMT)
+X-AuditID: cbfec7f4-993ff70000022c38-c2-654d022ba255
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 11.A8.10549.A220D456; Thu,  9
+        Nov 2023 16:00:42 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231109160042eusmtip2313c1dffb58902dbd51aa957b98bf10e~V-8HcdEM70179101791eusmtip2k;
+        Thu,  9 Nov 2023 16:00:42 +0000 (GMT)
+Received: from localhost (106.210.248.176) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Thu, 9 Nov 2023 16:00:41 +0000
+Date:   Thu, 9 Nov 2023 17:00:40 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Luis Chamberlain <mcgrof@kernel.org>, <willy@infradead.org>,
+        <josh@joshtriplett.org>, Kees Cook <keescook@chromium.org>,
+        David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, <coda@cs.cmu.edu>,
+        <linux-cachefs@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-aio@kvack.org>,
+        <linux-mm@kvack.org>, <linux-nfs@vger.kernel.org>,
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        <ocfs2-devel@lists.linux.dev>, <fsverity@lists.linux.dev>,
+        <linux-xfs@vger.kernel.org>, <codalist@telemann.coda.cs.cmu.edu>
+Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
+ from ctl_table array
+Message-ID: <20231109160040.bahkcsp44t5xu7qo@localhost>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="l4g2lsqapwic34ka"
+Content-Disposition: inline
+In-Reply-To: <20231108034231.GB2482@sol.localdomain>
+X-Originating-IP: [106.210.248.176]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe1BUZRztu/fuvcsy0GWl+AIEZyUyUMpH40el0kwz3RxMsGYq/wB34g5i
+        PHfdBGZQWlTYlZGHIfKSRXkJgrogjwXiDfIwHlYur51Yl4mAjPeI0G4sF8uZ/jvnfOf85pw/
+        Pj4uLKPs+UGhp1lJqDhYRAqIqo6Vvl3u2BH23aFUAeovLwXoQq2JQLXqSh5SGisJNN06D9Bg
+        uxMyjf2OoeXbWgzVlT/FUO6NChI9la8S6JHBGpmqzlOorH4NRwq9iURZ6XEYKhhR8NBKYQmF
+        un5aJtCtwmcUMqnCUO+lEFQzZiBQytUCHP1wVQ7QXH43heobutaPabJJpLtt4qH+ph4eik/I
+        BkizVkOhSynpFNImTwDUkBtLoBbdLzwkz2nkoe7n3RgyaQ+hC4krFOr7u5OHVp+tHyms/czL
+        ncmKHSAYVZs3MzFwjLkzlEoytZljFKNSy5i1lnsUU1HsxgxPH2DUJQqSUc+nUkztuCczWZEB
+        mDrVAsbIe9tx5tr8Iuljf1zwYQAbHPQdK3nn4AnByVu6Q+EFosiatItULGhzVAILPqT3wZUk
+        NaYEAr6QLgZQmzGEc2QRwPvNDSRHFgC8UaLBX0QKWos2XUUALuZf5v3rGtDUEhypBFCviyfM
+        EYJ2gZe11zfiJL0T9s2MrmM+35Z2hR0FR81+nK6whEp9M2bWt9BimNvsarZb0fvhSHE7wWEb
+        2JVh2MA4HQkzqrI3zuC0Aywy8s2yxXq54fy7gCu6HcZVN1EcjoHdlcMbOyH9yBKuTnZsmj6G
+        WSnGTbwFTnVWbgYcYc+VRIILXAGw0ThLcaQUwMLvlzDO9QE8/7NhM/ERTFEmEeZGkLaG2j9t
+        uKLWMLUqHedkK5hwUci5XWGpboZIBtszX5qW+dK0zP+mcfJOqKqbJ/8nu8PCvGmcwwdgeflf
+        hApQJcCOlUlDAlnpnlD2jIdUHCKVhQZ6fBMWogbrv6jH2LlYA4qm5jxaAMYHLcBlPay/W9oP
+        7InQsFBWZGvVv8+bFVoFiKOiWUmYv0QWzEpbgAOfENlZvRngzArpQPFp9luWDWclL14xvoV9
+        LPaK99Co59mFL/psvDpLwr2RQvGwTdcxcTDa3pYvl1klkXumIo79ei+lscfR1jpPnaxx/tTT
+        L26vz243i/vjmXeWJpu6ys4d9X8S4bg1J5EneCIveHtmdCS+32/4+vGbQVrl+9VtMxazST8+
+        zntP5D0wR/5WOrQcCc/aSlt6nb6y6FhJ+PwTr5w5rx79jpAEp72VdHWjwH/wzHhcRJ6lUPS6
+        LC/KoT2CH67R+xjEgzVlh0XWRr/qa4Tv1l3nto3HvPrGCdfZI3ZzGueY+SXf5zfTmh5SljtS
+        R2ODKtJmHjg0tp6y9I122f/HW4r6r/u+3Ba1qD/1Wpig87B/nNvjIMyQtmZ4ICKkJ8W73XCJ
+        VPwPDUSbhsAEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTbVBUVRjHOfdl74KhN6C6IDjOili8rCyvZxlRP1BzS+kFPqSG4hVuwMju
+        4r6gNCPRIiMshUCksqisxgIuRLJLxCqOsgYEUqKFbCCrEVhEYbswKoG77brT5Ezf/uf//J/f
+        PM+Zc7iozyAngJsjlrNSMZPL43hh1+39lohQJJmNtB7ZAIfbWgAsMTowaNR34FBl78Dg7DUb
+        gLd610DHxK8IfNhqRuCltjkE1p8zcOCccgmDP0ythI7OIwT8onsZhWWTDg6sO1GMQO14GQ4X
+        G3UEHPj+IQbPNz4moEMjgUPlItg1MYXBquNaFNYcVwJobRgkYPflASfs4ikOtLQ6cDh89ToO
+        j5aeAvDichcBy6tOENBcOQ3g5foiDJosIzhUnr6Cw8G/BxHoMG+BJR8vEvDGk34cLj12QhqN
+        b24No+uKbmK05pvt9PTNFPrLn6o5tFE9QdAavYJeNrUTtKE5lB6bTaT1ujIOrbdVE7TxZyH9
+        m6EW0Jc08witHOpF6ZO2Bc7bAbv4m6QShZxdmy2RyRN57wlgFF8ghPyoGCFfEB2/OyEqlrdx
+        86ZMNjcnn5Vu3LyXnz0w/gDP+5x3qHboNqcImAJVwJNLkTGU9loTqgJeXB9SC6jWY92YuxBI
+        tS+M4G7tSy3fVnHcISugxsdu4e5DB6DKrJWIK4WRwVSF+Qzq0hwynLrxxx2n5nL9yBCqT/uW
+        K4+ShhVUzV3jU9+XZKj6nhBX3JuMp8abezE38zRCdRaP4u7C89RA7dTTiVAynxrtmiFcvSi5
+        mmqyc122p3ODsYYLwD3oOqr466uEWx+m5p/cB5XAV/0MSf0MSf0fyW2HUmb7DPI/O4xqPDuL
+        unUi1db2ANMAQgf8WIVMlCWSCfgyRiRTiLP4GRKRHjgfcmffoqELnPndyjcBhAtMINjZOXmh
+        ZRgEYGKJmOX5eQ/HbGd9vDOZgg9YqSRdqshlZSYQ67zEKjTghQyJ81eI5emCuMhYQUycMDJW
+        GBfNe8n79bxSxofMYuTsfpbNY6X/9iFcz4AiZE/I+vZXbckf2e9WktOCbS+qnuMzujlLXrhA
+        kqNcFxx5NEjYQjXds/fnK0fjd/L2rjk8s5QW1I3UFbyS1JKqO0m+xkwes3zWHKhvTU2yjwA/
+        8ZXSmpdRGKFCpwvKIw5oa3mFHaJDurXnetDUwvAej+CEd3/cZ/mOuQdI7yS5vxTbv4Pc8otP
+        WuCnmQJ/jdXr/QzbDrXc/EZF9Z2/tq1/J6jYEJfStHpiHtV6+ld/MltWIdj3aGtYS+GeD3cv
+        pInSV3oEJf+5yHwbpUrZyRJp0dYDDZ4btOdb+w4iPfdTdykCGxODEszDq+jOZr3o4Aqth9z4
+        VXsSnrHK+qjk7IhNzsNk2YwgFJXKmH8Ajnig1V0EAAA=
+X-CMS-MailID: 20231109160042eucas1p2b119336f287d1d59325a03009cce1e84
+X-Msg-Generator: CA
+X-RootMTR: 20231108034239eucas1p2e5dacae548e47694184df217ee168da9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231108034239eucas1p2e5dacae548e47694184df217ee168da9
+References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
+        <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
+        <CGME20231108034239eucas1p2e5dacae548e47694184df217ee168da9@eucas1p2.samsung.com>
+        <20231108034231.GB2482@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023, Isaku Yamahata wrote:
-> On Tue, Nov 07, 2023 at 12:03:35PM -0800, Jim Mattson <jmattson@google.com> wrote:
-> > I think I know the answer, but do you have any tests for this new feature?
-> 
-> If you mean kvm kselftest, no.
-> I have
-> - TDX patched qemu
-> - kvm-unit-tests: test_apic_timer_one_shot() @ kvm-unit-tests/x86/apic.c
->   TDX version is found at https://github.com/intel/kvm-unit-tests-tdx
->   We're planning to upstream the changes for TDX
-> 
-> How far do we want to go?
-> - Run kvm-unit-tests with TDX. What I have right now.
-> - kvm-unit-tests: extend qemu for default VM case and update
->   test_apic_timer_one_host()
+--l4g2lsqapwic34ka
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hrm, I'm not sure that we can do a whole lot for test_apic_timer_one_shot().  Or
-rather, I'm not sure it's worth the effort to try and add coverage beyond what's
-already there.
+On Tue, Nov 07, 2023 at 07:42:31PM -0800, Eric Biggers wrote:
+> On Tue, Nov 07, 2023 at 02:44:21PM +0100, Joel Granados via B4 Relay wrot=
+e:
+> > [PATCH 2/4] aio: Remove the now superfluous sentinel elements from ctl_=
+table array
+>=20
+> The commit prefix should be "fs:".
+>=20
+> > Remove sentinel elements ctl_table struct. Special attention was placed=
+ in
+> > making sure that an empty directory for fs/verity was created when
+> > CONFIG_FS_VERITY_BUILTIN_SIGNATURES is not defined. In this case we use=
+ the
+> > register sysctl call that expects a size.
+> [...]
+> > diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
+> > index d071a6e32581..8191bf7ad706 100644
+> > --- a/fs/verity/fsverity_private.h
+> > +++ b/fs/verity/fsverity_private.h
+> > @@ -122,8 +122,8 @@ void __init fsverity_init_info_cache(void);
+> > =20
+> >  /* signature.c */
+> > =20
+> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  extern int fsverity_require_signatures;
+> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  int fsverity_verify_signature(const struct fsverity_info *vi,
+> >  			      const u8 *signature, size_t sig_size);
+> > =20
+> > diff --git a/fs/verity/init.c b/fs/verity/init.c
+> > index a29f062f6047..e31045dd4f6c 100644
+> > --- a/fs/verity/init.c
+> > +++ b/fs/verity/init.c
+> > @@ -13,7 +13,6 @@
+> >  static struct ctl_table_header *fsverity_sysctl_header;
+> > =20
+> >  static struct ctl_table fsverity_sysctl_table[] =3D {
+> > -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  	{
+> >  		.procname       =3D "require_signatures",
+> >  		.data           =3D &fsverity_require_signatures,
+> > @@ -23,14 +22,17 @@ static struct ctl_table fsverity_sysctl_table[] =3D=
+ {
+> >  		.extra1         =3D SYSCTL_ZERO,
+> >  		.extra2         =3D SYSCTL_ONE,
+> >  	},
+> > -#endif
+> > -	{ }
+> >  };
+> > =20
+> >  static void __init fsverity_init_sysctl(void)
+> >  {
+> > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> >  	fsverity_sysctl_header =3D register_sysctl("fs/verity",
+> >  						 fsverity_sysctl_table);
+> > +#else
+> > +	fsverity_sysctl_header =3D register_sysctl_sz("fs/verity",
+> > +						 fsverity_sysctl_table, 0);
+> > +#endif
+> >  	if (!fsverity_sysctl_header)
+> >  		panic("fsverity sysctl registration failed");
+>=20
+> This does not make sense, and it causes a build error when CONFIG_FS_VERI=
+TY=3Dy
+> and CONFIG_FS_VERITY_BUILTIN_SIGNATURES=3Dn.
+>=20
+> I think all you need to do is delete the sentinel element, the same as
+> everywhere else.  I just tested it, and it works fine.
+I found the reason why I added the CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+here: it is related to
+https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
+where the directory is registered with an element only if
+CONFIG_FS_VERITY_BUILTIN_SIGNATURES is defined. I had forgotten, but I
+even asked for a clarification on the patch :).
 
-As for TDX, *if* we extend KUT, please don't make it depend on TDX.  Very few people
-have access to TDX platforms and anything CoCo is pretty much guaranteed to be harder
-to debug.
+I see that that patch made it to v6.6. So the solution is not to remove
+the CONFIG_FS_VERITY_BUILTIN_SIGNATURES, but for me to rebase on top of
+a more up to date base.
 
-> - kselftest
->   Right now kvm kselftest doesn't have test cases even for in-kernel IRQCHIP
->   creation.
+@Eric: Please get back to me if the patch in
+https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
+is no longer relevant.
 
-Selftests always create an in-kernel APIC.  And I think selftests are perfectly
-suited to complement the coverage provided by KUT.  Specifically, the failure
-scenario for this is that KVM emulates at 1Ghz whereas TDX advertises 25Mhz, i.e.
-the test case we want is to verify that the APIC timer doesn't expire early.
+Best.
 
-There's no need for any APIC infrastructure, e.g. a selftest doesn't even need to
-handle an interrupt.  Get the TSC frequency from KVM, program up an arbitrary APIC
-bus clock frequency, set TMICT such that it expires waaaay in the future, and then
-verify that the APIC timer counts reasonably close to the programmed frequency.
-E.g. if the test sets the bus clock to 25Mhz, the "drift" due to KVM counting at
-1Ghz should be super obvious.
+>=20
+> BTW, the comments for register_sysctl_sz() and __register_sysctl_table() =
+are
+> outdated, as they still say "A completely 0 filled entry terminates the t=
+able."
+>=20
+> - Eric
 
-LOL, side topic, KUT has this:
+--=20
 
-	/*
-	 * For LVT Timer clock, SDM vol 3 10.5.4 says it should be
-	 * derived from processor's bus clock (IIUC which is the same  <======
-	 * as TSC), however QEMU seems to be using nanosecond. In all
-	 * cases, the following should satisfy on all modern
-	 * processors.
-	 */
-	report((lvtt_counter == 1) && (tsc2 - tsc1 >= interval),
-	       "APIC LVT timer one shot");
+Joel Granados
+
+--l4g2lsqapwic34ka
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVNAicACgkQupfNUreW
+QU/GDgv/RABlWS8CUHeazT6R6sZRrWYGzO5BFRViRaIJEt9DGxPeVdxGY5fggAJB
+noHXVpWD4pdS23h/JVKSgpbTgLL6Cf7ZpIz0dx/AaPEA6GaYaZQu0V+MlDeDJtAv
+NxOvKTvaCgiCkWS/VYVSs2lSfGhSdHLUuZYLAdeAym0Iw0xwxbBneYjoCTDAxVh/
+QE8RNvzM8YP6UJmUjOLYqGmb9CQS1tFtq92ISERe+sMogfc0EECLD0vzOM+CXT/Q
+Ps87qwdFoDxwCoQzGRmdYLkpwEJZ9pIZ1cHUI29/VBh5F6utWGZvefDz8vSVcbNc
+x8R5Pi4IMIax7MSUrASAljHq5hpaKDJGOIzMxBnCe/1im78XVYg70RwBPL7tyfdm
+FyHNyDDQJuy6B74bEqGsolKqY8peghoOmAOF047JXbMnWUgtqLVtoj6R7blYdQAh
+5OX13eCmTHSlYS+F62ayufBClYx3Sv2Lm1tyrr2Jt8R/nqjn49MLyfPAFZ96yeLH
+5C8y/YbF
+=rsQZ
+-----END PGP SIGNATURE-----
+
+--l4g2lsqapwic34ka--
