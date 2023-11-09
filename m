@@ -2,233 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1961A7E6AF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:07:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521987E6AA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbjKINHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S231826AbjKIMdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjKING7 (ORCPT
+        with ESMTP id S229898AbjKIMdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:06:59 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24642D7D;
-        Thu,  9 Nov 2023 05:06:56 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40859c466efso5656705e9.3;
-        Thu, 09 Nov 2023 05:06:56 -0800 (PST)
+        Thu, 9 Nov 2023 07:33:40 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1D22D57;
+        Thu,  9 Nov 2023 04:33:38 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc9784dbc1so6977565ad.2;
+        Thu, 09 Nov 2023 04:33:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699535215; x=1700140015; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KL9FI2uT5Jrru78i6MVf+2TGxRAUmPiO2FTbiOAD7ho=;
-        b=HmDrIfww7hCvBG1zw8Ol+FOhMOXWQ/ZH00rrumBuZCE/8+t2VNSQsZGv1t1+FrpObP
-         nn0SqVjfNCWoglCgar99zO/i51m7ITcFFdNzhuJHSRVMdLXPO8RFOTyd6PPew1z2YH7l
-         kaC1z+sLdfm1GUREDJfwrpg+7Wb81H+dIHGHIpV6h/nHY/yQlppuvgQUaCCma9a2N5W3
-         kvaFkPpy+QGBtd7E2QyVhV3j1l12u3A2XP8aG3kMF0KkHIBriFVbfGFaBuHTCShYGnUl
-         +E9DllLqirsgSdtdDSwi19oM4S5fTUkVyZw/D11SvO42h720QLxWHtxCZtszc7uFM2ZC
-         e+1g==
+        d=gmail.com; s=20230601; t=1699533218; x=1700138018; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KTHBXAc9zM9xt1Wy1erfrR/9L+jcsqcOSfBsUDoZoMI=;
+        b=jnQDT3HuLWzY9jAD4pmToxxFW4CuaCT2qfDGpcxgKKa4kcVnHV3zBkgzAWcFjtC9PF
+         o3ig0fafnWaV/pKUT7V4pLnp9YYso+7wdazgASYu228gq7YZEzCANqC6ABxrO5d+8rpQ
+         SY2JPUmeCwNbGDQ86+fOahGLTBzUXkjWy+/Lgz/WI/PfyXiEULDjXGNTnnAhgc0419fo
+         m35VIg5jzWZaj2rg3zolR992AiUVbuLnL8X54zJsnUjDtX0a+JBbtI8VnaUU9BPEvww3
+         oOMv73w8PvP3Pz1DtyFFqqJn+GCJe4UyhBdXKGC/GJtLbR6h1MLIpcuJlmNbHwrJouZ/
+         78gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699535215; x=1700140015;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699533218; x=1700138018;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KL9FI2uT5Jrru78i6MVf+2TGxRAUmPiO2FTbiOAD7ho=;
-        b=I/oraHqZbe7bDbrxrOf37+2caTYWWanDLifynE47ZJf/oxXKv5MlEUGHvaTggr3YSi
-         EwF9Kvt3uergKVEiE2n8ILoeb5qx7a+HtoVso/iDCEfZxMY5zVYtpNqnc3GfDGJedRGs
-         xSfQDjP4AypLRSMEnY/YX5SnBSvyzCCFuvHhgnAJ2G1GHSM1x1U0xcbtfwLUlhOe8+He
-         qSCJNipYV/XGfCaU80Hc5L1Jd9bf7/t2SiHw8s3/yktrH+GGBFK/ZGasGddM7wH+cStN
-         oxTpT2FRvxp28TYk6FzaR3QjPoW/V9CjwVuBDmTF6UWqOcXw1UDy7Vj+kQzBYri1V/c5
-         ISUw==
-X-Gm-Message-State: AOJu0YwEfIGiG8ystJ7MbDoxn+ww4QX7nzV3G9EtjN+VKb3ezJ29Ka0d
-        0uFmGvPSy9NG3t3VxkXwZRc=
-X-Google-Smtp-Source: AGHT+IGzKbD1Kv5hsz8aRxLdUv99I9bzk3gdeQ+ntFTzZGCLbBg9mT/5lGMXT8XHOpiLGkAkv99QNg==
-X-Received: by 2002:a1c:7507:0:b0:409:8e0:69f4 with SMTP id o7-20020a1c7507000000b0040908e069f4mr4364794wmc.21.1699535214558;
-        Thu, 09 Nov 2023 05:06:54 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id v19-20020a05600c445300b0040813e14b49sm2095267wmn.30.2023.11.09.05.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 05:06:54 -0800 (PST)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Conor Dooley <conor.dooley@microchip.com>
-Subject: [net-next RFC PATCH v6 4/4] dt-bindings: Document Marvell Aquantia PHY
-Date:   Thu,  9 Nov 2023 13:32:53 +0100
-Message-Id: <20231109123253.3933-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231109123253.3933-1-ansuelsmth@gmail.com>
-References: <20231109123253.3933-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        bh=KTHBXAc9zM9xt1Wy1erfrR/9L+jcsqcOSfBsUDoZoMI=;
+        b=XPQ169g2CK1mE2/rNI/ryZc+qagYTv/G8U2ySsp6WoQ1dwgDCs4WQmTsYmfN4eS7qw
+         28MpmbCzseB3kGKK0XFDorsXkOXuSDblIU1CGKuQlpbaM2DuZlzIu9vnw0AtBixlUWV7
+         g4aakvO1VYzhbhd3GikWuaiH/VvW1z77X1WvZ1mGUVGIxMpw88lPLLSNFopTVUOXVqOw
+         ETDgBhxkGbibGEqsK3wtXRfccSmOUOeTui2vd4tXkx5RjfE+mdMSQRmz60u7lyiIHPlR
+         A/d0AyK6LpHDoQN9aTHOwza1mV3FR4u2yyGFaJ6Zm+KZ9zNZQ+S80wvmEUxuNSD0kUYq
+         yLKA==
+X-Gm-Message-State: AOJu0YxtZgD5BxBcaTPqCYmuue1fGMUdAjX+OA+oKYN1+dc2llN+Ir3d
+        MFlmLDFSw+jnFg79fYJN2KY=
+X-Google-Smtp-Source: AGHT+IEWqil4LO0GuTbHAh6kUp2YrHS6DfkZH2dJOZVMwpiGaNIcEpflnfIgcd8Jp9z3stQgvB6oBw==
+X-Received: by 2002:a17:902:ec83:b0:1ca:a290:4c0c with SMTP id x3-20020a170902ec8300b001caa2904c0cmr6188990plg.16.1699533217532;
+        Thu, 09 Nov 2023 04:33:37 -0800 (PST)
+Received: from smtpclient.apple ([2401:e180:8821:59e0:e5cc:8803:56b9:e782])
+        by smtp.gmail.com with ESMTPSA id h21-20020a170902eed500b001bf846dd2d0sm3426037plb.13.2023.11.09.04.33.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 04:33:37 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Mining Lin <mimi05633@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v6 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and NCT3018Y-R
+Date:   Thu, 9 Nov 2023 20:33:25 +0800
+Message-Id: <79C789B5-345A-44F0-B81E-A0FB7E64235B@gmail.com>
+References: <20231103231735b4769ca4@mail.local>
+Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
+        KFLIN@nuvoton.com, mylin1@nuvoton.com, openbmc@lists.ozlabs.org,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231103231735b4769ca4@mail.local>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+X-Mailer: iPhone Mail (20G81)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document bindings for Marvell Aquantia PHY.
+Dear Alexandre,
 
-The Marvell Aquantia PHY require a firmware to work correctly and there
-at least 3 way to load this firmware.
+I will add change log next patch.
 
-Describe all the different way and document the binding "firmware-name"
-to load the PHY firmware from userspace.
+Thanks.
+Best regard,
+Mia
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changes v6:
-- Add Reviewed-by tag
-- Drop comments in dts examples
-- Improve commit title
-- Fix wrong reg in example
-Changes v5:
-- Drop extra entry not related to HW description
-Changes v3:
-- Make DT description more OS agnostic
-- Use custom select to fix dtbs checks
-Changes v2:
-- Add DT patch
+Sent from my iPhone
 
- .../bindings/net/marvell,aquantia.yaml        | 116 ++++++++++++++++++
- 1 file changed, 116 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> On Nov 4, 2023, at 7:17 AM, Alexandre Belloni <alexandre.belloni@bootlin.c=
+om> wrote:
+>=20
+> =EF=BB=BFOn 04/11/2023 00:16:40+0100, Alexandre Belloni wrote:
+>>> On 13/09/2023 09:37:19+0800, Mia Lin wrote:
+>>> The NCT3015Y-R and NCT3018Y-R use the same datasheet
+>>>    but have different topologies as follows.
+>>> - Topology (Only 1st i2c can set TWO bit and HF bit)
+>>>  In NCT3015Y-R,
+>>>    rtc 1st i2c is connected to a host CPU
+>>>    rtc 2nd i2c is connected to a BMC
+>>>  In NCT3018Y-R,
+>>>    rtc 1st i2c is connected to a BMC
+>>>    rtc 2nd i2c is connected to a host CPU
+>>> In order to be compatible with NCT3015Y-R and NCT3018Y-R,
+>>> - In probe,
+>>>  If part number is NCT3018Y-R, only set HF bit to 24-Hour format.
+>>>  Else, do nothing
+>>> - In set_time,
+>>>  If part number is NCT3018Y-R && TWO bit is 0,
+>>>     change TWO bit to 1, and restore TWO bit after updating time.
+>>>=20
+>>> Signed-off-by: Mia Lin <mimi05633@gmail.com>
+>>> ---
+>=20
+> I forgot to add, please include a changelog here, this will make my
+> reviews easier (and faster).
+>=20
+>>> drivers/rtc/rtc-nct3018y.c | 52 +++++++++++++++++++++++++++++++++-----
+>>> 1 file changed, 46 insertions(+), 6 deletions(-)
+>>>=20
+>>> diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
+>>> index ed4e606be8e5..b006b58e15e2 100644
+>>> --- a/drivers/rtc/rtc-nct3018y.c
+>>> +++ b/drivers/rtc/rtc-nct3018y.c
+>>> @@ -23,6 +23,7 @@
+>>> #define NCT3018Y_REG_CTRL    0x0A /* timer control */
+>>> #define NCT3018Y_REG_ST        0x0B /* status */
+>>> #define NCT3018Y_REG_CLKO    0x0C /* clock out */
+>>> +#define NCT3018Y_REG_PART    0x21 /* part info */
+>>>=20
+>>> #define NCT3018Y_BIT_AF        BIT(7)
+>>> #define NCT3018Y_BIT_ST        BIT(7)
+>>> @@ -37,10 +38,12 @@
+>>> #define NCT3018Y_REG_BAT_MASK        0x07
+>>> #define NCT3018Y_REG_CLKO_F_MASK    0x03 /* frequenc mask */
+>>> #define NCT3018Y_REG_CLKO_CKE        0x80 /* clock out enabled */
+>>> +#define NCT3018Y_REG_PART_NCT3018Y    0x02
+>>>=20
+>>> struct nct3018y {
+>>>    struct rtc_device *rtc;
+>>>    struct i2c_client *client;
+>>> +    int part_num;
+>>> #ifdef CONFIG_COMMON_CLK
+>>>    struct clk_hw clkout_hw;
+>>> #endif
+>>> @@ -177,8 +180,27 @@ static int nct3018y_rtc_read_time(struct device *de=
+v, struct rtc_time *tm)
+>>> static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm=
+)
+>>> {
+>>>    struct i2c_client *client =3D to_i2c_client(dev);
+>>> +    struct nct3018y *nct3018y =3D dev_get_drvdata(dev);
+>>>    unsigned char buf[4] =3D {0};
+>>> -    int err;
+>>> +    int err, flags;
+>>> +    int restore_flags =3D 0;
+>>> +
+>>> +    flags =3D i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+>>> +    if (flags < 0) {
+>>> +        dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_CTRL.\n");
+>>> +        return flags;
+>>> +    }
+>>> +
+>>> +    /* Check and set TWO bit */
+>>> +    if ((nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y) && !(flags & N=
+CT3018Y_BIT_TWO)) {
+>>> +        restore_flags =3D 1;
+>>> +        flags |=3D NCT3018Y_BIT_TWO;
+>>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fl=
+ags);
+>>> +        if (err < 0) {
+>>> +            dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n=
+");
+>>> +            return err;
+>>> +        }
+>>> +    }
+>>>=20
+>>>    buf[0] =3D bin2bcd(tm->tm_sec);
+>>>    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
+>>> @@ -212,6 +234,18 @@ static int nct3018y_rtc_set_time(struct device *dev=
+, struct rtc_time *tm)
+>>>        return -EIO;
+>>>    }
+>>>=20
+>>> +    /* Restore TWO bit */
+>>> +    if (restore_flags) {
+>>> +        if (nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y)
+>>> +            flags &=3D ~NCT3018Y_BIT_TWO;
+>>> +
+>>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fl=
+ags);
+>>> +        if (err < 0) {
+>>> +            dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n=
+");
+>>> +            return err;
+>>> +        }
+>>> +    }
+>>> +
+>>>    return err;
+>>> }
+>>>=20
+>>> @@ -479,11 +513,17 @@ static int nct3018y_probe(struct i2c_client *clien=
+t)
+>>>        dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__);=
 
-diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-new file mode 100644
-index 000000000000..68b2087a6722
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-@@ -0,0 +1,116 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell Aquantia Ethernet PHY
-+
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
-+
-+description: |
-+  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actually
-+  work.
-+
-+  This can be done and is implemented by OEM in 3 different way:
-+    - Attached SPI flash directly to the PHY with the firmware. The PHY
-+      will self load the firmware in the presence of this configuration.
-+    - Read from a dedicated partition on system NAND declared in an
-+      NVMEM cell, and loaded to the PHY using its mailbox interface.
-+    - Manually provided firmware loaded from a file in the filesystem.
-+
-+allOf:
-+  - $ref: ethernet-phy.yaml#
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - ethernet-phy-id03a1.b445
-+          - ethernet-phy-id03a1.b460
-+          - ethernet-phy-id03a1.b4a2
-+          - ethernet-phy-id03a1.b4d0
-+          - ethernet-phy-id03a1.b4e0
-+          - ethernet-phy-id03a1.b5c2
-+          - ethernet-phy-id03a1.b4b0
-+          - ethernet-phy-id03a1.b662
-+          - ethernet-phy-id03a1.b712
-+          - ethernet-phy-id31c3.1c12
-+  required:
-+    - compatible
-+
-+properties:
-+  reg:
-+    maxItems: 1
-+
-+  firmware-name:
-+    description: specify the name of PHY firmware to load
-+
-+  nvmem-cells:
-+    description: phandle to the firmware nvmem cell
-+    maxItems: 1
-+
-+  nvmem-cell-names:
-+    const: firmware
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ethernet-phy@0 {
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <0>;
-+            firmware-name = "AQR-G4_v5.4.C-AQR_CIG_WF-1945_0x8_ID44776_VER1630.cld";
-+        };
-+
-+        ethernet-phy@1 {
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <1>;
-+            nvmem-cells = <&aqr_fw>;
-+            nvmem-cell-names = "firmware";
-+        };
-+    };
-+
-+    flash {
-+        compatible = "jedec,spi-nor";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partitions {
-+            compatible = "fixed-partitions";
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            /* ... */
-+
-+            partition@650000 {
-+                compatible = "nvmem-cells";
-+                label = "0:ethphyfw";
-+                reg = <0x650000 0x80000>;
-+                read-only;
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                aqr_fw: aqr_fw@0 {
-+                    reg = <0x0 0x5f42a>;
-+                };
-+            };
-+
-+            /* ... */
-+
-+        };
-+    };
--- 
-2.40.1
-
+>>>    }
+>>>=20
+>>> -    flags =3D NCT3018Y_BIT_TWO;
+>>> -    err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags)=
+;
+>>> -    if (err < 0) {
+>>> -        dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
+>>> -        return err;
+>>> +    nct3018y->part_num =3D i2c_smbus_read_byte_data(client, NCT3018Y_RE=
+G_PART);
+>>> +    if (nct3018y->part_num < 0) {
+>>> +        dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_PART.\n");
+>>> +        return nct3018y->part_num;
+>>> +    } else if (nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y) {
+>>=20
+>> This is a weird way to check as this will accept any value of
+>> NCT3018Y_REG_PART as long as bit 1 is set, is this really what you want?
+>>=20
+>>> +        flags =3D NCT3018Y_BIT_HF;
+>>> +        err =3D i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, fl=
+ags);
+>>> +        if (err < 0) {
+>>> +            dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n=
+");
+>>> +            return err;
+>>> +        }
+>>>    }
+>>>=20
+>>>    flags =3D 0;
+>>> --=20
+>>> 2.17.1
+>>>=20
+>>=20
+>> --=20
+>> Alexandre Belloni, co-owner and COO, Bootlin
+>> Embedded Linux and Kernel engineering
+>> https://bootlin.com
+>=20
+> --=20
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
