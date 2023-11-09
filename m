@@ -2,169 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8320F7E65CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F617E65D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbjKII4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        id S233954AbjKII4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:56:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbjKII4R (ORCPT
+        with ESMTP id S233801AbjKII4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:56:17 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7187171D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:56:14 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40839652b97so3702715e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:56:14 -0800 (PST)
+        Thu, 9 Nov 2023 03:56:49 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF40E18C;
+        Thu,  9 Nov 2023 00:56:46 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so517768a12.3;
+        Thu, 09 Nov 2023 00:56:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699520173; x=1700124973; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C/Oc2Ri08TlARcuCbFX7jlwJIbMzeX1P2oeV470H4hk=;
-        b=acNULdN1ij2WrwhgGcnf7bHJtkAORvy+gP/mpevmLEDxPg22hZRZ7i1NWSEeUeZ/oq
-         TnlBBT9f7hbJp7sViFWMHXmdBh8FGAWCE7r2Q98zQ2gbVHf552w2ENmt6cU1laZvLTTj
-         py5gNyF3jum2O1BKm3+YnZxDfJ6SrNypYRpKoiwkURr89WNyyq9JfF7j/Z/VxCTtJUnY
-         HZIk1THyQUSCwDLrd01t3PNETwhD1IYMKiu4C6rKkdAEPgo70UcOGnU/+8ikpnyxCQ8L
-         eQ9WQ7uWow46tNb3ESsa8MKU88A/vw4ZtkOBu88D72RefyM4VRrr7dJAj/YY4Dm22LtK
-         qT7A==
+        d=gmail.com; s=20230601; t=1699520206; x=1700125006; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cDLgNugE0c+yztBBF8zbtCz4wwlRM6dod3FpN94iGlU=;
+        b=FyxIsMD9f0TsKuTsaL4ylX2cJARHXVJRS8hG8Teo89VfxlOYGEbNB68neWPL56dlPQ
+         6EZ6urMcD16RxfuCgJGrBloLl7PCD5GdT/UL9XxzuoaQ/7coOAVzcjzYp4pyhUTdV1Gv
+         ba+0l/Hw3/tA6PA/4xCQ5iDrKJ415czlxxBahts6GnRzto0gxroy1tk6W9eueO9dVdQ4
+         P166utnztjKbtxa7Z9xRg2XEE0SU8ka7xoib/8qDNA+SSV9OukdMec7gsFUaNnxwQJx4
+         879RfDdAPpytX6Hl6aRvmWaE5cMIQ1zRy8j0LuHGe+b39ZlNEF3jUsyYf63NvMGg4Dci
+         kNpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699520173; x=1700124973;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/Oc2Ri08TlARcuCbFX7jlwJIbMzeX1P2oeV470H4hk=;
-        b=qFywpvdE0JffNFkiPfh+YduEwBfQczPSdu162hQvrlBx5Xn4csUVFvqcksJmEaIVqD
-         w2EM7DJ0I46ogVmB1EQqeQyFB6gVYw4iEGooXkLo8aiwHL/QET4ngkevkRmeEDC3Wsld
-         LVpQLAtaqQuVtRRUIDd48RNtKee++nh9iM1iUpUm/n7YS2fOi9hvhinJTyLmjZspxg/w
-         Sc/OZd9JNOJE68ROgVMqdqNYy5DBIO85gyNWDuw+SolLrq4yu1bUfQcNpgrJ5DQbe465
-         p+AM2evZ4qheL9VlP6sdVIUnWq23lTFshnKBLwCc9TOnYUMCuAm9KN91GDpa/2H4fSkn
-         TXrQ==
-X-Gm-Message-State: AOJu0YzqCgoKeBnrtxOvUY0AxWiJkGRnvZr3C+i+YA2skMVEJ7u8IQfW
-        TEgECWfDv2TjfEQrnIYPDsBKfQ==
-X-Google-Smtp-Source: AGHT+IHxV0c5K+HW648KGXbRUM/dBxgAWN/R3MureWTsp8lzf6mVtsfAt6CPWUk7l/CmSjN0DyPJ7w==
-X-Received: by 2002:a05:600c:32a7:b0:408:fe93:a2f7 with SMTP id t39-20020a05600c32a700b00408fe93a2f7mr4067831wmp.37.1699520173091;
-        Thu, 09 Nov 2023 00:56:13 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id q3-20020a05600c46c300b00405442edc69sm1412660wmo.14.2023.11.09.00.56.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 00:56:12 -0800 (PST)
-Message-ID: <f9d25b19-ef26-480a-ae47-60dcba704ee5@linaro.org>
-Date:   Thu, 9 Nov 2023 09:56:11 +0100
+        d=1e100.net; s=20230601; t=1699520206; x=1700125006;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cDLgNugE0c+yztBBF8zbtCz4wwlRM6dod3FpN94iGlU=;
+        b=knpcsWSnS6OyAPKtzsSpEKLxKzdFkSk6Ajw/zQfwzV2PxzUH3YZBs4OuI7DL7yKpfV
+         QKD4HjNbZ96LQN4gsH0W0B6qe9rxu0VfHzRfoxNxxzqEv0rcWjLgLuT44x3/jc4MM+vT
+         OchYMr28YYa7bCNyOZ0BYIcUSgpoB+C0heroavapbIIr3h6Z3NK5mokfm+JCCeHq8ycU
+         VMkY694D57G8tFz8CaH1Yb27QxmF/s4puSMCZtAHVsMekIpHP3nOoq0k7BKbW2h9rT8f
+         6uKu6ya5JaNvGRyfb7wKkuvfGaxm2Ua/qE3bvCLcmSv5d3dtop/oXSmr358PY/ymeSWZ
+         8f9g==
+X-Gm-Message-State: AOJu0YzxOjXJgvA4PF0JK+NduOPfn0zCSVVKBRzVi/Z3BVDsoQLJGNqf
+        L5etaFkp6Exe5evSa0CBaRE=
+X-Google-Smtp-Source: AGHT+IHcQugFvLtnFl9wt8y75QyVX89mYEcdnJqy7AnJbVNPztfs5rwjKG6DJUGQTx33I1VObs4QBg==
+X-Received: by 2002:a17:90a:e7cf:b0:280:1729:b3e6 with SMTP id kb15-20020a17090ae7cf00b002801729b3e6mr1025727pjb.10.1699520206106;
+        Thu, 09 Nov 2023 00:56:46 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:c99d:e08e:5968:1b85])
+        by smtp.gmail.com with ESMTPSA id o7-20020a17090ab88700b00280cd4fbd83sm805627pjr.55.2023.11.09.00.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 00:56:45 -0800 (PST)
+Date:   Thu, 9 Nov 2023 00:56:43 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v6.7-rc0
+Message-ID: <ZUyey2l2Cfri8715@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
-Content-Language: en-US
-To:     Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231109044844.614007-1-peteryin.openbmc@gmail.com>
- <20231109044844.614007-2-peteryin.openbmc@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231109044844.614007-2-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 05:48, Peter Yin wrote:
-> Add a device tree bindings for mp5990 device.
-> 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
->  .../devicetree/bindings/hwmon/mps,mp5990.yaml | 41 +++++++++++++++++++
->  1 file changed, 41 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml b/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
-> new file mode 100644
-> index 000000000000..bfd0cf7d3470
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/mps,mp5990.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Monolithic Power Systems Devices MP5990 Hot-Swap Controller
-> +
-> +maintainers:
-> +  - Peter Yin <peteryin.openbmc@gmail.com>
-> +
-> +description: |
-> +  Monolithic Power Systems Devices MP5990 Hot-Swap Controller
-> +
-> +  Datasheets:
-> +  https://www.monolithicpower.com/en/mp5990.html
-> +
-> +properties:
-> +  compatible:
-> +    const: mps,mp5990
-> +
-> +  reg:
-> +    maxItems: 1
+Hi Linus,
 
-This is missing some properties... or is a candidate for
-trivial-devices.yaml.
+Please pull from:
 
-I guess it is fine as initial submission:
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git tags/input-for-v6.7-rc0
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+to receive updates for the input subsystem. You will get:
 
-Best regards,
-Krzysztof
+- a number of input drivers has been converted to use facilities provided
+  by the device core to instantiate driver-specific attributes instead of
+  using devm_device_add_group() and similar APIs
 
+- platform input devices have been converted to use remove() callback
+  returning void
+
+- a fix for use-after-free when tearing down a Synaptics RMI device
+
+- a few flexible arrays in input structures have been annotated with
+  __counted_by to help hardening efforts
+
+- handling of vddio supply in cyttsp5 driver
+
+- other miscellaneous fixups
+
+Changelog:
+---------
+
+Dan Carpenter (1):
+      Input: synaptics-rmi4 - fix use after free in rmi_unregister_function()
+
+Dmitry Torokhov (22):
+      Input: cros_ec_keyb - use device core to create driver-specific device attributes
+      Input: cyapa - use device core to create driver-specific device attributes
+      Input: iqs269a - use device core to create driver-specific device attributes
+      Input: kxtj9 - use device core to create driver-specific device attributes
+      Input: ad7877 - use device core to create driver-specific device attributes
+      Input: ad7879 - use device core to create driver-specific device attributes
+      Input: ads7846 - use device core to create driver-specific device attributes
+      Input: edt-ft5x06 - use device core to create driver-specific device attributes
+      Input: elants_i2c - use device core to create driver-specific device attributes
+      Input: exc3000 - use device core to create driver-specific device attributes
+      Input: hideep - use device core to create driver-specific device attributes
+      Input: hycon-hy46xx - use device core to create driver-specific device attributes
+      Input: ili210x - use device core to create driver-specific device attributes
+      Input: ilitek_ts_i2c - use device core to create driver-specific device attributes
+      Input: iqs5xx - use device core to create driver-specific device attributes
+      Input: melfas-mip4 - use device core to create driver-specific device attributes
+      Input: raydium_i2c_ts - use device core to create driver-specific device attributes
+      Input: rohm_bu21023 - use device core to create driver-specific device attributes
+      Input: s6sy761 - use device core to create driver-specific device attributes
+      Input: stmfts - use device core to create driver-specific device attributes
+      Input: tsc2004/5 - use device core to create driver-specific device attributes
+      Input: wdt87xx_i2c - use device core to create driver-specific device attributes
+
+Fabio Estevam (1):
+      dt-bindings: input: fsl,scu-key: Document wakeup-source
+
+Justin Stitt (2):
+      Input: synaptics-rmi4 - replace deprecated strncpy
+      Input: axp20x-pek - avoid needless newline removal
+
+Kees Cook (4):
+      Input: evdev - annotate struct evdev_client with __counted_by
+      Input: leds - annotate struct input_leds with __counted_by
+      Input: mt - annotate struct input_mt with __counted_by
+      Input: Annotate struct ff_device with __counted_by
+
+Li Zetao (1):
+      Input: walkera0701 - use module_parport_driver macro to simplify the code
+
+Lin, Meng-Bo (2):
+      dt-bindings: input: cyttsp5: document vddio-supply
+      Input: cyttsp5 - add handling for vddio regulator
+
+Rob Herring (1):
+      Input: tegra-kbc - use device_get_match_data()
+
+Uwe Kleine-König (52):
+      Input: adp5520-keys - convert to platform remove callback returning void
+      Input: cros_ec_keyb - convert to platform remove callback returning void
+      Input: ep93xx_keypad - convert to platform remove callback returning void
+      Input: iqs62x-keys - convert to platform remove callback returning void
+      Input: matrix_keypad - convert to platform remove callback returning void
+      Input: omap-keypad - convert to platform remove callback returning void
+      Input: omap4-keypad - convert to platform remove callback returning void
+      Input: samsung-keypad - convert to platform remove callback returning void
+      Input: sh_keysc - convert to platform remove callback returning void
+      Input: spear-keyboard - convert to platform remove callback returning void
+      Input: stmpe-keypad - convert to platform remove callback returning void
+      Input: 88pm80x_onkey - convert to platform remove callback returning void
+      Input: da9052_onkey - convert to platform remove callback returning void
+      Input: da9055_onkey - convert to platform remove callback returning void
+      Input: ideapad_slidebar - convert to platform remove callback returning void
+      Input: m68kspkr - convert to platform remove callback returning void
+      Input: max8997_haptic - convert to platform remove callback returning void
+      Input: mc13783-pwrbutton - convert to platform remove callback returning void
+      Input: palmas-pwrbutton - convert to platform remove callback returning void
+      Input: pcap_keys - convert to platform remove callback returning void
+      Input: pcf50633-input - convert to platform remove callback returning void
+      Input: pcspkr - convert to platform remove callback returning void
+      Input: pm8941-pwrkey - convert to platform remove callback returning void
+      Input: soc_button_array - convert to platform remove callback returning void
+      Input: sparcspkr - convert to platform remove callback returning void
+      Input: wistron_btns - convert to platform remove callback returning void
+      Input: wm831x-on - convert to platform remove callback returning void
+      Input: navpoint - convert to platform remove callback returning void
+      Input: altera_ps2 - convert to platform remove callback returning void
+      Input: ams_delta_serio - convert to platform remove callback returning void
+      Input: apbps2 - convert to platform remove callback returning void
+      Input: arc_ps2 - convert to platform remove callback returning void
+      Input: ct82c710 - convert to platform remove callback returning void
+      Input: i8042-sparcio - convert to platform remove callback returning void
+      Input: i8042 - convert to platform remove callback returning void
+      Input: ioc3kbd - convert to platform remove callback returning void
+      Input: maceps2 - convert to platform remove callback returning void
+      Input: olpc_apsp - convert to platform remove callback returning void
+      Input: ps2-gpio - convert to platform remove callback returning void
+      Input: q40kbd - convert to platform remove callback returning void
+      Input: rpckbd - convert to platform remove callback returning void
+      Input: sun4i-ps2 - convert to platform remove callback returning void
+      Input: xilinx_ps2 - convert to platform remove callback returning void
+      Input: da9052_tsi - convert to platform remove callback returning void
+      Input: mainstone-wm97xx - convert to platform remove callback returning void
+      Input: mc13783_ts - convert to platform remove callback returning void
+      Input: pcap_ts - convert to platform remove callback returning void
+      Input: stmpe-ts - convert to platform remove callback returning void
+      Input: sun4i-ts - convert to platform remove callback returning void
+      Input: ti_am335x_tsc - convert to platform remove callback returning void
+      Input: wm831x-ts - convert to platform remove callback returning void
+      Input: wm97xx-core - convert to platform remove callback returning void
+
+Diffstat:
+--------
+
+ .../devicetree/bindings/input/fsl,scu-key.yaml     |  2 ++
+ .../input/touchscreen/cypress,tt21000.yaml         |  3 +++
+ drivers/input/evdev.c                              |  2 +-
+ drivers/input/input-leds.c                         |  2 +-
+ drivers/input/joystick/walkera0701.c               | 13 +---------
+ drivers/input/keyboard/adp5520-keys.c              |  6 ++---
+ drivers/input/keyboard/cros_ec_keyb.c              | 16 ++++--------
+ drivers/input/keyboard/ep93xx_keypad.c             |  6 ++---
+ drivers/input/keyboard/iqs62x-keys.c               |  6 ++---
+ drivers/input/keyboard/matrix_keypad.c             |  6 ++---
+ drivers/input/keyboard/omap-keypad.c               |  6 ++---
+ drivers/input/keyboard/omap4-keypad.c              |  6 ++---
+ drivers/input/keyboard/samsung-keypad.c            |  6 ++---
+ drivers/input/keyboard/sh_keysc.c                  |  6 ++---
+ drivers/input/keyboard/spear-keyboard.c            |  6 ++---
+ drivers/input/keyboard/stmpe-keypad.c              |  6 ++---
+ drivers/input/keyboard/tegra-kbc.c                 |  7 ++----
+ drivers/input/misc/88pm80x_onkey.c                 |  5 ++--
+ drivers/input/misc/axp20x-pek.c                    | 11 +-------
+ drivers/input/misc/da9052_onkey.c                  |  6 ++---
+ drivers/input/misc/da9055_onkey.c                  |  6 ++---
+ drivers/input/misc/ideapad_slidebar.c              |  6 ++---
+ drivers/input/misc/iqs269a.c                       | 10 ++------
+ drivers/input/misc/kxtj9.c                         | 29 +++++++++++++---------
+ drivers/input/misc/m68kspkr.c                      |  6 ++---
+ drivers/input/misc/max8997_haptic.c                |  6 ++---
+ drivers/input/misc/mc13783-pwrbutton.c             |  6 ++---
+ drivers/input/misc/palmas-pwrbutton.c              |  6 ++---
+ drivers/input/misc/pcap_keys.c                     |  6 ++---
+ drivers/input/misc/pcf50633-input.c                |  6 ++---
+ drivers/input/misc/pcspkr.c                        |  6 ++---
+ drivers/input/misc/pm8941-pwrkey.c                 |  6 ++---
+ drivers/input/misc/soc_button_array.c              |  6 ++---
+ drivers/input/misc/sparcspkr.c                     | 12 +++------
+ drivers/input/misc/wistron_btns.c                  |  6 ++---
+ drivers/input/misc/wm831x-on.c                     |  6 ++---
+ drivers/input/mouse/cyapa.c                        | 14 +++--------
+ drivers/input/mouse/navpoint.c                     |  6 ++---
+ drivers/input/rmi4/rmi_bus.c                       |  2 +-
+ drivers/input/rmi4/rmi_f34.c                       |  2 +-
+ drivers/input/serio/altera_ps2.c                   |  6 ++---
+ drivers/input/serio/ams_delta_serio.c              |  6 ++---
+ drivers/input/serio/apbps2.c                       |  6 ++---
+ drivers/input/serio/arc_ps2.c                      |  6 ++---
+ drivers/input/serio/ct82c710.c                     |  6 ++---
+ drivers/input/serio/i8042-sparcio.h                |  6 ++---
+ drivers/input/serio/i8042.c                        |  6 ++---
+ drivers/input/serio/ioc3kbd.c                      |  6 ++---
+ drivers/input/serio/maceps2.c                      |  6 ++---
+ drivers/input/serio/olpc_apsp.c                    |  6 ++---
+ drivers/input/serio/ps2-gpio.c                     |  5 ++--
+ drivers/input/serio/q40kbd.c                       |  6 ++---
+ drivers/input/serio/rpckbd.c                       |  6 ++---
+ drivers/input/serio/sun4i-ps2.c                    |  6 ++---
+ drivers/input/serio/xilinx_ps2.c                   |  6 ++---
+ drivers/input/touchscreen/ad7877.c                 | 12 ++++-----
+ drivers/input/touchscreen/ad7879-i2c.c             |  7 +++---
+ drivers/input/touchscreen/ad7879-spi.c             |  7 +++---
+ drivers/input/touchscreen/ad7879.c                 | 10 +++++---
+ drivers/input/touchscreen/ad7879.h                 |  3 +++
+ drivers/input/touchscreen/ads7846.c                | 18 +++++---------
+ drivers/input/touchscreen/cyttsp5.c                | 19 ++++++++------
+ drivers/input/touchscreen/da9052_tsi.c             |  6 ++---
+ drivers/input/touchscreen/edt-ft5x06.c             | 10 ++------
+ drivers/input/touchscreen/elants_i2c.c             | 15 +++--------
+ drivers/input/touchscreen/exc3000.c                | 12 +++------
+ drivers/input/touchscreen/hideep.c                 | 15 +++--------
+ drivers/input/touchscreen/hycon-hy46xx.c           | 10 ++------
+ drivers/input/touchscreen/ili210x.c                | 15 ++++-------
+ drivers/input/touchscreen/ilitek_ts_i2c.c          | 12 ++-------
+ drivers/input/touchscreen/iqs5xx.c                 | 10 +++-----
+ drivers/input/touchscreen/mainstone-wm97xx.c       |  6 ++---
+ drivers/input/touchscreen/mc13783_ts.c             |  6 ++---
+ drivers/input/touchscreen/melfas_mip4.c            | 13 ++--------
+ drivers/input/touchscreen/pcap_ts.c                |  6 ++---
+ drivers/input/touchscreen/raydium_i2c_ts.c         | 16 +++---------
+ drivers/input/touchscreen/rohm_bu21023.c           | 12 ++-------
+ drivers/input/touchscreen/s6sy761.c                | 10 ++------
+ drivers/input/touchscreen/stmfts.c                 | 10 ++------
+ drivers/input/touchscreen/stmpe-ts.c               |  6 ++---
+ drivers/input/touchscreen/sun4i-ts.c               |  6 ++---
+ drivers/input/touchscreen/ti_am335x_tsc.c          |  5 ++--
+ drivers/input/touchscreen/tsc2004.c                |  7 +++---
+ drivers/input/touchscreen/tsc2005.c                |  7 +++---
+ drivers/input/touchscreen/tsc200x-core.c           | 18 ++++++--------
+ drivers/input/touchscreen/tsc200x-core.h           |  1 +
+ drivers/input/touchscreen/wdt87xx_i2c.c            | 16 +++---------
+ drivers/input/touchscreen/wm831x-ts.c              |  6 ++---
+ drivers/input/touchscreen/wm97xx-core.c            |  6 ++---
+ include/linux/input.h                              |  2 +-
+ include/linux/input/mt.h                           |  2 +-
+ 91 files changed, 240 insertions(+), 471 deletions(-)
+
+Thanks.
+
+
+-- 
+Dmitry
