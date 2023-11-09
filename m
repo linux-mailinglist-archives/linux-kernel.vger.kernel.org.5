@@ -2,289 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C387E6A1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E7A7E6A36
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbjKIL6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        id S234085AbjKIMBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbjKIL5r (ORCPT
+        with ESMTP id S232918AbjKIMBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:57:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E682D77
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:56:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699531016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rxgiQfG57B8WYlQaIBGWpOfAz7KPJ/cKr6geqUfke5Q=;
-        b=BV04ozt1bDX+AHd02NEvQu29HD4t1u683fV0WuphxJO7QMiWiEgySkA/rTF1XuJnSkTbQN
-        K3RTOFdUMFk2u3MXMVui265isNYJY+ETjB9xShQvPirKdX878F8m2qyvOSbPUWkHOhBqs/
-        UQkP77If/yOj+nPZzVMyhIKU9vT5XgY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-ddkg78dLO5K5UVv3skO56A-1; Thu, 09 Nov 2023 06:56:55 -0500
-X-MC-Unique: ddkg78dLO5K5UVv3skO56A-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9e293cd8269so66800166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 03:56:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699531014; x=1700135814;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rxgiQfG57B8WYlQaIBGWpOfAz7KPJ/cKr6geqUfke5Q=;
-        b=E5QW0pMWB+pvB6d0J+pJzQMWLadEJMkeigMQSa+Amwu+eTFjs7aqmKAqmhxEF5F0/6
-         OzpMXzqQDSdvOI4vBnzTzb5BU5mqFdlJ2WeuwCrwwcKMfqmzeAxMpGe0KWMsmOnQZvJP
-         huvwJ5TDetJftmn18l1Qt+xBdlUiPozk6qv8jluKJNNZj9q3K00BuWxdNmKC9waAtyhI
-         RpI1DBRJmQLEd/Py9PFLomifMyrOHBd+MLGtxbTi4Zd2jNszQzxqESc8ciswAgkpbY4F
-         krGWcjpxMjtHB78D7+ZLE2B4HOkoEqCUq0kD1HINX3ziP2AYndqCfQun55f4kOpTGRQn
-         J5Vw==
-X-Gm-Message-State: AOJu0YyEY0lOaQq6qMP5JZF9ETa9Y/secIWgoldzhZpJdbFHqJNQN9ty
-        FnsMqKLQbjqlAwq8ZRFKG+LFOrE4DjXwpqQDmrFME+gxN5964DGjR8tawmgxYv/YnDfzii+64Pj
-        QTfCqIr9Lw3JpIW22WK6+NRbUsYMG/tklhpOmD9nk
-X-Received: by 2002:a17:907:72d2:b0:9e0:5d5c:aa6d with SMTP id du18-20020a17090772d200b009e05d5caa6dmr4139560ejc.20.1699531014202;
-        Thu, 09 Nov 2023 03:56:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHxlrCZEP0Zf3bUap3zbIZY7FqJUmcGsAUa5ALjEfjFj+HW1CWZDvytrHMWS0qZ2D2ZlOhPOClx5L48I6cUeuc=
-X-Received: by 2002:a17:907:72d2:b0:9e0:5d5c:aa6d with SMTP id
- du18-20020a17090772d200b009e05d5caa6dmr4139541ejc.20.1699531013829; Thu, 09
- Nov 2023 03:56:53 -0800 (PST)
+        Thu, 9 Nov 2023 07:01:36 -0500
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2048.outbound.protection.outlook.com [40.107.15.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9612102;
+        Thu,  9 Nov 2023 04:01:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ABznZXwPPOTKssBzQ9YewdKbeOaQzPnkKuGdhyQJdFhF0u5cISTcE7yPB0T0eecOdXL81iAddnIJDpNl6dTNhdPkQsahb30Glfi9SoiAb+UqY6XUeDEmfz9+Gy6j0d2zhxFnXRYhdLD0Op7jY5HEQG9LwYZLX8+/Ucuk1Q95jOb5eE1Qexfc9wmPKG+GneBfzV/lDG9r3bagE0UfCFpvVSnuGwtwFWez5fnzOUlF0RsBkxzkMVGantN9dbnpjbNm6CNhB96Pyn56G47Kl8gIGI6KraJn8ZhN3nPPxbz9S3mqaDBm4ZYPQdxTx1JIpbEkdNZDdcNqFN+PiYLNjqUh1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zoIsXpCOhjyy1Pq1jKs4CyOChMqg84s9YLkpMkC6dCM=;
+ b=kK8HDK6FkuMckP/fJj2m9QhyDnttNxheuKL1buBkU3Ha1T65wik5y9cr0ZBxk/USx3hQX/2RbN+tR1tqlWyOivI55fMTB0i8ObMXLY1ZxFu3UVF20GOrltzRT2SH1FNQ2MhSIUR4hJVVsXNNjHAmWiAKG9SNL+8isak42judqYE4ovqqh0F7C+KlTy5tCZUhyeWPxNzNJ9O6/q0r2M8yHe3w1gKD/Mp8ZU+XLCQR+qwpQNDMSfIfHaESumhrTwaPcNy46u68HBOIHJOYO9KwMV78hgw6+bWc+x0iay/r/x+rOb+HyOq0uHBX0eT1IToseB4A1nEYPxb2zIE7a1DGgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zoIsXpCOhjyy1Pq1jKs4CyOChMqg84s9YLkpMkC6dCM=;
+ b=kf7qqfBmZQi5MUsQHLNWd5UVwky9aV8aYiEh5BPbutoWg1A3dopRFfHb4pIoggqZgWGfo5Ak6Q83RPfbS9EYwSRZot1mSU2pMynLQy0oGbwH1EAceNFLbgnSQR4oLc3Nf+U7xhJ7A6EDW6P+0c6N4i3U0dCZErI5wS7/olG5w3s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by DBBPR04MB7721.eurprd04.prod.outlook.com (2603:10a6:10:1f6::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Thu, 9 Nov
+ 2023 12:01:30 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%6]) with mapi id 15.20.6977.017; Thu, 9 Nov 2023
+ 12:01:30 +0000
+Date:   Thu, 9 Nov 2023 14:01:26 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net 4/7] net/sched: taprio: get corrected value of
+ cycle_time and interval
+Message-ID: <20231109120126.75vxgrcdjusfr54y@skbuf>
+References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+ <20231107112023.676016-5-faizal.abdul.rahim@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107112023.676016-5-faizal.abdul.rahim@linux.intel.com>
+X-ClientProxiedBy: VI1PR0502CA0021.eurprd05.prod.outlook.com
+ (2603:10a6:803:1::34) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
- <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
- <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
- <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
- <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
- <ZUtTpKyP0oxWhnn8@fedora> <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com>
- <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com> <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
-In-Reply-To: <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Thu, 9 Nov 2023 12:56:41 +0100
-Message-ID: <CAO-hwJ+zm=R7NwrALaLVmfPDtMNXpj0eoQgLkiS1wa6wd+hu+A@mail.gmail.com>
-Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
-To:     David Revoy <davidrevoy@protonmail.com>
-Cc:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
-        Eric GOUYER <folays@gmail.com>,
-        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
-        jkosina@suse.cz, jason.gerecke@wacom.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DBBPR04MB7721:EE_
+X-MS-Office365-Filtering-Correlation-Id: 21b1f746-d527-4b33-ae38-08dbe11b9bf5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wOlgdfz7fVzMNsqBJRCuxOrsn8AZchnK90HjgOXtU2i/ez4aYslo8dc4yNIR25SbX849rjyMRumFzc2OHZCQr/V/BJXKaJOKXY0YlHBoEfJQgpkPce37nIYtyb9ptEwJNVcR3K3syrkpkPQCiddusFJwOTLXPWmmWz195O6CqwVx3gnCwRSnK02nKyIeByS8xDQjakUm5ViLM3yLa0CTW06+W82EHOpgpT7EWbL66KKRDvIuAdpmxXiuqlRnrHxeoCoJzHED82x/KMTWibQ7icYUmBhzIrahOQamzwxbIAL5pZvYHywvruU/FgmujOw8IgHgzKm5pcpSHEpMYcagRqTkBKg1IFyJQeVXyLI67gebBeteckuaUaKwIZQI350f6a2lrCCkqB7J1PnO0teHzaAwmwqk7Jvu8DMu0sIYij0nHbWaOsXI/a6QuY3DA6Zme4NJiS6TKlYhhQ+Tujzo7GI+WGHFZjBnoG0p+WTDH548RulrxmDdUwWqIkyByHqvw7cYa/gHeKnX4GHaW3GyxM05i1FJOdJdi1/ekoAWHS6hFTI1xb8SNq1OInXC8jrm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(346002)(396003)(136003)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(6666004)(6506007)(83380400001)(38100700002)(6512007)(9686003)(1076003)(41300700001)(86362001)(8676002)(2906002)(8936002)(4744005)(4326008)(5660300002)(44832011)(478600001)(54906003)(6916009)(66556008)(66476007)(7416002)(66946007)(316002)(26005)(6486002)(33716001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KxWiwEKLfsZ7PLfPnJ98plp7tRSeydenTOkI754CGxsmTs7OZXSIaAvlowuQ?=
+ =?us-ascii?Q?aG5mxbkDn6g3pUeBjAKBinMF0jwXoVC4tdbwr3aQiRNpwSc0crIFQshtV1rI?=
+ =?us-ascii?Q?DNiCzp6LzdWVWKh2/At1VDoPmxgVncEaU1AQtxgAOKZB7QodwzFORJ1w6KSG?=
+ =?us-ascii?Q?Xn6UE5QcdQ3+nl9HjDZ4hWNywU5uVDNLDrpaQTUc/G7xYYNiM5rldk6T3Of0?=
+ =?us-ascii?Q?kr3kFOpMVX58dY4KGjZ40g5U3w1SccwC0GhPtpEImgYMpBz0OV3IYeNj7YDu?=
+ =?us-ascii?Q?ZYj0ZDVCyXRNxz1mpyDdYc6pHG7spFbWiq/S0XTx9kkIPlcZ3BEVOIVgPx36?=
+ =?us-ascii?Q?gvuf6L3EQIcquw4sRiw8FSMV6kbBlzzifKZc6biUf3Dy6Sr8C12bqc1Qhkrs?=
+ =?us-ascii?Q?lPFXWsKH5gOeKPZcJxMemIDBNO/raV+dmPE5I0TzE1vhlaOEx81rs8iplQ7J?=
+ =?us-ascii?Q?feooFkomVTMgPMvUqdF0YAIx8ypu8376GyGoZ38PwEDfNQoNdkxKos0jDUNY?=
+ =?us-ascii?Q?b64ivNodC7A7rpGi3KhuVFwNaXTNxnJc3jDMoxBKS7GX+5SG9w/jFijIqfY1?=
+ =?us-ascii?Q?I5qeAX/h1TDwVKrTLcvzZtOk9Mcv3AYtUsh+9TG3uMgKtocC5XAMIXSG+VCY?=
+ =?us-ascii?Q?HPY6DrJv3sCbrI1JmhCCHIuwGlh+0rLg1K6aWLXYoy/yMoVs+x/hQUWiUEFD?=
+ =?us-ascii?Q?bEjSx8ZowiSszQ6+g69rU/KpVPci/zCw1coXQ967BUMoLFLH916gMfwBGGXs?=
+ =?us-ascii?Q?OxSj4vAr8IhUkqOFCbkzhVRYlHHlb4aZE2Toa347mBCz2IsFbLa+7Gxv1oiZ?=
+ =?us-ascii?Q?64qCJWaV/1fcoaPEY1hrNQWpvboLzZDy8AxAfoIKFXiQ5nV4dqjSWWboiji1?=
+ =?us-ascii?Q?Con9IbUbc6vqtcUYy6j5Om1wQTPbQQXswgZo8OFI/F7XdL622VD6WwD8VkQA?=
+ =?us-ascii?Q?5HSIy/m3hi4uuOAJw6cJl/qrYsFKbnMkGioDI8nIH02hR1wtOEp+V4iKgE06?=
+ =?us-ascii?Q?EHQ+Gspfvdci0m/5em2RDE3iq76U6oayvwNg6RrDZTTltel+d6JRTqgEzKxR?=
+ =?us-ascii?Q?faaqkeD0LH+A+AEVPOXQLZsbiDZ/+Lmcra/pxNv26jMlcNGFXtVw5PpGujzS?=
+ =?us-ascii?Q?/cLT6aLhW6ahsOyNQHtaciGfovHl82JG62Knvn9ZtJW4b0MFBB8aoJ85ZfZ/?=
+ =?us-ascii?Q?/vBUn44ijFndhCS+2cF4v2mP4q4kuvmYEFejizlEiXboQTtoaWwrm019gEjf?=
+ =?us-ascii?Q?24L8WBlHR/uU/+oUu+JIImcoE1CJnmtDuhvMTb3U31YWP5rkIOtQ5ey2kwHr?=
+ =?us-ascii?Q?4CsPj3NLynzdrtXAo6GpxYMu5OXTzLjL+wqD14YGn5bFO9iSJ4GQdy2NjNeV?=
+ =?us-ascii?Q?21NQKjc2Ug8aDThWK9pdt1CiEo7Y78QbMEbsJ/8dOnMleKUwEulKtpkcoVUm?=
+ =?us-ascii?Q?QwseLCpM6cbVR6aDFPdWTcepVZCMQdmf95SmSYE5x1ECiysEVQzdUeHG3hm9?=
+ =?us-ascii?Q?B0DGqJvUR9HNn0Df9BHkKbZ/NwM0RMaUFU7xYOJXo4s5U2BjB6vvLgHEH9Pl?=
+ =?us-ascii?Q?vEB52RlBx7RCVvQ+91knQFF/CDPlXinOtmR/6idN3t8HvXDJqOUTT7O1Gd2u?=
+ =?us-ascii?Q?OA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21b1f746-d527-4b33-ae38-08dbe11b9bf5
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 12:01:30.1140
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: euEIf0+MOFf+liiIqF0unmqLt1pkvV3DsBq2mbB4ateCfwJ+TOx+sRrSd7L6cJlDt3IhERmZgW9IbJ7colHaZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7721
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Tue, Nov 07, 2023 at 06:20:20AM -0500, Faizal Rahim wrote:
+> @@ -215,6 +216,31 @@ static void switch_schedules(struct taprio_sched *q,
+>  	*admin = NULL;
+>  }
+>  
+> +static bool cycle_corr_active(s64 cycle_time_correction)
+> +{
+> +	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
+> +		return false;
+> +	else
+> +		return true;
+> +}
+> @@ -259,14 +286,6 @@ static int duration_to_length(struct taprio_sched *q, u64 duration)
+>  	return div_u64(duration * PSEC_PER_NSEC, atomic64_read(&q->picos_per_byte));
+>  }
+>  
+> -static bool cycle_corr_active(s64 cycle_time_correction)
+> -{
+> -	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
+> -		return false;
+> -	else
+> -		return true;
+> -}
+> -
 
-On Thu, Nov 9, 2023 at 1:32=E2=80=AFAM David Revoy <davidrevoy@protonmail.c=
-om> wrote:
->
-> Hi Benjamin,
->
-> > Alright, I made quite some progress so far:
-> > - regressions tests have been written (branch wip/xp-pen of my fork on
-> > freedesktop[0])
-> > that branch can not go in directly as it just adds the tests, and
-> > thus is failing
-> > - I made the fixes through HID-BPF[1]
-> >
-> > Anyone using those 2 tablets and using Fedora should be able to just
-> > grab the artifact at [2], uncompress it and run `sudo ./install.sh --ve=
-rbose`.
-> > This will install the bpf programs in /lib/firmware/hid/bpf/ and will
-> > automatically load them when the device is connected.
-> >
-> > For those not using Fedora, the binary might work (or not, not sure),
-> > but you can always decompress it, and check if running
-> > `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
-> > version or just fails. If you get "udev-hid-bpf 0.1.0", then running
-> > `sudo ./install.sh --verbose` should work, as long as the kernel has
-> > CONFIG_HID_BPF set to 'Y'.
-> > [...]
-> > [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_ty=
-pe=3Dheads
-> > [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_reques=
-ts/27
-> > [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589=
-/artifacts/raw/udev-hid-bpf_0.1.0.tar.xz
->
-> Thank you for this package.
->
-> I was able to test it even though the link in (2) at the bottom of your e=
-mail returned a blank page. I was able to find my way after manually visiti=
-ng gitlab.freedesktop.org [1] and then manually downloading the article fro=
-m 51350589. I unzipped it and ran `sudo ./install.sh --verbose`. Everything=
- looks like it was successful [2]. I then rebooted my Fedora 38 'Linux work=
-station 6.5.8-200.fc38.x86_64' kernel (the one I blamed in my post) and tes=
-ted both tablets.
-
-Weird that you had to manually retrieve it. It works here, but maybe
-because I am logged in on gitlab.fd.o.
-
-Also, just FYI, you shouldn't have to reboot. Just unplug/replug and
-you are good. In the same way, if you uninstall the package, you can
-just unplug/replug to not have the programs loaded.
-
->
-> Here are my observation:
->
-> XPPEN Artist Pro 24
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Nothing changed for this device (it's the one with two buttons and no 'er=
-aser tip'). Nor my hwdb/udev rules or `xsetwacom set "UGTABLET 24 inch PenD=
-isplay eraser" button 1 3` affects the upper button of the stylus: if I hol=
-d it hover the canvas, Krita switch the tool and cursor for an eraser. If I=
- click on the canvas with the pen tip while holding the upper button presse=
-d, I get the right-click Pop-up Palette (but not all the time, probably Kri=
-ta has hard time to triage Eraser or Right-click).
-
-As I mentioned in another reply, the more I think of it, the more I
-think I should get rid of the "eraser mode". In that Artist Pro 24 I
-can detect it through the same mechanics as the HID_QUIRK_NOINVERT
-from Illia's patch. But instead of trying to force the device into the
-eraser mode, we should just say "this is actually BUTTON_STYLUS_2".
-
-So I'm going to amend the bpf program to do this and hopefully you
-won't need the hwdb/udev rule at all.
-
->
-> XPPEN Artist Pro 16 (Gen2)
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> Something changed. `xsetwacom set "UGTABLET Artist Pro 16 (Gen2) eraser" =
-button 1 3` successfully affected the upper button of the stylus. Now if I =
-click it while hovering the canvas, Krita shows the right click Pop-up Pale=
-tte.
-
-I'm surprised you need to teach the wacom driver that BTN_STYLUS_2 is
-the right click.
-
-> On the downside; the real eraser tip when I flip the stylus bugs. When I =
-flip the stylus on eraser hovering the canvas, Krita shows the Eraser icon =
-and switch tool. As soon as I draw with the eraser tip, Krita will also sho=
-w a right-click color palette and with also not a 100% consistency, as if t=
-he event were mixed.
-
-I'll investigate. Maybe I messed up with my event flow patch.
-
-But just to be sure, you don't have a custom configuration in place
-for that tablet device?
-
-Cheers,
-Benjamin
-
->
-> [1] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/artifacts
-> [2] https://www.peppercarrot.com/extras/temp/2023-11-09_screenshot_005214=
-_net.jpg
->
->
-> On Wednesday, November 8th, 2023 at 19:21, Benjamin Tissoires <benjamin.t=
-issoires@redhat.com> wrote:
->
->
-> > On Wed, Nov 8, 2023 at 10:34=E2=80=AFAM Benjamin Tissoires
-> > benjamin.tissoires@redhat.com wrote:
-> >
-> > > On Wed, Nov 8, 2023 at 10:23=E2=80=AFAM Jos=C3=A9 Exp=C3=B3sito jose.=
-exposito89@gmail.com wrote:
-> > >
-> > > > Hi Benjamin,
-> > > >
-> > > > On Wed, Nov 08, 2023 at 10:04:30AM +0100, Benjamin Tissoires wrote:
-> > > > [...]
-> > > >
-> > > > > > So, the behavior probably breaks the specs, but sincerely I'm h=
-appy to
-> > > > > > have the "eraser" button independent of the "rubber eraser", wh=
-ich
-> > > > > > makes the stylus a somewhat 4-buttons stylus (tip, button1, but=
-ton2,
-> > > > > > rubber), and I would like to keep this.
-> > > > >
-> > > > > Yes, and I'd like to keep it that way, even if 6.6 and 6.5.8
-> > > > > apparently broke it.
-> > > > >
-> > > > > So, to me:
-> > > > > - 276e14e6c3993317257e1787e93b7166fbc30905 is wrong: this is a
-> > > > > firmware bug (reporting invert through eraser) and should not be
-> > > > > tackled at the generic level, thus it should be reverted
-> > > > > - both of these tablets are forwarding the useful information, bu=
-t not
-> > > > > correctly, which confuses the kernel
-> > > > > - I should now be able to write regression tests
-> > > > > - I should be able to provide HID-BPF fixes for those tablets so =
-that
-> > > > > we can keep them working with or without
-> > > > > 276e14e6c3993317257e1787e93b7166fbc30905
-> > > > > reverted (hopefully)
-> > > > > - problem is I still don't have the mechanics to integrate the HI=
-D-BPF
-> > > > > fixes directly in the kernel tree, so maybe I'll have to write a
-> > > > > driver for XP-Pen while these internals are set (it shouldn't
-> > > > > interfere with the HID-BPF out of the tree).
-> > > >
-> > > > I already added support for a few XP-Pen devices on the UCLogic dri=
-ver
-> > > > and I was planning to start working on this one during the weekend =
-in
-> > > > my DIGImend fork (to simplify testing).
-> > > >
-> > > > Let me know if you prefer to add it yourself or if you want me to p=
-ing
-> > > > you in the DIGImend discussion.
-> > >
-> > > So far, I really have to work on this now. It's a good use case for
-> > > HID-BPF and it's a regression that I'd like to be fixed ASAP.
-> > > I'd appreciate any reviews :)
-> >
-> >
-> > Alright, I made quite some progress so far:
-> > - regressions tests have been written (branch wip/xp-pen of my fork on
-> > freedesktop[0])
-> > that branch can not go in directly as it just adds the tests, and
-> > thus is failing
-> > - I made the fixes through HID-BPF[1]
-> >
-> > Anyone using those 2 tablets and using Fedora should be able to just
-> > grab the artifact at [2], uncompress it and run `sudo ./install.sh --ve=
-rbose`.
-> > This will install the bpf programs in /lib/firmware/hid/bpf/ and will
-> > automatically load them when the device is connected.
-> >
-> > For those not using Fedora, the binary might work (or not, not sure),
-> > but you can always decompress it, and check if running
-> > `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
-> > version or just fails. If you get "udev-hid-bpf 0.1.0", then running
-> > `sudo ./install.sh --verbose` should work, as long as the kernel has
-> > CONFIG_HID_BPF set to 'Y'.
-> >
-> > > Also, good to know that I can probably piggyback on hid-uclogic for
-> > > fixing those 2 devices in the kernel.
-> >
-> >
-> > Next step will be to fix them using a kernel driver, but it seems that
-> > the uclogic driver is doing more than just report descriptor fixups,
-> > so maybe I'll have to use a different driver.
-> > But the point is, in theory, if you are affected by those bugs, using
-> > the udev-hid-bpf should fix the issue, and this should also be
-> > resilient to further kernel updates.
-> >
-> > I'd appreciate testing when I got the full kernel series up and ready,
-> > of course.
-> >
-> > Cheers,
-> > Benjamin
-> >
-> > [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_ty=
-pe=3Dheads
-> > [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_reques=
-ts/27
-> > [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589=
-/artifacts/raw/udev-hid-bpf_0.1.0.tar.xz
->
-
+Don't move code around that you've introduced in earlier changes. Just
+place it where it needs to be from the beginning.
