@@ -2,299 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DAF67E6B2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D9A7E6B32
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:26:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjKINYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49626 "EHLO
+        id S232079AbjKIN0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKINYL (ORCPT
+        with ESMTP id S230055AbjKIN0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:24:11 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5637030C1;
-        Thu,  9 Nov 2023 05:24:09 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SR2dd0TsbzmWys;
-        Thu,  9 Nov 2023 21:20:53 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 9 Nov
- 2023 21:23:31 +0800
-Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
-To:     Mina Almasry <almasrymina@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-8-almasrymina@google.com>
- <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
- <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com>
- <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com>
- <CAHS8izM1P6d8jgyWE9wFJUJah2YFsjHP2uikDwA0vR=3QA+BXQ@mail.gmail.com>
- <a8ae22dc-5b85-9efe-16c7-d95d455828fa@huawei.com>
- <CAHS8izOh8yC7q9yJN+RAKGs=AgsEf13MnFDmG46=EU05ynnLKw@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b123e89d-d4d9-1202-d7c3-9e52e38009d7@huawei.com>
-Date:   Thu, 9 Nov 2023 21:23:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 9 Nov 2023 08:26:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593930CF
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699536412; x=1731072412;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g9oal6rbTL525Js9hP0J6TyZ4lfw4gXWCDHdKcrIlxc=;
+  b=SmrPJy8k7irApK9LNi5n8ASFyBeE/G5kOdu6RjshSPTfb3lEWDCpVTfX
+   8m4HugctBQJwOE8/iqivg3g0u3b5LKfTKDYKG+Md3OMn2yw5Xw66nId4s
+   4DHocVVC+SrEgvR9sY4tKsX7e9WtyY6HThoXg5goHpu3mf3UMRxgUXAcr
+   JafVNm+zgfpo7ksTxssWOmmrMfBM2ZpzbQE1bNIyw13UJ7AA6GwhmhA7y
+   rgyTxMiQ3xUvJ1R44wEKKE3L+saatcnsgLTEy5PI770MmorjFX8cLYVlE
+   tJkcoBMFSOL/JiwHNm2qnlnW1wbSgWUA2BVnjckaoTYno6dcyl3Ovko6h
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="8633371"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="8633371"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 05:26:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="1094859179"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="1094859179"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Nov 2023 05:26:50 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r153Y-0008kA-08;
+        Thu, 09 Nov 2023 13:26:48 +0000
+Date:   Thu, 9 Nov 2023 21:26:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Omkar Wagle <ov.wagle@gmail.com>, hughd@google.com
+Cc:     oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Omkar Wagle <ov.wagle@gmail.com>
+Subject: Re: [PATCH] MM: shmem: Remove code sytle warnings
+Message-ID: <202311092136.KQoibaVV-lkp@intel.com>
+References: <20231109062228.10227-1-ov.wagle@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izOh8yC7q9yJN+RAKGs=AgsEf13MnFDmG46=EU05ynnLKw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109062228.10227-1-ov.wagle@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/9 20:20, Mina Almasry wrote:
-> On Thu, Nov 9, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/11/9 11:20, Mina Almasry wrote:
->>> On Wed, Nov 8, 2023 at 2:56 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->>>
->>> Agreed everything above is undoable.
->>>
->>>> But we might be able to do something as folio is doing now, mm subsystem
->>>> is still seeing 'struct folio/page', but other subsystem like slab is using
->>>> 'struct slab', and there is still some common fields shared between
->>>> 'struct folio' and 'struct slab'.
->>>>
->>>
->>> In my eyes this is almost exactly what I suggested in RFC v1 and got
->>> immediately nacked with no room to negotiate. What we did for v1 is to
->>> allocate struct pages for dma-buf to make dma-bufs look like struct
->>> page to mm subsystem. Almost exactly what you're describing above.
->>
->> Maybe the above is where we have disagreement:
->> Do we still need make dma-bufs look like struct page to mm subsystem?
->> IMHO, the answer is no. We might only need to make dma-bufs look like
->> struct page to net stack and page pool subsystem. I think that is already
->> what this pacthset is trying to do, what I am suggesting is just make
->> it more like 'struct page' to net stack and page pool subsystem, in order
->> to try to avoid most of the 'if' checking in net stack and page pool
->> subsystem.
->>
-> 
-> First, most of the checking in the net stack is
-> skb_frag_not_readable(). dma-buf are fundamentally not kmap()able and
-> not readable. So we can't remove those, no matter what we do I think.
-> Can we agree on that? If so, lets discuss removing most of the ifs in
-> the page pool, only.
+Hi Omkar,
 
-Agreed on the 'not kmap()able and not readable' checking part.
+kernel test robot noticed the following build errors:
 
-> 
->>> It's a no-go. I don't think renaming struct page to netmem is going to
->>> move the needle (it also re-introduces code-churn). What I feel like I
->>> learnt is that dma-bufs are not struct pages and can't be made to look
->>> like one, I think.
->>>
->>>> As the netmem patchset, is devmem able to reuse the below 'struct netmem'
->>>> and rename it to 'struct page_pool_iov'?
->>>
->>> I don't think so. For the reasons above, but also practically it
->>> immediately falls apart. Consider this field in netmem:
->>>
->>> + * @flags: The same as the page flags.  Do not use directly.
->>>
->>> dma-buf don't have or support page-flags, and making dma-buf looks
->>> like they support page flags or any page-like features (other than
->>> dma_addr) seems extremely unacceptable to mm folks.
->>
->> As far as I tell, as we limit the devmem usage in netstack, the below
->> is the related mm function call for 'struct page' for devmem:
->> page_ref_*(): page->_refcount does not need changing
-> 
-> Sorry, I don't understand. Are you suggesting we call page_ref_add() &
-> page_ref_sub() on page_pool_iov? That is basically making
-> page_pool_iov look like struct page to the mm stack, since page_ref_*
-> are mm calls, which you say above we don't need to do. We will still
-> need to special case this, no?
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on linus/master next-20231109]
+[cannot apply to v6.6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-As we are reusing 'struct page' for devmem, page->_refcount for
-devmem and page->_refcount for normal memory should be the same, right?
-We may need to ensure 'struct page' for devmem to always look like a head
-page for compound page or base page for net stack, as we use get_page()
-in __skb_frag_ref().
+url:    https://github.com/intel-lab-lkp/linux/commits/Omkar-Wagle/MM-shmem-Remove-code-sytle-warnings/20231109-163742
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231109062228.10227-1-ov.wagle%40gmail.com
+patch subject: [PATCH] MM: shmem: Remove code sytle warnings
+config: mips-allnoconfig (https://download.01.org/0day-ci/archive/20231109/202311092136.KQoibaVV-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311092136.KQoibaVV-lkp@intel.com/reproduce)
 
-We can choose to not call page_ref_sub() for page from devmem, we can
-call napi_pp_put_page(), and we may be able to special handle the page
-from devmem in devmem provider's 'release_page' ops in napi_pp_put_page().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311092136.KQoibaVV-lkp@intel.com/
 
-> 
->> page_is_pfmemalloc(): which is corresponding to page->pp_magic, and
->>                       devmem provider can set/unset it in it's 'alloc_pages'
->>                       ops.
-> 
-> page_is_pfmemalloc() has nothing to do with page->pp_magic. It checks
-> page->lru.next to figure out if this is a pfmemalloc. page_pool_iov
-> has no page->lru.next. Still need to special case this?
+All errors (new ones prefixed by >>):
 
-See the comment in napi_pp_put_page():
-
-	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-	 * in order to preserve any existing bits, such as bit 0 for the
-	 * head page of compound page and bit 1 for pfmemalloc page, so
-	 * mask those bits for freeing side when doing below checking,
-	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-	 * to avoid recycling the pfmemalloc page.
-	 */
-
-There is some union in struct page, page->lru.next and page->pp_magic is
-actually pointing to the same thing as my understanding.
+   mm/shmem.c: In function 'shmem_fill_super':
+>> mm/shmem.c:4310:47: error: macro "max_t" requires 3 arguments, but only 2 given
+    4310 |                                 L1_CACHE_BYTES), GFP_KERNEL);
+         |                                               ^
+   In file included from include/linux/kernel.h:28,
+                    from include/linux/cpumask.h:10,
+                    from arch/mips/include/asm/processor.h:15,
+                    from arch/mips/include/asm/thread_info.h:16,
+                    from include/linux/thread_info.h:60,
+                    from include/asm-generic/preempt.h:5,
+                    from ./arch/mips/include/generated/asm/preempt.h:1,
+                    from include/linux/preempt.h:79,
+                    from include/linux/spinlock.h:56,
+                    from include/linux/wait.h:9,
+                    from include/linux/wait_bit.h:8,
+                    from include/linux/fs.h:6,
+                    from mm/shmem.c:24:
+   include/linux/minmax.h:169: note: macro "max_t" defined here
+     169 | #define max_t(type, x, y)       __careful_cmp(max, (type)(x), (type)(y))
+         | 
+>> mm/shmem.c:4309:26: error: 'max_t' undeclared (first use in this function); did you mean 'rmap_t'?
+    4309 |         sbinfo = kzalloc(max_t((int)sizeof(struct shmem_sb_info),
+         |                          ^~~~~
+         |                          rmap_t
+   mm/shmem.c:4309:26: note: each undeclared identifier is reported only once for each function it appears in
 
 
-> 
->> page_to_nid(): we may need to handle it differently somewhat like this
->>                patch does as page_to_nid() may has different implementation
->>                based on different configuration.
-> 
-> So you're saying we need to handle page_to_nid() differently for
-> devmem? So we're not going to be able to avoid the if statement.
+vim +/max_t +4310 mm/shmem.c
 
-Yes, it seems to be the only place that might need special handling I
-see so far.
+^1da177e4c3f41 Linus Torvalds  2005-04-16  4300  
+f32356261d44d5 David Howells   2019-03-25  4301  static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
+^1da177e4c3f41 Linus Torvalds  2005-04-16  4302  {
+f32356261d44d5 David Howells   2019-03-25  4303  	struct shmem_options *ctx = fc->fs_private;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  4304  	struct inode *inode;
+0edd73b33426df Hugh Dickins    2005-06-21  4305  	struct shmem_sb_info *sbinfo;
+71480663b751de Carlos Maiolino 2023-07-25  4306  	int error = -ENOMEM;
+680d794babebc7 Andrew Morton   2008-02-08  4307  
+680d794babebc7 Andrew Morton   2008-02-08  4308  	/* Round up to L1_CACHE_BYTES to resist false sharing */
+1c6e8dc111cb86 Omkar Wagle     2023-11-08 @4309  	sbinfo = kzalloc(max_t((int)sizeof(struct shmem_sb_info),
+680d794babebc7 Andrew Morton   2008-02-08 @4310  				L1_CACHE_BYTES), GFP_KERNEL);
+680d794babebc7 Andrew Morton   2008-02-08  4311  	if (!sbinfo)
+71480663b751de Carlos Maiolino 2023-07-25  4312  		return error;
+680d794babebc7 Andrew Morton   2008-02-08  4313  
+680d794babebc7 Andrew Morton   2008-02-08  4314  	sb->s_fs_info = sbinfo;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  4315  
 
-> 
->> page_pool_iov_put_many(): as mentioned in other thread, if net stack is not
->>                           calling page_pool_page_put_many() directly, we
->>                           can reuse napi_pp_put_page() for devmem too, and
->>                           handle the special case for devmem in 'release_page'
->>                           ops.
->>
-> 
-> page_pool_iov_put_many()/page_pool_iov_get_many() are called to do
-
-Can we remove the page_pool_iov_put_many()/page_pool_iov_get_many()
-calling?
-
-> refcounting before the page is released back to the provider. I'm not
-> seeing how we can handle the special case inside of 'release_page' -
-> that's too late, as far as I can tell.
-
-And handle the special case in page_pool_return_page() to mainly
-replace put_page() with 'release_page' for devmem page?
-https://elixir.free-electrons.com/linux/v6.6-rc1/source/net/core/page_pool.c#L537
-
-> 
-> The only way to remove the if statements in the page pool is to
-> implement what you said was not feasible in an earlier email. We would
-> define this struct:
-> 
-> struct netmem {
->         /* common fields */
->         refcount_t refcount;
->         bool is_pfmemalloc;
->         int nid;
->         ......
->         union {
->                 struct devmem{
->                         struct dmabuf_genpool_chunk_owner *owner;
->                 };
-> 
->                 struct page * page;
->         };
-> };
-> 
-> Then, we would require all memory providers to allocate struct netmem
-> for the memory and set the common fields, including ones that have
-> struct pages. For devmem, netmem->page will be NULL, because netmem
-> has no page.
-
-That is not what I have in mind.
-
-> 
-> If we do that, the page pool can ignore whether the underlying memory
-> is page or devmem, because it can use the common fields, example:
-> 
-> /* page_ref_count replacement */
-> netmem_ref_count(struct netmem* netmem) {
->     return netmem->refcount;
-> }
-> 
-> /* page_ref_add replacement */
-> netmem_ref_add(struct netmem* netmem) {
->    atomic_inc(netmem->refcount);
-> }
-> 
-> /* page_to_nid replacement */
-> netmem_nid(struct netmem* netmem) {
->     return netmem->nid;
-> }
-> 
-> /* page_is_pfmemalloc() replacement */
-> netmem_is_pfmemalloc(struct netmem* netmem) {
->     return netmem->is_pfmemalloc;
-> }
-> 
-> /* page_ref_sub replacement */
-> netmem_ref_sub(struct netmem* netmem) {
->     atomic_sub(netmet->refcount);
->     if (netmem->refcount == 0) {
->                   /* release page to the memory provider.
->                    * struct page memory provider will do put_page(),
->                    * devmem will do something else */
->            }
->      }
-> }
-> 
-> 
-> I think this MAY BE technically feasible, but I'm not sure it's better:
-> 
-> 1. It is a huge refactor to the page pool, lots of code churn. While
-> the page pool currently uses page*, it needs to be completely
-> refactored to use netmem*.
-> 2. It causes extra memory usage. struct netmem needs to be allocated
-> for every struct page.
-> 3. It has minimal perf upside. The page_is_page_pool_iov() checks
-> currently have minimal perf impact, and I demonstrated that to Jesper
-> in RFC v2.
-> 4. It also may not be technically feasible. I'm not sure how netmem
-> interacts with skb_frag_t. I guess we replace struct page* bv_page
-> with struct netmem* bv_page, and add changes there.
-> 5. Drivers need to be refactored to use netmem* instead of page*,
-> unless we cast netmem* to page* before returning to the driver.
-> 
-> Possibly other downsides, these are what I could immediately think of.
-> 
-> If I'm still misunderstanding your suggestion, it may be time to send
-> me a concrete code snippet of what you have in mind. I'm a bit
-> confused at the moment because the only avenue I see to remove the if
-> statements in the page pool is to define the struct that we agreed is
-> not feasible in earlier emails.
-> 
-
-I might be able to do it at the weekend if it is still not making any
-sense to you.
-
-> 
-> --
-> Thanks,
-> Mina
-> 
-> .
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
