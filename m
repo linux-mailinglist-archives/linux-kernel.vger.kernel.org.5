@@ -2,265 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2045E7E68E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5057E68E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbjKIKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S233499AbjKIKyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjKIKyd (ORCPT
+        with ESMTP id S231447AbjKIKyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:54:33 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46E32590;
-        Thu,  9 Nov 2023 02:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1699527270; x=1731063270;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=jqULNvC8So1R7XXan2J5nhd00nJuRRCdv0j4wy4LbsI=;
-  b=cTPzOmrXJe9q6CJYl2us7wEO5gYBivgln2bj5f9kYfx8SzDA42IW1sMW
-   dqsu1HEJGiPiWM66L3cDeef0Lax5x9NsRcxb7NMkztutOdygCv8WYaI+3
-   FF2iSaUlWVKDBG4PN6A4wm95KBD+GfByrJMJLsb9wpdgNn+H/MYWdt2RI
-   C/O9pjKjyBeCP1Z6nPSDIB28puA0sCGKl6yn5SgHktMhgl5X/+ay75snb
-   qPlZDI2pNN+uu5Ij3RBz5ZuLLei5Qm0MsjrvjVwsr0hYd2cVaqZrkvin1
-   QDKzzPkkpKQPIOzcuRTI1cQvAH9IjIfBZrLs8ZA8RpftpMt2TZaLBJKlQ
-   g==;
-X-CSE-ConnectionGUID: uIkylMUjRo+ABRJWN7sdzg==
-X-CSE-MsgGUID: WEM7x5ooTEqkwtyqH4iL4w==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="178583222"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Nov 2023 03:54:29 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 9 Nov 2023 03:53:28 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21 via Frontend Transport; Thu, 9 Nov 2023 03:53:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GTrWOGFpw/gIBfP7gFSQ1fkPnZrxse/j2QCAdwlsLCzrj8N8zP1n3I18DOtrYf6PN3FW0ZcOqWbnaG6jfLBRlHoRyFcKy5W3EXWrx3hqElMC2PG6WhDHOkDAA3HQChaK94VP9BNC32mg/utbPAYcYmY2i3Sm5AL0pcTyTZ9rmacR0NFmzUCKX7Zl4NlyM3lDif1dTlfGDaJu2+d5yWJVHUD9KvN9IInjuDdsC/6LQWMJBdwLyueZ8rHtbnMn20zoAQ9ONdLDPZSVGRK37mtm1BnjswfZ3Nnl+C7KMWcj9vC5ozjmtIugMj1DG4Ob8l8bDRVFcWTzLIpTsYuNyzIy2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jqULNvC8So1R7XXan2J5nhd00nJuRRCdv0j4wy4LbsI=;
- b=kTMCynP8x8CWeHxhyg5/kG1IU+eb7FFlaoZVukrk60ldofaOzZXHxoXpubKOsp2VjPgHKMG/7rqINnjbopephkT1n1suNdF7YsY7BazfNXn6Jb08bIWtHhkeXo+hbod+Eaw5lXq0eAo2Q/sY/hTVcjviKaAlfXJKgeom7otAiglJAbIYZKmHX/VLv5hBpyrlLxd91YqwK8NlPnx6Ql3J6CfHZJjOy8535byaC/PoOUpzd95aDD/kwmZqXmurXxYFqJYPcgJ4REzdXhz4OIGftwhAs/YvHvvk4eqZMJsCLoNZPWoNjEtqbeTRgbokjkvrs9rHTcMtc3iyhoEQVqVkAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jqULNvC8So1R7XXan2J5nhd00nJuRRCdv0j4wy4LbsI=;
- b=vVmiXzlF55uqs/PGo52qMBXn+XxLEFKeycoVp74vMiYuWpaphUB8WjHmbBzOU3RMDvB+gafEFPe41XVolenfUsF42a7EwXTD8xoIsllReMpW78hPdWP8YE1l+aycbTSPA2hqzUQJRg0KVC06WAw9/tX0XRs3VeLXs9fmBW4TdNg=
-Received: from CY8PR11MB7688.namprd11.prod.outlook.com (2603:10b6:930:75::20)
- by IA0PR11MB7356.namprd11.prod.outlook.com (2603:10b6:208:432::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.30; Thu, 9 Nov
- 2023 10:53:26 +0000
-Received: from CY8PR11MB7688.namprd11.prod.outlook.com
- ([fe80::311a:249d:c84a:1c51]) by CY8PR11MB7688.namprd11.prod.outlook.com
- ([fe80::311a:249d:c84a:1c51%4]) with mapi id 15.20.6954.030; Thu, 9 Nov 2023
- 10:53:26 +0000
-From:   <VishvambarPanth.S@microchip.com>
-To:     <kuba@kernel.org>, <f.fainelli@gmail.com>
-CC:     <Bryan.Whitehead@microchip.com>, <andrew@lunn.ch>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <edumazet@google.com>
-Subject: Re: [PATCH net] net: microchip: lan743x : bidirectional throughuput
- improvement
-Thread-Topic: [PATCH net] net: microchip: lan743x : bidirectional throughuput
- improvement
-Thread-Index: AQHZ8QY1ceTQbXJwb0+3Qg4gMnoFrbA6DY8AgAALvoCAAAIkgIArKtQAgAzOQQA=
-Date:   Thu, 9 Nov 2023 10:53:26 +0000
-Message-ID: <0d0627cbd32afb813b75b485ea8e979ac027482d.camel@microchip.com>
-References: <20230927111623.9966-1-vishvambarpanth.s@microchip.com>
-         <20231004122016.76b403f0@kernel.org>
-         <b1f64c44-0d1c-480e-a272-fb017e7d8673@gmail.com>
-         <20231004130957.2d633d03@kernel.org>
-         <ee81b2128f5178df95a1678d2cf94ad4edf2c9e9.camel@microchip.com>
-In-Reply-To: <ee81b2128f5178df95a1678d2cf94ad4edf2c9e9.camel@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CY8PR11MB7688:EE_|IA0PR11MB7356:EE_
-x-ms-office365-filtering-correlation-id: f89bcfd7-614e-4be9-ba70-08dbe11219d2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eEG7iZTjeBf/a5CQ0E/BbCYdsdFGVPNduixT0gEzIKbs9Py9oMyNqhqzLM3HzGqsokeyOs9XvSJG1jCjO61pFSa2C99RXYgv0qqfalwOCWU4Arji5hwRa47ZrcwLBmudFeZ8Lxw2dV4MBI3LSfoKEm1bITdEDGpIDgrhr0tPpYHcclpLHZmX1yFMWIRNtd3RHCTsNYRluqXzkN4XOJvX4sDCFFfLsUJRmqQKpwQKNAE57fBoLEyHNDP/LcW7S5iaKQI6XnAKnijUm4q4pF2+Owr+ZfX0uRPu3ff0FGTQx3lPlBm/7hA+NXGwE+PYoPd+RfsY+GnyXvL7hSZZNK9NLdQw02QWnyhJ88agEKfviBsf6i7HMsa+i98NrrK7+tL6IYicxHvgH74pNWy+bE73B/ChkJvMePaG/4AIQkOohgg0DZEcUVCVPoxMU7shtbXli3Q8+gryqE/XI98LJzMt5eLP7Xs/QaiGX+Wp5yJpnJjv5o3L7dAHqCWNmh5uuTc3WfPeId1ixgvrFxdtbaDJFiFilafFGm6ZvPPK0SflBFJuiWRzH49FFWg9ELgNSWBo0nWRV1HZy5rb/zbhMIcGQ+52YXHenBbEeE7Y/550GVYyS0/XH5IKV/E19SaIi1HifcUxZhjbD+hZzB1kj2+Vo1BZ5l7SWxYFpRkzpwV9mSulLDwm3G4ip9o7QQng/OH8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR11MB7688.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(39860400002)(346002)(376002)(230273577357003)(230173577357003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(38100700002)(86362001)(38070700009)(122000001)(36756003)(6486002)(5660300002)(2906002)(6506007)(71200400001)(966005)(478600001)(66556008)(26005)(6512007)(2616005)(4326008)(316002)(8936002)(8676002)(66476007)(66946007)(54906003)(110136005)(91956017)(76116006)(66446008)(41300700001)(64756008)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RFAzREFVWG5VaHVBMTNCaExMMHVtdCtpWWlPWExSQXBIYjdlOElieXNyMkFV?=
- =?utf-8?B?Q28rR3BycTFCU29GRGxURy9wNHlPTkVLUzcwcjhoSFNWUXowQUUxeFoyM0Vm?=
- =?utf-8?B?S0Jqem15eFk1RjB6eUllVlVydjQ3NnN5OVo1VHhMb1lJMmdSblg3Q2NOMkV6?=
- =?utf-8?B?UzFjdG9KMGVtc2NvbXFZVDk2VE9NYXo3dVZNWUV4OUErdHp5cjBwSXFHcnB2?=
- =?utf-8?B?bmptUzhNMWd0TUpFaDNES1BlTmhKdGhjVDlEOU9aRnY4OCtmZkliU0dwdXBa?=
- =?utf-8?B?WGE3elY2VjlzYjAwdldHb0NqQ2daOVI3bFAxbzhDMEZzb2VlSmFnUmZ0Qkth?=
- =?utf-8?B?eXdyNEliQ0lUeXZGc0NiNWovdmlCeDZDaG1WQm1Cd0p3SUgzSmNHc3hYcHRJ?=
- =?utf-8?B?TENpUEQyNWhaNTFwY0dMcTVxdmViNjBuOGplV0Z3MWJDMmg2VDlNcmE5UUUy?=
- =?utf-8?B?RmhrL0dNK1ZYZzUzUjZWb2RmOVpqMDNuQ0hWaERFR3ZXSWgxSGNNaWJlQXVI?=
- =?utf-8?B?ZDhFcHc1Tjg1ZzVXQy9HN25yUnRGa2syWEpId1l6c2ZYcTNwK21HM1pudFdK?=
- =?utf-8?B?WDc1Um5VdVJzamczTnhra2krSy9GMGJoZ3JFN0llTTF5dlZjYkt0NHRpcjdT?=
- =?utf-8?B?TGJubTltL3VLdDJzRTNkbXoxeisvcGY1QzNva1U4OUJGRzFpTS9zbldUZUU1?=
- =?utf-8?B?SU1SWExHa3NxRk5FNzhRVmM5UjhLeGRvZlBBbk5RcXI4Z0xnaE0yaGp0MGZv?=
- =?utf-8?B?SXBvOCtId0I3bzdxNmwzYWFiczRyY1NxOVdXOXppZEpsZnRpUy9hSnIzODk3?=
- =?utf-8?B?VElNOVRHODBkbjhPUlRGOUowTVFpRmdoUklTQVdRVVQ4LzVNNklXTnpGUU5u?=
- =?utf-8?B?Qnh2VlFWeDg2ODZsYmcwMjNLcFdUTDJKK0pzWkZGMW1LeVZUNS9BUERoWHNj?=
- =?utf-8?B?eEh6RGlLdktOVDZqc1lWQlJUL3BDVkwyYmJpU3RtTHhBY21XK3hweW9PSlBY?=
- =?utf-8?B?ZUNQb2FXdWFqU3BXU0wvT1RzTnNwY2xSbGVscGQ5TndCK0ZYS2NsMFlGQi9C?=
- =?utf-8?B?SEh0Y0hqLzVqMU5NVHMrcVpQcjJtbURJY3kxeUdxMEVQeFhuU05zakQ3M1lp?=
- =?utf-8?B?bnBBUzBaWjkvNWY2NVkzSjhTZ1hBSlpHRjMwblkwUmNjTEVaeFkxa0p3K1N0?=
- =?utf-8?B?RlpXT1F1YXRlRThzMkU3L3pUa1A1dFJuWGNzZmF2WlNPM2t2dVhZalRHbTlQ?=
- =?utf-8?B?dEl6aU1XUGlPN0Z0TEpRWjlvaTl2WG9KM0pEZVh6RjZqeU1ndElTYUZVOHBl?=
- =?utf-8?B?WnVWQVNjTVRnR2piR1pkdytnWHNzU2o3b3ZYNCtXSmhvR0ZEMU9VWVVubVcv?=
- =?utf-8?B?R0lGTmo2b1NNNTBsdExQZVJkL3Mvc2paQ1JnNkJObG1tekY2cmRPK3dqaWhB?=
- =?utf-8?B?eWFFZll3MXVvVTkwWVpyZnFIcFY0RFE3STBWTnltV2ZXZTlVVEFMMGwwYXV3?=
- =?utf-8?B?cnYzblJlL3NvK2xqaFB2VjBsRFBEWjdwcFNYNWFoQ3NFR043dUJQQks1SlVo?=
- =?utf-8?B?SFJWa3U2bG1BeWExRDZLc0U3OHpzekdZdWVpTEtXTy9VSmV1SHQ0eWJLS3Jv?=
- =?utf-8?B?OGtKTXZoNzJQRVZEVng3ZktOb0UxQWphNEJlb0xMa1pZbjRGU1F4b0xqaEcy?=
- =?utf-8?B?SVhjWUM5enAyRm40a3JmcXZtdCtKY01EaTUyTlZ5Z0FWbUhWOUF4UWFHcjF3?=
- =?utf-8?B?M2pla3lqMFdRUkFwWTRsUy8wRStaZXN2bEhXOHVlQy9VV21GenRDMWVzTDVs?=
- =?utf-8?B?ckpoVWQ3MDlzeVBTQmgrQ2VNTnBiUHlyVi8yOWVKRXlhaURCNmRWaXlIbW41?=
- =?utf-8?B?WDgxeGVnSXB0R0JuUHlub1lzVnFrU29HZnFxcnNvVWg5bUJzYlBzdmtFM1RL?=
- =?utf-8?B?dHNmSWJVQ3E4VzNJMlpSTDNFNWxKQnBGMXR0c0dFSmE3bittcEFVemtRd29w?=
- =?utf-8?B?dzRrTzgvSzFyQTRRSWZJNGV0VUZqdmxPOGxSaHIxdGk3WTZaTWdqVmkrZkw1?=
- =?utf-8?B?UEVqaFpMeXJ4LzJQeFN2L3VCWHZFMmZaMDlnQWpSMjU4dG9uOXNJREJMWEM1?=
- =?utf-8?B?MG8zSWJObTUyMTdiUGo0WjZuWXdYMzYxZWo3VnFTTUtUWXVCKzEvUDRybWV4?=
- =?utf-8?Q?sURE63CKC49nnmHZVYsCjxE=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B72C4783BE98FD498F91E67BF57506EB@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 9 Nov 2023 05:54:11 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BAA2590;
+        Thu,  9 Nov 2023 02:54:09 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1CD6C6607418;
+        Thu,  9 Nov 2023 10:54:06 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699527247;
+        bh=LkXl+rP/UNmUub3S7DGui7pcqUg+FDfvcQ/RuBUWIrM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BiKodqoMotSlAmDi8beLZ+RPWVZ1WoIOL/rtTrwmK5mtCnqaMz67p19i8qq0CNWQ/
+         lHHe9kFlHqAodC4C8/VBiXNwNy/C4NjS1vwhHzdJtbAFm9/sSgr4kQAlyLvDjNvB7i
+         aeEdKITPOyIll8pE5uAt7WrIQF7amZcqQ9locycFDdhgRadFe/z9GRZ+WgN2bTb/G5
+         U9G3HVWbT7rGhsd2lF4vHE9Wux3OIiSFJppayz/LbYYwQArNv422T6sgXtqu31duKV
+         g22Y1nzOYwrxRpbwPQwO90oepW0PyPJd8TgrIDsFR2P9Axrz/J8sZ7EIXGGELUxBN7
+         wgBZQK8TfZKNA==
+Message-ID: <859ac058-c50a-4eb8-99b6-3011ef4e7529@collabora.com>
+Date:   Thu, 9 Nov 2023 11:54:03 +0100
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR11MB7688.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f89bcfd7-614e-4be9-ba70-08dbe11219d2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2023 10:53:26.1835
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: i3ha3x/9Cuy6dHV0LqRm7Z5Gi4hbuVUO0fFI88g/xXGWKE8uyrQ164Q+6RojYBUi2Hd3Ggzv9d9IsXUwf8JQqkrMbtILAOtBulzKDfLCcuQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7356
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Johan Hovold <johan@kernel.org>
+References: <20231109100606.1245545-1-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231109100606.1245545-1-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTExLTAxIGF0IDEyOjUyICswNTMwLCBWaXNodmFtYmFyIFBhbnRoIFMgd3Jv
-dGU6DQo+IE9uIFdlZCwgMjAyMy0xMC0wNCBhdCAxMzowOSAtMDcwMCwgSmFrdWIgS2ljaW5za2kg
-d3JvdGU6DQo+ID4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0
-dGFjaG1lbnRzIHVubGVzcyB5b3UNCj4gPiBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gPiAN
-Cj4gPiBPbiBXZWQsIDQgT2N0IDIwMjMgMTM6MDI6MTcgLTA3MDAgRmxvcmlhbiBGYWluZWxsaSB3
-cm90ZToNCj4gPiA+ID4gTm9ib2R5IGNvbXBsYWluZWQgZm9yIDUgeWVhcnMsIGFuZCBpdCdzIG5v
-dCBhIHJlZ3Jlc3Npb24uDQo+ID4gPiA+IExldCdzIG5vdCB0cmVhdCB0aGlzIGFzIGEgZml4LCBw
-bGVhc2UgcmVwb3N0IHdpdGhvdXQgdGhlIEZpeGVzDQo+ID4gPiA+IHRhZyBmb3INCj4gPiA+ID4g
-bmV0LW5leHQuDQo+ID4gPiANCj4gPiA+IEFzIGEgZHJpdmVyIG1haW50YWluZXIsIHlvdSBtYXkg
-d2FudCB0byBwcm92aWRlIHNvbWUgZ3VhcmFudGVlcw0KPiA+ID4gdG8NCj4gPiA+IHlvdXINCj4g
-PiA+IGVuZCB1c2Vycy9jdXN0b21lcnMgdGhhdCBmcm9tIHN0YWJsZSB2ZXJzaW9uIFguWS5aIHRo
-ZQ0KPiA+ID4gcGVyZm9ybWFuY2UNCj4gPiA+IGlzc3VlcyBoYXZlIGJlZW4gZml4ZWQuIFBlcmZv
-cm1hbmNlIGltcHJvdmVtZW50cyBhcmUgZGVmaW5pdGl2ZWx5DQo+ID4gPiBib3JkZXINCj4gPiA+
-IGxpbmUgaW4gdGVybXMgb2YgYmVpbmcgY29uc2lkZXJlZCBhcyBidWcgZml4ZXMgdGhvdWdoLg0K
-PiA+IA0KPiA+IEkgdW5kZXJzdGFuZCB0aGF0LCBidXQgdG9vIG9mdGVuIHBlb3BsZSBqdXN0ICJm
-ZWVsIGxpa2UgYSBkZXZpY2UNCj4gPiB3aGljaA0KPiA+IGFkdmVydGlzZXMgWCBNYnBzIC8gR2Jw
-cyBzaG91bGQgcmVhY2ggbGluZSByYXRlIiB3aGlsZSBubyBlbmQgdXNlcg0KPiA+IGNhcmVzLg0K
-PiA+IA0KPiA+IEx1Y2tpbHkgc3RhYmxlIHJ1bGVzIGFyZSBwcmV0dHkgY2xlYXIgYWJvdXQgdGhp
-cyAoc2VhcmNoIGZvcg0KPiA+ICJwZXJmb3JtYW5jZSIpOg0KPiA+IGh0dHBzOi8vZG9jcy5rZXJu
-ZWwub3JnL3Byb2Nlc3Mvc3RhYmxlLWtlcm5lbC1ydWxlcy5odG1sDQo+ID4gDQo+ID4gQXMgcG9z
-dGVkIGl0IGRvZXNuJ3QgZnVsZmlsbCB0aGUgcmVxdWlyZW1lbnRzIA0KPiANCj4gVGhhbmtzIGZv
-ciB5b3VyIGZlZWRiYWNrLiBJIGFwb2xvZ2l6ZSBmb3IgdGhlIGRlbGF5ZWQgcmVzcG9uc2UuDQo+
-IMKgDQo+IFRoZSBkYXRhIHByZXNlbnRlZCBpbiB0aGUgcGF0Y2ggZGVzY3JpcHRpb24gd2FzIGFp
-bWVkIHRvIGNvbnZpbmNlIGENCj4gcmV2aWV3ZXIgd2l0aCB0aGUgdmlzaWJsZSBpbXBhY3Qgb2Yg
-dGhlIHBlcmZvcm1hbmNlIGJvb3N0cyBpbiBib3RoDQo+IHg2NA0KPiBhbmQgQVJNIHBsYXRmb3Jt
-cy4gSG93ZXZlciwgdGhlIG1haW4gbW90aXZhdGlvbiBiZWhpbmQgdGhlIHBhdGNoIHdhcw0KPiBu
-b3QgbWVyZWx5IGEgImdvb2QtdG8taGF2ZSIgaW1wcm92ZW1lbnQgYnV0IGEgc29sdXRpb24gdG8g
-dGhlDQo+IHRocm91Z2hwdXQgaXNzdWVzIHJlcG9ydGVkIGJ5IG11bHRpcGxlIGN1c3RvbWVycyBp
-biBzZXZlcmFsDQo+IHBsYXRmb3Jtcy4NCj4gV2UgcmVjZWl2ZWQgbG90cyBvZiBjdXN0b21lciBy
-ZXF1ZXN0cyB0aHJvdWdoIG91ciB0aWNrZXQgc2l0ZSBzeXN0ZW0NCj4gdXJnaW5nIHVzIHRvIGFk
-ZHJlc3MgdGhlIHBlcmZvcm1hbmNlIGlzc3VlcyBvbiBtdWx0aXBsZSBrZXJuZWwNCj4gdmVyc2lv
-bnMNCj4gaW5jbHVkaW5nIExUUy4gV2hpbGUgaXQncyBhY2tub3dsZWRnZWQgdGhhdCBzdGFibGUg
-YnJhbmNoIHJ1bGVzDQo+IHR5cGljYWxseSBkbyBub3QgY29uc2lkZXIgcGVyZm9ybWFuY2UgZml4
-ZXMgdGhhdCBhcmUgbm90IGRvY3VtZW50ZWQNCj4gaW4NCj4gcHVibGljIEJ1Z3ppbGxhLCB0aGlz
-IHBlcmZvcm1hbmNlIGVuaGFuY2VtZW50IGlzIGVzc2VudGlhbCB0byBtYW55IG9mDQo+IG91ciBj
-dXN0b21lcnMgYW5kIHRoZWlyIGVuZCB1c2VycyBhbmQgd2UgYmVsaWV2ZSBzaG91bGQgdGhlcmVm
-b3JlIGJlDQo+IGNvbnNpZGVyZWQgZm9yIHN0YWJsZSBicmFuY2ggb24gdGhlIGJhc2lzIG9mIGl0
-4oCZcyB2aXNpYmxlIHVzZXINCj4gaW1wYWN0Lg0KPiDCoA0KPiBGZXcgaXNzdWVzIHJlcG9ydGVk
-IGJ5IG91ciBjdXN0b21lcnMgYXJlIG1lbnRpb25lZCBiZWxvdywgZXZlbiB0aG91Z2gNCj4gdGhl
-c2UgaXNzdWVzIGhhdmUgZXhpc3RlZCBmb3IgYSBsb25nIHRpbWUsIHRoZSBkYXRhIHByZXNlbnRl
-ZCBiZWxvdw0KPiBpcw0KPiBjb2xsZWN0ZWQgZnJvbSB0aGUgY3VzdG9tZXIgd2l0aGluIGxhc3Qg
-MyBtb250aHMuIA0KPiANCj4gQ3VzdG9tZXItQSB1c2luZyBsYW43NDN4IHdpdGggSGlzaWxpY29u
-LSBLaXJpbiA5OTAgcHJvY2Vzc29yIGluIDUuMTANCj4ga2VybmVsLCByZXBvcnRlZCBhIG1lcmUg
-fjMwME1icHMgaW4gUnggVURQLiBUaGUgZml4IHNpZ25pZmljYW50bHkNCj4gaW1wcm92ZWQgdGhl
-IHBlcmZvcm1hbmNlIHRvIH45MDBNYnBzIFJ4wqAgaW4gdGhlaXIgcGxhdGZvcm0uDQo+IA0KPiBD
-dXN0b21lci1CIHVzaW5nIGxhbjc0M3ggd2l0aCB2NS4xMCBoYXMgYW4gaXNzdWUgd2l0aCBUeCBV
-RFAgYmVpbmcNCj4gb25seQ0KPiAxNTdNYnBzIGluIHRoZWlyIHBsYXRmb3JtLiBJbmNsdWRpbmcg
-dGhlIGZpeCBpbiB0aGUgcGF0Y2ggYm9vc3RzIHRoZQ0KPiBwZXJmb3JtYW5jZSB0byB+NjAwTWJw
-cyBpbiBUeCBVRFAuDQo+IA0KPiBDdXN0b21lci1DIHVzaW5nIGxhbjc0M3ggd2l0aCBBREFTIFJl
-ZiBEZXNpZ24gaW4gdjUuMTAgcmVwb3J0ZWQgVURQDQo+IFR4L1J4IHRvIGJlIDEyNi83MjMgTWJw
-cyBhbmQgdGhlIGZpeCBpbXByb3ZlZCB0aGUgcGVyZm9ybWFuY2UgdG8NCj4gODI4Lzk1NiBNYnBz
-Lg0KPiANCj4gQ3VzdG9tZXItRCB1c2luZyBsYW43NDN4IHdpdGggUWNvbSA2NDkwIHdpdGggdjUu
-NCB3YW50ZWQgaW1wcm92ZW1lbnRzDQo+IGZvciB0aGVpciBwbGF0Zm9ybSBmcm9tIFVEUCBSeCAy
-MDBNYnBzLiBUaGUgZml4IGFsb25nIHdpdGggZmV3IG90aGVyDQo+IGNoYW5nZXMgaGVscGVkIHVz
-IHRvIGJyaW5nIFJ4IHBlcmYgdG8gODAwTWJwcyBpbiBjdXN0b21lcuKAmXMgcGxhdGZvcm0NCj4g
-wqANCj4gVGhpcyBpcyBhIGtpbmQgcmVxdWVzdCBmb3IgY29uc2lkZXJpbmcgdGhlIGFjY2VwdGFu
-Y2Ugb2YgdGhpcyBwYXRjaA0KPiBpbnRvIHRoZSBuZXQgYnJhbmNoLCBhcyBpdCBoYXMgYSBzaWdu
-aWZpY2FudCBwb3NpdGl2ZSBpbXBhY3Qgb24gdXNlcnMNCj4gYW5kIGRvZXMgbm90IGhhdmUgYW55
-IGFkdmVyc2UgZWZmZWN0cy4NCj4gwqANCj4gVGhhbmtzLA0KPiBWaXNodmFtYmFyIFBhbnRoIFMN
-Cj4gwqANCj4gDQpJdCBoYXMgY29tZSB0byBteSBhdHRlbnRpb24gdGhhdCBzb21lIHBlb3BsZSBt
-YXkgbm90IGhhdmUgcmVjZWl2ZWQgbXkNCndob2xlIHJlcGx5IGRhdGVkIE5vdiAxc3QgKGFzIHBl
-cg0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9wYXRjaC8y
-MDIzMDkyNzExMTYyMy45OTY2LTEtdmlzaHZhbWJhcnBhbnRoLnNAbWljcm9jaGlwLmNvbS8jMjU1
-Nzc4OTUNCiksIHBvc3NpYmx5IGR1ZSB0byBhIG5vbi1BU0NJSSBjaGFyYWN0ZXIgYXQgdGhlIGN1
-dC1vZmYgcG9pbnQuDQpUaGVyZWZvcmUsIEkgYW0gcmVzZW5kaW5nIHRoZSBwYXJ0IHRoYXQgd2Fz
-IGN1dCBzaG9ydCBiZWxvdy4NCiANCkpha3ViLCB3b3VsZCBpdCBiZSBwb3NzaWJsZSBmb3IgeW91
-IHRvIGFwcGx5IHRoZSBwYXRjaCB0byB0aGUgbmV0DQpicmFuY2ggZ2l2ZW4gdGhlIGFkZGl0aW9u
-YWwganVzdGlmaWNhdGlvbiBub3cgcG9zdGVkIGJlbG93Pw0KIA0KLS0tLS0NCiANClRoYW5rcyBm
-b3IgeW91ciBmZWVkYmFjay4gSSBhcG9sb2dpemUgZm9yIHRoZSBkZWxheWVkIHJlc3BvbnNlLg0K
-DQpUaGUgZGF0YSBwcmVzZW50ZWQgaW4gdGhlIHBhdGNoIGRlc2NyaXB0aW9uIHdhcyBhaW1lZCB0
-byBjb252aW5jZSBhDQpyZXZpZXdlciB3aXRoIHRoZSB2aXNpYmxlIGltcGFjdCBvZiB0aGUgcGVy
-Zm9ybWFuY2UgYm9vc3RzIGluIGJvdGggeDY0DQphbmQgQVJNIHBsYXRmb3Jtcy4gSG93ZXZlciwg
-dGhlIG1haW4gbW90aXZhdGlvbiBiZWhpbmQgdGhlIHBhdGNoIHdhcw0Kbm90IG1lcmVseSBhICJn
-b29kLXRvLWhhdmUiIGltcHJvdmVtZW50IGJ1dCBhIHNvbHV0aW9uIHRvIHRoZQ0KdGhyb3VnaHB1
-dCBpc3N1ZXMgcmVwb3J0ZWQgYnkgbXVsdGlwbGUgY3VzdG9tZXJzIGluIHNldmVyYWwgcGxhdGZv
-cm1zLg0KV2UgcmVjZWl2ZWQgbG90cyBvZiBjdXN0b21lciByZXF1ZXN0cyB0aHJvdWdoIG91ciB0
-aWNrZXQgc2l0ZSBzeXN0ZW0NCnVyZ2luZyB1cyB0byBhZGRyZXNzIHRoZSBwZXJmb3JtYW5jZSBp
-c3N1ZXMgb24gbXVsdGlwbGUga2VybmVsIHZlcnNpb25zDQppbmNsdWRpbmcgTFRTLiBXaGlsZSBp
-dCdzIGFja25vd2xlZGdlZCB0aGF0IHN0YWJsZSBicmFuY2ggcnVsZXMNCnR5cGljYWxseSBkbyBu
-b3QgY29uc2lkZXIgcGVyZm9ybWFuY2UgZml4ZXMgdGhhdCBhcmUgbm90IGRvY3VtZW50ZWQgaW4N
-CnB1YmxpYyBCdWd6aWxsYSwgdGhpcyBwZXJmb3JtYW5jZSBlbmhhbmNlbWVudCBpcyBlc3NlbnRp
-YWwgdG8gbWFueSBvZg0Kb3VyIGN1c3RvbWVycyBhbmQgdGhlaXIgZW5kIHVzZXJzIGFuZCB3ZSBi
-ZWxpZXZlIHNob3VsZCB0aGVyZWZvcmUgYmUNCmNvbnNpZGVyZWQgZm9yIHN0YWJsZSBicmFuY2gg
-b24gdGhlIGJhc2lzIG9mIGl04oCZcyB2aXNpYmxlIHVzZXIgaW1wYWN0Lg0KRmV3IGlzc3VlcyBy
-ZXBvcnRlZCBieSBvdXIgY3VzdG9tZXJzIGFyZSBtZW50aW9uZWQgYmVsb3csIGV2ZW4gdGhvdWdo
-DQp0aGVzZSBpc3N1ZXMgaGF2ZSBleGlzdGVkIGZvciBhIGxvbmcgdGltZSwgdGhlIGRhdGEgcHJl
-c2VudGVkIGJlbG93IGlzDQpjb2xsZWN0ZWQgZnJvbSB0aGUgY3VzdG9tZXIgd2l0aGluIGxhc3Qg
-MyBtb250aHMuDQogDQpDdXN0b21lci1BIHVzaW5nIGxhbjc0M3ggd2l0aCBIaXNpbGljb24tIEtp
-cmluIDk5MCBwcm9jZXNzb3IgaW4gNS4xMA0Ka2VybmVsLCByZXBvcnRlZCBhIG1lcmUgfjMwME1i
-cHMgaW4gUnggVURQLiBUaGUgZml4IHNpZ25pZmljYW50bHkNCmltcHJvdmVkIHRoZSBwZXJmb3Jt
-YW5jZSB0byB+OTAwTWJwcyBSeCAgaW4gdGhlaXIgcGxhdGZvcm0uDQogDQpDdXN0b21lci1CIHVz
-aW5nIGxhbjc0M3ggd2l0aCB2NS4xMCBoYXMgYW4gaXNzdWUgd2l0aCBUeCBVRFAgYmVpbmcgb25s
-eQ0KMTU3TWJwcyBpbiB0aGVpciBwbGF0Zm9ybS4gSW5jbHVkaW5nIHRoZSBmaXggaW4gdGhlIHBh
-dGNoIGJvb3N0cyB0aGUNCnBlcmZvcm1hbmNlIHRvIH42MDBNYnBzIGluIFR4IFVEUC4NCiANCkN1
-c3RvbWVyLUMgdXNpbmcgbGFuNzQzeCB3aXRoIEFEQVMgUmVmIERlc2lnbiBpbiB2NS4xMCByZXBv
-cnRlZCBVRFANClR4L1J4IHRvIGJlIDEyNi83MjMgTWJwcyBhbmQgdGhlIGZpeCBpbXByb3ZlZCB0
-aGUgcGVyZm9ybWFuY2UgdG8NCjgyOC85NTYgTWJwcy4NCiANCkN1c3RvbWVyLUQgdXNpbmcgbGFu
-NzQzeCB3aXRoIFFjb20gNjQ5MCB3aXRoIHY1LjQgd2FudGVkIGltcHJvdmVtZW50cw0KZm9yIHRo
-ZWlyIHBsYXRmb3JtIGZyb20gVURQIFJ4IDIwME1icHMuIFRoZSBmaXggYWxvbmcgd2l0aCBmZXcg
-b3RoZXINCmNoYW5nZXMgaGVscGVkIHVzIHRvIGJyaW5nIFJ4IHBlcmYgdG8gODAwTWJwcyBpbiBj
-dXN0b21lcuKAmXMgcGxhdGZvcm0NCg0KVGhpcyBpcyBhIGtpbmQgcmVxdWVzdCBmb3IgY29uc2lk
-ZXJpbmcgdGhlIGFjY2VwdGFuY2Ugb2YgdGhpcyBwYXRjaA0KaW50byB0aGUgbmV0IGJyYW5jaCwg
-YXMgaXQgaGFzIGEgc2lnbmlmaWNhbnQgcG9zaXRpdmUgaW1wYWN0IG9uIHVzZXJzDQphbmQgZG9l
-cyBub3QgaGF2ZSBhbnkgYWR2ZXJzZSBlZmZlY3RzLg0KDQpUaGFua3MsDQpWaXNodmFtYmFyIFBh
-bnRoIFMNCg==
+Il 09/11/23 11:05, Chen-Yu Tsai ha scritto:
+> Hi everyone,
+> 
+> This v2 series continues Doug's "of: device: Support 2nd sources of
+> probeable but undiscoverable devices" [1] series, but follows the scheme
+> suggested by Rob, marking all second source component device nodes
+> as "fail-needs-probe-XXX", and having a hardware prober driver enable
+> the one of them. I tried to include everyone from the original Cc: list.
+> Please let me know if you would like to be dropped from future
+> submissions.
+> 
+> 
+> For the I2C component (touchscreens and trackpads) case from the
+> original series, the hardware prober driver finds the particular
+> class of device in the device tree, gets its parent I2C adapter,
+> and tries to initiate a simple I2C read for each device under that
+> I2C bus. When it finds one that responds, it considers that one
+> present, marks it as "okay", and returns, letting the driver core
+> actually probe the device.
+> 
+> This works fine in most cases since these components are connected
+> via ribbon cable and always have the same resources. The driver as
+> implemented currently doesn't deal with regulators or GPIO pins,
+> since in the existing device trees they are either always on for
+> regulators, or have GPIO hogs or pinmux and pinconfig directly
+> tied to the pin controller.
+> 
+> 
+> Another case this driver could handle is selecting components based
+> on some identifier passed in by the firmware. On Chromebooks we have
+> a SKU ID which is inserted by the bootloader at
+> /firmware/coreboot/sku-id. When a new combination of components is
+> introduced, a new SKU ID is allocated to it. To have SKU ID based
+> device trees, we would need to have one per SKU ID. This ends up
+> increasing the number of device trees we have a lot. The recent
+> MT8186 devices already have 10+10 SKUs [2], with possibly more to come.
+> 
+> Instead, we could have just one device tree for each device, with
+> component options listed and marked as "fail-needs-probe-XXX", and
+> let the hardware prober enable one of them based on the given SKU ID.
+> The driver will also fix up OF graph remote endpoints to point to the
+> enabled component.
+> 
+> The MT8186 Corsola series [2] can also benefit from this, though I
+> haven't implemented anything yet.
+> 
+> 
+> Patch 1 adds of_device_is_fail() for the new driver to use.
+> 
+> Patch 2 implements the first case, probing the I2C bus for presence
+> of components. This initial version targets the Hana Chromebooks.
+> 
+> Patch 3 modifies the Hana device tree and marks the touchscreens
+> and trackpads as "fail-needs-probe-XXX", ready for the driver to
+> probe.
+> 
+> Patch 4 adds a missing touchscreen variant to Hana.
+> 
+> Patch 5 implements the second case, selectively enabling components
+> based on the SKU ID. This initial version targets the Krane ChromeOS
+> tablet, which has two possible MIPI DSI display panel options.
+> 
+> Patch 6 drops Krane's SKU-specific compatible strings from the bindings.
+> 
+> Patch 7 merges Krane's SKU-specific device trees into one, with the
+> device tree now containing two possible panels. This unfortunately
+> introduces a dtc warning:
+> 
+>      arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dts:81.13-83.6:
+>          Warning (graph_endpoint): /soc/dsi@14014000/panel2@0/port/endpoint:
+> 	graph connection to node '/soc/dsi@14014000/ports/port/endpoint'
+> 	    is not bidirectional
+> 
+> 
+> Please take a look.
+> 
+> Johan, I'm not sure if this works as is for the Lenovo Thinkpad 13S
+> case, since it looks like the trackpad shares the I2C bus with the
+> keyboard.
+> 
+> 
+> Thanks
+> ChenYu
+> 
+> 
+> Background as given in Doug's cover letter:
+> 
+> Support for multiple "equivalent" sources for components (also known
+> as second sourcing components) is a standard practice that helps keep
+> cost down and also makes sure that if one component is unavailable due
+> to a shortage that we don't need to stop production for the whole
+> product.
+> 
+> Some components are very easy to second source. eMMC, for instance, is
+> fully discoverable and probable so you can stuff a wide variety of
+> similar eMMC chips on your board and things will work without a hitch.
+> 
+> Some components are more difficult to second source, specifically
+> because it's difficult for software to probe what component is present
+> on any given board. In cases like this software is provided
+> supplementary information to help it, like a GPIO strap or a SKU ID
+> programmed into an EEPROM. This helpful information can allow the
+> bootloader to select a different device tree. The various different
+> "SKUs" of different Chromebooks are examples of this.
+> 
+> Some components are somewhere in between. These in-between components
+> are the subject of this patch. Specifically, these components are
+> easily "probeable" but not easily "discoverable".
+> 
+> A good example of a probeable but undiscoverable device is an
+> i2c-connected touchscreen or trackpad. Two separate components may be
+> electrically compatible with each other and may have compatible power
+> sequencing requirements but may require different software. If
+> software is told about the different possible components (because it
+> can't discover them), it can safely probe them to figure out which
+> ones are present.
+> 
+> On systems using device tree, if we want to tell the OS about all of
+> the different components we need to list them all in the device
+> tree. This leads to a problem. The multiple sources for components
+> likely use the same resources (GPIOs, interrupts, regulators). If the
+> OS tries to probe all of these components at the same time then it
+> will detect a resource conflict and that's a fatal error.
+> 
+> The fact that Linux can't handle these probeable but undiscoverable
+> devices well has had a few consequences:
+> 1. In some cases, we've abandoned the idea of second sourcing
+>     components for a given board, which increases cost / generates
+>     manufacturing headaches.
+> 2. In some cases, we've been forced to add some sort of strapping /
+>     EEPROM to indicate which component is present. This adds difficulty
+>     to manufacturing / refurb processes.
+> 3. In some cases, we've managed to make things work by the skin of our
+>     teeth through slightly hacky solutions. Specifically, if we remove
+>     the "pinctrl" entry from the various options then it won't
+>     conflict. Regulators inherently can have more than one consumer, so
+>     as long as there are no GPIOs involved in power sequencing and
+>     probing devices then things can work. This is how
+>     "sc8280xp-lenovo-thinkpad-x13s" works and also how
+>     "mt8173-elm-hana" works.
+> 
+> End of background from Doug's cover letter.
+
+I think that using "status" is not a good idea, I find that confusing.
+
+Perhaps we could have a node like
+
+something {
+	device-class-one = <&device1>, <&device2>, <&device3>;
+	device-class-two = <&device4>, <&device5>, <&device6>;
+}
+
+so that'd be more or less
+
+hw-prober {
+	trackpads = <&tp1>, <&tp2>;
+	keyboards = <&kb1>, <&kb2>;
+	touchscreens = <&ts1>, <&ts2>;
+}
+
+Besides, something else I can suggest here is to make this more generic: actually,
+this issue is spread across way more devices than you maybe think... for example,
+I know of some smartphones that may have the same situation with DSI displays and
+they're sometimes distinguished by an ADC value, sometimes by reading back the
+manufacturer ID (or panel id) through DSI.
+
+Also, if Chromebooks really need something "special", such as that coreboot sku-id
+parameter, I think that this should be registered externally into the hw prober
+and not embedded inside of the *generic* hw prober driver.
+
+We can even reuse of_device_id instead of inventing a new hw_prober_entry struct...
+
+Idea:
+
+drivers/platform/chrome/cros_of_hw_prober.c
+
+static int cros_sku_hw_prober(struct platform_device *pdev, const void *data)
+{
+	...this is your cros_sku_component_selector() function, anyway...
+}
+
+static const struct of_device_id cros_hw_prober_ids[] = {
+	{ .compatible = "google,hana", .data = something },
+	{ /* sentinel */ }
+};
+
+static int some_kind_of_early_init_function(something)
+{
+	int a,b,c,ret,something;
+
+	.. some logic if necessary ..
+
+	return of_hw_prober_register(cros_sku_hw_prober, cros_hw_prober_ids);
+}
+
+
+Btw, thanks for starting that. If this will be done the right way, it's going to
+be useful to many, many people.
+
+Regards,
+Angelo	
+
+> 
+> [1] https://lore.kernel.org/all/20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid/
+> [2] https://lore.kernel.org/linux-mediatek/20231012230237.2676469-1-wenst@chromium.org/
+> 
+> Chen-Yu Tsai (7):
+>    of: base: Add of_device_is_fail
+>    of: Introduce hardware prober driver
+>    arm64: dts: mediatek: mt8173-elm-hana: Mark touchscreens and trackpads
+>      as fail
+>    arm64: dts: mediatek: mt8173-elm-hana: Add G2touch G7500 touchscreen
+>    of: hw_prober: Support Chromebook SKU ID based component selection
+>    dt-bindings: arm: mediatek: Remove SKU specific compatibles for Google
+>      Krane
+>    arm64: dts: mediatek: mt8183-kukui: Merge Krane device trees
+> 
+>   .../devicetree/bindings/arm/mediatek.yaml     |   3 -
+>   arch/arm64/boot/dts/mediatek/Makefile         |   3 +-
+>   .../boot/dts/mediatek/mt8173-elm-hana.dtsi    |  20 ++
+>   .../dts/mediatek/mt8183-kukui-krane-sku0.dts  |  24 --
+>   .../mediatek/mt8183-kukui-krane-sku176.dts    |  24 --
+>   ...ukui-krane.dtsi => mt8183-kukui-krane.dts} |  47 ++-
+>   drivers/of/Kconfig                            |  13 +
+>   drivers/of/Makefile                           |   1 +
+>   drivers/of/base.c                             |  20 ++
+>   drivers/of/hw_prober.c                        | 314 ++++++++++++++++++
+>   include/linux/of.h                            |   6 +
+>   11 files changed, 418 insertions(+), 57 deletions(-)
+>   delete mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
+>   delete mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+>   rename arch/arm64/boot/dts/mediatek/{mt8183-kukui-krane.dtsi => mt8183-kukui-krane.dts} (86%)
+>   create mode 100644 drivers/of/hw_prober.c
+> 
+
