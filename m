@@ -2,398 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FBA7E6A2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C387E6A1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343761AbjKIL7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S234664AbjKIL6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234704AbjKIL7R (ORCPT
+        with ESMTP id S232918AbjKIL5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:59:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD903251;
-        Thu,  9 Nov 2023 03:58:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699531121; x=1731067121;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=S8k31sQJcwrbWSda49ADoHS4K9UVoQOMkuJARurWsC4=;
-  b=H3SmWPsPkkc1Mvwgf3x2vSBae7HKKgRdQonIZik2ksuj1oNpHxDYWaVQ
-   VEDd35EhoVpQF9AjhRYAldrpYBnWEDV40hYg5NLWC6pnYzVswkQUKRv0c
-   OxKzx0SfL7nd1c32ucfFTrs+HDI67AgY/cNNl5tpAtX5B/awc7n/ezyjk
-   GkCFgHwYRLAH2f1Ndpzf3uSxA+UyiU9Xyvcju5i7K3F9mF9Ezu0bt1SFv
-   SiOKkk5wyJHcfo5fwoysukKE8yjBoS2MnYEcfJn85JKbzJeE6S48Nwvs/
-   SOqJ52FLGkzdZl3z/64m2fADZE9619fM6CN3P3f31Xt7+LgD0nixSCrZq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="2936850"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="2936850"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:58:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="766977119"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="766977119"
-Received: from shadphix-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.83.35])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:58:33 -0800
-From:   Kai Huang <kai.huang@intel.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, peterz@infradead.org,
-        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com,
-        kai.huang@intel.com
-Subject: [PATCH v15 23/23] Documentation/x86: Add documentation for TDX host support
-Date:   Fri, 10 Nov 2023 00:56:00 +1300
-Message-ID: <a9adc748ba9c222f4e1b7b5d5651544aa6284a5f.1699527082.git.kai.huang@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1699527082.git.kai.huang@intel.com>
-References: <cover.1699527082.git.kai.huang@intel.com>
+        Thu, 9 Nov 2023 06:57:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E682D77
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:56:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699531016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rxgiQfG57B8WYlQaIBGWpOfAz7KPJ/cKr6geqUfke5Q=;
+        b=BV04ozt1bDX+AHd02NEvQu29HD4t1u683fV0WuphxJO7QMiWiEgySkA/rTF1XuJnSkTbQN
+        K3RTOFdUMFk2u3MXMVui265isNYJY+ETjB9xShQvPirKdX878F8m2qyvOSbPUWkHOhBqs/
+        UQkP77If/yOj+nPZzVMyhIKU9vT5XgY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-ddkg78dLO5K5UVv3skO56A-1; Thu, 09 Nov 2023 06:56:55 -0500
+X-MC-Unique: ddkg78dLO5K5UVv3skO56A-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9e293cd8269so66800166b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 03:56:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699531014; x=1700135814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rxgiQfG57B8WYlQaIBGWpOfAz7KPJ/cKr6geqUfke5Q=;
+        b=E5QW0pMWB+pvB6d0J+pJzQMWLadEJMkeigMQSa+Amwu+eTFjs7aqmKAqmhxEF5F0/6
+         OzpMXzqQDSdvOI4vBnzTzb5BU5mqFdlJ2WeuwCrwwcKMfqmzeAxMpGe0KWMsmOnQZvJP
+         huvwJ5TDetJftmn18l1Qt+xBdlUiPozk6qv8jluKJNNZj9q3K00BuWxdNmKC9waAtyhI
+         RpI1DBRJmQLEd/Py9PFLomifMyrOHBd+MLGtxbTi4Zd2jNszQzxqESc8ciswAgkpbY4F
+         krGWcjpxMjtHB78D7+ZLE2B4HOkoEqCUq0kD1HINX3ziP2AYndqCfQun55f4kOpTGRQn
+         J5Vw==
+X-Gm-Message-State: AOJu0YyEY0lOaQq6qMP5JZF9ETa9Y/secIWgoldzhZpJdbFHqJNQN9ty
+        FnsMqKLQbjqlAwq8ZRFKG+LFOrE4DjXwpqQDmrFME+gxN5964DGjR8tawmgxYv/YnDfzii+64Pj
+        QTfCqIr9Lw3JpIW22WK6+NRbUsYMG/tklhpOmD9nk
+X-Received: by 2002:a17:907:72d2:b0:9e0:5d5c:aa6d with SMTP id du18-20020a17090772d200b009e05d5caa6dmr4139560ejc.20.1699531014202;
+        Thu, 09 Nov 2023 03:56:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHxlrCZEP0Zf3bUap3zbIZY7FqJUmcGsAUa5ALjEfjFj+HW1CWZDvytrHMWS0qZ2D2ZlOhPOClx5L48I6cUeuc=
+X-Received: by 2002:a17:907:72d2:b0:9e0:5d5c:aa6d with SMTP id
+ du18-20020a17090772d200b009e05d5caa6dmr4139541ejc.20.1699531013829; Thu, 09
+ Nov 2023 03:56:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
+ <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+ <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
+ <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
+ <ZUtTpKyP0oxWhnn8@fedora> <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com>
+ <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com> <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
+In-Reply-To: <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Thu, 9 Nov 2023 12:56:41 +0100
+Message-ID: <CAO-hwJ+zm=R7NwrALaLVmfPDtMNXpj0eoQgLkiS1wa6wd+hu+A@mail.gmail.com>
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
+To:     David Revoy <davidrevoy@protonmail.com>
+Cc:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
+        Eric GOUYER <folays@gmail.com>,
+        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
+        jkosina@suse.cz, jason.gerecke@wacom.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for TDX host kernel support.  There is already one
-file Documentation/x86/tdx.rst containing documentation for TDX guest
-internals.  Also reuse it for TDX host kernel support.
+Hi David,
 
-Introduce a new level menu "TDX Guest Support" and move existing
-materials under it, and add a new menu for TDX host kernel support.
+On Thu, Nov 9, 2023 at 1:32=E2=80=AFAM David Revoy <davidrevoy@protonmail.c=
+om> wrote:
+>
+> Hi Benjamin,
+>
+> > Alright, I made quite some progress so far:
+> > - regressions tests have been written (branch wip/xp-pen of my fork on
+> > freedesktop[0])
+> > that branch can not go in directly as it just adds the tests, and
+> > thus is failing
+> > - I made the fixes through HID-BPF[1]
+> >
+> > Anyone using those 2 tablets and using Fedora should be able to just
+> > grab the artifact at [2], uncompress it and run `sudo ./install.sh --ve=
+rbose`.
+> > This will install the bpf programs in /lib/firmware/hid/bpf/ and will
+> > automatically load them when the device is connected.
+> >
+> > For those not using Fedora, the binary might work (or not, not sure),
+> > but you can always decompress it, and check if running
+> > `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
+> > version or just fails. If you get "udev-hid-bpf 0.1.0", then running
+> > `sudo ./install.sh --verbose` should work, as long as the kernel has
+> > CONFIG_HID_BPF set to 'Y'.
+> > [...]
+> > [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_ty=
+pe=3Dheads
+> > [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_reques=
+ts/27
+> > [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589=
+/artifacts/raw/udev-hid-bpf_0.1.0.tar.xz
+>
+> Thank you for this package.
+>
+> I was able to test it even though the link in (2) at the bottom of your e=
+mail returned a blank page. I was able to find my way after manually visiti=
+ng gitlab.freedesktop.org [1] and then manually downloading the article fro=
+m 51350589. I unzipped it and ran `sudo ./install.sh --verbose`. Everything=
+ looks like it was successful [2]. I then rebooted my Fedora 38 'Linux work=
+station 6.5.8-200.fc38.x86_64' kernel (the one I blamed in my post) and tes=
+ted both tablets.
 
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
+Weird that you had to manually retrieve it. It works here, but maybe
+because I am logged in on gitlab.fd.o.
 
-v14 -> v15:
- - Removed the dmesg shows TDX module version (not printed anymore).
+Also, just FYI, you shouldn't have to reboot. Just unplug/replug and
+you are good. In the same way, if you uninstall the package, you can
+just unplug/replug to not have the programs loaded.
 
-v13 -> v14:
- - Added new sections for "Erratum" and "TDX vs S3/hibernation"
+>
+> Here are my observation:
+>
+> XPPEN Artist Pro 24
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Nothing changed for this device (it's the one with two buttons and no 'er=
+aser tip'). Nor my hwdb/udev rules or `xsetwacom set "UGTABLET 24 inch PenD=
+isplay eraser" button 1 3` affects the upper button of the stylus: if I hol=
+d it hover the canvas, Krita switch the tool and cursor for an eraser. If I=
+ click on the canvas with the pen tip while holding the upper button presse=
+d, I get the right-click Pop-up Palette (but not all the time, probably Kri=
+ta has hard time to triage Eraser or Right-click).
 
+As I mentioned in another reply, the more I think of it, the more I
+think I should get rid of the "eraser mode". In that Artist Pro 24 I
+can detect it through the same mechanics as the HID_QUIRK_NOINVERT
+from Illia's patch. But instead of trying to force the device into the
+eraser mode, we should just say "this is actually BUTTON_STYLUS_2".
 
----
- Documentation/arch/x86/tdx.rst | 222 +++++++++++++++++++++++++++++++--
- 1 file changed, 211 insertions(+), 11 deletions(-)
+So I'm going to amend the bpf program to do this and hopefully you
+won't need the hwdb/udev rule at all.
 
-diff --git a/Documentation/arch/x86/tdx.rst b/Documentation/arch/x86/tdx.rst
-index dc8d9fd2c3f7..8969675568d0 100644
---- a/Documentation/arch/x86/tdx.rst
-+++ b/Documentation/arch/x86/tdx.rst
-@@ -10,6 +10,206 @@ encrypting the guest memory. In TDX, a special module running in a special
- mode sits between the host and the guest and manages the guest/host
- separation.
- 
-+TDX Host Kernel Support
-+=======================
-+
-+TDX introduces a new CPU mode called Secure Arbitration Mode (SEAM) and
-+a new isolated range pointed by the SEAM Ranger Register (SEAMRR).  A
-+CPU-attested software module called 'the TDX module' runs inside the new
-+isolated range to provide the functionalities to manage and run protected
-+VMs.
-+
-+TDX also leverages Intel Multi-Key Total Memory Encryption (MKTME) to
-+provide crypto-protection to the VMs.  TDX reserves part of MKTME KeyIDs
-+as TDX private KeyIDs, which are only accessible within the SEAM mode.
-+BIOS is responsible for partitioning legacy MKTME KeyIDs and TDX KeyIDs.
-+
-+Before the TDX module can be used to create and run protected VMs, it
-+must be loaded into the isolated range and properly initialized.  The TDX
-+architecture doesn't require the BIOS to load the TDX module, but the
-+kernel assumes it is loaded by the BIOS.
-+
-+TDX boot-time detection
-+-----------------------
-+
-+The kernel detects TDX by detecting TDX private KeyIDs during kernel
-+boot.  Below dmesg shows when TDX is enabled by BIOS::
-+
-+  [..] virt/tdx: BIOS enabled: private KeyID range: [16, 64)
-+
-+TDX module initialization
-+---------------------------------------
-+
-+The kernel talks to the TDX module via the new SEAMCALL instruction.  The
-+TDX module implements SEAMCALL leaf functions to allow the kernel to
-+initialize it.
-+
-+If the TDX module isn't loaded, the SEAMCALL instruction fails with a
-+special error.  In this case the kernel fails the module initialization
-+and reports the module isn't loaded::
-+
-+  [..] virt/tdx: module not loaded
-+
-+Initializing the TDX module consumes roughly ~1/256th system RAM size to
-+use it as 'metadata' for the TDX memory.  It also takes additional CPU
-+time to initialize those metadata along with the TDX module itself.  Both
-+are not trivial.  The kernel initializes the TDX module at runtime on
-+demand.
-+
-+Besides initializing the TDX module, a per-cpu initialization SEAMCALL
-+must be done on one cpu before any other SEAMCALLs can be made on that
-+cpu.
-+
-+The kernel provides two functions, tdx_enable() and tdx_cpu_enable() to
-+allow the user of TDX to enable the TDX module and enable TDX on local
-+cpu respectively.
-+
-+Making SEAMCALL requires VMXON has been done on that CPU.  Currently only
-+KVM implements VMXON.  For now both tdx_enable() and tdx_cpu_enable()
-+don't do VMXON internally (not trivial), but depends on the caller to
-+guarantee that.
-+
-+To enable TDX, the caller of TDX should: 1) temporarily disable CPU
-+hotplug; 2) do VMXON and tdx_enable_cpu() on all online cpus; 3) call
-+tdx_enable().  For example::
-+
-+        cpus_read_lock();
-+        on_each_cpu(vmxon_and_tdx_cpu_enable());
-+        ret = tdx_enable();
-+        cpus_read_unlock();
-+        if (ret)
-+                goto no_tdx;
-+        // TDX is ready to use
-+
-+And the caller of TDX must guarantee the tdx_cpu_enable() has been
-+successfully done on any cpu before it wants to run any other SEAMCALL.
-+A typical usage is do both VMXON and tdx_cpu_enable() in CPU hotplug
-+online callback, and refuse to online if tdx_cpu_enable() fails.
-+
-+User can consult dmesg to see whether the TDX module has been initialized.
-+
-+If the TDX module is initialized successfully, dmesg shows something
-+like below::
-+
-+  [..] virt/tdx: 262668 KBs allocated for PAMT
-+  [..] virt/tdx: module initialized
-+
-+If the TDX module failed to initialize, dmesg also shows it failed to
-+initialize::
-+
-+  [..] virt/tdx: module initialization failed ...
-+
-+TDX Interaction to Other Kernel Components
-+------------------------------------------
-+
-+TDX Memory Policy
-+~~~~~~~~~~~~~~~~~
-+
-+TDX reports a list of "Convertible Memory Region" (CMR) to tell the
-+kernel which memory is TDX compatible.  The kernel needs to build a list
-+of memory regions (out of CMRs) as "TDX-usable" memory and pass those
-+regions to the TDX module.  Once this is done, those "TDX-usable" memory
-+regions are fixed during module's lifetime.
-+
-+To keep things simple, currently the kernel simply guarantees all pages
-+in the page allocator are TDX memory.  Specifically, the kernel uses all
-+system memory in the core-mm "at the time of TDX module initialization"
-+as TDX memory, and in the meantime, refuses to online any non-TDX-memory
-+in the memory hotplug.
-+
-+Physical Memory Hotplug
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Note TDX assumes convertible memory is always physically present during
-+machine's runtime.  A non-buggy BIOS should never support hot-removal of
-+any convertible memory.  This implementation doesn't handle ACPI memory
-+removal but depends on the BIOS to behave correctly.
-+
-+CPU Hotplug
-+~~~~~~~~~~~
-+
-+TDX module requires the per-cpu initialization SEAMCALL must be done on
-+one cpu before any other SEAMCALLs can be made on that cpu.  The kernel
-+provides tdx_cpu_enable() to let the user of TDX to do it when the user
-+wants to use a new cpu for TDX task.
-+
-+TDX doesn't support physical (ACPI) CPU hotplug.  During machine boot,
-+TDX verifies all boot-time present logical CPUs are TDX compatible before
-+enabling TDX.  A non-buggy BIOS should never support hot-add/removal of
-+physical CPU.  Currently the kernel doesn't handle physical CPU hotplug,
-+but depends on the BIOS to behave correctly.
-+
-+Note TDX works with CPU logical online/offline, thus the kernel still
-+allows to offline logical CPU and online it again.
-+
-+Kexec()
-+~~~~~~~
-+
-+There are two problems in terms of using kexec() to boot to a new kernel
-+when the old kernel has enabled TDX: 1) Part of the memory pages are
-+still TDX private pages; 2) There might be dirty cachelines associated
-+with TDX private pages.
-+
-+The first problem doesn't matter.  KeyID 0 doesn't have integrity check.
-+Even the new kernel wants use any non-zero KeyID, it needs to convert
-+the memory to that KeyID and such conversion would work from any KeyID.
-+
-+However the old kernel needs to guarantee there's no dirty cacheline
-+left behind before booting to the new kernel to avoid silent corruption
-+from later cacheline writeback (Intel hardware doesn't guarantee cache
-+coherency across different KeyIDs).
-+
-+Similar to AMD SME, the kernel does wbinvd() to flush cache before
-+booting to the new kernel.
-+
-+Erratum
-+~~~~~~~
-+
-+The first few generations of TDX hardware have an erratum.  A partial
-+write to a TDX private memory cacheline will silently "poison" the
-+line.  Subsequent reads will consume the poison and generate a machine
-+check.
-+
-+A partial write is a memory write where a write transaction of less than
-+cacheline lands at the memory controller.  The CPU does these via
-+non-temporal write instructions (like MOVNTI), or through UC/WC memory
-+mappings.  Devices can also do partial writes via DMA.
-+
-+Theoretically, a kernel bug could do partial write to TDX private memory
-+and trigger unexpected machine check.  What's more, the machine check
-+code will present these as "Hardware error" when they were, in fact, a
-+software-triggered issue.  But in the end, this issue is hard to trigger.
-+
-+If the platform has such erratum, the kernel does additional things:
-+1) resetting TDX private pages using MOVDIR64B in kexec before booting to
-+the new kernel; 2) Printing additional message in machine check handler
-+to tell user the machine check may be caused by kernel bug on TDX private
-+memory.
-+
-+Interaction vs S3 and deeper states
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+TDX cannot survive from S3 and deeper states.  The hardware resets and
-+disables TDX completely when platform goes to S3 and deeper.  Both TDX
-+guests and the TDX module get destroyed permanently.
-+
-+The kernel uses S3 for suspend-to-ram, and use S4 and deeper states for
-+hibernation.  Currently, for simplicity, the kernel chooses to make TDX
-+mutually exclusive with S3 and hibernation.
-+
-+The kernel disables TDX during early boot when hibernation support is
-+available::
-+
-+  [..] virt/tdx: initialization failed: Hibernation support is enabled
-+
-+Add 'nohibernate' kernel command line to disable hibernation in order to
-+use TDX.
-+
-+ACPI S3 is disabled during kernel early boot if TDX is enabled.  The user
-+needs to turn off TDX in the BIOS in order to use S3.
-+
-+TDX Guest Support
-+=================
- Since the host cannot directly access guest registers or memory, much
- normal functionality of a hypervisor must be moved into the guest. This is
- implemented using a Virtualization Exception (#VE) that is handled by the
-@@ -20,7 +220,7 @@ TDX includes new hypercall-like mechanisms for communicating from the
- guest to the hypervisor or the TDX module.
- 
- New TDX Exceptions
--==================
-+------------------
- 
- TDX guests behave differently from bare-metal and traditional VMX guests.
- In TDX guests, otherwise normal instructions or memory accesses can cause
-@@ -30,7 +230,7 @@ Instructions marked with an '*' conditionally cause exceptions.  The
- details for these instructions are discussed below.
- 
- Instruction-based #VE
-----------------------
-+~~~~~~~~~~~~~~~~~~~~~
- 
- - Port I/O (INS, OUTS, IN, OUT)
- - HLT
-@@ -41,7 +241,7 @@ Instruction-based #VE
- - CPUID*
- 
- Instruction-based #GP
-----------------------
-+~~~~~~~~~~~~~~~~~~~~~
- 
- - All VMX instructions: INVEPT, INVVPID, VMCLEAR, VMFUNC, VMLAUNCH,
-   VMPTRLD, VMPTRST, VMREAD, VMRESUME, VMWRITE, VMXOFF, VMXON
-@@ -52,7 +252,7 @@ Instruction-based #GP
- - RDMSR*,WRMSR*
- 
- RDMSR/WRMSR Behavior
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- MSR access behavior falls into three categories:
- 
-@@ -73,7 +273,7 @@ trapping and handling in the TDX module.  Other than possibly being slow,
- these MSRs appear to function just as they would on bare metal.
- 
- CPUID Behavior
----------------
-+~~~~~~~~~~~~~~
- 
- For some CPUID leaves and sub-leaves, the virtualized bit fields of CPUID
- return values (in guest EAX/EBX/ECX/EDX) are configurable by the
-@@ -93,7 +293,7 @@ not know how to handle. The guest kernel may ask the hypervisor for the
- value with a hypercall.
- 
- #VE on Memory Accesses
--======================
-+----------------------
- 
- There are essentially two classes of TDX memory: private and shared.
- Private memory receives full TDX protections.  Its content is protected
-@@ -107,7 +307,7 @@ entries.  This helps ensure that a guest does not place sensitive
- information in shared memory, exposing it to the untrusted hypervisor.
- 
- #VE on Shared Memory
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- Access to shared mappings can cause a #VE.  The hypervisor ultimately
- controls whether a shared memory access causes a #VE, so the guest must be
-@@ -127,7 +327,7 @@ be careful not to access device MMIO regions unless it is also prepared to
- handle a #VE.
- 
- #VE on Private Pages
----------------------
-+~~~~~~~~~~~~~~~~~~~~
- 
- An access to private mappings can also cause a #VE.  Since all kernel
- memory is also private memory, the kernel might theoretically need to
-@@ -145,7 +345,7 @@ The hypervisor is permitted to unilaterally move accepted pages to a
- to handle the exception.
- 
- Linux #VE handler
--=================
-+-----------------
- 
- Just like page faults or #GP's, #VE exceptions can be either handled or be
- fatal.  Typically, an unhandled userspace #VE results in a SIGSEGV.
-@@ -167,7 +367,7 @@ While the block is in place, any #VE is elevated to a double fault (#DF)
- which is not recoverable.
- 
- MMIO handling
--=============
-+-------------
- 
- In non-TDX VMs, MMIO is usually implemented by giving a guest access to a
- mapping which will cause a VMEXIT on access, and then the hypervisor
-@@ -189,7 +389,7 @@ MMIO access via other means (like structure overlays) may result in an
- oops.
- 
- Shared Memory Conversions
--=========================
-+-------------------------
- 
- All TDX guest memory starts out as private at boot.  This memory can not
- be accessed by the hypervisor.  However, some kernel users like device
--- 
-2.41.0
+>
+> XPPEN Artist Pro 16 (Gen2)
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> Something changed. `xsetwacom set "UGTABLET Artist Pro 16 (Gen2) eraser" =
+button 1 3` successfully affected the upper button of the stylus. Now if I =
+click it while hovering the canvas, Krita shows the right click Pop-up Pale=
+tte.
+
+I'm surprised you need to teach the wacom driver that BTN_STYLUS_2 is
+the right click.
+
+> On the downside; the real eraser tip when I flip the stylus bugs. When I =
+flip the stylus on eraser hovering the canvas, Krita shows the Eraser icon =
+and switch tool. As soon as I draw with the eraser tip, Krita will also sho=
+w a right-click color palette and with also not a 100% consistency, as if t=
+he event were mixed.
+
+I'll investigate. Maybe I messed up with my event flow patch.
+
+But just to be sure, you don't have a custom configuration in place
+for that tablet device?
+
+Cheers,
+Benjamin
+
+>
+> [1] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/artifacts
+> [2] https://www.peppercarrot.com/extras/temp/2023-11-09_screenshot_005214=
+_net.jpg
+>
+>
+> On Wednesday, November 8th, 2023 at 19:21, Benjamin Tissoires <benjamin.t=
+issoires@redhat.com> wrote:
+>
+>
+> > On Wed, Nov 8, 2023 at 10:34=E2=80=AFAM Benjamin Tissoires
+> > benjamin.tissoires@redhat.com wrote:
+> >
+> > > On Wed, Nov 8, 2023 at 10:23=E2=80=AFAM Jos=C3=A9 Exp=C3=B3sito jose.=
+exposito89@gmail.com wrote:
+> > >
+> > > > Hi Benjamin,
+> > > >
+> > > > On Wed, Nov 08, 2023 at 10:04:30AM +0100, Benjamin Tissoires wrote:
+> > > > [...]
+> > > >
+> > > > > > So, the behavior probably breaks the specs, but sincerely I'm h=
+appy to
+> > > > > > have the "eraser" button independent of the "rubber eraser", wh=
+ich
+> > > > > > makes the stylus a somewhat 4-buttons stylus (tip, button1, but=
+ton2,
+> > > > > > rubber), and I would like to keep this.
+> > > > >
+> > > > > Yes, and I'd like to keep it that way, even if 6.6 and 6.5.8
+> > > > > apparently broke it.
+> > > > >
+> > > > > So, to me:
+> > > > > - 276e14e6c3993317257e1787e93b7166fbc30905 is wrong: this is a
+> > > > > firmware bug (reporting invert through eraser) and should not be
+> > > > > tackled at the generic level, thus it should be reverted
+> > > > > - both of these tablets are forwarding the useful information, bu=
+t not
+> > > > > correctly, which confuses the kernel
+> > > > > - I should now be able to write regression tests
+> > > > > - I should be able to provide HID-BPF fixes for those tablets so =
+that
+> > > > > we can keep them working with or without
+> > > > > 276e14e6c3993317257e1787e93b7166fbc30905
+> > > > > reverted (hopefully)
+> > > > > - problem is I still don't have the mechanics to integrate the HI=
+D-BPF
+> > > > > fixes directly in the kernel tree, so maybe I'll have to write a
+> > > > > driver for XP-Pen while these internals are set (it shouldn't
+> > > > > interfere with the HID-BPF out of the tree).
+> > > >
+> > > > I already added support for a few XP-Pen devices on the UCLogic dri=
+ver
+> > > > and I was planning to start working on this one during the weekend =
+in
+> > > > my DIGImend fork (to simplify testing).
+> > > >
+> > > > Let me know if you prefer to add it yourself or if you want me to p=
+ing
+> > > > you in the DIGImend discussion.
+> > >
+> > > So far, I really have to work on this now. It's a good use case for
+> > > HID-BPF and it's a regression that I'd like to be fixed ASAP.
+> > > I'd appreciate any reviews :)
+> >
+> >
+> > Alright, I made quite some progress so far:
+> > - regressions tests have been written (branch wip/xp-pen of my fork on
+> > freedesktop[0])
+> > that branch can not go in directly as it just adds the tests, and
+> > thus is failing
+> > - I made the fixes through HID-BPF[1]
+> >
+> > Anyone using those 2 tablets and using Fedora should be able to just
+> > grab the artifact at [2], uncompress it and run `sudo ./install.sh --ve=
+rbose`.
+> > This will install the bpf programs in /lib/firmware/hid/bpf/ and will
+> > automatically load them when the device is connected.
+> >
+> > For those not using Fedora, the binary might work (or not, not sure),
+> > but you can always decompress it, and check if running
+> > `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
+> > version or just fails. If you get "udev-hid-bpf 0.1.0", then running
+> > `sudo ./install.sh --verbose` should work, as long as the kernel has
+> > CONFIG_HID_BPF set to 'Y'.
+> >
+> > > Also, good to know that I can probably piggyback on hid-uclogic for
+> > > fixing those 2 devices in the kernel.
+> >
+> >
+> > Next step will be to fix them using a kernel driver, but it seems that
+> > the uclogic driver is doing more than just report descriptor fixups,
+> > so maybe I'll have to use a different driver.
+> > But the point is, in theory, if you are affected by those bugs, using
+> > the udev-hid-bpf should fix the issue, and this should also be
+> > resilient to further kernel updates.
+> >
+> > I'd appreciate testing when I got the full kernel series up and ready,
+> > of course.
+> >
+> > Cheers,
+> > Benjamin
+> >
+> > [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_ty=
+pe=3Dheads
+> > [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_reques=
+ts/27
+> > [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589=
+/artifacts/raw/udev-hid-bpf_0.1.0.tar.xz
+>
 
