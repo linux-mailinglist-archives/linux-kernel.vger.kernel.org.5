@@ -2,336 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4A17E6D6D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:30:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B437E6D76
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbjKIPad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 10:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41126 "EHLO
+        id S234513AbjKIPeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 10:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKIPac (ORCPT
+        with ESMTP id S229770AbjKIPeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 10:30:32 -0500
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01on2074.outbound.protection.outlook.com [40.107.239.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B69187;
-        Thu,  9 Nov 2023 07:30:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A9SdhEuqTmvTRg0gZcrNfXpX7eoVBEadV8hvXz9j8m7FS1hA/YtEO667YPVnTWEaZt0af1R9/lcYXjUNtVMypIFOIxdMVnDpDaneMixI1flc88i8OLboQL7kman3JTDvXLs5+uL73kOMTIE/GLpI3JMSnkxl9u2cDeOaklC997YJdA5dYRR4GopJoMNZxtx9cbPNdb2Etkwj6pEfdodakn5xlzo/qe9SZdakzuWN3+JXYNcD+NJ/CRYGc5rIkH2IPjad/KizOz9EEz8auFTGktCHRjRsCUb0mZ5C4eqczwJ6Dki7uN3r6nvGmdViUlygz7Dx7zwvOv8NxnmidVTDhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lE69vXZKQQ9WXn48IB8HITcujG4H9VmNVVA4hOz15Ow=;
- b=C1h83Ok3Ye3tO8XjHfUi3+vgS+ODoPVMvrxwsD89qZG9nGRDPfRRP76tGwJOFuVOFZ2xk0xQ3dV3yHh6/x5YmU1MWS5Yf9cleGehCeiCQJUumop3ew8yVwRTfp2PfH0TBfYUmugkgmujgIyMKhEzWTgViw7YKqMIHTgP9teo4Ijd7GEn0uxsyDmrPVNZNyivWSRgt/zML8KnqgnUsdC+kSSFl1cqtwWt6DZ9HouM1MvMD8DqhPwWNtV0veTQPOs8P5syfxABELtXaK13VvzBNfrlptfdGWz3SoTfQcerhm9YeD5Fv+j6pFPVp5tbRhv96uab8TQSRTkYyrW6XM9xHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
- header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siliconsignals.io;
-Received: from MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:8::12)
- by MAZPR01MB8039.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:a2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Thu, 9 Nov
- 2023 15:30:25 +0000
-Received: from MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::1848:62aa:1da4:1924]) by MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
- ([fe80::1848:62aa:1da4:1924%3]) with mapi id 15.20.6977.018; Thu, 9 Nov 2023
- 15:30:24 +0000
-From:   Hiten Chauhan <hiten.chauhan@siliconsignals.io>
-Cc:     hiten.chauhan@siliconsignals.io,
-        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: imu: Add tilt interrupt support for inv_icm42600
-Date:   Thu,  9 Nov 2023 20:59:49 +0530
-Message-Id: <20231109152949.66809-1-hiten.chauhan@siliconsignals.io>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: PN2PR01CA0073.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:23::18) To MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:8::12)
+        Thu, 9 Nov 2023 10:34:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66BEE1BD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:34:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E7A3C433C8;
+        Thu,  9 Nov 2023 15:34:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699544058;
+        bh=8jkAy+EFAO7hgfx3NOP4D1/XUrFECQWnDFFsKhV3lLg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lXoHv42F70vQWgFxCDIWo3Dm9YB2teGltGZaULFCw3jvw/Nc62Nglat6/ohYyt+k/
+         T9SN+0StL14bxUHVms7KNVIsDhGxcY0MMhT3OECK6rxkOOFtqPlXESoXoO47CS/QxR
+         5oU9tYxsLRZzi6Q81SMOOSsOYaP3UyXlIgmxIEdEWckgpw6gk6jMdPNL+bpsUj6cF5
+         Stdc85X6OLRWQpxtHh0Mzq2EVdgQYng5fNrFS/Ib3mEbufpLO/ColwaluDTa+QB0H4
+         sHa7CcJUIlmCOIb8GSaiwdLn+mRrq0ZPkBa0UBYTk086IcOBdWz1wMadu3y/psaeI+
+         4ugw+qhvd5DQA==
+Date:   Thu, 9 Nov 2023 16:34:10 +0100
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
+        ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZUz78gFPgMupew+m@lpieralisi>
+References: <ZQIFfqgR5zcidRR3@nvidia.com>
+ <ZRKW6uDR/+eXYMzl@lpieralisi>
+ <ZRLiDf204zCpO6Mv@arm.com>
+ <ZR6IZwcFNw55asW0@lpieralisi>
+ <20231012123541.GB11824@willie-the-truck>
+ <ZSf6Ue09IO6QMBs1@arm.com>
+ <20231012144807.GA12374@willie-the-truck>
+ <ZSgsKSCv-zWgtWkm@arm.com>
+ <20231013092934.GA13524@willie-the-truck>
+ <ZSlBOiebenPKXBY4@arm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MAXPR01MB4118:EE_|MAZPR01MB8039:EE_
-X-MS-Office365-Filtering-Correlation-Id: f5956d37-8ab1-4cd6-a8d3-08dbe138cb0c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6hgCdFzZ+39F2ZK7ArkXMaqLv6H2m8XjDCnjDT4IjBaME8WEGyJJhZWRP2p0kpDIa+k+vcpVYSQ2qvJqsyVvgx3bmj/xf3ahNW9YnpHJ/u3hv328XF6RvIWcasYFe+Fv4Xf2E/sq7PwHzyMVh7i/ovRemBvxddEf80gUKD3nBaVt7kVnEIzryUI1NMsxc8z7ytM0UlZweHuSgduv3ZZ9E8i3GGDVlnjLhNV2sbOLuNOjjfKV2J89xzQqWYy15egu/5fBJOxsO0AUV29fpMLC5Nt7wjXSFLPUybKKdVFUxv1AAMLp1A908MaBBR1npELgBKd/cavEHfgBaEx7jA/3tUsaND6KjCdoEmSfuBqlIbq7cA/Fyt3VZlY7SH6Piit0CUb120laZzy1/gFaLVxZuhxevbS/JbdwdBNwsx3s4xScnh8i6ItPN62RMmVqYExX0m5P2x9GlUaEPbPjCSNifn1d78A7Tuwz5MRxdRUad3bI80CnT+WuTtVHb//GzcIiufucbP+hLVReWDaMAB464HQrymFC31Z/3qK3B0F8AQzfDI6Uu7fG5ASGPPdvflGSWjCk5KY6A5WIgklGnqO4ec9apKE6enWDzdT1Mv2Eu5LQ4TboSgLnhgv0dE40OYTF1/UpZbAVdJH31Un2RK2mebZKAnUnZgpjnHZf/67TFls=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(39830400003)(396003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(109986022)(2906002)(44832011)(6512007)(41300700001)(2616005)(6486002)(4326008)(8676002)(8936002)(5660300002)(86362001)(66946007)(38100700002)(1076003)(66476007)(26005)(66556008)(316002)(54906003)(83380400001)(478600001)(52116002)(36756003)(38350700005)(3613699003)(6506007)(6666004)(266003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G+RmV5ujucOz7lIioajEijL6pIpp1s1vje/sFt1UxtdtE+OCd21WZ0qzQJHA?=
- =?us-ascii?Q?xltQy/byIJkgZ2kjaYaXgVVCF/GNM7ylJPOIWrzywfjZCKu+/LWG3gv8aTao?=
- =?us-ascii?Q?qb+WUGsSXVu4l9Rt6Ghu6h13Y2L3bvGv9h3ka677cIpjy7nY7PyxI23nYIM6?=
- =?us-ascii?Q?Brh637CxeH3mit8vwc396+8+Hi8uryXVFbFp24J01er2aaCrCCMcqr6sxVPL?=
- =?us-ascii?Q?B0V9kbrZq+HfMS9g7t+cvK/0z5/WgYTWmP+nr9J1lQshyBOICaNWWTYGG3xK?=
- =?us-ascii?Q?s02GpBBh2ZVboYn1kfOibIvLEgLVwZgXZC/T2OwQUMRz5LPJUT8cXbjK67qI?=
- =?us-ascii?Q?cgFoh7bcDYgQjj4tUPKcUqPEyZPm9fQ+e/J7YdxC6fWsYK9rkx61kDbh/Ypm?=
- =?us-ascii?Q?5gl9mXZPoRi30ojgzkFVNh0f1vpzLB7p6G/IY5ecKsHPV12b1N4btMG1WY8j?=
- =?us-ascii?Q?lkfFpRGfXNq8xJ8hRf4xTkoEPKLy3H8lAe8fjjB557G0foqmXHR0jlbOF7F7?=
- =?us-ascii?Q?8cPr9z83dlCtQ0CzvUEX4H9+JCOFsmaEXi3PW4sl5hMjt9FynyuD8b1uaPPP?=
- =?us-ascii?Q?DMMz8nX9of9JUWRRHu7lB8pX21gA2cwc6eTMDaHF9dpv0lQN8itAlkMuIjdo?=
- =?us-ascii?Q?b5Z+PrkN8NIZC2YCr6DkEBw+9V5ARcdDlOCU3J6N2feLx0HqKoU8NsIZkcaa?=
- =?us-ascii?Q?5YlnhCuOUFghBB2WafcLWMN2Df5+6Cn7/TIGA8YMx4PCJhzYmVMz2sY8F6VJ?=
- =?us-ascii?Q?EkHVws+H3ELkCVf0iUumWn0Kyb7iBfIUzOVJzzLo1wqU8moWuZNCVimlAvOj?=
- =?us-ascii?Q?afAxvN28Sy3qmfPYppVhpeJJVbLYBjQ4UMKJaUbF0AdtA/+EdN9em1Q7bA/q?=
- =?us-ascii?Q?2T4AuQQ5UkGe+5Rr4OWAnofVcFe2RHdjYUkwwKUsIZ4ivN4QaMS0zMkapd3i?=
- =?us-ascii?Q?Sg1ZmVj66GyffzW0ypaeLFc/nVwZdy3oVwNqPIlYJekQKvho1lt0ovaFlukD?=
- =?us-ascii?Q?z+jgxUJg4eNNTfhZKWouZp5tKLgdnvT3hW229Sq9HMvsBWkFCNADiY2KSfcy?=
- =?us-ascii?Q?o3d4lVp891PHyJtKrSnYUjT3sKRDv7g2+cleVbZWN4rLJpR+nnyZGm4RRyly?=
- =?us-ascii?Q?Bs4nNblfPkoRIjuqa2qBTCi5Zkx21+AijbRnbQeIgTC/eUJ7Wd24Qyqf/1Pv?=
- =?us-ascii?Q?yWOqEgdks3sfP1HLqwRVOi1pkEbfGNtbMh+oIHlVIijuaI9aTZdsvy5dSqjW?=
- =?us-ascii?Q?3AdYMyCUPoLWzcehxopu6gCitxFQEepzndanZ+JBHfqciSjIkObube1i3+7m?=
- =?us-ascii?Q?gBec0C9YhLUcbvce0T2pCOBPFQ/epnmVRT4O4JmPel6UJGEqWXOgpANjbf2a?=
- =?us-ascii?Q?/M42hLWa0dHtaET+1W2fw+sqLdmVgAAwih+RFPbOhcwIoRlEG1Y7eSHdkopc?=
- =?us-ascii?Q?I+M6OkNlnVoZwV5ErFZqy4B6IgdDJnPkiEQ6w8F2/GO96/gb1GX7DUWZkhY9?=
- =?us-ascii?Q?AfF7rweXPYXpAivwUFmI7ksjjNhjGFWh1IJ2JhsDKa0LXARa3VpLwBIsz14u?=
- =?us-ascii?Q?ZOVvvLPCMrHVDxvhLBtntww+qKpV9v9ICROvd9s9nH43IYTBERJ+/zU/zjsX?=
- =?us-ascii?Q?RA2/C5a2+7fVV1FaBM7/vU0=3D?=
-X-OriginatorOrg: siliconsignals.io
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5956d37-8ab1-4cd6-a8d3-08dbe138cb0c
-X-MS-Exchange-CrossTenant-AuthSource: MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 15:30:24.6501
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DS8JFyEPaBDX+gvGbPNT7qrpsGdHwdl2PAjosUZsJVZJzMKPfg+fiTAr6kQM3/OVxMp5CLEdiIaYuQpa0cTtPHC//XV3P7bDrP0JGkNxbY0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MAZPR01MB8039
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZSlBOiebenPKXBY4@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added tit interrupt support in inv_icm42600 imu driver.
+On Fri, Oct 13, 2023 at 02:08:10PM +0100, Catalin Marinas wrote:
 
-diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600.h b/drivers/iio/imu/inv_icm42600/inv_icm42600.h
-index 0e290c807b0f..9865155b06c4 100644
---- a/drivers/iio/imu/inv_icm42600/inv_icm42600.h
-+++ b/drivers/iio/imu/inv_icm42600/inv_icm42600.h
-@@ -187,6 +187,8 @@ struct inv_icm42600_state {
- #define INV_ICM42600_FIFO_CONFIG_STOP_ON_FULL		\
- 		FIELD_PREP(INV_ICM42600_FIFO_CONFIG_MASK, 2)
- 
-+#define INV_ICM42600_REG_MASK        GENMASK(7, 0)
-+
- /* all sensor data are 16 bits (2 registers wide) in big-endian */
- #define INV_ICM42600_REG_TEMP_DATA			0x001D
- #define INV_ICM42600_REG_ACCEL_DATA_X			0x001F
-@@ -239,6 +241,7 @@ struct inv_icm42600_state {
- #define INV_ICM42600_REG_PWR_MGMT0			0x004E
- #define INV_ICM42600_PWR_MGMT0_TEMP_DIS			BIT(5)
- #define INV_ICM42600_PWR_MGMT0_IDLE			BIT(4)
-+#define INV_ICM42600_PWR_ACCEL_MODE			BIT(1)
- #define INV_ICM42600_PWR_MGMT0_GYRO(_mode)		\
- 		FIELD_PREP(GENMASK(3, 2), (_mode))
- #define INV_ICM42600_PWR_MGMT0_ACCEL(_mode)		\
-@@ -306,6 +309,21 @@ struct inv_icm42600_state {
- #define INV_ICM42600_WHOAMI_ICM42622			0x46
- #define INV_ICM42600_WHOAMI_ICM42631			0x5C
- 
-+/* Register configs for tilt interrupt */
-+#define INV_ICM42605_REG_APEX_CONFIG4                  0x4043
-+#define INV_ICM42605_APEX_CONFIG4_MASK                 GENMASK(7,0)
-+
-+#define INV_ICM42605_REG_APEX_CONFIG0                  0x0056
-+#define INV_ICM42605_APEX_CONFIG0_TILT_ENABLE          BIT(4)
-+#define INV_ICM42605_APEX_CONFIG0                      BIT(1)
-+
-+#define INV_ICM42605_REG_INTF_CONFIG1                   0x404D
-+#define INV_ICM42605_INTF_CONFIG1_MASK                  GENMASK(5,0)
-+#define INV_ICM42605_INTF_CONFIG1_TILT_DET_INT1_EN      BIT(3)
-+
-+#define INV_ICM42605_REG_INT_STATUS3                   0x0038
-+
-+
- /* User bank 1 (MSB 0x10) */
- #define INV_ICM42600_REG_SENSOR_CONFIG0			0x1003
- #define INV_ICM42600_SENSOR_CONFIG0_ZG_DISABLE		BIT(5)
-@@ -364,6 +382,8 @@ typedef int (*inv_icm42600_bus_setup)(struct inv_icm42600_state *);
- extern const struct regmap_config inv_icm42600_regmap_config;
- extern const struct dev_pm_ops inv_icm42600_pm_ops;
- 
-+extern uint8_t inv_icm42605_int_reg;
-+
- const struct iio_mount_matrix *
- inv_icm42600_get_mount_matrix(const struct iio_dev *indio_dev,
- 			      const struct iio_chan_spec *chan);
-@@ -395,4 +415,8 @@ struct iio_dev *inv_icm42600_accel_init(struct inv_icm42600_state *st);
- 
- int inv_icm42600_accel_parse_fifo(struct iio_dev *indio_dev);
- 
-+int inv_icm42605_generate_tilt_interrupt(struct inv_icm42600_state *st);
-+
-+int inv_icm42605_disable_tilt_interrupt(struct inv_icm42600_state *st);
-+
- #endif
-diff --git a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-index b1e4fde27d25..2afa38547f52 100644
---- a/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-+++ b/drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
-@@ -47,6 +47,8 @@
- 		.ext_info = _ext_info,					\
- 	}
- 
-+uint8_t inv_icm42605_int_reg = 0;
-+
- enum inv_icm42600_accel_scan {
- 	INV_ICM42600_ACCEL_SCAN_X,
- 	INV_ICM42600_ACCEL_SCAN_Y,
-@@ -60,6 +62,74 @@ static const struct iio_chan_spec_ext_info inv_icm42600_accel_ext_infos[] = {
- 	{},
- };
- 
-+static ssize_t tilt_interrupt_show(struct device *dev,
-+                               struct device_attribute *attr, char *buf)
-+{
-+	struct inv_icm42600_state *st = dev_get_drvdata(dev);
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(st->map, inv_icm42605_int_reg, &val);
-+
-+	if (ret != 0) {
-+		return ret;
-+	}
-+
-+	snprintf(buf, PAGE_SIZE, "Read reg %x value %x\n", inv_icm42605_int_reg, val);
-+
-+	return strlen(buf);
-+}
-+
-+static ssize_t tilt_interrupt_store(struct device *dev,
-+		struct device_attribute *attr, const char *buf,
-+		size_t count)
-+{
-+	struct inv_icm42600_state *st = dev_get_drvdata(dev);
-+        int ret;
-+        int value;
-+
-+        if (!st) {
-+                return -EINVAL;
-+        }
-+
-+	if (kstrtoint(buf, 10, &value)) {
-+            return -EINVAL;
-+        }
-+
-+	inv_icm42605_int_reg = INV_ICM42605_REG_INT_STATUS3;
-+
-+	switch (value) {
-+            case 1:
-+                ret = inv_icm42605_generate_tilt_interrupt(st);
-+                if (ret != 0) {
-+                    return -EIO;
-+                }
-+                break;
-+            case 0:
-+                ret = inv_icm42605_disable_tilt_interrupt(st);
-+                if (ret != 0) {
-+                    return -EIO;
-+                }
-+                break;
-+            default:
-+                return -EINVAL;
-+        }
-+
-+        return count;
-+}
-+
-+static DEVICE_ATTR(tilt_interrupt, S_IRUGO | S_IWUSR,
-+                   tilt_interrupt_show, tilt_interrupt_store);
-+
-+static struct attribute *icm42605_attrs[] = {
-+        &dev_attr_tilt_interrupt.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group icm42605_attrs_group = {
-+        .attrs = icm42605_attrs,
-+};
-+
- static const struct iio_chan_spec inv_icm42600_accel_channels[] = {
- 	INV_ICM42600_ACCEL_CHAN(IIO_MOD_X, INV_ICM42600_ACCEL_SCAN_X,
- 				inv_icm42600_accel_ext_infos),
-@@ -702,6 +772,7 @@ static const struct iio_info inv_icm42600_accel_info = {
- 	.update_scan_mode = inv_icm42600_accel_update_scan_mode,
- 	.hwfifo_set_watermark = inv_icm42600_accel_hwfifo_set_watermark,
- 	.hwfifo_flush_to_buffer = inv_icm42600_accel_hwfifo_flush,
-+	.attrs = &icm42605_attrs_group,
- };
- 
- struct iio_dev *inv_icm42600_accel_init(struct inv_icm42600_state *st)
-@@ -791,3 +862,67 @@ int inv_icm42600_accel_parse_fifo(struct iio_dev *indio_dev)
- 
- 	return 0;
- }
-+
-+int inv_icm42605_generate_tilt_interrupt(struct inv_icm42600_state *st)
-+{
-+	int ret;
-+	int val;
-+	char sleep = 10;
-+
-+	ret = regmap_update_bits(st->map, INV_ICM42605_REG_APEX_CONFIG4,
-+                                 INV_ICM42605_APEX_CONFIG4_MASK, 0);
-+        if (ret)
-+                return ret;
-+
-+	val = INV_ICM42600_PWR_ACCEL_MODE;
-+	ret = regmap_write(st->map, INV_ICM42600_REG_PWR_MGMT0, val);
-+        if (ret)
-+                return ret;
-+
-+	val = INV_ICM42605_APEX_CONFIG0;
-+	ret = regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, val);
-+        if (ret)
-+                return ret;
-+
-+	val = INV_ICM42600_SIGNAL_PATH_RESET_DMP_MEM_RESET;
-+	ret = regmap_write(st->map, INV_ICM42600_REG_SIGNAL_PATH_RESET, val);
-+        if (ret)
-+                return ret;
-+
-+	msleep(sleep);
-+
-+	val = INV_ICM42600_SIGNAL_PATH_RESET_DMP_INIT_EN;
-+	ret = regmap_write(st->map, INV_ICM42600_REG_SIGNAL_PATH_RESET, val);
-+        if (ret)
-+                return ret;
-+
-+	val = INV_ICM42605_APEX_CONFIG0_TILT_ENABLE |
-+	      INV_ICM42605_APEX_CONFIG0;
-+	ret = regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, val);
-+        if (ret)
-+                return ret;
-+
-+	ret = regmap_update_bits(st->map, INV_ICM42605_REG_INTF_CONFIG1,
-+                                 INV_ICM42605_INTF_CONFIG1_MASK,
-+				 INV_ICM42605_INTF_CONFIG1_TILT_DET_INT1_EN);
-+        if (ret)
-+                return ret;
-+
-+	return 0;
-+}
-+
-+int inv_icm42605_disable_tilt_interrupt(struct inv_icm42600_state *st)
-+{
-+	int ret;
-+
-+	ret = regmap_write(st->map, INV_ICM42605_REG_APEX_CONFIG0, 0);
-+        if (ret)
-+                return ret;
-+
-+	ret = regmap_update_bits(st->map, INV_ICM42605_REG_INTF_CONFIG1,
-+			INV_ICM42605_INTF_CONFIG1_MASK, 0);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
--- 
-2.25.1
+[...]
 
+> > > Things can go wrong but that's not because Device does anything better.
+> > > Given the RAS implementation, external aborts caused on Device memory
+> > > (e.g. wrong size access) is uncontainable. For Normal NC it can be
+> > > contained (I can dig out the reasoning behind this if you want, IIUC
+> > > something to do with not being able to cancel an already issued Device
+> > > access since such accesses don't allow speculation due to side-effects;
+> > > for Normal NC, it's just about the software not getting the data).
+> > 
+> > I really think these details belong in the commit message.
+> 
+> I guess another task for Lorenzo ;).
+
+Updated commit log (it might be [is] too verbose) below, it should probably
+be moved into a documentation file but to do that I should decouple
+it from this changeset (ie a document explaining memory attributes
+and error containment for ARM64 - indipendent from KVM S2 defaults).
+
+I'd also add a Link: to the lore archive entry for reference (did not
+add it in the log below).
+
+Please let me know what's the best option here.
+
+Thanks,
+Lorenzo
+
+-- >8 --
+Currently, KVM for ARM64 maps at stage 2 memory that is
+considered device (ie it is not RAM) with DEVICE_nGnRE
+memory attributes; this setting overrides (as per the ARM
+architecture [1]) any device MMIO mapping present at stage
+1, resulting in a set-up whereby a guest operating system
+can't determine device MMIO mapping memory attributes on its
+own but it is always overriden by the KVM stage 2 default.
+
+This set-up does not allow guest operating systems to select
+device memory attributes on a page by page basis independently
+from KVM stage-2 mappings (refer to [1], "Combining stage 1 and stage
+2 memory type attributes"), which turns out to be an issue in that
+guest operating systems (eg Linux) may request to map
+devices MMIO regions with memory attributes that guarantee
+better performance (eg gathering attribute - that for some
+devices can generate larger PCIe memory writes TLPs)
+and specific operations (eg unaligned transactions) such as
+the NormalNC memory type.
+
+The default device stage 2 mapping was chosen in KVM
+for ARM64 since it was considered safer (ie it would
+not allow guests to trigger uncontained failures
+ultimately crashing the machine) but this turned out
+to be imprecise.
+
+Failures containability is a property of the platform
+and is independent from the memory type used for MMIO
+device memory mappings.
+
+Actually, DEVICE_nGnRE memory type is even more problematic
+than eg Normal-NC memory type in terms of faults containability
+in that eg aborts triggered on DEVICE_nGnRE loads cannot be made,
+architecturally, synchronous (ie that would imply that the processor
+should issue at most 1 load transaction at a time - ie it can't pipeline
+them - otherwise the synchronous abort semantics would break the
+no-speculation attribute attached to DEVICE_XXX memory).
+
+This means that regardless of the combined stage1+stage2 mappings a
+platform is safe if and only if device transactions cannot trigger
+uncontained failures and that in turn relies on platform
+capabilities and the device type being assigned (ie PCIe AER/DPC
+error containment and RAS architecture[3]); therefore the default
+KVM device stage 2 memory attributes play no role in making device
+assignment safer for a given platform (if the platform design
+adheres to design guidelines outlined in [3]) and therefore can
+be relaxed.
+
+For all these reasons, relax the KVM stage 2 device
+memory attributes from DEVICE_nGnRE to Normal-NC.
+
+A different Normal memory type default at stage-2
+(eg Normal Write-through) could have been chosen
+instead of Normal-NC but Normal-NC was chosen
+because:
+
+- Its attributes are well-understood compared to
+  other Normal memory types for MMIO mappings
+- On systems implementing S2FWB (FEAT_S2FWB), that's the only sensible
+  default for normal memory types. For systems implementing
+  FEAT_S2FWB (see [1] D8.5.5 S2=stage-2 - S2 MemAttr[3:0]), the options
+  to choose the memory types are as follows:
+
+  if S2 MemAttr[2] == 0, the mapping defaults to DEVICE_XXX
+  (XXX determined by S2 MemAttr[1:0]). This is what we have
+  today (MemAttr[2:0] == 0b001) and therefore it is not described
+  any further.
+
+  if S2 MemAttr[2] == 1, there are the following options:
+ 
+  S2 MemAttr[2:0] | Resulting mapping
+  -----------------------------------------------------------------------------
+  0b101           | Prevent the guest from selecting cachable memory type, it
+		  | allows it to choose Device-* or Normal-NC
+  0b110           | It forces write-back memory type; it breaks MMIO.
+  0b111           | Allow the VM to select any memory type including cachable.
+		  | It is unclear whether this is safe from a platform
+		  | perspective, especially wrt uncontained failures and
+		  | cacheability (eg device reclaim/reset and cache
+		  | maintenance).
+  ------------------------------------------------------------------------------
+
+  - For !FEAT_S2FWB systems, it is logical to choose a default S2 mapping
+    identical to FEAT_S2FWB (that basically would force Normal-NC, see
+    option S2 MemAttr[2:0] == 0b101 above), to guarantee a coherent approach
+    between the two
+
+Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
+trigger any issue on guest device reclaim use cases either (ie device
+MMIO unmap followed by a device reset) at least for PCIe devices, in that
+in PCIe a device reset is architected and carried out through PCI config
+space transactions that are naturally ordered wrt MMIO transactions
+according to the PCI ordering rules.
+
+Having Normal-NC S2 default puts guests in control (thanks to
+stage1+stage2 combined memory attributes rules [1]) of device MMIO
+regions memory mappings, according to the rules described in [1]
+and summarized here ([(S1) - stage1], [(S2) - stage 2]):
+
+S1	     |  S2	     | Result
+NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
+NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
+NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
+DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
+
+It is worth noting that currently, to map devices MMIO space to user
+space in a device pass-through use case the VFIO framework applies memory
+attributes derived from pgprot_noncached() settings applied to VMAs, which
+result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
+
+This means that a userspace mapping for device MMIO space carried
+out with the current VFIO framework and a guest OS mapping for the same
+MMIO space may result in a mismatched alias as described in [2].
+
+Defaulting KVM device stage-2 mappings to Normal-NC attributes does not change
+anything in this respect, in that the mismatched aliases would only affect
+(refer to [2] for a detailed explanation) ordering between the userspace and
+GuestOS mappings resulting stream of transactions (ie it does not cause loss of
+property for either stream of transactions on its own), which is harmless
+given that the userspace and GuestOS access to the device is carried
+out through independent transactions streams.
+
+[1] section D8.5 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+[2] section B2.8 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+[3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf
