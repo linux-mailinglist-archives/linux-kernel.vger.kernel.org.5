@@ -2,210 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDDC7E754D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7357E75C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345425AbjKIXu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55966 "EHLO
+        id S1345445AbjKJAOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIXux (ORCPT
+        with ESMTP id S234801AbjKJAOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:50:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97D13868;
-        Thu,  9 Nov 2023 15:50:51 -0800 (PST)
+        Thu, 9 Nov 2023 19:14:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94364680
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 16:14:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699573851; x=1731109851;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vRiO16edNZkgPzULuOQ/IUBTwsOBdUZa0yBNmPFTM/s=;
-  b=AHvnPBCQxvsUGQu/mI86LxhIoUTMXaxlnj+vCI61dK7meJFo2PEx9Gbs
-   BZDgyHJfOo4rTibMXqCVtlKB7lvay7Yf3aOsBNS8V6LQrMfKMV4r442h0
-   tnPCQ4XZXgYQOWLrwb5e6VpBAJN1oPdE4Qv991c4EikDYN6Xn+yEas3DQ
-   StDMMED8zbliBUifb1A0aBGm1wuT47Bo6FfvzsxsRtmS1y/n52TI3P/Be
-   iFCwbld+TTjhkkJkFdtQuE4gT36mVEUMWeHaKRW7xNlb9Juy1dwn16bhp
-   OCq1jocGbhFIRjkAAaKtdiHDdBUGM8HPtA1cLecmLoQoizn9yKQYZh+cq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375137973"
+  t=1699575252; x=1731111252;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=lSnspuMIwuprMq/bH3iGi3403dX/kcExvXa3qR6TZXU=;
+  b=SXEy8gkzpKikIyniFmRhGWONNk/OG+5/j/lLvK3VTmXFd0wYNTEYG9Vw
+   egseKzsLgchpw88bUbDIaexlHY1ml2ErZ3PTLFGwXUd2Apf64UMszfpV3
+   3iwSbpI97K9fAVr65xjDYUjiot6joYmiZOXG2zfbAj9vW0r/9wFxmNE9y
+   +4FLRcGdbQ9A5zS74pMnPhhGeOvJKw7AdqDPgHug/VkEVcLrAAkUa8nEU
+   oRafbNQaJRez40WKHUNvUzb6sF/ev9ydJzU5onX3URmwOevR1tC/Qd60c
+   vv1E7oBEOfKGR9MWjcVuVUbD2Tze63zVY9n2kDJr3h85+RzXsow+6SwpP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="456597086"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="375137973"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 15:50:51 -0800
+   d="scan'208";a="456597086"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:14:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="937013280"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="937013280"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 15:50:50 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 15:50:50 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 15:50:50 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 15:50:50 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 9 Nov 2023 15:50:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TRk2xY8Id/Hd1LZISO+XVI3JM91XmGylm54g2K5muQ6Eu/o2L6FlRay/BbDXl2GTlWd7lJMBpVTgxcOEeyh+Qr4/E03z4b9pbmMBytQpU660oYVxVlaEZtFA1CN4ksrMq6HeUNE+s5VBND1QW+YsH4EzternyfToX4fjMjTUckEc9ARIvMOHxSbJOYhcQ8/WC3ZMPY56glIachLlgs7wCM2Af0+cR8oaDLMXcaSG+I0dZTS6sremcwkB+RrX8oYDmHxVXV0vobcyiFknbkZJvxZIqobmeRJUTWVFJisez5pZBAFz/AlfJeoCAM+Qzpqjcu8EcFIlQtGe5ibHWIVTQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HsmRsGEOB0ofWifvbx9SbeXYhmkrLGcTIbMgegTwUCM=;
- b=GegR1BOF+1YQibQYXsrQuypUSxih/fvKBn5BfO86jsTzB40BIjVrp6qZi8Zr5FDOVit+JrUC9PwtRsJJrW15TJMcb2YfsSLvg4OJ0EZiHQlU1Uaff2tmgLfehutAiOFoPzRUc6GRVKhjOicIcNVGNVLMNPNkDnc859mwbq2yF91BfcvGxCSYjB5ps9HChYWquAz9bI+QxmUBe/rKoK0Eh6OPPztNdEVBYxhn4TRseGKKYuY+HozwPLRtfa2nNej5qQJPVj565pXma4H6ytwg1mVARr4cSBVWqMaDq16QFiOEC7rJA3xZSMxOgHb70gi6KQZ01uyzfeRbXRzVK02FjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
- by MW4PR11MB7056.namprd11.prod.outlook.com (2603:10b6:303:21a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 23:50:37 +0000
-Received: from SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3]) by SA1PR11MB6734.namprd11.prod.outlook.com
- ([fe80::3d98:6afd:a4b2:49e3%6]) with mapi id 15.20.6954.028; Thu, 9 Nov 2023
- 23:50:37 +0000
-From:   "Li, Xin3" <xin3.li@intel.com>
-To:     "Gao, Chao" <chao.gao@intel.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Subject: RE: [PATCH v1 06/23] KVM: VMX: Defer enabling FRED MSRs save/load
- until after set CPUID
-Thread-Topic: [PATCH v1 06/23] KVM: VMX: Defer enabling FRED MSRs save/load
- until after set CPUID
-Thread-Index: AQHaEnYK31xdVTOu4kKzxsXb22qo7rBxtbMAgADxRyA=
-Date:   Thu, 9 Nov 2023 23:50:37 +0000
-Message-ID: <SA1PR11MB67347A31E38D604FDF2BD606A8AFA@SA1PR11MB6734.namprd11.prod.outlook.com>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-7-xin3.li@intel.com> <ZUyjPtaxOgDQQUwA@chao-email>
-In-Reply-To: <ZUyjPtaxOgDQQUwA@chao-email>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|MW4PR11MB7056:EE_
-x-ms-office365-filtering-correlation-id: 62a8b1ca-2883-42e1-37a4-08dbe17eac51
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hRoT+4q+CdYe3skxZmKFFatTNU8ocIK+CXcIoh0+YUkP24g5/Ccpp7fClYnduv6dPm+vpSeQJCLpdbbjuILZ/j2RNJaqAz3vHJc7ijQqNPVfc1KL87rtO7sa9hqKuQLBzgDSHCrSV7izjMR0p1bjOvDW9mWn7mg4+VudjaOD0dNstV7L0un1oono9thxrdM1LZbYQ7fqMDR2SSH19KVFrbUzP63wNXghSW8Thzf4QAihgsJNkNAkW+YC9NA+uCzaQ5fx5GffCNQsVWI1GdCDfQUHMOeR4jZuee8/ml+0Apx7LPjXS/0cQu+8wFSxPawfrr4WNWXtD1NMWAGXftR4pRTuHEtUK1F3A6V3P/zt31PD3mvOXmC5OQIbOfVzoCSRBIVDkFoOTATWnAHTMBu/uUV2SG+slS8owxnctmZBEaJs6oJ4s9Mo1TqQKyzBFTBfZ3y5+WzVcI8Uc28wMUvRSV4id3A373SQvC++zBRE+P7zE/vPVjcDf4Leq8Gi4Q76se+Vy3Vcj0eLTKj8Bfx/SiroyuLb4Xj431aI7gGMDhXR/tXkdmgazxZz2PKGSnXXrpztqVbvq4fdKnSooQI6/MyBQSCP91/Qi7lgbualsMI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(39860400002)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(4326008)(8936002)(9686003)(64756008)(122000001)(52536014)(82960400001)(316002)(478600001)(26005)(966005)(66476007)(66556008)(66446008)(6636002)(66946007)(54906003)(6506007)(7696005)(71200400001)(38070700009)(5660300002)(8676002)(76116006)(55016003)(2906002)(83380400001)(38100700002)(6862004)(41300700001)(33656002)(7416002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bRhrnBH8UNe8mS0h/D4sNVpa8Ty4dYYpk82unXQvVxDYP7Wf38jQAXbuoeXj?=
- =?us-ascii?Q?NHWuAhsl8jIuAzz5g64RHy1MCPvW164TiZweU+rD+qrmbMtyI4ozGpH3G9QQ?=
- =?us-ascii?Q?q9dFiwY60+CW51uT2IMDBTE5TjdRDkhVMcs6s0BZ4ymHKwM4vi3DdUe2pFX3?=
- =?us-ascii?Q?tff48OnayUMTnTwFMSHMTh29uJsLRvwda4yrusPTuMEkKTof03yAWvtxN4Qu?=
- =?us-ascii?Q?gbqA5U8oKofJxxInqbbChFI56VCa8m18ACcBm2lHhnKLWqOdgLhbOQ/aylD9?=
- =?us-ascii?Q?T8tJz27C7vqKvupJNFA7Up1REv7Mh+jKYTyaqwfHCsQmlZ1+Ip16qw4fHzSl?=
- =?us-ascii?Q?SyGcDNeVvBWV24SRAp2wYJo7JvEVMJrU7MjYM2QNzZRKI08JCW8quFCG7/Sy?=
- =?us-ascii?Q?hHnPs8RVM4es1pfJswRHNJsjXDQcRc2msxmJxWYHn0AQf8w8r6u+VN6tmGti?=
- =?us-ascii?Q?orM+k+ZWKIJBN5dqnWqhdt96F6NpqC1FV82QQhLg9F4h+OiAmsHZW/056eHJ?=
- =?us-ascii?Q?zv1/0WNhE3UGWggumqjOOW7/2dgqyRXiZiIqBS+x7kUn/NVguJDme5kRemRJ?=
- =?us-ascii?Q?pf/2J4uqJfx+ruuTva1Twn/NItjoaa7dkZHX4g7FL1NncJMLpicozs10mDLD?=
- =?us-ascii?Q?0dheiDKlsd+URP0/Ng3phVZxNGaXZATjkG0DVwePT1ms9YljJ2HkttLBrBnP?=
- =?us-ascii?Q?NkaJUDt8zeR6i4PE24Lu0Osm8ADl+VRfsIGffRd8FoNhAnRu0sIpAW64+wfa?=
- =?us-ascii?Q?dx8gc6wWWMJ1p2E/uKbaveIYCzVi6QE2dmfegNZRULdRCm/TZ17aoAbyXIjF?=
- =?us-ascii?Q?O0uWKQVtkG6fOBLVoG8W/IMlM1lmdNPVeeIEFMahuwmU70u06vlGUNU2GfjB?=
- =?us-ascii?Q?/k0R/wc8GpArxq48apx3o5pZEVAQQEEQTIkErRhz+F0WyvJaReqMaB85ShR4?=
- =?us-ascii?Q?MQ6gD43kBOSspdNhxaV6cpiA93dTHxnJ4uJ9dJc9uUnl4KSmj2yarg11F9kX?=
- =?us-ascii?Q?vk4NKXscUMO+Psl49TG2lV5smantkh08eZA8/18NFO/VeH0FA0Yj0DJD1TC9?=
- =?us-ascii?Q?dG/9/Hn2S0vafCWxbYBe3Ug4lkWrAXqHY5hLFqI7EDOax2VdHKt973Jrs4Ht?=
- =?us-ascii?Q?YDj7qt/feiyKUf8Ef729nzihCzLxEJV7gtX4uEuV1hm1XbasVIJ1LM0F1J39?=
- =?us-ascii?Q?JD1hkRCEjxkk/Nqm/ydcGjiaImK7el6NBWFe7YeWVcWaqMiWjQn/ub/cZSys?=
- =?us-ascii?Q?DGb0YwkFqqA7k2OoRH9nj6M1oI59S6mrF8Pv9bT2WBjICStEKm3CgJwLtL8O?=
- =?us-ascii?Q?xPJ5szgAQrEnVuwFmPw4W1YCVzrjO3UH1hAzpxVnfq3OYP2yWfGp/vLErQQ0?=
- =?us-ascii?Q?cPae7C2OJaBIbtZYyvAoXY4G/p4AREkScxpvK4NbcjG2ECRwy8j0GcAeqVLy?=
- =?us-ascii?Q?vCYqEDQqw/hQxt5YnAYxStFb33Wz3+Nr6cVXtTQZrN6ObwoHwM5fi6RsL5bu?=
- =?us-ascii?Q?uWlo9kjLcWcnSFt8Dy+L83cNOUisO1UnwOfP0prLHWLK61++wiAHBaMgskot?=
- =?us-ascii?Q?WxIdKCl5Jg26RaKxEI4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="11307866"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 09 Nov 2023 16:14:02 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1F9r-0009Go-2O;
+        Fri, 10 Nov 2023 00:13:59 +0000
+Date:   Fri, 10 Nov 2023 07:53:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Calvin Owens <calvinowens@fb.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
+Message-ID: <202311100727.f9HgBYnq-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62a8b1ca-2883-42e1-37a4-08dbe17eac51
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2023 23:50:37.5903
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JTNXHg7RtycSq4dq2y+fWW6h9M9nsCgk9myfgYYjP7f4ikcJkEWmQu+VkdPepyUfUxmSXIMoy3b3uaARtmy1ig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7056
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >+static void vmx_vcpu_config_fred_after_set_cpuid(struct kvm_vcpu *vcpu)
-> >+{
-> >+	struct vcpu_vmx *vmx =3D to_vmx(vcpu);
-> >+
-> >+	if (!cpu_feature_enabled(X86_FEATURE_FRED) ||
-> >+	    !guest_cpuid_has(vcpu, X86_FEATURE_FRED))
-> >+		return;
-> >+
-> >+	/* Enable loading guest FRED MSRs from VMCS */
-> >+	vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_FRED);
-> >+
-> >+	/*
-> >+	 * Enable saving guest FRED MSRs into VMCS and loading host FRED MSRs
-> >+	 * from VMCS.
-> >+	 */
-> >+	vm_exit_controls_setbit(vmx,
-> VM_EXIT_ACTIVATE_SECONDARY_CONTROLS);
-> >+	secondary_vm_exit_controls_setbit(vmx,
-> >+					  SECONDARY_VM_EXIT_SAVE_IA32_FRED
-> |
-> >+
-> SECONDARY_VM_EXIT_LOAD_IA32_FRED);
->=20
-> all above vmcs controls need to be cleared if guest doesn't enumerate FRE=
-D, see
->=20
-> https://lore.kernel.org/all/ZJYzPn7ipYfO0fLZ@google.com/
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6bc986ab839c844e78a2333a02e55f02c9e57935
+commit: bdb4d100afe9818aebd1d98ced575c5ef143456c procfs: always expose /proc/<pid>/map_files/ and make it readable
+date:   8 years ago
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231110/202311100727.f9HgBYnq-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100727.f9HgBYnq-lkp@intel.com/reproduce)
 
-Good point, the user space could set cpuid multiple times...
-=20
-> Clearing VM_EXIT_ACTIVATE_SECONDARY_CONTROLS may be problematic when
-> new bits are added to secondary vmcs controls. Why not keep
-> VM_EXIT_ACTIVATE_SECONDARY_CONTROLS always on if it is supported? or you
-> see any perf impact?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100727.f9HgBYnq-lkp@intel.com/
 
-I think it from the other way, why keeps hw loading it on every vmentry
-even if it's not used by a guest?
+sparse warnings: (new ones prefixed by >>)
+>> fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
+>> fs/proc/base.c:2039:42: sparse: sparse: cast from restricted fmode_t
+   fs/proc/base.c:2138:48: sparse: sparse: cast from restricted fmode_t
+   fs/proc/base.c:1033:24: sparse: sparse: context imbalance in 'oom_adj_read' - different lock contexts for basic block
+   fs/proc/base.c:1136:24: sparse: sparse: context imbalance in 'oom_score_adj_read' - different lock contexts for basic block
+   fs/proc/base.c:2166:13: sparse: sparse: context imbalance in 'timers_start' - wrong count at exit
+   fs/proc/base.c:2192:36: sparse: sparse: context imbalance in 'timers_stop' - unexpected unlock
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/device.h:17,
+                    from include/linux/node.h:17,
+                    from include/linux/swap.h:10,
+                    from fs/proc/base.c:66:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     496 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/cgroup.h:19,
+                    from include/linux/memcontrol.h:22,
+                    from include/linux/swap.h:8:
+   include/linux/kernfs.h:424:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     424 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   In file included from fs/proc/base.c:94:
+   fs/proc/internal.h: In function 'name_to_int':
+   fs/proc/internal.h:117:28: warning: pointer targets in initialization of 'const char *' from 'const unsigned char *' differ in signedness [-Wpointer-sign]
+     117 |         const char *name = qstr->name;
+         |                            ^~~~
+   In file included from include/linux/fs.h:7,
+                    from include/linux/proc_fs.h:8,
+                    from fs/proc/base.c:54:
+   fs/proc/base.c: In function 'proc_fill_cache':
+   fs/proc/base.c:1814:39: warning: pointer targets in initialization of 'const unsigned char *' from 'const char *' differ in signedness [-Wpointer-sign]
+    1814 |         struct qstr qname = QSTR_INIT(name, len);
+         |                                       ^~~~
+   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
+      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
+         |                                                    ^
+   fs/proc/base.c:1814:39: note: (near initialization for 'qname.name')
+    1814 |         struct qstr qname = QSTR_INIT(name, len);
+         |                                       ^~~~
+   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
+      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
+         |                                                    ^
+   fs/proc/base.c: In function 'dname_to_vma_addr':
+   fs/proc/base.c:1846:34: warning: pointer targets in passing argument 1 of 'sscanf' differ in signedness [-Wpointer-sign]
+    1846 |         if (sscanf(dentry->d_name.name, "%lx-%lx", start, end) != 2)
+         |                    ~~~~~~~~~~~~~~^~~~~
+         |                                  |
+         |                                  const unsigned char *
+   In file included from include/asm-generic/bug.h:13,
+                    from arch/x86/include/asm/bug.h:35,
+                    from include/linux/bug.h:4,
+                    from include/linux/thread_info.h:11,
+                    from arch/x86/include/asm/uaccess.h:8,
+                    from fs/proc/base.c:50:
+   include/linux/kernel.h:418:12: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     418 | int sscanf(const char *, const char *, ...);
+         |            ^~~~~~~~~~~~
+   fs/proc/base.c: In function 'proc_map_files_readdir':
+   fs/proc/base.c:2123:49: warning: pointer targets in passing argument 1 of 'snprintf' differ in signedness [-Wpointer-sign]
+    2123 |                         info.len = snprintf(info.name,
+         |                                             ~~~~^~~~~
+         |                                                 |
+         |                                                 unsigned char *
+   include/linux/kernel.h:405:20: note: expected 'char *' but argument is of type 'unsigned char *'
+     405 | int snprintf(char *buf, size_t size, const char *fmt, ...);
+         |              ~~~~~~^~~
+   fs/proc/base.c:2135:40: warning: pointer targets in passing argument 3 of 'proc_fill_cache' differ in signedness [-Wpointer-sign]
+    2135 |                                       p->name, p->len,
+         |                                       ~^~~~~~
+         |                                        |
+         |                                        unsigned char *
+   fs/proc/base.c:1810:21: note: expected 'const char *' but argument is of type 'unsigned char *'
+    1810 |         const char *name, int len,
+         |         ~~~~~~~~~~~~^~~~
+   fs/proc/base.c: In function 'proc_flush_task_mnt':
+   fs/proc/base.c:2876:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
+    2876 |         name.name = buf;
+         |                   ^
+   fs/proc/base.c:2888:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
+    2888 |         name.name = buf;
+         |                   ^
+   fs/proc/base.c:2894:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
+    2894 |         name.name = "task";
+         |                   ^
+   fs/proc/base.c:2895:31: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
+    2895 |         name.len = strlen(name.name);
+         |                           ~~~~^~~~~
+         |                               |
+         |                               const unsigned char *
+   In file included from arch/x86/include/asm/string.h:4,
+                    from include/linux/string.h:17,
+                    from include/linux/dynamic_debug.h:111,
+                    from include/linux/printk.h:277,
+                    from include/linux/kernel.h:13:
+   arch/x86/include/asm/string_64.h:64:27: note: expected 'const char *' but argument is of type 'const unsigned char *'
+      64 | size_t strlen(const char *s);
+         |               ~~~~~~~~~~~~^
+   fs/proc/base.c:2900:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
+    2900 |         name.name = buf;
 
-Different CPUs may implement it in different ways, which we can't assume.
+vim +1980 fs/proc/base.c
 
-Other features needing it should set it separately, say with a refcount.
+bdb4d100afe981 Calvin Owens         2015-09-09  1975  
+c52a47ace7ef58 Al Viro              2013-06-15  1976  static int
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1977  proc_map_files_instantiate(struct inode *dir, struct dentry *dentry,
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1978  			   struct task_struct *task, const void *ptr)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1979  {
+7b540d0646ce12 Al Viro              2012-08-27 @1980  	fmode_t mode = (fmode_t)(unsigned long)ptr;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1981  	struct proc_inode *ei;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1982  	struct inode *inode;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1983  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1984  	inode = proc_pid_make_inode(dir->i_sb, task);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1985  	if (!inode)
+c52a47ace7ef58 Al Viro              2013-06-15  1986  		return -ENOENT;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1987  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1988  	ei = PROC_I(inode);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1989  	ei->op.proc_get_link = proc_map_files_get_link;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1990  
+bdb4d100afe981 Calvin Owens         2015-09-09  1991  	inode->i_op = &proc_map_files_link_inode_operations;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1992  	inode->i_size = 64;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1993  	inode->i_mode = S_IFLNK;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1994  
+7b540d0646ce12 Al Viro              2012-08-27  1995  	if (mode & FMODE_READ)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1996  		inode->i_mode |= S_IRUSR;
+7b540d0646ce12 Al Viro              2012-08-27  1997  	if (mode & FMODE_WRITE)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1998  		inode->i_mode |= S_IWUSR;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  1999  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2000  	d_set_d_op(dentry, &tid_map_files_dentry_operations);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2001  	d_add(dentry, inode);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2002  
+c52a47ace7ef58 Al Viro              2013-06-15  2003  	return 0;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2004  }
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2005  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2006  static struct dentry *proc_map_files_lookup(struct inode *dir,
+00cd8dd3bf95f2 Al Viro              2012-06-10  2007  		struct dentry *dentry, unsigned int flags)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2008  {
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2009  	unsigned long vm_start, vm_end;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2010  	struct vm_area_struct *vma;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2011  	struct task_struct *task;
+c52a47ace7ef58 Al Viro              2013-06-15  2012  	int result;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2013  	struct mm_struct *mm;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2014  
+c52a47ace7ef58 Al Viro              2013-06-15  2015  	result = -ENOENT;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2016  	task = get_proc_task(dir);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2017  	if (!task)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2018  		goto out;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2019  
+c52a47ace7ef58 Al Viro              2013-06-15  2020  	result = -EACCES;
+eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2021  	if (!ptrace_may_access(task, PTRACE_MODE_READ))
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2022  		goto out_put_task;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2023  
+c52a47ace7ef58 Al Viro              2013-06-15  2024  	result = -ENOENT;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2025  	if (dname_to_vma_addr(dentry, &vm_start, &vm_end))
+eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2026  		goto out_put_task;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2027  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2028  	mm = get_task_mm(task);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2029  	if (!mm)
+eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2030  		goto out_put_task;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2031  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2032  	down_read(&mm->mmap_sem);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2033  	vma = find_exact_vma(mm, vm_start, vm_end);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2034  	if (!vma)
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2035  		goto out_no_vma;
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2036  
+05f564849d4949 Stanislav Kinsbursky 2012-11-26  2037  	if (vma->vm_file)
+7b540d0646ce12 Al Viro              2012-08-27  2038  		result = proc_map_files_instantiate(dir, dentry, task,
+7b540d0646ce12 Al Viro              2012-08-27 @2039  				(void *)(unsigned long)vma->vm_file->f_mode);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2040  
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2041  out_no_vma:
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2042  	up_read(&mm->mmap_sem);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2043  	mmput(mm);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2044  out_put_task:
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2045  	put_task_struct(task);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2046  out:
+c52a47ace7ef58 Al Viro              2013-06-15  2047  	return ERR_PTR(result);
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2048  }
+640708a2cff7f8 Pavel Emelyanov      2012-01-10  2049  
 
+:::::: The code at line 1980 was first introduced by commit
+:::::: 7b540d0646ce122f0ba4520412be91e530719742 proc_map_files_readdir(): don't bother with grabbing files
+
+:::::: TO: Al Viro <viro@zeniv.linux.org.uk>
+:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
