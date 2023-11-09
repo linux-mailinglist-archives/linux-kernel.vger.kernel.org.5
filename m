@@ -2,406 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A30A7E71B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A543A7E71C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345041AbjKISu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S1345045AbjKISwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:52:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344906AbjKISu2 (ORCPT
+        with ESMTP id S1344959AbjKISwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:50:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935A03C0F
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699555826; x=1731091826;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=PSE0idgq6SajhnkRn716aJkBnm8hVFRHpsof0XwRQqE=;
-  b=UzzXyz86tYwsDOcv4AEmwxjVRsNw7r4YF5IMH2+496QUZ+GYXfQT/+3m
-   8eh71iV1AZu0cltwglf8kDaOempwURhgD831e42nB64nHSFDzYl08ICUI
-   JXwjhF/EadKpGwHpjvLJ+sh4jQ+sHOX/LPvQ+Z5JDOMeC/LH44kEZVKRF
-   0dox0sbNOcWOzhzG3aLskFx/IgLAWD/bIbnvG1AAYtDt/EWHNRs4erXR9
-   J7/9u6W8Bns6+misvXZYBwaA5dUqwBVYqVTkw8K9VgamNlgMbFgTcncNT
-   JaJt56sdAy0pspc+uc3/BawCAoN+H8c4yHfMdCgl2HlKmCFiRZwsfurIm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375094079"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="375094079"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 10:50:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="792639137"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="792639137"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2023 10:50:24 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1A6g-000930-0I;
-        Thu, 09 Nov 2023 18:50:22 +0000
-Date:   Fri, 10 Nov 2023 02:49:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202311100231.vnhbJRVp-lkp@intel.com>
+        Thu, 9 Nov 2023 13:52:20 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755DE3C10;
+        Thu,  9 Nov 2023 10:52:18 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cc9b626a96so9912085ad.2;
+        Thu, 09 Nov 2023 10:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699555938; x=1700160738; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rOJwvxWy/qg4Uii7OOcQ3P1P+ebAD+J/sxGrJB+Tt8I=;
+        b=ZZe+7FFAQ2j8xwiIywwGjSjuq9i9YI98rt3khJjC3c1144z36bB/tSUnOpsC5KiUW7
+         f+Jodli3/QM+ZmZ/rXtnB8DNXyl6Z9AUTUsO39uk79tbyeLkr28xr4IuA6T1XQyFDE8K
+         jtBaziG+/e6z6mb9qBH7N3vEYStmk/U6LXJEHExMF08V6kRLbM4JXQ6iRP4QzEEbHKOy
+         WIAC1kFCPTtdB+FwwiL1Fw9iv8JUigHw407flVFwVIZBrzm0Z+V1bscqhtJ6mdclIGiW
+         9x+47ahnnKnAU3N+qn/51khg836eSAO5VEimKCA7JG8QeySPisiMni16UwzhHD1LbjFw
+         kxdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699555938; x=1700160738;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rOJwvxWy/qg4Uii7OOcQ3P1P+ebAD+J/sxGrJB+Tt8I=;
+        b=I7OGd2ZFNVIvaWd5yLSqPuLxEjR1ipisgwfg/7Ep4PE/Ko1CIyvBuPgvxxCmyQ4qAs
+         Im7YRyFGrJ12twYHtMR7gUt73rlu4wNuzjlePG037x+3PkOqnQfDC7xg97gOpcg+8WT+
+         yqja/gr3kzSKggnv+jaC5F5R4oFQ9YfA3CWtYAVxT3CqAaGbOp2lQE5tSjuO9PwMn+/p
+         qgbnDzPAnr84gk0DdONkEjYD/AZhL6kAn0CwavIhXm6wZRtMcjGvp9sBvO+/Oq3aOs7U
+         TA8uBHOihxPfIK9sqjL6dgq8iOuXz+iVw+kj+BVgLScdQRuydqpbNwh1qR0IZBKREhxV
+         e4tA==
+X-Gm-Message-State: AOJu0YynEaWeHxim0zCJzfSarRmQitcWUIFyhWJ7euonm/4GclaXPEyS
+        aRnsxdSzhK6BfPoGAmlUJ6M=
+X-Google-Smtp-Source: AGHT+IGEa/ADKkmacdMMkbkxEegVR+wrg/q/Cb1CKOTPJsyx20avzKAKNneewwQiGq9mVN0jP8cHOQ==
+X-Received: by 2002:a17:903:32d1:b0:1cc:45d0:46fc with SMTP id i17-20020a17090332d100b001cc45d046fcmr7264610plr.54.1699555937771;
+        Thu, 09 Nov 2023 10:52:17 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:7384])
+        by smtp.gmail.com with ESMTPSA id c6-20020a170902aa4600b001c625acfed0sm3860747plr.44.2023.11.09.10.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 10:52:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 9 Nov 2023 08:52:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <htejun@gmail.com>, dakr@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>, jeff@garzik.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: Implementation details of PCI Managed (devres) Functions
+Message-ID: <ZU0qYBfFzsF3e8S9@slm.duckdns.org>
+References: <84be1049e41283cf8a110267646320af9ffe59fe.camel@redhat.com>
+ <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1e964a74ca51e9e28202a47af22917e468050039.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: 7e94eeffe0e79a54e525ad05302eb454fb96affd bcachefs: Inline fastpath of bch2_disk_reservation_add()
-date:   3 weeks ago
-config: loongarch-randconfig-r132-20231107 (https://download.01.org/0day-ci/archive/20231110/202311100231.vnhbJRVp-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231110/202311100231.vnhbJRVp-lkp@intel.com/reproduce)
+Hello, Philipp.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100231.vnhbJRVp-lkp@intel.com/
+On Wed, Nov 08, 2023 at 10:02:29PM +0100, Philipp Stanner wrote:
+...
+> That struct keeps track of the requested BARs. That's why there can
+> only be one mapping per BAR, because that table is statically allocated
+> and is indexed with the bar-number.
+> pcim_iomap_table() now only ever returns the table with the pointers to
+> the BARs. Adding tables to that struct that keep track of which
+> mappings exist in which bars would be a bit tricky and require probably
+> an API change for everyone who currently uses pcim_iomap_table(), and
+> that's more than 100 C-files.
+> 
+> So, it seems that a concern back in 2007 was to keep things simple and
+> skip the more complex data structures necessary for keeping track of
+> the various mappings within a bar.
 
-sparse warnings: (new ones prefixed by >>)
-   fs/bcachefs/extent_update.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/extent_update.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
---
-   fs/bcachefs/btree_update_interior.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/btree_update_interior.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/btree_update_interior.c:1810:6: sparse: sparse: symbol 'async_btree_node_rewrite_work' was not declared. Should it be static?
-   fs/bcachefs/btree_update_interior.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
-   fs/bcachefs/btree_update_interior.c: note: in included file:
-   fs/bcachefs/btree_cache.h:45:54: sparse: sparse: incorrect type in return expression (different base types) @@     expected unsigned long long @@     got restricted __le64 const [usertype] seq @@
-   fs/bcachefs/btree_cache.h:45:54: sparse:     expected unsigned long long
-   fs/bcachefs/btree_cache.h:45:54: sparse:     got restricted __le64 const [usertype] seq
-   fs/bcachefs/btree_cache.h:45:54: sparse: sparse: incorrect type in return expression (different base types) @@     expected unsigned long long @@     got restricted __le64 const [usertype] seq @@
-   fs/bcachefs/btree_cache.h:45:54: sparse:     expected unsigned long long
-   fs/bcachefs/btree_cache.h:45:54: sparse:     got restricted __le64 const [usertype] seq
---
-   fs/bcachefs/ec.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/ec.c:401:26: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted blk_opf_t [usertype] opf @@     got unsigned int rw @@
-   fs/bcachefs/ec.c:401:26: sparse:     expected restricted blk_opf_t [usertype] opf
-   fs/bcachefs/ec.c:401:26: sparse:     got unsigned int rw
-   fs/bcachefs/ec.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/ec.c:401:26: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted blk_opf_t [usertype] opf @@     got unsigned int rw @@
-   fs/bcachefs/ec.c:401:26: sparse:     expected restricted blk_opf_t [usertype] opf
-   fs/bcachefs/ec.c:401:26: sparse:     got unsigned int rw
-   fs/bcachefs/ec.c:401:26: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected restricted blk_opf_t [usertype] opf @@     got unsigned int rw @@
-   fs/bcachefs/ec.c:401:26: sparse:     expected restricted blk_opf_t [usertype] opf
-   fs/bcachefs/ec.c:401:26: sparse:     got unsigned int rw
-   fs/bcachefs/ec.c:499:37: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int rw @@     got restricted blk_opf_t @@
-   fs/bcachefs/ec.c:499:37: sparse:     expected unsigned int rw
-   fs/bcachefs/ec.c:499:37: sparse:     got restricted blk_opf_t
-   fs/bcachefs/ec.c:934:48: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int rw @@     got restricted blk_opf_t @@
-   fs/bcachefs/ec.c:934:48: sparse:     expected unsigned int rw
-   fs/bcachefs/ec.c:934:48: sparse:     got restricted blk_opf_t
-   fs/bcachefs/ec.c:1243:23: sparse: sparse: symbol '__bch2_ec_stripe_head_get' was not declared. Should it be static?
-   fs/bcachefs/ec.c:1423:9: sparse: sparse: restricted __le16 degrades to integer
-   fs/bcachefs/ec.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
---
-   fs/bcachefs/journal.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/journal.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/journal.c:861:17: sparse: sparse: context imbalance in '__bch2_set_nr_journal_buckets' - different lock contexts for basic block
-   fs/bcachefs/journal.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
---
-   fs/bcachefs/move.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/move.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/move.c:928:42: sparse: sparse: invalid assignment: |=
-   fs/bcachefs/move.c:928:42: sparse:    left side has type restricted __le64
-   fs/bcachefs/move.c:928:42: sparse:    right side has type unsigned long long
-   fs/bcachefs/move.c:929:42: sparse: sparse: invalid assignment: |=
-   fs/bcachefs/move.c:929:42: sparse:    left side has type restricted __le64
-   fs/bcachefs/move.c:929:42: sparse:    right side has type unsigned long long
-   fs/bcachefs/move.c: note: in included file (through fs/bcachefs/super.h, fs/bcachefs/buckets.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/move.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
-   fs/bcachefs/move.c: note: in included file (through fs/bcachefs/super.h, fs/bcachefs/buckets.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/move.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
-   fs/bcachefs/move.c: note: in included file (through fs/bcachefs/super.h, fs/bcachefs/buckets.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
---
-   fs/bcachefs/fs-io.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/fs-io.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/fs-io.c:550:13: sparse: sparse: incorrect type in assignment (different base types) @@     expected int ret @@     got restricted vm_fault_t @@
-   fs/bcachefs/fs-io.c:550:13: sparse:     expected int ret
-   fs/bcachefs/fs-io.c:550:13: sparse:     got restricted vm_fault_t
-   fs/bcachefs/fs-io.c:553:16: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted vm_fault_t @@     got int ret @@
-   fs/bcachefs/fs-io.c:553:16: sparse:     expected restricted vm_fault_t
-   fs/bcachefs/fs-io.c:553:16: sparse:     got int ret
-   fs/bcachefs/fs-io.c:566:19: sparse: sparse: incorrect type in initializer (different base types) @@     expected int ret @@     got restricted vm_fault_t @@
-   fs/bcachefs/fs-io.c:566:19: sparse:     expected int ret
-   fs/bcachefs/fs-io.c:566:19: sparse:     got restricted vm_fault_t
-   fs/bcachefs/fs-io.c:586:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected int ret @@     got restricted vm_fault_t @@
-   fs/bcachefs/fs-io.c:586:21: sparse:     expected int ret
-   fs/bcachefs/fs-io.c:586:21: sparse:     got restricted vm_fault_t
-   fs/bcachefs/fs-io.c:594:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected int ret @@     got restricted vm_fault_t @@
-   fs/bcachefs/fs-io.c:594:21: sparse:     expected int ret
-   fs/bcachefs/fs-io.c:594:21: sparse:     got restricted vm_fault_t
-   fs/bcachefs/fs-io.c:606:16: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted vm_fault_t @@     got int ret @@
-   fs/bcachefs/fs-io.c:606:16: sparse:     expected restricted vm_fault_t
-   fs/bcachefs/fs-io.c:606:16: sparse:     got int ret
-   fs/bcachefs/fs-io.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
-   fs/bcachefs/fs-io.c: note: in included file (through fs/bcachefs/super.h, fs/bcachefs/buckets.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/fs-io.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
---
-   fs/bcachefs/io.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1101:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1116:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/io.c: note: in included file:
-   fs/bcachefs/bcachefs.h:786:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/io.c: note: in included file:
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/buckets.h:282:23: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/buckets.h:282:23: sparse:     expected void *ptr
-   fs/bcachefs/buckets.h:282:23: sparse:     got unsigned long long [noderef] __percpu *
+It was so long ago that I don't remember much but I do remember taking a
+shortcut there for convenience / simplicity. I'm sure it's already clear but
+there's no deeper reason, so if you wanna put in the work to make it
+consistent, that'd be great.
 
-vim +282 fs/bcachefs/buckets.h
-
-   271	
-   272	int __bch2_disk_reservation_add(struct bch_fs *,
-   273					struct disk_reservation *,
-   274					u64, int);
-   275	
-   276	static inline int bch2_disk_reservation_add(struct bch_fs *c, struct disk_reservation *res,
-   277						    u64 sectors, int flags)
-   278	{
-   279		u64 old, new;
-   280	
-   281		do {
- > 282			old = this_cpu_read(c->pcpu->sectors_available);
-   283			if (sectors > old)
-   284				return __bch2_disk_reservation_add(c, res, sectors, flags);
-   285	
-   286			new = old - sectors;
-   287		} while (this_cpu_cmpxchg(c->pcpu->sectors_available, old, new) != old);
-   288	
-   289		this_cpu_add(*c->online_reserved, sectors);
-   290		res->sectors			+= sectors;
-   291		return 0;
-   292	}
-   293	
+Thanks.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+tejun
