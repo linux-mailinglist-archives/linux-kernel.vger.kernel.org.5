@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CA87E6694
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72897E66A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjKIJV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S232866AbjKIJYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIJVz (ORCPT
+        with ESMTP id S229509AbjKIJYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:21:55 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA612590;
-        Thu,  9 Nov 2023 01:21:53 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 09BF76607410;
-        Thu,  9 Nov 2023 09:21:50 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699521712;
-        bh=f8JXp5DFigmWZNSo/1/xIIcN/xL2hsK0xHFmM9ZToL0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GhASGxhw40oITC1953wmOIZmXueh8mIWI9sy6ITxawXx67Jiz7uuD3m3plQGR3GFS
-         +mKwqeGFgJrCX8RMLO919BPvowQy4hSLxkXaIm6936+JP9oyW2S5tlDXWw/L88jNQK
-         g9Te4OtfxIx5Tek0ycpNfoJkR4YE4pXWTanCUigOuyE09hKEgZ+s7w3efbXOwfwGGc
-         ZV0VsLNy2f7kP0z8DRpX07zRPjLug6VKyUkqCwmZInQe+H6wrdzkcbMaOhbsl549iF
-         eX4oZzV6YbVIt6HLkUf0+OcsfKSscbztj7pSjrVs3/D266AeoVEMLaGuvWab6LMxXh
-         FPFtvJ9TBQ5Tw==
-Message-ID: <7972851a-9a78-426a-b864-4de8411cd15a@collabora.com>
-Date:   Thu, 9 Nov 2023 10:21:48 +0100
+        Thu, 9 Nov 2023 04:24:17 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091691A8;
+        Thu,  9 Nov 2023 01:24:15 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc3216b2a1so5400265ad.2;
+        Thu, 09 Nov 2023 01:24:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699521854; x=1700126654; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s9z5YMQfnjQ/GY0LeFlyZmhpmN5+9DIXygr9TI/NBP0=;
+        b=VBE2VOdmlJ4YFwH1l/BOwFSk5U2rqxh/uGUs/M/Jfnsf/HJ4bLB+5LFHaUoD+AQrYv
+         hzYwZaxruUl7dqPU89GaB14Ionndg72QrW1klvm9Rxd01iQqYbSb/krgaUkymaLhC9sG
+         yD+vc6oO0QnjayXYE7KXfbvTAwr1AVFfLHBGTP0r9avghwgE0hl+33hr4ZEtUuoAaro1
+         SusJ1XuYdQh9gRnW6UIKMSbwplx3ImQ8HEt6RgNlSIO9k7m8fM+3ytP2Pv5QSHFNloie
+         TLWC2ZMpWSkC6ywmhSQKTPeudIVU38UMcRKtO0A6XyKRAByB/Sd8RIRxhtcpIRNCATG8
+         Szyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699521854; x=1700126654;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s9z5YMQfnjQ/GY0LeFlyZmhpmN5+9DIXygr9TI/NBP0=;
+        b=eAzN0qZqmUiYZObQlHwkJI9yP7s+F/j44Fk9S4xY4IKmROoDgwvxkqWlxikKVCNDr2
+         EGKvu/elBj3+GgtyQsovpfy9EBYxX3ljrHou58PC5FfXRvWwmSWNqFc3fjXxB31zmUc6
+         CtMydA7VHHqtg2f0pc+enShQRBH66RZFVZJvvy0KtEh3JY8iTfW421ZKzomiO9iUtbEe
+         pOgxvjKZSO2my2LrFMaMY3hZDHMv4pXrZ2Ukis1FRQfvgpCRA6eGfNU8hd2QfXtEQewl
+         KG8wsAlDncei0V5jFdjBXbJ2u8VMyjydi9/No3kQOAqyFbSzxQ/f9Ha5zT8QyVX6JqBl
+         j3xQ==
+X-Gm-Message-State: AOJu0YxVtKb6RRu9Un2Ri4SPYVlmqRTc0cKuXdjmDVCvJrHCdc6kqjdO
+        Qd3wKnT6gkJ2lVbvhrUOx6kKROBZxjFfBRG6
+X-Google-Smtp-Source: AGHT+IENlNBi+FriuTiTX+gb9LYPZEJOn3W+qGieoAr6eCO/lUZaRo1Awj8aaYwZJVxrv6apffV17Q==
+X-Received: by 2002:a17:903:48f:b0:1ca:e4b:148d with SMTP id jj15-20020a170903048f00b001ca0e4b148dmr3491122plb.65.1699521854398;
+        Thu, 09 Nov 2023 01:24:14 -0800 (PST)
+Received: from ?IPV6:2401:4900:2353:8963:b940:1ac0:2fbc:6b6? ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
+        by smtp.gmail.com with ESMTPSA id h21-20020a170902eed500b001bf846dd2d0sm3066878plb.13.2023.11.09.01.24.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 01:24:13 -0800 (PST)
+Message-ID: <1ceb75c6-e65c-4c82-ba7f-7eb5dfb65018@gmail.com>
+Date:   Thu, 9 Nov 2023 14:52:40 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 13/56] media: mediatek: vcodec: Stop direct calls to
- queue num_buffers field
+Subject: Re: [PATCH 2/2] iio: light: driver for Lite-On ltr390
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+References: <20231109090456.814230-1-anshulusr@gmail.com>
+ <20231109090456.814230-2-anshulusr@gmail.com>
+ <CACRpkdYtawfonnkGXzTD65fx4CMbbTaXe359tm7=57saHSNfqA@mail.gmail.com>
 Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-14-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231031163104.112469-14-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Anshul Dalal <anshulusr@gmail.com>
+In-Reply-To: <CACRpkdYtawfonnkGXzTD65fx4CMbbTaXe359tm7=57saHSNfqA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> This allows us to change how the number of buffers is computed in the
-> future.
+Hello Linus,
+
+On 11/9/23 14:49, Linus Walleij wrote:
+> Hi Anshul,
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-
-Reviewed-by: Andrzej Pietrasiewicz <anrdzej.p@collabora.com>
-
-> CC: Bin Liu <bin.liu@mediatek.com>
-> CC: Matthias Brugger <matthias.bgg@gmail.com>
-> ---
->   drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> thanks for your patch!
 > 
-> diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-> index eb381fa6e7d1..181884e798fd 100644
-> --- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-> +++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
-> @@ -912,7 +912,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
->   	return 0;
->   
->   err_start_stream:
-> -	for (i = 0; i < q->num_buffers; ++i) {
-> +	for (i = 0; i < vb2_get_num_buffers(q); ++i) {
->   		struct vb2_buffer *buf = vb2_get_buffer(q, i);
->   
->   		/*
+> Overall this looks good to me.
+> 
+> On Thu, Nov 9, 2023 at 10:07 AM Anshul Dalal <anshulusr@gmail.com> wrote:
+> 
+>> Implements driver for the Ambient/UV Light sensor LTR390.
+>> The driver exposes two ways of getting sensor readings:
+>>   1. Raw UV Counts directly from the sensor
+>>   2. The computed UV Index value with a percision of 2 decimal places
+>>
+>> NOTE: Ambient light sensing has not been implemented yet.
+>>
+>> Datasheet:
+>>   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
+>>
+>> Driver tested on RPi Zero 2W
+>>
+>> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> (...)
+> 
+>> +#define LTR390_FRCTIONAL_PERCISION 100
+> 
+> This define is just too hard for me to read, can you rename it?
+> 
+> Does it mean LTR390_FRACTIONAL_PRECISION? It's fine to spell it out like
+> that instead.
 
+Yes indeed, that typo would be fixed in the next revision.
+
+Thanks for the review.
+
+Best wishes,
+Anshul
