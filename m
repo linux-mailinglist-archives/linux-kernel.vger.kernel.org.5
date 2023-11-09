@@ -2,233 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2039E7E6CB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12147E6CC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbjKIOza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
+        id S231659AbjKIPAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 10:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjKIOz3 (ORCPT
+        with ESMTP id S234454AbjKIPAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:55:29 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF72325B;
-        Thu,  9 Nov 2023 06:55:26 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7dd65052aso11900107b3.0;
-        Thu, 09 Nov 2023 06:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699541726; x=1700146526; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=bG8SxMPJCjkka3R2BtI4xsviL/neqgOy30fTWVbevYU=;
-        b=m1dPtdkqmbYDrlrV0nOTTNtkaxdUggqcRSrQPK3F33X1srCE8MFWBEL2qZ7LjoDfL8
-         TsapkeSXFfE2O1QC03arpZdwwaUXw6skxoAMSLe5FyzCHdpgm8+YopkpSkJe0ow8yxG1
-         qBxyGJV1KDeglV8L4zhRs0DN8Y9Dslf3Wjr0m7tS3PX9E3itoaTAXyYhYnXeXH/3yG9s
-         mWWI0uzGtCkWYLqJKtZ+yAJNnuqP0p52k1hxxHN2mDF3BA7+Me0PVvoeFVmYce1eRXe4
-         IiDACxnpHccPtHOIO1/7AQnv9gJhWJtxyop0ge6dzOJMyAkEg1gnqfkIS94gHMd1J3w8
-         djSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699541726; x=1700146526;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bG8SxMPJCjkka3R2BtI4xsviL/neqgOy30fTWVbevYU=;
-        b=gIna58SnjYMijhN+aQ3gYy/TVW6BeAVJ93VM3DF7bo2147OxSX7ZgkUaX5MK4JkB7z
-         jqqqXB2KZpVSq+wxGnG/X9jYLtQ4Ea3mxF6npZdnUbt4tdsyWuGBtZZfozdPp1FpH8F2
-         aD3BC2YExriYypS4mAbN1iQ6UD2eLsnnUFdJOYN+8MriZvHz5Nl0aWN4YMKMjb1Ap7nu
-         sdVO6i5frlJS6j7JsAHDuanurpBKQgw9U6djDg16Qo8Ra4m0PnkhgaPgIf82tB4TNmEW
-         ecpUA5P1dLFI7ajmSbMwmp9qDe9FcIzwSr8zQzhaf31+a3x9EYcW0GN/Vk753EWJKLnJ
-         SSQg==
-X-Gm-Message-State: AOJu0YwCCwuoEs/MDdTQwMbYTqoP6tqVTK/YEoBWkTWGx+OvrI3nT9XG
-        csDSw8OA9nikhxX9T4T1XyrQi14O5Z0=
-X-Google-Smtp-Source: AGHT+IFp6OopAvQN0Db1VUA78vdNCVvMth/yDWisq4joQocnTzVfsQbViTeFYq2EBGzxjuGwYSeE4g==
-X-Received: by 2002:a0d:d7c8:0:b0:59b:5170:a0f3 with SMTP id z191-20020a0dd7c8000000b0059b5170a0f3mr5314115ywd.36.1699541725948;
-        Thu, 09 Nov 2023 06:55:25 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z127-20020a814c85000000b005a7db2a0dddsm7993446ywa.3.2023.11.09.06.55.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 06:55:25 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d5692ab7-6d11-41f3-89ec-246a2fc045a8@roeck-us.net>
-Date:   Thu, 9 Nov 2023 06:55:23 -0800
+        Thu, 9 Nov 2023 10:00:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8293588
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:00:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699542015; x=1731078015;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=rlC0z7HSBPocvCE4M4HCr4JaDyw1m+YF4V4zfsEHocs=;
+  b=mU+a8wc0Lp7C5nP4h242vEzZ8MNZXjGfMZ0r9Hx9i4PAuHR0sSgCfWvb
+   zhYC8Q6HgQyQvg2wRZ/AKwPbgyDVwNx3Bou4V1r6MYiB1NNkRDyYJ4G01
+   YOFbETRUMiNYx+7EP3mJhsiUPF/HabBrGiw5IuWk3rYtcfcWq3Ps+nxUk
+   YmowYRkxi7Irbs21bJX4KbQtgC2seHgcKCoNUDofq6QORlKyvULVzZR03
+   7+dGNC6ZL2Jm2YCUMvHmXodXVPadCqSmvkf9mIiiQenURJOME09JY/Mny
+   zt0B5y5eL5vawQKjocTPFJjNGhmb6HOrXCFo6ueKDBj2F1WhVX3wXQOOq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="454301087"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="454301087"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 06:58:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="4562021"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 06:58:23 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 9 Nov 2023 06:58:22 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 9 Nov 2023 06:58:22 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 06:58:22 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 9 Nov 2023 06:58:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HCSKGTJwl06wq1TjHf/kj4MyHq7MaulKGzuZOQFgIylpmfZbnx5afm5G8GGU1kisZU3FQ3SvgA3NnLY2wGJ3lhO0BPA0ivKoilCUAgQKLnSr5l6e1KrTDZH2XIXtUvDsrSw6dRgXBKSS6Hbpoajf1fW+KazqItEBjQ26UbE9RdRZLTm26qCqTAMJm7m3TwvwWiUKKcsbfQeaAPcohMYJEiYJKG004EXlpFk7NiSphQzf9sk3ZD1upo7uK68o2TrWSAI0WV4xGEb7lpD3s/e0OpYx/Ou2xcEowBI3XxZOqRf3T8cw2r7EhXoNnowHYXu8/a0ieOUVpe2/tJLU2U2h9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sx3NyNb+Ymlz6CGQio2SrmNVN+jdKNIlYzXDrZDR5do=;
+ b=YPBKpA9GxmzUHBF3gXwTQT6HpxaJulSAy9GLeZfs4GJn0Lasl3y1rFTFrDxZN6YsTH8tI8eUTRt3YfBIT2CjyEXt6pRU8V/ddB3X4GzLVrxNr5Mrj2xaLPfXKt+ReJ4hgxVp0vllcZHVmvHEbSqYh/0S8YstUccBQ7EfX3zuvBzoaM8Z631LmgOKJZEpmGCJ4M+ep1/yCJ5emiymArWH+lLX0cwWVaRIrL4g9tbRrV6uxyiYhAZNKK73ImKgdhTA8rid5nsQ4iyPRQoYPQSyuCmxUkmO3qcnI+gI15xQiRj94/dHBUs9umKXKc+wHZeXA805fE0pIILzuuiFBptjLg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+ by SJ0PR11MB5789.namprd11.prod.outlook.com (2603:10b6:a03:424::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 14:58:19 +0000
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::8c24:7666:7047:d99e]) by MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::8c24:7666:7047:d99e%4]) with mapi id 15.20.6954.019; Thu, 9 Nov 2023
+ 14:58:18 +0000
+Date:   Thu, 9 Nov 2023 22:58:00 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC:     K Prateek Nayak <kprateek.nayak@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        "Tim Chen" <tim.c.chen@intel.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH v2 0/2] sched/fair migration reduction features
+Message-ID: <ZUzzeEptTlgalJIc@chenyu5-mobl2.ccr.corp.intel.com>
+References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+ <85b710a9-5b26-b0df-8c21-c2768a21e182@amd.com>
+ <909fd5b2-a1c6-49cf-8efa-c71affb1a4fe@efficios.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <909fd5b2-a1c6-49cf-8efa-c71affb1a4fe@efficios.com>
+X-ClientProxiedBy: SI2PR01CA0037.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::9) To MN0PR11MB6206.namprd11.prod.outlook.com
+ (2603:10b6:208:3c6::8)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] hwmon: Add support for Amphenol ChipCap 2
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
- <20231020-topic-chipcap2-v2-3-f5c325966fdb@gmail.com>
- <30ccb0a9-c0bd-491e-817f-def0aeda11c6@linaro.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <30ccb0a9-c0bd-491e-817f-def0aeda11c6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|SJ0PR11MB5789:EE_
+X-MS-Office365-Filtering-Correlation-Id: dbc31292-1738-4160-c595-08dbe1344f2e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uxC+fgByb8vudq4VcNzHSJVr7yujgUGXEBEA02Y7A9IYYdSTb+ahD+vQsxLlRKi4NjNKeCRCIzpU6w2gJLQO2B7Y9i7NpTREkthXVrDEAUpKTANWnhisPc8tfPe4Ka5uHp498W47YEmeC8X/4JPLC7Cd3gRXIfwC/O9gsxvgGrpTqjI2F8FkcnD/HoXsUw1kLLGHQi8dxHByvxH8sA28RO/luxAN51nrpmNqpm8WaNtkxOrK8LpQMhEOYEsiqSkfMHwr7nfclry4/fcfJZuGWawcnONDe+o64/E3l6gDH2ZVV16TP2ai77eeH5qLABn6aE9ga+uxw3ZEu/onjFcB32S+RR/GpbzMQM+Ph/7HowI2FitaBU9A85RoyOCeOv8GzbEb4hkay7dLbdfanfapacT+pA4G+gJV3t8kaEHqcuAyz28nXk5V7Y61nMJVNGYTHCNBMAPqRl8mmZYW3mNpfChQhxmCYnnz8FKruAHTTCoSDkSsivNJpQqqyaBKikZ1lVvARalQbdeWTifkbf3gyb+rPCBb68KUStGLi4DGwXUmTYsgrgKtIoIdREZWrQ56
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(366004)(376002)(136003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(6666004)(6512007)(53546011)(6486002)(6506007)(38100700002)(82960400001)(478600001)(5660300002)(2906002)(4001150100001)(7416002)(26005)(83380400001)(4326008)(8676002)(86362001)(8936002)(66946007)(6916009)(66556008)(41300700001)(316002)(54906003)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GBSenvo5aXaLfoyY1sJofw56iHAumm01Nayf55TJ/9LQyT0GrMA27OgVGQBB?=
+ =?us-ascii?Q?kmL4YIsjsX0LAgU4/zHUy0JJBc7xikaj6wJWMlwDqtQ5Qm89gky6xYoUwnk3?=
+ =?us-ascii?Q?asMuEVOdrFIYxB6YrZtzxApDkb3j38rnm+K808Odo13TB7NjJLRKLpimv7Vg?=
+ =?us-ascii?Q?lpv8EWFE4URXNVSZ+F6mlLf1U1bKul1ODIa5U93bwZHrf9P6/+TaTv5Cj9By?=
+ =?us-ascii?Q?gnytJEyrU/ngkJc4q6m1VDo1CwNkxGW18nWfhxNw9C0c74zpWAhk7rvb2esV?=
+ =?us-ascii?Q?6vfbYaDIVZDTnSLTP67iNSJ09S8YhezKsyJVxeUSZwQAbuhlGzUd1HjrJnSR?=
+ =?us-ascii?Q?VbjY8BJ137C+Evvztb0fVSGOBd0VPkTOuFGe0EXeEC7DmKw0JgagO0c516BE?=
+ =?us-ascii?Q?FB9H/UzTJ305Az1Wx12QLrlrrB/wzjKTW/nvj3ODveXtdLHFTAWc+/PHvvtO?=
+ =?us-ascii?Q?YiRecjgXRxgpiB1Id9NFhCczTKanJG+vQ7cI6oWQZO57RwRvD6c53ofCKSDD?=
+ =?us-ascii?Q?pGpWa/TansYI16MBMgx7J2Rvauq0PDf59i5u0bT6cpuktSIhILkgfzYAr3EG?=
+ =?us-ascii?Q?m4iL+hzDKjmK4aEWKpyWd8dcBS3SY1L2m0axICJxERbiIeSaKCnYXJzO7vpS?=
+ =?us-ascii?Q?1VAkg2YFXXMkLGEFtY3Ta1JDK5XcW8+Pc46PVAbw7Ok11dfs+st6zj1iQ1Xz?=
+ =?us-ascii?Q?ZS5OeAZRKP2n/I1ow9majt6oRu7Enu5w7O91p+YaVwsvRfM/NWbOYDu7rYq9?=
+ =?us-ascii?Q?jNkViOzwN0qYpPI1wVS5tRUqpLK77QnZUFzjI0HGx234JcYFF4ni449+ciBh?=
+ =?us-ascii?Q?KrN1MhV1lc5KzQTRT5ZteqDz1Ma8l11j4VxqWUDf/ltcaHvFr0wtvE8JWCbQ?=
+ =?us-ascii?Q?7S/B/e9kv2Hp03DSQUaDjXaVPDBts3A/eqsDakerLELAok2W1+7b7dEK1TLw?=
+ =?us-ascii?Q?Ok8JXMaHhtJQaPSlVRZUMql/oTtH81zgiGUwrUgN+xFjB2m8hQ/Ys1G70Lre?=
+ =?us-ascii?Q?wZmlFiNV+hh3LOjFdEc3dE2wFgLjPubwwKjiaDboyA8rlrXHVmvbfKCCTdrc?=
+ =?us-ascii?Q?KgJL8mObVE4zwKHXHo0kADmVRgUMEpiKzGGndZpP7B7vvd8/nbeN0jfpTdc/?=
+ =?us-ascii?Q?8y6y7onipn9zhz3EBgpwJrZe7WtYSHij5COgFo2KfuZo8v9xI9B7lLWH0tYv?=
+ =?us-ascii?Q?JGcW3AMwYfor7Wa4zszi1AZ39vYloCc151oj84KRYUdBHkCCelxErvFMuqfC?=
+ =?us-ascii?Q?yzPijFBipIV8Fy2pxNAAJNg2ByKcYX0hG1oesmIDOHZoWucU0mVOExFMzG1m?=
+ =?us-ascii?Q?Ll13J5L2gRtdWE2ok5zXz/F+BG38YNagwzLbHb/dwj+8yfKud1MeTYNtwdA3?=
+ =?us-ascii?Q?4cPtpuu+5ZOfvnvimdaBcxz0ABoPJOUbqa+WkfvxKC2wB/89If97+Pjy+hFn?=
+ =?us-ascii?Q?uSh0C3btYwHvwcWRijSr20wzFnXlQYePCzIRb1YJAxozL0y6Sjud+Ja30JbP?=
+ =?us-ascii?Q?HDg1D3JiDEE1nwDmIFiG4uog+KkrlBagRtC5Bc5tmA6FdbGdmXi/+mBz4DHr?=
+ =?us-ascii?Q?43Knwy4AR9+EuYR6ccJ6LO9R07elmqZDgKbI8L6b?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dbc31292-1738-4160-c595-08dbe1344f2e
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 14:58:18.8008
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1dNniE1Fp5r7ES+PiKlihbsypeyItmYjKDcgkCKP+bFjjELRs2Ibvmhu9ueNOb+mPzIhzESy8eyqOVOmAoLgDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5789
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 00:52, Krzysztof Kozlowski wrote:
-> On 08/11/2023 16:37, Javier Carrasco wrote:
->> The Amphenol ChipCap 2 is a capacitive polymer humidity and temperature
->> sensor with an integrated EEPROM and minimum/maximum humidity alarms.
->>
->> All device variants offer an I2C interface and depending on the part
->> number, two different output modes:
->> - CC2D: digital output
->> - CC2A: analog (PDM) output
->>
->> This driver adds support for the digital variant (CC2D part numbers),
->> which is also divided into two subfamilies [1]:
->> - CC2DXX: non-sleep measurement mode
->> - CC2DXXS: sleep measurement mode
+On 2023-11-06 at 11:32:02 -0500, Mathieu Desnoyers wrote:
+> On 2023-10-26 23:27, K Prateek Nayak wrote:
+> [...]
+> > --
+> > It is a mixed bag of results, as expected. I would love to hear your
+> > thoughts on the results. Meanwhile, I'll try to get some more data
+> > from other benchmarks.
 > 
-> ...
+> I suspect that workloads that exhibit a client-server (1:1) pairing pattern
+> are hurt by the bias towards leaving tasks on their prev runqueue: they
+> benefit from moving both client/server tasks as close as possible so they
+> share either the same core or a common cache.
+
+Yes, this should be true if the wakee's previous runqueue is not idle, at least
+on Prateek's machine. Does it mean, the change in PATCH 2/2 that "chooses previous
+CPU over target CPU when all CPUs are busy" might not be a universal win for the
+1:1 workloads?
+
 > 
->> +
->> +static int cc2_probe(struct i2c_client *client)
->> +{
->> +	struct cc2_data *data;
->> +	struct device *dev = &client->dev;
->> +	enum cc2_ids chip;
->> +	int ret;
->> +
->> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
->> +		return -EOPNOTSUPP;
->> +
->> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
->> +	if (!data)
->> +		return -ENOMEM;
->> +
->> +	i2c_set_clientdata(client, data);
->> +
->> +	mutex_init(&data->i2c_lock);
->> +	mutex_init(&data->alarm_lock);
->> +
->> +	data->client = client;
->> +
->> +	if (client->dev.of_node)
->> +		chip = (uintptr_t)of_device_get_match_data(&client->dev);
->> +	else
->> +		chip = i2c_match_id(cc2_id, client)->driver_data;
->> +
->> +	data->config = &cc2_config[chip];
->> +
->> +	ret = cc2_request_ready_irq(data, dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	data->regulator = devm_regulator_get_optional(dev, "vdd");
->> +	if (!IS_ERR(data->regulator)) {
->> +		ret = cc2_retrive_alarm_config(data);
-
-fwiw, s/retrive/retrieve/g
-
->> +		if (ret)
->> +			goto cleanup;
->> +	} else {
->> +		/* No access to EEPROM without regulator: no alarm control */
->> +		goto dev_register;
+> The hackbench workload is also client-server, but there are N-client and
+> N-server threads, creating a N:N relationship which really does not work
+> well when trying to pull tasks on sync wakeup: tasks then bounce all over
+> the place.
 > 
-> Nothing improved here.
+> It's tricky though. If we try to fix the "1:1" client-server pattern with a
+> heuristic, we may miss scenarios which are close to 1:1 but don't exactly
+> match.
 > 
-> Do not send new version of patchset before discussion finishes.
+> I'm working on a rewrite of select_task_rq_fair, with the aim to tackle the
+> more general task placement problem taking into account the following:
 > 
+> - We want to converge towards a task placement that moves tasks with
+>   most waker/wakee interactions as close as possible in the cache
+>   topology,
+> - We can use the core util_est/capacity metrics to calculate whether we
+>   have capacity left to enqueue a task in a core's runqueue.
+> - The underlying assumption is that work conserving [1] is not a good
+>   characteristic to aim for, because it does not take into account the
+>   overhead associated with migrations, and thus lack of cache locality.
 
-This driver will take a while to review due to its complexity.
+Agree, one pain point is how to figure out the requirement of a wakee.
+Does the wakee want an idle CPU, or want cache locality? One heuristic
+I'm thinking of to predict if a task is cache sensitive: check both the task's
+average runtime, and its average sleep time. If the runtime is long, it usually
+indicates that this task has large cache footprint, in terms of icache/dcache.
+If the sleep time is short, it means that this task is likely to revisit its hot
+cache soon.
 
-As for the code above: Error handling goes first. Something like
-the above, where the error case is just a goto, is unacceptable and
-just increases indentation level for the other code and makes it
-more difficult to read. Also, the above code _will_ have to handle
-error cases other than -ENODEV. Besides deferred probe, it is
-completely inappropriate to ignore -EINVAL or -ENOMEM or any other
-error codes other than -ENODEV.
-
->> +	}
->> +
->> +	ret = cc2_request_alarm_irqs(data, dev);
->> +	if (ret)
->> +		goto cleanup;
->> +
->> +dev_register:
->> +	data->hwmon = devm_hwmon_device_register_with_info(dev, client->name,
->> +							   data, &cc2_chip_info,
->> +							   NULL);
->> +	if (IS_ERR(data->hwmon)) {
->> +		ret = PTR_ERR(data->hwmon);
->> +		goto cleanup;
->> +	}
->> +
->> +	return 0;
->> +
->> +cleanup:
->> +	if (cc2_disable(data))
->> +		dev_dbg(dev, "Failed to disable device");
->> +
->> +	return dev_err_probe(dev, ret,
->> +			     "Unable to register hwmon device\n");
-> 
-> Drop or move to each error path.
-> 
-This actually follows Documentation/process/coding-style.rst, chapter 7
-(Centralized exiting of functions).
-
-Guenter
-
+thanks,
+Chenyu
