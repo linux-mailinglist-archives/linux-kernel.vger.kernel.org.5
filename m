@@ -2,235 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 568DD7E7308
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F407E7306
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:42:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345218AbjKIUmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:42:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+        id S1345203AbjKIUmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:42:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKIUmT (ORCPT
+        with ESMTP id S1345186AbjKIUmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:42:19 -0500
-Received: from snail.cherry.relay.mailchannels.net (snail.cherry.relay.mailchannels.net [23.83.223.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCED24239
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:42:16 -0800 (PST)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 71A98142BA1
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 20:42:16 +0000 (UTC)
-Received: from pdx1-sub0-mail-a263.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 231BB141DA7
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 20:42:16 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1699562536; a=rsa-sha256;
-        cv=none;
-        b=LJBgSZhOu+MdcFn4H3/16mCjK/97qFAuYpiJ/G6RJwhTI+Z2osW32a3OfaNKVWMcSvP1SE
-        6iwZDvlHGOdco5fkYcySXkmvhNxhd/2HnwFxg4ArXn5CraeiyJJCh6Hk77EaB6sIEYCdoC
-        wHoKsWEEXlF3LwnEPFC0QJrQHRSS4ijiTL5Kq24o4GnxFCQ5aJV3asONoARojxzFk4VCKw
-        w62Zt3L81AHuunu8kPvEXjNiI81ax8fXnkdwjR5cYLvRk4ZlW6KV2g8pdHOBuVoMmKycuj
-        VgU/HCgNbn80EDjpx9bAUVPU/qL4zwG6sryVPmMNHFdODsVuGwmY2tjNrEiVnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1699562536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=J8TgSKzVzW+2WUx6Pek4Go1CxyUWJVIsDKQsrukMIJs=;
-        b=rZVk6Cdp85pURONXtI+4bGwLx+/dwrX6vVKgEJdX7HuHAdo+umX5AhpQsnJp9E8jp5/c2V
-        AhIGP4MTwnuuviYZqX8CCMz/7SRt22kALaGstqkHZ/twvNuFNfNi1ArShrMFiX+Ccjv/J0
-        wChq9vN0scuNp6LDlSTQaYKjifzJRbWqlzdqr1U9nrLvFrwzrdTR34CG/uQx2AUviqAUlW
-        8uukU6bPZIgVvyCMntwmx42Zr58gLwXH+xo+2HEFt7n+us/jarhM2eTog6pvjlfhkRLgVB
-        cj/wymoG/P4tg/XBho/XG5tykhdyasz9EiseO5q/Y5S23Cd5hYefxMqyA+5fjA==
-ARC-Authentication-Results: i=1;
-        rspamd-6c48c794c6-98q4x;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Thread-Cold: 4f2623834261dcfb_1699562536302_1584876656
-X-MC-Loop-Signature: 1699562536302:2907193509
-X-MC-Ingress-Time: 1699562536302
-Received: from pdx1-sub0-mail-a263.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.112.201.10 (trex/6.9.2);
-        Thu, 09 Nov 2023 20:42:16 +0000
-Received: from kmjvbox.templeofstupid.com (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a263.dreamhost.com (Postfix) with ESMTPSA id 4SRDQv6WLfzRM
+        Thu, 9 Nov 2023 15:42:18 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2071.outbound.protection.outlook.com [40.107.96.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83E04239
         for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:42:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1699562535;
-        bh=J8TgSKzVzW+2WUx6Pek4Go1CxyUWJVIsDKQsrukMIJs=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=IAeZgujdeNE/3OaYYniSZtTzfDg3LLrsMRWqwb5xwxZNp2neplc9yy4ENtjxnLxaG
-         CQ+k5FMZHvlGobGuPZgZ4bmZZ8mBBUny8KBnYJwqSVIhi0OxDX4VlCka3JqJicqo+F
-         kg0qmCQgsv5CLn5unDcnA57SRc+cWgFKPMt5tIrV9uEcvIFp/euT/j3y3HwTmwy2xm
-         Q49OxZwqdeXasB78a7gXinSwCpmPKta5VFfkO6YLY5CzfRr1M9OtCkShSdp2nnUuwp
-         oKmM9IGWDAeDloI7rUtzkbobHqe1ZWfwrgmyDtIWRrFhcGHYk1n8umpB0Sifly1GJu
-         GubCRjlhmD6Ow==
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0044
-        by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
-        Thu, 09 Nov 2023 12:41:54 -0800
-Date:   Thu, 9 Nov 2023 12:41:54 -0800
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, regressions@lists.linux.dev,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: selftests: memfd: run_fuse_test.sh - fuse_evict_inode -
- fs/fuse/inode.c:162 - panic
-Message-ID: <20231109204154.GB2073@templeofstupid.com>
-References: <CA+G9fYue-dV7t-NrOhWwGshvyboXjb2B6HpCDVDe3bgG7fbnsg@mail.gmail.com>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lxmCU7jFY3nyFAs27NRQQIfaBkpWAHmkzQVLtaiE6NY9lRg3k/iX3RY3WXja/MToxF+9Z2hedszYHdpMeIzaTOFUE+1RgfPrTFKv4928MfdL+Zj+VWk0x0xXt+m9FcDb+Dgcesph+TtbBjEfQYqwKInXy+9zS0FPE+7MQJsdtt7ph2tfpV4qdUXtjFbxr8na46PAk49hPb3TfvmWAcLhOp/tAK2m6K7ANfO/MeHP6dbVMblmZkZWiL8OYmLwwDJ/y00k433H8aslob7Jk3rZ4LKPxIikGpP7zzliDGTQdeSZZ98FJm9nabg+Pxv4H7WeYb3i1OQ11iVT7io3YFAamw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z+XZfkevk1ZNMc+UcKAPyHwm0Shr/Sfcx14mC7dMA+o=;
+ b=VYrl+CYHeC3x1MhP9RizwMy9OdkFJSpFtTr6hTpWz61u32t4Wz1K/3SGADQy8/lc1e34IO6RH99E0clk8o5HBy1K6PtnoK9butF5fEH50PG10Wx10Iy8rXhQ3AzZ3ROmUvri6x28bl6RaGFdjU6J6Au2OBTBYcaJIBl4ZGh1Kci4e1keH2eStporZyA3M1MA1dIu1XvpkKjxa0yOnetxPt/lb0F8ZAT8hE1nhfBiSUJiDPrBHolw4ZusKg6701CHjSr/EXVu7vY+R8fNkGqRDg4+q05w06pIy8bW7n5LM6NIMX4mlYIrabRhE2ZKBt4iKFYi+gwEi35ulHordTru2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z+XZfkevk1ZNMc+UcKAPyHwm0Shr/Sfcx14mC7dMA+o=;
+ b=QG1rgAV+ue09Gdp622l5SrcsB7hzppK9vUxJaSl+2QkeFDGPqG4Uj0yHLdChzUTjzLan62cQ1pQenN3uAPADW5LR25MxK8ZeiExdlLrv+YEPgtuqIQ9zU4ni16cZirS/Xw/MfwnMqRgbAd9NcteLsawOgh7ePp2XdntzWUeY658=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by SA1PR12MB6917.namprd12.prod.outlook.com (2603:10b6:806:24c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 20:42:13 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b%4]) with mapi id 15.20.6977.019; Thu, 9 Nov 2023
+ 20:42:13 +0000
+Message-ID: <1d28db1a-196d-4aaf-922a-12ce31d71aa2@amd.com>
+Date:   Thu, 9 Nov 2023 14:42:11 -0600
+User-Agent: Mozilla Thunderbird
+From:   "Moger, Babu" <babu.moger@amd.com>
+Subject: Re: [PATCH v7 14/24] x86/resctrl: Allow resctrl_arch_rmid_read() to
+ sleep
+Reply-To: babu.moger@amd.com
+To:     James Morse <james.morse@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        shameerali.kolothum.thodi@huawei.com,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        carl@os.amperecomputing.com, lcherian@marvell.com,
+        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+        baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+        dfustini@baylibre.com, amitsinght@marvell.com
+References: <20231025180345.28061-1-james.morse@arm.com>
+ <20231025180345.28061-15-james.morse@arm.com>
+Content-Language: en-US
+In-Reply-To: <20231025180345.28061-15-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR01CA0029.prod.exchangelabs.com (2603:10b6:805:b6::42)
+ To MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYue-dV7t-NrOhWwGshvyboXjb2B6HpCDVDe3bgG7fbnsg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SA1PR12MB6917:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16e51f77-8f7d-479d-8746-08dbe1645a36
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nt2M9wR2r8dfQ7I47SFi1tvQaS1z7YQJ+JlkEdksvYHj3+EGXfXLqXPT6cq9ObRejPLqxm4GLXNn2UktOVv6B/w8OaXAkPqLW9nz5Z77gEP8D4j64HFLwMY8WuBtRUhCr6caQTe42Q2qXG2+zRcDxRqRxdARfMh56VxpSG/5wkZ+a0uOgNgDJeCNV6xNH1CAxM4GcFPLwoAQuwToXpZrOOO7ztCKZJsGI/U6LM9mzIypt0KT3Pfybcht3hqnuyrSCGxpnduyCpza3N4+krUlddiLLScEIDm/ko7PbKkys39Cu0HQHZcPkmGxUxSN+ceE21Zg7sS1XZPQxQX7VFsj1cXrw5LYV/4+unpHQJzaFnYFs/jFyJHXFCjmYPkR7xU/GNupxst6cxRXVkHpUhOi9hms0MzS1/tLPfHV8Dx3DFtwRCOomuCoUmYi2Dc/lkY+f0t2sqAxkOw3Dcfa/NuMPb0YbyYBNzNDVtZ+3SHDwxl966qLGoJetHp9obY+NABEr07f0Z7UwyEgsO1lmiw8P/2/CrB67snN0aogIbkXK0SX8nkLIyqh82N4FA8xUzfbTR/kYqhldK46gRP7xiUKd33srHYOx8hCKNHsPkMENpcptis0ObYzs0PvCF9Z0P4fHCSoog5GvOME3SO13XqOFodc6t7TpGi+bCZY0NG2LCXkS8TwnfWdSio39BPQ/BhG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39860400002)(366004)(230173577357003)(230273577357003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(31686004)(2616005)(53546011)(6512007)(66556008)(478600001)(6486002)(6506007)(2906002)(54906003)(38100700002)(316002)(36756003)(5660300002)(31696002)(86362001)(41300700001)(3450700001)(66946007)(26005)(8676002)(7416002)(83380400001)(66476007)(4326008)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TEZHZTVDa2tYVHJQN1MrVUZ3c0NGdlllRC9GbFltRHJqVkV3QXIrNjI1YTBa?=
+ =?utf-8?B?OG96MGxCYmt1R3loN291a2Jtd1FJYi9sbzdnaVp0bDlpZmxZbTBtcEJBc3RZ?=
+ =?utf-8?B?QktjUVdJRGdtNGtMWldEUmVCc244YXU5ZGZxKzBDWjFNMDYzZmZpam1IY083?=
+ =?utf-8?B?VUprcldqRk5UaSsrRHpEcjZGUEVtUitUWjZXeTh3MVh5N01JNC9hbml5RHl5?=
+ =?utf-8?B?aE9icFNCNGZwd2wvcE9UL1haT01vOTdkQUxFVUhEVFRoNEhjNHV1YWlPYnd6?=
+ =?utf-8?B?NUtmVXZEd0lQNURjUFBXaFV0d2QrMDdUNitxUjJHNlR2VU5iR1h4d3Noblk3?=
+ =?utf-8?B?cVg2RWc1NytCTnE1c3MwY1JYeGgxbHJOYjZEMVdYK0dhTCtoUTNuV1N0TnNr?=
+ =?utf-8?B?K21DR2libmJUdmlabWN6S2hYZ29ZMkdpQkd5aHZUTXZBakdIdy9mS1RBMm5j?=
+ =?utf-8?B?U3lUQXlCdFZHenBBUWdXZDV5MjNORWd4VUhQNTlNVDZ6U0NwUGlWTEc4RHN1?=
+ =?utf-8?B?QlBUQWRJcjRNSDhZRys1eTNWMlR0TEtZQnNudXA3N0dzS2xHZTF3aXVabUJE?=
+ =?utf-8?B?azJabGlaemFlNDc2ejZMT3lic2doaWg1YkRFTWxUMmJyR3RmWU5TOTl5U1dB?=
+ =?utf-8?B?Y1JoTnlhWmc2WW1QODB0dzlieUNrU3BESUM5MG9RVFNHZzNvTzlRS1d3a3pJ?=
+ =?utf-8?B?VnZaR3VpNHJyUWNRVHBuVXBFa1Ftbm00R21wYzlSWU5LUzV6THNoK2hxWUtP?=
+ =?utf-8?B?Tit5MTNZNWdUbWpXU3EwRk9NL2JCLzVoUVpPK0U0cUtBMG5FMENGYjA4N3Vn?=
+ =?utf-8?B?Z1lCeFFYQmhHNCtscjBpeERuSHlLYzRLeGJEWHYyck9VRmpCOSt1cDlXTGZh?=
+ =?utf-8?B?alhCNkozZGF4OUZLbHFHZlozdnhwc2dqVTdqR0JJbmpSWllmdDN1ZTdONlZN?=
+ =?utf-8?B?MndmQXRLY1NTTjBlZVl0cll1d0RWaFNJUDExdW5sbndJYnlaRjV2SUhIVnRi?=
+ =?utf-8?B?bVp3TmVsVFVJMkxja1lNSThldWNsRlVVdm14R05zSXg0SUxzWFg3VmlXZlJz?=
+ =?utf-8?B?bFl1bnF0aFl2Wi9ZU0NEYjhKQUpWMDQxYVB5R2VzTXZvV29vYWxScnZOQ3Bp?=
+ =?utf-8?B?aFVmVmM5dmFiSFk5LzdieEhrQ3pXTERETU1Vc0t5eEZBVEl6SzJuaHFlUThZ?=
+ =?utf-8?B?SDBpQXNlUGYwMEJkMUZUTFNkaXdNWlVRcTgvczk2NGZwMGEvUFdQODhIT0RW?=
+ =?utf-8?B?dlloc0R1R3dUcWsxUU9XSkdpajhhTDcxbm5zYTZ6Vk1XKzFmNlo2ZVNDQmVL?=
+ =?utf-8?B?Mi9DMC91SDl1b3JOMU0xMW9iMVd1c0ltN2NoRlc1RWdhR0pQWS9SNFRxMUt4?=
+ =?utf-8?B?dW96NTI5ejlxVElzNkJFZUN6SndxM3oyZUdJYkgralRya3lVWGs1VzZTRFNB?=
+ =?utf-8?B?RHhoaXRYVGJlS0UvRUdBY05Wc3FnMTkxL1RYVmRDNDNpTkY0cU9peDd3eUZC?=
+ =?utf-8?B?T05uZEZJajBML1E1bzB5WGg2QzZtZmNwK2VkUFQyMEpMMTE5cGM2M21lVzhQ?=
+ =?utf-8?B?T3M0eEFITHkvVGlJMUl2Wld3S2tiVkJzSFdldTlnSTZvMUxUcHppcGhTQVV5?=
+ =?utf-8?B?Y0dKYVNnaTNKaDFacUdsa0NaQlVKREgxNjk2R1VHVDkxOWVaemVwRUJTNmVF?=
+ =?utf-8?B?d0pMTi9nVEZUNml6bXlvTG9ISkVyalJBT2I3QnRKKzArL2dpR3dLQ2tHcmV6?=
+ =?utf-8?B?SmFuNVJwdDJCOEpHckU4VFYyQ0x3RnFMMklQOWVEZ2FKaVh5MGg5Q096RHcr?=
+ =?utf-8?B?bFZBWTFlMCttVjg2WDcxTk5lajB0K3c5OUhucW85aExlMTFOak5GVWJ4RndU?=
+ =?utf-8?B?aDZBSFRtMHAyYnZwQ1JzRXpQMitmNXczWFE4b2RWOWxORzVRRUQybzYwbThS?=
+ =?utf-8?B?K0hZbVBHeThJdFl5d2p4NVNjdmEzcFVCT2dVWG1KeVl4c2ZsaUdTamUvQWMv?=
+ =?utf-8?B?NHpidnRFeDgveHA1UHp5ZS8xT1FZc1M1aTJ5L2ZveTZkUGFkQ1pSSzZpOHZ4?=
+ =?utf-8?B?RDhLTFdFSHhPRFB5QVpaRElVSElaSDdOM1IvWjQyWW9oYVRmUU50UjhUTHFZ?=
+ =?utf-8?Q?JCPU=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16e51f77-8f7d-479d-8746-08dbe1645a36
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 20:42:13.0851
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KOgcwB36oDzKUumhumcDDEDiVOQnOMa9yi0BYoqRO5hy5LMxFTy4/ehgPf5lUCiW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6917
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 06:34:24PM +0530, Naresh Kamboju wrote:
-> Following kernel panic noticed while running selftests: memfd: run_fuse_test.sh
-> on arm64 Juno-r2 and x86 devices running Linux next-20231109.
+Hi James,
+
+On 10/25/23 13:03, James Morse wrote:
+> MPAM's cache occupancy counters can take a little while to settle once
+> the monitor has been configured. The maximum settling time is described
+> to the driver via a firmware table. The value could be large enough
+> that it makes sense to sleep. To avoid exposing this to resctrl, it
+> should be hidden behind MPAM's resctrl_arch_rmid_read().
 > 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> resctrl_arch_rmid_read() may be called via IPI meaning it is unable
+> to sleep. In this case resctrl_arch_rmid_read() should return an error
+> if it needs to sleep. This will only affect MPAM platforms where
+> the cache occupancy counter isn't available immediately, nohz_full is
+> in use, and there are no housekeeping CPUs in the necessary domain.
 > 
-> log:
+> There are three callers of resctrl_arch_rmid_read():
+> __mon_event_count() and __check_limbo() are both called from a
+> non-migrateable context. mon_event_read() invokes __mon_event_count()
+> using smp_call_on_cpu(), which adds work to the target CPUs workqueue.
+> rdtgroup_mutex() is held, meaning this cannot race with the resctrl
+> cpuhp callback. __check_limbo() is invoked via schedule_delayed_work_on()
+> also adds work to a per-cpu workqueue.
+> 
+> The remaining call is add_rmid_to_limbo() which is called in response
+> to a user-space syscall that frees an RMID. This opportunistically
+> reads the LLC occupancy counter on the current domain to see if the
+> RMID is over the dirty threshold. This has to disable preemption to
+> avoid reading the wrong domain's value. Disabling pre-emption here
+> prevents resctrl_arch_rmid_read() from sleeping.
+
+I dont know what did you mean by "This has to disable preemption to
+avoid reading the wrong domain's value."
+
+Who is disabling the preemption here? Is that specific to ARM?
+Can you please make that clear? Or Am i missing something?
+
+Thanks
+Babu
+
+> 
+> add_rmid_to_limbo() walks each domain, but only reads the counter
+> on one domain. If the system has more than one domain, the RMID will
+> always be added to the limbo list. If the RMIDs usage was not over the
+> threshold, it will be removed from the list when __check_limbo() runs.
+> Make this the default behaviour. Free RMIDs are always added to the
+> limbo list for each domain.
+> 
+> The user visible effect of this is that a clean RMID is not available
+> for re-allocation immediately after 'rmdir()' completes, this behaviour
+> was never portable as it never happened on a machine with multiple
+> domains.
+> 
+> Removing this path allows resctrl_arch_rmid_read() to sleep if its called
+> with interrupts unmasked. Document this is the expected behaviour, and
+> add a might_sleep() annotation to catch changes that won't work on arm64.
+> 
+> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+> Tested-by: Peter Newman <peternewman@google.com>
+> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+> Signed-off-by: James Morse <james.morse@arm.com>
 > ---
-> # timeout set to 45
-> # selftests: memfd: run_fuse_test.sh
-> # opening: ./mnt/memfd
-> # fuse: DONE
-> [ 1931.860330] Unable to handle kernel paging request at virtual
-> address 005a5a5a5a5a5a5a
-> [ 1931.868645] Mem abort info:
-> [ 1931.871505]   ESR = 0x0000000096000021
-> [ 1931.875311]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [ 1931.880805]   SET = 0, FnV = 0
-> [ 1931.883924]   EA = 0, S1PTW = 0
-> [ 1931.887563]   FSC = 0x21: alignment fault
-> [ 1931.891618] Data abort info:
-> [ 1931.894542]   ISV = 0, ISS = 0x00000021, ISS2 = 0x00000000
-> [ 1931.900219]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [ 1931.905305]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [ 1931.910692] [005a5a5a5a5a5a5a] address between user and kernel address ranges
-> [ 1931.918091] Internal error: Oops: 0000000096000021 [#1] PREEMPT SMP
-> [ 1931.924375] Modules linked in: gpio_sim onboard_usb_hub tda998x
-> hdlcd crct10dif_ce cec drm_dma_helper dm_mod [last unloaded:
-> gpio_mockup]
-> [ 1931.936789] CPU: 1 PID: 20739 Comm: fusermount Not tainted
-> 6.6.0-next-20231109 #1
-> [ 1931.944295] Hardware name: ARM Juno development board (r2) (DT)
-> [ 1931.950224] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [ 1931.957205] pc : fuse_evict_inode
-> (arch/arm64/include/asm/atomic_ll_sc.h:96 (discriminator 3)
-> arch/arm64/include/asm/atomic.h:51 (discriminator 3)
-> include/linux/atomic/atomic-arch-fallback.h:944 (discriminator 3)
-> include/linux/atomic/atomic-instrumented.h:401 (discriminator 3)
-> include/linux/refcount.h:272 (discriminator 3)
-> include/linux/refcount.h:315 (discriminator 3)
-> include/linux/refcount.h:333 (discriminator 3) fs/fuse/inode.c:137
-> (discriminator 3) fs/fuse/inode.c:166 (discriminator 3))
-> [ 1931.961586] lr : fuse_evict_inode (fs/fuse/inode.c:162)
-> [ 1931.965868] sp : ffff80008792ba90
-> [ 1931.969189] x29: ffff80008792ba90 x28: ffff000800b58040 x27: 0000000000000000
-> [ 1931.976358] x26: 0000000000000000 x25: ffff800080508f98 x24: ffff80008316a008
-> [ 1931.983519] x23: ffff80008316a008 x22: ffff80008424a020 x21: ffff00082a514c00
-> [ 1931.990679] x20: 5a5a5a5a5a5a5a5a x19: ffff000838828780 x18: 0000000000000000
-> [ 1931.997840] x17: ffff80008050e610 x16: ffff80008050e5bc x15: ffff80008050e3e8
-> [ 1932.005003] x14: ffff80008050df10 x13: ffff800080769c60 x12: ffff8000851f6388
-> [ 1932.012165] x11: 0000000000000645 x10: 0000000000000645 x9 : ffff800081c0e0b4
-> [ 1932.019332] x8 : ffff80008792b988 x7 : 0000000000000000 x6 : ffff800084a75fe8
-> [ 1932.026495] x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008424a968
-> [ 1932.033659] x2 : 0000000000000002 x1 : ffff000800b58040 x0 : 0000000000000001
-> [ 1932.040820] Call trace:
-> [ 1932.043272] fuse_evict_inode
-> (arch/arm64/include/asm/atomic_ll_sc.h:96 (discriminator 3)
-> arch/arm64/include/asm/atomic.h:51 (discriminator 3)
-> include/linux/atomic/atomic-arch-fallback.h:944 (discriminator 3)
-> include/linux/atomic/atomic-instrumented.h:401 (discriminator 3)
-> include/linux/refcount.h:272 (discriminator 3)
-> include/linux/refcount.h:315 (discriminator 3)
-> include/linux/refcount.h:333 (discriminator 3) fs/fuse/inode.c:137
-> (discriminator 3) fs/fuse/inode.c:166 (discriminator 3))
-> [ 1932.047296] evict (fs/inode.c:669)
-> [ 1932.050279] iput_final (fs/inode.c:1776)
-> [ 1932.053694] iput.part.0 (fs/inode.c:1803)
-> [ 1932.057280] iput (fs/inode.c:1803)
-> [ 1932.060085] dentry_unlink_inode (fs/dcache.c:402)
-> [ 1932.064281] __dentry_kill (arch/arm64/include/asm/current.h:19
-> arch/arm64/include/asm/preempt.h:47 fs/dcache.c:610)
-> [ 1932.067956] shrink_dentry_list (include/linux/list.h:373
-> (discriminator 2) fs/dcache.c:1179 (discriminator 2))
-> [ 1932.072067] shrink_dcache_parent (fs/dcache.c:1652)
-> [ 1932.076433] shrink_dcache_for_umount (fs/dcache.c:1682 fs/dcache.c:1698)
-> [ 1932.081062] generic_shutdown_super (fs/super.c:647)
-> [ 1932.085518] kill_anon_super (fs/super.c:1254)
-> [ 1932.089277] fuse_kill_sb_anon (fs/fuse/fuse_i.h:895 fs/fuse/inode.c:1912)
-> [ 1932.093298] deactivate_locked_super (fs/super.c:489)
-> [ 1932.097753] deactivate_super (fs/super.c:522)
-> [ 1932.101599] cleanup_mnt (fs/namespace.c:139 fs/namespace.c:1257)
-> [ 1932.105097] __cleanup_mnt (fs/namespace.c:1264)
-> [ 1932.108680] task_work_run (kernel/task_work.c:182)
-> [ 1932.112266] do_notify_resume (include/linux/resume_user_mode.h:49
-> arch/arm64/kernel/signal.c:1305)
-> [ 1932.116283] el0_svc (arch/arm64/kernel/entry-common.c:137
-> arch/arm64/kernel/entry-common.c:144
-> arch/arm64/kernel/entry-common.c:679)
-> [ 1932.119345] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:697)
-> [ 1932.123710] el0t_64_sync (arch/arm64/kernel/entry.S:595)
-> [ 1932.127383] Code: f9026a7f 17ffffd9 52800020 f9800291 (885f7e81)
-> All code
-> ========
->    0: f9026a7f str xzr, [x19, #1232]
->    4: 17ffffd9 b 0xffffffffffffff68
->    8: 52800020 mov w0, #0x1                    // #1
->    c: f9800291 prfm pstl1strm, [x20]
->   10:* 885f7e81 ldxr w1, [x20] <-- trapping instruction
+> The previous version allowed resctrl_arch_rmid_read() to be called on the
+> wrong CPUs, but now that this needs to take nohz_full and housekeeping into
+> account, its too complex.
 > 
-> Code starting with the faulting instruction
-> ===========================================
->    0: 885f7e81 ldxr w1, [x20]
-> [ 1932.133486] ---[ end trace 0000000000000000 ]---
-> [ 1932.138111] Kernel panic - not syncing: Oops: Fatal exception
-> [ 1932.143867] SMP: stopping secondary CPUs
-> [ 1932.148008] Kernel Offset: disabled
-> [ 1932.151498] CPU features: 0x1,0000020c,3c020000,0100421b
-> [ 1932.156820] Memory Limit: none
-> [ 1932.159880] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+> Changes since v3:
+>  * Removed error handling for smp_call_function_any(), this can't race
+>    with the cpuhp callbacks as both hold rdtgroup_mutex.
+>  * Switched to the alternative of removing the counter read, this simplifies
+>    things dramatically.
 > 
+> Changes since v4:
+>  * Messed with capitalisation.
+>  * Removed some dead code now that entry->busy will never be zero in
+>    add_rmid_to_limbo().
+>  * Rephrased the comment above resctrl_arch_rmid_read_context_check().
 > 
-> Links:
-> - https://lkft.validation.linaro.org/scheduler/job/7006578#L6164
-> - https://lkft.validation.linaro.org/scheduler/job/7006482#L9235
+> Changes since v5:
+>  * Really rephrased the comment above resctrl_arch_rmid_read_context_check().
 > 
-> metadata:
-> git_ref: master
-> git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> git_sha: b622d91ca201bf97582e9b09ebbaab005ecee86f
-> git_describe: next-20231109
-> kernel_version: 6.6.0
-> kernel-config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2Xv92VPrzXNNmQil9l8bJV2RQHs/config
-> artifact-location:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2Xv92VPrzXNNmQil9l8bJV2RQHs/
-> toolchain: gcc-13
+> No changes since v6
+> ---
+>  arch/x86/kernel/cpu/resctrl/monitor.c | 25 +++++--------------------
+>  include/linux/resctrl.h               | 23 ++++++++++++++++++++++-
+>  2 files changed, 27 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index fa3319021881..409817b0ae2c 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -277,6 +277,8 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  	u64 msr_val, chunks;
+>  	int ret;
+>  
+> +	resctrl_arch_rmid_read_context_check();
+> +
+>  	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
+>  		return -EINVAL;
+>  
+> @@ -455,8 +457,6 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  {
+>  	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+>  	struct rdt_domain *d;
+> -	int cpu, err;
+> -	u64 val = 0;
+>  	u32 idx;
+>  
+>  	lockdep_assert_held(&rdtgroup_mutex);
+> @@ -464,17 +464,7 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+>  
+>  	entry->busy = 0;
+> -	cpu = get_cpu();
+>  	list_for_each_entry(d, &r->domains, list) {
+> -		if (cpumask_test_cpu(cpu, &d->cpu_mask)) {
+> -			err = resctrl_arch_rmid_read(r, d, entry->closid,
+> -						     entry->rmid,
+> -						     QOS_L3_OCCUP_EVENT_ID,
+> -						     &val);
+> -			if (err || val <= resctrl_rmid_realloc_threshold)
+> -				continue;
+> -		}
+> -
+>  		/*
+>  		 * For the first limbo RMID in the domain,
+>  		 * setup up the limbo worker.
+> @@ -484,15 +474,10 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+>  		set_bit(idx, d->rmid_busy_llc);
+>  		entry->busy++;
+>  	}
+> -	put_cpu();
+>  
+> -	if (entry->busy) {
+> -		rmid_limbo_count++;
+> -		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> -			closid_num_dirty_rmid[entry->closid]++;
+> -	} else {
+> -		list_add_tail(&entry->list, &rmid_free_lru);
+> -	}
+> +	rmid_limbo_count++;
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
+> +		closid_num_dirty_rmid[entry->closid]++;
+>  }
+>  
+>  void free_rmid(u32 closid, u32 rmid)
+> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+> index bd4ec22b5a96..8649fc84aac2 100644
+> --- a/include/linux/resctrl.h
+> +++ b/include/linux/resctrl.h
+> @@ -236,7 +236,12 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
+>   * @eventid:		eventid to read, e.g. L3 occupancy.
+>   * @val:		result of the counter read in bytes.
+>   *
+> - * Call from process context on a CPU that belongs to domain @d.
+> + * Some architectures need to sleep when first programming some of the counters.
+> + * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
+> + *  for a short period of time). Call from a non-migrateable process context on
+> + * a CPU that belongs to domain @d. e.g. use smp_call_on_cpu() or
+> + * schedule_work_on(). This function can be called with interrupts masked,
+> + * e.g. using smp_call_function_any(), but may consistently return an error.
+>   *
+>   * Return:
+>   * 0 on success, or -EIO, -EINVAL etc on error.
+> @@ -245,6 +250,22 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+>  			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
+>  			   u64 *val);
+>  
+> +/**
+> + * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
+> + *
+> + * When built with CONFIG_DEBUG_ATOMIC_SLEEP generate a warning when
+> + * resctrl_arch_rmid_read() is called with preemption disabled.
+> + *
+> + * The contract with resctrl_arch_rmid_read() is that if interrupts
+> + * are unmasked, it can sleep. This allows NOHZ_FULL systems to use an
+> + * IPI, (and fail if the call needed to sleep), while most of the time
+> + * the work is scheduled, allowing the call to sleep.
+> + */
+> +static inline void resctrl_arch_rmid_read_context_check(void)
+> +{
+> +	if (!irqs_disabled())
+> +		might_sleep();
+> +}
+>  
+>  /**
+>   * resctrl_arch_reset_rmid() - Reset any private state associated with rmid
 
-Thanks for this report and apologies for the trouble this caused you.
-I'm in the process of preparing patch with a fix to send to Miklos.
-Hoping to send that out a little later today.
-
--K
+-- 
+Thanks
+Babu Moger
