@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD657E7568
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:00:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EEA7E756A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345463AbjKJAAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S1345467AbjKJAAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:00:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345443AbjKJAAX (ORCPT
+        with ESMTP id S1345446AbjKJAAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:00:23 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBB6420B;
-        Thu,  9 Nov 2023 16:00:21 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b44befac59so2029072b3a.0;
-        Thu, 09 Nov 2023 16:00:21 -0800 (PST)
+        Thu, 9 Nov 2023 19:00:24 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E4544BE;
+        Thu,  9 Nov 2023 16:00:22 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-27ff7fe7fbcso1299554a91.1;
+        Thu, 09 Nov 2023 16:00:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699574421; x=1700179221; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699574422; x=1700179222; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ohn4+jphevtQjEHJsPa6nw1ndYUCUTA0xB3bWWY8ZxA=;
-        b=ZAKVfq6kx8SI+oirL5u7gFjp/qILkDXAeM9ZJRtq5AaXoEIxU/PclY+kb6cYXMY3EK
-         DcgBHq4i+MLTaCt15YMp7tTrjH/VYclrI2hqsrjuqCJRjDLGFG92xVqgZ6tnzu5Bberd
-         YlvdSmmW18e1OhhX+GMRLhNkbnoji6XQJQC3RD21UkOVJbnOxA7QDBLgpZjMRyTtEcrR
-         UVT2nb4YHcOeSS0MfIwL2WkDvRudCF+kCz5oTt19BEuNFtNf+NQ9ZX7ipYDA5umnPN50
-         y5Smnt2A17zkyHm5BcxZUHxRTXGs+G4mnyerwY9QrOpN4X3VOaSfxDN+DP0QMUN7OhOu
-         mS7A==
+        bh=YFMOX8SX01fXKILUSbNGFFOegaedr50GlhEgN7HfJ3c=;
+        b=CbLFzvPC358cS0wOpDSrPGATDH0xnqTgZD0dqsUDQcOfBytmiDL3raJOWTRUicod6X
+         wHXzk4NuiM6GcCK0clPzu1SlkG9oBJC2uU2VyA2Av0SCs20VUpwRn0PsdxgfOmJcwhMX
+         Hy4sGGo1FRdoS2hcbnfLAYNh7kOiVuV0dE1+2rWb/AirRrud7TtxZFJl/W9czdrSo+qU
+         zfW/B1WQ2cNe7ykTb3SKrAx8GYadAMvQX4rbU9Ua+LBlTGsVj+RkVwdmAXhnW/2I4tbP
+         H6GxQ+oFJOGr/i8FTkIhnhCgSGnbbBKNCnzPRtgQ8vSLwO3tEYHh0j+61Q620hlGxmut
+         G11w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699574421; x=1700179221;
+        d=1e100.net; s=20230601; t=1699574422; x=1700179222;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Ohn4+jphevtQjEHJsPa6nw1ndYUCUTA0xB3bWWY8ZxA=;
-        b=E5tYWnC02QWYvIs2qU7wuN5PzYgza7fw2xdEpRy0gcW3U/KkOrcVqLZ6TXfLGAY8Br
-         vTpJl3962RtpURBThkrmonnlXLRXt3pRUDieSGJ+kKLyg1AvTTFkbTAEEtnYvSeCTmVF
-         ncOHoygc8wyEq9Xdof3qCqrWKiiENGWPbRvKRQp091VvFX/lXGuX94jEud4VixflIs/+
-         rzmIa7rPBorddVVefkJpOZSxlnMPcvTK1c1RolbXwpyRYxKZjFpsAv8bZQjQt/E+ChVJ
-         MUYNWivnG8ALWB9Xb+cPMLuwVxdkJnzEV3flgNDd1jaeU98bZFYQXVfmKfNb82L0GkIB
-         smQw==
-X-Gm-Message-State: AOJu0Ywm2SQ1OW7Yf6yYe/3Yq1mK9gNF37l+fxu8+zb6eYdibpnbzadu
-        ngNpbIBhMsyLyhsKvdSxQxA=
-X-Google-Smtp-Source: AGHT+IFe4IKBEneDjcK+fClglxOUqCTJXhiazz2fwJwEQ9EIE9cURli9ecN0TcG3PDVVefhqzjLIDA==
-X-Received: by 2002:a17:90b:1b04:b0:27d:1369:515e with SMTP id nu4-20020a17090b1b0400b0027d1369515emr1079689pjb.22.1699574420611;
-        Thu, 09 Nov 2023 16:00:20 -0800 (PST)
+        bh=YFMOX8SX01fXKILUSbNGFFOegaedr50GlhEgN7HfJ3c=;
+        b=f7iO/DpGZppY8pXBqHJ84jmT2CH1Eco5OznaId5G8jIogTIyN5kAFmmEXqtceDp8+z
+         UmLV8/pYOZ4/QGwjdGM7tGI4MQMIMGYmBKorWDf5iomyGypxEkhG1NslQgs4lskPpnwq
+         YiTb8LCUAkohWx8CHaKGyIS6WFDXQbZ+B93GeFA/XjufAiTIpzNQobFzWn9v1FW1Crkr
+         eOye93utTxw5GIGbjZpoR/+3ZewG9h+tW9VIF2Vp37dJi5Dqao28phStJE18g42R+pWE
+         9xOMyJ34saxxlW6LQHLCe4B17RF566MjrPO599NAvFQNKQnh9adFn1Y0Iu96qWVgeH22
+         xc6A==
+X-Gm-Message-State: AOJu0YxVEsgW+mMGEhdmYkSoU86vnSsMK5KAEaGa26k6BlRhafUOUGPA
+        K2u4vAdmlI5RbKUO5CIYRqA=
+X-Google-Smtp-Source: AGHT+IGSNjWc3MbyvDO+qDwwjc7N06wOn2WivEP4MkJBt3rpiL3aUf/iaPdEzzYU/Ta+kPiT01PkDQ==
+X-Received: by 2002:a17:90a:e7c7:b0:281:3fb:6df1 with SMTP id kb7-20020a17090ae7c700b0028103fb6df1mr3301226pjb.46.1699574422245;
+        Thu, 09 Nov 2023 16:00:22 -0800 (PST)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:d45c:ae16:d959:a5f1])
-        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.19
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 16:00:20 -0800 (PST)
+        Thu, 09 Nov 2023 16:00:21 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Subject: [PATCH 03/52] perf tools: Add util/debuginfo.[ch] files
-Date:   Thu,  9 Nov 2023 15:59:22 -0800
-Message-ID: <20231110000012.3538610-4-namhyung@kernel.org>
+Subject: [PATCH 04/52] perf dwarf-aux: Fix die_get_typename() for void *
+Date:   Thu,  9 Nov 2023 15:59:23 -0800
+Message-ID: <20231110000012.3538610-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231110000012.3538610-1-namhyung@kernel.org>
 References: <20231110000012.3538610-1-namhyung@kernel.org>
@@ -77,579 +77,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split debuginfo data structure and related functions into a separate
-file so that it can be used other than the probe-finder.
+The die_get_typename() is to return a C-like type name from DWARF debug
+entry and it follows data type if the target entry is a pointer type.
+But I found void pointers don't have the type attribte to follow and
+then the function returns an error for that case.  This results in a
+broken type string for void pointer types.
 
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
+For example, the following type entries are pointer types.
+
+ <1><48c>: Abbrev Number: 4 (DW_TAG_pointer_type)
+    <48d>   DW_AT_byte_size   : 8
+    <48d>   DW_AT_type        : <0x481>
+ <1><491>: Abbrev Number: 211 (DW_TAG_pointer_type)
+    <493>   DW_AT_byte_size   : 8
+ <1><494>: Abbrev Number: 4 (DW_TAG_pointer_type)
+    <495>   DW_AT_byte_size   : 8
+    <495>   DW_AT_type        : <0x49e>
+
+The first one at offset 48c and the third one at offset 494 have type
+information.  Then they are pointer types for the referenced types.
+But the second one at offset 491 doesn't have the type attribute.
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/Build          |   1 +
- tools/perf/util/debuginfo.c    | 205 +++++++++++++++++++++++++++++++++
- tools/perf/util/debuginfo.h    |  64 ++++++++++
- tools/perf/util/probe-finder.c | 193 +------------------------------
- tools/perf/util/probe-finder.h |  19 +--
- 5 files changed, 272 insertions(+), 210 deletions(-)
- create mode 100644 tools/perf/util/debuginfo.c
- create mode 100644 tools/perf/util/debuginfo.h
+ tools/perf/util/dwarf-aux.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 96058f949ec9..73e3f194f949 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -195,6 +195,7 @@ endif
- perf-$(CONFIG_DWARF) += probe-finder.o
- perf-$(CONFIG_DWARF) += dwarf-aux.o
- perf-$(CONFIG_DWARF) += dwarf-regs.o
-+perf-$(CONFIG_DWARF) += debuginfo.o
- 
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
- perf-$(CONFIG_LOCAL_LIBUNWIND)    += unwind-libunwind-local.o
-diff --git a/tools/perf/util/debuginfo.c b/tools/perf/util/debuginfo.c
-new file mode 100644
-index 000000000000..19acf4775d35
---- /dev/null
-+++ b/tools/perf/util/debuginfo.c
-@@ -0,0 +1,205 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * DWARF debug information handling code.  Copied from probe-finder.c.
-+ *
-+ * Written by Masami Hiramatsu <mhiramat@redhat.com>
-+ */
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 2941d88f2199..4849c3bbfd95 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -1090,7 +1090,14 @@ int die_get_typename(Dwarf_Die *vr_die, struct strbuf *buf)
+ 		return strbuf_addf(buf, "%s%s", tmp, name ?: "");
+ 	}
+ 	ret = die_get_typename(&type, buf);
+-	return ret ? ret : strbuf_addstr(buf, tmp);
++	if (ret < 0) {
++		/* void pointer has no type attribute */
++		if (tag == DW_TAG_pointer_type && ret == -ENOENT)
++			return strbuf_addf(buf, "void*");
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <linux/zalloc.h>
-+
-+#include "build-id.h"
-+#include "dso.h"
-+#include "debug.h"
-+#include "debuginfo.h"
-+#include "symbol.h"
-+
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
-+/* Dwarf FL wrappers */
-+static char *debuginfo_path;	/* Currently dummy */
-+
-+static const Dwfl_Callbacks offline_callbacks = {
-+	.find_debuginfo = dwfl_standard_find_debuginfo,
-+	.debuginfo_path = &debuginfo_path,
-+
-+	.section_address = dwfl_offline_section_address,
-+
-+	/* We use this table for core files too.  */
-+	.find_elf = dwfl_build_id_find_elf,
-+};
-+
-+/* Get a Dwarf from offline image */
-+static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
-+					 const char *path)
-+{
-+	GElf_Addr dummy;
-+	int fd;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	dbg->dwfl = dwfl_begin(&offline_callbacks);
-+	if (!dbg->dwfl)
-+		goto error;
-+
-+	dwfl_report_begin(dbg->dwfl);
-+	dbg->mod = dwfl_report_offline(dbg->dwfl, "", "", fd);
-+	if (!dbg->mod)
-+		goto error;
-+
-+	dbg->dbg = dwfl_module_getdwarf(dbg->mod, &dbg->bias);
-+	if (!dbg->dbg)
-+		goto error;
-+
-+	dwfl_module_build_id(dbg->mod, &dbg->build_id, &dummy);
-+
-+	dwfl_report_end(dbg->dwfl, NULL, NULL);
-+
-+	return 0;
-+error:
-+	if (dbg->dwfl)
-+		dwfl_end(dbg->dwfl);
-+	else
-+		close(fd);
-+	memset(dbg, 0, sizeof(*dbg));
-+
-+	return -ENOENT;
-+}
-+
-+static struct debuginfo *__debuginfo__new(const char *path)
-+{
-+	struct debuginfo *dbg = zalloc(sizeof(*dbg));
-+	if (!dbg)
-+		return NULL;
-+
-+	if (debuginfo__init_offline_dwarf(dbg, path) < 0)
-+		zfree(&dbg);
-+	if (dbg)
-+		pr_debug("Open Debuginfo file: %s\n", path);
-+	return dbg;
-+}
-+
-+enum dso_binary_type distro_dwarf_types[] = {
-+	DSO_BINARY_TYPE__FEDORA_DEBUGINFO,
-+	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
-+	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
-+	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
-+	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
-+	DSO_BINARY_TYPE__NOT_FOUND,
-+};
-+
-+struct debuginfo *debuginfo__new(const char *path)
-+{
-+	enum dso_binary_type *type;
-+	char buf[PATH_MAX], nil = '\0';
-+	struct dso *dso;
-+	struct debuginfo *dinfo = NULL;
-+	struct build_id bid;
-+
-+	/* Try to open distro debuginfo files */
-+	dso = dso__new(path);
-+	if (!dso)
-+		goto out;
-+
-+	/* Set the build id for DSO_BINARY_TYPE__BUILDID_DEBUGINFO */
-+	if (is_regular_file(path) && filename__read_build_id(path, &bid) > 0)
-+		dso__set_build_id(dso, &bid);
-+
-+	for (type = distro_dwarf_types;
-+	     !dinfo && *type != DSO_BINARY_TYPE__NOT_FOUND;
-+	     type++) {
-+		if (dso__read_binary_type_filename(dso, *type, &nil,
-+						   buf, PATH_MAX) < 0)
-+			continue;
-+		dinfo = __debuginfo__new(buf);
++		return ret;
 +	}
-+	dso__put(dso);
-+
-+out:
-+	/* if failed to open all distro debuginfo, open given binary */
-+	return dinfo ? : __debuginfo__new(path);
-+}
-+
-+void debuginfo__delete(struct debuginfo *dbg)
-+{
-+	if (dbg) {
-+		if (dbg->dwfl)
-+			dwfl_end(dbg->dwfl);
-+		free(dbg);
-+	}
-+}
-+
-+/* For the kernel module, we need a special code to get a DIE */
-+int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
-+				bool adjust_offset)
-+{
-+	int n, i;
-+	Elf32_Word shndx;
-+	Elf_Scn *scn;
-+	Elf *elf;
-+	GElf_Shdr mem, *shdr;
-+	const char *p;
-+
-+	elf = dwfl_module_getelf(dbg->mod, &dbg->bias);
-+	if (!elf)
-+		return -EINVAL;
-+
-+	/* Get the number of relocations */
-+	n = dwfl_module_relocations(dbg->mod);
-+	if (n < 0)
-+		return -ENOENT;
-+	/* Search the relocation related .text section */
-+	for (i = 0; i < n; i++) {
-+		p = dwfl_module_relocation_info(dbg->mod, i, &shndx);
-+		if (strcmp(p, ".text") == 0) {
-+			/* OK, get the section header */
-+			scn = elf_getscn(elf, shndx);
-+			if (!scn)
-+				return -ENOENT;
-+			shdr = gelf_getshdr(scn, &mem);
-+			if (!shdr)
-+				return -ENOENT;
-+			*offs = shdr->sh_addr;
-+			if (adjust_offset)
-+				*offs -= shdr->sh_offset;
-+		}
-+	}
-+	return 0;
-+}
-+
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+int get_source_from_debuginfod(const char *raw_path,
-+			       const char *sbuild_id, char **new_path)
-+{
-+	debuginfod_client *c = debuginfod_begin();
-+	const char *p = raw_path;
-+	int fd;
-+
-+	if (!c)
-+		return -ENOMEM;
-+
-+	fd = debuginfod_find_source(c, (const unsigned char *)sbuild_id,
-+				0, p, new_path);
-+	pr_debug("Search %s from debuginfod -> %d\n", p, fd);
-+	if (fd >= 0)
-+		close(fd);
-+	debuginfod_end(c);
-+	if (fd < 0) {
-+		pr_debug("Failed to find %s in debuginfod (%s)\n",
-+			raw_path, sbuild_id);
-+		return -ENOENT;
-+	}
-+	pr_debug("Got a source %s\n", *new_path);
-+
-+	return 0;
-+}
-+#endif /* HAVE_DEBUGINFOD_SUPPORT */
-diff --git a/tools/perf/util/debuginfo.h b/tools/perf/util/debuginfo.h
-new file mode 100644
-index 000000000000..4d65b8c605fc
---- /dev/null
-+++ b/tools/perf/util/debuginfo.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+#ifndef _PERF_DEBUGINFO_H
-+#define _PERF_DEBUGINFO_H
-+
-+#include <errno.h>
-+#include <linux/compiler.h>
-+
-+#ifdef HAVE_DWARF_SUPPORT
-+
-+#include "dwarf-aux.h"
-+
-+/* debug information structure */
-+struct debuginfo {
-+	Dwarf		*dbg;
-+	Dwfl_Module	*mod;
-+	Dwfl		*dwfl;
-+	Dwarf_Addr	bias;
-+	const unsigned char	*build_id;
-+};
-+
-+/* This also tries to open distro debuginfo */
-+struct debuginfo *debuginfo__new(const char *path);
-+void debuginfo__delete(struct debuginfo *dbg);
-+
-+int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
-+			       bool adjust_offset);
-+
-+#else /* HAVE_DWARF_SUPPORT */
-+
-+/* dummy debug information structure */
-+struct debuginfo {
-+};
-+
-+static inline struct debuginfo *debuginfo__new(const char *path __maybe_unused)
-+{
-+	return NULL;
-+}
-+
-+static inline void debuginfo__delete(struct debuginfo *dbg __maybe_unused)
-+{
-+}
-+
-+static inline int debuginfo__get_text_offset(struct debuginfo *dbg __maybe_unused,
-+					     Dwarf_Addr *offs __maybe_unused,
-+					     bool adjust_offset __maybe_unused)
-+{
-+	return -EINVAL;
-+}
-+
-+#endif /* HAVE_DWARF_SUPPORT */
-+
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+int get_source_from_debuginfod(const char *raw_path, const char *sbuild_id,
-+			       char **new_path);
-+#else /* HAVE_DEBUGINFOD_SUPPORT */
-+static inline int get_source_from_debuginfod(const char *raw_path __maybe_unused,
-+					     const char *sbuild_id __maybe_unused,
-+					     char **new_path __maybe_unused)
-+{
-+	return -ENOTSUP;
-+}
-+#endif /* HAVE_DEBUGINFOD_SUPPORT */
-+
-+#endif /* _PERF_DEBUGINFO_H */
-diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
-index f171360b0ef4..8d3dd85f9ff4 100644
---- a/tools/perf/util/probe-finder.c
-+++ b/tools/perf/util/probe-finder.c
-@@ -23,6 +23,7 @@
- #include "event.h"
- #include "dso.h"
- #include "debug.h"
-+#include "debuginfo.h"
- #include "intlist.h"
- #include "strbuf.h"
- #include "strlist.h"
-@@ -31,128 +32,9 @@
- #include "probe-file.h"
- #include "string2.h"
- 
--#ifdef HAVE_DEBUGINFOD_SUPPORT
--#include <elfutils/debuginfod.h>
--#endif
--
- /* Kprobe tracer basic type is up to u64 */
- #define MAX_BASIC_TYPE_BITS	64
- 
--/* Dwarf FL wrappers */
--static char *debuginfo_path;	/* Currently dummy */
--
--static const Dwfl_Callbacks offline_callbacks = {
--	.find_debuginfo = dwfl_standard_find_debuginfo,
--	.debuginfo_path = &debuginfo_path,
--
--	.section_address = dwfl_offline_section_address,
--
--	/* We use this table for core files too.  */
--	.find_elf = dwfl_build_id_find_elf,
--};
--
--/* Get a Dwarf from offline image */
--static int debuginfo__init_offline_dwarf(struct debuginfo *dbg,
--					 const char *path)
--{
--	GElf_Addr dummy;
--	int fd;
--
--	fd = open(path, O_RDONLY);
--	if (fd < 0)
--		return fd;
--
--	dbg->dwfl = dwfl_begin(&offline_callbacks);
--	if (!dbg->dwfl)
--		goto error;
--
--	dwfl_report_begin(dbg->dwfl);
--	dbg->mod = dwfl_report_offline(dbg->dwfl, "", "", fd);
--	if (!dbg->mod)
--		goto error;
--
--	dbg->dbg = dwfl_module_getdwarf(dbg->mod, &dbg->bias);
--	if (!dbg->dbg)
--		goto error;
--
--	dwfl_module_build_id(dbg->mod, &dbg->build_id, &dummy);
--
--	dwfl_report_end(dbg->dwfl, NULL, NULL);
--
--	return 0;
--error:
--	if (dbg->dwfl)
--		dwfl_end(dbg->dwfl);
--	else
--		close(fd);
--	memset(dbg, 0, sizeof(*dbg));
--
--	return -ENOENT;
--}
--
--static struct debuginfo *__debuginfo__new(const char *path)
--{
--	struct debuginfo *dbg = zalloc(sizeof(*dbg));
--	if (!dbg)
--		return NULL;
--
--	if (debuginfo__init_offline_dwarf(dbg, path) < 0)
--		zfree(&dbg);
--	if (dbg)
--		pr_debug("Open Debuginfo file: %s\n", path);
--	return dbg;
--}
--
--enum dso_binary_type distro_dwarf_types[] = {
--	DSO_BINARY_TYPE__FEDORA_DEBUGINFO,
--	DSO_BINARY_TYPE__UBUNTU_DEBUGINFO,
--	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
--	DSO_BINARY_TYPE__BUILDID_DEBUGINFO,
--	DSO_BINARY_TYPE__MIXEDUP_UBUNTU_DEBUGINFO,
--	DSO_BINARY_TYPE__NOT_FOUND,
--};
--
--struct debuginfo *debuginfo__new(const char *path)
--{
--	enum dso_binary_type *type;
--	char buf[PATH_MAX], nil = '\0';
--	struct dso *dso;
--	struct debuginfo *dinfo = NULL;
--	struct build_id bid;
--
--	/* Try to open distro debuginfo files */
--	dso = dso__new(path);
--	if (!dso)
--		goto out;
--
--	/* Set the build id for DSO_BINARY_TYPE__BUILDID_DEBUGINFO */
--	if (is_regular_file(path) && filename__read_build_id(path, &bid) > 0)
--		dso__set_build_id(dso, &bid);
--
--	for (type = distro_dwarf_types;
--	     !dinfo && *type != DSO_BINARY_TYPE__NOT_FOUND;
--	     type++) {
--		if (dso__read_binary_type_filename(dso, *type, &nil,
--						   buf, PATH_MAX) < 0)
--			continue;
--		dinfo = __debuginfo__new(buf);
--	}
--	dso__put(dso);
--
--out:
--	/* if failed to open all distro debuginfo, open given binary */
--	return dinfo ? : __debuginfo__new(path);
--}
--
--void debuginfo__delete(struct debuginfo *dbg)
--{
--	if (dbg) {
--		if (dbg->dwfl)
--			dwfl_end(dbg->dwfl);
--		free(dbg);
--	}
--}
--
- /*
-  * Probe finder related functions
-  */
-@@ -1677,44 +1559,6 @@ int debuginfo__find_available_vars_at(struct debuginfo *dbg,
- 	return (ret < 0) ? ret : af.nvls;
++	return strbuf_addstr(buf, tmp);
  }
  
--/* For the kernel module, we need a special code to get a DIE */
--int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
--				bool adjust_offset)
--{
--	int n, i;
--	Elf32_Word shndx;
--	Elf_Scn *scn;
--	Elf *elf;
--	GElf_Shdr mem, *shdr;
--	const char *p;
--
--	elf = dwfl_module_getelf(dbg->mod, &dbg->bias);
--	if (!elf)
--		return -EINVAL;
--
--	/* Get the number of relocations */
--	n = dwfl_module_relocations(dbg->mod);
--	if (n < 0)
--		return -ENOENT;
--	/* Search the relocation related .text section */
--	for (i = 0; i < n; i++) {
--		p = dwfl_module_relocation_info(dbg->mod, i, &shndx);
--		if (strcmp(p, ".text") == 0) {
--			/* OK, get the section header */
--			scn = elf_getscn(elf, shndx);
--			if (!scn)
--				return -ENOENT;
--			shdr = gelf_getshdr(scn, &mem);
--			if (!shdr)
--				return -ENOENT;
--			*offs = shdr->sh_addr;
--			if (adjust_offset)
--				*offs -= shdr->sh_offset;
--		}
--	}
--	return 0;
--}
--
- /* Reverse search */
- int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
- 				struct perf_probe_point *ppt)
-@@ -2009,41 +1853,6 @@ int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr)
- 	return (ret < 0) ? ret : lf.found;
- }
- 
--#ifdef HAVE_DEBUGINFOD_SUPPORT
--/* debuginfod doesn't require the comp_dir but buildid is required */
--static int get_source_from_debuginfod(const char *raw_path,
--				const char *sbuild_id, char **new_path)
--{
--	debuginfod_client *c = debuginfod_begin();
--	const char *p = raw_path;
--	int fd;
--
--	if (!c)
--		return -ENOMEM;
--
--	fd = debuginfod_find_source(c, (const unsigned char *)sbuild_id,
--				0, p, new_path);
--	pr_debug("Search %s from debuginfod -> %d\n", p, fd);
--	if (fd >= 0)
--		close(fd);
--	debuginfod_end(c);
--	if (fd < 0) {
--		pr_debug("Failed to find %s in debuginfod (%s)\n",
--			raw_path, sbuild_id);
--		return -ENOENT;
--	}
--	pr_debug("Got a source %s\n", *new_path);
--
--	return 0;
--}
--#else
--static inline int get_source_from_debuginfod(const char *raw_path __maybe_unused,
--				const char *sbuild_id __maybe_unused,
--				char **new_path __maybe_unused)
--{
--	return -ENOTSUP;
--}
--#endif
- /*
-  * Find a src file from a DWARF tag path. Prepend optional source path prefix
-  * and chop off leading directories that do not exist. Result is passed back as
-diff --git a/tools/perf/util/probe-finder.h b/tools/perf/util/probe-finder.h
-index 8bc1c80d3c1c..3add5ff516e1 100644
---- a/tools/perf/util/probe-finder.h
-+++ b/tools/perf/util/probe-finder.h
-@@ -24,21 +24,7 @@ static inline int is_c_varname(const char *name)
- #ifdef HAVE_DWARF_SUPPORT
- 
- #include "dwarf-aux.h"
--
--/* TODO: export debuginfo data structure even if no dwarf support */
--
--/* debug information structure */
--struct debuginfo {
--	Dwarf		*dbg;
--	Dwfl_Module	*mod;
--	Dwfl		*dwfl;
--	Dwarf_Addr	bias;
--	const unsigned char	*build_id;
--};
--
--/* This also tries to open distro debuginfo */
--struct debuginfo *debuginfo__new(const char *path);
--void debuginfo__delete(struct debuginfo *dbg);
-+#include "debuginfo.h"
- 
- /* Find probe_trace_events specified by perf_probe_event from debuginfo */
- int debuginfo__find_trace_events(struct debuginfo *dbg,
-@@ -49,9 +35,6 @@ int debuginfo__find_trace_events(struct debuginfo *dbg,
- int debuginfo__find_probe_point(struct debuginfo *dbg, u64 addr,
- 				struct perf_probe_point *ppt);
- 
--int debuginfo__get_text_offset(struct debuginfo *dbg, Dwarf_Addr *offs,
--			       bool adjust_offset);
--
- /* Find a line range */
- int debuginfo__find_line_range(struct debuginfo *dbg, struct line_range *lr);
- 
+ /**
 -- 
 2.42.0.869.gea05f2083d-goog
 
