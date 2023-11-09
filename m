@@ -2,227 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCF37E70A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C276F7E709E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344810AbjKIRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:44:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        id S1344791AbjKIRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344804AbjKIRof (ORCPT
+        with ESMTP id S231478AbjKIRoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:44:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28082D63
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:44:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699551874; x=1731087874;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ffVaWb2/xyTV9u+o43EsVB0nyBp+w2R4tsUSq8V3He0=;
-  b=K9bZpPTTWlM7YxDEduWz7Z2HHtevCyQc1E6lRo9AqU6BQ9jwFsU8J1Dj
-   kmWi8NZVmV6tQIHim9Q4Zs42vZKYHBr1TpArdyUMhtNlPYIONktFkgvvb
-   ZqLOFM4ftZd+Yp+0vTzJXU847iosDgrd9nuXH8Zn7vW4K3r61iegPy/pN
-   vH/pRyKG+UHvdUkUvb3PATKJ2sJ8DTjQlVLQXQ3z64zrL0WjchG/ei7v7
-   cd4olMOsNyPymLnv0wVFwdKgllXO+ih2rxH5tzXBk3nxzxM74qv4v+Wdo
-   +9ALALRLjOM/uPbvpERNWAayTLCnBfUclop9l4Gra4OJxc5N+TJn3xvAo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="11583574"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="11583574"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:44:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="739908511"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="739908511"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 09:44:32 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:44:32 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:44:31 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 09:44:31 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:44:30 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I8vEGnmDXubLV+AQx8a9p0+RcUFl4i3o06aArqr4rQHSzlNiMuLlgua2GMqT635m1DH/E2yutA0ORLXjPk4x8wJW9ckl49MQi9pokJjEikvT395jiEcFoTZ5VTYfXPtBwa5Gxyv+93nrti49u9hSSvha22k0nd3cuIn1+u8v0FYfd2ZJddGh+whzllnA4jo2+KtcEVU6vF+NhMZcoR4O06wjMPSduDRPkI3ZdqZoMeswUnNlbxsf1FP5ugiJldJSY97JouVvbFiZiz8sQaL95wmhyNMxt7oDbvi/qY4LL5GFmpM8b4Qvg3XSWa99fnstWzKel3zT1XsiDknx9DHw1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=39wfW6o5cyWQISiM3KrtSjqpSwBGnIrVuIElGG++6SU=;
- b=MeYzr5EJMmWMM9XqeNJnBmHy19JMJd2vTmaYnokkgYEuEprFOEBMdixHCM4SYSvRlgURPo7lFsC6/QrGOqhJwb054/6SphVqYWGW0ECewy8H5vdRR8BGVYsY+HkYX2KaJTErmJz7l+mK1n5ytBJjfYhEhgCmlFhR+/OOe+kAlvj29mORa+7hAQzsQKM3+2D5Fpm8HWeTEg2+2oTMpwZU1i1uQ+LFW5tvEzSMZ4+7/pZHoilaks4oivORoNgUKrG5JAEp0KnndTmXNXTpYwwnOGOJRTngyxZfnK3XVWCn7LLEw/vkJMex6SgjaB15tH8JDobuv9UU6l7gvo419i0Y5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM6PR11MB4707.namprd11.prod.outlook.com (2603:10b6:5:2a6::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Thu, 9 Nov
- 2023 17:44:27 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
- 17:44:27 +0000
-Message-ID: <7b6ae291-b1df-4a4a-a415-da1eaeed6775@intel.com>
-Date:   Thu, 9 Nov 2023 09:44:26 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 09/24] x86/resctrl: Use __set_bit()/__clear_bit()
- instead of open coding
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
-        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
-        <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
-        <dfustini@baylibre.com>, <amitsinght@marvell.com>
-References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-10-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20231025180345.28061-10-james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0225.namprd04.prod.outlook.com
- (2603:10b6:303:87::20) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Thu, 9 Nov 2023 12:44:32 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD521269E;
+        Thu,  9 Nov 2023 09:44:29 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 56C751F8B0;
+        Thu,  9 Nov 2023 17:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699551868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c86Z8q1/b2Eeyili5R4ug0kpFWr8jt8l2GoRdNG4LBs=;
+        b=CM3UMVDilXo4APmpFDbBhLZojjItYmVJAcUAjYUzvSnDgKnct+VwCHO+e5NX5UMbo+wHvU
+        BajiNYWpcdc9Fd6e9QRNtJwlUqlAgYkC/kBp2tv3UT9RKehOXFfUMd8UX6Yt/zOJ1zb/YP
+        dREUM3BE2lXR4pWuSk+kS4DJCWyRpUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699551868;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c86Z8q1/b2Eeyili5R4ug0kpFWr8jt8l2GoRdNG4LBs=;
+        b=EJn5qqXVFzUNqGtpqI7OkWF5YTpD/L4MHHp+N9K9KHhacifAqvpFSgquDTiXlXfg1XnE1h
+        4OpNhGnfVE1ZjnBw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id D615C2D2E5;
+        Thu,  9 Nov 2023 17:44:27 +0000 (UTC)
+Date:   Thu, 9 Nov 2023 18:44:26 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Lucas De Marchi <lucas.demarchi@intel.com>
+Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kmod v5 5/5] libkmod, depmod, modprobe: Make directory
+ for kernel modules configurable
+Message-ID: <20231109174426.GX6241@kitsune.suse.cz>
+References: <cover.1689589902.git.msuchanek@suse.de>
+ <cover.1689681454.git.msuchanek@suse.de>
+ <b878a01f09e250bb24dbaede71cc776217a8f862.1689681454.git.msuchanek@suse.de>
+ <e3yow7ih6af2hxzkmjay2oan3jypmo4hda64vxvpfco66ajcew@i3zewn4nbklf>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM6PR11MB4707:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82dd52af-c26f-49a0-a87e-08dbe14b8506
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PeBmMKhePGUJiOIrwc155mgtZXStndHmDUOmMqTSnUFxK/sVXWjfyDH+n5FX1VAZTN9DjHQ/00o9OY+C2fvSulPitg2FrHYkR9R1vSWXvzCR2qPayw4o5YCCrFIS8U7LKMBTflI3IBF4TDioYgz+1k/5n7lPZUnGAHOa3Wy9Uc/dMNG1AixkG/DJzmPb2Ys9Ly9sv4xowLVhiazkcR1JyzsiuDU/plLVY8D5HdzMZ4eyfW0/D33+06gXtwARZtf3tL+SfcskZubpp7wsyk0PcC+Qo8eYZ6fmqFpm7SMcGV1lqBSqWLsdYviadhOIaKM3cOfSRctQ4Z2AVLeOHGzft48bBrfBRsGI3vPKRrN8yZLqwNJq9pUBeZK9aMhzZ0ev4SQ6HlhBppu2GZ5OtNatZB67EEUjob7BPG8yLBf0xanDDm9oZ1LMLkQ6wEXjM/Q0lghRL3Ef5vdBhBQZUdHR7BqNf5gacZ5XAESZTfpgHaum/yTLDxjF/HZU7JvhgcLt9GfgeA6MHavRV5A00wr9Obqtk17MOxJZ/5TaoVdH3eK98KOln6Kk/IVGT837BMm9KPJir2FidOCNJyLFADZtv1ed/w9X/ZrFUjTJN+cL2uX2g0fwLgJZ/X2HJaQ/UgtrwjZcDB8cctBooLMVJ404zw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(39860400002)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(31686004)(54906003)(38100700002)(66946007)(66556008)(86362001)(31696002)(36756003)(66476007)(82960400001)(83380400001)(26005)(2616005)(7416002)(4326008)(6512007)(53546011)(6506007)(478600001)(2906002)(6486002)(316002)(8936002)(5660300002)(8676002)(41300700001)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V0U2MzVsdUhUYzhWN215aDlESUlnd0VCbVhXUmZFWUUzdDZrSWlyVmRiRVNF?=
- =?utf-8?B?VTJMWU56M3BnUVVBMXFCQUw0dXdnNTFKWHBJcWRIY01WVHF6bG0vUWFidTlF?=
- =?utf-8?B?Qmt4ckFqWUdoTHlPM3FJTFZpbzNzWTJQLytSRmUvU05PSWx3a1E1MXlReUU0?=
- =?utf-8?B?ZEJUL2JqNzFJbDIzKzBrdFZYNnBUcmh3Sm51Y2RuRExBWXkvd0RXU0Z6VTVx?=
- =?utf-8?B?UUJINGNGUDAyZm44UEVudnQrNXJyOHBqSmVWbHpxK1Iwa0UyQ2hBY3Vvb2lC?=
- =?utf-8?B?b3BaaVNxYTAybUFsZVFSZGdtNnJtUVB4SG5lc2ZISnVFck15RUVpNXE4bnNt?=
- =?utf-8?B?MDJqWXFQRGljb3B5bnZrY24vU1BNSW0vaTBLZ3pCVmJlOEF2SWphQlNFci9y?=
- =?utf-8?B?alpINWIwREp0eGhRd2NXVFJmMXJYY1VXM1N0UXpPWGE2bjB6RnZKV2UyRXBE?=
- =?utf-8?B?T3Z2eEhhNThRTUdCZlpOejIzK1gzcVRnR1VIanEzajl5dkQrVk9sUWdxOWcx?=
- =?utf-8?B?WGh2TW5Sa3dOZytHZGZhUnhjWmhVUWdneXhKOHNTSjdxWUpsTktyWWdzL3ZJ?=
- =?utf-8?B?TnR0QlA2ZlUwRlJQTkkySDJhOFE3NkV0YkNhN2t3dVB5V29VUmxVYnZvK2M4?=
- =?utf-8?B?MDBEbUQ5QjRJTzg5RldCMERkN1VPYWhTeDJGelcvOTJzSmpzN0ljSDNCZnNs?=
- =?utf-8?B?Z0pQd1dENXhMVUZtN1krWGJMQTArQlFHd2M1dVJ1WE41Ny84ZDE5ekl0SFpG?=
- =?utf-8?B?TEJWRlV1UHB3cHNoZDhpRWZ6ZWpkajFuQTdrb3BTaElCQkhRT25XNjM2d0RY?=
- =?utf-8?B?RUVVaVVkVlhQbnJDNlJWS3Z1dHJKVFJGbUxIV3RJWmNSMStqM3pnUEM2VGpO?=
- =?utf-8?B?ZEE3QitJUmdPS2pING5KVCszYzR4ZGJqREpIYjNCckpCQTl2TlpCT090a3NI?=
- =?utf-8?B?MG1LVmozd2tnSlZqTFV6Nnc0eWdwTXA5Um85YVd3VUtTa09Pa0M1dTVJMGVD?=
- =?utf-8?B?MDB1REc3dGNPTkF3LytqWk5hMVc3c1N1U3FvRnVRZXB1QS9kUHF4dElXd2wv?=
- =?utf-8?B?STRrNithbVJadThuOGdJUVppdVd5WlVlVWZjSzhuWUNOV1NWSVlmSVV4ODNv?=
- =?utf-8?B?RUVKRUN0SFB1QnZMUFlsa2M2OHk5Nkp5QTJXWjdhM1RhTlN4RjBEK3k4eTJs?=
- =?utf-8?B?ZlB6Z3lxNW90N1d3MXFNMFl3UkJDVVN3UnorcE5DZlovbVJzR09YUzltUkdL?=
- =?utf-8?B?R0tjN2w4SVlUMWd0cDhOM1lVQTllZzAzalRkR0g3ck52WHFBQ1V2Z0J1SEN1?=
- =?utf-8?B?Myt4S2FqRUd2ajJtZE9zUmI0VlFwR0ZZNlpON1ZIL0pQZDVEdUx2YUltcktm?=
- =?utf-8?B?T0JCbWRiRzdEcnY4Tms0cWp4bk9ybWJYVnBMVnVIT0cvdERMZ0xqZ1dyNXdk?=
- =?utf-8?B?cnhhWXozZ0JLZ2krcjg3MEVQTW51NWpEWldvQ1IvYzRNdXZJR1pUR0g5cW1I?=
- =?utf-8?B?ZjhjMzh3WEFiSGNsN09FdWtGV1pGTHVZOUxyVXN0aHFObzFlOUdWWmJXYXNL?=
- =?utf-8?B?bnFzMk9WaS9FVE41YnJFTjhON1JjdHhYZ01mNkdtT0ZYNDJrN0Fucm1lLzNw?=
- =?utf-8?B?YU44QStDK3M5K2VuYkdLS242Q1JsanVmRnpTWlNWeFdxYkwrZ2k3a2YxL0dL?=
- =?utf-8?B?NlRibUdDM2c4RzVBRURRYUV4aXVZSDhTTzFWYjdBZXpBcEQrOU9ERURMZ2Vt?=
- =?utf-8?B?ZDZEZkEzL2VzUDVGajVVNWlEOGJGdEdzWVpSekMvcHJWMWdjMUFGZGhDRVdq?=
- =?utf-8?B?TkdhTk4yTnVxWVlkWDdPRFl0eVljajA5ZEViZnRUTEoxakJHVEVjTVhCeXNT?=
- =?utf-8?B?TFUzZzRhZThIUHpvbG1hTFpoRGZVdHRlYTNRbDZ1a09VNXJXQjRIOEdzMjNX?=
- =?utf-8?B?M05sdUxTUkpBWWJFdnl1YzF5VE9kN0UxVmlZc2tzY2RLWUdJckxhcTNybmVC?=
- =?utf-8?B?QUZ6Q0dqb2krdThKYnA1UjFiMXJHU0VHMnl4RjVYdG00NkNzQysxbzBJMUQr?=
- =?utf-8?B?a1lRdUFlNmpvSTc2L0ZOK1J3NGw4ZkF3cHl0UEJ6ejNlVWJoMmFoc1k2aGFJ?=
- =?utf-8?B?WnBDS1U3QmdEa2VjOVA0MXVERVRJVm9tU3E5RzM0UWFrNGFGWDBORVY3enAw?=
- =?utf-8?B?alE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82dd52af-c26f-49a0-a87e-08dbe14b8506
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 17:44:27.5095
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SRes+c/dxqyiGH4etrDMQEnIWUTKTBondeo44eMAkduvQgU+Q+GC8VEjXO7/FYIAQiw04/wGQd7hvQHYmBeNq+sZIjf1BIYg3SzYk90wOqI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4707
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3yow7ih6af2hxzkmjay2oan3jypmo4hda64vxvpfco66ajcew@i3zewn4nbklf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On 10/25/2023 11:03 AM, James Morse wrote:
-> The resctrl CLOSID allocator uses a single 32bit word to track which
-> CLOSID are free. The setting and clearing of bits is open coded.
+On Tue, Oct 17, 2023 at 12:50:15PM -0500, Lucas De Marchi wrote:
+> On Tue, Jul 18, 2023 at 02:01:56PM +0200, Michal Suchanek wrote:
+> > Now that modprobe.d is searched under ${prefix}/lib, allow a complete
+> > transition to files only under ${prefix} by adding a ${module_directory}
+> > configuration. This specifies the directory where to search for kernel
+> > modules and should match the location where the kernel/distro installs
+> > them.
+> > 
+> > With this distributions that do not want to ship files in /lib can also
+> > move kernel modules to /usr while others can keep them in /lib.
+> > 
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> > v4: Make the whole path configurable
+> > v5: More verbose commit message
+> > ---
+> > Makefile.am                          |   3 +-
+> > configure.ac                         |   7 ++
+> > libkmod/libkmod.c                    |   4 +-
+> > man/Makefile.am                      |   1 +
+> > man/depmod.d.xml                     |   6 +-
+> > man/depmod.xml                       |   4 +-
+> > man/modinfo.xml                      |   2 +-
+> > man/modprobe.xml                     |   2 +-
+> > man/modules.dep.xml                  |   6 +-
+> > testsuite/module-playground/Makefile |   2 +-
+> > testsuite/setup-rootfs.sh            | 109 +++++++++++++++------------
+> > testsuite/test-depmod.c              |  16 ++--
+> > testsuite/test-testsuite.c           |   8 +-
+> > tools/depmod.c                       |   6 +-
+> > tools/kmod.pc.in                     |   1 +
+> > tools/modinfo.c                      |   4 +-
+> > tools/modprobe.c                     |   4 +-
+> > tools/static-nodes.c                 |   6 +-
+> > 18 files changed, 107 insertions(+), 84 deletions(-)
+> > 
+> > diff --git a/Makefile.am b/Makefile.am
+> > index 6d0b2decfef3..019aa749fdf1 100644
+> > --- a/Makefile.am
+> > +++ b/Makefile.am
+> > @@ -20,6 +20,7 @@ AM_CPPFLAGS = \
+> > 	-I$(top_srcdir) \
+> > 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+> > 	-DDISTCONFDIR=\""$(distconfdir)"\" \
+> > +	-DMODULE_DIRECTORY=\""$(module_directory)"\" \
+> > 	${zlib_CFLAGS}
+> > 
+> > AM_CFLAGS = $(OUR_CFLAGS)
+> > @@ -220,7 +221,7 @@ EXTRA_DIST += testsuite/setup-rootfs.sh
+> > MODULE_PLAYGROUND = testsuite/module-playground
+> > ROOTFS = testsuite/rootfs
+> > ROOTFS_PRISTINE = $(top_srcdir)/testsuite/rootfs-pristine
+> > -CREATE_ROOTFS = $(AM_V_GEN) $(top_srcdir)/testsuite/setup-rootfs.sh $(ROOTFS_PRISTINE) $(ROOTFS) $(MODULE_PLAYGROUND) $(top_builddir)/config.h $(sysconfdir)
+> > +CREATE_ROOTFS = $(AM_V_GEN) MODULE_DIRECTORY=$(module_directory) $(top_srcdir)/testsuite/setup-rootfs.sh $(ROOTFS_PRISTINE) $(ROOTFS) $(MODULE_PLAYGROUND) $(top_builddir)/config.h $(sysconfdir)
+> > 
+> > build-module-playground:
+> > 	$(AM_V_GEN)if test "$(top_srcdir)" != "$(top_builddir)"; then \
+> > diff --git a/configure.ac b/configure.ac
+> > index b4584d6cdc67..4051dc9249e2 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -91,6 +91,12 @@ AC_ARG_WITH([rootlibdir],
+> >         [], [with_rootlibdir=$libdir])
+> > AC_SUBST([rootlibdir], [$with_rootlibdir])
+> > 
+> > +# Ideally this would be $prefix/lib/modules but default to /lib/modules for compatibility with earlier versions
+> > +AC_ARG_WITH([module_directory],
+> > +        AS_HELP_STRING([--with-module-directory=DIR], [directory in which to look for kernel modules - typically '/lib/modules' or '${prefix}/lib/modules']),
+> > +        [], [with_module_directory=/lib/modules])
+> > +AC_SUBST([module_directory], [$with_module_directory])
 > 
-> A subsequent patch adds closid_allocated(), which adds more open
-
-(Note use of "A subsequent patch ")
-
-> coded bitmaps operations. These will eventually need changing to use
-> the bitops helpers so that a CLOSID bitmap of the correct size can be
-> allocated dynamically.
+> we will probably have "fun" results if we accept a relative path here.
 > 
-> Convert the existing open coded bit manipulations of closid_free_map
-> to use __set_bit() and friends. These don't need to be atomic as this
-> list is protected by the mutex.
+> > +
+> > AC_ARG_WITH([zstd],
+> > 	AS_HELP_STRING([--with-zstd], [handle Zstandard-compressed modules @<:@default=disabled@:>@]),
+> > 	[], [with_zstd=no])
+> > @@ -326,6 +332,7 @@ AC_MSG_RESULT([
+> > 	$PACKAGE $VERSION
+> > 	=======
+> > 
+> > +	module_directory:	${module_directory}
+> > 	prefix:			${prefix}
+> > 	sysconfdir:		${sysconfdir}
+> > 	distconfdir:		${distconfdir}
+> > diff --git a/libkmod/libkmod.c b/libkmod/libkmod.c
+> > index 09e6041461b0..63719e886de8 100644
+> > --- a/libkmod/libkmod.c
+> > +++ b/libkmod/libkmod.c
+> > @@ -209,7 +209,7 @@ static int log_priority(const char *priority)
+> > 	return 0;
+> > }
+> > 
+> > -static const char *dirname_default_prefix = "/lib/modules";
+> > +static const char *dirname_default_prefix = MODULE_DIRECTORY;
+> > 
+> > static char *get_kernel_release(const char *dirname)
+> > {
+> > @@ -231,7 +231,7 @@ static char *get_kernel_release(const char *dirname)
+> > /**
+> >  * kmod_new:
+> >  * @dirname: what to consider as linux module's directory, if NULL
+> > - *           defaults to /lib/modules/`uname -r`. If it's relative,
+> > + *           defaults to ${module_prefix}/lib/modules/`uname -r`. If it's relative,
 > 
-> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-by: Peter Newman <peternewman@google.com>
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
+> module_prefix?  did you mean to use $MODULE_DIRECTORY/`uname -r`?
+
+Yes, that's leftover from previous revision, will fix up.
+
 > 
-> ---
-> Changes since v6:
->  * Use the __ inatomic helpers and add lockdep_assert_held() annotations to
->    document how this is safe.
->  * Fixed a resctrl_closid_is_free()/closid_allocated() rename in the commit
->    message.
->  * Use RESCTRL_RESERVED_CLOSID to improve readability.
-> ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+> >  *           it's treated as relative to the current working directory.
+> >  *           Otherwise, give an absolute dirname.
+> >  * @config_paths: ordered array of paths (directories or files) where
+> > diff --git a/man/Makefile.am b/man/Makefile.am
+> > index 2fea8e46bf2f..f550091a216a 100644
+> > --- a/man/Makefile.am
+> > +++ b/man/Makefile.am
+> > @@ -22,6 +22,7 @@ CLEANFILES = $(dist_man_MANS)
+> > 	else \
+> > 		sed -e '/@DISTCONFDIR@/d' $< ; \
+> > 	fi | \
+> > +	sed -e 's|@MODULE_DIRECTORY@|$(module_directory)|g' | \
+> > 	$(XSLT) \
+> > 		-o $@ \
+> > 		--nonet \
+> > diff --git a/man/depmod.d.xml b/man/depmod.d.xml
+> > index f282a39cc840..b07e6a2bd4fe 100644
+> > --- a/man/depmod.d.xml
+> > +++ b/man/depmod.d.xml
+> > @@ -70,7 +70,7 @@
+> >         </term>
+> >         <listitem>
+> >           <para>
+> > -            This allows you to specify the order in which /lib/modules
+> > +            This allows you to specify the order in which @MODULE_DIRECTORY@
+> >             (or other configured module location) subdirectories will
+> >             be processed by <command>depmod</command>. Directories are
+> >             listed in order, with the highest priority given to the
+> > @@ -101,7 +101,7 @@
+> >             <command>depmod</command> command. It is possible to
+> >             specify one kernel or all kernels using the * wildcard.
+> >             <replaceable>modulesubdirectory</replaceable> is the
+> > -            name of the subdirectory under /lib/modules (or other
+> > +            name of the subdirectory under @MODULE_DIRECTORY@ (or other
+> >             module location) where the target module is installed.
+> >           </para>
+> >           <para>
+> > @@ -110,7 +110,7 @@
+> >             specifying the following command: "override kmod * extra".
+> >             This will ensure that any matching module name installed
+> >             under the <command>extra</command> subdirectory within
+> > -            /lib/modules (or other module location) will take priority
+> > +            @MODULE_DIRECTORY@ (or other module location) will take priority
+> >             over any likenamed module already provided by the kernel.
+> >           </para>
+> >         </listitem>
+> > diff --git a/man/depmod.xml b/man/depmod.xml
+> > index 3b0097184fd7..fce2a4a67a89 100644
+> > --- a/man/depmod.xml
+> > +++ b/man/depmod.xml
+> > @@ -80,7 +80,7 @@
+> >     </para>
+> >     <para> <command>depmod</command> creates a list of module dependencies by
+> >       reading each module under
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable> and
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable> and
+> >       determining what symbols it exports and what symbols it needs.  By
+> >       default, this list is written to <filename>modules.dep</filename>, and a
+> >       binary hashed version named <filename>modules.dep.bin</filename>, in the
+> > @@ -141,7 +141,7 @@
+> >         <listitem>
+> >           <para>
+> >             If your modules are not currently in the (normal) directory
+> > -            <filename>/lib/modules/</filename><replaceable>version</replaceable>,
+> > +            <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>,
+> >             but in a staging area, you can specify a
+> >             <replaceable>basedir</replaceable> which is prepended to the
+> >             directory name.  This <replaceable>basedir</replaceable> is
+> > diff --git a/man/modinfo.xml b/man/modinfo.xml
+> > index 9fe0324a2527..b6c4d6045829 100644
+> > --- a/man/modinfo.xml
+> > +++ b/man/modinfo.xml
+> > @@ -54,7 +54,7 @@
+> >       <command>modinfo</command> extracts information from the Linux Kernel
+> >       modules given on the command line.  If the module name is not a filename,
+> >       then the
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable>
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>
+> >       directory is searched, as is also done by
+> >       <citerefentry><refentrytitle>modprobe</refentrytitle><manvolnum>8</manvolnum></citerefentry>
+> >       when loading kernel modules.
+> > diff --git a/man/modprobe.xml b/man/modprobe.xml
+> > index 91f9e27997cd..4d1fd59c000b 100644
+> > --- a/man/modprobe.xml
+> > +++ b/man/modprobe.xml
+> > @@ -78,7 +78,7 @@
+> >       is no difference between _ and - in module names (automatic
+> >       underscore conversion is performed).
+> >       <command>modprobe</command> looks in the module directory
+> > -      <filename>/lib/modules/`uname -r`</filename> for all
+> > +      <filename>@MODULE_DIRECTORY@/`uname -r`</filename> for all
+> >       the modules and other files, except for the optional
+> >       configuration files in the
+> >       <filename>/etc/modprobe.d</filename> directory
+> > diff --git a/man/modules.dep.xml b/man/modules.dep.xml
+> > index ed633694ec9e..8ef6d8b3536e 100644
+> > --- a/man/modules.dep.xml
+> > +++ b/man/modules.dep.xml
+> > @@ -34,8 +34,8 @@
+> >   </refnamediv>
+> > 
+> >   <refsynopsisdiv>
+> > -    <para><filename>/lib/modules/modules.dep</filename></para>
+> > -    <para><filename>/lib/modules/modules.dep.bin</filename></para>
+> > +    <para><filename>@MODULE_DIRECTORY@/modules.dep</filename></para>
+> > +    <para><filename>@MODULE_DIRECTORY@/modules.dep.bin</filename></para>
+> >   </refsynopsisdiv>
+> > 
+> >   <refsect1><title>DESCRIPTION</title>
+> > @@ -43,7 +43,7 @@
+> >       <filename>modules.dep.bin</filename> is a binary file generated by
+> >       <command>depmod</command> listing the dependencies for
+> >       every module in the directories under
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable>.
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>.
+> >       It is used by kmod tools such as <command>modprobe</command> and
+> >       libkmod.
+> >     </para>
+> > diff --git a/testsuite/module-playground/Makefile b/testsuite/module-playground/Makefile
+> > index e6045b0dd932..a7ab09bea2bf 100644
+> > --- a/testsuite/module-playground/Makefile
+> > +++ b/testsuite/module-playground/Makefile
+> > @@ -47,7 +47,7 @@ endif
+> > 
+> > else
+> > # normal makefile
+> > -KDIR ?= /lib/modules/`uname -r`/build
+> > +KDIR ?= $(module_prefix)/lib/modules/`uname -r`/build
+> > KVER ?= `uname -r`
+> > ifeq ($(FAKE_BUILD),)
+> >     FAKE_BUILD=0
+> > diff --git a/testsuite/setup-rootfs.sh b/testsuite/setup-rootfs.sh
+> > index 4440ddcd6b4d..a780f9381b3c 100755
+> > --- a/testsuite/setup-rootfs.sh
+> > +++ b/testsuite/setup-rootfs.sh
+> > @@ -16,6 +16,19 @@ create_rootfs() {
+> > 	cp -r "$ROOTFS_PRISTINE" "$ROOTFS"
+> > 	find "$ROOTFS" -type d -exec chmod +w {} \;
+> > 	find "$ROOTFS" -type f -name .gitignore -exec rm -f {} \;
+> > +	if [ "$MODULE_DIRECTORY" != "/lib/modules" ] ; then
+> > +		sed -i -e "s|/lib/modules|$MODULE_DIRECTORY|g" $(find "$ROOTFS" -name \*.txt -o -name \*.conf -o -name \*.dep)
+> > +		sed -i -e "s|$MODULE_DIRECTORY/external|/lib/modules/external|g" $(find "$ROOTFS" -name \*.txt -o -name \*.conf -o -name \*.dep)
+> > +		for i in "$ROOTFS"/*/lib/modules/* "$ROOTFS"/*/*/lib/modules/* ; do
+> > +			version="$(basename $i)"
+> > +			[ $version != 'external' ] || continue
+> > +			mod="$(dirname $i)"
+> > +			lib="$(dirname $mod)"
+> > +			up="$(dirname $lib)$MODULE_DIRECTORY"
+> > +			mkdir -p "$up"
+> > +			mv "$i" "$up"
+> > +		done
+> > +	fi
+> > 
+> > 	if [ "$SYSCONFDIR" != "/etc" ]; then
+> > 		find "$ROOTFS" -type d -name etc -printf "%h\n" | while read -r e; do
+> > @@ -32,57 +45,57 @@ feature_enabled() {
+> > 
+> > declare -A map
+> > map=(
+> > -    ["test-depmod/search-order-simple/lib/modules/4.4.4/kernel/crypto/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-simple/lib/modules/4.4.4/updates/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-same-prefix/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-same-prefix/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-a.ko"]="mod-loop-a.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-b.ko"]="mod-loop-b.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-c.ko"]="mod-loop-c.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-d.ko"]="mod-loop-d.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-e.ko"]="mod-loop-e.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-f.ko"]="mod-loop-f.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-g.ko"]="mod-loop-g.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-h.ko"]="mod-loop-h.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-i.ko"]="mod-loop-i.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-j.ko"]="mod-loop-j.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-k.ko"]="mod-loop-k.ko"
+> > -    ["test-depmod/search-order-external-first/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-external-first/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-simple$MODULE_DIRECTORY/4.4.4/kernel/crypto/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-simple$MODULE_DIRECTORY/4.4.4/updates/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-same-prefix$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-same-prefix$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-a.ko"]="mod-loop-a.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-b.ko"]="mod-loop-b.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-c.ko"]="mod-loop-c.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-d.ko"]="mod-loop-d.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-e.ko"]="mod-loop-e.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-f.ko"]="mod-loop-f.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-g.ko"]="mod-loop-g.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-h.ko"]="mod-loop-h.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-i.ko"]="mod-loop-i.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-j.ko"]="mod-loop-j.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-k.ko"]="mod-loop-k.ko"
+> > +    ["test-depmod/search-order-external-first$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-first$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> >     ["test-depmod/search-order-external-first/lib/modules/external/"]="mod-simple.ko"
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 9864cb49d58c..f6051a3e7262 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -111,7 +111,7 @@ void rdt_staged_configs_clear(void)
->   * - Our choices on how to configure each resource become progressively more
->   *   limited as the number of resources grows.
->   */
-> -static int closid_free_map;
-> +static unsigned long closid_free_map;
->  static int closid_free_map_len;
->  
->  int closids_supported(void)
-> @@ -131,7 +131,7 @@ static void closid_init(void)
->  	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
->  
->  	/* CLOSID 0 is always reserved for the default group */
+> why didn't you change it here?
 
-Seems appropriate for the comment to be updated to the new define also.
+That's a module that's not installed into the directory of the current
+kernel -> does not relally matter where it is so long as it is not in
+that one directory corresponding to the tested kernel version AFAICT.
 
-With that addressed you can add:
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> 
+> > -    ["test-depmod/search-order-external-last/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-external-last/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-last$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-last$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> >     ["test-depmod/search-order-external-last/lib/modules/external/"]="mod-simple.ko"
+> 
+> and here...
 
-Reinette
+Same.
+
+Thanks
+
+Michal
