@@ -2,189 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E647E62D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6637E62D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbjKIE1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 23:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S232233AbjKIE1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 23:27:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbjKIE05 (ORCPT
+        with ESMTP id S232227AbjKIE1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 23:26:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285D12698;
-        Wed,  8 Nov 2023 20:26:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4C43C433D9;
-        Thu,  9 Nov 2023 04:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699504014;
-        bh=fYQ8cjKX+19C1ihpDV96mhTpvzL7G65cypI0SSFKxGw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j2CZ2TTrhO1fN0g5hgbqiKYkiAChrvPzbRi0YXwmLxeJ85FkuLLZXsvWx67JMKycP
-         nZcjh2r9FD3kaoAHvI+SLnyzcoHAm5mXLJV75PfQDgzq0ayGLS50EnX50ymi3ltSNv
-         WlM7C2tuLfk1Yq8syDyxY+EAoNnyFMdT/8K3dv8vgutniLt+VcWEbo9WYIRVfv37FP
-         AqanfMFmxRiIbIl15n5chg/ETDNGvTkvk4TuGEt6vOCE4KlN93cWwp9vcrAnzf7cNH
-         T7CCZL2M/06KNcPl9/sJr9q+4SztmKBtM9pN9yUp1pHCF6OsUdjD/18ZMWTfxmS2An
-         5vmqPyiNBCPQw==
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1f0f94a08a0so252518fac.2;
-        Wed, 08 Nov 2023 20:26:54 -0800 (PST)
-X-Gm-Message-State: AOJu0YxXm5OZ2KjQdQwon1bKcr3E+6rWoVjz7hoUF4XOYJMGMZXT+R9T
-        yesiZdXJcg53HVCbO2OhTBjbtBHvqHNMs7ZhlVE=
-X-Google-Smtp-Source: AGHT+IH8ctNVx9dH7eRJZUdvO7bLpKn+oyNzQkQPB6hniLZVGLKtruPtho9VRjW/UrUxb5JWngllKNeyw+bzhVQX4Uc=
-X-Received: by 2002:a05:6870:6586:b0:1f0:aff:333c with SMTP id
- fp6-20020a056870658600b001f00aff333cmr4924051oab.46.1699504013905; Wed, 08
- Nov 2023 20:26:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20231104222715.3967791-1-yoann.congal@smile.fr>
- <CAK7LNAS6J5Nh8nOUHbaf123yd1Z-1q--FvB1ok8GQcoNorAROw@mail.gmail.com> <20231107210004.GA2065849@dev-arch.thelio-3990X>
-In-Reply-To: <20231107210004.GA2065849@dev-arch.thelio-3990X>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 9 Nov 2023 06:26:16 +0200
-X-Gmail-Original-Message-ID: <CAK7LNARpJ9huseh-Ro9v8W_tabMof9cuUZO43gi-hfEnXG4FYA@mail.gmail.com>
-Message-ID: <CAK7LNARpJ9huseh-Ro9v8W_tabMof9cuUZO43gi-hfEnXG4FYA@mail.gmail.com>
-Subject: Re: [PATCH v5] kconfig: avoid an infinite loop in oldconfig/syncconfig
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Yoann Congal <yoann.congal@smile.fr>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Brandon Maier <brandon.maier@collins.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 8 Nov 2023 23:27:05 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E4926AB;
+        Wed,  8 Nov 2023 20:27:02 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A8rUKhzXQhaMTUPlM6Q4OloKxMiYq7QrULjazZZQBwbSbj2svW6UxQcgx/UwqY1Gw79j4/GyHAwfib51ZO58LyMW95Z8M9uMEuFrb9IqRKkcaXbWfSj0/YJMboHAbgrTXMTiGjOKPpL18FQncgvo44t2HAICbLVwMYKBB2Ccku+zK9EDRT0IMPADxyyYq2b0jxbeXZjWYWI2Z6SpUUIo0o1Nm22w2UJecvKMBhxhvMZui/c253JJPq0biz02pUGOuZyGSqL/a7DJcGBGWmCpR/TTyHdEPCi/QOcj9600jEA4cAHZ3Er8k2WwXcf3DWD9Ryd5XYxhv+Dr/VwnBNHV8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TH7gNH1dwX5nL3hpqItBRxJhJ3j2SpnSJAuYHdUGGC4=;
+ b=oIwPfLgE4EgBtic8Spivfh/qWCn9qjXo5utEV6F+NmwJ5XoIJY00s2Ab/1vL/l3BoR4ILKL5AcS3lHSmZB0kXlWPYu+ECgNhKueAmaKaJGZ7LjcfbXl2uyYeZzkCJMGvsrVv6QuymFia5peKfKL4s/k5MAIK5xbmqIf219YuaqIORQzckoh47P17D8MwHJI7je4tmPsR1qJF/e6IYBiNjuL6+v/8e8uLCLh5Un/9R1YXC9JcnadjxCAbgdtrgHHazwdEK2seLhGPs4fr7Nd9KC0G63plbu648ZZIyyVE2ed5ll5G/8TH+0fFQnByHWCX66Mn2fXaUnqUChFwyDni7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TH7gNH1dwX5nL3hpqItBRxJhJ3j2SpnSJAuYHdUGGC4=;
+ b=bHK8KV4KSzwgzDENnK7yWFhLfKv9Et18eY/D9Q8hpnarZuCl2b4aKgb7hsFbLqp+jLmtuOMopUGIgUOSTrZ5oCw+mH6/ZUUMHBP4PhYVQX5O8Ixpbg8Ad3ddsoR5pCZs13pO7K2mEK4roXPAbfBnLQ2TaQmTsIuWhdfHQpmS4giYwISlPItOciB1WhwFaRpHw9RUa+M8wBXv36Yisy5dTEZRi9DBWhbnUrx+xLTBHjI0da42tnoxqDJZmyB9x10bXSR0P0N1KoXE90OFB0u15qmwHHrBzx2N1t3pZcqni3xKlMk0oswIeaRkEigQ3ZTGvOONAnIYyKNo0X8aOrN5LQ==
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com (2603:10b6:a03:1a8::24)
+ by SA3PR12MB8439.namprd12.prod.outlook.com (2603:10b6:806:2f7::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 04:27:00 +0000
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::946b:df84:1f08:737a]) by BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::946b:df84:1f08:737a%4]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
+ 04:27:00 +0000
+From:   Ankit Agrawal <ankita@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Thread-Topic: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Thread-Index: AQHZ/4T6dPreO49caEWsaHN/ceuQqrBOmsSAgAi/5YSAACTLAIABhTmtgAAJHQCAAS20AIAAOkSMgAAn94CAFurKBw==
+Date:   Thu, 9 Nov 2023 04:27:00 +0000
+Message-ID: <BY5PR12MB376365035E31B569D767D636B0AFA@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20231015163047.20391-1-ankita@nvidia.com>
+        <20231017165437.69a84f0c.alex.williamson@redhat.com>
+        <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <20231023084312.15b8e37e.alex.williamson@redhat.com>
+        <BY5PR12MB37636C06DED20856CF604A86B0DFA@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <20231024082854.0b767d74.alex.williamson@redhat.com>
+        <BN9PR11MB5276A59033E514C051E9E4618CDEA@BN9PR11MB5276.namprd11.prod.outlook.com>
+        <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
+ <20231025082019.14575863.alex.williamson@redhat.com>
+In-Reply-To: <20231025082019.14575863.alex.williamson@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR12MB3763:EE_|SA3PR12MB8439:EE_
+x-ms-office365-filtering-correlation-id: df587a97-908e-4580-b27d-08dbe0dc1e03
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cTlE/yCxdxRZbiEFtqxgYvnLFDVKygSjeWf2bM0eAoiQfH6ajDrKhI9EkgWq4JX9+2EIJSQySwwdjzoXKUzm2ih4ZZSQ0tNTkQzZhtIf9BNXVKngHTWKakYej070TCZelvkiY7Ubj5FwH0H3AwQfeYJCcHo5My6f+xjNO36GL05pkf8s5Gxqx9wrkmjh9TPyjIVOwmPkQ1u6i/FFtx5Z2unT5gqCmZ/vJP6esWLHdbljx+Dc8J1tp3TYY9cJcAO4BBUBUksPdHggptGR6wxEA6ZE+4Z4DPB+79hGJtk3U0luStrn1PGLDBMxSqc7b7Xd687VB67dykvajKBc9hFTH8pCafDctVXJMYpx6rzywcpydrY4U7Dy9yYOD3htKuCgpQUOs4NwuHzJm0yCs6o174vdQTOjnS+0o6zihrmO4T9an9iVfVz5Cod1os1PTtRJcNtfhSWvklU6DXGNjRYooEKUfovUGmPsMvGfqKVW+T6fATMb780ZmqIRRd9+Y/VLJTBb8hoD16xfWC3m5KSYBoLX5C336bUx2AopYTkUPXGjlLFKPQlUhO254Eh13Ozd6+2kJcxGs9iMQ990n55bHu+miovPCFdM3SyG3itp0W2pp7oieUllCL7jMS11zB9K
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(9686003)(41300700001)(7696005)(6506007)(478600001)(71200400001)(8936002)(83380400001)(316002)(52536014)(8676002)(5660300002)(76116006)(2906002)(64756008)(66476007)(91956017)(4744005)(66946007)(54906003)(26005)(66446008)(6916009)(66556008)(38100700002)(122000001)(4326008)(86362001)(33656002)(38070700009)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?7m9Rj4tSdujRDh/DMJXlScvy1cJcDwjNnrlDKCDxXOHRZJyuUMwAGMWzwa?=
+ =?iso-8859-1?Q?jFBTqKJufzXVUJOVgdXuSsz/iKu+o6aq6dMiLOtbxbzmRFL8zEl3i+rfqn?=
+ =?iso-8859-1?Q?dvTDEHzu8AkGZ+Oz5DJOuo0f+PaS0fYiYMX4kfkPPIoekUlxxSgIOuCC/Z?=
+ =?iso-8859-1?Q?tdAVE1qDs+fybt80xe+mzw4l71M7U+pb1bKU1BgH3bCyEzVuDWenW5sUuq?=
+ =?iso-8859-1?Q?W8sHeF0jmUrI4wB5VLdD9xFTiho0Zc3vI7VHXBNWS/YzpwLY4i5k+950qn?=
+ =?iso-8859-1?Q?Ew1EmSaW0DNIOFjNEX/5VHzGktB2e+ooJWEQavsufDJN8tB+aJAROQcufU?=
+ =?iso-8859-1?Q?no/nr0uprd4Vd2TJ7ArbfDO/xVPeqP2IlN5dbJr1F8Y3KdObj7foRQf79+?=
+ =?iso-8859-1?Q?9UsITFP3IBCg9UvpF7TuS0rFMZ/aL84ZC6YfYzWPiAIiEUMy4ol/6nFnFy?=
+ =?iso-8859-1?Q?RHk64PLD+ngbgCqdVbwoDBLATSt3SSpSyubhzxogy2JjyjbMeJtKntSRMJ?=
+ =?iso-8859-1?Q?GFLnaWAvUaJXj+YvH/rNqZCUW1JF2tG92+jJe4uzuI7mlkhWeH9U1Zar45?=
+ =?iso-8859-1?Q?yDM4HzkoXJMwxyLQ+KzzFN8wZjPDZ8bk5r4kmMdap1RVbBKf3htMEjdGBA?=
+ =?iso-8859-1?Q?fvUWIrzGHFQctHAaBLED9gVwDwHbI4iH6O6PkaGixsaglQJoZIqzbKSak8?=
+ =?iso-8859-1?Q?xfORo48jccG8tOJEd3+URqv7YumOQopyGSEFIm7Tgk6pxT03FoY/7RddLV?=
+ =?iso-8859-1?Q?DnU3wR/aNDI07Watlc5UYC+C+nFpTuNqrUXXfo/6Mr60xMY2iRn9Miy8oO?=
+ =?iso-8859-1?Q?ruxqZEa39svwtRsUOR0B0DJ/eq+4HEKO7l+uWxke+wR7wQCDnxCFtnfcuO?=
+ =?iso-8859-1?Q?1ooooxNRX28Q2QwcqfcOxtL8MrV6QIyDnOWnX6iPdbkbjvElfP9Q4Ae+ZZ?=
+ =?iso-8859-1?Q?DELIXnqYYlXI+Jrs2BGf+dUrppUkqJfcr1McSlnDbOeKSil/Otwm8sPzMN?=
+ =?iso-8859-1?Q?L88nmoDHr0R0WWJE0+SU9wjRSnX5yKSLItO3AZ02V8Wl0JRxS/JwnkihA7?=
+ =?iso-8859-1?Q?ofsxaqiA9C4XAMpusmtKDJ3DmB/3w3/bQUxFtM56pfvLD2p8VepF/Dc2yZ?=
+ =?iso-8859-1?Q?QYQdRQZLJgQm26BmmKn99guv7NaUafqGGjA1J7FlCVryEe1E/CqCHQqZQe?=
+ =?iso-8859-1?Q?lQ4KVHPIPsxCEBvylIXdADVPISBunVL0aQsDvWngTVTJ9BR1Fa1U5986vf?=
+ =?iso-8859-1?Q?6YrxJSu0ek6Q8zcQNCM5bNKcc5r87eI5FAbgUspq7eqBOVOeUmBRCBgc+8?=
+ =?iso-8859-1?Q?k9OmDQi3sg6zYNYW2bEsFsmXsSv/sir4gEBGWBLexViCwevYehsuXcLWeB?=
+ =?iso-8859-1?Q?g0vukow32WQmKSM/8xrp35FE2AElRkYMTWDrvssQaIZ8tmoa16Rfiouf8L?=
+ =?iso-8859-1?Q?dnuQBC8FTIpTWPysRP1e665Op8xiqKmU+CfQ8Fni82osFx42tzMcunTUBs?=
+ =?iso-8859-1?Q?QegpbJhvxyb8AJ5IrW1LIbOsWQTpIl94F3l9zlsO9TaoqDUPVNCw1al4b3?=
+ =?iso-8859-1?Q?F9mKBB/N0rxAOKRW7zABSXwJIFqu+bjlelSKDLIbqE4eZQXZWoE/4IcKJB?=
+ =?iso-8859-1?Q?dwe3rBlusG3MI=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3763.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df587a97-908e-4580-b27d-08dbe0dc1e03
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2023 04:27:00.3535
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RMrOrbyN+0+7s1OCu7DrCwChXJdi1thGSQ0oU/HCruFk2EDH2yd77j4A47yUbYKL/1voDaHKI0O7wuDh7cBd+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8439
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 11:00=E2=80=AFPM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> On Sun, Nov 05, 2023 at 04:55:57PM +0900, Masahiro Yamada wrote:
-> > On Sun, Nov 5, 2023 at 7:27=E2=80=AFAM Yoann Congal <yoann.congal@smile=
-.fr> wrote:
-> > >
-> > > Exit on error when asking for value and reading stdin returns an erro=
-r
-> > > (mainly if it has reached EOF or is closed).
-> > >
-> > > This infinite loop happens in particular for hex/int configs without =
-an
-> > > explicit default value.
-> > >
-> > > Previously, this case would loop:
-> > > * oldconfig prompts for the value but stdin has reached EOF
-> > > * It gets the global default value : an empty string
-> > > * This is not a valid hex/int value so it prompts again, hence the
-> > >   infinite loop.
-> > >
-> > > This case happens with a configuration like this (a hex config withou=
-t a
-> > > valid default value):
-> > >   config TEST_KCONFIG
-> > >        hex "Test KConfig"
-> > >        # default 0x0
-> > >
-> > > And using:
-> > >   make oldconfig < /dev/null
-> > >
-> > > This was discovered when working on Yocto bug[0] on a downstream
-> > > kconfig user (U-boot)
-> > >
-> > > [0]: https://bugzilla.yoctoproject.org/show_bug.cgi?id=3D14136
-> > >
-> > > CC: Brandon Maier <brandon.maier@collins.com>
-> > > Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
-> >
-> > Applied to linux-kbuild.
-> > Thanks.
->
-> For what it's worth, this change breaks our continuous integration [1]
-> because tuxmake explicitly uses /dev/null as stdin to make for
-> non-interactive commands (I think it does this as basically the
-> equivalent of "yes '' | make" in Python), so the error will always
-> occur.
->
-> Before:
->
-> $ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/pac=
-kages/linux/-/raw/main/config
->
-> # Same as 'make < /dev/null' but still
-> $ python3 -c "import subprocess; subprocess.run(['make', '-j128'], stdin=
-=3Dsubprocess.DEVNULL)"
->   SYNC    include/config/auto.conf
->   HOSTCC  scripts/basic/fixdep
->   HOSTCC  scripts/kconfig/conf.o
->   HOSTCC  scripts/kconfig/confdata.o
->   HOSTCC  scripts/kconfig/expr.o
->   LEX     scripts/kconfig/lexer.lex.c
->   YACC    scripts/kconfig/parser.tab.[ch]
->   HOSTCC  scripts/kconfig/menu.o
->   HOSTCC  scripts/kconfig/preprocess.o
->   HOSTCC  scripts/kconfig/symbol.o
->   HOSTCC  scripts/kconfig/util.o
->   HOSTCC  scripts/kconfig/lexer.lex.o
->   HOSTCC  scripts/kconfig/parser.tab.o
->   HOSTLD  scripts/kconfig/conf
-> *
-> * Restart config...
-> *
-> ...
-> Error in reading or end of file.
->
->   GEN     arch/x86/include/generated/asm/orc_hash.h
->   WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
->   WRAP    arch/x86/include/generated/uapi/asm/errno.h
-> ...
->
-> After:
->
-> $ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/pac=
-kages/linux/-/raw/main/config
->
-> $ python3 -c "import subprocess; subprocess.run(['make', '-j128'], stdin=
-=3Dsubprocess.DEVNULL)"
->   SYNC    include/config/auto.conf
->   HOSTCC  scripts/basic/fixdep
->   HOSTCC  scripts/kconfig/conf.o
->   HOSTCC  scripts/kconfig/confdata.o
->   HOSTCC  scripts/kconfig/expr.o
->   LEX     scripts/kconfig/lexer.lex.c
->   YACC    scripts/kconfig/parser.tab.[ch]
->   HOSTCC  scripts/kconfig/menu.o
->   HOSTCC  scripts/kconfig/preprocess.o
->   HOSTCC  scripts/kconfig/symbol.o
->   HOSTCC  scripts/kconfig/util.o
->   HOSTCC  scripts/kconfig/lexer.lex.o
->   HOSTCC  scripts/kconfig/parser.tab.o
->   HOSTLD  scripts/kconfig/conf
-> *
-> * Restart config...
-> *
-> ...
-> Error in reading or end of file.
-> make[3]: *** [scripts/kconfig/Makefile:77: syncconfig] Error 1
-> ...
->
-> We have been doing this for some time and never run across an infinite
-> loop in syncconfig. Can this be improved?
-
-
-
-In Linux, most int/hex entries have a default,
-hence there is no practical issue.
-
-I will drop this for now.
-
-I will send an alternative solution.
-
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+> In light of that, I don't think we should be independently calculating=0A=
+> the BAR2 region size using roundup_pow_of_two(nvdev->memlength).=0A=
+> Instead we should be using pci_resource_len() of the physical BAR2 to=0A=
+> make it evident that this relationship exists.=0A=
+=0A=
+Just wanted to update on the discussions.. Since the underlying physical=0A=
+BAR is not being used at all, we will emulate the PCI config BAR registers=
+=0A=
+for the fake BAR. Thus, the read/write requests to those registers will not=
+=0A=
+go to the underlying BAR on the device. I'll make the change in the next=0A=
+posting.=
