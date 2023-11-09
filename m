@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C257E72A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094F87E72A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234702AbjKIUJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        id S1345119AbjKIUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344411AbjKIUJP (ORCPT
+        with ESMTP id S229613AbjKIUKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:09:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDEA44B6;
-        Thu,  9 Nov 2023 12:09:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2FABC433CD;
-        Thu,  9 Nov 2023 20:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699560553;
-        bh=riorARNTuUvrlXkh0YCvRYbJWzEYMnZ3VVViKJzwNnY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KEhwNhP3Qwutf1hNZ2Ywp22kez+8buGFI8rtM6kkCclFXCJANChpvmRuNRDNJgahr
-         DDU6tqL96GigHkw8SFqXO2PzGhHWUyASQSKdWRO6WhFH4Ks4K0+GbS+BEdF4vDbROy
-         2jVCP10aw4PfAjOcfaFj4xui6T5XI+380WPboVOp1OjKchozAQYnKmNF9Ciaq5lyax
-         wWlkR/BLzm0W8XOZ2MgcMY85Naq5yE4oC+UGyMTEmzyJdpsOYmfS9m9B5T3iRCPLib
-         4LO16SYkLCYo60+s28+2YASXHOa/8p8T14dpLkLAjXC6S7V2kc7aAb/wMqVySazzf0
-         wOF7Lf8Xf4gyA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BFD75CE0B77; Thu,  9 Nov 2023 12:09:11 -0800 (PST)
-Date:   Thu, 9 Nov 2023 12:09:11 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Peter Zijlstra <peterz@infradead.org>, j.alglave@ucl.ac.uk,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        mpe@ellerman.id.au, npiggin@gmail.com, palmer@dabbelt.com,
-        parri.andrea@gmail.com, linux-kernel@vger.kernel.org,
-        linux-toolchains@vger.kernel.org, davidtgoldblatt@gmail.com
-Subject: Re: Fw: [isocpp-parallel] OOTA fix (via fake branch-after-load)
- discussion
-Message-ID: <de5b0428-6624-4143-be28-5ba34106d765@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
- <20231105230859.GH8262@noisy.programming.kicks-ass.net>
- <d18e0ce6-db9e-4590-a7ab-15e27b2c33f4@paulmck-laptop>
- <20231107095745.GD19790@gate.crashing.org>
- <bf18e3f7-f8be-4b11-b348-b784420bda16@paulmck-laptop>
- <ece7680c-630e-956d-ad9f-10614afa84a4@huaweicloud.com>
- <ZU0j1z26ki1dsPpB@boqun-archlinux>
+        Thu, 9 Nov 2023 15:10:44 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D63544AF
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:10:42 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e1021dbd28so222242466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 12:10:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699560641; x=1700165441; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hme3VruWKu/ViE/hI0yCfth5H5XHosene3ze2VB+fj0=;
+        b=iPNq1jgNr3/tmuR8g00EBYI2QqNsN1XknCKiSngcBwExvfP8C3HKn3WfzoKIxJHDot
+         gXLaz722ol8Vwc0xBBUEy9uwWROnAPK3k7GDCfyBv7jkGZ8zaR9o3tWGlyTRfmsASP9A
+         QH2WZrVUiK/0VRHxNPiWz1qazCRbjwe49DIGDWrpGXvf8NuPf7/zRGkKJmPxqCXudd2x
+         RNpabKsLAOx+COJwBHCMdluFUicp6v2fmbaaUF5Jga8GByHoZFMBhyXp5GuSo3jb/1JK
+         oDXLJje6e6yRTi24OMh1UncVh4nHAPkytru1zFXLEVYXfG5DDfYMZqrCVDfm0ANzbYIh
+         b3Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699560641; x=1700165441;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hme3VruWKu/ViE/hI0yCfth5H5XHosene3ze2VB+fj0=;
+        b=UO+QlYnq5DBsHgxlMrvzFD3DTwmwIOCl32C8R8B8FQWr7bYPPHDs2sAyoWRK+W4YH7
+         ssUwPq6c5HSjegQrOPzCAIR6ex3QKR++8n9wZisjupVnxqXo781HkaGzMSibD2VKyclZ
+         tLETF74jzzSHJ29z3y1EY1YmRZKphIauu/uufpb8CHl5K2P6ta4o3i0fy+QRWelRtwYh
+         jWAp4g3H+228RZZUILhreRbmvCmY9oNl97seIgPQsQcAhbel9Z03aPYBQpiZujBy82XX
+         MSgWq5zMThhSRlz1p2SKMRZ+vbJzyPVHEN9RiXX3dt/fjYW1F+zYgYwXJt6ATOE+Ylz8
+         7OIA==
+X-Gm-Message-State: AOJu0Ywo9MOtoXRt+LhVBee1WiBGF1asvj4aY4Ak6rZPI/0riZdjFKLH
+        2ZfMP3MvZgU8F3rkJUWgQ18=
+X-Google-Smtp-Source: AGHT+IEQ/3pQdgQDPdZlU5i0auVUfXxaqEQg0tb9j5qH0CmWWQIlsc/hmEVDExu5fNvI71CUehTp+w==
+X-Received: by 2002:a17:906:7943:b0:9bd:a063:39d2 with SMTP id l3-20020a170906794300b009bda06339d2mr5681005ejo.16.1699560640630;
+        Thu, 09 Nov 2023 12:10:40 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id qx11-20020a170906fccb00b009b2f2451381sm2976019ejb.182.2023.11.09.12.10.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 12:10:40 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH] x86/head_64: Use testb instead of testl in secondary_startup_64_no_verify
+Date:   Thu,  9 Nov 2023 21:09:56 +0100
+Message-ID: <20231109201032.4439-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZU0j1z26ki1dsPpB@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:24:23AM -0800, Boqun Feng wrote:
-> On Thu, Nov 09, 2023 at 05:25:05PM +0100, Jonas Oberhauser wrote:
-> [...]
-> > > 4.	Semantics of volatile.	Perhaps the current state is the best
-> > > 	that can be hoped for, but given that the current state is a
-> > > 	few vague words in the standard in combination with the fact
-> > > 	that C-language device drivers must be able to use volatile
-> > > 	to reliably and concurrently access memory shared with device
-> > > 	firmware, one would hope for better.
-> > 
-> > 
-> > Is it really so bad? I think the definition in the manual is quite precise,
-> > if confusing. (volatiles are visible side effects and must therefore have
-> > the same program order in the abstract machine and in the implementation,
-> > and that's pretty much it).
-> 
-> But I don't think there is any mention on whether current volatile
-> accesses can be excluded from data race, or whether a volatile access
-> on a machine-word size natually aligned object can be teared or not.
+There is no need to use testl when checking LSB with a test instruction.
+Use testb, which is three bytes shorter:
 
-Here is my understanding:  It must be possible to write C-language
-device drivers for devices that...
+   f6 05 00 00 00 00 01    testb  $0x1,0x0(%rip)
 
-1.	read and write to normal memory.  If this device has C-langugae
-	firmware, volatile reads and writes involving aligned
-	machine-word-sized locations must not invoke undefined behavior.
+vs:
 
-2.	allow concurrent reads and writes to MMIO registers (or to
-	normal memory).  Even ignoring the device firmware, volatile
-	reads and writes involving aligned machine-word-sized locations
-	must not invoke undefined behavior.
+   f7 05 00 00 00 00 01    testl  $0x1,0x0(%rip)
+   00 00 00
 
-Not necessarily a popular view, but then again, in my experience,
-objective reality never has been trying to win a popularity contest.
+for the same effect.
 
-							Thanx, Paul
+No functional changes intended.
 
-> Regards,
-> Boqun
-> 
-> > There should just be a large explanatory note about what it implies and what
-> > it doesn't imply.
-> > 
-> > 
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ arch/x86/kernel/head_64.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 086a2c3aaaa0..1f79d809305d 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -182,7 +182,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	/* Enable PAE mode, PSE, PGE and LA57 */
+ 	orl	$(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+-	testl	$1, __pgtable_l5_enabled(%rip)
++	testb	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %ecx
+ 1:
+-- 
+2.41.0
+
