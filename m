@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5D77E64DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B14E7E64E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjKIICV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:02:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
+        id S233262AbjKIIGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbjKIICT (ORCPT
+        with ESMTP id S231376AbjKIIGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:02:19 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4F02728
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:02:17 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32faea0fa1fso306009f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:02:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699516935; x=1700121735; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BFIkC1FD/Uwtc6W91szrKWUfuMQSfWOdpdRrkGpPlWo=;
-        b=wandipyuMnKwXtbw9p1ouX1bBBAKwqaOMFUPUELk5ndRj/7LDZz0XS++dUTnyR0idK
-         GuVHflK9OzRdyu5PcL5tNx/pvdeEkak9X3hSy6A2c/YfSS7kFgj9pHh+lmmahengJyaz
-         L85wQzqRINpJ/m7Q0+KkqQsQZ+oiqvrXV6koEhV48m8YFnB9Kl/NGUHu8WpU8J1Fu6gH
-         jWyUOLSAdwCzs6KK1n/yGLuihQo7NWugQagKR/WTs9kHm53FgMPgz1+4uZz9eifmmnQp
-         mgnSZqBaQSDNtZt2Zz/zHF8S30QOSBj6eVZVPDIrQdoKeBH7zCWKN6RzcOQp1ncvEwJh
-         3Bcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699516935; x=1700121735;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BFIkC1FD/Uwtc6W91szrKWUfuMQSfWOdpdRrkGpPlWo=;
-        b=WPBIibn3G/Nl+rkt2Rn7k7oMApp7f0d5q2ObQ8P3p1Pg9hMi6IW7TmPQifIHA8X+ZH
-         jMq0kp2ehNkTMkTca/kaoACUKJxiMhzt/2EOzpsSgnVG+RGIlHs1eXRx1ot/xJWdWMWm
-         /SbsiM61KfflfUj1WibWfhwh1QfHad7LXSGFCFNDpFGs0Fjcs15EJNJ1DrFYAl9DGV1U
-         3gBcai3Km2lSQ9UY70BXYDYKEnNo+AX1PzWJ/KxD+rmI9eS5NriWY1fmUQTusXDFWdnu
-         6ZS04vd16T0T6SBUIpfN/IprCMd5CB96YIK01sW/VI8Tja87lnS6uLk9jmZq/LK5LYCO
-         rFKQ==
-X-Gm-Message-State: AOJu0Yy2bLNSEYwDQ7/i4aEZhailKLRkB85OxE/7+hZbM5zc8eVRxehj
-        BIaLVp2C8V/tfbq0r7YxZZX2uA==
-X-Google-Smtp-Source: AGHT+IGPq2vMTt96ad/AZA6B76G5T/W9HPy/vLX/E2Tps70yhgvZu+0T0LFKA9SFn0wgyqBEQQ+EyQ==
-X-Received: by 2002:a5d:5986:0:b0:32f:b47c:f1f6 with SMTP id n6-20020a5d5986000000b0032fb47cf1f6mr4764971wri.32.1699516935529;
-        Thu, 09 Nov 2023 00:02:15 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n17-20020a5d67d1000000b003232380ffd7sm6758579wrw.102.2023.11.09.00.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 00:02:15 -0800 (PST)
-Date:   Thu, 9 Nov 2023 11:02:12 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Tuo Li <islituo@gmail.com>,
-        mchehab@kernel.org, yongsuyoo0215@gmail.com
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju1990@outlook.com, Tuo Li <islituo@gmail.com>,
-        BassCheck <bass@buaa.edu.cn>
-Subject: Re: [PATCH] media: dvb-core: Fix a possible null-pointer dereference
- due to data race in dvbdmx_write()
-Message-ID: <16d72edf-78de-4995-8821-e95973d5c474@kadam.mountain>
+        Thu, 9 Nov 2023 03:06:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7BC269F;
+        Thu,  9 Nov 2023 00:06:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699517200; x=1731053200;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lOWmxm9+hlLDd/bFPxc4FNd/WQuv+HVFpFCjdXz4HsU=;
+  b=LUG5/aWxtxElw7HN3Rn/DrqERPwX84v8HkNLsdp1BbC4mvocCsT2AcxN
+   k3jap7iYSBo1vKEdc834meV7gEY2+VVe1tSEaYKxNzW+IbD41IxZBE25t
+   f84r67nl75ys1qcDNaAGc8+m5oz0ZwqX8GZhuWstHiujTitY24aj01cGF
+   HR3z/2e5NTV6w7cFdTtAzbukVVnzkloxjm99kDBTqFfj/kiJAR/Zadh+w
+   HbdHd4Uc8cDMk3J/cAvwaHloobxkxxUvOiupRyaYBNcM0izKxyx6DSM+/
+   DtDVVrel9d61YjHf5YDSi+SLDWfS/tEoRYqxNAauRH6eMNBmf+K0hz7uy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="392811257"
+X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
+   d="scan'208";a="392811257"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 00:06:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
+   d="scan'208";a="11068757"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa001.jf.intel.com with ESMTP; 09 Nov 2023 00:06:37 -0800
+Date:   Thu, 9 Nov 2023 16:05:01 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Nava kishore Manne <nava.kishore.manne@amd.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com,
+        trix@redhat.com, michal.simek@amd.com, linux-fpga@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nava kishore Manne <nava.manne@xilinx.com>
+Subject: Re: [PATCH] fpga: zynq: Fix incorrect variable type
+Message-ID: <ZUySrZ4Cc/qdzWXX@yilunxu-OptiPlex-7050>
+References: <20231109062823.3268724-1-nava.kishore.manne@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231108091300.3124649-1-islituo@gmail.com>
+In-Reply-To: <20231109062823.3268724-1-nava.kishore.manne@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tuo,
+On Thu, Nov 09, 2023 at 11:58:23AM +0530, Nava kishore Manne wrote:
+> From: Nava kishore Manne <nava.manne@xilinx.com>
+> 
+> zynq_fpga_has_sync () API is expecting "u8 *" but the
+> formal parameter that was passed is of type "const char *".
+> To fix this issue cast the const char pointer to u8 pointer.
 
-kernel test robot noticed the following build warnings:
+Any error log found? I assume this is just implicit cast and doesn't
+worth a fix.
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
+Yilun
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tuo-Li/media-dvb-core-Fix-a-possible-null-pointer-dereference-due-to-data-race-in-dvbdmx_write/20231108-200849
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/20231108091300.3124649-1-islituo%40gmail.com
-patch subject: [PATCH] media: dvb-core: Fix a possible null-pointer dereference due to data race in dvbdmx_write()
-config: x86_64-randconfig-161-20231108 (https://download.01.org/0day-ci/archive/20231109/202311090845.BlIvG8kE-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090845.BlIvG8kE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202311090845.BlIvG8kE-lkp@intel.com/
-
-smatch warnings:
-drivers/media/dvb-core/dvb_demux.c:1163 dvbdmx_write() warn: inconsistent returns '&dvbdemux->mutex'.
-
-vim +1163 drivers/media/dvb-core/dvb_demux.c
-
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1139  static int dvbdmx_write(struct dmx_demux *demux, const char __user *buf, size_t count)
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1140  {
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1141  	struct dvb_demux *dvbdemux = (struct dvb_demux *)demux;
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1142  	void *p;
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1143  
-eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1144  	mutex_lock(&dvbdemux->mutex);
-eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1145  	if ((!demux->frontend) || (demux->frontend->source != DMX_MEMORY_FE)) {
-eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1146  		mutex_unlock(&dvbdemux->mutex);
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1147  		return -EINVAL;
-eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1148  	}
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1149  
-c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1150  	p = memdup_user(buf, count);
-c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1151  	if (IS_ERR(p))
-c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1152  		return PTR_ERR(p);
-
-Need to drop the lock before returning.
-
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1153  	if (mutex_lock_interruptible(&dvbdemux->mutex)) {
-
-Wait, what?  Why are we taking the lock a second time?  This won't work.
-
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1154  		kfree(p);
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1155  		return -ERESTARTSYS;
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1156  	}
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1157  	dvb_dmx_swfilter(dvbdemux, p, count);
-947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1158  	kfree(p);
-3593cab5d62c4c drivers/media/dvb/dvb-core/dvb_demux.c Ingo Molnar    2006-02-07  1159  	mutex_unlock(&dvbdemux->mutex);
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1160  
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1161  	if (signal_pending(current))
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1162  		return -EINTR;
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16 @1163  	return count;
-^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1164  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> ---
+>  drivers/fpga/zynq-fpga.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
+> index 96611d424a10..988853137ac6 100644
+> --- a/drivers/fpga/zynq-fpga.c
+> +++ b/drivers/fpga/zynq-fpga.c
+> @@ -275,7 +275,7 @@ static int zynq_fpga_ops_write_init(struct fpga_manager *mgr,
+>  
+>  	/* don't globally reset PL if we're doing partial reconfig */
+>  	if (!(info->flags & FPGA_MGR_PARTIAL_RECONFIG)) {
+> -		if (!zynq_fpga_has_sync(buf, count)) {
+> +		if (!zynq_fpga_has_sync((u8 *)buf, count)) {
+>  			dev_err(&mgr->dev,
+>  				"Invalid bitstream, could not find a sync word. Bitstream must be a byte swapped .bin file\n");
+>  			err = -EINVAL;
+> -- 
+> 2.25.1
+> 
