@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA537E6B6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6FA7E6B79
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234119AbjKINrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        id S234055AbjKINtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:49:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbjKINrM (ORCPT
+        with ESMTP id S231214AbjKINtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:47:12 -0500
+        Thu, 9 Nov 2023 08:49:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DC6272C;
-        Thu,  9 Nov 2023 05:47:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2A2C433C9;
-        Thu,  9 Nov 2023 13:47:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFED2D59
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:49:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B717BC433C9;
+        Thu,  9 Nov 2023 13:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699537630;
-        bh=z4g5EW8efgIw8lyxSz+VhaqGLEYZgyBMh5nX9UJ9D5M=;
+        s=k20201202; t=1699537743;
+        bh=zRN/6P5lrsqVZwM9CTjtyq9M5h0TpNvvCvqPY+fc9Fk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rXnxVVo/03JiIe4Zfd/7TtmO+I8DtX6A62j+QKv7PwuNrWyGtwxed35dvFnWVqg27
-         DdXznxNETaD8qgC+QMCrqjJVRPxnFyGbk1S2FIqMRs0v99vJd40qGC/sZfCAZhVxeD
-         ZjEWkcIvnxByh6K7pP7/Gh5b/9wdSrvFT40g8WXzd9wQM+5w2tpfA3rHC4FMUmjP1j
-         YLzXPHNNtSf91G49eeyWULb+X36EcDF/TLRbLOCpetzlngRCLYvs8V3bDKR+3WoK0K
-         A36t2kY2BJpAs9PSnLKAr1C6No3WlvMogIPRekMLsAoMPj77PxMZQtcUopVkM8JV0c
-         tUH/xoI3eM/YA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1r15O8-0006uh-24;
-        Thu, 09 Nov 2023 14:48:04 +0100
-Date:   Thu, 9 Nov 2023 14:48:04 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] soc: qcom: pmic_glink_altmode: fix port sanity check
-Message-ID: <ZUzjFFUc1dOE8C54@hovoldconsulting.com>
-References: <20231109093100.19971-1-johan+linaro@kernel.org>
- <0edf26f9-46c8-4c9b-a68e-a92a78b5684e@linaro.org>
+        b=HJ14EKtQsn2SophxX8pKBwLgmqhSlvFF0PhYFTRbQ3O9+rjlI6qcL3RKEkBmWLLlM
+         qikTtADC5C2Gc8hs3tFLIiIqS77lecxoYu0gqyLWXP9sGb8RXaxVMgmDSBGTkjlmfG
+         tin7Tw9BcQvPRKXub995nBRY642+0sMS/8rEBpWrXRRZK5FKicLYuzC6ECuo+BdE8Q
+         dmR8VVAh7cXSM9DWjachOTfDq76Vlt5RLcxv+Xu2aXuxveoYaPbnB/a9DX8otn2cCr
+         Pra3/n05tjNrvhbgPh3SErDNH83osTI6aNhMsJLCLUgQDuNEZnlEkpWvPbTz3y9/xF
+         KXWudR+iOskag==
+Date:   Thu, 9 Nov 2023 13:49:00 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        debug@rivosinc.com, pengfei.xu@intel.com
+Subject: Re: [PATCH] x86/shstk: Change SSP after user accesses
+Message-ID: <ZUzjLy0IzqypDHYV@finisterre.sirena.org.uk>
+References: <20231107182251.91276-1-rick.p.edgecombe@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Q3Gs7OgqUD5phJZ1"
 Content-Disposition: inline
-In-Reply-To: <0edf26f9-46c8-4c9b-a68e-a92a78b5684e@linaro.org>
+In-Reply-To: <20231107182251.91276-1-rick.p.edgecombe@intel.com>
+X-Cookie: Slow day.  Practice crawling.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 02:28:59PM +0100, Konrad Dybcio wrote:
-> On 11/9/23 10:31, Johan Hovold wrote:
-  
-> > -	if (!altmode->ports[port].altmode) {
-> > +	if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
 
-> I'd personally use PMIC_GLINK_MAX_PORTS directly but it's the same
+--Q3Gs7OgqUD5phJZ1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-That's what I'd generally do as well, but here I followed the style of
-this driver (and using ARRAY_SIZE() is arguable more safe).
+On Tue, Nov 07, 2023 at 10:22:51AM -0800, Rick Edgecombe wrote:
 
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Fix this by adjusting the SSP register only after any userspace accesses,
+> such that there can be no failures after the SSP is adjusted. Do this by
+> moving the shadow stack sigframe push logic to happen after all other
+> userspace accesses.
 
-Thanks for reviewing.
+Thanks for the heads up on this.  From inspection it looks like the
+arm64 patches currently order things similarly to your new x86 code.
 
-Johan
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--Q3Gs7OgqUD5phJZ1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVM40sACgkQJNaLcl1U
+h9BKYgf/axzjgkzK55seZ98dWUhnmtDN0m/OzeP7UBiD/oVzQKjt9e65XTpwO75Q
+PlRWQ0Ci+1V0qiUNPUs2oBgHj9MBObK3Ofq+vzo1lI5jzERUJdLVUmp/zIfG8CiV
+r9z5aeQP1O3wMknIdtgrj0txUpV7slESDtvMIoj2l1OlG4Rc7UsqUkC/VMaSZibA
+ujtOPK5k23GdL4E3Yy2J8JYubpEJB4uRPqrd0nVhnnmTGFuE4KOWc1iK7FoCnbuv
+GJvG2Y/HDhU383xN1MKZfw0jlJDTzdmCwv2M7Wmw/b0vSH0RMtDsgdYQ/oypMkHf
+97vsriyKrLq8q9wn87oNJlwiaqDqfA==
+=ta/2
+-----END PGP SIGNATURE-----
+
+--Q3Gs7OgqUD5phJZ1--
