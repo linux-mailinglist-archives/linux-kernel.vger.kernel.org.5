@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48667E629A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 04:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B65807E62A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 04:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbjKID0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 22:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        id S232227AbjKID1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 22:27:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232149AbjKID0h (ORCPT
+        with ESMTP id S229923AbjKID1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 22:26:37 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05EE1B6
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 19:26:35 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc0e78ec92so2847705ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 19:26:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699500395; x=1700105195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SL43KqdoOApMZsa3YMezQNkvoYmYG9YJ6cT/naFj7n0=;
-        b=0uYz7R1JoaKNf6DVQzg8oUlsaTbw54ZeweD2rTeXnGm4H1NH5jOstTo0ZjJBQeRgHQ
-         R2+yyZJuLZhMgXoevavAxCFp4q9NPrW0MVbDCZOVLP6/UnmRkH9sIrYDmg3//vMJyEbS
-         3OZKRepAyvCtQ1fDGxVc7KIBqFydhcyvqlZftyo6AkiUnd+IB33M16/H1SPWiDxvqGTK
-         KrMk64mvtW7WBhaByy+JY0l3Ts9iBrsxIsdetykOQwPmzVDbvyiCi5AE3Vjr4Rc8kCgC
-         4vVK8HrRM+GYpm/MjnrYcqoXD5fwONOkNVkFZdomrR/Vcc5SCygDIu3owhMYc9eSOq0A
-         Sz8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699500395; x=1700105195;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SL43KqdoOApMZsa3YMezQNkvoYmYG9YJ6cT/naFj7n0=;
-        b=LMOCoW1ddflqBesbCLjCoOX+BawNbiH0Gcv6ALXKjcaf/Y0eah3AnFBmTZ/3n6PFnI
-         bLAfncX8Lu1lUC8pazdQ9X7BzpLexViuKYwslBL8sfumNfe08jCrSMhsDUaftsx2Ju5f
-         Wk4tgSitqLIxlLOv47lO2MLJ2hGx5AOm+HnhM3onrfDzWtUGS8giXb5rVorLVDoH5OHz
-         BDT7jDuFyuriUZt5ejU+rPv6ppksWVbPJ+cDgPbrd8wBsCovj2sZdDkPfe4GHZ+2A620
-         DVLjKwjel2/ijXdC259C9hoIE3QFpyZFZd88mQU0iqcPJXB0yoPDI2+wIsEKBKFifrxL
-         JZOg==
-X-Gm-Message-State: AOJu0Yz1GFBzkwS9YFjfDDb+r8TpBbEBUAdUCwHiGC6FK0Z6Z1Yl1ZD0
-        MVAaPzYBF8NDmRhwmO5THkI9Qg==
-X-Google-Smtp-Source: AGHT+IGr7vGXKEc3TQWEMfgM2CHVvt0ly+Zqz32FmWgjh6G8g9LT1+KY6vb72CQ295XvF9UU+LAVYQ==
-X-Received: by 2002:a17:902:ee89:b0:1cc:87f8:96ab with SMTP id a9-20020a170902ee8900b001cc87f896abmr4072748pld.38.1699500394683;
-        Wed, 08 Nov 2023 19:26:34 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id jj19-20020a170903049300b001bbb25dd3a7sm2388288plb.187.2023.11.08.19.26.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 19:26:34 -0800 (PST)
-Date:   Wed, 08 Nov 2023 19:26:34 -0800 (PST)
-X-Google-Original-Date: Wed, 08 Nov 2023 19:26:29 PST (-0800)
-Subject:     Re: [PATCH] selftests: sud_test: return correct emulated syscall value on RISC-V
-In-Reply-To: <20230913140711.266975-1-cleger@rivosinc.com>
-CC:     shuah@kernel.org, krisman@collabora.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, cleger@rivosinc.com
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     cleger@rivosinc.com
-Message-ID: <mhng-bd15a99e-2c1e-4f0e-95ff-b6f14fe26681@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 8 Nov 2023 22:27:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44DC1B6;
+        Wed,  8 Nov 2023 19:27:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABB7C433C8;
+        Thu,  9 Nov 2023 03:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699500438;
+        bh=8l3Y3uc+DtLheJHzFBiWnmoBSiDiQ5S3umInMPR7G6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BXjCzmlQaH1wqB6FK3BCldzyLMdyPaCbMrrMeJb2mpz099CS1s0YY7IGctM9M2aRj
+         xZaNF3IWZmml6PhRG+LAMxqkNS/IYpDM8yz7TtDvSTCCn7msvRh5tItl5c1Np/iuSU
+         Cp+arfYi910kgCPjIr227bQK5YCJTE77ElHI8EZnsQ0r6PJir0/98AVqQw0JnoOduI
+         W7nsu0jVHtRtqUU4scgBgzwqSpUgYhBIOoWkHdkUoZpnfPwLTeUdsdsZdOMe3VIhSc
+         G+y2HMhb40gtDjlUJVi2Naj/VwF9tIk0ZNm7+2MFeGcW6L5lnYH9CR6DJbGfzFBKr8
+         m4LUF9PCwVddA==
+Date:   Thu, 9 Nov 2023 08:57:03 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     Can Guo <cang@qti.qualcomm.com>, bvanassche@acm.org,
+        stanley.chu@mediatek.com, adrian.hunter@intel.com,
+        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/7] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to hosts
+ with HW version 5
+Message-ID: <20231109032703.GC3752@thinkpad>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-5-git-send-email-cang@qti.qualcomm.com>
+ <20231108052555.GD3296@thinkpad>
+ <59f83fcd-6c2d-6b8a-55e6-0db07bfb5744@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <59f83fcd-6c2d-6b8a-55e6-0db07bfb5744@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 07:07:11 PDT (-0700), cleger@rivosinc.com wrote:
-> Currently, the sud_test expects the emulated syscall to return the
-> emulated syscall number. This assumption only works on architectures
-> were the syscall calling convention use the same register for syscall
-> number/syscall return value. This is not the case for RISC-V and thus
-> the return value must be also emulated using the provided ucontext.
->
-> Signed-off-by: Clément Léger <cleger@rivosinc.com>
-> ---
->  tools/testing/selftests/syscall_user_dispatch/sud_test.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-> index b5d592d4099e..1b5553c19700 100644
-> --- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-> +++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-> @@ -158,6 +158,14 @@ static void handle_sigsys(int sig, siginfo_t *info, void *ucontext)
->
->  	/* In preparation for sigreturn. */
->  	SYSCALL_DISPATCH_OFF(glob_sel);
-> +
-> +	/*
-> +	 * Modify interrupted context returned value according to syscall
-> +	 * calling convention
-> +	 */
-> +#if defined(__riscv)
-> +	((ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A0] = MAGIC_SYSCALL_1;
-> +#endif
->  }
->
->  TEST(dispatch_and_return)
+On Wed, Nov 08, 2023 at 04:42:42PM +0800, Can Guo wrote:
+> Hi Mani,
+> 
+> On 11/8/2023 1:25 PM, Manivannan Sadhasivam wrote:
+> > On Mon, Nov 06, 2023 at 08:46:10PM -0800, Can Guo wrote:
+> > > From: Can Guo <quic_cang@quicinc.com>
+> > > 
+> > > Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
+> > > HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
+> > > to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
+> > > 
+> > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> > > ---
+> > >   drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
+> > >   1 file changed, 17 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > index 60b35ca..55ee31d 100644
+> > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
+> > >   static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> > >   {
+> > >   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > +	struct ufs_host_params *host_params = &host->host_params;
+> > >   	struct phy *phy = host->generic_phy;
+> > > +	enum phy_mode mode;
+> > >   	int ret;
+> > > +	/*
+> > > +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
+> > 
+> > Does this limitation apply to future targets as well or just to SM8550? If
+> > it's the latter, then we need to use a flag.
+> > 
+> > - ManiUFS host controller HW ver (major) 5 IPs (they may have different
+> minor/step verions) can be used by many QCOM chipsets, so it applies to
+> several available targets and future targets which are going to have HW ver
+> 5 UFS host controller. This limitation goes away since HW ver 6.
+> 
 
-I'm not sure if I'm just tired, but it took me a while to figure out why 
-this was necessary.  I think this is a better explanation:
+Okay, thanks for clarifying.
 
-    diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-    index b5d592d4099e..a913fd90cfa3 100644
-    --- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-    +++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
-    @@ -158,6 +158,16 @@ static void handle_sigsys(int sig, siginfo_t *info, void *ucontext)
-    
-     	/* In preparation for sigreturn. */
-     	SYSCALL_DISPATCH_OFF(glob_sel);
-    +	/*
-    +	 * The tests for argument handling assume that `syscall(x) == x`.  This
-    +	 * is a NOP on x86 because the syscall number is passed in %rax, which
-    +	 * happens to also be the function ABI return register.  Other
-    +	 * architectures may need to swizzle the arguments around.
-    +	 */
-    +#if defined(__riscv)
-    +	(ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A0] =
-    +		(ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A7];
-    +#endif
-     }
-    
-     TEST(dispatch_and_return)
+- Mani
 
-but also
+> Thanks,
+> Can Guo.
 
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-
-as I agree this is correct.
-
-also: wouldn't arm64 also need to move x8 into x0 here, for essentially 
-the same reason as we do?
+-- 
+மணிவண்ணன் சதாசிவம்
