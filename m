@@ -2,210 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373717E6FAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A57707E6FB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbjKIQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S234617AbjKIQw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjKIQuv (ORCPT
+        with ESMTP id S235048AbjKIQwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:50:51 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3700F1725
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:50:49 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D09C106F;
-        Thu,  9 Nov 2023 08:51:33 -0800 (PST)
-Received: from [10.1.31.52] (e133649.arm.com [10.1.31.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC00E3F7C5;
-        Thu,  9 Nov 2023 08:50:46 -0800 (PST)
-Message-ID: <531fd8a0-132e-425b-955b-d60a56004aba@arm.com>
-Date:   Thu, 9 Nov 2023 16:50:44 +0000
+        Thu, 9 Nov 2023 11:52:11 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C5735BC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:51:43 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so2259303a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 08:51:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699548702; x=1700153502; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EB/GVelCwv918J74mEa2RtiTqM5Zt5ATdZIb7vJjWqs=;
+        b=uOL3e0PpkB3neRMRh+gMuKCqBdKLdtVKimFUmlgJlQXqc14Tv6i0hkBdrwHU7Cuc5r
+         eMwbHO6DM5/N5zJ/yDVaTAoOr1AfcYk+s5BSOxEhhcUNtFXSTHIe2+w1jnWBk7+d4wri
+         tV1eduhKIXovDZzoIphACO2k5bQoVtcwmc/XM+Miit24WLmrozsb52JPj7pvHhPZaVys
+         GHl8JduQhCTyUKWnNjv+Po2BY8e0vV29U901tdkKUax1fwmPYq6s/vUlRwSMWkFY9mQ2
+         M2pboSQEJkJJp5F4Mt92wFptf9fAWG6Ody9NIpef6EorJ+UH8ECvivmaDbp+z2pCipPN
+         UN2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699548702; x=1700153502;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EB/GVelCwv918J74mEa2RtiTqM5Zt5ATdZIb7vJjWqs=;
+        b=odLvY3Gql+rhXyxcCnU7H9peTYa07Z9zGEv49pWi27E4e3Oji0+TgYw++gpzKLmwLt
+         D6CMK6gYK0emAcDfvm9zVQPiBi8FJ2F0dufLRCDBS42JB1hnQXtFtWkxIXT+cvYvLG4B
+         9l+ANoUcuoFZ9aLBDxCs2tLxIIaXJd5nOSBoq6apIX75VutybpGlGEryIgNWJoRv/o76
+         UiwB23932dJ7V12iVH5lm6/lPxcsWgL2XJtM/xuK9ILqbh/Hsdz3IsxR5uqW8eFcxDRh
+         bDFrScOZf44SDabg1bmAvD4MQYSlvi6g/+ERQRQwIvbRypshAQW9Mfs1HBU/UfvJYtzw
+         I24g==
+X-Gm-Message-State: AOJu0Yyu5yFoqpnEh1tftlwtD4bYgfHg0By+QHcmC9ETDb96z6+qHojN
+        4nsNnhG8e6ND+Vo1kXKBiYvf0A==
+X-Google-Smtp-Source: AGHT+IFbGuVzjNYYjJEj8Z6UtrMmOE+jObppKQkMkmfZJeCsI4LVyZRa2bt4nhjL41nb+31LKc8H+w==
+X-Received: by 2002:aa7:c79a:0:b0:531:14c4:ae30 with SMTP id n26-20020aa7c79a000000b0053114c4ae30mr5471759eds.0.1699548702186;
+        Thu, 09 Nov 2023 08:51:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id d4-20020a056402516400b0052febc781bfsm34335ede.36.2023.11.09.08.51.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 08:51:41 -0800 (PST)
+Message-ID: <847fc857-0229-4e5e-9cac-4be5bec6e9c1@linaro.org>
+Date:   Thu, 9 Nov 2023 17:51:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 2/6] sched/uclamp: Simulate PELT decay in
- util_avg_uclamp
+Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: imx93: add i3c1 and i3c2
 Content-Language: en-US
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <d73fc3e9a02f047902fdd5e4c07402452d6e0590.1696345700.git.Hongyan.Xia2@arm.com>
- <b09848dc-dea8-46e7-9f24-c11c64fd5d74@arm.com>
-From:   Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <b09848dc-dea8-46e7-9f24-c11c64fd5d74@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Frank Li <Frank.li@nxp.com>, shawnguo@kernel.org
+Cc:     alexander.stein@ew.tq-group.com, alexandre.belloni@bootlin.com,
+        conor+dt@kernel.org, conor.culhane@silvaco.com, conor@kernel.org,
+        devicetree@vger.kernel.org, festevam@gmail.com, haibo.chen@nxp.com,
+        imx@lists.linux.dev, joe@perches.com, kernel@pengutronix.de,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-i3c@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, peng.fan@nxp.com, ping.bai@nxp.com,
+        robh+dt@kernel.org, s.hauer@pengutronix.de, sherry.sun@nxp.com,
+        xiaoning.wang@nxp.com
+References: <20231017194657.3199749-1-Frank.Li@nxp.com>
+ <20231017194657.3199749-2-Frank.Li@nxp.com>
+ <ZUz/8fBWtnwdSW9w@lizhi-Precision-Tower-5810>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZUz/8fBWtnwdSW9w@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/11/2023 16:06, Dietmar Eggemann wrote:
-> On 04/10/2023 11:04, Hongyan Xia wrote:
->> From: Hongyan Xia <hongyan.xia2@arm.com>
+On 09/11/2023 16:51, Frank Li wrote:
+> On Tue, Oct 17, 2023 at 03:46:57PM -0400, Frank Li wrote:
+>> Add I3C1 and I3C2.
 >>
->> Because util_avg_uclamp is not directly managed by PELT, it lacks the
->> nice property of slowly decaying to a lower value, resulting in
->> performance degredation due to premature frequency drops.
->>
->> Add functions to decay root cfs utilization and tasks that are not on
->> the rq. This way, we get the benefits of PELT while still maintaining
->> uclamp. The rules are simple:
->>
->> 1. When task is se->on_rq, enforce its util_avg_uclamp within uclamp
->>     range.
->> 2. When task is !se->on_rq, PELT decay its util_avg_uclamp.
->> 3. When the root CFS util drops, PELT decay to the target frequency
->>     instead of immediately dropping to a lower target frequency.
->>
->> TODO: Can we somehow integrate this uclamp sum aggregation directly into
->> util_avg, so that we don't need to introduce a new util_avg_uclamp
->> signal and don't need to simulate PELT decay?
-> 
-> That's a good question. I'm wondering why you were not able to integrate
-> the maintenance of the util_avg_uclamp values inside the existing PELT
-> update functionality in fair.c ((__update_load_avg_xxx(),
-> propagate_entity_load_avg() -> update_tg_cfs_util() etc.)
-> 
-> Why do you need extra functions like ___decay_util_avg_uclamp_towards()
-> and ___update_util_avg_uclamp() for this?
-
-These new functions are already in __update_load_avg_xxx(). I just 
-separate the new code into a separate function for readability.
-
-I think we have talked offline on why we can't do things in 
-propagate_entity_load_avg() -> update_tg_cfs_util(). Currently cfs_rq 
-and se utilization is tracked independently. However, we can't track 
-them separately in sum aggregation. If a cfs_rq has two tasks with 
-utilization at 1024 and UCLAMP_MAX of 100, the cfs_rq must sum up those 
-two tasks, at 200, and cannot use the logic inside 
-propagate_entity_load_avg() -> update_tg_cfs_util() which is for 
-tracking cfs_rq independently and won't know the utilization is only 200.
-
-Again I may have misunderstood what you meant. Do you have a concrete 
-example on how to do this without extra functions?
-
-One idea I once had is to use the existing util_avg, and introduce a 
-'util_bias' variable. When there's no uclamp, this bias is 0 and 
-util_avg is what it is. When there's uclamp, for example, two tasks at 
-utilization of 400 but UCLAMP_MAX of 300, then each task has a util_bias 
-of -100, and cfs_rq will sum up the biases, at -200. Then, the cfs_rq 
-will run at 600 instead of 800. This way, no PELT simulation is needed. 
-However, this doesn't work, because say two tasks with utilization of 
-1024 but UCLAMP_MAX at 100, each will have a bias of -924 and cfs_rq 
-will sum up and have a bias of -1848, but the cfs_rq will be at 1024, 
-not 2048, so adding this bias will give you cfs_rq utilization of -824, 
-which is clearly wrong here.
-
->> Signed-off-by: Hongyan Xia <hongyan.xia2@arm.com>
+>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 >> ---
->>   kernel/sched/fair.c  |  20 +++++++++
->>   kernel/sched/pelt.c  | 103 ++++++++++++++++++++++++++++++++++++++++---
->>   kernel/sched/sched.h |   2 +
->>   3 files changed, 119 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 33e5a6e751c0..420af57d01ee 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -4311,17 +4311,22 @@ static inline int
->>   update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
->>   {
->>   	unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
->> +	unsigned int removed_root_util = 0;
 > 
->   unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
-> -unsigned int removed_root_util = 0;
-> +unsigned int __maybe_unused removed_root_util = 0;
+> @Guo Shawn:
 > 
-> Otherwise you get `warning: unused variable ‘rq’` w/ !CONFIG_UCLAMP_TASK
+> Driver part already merged. 
+> 
+> Please pick up dts part
 
-Thanks. Ack.
-> 
-> [...]
-> 
-> 
->>   #ifdef CONFIG_UCLAMP_TASK
->> +static void ___decay_util_avg_uclamp_towards(u64 now,
->> +					     u64 last_update_time,
->> +					     u32 period_contrib,
->> +					     unsigned int *old,
->> +					     unsigned int new_val)
->> +{
->> +	unsigned int old_val = READ_ONCE(*old);
->> +	u64 delta, periods;
->> +
->> +	if (old_val <= new_val) {
->> +		WRITE_ONCE(*old, new_val);
->> +		return;
->> +	}
-> 
-> Why is the function called `decay`? In case `new >= old` you set old =
-> new and bail out. So it's also more like an `update` function?
+It's merge window. What do you expect exactly?
 
-Bad naming indeed. I will rename it to ___update_util_avg_uclamp_towards
+Best regards,
+Krzysztof
 
->> +	if (!last_update_time)
->> +		return;
->> +	delta = now - last_update_time;
->> +	if ((s64)delta < 0)
->> +		return;
->> +	delta >>= 10;
->> +	if (!delta)
->> +		return;
->> +
->> +	delta += period_contrib;
->> +	periods = delta / 1024;
->> +	if (periods) {
->> +		u64 diff = old_val - new_val;
->> +
->> +		/*
->> +		 * Let's assume 3 tasks, A, B and C. A is still on rq but B and
->> +		 * C have just been dequeued. The cfs.avg.util_avg_uclamp has
->> +		 * become A but root_cfs_util_uclamp just starts to decay and is
->> +		 * now still A + B + C.
->> +		 *
->> +		 * After p periods with y being the decay factor, the new
->> +		 * root_cfs_util_uclamp should become
->> +		 *
->> +		 * A + B * y^p + C * y^p == A + (A + B + C - A) * y^p
->> +		 *     == cfs.avg.util_avg_uclamp +
->> +		 *        (root_cfs_util_uclamp_at_the_start - cfs.avg.util_avg_uclamp) * y^p
->> +		 *     == cfs.avg.util_avg_uclamp + diff * y^p
->> +		 *
->> +		 * So, instead of summing up each individual decayed values, we
->> +		 * could just decay the diff and not bother with the summation
->> +		 * at all. This is why we decay the diff here.
->> +		 */
->> +		diff = decay_load(diff, periods);
->> +		WRITE_ONCE(*old, new_val + diff);
->> +	}
->> +}
-> 
-> Looks like ___decay_util_avg_uclamp_towards() is used for:
-> 
-> (1) tasks with !se->on_rq to decay before enqueue
-> 
-> (2) rq->root_cfs_util_uclamp to align with
->      &rq_of(cfs_rq)->cfs->avg.util_avg_uclamp
-> 
-> All the cfs_rq's and the taskgroup se's seem to be updated only in
-> ___update_util_avg_uclamp() (which also handles the propagation towards
-> the root taskgroup).
-
-Yes, I would say that's a nice summary.
-
-When !se->on_rq, we never use ___update_util_avg_uclamp() but instead do 
-___update_util_avg_uclamp_towards().
-
-> 
-> [...]
