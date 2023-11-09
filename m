@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C693F7E7546
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566BC7E754B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345407AbjKIXro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
+        id S1345415AbjKIXto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:49:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIXrl (ORCPT
+        with ESMTP id S229629AbjKIXtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:47:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74E43A9E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:47:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7AB5C433C7;
-        Thu,  9 Nov 2023 23:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699573659;
-        bh=Zkq/7iZ3H80Jnb4PLSdJyK3YLpUxFO5+W/MaihT41SQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l+A9XrnOk6oY72C2nTFJMUmZJRnnID0D70pM5Z5vYztBmNoq0v6Ll/AqmLukM0jrl
-         VuVhTeIC7r2OCuTeCvMA6Br1s3A1E0B32L92RdnTOQoOv74OZbA00oFHpaZjXtNdIY
-         QoRvBAdICqqupiVYwsCpU70B6pgg1qrY++l0aXl+yYhSvw9jMWnZILIZb+OFx1thxA
-         UMOTUwAH93hCZvZUS5jtAtJg7DYUaGjgi9oPFJewcgyDPD1ry+e+QWu/1z4xi+4jlC
-         POYaBbAPgrTV/h6P9YgGbPghCI+t+RIheW1G1NXGDv1PWdBITeq2BOB/R8NryYYKf5
-         k1xv/uSlnX++Q==
-Date:   Thu, 9 Nov 2023 15:47:36 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, peterz@infradead.org,
-        torvalds@linux-foundation.org, paulmck@kernel.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
-        richard@nod.at, mjguzik@gmail.com, Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        live-patching@vger.kernel.org
-Subject: Re: [RFC PATCH 07/86] Revert "livepatch,sched: Add livepatch task
- switching to cond_resched()"
-Message-ID: <20231109234736.4kik62ys47ey23ju@treble>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-8-ankur.a.arora@oracle.com>
- <20231107181609.7e9e9dcc@gandalf.local.home>
- <20231109172637.ayue3jexgdxd53tu@treble>
- <20231109123147.2bb11809@gandalf.local.home>
- <20231109175118.olggitpaltz47n3b@treble>
- <87o7g2bkxj.fsf@oracle.com>
+        Thu, 9 Nov 2023 18:49:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26653A9E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699573736;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3SxbBnBy8wcp+DFoAqPelvZA1LQU0OFFn4SXuqEY8lc=;
+        b=J4fu2dXKN6mpOWvYDtuUWYWqnqiAhGlso4OHerB5TI0O8saXl6k7LIarnVBNkL7P3uEf2K
+        468CezVxqnM4k4LHi2IVjgWs1hE0xvS8wBerK2hG9V068n42+A2nikyYo//8aLqcARd66k
+        t0DJojIJGRns9ZvvjLAD1vGPf5kNg3M=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-494-BH1ICWvdPSeOxq6Wd0r6YQ-1; Thu, 09 Nov 2023 18:48:53 -0500
+X-MC-Unique: BH1ICWvdPSeOxq6Wd0r6YQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9ddae43f3f7so111945766b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 15:48:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699573732; x=1700178532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3SxbBnBy8wcp+DFoAqPelvZA1LQU0OFFn4SXuqEY8lc=;
+        b=PrdstiG+LbWnf1D2uyZJIXbCFitQGv8z7swiPxdOLH0PBfkxejyiKGIhtI7egINfO4
+         6YWbsbAJJ9Etcwge5iDQX4ltqAy58r3Ay83OK0mwbUWcxfmrXlDkYoVuQZrPt/y/KTWP
+         ihBWL+oiL11ZvQQxDyU7AcYexzC1EFgpUpH3sKycJTYduDtsgoCjK/wVlcMA0FDUJrPn
+         E0K8wrba5ebzPcdhvMFl462C+ImFOeyrmPHzZebnyUfGJKqXhPhu6rCBaRw/RYq6/xcA
+         fQTH8lTWuTx8UZl9nsPc7D6Yd2ayVQpdq1pjq7LfrWKMTP/dZsGaO3hHQOeepniYeihc
+         MysA==
+X-Gm-Message-State: AOJu0YyrmDw7fy9JSIfYWUJl2l9Q2nAZeeNo6NmhkAUZ485Nh099AbNE
+        gmOEXkkCG4vNsX6jSbB0pgi9wVivARkZ8Cbjy7qZ5UyWwQNRbuI8afPXMAHY6wvvMPWd9+nOyUF
+        JcHjBXVTL3Wz1cq/inPD6V2vi
+X-Received: by 2002:a17:907:25c4:b0:9e1:1996:f3d6 with SMTP id ae4-20020a17090725c400b009e11996f3d6mr6251180ejc.76.1699573732744;
+        Thu, 09 Nov 2023 15:48:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEKFgKEEunbjt3marXxbZibLU1JXnSLXyCS7/ojjJiN6MLuJ2Aa5uQPqet3dxVKkQKsLVJ/dA==
+X-Received: by 2002:a17:907:25c4:b0:9e1:1996:f3d6 with SMTP id ae4-20020a17090725c400b009e11996f3d6mr6251167ejc.76.1699573732476;
+        Thu, 09 Nov 2023 15:48:52 -0800 (PST)
+Received: from redhat.com ([2a02:14f:1f4:2044:be5a:328c:4b98:1420])
+        by smtp.gmail.com with ESMTPSA id j17-20020a170906255100b009737b8d47b6sm3126661ejb.203.2023.11.09.15.48.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 15:48:51 -0800 (PST)
+Date:   Thu, 9 Nov 2023 18:48:46 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Cindy Lu <lulu@redhat.com>, jasowang@redhat.com,
+        yi.l.liu@intel.com, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [RFC v1 0/8] vhost-vdpa: add support for iommufd
+Message-ID: <20231109183407-mutt-send-email-mst@kernel.org>
+References: <20231103171641.1703146-1-lulu@redhat.com>
+ <20231107022847-mutt-send-email-mst@kernel.org>
+ <20231107124902.GJ4488@nvidia.com>
+ <20231107082343-mutt-send-email-mst@kernel.org>
+ <20231107141237.GO4488@nvidia.com>
+ <20231107092551-mutt-send-email-mst@kernel.org>
+ <20231107155217.GQ4488@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o7g2bkxj.fsf@oracle.com>
+In-Reply-To: <20231107155217.GQ4488@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 02:50:48PM -0800, Ankur Arora wrote:
-> >> I guess I'm not fully understanding what the cond rescheds are for. But
-> >> would an IPI to all CPUs setting NEED_RESCHED, fix it?
+On Tue, Nov 07, 2023 at 11:52:17AM -0400, Jason Gunthorpe wrote:
+> On Tue, Nov 07, 2023 at 09:30:21AM -0500, Michael S. Tsirkin wrote:
+> > On Tue, Nov 07, 2023 at 10:12:37AM -0400, Jason Gunthorpe wrote:
+> > > Big company's should take the responsibility to train and provide
+> > > skill development for their own staff.
+> > 
+> > That would result in a beautiful cathedral of a patch. I know this is
+> > how some companies work. We are doing more of a bazaar thing here,
+> > though. In a bunch of subsystems it seems that you don't get the
+> > necessary skills until you have been publically shouted at by
+> > maintainers - better to start early ;). Not a nice environment for
+> > novices, for sure.
 > 
-> Yeah. We could just temporarily toggle to full preemption, when
-> NEED_RESCHED_LAZY is always upgraded to NEED_RESCHED which will
-> then send IPIs.
+> In my view the "shouting from maintainers" is harmful to the people
+> buidling skills and it is an unkind thing to dump employees into that
+> kind of situation.
 > 
-> > If all livepatch arches had the ORC unwinder, yes.
-> >
-> > The problem is that frame pointer (and similar) unwinders can't reliably
-> > unwind past an interrupt frame.
+> They should have help to establish the basic level of competence where
+> they may do the wrong thing, but all the process and presentation of
+> the wrong thing is top notch. You get a much better reception.
 > 
-> Ah, I wonder if we could just disable the preempt_schedule_irq() path
-> temporarily? Hooking into schedule() alongside something like this:
-> 
-> @@ -379,7 +379,7 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
-> 
->  void irqentry_exit_cond_resched(void)
->  {
-> -       if (!preempt_count()) {
-> +       if (klp_cond_resched_disable() && !preempt_count()) {
-> 
-> The problem would be tasks that don't go through any preemptible
-> sections.
+> Jason
 
-Let me back up a bit and explain what klp is trying to do.
-
-When a livepatch is applied, klp needs to unwind all the tasks,
-preferably within a reasonable amount of time.
-
-We can't unwind task A from task B while task A is running, since task A
-could be changing the stack during the unwind.  So task A needs to be
-blocked or asleep.  The only exception to that is if the unwind happens
-in the context of task A itself.
-
-The problem we were seeing was CPU-bound kthreads (e.g., vhost_worker)
-not getting patched within a reasonable amount of time.  We fixed it by
-hooking the klp unwind into cond_resched() so it can unwind from the
-task itself.
-
-It only worked because we had a non-preempted hook (because non-ORC
-unwinders can't unwind reliably through preemption) which called klp to
-unwind from the context of the task.
-
-Without something to hook into, we have a problem.  We could of course
-hook into schedule(), but if the kthread never calls schedule() from a
-non-preempted context then it still doesn't help.
+What - like e.g. mechanically fixing checkpatch warnings without
+understanding? I actually very much dislike it when people take a bad
+patch and just polish the presentation
+- it is easier for me if I can judge patch quality quickly from the
+presentation. Matter of taste I guess.
 
 -- 
-Josh
+MST
+
