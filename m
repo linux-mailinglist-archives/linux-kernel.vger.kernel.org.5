@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF547E7509
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E17607E7513
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345370AbjKIXO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:14:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S1345362AbjKIXWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIXO4 (ORCPT
+        with ESMTP id S229613AbjKIXWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:14:56 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751604231;
-        Thu,  9 Nov 2023 15:14:54 -0800 (PST)
+        Thu, 9 Nov 2023 18:22:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8403420F
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:22:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=h0f/DlHStT+Oyt0mkJL4GO5ZZL6rW4mBRECnrVDau8I=; b=uubL0Kl4vqUGiJtp+YKEl0GDvY
-        WGApZsqfrOP4vF8YHxKUBN2tcD7DmhYBp9K7Mrm62ZBBZE3BNO2xswyOyPg3VxVwL9XvDgmAZiefi
-        A5yqCtWsgtAFss6+9hhSOKPVC8D5oxtxYUPmaVL6CiiizmyLB5J9/eBWztqSH0C7/jcT6lenmw9pk
-        D+2j+X08MbkPV7r3/GeTjYFm0h22DrUlPK+i0TaaIVwTAb8N8JpT+qFhum+b93DXT9pXe62GXhUq8
-        JCoE7XQl4/CraPP3UgwgorTBtne0FBgd3/UpdGPnepCmICX6pW7NoXCEV6fy/5wfp6DgUAP7EeLEo
-        xX1e3tLA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r1EEW-007PiG-2T;
-        Thu, 09 Nov 2023 23:14:44 +0000
-Message-ID: <932eed52-fd9a-4617-84a4-9376861d1c86@infradead.org>
-Date:   Thu, 9 Nov 2023 15:14:44 -0800
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mc6OzgcBVY8B61ieg8s3Enizv9IsIEbGxDPtpfAWkvg=; b=ge2SwE5jZ8Pg+BCnDdpbmmvw1S
+        7X7Pwcus6b5uPZaCjSO2mFFX6C4j27TVv0ypW7tt6YBXRJ3n4VOfXBvw8gq7R8Ehm84RsvD982LSJ
+        53h1jhbLHsvonZH191u+jmsBOzLdz+0lT5YWepKl9d8eIAhUbY2+IJL6Vh4K68zCm3lKH6r7M2rFZ
+        O8i6XphYWB2UkhltblXkHcSpYI08HXX154gCbUaQXBPOEgAmkWKjeifCZIZzObtzJuopb2ZYU0C8u
+        vujodut9+csevS7q/chyE7GyZ5zJo87DLelQn5tSnoU7+6jSyiAzxe00Pvhps5zwo0NJ2atjJ+AYa
+        zyc0jd0A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r1ELV-00A0ax-Ul; Thu, 09 Nov 2023 23:21:57 +0000
+Date:   Thu, 9 Nov 2023 23:21:57 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, lstoakes@gmail.com, hughd@google.com,
+        david@redhat.com, fengwei.yin@intel.com, vbabka@suse.cz,
+        peterz@infradead.org, mgorman@suse.de, mingo@redhat.com,
+        riel@redhat.com, ying.huang@intel.com, hannes@cmpxchg.org,
+        Nanyong Sun <sunnanyong@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>
+Subject: Re: [Question]: major faults are still triggered after mlockall when
+ numa balancing
+Message-ID: <ZU1plX2mDgKbkAJ0@casper.infradead.org>
+References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 8/8] x86/resctrl: Update documentation with Sub-NUMA
- cluster changes
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, patches@lists.linux.dev
-References: <20231031211708.37390-1-tony.luck@intel.com>
- <20231109230915.73600-1-tony.luck@intel.com>
- <20231109230915.73600-9-tony.luck@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231109230915.73600-9-tony.luck@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
 
-If you make any updates to this:
-(but not critical)
+I went spelunking to try to find out more about this issue, and I
+discovered it's Aneesh's fault from 2017 ...
 
-On 11/9/23 15:09, Tony Luck wrote:
-> With Sub-NUMA Cluster mode enabled the scope of monitoring resources is
-> per-NODE instead of per-L3 cache. Suffixes of directories with "L3" in
-> their name refer to Sub-NUMA nodes instead of L3 cache ids.
+On Thu, Nov 09, 2023 at 09:47:24PM +0800, zhangpeng (AS) wrote:
+> Hi everyone,
 > 
-> Users should be aware that SNC mode also affects the amount of L3 cache
-> available for allocation within each SNC node.
+> There is a performance issue that has been bothering us recently.
+> This problem can reproduce in the latest mainline version (Linux 6.6).
 > 
-> Reviewed-by: Peter Newman <peternewman@google.com>
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  Documentation/arch/x86/resctrl.rst | 23 ++++++++++++++++++++---
->  1 file changed, 20 insertions(+), 3 deletions(-)
+> We use mlockall(MCL_CURRENT | MCL_FUTURE) in the user mode process
+> to avoid performance problems caused by major fault.
 > 
-> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-> index a6279df64a9d..d1db200db5f9 100644
-> --- a/Documentation/arch/x86/resctrl.rst
-> +++ b/Documentation/arch/x86/resctrl.rst
-> @@ -366,9 +366,9 @@ When control is enabled all CTRL_MON groups will also contain:
->  When monitoring is enabled all MON groups will also contain:
->  
->  "mon_data":
-> -	This contains a set of files organized by L3 domain and by
-> -	RDT event. E.g. on a system with two L3 domains there will
-> -	be subdirectories "mon_L3_00" and "mon_L3_01".	Each of these
-> +	This contains a set of files organized by L3 domain or by NUMA
-> +	node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
-> +	or enabled respectively) and by RDT event.  Each of these
->  	directories have one file per event (e.g. "llc_occupancy",
-
-	            has
-
->  	"mbm_total_bytes", and "mbm_local_bytes"). In a MON group these
->  	files provide a read out of the current value of the event for
-> @@ -478,6 +478,23 @@ if non-contiguous 1s value is supported. On a system with a 20-bit mask
->  each bit represents 5% of the capacity of the cache. You could partition
->  the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
->  
-> +Notes on Sub-NUMA Cluster mode
-> +==============================
-> +When SNC mode is enabled Linux may load balance tasks between Sub-NUMA
-> +nodes much more readily than between regular NUMA nodes since the CPUs
-> +on Sub-NUMA nodes share the same L3 cache and the system may report
-> +the NUMA distance between Sub-NUMA nodes with a lower value than used
-> +for regular NUMA nodes.  Users who do not bind tasks to the CPUs of a
-> +specific Sub-NUMA node must read the "llc_occupancy", "mbm_total_bytes",
-> +and "mbm_local_bytes" for all Sub-NUMA nodes where the tasks may execute
-> +to get the full view of traffic for which the tasks were the source.
-> +
-> +The cache allocation feature still provides the same number of
-> +bits in a mask to control allocation into the L3 cache. But each
-
-                                                    cache, but each
-
-> +of those ways has its capacity reduced because the cache is divided
-> +between the SNC nodes. The values reported in the resctrl
-> +"size" files are adjusted accordingly.
-> +
->  Memory bandwidth Allocation and monitoring
->  ==========================================
->  
-
--- 
-~Randy
+> There is a stage in numa fault which will set pte as 0 in do_numa_page() :
+> ptep_modify_prot_start() will clear the vmf->pte, until
+> ptep_modify_prot_commit() assign a value to the vmf->pte.
+> 
+> For the data segment of the user-mode program, the global variable area
+> is a private mapping. After the pagecache is loaded, the private
+> anonymous page is generated after the COW is triggered. Mlockall can
+> lock COW pages (anonymous pages), but the original file pages cannot
+> be locked and may be reclaimed. If the global variable (private anon page)
+> is accessed when vmf->pte is zero which is concurrently set by numa fault,
+> a file page fault will be triggered.
+> 
+> At this time, the original private file page may have been reclaimed.
+> If the page cache is not available at this time, a major fault will be
+> triggered and the file will be read, causing additional overhead.
+> 
+> Our problem scenario is as follows:
+> 
+> task 1                      task 2
+> ------                      ------
+> /* scan global variables */
+> do_numa_page()
+>   spin_lock(vmf->ptl)
+>   ptep_modify_prot_start()
+>   /* set vmf->pte as null */
+>                             /* Access global variables */
+>                             handle_pte_fault()
+>                               /* no pte lock */
+>                               do_pte_missing()
+>                                 do_fault()
+>                                   do_read_fault()
+>   ptep_modify_prot_commit()
+>   /* ptep update done */
+>   pte_unmap_unlock(vmf->pte, vmf->ptl)
+>                                     do_fault_around()
+>                                     __do_fault()
+>                                       filemap_fault()
+>                                         /* page cache is not available
+>                                         and a major fault is triggered */
+>                                         do_sync_mmap_readahead()
+>                                         /* page_not_uptodate and goto
+>                                         out_retry. */
+> 
+> Is there any way to avoid such a major fault?
+> 
+> -- 
+> Best Regards,
+> Peng
+> 
