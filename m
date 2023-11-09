@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CEC7E7336
+	by mail.lfdr.de (Postfix) with ESMTP id E082D7E7337
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345252AbjKIVDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S1345296AbjKIVDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:03:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345259AbjKIVDe (ORCPT
+        with ESMTP id S1345254AbjKIVDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:03:34 -0500
+        Thu, 9 Nov 2023 16:03:37 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655403A8D;
-        Thu,  9 Nov 2023 13:03:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0976C3C0C;
+        Thu,  9 Nov 2023 13:03:35 -0800 (PST)
 Received: from umang.jain (unknown [103.251.226.64])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CA3DE1B87;
-        Thu,  9 Nov 2023 22:03:06 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 66E056EF;
+        Thu,  9 Nov 2023 22:03:09 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699563789;
-        bh=h/4THN0QIgY78h8lFDTN6nK4kKFVQKeu9FsL8ajD6KI=;
+        s=mail; t=1699563791;
+        bh=A6r4SQOAK5Or0kMaxq2CUJLyYkisnRMaRenw7zGC+G4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1moi+Pwn5SPdmN+GsMGaL8NHsWvLV+sB4RjJQsW7zeB8Zd7rzMF/5pw6BBw1VdPV
-         6+7aT6opN836uex7Vli3Q+kotqsao1ebBJcLpoR4VGK02Rh4Sn4OsfQLWBWZGtVQus
-         dvgiYNxNnPYsXRPfdC+uZOVc+wC6Dn6kaDLwI3Ho=
+        b=gqmL81hA9pj4WYeVK/fypGJ3kZDrGth0EkIMHYNzJ9y0DK9AENcnDbk6fwgE2ozUD
+         y8ja3lWQ27XXNLgR9zTVPaHDoYK3BTKDogwDUouUTsfzKbdeKCVLkBDInNixmk2ebL
+         FAdyZSJrXwg8PfGQIF/ikmL77hh3peeaPevktzDI=
 From:   Umang Jain <umang.jain@ideasonboard.com>
 To:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
         linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
@@ -36,9 +36,9 @@ Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
         Dan Carpenter <error27@gmail.com>,
         Stefan Wahren <stefan.wahren@i2se.com>,
         Umang Jain <umang.jain@ideasonboard.com>
-Subject: [PATCH v2 05/15] staging: mmal-vchiq: Use vc-sm-cma to support zero copy
-Date:   Thu,  9 Nov 2023 16:02:57 -0500
-Message-ID: <20231109210309.638594-6-umang.jain@ideasonboard.com>
+Subject: [PATCH v2 06/15] staging: mmal_vchiq: Add image formats to be used by bcm2835-isp
+Date:   Thu,  9 Nov 2023 16:02:58 -0500
+Message-ID: <20231109210309.638594-7-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231109210309.638594-1-umang.jain@ideasonboard.com>
 References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
@@ -50,191 +50,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-With the vc-sm-cma driver we can support zero copy of buffers between
-the kernel and VPU. Add this support to mmal-vchiq.
+The bcm2835-isp supports Bayer, so add in the encodings for them.
+Also, Add support for monochrome image formats in the various MIPI
+packings.
 
 Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 ---
- .../staging/vc04_services/vchiq-mmal/Kconfig  |  1 +
- .../vc04_services/vchiq-mmal/mmal-common.h    |  4 +
- .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 84 +++++++++++++++++--
- .../vc04_services/vchiq-mmal/mmal-vchiq.h     |  1 +
- 4 files changed, 83 insertions(+), 7 deletions(-)
+ .../vc04_services/vchiq-mmal/mmal-encodings.h | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/Kconfig b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-index c99525a0bb45..a7c1a7bf516e 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-+++ b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-@@ -1,6 +1,7 @@
- config BCM2835_VCHIQ_MMAL
- 	tristate "BCM2835 MMAL VCHIQ service"
- 	depends on BCM2835_VCHIQ
-+	select BCM_VC_SM_CMA
- 	help
- 	  Enables the MMAL API over VCHIQ interface as used for the
- 	  majority of the multimedia services on VideoCore.
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
-index 0443be8198ea..809634924289 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-common.h
-@@ -50,6 +50,10 @@ struct mmal_buffer {
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-encodings.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-encodings.h
+index e15ae7b24f73..4711877a9711 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-encodings.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-encodings.h
+@@ -69,6 +69,68 @@
+  */
+ #define MMAL_ENCODING_OPAQUE           MMAL_FOURCC('O', 'P', 'Q', 'V')
  
- 	struct mmal_msg_context *msg_context;
- 
-+	struct dma_buf *dma_buf;/* Exported dmabuf fd from videobuf2 */
-+	void *vcsm_handle;      /* VCSM handle having imported the dmabuf */
-+	u32 vc_handle;          /* VC handle to that dmabuf */
++/* Bayer formats
++ * FourCC values copied from V4L2 where defined.
++ */
++/* 8 bit per pixel Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR8     MMAL_FOURCC('B', 'A', '8', '1')
++#define MMAL_ENCODING_BAYER_SGBRG8     MMAL_FOURCC('G', 'B', 'R', 'G')
++#define MMAL_ENCODING_BAYER_SGRBG8     MMAL_FOURCC('G', 'R', 'B', 'G')
++#define MMAL_ENCODING_BAYER_SRGGB8     MMAL_FOURCC('R', 'G', 'G', 'B')
 +
- 	u32 cmd;		/* MMAL command. 0=data. */
- 	unsigned long length;
- 	u32 mmal_flags;
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 6a270f308cf7..890669f874d9 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -27,9 +27,12 @@
- 
- #include "../include/linux/raspberrypi/vchiq.h"
- #include "mmal-common.h"
-+#include "mmal-parameters.h"
- #include "mmal-vchiq.h"
- #include "mmal-msg.h"
- 
-+#include "../vc-sm-cma/vc_sm_knl.h"
++/* 10 bit per pixel packed Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR10P   MMAL_FOURCC('p', 'B', 'A', 'A')
++#define MMAL_ENCODING_BAYER_SGRBG10P   MMAL_FOURCC('p', 'g', 'A', 'A')
++#define MMAL_ENCODING_BAYER_SGBRG10P   MMAL_FOURCC('p', 'G', 'A', 'A')
++#define MMAL_ENCODING_BAYER_SRGGB10P   MMAL_FOURCC('p', 'R', 'A', 'A')
 +
- /*
-  * maximum number of components supported.
-  * This matches the maximum permitted by default on the VPU
-@@ -416,14 +419,27 @@ buffer_from_host(struct vchiq_mmal_instance *instance,
- 
- 	/* buffer header */
- 	m.u.buffer_from_host.buffer_header.cmd = 0;
--	m.u.buffer_from_host.buffer_header.data =
--		(u32)(unsigned long)buf->buffer;
-+	if (port->zero_copy) {
-+		m.u.buffer_from_host.buffer_header.data = buf->vc_handle;
-+	} else {
-+		m.u.buffer_from_host.buffer_header.data =
-+				(u32)(unsigned long)buf->buffer;
-+	}
++/* 12 bit per pixel packed Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR12P   MMAL_FOURCC('p', 'B', '1', '2')
++#define MMAL_ENCODING_BAYER_SGRBG12P   MMAL_FOURCC('p', 'g', '1', '2')
++#define MMAL_ENCODING_BAYER_SGBRG12P   MMAL_FOURCC('p', 'G', '1', '2')
++#define MMAL_ENCODING_BAYER_SRGGB12P   MMAL_FOURCC('p', 'R', '1', '2')
 +
- 	m.u.buffer_from_host.buffer_header.alloc_size = buf->buffer_size;
--	m.u.buffer_from_host.buffer_header.length = 0;	/* nothing used yet */
--	m.u.buffer_from_host.buffer_header.offset = 0;	/* no offset */
--	m.u.buffer_from_host.buffer_header.flags = 0;	/* no flags */
--	m.u.buffer_from_host.buffer_header.pts = MMAL_TIME_UNKNOWN;
--	m.u.buffer_from_host.buffer_header.dts = MMAL_TIME_UNKNOWN;
-+	if (port->type == MMAL_PORT_TYPE_OUTPUT) {
-+		m.u.buffer_from_host.buffer_header.length = 0;
-+		m.u.buffer_from_host.buffer_header.offset = 0;
-+		m.u.buffer_from_host.buffer_header.flags = 0;
-+		m.u.buffer_from_host.buffer_header.pts = MMAL_TIME_UNKNOWN;
-+		m.u.buffer_from_host.buffer_header.dts = MMAL_TIME_UNKNOWN;
-+	} else {
-+		m.u.buffer_from_host.buffer_header.length = buf->length;
-+		m.u.buffer_from_host.buffer_header.offset = 0;
-+		m.u.buffer_from_host.buffer_header.flags = buf->mmal_flags;
-+		m.u.buffer_from_host.buffer_header.pts = buf->pts;
-+		m.u.buffer_from_host.buffer_header.dts = buf->dts;
-+	}
- 
- 	/* clear buffer type specific data */
- 	memset(&m.u.buffer_from_host.buffer_header_type_specific, 0,
-@@ -574,6 +590,21 @@ static void buffer_to_host_cb(struct vchiq_mmal_instance *instance,
- 
- 		msg_context->u.bulk.status = msg->h.status;
- 
-+	} else if (msg->u.buffer_from_host.is_zero_copy) {
-+		/*
-+		 * Zero copy buffer, so nothing to do.
-+		 * Copy buffer info and make callback.
-+		 */
-+		msg_context->u.bulk.buffer_used =
-+			msg->u.buffer_from_host.buffer_header.length;
-+		msg_context->u.bulk.mmal_flags =
-+			msg->u.buffer_from_host.buffer_header.flags;
-+		msg_context->u.bulk.dts =
-+			msg->u.buffer_from_host.buffer_header.dts;
-+		msg_context->u.bulk.pts =
-+			msg->u.buffer_from_host.buffer_header.pts;
-+		msg_context->u.bulk.cmd =
-+			msg->u.buffer_from_host.buffer_header.cmd;
- 	} else if (msg->u.buffer_from_host.buffer_header.length == 0) {
- 		/* empty buffer */
- 		if (msg->u.buffer_from_host.buffer_header.flags &
-@@ -1518,6 +1549,9 @@ int vchiq_mmal_port_parameter_set(struct vchiq_mmal_instance *instance,
- 
- 	mutex_unlock(&instance->vchiq_mutex);
- 
-+	if (parameter == MMAL_PARAMETER_ZERO_COPY && !ret)
-+		port->zero_copy = !!(*(bool *)value);
++/* 14 bit per pixel Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR14P   MMAL_FOURCC('p', 'B', 'E', 'E')
++#define MMAL_ENCODING_BAYER_SGBRG14P   MMAL_FOURCC('p', 'G', 'E', 'E')
++#define MMAL_ENCODING_BAYER_SGRBG14P   MMAL_FOURCC('p', 'g', 'E', 'E')
++#define MMAL_ENCODING_BAYER_SRGGB14P   MMAL_FOURCC('p', 'R', 'E', 'E')
 +
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(vchiq_mmal_port_parameter_set);
-@@ -1686,6 +1720,31 @@ int vchiq_mmal_submit_buffer(struct vchiq_mmal_instance *instance,
- 	unsigned long flags = 0;
- 	int ret;
- 
-+	/*
-+	 * We really want to do this in mmal_vchi_buffer_init but can't as
-+	 * videobuf2 won't let us have the dmabuf there.
-+	 */
-+	if (port->zero_copy && buffer->dma_buf && !buffer->vcsm_handle) {
-+		pr_debug("%s: import dmabuf %p\n", __func__, buffer->dma_buf);
-+		ret = vc_sm_cma_import_dmabuf(buffer->dma_buf,
-+					      &buffer->vcsm_handle);
-+		if (ret) {
-+			pr_err("%s: vc_sm_import_dmabuf_fd failed, ret %d\n",
-+			       __func__, ret);
-+			return ret;
-+		}
++/* 16 bit per pixel Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR16    MMAL_FOURCC('B', 'G', '1', '6')
++#define MMAL_ENCODING_BAYER_SGBRG16    MMAL_FOURCC('G', 'B', '1', '6')
++#define MMAL_ENCODING_BAYER_SGRBG16    MMAL_FOURCC('G', 'R', '1', '6')
++#define MMAL_ENCODING_BAYER_SRGGB16    MMAL_FOURCC('R', 'G', '1', '6')
 +
-+		buffer->vc_handle = vc_sm_cma_int_handle(buffer->vcsm_handle);
-+		if (!buffer->vc_handle) {
-+			pr_err("%s: vc_sm_int_handle failed %d\n",
-+			       __func__, ret);
-+			vc_sm_cma_free(buffer->vcsm_handle);
-+			return ret;
-+		}
-+		pr_debug("%s: import dmabuf %p - got vc handle %08X\n",
-+			 __func__, buffer->dma_buf, buffer->vc_handle);
-+	}
++/* 10 bit per pixel unpacked (16bit) Bayer formats. */
++#define MMAL_ENCODING_BAYER_SBGGR10    MMAL_FOURCC('B', 'G', '1', '0')
++#define MMAL_ENCODING_BAYER_SGRBG10    MMAL_FOURCC('B', 'A', '1', '0')
++#define MMAL_ENCODING_BAYER_SGBRG10    MMAL_FOURCC('G', 'B', '1', '0')
++#define MMAL_ENCODING_BAYER_SRGGB10    MMAL_FOURCC('R', 'G', '1', '0')
 +
- 	ret = buffer_from_host(instance, port, buffer);
- 	if (ret == -EINVAL) {
- 		/* Port is disabled. Queue for when it is enabled. */
-@@ -1719,6 +1778,17 @@ int mmal_vchi_buffer_cleanup(struct mmal_buffer *buf)
- 		release_msg_context(msg_context);
- 	buf->msg_context = NULL;
- 
-+	if (buf->vcsm_handle) {
-+		int ret;
++/* 12 bit per pixel unpacked (16bit) Bayer formats */
++#define MMAL_ENCODING_BAYER_SBGGR12    MMAL_FOURCC('B', 'G', '1', '2')
++#define MMAL_ENCODING_BAYER_SGRBG12    MMAL_FOURCC('B', 'A', '1', '2')
++#define MMAL_ENCODING_BAYER_SGBRG12    MMAL_FOURCC('G', 'B', '1', '2')
++#define MMAL_ENCODING_BAYER_SRGGB12    MMAL_FOURCC('R', 'G', '1', '2')
 +
-+		pr_debug("%s: vc_sm_cma_free on handle %p\n", __func__,
-+			 buf->vcsm_handle);
-+		ret = vc_sm_cma_free(buf->vcsm_handle);
-+		if (ret)
-+			pr_err("%s: vcsm_free failed, ret %d\n", __func__, ret);
-+		buf->vcsm_handle = 0;
-+	}
++/* 14 bit per pixel unpacked (16bit) Bayer formats */
++#define MMAL_ENCODING_BAYER_SBGGR14    MMAL_FOURCC('B', 'G', '1', '4')
++#define MMAL_ENCODING_BAYER_SGBRG14    MMAL_FOURCC('G', 'B', '1', '4')
++#define MMAL_ENCODING_BAYER_SGRBG14    MMAL_FOURCC('G', 'R', '1', '4')
++#define MMAL_ENCODING_BAYER_SRGGB14    MMAL_FOURCC('R', 'G', '1', '4')
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(mmal_vchi_buffer_cleanup);
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-index 7be26cb39165..7aeb38c0c94f 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-@@ -49,6 +49,7 @@ typedef void (*vchiq_mmal_buffer_cb)(
- 
- struct vchiq_mmal_port {
- 	bool enabled;
-+	u32 zero_copy;
- 	u32 handle;
- 	u32 type; /* port type, cached to use on port info set */
- 	u32 index; /* port index, cached to use on port info set */
++/* MIPI packed monochrome images */
++#define MMAL_ENCODING_GREY    MMAL_FOURCC('G', 'R', 'E', 'Y')
++#define MMAL_ENCODING_Y10P    MMAL_FOURCC('Y', '1', '0', 'P')
++#define MMAL_ENCODING_Y12P    MMAL_FOURCC('Y', '1', '2', 'P')
++#define MMAL_ENCODING_Y14P    MMAL_FOURCC('Y', '1', '4', 'P')
++#define MMAL_ENCODING_Y16     MMAL_FOURCC('Y', '1', '6', ' ')
++/* Unpacked monochrome formats (16bit per sample, but only N LSBs used) */
++#define MMAL_ENCODING_Y10     MMAL_FOURCC('Y', '1', '0', ' ')
++#define MMAL_ENCODING_Y12     MMAL_FOURCC('Y', '1', '2', ' ')
++#define MMAL_ENCODING_Y14     MMAL_FOURCC('Y', '1', '4', ' ')
++
+ /** An EGL image handle
+  */
+ #define MMAL_ENCODING_EGL_IMAGE        MMAL_FOURCC('E', 'G', 'L', 'I')
 -- 
 2.41.0
 
