@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C62C7E7519
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F127E751E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345383AbjKIX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        id S1345401AbjKIX2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjKIX0D (ORCPT
+        with ESMTP id S1345393AbjKIX2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:26:03 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD92449E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:26:01 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2809414efa9so1354024a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 15:26:01 -0800 (PST)
+        Thu, 9 Nov 2023 18:28:20 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3F3449A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:28:18 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da07b5e6f75so2113446276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 15:28:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699572361; x=1700177161; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q9Ux6J5ktMDQF6/oF6DhUm4Rz889Ag+4/KakbSomJfk=;
-        b=jQeZQFq4hV32SvYXzh1gpq3s9d54hXWckkEJt6fKeOSDYKevsjTVvS85fNQWXVZbqk
-         +IkBb2P81u2WwnRpE0W2JK0DIBDKuuiOEzML+x1R5dHpJnYxUhcaY4bxx9y3fOami3u4
-         zngGJoMWGqhRr6tt2g/G4PNwxhN6gjJjPErCSGZy43d1oAdaQi8vcOd+qHEt9bX3fceJ
-         vG250iB+G4WUG/qGfn/c99doU3cQV4s4FGphdSQSxMIc2JKmktjtpERqoatobK3oUk3A
-         DGK7ZsoJ/Fu+G3tV/ekVTjc6cmqpeszczz8XMKW3e73XCMNC1aAngI0RM8g0HwyqOzZP
-         lfHg==
+        d=google.com; s=20230601; t=1699572497; x=1700177297; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=va9PeSVkHZ3/T3gfCQBJuJqD+iAYQCCoTm/PqSXEj/U=;
+        b=CptAGb2xtYIbOhsnfnTT99k6LHTV8rf402VjZrN4Uzgmc7LgWrA02oPpVsb6JJWaIP
+         zAwxTTNbMHtkiIYx07gsLHjdH90iw2p5N2B8GvbuvXkp0EprJaLSuIWpnStUtXUr1VaZ
+         P2yQhOTxfO/mUFzD2q2K08IzP3UJx+UBwNrACpx/XAsLvFb9JGebZOYibmHu+fbPn9uU
+         BnoQHDzBsBYgHovllDsmkQZVTL9IZNV/qvcFgy5hpKtVYVzLAJoejESZarggcZ97vA6V
+         fRBfAGRwscJuOw7b23A1EaeEXg9OvOTVxWkt+HP5yTu1X5qZQFb4w2I3lPyNJ8Wjcevs
+         i/qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699572361; x=1700177161;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q9Ux6J5ktMDQF6/oF6DhUm4Rz889Ag+4/KakbSomJfk=;
-        b=LxX/A1JfiXd680OYyIRiXU6lJlpaRO3lv9vox//8F3aJE4e5ScsuUM/EvONP+7laMU
-         wV89EvHD75wdZfLKYMmnRO8xy7pzcDHiiiR7af5YGqUBSbNxM8Anx1HqYFy7xCxt5WZU
-         PBCBEqEdSb6TcDjbLdjpK1CXK224MATX7U+J83her3QJPZckXt2S9nl45FD9yNDYbZ2c
-         1drtP+NHqugnt7ETEQg8KYsVCVicfPtFdPSG5js0x3FwDG+8DFI+sssm+3HeDG1P3cXR
-         k0Ku+b0CdWc5H4vJ6vnUIKsR46bMsrimlR4vyZTRxbaihYUU8NwBtZNWFE9MRtocbjkN
-         1M6A==
-X-Gm-Message-State: AOJu0Yy0u4dJQuXuc6uM76wulhlOMpP7y1lpSO8hFvXJsyGZSg+nCJ2R
-        W1aX7klMEFcR/DKEJjNZlZY=
-X-Google-Smtp-Source: AGHT+IHmqb5rrghjC404ZAdgkTo7HoXC1w11HTOeHpgssCBYEnpbsQpvtBnpm79WrOHCysPpk2B6Ww==
-X-Received: by 2002:a17:90b:3a88:b0:281:3fb:6df2 with SMTP id om8-20020a17090b3a8800b0028103fb6df2mr3110060pjb.22.1699572360431;
-        Thu, 09 Nov 2023 15:26:00 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:c99d:e08e:5968:1b85])
-        by smtp.gmail.com with ESMTPSA id jx13-20020a17090b46cd00b00274b9dd8519sm300348pjb.35.2023.11.09.15.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 15:26:00 -0800 (PST)
-Date:   Thu, 9 Nov 2023 15:25:54 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Amit Shah <amit@kernel.org>, Gonglei <arei.gonglei@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Junxian Huang <huangjunxian6@hisilicon.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        Mark Brown <broonie@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Helge Deller <deller@gmx.de>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC PATCH 85/86] treewide: drivers: remove cond_resched()
-Message-ID: <ZU1qgv1QNiSJFEOZ@google.com>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-29-ankur.a.arora@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107230822.371443-29-ankur.a.arora@oracle.com>
+        d=1e100.net; s=20230601; t=1699572497; x=1700177297;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=va9PeSVkHZ3/T3gfCQBJuJqD+iAYQCCoTm/PqSXEj/U=;
+        b=TIY5dnQKvTyTnHAoLsd1D64UelIlskalkpN6eSwNUyxu+TyHEmBVxHTZVJYOxXcvOm
+         p39i8KcREDU64qhROlAMpr2rpfdd6JBSblQHMeQixwzsgFczBZ8gQ04cdTBc7ip0kHvw
+         9mMuC1FZRFGVfVy4mXsKOF3Q5g24Gd3ERafjkpIrXeotaFpyHurbdt0t5Z36+AkGbivZ
+         ww73LaV6i6iyOyHmvNe5ugelrJT8jq7990pEQJ6Nc84UCdU95l7Ad5ixaxL5cZsrJyxV
+         p26z6dcCnRIBnw7WwWEq4/6Z2bm1xL3+fxDAkPWTSjiHHLlRpqfEDqt5Edw7QsYUcLR8
+         U8MA==
+X-Gm-Message-State: AOJu0YyEML4bEAKy5bB6QR8Yq+fPUKC9tdmAr0Bmdn3hhiq9DF7IMgY6
+        o9XnDWDnBm4ar24Z7vD6dN/tWz72/Phd
+X-Google-Smtp-Source: AGHT+IGORyolPaDLwqvSKUqqw4W+HuVgJGBZQPOahnyRc3XRyRcCC27fSMmjbKSo4VVs17rwX2+VObQP5F1J
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:5f4b:1253:36b6:f990])
+ (user=irogers job=sendgmr) by 2002:a25:80d4:0:b0:daf:1554:b89a with SMTP id
+ c20-20020a2580d4000000b00daf1554b89amr23353ybm.2.1699572497553; Thu, 09 Nov
+ 2023 15:28:17 -0800 (PST)
+Date:   Thu,  9 Nov 2023 15:27:32 -0800
+Message-Id: <20231109232732.2973015-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+Subject: [PATCH v1] perf vendor events: Add skx, clx, icx and spr upi
+ bandwidth metric
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Perry Taylor <perry.taylor@intel.com>,
+        Caleb Biggers <caleb.biggers@intel.com>
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anhur,
+Add upi_data_receive_bw metric for skylakex, cascadelakex, icelakex
+and sapphirerapids. The metric was added to perfmon metrics in:
+https://github.com/intel/perfmon/pull/119
 
-On Tue, Nov 07, 2023 at 03:08:21PM -0800, Ankur Arora wrote:
-> There are broadly three sets of uses of cond_resched():
-> 
-> 1.  Calls to cond_resched() out of the goodness of our heart,
->     otherwise known as avoiding lockup splats.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ .../perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json  | 6 ++++++
+ tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json    | 6 ++++++
+ .../pmu-events/arch/x86/sapphirerapids/spr-metrics.json     | 6 ++++++
+ tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json    | 6 ++++++
+ 4 files changed, 24 insertions(+)
 
-...
-
-What about RCU stalls? The calls to cond_resched() in evdev.c and
-mousedev.c were added specifically to allow RCU to run in cases when
-userspace passes a large buffer and the kernel is not fully preemptable.
-
-Thanks.
-
+diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+index 84c132af3dfa..8bc6c0707856 100644
+--- a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+@@ -1862,6 +1862,12 @@
+         "MetricName": "uncore_frequency",
+         "ScaleUnit": "1GHz"
+     },
++    {
++        "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data receive bandwidth (MB/sec)",
++        "MetricExpr": "UNC_UPI_RxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
++        "MetricName": "upi_data_receive_bw",
++        "ScaleUnit": "1MB/s"
++    },
+     {
+         "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data transmit bandwidth (MB/sec)",
+         "MetricExpr": "UNC_UPI_TxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
+diff --git a/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+index e98602c66707..71d78a7841ea 100644
+--- a/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/icelakex/icx-metrics.json
+@@ -1846,6 +1846,12 @@
+         "MetricName": "uncore_frequency",
+         "ScaleUnit": "1GHz"
+     },
++    {
++        "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data receive bandwidth (MB/sec)",
++        "MetricExpr": "UNC_UPI_RxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
++        "MetricName": "upi_data_receive_bw",
++        "ScaleUnit": "1MB/s"
++    },
+     {
+         "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data transmit bandwidth (MB/sec)",
+         "MetricExpr": "UNC_UPI_TxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
+diff --git a/tools/perf/pmu-events/arch/x86/sapphirerapids/spr-metrics.json b/tools/perf/pmu-events/arch/x86/sapphirerapids/spr-metrics.json
+index 06c6d67cb76b..e31a4aac9f20 100644
+--- a/tools/perf/pmu-events/arch/x86/sapphirerapids/spr-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/sapphirerapids/spr-metrics.json
+@@ -1964,6 +1964,12 @@
+         "MetricName": "uncore_frequency",
+         "ScaleUnit": "1GHz"
+     },
++    {
++        "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data receive bandwidth (MB/sec)",
++        "MetricExpr": "UNC_UPI_RxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
++        "MetricName": "upi_data_receive_bw",
++        "ScaleUnit": "1MB/s"
++    },
+     {
+         "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data transmit bandwidth (MB/sec)",
+         "MetricExpr": "UNC_UPI_TxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
+index 4a8f8eeb7525..ec3aa5ef00a3 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
+@@ -1806,6 +1806,12 @@
+         "MetricName": "uncore_frequency",
+         "ScaleUnit": "1GHz"
+     },
++    {
++        "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data receive bandwidth (MB/sec)",
++        "MetricExpr": "UNC_UPI_RxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
++        "MetricName": "upi_data_receive_bw",
++        "ScaleUnit": "1MB/s"
++    },
+     {
+         "BriefDescription": "Intel(R) Ultra Path Interconnect (UPI) data transmit bandwidth (MB/sec)",
+         "MetricExpr": "UNC_UPI_TxL_FLITS.ALL_DATA * 7.111111111111111 / 1e6 / duration_time",
 -- 
-Dmitry
+2.43.0.rc0.421.g78406f8d94-goog
+
