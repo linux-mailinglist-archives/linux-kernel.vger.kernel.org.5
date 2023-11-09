@@ -2,53 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CDB7E6EEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA687E6EFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344230AbjKIQey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        id S1344151AbjKIQhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:37:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234475AbjKIQej (ORCPT
+        with ESMTP id S1344109AbjKIQhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:34:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032833A8C;
-        Thu,  9 Nov 2023 08:34:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7874BC433C9;
-        Thu,  9 Nov 2023 16:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699547662;
-        bh=M50p1wmNfhBm5BF+PbqO/fZbycxYiFAFBggFmvofJC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wmnpwJRFLNCHqj8pA5XEKCE2ErIcgdnTCnGua9skg2Rn+nnzVK1b0PGb3utaGldKM
-         8qS70EMJ7fIVL7AeAG3KyuZnbIcEbvrHnLgV4JOsEXkj1dpAvLPra0d9pJvdE9dzo6
-         EQMks+Ihx6cRC5UxdJWoisPh5+bPF79G9FET8Bqw=
-Date:   Thu, 9 Nov 2023 11:34:21 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] selftests/nolibc: run-user improvements
-Message-ID: <i72zexrh7vooea266kofft7c7ree6eh7ey4fk4x4vrl346np6v@qp4gwemohxpq>
-References: <20770915-nolibc-run-user-v1-0-3caec61726dc@weissschuh.net>
- <zvzacp6mqu6xhg4dx56kh67ucl6wmtnydm677tull2bx74i2zz@ebj4juspkjfw>
- <ZU0Jbg6JT2Tn2n3M@1wt.eu>
+        Thu, 9 Nov 2023 11:37:37 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D356F35BD;
+        Thu,  9 Nov 2023 08:37:35 -0800 (PST)
+Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6F080660740E;
+        Thu,  9 Nov 2023 16:37:33 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699547854;
+        bh=BwR4s4ywbEfCHkutA+4CwFbD89uhH72hhYuaRdTzP+g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aDfPjorOLUWVabpROtXCg4Xu6N3BBSN7dUiY0wR3cycYRdydZvHBo7BW02FrbdYEK
+         acdwmmniNSsVc6bjJwuttViRkO9CK1SyX71TJuKiPsJO2DuRemPsKzUwqh9LxaATma
+         Je9QRiVag5JxtFZAXb5LtlH3TIbQIOGvQas2UBkW4yXCHB8qbKN5GH1OxxQjJDOXH6
+         eN27uBtJNj93vS/+wNaHewgrqCuYgciAarkWQQc26Tamz8cE3t7kWm7yrOLUcl/QG3
+         f4KAuPPwJXjZvh2a6FpieTnRzniB4XabH04EDzCde0dKao+kH1PcoI547raGdgrP2w
+         DjkRyv+cTT9wg==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Bin Liu <bin.liu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH v15 13/56] media: mediatek: vcodec: Stop direct calls to queue num_buffers field
+Date:   Thu,  9 Nov 2023 17:34:29 +0100
+Message-Id: <20231109163512.179524-14-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZU0Jbg6JT2Tn2n3M@1wt.eu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 05:31:42PM +0100, Willy Tarreau wrote:
-> > I'm curious how this happened, especially since this was sent with b4.
-> 
-> We didn't want to tell you, but you slept 54 years Konstantin, the
-> current kernel is version 41.8 ;-)
+Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+This allows us to change how the number of buffers is computed in the
+future.
 
-Dang, I see we still use email for kernel development 50 years from now!
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+CC: Bin Liu <bin.liu@mediatek.com>
+CC: Matthias Brugger <matthias.bgg@gmail.com>
+---
+ drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--K
+diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
+index eb381fa6e7d1..181884e798fd 100644
+--- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
++++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc.c
+@@ -912,7 +912,7 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
+ 	return 0;
+ 
+ err_start_stream:
+-	for (i = 0; i < q->num_buffers; ++i) {
++	for (i = 0; i < vb2_get_num_buffers(q); ++i) {
+ 		struct vb2_buffer *buf = vb2_get_buffer(q, i);
+ 
+ 		/*
+-- 
+2.39.2
+
