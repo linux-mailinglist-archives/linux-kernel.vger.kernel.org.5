@@ -2,148 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E55497E6A8E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492477E6A91
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjKIM2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
+        id S232260AbjKIM26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjKIM2W (ORCPT
+        with ESMTP id S229605AbjKIM25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:28:22 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C29C2590;
-        Thu,  9 Nov 2023 04:28:20 -0800 (PST)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9CIdWV014337;
-        Thu, 9 Nov 2023 12:28:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=UO8TBtetr+3y4KPTWx2Mhw6wIQnBNZu5oEvShmWfUEY=;
- b=KhanbO+BVBGBzbmp6rCfwrYQLoP0CVWiV4TvkLcYv+OQhISC76NpUIbBx0pzqCtGrT5O
- cWD7n8jF/x/gTtfXHWUtrHwOro2kRmXDkzVp1IVPNzvzZq0OdJjCDuCuiljk7rWcwX3a
- p/JG1pHDMPrbKFjfpvU3yT87MMOAA8j1aUGi/YdYcNoFoQkoH4hQwY7UTwjQms3x7fzt
- qycVZP1vcR/cDmfD8Jh1q5GQgziLdr595AIbYWCbVIyBco7uftwe7F/SIk0N96R18uQJ
- zKY2Xy15+BlFMMU0oSEqbJZ/aFnuE9244OMSbWqSI9hdqvelX7sNIaA8hjie6v//dwDG Xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8y1x0txs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 12:28:19 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A9CK9xB020815;
-        Thu, 9 Nov 2023 12:28:18 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8y1x0txf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 12:28:18 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9BFMfD000657;
-        Thu, 9 Nov 2023 12:28:17 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u7w233ny7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 12:28:17 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A9CSE4u42271346
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Nov 2023 12:28:14 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6795F2004B;
-        Thu,  9 Nov 2023 12:28:14 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2D86220040;
-        Thu,  9 Nov 2023 12:28:14 +0000 (GMT)
-Received: from [9.152.224.253] (unknown [9.152.224.253])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Nov 2023 12:28:14 +0000 (GMT)
-Message-ID: <039518cc-379c-4800-b034-21ad8fbbc51a@linux.ibm.com>
-Date:   Thu, 9 Nov 2023 13:28:14 +0100
+        Thu, 9 Nov 2023 07:28:57 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F3B2590;
+        Thu,  9 Nov 2023 04:28:54 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 191B9660747A;
+        Thu,  9 Nov 2023 12:28:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699532932;
+        bh=wvBhmLqQREGAx7oI3reWe2l9af2k7nuNnRJBg9FCTr4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ExFkeytFlei55dbrJW6zpwbv5BYV0MbggCVBUcXQBNiM1/sHKVg/JpGHHnF2s7dCo
+         Li7kwuM3z+7qXVFORQmvymicrppZRH85wCQZMsLN7f2rgCEglpxhTv+fZXy1dydcfZ
+         GDPGLHh38V93b/yBaJnXaWSZu8x0I2yvc5VO/fwGRtCEslW39AR1gB+B3PTFdL5qGz
+         AMVyazugfVnHbygYcv7/22BzSpfukJJssucjtrgWIK7MpRgrNQQGriMw40W5F1QCE7
+         kDLVkR3xW9NLYiRr0GvcgEm+RhVsP7ysyGmCBgF3XENKjRaE7uMREYvh+oM8G0SNNZ
+         aZ86u3NgLFyKg==
+Message-ID: <25614b04-4bb5-4b32-b41f-92477d1117a0@collabora.com>
+Date:   Thu, 9 Nov 2023 13:28:48 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] KVM: s390: cpu model: Use proper define for
- facility mask size
+Subject: Re: [PATCH v14 44/56] media: core: Report the maximum possible number
+ of buffers for the queue
 Content-Language: en-US
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        kvm@vger.kernel.org
-References: <20231108171229.3404476-1-nsg@linux.ibm.com>
- <20231108171229.3404476-4-nsg@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Autocrypt: addr=frankja@linux.ibm.com; keydata=
- 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
-In-Reply-To: <20231108171229.3404476-4-nsg@linux.ibm.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-45-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-45-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 2dBgXTwUNZ_eh5cvs2LYgqir4qyl8hbQ
-X-Proofpoint-ORIG-GUID: 1JhIcpv8T77UUmMAuDtcRc4NnHg8SOLx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_10,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 impostorscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=373 clxscore=1011 phishscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090092
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 18:12, Nina Schoetterl-Glausch wrote:
-> Use the previously unused S390_ARCH_FAC_MASK_SIZE_U64 instead of
-> S390_ARCH_FAC_LIST_SIZE_U64 for defining the fac_mask array.
-> Note that both values are the same, there is no functional change.
-> 
-> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Hi Benjamin,
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use one of the struct v4l2_create_buffers reserved bytes to report
+
+I initially thought you were using literally a single byte, which made
+no sense to me given that values much larger than 255 are sometimes going to be
+stored there.
+
+Maybe rephrase this to:
+
+Use one element of the struct v4l2_create_buffers "reserved" array to report...
+
+With that you can add my
+
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+
+
+> the maximum possible number of buffers for the queue.
+> V4l2 framework set V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS flags in queue
+> capabilities so userland can know when the field is valid.
+> Does the same change in v4l2_create_buffers32 structure.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>   .../userspace-api/media/v4l/vidioc-create-bufs.rst       | 8 ++++++--
+>   Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst | 1 +
+>   drivers/media/common/videobuf2/videobuf2-v4l2.c          | 2 ++
+>   drivers/media/v4l2-core/v4l2-compat-ioctl32.c            | 9 ++++++++-
+>   drivers/media/v4l2-core/v4l2-ioctl.c                     | 4 ++--
+>   include/uapi/linux/videodev2.h                           | 7 ++++++-
+>   6 files changed, 25 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> index a048a9f6b7b6..49232c9006c2 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
+> @@ -116,9 +116,13 @@ than the number requested.
+>         - ``flags``
+>         - Specifies additional buffer management attributes.
+>   	See :ref:`memory-flags`.
+> -
+>       * - __u32
+> -      - ``reserved``\ [6]
+> +      - ``max_num_buffers``
+> +      - If the V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+> +        this field indicates the maximum possible number of buffers
+> +        for this queue.
+> +    * - __u32
+> +      - ``reserved``\ [5]
+>         - A place holder for future extensions. Drivers and applications
+>   	must set the array to zero.
+>   
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> index 099fa6695167..0b3a41a45d05 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> @@ -120,6 +120,7 @@ aborting or finishing any DMA in progress, an implicit
+>   .. _V4L2-BUF-CAP-SUPPORTS-ORPHANED-BUFS:
+>   .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+>   .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+> +.. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
+>   
+>   .. raw:: latex
+>   
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index f3cf4b235c1f..bdfc3a253c65 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -762,6 +762,8 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>   	fill_buf_caps(q, &create->capabilities);
+>   	validate_memory_flags(q, create->memory, &create->flags);
+>   	create->index = vb2_get_num_buffers(q);
+> +	create->max_num_buffers = q->max_num_buffers;
+> +	create->capabilities |= V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS;
+>   	if (create->count == 0)
+>   		return ret != -EBUSY ? ret : 0;
+>   
+> diff --git a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> index f3bed37859a2..5aac5cf780b3 100644
+> --- a/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> +++ b/drivers/media/v4l2-core/v4l2-compat-ioctl32.c
+> @@ -116,6 +116,9 @@ struct v4l2_format32 {
+>    * @flags:	additional buffer management attributes (ignored unless the
+>    *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability and
+>    *		configured for MMAP streaming I/O).
+> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+> + *		this field indicate the maximum possible number of buffers
+> + *		for this queue.
+>    * @reserved:	future extensions
+>    */
+>   struct v4l2_create_buffers32 {
+> @@ -125,7 +128,8 @@ struct v4l2_create_buffers32 {
+>   	struct v4l2_format32	format;
+>   	__u32			capabilities;
+>   	__u32			flags;
+> -	__u32			reserved[6];
+> +	__u32			max_num_buffers;
+> +	__u32			reserved[5];
+>   };
+>   
+>   static int get_v4l2_format32(struct v4l2_format *p64,
+> @@ -175,6 +179,8 @@ static int get_v4l2_create32(struct v4l2_create_buffers *p64,
+>   		return -EFAULT;
+>   	if (copy_from_user(&p64->flags, &p32->flags, sizeof(p32->flags)))
+>   		return -EFAULT;
+> +	if (copy_from_user(&p64->max_num_buffers, &p32->max_num_buffers, sizeof(p32->max_num_buffers)))
+> +		return -EFAULT;
+>   	return get_v4l2_format32(&p64->format, &p32->format);
+>   }
+>   
+> @@ -221,6 +227,7 @@ static int put_v4l2_create32(struct v4l2_create_buffers *p64,
+>   			 offsetof(struct v4l2_create_buffers32, format)) ||
+>   	    put_user(p64->capabilities, &p32->capabilities) ||
+>   	    put_user(p64->flags, &p32->flags) ||
+> +	    put_user(p64->max_num_buffers, &p32->max_num_buffers) ||
+>   	    copy_to_user(p32->reserved, p64->reserved, sizeof(p64->reserved)))
+>   		return -EFAULT;
+>   	return put_v4l2_format32(&p64->format, &p32->format);
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 9b1de54ce379..4d90424cbfc4 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -483,9 +483,9 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+>   {
+>   	const struct v4l2_create_buffers *p = arg;
+>   
+> -	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, ",
+> +	pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, max num buffers=%u",
+>   		p->index, p->count, prt_names(p->memory, v4l2_memory_names),
+> -		p->capabilities);
+> +		p->capabilities, p->max_num_buffers);
+>   	v4l_print_format(&p->format, write_only);
+>   }
+>   
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index c3d4e490ce7c..13ddb5abf584 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1035,6 +1035,7 @@ struct v4l2_requestbuffers {
+>   #define V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS		(1 << 4)
+>   #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF	(1 << 5)
+>   #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS		(1 << 6)
+> +#define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS		(1 << 7)
+>   
+>   /**
+>    * struct v4l2_plane - plane info for multi-planar buffers
+> @@ -2605,6 +2606,9 @@ struct v4l2_dbg_chip_info {
+>    * @flags:	additional buffer management attributes (ignored unless the
+>    *		queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
+>    *		and configured for MMAP streaming I/O).
+> + * @max_num_buffers: if V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS capability flag is set
+> + *		this field indicate the maximum possible number of buffers
+> + *		for this queue.
+>    * @reserved:	future extensions
+>    */
+>   struct v4l2_create_buffers {
+> @@ -2614,7 +2618,8 @@ struct v4l2_create_buffers {
+>   	struct v4l2_format	format;
+>   	__u32			capabilities;
+>   	__u32			flags;
+> -	__u32			reserved[6];
+> +	__u32			max_num_buffers;
+> +	__u32			reserved[5];
+>   };
+>   
+>   /*
 
