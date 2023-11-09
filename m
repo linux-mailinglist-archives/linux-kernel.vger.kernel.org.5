@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 624067E64E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D06B7E64EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbjKIIF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:05:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        id S233305AbjKIIH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbjKIIFy (ORCPT
+        with ESMTP id S231376AbjKIIH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:05:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178622D4D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:05:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22C00C433C7;
-        Thu,  9 Nov 2023 08:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699517151;
-        bh=4KAQB4Wpla32XTpJALIgLJy2ciB1pEC384jhuNFgK+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a9N819J2K0NWZLwJPTFGyvwa5otCJ6W5svAs9pDSaWppP6MTKUGIwUfmlf7LSA9U6
-         ZavbgthqdS33/iBwjm4jR5a0npnZAEL1FmjpC7CWq9aNfoILljmsNgozGUVCXJgqne
-         dAbMBLmczhgrn1q21qgXbaBHM0g1LHfVB0MTcMlU/qCSYIg9J/zmSFnvIcg13LSoE2
-         E4r9AJx+X+0qEOuycZUKHJ/ZtxjtFD00NI5uje7T5acrFBBgu7j971Dl4LjpFur0B8
-         VFMiFmESewu9VBr2iO26i7SKBi5y9IoyTTVuwj4dRkbEzGSWIWwJVbEcSCZHvGsGhi
-         jvrtNlurh4g5w==
-Date:   Thu, 9 Nov 2023 00:05:49 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jerry Shih <jerry.shih@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated
- AES-CBC/CTR/ECB/XTS implementations
-Message-ID: <20231109080549.GC1245@sol.localdomain>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
+        Thu, 9 Nov 2023 03:07:57 -0500
+Received: from mail-m12769.qiye.163.com (mail-m12769.qiye.163.com [115.236.127.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C13C2737;
+        Thu,  9 Nov 2023 00:07:54 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=EX8/MwsRplvL5wtx/0z10jCnhnFrvZ1SfgJWzLg1D9tkfgm26aNnlXtm7Hdqq2vSsHPrLlx4EZRfAVLHDTxL0Cw4IIFoq3SG4VEpN5sRd2pPv/ExJEHWivm+ghuMkRlx1/Oe8g8U+NCPgFRjPk9iJjSYrQ6l2b4O0Frbbwgf4Xk=;
+        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+        bh=18Gkx2GiMHfpYUb29bSeLsFtQHGrYGeLSfPMEOaVu54=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.49] (unknown [58.22.7.114])
+        by mail-m11877.qiye.163.com (Hmail) with ESMTPA id B40A54003F3;
+        Thu,  9 Nov 2023 16:06:44 +0800 (CST)
+Message-ID: <a11c847c-4f95-ea7b-3497-6ada0586c486@rock-chips.com>
+Date:   Thu, 9 Nov 2023 16:06:44 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025183644.8735-7-jerry.shih@sifive.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/4] dt-bindings: clock: rk3588: export PCLK_VO1GRF clk
+ id
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Conor Dooley <conor@kernel.org>, mturquette@baylibre.com,
+        sboyd@kernel.org, kever.yang@rock-chips.com, heiko@sntech.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huangtao@rock-chips.com, andy.yan@rock-chips.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20231108061822.4871-1-zhangqing@rock-chips.com>
+ <20231108061822.4871-4-zhangqing@rock-chips.com>
+ <20231108-donation-uncertain-c4d0f560c420@spud>
+ <2e520a06-0ff1-76ef-2a72-ab6663738b45@rock-chips.com>
+ <20231109-send-pushchair-45b37551102a@wendy>
+From:   zhangqing <zhangqing@rock-chips.com>
+In-Reply-To: <20231109-send-pushchair-45b37551102a@wendy>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQkpJT1YYSkodHk1DGRkYGBhVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5DTUtIVUpLS1VKQl
+        kG
+X-HM-Tid: 0a8bb31e8af12eb3kusnb40a54003f3
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mww6Czo4DDw1Vg8MTj8NKUgv
+        MVEKFBxVSlVKTUJCTkpMSUtOQ0NCVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
+        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQU5OT0o3Bg++
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
-> +# prepare input data(v24), iv(v28), bit-reversed-iv(v16), bit-reversed-iv-multiplier(v20)
-> +sub init_first_round {
-> +    my $code=<<___;
-> +    # load input
-> +    @{[vsetvli $VL, $LEN32, "e32", "m4", "ta", "ma"]}
-> +    @{[vle32_v $V24, $INPUT]}
-> +
-> +    li $T0, 5
-> +    # We could simplify the initialization steps if we have `block<=1`.
-> +    blt $LEN32, $T0, 1f
-> +
-> +    # Note: We use `vgmul` for GF(2^128) multiplication. The `vgmul` uses
-> +    # different order of coefficients. We should use`vbrev8` to reverse the
-> +    # data when we use `vgmul`.
-> +    @{[vsetivli "zero", 4, "e32", "m1", "ta", "ma"]}
-> +    @{[vbrev8_v $V0, $V28]}
-> +    @{[vsetvli "zero", $LEN32, "e32", "m4", "ta", "ma"]}
-> +    @{[vmv_v_i $V16, 0]}
-> +    # v16: [r-IV0, r-IV0, ...]
-> +    @{[vaesz_vs $V16, $V0]}
-> +
-> +    # Prepare GF(2^128) multiplier [1, x, x^2, x^3, ...] in v8.
-> +    slli $T0, $LEN32, 2
-> +    @{[vsetvli "zero", $T0, "e32", "m1", "ta", "ma"]}
-> +    # v2: [`1`, `1`, `1`, `1`, ...]
-> +    @{[vmv_v_i $V2, 1]}
-> +    # v3: [`0`, `1`, `2`, `3`, ...]
-> +    @{[vid_v $V3]}
-> +    @{[vsetvli "zero", $T0, "e64", "m2", "ta", "ma"]}
-> +    # v4: [`1`, 0, `1`, 0, `1`, 0, `1`, 0, ...]
-> +    @{[vzext_vf2 $V4, $V2]}
-> +    # v6: [`0`, 0, `1`, 0, `2`, 0, `3`, 0, ...]
-> +    @{[vzext_vf2 $V6, $V3]}
-> +    slli $T0, $LEN32, 1
-> +    @{[vsetvli "zero", $T0, "e32", "m2", "ta", "ma"]}
-> +    # v8: [1<<0=1, 0, 0, 0, 1<<1=x, 0, 0, 0, 1<<2=x^2, 0, 0, 0, ...]
-> +    @{[vwsll_vv $V8, $V4, $V6]}
-> +
-> +    # Compute [r-IV0*1, r-IV0*x, r-IV0*x^2, r-IV0*x^3, ...] in v16
-> +    @{[vsetvli "zero", $LEN32, "e32", "m4", "ta", "ma"]}
-> +    @{[vbrev8_v $V8, $V8]}
-> +    @{[vgmul_vv $V16, $V8]}
-> +
-> +    # Compute [IV0*1, IV0*x, IV0*x^2, IV0*x^3, ...] in v28.
-> +    # Reverse the bits order back.
-> +    @{[vbrev8_v $V28, $V16]}
 
-This code assumes that '1 << i' fits in 64 bits, for 0 <= i < vl.
+在 2023/11/9 15:29, Conor Dooley 写道:
+> On Thu, Nov 09, 2023 at 02:27:38PM +0800, zhangqing wrote:
+>> Hi:
+>>
+>> 在 2023/11/8 20:01, Conor Dooley 写道:
+>>> On Wed, Nov 08, 2023 at 02:18:21PM +0800, Elaine Zhang wrote:
+>>>> export PCLK_VO1GRF for DT.
+>>>>
+>>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+>>>> ---
+>>>>    include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>> index 5790b1391201..50ba72980190 100644
+>>>> --- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>> +++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>> @@ -733,8 +733,9 @@
+>>>>    #define ACLK_AV1_PRE			718
+>>>>    #define PCLK_AV1_PRE			719
+>>>>    #define HCLK_SDIO_PRE			720
+>>>> +#define PCLK_VO1GRF			721
+>>>> -#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
+>>>> +#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
+>>> This definition is part of the ABI, if it is safe to change it, then it
+>>> is safe to delete it.
+>> The new ID is to solve the niu clock dependency problem(Used in PATCH V5
+>> 4/4).This new ID will also be used in DTS in the future.
+>>
+>> CLK_NR_CLKS represents the number of clocks used by the
+>> drivers/clk/rockchip/clk-rkxxx.c. It is safe to modify it, but cannot delete
+>> it.
+> Then delete it from the header and move it to clk-rkxxx.c
+I don't think it's more appropriate to move to clk-rkxxx.c.
+Because if there are new requirements later, and add new clk id, it is 
+not in the same file, maybe forget to modify CLK_NR_CLKS.
 
-I think that works out to an implicit assumption that VLEN <= 2048.  I.e.,
-AES-XTS encryption/decryption would produce the wrong result on RISC-V
-implementations with VLEN > 2048.
+-- 
+张晴
+瑞芯微电子股份有限公司
+Rockchip Electronics Co.,Ltd
+地址：福建省福州市铜盘路软件大道89号软件园A区21号楼
+Add:No.21 Building, A District, No.89 Software Boulevard Fuzhou, Fujian 350003, P.R.China
+Tel:+86-0591-83991906-8601
+邮编：350003
+E-mail:elaine.zhang@rock-chips.com
+****************************************************************************
+保密提示：本邮件及其附件含有机密信息，仅发送给本邮件所指特定收件人。若非该特定收件人，请勿复制、使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件或其他方式即刻告知发件人。福州瑞芯微电子有限公司拥有本邮件信息的著作权及解释权，禁止任何未经授权许可的侵权行为。
 
-Perhaps it should be explicitly checked that VLEN <= 2048?
+IMPORTANT NOTICE: This email is from Fuzhou Rockchip Electronics Co., Ltd .The contents of this email and any attachments may contain information that is privileged, confidential and/or exempt from disclosure under applicable law and relevant NDA. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or use of the information is STRICTLY PROHIBITED. Please immediately contact the sender as soon as possible and destroy the material in its entirety in any format. Thank you.
 
-- Eric
+****************************************************************************
+
