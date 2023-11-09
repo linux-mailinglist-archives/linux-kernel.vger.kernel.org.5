@@ -2,150 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FA47E707D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4B47E707F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbjKIRlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:41:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        id S1344783AbjKIRlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbjKIRlE (ORCPT
+        with ESMTP id S1344753AbjKIRlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:41:04 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27273D58;
-        Thu,  9 Nov 2023 09:41:02 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so1912439a12.1;
-        Thu, 09 Nov 2023 09:41:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699551660; x=1700156460; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=07kyYbTdzzvjgx9MD5sep6il5lQYPpmm+4Zz1muN1eM=;
-        b=ASH1BbMHNm50aAdVE5S51mJRF1XIKsGyhuSpZ7nkfXZvC300bwbJGWlbAWAOHOGN2r
-         Pp5Y1U80gaySe0wDLfGCrVpJcP4C3cHOQ+h6A/OD0FK/EB76+7rRopFQ0W88d0prHv4a
-         LVIRpOeEu/CwBn+xnXcY0SYUKzVbBM7FIoX7DymPXUTcsM/vetGC+aPZR0kBErzbtAei
-         zUJsNix1mQLvNrqTbBR+hnGAR0t875B+3XnU/vavv1JPzmBlp6+DKCU4TGNucMIRXz0I
-         9HqLCY2zSW6r9Lp/3jOh64TRFKFF0OJCiTJuWlfNPs1a8rFrm7IUtMdk0Epvn2ITsj2c
-         4Adg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699551660; x=1700156460;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=07kyYbTdzzvjgx9MD5sep6il5lQYPpmm+4Zz1muN1eM=;
-        b=N1Sg7RSDNTIiorYjj9dFlWAjsNwdulM/pm5/Uo5RJte5HzYEvk1zs2BA9kC42K5LSw
-         ajNpupS5fcAq0Z10R9xTrKb1S3VB756ZWIhSCK26f3qE1f9M77tTSPNYj6tJC2wqbz07
-         wrBL0+2mgPDBhQWm9FdoABETzS3cb0DZ2a0xMmfOLYfNSrhZt85Za4j/dag8j+oL1R44
-         Ve5xta1PVmERZH6rqozIzG01PI+pn2GDJ1cd6plbRjNJ3SUMGAiOHwsipt+pq2w0C8lc
-         vMgUUK8i1syA2Fy4Nz+O1K9N7Ph8GPDtqNXERw5xgGGdcDyBTRIjFVvGdtAdmlQCmQ58
-         YWDQ==
-X-Gm-Message-State: AOJu0YyE3n1Rp54s9/bRdZZ1VHgjyFa0jSvtA6phr2MaJmieJlmxjPxk
-        UJodeHrcbke6/Z3ojMNOBK3+vIvGQxE=
-X-Google-Smtp-Source: AGHT+IF1roK4NxSaYsYXjL/5lEKfT5WDq2m+QyojtS+xlnXp6AZgkXvaeyZcL/jUoXiMWpML1xcgRw==
-X-Received: by 2002:a17:907:744:b0:9de:32bb:faab with SMTP id xc4-20020a170907074400b009de32bbfaabmr4670264ejb.32.1699551660369;
-        Thu, 09 Nov 2023 09:41:00 -0800 (PST)
-Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170906349800b0099bccb03eadsm2793845ejb.205.2023.11.09.09.40.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 09:40:59 -0800 (PST)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph updates for 6.7-rc1
-Date:   Thu,  9 Nov 2023 18:40:42 +0100
-Message-ID: <20231109174044.269054-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 9 Nov 2023 12:41:15 -0500
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F592D63
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:41:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1699551671; x=1700156471;
+        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+        References:From:Organization:In-Reply-To:Content-Type; bh=Ki76ye
+        ywH5oxL50t980cX9oYpBP6/Cs6J/4a3l/vPXs=; b=G8qw2CUavQRycdeggrD/xz
+        tWTBC/7Howfm3J2S7U9xWgobvSoGLK2/BiHFk403JFg32m0EY4HyVJLjk3HbEGgv
+        Gs5AJaIwITfMmSf157/PmigYMg7PVWoTgjldPNxqIzkYWMl53M9mZ5i+1c3+z0ki
+        t+zB5yF4lHsoKgqROiq9A=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 12:41:11 -0500
+Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1b) 
+        with ESMTPSA id md5001003742322.msg; Thu, 09 Nov 2023 12:41:11 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 12:41:11 -0500
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
+X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
+X-MDArrival-Date: Thu, 09 Nov 2023 12:41:11 -0500
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1677793fa9=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <60d74075-09b6-4c9f-91ac-5f4bea1a7356@auristor.com>
+Date:   Thu, 9 Nov 2023 12:41:01 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/41] afs: Add comments on abort handling
+Content-Language: en-US
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109154004.3317227-1-dhowells@redhat.com>
+ <20231109154004.3317227-9-dhowells@redhat.com>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <20231109154004.3317227-9-dhowells@redhat.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms090003070604000005050800"
+X-MDCFSigsAdded: auristor.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This is a cryptographically signed message in MIME format.
 
-The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbebfa:
+--------------ms090003070604000005050800
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  Linux 6.6 (2023-10-29 16:31:08 -1000)
+On 11/9/2023 10:39 AM, David Howells wrote:
+> Add some comments on AFS abort code handling in the rotation algorithm and
+> adjust the errors produced to match.
+>
+> Reported-by: Jeffrey E Altman <jaltman@auristor.com>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: linux-afs@lists.infradead.org
+> ---
 
-are available in the Git repository at:
+Reviewed-by: Jeffrey Altman <jaltman@auristor.com>
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.7-rc1
 
-for you to fetch changes up to 56d2e2cfa21315c12945c22e141c7e7ec8b0a630:
+--------------ms090003070604000005050800
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-  ceph: allow idmapped mounts (2023-11-03 23:28:34 +0100)
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEwOTE3
+NDEwMVowLwYJKoZIhvcNAQkEMSIEIKDTDrV0VIZIgQ02M0XGG7RNyeUCppVYsj5/83n7uT5K
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAcJg2
+3P2xc+w+pn4RqsrLCH8OlGMmNeM6rZX2WfLo2zQKnJ/jTqlTu5NlbkF/b/7lgFAgKeTfHx2U
+RbpmBQltoTwK04ZD1xEcbzqmoXWc1lGtaOjDDYgTPs+3R1FCDw5b1YDCJKNVyaHfwClf9e4o
+ocFLvwtQhaYpXSu3B/Ubi/ClFJNJ8w7iqpVpurUvDUoQKhGT/6YyVYWKmFf3iRFFr6pUWbIv
+5/S0zj3WtG8ydclc1HFr/UFq67qR/XA3x2L3BLtTz7Ehkd/xIWqiFA5fq8UVIaLbDsgbnuJs
+JvFDTdKIiwTKEXzru9ZguPc7HO/xBROWlTeBXsb6hel4PuFeJgAAAAAAAA==
+--------------ms090003070604000005050800--
 
-There are a few conflicts in fs/ceph/inode.c caused by a clash between
-the conversion to new timestamp accessors in VFS and logging changes in
-CephFS.  I have the resolution in for-linus-merged, it's the same as in
-linux-next.
-
-----------------------------------------------------------------
-Two items:
-
-- support for idmapped mounts in CephFS (Christian Brauner, Alexander
-  Mikhalitsyn).  The series was originally developed by Christian and
-  later picked up and brought over the finish line by Alexander, who
-  also contributed an enabler on the MDS side (separate owner_{u,g}id
-  fields on the wire).  The required exports for mnt_idmap_{get,put}()
-  in VFS have been acked by Christian and received no objection from
-  Christoph.
-
-- a churny change in CephFS logging to include cluster and client
-  identifiers in log and debug messages (Xiubo Li).  This would help
-  in scenarios with dozens of CephFS mounts on the same node which are
-  getting increasingly common, especially in the Kubernetes world.
-
-----------------------------------------------------------------
-Alexander Mikhalitsyn (3):
-      fs: export mnt_idmap_get/mnt_idmap_put
-      ceph: add enable_unsafe_idmap module parameter
-      ceph: pass idmap to __ceph_setattr
-
-Christian Brauner (9):
-      ceph: stash idmapping in mdsc request
-      ceph: handle idmapped mounts in create_request_message()
-      ceph: pass an idmapping to mknod/symlink/mkdir
-      ceph: allow idmapped getattr inode op
-      ceph: allow idmapped permission inode op
-      ceph: allow idmapped setattr inode op
-      ceph: allow idmapped set_acl inode op
-      ceph: allow idmapped atomic_open inode op
-      ceph: allow idmapped mounts
-
-Xiubo Li (5):
-      libceph: add doutc and *_client debug macros support
-      ceph: pass the mdsc to several helpers
-      ceph: rename _to_client() to _to_fs_client()
-      ceph: print cluster fsid and client global_id in all debug logs
-      libceph, ceph: move mdsmap.h to fs/ceph
-
- fs/ceph/acl.c                       |  12 +-
- fs/ceph/addr.c                      | 299 +++++++-------
- fs/ceph/cache.c                     |   2 +-
- fs/ceph/caps.c                      | 763 +++++++++++++++++++++---------------
- fs/ceph/crypto.c                    |  43 +-
- fs/ceph/debugfs.c                   |  10 +-
- fs/ceph/dir.c                       | 242 +++++++-----
- fs/ceph/export.c                    |  49 +--
- fs/ceph/file.c                      | 282 +++++++------
- fs/ceph/inode.c                     | 529 ++++++++++++++-----------
- fs/ceph/ioctl.c                     |  21 +-
- fs/ceph/locks.c                     |  57 +--
- fs/ceph/mds_client.c                | 678 +++++++++++++++++++-------------
- fs/ceph/mds_client.h                |  13 +-
- fs/ceph/mdsmap.c                    |  29 +-
- {include/linux => fs}/ceph/mdsmap.h |   5 +-
- fs/ceph/metric.c                    |   5 +-
- fs/ceph/quota.c                     |  29 +-
- fs/ceph/snap.c                      | 192 +++++----
- fs/ceph/super.c                     |  99 +++--
- fs/ceph/super.h                     |  23 +-
- fs/ceph/xattr.c                     | 108 ++---
- fs/mnt_idmapping.c                  |   2 +
- include/linux/ceph/ceph_debug.h     |  38 ++
- include/linux/ceph/ceph_fs.h        |  10 +-
- include/linux/mnt_idmapping.h       |   3 +
- 26 files changed, 2070 insertions(+), 1473 deletions(-)
- rename {include/linux => fs}/ceph/mdsmap.h (92%)
