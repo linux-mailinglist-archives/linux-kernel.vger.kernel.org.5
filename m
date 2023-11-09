@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FC27E6B73
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8A67E6B71
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbjKINs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58710 "EHLO
+        id S234085AbjKINsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234212AbjKINsI (ORCPT
+        with ESMTP id S230055AbjKINr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:48:08 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AAC30D3
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:48:03 -0800 (PST)
-Received: from kwepemm000020.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SR39D27d5zmXCt;
-        Thu,  9 Nov 2023 21:44:48 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm000020.china.huawei.com (7.193.23.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 9 Nov 2023 21:47:24 +0800
-Message-ID: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
-Date:   Thu, 9 Nov 2023 21:47:24 +0800
+        Thu, 9 Nov 2023 08:47:58 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55058272C
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:47:56 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62B4712FC;
+        Thu,  9 Nov 2023 05:48:40 -0800 (PST)
+Received: from [10.1.25.14] (e126510-lin.cambridge.arm.com [10.1.25.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 71F5F3F64C;
+        Thu,  9 Nov 2023 05:47:54 -0800 (PST)
+Message-ID: <d497b8c4-4e77-8d43-9d9f-1bb60785a4c0@arm.com>
+Date:   Thu, 9 Nov 2023 13:47:52 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Content-Language: en-US
-To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>,
-        <lstoakes@gmail.com>, <hughd@google.com>, <david@redhat.com>,
-        <fengwei.yin@intel.com>, <vbabka@suse.cz>, <peterz@infradead.org>,
-        <mgorman@suse.de>, <mingo@redhat.com>, <riel@redhat.com>,
-        <ying.huang@intel.com>, <hannes@cmpxchg.org>,
-        Nanyong Sun <sunnanyong@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-From:   "zhangpeng (AS)" <zhangpeng362@huawei.com>
-Subject: [Question]: major faults are still triggered after mlockall when numa
- balancing
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64/syscall: Remove duplicate declaration
+Content-Language: en-GB
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+References: <20231109101958.225593-1-kevin.brodsky@arm.com>
+From:   Kevin Brodsky <kevin.brodsky@arm.com>
+In-Reply-To: <20231109101958.225593-1-kevin.brodsky@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.160]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000020.china.huawei.com (7.193.23.93)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+On 09/11/2023 11:19, Kevin Brodsky wrote:
+> Commit 6ac19f96515e ("arm64: avoid prototype warnings for syscalls")
+> added missing declarations to various syscall wrapper macros.
+> It however proved a little too zealous in __SYSCALL_DEFINEx(), as
+> a declaration for __arm64_sys##name was already present.
+>
+> This likely wouldn't have happened if declarations were consistently
+> located, ideally just before the corresponding definition.
+> Accordingly, this patch removes the old declaration line in
+> __SYSCALL_DEFINEx(), and moves any other declaration that does not
+> directly precede the corresponding definition.
+>
+> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
+> ---
+>  arch/arm64/include/asm/syscall_wrapper.h | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/include/asm/syscall_wrapper.h b/arch/arm64/include/asm/syscall_wrapper.h
+> index 17f687510c48..0d1ec3280f89 100644
+> --- a/arch/arm64/include/asm/syscall_wrapper.h
+> +++ b/arch/arm64/include/asm/syscall_wrapper.h
+> @@ -18,10 +18,10 @@
+>  #ifdef CONFIG_COMPAT
+>  
+>  #define COMPAT_SYSCALL_DEFINEx(x, name, ...)						\
+> -	asmlinkage long __arm64_compat_sys##name(const struct pt_regs *regs);		\
+>  	ALLOW_ERROR_INJECTION(__arm64_compat_sys##name, ERRNO);				\
+>  	static long __se_compat_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+>  	static inline long __do_compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
+> +	asmlinkage long __arm64_compat_sys##name(const struct pt_regs *regs);		\
 
-There is a performance issue that has been bothering us recently.
-This problem can reproduce in the latest mainline version (Linux 6.6).
+This doesn't make sense, the declaration needs to stay before the call
+to ALLOW_ERROR_INJECTION() (I wasn't building with
+CONFIG_FUNCTION_ERROR_INJECTION). Will post a v2 that simply removes the
+added declaration in __SYSCALL_DEFINEx() without moving existing
+declarations - sorry for the noise.
 
-We use mlockall(MCL_CURRENT | MCL_FUTURE) in the user mode process
-to avoid performance problems caused by major fault.
+Kevin
 
-There is a stage in numa fault which will set pte as 0 in do_numa_page() :
-ptep_modify_prot_start() will clear the vmf->pte, until
-ptep_modify_prot_commit() assign a value to the vmf->pte.
-
-For the data segment of the user-mode program, the global variable area
-is a private mapping. After the pagecache is loaded, the private
-anonymous page is generated after the COW is triggered. Mlockall can
-lock COW pages (anonymous pages), but the original file pages cannot
-be locked and may be reclaimed. If the global variable (private anon page)
-is accessed when vmf->pte is zero which is concurrently set by numa fault,
-a file page fault will be triggered.
-
-At this time, the original private file page may have been reclaimed.
-If the page cache is not available at this time, a major fault will be
-triggered and the file will be read, causing additional overhead.
-
-Our problem scenario is as follows:
-
-task 1                      task 2
-------                      ------
-/* scan global variables */
-do_numa_page()
-   spin_lock(vmf->ptl)
-   ptep_modify_prot_start()
-   /* set vmf->pte as null */
-                             /* Access global variables */
-                             handle_pte_fault()
-                               /* no pte lock */
-                               do_pte_missing()
-                                 do_fault()
-                                   do_read_fault()
-   ptep_modify_prot_commit()
-   /* ptep update done */
-   pte_unmap_unlock(vmf->pte, vmf->ptl)
-                                     do_fault_around()
-                                     __do_fault()
-                                       filemap_fault()
-                                         /* page cache is not available
-                                         and a major fault is triggered */
-                                         do_sync_mmap_readahead()
-                                         /* page_not_uptodate and goto
-                                         out_retry. */
-
-Is there any way to avoid such a major fault?
-
--- 
-Best Regards,
-Peng
+>  	asmlinkage long __arm64_compat_sys##name(const struct pt_regs *regs)		\
+>  	{										\
+>  		return __se_compat_sys##name(SC_ARM64_REGS_TO_ARGS(x,__VA_ARGS__));	\
+> @@ -50,7 +50,6 @@
+>  #endif /* CONFIG_COMPAT */
+>  
+>  #define __SYSCALL_DEFINEx(x, name, ...)						\
+> -	asmlinkage long __arm64_sys##name(const struct pt_regs *regs);		\
+>  	ALLOW_ERROR_INJECTION(__arm64_sys##name, ERRNO);			\
+>  	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+>  	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
+> @@ -70,8 +69,8 @@
+>  
+>  #define SYSCALL_DEFINE0(sname)							\
+>  	SYSCALL_METADATA(_##sname, 0);						\
+> -	asmlinkage long __arm64_sys_##sname(const struct pt_regs *__unused);	\
+>  	ALLOW_ERROR_INJECTION(__arm64_sys_##sname, ERRNO);			\
+> +	asmlinkage long __arm64_sys_##sname(const struct pt_regs *__unused);	\
+>  	asmlinkage long __arm64_sys_##sname(const struct pt_regs *__unused)
+>  
+>  #define COND_SYSCALL(name)							\
 
