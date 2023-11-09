@@ -2,143 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D790D7E6729
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B81C7E672C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231518AbjKIJxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:53:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        id S231752AbjKIJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjKIJxf (ORCPT
+        with ESMTP id S231732AbjKIJxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:53:35 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DC02D4F;
-        Thu,  9 Nov 2023 01:53:32 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Thu, 9 Nov 2023 04:53:44 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202772D55
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:53:42 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C9BC821981;
-        Thu,  9 Nov 2023 09:53:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699523610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAxi1znqk3sGJCSNyuUjTVir9QcizsjWhu13JPKmk1Q=;
-        b=Chxg8NzcVn76MnEz5kl7JNVtqSUwVkxnuEveTXfGaXv1vBRKOJIt3ndyinjPp1TMC4cCO/
-        VBnyQ1BQfvQIPsL786bdXhDjkLeXb1F7PmvEoKx1u8oxACTPGmOSTaJPXDrXbwc9ISbWdb
-        WsSLyYUqVJxEHlyJPUWrrnx6Rw6WJEM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B85F5138E5;
-        Thu,  9 Nov 2023 09:53:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 87f9LBqsTGWJYQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 09 Nov 2023 09:53:30 +0000
-Date:   Thu, 9 Nov 2023 10:53:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-ID: <ZUysGhwqo_XZSV-M@tiehlicka>
-References: <20231108065818.19932-1-link@vivo.com>
- <ZUuV9xOZ5k7Ia_V2@tiehlicka>
- <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EBAE76607410;
+        Thu,  9 Nov 2023 09:53:39 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699523620;
+        bh=ZGn7roYimOFpkQ85qNvqGc33xwlpOQIEnSogwkDgLxw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=i7l8oxAhoeC323h+d+wmvTuAdcy4RJleeJtH6CbWXFRoFX6kd7dG4P7Y3ga4DxflT
+         +KIB8y3Nrzl4EjNQqypq5nsiCTMKoKjruemrRIonmFnL+oDDkHT/WqpB1lMRdNom8x
+         CL5+a7cUSK4hMXVMRgLbnYObuz58YdL946VzZm4V7LwXaVvClZQfShrqu/SR0cJHN7
+         59zq5WMLLDvW68Jw/8cOASYp1pUxaxcbF5Fh6s+3Kns5qW3jZQlArHbZJ11hZbEl1W
+         /5WmBDn9E6QpLGyw7OAAJL/cAhPiUWvBMpMZr8UyOUSq+3DfYcIFIZ89ln+t4KomSh
+         SQLit0OqvV02Q==
+Message-ID: <e88b6d5e-6888-4594-bbd4-7639e4205ee7@collabora.com>
+Date:   Thu, 9 Nov 2023 10:53:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/6] drm/panfrost: Implement ability to turn on/off GPU
+ clocks in suspend
+Content-Language: en-US
+To:     Steven Price <steven.price@arm.com>, boris.brezillon@collabora.com
+Cc:     robh@kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, wenst@chromium.org,
+        kernel@collabora.com
+References: <20231102142643.75288-1-angelogioacchino.delregno@collabora.com>
+ <20231102142643.75288-4-angelogioacchino.delregno@collabora.com>
+ <343788b6-c3b7-44f3-9376-d6937baeb16e@arm.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <343788b6-c3b7-44f3-9376-d6937baeb16e@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 09-11-23 09:56:46, Huan Yang wrote:
+Il 08/11/23 16:44, Steven Price ha scritto:
+> On 02/11/2023 14:26, AngeloGioacchino Del Regno wrote:
+>> Currently, the GPU is being internally powered off for runtime suspend
+>> and turned back on for runtime resume through commands sent to it, but
+>> note that the GPU doesn't need to be clocked during the poweroff state,
+>> hence it is possible to save some power on selected platforms.
+>>
+>> Add suspend and resume handlers for full system sleep and then add
+>> a new panfrost_gpu_pm enumeration and a pm_features variable in the
+>> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
+>> enable this power saving technique only on SoCs that are able to
+>> safely use it.
+>>
+>> Note that this was implemented only for the system sleep case and not
+>> for runtime PM because testing on one of my MediaTek platforms showed
+>> issues when turning on and off clocks aggressively (in PM runtime)
+>> resulting in a full system lockup.
+>>
+>> Doing this only for full system sleep never showed issues during my
+>> testing by suspending and resuming the system continuously for more
+>> than 100 cycles.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>
+>> Note: Even after fixing the panfrost_power_off() function, I'm still
+>> getting issues with turning off the clocks at .runtime_suspend() but
+>> this time, instead of getting a GPU lockup, the entire SoC will deadlock
+>> bringing down the entire system with it (so it's even worst!) :-)
 > 
-> 在 2023/11/8 22:06, Michal Hocko 写道:
-> > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> > 
-> > On Wed 08-11-23 14:58:11, Huan Yang wrote:
-> > > In some cases, we need to selectively reclaim file pages or anonymous
-> > > pages in an unbalanced manner.
-> > > 
-> > > For example, when an application is pushed to the background and frozen,
-> > > it may not be opened for a long time, and we can safely reclaim the
-> > > application's anonymous pages, but we do not want to touch the file pages.
-> > Could you explain why? And also why do you need to swap out in that
-> > case?
->
-> When an application is frozen, it usually means that we predict that
-> it will not be used for a long time. In order to proactively save some
-> memory, our strategy will choose to compress the application's private
-> data into zram. And we will also select some of the cold application
-> data that we think is in zram and swap it out.
->
-> The above operations assume that anonymous pages are private to the
-> application.  After the application is frozen, compressing these pages
-> into zram can save memory to some extent without worrying about
-> frequent refaults.
-
-Why don't you rely on the default reclaim heuristics? In other words do
-you have any numbers showing that a selective reclaim results in a much
-better behavior? How do you evaluate that?
-
+> Ouch! Hopefully that's a SoC issue as I can't see anything that should
+> cause problems. But note that if the GPU is powered down during a bus
+> transaction that can lock up the entire bus.
+>>
+>>
+>>   drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
+>>   drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
+>>   2 files changed, 68 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index 28f7046e1b1a..2022ed76a620 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
+>>   	panfrost_job_enable_interrupts(pfdev);
+>>   }
+>>   
+>> -static int panfrost_device_resume(struct device *dev)
+>> +static int panfrost_device_runtime_resume(struct device *dev)
+>>   {
+>>   	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>   
+>> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
+>>   	return 0;
+>>   }
+>>   
+>> -static int panfrost_device_suspend(struct device *dev)
+>> +static int panfrost_device_runtime_suspend(struct device *dev)
+>>   {
+>>   	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>   
+>> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
+>>   	return 0;
+>>   }
+>>   
+>> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
+>> -			      panfrost_device_resume, NULL);
+>> +static int panfrost_device_resume(struct device *dev)
+>> +{
+>> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +	int ret;
+>> +
+>> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +		ret = clk_enable(pfdev->clock);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		if (pfdev->bus_clock) {
+>> +			ret = clk_enable(pfdev->bus_clock);
+>> +			if (ret)
+>> +				goto err_bus_clk;
+>> +		}
+>> +	}
+>> +
+>> +	ret = pm_runtime_force_resume(dev);
+>> +	if (ret)
+>> +		goto err_resume;
+>> +
+>> +	return 0;
+>> +
+>> +err_resume:
+>> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
+>> +		clk_disable(pfdev->bus_clock);
+>> +err_bus_clk:
+>> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
+>> +		clk_disable(pfdev->clock);
+>> +	return ret;
+>> +}
+>> +
+>> +static int panfrost_device_suspend(struct device *dev)
+>> +{
+>> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +	int ret;
+>> +
+>> +	ret = pm_runtime_force_suspend(dev);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +		clk_disable(pfdev->clock);
+>> +
+>> +		if (pfdev->bus_clock)
+>> +			clk_disable(pfdev->bus_clock);
 > 
-> And the cost of refaults on zram is lower than that of IO.
+> NIT: I would normally expect panfrost_device_resume() to have the
+> opposite order. I'm not sure if there's an expected order here but I
+> feel like the bus should be enabled before core - so _resume() would
+> need to be swapped round.
 > 
+
+Actually, in panfrost_clk_init(), "bus" gets enabled after core... I'm
+not sure whether this was intentional or not either - but for consistency
+I will swap them in suspend (turning off `bus_clock` first, 'clock` after)
+as that's how it's done in panfrost_clk_fini() as well (except there the
+clocks are also unprepared).
+
+Though, I would agree on the logical fact that bus should get disabled
+after core...
+
+Cheers,
+Angelo
+
+> Other than that:
 > 
-> > 
-> > > This patchset extends the proactive reclaim interface to achieve
-> > > unbalanced reclamation. Users can control the reclamation tendency by
-> > > inputting swappiness under the original interface. Specifically, users
-> > > can input special values to extremely reclaim specific pages.
-> > Other have already touched on this in other replies but v2 doesn't have
-> > a per-memcg swappiness
-> > 
-> > > Example:
-> > >        echo "1G" 200 > memory.reclaim (only reclaim anon)
-> > >          echo "1G" 0  > memory.reclaim (only reclaim file)
-> > >          echo "1G" 1  > memory.reclaim (only reclaim file)
-> > > 
-> > > Note that when performing unbalanced reclamation, the cgroup swappiness
-> > > will be temporarily adjusted dynamically to the input value. Therefore,
-> > > if the cgroup swappiness is further modified during runtime, there may
-> > > be some errors.
-> > In general this is a bad semantic. The operation shouldn't have side
-> > effect that are potentially visible for another operation.
-> So, maybe pass swappiness into sc and keep a single reclamation ensure that
-> swappiness is not changed?
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> 
+> Thanks,
+> 
+> Steve
+> 
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
+>> +	RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
+>> +	SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
+>> +};
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index 1ef38f60d5dc..d7f179eb8ea3 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
+>>   #define NUM_JOB_SLOTS 3
+>>   #define MAX_PM_DOMAINS 5
+>>   
+>> +/**
+>> + * enum panfrost_gpu_pm - Supported kernel power management features
+>> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+>> + */
+>> +enum panfrost_gpu_pm {
+>> +	GPU_PM_CLK_DIS,
+>> +};
+>> +
+>>   struct panfrost_features {
+>>   	u16 id;
+>>   	u16 revision;
+>> @@ -75,6 +83,9 @@ struct panfrost_compatible {
+>>   
+>>   	/* Vendor implementation quirks callback */
+>>   	void (*vendor_quirk)(struct panfrost_device *pfdev);
+>> +
+>> +	/* Allowed PM features */
+>> +	u8 pm_features;
+>>   };
+>>   
+>>   struct panfrost_device {
+> 
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
 
-That would be a much saner approach.
 
-> Or, it's a bad idea that use swappiness to control unbalance reclaim.
-
-Memory reclaim is not really obliged to consider swappiness. In fact the
-actual behavior has changed several times in the past and it is safer to
-assume this might change in the future again.
-
--- 
-Michal Hocko
-SUSE Labs
