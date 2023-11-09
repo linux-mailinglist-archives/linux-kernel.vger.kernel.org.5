@@ -2,292 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47947E628F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 04:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF587E6295
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 04:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjKIDUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 22:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S231182AbjKIDYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 22:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKIDUk (ORCPT
+        with ESMTP id S229473AbjKIDYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 22:20:40 -0500
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8AC26A0
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 19:20:38 -0800 (PST)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7ba0c234135so116109241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 19:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699500037; x=1700104837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iq3WEnd44vE8jgZXHpA4QQ1qmbAmdjZD/UBm9ibEcLQ=;
-        b=Uk1880h0LxRYdfJR9fy6Atdf9CACkGBgxRCp01IpQYyd+nU6+KJJDOpwnYc9o5qAE9
-         6Pt4HHohk6wj9OCfsW2Y9mn9yBFqZoFPOuYVRdahMuPzTZat0RSLgUTl/M/kQErinbHH
-         k27a0w586gTuLMhHGJOxDk6fqkFnyEw1RPzFlKVJkvp6/1WGqnvSFrlQvXTtdA08vu8X
-         EdYget2xOBgZp+Mc94R1RGvt9CsT7oH6FwM/pg3g7l1ZwFQlRM1gPnsMVI7gsO8H4o+6
-         0e8l6hUuYeIkk3Spso+/cfYxjGWNxmajeRh1HQ9J1BtoLF5v/MvOx+UCtXd1fnNuADEt
-         xT2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699500037; x=1700104837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iq3WEnd44vE8jgZXHpA4QQ1qmbAmdjZD/UBm9ibEcLQ=;
-        b=hI0qSlTwRxrbKI6y2oDkawYXkkweKKTc+2lDH/XnUUnot+DURvbpw1gwsVZZaP9PuG
-         2272oF1lt2l7MYnkg7VcTQNms2p9zHpgqR86344BKaMfnmLuGoLIS/i17ioVZlTlXqEd
-         hWLv9NaKd9qInpGcVmRuHK9i8QKTl/XwNhnfP0e7aElyUvEQVAJCwaRDtQuIjvWzyODI
-         g2T26v+1oPikms/IEWj+hAikC0gnaf+KO3NSMWM0ApGexLRk/ZtZsV9x2OgYQirREy0z
-         lfrcusb3hARulEI9WBjE9PBxp/yRgpulEXdeFIL4HlzitPVd+U2htXhnIrFxJpD+uXbA
-         Jnvw==
-X-Gm-Message-State: AOJu0YweXni6mQUdLjcE9+Y6gHeTxa8alaGEHJ24YPC0Xmx9RdzbNRjj
-        ek5bB3O75uV2hJer6QDz01WeHVybTOzTqCqDJDO0qA==
-X-Google-Smtp-Source: AGHT+IEuh5NgxjrKua8SvctN+++crxKQK/Bd5CzKUuAJSFOtKWUj/OMgQExzWsLLGvFYvuGXIORZ65hgBJVAlS0Att4=
-X-Received: by 2002:a05:6102:3d8c:b0:45f:1bed:cec9 with SMTP id
- h12-20020a0561023d8c00b0045f1bedcec9mr3696662vsv.34.1699500037125; Wed, 08
- Nov 2023 19:20:37 -0800 (PST)
+        Wed, 8 Nov 2023 22:24:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6EE1BE6;
+        Wed,  8 Nov 2023 19:24:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62997C433C7;
+        Thu,  9 Nov 2023 03:24:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699500275;
+        bh=BzFqi92PoQuFON3x1paDLgkwMuhg2ukCHSzAT9d63LE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mil3aQWfpaJWUD3WbfU6YYLK3zWr9+sSyzSnTo1v5hOFuHy4bZnlHi45uOfTlCedT
+         8nQ4X5a3Z/4vllO70Phz6iR6ndH4W1rZXXqOfIOPMVD5H3l0auffo8fmhodrtu29vm
+         iuDFElyUdbyyf2dkHc76fPkbEhyOAOluqoaFTG+6IraoYLzbRAalMq0mOWd20+ed24
+         MK0AwyxUt22gmNc9JOuMxrdFZfref6Yz6+Hjj6ID2h6QnNCztejEAE19K7DomY6V/7
+         A6uCBFsaTeVfd01U/B+k4Qg+ipmaG8duMKtMz/Qbq+tdjUwYtZWzrKmMnqNe4XV2ja
+         14c0eBOaYTGAQ==
+Date:   Thu, 9 Nov 2023 08:54:18 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Can Guo <cang@qti.qualcomm.com>, quic_cang@quicinc.com,
+        bvanassche@acm.org, stanley.chu@mediatek.com,
+        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 6/7] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
+ Gear 5 support for SM8550
+Message-ID: <20231109032418.GA3752@thinkpad>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-7-git-send-email-cang@qti.qualcomm.com>
+ <CAA8EJpqEkkEoQ9vncNJU1t=mKbvBXKk1FUxnmGTE0Q++sf=oXA@mail.gmail.com>
+ <20231108054942.GF3296@thinkpad>
+ <CAA8EJpoCZChHDQLF0QHN0PkRUWV20thXMQvK-sH2fpYaC1zcvg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-8-almasrymina@google.com> <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
- <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com> <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com>
-In-Reply-To: <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 8 Nov 2023 19:20:21 -0800
-Message-ID: <CAHS8izM1P6d8jgyWE9wFJUJah2YFsjHP2uikDwA0vR=3QA+BXQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJpoCZChHDQLF0QHN0PkRUWV20thXMQvK-sH2fpYaC1zcvg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 2:56=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2023/11/8 5:56, Mina Almasry wrote:
-> > On Tue, Nov 7, 2023 at 12:00=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> >>
-> >> On 2023/11/6 10:44, Mina Almasry wrote:
-> >>> Overload the LSB of struct page* to indicate that it's a page_pool_io=
-v.
-> >>>
-> >>> Refactor mm calls on struct page* into helpers, and add page_pool_iov
-> >>> handling on those helpers. Modify callers of these mm APIs with calls=
- to
-> >>> these helpers instead.
-> >>>
-> >>> In areas where struct page* is dereferenced, add a check for special
-> >>> handling of page_pool_iov.
-> >>>
-> >>> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >>>
-> >>> ---
-> >>>  include/net/page_pool/helpers.h | 74 +++++++++++++++++++++++++++++++=
-+-
-> >>>  net/core/page_pool.c            | 63 ++++++++++++++++++++--------
-> >>>  2 files changed, 118 insertions(+), 19 deletions(-)
-> >>>
-> >>> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/=
-helpers.h
-> >>> index b93243c2a640..08f1a2cc70d2 100644
-> >>> --- a/include/net/page_pool/helpers.h
-> >>> +++ b/include/net/page_pool/helpers.h
-> >>> @@ -151,6 +151,64 @@ static inline struct page_pool_iov *page_to_page=
-_pool_iov(struct page *page)
-> >>>       return NULL;
-> >>>  }
-> >>>
-> >>> +static inline int page_pool_page_ref_count(struct page *page)
-> >>> +{
-> >>> +     if (page_is_page_pool_iov(page))
-> >>> +             return page_pool_iov_refcount(page_to_page_pool_iov(pag=
-e));
-> >>
-> >> We have added a lot of 'if' for the devmem case, it would be better to
-> >> make it more generic so that we can have more unified metadata handlin=
-g
-> >> for normal page and devmem. If we add another memory type here, do we
-> >> need another 'if' here?
+On Wed, Nov 08, 2023 at 08:56:16AM +0200, Dmitry Baryshkov wrote:
+> On Wed, 8 Nov 2023 at 07:49, Manivannan Sadhasivam <mani@kernel.org> wrote:
 > >
-> > Maybe, not sure. I'm guessing new memory types will either be pages or
-> > iovs, so maybe no new if statements needed.
+> > On Tue, Nov 07, 2023 at 03:18:09PM +0200, Dmitry Baryshkov wrote:
+> > > On Tue, 7 Nov 2023 at 06:47, Can Guo <cang@qti.qualcomm.com> wrote:
+> > > >
+> > > > From: Can Guo <quic_cang@quicinc.com>
+> > > >
+> > > > On SM8550, two sets of UFS PHY settings are provided, one set is to support
+> > > > HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
+> > > > settings are programming different values to different registers, mixing
+> > > > the two sets and/or overwriting one set with another set is definitely not
+> > > > blessed by UFS PHY designers. In order to add HS-G5 support for SM8550, we
+> > > > need to split the two sets into their dedicated tables, and leave only the
+> > > > common settings in the .tlbs. To have the PHY programmed with the correct
+> > > > set of PHY settings, the submode passed to PHY driver must be either HS-G4
+> > > > or HS-G5.
+> > > >
 > >
-> >> That is part of the reason I suggested using a more unified metadata f=
-or
-> >> all the types of memory chunks used by page_pool.
+> > You should also mention that this issue is also present in G4 supported targets.
+> > And a note that it will get fixed later.
 > >
-> > I think your suggestion was to use struct pages for devmem. That was
-> > thoroughly considered and intensely argued about in the initial
-> > conversations regarding devmem and the initial RFC, and from the
-> > conclusions there it's extremely clear to me that devmem struct pages
-> > are categorically a no-go.
->
-> Not exactly, I was wondering if adding a more abstract structure specific=
-ly
-> for page pool makes any sense, and each mem type can add its own specific
-> fields, net stack only see and handle the common fields so that it does n=
-ot
-> care about specific mem type, and each provider only see the and handle t=
-he
-> specific fields belonging to it most of the time.
->
-> Ideally something like beleow:
->
-> struct netmem {
->         /* common fields */
->         refcount_t refcount;
->         struct page_pool *pp;
->         ......
->
->         union {
->                 struct devmem{
->                         struct dmabuf_genpool_chunk_owner *owner;
->                 };
->
->                 struct other_mem{
->                         ...
->                         ...
->                 };
->         };
-> };
->
-> But untill we completely decouple the 'struct page' from the net stack,
-> the above seems undoable in the near term.
+> > > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> > > > ---
+> > > >  drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
+> > > >  drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
+> > > >  .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  12 +++
+> > > >  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 112 ++++++++++++++++++---
+> > > >  4 files changed, 115 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> > > > index c23d5e4..e563af5 100644
+> > > > --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> > > > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
+> > > > @@ -18,6 +18,7 @@
+> > > >  #define QPHY_V6_PCS_UFS_BIST_FIXED_PAT_CTRL            0x060
+> > > >  #define QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY           0x074
+> > > >  #define QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY           0x0bc
+> > > > +#define QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY        0x12c
+> > > >  #define QPHY_V6_PCS_UFS_DEBUG_BUS_CLKSEL               0x158
+> > > >  #define QPHY_V6_PCS_UFS_LINECFG_DISABLE                        0x17c
+> > > >  #define QPHY_V6_PCS_UFS_RX_MIN_HIBERN8_TIME            0x184
+> > > > @@ -27,5 +28,6 @@
+> > > >  #define QPHY_V6_PCS_UFS_READY_STATUS                   0x1a8
+> > > >  #define QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1              0x1f4
+> > > >  #define QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1               0x1fc
+> > > > +#define QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME         0x220
+> > > >
+> > > >  #endif
+> > > > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> > > > index f420f8f..ef392ce 100644
+> > > > --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> > > > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
+> > > > @@ -56,6 +56,8 @@
+> > > >  #define QSERDES_V6_COM_SYS_CLK_CTRL                            0xe4
+> > > >  #define QSERDES_V6_COM_SYSCLK_BUF_ENABLE                       0xe8
+> > > >  #define QSERDES_V6_COM_PLL_IVCO                                        0xf4
+> > > > +#define QSERDES_V6_COM_CMN_IETRIM                              0xfc
+> > > > +#define QSERDES_V6_COM_CMN_IPTRIM                              0x100
+> > > >  #define QSERDES_V6_COM_SYSCLK_EN_SEL                           0x110
+> > > >  #define QSERDES_V6_COM_RESETSM_CNTRL                           0x118
+> > > >  #define QSERDES_V6_COM_LOCK_CMP_EN                             0x120
+> > > > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> > > > index 15bcb4b..48f31c8 100644
+> > > > --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> > > > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
+> > > > @@ -10,10 +10,20 @@
+> > > >  #define QSERDES_UFS_V6_TX_RES_CODE_LANE_RX                     0x2c
+> > > >  #define QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_TX              0x30
+> > > >  #define QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_RX              0x34
+> > > > +#define QSERDES_UFS_V6_TX_LANE_MODE_1                          0x7c
+> > > > +#define QSERDES_UFS_V6_TX_FR_DCC_CTRL                          0x108
+> > > >
+> > > >  #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE2          0x08
+> > > >  #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4          0x10
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4          0x24
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4       0x54
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2                   0xd4
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4                   0xdc
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4                   0xf0
+> > > > +#define QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS                     0xf4
+> > > >  #define QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL                      0x178
+> > > > +#define QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1             0x1bc
+> > > > +#define QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3                        0x1c4
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0                     0x208
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1                     0x20c
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B3                     0x214
+> > > > @@ -25,6 +35,8 @@
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE3_B5                                0x264
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE3_B8                                0x270
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE4_B3                                0x280
+> > > > +#define QSERDES_UFS_V6_RX_MODE_RATE4_B4                                0x284
+> > > >  #define QSERDES_UFS_V6_RX_MODE_RATE4_B6                                0x28c
+> > > > +#define QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL                      0x2f8
+> > > >
+> > > >  #endif
+> > > > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> > > > index 3927eba..e0a01497 100644
+> > > > --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> > > > +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> > > > @@ -649,32 +649,51 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_serdes[] = {
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x11),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_HS_SWITCH_SEL_1, 0x00),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_EN, 0x01),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
+> > > > +
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_INITVAL2, 0x00),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x41),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x7f),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x06),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x4c),
+> > > > +};
+> > > > +
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_hs_b_serdes[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x44),
+> > > > +};
+> > > > +
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_serdes[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x99),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x07),
+> > >
+> > > Aside from moving these registers to the HS_G4 table, you are also
+> > > changing these registers. It makes me think that there was an error in
+> > > the original programming sequence.
+> > > If that is correct, could you please split the patch into two pieces:
+> > > - Fix programming sequence (add proper Fixes tags)
+> > > - Split G4 and G5 tables.
+> >
+> > Ack
+> >
+> > >
+> > > > +
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x4c),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x0a),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x18),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x14),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x99),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x07),
+> > >
+> > > I see all the MODE1 registers being only present in G4 and G5 tables.
+> > > Should they be programmed for the modes lower than G4?
+> > >
+> >
+> > We use G4 table for all the modes <= G4.
+> 
+> Could you please point me how it's handled?
+> In the patch I see just:
+> 
+>        if (qmp->submode == UFS_HS_G4)
+>                qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g4);
+>        else if (qmp->submode == UFS_HS_G5)
+>                qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g5);
+> 
+> Which looks like two special cases (HS_G4 and HS_G5) and nothing for
+> anything else.
+> 
 
-Agreed everything above is undoable.
+Yes, and the UFS driver passes only G4/G5. For all the gears <=G4, G4 init
+sequence will be used and for G5, G5 sequence will be used.
 
-> But we might be able to do something as folio is doing now, mm subsystem
-> is still seeing 'struct folio/page', but other subsystem like slab is usi=
-ng
-> 'struct slab', and there is still some common fields shared between
-> 'struct folio' and 'struct slab'.
->
+- Mani
 
-In my eyes this is almost exactly what I suggested in RFC v1 and got
-immediately nacked with no room to negotiate. What we did for v1 is to
-allocate struct pages for dma-buf to make dma-bufs look like struct
-page to mm subsystem. Almost exactly what you're describing above.
-It's a no-go. I don't think renaming struct page to netmem is going to
-move the needle (it also re-introduces code-churn). What I feel like I
-learnt is that dma-bufs are not struct pages and can't be made to look
-like one, I think.
-
-> As the netmem patchset, is devmem able to reuse the below 'struct netmem'
-> and rename it to 'struct page_pool_iov'?
-
-I don't think so. For the reasons above, but also practically it
-immediately falls apart. Consider this field in netmem:
-
-+ * @flags: The same as the page flags.  Do not use directly.
-
-dma-buf don't have or support page-flags, and making dma-buf looks
-like they support page flags or any page-like features (other than
-dma_addr) seems extremely unacceptable to mm folks.
-
-> So that 'struct page' for normal
-> memory and 'struct page_pool_iov' for devmem share the common fields used
-> by page pool and net stack?
-
-Are you suggesting that we'd cast a netmem* to a page* and call core
-mm APIs on it? It's basically what was happening with RFC v1, where
-things that are not struct pages were made to look like struct pages.
-
-Also, there isn't much upside for what you're suggesting, I think. For
-example I can align the refcount variable in struct page_pool_iov with
-the refcount in struct page so that this works:
-
-put_page((struct page*)ppiov);
-
-but it's a disaster. Because put_page() will call __put_page() if the
-page is freed, and __put_page() will try to return the page to the
-buddy allocator!
-
->  And we might be able to reuse the 'flags',
-> '_pp_mapping_pad' and '_mapcount' for specific mem provider, which is eno=
-ugh
-> for the devmem only requiring a single pointer to point to it's
-> owner?
->
-
-All the above seems quite similar to RFC v1 again, using netmem
-instead of struct page. In RFC v1 we re-used zone_device_data() for
-the dma-buf owner equivalent.
-
-> https://lkml.kernel.org/netdev/20230105214631.3939268-2-willy@infradead.o=
-rg/
->
-> +/**
-> + * struct netmem - A memory allocation from a &struct page_pool.
-> + * @flags: The same as the page flags.  Do not use directly.
-> + * @pp_magic: Magic value to avoid recycling non page_pool allocated pag=
-es.
-> + * @pp: The page pool this netmem was allocated from.
-> + * @dma_addr: Call netmem_get_dma_addr() to read this value.
-> + * @dma_addr_upper: Might need to be 64-bit on 32-bit architectures.
-> + * @pp_frag_count: For frag page support, not supported in 32-bit
-> + *   architectures with 64-bit DMA.
-> + * @_mapcount: Do not access this member directly.
-> + * @_refcount: Do not access this member directly.  Read it using
-> + *   netmem_ref_count() and manipulate it with netmem_get() and netmem_p=
-ut().
-> + *
-> + * This struct overlays struct page for now.  Do not modify without a
-> + * good understanding of the issues.
-> + */
-> +struct netmem {
-> +       unsigned long flags;
-> +       unsigned long pp_magic;
-> +       struct page_pool *pp;
-> +       /* private: no need to document this padding */
-> +       unsigned long _pp_mapping_pad;  /* aliases with folio->mapping */
-> +       /* public: */
-> +       unsigned long dma_addr;
-> +       union {
-> +               unsigned long dma_addr_upper;
-> +               atomic_long_t pp_frag_count;
-> +       };
-> +       atomic_t _mapcount;
-> +       atomic_t _refcount;
-> +};
->
-> If we do that, it seems we might be able to allow net stack and page pool=
- to see
-> the metadata for devmem chunk as 'struct page', and may be able to aovid =
-most of
-> the 'if' checking in net stack and page pool?
->
+> >
+> > > > +};
+> > > > +
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_serdes[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x1f),
+> > > > +
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IETRIM, 0x1b),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_IPTRIM, 0x1c),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x06),
+> > > >  };
+> > > >
+> > > >  static const struct qmp_phy_init_tbl sm8550_ufsphy_tx[] = {
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_1, 0x05),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_LANE_MODE_1, 0x05),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x07),
+> > > >  };
+> > > >
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_tx[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_TX_FR_DCC_CTRL, 0x4c),
+> > > > +};
+> > > > +
+> > > >  static const struct qmp_phy_init_tbl sm8550_ufsphy_rx[] = {
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE2, 0x0c),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4, 0x0f),
+> > > > -       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x0e),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2, 0x0c),
+> > > >
+> > > >         QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0, 0xc2),
+> > > >         QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1, 0xc2),
+> > > > @@ -690,14 +709,46 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_rx[] = {
+> > > >         QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE3_B8, 0x02),
+> > > >  };
+> > > >
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_rx[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x0e),
+> > > > +};
+> > > > +
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_rx[] = {
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4, 0x0c),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4, 0x04),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x14),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS, 0x07),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3, 0x0e),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4, 0x02),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4, 0x1c),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4, 0x06),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL, 0x08),
+> > > > +
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B3, 0xb9),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B4, 0x4f),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_MODE_RATE4_B6, 0xff),
+> > > > +       QMP_PHY_INIT_CFG(QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL, 0x30),
+> > > > +};
+> > > > +
+> > > >  static const struct qmp_phy_init_tbl sm8550_ufsphy_pcs[] = {
+> > > >         QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_SIGDET_CTRL2, 0x69),
+> > > >         QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0f),
+> > > >         QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1, 0x43),
+> > > > -       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x2b),
+> > > >         QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
+> > > >  };
+> > > >
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_pcs[] = {
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x2b),
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY, 0x04),
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY, 0x04),
+> > > > +};
+> > > > +
+> > > > +static const struct qmp_phy_init_tbl sm8550_ufsphy_g5_pcs[] = {
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_PLL_CNTL, 0x33),
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY, 0x4f),
+> > > > +       QMP_PHY_INIT_CFG(QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME, 0x9e),
+> > > > +};
+> > > > +
+> > > >  struct qmp_ufs_offsets {
+> > > >         u16 serdes;
+> > > >         u16 pcs;
+> > > > @@ -731,6 +782,8 @@ struct qmp_phy_cfg {
+> > > >         const struct qmp_phy_cfg_tbls tbls_hs_b;
+> > > >         /* Additional sequence for HS G4 */
+> > > >         const struct qmp_phy_cfg_tbls tbls_hs_g4;
+> > > > +       /* Additional sequence for HS G4 */
+> >
+> > HS G5
+> >
+> > > > +       const struct qmp_phy_cfg_tbls tbls_hs_g5;
+> > > >
+> > > >         /* clock ids to be requested */
+> > > >         const char * const *clk_list;
+> > > > @@ -1157,6 +1210,28 @@ static const struct qmp_phy_cfg sm8550_ufsphy_cfg = {
+> > > >                 .pcs            = sm8550_ufsphy_pcs,
+> > > >                 .pcs_num        = ARRAY_SIZE(sm8550_ufsphy_pcs),
+> > > >         },
+> > > > +       .tbls_hs_b = {
+> > > > +               .serdes         = sm8550_ufsphy_hs_b_serdes,
+> > > > +               .serdes_num     = ARRAY_SIZE(sm8550_ufsphy_hs_b_serdes),
+> > > > +       },
+> > > > +       .tbls_hs_g4 = {
+> > > > +               .serdes         = sm8550_ufsphy_g4_serdes,
+> > > > +               .serdes_num     = ARRAY_SIZE(sm8550_ufsphy_g4_serdes),
+> > > > +               .tx             = sm8550_ufsphy_g4_tx,
+> > > > +               .tx_num         = ARRAY_SIZE(sm8550_ufsphy_g4_tx),
+> > > > +               .rx             = sm8550_ufsphy_g4_rx,
+> > > > +               .rx_num         = ARRAY_SIZE(sm8550_ufsphy_g4_rx),
+> > > > +               .pcs            = sm8550_ufsphy_g4_pcs,
+> > > > +               .pcs_num        = ARRAY_SIZE(sm8550_ufsphy_g4_pcs),
+> > > > +       },
+> > > > +       .tbls_hs_g5 = {
+> > > > +               .serdes         = sm8550_ufsphy_g5_serdes,
+> > > > +               .serdes_num     = ARRAY_SIZE(sm8550_ufsphy_g5_serdes),
+> > > > +               .rx             = sm8550_ufsphy_g5_rx,
+> > > > +               .rx_num         = ARRAY_SIZE(sm8550_ufsphy_g5_rx),
+> > > > +               .pcs            = sm8550_ufsphy_g5_pcs,
+> > > > +               .pcs_num        = ARRAY_SIZE(sm8550_ufsphy_g5_pcs),
+> > > > +       },
+> > > >         .clk_list               = sdm845_ufs_phy_clk_l,
+> > > >         .num_clks               = ARRAY_SIZE(sdm845_ufs_phy_clk_l),
+> > > >         .vreg_list              = qmp_phy_vreg_l,
+> > > > @@ -1222,14 +1297,25 @@ static void qmp_ufs_pcs_init(struct qmp_ufs *qmp, const struct qmp_phy_cfg_tbls
+> > > >  static void qmp_ufs_init_registers(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg)
+> > > >  {
+> > > >         qmp_ufs_serdes_init(qmp, &cfg->tbls);
+> > > > +       if (qmp->submode == UFS_HS_G4)
+> > > > +               qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g4);
+> > > > +       else if (qmp->submode == UFS_HS_G5)
+> > > > +               qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g5);
+> > > > +
+> >
+> > Should we program submode sequence after HS_B?
+> >
+> > - Mani
 > >
 > > --
-> > Thanks,
-> > Mina
-> >
-> > .
-> >
+> > மணிவண்ணன் சதாசிவம்
+> 
+> 
+> 
+> --
+> With best wishes
+> Dmitry
 
-
-
---=20
-Thanks,
-Mina
+-- 
+மணிவண்ணன் சதாசிவம்
