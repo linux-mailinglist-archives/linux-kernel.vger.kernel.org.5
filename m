@@ -2,199 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FF17E70AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AA67E70AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344822AbjKIRpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:45:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        id S1344841AbjKIRpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234659AbjKIRp3 (ORCPT
+        with ESMTP id S1344859AbjKIRpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:45:29 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D902D65;
-        Thu,  9 Nov 2023 09:45:27 -0800 (PST)
-Received: from [100.84.166.245] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DFDCB6607423;
-        Thu,  9 Nov 2023 17:45:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699551925;
-        bh=c2JNVnT9JoiIN7t0Y6Bmq6v+0myfgFD1QT9HldMSizU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lZKzx66QBHtImSKlg+XJGUFdKmZAY9Of/Ub9fCFMrzTNfLAv7hE3vxqdS55nX8Vts
-         LEC5MhKYS507k9rhCWGNZiCfM3qKq8SNRsFWosMVa3lxk77Q1oiJu68I9Al1AyYLch
-         UCfVyN5W9kZSOpFAwepeZmOcYzDHmmeLIDbzE9xMMNEKrEKRNm6TaUhw6jS1RI9W+A
-         9Nk7bA7S0tzJ6lSI67o2IK34Hu6W6mo8bFtAVzEyVpHdk+1Z3MGOySjnZWjiVZSoWL
-         TLCBw2O5b1a9o+mvJA/wAlWIM/4nSgBaKbl62V8ziC4Dsv0MiKgLS/1kYeQTpzg4nB
-         7A5b55ucqqLug==
-Message-ID: <27626e6685fccad44eaec3a50fd330094d5d72fe.camel@collabora.com>
-Subject: Re: [PATCH 0/9] media: rkvdec: Add HEVC backend
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Thu, 09 Nov 2023 12:45:14 -0500
-In-Reply-To: <20231105233630.3927502-1-jonas@kwiboo.se>
-References: <20231105233630.3927502-1-jonas@kwiboo.se>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 9 Nov 2023 12:45:40 -0500
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A140D2D63;
+        Thu,  9 Nov 2023 09:45:37 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 18BF620004;
+        Thu,  9 Nov 2023 17:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699551935;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Q5/m2yxLb2+8S6LP3q83n6hJXZkXarQVShg5MoacVU=;
+        b=VmHgxizThJrbE3wHg12rB4KajgKl01mlpedNWWIe1dlcxixSLs1sj6zoHEnVye7f9YIAa+
+        0SXv7hOrbAZ8X6WXOyc2PobU0bvvSlOeFUwG7uE1kwWbb1Q4UwdNZk+3FZWXoJ5B7t6Kt6
+        bqQAGD61Wbo3g1nfM8Dv/MFvyw38lre0tsrRL7bGHpgz2FvNB26dQZf22AqC86xCiNqnE+
+        F3sT9WSUAPoB6Xkyf4XNnRK7cg/TimGV4E95zn0xUC/mPG/Md2XpGYlZHYwXc24Lpimx5+
+        8Fd7E9alFHvooAAMrdQro2I0Tb5hOL8fGcAls8rG0mxJWKzaZAlSK95tPFQnEA==
+Date:   Thu, 9 Nov 2023 18:45:34 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Mehdi Djait <mehdi.djait@bootlin.com>, mchehab@kernel.org,
+        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+        maxime.chevallier@bootlin.com, michael.riesch@wolfvision.net
+Subject: Re: [PATCH v10 1/3] media: dt-bindings: media: add bindings for
+ Rockchip CIF
+Message-ID: <ZU0avuRRaITV4jws@aptenodytes>
+References: <cover.1699460637.git.mehdi.djait@bootlin.com>
+ <037bcabf97294d37b271537e4b11fb88cf9bb6f6.1699460637.git.mehdi.djait@bootlin.com>
+ <20231109-closable-superglue-5e7f39739cf1@spud>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2Ex8Ew6F9ijkgEgp"
+Content-Disposition: inline
+In-Reply-To: <20231109-closable-superglue-5e7f39739cf1@spud>
+X-GND-Sasl: paul.kocialkowski@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
 
-Le dimanche 05 novembre 2023 =C3=A0 23:36 +0000, Jonas Karlman a =C3=A9crit=
-=C2=A0:
-> This series add a HEVC backend to the Rockchip Video Decoder driver.
->=20
-> A version of this HEVC backend has been in use by the LibreELEC distro
-> for the past 3+ years [1]. It was initially created based on a copy of
-> the H264 backend, unstable HEVC uAPI controls and a cabac table + scaling
-> matrix functions shamelessly copied 1:1 from the Rockchip mpp library.
->=20
-> It has since then been extended to use the stable HEVC uAPI controls and
-> improved opon e.g. to include support for rk3288 and fix decoding issues
-> by Alex Bee and Nicolas Dufresne.
->=20
-> The version submitted in this series is based on the code currently used
-> by the LibreELEC distro, excluding hard/soft reset, and with cabac table
-> and scaling matrix functions picked from Sebastian Fricke prior series
-> to add a HEVC backend [2].
->=20
-> Big thanks to Alex Bee, Nicolas Dufresne and Sebastian Fricke for making
-> this series possible!
->=20
-> Patch 1 add the new HEVC backend.
-> Patch 2-3 add variants support to the driver.
-> Patch 4 add support for a rk3288 variant.
-> Patch 5 add a rk3328 variant to work around hw quirks.
-> Patch 6-7 add device tree node for rk3288.
-> Patch 8-9 extend vdec node reg size to include cache/perf registers.
->=20
-> This was tested on a ROCK Pi 4 (RK3399) and Rock64 (RK3328):
->=20
->   v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
->   ...
->   Total for rkvdec device /dev/video1: 46, Succeeded: 46, Failed: 0, Warn=
-ings: 0
->=20
->   Running test suite JCT-VC-HEVC_V1 with decoder FFmpeg-H.265-V4L2-reques=
-t
->   ...
->   Ran 135/147 tests successfully
+--2Ex8Ew6F9ijkgEgp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Just tested, same score on GStreamer. Failing are:
+Hi,
 
-    - DBLK_D_VIXS_2
-    - DSLICE_A_HHI_5
-    - EXT_A_ericsson_4
-    - PICSIZE* (all 4, resolution reason)
-    - SAODBLK_A_MainConcept_4
-    - SAODBLK_B_MainConcept_4
-    - TSUNEQBD_A_MAIN10_Technicolor_2
-    - WPP_D_ericsson_MAIN_2
+On Thu 09 Nov 23, 17:24, Conor Dooley wrote:
+> On Wed, Nov 08, 2023 at 05:38:56PM +0100, Mehdi Djait wrote:
+> > Add a documentation for the Rockchip Camera Interface binding.
+> >=20
+> > the name of the file rk3066 is the first Rockchip SoC generation that u=
+ses cif
+> > instead of the px30 which is just one of the many iterations of the uni=
+t.
+>=20
+> I think this is becoming ridiculous. You've now removed the compatible
+> for the rk3066 but kept it in the filename. I don't understand the
+> hangup about naming the file after the px30-vip, but naming it after
+> something that is not documented here at all makes no sense to me.
+> Either document the rk3066 properly, or remove all mention of it IMO.
 
-To be noted that TSUNEQBD_A_MAIN10_Technicolor_2 has 10bit luma, and
-9bit chroma. Works on Hantro G2, but I just tried waving your check,=20
-and the results did not match the MD5. This is of low important though,
-I have never seen such a stream in the wild and MTK VCODEC also does
-not support it.
+I think the opposite is ridiculous. We have spent some time investigating t=
+he
+history of this unit, to find out that RK3066 is the first occurence where
+it exists. Since we want the binding to cover all generations of the same u=
+nit
+and give it a name that reflects this, rk3066 is the natural choice that co=
+mes
+to mind. As far as I understand, this is the normal thing to do to name
+bindings: name after the earliest known occurence of the unit.
 
->=20
->   Running test suite JCT-VC-MV-HEVC with decoder FFmpeg-H.265-V4L2-reques=
-t
->   ...
->   Ran 9/9 tests successfully
+What is the rationale behind naming the file after a generation of the unit
+that happens to be the one introducing the binding? This is neither the fir=
+st
+nor the last one to include this unit. The binding will be updated later to
+cover other generations. Do we want to rename the file each time an a gener=
+ation
+earlier than px30 is introduced? That sounds quite ridiculous too.
 
-Fails with GStreamer, but most likely a GStreamer issue, I'll have a
-look later. JCT-VC-RExt and JCT-VC-SCC also fails. I know of a fact
-that we did not implement SCC in the uAPI (and it may not be supported
-by this hardware anyway).
+We've done the research work to give it the most relevant name here.
+I'd expect some strong arguments not to use it. Can you ellaborate?
 
-Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cheers,
 
->=20
-> And on a TinkerBoard (RK3288):
->=20
->   v4l2-compliance 1.24.1, 32 bits, 32-bit time_t
->   ...
->   Total for rkvdec device /dev/video3: 47, Succeeded: 47, Failed: 0, Warn=
-ings: 0
->=20
->   Running test suite JCT-VC-HEVC_V1 with decoder FFmpeg-H.265-V4L2-reques=
-t
->   ...
->   Ran 137/147 tests successfully
->=20
->   Running test suite JCT-VC-MV-HEVC with decoder FFmpeg-H.265-V4L2-reques=
-t
->   ...
->   Ran 9/9 tests successfully
->=20
-> This series depend on the following series:
-> - media: rkvdec: Add H.264 High 10 and 4:2:2 profile support [3]
->=20
-> To fully runtime test this series you need above series and ffmpeg
-> patches from [4], this series and its depends is also available at [5].
->=20
-> Full summary of fluster run can be found at [6].
->=20
-> [1] https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockch=
-ip/patches/linux/default/linux-2000-v4l2-wip-rkvdec-hevc.patch
-> [2] https://lore.kernel.org/linux-media/20230101-patch-series-v2-6-2-rc1-=
-v2-0-fa1897efac14@collabora.com/
-> [3] https://lore.kernel.org/linux-media/20231105165521.3592037-1-jonas@kw=
-iboo.se/
-> [4] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-n6.1-dev/
-> [5] https://github.com/Kwiboo/linux-rockchip/commits/linuxtv-rkvdec-hevc-=
-v1/
-> [6] https://gist.github.com/Kwiboo/4c0ed87774dede44ce6838451a1ec93d
->=20
-> Regards,
-> Jonas
->=20
-> Alex Bee (5):
->   media: rkvdec: Add variants support
->   media: rkvdec: Add RK3288 variant
->   media: rkvdec: Disable QoS for HEVC and VP9 on RK3328
->   ARM: dts: rockchip: Add vdec node for RK3288
->   arm64: dts: rockchip: Expand reg size of vdec node for RK3399
->=20
-> Jonas Karlman (4):
->   media: rkvdec: Add HEVC backend
->   media: rkvdec: Implement capability filtering
->   media: dt-bindings: rockchip,vdec: Add RK3288 compatible
->   arm64: dts: rockchip: Expand reg size of vdec node for RK3328
->=20
->  .../bindings/media/rockchip,vdec.yaml         |    4 +-
->  arch/arm/boot/dts/rockchip/rk3288.dtsi        |   17 +-
->  arch/arm64/boot/dts/rockchip/rk3328.dtsi      |    2 +-
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi      |    6 +-
->  drivers/staging/media/rkvdec/Makefile         |    2 +-
->  drivers/staging/media/rkvdec/TODO             |    7 -
->  .../staging/media/rkvdec/rkvdec-hevc-data.c   | 1848 +++++++++++++++++
->  drivers/staging/media/rkvdec/rkvdec-hevc.c    |  823 ++++++++
->  drivers/staging/media/rkvdec/rkvdec-regs.h    |    3 +
->  drivers/staging/media/rkvdec/rkvdec-vp9.c     |   10 +
->  drivers/staging/media/rkvdec/rkvdec.c         |  180 +-
->  drivers/staging/media/rkvdec/rkvdec.h         |   15 +
->  12 files changed, 2886 insertions(+), 31 deletions(-)
->  create mode 100644 drivers/staging/media/rkvdec/rkvdec-hevc-data.c
->  create mode 100644 drivers/staging/media/rkvdec/rkvdec-hevc.c
->=20
+Paul
 
+
+> Cheers,
+> Conor.
+>=20
+> >=20
+> > Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> > ---
+> >  .../bindings/media/rockchip,rk3066-cif.yaml   | 94 +++++++++++++++++++
+> >  1 file changed, 94 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/rockchip,rk=
+3066-cif.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3066-ci=
+f.yaml b/Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+> > new file mode 100644
+> > index 000000000000..c3a5cd2baf71
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/rockchip,rk3066-cif.yaml
+> > @@ -0,0 +1,94 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/rockchip,rk3066-cif.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Rockchip CIF Camera Interface
+> > +
+> > +maintainers:
+> > +  - Mehdi Djait <mehdi.djait@bootlin.com>
+> > +
+> > +description:
+> > +  CIF is a camera interface present on some rockchip SoCs. It receives=
+ the data
+> > +  from Camera sensor or CCIR656 encoder and transfers it into system m=
+ain memory
+> > +  by AXI bus.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: rockchip,px30-vip
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: ACLK
+> > +      - description: HCLK
+> > +      - description: PCLK
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: aclk
+> > +      - const: hclk
+> > +      - const: pclk
+> > +
+> > +  resets:
+> > +    items:
+> > +      - description: AXI
+> > +      - description: AHB
+> > +      - description: PCLK IN
+> > +
+> > +  reset-names:
+> > +    items:
+> > +      - const: axi
+> > +      - const: ahb
+> > +      - const: pclkin
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +  port:
+> > +    $ref: /schemas/graph.yaml#/properties/port
+> > +    description: A connection to a sensor or decoder
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - clocks
+> > +  - port
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/clock/px30-cru.h>
+> > +    #include <dt-bindings/power/px30-power.h>
+> > +
+> > +    parent {
+> > +        #address-cells =3D <2>;
+> > +        #size-cells =3D <2>;
+> > +
+> > +        video-capture@ff490000 {
+> > +            compatible =3D "rockchip,px30-vip";
+> > +            reg =3D <0x0 0xff490000 0x0 0x200>;
+> > +            interrupts =3D <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+> > +            clocks =3D <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CI=
+F>;
+> > +            clock-names =3D "aclk", "hclk", "pclk";
+> > +            resets =3D <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRS=
+T_CIF_PCLKIN>;
+> > +            reset-names =3D "axi", "ahb", "pclkin";
+> > +            power-domains =3D <&power PX30_PD_VI>;
+> > +
+> > +            port {
+> > +                endpoint {
+> > +                    remote-endpoint =3D <&tw9900_out>;
+> > +                };
+> > +            };
+> > +        };
+> > +    };
+> > +...
+> > --=20
+> > 2.41.0
+> >=20
+
+
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--2Ex8Ew6F9ijkgEgp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVNGr4ACgkQ3cLmz3+f
+v9Eq4wgAj7fY0daXUAOGwuI7yN814j3NW7LprnB1K7vAwnMgqegqZ7mvDhk9eXli
+JvvUVWDCgDiKTzY+egLYELm2WHZnjFpz/S0UBxGlFx8EbMqZZUmS9KQNeKpoDIf9
+gQP1YrzsJ9QCnZ929p38FKKq2QpFGrpa5/iNjbvczMoX8T2ZFCatPEdPAULW+r2q
+O5O/r56CYVqy7nSJKn1Y6nW6ICYyYTqdxxfdY3c2ewD+ze3Y0taINQMrOGWSkq1q
+l3I3dGQ+ps7orektmW3STRwLCQsor027gjIOJe151Bbmm8l7cIXHUG2Wwv+6ndSr
+QiyNpLrC/ylFArfSUp9kMpNyUNJveQ==
+=ElAt
+-----END PGP SIGNATURE-----
+
+--2Ex8Ew6F9ijkgEgp--
