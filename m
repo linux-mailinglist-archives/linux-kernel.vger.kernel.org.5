@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1B87E68CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7A27E68DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjKIKwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S233651AbjKIKwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjKIKwI (ORCPT
+        with ESMTP id S233475AbjKIKwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:52:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97DB26B1;
-        Thu,  9 Nov 2023 02:52:05 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A99VRiJ023860;
-        Thu, 9 Nov 2023 10:51:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=asrSdqR8etWm4UY4zGpWvqxO6HonHQwNqgQz2v72Wxs=;
- b=aKw6aqzE2PGn+w71hms9xeBWz7UDGw8CZ4P2CpJmPnc8DkUKKZlIrwed5dMV26fb5BwW
- exlclVe+I5J9mDC/yMZcfqEEMJfD0a4ArM5becTbqYASBUX7H3mEPMUo3v5C5ToV255L
- IG50uWbbGSHAgq5uXGxfGQODKIlCjUMniJgQAsFpjGvmkb4tIpY+Bm6+zLXbUN3wbQQQ
- Xmwi/SomsTLMRYWb0TP0FT0XYpuC/HFXBP1F2LSik7U37x/HbGG4JjDZCXJw6QxDyvYa
- KCXEgf4H3bJ0UHz8PBJAHJ7drb5CPVYjjmHbS2/kHGKK0I2TPtg6Dvy2WLfCjuojE3Mh 2g== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8t0nrum2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 10:51:32 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A9ApV9Y001631
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Nov 2023 10:51:31 GMT
-Received: from [10.239.155.136] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 02:51:26 -0800
-Message-ID: <887a37d7-a719-ab02-0a60-d9f17c2f37e2@quicinc.com>
-Date:   Thu, 9 Nov 2023 18:51:24 +0800
+        Thu, 9 Nov 2023 05:52:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F22DD41
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699527114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uzXmFfn5zVQ8O2djRIzf4P/RBzxnLFE/MCnf13XN7x8=;
+        b=BMokZfVxwLfSamvGK17HmKIHP+NAyAWAUiEi3VDiBXnUZMOtlekbjmxgYhO6AMsUN70XPr
+        zNuK0ZSKc+zwMdNhSOSiBeRolZQS3vS3rBs0BSp+84tYO+64gmGoi5YgO4T2iRGmgy9D1Y
+        pg5zFYcvQ2kj1zruKkykVi9XN8MwtrI=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-oc6NtL-bOZ6eyRGedNQnmQ-1; Thu, 09 Nov 2023 05:51:53 -0500
+X-MC-Unique: oc6NtL-bOZ6eyRGedNQnmQ-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc34cb3b16so1109645ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:51:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699527112; x=1700131912;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uzXmFfn5zVQ8O2djRIzf4P/RBzxnLFE/MCnf13XN7x8=;
+        b=AKG0uSv0be/PtovDN2kjwuTjqI76YSqzJvpFX3Btdn2YZMgg2F69o8hTJqlrFOQViQ
+         J0lRWdPDfC+Z0SwtlJ0j122g+kMIQ0NAz3652M6jCw06gytXptYRec+TwqF5WK8XUe7J
+         ga/j38Ew5369SG7Ipmxo6Am4p9eD7eL1RCt2xA9xqCVeBupeCDF84aKds/kkkFv/FQag
+         kRi9z+OE9T6wRg7zJj9yXTw2zap8xCaKdXiEfqgU7/K9L5qwwbbEHwgHbnl4tTzhSZnb
+         lfLzenOZdDw0ogvbZ3SDOxo4EmdzGS1vS7i/RsubMi75zh1hYvZ7Ld4YIxFbzm6ksufJ
+         TPrg==
+X-Gm-Message-State: AOJu0YzSzRH6DKS7tFXRjfyuQHsHI1cDT/Ms9/hHSq/s4tqhyARoa4T9
+        lf+NzI1anpxs1b413Dtwf9OyMnd+lW/OYxu5X/SQ/QxiSCN0zVp84BynT4xEfaFQqxKKmxDe/eQ
+        JncYY2J0D50f6A/RLbh4JeaTf
+X-Received: by 2002:a17:902:e5c7:b0:1cc:27fa:1fb7 with SMTP id u7-20020a170902e5c700b001cc27fa1fb7mr4861879plf.5.1699527112443;
+        Thu, 09 Nov 2023 02:51:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHiDKE4c0Ju3XEU4qcUzBfLHE4odbtCyEmKR/OFqWPBbcxkvIL/TmgSbJ2a8W59JHM952t4Zg==
+X-Received: by 2002:a17:902:e5c7:b0:1cc:27fa:1fb7 with SMTP id u7-20020a170902e5c700b001cc27fa1fb7mr4861848plf.5.1699527112117;
+        Thu, 09 Nov 2023 02:51:52 -0800 (PST)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id y12-20020a170902ed4c00b001b86dd825e7sm3245836plb.108.2023.11.09.02.51.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 02:51:51 -0800 (PST)
+Message-ID: <17dd2b32-079a-101e-e5c1-0166d6dea3b9@redhat.com>
+Date:   Thu, 9 Nov 2023 18:51:44 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] dt-bindings: ufs: Add msi-parent for UFS MCQ
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RFC 08/22] drivers: base: Implement weak
+ arch_unregister_cpu()
 Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>, Rob Herring <robh@kernel.org>
-CC:     <quic_asutoshd@quicinc.com>, <quic_cang@quicinc.com>,
-        <mani@kernel.org>, <beanhuo@micron.com>, <avri.altman@wdc.com>,
-        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
-        <quic_nguyenb@quicinc.com>, <quic_nitirawa@quicinc.com>,
-        <quic_rampraka@quicinc.com>, <linux-scsi@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
- <20231106144831.GA317907-robh@kernel.org>
- <5850d5ac-e735-4358-866d-f410b00ba39d@acm.org>
-From:   Ziqi Chen <quic_ziqichen@quicinc.com>
-In-Reply-To: <5850d5ac-e735-4358-866d-f410b00ba39d@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLL-00CTxD-Gc@rmk-PC.armlinux.org.uk>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <E1r0JLL-00CTxD-Gc@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2XRJs_KHp5Fr3Vr0h-B-FIuWq-52-cHN
-X-Proofpoint-GUID: 2XRJs_KHp5Fr3Vr0h-B-FIuWq-52-cHN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_08,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/7/2023 1:56 AM, Bart Van Assche wrote:
-> On 11/6/23 06:48, Rob Herring wrote:
->> On Wed, Nov 01, 2023 at 06:48:13PM +0800, Ziqi Chen wrote:
->>> The Message Signaled Interrupts (MSI) has been introduced
->>> to UFS driver since the MCQ be enabled.
->>
->> Not really relevant when a driver supported MSI, but the when the h/w
->> did. Has UFS always supported MSI? It was added in some version of the
->> spec?
+On 11/7/23 18:29, Russell King (Oracle) wrote:
+> From: James Morse <james.morse@arm.com>
 > 
-> MSI support has been introduced in UFSHCI version 4.0 and I think that
-> the controller vendor can decide whether or not to implement MSI. Does
-> this mean that the patch needs to be improved?
+> Add arch_unregister_cpu() to allow the ACPI machinery to call
+> unregister_cpu(). This is enough for arm64, riscv and loongarch, but
+> needs to be overridden by x86 and ia64 who need to do more work.
 > 
-> Thanks,
+> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+> Changes since v1:
+>   * Added CONFIG_HOTPLUG_CPU ifdeffery around unregister_cpu
+> Changes since RFC v2:
+>   * Move earlier in the series
+> ---
+>   drivers/base/cpu.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> Bart.
-> 
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 579064fda97b..58bb86091b34 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -531,7 +531,14 @@ int __weak arch_register_cpu(int cpu)
+>   {
+>   	return register_cpu(&per_cpu(cpu_devices, cpu), cpu);
+>   }
+> -#endif
+> +
+> +#ifdef CONFIG_HOTPLUG_CPU
+> +void __weak arch_unregister_cpu(int num)
+> +{
+> +	unregister_cpu(&per_cpu(cpu_devices, num));
+> +}
+> +#endif /* CONFIG_HOTPLUG_CPU */
+> +#endif /* CONFIG_GENERIC_CPU_DEVICES */
+>   
+>   static void __init cpu_dev_register_generic(void)
+>   {
 
-Hi Rob, in my previous patch " dt-bindings: ufs: qcom: Add msi-parent 
-for UFS MCQ",  Manivannan Sadhasivam also think instead of 
-qcom,ufs.yaml, this should be part of ufs-common.yaml.
+-- 
+Shaoqin
 
-please let me know if there is any others I need to improve for this 
-patch. Thanks a lot.
-
-
-Best Regards,
-Ziqi
