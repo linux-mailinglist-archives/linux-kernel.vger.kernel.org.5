@@ -2,96 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A92B7E61C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061437E61BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjKIBQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 20:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S231536AbjKIBPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:15:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjKIBQO (ORCPT
+        with ESMTP id S230451AbjKIBPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 20:16:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38A9258F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:16:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699492573; x=1731028573;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Hj9O1oUl29Hx5F9sNOt7f3tvRUpgBetDr5T4gH2wu8A=;
-  b=f4Q/g/R/YWozexc0atwAuq7JvugVxpKWz3Dz8U40NksA8Sbs2xugEuVX
-   f0/J/WK8ISQHfR+EEZrFXzQlqCmMb45oXBKBTESC1OC0Hv9aABmR2V6Yh
-   zaTYweW8rB18y/am+HWB7fkpPdz8IoWNdJO9kQsN8YsertFeTlmyxzbbz
-   9t3j8wevjsO2zKZllp40oUc0QgDgsMx0LavruvIsy2T3CLfdjMtGwiX/3
-   08GWCend2jvGktUTgRVtBhaCJfNa5ypyRjha3dscELGj33WjIM0xWz38v
-   VKbDviYmzfcmsEUQ7arNnUQXYUuj+RCRCQFbmF3uO5P6IFGdgcrcHIVOo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="11446278"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="11446278"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 17:16:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="1010462801"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="1010462801"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Nov 2023 17:16:11 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0teT-0008MQ-1G;
-        Thu, 09 Nov 2023 01:16:09 +0000
-Date:   Thu, 9 Nov 2023 09:15:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ipvlan/ipvlan_core.c:57:36: sparse: sparse: incorrect
- type in argument 1 (different base types)
-Message-ID: <202311090900.o5hCIMpN-lkp@intel.com>
+        Wed, 8 Nov 2023 20:15:42 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31C925BD
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:15:39 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc3388621cso10847855ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:15:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1699492539; x=1700097339; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jJB2HzPFVnzl6OnBO06iUXlf1dFeMFQcQCJyWfsLLCM=;
+        b=oU+zW1JdlEDddCtLn2Vwe03LgnZG04PA20yor1yaYAokCZTbKT1vInggEJz6JAEUnZ
+         L02aVFp1o9bISNJJb72JekUAEvK5o+pfsrq47kqm0tBzlv3k2g5DdT4q3qhkpHnFu6/E
+         AlR9eBSyJ4cdrGi4+Nuw8VTSP0LY89X1e4JwL2SMYCvqisD+T1Mhw03J7FrPr7O2yVMa
+         hYZp4PFEX3I9Mqh6JpY1icCt4KBOjvjB8a5P4FgJQBZ5S8BNfkvI8afBg2nRmf4+SX3w
+         C2tD45LgTM7YX6zqix0odVOIls6rxx7DZUbIyYaZpKU3TGO7ER2/zsnhAarefMFAkiU2
+         rcRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699492539; x=1700097339;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jJB2HzPFVnzl6OnBO06iUXlf1dFeMFQcQCJyWfsLLCM=;
+        b=ensfe4O/snvN2zLLhgPbEm/N0txBf/Ax/AHo0rO2/NSljp4zVmDoSu/dOcSw4kQBkG
+         oMcdx5YBakY6bn57vro78MHzIUQ0xl4AR7aJl5QXBAFLichQY0h26QTcT1R9UgOM2YVe
+         xtYZ0GZPKAf3NVBr75cTE+SSvv/ZVPgVtkL8apRewf0UO7uRwaqNy9YIuFtl0XRuywVt
+         Y9keoiJcqRPnRr7WMwAtEheHWxmFlDSL3dcRJZkZE6yK6qlpI51iVOZsVnQXD2sP5dWm
+         60mqMSCahcrZpTv4Y7oQgFX7Vj6ENUCjuK8Gb0+nmlIsAPvYnBVvxBqmf2zaHOu0ip0J
+         X2LQ==
+X-Gm-Message-State: AOJu0YwHjxO+18OaPgSGs9i0fpBUWDhz9vObed32kcfbnE27xQJNuRaD
+        sgepvjXH0s12YplzimyT/j5Vjw==
+X-Google-Smtp-Source: AGHT+IEppdvik8GMA+ADUF0nvc93yMlmYp9AyXurMTUDu1ruiRbNSJ04wmW0jrxiNpH9ub52AlowNw==
+X-Received: by 2002:a17:902:d487:b0:1cc:4d4e:bfb4 with SMTP id c7-20020a170902d48700b001cc4d4ebfb4mr10863357plg.12.1699492539395;
+        Wed, 08 Nov 2023 17:15:39 -0800 (PST)
+Received: from ?IPV6:2a03:83e0:1256:2:c51:2090:e106:83fa? ([2620:10d:c090:500::5:887f])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902d48a00b001ae0152d280sm2268962plg.193.2023.11.08.17.15.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 17:15:39 -0800 (PST)
+Message-ID: <cdf21548-8c95-448e-88a4-701727ad7538@davidwei.uk>
+Date:   Wed, 8 Nov 2023 17:15:35 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
+Content-Language: en-GB
+To:     Mina Almasry <almasrymina@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-6-almasrymina@google.com>
+ <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
+ <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
+ <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
+ <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
+From:   David Wei <dw@davidwei.uk>
+In-Reply-To: <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: c675e06a98a474f7ad0af32ce467613da818da52 ipvlan: decouple l3s mode dependencies from other modes
-date:   4 years, 9 months ago
-config: i386-randconfig-062-20230914 (https://download.01.org/0day-ci/archive/20231109/202311090900.o5hCIMpN-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090900.o5hCIMpN-lkp@intel.com/reproduce)
+On 2023-11-07 15:03, Mina Almasry wrote:
+> On Tue, Nov 7, 2023 at 2:55 PM David Ahern <dsahern@kernel.org> wrote:
+>>
+>> On 11/7/23 3:10 PM, Mina Almasry wrote:
+>>> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
+>>>>
+>>>> On 11/5/23 7:44 PM, Mina Almasry wrote:
+>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>>>> index eeeda849115c..1c351c138a5b 100644
+>>>>> --- a/include/linux/netdevice.h
+>>>>> +++ b/include/linux/netdevice.h
+>>>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
+>>>>>  };
+>>>>>
+>>>>>  #ifdef CONFIG_DMA_SHARED_BUFFER
+>>>>> +struct page_pool_iov *
+>>>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
+>>>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
+>>>>
+>>>> netdev_{alloc,free}_dmabuf?
+>>>>
+>>>
+>>> Can do.
+>>>
+>>>> I say that because a dmabuf can be host memory, at least I am not aware
+>>>> of a restriction that a dmabuf is device memory.
+>>>>
+>>>
+>>> In my limited experience dma-buf is generally device memory, and
+>>> that's really its use case. CONFIG_UDMABUF is a driver that mocks
+>>> dma-buf with a memfd which I think is used for testing. But I can do
+>>> the rename, it's more clear anyway, I think.
+>>
+>> config UDMABUF
+>>         bool "userspace dmabuf misc driver"
+>>         default n
+>>         depends on DMA_SHARED_BUFFER
+>>         depends on MEMFD_CREATE || COMPILE_TEST
+>>         help
+>>           A driver to let userspace turn memfd regions into dma-bufs.
+>>           Qemu can use this to create host dmabufs for guest framebuffers.
+>>
+>>
+>> Qemu is just a userspace process; it is no way a special one.
+>>
+>> Treating host memory as a dmabuf should radically simplify the io_uring
+>> extension of this set.
+> 
+> I agree actually, and I was about to make that comment to David Wei's
+> series once I have the time.
+> 
+> David, your io_uring RX zerocopy proposal actually works with devmem
+> TCP, if you're inclined to do that instead, what you'd do roughly is
+> (I think):
+> 
+> - Allocate a memfd,
+> - Use CONFIG_UDMABUF to create a dma-buf out of that memfd.
+> - Bind the dma-buf to the NIC using the netlink API in this RFC.
+> - Your io_uring extensions and io_uring uapi should work as-is almost
+> on top of this series, I think.
+> 
+> If you do this the incoming packets should land into your memfd, which
+> may or may not work for you. In the future if you feel inclined to use
+> device memory, this approach that I'm describing here would be more
+> extensible to device memory, because you'd already be using dma-bufs
+> for your user memory; you'd just replace one kind of dma-buf (UDMABUF)
+> with another.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311090900.o5hCIMpN-lkp@intel.com/
+How would TCP devmem change if we no longer assume that dmabuf is device
+memory? Pavel will know more on the perf side, but I wouldn't want to
+put any if/else on the hot path if we can avoid it. I could be wrong,
+but right now in my mind using different memory providers solves this
+neatly and the driver/networking stack doesn't need to care.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ipvlan/ipvlan_core.c:57:36: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] a @@     got restricted __be32 const [usertype] s_addr @@
-   drivers/net/ipvlan/ipvlan_core.c:57:36: sparse:     expected unsigned int [usertype] a
-   drivers/net/ipvlan/ipvlan_core.c:57:36: sparse:     got restricted __be32 const [usertype] s_addr
+Mina, I believe you said at NetDev conf that you already had an udmabuf
+implementation for testing. I would like to see this (you can send
+privately) to see how TCP devmem would handle both user memory and
+device memory.
 
-vim +57 drivers/net/ipvlan/ipvlan_core.c
-
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  52  
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  53  static u8 ipvlan_get_v4_hash(const void *iaddr)
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  54  {
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  55  	const struct in_addr *ip4_addr = iaddr;
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  56  
-2ad7bf3638411c Mahesh Bandewar 2014-11-23 @57  	return jhash_1word(ip4_addr->s_addr, ipvlan_jhash_secret) &
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  58  	       IPVLAN_HASH_MASK;
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  59  }
-2ad7bf3638411c Mahesh Bandewar 2014-11-23  60  
-
-:::::: The code at line 57 was first introduced by commit
-:::::: 2ad7bf3638411cb547f2823df08166c13ab04269 ipvlan: Initial check-in of the IPVLAN driver.
-
-:::::: TO: Mahesh Bandewar <maheshb@google.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>> That the io_uring set needs to dive into
+>> page_pools is just wrong - complicating the design and code and pushing
+>> io_uring into a realm it does not need to be involved in.
+>>
+>> Most (all?) of this patch set can work with any memory; only device
+>> memory is unreadable.
+>>
+>>
+> 
+> 
