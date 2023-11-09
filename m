@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799B37E6C64
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCEA47E6C6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjKIO0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44832 "EHLO
+        id S234213AbjKIO2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:28:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234371AbjKIO0p (ORCPT
+        with ESMTP id S231963AbjKIO2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:26:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C4B30DE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699539994; x=1731075994;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xCVkFxZ+nwQcrI9l3FgoWbo0aGr8bOhdLLJpf0a15Ks=;
-  b=QHdSPPnOySSImAI3CNBoF9qqqt3r2l7jvpGMafRmpHwfsVeY9MSq5w4p
-   CKTKop/ygpi+M2AS+yh75TX9xRIQhbvALB8HFDvoUxTEB5xtkQ+S16g60
-   Gtks6nbxZeORWWhMe8onHAK8au0zWfF+KGu5Q4aRm0TqCH2oceOZ996Wx
-   5BcZsHI0FoZseOkPH3mzIe+nN29BI77111Tahttyf+MGardlLC3l3u8gE
-   e59zYU0V76Y1geShXqFInjN6iPWWzRqlzeby0teTLXpXWTu7eVjLggdRr
-   bemIIf/YDlghp45jcjJxI43yVVlHSIbR2betzk6g2lulBsXcVh9lKHnGg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="421088242"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="421088242"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 06:26:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="713307423"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="713307423"
-Received: from tiwariv-mobl.amr.corp.intel.com (HELO [10.212.165.194]) ([10.212.165.194])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 06:26:09 -0800
-Message-ID: <64cb078b-d2e7-417f-8125-b38d423163ce@intel.com>
-Date:   Thu, 9 Nov 2023 06:26:08 -0800
+        Thu, 9 Nov 2023 09:28:33 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918A62D77
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:28:31 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a84204e7aeso11433107b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699540111; x=1700144911; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OiBm5sPw96SiR0IGoxFNn3RBFbgfNC/bWK202lBgfEU=;
+        b=U3q2Dkg6Pv9Dp5wlJDo0T/7BOsQ48MH+8pfHJXAUPDYAMSaaFT6SFA88V4qHUHAvyW
+         x2/CJ5hhLuj/u5iIJnnqqcQ0VH3Se8UdOOKFZuT7OvAiZ0vMjgvNdwWJswW/5ZFUh/fT
+         i5sxut7hhzsp95y7jkd5OSUD1FPOGvLtj8GF/gh+JPrtMSQ7VZ+70IjPIE1+KgS/5ls6
+         0LtvfzjtJOFNsy+6rtQomS4QQTUJ1FytJEwetTrRliClt057QpTVnt+msCGZ9ICU+rNP
+         9anl0zmT8qFcvqKj/JsY8y/e1SatZlOzgAW6crT+Lu4qmJvmPKfX96firCU6RBse6hER
+         shUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699540111; x=1700144911;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OiBm5sPw96SiR0IGoxFNn3RBFbgfNC/bWK202lBgfEU=;
+        b=rGkdKVkhsLWrubVDvEM/yvCCASPAMTXt7bvp3Is/FmjTnU77Q6je1VOuVZBXV858tv
+         Wnfn40EG8NCjQ3+3vEo17yVi8NxQc1Nn1hHWJAsaTdzWdSDKDUnLc2DfuyiwoaW02bcv
+         2i3rN5xQMWoVhC31ku5dpjlxERg519323JrS7+rNh6WzzXQ93rGfXd8zJWdZCjX/PKX1
+         xwXu7bvAn169WrpzUyC5HR0Rt81s/wODZSNcTn61GmB2jl8IHbR35TCIsD4Tqw85cc+q
+         otfPJ0ISyKTZEVHauLj4o1+/pyQRSPmcHbrSttXil/obwjGYfaHA1r8FSiFnLL0z0jkC
+         F7Yw==
+X-Gm-Message-State: AOJu0YwD+tbAWyAfrfN9ABXX5fSF7rbA0morXVdCrUFMCrmu5F+os5/s
+        2SL3hV6OsDlsSq8eEyVR5PgiyzFK3BM0ZJwbCBfgmw==
+X-Google-Smtp-Source: AGHT+IHjHrbh0/nqFgWusFIU7pH6Xcx7ZGhZvYC7PoVRBLlGmpMQi61cINEisGMWZuPi4JdaAzan8N4NV0ogrYpHwPw=
+X-Received: by 2002:a81:9242:0:b0:5a1:d398:2e with SMTP id j63-20020a819242000000b005a1d398002emr5540050ywg.37.1699540110602;
+ Thu, 09 Nov 2023 06:28:30 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [v4 0/3] Reduce TLB flushes under some specific conditions
-Content-Language: en-US
-To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
-        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-References: <20231109045908.54996-1-byungchul@sk.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20231109045908.54996-1-byungchul@sk.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231109093100.19971-1-johan+linaro@kernel.org>
+ <0edf26f9-46c8-4c9b-a68e-a92a78b5684e@linaro.org> <ZUzjFFUc1dOE8C54@hovoldconsulting.com>
+In-Reply-To: <ZUzjFFUc1dOE8C54@hovoldconsulting.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 9 Nov 2023 16:28:19 +0200
+Message-ID: <CAA8EJpoAwFaush7GQgp=LSmd7OyfBLFw+fLRanqY3wD8p8KZKQ@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: pmic_glink_altmode: fix port sanity check
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 20:59, Byungchul Park wrote:
-> Can you believe it? I saw the number of TLB full flush reduced about
-> 80% and iTLB miss reduced about 50%, and the time wise performance
-> always shows at least 1% stable improvement with the workload I tested
-> with, XSBench. However, I believe that it would help more with other
-> ones or any real ones. It'd be appreciated to let me know if I'm missing
-> something.
+On Thu, 9 Nov 2023 at 15:47, Johan Hovold <johan@kernel.org> wrote:
+>
+> On Thu, Nov 09, 2023 at 02:28:59PM +0100, Konrad Dybcio wrote:
+> > On 11/9/23 10:31, Johan Hovold wrote:
+>
+> > > -   if (!altmode->ports[port].altmode) {
+> > > +   if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
+>
+> > I'd personally use PMIC_GLINK_MAX_PORTS directly but it's the same
+>
+> That's what I'd generally do as well, but here I followed the style of
+> this driver (and using ARRAY_SIZE() is arguable more safe).
 
-I see that you've moved a substantial amount of code out of arch/x86.
-That's great.
+I'd prefer ARRAY_SIZE here too.
 
-But there doesn't appear to be any improvement in the justification or
-performance data.  The page flag is also here, which is horribly frowned
-upon.  It's an absolute no-go with this level of justification.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-I'd really suggest not sending any more of these out until those issues
-are rectified.  I know I definitely won't be reviewing them in this state.
+>
+> > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>
+> Thanks for reviewing.
+>
+> Johan
+>
+
+
+-- 
+With best wishes
+Dmitry
