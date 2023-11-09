@@ -2,125 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577FB7E6E9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C407E6EA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343567AbjKIQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        id S234457AbjKIQZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:25:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKIQZX (ORCPT
+        with ESMTP id S229491AbjKIQZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:25:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BC6327D;
-        Thu,  9 Nov 2023 08:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699547120; x=1731083120;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=esw2qA2+1GB07Te/peGco+thBojxOIAyXxM1fpms2N8=;
-  b=HSHcba5+Mxqjt8VMCkRsBidv/RN1zdseH7wk9RAJa07Eo0UunjHyN6e9
-   sPhsdZkJySAH1yBux96eav6OT1Zr6HsDtGKV1ykp3T8yiEqvU1H2XP1Wn
-   ij4gyFw8WK57kPmWz4DDIFd2yxWIwQrDHz4gzK8KDt6QH5PkjdCvQnAhz
-   nWCcHWm8vYFA9UqMSaArcMZKyrknfSlOwdRgCikQM2nHdTZ0uEXghk62G
-   FWOUFal6h7nfq0dQqUZcMzr6TrQjXrhnAZVuujTeBrGKUi+HvZ8sPOAlc
-   HaeIH/HlIPej0/Gmi4VhgjwLJq9qtVovAuCfjOLBaCA0/ruDII562R+rX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="393927031"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="393927031"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 08:25:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="798354490"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="798354490"
-Received: from tiwariv-mobl.amr.corp.intel.com (HELO [10.212.165.194]) ([10.212.165.194])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 08:25:05 -0800
-Message-ID: <16ea75a9-8c94-4665-ae04-32d08aa4ebb2@intel.com>
-Date:   Thu, 9 Nov 2023 08:25:04 -0800
+        Thu, 9 Nov 2023 11:25:40 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB0C3272;
+        Thu,  9 Nov 2023 08:25:38 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SR6Mt62Bzz9xtTm;
+        Fri, 10 Nov 2023 00:09:14 +0800 (CST)
+Received: from [10.202.210.186] (unknown [10.202.210.186])
+        by APP1 (Coremail) with SMTP id LxC2BwAXBXXkB01lxX1ZAA--.19877S2;
+        Thu, 09 Nov 2023 17:25:18 +0100 (CET)
+Message-ID: <ece7680c-630e-956d-ad9f-10614afa84a4@huaweicloud.com>
+Date:   Thu, 9 Nov 2023 17:25:05 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Check cc_vendor when printing memory encryption
- info
-Content-Language: en-US
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Kelley <mhklinux@outlook.com>,
-        Dexuan Cui <decui@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, stefan.bader@canonical.com,
-        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
-        cascardo@canonical.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, kirill.shutemov@linux.intel.com,
-        sashal@kernel.org
-References: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: Fw: [isocpp-parallel] OOTA fix (via fake branch-after-load)
+ discussion
+To:     paulmck@kernel.org, Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, j.alglave@ucl.ac.uk,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        mpe@ellerman.id.au, npiggin@gmail.com, palmer@dabbelt.com,
+        parri.andrea@gmail.com, linux-kernel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, boqun.feng@gmail.com,
+        davidtgoldblatt@gmail.com
+References: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
+ <20231105230859.GH8262@noisy.programming.kicks-ass.net>
+ <d18e0ce6-db9e-4590-a7ab-15e27b2c33f4@paulmck-laptop>
+ <20231107095745.GD19790@gate.crashing.org>
+ <bf18e3f7-f8be-4b11-b348-b784420bda16@paulmck-laptop>
+From:   Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <bf18e3f7-f8be-4b11-b348-b784420bda16@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwAXBXXkB01lxX1ZAA--.19877S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAry3KryfWw48Kw4DuFWDtwb_yoW5Gw1rpa
+        y5K3W5Ka1DZFn7twn7Zw1xWF1Fv397JFy5Gr95Jr1vkrn0vr12gr4xt3y3KF93Cwn5Ww1j
+        qrWYkr93Was8Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 08:14, Jeremi Piotrowski wrote:
-...
->  	pr_info("Memory Encryption Features active:");
->  
-> -	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
-> +	if (cc_vendor == CC_VENDOR_INTEL) {
->  		pr_cont(" Intel TDX\n");
->  		return;
->  	}
 
-Why aren't these guests setting X86_FEATURE_TDX_GUEST?
+Am 11/7/2023 um 5:44 PM schrieb Paul E. McKenney:
+> On Tue, Nov 07, 2023 at 03:57:45AM -0600, Segher Boessenkool wrote:
+>> On Mon, Nov 06, 2023 at 06:16:24PM -0800, Paul E. McKenney wrote:
+>>
+>>> I am very much against incurring real overhead to solve an issue that is
+>>> an issue only in theory and not in practice.  I wish I could confidently
+>>> say that my view will prevail, but...
+
+
+Where to complain to to increase the chance of your view prevailing?
+
+
+>>                                                           If what you
+>> are writing has a constrained scope, or a limited impact, or both, you
+>> can ignore this "we'll deal with it later if/when it shows up".  But a
+>> compiler does not have that luxury at all: it has to make correct
+>> translations from source code to assembler code (or machine code
+>> directly, for some compilers), or refuse to compile something.  Making
+>> an incorrect translation is not an option.
+> But in this case, it would be most excellent if compiler practice were
+> to follow theory.  Because the theory of avoiding OOTA without emitting
+> extraneous instructions is quite simple:
+>
+> 	Avoid breaking semanitic dependencies.
+
+
+The problem with that is that C, unlike LKMM, doesn't use a ppo-based model.
+
+So there's no notion of "breaking a dependency" that could be applied to 
+define what it means "not to break" semantic dependencies.
+
+But the solution is actually simpler. Just add the axiom (proposed by 
+Viktor):
+
+     There are no OOTA behaviors
+
+
+> 4.	Semantics of volatile.	Perhaps the current state is the best
+> 	that can be hoped for, but given that the current state is a
+> 	few vague words in the standard in combination with the fact
+> 	that C-language device drivers must be able to use volatile
+> 	to reliably and concurrently access memory shared with device
+> 	firmware, one would hope for better.
+
+
+Is it really so bad? I think the definition in the manual is quite 
+precise, if confusing. (volatiles are visible side effects and must 
+therefore have the same program order in the abstract machine and in the 
+implementation, and that's pretty much it).
+
+There should just be a large explanatory note about what it implies and 
+what it doesn't imply.
+
+
+>
+> 5.	UB on signed integer overflow.	Right now, the kernel just
+> 	forces wrapping, which works, so maybe we don't really care
+> 	all that much.	But at this point, it seems to me that it was a
+> 	mistake for the language to have failed to provide a means of
+> 	specifying signed integers that wrap (int_wrap?).  (Yes, yes,
+> 	you can get them by making an atomic signed int, but that is
+> 	not exactly an ergonomic workaround.)
+
+What I don't understand is why they didn't make signed integer types 
+wrap when they became two's complement.
+
+
+
+
