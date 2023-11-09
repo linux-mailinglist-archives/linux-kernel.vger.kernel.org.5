@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4F17E6725
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABAC7E6701
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjKIJxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
+        id S229973AbjKIJqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjKIJxC (ORCPT
+        with ESMTP id S229574AbjKIJp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:53:02 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645C62D4F;
-        Thu,  9 Nov 2023 01:52:59 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 0804612000E;
-        Thu,  9 Nov 2023 12:52:58 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0804612000E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1699523578;
-        bh=xp76YwR5227vsBQhp1StLcVx3Q3c15aaGrkQqQFMpDw=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=DbAM+tEM4keru67mCxv6RNeUBC9mN9amQY8ygWEpkR16cMz8F3FA+O5PujdWRBl7B
-         osvsu9KOJI2aKo5Wz7wsp24cXg8AYZm5ws3wngovj8LU5gNjLReB2S7IM0FuVRBj4f
-         /0Qijb4OtUwQQvEk4OMSsRMH2NbJOON1z1St1JZPJppsuv97Cz/WEt/vTJ0FI9j9bZ
-         Seoux2BLz6W9tyyWDsWCHUSh56oOLNyS9yi2609p42v8MK+Trlua0bn8/L/xXUrfQj
-         JwQyqu817nHv3VWLJ3dNuYxqZvgzGNAOeKXL7JDtLclhnsqE9CtjmDRkpwTyGheWEQ
-         Blb/2oUCezaXg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu,  9 Nov 2023 12:52:57 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 9 Nov 2023 12:52:57 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Thu, 9 Nov 2023 04:45:59 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD82271F
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:45:57 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so701969b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:45:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1699523157; x=1700127957; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NbSiGKrBhM2/wHXRoKptmfeSde2mpjPrJRJ8xggR25Y=;
+        b=cR3scnhcl4yHgQ7xFD7Kqwpmzp7LL3j7TeGgKlyhYvMWFgNfxArIpu0Hyfipn11rQk
+         ddwpZGrwqtIGebyLVNSNHrUrWqNYYYpSrF99k7o7ptrpO7ZAO4jTM4RfBrQQC+WI5kb2
+         AmVKJz0rhd6dvEagIp+eWk5dDKQAQT3fWobIv2AuUWCzeYnNFl8RcmdlZAn/pfolXSYt
+         oPsknKpwvExD7z0WKOVHHDyUK1o+IISCzgYgTh0wXvrBzreJjn30C7ET4pyUrwjshItq
+         eBgjRiJSkOXA3DYfLIwJ6SKLetTvHCqBYgkwdGe0ai39WmCgiyPXacst6Y6XLB+jGb/t
+         HJwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699523157; x=1700127957;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NbSiGKrBhM2/wHXRoKptmfeSde2mpjPrJRJ8xggR25Y=;
+        b=Ufhy3HNo8pM6PVyFrD/dorVEQ3tPIrS3MVM9cA1QsKt/qkH4e2fjyYtPvgl29YZcwA
+         vp7E3u/nSpxJY7JLlypRbci+F5Y6i781RQcUukOlUDf7GgJMXIrAtDtGPhgLChSF7Y1o
+         QyOYklXq8wopJdIc9UgVaYu4aCwXrdeJT4wsnvuwbMP0dSgNB8JU3s9pJDY9LSfOFOSE
+         bQFvJKjzqS08S0yahxBdBQThBIGB8ruToY8AeGWwxYqLZT0qi+g74+X6OnBh0Quo33AV
+         LZdvy2hE/R4K2gYh3lFC1aOIri6z/5/S9iN1VSx2t95IKlqxM8+6ECjXoHlYrn/IBmPA
+         zSXg==
+X-Gm-Message-State: AOJu0Yx3e6kbozgaE/p5zr9wZCmNhujae3XyJzKENkSsXl51ZN1w9B0W
+        dYtcHU4PTQVDI/A+C/8HHxUB2A==
+X-Google-Smtp-Source: AGHT+IHcxvykfL05iCgUN8NZYoRBP07ZEj+8KS+NLRxGiL6Z6fO5lkId5FnQ6uAbYO6wWgDNI5Gdhg==
+X-Received: by 2002:a05:6a20:1594:b0:17a:f0e0:ed07 with SMTP id h20-20020a056a20159400b0017af0e0ed07mr5017358pzj.15.1699523156774;
+        Thu, 09 Nov 2023 01:45:56 -0800 (PST)
+Received: from ?IPv6:2402:7500:4ce:aeef:31cf:49a7:c:20d4? ([2402:7500:4ce:aeef:31cf:49a7:c:20d4])
+        by smtp.gmail.com with ESMTPSA id g13-20020aa7874d000000b006c31c0dfb69sm10276439pfo.188.2023.11.09.01.45.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Nov 2023 01:45:56 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v3 06/20] riscv: add ISA extension parsing for vector
+ crypto
+From:   Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231109-prevalent-serrated-d40eb5f71236@wendy>
+Date:   Thu, 9 Nov 2023 17:45:51 +0800
+Cc:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC:     <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-        Liang Yang <liang.yang@amlogic.com>,
-        Arseniy Krasnov <avkrasnov@salutedevices.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] arm64: dts: amlogic: meson-axg: pinctrl node for NAND
-Date:   Thu, 9 Nov 2023 12:45:04 +0300
-Message-ID: <20231109094504.131265-1-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181233 [Nov 09 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/09 07:10:00 #22435383
-X-KSMG-AntiVirus-Status: Clean, skipped
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F2C4CCA2-0513-4988-94C4-1ECEB9F1D578@sifive.com>
+References: <20231107105556.517187-1-cleger@rivosinc.com>
+ <20231107105556.517187-7-cleger@rivosinc.com>
+ <5EF129A2-195B-4207-A2F6-DBA1FBB9F65D@sifive.com>
+ <20231109-revolver-heat-9f4788c51bbf@wendy>
+ <20231109-prevalent-serrated-d40eb5f71236@wendy>
+To:     Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: Apple Mail (2.3445.9.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pinctrl node for the Meson NAND controller.
+On Nov 9, 2023, at 15:54, Conor Dooley <conor.dooley@microchip.com> =
+wrote:
+> On Thu, Nov 09, 2023 at 07:44:46AM +0000, Conor Dooley wrote:
+>> On Thu, Nov 09, 2023 at 10:58:41AM +0800, Jerry Shih wrote:
+>>> On Nov 7, 2023, at 18:55, Cl=C3=A9ment L=C3=A9ger =
+<cleger@rivosinc.com> wrote:
+>>> The Zvknha and Zvknhb are exclusive. It's not the superset =
+relationship.
+>>>=20
+>>> Please check:
+>>> =
+https://github.com/riscv/riscv-crypto/issues/364#issuecomment-1726782096
+>>=20
+>> You got a response to this on the previous version, but didn't engage
+>> with it:
+>> =
+https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc.=
+com/#t
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- Changelog:                                                             
- v1 -> v2:                                                              
-  * Rename node name 'nand_all_pins' -> 'nand-all-pins'.                       
+Reply for the thread:
+=
+https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc.=
+com/#t
 
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 23 ++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+> Yes, but for instance, what happens if the user query the zvknha (if =
+it
+> only needs SHA256) but zvknhb is present. If we don't declare zvknha,
+> then it will fail but the support would actually be present due to
+> zvknhb being there.
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index a49aa62e3f9f..7e5ac9db93f8 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -432,6 +432,27 @@ mux-1 {
- 					};
- 				};
- 
-+				nand_all_pins: nand-all-pins {
-+					mux {
-+						groups = "emmc_nand_d0",
-+							 "emmc_nand_d1",
-+							 "emmc_nand_d2",
-+							 "emmc_nand_d3",
-+							 "emmc_nand_d4",
-+							 "emmc_nand_d5",
-+							 "emmc_nand_d6",
-+							 "emmc_nand_d7",
-+							 "nand_ce0",
-+							 "nand_ale",
-+							 "nand_cle",
-+							 "nand_wen_clk",
-+							 "nand_ren_wr";
-+						function = "nand";
-+						input-enable;
-+						bias-pull-up;
-+					};
-+				};
-+
- 				emmc_ds_pins: emmc_ds {
- 					mux {
- 						groups = "emmc_ds";
-@@ -1913,6 +1934,8 @@ nfc: nand-controller@7800 {
- 				reg = <0x0 0x7800 0x0 0x100>,
- 				      <0x0 0x7000 0x0 0x800>;
- 				reg-names = "nfc", "emmc";
-+				pinctrl-0 = <&nand_all_pins>;
-+				pinctrl-names = "default";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 				interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
--- 
-2.35.0
+If we needs SHA256 only, then we should check whether we have zvknha =
+`or` zvknhb.
+=
+https://github.com/openssl/openssl/blob/4d4657cb6ba364dfa60681948b0a30c40b=
+ee31ca/crypto/sha/sha_riscv.c#L24
 
+> Ahh, I now see what that happened. Your mailer is broken and puts the
+> message-id of what you are replying to in the In-Reply-To and Reply-To
+> headers. The former is correct, the latter is bogus & means you don't =
+even
+> get delivered the response.
+
+I use mac builtin `mail` client. And I think I put the `in-reply-to` =
+address to
+the `reply to` field. Hope this one works well. Thank you for the thread =
+forwarding.
+
+-Jerry=
