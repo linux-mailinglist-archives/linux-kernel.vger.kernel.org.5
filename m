@@ -2,181 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56337E6778
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D48B7E677B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbjKIKKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S232978AbjKIKKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKIKK3 (ORCPT
+        with ESMTP id S232700AbjKIKKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:10:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FAC2D6A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:09:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699524580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f66C/Uco7Rn4beNRod/QtpM+fKeOVkNE1m9/M9ZsY14=;
-        b=XY0jEFNIKPzoHUHhMSwhB8sXqU6m5Y49AnlMsK6EU6Xjrk6b75F5a11XVZE2gmxf6nMx9x
-        Dm4FzxhvV1rFYpaU6N/0oE0bk9KIwK7XF5vgm9Lp43cVChuRaqrWeekC/QDJQx8zotC3RL
-        0BIM2WE2wFeuOuM2C6gMvl7LJpK4ylg=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-638-YNgrfNEbMli1Pi-U8B-ZGQ-1; Thu, 09 Nov 2023 05:09:39 -0500
-X-MC-Unique: YNgrfNEbMli1Pi-U8B-ZGQ-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1efb58aa320so161380fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:09:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699524578; x=1700129378;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f66C/Uco7Rn4beNRod/QtpM+fKeOVkNE1m9/M9ZsY14=;
-        b=YeJpefzab6YUYS0QuFqZUjxYZ28H2Rt5bhUKnrxbvrRnNr0E/jgOLZEUKV/iXT210O
-         rZgOwtMdRr5gzUAUe7YT7s75tj7AjzLqSkCQIKZ1/z5mk4VIAVrAvvYexH3c/0hIKp5p
-         eE2ciN2buo0c/UadHuVmfiUpKEe10bHn/JBz9fGrxzTNp6ibvBbtrA4+VSEjBE1ty9pq
-         SdZdVSjzIbsQb60XD3BcIYaMvXaSeNPEVuCfs1k2OCCJc/IPHEu8dRjl8mA+zFy3Xmnz
-         jzlfTVjw3Es9AHAtWpW/7xzzb0oiZCTO6Cb8PeC0Ktbadc+eHRolOaFHo+YfGNJ1d5/h
-         5+lQ==
-X-Gm-Message-State: AOJu0Ywi7E9A5fhhdd3HhMm/1NyJFzRxKmza2X6h+UyrfRaMx4qQQ0O9
-        1N/CScDUWMIPqlzgBoyvRdZKlnBEpc1F6rgH2XV3bF/ape8HKVq2c6jNMmSqcsQ/tIhjYJAHANX
-        Lj3tMInHkf+XWuL7heYAHx6qg
-X-Received: by 2002:a05:6871:a113:b0:1e9:e8fd:bb77 with SMTP id vs19-20020a056871a11300b001e9e8fdbb77mr5119492oab.0.1699524578738;
-        Thu, 09 Nov 2023 02:09:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGuc2Fsk1aOG+26g+R1TKcXCB5LvcN3abO9ejRxfqdYaGILXhVW+FjXlWbJavq6vyZSTQA5Iw==
-X-Received: by 2002:a05:6871:a113:b0:1e9:e8fd:bb77 with SMTP id vs19-20020a056871a11300b001e9e8fdbb77mr5119472oab.0.1699524578430;
-        Thu, 09 Nov 2023 02:09:38 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id q18-20020a62ae12000000b006bae6eea9d0sm10335148pff.49.2023.11.09.02.09.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 02:09:38 -0800 (PST)
-Message-ID: <f00dd1cf-5b4c-38a8-a337-817d474d53d1@redhat.com>
-Date:   Thu, 9 Nov 2023 18:09:32 +0800
+        Thu, 9 Nov 2023 05:10:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF43F2D6D;
+        Thu,  9 Nov 2023 02:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699524640; x=1731060640;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=4qGhbTIRC708KjN7HRwtdwzqwPhWWMW76mIn+hrZgRo=;
+  b=WZA9heMtudmVOXYJTdxWVcjDxIY4LHzPE6HuqIttJHAJlCECh4M5Jy+Q
+   UU1AyjEt8ikE7etSpAWfwFBpS+NiUm97crP68ugu0kLWjRY7/+MRwTLaR
+   KKV3kW054WRHjaIZQnMEtVm4a5vqiT1zR8UZZ9cTW3JAwGqqEhuBaQ1Cd
+   WuUcc7I0YU/6/2P9YI1UNME+D0aCJCP0cZGC0T4vdznXsB/ymUnOvtsVA
+   M9FyXV9y48pZscMsgj2flwBVy6gYwOUNjcwdW0GYtu7FMC/YWqtZbuMid
+   PNk5431O0w3g5o3OlOMRyI7ANDlzNIwsyPbyfZUVO88AIkMmdj8fCQkwR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="393866786"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="393866786"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 02:10:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="4489377"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.38])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 02:10:36 -0800
+Date:   Thu, 9 Nov 2023 12:10:33 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Mark Pearson <mpearson-lenovo@squebb.ca>
+cc:     platform-driver-x86@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        ibm-acpi-devel@lists.sourceforge.net, mario.limonciello@amd.com,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: Add support for improved performance
+ mode
+In-Reply-To: <20231108162039.13737-1-mpearson-lenovo@squebb.ca>
+Message-ID: <8b29ab8-fef4-8a60-e6c5-447f31f144a7@linux.intel.com>
+References: <mpearson-lenovo@squebb.ca> <20231108162039.13737-1-mpearson-lenovo@squebb.ca>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 06/22] drivers: base: Use present CPUs in
- GENERIC_CPU_DEVICES
-Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLB-00CTwy-7y@rmk-PC.armlinux.org.uk>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <E1r0JLB-00CTwy-7y@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+On Wed, 8 Nov 2023, Mark Pearson wrote:
 
-On 11/7/23 18:29, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
+> Some new Thinkpads have a new improved performance mode available.
+> Add support to make this mode usable.
 > 
-> Three of the five ACPI architectures create sysfs entries using
-> register_cpu() for present CPUs, whereas arm64, riscv and all
-> GENERIC_CPU_DEVICES do this for possible CPUs.
+> To avoid having to create a new profile, just use the improved performance
+> mode in place of the existing performance mode, when available.
 > 
-> Registering a CPU is what causes them to show up in sysfs.
+> Tested on T14 AMD G4 AMD.
 > 
-> It makes very little sense to register all possible CPUs. Registering
-> a CPU is what triggers the udev notifications allowing user-space to
-> react to newly added CPUs.
-> 
-> To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
-> it to use for_each_present_cpu(). Making the ACPI architectures use
-> GENERIC_CPU_DEVICES is a pre-requisite step to centralise their
-> cpu_register() logic, before moving it into the ACPI processor driver.
-> When ACPI is disabled this work would be done by
-> cpu_dev_register_generic().
-
-What do you actually mean about when ACPI is disabled this work would be 
-done by cpu_dev_register_generic()? Is the work means register the cpu?
-
-I'm not quite understand that, and how about when ACPI is enabled, which 
-function do this work?
-
-> 
-> Of the ACPI architectures that register possible CPUs, arm64 and riscv
-> do not support making possible CPUs present as they use the weak 'always
-> fails' version of arch_register_cpu().
-> 
-> Only two of the eight architectures that use GENERIC_CPU_DEVICES have a
-> distinction between present and possible CPUs.
-> 
-> The following architectures use GENERIC_CPU_DEVICES but are not SMP,
-> so possible == present:
->   * m68k
->   * microblaze
->   * nios2
-> 
-> The following architectures use GENERIC_CPU_DEVICES and consider
-> possible == present:
->   * csky: setup_smp()
->   * processor_probe() sets possible for all CPUs and present for all CPUs
->     except the boot cpu, which will have been done by
->     init/main.c::start_kernel().
-> 
-> um appears to be a subarchitecture of x86.
-> 
-> The remaining architecture using GENERIC_CPU_DEVICES are:
->   * openrisc and hexagon:
->     where smp_init_cpus() makes all CPUs < NR_CPUS possible,
->     whereas smp_prepare_cpus() only makes CPUs < setup_max_cpus present.
-> 
-> After this change, openrisc and hexagon systems that use the max_cpus
-> command line argument would not see the other CPUs present in sysfs.
-> This should not be a problem as these CPUs can't bre brought online as
-                                              ^ nit: can't be
-> _cpu_up() checks cpu_present().
-> 
-> After this change, only CPUs which are present appear in sysfs.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-
-Thanks,
-Shaoqin
-
+> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
 > ---
->   drivers/base/cpu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/platform/x86/thinkpad_acpi.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
 > 
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 9ea22e165acd..34b48f660b6b 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -533,7 +533,7 @@ static void __init cpu_dev_register_generic(void)
->   #ifdef CONFIG_GENERIC_CPU_DEVICES
->   	int i;
->   
-> -	for_each_possible_cpu(i) {
-> +	for_each_present_cpu(i) {
->   		if (register_cpu(&per_cpu(cpu_devices, i), i))
->   			panic("Failed to register CPU device");
->   	}
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index ad460417f901..eba701ab340e 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10136,6 +10136,7 @@ static struct ibm_struct proxsensor_driver_data = {
+>  
+>  #define DYTC_CMD_SET          1 /* To enable/disable IC function mode */
+>  #define DYTC_CMD_MMC_GET      8 /* To get current MMC function and mode */
+> +#define DYTC_CMD_UP_CAP     0xA /* To get Ultra-performance capability */
+>  #define DYTC_CMD_RESET    0x1ff /* To reset back to default */
+>  
+>  #define DYTC_CMD_FUNC_CAP     3 /* To get DYTC capabilities */
+> @@ -10152,6 +10153,7 @@ static struct ibm_struct proxsensor_driver_data = {
+>  
+>  #define DYTC_FUNCTION_STD     0  /* Function = 0, standard mode */
+>  #define DYTC_FUNCTION_CQL     1  /* Function = 1, lap mode */
+> +#define DYTC_FUNCTION_TMS     9  /* Function = 9, TMS mode */
+>  #define DYTC_FUNCTION_MMC     11 /* Function = 11, MMC mode */
+>  #define DYTC_FUNCTION_PSC     13 /* Function = 13, PSC mode */
+>  #define DYTC_FUNCTION_AMT     15 /* Function = 15, AMT mode */
+> @@ -10163,11 +10165,14 @@ static struct ibm_struct proxsensor_driver_data = {
+>  #define DYTC_MODE_MMC_LOWPOWER 3  /* Low power mode */
+>  #define DYTC_MODE_MMC_BALANCE  0xF  /* Default mode aka balanced */
+>  #define DYTC_MODE_MMC_DEFAULT  0  /* Default mode from MMC_GET, aka balanced */
+> +#define DYTC_NOMODE            0xF  /* When Function does not have a mode */
+>  
+>  #define DYTC_MODE_PSC_LOWPOWER 3  /* Low power mode */
+>  #define DYTC_MODE_PSC_BALANCE  5  /* Default mode aka balanced */
+>  #define DYTC_MODE_PSC_PERFORM  7  /* High power mode aka performance */
+>  
+> +#define DYTC_UP_SUPPORT_BIT    8  /* Bit 8 - 1 = supported, 0 = not */
+
+It would be preferrable to comment what is supported rather than have a 
+comment like above which isn't particularly helpful.
+
+>  #define DYTC_ERR_MASK       0xF  /* Bits 0-3 in cmd result are the error result */
+>  #define DYTC_ERR_SUCCESS      1  /* CMD completed successful */
+>  
+> @@ -10185,6 +10190,7 @@ static enum platform_profile_option dytc_current_profile;
+>  static atomic_t dytc_ignore_event = ATOMIC_INIT(0);
+>  static DEFINE_MUTEX(dytc_mutex);
+>  static int dytc_capabilities;
+> +static bool dytc_ultraperf_cap; /* ultra performance capable */
+>  static bool dytc_mmc_get_available;
+>  static int profile_force;
+>  
+> @@ -10355,6 +10361,17 @@ static int dytc_profile_set(struct platform_profile_handler *pprof,
+>  	if (err)
+>  		goto unlock;
+>  
+> +	/* Set TMS mode appropriately (enable for performance), if available */
+> +	if (dytc_ultraperf_cap) {
+> +		int cmd;
+> +
+> +		cmd = DYTC_SET_COMMAND(DYTC_FUNCTION_TMS, DYTC_NOMODE,
+> +				       profile == PLATFORM_PROFILE_PERFORMANCE);
+> +		err = dytc_command(cmd, &output);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	if (dytc_capabilities & BIT(DYTC_FC_MMC)) {
+>  		if (profile == PLATFORM_PROFILE_BALANCED) {
+>  			/*
+> @@ -10429,6 +10446,7 @@ static struct platform_profile_handler dytc_profile = {
+>  static int tpacpi_dytc_profile_init(struct ibm_init_struct *iibm)
+>  {
+>  	int err, output;
+> +	int cmd;
+>  
+>  	/* Setup supported modes */
+>  	set_bit(PLATFORM_PROFILE_LOW_POWER, dytc_profile.choices);
+> @@ -10484,6 +10502,16 @@ static int tpacpi_dytc_profile_init(struct ibm_init_struct *iibm)
+>  		dbg_printk(TPACPI_DBG_INIT, "No DYTC support available\n");
+>  		return -ENODEV;
+>  	}
+> +	err = dytc_command(DYTC_CMD_UP_CAP, &output);
+> +	dytc_ultraperf_cap = output & BIT(DYTC_UP_SUPPORT_BIT) ? true : false;
+
+It would be better to put this BIT() into the define itself and remove 
+_BIT from the name because it doesn't really add that much information.
+Since you're assigning to bool, ? true : false construct is not required 
+but implicit cast will handle it for you. So in the end, this line would 
+be:
+
+	dytc_ultraperf_cap = output & DYTC_UP_SUPPORT;
+
+Looking into the driver a bit more, there are a few other defines which 
+could also move BIT() from the code into defines. Please tell if you're 
+going to look at those because if not, I might try to make the patches.
+
+> +	if (dytc_ultraperf_cap) {
+> +		pr_debug("TMS is supported\n");
+> +		/* Disable TMS by default - only use with performance mode */
+> +		cmd = DYTC_SET_COMMAND(DYTC_FUNCTION_TMS, DYTC_NOMODE, 0);
+> +		err = dytc_command(cmd, &output);
+> +		if (err)
+> +			return err;
+> +	}
+>  
+>  	dbg_printk(TPACPI_DBG_INIT,
+>  			"DYTC version %d: thermal mode available\n", dytc_version);
+> 
+
+-- 
+ i.
 
