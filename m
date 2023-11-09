@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B0A7E738E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922937E73AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345276AbjKIVWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:22:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S1345210AbjKIViW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:38:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345297AbjKIVWO (ORCPT
+        with ESMTP id S229630AbjKIViV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:22:14 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FEA4205;
-        Thu,  9 Nov 2023 13:22:12 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bf20d466cdso296493b3a.1;
-        Thu, 09 Nov 2023 13:22:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699564932; x=1700169732; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KsvShR7q5/4puO4BbnmQ13+xfWAhOYuyw8hfh0n1j6s=;
-        b=cR8vOH2ZhJ9rtVbQuqfxuaX/AgsQCIhyCAwMNqwNEyLxX1VNSPdZVjRhuCZHvIvz7X
-         RMFswhSkqyWAqpNLFgDgoBwnb0lHN1jRi+VfLHhNQ18tLRt8HmJrZMt2vXN8mBEGX6NC
-         /W4CIJemCzW8n+u0ploN5t3S71OsupC+EU/tMMvKZOaMJAiA08dcuytcBviqlC7ADD9Q
-         tkjiIdq70UvKEqWddeJrsxNcnZT6ugBOvTFRwhIz+dQq2Dv80uNw2vHgEoAX/C1DW09K
-         LOLb/gnOd3JzKmFzLPdT2tls1MC/hLP2fdX1TdmyEDzwE21RxIJnjQJ5HLX23iaeLs8H
-         NPqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699564932; x=1700169732;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KsvShR7q5/4puO4BbnmQ13+xfWAhOYuyw8hfh0n1j6s=;
-        b=nR/8R7FZ8vOcIuzHIw6b6BzMXWjEDRDxa2ybrNh+D7RsR6k2cRp8tlAwG7wD0vekY9
-         Clv3jfiY532wp5Vz3jgOiYcuhF0hEnWItydT7NUoEyTOeCsO27Nx8nRs6jKwN0xHw98J
-         4+QBHZ4QkNICY28lmRykvasKGSHZsuoulWKjjQin1GGxpck/tULoXB+nYFZrPqVkqWWe
-         4izZeBldLrG1xaw6UawDld9b1Ai9w/vyWlh3V2uZcP2CKoyuY0HFwJMPrF2WAZAssjwA
-         joDfW7W4scVIh9yqwLSa+ltwVoby9Zx33lPXqto1OxpJTVMIztO102WLNq5YWP+n0/qf
-         mCKw==
-X-Gm-Message-State: AOJu0YxiyqY/lluEVUkJWjjCbn1ouazFdzEJ8tzPrUKNfEiRWjlIPKoy
-        QpKdRVL6yLngLK4EOJepPu8=
-X-Google-Smtp-Source: AGHT+IHvE/Tj6YL2R7oWzgCsSiWW0ZECdbesF+CSMBXb/FGlg4VeXbmCo+Mt4qdyXbf+h2M2Oz76IQ==
-X-Received: by 2002:a05:6a21:3293:b0:16c:b514:a4bc with SMTP id yt19-20020a056a21329300b0016cb514a4bcmr6964603pzb.4.1699564931925;
-        Thu, 09 Nov 2023 13:22:11 -0800 (PST)
-Received: from abhinav.. ([2402:3a80:196c:ea3:aee5:8832:917a:55b9])
-        by smtp.gmail.com with ESMTPSA id bk11-20020a17090b080b00b002807ec010e3sm249653pjb.48.2023.11.09.13.22.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 13:22:11 -0800 (PST)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     tony.luck@intel.com, qiuxu.zhuo@intel.com, bp@alien8.de,
-        james.morse@arm.com, mchehab@kernel.org, rric@kernel.org
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH] driver : edac : Fix warning using plain integer as NULL
-Date:   Fri, 10 Nov 2023 02:51:57 +0530
-Message-Id: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 9 Nov 2023 16:38:21 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC942139;
+        Thu,  9 Nov 2023 13:38:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+        Resent-Message-ID:In-Reply-To:References;
+        bh=jTULZb7nPWSXQoAz/suqF1eRILvjbvT5JeWBGWqkoIs=; t=1699565899; x=1700775499; 
+        b=yWmkr2DsB9ml6dHBZGwupNJRRGnOI4LA7w/RsvrdVvbpU0hOGjX5qSby3a6fHhpyASv7IafZ15J
+        5mkvjIPmuhPY42jaSAInV4G4T0B0Y6YPyvvig7mVIQu8JwltvZeVAqfluE5nzLLJp2MHZ+GKQrVFv
+        0qNGrz2JflJBlIg8rG59zhhbtcQWzjxHB81zytmFBkAt9rDwD6KiPiBT2YDE1iYFf8eKofw5wLryH
+        rZ/sGHqxXGKAS7BpPXjtQrosw2VB0CJUs3lK/qm6FM3w6QB0/7sajAngVCnIODvmKsj/6jrl/L/J2
+        ve/qrKph1rOPwKiYth19qoKbhX7mDoDpW6GA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r1CjA-00000001znF-2PA8;
+        Thu, 09 Nov 2023 22:38:16 +0100
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Nicolai Stange <nicstange@gmail.com>,
+        Ben Greear <greearb@candelatech.com>
+Subject: [RFC PATCH 0/6] debugfs/wifi: locking fixes
+Date:   Thu,  9 Nov 2023 22:22:52 +0100
+Message-ID: <20231109212251.213873-7-johannes@sipsolutions.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse static analysis tools generate a warning with this message
-"Using plain integer as NULL pointer". In this case this warning is
-being shown because we are trying to initialize  pointer to NULL using
-integer value 0.
+Hi,
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
----
- drivers/edac/i7core_edac.c |  2 +-
- drivers/edac/sb_edac.c     | 10 +++++-----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+So ... this is a bit complex.
 
-diff --git a/drivers/edac/i7core_edac.c b/drivers/edac/i7core_edac.c
-index 23d25724bae4..08bf20c60111 100644
---- a/drivers/edac/i7core_edac.c
-+++ b/drivers/edac/i7core_edac.c
-@@ -376,7 +376,7 @@ static const struct pci_id_table pci_dev_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_i7core_nehalem),
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_lynnfield),
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_i7core_westmere),
--	{0,}			/* 0 terminated list. */
-+	{NULL,}			/* 0 terminated list. */
- };
- 
- /*
-diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
-index 0c779a0326b6..a3f50a66de33 100644
---- a/drivers/edac/sb_edac.c
-+++ b/drivers/edac/sb_edac.c
-@@ -439,7 +439,7 @@ static const struct pci_id_descr pci_dev_descr_sbridge[] = {
- 
- static const struct pci_id_table pci_dev_descr_sbridge_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_sbridge, ARRAY_SIZE(pci_dev_descr_sbridge), 1, SANDY_BRIDGE),
--	{0,}			/* 0 terminated list. */
-+	{NULL,}			/* 0 terminated list. */
- };
- 
- /* This changes depending if 1HA or 2HA:
-@@ -505,7 +505,7 @@ static const struct pci_id_descr pci_dev_descr_ibridge[] = {
- 
- static const struct pci_id_table pci_dev_descr_ibridge_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_ibridge, 12, 2, IVY_BRIDGE),
--	{0,}			/* 0 terminated list. */
-+	{NULL,}			/* 0 terminated list. */
- };
- 
- /* Haswell support */
-@@ -576,7 +576,7 @@ static const struct pci_id_descr pci_dev_descr_haswell[] = {
- 
- static const struct pci_id_table pci_dev_descr_haswell_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_haswell, 13, 2, HASWELL),
--	{0,}			/* 0 terminated list. */
-+	{NULL,}			/* 0 terminated list. */
- };
- 
- /* Knight's Landing Support */
-@@ -620,7 +620,7 @@ static const struct pci_id_descr pci_dev_descr_knl[] = {
- 
- static const struct pci_id_table pci_dev_descr_knl_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_knl, ARRAY_SIZE(pci_dev_descr_knl), 1, KNIGHTS_LANDING),
--	{0,}
-+	{NULL,}
- };
- 
- /*
-@@ -686,7 +686,7 @@ static const struct pci_id_descr pci_dev_descr_broadwell[] = {
- 
- static const struct pci_id_table pci_dev_descr_broadwell_table[] = {
- 	PCI_ID_TABLE_ENTRY(pci_dev_descr_broadwell, 10, 2, BROADWELL),
--	{0,}			/* 0 terminated list. */
-+	{NULL,}			/* 0 terminated list. */
- };
- 
- 
--- 
-2.39.2
+Ben found [1] that since the wireless locking rework [2] we have
+a deadlock in the debugfs use in the wireless stack, since some
+objects (netdevs, links, stations) can be removed while holding
+the wiphy->mtx, where as the files (all netdev/link and agg_status
+for stations) also acquire the wiphy->mtx. This of course leads
+to deadlocks, since Nicolai's proxy_fops work [3] we wait for the
+users of the file to finish before removing them, which they
+cannot in this case:
+
+thread 1		thread 2
+lock(wiphy->mutex)
+			read()/write()
+			 -> lock(wiphy->mutex) // waits for mutex
+debugfs_remove()
+ -> wait_for_users() // cannot finish
+
+
+Unfortunately, there's no good way to remove the debugfs files
+*before* locking in wireless, since we may not even know which
+object needs to get removed, etc. Also, some files may need to
+be removed based on other actions, and we want/need to free the
+objects.
+
+
+I went back and forth on how to fix it, and Ben had some hacks
+in the threads, but in the end I decided on the approach taken
+in this patchset.
+
+So I have
+ * debugfs: fix automount d_fsdata usage
+
+   This patch fixes a bug in the existing automount case in
+   debugfs, if that dentry were ever removed, we'd try to
+   kfree() the function pointer. I previously tried to fix
+   this differently [4] but that doesn't work, so here I
+   just allocate a debugfs fsdata for automount, there's a
+   single instance of this in the tree ...
+
+ * debugfs: annotate debugfs handlers vs. removal with lockdep
+
+   This just makes the problem obvious, whether in wireless
+   or elsewhere, by annotating it with lockdep so that we get
+   complaints about the deadlock described above. I've checked
+   that the deadlock in wireless actually gets reported.
+
+ * debugfs: add API to allow debugfs operations cancellation
+
+   This adds a bit of infrastructure in debugfs to allow for
+   cancellation of read/write/... handlers when remove() is
+   called for a file. The API is written more generically,
+   so that it could also be used to e.g. cancel operations in
+   hardware/firmware, for example, if debugfs does accesses
+   to that.
+
+ * wifi: cfg80211: add locked debugfs wrappers
+
+   I went back and forth on this, but in the end this seemed
+   the easiest approach. Using these new helpers from debugfs
+   files that are removed under the wiphy lock is safe, at
+   the expense of pushing the read/write functions into a new
+   wiphy work, which is called with wiphy->mutex held. This
+   then uses the debugfs API introduced in the previous patch
+   to cancel operations that are pending while the file is
+   removed.
+
+ * wifi: mac80211: use wiphy locked debugfs helpers for agg_status
+ * wifi: mac80211: use wiphy locked debugfs for sdata/link
+
+   These convert the files that actually have the problem in
+   mac80211 to use the new helpers.
+
+Any comments would be appreciated :-)
+
+[1] https://lore.kernel.org/r/56d0b043-0585-5380-5703-f25d9a42f39d@candelatech.com
+[2] in particular commit 0ab6cba0696d ("wifi: mac80211: hold wiphy lock in netdev/link debugfs")
+    but there's a lot more work that went into it
+[3] commit e9117a5a4bf6 ("debugfs: implement per-file removal protection")
+[4] https://lore.kernel.org/lkml/20231109160639.514a2568f1e7.I64fe5615568e87f9ae2d7fb2ac4e5fa96924cb50@changeid/
+
+johannes
+
 
