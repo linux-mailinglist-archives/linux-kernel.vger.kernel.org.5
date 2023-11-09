@@ -2,235 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42F77E6C6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F217E6C73
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjKIOaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43180 "EHLO
+        id S232211AbjKIOdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:33:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbjKIOaF (ORCPT
+        with ESMTP id S231586AbjKIOc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:30:05 -0500
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC3F30D5
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:30:03 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-27ff9e2ffdfso914362a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:30:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699540203; x=1700145003;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VoeKjlpsvaMRBvnYvZV26UGdJ8nzg/H4S2MEi9nL8e0=;
-        b=WFx4x2zJ/p4jbt77WcpBEGQ+6IjdcyXd+AfXqfLpTMBihpdP8xNES5i4fahVkL8K0G
-         CyfqqX2l+fEJlNZRKQ1MqjAmzfBrivByeBOXGXoFLRfKiSp3XhiEhzGX+oev/om3Ush2
-         g/HJMNdiyn3I845xpBYseY1lJFfEPGlaKQzFolWYrY3aVPl6RsOXl6BNRFEblXSGPqCY
-         yle2lhfyVLLlry9WCgIBxZTalP2NvRTXL6PSy4ky00kbTnmw1YzJ95bGzrINgG8Hs6SN
-         EzFpLRwZnFbC1k74nDKwAN5wQc6QkkzzBSOPJNJPdohV2FSVBo4WtoTwPsQ/KEzq0SpE
-         EdXQ==
-X-Gm-Message-State: AOJu0YxxwVMbuGrHzKl1jMq/+n1HcVRGc0FbVTbX+e5jrEKip+AZ0/Us
-        IWvyXZEJXYKi+8AHGZo8Doa6PBMUut2fMTDE5Tc4hUoNcRau
-X-Google-Smtp-Source: AGHT+IEDPstkbgDwctbmRkljrUEGq+1w9u+C+KnfoJmx2rBVgP0Yodblg2qV7EVgvdVXLhTnjN8HdyKmHNjBui9HK2mHa8eaEHna
-MIME-Version: 1.0
-X-Received: by 2002:a17:90b:3546:b0:27d:5438:db49 with SMTP id
- lt6-20020a17090b354600b0027d5438db49mr434400pjb.8.1699540203460; Thu, 09 Nov
- 2023 06:30:03 -0800 (PST)
-Date:   Thu, 09 Nov 2023 06:30:03 -0800
-In-Reply-To: <tencent_F3556E8C96D4E90EEEAACFF07A626DBC2D0A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001bdf5b0609b90ac3@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+        Thu, 9 Nov 2023 09:32:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7E12D78
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:32:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699540376; x=1731076376;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=D+TCl4UfNdd9ebG6Wcxu1EgwZQbqTyrTc+jcOSKyyAk=;
+  b=S1SXbhzD7zmUBGL1SjN/k77RQxY4KaDCSx2h1at0+RVUT6Bbk3TNJy4Y
+   C8G/KvkXcNEh2k2ebKpewqAAtkOSCGQ5BRXYMLzRYmB28YbEi85JHnch6
+   09P61AjXdEj+J0m/kvlY8FR3ULqWJNOG15G09INIwlqFUNjWDhinlfuXP
+   MJGg+8SpYDfFIaGVWgNWMbEDI/R9ZQwqoChhICxat9DgikraHqJpCp0BA
+   x/bUhG31aJ5HR/Ev8tb4Cn6oC7q00Sec/HxL2sA0gZeclaiw1EsdpW5Ec
+   +ijVF/sSCzEQgm6y3+YKGACuNVTOSoQVOTL/c+JMzDODFbOkZi5uBX1/0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="454295322"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="454295322"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 06:32:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="880621760"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="880621760"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 06:32:55 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 9 Nov 2023 06:32:54 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 06:32:54 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Thu, 9 Nov 2023 06:32:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sm8hb6b8xRDLQAMsWnzcfYaZKLpM64gihYE0DUv99FRTNNw9LEq5wf/j/VMokBs1Uarl3/BH+XEv0KAXobf61h+f71GNflh6UwlUP1aNYeSFGkKVsZ7wmKHNwS8WpgE6M/C1hBuBh9TFj9bAj5q2q67tNB0WTQEGmCqoMzJws/Cn+gdDzKfOMaOu2KGAqKJyx8pPhML1Yj4BFFBwbMlJZQQlLe0SrRq0nDGd5asay2Z0ev3hcvbUlBoF6qO3DjP9LVruFY1cO0vFvWELJAUHyFJBL/oy6TJSUZ0bDlHPNygACImenH79Nbg/8GhmekGK3vpr9SgS9lPLg1/gYA2XIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BR6TEGxRU51Wy2cD5PYP2qY4KbsZEVBtrmefcVgqkIc=;
+ b=DwESU42RonFEJdkkaddz5LbLIdlXtrKeNxJxHg1W2MiBYwzeRVwTm8fT+Rfa4JQr2ZTk2gtW12urCdDj2ze85ibiwF8+0N5WAG1xkJQh/zXmBw4qdqRDC7bGAgPDsl0LWLWRZrygX1Od9WbpMiNUe8/mHny73/3o17UQXHYUpdVhHyZ2UJ9v7IpjBS6JQ7nH/y+RlivSyr9S0936aPmqWzxGoNS/4644esX/627FYxhyClkxEjhNBIjTu+vO1u1G5u5j6q0dhOXxPGRiozEnEa4KHpWkagpTHW02HY2/dwqNjTOyvdzoYNGaNPqja0JT9/BYXwv4AMcRwQHZjtEkOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
+ by PH0PR11MB5141.namprd11.prod.outlook.com (2603:10b6:510:3c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 14:32:52 +0000
+Received: from DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::36be:aaee:c5fe:2b80]) by DM6PR11MB3625.namprd11.prod.outlook.com
+ ([fe80::36be:aaee:c5fe:2b80%7]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
+ 14:32:52 +0000
+Message-ID: <27f5d15b-28da-469b-9625-1c840f33b60d@intel.com>
+Date:   Thu, 9 Nov 2023 15:32:46 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 2/2] lib/test_bitmap: add tests for
+ bitmap_{read,write}()
+Content-Language: en-US
+To:     Alexander Potapenko <glider@google.com>
+CC:     <catalin.marinas@arm.com>, <will@kernel.org>, <pcc@google.com>,
+        <andreyknvl@gmail.com>, <andriy.shevchenko@linux.intel.com>,
+        <linux@rasmusvillemoes.dk>, <yury.norov@gmail.com>,
+        <alexandru.elisei@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <eugenis@google.com>,
+        <syednwaris@gmail.com>, <william.gray@linaro.org>
+References: <20231030153210.139512-1-glider@google.com>
+ <20231030153210.139512-2-glider@google.com>
+ <093114e8-b02f-4df0-a0d4-8e9f86e2259d@intel.com>
+ <CAG_fn=W3LqtdDoUDDVGn_=2+gvKNeCusH6yUzWmVmMmOLZp9jA@mail.gmail.com>
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+In-Reply-To: <CAG_fn=W3LqtdDoUDDVGn_=2+gvKNeCusH6yUzWmVmMmOLZp9jA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DB9PR05CA0013.eurprd05.prod.outlook.com
+ (2603:10a6:10:1da::18) To DM6PR11MB3625.namprd11.prod.outlook.com
+ (2603:10b6:5:13a::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH0PR11MB5141:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4506558c-cb1f-494f-3d24-08dbe130c16a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aKKuP0Z0+WaRWLBv0I0xpj0FLKPy5G4Dm6QiD7G/uPWujLnlXVGNXxHJ1fKUsj4GPjj63uS7IZk7FtzDUiJRH/EriI+mgPzU5ozKP6c5pN77zRiQxYbXKi9x60zsohNwG++vr5EObfNDqtrm7lIrN06mfveSr9srr/XgBnRJ1QnMtwkBGFWh8T4xShR7SiXKrrqvgDBwv8lFAp093EwiGOgkf86LeUfEKrOpa69qnhrpkU8iTINYyzTufO7UfsJ7AY5yc1mVqgf/AmG9L2ASRXDEqKNH1BV6dF/JUfCkbSDQq2LT/Oin65nTpvl/NqxuoKQqgyFEYnx4CAIE1v1F5DmMBxunOPWCDaE/wddWQ6WRxfFUFJeDFtJzPY67yXND8he5GBvaDKXuHHzqhevaXCJsAeVGaQYxYQvw27I63YKQQde/zo0hRyPzy3YH7iTix2/IcxfCyusDNW9rLeh8U52ROIjevNkxtiu6GTFSAmD5+aSSUWmE2C8cHMn2ASruJH6pbBNOMgJXYd0WxmmRBul0F3qLug/IXj18IInMXtqzR+gJ8Y6POievyPi2E/H/Mq3zu0zcEfI8KV+s9EcRHPOap9EcDPqrrehMQQFbLmpF2j6HIPxB0UTJB/2XM8YRbSXLcHUhvxiEiyFJWkOprMRdgNoCgDcakovN0weeACc3avdSqu5EeRJjbSYSrgyJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(346002)(376002)(136003)(230922051799003)(230173577357003)(230273577357003)(1800799009)(186009)(64100799003)(451199024)(6916009)(8676002)(4326008)(41300700001)(316002)(36756003)(8936002)(2906002)(5660300002)(38100700002)(31696002)(6486002)(66556008)(6512007)(66476007)(31686004)(86362001)(7416002)(66946007)(83380400001)(26005)(66574015)(82960400001)(2616005)(6506007)(6666004)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTV3STk3ZCtkUVNqUnVyZDdsVUNkaUR4ZmZ6YU56Ui9OVkd6KzlNZFh1OHlZ?=
+ =?utf-8?B?OCt1a3VGakdhTzhHaDIwSi9EenFxSGhpNGdGT3d1SWk2d1VVYmd2bTFBanR2?=
+ =?utf-8?B?RjQyMHYxUkVlWlRWN2lBWnNjbHRVZStaRFJpUFN2cXNJejRLaWRRUHk0YUhL?=
+ =?utf-8?B?Y3JRbzJqQllocTNHcVVkeWluc0VIVDBvWDYvN0YwUHNOQ1JOSDlZbTNFMy82?=
+ =?utf-8?B?bW1nUXQ3aUs0dFE0ZXFCNFpnb1BKK1Z6VVJqaitjRVNYbGZTQ2ExemIyd1hC?=
+ =?utf-8?B?ZTZsbUtFSW9VOTAvZXBjaFJFZmRvTDNwTDNBbjdJSW56Mm51enhVN2dsaDVK?=
+ =?utf-8?B?d3grOTZwTU5LSjI4cktwdExNdXRoS1BubUREZEE4bWM1ZENlVzJubTJ1akQv?=
+ =?utf-8?B?ZVJrM2lkajhtdVFrOTBPQTdneGJMOGoxdXRCUWgyLzNWbDdPY0FoNWxDMVJx?=
+ =?utf-8?B?RnZyTFV1NWJOQ0l3ZFBRMUJ6UVdBNHBNZzEvd0s3aE4xcEtDazlBRW8zWGx4?=
+ =?utf-8?B?SDZ3V1RDaDMzcGVzaXFvdDFzNURZUTcwY2N6VEVSMlRtaWdTYWdLWW9VTDUr?=
+ =?utf-8?B?RVUreGdmNW56T3NqOXVzaXk4OTRMSm1YckM0SEVwY0J3WVpjYzZSTzljUVhB?=
+ =?utf-8?B?c1Y4dFFhdUJKUHFqcHBCbzFOa1pEWjZQTmFLL1JHZlVjZGNQU3lpbE13ekhE?=
+ =?utf-8?B?VFd2Uk9RcDNIeVB2TVgrZi9yMlh0dGljWmhUeUVjemRVbU9aNC9Fd3c3TGEy?=
+ =?utf-8?B?SWpzRUluNTZEbFhYWkdFN3dIT2FHNmlZMmRKbWpvdTZIbTdyZVVJOGd6QVR2?=
+ =?utf-8?B?L2hna1dGbGlqNjlyTU9GWVc5c09nd0tyNjVyS1YydVczS2RLTHBKTXU5cWF6?=
+ =?utf-8?B?YzJ6TGFOM0E4VEErNGdod0ZSNVNDRkxmcUpGTXQySFVPSHQyQnk1eHd2VlFZ?=
+ =?utf-8?B?a2U3WmZ5K2U1U0E2MFZjWEFWandVK2g0K1ZlK1k2blFnT2tXTlN3WTU5eHN0?=
+ =?utf-8?B?Nk94U1FpeFdBdDhzUjNNMEhhWVI3QjhUdUtVbkM4c2tHZW9uYWl5VWxmMUpU?=
+ =?utf-8?B?U2s1Mjg5Uk55OFFJNGNOcjEva20vQXNNbmJ3NS9JU3RJWXBYV3RPNUs2TFli?=
+ =?utf-8?B?blRSWmFxbXdIWEVoMUlhU2xjVXgxZmNXTERRa2FIc0xlL0J6eEllWlE3T0xk?=
+ =?utf-8?B?Vk5qVk9GRWpMQzBMZWx0NVo2c1Eyd2ppazg0dkYxcVVRQ1hIZXlsV2hBS0VR?=
+ =?utf-8?B?bW5wR1B1L25RWVpZZ3RVd1F6c3JTdjZxcmc5UXh4M3hoUDFRRHJiRmhiTmZE?=
+ =?utf-8?B?ZGVidng3N3FmMkdOaFpUQWJaOUFnN1kxQzAxZmlzZGhEOGx4aW9oN2xiZHox?=
+ =?utf-8?B?N3RkRWlOc2JXYnRsM004Tm9hYW1Eam5HaVdtai8vNmtIT3ROTmExQlB5TzQ5?=
+ =?utf-8?B?dXdjeVBZQk1iNmNXTEk0bFVYTnZxTWZFK0JrdnBTTTFSOGJ3MVJ5U0NkejVy?=
+ =?utf-8?B?c1lUa20rOTNmeVZCcDMwcDRBT3hjWFFGa3hWTDROOTdXSGEzeW5wWm5pd2xs?=
+ =?utf-8?B?S0RkN2FTZ2l5bTZKM09aUkVndTRrWFpxZTlHVi9TRHJpL1NkR0xxbGFibXh0?=
+ =?utf-8?B?QTdxR2gwVTBCRkVCSHZLaTB6ZEtUZlpqMUJCNi9Od1c3dy9XYUZoNy83QWVu?=
+ =?utf-8?B?a0krbmUwYVJROWFhMnRLQkNOSU9xZm5wSkFuZU0xZ1YrTGZDYkFhVGQ2K3JT?=
+ =?utf-8?B?U092WHoza0k2UGtKOElLWGZYU1JqM1BHK2VUY3Q0M1hoSlhna2Z5TzRxNTEz?=
+ =?utf-8?B?ZGhsMFhNYzE3NnpEZ1ZqZFB5M09XOUVaTTE0ckpYSDgxZmxoUXNRUXZSMVY0?=
+ =?utf-8?B?T05tRW5pMDBKNlM1QkJnSWliYlFLQmNaOWNGNkxWd2JwNmRNVDFWeXpkWmt1?=
+ =?utf-8?B?ZXBRT241TGpiOVFDU0kwTE9VeGFTeEpHYzJ5U0VpSE9jQjArTFdZQ1VWQUpX?=
+ =?utf-8?B?SXdOSGdIeUl4aGhWZ3YvRThRbFJRd2NWcWVYRWxPREZEalVzZldBdCsrckFW?=
+ =?utf-8?B?NkUybDdaeXYwejducXFjM1R2UjJwd0dOWGtuQzBwaUpTL1hZZnl0WU41QVgz?=
+ =?utf-8?B?aXhhT2VGMXZZZ0h1TDZtZzQ5dGJVZk9Hb1Jpa2dZMEtQTXJvdUx0OFJKMFh1?=
+ =?utf-8?B?MEE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4506558c-cb1f-494f-3d24-08dbe130c16a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 14:32:52.4648
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aizbbbTxJcO14+hhMAU7A6DILO0s2KEa/EwRy53cbJa7U0G8dcUZHifAFnQt7zXoAN1BkFJ5OLt/EVHhhaUi9zrYtUpE7lH8xcZxql1GvG4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5141
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Alexander Potapenko <glider@google.com>
+Date: Thu, 9 Nov 2023 15:28:56 +0100
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+>>
+>> Could we maybe rather extend __check_eq_uint to take ulongs? Doesn't
+>> seem like they differ a lot.
+> 
+> We could redefine expect_eq_uint as:
+> 
+> #define expect_eq_uint(x, y)           expect_eq_ulong((unsigned
+> int)(x), (unsigned int)(y))
 
-==================================================================
-BUG: KASAN: slab-use-after-free in nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
-Read of size 4 at addr ffff888147670548 by task syz-executor.0/5641
+Do we need explicit casts here tho?
 
-CPU: 0 PID: 5641 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-14263-gaea6bf908d73-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
- nfc_llcp_send_ui_frame+0x2ac/0x670 net/nfc/llcp_commands.c:766
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x592/0x890 net/socket.c:2588
- ___sys_sendmsg net/socket.c:2642 [inline]
- __sys_sendmmsg+0x3b2/0x730 net/socket.c:2728
- __do_sys_sendmmsg net/socket.c:2757 [inline]
- __se_sys_sendmmsg net/socket.c:2754 [inline]
- __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2754
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fac8927cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fac89f6c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007fac8939bf80 RCX: 00007fac8927cae9
-RDX: 0000000000000001 RSI: 00000000200013c0 RDI: 0000000000000004
-RBP: 00007fac892c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fac8939bf80 R15: 00007ffd93790688
- </TASK>
+> 
+> and throw __expect_eq_uint away.
+> 
+> 
+>>> +     }
+>>> +     time = ktime_get() - time;
+>>> +     pr_err("Time spent in %s:\t%llu\n", __func__, time);
+>>
+>> pr_err() is for printing errors and is shown in red by some log readers.
+>> Maybe use pr_info() or pr_notice()? Definitely not an error or even warning.
+> 
+> Note that test_bitmap.c has 17 calls of pr_err() and 7 calls of
+> pr_warn(), which aren't really consistent (e.g. they are used in
+> certain __check helpers instead of pr_err()), and the existing
+> performance tests are calling pr_err().
 
-Allocated by task 5641:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- nfc_allocate_device+0x12f/0x520 net/nfc/core.c:1065
- nci_allocate_device+0x1e2/0x360 net/nfc/nci/core.c:1179
- virtual_ncidev_open+0x75/0x1b0 drivers/nfc/virtual_ncidev.c:136
- misc_open+0x30b/0x380 drivers/char/misc.c:165
- chrdev_open+0x5ab/0x630 fs/char_dev.c:414
- do_dentry_open+0x8fd/0x1590 fs/open.c:948
- do_open fs/namei.c:3622 [inline]
- path_openat+0x2845/0x3280 fs/namei.c:3779
- do_filp_open+0x234/0x490 fs/namei.c:3809
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_openat fs/open.c:1471 [inline]
- __se_sys_openat fs/open.c:1466 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Correct, and that's what caught my attention: visual grepping for bitmap
+messages makes no sense because some of them are red even thought all
+tests pass correctly.
 
-Freed by task 5640:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
- device_release+0x95/0x1c0
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1ee/0x430 lib/kobject.c:733
- nfc_free_device include/net/nfc/nfc.h:213 [inline]
- nci_free_device+0x38/0x50 net/nfc/nci/core.c:1209
- virtual_ncidev_close+0x70/0x90 drivers/nfc/virtual_ncidev.c:164
- __fput+0x3cc/0xa10 fs/file_table.c:394
- __do_sys_close fs/open.c:1590 [inline]
- __se_sys_close+0x15f/0x220 fs/open.c:1575
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> I can change that in a separate patch, if you think it's worth the
+> effort: the error messages should probably remain pr_err(), but the
+> informational ones could be made pr_info().
 
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- __call_rcu_common kernel/rcu/tree.c:2667 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
- netlink_release+0x162a/0x1b00 net/netlink/af_netlink.c:831
- __sock_release net/socket.c:659 [inline]
- sock_close+0xb8/0x230 net/socket.c:1419
- __fput+0x3cc/0xa10 fs/file_table.c:394
- __do_sys_close fs/open.c:1590 [inline]
- __se_sys_close+0x15f/0x220 fs/open.c:1575
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Sounds good to be, would be nice to see!
 
-Second to last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- __call_rcu_common kernel/rcu/tree.c:2667 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
- netlink_release+0x162a/0x1b00 net/netlink/af_netlink.c:831
- __sock_release net/socket.c:659 [inline]
- sock_close+0xb8/0x230 net/socket.c:1419
- __fput+0x3cc/0xa10 fs/file_table.c:394
- __do_sys_close fs/open.c:1590 [inline]
- __se_sys_close+0x15f/0x220 fs/open.c:1575
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[...]
 
-The buggy address belongs to the object at ffff888147670000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1352 bytes inside of
- freed 2048-byte region [ffff888147670000, ffff888147670800)
+>>> @@ -1237,6 +1411,9 @@ static void __init selftest(void)
+>>>       test_bitmap_cut();
+>>>       test_bitmap_print_buf();
+>>>       test_bitmap_const_eval();
+>>> +     test_bitmap_read_write();
+>>> +     test_bitmap_read_perf();
+>>> +     test_bitmap_write_perf();
+>>>
+>>>       test_find_nth_bit();
+>>>       test_for_each_set_bit();
+>>
+>> Thanks,
+>> Olek
+> 
+> 
+> 
+> --
+> Alexander Potapenko
+> Software Engineer
+> 
+> Google Germany GmbH
+> Erika-Mann-Straße, 33
+> 80636 München
+> 
+> Geschäftsführer: Paul Manicle, Liana Sebastian
+> Registergericht und -nummer: Hamburg, HRB 86891
+> Sitz der Gesellschaft: Hamburg
 
-The buggy address belongs to the physical page:
-page:ffffea00051d9c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x147670
-head:ffffea00051d9c00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0x57ff00000000840(slab|head|node=1|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 057ff00000000840 ffff888012c42000 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid 1 (swapper/0), ts 2879381771, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x339a/0x3530 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- acpi_os_allocate_zeroed include/acpi/platform/aclinuxex.h:57 [inline]
- acpi_ds_create_walk_state+0x103/0x2a0 drivers/acpi/acpica/dswstate.c:518
- acpi_ps_execute_method+0x245/0x870 drivers/acpi/acpica/psxface.c:134
- acpi_ns_evaluate+0x5df/0xa40 drivers/acpi/acpica/nseval.c:205
- acpi_evaluate_object+0x59b/0xaf0 drivers/acpi/acpica/nsxfeval.c:354
- acpi_evaluate_integer+0x11b/0x2f0 drivers/acpi/utils.c:260
- acpi_bus_get_status_handle drivers/acpi/bus.c:82 [inline]
- acpi_bus_get_status+0x174/0x3a0 drivers/acpi/bus.c:111
- acpi_scan_init_status drivers/acpi/scan.c:1813 [inline]
- acpi_add_single_object+0x35c/0x1d70 drivers/acpi/scan.c:1846
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888147670400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888147670480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888147670500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                              ^
- ffff888147670580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888147670600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
-Tested on:
-
-commit:         aea6bf90 Merge tag 'f2fs-for-6.7-rc1' of git://git.ker..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=106b5f90e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14308797680000
-
+Thanks,
+Olek
