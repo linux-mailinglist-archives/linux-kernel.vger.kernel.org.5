@@ -2,152 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE097E749A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7A37E74EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345358AbjKIW44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
+        id S234739AbjKIXEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:04:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbjKIW4y (ORCPT
+        with ESMTP id S229613AbjKIXEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:56:54 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D014422D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 14:56:51 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c6b30acacdso17859491fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 14:56:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1699570610; x=1700175410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=1QtA2/x0ZyZN5FnQ0Yz771YH8zXyNfVbXbyQs0J7Qcc=;
-        b=u0yFevPjnb9B1oZvKEgt0ojfb988l4sjSb/1C+U6dTGr5MInh/Twzgt2MJIFvGZfNn
-         X9/L50KTRV96g1YUwUsZKf6qLRhTDIEYrRFjQGdujF0ZeBoJa3Xk/eGdg0OI6NhEifJr
-         SMuV0Gw/ISPFJHTCmctQBqHFmS1JgornSW2D3sdfWjnIZ/66rDhGXv2bVtiMpYHz/Rgk
-         4k8Xw0S8IMqTAUI7+iu1DzaVT+PJwUaM+dduIfCrfuQXkrgLTZTLno0yNZ2EsA1I0q8j
-         z9XzXPM4s92HtKFiJGGQIlyH1PEQQCn54NxrIsNE5igR73a2x3TDZGZYlk5mGIm71b5l
-         zRXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699570610; x=1700175410;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1QtA2/x0ZyZN5FnQ0Yz771YH8zXyNfVbXbyQs0J7Qcc=;
-        b=u1qNVoTuv5NA8FAvlgcggrFCdIdfbSUu/jZrq5hwJ6D9cHcwqs6NVqiGcScdSurLOD
-         0xiPsIJYGSjJczzrKoSGDdwnhrJKepVZh0axkB+sFuuWjHpjv8hcteg/HZIXZO1cXSG4
-         eoet2mzV037mA0gGgvbaVmquHJR4tb7pIPf7+8UIOKued+oL2J4zgoomJTEfHUpC31UC
-         DZYn8J8olDLc/aA2qsPZdfXz/fxD+A4pNMyviNx96piRN63tbBEPHA2oFX5icZeJrglD
-         ImFjWfqj597Tc+TfK7rIDZls50AhyEJFJiqKLZ0/B5HcYUCXrR+OaPe5H/SJgwRtU4Ih
-         sj7Q==
-X-Gm-Message-State: AOJu0YxPihK2gi2GTr0MOFxEKY0CXK1e6quOMg7eobCuWp7YOgsc+Hu8
-        cfVHQJ1XxmsdcSyJQvVEGShGtQ==
-X-Google-Smtp-Source: AGHT+IH8wamSL8MWF07seVKJLlmtRn705pu0xbWsjODjcj0QVNRgb8a+YFiv/EzLaDXHqlS63cHiAw==
-X-Received: by 2002:a2e:a4d2:0:b0:2c6:ed74:4058 with SMTP id p18-20020a2ea4d2000000b002c6ed744058mr4667381ljm.42.1699570609595;
-        Thu, 09 Nov 2023 14:56:49 -0800 (PST)
-Received: from [192.168.0.28] ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05600c350700b004090ca6d785sm3432267wmq.2.2023.11.09.14.56.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 14:56:49 -0800 (PST)
-Message-ID: <eb9cb563-d480-4000-8feb-b63b856235c3@smile.fr>
-Date:   Thu, 9 Nov 2023 23:56:48 +0100
+        Thu, 9 Nov 2023 18:04:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A634239
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:04:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA4FC433C7;
+        Thu,  9 Nov 2023 23:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699571043;
+        bh=q25fxnyRwCKyB6X8dMtvC2LfwbcbhvRVubBjYIAkRKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fQc4LdRaV2jqYQH4yFSwfyC8rn9ZhyExtgelVpdXl1F11rzQCI1vYfTxWC//Qw4DI
+         Om4dg2gugBNTsWUnhaQa7jsr5Z1IsFyRWcbGd5H7+qWqAAupPQBhetiIhccB5l/fcD
+         Ssjd003w2kcVfl+1USSNSuc9xpCMTq5APPgqlEqIZORqz/5CJFCZS/j6FE+k5uLR5z
+         282CPD/P4veeOnw+Xhj9NjLQY7NgVVM+s/Sdgc1D0excfGr1TzWrd2Fqz0RRPqgTOo
+         uSs6HbUT74Y9Q37Yi6fXK5d+JyaIHqyB4YO5TOvt4Lzwwq2lBGSdLGTqctcdc99O7S
+         2bySd79WnWVNA==
+Date:   Thu, 9 Nov 2023 15:04:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <VishvambarPanth.S@microchip.com>
+Cc:     <f.fainelli@gmail.com>, <Bryan.Whitehead@microchip.com>,
+        <andrew@lunn.ch>, <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
+        <edumazet@google.com>
+Subject: Re: [PATCH net] net: microchip: lan743x : bidirectional throughuput
+ improvement
+Message-ID: <20231109150402.12fda9cf@kernel.org>
+In-Reply-To: <0d0627cbd32afb813b75b485ea8e979ac027482d.camel@microchip.com>
+References: <20230927111623.9966-1-vishvambarpanth.s@microchip.com>
+        <20231004122016.76b403f0@kernel.org>
+        <b1f64c44-0d1c-480e-a272-fb017e7d8673@gmail.com>
+        <20231004130957.2d633d03@kernel.org>
+        <ee81b2128f5178df95a1678d2cf94ad4edf2c9e9.camel@microchip.com>
+        <0d0627cbd32afb813b75b485ea8e979ac027482d.camel@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] kconfig: avoid an infinite loop in
- oldconfig/syncconfig
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brandon Maier <brandon.maier@collins.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-References: <20231104222715.3967791-1-yoann.congal@smile.fr>
- <CAK7LNAS6J5Nh8nOUHbaf123yd1Z-1q--FvB1ok8GQcoNorAROw@mail.gmail.com>
- <20231107210004.GA2065849@dev-arch.thelio-3990X>
- <CAK7LNARpJ9huseh-Ro9v8W_tabMof9cuUZO43gi-hfEnXG4FYA@mail.gmail.com>
-Content-Language: en-US
-From:   Yoann Congal <yoann.congal@smile.fr>
-Organization: Smile ECS
-In-Reply-To: <CAK7LNARpJ9huseh-Ro9v8W_tabMof9cuUZO43gi-hfEnXG4FYA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 9 Nov 2023 10:53:26 +0000 VishvambarPanth.S@microchip.com wrote:
+> Thanks for your feedback. I apologize for the delayed response.
+>=20
+> The data presented in the patch description was aimed to convince a
+> reviewer with the visible impact of the performance boosts in both x64
+> and ARM platforms. However, the main motivation behind the patch was
+> not merely a "good-to-have" improvement but a solution to the
+> throughput issues reported by multiple customers in several platforms.
+> We received lots of customer requests through our ticket site system
+> urging us to address the performance issues on multiple kernel versions
+> including LTS. While it's acknowledged that stable branch rules
+> typically do not consider performance fixes that are not documented in
+> public Bugzilla, this performance enhancement is essential to many of
+> our customers and their end users and we believe should therefore be
+> considered for stable branch on the basis of it=E2=80=99s visible user im=
+pact.
+> Few issues reported by our customers are mentioned below, even though
+> these issues have existed for a long time, the data presented below is
+> collected from the customer within last 3 months.
+> =20
+> Customer-A using lan743x with Hisilicon- Kirin 990 processor in 5.10
+> kernel, reported a mere ~300Mbps in Rx UDP. The fix significantly
+> improved the performance to ~900Mbps Rx  in their platform.
+> =20
+> Customer-B using lan743x with v5.10 has an issue with Tx UDP being only
+> 157Mbps in their platform. Including the fix in the patch boosts the
+> performance to ~600Mbps in Tx UDP.
+> =20
+> Customer-C using lan743x with ADAS Ref Design in v5.10 reported UDP
+> Tx/Rx to be 126/723 Mbps and the fix improved the performance to
+> 828/956 Mbps.
+> =20
+> Customer-D using lan743x with Qcom 6490 with v5.4 wanted improvements
+> for their platform from UDP Rx 200Mbps. The fix along with few other
+> changes helped us to bring Rx perf to 800Mbps in customer=E2=80=99s platf=
+orm
+>=20
+> This is a kind request for considering the acceptance of this patch
+> into the net branch, as it has a significant positive impact on users
+> and does not have any adverse effects.
 
-Le 09/11/2023 à 05:26, Masahiro Yamada a écrit :
-> On Tue, Nov 7, 2023 at 11:00 PM Nathan Chancellor <nathan@kernel.org> wrote:
->> For what it's worth, this change breaks our continuous integration [1>> because tuxmake explicitly uses /dev/null as stdin to make for
->> non-interactive commands (I think it does this as basically the
->> equivalent of "yes '' | make" in Python), so the error will always
->> occur.
->>
->> Before:
->>
->> [...]
->>
->> After:
->>
->> $ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/main/config
+Thanks a lot for the details. Unfortunately after further consideration
+I can't accept this patch as a fix with clear conscience. The code has
+been this way for a long time, performance improvements should end up
+in new kernels and people who want to benefit from faster kernels should
+not be sticking to old LTS releases.
 
-Calling 'make olddefconfig' at this point should avoid opening the prompt on /dev/null in the next make.
-
-I got tuxmake to that with a hack:
-$ .../tuxmake/run --kconfig /dev/null --kconfig-add https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/main/config
-# --kconfig /dev/null      => Start from a blank config
-# --kconfig-add https//... => ... add to it a partial config
-=> tuxmake will "merge" the empty config and the URL one and then run 'make olddefconfig' and finally 'make < /dev/null' which does run
-
->> $ python3 -c "import subprocess; subprocess.run(['make', '-j128'], stdin=subprocess.DEVNULL)"
->>   SYNC    include/config/auto.conf
->>   HOSTCC  scripts/basic/fixdep
->>   HOSTCC  scripts/kconfig/conf.o
->>   HOSTCC  scripts/kconfig/confdata.o
->>   HOSTCC  scripts/kconfig/expr.o
->>   LEX     scripts/kconfig/lexer.lex.c
->>   YACC    scripts/kconfig/parser.tab.[ch]
->>   HOSTCC  scripts/kconfig/menu.o
->>   HOSTCC  scripts/kconfig/preprocess.o
->>   HOSTCC  scripts/kconfig/symbol.o
->>   HOSTCC  scripts/kconfig/util.o
->>   HOSTCC  scripts/kconfig/lexer.lex.o
->>   HOSTCC  scripts/kconfig/parser.tab.o
->>   HOSTLD  scripts/kconfig/conf
->> *
->> * Restart config...
->> *
->> ...
->> Error in reading or end of file.
->> make[3]: *** [scripts/kconfig/Makefile:77: syncconfig] Error 1
->> ...
->>
->> We have been doing this for some time and never run across an infinite
->> loop in syncconfig. Can this be improved?
-> 
-> In Linux, most int/hex entries have a default,
-> hence there is no practical issue.
-
-I agree. I never met such case in Linux but only on downstream kbuild user (u-boot in this case).
-
-> I will drop this for now.
-
-Okay!
-
-> I will send an alternative solution.
-
-Please tell me how I can help!
-
-For what it's worth the v2 of this patch[0] tried to exit *only* where the infinite loop would start.
-I've just tested it, it allows tuxmake to run smoothly and avoids the infinite loop in case of a hex config without a valid default value.
-
-[0]:https://lore.kernel.org/lkml/20230805095709.6717-1-yoann.congal@smile.fr/
-
-Regards,
--- 
-Yoann Congal
-Smile ECS
+So please repost for net-next next week, when it's open again.
