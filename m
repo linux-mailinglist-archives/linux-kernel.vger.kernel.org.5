@@ -2,224 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6B57E70BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791CB7E70C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344857AbjKIRtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:49:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S1344870AbjKIRth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344859AbjKIRtA (ORCPT
+        with ESMTP id S231845AbjKIRtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:49:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A956330FA
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699552139; x=1731088139;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=AxE5Rv09SjWjd7HMWTFgQPE6zFOQdob3yNoFm8ZBvFY=;
-  b=dY6GDLBrzPTZ/qClJPT5oxJQF1M3kQhiRb6JHjfJbATe+NwOqfTTGHFe
-   BPC34s7+eCF+Z7gi5AaYbeQ9f7UfOCITmQLAilWoQgNPlJhKAovXwDx9A
-   /vtN/osru+TZ8RCB9qdjkaxmJzWrctc9SQmeUoQQzM0UkBv437j5v9bVF
-   U0DNxiFYd0scUBg8miZ/GaEh06ZgcgoeAn5j6uUuRhPyzYsT2c4+BOUDL
-   T3OuGZPZGM2YC+JiqmPjL8FSv7NO7yZbXRyijPT2WwBY8uXL9QRsXpATq
-   d6kXepb4WaONFmKJHH1O1fqtN9oHWlQ/FIU8QkI2XZc0IJvwRUANjfLCa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="8691789"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="8691789"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:48:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="792624488"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="792624488"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 09:48:58 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:48:57 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:48:57 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 09:48:57 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:48:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hlqtTUNOD5nKfiXgTBH/QwCHzM/D2ZZNKrO/oHkxO/6y2aHo9ODTKp0sgNY3FeEKvHwQrrK1lk1IzwA9GXmICWz4RuG+6MFJLedbMdZIL9e/i/Or3h+KmFDKz+Y27h0q8edirWr+IOnpaYaSU0pSXsIJVQiFUVZFX0uUSp9rTc/jpEEGSTAm9hGUpbSx7jz3k+O5Gv9ydda/K3VVUpTkf00+7+2NZS+Ev0fFH/AzOEj4gspM6yYrjcPSa9KhCORTydpYyG+dOREpwnJT4/KC0UQAKrPRD6bFvNsmzNYEDd0RYpsNr7Dd6Cov9WlVdVKXg1o2sZWA49Ev5pLP5gdTiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9akkl7QcIGaTip+4HwwvcBYGaZkd4WAj7QvFDvOLh54=;
- b=kkYlIcABJ9hGga/Ic12LAxAFy+XIl9V/sBPMonEJBeG9cUmGNLssjmHSrrcC56gpnCVfEKK9psG/mK+56bUNnU7PH4j3mHyIghooYMiv/TBtJ3FZBwkblihKeUmo6+FMZDZpozsN8HyyERdKuPjxZVNDycZ9Inz77/N9cJ+9cmsgdH7cSPFutj0x7ywDgDDzWkwxT6x1wqXr0n2iE7c3KmnYHC2W/buTJaJmUugOIt2CN80W0ew2RthD8eaKwRgnbzPfb4sQYFt9nzlMRbmgByE3dfwNve9Ajclx+UUavL9AsJMeYvxd8WenMa7BMBRRROTKfOngMVPjC/8ecnWi2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM4PR11MB7303.namprd11.prod.outlook.com (2603:10b6:8:108::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 17:48:55 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
- 17:48:55 +0000
-Message-ID: <b4d33d06-9320-4a32-b2f3-4cbe2ae52a77@intel.com>
-Date:   Thu, 9 Nov 2023 09:48:54 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 24/24] x86/resctrl: Separate arch and fs resctrl locks
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
-        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
-        <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
-        <dfustini@baylibre.com>, <amitsinght@marvell.com>
-References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-25-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20231025180345.28061-25-james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0199.namprd04.prod.outlook.com
- (2603:10b6:303:86::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Thu, 9 Nov 2023 12:49:35 -0500
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC3F269E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:49:32 -0800 (PST)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231109174931epoutp03174a55b9624bf2c5d6f0d398af54a0e8~WBbH71Iuh2841328413epoutp034
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:49:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231109174931epoutp03174a55b9624bf2c5d6f0d398af54a0e8~WBbH71Iuh2841328413epoutp034
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699552171;
+        bh=GQPGTCJTLTSEdi/5JKW1h6q+xJIJju1ejA/iyYvB/Gs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=WITY7BPYd5IJG1oXRKOTs7lGQ9W4VeXDaCmRQXCn/fLWO29LnTUQTTOT7JlDgo/m7
+         VqqZ+bKXihT8ukwL3lf1+9X8lelPfc+D8Moe673jwT/HIDimtoFd1iYzvAPUw7q0wS
+         Flf+t/mZc/oloffKqbNaspYd7tOBF7eF+rv2Sm3w=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20231109174930epcas5p4f6dcd153c2f5d79047879cce118a43cf~WBbHTbjrn2406224062epcas5p4a;
+        Thu,  9 Nov 2023 17:49:30 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.177]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4SR8bY3dSnz4x9Pp; Thu,  9 Nov
+        2023 17:49:29 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F0.B5.19369.9AB1D456; Fri, 10 Nov 2023 02:49:29 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231109174928epcas5p369f0ea4d67dc5c77bfc85b739c2928e2~WBbFKWDya2320923209epcas5p3C;
+        Thu,  9 Nov 2023 17:49:28 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231109174928epsmtrp1a4eb91fcb2b8be4d8b85f5aebaa0c1e2~WBbFJtvSd1669316693epsmtrp1a;
+        Thu,  9 Nov 2023 17:49:28 +0000 (GMT)
+X-AuditID: b6c32a50-c99ff70000004ba9-ab-654d1ba96dd4
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FC.D5.18939.8AB1D456; Fri, 10 Nov 2023 02:49:28 +0900 (KST)
+Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231109174926epsmtip2c06847f1bf6b2132c37275cc5a393f4d~WBbDcAhR92451224512epsmtip2b;
+        Thu,  9 Nov 2023 17:49:26 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Shradha Todi'" <shradha.t@samsung.com>, <jingoohan1@gmail.com>,
+        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>
+Cc:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pankaj.dubey@samsung.com>
+In-Reply-To: <20231009062052.5407-1-shradha.t@samsung.com>
+Subject: RE: [PATCH] PCI: exynos: Change macro names to exynos specific
+Date:   Thu, 9 Nov 2023 23:19:25 +0530
+Message-ID: <029b01da1335$15c46d80$414d4880$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM4PR11MB7303:EE_
-X-MS-Office365-Filtering-Correlation-Id: b04639d0-5924-48d2-0357-08dbe14c24d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GFkSFRxMhfFgSJTBMfgIZm6DHe/2UNSEXaA3pmd0Yjlmpdo1/gBA8alNMBdbXRvTbbOQSRl84Gvc/zSfvhjdjCTmziWoG5VJ9odysi53CAPcBY53euVS+Td4YuQNeSWkL3vG/61R9moIC8IdT5gDRju+Rr8s2G0OEJj/1AUxMdROgStw7oEK/OqGMTcC3Y8m8BjedfNWpb7V8WcwxqHK7v1PAOyMz2AXmnKu0M7q+8lqddzK/Iyv3QgqY9yPWDULehU246pTAL++0DYptXoE0M1IYadVnIl/obq8fxtbmjCPmnh53D8Sbe51wcnjwat7AUzb7znivbKxTcAiG0C9MgosDAZrpCHleiuwWJuxSbC09DbXR/F2Ix9RsxpWLqbbKwZszn19aRl+79wqzm6YWDzGnWHZeRU+wTDppAY878UfrRQ91iLQAQUy0OXBgbBQW+N46Mcd3pH7Iqjq8r46YYIvmFFh3tu/q9dHuSOgBR26pY1mPj3uMyWvZD/Tc8UzDvUS+QIZCyT1K+424JnrDOxw5qqNuEiLAwHyvnEy9bxcRLNP1xd4IqeeRAQqsTiF2nNj276H/9MEtpLqEHhtwlb5eOY9U1Mo/on4NTWJ3CseCd8YAF2MwFVf/DNrI3c4EcQjN6mJQDwVg2vNnwVhYg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6506007)(82960400001)(83380400001)(6512007)(53546011)(36756003)(26005)(2616005)(38100700002)(6486002)(478600001)(31686004)(66946007)(8936002)(8676002)(4326008)(31696002)(66556008)(66476007)(54906003)(316002)(86362001)(5660300002)(7416002)(2906002)(66899024)(44832011)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dElmTXVFcWkyczVaSjBnbVJtYzlRTVdYTGxFR3kxRVB2UzB1cVV4UmZJMi9S?=
- =?utf-8?B?YldhcE1Gc1g5YW54WjFpbTE4T2FrdkZvMmtpSm5hSCtoc0ErbkoyUDFwT2x3?=
- =?utf-8?B?Yzg5azdScXd4a1A2dC9sVUlUbng0TG0vcEZxWldRWTJsK3pMUGpGaHN3SVVs?=
- =?utf-8?B?VUp4UEp6ODRzZkNWbW15cjErdWNIdVhFYlljVlN0SmZkVUx4QUN3ekJUdENY?=
- =?utf-8?B?MkVyMHFpYUNqYWJQa2RMSUFzdGRXbUQ3ZTdzZnRic29XdUR5dGFuQmFsQ0tZ?=
- =?utf-8?B?T0VCblp0ZVZ4R2FJMXo1UXpTL1RwVWlpMXE3Y0tnVktHcXJxTC9pTzRCZit1?=
- =?utf-8?B?MWt6TU9QT3d4Rkg4VU0wQU1BTUVvb0k3WGJ6a29tVndDRUJCYzluSUViUDgx?=
- =?utf-8?B?SWd0bjJFMkdtKzhyWUVFWDg1eVJKOFVvOVZINk5JbEo2OUZJeFNOdmJ2UFNj?=
- =?utf-8?B?VndWcmNZYkM4NHo1eHYvN3hxRDVUanlCdVRtN3U5NXFVNUtWN0ozTTJhaktw?=
- =?utf-8?B?RjRLd3IyVUtQaFZBek9ROVNuWUZZRDUvSXlRWlhJR2dYRFM2TWpSTFFTQ09K?=
- =?utf-8?B?TVhncGYyZFgzMGVoQkJ3WGpVL0FNdGk3YTdwTWhFdzNKUFRlY05aaVZhZUFY?=
- =?utf-8?B?UFNaTmg2dXphcys2em1uMWR3Ym1laitGeTZqNVBNSzdaZUdhcDF4bWI4bmV1?=
- =?utf-8?B?ZHFiMGhOb3hEZ2JLRm10YU1qd2JXQm1FdnhnZEtrS2dRZldzZFJSNUhlbFoy?=
- =?utf-8?B?M2tvTGZ3djhuRm5ia3R5MzBOcmRxVm5HWWtkbGUraktTZ3hZZlZMU1NycHNG?=
- =?utf-8?B?UHFvNEhKejBpc2lCVC9mcWcyWnhRdU5RVU9MdFVSMitWR0JOaGF1dTYvdVF2?=
- =?utf-8?B?c1R1a3V6NVAzSmRTSE9INjdnczdmV1JjZ0xBQ3hqNUJsMnJTVVlvYjlmY2NL?=
- =?utf-8?B?K1NwdGJtU1U5RW16L3RmcHZ5K2ZvOCtVdURsS3czRnNoKzJrRzhqYys5dS92?=
- =?utf-8?B?dUdLcDQ5eG0zRVdraVhHSys2VGRUN3RsV3NRRTh6MEE2QjJnNFpFZ2Q1VWow?=
- =?utf-8?B?Q2ZTd3hORVJYaWNuaHJsRE9XWlQ3K01ZNXA5WWNVUXEwUFJNNTkxTWV3YTJM?=
- =?utf-8?B?NExBQTZlVnlZNERUeWxPR1psMVA2d29QTnhhWGZCaE1ad2xmSWs4MzJpQ3Rv?=
- =?utf-8?B?KzV0b3QvY3R2L0NKWDBrV2pQY0RNemlsYTJrL2YzbkNxb2x5NDZIbjA4cExi?=
- =?utf-8?B?RS9ZSDhIdjlMMGZiNTJXaGpGYURZeitRSStTTDIyNWprUnZEQVlsTVlrWUl2?=
- =?utf-8?B?WjFEdjFna0xzWk13L1V3bVFwZnVsaDI2L2Rtbi94bWdJWTNxZUNJL3pxZUZr?=
- =?utf-8?B?bm1uN2VyWE5OSVRmSWFvRlhSeStUcENiK2FCc1RJb3JWdGM3YVBUQzhIUFJk?=
- =?utf-8?B?b2F6MTRIZlltK2Y3aGFKQlQrMm9zcnhvWXA0UFhuaGxzRXNJUnJFVHlmMXQy?=
- =?utf-8?B?cG05Uk9iZ1RrOTArSERlZmhTYWozaFYrbXJ3cE9VNHdvbmVsSzdtRWFXMmlJ?=
- =?utf-8?B?WTd5K1dmdm1nNC9TWjlHRnVyeGpFaDRISDVmYjZ4b29EOUQyUVNXS28vTHcv?=
- =?utf-8?B?bzVMaFlxY2grWlZ5K08xaG9DYWF3Y21CYkxEYndEcnk4VEhGMWNST1JpZkV2?=
- =?utf-8?B?R2x2YkJRYnpqUDVvdk5ySnVqSVl0NkFwNWRZa1RZazhtWnZwZkpvcGVkSCsw?=
- =?utf-8?B?WERRcW1GYktxRkZoNXRxbWdRbFV5LzNLOTJSWlNnSWlqK1RBRmVRK1dxR0Nk?=
- =?utf-8?B?bVNaNE9UR3lKV1NyY2ZUKzdrVHFGaDRhbjZ0ejBtODRaTXJzV2hzSmxBcGxS?=
- =?utf-8?B?eFEvNG9ndFpTY05xMzNpeks4emNJZHpYSENIZUVuN3ZJcVI4WTZNVVBXRWxI?=
- =?utf-8?B?MDFQOHd0aFFjUXZBQktSS21jQ05rQ2tQVXFXdmdFWmZudDlIZk4rbVZUUlhN?=
- =?utf-8?B?VjBkNXNvSmUvY0Q3NUxSb1Nkdm1EcjF0emVwOVl3MmdPVVp6WDZ0L0ZucWEr?=
- =?utf-8?B?U005R2E5YW1nUXFqVWNPZjNvbG1wZFhWZ0ZsdnhCa3YxRUVjRUFZbmdkZ3RI?=
- =?utf-8?B?djNHbmx0cnJZeGEzTWZJV2V4eTJRR2N4ZlZTQkRhdlNMTCs0a2xqSngxZGRv?=
- =?utf-8?B?MlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b04639d0-5924-48d2-0357-08dbe14c24d3
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 17:48:55.6075
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bP/cWIO76AefUMDeNr2NSGdeluJbhwRHga+WRfi+gZrPv9QFg/zgRSYhy0drqbN4/Sx2fbaoQDhy6uMPbNJ7m9xhrY/FuZqLExgqNhEFmjI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7303
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHePu0kvTSN+lKzECkL49kYbCkH+ALSVT9ssFNZfMA=
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmhu5Kad9Ug9OnpCyWNGVYrPgyk91i
+        7+ut7BYNPb9ZLTY9vsZqcXnXHDaLs/OOs1nMOL+PyaLlTwuLxaKtX9gt/u/ZwW7Re7jWgcdj
+        56y77B4LNpV6bFrVyeZx59oeNo8nV6YzeWxeUu/Rt2UVo8fnTXIBHFHZNhmpiSmpRQqpecn5
+        KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlApyoplCXmlAKFAhKLi5X07WyK
+        8ktLUhUy8otLbJVSC1JyCkwK9IoTc4tL89L18lJLrAwNDIxMgQoTsjPOzHzMXLDHtWLOk10s
+        DYzTrLsYOTkkBEwkDl9ZzQZiCwnsYZRYsS+zi5ELyP7EKLH34CJ2OOf85I+MXYwcYB2/d3lC
+        NOxklDg2nwui5gWjxP1by1hAEmwCuhI7FrexgSREBPYySrxadpQRJMEssIZRYnJ3FIjNKWAl
+        sWfpdrC4sIC7xP8LH5lBFrAIqEh8eWsEEuYVsJQ4sbaVEcIWlDg58wkLxBh5ie1v5zBDfKAg
+        8fPpMlYQWwRo5MdvO5khasQlXh49wg5Rc4JD4kO3BoTtIvHuwEWouLDEq+NboGwpiZf9bewQ
+        P3pILPojBRHOkHi7fD0jhG0vceDKHBaQEmYBTYn1u/QhNvFJ9P5+wgTRySvR0SYEUa0q0fzu
+        KguELS0xsbubFWb42Vc8ExgVZyF5axaSt2YhOX8Wwq4FjCyrGKVSC4pz01OTTQsMdfNSy+Fx
+        nZyfu4kRnIi1AnYwrt7wV+8QIxMH4yFGCQ5mJRHeCyY+qUK8KYmVValF+fFFpTmpxYcYTYFh
+        PZFZSjQ5H5gL8kriDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYMpJ
+        3+WrX6ws6Og9Ya9meu3mWf+Y+a2/H73EwvLdxWLJ05IzU1J2vXH9d1fn2nrzuTsmtNjOSa8w
+        jMxy//G4u35n2505Ygm9HwQnOLMVlx3V2drbvuGL05YDm2aZToyrOtfrV9f6/6Pi0jevMro+
+        SIfXZyz6/NDz04Jls0NbVnAcrXE9yDMvaGVhxfHbf/L4xe4z6u+K/NPlqSW560es+/aNM1i5
+        6jo5Et5amc3R53710vBJjlXoaUHre00PW6xWHD9eOD1mSWLVWZe026WHtzqx/JapEz759IW4
+        RE+Q8aS4tdE//LVedLEkPFBaffh+ahnv0RXaMTIxL+o/unw4rxl1IE3U7ne2Zt1qHodlq5RY
+        ijMSDbWYi4oTAYYXV51NBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWy7bCSvO4Kad9Ug+/T+SyWNGVYrPgyk91i
+        7+ut7BYNPb9ZLTY9vsZqcXnXHDaLs/OOs1nMOL+PyaLlTwuLxaKtX9gt/u/ZwW7Re7jWgcdj
+        56y77B4LNpV6bFrVyeZx59oeNo8nV6YzeWxeUu/Rt2UVo8fnTXIBHFFcNimpOZllqUX6dglc
+        GWdmPmYu2ONaMefJLpYGxmnWXYwcHBICJhK/d3l2MXJxCAlsZ5T4sesNWxcjJ1BcWuL6xgns
+        ELawxMp/z9khip4xSlx+t5UFJMEmoCuxY3EbG0hCROAoo8TR3X2sIAlmgQ2MEtsO5EF0dDNK
+        NG5dA5bgFLCS2LN0OyOILSzgLvH/wkdmkDNYBFQkvrw1AgnzClhKnFjbyghhC0qcnPmEBWKm
+        tsTTm0+hbHmJ7W/nMENcpyDx8+kysPEiQOM/ftvJDFEjLvHy6BH2CYzCs5CMmoVk1Cwko2Yh
+        aVnAyLKKUTS1oDg3PTe5wFCvODG3uDQvXS85P3cTIzgetYJ2MC5b/1fvECMTB+MhRgkOZiUR
+        3gsmPqlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeZVzOlOEBNITS1KzU1MLUotgskwcnFINTI4m
+        KfPfJ7saljhe3vH12Nofcu+fX0ny+1L44qSU00Rvvst6h0uD4tYa5XSbXPwn/8DZ96pgxdFN
+        s5ZH1d+dn5WivCujLTg2asvNz6ZzJ8R6BnDUTFsnsD5I+F2wQGd1/rL4d9JFn1aW3Zh7R8Hj
+        z1mVjqbS9DmJ4W/toierJUi8Dnw39dlmxa7ITW/KGCvEF2scbCiKbjbbKuY/J2qio7/wlHOu
+        LyTrF2hs0eJja8vI/v1Wqapqgh+v6dvPGx9y15xyO3/xUG6dePvtHWvjBQ+XWXgLbr/7huXY
+        pTbNiJ1vj033adEXmHXfJG07c8qe6ybfrpypCfPwuX+wiSd9fZTwr/0CdWte97PeXiIsr8RS
+        nJFoqMVcVJwIAEs1ujU2AwAA
+X-CMS-MailID: 20231109174928epcas5p369f0ea4d67dc5c77bfc85b739c2928e2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231009062058epcas5p4dc1fb50210c920137ac906b0bdf99e1b
+References: <CGME20231009062058epcas5p4dc1fb50210c920137ac906b0bdf99e1b@epcas5p4.samsung.com>
+        <20231009062052.5407-1-shradha.t@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
 
-On 10/25/2023 11:03 AM, James Morse wrote:
-> resctrl has one mutex that is taken by the architecture specific code,
-> and the filesystem parts. The two interact via cpuhp, where the
-> architecture code updates the domain list. Filesystem handlers that
-> walk the domains list should not run concurrently with the cpuhp
-> callback modifying the list.
+
+> -----Original Message-----
+> From: Shradha Todi <shradha.t@samsung.com>
+> Sent: Monday, October 9, 2023 11:51 AM
+> To: jingoohan1@gmail.com; lpieralisi@kernel.org; kw@linux.com;
+> robh@kernel.org; bhelgaas@google.com; krzysztof.kozlowski@linaro.org;
+> alim.akhtar@samsung.com
+> Cc: linux-pci@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
+> samsung-soc@vger.kernel.org; linux-kernel@vger.kernel.org;
+> pankaj.dubey@samsung.com; Shradha Todi <shradha.t@samsung.com>
+> Subject: [PATCH] PCI: exynos: Change macro names to exynos specific
 > 
-> Exposing a lock from the filesystem code means the interface is not
-> cleanly defined, and creates the possibility of cross-architecture
-> lock ordering headaches. The interaction only exists so that certain
-> filesystem paths are serialised against CPU hotplug. The CPU hotplug
-> code already has a mechanism to do this using cpus_read_lock().
+> Prefix macro names in exynos file with the term "EXYNOS" as the current
+> macro names seem to be generic to PCIe.
 > 
-> MPAM's monitors have an overflow interrupt, so it needs to be possible
-> to walk the domains list in irq context. RCU is ideal for this,
-> but some paths need to be able to sleep to allocate memory.
-> 
-> Because resctrl_{on,off}line_cpu() take the rdtgroup_mutex as part
-> of a cpuhp callback, cpus_read_lock() must always be taken first.
-> rdtgroup_schemata_write() already does this.
-> 
-> Most of the filesystem code's domain list walkers are currently
-> protected by the rdtgroup_mutex taken in rdtgroup_kn_lock_live().
-> The exceptions are rdt_bit_usage_show() and the mon_config helpers
-> which take the lock directly.
-> 
-> Make the domain list protected by RCU. An architecture-specific
-> lock prevents concurrent writers. rdt_bit_usage_show() could
-> walk the domain list using RCU, but to keep all the filesystem
-> operations the same, this is changed to call cpus_read_lock().
-> The mon_config helpers send multiple IPIs, take the cpus_read_lock()
-> in these cases.
-> 
-> The other filesystem list walkers need to be able to sleep.
-> Add cpus_read_lock() to rdtgroup_kn_lock_live() so that the
-> cpuhp callbacks can't be invoked when file system operations are
-> occurring.
-> 
-> Add lockdep_assert_cpus_held() in the cases where the
-> rdtgroup_kn_lock_live() call isn't obvious.
-> 
-> Resctrl's domain online/offline calls now need to take the
-> rdtgroup_mutex themselves.
-> 
-> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-by: Peter Newman <peternewman@google.com>
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
+> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+
 > ---
+>  drivers/pci/controller/dwc/pci-exynos.c | 116 ++++++++++++------------
+>  1 file changed, 58 insertions(+), 58 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-exynos.c
+> b/drivers/pci/controller/dwc/pci-exynos.c
+> index 6319082301d6..9e42cfcd99cc 100644
+> --- a/drivers/pci/controller/dwc/pci-exynos.c
+> +++ b/drivers/pci/controller/dwc/pci-exynos.c
+> @@ -26,30 +26,30 @@
+>  #define to_exynos_pcie(x)	dev_get_drvdata((x)->dev)
+> 
+>  /* PCIe ELBI registers */
+> -#define PCIE_IRQ_PULSE			0x000
+> -#define IRQ_INTA_ASSERT			BIT(0)
+> -#define IRQ_INTB_ASSERT			BIT(2)
+> -#define IRQ_INTC_ASSERT			BIT(4)
+> -#define IRQ_INTD_ASSERT			BIT(6)
+> -#define PCIE_IRQ_LEVEL			0x004
+> -#define PCIE_IRQ_SPECIAL		0x008
+> -#define PCIE_IRQ_EN_PULSE		0x00c
+> -#define PCIE_IRQ_EN_LEVEL		0x010
+> -#define PCIE_IRQ_EN_SPECIAL		0x014
+> -#define PCIE_SW_WAKE			0x018
+> -#define PCIE_BUS_EN			BIT(1)
+> -#define PCIE_CORE_RESET			0x01c
+> -#define PCIE_CORE_RESET_ENABLE		BIT(0)
+> -#define PCIE_STICKY_RESET		0x020
+> -#define PCIE_NONSTICKY_RESET		0x024
+> -#define PCIE_APP_INIT_RESET		0x028
+> -#define PCIE_APP_LTSSM_ENABLE		0x02c
+> -#define PCIE_ELBI_RDLH_LINKUP		0x074
+> -#define PCIE_ELBI_XMLH_LINKUP		BIT(4)
+> -#define PCIE_ELBI_LTSSM_ENABLE		0x1
+> -#define PCIE_ELBI_SLV_AWMISC		0x11c
+> -#define PCIE_ELBI_SLV_ARMISC		0x120
+> -#define PCIE_ELBI_SLV_DBI_ENABLE	BIT(21)
+> +#define EXYNOS_PCIE_IRQ_PULSE			0x000
+> +#define EXYNOS_IRQ_INTA_ASSERT			BIT(0)
+> +#define EXYNOS_IRQ_INTB_ASSERT			BIT(2)
+> +#define EXYNOS_IRQ_INTC_ASSERT			BIT(4)
+> +#define EXYNOS_IRQ_INTD_ASSERT			BIT(6)
+> +#define EXYNOS_PCIE_IRQ_LEVEL			0x004
+> +#define EXYNOS_PCIE_IRQ_SPECIAL		0x008
+> +#define EXYNOS_PCIE_IRQ_EN_PULSE		0x00c
+> +#define EXYNOS_PCIE_IRQ_EN_LEVEL		0x010
+> +#define EXYNOS_PCIE_IRQ_EN_SPECIAL		0x014
+> +#define EXYNOS_PCIE_SW_WAKE			0x018
+> +#define EXYNOS_PCIE_BUS_EN			BIT(1)
+> +#define EXYNOS_PCIE_CORE_RESET			0x01c
+> +#define EXYNOS_PCIE_CORE_RESET_ENABLE		BIT(0)
+> +#define EXYNOS_PCIE_STICKY_RESET		0x020
+> +#define EXYNOS_PCIE_NONSTICKY_RESET		0x024
+> +#define EXYNOS_PCIE_APP_INIT_RESET		0x028
+> +#define EXYNOS_PCIE_APP_LTSSM_ENABLE		0x02c
+> +#define EXYNOS_PCIE_ELBI_RDLH_LINKUP		0x074
+> +#define EXYNOS_PCIE_ELBI_XMLH_LINKUP		BIT(4)
+> +#define EXYNOS_PCIE_ELBI_LTSSM_ENABLE		0x1
+> +#define EXYNOS_PCIE_ELBI_SLV_AWMISC		0x11c
+> +#define EXYNOS_PCIE_ELBI_SLV_ARMISC		0x120
+> +#define EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE	BIT(21)
+> 
+>  struct exynos_pcie {
+>  	struct dw_pcie			pci;
+> @@ -105,49 +105,49 @@ static void
+> exynos_pcie_sideband_dbi_w_mode(struct exynos_pcie *ep, bool on)  {
+>  	u32 val;
+> 
+> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_AWMISC);
+> +	val = exynos_pcie_readl(ep->elbi_base,
+> EXYNOS_PCIE_ELBI_SLV_AWMISC);
+>  	if (on)
+> -		val |= PCIE_ELBI_SLV_DBI_ENABLE;
+> +		val |= EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
+>  	else
+> -		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_AWMISC);
+> +		val &= ~EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
+> +	exynos_pcie_writel(ep->elbi_base, val,
+> EXYNOS_PCIE_ELBI_SLV_AWMISC);
+>  }
+> 
+>  static void exynos_pcie_sideband_dbi_r_mode(struct exynos_pcie *ep,
+> bool on)  {
+>  	u32 val;
+> 
+> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_ELBI_SLV_ARMISC);
+> +	val = exynos_pcie_readl(ep->elbi_base,
+> EXYNOS_PCIE_ELBI_SLV_ARMISC);
+>  	if (on)
+> -		val |= PCIE_ELBI_SLV_DBI_ENABLE;
+> +		val |= EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
+>  	else
+> -		val &= ~PCIE_ELBI_SLV_DBI_ENABLE;
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_ELBI_SLV_ARMISC);
+> +		val &= ~EXYNOS_PCIE_ELBI_SLV_DBI_ENABLE;
+> +	exynos_pcie_writel(ep->elbi_base, val,
+> EXYNOS_PCIE_ELBI_SLV_ARMISC);
+>  }
+> 
+>  static void exynos_pcie_assert_core_reset(struct exynos_pcie *ep)  {
+>  	u32 val;
+> 
+> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
+> -	val &= ~PCIE_CORE_RESET_ENABLE;
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_STICKY_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_NONSTICKY_RESET);
+> +	val = exynos_pcie_readl(ep->elbi_base,
+> EXYNOS_PCIE_CORE_RESET);
+> +	val &= ~EXYNOS_PCIE_CORE_RESET_ENABLE;
+> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_CORE_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 0, EXYNOS_PCIE_STICKY_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 0,
+> EXYNOS_PCIE_NONSTICKY_RESET);
+>  }
+> 
+>  static void exynos_pcie_deassert_core_reset(struct exynos_pcie *ep)  {
+>  	u32 val;
+> 
+> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_CORE_RESET);
+> -	val |= PCIE_CORE_RESET_ENABLE;
+> +	val = exynos_pcie_readl(ep->elbi_base,
+> EXYNOS_PCIE_CORE_RESET);
+> +	val |= EXYNOS_PCIE_CORE_RESET_ENABLE;
+> 
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_CORE_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_STICKY_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_NONSTICKY_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 1, PCIE_APP_INIT_RESET);
+> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_APP_INIT_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_CORE_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 1, EXYNOS_PCIE_STICKY_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 1,
+> EXYNOS_PCIE_NONSTICKY_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 1,
+> EXYNOS_PCIE_APP_INIT_RESET);
+> +	exynos_pcie_writel(ep->elbi_base, 0,
+> EXYNOS_PCIE_APP_INIT_RESET);
+>  }
+> 
+>  static int exynos_pcie_start_link(struct dw_pcie *pci) @@ -155,21 +155,21
+> @@ static int exynos_pcie_start_link(struct dw_pcie *pci)
+>  	struct exynos_pcie *ep = to_exynos_pcie(pci);
+>  	u32 val;
+> 
+> -	val = exynos_pcie_readl(ep->elbi_base, PCIE_SW_WAKE);
+> -	val &= ~PCIE_BUS_EN;
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_SW_WAKE);
+> +	val = exynos_pcie_readl(ep->elbi_base, EXYNOS_PCIE_SW_WAKE);
+> +	val &= ~EXYNOS_PCIE_BUS_EN;
+> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_SW_WAKE);
+> 
+>  	/* assert LTSSM enable */
+> -	exynos_pcie_writel(ep->elbi_base, PCIE_ELBI_LTSSM_ENABLE,
+> -			  PCIE_APP_LTSSM_ENABLE);
+> +	exynos_pcie_writel(ep->elbi_base,
+> EXYNOS_PCIE_ELBI_LTSSM_ENABLE,
+> +			  EXYNOS_PCIE_APP_LTSSM_ENABLE);
+>  	return 0;
+>  }
+> 
+>  static void exynos_pcie_clear_irq_pulse(struct exynos_pcie *ep)  {
+> -	u32 val = exynos_pcie_readl(ep->elbi_base, PCIE_IRQ_PULSE);
+> +	u32 val = exynos_pcie_readl(ep->elbi_base,
+> EXYNOS_PCIE_IRQ_PULSE);
+> 
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_PULSE);
+> +	exynos_pcie_writel(ep->elbi_base, val, EXYNOS_PCIE_IRQ_PULSE);
+>  }
+> 
+>  static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg) @@ -182,12
+> +182,12 @@ static irqreturn_t exynos_pcie_irq_handler(int irq, void *arg)
+> 
+>  static void exynos_pcie_enable_irq_pulse(struct exynos_pcie *ep)  {
+> -	u32 val = IRQ_INTA_ASSERT | IRQ_INTB_ASSERT |
+> -		  IRQ_INTC_ASSERT | IRQ_INTD_ASSERT;
+> +	u32 val = EXYNOS_IRQ_INTA_ASSERT | EXYNOS_IRQ_INTB_ASSERT |
+> +		  EXYNOS_IRQ_INTC_ASSERT | EXYNOS_IRQ_INTD_ASSERT;
+> 
+> -	exynos_pcie_writel(ep->elbi_base, val, PCIE_IRQ_EN_PULSE);
+> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_LEVEL);
+> -	exynos_pcie_writel(ep->elbi_base, 0, PCIE_IRQ_EN_SPECIAL);
+> +	exynos_pcie_writel(ep->elbi_base, val,
+> EXYNOS_PCIE_IRQ_EN_PULSE);
+> +	exynos_pcie_writel(ep->elbi_base, 0,
+> EXYNOS_PCIE_IRQ_EN_LEVEL);
+> +	exynos_pcie_writel(ep->elbi_base, 0,
+> EXYNOS_PCIE_IRQ_EN_SPECIAL);
+>  }
+> 
+>  static u32 exynos_pcie_read_dbi(struct dw_pcie *pci, void __iomem *base,
+> @@ -244,9 +244,9 @@ static struct pci_ops exynos_pci_ops = {  static int
+> exynos_pcie_link_up(struct dw_pcie *pci)  {
+>  	struct exynos_pcie *ep = to_exynos_pcie(pci);
+> -	u32 val = exynos_pcie_readl(ep->elbi_base,
+> PCIE_ELBI_RDLH_LINKUP);
+> +	u32 val = exynos_pcie_readl(ep->elbi_base,
+> +EXYNOS_PCIE_ELBI_RDLH_LINKUP);
+> 
+> -	return (val & PCIE_ELBI_XMLH_LINKUP);
+> +	return (val & EXYNOS_PCIE_ELBI_XMLH_LINKUP);
+>  }
+> 
+>  static int exynos_pcie_host_init(struct dw_pcie_rp *pp)
+> --
+> 2.17.1
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-
-Reinette
 
