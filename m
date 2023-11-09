@@ -2,273 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C347E69EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056007E69ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjKILuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
+        id S233151AbjKILvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:51:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231877AbjKILuL (ORCPT
+        with ESMTP id S231964AbjKILvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:50:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84AB2D77
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:50:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699530610; x=1731066610;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=gSDhZjyk5r1AjRtuf4zDI57bWiv6HpSEdqzLYyaIb+4=;
-  b=ZQwkYTyH7zprOHP29r4OW3q3W3VI3J+RaMfS1zj2sr0L6NwmxWMCtGKd
-   r8NgW95dXI2fw6lHdS0wRU0Me32OBjRzh/kMHlzZ7EM6mS9LfbXbxjlpp
-   XGRUkFPjuoZaWtVqQ6C6+52Ld+59wKZHPfMDwMeMh5aItFXo6MKRSy891
-   hM4qVaalaEupAzn+qpRwmaiWowdSs/+iaJB1XtEsZJChCnRIklbVFARRS
-   tsBTNjE2We84Cxhbgx6T22jfQod25OLa2xrYzBX9OHPzvlnUZF4Ija0g9
-   SksglkX+A3wShQ1lZgR15BbTINt3K54ds4QeBNiNW2xtbeR5niGR4NCoz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="8619360"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="8619360"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:50:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="798302951"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="798302951"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 03:50:08 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 03:50:08 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 03:50:08 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 9 Nov 2023 03:50:08 -0800
+        Thu, 9 Nov 2023 06:51:00 -0500
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2065.outbound.protection.outlook.com [40.107.104.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3415619E;
+        Thu,  9 Nov 2023 03:50:58 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W+NqP5mpV/fDHHR9P8XE25lZkFO/WCx8XAzvA0B/jC4oKbE4cpWlCwzMgqFwzAOFyDtpRgF9fLtlYmOsurF28rZ5NXqqiSO1xIy1RDBjdlcfBFuERFIW+nViOSX1mnmJa6fFT3V5HsViHhz5WLXTv6KNEFJs7tDigZd/T5dt1+yiJlmWxNiwJI4bgS5IEEc3NxDpxM5gyOLa3gR6vBfJJj9zyeMIotDNoDM0SnisiZcjpYYuksOUdoOUuctdTP8LTpFw18gBe+JABsGPge2PVD//arCYpDdLeY3YXbKUvp7GN2YdNGuF30ojqmRwEm19mAXp1TxKo1zRYkICuA7IWw==
+ b=Ehl3ms3JgWE1Q6a8RIHzQTtQGwCHmoFnrLHvQQo4qlG4yF249fR5okvS6eMv9mCBWr4YqROtFZfGwgJoMuma9raFaIQMWPyQC2cmLACboA/S6jdRu7cQOOnZaBR3IMsOoA7ziitT64ykVYZpI9OgB3PwqWn+ezmfWHFANdGahxnl2cxNGJvlkzF5+Aw4VcSDMYPe2CWmZ97A8pLCA4M1ecOaxjPkWl/vLPSKkc3rD2W4+ZelUFnAdmckLvL4wnmRuOG2sI/jWVdhGsg+Chno83zP2b6RmdK4/IqNVKCihNxaPImShh+v5shifgX7A/ajhxocjLRqWQiXMjPbepTAlg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GbFNe+oa+uCyQdau767q3Ftj0BViVF9WX8u8R/m8XZg=;
- b=iF0cNWQ9EG+sipgJSJObMrHWux72qpVTQOzmMpeSjhXk8aX/DB3C2fTuFeoacieNl4+hhpewNu3g2sIKCvwQrroNUzoUWdH78Arl33UEPAjL9i4kVYe+KR8AvxAg6IkRZGPdHA/tOtuZEtzX5wEpz1UYJPJly63kmK8mncCtbT1JwWdNa5sova1ktmZn11w0y+iCPcyCeoEwumvaJlFn1gdt/vDPP409WZA8DUCQETeT8cR90y0OsUDqJ/34X84BntptpVw6PbxQMZGiZL9VsXHtkkx9bO/XNYetu3QM1QeOU7FuN6V5A3HYXpDo1v5Wed2ix5J8Zrj8sT86z1X1vA==
+ bh=XBh9QvkhAm/bhRyPxBExc/o94SRksH9s79ZLrmDjTWs=;
+ b=iaK2I5cABBWI70TAQehLeVsJkE6T+FaWnXAhXJplmmsM9sJ6d7+AeoXuBpM1lkDqImN75GgapZRiZNeFcckHwXlh859ZvokTlt2J2w6dP1wxB+qAGR4eDQjOG8CGnkLPwpZVulVuKnMymB3DRfA7Vh4IjnWZMjvnGQ1BeS2akUtXThk8GtupUN/24Li29YJaGR+eaiIgxWSeu3HT1h/qx20wb9p9Y+HIdb5BS1aD1gfYNhqBm9qhJgKGdvxKtEDhjk6eJtnbqEPc4lETiZ5az3mOfSk2+bEnTb6H0Aqom1KojtKuI7k7I1WmZrGJwyFICcKCcmuXqQ4pkZV/1R/KEA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XBh9QvkhAm/bhRyPxBExc/o94SRksH9s79ZLrmDjTWs=;
+ b=Noo+A1QjpqGW8zzu3D7nfcIFw9NCt0ufv3bGF2SlPLawZ/cX0GTbD+MZb+VPhEj+S3pGGUTQyHt6MZLAAe1EhjibNx7B/2TeNAq5J9HHg7taLpj8SqmdmfLliCyNQjXYwCL2218cL28kvAqksYz0LYqjCoQ5sxuMmWYaNeLhfvM=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by IA1PR11MB6267.namprd11.prod.outlook.com (2603:10b6:208:3e5::8) with
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by DB9PR04MB9556.eurprd04.prod.outlook.com (2603:10a6:10:304::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 11:50:01 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80%7]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
- 11:50:01 +0000
-Message-ID: <093114e8-b02f-4df0-a0d4-8e9f86e2259d@intel.com>
-Date:   Thu, 9 Nov 2023 12:49:55 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 2/2] lib/test_bitmap: add tests for
- bitmap_{read,write}()
-Content-Language: en-US
-To:     Alexander Potapenko <glider@google.com>
-CC:     <catalin.marinas@arm.com>, <will@kernel.org>, <pcc@google.com>,
-        <andreyknvl@gmail.com>, <andriy.shevchenko@linux.intel.com>,
-        <linux@rasmusvillemoes.dk>, <yury.norov@gmail.com>,
-        <alexandru.elisei@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <eugenis@google.com>,
-        <syednwaris@gmail.com>, <william.gray@linaro.org>
-References: <20231030153210.139512-1-glider@google.com>
- <20231030153210.139512-2-glider@google.com>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <20231030153210.139512-2-glider@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DU2PR04CA0178.eurprd04.prod.outlook.com
- (2603:10a6:10:2b0::33) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.13; Thu, 9 Nov
+ 2023 11:50:55 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%6]) with mapi id 15.20.6977.017; Thu, 9 Nov 2023
+ 11:50:55 +0000
+Date:   Thu, 9 Nov 2023 13:50:52 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net 5/7] net/sched: taprio: fix delayed switching to
+ new schedule after timer expiry
+Message-ID: <20231109115052.xz2vhaknno6nycbo@skbuf>
+References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+ <20231107112023.676016-6-faizal.abdul.rahim@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107112023.676016-6-faizal.abdul.rahim@linux.intel.com>
+X-ClientProxiedBy: FR2P281CA0007.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a::17) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|IA1PR11MB6267:EE_
-X-MS-Office365-Filtering-Correlation-Id: 689a53b1-ad72-4a1d-2579-08dbe11a011b
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DB9PR04MB9556:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0297e40e-eb26-4b50-9df4-08dbe11a2189
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kAGzf8E/vAtRH4NKyZJmPh2shB9JSs/kfN0gv11wvW98ZjDTQ0m0rIFQ+XIVw5A9j9I8+dNcoGRnF74KZoXQipEIK/8my8lfkZmEQ8D0n20/U7WF2c0UTAHGWq02LnWwb6rOWPDGs+zyYTJTe9lsjHRLyWylQdpVsjcuYw8ciCFCNSUURVixWvcXTCu/cQAUy+WXnbbiOJ3bYqtSDPNpK/vI18tnDreKUolB5ri4UDcInLETmzC790WAUho1dCh9DP7bx79cpDzadmSoarTYecjUyyllZYhC6S/1bfi9sT1m7X9ZnoT+v45yfg7HcZJoSITq6Uf8QuxvucO/p91MaQLxg6YWd8/lJKKWGDnrCEQRp4WXmo70OUVgzLGgpIXrKoXQL5pYduG4/NQ0kMZJLjs1+XKRLG7exPL7v6iEle3OGRqfuCyYjyYJkG3Msu5Obh0qZ4CgRsF9FAQtnx/zwYmnBPar0IYU8TrnRGMIeRE11fK2MSZQiUVx236L/ByL8F8IePnDsJBE7R5adkcAODgn5ae3DRbtIwTVqSqYgshtUGV5pKRrkCU1SeO7AovNMbuGdCqL0+wwH5tIF61AY89e2ZZ8P45CD6itm3bz+1JuGOTBg6QZhBkAq62b5OFw34XrfV61m2FiTF1KYJiBKwRyFu7WHR/qkzgbpa5mra6LbLtGzz37ulCtlxL295h3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(396003)(39860400002)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799009)(451199024)(2616005)(83380400001)(6666004)(6512007)(26005)(6506007)(478600001)(6486002)(31686004)(82960400001)(38100700002)(66476007)(8936002)(66556008)(8676002)(316002)(6916009)(66946007)(4326008)(7416002)(31696002)(5660300002)(86362001)(2906002)(41300700001)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: QCqr0czUL6b4eJeVsNjjxgx6bM6NW767FxApIxT7K46i3SALjkga/CAW/WrwghEfx+bmtYSxujUhXBPZSYQkLeV6o+EHvusFjN5UpdZ2etK2Cm914abZkqQN8JUKQ+6OcHuY5e94B96dVuvKjMLUn3oGIlnRsvt7UPM4sqPPGCSa7dAwcrtPWm1J2nQtA2RR+PVSuMxLRCdD63W3Id4MaKXwGzzpNM3v7YSmpTsp38Joh7AV4Mu+1K7WqKjLesTXecc4TtO2B5bh5S26XKt+msLtkzxM3zfg9IH2uGvUdqF00SgdOwJz7U/5zeVNZAO9zcjTY8/EhSNjLcs409nr3KfJOAY/GNm5rYK2sIiRcspxqGCQfm0N66V80fVuS878hrD46QMsCAEzGJksdUgLw4xUFLJk6gBOwI0Rg4UEYttBMJg+SDEEQXqXoKK2D5Mc/qzxQx3yxU8LZQbZEBXsl7f3PjbulauidmF4vYgZKpqYYDzbFsrorKvV6Sq/Hp+32lH0pBNPIOs5ndb/GkD+KWHLNRAA/TbYgwJMcabVxYt+3mkOcWb/Df8PtseZIpoV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(8676002)(8936002)(66899024)(41300700001)(2906002)(5660300002)(7416002)(44832011)(316002)(83380400001)(4326008)(33716001)(86362001)(6916009)(66476007)(66946007)(54906003)(38100700002)(66556008)(26005)(6506007)(6666004)(6486002)(6512007)(478600001)(9686003)(1076003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2JZZ0t1SEtmTm9DSC9VTmkvckcyM0RGckwvMVhQTkNCRXdEb1VWWnIxUDV5?=
- =?utf-8?B?L1VjOWZXZWw2amJpVXJWdStuZHlmcVhFL3BscEh2V0ZkQlRIcEdtcjI2RWVJ?=
- =?utf-8?B?aWRydHl4bndwMTZiYk9hd0FCQm5NcVYyaTN6eFNDVTNhRXUyc3JrRHdEMU5t?=
- =?utf-8?B?cVhUQklWa3FSVWQvZFBlVDk0Mkd5RG00dFQweElQdDk5eStLT1BydWJTU2t4?=
- =?utf-8?B?dHhGU2pQUXRjK3NJRVJPdDN3ZzBIbDc5SUJZZG9FenBZR1VCSHAwaW5LVkVn?=
- =?utf-8?B?ZHQyaDVPUzcrR1RKb1Q0OUNKQVR0WXYzR1dBVzJnQU81U3U3VGV3WlBtRG1M?=
- =?utf-8?B?ckdqSWx4dS8rYmhrMjFJa1BING8vWWhqSWYyZG5PSlgwbTlsU0hrcXloMXB2?=
- =?utf-8?B?QzJRbnBoUWx2T1NSVXdMK3E0VWpybGx5eWx6Tlpybk45V3FqN294N3BGVitB?=
- =?utf-8?B?UXdQT2tSeU4reGdPOWdmeW9HenV2ZHl2dXdCRXRzbUllSzJKRXNobXBMVlpP?=
- =?utf-8?B?L3o2YkZ4ZkdhMXVUOE5QbG1BOG81ZmpZM21BMnIrU0dmWDdOZ0pxckhnN2Yy?=
- =?utf-8?B?Z3BucVRKbXhrcHFrMWFENEpBUDFIZDVUb0Q0Y290SS9va2dBT1U3UElFU2ta?=
- =?utf-8?B?Rm9RRlNUYStTMytabGRaR2lNSnJzRHorWlgvMGxMc3BlKzk0VzdLRi9DOS9P?=
- =?utf-8?B?SWlLT21UdHNmYTRTWWdTYkYyU0xFanh3bEIrQ1Arc1Awai8xa2NoSGgxK2Fz?=
- =?utf-8?B?UU5ZbWtjUFUxTFBYZnBkRzdiRUhyeUNVbDBnMmE5SXo2WXQvNUtUZnBrZFRn?=
- =?utf-8?B?SDU3QWFmTG9YYUhrNjRyekZKZm1TdzE0Tm9ieXNPVzQvUTlBZVdsQTg5UUln?=
- =?utf-8?B?c2xYSjQyenowdEcrSGRDT3ZmOVlXZFNUWDVjakp5cktNanhLRzB0NHBjYTIw?=
- =?utf-8?B?aHpJa2RWeUVpOXpDRHA4eXVscHVMTmxXZ0ZTa0pUQXo2YWhGN0ZCaERpZTVI?=
- =?utf-8?B?cFdaakhNMGJxY2U4OU51c3lUUGRqdnNWUk0vd2w5TCs3YlU1WDFleGZSVHRP?=
- =?utf-8?B?TWJDZ29waGVXMWVOWEV2MGlqZ1Y3MW1xRzNlZFRxMmJ4Q0YzUjV5KytlVVpt?=
- =?utf-8?B?MFRpUGRpSm5VaS9XeGJvaHJiL1ZMNkxVYldSVlRhVEdlblNFaXFwNzNCN0NJ?=
- =?utf-8?B?OFhrV3BqTlhJWVVYdy9kRXhuTWZtaEVqcEt3UW9KbGh6c0xiUFA3eHltZ0hY?=
- =?utf-8?B?aUpVaWxnUlBYRHdlc3d4RzRmWWU2VTdsQyt3UVZSUTNoVHUyZ0JDVXFlMXJl?=
- =?utf-8?B?RWNBRGtJaFkxMnc4M3A4b0tieFFtQmZyalVoZCtZMVNUOTlHU053UDZMNzRq?=
- =?utf-8?B?MzZjeFFrN1orYnNDSVl2WUdXeW5YaVFBNndNRUN4eXhNTHFaSzBHRDY4S0VW?=
- =?utf-8?B?dVp0MGtZZEpWdCtjQVRMNXdRUFZKalBxSUYydWgxaWdMYlJ2dVBlYkZ6SWM3?=
- =?utf-8?B?WGp3Q0o5dmF2SWxVeGFEcFFPYXJuOXlUeHJydzdBWGVVTUt5ajEyUXRIRDJ2?=
- =?utf-8?B?V3Q1TUlEOTFab1VpWHJpbWpRdndrQ1JOVFVLcVF3Mmtranp3S0liUkd5UXRn?=
- =?utf-8?B?SVlyOE9jSU40V2FYR0VaRjNNbVJPZGhUSFRmRjh1cEVVc1pxZkdqVTNSNFZP?=
- =?utf-8?B?eUVXcXFzMm9MaG4xNXVQV3ZLWVM5ZGo5eDlWSXZKbDlLMjVBbk01QTR1STh5?=
- =?utf-8?B?Y1BCbEZmOXFzTXdCTlR6V3k5QURVODh6MnhmdGJoQThPU3p6U0hNbmpNQkxY?=
- =?utf-8?B?c2lPUFZpdDYrcGFlUXJBWUFKTE52Z1RGQXEreEdCR09TNldCaVIxczdPbGUz?=
- =?utf-8?B?bTBxb1JNY2c2bE5XQzdSZUtFRkJEQnpkZldJZ0RKbE5na3NkMW10T2lTckRx?=
- =?utf-8?B?YmlRZ0RKaXZPSis0ZFp2VjIzbm9qaUdJMkp0QmE0dXNkWTNCSUZzWm1BODh1?=
- =?utf-8?B?YkFmUXV3MkdqRGp3bXl4NTRvT25ESXB0OVBBTkkrQVJnRXVOWFV4NDNZUWdm?=
- =?utf-8?B?K3Q4T01Ncm5MRmlQbDlNY0hVNFQzdmFQeWZNTmQ4TW1ONTRjekF4dFRXWW9S?=
- =?utf-8?B?eHp5VEdFZ0JXeHM4MEhSUUovM0NERjBKWEx3cGg5blpLNlRZUlVZRW42V3JT?=
- =?utf-8?B?TFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 689a53b1-ad72-4a1d-2579-08dbe11a011b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0x6d7kDL5qAbVxFF4eqnp64iCWlGdBSdfYGAmcrULCdiIVNdRob6GZyll+Kg?=
+ =?us-ascii?Q?lljrdqXGiYSYogqPt3DwhU6Un3ohn8aY1INoOKJfdQWmeHTWa73t1KKfCPN8?=
+ =?us-ascii?Q?c54maZIlvdLwST+Xa8fSmyyMvPA84EyiJtH7kqT7bRJ6RklcpngvRavggHfp?=
+ =?us-ascii?Q?GXDzhoWsRwrMKfJh18ashko+qotuW7YtLzJNubFJQ7rfv9JtxZI4tvNh5Kcm?=
+ =?us-ascii?Q?hehmVep2O50insW0CIJ/A00z05ubsWDQwbSyaEwKJeUwvGq1JGn7R3cYpSSP?=
+ =?us-ascii?Q?1HLDziKgs2GQZhtGzt6cXH5srnh63R6Yhkm7zL9VgkrOvuVqHFtu7Iv8ji8T?=
+ =?us-ascii?Q?Wlc90ESGzGgMHCwFKiT95XXe+nKctsXyjtyTAt8f41VuysRRG0HjYk0SBlMA?=
+ =?us-ascii?Q?zeWtPjvQ3X2x5COxC2+TInfdtSdqCalVtX3FrsfJ0YxZPA32gtTA1mo5hJlM?=
+ =?us-ascii?Q?XLt8ikJUNZ6a0ooDN7BRtF3N8c5Bl8je9tNm8icnbu66tH/t/CfkTbyBbjv1?=
+ =?us-ascii?Q?kpw8IAvFV1IH78NUlP6vJ91HOKNwqt2QywUFx5yjFVHxS6ZnQlsXYQ2zxe9E?=
+ =?us-ascii?Q?sxhL0rW1hg9hRIdEMTQMxj4LVHHmAO18pXkzZ4dXZDAqtdbCtUZjtXEm7NNY?=
+ =?us-ascii?Q?USlNBwslyyvRwUccDvRZ7WHMcjOeEbhGYruJsp4DXU8ojl8Bnh2A+mJ+g2wc?=
+ =?us-ascii?Q?XAC//9RZzG3455/j0ZButj2dOx++1lUobPzb+3HtN4m17f1lhn+XSaf3XH4R?=
+ =?us-ascii?Q?O2gq1zYgxJevfdFmXQl3qg5t8NOqYH3pPwH/fNJ9qZJ77ddP7eFqjn0Kn0wD?=
+ =?us-ascii?Q?pJi1q/S3DMApFf/6FEEr35Q7HQfaMhSkHNrcar+8sRhY6107niKdTV8uSZru?=
+ =?us-ascii?Q?Dz2BfRcMypdRQAfiIknlIfcYv+iDqGgTVWFLyEDCgPVdDlOgCItUjv62Wbqx?=
+ =?us-ascii?Q?6rSvt4a0Rpuc1fg/0WWkoqQTOOCkXIKPopgwE/Jg5Nz77bnudcNbV64RKHy/?=
+ =?us-ascii?Q?4/OB9tz2TKF21JvpxdDikG3gFNJq+SPMO0lhpziGDJs6yCICOFrMoXsCZ4Mp?=
+ =?us-ascii?Q?TCsbHfca+N9LcZTh2iOWO3d1BakBbaouUdNq7JvDXty2xDuq24QAPnqppysx?=
+ =?us-ascii?Q?0mXk6qrFQp6MLuUEYVtMyJctJ17T6tE8X/VP8VITvm7zRZOUUQbxUZs2Hqk0?=
+ =?us-ascii?Q?ck13/Hz9J2FGgO5i4pta1VXIznRjx7YqMmNm7HN9zLLPhhgFXlFLSpjOaFB3?=
+ =?us-ascii?Q?mQiKyf56JfjY1fz3b9KQDmUKLyFFNQgiLSvq/5/EqQCylsDcshFHl+peJZSB?=
+ =?us-ascii?Q?7/xvMHHr/pTbFZUI6XayWlCnTqiXr4twkiEQbcabi3AT553CHVx7r5uktd8s?=
+ =?us-ascii?Q?GOuxfJekCq4nURkOCD1BRTnEqaOvcY1J/iWDqt3tRTKGIDybQqgbGOSn+uCa?=
+ =?us-ascii?Q?umK0rXr4BBI59xvpnOSclBKsPu9v4mg+AWp24p6cJ4RCFwu3hjY2uhVOEbwK?=
+ =?us-ascii?Q?hT16vjhEDQVYZ9ixnO4lGXXTEoCALrQrMqAb6GdbB+8PGhdBujuuvxGQZ+Zr?=
+ =?us-ascii?Q?WzhKOlP2+lHt78ndlMPzEldipskCvELyF9wlpqQT6APvBzgWE0jV97wLdAK5?=
+ =?us-ascii?Q?eA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0297e40e-eb26-4b50-9df4-08dbe11a2189
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 11:50:00.9686
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 11:50:55.2356
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0/a+wQqbI0/ZbODU8JdlONCBzO7gbR1sBaN2VedHA+Gqri4UwSyxQdwWu8T6eXPB7gSxdtCFBCWzy24izNYcb2YHZulYnRQ9+S4kqJHLvJU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6267
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: BzJtKzwwoR/Z/GuYHG6p6yZpMiEtxtkB10OMlnuTQ5u0JECMCpTPlFxgXxnwTdK0OdJK0kSYbt+mhzq5aZ0aXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9556
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Potapenko <glider@google.com>
-Date: Mon, 30 Oct 2023 16:32:10 +0100
-
-> Add basic tests ensuring that values can be added at arbitrary positions
-> of the bitmap, including those spanning into the adjacent unsigned
-> longs.
+On Tue, Nov 07, 2023 at 06:20:21AM -0500, Faizal Rahim wrote:
+> If a new GCL is triggered and the new admin base time falls before the
+> expiry of advance_timer (current running entry from oper),
+> taprio_start_sched() resets the current advance_timer expiry to the
+> new admin base time. However, upon expiry, advance_sched() doesn't
+> immediately switch to the admin schedule. It continues running entries
+> from the old oper schedule, and only switches to the new admin schedule
+> much later. Ideally, if the advance_timer is shorten to align with the
+> new admin base time, when the timer expires, advance_sched() should
+> trigger switch_schedules() at the beginning.
 > 
-> Two new performance tests, test_bitmap_read_perf() and
-> test_bitmap_write_perf(), can be used to assess future performance
-> improvements of bitmap_read() and bitmap_write():
+> To resolve this issue, set the cycle_time_correction to a non-initialized
+> value in taprio_start_sched(). advance_sched() will use it to initiate
+> switch_schedules() at the beginning.
 > 
-> [    0.431119][    T1] test_bitmap: Time spent in test_bitmap_read_perf:	615253
-> [    0.433197][    T1] test_bitmap: Time spent in test_bitmap_write_perf:	916313
+> Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
+
+Did the commit you blame really introduce this issue, or was it your
+rework to trigger switch_schedules() based on the correction?
+
+> Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+> ---
+>  net/sched/sch_taprio.c | 21 ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
 > 
-> (numbers from a Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz machine running
-> QEMU).
-> 
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-[...]
-
-> +static bool __init
-> +__check_eq_ulong(const char *srcfile, unsigned int line,
-> +		 const unsigned long exp_ulong, unsigned long x)
-> +{
-> +	if (exp_ulong != x) {
-> +		pr_err("[%s:%u] expected %lu, got %lu\n",
-> +			srcfile, line, exp_ulong, x);
-> +		return false;
-> +	}
-> +	return true;
-> +}
-
-Could we maybe rather extend __check_eq_uint to take ulongs? Doesn't
-seem like they differ a lot.
-
+> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+> index f18a5fe12f0c..01b114edec30 100644
+> --- a/net/sched/sch_taprio.c
+> +++ b/net/sched/sch_taprio.c
+> @@ -1379,14 +1379,19 @@ static void setup_first_end_time(struct taprio_sched *q,
+>  }
 >  
->  static bool __init
->  __check_eq_bitmap(const char *srcfile, unsigned int line,
-
-[...]
-
-> +static void __init test_bitmap_read_perf(void)
-> +{
-> +	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-> +	unsigned int cnt, nbits, i;
-> +	unsigned long val;
-> +	ktime_t time;
-> +
-> +	bitmap_fill(bitmap, TEST_BIT_LEN);
-> +	time = ktime_get();
-> +	for (cnt = 0; cnt < 5; cnt++) {
-> +		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
-> +			for (i = 0; i < TEST_BIT_LEN; i++) {
-> +				if (i + nbits > TEST_BIT_LEN)
-> +					break;
-> +				/*
-> +				 * Prevent the compiler from optimizing away the
-> +				 * bitmap_read() by using its value.
-> +				 */
-> +				WRITE_ONCE(val, bitmap_read(bitmap, i, nbits));
-> +			}
-> +		}
-> +	}
-> +	time = ktime_get() - time;
-> +	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-
-pr_err() is for printing errors and is shown in red by some log readers.
-Maybe use pr_info() or pr_notice()? Definitely not an error or even warning.
-
-> +}
-> +
-> +static void __init test_bitmap_write_perf(void)
-> +{
-> +	DECLARE_BITMAP(bitmap, TEST_BIT_LEN);
-> +	unsigned int cnt, nbits, i;
-> +	unsigned long val = 0xfeedface;
-> +	ktime_t time;
-> +
-> +	bitmap_zero(bitmap, TEST_BIT_LEN);
-> +	time = ktime_get();
-> +	for (cnt = 0; cnt < 5; cnt++) {
-> +		for (nbits = 1; nbits <= BITS_PER_LONG; nbits++) {
-> +			for (i = 0; i < TEST_BIT_LEN; i++) {
-> +				if (i + nbits > TEST_BIT_LEN)
-> +					break;
-> +				bitmap_write(bitmap, val, i, nbits);
-> +			}
-> +		}
-> +	}
-> +	time = ktime_get() - time;
-> +	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-
-(same)
-
-> +}
-> +
-> +#undef TEST_BIT_LEN
-> +
->  static void __init selftest(void)
+>  static void taprio_start_sched(struct Qdisc *sch,
+> -			       ktime_t start, struct sched_gate_list *new)
+> +			       ktime_t new_base_time,
+> +			       struct sched_gate_list *new)
 >  {
->  	test_zero_clear();
-> @@ -1237,6 +1411,9 @@ static void __init selftest(void)
->  	test_bitmap_cut();
->  	test_bitmap_print_buf();
->  	test_bitmap_const_eval();
-> +	test_bitmap_read_write();
-> +	test_bitmap_read_perf();
-> +	test_bitmap_write_perf();
+>  	struct taprio_sched *q = qdisc_priv(sch);
+> -	ktime_t expires;
+> +	struct sched_gate_list *oper = NULL;
+> +	ktime_t expires, start;
 >  
->  	test_find_nth_bit();
->  	test_for_each_set_bit();
+>  	if (FULL_OFFLOAD_IS_ENABLED(q->flags))
+>  		return;
+>  
+> +	oper = rcu_dereference_protected(q->oper_sched,
+> +					 lockdep_is_held(&q->current_entry_lock));
+> +
+>  	expires = hrtimer_get_expires(&q->advance_timer);
+>  	if (expires == 0)
+>  		expires = KTIME_MAX;
+> @@ -1395,7 +1400,17 @@ static void taprio_start_sched(struct Qdisc *sch,
+>  	 * reprogram it to the earliest one, so we change the admin
+>  	 * schedule to the operational one at the right time.
+>  	 */
+> -	start = min_t(ktime_t, start, expires);
+> +	start = min_t(ktime_t, new_base_time, expires);
+> +
+> +	if (expires != KTIME_MAX &&
+> +	    ktime_compare(start, new_base_time) == 0) {
+> +		/* Since timer was changed to align to the new admin schedule,
+> +		 * setting the variable below to a non-initialized value will
 
-Thanks,
-Olek
+I find the wording "setting the variable below to a non-initialized value"
+confusing. 0 is non-initialized? You're talking about a value different
+than INIT_CYCLE_TIME_CORRECTION. What about "setting a specific cycle
+correction will indicate ..."?
+
+> +		 * indicate to advance_sched() to call switch_schedules() after
+> +		 * this timer expires.
+> +		 */
+> +		oper->cycle_time_correction = 0;
+
+Why 0 and not ktime_sub(new_base_time, oper->cycle_end_time)? Doesn't
+the precise correction value make a difference?
+
+> +	}
+>  
+>  	hrtimer_start(&q->advance_timer, start, HRTIMER_MODE_ABS);
+>  }
+> -- 
+> 2.25.1
+>
