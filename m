@@ -2,167 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441647E66A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AFD7E66B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbjKIJXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
+        id S232566AbjKIJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:25:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234344AbjKIJXi (ORCPT
+        with ESMTP id S232483AbjKIJZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:23:38 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA4D2712
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:23:35 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9db6cf8309cso104563766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1699521814; x=1700126614; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KM+51/Ab8q9Ob1ygxdet2j1y8TyHO4eFE3VACdVz/qw=;
-        b=NyielVkyhghbYaYkE+xEF7ifhuYLssoBlbepRZFZOZX2xpLJMHRZVR4Jxah0zY2GBT
-         vG/ICtUL6ZerkuR5zg3tyLQVVZ8LapkyPzpusvA0u0WK93cs2iX3ibeB5LQHdhU7WbsP
-         +uMaR6BAi0gHejFg4W06ePQrUGuXibEGqt4LQYFiYm1PcvtPDG1jezrLmMZyti7Uj50r
-         E+3ayK094mZruRafd7IkWhM2VIJo2d226gpfopoyTny7+RqpEbcKNcc+ID9SjWcNcbH6
-         nIGEHvynq8P9dSqced7oNtvqKqmfxVKU8l1KXzQKloi9OX86Y2zggjMM/TOZW4UNUunx
-         fVgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699521814; x=1700126614;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KM+51/Ab8q9Ob1ygxdet2j1y8TyHO4eFE3VACdVz/qw=;
-        b=vaxGlYrunQ/DAoWt6PCfsGPLqwZZLJPmoVn3nng+HaANpKaVwIST1MEP/Cd47q37zo
-         uN+hjiDlqQyybivFazcSVRRwfsQtJ6VnyutNkUDZ7794Qi5lvWPcffMfp/4q1FWEPQYE
-         uXTlSK9ABkv/6mQikIaFbSC7Xun8rXRDTrO6Yb1hF/DlWhpxYfhhxOR+YE9vKwDQnDxN
-         fRc/QLON60bx3MtyafMxLyk+aWx3jgszBspRFfz7FTWsj2crZSmBY127N6MAuL3NCd5n
-         l9s2D/n2NvJBA75cnIIxyaCa6Xz85AMi82zed+3qFc3dpVMfgZk47tebYZLW6jA3Nxw/
-         lpUg==
-X-Gm-Message-State: AOJu0Yz5Py36oibQq9iKbfhJC9ZI+lFlYicleW7jGeNDOl0J6LVeThfg
-        FSIOp/+aStP6t7yga+0ZlOMMLg==
-X-Google-Smtp-Source: AGHT+IG8NylJbk6sL0rgMWAxvKR4U7Rs8ENCxcPPyl4ucM5zPQY1D4dVZPN98Dd+djq6QCHybRLZDg==
-X-Received: by 2002:a17:907:7f1e:b0:9d5:ecf9:e6a0 with SMTP id qf30-20020a1709077f1e00b009d5ecf9e6a0mr2305594ejc.0.1699521813764;
-        Thu, 09 Nov 2023 01:23:33 -0800 (PST)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id c7-20020a7bc847000000b0040836519dd9sm1453917wml.25.2023.11.09.01.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 01:23:33 -0800 (PST)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     andi.shyti@kernel.org, robh@kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v5 2/2] i2c: muxes: pca954x: Enable features on MAX7357
-Date:   Thu,  9 Nov 2023 09:23:27 +0000
-Message-ID: <20231109092328.3238241-2-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231109092328.3238241-1-naresh.solanki@9elements.com>
-References: <20231109092328.3238241-1-naresh.solanki@9elements.com>
+        Thu, 9 Nov 2023 04:25:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F6A270C;
+        Thu,  9 Nov 2023 01:25:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699521949; x=1731057949;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AyxJP29kR02iiNbcHt7dehQtU/CjLqUJJGn9LSD530U=;
+  b=HlAQ9WAYZZcdevi18vuASlC3HnxW4AnTI9acS6AdA0pQNZyRYR/IE4td
+   yXyaxyte2JbSiEI3Hqg8lQXVtFqseRznMdNXwGtXBGhJJrqhleLuEXLKU
+   lA4StVc4aiiPwdeO25EbLfaX5rUP3rriStFq2xtQrmwkNs68IveXN49s3
+   45zD5BMl9wtcWMYlDmKcdGq4VVRSV1zhsXEOdjCzwdogWlSUuu7qu1a4a
+   AjDMcfSrjE9xqf/KAUcTXuDWw968C0GfsDX7DqAb0WrirHXqV7moTrLu2
+   eRtPbEn87fPPpfCsegnw7p357FMoOBoA5ZX8yLqS4Me4SvsYCWxo443uQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="393860530"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="393860530"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 01:25:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="829250358"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="829250358"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Nov 2023 01:25:41 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r11IB-0008cK-0b;
+        Thu, 09 Nov 2023 09:25:39 +0000
+Date:   Thu, 9 Nov 2023 17:25:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
+Message-ID: <202311091754.K9wZD9Nv-lkp@intel.com>
+References: <20231108125843.3806765-16-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108125843.3806765-16-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+Hi Arnd,
 
-Enable additional features based on DT settings and unconditionally
-release the shared interrupt pin after 1.6 seconds and allow to use
-it as reset.
+kernel test robot noticed the following build errors:
 
-These features aren't enabled by default and it's up to board designer
-to validate for proper functioning and detection of devices in secondary
-bus as sometimes it can cause secondary bus being disabled.
+[auto build test ERROR on linus/master]
+[cannot apply to v6.6 next-20231109]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231108125843.3806765-16-arnd%40kernel.org
+patch subject: [PATCH 15/22] arch: vdso: consolidate gettime prototypes
+config: um-defconfig (https://download.01.org/0day-ci/archive/20231109/202311091754.K9wZD9Nv-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311091754.K9wZD9Nv-lkp@intel.com/reproduce)
 
----
-Changes in V5:
-- Fix typos
-- Update comment
-- Add newline in dev_warn
-Changes in V4:
-- Drop max7358
-- Update #define
-- Move conf variable
-- Print warning when I2C_FUNC_SMBUS_WRITE_BYTE_DATA isn't supported
-Changes in V3:
-- Delete unused #define
-- Update pca954x_init
-- Update commit message
-Changes in V2:
-- Update comments
-- Update check for DT properties
----
- drivers/i2c/muxes/i2c-mux-pca954x.c | 43 ++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311091754.K9wZD9Nv-lkp@intel.com/
 
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 2219062104fb..f5dfc33b97c0 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -57,6 +57,20 @@
- 
- #define PCA954X_IRQ_OFFSET 4
- 
-+/*
-+ * MAX7357's configuration register is writeable after POR, but
-+ * can be locked by setting the basic mode bit. MAX7358 configuration
-+ * register is locked by default and needs to be unlocked first.
-+ * The configuration register holds the following settings:
-+ */
-+#define MAX7357_CONF_INT_ENABLE			BIT(0)
-+#define MAX7357_CONF_FLUSH_OUT			BIT(1)
-+#define MAX7357_CONF_RELEASE_INT		BIT(2)
-+#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
-+#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
-+
-+#define MAX7357_POR_DEFAULT_CONF		MAX7357_CONF_INT_ENABLE
-+
- enum pca_type {
- 	max_7356,
- 	max_7357,
-@@ -470,7 +484,34 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
- 	else
- 		data->last_chan = 0; /* Disconnect multiplexer */
- 
--	ret = i2c_smbus_write_byte(client, data->last_chan);
-+	if (device_is_compatible(&client->dev, "maxim,max7357")) {
-+		if (i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
-+			u8 conf = MAX7357_POR_DEFAULT_CONF;
-+			/*
-+			 * The interrupt signal is shared with the reset pin. Release the
-+			 * interrupt after 1.6 seconds to allow using the pin as reset.
-+			 */
-+			conf |= MAX7357_CONF_RELEASE_INT;
-+
-+			if (device_property_read_bool(&client->dev, "maxim,isolate-stuck-channel"))
-+				conf |= MAX7357_CONF_DISCON_SINGLE_CHAN;
-+			if (device_property_read_bool(&client->dev,
-+						      "maxim,send-flush-out-sequence"))
-+				conf |= MAX7357_CONF_FLUSH_OUT;
-+			if (device_property_read_bool(&client->dev,
-+						      "maxim,preconnection-wiggle-test-enable"))
-+				conf |= MAX7357_CONF_PRECONNECT_TEST;
-+
-+			ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
-+		} else {
-+			dev_warn(&client->dev, "Write byte data not supported."
-+				 "Cannot enable enhanced mode features\n");
-+			ret = i2c_smbus_write_byte(client, data->last_chan);
-+		}
-+	} else {
-+		ret = i2c_smbus_write_byte(client, data->last_chan);
-+	}
-+
- 	if (ret < 0)
- 		data->last_chan = 0;
- 
+All errors (new ones prefixed by >>):
+
+>> arch/x86/um/vdso/um_vdso.c:17:5: error: conflicting types for '__vdso_clock_gettime'; have 'int(clockid_t,  struct __kernel_old_timespec *)' {aka 'int(int,  struct __kernel_old_timespec *)'}
+      17 | int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+         |     ^~~~~~~~~~~~~~~~~~~~
+   In file included from arch/x86/um/vdso/um_vdso.c:15:
+   include/vdso/gettime.h:16:5: note: previous declaration of '__vdso_clock_gettime' with type 'int(clockid_t,  struct __kernel_timespec *)' {aka 'int(int,  struct __kernel_timespec *)'}
+      16 | int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
+         |     ^~~~~~~~~~~~~~~~~~~~
+   arch/x86/um/vdso/um_vdso.c:58:1: warning: no previous prototype for '__vdso_getcpu' [-Wmissing-prototypes]
+      58 | __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
+         | ^~~~~~~~~~~~~
+
+
+vim +17 arch/x86/um/vdso/um_vdso.c
+
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  16  
+82210fc778982d arch/x86/um/vdso/um_vdso.c        Arnd Bergmann      2019-10-27 @17  int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  18  {
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  19  	long ret;
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  20  
+5541992e512de8 arch/x86/um/vdso/um_vdso.c        Ammar Faizi        2022-12-24  21  	asm("syscall"
+5541992e512de8 arch/x86/um/vdso/um_vdso.c        Ammar Faizi        2022-12-24  22  		: "=a" (ret)
+5541992e512de8 arch/x86/um/vdso/um_vdso.c        Ammar Faizi        2022-12-24  23  		: "0" (__NR_clock_gettime), "D" (clock), "S" (ts)
+5541992e512de8 arch/x86/um/vdso/um_vdso.c        Ammar Faizi        2022-12-24  24  		: "rcx", "r11", "memory");
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  25  
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  26  	return ret;
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  27  }
+82210fc778982d arch/x86/um/vdso/um_vdso.c        Arnd Bergmann      2019-10-27  28  int clock_gettime(clockid_t, struct __kernel_old_timespec *)
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  29  	__attribute__((weak, alias("__vdso_clock_gettime")));
+f1c2bb8b9964ed arch/um/sys-x86_64/vdso/um_vdso.c Richard Weinberger 2011-07-25  30  
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
