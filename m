@@ -2,190 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F8D7E6A6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751ED7E6A73
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbjKIMUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S232014AbjKIMVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjKIMUi (ORCPT
+        with ESMTP id S229450AbjKIMVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:20:38 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E52702
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 04:20:35 -0800 (PST)
-Received: from dggpemm500018.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SR1CC6ztkzPnfY;
-        Thu,  9 Nov 2023 20:16:23 +0800 (CST)
-Received: from [10.174.176.191] (10.174.176.191) by
- dggpemm500018.china.huawei.com (7.185.36.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 9 Nov 2023 20:20:33 +0800
-Message-ID: <fb427e6c-e89b-47f9-8947-9493b1dbfb0e@huawei.com>
-Date:   Thu, 9 Nov 2023 20:20:22 +0800
+        Thu, 9 Nov 2023 07:21:07 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42CF2702;
+        Thu,  9 Nov 2023 04:21:05 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5849fc56c62so430384eaf.3;
+        Thu, 09 Nov 2023 04:21:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699532465; x=1700137265; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cf06u8ZRup48FiodSvGNoaJfH2Amt2aPrTV0aUl6vho=;
+        b=bh9+RiTbrzxgHshpCGlnT/nMw3MWTOAeiew0g/iCh381q+PV7R6USTyEBvK+RED17U
+         4qHNCL2eKZ3z8mZ+1yXF3p2ENJHVq1ciMfECrJvXeicCNtQgm/BrH72cyCX/DMMwHsfz
+         51QfPCcTXwOL1HyNTZnOCtVOpo47x8Kn794t/5MMpx52Nfm1XKRoy1dUp45FtPpdSC8t
+         A6xSDmjlyy1UAmQWEXgbXHFBqrNLu3OZP+1x2DBl/DzIiWcmMATLtt1D2A74gYDKZ8vU
+         L7WyDksCm7oM8W9fuXNVRoEeAMJadleOgaz+syOjzMv3boVO1JlRQ3sH7TwbH62b7K1F
+         tB3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699532465; x=1700137265;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cf06u8ZRup48FiodSvGNoaJfH2Amt2aPrTV0aUl6vho=;
+        b=A4hYRF8XMFIxUtYZZ8sG2yAkecPm/ccbOtTiGMdfXsdqWGN5tzKukeEAh3lLVH05Ip
+         c1y7cUFyFVZrL6hTLXD5ktCiofTM+OadDr30klm1BCdjn0v5n3+L+CE/tDJUDHtCE5xC
+         orNHPYBRdpg6RG+zVrZxH93BGuLMwfzmzMdZweEwLJPuh/+tWnoOgVvdGEd+vMNRQmj8
+         Lg7ZrqKJNyXttK6mVqnEC3UOQGT/LC4T8dvhHxn3tUZ5G3ATeOVl82vuKL7aP2AZqDrS
+         uuXRw8PEu4CvMCIh+qy5jKkmiPbr8KCT6AsIK59H2ychkSxLU7VJjAQCibSKSUD0H4+T
+         oU+A==
+X-Gm-Message-State: AOJu0YwDRxfAiZi4mBoV7VyObQpqly5j9gXv+o0a7FR1kES3Lzy32z7m
+        ZsPGJBzStNCcx25EwIThUzywe+diV7LLpkj8DBw=
+X-Google-Smtp-Source: AGHT+IHSCIfAvxAsoOhCmuC/wS5IjQ8yNasMvbesR4csTwSDuItjtE1BiSf3ph5q+6Ne9SxAA+PV13TTUBc5f1h52dg=
+X-Received: by 2002:a4a:d35a:0:b0:581:ec87:edc0 with SMTP id
+ d26-20020a4ad35a000000b00581ec87edc0mr4683338oos.9.1699532464870; Thu, 09 Nov
+ 2023 04:21:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   "liutie (A)" <liutie4@huawei.com>
-Subject: Re: [Bug report] A variant deadlock issue of CPU hot-unplug operation
- vs. the CFS bandwidth timer
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Yu Liao <liaoyu15@huawei.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "liwei (GF)" <liwei391@huawei.com>, xiafukun <xiafukun@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Phil Auld <pauld@redhat.com>, <vschneid@redhat.com>,
-        <vdonnefort@google.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        <liuchao173@huawei.com>
-References: <6f0f3e42-ddf2-1bbf-ec80-bcbae41c700c@huawei.com>
- <87a5rphara.ffs@tglx>
-Content-Language: en-US
-In-Reply-To: <87a5rphara.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.191]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500018.china.huawei.com (7.185.36.111)
-X-CFilter-Loop: Reflected
+Received: by 2002:ac9:6696:0:b0:4f0:1250:dd51 with HTTP; Thu, 9 Nov 2023
+ 04:21:04 -0800 (PST)
+In-Reply-To: <87msvnwzim.fsf@email.froward.int.ebiederm.org>
+References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
+ <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
+ <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
+ <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
+ <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org> <CAGudoHESNDTAAOGB3riYjU3tgHTXVLRdB7tknfVBem38yqkJEA@mail.gmail.com>
+ <202311081129.9E1EC8D34@keescook> <CAGudoHEqv=JmMyV8vYSvhubxXaW-cK3n5WRR=nR7eDZjBOQTcw@mail.gmail.com>
+ <87msvnwzim.fsf@email.froward.int.ebiederm.org>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Thu, 9 Nov 2023 13:21:04 +0100
+Message-ID: <CAGudoHHb8Fh5UxgMa-hw3Kj=wjMqpdZq2J6869fBgsKXcZOeHA@mail.gmail.com>
+Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
+ allocating mm
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <kees@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/9/23, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Mateusz Guzik <mjguzik@gmail.com> writes:
+>> sched_exec causes migration only for only few % of execs in the bench,
+>> but when it does happen there is tons of overhead elsewhere.
+>>
+>> I expect real programs which get past execve will be prone to
+>> migrating anyway, regardless of what sched_exec is doing.
+>>
+>> That is to say, while sched_exec buggering off here would be nice, I
+>> think for real-world wins the thing to investigate is the overhead
+>> which comes from migration to begin with.
+>
+> I have a vague memory that the idea is that there is a point during exec
+> when it should be much less expensive than normal to allow migration
+> between cpus because all of the old state has gone away.
+>
+> Assuming that is the rationale, if we are getting lock contention
+> then either there is a global lock in there, or there is the potential
+> to pick a less expensive location within exec.
+>
+
+Given the commit below I think the term "migration cost" is overloaded here.
+
+By migration cost in my previous mail I meant the immediate cost
+(stop_one_cpu and so on), but also the aftermath -- for example tlb
+flushes on another CPU when tearing down your now-defunct mm after you
+switched.
+
+For testing purposes I verified commenting out sched_exec and not
+using taskset still gives me about 9.5k ops/s.
+
+I 100% agree should the task be moved between NUMA domains, it makes
+sense to do it when it has the smallest footprint. I don't know what
+the original patch did, the current code just picks a CPU and migrates
+to it, regardless of NUMA considerations. I will note that the goal
+would still be achieved by comparing domains and doing nothing if they
+match.
+
+I think this would be nice to fix, but it is definitely not a big
+deal. I guess the question is to Peter Zijlstra if this sounds
+reasonable.
+
+> Just to confirm my memory I dug a little deeper and I found the original
+> commit that added sched_exec (in tglx's git tree of the bit keeper
+> history).
+>
+> commit f01419fd6d4e5b32fef19d206bc3550cc04567a9
+> Author: Martin J. Bligh <mbligh@aracnet.com>
+> Date:   Wed Jan 15 19:46:10 2003 -0800
+>
+>     [PATCH] (2/3) Initial load balancing
+>
+>     Patch from Michael Hohnbaum
+>
+>     This adds a hook, sched_balance_exec(), to the exec code, to make it
+>     place the exec'ed task on the least loaded queue. We have less state
+>     to move at exec time than fork time, so this is the cheapest point
+>     to cross-node migrate. Experience in Dynix/PTX and testing on Linux
+>     has confirmed that this is the cheapest time to move tasks between
+> nodes.
+>
+>     It also macro-wraps changes to nr_running, to allow us to keep track of
+>     per-node nr_running as well. Again, no impact on non-NUMA machines.
+>
+>
+> Eric
+>
+>
 
 
-On 2023/11/7 22:57, Thomas Gleixner wrote:
-> 
-> Bah.
-> 
-> So we can actually migrate the hrtimers away from the outgoing CPU in
-> the dying callbacks. That's safe as nothing can queue an hrtimer remote
-> on the outgoing CPU because all other CPUs are spinwaiting with
-> interrupts disabled in stomp_machine() until the CPU marked itself
-> offline.
-> 
-> Survived a quick test, but needs some scrunity and probably a sanity
-> check in the post dead stage.
-> 
-> Thanks,
-> 
->          tglx
-> ---
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -195,6 +195,7 @@ enum cpuhp_state {
->   	CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
->   	CPUHP_AP_ARM64_ISNDEP_STARTING,
->   	CPUHP_AP_SMPCFD_DYING,
-> +	CPUHP_AP_HRTIMERS_DYING,
->   	CPUHP_AP_X86_TBOOT_DYING,
->   	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
->   	CPUHP_AP_ONLINE,
-> --- a/include/linux/hrtimer.h
-> +++ b/include/linux/hrtimer.h
-> @@ -531,9 +531,9 @@ extern void sysrq_timer_list_show(void);
->   
->   int hrtimers_prepare_cpu(unsigned int cpu);
->   #ifdef CONFIG_HOTPLUG_CPU
-> -int hrtimers_dead_cpu(unsigned int cpu);
-> +int hrtimers_cpu_dying(unsigned int cpu);
->   #else
-> -#define hrtimers_dead_cpu	NULL
-> +#define hrtimers_cpu_dying	NULL
->   #endif
->   
->   #endif
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -2116,7 +2116,7 @@ static struct cpuhp_step cpuhp_hp_states
->   	[CPUHP_HRTIMERS_PREPARE] = {
->   		.name			= "hrtimers:prepare",
->   		.startup.single		= hrtimers_prepare_cpu,
-> -		.teardown.single	= hrtimers_dead_cpu,
-> +		.teardown.single	= NULL,
->   	},
->   	[CPUHP_SMPCFD_PREPARE] = {
->   		.name			= "smpcfd:prepare",
-> @@ -2208,6 +2208,12 @@ static struct cpuhp_step cpuhp_hp_states
->   		.startup.single		= NULL,
->   		.teardown.single	= smpcfd_dying_cpu,
->   	},
-> +	[CPUHP_AP_HRTIMERS_DYING] = {
-> +		.name			= "hrtimers:dying",
-> +		.startup.single		= NULL,
-> +		.teardown.single	= hrtimers_cpu_dying,
-> +	},
-> +
->   	/* Entry state on starting. Interrupts enabled from here on. Transient
->   	 * state for synchronsization */
->   	[CPUHP_AP_ONLINE] = {
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -2219,29 +2219,22 @@ static void migrate_hrtimer_list(struct
->   	}
->   }
->   
-> -int hrtimers_dead_cpu(unsigned int scpu)
-> +int hrtimers_cpu_dying(unsigned int dying_cpu)
->   {
->   	struct hrtimer_cpu_base *old_base, *new_base;
-> -	int i;
-> +	int i, ncpu = cpumask_first(cpu_active_mask);
->   
-> -	BUG_ON(cpu_online(scpu));
-> -	tick_cancel_sched_timer(scpu);
-> +	tick_cancel_sched_timer(dying_cpu);
-> +
-> +	old_base = this_cpu_ptr(&hrtimer_bases);
-> +	new_base = &per_cpu(hrtimer_bases, ncpu);
->   
-> -	/*
-> -	 * this BH disable ensures that raise_softirq_irqoff() does
-> -	 * not wakeup ksoftirqd (and acquire the pi-lock) while
-> -	 * holding the cpu_base lock
-> -	 */
-> -	local_bh_disable();
-> -	local_irq_disable();
-> -	old_base = &per_cpu(hrtimer_bases, scpu);
-> -	new_base = this_cpu_ptr(&hrtimer_bases);
->   	/*
->   	 * The caller is globally serialized and nobody else
->   	 * takes two locks at once, deadlock is not possible.
->   	 */
-> -	raw_spin_lock(&new_base->lock);
-> -	raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
-> +	raw_spin_lock(&old_base->lock);
-> +	raw_spin_lock_nested(&new_base->lock, SINGLE_DEPTH_NESTING);
->   
->   	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
->   		migrate_hrtimer_list(&old_base->clock_base[i],
-> @@ -2252,15 +2245,13 @@ int hrtimers_dead_cpu(unsigned int scpu)
->   	 * The migration might have changed the first expiring softirq
->   	 * timer on this CPU. Update it.
->   	 */
-> -	hrtimer_update_softirq_timer(new_base, false);
-> +	__hrtimer_get_next_event(new_base, HRTIMER_ACTIVE_SOFT);
-> +	/* Tell the other CPU to retrigger the next event */
-> +	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
->   
-> -	raw_spin_unlock(&old_base->lock);
->   	raw_spin_unlock(&new_base->lock);
-> +	raw_spin_unlock(&old_base->lock);
->   
-> -	/* Check, if we got expired work to do */
-> -	__hrtimer_peek_ahead_timers();
-> -	local_irq_enable();
-> -	local_bh_enable();
->   	return 0;
->   }
->   
-
-Thanks for the patch. Tested in v6.6 and this patch works.
-
-Tested-by: Liu Tie <liutie4@huawei.com>
-
-Best regards,
-Tie
+-- 
+Mateusz Guzik <mjguzik gmail.com>
