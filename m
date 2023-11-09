@@ -2,151 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A8E7E6540
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D637E6548
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbjKII0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S233433AbjKII2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:28:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbjKII0i (ORCPT
+        with ESMTP id S231464AbjKII2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:26:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3567A273E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:25:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699518349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=odt/5xMXbjMgZlXR9oRA3wdW/adm1/gNuEpMj2VBGmk=;
-        b=JqYgyJ4mTafQAwU/hKRh//7IdyoYz4dnnrAg3UT9aSjVItRgL/Tsq9GUqYeQ4cYstp1B7I
-        QOr2kGxnfBv0LLFiZpEb/HzzPQDFsyRtBeOmqZXpUkMViG/ltwXW76hMxQJWX0w8Y1jSmL
-        aq9rS8Q3Ql4PHEbTFGGjmEMz12fLYDQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-156-bNE-_IY1OoS05ZvqPMs7LQ-1; Thu, 09 Nov 2023 03:25:48 -0500
-X-MC-Unique: bNE-_IY1OoS05ZvqPMs7LQ-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5411d71889aso415584a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:25:47 -0800 (PST)
+        Thu, 9 Nov 2023 03:28:01 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1605A273E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:27:59 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40839807e82so3323935e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:27:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699518477; x=1700123277; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f8DuB8h8ES/BpLoLVP2cNgaCu2vzRglHmcimDInihuk=;
+        b=Xh7DDRhMkn9RftQYwAaHmTGsISO77WAxdOoNaTp/Z9/vCTJJKZ/gFWTcM8uJUOR9/M
+         DeM2YckF4aWJ4PQfmpVHc/37nMB82AT8y22+QPzU4a1tTdp7EP1xjB49JtNP6fZ8GGzD
+         36sr5HUYtdW6KrYcBlukC3JbM1Jbm23mJnYwp0lStzCY2U5i0nBFD75VJ70p2yIqlRu6
+         1tXcpfcEK+xyZZ8zgfYQffMiGXWEGDa3XQ//4IaLsQTUGP/zKNAIDOmsjV3GaH9YAKtx
+         7WvsfxdDFUl6lezA5zy7efYdJ8llSGXMIofNHHf5nK39WwMA9Qd95AyYq34G25i2CpLq
+         3igw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699518347; x=1700123147;
+        d=1e100.net; s=20230601; t=1699518477; x=1700123277;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=odt/5xMXbjMgZlXR9oRA3wdW/adm1/gNuEpMj2VBGmk=;
-        b=eRmI2U6pXemCSFiHiLuZFASFodD1aryAgqQOngcjiwW5K173R79fzTIaoefJuvxCja
-         jwnAb/fr+jgzUIxp04f4pU4NeJwb1MBHVq/t1H2PyLvpY4W1+eetelgqWnHux4gESPHf
-         upgxGx4lx3hKDCXKKW7piHKs5F/A2eYMw2knFuee1XbR9hzXxLsninZgMIdZZJpkBB5Y
-         6+tQV5S4kh9S4E21gdZwdBptIS+0mn8kRZ4Ul+khYDrc5b0eshQfN9GNX91veXbVNI8l
-         F2PaHS4wukEnbUcriMnY1uBRBrv12NnpJot0l9Z5cbt3cNKwN8atWBAkvDAaLwYeYx5l
-         N0zw==
-X-Gm-Message-State: AOJu0YyRaF1YYRd9PPgTMyR5tp6GKJxDdRQdU1ITBirtcoVsEo4VLp/S
-        fXDDDTkJovalr4OX1+xrlNBHlKddcCkSaNFfT5sfv5q/ThAdkJysYr/8T4Hr/nlk8pmhm2Gjfdp
-        wfYGPqlfOuiUPdVGEJ/AbKVua
-X-Received: by 2002:a50:9f4e:0:b0:540:ccde:5 with SMTP id b72-20020a509f4e000000b00540ccde0005mr3348770edf.37.1699518346873;
-        Thu, 09 Nov 2023 00:25:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGc/8h7txNeYrJdeIJbeZLdKa5Ej0cD8Q6TYT5qVu8zzxOyeTh4hQuHi7CupWqz8J3PkKtaWg==
-X-Received: by 2002:a50:9f4e:0:b0:540:ccde:5 with SMTP id b72-20020a509f4e000000b00540ccde0005mr3348751edf.37.1699518346536;
-        Thu, 09 Nov 2023 00:25:46 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id j28-20020a508a9c000000b0053e3839fc79sm8007819edj.96.2023.11.09.00.25.44
+        bh=f8DuB8h8ES/BpLoLVP2cNgaCu2vzRglHmcimDInihuk=;
+        b=E9HUsL3SY3K+ldXAKUO8QswhW7R/nX7TrlEZ033NrCGvZ28UwTiPBwRdjbUefyM1PI
+         b+Rf789hMy1PJeBfCydGHWKMTdCD1KqZgW3qcSZD8FarzZwssis4XedhQ+N8TXOYcjfi
+         qUzn/Iv5nTbPRjcxVxoeElmkYWyaxr1rBIane1ABygHZQOFIj/r+3PcHwRPqvD3wYOLd
+         mUTUNd0BaEkEwUUm5iRiI0qlXmYvwteRJEgW86sP780oJX2PXGQWQwHQVn/h9zZtNy3w
+         yUXxA5eo5dRYx6XwLooJnmnCsg595tZXOyYtVkpJLMlL3RF+FjqKR2OQ48WEpObbo0/s
+         EdGA==
+X-Gm-Message-State: AOJu0YzSHn8689h7DqEqGX8OVOw/MypuM1bfrI3nDmHUOuiWuIhsTN8o
+        uBu/IWMEHeQMcxhqTzXVQliHKw==
+X-Google-Smtp-Source: AGHT+IHp74YVHchpSk1tozdSn6wVl9GtxAoEqEUndh5yV20UM/FZX0sKzvPOdsrx9S5Ld1CbW1R90g==
+X-Received: by 2002:a05:600c:510e:b0:403:aced:f7f4 with SMTP id o14-20020a05600c510e00b00403acedf7f4mr10275828wms.12.1699518477433;
+        Thu, 09 Nov 2023 00:27:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id w23-20020a05600c2a1700b003fe23b10fdfsm1293753wme.36.2023.11.09.00.27.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 00:25:45 -0800 (PST)
-Message-ID: <143f5411-9fc0-4e88-9e35-6f3679b6f930@redhat.com>
-Date:   Thu, 9 Nov 2023 09:25:43 +0100
+        Thu, 09 Nov 2023 00:27:57 -0800 (PST)
+Message-ID: <f989f789-9934-45fe-b30b-b916c2d92043@linaro.org>
+Date:   Thu, 9 Nov 2023 09:27:55 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 27/34] KVM: selftests: Introduce VM "shape" to allow tests
- to specify the VM type
+Subject: Re: [PATCH V5][3/4] mmc: Add dw mobile mmc cmdq rtk driver
 Content-Language: en-US
-To:     Anish Moorthy <amoorthy@google.com>
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu, brauner@kernel.org,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, dmatlack@google.com, isaku.yamahata@gmail.com,
-        isaku.yamahata@intel.com, jarkko@kernel.org,
-        kirill.shutemov@linux.intel.com, kvm-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, kvmarm@lists.linux.dev,
-        liam.merwick@oracle.com, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        mail@maciej.szmigiero.name, maz@kernel.org, mic@digikod.net,
-        michael.roth@amd.com, mpe@ellerman.id.au, oliver.upton@linux.dev,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, qperret@google.com,
-        seanjc@google.com, tabba@google.com, vannapurve@google.com,
-        vbabka@suse.cz, viro@zeniv.linux.org.uk, wei.w.wang@intel.com,
-        willy@infradead.org, xiaoyao.li@intel.com, yilun.xu@intel.com,
-        yu.c.zhang@linux.intel.com
-References: <CAF7b7mrGYuyjyEPAesYzZ6+KDuNAmvRxEonT7JC8NDPsSP+qDA@mail.gmail.com>
- <20231108233723.3380042-1-amoorthy@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20231108233723.3380042-1-amoorthy@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     =?UTF-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
+        "riteshh@codeaurora.org" <riteshh@codeaurora.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>
+Cc:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "briannorris@chromium.org" <briannorris@chromium.org>,
+        "doug@schmorgal.com" <doug@schmorgal.com>,
+        "tonyhuang.sunplus@gmail.com" <tonyhuang.sunplus@gmail.com>,
+        "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
+        "william.qiu@starfivetech.com" <william.qiu@starfivetech.com>
+References: <20231102081514.22945-1-jyanchou@realtek.com>
+ <20231102081514.22945-4-jyanchou@realtek.com>
+ <9c083c35-a8fb-4ee3-90a3-96af7efec11f@linaro.org>
+ <6da3391700204ebc8d2c0bb5e927d2c8@realtek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <6da3391700204ebc8d2c0bb5e927d2c8@realtek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 00:37, Anish Moorthy wrote:
-> On Wed, Nov 8, 2023 at 9:00 AM Anish Moorthy <amoorthy@google.com> wrote:
->>
->> This commit breaks the arm64 selftests build btw: looks like a simple oversight?
+On 09/11/2023 08:34, Jyan Chou [周芷安] wrote:
+>>> +     priv->m2tmx = 
+>>> + syscon_regmap_lookup_by_phandle(host->dev->of_node, 
+>>> + "realtek,m2tmx");
 > 
-> Yup, fix is a one-liner. Posted below.
+>> NAK, for the same reasons I mentioned for other patch.
 > 
-> diff --git a/tools/testing/selftests/kvm/aarch64/page_fault_test.c b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-> index eb4217b7c768..08a5ca5bed56 100644
-> --- a/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-> +++ b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-> @@ -705,7 +705,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
->   
->   	print_test_banner(mode, p);
->   
-> -	vm = ____vm_create(mode);
-> +	vm = ____vm_create(VM_SHAPE(mode));
+>> I will keep NAK-ing till you start testing your DTS.
+> 
+> Sorry, I am not sure whether I modify the correct thing you said. I will add
+> 
+> realtek,m2tmx in bindings.
 
-Yes, this is similar to the s390 patch I sent yesterday 
-(https://patchew.org/linux/20231108094055.221234-1-pbonzini@redhat.com/).
+Upstream a tested DTS. I don't trust that you test it, so I need to see it.
 
-Paolo
+
+Best regards,
+Krzysztof
 
