@@ -2,179 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 448867E70D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C2E7E70D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344883AbjKIRvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
+        id S1344881AbjKIRwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344811AbjKIRvg (ORCPT
+        with ESMTP id S1344843AbjKIRwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:51:36 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35CF3A8E;
-        Thu,  9 Nov 2023 09:51:33 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9CrtUk014394;
-        Thu, 9 Nov 2023 17:51:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=VGrocBjpfB4eUDrm+j3cr9UddNm0arMjWqZFjcDlqE0=;
- b=Plv3zypUMJ0ik5hxoYdBeX+TqjqV0JltbInzHs9c2TxXHGt6YP+HTwxDFWiJ/4121xAT
- Z23GVeOiN2YbHBtZNsyxe5oo/EmbYgIgumE2vbB/vTubrbYsqFm0cxci01xCvQQrtOvX
- wosDkQD7wllLyPZsznr8UQwv6Bd1FDiZu8Imx44sMKxug99HFDgjm33kzlSDQWby33xv
- b/KONQI37Jefa7Swoc8pLfCc9EMDs8yg5q7AhAxUd/EHNdSXHa4rgh/6KQvRe7l70AGm
- 7MEadHYyxtChNr5rtYK0v5tHN/QrC9d/KDEqAosNOL7H4BbADmVyQY6qPnvqAUvKpI/F dA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8w0ns54u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 17:51:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A9HpKHh023297
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Nov 2023 17:51:20 GMT
-Received: from [10.110.84.171] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 09:51:18 -0800
-Message-ID: <748da144-af4c-5a2a-e82b-3a870995cbce@quicinc.com>
-Date:   Thu, 9 Nov 2023 09:51:18 -0800
+        Thu, 9 Nov 2023 12:52:03 -0500
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD24387F;
+        Thu,  9 Nov 2023 09:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1699552317;
+ bh=erw3AGuB8ubO0tUACDJoBZw5alNFB6YDgPN2mZ8q69A=;
+ b=aCL+f1l37bwcGuOWKmTkfCMpdpntUdgmvvqSipw4kM7qmStPBYq4khry7TnDBSpvb3fetETL5
+ tDWgWER16mtOrHF3Q/xDU33qTbV4hLpfDqDz7wsQ1yUktAZzjBl90ymR1L+ILPIWG/Gbw8EOnur
+ V4fpTkRfEIZtQIMpV1bYSz+NDQ5SQxqWuyNiEUUuwuQ0iFxJ2oaWUDUlUk5WaWEEFJs1DZJbVp0
+ OgsFwphnhLjl29LE4zX6gS3iWZLSliN1TEMCvJqbl/ohAAkzEtRCr6iuM7TEQCLbxoK2ZIzKQZ1
+ sH20lkDe4QgLqS1/boLO2Df69lvgOmVQxAWRxs0ZWD6Q==
+Message-ID: <33a24dca-b523-4015-bea6-cbdd92b9e6b7@kwiboo.se>
+Date:   Thu, 9 Nov 2023 18:51:52 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 0/7] incorporate pm runtime framework and eDP clean up
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/11] media: rkvdec: Add H.264 High 10 and 4:2:2
+ profile support
 Content-Language: en-US
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1696632910-21942-1-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com>
- <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
- <CAA8EJpo9CFf-Z3eiuKPvwf-y6eGkSibro-q-=SBxKK_L-zFOBA@mail.gmail.com>
- <b708df07-6812-df43-1313-cf6f1289fd47@quicinc.com>
- <d597554a-ad3a-0af1-e21b-3001c80f6d30@quicinc.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <d597554a-ad3a-0af1-e21b-3001c80f6d30@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Alex Bee <knaerzche@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231105165521.3592037-1-jonas@kwiboo.se>
+ <874b6ea3309ff302dcdd9ff92f9098130b979c27.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <874b6ea3309ff302dcdd9ff92f9098130b979c27.camel@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XsUPbI8h8-aczDOJ5vFlGcvNkQm4TTAs
-X-Proofpoint-ORIG-GUID: XsUPbI8h8-aczDOJ5vFlGcvNkQm4TTAs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_14,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
- adultscore=0 impostorscore=0 mlxlogscore=674 priorityscore=1501
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090134
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 654d1c3da16ddfebde306cb5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nicolas,
 
-On 11/8/2023 10:27 AM, Abhinav Kumar wrote:
->
->
-> On 11/8/2023 10:10 AM, Kuogee Hsieh wrote:
+On 2023-11-07 22:43, Nicolas Dufresne wrote:
+> Hi Jonas,
+> 
+> thanks for this work.
+> 
+> Le dimanche 05 novembre 2023 à 16:54 +0000, Jonas Karlman a écrit :
+>> This is a revival of a 3 year old series [1] now that NV15/NV20/NV30 support
+>> for display driver have landed in mainline tree.
 >>
->> On 11/7/2023 1:23 PM, Dmitry Baryshkov wrote:
->>> On Tue, 7 Nov 2023 at 23:01, Kuogee Hsieh <quic_khsieh@quicinc.com> 
->>> wrote:
->>>>
->>>> On 11/6/2023 5:55 PM, Dmitry Baryshkov wrote:
->>>>> On Sat, 7 Oct 2023 at 01:55, Kuogee Hsieh 
->>>>> <quic_khsieh@quicinc.com> wrote:
->>>>>> The purpose of this patch series is to incorporate pm runtime 
->>>>>> framework
->>>>>> into MSM eDP/DP driver so that eDP panel can be detected by DRM 
->>>>>> eDP panel
->>>>>> driver during system probe time. During incorporating procedure, 
->>>>>> original
->>>>>> customized pm realted fucntions, such as dp_pm_prepare(), 
->>>>>> dp_pm_suspend(),
->>>>>> dp_pm_resume() and dp_pm_prepare(), are removed and replaced with 
->>>>>> functions
->>>>>> provided by pm runtiem framework such as 
->>>>>> pm_runtime_force_suspend() and
->>>>>> pm_runtime_force_resume(). In addition, both eDP aux-bus and irq 
->>>>>> handler
->>>>>> are bound at system probe time too.
->>>>> With this patchset in place I can crash the board using the following
->>>>> sequence (SM8350-HDK):
->>>>>
->>>>> - plug the USBC DP dongle
->>>>> - run modetest at any mode, don't press Enter yet
->>>>> - unplug the dongle
->>>>> - press Enter to stop modetest
->>>>>
->>>>> => the board resets to Sahara.
->>>>>
->>>>> Please ping me if you need any additional information from my side.
->>>> questiosn,
->>>>
->>>> 1) which dongle are you used?
->>> I have used several Dell and Hama USB-C dongles.
->>>
->>>> 2) what code branch shoud I used to duplicate this problem.
->>> I have pushed my kernel tree to
->>> git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm
->>> I had several UCSI patches on top, but they should not be relevant.
->> git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm <== 
->> I synced out his branch and it is still work at my chromebook Kodiak 
->> DUT.
->>>
->
-> Perhaps the gap in test results with the same tree is due to internal 
-> hpd vs hpd pin. We need to try this on a device which does not use 
-> internal hpd.
+>> This series adds H.264 High 10 and 4:2:2 profile support to the Rockchip
+>> Video Decoder driver.
+>>
+>> Patch 1 adds helpers for calculating plane bytesperline and sizeimage.
+>> Patch 2 adds two new pixelformats for semi-planer 10-bit 4:2:0/4:2:2 YUV.
+>>
+>> Patch 3 change to use bytesperline and buffer height to configure strides.
+>> Patch 4 change to use values from SPS/PPS control to configure the HW.
+>> Patch 5 remove an unnecessary call to validate sps at streaming start.
+>>
+>> Patch 6-10 refactor code to support filtering of CAPUTRE formats based
+>> on the image format returned from a get_image_fmt ops.
+>>
+>> Patch 11 adds final bits to support H.264 High 10 and 4:2:2 profiles.
+>>
+>> Tested on a ROCK Pi 4 (RK3399) and Rock64 (RK3328):
+>>
+>>   v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+>>   ...
+>>   Total for rkvdec device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+>>
+>>   Running test suite JVT-FR-EXT with decoder FFmpeg-H.264-V4L2-request
+>>   ...
+>>   Ran 65/69 tests successfully
+> 
+> I added GStreamer support for these formats and could confirm this
+> results with GStreamer too.
+> 
+> https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5612
 
+Nice!
 
-Hi Dmitry,
+> 
+> 
+> For the set:
+> Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> 
+>>
+>>   Running test suite JVT-AVC_V1 with decoder FFmpeg-H.264-V4L2-request
+>>   ...
+>>   Ran 127/135 tests successfully
+> 
+> I'm getting 129 with GStreamer, which matches also with FFMpeg software
+> decoder.
 
-I have two more questions,
+Great, I was able to track down a long term ref idx issue in the ffmpeg
+v4l2-request implementation and can now also get to 129 :-)
 
-1) are you see test pattern shows at external DP when you run modetest?
-2) is *.kcrash file created under /var/spool/crash/ when system crashed. 
-If it is, can you share it?
+> 
+>>
+>> Before this series:
+>>
+>>   Running test suite JVT-FR-EXT with decoder FFmpeg-H.264-V4L2-request
+>>   ...
+>>   Ran 44/69 tests successfully
+> 
+> I had 43 with GStreamer, but then I notice you fixed something in
+> fluster. The good news this is now upstream, thanks for spotting.
+> 
+> https://github.com/fluendo/fluster/pull/148
 
-Thanks,
+Thanks for sending the PR!
 
->
->>>> I can not duplicate  system crash problem at my setup kodiak (SM7325)
->>>> chrome book with my PM runtime patch series.
->>>>
->>>> my code base is Linux 6.6-rc2 + pm runtime patch series (7 patches)
->>>>
->>>> I did:
->>>>
->>>> 1) plugin either apple dongle (DP-to-HDMI) + 1080p display or DP typeC
->>>> cable directly to 1080p display
->>>>
->>>> 2)  stop ui
->>>>
->>>> 3) /usr/bin/modetest -M msm -s 34:1920x1080 (see test pattern show at
->>>> display)
->>>>
->>>> 4) unplug apple dongle or DP typeC cable
->>>>
->>>> 5) hit enter key
->>>>
->>>> 6) start ui
->>>>
->>>> 7) display back to login page of chrome book
->>>>
->>>>
->>>
+Regards,
+Jonas
+
+> 
+>>
+>> Changes in v4:
+>> - Fix failed v4l2-compliance tests related to CAPTURE queue
+>> - Rework CAPTURE format filter anv validate to use an image format
+>> - Run fluster test suite JVT-FR-EXT [4] and JVT-AVC_V1 [5]
+>> Link to v3: https://lore.kernel.org/linux-media/20231029183427.1781554-1-jonas@kwiboo.se/
+>>
+>> Changes in v3:
+>> - Drop merged patches
+>> - Use bpp and bpp_div instead of prior misuse of block_w/block_h
+>> - New patch to use values from SPS/PPS control to configure the HW
+>> - New patch to remove an unnecessary call to validate sps at streaming start
+>> - Reworked pixel format validation
+>> Link to v2: https://lore.kernel.org/linux-media/20200706215430.22859-1-jonas@kwiboo.se/
+>>
+>> Changes in v2:
+>> - Collect r-b tags
+>> - SPS pic width and height in mbs validation moved to rkvdec_try_ctrl
+>> - New patch to not override output buffer sizeimage
+>> - Reworked pixel format validation
+>> - Only align decoded buffer instead of changing frmsize step_width
+>> Link to v1: https://lore.kernel.org/linux-media/20200701215616.30874-1-jonas@kwiboo.se/
+>>
+>> Following commits adds support for NV15/NV20/NV30 to VOP driver:
+>> 728c15b4b5f3 ("drm/fourcc: Add NV20 and NV30 YUV formats")
+>> d4b384228562 ("drm/rockchip: vop: Add NV15, NV20 and NV30 support")
+>>
+>> To fully runtime test this series you may need above drm commits and ffmpeg
+>> patches from [2], this series and drm patches is also available at [3].
+>>
+>> [1] https://lore.kernel.org/linux-media/20200706215430.22859-1-jonas@kwiboo.se/
+>> [2] https://github.com/Kwiboo/FFmpeg/commits/v4l2-request-n6.1-dev/
+>> [3] https://github.com/Kwiboo/linux-rockchip/commits/linuxtv-rkvdec-high-10-v4/
+>> [4] https://gist.github.com/Kwiboo/f4ac15576b2c72887ae2bc5d58b5c865
+>> [5] https://gist.github.com/Kwiboo/459a1c8f1dcb56e45dc7a7a29cc28adf
+>>
+>> Regards,
+>> Jonas
+>>
+>> Alex Bee (1):
+>>   media: rkvdec: h264: Don't hardcode SPS/PPS parameters
+>>
+>> Jonas Karlman (10):
+>>   media: v4l2-common: Add helpers to calculate bytesperline and
+>>     sizeimage
+>>   media: v4l2: Add NV15 and NV20 pixel formats
+>>   media: rkvdec: h264: Use bytesperline and buffer height as virstride
+>>   media: rkvdec: h264: Remove SPS validation at streaming start
+>>   media: rkvdec: Extract rkvdec_fill_decoded_pixfmt into helper
+>>   media: rkvdec: Move rkvdec_reset_decoded_fmt helper
+>>   media: rkvdec: Extract decoded format enumeration into helper
+>>   media: rkvdec: Add image format concept
+>>   media: rkvdec: Add get_image_fmt ops
+>>   media: rkvdec: h264: Support High 10 and 4:2:2 profiles
+>>
+>>  .../media/v4l/pixfmt-yuv-planar.rst           | 128 +++++++++++
+>>  drivers/media/v4l2-core/v4l2-common.c         |  80 +++----
+>>  drivers/media/v4l2-core/v4l2-ioctl.c          |   2 +
+>>  drivers/staging/media/rkvdec/rkvdec-h264.c    |  83 +++----
+>>  drivers/staging/media/rkvdec/rkvdec.c         | 217 +++++++++++++-----
+>>  drivers/staging/media/rkvdec/rkvdec.h         |  18 +-
+>>  include/uapi/linux/videodev2.h                |   2 +
+>>  7 files changed, 396 insertions(+), 134 deletions(-)
+>>
+> 
+
