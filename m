@@ -2,246 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF29E7E62ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5647E62FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbjKIEtH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Nov 2023 23:49:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S232281AbjKIE71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 23:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbjKIEtE (ORCPT
+        with ESMTP id S230451AbjKIE7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 23:49:04 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67F626A2;
-        Wed,  8 Nov 2023 20:49:02 -0800 (PST)
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6b89ab5ddb7so441829b3a.0;
-        Wed, 08 Nov 2023 20:49:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699505342; x=1700110142;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=//fNZW24HiQXJZnbOmMOKxa5B9sCqJvB/Cm0s9I+HRc=;
-        b=FyrE4iipUD6QqWr/bnLXucq7Wk9zFxszNIAt7uFH5vU2zCXSIEDN3UybuV2ohRbmFJ
-         diU02RGT9FhhBSHDYWZ3NI6U6evN/OCNOYDYMmmeVFQMcvxpnQluELiF0nhOIijZFVmw
-         WCtkudrJE4ipwNw+gDAXfTBU0xH7iepkmq4S5lbz4wyHHMUmwk80tcuIp4m78dn5ufXr
-         nFR77jCq021GwtvnDzNiKWgQueeu8fshDPRlYVqKQYbG3KbqscFO8pGr2K1Fg0JhFpoj
-         VYH55mrBCVDE5N7hTwLfuH4TnGbJ6mhGfHAnFyoxFk8uGnr20WxGYZjWn30k+vLTrcyH
-         SCEw==
-X-Gm-Message-State: AOJu0YyCwwBSfX1X4cRQMFXAH0HGvtaaObcQnaC6DpP/GFJNZnlJ6jEo
-        ntrK2sjk73zAoICGrtfUC21W/2I7qzvEcOH493I=
-X-Google-Smtp-Source: AGHT+IGM/Yu0tNAUEG9TLLx7rAmF6coIAA82p+3BHh2r/DRVp1V3HED5aMHwQATgWAsvAkW4rj58aM+DZmkAHfFxe8w=
-X-Received: by 2002:a05:6a20:a121:b0:17b:7505:8ab7 with SMTP id
- q33-20020a056a20a12100b0017b75058ab7mr4524066pzk.46.1699505342069; Wed, 08
- Nov 2023 20:49:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <82cd8b7e-bd46-49ed-9160-eabcfd4c3c20@redhat.com>
-In-Reply-To: <82cd8b7e-bd46-49ed-9160-eabcfd4c3c20@redhat.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 8 Nov 2023 20:48:50 -0800
-Message-ID: <CAM9d7ciWY6kvVB-JkrJS7BZs_WMy-OZRgwLvBG9WQ-Zi00czfA@mail.gmail.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-To:     Joe Mario <jmario@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Wed, 8 Nov 2023 23:59:24 -0500
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C9FB92594
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 20:59:21 -0800 (PST)
+X-AuditID: a67dfc5b-d6dff70000001748-f7-654c6726fb7b
+From:   Byungchul Park <byungchul@sk.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Subject: [v4 0/3] Reduce TLB flushes under some specific conditions
+Date:   Thu,  9 Nov 2023 13:59:05 +0900
+Message-Id: <20231109045908.54996-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsXC9ZZnoa5auk+qwYMWQ4s569ewWXze8I/N
+        4sWGdkaLr+t/MVs8/dTHYnF51xw2i3tr/rNanN+1ltVix9J9TBaXDixgsri+6yGjxfHeA0wW
+        mzdNZbb4/QOobs4UK4uTsyazOAh4fG/tY/FYsKnUY/MKLY/Fe14yeWxa1cnmsenTJHaPd+fO
+        sXucmPGbxWPnQ0uPeScDPd7vu8rmsfWXncfnTXIe7+a/ZQvgi+KySUnNySxLLdK3S+DK6Hi3
+        m61gunbFnbVbGBsYvyh0MXJySAiYSHR3bmeGsS/N28MCYrMJqEvcuPETLC4iYCZxsPUPexcj
+        FwezwAMmiblvVzCCJIQFnCWW/ZnC1sXIwcEioCrxo6cYJMwrYCpxcd8FNoiZ8hKrNxxgBumV
+        ELjPJjF3+Xp2iISkxMEVN1gmMHIvYGRYxSiUmVeWm5iZY6KXUZmXWaGXnJ+7iREYxstq/0Tv
+        YPx0IfgQowAHoxIP742/3qlCrIllxZW5hxglOJiVRHgvmPikCvGmJFZWpRblxxeV5qQWH2KU
+        5mBREuc1+laeIiSQnliSmp2aWpBaBJNl4uCUamBMnu1mt/Pslv9maR4bY7fkMFcefOd39Up4
+        Wv10pmPvXiRW+rru+Pgx/HqCKM+8BLYlmRsWbmn/t8Pzostul6sPXpc+n8q29m+Efnrnieob
+        2nOMC+PPcgYf9Mm5/yOtcdocrW/d79kz9U/te3jjmM0Pvi1pn/4FXGyyt57Dx3YwqHlxU37J
+        ti8xSizFGYmGWsxFxYkAay1RlV8CAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAAwFGArn9CAMSswMaCGludGVybmFsIgYKBApOO4MtJmdMZTDf2xs4nK+sBjjz
+        sP4GOOiwhwE49a/6Azjl8o4EOMOdyQU407qcBjjerP8FOM+6rQU4uKW+AjjSwKACONe64QE4
+        x43AAjizspUDOPv4nAY4nJQ6OMmakwRAEUj3hY4ESKCydUizqCpIo7zpAkiyqokGSLLykgdI
+        7s7OB0jImPsESLnhOUieyVFI777VBkij6PACSLX6Pkjzsh5I7p/tBlAPWgo8ZGVsaXZlci8+
+        YApoiO67BnCXK3jcrbQBgAH0IIoBCQgYEDQY0p68BIoBCQgGECcY2Nj5A4oBCQgUEDYYwYX8
+        B4oBCggDEOACGJ3tqAGKAQkIExBDGKb8lAaKAQgIBBAlGPiMc4oBCQgNEDUY0b7QBooBCQgY
+        EB8Yq7DAA5ABCKABAKoBFGludm1haWw1LnNraHluaXguY29tsgEGCgSmffyRuAH000fCARAI
+        ASIMDWCUS2USBWF2c3ltwgEYCAMiFA3QNExlEg1kYXl6ZXJvX3J1bGVzwgEbCAQiFw1KV2Vg
+        EhBnYXRla2VlcGVyX3J1bGVzwgECCAkagAFFFnzEaIG75a+9aDs+MPOG5waZ8Hv4merIuO18
+        qxWpERYU24GKdQcOpD034ovIz4ZeFPOQkI1AGUPoRpfYURVwxEnczj5Wg1vpr2I0vAadPGvF
+        HlCSCOGfFnAygY7+2ftA9t+1EB8CRAQ1162NVhtZt7D9ENbNKBt73eLiM6JP1yIEc2hhMSoD
+        cnNhjxryDEYCAAA=
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi everyone,
 
-On Wed, Nov 8, 2023 at 9:12 AM Joe Mario <jmario@redhat.com> wrote:
->
-> Hi Namhyung:
->
-> I've been playing with your datatype profile patch and it looks really promising.
-> I think it would be a big help if it could be integrated into perf c2c.
+While I'm working with CXL memory, I have been facing migration overhead
+esp. TLB shootdown on promotion or demotion between different tiers.
+Yeah.. most TLB shootdowns on migration through hinting fault can be
+avoided thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
+flushing TLB in batch if PTE is inaccessible").
 
-Great!  Yeah, I think we can collaborate on it.
+However, it's only for ones using hinting fault. I thought it'd be much
+better if we have a general mechanism to reduce # of TLB flushes and
+TLB misses, that we can apply to any type of migration. I tried it only
+for tiering migration for now tho.
 
->
-> Perf c2c gives a great insight into what's contributing to cpu cacheline contention, but it
-> can be difficult to understand the output.  Having visuals with your datatype profile output
-> would be a big help.
+I'm suggesting a mechanism to reduce TLB flushes by keeping source and
+destination of folios participated in the migrations until all TLB
+flushes required are done, only if those folios are not mapped with
+write permission PTE entries at all. I worked Based on v6.6-rc5.
 
-Exactly.
+Can you believe it? I saw the number of TLB full flush reduced about
+80% and iTLB miss reduced about 50%, and the time wise performance
+always shows at least 1% stable improvement with the workload I tested
+with, XSBench. However, I believe that it would help more with other
+ones or any real ones. It'd be appreciated to let me know if I'm missing
+something.
 
->
-> I have a simple test program with readers and writers tugging on the data below:
->
->   uint64_t hotVar;
->   typedef struct __foo {
->      uint64_t m1;
->      uint64_t m2;
->      uint64_t m3;
->   } FOO;
->
-> The rest of this reply looks at both your datatype output and c2c to see where they
-> might compliment each other.
->
->
-> When I run perf with your patches on a simple program to cause contention on the above data, I get the following:
->
-> # perf mem record --ldlat=1 --all-user --  ./tugtest -r3 -r5 -r7 -r9 -r11 -w10 -w12 -w14 -w16 -b5 -H2000000
-> # perf report -s type,typeoff --hierarchy --stdio
->
->    # Samples: 26K of event 'cpu/mem-loads,ldlat=1/P'
->    # Event count (approx.): 2958226
->    #
->    #    Overhead  Data Type / Data Type Offset
->    # ...........  ............................
->    #
->        54.50%     int
->           54.50%     int +0 (no field)
->        23.21%     long int
->           23.21%     long int +0 (no field)
->        18.30%     struct __foo
->            9.57%     struct __foo +8 (m2)
->            8.73%     struct __foo +0 (m1)
->         3.86%     long unsigned int
->            3.86%     long unsigned int +0 (no field)
->        <snip>
->
->    # Samples: 30K of event 'cpu/mem-stores/P'
->    # Event count (approx.): 33880197
->    #
->    #    Overhead  Data Type / Data Type Offset
->    # ...........  ............................
->    #
->        99.85%     struct __foo
->           70.48%     struct __foo +0 (m1)
->           29.34%     struct __foo +16 (m3)
->            0.03%     struct __foo +8 (m2)
->         0.09%     long unsigned int
->            0.09%     long unsigned int +0 (no field)
->         0.06%     (unknown)
->            0.06%     (unknown) +0 (no field)
->        <snip>
->
-> Then I run perf annotate with your patches, and I get the following:
->
->   # perf annotate  --data-type
->
->    Annotate type: 'long int' in /home/joe/tugtest/tugtest (2901 samples):
->    ============================================================================
->        samples     offset       size  field
->           2901          0          8  long int  ;
->
->    Annotate type: 'struct __foo' in /home/joe/tugtest/tugtest (5593 samples):
->    ============================================================================
->        samples     offset       size  field
->           5593          0         24  struct __foo       {
->           2755          0          8      uint64_t      m1;
->           2838          8          8      uint64_t      m2;
->              0         16          8      uint64_t      m3;
->                                       };
->
-> Now when I run that same simple test using perf c2c, and I focus on the cachline that the struct and hotVar reside in, I get:
->
-> # perf c2c record --all-user -- ./tugtest -r3 -r5 -r7 -r9 -r11 -w10 -w12 -w14 -w16 -b5 -H2000000
-> # perf c2c report -NNN --stdio
-> # <snip>
-> #
-> #      ----- HITM -----  ------- Store Refs ------  ------ Data address ------                ---------- cycles ----------    Total    cpu               Shared
-> # Num  RmtHitm  LclHitm   L1 Hit  L1 Miss      N/A        Offset  Node  PA cnt  Code address  rmt hitm  lcl hitm      load  records    cnt      Symbol   Object    Source:Line  Node{cpu list}
-> #....  .......  .......  .......  .......  .......  ............  ....  ......  ............  ........  ........  ........  .......  .....  ..........  .......  .............  ....
-> #
->  ---------------------------------------------------------------
->     0     1094     2008    17071    13762        0      0x406100
->  ---------------------------------------------------------------
->          0.00%    0.20%    0.00%    0.00%    0.00%           0x8     1       1      0x401355         0       978      1020     2962      4  [.] writer  tugtest  tugtest.c:129   0{10,12,14,16}
->          0.00%    0.00%    0.12%    0.02%    0.00%           0x8     1       1      0x401360         0         0         0       23      4  [.] writer  tugtest  tugtest.c:129   0{10,12,14,16}
->         68.10%   60.26%    0.00%    0.00%    0.00%          0x10     1       1      0x401505      2181      1541      1393     5813      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->         31.63%   39.34%    0.00%    0.00%    0.00%          0x10     1       1      0x401331      1242      1095       936     3393      4  [.] writer  tugtest  tugtest.c:127   0{10,12,14,16}
->          0.00%    0.00%   40.03%   40.25%    0.00%          0x10     1       1      0x40133c         0         0         0    12372      4  [.] writer  tugtest  tugtest.c:127   0{10,12,14,16}
->          0.27%    0.15%    0.00%    0.00%    0.00%          0x18     1       1      0x401343       834      1136      1032     2930      4  [.] writer  tugtest  tugtest.c:128   0{10,12,14,16}
->          0.00%    0.05%    0.00%    0.00%    0.00%          0x18     1       1      0x40150c         0       933      1567     5050      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->          0.00%    0.00%    0.06%    0.00%    0.00%          0x18     1       1      0x40134e         0         0         0       10      4  [.] writer  tugtest  tugtest.c:128   0{10,12,14,16}
->          0.00%    0.00%   59.80%   59.73%    0.00%          0x20     1       1      0x401516         0         0         0    18428      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->
-> With the above c2c output, we can see:
->  - the hottest contended addresses, and the load latencies they caused.
->  - the cacheline offset for the contended addresses.
->  - the cpus and numa nodes where the accesses came from.
->  - the cacheline alignment for the data of interest.
->  - the number of cpus and threads concurrently accessing each address.
->  - the breakdown of reads causing HITM (contention) and writes hitting or missing the cacheline.
->  - the object name, source line and line number for where the accesses occured.
->  - the numa node where the data is allocated.
->  - the number of physical pages the virtual addresses were mapped to (e.g. numa_balancing).
->
-> What would really help the c2c output be more usable is if it had a better visual to it.
-> It's likely the current c2c output can be trimmed a bit.
->
-> Here's one idea that incorporates your datatype info, though I'm sure there are better ways, as this may get unwieldy.:
->
-> #      ----- HITM -----  ------- Store Refs ------  ------ Data address ------                ---------- cycles ----------    Total    cpu               Shared
-> # Num  RmtHitm  LclHitm   L1 Hit  L1 Miss      N/A        Offset  Node  PA cnt  Code address  rmt hitm  lcl hitm      load  records    cnt      Symbol   Object    Source:Line  Node{cpu list}
-> #....  .......  .......  .......  .......  .......  ............  ....  ......  ............  ........  ........  ........  .......  .....  ..........  .......  .............  ....
-> #
->  ---------------------------------------------------------------
->     0     1094     2008    17071    13762        0      0x406100
->  ---------------------------------------------------------------
->   uint64_t hotVar: tugtest.c:38
->          0.00%    0.20%    0.00%    0.00%    0.00%           0x8     1       1      0x401355         0       978      1020     2962      4  [.] writer  tugtest  tugtest.c:129   0{10,12,14,16}
->          0.00%    0.00%    0.12%    0.02%    0.00%           0x8     1       1      0x401360         0         0         0       23      4  [.] writer  tugtest  tugtest.c:129   0{10,12,14,16}
->   struct __foo uint64_t m1: tugtest.c:39
->         68.10%   60.26%    0.00%    0.00%    0.00%          0x10     1       1      0x401505      2181      1541      1393     5813      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->         31.63%   39.34%    0.00%    0.00%    0.00%          0x10     1       1      0x401331      1242      1095       936     3393      4  [.] writer  tugtest  tugtest.c:127   0{10,12,14,16}
->          0.00%    0.00%   40.03%   40.25%    0.00%          0x10     1       1      0x40133c         0         0         0    12372      4  [.] writer  tugtest  tugtest.c:127   0{10,12,14,16}
->   struct __foo uint64_t m2: tugtest.c:40
->          0.27%    0.15%    0.00%    0.00%    0.00%          0x18     1       1      0x401343       834      1136      1032     2930      4  [.] writer  tugtest  tugtest.c:128   0{10,12,14,16}
->          0.00%    0.05%    0.00%    0.00%    0.00%          0x18     1       1      0x40150c         0       933      1567     5050      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->          0.00%    0.00%    0.06%    0.00%    0.00%          0x18     1       1      0x40134e         0         0         0       10      4  [.] writer  tugtest  tugtest.c:128   0{10,12,14,16}
->   struct __foo uint64_t m3: tugtest.c:41
->          0.00%    0.00%   59.80%   59.73%    0.00%          0x20     1       1      0x401516         0         0         0    18428      5  [.] reader  tugtest  tugtest.c:163   1{3,5,7,9,11}
->
-> And then it would be good to find a clean way to incorporate your sample counts.
+	Byungchul
 
-I'm not sure we can get the exact source line for the data type/fields.
-Of course, we can aggregate the results for each field.  Actually you
-can use `perf report -s type,typeoff,symoff --hierarchy` for something
-similar. :)
+---
 
->
-> On a related note, is there a way the accesses could be broken down into read counts
-> and write counts?   That, with the above source line info for all the accesses,
-> helps to convey a picture of "the affinity of the accesses".
+Changes from v3:
 
-Sure, perf report already supports showing events in a group
-together.  You can use --group option to force grouping
-individual events.  perf annotate with --data-type doesn't have
-that yet.  I'll update it in v2.
+	1. Don't use the kconfig, CONFIG_MIGRC, and remove sysctl knob,
+	   migrc_enable. (feedbacked by Nadav)
+	2. Remove the optimization skipping CPUs that have already
+	   performed TLB flushes needed by any reason when performing
+	   TLB flushes by migrc because I can't tell the performance
+	   difference between w/ the optimization and w/o that.
+	   (feedbacked by Nadav)
+	3. Minimize arch-specific code. While at it, move all the migrc
+           declarations and inline functions from include/linux/mm.h to
+           mm/internal.h (feedbacked by Dave Hansen, Nadav)
+	4. Separate a part making migrc paused when the system is in
+	   high memory pressure to another patch. (feedbacked by Nadav)
+	5. Rename:
+	      a. arch_tlbbatch_clean() to arch_tlbbatch_clear(),
+	      b. tlb_ubc_nowr to tlb_ubc_ro,
+	      c. migrc_try_flush_free_folios() to migrc_flush_free_folios(),
+	      d. migrc_stop to migrc_pause.
+	   (feedbacked by Nadav)
+	6. Use ->lru list_head instead of introducing a new llist_head.
+	   (feedbacked by Nadav)
+	7. Use non-atomic operations of page-flag when it's safe.
+	   (feedbacked by Nadav)
+	8. Use stack instead of keeping a pointer of 'struct migrc_req'
+	   in struct task, which is for manipulating it locally.
+	   (feedbacked by Nadav)
+	9. Replace a lot of simple functions to inline functions placed
+	   in a header, mm/internal.h. (feedbacked by Nadav)
+	10. Add additional sufficient comments. (feedbacked by Nadav)
+	11. Remove a lot of wrapper functions. (feedbacked by Nadav)
 
->
-> For example, while it's normally good to separate read-mostly data from hot
-> written data, if the reads and writes are done together in the same block of
-> code by the same thread, then keeping the two data symbols in the same cacheline
-> could be a win.  I've seen this often. Your datatype info might be able to
-> make these affinities more visible to the user.
->
-> Thanks for doing this. This is great.
-> Joe
+Changes from RFC v2:
 
-Thanks for your feedback!
-Namhyung
+	1. Remove additional occupation in struct page. To do that,
+	   unioned with lru field for migrc's list and added a page
+	   flag. I know page flag is a thing that we don't like to add
+	   but no choice because migrc should distinguish folios under
+	   migrc's control from others. Instead, I force migrc to be
+	   used only on 64 bit system to mitigate you guys from getting
+	   angry.
+	2. Remove meaningless internal object allocator that I
+	   introduced to minimize impact onto the system. However, a ton
+	   of tests showed there was no difference.
+	3. Stop migrc from working when the system is in high memory
+	   pressure like about to perform direct reclaim. At the
+	   condition where the swap mechanism is heavily used, I found
+	   the system suffered from regression without this control.
+	4. Exclude folios that pte_dirty() == true from migrc's interest
+	   so that migrc can work simpler.
+	5. Combine several patches that work tightly coupled to one.
+	6. Add sufficient comments for better review.
+	7. Manage migrc's request in per-node manner (from globally).
+	8. Add TLB miss improvement in commit message.
+	9. Test with more CPUs(4 -> 16) to see bigger improvement.
+
+Changes from RFC:
+
+	1. Fix a bug triggered when a destination folio at the previous
+	   migration becomes a source folio at the next migration,
+	   before the folio gets handled properly so that the folio can
+	   play with another migration. There was inconsistency in the
+	   folio's state. Fixed it.
+	2. Split the patch set into more pieces so that the folks can
+	   review better. (Feedbacked by Nadav Amit)
+	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
+	   (Feedbacked by Nadav Amit)
+	4. Tried to add sufficient comments to explain the patch set
+	   better. (Feedbacked by Nadav Amit)
+
+Byungchul Park (3):
+  mm/rmap: Recognize read-only TLB entries during batched TLB flush
+  mm: Defer TLB flush by keeping both src and dst folios at migration
+  mm: Pause migrc mechanism at high memory pressure
+
+ arch/x86/include/asm/tlbflush.h |   3 +
+ arch/x86/mm/tlb.c               |  11 ++
+ include/linux/mm_types.h        |  21 +++
+ include/linux/mmzone.h          |   9 ++
+ include/linux/page-flags.h      |   4 +
+ include/linux/sched.h           |   7 +
+ include/trace/events/mmflags.h  |   3 +-
+ mm/internal.h                   |  78 ++++++++++
+ mm/memory.c                     |  11 ++
+ mm/migrate.c                    | 266 ++++++++++++++++++++++++++++++++
+ mm/page_alloc.c                 |  30 +++-
+ mm/rmap.c                       |  35 ++++-
+ 12 files changed, 475 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
+
