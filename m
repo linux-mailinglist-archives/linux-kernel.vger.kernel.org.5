@@ -2,192 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01F47E6140
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79E47E6143
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjKIACh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 19:02:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S231401AbjKIAD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 19:03:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKIACg (ORCPT
+        with ESMTP id S229473AbjKIADZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 19:02:36 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9DA2685;
-        Wed,  8 Nov 2023 16:02:34 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5b383b4184fso3803107b3.1;
-        Wed, 08 Nov 2023 16:02:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699488153; x=1700092953; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=4S3hUwpEwAhRsIK33hvWrkFRJfd6iKru9dgJJTsDG6o=;
-        b=ItFiPvw8bWfimT2ADSZn+NOtiad8oICm1f4A/0F3U8MdzEwszzkFU2b8Uf+77SrHWs
-         gwrbm/vzLLzXGpm0wSsKWOpy/zi7e1xgnmTtvMkdGBHTTL9AVYN1AXLbr9AFDCpBjEAr
-         gF5K1EXQEYbRpZ5y/hFaLjMVI3XrE2gmznAnwSRkuNZdmEL2g/aUvTUc5sRH4RSYbcgB
-         X3tr65gYJl9LAQjdORPvXnq9pPq1XoG9ZL9IuYZH46d1s14UjK4W1UAbS8VP2gzAH+Mb
-         W9OE5Dl+5ebSyWZoDVV6QlOumWVioU/vO4a0TPABu/ZKqLJuvEqZMZqTbka2xUjDCFZ+
-         QKTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699488153; x=1700092953;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4S3hUwpEwAhRsIK33hvWrkFRJfd6iKru9dgJJTsDG6o=;
-        b=u7FrwltY0KoOq8+hzGhCCnq9waHwRR7VR/GFoLqElDHzQGS2clV/zrEuEIcaEWyaZW
-         5auHGKbjs34GaKZuz4oBN7rXvwlajZgI+uhUN1OuEE7ZcTCP8nQnjktFLAbm1UdiEFoM
-         Q/rXekMnL03OQYZn83GFtOCB7lzEC76tBOn3x1jfDGhIkZgJLM9zkLrCFZ/tnt/GXUCC
-         ug6q/FsuiznzjzO0On0PfYrNtRyqzFey2pRgLPc2kSvJKOKNATfLlsxHfClrsnywkRYj
-         eVUcVxyBdSJFf5PtCMc/GzOj9UYrj5tIq7pjXWOt23CLbK3O9l+sP/SCkjGPtU6cuME/
-         eDrg==
-X-Gm-Message-State: AOJu0YxinkLgJs/FtEYOqz9PjkNuBKuV+lZClK1P1Hqp49XvcJLg0cav
-        MfmYhAWsVm+2v9Oua23jop0=
-X-Google-Smtp-Source: AGHT+IF7M4jKHrAJfyC9vLGEIV3Ibl9BE2YgD0HLpg94t/zgChrpWu+z0Mgw8Ztbp8/W5U9l7G1NZg==
-X-Received: by 2002:a81:9185:0:b0:5a5:65e:b847 with SMTP id i127-20020a819185000000b005a5065eb847mr3307746ywg.34.1699488153531;
-        Wed, 08 Nov 2023 16:02:33 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q16-20020a819910000000b005a20ab8a184sm7607523ywg.31.2023.11.08.16.02.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 16:02:32 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <44f1eaa3-a90d-42cf-9808-4f39aacbf270@roeck-us.net>
-Date:   Wed, 8 Nov 2023 16:02:29 -0800
+        Wed, 8 Nov 2023 19:03:25 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C605B25BC;
+        Wed,  8 Nov 2023 16:03:23 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 686EB2BC;
+        Thu,  9 Nov 2023 01:02:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699488179;
+        bh=r3/F4xck2AoqnZ9QaIyzlaGd+0XnYcVYkd0u9lYk57o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TKiNmgF5ZxYeLumixe+UTEodbVuzTEb5bDokWC9MNknFE7W63TnD8EjJ6GNtYW30O
+         Im9b9Sa3C/udqvcqniE3WYUDp6KGd/tNTk0ZzXve03Rj0D7afv8CRwdwGUBCKFg6B7
+         XBdRHS7ktlY/QQ9yhByZIxfRhQELGFjLmlkpTk5I=
+Date:   Thu, 9 Nov 2023 02:03:27 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     nicolas@ndufresne.ca, Esker Wong <esker@google.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Esker Wong <esker@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
+Message-ID: <20231109000327.GE21616@pendragon.ideasonboard.com>
+References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
+ <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu>
+ <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
+ <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
+ <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
+ <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
+ <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
+ <CANiDSCunRRyod3Rg+L9ZsffOZyC7CKbMVTHX3u-n5iuNyZQk0w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] hwmon: (core) Add support for humidity min/max
- alarm
-Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
- <20231020-topic-chipcap2-v2-2-f5c325966fdb@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231020-topic-chipcap2-v2-2-f5c325966fdb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANiDSCunRRyod3Rg+L9ZsffOZyC7CKbMVTHX3u-n5iuNyZQk0w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 07:37, Javier Carrasco wrote:
-> Add min_alarm and max_alarm attributes for humidityX to support devices
-> that can generate these alarms.
-> Such attributes already exist for other magnitudes such as tempX.
+Hi Ricardo,
+
+On Wed, Nov 08, 2023 at 11:46:40PM +0100, Ricardo Ribalda wrote:
+> On Wed, 8 Nov 2023 at 21:32, <nicolas@ndufresne.ca> wrote:
+> >
+> > The fact that you interpret the time from FRAME_SYNC to DQBUF (well the
+> > READ IO notification) as the actual latency is yours of course. It
+> > assumes that the camera on the other end does not introduce other
 > 
-> Tested with a ChipCap 2 temperature-humidity sensor.
+> We want to use this signal to measure how much power is used since we
+> start receiving the frame until we can use it.
+> I agree with you that the latency between capture and dqbuf should be
+> measured using the timestamp. That is not our use case here.
 > 
-
-No objection, but the new attributes also need to be added to the ABI
-documentation at
-Documentation/ABI/testing/sysfs-class-hwmon and
-Documentation/hwmon/sysfs-interface.rst
-
-Which made me notice that humidityX_alarm isn't documented either.
-Please document that attribute as well while you are at it.
-
-Thanks,
-Guenter
-
-> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> ---
->   drivers/hwmon/hwmon.c | 2 ++
->   include/linux/hwmon.h | 4 ++++
->   2 files changed, 6 insertions(+)
+> > source of latency (or that these are negligible). You are also going to
+> > introduce a lot of jitter, since it relies on when the OS decides to
+> > wake up your process.
 > 
-> diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-> index c7dd3f5b2bd5..7f92984c37d9 100644
-> --- a/drivers/hwmon/hwmon.c
-> +++ b/drivers/hwmon/hwmon.c
-> @@ -579,8 +579,10 @@ static const char * const hwmon_humidity_attr_templates[] = {
->   	[hwmon_humidity_input] = "humidity%d_input",
->   	[hwmon_humidity_label] = "humidity%d_label",
->   	[hwmon_humidity_min] = "humidity%d_min",
-> +	[hwmon_humidity_min_alarm] = "humidity%d_min_alarm",
->   	[hwmon_humidity_min_hyst] = "humidity%d_min_hyst",
->   	[hwmon_humidity_max] = "humidity%d_max",
-> +	[hwmon_humidity_max_alarm] = "humidity%d_max_alarm",
->   	[hwmon_humidity_max_hyst] = "humidity%d_max_hyst",
->   	[hwmon_humidity_alarm] = "humidity%d_alarm",
->   	[hwmon_humidity_fault] = "humidity%d_fault",
-> diff --git a/include/linux/hwmon.h b/include/linux/hwmon.h
-> index 8cd6a6b33593..154de35e34ac 100644
-> --- a/include/linux/hwmon.h
-> +++ b/include/linux/hwmon.h
-> @@ -286,8 +286,10 @@ enum hwmon_humidity_attributes {
->   	hwmon_humidity_input,
->   	hwmon_humidity_label,
->   	hwmon_humidity_min,
-> +	hwmon_humidity_min_alarm,
->   	hwmon_humidity_min_hyst,
->   	hwmon_humidity_max,
-> +	hwmon_humidity_max_alarm,
->   	hwmon_humidity_max_hyst,
->   	hwmon_humidity_alarm,
->   	hwmon_humidity_fault,
-> @@ -299,8 +301,10 @@ enum hwmon_humidity_attributes {
->   #define HWMON_H_INPUT			BIT(hwmon_humidity_input)
->   #define HWMON_H_LABEL			BIT(hwmon_humidity_label)
->   #define HWMON_H_MIN			BIT(hwmon_humidity_min)
-> +#define HWMON_H_MIN_ALARM		BIT(hwmon_humidity_min_alarm)
->   #define HWMON_H_MIN_HYST		BIT(hwmon_humidity_min_hyst)
->   #define HWMON_H_MAX			BIT(hwmon_humidity_max)
-> +#define HWMON_H_MAX_ALARM		BIT(hwmon_humidity_max_alarm)
->   #define HWMON_H_MAX_HYST		BIT(hwmon_humidity_max_hyst)
->   #define HWMON_H_ALARM			BIT(hwmon_humidity_alarm)
->   #define HWMON_H_FAULT			BIT(hwmon_humidity_fault)
+> We have measured a jitter of around 2.5 msec, which is acceptable for our needs.
 > 
+> > I think my opinion resides in if you can accurately *enough* implement
+> > what the spec says for FRAME_SYNC then do it, otherwise just don't lie.
+> 
+> What the specs says is:
+> ```
+> Triggered immediately when the reception of a frame has begun
+> ```
+> In my opinion, that is true for usb devices, we are triggering it as
+> soon as the transfer has started to the eyes of the driver. We cannot
+> trigger earlier than that.
+> 
+> 
+> > I think for ISO, "after the first chunk" i a small lie, but acceptable.
+> > But for BULK, the way it was explained is that it will be always very
+> > close to DQBUF time. and it should not emit FRAME_SYNC for this type of
+> > UVC device. If it fits other events fine of course, I'm just making a
+> > judgment on if its fits V4L2_EVENT_FRAME_SYNC or not.
+> 
+> nit: I believe that you have swapped iso and bulk on this description
 
+I've confused the USB packet size and the UVC payload size. The latter
+is typically much bigger for bulk devices than isoc devices, but the
+former will be in similar order of magnitudes in a large number of
+cases, but not all cases.
+
+The URB size is the result of the USB packet size and number of packets
+per URB. The uvcvideo driver currently sets the number of packets per
+URB to 32 at most (and lowers it if the frame size is small, or if not
+enough memory can be allocated). This could be increased or made dynamic
+in the future, as higher speeds typically benefit from larger URB sizes.
+The packet size differs between bulk and isoc endpoints.
+
+For bulk, the packet size can be up to 512 bytes for USB 2.0 and 1024
+bytes for USB 3.0, and the device can select a smaller size. The largest
+URB size (again based on the current implementation of the uvcvideo
+driver) is thus 32 KiB.
+
+For isochronous the situation is more complicated. The term "packet" as
+used in the uvcvideo driver actually means all the data transferred in
+one service interval, thus made of multiple isoc packets. It is heavily
+dependent on the USB speed, and the device can advertise different
+supported sizes (which translate directly to the reserved bandwidth for
+the transfer), with the driver picking the smallest bandwidth large
+enough for the data rate required by the resolution and frame rate. The
+theoretical worst case is 1024 bytes per isoc packet * 16 isoc packets
+per burst * 6 burst per interval * 32 "packets" per URB, equal to 3 MiB.
+
+Even with the largest URB size you have witnessed of ~1 MiB, we will end
+up lying quite a bit if we consider the URB completion callback for the
+first URB of the frame as indicating the start of reception.
+
+> > In term of accuracy, if timestamp was passed with the FRAME_SYNC event,
+> > it would not matter how fast your process the event anymore and greatly
+> > improve accuracy.
+> 
+> +1 to that. If we could easily change the uAPI for FRAME_SYNC that
+> should definitely be implemented.
+> 
+> > > Not to mention that the UVC timestamping requires a bit of love.
+> > >
+> > > @Laurent Pinchart, @Kieran Bingham  any progress reviewing :P :
+> > > https://patchwork.linuxtv.org/project/linux-media/list/?series=10083
+> >
+> > Thanks for working on this by the way, hope someone will find the time
+> > to review this. The timestamps should in theory provide a jitter free
+> 
+> It already has a couple of Reviewed-by stamped in.... ;)
+> 
+> > measurement of the delay Esker is trying to measure, and if it wasn't
+> > of bugs (and crazy complexity) it would in the worst case match the
+> > transfer time.
+> 
+> Sorry to repeat myself, but just to avoid the confusion: Esker needs
+> to know how much power is used since we start receiving a frame until
+> it is available for dqbuf, not de frame latency.
+
+As I think everybody is aware, the earliest notification you get on the
+CPU side is the *end* of reception of the first URB, which can possibly
+be significantly later than the start of reception of the frame.
+
+Based on what I understand, the goal is to measure the CPU power
+consumption related to CPU processing of the frame. If that's the case,
+there's good and bad news. The good news is that the CPU doesn't process
+the frame at all until the URB has been received (if you were to measure
+the power consumption of the USB host controller too, it would be a
+different story), so the delay shouldn't be a problem. The bad news is
+that I don't see how the information you're trying to get will help you,
+as there's plenty of other things unrelated to the uvcvideo driver that
+can take CPU time while a frame is being received. That may not be any
+of my business, but from the point of view of the uvcvideo driver, I'm
+less inclined to accept a possibly significant V4L2_EVENT_FRAME_SYNC lie
+if the use case ends up making little sense :-)
+
+-- 
+Regards,
+
+Laurent Pinchart
