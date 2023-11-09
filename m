@@ -2,187 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058717E7158
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B787E7131
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344980AbjKISYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S1344947AbjKISHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344938AbjKISYH (ORCPT
+        with ESMTP id S1344773AbjKISHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:24:07 -0500
-X-Greylist: delayed 1013 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Nov 2023 10:24:04 PST
-Received: from relay.virtuozzo.com (relay.virtuozzo.com [130.117.225.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35FD30CF;
-        Thu,  9 Nov 2023 10:24:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Message-Id:Date:Subject
-        :From; bh=BXpVce+kqExxqq8mEkIr6YLCv6YVYrkcxppHUHFKRtc=; b=rc/ynbwCEtZ51WsJdjp
-        hiGHlN9MsCWXbL1LUbvVzMvtpHbe8ZpABrcBuohM0ITAsyWs2Thr21KiJ5j/wF6pjdKyIzdUJgJQh
-        elRoaLrpoZosdruXPiVoEOeANgEqK9CZ7CqpcmIt9cSMbtmLMWcRPL1ItzUHZrSjdp8xVNfXkliPv
-        mIfI95pF9jWEHL8xdrou0yI8IVGzxKzTzPtM/zyFsyx4iVq2NtVPmBCj4gP7QoZEtwxWAdpMJVjeZ
-        d7mQX0agxnJPRHF73MuasLd+nkoSOx8jOzkBWlG0BnXPckFnXYS737lqGZNYljqp+7Cs/yKrWMc4v
-        Tqf1LITSJBFNluQ==;
-Received: from [130.117.225.1] (helo=finist-alma9.sw.ru)
-        by relay.virtuozzo.com with esmtp (Exim 4.96)
-        (envelope-from <khorenko@virtuozzo.com>)
-        id 1r19Pe-00Eo8U-2i;
-        Thu, 09 Nov 2023 19:06:46 +0100
-From:   Konstantin Khorenko <khorenko@virtuozzo.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>,
-        "Denis V. Lunev" <den@virtuozzo.com>
-Subject: [PATCH 1/1] KVM: x86/vPMU: Check PMU is enabled for vCPU before searching for PMC
-Date:   Thu,  9 Nov 2023 21:06:46 +0300
-Message-Id: <20231109180646.2963718-2-khorenko@virtuozzo.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231109180646.2963718-1-khorenko@virtuozzo.com>
-References: <20231109180646.2963718-1-khorenko@virtuozzo.com>
+        Thu, 9 Nov 2023 13:07:23 -0500
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807BB1727;
+        Thu,  9 Nov 2023 10:07:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1699553236;
+ bh=jCYEkVdywqRHlC8mhoNYhztpj7Nj5FYnQmn1ZQwqhys=;
+ b=iy46jHcyxm+my/KYZwLlm8suZ3fQbnc8/pYkS+x+t3D3l6YiNzOSeCci/SNgUCORqeL6C++95
+ gxOJRIFNwsLIJ5emcBexngpe251MP9bTNTR6eXqXMiiUgTUOICIsfXqfpquHTMpHCCS24Mkc2Ul
+ govupZCw4YTQMSqlbMUX6DqpUwbKiXfAw5IfBJ6Butu940dwaN0KwjqkcdF3VYXWrexSz4n0mAf
+ WYMVYI9JkyFnQOrcfCUnqCkLoPFHCP/hHry8U3YbKpGVF5qqWD2rhzjwzCAzsyfXvG8YyA79rv7
+ IEtaD8hl6Pl7Ni/lL3emQCNkxbaJChkpI/MDEOA9rc3g==
+Message-ID: <39b740b1-4d00-4afa-8b4f-58b0776b65c8@kwiboo.se>
+Date:   Thu, 9 Nov 2023 19:07:11 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at
+ streaming start
+Content-Language: en-US
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     Alex Bee <knaerzche@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231105165521.3592037-1-jonas@kwiboo.se>
+ <20231105165521.3592037-6-jonas@kwiboo.se>
+ <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
+ <bfabc182-4113-46fb-85e9-8550c97d132b@kwiboo.se>
+ <f69345217c21af63cf873bfb4a16ae1363b05875.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <f69345217c21af63cf873bfb4a16ae1363b05875.camel@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 654d1fd4a16ddfebde306cfd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following 2 mainstream patches have introduced extra
-events accounting:
+On 2023-11-08 03:39, Nicolas Dufresne wrote:
+> Le mardi 07 novembre 2023 à 23:56 +0100, Jonas Karlman a écrit :
+>> On 2023-11-07 23:01, Nicolas Dufresne wrote:
+>>> Le dimanche 05 novembre 2023 à 16:55 +0000, Jonas Karlman a écrit :
+>>>> SPS parameters is validated in try_ctrl() ops so there is no need to
+>>>
+>>>                  are
+>>>
+>>>> re-validate when streaming starts.
+>>>>
+>>>> Remove the unnecessary call to validate sps at streaming start.
+>>>
+>>> This patch is not working since user may change the format after the
+>>> control have been set. The proper fix should actually reset the SPS
+>>> (well all header controls) to match the the newly set format. Then this
+>>> validation won't be needed anymore.
+>>>
+>>> The sequence that is problematic after this patch is:
+>>>
+>>> S_FMT (OUTPUT, width, height);
+>>> S_CTRL (SPS) // valid
+>>> S_FMT(OUTPUT, width', height'); // SPS is no longer valid
+>>>
+>>> One suggestion I may make is to add a ops so that each codec
+>>> implementation can reset their header controls to make it valid against
+>>> the new resolution. With that in place you'll be able drop the check.
+>>
+>> According to the Initialization section of the V4L2 stateless
+>> documentation a client is supposed to S_CTRL(SPS) after S_FMT(OUTPUT).
+> 
+> Yes, but other part of the spec prevents us from failing if the
+> userspace restart in the middle of the process.
+> 
+>>
+>> https://docs.kernel.org/userspace-api/media/v4l/dev-stateless-decoder.html#initialization
+>>
+>> I guess that all stateless decoders probably should reset all ctrls to
+>> default value on S_FMT(OUTPUT) or decoders may end up in an unexpected
+>> state?
+>>
+>> Is resetting a ctrl value back to default something that is supported by
+>> v4l2 ctrl core? Did not find any obvious way to reset a ctrl value.
+> 
+> In order to avoid having to do this, Hantro driver just ignores these
+> values from SPS control and do the following:
+> 
+> 	reg = G1_REG_DEC_CTRL1_PIC_MB_WIDTH(MB_WIDTH(ctx->src_fmt.width)) |
+> 	      G1_REG_DEC_CTRL1_PIC_MB_HEIGHT_P(MB_HEIGHT(ctx->src_fmt.height)) |
+> 	      G1_REG_DEC_CTRL1_REF_FRAMES(sps->max_num_ref_frames);
+> 
+> Then all they do is reset the CAPTURE format whenever needed, matching
+> the bit depth that was previously set. The SPS is unfortunatly not
+> guarantied to be valid, but at first sight its safe in regard to
+> picture dimensions.
 
-  018d70ffcfec ("KVM: x86: Update vPMCs when retiring branch instructions")
-  9cd803d496e7 ("KVM: x86: Update vPMCs when retiring instructions")
+The commit 77e74be83083 ("media: rkvdec: h264: Validate and use pic
+width and height in mbs") changed to use the SPS values to help fix
+decoding of field encoded content, it also added this check.
 
-kvm_pmu_trigger_event() iterates over all PMCs looking for enabled and
-this appeared to be fast on Intel CPUs and quite expensive for AMD CPUs.
+Will drop this patch in v5, and should also re-add similar validation in
+the HEVC series.
 
-kvm_pmu_trigger_event() can be optimized not to iterate over all PMCs in
-the following cases:
+Regards,
+Jonas
 
-  * if PMU is completely disabled for a VM, which is the default
-    configuration
-  * if PMU v2 is enabled, but no PMCs are configured
-
-For Intel CPUs:
-  * By default PMU is disabled for KVM VMs (<pmu state='off'/> or absent
-    in the VM config xml which results in "-cpu pmu=off" qemu option).
-    In this case pmu->version is reported as 0 for the appropriate vCPU.
-
-  * According to Intel® 64 and IA-32 Architectures Software Developer’s
-    Manual PMU version 2 and higher provide IA32_PERF_GLOBAL_CTRL MSR
-    which in particular contains bits which can be used for efficient
-    detection which fixed-function performance and general-purpose
-    performance monitoring counters are enabled at the moment.
-
-  * Searching for enabled PMCs is fast and the optimization does not
-    bring noticeable performance increase.
-
-For AMD CPUs:
-  * For CPUs older than Zen 4 pmu->version is always reported as "1" for
-    the appropriate vCPU, no matter if PMU is disabled for KVM VMs
-    (<pmu state='off'/>) or enabled.
-    So for "old" CPUs currently it's impossible to detect when PMU is
-    disabled for a VM and skip the iteration by PMCs efficiently.
-
-  * Since Zen 4 AMD CPUs support PMU v2 and in this case pmu->version
-    should be reported as "2" and IA32_PERF_GLOBAL_CTRL MSR is available
-    and can be used for fast and efficient check for enabled PMCs.
-    https://www.phoronix.com/news/AMD-PerfMonV2-Linux-Patches
-    https://www.phoronix.com/news/AMD-PerfMonV2-Guests-KVM
-
-  * Optimized preliminary check for enabled PMCs on AMD Zen 4 CPUs
-    should give quite noticeable performance improvement.
-
-AMD performance results:
-CPU: AMD Zen 3 (three!): AMD EPYC 7443P 24-Core Processor
-
- * The test binary is run inside an AlmaLinux 9 VM with their stock kernel
-   5.14.0-284.11.1.el9_2.x86_64.
- * Test binary checks the CPUID instractions rate (instructions per sec).
- * Default VM config (PMU is off, pmu->version is reported as 1).
- * The Host runs the kernel under test.
-
- # for i in 1 2 3 4 5 ; do ./at_cpu_cpuid.pub ; done | \
-   awk -e '{print $4;}' | \
-   cut -f1 --delimiter='.' | \
-   ./avg.sh
-
-Measurements:
-1. Host runs stock latest mainstream kernel commit 305230142ae0.
-2. Host runs same mainstream kernel + current patch.
-3. Host runs same mainstream kernel + current patch + force
-   guest_pmu_is_enabled() to always return "false" using following change:
-
-   -       if (pmu->version >= 2 && !(pmu->global_ctrl & ~pmu->global_ctrl_mask))
-   +       if (pmu->version == 1 && !(pmu->global_ctrl & ~pmu->global_ctrl_mask))
-
-   --------------------------------------
-   | Kernels	| CPUID rate		|
-   --------------------------------------
-   | 1.		| 1360250		|
-   | 2.		| 1365536 (+ 0.4%)	|
-   | 3.		| 1541850 (+13.4%)	|
-   --------------------------------------
-
-Measurement (2) gives some fluctuation, the performance is not increased
-because the test was done on a Zen 3 CPU, so we are unable to use fast
-check for active PMCs.
-Measurement (3) shows expected performance boost on a Zen 4 CPU under
-the same test.
-
-Signed-off-by: Konstantin Khorenko <khorenko@virtuozzo.com>
----
- arch/x86/kvm/pmu.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 9ae07db6f0f6..290d407f339b 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -731,12 +731,38 @@ static inline bool cpl_is_matched(struct kvm_pmc *pmc)
- 	return (static_call(kvm_x86_get_cpl)(pmc->vcpu) == 0) ? select_os : select_user;
- }
- 
-+static inline bool guest_pmu_is_enabled(struct kvm_pmu *pmu)
-+{
-+	/*
-+	 * Currently VMs do not have PMU settings in configs which defaults
-+	 * to "pmu=off".
-+	 *
-+	 * For Intel currently this means pmu->version will be 0.
-+	 * For AMD currently PMU cannot be disabled:
-+	 * pmu->version should be 2 for Zen 4 cpus and 1 otherwise.
-+	 */
-+	if (pmu->version == 0)
-+		return false;
-+
-+	/*
-+	 * Starting with PMU v2 IA32_PERF_GLOBAL_CTRL MSR is available and
-+	 * it can be used to check if none PMCs are enabled.
-+	 */
-+	if (pmu->version >= 2 && !(pmu->global_ctrl & ~pmu->global_ctrl_mask))
-+		return false;
-+
-+	return true;
-+}
-+
- void kvm_pmu_trigger_event(struct kvm_vcpu *vcpu, u64 perf_hw_id)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
- 	struct kvm_pmc *pmc;
- 	int i;
- 
-+	if (!guest_pmu_is_enabled(pmu))
-+		return;
-+
- 	for_each_set_bit(i, pmu->all_valid_pmc_idx, X86_PMC_IDX_MAX) {
- 		pmc = static_call(kvm_x86_pmu_pmc_idx_to_pmc)(pmu, i);
- 
--- 
-2.39.3
+> 
+>>
+>> Will probably just drop this patch in v5.
+> 
+> That or do like in Hantro driver. What is scary though is that some of
+> the feature enabled by SPS may requires an auxiliary chunk of memory to
+> be allocated, and then this method falls appart. I think it would be
+> nice to fix that properly in all drivers in a future patchset.
+> 
+>>
+>> Regards,
+>> Jonas
+>>
+>>>
+>>> Nicolas
+>>>
+>>> p.s. you can also just drop this patch from the series and revisit it
+>>> later, though I think its worth fixing.
+>>>
+>>>>
+>>>> Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>>>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+>>>> ---
+>>>> v4:
+>>>> - No change
+>>>>
+>>>> v3:
+>>>> - New patch
+>>>>
+>>>>  drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
+>>>>  1 file changed, 2 insertions(+), 17 deletions(-)
+>>>>
+>>>> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+>>>> index 8bce8902b8dd..815d5359ddd5 100644
+>>>> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
+>>>> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+>>>> @@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>>>  	struct rkvdec_dev *rkvdec = ctx->dev;
+>>>>  	struct rkvdec_h264_priv_tbl *priv_tbl;
+>>>>  	struct rkvdec_h264_ctx *h264_ctx;
+>>>> -	struct v4l2_ctrl *ctrl;
+>>>> -	int ret;
+>>>> -
+>>>> -	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
+>>>> -			      V4L2_CID_STATELESS_H264_SPS);
+>>>> -	if (!ctrl)
+>>>> -		return -EINVAL;
+>>>> -
+>>>> -	ret = rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
+>>>> -	if (ret)
+>>>> -		return ret;
+>>>>  
+>>>>  	h264_ctx = kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
+>>>>  	if (!h264_ctx)
+>>>> @@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>>>  	priv_tbl = dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
+>>>>  				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
+>>>>  	if (!priv_tbl) {
+>>>> -		ret = -ENOMEM;
+>>>> -		goto err_free_ctx;
+>>>> +		kfree(h264_ctx);
+>>>> +		return -ENOMEM;
+>>>>  	}
+>>>>  
+>>>>  	h264_ctx->priv_tbl.size = sizeof(*priv_tbl);
+>>>> @@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>>>  
+>>>>  	ctx->priv = h264_ctx;
+>>>>  	return 0;
+>>>> -
+>>>> -err_free_ctx:
+>>>> -	kfree(h264_ctx);
+>>>> -	return ret;
+>>>>  }
+>>>>  
+>>>>  static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
+>>>
+>>
+> 
 
