@@ -2,195 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575477E6AE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20357E6AF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjKINEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
+        id S233551AbjKINHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:07:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjKINEj (ORCPT
+        with ESMTP id S230229AbjKINHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:04:39 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138E32D78
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:04:37 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7b9f08482c8so377999241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 05:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699535076; x=1700139876; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rJHV5wjvEmu0+H0pswwKbUsYcGzXtjcRUmurBVcTMsY=;
-        b=OCN1jmCBXsiBSD+mwIzfmHx5YKhJ66D9CNptirK9Mcc9yOFraci2K5ZY5A4eZm+4Oa
-         CdINqhxA9XFRmiD/scENxGkc1pjhx2ZoFiSCJPP6697Rrhl9Xm1K+do+qVR9K+uPdBZG
-         ZCyAMLjFX5ucuWvH1nivqWmz/kZCwLVTkbwk7FF5sjDbMFFPL+bbnxBcRbDKiAu6WQ83
-         NyIw6UEJWxmg+JKyYGQxXwwmWw8sAJkKApFG8HuT78d8k8cAFSSIR/LI7tKCJ37NCRY+
-         UJ1Bpks+mp1pCaWi9PseRcd6KO08IYr3zLYSQvSzTDI+ibyRjwOVBeJ2qlJNCBzWfPYV
-         CQ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699535076; x=1700139876;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rJHV5wjvEmu0+H0pswwKbUsYcGzXtjcRUmurBVcTMsY=;
-        b=MDE51+HJ80/cRYW0TYMe5b11S5lpr6HnKPmQzq6/RWmqj1RycKqm67Xn8xXP0Iy1Yn
-         i5XQeHLx90Vw8EquPR8SedbOgyNR+iqlOTuwAuMxw1WqdyNflIeRInKFiYrnwEmUmVk2
-         DgOezmjmmO/Lpz34jmMcwe+6+Vw3Oul8SoAFnhI+7R4Rf0c2bKXAagO+cEZM6sCv76CZ
-         dSGwY5HcOtv3LKP4YROaa5aMB8e7XOllSD3ieFkzCdwfEkNZcod+SMfZytwRSKIvEIZw
-         IbSbDpSQY7vEKTJ5KLN19iyMAXXOIJAYFRbtJ+FruHege42hXc3ekU7Ut6A0nDj3A5ZK
-         k2dA==
-X-Gm-Message-State: AOJu0YxRZ41B5uHfrNUuTWuT0v38ae540iVu24/mSRJZGPVvUFmtm4l3
-        HZHxT35xDL6hzS0MOeNiPoVlMOPiLbCVyZDm6wzLDg==
-X-Google-Smtp-Source: AGHT+IG9nwtGQRIOzqK10AkgRk7c+flhGsr/w/ZJgOnvHz+uB1IeZ5JtclgUH4I84oq/WNIfY/7UjG0NLcht5wwj2yQ=
-X-Received: by 2002:a1f:6e4e:0:b0:49d:fab:fa37 with SMTP id
- j75-20020a1f6e4e000000b0049d0fabfa37mr1381042vkc.4.1699535076016; Thu, 09 Nov
- 2023 05:04:36 -0800 (PST)
+        Thu, 9 Nov 2023 08:07:43 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449E12D55;
+        Thu,  9 Nov 2023 05:07:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UjKUUi+z2oYSwwTlp5gJVO/7Cpm7x7f82lC7eeCX0XVWfuew3ruB9rgwCzvXGpv23WPIhF4WsTZNN1bnjiiI/VVD7iLplK2SEE+yrMd9DRqhWWIDtDXBUBLXE2w01mPHVNkSDo7Co8mJLyK/50XzJEe59rwkhKTcjLJ8aBqc7/z6YTH4E3uRNPUrPNGeIfDxTj7hvRddxdQYEM1N8IiuugjmqKPB2/MrPgCIb5ULN5x1ruP1iGDVkRZG8vKwNOJQthC6IpRkwotaxqc8fd9skRtNQFEsJMzoKBabRo+ZksMvxoxcj04kHPNjJpyKgnP3T9O6ABGnq/Qz7603ILPowg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yXLHoBft3PFdyrEWviTmr47oqVChTZkeGwhvNzSWS4Y=;
+ b=QsDyvGPPzxLZfNXKsD5esLZheNQcZC2hv08J4za3xMF71bHTncBhGboJdiL0oxp9rcu+U5XjJufTzTPBltNkCh/lE2Cp9N4RRh6kdIM/Qfdcr2VeZ1Ua55RqnOzOYXdaP6U+lrE2zKfV/EtafhQEVDfMEsEpoGbGSk6Oa0olMaoxdcOyTqDCQhkWb7SQoB/BAh9luAEbSu+TOepZ2uEAs9cdgxciMbwEmBE29eb/b7Z2cYxc3HNtjBX7+2hrFtkEt8XmiyjnnYXb/aF0ASfeWDgnYUDyrVklx3dnxS7msJTOh10spoESfnfNjhHzAchXK95u8vIq5i4qWhr1tk7UEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yXLHoBft3PFdyrEWviTmr47oqVChTZkeGwhvNzSWS4Y=;
+ b=GdPAI5qtvtSopwe33gttIKJD/odRkgrXNaOSmZXdJ5WFsmOxuzWeWjekUgmPAW7T283soWRg/PF8jvuM0TmsA6BGvgB+S+ihSHQIJnetnT+ilzTth4FnYsinIFpe82Lt0XphR3dAN0Oaw91lcCL4TZJeBG2F6rT9q/mJGJhtOdpJ4Ldt++stNeP4s2vt6PkyydN7zwunqI9V6IrmJsEHoyugYew7W41NaWeAZEC8VPEWTuFQC1DUvmDvr+MthUreYia/iWPI3bHVj/1BxOcQSYA+3MZi8ecBQoWebA8Cffc1XF4fvo8M1VxEYcuG+kCc0/4xMHSMvYu2saFkhqiRJQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
+ 2023 13:07:36 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Thu, 9 Nov 2023
+ 13:07:35 +0000
+Message-ID: <e07c977f-8c73-4772-b069-527c6ac0ae4f@vivo.com>
+Date:   Thu, 9 Nov 2023 21:07:29 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka> <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+ <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com> <ZUytB5lSwxeKkBW8@tiehlicka>
+ <6b539e16-c835-49ff-9fae-a65960567657@vivo.com> <ZUy2-vrqDq7URzb6@tiehlicka>
+ <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com> <ZUzTVgK_i05uiHiB@tiehlicka>
+From:   Huan Yang <link@vivo.com>
+In-Reply-To: <ZUzTVgK_i05uiHiB@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR04CA0198.apcprd04.prod.outlook.com
+ (2603:1096:4:14::36) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 9 Nov 2023 18:34:24 +0530
-Message-ID: <CA+G9fYue-dV7t-NrOhWwGshvyboXjb2B6HpCDVDe3bgG7fbnsg@mail.gmail.com>
-Subject: selftests: memfd: run_fuse_test.sh - fuse_evict_inode -
- fs/fuse/inode.c:162 - panic
-To:     linux-fsdevel@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, regressions@lists.linux.dev
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB4173:EE_
+X-MS-Office365-Filtering-Correlation-Id: 886bedd4-dd5b-4011-b9de-08dbe124d77c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TQUraJz6PEYducrszdNAK+mwTJJb/MxOu848x9MZmb0JMXjm+Gy/qlz38SYmxRvJpyH/M+4oV72lrlu2t7qhzS98QQyrnQ2Kh65H6/Z9EK/3Z4FWrorQYkq76gltRY/vVPM24vWEZgYW9PmYbnTHw83VEojwI7mDHrE2SfNUsE6/nQxF4kQYafw7tfnjg4B83hg6QEraimAGfBlEew3N9Z8kIcfe+G/T7p6HwuNU6yOA+h9c7UowkCU18qAUi6tlVyxRnRDZYzS3G/4WLW2psUrfHZPWutp4H59VPD93nNJDhFfGYYrQl/husz2qBIxcGtKQgccKkiClCmj17EFqcEuJltGHfCNzvG4cuFO69UOXSBId1JqSCzbsYp8NEwpuQXDLWqLWOrxmAJxDsxolm0Z4ytLqcLaGDcprmqEA0Wuk5X7i4rn81pXU0EZLvNsg3h4fcJNOsu+tkph3qk6Db0ZUK6GcSrMVHtvaWmjTYTsa67SLSkeFb16PIxGKerY/4mkCG5vUjRWy0wYxmzkLiv6+ll/T3Zu02IH6eXrNyQ7ONYxrLM0XOrwkST52Zu7JYiVJKBYrkocV6bt9qBp6bU24Gb277GLmtGy0SlCXmzUd5hym76T7ynTgTXMCzfmMHPRnn5EexK9id/ujrjaOjYRb+pwqGxubhqibCDZ79lRjFMPw1IwPt79JO0Uc9xiNvtoHQmC43x1/MEZFqQAxsw85xFUE6jAYoJy7zWtzgqk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(39850400004)(136003)(346002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(2906002)(38100700002)(31686004)(4326008)(8676002)(41300700001)(83380400001)(7416002)(86362001)(31696002)(316002)(6512007)(8936002)(5660300002)(107886003)(66899024)(2616005)(66946007)(66556008)(66476007)(38350700005)(6916009)(6506007)(52116002)(54906003)(6666004)(478600001)(966005)(6486002)(26005)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a29IcEtjTUZSc2ZmUmdmYk43OVlLcVJZd0p5N3BTQkxkYWNqZkM3blFUV2Q0?=
+ =?utf-8?B?WlpsNUlMQTVNNkE5TCtaaW84djdIbC81MDV0eHhCN1d0TWs3NnpXa3F5YWpB?=
+ =?utf-8?B?SlQvcVY4ZC9xRlh5RkhjbXVCazladXpkUnZrV1N3RkhnN3NkM3JmQlcrU1BK?=
+ =?utf-8?B?WTZ4SCs2TkJmMlBWSWxEdUdLclMrb2k0U1ZEVXR1cXBMaTcxUTdQZzNMdDVR?=
+ =?utf-8?B?c0FxSVlVS2JkZnJTb2hlN0RRYnFwNjhVQm0wdnlKdHlhWjUxT3BLQnFEcWRO?=
+ =?utf-8?B?TzQ4NnR0SlBoZkt6MmEwRndhTGQ1YXZ0KzBCK0hac0lwUURHRUZ1b1kyTnFx?=
+ =?utf-8?B?U1ZWUWYrZlp3eXhZNGl1N1kydnhzaEZISTZXRjY3NE1TT21pMDRrRTgxaTEz?=
+ =?utf-8?B?RUlvN1NlNWhFTTRoZ1YvbDdjbHRWNkV0NFQrc1NZSkRGRjY0RzV5amg2N3dD?=
+ =?utf-8?B?R0pMUmlJVkpsdVd0RUhPOFpSVDNuVkc1MytRYTErSjZMb0hJRUd3ckV4OUFo?=
+ =?utf-8?B?VnZkVlpic2dXTDY1TTFrRFVMaXNveEhqaGpGZlFWSFV6azBXaWg1QkNVY3Vh?=
+ =?utf-8?B?M0tCT29kUDcwajBIeWJUTWx0NjRZMjRHNENrM1NxMEd4cFp1ODBpR0tXTVBs?=
+ =?utf-8?B?eVBOaFNXU1V0T3VLZHFySE5FTEJqV2Y5NFdhbUF4YkJ0TGtPcGNubHdTRWkz?=
+ =?utf-8?B?NktKS21KMXdDdjVMTVJLUmpEOFFaOTRBVDRVYXdYSUhOY21xUU1IR3VQand3?=
+ =?utf-8?B?SVNjR0JXUHNjZm9kL3ZFYVZJeWl6a1ZSY2laWnJFcEtlL0hwUXo3UmhhbUN6?=
+ =?utf-8?B?WmRkUXN6UUVqcDllaHlySURhR1pCZHBId1ZMMmM1UDI5dS9NeS9IVGNDSE4w?=
+ =?utf-8?B?TXJaZ1RFZHhPVkxOTUhtUnRWYTJZeEtRLzVqUCtBdXNJNnFsK0VyMHlvOWZC?=
+ =?utf-8?B?VHFrVjVDeXVEQkZMQlVJM0ltSUx2Qjd2VEllN1dlK0xGRzhpYW9uNWhzMnc5?=
+ =?utf-8?B?QnI2a2MvNWdETkExV1F5Q0plSkJvNUs1Y3gwOXV5czBjQ3daZkphU2cyR0Jt?=
+ =?utf-8?B?UjUyOWFPK3dJSTlDcG44dXkrSTJmSVEwNUJEQ0FsZXFWekN6SW41OXR1REcy?=
+ =?utf-8?B?aE5IL2tlay8zSllWQVJsN09FcWVsNG1OTkRkRGh2eEJNd3lNbytBcXpMaTVX?=
+ =?utf-8?B?U1RGclVNbUUrYnNKVVRvK2pYUEswL2hBMS9vVlBFcGtyNG04NGV5ODZzdEtu?=
+ =?utf-8?B?ajJCQ3JKWHFwNHBUZnE5Rk1kK2FCS3g0WGgvSW1qakg0WVR1WDZDWjUzd3VH?=
+ =?utf-8?B?SSsrVzBZMkxPQzYxcGlDMm9IL2lOWTZtMVZaMnFNTWlUdGU4SE5wLzhTWm1G?=
+ =?utf-8?B?czNsRkNHMXFCWXRVN2tVeENCYnc5cEpOcGJoZ1hkbGRUcGIweTBCRU9XZ1F6?=
+ =?utf-8?B?amU3OTA5dXJDYk9JMThSMmJQaEFnQ2s1MUM3bVZBTDVzS1JaRFRWNnB4QU9S?=
+ =?utf-8?B?UUk0TGZVOCtxV0xrbG1mNzBDVEJDWC9DYjNCbnhXNVhYY1FpRDc1UXIxT0Zl?=
+ =?utf-8?B?MFBvWTBxR2FJd3FqRHpDeitEU096OTRRZnZ5NytJaVpPSWJZT1lKMTNPeWoy?=
+ =?utf-8?B?eUpDWk91RWF6YUNkU0pwZ3ZHa0c4K3kvRkNDTzNpNVdkNnRIRHUybjR0YWF2?=
+ =?utf-8?B?aitYbEdPeGZMOEZMRG5EME0raEhMQWtRcGpMZkMwNC9sTS9xam1xVTJtOEtW?=
+ =?utf-8?B?RjZreFpReGdNYVluMG4vQ1N2UWIySWdXRXQyZXdySnFMVFh2MmN6cFBBeTEr?=
+ =?utf-8?B?RThPVlhFUUFBODRabS9JWnlQOElrTXNXOEszZ1JXdVhOMWYvQUo2aWlMQTZJ?=
+ =?utf-8?B?cUJuWTVpcGh4aE5HOUFWdFNyUkk4bnhZdzh4WEZlenZ3dnRmNjBEcDg4R1Jn?=
+ =?utf-8?B?ZG02QjFQdVJJcXMvREtVOHNCY3FjcVpMVktnN2VVbU8xVUFYNzJYc3grVDJj?=
+ =?utf-8?B?cEhWZUkwV0RTcDBzSTc1cFUzYWtpbW1tNFc5amdIUFFhcW1sUVM1QzBPTjF4?=
+ =?utf-8?B?d01GVjJKMjluRUVtUFZJK2dtRlpUWW1KOE1XajBIdys0dHlzQW96SXEzRksv?=
+ =?utf-8?Q?U6yv8uGUA27ZJjlZTPs3B+r+l?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 886bedd4-dd5b-4011-b9de-08dbe124d77c
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 13:07:35.5746
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vybgSKCFKL8kXRPpE/O6s6yxsuC1kkXsAEzxYWOVjpwv52L7efSGv/cwRz2pV2qE2/hRoQtD/xhqHDDzgTJVLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following kernel panic noticed while running selftests: memfd: run_fuse_test.sh
-on arm64 Juno-r2 and x86 devices running Linux next-20231109.
+HI,
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+在 2023/11/9 20:40, Michal Hocko 写道:
+> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+> On Thu 09-11-23 18:50:36, Huan Yang wrote:
+>> 在 2023/11/9 18:39, Michal Hocko 写道:
+>>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>>>
+>>> On Thu 09-11-23 18:29:03, Huan Yang wrote:
+>>>> HI Michal Hocko,
+>>>>
+>>>> Thanks for your suggestion.
+>>>>
+>>>> 在 2023/11/9 17:57, Michal Hocko 写道:
+>>>>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>>>>>
+>>>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
+>>>>> [...]
+>>>>>>> If so, is it better only to reclaim private anonymous pages explicitly?
+>>>>>> Yes, in practice, we only proactively compress anonymous pages and do not
+>>>>>> want to touch file pages.
+>>>>> If that is the case and this is mostly application centric (which you
+>>>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
+>>>>> instead.
+>>>> Madvise  may not be applicable in this scenario.(IMO)
+>>>>
+>>>> This feature is aimed at a core goal, which is to compress the anonymous
+>>>> pages
+>>>> of frozen applications.
+>>>>
+>>>> How to detect that an application is frozen and determine which pages can be
+>>>> safely reclaimed is the responsibility of the policy part.
+>>>>
+>>>> Setting madvise for an application is an active behavior, while the above
+>>>> policy
+>>>> is a passive approach.(If I misunderstood, please let me know if there is a
+>>>> better
+>>>> way to set madvise.)
+>>> You are proposing an extension to the pro-active reclaim interface so
+>>> this is an active behavior pretty much by definition. So I am really not
+>>> following you here. Your agent can simply scan the address space of the
+>>> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOUT)
+>>> on the private memory is that is really what you want/need.
+>> There is a key point here. We want to use the grouping policy of memcg
+>> to perform proactive reclamation with certain tendencies. Your
+>> suggestion is to reclaim memory by scanning the task process space.
+>> However, in the mobile field, memory is usually viewed at the
+>> granularity of an APP.
+> OK, sthis is likely a terminology gap on my end. By application you do
+> not really mean a process but rather a whole cgroup. That would have
+> been really useful to be explicit about.
+I'm sorry for the confusion. But, in reality, the example I gave was 
+just the one we use
+here. In terms of policy, any reasonable method can be chosen to 
+organize cgroups
+and reclaim memory with certain tendencies.
+But, let's continue the discussion assuming that memcg is grouped by 
+application to
+avoid confusion.
+>
+>> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
+>> according to the pre-grouped APP processes.
+>>
+>> Of course, as you suggested, madvise can also achieve this, but
+>> implementing it in the agent may be more complex.(In terms of
+>> achieving the same goal, using memcg to group all the processes of an
+>> APP and perform proactive reclamation is simpler than using madvise
+>> and scanning multiple processes of an application using an agent?)
+> It might be more involved but the primary question is whether it is
+> usable for the specific use case. Madvise interface is not LRU aware but
+> you are not really talking about that to be a requirement? So it would
+> really help if you go deeper into details on how is the interface
+> actually supposed to be used in your case.
+In mobile field, we usually configure zram to compress anonymous page.
+We can approximate to expand memory usage with limited hardware memory
+by using zram.
 
-log:
----
-# timeout set to 45
-# selftests: memfd: run_fuse_test.sh
-# opening: ./mnt/memfd
-# fuse: DONE
-[ 1931.860330] Unable to handle kernel paging request at virtual
-address 005a5a5a5a5a5a5a
-[ 1931.868645] Mem abort info:
-[ 1931.871505]   ESR = 0x0000000096000021
-[ 1931.875311]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 1931.880805]   SET = 0, FnV = 0
-[ 1931.883924]   EA = 0, S1PTW = 0
-[ 1931.887563]   FSC = 0x21: alignment fault
-[ 1931.891618] Data abort info:
-[ 1931.894542]   ISV = 0, ISS = 0x00000021, ISS2 = 0x00000000
-[ 1931.900219]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[ 1931.905305]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[ 1931.910692] [005a5a5a5a5a5a5a] address between user and kernel address ranges
-[ 1931.918091] Internal error: Oops: 0000000096000021 [#1] PREEMPT SMP
-[ 1931.924375] Modules linked in: gpio_sim onboard_usb_hub tda998x
-hdlcd crct10dif_ce cec drm_dma_helper dm_mod [last unloaded:
-gpio_mockup]
-[ 1931.936789] CPU: 1 PID: 20739 Comm: fusermount Not tainted
-6.6.0-next-20231109 #1
-[ 1931.944295] Hardware name: ARM Juno development board (r2) (DT)
-[ 1931.950224] pstate: 40000005 (nZcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[ 1931.957205] pc : fuse_evict_inode
-(arch/arm64/include/asm/atomic_ll_sc.h:96 (discriminator 3)
-arch/arm64/include/asm/atomic.h:51 (discriminator 3)
-include/linux/atomic/atomic-arch-fallback.h:944 (discriminator 3)
-include/linux/atomic/atomic-instrumented.h:401 (discriminator 3)
-include/linux/refcount.h:272 (discriminator 3)
-include/linux/refcount.h:315 (discriminator 3)
-include/linux/refcount.h:333 (discriminator 3) fs/fuse/inode.c:137
-(discriminator 3) fs/fuse/inode.c:166 (discriminator 3))
-[ 1931.961586] lr : fuse_evict_inode (fs/fuse/inode.c:162)
-[ 1931.965868] sp : ffff80008792ba90
-[ 1931.969189] x29: ffff80008792ba90 x28: ffff000800b58040 x27: 0000000000000000
-[ 1931.976358] x26: 0000000000000000 x25: ffff800080508f98 x24: ffff80008316a008
-[ 1931.983519] x23: ffff80008316a008 x22: ffff80008424a020 x21: ffff00082a514c00
-[ 1931.990679] x20: 5a5a5a5a5a5a5a5a x19: ffff000838828780 x18: 0000000000000000
-[ 1931.997840] x17: ffff80008050e610 x16: ffff80008050e5bc x15: ffff80008050e3e8
-[ 1932.005003] x14: ffff80008050df10 x13: ffff800080769c60 x12: ffff8000851f6388
-[ 1932.012165] x11: 0000000000000645 x10: 0000000000000645 x9 : ffff800081c0e0b4
-[ 1932.019332] x8 : ffff80008792b988 x7 : 0000000000000000 x6 : ffff800084a75fe8
-[ 1932.026495] x5 : 0000000000000000 x4 : 0000000000000001 x3 : ffff80008424a968
-[ 1932.033659] x2 : 0000000000000002 x1 : ffff000800b58040 x0 : 0000000000000001
-[ 1932.040820] Call trace:
-[ 1932.043272] fuse_evict_inode
-(arch/arm64/include/asm/atomic_ll_sc.h:96 (discriminator 3)
-arch/arm64/include/asm/atomic.h:51 (discriminator 3)
-include/linux/atomic/atomic-arch-fallback.h:944 (discriminator 3)
-include/linux/atomic/atomic-instrumented.h:401 (discriminator 3)
-include/linux/refcount.h:272 (discriminator 3)
-include/linux/refcount.h:315 (discriminator 3)
-include/linux/refcount.h:333 (discriminator 3) fs/fuse/inode.c:137
-(discriminator 3) fs/fuse/inode.c:166 (discriminator 3))
-[ 1932.047296] evict (fs/inode.c:669)
-[ 1932.050279] iput_final (fs/inode.c:1776)
-[ 1932.053694] iput.part.0 (fs/inode.c:1803)
-[ 1932.057280] iput (fs/inode.c:1803)
-[ 1932.060085] dentry_unlink_inode (fs/dcache.c:402)
-[ 1932.064281] __dentry_kill (arch/arm64/include/asm/current.h:19
-arch/arm64/include/asm/preempt.h:47 fs/dcache.c:610)
-[ 1932.067956] shrink_dentry_list (include/linux/list.h:373
-(discriminator 2) fs/dcache.c:1179 (discriminator 2))
-[ 1932.072067] shrink_dcache_parent (fs/dcache.c:1652)
-[ 1932.076433] shrink_dcache_for_umount (fs/dcache.c:1682 fs/dcache.c:1698)
-[ 1932.081062] generic_shutdown_super (fs/super.c:647)
-[ 1932.085518] kill_anon_super (fs/super.c:1254)
-[ 1932.089277] fuse_kill_sb_anon (fs/fuse/fuse_i.h:895 fs/fuse/inode.c:1912)
-[ 1932.093298] deactivate_locked_super (fs/super.c:489)
-[ 1932.097753] deactivate_super (fs/super.c:522)
-[ 1932.101599] cleanup_mnt (fs/namespace.c:139 fs/namespace.c:1257)
-[ 1932.105097] __cleanup_mnt (fs/namespace.c:1264)
-[ 1932.108680] task_work_run (kernel/task_work.c:182)
-[ 1932.112266] do_notify_resume (include/linux/resume_user_mode.h:49
-arch/arm64/kernel/signal.c:1305)
-[ 1932.116283] el0_svc (arch/arm64/kernel/entry-common.c:137
-arch/arm64/kernel/entry-common.c:144
-arch/arm64/kernel/entry-common.c:679)
-[ 1932.119345] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:697)
-[ 1932.123710] el0t_64_sync (arch/arm64/kernel/entry.S:595)
-[ 1932.127383] Code: f9026a7f 17ffffd9 52800020 f9800291 (885f7e81)
-All code
-========
-   0: f9026a7f str xzr, [x19, #1232]
-   4: 17ffffd9 b 0xffffffffffffff68
-   8: 52800020 mov w0, #0x1                    // #1
-   c: f9800291 prfm pstl1strm, [x20]
-  10:* 885f7e81 ldxr w1, [x20] <-- trapping instruction
+With proper strategies, an 8GB RAM phone can approximate the usage of a 
+12GB phone
+(or more).
 
-Code starting with the faulting instruction
-===========================================
-   0: 885f7e81 ldxr w1, [x20]
-[ 1932.133486] ---[ end trace 0000000000000000 ]---
-[ 1932.138111] Kernel panic - not syncing: Oops: Fatal exception
-[ 1932.143867] SMP: stopping secondary CPUs
-[ 1932.148008] Kernel Offset: disabled
-[ 1932.151498] CPU features: 0x1,0000020c,3c020000,0100421b
-[ 1932.156820] Memory Limit: none
-[ 1932.159880] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+In our strategy, we group memcg by application. When the agent detects 
+that an
+application has entered the background, then frozen, and has not been 
+used for a long time,
+the agent will slowly issue commands to reclaim the anonymous page of 
+that application.
 
+With this interface, `echo memory anon > memory.reclaim`
 
-Links:
-- https://lkft.validation.linaro.org/scheduler/job/7006578#L6164
-- https://lkft.validation.linaro.org/scheduler/job/7006482#L9235
+>
+> Also make sure to exaplain why you cannot use other existing interfaces.
+> For example, why you simply don't decrease the limit of the frozen
+> cgroup and rely on the normal reclaim process to evict the most cold
+This is a question of reclamation tendency, and simply decreasing the 
+limit of the frozen
+cgroup cannot achieve this.
+> memory? What are you basing your anon vs. file proportion decision on?
+When zram is configured and anonymous pages are reclaimed proactively, 
+the refault
+probability of anonymous pages is low when an application is frozen and 
+not reopened.
+Also, the cost of refaulting from zram is relatively low.
 
-metadata:
-git_ref: master
-git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-git_sha: b622d91ca201bf97582e9b09ebbaab005ecee86f
-git_describe: next-20231109
-kernel_version: 6.6.0
-kernel-config:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2Xv92VPrzXNNmQil9l8bJV2RQHs/config
-artifact-location:
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2Xv92VPrzXNNmQil9l8bJV2RQHs/
-toolchain: gcc-13
+However, file pages usually have shared properties, so even if an 
+application is frozen,
+other processes may still access the file pages. If a limit is set and 
+the reclamation encounters
+file pages, it will cause a certain amount of refault I/O, which is 
+costly for mobile devices.
 
+Therefore, we want to have a proactive reclamation interface that has a 
+tendency to only
+reclaim anonymous pages rather than file pages.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+By doing so, more application data can be stored in the background, and 
+when the application
+is reopened from the background, cold start can be avoided.(Cold start 
+means that the application
+needs to reload the required data and reinitialize its running logic.)
+>
+> In other words more details, ideally with some numbers and make sure to
+> describe why existing APIs cannot be used.
+> --
+> Michal Hocko
+> SUSE Labs
+
+-- 
+Thanks,
+Huan Yang
+
