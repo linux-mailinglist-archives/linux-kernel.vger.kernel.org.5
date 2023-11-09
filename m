@@ -2,264 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 022197E7435
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F36FB7E7438
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345418AbjKIWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        id S231724AbjKIWLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345363AbjKIWHc (ORCPT
+        with ESMTP id S229733AbjKIWLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:07:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E658C386A;
-        Thu,  9 Nov 2023 14:07:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699567649; x=1731103649;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=KhPyMx3hNg9FHHyBj/Cc6rSLoReQOrKtjb51FZZ8nHg=;
-  b=CsVIttZh+nUBHv2QeJ8RU9dYb+m/0kA8q7nLnP0uKajzGGLrAJH7zfSn
-   nzzeEq2TyqnxWx7LGBx3EGcqLDtVpb0e84DwvzMDsyz+9/gcgjqicYPIr
-   pCN2dH7iuq/YD8wCqhr75mO+MfsLsv2UYVVsF6qVVk1UOkJzim4rIoEms
-   K9/kStkLpA9E1byARCljAaC0J9lLGpcxGDzm1Zhfg4zQIxmOiQkliClM/
-   swNL2DrJa2CfjBGxOM7DwbgmUpWN1y5IqzAZb3nKsl5ruXU50gcHadCtZ
-   8lQ5BGtGtY1Zx4ysli5MSozQkW+nbKYmXjBHlacRtReHROu7mmSzwH+wj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375124191"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="375124191"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:07:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713453332"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="713453332"
-Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.16.95])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:07:28 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-Date:   Thu, 09 Nov 2023 14:07:19 -0800
-Subject: [PATCH RFC v4 6/6] cxl/memdev: Register for and process CPER
- events
+        Thu, 9 Nov 2023 17:11:48 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F79E1FF6;
+        Thu,  9 Nov 2023 14:11:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tRJ5cgcgY6rhfYTgPiiME6UbrPY/sU/021bhi9QLbcw=; b=JPjB1VgrnFh7mHgnK2Dquut/cc
+        iQY/Jt7D1UBinDdZ+SALNeDAbdzIx/WzHAZF+r7wc6FGQABqyugVQj02q+bOuTlpNEGTegeidRqzN
+        tR0CC4+68Wb5cKcrSQjznFZu1YmM+o4sF3DI3ZWhHjeaZzDJh8M3VXJg0zrTV0DlB8KL/76A6EA4m
+        0cOOqDJgUPqHiIzt4iAXb5bbAxEwm2a1dDAs+/6ub+CAZ/pDfy9Sp3lsnA8F9Ybihr74rkUncxQbW
+        XFOK2d2Le7WhNuezl8cwhRsbSS/6+YfwWsBtIDMM1gHAjkOO0gEqaYZetqYfK2fk2XuaV3qfPeVZQ
+        IHRzwBzw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r1DFU-00Dbab-0h;
+        Thu, 09 Nov 2023 22:11:40 +0000
+Date:   Thu, 9 Nov 2023 22:11:40 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Abhi Das <adas@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: RESOLVE_CACHED final path component fix
+Message-ID: <20231109221140.GJ1957730@ZenIV>
+References: <20231109190844.2044940-1-agruenba@redhat.com>
+ <20231109220018.GI1957730@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230601-cxl-cper-v4-6-47bb901f135e@intel.com>
-References: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
-In-Reply-To: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>
-X-Mailer: b4 0.13-dev-0f7f0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699567638; l=6559;
- i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
- bh=KhPyMx3hNg9FHHyBj/Cc6rSLoReQOrKtjb51FZZ8nHg=;
- b=rQp+YTv/A3nh8IyZeA8DK2ijBDrs90ptbPWe4RjTXwQK7G3jr62GHxLr+fNBZbOjaYs1noLjd
- XyVau0HBm0EADD9jkEa1ZMEMNHw+3g5uo2R6HKbJQ0BoUEBat6OjySP
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109220018.GI1957730@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the firmware has configured CXL event support to be firmware first
-the OS can process those events through CPER records.  The CXL layer has
-unique DPA to HPA knowledge and standard event trace parsing in place.
-Matching memory devices to the CPER records can be done via Bus, Device,
-Function which is part of the CPER record header.
+On Thu, Nov 09, 2023 at 10:00:18PM +0000, Al Viro wrote:
+> On Thu, Nov 09, 2023 at 08:08:44PM +0100, Andreas Gruenbacher wrote:
+> > Jens,
+> > 
+> > since your commit 99668f618062, applications can request cached lookups
+> > with the RESOLVE_CACHED openat2() flag.  When adding support for that in
+> > gfs2, we found that this causes the ->permission inode operation to be
+> > called with the MAY_NOT_BLOCK flag set for directories along the path,
+> > which is good, but the ->permission check on the final path component is
+> > missing that flag.  The filesystem will then sleep when it needs to read
+> > in the ACL, for example.
+> > 
+> > This doesn't look like the intended RESOLVE_CACHED behavior.
+> > 
+> > The file permission checks in path_openat() happen as follows:
+> > 
+> > (1) link_path_walk() -> may_lookup() -> inode_permission() is called for
+> > each but the final path component. If the LOOKUP_RCU nameidata flag is
+> > set, may_lookup() passes the MAY_NOT_BLOCK flag on to
+> > inode_permission(), which passes it on to the permission inode
+> > operation.
+> > 
+> > (2) do_open() -> may_open() -> inode_permission() is called for the
+> > final path component. The MAY_* flags passed to inode_permission() are
+> > computed by build_open_flags(), outside of do_open(), and passed down
+> > from there. The MAY_NOT_BLOCK flag doesn't get set.
+> > 
+> > I think we can fix this in build_open_flags(), by setting the
+> > MAY_NOT_BLOCK flag when a RESOLVE_CACHED lookup is requested, right
+> > where RESOLVE_CACHED is mapped to LOOKUP_CACHED as well.
+> 
+> No.  This will expose ->permission() instances to previously impossible
+> cases of MAY_NOT_BLOCK lookups, and we already have enough trouble
+> in that area.  See RCU pathwalk patches I posted last cycle; I'm
+> planning to rebase what still needs to be rebased and feed the
+> fixes into mainline, but that won't happen until the end of this
+> week *AND* ->permission()-related part of code audit will need
+> to be repeated and extended.
+> 
+> Until then - no, with the side of fuck, no.
 
-Detect firmware first, register a notifier callback for each memdev, and
-trace events when they match the proper device.
+Note that it's not just "->permission() might get called in RCU mode with
+combination of flags it never had seen before"; it actually would be
+called with MAY_NOT_BLOCK and without rcu_read_lock() held.
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from RFC v3:
-[smita: use PCI_DEVFN()]
-[iweiny: put uuid back in]
-
-Changes from RFC v2:
-[smita/djbw: use BDF not serial number for memdev ID]
-[smita: eliminate memcpy]
-[djbw: adjust to new structures]
-[iweiny: fix 0day errors]
-
-Changes from RFC v1:
-[iweiny: adjust to cper_event enum instead of converting guids]
----
- drivers/cxl/core/mbox.c | 31 +++++++++++++++++++++-----
- drivers/cxl/cxlmem.h    |  6 +++++
- drivers/cxl/pci.c       | 58 ++++++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 89 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index ac44f3659d84..7c8691e392ae 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -860,9 +860,30 @@ static const uuid_t mem_mod_event_uuid =
- 	UUID_INIT(0xfe927475, 0xdd59, 0x4339,
- 		  0xa5, 0x86, 0x79, 0xba, 0xb1, 0x13, 0xb7, 0x74);
- 
--static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
--				   enum cxl_event_log_type type,
--				   struct cxl_event_record_raw *record)
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event)
-+{
-+	switch (event_type) {
-+	case CXL_CPER_EVENT_GEN_MEDIA:
-+		trace_cxl_general_media(cxlmd, type, &gen_media_event_uuid,
-+					&event->gen_media);
-+		break;
-+	case CXL_CPER_EVENT_DRAM:
-+		trace_cxl_dram(cxlmd, type, &dram_event_uuid, &event->dram);
-+		break;
-+	case CXL_CPER_EVENT_MEM_MODULE:
-+		trace_cxl_memory_module(cxlmd, type, &mem_mod_event_uuid,
-+					&event->mem_module);
-+		break;
-+	}
-+}
-+EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
-+
-+static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+				     enum cxl_event_log_type type,
-+				     struct cxl_event_record_raw *record)
- {
- 	union cxl_event *evt = &record->event;
- 	uuid_t *id = &record->id;
-@@ -985,8 +1006,8 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
- 			break;
- 
- 		for (i = 0; i < nr_rec; i++)
--			cxl_event_trace_record(cxlmd, type,
--					       &payload->records[i]);
-+			__cxl_event_trace_record(cxlmd, type,
-+						 &payload->records[i]);
- 
- 		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
- 			trace_cxl_overflow(cxlmd, type, payload);
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index d694820ce8f5..b85cbf421cf4 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -478,6 +478,8 @@ struct cxl_memdev_state {
- 	struct cxl_security_state security;
- 	struct cxl_fw_state fw;
- 
-+	struct notifier_block cxl_cper_nb;
-+
- 	struct rcuwait mbox_wait;
- 	int (*mbox_send)(struct cxl_memdev_state *mds,
- 			 struct cxl_mbox_cmd *cmd);
-@@ -775,6 +777,10 @@ void set_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- void clear_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- 				  unsigned long *cmds);
- void cxl_mem_get_event_records(struct cxl_memdev_state *mds, u32 status);
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event);
- int cxl_set_timestamp(struct cxl_memdev_state *mds);
- int cxl_poison_state_init(struct cxl_memdev_state *mds);
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 44a21ab7add5..09d9e060f0f2 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-+#include <asm-generic/unaligned.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/moduleparam.h>
- #include <linux/module.h>
-@@ -748,6 +749,59 @@ static bool cxl_event_int_is_fw(u8 setting)
- 	return mode == CXL_INT_FW;
- }
- 
-+#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-+static int cxl_cper_event_call(struct notifier_block *nb, unsigned long action,
-+			       void *data)
-+{
-+	struct cxl_cper_notifier_data *nd = data;
-+	struct cper_cxl_event_devid *device_id = &nd->rec->hdr.device_id;
-+	enum cxl_event_log_type log_type;
-+	struct cxl_memdev_state *mds;
-+	struct cxl_dev_state *cxlds;
-+	struct pci_dev *pdev;
-+	unsigned int devfn;
-+	u32 hdr_flags;
-+
-+	mds = container_of(nb, struct cxl_memdev_state, cxl_cper_nb);
-+
-+	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-+	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-+					   device_id->bus_num, devfn);
-+	cxlds = pci_get_drvdata(pdev);
-+	if (cxlds != &mds->cxlds) {
-+		pci_dev_put(pdev);
-+		return NOTIFY_DONE;
-+	}
-+
-+	/* Fabricate a log type */
-+	hdr_flags = get_unaligned_le24(nd->rec->event.generic.hdr.flags);
-+	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-+
-+	cxl_event_trace_record(mds->cxlds.cxlmd, log_type, nd->event_type,
-+			       &nd->rec->event);
-+	pci_dev_put(pdev);
-+	return NOTIFY_OK;
-+}
-+
-+static void cxl_unregister_cper_events(void *_mds)
-+{
-+	struct cxl_memdev_state *mds = _mds;
-+
-+	unregister_cxl_cper_notifier(&mds->cxl_cper_nb);
-+}
-+
-+static void register_cper_events(struct cxl_memdev_state *mds)
-+{
-+	mds->cxl_cper_nb.notifier_call = cxl_cper_event_call;
-+
-+	if (register_cxl_cper_notifier(&mds->cxl_cper_nb)) {
-+		dev_err(mds->cxlds.dev, "CPER registration failed\n");
-+		return;
-+	}
-+
-+	devm_add_action_or_reset(mds->cxlds.dev, cxl_unregister_cper_events, mds);
-+}
-+
- static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 			    struct cxl_memdev_state *mds)
- {
-@@ -758,8 +812,10 @@ static int cxl_event_config(struct pci_host_bridge *host_bridge,
- 	 * When BIOS maintains CXL error reporting control, it will process
- 	 * event records.  Only one agent can do so.
- 	 */
--	if (!host_bridge->native_cxl_error)
-+	if (!host_bridge->native_cxl_error) {
-+		register_cper_events(mds);
- 		return 0;
-+	}
- 
- 	rc = cxl_mem_alloc_event_buf(mds);
- 	if (rc)
-
--- 
-2.41.0
-
+Which means that it can't make the usual assumptions about the objects
+not getting freed under it in such mode.  Sure, the inode itself is
+pinned in your new case, but anything that goes
+	if !MAY_NOT_BLOCK
+		grab a spinlock
+		grab a reference to X from inode
+		drop spinlock
+		use X, it's pinned down
+		drop a reference to X
+	else
+		READ_ONCE the reference to X
+		use X, its freeing is RCU-delayed
+would get screwed.  And that would need to be audited for all instances
+of ->permission() in the tree, along with all weird shit they might be
+pulling off.
