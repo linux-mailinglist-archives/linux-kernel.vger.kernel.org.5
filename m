@@ -2,95 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD41E7E7059
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458347E7107
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344597AbjKIRe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
+        id S1344903AbjKISBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:01:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjKIRe2 (ORCPT
+        with ESMTP id S1344773AbjKISBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:34:28 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D857E1991;
-        Thu,  9 Nov 2023 09:34:25 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A9HYAa941693917, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A9HYAa941693917
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Nov 2023 01:34:10 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 10 Nov 2023 01:34:10 +0800
-Received: from Test06-PC.realtek.com.tw (172.22.228.55) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 10 Nov 2023 01:34:09 +0800
-From:   ChunHao Lin <hau@realtek.com>
-To:     <hkallweit1@gmail.com>
-CC:     <nic_swsd@realtek.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        ChunHao Lin <hau@realtek.com>, <stable@vger.kernel.org>
-Subject: [PATCH net v4 2/2] r8169: fix network lost after resume on DASH systems
-Date:   Fri, 10 Nov 2023 01:34:00 +0800
-Message-ID: <20231109173400.4573-3-hau@realtek.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231109173400.4573-1-hau@realtek.com>
-References: <20231109173400.4573-1-hau@realtek.com>
+        Thu, 9 Nov 2023 13:01:13 -0500
+X-Greylist: delayed 1592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Nov 2023 10:01:10 PST
+Received: from force.fredarmour.com (force.fredarmour.com [88.209.206.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D93A92
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:01:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=fredarmour.com;
+ h=Content-Type:MIME-Version:Content-Transfer-Encoding:Content-Description:Subject:To:From:Date:Reply-To:Message-ID; i=tara@fredarmour.com;
+ bh=5mQuYswmo6GusGP6QUatuJ3vz5k=;
+ b=S6uloHbGEm5It1u/L9DQlzm1Hs1KvqmnEFxSQHHW3Z43Q5iXwM9hxJByT3FH8jRHe2MJEEWpzM9C
+   66R6DTh5ym/YEgKKKGmCt0fevWk5RL0GTqbE1y9l9S0u7Gg8PEV8IMwkrdsaD4y3kaf+2Z9kikPn
+   5CmT2X9yOfbbOnN12RGlIv1W0YDjNrc1SVnFCj9YKSaTCuLd1QiX09bGHLC3mXaQpTTHqguc1Ri/
+   urAuy47aDNOpSPMiAIu1/TiN/Tu3CEQV1pZ2Y9CaejQzqmuP/bOkVNCBUWvmh6pj/cyyfsjNb8VL
+   j6nc9rQcTIOo9rZz4W9tJ78yw6MxyDUyfdxtLQ==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=fredarmour.com;
+ b=ERfrOjK2QaVkakrofXqjERD80Efjz8/gB1WGGQWLvIHeBZYIf0iVyQkji/dR1ysNVHmA/M26z+j3
+   X96TZlqfHtVIw8T3in2xks5NKzb3QHHE9hSjSjhaWZCsvPztrVIyZeG/5xCejyxidWWIkEJGPOvp
+   N9Nbbp/qgRJMKyBV/rt+yBIiAePttiPjIuxbAIwFNpZSPnmL2cc5d6VswIWaL38AL0JuluI2HNAb
+   z2dbiDJLIE98h+VXlO3BVTbBWF6hjb+fsfL5i7xh+TZoaOlPOcbUJqH5uxtfznuMTQTEVnMWinYG
+   vADagCQpphJnPLeAxp+ZgKYRm59l0j6jugBh3w==;
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.22.228.55]
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Proposal to Partner with You
+To:     me <tara@fredarmour.com>
+From:   "Mr. Jim" <tara@fredarmour.com>
+Date:   Thu, 09 Nov 2023 12:34:34 -0500
+Reply-To: a.wafager1@gmail.com
+Message-ID: <0.0.1.15.1DA133301BBF5A8.0@force.fredarmour.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device that support DASH may be reseted or powered off during suspend.
-So driver needs to handle DASH during system suspend and resume. Or
-DASH firmware will influence device behavior and causes network lost.
+Hello Friend, =
 
-Fixes: b646d90053f8 ("r8169: magic.")
-Cc: stable@vger.kernel.org
-Reviewed-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: ChunHao Lin <hau@realtek.com>
----
- drivers/net/ethernet/realtek/r8169_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index cfcb40d90920..b9bb1d2f0237 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4661,10 +4661,16 @@ static void rtl8169_down(struct rtl8169_private *tp)
- 	rtl8169_cleanup(tp);
- 	rtl_disable_exit_l1(tp);
- 	rtl_prepare_power_down(tp);
-+
-+	if (tp->dash_type != RTL_DASH_NONE)
-+		rtl8168_driver_stop(tp);
- }
- 
- static void rtl8169_up(struct rtl8169_private *tp)
- {
-+	if (tp->dash_type != RTL_DASH_NONE)
-+		rtl8168_driver_start(tp);
-+
- 	pci_set_master(tp->pci_dev);
- 	phy_init_hw(tp->phydev);
- 	phy_resume(tp->phydev);
--- 
-2.39.2
+My name is Jim Jones, I am a Laboratory Scientist in a leading multinationa=
+l Pharmaceutical company and I have a business proposal for you. You do not=
+ need experience or expertise to participate and make good returns. Kindly =
+respond if interested and I will provide details. =
 
+
+Jim
