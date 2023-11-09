@@ -2,111 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05D37E66C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B077E66D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjKIJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S231270AbjKIJa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:30:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKIJaG (ORCPT
+        with ESMTP id S229583AbjKIJax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:30:06 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B852525BC;
-        Thu,  9 Nov 2023 01:30:04 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0D57B6607410;
-        Thu,  9 Nov 2023 09:30:01 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699522203;
-        bh=9DyG7QadW/ZB77/AoaK7eHY4Fj3oy5z9XOUorXxwg9M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=S4rtDO/y59Vlxzgq+9apsVQ+c0wLEonjrqKtts9FP/zBEeFqFUQ3t/yUeGkMA1NBl
-         mMGxINOPTbW55hhfHMMdk04M7yfVHd8dBtvbF+ExamdW7pYgsqohm+OyICXc7e1qRN
-         F75S7r/aXl7CECgk2bH2+sOPnQ+ik3eZdmKzxTAQtoYr7ZV81MSVYPfPunWB4jBEvS
-         MyNgISo6khl5tK1iS4f4Q4sIQqynZJKFH0YTq2CZTmlU1jyrfI6EvzHgcAqeinL8kI
-         xjxbqc3pGRoLPg3AhuajlyvcQmTmhO2CZjKcc+koKP1JXPV9v8OYqOPHAHgZ2ZSvDc
-         bKujPujjg4Gjw==
-Message-ID: <1d9c20f8-9735-4957-b718-7e0835ba7096@collabora.com>
-Date:   Thu, 9 Nov 2023 10:29:59 +0100
+        Thu, 9 Nov 2023 04:30:53 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745EB2590;
+        Thu,  9 Nov 2023 01:30:51 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SQxWy6kV1zfb3k;
+        Thu,  9 Nov 2023 17:30:38 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 9 Nov
+ 2023 17:30:16 +0800
+Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-8-almasrymina@google.com>
+ <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
+ <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com>
+ <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com>
+ <CAHS8izM1P6d8jgyWE9wFJUJah2YFsjHP2uikDwA0vR=3QA+BXQ@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <a8ae22dc-5b85-9efe-16c7-d95d455828fa@huawei.com>
+Date:   Thu, 9 Nov 2023 17:30:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 14/56] media: sti: hva: Use vb2_get_buffer() instead
- of directly access to buffers array
+In-Reply-To: <CAHS8izM1P6d8jgyWE9wFJUJah2YFsjHP2uikDwA0vR=3QA+BXQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-15-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231031163104.112469-15-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
-> Use vb2_get_buffer() instead of direct access to the vb2_queue bufs array.
-> This allows us to change the type of the bufs in the future.
-> After each call to vb2_get_buffer() we need to be sure that we get
-> a valid pointer so check the return value of all of them.
-> Remove index range test since it is done by vb2_get_buffer().
-
-Actually, the patch uses vb2_get_buffer() instead of using vb2_get_buffer().
-IOW vb2_get_buffer() continues to be used before and after this patch is applied.
-
-I'd rather reformulate the commit message body to say that we remove
-index check because it is already performed by vb2_get_buffer(), but
-introduce a check for a NULL result.
-
-Regards,
-
-Andrzej
+On 2023/11/9 11:20, Mina Almasry wrote:
+> On Wed, Nov 8, 2023 at 2:56 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
 
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
-> ---
->   drivers/media/platform/st/sti/hva/hva-v4l2.c | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
+> Agreed everything above is undoable.
 > 
-> diff --git a/drivers/media/platform/st/sti/hva/hva-v4l2.c b/drivers/media/platform/st/sti/hva/hva-v4l2.c
-> index 3a848ca32a0e..cfe83e9dc01b 100644
-> --- a/drivers/media/platform/st/sti/hva/hva-v4l2.c
-> +++ b/drivers/media/platform/st/sti/hva/hva-v4l2.c
-> @@ -569,14 +569,11 @@ static int hva_qbuf(struct file *file, void *priv, struct v4l2_buffer *buf)
->   		struct vb2_buffer *vb2_buf;
->   
->   		vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, buf->type);
-> -
-> -		if (buf->index >= vq->num_buffers) {
-> -			dev_dbg(dev, "%s buffer index %d out of range (%d)\n",
-> -				ctx->name, buf->index, vq->num_buffers);
-> +		vb2_buf = vb2_get_buffer(vq, buf->index);
-> +		if (!vb2_buf) {
-> +			dev_dbg(dev, "%s buffer index %d not found\n", ctx->name, buf->index);
->   			return -EINVAL;
->   		}
-> -
-> -		vb2_buf = vb2_get_buffer(vq, buf->index);
->   		stream = to_hva_stream(to_vb2_v4l2_buffer(vb2_buf));
->   		stream->bytesused = buf->bytesused;
->   	}
+>> But we might be able to do something as folio is doing now, mm subsystem
+>> is still seeing 'struct folio/page', but other subsystem like slab is using
+>> 'struct slab', and there is still some common fields shared between
+>> 'struct folio' and 'struct slab'.
+>>
+> 
+> In my eyes this is almost exactly what I suggested in RFC v1 and got
+> immediately nacked with no room to negotiate. What we did for v1 is to
+> allocate struct pages for dma-buf to make dma-bufs look like struct
+> page to mm subsystem. Almost exactly what you're describing above.
 
+Maybe the above is where we have disagreement:
+Do we still need make dma-bufs look like struct page to mm subsystem?
+IMHO, the answer is no. We might only need to make dma-bufs look like
+struct page to net stack and page pool subsystem. I think that is already
+what this pacthset is trying to do, what I am suggesting is just make
+it more like 'struct page' to net stack and page pool subsystem, in order
+to try to avoid most of the 'if' checking in net stack and page pool
+subsystem.
+
+> It's a no-go. I don't think renaming struct page to netmem is going to
+> move the needle (it also re-introduces code-churn). What I feel like I
+> learnt is that dma-bufs are not struct pages and can't be made to look
+> like one, I think.
+> 
+>> As the netmem patchset, is devmem able to reuse the below 'struct netmem'
+>> and rename it to 'struct page_pool_iov'?
+> 
+> I don't think so. For the reasons above, but also practically it
+> immediately falls apart. Consider this field in netmem:
+> 
+> + * @flags: The same as the page flags.  Do not use directly.
+> 
+> dma-buf don't have or support page-flags, and making dma-buf looks
+> like they support page flags or any page-like features (other than
+> dma_addr) seems extremely unacceptable to mm folks.
+
+As far as I tell, as we limit the devmem usage in netstack, the below
+is the related mm function call for 'struct page' for devmem:
+page_ref_*(): page->_refcount does not need changing
+page_is_pfmemalloc(): which is corresponding to page->pp_magic, and
+                      devmem provider can set/unset it in it's 'alloc_pages'
+                      ops.
+page_to_nid(): we may need to handle it differently somewhat like this
+               patch does as page_to_nid() may has different implementation
+               based on different configuration.
+page_pool_iov_put_many(): as mentioned in other thread, if net stack is not
+                          calling page_pool_page_put_many() directly, we
+                          can reuse napi_pp_put_page() for devmem too, and
+                          handle the special case for devmem in 'release_page'
+                          ops.
+
+> 
+>> So that 'struct page' for normal
+>> memory and 'struct page_pool_iov' for devmem share the common fields used
+>> by page pool and net stack?
+> 
+> Are you suggesting that we'd cast a netmem* to a page* and call core
+> mm APIs on it? It's basically what was happening with RFC v1, where
+> things that are not struct pages were made to look like struct pages.
+> 
+> Also, there isn't much upside for what you're suggesting, I think. For
+> example I can align the refcount variable in struct page_pool_iov with
+> the refcount in struct page so that this works:
+> 
+> put_page((struct page*)ppiov);
+> 
+> but it's a disaster. Because put_page() will call __put_page() if the
+> page is freed, and __put_page() will try to return the page to the
+> buddy allocator!
+
+As what I suggested above, Can we handle this in devmem provider's
+'release_page' ops instead of calling put_page() directly as for devmem.
+
+> 
+>>  And we might be able to reuse the 'flags',
+>> '_pp_mapping_pad' and '_mapcount' for specific mem provider, which is enough
+>> for the devmem only requiring a single pointer to point to it's
+>> owner?
+>>
+> 
+> All the above seems quite similar to RFC v1 again, using netmem
+> instead of struct page. In RFC v1 we re-used zone_device_data() for
+> the dma-buf owner equivalent.
+
+As we have added a few checkings to limit 'struct page' for devmem to
+be only used in net stack, we can decouple 'struct page' for devmem
+from mm subsystem, zone_device_data() is not really needed, right?
+
+If we can decouple 'struct page' for normal memory from mm subsystem
+through the folio work in the future, then we may define a more abstract
+structure for page pool and net stack instead of reusing 'struct page'
+from mm.
+
+> 
