@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E057E6628
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF147E663A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbjKIJEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:04:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S234119AbjKIJGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIJEt (ORCPT
+        with ESMTP id S233785AbjKIJGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:04:49 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055DE182
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:04:47 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4084095722aso4045615e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:04:46 -0800 (PST)
+        Thu, 9 Nov 2023 04:06:52 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0C61991;
+        Thu,  9 Nov 2023 01:06:50 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc2f17ab26so5328555ad.0;
+        Thu, 09 Nov 2023 01:06:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699520685; x=1700125485; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hHnsQJ4XpMcktv/vRmuqIsVKlG0FfHcOCkAwJxWxXr4=;
-        b=g/4vlLj2a7YW+1lZtF0N8VfhS0qioy3cTo0hblIRlUKdpVRSN1Waz+5BLIZx5U6ZmL
-         C+0pFj3xGLqHnhlN5mYZvsqzxbc5mrz5rQIv0Ifc2TvNtq1LCOA246nSrcuuk9DIf5Il
-         k0QgegpQ9NS476Q+SrUPl5S4qBp4mNZ61Q3v6Dhq066g3z+HORM3+hdDXFJVHwzDEahN
-         d1YHXLDTXLoD6Lp8/g2209DKizg/YJeVT497f/U7gNBGpy6//6dzQ1ASvgvc4GGQXC8t
-         mpvfetFJuQZROMmpU2JpL9v5Qv+VhVhcaKnUmGVM3t8UMQFwD1dL8R18RqdWiiXyi64b
-         98Ig==
+        d=gmail.com; s=20230601; t=1699520809; x=1700125609; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z5YF1mhym/Q5SMEev62zt7snyiNJO7d0PvYNhuYeeqE=;
+        b=D8UWIU2ic9yl7l6HYdH/gLRQqAZjK6EQxAkzqOOoVv1HQ561KBQ5ragKkGqnDpwxpA
+         TJafyVeJN7R3ZipQGqAznrm+Vn2MQ+GIGGZ0P9/8QsPC3AhEmKFwfFwbJn86OVYBxEsD
+         rsY7SENFg+o6NNOeLikcBPaBWdQdNjwazvhyQL9AYiGfv4paGD/U1nU7ciWHf/nzhtlL
+         LvVsyBEClC+eBGHvKmssr0INE0k+0dD/H0PMnJ9OSkcMLdf8T1zfgci2gJ+rxtBt+W0U
+         WnNTuMRxUHiSpZacQHC6u97iBgc4c4GvFc23G1E2Cv+yJFuRvcA3y05AWwAhIClz06LX
+         RMEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699520685; x=1700125485;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hHnsQJ4XpMcktv/vRmuqIsVKlG0FfHcOCkAwJxWxXr4=;
-        b=I24XXalORAhg1D4A/TaDIug735Po8kRHnl4QchkUejv4nze1PBV9c+KdrHwAO7lrzG
-         uKpmeTg6kcDCnaD1XUvVTL8xdHbYv+zUuXohfWPNwo6xf6nJfyYNFU4wlY5zEJtMtrGV
-         1NZa6zkC7khbwVplX+sJgE2ZZ7vZto5PpQcTU/PHen/jwcSZSNbgnQXm6czyd4oETviw
-         bTq3CgjfeDf757HonXNn7K6WM3GGdCN42pzG9JChNdnMqkLo4CmtqKIYLRG0SzcdDU/l
-         Mlhf+Ve4IIXlhpi1SZLEOvjSiQkdCe+Sgh4xTwcnvcJPKShVOgAh2UZJjmV/8el9sPCz
-         wXaA==
-X-Gm-Message-State: AOJu0Yy7ylNoscBkCedLgUct+c1T5X0+IT/RNTPIiyt0CGPC2ahl36Ez
-        Nd8Ll3UJYDEpq+FGmKd+ZwBFRQ==
-X-Google-Smtp-Source: AGHT+IG9gxOA4nD09dUm9a8mKZ++Oynr0aMFBrRI4R7rg4AWkBMr5Cz3hYVKfYWan2oKPYH73FN18g==
-X-Received: by 2002:a05:600c:3513:b0:405:82c0:d9f3 with SMTP id h19-20020a05600c351300b0040582c0d9f3mr4018331wmq.30.1699520685274;
-        Thu, 09 Nov 2023 01:04:45 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8f4c:8054:506f:f04b? ([2a01:e0a:982:cbb0:8f4c:8054:506f:f04b])
-        by smtp.gmail.com with ESMTPSA id 17-20020a05600c229100b003fe1fe56202sm1409881wmf.33.2023.11.09.01.04.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 01:04:44 -0800 (PST)
-Message-ID: <1468df75-3094-425b-b940-5c8297bd4067@linaro.org>
-Date:   Thu, 9 Nov 2023 10:04:44 +0100
+        d=1e100.net; s=20230601; t=1699520809; x=1700125609;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z5YF1mhym/Q5SMEev62zt7snyiNJO7d0PvYNhuYeeqE=;
+        b=ANmJqZdXwEGAYXFx8R3LJMFvqXuxlGRnj1HoRnKHelG74lsHYK3wk8YSTE96/2XAdC
+         lvuWXXlhjuX9guZMfZ2B53sXia4Dnh4IUIthCMCxna81zVPHCj5oqxtxKvLQW4wNIIZl
+         ZAgJX0ZurDVUjEFbRwzqGIeCvMAwr7E/jX0QKcrjynpJuDbMq3S0objy9//vZuR/gKub
+         1HaWZCb8y749SSsfk5KGfnzalR4rHSFHvE07CnHYAiZWSWa0usHtGLfmNoKdlsRBFncw
+         1Oei4Ba+5iaoEYwqh1KGpok8Z8mjGiWtfQuHLGrNOaUvo3TLOKI8sRqOnOPkEdEb9huO
+         JKSw==
+X-Gm-Message-State: AOJu0Yz/8tEllXGYaT+01Km2b7PZse72MMR6bLs0Inj3R4py64PA2Tir
+        0N15FiHQlQS8nCL7QJr/swiDxh+E3zwzgoAJ
+X-Google-Smtp-Source: AGHT+IHpxuw4Y0T35Aw4w3pOI3If9f2PAE66GTL8rfrzRIIwH9aos1ks47m6+jp20RSPJRwFSOKbmw==
+X-Received: by 2002:a17:903:2447:b0:1cc:2f9d:6e9b with SMTP id l7-20020a170903244700b001cc2f9d6e9bmr5530340pls.20.1699520809131;
+        Thu, 09 Nov 2023 01:06:49 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001b06c106844sm3036318plb.151.2023.11.09.01.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 01:06:48 -0800 (PST)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: iio: light: add ltr390
+Date:   Thu,  9 Nov 2023 14:34:53 +0530
+Message-ID: <20231109090456.814230-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH V3 3/3] arm64: dts: Add watchdog node for Amlogic S4 SoCs
-Content-Language: en-US, fr
-To:     Huqiang Qin <huqiang.qin@amlogic.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231027104358.342861-1-huqiang.qin@amlogic.com>
- <20231027104358.342861-4-huqiang.qin@amlogic.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231027104358.342861-4-huqiang.qin@amlogic.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/10/2023 12:43, Huqiang Qin wrote:
-> Add watchdog device.
-> 
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
-> ---
->   arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-> index e0cfc54ebccb..2344b2d741c3 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-> @@ -92,6 +92,12 @@ apb4: bus@fe000000 {
->   			#size-cells = <2>;
->   			ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
->   
-> +			watchdog@2100 {
-> +				compatible = "amlogic,s4-wdt", "amlogic,t7-wdt";
-> +				reg = <0x0 0x2100 0x0 0x10>;
-> +				clocks = <&xtal>;
-> +			};
-> +
->   			periphs_pinctrl: pinctrl@4000 {
->   				compatible = "amlogic,meson-s4-periphs-pinctrl";
->   				#address-cells = <2>;
+Add binding for Lite-On LTR390 which is an Ambient/UV light sensor that
+communicates over i2c with an address of 0x53.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Datasheet:
+  https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
+
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+---
+ .../bindings/iio/light/liteon,ltr390.yaml     | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml b/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
+new file mode 100644
+index 000000000000..90c20076b6c5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/light/liteon,ltr390.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lite-On LTR390 ALS and UV Sensor
++
++description: |
++  The Lite-On LTR390 is an ALS (Ambient Light Sensor) and a UV sensor in a
++  single package with i2c address of 0x53.
++
++  Datasheet: https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - liteon,ltr390
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description: |
++      Level interrupt pin with open drain output.
++      The sensor pulls this pin low when the measured reading is greater than
++      some configured threshold.
++
++  vdd-supply: true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        light-sensor@53 {
++            compatible = "liteon,ltr390";
++            reg = <0x53>;
++        };
++    };
+-- 
+2.42.0
+
