@@ -2,147 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 578E37E6814
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621737E681A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbjKIK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S232767AbjKIK3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:29:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233290AbjKIK3i (ORCPT
+        with ESMTP id S233341AbjKIK3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:29:38 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD5D211B;
-        Thu,  9 Nov 2023 02:29:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=k2gkeOQrNAEjn39cRXCfbpgo6HGUJfn9iHjQZ+mCvpE=; b=IHSMPuWYcuLCdYJoZFFHEG8thf
-        9jhhPJSykRLloUzaTWB4BUbFOkPu8loXs39HW9H8x4N5rRmEh38UyjZQIwLCF0Afp6ktJOPMGz+Xf
-        ueHVW9YySJOX2vw4OEy4zJjjj4EE5/zCN4jUZNjweQ9e8s8yknfigbErHK8XcLW/MiKh9Qn+PPDBV
-        DU5IAe2iD5JjtMfuW7zFqO82ZzKbT9eSsLuUBjL5fihCHqnuQjdhggMMaZMgZPerYH9MCj0pvIhb5
-        iSXhbPROGKwd+XCrFhhcWjsE88bL9nzHMW3hg2V8Cza4PBuLBnLCJhi8oPMvNNVaX/vdxFPFI/N2i
-        AjY9v+WA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40426)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r12Hx-0002KD-09;
-        Thu, 09 Nov 2023 10:29:29 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r12Hv-0000TA-GL; Thu, 09 Nov 2023 10:29:27 +0000
-Date:   Thu, 9 Nov 2023 10:29:27 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Shaoqin Huang <shahuang@redhat.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH RFC 06/22] drivers: base: Use present CPUs in
- GENERIC_CPU_DEVICES
-Message-ID: <ZUy0h/lc3QCPsuU8@shell.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLB-00CTwy-7y@rmk-PC.armlinux.org.uk>
- <f00dd1cf-5b4c-38a8-a337-817d474d53d1@redhat.com>
+        Thu, 9 Nov 2023 05:29:50 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3CC2D71
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:29:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 997091F8AF;
+        Thu,  9 Nov 2023 10:29:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699525786; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YuLoV2JyqsH4r5+2kBnsrDcvM5PpduhmNw67kT4f4c0=;
+        b=cSNh2vwEnUeJUJ1PTxf5EMSGtUZ+VO4+qAcHcB7d486sitasKs2F9Q+YnTVJP+fHZOqzbu
+        U6V621FqbBp2XWyZvlz5t+yB8N7mjJaDt7/4/UuHyoyXycYUE0XqFFDN5fnu3bV4YH/ad1
+        FeJOiJ+xSOt7ft6Fq6q5pSTUwkF/pOI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AA9F13524;
+        Thu,  9 Nov 2023 10:29:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yoHKIZq0TGXIdAAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 09 Nov 2023 10:29:46 +0000
+Date:   Thu, 9 Nov 2023 11:29:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Kalla <quic_charante@quicinc.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        quic_pkondeti@quicinc.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/3] mm: page_alloc: unreserve highatomic page blocks
+ before oom
+Message-ID: <ZUy0mj1frKoTebgX@tiehlicka>
+References: <cover.1699104759.git.quic_charante@quicinc.com>
+ <301b193fcc3e1f91ef30f19ceca06dd6e00b35e1.1699104759.git.quic_charante@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f00dd1cf-5b4c-38a8-a337-817d474d53d1@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <301b193fcc3e1f91ef30f19ceca06dd6e00b35e1.1699104759.git.quic_charante@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 06:09:32PM +0800, Shaoqin Huang wrote:
-> Hi Russell,
+On Sun 05-11-23 18:20:48, Charan Teja Kalla wrote:
+> __alloc_pages_direct_reclaim() is called from slowpath allocation where
+> high atomic reserves can be unreserved after there is a progress in
+> reclaim and yet no suitable page is found. Later should_reclaim_retry()
+> gets called from slow path allocation to decide if the reclaim needs to
+> be retried before OOM kill path is taken.
 > 
-> On 11/7/23 18:29, Russell King (Oracle) wrote:
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > Three of the five ACPI architectures create sysfs entries using
-> > register_cpu() for present CPUs, whereas arm64, riscv and all
-> > GENERIC_CPU_DEVICES do this for possible CPUs.
-> > 
-> > Registering a CPU is what causes them to show up in sysfs.
-> > 
-> > It makes very little sense to register all possible CPUs. Registering
-> > a CPU is what triggers the udev notifications allowing user-space to
-> > react to newly added CPUs.
-> > 
-> > To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
-> > it to use for_each_present_cpu(). Making the ACPI architectures use
-> > GENERIC_CPU_DEVICES is a pre-requisite step to centralise their
-> > cpu_register() logic, before moving it into the ACPI processor driver.
-> > When ACPI is disabled this work would be done by
-> > cpu_dev_register_generic().
+> should_reclaim_retry() checks the available(reclaimable + free pages)
+> memory against the min wmark levels of a zone and returns:
+> a)  true, if it is above the min wmark so that slow path allocation will
+> do the reclaim retries.
+> b) false, thus slowpath allocation takes oom kill path.
 > 
-> What do you actually mean about when ACPI is disabled this work would be
+> should_reclaim_retry() can also unreserves the high atomic reserves
+> **but only after all the reclaim retries are exhausted.**
+> 
+> In a case where there are almost none reclaimable memory and free pages
+> contains mostly the high atomic reserves but allocation context can't
+> use these high atomic reserves, makes the available memory below min
+> wmark levels hence false is returned from should_reclaim_retry() leading
+> the allocation request to take OOM kill path. This can turn into a early
+> oom kill if high atomic reserves are holding lot of free memory and
+> unreserving of them is not attempted.
+> 
+> (early)OOM is encountered on a VM with the below state:
+> [  295.998653] Normal free:7728kB boost:0kB min:804kB low:1004kB
+> high:1204kB reserved_highatomic:8192KB active_anon:4kB inactive_anon:0kB
+> active_file:24kB inactive_file:24kB unevictable:1220kB writepending:0kB
+> present:70732kB managed:49224kB mlocked:0kB bounce:0kB free_pcp:688kB
+> local_pcp:492kB free_cma:0kB
+> [  295.998656] lowmem_reserve[]: 0 32
+> [  295.998659] Normal: 508*4kB (UMEH) 241*8kB (UMEH) 143*16kB (UMEH)
+> 33*32kB (UH) 7*64kB (UH) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB
+> 0*4096kB = 7752kB
+> 
+> Per above log, the free memory of ~7MB exist in the high atomic
+> reserves is not freed up before falling back to oom kill path.
+> 
+> Fix it by trying to unreserve the high atomic reserves in
+> should_reclaim_retry() before __alloc_pages_direct_reclaim() can
+> fallback to oom kill path.
+> 
+> Fixes: 0aaa29a56e4f ("mm, page_alloc: reserve pageblocks for high-order atomic allocations on demand")
+> Reported-by: Chris Goldsworthy <quic_cgoldswo@quicinc.com>
+> Suggested-by: Michal Hocko <mhocko@suse.com>
+> Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
 
-Firstly, please note that "you" is not appropriate here. This is James'
-commit message, not mine.
+Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
 
-> done by cpu_dev_register_generic()? Is the work means register the cpu?
-
-When ACPI is disabled _and_ CONFIG_GENERIC_CPU_DEVICES is enabled, then
-cpu_dev_register_generic() will call arch_register_cpu() for each present
-CPU after this commit, rather than for each _possible_ CPU (which is the
-actual code change here.)
-
-> I'm not quite understand that, and how about when ACPI is enabled, which
-> function do this work?
-
-This is what happens later in the series.
-
-"drivers: base: Allow parts of GENERIC_CPU_DEVICES to be overridden"
-adds a test for CONFIG_GENERIC_CPU_DEVICES, so this will only be used
-with architectures using GENERIC_CPU_DEVICES. Then in:
-
-"ACPI: processor: Register all CPUs from acpi_processor_get_info()"
-which is not part of this series, this adds a call to arch_register_cpu()
-in the ACPI code, and disables this path via a test for !acpi_disabled.
-
-Essentially, this path gets used to register the present CPUs when
-firmware (ACPI) isn't going to be registering the present CPUs.
-
-I've changed this to:
-
-"It makes very little sense to register all possible CPUs. Registering
-a CPU is what triggers the udev notifications allowing user-space to
-react to newly added CPUs.
-
-"To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
-it to use for_each_present_cpu().
-
-"Making the ACPI architectures use GENERIC_CPU_DEVICES is a pre-requisite
-step to centralise their register_cpu() logic, before moving it into the
-ACPI processor driver. When we add support for register CPUs from ACPI
-in a later patch, we will avoid registering CPUs in this path."
-
-which I hope makes it clearer.
-
-> > After this change, openrisc and hexagon systems that use the max_cpus
-> > command line argument would not see the other CPUs present in sysfs.
-> > This should not be a problem as these CPUs can't bre brought online as
->                                              ^ nit: can't be
-
-Thanks, I'll fix that.
+> ---
+>  mm/page_alloc.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 95546f3..e07a38f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3809,14 +3809,9 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
+>  	else
+>  		(*no_progress_loops)++;
+>  
+> -	/*
+> -	 * Make sure we converge to OOM if we cannot make any progress
+> -	 * several times in the row.
+> -	 */
+> -	if (*no_progress_loops > MAX_RECLAIM_RETRIES) {
+> -		/* Before OOM, exhaust highatomic_reserve */
+> -		return unreserve_highatomic_pageblock(ac, true);
+> -	}
+> +	if (*no_progress_loops > MAX_RECLAIM_RETRIES)
+> +		goto out;
+> +
+>  
+>  	/*
+>  	 * Keep reclaiming pages while there is a chance this will lead
+> @@ -3859,6 +3854,11 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
+>  		schedule_timeout_uninterruptible(1);
+>  	else
+>  		cond_resched();
+> +out:
+> +	/* Before OOM, exhaust highatomic_reserve */
+> +	if (!ret)
+> +		return unreserve_highatomic_pageblock(ac, true);
+> +
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.7.4
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Michal Hocko
+SUSE Labs
