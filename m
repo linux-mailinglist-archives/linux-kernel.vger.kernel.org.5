@@ -2,135 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 922937E73AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F261E7E73B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345210AbjKIViW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S1345266AbjKIViZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjKIViV (ORCPT
+        with ESMTP id S1345257AbjKIViW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:38:21 -0500
+        Thu, 9 Nov 2023 16:38:22 -0500
 Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC942139;
-        Thu,  9 Nov 2023 13:38:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBF43C39;
+        Thu,  9 Nov 2023 13:38:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-        Resent-Message-ID:In-Reply-To:References;
-        bh=jTULZb7nPWSXQoAz/suqF1eRILvjbvT5JeWBGWqkoIs=; t=1699565899; x=1700775499; 
-        b=yWmkr2DsB9ml6dHBZGwupNJRRGnOI4LA7w/RsvrdVvbpU0hOGjX5qSby3a6fHhpyASv7IafZ15J
-        5mkvjIPmuhPY42jaSAInV4G4T0B0Y6YPyvvig7mVIQu8JwltvZeVAqfluE5nzLLJp2MHZ+GKQrVFv
-        0qNGrz2JflJBlIg8rG59zhhbtcQWzjxHB81zytmFBkAt9rDwD6KiPiBT2YDE1iYFf8eKofw5wLryH
-        rZ/sGHqxXGKAS7BpPXjtQrosw2VB0CJUs3lK/qm6FM3w6QB0/7sajAngVCnIODvmKsj/6jrl/L/J2
-        ve/qrKph1rOPwKiYth19qoKbhX7mDoDpW6GA==;
+        References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=6ZT7FJvDZFk52iLWTs4ADJtCF3Ou7kQeTljiE1vVw8M=;
+        t=1699565900; x=1700775500; b=UAdlYhOAvjrHYOPAbb2Mb8zNSg97SFKyj7Cpn+Y/RdoYZ1u
+        +yHSpkU98GF4XU0nsiSTUsX/Hu186weqvkIKluzsGVehfN0TRaoeHwHohx0xtoFJoVpuKN3I1bYMU
+        FsPxo/uwDa27c6G9HNR8LijMmQFG5PTf/o4FRLL6fpb2c94T4+MHvJsL4it87tZs4gmFXS2ytZ7S4
+        9z9IoMIgL4EtqMqirlgMgDUxxu8lsHsCgUTq+HAoolmn+CqRGxD0eDUXCvONr0GB/nxqdA/bAOwSt
+        GDR2Iw81HONfl95SrVKojS6/cfvFUp+HSWhVMUVRn/nWFqfQsdWVFPJR3egkqstw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
         (Exim 4.97)
         (envelope-from <johannes@sipsolutions.net>)
-        id 1r1CjA-00000001znF-2PA8;
-        Thu, 09 Nov 2023 22:38:16 +0100
+        id 1r1CjB-00000001znF-1Xz5;
+        Thu, 09 Nov 2023 22:38:17 +0100
 From:   Johannes Berg <johannes@sipsolutions.net>
 To:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     linux-fsdevel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Nicolai Stange <nicstange@gmail.com>,
-        Ben Greear <greearb@candelatech.com>
-Subject: [RFC PATCH 0/6] debugfs/wifi: locking fixes
-Date:   Thu,  9 Nov 2023 22:22:52 +0100
-Message-ID: <20231109212251.213873-7-johannes@sipsolutions.net>
+        Ben Greear <greearb@candelatech.com>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [RFC PATCH 1/6] debugfs: fix automount d_fsdata usage
+Date:   Thu,  9 Nov 2023 22:22:53 +0100
+Message-ID: <20231109222251.9e54cb55c700.I64fe5615568e87f9ae2d7fb2ac4e5fa96924cb50@changeid>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231109212251.213873-7-johannes@sipsolutions.net>
+References: <20231109212251.213873-7-johannes@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Johannes Berg <johannes.berg@intel.com>
 
-So ... this is a bit complex.
+debugfs_create_automount() stores a function pointer in d_fsdata,
+but since commit 7c8d469877b1 ("debugfs: add support for more
+elaborate ->d_fsdata") debugfs_release_dentry() will free it, now
+conditionally on DEBUGFS_FSDATA_IS_REAL_FOPS_BIT, but that's not
+set for the function pointer in automount. As a result, removing
+an automount dentry would attempt to free the function pointer.
+Luckily, the only user of this (tracing) never removes it.
 
-Ben found [1] that since the wireless locking rework [2] we have
-a deadlock in the debugfs use in the wireless stack, since some
-objects (netdevs, links, stations) can be removed while holding
-the wiphy->mtx, where as the files (all netdev/link and agg_status
-for stations) also acquire the wiphy->mtx. This of course leads
-to deadlocks, since Nicolai's proxy_fops work [3] we wait for the
-users of the file to finish before removing them, which they
-cannot in this case:
+Nevertheless, it's safer if we just handle the fsdata in one way,
+namely either DEBUGFS_FSDATA_IS_REAL_FOPS_BIT or allocated. Thus,
+change the automount to allocate it, and use the real_fops in the
+data to indicate whether or not automount is filled, rather than
+adding a type tag. At least for now this isn't actually needed,
+but the next changes will require it.
 
-thread 1		thread 2
-lock(wiphy->mutex)
-			read()/write()
-			 -> lock(wiphy->mutex) // waits for mutex
-debugfs_remove()
- -> wait_for_users() // cannot finish
+Also check in debugfs_file_get() that it gets only called
+on regular files, just to make things clearer.
 
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ fs/debugfs/file.c     |  3 +++
+ fs/debugfs/inode.c    | 25 ++++++++++++++++++-------
+ fs/debugfs/internal.h | 10 ++++++++--
+ 3 files changed, 29 insertions(+), 9 deletions(-)
 
-Unfortunately, there's no good way to remove the debugfs files
-*before* locking in wireless, since we may not even know which
-object needs to get removed, etc. Also, some files may need to
-be removed based on other actions, and we want/need to free the
-objects.
-
-
-I went back and forth on how to fix it, and Ben had some hacks
-in the threads, but in the end I decided on the approach taken
-in this patchset.
-
-So I have
- * debugfs: fix automount d_fsdata usage
-
-   This patch fixes a bug in the existing automount case in
-   debugfs, if that dentry were ever removed, we'd try to
-   kfree() the function pointer. I previously tried to fix
-   this differently [4] but that doesn't work, so here I
-   just allocate a debugfs fsdata for automount, there's a
-   single instance of this in the tree ...
-
- * debugfs: annotate debugfs handlers vs. removal with lockdep
-
-   This just makes the problem obvious, whether in wireless
-   or elsewhere, by annotating it with lockdep so that we get
-   complaints about the deadlock described above. I've checked
-   that the deadlock in wireless actually gets reported.
-
- * debugfs: add API to allow debugfs operations cancellation
-
-   This adds a bit of infrastructure in debugfs to allow for
-   cancellation of read/write/... handlers when remove() is
-   called for a file. The API is written more generically,
-   so that it could also be used to e.g. cancel operations in
-   hardware/firmware, for example, if debugfs does accesses
-   to that.
-
- * wifi: cfg80211: add locked debugfs wrappers
-
-   I went back and forth on this, but in the end this seemed
-   the easiest approach. Using these new helpers from debugfs
-   files that are removed under the wiphy lock is safe, at
-   the expense of pushing the read/write functions into a new
-   wiphy work, which is called with wiphy->mutex held. This
-   then uses the debugfs API introduced in the previous patch
-   to cancel operations that are pending while the file is
-   removed.
-
- * wifi: mac80211: use wiphy locked debugfs helpers for agg_status
- * wifi: mac80211: use wiphy locked debugfs for sdata/link
-
-   These convert the files that actually have the problem in
-   mac80211 to use the new helpers.
-
-Any comments would be appreciated :-)
-
-[1] https://lore.kernel.org/r/56d0b043-0585-5380-5703-f25d9a42f39d@candelatech.com
-[2] in particular commit 0ab6cba0696d ("wifi: mac80211: hold wiphy lock in netdev/link debugfs")
-    but there's a lot more work that went into it
-[3] commit e9117a5a4bf6 ("debugfs: implement per-file removal protection")
-[4] https://lore.kernel.org/lkml/20231109160639.514a2568f1e7.I64fe5615568e87f9ae2d7fb2ac4e5fa96924cb50@changeid/
-
-johannes
-
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 87b3753aa4b1..23bdfc126b5e 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -84,6 +84,9 @@ int debugfs_file_get(struct dentry *dentry)
+ 	struct debugfs_fsdata *fsd;
+ 	void *d_fsd;
+ 
++	if (WARN_ON(!d_is_reg(dentry)))
++		return -EINVAL;
++
+ 	d_fsd = READ_ONCE(dentry->d_fsdata);
+ 	if (!((unsigned long)d_fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)) {
+ 		fsd = d_fsd;
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index 83e57e9f9fa0..269bad87d552 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -236,17 +236,19 @@ static const struct super_operations debugfs_super_operations = {
+ 
+ static void debugfs_release_dentry(struct dentry *dentry)
+ {
+-	void *fsd = dentry->d_fsdata;
++	struct debugfs_fsdata *fsd = dentry->d_fsdata;
+ 
+-	if (!((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT))
+-		kfree(dentry->d_fsdata);
++	if ((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)
++		return;
++
++	kfree(fsd);
+ }
+ 
+ static struct vfsmount *debugfs_automount(struct path *path)
+ {
+-	debugfs_automount_t f;
+-	f = (debugfs_automount_t)path->dentry->d_fsdata;
+-	return f(path->dentry, d_inode(path->dentry)->i_private);
++	struct debugfs_fsdata *fsd = path->dentry->d_fsdata;
++
++	return fsd->automount(path->dentry, d_inode(path->dentry)->i_private);
+ }
+ 
+ static const struct dentry_operations debugfs_dops = {
+@@ -634,11 +636,20 @@ struct dentry *debugfs_create_automount(const char *name,
+ 					void *data)
+ {
+ 	struct dentry *dentry = start_creating(name, parent);
++	struct debugfs_fsdata *fsd;
+ 	struct inode *inode;
+ 
+ 	if (IS_ERR(dentry))
+ 		return dentry;
+ 
++	fsd = kzalloc(sizeof(*fsd), GFP_KERNEL);
++	if (!fsd) {
++		failed_creating(dentry);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	fsd->automount = f;
++
+ 	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
+ 		failed_creating(dentry);
+ 		return ERR_PTR(-EPERM);
+@@ -654,7 +665,7 @@ struct dentry *debugfs_create_automount(const char *name,
+ 	make_empty_dir_inode(inode);
+ 	inode->i_flags |= S_AUTOMOUNT;
+ 	inode->i_private = data;
+-	dentry->d_fsdata = (void *)f;
++	dentry->d_fsdata = fsd;
+ 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
+ 	inc_nlink(inode);
+ 	d_instantiate(dentry, inode);
+diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
+index 92af8ae31313..f7c489b5a368 100644
+--- a/fs/debugfs/internal.h
++++ b/fs/debugfs/internal.h
+@@ -17,8 +17,14 @@ extern const struct file_operations debugfs_full_proxy_file_operations;
+ 
+ struct debugfs_fsdata {
+ 	const struct file_operations *real_fops;
+-	refcount_t active_users;
+-	struct completion active_users_drained;
++	union {
++		/* automount_fn is used when real_fops is NULL */
++		debugfs_automount_t automount;
++		struct {
++			refcount_t active_users;
++			struct completion active_users_drained;
++		};
++	};
+ };
+ 
+ /*
+-- 
+2.41.0
 
