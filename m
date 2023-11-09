@@ -2,211 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA457E6869
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44397E686C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbjKIKih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S233341AbjKIKjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbjKIKig (ORCPT
+        with ESMTP id S229800AbjKIKjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:38:36 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079AB2139;
-        Thu,  9 Nov 2023 02:38:34 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507c5249d55so896772e87.3;
-        Thu, 09 Nov 2023 02:38:33 -0800 (PST)
+        Thu, 9 Nov 2023 05:39:09 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB10210E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:39:06 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40a279663a2so1499035e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699526312; x=1700131112; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=F6sdlilRzx4KJNCM1uvaoqMCkWPOin5PXK15jSeT8dQ=;
-        b=fCb+JTQB/vRTl2VoGmwlivyJZS6BGPmVqgYXFd43vWN/9ykzobQeG9vIASQ4vhom1R
-         dhnINY5isTV9x1YYHgmD1LTx9H7UyW0/6uMQIeRENmHOkUIAWUKW1cIkvgp7i0XtWfA7
-         sbTCF/IfkgGX0iGu+0Q+DtFPiqK0Ga6N0ZSRK2+xuyXYfE9Ts+L+sDMK9pX0XQaEGDRS
-         vUej/wZlTmm/1Gl6c2zTQD4rV+6QzMakdJGLD5wlTGavW0319j9ACPgIZQDp+9GSpmza
-         oRdsNvFxbVolLPhRtAYZAGurQoDOKnQTPowbVUBXKup7M1+Z/lUaPY8sfjB73VuYxv8p
-         q4NQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699526345; x=1700131145; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MmGbwmaXtBtukBQbSz5/AjnhxMx8QNKzqe9+KNioNp0=;
+        b=dpufDYmyevNF6IVh+HAMmA+4yya5tgBTewSwwUyBn5wa3+qOROWDB9OVo/cyFtRViS
+         kwr5rFV2cDJ7tvmbGW5Rbf1NgFE6pxZTd9TwEFpLwq1TohczHNnzCnTqAwzYzomxAu6v
+         247To/UFiA5Mf05KYfpWKfXJM+n0P5XUFzWtMbvO3OWEHuvbmyCmo1sS6/rT0WZXN+hJ
+         JdQJYfvNI+7UHrUcj8/rrEHSNe2S2EO7TA9qoFd62qQkTivnk7cEtFi3awafAXSNi9x2
+         Wjd6co14z4Y7xZ6Pn6+RBE8gJjinzT9LHFJfeXRwuKOHymI4vDxPGDhc2IvznoVx7MyB
+         KZpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699526312; x=1700131112;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F6sdlilRzx4KJNCM1uvaoqMCkWPOin5PXK15jSeT8dQ=;
-        b=ldReS1th0tQ/U1YqvpIdC07ySEsO+2es3Q9ApLg85tTiBUz2OPFR6ikrTlmyLogfNJ
-         1jfAJ+F8+6UcaxkTA1RB+Mx3K62Bs95awkDsvZoCsGOnWSKRjXU7K1syCa9aWa8W9zxe
-         mWcdqikUD0xDWkk2oJegXoGUbxyfu60syKUxyVA6ot3YraVlcWYPoDKqaEkF59Q6G+uX
-         5l/nixSHlVdT4PHBv/PNS7/J47Ei33Il8GrvUFtT6msJIbNX/OZWPR2qDg+zNimaAe9I
-         u3UXW7Y5kykY7dAfHDXA9pHQHJO/Uq+AwabPwZhlKnvg+NcwQzPILHGKU44alG4Zu4Gh
-         twsQ==
-X-Gm-Message-State: AOJu0Yx0+Ha0o0X5ITSuIwIKbY99u1HPHVwRtudkomJXCN43yTk/S1Rq
-        6bB6zgZsUbi2UP2t6maijC8=
-X-Google-Smtp-Source: AGHT+IHZhML8KNaOm9Y0mD700s/Nyoltq5ethe4dv3R0UqGXcUT3bmS/+0jzPSHKsy/PW133kpsC8w==
-X-Received: by 2002:ac2:5f57:0:b0:507:b15b:8b92 with SMTP id 23-20020ac25f57000000b00507b15b8b92mr998309lfz.59.1699526311861;
-        Thu, 09 Nov 2023 02:38:31 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id j29-20020a05600c1c1d00b00405391f485fsm1684846wms.41.2023.11.09.02.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 02:38:31 -0800 (PST)
-Message-ID: <654cb6a7.050a0220.78255.59d0@mx.google.com>
-X-Google-Original-Message-ID: <ZUy2pLuCj82ynjOh@Ansuel-xps.>
-Date:   Thu, 9 Nov 2023 11:38:28 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH v5 4/4] dt-bindings: Document bindings for
- Marvell Aquantia PHY
-References: <20231106165433.2746-1-ansuelsmth@gmail.com>
- <20231106165433.2746-4-ansuelsmth@gmail.com>
- <20231107192232.GA3296102-robh@kernel.org>
+        d=1e100.net; s=20230601; t=1699526345; x=1700131145;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MmGbwmaXtBtukBQbSz5/AjnhxMx8QNKzqe9+KNioNp0=;
+        b=Csr+hIPb39Zpfz+sGB1WE5+SOs/+DUfA0tiFKd9vnP/t4Q4vjAFDvjVtZ6pCKVeB/H
+         ExZhbvpQrzISn6gW9n0d8B0I9DqC9NN8/8+36A9RJJXAnUP5ahWCVLHuWnGdnjA7TeAo
+         Pmcu6HfZT2YSNxpW8JXLT1yqcYgn7P6ESsiS+F/fyi0mfyJofyh/6OZmR5YLkdJ1Sd2t
+         4pNnvjClGTLE8qaQDywx0AoWj+GukZj+mKJyCCQZE5y63IZZmAZ8/b9IMBfOGtw91kpS
+         obT5ze95ipiQitpWpB4Dn8P/xd8HMMZzcFCoy0ZLBgA6/L8n3hMvUiwHqWAZE7XOTysg
+         QB2Q==
+X-Gm-Message-State: AOJu0Yz+xFgwhY2/5Pjt4yr/gI9QWLgyeTLw4eaFO4c8jkgzRwHoZTYk
+        7mwZRKZqH25+eYh5SijiuAgipA==
+X-Google-Smtp-Source: AGHT+IGJDtJU0vy2RLytoP9NwcqdfAiEsZKNe2CEhkkrVnWPGJ8hlOjTlrHY/RwmZQGojP3I0Fa1xA==
+X-Received: by 2002:a7b:c4d7:0:b0:408:3836:525f with SMTP id g23-20020a7bc4d7000000b004083836525fmr4014084wmk.1.1699526344873;
+        Thu, 09 Nov 2023 02:39:04 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:87b4:87b9:6476:5df7? ([2a01:e0a:999:a3a0:87b4:87b9:6476:5df7])
+        by smtp.gmail.com with ESMTPSA id p22-20020a05600c359600b004080f0376a0sm1662458wmq.42.2023.11.09.02.39.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 02:39:04 -0800 (PST)
+Message-ID: <fd022864-f276-4c4c-84ea-0752b915a9b3@rivosinc.com>
+Date:   Thu, 9 Nov 2023 11:39:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107192232.GA3296102-robh@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 06/20] riscv: add ISA extension parsing for vector
+ crypto
+Content-Language: en-US
+To:     Jerry Shih <jerry.shih@sifive.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>
+References: <20231107105556.517187-1-cleger@rivosinc.com>
+ <20231107105556.517187-7-cleger@rivosinc.com>
+ <5EF129A2-195B-4207-A2F6-DBA1FBB9F65D@sifive.com>
+ <20231109-revolver-heat-9f4788c51bbf@wendy>
+ <20231109-prevalent-serrated-d40eb5f71236@wendy>
+ <F2C4CCA2-0513-4988-94C4-1ECEB9F1D578@sifive.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <F2C4CCA2-0513-4988-94C4-1ECEB9F1D578@sifive.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 01:22:32PM -0600, Rob Herring wrote:
-> On Mon, Nov 06, 2023 at 05:54:33PM +0100, Christian Marangi wrote:
-> > Document bindings for Marvell Aquantia PHY.
-> 
-> For the subject: dt-bindings: net: Add Marvell Aquantia PHY
-> 
-> ('Document bindings' is redundant)
-> 
-> > 
-> > The Marvell Aquantia PHY require a firmware to work correctly and there
-> > at least 3 way to load this firmware.
-> > 
-> > Describe all the different way and document the binding "firmware-name"
-> > to load the PHY firmware from userspace.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> > Changes v5:
-> > - Drop extra entry not related to HW description
-> > Changes v3:
-> > - Make DT description more OS agnostic
-> > - Use custom select to fix dtbs checks
-> > Changes v2:
-> > - Add DT patch
-> > 
-> >  .../bindings/net/marvell,aquantia.yaml        | 123 ++++++++++++++++++
-> >  1 file changed, 123 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> > new file mode 100644
-> > index 000000000000..7106c5bdf73c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> > @@ -0,0 +1,123 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Marvell Aquantia Ethernet PHY
-> > +
-> > +maintainers:
-> > +  - Christian Marangi <ansuelsmth@gmail.com>
-> > +
-> > +description: |
-> > +  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actually
-> > +  work.
-> > +
-> > +  This can be done and is implemented by OEM in 3 different way:
-> > +    - Attached SPI flash directly to the PHY with the firmware. The PHY
-> > +      will self load the firmware in the presence of this configuration.
-> > +    - Dedicated partition on system NAND with firmware in it. NVMEM
-> > +      subsystem will be used and the declared NVMEM cell will load
-> > +      the firmware to the PHY using the PHY mailbox interface.
-> > +    - Manually provided firmware loaded from a file in the filesystem.
-> > +
-> > +allOf:
-> > +  - $ref: ethernet-phy.yaml#
-> > +
-> > +select:
-> > +  properties:
-> > +    compatible:
-> > +      contains:
-> > +        enum:
-> > +          - ethernet-phy-id03a1.b445
-> > +          - ethernet-phy-id03a1.b460
-> > +          - ethernet-phy-id03a1.b4a2
-> > +          - ethernet-phy-id03a1.b4d0
-> > +          - ethernet-phy-id03a1.b4e0
-> > +          - ethernet-phy-id03a1.b5c2
-> > +          - ethernet-phy-id03a1.b4b0
-> > +          - ethernet-phy-id03a1.b662
-> > +          - ethernet-phy-id03a1.b712
-> > +          - ethernet-phy-id31c3.1c12
-> > +  required:
-> > +    - compatible
-> > +
-> > +properties:
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  firmware-name:
-> > +    description: specify the name of PHY firmware to load
-> > +
-> > +  nvmem-cells:
-> > +    description: phandle to the firmware nvmem cell
-> > +    maxItems: 1
-> > +
-> > +  nvmem-cell-names:
-> > +    const: firmware
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    mdio {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        ethernet-phy@0 {
-> > +            /*  Only needed to make DT lint tools work. Do not copy/paste
-> > +             *  into real DTS files.
-> > +             */
-> 
-> I don't agree with this statement. Pretty sure we've been through this 
-> before...
-> 
-> If we have a node, we need to define what it is. The way that is done is 
-> with compatible. Whether some particular OS implementation (currently) 
-> needs compatible or not is irrelevant. It's not about dtschema needing 
-> it, that just exposes the issue.
-> 
-> These MDIO PHY bindings are all broken because they are never actually 
-> applied to anything.
->
 
-I will just drop these comments, the additional compatible is redundant
-as it will be scanned from PHY ID but won't cause any problem.
 
-Also the scenario with fw in nvmem cells or in fs is in devices where
-the PHY is soldered to the device, so describe them in DT is correct.
+On 09/11/2023 10:45, Jerry Shih wrote:
+> On Nov 9, 2023, at 15:54, Conor Dooley <conor.dooley@microchip.com> wrote:
+>> On Thu, Nov 09, 2023 at 07:44:46AM +0000, Conor Dooley wrote:
+>>> On Thu, Nov 09, 2023 at 10:58:41AM +0800, Jerry Shih wrote:
+>>>> On Nov 7, 2023, at 18:55, Clément Léger <cleger@rivosinc.com> wrote:
+>>>> The Zvknha and Zvknhb are exclusive. It's not the superset relationship.
+>>>>
+>>>> Please check:
+>>>> https://github.com/riscv/riscv-crypto/issues/364#issuecomment-1726782096
+>>>
+>>> You got a response to this on the previous version, but didn't engage
+>>> with it:
+>>> https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc.com/#t
+> 
+> Reply for the thread:
+> https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc.com/#t
 
--- 
-	Ansuel
+Hi Jerry,
+
+Sorry for that, I actually thought my mailer was broken and fixed the
+mail the first time I answered but not the second time...
+
+> 
+>> Yes, but for instance, what happens if the user query the zvknha (if it
+>> only needs SHA256) but zvknhb is present. If we don't declare zvknha,
+>> then it will fail but the support would actually be present due to
+>> zvknhb being there.
+> 
+> If we needs SHA256 only, then we should check whether we have zvknha `or` zvknhb.
+> https://github.com/openssl/openssl/blob/4d4657cb6ba364dfa60681948b0a30c40bee31ca/crypto/sha/sha_riscv.c#L24
+
+Ok, and if there is already some userspace code that behaves like that,
+let's go this way and do not treat that as a superset.
+
+Thanks,
+
+Clément
+
+> 
+>> Ahh, I now see what that happened. Your mailer is broken and puts the
+>> message-id of what you are replying to in the In-Reply-To and Reply-To
+>> headers. The former is correct, the latter is bogus & means you don't even
+>> get delivered the response.
+> 
+> I use mac builtin `mail` client. And I think I put the `in-reply-to` address to
+> the `reply to` field. Hope this one works well. Thank you for the thread forwarding.
+> 
+> -Jerry
