@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4964E7E667C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE967E6680
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbjKIJTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        id S231447AbjKIJUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKIJTN (ORCPT
+        with ESMTP id S230144AbjKIJUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:19:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CED2590
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:19:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73AF2C433C8;
-        Thu,  9 Nov 2023 09:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699521551;
-        bh=HVYvN2ozVNeiaMghylZLEYToigZ/kX7ZicoXTeV4yrA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ak2l8fchJOepij39mv/tFpw2xQhP+8ITDV/1uKYBlWBbwDTPF3nloOkHMUYL8mUUt
-         LoGAnMc4TpW/WAhZ5y4gUXY/vrKU7UjMfbIQ+286lN56QwhglNPucsfijVA8IXHvpK
-         OtBxnGHu6xdoueQ/9CACI+PbWYaF2VhhMvdTQAgu7dJuF71vYfSPOhkmBykkeZlO95
-         f9QYP6zJiuywK7Cq/OXcDTM5XnxAUzDx2/9sbSj3eFgAFG/UctLTm4Nu4dd+oSx7kS
-         tSyMgUq5zFBrgDLuD+Kof05icpkQGUnHTk5osbxBRfkPkYvliW+Man1WSKiCQihLJR
-         CXjrzcC6pCKjA==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Yusong Gao <a869920004@163.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Filesystems Development <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fs: Clarify "non-RCY" in access_override_creds() comment
-Date:   Thu,  9 Nov 2023 10:19:04 +0100
-Message-Id: <20231109-klang-thermal-02adaa814632@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231031114728.41485-1-bagasdotme@gmail.com>
-References: <20231031114728.41485-1-bagasdotme@gmail.com>
+        Thu, 9 Nov 2023 04:20:01 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4A825BC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:19:59 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5be6d6c04bfso7427457b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:19:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699521599; x=1700126399; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IMqzOhl9WJdB/fNzCLgAfODP7qyR0cWrCHRSWDr+Pj0=;
+        b=eozzNk7MQrpb00EzZSTP+MyjbgBR58IXVyyVIjuSJ311RdgF0dg/XLO7icXV2sImmZ
+         ReEc6cZ5LEW31QXd8fvnkaq1pbc7Ac0i5ccaBCvLKwQZouOflbxwgmcYKb8/wonB8qzv
+         5k11Y4hpJdInQp7gORgysFVHxope/jCywS+Xf/IwjUpwNtfU6NlGX5ObSs/Uvk541n9o
+         D67NTcZGRtc+ormqXQaJJlZ1w70Oh4V2bNizbEy7C1wZko2iwhkuB3FDgl2yrra0oK7q
+         GOnrXy4XirTj72WZIq2I2eUnwdrarhSUJIoKLcg0LOEOpJvnEIkrDMu9nh+5yJv9dYqR
+         oq1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699521599; x=1700126399;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IMqzOhl9WJdB/fNzCLgAfODP7qyR0cWrCHRSWDr+Pj0=;
+        b=Gj0y0OpDYciFQpooXHLDVFH6tWImrtZcGF9nJ9KHakUWjBYsfAbqdhsgIQXKcbUc2F
+         QgZSmW5g28qEPCMx956wvqZVTS/XI0fTEq1pMe5YerCthK9s6Al7U2ZltIPRjr1calLB
+         BlJt9lXnYRKiMEd9sy+wC9xAnO2Y7TpxKFKCyVGTm9TNBGlx/u6QB7NEF84SHVlevgqc
+         +2oqV97Z9aQ2PyR0DGqP3Ybcqvgkz5hrDgAMfXRvWkdo2HfzSOEusO8fIExqquDYMEOY
+         803SDvOH7lS9scW9vtneWbp5drTWO/kEGML4GmAvd3L33OUAKjEHpoOXZ04XAJ7dqriV
+         lz2w==
+X-Gm-Message-State: AOJu0YzpwKt0qkzOsiLoAORckK6s+TJq4Zg/t30KdapEf+Ft4JxLtVzu
+        ZnTxm6/zOD+zI4ut9LlBJRjwFQZeFKd68KDfZt4mBWkwFRdKT4Ld
+X-Google-Smtp-Source: AGHT+IHGslikWjLVflnuZnU/FjwclWe1/pFMwApskuuBpFlo3DBr3i51zm8GUoCtqVS2TkIt+0zIc+bYLe0M7YFt/uM=
+X-Received: by 2002:a0d:e894:0:b0:59b:c805:de60 with SMTP id
+ r142-20020a0de894000000b0059bc805de60mr4100178ywe.45.1699521598749; Thu, 09
+ Nov 2023 01:19:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1023; i=brauner@kernel.org; h=from:subject:message-id; bh=HVYvN2ozVNeiaMghylZLEYToigZ/kX7ZicoXTeV4yrA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT6LP7d5Xi51b+CxenWlF+VdSuf7Ey/0tu5jqUo6dKqhdYP 2k7t7ihlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhIVzDD/5j3JQsaVHwZVDiX2/67NH Hbc/5n99bIHs494Fgo0dp9WIiRoaHugqaMgKpm56TzLJwsfB1nVOb+dNL/v6PpXoeOgnonLwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <20231109090456.814230-1-anshulusr@gmail.com> <20231109090456.814230-2-anshulusr@gmail.com>
+In-Reply-To: <20231109090456.814230-2-anshulusr@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 9 Nov 2023 10:19:47 +0100
+Message-ID: <CACRpkdYtawfonnkGXzTD65fx4CMbbTaXe359tm7=57saHSNfqA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] iio: light: driver for Lite-On ltr390
+To:     Anshul Dalal <anshulusr@gmail.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 18:47:28 +0700, Bagas Sanjaya wrote:
-> The term is originally intended as a joke that stands for "non-racy".
-> This trips new contributors who mistake it for RCU typo [1].
-> 
-> Replace the term with more-explicit wording.
-> 
-> 
+Hi Anshul,
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+thanks for your patch!
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Overall this looks good to me.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+On Thu, Nov 9, 2023 at 10:07=E2=80=AFAM Anshul Dalal <anshulusr@gmail.com> =
+wrote:
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+> Implements driver for the Ambient/UV Light sensor LTR390.
+> The driver exposes two ways of getting sensor readings:
+>   1. Raw UV Counts directly from the sensor
+>   2. The computed UV Index value with a percision of 2 decimal places
+>
+> NOTE: Ambient light sensing has not been implemented yet.
+>
+> Datasheet:
+>   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-3=
+90UV_Final_%20DS_V1%201.pdf
+>
+> Driver tested on RPi Zero 2W
+>
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+(...)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
+> +#define LTR390_FRCTIONAL_PERCISION 100
 
-[1/1] fs: Clarify "non-RCY" in access_override_creds() comment
-      https://git.kernel.org/vfs/vfs/c/effa12a475e6
+This define is just too hard for me to read, can you rename it?
+
+Does it mean LTR390_FRACTIONAL_PRECISION? It's fine to spell it out like
+that instead.
+
+Yours,
+Linus Walleij
