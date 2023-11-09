@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E89C7E704B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650667E7054
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbjKIRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S1344661AbjKIRbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:31:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjKIRaH (ORCPT
+        with ESMTP id S1344550AbjKIRbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:30:07 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFC993;
-        Thu,  9 Nov 2023 09:30:04 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A9HTiD721689371, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A9HTiD721689371
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Nov 2023 01:29:44 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 10 Nov 2023 01:29:44 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 10 Nov 2023 01:29:43 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 10 Nov 2023 01:29:43 +0800
-From:   Hau <hau@realtek.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-CC:     nic_swsd <nic_swsd@realtek.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH net v3 1/2] r8169: add handling DASH when DASH is disabled
-Thread-Topic: [PATCH net v3 1/2] r8169: add handling DASH when DASH is
- disabled
-Thread-Index: AQHaEyvgH17lAjTkmESMChUjvulwm7BxtAcAgACKA7A=
-Date:   Thu, 9 Nov 2023 17:29:43 +0000
-Message-ID: <51b3bbff47ff4e8dafeaeff647979d4e@realtek.com>
-References: <20231109164327.3577-1-hau@realtek.com>
- <20231109164327.3577-2-hau@realtek.com>
- <a1f703f4-a0da-4f88-9c1c-e5f6b6e2ce50@gmail.com>
-In-Reply-To: <a1f703f4-a0da-4f88-9c1c-e5f6b6e2ce50@gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-x-originating-ip: [172.22.228.56]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 9 Nov 2023 12:31:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BB61991
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:31:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8383FC433C9;
+        Thu,  9 Nov 2023 17:31:43 +0000 (UTC)
+Date:   Thu, 9 Nov 2023 12:31:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
+        richard@nod.at, mjguzik@gmail.com, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 07/86] Revert "livepatch,sched: Add livepatch task
+ switching to cond_resched()"
+Message-ID: <20231109123147.2bb11809@gandalf.local.home>
+In-Reply-To: <20231109172637.ayue3jexgdxd53tu@treble>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+        <20231107215742.363031-8-ankur.a.arora@oracle.com>
+        <20231107181609.7e9e9dcc@gandalf.local.home>
+        <20231109172637.ayue3jexgdxd53tu@treble>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ICAgICAgIGlmICghbmV0aWZfcnVubmluZyh0cC0+ZGV2KSB8fCAhbmV0aWZfY2Fycmllcl9v
-ayh0cC0+ZGV2KSkgQEANCj4gPiAtNDg5Niw3ICs0OTA5LDcgQEAgc3RhdGljIHZvaWQgcnRsX3No
-dXRkb3duKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQ0KPiA+ICAgICAgIHJ0bF9yYXJfc2V0KHRwLCB0
-cC0+ZGV2LT5wZXJtX2FkZHIpOw0KPiA+DQo+ID4gICAgICAgaWYgKHN5c3RlbV9zdGF0ZSA9PSBT
-WVNURU1fUE9XRVJfT0ZGICYmDQo+ID4gLSAgICAgICAgIHRwLT5kYXNoX3R5cGUgPT0gUlRMX0RB
-U0hfTk9ORSkgew0KPiA+ICsgICAgICAgICAhdHAtPmRhc2hfZW5hYmxlZCkgew0KPiANCj4gV2h5
-IGJyZWFrIHRoZSBsaW5lIGF0IGFsbD8gTm93IHRoZSBjaGVjayBmaXRzIHRoZSA4MCBjaGFyIGxp
-bmUgbGltaXQuDQoNCkkgd2lsbCBjb3JyZWN0IHRoaXMuIFRoYW5rcy4NCg==
+On Thu, 9 Nov 2023 09:26:37 -0800
+Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+
+> On Tue, Nov 07, 2023 at 06:16:09PM -0500, Steven Rostedt wrote:
+> > On Tue,  7 Nov 2023 13:56:53 -0800
+> > Ankur Arora <ankur.a.arora@oracle.com> wrote:
+> >   
+> > > This reverts commit e3ff7c609f39671d1aaff4fb4a8594e14f3e03f8.
+> > > 
+> > > Note that removing this commit reintroduces "live patches failing to
+> > > complete within a reasonable amount of time due to CPU-bound kthreads."
+> > > 
+> > > Unfortunately this fix depends quite critically on PREEMPT_DYNAMIC and
+> > > existence of cond_resched() so this will need an alternate fix.  
+> 
+> We definitely don't want to introduce a regression, something will need
+> to be figured out before removing cond_resched().
+> 
+> We could hook into preempt_schedule_irq(), but that wouldn't work for
+> non-ORC.
+> 
+> Another option would be to hook into schedule().  Then livepatch could
+> set TIF_NEED_RESCHED on remaining unpatched tasks.  But again if they go
+> through the preemption path then we have the same problem for non-ORC.
+> 
+> Worst case we'll need to sprinkle cond_livepatch() everywhere :-/
+> 
+
+I guess I'm not fully understanding what the cond rescheds are for. But
+would an IPI to all CPUs setting NEED_RESCHED, fix it?
+
+-- Steve
