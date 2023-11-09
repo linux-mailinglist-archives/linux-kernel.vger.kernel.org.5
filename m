@@ -2,120 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9791C7E68D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020367E68DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjKIKwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:52:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        id S233485AbjKIKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:52:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjKIKwd (ORCPT
+        with ESMTP id S233801AbjKIKwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:52:33 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81666270C;
-        Thu,  9 Nov 2023 02:52:31 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-586ad15f9aaso361910eaf.2;
-        Thu, 09 Nov 2023 02:52:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699527151; x=1700131951; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KAOqnDpMNbOMMNgcliZ7OaUSPhsi2JDqBTtnhKhncro=;
-        b=gsccuNL9v8Jp6qigbz+xAGAj2G2ra6FMV1oVOVZmnjl+zD7QdKoa5VDmSJJ541WEMV
-         6k7l4bpfvs58IXET1gNbxJSiAuuiGntp9W53YQ68e0Lx+UXgJs5NyjGEbEQ03PK4JGH3
-         dtzKAv8OPsUAbx/SWHI7FPYjqdAeA+h5VOx1MfP4za9xC3ZVsBJPwQCsBOvmEhbw4e/Y
-         BW2oBaQSLDrANzPQ73w8wvafV2N6qXTHqEQP4O15YhcR39I4JLxwnkWWTxf1P3+txl9R
-         JD4haVH9Ou+bHEbIkKX0RVjk6glrUHEcAobVuPlaPcmGy5CPDE4em7LHENyw+J/buV7p
-         WqHQ==
+        Thu, 9 Nov 2023 05:52:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE7F26B1
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:52:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699527128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/fEMZu04vJmPyEDeZ4tFFxfgW3Qd9nS2eGWSB2Vs73s=;
+        b=Id6+graJtD4jUxo3awPyoB+LjUj2/IkSyjSLwob4XBj3xzudQTRCjh5NG+oXjuNq3G+GrT
+        nEmeAC2GjORp86piU6S074f+QQSz3RxyfK+D/x0sjJNsmHFULI3WuG94Vu0Zw4DRBCWbjs
+        00H6Iexk9CBSEKxpG0zkdXJrEIFiigc=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-vyrug1vQPiaJ0WBEXIfpAg-1; Thu, 09 Nov 2023 05:52:07 -0500
+X-MC-Unique: vyrug1vQPiaJ0WBEXIfpAg-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-66cfa898cfeso1039206d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:52:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699527151; x=1700131951;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KAOqnDpMNbOMMNgcliZ7OaUSPhsi2JDqBTtnhKhncro=;
-        b=YK1C211gzf/7W6iuXZ/a64BTdP6FyL4xISTMTxBeoQt+c1M+JeGBfDPS2xJCzaJBJo
-         vA2E7304AvIBgGAhW0jhJyBdEghaV1v2MOgGUAN4bPXTuz2a8gOJFCU/JFLuBdldGtGi
-         eKI6MDFvjbrYUhrkxGenW2MtK3M7rZix+PDkiUdb/k5CrA87VoS3VnZhLZA5eae/tub2
-         zEtNXQlH7AHLAM5mVGeu03c71RvxClYASMyFI1kC/KafGN+urduhGMX4ruKbrJpcw4Q7
-         WPkj716CX2sa9aILQlQ2rP+J5qXdufcr9GmmBPqn/pVaT0ua2PdLH2o7k7BGHDdes4yQ
-         qCTQ==
-X-Gm-Message-State: AOJu0YxGhYDd9FltUHgTOs6PE7JdRAM/G6nvStRlX7WU4aJpqbUYIqFZ
-        nsrE0KXLLwhIHqSNNf2rOQFZxt5OznMKVJfsY94=
-X-Google-Smtp-Source: AGHT+IEMVB9nGYL9BAj5xM3M9jMord94wUjJC9D5YmMMavvqkvrIsFmhcICz8yHcCr2AhjrxJ6lKSEMeQsYhwEPKzxg=
-X-Received: by 2002:a05:6820:1a47:b0:57b:7e41:9f11 with SMTP id
- br7-20020a0568201a4700b0057b7e419f11mr4859333oob.2.1699527150705; Thu, 09 Nov
- 2023 02:52:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20230914112739.112729-1-alessandro.carminati@gmail.com>
-In-Reply-To: <20230914112739.112729-1-alessandro.carminati@gmail.com>
-From:   Alessandro Carminati <alessandro.carminati@gmail.com>
-Date:   Thu, 9 Nov 2023 11:51:54 +0100
-Message-ID: <CAPp5cGSij=jOVOtq+jR_TYGvj-ZnvtAbv2sEAPKg6bN-5jhs+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Enhancing Boot Speed and Security with Delayed
- Module Signature Verification
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Prarit Bhargava <prarit@redhat.com>
+        d=1e100.net; s=20230601; t=1699527126; x=1700131926;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/fEMZu04vJmPyEDeZ4tFFxfgW3Qd9nS2eGWSB2Vs73s=;
+        b=mNNt2JWbpFG8/1OyXcIIo1uM+Xw+wtb9MkQyYKp5eKOPgR74Wxe50ygirtqx4ZMaHd
+         c8uUUZaxIDNTgb7ciq81PYe8mZ4xV0M6NvsdkjPjMXGC2oMiukTqk/wbg/Sf3kUfPLxf
+         1h6xA3escDB44eS0x9wXy5+VfxEzNi7cYCUouoqS9ybgyJxouSxTX+CRj78j5lpnZCiI
+         TUNsNlMrkMbuN8W9/x8W6eef7bxXmLOLNkrBGTpJJXjffig9+izhdfI6DijmveqSOCyX
+         eTx3jnYcbWPp+oIWjgrAlmDgQKBqvvWPE3bkXRVbZEFdKEZyVP57g60MUxIaT1T5Ptku
+         3E0Q==
+X-Gm-Message-State: AOJu0Yzzo8fIC8eKg29NZn3IUbysGylYgNf1TqyBxUsIQXn6/CUPeTTe
+        q4ulFZXKY8vbigehL2G8v+AaiCCMKlTHTaMdlGI56Ra188gdaCQzseCPJb2Ib38napWE1Uy9SAG
+        aJPLezKcZPK4pQlvgK9BC8WOmj780oLPV
+X-Received: by 2002:a05:6214:4a:b0:670:d117:1f9e with SMTP id c10-20020a056214004a00b00670d1171f9emr4487350qvr.2.1699527126641;
+        Thu, 09 Nov 2023 02:52:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFAk/DQxSd74d4wUNFAZnKsQQezg47K5p4R/fP0LVcZMKk5oMlW4rqzws8VL1bQTjgTMKPmVQ==
+X-Received: by 2002:a05:6214:4a:b0:670:d117:1f9e with SMTP id c10-20020a056214004a00b00670d1171f9emr4487333qvr.2.1699527126264;
+        Thu, 09 Nov 2023 02:52:06 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-228-197.dyn.eolo.it. [146.241.228.197])
+        by smtp.gmail.com with ESMTPSA id l8-20020a056214104800b0065d89f4d537sm1952390qvr.45.2023.11.09.02.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 02:52:05 -0800 (PST)
+Message-ID: <e584ca804a2e98bcf6e8e5ea2d4206f9f579e0ce.camel@redhat.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Date:   Thu, 09 Nov 2023 11:52:01 +0100
+In-Reply-To: <20231106024413.2801438-11-almasrymina@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+         <20231106024413.2801438-11-almasrymina@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gentle ping
+On Sun, 2023-11-05 at 18:44 -0800, Mina Almasry wrote:
+[...]
+> +/* On error, returns the -errno. On success, returns number of bytes sen=
+t to the
+> + * user. May not consume all of @remaining_len.
+> + */
+> +static int tcp_recvmsg_devmem(const struct sock *sk, const struct sk_buf=
+f *skb,
+> +			      unsigned int offset, struct msghdr *msg,
+> +			      int remaining_len)
+> +{
+> +	struct cmsg_devmem cmsg_devmem =3D { 0 };
+> +	unsigned int start;
+> +	int i, copy, n;
+> +	int sent =3D 0;
+> +	int err =3D 0;
+> +
+> +	do {
+> +		start =3D skb_headlen(skb);
+> +
+> +		if (!skb_frags_not_readable(skb)) {
 
+As 'skb_frags_not_readable()' is intended to be a possibly wider scope
+test then skb->devmem, should the above test explicitly skb->devmem?
 
-Il giorno gio 14 set 2023 alle ore 13:28 Alessandro Carminati (Red
-Hat) <alessandro.carminati@gmail.com> ha scritto:
->
-> This patch sets up a new feature to the Linux kernel to have the ability,
-> while module signature checking is enabled, to delay the moment where
-> these signatures are effectively checked. The feature is structure into
-> two main key points, the feature can be enabled by a new command line
-> kernel argument, while in delay mode, the kernel waits until the
-> userspace communicates to start checking signature modules.
-> This operation can be done by writing a value in a securityfs file,
-> which works the same as /sys/kernel/security/lockdown.
->
-> Patch 1/2: Modules: Introduce boot-time module signature flexibility
-> The first patch in this set fundamentally alters the kernel's behavior
-> at boot time by implementing a delayed module signature verification
-> mechanism. It introduces a new boot-time kernel argument that allows
-> users to request this delay. By doing so, we aim to capitalize on the
-> cryptographic checks already performed on the kernel and initrd images
-> during the secure boot process. As a result, we can significantly
-> improve the boot speed without compromising system security.
->
-> Patch 2/2: docs: Update kernel-parameters.txt for signature verification
-> enhancement
-> The second patch is just to update the kernel parameters list
-> documentation.
->
-> Background and Motivation
-> In certain contexts, boot speed becomes crucial. This patch follows the
-> recognition that security checks can at times be redundant. Therefore,
-> it proves valuable to skip those checks that have already been validated.
->
-> In a typical Secure Boot startup with an initrd, the bootloader is
-> responsible for verifying artifacts before relinquishing control. In a
-> verified initrd image, it is reasonable to assume that its content is
-> also secure. Consequently, verifying module signatures may be deemed
-> unnecessary.
-> This patch introduces a feature to skip signature verification during
-> the initrd boot phase.
->
-> Alessandro Carminati (Red Hat) (2):
->   Modules: Introduce boot-time module signature flexibility
->   docs: Update kernel-parameters.txt for signature verification
->     enhancement
->
->  .../admin-guide/kernel-parameters.txt         |  9 +++
->  include/linux/module.h                        |  4 ++
->  kernel/module/main.c                          | 14 +++--
->  kernel/module/signing.c                       | 56 +++++++++++++++++++
->  4 files changed, 77 insertions(+), 6 deletions(-)
->
-> --
-> 2.34.1
->
+> +			err =3D -ENODEV;
+> +			goto out;
+> +		}
+> +
+> +		/* Copy header. */
+> +		copy =3D start - offset;
+> +		if (copy > 0) {
+> +			copy =3D min(copy, remaining_len);
+> +
+> +			n =3D copy_to_iter(skb->data + offset, copy,
+> +					 &msg->msg_iter);
+> +			if (n !=3D copy) {
+> +				err =3D -EFAULT;
+> +				goto out;
+> +			}
+> +
+> +			offset +=3D copy;
+> +			remaining_len -=3D copy;
+> +
+> +			/* First a cmsg_devmem for # bytes copied to user
+> +			 * buffer.
+> +			 */
+> +			memset(&cmsg_devmem, 0, sizeof(cmsg_devmem));
+> +			cmsg_devmem.frag_size =3D copy;
+> +			err =3D put_cmsg(msg, SOL_SOCKET, SO_DEVMEM_HEADER,
+> +				       sizeof(cmsg_devmem), &cmsg_devmem);
+> +			if (err || msg->msg_flags & MSG_CTRUNC) {
+> +				msg->msg_flags &=3D ~MSG_CTRUNC;
+> +				if (!err)
+> +					err =3D -ETOOSMALL;
+> +				goto out;
+> +			}
+> +
+> +			sent +=3D copy;
+> +
+> +			if (remaining_len =3D=3D 0)
+> +				goto out;
+> +		}
+> +
+> +		/* after that, send information of devmem pages through a
+> +		 * sequence of cmsg
+> +		 */
+> +		for (i =3D 0; i < skb_shinfo(skb)->nr_frags; i++) {
+> +			const skb_frag_t *frag =3D &skb_shinfo(skb)->frags[i];
+> +			struct page_pool_iov *ppiov;
+> +			u64 frag_offset;
+> +			u32 user_token;
+> +			int end;
+> +
+> +			/* skb_frags_not_readable() should indicate that ALL the
+> +			 * frags in this skb are unreadable page_pool_iovs.
+> +			 * We're checking for that flag above, but also check
+> +			 * individual pages here. If the tcp stack is not
+> +			 * setting skb->devmem correctly, we still don't want to
+> +			 * crash here when accessing pgmap or priv below.
+> +			 */
+> +			if (!skb_frag_page_pool_iov(frag)) {
+> +				net_err_ratelimited("Found non-devmem skb with page_pool_iov");
+> +				err =3D -ENODEV;
+> +				goto out;
+> +			}
+> +
+> +			ppiov =3D skb_frag_page_pool_iov(frag);
+> +			end =3D start + skb_frag_size(frag);
+> +			copy =3D end - offset;
+> +
+> +			if (copy > 0) {
+> +				copy =3D min(copy, remaining_len);
+> +
+> +				frag_offset =3D page_pool_iov_virtual_addr(ppiov) +
+> +					      skb_frag_off(frag) + offset -
+> +					      start;
+> +				cmsg_devmem.frag_offset =3D frag_offset;
+> +				cmsg_devmem.frag_size =3D copy;
+> +				err =3D xa_alloc((struct xarray *)&sk->sk_user_pages,
+> +					       &user_token, frag->bv_page,
+> +					       xa_limit_31b, GFP_KERNEL);
+> +				if (err)
+> +					goto out;
+> +
+> +				cmsg_devmem.frag_token =3D user_token;
+> +
+> +				offset +=3D copy;
+> +				remaining_len -=3D copy;
+> +
+> +				err =3D put_cmsg(msg, SOL_SOCKET,
+> +					       SO_DEVMEM_OFFSET,
+> +					       sizeof(cmsg_devmem),
+> +					       &cmsg_devmem);
+> +				if (err || msg->msg_flags & MSG_CTRUNC) {
+> +					msg->msg_flags &=3D ~MSG_CTRUNC;
+> +					xa_erase((struct xarray *)&sk->sk_user_pages,
+> +						 user_token);
+> +					if (!err)
+> +						err =3D -ETOOSMALL;
+> +					goto out;
+> +				}
+> +
+> +				page_pool_iov_get_many(ppiov, 1);
+> +
+> +				sent +=3D copy;
+> +
+> +				if (remaining_len =3D=3D 0)
+> +					goto out;
+> +			}
+> +			start =3D end;
+> +		}
+> +
+> +		if (!remaining_len)
+> +			goto out;
+> +
+> +		/* if remaining_len is not satisfied yet, we need to go to the
+> +		 * next frag in the frag_list to satisfy remaining_len.
+> +		 */
+> +		skb =3D skb_shinfo(skb)->frag_list ?: skb->next;
+
+I think at this point the 'skb' is still on the sk receive queue. The
+above will possibly walk the queue.
+
+Later on, only the current queue tail could be possibly consumed by
+tcp_recvmsg_locked(). This feel confusing to me?!? Why don't limit the
+loop only the 'current' skb and it's frags?
+
+> +
+> +		offset =3D offset - start;
+> +	} while (skb);
+> +
+> +	if (remaining_len) {
+> +		err =3D -EFAULT;
+> +		goto out;
+> +	}
+> +
+> +out:
+> +	if (!sent)
+> +		sent =3D err;
+> +
+> +	return sent;
+> +}
+> +
+>  /*
+>   *	This routine copies from a sock struct into the user buffer.
+>   *
+> @@ -2314,6 +2463,7 @@ static int tcp_recvmsg_locked(struct sock *sk, stru=
+ct msghdr *msg, size_t len,
+>  			      int *cmsg_flags)
+>  {
+>  	struct tcp_sock *tp =3D tcp_sk(sk);
+> +	int last_copied_devmem =3D -1; /* uninitialized */
+>  	int copied =3D 0;
+>  	u32 peek_seq;
+>  	u32 *seq;
+> @@ -2491,15 +2641,44 @@ static int tcp_recvmsg_locked(struct sock *sk, st=
+ruct msghdr *msg, size_t len,
+>  		}
+> =20
+>  		if (!(flags & MSG_TRUNC)) {
+> -			err =3D skb_copy_datagram_msg(skb, offset, msg, used);
+> -			if (err) {
+> -				/* Exception. Bailout! */
+> -				if (!copied)
+> -					copied =3D -EFAULT;
+> +			if (last_copied_devmem !=3D -1 &&
+> +			    last_copied_devmem !=3D skb->devmem)
+>  				break;
+> +
+> +			if (!skb->devmem) {
+> +				err =3D skb_copy_datagram_msg(skb, offset, msg,
+> +							    used);
+> +				if (err) {
+> +					/* Exception. Bailout! */
+> +					if (!copied)
+> +						copied =3D -EFAULT;
+> +					break;
+> +				}
+> +			} else {
+> +				if (!(flags & MSG_SOCK_DEVMEM)) {
+> +					/* skb->devmem skbs can only be received
+> +					 * with the MSG_SOCK_DEVMEM flag.
+> +					 */
+> +					if (!copied)
+> +						copied =3D -EFAULT;
+> +
+> +					break;
+> +				}
+> +
+> +				err =3D tcp_recvmsg_devmem(sk, skb, offset, msg,
+> +							 used);
+> +				if (err <=3D 0) {
+> +					if (!copied)
+> +						copied =3D -EFAULT;
+> +
+> +					break;
+> +				}
+> +				used =3D err;
+
+Minor nit: I personally would find the above more readable, placing
+this whole chunk in a single helper (e.g. the current
+tcp_recvmsg_devmem(), renamed to something more appropriate).
+
+Cheers,
+
+Paolo
+
