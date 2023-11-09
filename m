@@ -2,174 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649777E6491
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C97E64C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjKIHnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:43:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        id S233049AbjKIHxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 02:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjKIHnP (ORCPT
+        with ESMTP id S232613AbjKIHxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:43:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDD271F;
-        Wed,  8 Nov 2023 23:43:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699515793; x=1731051793;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Jqubs9fYJv686NaIUFg20xBqeod3EjBkKJaXMFTyavM=;
-  b=Xi6ri2eGBstP7hKRJRKqj+6LgRPlcVjrtCD3Vw7/zHFkpVCVC288utdh
-   p10d5ajZgNp3osG8K6F55tFdBsdE/Nw2YQXEETWqwjmA2aU6R8akYpHXC
-   aqxt+b5ksGDZs5nYgStbRZ8m0UlpD0pLiuhblTo/5Ccwsq+cIXptDGFhY
-   n2PirGt8QW4AM8wAOjPbpZomBqmLFfikZDYXdM+vOvHZQ2PMaAIwUmbzD
-   c6v8OfsSv8QXHFWIGyEA8vOka7VPSUCALvlw2aHaPqIErHnYo0FEHI4pL
-   WTHDiyjarYENP5LR6sNb4soa3fVLzP+vBWvFw0LsJK9XvffaCK94lJIRZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="389740358"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="389740358"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:43:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="766910589"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="766910589"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:43:10 -0800
-Message-ID: <cb38a9c5-f068-45be-b018-fb9bcd7243d4@linux.intel.com>
-Date:   Thu, 9 Nov 2023 15:43:07 +0800
+        Thu, 9 Nov 2023 02:53:00 -0500
+X-Greylist: delayed 550 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Nov 2023 23:52:58 PST
+Received: from codesynthesis.com (codesynthesis.com [188.40.148.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E571716;
+        Wed,  8 Nov 2023 23:52:58 -0800 (PST)
+Received: from brak.codesynthesis.com (unknown [105.186.92.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by codesynthesis.com (Postfix) with ESMTPSA id 55E5160D9F;
+        Thu,  9 Nov 2023 07:43:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=codesynthesis.com;
+        s=mail1; t=1699515826;
+        bh=fJ48MnwSMLL/XzmjxNLHtBoWhFyXgj04jwsCFx/3Hfs=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:From;
+        b=RmY00MK5Rg1p2bfkJRAejhbFOLJapXmR89HNVZ3EBm/VjgibjKGCFeSK65GEm8Qp7
+         7f9j1Jtr+eZAWyildkdVI5FnoKpLEsSBiJNckuM1L++5FiDEp+8rt9YCYWbIgMRdMb
+         Al9k9Cj8OS7NQDRJOB2rhzeJeoJzRGMuS+3W9CmV5AryyGeE5UKAAZzMU29UM7zbiY
+         x3wl9ICeAVqEmQZ1e99N5pzif5p18N2hGqk3Jl0HgiK1XdfCetqii0PTPMRIOpqlwL
+         utdtn5Fd16cdAlWb9XZbkyCF9VkdxC5FIx/HpCvzr3tTDJ7dpJDm1ijUjadcTb7BzS
+         uboZ2QLZ4arkQ==
+Received: by brak.codesynthesis.com (Postfix, from userid 1000)
+        id 2AE8B145E0D; Thu,  9 Nov 2023 09:43:44 +0200 (SAST)
+Date:   Thu, 9 Nov 2023 09:43:44 +0200
+From:   Boris Kolpackov <boris@codesynthesis.com>
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        linux-kbuild@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 2/3] kconfig: Add special rust_modules config option
+Message-ID: <boris.20231109093619@codesynthesis.com>
+References: <20231108022651.645950-2-mmaurer@google.com>
+ <20231108022651.645950-5-mmaurer@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 14/19] KVM: selftests: Expand PMU counters test to
- verify LLC events
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231108003135.546002-1-seanjc@google.com>
- <20231108003135.546002-15-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231108003135.546002-15-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108022651.645950-5-mmaurer@google.com>
+Organization: Code Synthesis
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Matthew Maurer <mmaurer@google.com> writes:
 
-On 11/8/2023 8:31 AM, Sean Christopherson wrote:
-> Expand the PMU counters test to verify that LLC references and misses have
-> non-zero counts when the code being executed while the LLC event(s) is
-> active is evicted via CFLUSH{,OPT}.  Note, CLFLUSH{,OPT} requires a fence
-> of some kind to ensure the cache lines are flushed before execution
-> continues.  Use MFENCE for simplicity (performance is not a concern).
+> Adds support for the rust_modules kconfig type, which works similarly to
+> modules, but for restricting or allowing the use of modules which
+> directly depend on Rust.
 >
-> Suggested-by: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 59 +++++++++++++------
->   1 file changed, 40 insertions(+), 19 deletions(-)
+> [...]
 >
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index b9c073d3ade9..90381382c51f 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -14,9 +14,9 @@
->   /*
->    * Number of "extra" instructions that will be counted, i.e. the number of
->    * instructions that are needed to set up the loop and then disabled the
-> - * counter.  2 MOV, 2 XOR, 1 WRMSR.
-> + * counter.  1 CLFLUSH/CLFLUSHOPT/NOP, 1 MFENCE, 2 MOV, 2 XOR, 1 WRMSR.
->    */
-> -#define NUM_EXTRA_INSNS		5
-> +#define NUM_EXTRA_INSNS		7
->   #define NUM_INSNS_RETIRED	(NUM_BRANCHES + NUM_EXTRA_INSNS)
->   
->   static uint8_t kvm_pmu_version;
-> @@ -107,6 +107,12 @@ static void guest_assert_event_count(uint8_t idx,
->   	case INTEL_ARCH_BRANCHES_RETIRED_INDEX:
->   		GUEST_ASSERT_EQ(count, NUM_BRANCHES);
->   		break;
-> +	case INTEL_ARCH_LLC_REFERENCES_INDEX:
-> +	case INTEL_ARCH_LLC_MISSES_INDEX:
-> +		if (!this_cpu_has(X86_FEATURE_CLFLUSHOPT) &&
-> +		    !this_cpu_has(X86_FEATURE_CLFLUSH))
-> +			break;
-> +		fallthrough;
->   	case INTEL_ARCH_CPU_CYCLES_INDEX:
->   	case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
->   		GUEST_ASSERT_NE(count, 0);
-> @@ -123,29 +129,44 @@ static void guest_assert_event_count(uint8_t idx,
->   	GUEST_ASSERT_EQ(_rdpmc(pmc), 0xdead);
->   }
->   
-> +/*
-> + * Enable and disable the PMC in a monolithic asm blob to ensure that the
-> + * compiler can't insert _any_ code into the measured sequence.  Note, ECX
-> + * doesn't need to be clobbered as the input value, @pmc_msr, is restored
-> + * before the end of the sequence.
-> + *
-> + * If CLFUSH{,OPT} is supported, flush the cacheline containing (at least) the
-> + * start of the loop to force LLC references and misses, i.e. to allow testing
-> + * that those events actually count.
-> + */
-> +#define GUEST_MEASURE_EVENT(_msr, _value, clflush)				\
-> +do {										\
-> +	__asm__ __volatile__("wrmsr\n\t"					\
-> +			     clflush "\n\t"					\
-> +			     "mfence\n\t"					\
-> +			     "1: mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"	\
-> +			     "loop .\n\t"					\
-> +			     "mov %%edi, %%ecx\n\t"				\
-> +			     "xor %%eax, %%eax\n\t"				\
-> +			     "xor %%edx, %%edx\n\t"				\
-> +			     "wrmsr\n\t"					\
-> +			     :: "a"((uint32_t)_value), "d"(_value >> 32),	\
-> +				"c"(_msr), "D"(_msr)				\
-> +	);									\
-> +} while (0)
+> +struct symbol *modules_rust_sym;
+> +static tristate modules_rust_val;
 > +
->   static void __guest_test_arch_event(uint8_t idx, struct kvm_x86_pmu_feature event,
->   				    uint32_t pmc, uint32_t pmc_msr,
->   				    uint32_t ctrl_msr, uint64_t ctrl_msr_value)
->   {
->   	wrmsr(pmc_msr, 0);
->   
-> -	/*
-> -	 * Enable and disable the PMC in a monolithic asm blob to ensure that
-> -	 * the compiler can't insert _any_ code into the measured sequence.
-> -	 * Note, ECX doesn't need to be clobbered as the input value, @pmc_msr,
-> -	 * is restored before the end of the sequence.
-> -	 */
-> -	__asm__ __volatile__("wrmsr\n\t"
-> -			     "mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"
-> -			     "loop .\n\t"
-> -			     "mov %%edi, %%ecx\n\t"
-> -			     "xor %%eax, %%eax\n\t"
-> -			     "xor %%edx, %%edx\n\t"
-> -			     "wrmsr\n\t"
-> -			     :: "a"((uint32_t)ctrl_msr_value),
-> -				"d"(ctrl_msr_value >> 32),
-> -				"c"(ctrl_msr), "D"(ctrl_msr)
-> -			     );
-> +	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))
-> +		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflushopt 1f");
-> +	else if (this_cpu_has(X86_FEATURE_CLFLUSH))
-> +		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflush 1f");
-> +	else
-> +		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "nop");
->   
->   	guest_assert_event_count(idx, event, pmc, pmc_msr);
->   }
+> +bool sym_depends_rust(struct symbol *sym)
+> +{
+> +	static struct symbol *rust_sym;
+> +
+> +	if (!rust_sym)
+> +		rust_sym = sym_find("RUST");
+> +	return expr_depends_symbol(sym->dir_dep.expr, rust_sym, true);
+> +}
+> +
 
+Hm, this feels like a quick and dirty hack to me: will we be hardcoding
+a symbol for each language?
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-
+I know there is little sympathy for other projects that use Kconfig,
+and whatever Linux needs, goes, but still, this feels like a step too
+far.
