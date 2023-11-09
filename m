@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE0D7E6666
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062247E666B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbjKIJPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:15:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
+        id S234195AbjKIJQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjKIJPX (ORCPT
+        with ESMTP id S234113AbjKIJQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:15:23 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F01B210A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:15:21 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 31F126607410;
-        Thu,  9 Nov 2023 09:15:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699521319;
-        bh=7E495mU7BugXetHo15jEPw07igwc/8Jw3mgxbekLybc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XfBLTN+CXU+gg+KTN2BCtfLv3c4NautMO+PV5X0bavRwxKLeKIICb+XDy4dcR97nI
-         HNtrfoRI9D8GQvH1n7rg8+dm05v0EwSJwLYP80DTf1/4Xu/D5C891IOFmUGKPH1WvY
-         umOnA8ejsNAylamAhHk8g48Zrc3gHv6Ru+xqWX6Ysd8eREKFjD8QHS9+tXGh/xL/5i
-         Ba2zo2ctz8ChQ+tPWVyOAXUHP2G49XISME1ZuVLnFHzeYO/6dHt4HESs4wPDeFTwkK
-         8ACzW1pc2qYfquXs6ire8pi1D3vjnfXy0OX/jJoiP9VGjxfLbUgge/sjg+qMvdts2O
-         XVDvyFmkXsFeg==
-Message-ID: <c28c99b8-36f8-479a-adbf-442c87062ca2@collabora.com>
-Date:   Thu, 9 Nov 2023 10:15:16 +0100
+        Thu, 9 Nov 2023 04:16:01 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157792592;
+        Thu,  9 Nov 2023 01:15:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QrvJkzyPb5eXMLbw/U/qM6wbTs8u3y089/0QYgihCZc=; b=e1cnhHhbRfJJONN+GNW4kdjpqt
+        MEOj/OKISubVwkr4/XNFHD0LiTKr/DCcuIUu6DAjQmFIrjsy8VM0M1myuxsuU4OLbczvHSlTN1bZf
+        vUldxONBLp1fpzsyeMeziawnQL6EZQnpRZ/49W2NhQkE0OWZUvTvSIr6OfOngPu6IUazc9J4Wt2eZ
+        U/0B6VqdrF7nxM7gwc/rL6SB/+Rx8CjDgUnlEfpC+Dk4q0OOu0eMEtSOKll8rRtr9HPYaQSWvIcx7
+        owQgd0W1doctv4yyEu/yIG7anYV8vFVj/qkYFkWf+oC5BTHHcc86was5sLFu+4vmT+bkFAmabYeJt
+        GXESwD8Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45130)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r118V-0002B9-2p;
+        Thu, 09 Nov 2023 09:15:39 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r118S-0000Qi-UQ; Thu, 09 Nov 2023 09:15:36 +0000
+Date:   Thu, 9 Nov 2023 09:15:36 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Gan Yi Fang <yi.fang.gan@intel.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: Re: [PATCH net 1/1] net: stmmac: fix MAC and phylink mismatch issue
+ after resume with STMMAC_FLAG_USE_PHY_WOL enabled
+Message-ID: <ZUyjOEQHHnnbzwrV@shell.armlinux.org.uk>
+References: <20231109050027.2545000-1-yi.fang.gan@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: clock: mediatek: Remove compatible for
- MT8188 VPPSYS
-Content-Language: en-US
-To:     "yu-chang.lee" <yu-chang.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>
-Cc:     Nathan Lu <nathan.lu@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231109082201.7698-1-yu-chang.lee@mediatek.com>
- <20231109082201.7698-3-yu-chang.lee@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231109082201.7698-3-yu-chang.lee@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109050027.2545000-1-yi.fang.gan@intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 09/11/23 09:22, yu-chang.lee ha scritto:
-> Remove VPPSYS0, VPPSYS1 compatible on Mediatek MT8188.
+On Thu, Nov 09, 2023 at 01:00:27PM +0800, Gan Yi Fang wrote:
+> From: "Gan, Yi Fang" <yi.fang.gan@intel.com>
 > 
-> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
-
-The mail recipients are wrong/incomplete. This patch cannot ever possibly get
-upstream if you don't Cc the right people/lists.
-
-Please use scripts/get_maintainer.pl to get the right list of recipients and
-resend.
-
-Thanks,
-Angelo
-
-> ---
->   .../devicetree/bindings/clock/mediatek,mt8188-clock.yaml        | 2 --
->   1 file changed, 2 deletions(-)
+> The issue happened when flag STMMAC_FLAG_USE_PHY_WOL is enabled.
+> It can be reproduced with steps below:
+> 1. Advertise only one speed on the host
+> 2. Enable the WoL on the host
+> 3. Suspend the host
+> 4. Wake up the host
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
-> index d7214d97b2ba..860570320545 100644
-> --- a/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
-> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
-> @@ -43,8 +43,6 @@ properties:
->         - mediatek,mt8188-vdecsys
->         - mediatek,mt8188-vdecsys-soc
->         - mediatek,mt8188-vencsys
-> -      - mediatek,mt8188-vppsys0
-> -      - mediatek,mt8188-vppsys1
->         - mediatek,mt8188-wpesys
->         - mediatek,mt8188-wpesys-vpp0
->   
+> When the WoL is disabled, both the PHY and MAC will suspend and wake up
+> with everything configured well. When WoL is enabled, the PHY needs to be
+> stay awake to receive the signal from remote client but MAC will enter
+> suspend mode.
+> 
+> When the MAC resumes from suspend, phylink_resume() will call
+> phylink_start() to start the phylink instance which will trigger the
+> phylink machine to invoke the mac_link_up callback function. The
+> stmmac_mac_link_up() will configure the MAC_CTRL_REG based on the current
+> link state. Then the stmmac_hw_setup() will be called to configure the MAC.
+> 
+> This sequence might cause mismatch of the link state between MAC and
+> phylink. This patch moves the phylink_resume() after stmamc_hw_setup() to
+> ensure the MAC is initialized before phylink is being configured.
 
+Isn't this going to cause problems?
 
+stmamc_hw_setup() calls stmmac_init_dma_engine(), which then calls
+stmmac_reset() - and stmmac_reset() can fail if the PHY clock isn't
+running, which is why phylink_resume() gets called before this.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
