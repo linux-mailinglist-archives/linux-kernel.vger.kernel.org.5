@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD817E7027
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B840C7E7026
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344605AbjKIR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
+        id S1344626AbjKIR0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:26:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343808AbjKIR0A (ORCPT
+        with ESMTP id S1344553AbjKIR0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Nov 2023 12:26:00 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C28B325B
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:25:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6015830FA
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:25:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699550709;
+        s=mimecast20190719; t=1699550715;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KM+kZjFHA8E0A+l+o485oGQAZV87bwGJzM3u9NBaaMA=;
-        b=e/cGm8lYKvoeQYINzkmtM+ll6tQjTbbgMlj+O7XVmg9vhZHZdmMZIM5qvj+W8Fr/jFm0ZX
-        P7K3mNfN9ua/yU7uhevO+qWx7CWiFLNOgXUHBEi1pMBJuuU2Hbw2xJihTKJd7U8LdC7q2z
-        XaF5uI6BHfHQ2Em0LlIjGVWeVPKmZ54=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3EBII1piFhjDdYePPF4sEFQnIWSSXfwKWEcUhw8jHaI=;
+        b=AkaT3X+C70YZEDmRr1fQuX43C3XgcEcpKuh2fPki+Wonco1CQavsnFjR7S6aQz3qZXrDPs
+        pG5p5rID5c3DKwke8OD8ASj+9adTCcXaYyYTfm8jnYm+QMTo763dQXYS1LxQV64GbBt1AI
+        Ve5ryFHrhfKkMGDNtFPcyflnFOlearM=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-258-Gupn3hwQOBOfC2d31EDtLQ-1; Thu, 09 Nov 2023 12:25:08 -0500
-X-MC-Unique: Gupn3hwQOBOfC2d31EDtLQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408508aa81cso7221165e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 09:25:08 -0800 (PST)
+ us-mta-214-NUZBN8a4O5G8MitdLp5h2g-1; Thu, 09 Nov 2023 12:25:10 -0500
+X-MC-Unique: NUZBN8a4O5G8MitdLp5h2g-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-507d2e150c2so1103324e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 09:25:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699550706; x=1700155506;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KM+kZjFHA8E0A+l+o485oGQAZV87bwGJzM3u9NBaaMA=;
-        b=XT7QYsa8SbI5B1+l+i7BwAl65Au8417ZAim1k6E0j1tHfHH/DLEtA3x47Y6tI4lErn
-         eTHi+EbT61sANzIa6K72+LWGzjBcVEoiytjhN/EYPJ1e3FS21+hkU875x79iNhVUqspH
-         6PdhrFQykXbYytqdKqRwFSKbZ0iA+sK7KPT/rYIIkG44lOcuQnBWbTAZqJeS0mdcQDTF
-         alqODZyklFxdrvUw7/7qxRtjFl52+mAOi7I1GLW5tp5Vtew0KtkxqD2cs0ISRBqQLnbu
-         iOLr7EGo5EpTipVIUnXSejCfsNUrbbQBxx4OO+I357P3ZEJE9k87o/e0fbntIZWmfRiC
-         5JfQ==
-X-Gm-Message-State: AOJu0YycmiQVLCmxDLAZ+w7pL9Bdr8yrSYuWkSWwak4a1Tzrzoz+aqMU
-        bQen4Y1ewFDiF/7Dc1F0Gw6CVDmfF4ekQraPCumeZfYy+Dg7I6idIxhXb86DY57yyav+0AE6VJv
-        NZOblPd4lXUYsUFBEyzh/jgdT9u/ZY4JV7bdHJjC9I4ksMIbybDL0Mru1sL0JymYyiK9oXYmcsL
-        30e4gGQJ0=
-X-Received: by 2002:a05:600c:3d9a:b0:408:5bc6:a7d with SMTP id bi26-20020a05600c3d9a00b004085bc60a7dmr4807933wmb.19.1699550706541;
-        Thu, 09 Nov 2023 09:25:06 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBYNpBFpSwc4pVpHVCRnVRLdnQyz2wbfqHlyA9KAIkGVscHGBHFPnaFmMk7VrRW7vmMUDnCw==
-X-Received: by 2002:a05:600c:3d9a:b0:408:5bc6:a7d with SMTP id bi26-20020a05600c3d9a00b004085bc60a7dmr4807894wmb.19.1699550706031;
-        Thu, 09 Nov 2023 09:25:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699550708; x=1700155508;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3EBII1piFhjDdYePPF4sEFQnIWSSXfwKWEcUhw8jHaI=;
+        b=MKFyGxZqkwEO1YeBW9qznMkZ4SEM6BDk7tEiwPH2wqjNxDQV6QcGEtowd9/8pCjz2/
+         1JqJZ9gtI4uDwShwrvrEUF3rD8JL5eHh/4xnz9Y5M27fxvAqmIzIlffsd4JfO6F9Z3gR
+         9eB7nM9fNOwovwyCstom040rnLoZr1cdnciZJpC0SixJiCkqrUhw8rq+4lHrEEFg/5XW
+         nT+N3EnFI7QEjSG+jii/PX6K8TzdgxgwkoTiJBNFj0so1cEhUFICfcJeFZv+TAalI1Fo
+         GyPYhtDOL7Ev+oQOg05b3U1OZPNk6u3iQLny11lO7YYf1oBuZNHNNYiOchqGmlR+zqnb
+         buqQ==
+X-Gm-Message-State: AOJu0YwuS2+GPTQebDrF+UE/Q/y4qF7kcLTcuO8leY8dZfyEDyWOcMEA
+        OT8xvk6v0Ai3hIZjnexp8GaqHVO7RppiEM2sTlsxCVCA2c4dEK0OovXOj/S1DmB0R2VBjZYwC08
+        jzkLGLn3nlqSJMc5SGeZ63lElRc0R55vfv+BxhXaUSEfDHlLTF8L/yv0UVPBHhs8kXi+2PexDq2
+        Eoc8i8S50=
+X-Received: by 2002:a19:e00d:0:b0:503:32bb:d5ca with SMTP id x13-20020a19e00d000000b0050332bbd5camr1864097lfg.31.1699550708448;
+        Thu, 09 Nov 2023 09:25:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH47EfQ6rX+t1XL8dC+Is/tx0yp1WtqPF4aXtdXPWPqw3Pqau19ZWSC5+9vmC1RAuAaGC1wqw==
+X-Received: by 2002:a19:e00d:0:b0:503:32bb:d5ca with SMTP id x13-20020a19e00d000000b0050332bbd5camr1864072lfg.31.1699550707984;
+        Thu, 09 Nov 2023 09:25:07 -0800 (PST)
 Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id n18-20020a05600c3b9200b0040839fcb217sm646229wms.8.2023.11.09.09.25.04
+        by smtp.gmail.com with ESMTPSA id q14-20020a05600000ce00b003143c9beeaesm133795wrx.44.2023.11.09.09.25.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 09:25:04 -0800 (PST)
+        Thu, 09 Nov 2023 09:25:07 -0800 (PST)
 From:   Javier Martinez Canillas <javierm@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Simon Ser <contact@emersion.fr>,
@@ -65,98 +66,171 @@ Cc:     Simon Ser <contact@emersion.fr>,
         Bilal Elmoussaoui <belmouss@redhat.com>,
         Erico Nunes <nunes.erico@gmail.com>,
         Javier Martinez Canillas <javierm@redhat.com>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        stable@vger.kernel.org,
+        nerdopolis <bluescreen_avenger@verizon.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@gmail.com>,
-        David Airlie <airlied@redhat.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH 0/6] drm: Allow the damage helpers to handle buffer damage
-Date:   Thu,  9 Nov 2023 18:24:34 +0100
-Message-ID: <20231109172449.1599262-1-javierm@redhat.com>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 1/6] drm: Move drm_atomic_helper_damage_{iter_init,merged}() to helpers
+Date:   Thu,  9 Nov 2023 18:24:35 +0100
+Message-ID: <20231109172449.1599262-2-javierm@redhat.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231109172449.1599262-1-javierm@redhat.com>
+References: <20231109172449.1599262-1-javierm@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+We need a similar drm_atomic_helper_buffer_damage_merged() helper function
+that takes into account if a framebuffer attached to the plane has changed
+since the last plane update (page-flip).
 
-This series is to fix an issue that surfaced after damage clipping was
-enabled for the virtio-gpu by commit 01f05940a9a7 ("drm/virtio: Enable
-fb damage clips property for the primary plane").
+Since both damage helpers will share most of the current logic, move it to
+an internal helper. The drm_atomic_helper_buffer_damage_merged() will have
+to use a different drm_atomic_helper_buffer_damage_iter_init() function so
+move that logic also to an internal helper.
 
-After that change, flickering artifacts was reported to be present with
-both weston and wlroots wayland compositors when running in a virtual
-machine. The cause was identified by Sima Vetter, who pointed out that
-virtio-gpu does per-buffer uploads and for this reason it needs to do
-a buffer damage handling, instead of frame damage handling.
+Fixes: 01f05940a9a7 ("drm/virtio: Enable fb damage clips property for the primary plane")
+Cc: <stable@vger.kernel.org> # v6.4+
+Reported-by: nerdopolis <bluescreen_avenger@verizon.net>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218115
+Suggested-by: Sima Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-Their suggestion was to extend the damage helpers to cover that case
-and given that there's isn't a buffer damage accumulation algorithm
-(e.g: buffer age), just do a full plane update if the framebuffer that
-is attached to a plane changed since the last plane update (page-flip).
+ drivers/gpu/drm/drm_damage_helper.c | 95 +++++++++++++++++------------
+ 1 file changed, 55 insertions(+), 40 deletions(-)
 
-Patch #1 is just a refactoring to allow the logic of the frame damage
-helpers to be shared by the buffer damage helpers.
-
-Patch #2 adds the helpers that are needed for buffer damage handling.
-
-Patch #3 fixes the virtio-gpu damage handling logic by using the
-helper that is required by drivers that need to handle buffer damage.
-
-Patch #4 fixes the vmwgfx similarly, since that driver also needs to
-handle buffer damage and should have the same issue (although I have
-not tested it due not having a VMWare setup).
-
-Patch #5 adds to the KMS damage tracking kernel-doc some paragraphs
-about damage tracking types and references to links that explain
-frame damage vs buffer damage.
-
-Finally patch #6 adds an item to the DRM/KMS todo, about the need to
-implement some buffer damage accumulation algorithm instead of just
-doing a full plane update in this case.
-
-Because commit 01f05940a9a7 landed in v6.4, the first three patches
-are marked as Fixes and Cc stable.
-
-I've tested this on a VM with weston, was able to reproduce the issue
-reported and the patches did fix the problem.
-
-Please let me know what you think. Specially on the wording since could
-made mistakes due just learning about these concepts yesterday thanks to
-Sima, Simon and Pekka.
-
-Best regards,
-Javier
-
-
-Javier Martinez Canillas (6):
-  drm: Move drm_atomic_helper_damage_{iter_init,merged}() to helpers
-  drm: Add drm_atomic_helper_buffer_damage_{iter_init,merged}() helpers
-  drm/virtio: Use drm_atomic_helper_buffer_damage_merged() for buffer
-    damage
-  drm/vmwgfx: Use drm_atomic_helper_buffer_damage_iter_init() for buffer
-    damage
-  drm/plane: Extend damage tracking kernel-doc
-  drm/todo: Add entry about implementing buffer age for damage tracking
-
- Documentation/gpu/todo.rst             |  20 +++
- drivers/gpu/drm/drm_damage_helper.c    | 166 +++++++++++++++++++------
- drivers/gpu/drm/drm_plane.c            |  22 +++-
- drivers/gpu/drm/virtio/virtgpu_plane.c |   2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_kms.c    |   2 +-
- include/drm/drm_damage_helper.h        |   7 ++
- 6 files changed, 173 insertions(+), 46 deletions(-)
-
+diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
+index d8b2955e88fd..aa2325567918 100644
+--- a/drivers/gpu/drm/drm_damage_helper.c
++++ b/drivers/gpu/drm/drm_damage_helper.c
+@@ -201,28 +201,10 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_dirtyfb);
+ 
+-/**
+- * drm_atomic_helper_damage_iter_init - Initialize the damage iterator.
+- * @iter: The iterator to initialize.
+- * @old_state: Old plane state for validation.
+- * @state: Plane state from which to iterate the damage clips.
+- *
+- * Initialize an iterator, which clips plane damage
+- * &drm_plane_state.fb_damage_clips to plane &drm_plane_state.src. This iterator
+- * returns full plane src in case damage is not present because either
+- * user-space didn't sent or driver discarded it (it want to do full plane
+- * update). Currently this iterator returns full plane src in case plane src
+- * changed but that can be changed in future to return damage.
+- *
+- * For the case when plane is not visible or plane update should not happen the
+- * first call to iter_next will return false. Note that this helper use clipped
+- * &drm_plane_state.src, so driver calling this helper should have called
+- * drm_atomic_helper_check_plane_state() earlier.
+- */
+-void
+-drm_atomic_helper_damage_iter_init(struct drm_atomic_helper_damage_iter *iter,
+-				   const struct drm_plane_state *old_state,
+-				   const struct drm_plane_state *state)
++static void
++__drm_atomic_helper_damage_iter_init(struct drm_atomic_helper_damage_iter *iter,
++				     const struct drm_plane_state *old_state,
++				     const struct drm_plane_state *state)
+ {
+ 	struct drm_rect src;
+ 	memset(iter, 0, sizeof(*iter));
+@@ -247,6 +229,32 @@ drm_atomic_helper_damage_iter_init(struct drm_atomic_helper_damage_iter *iter,
+ 		iter->full_update = true;
+ 	}
+ }
++
++/**
++ * drm_atomic_helper_damage_iter_init - Initialize the damage iterator.
++ * @iter: The iterator to initialize.
++ * @old_state: Old plane state for validation.
++ * @state: Plane state from which to iterate the damage clips.
++ *
++ * Initialize an iterator, which clips plane damage
++ * &drm_plane_state.fb_damage_clips to plane &drm_plane_state.src. This iterator
++ * returns full plane src in case damage is not present because either
++ * user-space didn't sent or driver discarded it (it want to do full plane
++ * update). Currently this iterator returns full plane src in case plane src
++ * changed but that can be changed in future to return damage.
++ *
++ * For the case when plane is not visible or plane update should not happen the
++ * first call to iter_next will return false. Note that this helper use clipped
++ * &drm_plane_state.src, so driver calling this helper should have called
++ * drm_atomic_helper_check_plane_state() earlier.
++ */
++void
++drm_atomic_helper_damage_iter_init(struct drm_atomic_helper_damage_iter *iter,
++				   const struct drm_plane_state *old_state,
++				   const struct drm_plane_state *state)
++{
++	__drm_atomic_helper_damage_iter_init(iter, old_state, state);
++}
+ EXPORT_SYMBOL(drm_atomic_helper_damage_iter_init);
+ 
+ /**
+@@ -291,24 +299,9 @@ drm_atomic_helper_damage_iter_next(struct drm_atomic_helper_damage_iter *iter,
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_damage_iter_next);
+ 
+-/**
+- * drm_atomic_helper_damage_merged - Merged plane damage
+- * @old_state: Old plane state for validation.
+- * @state: Plane state from which to iterate the damage clips.
+- * @rect: Returns the merged damage rectangle
+- *
+- * This function merges any valid plane damage clips into one rectangle and
+- * returns it in @rect.
+- *
+- * For details see: drm_atomic_helper_damage_iter_init() and
+- * drm_atomic_helper_damage_iter_next().
+- *
+- * Returns:
+- * True if there is valid plane damage otherwise false.
+- */
+-bool drm_atomic_helper_damage_merged(const struct drm_plane_state *old_state,
+-				     struct drm_plane_state *state,
+-				     struct drm_rect *rect)
++static bool __drm_atomic_helper_damage_merged(const struct drm_plane_state *old_state,
++					      struct drm_plane_state *state,
++					      struct drm_rect *rect)
+ {
+ 	struct drm_atomic_helper_damage_iter iter;
+ 	struct drm_rect clip;
+@@ -330,4 +323,26 @@ bool drm_atomic_helper_damage_merged(const struct drm_plane_state *old_state,
+ 
+ 	return valid;
+ }
++
++/**
++ * drm_atomic_helper_damage_merged - Merged plane damage
++ * @old_state: Old plane state for validation.
++ * @state: Plane state from which to iterate the damage clips.
++ * @rect: Returns the merged damage rectangle
++ *
++ * This function merges any valid plane damage clips into one rectangle and
++ * returns it in @rect.
++ *
++ * For details see: drm_atomic_helper_damage_iter_init() and
++ * drm_atomic_helper_damage_iter_next().
++ *
++ * Returns:
++ * True if there is valid plane damage otherwise false.
++ */
++bool drm_atomic_helper_damage_merged(const struct drm_plane_state *old_state,
++				     struct drm_plane_state *state,
++				     struct drm_rect *rect)
++{
++	return __drm_atomic_helper_damage_merged(old_state, state, rect);
++}
+ EXPORT_SYMBOL(drm_atomic_helper_damage_merged);
 -- 
 2.41.0
 
