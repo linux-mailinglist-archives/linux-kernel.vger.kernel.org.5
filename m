@@ -2,136 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550F97E7013
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B237E6FD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344496AbjKIRV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:21:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S1344072AbjKIRJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:09:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbjKIRV5 (ORCPT
+        with ESMTP id S231204AbjKIRJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:21:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93FF3255
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:21:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699550515; x=1731086515;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FHsL8SSnSX+/DWgFHktsVeo5j35WA0f9yadd8H+uEow=;
-  b=itlXwHoaey6+FF72knx/tHvTzeh83pHXaN7jBnX5GKkmrmkFs8/Ul3fT
-   tBEqX+Z1mYCPf3sh1tuEXz2BUCH3u7hO3H793MC+j85RwJDfU7jNhhnIz
-   8CKpD3Uo1bgitRgrgRlEN2qT9mZOxRzcq/1pdxEQqXX+j2RBg3Q8yFJtJ
-   HbK1ArkfzxqbU6QkYvG2/o2NjiM1ResJKEIGNS3Cn8f50o4bb9w4MdrBU
-   N4w3zw+0XLLQuHwXaduWA+WWafgsRUxMe8zXur8f6cBfo8auZNHMCwAs1
-   VW6IaSpMoXQE1E0zNIXvKYCPTM0LT5rGtL+Cz1Nhm/LAQZDeRwhlg19rd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370238001"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="370238001"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:21:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="1010689801"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="1010689801"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 09 Nov 2023 09:21:50 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r18iy-0008xW-0t;
-        Thu, 09 Nov 2023 17:21:48 +0000
-Date:   Fri, 10 Nov 2023 01:09:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
-        akpm@linux-foundation.org, ying.huang@intel.com, namit@vmware.com,
-        xhao@linux.alibaba.com, mgorman@techsingularity.net,
-        hughd@google.com, willy@infradead.org, david@redhat.com,
-        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
-Subject: Re: [v4 2/3] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <202311092356.XzY1aBHX-lkp@intel.com>
-References: <20231109045908.54996-3-byungchul@sk.com>
+        Thu, 9 Nov 2023 12:09:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13FCD4A;
+        Thu,  9 Nov 2023 09:09:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AC4EC433C8;
+        Thu,  9 Nov 2023 17:09:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699549793;
+        bh=9BXK0KwCu9S5adkHNwW6vjWRO10k3ESEGRHXlcO7k/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HctJhaRjYsnF1NnuYAE8SxFhZeb1L+0wgXPBz6YJ5z4Hf4Tz1hCleQELLBMyaF6fy
+         /n40B19t3cK436cE2fjQrDqjQumZ8UQ4o8++uJsQwikBRGD0m4amYP9oULeED+EClM
+         4oSoknFoQxQoBT1kB2KnRCtWpF+FpwWRKE9bQ4LpRE59fJLRaPaIxrHA9OpezghYDZ
+         OD5bwrt8mSSWXln1TpK1dRSrA/8KtwVUCaRMMFwr0jgKtf88SY+UHQLsfZGeyjeeke
+         MA8ZNGW41A0qxJncJtnC+8R8SIYJTA2X4TIjMySw/46fUArKJLfQHH93tvpqv3uum9
+         PVeKygKnXwgYA==
+Date:   Thu, 9 Nov 2023 17:09:48 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+Cc:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
+Message-ID: <20231109-obscurity-dress-4d1d3370ea56@spud>
+References: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231109014948.2334465-2-Delphine_CC_Chiu@Wiwynn.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r1FpUNa/o+EDNg70"
 Content-Disposition: inline
-In-Reply-To: <20231109045908.54996-3-byungchul@sk.com>
+In-Reply-To: <20231109014948.2334465-2-Delphine_CC_Chiu@Wiwynn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Byungchul,
 
-kernel test robot noticed the following build errors:
+--r1FpUNa/o+EDNg70
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on tip/sched/core]
-[also build test ERROR on tip/x86/core tip/x86/mm v6.6]
-[cannot apply to akpm-mm/mm-everything linus/master next-20231109]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Thu, Nov 09, 2023 at 09:49:45AM +0800, Delphine CC Chiu wrote:
+> Add a device tree bindings for ltc4286 device.
+>=20
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+>=20
+> Changelog:
+>   v4 - Revise some inappropriate writing in yaml file
+>   v3 - Revise adi,vrange-select-25p6 to adi,vrange-low-enable
+>   v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
+>      - Add type for adi,vrange-select-25p6
+>      - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/mm-rmap-Recognize-read-only-TLB-entries-during-batched-TLB-flush/20231109-163706
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20231109045908.54996-3-byungchul%40sk.com
-patch subject: [v4 2/3] mm: Defer TLB flush by keeping both src and dst folios at migration
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231109/202311092356.XzY1aBHX-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311092356.XzY1aBHX-lkp@intel.com/reproduce)
+Your changelog should be below the --- line.
+You also omitted the tag I left on the previous version.
+With the changelog fixed:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311092356.XzY1aBHX-lkp@intel.com/
+Cheers,
+Conor.
 
-All errors (new ones prefixed by >>):
+> ---
+>  .../bindings/hwmon/lltc,ltc4286.yaml          | 51 +++++++++++++++++++
+>  MAINTAINERS                                   | 10 ++++
+>  2 files changed, 61 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.=
+yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml b/=
+Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> new file mode 100644
+> index 000000000000..d26f34fb7ea7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/lltc,ltc4286.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LTC4286 power monitors
+> +
+> +maintainers:
+> +  - Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - lltc,ltc4286
+> +      - lltc,ltc4287
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  adi,vrange-low-enable:
+> +    description:
+> +      This property is a bool parameter to represent the
+> +      voltage range is 25.6 volts or 102.4 volts for this chip.
+> +      The default is 102.4 volts.
+> +    type: boolean
+> +
+> +  shunt-resistor-micro-ohms:
+> +    description:
+> +      Resistor value micro-ohms.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - shunt-resistor-micro-ohms
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        power-monitor@40 {
+> +            compatible =3D "lltc,ltc4286";
+> +            reg =3D <0x40>;
+> +            adi,vrange-low-enable;
+> +            shunt-resistor-micro-ohms =3D <300>;
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 0b275b8d6bd2..5d439cd64ecb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12609,6 +12609,16 @@ S:	Maintained
+>  F:	Documentation/hwmon/ltc4261.rst
+>  F:	drivers/hwmon/ltc4261.c
+> =20
+> +LTC4286 HARDWARE MONITOR DRIVER
+> +M:	Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> +L:	linux-i2c@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+> +F:	Documentation/devicetree/bindings/hwmon/ltc4286.rst
+> +F:	drivers/hwmon/pmbus/Kconfig
+> +F:	drivers/hwmon/pmbus/Makefile
+> +F:	drivers/hwmon/pmbus/ltc4286.c
+> +
+>  LTC4306 I2C MULTIPLEXER DRIVER
+>  M:	Michael Hennerich <michael.hennerich@analog.com>
+>  L:	linux-i2c@vger.kernel.org
+> --=20
+> 2.25.1
+>=20
+>=20
 
-   In file included from include/linux/mmzone.h:22,
-                    from include/linux/topology.h:33,
-                    from include/linux/irq.h:19,
-                    from include/asm-generic/hardirq.h:17,
-                    from ./arch/m68k/include/generated/asm/hardirq.h:1,
-                    from include/linux/hardirq.h:11,
-                    from include/linux/interrupt.h:11,
-                    from include/linux/kernel_stat.h:9,
-                    from arch/m68k/kernel/asm-offsets.c:16:
->> include/linux/mm_types.h:1416:42: error: field 'arch' has incomplete type
-    1416 |         struct arch_tlbflush_unmap_batch arch;
-         |                                          ^~~~
-   make[3]: *** [scripts/Makefile.build:116: arch/m68k/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1202: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:234: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+--r1FpUNa/o+EDNg70
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-vim +/arch +1416 include/linux/mm_types.h
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU0SXAAKCRB4tDGHoIJi
+0o3RAP9LvMj3vo2ZN2flNsUviDAWifQqZBjc1Lz6mrq8eBIYLwD+LT7EN17e+maE
+VSFhoe0qSkogRKsDDObn6ROyOwNV7w4=
+=HQG0
+-----END PGP SIGNATURE-----
 
-  1401	
-  1402	struct migrc_req {
-  1403		/*
-  1404		 * folios pending for TLB flush
-  1405		 */
-  1406		struct list_head folios;
-  1407	
-  1408		/*
-  1409		 * for hanging to the associated numa node
-  1410		 */
-  1411		struct llist_node llnode;
-  1412	
-  1413		/*
-  1414		 * architecture specific data for batched TLB flush
-  1415		 */
-> 1416		struct arch_tlbflush_unmap_batch arch;
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--r1FpUNa/o+EDNg70--
