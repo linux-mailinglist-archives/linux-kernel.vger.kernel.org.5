@@ -2,173 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC637E644F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3BC7E6454
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbjKIHaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S232817AbjKIHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 02:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbjKIHaJ (ORCPT
+        with ESMTP id S232742AbjKIHaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:30:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6C42726;
-        Wed,  8 Nov 2023 23:30:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699515007; x=1731051007;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ah6awO6TJYPqEBY79QJnkjDCK8oLzOlTj/Ln8MgS0Ps=;
-  b=mQMfyA0TNodx/h4pGG+8um+Zbg7xhnkXLO44+KT0DoV3CmYJyqUj2LPa
-   pD2VmUhcFjla9BqPhmix8OC/vjy2SQ48MUSAI6UC7uCFPiG4C0zNkEVzE
-   MiqWVJEWYaHrFyL1UygDyYXeaibJ456kJaaAlj3f7CSHO3yNaW99jiakE
-   RXcH5B62sjwZMNuVLHlUZWI6YXmULqf8BmNmxDHgvmEJMtHksx2xJI2zg
-   39Q1oK5juAfoBb3dwQPC7KsrCe/m8FRnail/ea2TbHWCTg/YUtuSd3dh/
-   RPs39vi2tu7UKA5yZhQVHx+7zUgZ7/7kD9O3Og1oKbJRhBDicAThFjOZy
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="387098407"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="387098407"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:30:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="11062966"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:30:05 -0800
-Message-ID: <ab10f933-b4ae-4784-a56c-b5d3bc2e3271@linux.intel.com>
-Date:   Thu, 9 Nov 2023 15:30:04 +0800
+        Thu, 9 Nov 2023 02:30:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C00271F;
+        Wed,  8 Nov 2023 23:30:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE60AC433C7;
+        Thu,  9 Nov 2023 07:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699515013;
+        bh=FA3I58jU0wFxNV8uXganb4fGiYQhPijI/pg4Lq7JIz8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fBB4lTjtqObDudXAPQ5ggKg62fOtfqvJgyZuLFSAMbD5h4x+rieC0Qs7i07wYIYdA
+         TYr2IYya9lVKeMJmLvQleOg4E+jR/Sk/0ArueekVX3zrNnooqPFq63MJAedinMHCrG
+         m24NHJT5+UA+IQbASzYl33wOMcyIVdI+fnj3rnGw=
+Date:   Thu, 9 Nov 2023 08:30:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@linux.intel.com>
+Cc:     Marco Pagani <marpagan@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Alan Tull <atull@opensource.altera.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] fpga: remove module reference counting from core
+ components
+Message-ID: <2023110918-showroom-choosy-ad14@gregkh>
+References: <20231027152928.184012-1-marpagan@redhat.com>
+ <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
+ <ae202b70-b106-4805-9ce0-ffbb2738bb04@redhat.com>
+ <ZUuu1CgVd4h3Qqu7@yilunxu-OptiPlex-7050>
+ <2023110839-jam-relapsing-7f5d@gregkh>
+ <ZUxpHk/8pCusjXOb@yilunxu-OptiPlex-7050>
+ <2023110922-lurk-subdivide-4962@gregkh>
+ <ZUyHSs+oI9AsQdZE@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 10/19] KVM: selftests: Test Intel PMU architectural
- events on fixed counters
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231108003135.546002-1-seanjc@google.com>
- <20231108003135.546002-11-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231108003135.546002-11-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUyHSs+oI9AsQdZE@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 09, 2023 at 03:16:26PM +0800, Xu Yilun wrote:
+> On Thu, Nov 09, 2023 at 06:27:24AM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 09, 2023 at 01:07:42PM +0800, Xu Yilun wrote:
+> > > On Wed, Nov 08, 2023 at 05:20:53PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Wed, Nov 08, 2023 at 11:52:52PM +0800, Xu Yilun wrote:
+> > > > > > >>
+> > > > > > >> In fpga_region_get() / fpga_region_put(): call get_device() before
+> > > > > > >> acquiring the mutex and put_device() after having released the mutex
+> > > > > > >> to avoid races.
+> > > > 
+> > > > Why do you need another reference count with a lock?  You already have
+> > > > that with the calls to get/put_device().
+> > > 
+> > > The low-level driver module could still be possibly unloaded at the same
+> > > time, if so, when FPGA core run some callbacks provided by low-level driver
+> > > module, its referenced page of code is unmapped...
+> > 
+> > Then something is designed wrong here, the unloading of the low-level
+> > driver should remove the access to the device itself.  Perhaps fix that?
+> 
+> Actually the low-level driver module on its own has no way to garantee its
+> own code page of callbacks not accessed. It *is* accessing its code page
+> when it tries (to release) any protection.
 
-On 11/8/2023 8:31 AM, Sean Christopherson wrote:
-> From: Jinrong Liang <cloudliang@tencent.com>
->
-> Extend the PMU counters test to validate architectural events using fixed
-> counters.  The core logic is largely the same, the biggest difference
-> being that if a fixed counter exists, its associated event is available
-> (the SDM doesn't explicitly state this to be true, but it's KVM's ABI and
-> letting software program a fixed counter that doesn't actually count would
-> be quite bizarre).
->
-> Note, fixed counters rely on PERF_GLOBAL_CTRL.
->
-> Reviewed-by: Jim Mattson <jmattson@google.com>
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 54 +++++++++++++++----
->   1 file changed, 45 insertions(+), 9 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index 5b8687bb4639..9cd308417aeb 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -150,26 +150,46 @@ static void __guest_test_arch_event(uint8_t idx, struct kvm_x86_pmu_feature even
->   	guest_assert_event_count(idx, event, pmc, pmc_msr);
->   }
->   
-> +#define X86_PMU_FEATURE_NULL						\
-> +({									\
-> +	struct kvm_x86_pmu_feature feature = {};			\
-> +									\
-> +	feature;							\
-> +})
-> +
-> +static bool pmu_is_null_feature(struct kvm_x86_pmu_feature event)
-> +{
-> +	return !(*(u64 *)&event);
-> +}
-> +
->   static void guest_test_arch_event(uint8_t idx)
->   {
->   	const struct {
->   		struct kvm_x86_pmu_feature gp_event;
-> +		struct kvm_x86_pmu_feature fixed_event;
->   	} intel_event_to_feature[] = {
-> -		[INTEL_ARCH_CPU_CYCLES_INDEX]		 = { X86_PMU_FEATURE_CPU_CYCLES },
-> -		[INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX]	 = { X86_PMU_FEATURE_INSNS_RETIRED },
-> -		[INTEL_ARCH_REFERENCE_CYCLES_INDEX]	 = { X86_PMU_FEATURE_REFERENCE_CYCLES },
-> -		[INTEL_ARCH_LLC_REFERENCES_INDEX]	 = { X86_PMU_FEATURE_LLC_REFERENCES },
-> -		[INTEL_ARCH_LLC_MISSES_INDEX]		 = { X86_PMU_FEATURE_LLC_MISSES },
-> -		[INTEL_ARCH_BRANCHES_RETIRED_INDEX]	 = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED },
-> -		[INTEL_ARCH_BRANCHES_MISPREDICTED_INDEX] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED },
-> -		[INTEL_ARCH_TOPDOWN_SLOTS_INDEX]	 = { X86_PMU_FEATURE_TOPDOWN_SLOTS },
-> +		[INTEL_ARCH_CPU_CYCLES_INDEX]		 = { X86_PMU_FEATURE_CPU_CYCLES, X86_PMU_FEATURE_CPU_CYCLES_FIXED },
-> +		[INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX]	 = { X86_PMU_FEATURE_INSNS_RETIRED, X86_PMU_FEATURE_INSNS_RETIRED_FIXED },
-> +		/*
-> +		 * Note, the fixed counter for reference cycles is NOT the same
-> +		 * as the general purpose architectural event.  The fixed counter
-> +		 * explicitly counts at the same frequency as the TSC, whereas
-> +		 * the GP event counts at a fixed, but uarch specific, frequency.
-> +		 * Bundle them here for simplicity.
-> +		 */
-> +		[INTEL_ARCH_REFERENCE_CYCLES_INDEX]	 = { X86_PMU_FEATURE_REFERENCE_CYCLES, X86_PMU_FEATURE_REFERENCE_TSC_CYCLES_FIXED },
-> +		[INTEL_ARCH_LLC_REFERENCES_INDEX]	 = { X86_PMU_FEATURE_LLC_REFERENCES, X86_PMU_FEATURE_NULL },
-> +		[INTEL_ARCH_LLC_MISSES_INDEX]		 = { X86_PMU_FEATURE_LLC_MISSES, X86_PMU_FEATURE_NULL },
-> +		[INTEL_ARCH_BRANCHES_RETIRED_INDEX]	 = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED, X86_PMU_FEATURE_NULL },
-> +		[INTEL_ARCH_BRANCHES_MISPREDICTED_INDEX] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED, X86_PMU_FEATURE_NULL },
-> +		[INTEL_ARCH_TOPDOWN_SLOTS_INDEX]	 = { X86_PMU_FEATURE_TOPDOWN_SLOTS, X86_PMU_FEATURE_TOPDOWN_SLOTS_FIXED },
->   	};
->   
->   	uint32_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
->   	uint32_t pmu_version = guest_get_pmu_version();
->   	/* PERF_GLOBAL_CTRL exists only for Architectural PMU Version 2+. */
->   	bool guest_has_perf_global_ctrl = pmu_version >= 2;
-> -	struct kvm_x86_pmu_feature gp_event;
-> +	struct kvm_x86_pmu_feature gp_event, fixed_event;
->   	uint32_t base_pmc_msr;
->   	unsigned int i;
->   
-> @@ -199,6 +219,22 @@ static void guest_test_arch_event(uint8_t idx)
->   		__guest_test_arch_event(idx, gp_event, i, base_pmc_msr + i,
->   					MSR_P6_EVNTSEL0 + i, eventsel);
->   	}
-> +
-> +	if (!guest_has_perf_global_ctrl)
-> +		return;
-> +
-> +	fixed_event = intel_event_to_feature[idx].fixed_event;
-> +	if (pmu_is_null_feature(fixed_event) || !this_pmu_has(fixed_event))
-> +		return;
-> +
-> +	i = fixed_event.f.bit;
-> +
-> +	wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, FIXED_PMC_CTRL(i, FIXED_PMC_KERNEL));
-> +
-> +	__guest_test_arch_event(idx, fixed_event, FIXED_PMC_RDPMC_BASE + i,
-> +				MSR_CORE_PERF_FIXED_CTR0 + i,
-> +				MSR_CORE_PERF_GLOBAL_CTRL,
-> +				FIXED_PMC_GLOBAL_CTRL_ENABLE(i));
->   }
->   
->   static void guest_test_arch_events(void)
+It is not up to the low-level driver to do this, it's up to the code
+that calls into it (i.e. the fpga core code) to handle the proper
+reference counting.
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> Core code must help, and something like file_operations.owner is an
+> effective way.
 
+Yes, that should be all that you need.
+
+thanks,
+
+greg k-h
