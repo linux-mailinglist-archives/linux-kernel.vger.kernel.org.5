@@ -2,109 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 094F87E72A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A727E72AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345119AbjKIUKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        id S1344965AbjKIUN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:13:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjKIUKo (ORCPT
+        with ESMTP id S229613AbjKIUN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:10:44 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D63544AF
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:10:42 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e1021dbd28so222242466b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 12:10:42 -0800 (PST)
+        Thu, 9 Nov 2023 15:13:27 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C4544B6
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:13:24 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so17609a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 12:13:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699560641; x=1700165441; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hme3VruWKu/ViE/hI0yCfth5H5XHosene3ze2VB+fj0=;
-        b=iPNq1jgNr3/tmuR8g00EBYI2QqNsN1XknCKiSngcBwExvfP8C3HKn3WfzoKIxJHDot
-         gXLaz722ol8Vwc0xBBUEy9uwWROnAPK3k7GDCfyBv7jkGZ8zaR9o3tWGlyTRfmsASP9A
-         QH2WZrVUiK/0VRHxNPiWz1qazCRbjwe49DIGDWrpGXvf8NuPf7/zRGkKJmPxqCXudd2x
-         RNpabKsLAOx+COJwBHCMdluFUicp6v2fmbaaUF5Jga8GByHoZFMBhyXp5GuSo3jb/1JK
-         oDXLJje6e6yRTi24OMh1UncVh4nHAPkytru1zFXLEVYXfG5DDfYMZqrCVDfm0ANzbYIh
-         b3Sg==
+        d=google.com; s=20230601; t=1699560803; x=1700165603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ocUzg3FTzeoLXOisKd+4x7BoT7kOaFCafsophQHiPRo=;
+        b=gB9+gqf4zFKcks3982Hlt21j0xm+Sv3In9ZFDJhrbDRWNxf+dHrKoQu/rTf61Gcwsj
+         RAYzeF/H4p7neoBnGw11w1ufeIPq7Qngc+EGrQsPRLsXScFe75rz85fH0Trfpkvxr76u
+         /Cl1Evq1lu+lvcI+yEIVpBHxrXLa89a0DWoJlrqC45KMUva2WN9aBoUTmOo4xzpK6cYy
+         ZKYa+ymTEmQhCgwNkPu+B5h72rb/NEVr0jFI8Qfob1ieGAncL7h7JV5dxa+xYkf9DyCn
+         KMQ7n462oCPUWCCYrfpd1Z/So0s4u1j+Pzqvjxwh7EWWP/FyY6lusGGq9a0Wm/caW5bV
+         96Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699560641; x=1700165441;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hme3VruWKu/ViE/hI0yCfth5H5XHosene3ze2VB+fj0=;
-        b=UO+QlYnq5DBsHgxlMrvzFD3DTwmwIOCl32C8R8B8FQWr7bYPPHDs2sAyoWRK+W4YH7
-         ssUwPq6c5HSjegQrOPzCAIR6ex3QKR++8n9wZisjupVnxqXo781HkaGzMSibD2VKyclZ
-         tLETF74jzzSHJ29z3y1EY1YmRZKphIauu/uufpb8CHl5K2P6ta4o3i0fy+QRWelRtwYh
-         jWAp4g3H+228RZZUILhreRbmvCmY9oNl97seIgPQsQcAhbel9Z03aPYBQpiZujBy82XX
-         MSgWq5zMThhSRlz1p2SKMRZ+vbJzyPVHEN9RiXX3dt/fjYW1F+zYgYwXJt6ATOE+Ylz8
-         7OIA==
-X-Gm-Message-State: AOJu0Ywo9MOtoXRt+LhVBee1WiBGF1asvj4aY4Ak6rZPI/0riZdjFKLH
-        2ZfMP3MvZgU8F3rkJUWgQ18=
-X-Google-Smtp-Source: AGHT+IEQ/3pQdgQDPdZlU5i0auVUfXxaqEQg0tb9j5qH0CmWWQIlsc/hmEVDExu5fNvI71CUehTp+w==
-X-Received: by 2002:a17:906:7943:b0:9bd:a063:39d2 with SMTP id l3-20020a170906794300b009bda06339d2mr5681005ejo.16.1699560640630;
-        Thu, 09 Nov 2023 12:10:40 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id qx11-20020a170906fccb00b009b2f2451381sm2976019ejb.182.2023.11.09.12.10.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 12:10:40 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH] x86/head_64: Use testb instead of testl in secondary_startup_64_no_verify
-Date:   Thu,  9 Nov 2023 21:09:56 +0100
-Message-ID: <20231109201032.4439-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1699560803; x=1700165603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ocUzg3FTzeoLXOisKd+4x7BoT7kOaFCafsophQHiPRo=;
+        b=HD8Yi9R2BblAwmF5+/sYvAHUVp/FUKMf/yJNJVmJQ9xDSA4VyxDSZyLrm4JyIQ5cny
+         RdwYFR56uDTzRtvnana9GlUL2NRnukMwGD8ELhdDZ9Bywg1O9fy9EphNm0Kt7yDEmPFI
+         FVLcl+XzZJDcrhmzRqIZA40s44LevLpRlF0wNaHQqwzS9Sy2crDVZQF7Q9QotpByl7kj
+         oEEcSWEEZlC+vlOj0BhrFuaNFhULIHZpCMPVStSaKyvrNOkfcOE6cDIkTJKJ0jTNcBcV
+         Rl0DlAod6pADYTMwKWOJt7KrBbNAOSK8zRa2YYAunhBYETpIbEUaM+i0rEpLq+S/8Jfx
+         sdBg==
+X-Gm-Message-State: AOJu0YzqhErdjF6T5y99kjEAwEoLnpZtHbCW7UMaEpunzXOxTWU/WcJv
+        p8CIzQrst9xjIxwYE+udWG9sA09QLZpq+VlOHIFaeQ==
+X-Google-Smtp-Source: AGHT+IFl3f7I4jfsKcQ/FZf0kEtsWD15V5uxxnAkbhemH9QBkuW16e1KUvDsXvbC5KcxaO60TUay/oB5kkJSbVpYeBA=
+X-Received: by 2002:a05:6402:2b8a:b0:544:e2b8:ba6a with SMTP id
+ fj10-20020a0564022b8a00b00544e2b8ba6amr662601edb.3.1699560802749; Thu, 09 Nov
+ 2023 12:13:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231109180646.2963718-1-khorenko@virtuozzo.com> <20231109180646.2963718-2-khorenko@virtuozzo.com>
+In-Reply-To: <20231109180646.2963718-2-khorenko@virtuozzo.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 9 Nov 2023 12:13:08 -0800
+Message-ID: <CALMp9eRpq+vYDD7s9t54ZMOK6WaXTY_trKzSE3R2vWP9PeSCOA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] KVM: x86/vPMU: Check PMU is enabled for vCPU before
+ searching for PMC
+To:     Konstantin Khorenko <khorenko@virtuozzo.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Denis V. Lunev" <den@virtuozzo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to use testl when checking LSB with a test instruction.
-Use testb, which is three bytes shorter:
+On Thu, Nov 9, 2023 at 10:24=E2=80=AFAM Konstantin Khorenko
+<khorenko@virtuozzo.com> wrote:
+>
+> The following 2 mainstream patches have introduced extra
+> events accounting:
+>
+>   018d70ffcfec ("KVM: x86: Update vPMCs when retiring branch instructions=
+")
+>   9cd803d496e7 ("KVM: x86: Update vPMCs when retiring instructions")
+>
+> kvm_pmu_trigger_event() iterates over all PMCs looking for enabled and
+> this appeared to be fast on Intel CPUs and quite expensive for AMD CPUs.
+>
+> kvm_pmu_trigger_event() can be optimized not to iterate over all PMCs in
+> the following cases:
+>
+>   * if PMU is completely disabled for a VM, which is the default
+>     configuration
+>   * if PMU v2 is enabled, but no PMCs are configured
+>
+> For Intel CPUs:
+>   * By default PMU is disabled for KVM VMs (<pmu state=3D'off'/> or absen=
+t
+>     in the VM config xml which results in "-cpu pmu=3Doff" qemu option).
+>     In this case pmu->version is reported as 0 for the appropriate vCPU.
+>
+>   * According to Intel=C2=AE 64 and IA-32 Architectures Software Develope=
+r=E2=80=99s
+>     Manual PMU version 2 and higher provide IA32_PERF_GLOBAL_CTRL MSR
+>     which in particular contains bits which can be used for efficient
+>     detection which fixed-function performance and general-purpose
+>     performance monitoring counters are enabled at the moment.
+>
+>   * Searching for enabled PMCs is fast and the optimization does not
+>     bring noticeable performance increase.
+>
+> For AMD CPUs:
+>   * For CPUs older than Zen 4 pmu->version is always reported as "1" for
+>     the appropriate vCPU, no matter if PMU is disabled for KVM VMs
+>     (<pmu state=3D'off'/>) or enabled.
+>     So for "old" CPUs currently it's impossible to detect when PMU is
+>     disabled for a VM and skip the iteration by PMCs efficiently.
+>
+>   * Since Zen 4 AMD CPUs support PMU v2 and in this case pmu->version
+>     should be reported as "2" and IA32_PERF_GLOBAL_CTRL MSR is available
+>     and can be used for fast and efficient check for enabled PMCs.
+>     https://www.phoronix.com/news/AMD-PerfMonV2-Linux-Patches
+>     https://www.phoronix.com/news/AMD-PerfMonV2-Guests-KVM
+>
+>   * Optimized preliminary check for enabled PMCs on AMD Zen 4 CPUs
+>     should give quite noticeable performance improvement.
+>
+> AMD performance results:
+> CPU: AMD Zen 3 (three!): AMD EPYC 7443P 24-Core Processor
+>
+>  * The test binary is run inside an AlmaLinux 9 VM with their stock kerne=
+l
+>    5.14.0-284.11.1.el9_2.x86_64.
+>  * Test binary checks the CPUID instractions rate (instructions per sec).
+>  * Default VM config (PMU is off, pmu->version is reported as 1).
+>  * The Host runs the kernel under test.
+>
+>  # for i in 1 2 3 4 5 ; do ./at_cpu_cpuid.pub ; done | \
+>    awk -e '{print $4;}' | \
+>    cut -f1 --delimiter=3D'.' | \
+>    ./avg.sh
+>
+> Measurements:
+> 1. Host runs stock latest mainstream kernel commit 305230142ae0.
+> 2. Host runs same mainstream kernel + current patch.
+> 3. Host runs same mainstream kernel + current patch + force
+>    guest_pmu_is_enabled() to always return "false" using following change=
+:
+>
+>    -       if (pmu->version >=3D 2 && !(pmu->global_ctrl & ~pmu->global_c=
+trl_mask))
+>    +       if (pmu->version =3D=3D 1 && !(pmu->global_ctrl & ~pmu->global=
+_ctrl_mask))
+>
+>    --------------------------------------
+>    | Kernels    | CPUID rate            |
+>    --------------------------------------
+>    | 1.         | 1360250               |
+>    | 2.         | 1365536 (+ 0.4%)      |
+>    | 3.         | 1541850 (+13.4%)      |
+>    --------------------------------------
+>
+> Measurement (2) gives some fluctuation, the performance is not increased
+> because the test was done on a Zen 3 CPU, so we are unable to use fast
+> check for active PMCs.
+> Measurement (3) shows expected performance boost on a Zen 4 CPU under
+> the same test.
+>
+> Signed-off-by: Konstantin Khorenko <khorenko@virtuozzo.com>
+> ---
+>  arch/x86/kvm/pmu.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 9ae07db6f0f6..290d407f339b 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -731,12 +731,38 @@ static inline bool cpl_is_matched(struct kvm_pmc *p=
+mc)
+>         return (static_call(kvm_x86_get_cpl)(pmc->vcpu) =3D=3D 0) ? selec=
+t_os : select_user;
+>  }
+>
+> +static inline bool guest_pmu_is_enabled(struct kvm_pmu *pmu)
+> +{
+> +       /*
+> +        * Currently VMs do not have PMU settings in configs which defaul=
+ts
+> +        * to "pmu=3Doff".
+> +        *
+> +        * For Intel currently this means pmu->version will be 0.
+> +        * For AMD currently PMU cannot be disabled:
 
-   f6 05 00 00 00 00 01    testb  $0x1,0x0(%rip)
-
-vs:
-
-   f7 05 00 00 00 00 01    testl  $0x1,0x0(%rip)
-   00 00 00
-
-for the same effect.
-
-No functional changes intended.
-
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/kernel/head_64.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 086a2c3aaaa0..1f79d809305d 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -182,7 +182,7 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	/* Enable PAE mode, PSE, PGE and LA57 */
- 	orl	$(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
- #ifdef CONFIG_X86_5LEVEL
--	testl	$1, __pgtable_l5_enabled(%rip)
-+	testb	$1, __pgtable_l5_enabled(%rip)
- 	jz	1f
- 	orl	$X86_CR4_LA57, %ecx
- 1:
--- 
-2.41.0
-
+Isn't that what KVM_PMU_CAP_DISABLE is for?
