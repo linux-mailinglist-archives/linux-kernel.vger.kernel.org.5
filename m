@@ -2,172 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B827E678A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91F17E6783
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbjKIKO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:14:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38388 "EHLO
+        id S232312AbjKIKNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbjKIKOZ (ORCPT
+        with ESMTP id S230055AbjKIKNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:14:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5972D7D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699524821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3rYhpoB4lYmS4MLIzZUo4ZMf6R8bUZVPeYV6RdLZieo=;
-        b=E2v8fSxBvFkLindDHRP2KJPgblNMHkW5wXqmQ+/apgPHwlPiakJhyxihtFqlR+fqJRJw56
-        HzFnXWYIGjKlxkrikxytVcuOz13Yhfz/VL9zfUmXIC+bxB4eLhhtVph02VZYZA9niZNBb9
-        mp2Q5zwCIOB1CgJt0jSs2y6MM3F/XpM=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-487-mmbZ3kFmOBih4YuMeR5HMw-1; Thu, 09 Nov 2023 05:13:39 -0500
-X-MC-Unique: mmbZ3kFmOBih4YuMeR5HMw-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2800fffc08eso192801a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:13:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699524814; x=1700129614;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3rYhpoB4lYmS4MLIzZUo4ZMf6R8bUZVPeYV6RdLZieo=;
-        b=Yl/047Dj9+T7ESXEgh084Atnwzx/NbVU7RpfTKiqD2k7qbc5sxHp8N2Ppv+vZWSCK9
-         Vmy9WC0Uk36SJPP30z0Y8GngXfTT7HStE5eLMQOSKIAV+qR8oUaKPGyZWgIO+sTIgO2P
-         moU+4CwrvZMSwvSHPnR+r7Ik41ceqwwgqopMyHUeBuORphpb3mFO+US9fjvUufDxHMUz
-         xkIMRi9NX4jUOsD3VsFV6pe0UExn++1O2NnztA3rK2mJPLrGq7ITuykrKUAKVgRGexFd
-         Kw4RL/gWmO696GCUg7/FHVp+PYqsK4Pqv0mA7g6Odl7tjas4aVrX2r5XyjGiW2NvNwDS
-         kr8g==
-X-Gm-Message-State: AOJu0YxVqnDYFA39MyxL50hjtbkwRZ+lD81VemhJmfg5t3HkCE9lUxjV
-        RcC3anUxGw30F98LaoPh+u8S52G4j5HXTmjvtIJgKDlLQu/m4GAFqAJpxaTp7GcPErT2aU+Ssmi
-        oQ+vbB+sfOXk8z0LIULwYModi
-X-Received: by 2002:a17:903:120e:b0:1cc:ebe:5547 with SMTP id l14-20020a170903120e00b001cc0ebe5547mr5043360plh.0.1699524813773;
-        Thu, 09 Nov 2023 02:13:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMYccyPUYXdRLbiWAt/Rrr2lff8DkVfjHrlmnPr9rVOEThxcSXfzeRdAMTZ0+vEY8CCgW5xw==
-X-Received: by 2002:a17:903:120e:b0:1cc:ebe:5547 with SMTP id l14-20020a170903120e00b001cc0ebe5547mr5043330plh.0.1699524813447;
-        Thu, 09 Nov 2023 02:13:33 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id p2-20020a170902e74200b001c60a2b5c61sm3165370plf.134.2023.11.09.02.13.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 02:13:33 -0800 (PST)
-Message-ID: <6341a77d-ba42-3f3a-4a2a-b598fb5c0e20@redhat.com>
-Date:   Thu, 9 Nov 2023 18:13:26 +0800
+        Thu, 9 Nov 2023 05:13:36 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE532D6A;
+        Thu,  9 Nov 2023 02:13:34 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BB51C660745D;
+        Thu,  9 Nov 2023 10:13:31 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699524813;
+        bh=tF00I9rvCUL/jzVG4vb3E9oiI67esankiKYonVaACl8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iL0EXaSzBN2yXBqt+in7a4pGMkwKIY7NFpOgD7ZWB0RKGkReOXRfR2KOFHOZlmF2e
+         XnFpq97cHi8jlcDHVlUlbKYWUCHva3Vk3O8ZGybGOyJ0GlVH80bryLtHMeYCA4GN6E
+         zcLMXldER/e4h+WpVYXyahJgKhgRA8NJwrLinO9jL1fDQpal8aGE68DSOLh+aHIhfx
+         nXFi+GF7906kxKNhhIRSFrRNe4YQdozco1jRJDTp3ONQ/z0Ovf9P7Coz/xEKtbM8mg
+         +p/q7Z/0kwExiPmOen9bJS2pO2hOcxKkqDAWUwZlvOEuQCEEQ29yeodPb6koT+A/4I
+         y4kzLsW4dxrgw==
+Message-ID: <99945dbe-194b-429c-b8ea-fc71dbc0b3b4@collabora.com>
+Date:   Thu, 9 Nov 2023 11:13:28 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 07/22] drivers: base: Allow parts of
- GENERIC_CPU_DEVICES to be overridden
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 25/56] media: pci: tw68: Stop direct calls to queue
+ num_buffers field
 Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLG-00CTx8-CG@rmk-PC.armlinux.org.uk>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <E1r0JLG-00CTx8-CG@rmk-PC.armlinux.org.uk>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-26-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-26-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Benjamin,
 
-
-On 11/7/23 18:29, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> future.
 > 
-> Architectures often have extra per-cpu work that needs doing
-> before a CPU is registered, often to determine if a CPU is
-> hotpluggable.
-> 
-> To allow the ACPI architectures to use GENERIC_CPU_DEVICES, move
-> the cpu_register() call into arch_register_cpu(), which is made __weak
-> so architectures with extra work can override it.
-> This aligns with the way x86, ia64 and loongarch register hotplug CPUs
-> when they become present.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 > ---
-> Changes since RFC:
->   * Dropped __init from x86/ia64 arch_register_cpu()
-> Changes since RFC v2:
->   * Dropped unnecessary Loongarch asm/cpu.h changes
-> ---
->   drivers/base/cpu.c  | 14 ++++++++++----
->   include/linux/cpu.h |  4 ++++
->   2 files changed, 14 insertions(+), 4 deletions(-)
+>   drivers/media/pci/tw68/tw68-video.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 34b48f660b6b..579064fda97b 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -525,19 +525,25 @@ bool cpu_is_hotpluggable(unsigned int cpu)
->   EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
->   
->   #ifdef CONFIG_GENERIC_CPU_DEVICES
-> -static DEFINE_PER_CPU(struct cpu, cpu_devices);
-> +DEFINE_PER_CPU(struct cpu, cpu_devices);
-> +
-> +int __weak arch_register_cpu(int cpu)
-> +{
-> +	return register_cpu(&per_cpu(cpu_devices, cpu), cpu);
-> +}
->   #endif
->   
->   static void __init cpu_dev_register_generic(void)
+> diff --git a/drivers/media/pci/tw68/tw68-video.c b/drivers/media/pci/tw68/tw68-video.c
+> index 773a18702d36..35296c226019 100644
+> --- a/drivers/media/pci/tw68/tw68-video.c
+> +++ b/drivers/media/pci/tw68/tw68-video.c
+> @@ -360,13 +360,13 @@ static int tw68_queue_setup(struct vb2_queue *q,
+>   			   unsigned int sizes[], struct device *alloc_devs[])
 >   {
-> -#ifdef CONFIG_GENERIC_CPU_DEVICES
->   	int i;
->   
-> +	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> +		return;
-> +
->   	for_each_present_cpu(i) {
-> -		if (register_cpu(&per_cpu(cpu_devices, i), i))
-> +		if (arch_register_cpu(i))
->   			panic("Failed to register CPU device");
->   	}
-> -#endif
->   }
->   
->   #ifdef CONFIG_GENERIC_CPU_VULNERABILITIES
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index fc8094419084..1e982d63eae8 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -88,6 +88,10 @@ extern ssize_t arch_cpu_probe(const char *, size_t);
->   extern ssize_t arch_cpu_release(const char *, size_t);
->   #endif
->   
-> +#ifdef CONFIG_GENERIC_CPU_DEVICES
-> +DECLARE_PER_CPU(struct cpu, cpu_devices);
-> +#endif
-> +
->   /*
->    * These states are not related to the core CPU hotplug mechanism. They are
->    * used by various (sub)architectures to track internal state
+>   	struct tw68_dev *dev = vb2_get_drv_priv(q);
 
--- 
-Shaoqin
+Why not
+
+	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+
+just like in other patches in the series?
+
+Regards,
+
+Andrzej
+
+> -	unsigned tot_bufs = q->num_buffers + *num_buffers;
+> +	unsigned tot_bufs = vb2_get_num_buffers(q) + *num_buffers;
+>   	unsigned size = (dev->fmt->depth * dev->width * dev->height) >> 3;
+>   
+>   	if (tot_bufs < 2)
+>   		tot_bufs = 2;
+>   	tot_bufs = tw68_buffer_count(size, tot_bufs);
+> -	*num_buffers = tot_bufs - q->num_buffers;
+> +	*num_buffers = tot_bufs - vb2_get_num_buffers(q);
+>   	/*
+>   	 * We allow create_bufs, but only if the sizeimage is >= as the
+>   	 * current sizeimage. The tw68_buffer_count calculation becomes quite
 
