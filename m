@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F52E7E6BB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CC47E6BBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbjKINy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:54:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S234238AbjKINzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbjKINyY (ORCPT
+        with ESMTP id S232307AbjKINzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:54:24 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654DD272C;
-        Thu,  9 Nov 2023 05:54:22 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-6707401e1edso5663596d6.1;
-        Thu, 09 Nov 2023 05:54:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699538061; x=1700142861; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z42HWweLYTdSGX0W+HlQsOPqVhtBfxSukaDoEFV1YIc=;
-        b=Y2rEq1T9KvlTrchTQ2UGZ1IkHn+b9gr+ie7Z3wEcXA1gbOYdGWlfGs0WMKRlLWERmg
-         kQLg4PWuhotFisZ8V8CX5buLRE9kkihc9YazASSOq0RxFO7evjPE5tp5eL81oGFQ7W8g
-         i/cRBndnrJh8EE6SWm96M+cWL5Ke11iwyyVGbWU+fK1qxs96V8bYRsYwFDW2qFmOjA6+
-         Q6EmLGd0En4GR+AkW4s0DJZcqoVRJKIq8NZr45s5Tnk84akvUg/ByqfLIohjn3mTjsey
-         EZgPUCPWkPf+ezrnZP88pGoW1zsWRAVTPUmTMzskTpwRE6Dr4N7DO5DMmTV1JYl8E5Bd
-         zAKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699538061; x=1700142861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z42HWweLYTdSGX0W+HlQsOPqVhtBfxSukaDoEFV1YIc=;
-        b=g59UySEDgAGmE9R/qXi4QDcF/jDnE56QCwuZQXx/M8HgOMM39gQ9KsjN6xlscR1JsC
-         wmly+HfJNp14whRqCDFp8woeC6rRgTH/AFo11YFR43TIojlEWsp2wIdvTG0qqwDZShmt
-         hkL3U6GpB1mpBd5GxZjbjTthTMGbV1uoBtTIbZy9VBnc5Tj4/RwF9shvObQ6WKPNCaQW
-         rlwGoda0l1Xrz8sY/+BSeEHwgTS7dxfZJWU2N0TMDMx0SjYLk7YH9XpiKziPQsiyvTmP
-         UvydLBcLnHytMt8bM3ms7YTm3NvBaS6qJoEFrfMB1r1VmuTVB2Aef++8L3HWWQCzypNK
-         d1jg==
-X-Gm-Message-State: AOJu0Yzboq2obdR19qQtyoZMwBZ3u9/dJNUusEHkgfp/19cM3zMq+WuX
-        3Z/QAhh4HrZsOfoK/s6/umaz3vtk6wU3AiU8vLk=
-X-Google-Smtp-Source: AGHT+IGADWikO6oNTwaA0U14hvH4C+OCIsQvy7sSD8b7QQ4FEnhv+kPj1zSEv3ve+XNsJqkQ0pLn8siSSOi7dUBWSdg=
-X-Received: by 2002:ad4:5e8f:0:b0:66d:627e:24c0 with SMTP id
- jl15-20020ad45e8f000000b0066d627e24c0mr5336741qvb.38.1699538061503; Thu, 09
- Nov 2023 05:54:21 -0800 (PST)
+        Thu, 9 Nov 2023 08:55:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1177E272C;
+        Thu,  9 Nov 2023 05:55:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C0D8C433CC;
+        Thu,  9 Nov 2023 13:55:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699538128;
+        bh=PRSbRNUDpo7VHbla1Uy5eT+4E78wjB1pL4qy+Ym1s9E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eg4W2xZrybsw1e1QnQ5CPHnXWTNBhcLj2+ItdMcjGqoHfKmkRSu19uRP5tYsVV+Qt
+         sWxcV3WLq9+CmG3NCYBdA057lIc5OqkcqXnzT58qdTfw6wLPPH80C/OtJMRdmTP7J/
+         ygw7DmfiARV+zmzIdNRTF2L62K/sngHhQpalr7peO+O3i47/rBoYprtl1PPGdNg77M
+         lsF7GzyPMntgLsejQArqEy7DY6YwaEhhUGc6bG8/DlIYYJ3mp1ZhpTzQNZSQ2OJX8O
+         dFj0UC8LT0pZxsmWqPFMsRB8u2nBiUnuyz8KQqd7IbcveTid72TIhzT7YlXxdr600d
+         oeDxO/OCzr6eQ==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5079f6efd64so1055732e87.2;
+        Thu, 09 Nov 2023 05:55:28 -0800 (PST)
+X-Gm-Message-State: AOJu0YwUTz8t3XjrTxVecnk+EHo/9/BhNYs1QBWLNDQFyjjMJvmx/cHY
+        JlJ1YYiNtJbp5YImnB2xeq1tpBQuqDqYF2yR0w==
+X-Google-Smtp-Source: AGHT+IF/PvyWrTicWn11hGwtbH/sTmZ3VNLpwfON74Eg9nVNXV0YZB8sj+Mc39cdyBdA2jEdrvTPxgJBhrkGnynW7/M=
+X-Received: by 2002:a19:2d5b:0:b0:509:4a02:49f6 with SMTP id
+ t27-20020a192d5b000000b005094a0249f6mr1227854lft.34.1699538126665; Thu, 09
+ Nov 2023 05:55:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20231109085419.84948-1-heminhong@kylinos.cn> <ZUzSM37FWz6sgH9n@rigel>
-In-Reply-To: <ZUzSM37FWz6sgH9n@rigel>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 9 Nov 2023 15:53:45 +0200
-Message-ID: <CAHp75Vd5Ea_yFb7tEQw5ZBr90CcETa-_BsbfpfFshFx8ddZqQA@mail.gmail.com>
-Subject: Re: [PATCH] tools/gpio: prevent resource leak
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     heminhong <heminhong@kylinos.cn>, linus.walleij@linaro.org,
-        brgl@bgdev.pl, andy@kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
+ <20231106144831.GA317907-robh@kernel.org> <5850d5ac-e735-4358-866d-f410b00ba39d@acm.org>
+In-Reply-To: <5850d5ac-e735-4358-866d-f410b00ba39d@acm.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 9 Nov 2023 07:55:14 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+XB5p_K3C+rc5XetQ-Xfxu4umNFzcF0idB2hhZvS7HLA@mail.gmail.com>
+Message-ID: <CAL_Jsq+XB5p_K3C+rc5XetQ-Xfxu4umNFzcF0idB2hhZvS7HLA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: ufs: Add msi-parent for UFS MCQ
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Ziqi Chen <quic_ziqichen@quicinc.com>, quic_asutoshd@quicinc.com,
+        quic_cang@quicinc.com, mani@kernel.org, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_rampraka@quicinc.com,
+        linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 2:36=E2=80=AFPM Kent Gibson <warthog618@gmail.com> w=
-rote:
+On Mon, Nov 6, 2023 at 11:56=E2=80=AFAM Bart Van Assche <bvanassche@acm.org=
+> wrote:
 >
-> On Thu, Nov 09, 2023 at 04:54:19PM +0800, heminhong wrote:
-> > In the main() function, the open() function is used to open the file.
-> > When the file is successfully opened, fd is used to interact with the f=
-ile,
-> > but the fd is not closed, it will cause resource leak.
+> On 11/6/23 06:48, Rob Herring wrote:
+> > On Wed, Nov 01, 2023 at 06:48:13PM +0800, Ziqi Chen wrote:
+> >> The Message Signaled Interrupts (MSI) has been introduced
+> >> to UFS driver since the MCQ be enabled.
 > >
+> > Not really relevant when a driver supported MSI, but the when the h/w
+> > did. Has UFS always supported MSI? It was added in some version of the
+> > spec?
 >
-> All open files are automatically closed when a process exits.
-> That includes both those returned by open() and by the GPIO ioctls.
-> So explicitly closing them here before exiting is redundant.
+> MSI support has been introduced in UFSHCI version 4.0 and I think that
+> the controller vendor can decide whether or not to implement MSI. Does
+> this mean that the patch needs to be improved?
 
-I would argue that this is a good practice for GPIO cases.
-More the GPIOs we have, the more line handles we can get, then default
-MAX open FD limit may occur. The best is to combine both.
+Yes, this information is what should be in the commit msg rather than
+driver details.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Rob
