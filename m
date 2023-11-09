@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151C77E63F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 07:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97CD7E63FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 07:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjKIGgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 01:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        id S232521AbjKIGh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 01:37:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjKIGgR (ORCPT
+        with ESMTP id S230300AbjKIGh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 01:36:17 -0500
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C765426B0
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 22:36:14 -0800 (PST)
-Message-ID: <8d78d1d8-85e7-41b6-9ba0-f18c2cb94427@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699511772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dQeTuG/d1jTRxBIJaHmdqmi6OeHpWS7JPZsZS9fBp/4=;
-        b=aa8BWohLbAhw02n9QYFHUOC2+sWcbckgNiTM55rtVutnZ6wDkp2y3YVJKFSONtJhGgQSXs
-        pPsCJkYRFLaLxdSaDIo4eRqOEXYdOqI1BdzJ35IRIx6baOz6ltiALON/BlVwZkZ/9nmycc
-        Ggx+y0ZifeeDEreqv3S4Y30W13cZWdQ=
-Date:   Thu, 9 Nov 2023 14:36:02 +0800
+        Thu, 9 Nov 2023 01:37:58 -0500
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F1426AF;
+        Wed,  8 Nov 2023 22:37:54 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3A96bTwj087373;
+        Thu, 9 Nov 2023 14:37:29 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SQsZT1xLrz2MgXmR;
+        Thu,  9 Nov 2023 14:32:33 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
+ (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 9 Nov
+ 2023 14:37:27 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>, <zhang.lyra@gmail.com>,
+        <orsonzhai@gmail.com>, <baolin.wang@linux.alibaba.com>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH] mmc: sprd: Fix vqmmc not shutting down after the card was pulled
+Date:   Thu, 9 Nov 2023 14:37:18 +0800
+Message-ID: <20231109063718.316-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
-References: <20231103095549.490744-1-lizhijian@fujitsu.com>
- <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
- <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
- <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
- <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <037148c3-c15b-4859-9b82-8349fcb54d0a@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+X-MAIL: SHSQR01.spreadtrum.com 3A96bTwj087373
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+With cat regulator_summary, we found that vqmmc was not shutting
+down after the card was pulled.
 
-在 2023/11/9 10:24, Zhijian Li (Fujitsu) 写道:
->
-> On 06/11/2023 21:58, Zhu Yanjun wrote:
->> 在 2023/11/6 12:07, Zhijian Li (Fujitsu) 写道:
->>>
->>> On 03/11/2023 21:00, Zhu Yanjun wrote:
->>>> 在 2023/11/3 17:55, Li Zhijian 写道:
->>>>> I don't collect the Reviewed-by to the patch1-2 this time, since i
->>>>> think we can make it better.
->>>>>
->>>>> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
->>>>>              Almost nothing change from V1.
->>>>> Patch3-5: cleanups # newly add
->>>>> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully tested
->>>>>
->>>>> My bad arm64 mechine offten hangs when doing blktests even though i use the
->>>>> default siw driver.
->>>>>
->>>>> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported yet.
->>>> Zhijian
->>>>
->>>> Please read carefully the whole discussion about this problem. You will find a lot of valuable suggestions, especially suggestions from Jason.
->>> Okay, i will read it again. If you can tell me which thread, that would be better.
->>>
->>>
->>>>    From the whole discussion, it seems that the root cause is very clear.
->>>> We need to fix this prolem. Please do not send this kind of commits again.
->>>>
->>> Let's think about what's our goal first.
->>>
->>> - 1) Fix the panic[1] and only support PAGE_SIZE MR
->>> - 2) support PAGE_SIZE aligned MR
->>> - 3) support any page_size MR.
->>>
->>> I'm sorry i'm not familiar with the linux MM subsystem. It seem it's safe/correct to access
->>> address/memory across pages start from the return of kmap_loca_page(page).
->>> In other words, 2) is already native supported, right?
->> Yes. Please read the comments from Jason, Leon and Bart. They shared a lot of good advice.
-> I read the whole discussion again, but I believed i still missed a lost.
->
->
->>  From them, we can know the root cause and how to fix this problem.
-> I don't think i misunderstood the root cause:
-> RXE splits memory into PAGE_SIZE units in the xarray. As a result, when we extract an address from the xarray,
-> we should not access address beyond a PAGE_SIZE window.
+cat /sys/kernel/debug/regulator/regulator_summary
+1.before fix
+1)Insert SD card
+ vddsdio		1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
 
-This is a complicated problem and it is deeply involved with memory 
-management.
+2)Pull out the SD card
+ vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
 
-A guy who is very familiar with linux MM is to provide a better solution 
-to this problem.
+2.after fix
+1)Insert SD cardt
+ vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
 
-I expect a whole perfect solution to this problem.
+2)Pull out the SD card
+ vddsdio		0    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  0                         0mA  3500mV  3600mV
 
-Zhu Yanjun
+Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
+Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+---
+ drivers/mmc/host/sdhci-sprd.c | 62 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
->
-> IIUC, then how to fix it?
-> - I'm not going to "removing page_size set", it's out of this patch scope.
->     Feel free to do the cleanup separately.
-> - I'm not going to fix the NVMe/rtrs etc problems in this patch set when 64K page is enabled.
->     But RXE will tell its callers explicitly "RXE don't don't support such page_size"
-> - I didn't state RXE supports PAGE_SIZE aligned page_size MR before refactoring rxe_map_mr_sg(),
->     because I worry about it was not correct to access address beyond the PAGE_SIZE window.
->
-> What I should do next?
-> Just state "RXE support PAGE_SIZE aligned MR" ? Then patches become
-> RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE aligned MR
-> RDMA/rxe: set RXE_PAGE_SIZE_CAP to starting from PAGE_SIZE
->
-> Or just keep we have done in the V1
->
-> Thanks
->
->
->> Good Luck.
->>
->> Zhu Yanjun
->>
->>> I get totally confused now.
->>>
->>>
->>>
->>>> Zhu Yanjun
->>>>
->>>>> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
->>>>>
->>>>> Li Zhijian (6):
->>>>>      RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
->>>>>      RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
->>>>>      RDMA/rxe: remove unused rxe_mr.page_shift
->>>>>      RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
->>>>>        page_list
->>>>>      RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
->>>>>      RDMA/rxe: Support PAGE_SIZE aligned MR
->>>>>
->>>>>     drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
->>>>>     drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
->>>>>     drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
->>>>>     3 files changed, 48 insertions(+), 43 deletions(-)
->>>>>
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 6b84ba27e6ab..b5f22e48e571 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -90,6 +90,7 @@ struct sdhci_sprd_host {
+ 	u32 base_rate;
+ 	int flags; /* backup of host attribute */
+ 	u32 phy_delay[MMC_TIMING_MMC_HS400 + 2];
++	u8 power_mode;
+ };
+ 
+ enum sdhci_sprd_tuning_type {
+@@ -416,12 +417,71 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
+ 	mmc_request_done(host->mmc, mrq);
+ }
+ 
++static void sdhci_sprd_signal_voltage_switch(struct sdhci_host *host, bool enable)
++{
++	const char *name = mmc_hostname(host->mmc);
++	bool on;
++
++	if (IS_ERR(host->mmc->supply.vqmmc))
++		return;
++
++	on = regulator_is_enabled(host->mmc->supply.vqmmc);
++	if (!(on ^ enable))
++		return;
++
++	if (enable) {
++		if (regulator_enable(host->mmc->supply.vqmmc))
++			pr_err("%s: signal voltage enable fail!\n", name);
++		else if (regulator_is_enabled(host->mmc->supply.vqmmc))
++			pr_debug("%s: signal voltage enable success!\n", name);
++		else
++			pr_err("%s: signal voltage enable hw fail!\n", name);
++	} else {
++		if (regulator_disable(host->mmc->supply.vqmmc))
++			pr_err("%s: signal voltage disable fail\n", name);
++		else if (!regulator_is_enabled(host->mmc->supply.vqmmc))
++			pr_debug("%s: signal voltage disable success!\n", name);
++		else
++			pr_err("%s: signal voltage disable hw fail\n", name);
++	}
++}
++
++static void sdhci_sprd_set_power(struct sdhci_host *host, unsigned char mode,
++				 unsigned short vdd)
++{
++	struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
++	struct mmc_host *mmc = host->mmc;
++
++	if (sprd_host->power_mode == mmc->ios.power_mode)
++		return;
++
++	switch (mode) {
++	case MMC_POWER_OFF:
++		sdhci_sprd_signal_voltage_switch(host, false);
++		if (!IS_ERR(mmc->supply.vmmc))
++			mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, 0);
++		break;
++	case MMC_POWER_ON:
++	case MMC_POWER_UP:
++		if (!IS_ERR(mmc->supply.vmmc))
++			mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, vdd);
++
++		/* waiting for mmc->supply.vmmc to stabilize */
++		usleep_range(200, 250);
++		sdhci_sprd_signal_voltage_switch(host, true);
++		break;
++	}
++
++	sprd_host->power_mode = mmc->ios.power_mode;
++}
++
+ static struct sdhci_ops sdhci_sprd_ops = {
+ 	.read_l = sdhci_sprd_readl,
+ 	.write_l = sdhci_sprd_writel,
+ 	.write_w = sdhci_sprd_writew,
+ 	.write_b = sdhci_sprd_writeb,
+ 	.set_clock = sdhci_sprd_set_clock,
++	.set_power = sdhci_sprd_set_power,
+ 	.get_max_clock = sdhci_sprd_get_max_clock,
+ 	.get_min_clock = sdhci_sprd_get_min_clock,
+ 	.set_bus_width = sdhci_set_bus_width,
+@@ -805,6 +865,8 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+ 	sprd_host->version = ((host->version & SDHCI_VENDOR_VER_MASK) >>
+ 			       SDHCI_VENDOR_VER_SHIFT);
+ 
++	sprd_host->power_mode = MMC_POWER_OFF;
++
+ 	pm_runtime_get_noresume(&pdev->dev);
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-- 
+2.17.1
+
