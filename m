@@ -2,262 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7357E75C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74547E755E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345445AbjKJAOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
+        id S1345367AbjKIX4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:56:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234801AbjKJAOP (ORCPT
+        with ESMTP id S229629AbjKIX4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:14:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94364680
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 16:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699575252; x=1731111252;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=lSnspuMIwuprMq/bH3iGi3403dX/kcExvXa3qR6TZXU=;
-  b=SXEy8gkzpKikIyniFmRhGWONNk/OG+5/j/lLvK3VTmXFd0wYNTEYG9Vw
-   egseKzsLgchpw88bUbDIaexlHY1ml2ErZ3PTLFGwXUd2Apf64UMszfpV3
-   3iwSbpI97K9fAVr65xjDYUjiot6joYmiZOXG2zfbAj9vW0r/9wFxmNE9y
-   +4FLRcGdbQ9A5zS74pMnPhhGeOvJKw7AdqDPgHug/VkEVcLrAAkUa8nEU
-   oRafbNQaJRez40WKHUNvUzb6sF/ev9ydJzU5onX3URmwOevR1tC/Qd60c
-   vv1E7oBEOfKGR9MWjcVuVUbD2Tze63zVY9n2kDJr3h85+RzXsow+6SwpP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="456597086"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="456597086"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:14:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="11307866"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 09 Nov 2023 16:14:02 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1F9r-0009Go-2O;
-        Fri, 10 Nov 2023 00:13:59 +0000
-Date:   Fri, 10 Nov 2023 07:53:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Calvin Owens <calvinowens@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
-Message-ID: <202311100727.f9HgBYnq-lkp@intel.com>
+        Thu, 9 Nov 2023 18:56:53 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BED44A4
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:56:50 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77a453eb01cso91604785a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 15:56:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek.ca; s=google; t=1699574210; x=1700179010; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KOGnrwGuPglkUh0+Fj19u8kSBzGFAbbmPxBOgbMVl8k=;
+        b=J0p519Rt8Ua3wXuRjkUln7egoTJqPVxUaP5G0UQL3yCZQWHi7PYrWPIiafvqqzmjLJ
+         tl8PrcOsxMmKPZbrtNIiqyr9LTn8urLLpyld/AAQ5XxauiA8IB8IOqpSlnBYZd8371na
+         KCYemOqnh4NugGZTtwN1WzckYoY6XeMXOUVQ3Rucu+F8sURvar7t+Zr0CMZquFf4Tm6k
+         5Mnc2IlL+xubCps0iXc5osf8unoCs8geVlIgmIr4J/h9oS3LwDeOJ4AVRuYv7VIhBe14
+         tp0zlz520slZNj5fLn0KTXKwB+oJ09EIxkm6AfL2q/BYTIQysCwaBW+D1mYg7hqGYbDu
+         cFFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699574210; x=1700179010;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KOGnrwGuPglkUh0+Fj19u8kSBzGFAbbmPxBOgbMVl8k=;
+        b=OTZ8pLcAlXB5x0gaL4qu5BbISIj78mcA0QLuQsM/mFxfqKQClIDwCkb7svwStXYeVJ
+         vx42YicdV2v4tM4yNwn130yUMiVV+KktMyWqeunDPgJURU1XOVNQ8eXGJDN2OPtF4PC0
+         zwJf/Z1MjQmkeVnpWbHquW7+q7YwioccxV8GtqT8SwlFlZ0CNrE8UMC0SaPOm22zPPWQ
+         oWm7wdyypecxvxEy4LT8z/MGuSPjj5USvriGjQ8w2ECJe2VYplyDIMlxYaXztTsCVuvv
+         BCnSjpY0/dT1PWI68QhEAgUyCh0/fHPGIsXoY+G4Hik1/cPv2TqbLVPmYsTvt/Dw30L7
+         r+Iw==
+X-Gm-Message-State: AOJu0YxDaEisxvHkeUqRgC6wPOxVBcYC3LqxUA+ZL1i1SqUimu/MQeU8
+        YaSLE4nHbK4+ye/Yvxl6oI5yjg==
+X-Google-Smtp-Source: AGHT+IGCEs76KiGmSEnDezMN2gqFvgJH8aqukcTT1Et69lNkzS+DPn40neuscPII0MMkpYwp9e1tCQ==
+X-Received: by 2002:a05:620a:29c9:b0:778:91f0:e541 with SMTP id s9-20020a05620a29c900b0077891f0e541mr7487802qkp.23.1699574210077;
+        Thu, 09 Nov 2023 15:56:50 -0800 (PST)
+Received: from localhost.localdomain (modemcable125.110-19-135.mc.videotron.ca. [135.19.110.125])
+        by smtp.gmail.com with ESMTPSA id bl1-20020a05620a1a8100b00777063b89casm299211qkb.5.2023.11.09.15.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 15:56:49 -0800 (PST)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Robert Foss <rfoss@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
+Date:   Thu,  9 Nov 2023 18:54:10 -0500
+Message-Id: <20231109235412.29343-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: bdb4d100afe9818aebd1d98ced575c5ef143456c procfs: always expose /proc/<pid>/map_files/ and make it readable
-date:   8 years ago
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231110/202311100727.f9HgBYnq-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100727.f9HgBYnq-lkp@intel.com/reproduce)
+Use the same value as the downstream driver. This change is needed for CPHY
+mode to work correctly.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100727.f9HgBYnq-lkp@intel.com/
+Fixes: 93f0ca6fd61c ("drm/msm/dsi: fix VREG_CTRL_1 value for 4nm cphy")
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-sparse warnings: (new ones prefixed by >>)
->> fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
->> fs/proc/base.c:2039:42: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:2138:48: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:1033:24: sparse: sparse: context imbalance in 'oom_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:1136:24: sparse: sparse: context imbalance in 'oom_score_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:2166:13: sparse: sparse: context imbalance in 'timers_start' - wrong count at exit
-   fs/proc/base.c:2192:36: sparse: sparse: context imbalance in 'timers_stop' - unexpected unlock
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/node.h:17,
-                    from include/linux/swap.h:10,
-                    from fs/proc/base.c:66:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/cgroup.h:19,
-                    from include/linux/memcontrol.h:22,
-                    from include/linux/swap.h:8:
-   include/linux/kernfs.h:424:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     424 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   In file included from fs/proc/base.c:94:
-   fs/proc/internal.h: In function 'name_to_int':
-   fs/proc/internal.h:117:28: warning: pointer targets in initialization of 'const char *' from 'const unsigned char *' differ in signedness [-Wpointer-sign]
-     117 |         const char *name = qstr->name;
-         |                            ^~~~
-   In file included from include/linux/fs.h:7,
-                    from include/linux/proc_fs.h:8,
-                    from fs/proc/base.c:54:
-   fs/proc/base.c: In function 'proc_fill_cache':
-   fs/proc/base.c:1814:39: warning: pointer targets in initialization of 'const unsigned char *' from 'const char *' differ in signedness [-Wpointer-sign]
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c:1814:39: note: (near initialization for 'qname.name')
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c: In function 'dname_to_vma_addr':
-   fs/proc/base.c:1846:34: warning: pointer targets in passing argument 1 of 'sscanf' differ in signedness [-Wpointer-sign]
-    1846 |         if (sscanf(dentry->d_name.name, "%lx-%lx", start, end) != 2)
-         |                    ~~~~~~~~~~~~~~^~~~~
-         |                                  |
-         |                                  const unsigned char *
-   In file included from include/asm-generic/bug.h:13,
-                    from arch/x86/include/asm/bug.h:35,
-                    from include/linux/bug.h:4,
-                    from include/linux/thread_info.h:11,
-                    from arch/x86/include/asm/uaccess.h:8,
-                    from fs/proc/base.c:50:
-   include/linux/kernel.h:418:12: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     418 | int sscanf(const char *, const char *, ...);
-         |            ^~~~~~~~~~~~
-   fs/proc/base.c: In function 'proc_map_files_readdir':
-   fs/proc/base.c:2123:49: warning: pointer targets in passing argument 1 of 'snprintf' differ in signedness [-Wpointer-sign]
-    2123 |                         info.len = snprintf(info.name,
-         |                                             ~~~~^~~~~
-         |                                                 |
-         |                                                 unsigned char *
-   include/linux/kernel.h:405:20: note: expected 'char *' but argument is of type 'unsigned char *'
-     405 | int snprintf(char *buf, size_t size, const char *fmt, ...);
-         |              ~~~~~~^~~
-   fs/proc/base.c:2135:40: warning: pointer targets in passing argument 3 of 'proc_fill_cache' differ in signedness [-Wpointer-sign]
-    2135 |                                       p->name, p->len,
-         |                                       ~^~~~~~
-         |                                        |
-         |                                        unsigned char *
-   fs/proc/base.c:1810:21: note: expected 'const char *' but argument is of type 'unsigned char *'
-    1810 |         const char *name, int len,
-         |         ~~~~~~~~~~~~^~~~
-   fs/proc/base.c: In function 'proc_flush_task_mnt':
-   fs/proc/base.c:2876:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2876 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2888:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2888 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2894:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2894 |         name.name = "task";
-         |                   ^
-   fs/proc/base.c:2895:31: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
-    2895 |         name.len = strlen(name.name);
-         |                           ~~~~^~~~~
-         |                               |
-         |                               const unsigned char *
-   In file included from arch/x86/include/asm/string.h:4,
-                    from include/linux/string.h:17,
-                    from include/linux/dynamic_debug.h:111,
-                    from include/linux/printk.h:277,
-                    from include/linux/kernel.h:13:
-   arch/x86/include/asm/string_64.h:64:27: note: expected 'const char *' but argument is of type 'const unsigned char *'
-      64 | size_t strlen(const char *s);
-         |               ~~~~~~~~~~~~^
-   fs/proc/base.c:2900:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2900 |         name.name = buf;
-
-vim +1980 fs/proc/base.c
-
-bdb4d100afe981 Calvin Owens         2015-09-09  1975  
-c52a47ace7ef58 Al Viro              2013-06-15  1976  static int
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1977  proc_map_files_instantiate(struct inode *dir, struct dentry *dentry,
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1978  			   struct task_struct *task, const void *ptr)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1979  {
-7b540d0646ce12 Al Viro              2012-08-27 @1980  	fmode_t mode = (fmode_t)(unsigned long)ptr;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1981  	struct proc_inode *ei;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1982  	struct inode *inode;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1983  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1984  	inode = proc_pid_make_inode(dir->i_sb, task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1985  	if (!inode)
-c52a47ace7ef58 Al Viro              2013-06-15  1986  		return -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1987  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1988  	ei = PROC_I(inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1989  	ei->op.proc_get_link = proc_map_files_get_link;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1990  
-bdb4d100afe981 Calvin Owens         2015-09-09  1991  	inode->i_op = &proc_map_files_link_inode_operations;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1992  	inode->i_size = 64;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1993  	inode->i_mode = S_IFLNK;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1994  
-7b540d0646ce12 Al Viro              2012-08-27  1995  	if (mode & FMODE_READ)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1996  		inode->i_mode |= S_IRUSR;
-7b540d0646ce12 Al Viro              2012-08-27  1997  	if (mode & FMODE_WRITE)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1998  		inode->i_mode |= S_IWUSR;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1999  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2000  	d_set_d_op(dentry, &tid_map_files_dentry_operations);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2001  	d_add(dentry, inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2002  
-c52a47ace7ef58 Al Viro              2013-06-15  2003  	return 0;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2004  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2005  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2006  static struct dentry *proc_map_files_lookup(struct inode *dir,
-00cd8dd3bf95f2 Al Viro              2012-06-10  2007  		struct dentry *dentry, unsigned int flags)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2008  {
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2009  	unsigned long vm_start, vm_end;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2010  	struct vm_area_struct *vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2011  	struct task_struct *task;
-c52a47ace7ef58 Al Viro              2013-06-15  2012  	int result;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2013  	struct mm_struct *mm;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2014  
-c52a47ace7ef58 Al Viro              2013-06-15  2015  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2016  	task = get_proc_task(dir);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2017  	if (!task)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2018  		goto out;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2019  
-c52a47ace7ef58 Al Viro              2013-06-15  2020  	result = -EACCES;
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2021  	if (!ptrace_may_access(task, PTRACE_MODE_READ))
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2022  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2023  
-c52a47ace7ef58 Al Viro              2013-06-15  2024  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2025  	if (dname_to_vma_addr(dentry, &vm_start, &vm_end))
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2026  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2027  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2028  	mm = get_task_mm(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2029  	if (!mm)
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2030  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2031  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2032  	down_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2033  	vma = find_exact_vma(mm, vm_start, vm_end);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2034  	if (!vma)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2035  		goto out_no_vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2036  
-05f564849d4949 Stanislav Kinsbursky 2012-11-26  2037  	if (vma->vm_file)
-7b540d0646ce12 Al Viro              2012-08-27  2038  		result = proc_map_files_instantiate(dir, dentry, task,
-7b540d0646ce12 Al Viro              2012-08-27 @2039  				(void *)(unsigned long)vma->vm_file->f_mode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2040  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2041  out_no_vma:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2042  	up_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2043  	mmput(mm);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2044  out_put_task:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2045  	put_task_struct(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2046  out:
-c52a47ace7ef58 Al Viro              2013-06-15  2047  	return ERR_PTR(result);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2048  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2049  
-
-:::::: The code at line 1980 was first introduced by commit
-:::::: 7b540d0646ce122f0ba4520412be91e530719742 proc_map_files_readdir(): don't bother with grabbing files
-
-:::::: TO: Al Viro <viro@zeniv.linux.org.uk>
-:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
-
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+index 3b1ed02f644d..89a6344bc865 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+@@ -918,7 +918,7 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+ 	if ((phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V5_2)) {
+ 		if (phy->cphy_mode) {
+ 			vreg_ctrl_0 = 0x45;
+-			vreg_ctrl_1 = 0x45;
++			vreg_ctrl_1 = 0x41;
+ 			glbl_rescode_top_ctrl = 0x00;
+ 			glbl_rescode_bot_ctrl = 0x00;
+ 		} else {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.26.1
+
