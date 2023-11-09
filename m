@@ -2,159 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B877E714E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5007E7153
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344960AbjKISU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        id S1344969AbjKISXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344928AbjKISU4 (ORCPT
+        with ESMTP id S1344906AbjKISX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:20:56 -0500
-Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B763C03
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:20:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
-        d=auristor.com; s=MDaemon; r=y; t=1699554053; x=1700158853;
-        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
-        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
-        References:From:Organization:In-Reply-To:Content-Type; bh=N5TTdf
-        OGt2wnlWcTICwBz77FuH2+axxK/zos5zsKKv0=; b=f/G7zEGfVX4o9SJZNlo6zR
-        0GU1Hc+ymX/PUrYfp0sVTet0K7DJknVUdgRadhTLWwBtK1HK3T8bK1drKRl0XvXa
-        kGrqgPPbMLPGTqxKWKzGf5F89lo6sF+0GT8PqqGRjKvQHsdDJV4F93TY8fkWpVBS
-        aEHX1C7U/2K9aZ2EBbVZQ=
-X-MDAV-Result: clean
-X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:20:53 -0500
-Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1b) 
-        with ESMTPSA id md5001003742343.msg; Thu, 09 Nov 2023 13:20:52 -0500
-X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:20:52 -0500
-        (not processed: message from trusted or authenticated source)
-X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
-X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
-X-MDArrival-Date: Thu, 09 Nov 2023 13:20:52 -0500
-X-MDOrigin-Country: US, NA
-X-Authenticated-Sender: jaltman@auristor.com
-X-Return-Path: prvs=1677793fa9=jaltman@auristor.com
-X-Envelope-From: jaltman@auristor.com
-X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
-Message-ID: <7984e12c-a688-4ae6-ac19-08ee9bf634f7@auristor.com>
-Date:   Thu, 9 Nov 2023 13:20:44 -0500
+        Thu, 9 Nov 2023 13:23:29 -0500
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55C93ABF
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:23:26 -0800 (PST)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6b31cb3cc7eso1177408b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 10:23:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699554206; x=1700159006;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MqZmZaQnQHMv/T08XsHu4/lwHim+riyuEWyefi56ZZQ=;
+        b=H41Ximiw1VKvZy7BanzWsoPfjct94qskTt683MdYMiDttbe4QYB5Nfw2fAwJUmivR8
+         llPWXy23VZK3Ok3iiqBherBkUJJo8/6x9Co2TxlAffsT3txGTTrQ8uPqxFkjdk6/GNyv
+         ovxReQD+ALX77sVuBRHoDaAnM85A2kSxJ03ztXzBVzQlZH08xmXO7NBhJQkvPLA9513j
+         eL/vJ89EENjxYo593ufn95uIRHOGKdvOkwk/DlkcnxK8AmUCl/BC3y5+RU7UMMNlSspq
+         ptqTAhBjWRETHFjzGhYjLPyys/ICK725u1/CTGyQKmDij5WoZffspYlUZb0L6G+IleJi
+         wlIw==
+X-Gm-Message-State: AOJu0YzqbhKwlXUdpnpGnPRX8d23Nl/h8WO45fDW1diCbBpMelbrExid
+        lZWdEdMYS2EvUEY92HrnJJwzVCxYYN1BXempqIQDqgtPSxca
+X-Google-Smtp-Source: AGHT+IG9LKwcLSJ1suW3rUPoiF7yaD9jW9LcNQLeKR4EMZtRNJaPpjUd38ipJcktoR/1FhOyahobkb1LoYUREkyXQo9t93gyVwxj
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 23/41] rxrpc: Create a procfile to display outstanding
- clien conn bundles
-Content-Language: en-US
-To:     David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231109154004.3317227-1-dhowells@redhat.com>
- <20231109154004.3317227-24-dhowells@redhat.com>
-From:   Jeffrey E Altman <jaltman@auristor.com>
-Organization: AuriStor, Inc.
-In-Reply-To: <20231109154004.3317227-24-dhowells@redhat.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070900050709040308080106"
-X-MDCFSigsAdded: auristor.com
+X-Received: by 2002:a05:6a00:850a:b0:690:29c0:ef51 with SMTP id
+ ha10-20020a056a00850a00b0069029c0ef51mr18126pfb.1.1699554206425; Thu, 09 Nov
+ 2023 10:23:26 -0800 (PST)
+Date:   Thu, 09 Nov 2023 10:23:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c0279e0609bc4c7a@google.com>
+Subject: [syzbot] Monthly udf report (Nov 2023)
+From:   syzbot <syzbot+liste6fcb39e599cf6bcae03@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hello udf maintainers/developers,
 
---------------ms070900050709040308080106
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+This is a 31-day syzbot report for the udf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/udf
 
-On 11/9/2023 10:39 AM, David Howells wrote:
-> Create /proc/net/rxrpc/bundles to display outstanding rxrpc client
-> connection bundles.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 14 issues are still open and 18 have been fixed so far.
 
-There is a typo in the subject
+Some of the still happening issues:
 
-     s/clien/client/
+Ref Crashes Repro Title
+<1> 1759    Yes   WARNING in udf_truncate_extents
+                  https://syzkaller.appspot.com/bug?extid=43fc5ba6dcb33e3261ca
+<2> 103     Yes   KASAN: use-after-free Write in udf_close_lvid
+                  https://syzkaller.appspot.com/bug?extid=60864ed35b1073540d57
+<3> 28      Yes   WARNING in udf_new_block
+                  https://syzkaller.appspot.com/bug?extid=cc717c6c5fee9ed6e41d
+<4> 15      Yes   WARNING in invalidate_bh_lru
+                  https://syzkaller.appspot.com/bug?extid=9743a41f74f00e50fc77
+<5> 13      Yes   WARNING in udf_setsize (2)
+                  https://syzkaller.appspot.com/bug?extid=db6df8c0f578bc11e50e
+<6> 6       Yes   UBSAN: array-index-out-of-bounds in udf_process_sequence
+                  https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
+<7> 5       Yes   KASAN: slab-out-of-bounds Write in udf_adinicb_writepage
+                  https://syzkaller.appspot.com/bug?extid=a3db10baf0c0ee459854
+<8> 2       Yes   KASAN: slab-use-after-free Read in udf_free_blocks
+                  https://syzkaller.appspot.com/bug?extid=0b7937459742a0a4cffd
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---------------ms070900050709040308080106
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
-BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
-MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
-MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
-YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
-xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
-fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
-EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
-9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
-IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
-BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
-BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
-My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
-A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
-L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
-bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
-aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
-YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
-ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
-dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
-MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
-gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
-eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
-WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
-utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
-Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
-a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
-AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
-Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
-EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
-AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
-wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
-15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
-o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
-3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
-VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
-CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
-dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
-L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
-5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
-dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
-eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
-YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
-dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
-Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
-dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
-bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
-CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
-bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
-0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
-6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
-QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
-Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
-db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
-rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
-UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
-p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
-MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
-A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
-ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEwOTE4
-MjA0NFowLwYJKoZIhvcNAQkEMSIEIP9AiV0mRZ9IfJQyn1HB087P9kF6ZEF2y8JKS0Z1RHWy
-MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
-MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
-AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
-dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
-AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAOW/5
-NdaYUJc/HbXOZuM82OvhGmctg8guNBkrbFklZOrMcazc8IML8lBuITY/Zq+nrwp+7DnDKjSF
-lSJd6+6vB4M8wQ/6zHNGizWX4eWqKd2YS1oVFE7IOXSznvGLL5cTgGNn1r93A9KRo3Zbt8lc
-WabFZnJLrA8UYTL7xQSDm4PPa0H4+pSJsI5ZnF3KDJeQXkbsl1VhexiSJXfke9do7N3My8aY
-q0nucZQG78r4D96wWt12V94bXHTcYtDM8TyoXLpbNFaU/3cuGjDuVXJpj53Xka7S8nnkgTSq
-kGa7oZviJB0+Pdl1kggzUM53VlZsnPZXKSi57ho5K3y3ISi7ZgAAAAAAAA==
---------------ms070900050709040308080106--
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
+You may send multiple commands in a single email message.
