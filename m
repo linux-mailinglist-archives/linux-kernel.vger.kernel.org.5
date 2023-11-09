@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39DA87E6B26
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4EB7E6B29
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjKINUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
+        id S233505AbjKINVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKINUf (ORCPT
+        with ESMTP id S230055AbjKINVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:20:35 -0500
+        Thu, 9 Nov 2023 08:21:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C37B30D3;
-        Thu,  9 Nov 2023 05:20:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0EEBC433C8;
-        Thu,  9 Nov 2023 13:20:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699536033;
-        bh=E4W6J/5ZYEJjJNXSptSCcUbzx0AqvGA+6wYmOROwYnQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hgwaj2a8odr+tdl/sx7LLKHFX9YRTutZbiZxTDklCJxU5xdPNeFNHkyYIUxVrMt3q
-         zpEMTIhP3ififF2jZxG2FFlTyabtVfyvnl4agv0t5vx3uCfcqsBUhhJX4JpVGWExCO
-         sFYYVAnsMZr9WVFoAacQkXXPFWxKfrvPlxf6fP8o=
-Date:   Thu, 9 Nov 2023 14:20:25 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-Cc:     git@amd.com, michal.simek@amd.com, jacmet@sunsite.dk,
-        jirislaby@kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, radhey.shyam.pandey@amd.com,
-        srinivas.goud@amd.com, shubhrajyoti.datta@amd.com,
-        manion05gk@gmail.com
-Subject: Re: [PATCH] serial: uartlite: Use dynamic allocation for major number
-Message-ID: <2023110915-trusting-pointer-40b0@gregkh>
-References: <20231109123640.1740310-1-manikanta.guntupalli@amd.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2F530C1
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:21:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A101C43391;
+        Thu,  9 Nov 2023 13:21:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699536102;
+        bh=W4AZvq3c+e+zUfNPx/HqmVF8sPcfZIynKF5fy4rArXs=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=TDznUS3WDtmh/RfJBMNwVdUUBWTT1K9qvmoZwKgxVkFf1Ky+6VbO03NtVWPF5nj3Y
+         ioxdp2yHzWHocLlwjKilWzZD/4Dz+uZVQ3aO8Nrj43LZftApVsmh1ZZxC7xYylehOG
+         +GVVHHkc3hBW2GHwn5uobcLYtb2DJlwdruMQiPfwqeZ8j1PfdWIkSpCwrILkRZAxkw
+         baw5lsOwFH08rwuJjFP3wEyVnosY0yLh4VkZKs2PShqGE0beu4PnqLgsVb4wDlCEUS
+         bCepFbYyOYdm1TNeEFkdiT7A/g83rGNNFcF2Xd/QiR/nzc7TLgkAT2qoOL3Gpn8w1d
+         0zY5F7WrUPGOQ==
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-589d6647c6cso419410eaf.2;
+        Thu, 09 Nov 2023 05:21:42 -0800 (PST)
+X-Gm-Message-State: AOJu0YzQ21FwELnaCzjJQ/v3eNIBaVP8KUIYXFxsTBDxBpUwDDkH4OIM
+        18mhkDgvDVNC7ILIt9n3VCMcg+7mgBZa/0IK5Ks=
+X-Google-Smtp-Source: AGHT+IH7IG2CokYLHaRCu9OeenBcpj7mfEXQDcnGjQjBfVBGI6VogVSVMciok3px8IofZ8eCtByfYDPc7LJsJcvhHGE=
+X-Received: by 2002:a05:6820:50b:b0:581:9066:49 with SMTP id
+ m11-20020a056820050b00b0058190660049mr6867673ooj.0.1699536101275; Thu, 09 Nov
+ 2023 05:21:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109123640.1740310-1-manikanta.guntupalli@amd.com>
+Received: by 2002:ac9:67d1:0:b0:506:a3fc:1021 with HTTP; Thu, 9 Nov 2023
+ 05:21:40 -0800 (PST)
+In-Reply-To: <20231109011725.1798784-1-min_halo@163.com>
+References: <CAKYAXd8qZTiSBR3aSUk4YRSo+LG-Z20FRJfGgV1Awf+Lep4kpg@mail.gmail.com>
+ <20231109011725.1798784-1-min_halo@163.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Thu, 9 Nov 2023 22:21:40 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_A-3kfK40hi9rkoKr=AVKG=_kK3_3ABbsuC0c-S6zk+g@mail.gmail.com>
+Message-ID: <CAKYAXd_A-3kfK40hi9rkoKr=AVKG=_kK3_3ABbsuC0c-S6zk+g@mail.gmail.com>
+Subject: Re: [PATCH v2] ksmbd: prevent memory leak on error return
+To:     Zongmin Zhou <min_halo@163.com>
+Cc:     linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        senozhatsky@chromium.org, sfrench@samba.org, tom@talpey.com,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Zongmin Zhou <zhouzongmin@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 06:06:40PM +0530, Manikanta Guntupalli wrote:
-> Device number 204 has a range of minors on major number.
-> uart_register_driver is failing due to lack of minor numbers
-> when more number of uart ports used.
+2023-11-09 10:17 GMT+09:00, Zongmin Zhou <min_halo@163.com>:
+> When allocated memory for 'new' failed,just return
+> will cause memory leak of 'ar'.
+>
+> v2: rollback iov_alloc_cnt when allocate memory failed.
+>
+> Fixes: 1819a9042999 ("ksmbd: reorganize ksmbd_iov_pin_rsp()")
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <error27@gmail.com>
+> Closes: https://lore.kernel.org/r/202311031837.H3yo7JVl-lkp@intel.com/
+> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
+Acked-by: Namjae Jeon <linkinjeon@kernel.org>
 
-So you need more than the 4 allocated to you?
-
-> So, use dynamic allocation
-> for major number to avoid minor number limitation on 204 major
-> number.
-> 
-> https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
-
-What does this break by doing this?
-
-Also, you forgot to update the documentation :(
-
-And how was this tested?  What about older systems with static device
-nodes, are you sure none are out there for this old hardware anymore?
-
-thanks,
-
-greg k-h
+Applied it #ksmbd-for-next-next.
+Thanks for your patch.
