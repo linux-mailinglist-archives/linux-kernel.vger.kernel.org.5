@@ -2,160 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 108EC7E6FAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373717E6FAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbjKIQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        id S232415AbjKIQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjKIQu3 (ORCPT
+        with ESMTP id S229916AbjKIQuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:50:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8EF171A;
-        Thu,  9 Nov 2023 08:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699548627; x=1731084627;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VyVhtf+NykkTPIVinfE56gh7ZbmN9guPJS5K2mzlesM=;
-  b=NOLhb0vKxBSUyTb5Hyk+UZHkGnHuD5UAr8/H8DZ+LXQpU0jrte3lx9rF
-   Z0MLAR2uz0jCJezF0hDtkCuqIF/GLfXOueMrH08TKLzp9sdLsHihKc9Cx
-   GqmUL9sCU8+/kKpwn7sxIvpZN0d2QNzwmDXEVM0ak6O80P9S+VvnPTndk
-   T/1zmKM00NmA6h/76Ul1lEFbLofYqFEV4AsYiGtH2g4kpB4/qOIAESnMA
-   2pof9ZgonEsw0W0dB+MFJgZ5OP0zR6MekNyFZ4FVFuVhV6+NJXiT87oFX
-   NgIDZf4c0wrrtYsZYjK8CI0zOqMGOWbAQKCEWpc8IMwSFCIBvu6hwzCvT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="8679260"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="8679260"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 08:50:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="756930772"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="756930772"
-Received: from tiwariv-mobl.amr.corp.intel.com (HELO [10.212.165.194]) ([10.212.165.194])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 08:50:25 -0800
-Message-ID: <ee9de366-6027-495a-98d9-b8b0cd866bf2@intel.com>
-Date:   Thu, 9 Nov 2023 08:50:25 -0800
+        Thu, 9 Nov 2023 11:50:51 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3700F1725
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:50:49 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D09C106F;
+        Thu,  9 Nov 2023 08:51:33 -0800 (PST)
+Received: from [10.1.31.52] (e133649.arm.com [10.1.31.52])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC00E3F7C5;
+        Thu,  9 Nov 2023 08:50:46 -0800 (PST)
+Message-ID: <531fd8a0-132e-425b-955b-d60a56004aba@arm.com>
+Date:   Thu, 9 Nov 2023 16:50:44 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Check cc_vendor when printing memory encryption
- info
+Subject: Re: [RFC PATCH 2/6] sched/uclamp: Simulate PELT decay in
+ util_avg_uclamp
 Content-Language: en-US
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Kelley <mhklinux@outlook.com>,
-        Dexuan Cui <decui@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, stefan.bader@canonical.com,
-        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
-        cascardo@canonical.com, kys@microsoft.com, haiyangz@microsoft.com,
-        wei.liu@kernel.org, kirill.shutemov@linux.intel.com,
-        sashal@kernel.org
-References: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
- <16ea75a9-8c94-4665-ae04-32d08aa4ebb2@intel.com>
- <58abbc79-64d4-41f9-9fd2-1de7826fbbf6@linux.microsoft.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
- LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
- lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
- MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
- IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
- aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
- I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
- E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
- F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
- CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
- P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
- 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
- GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
- MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
- Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
- lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
- 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
- qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
- BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
- 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
- vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
- FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
- l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
- yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
- +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
- asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
- WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
- sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
- KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
- MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
- hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
- vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <58abbc79-64d4-41f9-9fd2-1de7826fbbf6@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Christian Loehle <christian.loehle@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
+ <d73fc3e9a02f047902fdd5e4c07402452d6e0590.1696345700.git.Hongyan.Xia2@arm.com>
+ <b09848dc-dea8-46e7-9f24-c11c64fd5d74@arm.com>
+From:   Hongyan Xia <hongyan.xia2@arm.com>
+In-Reply-To: <b09848dc-dea8-46e7-9f24-c11c64fd5d74@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 08:35, Jeremi Piotrowski wrote:
-> On 09/11/2023 17:25, Dave Hansen wrote:
->> On 11/9/23 08:14, Jeremi Piotrowski wrote:
->> ...
->>>  	pr_info("Memory Encryption Features active:");
->>>  
->>> -	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
->>> +	if (cc_vendor == CC_VENDOR_INTEL) {
->>>  		pr_cont(" Intel TDX\n");
->>>  		return;
->>>  	}
+On 01/11/2023 16:06, Dietmar Eggemann wrote:
+> On 04/10/2023 11:04, Hongyan Xia wrote:
+>> From: Hongyan Xia <hongyan.xia2@arm.com>
 >>
->> Why aren't these guests setting X86_FEATURE_TDX_GUEST?
+>> Because util_avg_uclamp is not directly managed by PELT, it lacks the
+>> nice property of slowly decaying to a lower value, resulting in
+>> performance degredation due to premature frequency drops.
+>>
+>> Add functions to decay root cfs utilization and tasks that are not on
+>> the rq. This way, we get the benefits of PELT while still maintaining
+>> uclamp. The rules are simple:
+>>
+>> 1. When task is se->on_rq, enforce its util_avg_uclamp within uclamp
+>>     range.
+>> 2. When task is !se->on_rq, PELT decay its util_avg_uclamp.
+>> 3. When the root CFS util drops, PELT decay to the target frequency
+>>     instead of immediately dropping to a lower target frequency.
+>>
+>> TODO: Can we somehow integrate this uclamp sum aggregation directly into
+>> util_avg, so that we don't need to introduce a new util_avg_uclamp
+>> signal and don't need to simulate PELT decay?
 > 
-> They could if we can confirm that the code gated behind
-> cpu_feature_enabled(X86_FEATURE_TDX_GUEST) is correct when running with TD partitioning.
+> That's a good question. I'm wondering why you were not able to integrate
+> the maintenance of the util_avg_uclamp values inside the existing PELT
+> update functionality in fair.c ((__update_load_avg_xxx(),
+> propagate_entity_load_avg() -> update_tg_cfs_util() etc.)
+> 
+> Why do you need extra functions like ___decay_util_avg_uclamp_towards()
+> and ___update_util_avg_uclamp() for this?
 
-Let me elaborate a bit on my question.
+These new functions are already in __update_load_avg_xxx(). I just 
+separate the new code into a separate function for readability.
 
-X86_FEATURE_TDX_GUEST is set based on some specific gunk that shows up
-in CPUID in TDX guests.  I *believe* it's in one of the CPUID leaves
-that the VMM has no control over.
+I think we have talked offline on why we can't do things in 
+propagate_entity_load_avg() -> update_tg_cfs_util(). Currently cfs_rq 
+and se utilization is tracked independently. However, we can't track 
+them separately in sum aggregation. If a cfs_rq has two tasks with 
+utilization at 1024 and UCLAMP_MAX of 100, the cfs_rq must sum up those 
+two tasks, at 200, and cannot use the logic inside 
+propagate_entity_load_avg() -> update_tg_cfs_util() which is for 
+tracking cfs_rq independently and won't know the utilization is only 200.
 
-So, first, what in practice is keeping tdx_early_init() from running on
-these "TD partitioning" systems?  Because it's either not running, or
-I'm misreading the code horribly.
+Again I may have misunderstood what you meant. Do you have a concrete 
+example on how to do this without extra functions?
 
-> It still makes sense to have these prints based on the cc_xxx abstractions.
+One idea I once had is to use the existing util_avg, and introduce a 
+'util_bias' variable. When there's no uclamp, this bias is 0 and 
+util_avg is what it is. When there's uclamp, for example, two tasks at 
+utilization of 400 but UCLAMP_MAX of 300, then each task has a util_bias 
+of -100, and cfs_rq will sum up the biases, at -200. Then, the cfs_rq 
+will run at 600 instead of 800. This way, no PELT simulation is needed. 
+However, this doesn't work, because say two tasks with utilization of 
+1024 but UCLAMP_MAX at 100, each will have a bias of -924 and cfs_rq 
+will sum up and have a bias of -1848, but the cfs_rq will be at 1024, 
+not 2048, so adding this bias will give you cfs_rq utilization of -824, 
+which is clearly wrong here.
 
-I'm not sure I'm following.
+>> Signed-off-by: Hongyan Xia <hongyan.xia2@arm.com>
+>> ---
+>>   kernel/sched/fair.c  |  20 +++++++++
+>>   kernel/sched/pelt.c  | 103 ++++++++++++++++++++++++++++++++++++++++---
+>>   kernel/sched/sched.h |   2 +
+>>   3 files changed, 119 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 33e5a6e751c0..420af57d01ee 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -4311,17 +4311,22 @@ static inline int
+>>   update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>>   {
+>>   	unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+>> +	unsigned int removed_root_util = 0;
+> 
+>   unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+> -unsigned int removed_root_util = 0;
+> +unsigned int __maybe_unused removed_root_util = 0;
+> 
+> Otherwise you get `warning: unused variable ‘rq’` w/ !CONFIG_UCLAMP_TASK
 
-For instance, let's say that someone came up with a nutty reason to do
-MKTME in Linux.  We'd need a host-side contraption that sets
-CC_ATTR_MEM_ENCRYPT and so forth.  It would also, obviously, set
-cc_vendor=CC_VENDOR_INTEL just like host-side SME sets
-cc_vendor=CC_VENDOR_AMD.
+Thanks. Ack.
+> 
+> [...]
+> 
+> 
+>>   #ifdef CONFIG_UCLAMP_TASK
+>> +static void ___decay_util_avg_uclamp_towards(u64 now,
+>> +					     u64 last_update_time,
+>> +					     u32 period_contrib,
+>> +					     unsigned int *old,
+>> +					     unsigned int new_val)
+>> +{
+>> +	unsigned int old_val = READ_ONCE(*old);
+>> +	u64 delta, periods;
+>> +
+>> +	if (old_val <= new_val) {
+>> +		WRITE_ONCE(*old, new_val);
+>> +		return;
+>> +	}
+> 
+> Why is the function called `decay`? In case `new >= old` you set old =
+> new and bail out. So it's also more like an `update` function?
 
-Then we'd have to go back and disentangle all the places where we
-assumed CC_VENDOR_INTEL==TDX.
+Bad naming indeed. I will rename it to ___update_util_avg_uclamp_towards
 
-That, combined with this patch's apparent disregard for why
-X86_FEATURE_TDX_GUEST isn't getting set makes me think that the big
-picture was not considered here and this patch represents the quickest
-hack to get the right spew out to dmesg that is desired.
+>> +	if (!last_update_time)
+>> +		return;
+>> +	delta = now - last_update_time;
+>> +	if ((s64)delta < 0)
+>> +		return;
+>> +	delta >>= 10;
+>> +	if (!delta)
+>> +		return;
+>> +
+>> +	delta += period_contrib;
+>> +	periods = delta / 1024;
+>> +	if (periods) {
+>> +		u64 diff = old_val - new_val;
+>> +
+>> +		/*
+>> +		 * Let's assume 3 tasks, A, B and C. A is still on rq but B and
+>> +		 * C have just been dequeued. The cfs.avg.util_avg_uclamp has
+>> +		 * become A but root_cfs_util_uclamp just starts to decay and is
+>> +		 * now still A + B + C.
+>> +		 *
+>> +		 * After p periods with y being the decay factor, the new
+>> +		 * root_cfs_util_uclamp should become
+>> +		 *
+>> +		 * A + B * y^p + C * y^p == A + (A + B + C - A) * y^p
+>> +		 *     == cfs.avg.util_avg_uclamp +
+>> +		 *        (root_cfs_util_uclamp_at_the_start - cfs.avg.util_avg_uclamp) * y^p
+>> +		 *     == cfs.avg.util_avg_uclamp + diff * y^p
+>> +		 *
+>> +		 * So, instead of summing up each individual decayed values, we
+>> +		 * could just decay the diff and not bother with the summation
+>> +		 * at all. This is why we decay the diff here.
+>> +		 */
+>> +		diff = decay_load(diff, periods);
+>> +		WRITE_ONCE(*old, new_val + diff);
+>> +	}
+>> +}
+> 
+> Looks like ___decay_util_avg_uclamp_towards() is used for:
+> 
+> (1) tasks with !se->on_rq to decay before enqueue
+> 
+> (2) rq->root_cfs_util_uclamp to align with
+>      &rq_of(cfs_rq)->cfs->avg.util_avg_uclamp
+> 
+> All the cfs_rq's and the taskgroup se's seem to be updated only in
+> ___update_util_avg_uclamp() (which also handles the propagation towards
+> the root taskgroup).
+
+Yes, I would say that's a nice summary.
+
+When !se->on_rq, we never use ___update_util_avg_uclamp() but instead do 
+___update_util_avg_uclamp_towards().
+
+> 
+> [...]
