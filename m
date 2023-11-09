@@ -2,132 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0596F7E72C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 980A87E72C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345147AbjKIU10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
+        id S1345150AbjKIU2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344938AbjKIU1Y (ORCPT
+        with ESMTP id S229560AbjKIU2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:27:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985193A98
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:27:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699561642; x=1731097642;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=enHXLPDZchUeKaed5qrSorYY9iKUN/ksSXTR4yNaJGA=;
-  b=bjK0629XMr5+KTsle2Ul0gh59WctGD+4a67rijgGL/hU5QFgDeig6g2J
-   mcz2kVbrQ3lgnBwszjhhSuO7HOHd00W7LsgaRKFYZU660GRMtYq3RFHT7
-   N9tao4adJeSCki+TD+EKVZQvGMply/wHRCqrPn3C+zOn2icfh1yyuT0ct
-   NfCGZUb82F8F98bjJVkhS+vF6mzNXRELfxXTNmFNN4eNU0v8IoCJwKJRu
-   ngdF4bz6+IXdIGhl03sCRZfmVXLnKlKhSI4RVFa7rWhx+QbCdmF9a3eIi
-   gUwAv/AgB7eIyUbuESQKKtUeGQVy6iN9FGKHnXbBT7dzwJ0AGxeVvKRBx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="389873992"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="389873992"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 12:27:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="880724957"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="880724957"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Nov 2023 12:27:17 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1BcR-00097K-2H;
-        Thu, 09 Nov 2023 20:27:15 +0000
-Date:   Fri, 10 Nov 2023 04:26:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
-        akpm@linux-foundation.org, ying.huang@intel.com, namit@vmware.com,
-        xhao@linux.alibaba.com, mgorman@techsingularity.net,
-        hughd@google.com, willy@infradead.org, david@redhat.com,
-        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
-Subject: Re: [v4 1/3] mm/rmap: Recognize read-only TLB entries during batched
- TLB flush
-Message-ID: <202311100429.nc4jJoNu-lkp@intel.com>
-References: <20231109045908.54996-2-byungchul@sk.com>
+        Thu, 9 Nov 2023 15:28:23 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384193A98;
+        Thu,  9 Nov 2023 12:28:21 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1F72540006;
+        Thu,  9 Nov 2023 20:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699561699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BCdREV7hhUnDrr+yI8gw4JbnC8dXnl9JKc58LcOSwr0=;
+        b=PwruFa8fVSgyiIarj3H6EQU64tpDQie/xcK2dqWt70wkY8ZN3LsW2NVubHaBuev6yIS9sQ
+        If8+O7Z/fIRFU4QaY4MuLM+AZZ0pH2s4fzj59usOFC72NYELd3SYHKFLBjrRona/jNd7z8
+        OiiYZszFLDtzr7np0YcAAlCUlc4M3dLvzSL07oGg2flwjdVM/0xgVRzdMXOi9f2cpJ/Mr8
+        I42dZE+zsGvG9L+5iRAQLt17mT7mef/X834bT/TwK4a+md9+jd460Q4YFNHBDOvu/QqZyH
+        /e5R/cyB1sSjg/ZtYBHh20WCi9pBuhVtRym8M6KtEDUPVCLYdKYA7hI2EbyJsg==
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Subject: [PATCH v2] v4l2-compliance: codecs: Add stateless (TRY_)DECODER_CMD tests
+Date:   Thu,  9 Nov 2023 21:27:45 +0100
+Message-ID: <20231109202745.342387-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109045908.54996-2-byungchul@sk.com>
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: paul.kocialkowski@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Byungchul,
+Stateless codecs that support holding the capture buffer should implement the
+(TRY_)DECODER_CMD ioctls for the flush command (and only this command).
 
-kernel test robot noticed the following build errors:
+Add a conditional to separate the stateless case from stateful one and move
+the existing tests there.
 
-[auto build test ERROR on tip/sched/core]
-[also build test ERROR on tip/x86/core tip/x86/mm linus/master v6.6 next-20231109]
-[cannot apply to akpm-mm/mm-everything]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Add new tests for the stateless case which ensure that the flush command is
+supported and that the other stateful commands are not.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/mm-rmap-Recognize-read-only-TLB-entries-during-batched-TLB-flush/20231109-163706
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20231109045908.54996-2-byungchul%40sk.com
-patch subject: [v4 1/3] mm/rmap: Recognize read-only TLB entries during batched TLB flush
-config: arm64-randconfig-002-20231109 (https://download.01.org/0day-ci/archive/20231110/202311100429.nc4jJoNu-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100429.nc4jJoNu-lkp@intel.com/reproduce)
+An existing check will already return early (without error) when the ioctls
+are not implemented at all. Note that there is no easy way to check for the
+capture buffer holding buffer flag since it requires setting up a coded format
+in particular to be visible, which is far from trivial to implement here.
+As a result we just carry out the tests when the ioctls are available.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100429.nc4jJoNu-lkp@intel.com/
+Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+---
 
-All errors (new ones prefixed by >>):
+Changes since v1:
+- Fixed typos.
 
-   mm/rmap.c: In function 'fold_ubc_ro':
->> mm/rmap.c:620:9: error: implicit declaration of function 'arch_tlbbatch_fold'; did you mean 'arch_tlbbatch_flush'? [-Werror=implicit-function-declaration]
-     620 |         arch_tlbbatch_fold(&tlb_ubc->arch, &tlb_ubc_ro->arch);
-         |         ^~~~~~~~~~~~~~~~~~
-         |         arch_tlbbatch_flush
->> mm/rmap.c:626:9: error: implicit declaration of function 'arch_tlbbatch_clear'; did you mean 'arch_tlbbatch_flush'? [-Werror=implicit-function-declaration]
-     626 |         arch_tlbbatch_clear(&tlb_ubc_ro->arch);
-         |         ^~~~~~~~~~~~~~~~~~~
-         |         arch_tlbbatch_flush
-   cc1: some warnings being treated as errors
+ utils/v4l2-compliance/v4l2-test-codecs.cpp | 111 ++++++++++++++-------
+ 1 file changed, 75 insertions(+), 36 deletions(-)
 
-
-vim +620 mm/rmap.c
-
-   608	
-   609	void fold_ubc_ro(void)
-   610	{
-   611		struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
-   612		struct tlbflush_unmap_batch *tlb_ubc_ro = &current->tlb_ubc_ro;
-   613	
-   614		if (!tlb_ubc_ro->flush_required)
-   615			return;
-   616	
-   617		/*
-   618		 * Fold tlb_ubc_ro's data to tlb_ubc.
-   619		 */
- > 620		arch_tlbbatch_fold(&tlb_ubc->arch, &tlb_ubc_ro->arch);
-   621		tlb_ubc->flush_required = true;
-   622	
-   623		/*
-   624		 * Reset tlb_ubc_ro's data.
-   625		 */
- > 626		arch_tlbbatch_clear(&tlb_ubc_ro->arch);
-   627		tlb_ubc_ro->flush_required = false;
-   628	}
-   629	
-
+diff --git a/utils/v4l2-compliance/v4l2-test-codecs.cpp b/utils/v4l2-compliance/v4l2-test-codecs.cpp
+index df25a1ddc358..8c3527359813 100644
+--- a/utils/v4l2-compliance/v4l2-test-codecs.cpp
++++ b/utils/v4l2-compliance/v4l2-test-codecs.cpp
+@@ -99,6 +99,7 @@ int testDecoder(struct node *node)
+ {
+ 	struct v4l2_decoder_cmd cmd;
+ 	bool is_decoder = node->codec_mask & (STATEFUL_DECODER | JPEG_DECODER);
++	bool is_stateless = node->codec_mask & STATELESS_DECODER;
+ 	int ret;
+ 
+ 	fail_on_test((node->codec_mask & STATELESS_DECODER) && !node->has_media);
+@@ -118,42 +119,80 @@ int testDecoder(struct node *node)
+ 	fail_on_test(ret == ENOTTY);
+ 	fail_on_test(ret != EINVAL);
+ 
+-	cmd.cmd = V4L2_DEC_CMD_STOP;
+-	cmd.flags = ~0;
+-	ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
+-	fail_on_test(ret != 0);
+-	fail_on_test(cmd.flags & ~(V4L2_DEC_CMD_STOP_TO_BLACK | V4L2_DEC_CMD_STOP_IMMEDIATELY));
+-	fail_on_test(is_decoder && cmd.flags);
+-	ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
+-	fail_on_test(ret != 0);
+-
+-	cmd.cmd = V4L2_DEC_CMD_START;
+-	cmd.flags = ~0;
+-	ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
+-	fail_on_test(ret);
+-	fail_on_test(cmd.flags & ~V4L2_DEC_CMD_START_MUTE_AUDIO);
+-	fail_on_test(is_decoder && cmd.flags);
+-
+-	cmd.cmd = V4L2_DEC_CMD_START;
+-	cmd.flags = 0;
+-	cmd.start.speed = ~0;
+-	cmd.start.format = ~0U;
+-	ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
+-	fail_on_test(ret);
+-	fail_on_test(cmd.start.format == ~0U);
+-	fail_on_test(cmd.start.speed == ~0);
+-	fail_on_test(is_decoder && cmd.start.format);
+-	fail_on_test(is_decoder && cmd.start.speed);
+-
+-	cmd.cmd = V4L2_DEC_CMD_PAUSE;
+-	cmd.flags = 0;
+-	ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
+-	fail_on_test(ret != EPERM && ret != EINVAL);
+-	fail_on_test(is_decoder && ret != EINVAL);
++	if (is_stateless) {
++		cmd.cmd = V4L2_DEC_CMD_FLUSH;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++
++		cmd.cmd = V4L2_DEC_CMD_STOP;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++
++		cmd.cmd = V4L2_DEC_CMD_START;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++
++		cmd.cmd = V4L2_DEC_CMD_PAUSE;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++
++		cmd.cmd = V4L2_DEC_CMD_RESUME;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(!ret);
++	} else {
++		cmd.cmd = V4L2_DEC_CMD_STOP;
++		cmd.flags = ~0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++		fail_on_test(cmd.flags & ~(V4L2_DEC_CMD_STOP_TO_BLACK | V4L2_DEC_CMD_STOP_IMMEDIATELY));
++		fail_on_test(is_decoder && cmd.flags);
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++
++		cmd.cmd = V4L2_DEC_CMD_START;
++		cmd.flags = ~0;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++		fail_on_test(cmd.flags & ~V4L2_DEC_CMD_START_MUTE_AUDIO);
++		fail_on_test(is_decoder && cmd.flags);
++
++		cmd.cmd = V4L2_DEC_CMD_START;
++		cmd.flags = 0;
++		cmd.start.speed = ~0;
++		cmd.start.format = ~0U;
++		ret = doioctl(node, VIDIOC_TRY_DECODER_CMD, &cmd);
++		fail_on_test(ret);
++		fail_on_test(cmd.start.format == ~0U);
++		fail_on_test(cmd.start.speed == ~0);
++		fail_on_test(is_decoder && cmd.start.format);
++		fail_on_test(is_decoder && cmd.start.speed);
++
++		cmd.cmd = V4L2_DEC_CMD_PAUSE;
++		cmd.flags = 0;
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(ret != EPERM && ret != EINVAL);
++		fail_on_test(is_decoder && ret != EINVAL);
++
++		cmd.cmd = V4L2_DEC_CMD_RESUME;
++		ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
++		fail_on_test(ret != EPERM && ret != EINVAL);
++		fail_on_test(is_decoder && ret != EINVAL);
++	}
+ 
+-	cmd.cmd = V4L2_DEC_CMD_RESUME;
+-	ret = doioctl(node, VIDIOC_DECODER_CMD, &cmd);
+-	fail_on_test(ret != EPERM && ret != EINVAL);
+-	fail_on_test(is_decoder && ret != EINVAL);
+ 	return 0;
+ }
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.1
+
