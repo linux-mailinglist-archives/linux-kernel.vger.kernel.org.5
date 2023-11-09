@@ -2,339 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD74F7E62DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502CF7E62E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 05:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbjKIEgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 23:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S232242AbjKIEjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 23:39:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbjKIEgn (ORCPT
+        with ESMTP id S230451AbjKIEjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 23:36:43 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBA8269F
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 20:36:41 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5098e423ba2so404860e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 20:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699504599; x=1700109399; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yQyapGaksxc5HPHzYoaRYUc1BPx1RyETpKHLmN7h1N8=;
-        b=fVlX2Dv4lmMyssT9rEOo87gfNG079jUh+lx/O1vRESQ7LpyfcyXx7NZggozQpgJgrW
-         /E6Pz/vNVHFEWBX+WkZZ4gSbfO5SxCQgLzxu39LaZaR9XNkr4IsjKFbIC6/Uwl+0d4lS
-         lhlvRz5s1JchieAW7CZgQsn9WrHgEjGF7BXCQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699504599; x=1700109399;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yQyapGaksxc5HPHzYoaRYUc1BPx1RyETpKHLmN7h1N8=;
-        b=eLWzktsAFS34V8jDokAh/5NcnW+k6VjKMMn00Nqr0lSP47LXPrDBJmav9WJLnjANEy
-         tqQPOQJpPoLVc5ISnm1sFmSe+jgtd7bxNMNpVUwlayAZGE4qs4sawju7ntlaf/1HbOYk
-         mi80Rf2CMFxwOQdGzMDbw5GFUjVho84oH3b1Azw5XVfbShwOBwyjEfp+FFNIqh5nxIR4
-         by/oeSfA8EOHbVsqED4fyRuUUa+8lmxZjdyp8U9dbB5oqE2zYu9nTI8++i9yrec2X4Mk
-         NvdXyPCdhDGVKPIp3dQf0coCUWDgVzPuJfCj78Uz+ebWDQtC+nUiVP92CAb9p8VsuEQz
-         awOw==
-X-Gm-Message-State: AOJu0Yxh4olPxOQtF4g7bXNV+wnZsJZcTtqT+OoI/9jAUBJLxlI1ygWD
-        RGbqaHxJBaMla+Ppy4P4K/Bwecef0ofrJ7nFz+DgKosy
-X-Google-Smtp-Source: AGHT+IHt4Sg4vsVn//lYV6V4ezTWLWBZ2BI+Oz32zgn5luWLxsPBS1u1dmZoW/ZWsI6w86oxZL8RAQ==
-X-Received: by 2002:a05:6512:758:b0:500:d970:6541 with SMTP id c24-20020a056512075800b00500d9706541mr367807lfs.39.1699504599574;
-        Wed, 08 Nov 2023 20:36:39 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id d14-20020a0565123d0e00b005041b7735dbsm910618lfv.53.2023.11.08.20.36.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Nov 2023 20:36:39 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50949b7d7ffso599466e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 20:36:39 -0800 (PST)
-X-Received: by 2002:a05:6512:3251:b0:509:4b59:d40e with SMTP id
- c17-20020a056512325100b005094b59d40emr327270lfr.49.1699504598991; Wed, 08 Nov
- 2023 20:36:38 -0800 (PST)
+        Wed, 8 Nov 2023 23:39:10 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2031.outbound.protection.outlook.com [40.92.99.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA6526A0;
+        Wed,  8 Nov 2023 20:39:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UiX9mPiQfXl+CeatA1XfszWlKk/4INuiYvkDHYxBNszIkSm4c8CifeMiL37nffI0jk91icC+4DAx71s24wI8hKnPoOqNfca9PQ5dUNqw0fg4Gg0srpyWKJ6zXiIo6IBzrgzUmPE38IOgPU1xwEjfr2MfvMMtUIFqh6jsPHgiKJ6rIcu+2qDAhvILLXZle5wCBPk663rfVgQOE+JPvEDZlVMxbWXuNSPHM8f9/sS7zVMRJj/uHEcbpqfUs1DemtbSAs1C4tiIqgn15rBMzglwcReZ4WD57NzrVMI+/Y66qZBbmmjbPKGLT9xEypDTscV74GhV3to0qPDz6EwW63AB3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/zq8ppgizd2ejfRY8/vPm1f2xw/C11dZfCnWvGn9Z0I=;
+ b=g4fa2QVRXlz8nBMdlP9GFnrf6OO0ZoqaTul5CzaVRHSq/gsUp0Wg1TrcnxqebL0l287IzPL/idXoOwSnh2zCiGhGQtI6SmnBy58s4n7JwAMw0KEtNr0gFGFHqLCN2kq2yBcBAlZ90Kdd9IT3ptjssgvLeb7QoiTHpBKG99ZvlhEq9UoPc02vEmz378vq1vG/5We4SU/rMiTArX1THmQJddMUHVcqtq4wEQirCgNu0qgx0Lj1kOL3oGunpT9X3elUZ/S0Hfj1dAFaDlvaEmDEG08D0n3rletBhRrVHumftSB0lJfHAc29LC/LZZVLGfYp426+nc7onz4FQIaCpPANGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/zq8ppgizd2ejfRY8/vPm1f2xw/C11dZfCnWvGn9Z0I=;
+ b=IZ+8k8lbp/UvAPRVib7hoMW6EkZ327NjoBH2xLxZkQOqHE2MEr7JsFDKy5aSetgJUafP8kM5q+abdd10E0HLmdgaxAGeOuMa+QJ/ZVPQU3ULcHSbq7Ad3Y3sIY2DBYgVV65hnNsKbEO8I1Z7bJ6xW0wrzWlk8Dhy+mMgUZcu7CClWf5QLVbf3/Ih2fkOlbNUYfNIq0XJ3cfZhJtTUS04+oDltpJRRoL9/DPs/sA4JGcbIxNRkRujFyY+pf2QRYQm0qo07BZwqjyzEfHoPt918VAO0wnm+2z5/mr7Dp0ZOSi6S1aAn0Pe5vnhA8F2AhVccAHIVnXmNXuNtIFFjDdKdw==
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
+ by TY3P286MB2609.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:23f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.33; Thu, 9 Nov
+ 2023 04:39:05 +0000
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::465a:2534:4d99:a25b]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::465a:2534:4d99:a25b%6]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
+ 04:39:04 +0000
+From:   Shiji Yang <yangshiji66@outlook.com>
+To:     linux-wireless@vger.kernel.org
+Cc:     Stanislaw Gruszka <stf_xl@wp.pl>, Kalle Valo <kvalo@kernel.org>,
+        linux-kernel@vger.kernel.org, Shiji Yang <yangshiji66@outlook.com>
+Subject: [PATCH] wifi: rt2x00: correct wrong BBP register in RxDCOC calibration
+Date:   Thu,  9 Nov 2023 12:38:51 +0800
+Message-ID: <TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [FRpPPHR0U2TgWYIh3kY9EA0nXi5RaMls]
+X-ClientProxiedBy: TYAPR01CA0013.jpnprd01.prod.outlook.com (2603:1096:404::25)
+ To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
+X-Microsoft-Original-Message-ID: <20231109043851.26584-1-yangshiji66@outlook.com>
 MIME-Version: 1.0
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-9-benjamin.gaignard@collabora.com> <20231108094223.rprskkeee47vaezy@chromium.org>
- <adc94476-8188-4569-8a39-2a1fb6b2f9dc@collabora.com>
-In-Reply-To: <adc94476-8188-4569-8a39-2a1fb6b2f9dc@collabora.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 9 Nov 2023 13:36:21 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5C0PG+tP1Sa9BHKOFFpc9K9Fc-SqUxGmBKnd09eJnzDZA@mail.gmail.com>
-Message-ID: <CAAFQd5C0PG+tP1Sa9BHKOFFpc9K9Fc-SqUxGmBKnd09eJnzDZA@mail.gmail.com>
-Subject: Re: [PATCH v14 08/56] media: videobuf2: Use vb2_get_num_buffers() helper
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
-        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
-        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|TY3P286MB2609:EE_
+X-MS-Office365-Filtering-Correlation-Id: 671b7df7-7d07-4671-f7b9-08dbe0ddcd26
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YDbF9c7/Cg31i4jaBKs60Bj60n4ERQnTbtkpfKmJclJOpclXMyYt3iEbL46Efyd8yi6OvPl7nqJ2JHeRzDCEmquGXpiaGdZGFAmeXtw79Fq2K6b0G6afgSomDxRhUiio/9N57yNxPYqvbXJqv7UpkgB/cWA+GcHuhkugOddxViZfJJrpfELq3uckpgutCRVNrtxIkphyy+/9kZ7LsMit0CioStFikIuAy5yn/hdqVwkNXl35GmwrXQ2jFoqPTHBDbcov2lph1S0sP6dO/TsgMQ/nbof7Q2yWGLezwMnipN2TI2yEhmbVMSIn8SOf54Yn99zuUPZcouoiI7KZtDQXHjM8fhD33lpdIVKmvzbl+pzUd/Ljn0HHuUyy6zOSGABBb/5mVF6j//nNruxB0S+wlfJUdR6ODOB6hpkdX3sddB8Ix9LwzxZsWVpQcWrXXs7/rfohHDWJ+IkmYs1U4F5HDuXZ9m1x8oZRlsRR41M2YlXEC4LERLyFxcJtw5OnpZw/Lp41iAcLoUujV9RznqUUZQxVLlxkwBa/QPkcwvAjuHrlg06u8Z40pMAJ1W7QsLb6rLMjSpuTeij/MfkbVvnjzjgAl3amW5Fdnwqq6Ygw1AiU3x0O23VKUVXJgAbQ8WPT
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wBKcyhrH7arytULJ9FXWhx2dPP6XqcThbuL4DaL+2UYQ4wvZcdjox23fs9AK?=
+ =?us-ascii?Q?oy6A6le1l5HWwzFUMGV04/kLxajXeN51jH3zN7yn5eGk+SyPvI4Ml+KNUeNR?=
+ =?us-ascii?Q?qVxDgBX2KPXSg9aJQ0pHd9Ow+epVrsq0utg7By3z2ZA1D6G9Gh8zcJOAY7G8?=
+ =?us-ascii?Q?tVYYHZaYMl9D7ShbXu34LuorheeMyjq/vN74eTuocnb96kejRbkOC30/8yi/?=
+ =?us-ascii?Q?3ZmrUqmgoexaIWHUg7Wc4DV73jIvtfcJZLOkfNrOlJXZMRWJ3+JE9AtS8cml?=
+ =?us-ascii?Q?3v1jVRCDL1ByrZIMQ4Ba85oMu4q6K9w+xwvHg2X/oWXgdUcbv/Kd21sSK8qN?=
+ =?us-ascii?Q?+2CufHyUDnqBq4vS8sEfwSZL5NGgtKdNviCsE1ZOLyYoY4qcMRRc8DabpnLf?=
+ =?us-ascii?Q?Pjz3rL/GNu9qmbvHfjVSsZ2KJTFJqviYKW4ZMrH5F7OFsvj7dk5C/v26vL3Z?=
+ =?us-ascii?Q?uDd7oHiB0LsTzUkrg/kG7N+p5bwJ3vKyV9wF1zgnmfokHxWbdqGubduKA20p?=
+ =?us-ascii?Q?l72Xveayl0rBT51n1Eg4m47hQ09ftZQd9q5d7OvMXfydHN1CrdoEBPvilZ6o?=
+ =?us-ascii?Q?do3S+BjHL+NEfVEErMG0x73P7APtT7uoVLvlMakBEtCJ14lD/lEJTxlAPnuE?=
+ =?us-ascii?Q?hZqQKFVEtoKkXhzIotVyuX6TUidCYD0IcSZRFCZqq5jrxJDFZeVbYY4sZg5O?=
+ =?us-ascii?Q?2x/TMdpwgo4n4nmQxuWS+jYE1dJqgEjYNsCViouBjJVSR41v3kBOnP4aS8W8?=
+ =?us-ascii?Q?GrCIXknjeJZbVHBasMqXk19kjlty7JBrzu/AhfZ8CjXzzD0IR+ou29IKRskd?=
+ =?us-ascii?Q?6S6iQc9GZ0sfq7+flmGohz5poLICX9ws6zJJSIbfV9JovzrlodNhLnZzOG8h?=
+ =?us-ascii?Q?1f8r/xdn8LoJ9YXKRecYasStv3mXDe0hlHi9mywoBXI5xLSIQXajkhbBz+ew?=
+ =?us-ascii?Q?U7/7cjeuiVrXU+FHGjXrWp6s/ejPXheW9PngqdXDi+2IHwMwtk0Wvdco2Rzm?=
+ =?us-ascii?Q?apAZvM+2eaDOUhineAlqwH0gH4gs8MjiYl+w5mrwHThCZZM9aZ56fyJbYhiU?=
+ =?us-ascii?Q?dGhJXoDsW/qverzcZjeEfuMutmxeOboKpbLDxmpzP3Dn0i26f/G50YkLE5b0?=
+ =?us-ascii?Q?nziUIBse8rXyNlh/AvgKc8k0vZhA9YkXZLToR/3t9uTRaT9jNHD8WT3wK3OS?=
+ =?us-ascii?Q?/nfsuB0DdM8EUgT9QwU7/LDX1bhQDwqQHur3Rsufe9eNmbRAerAtqqAViCY?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 671b7df7-7d07-4671-f7b9-08dbe0ddcd26
+X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 04:39:04.9604
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB2609
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 10:22=E2=80=AFPM Benjamin Gaignard
-<benjamin.gaignard@collabora.com> wrote:
->
->
-> Le 08/11/2023 =C3=A0 10:42, Tomasz Figa a =C3=A9crit :
-> > On Tue, Oct 31, 2023 at 05:30:16PM +0100, Benjamin Gaignard wrote:
-> >> Stop using queue num_buffers field directly, instead use
-> >> vb2_get_num_buffers().
-> >> This prepares for the future 'delete buffers' feature where there are
-> >> holes in the buffer indices.
-> >>
-> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> >> ---
-> >>   .../media/common/videobuf2/videobuf2-core.c   | 92 +++++++++++------=
---
-> >>   .../media/common/videobuf2/videobuf2-v4l2.c   |  4 +-
-> >>   2 files changed, 54 insertions(+), 42 deletions(-)
-> >>
-> >> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers=
-/media/common/videobuf2/videobuf2-core.c
-> >> index b406a30a9b35..c5c5ae4d213d 100644
-> >> --- a/drivers/media/common/videobuf2/videobuf2-core.c
-> >> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-> >> @@ -444,13 +444,14 @@ static int __vb2_queue_alloc(struct vb2_queue *q=
-, enum vb2_memory memory,
-> >>                           unsigned int num_buffers, unsigned int num_p=
-lanes,
-> >>                           const unsigned plane_sizes[VB2_MAX_PLANES])
-> >>   {
-> >> +    unsigned int q_num_buffers =3D vb2_get_num_buffers(q);
-> >>      unsigned int buffer, plane;
-> >>      struct vb2_buffer *vb;
-> >>      int ret;
-> >>
-> >>      /* Ensure that q->num_buffers+num_buffers is below VB2_MAX_FRAME =
-*/
-> >>      num_buffers =3D min_t(unsigned int, num_buffers,
-> >> -                        VB2_MAX_FRAME - q->num_buffers);
-> >> +                        VB2_MAX_FRAME - q_num_buffers);
-> > I guess it's safe in this specific situation, but was there any reason
-> > behind not just calling vb2_get_num_buffers() directly here?
-> >
-> >>
-> >>      for (buffer =3D 0; buffer < num_buffers; ++buffer) {
-> >>              /* Allocate vb2 buffer structures */
-> >> @@ -470,7 +471,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, =
-enum vb2_memory memory,
-> >>                      vb->planes[plane].min_length =3D plane_sizes[plan=
-e];
-> >>              }
-> >>
-> >> -            vb2_queue_add_buffer(q, vb, q->num_buffers + buffer);
-> >> +            vb2_queue_add_buffer(q, vb, q_num_buffers + buffer);
-> > In this case it should also be fine, but actually now this is a loop an=
-d if
-> > somone doesn't know what the other code in the loop does, one could be
-> > concerned that the num buffers actually could have changed, but we stil=
-l
-> > use the cached one that we got at the beginning of the function.
-> >
-> > (Ideally I'd imagine vb2_queue_add_buffer() to append the buffer
-> > at the end of the queue and increment the num_buffers internally, but i=
-t
-> > doesn't have to happen now, as this series is already quite complex...)
->
-> That will be the case later in the series when I replace num_buffers fiel=
-d
-> by a bitmap. Until that I prefer to limit the changes in this loop.
->
-> >
-> >>              call_void_bufop(q, init_buffer, vb);
-> >>
-> >>              /* Allocate video buffer memory for the MMAP type */
-> > [snip]
-> >> @@ -2513,7 +2519,8 @@ void vb2_core_queue_release(struct vb2_queue *q)
-> >>      __vb2_cleanup_fileio(q);
-> >>      __vb2_queue_cancel(q);
-> >>      mutex_lock(&q->mmap_lock);
-> >> -    __vb2_queue_free(q, q->num_buffers);
-> >> +    __vb2_queue_free(q, vb2_get_num_buffers(q));
-> >> +    q->num_buffers =3D 0;
-> > Unrelated change?
->
-> No because I found a case where q->num_buffers wasn't correctly reset whi=
-le testing.
->
+Refer to Mediatek vendor driver RxDCOC_Calibration() function, when
+performing gainfreeze calibration, we should write register 140
+instead of 141. This fix can reduce the total calibration time from
+6 seconds to 1 second.
 
-Could you provide more details about that case? Shouldn't it be fixed inste=
-ad?
+Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+---
 
-It's a bit weird to me, because __vb2_queue_free() is supposed to
-decrement q->num_buffers by the number of buffers freed and it's
-called with vb2_get_num_buffers() just one line above.
+Hi!
 
-> >
-> >>      mutex_unlock(&q->mmap_lock);
-> >>   }
-> >>   EXPORT_SYMBOL_GPL(vb2_core_queue_release);
-> >> @@ -2542,7 +2549,7 @@ __poll_t vb2_core_poll(struct vb2_queue *q, stru=
-ct file *file,
-> >>      /*
-> >>       * Start file I/O emulator only if streaming API has not been use=
-d yet.
-> >>       */
-> >> -    if (q->num_buffers =3D=3D 0 && !vb2_fileio_is_active(q)) {
-> >> +    if (vb2_get_num_buffers(q) =3D=3D 0 && !vb2_fileio_is_active(q)) =
-{
-> >>              if (!q->is_output && (q->io_modes & VB2_READ) &&
-> >>                              (req_events & (EPOLLIN | EPOLLRDNORM))) {
-> >>                      if (__vb2_init_fileio(q, 1))
-> >> @@ -2580,7 +2587,7 @@ __poll_t vb2_core_poll(struct vb2_queue *q, stru=
-ct file *file,
-> >>       * For output streams you can call write() as long as there are f=
-ewer
-> >>       * buffers queued than there are buffers available.
-> >>       */
-> >> -    if (q->is_output && q->fileio && q->queued_count < q->num_buffers=
-)
-> >> +    if (q->is_output && q->fileio && q->queued_count < vb2_get_num_bu=
-ffers(q))
-> >>              return EPOLLOUT | EPOLLWRNORM;
-> >>
-> >>      if (list_empty(&q->done_list)) {
-> >> @@ -2629,8 +2636,8 @@ struct vb2_fileio_buf {
-> >>    * struct vb2_fileio_data - queue context used by file io emulator
-> >>    *
-> >>    * @cur_index:     the index of the buffer currently being read from=
- or
-> >> - *          written to. If equal to q->num_buffers then a new buffer
-> >> - *          must be dequeued.
-> >> + *          written to. If equal to number of already queued buffers
-> >> + *          then a new buffer must be dequeued.
-> > Hmm, that's a significant meaning change compared to the original text.=
- Is
-> > it indended?
->
-> Does "If equal to number of buffers in the vb2_queue then a new buffer mu=
-st be dequeued."
-> sound better for you ?
+I found another small fix. Ref:
+https://github.com/hanwckf/rt-n56u/blob/23387b278a7cf728748af606760758f5d59d1451/trunk/proprietary/rt_wifi/rtsoc/2.7.X.X/rt2860v2/common/cmm_rf_cal.c#L2464-L2470
 
-Yes, I think now it matches the original meaning. Thanks.
+This link may not be a permanent link, so it is not included in the
+commit message.
 
->
-> >
-> >>    * @initial_index: in the read() case all buffers are queued up imme=
-diately
-> >>    *         in __vb2_init_fileio() and __vb2_perform_fileio() just cy=
-cles
-> >>    *         buffers. However, in the write() case no buffers are init=
-ially
-> >> @@ -2640,7 +2647,7 @@ struct vb2_fileio_buf {
-> >>    *         buffers. This means that initially __vb2_perform_fileio()
-> >>    *         needs to know what buffer index to use when it is queuing=
- up
-> >>    *         the buffers for the first time. That initial index is sto=
-red
-> >> - *          in this field. Once it is equal to q->num_buffers all
-> >> + *          in this field. Once it is equal to num_buffers all
-> > It's not clear what num_buffers means here. Would it make sense to inst=
-ead
-> > say "number of buffers in the vb2_queue"?
->
-> Yes I will change that
->
-> >
-> >>    *         available buffers have been queued and __vb2_perform_file=
-io()
-> >>    *         should start the normal dequeue/queue cycle.
-> >>    *
-> >> @@ -2690,7 +2697,7 @@ static int __vb2_init_fileio(struct vb2_queue *q=
-, int read)
-> >>      /*
-> >>       * Check if streaming api has not been already activated.
-> >>       */
-> >> -    if (q->streaming || q->num_buffers > 0)
-> >> +    if (q->streaming || vb2_get_num_buffers(q) > 0)
-> >>              return -EBUSY;
-> >>
-> >>      /*
-> >> @@ -2740,7 +2747,7 @@ static int __vb2_init_fileio(struct vb2_queue *q=
-, int read)
-> >>      /*
-> >>       * Get kernel address of each buffer.
-> >>       */
-> >> -    for (i =3D 0; i < q->num_buffers; i++) {
-> >> +    for (i =3D 0; i < vb2_get_num_buffers(q); i++) {
-> >>              /* vb can never be NULL when using fileio. */
-> >>              vb =3D vb2_get_buffer(q, i);
-> >>
-> >> @@ -2759,18 +2766,23 @@ static int __vb2_init_fileio(struct vb2_queue =
-*q, int read)
-> >>              /*
-> >>               * Queue all buffers.
-> >>               */
-> >> -            for (i =3D 0; i < q->num_buffers; i++) {
-> >> -                    ret =3D vb2_core_qbuf(q, q->bufs[i], NULL, NULL);
-> >> +            for (i =3D 0; i < vb2_get_num_buffers(q); i++) {
-> >> +                    struct vb2_buffer *vb2 =3D vb2_get_buffer(q, i);
-> >> +
-> >> +                    if (!vb2)
-> >> +                            continue;
-> >> +
-> >> +                    ret =3D vb2_core_qbuf(q, vb2, NULL, NULL);
-> >>                      if (ret)
-> >>                              goto err_reqbufs;
-> >>                      fileio->bufs[i].queued =3D 1;
-> >>              }
-> > Doesn't this part belong to the previous patch that changes q->bufs[x] =
-to
-> > vb2_get_buffer()?
->
-> Yes I will change that too.
->
-> >
-> >>              /*
-> >>               * All buffers have been queued, so mark that by setting
-> >> -             * initial_index to q->num_buffers
-> >> +             * initial_index to num_buffers
-> > What num_buffers?
->
-> I will use your wording: "the number of buffers in the vb2_queue"
->
+Regards,
+Shiji Yang
 
-Thanks!
 
-> >
-> >>               */
-> >> -            fileio->initial_index =3D q->num_buffers;
-> >> -            fileio->cur_index =3D q->num_buffers;
-> >> +            fileio->initial_index =3D vb2_get_num_buffers(q);
-> >> +            fileio->cur_index =3D fileio->initial_index;
-> >>      }
-> >>
-> >>      /*
-> >> @@ -2964,12 +2976,12 @@ static size_t __vb2_perform_fileio(struct vb2_=
-queue *q, char __user *data, size_
-> >>               * If we are queuing up buffers for the first time, then
-> >>               * increase initial_index by one.
-> >>               */
-> >> -            if (fileio->initial_index < q->num_buffers)
-> >> +            if (fileio->initial_index < vb2_get_num_buffers(q))
-> >>                      fileio->initial_index++;
-> >>              /*
-> >>               * The next buffer to use is either a buffer that's going=
- to be
-> >> -             * queued for the first time (initial_index < q->num_buff=
-ers)
-> >> -             * or it is equal to q->num_buffers, meaning that the nex=
-t
-> >> +             * queued for the first time (initial_index < num_buffers=
-)
-> >> +             * or it is equal to num_buffers, meaning that the next
-> > What num_buffers?
->
-> Same here
+ drivers/net/wireless/ralink/rt2x00/rt2800lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
+index 7b13c176d..3a52a04d3 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2800lib.c
+@@ -8710,7 +8710,7 @@ static void rt2800_rxdcoc_calibration(struct rt2x00_dev *rt2x00dev)
+ 	rt2800_rfcsr_write_bank(rt2x00dev, 5, 4, saverfb5r4);
+ 	rt2800_rfcsr_write_bank(rt2x00dev, 7, 4, saverfb7r4);
+ 
+-	rt2800_bbp_write(rt2x00dev, 158, 141);
++	rt2800_bbp_write(rt2x00dev, 158, 140);
+ 	bbpreg = rt2800_bbp_read(rt2x00dev, 159);
+ 	bbpreg = bbpreg & (~0x40);
+ 	rt2800_bbp_write(rt2x00dev, 159, bbpreg);
+-- 
+2.39.2
 
-Best regards,
-Tomasz
