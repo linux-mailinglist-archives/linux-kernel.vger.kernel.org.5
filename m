@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2137E70C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005197E70CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344863AbjKIRue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:50:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
+        id S1344872AbjKIRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbjKIRuc (ORCPT
+        with ESMTP id S1344773AbjKIRvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:50:32 -0500
+        Thu, 9 Nov 2023 12:51:00 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1681BFD
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:50:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5B508C433C7;
-        Thu,  9 Nov 2023 17:50:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D0F269E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:50:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0B4C433C7;
+        Thu,  9 Nov 2023 17:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699552230;
-        bh=NC2wQNcDNMRuGv9g3+/8bxt26yBhotbPBQ9TPyur8Io=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fXl1HJSTyAdNusFocUwf48YPEjKuv8vRm9YMPQIXaIoIWAoKmIy1wvVVtFS+ycZko
-         z08nO6cxn9XrUQmMfVtGSx6G7oPrdzaKoJc7lbzjbzXkPN6/sDdUi09XCJFTG9hYuY
-         wlXRypddOjgIhSYk+ArKvQ+SSKQPzBIPdhQR+MVjIxFn3GwuuJNWWLpiXSX+Wvaz+z
-         vVIuxDRbGIPQ+Lx6oifYUKSySr/BgdnzLelrnzK5J4/piupOkogqWyf+USUyBy8p8t
-         2Haryc2T7CD6pU5KchTK888SYjBsg1+JB3c63zMTbDidWpb6y2Hx9+wonpD51ULaP+
-         Br1NjCEZ2Ot8g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 39B33C43158;
-        Thu,  9 Nov 2023 17:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1699552257;
+        bh=GB1syrHkrGKsmiS0BjcotABnBGuB2ElN3V85GZw/kAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ToCXT+f0/7z3BZkle4LwTFuKxK3lAXNYtMhvN8zhbG2gkF7h4SBB/igmwG0P+Zvo2
+         NmuS/Eg86zaZ6ucHSUi94mNjOVQMxv6vRV7mSbR5Nu2xBvVt+kOOadEY1MeJi2R5eX
+         gm/vUCHta0V+Aw72M3C1IBCFGONx0v4m5jQ9enBcpbJJu7jdsg0lKCj1pkr1bIN56H
+         XlOOpDuFV4fAm1/T95n+hJTQNX4BnHUyad1pDELC+KMD+BzhteYuURCIzoLPGIax5q
+         24ToC2MuXIi88cVPWmXu7EuLB2aftW1hVxXBE5zrsHGWQoYmx0ds30NK2pSkEsnp1Z
+         O5bKwljiIwPLw==
+Date:   Thu, 9 Nov 2023 17:50:51 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 03/12] dt-bindings: phy:
+ amlogic,meson-axg-mipi-pcie-analog: drop text about parent syscon and drop
+ example
+Message-ID: <20231109-unsalted-daredevil-4052fa57fd2c@spud>
+References: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-0-81e4aeeda193@linaro.org>
+ <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-3-81e4aeeda193@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 02/41] rxrpc: Fix two connection reaping bugs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169955223023.20616.10876118854212671303.git-patchwork-notify@kernel.org>
-Date:   Thu, 09 Nov 2023 17:50:30 +0000
-References: <20231109154004.3317227-3-dhowells@redhat.com>
-In-Reply-To: <20231109154004.3317227-3-dhowells@redhat.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     marc.dionne@auristor.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="E5Nn4IFoyvxjicc1"
+Content-Disposition: inline
+In-Reply-To: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-3-81e4aeeda193@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to bpf/bpf.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+--E5Nn4IFoyvxjicc1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu,  9 Nov 2023 15:39:25 +0000 you wrote:
-> Fix two connection reaping bugs:
-> 
->  (1) rxrpc_connection_expiry is in units of seconds, so
->      rxrpc_disconnect_call() needs to multiply it by HZ when adding it to
->      jiffies.
-> 
->  (2) rxrpc_client_conn_reap_timeout() should set RXRPC_CLIENT_REAP_TIMER if
->      local->kill_all_client_conns is clear, not if it is set (in which case
->      we don't need the timer).  Without this, old client connections don't
->      get cleaned up until the local endpoint is cleaned up.
-> 
-> [...]
+On Thu, Nov 09, 2023 at 10:00:04AM +0100, Neil Armstrong wrote:
+> Since this bindings is referred from amlogic,meson-gx-hhi-sysctrl.yaml, d=
+rop the now
+> useless description about the parent node and also drop the unnecessary e=
+xample.
+>=20
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Here is the summary with links:
-  - [02/41] rxrpc: Fix two connection reaping bugs
-    https://git.kernel.org/bpf/bpf/c/61e4a8660002
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Cheers,
+COnor.
 
+> ---
+>  .../phy/amlogic,meson-axg-mipi-pcie-analog.yaml         | 17 -----------=
+------
+>  1 file changed, 17 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi=
+-pcie-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson-axg=
+-mipi-pcie-analog.yaml
+> index 009a39808318..70def36e5688 100644
+> --- a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-a=
+nalog.yaml
+> +++ b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-a=
+nalog.yaml
+> @@ -9,16 +9,6 @@ title: Amlogic AXG shared MIPI/PCIE analog PHY
+>  maintainers:
+>    - Remi Pommarel <repk@triplefau.lt>
+> =20
+> -description: |+
+> -  The Everything-Else Power Domains node should be the child of a syscon
+> -  node with the required property:
+> -
+> -  - compatible: Should be the following:
+> -                "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
+> -
+> -  Refer to the bindings described in
+> -  Documentation/devicetree/bindings/mfd/syscon.yaml
+> -
+>  properties:
+>    compatible:
+>      const: amlogic,axg-mipi-pcie-analog-phy
+> @@ -31,10 +21,3 @@ required:
+>    - "#phy-cells"
+> =20
+>  additionalProperties: false
+> -
+> -examples:
+> -  - |
+> -    mpphy: phy {
+> -          compatible =3D "amlogic,axg-mipi-pcie-analog-phy";
+> -          #phy-cells =3D <0>;
+> -    };
+>=20
+> --=20
+> 2.34.1
+>=20
 
+--E5Nn4IFoyvxjicc1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU0b+wAKCRB4tDGHoIJi
+0llMAQDSiyi01Tk6EfsjuzI7TW2RZ9q3lS642vkuNdyv7Vl74QEAi50xLev+LeZV
+0XXHkOzNdlCx7iH9hujdrheVevi6VwY=
+=NFGG
+-----END PGP SIGNATURE-----
+
+--E5Nn4IFoyvxjicc1--
