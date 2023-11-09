@@ -2,241 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D80B7E66E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C757E66E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjKIJhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S230291AbjKIJh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjKIJhA (ORCPT
+        with ESMTP id S229629AbjKIJhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:37:00 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142762702;
-        Thu,  9 Nov 2023 01:36:58 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A96inKv031062;
-        Thu, 9 Nov 2023 09:36:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=GcJK9lbzyXibo8zNkgD9SGW2SuPKTMTtlGyu6iZHRgo=;
- b=co7Eb3E8sI3u+7bM/hMH6LeM117fZO7qwsSiaBhnqgnbcXgXqZxCX0lG1DNGSGO8If1f
- G8XLwvmVssy6YWoFUvxD01uvz/tmanNHUJjcKi8K9HzNHiVjHL0cMHyyTUApVRthLLPe
- ma4RQuiPjoL187qk4QoAUvubLwDYoVtnCVQsKuhOVhcG8u/6+GTuzr3z1+diqLOrl04p
- uc7rfFApwEgmKAPDDrKHwbbOkmC8+pqPBmtM2ZRkMUiYlq9a9Yy+rN6dpiVo/RngIz71
- jDfbEV+gesqiX4MZc9YHV6QKPaJh2PRDHEohCTEaYgL5lQyHoFftJSn4QXiBpEpUuccO Pg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8tcrrmgy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 09:36:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A99ap7Z018643
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Nov 2023 09:36:51 GMT
-Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 01:36:44 -0800
-Message-ID: <d2556aad-24cc-c0d1-d71d-bf43bc832036@quicinc.com>
-Date:   Thu, 9 Nov 2023 15:06:41 +0530
+        Thu, 9 Nov 2023 04:37:24 -0500
+Received: from out28-121.mail.aliyun.com (out28-121.mail.aliyun.com [115.124.28.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205F32712;
+        Thu,  9 Nov 2023 01:37:20 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06712908|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00220234-2.48532e-05-0.997773;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.VJJFKQh_1699522631;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.VJJFKQh_1699522631)
+          by smtp.aliyun-inc.com;
+          Thu, 09 Nov 2023 17:37:17 +0800
+From:   wangweidong.a@awinic.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, wangweidong.a@awinic.com, liweilei@awinic.com,
+        yijiangtao@awinic.com, trix@redhat.com, dan.carpenter@linaro.org,
+        colin.i.king@gmail.com, herve.codina@bootlin.com,
+        nathan@kernel.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codecs: Modify the bin file parsing method
+Date:   Thu,  9 Nov 2023 17:37:07 +0800
+Message-ID: <20231109093708.13155-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v2 2/3] phy: qcom-qmp-pcie: Add endpoint refclk control
- register offset
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231107-refclk_always_on-v2-0-de23962fc4b3@quicinc.com>
- <20231107-refclk_always_on-v2-2-de23962fc4b3@quicinc.com>
- <CAA8EJpr8Y+k2FJqFfZVagWxfgsUEnZ1010-xaaUg=c6tqu8Hsw@mail.gmail.com>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <CAA8EJpr8Y+k2FJqFfZVagWxfgsUEnZ1010-xaaUg=c6tqu8Hsw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: PGBEJB1BBUJIrD9anw0X-I4LZqZyZmL4
-X-Proofpoint-ORIG-GUID: PGBEJB1BBUJIrD9anw0X-I4LZqZyZmL4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_08,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 malwarescore=0 mlxscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090076
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Weidong Wang <wangweidong.a@awinic.com>
 
-On 11/7/2023 6:36 PM, Dmitry Baryshkov wrote:
-> On Tue, 7 Nov 2023 at 14:26, Krishna chaitanya chundru
-> <quic_krichai@quicinc.com> wrote:
->> Some platforms needs to keep endpoint refclk always on, for this
->> purpose add this offset for all the applicable phy versions.
->>
->> And also add reg layout for few controllers as we are adding
->> endpoint refclk control register which changes based upon phy version.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 26 +++++++++++++++++++---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h    |  1 +
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h |  1 +
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h |  1 +
->>   4 files changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> index a63ca7424974..74d03d217ff2 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> @@ -77,6 +77,7 @@ enum qphy_reg_layout {
->>          QPHY_START_CTRL,
->>          QPHY_PCS_STATUS,
->>          QPHY_PCS_POWER_DOWN_CONTROL,
->> +       QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
->>          /* Keep last to ensure regs_layout arrays are properly initialized */
->>          QPHY_LAYOUT_SIZE
->>   };
->> @@ -93,6 +94,7 @@ static const unsigned int pciephy_v3_regs_layout[QPHY_LAYOUT_SIZE] = {
->>          [QPHY_START_CTRL]               = QPHY_V3_PCS_START_CONTROL,
->>          [QPHY_PCS_STATUS]               = QPHY_V3_PCS_PCS_STATUS,
->>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V3_PCS_POWER_DOWN_CONTROL,
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V3_PCS_ENDPOINT_REFCLK_CNTRL,
->>   };
->>
->>   static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
->> @@ -107,6 +109,7 @@ static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
->>          [QPHY_START_CTRL]               = QPHY_V4_PCS_START_CONTROL,
->>          [QPHY_PCS_STATUS]               = QPHY_V4_PCS_PCS_STATUS1,
->>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V4_PCS_POWER_DOWN_CONTROL,
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
->>   };
->>
->>   static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
->> @@ -114,6 +117,23 @@ static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
->>          [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
->>          [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
->>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
->> +};
->> +
->> +static const unsigned int pciephy_v5_20_regs_layout[QPHY_LAYOUT_SIZE] = {
->> +       [QPHY_SW_RESET]                 = QPHY_V5_PCS_SW_RESET,
->> +       [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
->> +       [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
->> +       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
-> Nit: we should probably define V5_20 and v6_20 versions of these registers
+Modify the aw88395_lib file so that the bin file
+parsing is no longer related to the chip id of the chip.
+Adopt the bin file data type "prof_data_type" as the
+differentiation between different chip bin file
+parsing methods.
 
-We don't have separate defines for v5_20 and v6_20 for these registers, 
-that is why we are using these.
+Since the chip id macro for the aw88399 is no longer
+defined in aw88395_reg.h, define the chip id
+for the aw88399 in aw88399.h
 
-And the offsets are same for those version. That is why I tried to use 
-macros.
+Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+---
+ sound/soc/codecs/aw88395/aw88395_device.h |   1 +
+ sound/soc/codecs/aw88395/aw88395_lib.c    | 124 +++++++---------------
+ sound/soc/codecs/aw88395/aw88395_reg.h    |   3 -
+ sound/soc/codecs/aw88399.c                |   1 -
+ sound/soc/codecs/aw88399.h                |   1 +
+ 5 files changed, 42 insertions(+), 88 deletions(-)
 
-- Krishna Chaitanya.
+diff --git a/sound/soc/codecs/aw88395/aw88395_device.h b/sound/soc/codecs/aw88395/aw88395_device.h
+index 791c8c106557..0f750f654f3e 100644
+--- a/sound/soc/codecs/aw88395/aw88395_device.h
++++ b/sound/soc/codecs/aw88395/aw88395_device.h
+@@ -146,6 +146,7 @@ struct aw_device {
+ 
+ 	unsigned int channel;
+ 	unsigned int fade_step;
++	unsigned int prof_data_type;
+ 
+ 	struct i2c_client *i2c;
+ 	struct device *dev;
+diff --git a/sound/soc/codecs/aw88395/aw88395_lib.c b/sound/soc/codecs/aw88395/aw88395_lib.c
+index 9ebe7c510109..f25f6e0d4428 100644
+--- a/sound/soc/codecs/aw88395/aw88395_lib.c
++++ b/sound/soc/codecs/aw88395/aw88395_lib.c
+@@ -11,7 +11,6 @@
+ #include <linux/i2c.h>
+ #include "aw88395_lib.h"
+ #include "aw88395_device.h"
+-#include "aw88395_reg.h"
+ 
+ #define AW88395_CRC8_POLYNOMIAL 0x8C
+ DECLARE_CRC8_TABLE(aw_crc8_table);
+@@ -456,14 +455,6 @@ static int aw_dev_parse_reg_bin_with_hdr(struct aw_device *aw_dev,
+ 		goto parse_bin_failed;
+ 	}
+ 
+-	if (aw_dev->chip_id == AW88261_CHIP_ID) {
+-		if (aw_bin->header_info[0].valid_data_len % 4) {
+-			dev_err(aw_dev->dev, "bin data len get error!");
+-			ret = -EINVAL;
+-			goto parse_bin_failed;
+-		}
+-	}
+-
+ 	prof_desc->sec_desc[AW88395_DATA_TYPE_REG].data =
+ 				data + aw_bin->header_info[0].valid_data_addr;
+ 	prof_desc->sec_desc[AW88395_DATA_TYPE_REG].len =
+@@ -528,7 +519,7 @@ static int aw_dev_parse_dev_type(struct aw_device *aw_dev,
+ 							cfg_dde[i].dev_profile);
+ 				return -EINVAL;
+ 			}
+-
++			aw_dev->prof_data_type = cfg_dde[i].data_type;
+ 			ret = aw_dev_parse_data_by_sec_type(aw_dev, prof_hdr, &cfg_dde[i],
+ 					&all_prof_info->prof_desc[cfg_dde[i].dev_profile]);
+ 			if (ret < 0) {
+@@ -564,6 +555,7 @@ static int aw_dev_parse_dev_default_type(struct aw_device *aw_dev,
+ 					cfg_dde[i].dev_profile);
+ 				return -EINVAL;
+ 			}
++			aw_dev->prof_data_type = cfg_dde[i].data_type;
+ 			ret = aw_dev_parse_data_by_sec_type(aw_dev, prof_hdr, &cfg_dde[i],
+ 					&all_prof_info->prof_desc[cfg_dde[i].dev_profile]);
+ 			if (ret < 0) {
+@@ -582,7 +574,7 @@ static int aw_dev_parse_dev_default_type(struct aw_device *aw_dev,
+ 	return 0;
+ }
+ 
+-static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
++static int aw_dev_cfg_get_reg_valid_prof(struct aw_device *aw_dev,
+ 				struct aw_all_prof_info *all_prof_info)
+ {
+ 	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
+@@ -624,7 +616,7 @@ static int aw88261_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
+ 	return 0;
+ }
+ 
+-static int aw88395_dev_cfg_get_valid_prof(struct aw_device *aw_dev,
++static int aw_dev_cfg_get_multiple_valid_prof(struct aw_device *aw_dev,
+ 				struct aw_all_prof_info *all_prof_info)
+ {
+ 	struct aw_prof_desc *prof_desc = all_prof_info->prof_desc;
+@@ -703,26 +695,20 @@ static int aw_dev_load_cfg_by_hdr(struct aw_device *aw_dev,
+ 			goto exit;
+ 	}
+ 
+-	switch (aw_dev->chip_id) {
+-	case AW88395_CHIP_ID:
+-	case AW88399_CHIP_ID:
+-		ret = aw88395_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
+-		if (ret < 0)
+-			goto exit;
++	switch (aw_dev->prof_data_type) {
++	case ACF_SEC_TYPE_MULTIPLE_BIN:
++		ret = aw_dev_cfg_get_multiple_valid_prof(aw_dev, all_prof_info);
+ 		break;
+-	case AW88261_CHIP_ID:
+-	case AW87390_CHIP_ID:
+-		ret = aw88261_dev_cfg_get_valid_prof(aw_dev, all_prof_info);
+-		if (ret < 0)
+-			goto exit;
++	case ACF_SEC_TYPE_HDR_REG:
++		ret = aw_dev_cfg_get_reg_valid_prof(aw_dev, all_prof_info);
+ 		break;
+ 	default:
+-		dev_err(aw_dev->dev, "valid prof unsupported");
++		dev_err(aw_dev->dev, "unsupport data type\n");
+ 		ret = -EINVAL;
+ 		break;
+ 	}
+-
+-	aw_dev->prof_info.prof_name_list = profile_name;
++	if (!ret)
++		aw_dev->prof_info.prof_name_list = profile_name;
+ 
+ exit:
+ 	devm_kfree(aw_dev->dev, all_prof_info);
+@@ -791,39 +777,23 @@ static int aw_get_dev_scene_count_v1(struct aw_device *aw_dev, struct aw_contain
+ 	struct aw_cfg_dde_v1 *cfg_dde =
+ 		(struct aw_cfg_dde_v1 *)(aw_cfg->data + cfg_hdr->hdr_offset);
+ 	unsigned int i;
+-	int ret;
+ 
+-	switch (aw_dev->chip_id) {
+-	case AW88395_CHIP_ID:
+-	case AW88399_CHIP_ID:
+-		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+-			if ((cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN) &&
+-			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+-			    (aw_dev->i2c->adapter->nr == cfg_dde[i].dev_bus) &&
+-			    (aw_dev->i2c->addr == cfg_dde[i].dev_addr))
+-				(*scene_num)++;
+-		}
+-		ret = 0;
+-		break;
+-	case AW88261_CHIP_ID:
+-	case AW87390_CHIP_ID:
+-		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+-			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
+-			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
+-			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+-			    (aw_dev->i2c->adapter->nr == cfg_dde[i].dev_bus) &&
+-			    (aw_dev->i2c->addr == cfg_dde[i].dev_addr))
+-				(*scene_num)++;
+-		}
+-		ret = 0;
+-		break;
+-	default:
+-		dev_err(aw_dev->dev, "unsupported device");
+-		ret = -EINVAL;
+-		break;
++	for (i = 0; i < cfg_hdr->ddt_num; ++i) {
++		if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
++		     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG) ||
++		     (cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN)) &&
++		    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
++		    (aw_dev->i2c->adapter->nr == cfg_dde[i].dev_bus) &&
++		    (aw_dev->i2c->addr == cfg_dde[i].dev_addr))
++			(*scene_num)++;
+ 	}
+ 
+-	return ret;
++	if ((*scene_num) == 0) {
++		dev_err(aw_dev->dev, "failed to obtain scene, scenu_num = %d\n", (*scene_num));
++		return -EINVAL;
++	}
++
++	return 0;
+ }
+ 
+ static int aw_get_default_scene_count_v1(struct aw_device *aw_dev,
+@@ -834,37 +804,23 @@ static int aw_get_default_scene_count_v1(struct aw_device *aw_dev,
+ 	struct aw_cfg_dde_v1 *cfg_dde =
+ 		(struct aw_cfg_dde_v1 *)(aw_cfg->data + cfg_hdr->hdr_offset);
+ 	unsigned int i;
+-	int ret;
+ 
+-	switch (aw_dev->chip_id) {
+-	case AW88395_CHIP_ID:
+-	case AW88399_CHIP_ID:
+-		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+-			if ((cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN) &&
+-			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+-			    (aw_dev->channel == cfg_dde[i].dev_index))
+-				(*scene_num)++;
+-		}
+-		ret = 0;
+-		break;
+-	case AW88261_CHIP_ID:
+-	case AW87390_CHIP_ID:
+-		for (i = 0; i < cfg_hdr->ddt_num; ++i) {
+-			if (((cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
+-			     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
+-			    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
+-			    (aw_dev->channel == cfg_dde[i].dev_index))
+-				(*scene_num)++;
+-		}
+-		ret = 0;
+-		break;
+-	default:
+-		dev_err(aw_dev->dev, "unsupported device");
+-		ret = -EINVAL;
+-		break;
++
++	for (i = 0; i < cfg_hdr->ddt_num; ++i) {
++		if (((cfg_dde[i].data_type == ACF_SEC_TYPE_MULTIPLE_BIN) ||
++		     (cfg_dde[i].data_type == ACF_SEC_TYPE_REG) ||
++		     (cfg_dde[i].data_type == ACF_SEC_TYPE_HDR_REG)) &&
++		    (aw_dev->chip_id == cfg_dde[i].chip_id) &&
++		    (aw_dev->channel == cfg_dde[i].dev_index))
++			(*scene_num)++;
+ 	}
+ 
+-	return ret;
++	if ((*scene_num) == 0) {
++		dev_err(aw_dev->dev, "failed to obtain scene, scenu_num = %d\n", (*scene_num));
++		return -EINVAL;
++	}
++
++	return 0;
+ }
+ 
+ static int aw_dev_parse_scene_count_v1(struct aw_device *aw_dev,
+diff --git a/sound/soc/codecs/aw88395/aw88395_reg.h b/sound/soc/codecs/aw88395/aw88395_reg.h
+index ede7deab6a9c..e64f24e97150 100644
+--- a/sound/soc/codecs/aw88395/aw88395_reg.h
++++ b/sound/soc/codecs/aw88395/aw88395_reg.h
+@@ -95,10 +95,7 @@
+ #define AW88395_TM_REG			(0x7C)
+ 
+ enum aw88395_id {
+-	AW88399_CHIP_ID = 0x2183,
+ 	AW88395_CHIP_ID = 0x2049,
+-	AW88261_CHIP_ID = 0x2113,
+-	AW87390_CHIP_ID = 0x76,
+ };
+ 
+ #define AW88395_REG_MAX		(0x7D)
+diff --git a/sound/soc/codecs/aw88399.c b/sound/soc/codecs/aw88399.c
+index 54f8457e8497..9fcb805bf971 100644
+--- a/sound/soc/codecs/aw88399.c
++++ b/sound/soc/codecs/aw88399.c
+@@ -15,7 +15,6 @@
+ #include <sound/soc.h>
+ #include "aw88399.h"
+ #include "aw88395/aw88395_device.h"
+-#include "aw88395/aw88395_reg.h"
+ 
+ static const struct regmap_config aw88399_remap_config = {
+ 	.val_bits = 16,
+diff --git a/sound/soc/codecs/aw88399.h b/sound/soc/codecs/aw88399.h
+index 4f391099d0f2..97db76055ccf 100644
+--- a/sound/soc/codecs/aw88399.h
++++ b/sound/soc/codecs/aw88399.h
+@@ -491,6 +491,7 @@
+ #define AW88399_CRC_FW_BASE_ADDR		(0x4C0)
+ #define AW88399_ACF_FILE			"aw88399_acf.bin"
+ #define AW88399_DEV_SYSST_CHECK_MAX		(10)
++#define AW88399_CHIP_ID			0x2183
+ 
+ #define AW88399_I2C_NAME			"aw88399"
+ 
 
-> If you were to send v3 for any reason, could you please add them?
->
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
->> +};
->> +
->> +static const unsigned int pciephy_v6_20_regs_layout[QPHY_LAYOUT_SIZE] = {
->> +       [QPHY_SW_RESET]                 = QPHY_V5_PCS_SW_RESET,
->> +       [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
->> +       [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
->> +       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_CNTRL,
->>   };
->>
->>   static const struct qmp_phy_init_tbl msm8998_pcie_serdes_tbl[] = {
->> @@ -2956,7 +2976,7 @@ static const struct qmp_phy_cfg sm8450_qmp_gen4x2_pciephy_cfg = {
->>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
->>          .vreg_list              = qmp_phy_vreg_l,
->>          .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
->> -       .regs                   = pciephy_v5_regs_layout,
->> +       .regs                   = pciephy_v5_20_regs_layout,
->>
->>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
->>          .phy_status             = PHYSTATUS_4_20,
->> @@ -3012,7 +3032,7 @@ static const struct qmp_phy_cfg sm8550_qmp_gen4x2_pciephy_cfg = {
->>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
->>          .vreg_list              = sm8550_qmp_phy_vreg_l,
->>          .num_vregs              = ARRAY_SIZE(sm8550_qmp_phy_vreg_l),
->> -       .regs                   = pciephy_v5_regs_layout,
->> +       .regs                   = pciephy_v6_20_regs_layout,
->>
->>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
->>          .phy_status             = PHYSTATUS_4_20,
->> @@ -3047,7 +3067,7 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x2_pciephy_cfg = {
->>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
->>          .vreg_list              = qmp_phy_vreg_l,
->>          .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
->> -       .regs                   = pciephy_v5_regs_layout,
->> +       .regs                   = pciephy_v5_20_regs_layout,
->>
->>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
->>          .phy_status             = PHYSTATUS_4_20,
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
->> index a469ae2a10a1..9b166286afda 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
->> @@ -11,6 +11,7 @@
->>   #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG2           0x0c
->>   #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG4           0x14
->>   #define QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_DRIVE         0x20
->> +#define QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_CNTRL         0x24
->>   #define QPHY_V5_PCS_PCIE_INT_AUX_CLK_CONFIG1           0x54
->>   #define QPHY_V5_PCS_PCIE_OSC_DTCT_ACTIONS              0x94
->>   #define QPHY_V5_PCS_PCIE_EQ_CONFIG2                    0xa8
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
->> index cdf8c04ea078..8b114e538a07 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
->> @@ -9,6 +9,7 @@
->>   /* Only for QMP V5_20 PHY - PCIe PCS registers */
->>   #define QPHY_V5_20_PCS_PCIE_POWER_STATE_CONFIG2                0x00c
->>   #define QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_DRIVE      0x01c
->> +#define QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_CNTRL      0x020
->>   #define QPHY_V5_20_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5     0x084
->>   #define QPHY_V5_20_PCS_PCIE_OSC_DTCT_ACTIONS           0x090
->>   #define QPHY_V5_20_PCS_PCIE_EQ_CONFIG1                 0x0a0
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
->> index e3eb08776339..f7abe95c49ad 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
->> @@ -10,6 +10,7 @@
->>   #define QPHY_PCIE_V6_20_PCS_POWER_STATE_CONFIG2                0x00c
->>   #define QPHY_PCIE_V6_20_PCS_TX_RX_CONFIG               0x018
->>   #define QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_DRIVE      0x01c
->> +#define QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_CNTRL      0x020
->>   #define QPHY_PCIE_V6_20_PCS_OSC_DTCT_ATCIONS           0x090
->>   #define QPHY_PCIE_V6_20_PCS_EQ_CONFIG1                 0x0a0
->>   #define QPHY_PCIE_V6_20_PCS_EQ_CONFIG5                 0x108
->>
->> --
->> 2.42.0
->>
->>
->
+base-commit: b622d91ca201bf97582e9b09ebbaab005ecee86f
+-- 
+2.41.0
+
