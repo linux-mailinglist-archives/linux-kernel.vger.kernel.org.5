@@ -2,195 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 447CC7E6925
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412BB7E692E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231931AbjKILGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
+        id S232344AbjKILI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbjKILG3 (ORCPT
+        with ESMTP id S231878AbjKILI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:06:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D6D2736
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:05:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699527946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AtRUDPzty4xk6G3YrueIs/2p0T2ePc3PiZweAufe498=;
-        b=OS361Xut6gEBwI75pkHK1P6BpZbEaeTNv1/Ogh97N9vzFF5xKsJZ6nsEjoXEx3MO0YeOGh
-        PWq/xBNT1V+Ph7tmez+pYsmB+cuoGHj9jS3YdbxQzC3tOn+J9rwiO8qShzQHCx3wmYeAV7
-        Rt4O0a/rq/k+iYg+8vfGBGuZdtoN+uQ=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-a-nrPpsqMnSpTdASZOdb5w-1; Thu, 09 Nov 2023 06:05:45 -0500
-X-MC-Unique: a-nrPpsqMnSpTdASZOdb5w-1
-Received: by mail-yb1-f200.google.com with SMTP id 3f1490d57ef6-d9cb24d0d2eso155633276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 03:05:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699527944; x=1700132744;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AtRUDPzty4xk6G3YrueIs/2p0T2ePc3PiZweAufe498=;
-        b=p1/T85J84KpESymEXCpOiYlNxzllr0K4BP2bveYSEVrzjsAYFpHkV5805GSnBmEUtc
-         iihTPqARfQNGJvKGiC2YMMBE8G90eKh7Yq3wU3sdaYDsABhyA3AC4bDIon4s/uTdwuRB
-         lvzV21IQOihBXRTWM3JrhMpweorvBR1M1z2J0FucPSQF/KdyYrzOe8rckJZXso5KdQ6U
-         w4oCdNDElmieTlxbXJCmKlbSat2cBARvS0YZAbEPqi6dximJQd0UlCg+U4b0pIoHxlhN
-         9AgP7eg2ZtlL++4ZktoXjGi430vLwZrXiWgveh7HezRrK2BUwOEpH2TIYTrcGg3PRyH/
-         vBqQ==
-X-Gm-Message-State: AOJu0YzQUC046elTCF/6ye3nRCLwv16+MdNUPdEkVjZJIsvFhUl5X2O9
-        Grps2JS6aKXcK3eqama5f+GZLKDK2szkzh3hICKsuXLxOPaDfRMtijY8m7uO4axXe6g/eBqcuK5
-        Xr8l9DLsWS1DGDBE6/8qSSt99zGYBsUtg
-X-Received: by 2002:a25:9346:0:b0:dae:e380:3afa with SMTP id g6-20020a259346000000b00daee3803afamr1116260ybo.2.1699527944399;
-        Thu, 09 Nov 2023 03:05:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHOFSam8Y2WZfjs6lyrCBJqDmNWulDFM0w0FKUbNkESWMi4P7ZtSYxs4i3pcukjOXBjSX6POg==
-X-Received: by 2002:a25:9346:0:b0:dae:e380:3afa with SMTP id g6-20020a259346000000b00daee3803afamr1116194ybo.2.1699527942695;
-        Thu, 09 Nov 2023 03:05:42 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-228-197.dyn.eolo.it. [146.241.228.197])
-        by smtp.gmail.com with ESMTPSA id g23-20020ac870d7000000b004181e5a724csm1813782qtp.88.2023.11.09.03.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 03:05:42 -0800 (PST)
-Message-ID: <3a1b5412bee202affc6a7cc74cd939e182b9a18e.camel@redhat.com>
-Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Thu, 9 Nov 2023 06:08:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD63A271F;
+        Thu,  9 Nov 2023 03:08:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699528135; x=1731064135;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=R01ca81ioNmZ4Qa0/4lDzRiUdDaqgXI8cjnkTR00Rw4=;
+  b=DElB3MFN2FJ0w5VEC68PbqjQQkjJ8UtpA++35HiuDXiRQ2bP9e8gpvhI
+   3LvI7O8kTLedlkJgr2638v7M3hEilsP4YHTP8X1uu4iQWpAzvr2JK9qiz
+   jN5el7c06TiBP9y3wXKr8WAfge4uEg5TwZ742w9oywXGj/ZBAc7J4mquA
+   0mbaoObKRZuGXgBQ2BWa8qGOB0sIQZSmPKgqDC566p/DjOmuYe5GwuGfs
+   zdW5j6phSvFYRaT6kGU9XbCoOyyewVL2dZcTnIxl26m7Eqpa9ltBQsvOZ
+   a0xEP7xHoTPAdG/ol8Ce8Hq7fYdyLm3rFC1Q2NESVGk4QJOb41+tnfyX7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="387129127"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="387129127"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:08:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="4509037"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 09 Nov 2023 03:08:50 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r12ty-0008g8-00;
+        Thu, 09 Nov 2023 11:08:46 +0000
+Date:   Thu, 9 Nov 2023 19:08:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huan Yang <link@vivo.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Date:   Thu, 09 Nov 2023 12:05:37 +0100
-In-Reply-To: <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
-         <20231106024413.2801438-11-almasrymina@google.com>
-         <ZUk0FGuJ28s1d9OX@google.com>
-         <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
-         <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
-         <ZUlp8XutSAScKs_0@google.com>
-         <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        opensource.kernel@vivo.com, Huan Yang <link@vivo.com>
+Subject: Re: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
+Message-ID: <202311091842.AqdVBQwL-lkp@intel.com>
+References: <20231108065818.19932-3-link@vivo.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108065818.19932-3-link@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-06 at 14:55 -0800, Willem de Bruijn wrote:
-> On Mon, Nov 6, 2023 at 2:34=E2=80=AFPM Stanislav Fomichev <sdf@google.com=
-> wrote:
-> >=20
-> > On 11/06, Willem de Bruijn wrote:
-> > > > > IMHO, we need a better UAPI to receive the tokens and give them b=
-ack to
-> > > > > the kernel. CMSG + setsockopt(SO_DEVMEM_DONTNEED) get the job don=
-e,
-> > > > > but look dated and hacky :-(
-> > > > >=20
-> > > > > We should either do some kind of user/kernel shared memory queue =
-to
-> > > > > receive/return the tokens (similar to what Jonathan was doing in =
-his
-> > > > > proposal?)
-> > > >=20
-> > > > I'll take a look at Jonathan's proposal, sorry, I'm not immediately
-> > > > familiar but I wanted to respond :-) But is the suggestion here to
-> > > > build a new kernel-user communication channel primitive for the
-> > > > purpose of passing the information in the devmem cmsg? IMHO that se=
-ems
-> > > > like an overkill. Why add 100-200 lines of code to the kernel to ad=
-d
-> > > > something that can already be done with existing primitives? I don'=
-t
-> > > > see anything concretely wrong with cmsg & setsockopt approach, and =
-if
-> > > > we switch to something I'd prefer to switch to an existing primitiv=
-e
-> > > > for simplicity?
-> > > >=20
-> > > > The only other existing primitive to pass data outside of the linea=
-r
-> > > > buffer is the MSG_ERRQUEUE that is used for zerocopy. Is that
-> > > > preferred? Any other suggestions or existing primitives I'm not awa=
-re
-> > > > of?
-> > > >=20
-> > > > > or bite the bullet and switch to io_uring.
-> > > > >=20
-> > > >=20
-> > > > IMO io_uring & socket support are orthogonal, and one doesn't precl=
-ude
-> > > > the other. As you know we like to use sockets and I believe there a=
-re
-> > > > issues with io_uring adoption at Google that I'm not familiar with
-> > > > (and could be wrong). I'm interested in exploring io_uring support =
-as
-> > > > a follow up but I think David Wei will be interested in io_uring
-> > > > support as well anyway.
-> > >=20
-> > > I also disagree that we need to replace a standard socket interface
-> > > with something "faster", in quotes.
-> > >=20
-> > > This interface is not the bottleneck to the target workload.
-> > >=20
-> > > Replacing the synchronous sockets interface with something more
-> > > performant for workloads where it is, is an orthogonal challenge.
-> > > However we do that, I think that traditional sockets should continue
-> > > to be supported.
-> > >=20
-> > > The feature may already even work with io_uring, as both recvmsg with
-> > > cmsg and setsockopt have io_uring support now.
-> >=20
-> > I'm not really concerned with faster. I would prefer something cleaner =
-:-)
-> >=20
-> > Or maybe we should just have it documented. With some kind of path
-> > towards beautiful world where we can create dynamic queues..
->=20
-> I suppose we just disagree on the elegance of the API.
->=20
-> The concise notification API returns tokens as a range for
-> compression, encoding as two 32-bit unsigned integers start + length.
-> It allows for even further batching by returning multiple such ranges
-> in a single call.
->=20
-> This is analogous to the MSG_ZEROCOPY notification mechanism from
-> kernel to user.
->=20
-> The synchronous socket syscall interface can be replaced by something
-> asynchronous like io_uring. This already works today? Whatever
-> asynchronous ring-based API would be selected, io_uring or otherwise,
-> I think the concise notification encoding would remain as is.
->=20
-> Since this is an operation on a socket, I find a setsockopt the
-> fitting interface.
+Hi Huan,
 
-FWIW, I think sockopt +cmsg is the right API. It would deserve some
-explicit addition to the documentation, both in the kernel and in the
-man-pages.
+kernel test robot noticed the following build warnings:
 
-Cheers,
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on tj-cgroup/for-next linus/master v6.6 next-20231109]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Paolo
+url:    https://github.com/intel-lab-lkp/linux/commits/Huan-Yang/mm-vmscan-LRU-unbalance-cgroup-reclaim/20231108-151757
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231108065818.19932-3-link%40vivo.com
+patch subject: [PATCH 2/4] mm: multi-gen LRU: MGLRU unbalance reclaim
+config: x86_64-randconfig-013-20231108 (https://download.01.org/0day-ci/archive/20231109/202311091842.AqdVBQwL-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311091842.AqdVBQwL-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311091842.AqdVBQwL-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   mm/vmscan.c: In function 'isolate_folios':
+>> mm/vmscan.c:4518:15: warning: 'unbalance' is used uninitialized in this function [-Wuninitialized]
+    4518 |   if (scanned || unbalance)
+         |       ~~~~~~~~^~~~~~~~~~~~
+
+
+vim +/unbalance +4518 mm/vmscan.c
+
+  4480	
+  4481	static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int swappiness,
+  4482				  int *type_scanned, struct list_head *list)
+  4483	{
+  4484		int i;
+  4485		int type;
+  4486		int scanned;
+  4487		int tier = -1;
+  4488		bool unbalance;
+  4489		DEFINE_MIN_SEQ(lruvec);
+  4490	
+  4491		/*
+  4492		 * Try to make the obvious choice first. When anon and file are both
+  4493		 * available from the same generation, interpret swappiness 1 as file
+  4494		 * first and 200 as anon first.
+  4495		 */
+  4496		if (unlikely(unbalance_file_reclaim(sc, swappiness))) {
+  4497			unbalance = true;
+  4498			type = LRU_GEN_FILE;
+  4499		} else if (unlikely(unbalance_anon_reclaim(sc, swappiness))) {
+  4500			unbalance = true;
+  4501			type = LRU_GEN_ANON;
+  4502		} else if (!swappiness)
+  4503			type = LRU_GEN_FILE;
+  4504		else if (min_seq[LRU_GEN_ANON] < min_seq[LRU_GEN_FILE])
+  4505			type = LRU_GEN_ANON;
+  4506		else if (swappiness == 1)
+  4507			type = LRU_GEN_FILE;
+  4508		else if (swappiness == 200)
+  4509			type = LRU_GEN_ANON;
+  4510		else
+  4511			type = get_type_to_scan(lruvec, swappiness, &tier);
+  4512	
+  4513		for (i = !swappiness; i < ANON_AND_FILE; i++) {
+  4514			if (tier < 0)
+  4515				tier = get_tier_idx(lruvec, type);
+  4516	
+  4517			scanned = scan_folios(lruvec, sc, type, tier, list);
+> 4518			if (scanned || unbalance)
+  4519				break;
+  4520	
+  4521			type = !type;
+  4522			tier = -1;
+  4523		}
+  4524	
+  4525		*type_scanned = type;
+  4526	
+  4527		return scanned;
+  4528	}
+  4529	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
