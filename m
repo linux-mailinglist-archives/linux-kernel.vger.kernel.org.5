@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BB27E72FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D497E7300
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:39:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345189AbjKIUjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
+        id S1345163AbjKIUjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:39:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjKIUjX (ORCPT
+        with ESMTP id S234623AbjKIUjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:39:23 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2041.outbound.protection.outlook.com [40.107.96.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6636E182
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:39:21 -0800 (PST)
+        Thu, 9 Nov 2023 15:39:40 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2040.outbound.protection.outlook.com [40.107.96.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332E544B9
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:39:38 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GK7yIaGAGMPKWZrUHYXldT239YvMIyN+QPu36hObrnP9oVs2e8aHsVMFcWaiRjgO9KE322CgsdIrTgcIiOpGM6Bj05YPv7bpCbAVsqpzj32yB5w/lG4XE0XADlMalGDi+zsXghhvUzulDpyWTRdTXSCVTLyl6AfmFuhCRHB8Wf36B9e3fhwNejZUBjU9aBJ/VhH/A+XGZYoqwFU2EUEMlznWBh9IhiOaFu6vHs/UBd7By4e+VRgmpZs7fUrJ42zswmu2nH+5j3aSgSL/HuHfYg2++Q1JmIEFKPaVbSYm7XONnKeV26l35NXBaKMio0HO3ARp3VIVOCF/7arc8gmdTA==
+ b=LBj+iT7B9jlppe+JJFUWdBjVgocYMofWndZifAxBJMSUOswcZdLnkE8Y4UPv4O52UqM1Iy/7oBXBS0iZfzxJyY4REzZt6tmYAcId2skpTXe0MR6ONmN3PvCe0ViRjv1OReTdYcBnTxebzMviUUyYOlxUWOFrgOgt7VpX+6CciUk3xAv6tiZxZMsLF534XU12P19qocgX1KK/N2HajsDBgrlI/1W3f+UyScMDIioeLz+WYvLeTDjGiXtI1N5n3G0hMsl66J+xaxLkW9b7f7XEiC3jJMqIExwPmfylSHVB1Epw8oaQePNofwGYG+nLW15lFdtx4YVTIGhWegLSLOr0lA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C3mJAW1OuO9eVa2qNa0gQZ1c3eBe57exzveCAeItYU0=;
- b=ExULzWE6kTjWJ6jvqz7o48VV+Y61eZH/6NoAvCLkEfraDHHhirAyuDQo48GPWTKi7xq1BxbqfytIMiVy04j0MLIS/4YoQKptYj2YTg2DGLwUTqyPJO8eVIGmXDS13FU/tEGY8QLIkSaVIP/f3OewVItIkn5MrrxlR/4nLlDaL1k1eqOZhFJmUaZ7+bvTXfdL0MNtWF3CeLPNLy64qIRmSkj+kL1A1kjKsFJ7Zgl6NR9bMObrZQIxRcuvnO+NL/zukK95rKu2TaAslBYy90Ktr+NLmXij9y04liHNXRDJc1PsRjEhwUY0qCn2gRTLA70UB8mcfB1W7vfCEJEVgL9q5A==
+ bh=HinSXP73uXIr5Q6MJBtn/ALCMS8gVJbrkwmAesrn+h0=;
+ b=YPalGHfC6p7bzA+sN4jWVYVlu0Voi1NRKsjmqYf9vl4eTkLDmCQ5zlR6cg2vsE5aAK5gL0/+lN4f2JN04U/PL7FcQN8voBd+VSl1B+t2MFduZoKVqaMNu/gUml4fkEpjzX2qvsywQd2l7Gg3/B0H4ZcTigeNtiTtFr0USW/GoRZTrTLNn3JNHTMvqYvK9EGR4b/5UYSyQbJwWWCxG0DkPqJhtSGD0uKI32dkKfe0L737izzG0U+DfF65IU16m4yP1/PRH5xzonedtsEsdgNLgu5tgSCwlmHEIHZnXIGV+ChJEjQX9B8jxxjtSMK/T6NBHGF3D9vr/mjY/7+3mFQboQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C3mJAW1OuO9eVa2qNa0gQZ1c3eBe57exzveCAeItYU0=;
- b=xWUSmBdxLDlKrGsTwvwfgwHQXnHDlspvspMXh9sFDpRi1RqlH/j2Doa91yk5cx9HaF5NGJps5rU51i4dSPHKra/lPUgx/nBhL8SnrnHgoSGZby1W4LBSGmfWJYIaHddOjqsJVKFDs15uhsTeEOrW65/8d6esbYHGSdmf+c4xEA8=
+ bh=HinSXP73uXIr5Q6MJBtn/ALCMS8gVJbrkwmAesrn+h0=;
+ b=ix8EjJ4Gsxc1OS0XWjKAqcuIbhhn/WM4ojWB+2Jmq3La5CMOx2Q+1owDR4Gwg/NahU09D6VVqWJAJL2VT/yVM9pnNkbthkqk9K4FBl5YdLPMJTA7c2+cqTZUGc0YhXCyC0EVB49DCkq2ZZJHHZJMEw4hYhX5cBoukn7fXkHFU4M=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
  by SA1PR12MB6917.namprd12.prod.outlook.com (2603:10b6:806:24c::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 20:39:18 +0000
+ 2023 20:39:35 +0000
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b%4]) with mapi id 15.20.6977.019; Thu, 9 Nov 2023
- 20:39:18 +0000
-Message-ID: <7e401723-4cb6-43c4-ad4c-8e3a28639718@amd.com>
-Date:   Thu, 9 Nov 2023 14:39:16 -0600
+ 20:39:35 +0000
+Message-ID: <9ea2218e-3f0c-4e62-97f7-1d0b1f57b46d@amd.com>
+Date:   Thu, 9 Nov 2023 14:39:34 -0600
 User-Agent: Mozilla Thunderbird
 From:   "Moger, Babu" <babu.moger@amd.com>
-Subject: Re: [PATCH v7 10/24] x86/resctrl: Allocate the cleanest CLOSID by
- searching closid_num_dirty_rmid
+Subject: Re: [PATCH v7 11/24] x86/resctrl: Move CLOSID/RMID matching and
+ setting to use helpers
 Reply-To: babu.moger@amd.com
 To:     James Morse <james.morse@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
@@ -62,9 +62,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com, amitsinght@marvell.com
 References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-11-james.morse@arm.com>
+ <20231025180345.28061-12-james.morse@arm.com>
 Content-Language: en-US
-In-Reply-To: <20231025180345.28061-11-james.morse@arm.com>
+In-Reply-To: <20231025180345.28061-12-james.morse@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: SN6PR01CA0029.prod.exchangelabs.com (2603:10b6:805:b6::42)
@@ -72,59 +72,59 @@ X-ClientProxiedBy: SN6PR01CA0029.prod.exchangelabs.com (2603:10b6:805:b6::42)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SA1PR12MB6917:EE_
-X-MS-Office365-Filtering-Correlation-Id: e25c70e1-4d3a-42d1-f6a4-08dbe163f235
+X-MS-Office365-Filtering-Correlation-Id: 79e24b25-bbd7-4d3f-f8b7-08dbe163fc76
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WvgszdyZkY/gVQX2EFkmt5A1uynTPPC0LK/06g+lmPoFT0moRR99cSoT7nJEh65ZSEnw3oCj9USNGhE8H09o6Oa0TFETVa6WWZD5ehIDpk1yfdt6MlUAH3E8q29ar5K+Co3xwJz/WYF84AUoldrL7sAiiQmrJ/kuoDAQG/LdAsoQRq9hmmGP8cC02YLh9Bjun2vP87jlOX7eliOJjB3j3H1IRUPg3IhfaGMgiFl2ogiMt5JyKam0c5rIeju6qs48bW2JsGNwmDBVuzWhns5ohVvQf3ewCvtynGxmyB5iIrERN7qdgVxWKcondF9mGgmgFGtRqUO1k2wu6lrcmO2zt3RsYESsBJXCtaC7q2UdhYtxBtPG8FeW9dt/ANjR3nO4vkBaCKf+cyfNw03TGoRqbaV6993kRgWW6rSfgQ7Zd/1NLsXiR6MfLzuCU80XdvScvRLQ8eAY9I8mYT+Fmf84N2defYSk5mSOHuGRBI4QvAYR0ALDnLO4dTJnu/Y1tigCBZng4glynew3Tip2UlqBmhvfvBAKM+TVnyAXmBTwSyxGeMB46n7WAXKuchBSvL3FEerNeJOqpAiWtpC1/tlhzsxGsDXNsLaVZehe0MKt2wON3Zz0ieFkPqw+26KEvimfMm19kjvg73+C+nJQd6qepxaWBSfglC0SZAQ/eFy+8s0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39860400002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(31686004)(2616005)(53546011)(6512007)(66556008)(478600001)(6486002)(6506007)(2906002)(54906003)(38100700002)(316002)(36756003)(5660300002)(31696002)(86362001)(41300700001)(3450700001)(66946007)(26005)(8676002)(7416002)(83380400001)(66476007)(4326008)(8936002)(14143004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7ayDyaE2L34olE55oEE3Yl6r7+0qkVACWE1gpGZCjBO2pjsLOzJCEcNfCJvW6Og4a/zwGp529mGyBvhKV17Zb+gzXfzLoijFzNvA7PNdjC+Mufk/oDZRnrCtItW7ItLPRAS9BPwNkDZmIjz833LEFJR6Z8LPFQXuHhVFfxJ1Locr1Ha2PZynrJXnSs1E0GTgKauEvp3TwUhdoWorT+wZg6uUZL0LYzK3DYmsR8KAVA3H9NPli9rw8MogpQxGDOtDPmhfuDK+g1KTYPK69yr9EMy0V18dcqyiVs+W4WJDdwOrmeq5DqDyvyLS+Bx+TKKEZrmoUeK8oGRQAmBwJu2LJfDvPeGBRnYIdk9LoEutfWS6q17tN72E3qUnxY7m2/a1bkdYeauBKd/ghYkvxlkGhBfeH6pdDQoGsQbO7m4YH1QvPEJDaawge5ahZi6yzxIGH7m2fEUpIT4IDSNsnrh/Ebosb91eyo8zcYkRbFPbox+jkzf19aOnzuoNHFLtTKNJXIKzUL0N14rRcchHI+SyCgBPekmjX0Huukv8Bwl4Vo6hK3cmd+gPdVI4ew6XN3xdYm1chZ4EWc4faZMSeq1nw07OkskyezsSKgbWHJIkXpY3NZ1WxWsB5orff+faSMDU5fTbOZ7PdTMqpnN4l8+CwQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(39860400002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(31686004)(2616005)(53546011)(6512007)(66556008)(478600001)(6486002)(6506007)(2906002)(54906003)(38100700002)(316002)(36756003)(5660300002)(31696002)(86362001)(41300700001)(3450700001)(66946007)(26005)(8676002)(7416002)(83380400001)(66476007)(4326008)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aUUva2FtNXplTkcyd0hxaG5Nc0k3S1RCUlc3WHFFSjdGc1NYZWFxTXpaZWlS?=
- =?utf-8?B?R0JUNjMzRVdWclpUb0lWQStyTU9OZ3RuWUdVK2pVZGJ1dUE1amVRYlZnZ3Bt?=
- =?utf-8?B?NmszQitwdnJCVEp3R0pua2FPbEowZ1Q1SzdxSHVEaEdvbThzR3pjbHJPMXl4?=
- =?utf-8?B?TFhxWkhWVnA5QXdyUWVCU0VJTW44bTNjQ1Vud3ZXN0kvdGZlYU5NczNRMDVI?=
- =?utf-8?B?LzlKSHg0aXZuakEveVhBeVQwejZ4d0lXREF2eEtXNlFVSCsyYUxMYW1xK2lD?=
- =?utf-8?B?VTFiQnU4cy9KK29RczIwYk5SRSt3N25rNUV3bkoveDhwTlF4RStiYjZKSW56?=
- =?utf-8?B?YVF1WHZsNmExTHRraXR3WTZnSkNzbXIvWTNKOS9HMlBMUWF4NlVFQTd4d2Iy?=
- =?utf-8?B?SEY0QUdzZW9uRTdJemVjS1NPNE11VHd1d0pSTVRkc2xnZ21DY04vaWJqTTk1?=
- =?utf-8?B?TTlhR1crbk1rMTNzUFJ2SWUwTWxKK2M5cVlKeEFRZXBheE5Wb1habVhYQ2pl?=
- =?utf-8?B?WTdreC9jWklXMmUwKzJzNldRVFE5RTFPdWpLMmZkRWFmdVpsSjB2NE5lUXBY?=
- =?utf-8?B?QzgxQ0JDMkFHT0I2Znk5VEhGTHJnQVhWOG90alpMM0xVSExpbzM3NTlyOGdj?=
- =?utf-8?B?NW5xWmNJUzNQRHZGd2dKeG1HNytES0R5Znk2MEs3bG1JK2JlTlFnSDhrYnM0?=
- =?utf-8?B?a08rOGs1T1psSGdIYkZLYXJEZC9iclNUUmNGR0hZVys0ZER4OTVsQ0NpMTVT?=
- =?utf-8?B?MmwzYVM2S3lmS2FPYXdUZUJHOWlCTnQ3djMwOFl0Tm1waUpzQ3kzNnhtRk1i?=
- =?utf-8?B?TlBWMm50ZWtPWU5pN2x1c3FCTFNlckR6ZDE3NndDM2Q3Yk11VkZrajllb3lm?=
- =?utf-8?B?b0lmK2JxTGl6a3lFODFESUQ3SlhzWGpkTklHMHNNd05CR3hpM01RQjlCMkFl?=
- =?utf-8?B?d0ZMS3VRZkRBWW0zRHFjckQ5R1JieFhJcUI3Y24yRlJHMlA5eExwc3ppakdx?=
- =?utf-8?B?UGU4ZE5HMCtuQittbEF1VGM1M3hBVTAzQzBJRjFnVC9hbXdqbFFOK2lmU1JB?=
- =?utf-8?B?ampaNkhRSnB6cWNBRUpuUWk4cGIremxCbmZHY0RycXFvZU8xby9HVFNobWtW?=
- =?utf-8?B?ME1rSTdyOG5XbHVTZmhwZlZRdVNhSnVHODMwNmRrejNickxZRXRaV2lOeUhU?=
- =?utf-8?B?RWJjbjNRK2FUd1I3MkNWb2hJUS8wRDZSazY5bVBaZlBHWUhVMVpRT1A2SnRD?=
- =?utf-8?B?MnVEdjVPcG1VU1lQRkpLek9JdnZraEZlclJTc2pYdVltM1M5c0syTTRBSUtw?=
- =?utf-8?B?UXRHbnQ4aHgrN0lWRGdIMFV4TEJSR3AwK2U2NEJLaWp5MUdONU1RS3h3NGJM?=
- =?utf-8?B?R1NXbW05WXFRWTlKU1d6SUl6enQrOW5DQmlrblhjWWxnYkY0UGYzUVBaRU1D?=
- =?utf-8?B?YTJQcm5NUTZBMTNCdytxN1U0L3ZQdVlyclRwa01VQjRXYjRWSzFOWkc4VkJs?=
- =?utf-8?B?K2syK3VGbVIvK2RmaUx5SXUrOWFJSDVrZ0NSanRNY25vUVozSGhjdFAwZzFY?=
- =?utf-8?B?WU4vdFBVT0dJS0xDLzlRVzd6S0JId3pSTU96bHZ0NWNJV1RubzJhWDhWWUF4?=
- =?utf-8?B?ancxNzNEVmRyOGpKM2hoak5reFpka1h4Tm5VeVJvV3loeDdSdTVsWjJRZGxx?=
- =?utf-8?B?UUdHV3l0akdQUHkyckNxNkpOb3VKZGdad2hneTN5SFhRTUVqUzhBNDVGVnZN?=
- =?utf-8?B?K3NaMFJwaDVOU0NwRyszS3I1dmlJVGcxcHpqdTF5MmEyRTBKQUlaUzFpTUpC?=
- =?utf-8?B?V1ZyYmwwWVBUOUN0b3p6RlpYZ2R2ZHB5UEhDRTlwazd2MXREaWJFaEdtL3Zz?=
- =?utf-8?B?UFk2QTJiR0dINE9PeWtBaDFYZGMxT1M4blRQRTBZdUZNL1FZZk1XYmRUaUo0?=
- =?utf-8?B?eXdTL25hTzhHNk1xOGJ5eEJmQ0dnS05pSGlWbXBGdjFSTHVuVmZuNTNTR2Zt?=
- =?utf-8?B?eCtucWQ5ZDJvWGUxdkk1OHlmd3hRVUJzMVlsV2kwUG11VjFremRjNUExZ3lL?=
- =?utf-8?B?ejdOclh0bHVNemVYK1UzMEJ0Wmh1bmxJSnNxdFdJNExlZEc0dWM2Vk9qamFm?=
- =?utf-8?Q?czfY=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3pkR2pvVVFiT2F3OWhDaEhyWUp6eVVDeWV6OEswb0ZSa01iRUZZQUl6SFRW?=
+ =?utf-8?B?Z2FuZEQrNk83Q2srLzErcFRXbkpVc2ZQTCthT2h6aFJNZEptWUE5dzBDTVdz?=
+ =?utf-8?B?YXNTaVhzdkRNWVNXMmkxejZrZENQVkZJU05ZSDIrSDIzMlUwZGl1QXY2bk9O?=
+ =?utf-8?B?QnJOcC9QeXRGaDRXUUoxeURlcTBuQnJFdExRalMwSVgreC9SaW1zNTZPa3dT?=
+ =?utf-8?B?U2c5YWZ5UGg1bU1ZNW0xNlJ4RmNyUWlobUZyMkYySGcrWUZDSUg1S2p4MWg3?=
+ =?utf-8?B?MWY4RTdtL05JY3hTc2ROanJvdFozbHZ0MjVCYS9MUUJ4NWpJM2cvWGNSS0RJ?=
+ =?utf-8?B?cGxIUC9Ybm9BSENudVZ2aWhySG1UT1A1blBIcHJ2ZThaZjlVb3d0d3dTSTV3?=
+ =?utf-8?B?MzdMaWROVmxaLzJlZDhQNEQ3aVVsalJNR1BxWDE0RlVvYVdKa1NNRURySTJu?=
+ =?utf-8?B?cXpPeEJvbngwSkh6S0VVeVM1ckc4VlBXRXBBOHlvd2pUTUs1TWRNK2NsbTBE?=
+ =?utf-8?B?blVrZmYwWGtxalBtbG8zTlk5SWpqQVRZRDJ5ZFp2ZHlPL1ZPU1V2WHd3Z1ll?=
+ =?utf-8?B?dXdaSnM1c2twMnFQZkJpUEFDUk9PTU5iVzhyVGQ1UTBISzgvUzVuQUh6WUU4?=
+ =?utf-8?B?NnNYbDJoUDFWaHRzdzByWHpQc3Fia21MbXVlL3NYUDlDVDFqc280dzgyTTA4?=
+ =?utf-8?B?Yy83M2lxRHZEdDNiK213NDluMkJQMkRINVB6S2FBVzlKV0drZTRBUEY1Tk5l?=
+ =?utf-8?B?azd2ZGtrZ3RMZmovSFZPM1dYT21yOUI2U3kvR2RPQ1hPTjBzYXZKeldwZWdn?=
+ =?utf-8?B?MkY5MVNtMmdLUFg4cWFpOWYrbWoya0tnQ21zQWpzamN0bXBkQ01STGNuVk0z?=
+ =?utf-8?B?Z05hM0IrdTcySXlLbXV1MGFRR1RUVmNDd1pUOEdTUDNkOXBadGlyem4vekxz?=
+ =?utf-8?B?SmJ1eUVsTmMxQnEyVlFnOXhYNEUrTzhFNDNNZ2JZQjgrUGM2KzB1U1JSa2Fl?=
+ =?utf-8?B?QldXcHZOb3R3NCtJWFhLcGJlYkRuNHVGcjgrY2NPeTNseFlRZFEzM25zbFB0?=
+ =?utf-8?B?bnBiRnJVQ1F1eXJwTHFrMEZLUldDNnl4cGJqR1JGWEZWNThPQ0lZMHlsYWdO?=
+ =?utf-8?B?SUNUZE9pQUJGWDFKMlhFWktPT0h0aFRrZzAwUVh2dkFBVDVtUHdua1d3UkpY?=
+ =?utf-8?B?UDhqSFc1Y09sN0h4NDZiNGhlc29OVDhqNHJZK2swT2ZnMzZNak9pSWo3ditE?=
+ =?utf-8?B?SDkzQVFCMG43MUY2TVAwU2RaVXh4dVF0NHp4bFNPaU1XWHZ2a1NzeSswZUpL?=
+ =?utf-8?B?Y1lBYjEwUm1IdlVaQXNEbGNYZ0VqcHpGS2g3L000ejF2WDVlSFozMTVsd2xy?=
+ =?utf-8?B?UlhSUlYyT3dGVHkwWTBkcVowZDZ1UkVDZHR3ZXU0a0UzVnMvbFJNZWkyOXZ5?=
+ =?utf-8?B?OTlOYWdSM0lRVTg4K2NaSVdiOE52NU5BcUNQVW9tSkFEcVV2c010N3BjYjlZ?=
+ =?utf-8?B?LzdXTFc2ajZRYjYybWZaUlluSUhoTXUyaHhJNWhDRlJuOGU2WWFmcFgwZ0kv?=
+ =?utf-8?B?Uys3MWFSeW5NWFVDcHRpNFRhTHpMbGUwdEhGb3lyU05sbDJUbG5oL2hQOHIz?=
+ =?utf-8?B?S1AwUlZVelM1TEpwbXdWdllFTXM3TGZqTjJscGlpZDZOUTRUMW9ZZjdvQUpU?=
+ =?utf-8?B?SGdzTEdWNng4ZlFWNmpEN2ZZRzVLS0U2dnVBOXgyRllldThvZHhGLzZ5Unlp?=
+ =?utf-8?B?ejdRbndlZnZNUU9JSk03NE9QWkdGM2xtcHpheGNkY2pTOFZSMlBXNnRCVThM?=
+ =?utf-8?B?VktKOTlDUTZvekdGQ3hPQU4wc0ZCYjRTMEc0WEVmdVNZMG1oQ1RFalhhM00w?=
+ =?utf-8?B?dTJ5U3dMV3g2VCt3VGthN3h0ZHZ0NXJzNWNRbFo0OTJYN05UZlNSaEU1YlVI?=
+ =?utf-8?B?OGlkVVAvRGIyOVpjUTlKWUFDQU94YlplRUJ6eWlOWW5FNFpQSGx4dHNzbG5j?=
+ =?utf-8?B?SExJTlpWUmJ1ZzJoUjJ0SjczZWthQUhSUlNtV0dJZGpYM0lYdEppdnRsWlRt?=
+ =?utf-8?B?ZGFrVnVld0dyK1ZmQk1ST3RNU0ozMGR6RnBJOW5YTWxYWGc1SEkzTm5jcDJE?=
+ =?utf-8?Q?5C+g=3D?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e25c70e1-4d3a-42d1-f6a4-08dbe163f235
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79e24b25-bbd7-4d3f-f8b7-08dbe163fc76
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 20:39:18.5844
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 20:39:35.7983
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nbzUoQA7GcCo0qPeuGVJQQBbsMQY01GvdScdb/M9Kp5/WXk+0agWQiVjBcK6/xTH
+X-MS-Exchange-CrossTenant-UserPrincipalName: YeUxrCPy9zED6ODxKv/wsWG59C7EDFlBFjOiPNYIaTZHT0wfDV5kF3ob50yWRaGT
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6917
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -133,18 +133,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi James,
 
 On 10/25/23 13:03, James Morse wrote:
-> MPAM's PMG bits extend its PARTID space, meaning the same PMG value can be
-> used for different control groups.
+> When switching tasks, the CLOSID and RMID that the new task should
+> use are stored in struct task_struct. For x86 the CLOSID known by resctrl,
+> the value in task_struct, and the value written to the CPU register are
+> all the same thing.
 > 
-> This means once a CLOSID is allocated, all its monitoring ids may still be
-> dirty, and held in limbo.
+> MPAM's CPU interface has two different PARTID's one for data accesses
+> the other for instruction fetch. Storing resctrl's CLOSID value in
+> struct task_struct implies the arch code knows whether resctrl is using
+> CDP.
 > 
-> Instead of allocating the first free CLOSID, on architectures where
-> CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is enabled, search
-> closid_num_dirty_rmid[] to find the cleanest CLOSID.
+> Move the matching and setting of the struct task_struct properties
+> to use helpers. This allows arm64 to store the hardware format of
+> the register, instead of having to convert it each time.
 > 
-> The CLOSID found is returned to closid_alloc() for the free list
-> to be updated.
+> __rdtgroup_move_task()s use of READ_ONCE()/WRITE_ONCE() ensures torn
+> values aren't seen as another CPU may schedule the task being moved
+> while the value is being changed. MPAM has an additional corner-case
+> here as the PMG bits extend the PARTID space. If the scheduler sees a
+> new-CLOSID but old-RMID, the task will dirty an RMID that the limbo code
+> is not watching causing an inaccurate count. x86's RMID are independent
+> values, so the limbo code will still be watching the old-RMID in this
+> circumstance.
+> To avoid this, arm64 needs both the CLOSID/RMID WRITE_ONCE()d together.
+> Both values must be provided together.
+> 
+> Because MPAM's RMID values are not unique, the CLOSID must be provided
+> when matching the RMID.
 > 
 > Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 > Tested-by: Peter Newman <peternewman@google.com>
@@ -155,127 +170,170 @@ On 10/25/23 13:03, James Morse wrote:
 Reviewed-by: Babu Moger <babu.moger@amd.com>
 
 > ---
-> Changes since v4:
->  * Dropped stale section from comment
-> 
-> Changes since v5:
->  * Renamed some variables.
+> Changes since v2:
+>  * __rdtgroup_move_task() changed to set CLOSID from different CLOSID place
+>    depending on group type
 > 
 > No changes since v6
 > ---
->  arch/x86/kernel/cpu/resctrl/internal.h |  2 ++
->  arch/x86/kernel/cpu/resctrl/monitor.c  | 45 ++++++++++++++++++++++++++
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 ++++++++---
->  3 files changed, 61 insertions(+), 5 deletions(-)
+>  arch/x86/include/asm/resctrl.h         | 18 ++++++++
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 62 ++++++++++++++++----------
+>  2 files changed, 56 insertions(+), 24 deletions(-)
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 2f1d4f141dab..521afa016b05 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -568,5 +568,7 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r);
->  void __init thread_throttle_mode_init(void);
->  void __init mbm_config_rftype_init(const char *config);
->  void rdt_staged_configs_clear(void);
-> +bool closid_allocated(unsigned int closid);
-> +int resctrl_find_cleanest_closid(void);
->  
->  #endif /* _ASM_X86_RESCTRL_INTERNAL_H */
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index 9a07707d3eb4..cf512d4d383e 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -386,6 +386,51 @@ static struct rmid_entry *resctrl_find_free_rmid(u32 closid)
->  	return ERR_PTR(-ENOSPC);
+> diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+> index db4c84dde2d5..1d274dbabc44 100644
+> --- a/arch/x86/include/asm/resctrl.h
+> +++ b/arch/x86/include/asm/resctrl.h
+> @@ -95,6 +95,24 @@ static inline unsigned int resctrl_arch_round_mon_val(unsigned int val)
+>  	return val * scale;
 >  }
 >  
-> +/**
-> + * resctrl_find_cleanest_closid() - Find a CLOSID where all the associated
-> + *                                  RMID are clean, or the CLOSID that has
-> + *                                  the most clean RMID.
-> + *
-> + * MPAM's equivalent of RMID are per-CLOSID, meaning a freshly allocated CLOSID
-> + * may not be able to allocate clean RMID. To avoid this the allocator will
-> + * choose the CLOSID with the most clean RMID.
-> + *
-> + * When the CLOSID and RMID are independent numbers, the first free CLOSID will
-> + * be returned.
-> + */
-> +int resctrl_find_cleanest_closid(void)
+> +static inline void resctrl_arch_set_closid_rmid(struct task_struct *tsk,
+> +						u32 closid, u32 rmid)
 > +{
-> +	u32 cleanest_closid = ~0;
-> +	int i = 0;
-> +
-> +	lockdep_assert_held(&rdtgroup_mutex);
-> +
-> +	if (!IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
-> +		return -EIO;
-> +
-> +	for (i = 0; i < closids_supported(); i++) {
-> +		int num_dirty;
-> +
-> +		if (closid_allocated(i))
-> +			continue;
-> +
-> +		num_dirty = closid_num_dirty_rmid[i];
-> +		if (num_dirty == 0)
-> +			return i;
-> +
-> +		if (cleanest_closid == ~0)
-> +			cleanest_closid = i;
-> +
-> +		if (num_dirty < closid_num_dirty_rmid[cleanest_closid])
-> +			cleanest_closid = i;
-> +	}
-> +
-> +	if (cleanest_closid == ~0)
-> +		return -ENOSPC;
-> +
-> +	return cleanest_closid;
+> +	WRITE_ONCE(tsk->closid, closid);
+> +	WRITE_ONCE(tsk->rmid, rmid);
 > +}
 > +
->  /*
->   * For MPAM the RMID value is not unique, and has to be considered with
->   * the CLOSID. The (CLOSID, RMID) pair is allocated on all domains, which
+> +static inline bool resctrl_arch_match_closid(struct task_struct *tsk, u32 closid)
+> +{
+> +	return READ_ONCE(tsk->closid) == closid;
+> +}
+> +
+> +static inline bool resctrl_arch_match_rmid(struct task_struct *tsk, u32 ignored,
+> +					   u32 rmid)
+> +{
+> +	return READ_ONCE(tsk->rmid) == rmid;
+> +}
+> +
+>  static inline void resctrl_sched_in(struct task_struct *tsk)
+>  {
+>  	if (static_branch_likely(&rdt_enable_key))
 > diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index f6051a3e7262..0b9bd5f0f60d 100644
+> index 0b9bd5f0f60d..fe6dfea471f2 100644
 > --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
 > +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -137,13 +137,22 @@ static void closid_init(void)
+> @@ -102,7 +102,7 @@ void rdt_staged_configs_clear(void)
+>   *
+>   * Using a global CLOSID across all resources has some advantages and
+>   * some drawbacks:
+> - * + We can simply set "current->closid" to assign a task to a resource
+> + * + We can simply set current's closid to assign a task to a resource
+>   *   group.
+>   * + Context switch code can avoid extra memory references deciding which
+>   *   CLOSID to load into the PQR_ASSOC MSR
+> @@ -574,14 +574,26 @@ static void update_task_closid_rmid(struct task_struct *t)
+>  		_update_task_closid_rmid(t);
+>  }
 >  
->  static int closid_alloc(void)
+> +static bool task_in_rdtgroup(struct task_struct *tsk, struct rdtgroup *rdtgrp)
+> +{
+> +	u32 closid, rmid = rdtgrp->mon.rmid;
+> +
+> +	if (rdtgrp->type == RDTCTRL_GROUP)
+> +		closid = rdtgrp->closid;
+> +	else if (rdtgrp->type == RDTMON_GROUP)
+> +		closid = rdtgrp->mon.parent->closid;
+> +	else
+> +		return false;
+> +
+> +	return resctrl_arch_match_closid(tsk, closid) &&
+> +	       resctrl_arch_match_rmid(tsk, closid, rmid);
+> +}
+> +
+>  static int __rdtgroup_move_task(struct task_struct *tsk,
+>  				struct rdtgroup *rdtgrp)
 >  {
-> -	u32 closid = ffs(closid_free_map);
-> +	int cleanest_closid;
-> +	u32 closid;
+>  	/* If the task is already in rdtgrp, no need to move the task. */
+> -	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
+> -	     tsk->rmid == rdtgrp->mon.rmid) ||
+> -	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
+> -	     tsk->closid == rdtgrp->mon.parent->closid))
+> +	if (task_in_rdtgroup(tsk, rdtgrp))
+>  		return 0;
 >  
->  	lockdep_assert_held(&rdtgroup_mutex);
+>  	/*
+> @@ -592,19 +604,19 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+>  	 * For monitor groups, can move the tasks only from
+>  	 * their parent CTRL group.
+>  	 */
+> -
+> -	if (rdtgrp->type == RDTCTRL_GROUP) {
+> -		WRITE_ONCE(tsk->closid, rdtgrp->closid);
+> -		WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+> -	} else if (rdtgrp->type == RDTMON_GROUP) {
+> -		if (rdtgrp->mon.parent->closid == tsk->closid) {
+> -			WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+> -		} else {
+> -			rdt_last_cmd_puts("Can't move task to different control group\n");
+> -			return -EINVAL;
+> -		}
+> +	if (rdtgrp->type == RDTMON_GROUP &&
+> +	    !resctrl_arch_match_closid(tsk, rdtgrp->mon.parent->closid)) {
+> +		rdt_last_cmd_puts("Can't move task to different control group\n");
+> +		return -EINVAL;
+>  	}
 >  
-> -	if (closid == 0)
-> -		return -ENOSPC;
-> -	closid--;
-> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
-> +		cleanest_closid = resctrl_find_cleanest_closid();
-> +		if (cleanest_closid < 0)
-> +			return cleanest_closid;
-> +		closid = cleanest_closid;
-> +	} else {
-> +		closid = ffs(closid_free_map);
-> +		if (closid == 0)
-> +			return -ENOSPC;
-> +		closid--;
-> +	}
->  	__clear_bit(closid, &closid_free_map);
+> +	if (rdtgrp->type == RDTMON_GROUP)
+> +		resctrl_arch_set_closid_rmid(tsk, rdtgrp->mon.parent->closid,
+> +					     rdtgrp->mon.rmid);
+> +	else
+> +		resctrl_arch_set_closid_rmid(tsk, rdtgrp->closid,
+> +					     rdtgrp->mon.rmid);
+> +
+>  	/*
+>  	 * Ensure the task's closid and rmid are written before determining if
+>  	 * the task is current that will decide if it will be interrupted.
+> @@ -626,14 +638,15 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
 >  
->  	return closid;
-> @@ -163,7 +172,7 @@ void closid_free(int closid)
->   * Return: true if @closid is currently associated with a resource group,
->   * false if @closid is free
->   */
-> -static bool closid_allocated(unsigned int closid)
-> +bool closid_allocated(unsigned int closid)
+>  static bool is_closid_match(struct task_struct *t, struct rdtgroup *r)
 >  {
->  	lockdep_assert_held(&rdtgroup_mutex);
+> -	return (rdt_alloc_capable &&
+> -	       (r->type == RDTCTRL_GROUP) && (t->closid == r->closid));
+> +	return (rdt_alloc_capable && (r->type == RDTCTRL_GROUP) &&
+> +		resctrl_arch_match_closid(t, r->closid));
+>  }
 >  
+>  static bool is_rmid_match(struct task_struct *t, struct rdtgroup *r)
+>  {
+> -	return (rdt_mon_capable &&
+> -	       (r->type == RDTMON_GROUP) && (t->rmid == r->mon.rmid));
+> +	return (rdt_mon_capable && (r->type == RDTMON_GROUP) &&
+> +		resctrl_arch_match_rmid(t, r->mon.parent->closid,
+> +					r->mon.rmid));
+>  }
+>  
+>  /**
+> @@ -884,7 +897,7 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
+>  		    rdtg->mode != RDT_MODE_EXCLUSIVE)
+>  			continue;
+>  
+> -		if (rdtg->closid != tsk->closid)
+> +		if (!resctrl_arch_match_closid(tsk, rdtg->closid))
+>  			continue;
+>  
+>  		seq_printf(s, "res:%s%s\n", (rdtg == &rdtgroup_default) ? "/" : "",
+> @@ -892,7 +905,8 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
+>  		seq_puts(s, "mon:");
+>  		list_for_each_entry(crg, &rdtg->mon.crdtgrp_list,
+>  				    mon.crdtgrp_list) {
+> -			if (tsk->rmid != crg->mon.rmid)
+> +			if (!resctrl_arch_match_rmid(tsk, crg->mon.parent->closid,
+> +						     crg->mon.rmid))
+>  				continue;
+>  			seq_printf(s, "%s", crg->kn->name);
+>  			break;
+> @@ -2825,8 +2839,8 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
+>  	for_each_process_thread(p, t) {
+>  		if (!from || is_closid_match(t, from) ||
+>  		    is_rmid_match(t, from)) {
+> -			WRITE_ONCE(t->closid, to->closid);
+> -			WRITE_ONCE(t->rmid, to->mon.rmid);
+> +			resctrl_arch_set_closid_rmid(t, to->closid,
+> +						     to->mon.rmid);
+>  
+>  			/*
+>  			 * Order the closid/rmid stores above before the loads
 
 -- 
 Thanks
