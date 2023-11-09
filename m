@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C71F7E67FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDFD7E623A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbjKIK1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:27:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S231523AbjKICc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 21:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbjKIK1D (ORCPT
+        with ESMTP id S229557AbjKICc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:27:03 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D1F30F0;
-        Thu,  9 Nov 2023 02:27:00 -0800 (PST)
-Received: from [100.98.136.55] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5CEAD660747A;
-        Thu,  9 Nov 2023 10:26:58 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699525619;
-        bh=Dppw+eChOPaHwmg9+mdNbnBcLPL6bcEoiuHmKGTC7O8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kAmtXuQ2qb9vCgH1kc/tqw9Av6XQt+zwUcKt3yALlnxGYR1he8Buedg1Y0NxHEk82
-         H7R3hlCf9t2VZ58DfuRo5XiXjYUGtup0DICyoBPjE/pWwBp9jRXJNkNQHTbf0IOXhV
-         Yvwu+jpMwaEPVpPr2avsgZnIBpkDlyE+BnCD5d0ELORcbGfiQ1YirngYblxe3CNMR5
-         eOmpWClqC4n/xCEQR6qllMXbt4Qc1WYpVLKfls0y2OSO9/Zf/YNhjE3/HqsjkXLruT
-         o7y+l71HIeBXXHXeONKnXn15dVfoIkavr4Q9LmPgyW56D/f1Sv0Tj2oIYEj02E63Y4
-         m1X3gsnFMqD+A==
-Message-ID: <fa68feca-15db-4d0a-a8b2-859f997e5e38@collabora.com>
-Date:   Thu, 9 Nov 2023 11:26:55 +0100
+        Wed, 8 Nov 2023 21:32:27 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBF0210E;
+        Wed,  8 Nov 2023 18:32:25 -0800 (PST)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SQm8Y1vPYzPpBr;
+        Thu,  9 Nov 2023 10:28:13 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.67) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 9 Nov 2023 10:32:16 +0800
+From:   WoZ1zh1 <wozizhi@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
+        <akpm@linux-foundation.org>, <oleg@redhat.com>,
+        <jlayton@kernel.org>, <dchinner@redhat.com>, <cyphar@cyphar.com>,
+        <shr@devkernel.io>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <wozizhi@huawei.com>, <yangerkun@huawei.com>
+Subject: [PATCH -next V2] proc: support file->f_pos checking in mem_lseek
+Date:   Thu, 9 Nov 2023 18:26:58 +0800
+Message-ID: <20231109102658.2075547-1-wozizhi@huawei.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 26/56] media: i2c: video-i2c: Stop direct calls to
- queue num_buffers field
-Content-Language: en-US
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Matt Ranostay <matt.ranostay@konsulko.com>
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-27-benjamin.gaignard@collabora.com>
- <683359b7-bab4-4eef-a047-c3dc1a04f9d6@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <683359b7-bab4-4eef-a047-c3dc1a04f9d6@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In mem_lseek, file->f_pos may overflow. And it's not a problem that
+mem_open set file mode with FMODE_UNSIGNED_OFFSET(memory_lseek). However,
+another file use mem_lseek do lseek can have not FMODE_UNSIGNED_OFFSET
+(kpageflags_proc_ops/proc_pagemap_operations...), so in order to prevent
+file->f_pos updated to an abnormal number, fix it by checking overflow and
+FMODE_UNSIGNED_OFFSET.
 
-Le 09/11/2023 à 11:18, Andrzej Pietrasiewicz a écrit :
-> Hi Benjamin,
->
-> W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
->> Use vb2_get_num_buffers() to avoid using queue num_buffers field 
->> directly.
->> This allows us to change how the number of buffers is computed in the
->> future.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> CC: Matt Ranostay <matt.ranostay@konsulko.com>
->> ---
->>   drivers/media/i2c/video-i2c.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/media/i2c/video-i2c.c 
->> b/drivers/media/i2c/video-i2c.c
->> index 178bd06cc2ed..ebf2ac98a068 100644
->> --- a/drivers/media/i2c/video-i2c.c
->> +++ b/drivers/media/i2c/video-i2c.c
->> @@ -405,9 +405,10 @@ static int queue_setup(struct vb2_queue *vq,
->>   {
->>       struct video_i2c_data *data = vb2_get_drv_priv(vq);
->>       unsigned int size = data->chip->buffer_size;
->> +    unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->>   -    if (vq->num_buffers + *nbuffers < 2)
->> -        *nbuffers = 2;
->> +    if (q_num_bufs + *nbuffers < 2)
->> +        *nbuffers = 2 - q_num_bufs;
->
-> This actually changes the logic. Maybe it has already been discussed and
-> the result of that discussion is this change in logic? Looking at other
-> drivers *nbuffers = 2 - q_num_bufs; seems the right thing to do.
-> But then at least the commit message body IMO should mention this change.
-> Or, preferably, the change in logic should be a separate patch to be 
-> applied
-> before this one.
+Signed-off-by: WoZ1zh1 <wozizhi@huawei.com>
+---
+ fs/proc/base.c     | 30 ++++++++++++++++++++++--------
+ fs/read_write.c    |  5 -----
+ include/linux/fs.h |  5 ++++-
+ 3 files changed, 26 insertions(+), 14 deletions(-)
 
-I will add word about that in the commit message.
-Thanks.
-Benjamin
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index dd31e3b6bf77..0fd986e861d9 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -903,18 +903,32 @@ static ssize_t mem_write(struct file *file, const char __user *buf,
+ 
+ loff_t mem_lseek(struct file *file, loff_t offset, int orig)
+ {
++	loff_t ret = 0;
++
++	spin_lock(&file->f_lock);
+ 	switch (orig) {
+-	case 0:
+-		file->f_pos = offset;
+-		break;
+-	case 1:
+-		file->f_pos += offset;
++	case SEEK_CUR:
++		offset += file->f_pos;
++	case SEEK_SET:
++		/* to avoid userland mistaking f_pos=-9 as -EBADF=-9 */
++		if ((unsigned long long)offset >= -MAX_ERRNO)
++			ret = -EOVERFLOW;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+-	force_successful_syscall_return();
+-	return file->f_pos;
++	if (!ret) {
++		if (offset < 0 && !(unsigned_offsets(file))) {
++			ret = -EINVAL;
++		} else {
++			file->f_pos = offset;
++			ret = file->f_pos;
++			force_successful_syscall_return();
++		}
++	}
++
++	spin_unlock(&file->f_lock);
++	return ret;
+ }
+ 
+ static int mem_release(struct inode *inode, struct file *file)
+diff --git a/fs/read_write.c b/fs/read_write.c
+index 4771701c896b..2f456d5a1df5 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -34,11 +34,6 @@ const struct file_operations generic_ro_fops = {
+ 
+ EXPORT_SYMBOL(generic_ro_fops);
+ 
+-static inline bool unsigned_offsets(struct file *file)
+-{
+-	return file->f_mode & FMODE_UNSIGNED_OFFSET;
+-}
+-
+ /**
+  * vfs_setpos - update the file offset for lseek
+  * @file:	file structure in question
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 98b7a7a8c42e..dde0756d2350 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2994,7 +2994,10 @@ extern ssize_t iter_file_splice_write(struct pipe_inode_info *,
+ extern long do_splice_direct(struct file *in, loff_t *ppos, struct file *out,
+ 		loff_t *opos, size_t len, unsigned int flags);
+ 
+-
++static inline bool unsigned_offsets(struct file *file)
++{
++	return file->f_mode & FMODE_UNSIGNED_OFFSET;
++}
+ extern void
+ file_ra_state_init(struct file_ra_state *ra, struct address_space *mapping);
+ extern loff_t noop_llseek(struct file *file, loff_t offset, int whence);
+-- 
+2.39.2
 
->
-> Regards,
->
-> Andrzej
->
->>         if (*nplanes)
->>           return sizes[0] < size ? -EINVAL : 0;
->
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
