@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A136D7E700A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD817E7027
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344330AbjKIRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
+        id S1344605AbjKIR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbjKIRSe (ORCPT
+        with ESMTP id S1343808AbjKIR0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:18:34 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C05030D5
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:18:32 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5b980391d7cso877128a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 09:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699550312; x=1700155112; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sETpXjNQzICuFitVFLZxqbi5fXHH6j39NgeWIXg4AEc=;
-        b=tG/Nl6IxW956YJhFGMfbFXaKEDBO9A8Rj8FwciYfV+Rx+cF3fGwlTC9r8EVgp3xFUa
-         tDAQG3pkOcvEgVtUmdLt6zOUJJCHmndDs/8i/qLQ2BKGs7+dC5Z/59DVQOd1gDnmR5dD
-         V2ZjxYtSNwHhXGiP/MmvhT1pO818HrnFClWrR8P9PB3i4br5WWwDLPvuMIryIou7rvZW
-         qUhdTrLQLAK/mDo+1UPfblS/8aJg8uiJ9Lv7ZHIVKBrg1cOAfZDzQCRMWlAb2GVRXEA4
-         y8WsmaCnHNUYMvB0q2hseiWmls//hzZ1PRYwPkfe8vOX8WxZTHVe2DgVUyARYWZjL2BS
-         oj0w==
+        Thu, 9 Nov 2023 12:26:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C28B325B
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699550709;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=KM+kZjFHA8E0A+l+o485oGQAZV87bwGJzM3u9NBaaMA=;
+        b=e/cGm8lYKvoeQYINzkmtM+ll6tQjTbbgMlj+O7XVmg9vhZHZdmMZIM5qvj+W8Fr/jFm0ZX
+        P7K3mNfN9ua/yU7uhevO+qWx7CWiFLNOgXUHBEi1pMBJuuU2Hbw2xJihTKJd7U8LdC7q2z
+        XaF5uI6BHfHQ2Em0LlIjGVWeVPKmZ54=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-258-Gupn3hwQOBOfC2d31EDtLQ-1; Thu, 09 Nov 2023 12:25:08 -0500
+X-MC-Unique: Gupn3hwQOBOfC2d31EDtLQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408508aa81cso7221165e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 09:25:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699550312; x=1700155112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sETpXjNQzICuFitVFLZxqbi5fXHH6j39NgeWIXg4AEc=;
-        b=BE5esBbFoZk+lnbE+WMzzgyMPFnQjsNqy3wLJDTJzEPper6o3JKnCLBE1mYlJjBB0M
-         TPuthgwByuROW7VjgBTDsk7i1LGO4jlcmcY1O5rTmoMFM2YpNjkE7BQldlvj+l95Tp7q
-         1WGFIO5LgKSZWAdL6ITSzUg4bxu/+bMLmSjSpVGquQ3cLtE/84Dxc3S84fuK6G97+IqS
-         st5Mb18CyV1xfBX4+Bj78ttUWN0oxD094FlI+SP0lLVI3SwR79NF5iuiZXXVN/UwCf3K
-         aFV53Uy1WxgizPS/paEauO5+Tymloyc3INuizggDDQOok7IEXieC/OCoqbw6xqSYBRFK
-         sOaA==
-X-Gm-Message-State: AOJu0YxqsOP5empa0PDgcEQgG0eEJ3W4qDwqP81ndA3Cs7pTNTBe/dei
-        o/B0kdxQhSHUzHReGWdULgZYDNYN2qLA04bKiG9A3g==
-X-Google-Smtp-Source: AGHT+IEjNKsPYRbDywGL5IVqy65WLDYYH1YmfsFR5Qhhi8kAgJ2XOcWYnPrga4W/M5uQvoxORRqAEr3CsijD0Yl4sd8=
-X-Received: by 2002:a17:90b:17c5:b0:281:2634:f81e with SMTP id
- me5-20020a17090b17c500b002812634f81emr2238764pjb.37.1699550312016; Thu, 09
- Nov 2023 09:18:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699550706; x=1700155506;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KM+kZjFHA8E0A+l+o485oGQAZV87bwGJzM3u9NBaaMA=;
+        b=XT7QYsa8SbI5B1+l+i7BwAl65Au8417ZAim1k6E0j1tHfHH/DLEtA3x47Y6tI4lErn
+         eTHi+EbT61sANzIa6K72+LWGzjBcVEoiytjhN/EYPJ1e3FS21+hkU875x79iNhVUqspH
+         6PdhrFQykXbYytqdKqRwFSKbZ0iA+sK7KPT/rYIIkG44lOcuQnBWbTAZqJeS0mdcQDTF
+         alqODZyklFxdrvUw7/7qxRtjFl52+mAOi7I1GLW5tp5Vtew0KtkxqD2cs0ISRBqQLnbu
+         iOLr7EGo5EpTipVIUnXSejCfsNUrbbQBxx4OO+I357P3ZEJE9k87o/e0fbntIZWmfRiC
+         5JfQ==
+X-Gm-Message-State: AOJu0YycmiQVLCmxDLAZ+w7pL9Bdr8yrSYuWkSWwak4a1Tzrzoz+aqMU
+        bQen4Y1ewFDiF/7Dc1F0Gw6CVDmfF4ekQraPCumeZfYy+Dg7I6idIxhXb86DY57yyav+0AE6VJv
+        NZOblPd4lXUYsUFBEyzh/jgdT9u/ZY4JV7bdHJjC9I4ksMIbybDL0Mru1sL0JymYyiK9oXYmcsL
+        30e4gGQJ0=
+X-Received: by 2002:a05:600c:3d9a:b0:408:5bc6:a7d with SMTP id bi26-20020a05600c3d9a00b004085bc60a7dmr4807933wmb.19.1699550706541;
+        Thu, 09 Nov 2023 09:25:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFBYNpBFpSwc4pVpHVCRnVRLdnQyz2wbfqHlyA9KAIkGVscHGBHFPnaFmMk7VrRW7vmMUDnCw==
+X-Received: by 2002:a05:600c:3d9a:b0:408:5bc6:a7d with SMTP id bi26-20020a05600c3d9a00b004085bc60a7dmr4807894wmb.19.1699550706031;
+        Thu, 09 Nov 2023 09:25:06 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id n18-20020a05600c3b9200b0040839fcb217sm646229wms.8.2023.11.09.09.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 09:25:04 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Simon Ser <contact@emersion.fr>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Bilal Elmoussaoui <belmouss@redhat.com>,
+        Erico Nunes <nunes.erico@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 0/6] drm: Allow the damage helpers to handle buffer damage
+Date:   Thu,  9 Nov 2023 18:24:34 +0100
+Message-ID: <20231109172449.1599262-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <CGME20231109104758eucas1p2e98e8cf22a42aae212a98228e46b4438@eucas1p2.samsung.com>
- <20231109104748.2746839-1-m.szyprowski@samsung.com>
-In-Reply-To: <20231109104748.2746839-1-m.szyprowski@samsung.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 9 Nov 2023 11:18:21 -0600
-Message-ID: <CAPLW+4=DHhtbr2zh61WJ7QpkwYTmJaWxoi-Vd4AoSSs0TrZWrQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pwm: samsung: Fix broken resume after putting
- per-channel data into driver data
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 4:48=E2=80=AFAM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> PWMF_EXPORTED is misleadingly used as a bit numer in the pwm->flags, not
-> as a flag value, so the proper test for it must use test_bit() helper.
-> This fixes broken resume after putting per-channel data into driver data.
->
-> Fixes: e3fe982b2e4e ("pwm: samsung: Put per-channel data into driver data=
-")
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
+Hello,
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+This series is to fix an issue that surfaced after damage clipping was
+enabled for the virtio-gpu by commit 01f05940a9a7 ("drm/virtio: Enable
+fb damage clips property for the primary plane").
 
->  drivers/pwm/pwm-samsung.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
-> index 568491ed6829..69d9f4577b34 100644
-> --- a/drivers/pwm/pwm-samsung.c
-> +++ b/drivers/pwm/pwm-samsung.c
-> @@ -631,7 +631,7 @@ static int pwm_samsung_resume(struct device *dev)
->                 struct pwm_device *pwm =3D &chip->pwms[i];
->                 struct samsung_pwm_channel *chan =3D &our_chip->channel[i=
-];
->
-> -               if (!(pwm->flags & PWMF_REQUESTED))
-> +               if (!test_bit(PWMF_REQUESTED, &pwm->flags))
->                         continue;
->
->                 if (our_chip->variant.output_mask & BIT(i))
-> --
-> 2.34.1
->
+After that change, flickering artifacts was reported to be present with
+both weston and wlroots wayland compositors when running in a virtual
+machine. The cause was identified by Sima Vetter, who pointed out that
+virtio-gpu does per-buffer uploads and for this reason it needs to do
+a buffer damage handling, instead of frame damage handling.
+
+Their suggestion was to extend the damage helpers to cover that case
+and given that there's isn't a buffer damage accumulation algorithm
+(e.g: buffer age), just do a full plane update if the framebuffer that
+is attached to a plane changed since the last plane update (page-flip).
+
+Patch #1 is just a refactoring to allow the logic of the frame damage
+helpers to be shared by the buffer damage helpers.
+
+Patch #2 adds the helpers that are needed for buffer damage handling.
+
+Patch #3 fixes the virtio-gpu damage handling logic by using the
+helper that is required by drivers that need to handle buffer damage.
+
+Patch #4 fixes the vmwgfx similarly, since that driver also needs to
+handle buffer damage and should have the same issue (although I have
+not tested it due not having a VMWare setup).
+
+Patch #5 adds to the KMS damage tracking kernel-doc some paragraphs
+about damage tracking types and references to links that explain
+frame damage vs buffer damage.
+
+Finally patch #6 adds an item to the DRM/KMS todo, about the need to
+implement some buffer damage accumulation algorithm instead of just
+doing a full plane update in this case.
+
+Because commit 01f05940a9a7 landed in v6.4, the first three patches
+are marked as Fixes and Cc stable.
+
+I've tested this on a VM with weston, was able to reproduce the issue
+reported and the patches did fix the problem.
+
+Please let me know what you think. Specially on the wording since could
+made mistakes due just learning about these concepts yesterday thanks to
+Sima, Simon and Pekka.
+
+Best regards,
+Javier
+
+
+Javier Martinez Canillas (6):
+  drm: Move drm_atomic_helper_damage_{iter_init,merged}() to helpers
+  drm: Add drm_atomic_helper_buffer_damage_{iter_init,merged}() helpers
+  drm/virtio: Use drm_atomic_helper_buffer_damage_merged() for buffer
+    damage
+  drm/vmwgfx: Use drm_atomic_helper_buffer_damage_iter_init() for buffer
+    damage
+  drm/plane: Extend damage tracking kernel-doc
+  drm/todo: Add entry about implementing buffer age for damage tracking
+
+ Documentation/gpu/todo.rst             |  20 +++
+ drivers/gpu/drm/drm_damage_helper.c    | 166 +++++++++++++++++++------
+ drivers/gpu/drm/drm_plane.c            |  22 +++-
+ drivers/gpu/drm/virtio/virtgpu_plane.c |   2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c    |   2 +-
+ include/drm/drm_damage_helper.h        |   7 ++
+ 6 files changed, 173 insertions(+), 46 deletions(-)
+
+-- 
+2.41.0
+
