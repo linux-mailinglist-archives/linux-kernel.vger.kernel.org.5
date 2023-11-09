@@ -2,233 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 888377E69CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC6A7E698A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbjKILiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        id S233341AbjKIL3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:29:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbjKILiD (ORCPT
+        with ESMTP id S232078AbjKIL33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:38:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E90269A;
-        Thu,  9 Nov 2023 03:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699529881; x=1731065881;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DKFfaiU9gGxjgDYBwyC5urWJAh5gfm6X7WCUnD4IAWM=;
-  b=FRBC3Ds5jzTLvym0W6ctK7MrFpuMHP6bKeuFF3PbPN6PJXTu6g9PyG9R
-   EqsEMHzoNhbap0JAtrLyCotVWUQvNspjr5QWS9jLgjDI/BHBQBIoOaWGB
-   yfqezKZyVVF1cJwI8UG+yjqkJ9BX3+048/MWoTF65HGiHVcwXBC4ZgSFP
-   /pZPaLSZ+T2IG1uvKSIOsaTkgBeVzSs7ZQnZwngJJSKEYZcwtuCxnzxR4
-   Utkkl48VmQdn3pNYknX0wNS+pYsErIgeCUU8b17o+EQ1Ay6fXILl18pOY
-   KS1y4VnB/BdbvNBSS9fjPkvspIr2Pn5zswKpHRXwnvJ3f4ensjUsfM41J
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="369301857"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="369301857"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:37:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="854052328"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="854052328"
-Received: from bsochack-mobl2.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.8.94])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 03:37:56 -0800
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests/resctrl: Add non-contiguous CBMs CAT test
-Date:   Thu,  9 Nov 2023 12:28:47 +0100
-Message-ID: <20231109112847.432687-1-maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.1
+        Thu, 9 Nov 2023 06:29:29 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC1B2D69;
+        Thu,  9 Nov 2023 03:29:27 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 16C196607421;
+        Thu,  9 Nov 2023 11:29:23 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699529366;
+        bh=MbNXLia+jC7hLR3GZ2i7bjau3A6rpAnLgPDOnuSzDCA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=b+9kQAiwNaExBK6WtWt4ggbc6a2sRS3psYkGAorlUhLSWPtH5rxieRN1SgFbmVkna
+         uWYH4S2KLRX/J9rp4KtO+ufMlyRaE4d49N6b2SnF7GrC7x8NdMfWgKfU+9V/IbEv11
+         KCi2qK8jc89URqTt0LrBrD4n0yDsLBCLzUS9ycG1JrqUchTFktA0rYow+gA1gFV4Oc
+         +zlMc2JiE2TvRHM7edTgA66BqUEgKOCnLBsq62N3DHykNVQaMgLdbxckeLjFLb7/sw
+         wIl/3GDcyTKABMTes1GiWFN9ffnerxmxbLPg1HixHSh9GqRt8NG9Kn6b7QUSErF/py
+         O0SDTZK3ws2HA==
+Message-ID: <47aad456-30e8-4b42-bbe4-d40bd808d155@collabora.com>
+Date:   Thu, 9 Nov 2023 12:29:21 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 36/56] media: nuvoton: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, Joseph Liu <kwliu@nuvoton.com>,
+        Marvin Lin <kflin@nuvoton.com>
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-37-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-37-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Non-contiguous CBM support for Intel CAT has been merged into the kernel
-with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
-Intel CAT") but there is no selftest that would validate if this feature
-works correctly.
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> future.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-The selftest needs to verify if writing non-contiguous CBMs to the
-schemata file behaves as expected in comparison to the information about
-non-contiguous CBMs support.
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Add tests for both L2 and L3 CAT to verify if the return values
-generated by writing non-contiguous CBMs don't contradict the
-reported non-contiguous support information.
-
-Comparing the return value of write_schemata() with non-contiguous CBMs
-support information can be simplified as a logical XOR operation. In
-other words if non-contiguous CBMs are supported and if non-contiguous
-write succeeds the test should succeed and if the write fails the test
-should also fail. The opposite should happen if non-contiguous CBMs are
-not supported.
-
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-
----
-
-This patch is based on a rework of resctrl selftests that's currently in
-review [1]. The patch also implements a similiar functionality presented
-in the bash script included in the cover letter to the original
-non-contiguous CBMs in Intel CAT series [2].
-
-[1] https://lore.kernel.org/all/20231024092634.7122-1-ilpo.jarvinen@linux.intel.com/
-[2] https://lore.kernel.org/all/cover.1696934091.git.maciej.wieczor-retman@intel.com/
-
- tools/testing/selftests/resctrl/cat_test.c    | 97 +++++++++++++++++++
- tools/testing/selftests/resctrl/resctrl.h     |  2 +
- .../testing/selftests/resctrl/resctrl_tests.c |  2 +
- 3 files changed, 101 insertions(+)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index bc88eb891f35..6a01a5da30b4 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -342,6 +342,87 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 	return ret;
- }
- 
-+static int noncont_cat_run_test(const struct resctrl_test *test,
-+				const struct user_params *uparams)
-+{
-+	unsigned long full_cache_mask, cont_mask, noncont_mask;
-+	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-+	char res_path[PATH_MAX];
-+	char schemata[64];
-+	int bit_center;
-+	FILE *fp;
-+
-+	/* Check to compare sparse_masks content to cpuid output. */
-+	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-+		 test->resource, "sparse_masks");
-+
-+	fp = fopen(res_path, "r");
-+	if (!fp) {
-+		perror("# Error in opening file\n");
-+		return errno;
-+	}
-+
-+	if (fscanf(fp, "%u", &sparse_masks) <= 0) {
-+		perror("Could not get sparse_masks contents\n");
-+		fclose(fp);
-+		return -1;
-+	}
-+
-+	fclose(fp);
-+
-+	if (!strcmp(test->resource, "L3"))
-+		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
-+	else if (!strcmp(test->resource, "L2"))
-+		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
-+	else
-+		return -EINVAL;
-+
-+	if (sparse_masks != ((ecx >> 3) & 1))
-+		return -1;
-+
-+	/* Write checks initialization. */
-+	ret = get_cbm_mask(test->resource, &full_cache_mask);
-+	if (ret < 0)
-+		return ret;
-+	bit_center = count_bits(full_cache_mask) / 2;
-+	cont_mask = full_cache_mask >> bit_center;
-+
-+	/* Contiguous mask write check. */
-+	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * Non-contiguous mask write check. CBM has a 0xf hole approximately in the middle.
-+	 * Output is compared with support information to catch any edge case errors.
-+	 */
-+	noncont_mask = ~(full_cache_mask & (0xf << bit_center)) & full_cache_mask;
-+	snprintf(schemata, sizeof(schemata), "%lx", noncont_mask);
-+	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-+	if (ret && sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs supported but write failed\n");
-+	else if (ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported and write failed as expected\n");
-+	else if (!ret && !sparse_masks)
-+		ksft_print_msg("Non-contiguous CBMs not supported but write succeeded\n");
-+	return !ret == !sparse_masks;
-+}
-+
-+static bool noncont_cat_feature_check(const struct resctrl_test *test)
-+{
-+	char res_path[PATH_MAX];
-+	struct stat statbuf;
-+
-+	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-+		 test->resource, "sparse_masks");
-+
-+	if (stat(res_path, &statbuf))
-+		return false;
-+
-+	return test_resource_feature_check(test);
-+}
-+
- struct resctrl_test l3_cat_test = {
- 	.name = "L3_CAT",
- 	.group = "CAT",
-@@ -357,3 +438,19 @@ struct resctrl_test l2_cat_test = {
- 	.feature_check = test_resource_feature_check,
- 	.run_test = cat_run_test,
- };
-+
-+struct resctrl_test l3_noncont_cat_test = {
-+	.name = "L3_NONCONT_CAT",
-+	.group = "NONCONT_CAT",
-+	.resource = "L3",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-+
-+struct resctrl_test l2_noncont_cat_test = {
-+	.name = "L2_NONCONT_CAT",
-+	.group = "NONCONT_CAT",
-+	.resource = "L2",
-+	.feature_check = noncont_cat_feature_check,
-+	.run_test = noncont_cat_run_test,
-+};
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index fffeb442c173..51b8a6ff3a0d 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -184,5 +184,7 @@ extern struct resctrl_test mba_test;
- extern struct resctrl_test cmt_test;
- extern struct resctrl_test l3_cat_test;
- extern struct resctrl_test l2_cat_test;
-+extern struct resctrl_test l3_noncont_cat_test;
-+extern struct resctrl_test l2_noncont_cat_test;
- 
- #endif /* RESCTRL_H */
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 9e254bca6c25..fdeef82feb4e 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -16,6 +16,8 @@ static struct resctrl_test *resctrl_tests[] = {
- 	&cmt_test,
- 	&l3_cat_test,
- 	&l2_cat_test,
-+	&l3_noncont_cat_test,
-+	&l2_noncont_cat_test,
- };
- 
- static int detect_vendor(void)
--- 
-2.42.1
+> CC: Joseph Liu <kwliu@nuvoton.com>
+> CC: Marvin Lin <kflin@nuvoton.com>
+> ---
+>   drivers/media/platform/nuvoton/npcm-video.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
+> index b9e6782f59b4..f9b4e36a5175 100644
+> --- a/drivers/media/platform/nuvoton/npcm-video.c
+> +++ b/drivers/media/platform/nuvoton/npcm-video.c
+> @@ -393,7 +393,7 @@ static void npcm_video_free_diff_table(struct npcm_video *video)
+>   	struct rect_list *tmp;
+>   	unsigned int i;
+>   
+> -	for (i = 0; i < video->queue.num_buffers; i++) {
+> +	for (i = 0; i < vb2_get_num_buffers(&video->queue); i++) {
+>   		head = &video->list[i];
+>   		list_for_each_safe(pos, nx, head) {
+>   			tmp = list_entry(pos, struct rect_list, list);
 
