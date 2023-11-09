@@ -2,456 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B057E61E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D217E61F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbjKIBuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 20:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S231627AbjKIB5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbjKIBuM (ORCPT
+        with ESMTP id S229697AbjKIB5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 20:50:12 -0500
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2073.outbound.protection.outlook.com [40.107.117.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773FA269E;
-        Wed,  8 Nov 2023 17:50:09 -0800 (PST)
+        Wed, 8 Nov 2023 20:57:01 -0500
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2118.outbound.protection.outlook.com [40.107.117.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD8A26A0;
+        Wed,  8 Nov 2023 17:56:58 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fve2InbtGOq9oSlu0G59eaIY8xpgCR4pIH+PoqVH31WjuW06YDruX0V8bqx5UHKkZ3jmPQsZl4MX13TWA8uqOdEj0w+vxd3HD9RpNm/eF1JkyARIE9mXjVIMuXOXxHa26xr5KiV6W+/CNPLxBpWToXv0CbdEjLkm2BYmDcWq9HiRFHHJUMaqPAG/mJGpX5skdDntlbGOeuQe2lc8N58Z1tZUCcYzU5rgzq76DErBrcm1ZXkIi5wUkcfzsMAOyHIHmcxCseywMM+o+vpOfJ8rp40+PYtHwKRL7h+zjU1e2Au8bVwSv5fQ56ob5d7A3YC5IgIAA7VcqCOTnnEZLvmsjw==
+ b=Lx/JQf5KQsV4rb8Ayv3ak4CNpW2bAHgcP9fPtjxN9kOysOXQcmnurEeHBbSrSe3kGj0jTVfOg/v6vufJ4v55QNUupYRs8ydvikq8IrSTTeccmAZS3VPst6Nk8J+/Ra39e4j86QoghlMzVXVLi/iSruPJnxCQNi+0v4Z8gRAyEwQRcOSaQ3p/6h6oxxo87V21SFPmR37jrzddmeFqXTvLz9kYG4b2JO2JHlI6DEjAbE8t6FYYoSNzpSwGHZGED0SkWeqYcFD8fKX9CV+Efyf/Wzn9yFqHOiD/owwqNnicPcfrPr37dzR3owU55BqwIAUWwTlWcD4INDRWT9uQfPv0JA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6xAJoqXTjp7anwVoo3/HbsH7rYkryE3zap6wVl4dunk=;
- b=PE/sq4MDdaTRnBmfokBGaVCJU33qvhDSm6EADNP1ZXSY1z1z2t/+997Ynf487vmC3w8LK2VcEvn8cycDltbmohZc9RJGgGmcQu/CUX/j4y8GnhLhGtA6KcfeYiemNt5MOvYd+SXjTIvACbwHtzFhRb+duMYqnmJbZYVGktN4ox1roPqc6rVkvsJXVvRkPNBI1DZqgq4AQeoz/oA3rghL7l2WhMVHr4YSNL1HkAco2UZ0TPrigWrkTxCI9LNauvyZIUZChp4t+m/2X9X3V1N0JydXsQmWu2Rkf8rKfJhimaz8gv6qUV/iZ7lTVTods6/AJlxBJSZYvUeykQ0M4FvChw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
- (p=quarantine sp=quarantine pct=100) action=quarantine
- header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
- s=selector2;
+ bh=jx3Aa6DzTj3YNGl86X0zVEea0XMkHp4V9VRMPEeSFBo=;
+ b=nCS8JLg72B6J8VIMlBK+ffB9D7JT1yOc99KR+yWhbtlJ5VKihK5BmmQpsNy6tFNNCs/xsbGQwNU/XBsxlQlfrPRPJHU0sJj/sF6xhfRV/BOrVQkma7vZSjaTV0cwO85wFoDLJvsH63XU+dMxhzC2u4l+ImYX2BRpmLkaG8SzdBBlMpMORb127fdZo4r004CyXr7vREDLqmsOnHULP1bz3K0r4YPSqpW2s3YX3gj32AzdzmHWUSZ06hFPT11cM8LiZ1K340TLSmPAc2FsugXAM21X0GeLR5hb7GlqMUdypB5LzVOj39eM/y7nK0c+p3JoQHbSH5MzrRVcT/hWOdypgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6xAJoqXTjp7anwVoo3/HbsH7rYkryE3zap6wVl4dunk=;
- b=JARd55ThX0MlRJ3zElhhE47n4mQveG7AdXFK4V/DDKYNtYu9QOm5yHX2sSSZ3s5ROk0XcshuyqN7pdy+In+dnP/K+VNELSj3B5iOl102FmciDxxtl7PifFTFIupR7Kyj6axDtXEdVPSRtC5ca5vXiBFTvJEm8YLxi5K5kYG6P8afN/rTftYntpuE4JpwVc5FO2wCLaorfjj/n98M/ItNbPJofSQsI6p4QWK9w/bnBb46w1CRCX+dXLaMhRqkimDMhle5DAf1nk0fSkpin3lrkHyQwHCen7SY4SbbPIzEUTV5YagsLUTEiMn3FaQQBwv6aZ1deBAWX+wDleme5JaquQ==
-Received: from PS2PR02CA0056.apcprd02.prod.outlook.com (2603:1096:300:5a::20)
- by KL1PR0401MB6586.apcprd04.prod.outlook.com (2603:1096:820:b4::14) with
+ bh=jx3Aa6DzTj3YNGl86X0zVEea0XMkHp4V9VRMPEeSFBo=;
+ b=VbKmnDmNb+sX8v+fHUga6AYF938MFccvexhoMvojs0q/bPUXHlr4q5/LMkk5YP5m3LLu4pxz93g8a2lR6kr0sVH3GXlJTs23reBWKAOcZ/k5os6vr2cOa4RpyjgxUAsJyDj9S2IT3r+sr0WVgr8xFNFmT2+Qt9crQOWi/lEcHhb1g94/m7UTTlWpKzatOoudhxjw0n5dwMLLEH8ovULZE/rqcFX84kL1vNXQe0FyQcr5hEzDgINc1cqls6EaeTjMf2MriprMGzH2HJXSzqwjL1W2lAL6qHJZYcTLHP8M6l2gp2pI5lKhIYEhP5poI+ocrO/AO3WnDkq5RS9nz5pd1g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by TYZPR06MB4397.apcprd06.prod.outlook.com (2603:1096:400:73::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 01:50:05 +0000
-Received: from HK3PEPF0000021A.apcprd03.prod.outlook.com
- (2603:1096:300:5a:cafe::c4) by PS2PR02CA0056.outlook.office365.com
- (2603:1096:300:5a::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
- Transport; Thu, 9 Nov 2023 01:50:04 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
- smtp.mailfrom=Wiwynn.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=quarantine header.from=Wiwynn.com;
-Received-SPF: Fail (protection.outlook.com: domain of Wiwynn.com does not
- designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
- client-ip=211.20.1.79; helo=localhost.localdomain;
-Received: from localhost.localdomain (211.20.1.79) by
- HK3PEPF0000021A.mail.protection.outlook.com (10.167.8.36) with Microsoft SMTP
- Server id 15.20.6977.18 via Frontend Transport; Thu, 9 Nov 2023 01:50:04
- +0000
-From:   Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-To:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+ 2023 01:56:55 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Thu, 9 Nov 2023
+ 01:56:54 +0000
+Message-ID: <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+Date:   Thu, 9 Nov 2023 09:56:46 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH v4 2/2] hwmon: pmbus: Add ltc4286 driver
-Date:   Thu,  9 Nov 2023 09:49:46 +0800
-Message-Id: <20231109014948.2334465-3-Delphine_CC_Chiu@Wiwynn.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
-References: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
-MIME-Version: 1.0
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+From:   Huan Yang <link@vivo.com>
+In-Reply-To: <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SG2PR04CA0180.apcprd04.prod.outlook.com
+ (2603:1096:4:14::18) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021A:EE_|KL1PR0401MB6586:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: f45e3f51-0c5a-4515-f054-08dbe0c63195
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|TYZPR06MB4397:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2389812e-2a02-4aa9-fdca-08dbe0c7258c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0478kSZXyu6m6Bge5TEFTSsBFb3cOnSWooYHw1vno1+mIAPZykGleK/ET4OSAKvXAFw0N5WjDavWm6rhJ5Gbv55WD+z+pcr2rmtxHu5XJ7rDLGQCzIhHiHlCTyczwCrgD2sDDFfZUsMgeZW+NHpbmes/WLzX+j+HEIyj+AwRt7qfVUYD8lQlDctaoWdDhQpmMQGp+2zGUSh1OLtasZSHG0nEtFLUf6d1+B0qJSe/p/vtGlSc2y2GfpQOZHC6ydSwgqMhIwlTaxodZCPjcZkuGy0ImZ69tsLqVdE8Odv+q0/DPr5WkIfT3ZBoG5Ye+rPT9e+RFE0rR5dodgdDNcCh/PGGFizGB6e3yZCjTFLWx1c4fsUp5UmVJ6RUH222qO1w2je9JaVr52VZV4uqWw3cuU6/0vgDTyInzbsDJxGMoULXlc3X8/Hu1KoAoA0FrrsnF3MFBj3bAV6ayYb6NgmZrTZVpxmiY4UdCKGTwccRXcXs48DsbCiGxSQfJOcaPyKcI0fObnO4S9XysppGRVzVTV6N2wcbPGWojhAnjfR0xKBxh+OU0Yh2e15QOjAB87CiIUz3kYfZBC19YsM4a9wk9YR3+SoQYvpb8Dnglto49mOvpE5Ya2yUmdd1hUzctId7pY4sJAQy0q+ckElSJGi5A7zcXA2xSqpTnQ344FiZzqGD4W0b8+7mws874Zel+70wzAaxg7As093Y8gelHvJ9lQ==
-X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(39860400002)(396003)(346002)(376002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(82310400011)(46966006)(36840700001)(36860700001)(9316004)(30864003)(2906002)(966005)(5660300002)(41300700001)(316002)(36736006)(478600001)(70206006)(36756003)(54906003)(110136005)(8936002)(8676002)(4326008)(70586007)(47076005)(40480700001)(7049001)(86362001)(7416002)(1076003)(6486002)(356005)(81166007)(83380400001)(66574015)(336012)(82740400003)(6506007)(2616005)(956004)(6666004)(26005)(6512007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: wiwynn.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 01:50:04.0457
+X-Microsoft-Antispam-Message-Info: vCAH1YZK5D4e2+HQNlxxjeN9ZbBGlvcI0UdyyGeBUolbwZY+xVWPsmPDIL70xsu/AbU+O+itW5DKaHsORFZv1Ql9FksW1/QUmjgYtRv7Oj8aza1XJ5W3ImRDMFp3eK/zG2n2YdAWOyigYc9IOzl09WoympNxP1oWSlEkvqYwxJqS3xIIOSjfVqLKDlFIBaMWB4SQ6Lfpj6ZqcG/Dsq2j27mytYFc6fh1sz1m7cUW2Hzxmm/OX8l0MS942YO3lwvcTf8nvQ4U6dI/lpdBj8LtxuVj9eSfsQEEnHWXHv5OL8wSwHICricKvW7b7DXSoQ5m6Y8CkLiH+BlW5CGhZYI70uLr+rKbi8RV/VglfSC67sbTXg5n763XHsczPOpFppI8nJ5tqvul1J9R4IlLrVd5c6PDRHy8mkgcQVounFCJFwme0Kcu0bKcYBgzDbXzhoSQ4w+6u16jTKMp+ifLkTf6I7WGoIsP9tbGkIRwOQ40du4nWuA3NmbwYPM4tJJVZJc9BuNu8gRXlsaw2uQs+S0KR0qbrbn/Dx8/f8oG5Vhg0nvQr2MxYJqdJrt2s98m7afS/deCfllEE3B3+iD6kFS3cs5qPn0XP2RxiZ+Qn49/1mUqwMsWR/GZ4bS+MvkHEBvD/KGkoQNNx2s+NWfM+AiczpXNqfzW256S3Gf0Jej+oLwgLv4R+Y8P41Qnn2AMXVMwmkFoRdhCjKFVScZU8y6t+gxxWa1UTyeHByPModSMu+E=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39850400004)(366004)(346002)(136003)(376002)(230922051799003)(230273577357003)(230173577357003)(1800799009)(451199024)(64100799003)(186009)(41300700001)(478600001)(6512007)(7416002)(52116002)(6506007)(6486002)(2616005)(966005)(8936002)(83380400001)(54906003)(8676002)(5660300002)(2906002)(6916009)(316002)(66476007)(6666004)(66946007)(66556008)(38100700002)(4326008)(107886003)(31686004)(31696002)(86362001)(26005)(36756003)(38350700005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVJGSzN1eURkbW5XRzRiN3RqazVHSmorMUh2TVJqdTNpalhGUzhXeGJSTG9v?=
+ =?utf-8?B?RmM0R3pZTmdTVVFvVVpCYjh3MEQ0eXJHM0tKTkMzNUw3VXJBanI4T2hnVUtX?=
+ =?utf-8?B?RnVZdzNoNjFhSnZWVCtaVU03eFVVOXA1N0ovZ2tIaUI4dmV2K2NLbDNWS3BQ?=
+ =?utf-8?B?TmQ1UnFpckxKSDhVOUVUQVJKV216aHVNVHZhS0J5NXUzekF0STd1VTlxUzF5?=
+ =?utf-8?B?UTdEVTBkM014UFoxOXFFcDBmaXJIK3N3UHJJZDhJZytqa1VqTkR5TUtLNDhv?=
+ =?utf-8?B?alhYSkxQWnl0RitNWlI3aGN6YWR4SHkzSHNQYkFnZi9jdXdsUmg1U25WcG00?=
+ =?utf-8?B?cGJacU9mK1VBdkt5R291Q0pIZVRUYkU1Q3N3SlJTRWRQTC9jbFBQMDd3akVa?=
+ =?utf-8?B?bHVzVHBJVW4wUkRRd1h4OGJoNUpFZXZwSVVmdmovWTVRWFhwQklJNGdWbzIx?=
+ =?utf-8?B?WnVYZkQycFRzSHdpTmJLR090ei9UbGJjamljSkV3ZnA3SDhXeTJUa09xUWZv?=
+ =?utf-8?B?OHpTdEJub3JQUlZMdTdBY0UweEJkOU1nRFBITnh3MXN2cUYrZDBwRFQ2OFQ2?=
+ =?utf-8?B?NEdkMmhxOHRway82UkszZDA5RUhOd1RLcXY0c25PZTJ5NTAxN05hOHBYT003?=
+ =?utf-8?B?QW5tRUYwbWpMZ295THl2WW5VTTNYbUxpVHVRZlJJLzhpYmdGek5pbVRKZkVY?=
+ =?utf-8?B?S3owY0tSa0dBNEM2cGg4V1k5STk0WGFWUWZ0OWZaWVJUeGV4WC9mbnovc0JG?=
+ =?utf-8?B?bHd0WFc3MVhKVWE3clB5aE9YN0lZWDhCak13b1ZEV29ZNFlzZDhiMGVjT1lS?=
+ =?utf-8?B?emwrYkJMekRsWVAyTTlnc04xQU9YbHVpdFRsV3p2M1J4UjBPNEpmLzVaa2lI?=
+ =?utf-8?B?cG9OdHRCYjZRSjFCaEZaNVNSdVFUelZURmJuaGVxMWJNWTNneFpzekt1QURk?=
+ =?utf-8?B?RzVuT0pZY2J1M2ZrdHpyVlZKYmo0VnJ3dlhZV21DM2svelFQVFJLZ2p0V0Nr?=
+ =?utf-8?B?N3VqRjlMZHZwbW5aUllZZ201US9XM3IxU0JuSDJUZDZObG9JNUlTdDhSMmRs?=
+ =?utf-8?B?Mk1FY0t1YVQ0bGVQVTU2bnEvY0hCT2x6VGg1bHF4YVJoMEVhRzBlUFkxTDht?=
+ =?utf-8?B?WnExV0ZqWjBBNFBMV0hNOTlFZ3R2VlllOUgzMU5PeEhocGhuc3dRZ0pTSnpx?=
+ =?utf-8?B?ZGpRTElLYjdoUzlVYWQ4SEp3Tng0blRUUVBpbG1hZ1A1c2d5a1VjZW5tNm4v?=
+ =?utf-8?B?akFtUVhhdEVZOGxsZW43U0VUTHRpVWhIZW1uK0g2eHhSZmhyRk1TR1VUeTBw?=
+ =?utf-8?B?NzNuWndyM2pwTGRSYndpU3hoNUl0UlR6U1hnbTcvYTFGSVpBM1lpN1hQbjV4?=
+ =?utf-8?B?dlpmOFA1Sld6NCs0dzZWbUw0amJjNlVZWXBUQ3hGQ0RqWXZUUmsxNXF6NWky?=
+ =?utf-8?B?ZUo3bDI1WVIyaStVMlpIRlZlOTlva0RHV01kbGZjRUxhNW1IV2VWSjlZOTRU?=
+ =?utf-8?B?ZTYxOEYrZklIcURpK3lrM2UxQklJd3hSbVRYUjZ3UlZSK0sxMUs5ajY1dkVz?=
+ =?utf-8?B?d0FleHM1bXZvZkI5VWhTNHdYUlFoWWFqZ2JXTUVEUVpMMmJyRFRCM2laY2pk?=
+ =?utf-8?B?K3ZSUkNTYndHY3dhQ01sN0NiWWcwTWNQRWJ5NURsMldXV1I1WWN4dFhEUHBR?=
+ =?utf-8?B?WDcxakU1Zm9zNkZSUFJYRDcrQURmOXNFdWRqdDdrRGpGaXZ2MERUb1V6Ky80?=
+ =?utf-8?B?RHF5VnpLTTdFbkdzTFJvZlRDOS8yMzNCeEpxZmExZE13WSs0ZE8ybTdmTzQy?=
+ =?utf-8?B?NEE3NUJQK3p3YzRrdElkcEFMRXk1NkV3QnJubHU1K2dhWk01NDMyUDNhbXFs?=
+ =?utf-8?B?K0hWTmdiVWtKNldnTlNSUVdCTUY1c24xajdHUnNQMGM0OFBMaWtkai9XUzJ2?=
+ =?utf-8?B?WWJUV2pCaDVaQ2VYOG41WjRVNURPcjdhWGpCNFNWS2ZuOUdqYUlWSUxBTWo0?=
+ =?utf-8?B?dHRYZ01CeFNwTVl5OTdybDZCQVVmUSt1Qm9VL1ZGV2loTEJ0d01EMThmVTQ2?=
+ =?utf-8?B?dXRrNk5MTDFCN2FZL1lYNWNxSnMzc1hZWG9hMm5lVEFxeDZCLzU1TFhQMWNY?=
+ =?utf-8?Q?kodGeJR0whSFLNFLZMN8TahLB?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2389812e-2a02-4aa9-fdca-08dbe0c7258c
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 01:56:53.9545
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f45e3f51-0c5a-4515-f054-08dbe0c63195
-X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
-X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021A.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0401MB6586
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fihWbXPwgihx0Qx2jul7t/lYAG9DkXrVDPZ+n+gbzIsubv+z1Jsoxl5U+1faM2I9JHQCg7MXB1Yohu+WEeUyWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4397
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver to support ltc4286 chip
 
-Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+在 2023/11/8 22:06, Michal Hocko 写道:
+> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+> On Wed 08-11-23 14:58:11, Huan Yang wrote:
+>> In some cases, we need to selectively reclaim file pages or anonymous
+>> pages in an unbalanced manner.
+>>
+>> For example, when an application is pushed to the background and frozen,
+>> it may not be opened for a long time, and we can safely reclaim the
+>> application's anonymous pages, but we do not want to touch the file pages.
+> Could you explain why? And also why do you need to swap out in that
+> case?
+When an application is frozen, it usually means that we predict that it 
+will not be
+used for a long time. In order to proactively save some memory, our 
+strategy will
+choose to compress the application's private data into zram. And we will 
+also
+select some of the cold application data that we think is in zram and 
+swap it out.
 
-Changelog:
-  v4 - Add empty line before "config SENSORS_LTC4286" in Kconfig
-     - Add ltc4286 to Documentation/hwmon/index.rst
-     - Revise comment typo
-     - Use devm_kmemdup instead of memcpy
-     - Check MBR value before writting into
-  v3 - Use dev_err_probe() instead of dev_err()
-     - The VRANGE_SELECT bit only be written if it actually changed
-     - Avoid the info pointer being overwritten
-     - Check the MBR value range to avoid overflow
-     - Revise ltc4286.rst to corrcet description
-  v2 - Revise Linear Technologies LTC4286 to
-       Analog Devices LTC4286 in Kconfig
-     - Add more description for this driver in Kconfig
-     - Add some comments for MBR setting in ltc4286.c
-     - Add ltc4286.rst
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/ltc4286.rst |  95 +++++++++++++++++
- drivers/hwmon/pmbus/Kconfig     |  10 ++
- drivers/hwmon/pmbus/Makefile    |   1 +
- drivers/hwmon/pmbus/ltc4286.c   | 177 ++++++++++++++++++++++++++++++++
- 5 files changed, 284 insertions(+)
- create mode 100644 Documentation/hwmon/ltc4286.rst
- create mode 100644 drivers/hwmon/pmbus/ltc4286.c
+The above operations assume that anonymous pages are private to the 
+application.
+After the application is frozen, compressing these pages into zram can 
+save memory
+to some extent without worrying about frequent refaults.
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 72f4e6065bae..080827cc4c34 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -128,6 +128,7 @@ Hardware Monitoring Kernel Drivers
-    ltc4245
-    ltc4260
-    ltc4261
-+   ltc4286
-    max127
-    max15301
-    max16064
-diff --git a/Documentation/hwmon/ltc4286.rst b/Documentation/hwmon/ltc4286.rst
-new file mode 100644
-index 000000000000..2cd149676d86
---- /dev/null
-+++ b/Documentation/hwmon/ltc4286.rst
-@@ -0,0 +1,95 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Kernel driver ltc4286
-+=====================
-+
-+Supported chips:
-+
-+  * Analog Devices LTC4286
-+
-+    Prefix: 'ltc4286'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4286.pdf
-+
-+  * Analog Devices LTC4287
-+
-+    Prefix: 'ltc4287'
-+
-+    Addresses scanned: -
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4287.pdf
-+
-+Author: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for Analog Devices LTC4286
-+and LTC4287 Hot-Swap Controller and Digital Power Monitors.
-+
-+LTC4286 and LTC4287 are hot-swap controllers that allow a circuit board
-+to be removed from or inserted into a live backplane. They also feature
-+current and voltage readback via an integrated 12 bit analog-to-digital
-+converter (ADC), accessed using a PMBus interface.
-+
-+The driver is a client driver to the core PMBus driver. Please see
-+Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-+
-+
-+Usage Notes
-+-----------
-+
-+This driver does not auto-detect devices. You will have to instantiate the
-+devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-+details.
-+
-+The shunt value in micro-ohms can be set via device tree at compile-time. Please
-+refer to the Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml for bindings
-+if the device tree is used.
-+
-+
-+Platform data support
-+---------------------
-+
-+The driver supports standard PMBus driver platform data. Please see
-+Documentation/hwmon/pmbus.rst for details.
-+
-+
-+Sysfs entries
-+-------------
-+
-+The following attributes are supported. Limits are read-write, history reset
-+attributes are write-only, all other attributes are read-only.
-+
-+======================= =======================================================
-+in1_label		"vin"
-+in1_input		Measured voltage.
-+in1_alarm		Input voltage alarm.
-+in1_min 		Minimum input voltage.
-+in1_max 		Maximum input voltage.
-+
-+in2_label		"vout1"
-+in2_input		Measured voltage.
-+in2_alarm		Output voltage alarm.
-+in2_min 		Minimum output voltage.
-+in2_max 		Maximum output voltage.
-+
-+curr1_label		"iout1"
-+curr1_input		Measured current.
-+curr1_alarm		Output current alarm.
-+curr1_max		Maximum current.
-+
-+power1_label		"pin"
-+power1_input		Input power.
-+power1_alarm		Input power alarm.
-+power1_max		Maximum poewr.
-+
-+temp1_input		Chip temperature.
-+temp1_min		Minimum chip temperature.
-+temp1_max		Maximum chip temperature.
-+temp1_crit		Critical chip temperature.
-+temp1_alarm		Chip temperature alarm.
-+======================= =======================================================
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index b4e93bd5835e..2d4f972e5a65 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -227,6 +227,16 @@ config SENSORS_LTC3815
- 	  This driver can also be built as a module. If so, the module will
- 	  be called ltc3815.
- 
-+config SENSORS_LTC4286
-+	bool "Analog Devices LTC4286"
-+	help
-+	  LTC4286 is an integrated solution for hot swap applications that
-+	  allows a board to be safely inserted and removed from a live
-+	  backplane.
-+	  This chip could be used to monitor voltage, current, ...etc.
-+	  If you say yes here you get hardware monitoring support for Analog
-+	  Devices LTC4286.
-+
- config SENSORS_MAX15301
- 	tristate "Maxim MAX15301"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 84ee960a6c2d..94e28f6d6a61 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_SENSORS_LM25066)	+= lm25066.o
- obj-$(CONFIG_SENSORS_LT7182S)	+= lt7182s.o
- obj-$(CONFIG_SENSORS_LTC2978)	+= ltc2978.o
- obj-$(CONFIG_SENSORS_LTC3815)	+= ltc3815.o
-+obj-$(CONFIG_SENSORS_LTC4286)	+= ltc4286.o
- obj-$(CONFIG_SENSORS_MAX15301)	+= max15301.o
- obj-$(CONFIG_SENSORS_MAX16064)	+= max16064.o
- obj-$(CONFIG_SENSORS_MAX16601)	+= max16601.o
-diff --git a/drivers/hwmon/pmbus/ltc4286.c b/drivers/hwmon/pmbus/ltc4286.c
-new file mode 100644
-index 000000000000..e6690b38349a
---- /dev/null
-+++ b/drivers/hwmon/pmbus/ltc4286.c
-@@ -0,0 +1,177 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/pmbus.h>
-+#include "pmbus.h"
-+
-+/* LTC4286 register */
-+#define LTC4286_MFR_CONFIG1	0xF2
-+
-+/* LTC4286 configuration */
-+#define VRANGE_SELECT_BIT	BIT(1)
-+
-+#define LTC4286_MFR_ID_SIZE	3
-+#define VRANGE_25P6		0
-+
-+/*
-+ * Initialize the MBR as default settings which is referred to LTC4286 datasheet
-+ * (March 22, 2022 version) table 3 page 16
-+ */
-+static struct pmbus_driver_info ltc4286_info = {
-+	.pages = 1,
-+	.format[PSC_VOLTAGE_IN] = direct,
-+	.format[PSC_VOLTAGE_OUT] = direct,
-+	.format[PSC_CURRENT_OUT] = direct,
-+	.format[PSC_POWER] = direct,
-+	.format[PSC_TEMPERATURE] = direct,
-+	.m[PSC_VOLTAGE_IN] = 32,
-+	.b[PSC_VOLTAGE_IN] = 0,
-+	.R[PSC_VOLTAGE_IN] = 1,
-+	.m[PSC_VOLTAGE_OUT] = 32,
-+	.b[PSC_VOLTAGE_OUT] = 0,
-+	.R[PSC_VOLTAGE_OUT] = 1,
-+	.m[PSC_CURRENT_OUT] = 1024,
-+	.b[PSC_CURRENT_OUT] = 0,
-+	/*
-+	 * The rsense value used in MBR formula in LTC4286 datasheet should be ohm unit.
-+	 * However, the rsense value that user input is micro ohm.
-+	 * Thus, the MBR setting which involves rsense should be shifted by 6 digits.
-+	 */
-+	.R[PSC_CURRENT_OUT] = 3 - 6,
-+	.m[PSC_POWER] = 1,
-+	.b[PSC_POWER] = 0,
-+	/*
-+	 * The rsense value used in MBR formula in LTC4286 datasheet should be ohm unit.
-+	 * However, the rsense value that user input is micro ohm.
-+	 * Thus, the MBR setting which involves rsense should be shifted by 6 digits.
-+	 */
-+	.R[PSC_POWER] = 4 - 6,
-+	.m[PSC_TEMPERATURE] = 1,
-+	.b[PSC_TEMPERATURE] = 273,
-+	.R[PSC_TEMPERATURE] = 0,
-+	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT |
-+		   PMBUS_HAVE_PIN | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_VOUT |
-+		   PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_TEMP,
-+};
-+
-+static const struct i2c_device_id ltc4286_id[] = { { "ltc4286", 0 },
-+						   { "ltc4287", 1 },
-+						   {} };
-+MODULE_DEVICE_TABLE(i2c, ltc4286_id);
-+
-+static int ltc4286_probe(struct i2c_client *client)
-+{
-+	int ret;
-+	int temp_setting;
-+	const struct i2c_device_id *mid;
-+	u8 block_buffer[I2C_SMBUS_BLOCK_MAX + 1];
-+	struct pmbus_driver_info *info;
-+	u32 rsense;
-+
-+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, block_buffer);
-+	if (ret < 0) {
-+		return dev_err_probe(&client->dev, ret,
-+				     "Failed to read manufacturer id\n");
-+	}
-+
-+	/*
-+	 * Refer to ltc4286 datasheet page 20
-+	 * the manufacturer id is LTC
-+	 */
-+	if (ret != LTC4286_MFR_ID_SIZE ||
-+	    strncmp(block_buffer, "LTC", LTC4286_MFR_ID_SIZE)) {
-+		return dev_err_probe(&client->dev, ret,
-+				     "Manufacturer id mismatch\n");
-+	}
-+
-+	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, block_buffer);
-+	if (ret < 0) {
-+		return dev_err_probe(&client->dev, ret,
-+				     "Failed to read manufacturer model\n");
-+	}
-+
-+	for (mid = ltc4286_id; mid->name[0]; mid++) {
-+		if (!strncasecmp(mid->name, block_buffer, strlen(mid->name)))
-+			break;
-+	}
-+	if (!mid->name[0])
-+		return dev_err_probe(&client->dev, -ENODEV,
-+				     "Unsupported device\n");
-+
-+	ret = of_property_read_u32(client->dev.of_node,
-+				   "shunt-resistor-micro-ohms", &rsense);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (rsense == 0)
-+		return -EINVAL;
-+
-+	if (rsense > INT_MAX)
-+		return -ERANGE;
-+
-+	info = devm_kmemdup(&client->dev, &ltc4286_info, sizeof(*info),
-+			    GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	/* Default of VRANGE_SELECT = 1, 102.4V */
-+	if (device_property_read_bool(&client->dev, "adi,vrange-low-enable")) {
-+		/* Setup MFR1 CONFIG register bit 1 VRANGE_SELECT */
-+		ret = i2c_smbus_read_word_data(client, LTC4286_MFR_CONFIG1);
-+		if (ret < 0)
-+			return dev_err_probe(
-+				&client->dev, ret,
-+				"Failed to read manufacturer configuration one\n");
-+
-+		ret &= ~VRANGE_SELECT_BIT; /* VRANGE_SELECT = 0, 25.6V */
-+		ret = i2c_smbus_write_word_data(client, LTC4286_MFR_CONFIG1,
-+						ret);
-+		if (ret < 0)
-+			return dev_err_probe(&client->dev, ret,
-+					     "Failed to set vrange\n");
-+
-+		info->m[PSC_VOLTAGE_IN] = 128;
-+		info->m[PSC_VOLTAGE_OUT] = 128;
-+
-+		temp_setting = 4 * rsense;
-+		if (temp_setting > INT_MAX)
-+			return dev_err_probe(&client->dev, -ERANGE,
-+					     "Power coefficient overflow\n");
-+		info->m[PSC_POWER] = temp_setting;
-+	} else {
-+		info->m[PSC_POWER] = rsense;
-+	}
-+
-+	temp_setting = 1024 * rsense;
-+	if (temp_setting > INT_MAX)
-+		return dev_err_probe(&client->dev, -ERANGE,
-+				     "Current coefficient overflow\n");
-+	info->m[PSC_CURRENT_OUT] = temp_setting;
-+
-+	return pmbus_do_probe(client, info);
-+}
-+
-+static const struct of_device_id ltc4286_of_match[] = {
-+	{ .compatible = "lltc,ltc4286" },
-+	{ .compatible = "lltc,ltc4287" },
-+	{}
-+};
-+
-+static struct i2c_driver ltc4286_driver = {
-+	.driver = {
-+		.name = "ltc4286",
-+		.of_match_table = ltc4286_of_match,
-+	},
-+	.probe = ltc4286_probe,
-+	.id_table = ltc4286_id,
-+};
-+
-+module_i2c_driver(ltc4286_driver);
-+
-+MODULE_AUTHOR("Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>");
-+MODULE_DESCRIPTION("PMBUS driver for LTC4286 and compatibles");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+And the cost of refaults on zram is lower than that of IO.
 
+
+>
+>> This patchset extends the proactive reclaim interface to achieve
+>> unbalanced reclamation. Users can control the reclamation tendency by
+>> inputting swappiness under the original interface. Specifically, users
+>> can input special values to extremely reclaim specific pages.
+> Other have already touched on this in other replies but v2 doesn't have
+> a per-memcg swappiness
+>
+>> Example:
+>>        echo "1G" 200 > memory.reclaim (only reclaim anon)
+>>          echo "1G" 0  > memory.reclaim (only reclaim file)
+>>          echo "1G" 1  > memory.reclaim (only reclaim file)
+>>
+>> Note that when performing unbalanced reclamation, the cgroup swappiness
+>> will be temporarily adjusted dynamically to the input value. Therefore,
+>> if the cgroup swappiness is further modified during runtime, there may
+>> be some errors.
+> In general this is a bad semantic. The operation shouldn't have side
+> effect that are potentially visible for another operation.
+So, maybe pass swappiness into sc and keep a single reclamation ensure that
+swappiness is not changed?
+Or, it's a bad idea that use swappiness to control unbalance reclaim.
+> --
+> Michal Hocko
+> SUSE Labs
