@@ -2,97 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0747E6E7D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8517E6E48
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343797AbjKIQSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        id S1343808AbjKIQIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343567AbjKIQSf (ORCPT
+        with ESMTP id S234424AbjKIQIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:18:35 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235D1358C
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:18:33 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32fa7d15f4eso658154f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 08:18:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699546711; x=1700151511; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hQTXl6Zu6Uy1kHuaX8me13xEm3/yUTPeeI94ANaTAbI=;
-        b=lBfb5K8R2lrCeSk/gEWICZEFcyaZsZymvPamcg0BdxTHImcGbUW76znPypNMCW7iaT
-         w67ySEG29zeOpZGTEPjA++1LHACPwLBGDxkIHBTCrbnn3Sd0+Iyyrb5Fg1GxhmJuWwnj
-         DydeaGnUBFf2fy5GPnxzTD3BVBLsD1LH4Ie3Fz9+qQsrx/j9FrT+M4f/q0/nvKMrqSwM
-         dv7k12Jv1CIYbZoAYjlVqlIW4VfKxs/rtwaYWGPhNJieopTv5K96bFV/ugoB2bf/E1GI
-         ueoBCYutD1NLof9BjiPmCuh1TAjP3l4cW2WRbERLV5ypm+qSwVq0AV3zEX0Ek893d8kW
-         VaUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699546711; x=1700151511;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hQTXl6Zu6Uy1kHuaX8me13xEm3/yUTPeeI94ANaTAbI=;
-        b=cjQjtxur9pwrlwpDvNWFYuJqtskKnRnySLEFydwfFKtte+IEPNu+zUwG8E5ePlx/NL
-         gU0CIs1vEJPldjiNpO1ulUx+zAcwvrMEmgk/AFnqH+qSXViCmECSLfBA3f8gdvxTTden
-         IFgazIZrGH9vLUBSpT5WUhHDm5hbBnWXMV6cCJw8N5uLxVdKhVhiD6ui3oycb3pO3OZt
-         I0f1haS1R9f46KLCI0OXn9mDsqP4SxMu02Np2owktisaK8Zyyumm/1vRoCwIYt6JMEip
-         aTRfhpEH/MNhbtjmRhg09pzZPDgteODlJ3YONLVHUuuVmvIlBd+5BDn7cwb/BzMAcMQN
-         AtCw==
-X-Gm-Message-State: AOJu0Yza09UF8hattyz7KJM3RX4kC6JkozgqqoBLXa8pzVQdBRPwktTc
-        XDBge1ZNReBh40Oxk9ymZbf/cXXzo/8=
-X-Google-Smtp-Source: AGHT+IHexaKgLQ/GGGhfb5Y28I8HrRRB5wZXhQW61rrmynZ6/h89ybsaD3BBKLw89E3WOB2OvdQDtg==
-X-Received: by 2002:adf:e10b:0:b0:317:393f:8633 with SMTP id t11-20020adfe10b000000b00317393f8633mr4298453wrz.58.1699546711199;
-        Thu, 09 Nov 2023 08:18:31 -0800 (PST)
-Received: from localhost.localdomain ([212.187.182.165])
-        by smtp.gmail.com with ESMTPSA id h6-20020adfe986000000b003200c918c81sm7593363wrm.112.2023.11.09.08.18.30
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 09 Nov 2023 08:18:30 -0800 (PST)
-From:   Levi Yun <ppbuk5246@gmail.com>
-To:     Liam.Howlett@oracle.com
-Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Levi Yun <ppbuk5246@gmail.com>
-Subject: [PATCH] maple_tree: change return type of mas_split_final_node as void.
-Date:   Thu,  9 Nov 2023 16:08:22 +0000
-Message-ID: <20231109160821.16248-2-ppbuk5246@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 9 Nov 2023 11:08:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB2A324A;
+        Thu,  9 Nov 2023 08:08:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B540BC433BB;
+        Thu,  9 Nov 2023 16:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699546114;
+        bh=9jv2+syvODBbcmGY4ew2QNcGO1aZvABUK26yZSJvayg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=an4/usvbiRel89q01Pnvd+TES/B31/7WCTra21aJC2vR167RVrBTD0T4l0Np+n4v2
+         EbNHWbE4mRlTd5664QNTBac6vz4tQNjuUPAC3mzSXSGjwmxfFbC0EtztrMUvvPWYxz
+         sWh1REN/5Ta35snZBzzhuRnh6NPnaQUCGtFqSS6jbo4+qkTAM968xLrAL3uV5ktTpn
+         y3QxjKJ6GsVIlGinqAPCFIpiDBiVj/TNhytdxD8mN4Z0u36nPI2e4kHizhl+ga9hTX
+         YcrNLvLA/u2tD3L89PolcPCLJ71qSrC12ls7rhoKQqiMWBmhKAiZSNIRpl39WLT7qF
+         OYkbTreIzsQaA==
+Date:   Thu, 9 Nov 2023 08:08:31 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
+        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu
+Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
+ from ctl_table array
+Message-ID: <20231109160831.GA1933@sol.localdomain>
+References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
+ <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
+ <CGME20231108034239eucas1p2e5dacae548e47694184df217ee168da9@eucas1p2.samsung.com>
+ <20231108034231.GB2482@sol.localdomain>
+ <20231109160040.bahkcsp44t5xu7qo@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109160040.bahkcsp44t5xu7qo@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mas_split_final_node always returns true and there is no usage
-for checking return value.
+On Thu, Nov 09, 2023 at 05:00:40PM +0100, Joel Granados wrote:
+> > >  static void __init fsverity_init_sysctl(void)
+> > >  {
+> > > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> > >  	fsverity_sysctl_header = register_sysctl("fs/verity",
+> > >  						 fsverity_sysctl_table);
+> > > +#else
+> > > +	fsverity_sysctl_header = register_sysctl_sz("fs/verity",
+> > > +						 fsverity_sysctl_table, 0);
+> > > +#endif
+> > >  	if (!fsverity_sysctl_header)
+> > >  		panic("fsverity sysctl registration failed");
+> > 
+> > This does not make sense, and it causes a build error when CONFIG_FS_VERITY=y
+> > and CONFIG_FS_VERITY_BUILTIN_SIGNATURES=n.
+> > 
+> > I think all you need to do is delete the sentinel element, the same as
+> > everywhere else.  I just tested it, and it works fine.
+> I found the reason why I added the CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> here: it is related to
+> https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
+> where the directory is registered with an element only if
+> CONFIG_FS_VERITY_BUILTIN_SIGNATURES is defined. I had forgotten, but I
+> even asked for a clarification on the patch :).
+> 
+> I see that that patch made it to v6.6. So the solution is not to remove
+> the CONFIG_FS_VERITY_BUILTIN_SIGNATURES, but for me to rebase on top of
+> a more up to date base.
+> 
+> @Eric: Please get back to me if the patch in
+> https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
+> is no longer relevant.
+> 
+> Best.
 
-change return type as void.
+Yes, that patch was merged in 6.6.  I don't think it really matters here though,
+other than the fact that it moved the code to a different file.  I believe all
+you need to do is remove the sentinel element, the same as anywhere else:
 
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
----
- lib/maple_tree.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index bb24d84a4922..9389a631483a 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -3167,7 +3167,7 @@ static inline void mas_destroy_rebalance(struct ma_state *mas, unsigned char end
-  * @mas: The maple state
-  * @height: The height of the tree in case it's a new root.
-  */
--static inline bool mas_split_final_node(struct maple_subtree_state *mast,
-+static inline void mas_split_final_node(struct maple_subtree_state *mast,
- 					struct ma_state *mas, int height)
- {
- 	struct maple_enode *ancestor;
-@@ -3191,7 +3191,6 @@ static inline bool mas_split_final_node(struct maple_subtree_state *mast,
- 	mast->l->node = ancestor;
- 	mab_mas_cp(mast->bn, 0, mt_slots[mast->bn->type] - 1, mast->l, true);
- 	mas->offset = mast->bn->b_end - 1;
--	return true;
- }
-
- /*
---
-2.39.2
+diff --git a/fs/verity/init.c b/fs/verity/init.c
+index a29f062f6047b..b64a76b9ac362 100644
+--- a/fs/verity/init.c
++++ b/fs/verity/init.c
+@@ -24,7 +24,6 @@ static struct ctl_table fsverity_sysctl_table[] = {
+ 		.extra2         = SYSCTL_ONE,
+ 	},
+ #endif
+-	{ }
+ };
+ 
+ static void __init fsverity_init_sysctl(void)
