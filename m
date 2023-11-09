@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 368FB7E61C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEDB7E61CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjKIBVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 20:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
+        id S231208AbjKIB2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbjKIBVi (ORCPT
+        with ESMTP id S229697AbjKIB2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 20:21:38 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB62B171B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:21:35 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5bd85b1939aso251009a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:21:35 -0800 (PST)
+        Wed, 8 Nov 2023 20:28:22 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA7E258C
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:27:55 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5a9bc2ec556so256085a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:27:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699492895; x=1700097695; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XSfmB+u51JBmKC1Wlkf6iEFeaQtZOycHV3eXMwvCsVM=;
-        b=Ul5fY/zjB+HoZAeE6OpMVcElPHAZl2OKe2DMwBhV3svjD8NwgXy/Jw0o/jTs701EA5
-         UyzZbbtXfrgj6XgW/naSQM4crFUnE8F5EH3xNyzjqG0kmtqQMj/pmSOaxfcubz+xfs2j
-         /Mh98UGCZRYxppBX5F+3wmV8+SvCFmRwJ6m4WPBFGuSMIf7FW56uco4hw3SAKML6tpVN
-         NfbgUZOCGZ/Bb439EIgC/Iu/1z4mTn1sUyysp0mrOjFoSU1GI+XRb3lCgTFXAn0J7SA9
-         Qsz01BZC57JuzOQZq5sC5MZnBHwKNlUQl9OQAwZ4zquj7NNt8X3cS3s0qak6tH7/8zGh
-         JUPQ==
+        d=bytedance.com; s=google; t=1699493274; x=1700098074; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=baE0QkFBkm69A7/KmX1olgrrF0ZpXIH/VwZM7lqHCgE=;
+        b=ZCrQUONZsHpgXvLGz/mqgU7RcGxD62OqPfkTNYc0SgirTf8jFhLFNNGPQnGqbdlkLa
+         p5Vhsvo6Rs/n2TQl3LDLyOES7IRJKvWmnQM00MVIFvIcVNjbiW9rIxWZLc/LqJynCaVS
+         //JFNOeOUh8fJ5Pja+mA+NZUZSd2NJhi8I46HMzjrewGnuktkoplO3/zZvotF67OxMcS
+         HpPjQmluKQ0qkp7UdlhX36B+FaV3vVwN4YFVJbHn9oGcnITFD/2yLHyoy6Hp0q4PfCyg
+         JKamdfjvgDSShhhKJ+TH/Gbbglyuj7xbFmWqdBY0f/PsOmAO7EMaAARaCsTUEb/O3oXU
+         uXqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699492895; x=1700097695;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XSfmB+u51JBmKC1Wlkf6iEFeaQtZOycHV3eXMwvCsVM=;
-        b=pSBjO06Seq7w9aTrj2Pdae7Vwegk0pfkYS3ITi49dRUJYgTz5bAMi5nBvFq6GO1uSQ
-         FCFsfTJcE/kERH0F1tz6jjgJJoNIK2a2DjBLAugSz4DdX76thv5BS/LPq06XytqzFabo
-         jVEQr9s86VwoiNxFfTkQJgaVgpp/BUD7GMwIrGV3jBAi0q2X15CjXQyPwt4VG2eIOsRs
-         RDRO3VgoHaoyu+DCHlCNlt/OsuxuXtQl6dyaDPs876gnVwKhqCo5bH+OuFhukQajN5Rp
-         GxVf/jXBNJ1qjfHxsOz7K2+Ngr+g4SSF9my6EbgODzULmQVxgxEtpxklCSd/QTh8G+zd
-         KsrQ==
-X-Gm-Message-State: AOJu0Ywzt6cTxO+a9ImYsiQW+QsnxuXWafdl6FXKCPb9DdGZMH2SH7tM
-        4xu4ofe58s3AsuxaoXeVZhUYcQ==
-X-Google-Smtp-Source: AGHT+IGXzpJhbmftzemN7E3TZ5XSqtbPdkGaoy05sJ4+xoWY9upXDzaAB6RHGM12rXJkXT8e/q3V2A==
-X-Received: by 2002:a05:6a20:441a:b0:16b:f3b1:c040 with SMTP id ce26-20020a056a20441a00b0016bf3b1c040mr4606549pzb.38.1699492895241;
-        Wed, 08 Nov 2023 17:21:35 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id o24-20020a17090aac1800b002800d17a21csm132815pjq.15.2023.11.08.17.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 17:21:34 -0800 (PST)
-Date:   Wed, 08 Nov 2023 17:21:34 -0800 (PST)
-X-Google-Original-Date: Wed, 08 Nov 2023 17:21:32 PST (-0800)
-Subject:     Re: drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s' directive argument is null
-In-Reply-To: <ZUwYejD6z1Kxa8ky@sunil-laptop>
-CC:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, ajones@ventanamicro.com,
-        Conor Dooley <conor.dooley@microchip.com>
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     sunilvl@ventanamicro.com
-Message-ID: <mhng-9c8eb5de-4aab-467a-b09f-ff6707b74738@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1699493274; x=1700098074;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=baE0QkFBkm69A7/KmX1olgrrF0ZpXIH/VwZM7lqHCgE=;
+        b=TNY7vlt1Z2EgQu0jsh7lta+tvTuBveV8zvvYsqYVGFjX+mwmYlbi94RRpNkjkNDv8+
+         mhsUVbcu7+a+UosMQbXdYHLAvTi+IqvdI6ZWuywSwbvJy+pJ8m1Z06wKNEpiVbwenuW+
+         wyUSjY/6CjlAhJFwViPoKU2jXPh06fdpFbxfok9ryNkpqNNwYtpxilcp2vNjU5ASqJzU
+         33dw/44gjI9cz7IqeLQFkH9XQartX+UTYrEdp67cXPeEhyPfAzsmnsIMul1OuWNejscO
+         q9yCow8gxWJTbooYQ8PYv0KTt9No26ww7Qx6zsh2hRfPUWdjLT7DQliIeQ1AOrmAIgRU
+         Z+HQ==
+X-Gm-Message-State: AOJu0YxjFweY5N0v4YzzdUVQ/Pl1kQO9cDjUoyxTyCjFjCG0WTMu6xUz
+        suiHtxRvFbRkVq7D6uSW8+Stnw==
+X-Google-Smtp-Source: AGHT+IEhHoFq6CLb7HH93zopsT2C4lI5MytKERcJeOPmAxoF8kXhwdjHE1xz8CmSnC38AVszTgVYjg==
+X-Received: by 2002:a05:6a20:728a:b0:14c:a53c:498c with SMTP id o10-20020a056a20728a00b0014ca53c498cmr3942526pzk.10.1699493274506;
+        Wed, 08 Nov 2023 17:27:54 -0800 (PST)
+Received: from ?IPV6:2409:8a28:e60:6e40:6:afb5:b160:8513? ([2409:8a28:e60:6e40:6:afb5:b160:8513])
+        by smtp.gmail.com with ESMTPSA id n11-20020a170902e54b00b001cc3f9b70e9sm2288783plf.220.2023.11.08.17.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 17:27:53 -0800 (PST)
+Message-ID: <7ed9f6f9-d309-4d30-9b3b-c465cfa48a52@bytedance.com>
+Date:   Thu, 9 Nov 2023 09:27:45 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [block?] WARNING in blk_mq_start_request
+To:     syzbot <syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, bvanassche@acm.org, chaitanyak@nvidia.com,
+        eadavis@qq.com, hch@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        syzkaller-bugs@googlegroups.com
+References: <00000000000077ca930609aa9f86@google.com>
+Content-Language: en-US
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <00000000000077ca930609aa9f86@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Nov 2023 15:23:38 PST (-0800), sunilvl@ventanamicro.com wrote:
-> On Sat, Nov 04, 2023 at 06:24:22AM +0800, kernel test robot wrote:
->> Hi Sunil,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
->> commit: a91a9ffbd3a55a0ae1bb75e2b6e85b2a03f64e8f RISC-V: Add support to build the ACPI core
->> date:   5 months ago
->> config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20231104/202311040602.sCjU3UXr-lkp@intel.com/config)
->> compiler: riscv64-linux-gcc (GCC) 13.2.0
->> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040602.sCjU3UXr-lkp@intel.com/reproduce)
->>
->> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: https://lore.kernel.org/oe-kbuild-all/202311040602.sCjU3UXr-lkp@intel.com/
->>
->> All warnings (new ones prefixed by >>):
->>
->>    In file included from drivers/net/wireless/intel/iwlwifi/fw/acpi.c:9:
->>    drivers/net/wireless/intel/iwlwifi/fw/acpi.c: In function 'iwl_acpi_is_ppag_approved':
->> >> drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25: warning: '%s' directive argument is null [-Wformat-overflow=]
->>     1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
->>          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>    drivers/net/wireless/intel/iwlwifi/iwl-debug.h:91:56: note: in definition of macro '__IWL_DEBUG_DEV'
->>       91 |                 __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
->>          |                                                        ^~~
->>    drivers/net/wireless/intel/iwlwifi/iwl-debug.h:209:41: note: in expansion of macro 'IWL_DEBUG'
->>      209 | #define IWL_DEBUG_RADIO(p, f, a...)     IWL_DEBUG(p, IWL_DL_RADIO, f, ## a)
->>          |                                         ^~~~~~~~~
->>    drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1189:17: note: in expansion of macro 'IWL_DEBUG_RADIO'
->>     1189 |                 IWL_DEBUG_RADIO(fwrt,
->>          |                 ^~~~~~~~~~~~~~~
->>    drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:41: note: format string is defined here
->>     1190 |                         "System vendor '%s' is not in the approved list, disabling PPAG.\n",
->>          |                                         ^~
->>
->>
->> vim +1190 drivers/net/wireless/intel/iwlwifi/fw/acpi.c
->>
->> e8e10a37c51c08 Matt Chen 2022-03-04  1187
->> e8e10a37c51c08 Matt Chen 2022-03-04  1188  	if (!dmi_check_system(dmi_ppag_approved_list)) {
->> e8e10a37c51c08 Matt Chen 2022-03-04  1189  		IWL_DEBUG_RADIO(fwrt,
->> e8e10a37c51c08 Matt Chen 2022-03-04 @1190  			"System vendor '%s' is not in the approved list, disabling PPAG.\n",
->>
-> Hi,
->
-> This should be fixed once SMBIOS is enabled in RISC-V. So, can this
-> warning be ignored until SMBIOS support is merged for RISC-V?
+On 2023/11/9 05:18, syzbot wrote:
+> syzbot has bisected this issue to:
+> 
+> commit d78bfa1346ab1fe04d20aa45a0678d1fc866f37c
+> Author: Chengming Zhou <zhouchengming@bytedance.com>
+> Date:   Wed Sep 13 15:16:16 2023 +0000
+> 
+>     block/null_blk: add queue_rqs() support
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106414a8e80000
+> start commit:   13d88ac54ddd Merge tag 'vfs-6.7.fsid' of git://git.kernel...
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=126414a8e80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=146414a8e80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=fcc47ba2476570cbbeb0
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1465bb08e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e7881f680000
+> 
+> Reported-by: syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
+> Fixes: d78bfa1346ab ("block/null_blk: add queue_rqs() support")
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Maybe we should just have something like this?
+CONFIG_BLK_DEV_NULL_BLK_FAULT_INJECTION is enabled in the kernel config,
+so null_queue_rq() will return BLK_STS_RESOURCE or BLK_STS_DEV_RESOURCE
+for some requests, which have been marked as IN_FLIGHT status.
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/Kconfig b/drivers/net/wireless/intel/iwlwifi/Kconfig
-index 20971304fdef..cbcd1dcced4d 100644
---- a/drivers/net/wireless/intel/iwlwifi/Kconfig
-+++ b/drivers/net/wireless/intel/iwlwifi/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config IWLWIFI
- 	tristate "Intel Wireless WiFi Next Gen AGN - Wireless-N/Advanced-N/Ultimate-N (iwlwifi) "
--	depends on PCI && HAS_IOMEM && CFG80211
-+	depends on PCI && HAS_IOMEM && CFG80211 && DMI
- 	depends on IWLMEI || !IWLMEI
- 	select FW_LOADER
- 	help
+Then null_queue_rqs() put these requests in the rqlist and return back,
+blk-mq will try to queue them individually once again, caused the warning
+"WARN_ON_ONCE(blk_mq_rq_state(rq) != MQ_RQ_IDLE)" in blk_mq_start_request().
 
->
-> Thanks,
-> Sunil
->> :::::: The code at line 1190 was first introduced by commit
->> :::::: e8e10a37c51c08b99d272b2e1b3ef70fcd38f9e8 iwlwifi: acpi: move ppag code from mvm to fw/acpi
->>
->> :::::: TO: Matt Chen <matt.chen@intel.com>
->> :::::: CC: Luca Coelho <luciano.coelho@intel.com>
->>
->> --
->> 0-DAY CI Kernel Test Service
->> https://github.com/intel/lkp-tests/wiki
+So handling of return value of null_queue_rq() in null_queue_rqs() is wrong,
+maybe we should __blk_mq_requeue_request() for these requests, before
+adding them in the rqlist?
+
+Thanks!
