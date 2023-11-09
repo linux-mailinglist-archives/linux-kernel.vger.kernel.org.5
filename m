@@ -2,150 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93B37E6722
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D790D7E6729
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbjKIJwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
+        id S231518AbjKIJxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:53:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbjKIJwT (ORCPT
+        with ESMTP id S229574AbjKIJxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:52:19 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1C92726;
-        Thu,  9 Nov 2023 01:52:16 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9d267605ceeso105169466b.2;
-        Thu, 09 Nov 2023 01:52:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699523535; x=1700128335; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qyS8DtOu76hKJM8U9iOb6KlcCppdmmmIn9mic1VECzg=;
-        b=GGft0JbM5rxOQDBSq7O+NJlY5UlZRV8bGj8llBLvfuz8DxoGAGBqWlS2/07MSobryg
-         wB7B/OHsx7sZtd45CP0CQ0BhZlqPEoOcCwxSTSEN1B8mLG6JXSWuklvFXQp5AAxPdQj5
-         RQYlfQcoq9VYRDOaIehdqTTP14ZCIeWMrDAC4GoKBWtKB0KVMoepQgn5e+YjZJY+YQWQ
-         /Hjr8sz7kYc/+EfLMcwKhq+x+eVKkBYhcO5Q++w0qWEcg0uHReu8qteRfAe2ouEXWYBG
-         5bfrMzKJHQ61GQHKT5tmEu5jt6+V4vDHBN9rJdKjbWZDmzNwKVW1AN6/yKn8Z5Vyu5Ro
-         MDfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699523535; x=1700128335;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qyS8DtOu76hKJM8U9iOb6KlcCppdmmmIn9mic1VECzg=;
-        b=ZI53jy8d0zJNF4FaTSElvwqXCxO3UjvKkzyTHmnpKcV93Ffa+ZqDeDkjPCdkQNhPtH
-         d6UtK3wvvWwQEeAKmswXITnkxORWYXodzF82b6P9dTZp6p4BrG6ODMwj+suPIybmayEU
-         lgcubowJuD8tf5RKSu4rfOmyTWT3pdRS4QZJsYHztxD1clyMGMi2NbcRgUastToxW+CX
-         UgmT/ff3r+208uYfoTx7S6Dab6t3XAdwskUIh1Ze9eXKN6QcwhdYIMfHD24cnRZ9Wl77
-         jnkKkelhmkRLEfHy96YkY3GqrBLKnR62Zu39uiFurBrij3ntKacLG9nBI3RquJYP+DpR
-         cJwQ==
-X-Gm-Message-State: AOJu0YyyUcSfZukgT6tuKoyu6XgDC0GFaV8rHtbrbHcvn8T7jU6MnYq6
-        56dpSqqFp18OdF/MvW2A5Wl2noyNLKLsjQ==
-X-Google-Smtp-Source: AGHT+IFXieEJ7rWnHwFIcuQX3LAG2VmKFBAL+uQEuCkz2H/rM2eTQk6v6KvWDaR/FcxFiepDS2Liqw==
-X-Received: by 2002:a17:906:478b:b0:9c7:5667:5648 with SMTP id cw11-20020a170906478b00b009c756675648mr3455100ejc.51.1699523535338;
-        Thu, 09 Nov 2023 01:52:15 -0800 (PST)
-Received: from [192.168.100.74] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id ha12-20020a170906a88c00b0099d804da2e9sm2307418ejb.225.2023.11.09.01.52.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 01:52:14 -0800 (PST)
-Message-ID: <1a7adaca-7971-4739-8a0b-04429c08f683@gmail.com>
-Date:   Thu, 9 Nov 2023 10:52:13 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] hwmon: Add support for Amphenol ChipCap 2
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
+        Thu, 9 Nov 2023 04:53:35 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DC02D4F;
+        Thu,  9 Nov 2023 01:53:32 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C9BC821981;
+        Thu,  9 Nov 2023 09:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699523610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uAxi1znqk3sGJCSNyuUjTVir9QcizsjWhu13JPKmk1Q=;
+        b=Chxg8NzcVn76MnEz5kl7JNVtqSUwVkxnuEveTXfGaXv1vBRKOJIt3ndyinjPp1TMC4cCO/
+        VBnyQ1BQfvQIPsL786bdXhDjkLeXb1F7PmvEoKx1u8oxACTPGmOSTaJPXDrXbwc9ISbWdb
+        WsSLyYUqVJxEHlyJPUWrrnx6Rw6WJEM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B85F5138E5;
+        Thu,  9 Nov 2023 09:53:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 87f9LBqsTGWJYQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 09 Nov 2023 09:53:30 +0000
+Date:   Thu, 9 Nov 2023 10:53:30 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v1-0-087e21d4b1ed@gmail.com>
- <20231020-topic-chipcap2-v1-3-087e21d4b1ed@gmail.com>
- <e58cdedb-1825-4713-9d3f-5239bb182230@linaro.org>
- <285ec1d8-d277-403c-961f-3de523fc799f@gmail.com>
- <a5b63eb4-4168-425e-a235-15cc7a6f2df3@linaro.org>
- <f1c6efd3-fad1-453a-b922-41485495385b@gmail.com>
- <037f44d9-7240-4daf-9fe1-ac89fae9499c@linaro.org>
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <037f44d9-7240-4daf-9fe1-ac89fae9499c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+Message-ID: <ZUysGhwqo_XZSV-M@tiehlicka>
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+ <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.11.23 10:35, Krzysztof Kozlowski wrote:
-> On 09/11/2023 09:59, Javier Carrasco wrote:
->>
->>
->> On 09.11.23 09:40, Krzysztof Kozlowski wrote:
->>> On 08/11/2023 17:35, Javier Carrasco wrote:
->>>>>> +
->>>>>> +	data->regulator = devm_regulator_get_optional(dev, "vdd");
->>>>>> +	if (!IS_ERR(data->regulator)) {
->>>>>> +		ret = cc2_retrive_alarm_config(data);
->>>>>> +		if (ret)
->>>>>> +			goto cleanup;
->>>>>> +	} else {
->>>>>> +		/* No access to EEPROM without regulator: no alarm control */
->>>>>
->>>>> Test your code with deferred probe. Are you sure you handle it
->>>>> correctly? To me, it looks like you handle deferred probe the same as
->>>>> any error.
->>>>>
->>>> The -EPROBE_DEFER is propagated to the probe function and it is the
->>>> returned value. I clarified the error path in v2 so no error messages
->>>
->>> Really?
->>>
->>> I see:
->>> if (!IS_ERR(data->regulator)) {
->>> 	// so you do not go here
->>> } else {
->>> 	goto dev_register;
->>> }
->>> dev_register is not error path. So how do you return EPROBE_DEFER?
->>>
->>> Which line of code does it?
->>>
->> EPROBE_DEFER is returned if the command window was missed, which is
+On Thu 09-11-23 09:56:46, Huan Yang wrote:
 > 
-> How "command window was missed" is related to the place I commented?
-> 
-it is right below the comment you added and hence the misunderstanding.
-But focusing on the line where your comment is, there is no probe
-deferring in that case. This is why I asked if you were talking about
-devm_regulator_get_optional() failing, which is not covered by the
-deferring mechanism in the current form.
+> 在 2023/11/8 22:06, Michal Hocko 写道:
+> > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > On Wed 08-11-23 14:58:11, Huan Yang wrote:
+> > > In some cases, we need to selectively reclaim file pages or anonymous
+> > > pages in an unbalanced manner.
+> > > 
+> > > For example, when an application is pushed to the background and frozen,
+> > > it may not be opened for a long time, and we can safely reclaim the
+> > > application's anonymous pages, but we do not want to touch the file pages.
+> > Could you explain why? And also why do you need to swap out in that
+> > case?
+>
+> When an application is frozen, it usually means that we predict that
+> it will not be used for a long time. In order to proactively save some
+> memory, our strategy will choose to compress the application's private
+> data into zram. And we will also select some of the cold application
+> data that we think is in zram and swap it out.
+>
+> The above operations assume that anonymous pages are private to the
+> application.  After the application is frozen, compressing these pages
+> into zram can save memory to some extent without worrying about
+> frequent refaults.
 
-I have never experienced the case where the regulator was still not
-available, but I suppose there is no reason why that should never happen.
-The regulator is not mandatory and there is no reason to retry if it is
-not defined. But in case it is defined and not available, the deferring
-would make sense. I could consider that case as well.
->> checked in cc2_retrieve_alarm_config() (there is a typo I just corrected
->> -> cc2_retrive_alarm_config() in the current version). It could then
->> happen where you added a comment, but not because
->> devm_regulator_get_optional() failed.
->>
->> Are you expecting a probe deferring if devm_regulator_get_optional()
->> fails as well? Like if the regulator is still not ready when the
->> function is called.
+Why don't you rely on the default reclaim heuristics? In other words do
+you have any numbers showing that a selective reclaim results in a much
+better behavior? How do you evaluate that?
+
 > 
-> We talk only about this place. Not others.
+> And the cost of refaults on zram is lower than that of IO.
 > 
 > 
-> Best regards,
-> Krzysztof
-> 
-Best regards,
-Javier Carrasco
+> > 
+> > > This patchset extends the proactive reclaim interface to achieve
+> > > unbalanced reclamation. Users can control the reclamation tendency by
+> > > inputting swappiness under the original interface. Specifically, users
+> > > can input special values to extremely reclaim specific pages.
+> > Other have already touched on this in other replies but v2 doesn't have
+> > a per-memcg swappiness
+> > 
+> > > Example:
+> > >        echo "1G" 200 > memory.reclaim (only reclaim anon)
+> > >          echo "1G" 0  > memory.reclaim (only reclaim file)
+> > >          echo "1G" 1  > memory.reclaim (only reclaim file)
+> > > 
+> > > Note that when performing unbalanced reclamation, the cgroup swappiness
+> > > will be temporarily adjusted dynamically to the input value. Therefore,
+> > > if the cgroup swappiness is further modified during runtime, there may
+> > > be some errors.
+> > In general this is a bad semantic. The operation shouldn't have side
+> > effect that are potentially visible for another operation.
+> So, maybe pass swappiness into sc and keep a single reclamation ensure that
+> swappiness is not changed?
+
+That would be a much saner approach.
+
+> Or, it's a bad idea that use swappiness to control unbalance reclaim.
+
+Memory reclaim is not really obliged to consider swappiness. In fact the
+actual behavior has changed several times in the past and it is safer to
+assume this might change in the future again.
+
+-- 
+Michal Hocko
+SUSE Labs
