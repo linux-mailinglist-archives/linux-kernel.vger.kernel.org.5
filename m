@@ -2,216 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626757E619E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F043D7E61A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbjKIA7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 19:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
+        id S231661AbjKIBAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:00:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjKIA7x (ORCPT
+        with ESMTP id S231514AbjKIBAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 19:59:53 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EBC2102
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 16:59:51 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5bdf5a025c1so252197a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 16:59:51 -0800 (PST)
+        Wed, 8 Nov 2023 20:00:12 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9C258A
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:00:10 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b44befac59so1094653b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:00:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699491590; x=1700096390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OHn9y25TkCjUGRzezI+pCpcdi+i7Y9ZJGwoclVKbOkE=;
-        b=BDzSRfpJdZ1jcW7m8YHCRzuBOkOu92fVUMCxQ2a9VMqyOWKbKmDCilLI7AeWQxR52+
-         HCYFINs2m/+ln0s69R8liDtqeHU2woqzKIHWKzmHqQzcBbRuKbA8boawwZO7DgCpyQdX
-         iZjs9rcSlA1pGWHmdks9rZAv48GC9SBnxBDsoBrjCllA2so+oEAWPW/zmRy0G9KK7coF
-         vpdj5X2eOUI3Mwmqs+PuwBqs6jEkJtX1QpAEo2WHQTYcHg/07s0ugJX46q3OMnpKYPy+
-         01NT4Z37QhIrp6F5ANJCC2chDQ4EiKj/TDsJcEpSmlnZEad3CTgpHWXNpjEUEsqEM0go
-         ZmDA==
+        d=google.com; s=20230601; t=1699491610; x=1700096410; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=85crlNpRBk7PCnm2srRrO/tBT8MDdkwM/1UpT6izcog=;
+        b=Z6iRT4JHu6+3N+c+fhaLOE5UhbFY5dyt5m14u0VKTRx+ptNSsToHr1UKMneKL4iMzA
+         X4zaIACj2GL67DAW+hw1mPAfQ6rLSmLBNI3oHfX3tDCbNrJe8B5lGFGkhFIhMBL4NQHU
+         d2h11/Z/WLMRZZYxFyjaVMWH5RrjxJvleWnsW4XmIzQpCYIqEzJ7XaA5MHX9NFibf5Rh
+         bFD7urGH3usM2rrbZ4HzRCs/R47qp/5rL13/5ALPckOGDpr0n8kHV3mYIw7sXtkHw1/P
+         e07XIfgRWGjjCmih0yxF1L4nrr7WznxhhgR2OkP6Sf0jm+xlUjY9IOoWbfNbyp3KOUtp
+         TEQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699491590; x=1700096390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OHn9y25TkCjUGRzezI+pCpcdi+i7Y9ZJGwoclVKbOkE=;
-        b=ZnebhOaAD7y7ysl75Ley1IhuxzR1jgsRe4k+079CSkhwAdU3or95jG06CYPLSBsAA8
-         ujwXcSi9mEIILx4IXruDKWaGcSyJBbimq+utllAzAp2gGUnFGS9wsJfmwQuox2ZvYVra
-         +Sz/DVYkLCL6Gz2FMLZRg3J2zlUkoBMJ3MsAfzPJo/ugrW9LU3dNQmFIcii7aYB10T+i
-         mxm3Xlj59AoXFUaatPOYsoI8Hbl8HHeFLBNLYjrDCZmWzTmRZ+epgjUbuy/FDPh1+3DE
-         DKM2ZjqP8G5cXqj+61QNQYg8zgVaJG9amhjV2n0NEYqo85rvvPxvFbBYEGhqhX6BHudk
-         Iqvw==
-X-Gm-Message-State: AOJu0YxvTLLoV0XKSytL6nsICa1HD/Jwd+x8Ehc7/zveFXX2/ReFa10Z
-        3iotI+nf+OTFwsU3WOpYtBK2hijnFPV3qweTabdw3g==
-X-Google-Smtp-Source: AGHT+IFboY654P5PbdzMK3cWhT8zt7kSG4KSHSRZRP1kgnDknG3IIxQjU6ixoNsTL18e9XE/xU1v/ItygPZDlQcVgqc=
-X-Received: by 2002:a05:6a20:8417:b0:181:16c7:6cd0 with SMTP id
- c23-20020a056a20841700b0018116c76cd0mr4583310pzd.17.1699491589543; Wed, 08
- Nov 2023 16:59:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699491610; x=1700096410;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=85crlNpRBk7PCnm2srRrO/tBT8MDdkwM/1UpT6izcog=;
+        b=O4NsBTWZxCCAygztdcaNzylT84cW+9TVukXpREPou6Vx807ilOEkR4sZUaILAHgnuY
+         BYB79DdqQbHOWpGaZM6wkyLQrS9JD8icaM3nxpG/p/O4SBLn8lnqQFnnPYlDpr9awDR6
+         yY3U20cqMiHYsW572OtR6vxK1Ra95pa+qFB3l595j+Sb7Dz7NLePwfEE25+cYNNQ+UNO
+         1Gvu396hdxeliPCkT1WemYmtTyK2TSK85FpUfwmC1ZjT74RFNBXAr0RnInwkB3twLVcj
+         IHQJnkhViDXaxq7XB/LmW1k9Lw/T0JuVM695Qsl/oz30jRD+vUSpCkMxnzHoKx8dKa/Q
+         K74g==
+X-Gm-Message-State: AOJu0YwXhQQImNPnP5dlByXScClaWZJ5hLVvb3o5qJjjR1iYMxlISvza
+        NyOIDn4fA+ywygLfHlQnSvAq+Q==
+X-Google-Smtp-Source: AGHT+IFZ+A+V9efdpst3RKcmTzNFKjnU6fZAcVh9Gggf3QKcHciEceqFp7u+2xG/6WA0k0W4Mavqug==
+X-Received: by 2002:a05:6a20:914b:b0:13f:13cb:bc50 with SMTP id x11-20020a056a20914b00b0013f13cbbc50mr5525792pzc.25.1699491608958;
+        Wed, 08 Nov 2023 17:00:08 -0800 (PST)
+Received: from [192.168.60.239] (183.43.230.35.bc.googleusercontent.com. [35.230.43.183])
+        by smtp.gmail.com with ESMTPSA id f29-20020a056a000b1d00b006c03fa6300dsm9528921pfu.117.2023.11.08.17.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 17:00:08 -0800 (PST)
+Message-ID: <e29802cf-8387-41d1-a5b1-ab77254cd5cc@google.com>
+Date:   Wed, 8 Nov 2023 17:00:07 -0800
 MIME-Version: 1.0
-References: <20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org>
- <ZUjIlq0cxSv9Cut0@valkosipuli.retiisi.eu> <CAN_q1f_HV7Etb9i2c2_c6Trm2hAJUyd068UskJfMvT=OyiKXpA@mail.gmail.com>
- <fe672e31315b8f9c44a693c909d464a299e76093.camel@ndufresne.ca>
- <CAEZL83qR2bDq35yvCV-WvkaL6ZbPvSxQH+j=ViG6Kq8-0Mzq1Q@mail.gmail.com>
- <CANiDSCtDQ9Wg57YzVAJ1o5WQRmy1QPW8td8V2Scc08MmWtOwFg@mail.gmail.com>
- <03ac47742945cc04e4663b87563b47a96ed3ec1f.camel@ndufresne.ca>
- <CANiDSCunRRyod3Rg+L9ZsffOZyC7CKbMVTHX3u-n5iuNyZQk0w@mail.gmail.com> <20231109000327.GE21616@pendragon.ideasonboard.com>
-In-Reply-To: <20231109000327.GE21616@pendragon.ideasonboard.com>
-From:   Esker Wong <esker@google.com>
-Date:   Thu, 9 Nov 2023 08:59:13 +0800
-Message-ID: <CAEZL83rcMocCohTi1ddAOyQ7BDK_AqR3-h33ZnHkWRMFO7cuwg@mail.gmail.com>
-Subject: Re: [PATCH v2] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, nicolas@ndufresne.ca,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Esker Wong <esker@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 4/4] usb: gadget: uvc: Fix use-after-free for inflight
+ usb_requests
+Content-Language: en-US
+To:     Dan Scally <dan.scally@ideasonboard.com>,
+        gregkh@linuxfoundation.org
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, m.grzeschik@pengutronix.de
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+ <20231102201939.4171214-1-arakesh@google.com>
+ <20231102201939.4171214-4-arakesh@google.com>
+ <93e26d61-49ca-443d-9044-32e73243c3b7@ideasonboard.com>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <93e26d61-49ca-443d-9044-32e73243c3b7@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
 
-The use case here we want is actually the latency. We want to know
-what is the most accurate delay the user will feel when the camera
-capture the frame to the frame get displayed. So anytime earlier then
-the dqbuf should be an improvement here. It would help us know better
-of a camera quality.
+
+On 11/8/23 06:15, Dan Scally wrote:
+> Hi Avichal
+> 
+> On 02/11/2023 20:19, Avichal Rakesh wrote:
+>> Currently, the uvc gadget driver allocates all uvc_requests as one array
+>> and deallocates them all when the video stream stops. This includes
+>> de-allocating all the usb_requests associated with those uvc_requests.
+>> This can lead to use-after-free issues if any of those de-allocated
+>> usb_requests were still owned by the usb controller.
+>>
+>> This is patch 2 of 2 in fixing the use-after-free issue. It adds a new
+>> flag to uvc_video to track when frames and requests should be flowing.
+>> When disabling the video stream, the flag is tripped and, instead
+>> of de-allocating all uvc_requests and usb_requests, the gadget
+>> driver only de-allocates those usb_requests that are currently
+>> owned by it (as present in req_free). Other usb_requests are left
+>> untouched until their completion handler is called which takes care
+>> of freeing the usb_request and its corresponding uvc_request.
+>>
+>> Now that uvc_video does not depends on uvc->state, this patch removes
+>> unnecessary upates to uvc->state that were made to accommodate uvc_video
+>> logic. This should ensure that uvc gadget driver never accidentally
+>> de-allocates a usb_request that it doesn't own.
+>>
+>> Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+>> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+>> Signed-off-by: Avichal Rakesh <arakesh@google.com>
+>> ---
+> 
+> 
+> Thanks for the update. Let's leave the locking as it is; I think albeit not strictly necessary on that occasion it certainly is necessary to take the lock to protect the flags elsewhere, and probably better to be consistent with it.
+> 
+> 
+> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+
+Thank you for reviewing, Dan!
+
+Greg, I just sent out v12 with the Reviewed-by tag:
+https://lore.kernel.org/all/20231109004104.3467968-1-arakesh@google.com/ 
+They should be ready to submit now. Thank you!
 
 Regards,
-Esker
+Avi.
 
-On Thu, Nov 9, 2023 at 8:03=E2=80=AFAM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> On Wed, Nov 08, 2023 at 11:46:40PM +0100, Ricardo Ribalda wrote:
-> > On Wed, 8 Nov 2023 at 21:32, <nicolas@ndufresne.ca> wrote:
-> > >
-> > > The fact that you interpret the time from FRAME_SYNC to DQBUF (well t=
-he
-> > > READ IO notification) as the actual latency is yours of course. It
-> > > assumes that the camera on the other end does not introduce other
-> >
-> > We want to use this signal to measure how much power is used since we
-> > start receiving the frame until we can use it.
-> > I agree with you that the latency between capture and dqbuf should be
-> > measured using the timestamp. That is not our use case here.
-> >
-> > > source of latency (or that these are negligible). You are also going =
-to
-> > > introduce a lot of jitter, since it relies on when the OS decides to
-> > > wake up your process.
-> >
-> > We have measured a jitter of around 2.5 msec, which is acceptable for o=
-ur needs.
-> >
-> > > I think my opinion resides in if you can accurately *enough* implemen=
-t
-> > > what the spec says for FRAME_SYNC then do it, otherwise just don't li=
-e.
-> >
-> > What the specs says is:
-> > ```
-> > Triggered immediately when the reception of a frame has begun
-> > ```
-> > In my opinion, that is true for usb devices, we are triggering it as
-> > soon as the transfer has started to the eyes of the driver. We cannot
-> > trigger earlier than that.
-> >
-> >
-> > > I think for ISO, "after the first chunk" i a small lie, but acceptabl=
-e.
-> > > But for BULK, the way it was explained is that it will be always very
-> > > close to DQBUF time. and it should not emit FRAME_SYNC for this type =
-of
-> > > UVC device. If it fits other events fine of course, I'm just making a
-> > > judgment on if its fits V4L2_EVENT_FRAME_SYNC or not.
-> >
-> > nit: I believe that you have swapped iso and bulk on this description
->
-> I've confused the USB packet size and the UVC payload size. The latter
-> is typically much bigger for bulk devices than isoc devices, but the
-> former will be in similar order of magnitudes in a large number of
-> cases, but not all cases.
->
-> The URB size is the result of the USB packet size and number of packets
-> per URB. The uvcvideo driver currently sets the number of packets per
-> URB to 32 at most (and lowers it if the frame size is small, or if not
-> enough memory can be allocated). This could be increased or made dynamic
-> in the future, as higher speeds typically benefit from larger URB sizes.
-> The packet size differs between bulk and isoc endpoints.
->
-> For bulk, the packet size can be up to 512 bytes for USB 2.0 and 1024
-> bytes for USB 3.0, and the device can select a smaller size. The largest
-> URB size (again based on the current implementation of the uvcvideo
-> driver) is thus 32 KiB.
->
-> For isochronous the situation is more complicated. The term "packet" as
-> used in the uvcvideo driver actually means all the data transferred in
-> one service interval, thus made of multiple isoc packets. It is heavily
-> dependent on the USB speed, and the device can advertise different
-> supported sizes (which translate directly to the reserved bandwidth for
-> the transfer), with the driver picking the smallest bandwidth large
-> enough for the data rate required by the resolution and frame rate. The
-> theoretical worst case is 1024 bytes per isoc packet * 16 isoc packets
-> per burst * 6 burst per interval * 32 "packets" per URB, equal to 3 MiB.
->
-> Even with the largest URB size you have witnessed of ~1 MiB, we will end
-> up lying quite a bit if we consider the URB completion callback for the
-> first URB of the frame as indicating the start of reception.
->
-> > > In term of accuracy, if timestamp was passed with the FRAME_SYNC even=
-t,
-> > > it would not matter how fast your process the event anymore and great=
-ly
-> > > improve accuracy.
-> >
-> > +1 to that. If we could easily change the uAPI for FRAME_SYNC that
-> > should definitely be implemented.
-> >
-> > > > Not to mention that the UVC timestamping requires a bit of love.
-> > > >
-> > > > @Laurent Pinchart, @Kieran Bingham  any progress reviewing :P :
-> > > > https://patchwork.linuxtv.org/project/linux-media/list/?series=3D10=
-083
-> > >
-> > > Thanks for working on this by the way, hope someone will find the tim=
-e
-> > > to review this. The timestamps should in theory provide a jitter free
-> >
-> > It already has a couple of Reviewed-by stamped in.... ;)
-> >
-> > > measurement of the delay Esker is trying to measure, and if it wasn't
-> > > of bugs (and crazy complexity) it would in the worst case match the
-> > > transfer time.
-> >
-> > Sorry to repeat myself, but just to avoid the confusion: Esker needs
-> > to know how much power is used since we start receiving a frame until
-> > it is available for dqbuf, not de frame latency.
->
-> As I think everybody is aware, the earliest notification you get on the
-> CPU side is the *end* of reception of the first URB, which can possibly
-> be significantly later than the start of reception of the frame.
->
-> Based on what I understand, the goal is to measure the CPU power
-> consumption related to CPU processing of the frame. If that's the case,
-> there's good and bad news. The good news is that the CPU doesn't process
-> the frame at all until the URB has been received (if you were to measure
-> the power consumption of the USB host controller too, it would be a
-> different story), so the delay shouldn't be a problem. The bad news is
-> that I don't see how the information you're trying to get will help you,
-> as there's plenty of other things unrelated to the uvcvideo driver that
-> can take CPU time while a frame is being received. That may not be any
-> of my business, but from the point of view of the uvcvideo driver, I'm
-> less inclined to accept a possibly significant V4L2_EVENT_FRAME_SYNC lie
-> if the use case ends up making little sense :-)
->
-> --
-> Regards,
->
-> Laurent Pinchart
+> 
+>> <snip>
