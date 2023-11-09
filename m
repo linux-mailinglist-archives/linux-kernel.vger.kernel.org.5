@@ -2,193 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CABC7E6248
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8353D7E624C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbjKICj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 21:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
+        id S232160AbjKICkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 21:40:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbjKICj0 (ORCPT
+        with ESMTP id S231161AbjKICky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 21:39:26 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC85E2590
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 18:39:23 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7b9f08482c8so151909241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 18:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699497563; x=1700102363; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IoDAF1C1HAcA+PpMvkLLmDwQmtJn4XmvLM4Nw3eJF8Y=;
-        b=dRoUnOgw7U9zOhs/0i+VdiR703NzY9F/2UF30kZ+bLdDlGMNgf3bllc/hw+VwDziia
-         w6V78ZYWC3HAY5TJRChhOqzBPvZi0v0l1VNF444Ht7pvfSqC+DEG3E3DsAApfnqPBOI6
-         ohKLG7XPRWNU6jy7f6Styjawoo/Epoe/a8reiFO4ONfzwXRYMH/sIGyKGovivudXEf4+
-         s9lI4L8BtH2ka7S6QiNHfU0g9qdt2q93bq/urJ9bFsvyzVCc0efPYB6hs/mhIxuI70iz
-         ApovVZJ5Em8xkNIl0toZRPsHQ/jacmnPu+7krx9YKxsFJqyBvfkH3q41t0fClEhQfXWd
-         8eZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699497563; x=1700102363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IoDAF1C1HAcA+PpMvkLLmDwQmtJn4XmvLM4Nw3eJF8Y=;
-        b=s3mlpc8aQB6WFPnfdbnxFvWbq/2fgtwFwMWseuooyND3xSXBB1tLuxi57O96rNL0lc
-         TOb1cnLTBm/Rgb8RtGkeX6kb5O5tIjKEKxYpK8ZFqvTEYDk3LV3VluOlS8/W4NFbcx0x
-         jBGksv3k+KTSm7A/5SXKPGKEcTV44keefcdggHKKjsIB8/aAFOj+0O1r6zuO0mnhnla0
-         FcAklTz8cXcVnr+t48o0Y75Gi+04npWDGR/nnj9G4tLxJblHhbB8J/gWhMIYKk37Et94
-         DDlD9JUcmc+ORkIhhHyr4Ll7+merHBprVsjjnuiC+F0+h7zh7Nnz4swgkECW5I4TivtM
-         rlxQ==
-X-Gm-Message-State: AOJu0Ywam0/FjnEpSE8if15sQNIphbzKZ2/3cxTfHtIR9sO/a068a4ap
-        fjrAnEtkAQPQjVQ9gx+3khZzmnE/BWGciS/XBhRaVQ==
-X-Google-Smtp-Source: AGHT+IFFkRJvUoPlQ13R7albFmtMDS+H8AANP9cOujoPlk+sG7EujjfJVZajEWG/Gx1UcPEbXMz+/ayvbG3vg4TKYIA=
-X-Received: by 2002:a67:b201:0:b0:45d:873e:c795 with SMTP id
- b1-20020a67b201000000b0045d873ec795mr3756190vsf.10.1699497562743; Wed, 08 Nov
- 2023 18:39:22 -0800 (PST)
+        Wed, 8 Nov 2023 21:40:54 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE669D58;
+        Wed,  8 Nov 2023 18:40:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Izao/Oe+Ice4rRrR6YJ3TmwlziZFsjKfxkPlLCNcxEQ=; b=g9WBIAzllpcaX36dpcCIkUQK8F
+        80fXUqCocLHtK5v+rogT6VaUEzZ1B2nyEpE4rBgHXpD4Xy626GyoqEscanpv+NcM75R9EX8q83Ku2
+        1735AL5tu/RnF4KYtssAIOFkkusA/iXTLdiyXDzbW93SqXDd/+xVNKmK0jbo9pLCfW8Aj14IR27CD
+        IVX8AOdCRxrGc6N631v11HKixnSsUbkb6jZULNK7g86gaU06xL+cqM89WQt0WgHPpsfjqWndk2BJA
+        lU2x1WDnggBwROvBmGH7pYBpZo+eHmRy/fslh6Onj27rT/5Bfdr5ueUoZagsRxO8EG8TJuNgqBTwE
+        3Q6LmhDQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r0uxz-00DI50-0y;
+        Thu, 09 Nov 2023 02:40:23 +0000
+Date:   Thu, 9 Nov 2023 02:40:23 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     WoZ1zh1 <wozizhi@huawei.com>
+Cc:     brauner@kernel.org, akpm@linux-foundation.org, oleg@redhat.com,
+        jlayton@kernel.org, dchinner@redhat.com, cyphar@cyphar.com,
+        shr@devkernel.io, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, yangerkun@huawei.com
+Subject: Re: [PATCH -next V2] proc: support file->f_pos checking in mem_lseek
+Message-ID: <20231109024023.GZ1957730@ZenIV>
+References: <20231109102658.2075547-1-wozizhi@huawei.com>
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
- <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
- <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
- <ZUlp8XutSAScKs_0@google.com> <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
- <CAKH8qBueYgpxQTvTwngOs6RNjy9yvLF92s1p5nFrobw_UprNMQ@mail.gmail.com>
- <93eb6a2b-a991-40ca-8f26-f520c986729a@kernel.org> <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
- <CAHS8izOU06ceKyc5oVZhdCKJqmeRdcRyJBFpjGe=u2yh=V52dQ@mail.gmail.com> <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
-In-Reply-To: <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 8 Nov 2023 18:39:11 -0800
-Message-ID: <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
-To:     David Ahern <dsahern@kernel.org>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109102658.2075547-1-wozizhi@huawei.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 4:01=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
-te:
->
-> On 11/7/23 4:55 PM, Mina Almasry wrote:
-> > On Mon, Nov 6, 2023 at 4:03=E2=80=AFPM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> >>
-> >> On Mon, Nov 6, 2023 at 3:55=E2=80=AFPM David Ahern <dsahern@kernel.org=
-> wrote:
-> >>>
-> >>> On 11/6/23 4:32 PM, Stanislav Fomichev wrote:
-> >>>>> The concise notification API returns tokens as a range for
-> >>>>> compression, encoding as two 32-bit unsigned integers start + lengt=
-h.
-> >>>>> It allows for even further batching by returning multiple such rang=
-es
-> >>>>> in a single call.
-> >>>>
-> >>>> Tangential: should tokens be u64? Otherwise we can't have more than
-> >>>> 4gb unacknowledged. Or that's a reasonable constraint?
-> >>>>
-> >>>
-> >>> Was thinking the same and with bits reserved for a dmabuf id to allow
-> >>> multiple dmabufs in a single rx queue (future extension, but build th=
-e
-> >>> capability in now). e.g., something like a 37b offset (128GB dmabuf
-> >>> size), 19b length (large GRO), 8b dmabuf id (lots of dmabufs to a que=
-ue).
-> >>
-> >> Agreed. Converting to 64b now sounds like a good forward looking revis=
-ion.
-> >
-> > The concept of IDing a dma-buf came up in a couple of different
-> > contexts. First, in the context of us giving the dma-buf ID to the
-> > user on recvmsg() to tell the user the data is in this specific
-> > dma-buf. The second context is here, to bind dma-bufs with multiple
-> > user-visible IDs to an rx queue.
-> >
-> > My issue here is that I don't see anything in the struct dma_buf that
-> > can practically serve as an ID:
-> >
-> > https://elixir.bootlin.com/linux/v6.6-rc7/source/include/linux/dma-buf.=
-h#L302
-> >
-> > Actually, from the userspace, only the name of the dma-buf seems
-> > queryable. That's only unique if the user sets it as such. The dmabuf
-> > FD can't serve as an ID. For our use case we need to support 1 process
-> > doing the dma-buf bind via netlink, sharing the dma-buf FD to another
-> > process, and that process receives the data.  In this case the FDs
-> > shown by the 2 processes may be different. Converting to 64b is a
-> > trivial change I can make now, but I'm not sure how to ID these
-> > dma-bufs. Suggestions welcome. I'm not sure the dma-buf guys will
-> > allow adding a new ID + APIs to query said dma-buf ID.
-> >
->
-> The API can be unique to this usage: e.g., add a dmabuf id to the
-> netlink API. Userspace manages the ids (tells the kernel what value to
-> use with an instance), the kernel validates no 2 dmabufs have the same
-> id and then returns the value here.
->
->
+On Thu, Nov 09, 2023 at 06:26:58PM +0800, WoZ1zh1 wrote:
+> In mem_lseek, file->f_pos may overflow. And it's not a problem that
+> mem_open set file mode with FMODE_UNSIGNED_OFFSET(memory_lseek). However,
+> another file use mem_lseek do lseek can have not FMODE_UNSIGNED_OFFSET
+> (kpageflags_proc_ops/proc_pagemap_operations...), so in order to prevent
+> file->f_pos updated to an abnormal number, fix it by checking overflow and
+> FMODE_UNSIGNED_OFFSET.
 
-Seems reasonable, will do.
-
-On Wed, Nov 8, 2023 at 7:36=E2=80=AFAM Edward Cree <ecree.xilinx@gmail.com>=
- wrote:
->
-> On 06/11/2023 21:17, Stanislav Fomichev wrote:
-> > I guess I'm just wondering whether other people have any suggestions
-> > here. Not sure Jonathan's way was better, but we fundamentally
-> > have two queues between the kernel and the userspace:
-> > - userspace receiving tokens (recvmsg + magical flag)
-> > - userspace refilling tokens (setsockopt + magical flag)
-> >
-> > So having some kind of shared memory producer-consumer queue feels natu=
-ral.
-> > And using 'classic' socket api here feels like a stretch, idk.
->
-> Do 'refilled tokens' (returned memory areas) get used for anything other
->  than subsequent RX?
-
-Hi Ed!
-
-Not really, it's only the subsequent RX.
-
->  If not then surely the way to return a memory area
->  in an io_uring idiom is just to post a new read sqe ('RX descriptor')
->  pointing into it, rather than explicitly returning it with setsockopt.
-
-We're interested in using this with regular TCP sockets, not
-necessarily io_uring. The io_uring interface to devmem TCP may very
-well use what you suggest and can drop the setsockopt.
-
-
-> (Being async means you can post lots of these, unlike recvmsg(), so you
->  don't need any kernel management to keep the RX queue filled; it can
->  just be all handled by the userland thus simplifying APIs overall.)
-> Or I'm misunderstanding something?
->
-> -e
-
-
---
-Thanks,
-Mina
+Umm...  Is there any reasons why all of those shouldn't get FMODE_UNSIGNED_OFFSET
+as well?
