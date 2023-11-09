@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728377E71AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4677E71B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345021AbjKISq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S1345035AbjKISt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344906AbjKISqz (ORCPT
+        with ESMTP id S1344906AbjKIStZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:46:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84253185
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:46:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA416C433C7;
-        Thu,  9 Nov 2023 18:46:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699555613;
-        bh=8pdUvdeeJt1xYI9bSzOjOml7hRUfXdZgRf47A7GvhaM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eLfEagyvP0/lXHGkH87W0+RL0faa6ZzHs3yCG5cqKp5vfEkfVhLauLiNp/0BHfUPD
-         Z4rDRxGdSF+Xu/I6ZIxmRSiioiY1IR/J/NUdHJKlJ5Y7ps9C+G5ojU08h+adukGoW+
-         n2GHXu/rMxu+Jc0OKNGars8FnZ0GiGpy5uTcT53oUm6ds8qpc6p/FyRxNRGYTNR9YS
-         emrGugG3sa9jDf18w1VmMvCw0Lthv33LMQE/yuBo4jMHqZXPAtW/Fb36rDmve93EAq
-         xovOqG8RMvZMxYmA7knV3Q0pnveZS/8kTs4TsVNlf88QNpPVqKTSeC2Hu9EE/djehn
-         S2pJ83iSk6cxg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 196DE40094; Thu,  9 Nov 2023 15:46:50 -0300 (-03)
-Date:   Thu, 9 Nov 2023 15:46:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
-Subject: Re: [PATCH V5 2/8] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK
- flag
-Message-ID: <ZU0pGuUBJH+bF1yU@kernel.org>
-References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
- <20231025201626.3000228-2-kan.liang@linux.intel.com>
- <ZUlWuROfYcYJlRn4@kernel.org>
- <fb1ebf48-ac2f-499a-b480-ba8474b12200@linux.intel.com>
- <ZUpTtoCzJFHhnSdh@kernel.org>
- <ZUv+G+w5EvJgQS45@kernel.org>
- <a40ff4eb-5507-45b9-9f21-1d153a544e16@linux.intel.com>
- <ZU0MvXe1GF6xejlf@kernel.org>
- <7243048f-5f45-4f3d-9abb-626568359536@linux.intel.com>
+        Thu, 9 Nov 2023 13:49:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1AD185;
+        Thu,  9 Nov 2023 10:49:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699555764; x=1731091764;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pn7fi9X3+8b67fGa5JWM/IqMf8NynHWVA8y/+7uZeoA=;
+  b=lhix2s5IOqGEew6NAVokhC8srJ2WTxF0SMjpcqA+nMERlO1ywLJWAo1C
+   T6fAzG6TlGsRRank/PpBH9Nd5kRK87Oa0mEbWN+8GcE2XifJWvxE6YLfC
+   a/y1yUU+HxHpgFgOdHfvXEtZUTX7PkKeZpCK41WYbHlPR4/aWnZZfdlgR
+   BWhS8lA00OTrbHeB6dBPCMMv0Lxv8cikbIpjJQ74B921F90zxZxXMy1DK
+   iwtdXXp4v+QflRRoTEQkKY2sLsttECHCLgfdqO98RE5lVD9YLu5PYjfHZ
+   HfdkyjQ/grWUBPeGSlYJ3dwHIsofydZAgSc6yG6CEPAwjla3KJeox74GA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="3033663"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="3033663"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 10:49:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="829414673"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="829414673"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 09 Nov 2023 10:49:20 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1A5d-00092s-1r;
+        Thu, 09 Nov 2023 18:49:17 +0000
+Date:   Fri, 10 Nov 2023 02:49:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>,
+        linux-rdma@vger.kernel.org, leon@kernel.org, jgg@ziepe.ca,
+        zyjzyj2000@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        rpearsonhpe@gmail.com, yangx.jy@fujitsu.com, lizhijian@fujitsu.com,
+        y-goto@fujitsu.com, Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Subject: Re: [PATCH for-next v7 5/7] RDMA/rxe: Allow registering MRs for
+ On-Demand Paging
+Message-ID: <202311100130.efgRVVKL-lkp@intel.com>
+References: <5d46bd682aa8e3d5cabc38ca1cd67d2976f2731d.1699503619.git.matsuda-daisuke@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7243048f-5f45-4f3d-9abb-626568359536@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <5d46bd682aa8e3d5cabc38ca1cd67d2976f2731d.1699503619.git.matsuda-daisuke@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 09, 2023 at 12:05:27PM -0500, Liang, Kan escreveu:
-> On 2023-11-09 11:45 a.m., Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Nov 09, 2023 at 11:14:31AM -0500, Liang, Kan escreveu:
-> >> The below change should fix it. I will post a complete patch shortly.
+Hi Daisuke,
 
-> > Thanks for the quick response, if all that is needed are the checks
-> > below, I'll fold it into your original patch:
+kernel test robot noticed the following build warnings:
 
-> > 2ae01908298426e4 perf tools: Add branch counter knob
+[auto build test WARNING on rdma/for-next]
+[also build test WARNING on linus/master v6.6 next-20231109]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> > So that we don't regress, ok?
+url:    https://github.com/intel-lab-lkp/linux/commits/Daisuke-Matsuda/RDMA-rxe-Always-defer-tasks-on-responder-and-completer-to-workqueue/20231109-185612
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+patch link:    https://lore.kernel.org/r/5d46bd682aa8e3d5cabc38ca1cd67d2976f2731d.1699503619.git.matsuda-daisuke%40fujitsu.com
+patch subject: [PATCH for-next v7 5/7] RDMA/rxe: Allow registering MRs for On-Demand Paging
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231110/202311100130.efgRVVKL-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100130.efgRVVKL-lkp@intel.com/reproduce)
 
-> Sure.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100130.efgRVVKL-lkp@intel.com/
 
-> I also post the patch to
-> https://lore.kernel.org/lkml/20231109164007.2037721-1-kan.liang@linux.intel.com/
-> Either folding it or using the new patch is fine for me.
+All warnings (new ones prefixed by >>):
 
-I folded it, retested, pushed out perf-tools-next.
- 
-> BTW: the new perf test case for the feature is posted here.
-> I think Ian is reviewing it.
-> https://lore.kernel.org/lkml/20231107184020.1497571-1-kan.liang@linux.intel.com/
+   drivers/infiniband/sw/rxe/rxe_odp.c: In function 'rxe_mr_set_xarray':
+>> drivers/infiniband/sw/rxe/rxe_odp.c:35:22: warning: variable 'entry' set but not used [-Wunused-but-set-variable]
+      35 |         void *page, *entry;
+         |                      ^~~~~
 
-Ok, lets wait some more.
 
-Hey, what is SFR/GRR? Sapphire Rapids/Granite Rapids? I thought about
-testing this somehow, if possible.
+vim +/entry +35 drivers/infiniband/sw/rxe/rxe_odp.c
 
-- Arnaldo
+    29	
+    30	static void rxe_mr_set_xarray(struct rxe_mr *mr, unsigned long start,
+    31				      unsigned long end, unsigned long *pfn_list)
+    32	{
+    33		unsigned long upper = rxe_mr_iova_to_index(mr, end - 1);
+    34		unsigned long lower = rxe_mr_iova_to_index(mr, start);
+  > 35		void *page, *entry;
+    36	
+    37		XA_STATE(xas, &mr->page_list, lower);
+    38	
+    39		xas_lock(&xas);
+    40		while (xas.xa_index <= upper) {
+    41			if (pfn_list[xas.xa_index] & HMM_PFN_WRITE) {
+    42				page = xa_tag_pointer(hmm_pfn_to_page(pfn_list[xas.xa_index]),
+    43						      RXE_ODP_WRITABLE_BIT);
+    44			} else
+    45				page = hmm_pfn_to_page(pfn_list[xas.xa_index]);
+    46	
+    47			xas_store(&xas, page);
+    48			entry = xas_next(&xas);
+    49		}
+    50		xas_unlock(&xas);
+    51	}
+    52	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
