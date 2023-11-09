@@ -2,521 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03F27E703C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476397E7051
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344606AbjKIR1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
+        id S1344556AbjKIRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbjKIR1o (ORCPT
+        with ESMTP id S231478AbjKIRbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:27:44 -0500
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3578B93;
-        Thu,  9 Nov 2023 09:27:42 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a84204e7aeso13741147b3.0;
-        Thu, 09 Nov 2023 09:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699550861; x=1700155661; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=vRiA8JxjoD2NjKIcDOlUOfv4VQnMOeyr7clgpYm5X6w=;
-        b=CPzQ3Ptc+kjI5R4bYstMY0AvTjWjPexSlAPemIKdQ7O4c7a+0Uc4q3ULTSIbpAT4EO
-         famXOZYrYP22g5/aXFRpo+30KaGYJ/vsUeYhCpvFHDT3eEmqbJ2Fn7lCDXyQkorMBPAf
-         7WxOATXiDgxg5kJlh0ngqj4/krRTBllHKQJzkFKShZzxNCNDq3DgahCQyOvuF35APb4V
-         IDMIaPBmIh1Kr/Oc0vsJ3XzeaQLz+b//1pRCWG0DVVVkGgZWD1fziZqSIShUKpmWNPd7
-         W4arIuWERu0iv7BIPABV0rmxQpWkw1aF4XjDaTfiuSx5MEGB+yi/N14zFRWo09IWq+4X
-         +hEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699550861; x=1700155661;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vRiA8JxjoD2NjKIcDOlUOfv4VQnMOeyr7clgpYm5X6w=;
-        b=MFzzWunUeX00j6/cZ6PYusdv5yHrPzng7UvFG1RDpcze5kh7P20l8N6eKxia1dJ6lh
-         G0D35qcG/RuIXk9o6HDRkyr20sbEqldVM82AD+/n9ZDTYRNsbwdG1rEJ+qeo3fs1u0G3
-         7pRbSejlbM3p0Vy/wK+izRgObARzS715Sg4Q2DHYjv5AW2nmiAm+5YHbrWnn79IIUuIF
-         TdqmU6OU0pyLU8f3reXFz9BoQY+dN3DmJFXaRoV15bg0qN7KSZKt3lKIXaPTKZ8+eOZU
-         ckQH8H4HyfdbY2tOdQpoG57MIHH5mygXexFL4sRH0rbi3h+CV+WFXdvxgABc55NDW4w9
-         nEfQ==
-X-Gm-Message-State: AOJu0YxjMvOQMTPVKsIpcR+TeVMvamNy8K7iWz7XzaKeGkaX9Keu7cdK
-        9C8EeQRSv28Jg7HV3YjNoQg=
-X-Google-Smtp-Source: AGHT+IH1Mugy42a9uBExGt4NdSrQEpv4KL34qy/YVOmoiAxARLbYEjwxN6x8CWIQ0lYwnF3uzvNekw==
-X-Received: by 2002:a81:4893:0:b0:5a7:fcae:f3e2 with SMTP id v141-20020a814893000000b005a7fcaef3e2mr5860452ywa.43.1699550861262;
-        Thu, 09 Nov 2023 09:27:41 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t15-20020a81c24f000000b00594fb0e2db3sm8067834ywg.138.2023.11.09.09.27.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 09:27:40 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <065e97b5-23ce-45f3-95ec-40e798c8a22e@roeck-us.net>
-Date:   Thu, 9 Nov 2023 09:27:38 -0800
+        Thu, 9 Nov 2023 12:31:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410861991
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:31:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699551094; x=1731087094;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0O197kK4A+k+7fNW3ewE6V7xrfZeNaL2neDGXPiZc4M=;
+  b=Si9mNfj9PX6i1HBFsb2CcqdvfME5+vjY/dI3lK22ZoUSApHQz9n4IWDB
+   4ZcS06K/fju5JluBo+EgFbbsTrirCYNXEY08mDByAh+fDJ6k6zly7xcGJ
+   rkjZvZtTh97HbN0j74iR1Or74cVJJ3hkxu84dGVfGh9fkUHYUe8/b/5bs
+   eoEmY8nMA4XG0R7zQCIfv/kl3OaBNw6KwwpPvIBj4Qg6z1IWcpBLttN28
+   DPIsMijPj+VPF56JvqPwdNrIxoyPOlogQ4qT1iNlKgAN0I0XXCSktBMH5
+   feTGxEXbcofs16/fi9tR68xC1k8Qtvzdps6eS3lJ6ozH5x7VdeTn8YqEO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="454337079"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="454337079"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:31:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="4786901"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 09 Nov 2023 09:31:32 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r18sL-0008yw-2J;
+        Thu, 09 Nov 2023 17:31:29 +0000
+Date:   Fri, 10 Nov 2023 01:27:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/power/supply/pmu_battery.c:171:50: warning: '%d' directive
+ writing between 1 and 11 bytes into a region of size 4
+Message-ID: <202311100157.2Kn3gHLg-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] hwmon: pmbus: Add ltc4286 driver
-Content-Language: en-US
-To:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
- <20231109014948.2334465-3-Delphine_CC_Chiu@Wiwynn.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231109014948.2334465-3-Delphine_CC_Chiu@Wiwynn.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 17:49, Delphine CC Chiu wrote:
-> Add a driver to support ltc4286 chip
-> 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-> 
-> Changelog:
->    v4 - Add empty line before "config SENSORS_LTC4286" in Kconfig
->       - Add ltc4286 to Documentation/hwmon/index.rst
->       - Revise comment typo
->       - Use devm_kmemdup instead of memcpy
->       - Check MBR value before writting into
->    v3 - Use dev_err_probe() instead of dev_err()
->       - The VRANGE_SELECT bit only be written if it actually changed
->       - Avoid the info pointer being overwritten
->       - Check the MBR value range to avoid overflow
->       - Revise ltc4286.rst to corrcet description
->    v2 - Revise Linear Technologies LTC4286 to
->         Analog Devices LTC4286 in Kconfig
->       - Add more description for this driver in Kconfig
->       - Add some comments for MBR setting in ltc4286.c
->       - Add ltc4286.rst
-> ---
->   Documentation/hwmon/index.rst   |   1 +
->   Documentation/hwmon/ltc4286.rst |  95 +++++++++++++++++
->   drivers/hwmon/pmbus/Kconfig     |  10 ++
->   drivers/hwmon/pmbus/Makefile    |   1 +
->   drivers/hwmon/pmbus/ltc4286.c   | 177 ++++++++++++++++++++++++++++++++
->   5 files changed, 284 insertions(+)
->   create mode 100644 Documentation/hwmon/ltc4286.rst
->   create mode 100644 drivers/hwmon/pmbus/ltc4286.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 72f4e6065bae..080827cc4c34 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -128,6 +128,7 @@ Hardware Monitoring Kernel Drivers
->      ltc4245
->      ltc4260
->      ltc4261
-> +   ltc4286
->      max127
->      max15301
->      max16064
-> diff --git a/Documentation/hwmon/ltc4286.rst b/Documentation/hwmon/ltc4286.rst
-> new file mode 100644
-> index 000000000000..2cd149676d86
-> --- /dev/null
-> +++ b/Documentation/hwmon/ltc4286.rst
-> @@ -0,0 +1,95 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +Kernel driver ltc4286
-> +=====================
-> +
-> +Supported chips:
-> +
-> +  * Analog Devices LTC4286
-> +
-> +    Prefix: 'ltc4286'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4286.pdf
-> +
-> +  * Analog Devices LTC4287
-> +
-> +    Prefix: 'ltc4287'
-> +
-> +    Addresses scanned: -
-> +
-> +    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ltc4287.pdf
-> +
-> +Author: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver supports hardware monitoring for Analog Devices LTC4286
-> +and LTC4287 Hot-Swap Controller and Digital Power Monitors.
-> +
-> +LTC4286 and LTC4287 are hot-swap controllers that allow a circuit board
-> +to be removed from or inserted into a live backplane. They also feature
-> +current and voltage readback via an integrated 12 bit analog-to-digital
-> +converter (ADC), accessed using a PMBus interface.
-> +
-> +The driver is a client driver to the core PMBus driver. Please see
-> +Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
-> +
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +The shunt value in micro-ohms can be set via device tree at compile-time. Please
-> +refer to the Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml for bindings
-> +if the device tree is used.
-> +
-> +
-> +Platform data support
-> +---------------------
-> +
-> +The driver supports standard PMBus driver platform data. Please see
-> +Documentation/hwmon/pmbus.rst for details.
-> +
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +The following attributes are supported. Limits are read-write, history reset
-> +attributes are write-only, all other attributes are read-only.
-> +
-> +======================= =======================================================
-> +in1_label		"vin"
-> +in1_input		Measured voltage.
-> +in1_alarm		Input voltage alarm.
-> +in1_min 		Minimum input voltage.
-> +in1_max 		Maximum input voltage.
-> +
-> +in2_label		"vout1"
-> +in2_input		Measured voltage.
-> +in2_alarm		Output voltage alarm.
-> +in2_min 		Minimum output voltage.
-> +in2_max 		Maximum output voltage.
-> +
-> +curr1_label		"iout1"
-> +curr1_input		Measured current.
-> +curr1_alarm		Output current alarm.
-> +curr1_max		Maximum current.
-> +
-> +power1_label		"pin"
-> +power1_input		Input power.
-> +power1_alarm		Input power alarm.
-> +power1_max		Maximum poewr.
-> +
-> +temp1_input		Chip temperature.
-> +temp1_min		Minimum chip temperature.
-> +temp1_max		Maximum chip temperature.
-> +temp1_crit		Critical chip temperature.
-> +temp1_alarm		Chip temperature alarm.
-> +======================= =======================================================
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index b4e93bd5835e..2d4f972e5a65 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -227,6 +227,16 @@ config SENSORS_LTC3815
->   	  This driver can also be built as a module. If so, the module will
->   	  be called ltc3815.
->   
-> +config SENSORS_LTC4286
-> +	bool "Analog Devices LTC4286"
-> +	help
-> +	  LTC4286 is an integrated solution for hot swap applications that
-> +	  allows a board to be safely inserted and removed from a live
-> +	  backplane.
-> +	  This chip could be used to monitor voltage, current, ...etc.
-> +	  If you say yes here you get hardware monitoring support for Analog
-> +	  Devices LTC4286.
-> +
->   config SENSORS_MAX15301
->   	tristate "Maxim MAX15301"
->   	help
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 84ee960a6c2d..94e28f6d6a61 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -24,6 +24,7 @@ obj-$(CONFIG_SENSORS_LM25066)	+= lm25066.o
->   obj-$(CONFIG_SENSORS_LT7182S)	+= lt7182s.o
->   obj-$(CONFIG_SENSORS_LTC2978)	+= ltc2978.o
->   obj-$(CONFIG_SENSORS_LTC3815)	+= ltc3815.o
-> +obj-$(CONFIG_SENSORS_LTC4286)	+= ltc4286.o
->   obj-$(CONFIG_SENSORS_MAX15301)	+= max15301.o
->   obj-$(CONFIG_SENSORS_MAX16064)	+= max16064.o
->   obj-$(CONFIG_SENSORS_MAX16601)	+= max16601.o
-> diff --git a/drivers/hwmon/pmbus/ltc4286.c b/drivers/hwmon/pmbus/ltc4286.c
-> new file mode 100644
-> index 000000000000..e6690b38349a
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/ltc4286.c
-> @@ -0,0 +1,177 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +#include <linux/err.h>
-> +#include <linux/i2c.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pmbus.h>
-> +#include "pmbus.h"
-> +
-> +/* LTC4286 register */
-> +#define LTC4286_MFR_CONFIG1	0xF2
-> +
-> +/* LTC4286 configuration */
-> +#define VRANGE_SELECT_BIT	BIT(1)
-> +
-> +#define LTC4286_MFR_ID_SIZE	3
-> +#define VRANGE_25P6		0
-> +
-> +/*
-> + * Initialize the MBR as default settings which is referred to LTC4286 datasheet
-> + * (March 22, 2022 version) table 3 page 16
-> + */
-> +static struct pmbus_driver_info ltc4286_info = {
-> +	.pages = 1,
-> +	.format[PSC_VOLTAGE_IN] = direct,
-> +	.format[PSC_VOLTAGE_OUT] = direct,
-> +	.format[PSC_CURRENT_OUT] = direct,
-> +	.format[PSC_POWER] = direct,
-> +	.format[PSC_TEMPERATURE] = direct,
-> +	.m[PSC_VOLTAGE_IN] = 32,
-> +	.b[PSC_VOLTAGE_IN] = 0,
-> +	.R[PSC_VOLTAGE_IN] = 1,
-> +	.m[PSC_VOLTAGE_OUT] = 32,
-> +	.b[PSC_VOLTAGE_OUT] = 0,
-> +	.R[PSC_VOLTAGE_OUT] = 1,
-> +	.m[PSC_CURRENT_OUT] = 1024,
-> +	.b[PSC_CURRENT_OUT] = 0,
-> +	/*
-> +	 * The rsense value used in MBR formula in LTC4286 datasheet should be ohm unit.
-> +	 * However, the rsense value that user input is micro ohm.
-> +	 * Thus, the MBR setting which involves rsense should be shifted by 6 digits.
-> +	 */
-> +	.R[PSC_CURRENT_OUT] = 3 - 6,
-> +	.m[PSC_POWER] = 1,
-> +	.b[PSC_POWER] = 0,
-> +	/*
-> +	 * The rsense value used in MBR formula in LTC4286 datasheet should be ohm unit.
-> +	 * However, the rsense value that user input is micro ohm.
-> +	 * Thus, the MBR setting which involves rsense should be shifted by 6 digits.
-> +	 */
-> +	.R[PSC_POWER] = 4 - 6,
-> +	.m[PSC_TEMPERATURE] = 1,
-> +	.b[PSC_TEMPERATURE] = 273,
-> +	.R[PSC_TEMPERATURE] = 0,
-> +	.func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT | PMBUS_HAVE_IOUT |
-> +		   PMBUS_HAVE_PIN | PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_VOUT |
-> +		   PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_TEMP,
-> +};
-> +
-> +static const struct i2c_device_id ltc4286_id[] = { { "ltc4286", 0 },
-> +						   { "ltc4287", 1 },
-> +						   {} };
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6bc986ab839c844e78a2333a02e55f02c9e57935
+commit: 2edb16efc899f9c232e2d880930b855e4cf55df4 powerpc/32: Add KASAN support
+date:   4 years, 6 months ago
+config: powerpc-randconfig-r031-20211015 (https://download.01.org/0day-ci/archive/20231110/202311100157.2Kn3gHLg-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100157.2Kn3gHLg-lkp@intel.com/reproduce)
 
-Please fix that formatting and use the more common style.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100157.2Kn3gHLg-lkp@intel.com/
 
-static const struct i2c_device_id ltc4286_id[] = {
-	{ "ltc4286", 0 },
-	{ "ltc4287", 1 },
-	{}
-};
+All warnings (new ones prefixed by >>):
 
-> +MODULE_DEVICE_TABLE(i2c, ltc4286_id);
-> +
-> +static int ltc4286_probe(struct i2c_client *client)
-> +{
-> +	int ret;
-> +	int temp_setting;
-> +	const struct i2c_device_id *mid;
-> +	u8 block_buffer[I2C_SMBUS_BLOCK_MAX + 1];
-> +	struct pmbus_driver_info *info;
-> +	u32 rsense;
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, block_buffer);
-> +	if (ret < 0) {
-> +		return dev_err_probe(&client->dev, ret,
-> +				     "Failed to read manufacturer id\n");
-> +	}
-> +
-> +	/*
-> +	 * Refer to ltc4286 datasheet page 20
-> +	 * the manufacturer id is LTC
-> +	 */
-> +	if (ret != LTC4286_MFR_ID_SIZE ||
-> +	    strncmp(block_buffer, "LTC", LTC4286_MFR_ID_SIZE)) {
-> +		return dev_err_probe(&client->dev, ret,
-> +				     "Manufacturer id mismatch\n");
-> +	}
-> +
-> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, block_buffer);
-> +	if (ret < 0) {
-> +		return dev_err_probe(&client->dev, ret,
-> +				     "Failed to read manufacturer model\n");
-> +	}
-> +
-> +	for (mid = ltc4286_id; mid->name[0]; mid++) {
-> +		if (!strncasecmp(mid->name, block_buffer, strlen(mid->name)))
-> +			break;
-> +	}
-> +	if (!mid->name[0])
-> +		return dev_err_probe(&client->dev, -ENODEV,
-> +				     "Unsupported device\n");
-> +
-> +	ret = of_property_read_u32(client->dev.of_node,
-> +				   "shunt-resistor-micro-ohms", &rsense);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (rsense == 0)
-> +		return -EINVAL;
-> +
-> +	if (rsense > INT_MAX)
-> +		return -ERANGE;
-> +
-
-This is not "Math result not representable". See below.
-
-> +	info = devm_kmemdup(&client->dev, &ltc4286_info, sizeof(*info),
-> +			    GFP_KERNEL);
-> +	if (!info)
-> +		return -ENOMEM;
-> +
-> +	/* Default of VRANGE_SELECT = 1, 102.4V */
-> +	if (device_property_read_bool(&client->dev, "adi,vrange-low-enable")) {
-> +		/* Setup MFR1 CONFIG register bit 1 VRANGE_SELECT */
-> +		ret = i2c_smbus_read_word_data(client, LTC4286_MFR_CONFIG1);
-> +		if (ret < 0)
-> +			return dev_err_probe(
-> +				&client->dev, ret,
-> +				"Failed to read manufacturer configuration one\n");
-> +
-> +		ret &= ~VRANGE_SELECT_BIT; /* VRANGE_SELECT = 0, 25.6V */
-> +		ret = i2c_smbus_write_word_data(client, LTC4286_MFR_CONFIG1,
-> +						ret);
-> +		if (ret < 0)
-> +			return dev_err_probe(&client->dev, ret,
-> +					     "Failed to set vrange\n");
-> +
-> +		info->m[PSC_VOLTAGE_IN] = 128;
-> +		info->m[PSC_VOLTAGE_OUT] = 128;
-> +
-> +		temp_setting = 4 * rsense;
-> +		if (temp_setting > INT_MAX)
-
-This will still overflow for values of rsense larger than INT_MAX / 4.
-temp_setting is an int, and its value will never be > INT_MAX.
-
-> +			return dev_err_probe(&client->dev, -ERANGE,
-> +					     "Power coefficient overflow\n");
-
-ERANGE is "Math result not representable", which is not the case here.
-This (and the above above) error needs to be -EINVAL.
+   drivers/power/supply/pmu_battery.c: In function 'pmu_bat_init':
+>> drivers/power/supply/pmu_battery.c:171:50: warning: '%d' directive writing between 1 and 11 bytes into a region of size 4 [-Wformat-overflow=]
+     171 |                 sprintf(pbat->name, "PMU_battery_%d", i);
+         |                                                  ^~
+   drivers/power/supply/pmu_battery.c:171:37: note: directive argument in the range [-2147483643, 2147483646]
+     171 |                 sprintf(pbat->name, "PMU_battery_%d", i);
+         |                                     ^~~~~~~~~~~~~~~~
+   drivers/power/supply/pmu_battery.c:171:17: note: 'sprintf' output between 14 and 24 bytes into a destination of size 16
+     171 |                 sprintf(pbat->name, "PMU_battery_%d", i);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-> +		info->m[PSC_POWER] = temp_setting;
-> +	} else {
-> +		info->m[PSC_POWER] = rsense;
+vim +171 drivers/power/supply/pmu_battery.c
 
-I told you before, the default range needs to be set. The range may have been
-changed by the BIOS/ROMMON, or someone could have changed it manually with
-i2cset or some other application, or some other operating system was loaded
-earlier which did its own setting.
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  145  
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  146  static int __init pmu_bat_init(void)
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  147  {
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  148  	int ret = 0;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  149  	int i;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  150  
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  151  	bat_pdev = platform_device_register_simple("pmu-battery",
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  152  						   0, NULL, 0);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  153  	if (IS_ERR(bat_pdev)) {
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  154  		ret = PTR_ERR(bat_pdev);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  155  		goto pdev_register_failed;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  156  	}
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  157  
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  158  	pmu_ac = power_supply_register(&bat_pdev->dev, &pmu_ac_desc, NULL);
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  159  	if (IS_ERR(pmu_ac)) {
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  160  		ret = PTR_ERR(pmu_ac);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  161  		goto ac_register_failed;
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  162  	}
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  163  
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  164  	for (i = 0; i < pmu_battery_count; i++) {
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  165  		struct power_supply_config psy_cfg = {};
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  166  		struct pmu_battery_dev *pbat = kzalloc(sizeof(*pbat),
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  167  						       GFP_KERNEL);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  168  		if (!pbat)
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  169  			break;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  170  
+35bf559145b633 drivers/power/pmu_battery.c Christian Kujau     2008-05-02 @171  		sprintf(pbat->name, "PMU_battery_%d", i);
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  172  		pbat->bat_desc.name = pbat->name;
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  173  		pbat->bat_desc.properties = pmu_bat_props;
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  174  		pbat->bat_desc.num_properties = ARRAY_SIZE(pmu_bat_props);
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  175  		pbat->bat_desc.get_property = pmu_bat_get_property;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  176  		pbat->pbi = &pmu_batteries[i];
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  177  		psy_cfg.drv_data = pbat;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  178  
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  179  		pbat->bat = power_supply_register(&bat_pdev->dev,
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  180  						  &pbat->bat_desc,
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  181  						  &psy_cfg);
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  182  		if (IS_ERR(pbat->bat)) {
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  183  			ret = PTR_ERR(pbat->bat);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  184  			kfree(pbat);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  185  			goto battery_register_failed;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  186  		}
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  187  		pbats[i] = pbat;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  188  	}
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  189  
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  190  	goto success;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  191  
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  192  battery_register_failed:
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  193  	while (i--) {
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  194  		if (!pbats[i])
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  195  			continue;
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  196  		power_supply_unregister(pbats[i]->bat);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  197  		kfree(pbats[i]);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  198  	}
+297d716f6260cc drivers/power/pmu_battery.c Krzysztof Kozlowski 2015-03-12  199  	power_supply_unregister(pmu_ac);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  200  ac_register_failed:
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  201  	platform_device_unregister(bat_pdev);
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  202  pdev_register_failed:
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  203  success:
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  204  	return ret;
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  205  }
+efea58e397dec8 drivers/power/pmu_battery.c David Woodhouse     2007-05-04  206  
 
-I do understand by now that you don't want to do that, but I won't accept
-the driver without it, sorry.
+:::::: The code at line 171 was first introduced by commit
+:::::: 35bf559145b6332f5465c15a4e5cd7a363985382 PMU battery: filenames in sysfs with spaces
 
-> +	}
-> +
-> +	temp_setting = 1024 * rsense;
-> +	if (temp_setting > INT_MAX)
-> +		return dev_err_probe(&client->dev, -ERANGE,
-> +				     "Current coefficient overflow\n");
+:::::: TO: Christian Kujau <lists@nerdbynature.de>
+:::::: CC: Anton Vorontsov <cbouatmailru@gmail.com>
 
-Same comments as above for both overflow detection and error code. This also
-means that rsense must _always_ be <= INT_MAX / 1024. I would suggest to
-check that once after reading rsense instead of having three different checks
-in different places.
-
-Also, having an error message here but not with the initial check against
-0 and INT_MAX is inconsistent. I'd suggest no error message, but if you want
-to have error messages please make it consistent.
-
-> +	info->m[PSC_CURRENT_OUT] = temp_setting;
-> +
-> +	return pmbus_do_probe(client, info);
-> +}
-> +
-> +static const struct of_device_id ltc4286_of_match[] = {
-> +	{ .compatible = "lltc,ltc4286" },
-> +	{ .compatible = "lltc,ltc4287" },
-> +	{}
-> +};
-> +
-> +static struct i2c_driver ltc4286_driver = {
-> +	.driver = {
-> +		.name = "ltc4286",
-> +		.of_match_table = ltc4286_of_match,
-> +	},
-> +	.probe = ltc4286_probe,
-> +	.id_table = ltc4286_id,
-> +};
-> +
-> +module_i2c_driver(ltc4286_driver);
-> +
-> +MODULE_AUTHOR("Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>");
-> +MODULE_DESCRIPTION("PMBUS driver for LTC4286 and compatibles");
-> +MODULE_LICENSE("GPL");
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
