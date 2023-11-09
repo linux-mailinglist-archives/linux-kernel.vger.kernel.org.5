@@ -2,108 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440237E6C95
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 706B37E6C9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbjKIOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        id S234073AbjKIOrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjKIOpe (ORCPT
+        with ESMTP id S231659AbjKIOrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:45:34 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11592327D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:45:32 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5bcfc508d14so776052a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:45:32 -0800 (PST)
+        Thu, 9 Nov 2023 09:47:17 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE09325B;
+        Thu,  9 Nov 2023 06:47:15 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5bf58914bacso8362237b3.3;
+        Thu, 09 Nov 2023 06:47:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699541131; x=1700145931; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KfWhXSOJF/IUlfX6AbsqfRgX7G0/QxQLJqodQO16P44=;
-        b=XwMogqVBqHIhThjZGVxh8Cu+BjHdo32dBqsZ6w3YT06YTYxPLxEqhUDETBTMBr7eOB
-         DO+Jva1u2QJ9dUUZrGrA52zec8L1pgatihPrss8xvXCu1E/sgXelWA5xgFkUBICrl47J
-         BtogZenocAKH4ZAeRf9pDzCk5EGDlbmw8YTpWDSrXDtOk3w0E9MxZKxY74UP6kYbP5fe
-         41+fKwUOgHf098lA9nNj6y9mEZKb8KNNv3kN9aUfKM2B080LgCHl2lzTUB1ZVdnyMJ8a
-         1s/QZSOnYkz9hOpPJyLjjLwdDT/BLwZjy9BQ6nDVbViHU/DjIRop6TEWol7ThPP286LL
-         yudg==
+        d=gmail.com; s=20230601; t=1699541234; x=1700146034; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=VV7Jzetcl/qBR3tZg/th8WOMrz/y0Xa/41dX+nUFncU=;
+        b=cVArIc5NnIDhvODhcATVnppXcf0tW7TUlz6JsNj6YBIJx2CDR++8rcGCblZb5HKGLq
+         /1uYTTCKBzR95mpYvnDylcBkLo0ewM0piiMf1kbIfkwOM0NYWi8eB4sTfvwaeSnIP5ws
+         HDstmoBoC8o3IF7BRLZJjLClsFWWDf6vrNNMSjIXptQydCdAGvvY8z/mLQaja9lBFv8y
+         Mdb1crGf0As7QrTyTu/MYEwj8olyc7oQ/rbtLoZsYMboXLVg7VGe3U+NiTAmB5MOlgmP
+         VJHkfjyxKC1zmRw4UPpaRQEymhrMgmb+A34cpi/srHBoCDTpEv77Ocwc9Mtjr0NwBPVH
+         8VZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699541131; x=1700145931;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfWhXSOJF/IUlfX6AbsqfRgX7G0/QxQLJqodQO16P44=;
-        b=JuZtSM0LzC2F4QPtnKfVfg+2UYbOJgLAvH09Ncbg0vSffg3hWvTtxKh/5ejw8yJ4HM
-         LTGFz3Zg5Q5LopuFy58GlKh80H1cYy4dcUibZaVY8ggE536PsZfBiON/4NoF12IYgxhf
-         boyK7aMGX0tjMAAT2uFfC3NhHJUEKIu2VlAjKGUnBJCwtBFyPLuE1WuuBg7oODqPj+uR
-         t64lRCBtaeSEeDetmy5H9w1/ENG/pq9223qHsQ2bEH4/4InEqz14UMkeNeWu6Ihq8BVT
-         8tNUg/7GOE7f6+xJTEBetV/bzHug8Zuk1ZffTVZfZhNFebhgRDOlDZFJz8kVVKw8kzCZ
-         Kt7Q==
-X-Gm-Message-State: AOJu0YzLaUNObBbNtfS1/zeldSA/ooJhK/WchMKBt34Ok31ay5qsTSAD
-        M9TYWkNLnd9VaHn7wFfjNHiMZsy4fmvmfAEtGQ==
-X-Google-Smtp-Source: AGHT+IGoaMELaV0OR2MxG3UGfILba7MFZYkophuoiyWm1Q6pT90+98qfV3htFNmmOEhqcX6GYdrr+6lasoWRYbCgDyc=
-X-Received: by 2002:a17:90b:1809:b0:281:3a4:2220 with SMTP id
- lw9-20020a17090b180900b0028103a42220mr1709904pjb.36.1699541131407; Thu, 09
- Nov 2023 06:45:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699541234; x=1700146034;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VV7Jzetcl/qBR3tZg/th8WOMrz/y0Xa/41dX+nUFncU=;
+        b=G/RmpeUF6AUU2xlez4NfUNdEGas34G/9T6gKYHDXzxT2LFg0rTLSMzxeIzLsb15bRV
+         DHRwV5QsOgLAK59UVq6YVQjoWYhjkTBs4PRkf3Wrxo1E0S+7Q1o7cuv4+cB6aSsy9rxh
+         MnabfHUOAyjquYU6NQ+So3YyjrRTcqQrPerW6Osy1ysuKkaAttWvRjyu2oHl9IxoMqny
+         gVZlmlc1eunbzOuy+FSrRAYqN8v/GD0HBRWmPiFoZ4aYDG4q9512cl+mexli9zFvXs+3
+         koMw51AIE8su+HspsTJxjQweGJyEgtolLLKdxIPObdGeXk3hT8U9/aKbXuWDzSeYCzUM
+         MeiQ==
+X-Gm-Message-State: AOJu0YzN8FVe6iMCuzHgHbhqOJ9rqx+VlLFZ4V04OrzMCYm/XOTXpXJh
+        ru7kFR+fv/NiBRzA/1meKB4=
+X-Google-Smtp-Source: AGHT+IF5d6+q7krI10WZ5H1tVxnyyAaWQzgSB26UudFbzvdHGfsdsyHA/ahP9nbwbvoRFD236bXdGA==
+X-Received: by 2002:a0d:dd53:0:b0:594:e97b:f6fa with SMTP id g80-20020a0ddd53000000b00594e97bf6famr5234134ywe.30.1699541234472;
+        Thu, 09 Nov 2023 06:47:14 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s38-20020a814526000000b005a7bf2aff15sm8060983ywa.95.2023.11.09.06.47.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 06:47:13 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <55391a93-2848-4885-b619-09a11b0ffb5c@roeck-us.net>
+Date:   Thu, 9 Nov 2023 06:47:11 -0800
 MIME-Version: 1.0
-Received: by 2002:a05:7300:7487:b0:f6:dda2:65c with HTTP; Thu, 9 Nov 2023
- 06:45:30 -0800 (PST)
-Reply-To: marouaneranda172@aol.com
-From:   Marouane El Randa <abebeaemroselassie2@gmail.com>
-Date:   Thu, 9 Nov 2023 15:45:30 +0100
-Message-ID: <CADm_bqKiTTNZndLc7SEtqaM2z-FeXW0UkubU9hWupxHSJStFrQ@mail.gmail.com>
-Subject: BUSINESS INVESTMENT I NEED YOUR URGENT RESPOND.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] dt-bindings: hwmon: Add Amphenol ChipCap 2
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20231020-topic-chipcap2-v1-0-087e21d4b1ed@gmail.com>
+ <20231020-topic-chipcap2-v1-4-087e21d4b1ed@gmail.com>
+ <5a35f02d-31d0-4cef-9b46-f231d0611c7a@linaro.org>
+ <269222d8-b72f-4c7a-a19e-a82964e29ec8@gmail.com>
+ <4b1d6fe8-529b-4cf4-ba0a-697c7aeac174@linaro.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <4b1d6fe8-529b-4cf4-ba0a-697c7aeac174@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings my good friend,
+On 11/9/23 00:41, Krzysztof Kozlowski wrote:
+> On 08/11/2023 13:44, Javier Carrasco wrote:
+> 
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    enum:
+>>>> +      - amphenol,cc2dxx
+>>>> +      - amphenol,cc2dxxs
+>>>
+>>> What does xx stand for? Wildcard? I do not see cc2dxx in part numbers.
+>>> We expect specific compatibles, not generic. What are the differences
+>>> between all parts?
+>>>
+>> There are two device families: cc2dxx and cc2dxxs, where xx indicates
+>> the voltage and the accuracy. That does not change how the devices works
+>> and it is not relevant for the driver. The 's' indicates that it is a
+>> sleep device, and that modifies how it works.
+>> I listed the supported part numbers in the hwmon documentation, where
+>> they are also divided into these two families.
+> 
+> If the number of devices is relatively small, list them all. Otherwise
+> choose one device model and use it. No family models. No wildcards.
+> 
 
-I have a proposal for you, this however is not mandatory nor will I in
-any manner compel you to honor against your will. I am Mr. Marouane El
-Randa, a former executive director with Arab Tunisian Bank here in
-Tunis; I retired A year and 7 months ago after putting in 28 years of
-meticulous service. During my days with Arab Tunisian Bank, I was the
-personal account officer and one of the financial advisers to Mr. Zine
-Al-Abidine Ben Ali the past Tunisian President who died on self exile
-at Saudi Arabia. During his tryer period he instructed me to move all
-his investment in my care which consists of US$115M and 767KG of gold
-out of the Gulf States for safe keeping; and that I successfully did
-by moving US$50M to Madrid Spain, US$50M to Dubai United Arab
-Emirate,US$15M to Ouagadougou and 767KG of gold to Acra Ghana in West
-Africa as an anonymous deposits, so that the funds will in no way to
-be traced to him. He has instructed me to find an investor who would
-stand as the beneficiary of the fund and the gold; and claim it for
-further investment.
+Agreed. There is no guarantee that CC2D[00..99][X] will be the same
+devices.
 
-Consequent upon the above, my proposal is that I would like you as a
-foreigner to stand in as the beneficiary of this fund and the gold
-which I have successfully moved outside the country and provide an
-account overseas where this said fund will be transferred into. It is
-a careful network and my voluntary retirement from the Arab Tunisian
-Bank is to ensure a hitch-free operation as all modalities for you to
-stand as beneficiary and owner of the deposits has been perfected by
-me. Mr. Zine al-Abidine Ben Ali will offer you 20% of the total
-investment if you can be the investor and claim this deposits in
-Spain, Dubai, Ouagadougou and Accra Ghana as the beneficiary.
-
-Now my questions are:-
-
-1. Can you handle this transaction?
-2. Can I give you this trust?
-
-Consider this and get back to me as soon as possible so that I can
-give you more details regarding this transaction. Finally, it is my
-humble request that the information as contained herein be accorded
-the necessary attention, urgency as well as the secrecy it deserves.
-
-I expect your urgent response if you can handle this project.You have
-to contact me through my private e-mail at {marouaneranda172@aol.com}
-
-Sorry if you received this letter in your spam or junk email, is due to recent
-connection error here in the country.
-
-Regards,
-Mr. Marouane El Randa.
+Guenter
