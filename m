@@ -2,93 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164DA7E6145
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4337E6149
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbjKIAIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 19:08:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
+        id S232025AbjKIAK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 19:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKIAID (ORCPT
+        with ESMTP id S229473AbjKIAK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 19:08:03 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C1D2685
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 16:08:00 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso358967a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 16:08:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699488479; x=1700093279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rz7mhIwDEHwZ7Y0YNWv+J5BlWu5bz+Y6wtW1QfLOmcM=;
-        b=QFPjbg98K9iJNkwws75Xd43/wi/aJsYf9ktODskfTDJ755amtKvZez6cT4thQ64Xh3
-         xq2YVfCCMNp53d/Aky2xEKekumHNfFStJHn3D/+u7igmy4kFncHlaK2RQmvgpdJ+VTtP
-         0NYLCL0clcLjPhmVDWmoBM3C4P279owHj4NwcR0yseb9yw0irD0VGoxM3a9xb9/oJRsW
-         rSJx0M9ElViX+8rXtbL4i83Au2cibC2YjT2I35J/OA2wje7h/mvm2EUp1xp1CW5BrKuC
-         1zSp0eM2Sprn3oi4zY1zteks/R9Do6E3B7YeCBY8MkCDuazwtwJ8H1eTC30arx1nsbHh
-         9dyg==
+        Wed, 8 Nov 2023 19:10:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C0025BC
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 16:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699488579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+BDCV67ZJJzj3udjDKNsHDngo8mLUTTtP7ZAGfmOzog=;
+        b=T4/dNpUKwSMhXGKJHOhX1RENDJEuU4BP1VpD6l+z8VDLHPyCilmGKK0xwXME4TGKAK9GYU
+        eqiuE2f0y+cZIA5yRp3No83aQlU/HuwBGXsuJvvYP/MRVUnGDU6vlSOUZk3kKsZc33WhOe
+        4HA5CUWVZMEN4K6nwXtrR/lQfoLPZ6Q=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-260-x8O9BlpUO8-FNdSwdM2NsQ-1; Wed, 08 Nov 2023 19:09:36 -0500
+X-MC-Unique: x8O9BlpUO8-FNdSwdM2NsQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d9b520d15so106879f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 16:09:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699488479; x=1700093279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rz7mhIwDEHwZ7Y0YNWv+J5BlWu5bz+Y6wtW1QfLOmcM=;
-        b=auj7985g1oqoxRt2nVHAASexggyW7w9+VS86hYHOsY13217ZbskVtjzo1CrLafvLW0
-         Ye9omZ/2XkFAonzw0RTGQ8LcGkZJreYeDWk42D+gvPGqldy/tZ+Sc7zTD9x+O5P2oQuQ
-         xYnwyzNvAZ2lPEdnMHPgalUO2n0lW0Tjwlo5Io/CUl+NDMrjCf4LVa59m7zg5UCE9dVz
-         Dh690OPCj9Pr5vUl0qcLtBApTgQDRKt0FLORH/s2MF2fVPKhmuTDFvgzFyorIQyMgOYj
-         YlhXKqX+miRP32X2R8GOu/UzcA4Gj4saSkYg9O85TT5sebikB61a4rxBzeqTJpjRWfzo
-         pDfw==
-X-Gm-Message-State: AOJu0Yz4zcNNxVy7dYbcKDS162L1xYAxJ0ID+G9FsKTlRG9AiZzsBYdw
-        XN0PUAArwqjkSjxOOJ/e0vMYRry+RLRSE1E9ggbphA==
-X-Google-Smtp-Source: AGHT+IGpO7H+kRRWyzMj4BetZ3oYPaIbaBlz2jRUUfN3V+9mya/7be4ceQJGfNOaDOryDYKZgvJQi3sXhasVWJqBjBI=
-X-Received: by 2002:a17:907:7f1e:b0:9d5:ecf9:e6a0 with SMTP id
- qf30-20020a1709077f1e00b009d5ecf9e6a0mr1348753ejc.0.1699488479067; Wed, 08
- Nov 2023 16:07:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699488575; x=1700093375;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+BDCV67ZJJzj3udjDKNsHDngo8mLUTTtP7ZAGfmOzog=;
+        b=rko1+UKwBEHQV3Z/W42luO+oyTKbo6stbRs3UoMBL7d9bdx1u+Ce4nxUo1WHjPNyfz
+         OLIrBS7fi8VOCKuOpMAeKX2mUGWh0lJQVUh7a3k9F+3prKVUw2/NdfmQ5CHoUa0zXS3O
+         dP1o9U4no6ekoz15yKZ/Pz6sA3VRssCMlEQborJdvucPRZChdqQG0DuV7n+mtejXvFmb
+         HQQXQwx3gIvurCvFSBe++rSVgpLLpb4p4OXBti4VvKRrjZJMsT9uEoS+cJdatPqxW+Y0
+         SX07+NF0tzury2gecNBxuShrmJGrh7bSGqfPqTI7NmihDM5aUX2KitGBg+OHIu08ViKC
+         8DcA==
+X-Gm-Message-State: AOJu0YwbqfQLY7Li280MnFHmYhRREoPCaxKaGc7xw7MpfL/Q03+sVQDh
+        i2jFVmzW4Ng49xHU8MsSWk7DVw1ydZcIIKAmSOR5vK81LirYtADV42qMyzPRfs/5TOqzcQIYFcc
+        DNfYx16NkYZ+RO8FJVzUiIHMO
+X-Received: by 2002:a5d:6da2:0:b0:32f:8ace:f0b7 with SMTP id u2-20020a5d6da2000000b0032f8acef0b7mr3748252wrs.12.1699488575200;
+        Wed, 08 Nov 2023 16:09:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFUAVT/jN+LlNSuyCU1pMvZ0q3i4Ug9qHBMHGhKW0QD7oqx2iJ3jNbf4SmDR+MVnr34xh2jkw==
+X-Received: by 2002:a5d:6da2:0:b0:32f:8ace:f0b7 with SMTP id u2-20020a5d6da2000000b0032f8acef0b7mr3748243wrs.12.1699488574847;
+        Wed, 08 Nov 2023 16:09:34 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id f9-20020a0560001b0900b0032db430fb9bsm6011061wrz.68.2023.11.08.16.09.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Nov 2023 16:09:34 -0800 (PST)
+Message-ID: <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
+Date:   Thu, 9 Nov 2023 01:09:33 +0100
 MIME-Version: 1.0
-References: <20231108164920.3401565-1-jackmanb@google.com> <CALvZod4Uj9rR3OL7CYfq5t8gsRLAa7b2wa3m26nyDhfvQaWQ+g@mail.gmail.com>
-In-Reply-To: <CALvZod4Uj9rR3OL7CYfq5t8gsRLAa7b2wa3m26nyDhfvQaWQ+g@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 8 Nov 2023 16:07:21 -0800
-Message-ID: <CAJD7tkYJJOq5cZCaymbTT_PdGrQOb6iGUvrtaPK9FAFXYFduUg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/page_alloc: Dedupe some memcg uncharging logic
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/sched: fix potential page fault in
+ drm_sched_job_init()
+Content-Language: en-US
+To:     Luben Tuikov <ltuikov89@gmail.com>, airlied@gmail.com,
+        daniel@ffwll.ch, christian.koenig@amd.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20231108022716.15250-1-dakr@redhat.com>
+ <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 3:52=E2=80=AFPM Shakeel Butt <shakeelb@google.com> w=
-rote:
->
-> On Wed, Nov 8, 2023 at 8:49=E2=80=AFAM Brendan Jackman <jackmanb@google.c=
-om> wrote:
-> >
-> > The duplication makes it seem like some work is required before
-> > uncharging in the !PageHWPoison case. But it isn't, so we can simplify
-> > the code a little.
-> >
-> > Note the PageMemcgKmem check is redundant, but I've left it in as it
-> > avoids an unnecessary function call.
-> >
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
->
-> Thanks for the patch. Actually the PageMemcgKmem/folio_memcg_kmem
-> check should be in memcg_kmem_uncharge_page() and not in
-> __memcg_kmem_uncharge_page(). Anyways, that is orthogonal to this
-> patch.
+On 11/8/23 06:46, Luben Tuikov wrote:
+> Hi,
+> 
+> Could you please use my gmail address, the one one I'm responding from--I don't want
+> to miss any DRM scheduler patches. BTW, the luben.tuikov@amd.com email should bounce
+> as undeliverable.
+> 
+> On 2023-11-07 21:26, Danilo Krummrich wrote:
+>> Commit 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable
+>> number of run-queues") introduces drm_err() in drm_sched_job_init(), in
+>> order to indicate that the given entity has no runq, however at this
+>> time job->sched is not yet set, likely to be NULL initialized, and hence
+>> shouldn't be used.
+>>
+>> Replace the corresponding drm_err() call with pr_err() to avoid a
+>> potential page fault.
+>>
+>> While at it, extend the documentation of drm_sched_job_init() to
+>> indicate that job->sched is not a valid pointer until
+>> drm_sched_job_arm() has been called.
+>>
+>> Fixes: 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable number of run-queues")
+>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>> ---
+>>   drivers/gpu/drm/scheduler/sched_main.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+>> index 27843e37d9b7..dd28389f0ddd 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_main.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+>> @@ -680,6 +680,9 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
+>>    * This function returns -ENOENT in this case (which probably should be -EIO as
+>>    * a more meanigful return value).
+>>    *
+>> + * Note that job->sched is not a valid pointer until drm_sched_job_arm() has
+>> + * been called.
+>> + *
+> 
+> Good catch!
+> 
+> Did you actually get this to page-fault and have a kernel log?
 
-Agreed. If we move the check into memcg_kmem_uncharge_page(), perhaps
-we should call it directly here instead of doing the checks, since
-there won't be an extra function call as it is inline, right? We can
-also make __memcg_kmem_uncharge_page static to mm/memcontrol.c
+No, I just found it because I was about to make the same mistake.
 
-I suspect the same can be done for __memcg_kmem_charge_page() as well.
+> 
+> I'm asking because we see it correctly set in this kernel log coming from AMD,
+
+I think that's because amdgpu just sets job->sched to *some* scheduler instance after
+job allocation [1].
+
+[1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c#L108
+
+> 
+> [   11.886024] amdgpu 0000:0a:00.0: [drm] *ERROR* drm_sched_job_init: entity has no rq!
+> 
+> in this email,
+> https://lore.kernel.org/r/CADnq5_PS64jYS_Y3kGW27m-kuWP+FQFiaVcOaZiB=JLSgPnXBQ@mail.gmail.com
+> 
+>>    * Returns 0 for success, negative error code otherwise.
+>>    */
+>>   int drm_sched_job_init(struct drm_sched_job *job,
+>> @@ -691,7 +694,7 @@ int drm_sched_job_init(struct drm_sched_job *job,
+>>   		 * or worse--a blank screen--leave a trail in the
+>>   		 * logs, so this can be debugged easier.
+>>   		 */
+>> -		drm_err(job->sched, "%s: entity has no rq!\n", __func__);
+>> +		pr_err("%s: entity has no rq!\n", __func__);
+> 
+> Is it feasible to do something like the following?
+> 
+> 		dev_err(job->sched ? job->sched->dev : NULL, "%s: entity has no rq!\n", __func__);
+
+I don't think that's a good idea. Although I'd assume that every driver zero-initializes its job
+structures, I can't see a rule enforcing that. Hence, job->sched can be a random value until
+drm_sched_job_arm() is called.
+
+However, I notice there are quite a view more fields of struct drm_sched_job that are never
+initialized, hence there are either a couple more potential bugs or missing documentation that
+drivers *must* ensure that a job is zero-initialized.
+
+Not quite sure if we really want to rely on the latter for core infrastructure...
+
+> 
+>>   		return -ENOENT;
+>>   	}
+>>   
+>>
+>> base-commit: c015fb6d01adb616fb54824feb55ce5ab18e8ca1
+> 
+
