@@ -2,211 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84937E66FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BF07E66FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjKIJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S230295AbjKIJpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjKIJob (ORCPT
+        with ESMTP id S229574AbjKIJpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:44:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5292736
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:43:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699523027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OEjQ7xxzDSW6bCsBCGR2pe6qDNDSEL6lx838tIM/GU8=;
-        b=f6+oEIASi65VzaiyTjaD9u+K9jLEYYB14KYR755tiblsv2Eo4qIzmmuAJJyG3PiXjkWptG
-        qbVqlY7RAKtWGUOYTu6FaVBLNFiXxm1n5OP+xyBH879iMbVubfBT1ioo/D77ROwvVORDN2
-        euRlqCT5Vk/t8ZRuKXLsEJCaVD7RIRM=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-632-fywIOqZONi2V1g8Qj8KutA-1; Thu, 09 Nov 2023 04:43:45 -0500
-X-MC-Unique: fywIOqZONi2V1g8Qj8KutA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2800be2d781so182119a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:43:45 -0800 (PST)
+        Thu, 9 Nov 2023 04:45:15 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3619C271F
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:45:13 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-da2b9234a9fso719630276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:45:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699523112; x=1700127912; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m3j1z3JdsTrjV1Ga7OJY3GeweZCLOf9hKt+iEco6J78=;
+        b=JkRCM3GMerYL5k7sGGMOfzzUuiAIGO4PdZi3yYSwYcXQtkwrdJTDKdTo+7hBbPtsYg
+         rAmp1+gc9Ox1AHEt9BYFw/GFVsAksHiUQmRcHs9MMKatMfEXz/b/Ln7E1aHx7N9WfcwC
+         e1l+LRv6GFgCdb5eqrChrkaEP9l01Begh5tFa04Pvl/trchP3f5KPjlwmLvc//IgVNxw
+         7pYtgOpLpEc3xN6F4uoqI9S8t8pxMui/Y7jFvbSYGLJ2nn6f+P818e+8jzsuPTyUGkZk
+         P6ub0qK5CrmsCuP1zKp6VqnkTtBoJUkkQPUt2v+6p3ZmLgo/8zm2j/iqrhd2yjF7h2ga
+         UXGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699523024; x=1700127824;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OEjQ7xxzDSW6bCsBCGR2pe6qDNDSEL6lx838tIM/GU8=;
-        b=LTYyYV/C4CxC6JmqO6BsvlF3mp/P4rrFemCwHHqvson6BhIwnVhjpvcixhLX+PP9Qk
-         XonkFw8WD37Cy+MVICNhDvveXXBN9L9Di19ikANAyphqqztz/m7bldM1UejYgvvzGbe/
-         LFB10dgCWzL2xw1AHu2e+Wdxqdoq7DF2hKYeZqlVnMDAkVaH0WVzJCj842WdfSBuEfZE
-         2I74pgWD39/yunDcCWQ38uSSD4LfpIbPqh7cNUYYxmGZdaPeznEjziocXFr25PvD7ES5
-         DrGrzQFZSxGP0sa+iPVT5YRuaXfshxtEvZvRnBoPWKsYdcUyygw//3yApf3QxHAnJbjO
-         AuGQ==
-X-Gm-Message-State: AOJu0Yzie34RPcJghoR2c+9iCkYA73+J85ibPz2kkrlHYGcjf+H2BIYB
-        384A4eMSiRUDEQMychsIT9i8nENvxHK3IQ77ZAM8IHwZRYcV5T7dYrZU0hMUx8BRn61UsU9+Meu
-        m+ZUdq5DgG2YAgntQLuBnhHHP
-X-Received: by 2002:a17:902:d4cd:b0:1cc:2bc4:5157 with SMTP id o13-20020a170902d4cd00b001cc2bc45157mr4921098plg.1.1699523024547;
-        Thu, 09 Nov 2023 01:43:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF6RZnogij7LzQU0k7NFPHwR/unfu31fUk7J39NRmSg93ajKyOUqEekd23fy6SG5sWCfMu5eg==
-X-Received: by 2002:a17:902:d4cd:b0:1cc:2bc4:5157 with SMTP id o13-20020a170902d4cd00b001cc2bc45157mr4921073plg.1.1699523024112;
-        Thu, 09 Nov 2023 01:43:44 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170902eed500b001bf846dd2d0sm3105978plb.13.2023.11.09.01.43.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 01:43:43 -0800 (PST)
-Message-ID: <46faa2bd-9f27-2eea-f46d-f02715e2b540@redhat.com>
-Date:   Thu, 9 Nov 2023 17:43:36 +0800
+        d=1e100.net; s=20230601; t=1699523112; x=1700127912;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m3j1z3JdsTrjV1Ga7OJY3GeweZCLOf9hKt+iEco6J78=;
+        b=moTE93DMpyWDCZUP0hrSjXN320idG9ukZcj8UjTL/jTM7BbEpwnQtcbEaLYtVUu79L
+         MmQ6CXJ15nzpZfOqsSv2Hp0RbtULfes6KWYDysruE/tjPXR1ffT/fFhamAr0OG0ngcGD
+         RPB+Rih7equQ1e/6wKPuQoANfFjNlLMWZnLuvIBktN8HPjLttS8T4setC9/5cUee1PvK
+         uoJzrC5YZaZF9o1AneakKqY/RgVaFiS5egHpOewN7bopc84hTGLI7H8WO2DV2Xl9+C7c
+         NDgg0imE/nY1EzqDipJVhBmHoRyAbFYfDRiDCgXRqWCFsa2Oi/vloPRqEC507tzrsGG8
+         r9HA==
+X-Gm-Message-State: AOJu0YzM3V/zFKM+eNiksUe1e3yPVD4y6/OK4qe08hnY+NhSsDxkFj5b
+        +wNT3c5jPyaWKND0oKDdXleGLOSmQSxgtLuWGOhjWg==
+X-Google-Smtp-Source: AGHT+IHsxENxFKAe6hQ6iaJ1WQ/sXmmaQU8ry7Cn4q0Z5XlzXmgqzaQ8cqMSayf6tlAVYKaoDwiwsSz7RpEzRHnY8kE=
+X-Received: by 2002:a25:d110:0:b0:da0:6cf3:c629 with SMTP id
+ i16-20020a25d110000000b00da06cf3c629mr4322026ybg.41.1699523112296; Thu, 09
+ Nov 2023 01:45:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 05/22] ACPI: Move ACPI_HOTPLUG_CPU to be disabled on
- arm64 and riscv
-Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JL6-00CTws-3z@rmk-PC.armlinux.org.uk>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <E1r0JL6-00CTws-3z@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231107-refclk_always_on-v2-0-de23962fc4b3@quicinc.com>
+ <20231107-refclk_always_on-v2-2-de23962fc4b3@quicinc.com> <CAA8EJpr8Y+k2FJqFfZVagWxfgsUEnZ1010-xaaUg=c6tqu8Hsw@mail.gmail.com>
+ <d2556aad-24cc-c0d1-d71d-bf43bc832036@quicinc.com>
+In-Reply-To: <d2556aad-24cc-c0d1-d71d-bf43bc832036@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 9 Nov 2023 11:45:00 +0200
+Message-ID: <CAA8EJppeUpmGsoqueRoq_jo1FnyP6uO8P8egmYpysNcD8A8KAA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] phy: qcom-qmp-pcie: Add endpoint refclk control
+ register offset
+To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 9 Nov 2023 at 11:36, Krishna Chaitanya Chundru
+<quic_krichai@quicinc.com> wrote:
+>
+>
+> On 11/7/2023 6:36 PM, Dmitry Baryshkov wrote:
+> > On Tue, 7 Nov 2023 at 14:26, Krishna chaitanya chundru
+> > <quic_krichai@quicinc.com> wrote:
+> >> Some platforms needs to keep endpoint refclk always on, for this
+> >> purpose add this offset for all the applicable phy versions.
+> >>
+> >> And also add reg layout for few controllers as we are adding
+> >> endpoint refclk control register which changes based upon phy version.
+> >>
+> >> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >
+> >> ---
+> >>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           | 26 +++++++++++++++++++---
+> >>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h    |  1 +
+> >>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h |  1 +
+> >>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h |  1 +
+> >>   4 files changed, 26 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> index a63ca7424974..74d03d217ff2 100644
+> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+> >> @@ -77,6 +77,7 @@ enum qphy_reg_layout {
+> >>          QPHY_START_CTRL,
+> >>          QPHY_PCS_STATUS,
+> >>          QPHY_PCS_POWER_DOWN_CONTROL,
+> >> +       QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
+> >>          /* Keep last to ensure regs_layout arrays are properly initialized */
+> >>          QPHY_LAYOUT_SIZE
+> >>   };
+> >> @@ -93,6 +94,7 @@ static const unsigned int pciephy_v3_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >>          [QPHY_START_CTRL]               = QPHY_V3_PCS_START_CONTROL,
+> >>          [QPHY_PCS_STATUS]               = QPHY_V3_PCS_PCS_STATUS,
+> >>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V3_PCS_POWER_DOWN_CONTROL,
+> >> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V3_PCS_ENDPOINT_REFCLK_CNTRL,
+> >>   };
+> >>
+> >>   static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >> @@ -107,6 +109,7 @@ static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >>          [QPHY_START_CTRL]               = QPHY_V4_PCS_START_CONTROL,
+> >>          [QPHY_PCS_STATUS]               = QPHY_V4_PCS_PCS_STATUS1,
+> >>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V4_PCS_POWER_DOWN_CONTROL,
+> >> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
+> >>   };
+> >>
+> >>   static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >> @@ -114,6 +117,23 @@ static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >>          [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
+> >>          [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
+> >>          [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
+> >> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
+> >> +};
+> >> +
+> >> +static const unsigned int pciephy_v5_20_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >> +       [QPHY_SW_RESET]                 = QPHY_V5_PCS_SW_RESET,
+> >> +       [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
+> >> +       [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
+> >> +       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
+> > Nit: we should probably define V5_20 and v6_20 versions of these registers
+>
+> We don't have separate defines for v5_20 and v6_20 for these registers,
+> that is why we are using these.
+>
+> And the offsets are same for those version. That is why I tried to use
+> macros.
+
+Mixing versions in a single table can quickly lead to a disaster.
+
+>
+> - Krishna Chaitanya.
+>
+> > If you were to send v3 for any reason, could you please add them?
+> >
+> >> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
+> >> +};
+> >> +
+> >> +static const unsigned int pciephy_v6_20_regs_layout[QPHY_LAYOUT_SIZE] = {
+> >> +       [QPHY_SW_RESET]                 = QPHY_V5_PCS_SW_RESET,
+> >> +       [QPHY_START_CTRL]               = QPHY_V5_PCS_START_CONTROL,
+> >> +       [QPHY_PCS_STATUS]               = QPHY_V5_PCS_PCS_STATUS1,
+> >> +       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V5_PCS_POWER_DOWN_CONTROL,
+> >> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_CNTRL,
+> >>   };
+> >>
+> >>   static const struct qmp_phy_init_tbl msm8998_pcie_serdes_tbl[] = {
+> >> @@ -2956,7 +2976,7 @@ static const struct qmp_phy_cfg sm8450_qmp_gen4x2_pciephy_cfg = {
+> >>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
+> >>          .vreg_list              = qmp_phy_vreg_l,
+> >>          .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
+> >> -       .regs                   = pciephy_v5_regs_layout,
+> >> +       .regs                   = pciephy_v5_20_regs_layout,
+> >>
+> >>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
+> >>          .phy_status             = PHYSTATUS_4_20,
+> >> @@ -3012,7 +3032,7 @@ static const struct qmp_phy_cfg sm8550_qmp_gen4x2_pciephy_cfg = {
+> >>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
+> >>          .vreg_list              = sm8550_qmp_phy_vreg_l,
+> >>          .num_vregs              = ARRAY_SIZE(sm8550_qmp_phy_vreg_l),
+> >> -       .regs                   = pciephy_v5_regs_layout,
+> >> +       .regs                   = pciephy_v6_20_regs_layout,
+> >>
+> >>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
+> >>          .phy_status             = PHYSTATUS_4_20,
+> >> @@ -3047,7 +3067,7 @@ static const struct qmp_phy_cfg sa8775p_qmp_gen4x2_pciephy_cfg = {
+> >>          .num_resets             = ARRAY_SIZE(sdm845_pciephy_reset_l),
+> >>          .vreg_list              = qmp_phy_vreg_l,
+> >>          .num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
+> >> -       .regs                   = pciephy_v5_regs_layout,
+> >> +       .regs                   = pciephy_v5_20_regs_layout,
+> >>
+> >>          .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
+> >>          .phy_status             = PHYSTATUS_4_20,
+> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
+> >> index a469ae2a10a1..9b166286afda 100644
+> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
+> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h
+> >> @@ -11,6 +11,7 @@
+> >>   #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG2           0x0c
+> >>   #define QPHY_V5_PCS_PCIE_POWER_STATE_CONFIG4           0x14
+> >>   #define QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_DRIVE         0x20
+> >> +#define QPHY_V5_PCS_PCIE_ENDPOINT_REFCLK_CNTRL         0x24
+> >>   #define QPHY_V5_PCS_PCIE_INT_AUX_CLK_CONFIG1           0x54
+> >>   #define QPHY_V5_PCS_PCIE_OSC_DTCT_ACTIONS              0x94
+> >>   #define QPHY_V5_PCS_PCIE_EQ_CONFIG2                    0xa8
+> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
+> >> index cdf8c04ea078..8b114e538a07 100644
+> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
+> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5_20.h
+> >> @@ -9,6 +9,7 @@
+> >>   /* Only for QMP V5_20 PHY - PCIe PCS registers */
+> >>   #define QPHY_V5_20_PCS_PCIE_POWER_STATE_CONFIG2                0x00c
+> >>   #define QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_DRIVE      0x01c
+> >> +#define QPHY_V5_20_PCS_PCIE_ENDPOINT_REFCLK_CNTRL      0x020
+> >>   #define QPHY_V5_20_PCS_PCIE_OSC_DTCT_MODE2_CONFIG5     0x084
+> >>   #define QPHY_V5_20_PCS_PCIE_OSC_DTCT_ACTIONS           0x090
+> >>   #define QPHY_V5_20_PCS_PCIE_EQ_CONFIG1                 0x0a0
+> >> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
+> >> index e3eb08776339..f7abe95c49ad 100644
+> >> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
+> >> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h
+> >> @@ -10,6 +10,7 @@
+> >>   #define QPHY_PCIE_V6_20_PCS_POWER_STATE_CONFIG2                0x00c
+> >>   #define QPHY_PCIE_V6_20_PCS_TX_RX_CONFIG               0x018
+> >>   #define QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_DRIVE      0x01c
+> >> +#define QPHY_PCIE_V6_20_PCS_ENDPOINT_REFCLK_CNTRL      0x020
+> >>   #define QPHY_PCIE_V6_20_PCS_OSC_DTCT_ATCIONS           0x090
+> >>   #define QPHY_PCIE_V6_20_PCS_EQ_CONFIG1                 0x0a0
+> >>   #define QPHY_PCIE_V6_20_PCS_EQ_CONFIG5                 0x108
+> >>
+> >> --
+> >> 2.42.0
+> >>
+> >>
+> >
 
 
-On 11/7/23 18:29, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> Neither arm64 nor riscv support physical hotadd of CPUs that were not
-> present at boot. For arm64 much of the platform description is in static
-> tables which do not have update methods. arm64 does support HOTPLUG_CPU,
-> which is backed by a firmware interface to turn CPUs on and off.
-> 
-> acpi_processor_hotadd_init() and acpi_processor_remove() are for adding
-> and removing CPUs that were not present at boot. arm64 systems that do this
-> are not supported as there is currently insufficient information in the
-> platform description. (e.g. did the GICR get removed too?)
-> 
-> arm64 currently relies on the MADT enabled flag check in map_gicc_mpidr()
-> to prevent CPUs that were not described as present at boot from being
-> added to the system. Similarly, riscv relies on the same check in
-> map_rintc_hartid(). Both architectures also rely on the weak 'always fails'
-> definitions of acpi_map_cpu() and arch_register_cpu().
-> 
-> Subsequent changes will redefine ACPI_HOTPLUG_CPU as making possible
-> CPUs present. Neither arm64 nor riscv support this.
-> 
-> Disable ACPI_HOTPLUG_CPU for arm64 and riscv by removing 'default y' and
-> selecting it on the other three ACPI architectures. This allows the weak
-> definitions of some symbols to be removed.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
-> Changes since RFC:
->   * Expanded conditions to avoid ACPI_HOTPLUG_CPU being enabled when
->     HOTPLUG_CPU isn't.
-> Changes since RFC v3:
->   * Dropped ia64 changes
-> ---
->   arch/loongarch/Kconfig        |  1 +
->   arch/x86/Kconfig              |  1 +
->   drivers/acpi/Kconfig          |  1 -
->   drivers/acpi/acpi_processor.c | 18 ------------------
->   4 files changed, 2 insertions(+), 19 deletions(-)
-> 
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index d889a0b97bc1..64620e90c12c 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -5,6 +5,7 @@ config LOONGARCH
->   	select ACPI
->   	select ACPI_GENERIC_GSI if ACPI
->   	select ACPI_MCFG if ACPI
-> +	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ACPI_PPTT if ACPI
->   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
->   	select ARCH_BINFMT_ELF_STATE
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3762f41bb092..dbdcfc708369 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -59,6 +59,7 @@ config X86
->   	#
->   	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
->   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
-> +	select ACPI_HOTPLUG_CPU			if ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ARCH_32BIT_OFF_T			if X86_32
->   	select ARCH_CLOCKSOURCE_INIT
->   	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index f819e760ff19..a3acfc750fce 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -310,7 +310,6 @@ config ACPI_HOTPLUG_CPU
->   	bool
->   	depends on ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ACPI_CONTAINER
-> -	default y
->   
->   config ACPI_PROCESSOR_AGGREGATOR
->   	tristate "Processor Aggregator"
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 0f5218e361df..4fe2ef54088c 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -184,24 +184,6 @@ static void __init acpi_pcc_cpufreq_init(void) {}
->   
->   /* Initialization */
->   #ifdef CONFIG_ACPI_HOTPLUG_CPU
-> -int __weak acpi_map_cpu(acpi_handle handle,
-> -		phys_cpuid_t physid, u32 acpi_id, int *pcpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -int __weak acpi_unmap_cpu(int cpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -int __weak arch_register_cpu(int cpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -void __weak arch_unregister_cpu(int cpu) {}
-> -
->   static int acpi_processor_hotadd_init(struct acpi_processor *pr)
->   {
->   	unsigned long long sta;
 
 -- 
-Shaoqin
-
+With best wishes
+Dmitry
