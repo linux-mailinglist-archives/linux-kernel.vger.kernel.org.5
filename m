@@ -2,394 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D20E17E69C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98B27E69C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbjKILgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
+        id S232628AbjKILhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbjKILg3 (ORCPT
+        with ESMTP id S230123AbjKILhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:36:29 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6352D69;
-        Thu,  9 Nov 2023 03:36:27 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so817542b3a.2;
-        Thu, 09 Nov 2023 03:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699529787; x=1700134587; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9FqbWiyXG216kDW0jojJTcyqxwv5dDcG06yvulcVnls=;
-        b=IOkW+JzBO1bcPMWDpK+g+2YXnAvTwb4i9ToiAmkTwQiBt9Cke0ShYby1y2qBQnOwfR
-         GCuz6ZojYSJ4wpt1miZtEVSqICAlCX1OD7lO3kLVtbjKy5/K4wkMYGGnx6jeojX8JCBE
-         +wQbqNREAjysDyYv2wejsvYqnJQitsgBCj5ozZLtduB7zGV9w9ILWsRdNG0Xr2j8Udgk
-         WCcyotrTJQNoR315nAyWiP0c/+6h/xT/IKB6NtCBaa3Y4hUwuqHCKz0MFIWbly2oJi9c
-         p+NHqA1vc31eKsO1cAaHseI5H5VSveFJ7cLpf2yhuLkCnuwlpeltIdQevpAnWtSRkg44
-         PLwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699529787; x=1700134587;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9FqbWiyXG216kDW0jojJTcyqxwv5dDcG06yvulcVnls=;
-        b=It6LL1WkTYCattLhCe/an97RmLrYpLK4aM3WavsOX+zd3UR8W/RmpVH2qFa7bjQlGY
-         v/25fSXaLUTEkQbi8aYBPyO+AOjQNlkN1V7RtgZb7o8hs/39qXN2BMqxrGBX5r/9RFTs
-         Hqc5U8U+3C7OsB1xYyhujcAf1/FEbBxWrqxRNYMaHyMZvMVX2MTh3LhjflHw4F3A8tQ8
-         UgDvnpK6kQdQYfU/7GPgwAxGJil6T7TzA7+1B3qx2YDWZ7L/lEC4DY0uuBtfZ3xDrVIO
-         WU5NwR25GGQ3hw4ccWpSYE3yEDBZO0Lp+CHqRqQ4l/DJB5zLFXCc21ECVpZlC1HOS2dw
-         xKJA==
-X-Gm-Message-State: AOJu0Yxre8VE3A0UxMprOu9V8/N1EeX98faWE6D4le69hLoMWQGqE8uh
-        KYj5yRs9KvVGa+ERHZu7LrNeMYWgHQctHyYAtAA=
-X-Google-Smtp-Source: AGHT+IGzAkDLHqLHNP6zHSk3pjn7ICaNTT1Xf1zlINxTX5LTqrxADqS6H6WuG7u8GqaCAoIrCfS3coH4XpPV3VYr4dc=
-X-Received: by 2002:a05:6a20:8e10:b0:183:c7ea:bb52 with SMTP id
- y16-20020a056a208e1000b00183c7eabb52mr5467691pzj.30.1699529786970; Thu, 09
- Nov 2023 03:36:26 -0800 (PST)
+        Thu, 9 Nov 2023 06:37:12 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2072.outbound.protection.outlook.com [40.107.243.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E93A269A;
+        Thu,  9 Nov 2023 03:37:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xpkf9wfZJVZLOnbAzVNvBXONphp7J3v6xSu+RIhl8+po41TOKf25YQ3dKiHdGFT2QNT0Be6u8F+0i/Wj7HjYWkSHV/ZwCPY3QlJARXjXoVbZRlHBfBWOzpec09142wDiESlCbzbW3mU8AkikzMJhnu+17LryyBkycQTcDBQNihG5cGNqJ48/gmIV3+hwSM6Obxf7v42UMA5o7rENDZDVi7X6NsLg/q7Q8hcVVOdBnj0lVCkuFCqFOsoI5tPwLg769Go1WVbQfsd3joqKDFcNYvm9bc54tbRFQG3vRn6SNzpDNbhWcWIrtrQCbQNnfSdwegPDiTQYYxSpAIZVqjVB5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/Na2msQSAmWfxUs73SyYJLFCD+NzFcs8CqrH+Jt1fMA=;
+ b=WXuMshcXTXH2WWQqdqF7gJ/Nwnk4MzQWT3d5yoE0ez7yYX2m12JX4+Kw34KWNUn6QYET+mRIbYlFYcsVOswZYa1wlMSk6BhUm41LU21xEYXDlmsVjuga0MJiC4n2okqRDPvs1QQo3xWWzIRz7qk/PUCVnw8cixAvIwJslTAZwh6pwt6w2iAmgKI3EOYYCOJ8hG56VGA+HCH2ijh3b7hB3bgVKYB8xwTjTPpHsw7Z+Z9JJSaA907ZECm8r2CSk2JmWH1Paj6GxMRJ59qE/UsKudBO1d+nPRTBG38R3nGRDly2YciYExdEJ9DtvMTGKR73tFXvRgK8gl8A5QpWv3lZSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=huawei.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Na2msQSAmWfxUs73SyYJLFCD+NzFcs8CqrH+Jt1fMA=;
+ b=Ks0cy16yLtU6LQ5ONQji2e5kHoNzH9VXNnzP4hKkqD/WQbljq6G3BRziIsIZUVoO1rvr+ag712Ue02O5K8Rp+Hy+G5aJMas4/qF25nQass2s2RXezrRj/sUFw/W5oAxQpXbo+MgUUdTPeo3r8jcEU9OY2LEf0eRq828YNM40c4BYBM4ytM/HCVo8+afT2Hcxb/xLjql+ZYwoyIr+6NjVcbN0RxVE+mtVvRnLFislUjvDyEc5d2EE/WXm/DzItQYZOUWb0W69Tx2/Nd/uoBm14RwHi/rQJOibQzkhVb1XAZZLuH/qUrP2qsNAO7DaRcaP3nZK42RnY64AeL6//N4UWg==
+Received: from CH2PR18CA0038.namprd18.prod.outlook.com (2603:10b6:610:55::18)
+ by PH7PR12MB5951.namprd12.prod.outlook.com (2603:10b6:510:1da::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19; Thu, 9 Nov
+ 2023 11:37:06 +0000
+Received: from DS2PEPF00003441.namprd04.prod.outlook.com
+ (2603:10b6:610:55:cafe::16) by CH2PR18CA0038.outlook.office365.com
+ (2603:10b6:610:55::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
+ Transport; Thu, 9 Nov 2023 11:37:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS2PEPF00003441.mail.protection.outlook.com (10.167.17.68) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.16 via Frontend Transport; Thu, 9 Nov 2023 11:37:04 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 9 Nov 2023
+ 03:36:52 -0800
+Received: from [10.41.21.79] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 9 Nov 2023
+ 03:36:47 -0800
+Message-ID: <94a329fe-52d2-eb8d-9c6f-c1bdf59ffe44@nvidia.com>
+Date:   Thu, 9 Nov 2023 17:06:43 +0530
 MIME-Version: 1.0
-References: <20231030131254.488186-1-urezki@gmail.com> <20231030131254.488186-2-urezki@gmail.com>
-In-Reply-To: <20231030131254.488186-2-urezki@gmail.com>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Thu, 9 Nov 2023 19:36:14 +0800
-Message-ID: <CALm+0cWOV+7t2JOa29YgLb1vbg9W34Zf5jyi3DVXKGv0V2MC=w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] rcu: Reduce synchronize_rcu() latency
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v5 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
+ pctg for Tegra241
+Content-Language: en-US
+To:     Hanjun Guo <guohanjun@huawei.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, <lpieralisi@kernel.org>,
+        <sudeep.holla@arm.com>
+CC:     <rui.zhang@intel.com>, <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <treding@nvidia.com>,
+        <jonathanh@nvidia.com>, <bbasu@nvidia.com>, <sanjayc@nvidia.com>,
+        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
+        <jbrasen@nvidia.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "Sumit Gupta" <sumitg@nvidia.com>
+References: <20231014105426.26389-1-sumitg@nvidia.com>
+ <20231014105426.26389-3-sumitg@nvidia.com>
+ <CAJZ5v0ivZd-+wRtCNE4t1P=SjJSEJmW6s7GyuYELWg-v87Tw2w@mail.gmail.com>
+ <4fd879be-ae89-45a7-9607-b55606cfb3ac@nvidia.com>
+ <7f17a560-f26a-eae5-f8d5-1f6602ed8f7c@huawei.com>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <7f17a560-f26a-eae5-f8d5-1f6602ed8f7c@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003441:EE_|PH7PR12MB5951:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1713bb87-4df2-4dd5-8472-08dbe11832ca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aersys4RWAzOKRnl8cuLwZROXniqu2Q71LGdg3E/xLtbNFh0DRnQSNz/1RB5HdKqC+G5TjzhPZ5uQ22H08154ZwKPGXIbemX1JS2fLfNbY6LXa6LFCwSvevTbiToww3a85zVT8PS+kzCpthRK7fFrkuUnQz+6zepJjCMeXD06FAp2CegL1l+d5UTTZCwODsWauOuWb7Ys+iipg37c+fAxjABlhACGZeqST5S8aSZo+chDuisGkTk4kaxO197f+qQFqwc+G0vzKRJjnczji1r8dLyp6Ro8xUMjGYaPblF9qNPnw6T5mCqbGwqzy8tYCKRnsdbBbXZUmv5W89fzh/aLJr3ZbnkHBpyBICjbw+0svfUB5tMsxioCJfe1HtTvngre8J1P5qctDJ+xTJbmifaZsQRvrN1n4DG2OFLgdYMgLOQ3lJMXcSF8v9dGR10UyOhYZPcByB4XByL2LpPRxf3BE9JKUOWrywMD3NEZegn1tsaN0rEeBigAZQk9VCjM1mSnmonugtMgEmUHHXvGaUZdmSsIfRmRBx3jvRRFNmD9k3DqxwxISoOoI9T9JMV4pC93/O0qfHQH+RqljKvCdAXN+OI9aNe7D1Ykn+XFN6XzHv7hDth5HHw8ghiYU99B+b38K1US4TRFgWSZAfxjVstfEXmTIwChn5oNTl8kj6zJGkbobOxQtyaI6UgQ09ojSwahHR5Hk+TPy16wg/LBNNz74qCsCBOWjBSu+DFxBG3fSfgECywHd7Rx/MMrLS4u7KwG+Td8ILq4E1ayTmh1vykgN/5a5uKzX1V8vhXwysQYRZQErMlLpH8BmVjzf7JcZMnBM5kAQvEOcoJWT6qc2NJoEaHd8/oX3ta9tScq+uPv/o=
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(230273577357003)(230173577357003)(1800799009)(186009)(64100799003)(451199024)(82310400011)(36840700001)(46966006)(40470700004)(36756003)(41300700001)(82740400003)(8676002)(4326008)(8936002)(356005)(7636003)(40460700003)(2906002)(7416002)(5660300002)(86362001)(31696002)(16526019)(26005)(6666004)(36860700001)(2616005)(107886003)(53546011)(478600001)(966005)(47076005)(83380400001)(110136005)(54906003)(40480700001)(70206006)(70586007)(16576012)(31686004)(316002)(336012)(426003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 11:37:04.8936
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1713bb87-4df2-4dd5-8472-08dbe11832ca
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003441.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5951
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> A call to a synchronize_rcu() can be optimized from a latency
-> point of view. Workloads which depend on this can benefit of it.
->
-> The delay of wakeme_after_rcu() callback, which unblocks a waiter,
-> depends on several factors:
->
-> - how fast a process of offloading is started. Combination of:
->     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
->     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
->     - other.
-> - when started, invoking path is interrupted due to:
->     - time limit;
->     - need_resched();
->     - if limit is reached.
-> - where in a nocb list it is located;
-> - how fast previous callbacks completed;
->
-> Example:
->
-> 1. On our embedded devices i can easily trigger the scenario when
-> it is a last in the list out of ~3600 callbacks:
->
-> <snip>
->   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> ...
->   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
->   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> <snip>
->
-> 2. We use cpuset/cgroup to classify tasks and assign them into
-> different cgroups. For example "backgrond" group which binds tasks
-> only to little CPUs or "foreground" which makes use of all CPUs.
-> Tasks can be migrated between groups by a request if an acceleration
-> is needed.
->
-> See below an example how "surfaceflinger" task gets migrated.
-> Initially it is located in the "system-background" cgroup which
-> allows to run only on little cores. In order to speed it up it
-> can be temporary moved into "foreground" cgroup which allows
-> to use big/all CPUs:
->
-> cgroup_attach_task():
->  -> cgroup_migrate_execute()
->    -> cpuset_can_attach()
->      -> percpu_down_write()
->        -> rcu_sync_enter()
->          -> synchronize_rcu()
->    -> now move tasks to the new cgroup.
->  -> cgroup_migrate_finish()
->
-> <snip>
->          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
->     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> <snip>
->
-> "Boosting a task" depends on synchronize_rcu() latency:
->
-> - first trace shows a completion of synchronize_rcu();
-> - second shows attaching a task to a new group;
-> - last shows a final step when migration occurs.
->
-> 3. To address this drawback, maintain a separate track that consists
-> of synchronize_rcu() callers only. After completion of a grace period
-> users are awaken directly, it is limited by allowed threshold, others
-> are deferred(if still exist) to a worker to complete the rest.
->
-> 4. This patch reduces the latency of synchronize_rcu() approximately
-> by ~30-40% on synthetic tests. The real test case, camera launch time,
-> shows(time is in milliseconds):
->
-> 1-run 542 vs 489 improvement 9%
-> 2-run 540 vs 466 improvement 13%
-> 3-run 518 vs 468 improvement 9%
-> 4-run 531 vs 457 improvement 13%
-> 5-run 548 vs 475 improvement 13%
-> 6-run 509 vs 484 improvement 4%
->
-> Synthetic test:
->
-> Hardware: x86_64 64 CPUs, 64GB of memory
->
-> - 60K tasks(simultaneous);
-> - each task does(1000 loops)
->      synchronize_rcu();
->      kfree(p);
->
-> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
-> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
->
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> ---
->  kernel/rcu/tree.c     | 154 +++++++++++++++++++++++++++++++++++++++++-
->  kernel/rcu/tree_exp.h |   2 +-
->  2 files changed, 154 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 78554e7181dd..f04846b543de 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1384,6 +1384,125 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->                 raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  }
->
-> +/*
-> + * There are three lists for handling synchronize_rcu() users.
-> + * A first list corresponds to new coming users, second for users
-> + * which wait for a grace period and third is for which a grace
-> + * period is passed.
-> + */
-> +static struct sr_normal_state {
-> +       struct llist_head srs_next;     /* request a GP users. */
-> +       struct llist_head srs_wait;     /* wait for GP users. */
-> +       struct llist_head srs_done;     /* ready for GP users. */
-> +
-> +       /*
-> +        * In order to add a batch of nodes to already
-> +        * existing srs-done-list, a tail of srs-wait-list
-> +        * is maintained.
-> +        */
-> +       struct llist_node *srs_wait_tail;
-> +} sr;
-> +
-> +/* Disabled by default. */
-> +static int rcu_normal_wake_from_gp;
-> +module_param(rcu_normal_wake_from_gp, int, 0644);
-> +
-> +static void rcu_sr_normal_complete(struct llist_node *node)
-> +{
-> +       struct rcu_synchronize *rs = container_of(
-> +               (struct rcu_head *) node, struct rcu_synchronize, head);
-> +       unsigned long oldstate = (unsigned long) rs->head.func;
-> +
-> +       WARN_ONCE(!poll_state_synchronize_rcu(oldstate),
-> +               "A full grace period is not passed yet: %lu",
-> +               rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-> +
-> +       /* Finally. */
-> +       complete(&rs->completion);
-> +}
-> +
-> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> +{
-> +       struct llist_node *done, *rcu, *next;
-> +
-> +       done = llist_del_all(&sr.srs_done);
-> +       if (!done)
-> +               return;
-> +
-> +       llist_for_each_safe(rcu, next, done)
-> +               rcu_sr_normal_complete(rcu);
-> +}
-> +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-> +
-> +/*
-> + * This is hard-coded and it is a maximum number of
-> + * synchronize_rcu() users(might be +1 extra), which
-> + * are awaken directly by the rcu_gp_kthread(). The
-> + * reset is deferred to a dedicated worker.
-> + */
-> +#define MAX_SR_WAKE_FROM_GP 5
-> +
-> +/*
-> + * Helper function for rcu_gp_cleanup().
-> + */
-> +static void rcu_sr_normal_gp_cleanup(void)
-> +{
-> +       struct llist_node *head, *tail, *pos;
-> +       int i = 0;
-> +
-> +       if (llist_empty(&sr.srs_wait))
-> +               return;
-> +
-> +       tail = READ_ONCE(sr.srs_wait_tail);
-> +       head = __llist_del_all(&sr.srs_wait);
-> +
-> +       llist_for_each_safe(pos, head, head) {
-> +               rcu_sr_normal_complete(pos);
-> +
-> +               if (++i == MAX_SR_WAKE_FROM_GP) {
-> +                       /* If last, process it also. */
-> +                       if (head && !head->next)
-> +                               continue;
-> +                       break;
-> +               }
-> +       }
-> +
-> +       if (head) {
-> +               /* Can be not empty. */
-> +               llist_add_batch(head, tail, &sr.srs_done);
-> +               queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> +       }
-> +}
-> +
-> +/*
-> + * Helper function for rcu_gp_init().
-> + */
-> +static void rcu_sr_normal_gp_init(void)
-> +{
-> +       struct llist_node *head, *tail;
-> +
-> +       if (llist_empty(&sr.srs_next))
-> +               return;
-> +
-> +       tail = llist_del_all(&sr.srs_next);
-> +       head = llist_reverse_order(tail);
-> +
-> +       /*
-> +        * A waiting list of GP should be empty on this step,
-> +        * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> +        * rolls it over. If not, it is a BUG, warn a user.
-> +        */
-> +       WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
-> +
-> +       WRITE_ONCE(sr.srs_wait_tail, tail);
-> +       __llist_add_batch(head, tail, &sr.srs_wait);
-> +}
-> +
-> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> +{
-> +       llist_add((struct llist_node *) &rs->head, &sr.srs_next);
-> +}
-> +
->  /*
->   * Initialize a new grace period.  Return false if no grace period required.
->   */
-> @@ -1418,6 +1537,7 @@ static noinline_for_stack bool rcu_gp_init(void)
->         /* Record GP times before starting GP, hence rcu_seq_start(). */
->         rcu_seq_start(&rcu_state.gp_seq);
->         ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> +       rcu_sr_normal_gp_init();
->         trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
->         rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
->         raw_spin_unlock_irq_rcu_node(rnp);
-> @@ -1787,6 +1907,9 @@ static noinline void rcu_gp_cleanup(void)
->         }
->         raw_spin_unlock_irq_rcu_node(rnp);
->
-> +       // Make synchronize_rcu() users aware of the end of old grace period.
-> +       rcu_sr_normal_gp_cleanup();
-> +
->         // If strict, make all CPUs aware of the end of the old grace period.
->         if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
->                 on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> @@ -3500,6 +3623,35 @@ static int rcu_blocking_is_gp(void)
->         return true;
->  }
->
-> +/*
-> + * Helper function for the synchronize_rcu() API.
-> + */
-> +static void synchronize_rcu_normal(void)
-> +{
-> +       struct rcu_synchronize rs;
-> +
-> +       if (READ_ONCE(rcu_normal_wake_from_gp)) {
-> +               init_rcu_head_on_stack(&rs.head);
-> +               init_completion(&rs.completion);
-> +
-> +               /*
-> +                * This code might be preempted, therefore take a GP
-> +                * snapshot before adding a request.
-> +                */
-> +               rs.head.func = (void *) get_state_synchronize_rcu();
-> +               rcu_sr_normal_add_req(&rs);
-> +
-> +               /* Kick a GP and start waiting. */
-> +               (void) start_poll_synchronize_rcu();
-> +
-
-Before invoking rcu_sr_normal_add_req(), can we add the following judgment?
-
-  if (poll_state_synchronize_rcu((unsigned long)rs.head.func)) {
-                   complete(&rs->completion);
-   } else {
-                 rcu_sr_normal_add_req(&rs);
-                 (void) start_poll_synchronize_rcu();
-   }
-
-Thanks
-Zqiang
 
 
-> +               /* Now we can wait. */
-> +               wait_for_completion(&rs.completion);
-> +               destroy_rcu_head_on_stack(&rs.head);
-> +       } else {
-> +               wait_rcu_gp(call_rcu_hurry);
-> +       }
-> +}
-> +
->  /**
->   * synchronize_rcu - wait until a grace period has elapsed.
->   *
-> @@ -3551,7 +3703,7 @@ void synchronize_rcu(void)
->                 if (rcu_gp_is_expedited())
->                         synchronize_rcu_expedited();
->                 else
-> -                       wait_rcu_gp(call_rcu_hurry);
-> +                       synchronize_rcu_normal();
->                 return;
->         }
->
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 6d7cea5d591f..279a37beb05a 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
->
->         /* If expedited grace periods are prohibited, fall back to normal. */
->         if (rcu_gp_is_normal()) {
-> -               wait_rcu_gp(call_rcu_hurry);
-> +               synchronize_rcu_normal();
->                 return;
->         }
->
-> --
-> 2.30.2
->
+On 09/11/23 13:20, Hanjun Guo wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 2023/10/20 16:30, Sumit Gupta wrote:
+>>
+>>>> Current implementation of processor_thermal performs software 
+>>>> throttling
+>>>> in fixed steps of "20%" which can be too coarse for some platforms.
+>>>> We observed some performance gain after reducing the throttle
+>>>> percentage.
+>>>> Change the CPUFREQ thermal reduction percentage and maximum thermal
+>>>> steps
+>>>> to be configurable. Also, update the default values of both for Nvidia
+>>>> Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to
+>>>> "5%"
+>>>> and accordingly the maximum number of thermal steps are increased as
+>>>> they
+>>>> are derived from the reduction percentage.
+>>>>
+>>>> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+>>>> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+>>>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>>>> ---
+>>>>   drivers/acpi/arm64/Makefile          |  1 +
+>>>>   drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++++++
+>>>>   drivers/acpi/processor_thermal.c     | 35 
+>>>> +++++++++++++++++++++++++---
+>>>>   include/linux/acpi.h                 |  9 +++++++
+>>>>   4 files changed, 62 insertions(+), 3 deletions(-)
+>>>>   create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+>>>>
+>>>> diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
+>>>> index 143debc1ba4a..3f181d8156cc 100644
+>>>> --- a/drivers/acpi/arm64/Makefile
+>>>> +++ b/drivers/acpi/arm64/Makefile
+>>>> @@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT)         += gtdt.o
+>>>>   obj-$(CONFIG_ACPI_APMT)        += apmt.o
+>>>>   obj-$(CONFIG_ARM_AMBA)         += amba.o
+>>>>   obj-y                          += dma.o init.o
+>>>> +obj-$(CONFIG_ACPI)             += thermal_cpufreq.o
+>>>> diff --git a/drivers/acpi/arm64/thermal_cpufreq.c
+>>>> b/drivers/acpi/arm64/thermal_cpufreq.c
+>>>> new file mode 100644
+>>>> index 000000000000..de834fb013e7
+>>>> --- /dev/null
+>>>> +++ b/drivers/acpi/arm64/thermal_cpufreq.c
+>>>> @@ -0,0 +1,20 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>>> +#include <linux/acpi.h>
+>>>> +
+>>>> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+>>>> +#define SMCCC_SOC_ID_T241      0x036b0241
+>>>> +
+>>>> +int acpi_thermal_cpufreq_pctg(void)
+>>>> +{
+>>>> +       s32 soc_id = arm_smccc_get_soc_id_version();
+>>>> +
+>>>> +       /*
+>>>> +        * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
+>>>> +        * reduce the CPUFREQ Thermal reduction percentage to 5%.
+>>>> +        */
+>>>> +       if (soc_id == SMCCC_SOC_ID_T241)
+>>>> +               return 5;
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>>> +#endif
+>>>
+>>> This part needs an ACK from the ARM folks.
+>>>
+>> Sorry, missed adding 'ACPI arm64' maintainers. Added Lorenzo, Sudeep and
+>> Hanjun.
+> 
+> Sorry for the late reply, would mind giving me the link which the ID
+> (SMCCC_SOC_ID_T241) is documented?
+> 
+> Thanks
+> Hanjun
+
+The ID is already used in file 'irq-gic-v3.c'. Please refer change [1].
+
+[1] 
+https://lore.kernel.org/linux-arm-kernel/20230319024314.3540573-2-sdonthineni@nvidia.com/
+
+Best Regards,
+Sumit Gupta
