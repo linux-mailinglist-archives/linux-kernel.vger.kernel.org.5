@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06027E6E32
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC3B7E6E39
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343652AbjKIQFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S1343640AbjKIQG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:06:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234298AbjKIQFg (ORCPT
+        with ESMTP id S234482AbjKIQG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:05:36 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BCAE719A5
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:05:33 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC2151063;
-        Thu,  9 Nov 2023 08:06:17 -0800 (PST)
-Received: from [10.1.31.52] (e133649.arm.com [10.1.31.52])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C0D63F64C;
-        Thu,  9 Nov 2023 08:05:31 -0800 (PST)
-Message-ID: <cda9bff0-1fcb-4736-93e7-19659cac9a01@arm.com>
-Date:   Thu, 9 Nov 2023 16:05:29 +0000
+        Thu, 9 Nov 2023 11:06:56 -0500
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B5A30FA;
+        Thu,  9 Nov 2023 08:06:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1699546010;
+ bh=DI9I7e45GZv43PxZw1RhCeG/VkyNjaieZAPB6CbinL8=;
+ b=p+jK5XE8PeJxjXI/BBTG/8O0J0XMCp/bW/yvifumjpYn+AYPaG1yrEhqgEmCOZis1xokjYo/l
+ h7nhe/64DyaJzyfJ4Ck3IVTccxlgymbKHw+HUL88PdTLiw+07WcXIpDrU6BtLKsQ3NspL+NilO0
+ 0pIIr6GoFU8V/OAaBziaTYR4y6dDeyabeIWlHoqWNmpy4BnQ9tLAr7cpzcUSj+bMUDnFhQO3YxU
+ ogikXHMhCO4cLHRrS5Vvf4IF8soGihvJQ6dqtyv22QEnJ6RCgD/YgXANkt20wO1TIqYtdmZ3QAc
+ MkBVFtyggdKCmSZSSoCL8ibgkQQEiGrJZBhHLz2entWA==
+Message-ID: <0763eeea-ac0f-4e07-9678-dd7567a0f3be@kwiboo.se>
+Date:   Thu, 9 Nov 2023 17:06:45 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/6] sched/uclamp: Track uclamped util_avg in
- sched_avg
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <5564fc23d5e6425d069c36b4cef48edbe77fe64d.1696345700.git.Hongyan.Xia2@arm.com>
- <d1b613d5-2207-45dd-8aa2-a276502ccaa1@arm.com>
+Subject: Re: [PATCH v2 3/5] docs: uapi: media: Add common documentation of
+ tiled NV15
 Content-Language: en-US
-From:   Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <d1b613d5-2207-45dd-8aa2-a276502ccaa1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230914150651.3114134-1-nicolas.dufresne@collabora.com>
+ <20230914150651.3114134-4-nicolas.dufresne@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <20230914150651.3114134-4-nicolas.dufresne@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 654d039ab32fff32884ed3f7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/10/2023 15:52, Dietmar Eggemann wrote:
-> On 04/10/2023 11:04, Hongyan Xia wrote:
->> From: Hongyan Xia <hongyan.xia2@arm.com>
+On 2023-09-14 17:06, Nicolas Dufresne wrote:
+> This way we don't have to repeat over and over how the pixels are
+> packed in NV15.
 > 
-> [...]
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> ---
+>  .../media/v4l/pixfmt-yuv-planar.rst           | 144 ++++++++++++++++--
+>  1 file changed, 131 insertions(+), 13 deletions(-)
 > 
->> @@ -6445,6 +6450,21 @@ static int sched_idle_cpu(int cpu)
->>   }
->>   #endif
->>   
->> +void ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se);
-> 
-> IMHO, `struct sched_avg *avg` can only be the one of a cfs_rq. So
-> passing a cfs_rq would eliminate the question whether this can be from
-> another se.
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> index 1d43532095c07..2f0e0c97870b2 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> @@ -373,25 +373,143 @@ two non-contiguous planes.
+>  Tiled NV15
+>  ----------
+>  
+> -``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
+> -All components are packed without any padding between each other.
+> -As a side-effect, each group of 4 components are stored over 5 bytes
+> -(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
+> +Semi-planar 10-bit YUV 4:2:0 formats. All components are packed
+> +without any padding between each other. Each components group occupy 15
 
-At the moment, yes, the avg can only come from cfs_rq. The reason why I 
-kept sched_avg is that once we have sum aggregation for RT tasks, it's 
-very likely we will end up calling this function on rt_rq->avg, so 
-having just sched_avg here will work for RT in the future.
+Each component (Y, Cb and Cr) is 10 bits in this format, the effective
+bits per pixel is however 15 bits when number of pixels is aligned to 8.
 
->> +static void update_se_chain(struct task_struct *p)
->> +{
->> +#ifdef CONFIG_UCLAMP_TASK
->> +	struct sched_entity *se = &p->se;
->> +	struct rq *rq = task_rq(p);
->> +
->> +	for_each_sched_entity(se) {
->> +		struct cfs_rq *cfs_rq = cfs_rq_of(se);
->> +
->> +		___update_util_avg_uclamp(&cfs_rq->avg, se);
->> +	}
->> +#endif
->> +}
->>   /*
->>    * The enqueue_task method is called before nr_running is
->>    * increased. Here we update the fair scheduling stats and
->> @@ -6511,6 +6531,16 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->>   			goto enqueue_throttle;
->>   	}
->>   
->> +	/*
->> +	 * Re-evaluate the se hierarchy now that on_rq is true. This is
->> +	 * important to enforce uclamp the moment a task with uclamp is
->> +	 * enqueued, rather than waiting a timer tick for uclamp to kick in.
->> +	 *
->> +	 * XXX: This duplicates some of the work already done in the above for
->> +	 * loops.
->> +	 */
->> +	update_se_chain(p);
-> 
-> I try to figure out why this is necessary here:
-> 
-> enqueue_task_fair()
->    for_each_sched_entity()
->      enqueue_entity()
->        update_load_avg()
->          __update_load_avg_se()
->            ___update_util_avg_uclamp()        <-- if se->on_rq,
->                                                   update p (se) if we
->                                                   cross PELT period (1)
->                                                   boundaries
->            ___decay_util_avg_uclamp_towards() <-- decay p (se)      (2)
-> 
->        enqueue_util_avg_uclamp()          <-- enqueue p into cfs_rq (3)
-> 
->        se->on_rq = 1                          <-- set p (se) on_rq  (4)
-> 
->    for_each_sched_entity()
->      update_load_avg()                        <-- update all on_rq se's
->                                                   in the hierarchy  (5)
-> 
->    update_se_chain()                          <-- update p (se) and its
->                                                   se hierarchy      (6)
-> 
-> (1) Skip p since it is !se->on_rq.
-> 
-> (2) Decay p->se->avg.util_avg_uclamp to 0 since it was sleeping.
-> 
-> (3) Attach p to its cfs_rq
-> 
-> ...
-> 
-> (6) Update all all se's and cfs_rq's involved in p's task_group
->      hierarchy (including propagation from se (level=x+1) to cfs_rq
->      (level=x))
-> 
-> Question for me is why can't you integrate the util_avg_uclamp signals
-> for se's and cfs_rq's/rq's much closer into existing PELT functions?
+For a 4x2 image:
+8Y + 2Cb + 2Cr = 80 + 20 + 20 = 120 bits (15 bytes) => 15 bits per pixel
 
-So the problem is that when we enqueue the task (say UCLAMP_MIN of 200), 
-at that exact moment se->on_rq is false, so we only decay and not 
-enforce UCLAMP_MIN. Further up in the hierarchy we do update_load_avg(), 
-but the se of the task has already been processed so UCLAMP_MIN has not 
-taken any effect. To make sure UCLAMP_MIN is immediately effective, I 
-just re-evaluate the whole hierarchy from bottom to top.
+The 'Bits per component' in the table 'Overview of Semi-Planar YUV
+Formats' is also showing 15, should be 10.
 
-I probably didn't quite catch what you said here. Could you elaborate a 
-bit on what 'much closer' means?
+Regards,
+Jonas
 
-Hongyan
+> +bits and are usually stored in group of 4 components stored over 5 bytes
+> +(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes) or partitioned into
+> +upper 8 bit and lower 2 bits. The final arrangement will vary depending if
+> +the hardware operated in little or big endian.
+> +
+
+[...]
