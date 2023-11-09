@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6FA7E6B79
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B677E6B7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbjKINtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41868 "EHLO
+        id S234119AbjKINth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:49:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231214AbjKINtF (ORCPT
+        with ESMTP id S232167AbjKINtf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:49:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFED2D59
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:49:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B717BC433C9;
-        Thu,  9 Nov 2023 13:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699537743;
-        bh=zRN/6P5lrsqVZwM9CTjtyq9M5h0TpNvvCvqPY+fc9Fk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HJ14EKtQsn2SophxX8pKBwLgmqhSlvFF0PhYFTRbQ3O9+rjlI6qcL3RKEkBmWLLlM
-         qikTtADC5C2Gc8hs3tFLIiIqS77lecxoYu0gqyLWXP9sGb8RXaxVMgmDSBGTkjlmfG
-         tin7Tw9BcQvPRKXub995nBRY642+0sMS/8rEBpWrXRRZK5FKicLYuzC6ECuo+BdE8Q
-         dmR8VVAh7cXSM9DWjachOTfDq76Vlt5RLcxv+Xu2aXuxveoYaPbnB/a9DX8otn2cCr
-         Pra3/n05tjNrvhbgPh3SErDNH83osTI6aNhMsJLCLUgQDuNEZnlEkpWvPbTz3y9/xF
-         KXWudR+iOskag==
-Date:   Thu, 9 Nov 2023 13:49:00 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        debug@rivosinc.com, pengfei.xu@intel.com
-Subject: Re: [PATCH] x86/shstk: Change SSP after user accesses
-Message-ID: <ZUzjLy0IzqypDHYV@finisterre.sirena.org.uk>
-References: <20231107182251.91276-1-rick.p.edgecombe@intel.com>
+        Thu, 9 Nov 2023 08:49:35 -0500
+Received: from relay163.nicmail.ru (relay163.nicmail.ru [91.189.117.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E1930CF
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:49:31 -0800 (PST)
+Received: from [10.28.138.148] (port=33836 helo=[192.168.95.111])
+        by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+        (envelope-from <kiryushin@ancud.ru>)
+        id 1r15PS-0005CE-BH; Thu, 09 Nov 2023 16:49:26 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
+        by incarp1101.mail.hosting.nic.ru (Exim 5.55)
+        with id 1r15PS-00E7MJ-1K;
+        Thu, 09 Nov 2023 16:49:26 +0300
+Message-ID: <262a7526-9e0a-4688-85b4-8546a6580ad0@ancud.ru>
+Date:   Thu, 9 Nov 2023 16:49:25 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q3Gs7OgqUD5phJZ1"
-Content-Disposition: inline
-In-Reply-To: <20231107182251.91276-1-rick.p.edgecombe@intel.com>
-X-Cookie: Slow day.  Practice crawling.
+User-Agent: Mozilla Thunderbird
+From:   Nikita Kiryushin <kiryushin@ancud.ru>
+Subject: [PATCH] ACPI: video: check for error while searching for backlit
+ device parent
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, Matthew Garrett <mjg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MS-Exchange-Organization-SCL: -1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If acpi_get_parent called in acpi_video_dev_register_backlight fails
+(for example, acpi_ut_acquire_mutex fails inside acpi_get_parent),
+this can lead to incorrect (uninitialized) acpi_parent handler being
+passed to acpi_get_pci_dev for detecting parent pci device.
 
---Q3Gs7OgqUD5phJZ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Check acpi_get_parent result and set parent device only in case of success.
 
-On Tue, Nov 07, 2023 at 10:22:51AM -0800, Rick Edgecombe wrote:
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-> Fix this by adjusting the SSP register only after any userspace accesses,
-> such that there can be no failures after the SSP is adjusted. Do this by
-> moving the shadow stack sigframe push logic to happen after all other
-> userspace accesses.
+Fixes: 9661e92c10a9 ("acpi: tie ACPI backlight devices to PCI devices if 
+possible")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+  drivers/acpi/acpi_video.c | 12 ++++++------
+  1 file changed, 6 insertions(+), 6 deletions(-)
 
-Thanks for the heads up on this.  From inspection it looks like the
-arm64 patches currently order things similarly to your new x86 code.
+diff --git a/drivers/acpi/acpi_video.c b/drivers/acpi/acpi_video.c
+index 0b7a01f38b65..1d550887349a 100644
+--- a/drivers/acpi/acpi_video.c
++++ b/drivers/acpi/acpi_video.c
+@@ -1717,12 +1717,12 @@ static void 
+acpi_video_dev_register_backlight(struct acpi_video_device *device)
+  		return;
+  	count++;
+  -	acpi_get_parent(device->dev->handle, &acpi_parent);
+-
+-	pdev = acpi_get_pci_dev(acpi_parent);
+-	if (pdev) {
+-		parent = &pdev->dev;
+-		pci_dev_put(pdev);
++	if (ACPI_SUCCESS(acpi_get_parent(device->dev->handle, &acpi_parent))) {
++		pdev = acpi_get_pci_dev(acpi_parent);
++		if (pdev) {
++			parent = &pdev->dev;
++			pci_dev_put(pdev);
++		}
+  	}
+   	memset(&props, 0, sizeof(struct backlight_properties));
+-- 
+2.34.1
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
---Q3Gs7OgqUD5phJZ1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVM40sACgkQJNaLcl1U
-h9BKYgf/axzjgkzK55seZ98dWUhnmtDN0m/OzeP7UBiD/oVzQKjt9e65XTpwO75Q
-PlRWQ0Ci+1V0qiUNPUs2oBgHj9MBObK3Ofq+vzo1lI5jzERUJdLVUmp/zIfG8CiV
-r9z5aeQP1O3wMknIdtgrj0txUpV7slESDtvMIoj2l1OlG4Rc7UsqUkC/VMaSZibA
-ujtOPK5k23GdL4E3Yy2J8JYubpEJB4uRPqrd0nVhnnmTGFuE4KOWc1iK7FoCnbuv
-GJvG2Y/HDhU383xN1MKZfw0jlJDTzdmCwv2M7Wmw/b0vSH0RMtDsgdYQ/oypMkHf
-97vsriyKrLq8q9wn87oNJlwiaqDqfA==
-=ta/2
------END PGP SIGNATURE-----
-
---Q3Gs7OgqUD5phJZ1--
