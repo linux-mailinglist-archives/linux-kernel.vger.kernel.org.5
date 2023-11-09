@@ -2,112 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E167E6ABF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE107E6AC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjKIMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
+        id S231882AbjKIMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:44:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbjKIMoh (ORCPT
+        with ESMTP id S230006AbjKIMom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:44:37 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1549B1B3;
-        Thu,  9 Nov 2023 04:44:35 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9Ce38i030484;
-        Thu, 9 Nov 2023 12:44:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=Dth4Aqj24dwQKPK9nGhX+J3127jEeRIPgkj8pYjzpXM=;
- b=FfnPtD0AX70bEU5OOOYfIAZ4pjKVQ59BayDh/L+qEO2Lmw9aUthg1+VO5zkuzh/YV9dv
- mg5tRTeiWBpr3p55+wUqMdWhlxxriJPUL4ntR/7VW4T+DflP8ZvHsBqlLWEV1muWlv8s
- FY0YDQkH9i0bWUv8lkLS9LtfGjSWvWzu1ZTq4cjt0zbvDD9Dd38uHreoqthlH1VwpOmZ
- ZsxBispVuBLFeiiYFfdxPpzkDWUE7VprkfodPL2i39cQZPRWOiUemjreDsClTzBfqGHi
- JFADrL13q/utLrap494JpG9E27VGBnzdPJ0XwXYVVn6aSwU4peQnK8A7hPOeg7Ly8p9h NA== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8ymkg3jc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 12:44:34 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9BjTw6019286;
-        Thu, 9 Nov 2023 12:44:33 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w243qc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 12:44:33 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A9CiUfC40764140
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 9 Nov 2023 12:44:30 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3564620043;
-        Thu,  9 Nov 2023 12:44:30 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EBF0320040;
-        Thu,  9 Nov 2023 12:44:29 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu,  9 Nov 2023 12:44:29 +0000 (GMT)
-Date:   Thu, 9 Nov 2023 13:44:28 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        frankja@linux.ibm.com, nrb@linux.ibm.com, nsg@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, gor@linux.ibm.com,
-        svens@linux.ibm.com, agordeev@linux.ibm.com
-Subject: Re: [PATCH v1 1/1] KVM: s390/mm: Properly reset no-dat
-Message-ID: <20231109134428.613ba70e@p-imbrenda>
-In-Reply-To: <20231109123624.37314-1-imbrenda@linux.ibm.com>
-References: <20231109123624.37314-1-imbrenda@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 9 Nov 2023 07:44:42 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C0AE8
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 04:44:40 -0800 (PST)
+Received: from [100.116.205.35] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 20D4B66074AC;
+        Thu,  9 Nov 2023 12:44:35 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699533878;
+        bh=8aZTpXv059m0WrMHiogmcRnmZfrI6GVeXOICP1uiu9E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VEvXfsptEeNlxrznjcN6qd8PPpdRNEa00wrYBn2Ei0vnA45ZKukRVQyOIsj0PNr4R
+         yEZn5dWdD5Icfv7MxAnVeMlj9VQ2Sq6th9wSLHsEsmwcVM85lt9mdc774buWEHmzHa
+         IZ4VosGckt6ADyTgdqq5pJWOlxP+GJvrfTstxlYQ8rSjoTdLk13MUOQ5ZrbcWrbrEV
+         meI0y9vPbTVqjPfz4W9QTPmYkx72h/2a9SSI4ArRDz5nBU2dda63hC06933VRQzw4s
+         O8GvtdTbpnKpiXOYAhym8YLmoSceiUEXmHR4xMYiWniGUguHr87ej0sC+g2tcgdXWi
+         nk6pDvp8uXG+w==
+Message-ID: <5c803b76-9baf-4328-9b64-7c7277fe987e@collabora.com>
+Date:   Thu, 9 Nov 2023 09:44:29 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dg_zb4aOOUFS37rvtlgWXi7GrxUXvtiP
-X-Proofpoint-GUID: dg_zb4aOOUFS37rvtlgWXi7GrxUXvtiP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_10,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 phishscore=0 clxscore=1015 impostorscore=0 mlxlogscore=767
- malwarescore=0 bulkscore=0 suspectscore=0 mlxscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090095
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
+Content-Language: en-US
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     robdclark@chromium.org, freedreno@lists.freedesktop.org,
+        quic_abhinavk@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
+ <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
+ <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
+ <aa112fd1-478a-43b2-8e8f-cef72c930bb2@quicinc.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <aa112fd1-478a-43b2-8e8f-cef72c930bb2@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I had copy-pasted the wrong email address for Gerald, fixed now
 
-On Thu,  9 Nov 2023 13:36:24 +0100
-Claudio Imbrenda <imbrenda@linux.ibm.com> wrote:
 
-> When the CMMA state needs to be reset, the no-dat bit also needs to be
-> reset. Failure to do so could cause issues in the guest, since the
-> guest expects the bit to be cleared after a reset.
+On 07/11/2023 21:10, Jessica Zhang wrote:
 > 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> ---
->  arch/s390/mm/pgtable.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/s390/mm/pgtable.c b/arch/s390/mm/pgtable.c
-> index 3bd2ab2a9a34..5cb92941540b 100644
-> --- a/arch/s390/mm/pgtable.c
-> +++ b/arch/s390/mm/pgtable.c
-> @@ -756,7 +756,7 @@ void ptep_zap_unused(struct mm_struct *mm, unsigned long addr,
->  		pte_clear(mm, addr, ptep);
->  	}
->  	if (reset)
-> -		pgste_val(pgste) &= ~_PGSTE_GPS_USAGE_MASK;
-> +		pgste_val(pgste) &= ~(_PGSTE_GPS_USAGE_MASK | _PGSTE_GPS_NODAT);
->  	pgste_set_unlock(ptep, pgste);
->  	preempt_enable();
->  }
+> On 11/6/2023 9:35 AM, Jessica Zhang wrote:
+>>
+>>
+>> On 11/4/2023 6:02 AM, Helen Koike wrote:
+>>> Hi Jessica,
+>>>
+>>> On 10/10/2023 19:25, Jessica Zhang wrote:
+>>>> Recently, we've registered a Gitlab runner for a Qualcomm RB5 device 
+>>>> that will be
+>>>> hosted and maintained in Qualcomm labs.
+>>>>
+>>>> This series will add a corresponding CI job for testing SM8250 
+>>>> devices and add the
+>>>> skip/fails/flakes list. We were able to complete a successful run 
+>>>> [1] with these
+>>>> changes.
+>>>>
+>>>> For now, we will keep the job as manual trigger only and drop that 
+>>>> rule later
+>>>> after we stabilize the tests.
+>>>>
+>>>> [1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
+>>>>
+>>>> ---
+>>>
+>>> Thank you for you patchset.
+>>>
+>>> I'm getting the following error:
+>>>
+>>> "serial.serialutil.SerialException: [Errno 2] could not open port 
+>>> /dev/ttyUSB0: [Errno 2] No such file or directory: '/dev/ttyUSB0'"
+>>>
+>>> https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51193215#L146
+>>>
+>>> I'm wondering if I'm missing some configuration.
+>>>
+>>> I tested on top of drm-misc-next.
+>>
+>> Hi Helen,
+>>
+>> Sorry for the inconvenience, but I had to temporarily take down the 
+>> runner last Friday to physically move the setup (as part of a 
+>> reorganization of our lab here).
+>>
+>> I'll update this thread as soon as the runner is back up -- the move 
+>> will be complete by the end of this week.
+> The RB5 runner is back up -- please let me know if you run into any 
+> issues with it.
 
+It worked now, I runned on drm-tip-next, I got several UnexpectedPass, 
+except for kms_color@ctm-green-to-red,Fail, could you check if those are 
+flakes or things got fixed and we can remove them from -fails.txt?
+
+https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51385345#L23356
+
+
+Thanks!
+
+Regards,
+Helen
+
+> 
+> Thanks,
+> 
+> Jessica Zhang
+> 
+>>
+>>>
+>>> Also, I'd like to add in the docs an entry about the devices we have, 
+>>> which tag they need, which dts they correspond to, which farm they 
+>>> are located, who to contact if there is any problem and maybe some 
+>>> comment about the device (how it is hooked up, the logs comes from 
+>>> uart or ssh, does it use fastboot, etc) if you find it useful.
+>>> Would you mind adding an entry in the docs with this information for 
+>>> the sm8250? (Than I'll add the info of the other devices after yours).
+>>
+>> Sure, sounds good.
+>>
+>>>
+>>>
+>>>> Jessica Zhang (3):
+>>>>        drm/ci: Add SM8250 job to CI
+>>>
+>>> I would also move this patch to last, so we don't have a commit where 
+>>> things shouldn't work properly.
+>>> Or maybe squash them all.
+>>
+>> Acked -- I'll move this patch to the end.
+>>
+>> Thanks,
+>>
+>> Jessica Zhang
+>>
+>>>
+>>> Regards,
+>>> Helen
+>>>
+>>>>        drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
+>>>>        drm/ci: Add skips, fails and flakes for SM8250
+>>>>
+>>>>   drivers/gpu/drm/ci/arm64.config                 |  1 +
+>>>>   drivers/gpu/drm/ci/build.sh                     |  1 +
+>>>>   drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
+>>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 
+>>>> +++++++++++++++++++++++++
+>>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
+>>>>   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
+>>>>   6 files changed, 57 insertions(+)
+>>>> ---
+>>>> base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
+>>>> change-id: 20230919-rb5-runner-77ec32bd61e7
+>>>>
+>>>> Best regards,
