@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C53B87E672F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C447E6708
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjKIJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S231563AbjKIJqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbjKIJxx (ORCPT
+        with ESMTP id S231398AbjKIJql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:53:53 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480D22D75;
-        Thu,  9 Nov 2023 01:53:50 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id A275110003B;
-        Thu,  9 Nov 2023 12:53:48 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A275110003B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1699523628;
-        bh=IfJ8cu2K4V4g3C0Jv3H+No5r3bwi3kA/UkN+DxWED4I=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=MwGOofvwiqci80x+dhxrIQUHFBn1jlvWYbXY9lKyXxXnpNrn/pDzR1rLojcKxQXWf
-         ZRd9tAUXnm844kT22MT8MFNUpLHTO0vp/6SUYTKsj08QvsoVhG4vr68Eu4oRwgiJCJ
-         AA1updnc9tyDNIHNNGLY+eUYHM7qy+rlgT5o2GIPYM+ndahYSTDojZuphO7dqTWYI4
-         kZjs+ESkvqNTcZHluELnQ/NJSNUNe7QtZZFZBJuSnyv37CtTQSWcC0ciP7un7V3I2X
-         4YG3g9gFav1ngpea/qcepQVDqsi/HGZ04KTesI6Ufa5LZnM/tuRx9VM78wQGFjFQWb
-         dYyH3KPG3KtWA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu,  9 Nov 2023 12:53:48 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Thu, 9 Nov 2023 12:53:48 +0300
-Message-ID: <5ce7f372-bc3d-d16c-b48e-48e89ff6943a@salutedevices.com>
-Date:   Thu, 9 Nov 2023 12:46:16 +0300
+        Thu, 9 Nov 2023 04:46:41 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC0A2D49;
+        Thu,  9 Nov 2023 01:46:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cToWrjKVkKlNsoeH6fQytqUtrMdfuAVIxZoekhMSeHU=; b=BWdti6VBodHQYvNyN5+fj7ApxK
+        pBBN4JBp6GoSQOmrIrCZt585hkq3fgNoHm14umxjNweakNB0fuBEo454E4n3j0Dv9wNleEfP1cpHu
+        Y2lNsjV01IZVD29zbeJb5X4bN7AzfiywYP/PMR43P0K4NX2laKuksRwSdTZtuvWApcX7VSCv9ksf0
+        S7VuzWrJHFWVPqXqPR92IJ6o7iTORGUFBU3iknfCD28oRjjIowdXCO8tApMtnTHDdG0Xa6p3PQsiB
+        da+LDhPjglZxooSqrfPmr6R/deiZ/gHxOkFNVWe3prUuISHU7Ji2b4p1nwfMWOr+WI6uRmu8wmQMz
+        EMwySoHQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35116)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r11cD-0002DX-0q;
+        Thu, 09 Nov 2023 09:46:21 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r11cB-0000Rt-RJ; Thu, 09 Nov 2023 09:46:19 +0000
+Date:   Thu, 9 Nov 2023 09:46:19 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Gan Yi Fang <yi.fang.gan@intel.com>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: Re: [PATCH net 1/1] net: stmmac: fix MAC and phylink mismatch issue
+ after resume with STMMAC_FLAG_USE_PHY_WOL enabled
+Message-ID: <ZUyqa5lVfWtDP9/F@shell.armlinux.org.uk>
+References: <20231109050027.2545000-1-yi.fang.gan@intel.com>
+ <ZUyjOEQHHnnbzwrV@shell.armlinux.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v1] arm64: dts: amlogic: meson-axg: pinctrl node for NAND
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC:     <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-        Liang Yang <liang.yang@amlogic.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231109053100.3849655-1-avkrasnov@salutedevices.com>
- <0221ef7f-7043-4959-9df1-64182d325c69@linaro.org>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <0221ef7f-7043-4959-9df1-64182d325c69@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181233 [Nov 09 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/09 07:10:00 #22435383
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUyjOEQHHnnbzwrV@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 09.11.2023 11:54, Krzysztof Kozlowski wrote:
-> On 09/11/2023 06:30, Arseniy Krasnov wrote:
->> Add pinctrl node for the Meson NAND controller.
->>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->> ---
->>  arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 23 ++++++++++++++++++++++
->>  1 file changed, 23 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
->> index a49aa62e3f9f..98a17953e969 100644
->> --- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
->> +++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
->> @@ -432,6 +432,27 @@ mux-1 {
->>  					};
->>  				};
->>  
->> +				nand_all_pins: nand_all_pins {
+On Thu, Nov 09, 2023 at 09:15:36AM +0000, Russell King (Oracle) wrote:
+> On Thu, Nov 09, 2023 at 01:00:27PM +0800, Gan Yi Fang wrote:
+> > From: "Gan, Yi Fang" <yi.fang.gan@intel.com>
+> > 
+> > The issue happened when flag STMMAC_FLAG_USE_PHY_WOL is enabled.
+> > It can be reproduced with steps below:
+> > 1. Advertise only one speed on the host
+> > 2. Enable the WoL on the host
+> > 3. Suspend the host
+> > 4. Wake up the host
+> > 
+> > When the WoL is disabled, both the PHY and MAC will suspend and wake up
+> > with everything configured well. When WoL is enabled, the PHY needs to be
+> > stay awake to receive the signal from remote client but MAC will enter
+> > suspend mode.
+> > 
+> > When the MAC resumes from suspend, phylink_resume() will call
+> > phylink_start() to start the phylink instance which will trigger the
+> > phylink machine to invoke the mac_link_up callback function. The
+> > stmmac_mac_link_up() will configure the MAC_CTRL_REG based on the current
+> > link state. Then the stmmac_hw_setup() will be called to configure the MAC.
+> > 
+> > This sequence might cause mismatch of the link state between MAC and
+> > phylink. This patch moves the phylink_resume() after stmamc_hw_setup() to
+> > ensure the MAC is initialized before phylink is being configured.
 > 
-> No underscores in node names. Doesn't dtbs_check point it?
-
-Ok, thanks, done in v2! No, dtbs_check passes ok in my case
-
-Thanks, Arseniy
-
+> Isn't this going to cause problems?
 > 
-> Best regards,
-> Krzysztof
-> 
+> stmamc_hw_setup() calls stmmac_init_dma_engine(), which then calls
+> stmmac_reset() - and stmmac_reset() can fail if the PHY clock isn't
+> running, which is why phylink_resume() gets called before this.
+
+I think these two commits should be reviewed to understand why the code
+is the way it is, and why changing it may cause regressions:
+
+90702dcd19c0 ("net: stmmac: fix MAC not working when system resume back
+with WoL active")
+
+36d18b5664ef ("net: stmmac: start phylink instance before
+stmmac_hw_setup()")
+
+As part of my work on stmmac that got junked, I was looking at a
+solution to the "we need the PHY clock to be running for the MAC to
+work for things like reset" problem - but those patches got thrown
+away when stmmac folk were very nitpicky over %u vs %d in format
+strings to print what was a _signed_ value that stmmac code stupidly
+converts to an unsigned integer... it's still a signed integer no
+matter if code decides to use "unsigned int". I suspect all those
+patches (and there was a considerable number of them) have now been
+expired from git, so are now totally lost, and honestly I have no
+desire to put further work into stmmac stuff.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
