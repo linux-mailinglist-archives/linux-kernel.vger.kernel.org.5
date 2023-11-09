@@ -2,114 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B487E713C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21A87E7140
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbjKISJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
+        id S1344933AbjKISMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344906AbjKISJ6 (ORCPT
+        with ESMTP id S1344906AbjKISMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:09:58 -0500
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9584CE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:09:55 -0800 (PST)
-Message-ID: <11e2e744-4bc7-45b1-aaca-298b5e4ee281@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699553393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+i1XoVLmgrvkP2MiYW953YAIB1lEyaf4e1N1W5RcvHU=;
-        b=DBQjH57enkpPK0kzCojOpPQc9yMRxEWWxKb7Z7VJ2Fg1KVuZBL+keheo5yShwEdhi7Pp06
-        4/N9gGeAm7646xxn0/jhh/p9FjBecI5G7aSWYErCGrSYLRSFBwyYFrEQoN1kozqy0osGNU
-        W40kqlOe6WZre6QGg58biFDenAMNieU=
-Date:   Thu, 9 Nov 2023 10:09:46 -0800
+        Thu, 9 Nov 2023 13:12:22 -0500
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972533AB7
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:12:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1699553538; x=1700158338;
+        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+        References:From:Organization:In-Reply-To:Content-Type; bh=MQhplA
+        e/sO9jH8ZxIC5uZQcGSA/WDm8kPbzRWk9x2z8=; b=i+4UJ10y9FcYR8zhB6jIUd
+        pFGccP22iE5+FZlc2nhbMDo9CUj2kzHjaPHx0Y2nMX437CB8hRNGZdRaQfQ/K541
+        qvOsHUkWhSdj0dDfszDwFwJF8Z4V/4LY+857MR5c4l5HrR+nC+zwpFysfSy5MgyM
+        wAlasPNEFIAvecCJBe6Wc=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:12:18 -0500
+Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1b) 
+        with ESMTPSA id md5001003742340.msg; Thu, 09 Nov 2023 13:12:17 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:12:17 -0500
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
+X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
+X-MDArrival-Date: Thu, 09 Nov 2023 13:12:17 -0500
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1677793fa9=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <fb7a539a-9161-4ac6-a49c-16f48d8fe4d7@auristor.com>
+Date:   Thu, 9 Nov 2023 13:12:08 -0500
 MIME-Version: 1.0
-Subject: Re: [GIT PULL v2] Networking for 6.7
-Content-Language: en-GB
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hou Tao <houtao1@huawei.com>, Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, yonghong.song@linux.dev
-References: <20231028011741.2400327-1-kuba@kernel.org>
- <20231031210948.2651866-1-kuba@kernel.org>
- <20231109154934.4saimljtqx625l3v@box.shutemov.name>
- <CAADnVQJnMQaFoWxj165GZ+CwJbVtPQBss80o7zYVQwg5MVij3g@mail.gmail.com>
- <20231109161406.lol2mjhr47dhd42q@box.shutemov.name>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231109161406.lol2mjhr47dhd42q@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/41] afs: Handle the VIO abort explicitly
+Content-Language: en-US
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109154004.3317227-1-dhowells@redhat.com>
+ <20231109154004.3317227-14-dhowells@redhat.com>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <20231109154004.3317227-14-dhowells@redhat.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms060009020505020306050909"
+X-MDCFSigsAdded: auristor.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a cryptographically signed message in MIME format.
 
-On 11/9/23 8:14 AM, Kirill A. Shutemov wrote:
-> On Thu, Nov 09, 2023 at 08:01:39AM -0800, Alexei Starovoitov wrote:
->> On Thu, Nov 9, 2023 at 7:49 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
->>> On Tue, Oct 31, 2023 at 02:09:48PM -0700, Jakub Kicinski wrote:
->>>>        bpf: Add support for non-fix-size percpu mem allocation
->>> Recent changes in BPF increased per-CPU memory consumption a lot.
->>>
->>> On virtual machine with 288 CPUs, per-CPU consumtion increased from 111 MB
->>> to 969 MB, or 8.7x.
->>>
->>> I've bisected it to the commit 41a5db8d8161 ("bpf: Add support for
->>> non-fix-size percpu mem allocation"), which part of the pull request.
->> Hmm. This is unexpected. Thank you for reporting.
->>
->> How did you measure this 111 MB vs 969 MB ?
->> Pls share the steps to reproduce.
-> Boot VMM with 288 (qemu-system-x86_64 -smp 288) and check Percpu: field of
-> /proc/meminfo.
+--------------ms060009020505020306050909
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I did some experiments with my VM. My VM currently supports up to 255 cpus,
-so I tried 4/32/252 number of cpus. For a particular number of cpus, two
-experiments are done:
-   (1). bpf-percpu-mem-prefill
-   (2). no-bpf-percpu-mem-prefill
-
-For 4 cpu:
-    bpf-percpu-mem-prefill:
-      Percpu:             2000 kB
-    no-bpf-percpu-mem-prefill:
-      Percpu:             1808 kB
-
-    bpf-percpu-mem-prefill percpu cost: (2000 - 1808)/4 KB = 48KB
-
-For 32 cpus:
-    bpf-percpu-mem-prefill:
-      Percpu:            25344 kB
-    no-bpf-percpu-mem-prefill:
-      Percpu:            14464 kB
-
-    bpf-percpu-mem-prefill percpu cost: (25344 - 14464)/4 KB = 340KB
-
-For 252 cpus:
-    bpf-percpu-mem-prefill:
-      Percpu:           230912 kB
-    no-bpf-percpu-mem-prefill:
-      Percpu:            57856 kB
-  
-    bpf-percpu-mem-prefill percpu cost: (230912 - 57856)/4 KB = 686KB
-
-I am not able to reproduce the dramatic number from 111 MB to 969 MB.
-My number with 252 cpus is from ~58MB to ~231MB.
-
-I appears that percpu allocation cost goes up when the number of cpus
-is increased.
-
-I will continue to debug this. Thanks!
-
+On 11/9/2023 10:39 AM, David Howells wrote:
+> When processing the result of a call, handle the VIO abort specifically
+> rather than leaving it to a default case.  Rather than erroring out
+> unconditionally, see if there's another server if the volume has more than
+> one server available, otherwise return -EREMOTEIO.
 >
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: linux-afs@lists.infradead.org
+> ---
+>   fs/afs/rotate.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+
+OpenAFS fileservers can return VIO (112) either during an attempt to 
+load a vnode or to store a vnode. However, most IBM AFS derived cache 
+managers do not explicitly handle VIO errors and pass them to the vfs to 
+be interpreted as a local operating system error. For Linux that means 
+EHOSTDOWN. Therefore, AuriStorFS fileservers return UAEIO instead.
+
+Please modify this patch to handle UAEIO the same as VIO.
+
+Thank you.
+
+Jeffrey Altman
+
+
+--------------ms060009020505020306050909
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEwOTE4
+MTIwOFowLwYJKoZIhvcNAQkEMSIEILfIRV4bAONQEr0x3EDjNTYDsOZYjYQ4WrRig3RIBCRj
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEABoLF
+YPRdUkKFPrIAE5FlQ2nlxUxdLIe04Zr8169mzj9U4aKCNxJZX1Vchc8b0KyAKyG0Rg8k/Jm8
+8tnmpyzL3qlWOo32ARTw4zkusw363F+adXyyp9mtxxOyDRb9+HA5eUWUk/j/QROm+ucZlj6m
+MF+7msCfeiliy7IYenRjJoqt26XiTSzLD8jktXrTXs7mkGPI/JGiMB7HGTt8m77vE5i788Q0
+g0pk87KLVqHOk0IeWIeNpXOAyyKYczkttpXzplVxcmhkPFNwy20m4wC+JbMNPmuS05oVc01E
+wKO5p8hPz+1WvM0oPyC3bn1lsijmuZ9GZ6GJuK8WdjbUM2/EvwAAAAAAAA==
+--------------ms060009020505020306050909--
+
