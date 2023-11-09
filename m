@@ -2,308 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FC67E635F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 06:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD1C7E636C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 06:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjKIFqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 00:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
+        id S232566AbjKIFuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 00:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjKIFp5 (ORCPT
+        with ESMTP id S230439AbjKIFub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 00:45:57 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CC62718
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 21:45:49 -0800 (PST)
-Received: from kwepemm000004.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SQrSq1Qmtz1P88y;
-        Thu,  9 Nov 2023 13:42:35 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- kwepemm000004.china.huawei.com (7.193.23.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 9 Nov 2023 13:45:11 +0800
-From:   Huisong Li <lihuisong@huawei.com>
-To:     <xuwei5@hisilicon.com>
-CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <arnd@arndb.de>,
-        <krzk@kernel.org>, <sudeep.holla@arm.com>,
-        <liuyonglong@huawei.com>, <lihuisong@huawei.com>
-Subject: [PATCH v1 3/3] soc: hisilicon: kunpeng_hccs: Support the platform with PCC type3 and interrupt ack
-Date:   Thu, 9 Nov 2023 13:45:26 +0800
-Message-ID: <20231109054526.27270-4-lihuisong@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231109054526.27270-1-lihuisong@huawei.com>
-References: <20231109054526.27270-1-lihuisong@huawei.com>
+        Thu, 9 Nov 2023 00:50:31 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDFA1BD7
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 21:50:28 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A95U9lx028466;
+        Thu, 9 Nov 2023 05:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=S9xQIqTJ6YkUKqio+lbpswaD8NbhvZ2tDyki0NyQ3uc=;
+ b=U1in8OZMpuy2+Lut2r/TViH2LNggz0UIHOqXDWTI8PobIXufG6t/uv9NbcWuLyGFpC1r
+ dN4vMjOxJHZpAME3UAweKQ3lwD71Lh5wCDJ3A4ZPS+XcsNeSWBFnGYf40Mk6Hdg1yFVj
+ UMzDQMg1x6O/pa6eSXr0amT2BlPTQ4y/hNm/bqi9fbnYKmm5QcFXGyO+CHtEU0BeYl13
+ tdtdl0sNbOdd7500hoIdCgwSfl1+3zWeeIpKiDzRl8NquE7nqTmt2hg4FlkAdnyd6bh1
+ F1wNQjafUcVSbYBigstoiVDFspu7jXyccIbnolBZXgjGwT4nSKrhF9m+F3YI/BLBvlcy +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8sb1rc12-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Nov 2023 05:49:58 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A95lqJT004551;
+        Thu, 9 Nov 2023 05:49:58 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8sb1rc0m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Nov 2023 05:49:58 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A955kcE019429;
+        Thu, 9 Nov 2023 05:49:57 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w241tg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Nov 2023 05:49:57 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A95nsV359048204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Nov 2023 05:49:55 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3BDDE2004E;
+        Thu,  9 Nov 2023 05:49:54 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06EC720043;
+        Thu,  9 Nov 2023 05:49:52 +0000 (GMT)
+Received: from sapthagiri.in.ibm.com (unknown [9.109.198.19])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Nov 2023 05:49:51 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v4 0/5] powerpc/smp: Topology and shared processor optimizations
+Date:   Thu,  9 Nov 2023 11:19:28 +0530
+Message-ID: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eqJgOyqDUjO14sWsFMml0hw-1MUmqrWk
+X-Proofpoint-ORIG-GUID: MfSRJ3KtVzk2gJj3QJcVx2lYWJWBOHlu
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm000004.china.huawei.com (7.193.23.18)
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-09_04,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1011 phishscore=0 mlxlogscore=999 impostorscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311090045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support the platform with PCC type3 and interrupt ack.
+PowerVM systems configured in shared processors mode have some unique
+challenges. Some device-tree properties will be missing on a shared
+processor. Hence some sched domains may not make sense for shared processor
+systems.
 
-Signed-off-by: Huisong Li <lihuisong@huawei.com>
----
- drivers/soc/hisilicon/kunpeng_hccs.c | 137 +++++++++++++++++++++------
- drivers/soc/hisilicon/kunpeng_hccs.h |   2 +
- 2 files changed, 110 insertions(+), 29 deletions(-)
+Most shared processor systems are over-provisioned. Underlying PowerVM
+Hypervisor would schedule at a Big Core granularity. The most recent power
+processors support two almost independent cores. In a lightly loaded
+condition, it helps the overall system performance if we pack to lesser
+number of Big Cores.
 
-diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
-index fd3ca0eb8175..96cdac7be244 100644
---- a/drivers/soc/hisilicon/kunpeng_hccs.c
-+++ b/drivers/soc/hisilicon/kunpeng_hccs.c
-@@ -38,6 +38,11 @@
- #define HCCS_PCC_CMD_WAIT_RETRIES_NUM		500ULL
- #define HCCS_POLL_STATUS_TIME_INTERVAL_US	3
- 
-+enum hccs_hw_device_version {
-+	HCCS_HW_DEVICE_V1 = 0,
-+	HCCS_HW_DEVICE_V2 = 1,
-+};
-+
- static struct hccs_port_info *kobj_to_port_info(struct kobject *k)
- {
- 	return container_of(k, struct hccs_port_info, kobj);
-@@ -100,6 +105,21 @@ static int hccs_get_pcc_chan_id(struct hccs_dev *hdev)
- 	return 0;
- }
- 
-+static int hccs_get_device_version(struct hccs_dev *hdev)
-+{
-+	const struct acpi_device_id *acpi_id;
-+
-+	acpi_id = acpi_match_device(hdev->dev->driver->acpi_match_table,
-+				    hdev->dev);
-+	if (!acpi_id) {
-+		dev_err(hdev->dev, "get device version failed.");
-+		return -EINVAL;
-+	}
-+
-+	hdev->dev_ver = (u8)acpi_id->driver_data;
-+	return 0;
-+}
-+
- static void hccs_chan_tx_done(struct mbox_client *cl, void *msg, int ret)
- {
- 	if (ret < 0)
-@@ -110,6 +130,14 @@ static void hccs_chan_tx_done(struct mbox_client *cl, void *msg, int ret)
- 			 *(u8 *)msg, ret);
- }
- 
-+static void hccs_pcc_rx_callback(struct mbox_client *cl, void *m)
-+{
-+	struct hccs_mbox_client_info *cl_info =
-+			container_of(cl, struct hccs_mbox_client_info, client);
-+
-+	complete(&cl_info->done);
-+}
-+
- static void hccs_unregister_pcc_channel(struct hccs_dev *hdev)
- {
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
-@@ -131,6 +159,11 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- 	cl->tx_block = false;
- 	cl->knows_txdone = true;
- 	cl->tx_done = hccs_chan_tx_done;
-+	if (hdev->dev_ver == HCCS_HW_DEVICE_V2) {
-+		cl->rx_callback = hccs_pcc_rx_callback;
-+		init_completion(&cl_info->done);
-+	}
-+
- 	pcc_chan = pcc_mbox_request_channel(cl, hdev->chan_id);
- 	if (IS_ERR(pcc_chan)) {
- 		dev_err(dev, "PPC channel request failed.\n");
-@@ -147,10 +180,16 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- 	 */
- 	cl_info->deadline_us =
- 			HCCS_PCC_CMD_WAIT_RETRIES_NUM * pcc_chan->latency;
--	if (cl_info->mbox_chan->mbox->txdone_irq) {
-+	if (hdev->dev_ver == HCCS_HW_DEVICE_V1 &&
-+	    cl_info->mbox_chan->mbox->txdone_irq) {
- 		dev_err(dev, "PCC IRQ in PCCT is enabled.\n");
- 		rc = -EINVAL;
- 		goto err_mbx_channel_free;
-+	} else if (hdev->dev_ver == HCCS_HW_DEVICE_V2 &&
-+		   !cl_info->mbox_chan->mbox->txdone_irq) {
-+		dev_err(dev, "PCC IRQ in PCCT isn't supported.\n");
-+		rc = -EINVAL;
-+		goto err_mbx_channel_free;
- 	}
- 
- 	if (pcc_chan->shmem_base_addr) {
-@@ -175,49 +214,81 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
- static int hccs_check_chan_cmd_complete(struct hccs_dev *hdev)
- {
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
--	struct acpi_pcct_shared_memory __iomem *comm_base =
--							cl_info->pcc_comm_addr;
-+	struct acpi_pcct_shared_memory __iomem *comm_base;
-+	int ret = 0;
- 	u16 status;
--	int ret;
- 
- 	/*
- 	 * Poll PCC status register every 3us(delay_us) for maximum of
- 	 * deadline_us(timeout_us) until PCC command complete bit is set(cond)
- 	 */
--	ret = readw_poll_timeout(&comm_base->status, status,
--				 status & PCC_STATUS_CMD_COMPLETE,
--				 HCCS_POLL_STATUS_TIME_INTERVAL_US,
--				 cl_info->deadline_us);
--	if (unlikely(ret))
--		dev_err(hdev->dev, "poll PCC status failed, ret = %d.\n", ret);
-+	if (hdev->dev_ver == HCCS_HW_DEVICE_V1) {
-+		comm_base = cl_info->pcc_comm_addr;
-+		ret = readw_poll_timeout(&comm_base->status, status,
-+					status & PCC_STATUS_CMD_COMPLETE,
-+					HCCS_POLL_STATUS_TIME_INTERVAL_US,
-+					cl_info->deadline_us);
-+		if (unlikely(ret))
-+			dev_err(hdev->dev, "poll PCC status failed, ret = %d.\n", ret);
-+	} else {
-+		if (!wait_for_completion_timeout(&cl_info->done,
-+				usecs_to_jiffies(cl_info->deadline_us))) {
-+			dev_err(hdev->dev, "PCC command executed timeout!\n");
-+			ret = -ETIMEDOUT;
-+		}
-+	}
- 
- 	return ret;
- }
- 
-+static void hccs_fill_pcc_shared_mem_region(struct hccs_dev *hdev, u8 cmd,
-+					    struct hccs_desc *desc,
-+					    void __iomem *comm_space,
-+					    u16 space_size)
-+{
-+	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
-+	struct acpi_pcct_ext_pcc_shared_memory tmp1 = {0};
-+	struct acpi_pcct_shared_memory tmp2 = {0};
-+
-+	if (hdev->dev_ver == HCCS_HW_DEVICE_V1) {
-+		tmp2.signature = PCC_SIGNATURE | hdev->chan_id;
-+		tmp2.command = cmd;
-+		tmp2.status = 0;
-+		memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp2,
-+			    sizeof(struct acpi_pcct_shared_memory));
-+	} else {
-+		tmp1.signature = PCC_SIGNATURE | hdev->chan_id;
-+		tmp1.command = cmd;
-+		tmp1.flags = PCC_CMD_COMPLETION_NOTIFY;
-+		tmp1.length = HCCS_PCC_SHARE_MEM_BYTES;
-+		memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp1,
-+			    sizeof(struct acpi_pcct_ext_pcc_shared_memory));
-+	}
-+
-+	/* Copy the message to the PCC comm space */
-+	memcpy_toio(comm_space, (void *)desc, space_size);
-+}
-+
- static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 			     struct hccs_desc *desc)
- {
- 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
--	void __iomem *comm_space = cl_info->pcc_comm_addr +
--					sizeof(struct acpi_pcct_shared_memory);
- 	struct hccs_fw_inner_head *fw_inner_head;
--	struct acpi_pcct_shared_memory tmp = {0};
--	u16 comm_space_size;
-+	void __iomem *comm_space;
-+	u16 shared_mem_size;
-+	u16 space_size;
- 	int ret;
- 
--	/* Write signature for this subspace */
--	tmp.signature = PCC_SIGNATURE | hdev->chan_id;
--	/* Write to the shared command region */
--	tmp.command = cmd;
--	/* Clear cmd complete bit */
--	tmp.status = 0;
--	memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp,
--			sizeof(struct acpi_pcct_shared_memory));
-+	shared_mem_size = hdev->dev_ver == HCCS_HW_DEVICE_V1 ?
-+			sizeof(struct acpi_pcct_shared_memory) :
-+			sizeof(struct acpi_pcct_ext_pcc_shared_memory);
-+	comm_space = cl_info->pcc_comm_addr + shared_mem_size;
-+	space_size = HCCS_PCC_SHARE_MEM_BYTES - shared_mem_size;
- 
--	/* Copy the message to the PCC comm space */
--	comm_space_size = HCCS_PCC_SHARE_MEM_BYTES -
--				sizeof(struct acpi_pcct_shared_memory);
--	memcpy_toio(comm_space, (void *)desc, comm_space_size);
-+	hccs_fill_pcc_shared_mem_region(hdev, cmd, desc,
-+					comm_space, space_size);
-+	if (cl_info->mbox_chan->mbox->txdone_irq)
-+		reinit_completion(&cl_info->done);
- 
- 	/* Ring doorbell */
- 	ret = mbox_send_message(cl_info->mbox_chan, &cmd);
-@@ -233,7 +304,7 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 		goto end;
- 
- 	/* Copy response data */
--	memcpy_fromio((void *)desc, comm_space, comm_space_size);
-+	memcpy_fromio((void *)desc, comm_space, space_size);
- 	fw_inner_head = &desc->rsp.fw_inner_head;
- 	if (fw_inner_head->retStatus) {
- 		dev_err(hdev->dev, "Execute PCC command failed, error code = %u.\n",
-@@ -242,7 +313,10 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
- 	}
- 
- end:
--	mbox_client_txdone(cl_info->mbox_chan, ret);
-+	if (cl_info->mbox_chan->mbox->txdone_irq)
-+		mbox_chan_txdone(cl_info->mbox_chan, ret);
-+	else
-+		mbox_client_txdone(cl_info->mbox_chan, ret);
- 	return ret;
- }
- 
-@@ -1214,6 +1288,10 @@ static int hccs_probe(struct platform_device *pdev)
- 	hdev->dev = &pdev->dev;
- 	platform_set_drvdata(pdev, hdev);
- 
-+	rc = hccs_get_device_version(hdev);
-+	if (rc)
-+		return rc;
-+
- 	mutex_init(&hdev->lock);
- 	rc = hccs_get_pcc_chan_id(hdev);
- 	if (rc)
-@@ -1251,7 +1329,8 @@ static void hccs_remove(struct platform_device *pdev)
- }
- 
- static const struct acpi_device_id hccs_acpi_match[] = {
--	{ "HISI04B1"},
-+	{ "HISI04B1", HCCS_HW_DEVICE_V1},
-+	{ "HISI04B2", HCCS_HW_DEVICE_V2},
- 	{ ""},
- };
- MODULE_DEVICE_TABLE(acpi, hccs_acpi_match);
-diff --git a/drivers/soc/hisilicon/kunpeng_hccs.h b/drivers/soc/hisilicon/kunpeng_hccs.h
-index 6012d2776028..bbb1aada0c6c 100644
---- a/drivers/soc/hisilicon/kunpeng_hccs.h
-+++ b/drivers/soc/hisilicon/kunpeng_hccs.h
-@@ -51,12 +51,14 @@ struct hccs_mbox_client_info {
- 	struct pcc_mbox_chan *pcc_chan;
- 	u64 deadline_us;
- 	void __iomem *pcc_comm_addr;
-+	struct completion done;
- };
- 
- struct hccs_dev {
- 	struct device *dev;
- 	struct acpi_device *acpi_dev;
- 	u64 caps;
-+	u8 dev_ver;
- 	u8 chip_num;
- 	struct hccs_chip_info *chips;
- 	u8 chan_id;
+System Configuration
+type=Shared mode=Uncapped smt=8 lcpu=96 mem=1066409344 kB cpus=96 ent=64.00
+So *64 Entitled cores/ 96 Virtual processor* Scenario
+
+lscpu
+Architecture:                       ppc64le
+Byte Order:                         Little Endian
+CPU(s):                             768
+On-line CPU(s) list:                0-767
+Model name:                         POWER10 (architected), altivec supported
+Model:                              2.0 (pvr 0080 0200)
+Thread(s) per core:                 8
+Core(s) per socket:                 16
+Socket(s):                          6
+Hypervisor vendor:                  pHyp
+Virtualization type:                para
+L1d cache:                          6 MiB (192 instances)
+L1i cache:                          9 MiB (192 instances)
+NUMA node(s):                       6
+NUMA node0 CPU(s):                  0-7,32-39,80-87,128-135,176-183,224-231,272-279,320-327,368-375,416-423,464-471,512-519,560-567,608-615,656-663,704-711,752-759
+NUMA node1 CPU(s):                  8-15,40-47,88-95,136-143,184-191,232-239,280-287,328-335,376-383,424-431,472-479,520-527,568-575,616-623,664-671,712-719,760-767
+NUMA node4 CPU(s):                  64-71,112-119,160-167,208-215,256-263,304-311,352-359,400-407,448-455,496-503,544-551,592-599,640-647,688-695,736-743
+NUMA node5 CPU(s):                  16-23,48-55,96-103,144-151,192-199,240-247,288-295,336-343,384-391,432-439,480-487,528-535,576-583,624-631,672-679,720-727
+NUMA node6 CPU(s):                  72-79,120-127,168-175,216-223,264-271,312-319,360-367,408-415,456-463,504-511,552-559,600-607,648-655,696-703,744-751
+NUMA node7 CPU(s):                  24-31,56-63,104-111,152-159,200-207,248-255,296-303,344-351,392-399,440-447,488-495,536-543,584-591,632-639,680-687,728-735
+
+ebizzy -t 32 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N  Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5  3840178  4059268  3978042  3973936.6  84264.456
++patch     5  3768393  3927901  3874994  3854046    71532.926  -3.01692
+
+>From lparstat (when the workload stabilized)
+Kernel     %user  %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw       phint
+6.6.0-rc3  4.16   0.00  0.00   95.84  26.06  40.72  4.16   69.88  276906989  578
++patch     4.16   0.00  0.00   95.83  17.70  27.66  4.17   78.26  70436663   119
+
+ebizzy -t 128 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5 5520692  5981856  5717709  5727053.2  176093.2
++patch     5 5305888  6259610  5854590  5843311    375917.03  2.02998
+
+>From lparstat (when the workload stabilized)
+Kernel     %user  %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw       phint
+6.6.0-rc3  16.66  0.00  0.00   83.33  45.49  71.08  16.67  50.50  288778533  581
++patch     16.65  0.00  0.00   83.35  30.15  47.11  16.65  65.76  85196150   133
+
+ebizzy -t 512 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N  Min       Max       Median    Avg       Stddev     %Change
+6.6.0-rc3  5  19563921  20049955  19701510  19728733  198295.18
++patch     5  19455992  20176445  19718427  19832017  304094.05  0.523521
+
+>From lparstat (when the workload stabilized)
+%Kernel     user  %sys  %wait  %idle  physc  %entc   lbusy  app   vcsw       phint
+66.6.0-rc3  6.44  0.01  0.00   33.55  94.14  147.09  66.45  1.33  313345175  621
+6+patch     6.44  0.01  0.00   33.55  94.15  147.11  66.45  1.33  109193889  309
+
+System Configuration
+type=Shared mode=Uncapped smt=8 lcpu=40 mem=1067539392 kB cpus=96 ent=40.00
+So *40 Entitled cores/ 40 Virtual processor* Scenario
+
+lscpu
+Architecture:                       ppc64le
+Byte Order:                         Little Endian
+CPU(s):                             320
+On-line CPU(s) list:                0-319
+Model name:                         POWER10 (architected), altivec supported
+Model:                              2.0 (pvr 0080 0200)
+Thread(s) per core:                 8
+Core(s) per socket:                 10
+Socket(s):                          4
+Hypervisor vendor:                  pHyp
+Virtualization type:                para
+L1d cache:                          2.5 MiB (80 instances)
+L1i cache:                          3.8 MiB (80 instances)
+NUMA node(s):                       4
+NUMA node0 CPU(s):                  0-7,32-39,64-71,96-103,128-135,160-167,192-199,224-231,256-263,288-295
+NUMA node1 CPU(s):                  8-15,40-47,72-79,104-111,136-143,168-175,200-207,232-239,264-271,296-303
+NUMA node4 CPU(s):                  16-23,48-55,80-87,112-119,144-151,176-183,208-215,240-247,272-279,304-311
+NUMA node5 CPU(s):                  24-31,56-63,88-95,120-127,152-159,184-191,216-223,248-255,280-287,312-319
+
+ebizzy -t 32 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   3535518  3864532  3745967  3704233.2  130216.76
++patch     5   3608385  3708026  3649379  3651596.6  37862.163  -1.42099
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw     phint
+6.6.0-rc3  10.00  0.01  0.00   89.99  22.98  57.45  10.01  41.01  1135139  262
++patch     10.00  0.00  0.00   90.00  16.95  42.37  10.00  47.05  925561   19
+
+ebizzy -t 64 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   4434984  4957281  4548786  4591298.2  211770.2
++patch     5   4461115  4835167  4544716  4607795.8  151474.85  0.359323
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw     phint
+6.6.0-rc3  20.01  0.00  0.00   79.99  38.22  95.55  20.01  25.77  1287553  265
++patch     19.99  0.00  0.00   80.01  25.55  63.88  19.99  38.44  1077341  20
+
+ebizzy -t 256 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   8850648  8982659  8951911  8936869.2  52278.031
++patch     5   8751038  9060510  8981409  8942268.4  117070.6   0.0604149
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc   lbusy  app    vcsw     phint
+6.6.0-rc3  80.02  0.01  0.01   19.96  40.00  100.00  80.03  24.00  1597665  276
++patch     80.02  0.01  0.01   19.96  40.00  100.00  80.03  23.99  1383921  63
+
+Observation:
+We are able to see Improvement in ebizzy throughput even with lesser
+core utilization (almost half the core utilization) in low utilization
+scenarios while still retaining throughput in mid and higher utilization
+scenarios.
+Note: The numbers are with Uncapped + no-noise case. In the Capped and/or
+noise case, due to contention on the Cores, the numbers are expected to
+further improve.
+
+Note: The numbers included (sched/fair: Enable group_asym_packing in find_idlest_group)
+https://lore.kernel.org/all/20231018155036.2314342-1-srikar@linux.vnet.ibm.com/
+
+Changelog
+v3 (https://lore.kernel.org/all/20231026101843.56784-1-srikar@linux.vnet.ibm.com) ->v4:
+1. SPLAR specific Asym packing only for MC and DIE domains.
+2. Changes due to rebase (DIE became PKG)
+
+v2 (https://lore.kernel.org/all/20231018163751.2423181-1-srikar@linux.vnet.ibm.com) ->v3:
+1. Handle comments from Peter Zijlstra / Michael Ellerman
+2. Use __ro_after_init attribute instead of read_mostly
+3. Use cpu_has_feature static_key instead of a new one.
+4. Build topology dynamically patch added to this patchset.
+
+v1 (https://lore.kernel.org/all/20230830105244.62477-1-srikar@linux.vnet.ibm.com) -> v2:
+1. Last two patches were added in this version
+2. This version uses static keys
+
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Rohan McLure <rmclure@linux.ibm.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+
+Srikar Dronamraju (5):
+  powerpc/smp: Enable Asym packing for cores on shared processor
+  powerpc/smp: Disable MC domain for shared processor
+  powerpc/smp: Add __ro_after_init attribute
+  powerpc/smp: Avoid asym packing within thread_group of a core
+  powerpc/smp: Dynamically build Powerpc topology
+
+ arch/powerpc/kernel/smp.c | 136 +++++++++++++++++++++-----------------
+ 1 file changed, 76 insertions(+), 60 deletions(-)
+
+
+base-commit: efdcf91a2158294ea1af97e7d592c00e7a97c5b5
 -- 
-2.33.0
+2.31.1
 
