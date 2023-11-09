@@ -2,186 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E947E6E13
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC097E6E16
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234475AbjKIPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 10:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
+        id S1343570AbjKIPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 10:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjKIPy1 (ORCPT
+        with ESMTP id S234424AbjKIPzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 10:54:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAD7125;
-        Thu,  9 Nov 2023 07:54:24 -0800 (PST)
-Received: from [100.98.136.55] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6B90C66074E4;
-        Thu,  9 Nov 2023 15:54:22 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699545263;
-        bh=3WWL6wQEComAANvAj1qEV/UYxsJ1yDBfQ3tP5uX/YLk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=D/dUZwI3iQpedaY/GdQjHQS1scxyhcN7jhgn6D47iDVOWAXLkJYI6JlliE4PqmW/F
-         dMEOOPkxJ8ZlzQybUFvpUZmlGi79eHqyaJx0Yxup3HJ5Yd6Ze+dQnNfdhHKlpO8PSd
-         xeXAr05Z1tf0hQAm4iDfRDXdrOnBv1+GpDuUaeyED4Kd+IQ8QxcOkJsa+goDTcXPQg
-         cs+yV0VQgJo5pHMGahaM5nsibUwKDyBxIKWaWQhTwPBpbwc4vz7xxBxDOLmmP5aVKf
-         1weo50VNmE7smJkaFraV1l9OxfnyeJPl9QQ7xCmBW2qThbML61PtQ3rgYO5gVG8+gT
-         dko5b02V9ORdA==
-Message-ID: <22f2aee0-aea7-465d-b7f3-b1add1bf7bd7@collabora.com>
-Date:   Thu, 9 Nov 2023 16:54:19 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 35/56] media: cedrus: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Maxime Ripard <mripard@kernel.org>
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-36-benjamin.gaignard@collabora.com>
- <083e43d9-452a-4b11-b7f1-f75992bc795e@collabora.com>
- <ZUzpSXDbO60uGr0t@aptenodytes>
- <618d5b67-ba46-4c33-ae7f-990f4b522ba8@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <618d5b67-ba46-4c33-ae7f-990f4b522ba8@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Thu, 9 Nov 2023 10:55:50 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A7FD5A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:55:48 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5af592fed43so13397847b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699545347; x=1700150147; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LIV0OIBtO/qEXjcwFa8rlo/bkTpqYyvIzQur9Hu2Qhs=;
+        b=elmMbCuHGjmMGTYLrs9pdF/CJ9097pLAy+R7TYoStB/mA5LnEMcQqefeUu+cR4DaDw
+         dNIDJpPIkqFORFySnj2KZ0bpmw8AdWdCuq9IK8VSLikNaNApOr9XzMCVFrbwFMlrYOyb
+         d8afeYo0We9B/Jt6gVOQDGQ9JpNt/imEEezhIEcFfYXi8Pyv45NCN2qapcAYPXOnrK+Q
+         g8cERphO/Jp20EYPeOlfKaexzJysIg0OlfexqhaFLWwdHNlAeHaCE0E9ZsoqBZ/IunC8
+         dxH0pAiPycB3Z7IOEiMbGar/gpMascpfsM13FZCkvMD0zPVIw9N9Ym7RuMQYdWuo/70I
+         Q1gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699545347; x=1700150147;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LIV0OIBtO/qEXjcwFa8rlo/bkTpqYyvIzQur9Hu2Qhs=;
+        b=eHu1UdkyRkxI1J/y4GHDQl2cLha0JKWp352gcjXipQT21EM93T6V1SytHu4vHP0u3R
+         /suabVT2JeF39iGnsvNxaWeX0g/98KkAEcWCCfh/EhvENvfMohxfMU1vwcXK3PxLug1y
+         OtGMHg43rxwo0rEWxxkVbunYdKEkq7DxjtNrqBMIwYMvS73/dI40roOPobto4kM+j/3i
+         lw2Ej+N3Sz/9N99jjb+/fyBsS7QmtwMkJ6mmB0kTIYNeHfrnkTBrE9dKUubNsR3Ez6p9
+         D5/VQuNok5r4dOz4dEVtIjarY3tR1dtvtVF9t7uXBRBVbKuLJCav38N0Fj0hkwYYra43
+         cC4w==
+X-Gm-Message-State: AOJu0YxqSWiy+0iCws5WHH3I1oUAQOccwducR3tHgKGRswuS0iSP6nEA
+        FKNFOyhovgxX8THiwff9jdsW5ahXq7w=
+X-Google-Smtp-Source: AGHT+IEMEShf0mykk0aG8QQsdHk7vwrzkzv/Ox7kVvv3Xl7bbuRdh2hiw2H6Gx6DhoX5AbdU/WOx4VMJWVk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:310:b0:5bf:6098:58dc with SMTP id
+ bg16-20020a05690c031000b005bf609858dcmr88627ywb.9.1699545347576; Thu, 09 Nov
+ 2023 07:55:47 -0800 (PST)
+Date:   Thu, 9 Nov 2023 07:55:45 -0800
+In-Reply-To: <20231108235456.GB1132821@ls.amr.corp.intel.com>
+Mime-Version: 1.0
+References: <cover.1699383993.git.isaku.yamahata@intel.com>
+ <20231107192933.GA1102144@ls.amr.corp.intel.com> <CALMp9eR8Jnn0g0XBpTKTfKKOtRmFwAWuLAKcozuOs6KAGZ6MQQ@mail.gmail.com>
+ <20231108235456.GB1132821@ls.amr.corp.intel.com>
+Message-ID: <ZU0BASXWcck85r90@google.com>
+Subject: Re: KVM: X86: Make bus clock frequency for vapic timer (bus lock ->
+ bus clock) (was Re: [PATCH 0/2] KVM: X86: Make bus lock frequency for vapic
+ timer) configurable
+From:   Sean Christopherson <seanjc@google.com>
+To:     Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Cc:     Jim Mattson <jmattson@google.com>, isaku.yamahata@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 08, 2023, Isaku Yamahata wrote:
+> On Tue, Nov 07, 2023 at 12:03:35PM -0800, Jim Mattson <jmattson@google.com> wrote:
+> > I think I know the answer, but do you have any tests for this new feature?
+> 
+> If you mean kvm kselftest, no.
+> I have
+> - TDX patched qemu
+> - kvm-unit-tests: test_apic_timer_one_shot() @ kvm-unit-tests/x86/apic.c
+>   TDX version is found at https://github.com/intel/kvm-unit-tests-tdx
+>   We're planning to upstream the changes for TDX
+> 
+> How far do we want to go?
+> - Run kvm-unit-tests with TDX. What I have right now.
+> - kvm-unit-tests: extend qemu for default VM case and update
+>   test_apic_timer_one_host()
 
-Le 09/11/2023 à 16:48, Andrzej Pietrasiewicz a écrit :
-> Hi Paul,
->
-> W dniu 9.11.2023 o 15:14, Paul Kocialkowski pisze:
->> Hi Andrzej,
->>
->> On Thu 09 Nov 23, 12:27, Andrzej Pietrasiewicz wrote:
->>> Hi Paul,
->>>
->>> W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
->>>> Use vb2_get_num_buffers() to avoid using queue num_buffers field 
->>>> directly.
->>>> This allows us to change how the number of buffers is computed in the
->>>> future.
->>>>
->>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>>> Acked-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
->>>
->>> Given you've alaredy A-b, would you be ok with adding this sentence:
->>>
->>> "While at it, check the return value of vb2_get_buffer()."
->>>
->>> to the commit message body?
->>
->> Not only do I agree, but because this is done in a function returning 
->> void,
->> you could even:
->>
->> if (WARN_ON(!vb))
->>     continue;
->>
->> so that it doesn't go completely unnoticed.
->>
->> What do you think?
->>
->
-> I'd ask Benjamin.
->
-> But my take on the direction of changes is that ultimately
-> there will be "holes" in the array of allocated buffers (hence the
-> bitmap to track which slots are used and which are not). In other words,
-> getting a NULL sometimes will be an expected situation, and a WARN() will
-> not be appropriate for an expected situation.
->
-> @Benjamin?
+Hrm, I'm not sure that we can do a whole lot for test_apic_timer_one_shot().  Or
+rather, I'm not sure it's worth the effort to try and add coverage beyond what's
+already there.
 
-That should never happens unless you add delete buffers capability to the driver
-and in this case it is normal to have holes.
-Other drivers do not use WARN_ON() so I will not do it for this one.
+As for TDX, *if* we extend KUT, please don't make it depend on TDX.  Very few people
+have access to TDX platforms and anything CoCo is pretty much guaranteed to be harder
+to debug.
 
-Regards,
-Benjamin
+> - kselftest
+>   Right now kvm kselftest doesn't have test cases even for in-kernel IRQCHIP
+>   creation.
 
->
-> Regards,
->
-> Andrzej
->
->> Cheers,
->>
->> Paul
->>
->>> @Benjamin:
->>>
->>> With this change, you can add my
->>>
->>> Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
->>>
->>>> CC: Maxime Ripard <mripard@kernel.org>
->>>> ---
->>>>    drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 9 +++++++--
->>>>    drivers/staging/media/sunxi/cedrus/cedrus_h265.c | 9 +++++++--
->>>>    2 files changed, 14 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c 
->>>> b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
->>>> index dfb401df138a..3e2843ef6cce 100644
->>>> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
->>>> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
->>>> @@ -653,8 +653,13 @@ static void cedrus_h264_stop(struct cedrus_ctx 
->>>> *ctx)
->>>>        vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, 
->>>> V4L2_BUF_TYPE_VIDEO_CAPTURE);
->>>> -    for (i = 0; i < vq->num_buffers; i++) {
->>>> -        buf = vb2_to_cedrus_buffer(vb2_get_buffer(vq, i));
->>>> +    for (i = 0; i < vb2_get_num_buffers(vq); i++) {
->>>> +        struct vb2_buffer *vb = vb2_get_buffer(vq, i);
->>>> +
->>>> +        if (!vb)
->>>> +            continue;
->>>> +
->>>> +        buf = vb2_to_cedrus_buffer(vb);
->>>>            if (buf->codec.h264.mv_col_buf_size > 0) {
->>>>                dma_free_attrs(dev->dev,
->>>> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c 
->>>> b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>>> index fc9297232456..52e94c8f2f01 100644
->>>> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>>> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->>>> @@ -869,8 +869,13 @@ static void cedrus_h265_stop(struct cedrus_ctx 
->>>> *ctx)
->>>>        vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, 
->>>> V4L2_BUF_TYPE_VIDEO_CAPTURE);
->>>> -    for (i = 0; i < vq->num_buffers; i++) {
->>>> -        buf = vb2_to_cedrus_buffer(vb2_get_buffer(vq, i));
->>>> +    for (i = 0; i < vb2_get_num_buffers(vq); i++) {
->>>> +        struct vb2_buffer *vb = vb2_get_buffer(vq, i);
->>>> +
->>>> +        if (!vb)
->>>> +            continue;
->>>> +
->>>> +        buf = vb2_to_cedrus_buffer(vb);
->>>>            if (buf->codec.h265.mv_col_buf_size > 0) {
->>>>                dma_free_attrs(dev->dev,
->>>
->>
->>
->> _______________________________________________
->> Kernel mailing list -- kernel@mailman.collabora.com
->> To unsubscribe send an email to kernel-leave@mailman.collabora.com
->
+Selftests always create an in-kernel APIC.  And I think selftests are perfectly
+suited to complement the coverage provided by KUT.  Specifically, the failure
+scenario for this is that KVM emulates at 1Ghz whereas TDX advertises 25Mhz, i.e.
+the test case we want is to verify that the APIC timer doesn't expire early.
+
+There's no need for any APIC infrastructure, e.g. a selftest doesn't even need to
+handle an interrupt.  Get the TSC frequency from KVM, program up an arbitrary APIC
+bus clock frequency, set TMICT such that it expires waaaay in the future, and then
+verify that the APIC timer counts reasonably close to the programmed frequency.
+E.g. if the test sets the bus clock to 25Mhz, the "drift" due to KVM counting at
+1Ghz should be super obvious.
+
+LOL, side topic, KUT has this:
+
+	/*
+	 * For LVT Timer clock, SDM vol 3 10.5.4 says it should be
+	 * derived from processor's bus clock (IIUC which is the same  <======
+	 * as TSC), however QEMU seems to be using nanosecond. In all
+	 * cases, the following should satisfy on all modern
+	 * processors.
+	 */
+	report((lvtt_counter == 1) && (tsc2 - tsc1 >= interval),
+	       "APIC LVT timer one shot");
