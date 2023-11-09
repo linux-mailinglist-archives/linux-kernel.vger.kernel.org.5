@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005197E70CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F297E70CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344872AbjKIRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S1344849AbjKIRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344773AbjKIRvA (ORCPT
+        with ESMTP id S1344773AbjKIRvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:51:00 -0500
+        Thu, 9 Nov 2023 12:51:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D0F269E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:50:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A0B4C433C7;
-        Thu,  9 Nov 2023 17:50:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F10386E
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:51:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BCE5C433C9;
+        Thu,  9 Nov 2023 17:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699552257;
-        bh=GB1syrHkrGKsmiS0BjcotABnBGuB2ElN3V85GZw/kAw=;
+        s=k20201202; t=1699552281;
+        bh=XPmieidkvTqBzUR/vxOsuiXcCyKM/zgNK+ZNoUrqnMg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ToCXT+f0/7z3BZkle4LwTFuKxK3lAXNYtMhvN8zhbG2gkF7h4SBB/igmwG0P+Zvo2
-         NmuS/Eg86zaZ6ucHSUi94mNjOVQMxv6vRV7mSbR5Nu2xBvVt+kOOadEY1MeJi2R5eX
-         gm/vUCHta0V+Aw72M3C1IBCFGONx0v4m5jQ9enBcpbJJu7jdsg0lKCj1pkr1bIN56H
-         XlOOpDuFV4fAm1/T95n+hJTQNX4BnHUyad1pDELC+KMD+BzhteYuURCIzoLPGIax5q
-         24ToC2MuXIi88cVPWmXu7EuLB2aftW1hVxXBE5zrsHGWQoYmx0ds30NK2pSkEsnp1Z
-         O5bKwljiIwPLw==
-Date:   Thu, 9 Nov 2023 17:50:51 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v8 03/12] dt-bindings: phy:
- amlogic,meson-axg-mipi-pcie-analog: drop text about parent syscon and drop
- example
-Message-ID: <20231109-unsalted-daredevil-4052fa57fd2c@spud>
-References: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-0-81e4aeeda193@linaro.org>
- <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-3-81e4aeeda193@linaro.org>
+        b=r1ePCVIEMutoRd7UrDkWj2iYyVFGYbgLcHeSq9obJ4o4zzzwK3u4nxTihrF8eZ1yq
+         sfnuFjVWVf78FPKIU2e5mF59xnqWoRuYfTRYV2njrfu0kiUILM+7dub00TiAKJplOu
+         ngwhrE3y+SLoH095RDwg9P65PpQqcwuApLlWTgfX+Ck3rKSqe+7nEi3Pkzk2cG5zdI
+         TsAIS4ceXMHebQD+72i+fpNySaV7B33uhk1AdjtbOhggpGGxK/dm5f59yfOCp0X1Wj
+         uBSwsMwGXw0xoK3z0qEHuOggsU8fHqsZTSiDKPpse23MgOtaWsHt4yUiL9MT2Zj9eX
+         cJxDDq6v0NNZA==
+Date:   Thu, 9 Nov 2023 09:51:18 -0800
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
+        richard@nod.at, mjguzik@gmail.com, Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        live-patching@vger.kernel.org
+Subject: Re: [RFC PATCH 07/86] Revert "livepatch,sched: Add livepatch task
+ switching to cond_resched()"
+Message-ID: <20231109175118.olggitpaltz47n3b@treble>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-8-ankur.a.arora@oracle.com>
+ <20231107181609.7e9e9dcc@gandalf.local.home>
+ <20231109172637.ayue3jexgdxd53tu@treble>
+ <20231109123147.2bb11809@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="E5Nn4IFoyvxjicc1"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-3-81e4aeeda193@linaro.org>
+In-Reply-To: <20231109123147.2bb11809@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 09, 2023 at 12:31:47PM -0500, Steven Rostedt wrote:
+> On Thu, 9 Nov 2023 09:26:37 -0800
+> Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+> 
+> > On Tue, Nov 07, 2023 at 06:16:09PM -0500, Steven Rostedt wrote:
+> > > On Tue,  7 Nov 2023 13:56:53 -0800
+> > > Ankur Arora <ankur.a.arora@oracle.com> wrote:
+> > >   
+> > > > This reverts commit e3ff7c609f39671d1aaff4fb4a8594e14f3e03f8.
+> > > > 
+> > > > Note that removing this commit reintroduces "live patches failing to
+> > > > complete within a reasonable amount of time due to CPU-bound kthreads."
+> > > > 
+> > > > Unfortunately this fix depends quite critically on PREEMPT_DYNAMIC and
+> > > > existence of cond_resched() so this will need an alternate fix.  
+> > 
+> > We definitely don't want to introduce a regression, something will need
+> > to be figured out before removing cond_resched().
+> > 
+> > We could hook into preempt_schedule_irq(), but that wouldn't work for
+> > non-ORC.
+> > 
+> > Another option would be to hook into schedule().  Then livepatch could
+> > set TIF_NEED_RESCHED on remaining unpatched tasks.  But again if they go
+> > through the preemption path then we have the same problem for non-ORC.
+> > 
+> > Worst case we'll need to sprinkle cond_livepatch() everywhere :-/
+> > 
+> 
+> I guess I'm not fully understanding what the cond rescheds are for. But
+> would an IPI to all CPUs setting NEED_RESCHED, fix it?
 
---E5Nn4IFoyvxjicc1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If all livepatch arches had the ORC unwinder, yes.
 
-On Thu, Nov 09, 2023 at 10:00:04AM +0100, Neil Armstrong wrote:
-> Since this bindings is referred from amlogic,meson-gx-hhi-sysctrl.yaml, d=
-rop the now
-> useless description about the parent node and also drop the unnecessary e=
-xample.
->=20
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+The problem is that frame pointer (and similar) unwinders can't reliably
+unwind past an interrupt frame.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-COnor.
-
-> ---
->  .../phy/amlogic,meson-axg-mipi-pcie-analog.yaml         | 17 -----------=
-------
->  1 file changed, 17 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi=
--pcie-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson-axg=
--mipi-pcie-analog.yaml
-> index 009a39808318..70def36e5688 100644
-> --- a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-a=
-nalog.yaml
-> +++ b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-a=
-nalog.yaml
-> @@ -9,16 +9,6 @@ title: Amlogic AXG shared MIPI/PCIE analog PHY
->  maintainers:
->    - Remi Pommarel <repk@triplefau.lt>
-> =20
-> -description: |+
-> -  The Everything-Else Power Domains node should be the child of a syscon
-> -  node with the required property:
-> -
-> -  - compatible: Should be the following:
-> -                "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
-> -
-> -  Refer to the bindings described in
-> -  Documentation/devicetree/bindings/mfd/syscon.yaml
-> -
->  properties:
->    compatible:
->      const: amlogic,axg-mipi-pcie-analog-phy
-> @@ -31,10 +21,3 @@ required:
->    - "#phy-cells"
-> =20
->  additionalProperties: false
-> -
-> -examples:
-> -  - |
-> -    mpphy: phy {
-> -          compatible =3D "amlogic,axg-mipi-pcie-analog-phy";
-> -          #phy-cells =3D <0>;
-> -    };
->=20
-> --=20
-> 2.34.1
->=20
-
---E5Nn4IFoyvxjicc1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU0b+wAKCRB4tDGHoIJi
-0llMAQDSiyi01Tk6EfsjuzI7TW2RZ9q3lS642vkuNdyv7Vl74QEAi50xLev+LeZV
-0XXHkOzNdlCx7iH9hujdrheVevi6VwY=
-=NFGG
------END PGP SIGNATURE-----
-
---E5Nn4IFoyvxjicc1--
+-- 
+Josh
