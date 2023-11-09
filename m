@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AABC7E6C24
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE6C7E6C2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbjKIOJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:09:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S234213AbjKIOLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjKIOJV (ORCPT
+        with ESMTP id S231835AbjKIOLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:09:21 -0500
+        Thu, 9 Nov 2023 09:11:09 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464E4269A;
-        Thu,  9 Nov 2023 06:09:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188672D6B;
+        Thu,  9 Nov 2023 06:11:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=g+lNrllJ5lzRMSerkLwsHNxMh6MnqQQj+IsmmSA/ncQ=; b=lf4Z5aluBgo1Dcb3dCZuAvwpHD
-        Zky+SybZXcNQwcfBvlSrIX8hIew/jeklvfnsoi51Ervq+JUA9Al1Jg+2zVFIFSG20M97UmJES7Iag
-        3kPHWcxKK77aRIZb6BQYzu7eY/eRDZ6aFQR7+ZYcDmSe462ML5dvUIWr16uibYEfZs0O/M7q3qn+T
-        0ZBEP7JRmzDPg5Jn4MzWav4Sfxvwhd3w3VZPm/hdX/48EzdMdmHiayPWZ14U0fSGuxcbVk5Xx3VaV
-        nsx/4jFYORHA30GIkiCTM9y3ueItzKAHSdyho5OBu/XCUFr9Ovz8PXe/qfvNANSrX8Z6XZIZV+TJ0
-        URuaFNUQ==;
+        bh=s3u9jxqjI5KwNmQNMyyZwIKD3v79jB5wPUc1BiFVB9U=; b=cOECJ9T9Vj4NcyTWwe/g8EKrad
+        hhsH3X3woSg5q5NbpUpZ67TMtaSxwTPecV/2GVOwD88mQqhFjETKH7RK4BEBgbB9HNbAszF/Fj8B3
+        HOeTxxBHWGV6dO/pva2uhbe8T50s++1kqopFzrjCFkDZ1vjnTH44mARAcD3P9mxFXTg0YkByBpfIa
+        m5LIs/p1hczjJ22EzO+iqZW8FZytPYz7xfUUVirLV5/fnPeCgNLrSFFfRg8i5wjT1DE7oI8aMDkNK
+        YisxxW+cWNb8jhkd3z4GEdD3TcN/JPv5C1CoVnQZ7OyGolUge3nIey8VDjdIQtdd6VtKesUalZtiu
+        hVtMPe+w==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r15iU-007et8-8S; Thu, 09 Nov 2023 14:09:06 +0000
-Date:   Thu, 9 Nov 2023 14:09:06 +0000
+        id 1r15kA-007exW-20; Thu, 09 Nov 2023 14:10:50 +0000
+Date:   Thu, 9 Nov 2023 14:10:50 +0000
 From:   Matthew Wilcox <willy@infradead.org>
 To:     Jeff Xie <jeff.xie@linux.dev>
 Cc:     akpm@linux-foundation.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
@@ -35,50 +35,29 @@ Cc:     akpm@linux-foundation.org, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
         roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         chensong_2000@189.cn, xiehuan09@gmail.com
-Subject: Re: [RFC][PATCH 3/4] filemap: implement filemap allocate post
+Subject: Re: [RFC][PATCH 4/4] mm/rmap: implement anonmap allocate post
  callback for page_owner
-Message-ID: <ZUzoAhpkrCNz9l1k@casper.infradead.org>
+Message-ID: <ZUzoanvY4eIc1xK0@casper.infradead.org>
 References: <20231109032521.392217-1-jeff.xie@linux.dev>
- <20231109032521.392217-4-jeff.xie@linux.dev>
+ <20231109032521.392217-5-jeff.xie@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231109032521.392217-4-jeff.xie@linux.dev>
+In-Reply-To: <20231109032521.392217-5-jeff.xie@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 11:25:20AM +0800, Jeff Xie wrote:
-> +static int filemap_alloc_post_page_owner(struct folio *folio, struct task_struct *tsk,
+On Thu, Nov 09, 2023 at 11:25:21AM +0800, Jeff Xie wrote:
+> +static int anon_alloc_post_page_owner(struct folio *folio, struct task_struct *tsk,
 > +			void *data, char *kbuf, size_t count)
 > +{
 > +	int ret;
-> +	int mapcount;
-> +	dev_t s_dev;
-> +	struct inode *inode;
-> +	struct vm_area_struct *vma;
-> +	struct mm_struct *mm;
-> +	unsigned long virtual_start = 0x0;
-> +	unsigned long virtual_end = 0x0;
-> +	struct address_space *mapping = data;
+> +	unsigned long address = (unsigned long)data;
+> +
+> +	ret = scnprintf(kbuf, count, "ANON_PAGE address 0x%lx\n", address);
 
-This is just folio->mapping.
+... completely ignoring that it might have been mremap() since ...
 
-> +	mapcount = folio_mapcount(folio);
-> +	if (mapcount && tsk && tsk->mm) {
-> +		mm = tsk->mm;
-> +		VMA_ITERATOR(vmi, mm, 0);
-> +		mmap_read_lock(mm);
-> +		for_each_vma(vmi, vma) {
-> +			if (page_mapped_in_vma(&folio->page, vma)) {
-> +				virtual_start = vma_address(&folio->page, vma);
-> +				virtual_end = virtual_start + folio_nr_pages(folio) * PAGE_SIZE;
-> +				break;
-> +			}
-> +		}
-> +		mmap_read_unlock(mm);
-> +	}
-
-Why not just walk the rmap directly to find out where it's mapped in
-any process instead of the one which allocated it?
-
+I'm not an expert on anon memory.  I'm sure someone can tell you how to
+figure out the current address that a folio is mapped at.
