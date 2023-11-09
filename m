@@ -2,235 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6967E61D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DA37E61DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 02:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbjKIBmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 20:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        id S231514AbjKIBuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 20:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjKIBmN (ORCPT
+        with ESMTP id S229565AbjKIBuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 20:42:13 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4769C2698
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 17:42:11 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7ba45fc8619so123692241.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 17:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699494130; x=1700098930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rtXvJMS7/3Fgi+LpB6nuDO1GbZPELeIfXynT/oP6gbw=;
-        b=pte8zQkMQ+/0wqzuA5lFv1GZ/lyHdSNgr4p7SbREBf9dolQE99OPtDF1uQbqi5A7wz
-         L16PQRM6VdeIbhQ4n+3JN5QN6cwTGf2BlIwwFKWpyFaEpzv33Rags+tgwjtX4pROh/x8
-         ACPiFtN7FvjLkD6uKebnroFsZRoMDYSry8gP7P9/TJFE+Jyb92HyZ5zd0Wi1PHEziu7W
-         +w8ULc2V8vg/WVf0bx2yVfXc/jKsQjk3G2MbXsU6R6tk9Yakq7HjE4tY4G27+N28n+Wy
-         ymH75pQdUwgpLl8598nL5W9x7rk5NHjoc+k/UNLVjsmL8DJD6yaP8SvmxUkNrkCvR28x
-         JVMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699494130; x=1700098930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rtXvJMS7/3Fgi+LpB6nuDO1GbZPELeIfXynT/oP6gbw=;
-        b=YjYfseoBQGcNRZipOOZLimiAQ6LZbkkvedO5JHg2fvFk8ahP/zU8Mu7v3DGmorjQI/
-         Uvu69re8jpMg1UmR2Vzg0HbkCniSp+Nzh5hTnwxJJdpZHYVrzj0k6K0nvePlpbmyOBAJ
-         1NsjzILt3Ie9kkW88j4gxbxgmgBlL/DU3KsR4uoude/yECGRHeFZVRxmpR6IeSo97Ymh
-         PQqTG0Mn13I4st2uJb0GsgHgjtNIUwHNu1YkBb9JKNQ2CTxi56nybAlQUxhksJx3lg2k
-         WS1OVawpxdqEhlh6Uze4V1uuE8ccXeGDUgJQjSyKxdIM7OfWEl9j8p8NmbIPUfEson7n
-         kAJA==
-X-Gm-Message-State: AOJu0YwNLbn36sTcvm1EdlMvLyu0bClGKU/J0mtwyyezxWFDw80LtUQg
-        0i4sH1Mihjykz139Ies51Ce4GFU8XaE5uVNYtKeXwA==
-X-Google-Smtp-Source: AGHT+IEgdcG0qqqXy9cIxFiAolh/hrZOW6JAOB3Io/o+JJsEAX7J8FeEEaKDW9kJyXKjNOuzCBypENaeQVzYpVq+vos=
-X-Received: by 2002:a05:6102:2082:b0:45d:8660:b91 with SMTP id
- h2-20020a056102208200b0045d86600b91mr3660311vsr.9.1699494130078; Wed, 08 Nov
- 2023 17:42:10 -0800 (PST)
+        Wed, 8 Nov 2023 20:50:00 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2077.outbound.protection.outlook.com [40.107.215.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1E825BB;
+        Wed,  8 Nov 2023 17:49:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZbaWEIoCh/qRwwcLUP4xvgpU9RLuPkdkC5dOc/pLeZ+sYhiOofMvwHg8aaH8QgybHlgKoH0eC42ZdU1YVNLVvE//kKGhCXfyby73AQtvnLEViaZgPjFp96+qjUHzAs+XO2hRGLm/I+OKkWWGG/6UkYGrmdi1lXpXVCqTgnrSy1QEr6KdKnBbOBqiaXw0vMZnAGEfQz+P8D2jQuKOIwi+LJuKCYSUCYdS07wQc5N7YXQvNMBC62Q3l0KVt9PmasaJqGyRXI1VnvPmRLpOQ8jM+F2zZ4jivr0Zm4RUDPUwGulGDvm0hKRdzAe/PoYUJiG97xqIhvE8tFXdl+Vnqc1XLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m2pRIdWBF5flFg4ac2FXqX+9BfXpv1nBuypFYcAi2iQ=;
+ b=nYNHheWKTUlhDq13u5L0SFkvRp3wZD/xcrey/2Xu36KgEgW/S8uoXB2utDHLh1RDYujfwXheePLfYhaggVFhmIgQPP+DnIiiMnLD0MT+Nb+IIc++ljyy5u0LG4NkHsEHLz3UxjMMyV0WkpKPCn8ucGp1maOWN3SIy/8K0ypCaSFKSmkaTUKONMhDbrHmxGBzzNa+GLEsWoj6rwkWm/nEc83XakObCn+1b/77bDmYMVJZkzrD4NMmrQidMkCcXnt9ouBMOC/Eb4oxQH41AA29KrL829/hTI9IfbG+ITobYWMLDAWKEO4eqA4N9VriCSDhCLRwM1RpD1FouValdVlrZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m2pRIdWBF5flFg4ac2FXqX+9BfXpv1nBuypFYcAi2iQ=;
+ b=Gn0rEbPIBwObwOUjp8ArIN9PW4QoBgRm5gjlrhR1Y13Uay5EJEtGBgbGixg2YdPvlGYooFt0AhZESvpQahXq7oNgeLxLh0hlRWu25kEDLbDWQKrkHc+hJPgEAHHyyMgyyW1M5PpXjDtiXhfkgoEauHmQmUENS8Mp89wSQGpQ4pX/APF+b5FuPYqASrgGCcAh4cy2gq/vKCPpl0812VIrnXu05HoS+vLSaz9swqM4Mnw3mSnkIdJ2vhjxlpOqQRulhlZr8e4O5ckByI4ux5pZFvGYLUjzix0GkWEslsl9es6ludWkKzxnFo/Ba5oWYIxG4sTMlHkPDuGK7o2WfhmDZQ==
+Received: from PS2PR02CA0067.apcprd02.prod.outlook.com (2603:1096:300:5a::31)
+ by SG2PR04MB3946.apcprd04.prod.outlook.com (2603:1096:0:e::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.27; Thu, 9 Nov 2023 01:49:52 +0000
+Received: from HK3PEPF0000021A.apcprd03.prod.outlook.com
+ (2603:1096:300:5a:cafe::d8) by PS2PR02CA0067.outlook.office365.com
+ (2603:1096:300:5a::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18 via Frontend
+ Transport; Thu, 9 Nov 2023 01:49:51 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=Wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=Wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of Wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK3PEPF0000021A.mail.protection.outlook.com (10.167.8.36) with Microsoft SMTP
+ Server id 15.20.6977.18 via Frontend Transport; Thu, 9 Nov 2023 01:49:51
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v4 0/2] LTC4286 and LTC4287 driver support
+Date:   Thu,  9 Nov 2023 09:49:44 +0800
+Message-Id: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-6-almasrymina@google.com> <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
- <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com> <6c629d6d-6927-3857-edaa-1971a94b6e93@huawei.com>
-In-Reply-To: <6c629d6d-6927-3857-edaa-1971a94b6e93@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 8 Nov 2023 17:41:56 -0800
-Message-ID: <CAHS8izPgioCzFGadNFNFWr_tqi--YBF8qrNqi8ELgixA9ZX0rQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021A:EE_|SG2PR04MB3946:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 7a25bfa2-5877-4da8-45a6-08dbe0c629f5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: h8fxUJgvnLxBD8KO1zgxMXUfZ3c0PNyLsmfE/VKJdSgfbGg6cEN9b6CVvbyn7+Shqwxl90ImBTGNNXbh+KgGK0fsrmr4WdazXKK57PmvBG6x5SjVOOU0vltr/LHL4xo+v3aff1IxqnnwBRZgE6dTqxKDYxo3t2TVmR1J9yfBiG6gheCqqDF67YyNRJKMTI5+2ledc8K8a3/j78hh/6OVrxe/NTo1Pr7wSIywP2iRnjUg09JMMyOhmgbHRHQ6LZdUFZJmL0usQ3JI1912/qiLp9BK3BTUi7Kp3eA85H4UOVVUczBqxu+vpfDBmgXxyd6SSs8yfCqU/Ml31W593UtHvKNuRHQGqn9y8DEDBgtSjoQVU/rf2j0S9Q+W0CegQY+42RXzwwDPMzr4/KL1ASnVdd1A5hmqCKhWXqWC7ebzUYj6vCyfUQ+quo49pKwVbI2FTl6JHto1kZrS/vL9c+C39A5ow4/CO9wQap+STpW7DQZaWbSY6BS7hhA7nTatg2ofwEtgjacDKWqAxhw7gOBPulcTkaDzFnJRSkw9HiPAFyFFXXrccwnBt162HSgRXALu0FjdFmyNyJ1w4M0/ENMcEmwKr9Y4s4lSC1bNFjkh4CKGyW5xCTs2R5NkgbWZWA0RTN+lgZWkUspAlagSHywrZi4enhci3jvIYrFv4KC9xlVBLTCWBw5nVtsKfYsW5OcSvAjnW3W+fxaRBFAUGkSDuw==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(451199024)(82310400011)(64100799003)(1800799009)(186009)(46966006)(36840700001)(6666004)(36860700001)(6506007)(9316004)(356005)(81166007)(47076005)(40480700001)(336012)(6512007)(1076003)(4326008)(5660300002)(2616005)(956004)(36756003)(41300700001)(4744005)(86362001)(8936002)(2906002)(36736006)(70586007)(70206006)(6486002)(6916009)(7416002)(54906003)(316002)(82740400003)(26005)(478600001)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 01:49:51.2487
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a25bfa2-5877-4da8-45a6-08dbe0c629f5
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021A.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR04MB3946
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Mon, Nov 6, 2023 at 11:45=E2=80=AFPM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> >>
-> >> On 2023/11/6 10:44, Mina Almasry wrote:
-> >>> +
-> >>> +void netdev_free_devmem(struct page_pool_iov *ppiov)
-> >>> +{
-> >>> +     struct netdev_dmabuf_binding *binding =3D page_pool_iov_binding=
-(ppiov);
-> >>> +
-> >>> +     refcount_set(&ppiov->refcount, 1);
-> >>> +
-> >>> +     if (gen_pool_has_addr(binding->chunk_pool,
-> >>> +                           page_pool_iov_dma_addr(ppiov), PAGE_SIZE)=
-)
-> >>
-> >> When gen_pool_has_addr() returns false, does it mean something has gon=
-e
-> >> really wrong here?
-> >>
-> >
-> > Yes, good eye. gen_pool_has_addr() should never return false, but then
-> > again, gen_pool_free()  BUG_ON()s if it doesn't find the address,
-> > which is an extremely severe reaction to what can be a minor bug in
-> > the accounting. I prefer to leak rather than crash the machine. It's a
-> > bit of defensive programming that is normally frowned upon, but I feel
-> > like in this case it's maybe warranted due to the very severe reaction
-> > (BUG_ON).
->
-> I would argue that why is the above defensive programming not done in the
-> gen_pool core:)
->
+v4 - Add LTC4286 and LTC4287 binding document
+   - Add LTC4286 and LTC4287 driver
 
-I think gen_pool is not really not that new, and suggesting removing
-the BUG_ONs must have been proposed before and rejected. I'll try to
-do some research and maybe suggest downgrading the BUG_ON to WARN_ON,
-but my guess is there is some reason the maintainer wants it to be a
-BUG_ON.
+Delphine CC Chiu (2):
+  dt-bindings: hwmon: Add lltc ltc4286 driver bindings
+  hwmon: pmbus: Add ltc4286 driver
 
-On Wed, Nov 8, 2023 at 5:00=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
->
-> On 2023-11-07 14:55, David Ahern wrote:
-> > On 11/7/23 3:10 PM, Mina Almasry wrote:
-> >> On Mon, Nov 6, 2023 at 3:44=E2=80=AFPM David Ahern <dsahern@kernel.org=
-> wrote:
-> >>>
-> >>> On 11/5/23 7:44 PM, Mina Almasry wrote:
-> >>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >>>> index eeeda849115c..1c351c138a5b 100644
-> >>>> --- a/include/linux/netdevice.h
-> >>>> +++ b/include/linux/netdevice.h
-> >>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
-> >>>>  };
-> >>>>
-> >>>>  #ifdef CONFIG_DMA_SHARED_BUFFER
-> >>>> +struct page_pool_iov *
-> >>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
-> >>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
-> >>>
-> >>> netdev_{alloc,free}_dmabuf?
-> >>>
-> >>
-> >> Can do.
-> >>
-> >>> I say that because a dmabuf can be host memory, at least I am not awa=
-re
-> >>> of a restriction that a dmabuf is device memory.
-> >>>
-> >>
-> >> In my limited experience dma-buf is generally device memory, and
-> >> that's really its use case. CONFIG_UDMABUF is a driver that mocks
-> >> dma-buf with a memfd which I think is used for testing. But I can do
-> >> the rename, it's more clear anyway, I think.
-> >
-> > config UDMABUF
-> >         bool "userspace dmabuf misc driver"
-> >         default n
-> >         depends on DMA_SHARED_BUFFER
-> >         depends on MEMFD_CREATE || COMPILE_TEST
-> >         help
-> >           A driver to let userspace turn memfd regions into dma-bufs.
-> >           Qemu can use this to create host dmabufs for guest framebuffe=
-rs.
-> >
-> >
-> > Qemu is just a userspace process; it is no way a special one.
-> >
-> > Treating host memory as a dmabuf should radically simplify the io_uring
-> > extension of this set. That the io_uring set needs to dive into
-> > page_pools is just wrong - complicating the design and code and pushing
-> > io_uring into a realm it does not need to be involved in.
->
-> I think our io_uring proposal will already be vastly simplified once we
-> rebase onto Kuba's page pool memory provider API. Using udmabuf means
-> depending on a driver designed for testing, vs io_uring's registered
-> buffers API that's been tried and tested.
->
+ .../bindings/hwmon/lltc,ltc4286.yaml          |  51 +++++
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/ltc4286.rst               |  95 ++++++++++
+ MAINTAINERS                                   |  10 +
+ drivers/hwmon/pmbus/Kconfig                   |  10 +
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/ltc4286.c                 | 177 ++++++++++++++++++
+ 7 files changed, 345 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+ create mode 100644 Documentation/hwmon/ltc4286.rst
+ create mode 100644 drivers/hwmon/pmbus/ltc4286.c
 
-FWIW I also get an impression that udmabuf is mostly targeting
-testing, but I'm not aware of any deficiency that makes it concretely
-unsuitable for you. You be the judge.
+-- 
+2.25.1
 
-The only quirk of udmabuf I'm aware of is that it seems to cap the max
-dma-buf size to 16000 pages. Not sure if that's due to a genuine
-technical limitation or just convenience.
-
-> I don't have an intuitive understanding of the trade offs yet, and would
-> need to try out udmabuf and compare vs say using our own page pool
-> memory provider.
->
-
-
-On Wed, Nov 8, 2023 at 5:15=E2=80=AFPM David Wei <dw@davidwei.uk> wrote:
-> How would TCP devmem change if we no longer assume that dmabuf is device
-> memory?
-
-It wouldn't. The code already never assumes that dmabuf is device
-memory. Any dma-buf should work, as far as I can tell. I'm also quite
-confident udmabuf works, I use it for testing.
-
-(Jason Gunthrope is much more of an expert and may chime in to say
-'some dma-buf will not work'. My primitive understanding is that we're
-using dma-bufs without any quirks and any dma-buf should work. I of
-course haven't tested all dma-bufs :D)
-
-> Pavel will know more on the perf side, but I wouldn't want to
-> put any if/else on the hot path if we can avoid it. I could be wrong,
-> but right now in my mind using different memory providers solves this
-> neatly and the driver/networking stack doesn't need to care.
->
-> Mina, I believe you said at NetDev conf that you already had an udmabuf
-> implementation for testing. I would like to see this (you can send
-> privately) to see how TCP devmem would handle both user memory and
-> device memory.
->
-
-There is nothing to send privately. The patch series you're looking at
-supports udma-buf as-is, and the kselftest included with the series
-demonstrates devmem TCP working with udmabuf.
-
-The only thing missing from this series is the driver support. You can
-see the GVE driver support for devmem TCP here:
-
-https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
-
-You may need to implement devmem TCP for your driver before you can
-reproduce udmabuf working for yourself, though.
-
---=20
-Thanks,
-Mina
