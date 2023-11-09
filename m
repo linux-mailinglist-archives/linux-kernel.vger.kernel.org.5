@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAF57E6C3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305C57E6C35
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjKIOMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S234194AbjKIOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbjKIOMW (ORCPT
+        with ESMTP id S231586AbjKIOMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:12:22 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CD72D73
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8gAs0BtsM8utUDlNE+Hxk/kuj0OGhH5k7BA44pz9JDg=; b=EIZ8VK/OxomSYDgAtwf/qnI5hY
-        rX8FJgL/tuHwHWyeI5NHG/PkSBCQdULKd2gqeBqcl2K+rCk5TgLIHb4sGyIC60knmdLLWcFJZuTWI
-        4PNcSnyUOfTYN8Lu6K1GyEm0DGd7HDOWLvq5pxKMxkrziw8PW7hetkiyoJMkTR6E86M3klIVCYP+M
-        7Dj65vaByr9FKMy/xw8YXTgZLIIkxoIU1ANGZLt/DAsDBG+a5xbp57bgYvIdqqDmtUA3h2tLnuKTx
-        ygk1buGY/Vk7dhe5NtZXL8rcBM51n75Ww5jkZSq+xqYoWfj3RPTTDwJpTo68jrp/llQLvp1HU33Yz
-        737p6LgA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r15l0-00EUCj-0s;
-        Thu, 09 Nov 2023 14:11:42 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E8629300454; Thu,  9 Nov 2023 15:11:41 +0100 (CET)
-Date:   Thu, 9 Nov 2023 15:11:41 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "zhangpeng (AS)" <zhangpeng362@huawei.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, Matthew Wilcox <willy@infradead.org>,
-        lstoakes@gmail.com, hughd@google.com, david@redhat.com,
-        fengwei.yin@intel.com, vbabka@suse.cz, mgorman@suse.de,
-        mingo@redhat.com, riel@redhat.com, ying.huang@intel.com,
-        hannes@cmpxchg.org, Nanyong Sun <sunnanyong@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [Question]: major faults are still triggered after mlockall when
- numa balancing
-Message-ID: <20231109141141.GC8683@noisy.programming.kicks-ass.net>
-References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
+        Thu, 9 Nov 2023 09:12:14 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C40C2D75
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:12:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B410512FC;
+        Thu,  9 Nov 2023 06:12:56 -0800 (PST)
+Received: from e123572-lin.arm.com (e123572-lin.cambridge.arm.com [10.1.194.65])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 245993F64C;
+        Thu,  9 Nov 2023 06:12:11 -0800 (PST)
+From:   Kevin Brodsky <kevin.brodsky@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Kevin Brodsky <kevin.brodsky@arm.com>
+Subject: [PATCH v2] arm64/syscall: Remove duplicate declaration
+Date:   Thu,  9 Nov 2023 14:11:53 +0000
+Message-ID: <20231109141153.250046-1-kevin.brodsky@arm.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 09:47:24PM +0800, zhangpeng (AS) wrote:
-> Is there any way to avoid such a major fault?
+Commit 6ac19f96515e ("arm64: avoid prototype warnings for syscalls")
+added missing declarations to various syscall wrapper macros. It
+however proved a little too zealous in __SYSCALL_DEFINEx(), as a
+declaration for __arm64_sys##name was already present. A declaration
+is required before the call to ALLOW_ERROR_INJECTION(), so keep
+the original one and remove the new one.
 
-man madvise
+Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
+---
+
+v1..v2:
+- Keep the original declarations as-is, as they are required before
+  calling ALLOW_ERROR_INJECTION().
+
+ arch/arm64/include/asm/syscall_wrapper.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/syscall_wrapper.h b/arch/arm64/include/asm/syscall_wrapper.h
+index 17f687510c48..d977713ec0ba 100644
+--- a/arch/arm64/include/asm/syscall_wrapper.h
++++ b/arch/arm64/include/asm/syscall_wrapper.h
+@@ -54,7 +54,6 @@
+ 	ALLOW_ERROR_INJECTION(__arm64_sys##name, ERRNO);			\
+ 	static long __se_sys##name(__MAP(x,__SC_LONG,__VA_ARGS__));		\
+ 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__));	\
+-	asmlinkage long __arm64_sys##name(const struct pt_regs *regs);		\
+ 	asmlinkage long __arm64_sys##name(const struct pt_regs *regs)		\
+ 	{									\
+ 		return __se_sys##name(SC_ARM64_REGS_TO_ARGS(x,__VA_ARGS__));	\
+-- 
+2.42.1
+
