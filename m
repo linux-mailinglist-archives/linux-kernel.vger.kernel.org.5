@@ -2,109 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C594A7E69B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5947E7E69B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 12:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbjKILby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 06:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
+        id S232218AbjKILcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 06:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbjKILbj (ORCPT
+        with ESMTP id S230123AbjKILcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 06:31:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931F030D5
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 03:31:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AACB9C433C7;
-        Thu,  9 Nov 2023 11:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699529480;
-        bh=blKVtPHhl71Ai5r3uhi0OqDF5/eM11yZfDX1m/EaHTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P60+Bp/9DMnA1KCELXWMhYLJaeGmWP/96gWvnKXjzdLatjfYHYRO0tnJa6wVxN+6C
-         XHqMWvcK/WPPzcEG4IYrR1h0XmDKWw22Wyxjd0bRtIOQKcsqzHsjj1732ITsAUGut/
-         kPJVf/GQAaCIbwitF6Hr9L7WLf84MllnmpYX4G2eQpCYGsymxE/qzGsv+MEAsZiaWZ
-         HqwvAImawWuatTlyYkjga2vzARcfhAx3qFpYq64FK2lmJqGaXsp3n8U3IeykB9Z1Tc
-         qNakhovxCz0mHiQOxJmGxWtmt8gLPu0S1/T9if9WoTjnkcgLbkNPR5qTCcwRu3Ih5H
-         G9sbeziEdGepg==
-Date:   Thu, 9 Nov 2023 11:31:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
-Message-ID: <ZUzDBCaqR9Ui4j71@finisterre.sirena.org.uk>
-References: <20231005133059.917577-1-naresh.solanki@9elements.com>
- <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk>
- <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
- <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk>
- <CABqG17h949R+3NFgA1MvPLZFc6zkBi+WRPSE9qP4fCBv5gdXHw@mail.gmail.com>
- <c2dd0533-3a60-4481-8621-86578e62aab6@sirena.org.uk>
- <CABqG17h0OnMD-L1vYkJobji+Z=QPuYrd=ra1d7DncAN0_TO23A@mail.gmail.com>
- <f5829ebc-b3ab-409b-9271-e066c08aec6e@sirena.org.uk>
- <CABqG17iBsEO-NnRvgFJ9e5PvT7q+HgLyiDDfO5GcvXh4ueySsA@mail.gmail.com>
+        Thu, 9 Nov 2023 06:32:14 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27C610A;
+        Thu,  9 Nov 2023 03:32:11 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 02E616607421;
+        Thu,  9 Nov 2023 11:32:08 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699529530;
+        bh=VG1w9Pjjey9M4D6zDTGB2ppMv6zfZFZgDw9VZFd1POI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NU1aIuJef7HZL9xqOBaXnfBPX1f8dRX8TzKoXST6ZKdmi65WNUonx1xdbI4jJNHoQ
+         Akws7CNVKRzfM6KFRO/k6QjQGRxvALOX2rL3+qjt6hRiJ3exDuYCDR7enA3LPRQ3Gw
+         HrWFVVQK2Z3uElIt0+rMHJ+DjF68pZUp4aoAc54OLvcsOdibhaPSSMioBUuJazb8gf
+         cMr348Qe4azihf0irGki9G0wHL42fFrCL3Qt12o5xY+amvzdilt4wU6TRlRhlMWW3O
+         2tJcKicMkzl7kfq2ga3gyU9ffO9HJhTPF2saYBJve6pJvHdH8pGP1sxs3VH8eXPFpE
+         lP6Cxjw2DB5wQ==
+Message-ID: <4c951ab7-9443-48e6-be18-64f60ac8b422@collabora.com>
+Date:   Thu, 9 Nov 2023 12:32:06 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2zxzU1hZM/2dii12"
-Content-Disposition: inline
-In-Reply-To: <CABqG17iBsEO-NnRvgFJ9e5PvT7q+HgLyiDDfO5GcvXh4ueySsA@mail.gmail.com>
-X-Cookie: Slow day.  Practice crawling.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 38/56] media: ti: Stop direct calls to queue
+ num_buffers field
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-39-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-39-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> future.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
---2zxzU1hZM/2dii12
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-On Thu, Nov 09, 2023 at 04:08:06PM +0530, Naresh Solanki wrote:
-> On Thu, 2 Nov 2023 at 22:20, Mark Brown <broonie@kernel.org> wrote:
+> CC: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+> ---
+>   drivers/media/platform/ti/am437x/am437x-vpfe.c   | 5 +++--
+>   drivers/media/platform/ti/cal/cal-video.c        | 5 +++--
+>   drivers/media/platform/ti/davinci/vpif_capture.c | 5 +++--
+>   drivers/media/platform/ti/davinci/vpif_display.c | 5 +++--
+>   drivers/media/platform/ti/omap/omap_vout.c       | 5 +++--
+>   5 files changed, 15 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/platform/ti/am437x/am437x-vpfe.c b/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> index 5fa2ea9025d9..f18acf9286a2 100644
+> --- a/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> +++ b/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> @@ -1771,9 +1771,10 @@ static int vpfe_queue_setup(struct vb2_queue *vq,
+>   {
+>   	struct vpfe_device *vpfe = vb2_get_drv_priv(vq);
+>   	unsigned size = vpfe->fmt.fmt.pix.sizeimage;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	if (*nplanes) {
+>   		if (sizes[0] < size)
+> diff --git a/drivers/media/platform/ti/cal/cal-video.c b/drivers/media/platform/ti/cal/cal-video.c
+> index a8abcd0fee17..94e67c057a20 100644
+> --- a/drivers/media/platform/ti/cal/cal-video.c
+> +++ b/drivers/media/platform/ti/cal/cal-video.c
+> @@ -603,9 +603,10 @@ static int cal_queue_setup(struct vb2_queue *vq,
+>   {
+>   	struct cal_ctx *ctx = vb2_get_drv_priv(vq);
+>   	unsigned int size = ctx->v_fmt.fmt.pix.sizeimage;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	if (*nplanes) {
+>   		if (sizes[0] < size)
+> diff --git a/drivers/media/platform/ti/davinci/vpif_capture.c b/drivers/media/platform/ti/davinci/vpif_capture.c
+> index 99fae8830c41..fc42b4bc37e6 100644
+> --- a/drivers/media/platform/ti/davinci/vpif_capture.c
+> +++ b/drivers/media/platform/ti/davinci/vpif_capture.c
+> @@ -113,6 +113,7 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
+>   	struct channel_obj *ch = vb2_get_drv_priv(vq);
+>   	struct common_obj *common = &ch->common[VPIF_VIDEO_INDEX];
+>   	unsigned size = common->fmt.fmt.pix.sizeimage;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   
+>   	vpif_dbg(2, debug, "vpif_buffer_setup\n");
+>   
+> @@ -122,8 +123,8 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
+>   		size = sizes[0];
+>   	}
+>   
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	*nplanes = 1;
+>   	sizes[0] = size;
+> diff --git a/drivers/media/platform/ti/davinci/vpif_display.c b/drivers/media/platform/ti/davinci/vpif_display.c
+> index f8ec2991c667..9dbab1003c1d 100644
+> --- a/drivers/media/platform/ti/davinci/vpif_display.c
+> +++ b/drivers/media/platform/ti/davinci/vpif_display.c
+> @@ -115,6 +115,7 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
+>   	struct channel_obj *ch = vb2_get_drv_priv(vq);
+>   	struct common_obj *common = &ch->common[VPIF_VIDEO_INDEX];
+>   	unsigned size = common->fmt.fmt.pix.sizeimage;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   
+>   	if (*nplanes) {
+>   		if (sizes[0] < size)
+> @@ -122,8 +123,8 @@ static int vpif_buffer_queue_setup(struct vb2_queue *vq,
+>   		size = sizes[0];
+>   	}
+>   
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	*nplanes = 1;
+>   	sizes[0] = size;
+> diff --git a/drivers/media/platform/ti/omap/omap_vout.c b/drivers/media/platform/ti/omap/omap_vout.c
+> index 4143274089c3..72ce903717d3 100644
+> --- a/drivers/media/platform/ti/omap/omap_vout.c
+> +++ b/drivers/media/platform/ti/omap/omap_vout.c
+> @@ -944,10 +944,11 @@ static int omap_vout_vb2_queue_setup(struct vb2_queue *vq,
+>   				     struct device *alloc_devs[])
+>   {
+>   	struct omap_vout_device *vout = vb2_get_drv_priv(vq);
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   	int size = vout->pix.sizeimage;
+>   
+> -	if (is_rotation_enabled(vout) && vq->num_buffers + *nbufs > VRFB_NUM_BUFS) {
+> -		*nbufs = VRFB_NUM_BUFS - vq->num_buffers;
+> +	if (is_rotation_enabled(vout) && q_num_bufs + *nbufs > VRFB_NUM_BUFS) {
+> +		*nbufs = VRFB_NUM_BUFS - q_num_bufs;
+>   		if (*nbufs == 0)
+>   			return -EINVAL;
+>   	}
 
-> > Ah, right.  Everything except for the enable and disable there looks
-> > like it should be OK since they should normally just not happen but the
-> > enables and disables might get a bit frequent with runtime PM - not
-> > *super* frequent like voltage scaling but enough that people could have
-> > an issue with it.
-
-> I aim for a straightforward implementation.
-> Using attributes such as status or state seems ideal for receiving
-> notifications.
-> In my case, the application focuses on status changes=E2=80=94whether it'=
-s on, off,
-> or encountering an error.
-> These changes are driven by events originating from the regulator.
-> So below change is what I see fit well.
->=20
->         status_events =3D REGULATOR_EVENT_DISABLE;
->         status_events |=3D REGULATOR_EVENT_ENABLE;
->         status_events |=3D REGULATOR_EVENT_FAIL;
->         status_events |=3D REGULATOR_EVENT_FORCE_DISABLE;
->         status_events |=3D REGULATOR_EVENT_ABORT_DISABLE;
-
-In terms of the implementation for delivering uevents this looks fine,
-my concern here is that for some systems the enable and disable events
-might happen more often than is really a good fir for delivering via
-uevents, if a device like say a SD card is getting powered up and down
-via runtime PM that might happen relatively often and then the system
-would get a lot of uevents which it would most likely end up ignoring.
-That could have a noticable impact on power or performance.
-
---2zxzU1hZM/2dii12
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVMwwMACgkQJNaLcl1U
-h9AE2Qf/cPat5XO7XYmw+GLe2j1BU3zQaukbslHjpVHoaW59Ov+qBNcCh0EqBVRQ
-wyCFAnv2XnMyeesLa1GvjJoPPp0WLgORnAz5FAUxq0Zi3h610ojvochQ78y2h78I
-OgPPwtCX0aZp7/CyUgXTBaByZhfEoP9XTXxCPk/6bPPkFqqIUc5SZTRxVFu6TSq6
-cMrq9ny2TKP9V4vhai651X4R/ieLhcs026LPLpiR+LRwVKd1DM1rXGKSuMkD1q+F
-5gESCORPLkehbp+00H9ML7F0hfA1jh7W2rC2DkBqCXd8i1zhLzDBM+fx9abLYcs4
-bkviUQTRhv2K+j/tz8DsjJCO1sI6DA==
-=fkOC
------END PGP SIGNATURE-----
-
---2zxzU1hZM/2dii12--
