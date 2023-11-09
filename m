@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FBF7E73CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45547E73D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344927AbjKIVrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S1345399AbjKIVsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjKIVre (ORCPT
+        with ESMTP id S230020AbjKIVsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:47:34 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA7C3AA8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 13:47:31 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9e4675c7a5fso226266066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 13:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699566450; x=1700171250; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=57/MzW+inXIQgaszl6DSxcjhZsZp6Ijm+kZhgGNRRf4=;
-        b=IplVbHM1zr8YSi3wo9Ns+ecnVM/mWjVOfWmQqsP5dXg9x2vQIideSPgqAhJqucYjjN
-         8mXGfqRm4uZN2sKhwrQ3BRu8xRsETzNCyrqszfvxNOD+NOWZVgjeoIzhaKimHdiW6wlU
-         uPul8etoM6/uTZxprB+6xNJhLZcqyzWwjSjGw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699566450; x=1700171250;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=57/MzW+inXIQgaszl6DSxcjhZsZp6Ijm+kZhgGNRRf4=;
-        b=msrwq80WCBOJ8vqIe7Xv0StuYpiRGtgJIYEVNygLFZGrvYK7m6tN75vwF7oki/0IE0
-         dyPkytoJ2yuFlcx15rQDglNyoBBCJkDFlX2aZGRE7NAwqvrug7yoG6IifdNqcINpXzLz
-         Lc8DwFajydtuzU1+7p3G2kJlJpcsrXtjRvX7Qfe91vNolPuV2QPolEJyrYyPL2618DJE
-         qctMnbF7sUyQMKLEwDspVOXaPAKa8sn2k8z5rDBpl1vvsMlElSm7vChLx4me2qTqIUbR
-         C88WcgmN8EchnbAHmuhCnu4LSLRrqi28p25aF2V6NxEELKlsDh+Cyhskv5ot2orGmvto
-         KLBA==
-X-Gm-Message-State: AOJu0Yx52/SKJny3Www1GutCdJj1LE3gKAxl7W7pSFuRsPvogr6xunz1
-        /sHQPiK5MlDcPuRjh5We90wxocmOun3OFHVps1xl9g==
-X-Google-Smtp-Source: AGHT+IFWTZiHgiy8QElhwQS34is49TfTHvUZ8VYyp+enmnsCSYnCk6VE5R8OVw/BXa7zShLBCbOCcA==
-X-Received: by 2002:a17:906:6b18:b0:9e4:6d0a:c37a with SMTP id q24-20020a1709066b1800b009e46d0ac37amr3368261ejr.19.1699566449983;
-        Thu, 09 Nov 2023 13:47:29 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id t15-20020a1709064f0f00b0099bcf9c2ec6sm3066251eju.75.2023.11.09.13.47.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 13:47:29 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so2323307a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 13:47:29 -0800 (PST)
-X-Received: by 2002:a50:cdc4:0:b0:53e:2e74:7e0c with SMTP id
- h4-20020a50cdc4000000b0053e2e747e0cmr5745536edj.24.1699566448940; Thu, 09 Nov
- 2023 13:47:28 -0800 (PST)
+        Thu, 9 Nov 2023 16:48:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A5E420B;
+        Thu,  9 Nov 2023 13:48:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2224C433C7;
+        Thu,  9 Nov 2023 21:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699566524;
+        bh=7XuYnooz8inGMQvDAxkJmkzE0dIpxNG6Q8qjlRXE2fw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jWZbVbCbQ7Hyw8KbYQtLjHwYIwTOFwWbTK6TD4gXX97sjNOsjjftN7frhIJf47jPc
+         zYEL90kuHV0sZUdvCoulkn05qwLf3MymNSmmy85HkwR0hVZU+8pj3Uph9Oo3sARYQY
+         wo7mR6fOEN3buUcIAX2SH3gQ/YgzbunvJDltA7qniFHwsFrdLv3y42vWbrEIBss9+n
+         bcnk8IQ3ouVFgagwUy5AYy/HVA/ZZ3zEroieV1IcBD63HwPeubk+xo5Jo6EoUG8Rzk
+         ofS9X/ty31KbdqpHNaWRPXWxMtHaMzAe4BNlREL3kQYFIejvs54nR1laf6lEdghy4x
+         YmuwvymsWoXvQ==
+Date:   Thu, 9 Nov 2023 16:48:38 -0500
+From:   Simon Horman <horms@kernel.org>
+To:     Shigeru Yoshida <syoshida@redhat.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-ppp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] tty: Fix uninit-value access in ppp_sync_receive()
+Message-ID: <20231109214838.GB568506@kernel.org>
+References: <20231108154420.1474853-1-syoshida@redhat.com>
 MIME-Version: 1.0
-References: <ZUkXojmVf2CmkXHh@8bytes.org>
-In-Reply-To: <ZUkXojmVf2CmkXHh@8bytes.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Nov 2023 13:47:11 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjHyBy2Mttaj8kySJBpZ9hUiCe09ZJPo8trCRHfhi7NBg@mail.gmail.com>
-Message-ID: <CAHk-=wjHyBy2Mttaj8kySJBpZ9hUiCe09ZJPo8trCRHfhi7NBg@mail.gmail.com>
-Subject: Re: [git pull] IOMMU Updates for Linux v6.7
-To:     Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108154420.1474853-1-syoshida@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 at 08:43, Joerg Roedel <joro@8bytes.org> wrote:
->
-> There are conflicts with the current upstream code, mainly
-> from iommufd changes. My resolution is attached.
+On Thu, Nov 09, 2023 at 12:44:20AM +0900, Shigeru Yoshida wrote:
+> KMSAN reported the following uninit-value access issue:
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in ppp_sync_input drivers/net/ppp/ppp_synctty.c:690 [inline]
+> BUG: KMSAN: uninit-value in ppp_sync_receive+0xdc9/0xe70 drivers/net/ppp/ppp_synctty.c:334
+>  ppp_sync_input drivers/net/ppp/ppp_synctty.c:690 [inline]
+>  ppp_sync_receive+0xdc9/0xe70 drivers/net/ppp/ppp_synctty.c:334
+>  tiocsti+0x328/0x450 drivers/tty/tty_io.c:2295
+>  tty_ioctl+0x808/0x1920 drivers/tty/tty_io.c:2694
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl+0x211/0x400 fs/ioctl.c:857
+>  __x64_sys_ioctl+0x97/0xe0 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Uninit was created at:
+>  __alloc_pages+0x75d/0xe80 mm/page_alloc.c:4591
+>  __alloc_pages_node include/linux/gfp.h:238 [inline]
+>  alloc_pages_node include/linux/gfp.h:261 [inline]
+>  __page_frag_cache_refill+0x9a/0x2c0 mm/page_alloc.c:4691
+>  page_frag_alloc_align+0x91/0x5d0 mm/page_alloc.c:4722
+>  page_frag_alloc include/linux/gfp.h:322 [inline]
+>  __netdev_alloc_skb+0x215/0x6d0 net/core/skbuff.c:728
+>  netdev_alloc_skb include/linux/skbuff.h:3225 [inline]
+>  dev_alloc_skb include/linux/skbuff.h:3238 [inline]
+>  ppp_sync_input drivers/net/ppp/ppp_synctty.c:669 [inline]
+>  ppp_sync_receive+0x237/0xe70 drivers/net/ppp/ppp_synctty.c:334
+>  tiocsti+0x328/0x450 drivers/tty/tty_io.c:2295
+>  tty_ioctl+0x808/0x1920 drivers/tty/tty_io.c:2694
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl+0x211/0x400 fs/ioctl.c:857
+>  __x64_sys_ioctl+0x97/0xe0 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> CPU: 0 PID: 12950 Comm: syz-executor.1 Not tainted 6.6.0-14500-g1c41041124bd #10
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> =====================================================
+> 
+> ppp_sync_input() checks the first 2 bytes of the data are PPP_ALLSTATIONS
+> and PPP_UI. However, if the data length is 1 and the first byte is
+> PPP_ALLSTATIONS, an access to an uninitialized value occurs when checking
+> PPP_UI. This patch resolves this issue by checking the data length.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
 
-Hmm. My resolution is slightly different. In particular, in the
-selftest code, I removed mock_domain_alloc() entirely in favor of
-mock_domain_alloc_paging(), the same way commit 13fbceb1b8e9
-("iommufd: Convert to alloc_domain_paging()") did.
-
-That not only seems to logically match that change, it also matches
-what I think Jason (cc'd) intended with commit b2b67c997bf7 ("iommufd:
-Organize the mock domain alloc functions closer to Joerg's tree").
-
-Holler if something looks odd.
-
-                  Linus
+Reviewed-by: Simon Horman <horms@kernel.org>
