@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE577E66D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C99E7E66D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbjKIJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
+        id S230027AbjKIJdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231826AbjKIJbD (ORCPT
+        with ESMTP id S229559AbjKIJdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:31:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D092D44;
-        Thu,  9 Nov 2023 01:30:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDDABC433C8;
-        Thu,  9 Nov 2023 09:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699522257;
-        bh=PZQMPnYlGnEWT673t/5m3TU6f1iHCeG8oTv/I5ehW6E=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GisZhfwZ84diDIDf2mIw/gX/FvfZ8/audX+9nlBrRhzVfNzmDtcOqvnUBTEuRM+j1
-         WOREsxZdXozH9LmIYVGU9PekDEJgyKuD+e1HgAA+HiOxxBcbRC0k1OleQeBVe+Q4Bw
-         7nqzTA1P6Lw17xkWMGbgPG8HIBq2vsdGBDIKjPv6KGrZ8cFRfvHdKFmrVyAgXOG6Pc
-         skpnCj4ersGD6W7EDfezauoeHQeK4v24oUKayIjJMLOTbpJ4dcJLELRNiVJY0P3nE+
-         jbM0tjOJ+e4zEoIUrg9pLqhjiZnWnCJ3hjiq8D3h4TU3Ngj9pDV/7sgmC9QT1Vnvx8
-         34v1C4stiuB5Q==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1r11OB-0005CW-1Q;
-        Thu, 09 Nov 2023 10:31:51 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH] soc: qcom: pmic_glink_altmode: fix port sanity check
-Date:   Thu,  9 Nov 2023 10:31:00 +0100
-Message-ID: <20231109093100.19971-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Thu, 9 Nov 2023 04:33:09 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A686F2590
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JrmCXtoRr7oqSU3gZeuU9Jf2IqGd/4aYMHqwkCedhGc=; b=LseiTpszMRMo61aMp9dz6hpGXf
+        9fJw2q1ir1+ixIC/ENi60/RVQeoSBiflP8k83NOslCq49jYcgJpSoXkaY5CPbtEm5ZYzoZxghrbjt
+        QY62wZpYeU8NbuBToKPOVfORO+z54qFD5vPz7CfjD0tYaXD9IHEYnmJk4w7148n097rTfd3iud5zx
+        wp7pAaCRITuzXSpHJaoNQmSCCmbxNUbX72HCBG3s5yfXxTXO3WfrdDNSde493X+iKGuZqC4Et/9ur
+        fgwabBUiBszT+aI8TR+dAsbhVp0LVIWBPke2ttxmOEQPVczz+dP22ufOMTe/YlW/MYknm6WZCrPhF
+        l3OmTCHA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r11OD-00EJFR-0D;
+        Thu, 09 Nov 2023 09:32:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B8D00300454; Thu,  9 Nov 2023 10:31:52 +0100 (CET)
+Date:   Thu, 9 Nov 2023 10:31:52 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexander Aring <aahringo@redhat.com>
+Cc:     will@kernel.org, gfs2@lists.linux.dev, boqun.feng@gmail.com,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] refcount: introduce __refcount_dec_and_lock macro
+Message-ID: <20231109093152.GS8262@noisy.programming.kicks-ass.net>
+References: <20231106191138.3179599-1-aahringo@redhat.com>
+ <20231106191138.3179599-2-aahringo@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106191138.3179599-2-aahringo@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PMIC GLINK altmode driver currently supports at most two ports.
+On Mon, Nov 06, 2023 at 02:11:37PM -0500, Alexander Aring wrote:
+> This patch adds the __refcount_dec_and_lock macro to generate code for a
+> lock specific refcount_dec_and_lock implementation. Existing
+> refcount_dec_and_lock implementation are updated to use the new
+> __refcount_dec_and_lock macro. In future other lock implementation can
+> added to use the refcount_dec_and_lock trick to only hold the lock when
+> the refcount is going to be zero. Per subsystem own lock implementation
+> can use the macro as well to provide such implementation for their own
+> locking type.
+> 
+> Co-developed: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Alexander Aring <aahringo@redhat.com>
 
-Fix the incomplete port sanity check on notifications to avoid
-accessing and corrupting memory beyond the port array if we ever get a
-notification for an unsupported port.
-
-Fixes: 080b4e24852b ("soc: qcom: pmic_glink: Introduce altmode support")
-Cc: stable@vger.kernel.org	# 6.3
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/soc/qcom/pmic_glink_altmode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/soc/qcom/pmic_glink_altmode.c b/drivers/soc/qcom/pmic_glink_altmode.c
-index 974c14d1e0bf..561d6ba005f4 100644
---- a/drivers/soc/qcom/pmic_glink_altmode.c
-+++ b/drivers/soc/qcom/pmic_glink_altmode.c
-@@ -285,7 +285,7 @@ static void pmic_glink_altmode_sc8180xp_notify(struct pmic_glink_altmode *altmod
- 
- 	svid = mux == 2 ? USB_TYPEC_DP_SID : 0;
- 
--	if (!altmode->ports[port].altmode) {
-+	if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
- 		dev_dbg(altmode->dev, "notification on undefined port %d\n", port);
- 		return;
- 	}
-@@ -328,7 +328,7 @@ static void pmic_glink_altmode_sc8280xp_notify(struct pmic_glink_altmode *altmod
- 	hpd_state = FIELD_GET(SC8280XP_HPD_STATE_MASK, notify->payload[8]);
- 	hpd_irq = FIELD_GET(SC8280XP_HPD_IRQ_MASK, notify->payload[8]);
- 
--	if (!altmode->ports[port].altmode) {
-+	if (port >= ARRAY_SIZE(altmode->ports) || !altmode->ports[port].altmode) {
- 		dev_dbg(altmode->dev, "notification on undefined port %d\n", port);
- 		return;
- 	}
--- 
-2.41.0
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
