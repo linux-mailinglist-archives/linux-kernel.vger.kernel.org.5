@@ -2,220 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1047E616D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1EC7E6170
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbjKIAce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 19:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        id S231449AbjKIAdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 19:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKIAcd (ORCPT
+        with ESMTP id S229508AbjKIAdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 19:32:33 -0500
-X-Greylist: delayed 7422 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Nov 2023 16:32:30 PST
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBF12588
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 16:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1699489947; x=1699749147;
-        bh=mbas3qgCafFlNKUOVoJnFndc2NTEFuTXuNWWCAWewGw=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=osEayDi40a1PpKI5GROe9OK93e5Z3KR4XCK17f3deHnxeOLldFdgW98EYp21q2pBk
-         8kEhzHGSEgeoqe1CsC/tauam4Rn1d2cnF6zLJpXc4bK76gagstKIoCojOyQey3yfex
-         5Avu07OkSdfq5ogas6PEeZ0vikUOeq9rwn1/PPwTaFY+niVuE4COfAFyniVDzA9871
-         DstDV26bwvi5YGeuAQH+57sWGcTPKRawhqItZrOKdUA/V59coiblPm8hJnXHbXchrM
-         oQtZywOjbJuZXRZthLWtF187k/t/Dn9p1zy/O1KEoi9d6m21fJANKcUAb1MIXucdWa
-         tx4FFwiZAaXmw==
-Date:   Thu, 09 Nov 2023 00:32:12 +0000
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-From:   David Revoy <davidrevoy@protonmail.com>
-Cc:     =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
-        Eric GOUYER <folays@gmail.com>,
-        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
-        jkosina@suse.cz, jason.gerecke@wacom.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
-Message-ID: <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
-In-Reply-To: <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com>
-References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm> <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com> <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de> <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com> <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com> <ZUtTpKyP0oxWhnn8@fedora> <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com> <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com>
-Feedback-ID: 5460171:user:proton
+        Wed, 8 Nov 2023 19:33:09 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545EF2694
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 16:33:07 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1eb7a8e9dd0so143266fac.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 16:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1699489986; x=1700094786; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XpvSVpOIuoICwr0eisYk7Xi99IWTfuOr8GvS2fUSAq4=;
+        b=LkKOz0dwjQBJdrBh/iSrAEha7KCXzAzUuHWyCGZ90WfdcvuIYlBdnwO9RW4TVV1bLY
+         Y4rb60gcN4AVmRpgDUFt1pORH4Fg8jHVbIkOmJyJwKpcsuRgI49JNQSLt8alLZ15BFnG
+         ust3wRzobIBhUCpyKJaAI2iak6fJPoXS6WR7SZ0Yuk2OKkvMxlkKXw8pNuFFMzR1uu7i
+         QjHYCtKGB52Xa9T68w0xylQ/ZVkZNtmtnollQQjgPl4ryMK/nTzLunSSx3eqoyThc6E1
+         HL7DqLS4Hj2U45Yf5ssUac5M9pIEhEUFyPW1HcUO2Q9ov0KgTQE9gxrASDC+vlPnNH+D
+         wBFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699489986; x=1700094786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XpvSVpOIuoICwr0eisYk7Xi99IWTfuOr8GvS2fUSAq4=;
+        b=NP8IMcjwEQt28J9jeh4kdKyGZ/XP/mjx1Dl0Q72WGL2oZru5O4TSYUBOqC+VMYPGeh
+         w//7EQwl8brK37aageNmnWTpAa823yWTFsMbbHmpJHG16ARr4MEHJLwaDYj343umjbGI
+         A4MKxyCp/QRsxwi9arF6vaUL1KJHDwvMPPRhOinW9oAum5EyzHEfiaqkSbJOSsc2m2qq
+         C9HkqRI/gp94J2oD4P5+ENGSECIEsZct3bPZBy0hhCpfdbn1L/G/zfVtzCVvxudmTrGT
+         Ovng/wfI9t/NEh4s/GXmI6zD3wPETWUyy73YQT5ei12II9gvV9459+fl9gCySidj8K4Z
+         W43g==
+X-Gm-Message-State: AOJu0YxCvoxYYeToLaNHi0V1fV2zmEmsto9Aj4hiNncsHt6WiAH05W8/
+        0JaeYHmwwtYMUqAIXbGnlZiOJw==
+X-Google-Smtp-Source: AGHT+IF96nOKOaNh89TNNrC8DvAIA42Xn4IPrYpq+5CGXZoyWBXuWbQokFnyps+CZE1BYCDOJhxJVg==
+X-Received: by 2002:a05:6870:1290:b0:1f0:36b6:ef26 with SMTP id 16-20020a056870129000b001f036b6ef26mr3049223oal.46.1699489986633;
+        Wed, 08 Nov 2023 16:33:06 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id ki14-20020a056871bcce00b001eb7196de06sm508956oac.54.2023.11.08.16.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 16:33:05 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r0sym-001jjD-8L;
+        Wed, 08 Nov 2023 20:33:04 -0400
+Date:   Wed, 8 Nov 2023 20:33:04 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Zhang, Tina" <tina.zhang@intel.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 2/5] iommu/vt-d: Add generic IO page table support
+Message-ID: <20231109003304.GG4634@ziepe.ca>
+References: <20231106071226.9656-1-tina.zhang@intel.com>
+ <20231106071226.9656-3-tina.zhang@intel.com>
+ <20231106193228.GU4634@ziepe.ca>
+ <MW5PR11MB5881FC3D9DBF14D6BD07025489AFA@MW5PR11MB5881.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR11MB5881FC3D9DBF14D6BD07025489AFA@MW5PR11MB5881.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+On Thu, Nov 09, 2023 at 12:10:59AM +0000, Zhang, Tina wrote:
 
-> Alright, I made quite some progress so far:
-> - regressions tests have been written (branch wip/xp-pen of my fork on
-> freedesktop[0])
-> that branch can not go in directly as it just adds the tests, and
-> thus is failing
-> - I made the fixes through HID-BPF[1]
->=20
-> Anyone using those 2 tablets and using Fedora should be able to just
-> grab the artifact at [2], uncompress it and run `sudo ./install.sh --verb=
-ose`.
-> This will install the bpf programs in /lib/firmware/hid/bpf/ and will
-> automatically load them when the device is connected.
->=20
-> For those not using Fedora, the binary might work (or not, not sure),
-> but you can always decompress it, and check if running
-> `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
-> version or just fails. If you get "udev-hid-bpf 0.1.0", then running
-> `sudo ./install.sh --verbose` should work, as long as the kernel has
-> CONFIG_HID_BPF set to 'Y'.
-> [...]
-> [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_type=
-=3Dheads
-> [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests=
-/27
-> [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589/a=
-rtifacts/raw/udev-hid-bpf_0.1.0.tar.xz
+> > If this is going to happen can we also convert vt-d to actually use the io page
+> > table stuff directly and shuffle the code around so it is structured like the rest of
+> > the io page table implementations?
 
-Thank you for this package.=20
+> Converting VT-d driver to use io page table involves much code
+> change. I made a local version of it, and it didn't prove much
+> benefit.
 
-I was able to test it even though the link in (2) at the bottom of your ema=
-il returned a blank page. I was able to find my way after manually visiting=
- gitlab.freedesktop.org [1] and then manually downloading the article from =
-51350589. I unzipped it and ran `sudo ./install.sh --verbose`. Everything l=
-ooks like it was successful [2]. I then rebooted my Fedora 38 'Linux workst=
-ation 6.5.8-200.fc38.x86_64' kernel (the one I blamed in my post) and teste=
-d both tablets.=20
+Well, it structures the code in a similar way to all the other
+drivers, though I admit to having not looked closely at the io page
+table stuff.
+ 
+> VT-d only supports one 1st-stage IO pgtable format and one 2nd-stage
+> IO pgtable format. So, the current IO pgtable handling operations
+> seems more efficient comparing to adding another layer callbacks in
+> them.
 
-Here are my observation:
+I would like to de-virtualize those callbacks, is is completely
+pointless when we have per-format iommu_domain ops now.
 
-XPPEN Artist Pro 24
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Nothing changed for this device (it's the one with two buttons and no 'eras=
-er tip'). Nor my hwdb/udev rules or `xsetwacom set "UGTABLET 24 inch PenDis=
-play eraser" button 1 3` affects the upper button of the stylus: if I hold =
-it hover the canvas, Krita switch the tool and cursor for an eraser. If I c=
-lick on the canvas with the pen tip while holding the upper button pressed,=
- I get the right-click Pop-up Palette (but not all the time, probably Krita=
- has hard time to triage Eraser or Right-click).
-
-XPPEN Artist Pro 16 (Gen2)
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-Something changed. `xsetwacom set "UGTABLET Artist Pro 16 (Gen2) eraser" bu=
-tton 1 3` successfully affected the upper button of the stylus. Now if I cl=
-ick it while hovering the canvas, Krita shows the right click Pop-up Palett=
-e.
-On the downside; the real eraser tip when I flip the stylus bugs. When I fl=
-ip the stylus on eraser hovering the canvas, Krita shows the Eraser icon an=
-d switch tool. As soon as I draw with the eraser tip, Krita will also show =
-a right-click color palette and with also not a 100% consistency, as if the=
- event were mixed.
-
-[1] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/artifacts =20
-[2] https://www.peppercarrot.com/extras/temp/2023-11-09_screenshot_005214_n=
-et.jpg
-
-
-On Wednesday, November 8th, 2023 at 19:21, Benjamin Tissoires <benjamin.tis=
-soires@redhat.com> wrote:
-
-
-> On Wed, Nov 8, 2023 at 10:34=E2=80=AFAM Benjamin Tissoires
-> benjamin.tissoires@redhat.com wrote:
->=20
-> > On Wed, Nov 8, 2023 at 10:23=E2=80=AFAM Jos=C3=A9 Exp=C3=B3sito jose.ex=
-posito89@gmail.com wrote:
-> >=20
-> > > Hi Benjamin,
-> > >=20
-> > > On Wed, Nov 08, 2023 at 10:04:30AM +0100, Benjamin Tissoires wrote:
-> > > [...]
-> > >=20
-> > > > > So, the behavior probably breaks the specs, but sincerely I'm hap=
-py to
-> > > > > have the "eraser" button independent of the "rubber eraser", whic=
-h
-> > > > > makes the stylus a somewhat 4-buttons stylus (tip, button1, butto=
-n2,
-> > > > > rubber), and I would like to keep this.
-> > > >=20
-> > > > Yes, and I'd like to keep it that way, even if 6.6 and 6.5.8
-> > > > apparently broke it.
-> > > >=20
-> > > > So, to me:
-> > > > - 276e14e6c3993317257e1787e93b7166fbc30905 is wrong: this is a
-> > > > firmware bug (reporting invert through eraser) and should not be
-> > > > tackled at the generic level, thus it should be reverted
-> > > > - both of these tablets are forwarding the useful information, but =
-not
-> > > > correctly, which confuses the kernel
-> > > > - I should now be able to write regression tests
-> > > > - I should be able to provide HID-BPF fixes for those tablets so th=
-at
-> > > > we can keep them working with or without
-> > > > 276e14e6c3993317257e1787e93b7166fbc30905
-> > > > reverted (hopefully)
-> > > > - problem is I still don't have the mechanics to integrate the HID-=
-BPF
-> > > > fixes directly in the kernel tree, so maybe I'll have to write a
-> > > > driver for XP-Pen while these internals are set (it shouldn't
-> > > > interfere with the HID-BPF out of the tree).
-> > >=20
-> > > I already added support for a few XP-Pen devices on the UCLogic drive=
-r
-> > > and I was planning to start working on this one during the weekend in
-> > > my DIGImend fork (to simplify testing).
-> > >=20
-> > > Let me know if you prefer to add it yourself or if you want me to pin=
-g
-> > > you in the DIGImend discussion.
-> >=20
-> > So far, I really have to work on this now. It's a good use case for
-> > HID-BPF and it's a regression that I'd like to be fixed ASAP.
-> > I'd appreciate any reviews :)
->=20
->=20
-> Alright, I made quite some progress so far:
-> - regressions tests have been written (branch wip/xp-pen of my fork on
-> freedesktop[0])
-> that branch can not go in directly as it just adds the tests, and
-> thus is failing
-> - I made the fixes through HID-BPF[1]
->=20
-> Anyone using those 2 tablets and using Fedora should be able to just
-> grab the artifact at [2], uncompress it and run `sudo ./install.sh --verb=
-ose`.
-> This will install the bpf programs in /lib/firmware/hid/bpf/ and will
-> automatically load them when the device is connected.
->=20
-> For those not using Fedora, the binary might work (or not, not sure),
-> but you can always decompress it, and check if running
-> `udev-hid-bpf_0.1.0/bin/udev-hid-bpf --version` returns the correct
-> version or just fails. If you get "udev-hid-bpf 0.1.0", then running
-> `sudo ./install.sh --verbose` should work, as long as the kernel has
-> CONFIG_HID_BPF set to 'Y'.
->=20
-> > Also, good to know that I can probably piggyback on hid-uclogic for
-> > fixing those 2 devices in the kernel.
->=20
->=20
-> Next step will be to fix them using a kernel driver, but it seems that
-> the uclogic driver is doing more than just report descriptor fixups,
-> so maybe I'll have to use a different driver.
-> But the point is, in theory, if you are affected by those bugs, using
-> the udev-hid-bpf should fix the issue, and this should also be
-> resilient to further kernel updates.
->=20
-> I'd appreciate testing when I got the full kernel series up and ready,
-> of course.
->=20
-> Cheers,
-> Benjamin
->=20
-> [0] https://gitlab.freedesktop.org/bentiss/hid/-/tree/wip/xp-pen?ref_type=
-=3Dheads
-> [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests=
-/27
-> [2] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf/-/jobs/51350589/a=
-rtifacts/raw/udev-hid-bpf_0.1.0.tar.xz
+Jason
