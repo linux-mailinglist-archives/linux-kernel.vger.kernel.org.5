@@ -2,152 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D637E6548
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2ADF7E6552
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbjKII2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        id S233420AbjKIIat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbjKII2B (ORCPT
+        with ESMTP id S231464AbjKIIas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:28:01 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1605A273E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:27:59 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40839807e82so3323935e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699518477; x=1700123277; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f8DuB8h8ES/BpLoLVP2cNgaCu2vzRglHmcimDInihuk=;
-        b=Xh7DDRhMkn9RftQYwAaHmTGsISO77WAxdOoNaTp/Z9/vCTJJKZ/gFWTcM8uJUOR9/M
-         DeM2YckF4aWJ4PQfmpVHc/37nMB82AT8y22+QPzU4a1tTdp7EP1xjB49JtNP6fZ8GGzD
-         36sr5HUYtdW6KrYcBlukC3JbM1Jbm23mJnYwp0lStzCY2U5i0nBFD75VJ70p2yIqlRu6
-         1tXcpfcEK+xyZZ8zgfYQffMiGXWEGDa3XQ//4IaLsQTUGP/zKNAIDOmsjV3GaH9YAKtx
-         7WvsfxdDFUl6lezA5zy7efYdJ8llSGXMIofNHHf5nK39WwMA9Qd95AyYq34G25i2CpLq
-         3igw==
+        Thu, 9 Nov 2023 03:30:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2942D55
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:30:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699518600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0qGu6ReB5a+EcqdKKJhEiSap1D12mNLXKF1UNlxFd2w=;
+        b=ODIGiN1RNwWY21DlbCMNQKsTXvSqV6WP7bnpfvsmOjCbEFuOJq6dViDbwqla9IA+P3SpeR
+        74BrJLNxJ4fT9UER+dZYUXipbHhrd0qhPCSxSkcRN33E5K8WvAG863DC9I4ljDnL/x/oTh
+        xIL9biFaT0jNQ5ftaQVj+d1m6x8B/2Y=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-620-RBsdbTA2PTC3ifaah83WFA-1; Thu, 09 Nov 2023 03:29:58 -0500
+X-MC-Unique: RBsdbTA2PTC3ifaah83WFA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9c167384046so11850666b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:29:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699518477; x=1700123277;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f8DuB8h8ES/BpLoLVP2cNgaCu2vzRglHmcimDInihuk=;
-        b=E9HUsL3SY3K+ldXAKUO8QswhW7R/nX7TrlEZ033NrCGvZ28UwTiPBwRdjbUefyM1PI
-         b+Rf789hMy1PJeBfCydGHWKMTdCD1KqZgW3qcSZD8FarzZwssis4XedhQ+N8TXOYcjfi
-         qUzn/Iv5nTbPRjcxVxoeElmkYWyaxr1rBIane1ABygHZQOFIj/r+3PcHwRPqvD3wYOLd
-         mUTUNd0BaEkEwUUm5iRiI0qlXmYvwteRJEgW86sP780oJX2PXGQWQwHQVn/h9zZtNy3w
-         yUXxA5eo5dRYx6XwLooJnmnCsg595tZXOyYtVkpJLMlL3RF+FjqKR2OQ48WEpObbo0/s
-         EdGA==
-X-Gm-Message-State: AOJu0YzSHn8689h7DqEqGX8OVOw/MypuM1bfrI3nDmHUOuiWuIhsTN8o
-        uBu/IWMEHeQMcxhqTzXVQliHKw==
-X-Google-Smtp-Source: AGHT+IHp74YVHchpSk1tozdSn6wVl9GtxAoEqEUndh5yV20UM/FZX0sKzvPOdsrx9S5Ld1CbW1R90g==
-X-Received: by 2002:a05:600c:510e:b0:403:aced:f7f4 with SMTP id o14-20020a05600c510e00b00403acedf7f4mr10275828wms.12.1699518477433;
-        Thu, 09 Nov 2023 00:27:57 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id w23-20020a05600c2a1700b003fe23b10fdfsm1293753wme.36.2023.11.09.00.27.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 00:27:57 -0800 (PST)
-Message-ID: <f989f789-9934-45fe-b30b-b916c2d92043@linaro.org>
-Date:   Thu, 9 Nov 2023 09:27:55 +0100
+        d=1e100.net; s=20230601; t=1699518597; x=1700123397;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0qGu6ReB5a+EcqdKKJhEiSap1D12mNLXKF1UNlxFd2w=;
+        b=pJ32H6z2N7u+2Y0hY5MOIzNLsHs+uSUux19XJXkQi8ZOhHQEjsbyx89TczGP4vkI83
+         +Ky1zy4iyEyf3bQE0Eax3t0zwcrh5lRMebea4yRKibb/erfMWy3fzTr2+ynlG0+nm2gq
+         O9Chc0d9Xbe0EG8diFjkmS/4tYfb5A//EO3bPOurVjiWRj/Qlrt+WzcZGlro43RYAZul
+         4RVgKiz6DCI0bfN4DYTaGHyqkcegDxBeGkdZRdW8BfJkfBm/Kp2OYS8rmueIsjuGZu4b
+         01YjvTpSzsfqjZOuRbiEpQcc7SctYAUdBnelCpjxW0fOcpxKGQVMGNc86+K4zmg4ZA4I
+         haAw==
+X-Gm-Message-State: AOJu0Yxy6/ZsYEJll8cpnA4Tmk2iMA4Fur+uUJKTdF1YFh/JZlP51rXu
+        y6Bjr0GpFJ7QZE6XD2G4F46ej1oWJnyOjypVxdSEEyXjftL6qEothwdcYLtPLTnmUmJS2srQFZX
+        qJuVMuMH233wHPd2aiGJ/1Dpb
+X-Received: by 2002:a17:907:9725:b0:9dd:b624:dea9 with SMTP id jg37-20020a170907972500b009ddb624dea9mr3415524ejc.7.1699518597399;
+        Thu, 09 Nov 2023 00:29:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEFQLHA2HdtAUf7yiWJ3zu6Jf15htwDL4OIcB2ox9NPft2Q3sVGGotT9BWcb+BUEytSXl5ggw==
+X-Received: by 2002:a17:907:9725:b0:9dd:b624:dea9 with SMTP id jg37-20020a170907972500b009ddb624dea9mr3415493ejc.7.1699518597043;
+        Thu, 09 Nov 2023 00:29:57 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-228-197.dyn.eolo.it. [146.241.228.197])
+        by smtp.gmail.com with ESMTPSA id v25-20020a170906381900b009dfd3b80ba3sm2221221ejc.35.2023.11.09.00.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 00:29:56 -0800 (PST)
+Message-ID: <076fa6505f3e1c79cc8acdf9903809fad6c2fd31.camel@redhat.com>
+Subject: Re: [RFC PATCH v3 04/12] netdev: support binding dma-buf to
+ netdevice
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Date:   Thu, 09 Nov 2023 09:29:54 +0100
+In-Reply-To: <20231106024413.2801438-5-almasrymina@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+         <20231106024413.2801438-5-almasrymina@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5][3/4] mmc: Add dw mobile mmc cmdq rtk driver
-Content-Language: en-US
-To:     =?UTF-8?B?SnlhbiBDaG91IFvlkajoirflrold?= <jyanchou@realtek.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "jh80.chung@samsung.com" <jh80.chung@samsung.com>,
-        "riteshh@codeaurora.org" <riteshh@codeaurora.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>
-Cc:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "briannorris@chromium.org" <briannorris@chromium.org>,
-        "doug@schmorgal.com" <doug@schmorgal.com>,
-        "tonyhuang.sunplus@gmail.com" <tonyhuang.sunplus@gmail.com>,
-        "abel.vesa@linaro.org" <abel.vesa@linaro.org>,
-        "william.qiu@starfivetech.com" <william.qiu@starfivetech.com>
-References: <20231102081514.22945-1-jyanchou@realtek.com>
- <20231102081514.22945-4-jyanchou@realtek.com>
- <9c083c35-a8fb-4ee3-90a3-96af7efec11f@linaro.org>
- <6da3391700204ebc8d2c0bb5e927d2c8@realtek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <6da3391700204ebc8d2c0bb5e927d2c8@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 08:34, Jyan Chou [周芷安] wrote:
->>> +     priv->m2tmx = 
->>> + syscon_regmap_lookup_by_phandle(host->dev->of_node, 
->>> + "realtek,m2tmx");
-> 
->> NAK, for the same reasons I mentioned for other patch.
-> 
->> I will keep NAK-ing till you start testing your DTS.
-> 
-> Sorry, I am not sure whether I modify the correct thing you said. I will add
-> 
-> realtek,m2tmx in bindings.
+On Sun, 2023-11-05 at 18:44 -0800, Mina Almasry wrote:
+[...]
+> +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
+> +		       struct netdev_dmabuf_binding **out)
+> +{
+> +	struct netdev_dmabuf_binding *binding;
+> +	struct scatterlist *sg;
+> +	struct dma_buf *dmabuf;
+> +	unsigned int sg_idx, i;
+> +	unsigned long virtual;
+> +	int err;
+> +
+> +	if (!capable(CAP_NET_ADMIN))
+> +		return -EPERM;
+> +
+> +	dmabuf =3D dma_buf_get(dmabuf_fd);
+> +	if (IS_ERR_OR_NULL(dmabuf))
+> +		return -EBADFD;
+> +
+> +	binding =3D kzalloc_node(sizeof(*binding), GFP_KERNEL,
+> +			       dev_to_node(&dev->dev));
+> +	if (!binding) {
+> +		err =3D -ENOMEM;
+> +		goto err_put_dmabuf;
+> +	}
+> +
+> +	xa_init_flags(&binding->bound_rxq_list, XA_FLAGS_ALLOC);
+> +
+> +	refcount_set(&binding->ref, 1);
+> +
+> +	binding->dmabuf =3D dmabuf;
+> +
+> +	binding->attachment =3D dma_buf_attach(binding->dmabuf, dev->dev.parent=
+);
+> +	if (IS_ERR(binding->attachment)) {
+> +		err =3D PTR_ERR(binding->attachment);
+> +		goto err_free_binding;
+> +	}
+> +
+> +	binding->sgt =3D dma_buf_map_attachment(binding->attachment,
+> +					      DMA_BIDIRECTIONAL);
+> +	if (IS_ERR(binding->sgt)) {
+> +		err =3D PTR_ERR(binding->sgt);
+> +		goto err_detach;
+> +	}
+> +
+> +	/* For simplicity we expect to make PAGE_SIZE allocations, but the
+> +	 * binding can be much more flexible than that. We may be able to
+> +	 * allocate MTU sized chunks here. Leave that for future work...
+> +	 */
+> +	binding->chunk_pool =3D gen_pool_create(PAGE_SHIFT,
+> +					      dev_to_node(&dev->dev));
+> +	if (!binding->chunk_pool) {
+> +		err =3D -ENOMEM;
+> +		goto err_unmap;
+> +	}
+> +
+> +	virtual =3D 0;
+> +	for_each_sgtable_dma_sg(binding->sgt, sg, sg_idx) {
+> +		dma_addr_t dma_addr =3D sg_dma_address(sg);
+> +		struct dmabuf_genpool_chunk_owner *owner;
+> +		size_t len =3D sg_dma_len(sg);
+> +		struct page_pool_iov *ppiov;
+> +
+> +		owner =3D kzalloc_node(sizeof(*owner), GFP_KERNEL,
+> +				     dev_to_node(&dev->dev));
+> +		owner->base_virtual =3D virtual;
+> +		owner->base_dma_addr =3D dma_addr;
+> +		owner->num_ppiovs =3D len / PAGE_SIZE;
+> +		owner->binding =3D binding;
+> +
+> +		err =3D gen_pool_add_owner(binding->chunk_pool, dma_addr,
+> +					 dma_addr, len, dev_to_node(&dev->dev),
+> +					 owner);
+> +		if (err) {
+> +			err =3D -EINVAL;
+> +			goto err_free_chunks;
+> +		}
+> +
+> +		owner->ppiovs =3D kvmalloc_array(owner->num_ppiovs,
+> +					       sizeof(*owner->ppiovs),
+> +					       GFP_KERNEL);
+> +		if (!owner->ppiovs) {
+> +			err =3D -ENOMEM;
+> +			goto err_free_chunks;
+> +		}
+> +
+> +		for (i =3D 0; i < owner->num_ppiovs; i++) {
+> +			ppiov =3D &owner->ppiovs[i];
+> +			ppiov->owner =3D owner;
+> +			refcount_set(&ppiov->refcount, 1);
+> +		}
+> +
+> +		dma_addr +=3D len;
 
-Upstream a tested DTS. I don't trust that you test it, so I need to see it.
+I'm trying to wrap my head around the whole infra... the above line is
+confusing. Why do you increment dma_addr? it will be re-initialized in
+the next iteration.
 
+Cheers,
 
-Best regards,
-Krzysztof
+Paolo
 
