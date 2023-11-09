@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E987E7413
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA7C7E741F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjKIWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        id S231912AbjKIWEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIWA3 (ORCPT
+        with ESMTP id S229629AbjKIWEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:00:29 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8823AA8;
-        Thu,  9 Nov 2023 14:00:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=anOQMVnXqS6edVU03GrtNGZXocRurD23acE+4byDQFc=; b=f/2dDbTny8+5mpl75c8Si55DgJ
-        fj+fswouCubQqu0i9Cjo/nIQsO7tQZg4swOBurZrNtwKyHYmY6IuYR8cRNkrFAwMq5zILlsPjtY/+
-        0L/34MdAwo5oFJh8SJFS8tfLb+AzLCpGkjhMZCQqZnyFMYdxykGxC2kf2LN08lG9alnD/T2i0vYoJ
-        wC4GrorkAOv3mHlIWdsSrWspHJzqaBlnOUDpnyR9Wvl2jlh6zmIH3yTRFUIK+4LI2zmOrTiZyyQ54
-        brszdVTQdt9pYYs172igF1AEXQdadgWZNniObxSe2UNiFYFE19T7oQVUn7U/7iTBYInRq5X67mXUr
-        TbAQEiyQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r1D4U-00DbMG-1V;
-        Thu, 09 Nov 2023 22:00:18 +0000
-Date:   Thu, 9 Nov 2023 22:00:18 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>,
-        Abhi Das <adas@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: RESOLVE_CACHED final path component fix
-Message-ID: <20231109220018.GI1957730@ZenIV>
-References: <20231109190844.2044940-1-agruenba@redhat.com>
+        Thu, 9 Nov 2023 17:04:44 -0500
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770193ABF;
+        Thu,  9 Nov 2023 14:04:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1699567479; x=1699826679;
+        bh=S1J35HbO+lUVg33fr64tkBvXBm9tFZP+6CCTZpI2ago=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=pghYXL3oDXr9i+y+OFaykpg1F3LxdwdgNJzp1rE7l7fnC/ZCfn1n1uaHLBU+Kgkdr
+         E6up0ndKx0SYlXRiJ+b4afGHUdK9jZFYI83/nrMNSDFJPO6Ye/OXJqwj2c2vDsAzwC
+         4CJf2LK2n8D7jtYaRKOxAdjIlQcoVTHELZMnYaBTHJGVriWggRXqiqAMl7GES/NBEL
+         qJIa0qINsNfcliJVy0JCUB6KnyT3A8IRbn33skdkeJdV3Ar2g7JKpzUzwEQJqkDGXq
+         k1QqaGeROD0j/d03JEO5gdNaPlEZqaBXERMXjRp8061zIuigGW3QAyBzwshUqm0GaJ
+         lhMkCRN91RVlQ==
+Date:   Thu, 09 Nov 2023 22:04:33 +0000
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+From:   David Revoy <davidrevoy@protonmail.com>
+Cc:     =?utf-8?Q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
+        Eric GOUYER <folays@gmail.com>,
+        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
+        jkosina@suse.cz, jason.gerecke@wacom.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
+Message-ID: <7wmtNlKuYResf5cFQ7M2QTalzIUtw0I6ohvPcz69Jo1c8flezyIlnJu1IwAgXhJ-u0NlRL3IV7HnL0Kza6fVBqd7X7jhc-Z6QCi3oqHEvpY=@protonmail.com>
+In-Reply-To: <CAO-hwJKJW5jGDdaaS8eB7kcLQUvWO_1XkOzJG4HAcaRzw1cGnQ@mail.gmail.com>
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm> <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com> <ZUtTpKyP0oxWhnn8@fedora> <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com> <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com> <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com> <CAO-hwJ+zm=R7NwrALaLVmfPDtMNXpj0eoQgLkiS1wa6wd+hu+A@mail.gmail.com> <CAO-hwJKJW5jGDdaaS8eB7kcLQUvWO_1XkOzJG4HAcaRzw1cGnQ@mail.gmail.com>
+Feedback-ID: 5460171:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109190844.2044940-1-agruenba@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 08:08:44PM +0100, Andreas Gruenbacher wrote:
-> Jens,
-> 
-> since your commit 99668f618062, applications can request cached lookups
-> with the RESOLVE_CACHED openat2() flag.  When adding support for that in
-> gfs2, we found that this causes the ->permission inode operation to be
-> called with the MAY_NOT_BLOCK flag set for directories along the path,
-> which is good, but the ->permission check on the final path component is
-> missing that flag.  The filesystem will then sleep when it needs to read
-> in the ACL, for example.
-> 
-> This doesn't look like the intended RESOLVE_CACHED behavior.
-> 
-> The file permission checks in path_openat() happen as follows:
-> 
-> (1) link_path_walk() -> may_lookup() -> inode_permission() is called for
-> each but the final path component. If the LOOKUP_RCU nameidata flag is
-> set, may_lookup() passes the MAY_NOT_BLOCK flag on to
-> inode_permission(), which passes it on to the permission inode
-> operation.
-> 
-> (2) do_open() -> may_open() -> inode_permission() is called for the
-> final path component. The MAY_* flags passed to inode_permission() are
-> computed by build_open_flags(), outside of do_open(), and passed down
-> from there. The MAY_NOT_BLOCK flag doesn't get set.
-> 
-> I think we can fix this in build_open_flags(), by setting the
-> MAY_NOT_BLOCK flag when a RESOLVE_CACHED lookup is requested, right
-> where RESOLVE_CACHED is mapped to LOOKUP_CACHED as well.
+Hi Benjamin,
 
-No.  This will expose ->permission() instances to previously impossible
-cases of MAY_NOT_BLOCK lookups, and we already have enough trouble
-in that area.  See RCU pathwalk patches I posted last cycle; I'm
-planning to rebase what still needs to be rebased and feed the
-fixes into mainline, but that won't happen until the end of this
-week *AND* ->permission()-related part of code audit will need
-to be repeated and extended.
+Thank you it works! =F0=9F=8E=89 =F0=9F=8E=89 =F0=9F=8E=89=20
 
-Until then - no, with the side of fuck, no.
+> I've pushed an update of the file[0], turns out I made several mistakes.
+> As a general rule of thumb, you can follow the MR I've opened at [1],
+> click on the pipeline, open the last job ("make release"), then browse
+> the artifacts and pull the file from there.
+> [...]
+> > But just to be sure, you don't have a custom configuration in place
+> > for that tablet device?
+> [...]
+> [0] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/jobs/51399392/=
+artifacts/file/udev-hid-bpf_0.1.0.tar.xz
+> [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests=
+/27
+
+I tested the latest artifact on kernel 6.5.8-200.fc38.x86_64 and I also rem=
+oved my custom configuration at startup (I had not much: an hwdb files for =
+the 24 Pro =E2=88=92mainly for frame buttons=E2=88=92 and an xsetwacom bash=
+ script for each tablet).=20
+
+During the tests, the styluses of both 24 Pro and 16 Pro Gen2 worked perfec=
+tly: right-click on upper button out-of-the-box, and the eraser tip of the =
+16 Pro Gen2 continued to erase as expected.=20
+
+I could also target with xsetwacom this 'button 3' of the styluses, and I t=
+ested random available shortcuts (but I'll keep default right-click).
+
+So, good job, and many thanks!
+
+I want now to write a follow-up after the first blog-post. I see it is a MR=
+ [1], maybe it means if it get merged it will be part of libevdev? What wou=
+ld you advice to write for the ones who want to benefit from the fix?
+
+Thanks again,
+David
+
+[1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/2=
+7
