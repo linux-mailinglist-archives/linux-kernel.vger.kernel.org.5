@@ -2,261 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E598B7E6FCA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECCF7E6FD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343910AbjKIRCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S1344135AbjKIRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 12:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbjKIRCA (ORCPT
+        with ESMTP id S229925AbjKIRGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:02:00 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39A02726;
-        Thu,  9 Nov 2023 09:01:57 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9DhepH020202;
-        Thu, 9 Nov 2023 17:01:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=g0Rt0N+KWItTQ4NTaDYxbyAhidZdpBVEIffqu2IMotg=;
- b=k7I6v4xCVP780IQpZQCdk9Nip2SGYozWvMWgfd6dJM9wD/7Ml5zC5WHkDzVCOvGH3uan
- up7B/vWDUIn0Sf4U312PmscO16SSPUUDZD3bPDQ3Q7+/8OcGxU9YEuoqDoFJI9FvZ+lt
- Cn9U0nELEAKMObIEbgRvygrgdzSS8yu8eAtTS0nuULKRPdKnvPtDNrj7b4dRntJR/rMq
- ucuwz9lZk8bZ83UgmPueP9xfKKRamEYi4KFzCFB/hUSwbhb1PTkq39fnH9xY1v0gzHld
- 1kjIvKZ9fhEoqU4TDhBo8255sMJta9WLOr2c4tC6XVjbHRKVTXiIHqIpp0Mu+09aNI+Y lA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w204h58-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Nov 2023 17:01:21 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9G3qRZ011123;
-        Thu, 9 Nov 2023 17:01:20 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1wqcks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Nov 2023 17:01:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hStDzThYQow5PJxhpzVD/Z9NbcGmt9lEaNMFCPmZ0zFYZ6MzZkAzkZdVz89d7zChR2C9kOzw9Ynguomf8JbZAbUxXKLYVtNfcQrGmcETEObVjKGBeU7TK8wzY7Bf5dgVLu7S6CM7+x6IFcdPsExCgqelpa6ZnI9lB8+2oC2xCkF8/uWRijXRDaLBUwBrw5UV9Nn7Glby/RdvdXFdjUl+jAp55XRgNRtG1UCmZP6nJ9+heABAfkIR3Xw+ocEgShHKotUEXUn1qgnsadAPs5pjkIXumpbIzuMJG2+1YgLICo30hctDdmRpsJxs+Ul0pr0QZ1YJu8IGEuvGtB6ASHC3jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g0Rt0N+KWItTQ4NTaDYxbyAhidZdpBVEIffqu2IMotg=;
- b=HO2udHxzVqFFruubM3fixaGHSaJAxUVgVk3888rv3PCv7LBaxsCgA33HvXd7lEZM3aqcD3kroDn7noFZZOhjXBCh6ZqynQSFrW5JBuGcb3PSUfNzTMEEj9xiAcZvQOkTqpxRDpj+MZPdyU2OhU+gR9gl/seo7HadqDN3FYkLUuo1yS/yUafuOa/B1/JWVHW6MgZt0MaULy4aXRT7Qp8v1LtvRF+MoKZ5eQb5TzE18B/GvIt9BlJpK3hIkr+ZxMY4wMXOCLKha20qY8oKdLsNCHEwX6eMeiV6hJC0sSYL9tJgzTNhDsFQQc+kbOUVH07UIdos7xxz2zLCplklY6nsuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g0Rt0N+KWItTQ4NTaDYxbyAhidZdpBVEIffqu2IMotg=;
- b=J4vQb4rXpORAJCwX7xq5ihB3ZAPb/I/Ly8K/X/H6WFSQQuDTHQswDZcAzvYo1qG7DOaA92ilqyx9DEKid/i0Vqelvnv7vo4ew1US3MGLwCXo8niu3/+wAFvQeoMul1at0ps1/ETJjouf/yjl9+6v4z+619Zx2pA6b6hug9pA0TA=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS0PR10MB6080.namprd10.prod.outlook.com (2603:10b6:8:c8::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Thu, 9 Nov
- 2023 17:01:16 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.6977.018; Thu, 9 Nov 2023
- 17:01:16 +0000
-Message-ID: <b7f1b93a-08ea-07c8-d1da-5c2a31d1be80@oracle.com>
-Date:   Thu, 9 Nov 2023 17:01:10 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 01/21] block: Add atomic write operations to request_queue
- limits
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-2-john.g.garry@oracle.com>
- <20231109151013.GA32432@lst.de>
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231109151013.GA32432@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LNXP265CA0006.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:5e::18) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Thu, 9 Nov 2023 12:06:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7492726
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:06:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699549560; x=1731085560;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5/RMAKu+i9jH0jqbckGtja20iqvG/TpYZA34SiapWbw=;
+  b=Afl/pfDRa1iWnLixhR1A12wcXhBqx7bF5TGg3cmA1YwhKVtMvwlgf7fx
+   wmmBpV7fEPePncxlh2TLqpO4Czm1QCC7LfMqu6bLyjlm8jk7/3+8XK+Dx
+   e77gWciixRiY4G6OfHiGzrLf02CtdtZTkYRdMqLcMAl6DpJYf62B4A2MO
+   N3nImR4WGy7lWT7A88lPEORrt1nTe/Uiq1CWNAut2mK4hor3yuSP1gXFB
+   ry8WgkJIqu7v5S34quKwkebLBm9oGaW6LgjOQw2e4lfUqdIRT5yLFSSac
+   8FAoc7seh0wUadnFu4fCL4hLs5gT0W+cf3xBe0bk66GCQbEP5Q3bJsrJ6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370233570"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="370233570"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:05:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="4777646"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:05:31 -0800
+Received: from [10.212.120.254] (kliang2-mobl1.ccr.corp.intel.com [10.212.120.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 1A25F580DB0;
+        Thu,  9 Nov 2023 09:05:29 -0800 (PST)
+Message-ID: <7243048f-5f45-4f3d-9abb-626568359536@linux.intel.com>
+Date:   Thu, 9 Nov 2023 12:05:27 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS0PR10MB6080:EE_
-X-MS-Office365-Filtering-Correlation-Id: eaac7e29-3d12-48c2-8928-08dbe1457c59
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aLgahRlTGGLy4f7TVMQshrA0tD7p0gxBF/vAy292SmDbZi7hNW1THgakCH0eNBQsqe6dsl0tpq7fOUmeZ0ovkDH9QTabg3XMshruVZdRV9os9+wW7PppmP2TtAsWj9h1UIQFTPR0X42sKKZlryXQSCARvNiXhCzFUrfG5gE6LO1r5yfyBGlFYghw5uTFEoVWQOpwYdnWOmpiCC0tdIFB2waYI3qQtEvelDnHuGOvtlhpQ9IUBtXoGC7TxlhlS6ofjcgqB9Q0/JA/GJwesFeb6rzRiw0Cz07+5CeKi4Kj9P40g+ARknh5Um1UuU2mpke011LCSszqMLNnYLmFOOjfrSkqZeVQ1FkhMRGGDQ70oYRVnYIU5ZMYAPNbyfGKY0kx60rq8FO6X5/Z1jdgMeRu6ZsbuM8MVFy7H54pqM0vWymUpwhzS16I58f03LcHFd2tSVjm05Yq2JD7MjgLUenIDt0EykxCEuDcrYE6jWp3lp1rsldxp9uj19gNp8F46JXjRKoSdcvjQvPxG2no9jhCGNs+rH6DoNQ9dTXStTu3sj6dhutkf1Ds0Ue69fIWOWgs7LJI3C+CiqnvAWzfPPXr/FjBBfcbrJmC1fGP7xFAK/C1OQS4oIpM3KFj28hZPGODkl/3/sWnF3cRDc742DQ0lA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6666004)(2616005)(86362001)(6916009)(6506007)(7416002)(38100700002)(41300700001)(66556008)(2906002)(4326008)(478600001)(83380400001)(6486002)(36916002)(66476007)(53546011)(36756003)(6512007)(66574015)(5660300002)(8676002)(31696002)(8936002)(26005)(316002)(31686004)(66946007)(107886003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3dZbmprWFJ1SXdKVTdkalErSkJIdGNvZUxuSkZIeU8vSGhBdXl5M01YcE9F?=
- =?utf-8?B?ZXVEQ0hidS9MZTdmR3U5S01pbTBFcCtMZ0QzUTBraTlJaWFJU3EzNGNacnFV?=
- =?utf-8?B?aDBSaW5KWHg3S09uL0lPV1RHL3Zkd3lHTXF3dkEwZTdDVUh0eExkZVpSNXph?=
- =?utf-8?B?RHA0d1djNGEyMHp1dTNvWkhzRmxWTnIxcGdFd1F4ZXZlVk9ZY0dkMnNkdE05?=
- =?utf-8?B?QmZkbHNnczY2eTVCOEovMCtVTEdDWWk5UWZKdGxnMGMyMkxydjBwYTh0d2hL?=
- =?utf-8?B?NVNKekVaREtpcWlEZk9OZFJkVVVOZkc3cjlTY2ViN0FsM0NhY0pnWHJtR0gy?=
- =?utf-8?B?bUJqRHNIS1V3KzhrRzBzV1QzaE5vcnRQaU02RkppNHFDeGdKOEdxdXFaQjNM?=
- =?utf-8?B?ZFNRcUFlQ1ZvNnNSbnNxZVovVzJBK0tNVlVWQk5wZWJDNXZ5TjJPdFlPSzNW?=
- =?utf-8?B?VDU4Z3k1dHhuc283RjV5UFh1UmFwYlh4c0R3NXFBRUF5QitNVHRjTmFoenVX?=
- =?utf-8?B?UkJSTVE4ZXdPekF4R0lndkx6L2tVVDVodFlYTHBHVEpvazJoOTB3dUdVRnhJ?=
- =?utf-8?B?azZyN2FkNXRMbnVhWTVZSTZhQThHRWl4bWxhVmpGcURGMHVQdkIyaWZBWGE2?=
- =?utf-8?B?WnJIOGdGdlVDdlFFY0RwQSt4RkhFNzdtUUpLdVBSZVlyZ1FPQURmTHV5NlEr?=
- =?utf-8?B?NW5qbE0wMjdtR2dCdFUveXR5dzZlYTgyeXZMNEVVNDFwN01SZEo4bWFTamti?=
- =?utf-8?B?V01DQmVQU2tRcy9ZbEtId0QvcmJlaTg3dFRQc2JQQ09nTGVzZ1BDUmZXdWE3?=
- =?utf-8?B?TC9xZ2Vpck1hZDFVS0F3RkYyVU4wR3BvdG9BbldJaGNVckhFOEI2Q0VVYzFJ?=
- =?utf-8?B?bUFNY0JKNERYVlRJSWUyc1NCZzlGM2duTTg0aTVEWjZqSEdzSVM5UEhMdWFH?=
- =?utf-8?B?eE9qempFK2x2US9BbEExYlpXU05yUlZwTkphQzcxU0ZFbVhPL0Nra1ZaMkc4?=
- =?utf-8?B?TElsekpSSW1WY014ZWRUQUpNb3hLWWdHY3BVanJWMEYzMDZxbTYwNzhUZUpO?=
- =?utf-8?B?Nm1aeFZNTmdaL2MwaWZrU0ZmNjB4NDdOOFZkR05waXhwdVZGRERBWmRIWVZt?=
- =?utf-8?B?YTl0V3d0N215QnI2cHl1ZGdqbEpldjlTYy9jUWd3Q0pGUTIyZ0pPRms0THU5?=
- =?utf-8?B?TnVMeDFwM1dRWi9hR3NZcDF2TUhJajhXR3Nzd05hT1FKUVVTVy83a3FGQTVI?=
- =?utf-8?B?SmVWTmcyZGVTWWJGWWNvSlZEd2FkdEpJN2IrWm90VE82YmNDRGZ4aUFXZWJm?=
- =?utf-8?B?NmRjTHJmdWJiL3BMdVU4NWtkamIwanlnUGZMbXo4amVaUEJxTnZRaXh0c2xB?=
- =?utf-8?B?SVkvTlc0Q2JCc3l5UDRvdWpnamxtemRlSzFla05uRjRkL1BqRkVGRW5hWkJt?=
- =?utf-8?B?UjhaR0ZCaUUwRURTcVd3WGVSZVF5QUZXdWNSdTR0NmlGSHNPSlFPWWFEbjlK?=
- =?utf-8?B?ZmVnS3FMbi9UckJIVGNYSWhpanowSmtSWWlpUEtmMEozS0JSQXBEVmFZcmVG?=
- =?utf-8?B?VHJpdVl4MWM2VElJOGZ0MlBUVHVXWStJQmwyRVlDVlh1aTRTenR4U28wNzYv?=
- =?utf-8?B?UlUrMk52ZExjTG9JWElXZ1FYVW5CNFdtTDlRU1NrUWdSTXFnam5aVElnalpu?=
- =?utf-8?B?OGxwbGorNnRLVXR6ckJrcWY0Qis0TXJoYjBTM0xmSFN6ZkYvSnAzaitrUnBp?=
- =?utf-8?B?UGZwZ2p6eXpENTUxbkZqZ3lPQTQxSjhYUGJIVWNUUWN6SnJNRHEyUGMxbzVT?=
- =?utf-8?B?VzlZd3JNSGlDT1o4TjZEUzB3N2RrenpKeTc4d0s1alZtZEVDaVJtdDJ3eUp3?=
- =?utf-8?B?NUU4ZlJ1dnJ4ZTVNUzhTMkllWnpHNko2K3FXUUNkNmhua0VpY3Jzd2RiMFBl?=
- =?utf-8?B?d053cGVObHgzeHVEQnVyeW5HcHZZUEo1ZFU5cVExUkI1eG00Q0dyd2ovRmRX?=
- =?utf-8?B?UkllNzlWVmIzeDNLdU1NN0thLzROMHhyWklTb2pJV0oxcCtmY1pEb2lvNXJm?=
- =?utf-8?B?eVQralUzQzAwYnVTYnBWTXEvYXFQTzRCczhPTmg0a0RPL1VNQmpYRnZrbzRH?=
- =?utf-8?Q?vtUhCc7aVt/FRUL/BS+21VCOj?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?cXdiRC85ZGFJbFdhVXJLbTdCU3U4dm9ORExwbWRocFp1SXBJa1JDZk1vMzQz?=
- =?utf-8?B?TGVuV0UrV0NXcnZYM1NwMFBBUVgwWG12Sy9WN3VCdkQvYkZxbDBTYlFVZ2c1?=
- =?utf-8?B?TCsyNnNiM2RPYXNTTWhoNmtMTDJ4dnh2dG1BNzBOaFlVYlovVGlCZ0lhVUdE?=
- =?utf-8?B?eUp5OXRtVTZ6MityZzAwQ1pzU29BWjNWVFpkWFBUTlllQlZoaDRKMmpDSmpX?=
- =?utf-8?B?WjNnSGpLMnFjWFI0eVN6RGY2NW15dEpJcWF6MWRJRjhXemZ4L2E2L2lxRXVH?=
- =?utf-8?B?bEpwbzhJRWRGUWNWQ0loOVlsdjkyQnkvaUdUSlIzUS9aVXVjUGN5Tlc3MkhH?=
- =?utf-8?B?TVJmOFd5VmR6MXRKZ0VIbDVuNmo3VVZrZHFsOVlDOHBlZloxQXA2QzVvMkFZ?=
- =?utf-8?B?RGtwRkdGeldFbE4yYXZPQmhUbEEvcGsyRVl0cGdUY3RNM3RWZnE1MGdLSWVL?=
- =?utf-8?B?ZWcvM3l5VmMyL2lTZEtHcFdDZ0VEQ3NaSWZJZEhZbDE3OC9PUTNkTDlrQ3NL?=
- =?utf-8?B?QkFDUzFFc3JZN1M0bWI4MlFZVm00b2piQ2FNUjRlRk9nejdXTGZWU2R1WmRu?=
- =?utf-8?B?N2tZbGF1TmNrZlhBRWY0Z0NHR1VIMVFLZ2VLWDM4RktQUXlwZHJGcWRwZWsx?=
- =?utf-8?B?azRWNEJJMThzSjB0N3R6Q1cweFNCSHFqQVZnbUMxQlBCZFhENk1UVjc5NENU?=
- =?utf-8?B?M2EyM3RTSUYxN1JDNWQrVG9IelRycVhEcGlMUnNGNldGZGhyT0svUUZoUTQ4?=
- =?utf-8?B?aThTa3A1cUNqc3dGditoaWVtUVFUSnFGY0YwblE5NlIybE16NVMrL1RwZUhF?=
- =?utf-8?B?RHcvc1I0R3lJN1g0VXYrNmYvd3d1UVVqL2JRaVRXOVZ3eGIrNC9sMUhrVU5x?=
- =?utf-8?B?QjhYVC95M0pDem1EV2ZCTWtnUTA2K0NYTHFZWVJrT3NzTC9od29rTXlBZkM4?=
- =?utf-8?B?cm5RZ3N4bDNjMXYvL3hNT0hzSkJyeDArR2ZIK3MwdnJDTXdMRUFsODByN0tr?=
- =?utf-8?B?dG5sMmxWTGFyS0FIVHNYald6WEdrQmh0SGJEVytKTGVjNnp2Sy9LUUFNODZn?=
- =?utf-8?B?N3gyNDhySmJabkc5aFlWcjRLUjFvbSt2TE9aaXRGa25yaDVjQmN1dWZRN3Zq?=
- =?utf-8?B?S1hIbnZXRkljb0FpZi9iUkFWWTlsNWV1cDluaVdzVHEzMDBzaDBJbFFpcjJ0?=
- =?utf-8?B?RXVHNHpGdUJZQkZyTlhTVVNQSVVRczRlMTRVV052ZWNnSllRbDREK2xSa0VK?=
- =?utf-8?B?V2lhR1VySDRKbUdVblFxTUxhelBZNmF5eWdNT0VmRGxYcGc2eWNnanNrSi9y?=
- =?utf-8?B?cEF2U05IbWJVK0c3cDBqWFYwMENSZUxXZkxqMUs3T3BrZGpDQnhhQnR0VjN5?=
- =?utf-8?B?RnlYanczcVA1VTBTWlZ2YkI1eUkyMUsydnpaaWMzR1BONkFSNWxWNU0vY1Vo?=
- =?utf-8?B?b3VmNkhSRlJYVlkyU0o2bmZRODVLUlQ1dFBhNUh3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eaac7e29-3d12-48c2-8928-08dbe1457c59
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 17:01:16.0405
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b8qYzLyHgHjBM/zvNAns3zKiJHqR6N218el6wK17aevcMGRo4T/hMuU0NDucbBJNcOjEtrlt1IEpRCcf0b4efw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6080
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_14,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311090129
-X-Proofpoint-ORIG-GUID: KRBFPtmvSldNnwAJavlQI07toVo6ZhHh
-X-Proofpoint-GUID: KRBFPtmvSldNnwAJavlQI07toVo6ZhHh
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 2/8] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK
+ flag
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
+References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
+ <20231025201626.3000228-2-kan.liang@linux.intel.com>
+ <ZUlWuROfYcYJlRn4@kernel.org>
+ <fb1ebf48-ac2f-499a-b480-ba8474b12200@linux.intel.com>
+ <ZUpTtoCzJFHhnSdh@kernel.org> <ZUv+G+w5EvJgQS45@kernel.org>
+ <a40ff4eb-5507-45b9-9f21-1d153a544e16@linux.intel.com>
+ <ZU0MvXe1GF6xejlf@kernel.org>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <ZU0MvXe1GF6xejlf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 15:10, Christoph Hellwig wrote:
->> Documentation/ABI/stable/sysfs-block | 42 +++++++++++++++++++
->>   block/blk-settings.c                 | 60 ++++++++++++++++++++++++++++
->>   block/blk-sysfs.c                    | 33 +++++++++++++++
->>   include/linux/blkdev.h               | 33 +++++++++++++++
->>   4 files changed, 168 insertions(+)
+
+
+On 2023-11-09 11:45 a.m., Arnaldo Carvalho de Melo wrote:
+> Em Thu, Nov 09, 2023 at 11:14:31AM -0500, Liang, Kan escreveu:
 >>
->> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
->> index 1fe9a553c37b..05df7f74cbc1 100644
->> --- a/Documentation/ABI/stable/sysfs-block
->> +++ b/Documentation/ABI/stable/sysfs-block
->> @@ -21,6 +21,48 @@ Description:
->>   		device is offset from the internal allocation unit's
->>   		natural alignment.
->>   
->> +What:		/sys/block/<disk>/atomic_write_max_bytes
->> +Date:		May 2023
->> +Contact:	Himanshu Madhani<himanshu.madhani@oracle.com>
->> +Description:
->> +		[RO] This parameter specifies the maximum atomic write
->> +		size reported by the device. An atomic write operation
->> +		must not exceed this number of bytes.
->> +What:		/sys/block/<disk>/atomic_write_unit_max_bytes
->> +Date:		January 2023
->> +Contact:	Himanshu Madhani<himanshu.madhani@oracle.com>
->> +Description:
->> +		[RO] This parameter defines the largest block which can be
->> +		written atomically with an atomic write operation. This
->> +		value must be a multiple of atomic_write_unit_min and must
->> +		be a power-of-two.
-> What is the difference between these two values?
+>>
+>> On 2023-11-08 4:31 p.m., Arnaldo Carvalho de Melo wrote:
+>>> Em Tue, Nov 07, 2023 at 12:11:50PM -0300, Arnaldo Carvalho de Melo es=
+creveu:
+>>>> Em Mon, Nov 06, 2023 at 04:19:13PM -0500, Liang, Kan escreveu:
+>>>>> On 2023-11-06 4:12 p.m., Arnaldo Carvalho de Melo wrote:
+>>>>>> Em Wed, Oct 25, 2023 at 01:16:20PM -0700, kan.liang@linux.intel.co=
+m escreveu:
+>>>>> Ian has already reviewed the tool parts.
+>>>
+>>>>> But I still owe a test case for the feature. I will post a patch la=
+ter.
+>>>>> https://lore.kernel.org/lkml/acbb895a-475e-4679-98fc-6b90c05a00af@l=
+inux.intel.com/
+>>>
+>>>> I saw Ian's suggestion, and agree with it, we need to pair new featu=
+res
+>>>> with regression tests in 'perf test', thanks for working on it!
+>>>
+>>> Kan,
+>>>
+>>> 	I still have to bisect, but can you check if this works for you?
+>>
+>> The branch counters feature requires all the events to belong to a
+>> group. There is no problem for the normal perf usage which usually
+>> initializes an evlist even for a single evsel.
+>> But perf test is special, which may not initialize an evlist. The Samp=
+le
+>> parsing test case is one of the examples. It crashes with the
+>> !evsel->evlist.
+>>
+>> The below change should fix it. I will post a complete patch shortly.
+>=20
+> Thanks for the quick response, if all that is needed are the checks
+> below, I'll fold it into your original patch:
+>=20
+> 2ae01908298426e4 perf tools: Add branch counter knob
+>=20
+> So that we don't regress, ok?
 
-Generally they come from the same device property. Then since 
-atomic_write_unit_max_bytes must be a power-of-2 (and 
-atomic_write_max_bytes may not be), they may be different. In addition, 
-atomic_write_unit_max_bytes is required to be limited by whatever is 
-guaranteed to be able to fit in a bio.
+Sure.
 
-atomic_write_max_bytes is really only relevant for merging writes. Maybe 
-we should not even expose via sysfs.
+I also post the patch to
+https://lore.kernel.org/lkml/20231109164007.2037721-1-kan.liang@linux.int=
+el.com/
+Either folding it or using the new patch is fine for me.
 
-BTW, I do still wonder whether all these values should be limited by 
-max_sectors_kb (which they aren't currently).
-
-> 
-> 
->> +Date:		May 2023
->> +Contact:	Himanshu Madhani<himanshu.madhani@oracle.com>
->> +Description:
->> +		[RO] This parameter specifies the smallest block which can
->> +		be written atomically with an atomic write operation. All
->> +		atomic write operations must begin at a
->> +		atomic_write_unit_min boundary and must be multiples of
->> +		atomic_write_unit_min. This value must be a power-of-two.
-> How can the minimum unit be anythіng but one logical block?
-> 
->> +extern void blk_queue_atomic_write_max_bytes(struct request_queue *q,
->> +					     unsigned int bytes);
-> Please don't add pointless externs to prototypes in headers.
-
-ok, fine - blkdev.h seems to have a mix for declarations with and 
-without extern, so at least we would be consistently inconsistent.
-
-> 
->> +static inline unsigned int queue_atomic_write_unit_max_bytes(const struct request_queue *q)
-> .. and please avoid the overly long lines.
-
-ok
+BTW: the new perf test case for the feature is posted here.
+I think Ian is reviewing it.
+https://lore.kernel.org/lkml/20231107184020.1497571-1-kan.liang@linux.int=
+el.com/
 
 Thanks,
-John
-
-> 
-
+Kan
+>=20
+> I'll add a note and the Link tag points to this discussion in case
+> people want to do historical digs in the future :-)
+>=20
+> - Arnaldo
+> =20
+>> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+>> index 58a9b8c82790..7a6a2d1f96db 100644
+>> --- a/tools/perf/util/evsel.c
+>> +++ b/tools/perf/util/evsel.c
+>> @@ -2355,6 +2355,10 @@ static inline bool
+>> evsel__has_branch_counters(const struct evsel *evsel)
+>>  {
+>>         struct evsel *cur, *leader =3D evsel__leader(evsel);
+>>
+>> +       /* The branch counters feature only supports group */
+>> +       if (!leader || !evsel->evlist)
+>> +               return false;
+>> +
+>>         evlist__for_each_entry(evsel->evlist, cur) {
+>>                 if ((leader =3D=3D evsel__leader(cur)) &&
+>>                     (cur->core.attr.branch_sample_type &
+>> PERF_SAMPLE_BRANCH_COUNTERS))
+>>
+>> Thanks,
+>> Kan
+>>
+>>>
+>>>
+>>> (gdb) run test -F -v 27
+>>> Starting program: /root/bin/perf test -F -v 27
+>>>
+>>>  27: Sample parsing                                                  =
+:
+>>> --- start ---
+>>>
+>>> Program received signal SIGSEGV, Segmentation fault.
+>>> 0x00000000004e4aa6 in evsel.parse_sample ()
+>>> Missing separate debuginfos, use: dnf debuginfo-install bzip2-libs-1.=
+0.8-13.fc38.x86_64 cyrus-sasl-lib-2.1.28-9.fc38.x86_64 elfutils-debuginfo=
+d-client-0.189-3.fc38.x86_64 elfutils-libelf-0.189-3.fc38.x86_64 elfutils=
+-libs-0.189-3.fc38.x86_64 glib2-2.76.5-2.fc38.x86_64 glibc-2.37-13.fc38.x=
+86_64 keyutils-libs-1.6.1-6.fc38.x86_64 krb5-libs-1.21-3.fc38.x86_64 libb=
+abeltrace-1.5.11-2.fc38.x86_64 libbrotli-1.0.9-11.fc38.x86_64 libcap-2.48=
+-6.fc38.x86_64 libcom_err-1.46.5-4.fc38.x86_64 libcurl-8.0.1-5.fc38.x86_6=
+4 libevent-2.1.12-8.fc38.x86_64 libgcc-13.2.1-4.fc38.x86_64 libidn2-2.3.4=
+-2.fc38.x86_64 libnghttp2-1.52.0-2.fc38.x86_64 libpfm-4.11.0-11.fc38.x86_=
+64 libpsl-0.21.2-2.fc38.x86_64 libselinux-3.5-1.fc38.x86_64 libssh-0.10.5=
+-1.fc38.x86_64 libstdc++-13.2.1-4.fc38.x86_64 libtraceevent-1.7.2-1.fc38.=
+x86_64 libunistring1.0-1.0-1.fc38.x86_64 libunwind-1.6.2-7.fc38.x86_64 li=
+buuid-2.38.1-4.fc38.x86_64 libxcrypt-4.4.36-1.fc38.x86_64 libzstd-1.5.5-1=
+=2Efc38.x86_64 opencsd-1.3.3-1.fc38.x86_64 openldap-2.6.6-1.fc38.x86_64 o=
+penssl-libs-3.0.9-2.fc38.x86_64 perl-libs-5.36.1-497.fc38.x86_64 popt-1.1=
+9-2.fc38.x86_64 python3-libs-3.11.6-1.fc38.x86_64 slang-2.3.3-3.fc38.x86_=
+64 zlib-1.2.13-3.fc38.x86_64
+>>> (gdb) bt
+>>> #0  0x00000000004e4aa6 in evsel.parse_sample ()
+>>> #1  0x00000000004b28dc in do_test ()
+>>> #2  0x00000000004b2acd in test.sample_parsing ()
+>>> #3  0x0000000000495348 in test_and_print.isra ()
+>>> #4  0x0000000000495f5d in cmd_test ()
+>>> #5  0x00000000004c2a29 in run_builtin ()
+>>> #6  0x000000000041053f in main ()
+>>> (gdb)
+>>>
+>=20
