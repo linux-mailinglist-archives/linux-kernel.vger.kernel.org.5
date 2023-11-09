@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F5B7E758F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58B97E758D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345623AbjKJADk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        id S1345521AbjKJADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345640AbjKJAC6 (ORCPT
+        with ESMTP id S1345642AbjKJAC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:02:58 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EFC44BD;
-        Thu,  9 Nov 2023 16:01:14 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-28019b66ad5so1294056a91.3;
-        Thu, 09 Nov 2023 16:01:14 -0800 (PST)
+        Thu, 9 Nov 2023 19:02:59 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B0447AE;
+        Thu,  9 Nov 2023 16:01:16 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5be24d41bb8so162466a12.0;
+        Thu, 09 Nov 2023 16:01:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699574474; x=1700179274; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699574475; x=1700179275; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uT1nC/9fwVyUyj/Fu7de7zQ927+akdOp694fgBwHADA=;
-        b=eQSfHD6qRSxxcCJ4zVBQiHAVW0LYKgFgXjSzEZ8SNsi0xsq8hMByVP00UMwVdYUdO+
-         TPvk0oiBybTql7XrmO+p8oljr/zD7pD+93m9NsDkBsrkjVtaPgcQUNRIpsUs0qCEj+EZ
-         XCAUrtqiSlX19j6CaFYEhUEaZCNOPjGmybm9CcOWQ/ocnRdJpZ14qowUqEMIQX7JHkGp
-         d/lfRx+BRROYjE8Go2S8NPlkOfdjj32R0+goFYOJ4oxYuULgWCkyemzrsi4MFkeshEPE
-         nxdZBHChrBJqpJNuFbHdghQ1/utoUHDNzNfoWkBha4vosMwPQTOFdJ/zVtEd4zrfC/HI
-         nvCA==
+        bh=m0dxuEbR5jZqtd2BZmTVNrG3auPejdj7FpqX+DTGvcY=;
+        b=BUVnHbZGmi+uO/b+nNeOxmtkpuUrU6OZkMF+l5hOuiKBBqyk2JIwT8q3YI47TrkwEi
+         Y7mNNVRwhHS7tnBmCrfjgxbMoOnVSG64lLSGqRQRF6aVr4tIoQ8fzLlxyGZBUo6pXknK
+         4Azgr9W8HTpdfKbfSR5BmnDsKD5kcPXGb71hHNdSZIESWFvfD/y4cPytV1lw0BB8SFrp
+         +22Yt1RRLtzSvuuiEaiodHDWLCRp+i1ypAHaprxu7SexYVoJceCFBl8/yAKbiFIWYfNL
+         sRSvqw+oA609GcoYGL0cP9P4vCCsQrwsWone+lBi0ZWpaWm98h+wK7kpX+07iaIsWdxK
+         V8iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699574474; x=1700179274;
+        d=1e100.net; s=20230601; t=1699574475; x=1700179275;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=uT1nC/9fwVyUyj/Fu7de7zQ927+akdOp694fgBwHADA=;
-        b=VZpKlAPYJGdevsXByj4RBjP7TnSQ0Ec9vAtsGyVpNCPFDFknYJEgUR6egPzGcV+YaO
-         iPKYuTZI4Vk9ljT6QIlWw3X+qStrtLBgSdbTDnCkdMEZAs0B3jIhMsPO0ulp1Cu6yPhe
-         lD1+1xfsAErXliq8ciWw46OK9x/DXRC+mA1xK0r1V667tzMci2rrb1ZlyssUM+mZvKF8
-         8aWlZXtF4jOnrnNVj9StR51Yt4kvDxuPyRGHZpWD6pQFydyQZMafNQ/6Px+Z8/vRZtby
-         Rj/raLI89dHp02w+ImiN3VdhnFd4M+aNwYbM4GQyeCNUZOjMeTUAMSqb9m6LjbZDrYr1
-         ggoA==
-X-Gm-Message-State: AOJu0YwT69TBSD/ZdBPhV2DUUWy0GJg88igh8jjcd2XG+J7SWXXGjg6F
-        eZzuZx1pUjcdJZ1va5oVXAg=
-X-Google-Smtp-Source: AGHT+IFO/JkanR9IR/Lp11Sg73brWz8xYwaLrFQ+5d854RWPIu8c2V7iw3LrpPbt3IIieBVPIz5Ytg==
-X-Received: by 2002:a17:90b:1b45:b0:27d:9f6:47a3 with SMTP id nv5-20020a17090b1b4500b0027d09f647a3mr3498693pjb.31.1699574474120;
-        Thu, 09 Nov 2023 16:01:14 -0800 (PST)
+        bh=m0dxuEbR5jZqtd2BZmTVNrG3auPejdj7FpqX+DTGvcY=;
+        b=BwueXOl6evZg3RqiUV4ZH7YGV9k7S2vK/DA7uuOmUdXG1AZ27eJ/CkCIF3Qvp5IAiU
+         LqW2CNIibVlygWtmtqIeGoCgkpbc+kd7LE7VU4N/rAPPqJQdQBHW7LYDbjPzpWQP830T
+         MQMwGauCbq0jtjfO9wI7OmcKbXeef4W/RS4EqaZ14MyKRuHZEj7PUZqnp59m9tUjr1Fe
+         RluX8Ql12Aa28a3H4eZ4lghSsSAtRFe2ZxBlOrQ+mksk5uYf4f+0O4BU4vYUKRPo0AGM
+         Q+mwcXDJHarhGflmAYVVXKfVUim7+exrJHsQaSIbmlfUIaxGIPMSz7vgJxjm7fM6jI+I
+         zV+w==
+X-Gm-Message-State: AOJu0YyDPDOb+8o5nIjjcdppIXLUnhvEZho+sd9eQzYMDy34cRFtx9aD
+        SH5n+mW3Nqx0OON+AiDqGZbGCj4262w=
+X-Google-Smtp-Source: AGHT+IGrAF9hEktqUyOvfsnTKTIzu6+ZaZ6dDMZZZh3UJUErCS54lmHI3Q9hYCg+zcZBmapjxKK9RA==
+X-Received: by 2002:a17:90b:1e09:b0:280:4af4:1a41 with SMTP id pg9-20020a17090b1e0900b002804af41a41mr1208908pjb.15.1699574475552;
+        Thu, 09 Nov 2023 16:01:15 -0800 (PST)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:d45c:ae16:d959:a5f1])
-        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.01.12
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.01.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 16:01:13 -0800 (PST)
+        Thu, 09 Nov 2023 16:01:15 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Subject: [PATCH 38/52] perf dwarf-aux: Add die_collect_vars()
-Date:   Thu,  9 Nov 2023 15:59:57 -0800
-Message-ID: <20231110000012.3538610-39-namhyung@kernel.org>
+Subject: [PATCH 39/52] perf dwarf-aux: Handle type transfer for memory access
+Date:   Thu,  9 Nov 2023 15:59:58 -0800
+Message-ID: <20231110000012.3538610-40-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231110000012.3538610-1-namhyung@kernel.org>
 References: <20231110000012.3538610-1-namhyung@kernel.org>
@@ -77,203 +77,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The die_collect_vars() is to find all variable information in the scope
-including function parameters.  The struct die_var_type is to save the
-type of the variable with the location (reg and offset) as well as where
-it's defined in the code (addr).
+We want to track type states as instructions are executed.  Each
+instruction can access compound types like struct or union and load/
+store its members to a different location.
+
+The die_deref_ptr_type() is to find a type of memory access with a
+pointer variable.  If it points to a compound type like struct, the
+target memory is a member in the struct.  The access will happen
+with an offset indicating which member it refers.  Let's follow the
+DWARF info to figure out the type of the pointer target.
+
+For example, say we have the following code.
+
+  struct foo {
+    int a;
+    int b;
+  };
+
+  struct foo *p = malloc(sizeof(*p));
+  p->b = 0;
+
+The last pointer access should produce x86 asm like below:
+
+  mov  0x0, 4(%rbx)
+
+And we know %rbx register has a pointer to struct foo.  Then offset 4
+should return the debug info of member 'b'.
+
+Also variables of compound types can be accessed directly without a
+pointer.  The die_get_member_type() is to handle a such case.
 
 Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/dwarf-aux.c | 118 +++++++++++++++++++++++++++---------
- tools/perf/util/dwarf-aux.h |  17 ++++++
- 2 files changed, 107 insertions(+), 28 deletions(-)
+ tools/perf/util/dwarf-aux.c | 110 ++++++++++++++++++++++++++++++++++++
+ tools/perf/util/dwarf-aux.h |   6 ++
+ 2 files changed, 116 insertions(+)
 
 diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 2791126069b4..f878014c9e27 100644
+index f878014c9e27..39851ff1d5c4 100644
 --- a/tools/perf/util/dwarf-aux.c
 +++ b/tools/perf/util/dwarf-aux.c
-@@ -1136,6 +1136,40 @@ int die_get_varname(Dwarf_Die *vr_die, struct strbuf *buf)
- 	return ret < 0 ? ret : strbuf_addf(buf, "\t%s", dwarf_diename(vr_die));
+@@ -1841,3 +1841,113 @@ int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes)
+ 	*scopes = data.scopes;
+ 	return data.nr;
  }
- 
-+#if defined(HAVE_DWARF_GETLOCATIONS_SUPPORT) || defined(HAVE_DWARF_CFI_SUPPORT)
-+static int reg_from_dwarf_op(Dwarf_Op *op)
-+{
-+	switch (op->atom) {
-+	case DW_OP_reg0 ... DW_OP_reg31:
-+		return op->atom - DW_OP_reg0;
-+	case DW_OP_breg0 ... DW_OP_breg31:
-+		return op->atom - DW_OP_breg0;
-+	case DW_OP_regx:
-+	case DW_OP_bregx:
-+		return op->number;
-+	default:
-+		break;
-+	}
-+	return -1;
-+}
 +
-+static int offset_from_dwarf_op(Dwarf_Op *op)
++static int __die_find_member_offset_cb(Dwarf_Die *die_mem, void *arg)
 +{
-+	switch (op->atom) {
-+	case DW_OP_reg0 ... DW_OP_reg31:
-+	case DW_OP_regx:
-+		return 0;
-+	case DW_OP_breg0 ... DW_OP_breg31:
-+		return op->number;
-+	case DW_OP_bregx:
-+		return op->number2;
-+	default:
-+		break;
-+	}
-+	return -1;
-+}
-+#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT || HAVE_DWARF_CFI_SUPPORT */
-+
- #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
- /**
-  * die_get_var_innermost_scope - Get innermost scope range of given variable DIE
-@@ -1479,41 +1513,69 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
- 		*offset = data.offset;
- 	return result;
- }
--#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
--#ifdef HAVE_DWARF_CFI_SUPPORT
--static int reg_from_dwarf_op(Dwarf_Op *op)
-+static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
- {
--	switch (op->atom) {
--	case DW_OP_reg0 ... DW_OP_reg31:
--		return op->atom - DW_OP_reg0;
--	case DW_OP_breg0 ... DW_OP_breg31:
--		return op->atom - DW_OP_breg0;
--	case DW_OP_regx:
--	case DW_OP_bregx:
--		return op->number;
--	default:
--		break;
--	}
--	return -1;
-+	struct die_var_type **var_types = arg;
 +	Dwarf_Die type_die;
++	Dwarf_Word size, loc;
++	Dwarf_Word offset = (long)arg;
 +	int tag = dwarf_tag(die_mem);
-+	Dwarf_Attribute attr;
-+	Dwarf_Addr base, start, end;
-+	Dwarf_Op *ops;
-+	size_t nops;
-+	struct die_var_type *vt;
 +
-+	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
++	if (tag != DW_TAG_member)
 +		return DIE_FIND_CB_SIBLING;
 +
-+	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
-+		return DIE_FIND_CB_SIBLING;
++	/* Unions might not have location */
++	if (die_get_data_member_location(die_mem, &loc) < 0)
++		loc = 0;
 +
-+	/*
-+	 * Only collect the first location as it can reconstruct the
-+	 * remaining state by following the instructions.
-+	 * start = 0 means it covers the whole range.
-+	 */
-+	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
-+		return DIE_FIND_CB_SIBLING;
-+
-+	if (die_get_real_type(die_mem, &type_die) == NULL)
-+		return DIE_FIND_CB_SIBLING;
-+
-+	vt = malloc(sizeof(*vt));
-+	if (vt == NULL)
++	if (offset == loc)
 +		return DIE_FIND_CB_END;
 +
-+	vt->die_off = dwarf_dieoffset(&type_die);
-+	vt->addr = start;
-+	vt->reg = reg_from_dwarf_op(ops);
-+	vt->offset = offset_from_dwarf_op(ops);
-+	vt->next = *var_types;
-+	*var_types = vt;
++	die_get_real_type(die_mem, &type_die);
++
++	if (dwarf_aggregate_size(&type_die, &size) < 0)
++		size = 0;
++
++	if (loc < offset && offset < (loc + size))
++		return DIE_FIND_CB_END;
 +
 +	return DIE_FIND_CB_SIBLING;
- }
- 
--static int offset_from_dwarf_op(Dwarf_Op *op)
-+/**
-+ * die_collect_vars - Save all variables and parameters
-+ * @sc_die: a scope DIE
-+ * @var_types: a pointer to save the resulting list
-+ *
-+ * Save all variables and parameters in the @sc_die and save them to @var_types.
-+ * The @var_types is a singly-linked list containing type and location info.
-+ * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
-+ *
-+ * Callers should free @var_types.
-+ */
-+void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
- {
--	switch (op->atom) {
--	case DW_OP_reg0 ... DW_OP_reg31:
--	case DW_OP_regx:
--		return 0;
--	case DW_OP_breg0 ... DW_OP_breg31:
--		return op->number;
--	case DW_OP_bregx:
--		return op->number2;
--	default:
--		break;
--	}
--	return -1;
-+	Dwarf_Die die_mem;
++}
 +
-+	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
- }
-+#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
-+#ifdef HAVE_DWARF_CFI_SUPPORT
- /**
-  * die_get_cfa - Get frame base information
-  * @dwarf: a Dwarf info
++/**
++ * die_get_member_type - Return type info of struct member
++ * @type_die: a type DIE
++ * @offset: offset in the type
++ * @die_mem: a buffer to save the resulting DIE
++ *
++ * This function returns a type of a member in @type_die where it's located at
++ * @offset if it's a struct.  For now, it just returns the first matching
++ * member in a union.  For other types, it'd return the given type directly
++ * if it's within the size of the type or NULL otherwise.
++ */
++Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset,
++			       Dwarf_Die *die_mem)
++{
++	Dwarf_Die *member;
++	Dwarf_Die mb_type;
++	int tag;
++
++	tag = dwarf_tag(type_die);
++	/* If it's not a compound type, return the type directly */
++	if (tag != DW_TAG_structure_type && tag != DW_TAG_union_type) {
++		Dwarf_Word size;
++
++		if (dwarf_aggregate_size(type_die, &size) < 0)
++			size = 0;
++
++		if ((unsigned)offset >= size)
++			return NULL;
++
++		*die_mem = *type_die;
++		return die_mem;
++	}
++
++	mb_type = *type_die;
++	/* TODO: Handle union types better? */
++	while (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
++		member = die_find_child(&mb_type, __die_find_member_offset_cb,
++					(void *)(long)offset, die_mem);
++		if (member == NULL)
++			return NULL;
++
++		if (die_get_real_type(member, &mb_type) == NULL)
++			return NULL;
++
++		tag = dwarf_tag(&mb_type);
++
++		if (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
++			Dwarf_Word loc;
++
++			/* Update offset for the start of the member struct */
++			if (die_get_data_member_location(member, &loc) == 0)
++				offset -= loc;
++		}
++	}
++	*die_mem = mb_type;
++	return die_mem;
++}
++
++/**
++ * die_deref_ptr_type - Return type info for pointer access
++ * @ptr_die: a pointer type DIE
++ * @offset: access offset for the pointer
++ * @die_mem: a buffer to save the resulting DIE
++ *
++ * This function follows the pointer in @ptr_die with given @offset
++ * and saves the resulting type in @die_mem.  If the pointer points
++ * a struct type, actual member at the offset would be returned.
++ */
++Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset,
++			      Dwarf_Die *die_mem)
++{
++	Dwarf_Die type_die;
++
++	if (dwarf_tag(ptr_die) != DW_TAG_pointer_type)
++		return NULL;
++
++	if (die_get_real_type(ptr_die, &type_die) == NULL)
++		return NULL;
++
++	return die_get_member_type(&type_die, offset, die_mem);
++}
 diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-index 85dd527ae1f7..efafd3a1f5b6 100644
+index efafd3a1f5b6..ad4d7322fcbf 100644
 --- a/tools/perf/util/dwarf-aux.h
 +++ b/tools/perf/util/dwarf-aux.h
-@@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
- /* Get the list of including scopes */
- int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
+@@ -144,6 +144,12 @@ struct die_var_type {
+ 	int offset;
+ };
  
-+/* Variable type information */
-+struct die_var_type {
-+	struct die_var_type *next;
-+	u64 die_off;
-+	u64 addr;
-+	int reg;
-+	int offset;
-+};
++/* Return type info of a member at offset */
++Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset, Dwarf_Die *die_mem);
++
++/* Return type info where the pointer and offset point to */
++Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset, Dwarf_Die *die_mem);
 +
  #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
  
  /* Get byte offset range of given variable DIE */
-@@ -150,6 +159,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
- 				     Dwarf_Addr addr, Dwarf_Die *die_mem,
- 				     int *offset);
- 
-+/* Save all variables and parameters in this scope */
-+void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
-+
- #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
- static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
-@@ -178,6 +190,11 @@ static inline Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die __maybe_unu
- 	return NULL;
- }
- 
-+static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
-+				    struct die_var_type **var_types __maybe_unused)
-+{
-+}
-+
- #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
- 
- #ifdef HAVE_DWARF_CFI_SUPPORT
 -- 
 2.42.0.869.gea05f2083d-goog
 
