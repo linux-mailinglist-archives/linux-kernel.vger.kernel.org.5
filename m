@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F497E732A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11BC7E732D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344954AbjKIVCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37758 "EHLO
+        id S1345146AbjKIVDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:03:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjKIVC3 (ORCPT
+        with ESMTP id S229871AbjKIVDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:02:29 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B53B3C0A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 13:02:27 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9ad67058fcso1470732276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 13:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699563746; x=1700168546; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=87YsagAgSxTCzkx78cHO15uU55fceNs/c/03xKq5PQg=;
-        b=t7IPZHWWBEWBNIM3toOIfR1gK/0XlwGha9rpP6Ht4Lv8ViFqUsc+APdtSx7AClzjYe
-         rOX7LUUCFAsCnBqk5dc2A+PwNOqIBjX2Xl98+RqN1w91zuWuxO4KHzfYB+nONCo9XwGF
-         /sKf00RmKTy81dgqySA9BMq2253VPF1ADU0mT0c/g4c0AZL/tZyckfZ0MEnz42RM8sZ6
-         ffRIC9f99rXqpH5wCKBwjYI9bGFeN73K4a7aoIknkbDBwt9qMiqaQZxv192GV1jCAl5y
-         dGaiUQgFT4DmBxxD0jWwmRcsSaUJ6ZS4pldd8IjfOOxyTo50sy2dLSKXTl7jyVY/8wLZ
-         /79Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699563746; x=1700168546;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=87YsagAgSxTCzkx78cHO15uU55fceNs/c/03xKq5PQg=;
-        b=nZU5zO6dFd3e4fK9QLFbUs4sGJVWMKQmWQdz6s7MFiMbLTAk/1QVSbvV6ONyZty9ta
-         AULiYZYvYD3uNMqJJ3jyPrSG35+a1E7i+DnEifNPI5KVKPPHaHO/5UpIc7jq6IgWxZic
-         nLhfH/Ni3N9g2O05+Vy6XiAmZfoU1Eg/MxO07ttlkqFFmcfdfoI0YcN1GbEo7JU1U+Jh
-         1CyXgbOVSAuKVBpNJT5mj/V4S45b/r1kmvhMKOLmDjgmnLGn6fex+ECXcoZ8OqTrEoOz
-         vMLMmG4+xtXAUG9A+CiCKFB8eck4xAPvGw2szI3+xTA1cXkVppyVrNyg+tNb6pSyLlXf
-         +9fQ==
-X-Gm-Message-State: AOJu0Yx13NIdE8LLFiEYpohm7n0JZV1iajiq5tn2/x3OgJRMwoBhxpEu
-        kh4hX7TloXMDU22WXqBeD+dnpK74CKhev6vEeG1f9g==
-X-Google-Smtp-Source: AGHT+IFZf0Ef1uCyXVsYVxmvVRjeOd50i7i/PDExqHkIFNnYHucLfuFOiMYxetycgpO4YM37XJhEHKMvC0YKeyfeDZc=
-X-Received: by 2002:a25:aaf0:0:b0:d9a:d184:8304 with SMTP id
- t103-20020a25aaf0000000b00d9ad1848304mr6718605ybi.35.1699563746352; Thu, 09
- Nov 2023 13:02:26 -0800 (PST)
+        Thu, 9 Nov 2023 16:03:22 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652123A8D;
+        Thu,  9 Nov 2023 13:03:20 -0800 (PST)
+Received: from umang.jain (unknown [103.251.226.64])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4C9E56EF;
+        Thu,  9 Nov 2023 22:02:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699563775;
+        bh=mmbO87nh5mz7pqHh+iTwGNB+opdv/5av5rOCwQbRdhU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BhEBrXzv2YD+14NCMuaJBGgd1S/2uG68SNi1UPwk5s83IRhDj6+cH+5YeOUN61G0C
+         r//ORYr9FlRb1INss0Jy+aNIX4PtJj/h/qZDDmCQrcKbnavRp0DN306PMNb5FTdt87
+         9f54S1b3SY2+StENBB1meyWlealKX8+oewhL+Zr0=
+From:   Umang Jain <umang.jain@ideasonboard.com>
+To:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v2 00/15] staging: vc04_services: bcm2835-isp support
+Date:   Thu,  9 Nov 2023 16:02:52 -0500
+Message-ID: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230926160255.330417-1-robert.marko@sartura.hr>
- <CACRpkdZem9Gtd==gQM4EQ9R8MN2ZQ0JCyMCoTjg0kqCNDjuFMA@mail.gmail.com>
- <CA+HBbNFeVmc2CJeo+u9jbZrzsrDTOttW_4+aeLJFcOjDJ8DwyQ@mail.gmail.com>
- <CACRpkdYUW-mO6vhh-zkZAuqQOHpwMeJsNw=jSLzbgoEtoCTtNQ@mail.gmail.com> <ZU1BSmyD931BRwSD@shell.armlinux.org.uk>
-In-Reply-To: <ZU1BSmyD931BRwSD@shell.armlinux.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 9 Nov 2023 22:02:14 +0100
-Message-ID: <CACRpkdZBR1ROkQ_w_QonVmvPB1nxh4c7BQksuP-k=hQG92FmDw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: core: dont change pinmux state to GPIO during
- recovery setup
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Robert Marko <robert.marko@sartura.hr>, wsa@kernel.org,
-        codrin.ciubotariu@microchip.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 9:30=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
-> On Thu, Nov 09, 2023 at 09:04:29PM +0100, Linus Walleij wrote:
+This series aims to upport bcm2835-isp from the RPi kernel.
+It is developed on top of staging-next which comprises many
+VC04 changes for it's de-staging. Hence, the merge of this
+driver is targeted when VC04 is de-staged completely (which I
+have been pushing), but it can be helped getting reviewed meanwhile.
+Hence, the reason for posting the series.
 
-> > > After it was converted to it, the I2C bus completely stopped working
-> > > on Armada 3720
-> > > if I2C recovery is enabled by making the recovery pinctrl available i=
-n DTS.
-> >
-> > Shouldn't we just revert that patch until we can figure this out then?
->
-> Note that when I wrote the i2c-pxa recovery code (which was developed
-> and tested on Armada 3720 - the uDPU) it had to work... when the
-> suggestion came up to implement generic recovery, I stated:
->
-> http://archive.lwn.net:8080/linux-kernel/20200705210942.GA1055@kunai/T/#m=
-f7f862fcd53245f14fb650d33c29cf139d41039d
+Patch (01-02)/15  adds a new driver named vc-sm-cma to handle memory sharing
+with the VC4 VPU. 
 
-Makes me even more convinced that we should just revert this. i.e.
-commit 0b01392c18b9993a584f36ace1d61118772ad0ca
-i2c: pxa: move to generic GPIO recovery
+Patch 03/15 adds a small extension to videobuf2 to allow exporting as a
+dma_buf instead of a file-descriptor.
 
-There is even:
-https://lore.kernel.org/linux-i2c/20201209204645.GF3499@kunai/
+Patch (04-05)/15 adds a couple of improvements/support for
+bcm2835-isp(event callback and zero-copy) to vchiq-mmal.
 
-"In case we missed a glitch, we can still revert the patch later."
-Well this is later.
+Patch (06-10)/15 adds the core bcm2835-isp driver along with headers
+and format defintions. 09/15 is a standalone patch which can be merged
+independently I believe.
 
-Robert can you see if it possible to revert, that things work after a
-revert and send a revert patch?
+Patch (11-12)/15 deals with the colorspace support.
 
-> > > I then spent quite a while trying to bisect the exact change that
-> > > causes this issue
-> > > in the conversion as code is almost identical to what the driver was
-> > > doing previously,
-> > > and have bisected it down to pinctrl_select_state(bri->pinctrl,
-> > > bri->pins_gpio) being
-> > > called before SDA and SCL pins are obtained via devm_gpiod_get().
->
-> Yes, indeed. That's because the pinctrl internals get confused. I sent
-> you an email about it on 6th December 2019
->
-> "pinctrl states vs pinmux vs gpio (i2c bus recovery)"
+Patch 13/15 allows multiple instances of the ISP.
 
-I found it:
-https://lore.kernel.org/all/20191206173343.GX25745@shell.armlinux.org.uk/
+Patch 14/15 adds a admin-guide document on bcm2835-isp.
 
-Sadly I had no good advice for any simple elegant solutions
-to the problem, but the more complicated solution does
-work so let's go for that.
+Patch 15/15 deals with driver registeration.
 
-> which is why i2c-pxa did things the way it did in my commit
-> "i2c: pxa: implement generic i2c bus recovery".
+Dave Stevenson (6):
+  staging: vc04_services: Add new vc-sm-cma driver
+  media: videobuf2: Allow exporting of a struct dmabuf
+  staging: mmal-vchiq: Add support for event callbacks
+  staging: mmal-vchiq: Use vc-sm-cma to support zero copy
+  staging: mmal_vchiq: Add image formats to be used by bcm2835-isp
+  uapi: bcm2835-isp: Add bcm2835-isp uapi header file
 
-I think we need to go back to this.
+David Plowman (2):
+  vc04_services: bcm2835-isp: Allow formats with different colour spaces
+  vc04_services: bcm2835-isp: Permit all sRGB colour spaces on ISP
+    outputs
 
-It's nice with the ambition to create generic code of course, but
-sometimes it is better to just roll something IP-unique.
+Naushir Patuck (4):
+  media: uapi: v4l2-core: Add ISP statistics output V4L2 fourcc type
+  staging: vc04_services: bcm2835-isp: Add a more complex ISP processing
+    component
+  staging: vc04_services: bcm2835_isp: Allow multiple users
+  docs: admin-guide: media: bcm2835-isp: Add documentation for
+    bcm2835-isp
 
-Yours,
-Linus Walleij
+Umang Jain (3):
+  staging: vc04_services: vchiq_arm: Register vcsm-cma driver
+  staging: vc04_services: Add helpers for vchiq driver data
+  staging: vc04_services: vchiq: Register bcm2835-isp
+
+ .../admin-guide/media/bcm2835-isp.rst         |  127 ++
+ .../userspace-api/media/drivers/index.rst     |    1 +
+ .../userspace-api/media/v4l/meta-formats.rst  |    1 +
+ .../v4l/pixfmt-meta-bcm2835-isp-stats.rst     |   32 +
+ MAINTAINERS                                   |    9 +
+ .../media/common/videobuf2/videobuf2-core.c   |   36 +-
+ drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
+ drivers/staging/vc04_services/Kconfig         |    4 +
+ drivers/staging/vc04_services/Makefile        |    3 +-
+ .../staging/vc04_services/bcm2835-isp/Kconfig |   14 +
+ .../vc04_services/bcm2835-isp/Makefile        |    4 +
+ .../bcm2835-isp/bcm2835-isp-ctrls.h           |   72 +
+ .../bcm2835-isp/bcm2835-isp-fmts.h            |  559 +++++
+ .../bcm2835-isp/bcm2835-v4l2-isp.c            | 1822 +++++++++++++++++
+ .../interface/vchiq_arm/vchiq_arm.c           |    6 +
+ .../interface/vchiq_arm/vchiq_bus.h           |   10 +
+ .../staging/vc04_services/vc-sm-cma/Kconfig   |   10 +
+ .../staging/vc04_services/vc-sm-cma/Makefile  |    4 +
+ .../staging/vc04_services/vc-sm-cma/vc_sm.c   |  817 ++++++++
+ .../staging/vc04_services/vc-sm-cma/vc_sm.h   |   54 +
+ .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.c  |  507 +++++
+ .../vc04_services/vc-sm-cma/vc_sm_cma_vchi.h  |   63 +
+ .../vc04_services/vc-sm-cma/vc_sm_defs.h      |  187 ++
+ .../vc04_services/vc-sm-cma/vc_sm_knl.h       |   28 +
+ .../staging/vc04_services/vchiq-mmal/Kconfig  |    1 +
+ .../vc04_services/vchiq-mmal/mmal-common.h    |    5 +
+ .../vc04_services/vchiq-mmal/mmal-encodings.h |   66 +
+ .../vc04_services/vchiq-mmal/mmal-msg.h       |   35 +
+ .../vchiq-mmal/mmal-parameters.h              |  165 +-
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     |  253 ++-
+ .../vc04_services/vchiq-mmal/mmal-vchiq.h     |    5 +
+ include/media/videobuf2-core.h                |   15 +
+ include/uapi/linux/bcm2835-isp.h              |  347 ++++
+ include/uapi/linux/v4l2-controls.h            |    5 +
+ include/uapi/linux/videodev2.h                |    1 +
+ 35 files changed, 5235 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/admin-guide/media/bcm2835-isp.rst
+ create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-meta-bcm2835-isp-stats.rst
+ create mode 100644 drivers/staging/vc04_services/bcm2835-isp/Kconfig
+ create mode 100644 drivers/staging/vc04_services/bcm2835-isp/Makefile
+ create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm2835-isp-ctrls.h
+ create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm2835-isp-fmts.h
+ create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/Kconfig
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/Makefile
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm.c
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm.h
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.c
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm_cma_vchi.h
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm_defs.h
+ create mode 100644 drivers/staging/vc04_services/vc-sm-cma/vc_sm_knl.h
+ create mode 100644 include/uapi/linux/bcm2835-isp.h
+
+-- 
+2.41.0
+
