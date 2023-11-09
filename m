@@ -2,242 +2,405 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9537E6498
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1447E64BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjKIHqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        id S233163AbjKIHvR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Nov 2023 02:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjKIHqB (ORCPT
+        with ESMTP id S231336AbjKIHvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:46:01 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE8D268D;
-        Wed,  8 Nov 2023 23:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699515959; x=1731051959;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ELyq3gVEQIYxMFqLbWIT0ROXWF7V1vELa/teCRoLsTQ=;
-  b=E3JiR/iTci39bCtyS5OLZMyOLayzfdl0rACy87bpRCl9HDOO5J3K0Gzg
-   NJK7lhLduAaPXL/ynmMLadd/ZJ46En82jq2N8sOjZTCidn7XIALyJAN7m
-   JKzYhzdUhrlrb/VoIG8pplpWMUqz6a0mmY4WOsfL0FIrHhJq4zlmdZBT0
-   6pIg4o0QEepDGAjT3asLv7LCdGoQTojOUvI31T3ws2xxrmJtzH+w3+qtV
-   JqfwwDlTXsKqXbqqoWh3uk9LBISxntaEfvTAev97eMMNRLQDUqWJw0X4J
-   540+dQemUe3NHAumR4PgJIhdfDGKQw0DLKcQJn+awTWCqT01okEa2JBw6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="370138005"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="370138005"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:45:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="739762889"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="739762889"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Nov 2023 23:45:58 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 8 Nov 2023 23:45:58 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 8 Nov 2023 23:45:58 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 8 Nov 2023 23:45:58 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 8 Nov 2023 23:45:57 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nMhxZxbUiEVKlejsvKXfIKHu9711pd6aMGhR39uF3fqjydRuGcx/0JBCkMSY+H9dx25t+ZywdEoOs+dp9R7H6fQAkawNZWaAXWeEeeuhnc7ChXeWplkXbevSW7hVvoDMvOZJ003cqRP7Az20J1muBqdKZLOurP901bkLgPKk6EI3VxSGxGm8xjECzRu36qK6Z7Jcrw4OUCVu5/yGsJu0nBuBZYFainDBs37ScbS3TSfzs8Po2s+78kN6nZLrVIxCXrbkta50wUrogxah3BL3ALP/AyMA7peOyEVTs6PQSG6S0GUNYny43n0qXxJBSpmBJKUuSfxiRhSG+eflv5ZVAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jDvFcfAp9Ix8J4GLPgYOC/YqOeGlsUl2CFE2XpuDK+c=;
- b=OpiBGI2Bq9uSsZA/p9uJ6lkNrA0FaUa5NVnLG3kQQZmZokcF8eiCtNlGa3aD9GjItfFlbYnH/BkqxaaIaPLbzEBgkEfqXYf+0CdM9yCKUJ5HkocvNiWFjfKRbZXXMR+ltQmw37mPQiUyJ98AeMF///Mx26KVqMEUsC7c/pVlsltU9BJ77OSacNYApJZuXeY6yOCGW4k7DBLSwZBla1KHTVEGI6iWBykzeszcIjNVz1jNS7fYdAUWZFcJM5C+r0vQMRzD854NYt7hFefimGitqbC09RKlg2IqTE/jLd5f3SiviU+ObQ5FRLJvxQ9HFxF9Dtq0YF8T25c0LP7kFUAUSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by CY8PR11MB7361.namprd11.prod.outlook.com (2603:10b6:930:84::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 07:45:55 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%4]) with mapi id 15.20.6954.024; Thu, 9 Nov 2023
- 07:45:55 +0000
-Message-ID: <110f5a3a-7f3f-4b82-bb12-c7ca5df5c98f@intel.com>
-Date:   Thu, 9 Nov 2023 15:48:21 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 6/7] iommufd/selftest: Add test coverage for SIOV virtual
- device
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-References: <20231009085123.463179-1-yi.l.liu@intel.com>
- <20231009085123.463179-7-yi.l.liu@intel.com>
- <BN9PR11MB5276A82597B194611BE01DFE8CCDA@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <BN9PR11MB5276A82597B194611BE01DFE8CCDA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0052.apcprd02.prod.outlook.com
- (2603:1096:4:54::16) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+        Thu, 9 Nov 2023 02:51:10 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CA52693;
+        Wed,  8 Nov 2023 23:51:06 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id BC1AD24E2A3;
+        Thu,  9 Nov 2023 15:50:56 +0800 (CST)
+Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 9 Nov
+ 2023 15:50:56 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
+ (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 9 Nov
+ 2023 15:50:45 +0800
+From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Nikita Shubin" <n.shubin@yadro.com>
+CC:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+Subject: [PATCH v3] perf vendor events riscv: add StarFive Dubhe-90 JSON file
+Date:   Thu, 9 Nov 2023 15:49:00 +0800
+Message-ID: <20231109074900.1971266-1-jisheng.teoh@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CY8PR11MB7361:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3602fb21-473f-4ed5-77ee-08dbe0f7e6f9
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3tK55rDfjmbU+5g27hsu+CbhZtvL/o5l9ZXtxoY/LElTEAqRH9Bck6up868TMmog0Lp2aPt4nRg5qUIW25iLsZ6mFtqIRP/p2zyb10toLXlsZmcyMMkCC9Gxz1AgiykaC7JrZ1jcWek/DgsiuKt2ZIA9W+LKQXIPlhHI0d15cj38BbmS6tV494DRIXhXMa2g7iGrAqfdtx1Lu5aXsJitGvzQV64g5Jww6GNXFUhmVmXcvzMGHm9LoG2czUG1x++KRtv03szDTUVHWDM8dF/ydvsCTPQ/LqrYOPtgcwerqQez8OOZwd4QzaYEYVVDEyDJjlIja50q+Ge2/vqa9oN0DSq78Sx1LNJn6FQ6l/j/mhKkbeiCT6042/J6JZIIEAyNiisZFxGUarTUq/WEPaO+I7lZpEViiJNMRH9MLMRBbpcJ9PVbmPk0rxT7IGM8JPVCpOOJ50lwEM/COlAJz7F7CAHanMTEJzktji1oBUqR+S/e4L27Q72CqQyxmKB/+hJzUnSnaBItLtBb68AweHrZsyERSc7jjBMJ3zhA+WZwlOysG5Tr8LBuM+wrvzPkqHwezjLz+kA/+ZiU5L3doNlV+u0ag+Tm26qEuG+iZjbz+0ZdpCrdH9DhFtpN9KSwB7poQ7Pvql/WTccsPVqC5AUDbw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(346002)(39860400002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(41300700001)(6512007)(6486002)(53546011)(2616005)(478600001)(6666004)(6506007)(7416002)(26005)(4326008)(110136005)(8676002)(316002)(8936002)(5660300002)(66476007)(66946007)(54906003)(66556008)(31696002)(2906002)(31686004)(82960400001)(86362001)(38100700002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bGVBTHN0RTU0U2EwUVF3N0tQSDMycGJRUjMwUTd4THNMeXRRcFNiT1ozazZu?=
- =?utf-8?B?azBTRVh1VnVVUWZIbEtta0FtVnVhZzllTDEzdytsRkF5YXduRnhmUk1WbjFU?=
- =?utf-8?B?aVAvMmRUWmp3alR5VXNWN2F0YXhHN2xxK2tMTjhDcDdleStVMFJXNzlLbFZz?=
- =?utf-8?B?MCt4ekxnN3VGWjRta25IMTZST3NqRW04VXdRbHgyeW0yeUFidHdGQUZ2UHpW?=
- =?utf-8?B?M09FeHliLzhXRzBDRFdXbisvaU05VHJxbWxIMVNtNzdTYlFNK0NNUkhzbUVy?=
- =?utf-8?B?cnQzaExvMVp6ZSsvaVhmWjViZVJpbFpEcnFKVXJ0SDY1dlQ5SmtXZktPZ0Zo?=
- =?utf-8?B?OENhN1ZxM2FqSWhuVUFybHY0MTlIa1JNRmkzY2JCWUJ2bktKKzh6NWtUc1B5?=
- =?utf-8?B?dWg3Zk0wQmpRT3p0SGRNVG84VStDSnF0WU1QMHRiSTJCVmVrMFVzNWR4aDhs?=
- =?utf-8?B?NlgwZ0V5QzdDRm45ZkVIVUszR3liaUJxQmExS2pGRmFKOHdyMWhHWGxLOGlG?=
- =?utf-8?B?L2FYSVUveEp1OWxKVC9xSmk5bG9Xejl4RllxTHgrWDI0M0tsaE9nOENST3Vs?=
- =?utf-8?B?K3JTUFVNUjE2MU15cVNsYVNPSDlNKzkzVUdoc052Lzlpc1NqNW9JWTE0YVVT?=
- =?utf-8?B?OHVoUi9qZU5KZnBDc2NXZDVHL1JDK3BISDFzdnpEaDdSVCtBcndzYVVBNmlV?=
- =?utf-8?B?VDJSdWV4ZmFSYkQ4enNKYkNBZmxPazlwOVFueGpVTnFUalBjM2h5cEFIMGFC?=
- =?utf-8?B?S1k5Q1BESWlxY25pSHlNd3M4eTQrMmVwS0tHQkYwWmdYbmVlRXBnMjZRSkRa?=
- =?utf-8?B?NUVUS0RLSURKWXdaaVpPUnUrTkp5M3NOb2ZKdnpKV3ZzMndEN0NSeERqOFlW?=
- =?utf-8?B?M2NwQno3VEpVZ283anBaaWhYQ29zNHViSEZ6RnlIMDQ1d0ZmSHh3WUk2bGc1?=
- =?utf-8?B?ZHh0Qkh2Sy91b2t0VHEzUlh3OTRMTnVIV1p3Z21XYTFGY0l4QWxrbGVUREdh?=
- =?utf-8?B?K2l2bkJ2bmpnVjU3eFZ2Ry9VWUs4RnFuSGpoM2xydTBZaURONVdRditDRlZZ?=
- =?utf-8?B?R2sveU1OUUFnUFcyQ2hnMk9rZkt6Q3RvbUFmcWZHZ2tybmR4cXRWQUlOSmhC?=
- =?utf-8?B?VjQ1S3c5RDloeUlXMERta2ZRY2ZwUDB5b29iY1E2b3ZvbG9PY1BMSExsQmdT?=
- =?utf-8?B?dDFoNm0wN1kza3JLVVpaRGRhWU9aelhZODlMZ1pRSmNXM0huY0lJeDVXWk9p?=
- =?utf-8?B?Mmllc09HNy9sZXFtZCtFaGNUb29nT2hneC82MWYxT0F0ZGw3RkY4cVNNcjhu?=
- =?utf-8?B?d1hNcElSRXI0Vm9GdFAxTTBTWTU1akR2Tkgyand4Y0VhYXAzWEJTUVAvVWlp?=
- =?utf-8?B?ZmErTjlNN3B3WmlZZGEyMTNzVndBRlEyR2Z6OHBDWGh4SmJjZG9oYU9Zd3Ri?=
- =?utf-8?B?WVQ3Y0toVVk5OUxnZWZTOGtkNEdDN2ZDbTg4NlFybXY5YTBhSEM1UzJwWWtP?=
- =?utf-8?B?UHVEZks5c2lHN1NsQWEwUi9kTGFiRzdUS2xXUjd3c2lvT21DVUFQOUoxa0NH?=
- =?utf-8?B?NjNOaUVoQW1GRzRhZHlsb3ZubE1EU3ZHWVBvemNKM245ZDRHSDk2L1hwMWhL?=
- =?utf-8?B?VGFoREtuS0N3OTZGemZld1BGSG9JSDJJUnc5V1JQcCtIdUV2b1JCcVRBYzZY?=
- =?utf-8?B?ZnQ4WVBHSERBNmFDNnZQNlFNWHRRcVZnRUI3Q01KbGpoYjRkUWRqTVBDQlll?=
- =?utf-8?B?S0gzRlc0WHlwa3FFVllzQWhzeE11MEN4eUdKUDdYMnBGb3NmSUl0UTVJa254?=
- =?utf-8?B?dmpOejZGeVBycktRY0R2ZDIyb2NPVDJheTVRdHBhU1l3ZXNpaVRONE5aQS85?=
- =?utf-8?B?VUJrNG1BWkpiVldmYWI1THprbCtZWnpVTC9WWDFSUU9zTnRSRWFUdjBlV1R6?=
- =?utf-8?B?RDA3bjFDVHVRa2NQVTNUZnBlNCs0bkFWTTh3VzFuSmVmZFJrMHMvSWNNamVp?=
- =?utf-8?B?aVJaVzJyK3dDQ2VnVFh0ZUZKNldUTVZwRTJKRVdwNm9OMUhEeUZxWjAxMmow?=
- =?utf-8?B?UkdGZ2xVR3NhK2JRa0Z1bklpUlhIa1FDalBVTlFOVEZNY21McXlySldIK3RX?=
- =?utf-8?Q?ys6tiMpkwi5db2xOtTA2XGlvg?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3602fb21-473f-4ed5-77ee-08dbe0f7e6f9
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 07:45:54.7741
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oZeZDM0O0HoRo/NG1GCEUB5oUSmTwXqar7kEmuB8ZzUhbN3ZvYe631+5ix4CUIp2RjLu84ivVEJRIoRuxxWHuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7361
-X-OriginatorOrg: intel.com
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
+ (172.16.6.92)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/10 16:30, Tian, Kevin wrote:
->> From: Liu, Yi L <yi.l.liu@intel.com>
->> Sent: Monday, October 9, 2023 4:51 PM
->>
->> @@ -2071,6 +2083,43 @@ TEST_F(iommufd_device_pasid, pasid_attach)
->>
->> IOMMU_HWPT_ALLOC_DATA_SELFTEST,
->>   					   &data, sizeof(data));
->>
->> +		if (variant->pasid) {
->> +			uint32_t new_hwpt_id = 0;
->> +
->> +			ASSERT_EQ(0,
->> +				  test_cmd_pasid_check_domain(self->fd,
->> +							      self->stdev_id,
->> +							      variant->pasid,
->> +							      self->hwpt_id,
->> +							      &result));
->> +			EXPECT_EQ(1, result);
->> +			test_cmd_hwpt_alloc(self->device_id, self->ioas_id,
->> +					    0, &new_hwpt_id);
->> +			test_cmd_mock_domain_replace(self->stdev_id,
->> +						     new_hwpt_id);
->> +			ASSERT_EQ(0,
->> +				  test_cmd_pasid_check_domain(self->fd,
->> +							      self->stdev_id,
->> +							      variant->pasid,
->> +							      new_hwpt_id,
->> +							      &result));
->> +			EXPECT_EQ(1, result);
->> +
->> +			/*
->> +			 * Detach hwpt from variant->pasid, and check if the
->> +			 * variant->pasid has null domain
->> +			 */
->> +			test_cmd_pasid_detach(variant->pasid);
->> +			ASSERT_EQ(0,
->> +				  test_cmd_pasid_check_domain(self->fd,
->> +							      self->stdev_id,
->> +							      variant->pasid,
->> +							      0, &result));
->> +			EXPECT_EQ(1, result);
->> +
->> +			test_ioctl_destroy(new_hwpt_id);
->> +		}
->> +
-> 
-> I wonder whether above better reuses the device attach/replace cases
-> given default_pasid is hidden inside iommufd_device. this pasid_attach
-> case is more for testing user pasids on a iommufd_device which hasn't
-> yet been supported by SIOV device?
+StarFive's Dubhe-90 supports raw event id 0x00 - 0x22.
+The raw events are enabled through PMU node of DT binding.
+Besides raw event, add standard RISC-V firmware events to
+support monitoring of firmware event.
 
-perhaps the way how the above code checks the attached domain misled you.
-Actually, this is still testing the siov default_pasid. In the variant
-setup, the default_pasid is passed to the testing driver when creating
-the stdev. That's why the replace test does not require a pasid.
+Example of PMU DT node:
+pmu {
+	compatible = "riscv,pmu";
+	riscv,raw-event-to-mhpmcounters =
+		/* Event ID 1-31 */
+		<0x00 0x00 0xFFFFFFFF 0xFFFFFFE0 0x00007FF8>,
+		/* Event ID 32-33 */
+		<0x00 0x20 0xFFFFFFFF 0xFFFFFFFE 0x00007FF8>,
+		/* Event ID 34 */
+		<0x00 0x22 0xFFFFFFFF 0xFFFFFF22 0x00007FF8>;
+};
 
-maybe I can let have a new selftest op to check attached domain for a given 
-stdev instead of reusing test_cmd_pasid_check_domain().
+Perf stat output:
+[root@user]# perf stat -a \
+	-e access_mmu_stlb \
+	-e miss_mmu_stlb \
+	-e access_mmu_pte_c \
+	-e rob_flush \
+	-e btb_prediction_miss \
+	-e itlb_miss \
+	-e sync_del_fetch_g \
+	-e icache_miss \
+	-e bpu_br_retire \
+	-e bpu_br_miss \
+	-e ret_ins_retire \
+	-e ret_ins_miss \
+	-- openssl speed rsa2048
+Doing 2048 bits private rsa's for 10s: 39 2048 bits private RSA's in
+10.03s
+Doing 2048 bits public rsa's for 10s: 1469 2048 bits public RSA's in
+9.47s
+version: 3.0.10
+built on: Tue Aug  1 13:47:24 2023 UTC
+options: bn(64,64)
+CPUINFO: N/A
+                  sign    verify    sign/s verify/s
+rsa 2048 bits 0.257179s 0.006447s      3.9    155.1
 
+ Performance counter stats for 'system wide':
+
+           3112882      access_mmu_stlb
+             10550      miss_mmu_stlb
+             18251      access_mmu_pte_c
+            274765      rob_flush
+          22470560      btb_prediction_miss
+           3035839      itlb_miss
+         643549060      sync_del_fetch_g
+            133013      icache_miss
+          62982796      bpu_br_retire
+            287548      bpu_br_miss
+           8935910      ret_ins_retire
+              8308      ret_ins_miss
+
+      20.656182600 seconds time elapsed
+
+Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+---
+Changelog:
+v2 -> v3:
+- Add standard RISC-V firmware event
+- Update commit message to reflect addition of standard
+  RISC-V firmware event.
+v1 -> v2:
+- Rename 'Starfive Dubhe' to 'StarFive Dubhe-90' in commit message.
+- Rename 'starfive/dubhe' pmu-events folder to 'starfive/dubhe-90'
+- Update MARCHID to 0x80000000db000090 in mapfile.csv
+---
+ tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+ .../arch/riscv/starfive/dubhe-90/common.json  | 172 ++++++++++++++++++
+ .../riscv/starfive/dubhe-90/firmware.json     |  68 +++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/firmware.json
+
+diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+index c61b3d6ef616..5b75ecfe206d 100644
+--- a/tools/perf/pmu-events/arch/riscv/mapfile.csv
++++ b/tools/perf/pmu-events/arch/riscv/mapfile.csv
+@@ -15,3 +15,4 @@
+ #
+ #MVENDORID-MARCHID-MIMPID,Version,Filename,EventType
+ 0x489-0x8000000000000007-0x[[:xdigit:]]+,v1,sifive/u74,core
++0x67e-0x80000000db000090-0x[[:xdigit:]]+,v1,starfive/dubhe-90,core
+\ No newline at end of file
+diff --git a/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+new file mode 100644
+index 000000000000..fbffcacb2ace
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
+@@ -0,0 +1,172 @@
++[
++  {
++    "EventName": "ACCESS_MMU_STLB",
++    "EventCode": "0x1",
++    "BriefDescription": "access MMU STLB"
++  },
++  {
++    "EventName": "MISS_MMU_STLB",
++    "EventCode": "0x2",
++    "BriefDescription": "miss MMU STLB"
++  },
++  {
++    "EventName": "ACCESS_MMU_PTE_C",
++    "EventCode": "0x3",
++    "BriefDescription": "access MMU PTE-Cache"
++  },
++  {
++    "EventName": "MISS_MMU_PTE_C",
++    "EventCode": "0x4",
++    "BriefDescription": "miss MMU PTE-Cache"
++  },
++  {
++    "EventName": "ROB_FLUSH",
++    "EventCode": "0x5",
++    "BriefDescription": "ROB flush (all kinds of exceptions)"
++  },
++  {
++    "EventName": "BTB_PREDICTION_MISS",
++    "EventCode": "0x6",
++    "BriefDescription": "BTB prediction miss"
++  },
++  {
++    "EventName": "ITLB_MISS",
++    "EventCode": "0x7",
++    "BriefDescription": "ITLB miss"
++  },
++  {
++    "EventName": "SYNC_DEL_FETCH_G",
++    "EventCode": "0x8",
++    "BriefDescription": "SYNC delivery a fetch-group"
++  },
++  {
++    "EventName": "ICACHE_MISS",
++    "EventCode": "0x9",
++    "BriefDescription": "ICache miss"
++  },
++  {
++    "EventName": "BPU_BR_RETIRE",
++    "EventCode": "0xA",
++    "BriefDescription": "condition branch instruction retire"
++  },
++  {
++    "EventName": "BPU_BR_MISS",
++    "EventCode": "0xB",
++    "BriefDescription": "condition branch instruction miss"
++  },
++  {
++    "EventName": "RET_INS_RETIRE",
++    "EventCode": "0xC",
++    "BriefDescription": "return instruction retire"
++  },
++  {
++    "EventName": "RET_INS_MISS",
++    "EventCode": "0xD",
++    "BriefDescription": "return instruction miss"
++  },
++  {
++    "EventName": "INDIRECT_JR_MISS",
++    "EventCode": "0xE",
++    "BriefDescription": "indirect JR instruction miss (inlcude without target)"
++  },
++  {
++    "EventName": "IBUF_VAL_ID_NORDY",
++    "EventCode": "0xF",
++    "BriefDescription": "IBUF valid while ID not ready"
++  },
++  {
++    "EventName": "IBUF_NOVAL_ID_RDY",
++    "EventCode": "0x10",
++    "BriefDescription": "IBUF not valid while ID ready"
++  },
++  {
++    "EventName": "REN_INT_PHY_REG_NORDY",
++    "EventCode": "0x11",
++    "BriefDescription": "REN integer physical register file is not ready"
++  },
++  {
++    "EventName": "REN_FP_PHY_REG_NORDY",
++    "EventCode": "0x12",
++    "BriefDescription": "REN floating point physical register file is not ready"
++  },
++  {
++    "EventName": "REN_CP_NORDY",
++    "EventCode": "0x13",
++    "BriefDescription": "REN checkpoint is not ready"
++  },
++  {
++    "EventName": "DEC_VAL_ROB_NORDY",
++    "EventCode": "0x14",
++    "BriefDescription": "DEC is valid and ROB is not ready"
++  },
++  {
++    "EventName": "OOD_FLUSH_LS_DEP",
++    "EventCode": "0x15",
++    "BriefDescription": "out of order flush due to load/store dependency"
++  },
++  {
++    "EventName": "BRU_RET_IJR_INS",
++    "EventCode": "0x16",
++    "BriefDescription": "BRU retire an IJR instruction"
++  },
++  {
++    "EventName": "ACCESS_DTLB",
++    "EventCode": "0x17",
++    "BriefDescription": "access DTLB"
++  },
++  {
++    "EventName": "MISS_DTLB",
++    "EventCode": "0x18",
++    "BriefDescription": "miss DTLB"
++  },
++  {
++    "EventName": "LOAD_INS_DCACHE",
++    "EventCode": "0x19",
++    "BriefDescription": "load instruction access DCache"
++  },
++  {
++    "EventName": "LOAD_INS_MISS_DCACHE",
++    "EventCode": "0x1A",
++    "BriefDescription": "load instruction miss DCache"
++  },
++  {
++    "EventName": "STORE_INS_DCACHE",
++    "EventCode": "0x1B",
++    "BriefDescription": "store/amo instruction access DCache"
++  },
++  {
++    "EventName": "STORE_INS_MISS_DCACHE",
++    "EventCode": "0x1C",
++    "BriefDescription": "store/amo instruction miss DCache"
++  },
++  {
++    "EventName": "LOAD_SCACHE",
++    "EventCode": "0x1D",
++    "BriefDescription": "load access SCache"
++  },
++  {
++    "EventName": "STORE_SCACHE",
++    "EventCode": "0x1E",
++    "BriefDescription": "store access SCache"
++  },
++  {
++    "EventName": "LOAD_MISS_SCACHE",
++    "EventCode": "0x1F",
++    "BriefDescription": "load miss SCache"
++  },
++  {
++    "EventName": "STORE_MISS_SCACHE",
++    "EventCode": "0x20",
++    "BriefDescription": "store miss SCache"
++  },
++  {
++    "EventName": "L2C_PF_REQ",
++    "EventCode": "0x21",
++    "BriefDescription": "L2C data-prefetcher request"
++  },
++  {
++    "EventName": "L2C_PF_HIT",
++    "EventCode": "0x22",
++    "BriefDescription": "L2C data-prefetcher hit"
++  }
++]
+diff --git a/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/firmware.json b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/firmware.json
+new file mode 100644
+index 000000000000..9b4a032186a7
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/firmware.json
+@@ -0,0 +1,68 @@
++[
++  {
++    "ArchStdEvent": "FW_MISALIGNED_LOAD"
++  },
++  {
++    "ArchStdEvent": "FW_MISALIGNED_STORE"
++  },
++  {
++    "ArchStdEvent": "FW_ACCESS_LOAD"
++  },
++  {
++    "ArchStdEvent": "FW_ACCESS_STORE"
++  },
++  {
++    "ArchStdEvent": "FW_ILLEGAL_INSN"
++  },
++  {
++    "ArchStdEvent": "FW_SET_TIMER"
++  },
++  {
++    "ArchStdEvent": "FW_IPI_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_IPI_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_FENCE_I_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_FENCE_I_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_SFENCE_VMA_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_SFENCE_VMA_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_SFENCE_VMA_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_SFENCE_VMA_ASID_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_GVMA_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_GVMA_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_GVMA_VMID_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_GVMA_VMID_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_VVMA_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_VVMA_RECEIVED"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_VVMA_ASID_SENT"
++  },
++  {
++    "ArchStdEvent": "FW_HFENCE_VVMA_ASID_RECEIVED"
++  }
++]
 -- 
-Regards,
-Yi Liu
+2.25.1
+
