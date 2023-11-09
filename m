@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B1F7E757E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180827E757F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345488AbjKJACO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:02:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S1345492AbjKJACR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345638AbjKJABi (ORCPT
+        with ESMTP id S1345641AbjKJABj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:01:38 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F055146BB;
-        Thu,  9 Nov 2023 16:00:50 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc394f4cdfso12438565ad.0;
-        Thu, 09 Nov 2023 16:00:50 -0800 (PST)
+        Thu, 9 Nov 2023 19:01:39 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6325478B;
+        Thu,  9 Nov 2023 16:00:52 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5b9390d6bd3so2052782a12.0;
+        Thu, 09 Nov 2023 16:00:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699574450; x=1700179250; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699574452; x=1700179252; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fZWD+Xm8A+pCVGPG3VW7Xs9+o4dQn/qSi3meRIUI+UM=;
-        b=hn34fM5w5RmF8tqgc7sNsruH71/1aIVQzBW2Va0q9FbxSj55YmUJNbJyX3BQj+Kw45
-         9aSPqfpBwJ4oEWMxsCUggIcTutC8gQDVx9pxJwWfBCBF40WuB0FHhXDnJJ9TNbJ5p8ja
-         pF2xpQQU5bUq8W7vumKOvF+0xr+zovbrIwSCtHushRL+T2mFlKTgXCVKd5kJgfKo7w/a
-         6lo9X6CyW70aYtc0VsdOwiFBi3TtoJYiQOjWfaT5KOJZut7pJz60JTO1TIGJCQXAJ7Pr
-         dbKZzGQyuISMf2/mxLUyjE2Sk5mLoNhMcXKiorKIjci8cP8lAvZhvd/fb4/ho3pCUxZg
-         YcZA==
+        bh=z3p/0qsKuHXZ71nZRToEzeJmSxz+5PnmASt9/Ym8sAw=;
+        b=QEmsw5IbPNVdeVM+E4OQ4Ow4pnYZdm6CoOAmjvApS45/Nw82jjXApR9q+f+LER8SGf
+         +JD8VALlt//G//lTkF2L9pbGguCnzxQ4E9eBAZ+RIkhEnmvq8whxG8WmxwtSzMInIsYt
+         EgHovb61zNo2Mt5lxDj17HeLjqZ79tXgIz5t+I3D6GLtpYSlcIYKGd+oSO3gwbKXJmuF
+         4guCMZw1zTztwKnO7sI3VNIu9PuPOmoW6T2XDggFPqdaccaq4NRRNd3ha1iFdt3xYaS5
+         g3ZwLJS0zCQcUBKC8B2igLy/vAL+5o0WFPqsrnQ4a71LoIjFeDyGGVENJ+NcV/4ESg3F
+         6bow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699574450; x=1700179250;
+        d=1e100.net; s=20230601; t=1699574452; x=1700179252;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=fZWD+Xm8A+pCVGPG3VW7Xs9+o4dQn/qSi3meRIUI+UM=;
-        b=XGE+EEiCP/Ffg6UmLigfr5aoDGVpJYsg5qx9ioGFx9lCvyHIv2p5DPinNoUyYmQZgR
-         8kqeaJaoY84O5JIp+Zgk7KpCEsogA5eNXXgzrJS0gOa/bSAA0uNQw37oX0CJmBXmCQwr
-         4bWkucmtdX+GmmtjybvTdnlcYACj85IIvvN5VhyDUvbza/YCt3H4CwXok4qJdIhAeQhN
-         XPgs5Ba54bGV1rvpxRs8Oz7nUToarysD6te8r4WYgOXWravMt6errd/8IE1Ef/tIoB/D
-         5Id9UptH4qcnTiYWm7DpUWIMPKqsYQS+Dv1MiO2uXO5oBhyQbgjGFcK5nOAJE/pCiLOz
-         qfFA==
-X-Gm-Message-State: AOJu0YzhlAEmSxgD88d6nTSGUzeRqRtLogJ2kLIu4MzLt/WTcb1hdhnw
-        8Pl0nuthnYEqjwCyOtT309s=
-X-Google-Smtp-Source: AGHT+IHQo/kRvhc5lrELJdyBLPwcI4/yzjO5UJkyDXIgoSSegO+ofnjbUFutrl06Gg0CDORkAkJNCA==
-X-Received: by 2002:a17:90b:390b:b0:280:2652:d4e with SMTP id ob11-20020a17090b390b00b0028026520d4emr2895128pjb.29.1699574450352;
-        Thu, 09 Nov 2023 16:00:50 -0800 (PST)
+        bh=z3p/0qsKuHXZ71nZRToEzeJmSxz+5PnmASt9/Ym8sAw=;
+        b=QksSmjfcrZxMIwGLjSCz7BuVteUiDyEJVH+7/ew9yi3UxXKvUHDB3w7J7n7ewokcSo
+         Jg4or0+e7Hc9PybuFf+Vv+wF6ViSWPZ5YiV2u45LEO9QnEz4n2M2PImD4khrJAoIlozy
+         usPJzQ8Rz0JzvJ9nVPvlF7c/29ECxxNYNzdSInOzsXlRKQGNnX5IDeNODLpDbS+UTSfg
+         7IJJUO7uGZs8jGcjww+QA5aWrzw957+5+RV6GolvvCrrdpjKRZ0NMZgTuPYrMA9pGGV6
+         u78gNGsm6Dwv8ecrXSYXB3MNIjoP+6q2KgpWgUoITC4Z1ZsMXeoKYq2/u2G9WfebNqfr
+         554g==
+X-Gm-Message-State: AOJu0Yyr5PqEoKL2EcP4dz7oJVokgn6E39xCfRqYyasUaUKff2hQArJz
+        jZVyrFLYqzlr7QxWHdflH9U=
+X-Google-Smtp-Source: AGHT+IE7GjZMCJt+06XhSqkg7mgNP+8BVanL2EdM0Rmo1Tvvp4/L5bEoFMLOSvJsztFe3SNtnY5LGg==
+X-Received: by 2002:a17:90b:11c1:b0:277:68c3:64b9 with SMTP id gv1-20020a17090b11c100b0027768c364b9mr1200733pjb.5.1699574451924;
+        Thu, 09 Nov 2023 16:00:51 -0800 (PST)
 Received: from bangji.corp.google.com ([2620:15c:2c0:5:d45c:ae16:d959:a5f1])
-        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.48
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b002635db431a0sm371312pjh.45.2023.11.09.16.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 16:00:49 -0800 (PST)
+        Thu, 09 Nov 2023 16:00:51 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -65,9 +65,9 @@ Cc:     Ian Rogers <irogers@google.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Subject: [PATCH 23/52] perf report: Add 'symoff' sort key
-Date:   Thu,  9 Nov 2023 15:59:42 -0800
-Message-ID: <20231110000012.3538610-24-namhyung@kernel.org>
+Subject: [PATCH 24/52] perf annotate: Add --data-type option
+Date:   Thu,  9 Nov 2023 15:59:43 -0800
+Message-ID: <20231110000012.3538610-25-namhyung@kernel.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231110000012.3538610-1-namhyung@kernel.org>
 References: <20231110000012.3538610-1-namhyung@kernel.org>
@@ -77,139 +77,312 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The symoff sort key is to print symbol and offset of sample.  This is
-useful for data type profiling to show exact instruction in the function
-which refers the data.
+Support data type annotation with new --data-type option.  It internally
+uses type sort key to collect sample histogram for the type and display
+every members like below.
 
-  $ perf report -s type,sym,typeoff,symoff --hierarchy
+  $ perf annotate --data-type
   ...
-  #       Overhead  Data Type / Symbol / Data Type Offset / Symbol Offset
-  # ..............  .....................................................
-  #
-      1.23%         struct cfs_rq
-        0.84%         update_blocked_averages
-          0.19%         struct cfs_rq +336 (leaf_cfs_rq_list.next)
-             0.19%         [k] update_blocked_averages+0x96
-          0.19%         struct cfs_rq +0 (load.weight)
-             0.14%         [k] update_blocked_averages+0x104
-             0.04%         [k] update_blocked_averages+0x31c
-          0.17%         struct cfs_rq +404 (throttle_count)
-             0.12%         [k] update_blocked_averages+0x9d
-             0.05%         [k] update_blocked_averages+0x1f9
-          0.08%         struct cfs_rq +272 (propagate)
-             0.07%         [k] update_blocked_averages+0x3d3
-             0.02%         [k] update_blocked_averages+0x45b
+  Annotate type: 'struct cfs_rq' in [kernel.kallsyms] (13 samples):
+  ============================================================================
+      samples     offset       size  field
+           13          0        640  struct cfs_rq         {
+            2          0         16      struct load_weight       load {
+            2          0          8          unsigned long        weight;
+            0          8          4          u32  inv_weight;
+                                         };
+            0         16          8      unsigned long    runnable_weight;
+            0         24          4      unsigned int     nr_running;
+            1         28          4      unsigned int     h_nr_running;
   ...
+
+For simplicity it prints the number of samples per field for now.
+But it should be easy to show the overhead percentage instead.
+
+The number at the outer struct is a sum of the numbers of the inner
+members.  For example, struct cfs_rq got total 13 samples, and 2 came
+from the load (struct load_weight) and 1 from h_nr_running.  Similarly,
+the struct load_weight got total 2 samples and they all came from the
+weight field.
+
+I've added two new flags in the symbol_conf for this.  The
+annotate_data_member is to get the members of the type.  This is also
+needed for perf report with typeoff sort key.  The annotate_data_sample
+is to update sample stats for each offset and used only in annotate.
+
+Currently it only support stdio output mode, TUI support can be added
+later.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/Documentation/perf-report.txt |  1 +
- tools/perf/util/hist.h                   |  1 +
- tools/perf/util/sort.c                   | 47 ++++++++++++++++++++++++
- tools/perf/util/sort.h                   |  1 +
- 4 files changed, 50 insertions(+)
+ tools/perf/Documentation/perf-annotate.txt |  8 ++
+ tools/perf/builtin-annotate.c              | 94 +++++++++++++++++++++-
+ tools/perf/util/annotate-data.c            |  8 +-
+ tools/perf/util/annotate.c                 | 10 ++-
+ tools/perf/util/sort.c                     |  2 +
+ tools/perf/util/symbol_conf.h              |  4 +-
+ 6 files changed, 115 insertions(+), 11 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
-index b57eb51b47aa..38f59ac064f7 100644
---- a/tools/perf/Documentation/perf-report.txt
-+++ b/tools/perf/Documentation/perf-report.txt
-@@ -120,6 +120,7 @@ OPTIONS
- 	- simd: Flags describing a SIMD operation. "e" for empty Arm SVE predicate. "p" for partial Arm SVE predicate
- 	- type: Data type of sample memory access.
- 	- typeoff: Offset in the data type of sample memory access.
-+	- symoff: Offset in the symbol.
+diff --git a/tools/perf/Documentation/perf-annotate.txt b/tools/perf/Documentation/perf-annotate.txt
+index fe168e8165c8..0e6a49b7795c 100644
+--- a/tools/perf/Documentation/perf-annotate.txt
++++ b/tools/perf/Documentation/perf-annotate.txt
+@@ -155,6 +155,14 @@ include::itrace.txt[]
+ 	stdio or stdio2 (Default: 0).  Note that this is about selection of
+ 	functions to display, not about lines within the function.
  
- 	By default, comm, dso and symbol keys are used.
- 	(i.e. --sort comm,dso,symbol)
-diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
-index 941176afcebc..1ce0ee262abe 100644
---- a/tools/perf/util/hist.h
-+++ b/tools/perf/util/hist.h
-@@ -84,6 +84,7 @@ enum hist_column {
- 	HISTC_SIMD,
- 	HISTC_TYPE,
- 	HISTC_TYPE_OFFSET,
-+	HISTC_SYMBOL_OFFSET,
- 	HISTC_NR_COLS, /* Last entry */
++--data-type[=TYPE_NAME]::
++	Display data type annotation instead of code.  It infers data type of
++	samples (if they are memory accessing instructions) using DWARF debug
++	information.  It can take an optional argument of data type name.  In
++	that case it'd show annotation for the type only, otherwise it'd show
++	all data types it finds.
++
++
+ SEE ALSO
+ --------
+ linkperf:perf-record[1], linkperf:perf-report[1]
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index a9129b51d511..2290ce3bdc2e 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -20,6 +20,7 @@
+ #include "util/evlist.h"
+ #include "util/evsel.h"
+ #include "util/annotate.h"
++#include "util/annotate-data.h"
+ #include "util/event.h"
+ #include <subcmd/parse-options.h>
+ #include "util/parse-events.h"
+@@ -56,9 +57,11 @@ struct perf_annotate {
+ 	bool	   skip_missing;
+ 	bool	   has_br_stack;
+ 	bool	   group_set;
++	bool	   data_type;
+ 	float	   min_percent;
+ 	const char *sym_hist_filter;
+ 	const char *cpu_list;
++	const char *target_data_type;
+ 	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
  };
  
+@@ -234,8 +237,12 @@ static int evsel__add_sample(struct evsel *evsel, struct perf_sample *sample,
+ {
+ 	struct hists *hists = evsel__hists(evsel);
+ 	struct hist_entry *he;
++	struct annotation *notes = al->sym ? symbol__annotation(al->sym) : NULL;
+ 	int ret;
+ 
++	if (notes)
++		notes->options = &ann->opts;
++
+ 	if ((!ann->has_br_stack || !has_annotation(ann)) &&
+ 	    ann->sym_hist_filter != NULL &&
+ 	    (al->sym == NULL ||
+@@ -323,6 +330,32 @@ static int hist_entry__tty_annotate(struct hist_entry *he,
+ 	return symbol__tty_annotate2(&he->ms, evsel, &ann->opts);
+ }
+ 
++static void print_annotated_data_type(struct annotated_data_type *mem_type,
++				      struct annotated_member *member,
++				      struct evsel *evsel, int indent)
++{
++	struct annotated_member *child;
++	struct type_hist *h = mem_type->histograms[evsel->core.idx];
++	int i, samples = 0;
++
++	for (i = 0; i < member->size; i++)
++		samples += h->addr[member->offset + i].nr_samples;
++
++	printf(" %10d %10d %10d  %*s%s\t%s",
++	       samples, member->offset, member->size, indent, "", member->type_name,
++	       member->var_name ?: "");
++
++	if (!list_empty(&member->children))
++		printf(" {\n");
++
++	list_for_each_entry(child, &member->children, node)
++		print_annotated_data_type(mem_type, child, evsel, indent + 4);
++
++	if (!list_empty(&member->children))
++		printf("%*s}", 35 + indent, "");
++	printf(";\n");
++}
++
+ static void hists__find_annotations(struct hists *hists,
+ 				    struct evsel *evsel,
+ 				    struct perf_annotate *ann)
+@@ -362,6 +395,40 @@ static void hists__find_annotations(struct hists *hists,
+ 			continue;
+ 		}
+ 
++		if (ann->data_type) {
++			struct map *map = he->ms.map;
++
++			/* skip unknown type */
++			if (he->mem_type->histograms == NULL)
++				goto find_next;
++
++			if (ann->target_data_type) {
++				const char *type_name = he->mem_type->self.type_name;
++
++				/* skip 'struct ' prefix in the type name */
++				if (strncmp(ann->target_data_type, "struct ", 7) &&
++				    !strncmp(type_name, "struct ", 7))
++					type_name += 7;
++
++				/* skip 'union ' prefix in the type name */
++				if (strncmp(ann->target_data_type, "union ", 6) &&
++				    !strncmp(type_name, "union ", 6))
++					type_name += 6;
++
++				if (strcmp(ann->target_data_type, type_name))
++					goto find_next;
++			}
++
++			printf("Annotate type: '%s' in %s (%d samples):\n",
++				he->mem_type->self.type_name, map->dso->name, he->stat.nr_events);
++			printf("============================================================================\n");
++			printf(" %10s %10s %10s  %s\n", "samples", "offset", "size", "field");
++
++			print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
++			printf("\n");
++			goto find_next;
++		}
++
+ 		if (use_browser == 2) {
+ 			int ret;
+ 			int (*annotate)(struct hist_entry *he,
+@@ -498,6 +565,17 @@ static int parse_percent_limit(const struct option *opt, const char *str,
+ 	return 0;
+ }
+ 
++static int parse_data_type(const struct option *opt, const char *str, int unset)
++{
++	struct perf_annotate *ann = opt->value;
++
++	ann->data_type = !unset;
++	if (str)
++		ann->target_data_type = strdup(str);
++
++	return 0;
++}
++
+ static const char * const annotate_usage[] = {
+ 	"perf annotate [<options>]",
+ 	NULL
+@@ -609,6 +687,9 @@ int cmd_annotate(int argc, const char **argv)
+ 	OPT_CALLBACK_OPTARG(0, "itrace", &itrace_synth_opts, NULL, "opts",
+ 			    "Instruction Tracing options\n" ITRACE_HELP,
+ 			    itrace_parse_synth_opts),
++	OPT_CALLBACK_OPTARG(0, "data-type", &annotate, NULL, "name",
++			    "Show data type annotate for the memory accesses",
++			    parse_data_type),
+ 
+ 	OPT_END()
+ 	};
+@@ -705,6 +786,14 @@ int cmd_annotate(int argc, const char **argv)
+ 		use_browser = 2;
+ #endif
+ 
++	/* FIXME: only support stdio for now */
++	if (annotate.data_type) {
++		use_browser = 0;
++		annotate.opts.annotate_src = false;
++		symbol_conf.annotate_data_member = true;
++		symbol_conf.annotate_data_sample = true;
++	}
++
+ 	setup_browser(true);
+ 
+ 	/*
+@@ -712,7 +801,10 @@ int cmd_annotate(int argc, const char **argv)
+ 	 * symbol, we do not care about the processes in annotate,
+ 	 * set sort order to avoid repeated output.
+ 	 */
+-	sort_order = "dso,symbol";
++	if (annotate.data_type)
++		sort_order = "dso,type";
++	else
++		sort_order = "dso,symbol";
+ 
+ 	/*
+ 	 * Set SORT_MODE__BRANCH so that annotate display IPC/Cycle
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index 3c452d037948..5326396b08ec 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -18,6 +18,7 @@
+ #include "map_symbol.h"
+ #include "strbuf.h"
+ #include "symbol.h"
++#include "symbol_conf.h"
+ 
+ /*
+  * Compare type name and size to maintain them in a tree.
+@@ -157,11 +158,8 @@ static struct annotated_data_type *dso__findnew_data_type(struct dso *dso,
+ 	result->self.size = size;
+ 	INIT_LIST_HEAD(&result->self.children);
+ 
+-	/*
+-	 * Fill member info unconditionally for now,
+-	 * later perf annotate would need it.
+-	 */
+-	add_member_types(result, type_die);
++	if (symbol_conf.annotate_data_member)
++		add_member_types(result, type_die);
+ 
+ 	rb_add(&result->node, &dso->data_types, data_type_less);
+ 	return result;
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 76309f1e6e39..4d725562fd0a 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -3713,10 +3713,12 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 
+ 		mem_type = find_data_type(ms, ip, op_loc->reg, op_loc->offset);
+ 
+-		annotated_data_type__update_samples(mem_type, evsel,
+-						    op_loc->offset,
+-						    he->stat.nr_events,
+-						    he->stat.period);
++		if (symbol_conf.annotate_data_sample) {
++			annotated_data_type__update_samples(mem_type, evsel,
++							    op_loc->offset,
++							    he->stat.nr_events,
++							    he->stat.period);
++		}
+ 		he->mem_type_off = op_loc->offset;
+ 		return mem_type;
+ 	}
 diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
-index d78e680d3988..0cbbd5ba8175 100644
+index 0cbbd5ba8175..30254eb63709 100644
 --- a/tools/perf/util/sort.c
 +++ b/tools/perf/util/sort.c
-@@ -419,6 +419,52 @@ struct sort_entry sort_sym = {
- 	.se_width_idx	= HISTC_SYMBOL,
- };
+@@ -3401,6 +3401,8 @@ int sort_dimension__add(struct perf_hpp_list *list, const char *tok,
+ 			list->thread = 1;
+ 		} else if (sd->entry == &sort_comm) {
+ 			list->comm = 1;
++		} else if (sd->entry == &sort_type_offset) {
++			symbol_conf.annotate_data_member = true;
+ 		}
  
-+/* --sort symoff */
-+
-+static int64_t
-+sort__symoff_cmp(struct hist_entry *left, struct hist_entry *right)
-+{
-+	int64_t ret;
-+
-+	ret = sort__sym_cmp(left, right);
-+	if (ret)
-+		return ret;
-+
-+	return left->ip - right->ip;
-+}
-+
-+static int64_t
-+sort__symoff_sort(struct hist_entry *left, struct hist_entry *right)
-+{
-+	int64_t ret;
-+
-+	ret = sort__sym_sort(left, right);
-+	if (ret)
-+		return ret;
-+
-+	return left->ip - right->ip;
-+}
-+
-+static int
-+hist_entry__symoff_snprintf(struct hist_entry *he, char *bf, size_t size, unsigned int width)
-+{
-+	struct symbol *sym = he->ms.sym;
-+
-+	if (sym == NULL)
-+		return repsep_snprintf(bf, size, "[%c] %-#.*llx", he->level, width - 4, he->ip);
-+
-+	return repsep_snprintf(bf, size, "[%c] %s+0x%llx", he->level, sym->name, he->ip - sym->start);
-+}
-+
-+struct sort_entry sort_sym_offset = {
-+	.se_header	= "Symbol Offset",
-+	.se_cmp		= sort__symoff_cmp,
-+	.se_sort	= sort__symoff_sort,
-+	.se_snprintf	= hist_entry__symoff_snprintf,
-+	.se_filter	= hist_entry__sym_filter,
-+	.se_width_idx	= HISTC_SYMBOL_OFFSET,
-+};
-+
- /* --sort srcline */
- 
- char *hist_entry__srcline(struct hist_entry *he)
-@@ -2335,6 +2381,7 @@ static struct sort_dimension common_sort_dimensions[] = {
- 	DIM(SORT_SIMD, "simd", sort_simd),
- 	DIM(SORT_ANNOTATE_DATA_TYPE, "type", sort_type),
- 	DIM(SORT_ANNOTATE_DATA_TYPE_OFFSET, "typeoff", sort_type_offset),
-+	DIM(SORT_SYM_OFFSET, "symoff", sort_sym_offset),
- };
- 
- #undef DIM
-diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
-index d806adcc1e1e..6f6b4189a389 100644
---- a/tools/perf/util/sort.h
-+++ b/tools/perf/util/sort.h
-@@ -249,6 +249,7 @@ enum sort_type {
- 	SORT_SIMD,
- 	SORT_ANNOTATE_DATA_TYPE,
- 	SORT_ANNOTATE_DATA_TYPE_OFFSET,
-+	SORT_SYM_OFFSET,
- 
- 	/* branch stack specific sort keys */
- 	__SORT_BRANCH_STACK,
+ 		return __sort_dimension__add(sd, list, level);
+diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
+index 6040286e07a6..c114bbceef40 100644
+--- a/tools/perf/util/symbol_conf.h
++++ b/tools/perf/util/symbol_conf.h
+@@ -44,7 +44,9 @@ struct symbol_conf {
+ 			buildid_mmap2,
+ 			guest_code,
+ 			lazy_load_kernel_maps,
+-			keep_exited_threads;
++			keep_exited_threads,
++			annotate_data_member,
++			annotate_data_sample;
+ 	const char	*vmlinux_name,
+ 			*kallsyms_name,
+ 			*source_prefix,
 -- 
 2.42.0.869.gea05f2083d-goog
 
