@@ -2,94 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1A27E6202
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B2F17E6206
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbjKICKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 21:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        id S231742AbjKICLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 21:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKICKg (ORCPT
+        with ESMTP id S229557AbjKICLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 21:10:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223FE1FEB
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 18:10:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99856C4339A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:10:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699495833;
-        bh=DVLFCWJnRMkoGOLTyBqnffpxgwHE8qbUIAAHGI0JehY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SpSoYgaM5E+9cJ+iHccgbzzkJnoR2D5inpMNYNNxkh/BLckbV0HDb8BEAKYzbD5Pk
-         Po9vE/CCJSFHTwEWx7CHoK7iHjCpwFM4IJ4QQdtDCGIPRiZOzWo5SUuAO2ewkhC2bD
-         moYBglhUR6t+09zvHQIysPuVDuoAfveaT1s0jFWii69A/ozvYeR4VG/ul8ntZOIzoC
-         lTr+h8pF76bybG3aDjpbUkuC2bFw45HSCUv1GxQrtJNq4c+xG3E+TXazdBWrW2ZQEk
-         WDsTz0jr4RIJXL8W7Q84grfYu2DC4tsfLacS6Gdqiixn9MvcWEu6iRHUjVD0Ux8+/V
-         7bsaT97YIO9Kw==
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so294816a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 18:10:33 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzsamnskz0TJaEBCYWGfSN6V7AXCHLlP/uENop4UGpF7j93fnsr
-        /0LeAB3W5eoj7jOSjCFdTvscPiYZuqgIFk9WPRapzA==
-X-Google-Smtp-Source: AGHT+IHmtrIrCFhVDA+PNOLAhehjYlT2Z8PZ6VwoYo9Eyy9bpMSAL2olQgBXd3JCuPc/0Iot3GRqgIvgqwJu+XvWJ2w=
-X-Received: by 2002:a17:90a:4f41:b0:27d:12e1:7e20 with SMTP id
- w1-20020a17090a4f4100b0027d12e17e20mr371864pjl.12.1699495832818; Wed, 08 Nov
- 2023 18:10:32 -0800 (PST)
+        Wed, 8 Nov 2023 21:11:40 -0500
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F16C258A
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 18:11:38 -0800 (PST)
+Message-ID: <42a2dddc-64cf-90b7-e6e3-2ca33f7e9950@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699495896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b9YACYTCreJim1FpgEO6jmK4XJvCfIwTvAhC/eGGzOs=;
+        b=E8ATByKvwiex2V1EhSlMhMVqO6eDt0ckueJ3LtpruKRjeSylP2n97pyr7ISsrU3AvoxZ3W
+        CMB0Dz+U3FIgQxdNYDsl558V35DA9YnfY+6jax3PefPpvOUocYlEGBfYlDdh3tCMhBGlGv
+        FVf/pU1PA91oi0qGN8Kd1UnfpYHhSSo=
+Date:   Thu, 9 Nov 2023 10:11:29 +0800
 MIME-Version: 1.0
-References: <20231106183159.3562879-1-nphamcs@gmail.com> <CAF8kJuMsXUm9=kiL8qPNVfYPzfyq-JWYSH3KraZadjF+myW-2A@mail.gmail.com>
- <CAKEwX=MNKY0UHbxi6Zfwf0KkepYavFaZo8F6LGe5GyyE3U35Jg@mail.gmail.com>
- <CAF8kJuMx4KT9z2RPy8z+snhM6YUtK=kZ1+BdHjKua2jhwFo-XQ@mail.gmail.com> <CAKEwX=OpQZhDmCr-a+O0=c8LfPoO0r8y=abpQoKXWcOP+V6yYg@mail.gmail.com>
-In-Reply-To: <CAKEwX=OpQZhDmCr-a+O0=c8LfPoO0r8y=abpQoKXWcOP+V6yYg@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Wed, 8 Nov 2023 18:10:21 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuNnM_0jDCaAueseiNA1264-MtA0QiQtfjEN1E6aY56MKQ@mail.gmail.com>
-Message-ID: <CAF8kJuNnM_0jDCaAueseiNA1264-MtA0QiQtfjEN1E6aY56MKQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] workload-specific and memory pressure-driven zswap writeback
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
-        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
-        muchun.song@linux.dev, linux-mm <linux-mm@kvack.org>,
-        kernel-team@meta.com, LKML <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] sched/rt: Redefine RR_TIMESLICE to 100 msecs
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        vschneid@redhat.com, linux-kernel@vger.kernel.org
+References: <20231018081709.2289264-1-yajun.deng@linux.dev>
+ <20231108115501.06beac86@gandalf.local.home>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20231108115501.06beac86@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 4:28=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+
+On 2023/11/9 00:55, Steven Rostedt wrote:
+> On Wed, 18 Oct 2023 16:17:09 +0800
+> Yajun Deng <yajun.deng@linux.dev> wrote:
 >
-> Hmm my guess is that I probably sent this out based on an outdated
-> mm-unstable. There has since been a new zswap selftest merged
-> to mm-unstable (written by no other than myself - oh the irony), so
-> maybe it does not apply cleanly anymore with git am.
+>> The RR_TIMESLICE is currently defined as the jiffies corresponding to
+>> 100 msecs. And then sysctl_sched_rr_timeslice will convert RR_TIMESLICE
+>> to 100 msecs. These are opposite calculations.
+> Do we care? The compiler will do this at build time. What's wrong with the
+> current code?
 
-$ git am -3 patches/zswap-pool-lru/0005
-Applying: selftests: cgroup: update per-memcg zswap writeback selftest
-Using index info to reconstruct a base tree...
-M       tools/testing/selftests/cgroup/test_zswap.c
-Falling back to patching base and 3-way merge...
-Auto-merging tools/testing/selftests/cgroup/test_zswap.c
-$ git am -3 patches/zswap-pool-lru/0006
-Applying: zswap: shrinks zswap pool based on memory pressure
-error: sha1 information is lacking or useless (mm/zswap.c).
-error: could not build fake ancestor
-Patch failed at 0001 zswap: shrinks zswap pool based on memory pressure
-hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
 
-I was able to resolve the conflict on patch 6 by hand though. So I am good =
-now.
+Yes, two calculations may introduce rounding error like the following.
 
-Thanks
+>> There are msecs_to_jiffies and jiffies_to_msecs in sched_rr_handler.
+>> These are also opposite calculations.
+>>
+>> Redefine RR_TIMESLICE to 100 msecs, only sched_rr_timeslice needs to
+>> convert RR_TIMESLICE to jiffies.
+> Why? What's the difference if we do it in one place or another? The
+> calculations are done at compile time anyway. There's no performance
+> benefit by this change.
+>
+The current code requires two calculations, it only needs to be 
+calculated once after this patch.
 
-Chris
+
+>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+>> ---
+>>   include/linux/sched/rt.h |  2 +-
+>>   init/init_task.c         |  2 +-
+>>   kernel/sched/rt.c        | 12 +++++-------
+>>   3 files changed, 7 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/include/linux/sched/rt.h b/include/linux/sched/rt.h
+>> index b2b9e6eb9683..74f8f456a804 100644
+>> --- a/include/linux/sched/rt.h
+>> +++ b/include/linux/sched/rt.h
+>> @@ -58,6 +58,6 @@ extern void normalize_rt_tasks(void);
+>>    * default timeslice is 100 msecs (used only for SCHED_RR tasks).
+>>    * Timeslices get refilled after they expire.
+>>    */
+>> -#define RR_TIMESLICE		(100 * HZ / 1000)
+>> +#define RR_TIMESLICE		(100)
+> If anything, if this change is accepted, the above should be renamed to
+> RR_TIMESLICE_MS to explicitly state that they are in milliseconds.
+
+Okay.
+
+>>   
+>>   #endif /* _LINUX_SCHED_RT_H */
+>> diff --git a/init/init_task.c b/init/init_task.c
+>> index 5727d42149c3..86619a425342 100644
+>> --- a/init/init_task.c
+>> +++ b/init/init_task.c
+>> @@ -94,7 +94,7 @@ struct task_struct init_task
+>>   	},
+>>   	.rt		= {
+>>   		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
+>> -		.time_slice	= RR_TIMESLICE,
+>> +		.time_slice	= (RR_TIMESLICE * HZ) / MSEC_PER_SEC,
+>>   	},
+>>   	.tasks		= LIST_HEAD_INIT(init_task.tasks),
+>>   #ifdef CONFIG_SMP
+>> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+>> index 6aaf0a3d6081..7c0e912094a9 100644
+>> --- a/kernel/sched/rt.c
+>> +++ b/kernel/sched/rt.c
+>> @@ -4,7 +4,7 @@
+>>    * policies)
+>>    */
+>>   
+>> -int sched_rr_timeslice = RR_TIMESLICE;
+>> +int sched_rr_timeslice = (RR_TIMESLICE * HZ) / MSEC_PER_SEC;
+>>   /* More than 4 hours if BW_SHIFT equals 20. */
+>>   static const u64 max_rt_runtime = MAX_BW;
+>>   
+>> @@ -25,7 +25,7 @@ int sysctl_sched_rt_period = 1000000;
+>>   int sysctl_sched_rt_runtime = 950000;
+>>   
+>>   #ifdef CONFIG_SYSCTL
+>> -static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC * RR_TIMESLICE) / HZ;
+>> +static int sysctl_sched_rr_timeslice = RR_TIMESLICE;
+> So you are just moving calculations around that get done at compile time?
+>
+
+It's a constant which avoids the rounding error in the calculation. Like 
+commit:
+
+c7fcb99877f9 ("sched/rt: Fix sysctl_sched_rr_timeslice intial value" ).
+
+>>   static int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
+>>   		size_t *lenp, loff_t *ppos);
+>>   static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
+>> @@ -3014,12 +3014,10 @@ static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
+>>   	 * Also, writing zero resets the timeslice to default:
+>>   	 */
+>>   	if (!ret && write) {
+>> -		sched_rr_timeslice =
+>> -			sysctl_sched_rr_timeslice <= 0 ? RR_TIMESLICE :
+>> -			msecs_to_jiffies(sysctl_sched_rr_timeslice);
+>> -
+>>   		if (sysctl_sched_rr_timeslice <= 0)
+>> -			sysctl_sched_rr_timeslice = jiffies_to_msecs(RR_TIMESLICE);
+>> +			sysctl_sched_rr_timeslice = RR_TIMESLICE;
+>> +
+>> +		sched_rr_timeslice = msecs_to_jiffies(sysctl_sched_rr_timeslice);
+> If anything, this patch may make this code easier to follow, but it's up to
+> Peter if he wants to take it or not.
+>
+> Agnostic-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+>
+> -- Steve
+>
+>
+>
+>>   	}
+>>   	mutex_unlock(&mutex);
+>>   
