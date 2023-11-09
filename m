@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B507E67D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6015B7E67D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjKIKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S231768AbjKIKZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKIKXu (ORCPT
+        with ESMTP id S231732AbjKIKZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:23:50 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C96A2584
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:23:48 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-408425c7c10so4737795e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:23:48 -0800 (PST)
+        Thu, 9 Nov 2023 05:25:02 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1A2258D
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:25:00 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40859c464daso4660815e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:25:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699525427; x=1700130227; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699525498; x=1700130298; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=abqWbKoJvRUeVNOukLsY6JyZVWc7/K+e07P4bm1fqIQ=;
-        b=KxI8Z5hSGwOcPU5ncTuVj+7Dyhw2INrRjEOY1YyfKHV6lNulP8Lo6RutiKXRLZaU5p
-         LU3W+IaLKtOh90O4kFLMXdc5S4FuZo8GoTTHfprAGGEdFKf/PYhvifycr+my6W0gLUTh
-         h+BCF/4aBSct7dT8JJ5EY+KebJ1EbCYcPkriVRm3ngDTptcvHkpaLX+SkK1x2SdCq5nz
-         muXUcqven469/t9J5e1N7d8POT1qDvOkwpa6joQxu6gjFbSS3EMBOHbOeRCoBe0KePd1
-         vULmxOkqHR7k1EQjmVCOu8vZlADMdxu4PcvGIZzroZtReeXpjMpGoyr0mX6kGH3X6YGr
-         oE+w==
+        bh=cEa65zbadXb56guqlzS9fYt6eXzoAqSRXIuLeM4+qbs=;
+        b=cS70pRn99t/g68K0RdcbIlF9FjqPXjqvUBQnX8uomPLZ1YViv1SFQZASlcQ6mqzlbz
+         DmKWbz3mHG8gwrC8o0tP0Rs6Zo3rDNH8WNAuTKIFukFK4eyG3h8H8BDYFa/qiRc4erkF
+         dug1Dda9YROuV4a/ePHSQfedHeyrMJ3+uU1rgYz5wCskJR3IEVml3TxJctmdkUWHFMlo
+         Qmh1vGXBRl4uQJq2Nv2bKsaewrL0eIgLR07CTRU2OVptEaU/5K5V0mXdyygZR+RzfUX8
+         eux9DsQ8mU0HZDIvIFNb96JOvhvrq8U1ak7X2IlcGIBqJrbMM3B00JQ4pDkc9Gn40tnk
+         7fZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699525427; x=1700130227;
+        d=1e100.net; s=20230601; t=1699525498; x=1700130298;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=abqWbKoJvRUeVNOukLsY6JyZVWc7/K+e07P4bm1fqIQ=;
-        b=K1DucSKD0E67872H2nOPjgiwJM0ehvqhWv9ftFtm1quNGrzgnQEAOKgdok2HHiLsCl
-         r7FZ4N6KeOUAVFSCg22u+TIt9PKJTTB42kzvkgNsxAh91KQTINROl1ZVx+SGwdknh47P
-         tB4f++LU2yRq0GUD7ZCYkz6UTyVT225XrPvuusEvg0ik8QqFc/aMfTkQQfJfiUW+3zOi
-         sW0S4HPluc4/eZkh1OS4pCmQIkkNYYqLpZMBU4wwtNIV2NKpyBEomjkRXligypHoYXNF
-         TuVOcrzrioY1KysrPky6LjNdC00THiN5/gL4V2VxxhsR5qVbD1uG+FV20cT8orYIjdXo
-         a+OQ==
-X-Gm-Message-State: AOJu0YzJzLpQUbSJDSDPOqpWmjOhDG861dMLsDl2r0CIy0L1a2T3JMmY
-        yeN0WyngkvzU+AOPgclWkuxKLA==
-X-Google-Smtp-Source: AGHT+IGmY55gJMxKush80aN1LgQ1fO7f8p1GzdPHjal1IkKOXJ4zpKUZHPMzk28dHOeAxpE2avGMAQ==
-X-Received: by 2002:a05:600c:524e:b0:402:bcac:5773 with SMTP id fc14-20020a05600c524e00b00402bcac5773mr4106560wmb.38.1699525426990;
-        Thu, 09 Nov 2023 02:23:46 -0800 (PST)
+        bh=cEa65zbadXb56guqlzS9fYt6eXzoAqSRXIuLeM4+qbs=;
+        b=iFJo7o2WJLc2lbNvOpWPHNxYCyx0nBCb5ND9zPpbkb0zMCG8pX5Wz7ArAQxrpnp3JK
+         gaw5FO8vAYKKqT1W/NQWJ6+jQL/M0yXyzfNzkDGrFjjW//lLUa1AEm0g1O2evg8VnToC
+         s9NPPGNSSrpPZfHu6+2D23tLdSmeznH8lMPW3JOt1PFZmIzold/ljUMOIQlpKEJk621m
+         wtLGA0sdu+l9fjlogntnbIWnYvalqJ2F+wEDtA0pfp9FnV9fLu2hXd00/dnHA4eg4Kwd
+         CZZFN0Vp6jopTpvm21MFRTWNEW5AeCPArAELSSeSmWPeQ682zuKnGXDIo+VMPpRRrFPl
+         PQZA==
+X-Gm-Message-State: AOJu0YzC0Tj9ccORPPauyw55dfb1+Sh2xXRkGXakJNaj+CPmwQfjQ5W2
+        3ZELCamIbMomJJAfGmOjbxv6dQ==
+X-Google-Smtp-Source: AGHT+IE37xNQ1PNI1ZTi31vf3M1OMcSN8bEeLxMU3Z3hZ/5we4zJ+aAbyZH0DVkyGOqEozLn7LRjbQ==
+X-Received: by 2002:adf:e3cd:0:b0:32d:d879:1c3 with SMTP id k13-20020adfe3cd000000b0032dd87901c3mr4180617wrm.31.1699525498376;
+        Thu, 09 Nov 2023 02:24:58 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id c7-20020a5d4cc7000000b0032fa66bda58sm7074001wrt.101.2023.11.09.02.23.45
+        by smtp.gmail.com with ESMTPSA id c7-20020a5d4cc7000000b0032fa66bda58sm7074001wrt.101.2023.11.09.02.24.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 02:23:46 -0800 (PST)
-Message-ID: <3af60fa2-bcf3-4e38-952d-ad14253c415a@linaro.org>
-Date:   Thu, 9 Nov 2023 11:23:45 +0100
+        Thu, 09 Nov 2023 02:24:57 -0800 (PST)
+Message-ID: <f58c8f3f-7b34-47e7-a33a-bddb6106fec7@linaro.org>
+Date:   Thu, 9 Nov 2023 11:24:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] hwmon: Add support for Amphenol ChipCap 2
+Subject: Re: [PATCH v5 3/4] dt-bindings: clock: rk3588: export PCLK_VO1GRF clk
+ id
 Content-Language: en-US
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231020-topic-chipcap2-v1-0-087e21d4b1ed@gmail.com>
- <20231020-topic-chipcap2-v1-3-087e21d4b1ed@gmail.com>
- <e58cdedb-1825-4713-9d3f-5239bb182230@linaro.org>
- <285ec1d8-d277-403c-961f-3de523fc799f@gmail.com>
- <a5b63eb4-4168-425e-a235-15cc7a6f2df3@linaro.org>
- <f1c6efd3-fad1-453a-b922-41485495385b@gmail.com>
- <037f44d9-7240-4daf-9fe1-ac89fae9499c@linaro.org>
- <1a7adaca-7971-4739-8a0b-04429c08f683@gmail.com>
+To:     zhangqing <zhangqing@rock-chips.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     Conor Dooley <conor@kernel.org>, mturquette@baylibre.com,
+        sboyd@kernel.org, kever.yang@rock-chips.com, heiko@sntech.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huangtao@rock-chips.com, andy.yan@rock-chips.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20231108061822.4871-1-zhangqing@rock-chips.com>
+ <20231108061822.4871-4-zhangqing@rock-chips.com>
+ <20231108-donation-uncertain-c4d0f560c420@spud>
+ <2e520a06-0ff1-76ef-2a72-ab6663738b45@rock-chips.com>
+ <20231109-send-pushchair-45b37551102a@wendy>
+ <a11c847c-4f95-ea7b-3497-6ada0586c486@rock-chips.com>
+ <dee8031f-d739-442c-988c-3df61d92c0d3@linaro.org>
+ <f013df81-670e-37c4-c1a7-e1302352ca20@rock-chips.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,70 +120,66 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1a7adaca-7971-4739-8a0b-04429c08f683@gmail.com>
+In-Reply-To: <f013df81-670e-37c4-c1a7-e1302352ca20@rock-chips.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 10:52, Javier Carrasco wrote:
-> On 09.11.23 10:35, Krzysztof Kozlowski wrote:
->> On 09/11/2023 09:59, Javier Carrasco wrote:
->>>
->>>
->>> On 09.11.23 09:40, Krzysztof Kozlowski wrote:
->>>> On 08/11/2023 17:35, Javier Carrasco wrote:
->>>>>>> +
->>>>>>> +	data->regulator = devm_regulator_get_optional(dev, "vdd");
->>>>>>> +	if (!IS_ERR(data->regulator)) {
->>>>>>> +		ret = cc2_retrive_alarm_config(data);
->>>>>>> +		if (ret)
->>>>>>> +			goto cleanup;
->>>>>>> +	} else {
->>>>>>> +		/* No access to EEPROM without regulator: no alarm control */
->>>>>>
->>>>>> Test your code with deferred probe. Are you sure you handle it
->>>>>> correctly? To me, it looks like you handle deferred probe the same as
->>>>>> any error.
->>>>>>
->>>>> The -EPROBE_DEFER is propagated to the probe function and it is the
->>>>> returned value. I clarified the error path in v2 so no error messages
->>>>
->>>> Really?
->>>>
->>>> I see:
->>>> if (!IS_ERR(data->regulator)) {
->>>> 	// so you do not go here
->>>> } else {
->>>> 	goto dev_register;
->>>> }
->>>> dev_register is not error path. So how do you return EPROBE_DEFER?
->>>>
->>>> Which line of code does it?
->>>>
->>> EPROBE_DEFER is returned if the command window was missed, which is
->>
->> How "command window was missed" is related to the place I commented?
->>
-> it is right below the comment you added and hence the misunderstanding.
-> But focusing on the line where your comment is, there is no probe
-> deferring in that case. This is why I asked if you were talking about
-> devm_regulator_get_optional() failing, which is not covered by the
-> deferring mechanism in the current form.
+On 09/11/2023 11:05, zhangqing wrote:
 > 
-> I have never experienced the case where the regulator was still not
-> available, but I suppose there is no reason why that should never happen.
+> 在 2023/11/9 17:21, Krzysztof Kozlowski 写道:
+>> On 09/11/2023 09:06, zhangqing wrote:
+>>> 在 2023/11/9 15:29, Conor Dooley 写道:
+>>>> On Thu, Nov 09, 2023 at 02:27:38PM +0800, zhangqing wrote:
+>>>>> Hi:
+>>>>>
+>>>>> 在 2023/11/8 20:01, Conor Dooley 写道:
+>>>>>> On Wed, Nov 08, 2023 at 02:18:21PM +0800, Elaine Zhang wrote:
+>>>>>>> export PCLK_VO1GRF for DT.
+>>>>>>>
+>>>>>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+>>>>>>> ---
+>>>>>>>     include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
+>>>>>>>     1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>> index 5790b1391201..50ba72980190 100644
+>>>>>>> --- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>> +++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>> @@ -733,8 +733,9 @@
+>>>>>>>     #define ACLK_AV1_PRE			718
+>>>>>>>     #define PCLK_AV1_PRE			719
+>>>>>>>     #define HCLK_SDIO_PRE			720
+>>>>>>> +#define PCLK_VO1GRF			721
+>>>>>>> -#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
+>>>>>>> +#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
+>>>>>> This definition is part of the ABI, if it is safe to change it, then it
+>>>>>> is safe to delete it.
+>>>>> The new ID is to solve the niu clock dependency problem(Used in PATCH V5
+>>>>> 4/4).This new ID will also be used in DTS in the future.
+>>>>>
+>>>>> CLK_NR_CLKS represents the number of clocks used by the
+>>>>> drivers/clk/rockchip/clk-rkxxx.c. It is safe to modify it, but cannot delete
+>>>>> it.
+>>>> Then delete it from the header and move it to clk-rkxxx.c
+>>> I don't think it's more appropriate to move to clk-rkxxx.c.
+>>> Because if there are new requirements later, and add new clk id, it is
+>>> not in the same file, maybe forget to modify CLK_NR_CLKS.
+>> Then you are not allowed to change it. It's part of ABI.
+> 
+> If you just don't want me to modify CLK_NR_CLKS, can I use an unused ID, 
+> like [PATCH V4 3/4]:
+> 
+> -#define MBIST_MCLK_PDM1                        24
+> +#define PCLK_VO1GRF                    24
 
-Defer on regulators, just like several other resources, is quite likely,
-so all code must be ready for this.
+You cannot change the ABI.
 
-> The regulator is not mandatory and there is no reason to retry if it is
-> not defined. But in case it is defined and not available, the deferring
-> would make sense. I could consider that case as well.
-
-Your code should consider it always.
-
+I don't understand why do you insist on this path. You got clear
+comments: either this is ABI, so it cannot be changed, or it has to be
+dropped. You know insist on some third path. There is no such.
 
 Best regards,
 Krzysztof
