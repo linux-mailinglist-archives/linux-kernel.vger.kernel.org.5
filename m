@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4847E72CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE537E72D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345214AbjKIU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
+        id S1345227AbjKIU3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345181AbjKIU3O (ORCPT
+        with ESMTP id S1345168AbjKIU3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:29:14 -0500
+        Thu, 9 Nov 2023 15:29:15 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FC344B6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A3944BB
         for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:29:12 -0800 (PST)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r1BeF-00032b-I0; Thu, 09 Nov 2023 21:29:07 +0100
+        id 1r1BeF-00033N-OC; Thu, 09 Nov 2023 21:29:07 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r1BeF-007rX3-3v; Thu, 09 Nov 2023 21:29:07 +0100
+        id 1r1BeF-007rX7-Aa; Thu, 09 Nov 2023 21:29:07 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
         (envelope-from <ukl@pengutronix.de>)
-        id 1r1BeE-00GGu9-Qi; Thu, 09 Nov 2023 21:29:06 +0100
+        id 1r1BeF-00GGuD-1O; Thu, 09 Nov 2023 21:29:07 +0100
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
-To:     Rob Herring <robh@kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 10/12] bus: ti-pwmss: Convert to platform remove callback returning void
-Date:   Thu,  9 Nov 2023 21:28:40 +0100
-Message-ID: <20231109202830.4124591-11-u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@arndb.de>, Tony Lindgren <tony@atomide.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH 11/12] bus: ti-sysc: Convert to platform remove callback returning void
+Date:   Thu,  9 Nov 2023 21:28:41 +0100
+Message-ID: <20231109202830.4124591-12-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.42.0.586.gbc5204569f7d.dirty
 In-Reply-To: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
 References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1571; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=IiUhWp+R9SDimNa6PMkD/UFH/SAwMLvdBfB4LRnQOD4=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlTUD6GHJK2UFwCF/Nj5OAVtRMKGRi41NJClHLd QCvO1P2Y2WJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZU1A+gAKCRCPgPtYfRL+ Tg4NB/wKQHLtuGfz4DBpdTgoDFZ9LgEa1BARbMLRGcjq++n46VI0Z3vZ3CNHHEwE/n8S21AKns8 4K10rjdJJrv0fzcZEo/y2NVMQH7o+P+kClY4E5xCpODZ5puAV52P0d9nl82XpNLQTmCoK7BpY1B Sxnja46qIh32/iUOWwfIKJBy14LDCD5Lr3UuH3OIScd8XHD8SgD2OqYWpIGxI86LTd0BSrowN8d WAQglBy+YHMkvSLwZTbjw5si0pCYCnqkbCjmVa+k9mM0BJegS368NPNsc9wUujkIIdw8qDFUZtP cSdkHJkzFNMScrNy5+FC1FtG61vq7A7yAB/iOZeSKXSGYR0h
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1758; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=opTk4HTyURjB0GAHXubqOJ0QoyNNC03II0HWbr+XPDE=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlTUD7++rpK6UFrsRtYltlQ1hWs00xrWDPQ+PR7 a0yuf2VwZCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZU1A+wAKCRCPgPtYfRL+ TmE8B/4+R8UdQTyzVId2Y5KghT3jOlnVGcrlwPCYjGXUxBdn5orhi2SpN13OxnlaQcwfOTfyGhz wL9aJEod+w/fRiUVXvW9eDu90T9p9+0w8ZHpe0zV36adsT9hE6lqfyXDNmmOBCNxyia/LPIrfdZ D2jDnSXAHOLKKyXqLqvrVfTXneT4WFz0lkx/P5824KSHMfcZySPfqF+TAn8znuph3KrEc9aj2Tb SxX8sASUIE+NG2neTkASHaYKcsyL57R8lMOg2RC5UxCggM/6Jaq6gnrD4as3JpouexLwLjddOq8 N+GoHau3t/0hOzIVzVSYXhvvFpTzDtHIVlsSX+WgF7qfvSWj
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -69,34 +67,40 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/bus/ti-pwmss.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/bus/ti-sysc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/bus/ti-pwmss.c b/drivers/bus/ti-pwmss.c
-index 480a4de76cd4..4969c556e752 100644
---- a/drivers/bus/ti-pwmss.c
-+++ b/drivers/bus/ti-pwmss.c
-@@ -33,10 +33,9 @@ static int pwmss_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index d57bc066dce6..490841dbe0d8 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -3387,7 +3387,7 @@ static int sysc_probe(struct platform_device *pdev)
+ 	return error;
  }
  
--static int pwmss_remove(struct platform_device *pdev)
-+static void pwmss_remove(struct platform_device *pdev)
+-static int sysc_remove(struct platform_device *pdev)
++static void sysc_remove(struct platform_device *pdev)
  {
- 	pm_runtime_disable(&pdev->dev);
+ 	struct sysc *ddata = platform_get_drvdata(pdev);
+ 	int error;
+@@ -3412,8 +3412,6 @@ static int sysc_remove(struct platform_device *pdev)
+ 
+ unprepare:
+ 	sysc_unprepare(ddata);
+-
 -	return 0;
  }
  
- static struct platform_driver pwmss_driver = {
-@@ -45,7 +44,7 @@ static struct platform_driver pwmss_driver = {
- 		.of_match_table	= pwmss_of_match,
- 	},
- 	.probe	= pwmss_probe,
--	.remove	= pwmss_remove,
-+	.remove_new = pwmss_remove,
- };
+ static const struct of_device_id sysc_match[] = {
+@@ -3439,7 +3437,7 @@ MODULE_DEVICE_TABLE(of, sysc_match);
  
- module_platform_driver(pwmss_driver);
+ static struct platform_driver sysc_driver = {
+ 	.probe		= sysc_probe,
+-	.remove		= sysc_remove,
++	.remove_new	= sysc_remove,
+ 	.driver         = {
+ 		.name   = "ti-sysc",
+ 		.of_match_table	= sysc_match,
 -- 
 2.42.0
 
