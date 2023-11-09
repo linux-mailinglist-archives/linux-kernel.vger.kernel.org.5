@@ -2,339 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF98B7E717E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B877E714E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345076AbjKIS3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:29:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
+        id S1344960AbjKISU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345005AbjKIS2n (ORCPT
+        with ESMTP id S1344928AbjKISU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:28:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B753C0D;
-        Thu,  9 Nov 2023 10:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699554521; x=1731090521;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=oNm2DTRGW/g8DUNG7uMus55v6HP+IhXbZeTsiinxui0=;
-  b=RGmsllt1d4omf3yV2sQHzyS2quA55sPfVgnP3VkHB5V0gX0TXxt/mrVc
-   eVG+rYd2taNOhIZpSTlgkRdkdsvj0E6NMSCy4Z1Y9iuVPN7hUTvCGlfLG
-   MBv5I7z1cgRFyvwR2ZgmKVyH0AyGFjyY5L5vfq4E/NCyrB6jnsJ7dEt46
-   honAZQ+VfxArFBMWxI8xNz6fNcVDhkUIVg2I0cL+HeP43yeFffXOO5g41
-   Abgan43eEeitUF48uOUl32GxAiD7UKLd5cV/uJvqiXoDpUFWAdHNOvySs
-   8UweHi0EHxptkJV4GsG7Gr3NH4UyQ1Qc0DR4zeICbrkLX+UyBFeThEZ5U
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375088709"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="375088709"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 10:28:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="767086855"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="767086855"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Nov 2023 10:28:37 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id F1AA7845; Thu,  9 Nov 2023 20:28:32 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 12/12] i2c: designware: Consolidate PM ops
-Date:   Thu,  9 Nov 2023 20:19:22 +0200
-Message-ID: <20231109182823.3531846-13-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1996.gbec44491f096
-In-Reply-To: <20231109182823.3531846-1-andriy.shevchenko@linux.intel.com>
-References: <20231109182823.3531846-1-andriy.shevchenko@linux.intel.com>
+        Thu, 9 Nov 2023 13:20:56 -0500
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B763C03
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1699554053; x=1700158853;
+        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+        MIME-Version:User-Agent:Subject:Content-Language:To:Cc:
+        References:From:Organization:In-Reply-To:Content-Type; bh=N5TTdf
+        OGt2wnlWcTICwBz77FuH2+axxK/zos5zsKKv0=; b=f/G7zEGfVX4o9SJZNlo6zR
+        0GU1Hc+ymX/PUrYfp0sVTet0K7DJknVUdgRadhTLWwBtK1HK3T8bK1drKRl0XvXa
+        kGrqgPPbMLPGTqxKWKzGf5F89lo6sF+0GT8PqqGRjKvQHsdDJV4F93TY8fkWpVBS
+        aEHX1C7U/2K9aZ2EBbVZQ=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:20:53 -0500
+Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1b) 
+        with ESMTPSA id md5001003742343.msg; Thu, 09 Nov 2023 13:20:52 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Thu, 09 Nov 2023 13:20:52 -0500
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
+X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
+X-MDArrival-Date: Thu, 09 Nov 2023 13:20:52 -0500
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1677793fa9=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <7984e12c-a688-4ae6-ac19-08ee9bf634f7@auristor.com>
+Date:   Thu, 9 Nov 2023 13:20:44 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 23/41] rxrpc: Create a procfile to display outstanding
+ clien conn bundles
+Content-Language: en-US
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>
+Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109154004.3317227-1-dhowells@redhat.com>
+ <20231109154004.3317227-24-dhowells@redhat.com>
+From:   Jeffrey E Altman <jaltman@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <20231109154004.3317227-24-dhowells@redhat.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms070900050709040308080106"
+X-MDCFSigsAdded: auristor.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have the same (*) PM ops in the PCI and plaform drivers.
-Instead, consolidate that PM ops under exported variable and
-deduplicate them.
+This is a cryptographically signed message in MIME format.
 
-*)
-With the subtle ACPI and P-Unit behaviour differences in PCI case.
-But this is not a problem as for ACPI we need to take care of the
-P-Unit semaphore anyway and calling PM ops for ACPI makes sense as
-it might provide specific operation regions in (however there are
-no known devices on market that are using it with PCI enabled I2C).
-Note, the clocks are not in use in the PCI case.
+--------------ms070900050709040308080106
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/i2c/busses/i2c-designware-common.c  | 62 ++++++++++++++++++++
- drivers/i2c/busses/i2c-designware-core.h    |  4 +-
- drivers/i2c/busses/i2c-designware-pcidrv.c  | 44 +-------------
- drivers/i2c/busses/i2c-designware-platdrv.c | 63 +--------------------
- 4 files changed, 68 insertions(+), 105 deletions(-)
+On 11/9/2023 10:39 AM, David Howells wrote:
+> Create /proc/net/rxrpc/bundles to display outstanding rxrpc client
+> connection bundles.
 
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index 5d4e39663438..c211693d760f 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -21,6 +21,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
- #include <linux/regmap.h>
-@@ -714,5 +715,66 @@ void i2c_dw_disable(struct dw_i2c_dev *dev)
- 	i2c_dw_release_lock(dev);
- }
- 
-+static int i2c_dw_prepare(struct device *device)
-+{
-+	/*
-+	 * If the ACPI companion device object is present for this device,
-+	 * it may be accessed during suspend and resume of other devices via
-+	 * I2C operation regions, so tell the PM core and middle layers to
-+	 * avoid skipping system suspend/resume callbacks for it in that case.
-+	 */
-+	return !has_acpi_companion(device);
-+}
-+
-+static int i2c_dw_runtime_suspend(struct device *device)
-+{
-+	struct dw_i2c_dev *dev = dev_get_drvdata(device);
-+
-+	if (dev->shared_with_punit)
-+		return 0;
-+
-+	i2c_dw_disable(dev);
-+	i2c_dw_prepare_clk(dev, false);
-+
-+	return 0;
-+}
-+
-+static int i2c_dw_suspend(struct device *device)
-+{
-+	struct dw_i2c_dev *dev = dev_get_drvdata(device);
-+
-+	i2c_mark_adapter_suspended(&dev->adapter);
-+
-+	return i2c_dw_runtime_suspend(device);
-+}
-+
-+static int i2c_dw_runtime_resume(struct device *device)
-+{
-+	struct dw_i2c_dev *dev = dev_get_drvdata(device);
-+
-+	if (!dev->shared_with_punit)
-+		i2c_dw_prepare_clk(dev, true);
-+
-+	dev->init(dev);
-+
-+	return 0;
-+}
-+
-+static int i2c_dw_resume(struct device *device)
-+{
-+	struct dw_i2c_dev *dev = dev_get_drvdata(device);
-+
-+	i2c_dw_runtime_resume(device);
-+	i2c_mark_adapter_resumed(&dev->adapter);
-+
-+	return 0;
-+}
-+
-+EXPORT_GPL_DEV_PM_OPS(i2c_dw_dev_pm_ops) = {
-+	.prepare = pm_sleep_ptr(i2c_dw_prepare),
-+	LATE_SYSTEM_SLEEP_PM_OPS(i2c_dw_suspend, i2c_dw_resume)
-+	RUNTIME_PM_OPS(i2c_dw_runtime_suspend, i2c_dw_runtime_resume, NULL)
-+};
-+
- MODULE_DESCRIPTION("Synopsys DesignWare I2C bus adapter core");
- MODULE_LICENSE("GPL");
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index a22f2cd5faf8..399b4304e215 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -335,7 +335,8 @@ int i2c_dw_wait_bus_not_busy(struct dw_i2c_dev *dev);
- int i2c_dw_handle_tx_abort(struct dw_i2c_dev *dev);
- int i2c_dw_set_fifo_size(struct dw_i2c_dev *dev);
- u32 i2c_dw_func(struct i2c_adapter *adap);
--void i2c_dw_disable(struct dw_i2c_dev *dev);
-+
-+extern const struct dev_pm_ops i2c_dw_dev_pm_ops;
- 
- static inline void __i2c_dw_enable(struct dw_i2c_dev *dev)
- {
-@@ -350,6 +351,7 @@ static inline void __i2c_dw_disable_nowait(struct dw_i2c_dev *dev)
- }
- 
- void __i2c_dw_disable(struct dw_i2c_dev *dev);
-+void i2c_dw_disable(struct dw_i2c_dev *dev);
- 
- extern void i2c_dw_configure_master(struct dw_i2c_dev *dev);
- extern int i2c_dw_probe_master(struct dw_i2c_dev *dev);
-diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index b8bf4ae4fab1..afe85599ed1a 100644
---- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -19,6 +19,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/power_supply.h>
- #include <linux/sched.h>
-@@ -194,47 +195,6 @@ static struct dw_pci_controller dw_pci_controllers[] = {
- 	},
- };
- 
--static int __maybe_unused i2c_dw_pci_runtime_suspend(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	i2c_dw_disable(i_dev);
--	return 0;
--}
--
--static int __maybe_unused i2c_dw_pci_suspend(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	i2c_mark_adapter_suspended(&i_dev->adapter);
--
--	return i2c_dw_pci_runtime_suspend(dev);
--}
--
--static int __maybe_unused i2c_dw_pci_runtime_resume(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	return i_dev->init(i_dev);
--}
--
--static int __maybe_unused i2c_dw_pci_resume(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--	int ret;
--
--	ret = i2c_dw_pci_runtime_resume(dev);
--
--	i2c_mark_adapter_resumed(&i_dev->adapter);
--
--	return ret;
--}
--
--static const struct dev_pm_ops i2c_dw_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(i2c_dw_pci_suspend, i2c_dw_pci_resume)
--	SET_RUNTIME_PM_OPS(i2c_dw_pci_runtime_suspend, i2c_dw_pci_runtime_resume, NULL)
--};
--
- static const struct property_entry dgpu_properties[] = {
- 	/* USB-C doesn't power the system */
- 	PROPERTY_ENTRY_U8("scope", POWER_SUPPLY_SCOPE_DEVICE),
-@@ -411,7 +371,7 @@ static struct pci_driver dw_i2c_driver = {
- 	.probe		= i2c_dw_pci_probe,
- 	.remove		= i2c_dw_pci_remove,
- 	.driver         = {
--		.pm     = &i2c_dw_pm_ops,
-+		.pm	= pm_ptr(&i2c_dw_dev_pm_ops),
- 	},
- };
- module_pci_driver(dw_i2c_driver);
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index d7c39ef16a32..99498823563f 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -342,67 +342,6 @@ static void dw_i2c_plat_remove(struct platform_device *pdev)
- 	reset_control_assert(dev->rst);
- }
- 
--static int dw_i2c_plat_prepare(struct device *dev)
--{
--	/*
--	 * If the ACPI companion device object is present for this device, it
--	 * may be accessed during suspend and resume of other devices via I2C
--	 * operation regions, so tell the PM core and middle layers to avoid
--	 * skipping system suspend/resume callbacks for it in that case.
--	 */
--	return !has_acpi_companion(dev);
--}
--
--static int dw_i2c_plat_runtime_suspend(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	if (i_dev->shared_with_punit)
--		return 0;
--
--	i2c_dw_disable(i_dev);
--	i2c_dw_prepare_clk(i_dev, false);
--
--	return 0;
--}
--
--static int dw_i2c_plat_suspend(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	i2c_mark_adapter_suspended(&i_dev->adapter);
--
--	return dw_i2c_plat_runtime_suspend(dev);
--}
--
--static int dw_i2c_plat_runtime_resume(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	if (!i_dev->shared_with_punit)
--		i2c_dw_prepare_clk(i_dev, true);
--
--	i_dev->init(i_dev);
--
--	return 0;
--}
--
--static int dw_i2c_plat_resume(struct device *dev)
--{
--	struct dw_i2c_dev *i_dev = dev_get_drvdata(dev);
--
--	dw_i2c_plat_runtime_resume(dev);
--	i2c_mark_adapter_resumed(&i_dev->adapter);
--
--	return 0;
--}
--
--static const struct dev_pm_ops dw_i2c_dev_pm_ops = {
--	.prepare = pm_sleep_ptr(dw_i2c_plat_prepare),
--	LATE_SYSTEM_SLEEP_PM_OPS(dw_i2c_plat_suspend, dw_i2c_plat_resume)
--	RUNTIME_PM_OPS(dw_i2c_plat_runtime_suspend, dw_i2c_plat_runtime_resume, NULL)
--};
--
- static const struct of_device_id dw_i2c_of_match[] = {
- 	{ .compatible = "snps,designware-i2c", },
- 	{ .compatible = "mscc,ocelot-i2c", .data = (void *)MODEL_MSCC_OCELOT },
-@@ -444,7 +383,7 @@ static struct platform_driver dw_i2c_driver = {
- 		.name	= "i2c_designware",
- 		.of_match_table = dw_i2c_of_match,
- 		.acpi_match_table = dw_i2c_acpi_match,
--		.pm	= pm_ptr(&dw_i2c_dev_pm_ops),
-+		.pm	= pm_ptr(&i2c_dw_dev_pm_ops),
- 	},
- 	.id_table = dw_i2c_platform_ids,
- };
--- 
-2.40.0.1996.gbec44491f096
+There is a typo in the subject
+
+     s/clien/client/
+
+
+--------------ms070900050709040308080106
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEwOTE4
+MjA0NFowLwYJKoZIhvcNAQkEMSIEIP9AiV0mRZ9IfJQyn1HB087P9kF6ZEF2y8JKS0Z1RHWy
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEAOW/5
+NdaYUJc/HbXOZuM82OvhGmctg8guNBkrbFklZOrMcazc8IML8lBuITY/Zq+nrwp+7DnDKjSF
+lSJd6+6vB4M8wQ/6zHNGizWX4eWqKd2YS1oVFE7IOXSznvGLL5cTgGNn1r93A9KRo3Zbt8lc
+WabFZnJLrA8UYTL7xQSDm4PPa0H4+pSJsI5ZnF3KDJeQXkbsl1VhexiSJXfke9do7N3My8aY
+q0nucZQG78r4D96wWt12V94bXHTcYtDM8TyoXLpbNFaU/3cuGjDuVXJpj53Xka7S8nnkgTSq
+kGa7oZviJB0+Pdl1kggzUM53VlZsnPZXKSi57ho5K3y3ISi7ZgAAAAAAAA==
+--------------ms070900050709040308080106--
 
