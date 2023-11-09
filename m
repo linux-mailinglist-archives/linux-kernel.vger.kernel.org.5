@@ -2,159 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC32A7E6532
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D48D7E6530
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjKIIXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58340 "EHLO
+        id S233551AbjKIIXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:23:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233167AbjKIIXd (ORCPT
+        with ESMTP id S233051AbjKIIWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:23:33 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9512B273E;
-        Thu,  9 Nov 2023 00:23:31 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A96OrKd004383;
-        Thu, 9 Nov 2023 08:23:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=B+GqainagvNOtu1pq9n6NRHe6VBbgoJkIl8FNVDCxec=;
- b=krV4FkK9QJwNboB4Fg6CPpaW3aArdIEqllJSGOJ2fRlS5qmcY6Q0J1MWrjuKHdzTtbuH
- KzNwL+D1ZC3wId26rBbqkVDbbKIxLykIAvCOqtECJxkDBOvIeMuchLbVTkGhelvpXk8/
- fYb/DJxNftdiStCsnLoojs64P+sZPrHFm8YlRNlgw3olMK+5Ucwdt5pttVSoUqqkDILu
- byBG4jmj/q/3wsCfKlvasL8w2+nLgELjuMU85F0WhP2OqX6EKMmWlA6tBevxgDLiSi+v
- Q3sLzJHIDwQjus5X7atHVvQXqLqnjQPQRDkxldoLm1eOZGDJAtRGvcjjhp9PkQiNbksU sQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8t0nrfjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 08:23:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A98NFUx009181
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Nov 2023 08:23:15 GMT
-Received: from [10.218.16.59] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 00:23:08 -0800
-Message-ID: <7ccaf08e-0add-33e5-fbea-ce737e53fa28@quicinc.com>
-Date:   Thu, 9 Nov 2023 13:52:25 +0530
+        Thu, 9 Nov 2023 03:22:52 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F066C2D63
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:22:49 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32da4180ca2so96922f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:22:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699518168; x=1700122968; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6L9e4FIZCW/cWI4CMkVwxfgtOwMhyuLQGfalUNr9zJ8=;
+        b=nG+dhpYAbbJZyRNC2Wak13uNZxEqdTUSqGMnOHmXtTmasKq14ClI/aS/e799jUTKTm
+         mbdA5tipoyTQL8Ka3SuRkJu23pu860+Ud2EssCO9ZbhkHJ1hXjCmf2SRstu8L5eUu3Ua
+         J03A8udw3KqVQb9DWNQKVb5vKax6Jls2pKHMvUkWt+4YJOaKftdHQTXcv4qqxiV8zraj
+         YSVbuz6qq9Yi+PZMGhiVghy7JSItzWHCgvtO9GwEmWW3IJgIuYNktPnPAXO9xH55pNcF
+         IGJywKV1mXPm5EuFiFXfPp2deRVuBxFrDof2eZsm2zsAMBtm5LCio+g+u2u2BCgg6iWn
+         hcxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699518168; x=1700122968;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6L9e4FIZCW/cWI4CMkVwxfgtOwMhyuLQGfalUNr9zJ8=;
+        b=IjTFWgwfI5fb9UXJu+JVAENaCUZ1zVhgmHRMfmfnixPPnM2L0PS9qlB6H5UIjmpGod
+         LvlbVqTwPJyto3+3VjOkiVoPsChtNC+sDlhfx9IDlFM7ckzbbN78gickThd9FWMvW0Br
+         rXK/jJdCukp5+Bctd0Jy289kiRaGqXj9UfvPS3+PzLDt6AqEsbmSsXAHtJTFREtjZU07
+         5Kmhlsh5g4PePaZZWRGcdRtCXj6BR4SuQYayfqxjWFH86w/Rsv8I86nHCZ10L4X9R6XV
+         YBo9pcl9LQkob1fRe0q7Qfi6ONl4Vt//rdFjAAXGRJY+jd9b2CbRgvKQoEEEwu7nf62v
+         qp0w==
+X-Gm-Message-State: AOJu0YxsI9peX3UrfryizDLTSElLGykt39v9+dwx7ZZ9vrDcoIMoEHZW
+        5assG2eIbg5kt1dHD0jIanttWw==
+X-Google-Smtp-Source: AGHT+IHK4jz0hvKjL1UU+txgQCeQzgbTv4KRpSfNHNu6mKMYO3jCYjwyh6vF0R5mbSffwlvJKf1efA==
+X-Received: by 2002:a5d:6dae:0:b0:32f:8372:dfe8 with SMTP id u14-20020a5d6dae000000b0032f8372dfe8mr3193845wrs.1.1699518168015;
+        Thu, 09 Nov 2023 00:22:48 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:999:a3a0:87b4:87b9:6476:5df7? ([2a01:e0a:999:a3a0:87b4:87b9:6476:5df7])
+        by smtp.gmail.com with ESMTPSA id a6-20020a056000100600b0031984b370f2sm6817227wrx.47.2023.11.09.00.22.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 00:22:47 -0800 (PST)
+Message-ID: <ef980c24-6901-4bb3-8a1b-5902675e7851@rivosinc.com>
+Date:   Thu, 9 Nov 2023 09:22:46 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 03/11] ARM: dts: qcom: Update devicetree for ADC7 rename
- for QCOM PMICs
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: sud_test: return correct emulated syscall
+ value on RISC-V
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     shuah@kernel.org, krisman@collabora.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <mhng-bd15a99e-2c1e-4f0e-95ff-b6f14fe26681@palmer-ri-x1c9>
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <Jonathan.Cameron@huawei.com>, <sboyd@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_subbaram@quicinc.com>,
-        <quic_collinsd@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <marijn.suijten@somainline.org>,
-        <andriy.shevchenko@linux.intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        <linux-arm-msm@vger.kernel.org>
-CC:     <linux-iio@vger.kernel.org>, <linux-arm-msm-owner@vger.kernel.org>
-References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
- <20230708072835.3035398-4-quic_jprakash@quicinc.com>
- <839cfac2-8f74-3386-5854-e3fb2ba4e07f@linaro.org>
- <27b5806f-ef15-7a90-5adc-5ee12690f2ca@quicinc.com>
- <7af782f3-fe6c-415b-a993-55962845a102@linaro.org>
-From:   Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <7af782f3-fe6c-415b-a993-55962845a102@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2NcRwwyqo7OSH7oFqVYuiZwco9kz_LKS
-X-Proofpoint-GUID: 2NcRwwyqo7OSH7oFqVYuiZwco9kz_LKS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_07,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 adultscore=0 mlxscore=0
- mlxlogscore=605 spamscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090068
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <mhng-bd15a99e-2c1e-4f0e-95ff-b6f14fe26681@palmer-ri-x1c9>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
 
-On 10/23/2023 12:02 PM, Krzysztof Kozlowski wrote:
-> On 23/10/2023 08:09, Jishnu Prakash wrote:
->> Hi Krzysztof,
+
+On 09/11/2023 04:26, Palmer Dabbelt wrote:
+> On Wed, 13 Sep 2023 07:07:11 PDT (-0700), cleger@rivosinc.com wrote:
+>> Currently, the sud_test expects the emulated syscall to return the
+>> emulated syscall number. This assumption only works on architectures
+>> were the syscall calling convention use the same register for syscall
+>> number/syscall return value. This is not the case for RISC-V and thus
+>> the return value must be also emulated using the provided ucontext.
 >>
->> On 7/9/2023 10:48 PM, Krzysztof Kozlowski wrote:
->>> On 08/07/2023 09:28, Jishnu Prakash wrote:
->>>> The name "ADC7" needs to be replaced with the name "ADC5_GEN2"
->>>> everywhere to match the convention used for these ADC peripherals
->>>> on Qualcomm Technologies, Inc. PMICs. Update devicetree files for
->>> We do not rename compatibles to match convention. Please provide proper
->>> rationale.
->> I'll avoid renaming the compatible directly, will just mark it
->> deprecated - but is it fine to do the other changes, for updating the
->> macro names used in devicetree (replacing the ADC7 macros with the ADC5
->> Gen2 macros)?
-> Please provide proper rationale why "ADC7 needs to be replaced". Your
-> marketing is not a proper rationale.
-
-
-The name "ADC7" was the one used internally at first, but it got changed 
-later to "ADC5 Gen2" by our HW team, after we had added this support 
-both downstream and upstream. Since we are now adding support for the 
-next generation named "ADC5 Gen3", we thought it would be helpful to 
-indicate in some way that this generation (ADC7) lies between the 
-earlier ADC5 and the latest ADC5 Gen3.
-
-Since you do not want us to modify the existing bindings, is it fine if 
-I just add a new compatible for ADC5 Gen2 and comments to indicate the 
-ADC7 compatible should be considered deprecated?
-
-If you are not convinced, we can drop the Gen2 name related changes from 
-the patch series.
-
-
->
->> I do see an example of a macro change in devicetree done in this patch:
->> https://lore.kernel.org/all/cover.1646388139.git.zong.li@sifive.com/.
+>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>> ---
+>>  tools/testing/selftests/syscall_user_dispatch/sud_test.c | 8 ++++++++
+>>  1 file changed, 8 insertions(+)
 >>
->> Patch 2 here replaced some macro definitions:
->> https://lore.kernel.org/all/f9284873c2993a9952d9fe4f8dd5e89f20daab75.1646388139.git.zong.li@sifive.com/.
+>> diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>> b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>> index b5d592d4099e..1b5553c19700 100644
+>> --- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>> +++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>> @@ -158,6 +158,14 @@ static void handle_sigsys(int sig, siginfo_t
+>> *info, void *ucontext)
 >>
->> Patch 3 made the corresponding update in devicetree files:
->> https://lore.kernel.org/all/db92d209fa700f7da8bc8028083476fcc138d80e.1646388139.git.zong.li@sifive.com/.
-> And what is rationale in that patchset?
+>>      /* In preparation for sigreturn. */
+>>      SYSCALL_DISPATCH_OFF(glob_sel);
+>> +
+>> +    /*
+>> +     * Modify interrupted context returned value according to syscall
+>> +     * calling convention
+>> +     */
+>> +#if defined(__riscv)
+>> +    ((ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A0] =
+>> MAGIC_SYSCALL_1;
+>> +#endif
+>>  }
+>>
+>>  TEST(dispatch_and_return)
+> 
+> I'm not sure if I'm just tired, but it took me a while to figure out why
+> this was necessary.  I think this is a better explanation:
 
+I think it's because this mechanism does not behave like other syscalls
+at all and the classic calling convention does not really apply...
 
-Right, I see that the change was made to refactor the driver code and 
-avoid unused variable errors, not just a name change.
+> 
+>    diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+> b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>    index b5d592d4099e..a913fd90cfa3 100644
+>    --- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>    +++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+>    @@ -158,6 +158,16 @@ static void handle_sigsys(int sig, siginfo_t
+> *info, void *ucontext)
+>            /* In preparation for sigreturn. */
+>         SYSCALL_DISPATCH_OFF(glob_sel);
+>    +    /*
+>    +     * The tests for argument handling assume that `syscall(x) ==
+> x`.  This
+>    +     * is a NOP on x86 because the syscall number is passed in %rax,
+> which
+>    +     * happens to also be the function ABI return register.  Other
+>    +     * architectures may need to swizzle the arguments around.
+>    +     */
+
+Indeed, that is more clear. Should I send a v2 ?
+
+>    +#if defined(__riscv)
+>    +    (ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A0] =
+>    +        (ucontext_t*)ucontext)->uc_mcontext.__gregs[REG_A7];
+>    +#endif
+>     }
+>        TEST(dispatch_and_return)
+> 
+> but also
+> 
+> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> 
+> as I agree this is correct.
+> 
+> also: wouldn't arm64 also need to move x8 into x0 here, for essentially
+> the same reason as we do?
+
+Yes, as well as for a bunch of other architectures. I suspect this has
+only been tested on x86. AFAIK, this feature is mainly for wine usage
+which then makes sense for x86 and games.
 
 Thanks,
 
-Jishnu
+Clément
 
-
->
->>
->>   From this mail, it looks like the maintainer was willing to pick them
->> at that time:
->> https://lore.kernel.org/all/20220315225652.CDAD1C340E8@smtp.kernel.org/,
->> would something similar be possible here?
-> For stated before marketing reasons - no, would not be possible.
->
-> Best regards,
-> Krzysztof
->
