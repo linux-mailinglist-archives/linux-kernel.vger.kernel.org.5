@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543517E6EAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDDB7E6EAE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343770AbjKIQ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
+        id S1343820AbjKIQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231842AbjKIQ1j (ORCPT
+        with ESMTP id S232003AbjKIQ2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:27:39 -0500
+        Thu, 9 Nov 2023 11:28:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A343135A9
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:27:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E77A4C433C7;
-        Thu,  9 Nov 2023 16:27:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AE73272
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:28:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA39C433C8;
+        Thu,  9 Nov 2023 16:27:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699547257;
-        bh=K0Ef1esV51IqTPvc+vVqEV+FPQyve5bzIR/FA/9enaE=;
+        s=k20201202; t=1699547282;
+        bh=GEAEG0o0GRo1vlKX9XnrXqT0oaTAgwdrEys+ItJAuIQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fEzttJaBnvVyG6WeKLinfZFrwmDmmsPsImwn4ltT3ElvgsC6pEz2UgT7PjNUAzTyM
-         Q6o2vCBHceg9Dbesurc0XtuJAEvFCQdPD/rGLkqYPxPe7nsWym0GUYMvd2CYjU8UsK
-         FgFSmnVLcYrFFpHK8E7Nwu/rQWSSg0O6ubY8ItEwuwkKgieK+9kWetZqVbyDariGZz
-         M26biyThbiu+MCuZfNu2MTSnvL2UfPZY7E6pK2BAJGgkc6u72LLystt4WaMS3Oeg/Q
-         rAhSDnQUn7eAN7FeQ1V4a3xVwXZZ9lAxWEQcDM4IEUL6UzYbyjp1TJY/ZBijlY3rB1
-         rQuSMmaPVCXzQ==
-Message-ID: <c511b42d-87e8-4b79-a5b5-aae68fa3c1ae@kernel.org>
-Date:   Thu, 9 Nov 2023 17:27:29 +0100
+        b=iu1v+T7WV0kGzzpg3BX43Pjmx9k2dWUEHkDsTo1kU+IDwr9IgXNnKhU8/XPw5geuy
+         26YnGZDVQAr5cOFA3RQYAe09HSwPBKBD8YUG+h6PZD7SIq+1N+/KSGvYZbgb1RIciL
+         zwKvxIWut+BDOBHWz39BA7cnM/OHltSssQIA024wUZASSzca+dkiL+rsazkiwQTS+t
+         UV9glUYcAhu96yoh9kNn5T9a/NtKXK7tQgJZZDNKlajgaFrtzydG5u4cNcx4eMnOnR
+         A64jg/p614CbhmBpF3PweQa5WHi3JxlHY+kAOyoFOA0eNwzmk4/43oADkn2N3754wK
+         HRQQUz0irAJrA==
+Message-ID: <fb79234e-d5d8-41e3-80b1-907159e99eae@kernel.org>
+Date:   Thu, 9 Nov 2023 17:27:58 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: clock: mediatek: Remove compatible for
- MT8188 VPPSYS
+Subject: Re: [PATCH 3/3] dt-bindings: arm:mediatek: mmsys: Add VPPSYS
+ compatible for MT8188
 Content-Language: en-US
 To:     "yu-chang.lee" <yu-chang.lee@mediatek.com>,
         AngeloGioacchino Del Regno 
@@ -47,7 +47,7 @@ Cc:     Nathan Lu <nathan.lu@mediatek.com>,
         linux-mediatek@lists.infradead.org,
         Project_Global_Chrome_Upstream_Group@mediatek.com
 References: <20231109082201.7698-1-yu-chang.lee@mediatek.com>
- <20231109082201.7698-3-yu-chang.lee@mediatek.com>
+ <20231109082201.7698-4-yu-chang.lee@mediatek.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -92,7 +92,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231109082201.7698-3-yu-chang.lee@mediatek.com>
+In-Reply-To: <20231109082201.7698-4-yu-chang.lee@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -100,7 +100,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 09/11/2023 09:22, yu-chang.lee wrote:
-> Remove VPPSYS0, VPPSYS1 compatible on Mediatek MT8188.
+> Add VPPSYS0, VPPSYS1 compatible on Mediatek MT8188.
 > 
 > Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
 > ---
