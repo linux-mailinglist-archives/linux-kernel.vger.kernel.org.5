@@ -2,188 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 140D87E71E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAB37E71E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbjKITIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S1345089AbjKITIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKITIJ (ORCPT
+        with ESMTP id S1345072AbjKITIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:08:09 -0500
+        Thu, 9 Nov 2023 14:08:10 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB2930EB
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:08:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A568A30EB
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699556888; x=1731092888;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=WQAWgT/ozAaa2+4EL0TBUqDOQYK4PJVhBP+7XYE7o6U=;
-  b=ABMGJN549o8zxDZ1Ttg1OYzuqVqkCQbZJoWFwR+X8PZzBxe3ccRHorNt
-   cQKJvacjY/N7NtgqxZkwL/crG2t32g1zhnFfUbF4DdFcOp/295lqebNiC
-   Plwopkh6TEOd0icZ8YNdDelBMQrH940dQkKYi5HLhiUhgWutmvSqWMWY8
-   1wuqAh9sqWrhFmOFwK1OhzZirNdR12P18jfkfrrNHOmkyckgWYvbK9U8R
-   d1O6FyTZcf2F10JO3EkF5itHnvqYihg/uy4I7OdidFbDidQOnNraxEFOs
-   q2I/gLG0k+F2wiAQ8LQeBTuOfu3U7TXBO6JYsGcDAmwXpC0q58v7Qc2UV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="8710192"
+  t=1699556889; x=1731092889;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yWTDA5OQls8cfbWPj5y2WOfn1M/AtsguX3V9MSRj6DU=;
+  b=hlJZPi+WxitYKbd88Lzw90/hw9Qw3iWipfN0caD7/RdYiHND1DWnVJR7
+   qKUfcOuStRC1ft4ddiIuh1b8Ou6yxYvHcS3tJ2ka4AEcw4HWQR8qcb3W/
+   NHwFj0/teFlFVWKaJTm1k+PNqM15dZQi7j4BSNB3l3cEmGuYy4X+9WuCf
+   Q0Gk0Rd/WhBmkiItdwRvHv/mcKAoE3P+OIOplIf8qBWqJXtapwlZ4Zn7J
+   rxa2ZvCW+DQxK54FNcWOnEKMrI/Mk17oMoEhr+qS5b0HTsRAQcKhQ6kfm
+   Efj+e7k0MPj/RlbXu7RNHbjT864uVtnsy4wkrX5YB57uQa4to4RJJ0PfS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="8710199"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="8710192"
+   d="scan'208";a="8710199"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 11:08:08 -0800
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 11:08:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713415339"
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713415352"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="713415339"
+   d="scan'208";a="713415352"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2023 11:08:06 -0800
+  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2023 11:08:03 -0800
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r1ANn-00094p-1w;
-        Thu, 09 Nov 2023 19:08:03 +0000
-Date:   Fri, 10 Nov 2023 03:07:13 +0800
+        id 1r1ANk-00094f-2i;
+        Thu, 09 Nov 2023 19:08:00 +0000
+Date:   Fri, 10 Nov 2023 03:07:42 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Alban Bedel <albeu@free.fr>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jason Cooper <jason@lakedaemon.net>
-Subject: drivers/irqchip/irq-ath79-misc.c:173:13: warning: no previous
- prototype for 'ath79_misc_irq_init'
-Message-ID: <202311100226.yNCwxxjc-lkp@intel.com>
+To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Subject: Re: [v4 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <202311100211.UAqu6dj7-lkp@intel.com>
+References: <20231109045908.54996-3-byungchul@sk.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231109045908.54996-3-byungchul@sk.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: 07ba4b061a79896315a7be4b123de12df6a9d2bd irqchip/ath79-misc: Move the MISC driver from arch/mips/ath79/
-date:   8 years ago
-config: mips-randconfig-r005-20210928 (https://download.01.org/0day-ci/archive/20231110/202311100226.yNCwxxjc-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100226.yNCwxxjc-lkp@intel.com/reproduce)
+Hi Byungchul,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on tip/sched/core]
+[also build test ERROR on tip/x86/core tip/x86/mm v6.6]
+[cannot apply to akpm-mm/mm-everything linus/master next-20231109]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/mm-rmap-Recognize-read-only-TLB-entries-during-batched-TLB-flush/20231109-163706
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/20231109045908.54996-3-byungchul%40sk.com
+patch subject: [v4 2/3] mm: Defer TLB flush by keeping both src and dst folios at migration
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231110/202311100211.UAqu6dj7-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100211.UAqu6dj7-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100226.yNCwxxjc-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100211.UAqu6dj7-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-     158 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   include/linux/preempt.h:165:9: note: in expansion of macro 'if'
-     165 |         if (unlikely(preempt_count_dec_and_test())) \
-         |         ^~
-   include/linux/compiler.h:137:60: note: in expansion of macro '__branch_check__'
-     137 | #  define unlikely(x)   (__builtin_constant_p(x) ? !!(x) : __branch_check__(x, 0))
-         |                                                            ^~~~~~~~~~~~~~~~
-   include/linux/preempt.h:165:13: note: in expansion of macro 'unlikely'
-     165 |         if (unlikely(preempt_count_dec_and_test())) \
-         |             ^~~~~~~~
-   include/linux/radix-tree.h:315:9: note: in expansion of macro 'preempt_enable'
-     315 |         preempt_enable();
-         |         ^~~~~~~~~~~~~~
-   include/linux/compiler.h:153:25: note: previous declaration here
-     153 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:145:23: note: in expansion of macro '__trace_if'
-     145 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/linux/preempt.h:165:9: note: in expansion of macro 'if'
-     165 |         if (unlikely(preempt_count_dec_and_test())) \
-         |         ^~
-   include/linux/radix-tree.h:315:9: note: in expansion of macro 'preempt_enable'
-     315 |         preempt_enable();
-         |         ^~~~~~~~~~~~~~
-   include/linux/radix-tree.h: In function 'radix_tree_next_slot':
-   include/linux/compiler.h:115:39: warning: ignoring attribute 'section ("_ftrace_annotated_branch")' because it conflicts with previous 'section ("_ftrace_branch")' [-Wattributes]
-     115 |                         static struct ftrace_branch_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:158:30: note: in definition of macro '__trace_if'
-     158 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   include/linux/radix-tree.h:409:17: note: in expansion of macro 'if'
-     409 |                 if (likely(iter->tags & 1ul)) {
-         |                 ^~
-   include/linux/compiler.h:134:60: note: in expansion of macro '__branch_check__'
-     134 | #  define likely(x)     (__builtin_constant_p(x) ? !!(x) : __branch_check__(x, 1))
-         |                                                            ^~~~~~~~~~~~~~~~
-   include/linux/radix-tree.h:409:21: note: in expansion of macro 'likely'
-     409 |                 if (likely(iter->tags & 1ul)) {
-         |                     ^~~~~~
-   include/linux/compiler.h:153:25: note: previous declaration here
-     153 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:145:23: note: in expansion of macro '__trace_if'
-     145 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/linux/radix-tree.h:409:17: note: in expansion of macro 'if'
-     409 |                 if (likely(iter->tags & 1ul)) {
-         |                 ^~
-   include/linux/compiler.h:115:39: warning: ignoring attribute 'section ("_ftrace_annotated_branch")' because it conflicts with previous 'section ("_ftrace_branch")' [-Wattributes]
-     115 |                         static struct ftrace_branch_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:158:30: note: in definition of macro '__trace_if'
-     158 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   include/linux/radix-tree.h:413:17: note: in expansion of macro 'if'
-     413 |                 if (!(flags & RADIX_TREE_ITER_CONTIG) && likely(iter->tags)) {
-         |                 ^~
-   include/linux/compiler.h:134:60: note: in expansion of macro '__branch_check__'
-     134 | #  define likely(x)     (__builtin_constant_p(x) ? !!(x) : __branch_check__(x, 1))
-         |                                                            ^~~~~~~~~~~~~~~~
-   include/linux/radix-tree.h:413:58: note: in expansion of macro 'likely'
-     413 |                 if (!(flags & RADIX_TREE_ITER_CONTIG) && likely(iter->tags)) {
-         |                                                          ^~~~~~
-   include/linux/compiler.h:153:25: note: previous declaration here
-     153 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:145:23: note: in expansion of macro '__trace_if'
-     145 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/linux/radix-tree.h:413:17: note: in expansion of macro 'if'
-     413 |                 if (!(flags & RADIX_TREE_ITER_CONTIG) && likely(iter->tags)) {
-         |                 ^~
-   include/linux/compiler.h:115:39: warning: ignoring attribute 'section ("_ftrace_annotated_branch")' because it conflicts with previous 'section ("_ftrace_branch")' [-Wattributes]
-     115 |                         static struct ftrace_branch_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:158:30: note: in definition of macro '__trace_if'
-     158 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   include/linux/radix-tree.h:426:25: note: in expansion of macro 'if'
-     426 |                         if (likely(*slot))
-         |                         ^~
-   include/linux/compiler.h:134:60: note: in expansion of macro '__branch_check__'
-     134 | #  define likely(x)     (__builtin_constant_p(x) ? !!(x) : __branch_check__(x, 1))
-         |                                                            ^~~~~~~~~~~~~~~~
-   include/linux/radix-tree.h:426:29: note: in expansion of macro 'likely'
-     426 |                         if (likely(*slot))
-         |                             ^~~~~~
-   include/linux/compiler.h:153:25: note: previous declaration here
-     153 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:145:23: note: in expansion of macro '__trace_if'
-     145 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/linux/radix-tree.h:426:25: note: in expansion of macro 'if'
-     426 |                         if (likely(*slot))
-         |                         ^~
-   drivers/irqchip/irq-ath79-misc.c: At top level:
->> drivers/irqchip/irq-ath79-misc.c:173:13: warning: no previous prototype for 'ath79_misc_irq_init' [-Wmissing-prototypes]
-     173 | void __init ath79_misc_irq_init(void __iomem *regs, int irq,
-         |             ^~~~~~~~~~~~~~~~~~~
+   In file included from arch/um/kernel/asm-offsets.c:1:
+   In file included from arch/x86/um/shared/sysdep/kernel-offsets.h:5:
+   In file included from include/linux/crypto.h:17:
+   In file included from include/linux/slab.h:16:
+   In file included from include/linux/gfp.h:7:
+   In file included from include/linux/mmzone.h:22:
+>> include/linux/mm_types.h:1416:35: error: field has incomplete type 'struct arch_tlbflush_unmap_batch'
+    1416 |         struct arch_tlbflush_unmap_batch arch;
+         |                                          ^
+   include/linux/mm_types.h:1416:9: note: forward declaration of 'struct arch_tlbflush_unmap_batch'
+    1416 |         struct arch_tlbflush_unmap_batch arch;
+         |                ^
+   In file included from arch/um/kernel/asm-offsets.c:1:
+   arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previous prototype for function 'foo' [-Wmissing-prototypes]
+       9 | void foo(void)
+         |      ^
+   arch/x86/um/shared/sysdep/kernel-offsets.h:9:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+       9 | void foo(void)
+         | ^
+         | static 
+   1 warning and 1 error generated.
+   make[3]: *** [scripts/Makefile.build:116: arch/um/kernel/asm-offsets.s] Error 1
+   make[3]: Target 'prepare' not remade because of errors.
+   make[2]: *** [Makefile:1202: prepare0] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
 
-vim +/ath79_misc_irq_init +173 drivers/irqchip/irq-ath79-misc.c
+vim +1416 include/linux/mm_types.h
 
-   169	
-   170	IRQCHIP_DECLARE(ar7240_misc_intc, "qca,ar7240-misc-intc",
-   171			ar7240_misc_intc_of_init);
-   172	
- > 173	void __init ath79_misc_irq_init(void __iomem *regs, int irq,
+  1401	
+  1402	struct migrc_req {
+  1403		/*
+  1404		 * folios pending for TLB flush
+  1405		 */
+  1406		struct list_head folios;
+  1407	
+  1408		/*
+  1409		 * for hanging to the associated numa node
+  1410		 */
+  1411		struct llist_node llnode;
+  1412	
+  1413		/*
+  1414		 * architecture specific data for batched TLB flush
+  1415		 */
+> 1416		struct arch_tlbflush_unmap_batch arch;
 
 -- 
 0-DAY CI Kernel Test Service
