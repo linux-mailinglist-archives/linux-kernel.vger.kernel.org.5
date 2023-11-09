@@ -2,106 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91F17E6783
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B1E7E6791
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbjKIKNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
+        id S233027AbjKIKOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:14:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKIKNg (ORCPT
+        with ESMTP id S232654AbjKIKOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:13:36 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE532D6A;
-        Thu,  9 Nov 2023 02:13:34 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BB51C660745D;
-        Thu,  9 Nov 2023 10:13:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699524813;
-        bh=tF00I9rvCUL/jzVG4vb3E9oiI67esankiKYonVaACl8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=iL0EXaSzBN2yXBqt+in7a4pGMkwKIY7NFpOgD7ZWB0RKGkReOXRfR2KOFHOZlmF2e
-         XnFpq97cHi8jlcDHVlUlbKYWUCHva3Vk3O8ZGybGOyJ0GlVH80bryLtHMeYCA4GN6E
-         zcLMXldER/e4h+WpVYXyahJgKhgRA8NJwrLinO9jL1fDQpal8aGE68DSOLh+aHIhfx
-         nXFi+GF7906kxKNhhIRSFrRNe4YQdozco1jRJDTp3ONQ/z0Ovf9P7Coz/xEKtbM8mg
-         +p/q7Z/0kwExiPmOen9bJS2pO2hOcxKkqDAWUwZlvOEuQCEEQ29yeodPb6koT+A/4I
-         y4kzLsW4dxrgw==
-Message-ID: <99945dbe-194b-429c-b8ea-fc71dbc0b3b4@collabora.com>
-Date:   Thu, 9 Nov 2023 11:13:28 +0100
+        Thu, 9 Nov 2023 05:14:50 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A7A2D6A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:14:48 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4094301d505so4322995e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699524887; x=1700129687; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4oi3jXI7vrHdw4Az1EYDzA4Gdmd91pOzyx51udMAAeQ=;
+        b=wjI3aL7we4IRiPtB+26llD3AWM9EwxK8+G400/9pCEgdB3JPQy8H00AwqmEAxoOIKK
+         Z2sDS04rPIhcCGhWv2hPfq2jkeju0TDQ6KifZ8djti/MqKpv5cFoDPfilLUNA/cpyasq
+         hJH/ahUO8qRSkMr44NrogArcgqDGvCsqWLgcpBn0vmcKSKHML1VV8kIg57qB/MhASOJD
+         UEMWj1saPS/kcBz5u4w/noU0CRVqIIkp/6kjrbUF4XRkW4uL+DAuOlPTfGeEzz1kNY3N
+         XqwiNCnQ28TphdYd7533kBS30gyC8PJeJ/t5TtAfPrRXY7GXylqUvGQdR19Dwd5a7R66
+         DbSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699524887; x=1700129687;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4oi3jXI7vrHdw4Az1EYDzA4Gdmd91pOzyx51udMAAeQ=;
+        b=YQHBeIVEcgWgG8lHRmxz469oE/YGPypqYuQ74nR8QhIbGgQVlB/uGUl+3reIgo7lES
+         PfjAFlglNslYxQ62deVLit9H5B7yvXFGubJygD1Z1OmiUDjen+6FmbksCt6KFWwdq+2O
+         1ORSugoVIJqCEMfy1r3mw596PdlKqVwsLiq5SHATBYl7IZL5sRdNOXo63YRdvc4aTPB9
+         Zn4c3IR3XOek/e0Xi9U6DwLOYnt421BvTuwrwJp9nsoLmKwlaHImp6pePpKW8jWsJBYJ
+         WFNfNEaNbSPPpi26Tey1HVa3MOO83gQMBeCoyV7hf1pXyJZdemaNQrbyXsWYjTNk189X
+         wIGQ==
+X-Gm-Message-State: AOJu0Yyrb3A6TKNYUdKj9BbLXue4gKGIfhSRksCSVnImkqs1B5VNc5jT
+        DXuqmy9PbAbO79+HBZTLRUE6dg==
+X-Google-Smtp-Source: AGHT+IGLiZmuTGbMYyyqS0Ud9k4f2BHvLpElKnJiu++mYwxV1ds6E0Yux6gLdmYe3xpB+kvAcq0ZeA==
+X-Received: by 2002:a05:600c:20d:b0:408:fba2:f4bc with SMTP id 13-20020a05600c020d00b00408fba2f4bcmr4093547wmi.24.1699524886779;
+        Thu, 09 Nov 2023 02:14:46 -0800 (PST)
+Received: from vingu-book.. ([2a01:e0a:f:6020:26e5:c6da:63bc:dd99])
+        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b003fefb94ccc9sm1611816wmq.11.2023.11.09.02.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 02:14:46 -0800 (PST)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, beata.michalska@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v6 0/7] consolidate and cleanup CPU capacity
+Date:   Thu,  9 Nov 2023 11:14:31 +0100
+Message-Id: <20231109101438.1139696-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 25/56] media: pci: tw68: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-26-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231031163104.112469-26-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
+This is the 1st part of consolidating how the max compute capacity is
+used in the scheduler and how we calculate the frequency for a level of
+utilization.
 
-W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> This allows us to change how the number of buffers is computed in the
-> future.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> ---
->   drivers/media/pci/tw68/tw68-video.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/pci/tw68/tw68-video.c b/drivers/media/pci/tw68/tw68-video.c
-> index 773a18702d36..35296c226019 100644
-> --- a/drivers/media/pci/tw68/tw68-video.c
-> +++ b/drivers/media/pci/tw68/tw68-video.c
-> @@ -360,13 +360,13 @@ static int tw68_queue_setup(struct vb2_queue *q,
->   			   unsigned int sizes[], struct device *alloc_devs[])
->   {
->   	struct tw68_dev *dev = vb2_get_drv_priv(q);
+Fix some unconsistancy when computing frequency for an utilization. There
+can be a mismatch between energy model and schedutil.
 
-Why not
+Next step will be to make a difference between the original
+max compute capacity of a CPU and what is currently available when
+there is a capping applying forever (i.e. seconds or more).
 
-	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+Changes since v5:
+- remove useless return in freq_inv_set_max_ratio()
+- Add tags
 
-just like in other patches in the series?
+Changes since v4:
+- Capitalize the verb in subject
+- Remove usless parentheses in cppc_get_dmi_max_khz()
+- Use freq_ref pattern everywhere
+- Fix MHz / kHz units conversion for cppc_cpufreq
+- Move default definition of arch_scale_freq_ref() in
+  include/linux/sched/topology.h beside arch_scale_cpu_capacity
+  which faces similar default declaration behavior. This location covers
+  all cases with arch and CONFIG_* which was not the case with previous
+  attempts.
 
-Regards,
+Changes since v3:
+- Split patch 5 cpufreq/cppc
+- Fix topology_init_cpu_capacity_cppc() 
+- Fix init if AMU ratio
+- Added some tags
 
-Andrzej
+Changes since v2:
+- Remove the 1st patch which has been queued in tip
+- Rework how to initialize the reference frequency for cppc_cpufreq and
+  change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
+- Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
+  of the AMU ratio to be done when intializing cpu capacity and
+  capacity_ref_freq
+- Added some tags
 
-> -	unsigned tot_bufs = q->num_buffers + *num_buffers;
-> +	unsigned tot_bufs = vb2_get_num_buffers(q) + *num_buffers;
->   	unsigned size = (dev->fmt->depth * dev->width * dev->height) >> 3;
->   
->   	if (tot_bufs < 2)
->   		tot_bufs = 2;
->   	tot_bufs = tw68_buffer_count(size, tot_bufs);
-> -	*num_buffers = tot_bufs - q->num_buffers;
-> +	*num_buffers = tot_bufs - vb2_get_num_buffers(q);
->   	/*
->   	 * We allow create_bufs, but only if the sizeimage is >= as the
->   	 * current sizeimage. The tw68_buffer_count calculation becomes quite
+Changes since v1:
+- Fix typos
+- Added changes in cpufreq to use arch_scale_freq_ref() when calling
+  arch_set_freq_scale (patch 3).
+- arch_scale_freq_ref() is always defined and returns 0 (as proposed
+  by Ionela) when not defined by the arch. This simplifies the code with
+  the addition of patch 3.
+- Simplify Energy Model which always uses arch_scale_freq_ref(). The
+  latter returns 0 when not defined by arch instead of last item of the 
+  perf domain. This is not a problem because the function is only defined
+  for compilation purpose in this case and we don't care about the
+  returned value. (patch 5)
+- Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
+- Added reviewed tag for patch 1 which got a minor change but not for
+  others as I did some changes which could make previous reviewed tag
+  no more relevant.
+
+Vincent Guittot (7):
+  topology: Add a new arch_scale_freq_reference
+  cpufreq: Use the fixed and coherent frequency for scaling capacity
+  cpufreq/schedutil: Use a fixed reference frequency
+  energy_model: Use a fixed reference frequency
+  cpufreq/cppc: Move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
+  cpufreq/cppc: Set the frequency used for computing the capacity
+  arm64/amu: Use capacity_ref_freq to set AMU ratio
+
+ arch/arm/include/asm/topology.h   |   1 +
+ arch/arm64/include/asm/topology.h |   1 +
+ arch/arm64/kernel/topology.c      |  26 +++---
+ arch/riscv/include/asm/topology.h |   1 +
+ drivers/acpi/cppc_acpi.c          | 104 ++++++++++++++++++++++
+ drivers/base/arch_topology.c      |  56 ++++++++----
+ drivers/cpufreq/cppc_cpufreq.c    | 139 ++++--------------------------
+ drivers/cpufreq/cpufreq.c         |   4 +-
+ include/acpi/cppc_acpi.h          |   2 +
+ include/linux/arch_topology.h     |   8 ++
+ include/linux/cpufreq.h           |   1 +
+ include/linux/energy_model.h      |   6 +-
+ include/linux/sched/topology.h    |   8 ++
+ kernel/sched/cpufreq_schedutil.c  |  26 +++++-
+ 14 files changed, 224 insertions(+), 159 deletions(-)
+
+-- 
+2.34.1
 
