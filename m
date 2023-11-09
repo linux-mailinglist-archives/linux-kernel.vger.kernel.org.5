@@ -2,216 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721807E71FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BB77E7207
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345111AbjKITKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S231537AbjKITOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:14:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345114AbjKITKG (ORCPT
+        with ESMTP id S229560AbjKITOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:10:06 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026203C25
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:10:04 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso956363a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:10:03 -0800 (PST)
+        Thu, 9 Nov 2023 14:14:04 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A203C11
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:14:02 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2800f7c8125so1880540a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:14:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1699557003; x=1700161803; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=broadcom.com; s=google; t=1699557241; x=1700162041; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qGIHHIyIj/eQKklLFt+o4EC73VgMtqD7AwmKgpBlOOs=;
-        b=ZrXeMrLMk/DpvkWwQft0y1/i2cj2Mz133uHSnJ/xQwN35n4nBoSiEmdRR7x4QNaSVm
-         j+sMy9gsPFJxmis6QeVdwIr0ugj9fztOzehA0mTKC9a1SGFo5JZb3hWfB8lyC1DV5SGS
-         /V/IerznE1hdrkKmIGWHV58wmT8H71RbG+Sggv2sKGO/gxtYgMLa1d76Wahk9v1RZdO/
-         idShgEQnTi6z/Vp0PWzy+RS7dzplKIs21KPc2U0YNnumC1cvRDsOlD0DRGM3AjjzxIpq
-         gZEQ/g1P0cMvqahRQjHTZ7j4yVdDkXNticT1evChhVBp6/VVXA9Im8i4II3WNGjvNTdc
-         wY+Q==
+        bh=JvssQPGJGHCjIA95KZ2yzB/hdWxjxOR+iO8OUX78Wcc=;
+        b=G5CAMr5cLRnmyT4PSj0E25hmhy7rGz3B6bZz2sl7UlvPSb9cKVGDGXW9RerfH08npg
+         y6cL9LiaYl8VxrE7NdlLDMDME8Bdb3ifEu8tJQVwdueb4RoI73e/0nD7+ql7cQAllRgX
+         0mhB8FgL+XcQ/tYd+yXVNOuNONaJbY5aBQXVE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699557003; x=1700161803;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699557241; x=1700162041;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qGIHHIyIj/eQKklLFt+o4EC73VgMtqD7AwmKgpBlOOs=;
-        b=AMvebqwKfWsK9hGmgmakdn8MHLkRyZiUkoNbzvK0gtQNcYinqUCTYcnXR/TfjRv1qQ
-         D6e7CyF8gMeT+HOSkvQklPm+2Ma+OtyFa93PpgEL8GwXin1AU7qU3Hw2WN2GkpqY7+VR
-         /izt+GowH8KqmhKK75hA2E9i9oJDN43/p1gM4UkfM4V9D/j3K7zZ/f6QFpAmWEwAogIv
-         BROlrtT5GWlAvoLoFcX0Qovjcil2rmFc0+WJqoSxmHNxTsjHYBLbzXjSnGQVFZeqQYC5
-         wAPyb3j7HUoAZ3c/JUWSvzEplyWlrMZHoXg+OwsPF65pRB80Q/uJmRQ0lpEn4ZjwclUj
-         Z2OA==
-X-Gm-Message-State: AOJu0Yx80mu2dU7E13pr5fzRP4BD51jzEfOonmaRRIJ7U/zxjcwK29Dp
-        ZXFlrTyNBuSj+GMN9OnH3tCbWyHE60Fbrx03sj0ohw==
-X-Google-Smtp-Source: AGHT+IF9rha3ZSgE/rr2Azs/075zCXghyG37VPOmh3714TVhwE0iJCVtFlVvOvJABF3bbGC33AZ04bGX6NegZNkuZGk=
-X-Received: by 2002:a17:90b:3b8b:b0:280:3772:5c2e with SMTP id
- pc11-20020a17090b3b8b00b0028037725c2emr2345785pjb.25.1699557003421; Thu, 09
- Nov 2023 11:10:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20230926160255.330417-1-robert.marko@sartura.hr> <CACRpkdZem9Gtd==gQM4EQ9R8MN2ZQ0JCyMCoTjg0kqCNDjuFMA@mail.gmail.com>
-In-Reply-To: <CACRpkdZem9Gtd==gQM4EQ9R8MN2ZQ0JCyMCoTjg0kqCNDjuFMA@mail.gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Thu, 9 Nov 2023 20:09:52 +0100
-Message-ID: <CA+HBbNFeVmc2CJeo+u9jbZrzsrDTOttW_4+aeLJFcOjDJ8DwyQ@mail.gmail.com>
-Subject: Re: [PATCH] i2c: core: dont change pinmux state to GPIO during
- recovery setup
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     wsa@kernel.org, codrin.ciubotariu@microchip.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        bh=JvssQPGJGHCjIA95KZ2yzB/hdWxjxOR+iO8OUX78Wcc=;
+        b=bmadrdsOjeo/vIIxIobD7QP8gQ151ZTzlJwhQPRfIQt2osiphhcUsxs9MPm+itpbV/
+         bQVvokzu+O8KO0K89aMBfD2OFQ53kpXGZkhDiIjERnGaBoKcWLLZlGHV2sU0WMxTfsuj
+         dXsmYmdn19ZDGeMWXiCyWqYd2ggAZC4Dap+2YiUp89/uJUZfuhUPf16+v55TixBWJaSY
+         ahpMLXSwsQx+XrPTjkzL/9dic/iNBUC+PcXtXV5VpjusAtEGNQMN5F0nECvE9VhIz+ly
+         vnATfBYhvDmd07Ztc3Wq8LOOHrIpLGkmY/KjkOG+kJh5+gt7Z8WQt+AuXpt1HjXhlPSk
+         245A==
+X-Gm-Message-State: AOJu0Yz70J++I5o1lhfdMCc0NKhSfIrA58LtQArN90Lno/APkkjmBXhT
+        3himNjDFhWyh8vcECwnHoOB75w==
+X-Google-Smtp-Source: AGHT+IFKQeIXiKgMCFmgv5wuFvvQpoXMS9T66pTeCj0K9JdFQuOHrsmo5pzd0sX82qkWa+oU9//dtQ==
+X-Received: by 2002:a17:90a:cb86:b0:280:963d:9cb with SMTP id a6-20020a17090acb8600b00280963d09cbmr181421pju.23.1699557241455;
+        Thu, 09 Nov 2023 11:14:01 -0800 (PST)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id pj9-20020a17090b4f4900b00282ecb631a9sm124069pjb.25.2023.11.09.11.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 11:14:00 -0800 (PST)
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+To:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-kernel@vger.kernel.org (open list),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 0/3] PCI: brcmstb: Configure appropriate HW CLKREQ# mode
+Date:   Thu,  9 Nov 2023 14:13:51 -0500
+Message-Id: <20231109191355.27738-1-james.quinlan@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000acdff60609bd016c"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:11=E2=80=AFPM Linus Walleij <linus.walleij@linar=
-o.org> wrote:
->
-> On Tue, Sep 26, 2023 at 6:03=E2=80=AFPM Robert Marko <robert.marko@sartur=
-a.hr> wrote:
->
-> > @@ -359,13 +359,6 @@ static int i2c_gpio_init_generic_recovery(struct i=
-2c_adapter *adap)
-> >         if (bri->recover_bus && bri->recover_bus !=3D i2c_generic_scl_r=
-ecovery)
-> >                 return 0;
-> >
-> > -       /*
-> > -        * pins might be taken as GPIO, so we should inform pinctrl abo=
-ut
-> > -        * this and move the state to GPIO
-> > -        */
-> > -       if (bri->pinctrl)
-> > -               pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
-> > -
->
-> But this might be absolutely necessary for other i2c drivers and this is
-> set in generic code.
->
-> My first question is: why is this platform even defining the "gpio" pin
-> control state for this i2c device if it is so dangerous to use?
-> If it can't be used, you just give it too much rope, delete the "gpio"
-> state for this group from the device tree: problem solved.
->
-> (This can be done with the specific /delete-node/ directive if
-> necessary, e.g. if you want to use the "gpio" state on other boards.)
+--000000000000acdff60609bd016c
 
-Hi,
-Sorry for the late reply.
+v7 -- Manivannan Sadhasivam suggested (a) making the property look like a
+      network phy-mode and (b) keeping the code simple (not counting clkreq
+      signal appearances, un-advertising capabilites, etc).  This is
+      what I have done.  The property is now "brcm,clkreq-mode" and
+      the values may be one of "safe", "default", and "no-l1ss".  The
+      default setting is to employ the most capable power savings mode.
 
-GPIO function is being defined as I2C recovery itself requires it, it
-will switch
-the pins to GPIO mode and then pulse SCL for a predefined number of pulses
-in order to try and recover the bus.
-So we cannot remove it from DTS and have I2C recovery working.
+v6 -- No code has been changed.
+   -- Changed commit subject and comment in "#PERST" commit (Bjorn, Cyril)
+   -- Changed sign-off and author email address for all commits.
+      This was due to a change in Broadcom's upstreaming policy.
 
-Also, GPIO is a fully valid option for this pin group according to the
-datasheet,
-it is even the default until you switch them to I2C.
+v5 -- Remove DT property "brcm,completion-timeout-us" from	 
+      "DT bindings" commit.  Although this error may be reported	 
+      as a completion timeout, its cause was traced to an	 
+      internal bus timeout which may occur even when there is	 
+      no PCIe access being processed.  We set a timeout of four	 
+      seconds only if we are operating in "L1SS CLKREQ#" mode.
+   -- Correct CEM 2.0 reference provided by HW engineer,
+      s/3.2.5.2.5/3.2.5.2.2/ (Bjorn)
+   -- Add newline to dev_info() string (Stefan)
+   -- Change variable rval to unsigned (Stefan)
+   -- s/implementaion/implementation/ (Bjorn)
+   -- s/superpowersave/powersupersave/ (Bjorn)
+   -- Slightly modify message on "PERST#" commit.
+   -- Rebase to torvalds master
 
->
-> Second: do you even want to do recovery on this platform then?
-> Is it necessary? What happens electronically in this case, if we don't
-> switch the pins to GPIO mode? Is it something akin to the "strict"
-> property in struct pinmux: that the GPIO block and the device can
-> affect the same pins at the same time? That warrants an explanation
-> and a comment.
+v4 -- New commit that asserts PERST# for 2711/RPi SOCs at PCIe RC
+      driver probe() time.  This is done in Raspian Linux and its
+      absence may be the cause of a failing test case.
+   -- New commit that removes stale comment.
 
-Yes, I2C recovery is required on this board as otherwise the I2C bus will
-get stuck after a certain number of SFP module plug/unplug events or
-sometimes even just randomly, I2C recovery allows the bus to recover
-and continue working.
+v3 -- Rewrote commit msgs and comments refering panics if L1SS
+      is enabled/disabled; the code snippet that unadvertises L1SS
+      eliminates the panic scenario. (Bjorn)
+   -- Add reference for "400ns of CLKREQ# assertion" blurb (Bjorn)
+   -- Put binding names in DT commit Subject (Bjorn)
+   -- Add a verb to a commit's subject line (Bjorn)
+   -- s/accomodat(\w+)/accommodat$1/g (Bjorn)
+   -- Rewrote commit msgs and comments refering panics if L1SS
+      is enabled/disabled; the code snippet that unadvertises L1SS
+      eliminates the panic scenario. (Bjorn)
 
-Maybe my commit message was confusing, so I will try and explain further.
-I2C recovery did work on Armada 3720 just fine until the driver was convert=
-ed
-to use the generic I2C recovery which is now part of the I2C core.
+v2 -- Changed binding property 'brcm,completion-timeout-msec' to
+      'brcm,completion-timeout-us'.  (StefanW for standard suffix).
+   -- Warn when clamping timeout value, and include clamped
+      region in message. Also add min and max in YAML. (StefanW)
+   -- Qualify description of "brcm,completion-timeout-us" so that
+      it refers to PCIe transactions. (StefanW)
+   -- Remvove mention of Linux specifics in binding description. (StefanW)
+   -- s/clkreq#/CLKREQ#/g (Bjorn)
+   -- Refactor completion-timeout-us code to compare max and min to
+      value given by the property (as opposed to the computed value).
 
-After it was converted to it, the I2C bus completely stopped working
-on Armada 3720
-if I2C recovery is enabled by making the recovery pinctrl available in DTS.
+v1 -- The current driver assumes the downstream devices can
+      provide CLKREQ# for ASPM.  These commits accomodate devices
+      w/ or w/o clkreq# and also handle L1SS-capable devices.
 
-I then spent quite a while trying to bisect the exact change that
-causes this issue
-in the conversion as code is almost identical to what the driver was
-doing previously,
-and have bisected it down to pinctrl_select_state(bri->pinctrl,
-bri->pins_gpio) being
-called before SDA and SCL pins are obtained via devm_gpiod_get().
-
-Then I thought that maybe there was a HW bug in the Armada 3720 as the
-pin function
-was being set to GPIO twice via register write so I made sure the
-register was being
-written to only if the desired value is different than the current one
-but that did not help
-at all.
-For whatever reason calling pinctrl_select_state(bri->pinctrl,
-bri->pins_gpio) causes
-the pins to basically lock up, but the weird thing is that calling
-devm_gpiod_get() will
-also end up with the kernel changing the pin function to GPIO and this
-works, hence
-this patch.
-
-This is basically the only change in the old driver behavior which would do=
-:
-
-pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
-return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
-
-After obtaining the SDA and SCL pins via devm_gpiod_get() and this somehow
-works while the generic I2C code will first call:
-pinctrl_select_state(bri->pinctrl, bri->pins_gpio)
-Then it obtains the SDA and SCL pins via devm_gpiod_get() and
-eventually at the end of i2c_gpio_init_generic_recovery() call
-pinctrl_select_state(bri->pinctrl, bri->pins_default);
-to return the pins back to I2C state.
-
-Hopefully, this all makes more sense.
-
->
-> If you can't delete the "gpio" pin control state, I would add a
-> bool pinctrl_stay_in_device_mode;
-> to
-> struct i2c_bus_recovery_info
-> in include/linux/i2c.h
->
-> And just:
->
-> if (bri->pinctrl && !bri->pinctrl_stay_in_device_mode)
->     pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
->
-> (Also the switch to the "default" state further down could be
-> contitional !bri->pinctrl_stay_in_device_mode)
->
-> But mostly I wonder why the "gpio" pin control state is defined, if it's
-> not to be used.
-
-Well, that is the thing, it is being used, it just somehow got broken with
-the move to generic I2C recovery.
-
-I hope to have explained the issue and symptoms more clearly now
-as I have ran out of ideas why a call to pinctrl_select_state() to
-change to GPIO
-state breaks things, but then devm_gpio_get() also eventually makes a call =
-to
-the pinctrl driver to change the pin function to GPIO but that works.
-
-Regards,
-Robert
->
-> Yours,
-> Linus Walleij
+   -- The Raspian Linux folks have already been using a PCIe RC
+      property "brcm,enable-l1ss".  These commits use the same
+      property, in a backward-compatible manner, and the implementaion
+      adds more detail and also automatically identifies devices w/o
+      a clkreq# signal, i.e. most devices plugged into an RPi CM4
+      IO board.
 
 
+Jim Quinlan (3):
+  dt-bindings: PCI: brcmstb: Add property "brcm,clkreq-mode"
+  PCI: brcmstb: Configure HW CLKREQ# mode appropriate for downstream
+    device
+  PCI: brcmstb: Set higher value for internal bus timeout
 
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+ .../bindings/pci/brcm,stb-pcie.yaml           | 21 +++++
+ drivers/pci/controller/pcie-brcmstb.c         | 81 ++++++++++++++++---
+ 2 files changed, 92 insertions(+), 10 deletions(-)
+
+
+base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8
+-- 
+2.17.1
+
+
+--000000000000acdff60609bd016c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIQbgYJKoZIhvcNAQcCoIIQXzCCEFsCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3FMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBU0wggQ1oAMCAQICDEjuN1Vuw+TT9V/ygzANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE3MTNaFw0yNTA5MTAxMjE3MTNaMIGO
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xFDASBgNVBAMTC0ppbSBRdWlubGFuMSkwJwYJKoZIhvcNAQkB
+FhpqYW1lcy5xdWlubGFuQGJyb2FkY29tLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAKtQZbH0dDsCEixB9shqHxmN7R0Tywh2HUGagri/LzbKgXsvGH/LjKUjwFOQwFe4EIVds/0S
+hNqJNn6Z/DzcMdIAfbMJ7juijAJCzZSg8m164K+7ipfhk7SFmnv71spEVlo7tr41/DT2HvUCo93M
+7Hu+D3IWHBqIg9YYs3tZzxhxXKtJW6SH7jKRz1Y94pEYplGQLM+uuPCZaARbh+i0auVCQNnxgfQ/
+mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
+uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
+BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
+VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
+z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
+b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
++R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
+AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
+75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
+AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
+AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
+MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCluiOmK1bpo6Y1SFURlIrABZniuq2R
+g9QwsPIvq/uCzTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzEx
+MDkxOTE0MDFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
+hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
+AgEwDQYJKoZIhvcNAQEBBQAEggEAWwynl9iEyzgULqJBFyOJKEs980DuqJQqbtPBsqdu/nfyLE6N
+ZKSeL5oksqXynfT+U24KQgyti6Yali2s0vT1E/HkNdBcJ4/2PTa99R36a6iZ6gNjxMNAra8h+91Y
+TgBlMxNaCewV9WaMCcCWzzcsKb1/ZJFXhdtcoUQ3HDzORBly5AzAqz48Wj0mAw68XXn9Ur2ZyCCJ
+RyWHNGI6Zv3mSv5fK1CeqUnYE/oMlKJwoUWGWhik6jkxX6JMF4eNxgQyvNxAP2rkfAf5deidhnE2
+qm0Qc8Qn7LubP1vrSYm6FyrmmZppspEG4iuHTirZBWwAtFMpkIedPmeGF42AZ63EaQ==
+--000000000000acdff60609bd016c--
