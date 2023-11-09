@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5B87E740E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E987E7413
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231565AbjKIV4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S230150AbjKIWAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIV4U (ORCPT
+        with ESMTP id S229629AbjKIWA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:56:20 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2161FDF;
-        Thu,  9 Nov 2023 13:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ik3c7d8hsm0kgnnmU8zPPgMQeaya/wakATwAYdDt1wE=; b=Es0Kx0xRNjpRcUR78zokfpRewx
-        SPl+kZgtYZnY7bjGgg24Khp/V4iIp4C+HPLuthYwXbps/j9NrmaCvTCJWuHHAxAWYTBJAzW5idZj6
-        UvAy6ZLEVPi3FCI2psVYQ0g50xXPPIi3QcwizGYR9QQ367r96ncgKVHadwz9zmjAFi9U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r1D0F-001F8X-65; Thu, 09 Nov 2023 22:55:55 +0100
-Date:   Thu, 9 Nov 2023 22:55:55 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH 1/8] dt-bindings: phy: mediatek,xfi-pextp: add new
- bindings
-Message-ID: <797ea94b-9c26-43a2-85d7-633990ed8c57@lunn.ch>
-References: <cover.1699565880.git.daniel@makrotopia.org>
- <924c2c6316e6d51a17423eded3a2c5c5bbf349d2.1699565880.git.daniel@makrotopia.org>
+        Thu, 9 Nov 2023 17:00:29 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8823AA8;
+        Thu,  9 Nov 2023 14:00:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=anOQMVnXqS6edVU03GrtNGZXocRurD23acE+4byDQFc=; b=f/2dDbTny8+5mpl75c8Si55DgJ
+        fj+fswouCubQqu0i9Cjo/nIQsO7tQZg4swOBurZrNtwKyHYmY6IuYR8cRNkrFAwMq5zILlsPjtY/+
+        0L/34MdAwo5oFJh8SJFS8tfLb+AzLCpGkjhMZCQqZnyFMYdxykGxC2kf2LN08lG9alnD/T2i0vYoJ
+        wC4GrorkAOv3mHlIWdsSrWspHJzqaBlnOUDpnyR9Wvl2jlh6zmIH3yTRFUIK+4LI2zmOrTiZyyQ54
+        brszdVTQdt9pYYs172igF1AEXQdadgWZNniObxSe2UNiFYFE19T7oQVUn7U/7iTBYInRq5X67mXUr
+        TbAQEiyQ==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r1D4U-00DbMG-1V;
+        Thu, 09 Nov 2023 22:00:18 +0000
+Date:   Thu, 9 Nov 2023 22:00:18 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Abhi Das <adas@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: RESOLVE_CACHED final path component fix
+Message-ID: <20231109220018.GI1957730@ZenIV>
+References: <20231109190844.2044940-1-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <924c2c6316e6d51a17423eded3a2c5c5bbf349d2.1699565880.git.daniel@makrotopia.org>
+In-Reply-To: <20231109190844.2044940-1-agruenba@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +  mediatek,usxgmii-performance-errata:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      USXGMII0 on MT7988 suffers from a performance problem in 10GBase-R
-> +      mode which needs a work-around in the driver. The work-around is
-> +      enabled using this flag.
+On Thu, Nov 09, 2023 at 08:08:44PM +0100, Andreas Gruenbacher wrote:
+> Jens,
+> 
+> since your commit 99668f618062, applications can request cached lookups
+> with the RESOLVE_CACHED openat2() flag.  When adding support for that in
+> gfs2, we found that this causes the ->permission inode operation to be
+> called with the MAY_NOT_BLOCK flag set for directories along the path,
+> which is good, but the ->permission check on the final path component is
+> missing that flag.  The filesystem will then sleep when it needs to read
+> in the ACL, for example.
+> 
+> This doesn't look like the intended RESOLVE_CACHED behavior.
+> 
+> The file permission checks in path_openat() happen as follows:
+> 
+> (1) link_path_walk() -> may_lookup() -> inode_permission() is called for
+> each but the final path component. If the LOOKUP_RCU nameidata flag is
+> set, may_lookup() passes the MAY_NOT_BLOCK flag on to
+> inode_permission(), which passes it on to the permission inode
+> operation.
+> 
+> (2) do_open() -> may_open() -> inode_permission() is called for the
+> final path component. The MAY_* flags passed to inode_permission() are
+> computed by build_open_flags(), outside of do_open(), and passed down
+> from there. The MAY_NOT_BLOCK flag doesn't get set.
+> 
+> I think we can fix this in build_open_flags(), by setting the
+> MAY_NOT_BLOCK flag when a RESOLVE_CACHED lookup is requested, right
+> where RESOLVE_CACHED is mapped to LOOKUP_CACHED as well.
 
-Is there more details about this? I'm just wondering if this should be
-based on the compatible, rather than a bool property.
+No.  This will expose ->permission() instances to previously impossible
+cases of MAY_NOT_BLOCK lookups, and we already have enough trouble
+in that area.  See RCU pathwalk patches I posted last cycle; I'm
+planning to rebase what still needs to be rebased and feed the
+fixes into mainline, but that won't happen until the end of this
+week *AND* ->permission()-related part of code audit will need
+to be repeated and extended.
 
-      Andrew
+Until then - no, with the side of fuck, no.
