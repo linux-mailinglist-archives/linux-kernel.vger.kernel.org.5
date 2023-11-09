@@ -2,221 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D61A77E68E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B105A7E68F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:56:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbjKIKz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        id S232749AbjKIK4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:56:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbjKIKzZ (ORCPT
+        with ESMTP id S231703AbjKIK4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:55:25 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2097.outbound.protection.outlook.com [40.107.215.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B77CD41;
-        Thu,  9 Nov 2023 02:55:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MlRuYwjdND/HcLQ1o/U2/JQO2qaoHgpVL7brWVVKA6pjRDlmJ4TQGCQ/fhMMFABR8uMkQvJle5IfyGgQ/jxjI5WQxeB5sJXuIeWQGyxpPb2tZQSodT9vESXqfflRE6hvDzoJsmLFb8PZJ6kH1j8iT83BhOkSFhYJ4sCfl3FngtzT1i5ZRbHvZI7ScFxYEhvcID/t1U3eUoFmzySi749IGwh0bPySQyS9JJK3k6hhfbAMBSZ6JdktlCsV00FDjau+4CxpZUwI9g94nSXImE7/Ax92gI0P18EAwjLukIJ45aofEkAJMN7H9XCVmaw76UMatsCbMAzmkfSNkOEhfSPMhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SfMcuMyVa5E3l2CKKN3SYmT7n86qn4rvBZMmCk1ISG0=;
- b=iyI5GDJafXvE790WwMr6/2PdLks/+mWVlFSpRNsei6pJ7NxW6827q4OVFvYh7aoOH420rKh9Pc1HjjCitseVG/soqeoZRY1/TyLd1FgqkmBQoH6dlHoUjO5ydoGuWT8PZENLA3XyA/TsHlxzMY2je1VlcEaTJj7yMIXqPYXqqLdu/2VxsSDglh4aB2lrxsfEK3aIbYq8SauPNIa2xVC2TzRUpSwp1pKy7d1yeAMwPArHHg1OYNC/z94/ILABij8ZGV0PBS4USQi8/G7Fx4yZajcN9gcu44uytTSYS0H0bAsgLrGFtswyBZ9efSy0Km1qy7XW2Bfj5rlimKZiC00exw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SfMcuMyVa5E3l2CKKN3SYmT7n86qn4rvBZMmCk1ISG0=;
- b=lAJ35mcjwvDm7GtVCIFMTmkTtf6i8lSyZw30fwZrh5emCwymNmNph1RRohUqRYCMdwZnKoQrEFHDpI1nj4N9B9ZdqrENwbKh9mrCSF4LsnfYcPXY1MC6irGJc6+DHMjQgpAzXI7Mvovk4//6T6VOduu1p9HsoSvWyc57wom5ck5U4OkWpYeKwo4psVm4CcuYbIN6+mlbrO7r2OvXVzNpf/Gqkn5+7FOxLqug9ksI7AtxNTnmk08RrnXInRT5xUpYMDiM6StyhfJKqhpn9/+1Cap23rC7XumpERo6BjGQtFrmo0LFmJYKCxH1NwKvAnNl83umIpLjWq2HNeYwQ9Rtnw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by SEYPR06MB5815.apcprd06.prod.outlook.com (2603:1096:101:b1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.31; Thu, 9 Nov
- 2023 10:55:16 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Thu, 9 Nov 2023
- 10:55:16 +0000
-Message-ID: <d49acb29-c1e6-429b-8d94-a5a8e1e2f548@vivo.com>
-Date:   Thu, 9 Nov 2023 18:55:09 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-References: <20231108065818.19932-1-link@vivo.com>
- <ZUuV9xOZ5k7Ia_V2@tiehlicka> <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
- <ZUysGhwqo_XZSV-M@tiehlicka>
-From:   Huan Yang <link@vivo.com>
-In-Reply-To: <ZUysGhwqo_XZSV-M@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0192.apcprd04.prod.outlook.com
- (2603:1096:4:14::30) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Thu, 9 Nov 2023 05:56:52 -0500
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DC82590
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:56:50 -0800 (PST)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id B05CA3D5;
+        Thu,  9 Nov 2023 11:56:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1699527406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lkYMEi9z1AjiGREcvVrdAbNNB3OU3WdHnR6KqvlMljQ=;
+        b=grAGzuV2AuyNfQRQappwyoX4KVhLzIR3bZ8s+T/jMKZda052fs0tidxamkCKzcbyO2S8aD
+        euDE0g9Olk/ci/LzsausVg0dTodWuK447lx9wMfOVl/vWLsw+dRKFwqT234ZADj4sWgcF5
+        rg/5lW+yI9jRpd8ssM8Mlp5CkE3YPDaR1tv4P8dcgDQK3QF/dpH425j3AnzNVBG+5b4cpX
+        N8sRh6VHg5kGC67oCzSMhjRLY7N5mSp+BoAXdaVaAQ+IwJXhM/8VbEevc/tbxpKeDT+jU2
+        DHbKwHp9BE4nOtNFGwmV4zf0EhXo/SPUWCaI+siCnjIKlb5Ufs3yRpVRXoxH5g==
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SEYPR06MB5815:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fcecc72-55c6-4ff1-b8d8-08dbe1125b28
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: onyJPUy/Z0AxYVVWj3uvyxaFdzq3FUTgLqsnKiGI/WrfWixM1fqR89RUjE1ycX4KFOO+czW7QFQh2gd5Frd3IoVeR3Z8grMr5XVivHNylvp9IAmZ0mHjcoPOz8+pkcSBSl6PPmIQvY94la6/dySawniBqjrHE40CJu8fLlMIAoQvXwj9zVwkfQ1e45KONg1EWYB6dlVSqaCdQNb9E7qnDU2kh/JT4KOefBP4dXY4YRO8Wg9I/KYbb9FilkPKpszJPRT7AsMTzYUdw5pFPS82UN4YOjB8Hfr41PNxh5EUk2q2EwKDkQj8L86AgoBPgcAN6/5c57ZKuY4Vqk9K4TTOmTSDVG429pHlNxzwaicWnlzAzOjHYILoktgdFTo9VHFVlatNjBkJuUDlLmPBTDrgjCOqcduJg5HeJyCPnEb9UMB/O/PxyHb1sIoow7um9fBPy6q3IbSAKd3agC/70gpcgRH/z/wpGNhgKg7NwEjGY62x6TIZdhDnrtBM/XBHBKMqhFDjwJl/4UE4qgHVXuQBLoRZxI5JTVl2V6zdiRwJzuHBSnSPcopvqhSvdEAig4QIdSph2yYgnLSzlVV0rQLdxDrNoeIxNGEz/Y7anKnSw6VYUux/SOP8Nbbgz6mle0EnUMs1fAPJv4a6sSTIxyXTtzF6EgONU33gEbMDyU5tVwnidlQ31t86KwWcn1l80CG5zVY3aqr8B51K/qaVi3fekoqGEiTBFLfnxr6KFQ3LRgo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(396003)(39860400002)(376002)(230173577357003)(230922051799003)(230273577357003)(64100799003)(1800799009)(186009)(451199024)(66476007)(66556008)(54906003)(66946007)(26005)(2906002)(316002)(31696002)(83380400001)(6916009)(7416002)(107886003)(86362001)(31686004)(2616005)(5660300002)(6512007)(41300700001)(6506007)(52116002)(38350700005)(478600001)(6666004)(6486002)(36756003)(8936002)(4326008)(8676002)(38100700002)(966005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ejRoWjBISnRITWc4VTNlUTUxRXpob2JhUjhFRHFES3kxN1VMMUJNQmwyRWNG?=
- =?utf-8?B?WGJtOHJIVDQ4YXFjOFNDeTVyODJod0RzVEplV1k3NFN5TkpMVnFNSTNYcWVQ?=
- =?utf-8?B?NXpweGY5OUpWRnZRaE9BUUFnemRvVS9JU1Z6aEVaWVIxLzQ3QVorM28xSVAy?=
- =?utf-8?B?b0wybHNHcG9lRHp5OHAwU2FmNHFsbVBsQnpKRTVxRjBhMjlXeTRoVGYyRzcy?=
- =?utf-8?B?ZVpRVFpqSmpnaEQ3a1lvT1dyKzVhREpLYnI3eVlGMFdOeERWMVhzV0pTNlVF?=
- =?utf-8?B?YnhNMm9EZnNTcEhHbk9odUVTMXRJSkNjVFdub0lmMTRaQk1uMXF2SFk3N0FS?=
- =?utf-8?B?QWx4MEI3SDRLbnJlK05xL1c3QXpJQVpSbk8rei83eThDdDFIRFVwT1RSc3hP?=
- =?utf-8?B?UkRhNDkwVjFkSEgvNE8zVmdEa2cwcFVBMkJxa2FDSlRjSk9EbDJMTUM3RW41?=
- =?utf-8?B?ODdqVDN1aFJXbHY4dDk4bDJ0akdZcDdyNEl4aXM0MmFhV2k4eWxvTlI5N0hu?=
- =?utf-8?B?NmhqQ1VscnNhTEw3aUhGS3hOeDljK1JuZ01QWWdDVnZZZFFsSzFYUG9KbnJ0?=
- =?utf-8?B?R3ZLK3R1b1M5c29uam5rWnN5clZaYk1sU3F6YTNwUE5ScDhVdEdid1ljeDJF?=
- =?utf-8?B?cXp5T1FyU3BZUDA4Qm5PT2p0QWNncmRQUWR3TlloL3FEOXhMWWxPL002ZzJp?=
- =?utf-8?B?WlBVcmZYS1V0WERPdUoxNEN4V0dtb1RGbHFMeWZGWVJVSVlWT3huWW04aVdX?=
- =?utf-8?B?OUxwWlVUOU4zRjgyUnFvWGRCbmw3VzR2a1poY2xzOS9NcWNXV0pSMkhuM0xm?=
- =?utf-8?B?d1EzNEhpSUpxR1J2dU5zNCs1OEhLMUVWa01GdVBnUU9GM1UyNUZoais2RVhS?=
- =?utf-8?B?cGtYdjF1L2JaSUhWOHJjVDNCUkRUdWUwOFNaZnRPWGdmWDBuU1dIVTYvenFu?=
- =?utf-8?B?MXJnR0pJcTlUZnMxRm5iSkRLekZBekQyaUlQbXgzcDF0VXZPc2Z0QStGWWVP?=
- =?utf-8?B?aFVHdlJBS0M2aUpBcmVaaHY5NHhxMEpRQitiN04wMVkwU25YZkphTENHSnpy?=
- =?utf-8?B?V3hUU1lOMGFVOU5XR2UxdnBTdEdDV1RjVFdiNzRBNlFHWmtRdlkwWFVCTHVB?=
- =?utf-8?B?dzBMZzZ3a28yQmFMbk12NnBYdG51Z3dGZzM4b0tOSHdkK3ZqaWZZOTFTR1Az?=
- =?utf-8?B?Z2JlRTUxK1UzdUNkR0l6OUhlS3hMbU5MMEtXOTVDRzV2aEltU0RaOFl1SkhW?=
- =?utf-8?B?dUdaL3lBQmJ0RWNOWVpRWmlCcyt4QUJnUG0rZ0RETTZxZTlRRHpLNnR1Wlhy?=
- =?utf-8?B?c1pRSnllWWJ2UFp2c0lkKzd5R0NVdWZCSmFMUi84eHNMVTZlWEhIc3J6L2x5?=
- =?utf-8?B?WjB3Tzh5eHUxY1ZPVEthTERGdzdSQk9OSXlqTkRFYWpxOFpPck93VGpyYmlX?=
- =?utf-8?B?OGQrKytBVFNnYzF4L2M3QmsrbklWd1BZQjgrZXNQbXVZV1hqTE1sdzFFSnM5?=
- =?utf-8?B?NUpuOXh1OGlGbkNmSDZRY1FNdW5zTFZ2VnBHaksrWjVmdE5yejY3VkVaZ1E4?=
- =?utf-8?B?a21oQlBPVjVybXdUNi9sUDI3WjBJSTZVOE55bmZRUm5JL2hPWVNUaVZQSDZZ?=
- =?utf-8?B?ZEsxeWhEcGd4ZjhHemN3WUFBeUNZeDkrV1pZTEs3dE1ub284TmFMZndvNHIz?=
- =?utf-8?B?b1FscnJuU1NzTFc4ZjhvMEVDaXlITUxnSFFkN0M5QVZYSnk2bTR5QXlNOWFC?=
- =?utf-8?B?RS9DUVdVTDdVaTNzSEt2RlU3OEtNSFAxMzFtQ1lHWDlYTTZJaS8zZWl4R1JI?=
- =?utf-8?B?MHAvUVphQVI1WWJsNGpWUzJMZVduV1ZHNEh5enI2ZEoyZ1Jla2JCZ0FieWF0?=
- =?utf-8?B?Zjh2ZHFSWHcyTEdlVUZQNlpLYStrSXhKSmdKY1ZYWFlDakM4NU1zY1RQTGgr?=
- =?utf-8?B?cWcyUzRaQnZTUDY4ejBDOUswbk1kQUhBb2VHdWFWSENFQ0F0NkxmczlpbHFS?=
- =?utf-8?B?VWxoWkFDTmJmcnRFUjV5cjJCZ2xuU0FyU0FYdm8vZGtmbFpxL2w5ZURML3hB?=
- =?utf-8?B?dkFJUTVMQXAxU21nZ2lvNENDbDdZdlBnQUNLL1pPOCtBK2xpWk8vdmZ6UWNT?=
- =?utf-8?Q?HM2hw+ZCo1l9Ly5xKazpb6BtR?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fcecc72-55c6-4ff1-b8d8-08dbe1125b28
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 10:55:16.0337
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: viMNDxAn52Sx9ul0gsZB5amVP3aROL0qONFvyzRdk8JebzZWzSmd10bbWMYg/odMggBWcw9oDMqsS67Cgl/IAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5815
+Date:   Thu, 09 Nov 2023 11:56:46 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     AceLan Kao <acelan.kao@canonical.com>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] spi: Replace -ENOTSUPP with -EOPNOTSUPP in op
+ checking
+In-Reply-To: <20231108094303.46303-1-acelan.kao@canonical.com>
+References: <20231108094303.46303-1-acelan.kao@canonical.com>
+Message-ID: <30509dedc61b0590b322e2860abbd109@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-在 2023/11/9 17:53, Michal Hocko 写道:
-> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> On Thu 09-11-23 09:56:46, Huan Yang wrote:
->> 在 2023/11/8 22:06, Michal Hocko 写道:
->>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>>
->>> On Wed 08-11-23 14:58:11, Huan Yang wrote:
->>>> In some cases, we need to selectively reclaim file pages or anonymous
->>>> pages in an unbalanced manner.
->>>>
->>>> For example, when an application is pushed to the background and frozen,
->>>> it may not be opened for a long time, and we can safely reclaim the
->>>> application's anonymous pages, but we do not want to touch the file pages.
->>> Could you explain why? And also why do you need to swap out in that
->>> case?
->> When an application is frozen, it usually means that we predict that
->> it will not be used for a long time. In order to proactively save some
->> memory, our strategy will choose to compress the application's private
->> data into zram. And we will also select some of the cold application
->> data that we think is in zram and swap it out.
->>
->> The above operations assume that anonymous pages are private to the
->> application.  After the application is frozen, compressing these pages
->> into zram can save memory to some extent without worrying about
->> frequent refaults.
-> Why don't you rely on the default reclaim heuristics? In other words do
-As I mentioned earlier, the madvise approach may not be suitable for my 
-needs.
-> you have any numbers showing that a selective reclaim results in a much
+Am 2023-11-08 10:43, schrieb AceLan Kao:
+> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
+> 
+> No functional changes are introduced by this patch; it's a code cleanup
+> to use the correct error code.
 
-In the mobile field, we have a core metric called application residency.
+This error code might be returned to userspace (I guess?).
 
-This mechanism can help us improve the application residency if we can 
-provide
-a good freeze detection and proactive reclamation policy.
+> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
+> 
+> ---
+> v5. distinguish -EOPNOTSUPP from -ENOTSUPP
+> ---
+>  drivers/mtd/nand/spi/core.c | 2 +-
+>  drivers/spi/atmel-quadspi.c | 2 +-
+>  drivers/spi/spi-ath79.c     | 2 +-
+>  drivers/spi/spi-bcm-qspi.c  | 2 +-
+>  drivers/spi/spi-mem.c       | 6 +++---
+>  drivers/spi/spi-npcm-fiu.c  | 2 +-
+>  drivers/spi/spi-ti-qspi.c   | 4 ++--
+>  drivers/spi/spi-wpcm-fiu.c  | 2 +-
 
-I can only provide specific data from our internal tests, and it may be 
-older data,
-and it tested using cgroup v1:
+This is missing a user in spi-nor/core.c (in
+spi_nor_set_4byte_addr_mode()).
 
-In 12G ram phone, app residency improve from 29 to 38.
+-michael
 
-
-> better behavior? How do you evaluate that?
->
->> And the cost of refaults on zram is lower than that of IO.
->>
->>
->>>> This patchset extends the proactive reclaim interface to achieve
->>>> unbalanced reclamation. Users can control the reclamation tendency by
->>>> inputting swappiness under the original interface. Specifically, users
->>>> can input special values to extremely reclaim specific pages.
->>> Other have already touched on this in other replies but v2 doesn't have
->>> a per-memcg swappiness
->>>
->>>> Example:
->>>>         echo "1G" 200 > memory.reclaim (only reclaim anon)
->>>>           echo "1G" 0  > memory.reclaim (only reclaim file)
->>>>           echo "1G" 1  > memory.reclaim (only reclaim file)
->>>>
->>>> Note that when performing unbalanced reclamation, the cgroup swappiness
->>>> will be temporarily adjusted dynamically to the input value. Therefore,
->>>> if the cgroup swappiness is further modified during runtime, there may
->>>> be some errors.
->>> In general this is a bad semantic. The operation shouldn't have side
->>> effect that are potentially visible for another operation.
->> So, maybe pass swappiness into sc and keep a single reclamation ensure that
->> swappiness is not changed?
-> That would be a much saner approach.
->
->> Or, it's a bad idea that use swappiness to control unbalance reclaim.
-> Memory reclaim is not really obliged to consider swappiness. In fact the
-> actual behavior has changed several times in the past and it is safer to
-> assume this might change in the future again.
-Thank you for the guidance.
->
-> --
-> Michal Hocko
-> SUSE Labs
-
--- 
-Thanks,
-Huan Yang
-
+>  8 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+> index 393ff37f0d23..d1df5cd401cf 100644
+> --- a/drivers/mtd/nand/spi/core.c
+> +++ b/drivers/mtd/nand/spi/core.c
+> @@ -973,7 +973,7 @@ static int spinand_manufacturer_match(struct 
+> spinand_device *spinand,
+>  		spinand->manufacturer = manufacturer;
+>  		return 0;
+>  	}
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static int spinand_id_detect(struct spinand_device *spinand)
+> diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+> index 3d1252566134..370c4d1572ed 100644
+> --- a/drivers/spi/atmel-quadspi.c
+> +++ b/drivers/spi/atmel-quadspi.c
+> @@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct 
+> spi_mem_op *op)
+>  		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
+>  			return i;
+> 
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static bool atmel_qspi_supports_op(struct spi_mem *mem,
+> diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+> index c9f1d1e1dcf7..b7ada981464a 100644
+> --- a/drivers/spi/spi-ath79.c
+> +++ b/drivers/spi/spi-ath79.c
+> @@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
+>  	/* Only use for fast-read op. */
+>  	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
+>  	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	/* disable GPIO mode */
+>  	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
+> diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+> index ef08fcac2f6d..d96222e6d7d2 100644
+> --- a/drivers/spi/spi-bcm-qspi.c
+> +++ b/drivers/spi/spi-bcm-qspi.c
+> @@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem 
+> *mem,
+> 
+>  	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
+>  	    op->data.dir != SPI_MEM_DATA_IN)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	buf = op->data.buf.in;
+>  	addr = op->addr.val;
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index edd7430d4c05..2dc8ceb85374 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const 
+> struct spi_mem_op *op)
+>  		return ret;
+> 
+>  	if (!spi_mem_internal_supports_op(mem, op))
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && 
+> !spi_get_csgpiod(mem->spi, 0)) {
+>  		ret = spi_mem_access_start(mem);
+> @@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const 
+> struct spi_mem_op *op)
+>  		 * read path) and expect the core to use the regular SPI
+>  		 * interface in other cases.
+>  		 */
+> -		if (!ret || ret != -ENOTSUPP)
+> +		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+>  			return ret;
+>  	}
+> 
+> @@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+>  	if (ret) {
+>  		desc->nodirmap = true;
+>  		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
+> -			ret = -ENOTSUPP;
+> +			ret = -EOPNOTSUPP;
+>  		else
+>  			ret = 0;
+>  	}
+> diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+> index 03db9f016a11..f3bb8bbc192f 100644
+> --- a/drivers/spi/spi-npcm-fiu.c
+> +++ b/drivers/spi/spi-npcm-fiu.c
+> @@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, 
+> const struct spi_mem_op *op)
+>  		op->data.nbytes);
+> 
+>  	if (fiu->spix_mode || op->addr.nbytes > 4)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	if (fiu->clkrate != chip->clkrate) {
+>  		ret = clk_set_rate(fiu->clk, chip->clkrate);
+> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+> index 4c81516b67db..0877dc5058a1 100644
+> --- a/drivers/spi/spi-ti-qspi.c
+> +++ b/drivers/spi/spi-ti-qspi.c
+> @@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem 
+> *mem,
+>  	/* Only optimize read path. */
+>  	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+>  	    !op->addr.nbytes || op->addr.nbytes > 4)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	/* Address exceeds MMIO window size, fall back to regular mode. */
+>  	from = op->addr.val;
+>  	if (from + op->data.nbytes > qspi->mmap_size)
+> -		return -ENOTSUPP;
+> +		return -EOPNOTSUPP;
+> 
+>  	mutex_lock(&qspi->list_lock);
+> 
+> diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
+> index 852ffe013d32..d76f7b5a9b97 100644
+> --- a/drivers/spi/spi-wpcm-fiu.c
+> +++ b/drivers/spi/spi-wpcm-fiu.c
+> @@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, 
+> const struct spi_mem_op *op)
+> 
+>  	wpcm_fiu_stall_host(fiu, false);
+> 
+> -	return -ENOTSUPP;
+> +	return -EOPNOTSUPP;
+>  }
+> 
+>  static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct 
+> spi_mem_op *op)
