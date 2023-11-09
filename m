@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B127B7E74EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D057E74F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345364AbjKIXFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
+        id S1345361AbjKIXJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjKIXFl (ORCPT
+        with ESMTP id S229613AbjKIXJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:05:41 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C994482
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 15:05:39 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b1ff96d5b9so19832447b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 15:05:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699571138; x=1700175938; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HjzQ70dIii0aQke9hZY91N1JYyLYd3OjxGBZLLov1ig=;
-        b=QG5XY3abfTxF4xZnHUG9Z8XAaCN4zUMpxhYqmc2+MhQZRbFTT0+u8cKnpJx12iFrNO
-         1eQgpiorC3TZGle7pVOOO0zJSVgsaa3zzegKJFy3PYsXdMG4FOT7m2S5XawRgkkCqnzU
-         gURdatdsPPMelaJm3pFtsPF3u4zBLu2FeNZolB2WLjtQUajEQlCQ3Dw56c2cIHY1851r
-         BwOSwq5Oc5Z/7XvHEOqyAOCo5MqNw8eH7SS8x+hbIgmEU7XkfqYLQIr3lF1uFSLf7YGN
-         RaDLtLSDTRbpFZj63kan3Jq0OCUFY6/yRuVrSNRtiHlphcCSETnkltW5lITmZeEyPEYF
-         HaUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699571138; x=1700175938;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=HjzQ70dIii0aQke9hZY91N1JYyLYd3OjxGBZLLov1ig=;
-        b=BMmqmyKm4pI3cUE2YQSYPOtBDqMeFhwAk2av7bMGj0mSggiL9Tx0hvX7f3n4qbeaPH
-         G7p9pU64F3/zmilVQXvRdKR8dy0HEQzOneCd5qpLPVgq0GeO9JeVtHeCP0wVxh33uIni
-         Vfppeqfk0dwfYjF0uxQZJIXsqpkVNZiJJ85r76l/k0BSZXHJIxX0J8nSc8dwI+jOAuLc
-         lY/z/I1se12+pwgoD+dHLMAIw/gpgHgSeA1FI5ZnJPnTlAoTNjqarF4930MKQLetAUjv
-         PUcBkXnaYDeSaTscgL5oQ676PAZp26H8kp1+xceObprx95ArachAmlSYN4GABXbdZleE
-         A2Cw==
-X-Gm-Message-State: AOJu0YyavfoNLVVUnrMASycPpKG0RdiqrFwZn0uRCcUd8v5fpbapybV6
-        AjR3RGVAROY+64Q/JqeGIKvFajeWTwA=
-X-Google-Smtp-Source: AGHT+IE018ErF8huRo2NaTD/Dz6GiBtvPamqI3xiGKEPPMgVfo9uZlg4dPCR0tyEabNajivXmcQRoRw7tj4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:6c56:0:b0:59b:ec33:ec6d with SMTP id
- h83-20020a816c56000000b0059bec33ec6dmr201069ywc.5.1699571138466; Thu, 09 Nov
- 2023 15:05:38 -0800 (PST)
-Date:   Thu, 9 Nov 2023 15:05:36 -0800
-In-Reply-To: <CALMp9eRpq+vYDD7s9t54ZMOK6WaXTY_trKzSE3R2vWP9PeSCOA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231109180646.2963718-1-khorenko@virtuozzo.com>
- <20231109180646.2963718-2-khorenko@virtuozzo.com> <CALMp9eRpq+vYDD7s9t54ZMOK6WaXTY_trKzSE3R2vWP9PeSCOA@mail.gmail.com>
-Message-ID: <ZU1lwEONQv_CtBM9@google.com>
-Subject: Re: [PATCH 1/1] KVM: x86/vPMU: Check PMU is enabled for vCPU before
- searching for PMC
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Konstantin Khorenko <khorenko@virtuozzo.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Denis V. Lunev" <den@virtuozzo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 9 Nov 2023 18:09:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90B24231;
+        Thu,  9 Nov 2023 15:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699571372; x=1731107372;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hnpIpGXuGDWvAQGbF6yB63hW3Mlj2/cO9Ba/c4OMGKQ=;
+  b=GhHcTBexPFxgogUfcPgew1mGaYWeLSPKVvYZwcisSBOayRQpmPwifNq2
+   BpK0mLwaPsBRKhVaFFK0OenaIzhKzxOISqoG8SS1qM2ZyOkeFHU2fis+7
+   MEdpPYojLbIkRRjuBW4eOFJEqatWkw036pV9okhkSEbQQ2Nl+H0OK0pKZ
+   SLYrdHmpkVg9bAx2jRf0lSqxDqYJfbq8qaeu90HDo1iIedBsDZ043pWhi
+   IuVzdTFvVVI2qf/03Vv/kBsHaUYWYMdZ6BB8U1dLhhBktktYqretQbyh2
+   zxCkZqjzw2o8ooi4UyN2XF857zl6j7B/4oB72papZz7vS5WLpFFpeY7gd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370298081"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="370298081"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 15:09:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="833984555"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="833984555"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 15:09:31 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v11 0/8] Add support for Sub-NUMA cluster (SNC) systems
+Date:   Thu,  9 Nov 2023 15:09:07 -0800
+Message-ID: <20231109230915.73600-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231031211708.37390-1-tony.luck@intel.com>
+References: <20231031211708.37390-1-tony.luck@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023, Jim Mattson wrote:
-> On Thu, Nov 9, 2023 at 10:24=E2=80=AFAM Konstantin Khorenko <khorenko@vir=
-tuozzo.com> wrote:
-> > ---
-> >  arch/x86/kvm/pmu.c | 26 ++++++++++++++++++++++++++
-> >  1 file changed, 26 insertions(+)
-> >
-> > diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> > index 9ae07db6f0f6..290d407f339b 100644
-> > --- a/arch/x86/kvm/pmu.c
-> > +++ b/arch/x86/kvm/pmu.c
-> > @@ -731,12 +731,38 @@ static inline bool cpl_is_matched(struct kvm_pmc =
-*pmc)
-> >         return (static_call(kvm_x86_get_cpl)(pmc->vcpu) =3D=3D 0) ? sel=
-ect_os : select_user;
-> >  }
-> >
-> > +static inline bool guest_pmu_is_enabled(struct kvm_pmu *pmu)
-> > +{
-> > +       /*
-> > +        * Currently VMs do not have PMU settings in configs which defa=
-ults
-> > +        * to "pmu=3Doff".
-> > +        *
-> > +        * For Intel currently this means pmu->version will be 0.
-> > +        * For AMD currently PMU cannot be disabled:
->=20
-> Isn't that what KVM_PMU_CAP_DISABLE is for?
+The Sub-NUMA cluster feature on some Intel processors partitions the CPUs
+that share an L3 cache into two or more sets. This plays havoc with the
+Resource Director Technology (RDT) monitoring features.  Prior to this
+patch Intel has advised that SNC and RDT are incompatible.
 
-Yeah, see my response.  KVM doesn't clear the metadata, so internally it lo=
-oks
-like the PMU is enabled even though it's effectively disabled from the gues=
-t's
-perspective.
+Some of these CPU support an MSR that can partition the RMID counters in
+the same way. This allows monitoring features to be used. With the caveat
+that users must be aware that Linux may migrate tasks more frequently
+between SNC nodes than between "regular" NUMA nodes, so reading counters
+from all SNC nodes may be needed to get a complete picture of activity
+for tasks.
+
+Cache and memory bandwidth allocation features continue to operate at
+the scope of the L3 cache.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+
+Changes since v10 to patches 1, 3, 4, 7. See patches for details.
+
+Tony Luck (8):
+  x86/resctrl: Prepare for new domain scope
+  x86/resctrl: Prepare to split rdt_domain structure
+  x86/resctrl: Prepare for different scope for control/monitor
+    operations
+  x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
+  x86/resctrl: Add node-scope to the options for feature scope
+  x86/resctrl: Introduce snc_nodes_per_l3_cache
+  x86/resctrl: Sub NUMA Cluster detection and enable
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+
+ Documentation/arch/x86/resctrl.rst        |  23 +-
+ include/linux/resctrl.h                   |  85 +++--
+ arch/x86/include/asm/msr-index.h          |   1 +
+ arch/x86/kernel/cpu/resctrl/internal.h    |  66 ++--
+ arch/x86/kernel/cpu/resctrl/core.c        | 403 +++++++++++++++++-----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  58 ++--
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  68 ++--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  26 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 149 ++++----
+ 9 files changed, 598 insertions(+), 281 deletions(-)
+
+
+base-commit: 5a6a09e97199d6600d31383055f9d43fbbcbe86f
+-- 
+2.41.0
+
