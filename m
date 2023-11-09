@@ -2,188 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA527E6243
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CABC7E6248
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 03:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjKICgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 21:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S232081AbjKICj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 21:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKICgX (ORCPT
+        with ESMTP id S231161AbjKICj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 21:36:23 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6B02582;
-        Wed,  8 Nov 2023 18:36:21 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A91iREn019025;
-        Thu, 9 Nov 2023 02:35:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=TovO9wxWmsNi8DzyoRpB/NtZHOeAPGSyXjBNxCjS7lY=;
- b=vlDr1H1O3IMKgy4Pny65tTiJdPRVooO106GyQ0AkWDPN6m2FOsS1XXI97MrGgECo2Ejk
- eau/PT7uO3VTGwz0fTdLu5D4roq6YwT6WJkt+rVur91WufL7EeyY4Kc3l7gnf+KHOCFg
- NVUmwjjQ8ci/ktpSGz5ySZZPTVKFs0lgBpHTZNG/YCoh7W5cKBuF5+auKAhTxBqsHd/s
- KnuwBF5GF9a929Wi7+fSgLSd5Bk13Fl1T9QT4nV1pXnjV0wza6ZtoN579g3SAI2Vnx9C
- xSWHwnc+fiSRSgAbmNzr/6WWm4rZN4C+we3BwMPPlTI04vA4cNLZCDkm4TjQ9JQqhEj/ kg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w23301n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Nov 2023 02:35:58 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A92TApb011123;
-        Thu, 9 Nov 2023 02:35:57 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vr9df-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Nov 2023 02:35:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KrnrfWIznLiXC+zmv+hAQOgx0CtG1aLlMYKVJjzslK7rY3MuEDQvo0MHOc2KGAMhzcxDqzsqWdMoqaK3lWJiMIYKqjZXs4DHsIj4GW2li6LjoA0eDpytuyPlmuLHFr1w6mfFviymDA5nIit4DbeUeVdrJIppccyY9FeNDly+l4g6kRRTQhGi0WqcLwRm8X9ObgDjXbZlDAcXzfIgK7xpn7ZdrixFlJJPVn2M85PN3au2vzQyQZW/+00CNDq1RWERH4UGHenNiPxXxvp7vl2Xq8/paDex0Sg7qbAy7vDoJuFyoVqFwWzolW4En+2DZTzubv45lMdDkyK66sExQFJOwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TovO9wxWmsNi8DzyoRpB/NtZHOeAPGSyXjBNxCjS7lY=;
- b=lDnrGGH6Doo6WPpPs2V9tkbZd8DqILVIEZxR34ZR/DDwRzMbiJ6IYcl6ZVXp76A5iK1SmPHucp/zIX5u8ItgvkGgd5iPYdODm4BOYT10P65O4KsCCS7uf/eWNnp5KU/Kyj8yVeCNMvvrNtsnUDmqSyO+t0HHK9G/fDhZkdkWoeXX1od023eomr6LZe41KeDZoNLPZeuui9Z897+7g0O+/IGt3qFqguxxtG2WSTfhNWj6ERisX6Y0GiBryt8sew3eWw0fEA8Hg6WTg82yK2+qDeFVSsj8x/1rItgLWYFcOARIdtj0aRZsnYMO1IA3LKtpKDn8j1gd/w56ZEpjIyyP0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 8 Nov 2023 21:39:26 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC85E2590
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 18:39:23 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7b9f08482c8so151909241.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 18:39:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TovO9wxWmsNi8DzyoRpB/NtZHOeAPGSyXjBNxCjS7lY=;
- b=ANGQHnihpCsLCEjBUr/wYoGksNIjLMlou+H4O2KKzczHI0ol8+f6R1HGXJJXAyn7QTudfBW2qpOZu9UmjhRgfsjhU6iqgW5dITA1OxThJHjali/nOEhgTfp6F5wMY2V9XOZmWHAlrG/afO687dYtpnCIacjb1pDkz/NHpSG+Fhk=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by SN7PR10MB6667.namprd10.prod.outlook.com (2603:10b6:806:299::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 02:35:55 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660%4]) with mapi id 15.20.6977.018; Thu, 9 Nov 2023
- 02:35:55 +0000
-To:     <naomi.chu@mediatek.com>
-Cc:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Asutosh Das <quic_asutoshd@quicinc.com>,
-        Can Guo <quic_cang@quicinc.com>, <wsd_upstream@mediatek.com>,
-        <peter.wang@mediatek.com>, <casper.li@mediatek.com>,
-        <powen.kao@mediatek.com>, <alice.chao@mediatek.com>,
-        <chun-hung.wu@mediatek.com>, <cc.chou@mediatek.com>,
-        <eddie.huang@mediatek.com>
-Subject: Re: [PATCH v3 1/1] ufs: core: Expand MCQ queue slot to
- DeviceQueueDepth + 1
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1h6lv64cz.fsf@ca-mkp.ca.oracle.com>
-References: <20231102052426.12006-1-naomi.chu@mediatek.com>
-        <20231102052426.12006-2-naomi.chu@mediatek.com>
-Date:   Wed, 08 Nov 2023 21:35:53 -0500
-In-Reply-To: <20231102052426.12006-2-naomi.chu@mediatek.com> (naomi chu's
-        message of "Thu, 2 Nov 2023 13:24:24 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0263.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::28) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=google.com; s=20230601; t=1699497563; x=1700102363; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IoDAF1C1HAcA+PpMvkLLmDwQmtJn4XmvLM4Nw3eJF8Y=;
+        b=dRoUnOgw7U9zOhs/0i+VdiR703NzY9F/2UF30kZ+bLdDlGMNgf3bllc/hw+VwDziia
+         w6V78ZYWC3HAY5TJRChhOqzBPvZi0v0l1VNF444Ht7pvfSqC+DEG3E3DsAApfnqPBOI6
+         ohKLG7XPRWNU6jy7f6Styjawoo/Epoe/a8reiFO4ONfzwXRYMH/sIGyKGovivudXEf4+
+         s9lI4L8BtH2ka7S6QiNHfU0g9qdt2q93bq/urJ9bFsvyzVCc0efPYB6hs/mhIxuI70iz
+         ApovVZJ5Em8xkNIl0toZRPsHQ/jacmnPu+7krx9YKxsFJqyBvfkH3q41t0fClEhQfXWd
+         8eZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699497563; x=1700102363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IoDAF1C1HAcA+PpMvkLLmDwQmtJn4XmvLM4Nw3eJF8Y=;
+        b=s3mlpc8aQB6WFPnfdbnxFvWbq/2fgtwFwMWseuooyND3xSXBB1tLuxi57O96rNL0lc
+         TOb1cnLTBm/Rgb8RtGkeX6kb5O5tIjKEKxYpK8ZFqvTEYDk3LV3VluOlS8/W4NFbcx0x
+         jBGksv3k+KTSm7A/5SXKPGKEcTV44keefcdggHKKjsIB8/aAFOj+0O1r6zuO0mnhnla0
+         FcAklTz8cXcVnr+t48o0Y75Gi+04npWDGR/nnj9G4tLxJblHhbB8J/gWhMIYKk37Et94
+         DDlD9JUcmc+ORkIhhHyr4Ll7+merHBprVsjjnuiC+F0+h7zh7Nnz4swgkECW5I4TivtM
+         rlxQ==
+X-Gm-Message-State: AOJu0Ywam0/FjnEpSE8if15sQNIphbzKZ2/3cxTfHtIR9sO/a068a4ap
+        fjrAnEtkAQPQjVQ9gx+3khZzmnE/BWGciS/XBhRaVQ==
+X-Google-Smtp-Source: AGHT+IFFkRJvUoPlQ13R7albFmtMDS+H8AANP9cOujoPlk+sG7EujjfJVZajEWG/Gx1UcPEbXMz+/ayvbG3vg4TKYIA=
+X-Received: by 2002:a67:b201:0:b0:45d:873e:c795 with SMTP id
+ b1-20020a67b201000000b0045d873ec795mr3756190vsf.10.1699497562743; Wed, 08 Nov
+ 2023 18:39:22 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SN7PR10MB6667:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35a52286-0126-4aed-a2f1-08dbe0cc9963
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y+iloQIUmHlXXG++t0ED1igZWp12BkuSe9ec6XWWVKUm1FqeC1GSlF+2VjP5eiv+uGozr67w3xDM+PGnp3QQ+3erZASO9CucSSwK7vXH8H7Y1lbaQBGSugzmJuF/Jnao0cLA4UBbRKYYkeNPVUTeXrVrZEV9Y3IOohKhtNXKpR45s0XDAHRDkRHXpsrzmmOpKEPgESEYaSs/jh3d7ZzwrbTNPjbkh25oUvgkjN3vgP5QgRfdhRfSOudPtHHZlXelH84Ui6/6zwOMg6uW5YPvaNxlPx/tTdHPjDr5Ozli02NjeIss4zN6LcOe5vdcAyO1wkUbKjf+PS8Ssz2tNGWQNgyfwTXAlBMujh0aJAI5iu7wSZG2coP+yWEzc9yrfhH+ICFOx9DYKd9dUvKK+h7+IAI5vQce3faOlDEN8XLk4pseTS1ZQJesRhP+z6T8kSaLeWMLfIkL1j01wPN35IDK5qFswmbwnprHycJTp8nNbSZdc9cGSQrwOCd5fry5icLLpAWBzDjowGgro09uPVMzmQGHCoKW3k48W11Y+CWeCvDUY7LbWlkeWkdVNOb8sFzv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(366004)(136003)(376002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(4744005)(38100700002)(316002)(26005)(478600001)(36916002)(6506007)(6486002)(66476007)(66556008)(6512007)(6916009)(66946007)(5660300002)(7416002)(54906003)(2906002)(86362001)(8676002)(41300700001)(8936002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YrnUFAASC5IBRmAKrhgkXfHjaGTLNlKDz3KO4nPzEiOOYWljMhxzPeDMg3Tz?=
- =?us-ascii?Q?5QJhc7MgXfPUo7v0J+bjXdyP45JapD3wQw9Drk3ETNybCjQxBxvfaTQQIFbM?=
- =?us-ascii?Q?gPvsYjNs2hUdRQjJVYVgzReMTzJJ8Z0IG5IkDSninwUo604FH9PoUvHv1ZD+?=
- =?us-ascii?Q?YUH43IVivMPXnqLnv0yBZrXGj+1GfqZMx2GWchKVJ6Gn1tzp8KHvztbUdumT?=
- =?us-ascii?Q?GTklnXZlLsZfOkc8BHVklHeL0tT/Wt5lxDMwNoFQ3u+qb7bcXyC/jHBc2Ibv?=
- =?us-ascii?Q?hRl6CoRCUUyWYtt4/4oX8QKOitedDL7J4KOaUg12HvQbJOJKbX3g9nOT04S+?=
- =?us-ascii?Q?+0hT2pCu64TUNd0XszH9pM66mNm/gU5Hj8g4NeY1Hc3v12gVLp3dNmXMUhkY?=
- =?us-ascii?Q?zmmxcNr/GdXZL8IMx+S/3WpvPCPNdlIIvCloDxow0NE53l7ACHNWZjfju4pD?=
- =?us-ascii?Q?IHoqWizkTGQ7E1/EBVxqbtREeRB4/nzDpIWDBVl9U4YlgYs3qGMYs8l+aQAs?=
- =?us-ascii?Q?rY/UQ2CbGfFV1zELNHy4M7GcU08JEe72/OgJ/4H0ReyFettxJG8K8AMEwe7K?=
- =?us-ascii?Q?iWv2Ycup5CEqGdZJF1u1vxA+QFTUKjbS708qIsi2zQvnjE1fkYltcvC4KPfF?=
- =?us-ascii?Q?jGfGfPXjx0c4hFXO+6+gtUAWJIWC0bGE3JKM2TDuw96dVDHOzYGMsHsLMuSO?=
- =?us-ascii?Q?eK0b7GRLAIbvAHpksOjUz6GFQNbkOoQpJWhKHtoAzTV6aalZ4yxlJOzQTLrS?=
- =?us-ascii?Q?OYgUo95mZai9IEPSY6GuWDRBNbbxdXGjc60EcssnQjr3zuqJyFQwdeCxWnEZ?=
- =?us-ascii?Q?a8FqulrcVbjmC2Kt6yOfhCmuDkz2rTITVYvyWalZE0CsIqepABDQaegc4/hw?=
- =?us-ascii?Q?BNgvPzNYWpHydLTjF9ggkL20knNQLYU+x5fDOpJbrpv4rVQ5EEfF+edHSGC8?=
- =?us-ascii?Q?ilpy6iL6AUrPcwddTjw8iUY1k7nToGLB4mwLfalG6Nw1idkCEfbFCT3xdece?=
- =?us-ascii?Q?dz/pkHKsoQi3TBG7h+d1PqthAfKSiehq/ZeHORN+0CAkeA+pmaSUNsHEJxZt?=
- =?us-ascii?Q?hPUY4TB3KpDBICfZEmP19D6WTJRwjCcYCIRfO7Y2FYqUShr/GutdN3bxgpzS?=
- =?us-ascii?Q?afIDereawjCI4hdsuyEYUz05bLYxHezJ3OMYyyz3z+daQzWXVXQxiO3q3myi?=
- =?us-ascii?Q?Id6W7onApJeSSf+bNGNzN1Q7fi5CELt86uNAyVQWpcvvB2OfV2v/FQxwv245?=
- =?us-ascii?Q?bwCuU4A1y0AFsvyvKycOeojKU12K+GHDh99Jb5QtTKjp3yZX0fzHEYV01Oi1?=
- =?us-ascii?Q?5yZP3FpMjkxMY1ToXpahZRLFOaLjRQ3ji6r7Dx3NrvmnXr1RH8gu0/zJdRVN?=
- =?us-ascii?Q?lfwar89sKGSdE/VyuhS5UYVQdNopQ2X4Pv7jRIqlpfkp7qLq8/rvBmjfXuVf?=
- =?us-ascii?Q?PYJORYxmFdUF+LWfpp/rTjpiOAL1yCjBOzcWc2GWPCW/D2mhE/jfT22r3QGG?=
- =?us-ascii?Q?RAjrBAJkZ0tNxcuxE9ohoxrG+Gbg+1blq4TQ+P3sQUzMJvun5k+a5cH04VZB?=
- =?us-ascii?Q?QoKhw1UPOInaDdlEPqIeNnCP6tEKrvlG0cCppi6oUh6rWaflr4IlAS8BvXJm?=
- =?us-ascii?Q?eA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?f5XgA9sSS9Qb3D+KpgNkLY2RN5HT7KtYbJ+5uZpK30bEZRSGyR+VCEkR5iak?=
- =?us-ascii?Q?RKDJ1/3x4zRwBvg+04FCySHOZseAV0pSDEvFnIEPNUbVTkl9/hNyh69Dk82u?=
- =?us-ascii?Q?bS0gYIlAAZpUsSIwGDPs79VKgZJZCSx/LufYmAUXR4jIzeA0GyqsCSy95BY8?=
- =?us-ascii?Q?JTfip99Paw5tSKT275z3+YxmssBH+69prViMzHCouBvGuaeDD3u+4ljQ5TtB?=
- =?us-ascii?Q?Y47UNfWty5dEYVs69eiC0SJZ/G+wQKRkPTKUc1LXbN2G2cfTx7EAL83ukKKB?=
- =?us-ascii?Q?YysPHopPXcvWV9XN+zRQuIjYy5jSxcP7SefIm1Bw9c6Qd0+U931sqZqj5qIy?=
- =?us-ascii?Q?X9dBILCAhJVOvxBaIVztAFfDCwipkaszDpN9zWG5e6NH/Uaa4EPhfUKy2Pd9?=
- =?us-ascii?Q?l/dCpAFRtcWdC8oj4XV1XbOJvHZDGhD3sN9j89XEiquyVUacq9Z0oHvgUMnp?=
- =?us-ascii?Q?qZLS2WM21N5ycims6zchMkNFcN1F2reCsRqdYR7Hj9eAQ0ACWxLIUuZacPG0?=
- =?us-ascii?Q?MjMeHqESMSJFNuc313spNuoLTvKAl47JMG/mj7jNc4/fJJX5uM/7EygIkwVj?=
- =?us-ascii?Q?gXaIjxHgnW83mtoOhQqb4rMCe9iFijvkvsVGvvwyNydyUUqzNRFWxMMqQSsR?=
- =?us-ascii?Q?32Q7CveYxxuvoNo1dG9ruj/eYnQ8d6nYTBvC0WGKXkL+xxMOcaI/KUrw4QQn?=
- =?us-ascii?Q?9+H/IPTNLjEK1E1JTBNvFXiwet3/gNGp4hzspj5r7jRuWEakUJHGfxknt0DY?=
- =?us-ascii?Q?6suz/XJXf1PQ2mJMmYkOOBkp/2X8K6K8XUe1HpIx807LleJiBUc4EXDWQbF9?=
- =?us-ascii?Q?tTDHZnCDtnXc2U9t4yWQLlYH12lR8WL2vaWX4zklANPJ6VMrOmqvZXCWv9kG?=
- =?us-ascii?Q?+RDRnPEmX0D5MnM3+rOdDL77QFWd0DSBF6dKyVQkkf+ulvObahXqHM5iLNsx?=
- =?us-ascii?Q?UEMeJcOcvqbW3+AvaLOrS8C+tkcsOg8rpUgpinGGj6i0PrTrXVM4VzEj3rrM?=
- =?us-ascii?Q?k+Ap7qmThUMTEEJ78dCvxt/ySCdDuDZ3Fp6pW9h4h7nfHyb7j+aX5sDUCEWi?=
- =?us-ascii?Q?IxCQ4KncY2gN8GDZM0LyU7S7HWdHKw=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35a52286-0126-4aed-a2f1-08dbe0cc9963
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 02:35:55.5524
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b4PTW7EXWf7mALrhVDSQFgC5P4Sxm5HknvQ98JPxVrGmEtb/7NG9i9PlOtlsUogDbF4DdtnnE/KStbKnq7vaIwk4DN4viELfMZeIRocl1lM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6667
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_01,2023-11-08_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=836 bulkscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311090019
-X-Proofpoint-GUID: fUox6ZhKXykL4kLLPrlPc2A4kSnTYw6K
-X-Proofpoint-ORIG-GUID: fUox6ZhKXykL4kLLPrlPc2A4kSnTYw6K
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
+ <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+ <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+ <ZUlp8XutSAScKs_0@google.com> <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
+ <CAKH8qBueYgpxQTvTwngOs6RNjy9yvLF92s1p5nFrobw_UprNMQ@mail.gmail.com>
+ <93eb6a2b-a991-40ca-8f26-f520c986729a@kernel.org> <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
+ <CAHS8izOU06ceKyc5oVZhdCKJqmeRdcRyJBFpjGe=u2yh=V52dQ@mail.gmail.com> <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
+In-Reply-To: <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 8 Nov 2023 18:39:11 -0800
+Message-ID: <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 7, 2023 at 4:01=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
+te:
+>
+> On 11/7/23 4:55 PM, Mina Almasry wrote:
+> > On Mon, Nov 6, 2023 at 4:03=E2=80=AFPM Willem de Bruijn
+> > <willemdebruijn.kernel@gmail.com> wrote:
+> >>
+> >> On Mon, Nov 6, 2023 at 3:55=E2=80=AFPM David Ahern <dsahern@kernel.org=
+> wrote:
+> >>>
+> >>> On 11/6/23 4:32 PM, Stanislav Fomichev wrote:
+> >>>>> The concise notification API returns tokens as a range for
+> >>>>> compression, encoding as two 32-bit unsigned integers start + lengt=
+h.
+> >>>>> It allows for even further batching by returning multiple such rang=
+es
+> >>>>> in a single call.
+> >>>>
+> >>>> Tangential: should tokens be u64? Otherwise we can't have more than
+> >>>> 4gb unacknowledged. Or that's a reasonable constraint?
+> >>>>
+> >>>
+> >>> Was thinking the same and with bits reserved for a dmabuf id to allow
+> >>> multiple dmabufs in a single rx queue (future extension, but build th=
+e
+> >>> capability in now). e.g., something like a 37b offset (128GB dmabuf
+> >>> size), 19b length (large GRO), 8b dmabuf id (lots of dmabufs to a que=
+ue).
+> >>
+> >> Agreed. Converting to 64b now sounds like a good forward looking revis=
+ion.
+> >
+> > The concept of IDing a dma-buf came up in a couple of different
+> > contexts. First, in the context of us giving the dma-buf ID to the
+> > user on recvmsg() to tell the user the data is in this specific
+> > dma-buf. The second context is here, to bind dma-bufs with multiple
+> > user-visible IDs to an rx queue.
+> >
+> > My issue here is that I don't see anything in the struct dma_buf that
+> > can practically serve as an ID:
+> >
+> > https://elixir.bootlin.com/linux/v6.6-rc7/source/include/linux/dma-buf.=
+h#L302
+> >
+> > Actually, from the userspace, only the name of the dma-buf seems
+> > queryable. That's only unique if the user sets it as such. The dmabuf
+> > FD can't serve as an ID. For our use case we need to support 1 process
+> > doing the dma-buf bind via netlink, sharing the dma-buf FD to another
+> > process, and that process receives the data.  In this case the FDs
+> > shown by the 2 processes may be different. Converting to 64b is a
+> > trivial change I can make now, but I'm not sure how to ID these
+> > dma-bufs. Suggestions welcome. I'm not sure the dma-buf guys will
+> > allow adding a new ID + APIs to query said dma-buf ID.
+> >
+>
+> The API can be unique to this usage: e.g., add a dmabuf id to the
+> netlink API. Userspace manages the ids (tells the kernel what value to
+> use with an instance), the kernel validates no 2 dmabufs have the same
+> id and then returns the value here.
+>
+>
 
-> The UFSHCI 4.0 specification mandates that there should always be at
-> least one empty slot in each queue for distinguishing between full and
-> empty states. Enlarge the `hwq->max_entries` to `DeviceQueueDepth +1`
-> to allow UFSHCI 4.0 controllers to fully utilize MCQ queue slots.
+Seems reasonable, will do.
 
-Applied to 6.7/scsi-staging, thanks!
+On Wed, Nov 8, 2023 at 7:36=E2=80=AFAM Edward Cree <ecree.xilinx@gmail.com>=
+ wrote:
+>
+> On 06/11/2023 21:17, Stanislav Fomichev wrote:
+> > I guess I'm just wondering whether other people have any suggestions
+> > here. Not sure Jonathan's way was better, but we fundamentally
+> > have two queues between the kernel and the userspace:
+> > - userspace receiving tokens (recvmsg + magical flag)
+> > - userspace refilling tokens (setsockopt + magical flag)
+> >
+> > So having some kind of shared memory producer-consumer queue feels natu=
+ral.
+> > And using 'classic' socket api here feels like a stretch, idk.
+>
+> Do 'refilled tokens' (returned memory areas) get used for anything other
+>  than subsequent RX?
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Hi Ed!
+
+Not really, it's only the subsequent RX.
+
+>  If not then surely the way to return a memory area
+>  in an io_uring idiom is just to post a new read sqe ('RX descriptor')
+>  pointing into it, rather than explicitly returning it with setsockopt.
+
+We're interested in using this with regular TCP sockets, not
+necessarily io_uring. The io_uring interface to devmem TCP may very
+well use what you suggest and can drop the setsockopt.
+
+
+> (Being async means you can post lots of these, unlike recvmsg(), so you
+>  don't need any kernel management to keep the RX queue filled; it can
+>  just be all handled by the userland thus simplifying APIs overall.)
+> Or I'm misunderstanding something?
+>
+> -e
+
+
+--
+Thanks,
+Mina
