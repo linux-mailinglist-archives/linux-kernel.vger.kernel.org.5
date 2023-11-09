@@ -2,318 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76737E6A6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F8D7E6A6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbjKIMU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S231944AbjKIMUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjKIMU2 (ORCPT
+        with ESMTP id S229651AbjKIMUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:20:28 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE632702
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 04:20:25 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7bb42a18bf1so271616241.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 04:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699532425; x=1700137225; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BPcS64LNsr6Re9WYBQ3Sfo6KPTli043xINsR6eR0oWU=;
-        b=CGuM6wOVAZlujMOXHQNeku1AE6QvAmM2iij+iJLrYAQC+V2esDVnIAL/n2CqDR+dqw
-         LZLkwCzUOcD6ZOE98OaiHbINwIwhVP+/r20yI5s5s9Y4dHeksn6jU+kH9OwcOmCdzqn4
-         a9TS+wGPZLS+49mbMhxQ8FLGxePOcPtOAVjnR1W+87oWfDtTzBGDHzvMKwQkcHzR2Eul
-         SlduiTaCIla+dHwQ2FFGc6rByWzCsKo75/cfx63kjxyJC4w5gFD4bI1m82CmKxzo+xQM
-         CHHfiiqGZ6EGC6jUCM9FjKX6z7wzgAi9KojyMSWa4c7tEoIDOObdG3DCBNcrb2+uzDx3
-         v3dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699532425; x=1700137225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BPcS64LNsr6Re9WYBQ3Sfo6KPTli043xINsR6eR0oWU=;
-        b=YYHxHDG79ueLe5DJQguy384ZbSDOpy367UHR/g7QoSF9w25ZL9tM+cHUu82IltFf/U
-         qNz3vTa37yOAD4XWAfrGf13GG2L4Cc9i3Is+UekExJu7zoyVicnm2h9bC1pamuZLk1hv
-         YVU00V5WdSNZFymbxUdfTjh1aINkalaeLQIHiIaQksu4eMsru9MTL43j044e8jW6mTJj
-         VowxDsj6j+pmVBRml8R+SeVMcwWO6D3PcD6Bh4dqUo7Ju+fIW9rNoiKWtLw8zq4grceF
-         wI6OivznXmiyhnWCydu59b7o4f4dTOuwVagq63yxsDbsWhIDkDYkNIU3wjXGxWhXAimL
-         sAxw==
-X-Gm-Message-State: AOJu0YyzhT6BV3aEBV3EoIEu/qSl3mK/lzmZqAExX3NPplTUc9SBkH4r
-        BHeblcv3nVvuETBevp0dHhDBjs39kwaXOyNIddDrbg==
-X-Google-Smtp-Source: AGHT+IFfFl922mscmOxZBJu/cgw+xUG99huJKamj4SvfI8CIyJ6yJO0CbXCAJJce1KiW6D25ou0quO0lgo5uh+PiKfc=
-X-Received: by 2002:a67:ef5e:0:b0:45d:b022:9835 with SMTP id
- k30-20020a67ef5e000000b0045db0229835mr4061147vsr.22.1699532424738; Thu, 09
- Nov 2023 04:20:24 -0800 (PST)
+        Thu, 9 Nov 2023 07:20:38 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78E52702
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 04:20:35 -0800 (PST)
+Received: from dggpemm500018.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SR1CC6ztkzPnfY;
+        Thu,  9 Nov 2023 20:16:23 +0800 (CST)
+Received: from [10.174.176.191] (10.174.176.191) by
+ dggpemm500018.china.huawei.com (7.185.36.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 9 Nov 2023 20:20:33 +0800
+Message-ID: <fb427e6c-e89b-47f9-8947-9493b1dbfb0e@huawei.com>
+Date:   Thu, 9 Nov 2023 20:20:22 +0800
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-8-almasrymina@google.com> <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
- <CAHS8izNbw7vAGo2euQGA+TF9CgQ8zwrDqTVGsOSxh22_uo0R1w@mail.gmail.com>
- <d4309392-711a-75b0-7bf0-9e7de8fd527e@huawei.com> <CAHS8izM1P6d8jgyWE9wFJUJah2YFsjHP2uikDwA0vR=3QA+BXQ@mail.gmail.com>
- <a8ae22dc-5b85-9efe-16c7-d95d455828fa@huawei.com>
-In-Reply-To: <a8ae22dc-5b85-9efe-16c7-d95d455828fa@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 9 Nov 2023 04:20:11 -0800
-Message-ID: <CAHS8izOh8yC7q9yJN+RAKGs=AgsEf13MnFDmG46=EU05ynnLKw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From:   "liutie (A)" <liutie4@huawei.com>
+Subject: Re: [Bug report] A variant deadlock issue of CPU hot-unplug operation
+ vs. the CFS bandwidth timer
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Yu Liao <liaoyu15@huawei.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liwei (GF)" <liwei391@huawei.com>, xiafukun <xiafukun@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Phil Auld <pauld@redhat.com>, <vschneid@redhat.com>,
+        <vdonnefort@google.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        <liuchao173@huawei.com>
+References: <6f0f3e42-ddf2-1bbf-ec80-bcbae41c700c@huawei.com>
+ <87a5rphara.ffs@tglx>
+Content-Language: en-US
+In-Reply-To: <87a5rphara.ffs@tglx>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.191]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500018.china.huawei.com (7.185.36.111)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2023/11/9 11:20, Mina Almasry wrote:
-> > On Wed, Nov 8, 2023 at 2:56=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
-.com> wrote:
->
-> >
-> > Agreed everything above is undoable.
-> >
-> >> But we might be able to do something as folio is doing now, mm subsyst=
-em
-> >> is still seeing 'struct folio/page', but other subsystem like slab is =
-using
-> >> 'struct slab', and there is still some common fields shared between
-> >> 'struct folio' and 'struct slab'.
-> >>
-> >
-> > In my eyes this is almost exactly what I suggested in RFC v1 and got
-> > immediately nacked with no room to negotiate. What we did for v1 is to
-> > allocate struct pages for dma-buf to make dma-bufs look like struct
-> > page to mm subsystem. Almost exactly what you're describing above.
->
-> Maybe the above is where we have disagreement:
-> Do we still need make dma-bufs look like struct page to mm subsystem?
-> IMHO, the answer is no. We might only need to make dma-bufs look like
-> struct page to net stack and page pool subsystem. I think that is already
-> what this pacthset is trying to do, what I am suggesting is just make
-> it more like 'struct page' to net stack and page pool subsystem, in order
-> to try to avoid most of the 'if' checking in net stack and page pool
-> subsystem.
->
-
-First, most of the checking in the net stack is
-skb_frag_not_readable(). dma-buf are fundamentally not kmap()able and
-not readable. So we can't remove those, no matter what we do I think.
-Can we agree on that? If so, lets discuss removing most of the ifs in
-the page pool, only.
-
-> > It's a no-go. I don't think renaming struct page to netmem is going to
-> > move the needle (it also re-introduces code-churn). What I feel like I
-> > learnt is that dma-bufs are not struct pages and can't be made to look
-> > like one, I think.
-> >
-> >> As the netmem patchset, is devmem able to reuse the below 'struct netm=
-em'
-> >> and rename it to 'struct page_pool_iov'?
-> >
-> > I don't think so. For the reasons above, but also practically it
-> > immediately falls apart. Consider this field in netmem:
-> >
-> > + * @flags: The same as the page flags.  Do not use directly.
-> >
-> > dma-buf don't have or support page-flags, and making dma-buf looks
-> > like they support page flags or any page-like features (other than
-> > dma_addr) seems extremely unacceptable to mm folks.
->
-> As far as I tell, as we limit the devmem usage in netstack, the below
-> is the related mm function call for 'struct page' for devmem:
-> page_ref_*(): page->_refcount does not need changing
-
-Sorry, I don't understand. Are you suggesting we call page_ref_add() &
-page_ref_sub() on page_pool_iov? That is basically making
-page_pool_iov look like struct page to the mm stack, since page_ref_*
-are mm calls, which you say above we don't need to do. We will still
-need to special case this, no?
-
-> page_is_pfmemalloc(): which is corresponding to page->pp_magic, and
->                       devmem provider can set/unset it in it's 'alloc_pag=
-es'
->                       ops.
-
-page_is_pfmemalloc() has nothing to do with page->pp_magic. It checks
-page->lru.next to figure out if this is a pfmemalloc. page_pool_iov
-has no page->lru.next. Still need to special case this?
-
-> page_to_nid(): we may need to handle it differently somewhat like this
->                patch does as page_to_nid() may has different implementati=
-on
->                based on different configuration.
-
-So you're saying we need to handle page_to_nid() differently for
-devmem? So we're not going to be able to avoid the if statement.
-
-> page_pool_iov_put_many(): as mentioned in other thread, if net stack is n=
-ot
->                           calling page_pool_page_put_many() directly, we
->                           can reuse napi_pp_put_page() for devmem too, an=
-d
->                           handle the special case for devmem in 'release_=
-page'
->                           ops.
->
-
-page_pool_iov_put_many()/page_pool_iov_get_many() are called to do
-refcounting before the page is released back to the provider. I'm not
-seeing how we can handle the special case inside of 'release_page' -
-that's too late, as far as I can tell.
-
-The only way to remove the if statements in the page pool is to
-implement what you said was not feasible in an earlier email. We would
-define this struct:
-
-struct netmem {
-        /* common fields */
-        refcount_t refcount;
-        bool is_pfmemalloc;
-        int nid;
-        ......
-        union {
-                struct devmem{
-                        struct dmabuf_genpool_chunk_owner *owner;
-                };
-
-                struct page * page;
-        };
-};
-
-Then, we would require all memory providers to allocate struct netmem
-for the memory and set the common fields, including ones that have
-struct pages. For devmem, netmem->page will be NULL, because netmem
-has no page.
-
-If we do that, the page pool can ignore whether the underlying memory
-is page or devmem, because it can use the common fields, example:
-
-/* page_ref_count replacement */
-netmem_ref_count(struct netmem* netmem) {
-    return netmem->refcount;
-}
-
-/* page_ref_add replacement */
-netmem_ref_add(struct netmem* netmem) {
-   atomic_inc(netmem->refcount);
-}
-
-/* page_to_nid replacement */
-netmem_nid(struct netmem* netmem) {
-    return netmem->nid;
-}
-
-/* page_is_pfmemalloc() replacement */
-netmem_is_pfmemalloc(struct netmem* netmem) {
-    return netmem->is_pfmemalloc;
-}
-
-/* page_ref_sub replacement */
-netmem_ref_sub(struct netmem* netmem) {
-    atomic_sub(netmet->refcount);
-    if (netmem->refcount =3D=3D 0) {
-                  /* release page to the memory provider.
-                   * struct page memory provider will do put_page(),
-                   * devmem will do something else */
-           }
-     }
-}
 
 
-I think this MAY BE technically feasible, but I'm not sure it's better:
+On 2023/11/7 22:57, Thomas Gleixner wrote:
+> 
+> Bah.
+> 
+> So we can actually migrate the hrtimers away from the outgoing CPU in
+> the dying callbacks. That's safe as nothing can queue an hrtimer remote
+> on the outgoing CPU because all other CPUs are spinwaiting with
+> interrupts disabled in stomp_machine() until the CPU marked itself
+> offline.
+> 
+> Survived a quick test, but needs some scrunity and probably a sanity
+> check in the post dead stage.
+> 
+> Thanks,
+> 
+>          tglx
+> ---
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -195,6 +195,7 @@ enum cpuhp_state {
+>   	CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
+>   	CPUHP_AP_ARM64_ISNDEP_STARTING,
+>   	CPUHP_AP_SMPCFD_DYING,
+> +	CPUHP_AP_HRTIMERS_DYING,
+>   	CPUHP_AP_X86_TBOOT_DYING,
+>   	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
+>   	CPUHP_AP_ONLINE,
+> --- a/include/linux/hrtimer.h
+> +++ b/include/linux/hrtimer.h
+> @@ -531,9 +531,9 @@ extern void sysrq_timer_list_show(void);
+>   
+>   int hrtimers_prepare_cpu(unsigned int cpu);
+>   #ifdef CONFIG_HOTPLUG_CPU
+> -int hrtimers_dead_cpu(unsigned int cpu);
+> +int hrtimers_cpu_dying(unsigned int cpu);
+>   #else
+> -#define hrtimers_dead_cpu	NULL
+> +#define hrtimers_cpu_dying	NULL
+>   #endif
+>   
+>   #endif
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -2116,7 +2116,7 @@ static struct cpuhp_step cpuhp_hp_states
+>   	[CPUHP_HRTIMERS_PREPARE] = {
+>   		.name			= "hrtimers:prepare",
+>   		.startup.single		= hrtimers_prepare_cpu,
+> -		.teardown.single	= hrtimers_dead_cpu,
+> +		.teardown.single	= NULL,
+>   	},
+>   	[CPUHP_SMPCFD_PREPARE] = {
+>   		.name			= "smpcfd:prepare",
+> @@ -2208,6 +2208,12 @@ static struct cpuhp_step cpuhp_hp_states
+>   		.startup.single		= NULL,
+>   		.teardown.single	= smpcfd_dying_cpu,
+>   	},
+> +	[CPUHP_AP_HRTIMERS_DYING] = {
+> +		.name			= "hrtimers:dying",
+> +		.startup.single		= NULL,
+> +		.teardown.single	= hrtimers_cpu_dying,
+> +	},
+> +
+>   	/* Entry state on starting. Interrupts enabled from here on. Transient
+>   	 * state for synchronsization */
+>   	[CPUHP_AP_ONLINE] = {
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -2219,29 +2219,22 @@ static void migrate_hrtimer_list(struct
+>   	}
+>   }
+>   
+> -int hrtimers_dead_cpu(unsigned int scpu)
+> +int hrtimers_cpu_dying(unsigned int dying_cpu)
+>   {
+>   	struct hrtimer_cpu_base *old_base, *new_base;
+> -	int i;
+> +	int i, ncpu = cpumask_first(cpu_active_mask);
+>   
+> -	BUG_ON(cpu_online(scpu));
+> -	tick_cancel_sched_timer(scpu);
+> +	tick_cancel_sched_timer(dying_cpu);
+> +
+> +	old_base = this_cpu_ptr(&hrtimer_bases);
+> +	new_base = &per_cpu(hrtimer_bases, ncpu);
+>   
+> -	/*
+> -	 * this BH disable ensures that raise_softirq_irqoff() does
+> -	 * not wakeup ksoftirqd (and acquire the pi-lock) while
+> -	 * holding the cpu_base lock
+> -	 */
+> -	local_bh_disable();
+> -	local_irq_disable();
+> -	old_base = &per_cpu(hrtimer_bases, scpu);
+> -	new_base = this_cpu_ptr(&hrtimer_bases);
+>   	/*
+>   	 * The caller is globally serialized and nobody else
+>   	 * takes two locks at once, deadlock is not possible.
+>   	 */
+> -	raw_spin_lock(&new_base->lock);
+> -	raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
+> +	raw_spin_lock(&old_base->lock);
+> +	raw_spin_lock_nested(&new_base->lock, SINGLE_DEPTH_NESTING);
+>   
+>   	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
+>   		migrate_hrtimer_list(&old_base->clock_base[i],
+> @@ -2252,15 +2245,13 @@ int hrtimers_dead_cpu(unsigned int scpu)
+>   	 * The migration might have changed the first expiring softirq
+>   	 * timer on this CPU. Update it.
+>   	 */
+> -	hrtimer_update_softirq_timer(new_base, false);
+> +	__hrtimer_get_next_event(new_base, HRTIMER_ACTIVE_SOFT);
+> +	/* Tell the other CPU to retrigger the next event */
+> +	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
+>   
+> -	raw_spin_unlock(&old_base->lock);
+>   	raw_spin_unlock(&new_base->lock);
+> +	raw_spin_unlock(&old_base->lock);
+>   
+> -	/* Check, if we got expired work to do */
+> -	__hrtimer_peek_ahead_timers();
+> -	local_irq_enable();
+> -	local_bh_enable();
+>   	return 0;
+>   }
+>   
 
-1. It is a huge refactor to the page pool, lots of code churn. While
-the page pool currently uses page*, it needs to be completely
-refactored to use netmem*.
-2. It causes extra memory usage. struct netmem needs to be allocated
-for every struct page.
-3. It has minimal perf upside. The page_is_page_pool_iov() checks
-currently have minimal perf impact, and I demonstrated that to Jesper
-in RFC v2.
-4. It also may not be technically feasible. I'm not sure how netmem
-interacts with skb_frag_t. I guess we replace struct page* bv_page
-with struct netmem* bv_page, and add changes there.
-5. Drivers need to be refactored to use netmem* instead of page*,
-unless we cast netmem* to page* before returning to the driver.
+Thanks for the patch. Tested in v6.6 and this patch works.
 
-Possibly other downsides, these are what I could immediately think of.
+Tested-by: Liu Tie <liutie4@huawei.com>
 
-If I'm still misunderstanding your suggestion, it may be time to send
-me a concrete code snippet of what you have in mind. I'm a bit
-confused at the moment because the only avenue I see to remove the if
-statements in the page pool is to define the struct that we agreed is
-not feasible in earlier emails.
-
-> >
-> >> So that 'struct page' for normal
-> >> memory and 'struct page_pool_iov' for devmem share the common fields u=
-sed
-> >> by page pool and net stack?
-> >
-> > Are you suggesting that we'd cast a netmem* to a page* and call core
-> > mm APIs on it? It's basically what was happening with RFC v1, where
-> > things that are not struct pages were made to look like struct pages.
-> >
-> > Also, there isn't much upside for what you're suggesting, I think. For
-> > example I can align the refcount variable in struct page_pool_iov with
-> > the refcount in struct page so that this works:
-> >
-> > put_page((struct page*)ppiov);
-> >
-> > but it's a disaster. Because put_page() will call __put_page() if the
-> > page is freed, and __put_page() will try to return the page to the
-> > buddy allocator!
->
-> As what I suggested above, Can we handle this in devmem provider's
-> 'release_page' ops instead of calling put_page() directly as for devmem.
->
-> >
-> >>  And we might be able to reuse the 'flags',
-> >> '_pp_mapping_pad' and '_mapcount' for specific mem provider, which is =
-enough
-> >> for the devmem only requiring a single pointer to point to it's
-> >> owner?
-> >>
-> >
-> > All the above seems quite similar to RFC v1 again, using netmem
-> > instead of struct page. In RFC v1 we re-used zone_device_data() for
-> > the dma-buf owner equivalent.
->
-> As we have added a few checkings to limit 'struct page' for devmem to
-> be only used in net stack, we can decouple 'struct page' for devmem
-> from mm subsystem, zone_device_data() is not really needed, right?
->
-> If we can decouple 'struct page' for normal memory from mm subsystem
-> through the folio work in the future, then we may define a more abstract
-> structure for page pool and net stack instead of reusing 'struct page'
-> from mm.
->
-> >
-
-
-
---
-Thanks,
-Mina
+Best regards,
+Tie
