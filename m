@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998837E6CF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0050A7E6CF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbjKIPLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 10:11:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S234485AbjKIPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 10:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234597AbjKIPLh (ORCPT
+        with ESMTP id S232277AbjKIPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 10:11:37 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E113858
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:11:32 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6c320a821c4so906846b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:11:32 -0800 (PST)
+        Thu, 9 Nov 2023 10:12:13 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2081735
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:12:11 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6c320a821c4so907657b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:12:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1699542691; x=1700147491; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O5v+dAwjm30e0kGB+NS1Oi1w8KzDlGIijfK5vUktEP8=;
-        b=cEOp1sMzJv8VacF/cxeL/ZOnaV7a6HN7mxabl9ywR8/liazX1sKTdtf175aZA1eKOf
-         ZaDvPmS1d4eENFYYNR5tlLu10beodO6uxBmeFmpXZTB+46xsnxgcg2oAVQIlBUVXeSko
-         hYxfVQm4Z3BkPMhYZIa28VRfoNsxmY1VyCPw5kwNE9U9DwSO2uH9WksIXce/HVjxZbAZ
-         v6D+DCSY1fvmweksMTpNyFW2IW5US6vMWyzwYA8t6tucb7aKlJdM8u6d0liz6A5JYqVg
-         31i8exexu3aHfu1IxFHSntxe0cA3PFZjeVdTY4UMxpAruv/P6IeZ2O73ETF7H9VnEF8s
-         66Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699542691; x=1700147491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=9elements.com; s=google; t=1699542731; x=1700147531; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O5v+dAwjm30e0kGB+NS1Oi1w8KzDlGIijfK5vUktEP8=;
-        b=T9zni6VJH2jY9NxNvrZWLITI+b5oRZ9bMIDRZUrAbC6Nf1kJkDErEClHPvdYxkYhPK
-         P1teYMTZM9Eoob9ZIJn0ReXl/I1g0AJySKCieUqqkTV1JZmwizqZP1nICI1Hj1M35/kp
-         yadEkiMrzFP11KwLS+ixr+kFktNeww8m5d+v3KfAv9NAu4E4uMxjppW1o92+UyUF3Iax
-         gu6pP06lqJGeS1hWMvAN5YehUjmq/F7NUmeLYnGCyTlqikoGakzvnvfFtscjy36ONO9t
-         PWPE+wffDag7FP78LSwZfTtdiZSDvRlmuylAgQu8qpZYK+N0wizGDp7wFJam7NWSUQdR
-         Zv3Q==
-X-Gm-Message-State: AOJu0YwknGMHTxvPWjTyO+W3lByR8pyJyER7gdRaCwLinowByoujH0Y8
-        pHRl9EGB9BPffRgUVFhape29XOaV7NycljOBhH0CIQ==
-X-Google-Smtp-Source: AGHT+IGPQ9oO60T01y2Uku+Q2RO9uw7Rk3c5JPNl995y8AVjNbF2aI3KuXg25V5pcpsrcmm9QFYssA==
-X-Received: by 2002:a05:6a20:a127:b0:181:6bde:72aa with SMTP id q39-20020a056a20a12700b001816bde72aamr6001863pzk.42.1699542691541;
-        Thu, 09 Nov 2023 07:11:31 -0800 (PST)
-Received: from sunil-laptop ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id o3-20020a62cd03000000b00686b649cdd0sm11221586pfg.86.2023.11.09.07.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 07:11:31 -0800 (PST)
-Date:   Thu, 9 Nov 2023 20:41:24 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] wifi: iwlwifi: Fix warning by adding dependency on DMI
-Message-ID: <ZUz2nLO28djDYZHJ@sunil-laptop>
-References: <20231109054027.2870124-1-sunilvl@ventanamicro.com>
- <5a5203915a94a0299131d3e03d132c40bd98dee6.camel@sipsolutions.net>
+        bh=/9EQ/3uynt3hQPZvP5J6LtKRk4MUPps4VFOyx+7JFU0=;
+        b=crU3O6guLPXOqOp7LqJ/+sgWk+r4sBmWCOMt6Fbhci4E14pk/i2ZROvM8RPWOl0PcD
+         3f8n1AIHOcbOT7Davzy8wWuqfo+Kr4Q04oGhMLpx0p5zDhgwWWGyi8HlVhJZUVUFzcPn
+         /t+Xxt7ZjSN3iuy3MP5rz0irDQrWmdXu88lYl+gakMNsWp0eSZqQXCA/d2eYoV2I2Ag8
+         WZc4ctr8loxzr5eUM1XcSkC6dSBuNxLm9O5PwUPRenJtBVdSza00zVnI8ezAImVe+YLP
+         f2l9UB2UwdEjWbPYe7R7Myezdgnch5Um/HYdGvad575dayb6XN81eSiNUx0TaKudXIuS
+         Qlxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699542731; x=1700147531;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/9EQ/3uynt3hQPZvP5J6LtKRk4MUPps4VFOyx+7JFU0=;
+        b=praj7LCQqAE4PLBj9vwxoIjszlTWQZ1J62SsdBQe/DxnisThASW/etQCLPsr6nDoG9
+         K1jJBLug6oEAprVSBRepmVq/wPD2uf8O+rrNKqBtsCL2kO7rZ61nrKsZU2xEAbd7F3Ub
+         ybM97lxGHgFOP7hvhm1zd2M8793Y/mJSYYYgj9UkLT3ePdCQDJrHKbjs/cxEMzT2ufLb
+         sOHYO5EPCRA1t38HTL8jzfjfmBMYCO7JavBfY8+73qrbv5JKr1fP3ngvUzQHlmbyYdM8
+         4gL5Ln3osHzFcYUDUS7+gStQ8BxHo5nhWViHyueL8hIGD5ghfWpj8c/blcURc7hSsd1K
+         AONA==
+X-Gm-Message-State: AOJu0YzBegTSCrigq96eQz0+8Qrlvp9r6iw3ELp03dTmaFy1KNiliJeB
+        99iRVZ03oWvjqLTQdaUQE2qLUYD6sbbPGKQk/kwodg==
+X-Google-Smtp-Source: AGHT+IHOOLBbkbzPm8gGREhCPqQ8oNM3NzFr4uZyUvE8yTy1xKc8RenLWSpzcT5jwfw72MTK9GtxETFWGps9OsY+uQs=
+X-Received: by 2002:a17:90b:3a8d:b0:280:6b5b:3f40 with SMTP id
+ om13-20020a17090b3a8d00b002806b5b3f40mr1891120pjb.8.1699542730865; Thu, 09
+ Nov 2023 07:12:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a5203915a94a0299131d3e03d132c40bd98dee6.camel@sipsolutions.net>
+References: <20231005133059.917577-1-naresh.solanki@9elements.com>
+ <f8dd6d53-7c0b-4a89-9ec4-400aa242c020@sirena.org.uk> <CABqG17iufSniSLZ2vU5fFduFwV2FL8jNzMcsveOgFUME1jXmgg@mail.gmail.com>
+ <aa3f5615-dddf-4c94-88c7-494cf7cd80ab@sirena.org.uk> <CABqG17h949R+3NFgA1MvPLZFc6zkBi+WRPSE9qP4fCBv5gdXHw@mail.gmail.com>
+ <c2dd0533-3a60-4481-8621-86578e62aab6@sirena.org.uk> <CABqG17h0OnMD-L1vYkJobji+Z=QPuYrd=ra1d7DncAN0_TO23A@mail.gmail.com>
+ <f5829ebc-b3ab-409b-9271-e066c08aec6e@sirena.org.uk> <CABqG17iBsEO-NnRvgFJ9e5PvT7q+HgLyiDDfO5GcvXh4ueySsA@mail.gmail.com>
+ <ZUzDBCaqR9Ui4j71@finisterre.sirena.org.uk>
+In-Reply-To: <ZUzDBCaqR9Ui4j71@finisterre.sirena.org.uk>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Thu, 9 Nov 2023 20:41:58 +0530
+Message-ID: <CABqG17gc40_z4FWSwnqUwnXGKZzGAHs6zD7br03chcT_+bGWLw@mail.gmail.com>
+Subject: Re: [PATCH] drivers/regulator: Notify sysfs about status changes
+To:     Mark Brown <broonie@kernel.org>
+Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:09:53AM +0100, Johannes Berg wrote:
-> On Thu, 2023-11-09 at 11:10 +0530, Sunil V L wrote:
-> > This driver currently assumes CONFIG_DMI is enabled along with ACPI.
-> > This may not be true. Due to this, the kernel test bot reports new
-> > warning like below for RISC-V allyesconfig builds.
-> > 
-> > > > drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25:
-> > warning: '%s' directive argument is null [-Wformat-overflow=]
-> > 
-> > 1190 | "System vendor '%s' is not in the approved list, disabling PPAG.\n",
-> > 
-> > Fix the warning by adding dependency on CONFIG_DMI.
-> > 
-> 
-> Not sure that's the right fix - why not put checks in the code there?
-> 
-> Is it just a build warning?
-> 
-> maybe
-> 
-> -dmi_get_system_info(DMI_SYS_VENDOR)
-> +dmi_get_system_info(DMI_SYS_VENDOR) ?: "<unknown>"
-> 
-Thanks!, Johannes. It is a build warning because of allyesconfig build.
+Hi Mark,
 
-Your suggestion works. I will send v2 with this solution.
 
-Thanks,
-Sunil
+On Thu, 9 Nov 2023 at 17:01, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Nov 09, 2023 at 04:08:06PM +0530, Naresh Solanki wrote:
+> > On Thu, 2 Nov 2023 at 22:20, Mark Brown <broonie@kernel.org> wrote:
+>
+> > > Ah, right.  Everything except for the enable and disable there looks
+> > > like it should be OK since they should normally just not happen but t=
+he
+> > > enables and disables might get a bit frequent with runtime PM - not
+> > > *super* frequent like voltage scaling but enough that people could ha=
+ve
+> > > an issue with it.
+>
+> > I aim for a straightforward implementation.
+> > Using attributes such as status or state seems ideal for receiving
+> > notifications.
+> > In my case, the application focuses on status changes=E2=80=94whether i=
+t's on, off,
+> > or encountering an error.
+> > These changes are driven by events originating from the regulator.
+> > So below change is what I see fit well.
+> >
+> >         status_events =3D REGULATOR_EVENT_DISABLE;
+> >         status_events |=3D REGULATOR_EVENT_ENABLE;
+> >         status_events |=3D REGULATOR_EVENT_FAIL;
+> >         status_events |=3D REGULATOR_EVENT_FORCE_DISABLE;
+> >         status_events |=3D REGULATOR_EVENT_ABORT_DISABLE;
+>
+> In terms of the implementation for delivering uevents this looks fine,
+> my concern here is that for some systems the enable and disable events
+> might happen more often than is really a good fir for delivering via
+> uevents, if a device like say a SD card is getting powered up and down
+> via runtime PM that might happen relatively often and then the system
+> would get a lot of uevents which it would most likely end up ignoring.
+> That could have a noticable impact on power or performance.
+
+May be in that case should we consider adding a kernel parameter or
+some property in sysfs attribute to allow getting events ?
+
+Regards,
+Naresh
