@@ -2,174 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B027E7282
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3ADF7E7281
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345118AbjKIT4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53014 "EHLO
+        id S231954AbjKIT4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:56:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjKIT4r (ORCPT
+        with ESMTP id S234623AbjKIT4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:56:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C4D3C25
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:55:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699559748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=449SuGePvATjn5tp4HyLcKrMf3SZiN0UHIQUcLzqf1M=;
-        b=Bb5vzacC4glpCwpIvGANyNZN4OyEwKCr0in5nQJ93tqIsvaNnDZudZrdh2nDFvczTkqcGR
-        m6JqKU2MfnRwJQThOczDeBwr/JKepes8DMQO8jBrbOPanh5V2IcLBV6JJiidIch0D8MfE3
-        AE1i+7zHWGZAjbRGWo4r8u0I4EhRvAo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-33-ZiM1rVQvMsm6KRg5wbFT7g-1; Thu, 09 Nov 2023 14:55:47 -0500
-X-MC-Unique: ZiM1rVQvMsm6KRg5wbFT7g-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4084163ecd9so8599085e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:55:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699559746; x=1700164546;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=449SuGePvATjn5tp4HyLcKrMf3SZiN0UHIQUcLzqf1M=;
-        b=kOyOvoxa9oJwl151l5/eKk4/KFkD/8Bvy3AG4VP4uJH0nopsJC6z3Osy02jtlSDX56
-         oafkvMgFBpPKpZjgeTntETk/Mm6mCrxjzXgVDXMKIGJFlS01PIHV5zQkTRdOSMgzVHAY
-         uTXiaS8Ikn/P1xG7w03AEo8YH5m5EsloXfiO/MDW8n3ud/C7wm0b5d99+nu4JTTcjna/
-         VhDvUYf8y7Gkp7cQtbpzERoE+fztrfstV+RGMBSFPPOTmaBsT3xYwlj/xqPXLutaAXb1
-         mY8NF1v0o80tC6XlnhFq036mfNQ0VsQNxi1q1SEWTiSykrJS+9vv+pV+cyOclD2R7WcX
-         QD1Q==
-X-Gm-Message-State: AOJu0YyiEuR99mK0l5cJsQEbiDAOiIsTKSQQWMKMtq/AOpvDlJy1bJE8
-        DxXITYjm/MOzRNHqy18Y7Oz4i+3FcDuuOxZULzhgklE0D0vQLo6+L+n7rMOkMmQbIh/BBT2mcqh
-        v3mU0eTpYDssV3AwTNUv9s2lI
-X-Received: by 2002:a05:600c:68a:b0:408:4475:8cc1 with SMTP id a10-20020a05600c068a00b0040844758cc1mr5397602wmn.35.1699559745984;
-        Thu, 09 Nov 2023 11:55:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE4NKG5wB0gJEbcmArHRa0/4XU4inkMLfBR3udGHiHduQub1uThCHjG5THdPgesq8DE9mXvWQ==
-X-Received: by 2002:a05:600c:68a:b0:408:4475:8cc1 with SMTP id a10-20020a05600c068a00b0040844758cc1mr5397593wmn.35.1699559745564;
-        Thu, 09 Nov 2023 11:55:45 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id p22-20020a05600c359600b004080f0376a0sm3043990wmq.42.2023.11.09.11.55.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 11:55:45 -0800 (PST)
-Message-ID: <c2c4a1e3-9a8c-4922-aecc-8894d13a8054@redhat.com>
-Date:   Thu, 9 Nov 2023 20:55:44 +0100
+        Thu, 9 Nov 2023 14:56:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7030E3C19
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:56:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8351FC433C8;
+        Thu,  9 Nov 2023 19:56:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699559777;
+        bh=QXPODse8o2394/LKml7r+8fnAQlcRnH/e6QYByqs4xI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gOvtThX+NyUsrhn+dehgSs2/lePI/Ebxt3HPRRXtzcerau75AiILWUJM81V7mswbk
+         sD6JSj3qO1T2dgSHuQ8k0Pi+KBdGOTXfW8eVXVIL5BQqaXszzAhW5sbVR88aPR+GfT
+         HigHc3L5hyW+EcMuH0vdz8jaXZIM3U7qM4bk3KSHGcnoxDwpwA9en2aSOZPz4PIDnl
+         WWyYjBJtMytvMH2nP6M5sR9WtkDbsbBEljakalAdaVdK8ox8HZCMQCmb8mNeF8+9vt
+         6hMOuZ7Tr512NRB7y1F8lMYfv8/UuCjhtfF720oTmnT+STI/7HGgITr5DyN0wuRSZN
+         T7/bRYGzsgCmQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1CA3340094; Thu,  9 Nov 2023 16:56:15 -0300 (-03)
+Date:   Thu, 9 Nov 2023 16:56:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     namhyung@kernel.org, kim.phillips@amd.com, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, changbin.du@huawei.com,
+        yangjihong1@huawei.com, zwisler@chromium.org,
+        wangming01@loongson.cn, chenhuacai@kernel.org,
+        kprateek.nayak@amd.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
+        ananth.narayan@amd.com, santosh.shukla@amd.com
+Subject: Re: [PATCH 2/2] perf header: Additional note on AMD IBS for
+ max_precise pmu cap
+Message-ID: <ZU05X1SLwk1NTW59@kernel.org>
+References: <20231107083331.901-1-ravi.bangoria@amd.com>
+ <20231107083331.901-2-ravi.bangoria@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/sched: fix potential page fault in
- drm_sched_job_init()
-Content-Language: en-US
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Luben Tuikov <ltuikov89@gmail.com>, airlied@gmail.com,
-        daniel@ffwll.ch, christian.koenig@amd.com
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20231108022716.15250-1-dakr@redhat.com>
- <fff7a8db-be77-4c5e-a4dd-82b254adbb78@gmail.com>
- <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
-Organization: RedHat
-In-Reply-To: <242188d1-2232-4e37-8ad7-f2cdebacddd9@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107083331.901-2-ravi.bangoria@amd.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/9/23 01:09, Danilo Krummrich wrote:
-> On 11/8/23 06:46, Luben Tuikov wrote:
->> Hi,
->>
->> Could you please use my gmail address, the one one I'm responding from--I don't want
->> to miss any DRM scheduler patches. BTW, the luben.tuikov@amd.com email should bounce
->> as undeliverable.
->>
->> On 2023-11-07 21:26, Danilo Krummrich wrote:
->>> Commit 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable
->>> number of run-queues") introduces drm_err() in drm_sched_job_init(), in
->>> order to indicate that the given entity has no runq, however at this
->>> time job->sched is not yet set, likely to be NULL initialized, and hence
->>> shouldn't be used.
->>>
->>> Replace the corresponding drm_err() call with pr_err() to avoid a
->>> potential page fault.
->>>
->>> While at it, extend the documentation of drm_sched_job_init() to
->>> indicate that job->sched is not a valid pointer until
->>> drm_sched_job_arm() has been called.
->>>
->>> Fixes: 56e449603f0a ("drm/sched: Convert the GPU scheduler to variable number of run-queues")
->>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->>> ---
->>>   drivers/gpu/drm/scheduler/sched_main.c | 5 ++++-
->>>   1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
->>> index 27843e37d9b7..dd28389f0ddd 100644
->>> --- a/drivers/gpu/drm/scheduler/sched_main.c
->>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
->>> @@ -680,6 +680,9 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
->>>    * This function returns -ENOENT in this case (which probably should be -EIO as
->>>    * a more meanigful return value).
->>>    *
->>> + * Note that job->sched is not a valid pointer until drm_sched_job_arm() has
->>> + * been called.
->>> + *
->>
->> Good catch!
->>
->> Did you actually get this to page-fault and have a kernel log?
-> 
-> No, I just found it because I was about to make the same mistake.
-> 
->>
->> I'm asking because we see it correctly set in this kernel log coming from AMD,
-> 
-> I think that's because amdgpu just sets job->sched to *some* scheduler instance after
-> job allocation [1].
-> 
-> [1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c#L108
-> 
->>
->> [   11.886024] amdgpu 0000:0a:00.0: [drm] *ERROR* drm_sched_job_init: entity has no rq!
->>
->> in this email,
->> https://lore.kernel.org/r/CADnq5_PS64jYS_Y3kGW27m-kuWP+FQFiaVcOaZiB=JLSgPnXBQ@mail.gmail.com
->>
->>>    * Returns 0 for success, negative error code otherwise.
->>>    */
->>>   int drm_sched_job_init(struct drm_sched_job *job,
->>> @@ -691,7 +694,7 @@ int drm_sched_job_init(struct drm_sched_job *job,
->>>            * or worse--a blank screen--leave a trail in the
->>>            * logs, so this can be debugged easier.
->>>            */
->>> -        drm_err(job->sched, "%s: entity has no rq!\n", __func__);
->>> +        pr_err("%s: entity has no rq!\n", __func__);
->>
->> Is it feasible to do something like the following?
->>
->>         dev_err(job->sched ? job->sched->dev : NULL, "%s: entity has no rq!\n", __func__);
-> 
-> I don't think that's a good idea. Although I'd assume that every driver zero-initializes its job
-> structures, I can't see a rule enforcing that. Hence, job->sched can be a random value until
-> drm_sched_job_arm() is called.
-> 
-> However, I notice there are quite a view more fields of struct drm_sched_job that are never
-> initialized, hence there are either a couple more potential bugs or missing documentation that
-> drivers *must* ensure that a job is zero-initialized.
+Em Tue, Nov 07, 2023 at 02:03:31PM +0530, Ravi Bangoria escreveu:
+> From: Arnaldo Carvalho de Melo <acme@kernel.org>
 
-Any opinions on that? Otherwise I'd probably go ahead and send a fix for the other bugs too.
+Applied this one, waiting for some more time to address Ian comments,
 
+- Arnaldo
+ 
+> x86 core pmu exposes supported maximum precision level via max_precise
+> pmu capability. Although, AMD core pmu does not support precise mode,
+> certain core pmu events with precise_ip > 0 are allowed and forwarded
+> to IBS OP pmu. Display a note about this in perf report header and
+> document the details in the perf-list man page.
 > 
-> Not quite sure if we really want to rely on the latter for core infrastructure...
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> ---
+>  tools/perf/Documentation/perf-list.txt | 12 +++++++-----
+>  tools/perf/util/env.c                  | 18 ++++++++++++++++++
+>  tools/perf/util/env.h                  |  2 ++
+>  tools/perf/util/header.c               |  8 ++++++++
+>  4 files changed, 35 insertions(+), 5 deletions(-)
 > 
->>
->>>           return -ENOENT;
->>>       }
->>>
->>> base-commit: c015fb6d01adb616fb54824feb55ce5ab18e8ca1
->>
+> diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+> index d5f78e125efe..1b90575ee3c8 100644
+> --- a/tools/perf/Documentation/perf-list.txt
+> +++ b/tools/perf/Documentation/perf-list.txt
+> @@ -81,11 +81,13 @@ For Intel systems precise event sampling is implemented with PEBS
+>  which supports up to precise-level 2, and precise level 3 for
+>  some special cases
+>  
+> -On AMD systems it is implemented using IBS (up to precise-level 2).
+> -The precise modifier works with event types 0x76 (cpu-cycles, CPU
+> -clocks not halted) and 0xC1 (micro-ops retired). Both events map to
+> -IBS execution sampling (IBS op) with the IBS Op Counter Control bit
+> -(IbsOpCntCtl) set respectively (see the
+> +On AMD systems it is implemented using IBS OP (up to precise-level 2).
+> +Unlike Intel PEBS which provides levels of precision, AMD core pmu is
+> +inherently non-precise and IBS is inherently precise. (i.e. ibs_op//,
+> +ibs_op//p, ibs_op//pp and ibs_op//ppp are all same). The precise modifier
+> +works with event types 0x76 (cpu-cycles, CPU clocks not halted) and 0xC1
+> +(micro-ops retired). Both events map to IBS execution sampling (IBS op)
+> +with the IBS Op Counter Control bit (IbsOpCntCtl) set respectively (see the
+>  Core Complex (CCX) -> Processor x86 Core -> Instruction Based Sampling (IBS)
+>  section of the [AMD Processor Programming Reference (PPR)] relevant to the
+>  family, model and stepping of the processor being used).
+> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+> index 44140b7f596a..cbc18b22ace5 100644
+> --- a/tools/perf/util/env.c
+> +++ b/tools/perf/util/env.c
+> @@ -531,6 +531,24 @@ int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu)
+>  	return cpu.cpu >= 0 && cpu.cpu < env->nr_numa_map ? env->numa_map[cpu.cpu] : -1;
+>  }
+>  
+> +bool perf_env__has_pmu_mapping(struct perf_env *env, const char *pmu_name)
+> +{
+> +	char *pmu_mapping = env->pmu_mappings, *colon;
+> +
+> +	for (int i = 0; i < env->nr_pmu_mappings; ++i) {
+> +		if (strtoul(pmu_mapping, &colon, 0) == ULONG_MAX || *colon != ':')
+> +			goto out_error;
+> +
+> +		pmu_mapping = colon + 1;
+> +		if (strcmp(pmu_mapping, pmu_name) == 0)
+> +			return true;
+> +
+> +		pmu_mapping += strlen(pmu_mapping) + 1;
+> +	}
+> +out_error:
+> +	return false;
+> +}
+> +
+>  char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
+>  			     const char *cap)
+>  {
+> diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+> index 4566c51f2fd9..56aea562c61b 100644
+> --- a/tools/perf/util/env.h
+> +++ b/tools/perf/util/env.h
+> @@ -174,4 +174,6 @@ struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
+>  int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
+>  char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
+>  			     const char *cap);
+> +
+> +bool perf_env__has_pmu_mapping(struct perf_env *env, const char *pmu_name);
+>  #endif /* __PERF_ENV_H */
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index e86b9439ffee..3cc288d14002 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -2145,6 +2145,14 @@ static void print_pmu_caps(struct feat_fd *ff, FILE *fp)
+>  		__print_pmu_caps(fp, pmu_caps->nr_caps, pmu_caps->caps,
+>  				 pmu_caps->pmu_name);
+>  	}
+> +
+> +	if (strcmp(perf_env__arch(&ff->ph->env), "x86") == 0 &&
+> +	    perf_env__has_pmu_mapping(&ff->ph->env, "ibs_op")) {
+> +		char *max_precise = perf_env__find_pmu_cap(&ff->ph->env, "cpu", "max_precise");
+> +
+> +		if (max_precise != NULL && atoi(max_precise) == 0)
+> +			fprintf(fp, "# AMD systems uses ibs_op// PMU for some precise events, e.g.: cycles:p, see the 'perf list' man page for further details.\n");
+> +	}
+>  }
+>  
+>  static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
+> -- 
+> 2.41.0
+> 
 
+-- 
+
+- Arnaldo
