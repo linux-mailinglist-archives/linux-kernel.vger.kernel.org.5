@@ -2,59 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2446B7E7114
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5307E7116
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 19:04:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344911AbjKISEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 13:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
+        id S1344901AbjKISEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 13:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344773AbjKISEh (ORCPT
+        with ESMTP id S1344915AbjKISEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 13:04:37 -0500
+        Thu, 9 Nov 2023 13:04:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155D73A92;
-        Thu,  9 Nov 2023 10:04:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4BAC433C8;
-        Thu,  9 Nov 2023 18:04:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699553074;
-        bh=FsRp+VuhFA+PT8BubfLxYWcSBlXXJL7Zf1gOJsFXpyY=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBED42139
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 10:04:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9222C433C8;
+        Thu,  9 Nov 2023 18:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699553080;
+        bh=Z9CrFEFmEnOL/3Q5XW+qZ/CdeY8ktvSVkXjM1v0v9Bk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vjKwMShxqHJemOTBw2zvKj6QI8qNTmJewu+Rgb2iAMpOELRtKtzK2kWorUpTrT2mu
-         JNf3yf7fmSXh86FEBtnnbtuqJwX/eStLyQImU0iTNDfaP9WZLoNgCXOTIePNH7JjEI
-         8lmPY8d7S7gRVKXeORKnMnBHjWm12OtKctHB17fI=
-Date:   Thu, 9 Nov 2023 13:04:31 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Cc:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] selftests/nolibc: run-user improvements
-Message-ID: <pfzkuw4o7752mb2ksowte2cbfa2ogd2bsucbget5nsk76edcin@tueappcjnih4>
-References: <20770915-nolibc-run-user-v1-0-3caec61726dc@weissschuh.net>
- <zvzacp6mqu6xhg4dx56kh67ucl6wmtnydm677tull2bx74i2zz@ebj4juspkjfw>
- <49861e61-72b6-4133-a72a-3dded276d4df@t-8ch.de>
+        b=GVkWWZLA7o6syfN/8ixVI8y7Kdr61lfB5UBV5DieWn5k8XcuuWkgPoxb3EdxBWnDP
+         DfI6QayvLB5LE3pbUCN79+3wROAQQ3mEo3tjiBMDAgoWvrKzNTnNXATQM1SKhGLdYd
+         UfsTP3tfcL9x7DB4q2zaAHlAcAx0pLoeelZd7uFt0XTtiU/Y5mWg8NdbEb++epj1XT
+         9u/1OVbyyPtXYFlftLsmDkuGEf0poTDvOU4QmBe+4k4d/g40Ejn6n2kflZkWzK1LCI
+         cIGkoTTZr7D7XB6WsRiR+5of7ldK4F6ZdYNsclZyoN9QxOM9qcexPEYaJtIlL8Gk2K
+         eE/N+uPZoigng==
+Date:   Thu, 9 Nov 2023 18:04:34 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v8 04/12] dt-bindings: phy:
+ amlogic,g12a-mipi-dphy-analog: drop unneeded reg property and example
+Message-ID: <20231109-sterility-unsoiled-e43771c61894@spud>
+References: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-0-81e4aeeda193@linaro.org>
+ <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-4-81e4aeeda193@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tjSRnZL12xJ4z8LE"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49861e61-72b6-4133-a72a-3dded276d4df@t-8ch.de>
+In-Reply-To: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-4-81e4aeeda193@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 06:44:44PM +0100, Thomas Weißschuh  wrote:
-> > On Wed, Sep 15, 2077 at 02:13:51AM +0200, Thomas Weißschuh wrote:
-> >         ^^^^^^^^^^^^
-> >
-> > I'm curious how this happened, especially since this was sent with b4.
-> 
-> My system time was messed up.
-> I blame systemd-timesyncd.
 
-Well, at least we know b4 is Y38K compliant. ;)
+--tjSRnZL12xJ4z8LE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you!
+On Thu, Nov 09, 2023 at 10:00:05AM +0100, Neil Armstrong wrote:
+> Now this bindings is referred from amlogic,meson-gx-hhi-sysctrl.yaml and =
+is
+> documented as a subnode of a simple-mfd, drop the invalid reg property.
 
--K
+I'd expect a note here tbh about how removing reg & relying on being a
+subnode of the simple-mfd is safe to do. It looks like your driver
+was added at the same time as this binding & it was always documented as
+being a child of the simple-mfd system controller, so I'd kinda expect
+to see a Fixes tag on this patch..
+
+Am I missing something?
+
+>=20
+> Also drop the unnecessary example, the top level bindings example should
+> be enough.
+>=20
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  .../bindings/phy/amlogic,g12a-mipi-dphy-analog.yaml          | 12 ------=
+------
+>  1 file changed, 12 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy=
+-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy=
+-analog.yaml
+> index c8c83acfb871..81c2654b7e57 100644
+> --- a/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/phy/amlogic,g12a-mipi-dphy-analog=
+=2Eyaml
+> @@ -16,20 +16,8 @@ properties:
+>    "#phy-cells":
+>      const: 0
+> =20
+> -  reg:
+> -    maxItems: 1
+> -
+>  required:
+>    - compatible
+> -  - reg
+>    - "#phy-cells"
+> =20
+>  additionalProperties: false
+> -
+> -examples:
+> -  - |
+> -    phy@0 {
+> -          compatible =3D "amlogic,g12a-mipi-dphy-analog";
+> -          reg =3D <0x0 0xc>;
+> -          #phy-cells =3D <0>;
+> -    };
+>=20
+> --=20
+> 2.34.1
+>=20
+
+--tjSRnZL12xJ4z8LE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU0fMgAKCRB4tDGHoIJi
+0iggAQCV2/5BcIW31u6mySyU3aLEob1O1ciipaTd/rc/GvNlSAEAoFfFfmam/hxu
+pqXvBa9dJuXqDDyhraCQHOmyFKSHugs=
+=tBb3
+-----END PGP SIGNATURE-----
+
+--tjSRnZL12xJ4z8LE--
