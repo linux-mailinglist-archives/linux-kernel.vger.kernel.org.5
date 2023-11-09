@@ -2,124 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9081A7E6C3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08C77E6C47
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234382AbjKIOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        id S234429AbjKIOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:14:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234046AbjKIOMj (ORCPT
+        with ESMTP id S234371AbjKIOOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:12:39 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BA92D73;
-        Thu,  9 Nov 2023 06:12:37 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A7236660739D;
-        Thu,  9 Nov 2023 14:12:34 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699539156;
-        bh=bHsPXcPq+RCxN5m6no2vYCXtGthGOFXffIvEuss0WaA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NLuvksTyGejXV9sdJMh5tC3X3EILGdZx7JOLHtkjqzvKQ3PL4BSf6mYdIJ7FKI30m
-         rMh4dIyDlhnunSIkJ8s6NjI4lfqp/zXcSG28zGAuDeaTLFZPzE40mcEAWUASYHATBa
-         QbRzO5gBq0o/kbUh0knpprCOQbTygboTYfIvHGmxhtXd6F6s3FhngHg7en/XzWeJTc
-         aQYUVjVNJLT4k7J25i+aaWNgjsKMtcBmEHtLCKaNdFFHxKPC97grku+QB19Tw0N1Yc
-         Dy7666VhwjTj4anJuDh1NtIg7zZvVjI5Xz8jN1tn4wDjBKwsEYJtoXGCdhLNQwKPTe
-         lcwYPysIvoRSQ==
-Message-ID: <9f0edfe5-0bde-43ca-9238-2c84897c56a8@collabora.com>
-Date:   Thu, 9 Nov 2023 15:12:26 +0100
+        Thu, 9 Nov 2023 09:14:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC6130D2
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:14:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699539263; x=1731075263;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CsKO0PVa1TCnRBy/VSilAKj4lQHBGw9d06Y3shR2C1o=;
+  b=BXEr+JmQ+GC886YFBr35Mj69fbd39Gy63D+SnbTQH5cfL6pmMiQKhfAe
+   CT7lHDAI2awlX5HhZhscIWt/ac/Nu5mXyCg7IhnoCkTR5UOy0vdA8srCS
+   GR4bd1+NdVEHN+//R6AanmXJLQo0Ho708IloJtBzdIfiJIEUEuYqemVFa
+   fvmOp3Tk5xtOV3D57MfquwGitcJzJUX2K7Xgh0BslG1IIv1W5huJUrQgO
+   U7EMUKiwj3JbjQN0hjP+XfIzyrw3ERI2WIK9pwd1ozhzQHAX6OVnUlKei
+   WiKOk4mlYnn6mPatr7S9XAo1Z17HSiTqSUlpSf/Ql6cCssivmQ5390AFg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="369324452"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="369324452"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 06:14:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="739856784"
+X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
+   d="scan'208";a="739856784"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 09 Nov 2023 06:14:20 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r15nW-0008m8-1D;
+        Thu, 09 Nov 2023 14:14:18 +0000
+Date:   Thu, 9 Nov 2023 22:13:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>
+Subject: drivers/net/dsa/qca/ar9331.c:502:29: error: implicit declaration of
+ function 'irq_find_mapping'
+Message-ID: <202311092236.uvirbjcm-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 48/56] media: verisilicon: Store chroma and motion
- vectors offset
-Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
- <20231031163104.112469-49-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231031163104.112469-49-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
-> Store computed values of chroma and motion vectors offset because
-> they depends on width and height values which change if the resolution
-> change.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6bc986ab839c844e78a2333a02e55f02c9e57935
+commit: ec6698c272debe16c8825c88a5b3c3f68a12ef4a net: dsa: add support for Atheros AR9331 built-in switch
+date:   3 years, 11 months ago
+config: um-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311092236.uvirbjcm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311092236.uvirbjcm-lkp@intel.com/reproduce)
 
-Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311092236.uvirbjcm-lkp@intel.com/
 
-> CC: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> CC: Philipp Zabel <p.zabel@pengutronix.de>
-> ---
->   drivers/media/platform/verisilicon/hantro.h            | 2 ++
->   drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c | 6 ++++--
->   2 files changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
-> index 0948b04a9f8d..6f5eb975d0e3 100644
-> --- a/drivers/media/platform/verisilicon/hantro.h
-> +++ b/drivers/media/platform/verisilicon/hantro.h
-> @@ -328,6 +328,8 @@ struct hantro_vp9_decoded_buffer_info {
->   	/* Info needed when the decoded frame serves as a reference frame. */
->   	unsigned short width;
->   	unsigned short height;
-> +	size_t chroma_offset;
-> +	size_t mv_offset;
->   	u32 bit_depth : 4;
->   };
->   
-> diff --git a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
-> index 6fc4b555517f..6db1c32fce4d 100644
-> --- a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
-> +++ b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
-> @@ -158,9 +158,11 @@ static void config_output(struct hantro_ctx *ctx,
->   
->   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
->   	hantro_write_addr(ctx->dev, G2_OUT_CHROMA_ADDR, chroma_addr);
-> +	dst->vp9.chroma_offset = chroma_offset(ctx, dec_params);
->   
->   	mv_addr = luma_addr + mv_offset(ctx, dec_params);
->   	hantro_write_addr(ctx->dev, G2_OUT_MV_ADDR, mv_addr);
-> +	dst->vp9.mv_offset = mv_offset(ctx, dec_params);
->   }
->   
->   struct hantro_vp9_ref_reg {
-> @@ -195,7 +197,7 @@ static void config_ref(struct hantro_ctx *ctx,
->   	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
->   	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
->   
-> -	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
-> +	chroma_addr = luma_addr + buf->vp9.chroma_offset;
->   	hantro_write_addr(ctx->dev, ref_reg->c_base, chroma_addr);
->   }
->   
-> @@ -238,7 +240,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
->   	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
->   
->   	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
-> -		  mv_offset(ctx, dec_params);
-> +		  mv_ref->vp9.mv_offset;
->   	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
->   
->   	hantro_reg_write(ctx->dev, &vp9_last_sign_bias,
+All error/warnings (new ones prefixed by >>):
 
+   cc1: warning: arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+   In file included from include/linux/build_bug.h:5,
+                    from include/linux/bitfield.h:10,
+                    from drivers/net/dsa/qca/ar9331.c:42:
+   include/asm-generic/fixmap.h: In function 'fix_to_virt':
+   include/asm-generic/fixmap.h:32:26: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+      32 |         BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
+         |                          ^~
+   include/linux/compiler.h:330:23: note: in definition of macro '__compiletime_assert'
+     330 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/compiler.h:350:9: note: in expansion of macro '_compiletime_assert'
+     350 |         _compiletime_assert(condition, msg, __compiletime_assert_, __LINE__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   include/asm-generic/fixmap.h:32:9: note: in expansion of macro 'BUILD_BUG_ON'
+      32 |         BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
+         |         ^~~~~~~~~~~~
+   drivers/net/dsa/qca/ar9331.c: In function 'ar9331_sw_irq':
+>> drivers/net/dsa/qca/ar9331.c:502:29: error: implicit declaration of function 'irq_find_mapping' [-Werror=implicit-function-declaration]
+     502 |                 child_irq = irq_find_mapping(priv->irqdomain, 0);
+         |                             ^~~~~~~~~~~~~~~~
+   drivers/net/dsa/qca/ar9331.c: At top level:
+>> drivers/net/dsa/qca/ar9331.c:567:18: error: 'irq_domain_xlate_onecell' undeclared here (not in a function)
+     567 |         .xlate = irq_domain_xlate_onecell,
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/dsa/qca/ar9331.c: In function 'ar9331_sw_irq_init':
+>> drivers/net/dsa/qca/ar9331.c:589:27: error: implicit declaration of function 'irq_domain_add_linear' [-Werror=implicit-function-declaration]
+     589 |         priv->irqdomain = irq_domain_add_linear(np, 1, &ar9331_sw_irqdomain_ops,
+         |                           ^~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/dsa/qca/ar9331.c:589:25: warning: assignment to 'struct irq_domain *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     589 |         priv->irqdomain = irq_domain_add_linear(np, 1, &ar9331_sw_irqdomain_ops,
+         |                         ^
+>> drivers/net/dsa/qca/ar9331.c:596:24: error: implicit declaration of function 'irq_create_mapping'; did you mean 'irq_create_of_mapping'? [-Werror=implicit-function-declaration]
+     596 |         irq_set_parent(irq_create_mapping(priv->irqdomain, 0), irq);
+         |                        ^~~~~~~~~~~~~~~~~~
+         |                        irq_create_of_mapping
+   drivers/net/dsa/qca/ar9331.c: In function 'ar9331_sw_probe':
+>> drivers/net/dsa/qca/ar9331.c:821:9: error: implicit declaration of function 'irq_domain_remove' [-Werror=implicit-function-declaration]
+     821 |         irq_domain_remove(priv->irqdomain);
+         |         ^~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for LOCKDEP
+   Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+   Selected by [y]:
+   - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+   - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+
+
+vim +/irq_find_mapping +502 drivers/net/dsa/qca/ar9331.c
+
+   482	
+   483	static irqreturn_t ar9331_sw_irq(int irq, void *data)
+   484	{
+   485		struct ar9331_sw_priv *priv = data;
+   486		struct regmap *regmap = priv->regmap;
+   487		u32 stat;
+   488		int ret;
+   489	
+   490		ret = regmap_read(regmap, AR9331_SW_REG_GINT, &stat);
+   491		if (ret) {
+   492			dev_err(priv->dev, "can't read interrupt status\n");
+   493			return IRQ_NONE;
+   494		}
+   495	
+   496		if (!stat)
+   497			return IRQ_NONE;
+   498	
+   499		if (stat & AR9331_SW_GINT_PHY_INT) {
+   500			int child_irq;
+   501	
+ > 502			child_irq = irq_find_mapping(priv->irqdomain, 0);
+   503			handle_nested_irq(child_irq);
+   504		}
+   505	
+   506		ret = regmap_write(regmap, AR9331_SW_REG_GINT, stat);
+   507		if (ret) {
+   508			dev_err(priv->dev, "can't write interrupt status\n");
+   509			return IRQ_NONE;
+   510		}
+   511	
+   512		return IRQ_HANDLED;
+   513	}
+   514	
+   515	static void ar9331_sw_mask_irq(struct irq_data *d)
+   516	{
+   517		struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+   518		struct regmap *regmap = priv->regmap;
+   519		int ret;
+   520	
+   521		ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+   522					 AR9331_SW_GINT_PHY_INT, 0);
+   523		if (ret)
+   524			dev_err(priv->dev, "could not mask IRQ\n");
+   525	}
+   526	
+   527	static void ar9331_sw_unmask_irq(struct irq_data *d)
+   528	{
+   529		struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+   530		struct regmap *regmap = priv->regmap;
+   531		int ret;
+   532	
+   533		ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+   534					 AR9331_SW_GINT_PHY_INT,
+   535					 AR9331_SW_GINT_PHY_INT);
+   536		if (ret)
+   537			dev_err(priv->dev, "could not unmask IRQ\n");
+   538	}
+   539	
+   540	static struct irq_chip ar9331_sw_irq_chip = {
+   541		.name = AR9331_SW_NAME,
+   542		.irq_mask = ar9331_sw_mask_irq,
+   543		.irq_unmask = ar9331_sw_unmask_irq,
+   544	};
+   545	
+   546	static int ar9331_sw_irq_map(struct irq_domain *domain, unsigned int irq,
+   547				     irq_hw_number_t hwirq)
+   548	{
+   549		irq_set_chip_data(irq, domain->host_data);
+   550		irq_set_chip_and_handler(irq, &ar9331_sw_irq_chip, handle_simple_irq);
+   551		irq_set_nested_thread(irq, 1);
+   552		irq_set_noprobe(irq);
+   553	
+   554		return 0;
+   555	}
+   556	
+   557	static void ar9331_sw_irq_unmap(struct irq_domain *d, unsigned int irq)
+   558	{
+   559		irq_set_nested_thread(irq, 0);
+   560		irq_set_chip_and_handler(irq, NULL, NULL);
+   561		irq_set_chip_data(irq, NULL);
+   562	}
+   563	
+   564	static const struct irq_domain_ops ar9331_sw_irqdomain_ops = {
+   565		.map = ar9331_sw_irq_map,
+   566		.unmap = ar9331_sw_irq_unmap,
+ > 567		.xlate = irq_domain_xlate_onecell,
+   568	};
+   569	
+   570	static int ar9331_sw_irq_init(struct ar9331_sw_priv *priv)
+   571	{
+   572		struct device_node *np = priv->dev->of_node;
+   573		struct device *dev = priv->dev;
+   574		int ret, irq;
+   575	
+   576		irq = of_irq_get(np, 0);
+   577		if (irq <= 0) {
+   578			dev_err(dev, "failed to get parent IRQ\n");
+   579			return irq ? irq : -EINVAL;
+   580		}
+   581	
+   582		ret = devm_request_threaded_irq(dev, irq, NULL, ar9331_sw_irq,
+   583						IRQF_ONESHOT, AR9331_SW_NAME, priv);
+   584		if (ret) {
+   585			dev_err(dev, "unable to request irq: %d\n", ret);
+   586			return ret;
+   587		}
+   588	
+ > 589		priv->irqdomain = irq_domain_add_linear(np, 1, &ar9331_sw_irqdomain_ops,
+   590							priv);
+   591		if (!priv->irqdomain) {
+   592			dev_err(dev, "failed to create IRQ domain\n");
+   593			return -EINVAL;
+   594		}
+   595	
+ > 596		irq_set_parent(irq_create_mapping(priv->irqdomain, 0), irq);
+   597	
+   598		return 0;
+   599	}
+   600	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
