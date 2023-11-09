@@ -2,123 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB957E64E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145DA7E64EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbjKIIHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
+        id S233341AbjKIIIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbjKIIHH (ORCPT
+        with ESMTP id S231376AbjKIII3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:07:07 -0500
-Received: from mx.msync.work (mx.msync.work [62.182.159.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC202D4F
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:07:05 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E2331150353;
-        Thu,  9 Nov 2023 08:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1699517222; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=R+Cskg0Zlf2z6oSgOHmCw4RtbIi3Vlboh4OLjWOc198=;
-        b=BCCljUJq/AJBA5kbkykFWado6JzsjJtD6qn7ZxFQCTvcTJqYwODjBGzZnSi/jrFW0pVbS8
-        Q+cCZz09QrZtTbvcPgAtyWvY34kbu+a55iEQS7c50++aKNwnViBYw1krzaeZVnU+Od/RZZ
-        jTT0u/+8k8lor6m1Q/a17LCXSHG9uHcJR/d/NKwAJF8sK/ZBvpBp3KeJ2QDfluUIYDQz5v
-        ine+4f1DCG19wklwz37nhnkJ35RKdQN9qlnS2NZ0IKXeepK22gLQyTTjXVWZjlhT1QmGFz
-        0IMdLTHuLMC/+M4pMf8mN9Cb+lU49x4nzNHh8mV+Hu+vFwbDF4OtOPfdu9X20w==
-Message-ID: <5a82e3b96c94b45821707eb5d392384e1a026c2e.camel@lexina.in>
-Subject: Re: [PATCH v1] mtd: rawnand: meson: handle OOB buffer according OOB
- layout
-From:   Viacheslav Bocharov <adeep@lexina.in>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>,
-        Liang Yang <liang.yang@amlogic.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     oxffffaa@gmail.com, kernel@sberdevices.ru,
-        linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Thu, 09 Nov 2023 11:06:58 +0300
-In-Reply-To: <20231109053953.3863664-1-avkrasnov@salutedevices.com>
-References: <20231109053953.3863664-1-avkrasnov@salutedevices.com>
+        Thu, 9 Nov 2023 03:08:29 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86DD2D44;
+        Thu,  9 Nov 2023 00:08:26 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6708d2df1a3so937116d6.1;
+        Thu, 09 Nov 2023 00:08:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699517306; x=1700122106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dh3aK/boLb55s+2CloV3PQFJiW07ZanTj3NExkitxvU=;
+        b=WJyLbeGk62ZRdwPccPzEMqTIB4ABmtCO4CJkgVQ3URAaUkkmWusilE3sGH+OXUKGye
+         N1xPnBwQcQHTIaz5bstDLKcjd5/Tr7fkRNfIwbR+3wCZW+n6hDw6VsFRmBJbZuuanI/0
+         oT9jZpu4Jblh3IBfhC8uhADByBXtfjew3kq8GfIDwu6Uxs89/ZJOJAYghrQkGQbf6Mvm
+         rrwLtxdhPbLfcZDpzYICdSIgSm3wEd7KohYrDVydIwwlJj7Yzha1jhj72kFkWehbZV8d
+         FTTfHfrzEGw2RuUWwkOeNuhymTCF/g2ihk04cVatkm1OzFp0CZ4BfZiVlU29i8P3aZGT
+         sGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699517306; x=1700122106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dh3aK/boLb55s+2CloV3PQFJiW07ZanTj3NExkitxvU=;
+        b=ugzgUT9Yy9iemVs+LMReznS0m5i5S5B4vEqx9w3JdZcepiBQUo/PLxD/alkCjhtQQe
+         a3n8fIGGc1T8t9Ii6DUUPeHdGoLIfD/RhxxjqNYQAb7AzrvTTXiCN0B80FIeNOEmhFjO
+         bMkOBP29tsGXXMO6YuxOdYIKqzCv9RvHNICNbaQr/cddztNpdLvsDqii8U9BKp3AzWr4
+         WIn9Jm9ziZ4g4dY72vaVi7KaaXque8o470CXFm+4qcy6ydjAKdVKBO/Qrwqgwb/LN3Q1
+         IdUfK4FC6f/JJfPLhDkmpqDIq5B6oHNDTC5sEVJVE+hfNSEMzrFJ7W9G2On6R9cu5/K8
+         /k+A==
+X-Gm-Message-State: AOJu0YzOjxEdxNxj2x3QlErmbYEVquDBTRq2eV0iCPSJaQt1D6aWNVNI
+        pQWwMwxGSNCtRyjljaso7DZ/x6SWdj6cU+7hFsE=
+X-Google-Smtp-Source: AGHT+IH8i4A2b188pIGfsrVqj2SrzsVFFgMXFKHrIhORMO+ipexlXg3AcHeM3WCYcW218uLn10ecZsqlQ6SVT97+M0M=
+X-Received: by 2002:a05:6214:1187:b0:66d:1bbb:e9f8 with SMTP id
+ t7-20020a056214118700b0066d1bbbe9f8mr4089852qvv.6.1699517305657; Thu, 09 Nov
+ 2023 00:08:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20231108110048.1988128-1-anders.roxell@linaro.org> <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 9 Nov 2023 09:08:14 +0100
+Message-ID: <CAJ8uoz1_g7mZfqUqMfQZEewGgDB0tCjWB_Eb+D6MmBxGS0Zt-w@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: bpf: xskxceiver: ksft_print_msg: fix format
+ type error
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Anders Roxell <anders.roxell@linaro.org>, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
-MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Wed, 8 Nov 2023 at 18:03, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
+ote:
+>
+> On Wed, Nov 8, 2023 at 3:00=E2=80=AFAM Anders Roxell <anders.roxell@linar=
+o.org> wrote:
+> >
+> > Crossbuilding selftests/bpf for architecture arm64, format specifies
+> > type error show up like.
+> >
+> > xskxceiver.c:912:34: error: format specifies type 'int' but the argumen=
+t
+> > has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
+> >  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
+> >                                                                 ~~
+> >                                                                 %llu
+> >                 __func__, pkt->pkt_nb, meta->count);
+> >                                        ^~~~~~~~~~~
+> > xskxceiver.c:929:55: error: format specifies type 'unsigned long long' =
+but
+> >  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
+> >  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
+> >                                     ~~~~             ^~~~
+> >
+> > Fixing the issues by casting to (unsigned long long) and changing the
+> > specifiers to be %llx, since with u64s it might be %llx or %lx,
+> > depending on architecture.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  tools/testing/selftests/bpf/xskxceiver.c | 19 ++++++++++++-------
+> >  1 file changed, 12 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/s=
+elftests/bpf/xskxceiver.c
+> > index 591ca9637b23..1ab9512f5aa2 100644
+> > --- a/tools/testing/selftests/bpf/xskxceiver.c
+> > +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> > @@ -908,8 +908,9 @@ static bool is_metadata_correct(struct pkt *pkt, vo=
+id *buffer, u64 addr)
+> >         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
+> >
+> >         if (meta->count !=3D pkt->pkt_nb) {
+> > -               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%d]\n",
+> > -                              __func__, pkt->pkt_nb, meta->count);
+> > +               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%llx]\n",
+>
+> why hex? %llu?
 
-On Thu, 2023-11-09 at 08:39 +0300, Arseniy Krasnov wrote:
-> In case of MTD_OPS_AUTO_OOB mode, MTD/NAND layer fills/reads OOB buffer
-> according current OOB layout so we need to follow it in the driver.
->=20
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  drivers/mtd/nand/raw/meson_nand.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/mes=
-on_nand.c
-> index 561d46d860b7..0d4d358152d7 100644
-> --- a/drivers/mtd/nand/raw/meson_nand.c
-> +++ b/drivers/mtd/nand/raw/meson_nand.c
-> @@ -510,7 +510,7 @@ static void meson_nfc_set_user_byte(struct nand_chip =
-*nand, u8 *oob_buf)
->  	__le64 *info;
->  	int i, count;
-> =20
-> -	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D 2) {
-> +	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D (2 + na=
-nd->ecc.bytes)) {
->  		info =3D &meson_chip->info_buf[i];
->  		*info |=3D oob_buf[count];
->  		*info |=3D oob_buf[count + 1] << 8;
-Seems something wrong with your logic here.
-I think this code should most likely look like this:
+You are correct, it should be %llu in both these cases. The original
+%d was incorrect here and good that it was corrected to a 64-bit
+unsigned.
 
-for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D nand->ecc.b=
-ytes) {
-    info =3D &meson_chip->info_buf[i];
-    *info |=3D oob_buf[count];
-    if (nand->ecc.bytes > 1)
-      *info |=3D oob_buf[count + 1] << 8;
-}
+>
+> > +                              __func__, pkt->pkt_nb,
+> > +                              (unsigned long long)meta->count);
+> >                 return false;
+> >         }
+> >
+> > @@ -926,11 +927,13 @@ static bool is_frag_valid(struct xsk_umem_info *u=
+mem, u64 addr, u32 len, u32 exp
+> >
+> >         if (addr >=3D umem->num_frames * umem->frame_size ||
+> >             addr + len > umem->num_frames * umem->frame_size) {
+> > -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", add=
+r, len);
+> > +               ksft_print_msg("Frag invalid addr: %llx len: %u\n",
+> > +                              (unsigned long long)addr, len);
+> >                 return false;
+> >         }
+> >         if (!umem->unaligned_mode && addr % umem->frame_size + len > um=
+em->frame_size) {
+> > -               ksft_print_msg("Frag crosses frame boundary addr: %llx =
+len: %u\n", addr, len);
+> > +               ksft_print_msg("Frag crosses frame boundary addr: %llx =
+len: %u\n",
+> > +                              (unsigned long long)addr, len);
+> >                 return false;
+> >         }
+> >
+> > @@ -1029,7 +1032,8 @@ static int complete_pkts(struct xsk_socket_info *=
+xsk, int batch_size)
+> >                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->um=
+em->cq, idx + rcvd - 1);
+> >
+> >                         ksft_print_msg("[%s] Too many packets completed=
+\n", __func__);
+> > -                       ksft_print_msg("Last completion address: %llx\n=
+", addr);
+> > +                       ksft_print_msg("Last completion address: %llx\n=
+",
+> > +                                      (unsigned long long)addr);
+> >                         return TEST_FAILURE;
+> >                 }
+> >
+> > @@ -1513,8 +1517,9 @@ static int validate_tx_invalid_descs(struct ifobj=
+ect *ifobject)
+> >         }
+> >
+> >         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_p=
+kts / 2) {
+> > -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+u] expected [%u]\n",
+> > -                              __func__, stats.tx_invalid_descs,
+> > +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+llx] expected [%u]\n",
+>
+> should this be %llu? Or the switch to the hex was intentional?
 
+Same thing here. The original %u should really have been %llu since
+the stats is 64-bits. But no reason for the hex here since it is not
+an address.
 
-> @@ -523,7 +523,7 @@ static void meson_nfc_get_user_byte(struct nand_chip =
-*nand, u8 *oob_buf)
->  	__le64 *info;
->  	int i, count;
-> =20
-> -	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D 2) {
-> +	for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D (2 + na=
-nd->ecc.bytes)) {
->  		info =3D &meson_chip->info_buf[i];
->  		oob_buf[count] =3D *info;
->  		oob_buf[count + 1] =3D *info >> 8;
-And there:
-
-for (i =3D 0, count =3D 0; i < nand->ecc.steps; i++, count +=3D nand->ecc.b=
-ytes) {
-    info =3D &meson_chip->info_buf[i];
-    oob_buf[count] =3D *info;
-    if (nand->ecc.bytes > 1)
-        oob_buf[count + 1] =3D *info >> 8;
-}
-
-
-This is more similar to the behavior of similar functions in the proprietar=
-y U-Boot.
-
---
-Viacheslav Bocharov
-
+> > +                              __func__,
+> > +                              (unsigned long long)stats.tx_invalid_des=
+cs,
+> >                                ifobject->xsk->pkt_stream->nb_pkts);
+> >                 return TEST_FAILURE;
+> >         }
+> > --
+> > 2.42.0
+> >
+>
