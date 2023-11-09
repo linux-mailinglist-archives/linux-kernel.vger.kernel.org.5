@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D77C7E64CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE65F7E64CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbjKIHyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
+        id S233189AbjKIHzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 02:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbjKIHys (ORCPT
+        with ESMTP id S232613AbjKIHzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:54:48 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5224E1716;
-        Wed,  8 Nov 2023 23:54:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1699516486; x=1731052486;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4pPfBmiUINhRoPJo2eY11blRCwfArWzDBp253sWlEgM=;
-  b=lmfL/xfVbi/FgjXF15FlM9eSRO6rBqoTuUQ1RwH1VPBmIgKFBIN5a6+p
-   dhtqBiW5BSEAPC5isoXJewBCe/nikxsx28nh82Rh1ByOWESasXcBW78KH
-   Haz8plwoLjIoOmASDkShf1afE860a50Tv0i3VTlEXMgps2WUnR0ShJUKs
-   QrAdaYlqSvKrX+dZB167+MBpqMpMbID2q8P51GJmt/r+mjhynp7GU0lOD
-   l1F4NS90rF+odv876hBsY6tiDHQznYgCRn2hyl9p4c2qY6N5ej0nhZKRF
-   t37SRElhaGDD1X/eMseLy2eGJ4Ez33IsfpOQYGPvI6L/PHkPZhGhp9YJd
-   g==;
-X-CSE-ConnectionGUID: se6pjHG5SuelUARNIWzFMg==
-X-CSE-MsgGUID: vlGbOKuDThK6JpzYW9mFPQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="asc'?scan'208";a="12060742"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Nov 2023 00:54:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 9 Nov 2023 00:54:35 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 9 Nov 2023 00:54:32 -0700
-Date:   Thu, 9 Nov 2023 07:54:07 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Jerry Shih <jerry.shih@sifive.com>
-CC:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thu, 9 Nov 2023 02:55:39 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EE81716;
+        Wed,  8 Nov 2023 23:55:37 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9becde9ea7bso349223166b.0;
+        Wed, 08 Nov 2023 23:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699516535; x=1700121335; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4DT7KbStmBKIyXguUJVsEhwW3sZLd8u/CViWdFU++us=;
+        b=PDzgTFvd+vBIfxWwAaPCtNmC6E9/9arN58U7XKlT67+1m0S8qhNjcl3yj8HGgLYQXb
+         eiiumBNylBlJETv+eEhY54Utk6xRCGqKAiZ1vASUuqfRjbP4z/o58w94TBBqW9dWSgeY
+         KLrfa7z/mdv3U7J8uzK1TAOLGC7riRbRCm6ScheKHPiUk4Egd1Dy/QPuZ2+2wOSHzwtB
+         bAfvnKwuMemfOWcwWAcQg94Veob2Jkb7+6JmhaDmib8CxOTwc+s3W9iZR8+TE7FJtSyY
+         VZlfu6JiqnrHFI8VsPY37rQVB09ZduCUilTPjUv+RBAWSlxQ84gAVebF3/CLRQLSE6FS
+         d9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699516535; x=1700121335;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4DT7KbStmBKIyXguUJVsEhwW3sZLd8u/CViWdFU++us=;
+        b=wfev15Sq+ak0ImmOv/FpaMeDxH0S3SVi8TfsGjC+9ijHLuCJJDszOC5LQowaHHUj+e
+         mS/p60TBOTvGkhGblnOw+orToUfQoUmWda0pJiB0AGmTZPHrGk3rIELPGrrSHkGcnDJw
+         hRioYjGDwdrMXkp3yRzyaw9N1rX2Db1qlX7Lqqvu5THBJgyT+ZAoHI5jXaQD2831wVaO
+         p0BlD3tHMEBSn87/z54BCSmwzrbEyxdxQTUukMjuFjkMVd6LMHKyUWWcpkZecJoMaOMM
+         ahpHAEkslMoZmfXThfETS8CH97jVza42erJ6iAnPnx5cGOr/6kbDEevwniXCznXjHM40
+         nWFA==
+X-Gm-Message-State: AOJu0Yye6Graya7mkQYgjkbin5K5bD6cA3Ttu8NTo1JL17p9yq3dxyYu
+        K2mLlEnp2TJBoyGRyET75dw=
+X-Google-Smtp-Source: AGHT+IHoZaA0GKZk6O7gCurRmuDoN2dF5sTBZ6TfLPTfaTomNuRl4tfRrqcffYnM+MhuHKNZcDUzIw==
+X-Received: by 2002:a17:907:d89:b0:9bd:d405:4e8a with SMTP id go9-20020a1709070d8900b009bdd4054e8amr4394735ejc.17.1699516535329;
+        Wed, 08 Nov 2023 23:55:35 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:361b:8f29:1cbf:5e69? (p200300f6ef1b2000361b8f291cbf5e69.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:361b:8f29:1cbf:5e69])
+        by smtp.gmail.com with ESMTPSA id bo17-20020a170906d05100b009dddec5a96fsm2234918ejb.170.2023.11.08.23.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 23:55:34 -0800 (PST)
+Message-ID: <9b9df9a9dec28ff46fef6df1c482e5a09f338891.camel@gmail.com>
+Subject: Re: [PATCH v2 1/2] iio: amplifiers: hmc425a: add support for
+ ADRF5740 Attenuator
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Ana-Maria Cusco <anamaria.cuscoo@gmail.com>,
+        Ana-Maria Cusco <ana-maria.cusco@analog.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Ortiz <sameo@rivosinc.com>
-Subject: Re: [PATCH v3 06/20] riscv: add ISA extension parsing for vector
- crypto
-Message-ID: <20231109-prevalent-serrated-d40eb5f71236@wendy>
-References: <20231107105556.517187-1-cleger@rivosinc.com>
- <20231107105556.517187-7-cleger@rivosinc.com>
- <5EF129A2-195B-4207-A2F6-DBA1FBB9F65D@sifive.com>
- <20231109-revolver-heat-9f4788c51bbf@wendy>
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 09 Nov 2023 08:58:30 +0100
+In-Reply-To: <20231107132118.1165494-2-anamaria.cuscoo@gmail.com>
+References: <20231107132118.1165494-1-anamaria.cuscoo@gmail.com>
+         <20231107132118.1165494-2-anamaria.cuscoo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LUyl317BBN37OabN"
-Content-Disposition: inline
-In-Reply-To: <20231109-revolver-heat-9f4788c51bbf@wendy>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---LUyl317BBN37OabN
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 09, 2023 at 07:44:46AM +0000, Conor Dooley wrote:
-> On Thu, Nov 09, 2023 at 10:58:41AM +0800, Jerry Shih wrote:
-> > On Nov 7, 2023, at 18:55, Cl=E9ment L=E9ger <cleger@rivosinc.com> wrote:
-> > > +static const unsigned int riscv_zvknhb_exts[] =3D {
-> > > +	RISCV_ISA_EXT_ZVKNHA
-> > > +};
-> > > +
-> >=20
-> > > +	__RISCV_ISA_EXT_SUPERSET(zvknhb, RISCV_ISA_EXT_ZVKNHB, riscv_zvknhb=
-_exts),
-> > > +	__RISCV_ISA_EXT_BUNDLE(zvks, riscv_zvks_bundled_exts),
-> >=20
-> > The Zvknha and Zvknhb are exclusive. It's not the superset relationship.
-> >=20
-> > Please check:
-> > https://github.com/riscv/riscv-crypto/issues/364#issuecomment-1726782096
+On Tue, 2023-11-07 at 15:21 +0200, Ana-Maria Cusco wrote:
+> From: Ana-Maria Cusco <ana-maria.cusco@analog.com>
 >=20
-> You got a response to this on the previous version, but didn't engage
-> with it:
-> https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc=
-=2Ecom/#t
+> This adds support for the Analog Devices ADRF5740 2 dB LSB, 4-Bit,
+> Silicon Digital Attenuator, 10 MHz to 60 GHz
+>=20
+> Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
+> ---
+> =C2=A0drivers/iio/amplifiers/hmc425a.c | 23 +++++++++++++++++++++++
+> =C2=A01 file changed, 23 insertions(+)
+>=20
+> diff --git a/drivers/iio/amplifiers/hmc425a.c
+> b/drivers/iio/amplifiers/hmc425a.c
+> index e87d35d50a95..ed4d72922696 100644
+> --- a/drivers/iio/amplifiers/hmc425a.c
+> +++ b/drivers/iio/amplifiers/hmc425a.c
+> @@ -5,6 +5,7 @@
+> =C2=A0 * Copyright 2020 Analog Devices Inc.
+> =C2=A0 */
+> =C2=A0
+> +#include <linux/bitops.h>
+> =C2=A0#include <linux/device.h>
+> =C2=A0#include <linux/err.h>
+> =C2=A0#include <linux/gpio/consumer.h>
+> @@ -22,6 +23,7 @@
+> =C2=A0enum hmc425a_type {
+> =C2=A0	ID_HMC425A,
+> =C2=A0	ID_HMC540S,
+> +	ID_ADRF5740
+> =C2=A0};
+> =C2=A0
+> =C2=A0struct hmc425a_chip_info {
+> @@ -74,6 +76,10 @@ static int hmc425a_read_raw(struct iio_dev *indio_dev,
+> =C2=A0		case ID_HMC540S:
+> =C2=A0			gain =3D ~code * -1000;
+> =C2=A0			break;
+> +		case ID_ADRF5740:
+> +			code =3D code & BIT(3) ? code & ~BIT(2) : code;
+> +			gain =3D code * -2000;
+> +			break;
+> =C2=A0		}
+> =C2=A0
+> =C2=A0		*val =3D gain / 1000;
+> @@ -113,6 +119,10 @@ static int hmc425a_write_raw(struct iio_dev *indio_d=
+ev,
+> =C2=A0	case ID_HMC540S:
+> =C2=A0		code =3D ~((abs(gain) / 1000) & 0xF);
+> =C2=A0		break;
+> +	case ID_ADRF5740:
+> +		code =3D (abs(gain) / 2000) & 0xF;
+> +		code =3D code & BIT(3) ? code | BIT(2) : code;
+> +		break;
+> =C2=A0	}
+> =C2=A0
+> =C2=A0	mutex_lock(&st->lock);
+> @@ -165,6 +175,7 @@ static const struct iio_chan_spec hmc425a_channels[] =
+=3D {
+> =C2=A0static const struct of_device_id hmc425a_of_match[] =3D {
+> =C2=A0	{ .compatible =3D "adi,hmc425a", .data =3D (void *)ID_HMC425A },
+> =C2=A0	{ .compatible =3D "adi,hmc540s", .data =3D (void *)ID_HMC540S },
+> +	{ .compatible =3D "adi,adrf5740", .data =3D (void *)ID_ADRF5740 },
+> =C2=A0	{},
+> =C2=A0};
+> =C2=A0MODULE_DEVICE_TABLE(of, hmc425a_of_match);
+> @@ -188,6 +199,15 @@ static struct hmc425a_chip_info hmc425a_chip_info_tb=
+l[] =3D
+> {
+> =C2=A0		.gain_max =3D 0,
+> =C2=A0		.default_gain =3D -0x10, /* set default gain -15.0db*/
+> =C2=A0	},
+> +	[ID_ADRF5740] =3D {
+> +		.name =3D "adrf5740",
+> +		.channels =3D hmc425a_channels,
+> +		.num_channels =3D ARRAY_SIZE(hmc425a_channels),
+> +		.num_gpios =3D 4,
+> +		.gain_min =3D -22000,
+> +		.gain_max =3D 0,
+> +		.default_gain =3D 0xF, /* set default gain -22.0db*/
+> +	},
+> =C2=A0};
+> =C2=A0
+> =C2=A0static int hmc425a_probe(struct platform_device *pdev)
+> @@ -229,6 +249,9 @@ static int hmc425a_probe(struct platform_device *pdev=
+)
+> =C2=A0	indio_dev->info =3D &hmc425a_info;
+> =C2=A0	indio_dev->modes =3D INDIO_DIRECT_MODE;
+> =C2=A0
+> +	/* Set default gain */
+> +	hmc425a_write(indio_dev, st->gain);
+> +
 
-Ahh, I now see what that happened. Your mailer is broken and puts the
-message-id of what you are replying to in the In-Reply-To and Reply-To
-headers. The former is correct, the latter is bogus & means you don't even
-get delivered the response.
+This is an unrelated change. It's simple enough to sneak it in but you shou=
+ld at
+least mention it in the commit message.
 
---LUyl317BBN37OabN
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+With that,
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUyQHwAKCRB4tDGHoIJi
-0nowAP0W6kYqZfjp8aXoOoQXmmbdkMNZc5Iz55LCZY1/uNSHywD9EzrcQKDZ70d+
-CQXwkQCx/EhZ3XtYSRbz+3Q65lor3gQ=
-=zJio
------END PGP SIGNATURE-----
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
---LUyl317BBN37OabN--
