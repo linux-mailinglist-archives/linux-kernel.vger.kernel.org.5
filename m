@@ -2,97 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC3B7E6E39
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C227E6E3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343640AbjKIQG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        id S1343770AbjKIQHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjKIQG4 (ORCPT
+        with ESMTP id S234482AbjKIQHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:06:56 -0500
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B5A30FA;
-        Thu,  9 Nov 2023 08:06:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
- s=fe-e1b5cab7be; t=1699546010;
- bh=DI9I7e45GZv43PxZw1RhCeG/VkyNjaieZAPB6CbinL8=;
- b=p+jK5XE8PeJxjXI/BBTG/8O0J0XMCp/bW/yvifumjpYn+AYPaG1yrEhqgEmCOZis1xokjYo/l
- h7nhe/64DyaJzyfJ4Ck3IVTccxlgymbKHw+HUL88PdTLiw+07WcXIpDrU6BtLKsQ3NspL+NilO0
- 0pIIr6GoFU8V/OAaBziaTYR4y6dDeyabeIWlHoqWNmpy4BnQ9tLAr7cpzcUSj+bMUDnFhQO3YxU
- ogikXHMhCO4cLHRrS5Vvf4IF8soGihvJQ6dqtyv22QEnJ6RCgD/YgXANkt20wO1TIqYtdmZ3QAc
- MkBVFtyggdKCmSZSSoCL8ibgkQQEiGrJZBhHLz2entWA==
-Message-ID: <0763eeea-ac0f-4e07-9678-dd7567a0f3be@kwiboo.se>
-Date:   Thu, 9 Nov 2023 17:06:45 +0100
+        Thu, 9 Nov 2023 11:07:21 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFB9325A;
+        Thu,  9 Nov 2023 08:07:19 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so666291f8f.0;
+        Thu, 09 Nov 2023 08:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699546038; x=1700150838; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bLnVRYPlFfc13GAjjN2Xsp7jGpHoZsbxAdnsHea6XjM=;
+        b=S1PdBEEbQjC//UPEJlQzyAeUAkuHeKKJJ9YxSwGJsBWIinlJkTs+futdHjvOEVf1FC
+         i1Lq84/hnwkn4XeC5I0BBN/0oIHI5af7Fi3x6itpWXj6tG56p2o+2ARGn2y3UatsLXoM
+         2BRCpof7VunFpfVP3P0nRrTARM2YsPO0VE0dPjXa8wqDzjKgoixES1wF4kmsqRx0ezw9
+         h3fikdiuHtuXCTH3ejazBRyAvX0r13K29IX5G5vNdpNq2cBxgpRFb+JkL0Tem9jL0+K7
+         pAhZsBr6i3kJ2w4D3MLLjQvI1ypeSrlzcBEEphirMcF7RjNd0iiclyA2FqT68ZsCnMv5
+         hM3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699546038; x=1700150838;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bLnVRYPlFfc13GAjjN2Xsp7jGpHoZsbxAdnsHea6XjM=;
+        b=R/MbwkS/v8iIbH06fbpsFkDdZD9+AYldSwwIVdg6X9PNPW5NkpenkDc9jDsYzVHhTT
+         J7VrGwVPZB1LflTmKfBY70EhNcRqlMD+LA/5rW2XJg0SdxntYLDp1NQWRunqbhaJU1xL
+         R/nOoJEzR6nzeRqBGN8bC1Qmhe4pReIQ4u/3QvTL83ZSyyHXzyc1nsSFDuwXSgRTlGQ5
+         AEwJ/V44dN0PXF/XYwUkQOkK0XgXxazJi4TwIMlWcGFERrmzfY9SWsBHzBRfbMqkQzfv
+         4Sz63UHyC5/kfLXFw0DSlEyRgW4+jh2nSoqU/uXcTN16mJVwgTt1V7mIz/OjCDpj+naD
+         /Osw==
+X-Gm-Message-State: AOJu0YwiZkdiOR1l2yn/EgV10xBCIJqDIqkgH4smPRNFKS8MUyVbibSC
+        xeGsTXVc6tTg8V3ClCJS6Yk=
+X-Google-Smtp-Source: AGHT+IGVRroWe9+M86SBSGyIl3Qj9MvOmsO9RPSIFo66Ff8BWlVF0jn+QQTFhXSBQi9W892f6tI7Bg==
+X-Received: by 2002:a05:6000:1888:b0:32f:87e8:707d with SMTP id a8-20020a056000188800b0032f87e8707dmr7113717wri.5.1699546037464;
+        Thu, 09 Nov 2023 08:07:17 -0800 (PST)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id t10-20020a5d42ca000000b0032f7fab0712sm7577069wrr.52.2023.11.09.08.07.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 08:07:17 -0800 (PST)
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+To:     Mina Almasry <almasrymina@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com>
+ <ZUk0FGuJ28s1d9OX@google.com>
+ <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+ <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+ <ZUlp8XutSAScKs_0@google.com>
+ <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
+ <CAKH8qBueYgpxQTvTwngOs6RNjy9yvLF92s1p5nFrobw_UprNMQ@mail.gmail.com>
+ <93eb6a2b-a991-40ca-8f26-f520c986729a@kernel.org>
+ <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
+ <CAHS8izOU06ceKyc5oVZhdCKJqmeRdcRyJBFpjGe=u2yh=V52dQ@mail.gmail.com>
+ <7ce2d027-1e02-4a63-afb7-7304fbfbdf90@kernel.org>
+ <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <6f853286-e463-b684-cc1e-405119528697@gmail.com>
+Date:   Thu, 9 Nov 2023 16:07:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] docs: uapi: media: Add common documentation of
- tiled NV15
-Content-Language: en-US
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230914150651.3114134-1-nicolas.dufresne@collabora.com>
- <20230914150651.3114134-4-nicolas.dufresne@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <20230914150651.3114134-4-nicolas.dufresne@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 654d039ab32fff32884ed3f7
+In-Reply-To: <CAHS8izM_qrEs37F=kPzT_kmqCBV_wSiTf72PtHfJYxks9R9--Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-14 17:06, Nicolas Dufresne wrote:
-> This way we don't have to repeat over and over how the pixels are
-> packed in NV15.
+On 09/11/2023 02:39, Mina Almasry wrote:
+> On Wed, Nov 8, 2023 at 7:36 AM Edward Cree <ecree.xilinx@gmail.com> wrote:
+>>  If not then surely the way to return a memory area
+>>  in an io_uring idiom is just to post a new read sqe ('RX descriptor')
+>>  pointing into it, rather than explicitly returning it with setsockopt.
 > 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> ---
->  .../media/v4l/pixfmt-yuv-planar.rst           | 144 ++++++++++++++++--
->  1 file changed, 131 insertions(+), 13 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index 1d43532095c07..2f0e0c97870b2 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -373,25 +373,143 @@ two non-contiguous planes.
->  Tiled NV15
->  ----------
->  
-> -``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using 4x4 tiling.
-> -All components are packed without any padding between each other.
-> -As a side-effect, each group of 4 components are stored over 5 bytes
-> -(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes).
-> +Semi-planar 10-bit YUV 4:2:0 formats. All components are packed
-> +without any padding between each other. Each components group occupy 15
+> We're interested in using this with regular TCP sockets, not
+> necessarily io_uring.
+Fair.  I just wanted to push against the suggestion upthread that "oh,
+ since io_uring supports setsockopt() we can just ignore it and it'll
+ all magically work later" (paraphrased).
+If you can keep the "allocate buffers out of a devmem region" and "post
+ RX descriptors built on those buffers" APIs separate (inside the
+ kernel; obviously both triggered by a single call to the setsockopt()
+ uAPI) that'll likely make things simpler for the io_uring interface I
+ describe, which will only want the latter.
 
-Each component (Y, Cb and Cr) is 10 bits in this format, the effective
-bits per pixel is however 15 bits when number of pixels is aligned to 8.
+-ed
 
-For a 4x2 image:
-8Y + 2Cb + 2Cr = 80 + 20 + 20 = 120 bits (15 bytes) => 15 bits per pixel
-
-The 'Bits per component' in the table 'Overview of Semi-Planar YUV
-Formats' is also showing 15, should be 10.
-
-Regards,
-Jonas
-
-> +bits and are usually stored in group of 4 components stored over 5 bytes
-> +(YYYY or UVUV = 4 * 10 bits = 40 bits = 5 bytes) or partitioned into
-> +upper 8 bit and lower 2 bits. The final arrangement will vary depending if
-> +the hardware operated in little or big endian.
-> +
-
-[...]
+PS: Here's a crazy idea that I haven't thought through at all: what if
+ you allow device memory to be mmap()ed into process address space
+ (obviously with none of r/w/x because it's unreachable), so that your
+ various uAPIs can just operate on pointers (e.g. the setsockopt
+ becomes the madvise it's named after; recvmsg just uses or populates
+ the iovec rather than needing a cmsg).  Then if future devices have
+ their memory CXL accessible that can potentially be enabled with no
+ change to the uAPI (userland just starts being able to access the
+ region without faulting).
+And you can maybe add a semantic flag to recvmsg saying "if you don't
+ use all the buffers in my iovec, keep hold of the rest of them for
+ future incoming traffic, and if I post new buffers with my next
+ recvmsg, add those to the tail of the RXQ rather than replacing the
+ ones you've got".  That way you can still have the "userland
+ directly fills the RX ring" behaviour even with TCP sockets.
