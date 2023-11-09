@@ -2,207 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A3D7E7211
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF6D7E721C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 20:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbjKITOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 14:14:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S1344592AbjKITTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 14:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234761AbjKITOT (ORCPT
+        with ESMTP id S229560AbjKITTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 14:14:19 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D679D3C17
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:14:11 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-28120aa1c24so1080153a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:14:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699557251; x=1700162051; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SzYDsa2y0XIr3tBz6wOTecjM7CJinZfABzFWi0NdgQE=;
-        b=hIWfVwahGv64u/a8w0RXUcV+yWjKR7QEvM3Di4y1GcGq67Ip/YMR97SnzkYA61F4za
-         gWszdOnTIqyOvqhjwi4FTpA4JjTPiLMQBQ9drDA04yDloIMyzbvo3AQ3erUykrDtOvuV
-         /wqYIgQ8B8GSs5xXEJZrzg4AOXAtFXdE81Hl4=
+        Thu, 9 Nov 2023 14:19:06 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E269E3C11
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 11:19:03 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5b62a669d61so1076216a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 11:19:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699557251; x=1700162051;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
+        d=1e100.net; s=20230601; t=1699557543; x=1700162343;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzYDsa2y0XIr3tBz6wOTecjM7CJinZfABzFWi0NdgQE=;
-        b=gx2GKSjzRlt2BWd/0VQfLpgkyH9hdkvxYQdtT8ZLVdXbxiyhRxtJQ3zIfeqo6Cy3eD
-         pZvU69ZqCN2l4FNJ7a5prYAzgg12MzSU+TGmiCSLrDl8+yAhTp8drm0OYQorbhrAqboK
-         cszgX4USvEq9GAaipcC8no4WLB/v3ATODaQxO/sigTNXFSCje38klB47dNVPP4SgQ8We
-         YkFZZGHMqPajgzjH7r5Do6RktnDXPFM56Vz9xSsQic2kcEQtkEWs6z3rTdWOKnqoo1Cz
-         kTBQqWshSzkXjGDQmkI+8MCdnacWtf7beZdXRsV1wDQm3ip4j/e3Cj4TU2W1PTFov0Kp
-         IDow==
-X-Gm-Message-State: AOJu0YwvXLJbOY1usXPXWMjs8UwuJBuBWmoMrJOKqAATQcUjqWp3xpim
-        9fTiYdF/ZtXGRhi1Fau+cqbtEg==
-X-Google-Smtp-Source: AGHT+IGr9VprmPbSO0Bq6pzvM7OCgl/VP1LuUfAbpUcm/xZIOExx4XrMUzb881hGGMqiWsezzj6W9w==
-X-Received: by 2002:a17:90a:d913:b0:280:3a0c:bf73 with SMTP id c19-20020a17090ad91300b002803a0cbf73mr2678933pjv.26.1699557251275;
-        Thu, 09 Nov 2023 11:14:11 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id pj9-20020a17090b4f4900b00282ecb631a9sm124069pjb.25.2023.11.09.11.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 11:14:10 -0800 (PST)
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-To:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v7 3/3] PCI: brcmstb: Set higher value for internal bus timeout
-Date:   Thu,  9 Nov 2023 14:13:54 -0500
-Message-Id: <20231109191355.27738-4-james.quinlan@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231109191355.27738-1-james.quinlan@broadcom.com>
-References: <20231109191355.27738-1-james.quinlan@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000042030d0609bd029c"
+        bh=LAtLnb72EkhhuFO4ZV5fL7VkmsX9UfW8s8n3qZp2iBU=;
+        b=rGiGOJUUc+2XswXdjVPvbfgOvJTWBmMihAfH7en9zEJkdQyww/eqCXlBfZ38uK6W94
+         X2OXtW5VuC3Sw6dXwTrM80Pc+1cgtNC/QFn4TXYLg0bzGo/Qc0/eilUDsry0P9jAvw9x
+         HvB59Eo+Ropt+PY+FOQKn6X1OTGe0y7CQT/k3a0Me5D6ppUWrcIphyZpvZQfQ5yAJWft
+         V3i1xtYOFondBVbYdeKkr8Yuxka8sq9qFM3UzD4OFjCHoi5Ob425cjmtYx8Q5ZxQjVpa
+         Jcy8wuw8H9b5zHwixhqm5kWCxd812N4CAVtc6I9jXHd92MIvSfqGYLJSGvZpJ7HYHsTa
+         +PVw==
+X-Gm-Message-State: AOJu0YyXs5fjfLdsoRF/WAbUXfhhOgD9XvcDtpf2UXzz5vOVaffvTRjT
+        VZ4CZDPwojU46E8U4QdBI+o4RKjNeYiAEbtOEy/tnF8dNyIY
+X-Google-Smtp-Source: AGHT+IHKb+19U+ZmmFPlZshuQVUWzVrT9RNn1wL6q7iFrWwTv0TIxac2wXeuYlTQRJHLMx9SToRgEDfecxHG6yMAzT8E//H83HWV
+MIME-Version: 1.0
+X-Received: by 2002:a65:5a44:0:b0:5bd:bc9c:7bc4 with SMTP id
+ z4-20020a655a44000000b005bdbc9c7bc4mr683178pgs.12.1699557543466; Thu, 09 Nov
+ 2023 11:19:03 -0800 (PST)
+Date:   Thu, 09 Nov 2023 11:19:03 -0800
+In-Reply-To: <20231109190331.107211-1-kdipendra88@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a75acb0609bd13f0@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     kdipendra88@gmail.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000042030d0609bd029c
+Hello,
 
-During long periods of the PCIe RC HW being in an L1SS sleep state, there
-may be a timeout on an internal bus access, even though there may not be
-any PCIe access involved.  Such a timeout will cause a subsequent CPU
-abort.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in nfc_alloc_send_skb
 
-Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
----
- drivers/pci/controller/pcie-brcmstb.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+==================================================================
+BUG: KASAN: slab-use-after-free in nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
+Read of size 4 at addr ffff88806a407548 by task syz-executor.0/5449
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index f45c5d0168d3..f82a3e1a843a 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1031,6 +1031,21 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 	return 0;
- }
- 
-+/*
-+ * This extends the timeout period for an access to an internal bus.  This
-+ * access timeout may occur during L1SS sleep periods, even without the
-+ * presence of a PCIe access.
-+ */
-+static void brcm_extend_rbus_timeout(struct brcm_pcie *pcie)
-+{
-+	/* TIMEOUT register is two registers before RGR1_SW_INIT_1 */
-+	const unsigned int REG_OFFSET = PCIE_RGR1_SW_INIT_1(pcie) - 8;
-+	u32 timeout_us = 4000000; /* 4 seconds, our setting for L1SS */
-+
-+	/* Each unit in timeout register is 1/216,000,000 seconds */
-+	writel(216 * timeout_us, pcie->base + REG_OFFSET);
-+}
-+
- static void brcm_config_clkreq(struct brcm_pcie *pcie)
- {
- 	static const char err_msg[] = "invalid 'brcm,clkreq-mode' DT string\n";
-@@ -1067,6 +1082,7 @@ static void brcm_config_clkreq(struct brcm_pcie *pcie)
- 		 * atypical and should happen only with older devices.
- 		 */
- 		clkreq_cntl |= PCIE_MISC_HARD_PCIE_HARD_DEBUG_L1SS_ENABLE_MASK;
-+		brcm_extend_rbus_timeout(pcie);
- 	} else {
- 		/*
- 		 * "safe" -- No power savings; refclk is driven by RC
--- 
-2.17.1
+CPU: 1 PID: 5449 Comm: syz-executor.0 Not tainted 6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
+ nfc_llcp_send_ui_frame+0x2ac/0x670 net/nfc/llcp_commands.c:766
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x592/0x890 net/socket.c:2558
+ ___sys_sendmsg net/socket.c:2612 [inline]
+ __sys_sendmmsg+0x3b2/0x730 net/socket.c:2698
+ __do_sys_sendmmsg net/socket.c:2727 [inline]
+ __se_sys_sendmmsg net/socket.c:2724 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2724
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7efdd1e7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007efdd2b050c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007efdd1f9bf80 RCX: 00007efdd1e7cae9
+RDX: 0000000000000001 RSI: 00000000200013c0 RDI: 0000000000000004
+RBP: 00007efdd1ec847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007efdd1f9bf80 R15: 00007ffcb9f3b548
+ </TASK>
+
+Allocated by task 5449:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ nfc_allocate_device+0x12f/0x520 net/nfc/core.c:1065
+ nci_allocate_device+0x1e2/0x360 net/nfc/nci/core.c:1179
+ virtual_ncidev_open+0x75/0x1b0 drivers/nfc/virtual_ncidev.c:136
+ misc_open+0x30b/0x380 drivers/char/misc.c:165
+ chrdev_open+0x551/0x630 fs/char_dev.c:414
+ do_dentry_open+0x80f/0x1430 fs/open.c:929
+ do_open fs/namei.c:3640 [inline]
+ path_openat+0x27bb/0x3180 fs/namei.c:3797
+ do_filp_open+0x234/0x490 fs/namei.c:3824
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __x64_sys_openat+0x247/0x290 fs/open.c:1448
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5448:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
+ device_release+0x95/0x1c0
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:716 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1ee/0x430 lib/kobject.c:733
+ nfc_free_device include/net/nfc/nfc.h:213 [inline]
+ nci_free_device+0x38/0x50 net/nfc/nci/core.c:1209
+ virtual_ncidev_close+0x70/0x90 drivers/nfc/virtual_ncidev.c:164
+ __fput+0x3f8/0x910 fs/file_table.c:384
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close+0x15f/0x220 fs/open.c:1557
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff88806a407000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 1352 bytes inside of
+ freed 2048-byte region [ffff88806a407000, ffff88806a407800)
+
+The buggy address belongs to the physical page:
+page:ffffea0001a90000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x6a400
+head:ffffea0001a90000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012842000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 5382, tgid 5382 (syz-executor.0), ts 87391067310, free_ts 58677729993
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1025 [inline]
+ __kmalloc+0xa8/0x230 mm/slab_common.c:1039
+ kmalloc include/linux/slab.h:603 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ ipt_alloc_initial_table+0x6c/0x570 net/ipv4/netfilter/ip_tables.c:36
+ iptable_mangle_table_init+0x1c/0x60 net/ipv4/netfilter/iptable_mangle.c:88
+ xt_find_table_lock+0x2d0/0x3b0 net/netfilter/x_tables.c:1259
+ xt_request_find_table_lock+0x26/0x100 net/netfilter/x_tables.c:1284
+ get_info net/ipv4/netfilter/ip_tables.c:963 [inline]
+ do_ipt_get_ctl+0x885/0x18c0 net/ipv4/netfilter/ip_tables.c:1651
+ nf_getsockopt+0x292/0x2c0 net/netfilter/nf_sockopt.c:116
+ ip_getsockopt+0x21e/0x2e0 net/ipv4/ip_sockglue.c:1788
+ tcp_getsockopt+0x160/0x1c0 net/ipv4/tcp.c:4278
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
+ vfree+0x186/0x2e0 mm/vmalloc.c:2842
+ kcov_put kernel/kcov.c:429 [inline]
+ kcov_close+0x2b/0x50 kernel/kcov.c:525
+ __fput+0x3f8/0x910 fs/file_table.c:384
+ task_work_run+0x24a/0x300 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa2c/0x2650 kernel/exit.c:874
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1024
+ get_signal+0x175d/0x1840 kernel/signal.c:2892
+ arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop+0x6a/0x100 kernel/entry/common.c:168
+ exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff88806a407400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806a407480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88806a407500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                              ^
+ ffff88806a407580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806a407600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
---00000000000042030d0609bd029c
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Tested on:
 
-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
-mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
-uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
-BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
-VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
-z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
-b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
-+R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
-AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
-75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
-AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
-AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC8WA6GIMj7FwZU5Qb2fJpPMVftOJxn
-8qXmqumFOkWqATAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzEx
-MDkxOTE0MTFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
-hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEAg5XwDPAMo6TDoI6gOyReZwjGUNntM8lA2azeVDx4bpDEjTIG
-Lt86hJVN9UzfBfKwY7owAHvrLd0z3mhTPcEPRgNkUnTw5PGhoLm5qColo1UC6CETGEEQJEkiAJEK
-7mqpgUtMS3CiJIkTMnURHaV1Cu2k2EWA1YzRVEhwdAqH+Lyr80goa4BZ4ucRfZ39hTphJoqadUk6
-mN87Q1EvrN4Pn+hWvcjNbqY+Wn8OKQDbR1yLnmQYq1wZUnXBQyYuoRL51AIYRryRJfExGXJbmflX
-emEI2DzZXkZQ0PzkWmqW38TB5BiCeYscgAPWG4kd0u1s6Akb3D4xJPweY9eAXxm1Vg==
---00000000000042030d0609bd029c--
+commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1617ab37680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f0d47f0e0359e88e
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11005d0f680000
+
