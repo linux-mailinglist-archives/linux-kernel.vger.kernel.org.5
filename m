@@ -2,331 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5667E65AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96487E65AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbjKIIvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S233651AbjKIIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233671AbjKIIvM (ORCPT
+        with ESMTP id S232521AbjKIIwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:51:12 -0500
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA642D65;
-        Thu,  9 Nov 2023 00:51:02 -0800 (PST)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=06912c668f=fe@dev.tdt.de>)
-        id 1r10kV-00E9my-C2; Thu, 09 Nov 2023 09:50:51 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1r10kU-001kLD-ID; Thu, 09 Nov 2023 09:50:50 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 26D7B240040;
-        Thu,  9 Nov 2023 09:50:50 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 7A8A3240049;
-        Thu,  9 Nov 2023 09:50:49 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id 86941211D4;
-        Thu,  9 Nov 2023 09:50:48 +0100 (CET)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        m.brock@vanmierlo.com
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: [Patch v8 6/6] leds: ledtrig-tty: add additional line state evaluation
-Date:   Thu,  9 Nov 2023 09:50:38 +0100
-Message-ID: <20231109085038.371977-7-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231109085038.371977-1-fe@dev.tdt.de>
-References: <20231109085038.371977-1-fe@dev.tdt.de>
+        Thu, 9 Nov 2023 03:52:55 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B7D111
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:52:53 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32f78dcf036so1053691f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699519972; x=1700124772; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rvehk1fV53gG9nJW7yH/BIf42Uaj50NUcQqqGKhqkzY=;
+        b=cg28cd8m1c7NlKBNLJaI3rW2x4fRntoFlWQa1bPQZ/PLmkO7iQzXUW0V2uZAnqwwWA
+         eOOluKq6PDoPtbDQ1LiIWj0WHVO1ll4rBujJQd7dvb2m0iObU6ZYHD2q8p3ZlTmyr2C8
+         HaJaJHcpLfO9HzzEpWb6G5bQfMxx23VCDfT2nRB5ExcjtDu1XYvHSmoVOtO5WZ+OfQWh
+         n8TzCXK4mDVzno3LB26o4OB8iMgF4anakakkIr+IEQCkr5TcD83xdQ4n4JQoZ1AlU19V
+         sfbbyxz9IzAMLcu/rRotUS2HYd0mAbyyZT8K4BWUCRR+uHLjZ92ysqJGgtsjCb/aODOI
+         qdgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699519972; x=1700124772;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rvehk1fV53gG9nJW7yH/BIf42Uaj50NUcQqqGKhqkzY=;
+        b=u55yOVjwvqAf6XVVHQub0olH888dcgr7z7lGTcr5lL0jfv/s7QemImUwqNJnLQ7Qit
+         abi9CLRkyHXYN7WE2h/GQ47rU7wuxfh28m5cyTncfQWbf8Hlo4mhDKYMID0yLcgUe5N5
+         rzdHWKXfR+iNF3Qpvcja2EhIs0cxWs6dEdjFqbicAaxtvXSkyKAr+I6gRxMTxNKsyqxp
+         196PVVl9TW2PBcnyj6sjHqPUPgOVUgRR4ILkYSQNGkWJ4EkeMSczhrLrLQq+4pZMcwGD
+         ry2DEZBYO8SVO+BrsRSgeyaM1VpRKw8cuT4VlJQjdWzmjZWiIUqdpDdXlQGv3XZDark+
+         8Hng==
+X-Gm-Message-State: AOJu0Yz7Gp7JoJHTCU3fo5A1ublKwG4DjYNtH0Xz7tB3ajTpbN+DWzin
+        py4VKKzSEHMJOh4maq/PBzT2Nw==
+X-Google-Smtp-Source: AGHT+IHRP2KQj+lro9Fdgd1KyWHS2BorRdoSM6MNLlcFvlh4i9ZdelA+7ithKcjFQGx9EUJxZJTpWQ==
+X-Received: by 2002:a05:6000:11ca:b0:32f:92ca:9e5a with SMTP id i10-20020a05600011ca00b0032f92ca9e5amr5122894wrx.15.1699519971812;
+        Thu, 09 Nov 2023 00:52:51 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id v5-20020adfa1c5000000b0032d81837433sm6944964wrv.30.2023.11.09.00.52.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 00:52:51 -0800 (PST)
+Message-ID: <30ccb0a9-c0bd-491e-817f-def0aeda11c6@linaro.org>
+Date:   Thu, 9 Nov 2023 09:52:49 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,
-        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        URIBL_DBL_BLOCKED_OPENDNS,URIBL_ZEN_BLOCKED_OPENDNS autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-Content-Transfer-Encoding: quoted-printable
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1699519851-CE6F33D8-1C4D7CE9/0/0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] hwmon: Add support for Amphenol ChipCap 2
+Content-Language: en-US
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
+ <20231020-topic-chipcap2-v2-3-f5c325966fdb@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231020-topic-chipcap2-v2-3-f5c325966fdb@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The serial tty interface also supports additional input signals, that
-can also be evaluated within this trigger. This change is adding the
-following additional input sources, which could be controlled
-via the '/sys/class/<leds>/' sysfs interface.
+On 08/11/2023 16:37, Javier Carrasco wrote:
+> The Amphenol ChipCap 2 is a capacitive polymer humidity and temperature
+> sensor with an integrated EEPROM and minimum/maximum humidity alarms.
+> 
+> All device variants offer an I2C interface and depending on the part
+> number, two different output modes:
+> - CC2D: digital output
+> - CC2A: analog (PDM) output
+> 
+> This driver adds support for the digital variant (CC2D part numbers),
+> which is also divided into two subfamilies [1]:
+> - CC2DXX: non-sleep measurement mode
+> - CC2DXXS: sleep measurement mode
 
-Explanation:
-DCE =3D Data Communication Equipment (Modem)
-DTE =3D Data Terminal Equipment (Computer)
+...
 
-- cts:
-  DCE is ready to accept data from the DTE (CTS =3D Clear To Send). If
-  the line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate CTS.
-  If set to 1, the LED will evaluate CTS.
+> +
+> +static int cc2_probe(struct i2c_client *client)
+> +{
+> +	struct cc2_data *data;
+> +	struct device *dev = &client->dev;
+> +	enum cc2_ids chip;
+> +	int ret;
+> +
+> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+> +		return -EOPNOTSUPP;
+> +
+> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	i2c_set_clientdata(client, data);
+> +
+> +	mutex_init(&data->i2c_lock);
+> +	mutex_init(&data->alarm_lock);
+> +
+> +	data->client = client;
+> +
+> +	if (client->dev.of_node)
+> +		chip = (uintptr_t)of_device_get_match_data(&client->dev);
+> +	else
+> +		chip = i2c_match_id(cc2_id, client)->driver_data;
+> +
+> +	data->config = &cc2_config[chip];
+> +
+> +	ret = cc2_request_ready_irq(data, dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	data->regulator = devm_regulator_get_optional(dev, "vdd");
+> +	if (!IS_ERR(data->regulator)) {
+> +		ret = cc2_retrive_alarm_config(data);
+> +		if (ret)
+> +			goto cleanup;
+> +	} else {
+> +		/* No access to EEPROM without regulator: no alarm control */
+> +		goto dev_register;
 
-- dsr:
-  DCE is ready to receive and send data (DSR =3D Data Set Ready). If the
-  line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate DSR.
-  If set to 1, the LED will evaluate DSR.
+Nothing improved here.
 
-- dcd:
-  DTE is receiving a carrier from the DCE (DCD =3D Data Carrier Detect).
-  If the line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate DCD.
-  If set to 1, the LED will evaluate DCD.
+Do not send new version of patchset before discussion finishes.
 
-- rng:
-  DCE has detected an incoming ring signal on the telephone line
-  (RNG =3D Ring Indicator). If the line state is detected, the LED is
-  switched on.
-  If set to 0 (default), the LED will not evaluate RNG.
-  If set to 1, the LED will evaluate RNG.
+> +	}
+> +
+> +	ret = cc2_request_alarm_irqs(data, dev);
+> +	if (ret)
+> +		goto cleanup;
+> +
+> +dev_register:
+> +	data->hwmon = devm_hwmon_device_register_with_info(dev, client->name,
+> +							   data, &cc2_chip_info,
+> +							   NULL);
+> +	if (IS_ERR(data->hwmon)) {
+> +		ret = PTR_ERR(data->hwmon);
+> +		goto cleanup;
+> +	}
+> +
+> +	return 0;
+> +
+> +cleanup:
+> +	if (cc2_disable(data))
+> +		dev_dbg(dev, "Failed to disable device");
+> +
+> +	return dev_err_probe(dev, ret,
+> +			     "Unable to register hwmon device\n");
 
-Also add an invert flag on LED blink, so that the LED blinks in the
-correct order.
+Drop or move to each error path.
 
-* If one off the new enabled input signals are evaluatet as 'enabled',
-  and data are transmitted, then the LED should first blink 'off' and
-  then 'on' (invert).
-* If all the new enabled input signals are evaluatet as 'disabled',
-  and data are transmitted, then the LED should first blink 'on' and
-  then 'off'.
 
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
----
- .../ABI/testing/sysfs-class-led-trigger-tty   | 40 ++++++++++
- drivers/leds/trigger/ledtrig-tty.c            | 77 ++++++++++++++++++-
- 2 files changed, 116 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Docu=
-mentation/ABI/testing/sysfs-class-led-trigger-tty
-index 504dece151b8..30cef9ac0f49 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -20,3 +20,43 @@ Description:
- 		Signal transmission (tx) of data on the named tty device.
- 		If set to 0, the LED will not blink on transmission.
- 		If set to 1 (default), the LED will blink on transmission.
-+
-+What:		/sys/class/leds/<led>/cts
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		CTS =3D Clear To Send
-+		DCE is ready to accept data from the DTE.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CTS.
-+		If set to 1, the LED will evaluate CTS.
-+
-+What:		/sys/class/leds/<led>/dsr
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		DSR =3D Data Set Ready
-+		DCE is ready to receive and send data.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate DSR.
-+		If set to 1, the LED will evaluate DSR.
-+
-+What:		/sys/class/leds/<led>/dcd
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		DCD =3D Data Carrier Detect
-+		DTE is receiving a carrier from the DCE.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CAR (DCD).
-+		If set to 1, the LED will evaluate CAR (DCD).
-+
-+What:		/sys/class/leds/<led>/rng
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		RNG =3D Ring Indicator
-+		DCE has detected an incoming ring signal on the telephone
-+		line. If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate RNG.
-+		If set to 1, the LED will evaluate RNG.
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/le=
-dtrig-tty.c
-index 1a40a78bf1ee..7291b2d970c6 100644
---- a/drivers/leds/trigger/ledtrig-tty.c
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -19,17 +19,26 @@ struct ledtrig_tty_data {
- 	int rx, tx;
- 	bool mode_rx;
- 	bool mode_tx;
-+	bool mode_cts;
-+	bool mode_dsr;
-+	bool mode_dcd;
-+	bool mode_rng;
- };
-=20
- /* Indicates which state the LED should now display */
- enum led_trigger_tty_state {
- 	TTY_LED_BLINK,
-+	TTY_LED_ENABLE,
- 	TTY_LED_DISABLE,
- };
-=20
- enum led_trigger_tty_modes {
- 	TRIGGER_TTY_RX =3D 0,
- 	TRIGGER_TTY_TX,
-+	TRIGGER_TTY_CTS,
-+	TRIGGER_TTY_DSR,
-+	TRIGGER_TTY_DCD,
-+	TRIGGER_TTY_RNG,
- };
-=20
- static int ledtrig_tty_waitforcompletion(struct device *dev)
-@@ -118,6 +127,18 @@ static ssize_t ledtrig_tty_attr_show(struct device *=
-dev, char *buf,
- 	case TRIGGER_TTY_TX:
- 		state =3D trigger_data->mode_tx;
- 		break;
-+	case TRIGGER_TTY_CTS:
-+		state =3D trigger_data->mode_cts;
-+		break;
-+	case TRIGGER_TTY_DSR:
-+		state =3D trigger_data->mode_dsr;
-+		break;
-+	case TRIGGER_TTY_DCD:
-+		state =3D trigger_data->mode_dcd;
-+		break;
-+	case TRIGGER_TTY_RNG:
-+		state =3D trigger_data->mode_rng;
-+		break;
- 	}
-=20
- 	return sysfs_emit(buf, "%u\n", state);
-@@ -147,6 +168,18 @@ static ssize_t ledtrig_tty_attr_store(struct device =
-*dev, const char *buf,
- 	case TRIGGER_TTY_TX:
- 		trigger_data->mode_tx =3D state;
- 		break;
-+	case TRIGGER_TTY_CTS:
-+		trigger_data->mode_cts =3D state;
-+		break;
-+	case TRIGGER_TTY_DSR:
-+		trigger_data->mode_dsr =3D state;
-+		break;
-+	case TRIGGER_TTY_DCD:
-+		trigger_data->mode_dcd =3D state;
-+		break;
-+	case TRIGGER_TTY_RNG:
-+		trigger_data->mode_rng =3D state;
-+		break;
- 	}
-=20
- 	return size;
-@@ -167,6 +200,10 @@ static ssize_t ledtrig_tty_attr_store(struct device =
-*dev, const char *buf,
-=20
- DEFINE_TTY_TRIGGER(rx, TRIGGER_TTY_RX);
- DEFINE_TTY_TRIGGER(tx, TRIGGER_TTY_TX);
-+DEFINE_TTY_TRIGGER(cts, TRIGGER_TTY_CTS);
-+DEFINE_TTY_TRIGGER(dsr, TRIGGER_TTY_DSR);
-+DEFINE_TTY_TRIGGER(dcd, TRIGGER_TTY_DCD);
-+DEFINE_TTY_TRIGGER(rng, TRIGGER_TTY_RNG);
-=20
- static void ledtrig_tty_work(struct work_struct *work)
- {
-@@ -175,6 +212,8 @@ static void ledtrig_tty_work(struct work_struct *work=
-)
- 	struct led_classdev *led_cdev =3D trigger_data->led_cdev;
- 	enum led_trigger_tty_state state =3D TTY_LED_DISABLE;
- 	unsigned long interval =3D LEDTRIG_TTY_INTERVAL;
-+	bool invert =3D false;
-+	int status;
- 	int ret;
-=20
- 	if (!trigger_data->ttyname)
-@@ -202,6 +241,33 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
- 		trigger_data->tty =3D tty;
- 	}
-=20
-+	status =3D tty_get_tiocm(trigger_data->tty);
-+	if (status > 0) {
-+		if (trigger_data->mode_cts) {
-+			if (status & TIOCM_CTS)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_dsr) {
-+			if (status & TIOCM_DSR)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_dcd) {
-+			if (status & TIOCM_CAR)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_rng) {
-+			if (status & TIOCM_RNG)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+	}
-+
-+	/*
-+	 * The evaluation of rx/tx must be done after the evaluation
-+	 * of TIOCM_*, because rx/tx has priority.
-+	 */
- 	if (trigger_data->mode_rx || trigger_data->mode_tx) {
- 		struct serial_icounter_struct icount;
-=20
-@@ -211,11 +277,13 @@ static void ledtrig_tty_work(struct work_struct *wo=
-rk)
-=20
- 		if (trigger_data->mode_tx && (icount.tx !=3D trigger_data->tx)) {
- 			trigger_data->tx =3D icount.tx;
-+			invert =3D state =3D=3D TTY_LED_ENABLE;
- 			state =3D TTY_LED_BLINK;
- 		}
-=20
- 		if (trigger_data->mode_rx && (icount.rx !=3D trigger_data->rx)) {
- 			trigger_data->rx =3D icount.rx;
-+			invert =3D state =3D=3D TTY_LED_ENABLE;
- 			state =3D TTY_LED_BLINK;
- 		}
- 	}
-@@ -223,7 +291,10 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
- out:
- 	switch (state) {
- 	case TTY_LED_BLINK:
--		led_blink_set_oneshot(led_cdev, &interval, &interval, 0);
-+		led_blink_set_oneshot(led_cdev, &interval, &interval, invert);
-+		break;
-+	case TTY_LED_ENABLE:
-+		led_set_brightness(led_cdev, led_cdev->blink_brightness);
- 		break;
- 	case TTY_LED_DISABLE:
- 		fallthrough;
-@@ -241,6 +312,10 @@ static struct attribute *ledtrig_tty_attrs[] =3D {
- 	&dev_attr_ttyname.attr,
- 	&dev_attr_rx.attr,
- 	&dev_attr_tx.attr,
-+	&dev_attr_cts.attr,
-+	&dev_attr_dsr.attr,
-+	&dev_attr_dcd.attr,
-+	&dev_attr_rng.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(ledtrig_tty);
---=20
-2.30.2
+Best regards,
+Krzysztof
 
