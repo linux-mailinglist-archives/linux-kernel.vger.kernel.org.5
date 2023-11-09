@@ -2,189 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0099E7E6B4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914757E6B57
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 14:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjKINlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 08:41:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
+        id S232443AbjKINox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 08:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbjKINlh (ORCPT
+        with ESMTP id S231214AbjKINow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 08:41:37 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F83B171B;
-        Thu,  9 Nov 2023 05:41:35 -0800 (PST)
-Date:   Thu, 09 Nov 2023 13:41:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699537292;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B5L7TrDn+iOraFgK4bd/yleetT2/5lD4JNly4xY6Cuw=;
-        b=GJXodOzUOj86wDLUdXqiBEmN0qzpscmX+UODIJBa6k/ZPPQc4qre48pQKEOaS3PjNU/N3W
-        2MyC5Oab7pb/MAe3nDGlf03Hm6B/ln/+5XDlMYdpOa/PTt7sp/YdTh/v0bx0Rk3Nm7eWkt
-        MB4lD2cuJXOeCtLcR3t1+HpjPTI3MXT6i5yrIFtXgKHS0goqCFnhxhV7tsbNLzFWdplDR8
-        NFYDM21Tlrki7sEljC/eCo4jyzdWE6ETivjIY/5078hyJ7G/t4Fokx2pb7tQBXCRwPgmEa
-        TGfKsTK/50et4GV9Ge1Flb3/ufdTbYaLiTVvVPgG3ZSyXP+nP2A3kHdDg+kurQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699537292;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B5L7TrDn+iOraFgK4bd/yleetT2/5lD4JNly4xY6Cuw=;
-        b=jeX9WlYiyrb2EcUUCxIgMOqeY4kbgIDfTINs1mpQ+oAv7S/aEEtNJlYHJpEFHLjn9uYt9N
-        ZWDPDRYkrMi/xpBw==
-From:   "tip-bot2 for Zhang Rui" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230702162802.344176-1-rui.zhang@intel.com>
-References: <20230702162802.344176-1-rui.zhang@intel.com>
+        Thu, 9 Nov 2023 08:44:52 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EEA30CF
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 05:44:49 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso5377735e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 05:44:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699537488; x=1700142288; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y/upOHJ+PHpaZV2stE6UqZyQX42WRDbcQMQDPTdbtQg=;
+        b=s9gtDvQJ0Sf+/trGlgOaSNJ7arr9R92UnlgVdRj9U8HPjnD6kkfzRBYd1IvC4sP01A
+         owF9Vl0tNjJM9P1T+MUMQRUdYLIHVOf14ZFNmbnajD+vQYr+StrgljLjRlLx0RxfxgCc
+         cnlXG/UPdSJ2f4nTL0hKj1U3bCmmTzMCbYQGUQCJQatoPM77m75lzBAfODKVSMzQNoRr
+         8OrvZrkPcgUC7UpxNiSN3VnSEn45mO7hr8wsw2E4w6F03St+SGwycvuTIoKDUAeQpQm9
+         2KCkpqafLSpdr9EM0fMFTre8LNVWlLy1BXIUJtSDjTX3a7isUgXiA1aonZIGJSE+i47E
+         AC6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699537488; x=1700142288;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y/upOHJ+PHpaZV2stE6UqZyQX42WRDbcQMQDPTdbtQg=;
+        b=EeRH+Nq2by/UPcjhwgDndClVHPIQoAh698SJisuC3Cpe8ZoecAC7rJDXNKU4CWefsH
+         bIQbFUY5dEkjoRoIjF4YoNSIoWh3E3H0xn8ZuSHOA0h8uuUymJ0K8L0BsPwvhFKXzUlJ
+         swpgPcUmFLLo8+aehlwo6xOHupiNlRfe6yFgPay+P4EtJ1disf5pCMMcshu9QqK+6CCS
+         mTBci5wRaUtKRw5rq1gkjxar6LtEHgbwoJDiskV5QLjdbkvnPPHvP5CapdX4QSwpquaS
+         vbDVdas5lx6AI/Ay2Md9Aby9eyaM9TMWlre5UVZbCwVGAgIZI6rBDiTqYeTeJ7gRwsxY
+         4BXQ==
+X-Gm-Message-State: AOJu0Yy8WvKbWi+hRUdJh9rfNxz+sFckk1+ev2kkfl7crAxR++8Jg5x/
+        eyyxk3luqMHr206p03iH0++8jQ==
+X-Google-Smtp-Source: AGHT+IHRrU+JfzY0kqwmpCPMcxEvJ3PFd7PE0xe/26BgsjORmrP/PrXas+oHUi1Rj4DSrRdXAwVyaQ==
+X-Received: by 2002:a7b:c7c8:0:b0:3ff:233f:2cfb with SMTP id z8-20020a7bc7c8000000b003ff233f2cfbmr4196457wmk.23.1699537488190;
+        Thu, 09 Nov 2023 05:44:48 -0800 (PST)
+Received: from [10.66.66.2] (9.ip-51-91-159.eu. [51.91.159.9])
+        by smtp.gmail.com with ESMTPSA id v5-20020adfa1c5000000b0032d81837433sm7445222wrv.30.2023.11.09.05.44.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 05:44:47 -0800 (PST)
+Message-ID: <3e0958a9-4d1e-4d1b-a914-5da154caa11f@linaro.org>
+Date:   Thu, 9 Nov 2023 14:44:44 +0100
 MIME-Version: 1.0
-Message-ID: <169953729188.3135.6804572126118798018.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/6] media: qcom: camss: Add sc8280xp resource details
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231109-b4-camss-sc8280xp-v4-0-58a58bc200f9@linaro.org>
+ <20231109-b4-camss-sc8280xp-v4-4-58a58bc200f9@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231109-b4-camss-sc8280xp-v4-4-58a58bc200f9@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     ec9aedb2aa1ab7ac420c00b31f5edc5be15ec167
-Gitweb:        https://git.kernel.org/tip/ec9aedb2aa1ab7ac420c00b31f5edc5be15ec167
-Author:        Zhang Rui <rui.zhang@intel.com>
-AuthorDate:    Mon, 03 Jul 2023 00:28:02 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 09 Nov 2023 14:33:30 +01:00
 
-x86/acpi: Ignore invalid x2APIC entries
+On 11/9/23 12:30, Bryan O'Donoghue wrote:
+> This commit describes the hardware layout for the sc8280xp for the
+> following hardware blocks:
+> 
+> - 4 x VFE, 4 RDI per VFE
+> - 4 x VFE Lite, 4 RDI per VFE
+> - 4 x CSID
+> - 4 x CSID Lite
+> - 4 x CSI PHY
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+[...]
 
-Currently, the kernel enumerates the possible CPUs by parsing both ACPI
-MADT Local APIC entries and x2APIC entries. So CPUs with "valid" APIC IDs,
-even if they have duplicated APIC IDs in Local APIC and x2APIC, are always
-enumerated.
+> +static const struct camss_subdev_resources csid_res_sc8280xp[] = {
+> +	/* CSID0 */
+> +	{
+> +		.regulators = { "vdda-phy", "vdda-pll" },
+> +		.clock = { "vfe0_csid", "vfe0_cphy_rx", "vfe0", "vfe0_axi" },
+> +		.clock_rate = { { 400000000, 400000000, 480000000, 600000000, 600000000, 600000000 },
+(why is it 400, 400, 480, 600, 600, 600 and not 400, 480, 600?)
 
-Below is what ACPI MADT Local APIC and x2APIC describes on an
-Ivebridge-EP system,
+> +				{ 0 },
+> +				{ 0 },
+> +				{ 0 } },
+There's a funny bug..
 
-[02Ch 0044   1]                Subtable Type : 00 [Processor Local APIC]
-[02Fh 0047   1]                Local Apic ID : 00
-...
-[164h 0356   1]                Subtable Type : 00 [Processor Local APIC]
-[167h 0359   1]                Local Apic ID : 39
-[16Ch 0364   1]                Subtable Type : 00 [Processor Local APIC]
-[16Fh 0367   1]                Local Apic ID : FF
-...
-[3ECh 1004   1]                Subtable Type : 09 [Processor Local x2APIC]
-[3F0h 1008   4]                Processor x2Apic ID : 00000000
-...
-[B5Ch 2908   1]                Subtable Type : 09 [Processor Local x2APIC]
-[B60h 2912   4]                Processor x2Apic ID : 00000077
+camss-csiphy.c and camss-vfe.c (sounds like room for commonization):
 
-As a result, kernel shows "smpboot: Allowing 168 CPUs, 120 hotplug CPUs".
-And this wastes significant amount of memory for the per-cpu data.
-Plus this also breaks https://lore.kernel.org/all/87edm36qqb.ffs@tglx/,
-because __max_logical_packages is over-estimated by the APIC IDs in
-the x2APIC entries.
+while (res->clock_rate[i][clock->nfreqs])
+	clock->nfreqs++;
 
-According to https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#processor-local-x2apic-structure:
+this works fine in this case, because the last frequency is followed
+by a zero, so overflowing the 2nd dimension of the array into the last+1
+member (meaning the first member of the following entry in the 1st dimension)
+stops this loop
 
-  "[Compatibility note] On some legacy OSes, Logical processors with APIC
-   ID values less than 255 (whether in XAPIC or X2APIC mode) must use the
-   Processor Local APIC structure to convey their APIC information to OSPM,
-   and those processors must be declared in the DSDT using the Processor()
-   keyword. Logical processors with APIC ID values 255 and greater must use
-   the Processor Local x2APIC structure and be declared using the Device()
-   keyword."
+however
 
-Therefore prevent the registration of x2APIC entries with an APIC ID less
-than 255 if the local APIC table enumerates valid APIC IDs.
+[...]
 
-[ tglx: Simplify the logic ]
+> +static const struct camss_subdev_resources vfe_res_sc8280xp[] = {
+> +	/* IFE0 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "gcc_axi_hf", "gcc_axi_sf", "cpas_ahb", "camnoc_axi", "vfe0", "vfe0_axi" },
+> +		.clock_rate = { { 0 },
+> +				{ 0 },
+> +				{ 19200000, 80000000, 80000000, 80000000, 80000000},
+> +				{ 19200000, 150000000, 266666667, 320000000, 400000000, 480000000 },
+> +				{ 400000000, 558000000, 637000000, 760000000 },
+> +				{ 0 }, },
+Not the case here!
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230702162802.344176-1-rui.zhang@intel.com
----
- arch/x86/kernel/acpi/boot.c | 34 +++++++++++++++-------------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
+I'd suggest moving this to something like:
 
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index c55c0ef..fc5bce1 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -63,6 +63,7 @@ int acpi_fix_pin2_polarity __initdata;
- 
- #ifdef CONFIG_X86_LOCAL_APIC
- static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
-+static bool has_lapic_cpus __initdata;
- static bool acpi_support_online_capable;
- #endif
- 
-@@ -233,6 +234,14 @@ acpi_parse_x2apic(union acpi_subtable_headers *header, const unsigned long end)
- 		return 0;
- 
- 	/*
-+	 * According to https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#processor-local-x2apic-structure
-+	 * when MADT provides both valid LAPIC and x2APIC entries, the APIC ID
-+	 * in x2APIC must be equal or greater than 0xff.
-+	 */
-+	if (has_lapic_cpus && apic_id < 0xff)
-+		return 0;
-+
-+	/*
- 	 * We need to register disabled CPU as well to permit
- 	 * counting disabled CPUs. This allows us to size
- 	 * cpus_possible_map more accurately, to permit
-@@ -1114,10 +1123,7 @@ static int __init early_acpi_parse_madt_lapic_addr_ovr(void)
- 
- static int __init acpi_parse_madt_lapic_entries(void)
- {
--	int count;
--	int x2count = 0;
--	int ret;
--	struct acpi_subtable_proc madt_proc[2];
-+	int count, x2count = 0;
- 
- 	if (!boot_cpu_has(X86_FEATURE_APIC))
- 		return -ENODEV;
-@@ -1126,21 +1132,11 @@ static int __init acpi_parse_madt_lapic_entries(void)
- 				      acpi_parse_sapic, MAX_LOCAL_APIC);
- 
- 	if (!count) {
--		memset(madt_proc, 0, sizeof(madt_proc));
--		madt_proc[0].id = ACPI_MADT_TYPE_LOCAL_APIC;
--		madt_proc[0].handler = acpi_parse_lapic;
--		madt_proc[1].id = ACPI_MADT_TYPE_LOCAL_X2APIC;
--		madt_proc[1].handler = acpi_parse_x2apic;
--		ret = acpi_table_parse_entries_array(ACPI_SIG_MADT,
--				sizeof(struct acpi_table_madt),
--				madt_proc, ARRAY_SIZE(madt_proc), MAX_LOCAL_APIC);
--		if (ret < 0) {
--			pr_err("Error parsing LAPIC/X2APIC entries\n");
--			return ret;
--		}
--
--		count = madt_proc[0].count;
--		x2count = madt_proc[1].count;
-+		count = acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_APIC,
-+					acpi_parse_lapic, MAX_LOCAL_APIC);
-+		has_lapic_cpus = count > 0;
-+		x2count = acpi_table_parse_madt(ACPI_MADT_TYPE_LOCAL_X2APIC,
-+					acpi_parse_x2apic, MAX_LOCAL_APIC);
- 	}
- 	if (!count && !x2count) {
- 		pr_err("No LAPIC entries present\n");
+struct res_clk_data {
+	const char * const names;
+	const u64 * const rates; (or unsigned long / unsigned long long / uint?
+				  there was some capping for arm32)
+	const u8 num_clks;
+}
+
+OR even better
+
+separate out clocks that just need to be on/off ("intf/interface clocks" sounds
+like a good name for these) from ones that require scaling, use clk_bulk apis
+for the former and OPP for the latter to make sure the correct performance state
+is requested on the RPMhPDs
+
+Konrad
