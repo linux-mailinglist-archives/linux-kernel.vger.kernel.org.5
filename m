@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E32637E73A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2417D7E73A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 22:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbjKIVdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 16:33:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
+        id S1345249AbjKIVd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 16:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjKIVdU (ORCPT
+        with ESMTP id S230020AbjKIVdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 16:33:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2D43C30;
-        Thu,  9 Nov 2023 13:33:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F83C433C8;
-        Thu,  9 Nov 2023 21:33:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699565598;
-        bh=ksMXL7JuxLefyNW85J+EYnJjuVKz/X0dBos8onrG1LY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MKNxzbGaY6mBpEZtn1QzDfV4ts54b26DJKnhlTleYCCLiUj+7IesrVrsftXrpWn95
-         n1JLCypQlzJOqt6XbvxnEPnUopUxKlGGn8julyNr59DiAYSn+cCLfzta3O7w5Kkr2D
-         w+2VaLMrcKC9OcKIvTH8LIYrulkxJBBMkWrDiHgcRkaaz28hcO5CBWGYf1uZ56NAgd
-         i8FMFyfVlwlGk9fDcMB/Cp8xjF3vPV88ejhKsVKWe5Tgm9I5tDEpHlXYDo0mTlX43S
-         J/WctStnl47pFWDjcx7Jd+8eMldIhSyUTm8COzi6nkGttcr44SECEJrqeovVyw7vRs
-         /e4ld6Grc5XQA==
-Date:   Thu, 9 Nov 2023 15:33:15 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Jim Quinlan <jim2101024@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/3] dt-bindings: PCI: brcmstb: Add property
- "brcm,clkreq-mode"
-Message-ID: <20231109213315.GA492812@bhelgaas>
+        Thu, 9 Nov 2023 16:33:55 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0929F3C39
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 13:33:53 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc3216b2a1so11728275ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 13:33:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699565632; x=1700170432; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/unuH/wgOv+LMXS1Iv/n0xTf2dbEARyI1vRnvxRKBR4=;
+        b=Uh6kWNv8F0dT/2DjpzMsfBHJQJq0CwmVL2CR2MCG19wC4fhM/YtuPFsWBGAVZqCS4k
+         VuvNw2ymwOMqqfCUuoYLWHEkaiuu3/4mb+3e41wfvvBqRI1aJULzQ+NioFZye9E0Bdq7
+         fPoAiRqz+IjBDExo6O3gG6Sq5ukKosTIXc3XthFRIyFwJtV6uNN0vnDTZEkuJPmTznAP
+         t2z2yglueCBVwgGRCC/jBDZCd/ZAKyDLGL9IHfOj/mTUvom9pFFn07s0Ynpnx1ftqfmA
+         WWqo6oxmV5KI+sAt1wurpiDA4dQ/siQSAGg5SDaEOL6QOVgFEYPteV3MHhSBwq812UNZ
+         AbCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699565632; x=1700170432;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/unuH/wgOv+LMXS1Iv/n0xTf2dbEARyI1vRnvxRKBR4=;
+        b=kgki2iq3hnICiOy/C5odyR1BdEM/vpn0ko03CwZ1kxI25aCQs1vKNax7GHTyl35W19
+         VDS/ktUk+XMD43Iosppmcbloz1raWxKE5umuo8ANgbpuann/tUMk6aWraf+804LJmhEH
+         Woro2xgSx8wZZdGjIFyTj/Yw0Rirr2s8p2E7Yj4m8CBhRDxe7objLZUw8+TNTTUodXrH
+         IG/Z7uIhzKYRih0ljQMrAMV+2eBavBc9T4o3nYZ7mviS2nI3h26WtfNBHObYPhDXrgXg
+         n/r1MDMCTjtpgvT7eFMEXyjZqJ76V/P1txEmuC7o5IBhotp+Jz2LCD9MiyNBloHNTnv7
+         5GrA==
+X-Gm-Message-State: AOJu0YzvWUrlTypRpLUKVIb7pUQdxzCygHPLkCglTmgSr8IGDQWoCZgd
+        icM50inU49oUg//PiUMfGSctkv9T1Ro=
+X-Google-Smtp-Source: AGHT+IE9PYWFnJi2XRz1FID1YWfKCOTF0hvn9ln/YjvaPRVQc+6AbSETDQawoHmp/BfL6AQW5zP/ww==
+X-Received: by 2002:a17:902:8e89:b0:1cc:636f:f37c with SMTP id bg9-20020a1709028e8900b001cc636ff37cmr5781479plb.13.1699565632137;
+        Thu, 09 Nov 2023 13:33:52 -0800 (PST)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:f97c:cf47:191e:4442])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902d48a00b001cc46240491sm3977722plg.136.2023.11.09.13.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 13:33:51 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs-tools: initialize user cache valid values
+Date:   Thu,  9 Nov 2023 13:33:48 -0800
+Message-ID: <20231109213348.675704-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109191355.27738-2-james.quinlan@broadcom.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 02:13:52PM -0500, Jim Quinlan wrote:
-> The Broadcom STB/CM PCIe HW -- a core that is also used by RPi SOCs --
-> requires the driver to deliberately place the RC HW one of three CLKREQ#
-> modes.  The "brcm,clkreq-mode" property allows the user to override the
-> default setting.  If this property is omitted, the default mode shall be
-> "default".
-> 
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> ---
->  .../bindings/pci/brcm,stb-pcie.yaml           | 21 +++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> index 7e15aae7d69e..992b35e915a5 100644
-> --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> @@ -64,6 +64,27 @@ properties:
->  
->    aspm-no-l0s: true
->  
-> +  brcm,clkreq-mode:
-> +    description: A string that determines the operating
-> +      clkreq mode of the PCIe RC HW WRT controlling the refclk signal.
+From: Daeho Jeong <daehojeong@google.com>
 
-I assume "WRT" is shorthand for "with respect to", but it's slightly
-confusing following all the other acronyms.
+Need to initialize user cache valid values to prevent from providing
+false cache entries.
 
-> +      There are three different modes --
-> +      "safe", which drives the
-> +      refclk signal unconditionally and will work for all devices but does
-> +      not provide any power savings;
-> +      "no-l1ss" -- which provides Clock Power Management, L0s, and
-> +      L1, but cannot provide L1 substate (L1SS) power
-> +      savings. If the downstream device connected to the RC is
-> +      L1SS capable AND the OS enables L1SS, all PCIe traffic
-> +      may abruptly halt, potentially hanging the system;
-> +      "default" -- which provides L0s, L1, and L1SS, but not
-> +      compliant to provide Clock Power Management;
-> +      specifically, may not be able to meet the Tclron max
-> +      timing of 400ns as specified in "Dynamic Clock Control",
-> +      section 3.2.5.2.2 of the PCIe spec.  This situation is
-> +      atypical and should happen only with older devices.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ lib/libf2fs_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-These are all weirdly wrapped.  Really no reason to use lines shorter
-than 80.
+diff --git a/lib/libf2fs_io.c b/lib/libf2fs_io.c
+index 39d3777..d76da83 100644
+--- a/lib/libf2fs_io.c
++++ b/lib/libf2fs_io.c
+@@ -165,7 +165,7 @@ static int dcache_alloc_all(long n)
+ 		|| (dcache_lastused = (uint64_t *)
+ 				malloc(sizeof(uint64_t) * n)) == NULL
+ 		|| (dcache_buf = (char *) malloc (F2FS_BLKSIZE * n)) == NULL
+-		|| (dcache_valid = (bool *) malloc(sizeof(bool) * n)) == NULL)
++		|| (dcache_valid = (bool *) calloc(sizeof(bool) * n, 1)) == NULL)
+ 	{
+ 		dcache_release();
+ 		return -1;
+-- 
+2.42.0.869.gea05f2083d-goog
 
-Same spec citation question as in patch 2/3.
-
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    enum: [ safe, no-l1ss, default ]
-> +
->    brcm,scb-sizes:
->      description: u64 giving the 64bit PCIe memory
->        viewport size of a memory controller.  There may be up to
