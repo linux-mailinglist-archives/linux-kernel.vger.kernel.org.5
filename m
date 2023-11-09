@@ -2,149 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC9F7E6411
+	by mail.lfdr.de (Postfix) with ESMTP id 874AE7E6412
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 07:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjKIG5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 01:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55136 "EHLO
+        id S232537AbjKIG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 01:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbjKIG5i (ORCPT
+        with ESMTP id S230300AbjKIG7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 01:57:38 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CF32D4F;
-        Wed,  8 Nov 2023 22:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1699513056; x=1731049056;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PAqbVjcJpwJv+qGmjw/YAS9SG5eyJvGIFMhJR66DceA=;
-  b=QpvpNKWJVaR8vnr5KVCc6AtTVSzPzhDWxitdwhdk0Zus90twur43yGRk
-   DadBv1X/rWOlmieDQj4BB59VO1xu6YTjkGAqpGSytptbJwqv8zIakKMpm
-   3iVhn1iESZRy1Ssps3vzI61vst7tfCGAdU9DV+5s3XrpBLm4rRHVWSeBn
-   U+gwAZtBUdy5FkMNvNH/45diGyLLhn2O2y6/UGxvrGXLG74//H2mE/+i1
-   IGehHTIlszvbVMwl/yuSZ8uJSZXgYLiKY+QDHGiFEGVfBYDVTcvP2UcnU
-   V68UmuP+TxVgUYEwRDQwumPoDagQZA4Yw4NjwQ+zc0QL8odLT09SOA36m
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,288,1694728800"; 
-   d="scan'208";a="33887871"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 09 Nov 2023 07:57:33 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 8966628007F;
-        Thu,  9 Nov 2023 07:57:33 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     =?ISO-8859-1?Q?Jo=E3o?= Rodrigues <jrodrigues@ubimet.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] ARM: dts: imx: tqma7: add lm75a sensor (rev. 01xxx)
-Date:   Thu, 09 Nov 2023 07:57:36 +0100
-Message-ID: <1783737.VLH7GnMWUR@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <2253436.iZASKD2KPV@steina-w>
-References: <20231102231130.13ca0513@pcn112> <CAOMZO5C8wq=72HUqSb9bdQK2ji2zcEKByByovnKzUt6A5H3K8Q@mail.gmail.com> <2253436.iZASKD2KPV@steina-w>
+        Thu, 9 Nov 2023 01:59:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAC52D4F;
+        Wed,  8 Nov 2023 22:59:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C1FCC433C8;
+        Thu,  9 Nov 2023 06:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699513171;
+        bh=h9kDV3dysZgpe/2x0AsOul6LLidhINT+Wclj38jsZEI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cnNqZ8GLiC5K9PXNw+fsLnYWsEMdQ8aHvMfnLvyKKnwxohYK029iHYC/zfU4JgOBt
+         pHqWca7lNzWQRKMmsaI4uyoj5+uJhXTbwr/LoHt3oxpcpDfkefwXKgUdmkdlHpxasb
+         5SlySvTmtpMCKbCGRKVuqilN3V8uK4S1cMdw1q7/wdDQg+JEHQCnoBPteP8h5C8EL1
+         Moi9rgDsfaw/X+87YrBC1x6EQ5Zn0AkN/TdCbn6vkrDU8umkFVz90Aw+0BZLHV0hZT
+         G8ZTsbzw3w4h9HYuJHXtjo+lR+fXnGfutBHUZrkTgs1Cxna+0eiR1STVMcfupUjkSK
+         tqjTNjSPTTFBQ==
+Date:   Thu, 9 Nov 2023 07:59:25 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] for-6.7-rc1-part2
+Message-ID: <ZUyDTXUSNgMQFNAh@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="u4kCAQQpSN6EeeWl"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jo=C3=A3o,
 
-Am Dienstag, 7. November 2023, 07:34:32 CET schrieb Alexander Stein:
-> Hi,
->=20
-> Am Freitag, 3. November 2023, 22:07:08 CET schrieb Fabio Estevam:
-> > [Adding Bruno and Alexander]
-> >=20
-> > On Thu, Nov 2, 2023 at 7:12=E2=80=AFPM Jo=C3=A3o Rodrigues <jrodrigues@=
-ubimet.com>=20
-wrote:
-> > > From: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
-> > >=20
-> > > TQMa7x (revision 01xxx) uses a LM75A temperature sensor.
-> > > The two sensors use different I2C addresses, so we can set both senso=
-rs
-> > > simultaneously.
->=20
-> I've contacted responsible department and I am waiting for more details.
+--u4kCAQQpSN6EeeWl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I got response that REV.01xx was just a prototype and not released official=
-ly.
+The following changes since commit 305230142ae0637213bf6e04f6d9f10bbcb74af8:
 
-> Best regards,
-> Alexander
->=20
-> > > Signed-off-by: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
-> > > ---
-> > >=20
-> > >  arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi | 9 +++++++--
-> > >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > >=20
-> > > diff --git a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > > b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi index
-> > > fe42b0a4683..3fc3130f9de 100644
-> > > --- a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > > +++ b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > > @@ -128,11 +128,16 @@ vgen6_reg: vldo4 {
-> > >=20
-> > >                 };
-> > >        =20
-> > >         };
-> > >=20
-> > > -       /* NXP SE97BTP with temperature sensor + eeprom */
-> > > +       /* LM75A temperature sensor, TQMa7x 01xx */
-> > > +       lm75a: temperature-sensor@48 {
-> > > +               compatible =3D "national,lm75a";
-> > > +               reg =3D <0x48>;
-> > > +       };
+  Merge tag 'pm-6.7-rc1-2' of git://git.kernel.org/pub/scm/linux/kernel/git=
+/rafael/linux-pm (2023-11-07 17:16:23 -0800)
 
-I don't like the idea of adding an i2c device for everybody. This restricts/
-affects usage of i2c address 0x48 for all rev.02xx users, no?
+are available in the Git repository at:
 
-Best regards,
-Alexander
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/for-6.7-=
+rc1-part2
 
-> > > +
-> > > +       /* NXP SE97BTP with temperature sensor + eeprom, TQMa7x 02xx =
-*/
-> > >=20
-> > >         se97b: temperature-sensor-eeprom@1e {
-> > >        =20
-> > >                 compatible =3D "nxp,se97b", "jedec,jc-42.4-temp";
-> > >                 reg =3D <0x1e>;
-> > >=20
-> > > -               status =3D "okay";
-> > >=20
-> > >         };
-> > >        =20
-> > >         /* ST M24C64 */
-> > >=20
-> > > --
-> > > 2.25.1
+for you to fetch changes up to bdba49cbba41f0bea54fc93529bbef4d6ceaa3cd:
+
+  i2c: cp2615: Fix 'assignment to __be16' warning (2023-11-08 10:27:17 +010=
+0)
+
+----------------------------------------------------------------
+The second I2C pull request for 6.7-rc1 contains one patch which slipped
+through the cracks (iproc), a core sanitizing improvement as the new
+memdup_array_user() helper went upstream (i2c-dev), and two driver
+bugfixes (designware, cp2615).
+
+----------------------------------------------------------------
+Bence Cs=C3=B3k=C3=A1s (1):
+      i2c: cp2615: Fix 'assignment to __be16' warning
+
+Philipp Stanner (1):
+      i2c: dev: copy userspace array safely
+
+Roman Bacik (1):
+      i2c: iproc: handle invalid slave state
+
+Tam Nguyen (1):
+      i2c: designware: Disable TX_EMPTY irq while waiting for block length =
+byte
 
 
-=2D-=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-http://www.tq-group.com/
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Serge Semin (1):
+      (Rev.) i2c: designware: Disable TX_EMPTY irq while waiting for block =
+length byte
 
+ drivers/i2c/busses/i2c-bcm-iproc.c         | 133 ++++++++++++++++---------=
+----
+ drivers/i2c/busses/i2c-cp2615.c            |   2 +-
+ drivers/i2c/busses/i2c-designware-master.c |  19 ++++-
+ drivers/i2c/i2c-dev.c                      |   4 +-
+ 4 files changed, 94 insertions(+), 64 deletions(-)
 
+--u4kCAQQpSN6EeeWl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVMg00ACgkQFA3kzBSg
+Kba91Q/+MdRuLy8yd4gT2wXMDvy5WzqBpSxOaJfXao7ZMDA8nxgc0B8hx63mXZ45
+q6SR69ZuU0bV5/0ttx+mseZawlq+st/WexWKTFBN/FtKk7VR1Bv9RoFAaxYj2RGz
+YXMWC6syhxQwLf/vUTcm1fYbi4P9GfdHpLsrA3V69D07XjhttVMv4s36FbeHA3wi
+iec373VVcpWasgKAAPvJpx4pIkvl6end5kRUcoOPrzDwB4jMgQ0lEO3kMW0+EkUW
+6fznmdLhTrRZzgKp3ugv0p6yVflR8RhQNrdk84aGeASvGmCMR3lnRoeNXfxwJw6y
+43CYNDUDTfvq7FcApfcAuITC9aiWK2/FpssHiME0t5IL83q7lRBEAkr2T3sJQSah
+daU1PObLxG2Dc/pBRBxnb9lQQhFmaMi8OsXi9PwHRhKxzdziSdKCNbOyiRj2CLdE
+pv8aeuyrMqI8MVOLJ/o0RKybjrWubu3vUW1s/bU0nFZHjQATHwGxAh4lSGN6VDdn
+YK+G6NgIYIh+q7n5yS6fwGuAytTFT6UNvNeGHZYmH0W0OfbEzdGONuJSSMF3FO1J
+1zn8s9dfZEKBosLF3Gpt+rziXqc2PTJV1i0L3VjYmWQehWU9MLmTyo10RlWhUF4N
+TCzfNRjNWLHFWgaXjGJ8+rmZsHbE2nBsmY41vzHzKEE1jTOCiL8=
+=gbw7
+-----END PGP SIGNATURE-----
+
+--u4kCAQQpSN6EeeWl--
