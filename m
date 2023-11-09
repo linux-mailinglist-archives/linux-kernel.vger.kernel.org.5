@@ -2,323 +2,1328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 790747E70BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9CF7E70BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 18:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344853AbjKIRso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 12:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        id S1344862AbjKIRtB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Nov 2023 12:49:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344837AbjKIRsm (ORCPT
+        with ESMTP id S234704AbjKIRsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 12:48:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44DF1BFD
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 09:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699552121; x=1731088121;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ycVyfPhQQju8V8FeC+eZsamXUIrOUGU3Onu6tePC8gU=;
-  b=fpBA2qXqzx6y8z4EJ+YrNPp2iAdqOqT9192TKMWyRgDnv4NV11GeK5Br
-   4uoo3O1bMgcWgyfCJ3YGBsv9GzKuNrMUfO8HqKiTKs617LoLfFm8oieXp
-   VEa8s/MfACHlwfU4IVNtLXHIDHU73ym8O9w+r+ahean0nuUEkIoaUS9Kr
-   429wvBAwL+pWk82zu5Q+XjhWVE24NK1ySeE5et1yGh8aBdSuKfll14Chc
-   gM3CgeYfoNzg31o6phGNnEmInIV6a4IAIIfHCbj1OBsLJV25nQyzPZCr3
-   scBT2kWplHJRKOY0NlG2MRBEMZVDf7gHVvEnf3X97SKxAx5HgntzRhftU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="11584455"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="11584455"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 09:48:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="739909171"
-X-IronPort-AV: E=Sophos;i="6.03,289,1694761200"; 
-   d="scan'208";a="739909171"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 Nov 2023 09:48:35 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:48:34 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 9 Nov 2023 09:48:34 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 9 Nov 2023 09:48:34 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NjzBcuBYEjtUdz4BUlOsxAWFVj+gHcGZPpv7PZXFKauNE+ROqRkAGVCde95ZBKKcL1lzGSs/D+i+Wh+OuwsjUocx/IbKuRdvUNMDxRrlbXUKxibk0Jj9rE0QsElt3NaY0sCvNeodOWyWC/uU9732tzNLbEZIpK+z8x0PcnekZk22kUDhXMhM5KZ7LhnHZyhS3rsUnjmDzu4+DxowyouMcpkG/iQUIm8MEKWZmkJwnhtMGOTLby8rUgblC+fjaKgic+IOXNQN44o2RUw89k9E/CWiewZekZ7b6a+ZS9FBGEUu72UDYZGm/W9ZUPRjyWStaGx7CqDnKDrn6Js6vAy42A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DgHkh0quWBndQt+mTMgIPFhKAziqu4KiAZV3/nFPg6c=;
- b=AmozkElolPWWSWDPdfSRPyozTFlT0Q9RXtTLzXwlYwEYW91Hi3A+NHpwDSvpvlMx/KC51pBkQu8s+C3ObgjZaNEOEP8yMZ062azDgUdllc0kjrkRJaiVaf02UyWpXC5ljx6c+3WLfeke31uc4dPLT5YmcWS9FQYxygihjvN4M3tTT1tJ6JCeazH6cO4X99ero1rj9XgLeniAwnj4Jkyl6Wt5ihiDnjicEN/XDwsdb5f4NaFZ+cRC2i+GCq857yuwpChbJ8nHPUvX0ufkHhaczwKY/wPZQ2ZOnGr5J4zh7ScvBeD2cTWnd6uEQlGm/fog/BmeZxXzSh7CjBKlikoikA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DM4PR11MB7303.namprd11.prod.outlook.com (2603:10b6:8:108::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 17:48:32 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.029; Thu, 9 Nov 2023
- 17:48:32 +0000
-Message-ID: <9084cb79-22bd-4cb3-b48d-f0d8d71aa47c@intel.com>
-Date:   Thu, 9 Nov 2023 09:48:31 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 21/24] x86/resctrl: Allow overflow/limbo handlers to be
- scheduled on any-but cpu
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
-        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
-        <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
-        <dfustini@baylibre.com>, <amitsinght@marvell.com>
-References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-22-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20231025180345.28061-22-james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0199.namprd04.prod.outlook.com
- (2603:10b6:303:86::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Thu, 9 Nov 2023 12:48:52 -0500
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07CE2D69;
+        Thu,  9 Nov 2023 09:48:49 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so1858084a12.1;
+        Thu, 09 Nov 2023 09:48:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699552128; x=1700156928;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nOlVNFKWnf75PIsKIPkD7JWI+LGlxtTheKrnX7rsMZo=;
+        b=MMCLIFkU5YXLB6Ae/USZ5x5b12HYbIDyq6Q3Rhd3bSF2XUrF5CKRbCIa3SR+m77uf7
+         nXzlrt22Ce+qUAeVKfKVq0idx1NOtkrQifRv3EBK3wymUHrZ0wT3/wXQTg/mgfPjGIEo
+         oNYoGZHhG/oPa1bNa//o8xqrn15QUOLIcU4lm/weA/qnUSwvgWcQMZ3+fYqqIPwK8LwI
+         QawIvS8bJ9FpJHNQRA1sG+mWcyBYi2Y2z57eESxPyNf4qFcVk5eR1+SSZlFAPzfiBEPS
+         2rD/Lp7dcUz+bj0LoPEUFtGh1zZxLasZJCXttIbJo4fMLb19I3q63limJt9Pm4S+PKL/
+         he3g==
+X-Gm-Message-State: AOJu0Yw2iOiTOKAofNl58IkkNgJQMfyfgSlsU11xEB+D/dZkuml+8FY0
+        HtTX94bSQ4HOKFdFdTzy1DcYHe2AES653Q==
+X-Google-Smtp-Source: AGHT+IGMWDklsnnLkxzCpSMr+4iKxIY/1W9BR0tHTyjeoLfXFPiCkFMZFzvuhni/PT6eGXLE3jfgzQ==
+X-Received: by 2002:a50:8e16:0:b0:543:cc90:cb8b with SMTP id 22-20020a508e16000000b00543cc90cb8bmr5348519edw.2.1699552127215;
+        Thu, 09 Nov 2023 09:48:47 -0800 (PST)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id y93-20020a50bb66000000b0053e07fe8d98sm84777ede.79.2023.11.09.09.48.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 09:48:47 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9c41e95efcbso194448266b.3;
+        Thu, 09 Nov 2023 09:48:47 -0800 (PST)
+X-Received: by 2002:a17:906:4f86:b0:9e5:2710:6a4 with SMTP id
+ o6-20020a1709064f8600b009e5271006a4mr595367eju.49.1699552126498; Thu, 09 Nov
+ 2023 09:48:46 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM4PR11MB7303:EE_
-X-MS-Office365-Filtering-Correlation-Id: 80aaeeec-4d3f-4f89-8811-08dbe14c1730
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ztYOe6vbh0JUtr+zXfX/QhZ76WUVxdVa7yi1TYbq0yikO5kXWb2pyfbnLkLznbQ10oVZg/8PJcJ+/LRIs1vsize7dwj3g+Ay4uR+VE4UYAr35XNoGW1829x262EX3q+GEXv9ts43PZFnDphUBnzoisuCKmzs3JV8Qdr1Z82jC3G0GxY7kMQUa+bmwRGrHsb/DBXWSPICxvT1DbOg2SeeyrFz0b44aLyEViqYhL3iAM/oAECm2omEyk/rM4ALEIu5fMuVb3oQ/alNnwOnN58U/zPJsGEsjU21Po7LLnAiG570GCEbky2S3AWeO8vciVwbxwJvNgodzgDbu2PFCncS6K9Z2dOYh+KDXzeCkRA93OI7jG51xRmE3fXpkjkWCYgzq4tIqX0GhzLT4Trjrrn2tDVDJNtM+cgTDgsWzrPHJZX6/Utzy919EQLq3z65aT1uqTvk7Ap3eJnQ/5E1od5Jmjr5/YuxLp6fRtH1uKPBER5YD0PBu+PtH/nQZ+V5h2GxWHyc6ni3oDgMwLKy2yaQVfw9dsaQJRuofaciayOzNRRixG3r497dv4b4cRZC+uO0qytOF98HCP8HpQZy7iHtqZNrX/tqzR5oAFE8Iw/E2asZxjprwVhmLKAXmDD0Al0PehpuDfnISXi/igDBV8VRxg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6506007)(82960400001)(83380400001)(6512007)(53546011)(36756003)(26005)(2616005)(38100700002)(6486002)(478600001)(31686004)(66946007)(8936002)(8676002)(4326008)(31696002)(66556008)(66476007)(54906003)(316002)(86362001)(5660300002)(7416002)(2906002)(44832011)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q1lJVEkzd3hIVGRYRC9TdUp6cjlZWC9xNGQ2ekFnOWppLzZ5UngwRSt1R0Y2?=
- =?utf-8?B?NDFwcVhjYnVuNjdpdlRpMmNQWDVQUHhkcG8vUFVBTTE5Sy9YY2p4MzBiRTRr?=
- =?utf-8?B?VnJWYmZ5RUVBcDhvcmxJYURBR2JBS0pRd0hmdnZOdkxIOWxmOXlYeGRnTDda?=
- =?utf-8?B?U3E3Z1A4U0lJcys1M1lxQ3M2bE1RN2t4MEwzQ29jTEV4bUJJZWFXUlU4YjRa?=
- =?utf-8?B?eDVDU3p2cTFXaHNQM1hnT0pBUVkyb05iNUdqZWNBVHNVdUZTL2Q3VUtYUnJu?=
- =?utf-8?B?clBFc0p2VGV5enZkNHJVMEIxdFpXUS9wc3V3V0xXUktRRmtIWUhicU9UV0RT?=
- =?utf-8?B?ZGYyOVYwZ3ZpRXdvTC9GbWsyb3VjNlJXbWdWTTdTS2wxQXh3aDlFTzFmSldE?=
- =?utf-8?B?Y1dScnllYm9nS0ZCUlZwRVRWQk1DcWI1T1Z4Nmlndm1Ka0NKa2JCdU1jczlN?=
- =?utf-8?B?SkRkQVNjMFZ6MTZsaWZXd0srSGJ0RGxxZUcyQ0FYa1huOWhoNWxRL1JrWmxn?=
- =?utf-8?B?TjhQNEFnWWE4dEExc2ZJazRMYm9tQ3pZaEhLRDNCcTVGWWlZYTBlaTgwdTVP?=
- =?utf-8?B?YWdUV25oNkhIR3AvWWdUNWRCMXF4cVRLaE15c3VpUnFRTWtqRXBpeStranBs?=
- =?utf-8?B?ZEtNZEV5MHB0WDluQzF5Z0RUVzFOWU9RWnhqdks5Vmhyc2VJSTBpaVA5UGpF?=
- =?utf-8?B?WW1BYUhWaUZhblFHTUFmVFVTQzlPcjZmbERzWmJBbDJXZXcyNTZrZ0RYTU5k?=
- =?utf-8?B?S25Ib3Y0OElPRkNEVEFUVzRBUEZYSER2ZG9EeFFSVDVpWDB0ZEgzb3JlTWZQ?=
- =?utf-8?B?TXpjM3ZMVWFQRnRiT0M0dXNHS1RMb25jbmJBRkFSa1liU211Z01xWGF5b3lI?=
- =?utf-8?B?ZnpUWlV1SUxqZ3FmSlgvdEpyakt6NlVpQjdPN21kSmtXWmRxcHZlOHF1YTVp?=
- =?utf-8?B?emF5T3QwbHJiMVFUZ3hZcGtITHNGU2JybFQ4V2dEOFBRVXgyakxzU0cxNzd0?=
- =?utf-8?B?WnV1U0Zna3U0WmZGREcrZjNScVNReis0aVVUVFgzV21peDNEcll4ZUYrRlFV?=
- =?utf-8?B?VFFCdXRpanNvdEhZcmtCSk9KU1lFOTRRK3BVWmRja05idlFEYVZrb3R4MWVp?=
- =?utf-8?B?SEU4WGx0MDE4cGdZU0wra0JpME5GTGtObWJTMGFySElXSXhxQ3ZXbUdXSXRa?=
- =?utf-8?B?L1FUcXJqeEtpVjEwbjh0RFRSeDB6M3RqaWk1VUNSQ2wxMWdaL0FKUUZ1a2Ex?=
- =?utf-8?B?WEltSEZPb3Z1eXlGRnUyUHB3RzJwMStSdEhSNVR1dVRKdzRQYWdycm5yNUlF?=
- =?utf-8?B?bjNJQ1BmTnQxWHJOOXdVZ3RMRXhFS3hocVB0ZzE1TnVLUDBIVGZUeFlrYitz?=
- =?utf-8?B?WllSZiswRkd2M0luTitIRHVXaHltanBNRmlvaTVYN0orM2xZeWxJTlJWWVlD?=
- =?utf-8?B?aENyMS92M0tjbXRTTy8yQWd4YUVoY2F1Y0NGbWNwUkdmYWRzazBjTGh4YmJy?=
- =?utf-8?B?WWxwdGJEWEhDUCsvK0lzM2JPa3lvMGMybG5WakRlQWVUTkRJTy9tdlVCZndv?=
- =?utf-8?B?bHVGTlZFWHVabVpTMTRRTnhMSFVQN2JBUUVNcDRsUk9FRk1WdmVtaTVUNlFF?=
- =?utf-8?B?K3FMS3ZWQ0FxTTBkeHhvd3ZFbXFwTXl2bk5xVU96RTNOYmJTOU56dU5JWFVy?=
- =?utf-8?B?TnNoOFNUNDkvNVo3RVRaOWF1RnppaVAyWkJFQnF4SC9pSVlWY3RKaVZBbWdi?=
- =?utf-8?B?UXd5YzJQTG9xTWVZa1BnRGJRbloxdzUreVpxd0Z6cDJJcDNyZFB0RWY4Yk1B?=
- =?utf-8?B?bE9nRUxCbGpQcVpiNUowYklYT2ZQU29yOTgzQmxxSDhhNmtNSXBSL2VteU5I?=
- =?utf-8?B?dFpLMmF6dlE4UW1wdHNmSi83eHc3SXB6NVpzblRXMHJqcGpod1JlVStyMGdu?=
- =?utf-8?B?eXR1ME51em9VNkM4WEY2ZWpwbTYxZTAyeU1maEV4c1kwMEVZNjd0UE5KeUcr?=
- =?utf-8?B?ci9HUGJMR1hrUEJZYmVMUDNUTTJDb3FLczlqRjJONU5VeTdTUHRkODNnUmcr?=
- =?utf-8?B?b3h4T0hnMEg4bUZuVWRWVDFvVWorbXdSbFNaN05QdkhNcmFwcWVNNVFJTzBT?=
- =?utf-8?B?d1k5TUNtU2ZEZVVtUWNzZjBjRmhnUFkzQ0hxNHBPdEZ5R0R2OG4xV0RNcnhl?=
- =?utf-8?B?S2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80aaeeec-4d3f-4f89-8811-08dbe14c1730
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 17:48:32.7272
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: riNtkpQRaFcE7/fZlKmMa5ADQVTM1Tk0cyH8YObGjDE0huOXRIdHM/VZDwj5QSBbBPmafpaubCDwTmRy0myThBJopNimUjxhhfnMBQJPTu8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7303
-X-OriginatorOrg: intel.com
+References: <20231109154004.3317227-1-dhowells@redhat.com> <20231109154004.3317227-11-dhowells@redhat.com>
+In-Reply-To: <20231109154004.3317227-11-dhowells@redhat.com>
+From:   Marc Dionne <marc.dionne@auristor.com>
+Date:   Thu, 9 Nov 2023 13:48:34 -0400
+X-Gmail-Original-Message-ID: <CAB9dFdsGYo-ADNBUybXfy1njpdQpT6P_0w6qg=8RPw1O_0GniQ@mail.gmail.com>
+Message-ID: <CAB9dFdsGYo-ADNBUybXfy1njpdQpT6P_0w6qg=8RPw1O_0GniQ@mail.gmail.com>
+Subject: Re: [PATCH 10/41] rxrpc, afs: Allow afs to pin rxrpc_peer objects
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On 10/25/2023 11:03 AM, James Morse wrote:
-> When a CPU is taken offline resctrl may need to move the overflow or
-> limbo handlers to run on a different CPU.
-> 
-> Once the offline callbacks have been split, cqm_setup_limbo_handler()
-> will be called while the CPU that is going offline is still present
-> in the cpu_mask.
-> 
-> Pass the CPU to exclude to cqm_setup_limbo_handler() and
-> mbm_setup_overflow_handler(). These functions can use a variant of
-> cpumask_any_but() when selecting the CPU. -1 is used to indicate no CPUs
-> need excluding.
-> 
-> A subsequent patch moves these calls to be before CPUs have been removed,
-> so this exclude_cpus behaviour is temporary.
-
-Note "A subsequent patch". Please do go over your entire series. I may not
-have noticed all.
-
-> 
-> Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Tested-by: Peter Newman <peternewman@google.com>
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
-> Signed-off-by: James Morse <james.morse@arm.com>
+On Thu, Nov 9, 2023 at 11:40 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Change rxrpc's API such that:
+>
+>  (1) A new function, rxrpc_kernel_lookup_peer(), is provided to look up an
+>      rxrpc_peer record for a remote address and a corresponding function,
+>      rxrpc_kernel_put_peer(), is provided to dispose of it again.
+>
+>  (2) When setting up a call, the rxrpc_peer object used during a call is
+>      now passed in rather than being set up by rxrpc_connect_call().  For
+>      afs, this meenat passing it to rxrpc_kernel_begin_call() rather than
+>      the full address (the service ID then has to be passed in as a
+>      separate parameter).
+>
+>  (3) A new function, rxrpc_kernel_remote_addr(), is added so that afs can
+>      get a pointer to the transport address for display purposed, and
+>      another, rxrpc_kernel_remote_srx(), to gain a pointer to the full
+>      rxrpc address.
+>
+>  (4) The function to retrieve the RTT from a call, rxrpc_kernel_get_srtt(),
+>      is then altered to take a peer.  This now returns the RTT or -1 if
+>      there are insufficient samples.
+>
+>  (5) Rename rxrpc_kernel_get_peer() to rxrpc_kernel_call_get_peer().
+>
+>  (6) Provide a new function, rxrpc_kernel_get_peer(), to get a ref on a
+>      peer the caller already has.
+>
+> This allows the afs filesystem to pin the rxrpc_peer records that it is
+> using, allowing faster lookups and pointer comparisons rather than
+> comparing sockaddr_rxrpc contents.  It also makes it easier to get hold of
+> the RTT.  The following changes are made to afs:
+>
+>  (1) The addr_list struct's addrs[] elements now hold a peer struct pointer
+>      and a service ID rather than a sockaddr_rxrpc.
+>
+>  (2) When displaying the transport address, rxrpc_kernel_remote_addr() is
+>      used.
+>
+>  (3) The port arg is removed from afs_alloc_addrlist() since it's always
+>      overridden.
+>
+>  (4) afs_merge_fs_addr4() and afs_merge_fs_addr6() do peer lookup and may
+>      now return an error that must be handled.
+>
+>  (5) afs_find_server() now takes a peer pointer to specify the address.
+>
+>  (6) afs_find_server(), afs_compare_fs_alists() and afs_merge_fs_addr[46]{}
+>      now do peer pointer comparison rather than address comparison.
+>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: Marc Dionne <marc.dionne@auristor.com>
+> cc: linux-afs@lists.infradead.org
 > ---
-> Changes since v2:
->  * Rephrased a comment to avoid a two letter bad-word. (we)
->  * Avoid assigning mbm_work_cpu if the domain is going to be free()d
->  * Added cpumask_any_housekeeping_but(), I dislike the name
-> 
-> Changes since v3:
->  * Marked an explanatory comment as temporary as the subsequent patch is
->    no longer adjacent.
-> 
-> Changes since v4:
->  * Check against RESCTRL_PICK_ANY_CPU instead of -1.
->  * Leave cqm_work_cpu as nr_cpu_ids when no CPU is available.
->  * Made cpumask_any_housekeeping_but() more readable.
-> 
-> Changes since v5:
->  * Changes in captialisation, and a typo.
->  * Merged cpumask helpers.
-> 
-> Changes since v6:
->  * Added the missing dom parameter to some kernel doc.
->  * Re-added use of cpumask_any_but(),
->  * Expanded comment above cpumask_any_housekeeping(),
->  * Added some more comments for good measure.
->  * Added explicit IS_ENABLED() check as gcc-12 doesn't seem to work this out.
-> ---
->  arch/x86/kernel/cpu/resctrl/core.c        |  8 +++--
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  2 +-
->  arch/x86/kernel/cpu/resctrl/internal.h    | 33 ++++++++++++++----
->  arch/x86/kernel/cpu/resctrl/monitor.c     | 42 ++++++++++++++++++-----
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  6 ++--
->  include/linux/resctrl.h                   |  2 ++
->  6 files changed, 72 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index 1a74e9c47416..7e44f2c40897 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -586,12 +586,16 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
->  	if (r == &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl) {
->  		if (is_mbm_enabled() && cpu == d->mbm_work_cpu) {
->  			cancel_delayed_work(&d->mbm_over);
-> -			mbm_setup_overflow_handler(d, 0);
-> +			/*
-> +			 * temporary: exclude_cpu=-1 as this CPU has already
-> +			 * been removed by cpumask_clear_cpu()d
-> +			 */
-> +			mbm_setup_overflow_handler(d, 0, RESCTRL_PICK_ANY_CPU);
->  		}
->  		if (is_llc_occupancy_enabled() && cpu == d->cqm_work_cpu &&
->  		    has_busy_rmid(d)) {
->  			cancel_delayed_work(&d->cqm_limbo);
-> -			cqm_setup_limbo_handler(d, 0);
-> +			cqm_setup_limbo_handler(d, 0, RESCTRL_PICK_ANY_CPU);
->  		}
->  	}
->  }
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index a033e8e32108..64db51455df3 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -552,7 +552,7 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
->  		return;
->  	}
->  
-> -	cpu = cpumask_any_housekeeping(&d->cpu_mask);
-> +	cpu = cpumask_any_housekeeping(&d->cpu_mask, RESCTRL_PICK_ANY_CPU);
->  
->  	/*
->  	 * cpumask_any_housekeeping() prefers housekeeping CPUs, but
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index c4c1e1909058..f5fff2f0d866 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -61,19 +61,36 @@
->   * cpumask_any_housekeeping() - Choose any CPU in @mask, preferring those that
->   *			        aren't marked nohz_full
->   * @mask:	The mask to pick a CPU from.
-> + * @exclude_cpu:The CPU to avoid picking.
->   *
-> - * Returns a CPU in @mask. If there are housekeeping CPUs that don't use
-> - * nohz_full, these are preferred.
-> + * Returns a CPU from @mask, but not @exclude_cpu. If there are housekeeping
-> + * CPUs that don't use nohz_full, these are preferred. Pass
-> + * RESCTRL_PICK_ANY_CPU to avoid excluding any CPUs.
-> + *
-> + * When a CPU is excluded, returns >= nr_cpu_ids if no CPUs are available.
+>  fs/afs/addr_list.c           | 125 ++++++++++++++++++-----------------
+>  fs/afs/cmservice.c           |   5 +-
+>  fs/afs/fs_probe.c            |  11 +--
+>  fs/afs/internal.h            |  26 ++++----
+>  fs/afs/proc.c                |   9 +--
+>  fs/afs/rotate.c              |   6 +-
+>  fs/afs/rxrpc.c               |  10 +--
+>  fs/afs/server.c              |  41 ++----------
+>  fs/afs/vl_alias.c            |  55 +--------------
+>  fs/afs/vl_list.c             |  15 +++--
+>  fs/afs/vl_probe.c            |  12 ++--
+>  fs/afs/vl_rotate.c           |   6 +-
+>  fs/afs/vlclient.c            |  22 ++++--
+>  include/net/af_rxrpc.h       |  15 +++--
+>  include/trace/events/rxrpc.h |   3 +
+>  net/rxrpc/af_rxrpc.c         |  62 ++++++++++++++---
+>  net/rxrpc/ar-internal.h      |   2 +-
+>  net/rxrpc/call_object.c      |  17 ++---
+>  net/rxrpc/peer_object.c      |  56 ++++++++++------
+>  net/rxrpc/sendmsg.c          |  11 ++-
+>  20 files changed, 271 insertions(+), 238 deletions(-)
+>
+> diff --git a/fs/afs/addr_list.c b/fs/afs/addr_list.c
+> index ac05a59e9d46..519821f5aedc 100644
+> --- a/fs/afs/addr_list.c
+> +++ b/fs/afs/addr_list.c
+> @@ -13,26 +13,33 @@
+>  #include "internal.h"
+>  #include "afs_fs.h"
+>
+> +static void afs_free_addrlist(struct rcu_head *rcu)
+> +{
+> +       struct afs_addr_list *alist = container_of(rcu, struct afs_addr_list, rcu);
+> +       unsigned int i;
+> +
+> +       for (i = 0; i < alist->nr_addrs; i++)
+> +               rxrpc_kernel_put_peer(alist->addrs[i].peer);
+> +}
+> +
+>  /*
+>   * Release an address list.
 >   */
-> -static inline unsigned int cpumask_any_housekeeping(const struct cpumask *mask)
-> +static inline unsigned int
-> +cpumask_any_housekeeping(const struct cpumask *mask, int exclude_cpu)
+>  void afs_put_addrlist(struct afs_addr_list *alist)
 >  {
->  	unsigned int cpu, hk_cpu;
->  
-> -	cpu = cpumask_any(mask);
-> -	if (!tick_nohz_full_cpu(cpu))
-> +	if (exclude_cpu == RESCTRL_PICK_ANY_CPU)
-> +		cpu = cpumask_any(mask);
-> +	else
-> +		cpu = cpumask_any_but(mask, exclude_cpu);
+>         if (alist && refcount_dec_and_test(&alist->usage))
+> -               kfree_rcu(alist, rcu);
+> +               call_rcu(&alist->rcu, afs_free_addrlist);
+>  }
+>
+>  /*
+>   * Allocate an address list.
+>   */
+> -struct afs_addr_list *afs_alloc_addrlist(unsigned int nr,
+> -                                        unsigned short service,
+> -                                        unsigned short port)
+> +struct afs_addr_list *afs_alloc_addrlist(unsigned int nr, u16 service_id)
+>  {
+>         struct afs_addr_list *alist;
+>         unsigned int i;
+>
+> -       _enter("%u,%u,%u", nr, service, port);
+> +       _enter("%u,%u", nr, service_id);
+>
+>         if (nr > AFS_MAX_ADDRESSES)
+>                 nr = AFS_MAX_ADDRESSES;
+> @@ -44,16 +51,8 @@ struct afs_addr_list *afs_alloc_addrlist(unsigned int nr,
+>         refcount_set(&alist->usage, 1);
+>         alist->max_addrs = nr;
+>
+> -       for (i = 0; i < nr; i++) {
+> -               struct sockaddr_rxrpc *srx = &alist->addrs[i].srx;
+> -               srx->srx_family                 = AF_RXRPC;
+> -               srx->srx_service                = service;
+> -               srx->transport_type             = SOCK_DGRAM;
+> -               srx->transport_len              = sizeof(srx->transport.sin6);
+> -               srx->transport.sin6.sin6_family = AF_INET6;
+> -               srx->transport.sin6.sin6_port   = htons(port);
+> -       }
+> -
+> +       for (i = 0; i < nr; i++)
+> +               alist->addrs[i].service_id = service_id;
+>         return alist;
+>  }
+>
+> @@ -126,7 +125,7 @@ struct afs_vlserver_list *afs_parse_text_addrs(struct afs_net *net,
+>         if (!vllist->servers[0].server)
+>                 goto error_vl;
+>
+> -       alist = afs_alloc_addrlist(nr, service, AFS_VL_PORT);
+> +       alist = afs_alloc_addrlist(nr, service);
+>         if (!alist)
+>                 goto error;
+>
+> @@ -197,9 +196,11 @@ struct afs_vlserver_list *afs_parse_text_addrs(struct afs_net *net,
+>                 }
+>
+>                 if (family == AF_INET)
+> -                       afs_merge_fs_addr4(alist, x[0], xport);
+> +                       ret = afs_merge_fs_addr4(net, alist, x[0], xport);
+>                 else
+> -                       afs_merge_fs_addr6(alist, x, xport);
+> +                       ret = afs_merge_fs_addr6(net, alist, x, xport);
+> +               if (ret < 0)
+> +                       goto error;
+>
+>         } while (p < end);
+>
+> @@ -271,25 +272,33 @@ struct afs_vlserver_list *afs_dns_query(struct afs_cell *cell, time64_t *_expiry
+>  /*
+>   * Merge an IPv4 entry into a fileserver address list.
+>   */
+> -void afs_merge_fs_addr4(struct afs_addr_list *alist, __be32 xdr, u16 port)
+> +int afs_merge_fs_addr4(struct afs_net *net, struct afs_addr_list *alist,
+> +                      __be32 xdr, u16 port)
+>  {
+> -       struct sockaddr_rxrpc *srx;
+> -       u32 addr = ntohl(xdr);
+> +       struct sockaddr_rxrpc srx;
+> +       struct rxrpc_peer *peer;
+>         int i;
+>
+>         if (alist->nr_addrs >= alist->max_addrs)
+> -               return;
+> +               return 0;
+>
+> -       for (i = 0; i < alist->nr_ipv4; i++) {
+> -               struct sockaddr_in *a = &alist->addrs[i].srx.transport.sin;
+> -               u32 a_addr = ntohl(a->sin_addr.s_addr);
+> -               u16 a_port = ntohs(a->sin_port);
+> +       srx.srx_family = AF_RXRPC;
+> +       srx.transport_type = SOCK_DGRAM;
+> +       srx.transport_len = sizeof(srx.transport.sin);
+> +       srx.transport.sin.sin_family = AF_INET;
+> +       srx.transport.sin.sin_port = htons(port);
+> +       srx.transport.sin.sin_addr.s_addr = xdr;
+>
+> -               if (addr == a_addr && port == a_port)
+> -                       return;
+> -               if (addr == a_addr && port < a_port)
+> -                       break;
+> -               if (addr < a_addr)
+> +       peer = rxrpc_kernel_lookup_peer(net->socket, &srx, GFP_KERNEL);
+> +       if (!peer)
+> +               return -ENOMEM;
 > +
-> +	if (!IS_ENABLED(CONFIG_NO_HZ_FULL))
-> +		return cpu;
-
-It is not clear to me how cpumask_any_but() failure is handled.
-
-cpumask_any_but() returns ">= nr_cpu_ids if no cpus set" ...
-
+> +       for (i = 0; i < alist->nr_ipv4; i++) {
+> +               if (peer == alist->addrs[i].peer) {
+> +                       rxrpc_kernel_put_peer(peer);
+> +                       return 0;
+> +               }
+> +               if (peer <= alist->addrs[i].peer)
+>                         break;
+>         }
+>
+> @@ -298,38 +307,42 @@ void afs_merge_fs_addr4(struct afs_addr_list *alist, __be32 xdr, u16 port)
+>                         alist->addrs + i,
+>                         sizeof(alist->addrs[0]) * (alist->nr_addrs - i));
+>
+> -       srx = &alist->addrs[i].srx;
+> -       srx->srx_family = AF_RXRPC;
+> -       srx->transport_type = SOCK_DGRAM;
+> -       srx->transport_len = sizeof(srx->transport.sin);
+> -       srx->transport.sin.sin_family = AF_INET;
+> -       srx->transport.sin.sin_port = htons(port);
+> -       srx->transport.sin.sin_addr.s_addr = xdr;
+> +       alist->addrs[i].peer = peer;
+>         alist->nr_ipv4++;
+>         alist->nr_addrs++;
+> +       return 0;
+>  }
+>
+>  /*
+>   * Merge an IPv6 entry into a fileserver address list.
+>   */
+> -void afs_merge_fs_addr6(struct afs_addr_list *alist, __be32 *xdr, u16 port)
+> +int afs_merge_fs_addr6(struct afs_net *net, struct afs_addr_list *alist,
+> +                      __be32 *xdr, u16 port)
+>  {
+> -       struct sockaddr_rxrpc *srx;
+> -       int i, diff;
+> +       struct sockaddr_rxrpc srx;
+> +       struct rxrpc_peer *peer;
+> +       int i;
+>
+>         if (alist->nr_addrs >= alist->max_addrs)
+> -               return;
+> +               return 0;
+>
+> -       for (i = alist->nr_ipv4; i < alist->nr_addrs; i++) {
+> -               struct sockaddr_in6 *a = &alist->addrs[i].srx.transport.sin6;
+> -               u16 a_port = ntohs(a->sin6_port);
+> +       srx.srx_family = AF_RXRPC;
+> +       srx.transport_type = SOCK_DGRAM;
+> +       srx.transport_len = sizeof(srx.transport.sin6);
+> +       srx.transport.sin6.sin6_family = AF_INET6;
+> +       srx.transport.sin6.sin6_port = htons(port);
+> +       memcpy(&srx.transport.sin6.sin6_addr, xdr, 16);
+>
+> -               diff = memcmp(xdr, &a->sin6_addr, 16);
+> -               if (diff == 0 && port == a_port)
+> -                       return;
+> -               if (diff == 0 && port < a_port)
+> -                       break;
+> -               if (diff < 0)
+> +       peer = rxrpc_kernel_lookup_peer(net->socket, &srx, GFP_KERNEL);
+> +       if (!peer)
+> +               return -ENOMEM;
 > +
-> +	/* If the CPU picked isn't marked nohz_full, we're done */
-
-Please don't impersonate code.
-
-> +	if (cpu <= nr_cpu_ids && !tick_nohz_full_cpu(cpu))
->  		return cpu;
-
-Is this intended to be "cpu < nr_cpu_ids"? But that would have
-code continue ... so maybe it needs explicit error check of
-cpumask_any_but() failure with an earlier exit?
-
->  
-> +	/* Try to find a CPU that isn't nohz_full to use in preference */
->  	hk_cpu = cpumask_nth_andnot(0, mask, tick_nohz_full_mask);
-> +	if (hk_cpu == exclude_cpu)
-> +		hk_cpu = cpumask_nth_andnot(1, mask, tick_nohz_full_mask);
+> +       for (i = alist->nr_ipv4; i < alist->nr_addrs; i++) {
+> +               if (peer == alist->addrs[i].peer) {
+> +                       rxrpc_kernel_put_peer(peer);
+> +                       return 0;
+> +               }
+> +               if (peer <= alist->addrs[i].peer)
+>                         break;
+>         }
+>
+> @@ -337,15 +350,9 @@ void afs_merge_fs_addr6(struct afs_addr_list *alist, __be32 *xdr, u16 port)
+>                 memmove(alist->addrs + i + 1,
+>                         alist->addrs + i,
+>                         sizeof(alist->addrs[0]) * (alist->nr_addrs - i));
+> -
+> -       srx = &alist->addrs[i].srx;
+> -       srx->srx_family = AF_RXRPC;
+> -       srx->transport_type = SOCK_DGRAM;
+> -       srx->transport_len = sizeof(srx->transport.sin6);
+> -       srx->transport.sin6.sin6_family = AF_INET6;
+> -       srx->transport.sin6.sin6_port = htons(port);
+> -       memcpy(&srx->transport.sin6.sin6_addr, xdr, 16);
+> +       alist->addrs[i].peer = peer;
+>         alist->nr_addrs++;
+> +       return 0;
+>  }
+>
+>  /*
+> diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
+> index d4ddb20d6732..99a3f20bc786 100644
+> --- a/fs/afs/cmservice.c
+> +++ b/fs/afs/cmservice.c
+> @@ -146,10 +146,11 @@ static int afs_find_cm_server_by_peer(struct afs_call *call)
+>  {
+>         struct sockaddr_rxrpc srx;
+>         struct afs_server *server;
+> +       struct rxrpc_peer *peer;
+>
+> -       rxrpc_kernel_get_peer(call->net->socket, call->rxcall, &srx);
+> +       peer = rxrpc_kernel_get_call_peer(call->net->socket, call->rxcall);
+>
+> -       server = afs_find_server(call->net, &srx);
+> +       server = afs_find_server(call->net, peer);
+>         if (!server) {
+>                 trace_afs_cm_no_server(call, &srx);
+>                 return 0;
+> diff --git a/fs/afs/fs_probe.c b/fs/afs/fs_probe.c
+> index 3dd24842f277..58d28b82571e 100644
+> --- a/fs/afs/fs_probe.c
+> +++ b/fs/afs/fs_probe.c
+> @@ -101,6 +101,7 @@ static void afs_fs_probe_not_done(struct afs_net *net,
+>  void afs_fileserver_probe_result(struct afs_call *call)
+>  {
+>         struct afs_addr_list *alist = call->alist;
+> +       struct afs_address *addr = &alist->addrs[call->addr_ix];
+>         struct afs_server *server = call->server;
+>         unsigned int index = call->addr_ix;
+>         unsigned int rtt_us = 0, cap0;
+> @@ -153,12 +154,12 @@ void afs_fileserver_probe_result(struct afs_call *call)
+>         if (call->service_id == YFS_FS_SERVICE) {
+>                 server->probe.is_yfs = true;
+>                 set_bit(AFS_SERVER_FL_IS_YFS, &server->flags);
+> -               alist->addrs[index].srx.srx_service = call->service_id;
+> +               addr->service_id = call->service_id;
+>         } else {
+>                 server->probe.not_yfs = true;
+>                 if (!server->probe.is_yfs) {
+>                         clear_bit(AFS_SERVER_FL_IS_YFS, &server->flags);
+> -                       alist->addrs[index].srx.srx_service = call->service_id;
+> +                       addr->service_id = call->service_id;
+>                 }
+>                 cap0 = ntohl(call->tmp);
+>                 if (cap0 & AFS3_VICED_CAPABILITY_64BITFILES)
+> @@ -167,7 +168,7 @@ void afs_fileserver_probe_result(struct afs_call *call)
+>                         clear_bit(AFS_SERVER_FL_HAS_FS64, &server->flags);
+>         }
+>
+> -       rxrpc_kernel_get_srtt(call->net->socket, call->rxcall, &rtt_us);
+> +       rtt_us = rxrpc_kernel_get_srtt(addr->peer);
+>         if (rtt_us < server->probe.rtt) {
+>                 server->probe.rtt = rtt_us;
+>                 server->rtt = rtt_us;
+> @@ -181,8 +182,8 @@ void afs_fileserver_probe_result(struct afs_call *call)
+>  out:
+>         spin_unlock(&server->probe_lock);
+>
+> -       _debug("probe %pU [%u] %pISpc rtt=%u ret=%d",
+> -              &server->uuid, index, &alist->addrs[index].srx.transport,
+> +       _debug("probe %pU [%u] %pISpc rtt=%d ret=%d",
+> +              &server->uuid, index, rxrpc_kernel_remote_addr(alist->addrs[index].peer),
+>                rtt_us, ret);
+>
+>         return afs_done_one_fs_probe(call->net, server);
+> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+> index ae874baee249..caf89edc0644 100644
+> --- a/fs/afs/internal.h
+> +++ b/fs/afs/internal.h
+> @@ -72,6 +72,11 @@ enum afs_call_state {
+>         AFS_CALL_COMPLETE,              /* Completed or failed */
+>  };
+>
+> +struct afs_address {
+> +       struct rxrpc_peer       *peer;
+> +       u16                     service_id;
+> +};
 > +
->  	if (hk_cpu < nr_cpu_ids)
->  		cpu = hk_cpu;
->  
+>  /*
+>   * List of server addresses.
+>   */
+> @@ -87,9 +92,7 @@ struct afs_addr_list {
+>         enum dns_lookup_status  status:8;
+>         unsigned long           failed;         /* Mask of addrs that failed locally/ICMP */
+>         unsigned long           responded;      /* Mask of addrs that responded */
+> -       struct {
+> -               struct sockaddr_rxrpc   srx;
+> -       } addrs[] __counted_by(max_addrs);
+> +       struct afs_address      addrs[] __counted_by(max_addrs);
+>  #define AFS_MAX_ADDRESSES ((unsigned int)(sizeof(unsigned long) * 8))
+>  };
+>
+> @@ -420,7 +423,7 @@ struct afs_vlserver {
+>         atomic_t                probe_outstanding;
+>         spinlock_t              probe_lock;
+>         struct {
+> -               unsigned int    rtt;            /* RTT in uS */
+> +               unsigned int    rtt;            /* Best RTT in uS (or UINT_MAX) */
+>                 u32             abort_code;
+>                 short           error;
+>                 unsigned short  flags;
+> @@ -537,7 +540,7 @@ struct afs_server {
+>         atomic_t                probe_outstanding;
+>         spinlock_t              probe_lock;
+>         struct {
+> -               unsigned int    rtt;            /* RTT in uS */
+> +               unsigned int    rtt;            /* Best RTT in uS (or UINT_MAX) */
+>                 u32             abort_code;
+>                 short           error;
+>                 bool            responded:1;
+> @@ -963,9 +966,7 @@ static inline struct afs_addr_list *afs_get_addrlist(struct afs_addr_list *alist
+>                 refcount_inc(&alist->usage);
+>         return alist;
+>  }
+> -extern struct afs_addr_list *afs_alloc_addrlist(unsigned int,
+> -                                               unsigned short,
+> -                                               unsigned short);
+> +extern struct afs_addr_list *afs_alloc_addrlist(unsigned int nr, u16 service_id);
+>  extern void afs_put_addrlist(struct afs_addr_list *);
+>  extern struct afs_vlserver_list *afs_parse_text_addrs(struct afs_net *,
+>                                                       const char *, size_t, char,
+> @@ -976,8 +977,10 @@ extern struct afs_vlserver_list *afs_dns_query(struct afs_cell *, time64_t *);
+>  extern bool afs_iterate_addresses(struct afs_addr_cursor *);
+>  extern int afs_end_cursor(struct afs_addr_cursor *);
+>
+> -extern void afs_merge_fs_addr4(struct afs_addr_list *, __be32, u16);
+> -extern void afs_merge_fs_addr6(struct afs_addr_list *, __be32 *, u16);
+> +extern int afs_merge_fs_addr4(struct afs_net *net, struct afs_addr_list *addr,
+> +                             __be32 xdr, u16 port);
+> +extern int afs_merge_fs_addr6(struct afs_net *net, struct afs_addr_list *addr,
+> +                             __be32 *xdr, u16 port);
+>
+>  /*
+>   * callback.c
+> @@ -1404,8 +1407,7 @@ extern void __exit afs_clean_up_permit_cache(void);
+>   */
+>  extern spinlock_t afs_server_peer_lock;
+>
+> -extern struct afs_server *afs_find_server(struct afs_net *,
+> -                                         const struct sockaddr_rxrpc *);
+> +extern struct afs_server *afs_find_server(struct afs_net *, const struct rxrpc_peer *);
+>  extern struct afs_server *afs_find_server_by_uuid(struct afs_net *, const uuid_t *);
+>  extern struct afs_server *afs_lookup_server(struct afs_cell *, struct key *, const uuid_t *, u32);
+>  extern struct afs_server *afs_get_server(struct afs_server *, enum afs_server_trace);
+> diff --git a/fs/afs/proc.c b/fs/afs/proc.c
+> index ab9cd986cfd9..8a65a06908d2 100644
+> --- a/fs/afs/proc.c
+> +++ b/fs/afs/proc.c
+> @@ -307,7 +307,7 @@ static int afs_proc_cell_vlservers_show(struct seq_file *m, void *v)
+>                 for (i = 0; i < alist->nr_addrs; i++)
+>                         seq_printf(m, " %c %pISpc\n",
+>                                    alist->preferred == i ? '>' : '-',
+> -                                  &alist->addrs[i].srx.transport);
+> +                                  rxrpc_kernel_remote_addr(alist->addrs[i].peer));
+>         }
+>         seq_printf(m, " info: fl=%lx rtt=%d\n", vlserver->flags, vlserver->rtt);
+>         seq_printf(m, " probe: fl=%x e=%d ac=%d out=%d\n",
+> @@ -398,9 +398,10 @@ static int afs_proc_servers_show(struct seq_file *m, void *v)
+>         seq_printf(m, "  - ALIST v=%u rsp=%lx f=%lx\n",
+>                    alist->version, alist->responded, alist->failed);
+>         for (i = 0; i < alist->nr_addrs; i++)
+> -               seq_printf(m, "    [%x] %pISpc%s\n",
+> -                          i, &alist->addrs[i].srx.transport,
+> -                          alist->preferred == i ? "*" : "");
+> +               seq_printf(m, "    [%x] %pISpc%s rtt=%d\n",
+> +                          i, rxrpc_kernel_remote_addr(alist->addrs[i].peer),
+> +                          alist->preferred == i ? "*" : "",
+> +                          rxrpc_kernel_get_srtt(alist->addrs[i].peer));
+>         return 0;
+>  }
+>
+> diff --git a/fs/afs/rotate.c b/fs/afs/rotate.c
+> index 993e20d752d9..1c8f26a7f128 100644
+> --- a/fs/afs/rotate.c
+> +++ b/fs/afs/rotate.c
+> @@ -113,7 +113,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+>         struct afs_server *server;
+>         struct afs_vnode *vnode = op->file[0].vnode;
+>         struct afs_error e;
+> -       u32 rtt;
+> +       unsigned int rtt;
+>         int error = op->ac.error, i;
+>
+>         _enter("%lx[%d],%lx[%d],%d,%d",
+> @@ -419,7 +419,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+>         }
+>
+>         op->index = -1;
+> -       rtt = U32_MAX;
+> +       rtt = UINT_MAX;
+>         for (i = 0; i < op->server_list->nr_servers; i++) {
+>                 struct afs_server *s = op->server_list->servers[i].server;
+>
+> @@ -487,7 +487,7 @@ bool afs_select_fileserver(struct afs_operation *op)
+>
+>         _debug("address [%u] %u/%u %pISp",
+>                op->index, op->ac.index, op->ac.alist->nr_addrs,
+> -              &op->ac.alist->addrs[op->ac.index].srx.transport);
+> +              rxrpc_kernel_remote_addr(op->ac.alist->addrs[op->ac.index].peer));
+>
+>         _leave(" = t");
+>         return true;
+> diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+> index 2b1a31b4249c..1a18fcbdec80 100644
+> --- a/fs/afs/rxrpc.c
+> +++ b/fs/afs/rxrpc.c
+> @@ -296,7 +296,8 @@ static void afs_notify_end_request_tx(struct sock *sock,
+>   */
+>  void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+>  {
+> -       struct sockaddr_rxrpc *srx = &ac->alist->addrs[ac->index].srx;
+> +       struct afs_address *addr = &ac->alist->addrs[ac->index];
+> +       struct rxrpc_peer *peer = addr->peer;
+>         struct rxrpc_call *rxcall;
+>         struct msghdr msg;
+>         struct kvec iov[1];
+> @@ -304,7 +305,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+>         s64 tx_total_len;
+>         int ret;
+>
+> -       _enter(",{%pISp},", &srx->transport);
+> +       _enter(",{%pISp},", rxrpc_kernel_remote_addr(addr->peer));
+>
+>         ASSERT(call->type != NULL);
+>         ASSERT(call->type->name != NULL);
+> @@ -333,7 +334,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+>         }
+>
+>         /* create a call */
+> -       rxcall = rxrpc_kernel_begin_call(call->net->socket, srx, call->key,
+> +       rxcall = rxrpc_kernel_begin_call(call->net->socket, peer, call->key,
+>                                          (unsigned long)call,
+>                                          tx_total_len,
+>                                          call->max_lifespan,
+> @@ -341,6 +342,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+>                                          (call->async ?
+>                                           afs_wake_up_async_call :
+>                                           afs_wake_up_call_waiter),
+> +                                        addr->service_id,
+>                                          call->upgrade,
+>                                          (call->intr ? RXRPC_PREINTERRUPTIBLE :
+>                                           RXRPC_UNINTERRUPTIBLE),
+> @@ -461,7 +463,7 @@ static void afs_log_error(struct afs_call *call, s32 remote_abort)
+>                 max = m + 1;
+>                 pr_notice("kAFS: Peer reported %s failure on %s [%pISp]\n",
+>                           msg, call->type->name,
+> -                         &call->alist->addrs[call->addr_ix].srx.transport);
+> +                         rxrpc_kernel_remote_addr(call->alist->addrs[call->addr_ix].peer));
+>         }
+>  }
+>
+> diff --git a/fs/afs/server.c b/fs/afs/server.c
+> index 4b98788c7b12..831254d8ef9c 100644
+> --- a/fs/afs/server.c
+> +++ b/fs/afs/server.c
+> @@ -21,13 +21,12 @@ static void __afs_put_server(struct afs_net *, struct afs_server *);
+>  /*
+>   * Find a server by one of its addresses.
+>   */
+> -struct afs_server *afs_find_server(struct afs_net *net,
+> -                                  const struct sockaddr_rxrpc *srx)
+> +struct afs_server *afs_find_server(struct afs_net *net, const struct rxrpc_peer *peer)
+>  {
+>         const struct afs_addr_list *alist;
+>         struct afs_server *server = NULL;
+>         unsigned int i;
+> -       int seq = 0, diff;
+> +       int seq = 0;
+>
+>         rcu_read_lock();
+>
+> @@ -37,37 +36,11 @@ struct afs_server *afs_find_server(struct afs_net *net,
+>                 server = NULL;
+>                 read_seqbegin_or_lock(&net->fs_addr_lock, &seq);
+>
+> -               if (srx->transport.family == AF_INET6) {
+> -                       const struct sockaddr_in6 *a = &srx->transport.sin6, *b;
+> -                       hlist_for_each_entry_rcu(server, &net->fs_addresses6, addr6_link) {
+> -                               alist = rcu_dereference(server->addresses);
+> -                               for (i = alist->nr_ipv4; i < alist->nr_addrs; i++) {
+> -                                       b = &alist->addrs[i].srx.transport.sin6;
+> -                                       diff = ((u16 __force)a->sin6_port -
+> -                                               (u16 __force)b->sin6_port);
+> -                                       if (diff == 0)
+> -                                               diff = memcmp(&a->sin6_addr,
+> -                                                             &b->sin6_addr,
+> -                                                             sizeof(struct in6_addr));
+> -                                       if (diff == 0)
+> -                                               goto found;
+> -                               }
+> -                       }
+> -               } else {
+> -                       const struct sockaddr_in *a = &srx->transport.sin, *b;
+> -                       hlist_for_each_entry_rcu(server, &net->fs_addresses4, addr4_link) {
+> -                               alist = rcu_dereference(server->addresses);
+> -                               for (i = 0; i < alist->nr_ipv4; i++) {
+> -                                       b = &alist->addrs[i].srx.transport.sin;
+> -                                       diff = ((u16 __force)a->sin_port -
+> -                                               (u16 __force)b->sin_port);
+> -                                       if (diff == 0)
+> -                                               diff = ((u32 __force)a->sin_addr.s_addr -
+> -                                                       (u32 __force)b->sin_addr.s_addr);
+> -                                       if (diff == 0)
+> -                                               goto found;
+> -                               }
+> -                       }
+> +               hlist_for_each_entry_rcu(server, &net->fs_addresses6, addr6_link) {
+> +                       alist = rcu_dereference(server->addresses);
+> +                       for (i = 0; i < alist->nr_addrs; i++)
+> +                               if (alist->addrs[i].peer == peer)
+> +                                       goto found;
+>                 }
+>
+>                 server = NULL;
+> diff --git a/fs/afs/vl_alias.c b/fs/afs/vl_alias.c
+> index d3c0df70a1a5..6fdf9f1bedc0 100644
+> --- a/fs/afs/vl_alias.c
+> +++ b/fs/afs/vl_alias.c
+> @@ -32,55 +32,6 @@ static struct afs_volume *afs_sample_volume(struct afs_cell *cell, struct key *k
+>         return volume;
+>  }
+>
+> -/*
+> - * Compare two addresses.
+> - */
+> -static int afs_compare_addrs(const struct sockaddr_rxrpc *srx_a,
+> -                            const struct sockaddr_rxrpc *srx_b)
+> -{
+> -       short port_a, port_b;
+> -       int addr_a, addr_b, diff;
+> -
+> -       diff = (short)srx_a->transport_type - (short)srx_b->transport_type;
+> -       if (diff)
+> -               goto out;
+> -
+> -       switch (srx_a->transport_type) {
+> -       case AF_INET: {
+> -               const struct sockaddr_in *a = &srx_a->transport.sin;
+> -               const struct sockaddr_in *b = &srx_b->transport.sin;
+> -               addr_a = ntohl(a->sin_addr.s_addr);
+> -               addr_b = ntohl(b->sin_addr.s_addr);
+> -               diff = addr_a - addr_b;
+> -               if (diff == 0) {
+> -                       port_a = ntohs(a->sin_port);
+> -                       port_b = ntohs(b->sin_port);
+> -                       diff = port_a - port_b;
+> -               }
+> -               break;
+> -       }
+> -
+> -       case AF_INET6: {
+> -               const struct sockaddr_in6 *a = &srx_a->transport.sin6;
+> -               const struct sockaddr_in6 *b = &srx_b->transport.sin6;
+> -               diff = memcmp(&a->sin6_addr, &b->sin6_addr, 16);
+> -               if (diff == 0) {
+> -                       port_a = ntohs(a->sin6_port);
+> -                       port_b = ntohs(b->sin6_port);
+> -                       diff = port_a - port_b;
+> -               }
+> -               break;
+> -       }
+> -
+> -       default:
+> -               WARN_ON(1);
+> -               diff = 1;
+> -       }
+> -
+> -out:
+> -       return diff;
+> -}
+> -
+>  /*
+>   * Compare the address lists of a pair of fileservers.
+>   */
+> @@ -94,9 +45,9 @@ static int afs_compare_fs_alists(const struct afs_server *server_a,
+>         lb = rcu_dereference(server_b->addresses);
+>
+>         while (a < la->nr_addrs && b < lb->nr_addrs) {
+> -               const struct sockaddr_rxrpc *srx_a = &la->addrs[a].srx;
+> -               const struct sockaddr_rxrpc *srx_b = &lb->addrs[b].srx;
+> -               int diff = afs_compare_addrs(srx_a, srx_b);
+> +               unsigned long pa = (unsigned long)la->addrs[a].peer;
+> +               unsigned long pb = (unsigned long)lb->addrs[b].peer;
+> +               long diff = pa - pb;
+>
+>                 if (diff < 0) {
+>                         a++;
+> diff --git a/fs/afs/vl_list.c b/fs/afs/vl_list.c
+> index acc48216136a..ba89140eee9e 100644
+> --- a/fs/afs/vl_list.c
+> +++ b/fs/afs/vl_list.c
+> @@ -83,14 +83,15 @@ static u16 afs_extract_le16(const u8 **_b)
+>  /*
+>   * Build a VL server address list from a DNS queried server list.
+>   */
+> -static struct afs_addr_list *afs_extract_vl_addrs(const u8 **_b, const u8 *end,
+> +static struct afs_addr_list *afs_extract_vl_addrs(struct afs_net *net,
+> +                                                 const u8 **_b, const u8 *end,
+>                                                   u8 nr_addrs, u16 port)
+>  {
+>         struct afs_addr_list *alist;
+>         const u8 *b = *_b;
+>         int ret = -EINVAL;
+>
+> -       alist = afs_alloc_addrlist(nr_addrs, VL_SERVICE, port);
+> +       alist = afs_alloc_addrlist(nr_addrs, VL_SERVICE);
+>         if (!alist)
+>                 return ERR_PTR(-ENOMEM);
+>         if (nr_addrs == 0)
+> @@ -109,7 +110,9 @@ static struct afs_addr_list *afs_extract_vl_addrs(const u8 **_b, const u8 *end,
+>                                 goto error;
+>                         }
+>                         memcpy(x, b, 4);
+> -                       afs_merge_fs_addr4(alist, x[0], port);
+> +                       ret = afs_merge_fs_addr4(net, alist, x[0], port);
+> +                       if (ret < 0)
+> +                               goto error;
+>                         b += 4;
+>                         break;
+>
+> @@ -119,7 +122,9 @@ static struct afs_addr_list *afs_extract_vl_addrs(const u8 **_b, const u8 *end,
+>                                 goto error;
+>                         }
+>                         memcpy(x, b, 16);
+> -                       afs_merge_fs_addr6(alist, x, port);
+> +                       ret = afs_merge_fs_addr6(net, alist, x, port);
+> +                       if (ret < 0)
+> +                               goto error;
+>                         b += 16;
+>                         break;
+>
+> @@ -247,7 +252,7 @@ struct afs_vlserver_list *afs_extract_vlserver_list(struct afs_cell *cell,
+>                 /* Extract the addresses - note that we can't skip this as we
+>                  * have to advance the payload pointer.
+>                  */
+> -               addrs = afs_extract_vl_addrs(&b, end, bs.nr_addrs, bs.port);
+> +               addrs = afs_extract_vl_addrs(cell->net, &b, end, bs.nr_addrs, bs.port);
+>                 if (IS_ERR(addrs)) {
+>                         ret = PTR_ERR(addrs);
+>                         goto error_2;
+> diff --git a/fs/afs/vl_probe.c b/fs/afs/vl_probe.c
+> index bdd9372e3fb2..9551aef07cee 100644
+> --- a/fs/afs/vl_probe.c
+> +++ b/fs/afs/vl_probe.c
+> @@ -48,6 +48,7 @@ void afs_vlserver_probe_result(struct afs_call *call)
+>  {
+>         struct afs_addr_list *alist = call->alist;
+>         struct afs_vlserver *server = call->vlserver;
+> +       struct afs_address *addr = &alist->addrs[call->addr_ix];
+>         unsigned int server_index = call->server_index;
+>         unsigned int rtt_us = 0;
+>         unsigned int index = call->addr_ix;
+> @@ -106,16 +107,16 @@ void afs_vlserver_probe_result(struct afs_call *call)
+>         if (call->service_id == YFS_VL_SERVICE) {
+>                 server->probe.flags |= AFS_VLSERVER_PROBE_IS_YFS;
+>                 set_bit(AFS_VLSERVER_FL_IS_YFS, &server->flags);
+> -               alist->addrs[index].srx.srx_service = call->service_id;
+> +               addr->service_id = call->service_id;
+>         } else {
+>                 server->probe.flags |= AFS_VLSERVER_PROBE_NOT_YFS;
+>                 if (!(server->probe.flags & AFS_VLSERVER_PROBE_IS_YFS)) {
+>                         clear_bit(AFS_VLSERVER_FL_IS_YFS, &server->flags);
+> -                       alist->addrs[index].srx.srx_service = call->service_id;
+> +                       addr->service_id = call->service_id;
+>                 }
+>         }
+>
+> -       rxrpc_kernel_get_srtt(call->net->socket, call->rxcall, &rtt_us);
+> +       rtt_us = rxrpc_kernel_get_srtt(addr->peer);
+>         if (rtt_us < server->probe.rtt) {
+>                 server->probe.rtt = rtt_us;
+>                 server->rtt = rtt_us;
+> @@ -130,8 +131,9 @@ void afs_vlserver_probe_result(struct afs_call *call)
+>  out:
+>         spin_unlock(&server->probe_lock);
+>
+> -       _debug("probe [%u][%u] %pISpc rtt=%u ret=%d",
+> -              server_index, index, &alist->addrs[index].srx.transport, rtt_us, ret);
+> +       _debug("probe [%u][%u] %pISpc rtt=%d ret=%d",
+> +              server_index, index, rxrpc_kernel_remote_addr(addr->peer),
+> +              rtt_us, ret);
+>
+>         afs_done_one_vl_probe(server, have_result);
+>  }
+> diff --git a/fs/afs/vl_rotate.c b/fs/afs/vl_rotate.c
+> index 0d0b54819128..af445e7d3a12 100644
+> --- a/fs/afs/vl_rotate.c
+> +++ b/fs/afs/vl_rotate.c
+> @@ -86,7 +86,7 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
+>         struct afs_addr_list *alist;
+>         struct afs_vlserver *vlserver;
+>         struct afs_error e;
+> -       u32 rtt;
+> +       unsigned int rtt;
+>         int error = vc->ac.error, i;
+>
+>         _enter("%lx[%d],%lx[%d],%d,%d",
+> @@ -188,7 +188,7 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
+>                 goto selected_server;
+>
+>         vc->index = -1;
+> -       rtt = U32_MAX;
+> +       rtt = UINT_MAX;
+>         for (i = 0; i < vc->server_list->nr_servers; i++) {
+>                 struct afs_vlserver *s = vc->server_list->servers[i].server;
+>
+> @@ -243,7 +243,7 @@ bool afs_select_vlserver(struct afs_vl_cursor *vc)
+>
+>         _debug("VL address %d/%d", vc->ac.index, vc->ac.alist->nr_addrs);
+>
+> -       _leave(" = t %pISpc", &vc->ac.alist->addrs[vc->ac.index].srx.transport);
+> +       _leave(" = t %pISpc", rxrpc_kernel_remote_addr(vc->ac.alist->addrs[vc->ac.index].peer));
+>         return true;
+>
+>  next_server:
+> diff --git a/fs/afs/vlclient.c b/fs/afs/vlclient.c
+> index 00fca3c66ba6..41e7932d75c6 100644
+> --- a/fs/afs/vlclient.c
+> +++ b/fs/afs/vlclient.c
+> @@ -208,7 +208,7 @@ static int afs_deliver_vl_get_addrs_u(struct afs_call *call)
+>                 count           = ntohl(*bp);
+>
+>                 nentries = min(nentries, count);
+> -               alist = afs_alloc_addrlist(nentries, FS_SERVICE, AFS_FS_PORT);
+> +               alist = afs_alloc_addrlist(nentries, FS_SERVICE);
+>                 if (!alist)
+>                         return -ENOMEM;
+>                 alist->version = uniquifier;
+> @@ -230,9 +230,13 @@ static int afs_deliver_vl_get_addrs_u(struct afs_call *call)
+>                 alist = call->ret_alist;
+>                 bp = call->buffer;
+>                 count = min(call->count, 4U);
+> -               for (i = 0; i < count; i++)
+> -                       if (alist->nr_addrs < call->count2)
+> -                               afs_merge_fs_addr4(alist, *bp++, AFS_FS_PORT);
+> +               for (i = 0; i < count; i++) {
+> +                       if (alist->nr_addrs < call->count2) {
+> +                               ret = afs_merge_fs_addr4(call->net, alist, *bp++, AFS_FS_PORT);
+> +                               if (ret < 0)
+> +                                       return ret;
+> +                       }
+> +               }
+>
+>                 call->count -= count;
+>                 if (call->count > 0)
+> @@ -450,7 +454,7 @@ static int afs_deliver_yfsvl_get_endpoints(struct afs_call *call)
+>                 if (call->count > YFS_MAXENDPOINTS)
+>                         return afs_protocol_error(call, afs_eproto_yvl_fsendpt_num);
+>
+> -               alist = afs_alloc_addrlist(call->count, FS_SERVICE, AFS_FS_PORT);
+> +               alist = afs_alloc_addrlist(call->count, FS_SERVICE);
+>                 if (!alist)
+>                         return -ENOMEM;
+>                 alist->version = uniquifier;
+> @@ -488,14 +492,18 @@ static int afs_deliver_yfsvl_get_endpoints(struct afs_call *call)
+>                         if (ntohl(bp[0]) != sizeof(__be32) * 2)
+>                                 return afs_protocol_error(
+>                                         call, afs_eproto_yvl_fsendpt4_len);
+> -                       afs_merge_fs_addr4(alist, bp[1], ntohl(bp[2]));
+> +                       ret = afs_merge_fs_addr4(call->net, alist, bp[1], ntohl(bp[2]));
+> +                       if (ret < 0)
+> +                               return ret;
+>                         bp += 3;
+>                         break;
+>                 case YFS_ENDPOINT_IPV6:
+>                         if (ntohl(bp[0]) != sizeof(__be32) * 5)
+>                                 return afs_protocol_error(
+>                                         call, afs_eproto_yvl_fsendpt6_len);
+> -                       afs_merge_fs_addr6(alist, bp + 1, ntohl(bp[5]));
+> +                       ret = afs_merge_fs_addr6(call->net, alist, bp + 1, ntohl(bp[5]));
+> +                       if (ret < 0)
+> +                               return ret;
+>                         bp += 6;
+>                         break;
+>                 default:
+> diff --git a/include/net/af_rxrpc.h b/include/net/af_rxrpc.h
+> index 5531dd08061e..0754c463224a 100644
+> --- a/include/net/af_rxrpc.h
+> +++ b/include/net/af_rxrpc.h
+> @@ -15,6 +15,7 @@ struct key;
+>  struct sock;
+>  struct socket;
+>  struct rxrpc_call;
+> +struct rxrpc_peer;
+>  enum rxrpc_abort_reason;
+>
+>  enum rxrpc_interruptibility {
+> @@ -41,13 +42,14 @@ void rxrpc_kernel_new_call_notification(struct socket *,
+>                                         rxrpc_notify_new_call_t,
+>                                         rxrpc_discard_new_call_t);
+>  struct rxrpc_call *rxrpc_kernel_begin_call(struct socket *sock,
+> -                                          struct sockaddr_rxrpc *srx,
+> +                                          struct rxrpc_peer *peer,
+>                                            struct key *key,
+>                                            unsigned long user_call_ID,
+>                                            s64 tx_total_len,
+>                                            u32 hard_timeout,
+>                                            gfp_t gfp,
+>                                            rxrpc_notify_rx_t notify_rx,
+> +                                          u16 service_id,
+>                                            bool upgrade,
+>                                            enum rxrpc_interruptibility interruptibility,
+>                                            unsigned int debug_id);
+> @@ -60,9 +62,14 @@ bool rxrpc_kernel_abort_call(struct socket *, struct rxrpc_call *,
+>                              u32, int, enum rxrpc_abort_reason);
+>  void rxrpc_kernel_shutdown_call(struct socket *sock, struct rxrpc_call *call);
+>  void rxrpc_kernel_put_call(struct socket *sock, struct rxrpc_call *call);
+> -void rxrpc_kernel_get_peer(struct socket *, struct rxrpc_call *,
+> -                          struct sockaddr_rxrpc *);
+> -bool rxrpc_kernel_get_srtt(struct socket *, struct rxrpc_call *, u32 *);
+> +struct rxrpc_peer *rxrpc_kernel_lookup_peer(struct socket *sock,
+> +                                           struct sockaddr_rxrpc *srx, gfp_t gfp);
+> +void rxrpc_kernel_put_peer(struct rxrpc_peer *peer);
+> +struct rxrpc_peer *rxrpc_kernel_get_peer(struct rxrpc_peer *peer);
+> +struct rxrpc_peer *rxrpc_kernel_get_call_peer(struct socket *sock, struct rxrpc_call *call);
+> +const struct sockaddr_rxrpc *rxrpc_kernel_remote_srx(const struct rxrpc_peer *peer);
+> +const struct sockaddr *rxrpc_kernel_remote_addr(const struct rxrpc_peer *peer);
+> +unsigned int rxrpc_kernel_get_srtt(const struct rxrpc_peer *);
+>  int rxrpc_kernel_charge_accept(struct socket *, rxrpc_notify_rx_t,
+>                                rxrpc_user_attach_call_t, unsigned long, gfp_t,
+>                                unsigned int);
+> diff --git a/include/trace/events/rxrpc.h b/include/trace/events/rxrpc.h
+> index 4c53a5ef6257..90a1e39d620e 100644
+> --- a/include/trace/events/rxrpc.h
+> +++ b/include/trace/events/rxrpc.h
+> @@ -178,7 +178,9 @@
+>  #define rxrpc_peer_traces \
+>         EM(rxrpc_peer_free,                     "FREE        ") \
+>         EM(rxrpc_peer_get_accept,               "GET accept  ") \
+> +       EM(rxrpc_peer_get_application,          "GET app     ") \
+>         EM(rxrpc_peer_get_bundle,               "GET bundle  ") \
+> +       EM(rxrpc_peer_get_call,                 "GET call    ") \
+>         EM(rxrpc_peer_get_client_conn,          "GET cln-conn") \
+>         EM(rxrpc_peer_get_input,                "GET input   ") \
+>         EM(rxrpc_peer_get_input_error,          "GET inpt-err") \
+> @@ -187,6 +189,7 @@
+>         EM(rxrpc_peer_get_service_conn,         "GET srv-conn") \
+>         EM(rxrpc_peer_new_client,               "NEW client  ") \
+>         EM(rxrpc_peer_new_prealloc,             "NEW prealloc") \
+> +       EM(rxrpc_peer_put_application,          "PUT app     ") \
+>         EM(rxrpc_peer_put_bundle,               "PUT bundle  ") \
+>         EM(rxrpc_peer_put_call,                 "PUT call    ") \
+>         EM(rxrpc_peer_put_conn,                 "PUT conn    ") \
+> diff --git a/net/rxrpc/af_rxrpc.c b/net/rxrpc/af_rxrpc.c
+> index fa8aec78f63d..465bfe5eb061 100644
+> --- a/net/rxrpc/af_rxrpc.c
+> +++ b/net/rxrpc/af_rxrpc.c
+> @@ -258,16 +258,62 @@ static int rxrpc_listen(struct socket *sock, int backlog)
+>         return ret;
+>  }
+>
+> +/**
+> + * rxrpc_kernel_lookup_peer - Obtain remote transport endpoint for an address
+> + * @sock: The socket through which it will be accessed
+> + * @srx: The network address
+> + * @gfp: Allocation flags
+> + *
+> + * Lookup or create a remote transport endpoint record for the specified
+> + * address and return it with a ref held.
+> + */
+> +struct rxrpc_peer *rxrpc_kernel_lookup_peer(struct socket *sock,
+> +                                           struct sockaddr_rxrpc *srx, gfp_t gfp)
+> +{
+> +       struct rxrpc_sock *rx = rxrpc_sk(sock->sk);
+> +       int ret;
+> +
+> +       ret = rxrpc_validate_address(rx, srx, sizeof(*srx));
+> +       if (ret < 0)
+> +               return ERR_PTR(ret);
+> +
+> +       return rxrpc_lookup_peer(rx->local, srx, gfp);
+> +}
+> +EXPORT_SYMBOL(rxrpc_kernel_lookup_peer);
+> +
+> +/**
+> + * rxrpc_kernel_get_peer - Get a reference on a peer
+> + * @peer: The peer to get a reference on.
+> + *
+> + * Get a record for the remote peer in a call.
+> + */
+> +struct rxrpc_peer *rxrpc_kernel_get_peer(struct rxrpc_peer *peer)
+> +{
+> +       return peer ? rxrpc_get_peer(peer, rxrpc_peer_get_application) : NULL;
+> +}
+> +EXPORT_SYMBOL(rxrpc_kernel_get_peer);
+> +
+> +/**
+> + * rxrpc_kernel_put_peer - Allow a kernel app to drop a peer reference
+> + * @peer: The peer to drop a ref on
+> + */
+> +void rxrpc_kernel_put_peer(struct rxrpc_peer *peer)
+> +{
+> +       rxrpc_put_peer(peer, rxrpc_peer_put_application);
+> +}
+> +EXPORT_SYMBOL(rxrpc_kernel_put_peer);
+> +
+>  /**
+>   * rxrpc_kernel_begin_call - Allow a kernel service to begin a call
+>   * @sock: The socket on which to make the call
+> - * @srx: The address of the peer to contact
+> + * @peer: The peer to contact
+>   * @key: The security context to use (defaults to socket setting)
+>   * @user_call_ID: The ID to use
+>   * @tx_total_len: Total length of data to transmit during the call (or -1)
+>   * @hard_timeout: The maximum lifespan of the call in sec
+>   * @gfp: The allocation constraints
+>   * @notify_rx: Where to send notifications instead of socket queue
+> + * @service_id: The ID of the service to contact
+>   * @upgrade: Request service upgrade for call
+>   * @interruptibility: The call is interruptible, or can be canceled.
+>   * @debug_id: The debug ID for tracing to be assigned to the call
+> @@ -280,13 +326,14 @@ static int rxrpc_listen(struct socket *sock, int backlog)
+>   * supplying @srx and @key.
+>   */
+>  struct rxrpc_call *rxrpc_kernel_begin_call(struct socket *sock,
+> -                                          struct sockaddr_rxrpc *srx,
+> +                                          struct rxrpc_peer *peer,
+>                                            struct key *key,
+>                                            unsigned long user_call_ID,
+>                                            s64 tx_total_len,
+>                                            u32 hard_timeout,
+>                                            gfp_t gfp,
+>                                            rxrpc_notify_rx_t notify_rx,
+> +                                          u16 service_id,
+>                                            bool upgrade,
+>                                            enum rxrpc_interruptibility interruptibility,
+>                                            unsigned int debug_id)
+> @@ -295,13 +342,11 @@ struct rxrpc_call *rxrpc_kernel_begin_call(struct socket *sock,
+>         struct rxrpc_call_params p;
+>         struct rxrpc_call *call;
+>         struct rxrpc_sock *rx = rxrpc_sk(sock->sk);
+> -       int ret;
+>
+>         _enter(",,%x,%lx", key_serial(key), user_call_ID);
+>
+> -       ret = rxrpc_validate_address(rx, srx, sizeof(*srx));
+> -       if (ret < 0)
+> -               return ERR_PTR(ret);
+> +       if (WARN_ON_ONCE(peer->local != rx->local))
+> +               return ERR_PTR(-EIO);
+>
+>         lock_sock(&rx->sk);
+>
+> @@ -319,12 +364,13 @@ struct rxrpc_call *rxrpc_kernel_begin_call(struct socket *sock,
+>
+>         memset(&cp, 0, sizeof(cp));
+>         cp.local                = rx->local;
+> +       cp.peer                 = peer;
+>         cp.key                  = key;
+>         cp.security_level       = rx->min_sec_level;
+>         cp.exclusive            = false;
+>         cp.upgrade              = upgrade;
+> -       cp.service_id           = srx->srx_service;
+> -       call = rxrpc_new_client_call(rx, &cp, srx, &p, gfp, debug_id);
+> +       cp.service_id           = service_id;
+> +       call = rxrpc_new_client_call(rx, &cp, &p, gfp, debug_id);
+>         /* The socket has been unlocked. */
+>         if (!IS_ERR(call)) {
+>                 call->notify_rx = notify_rx;
+> diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
+> index e8e14c6f904d..8eea7a487380 100644
+> --- a/net/rxrpc/ar-internal.h
+> +++ b/net/rxrpc/ar-internal.h
+> @@ -364,6 +364,7 @@ struct rxrpc_conn_proto {
+>
+>  struct rxrpc_conn_parameters {
+>         struct rxrpc_local      *local;         /* Representation of local endpoint */
+> +       struct rxrpc_peer       *peer;          /* Representation of remote endpoint */
+>         struct key              *key;           /* Security details */
+>         bool                    exclusive;      /* T if conn is exclusive */
+>         bool                    upgrade;        /* T if service ID can be upgraded */
+> @@ -867,7 +868,6 @@ struct rxrpc_call *rxrpc_find_call_by_user_ID(struct rxrpc_sock *, unsigned long
+>  struct rxrpc_call *rxrpc_alloc_call(struct rxrpc_sock *, gfp_t, unsigned int);
+>  struct rxrpc_call *rxrpc_new_client_call(struct rxrpc_sock *,
+>                                          struct rxrpc_conn_parameters *,
+> -                                        struct sockaddr_rxrpc *,
+>                                          struct rxrpc_call_params *, gfp_t,
+>                                          unsigned int);
+>  void rxrpc_start_call_timer(struct rxrpc_call *call);
+> diff --git a/net/rxrpc/call_object.c b/net/rxrpc/call_object.c
+> index 773eecd1e979..beea25ac88f5 100644
+> --- a/net/rxrpc/call_object.c
+> +++ b/net/rxrpc/call_object.c
+> @@ -193,7 +193,6 @@ struct rxrpc_call *rxrpc_alloc_call(struct rxrpc_sock *rx, gfp_t gfp,
+>   * Allocate a new client call.
+>   */
+>  static struct rxrpc_call *rxrpc_alloc_client_call(struct rxrpc_sock *rx,
+> -                                                 struct sockaddr_rxrpc *srx,
+>                                                   struct rxrpc_conn_parameters *cp,
+>                                                   struct rxrpc_call_params *p,
+>                                                   gfp_t gfp,
+> @@ -211,10 +210,12 @@ static struct rxrpc_call *rxrpc_alloc_client_call(struct rxrpc_sock *rx,
+>         now = ktime_get_real();
+>         call->acks_latest_ts    = now;
+>         call->cong_tstamp       = now;
+> -       call->dest_srx          = *srx;
+> +       call->dest_srx          = cp->peer->srx;
+> +       call->dest_srx.srx_service = cp->service_id;
+>         call->interruptibility  = p->interruptibility;
+>         call->tx_total_len      = p->tx_total_len;
+>         call->key               = key_get(cp->key);
+> +       call->peer              = rxrpc_get_peer(cp->peer, rxrpc_peer_get_call);
+>         call->local             = rxrpc_get_local(cp->local, rxrpc_local_get_call);
+>         call->security_level    = cp->security_level;
+>         if (p->kernel)
+> @@ -306,10 +307,6 @@ static int rxrpc_connect_call(struct rxrpc_call *call, gfp_t gfp)
+>
+>         _enter("{%d,%lx},", call->debug_id, call->user_call_ID);
+>
+> -       call->peer = rxrpc_lookup_peer(local, &call->dest_srx, gfp);
+> -       if (!call->peer)
+> -               goto error;
+> -
+>         ret = rxrpc_look_up_bundle(call, gfp);
+>         if (ret < 0)
+>                 goto error;
+> @@ -334,7 +331,6 @@ static int rxrpc_connect_call(struct rxrpc_call *call, gfp_t gfp)
+>   */
+>  struct rxrpc_call *rxrpc_new_client_call(struct rxrpc_sock *rx,
+>                                          struct rxrpc_conn_parameters *cp,
+> -                                        struct sockaddr_rxrpc *srx,
+>                                          struct rxrpc_call_params *p,
+>                                          gfp_t gfp,
+>                                          unsigned int debug_id)
+> @@ -349,13 +345,18 @@ struct rxrpc_call *rxrpc_new_client_call(struct rxrpc_sock *rx,
+>
+>         _enter("%p,%lx", rx, p->user_call_ID);
+>
+> +       if (WARN_ON_ONCE(!cp->peer)) {
+> +               release_sock(&rx->sk);
+> +               return ERR_PTR(-EIO);
+> +       }
+> +
+>         limiter = rxrpc_get_call_slot(p, gfp);
+>         if (!limiter) {
+>                 release_sock(&rx->sk);
+>                 return ERR_PTR(-ERESTARTSYS);
+>         }
+>
+> -       call = rxrpc_alloc_client_call(rx, srx, cp, p, gfp, debug_id);
+> +       call = rxrpc_alloc_client_call(rx, cp, p, gfp, debug_id);
+>         if (IS_ERR(call)) {
+>                 release_sock(&rx->sk);
+>                 up(limiter);
+> diff --git a/net/rxrpc/peer_object.c b/net/rxrpc/peer_object.c
+> index 8d7a715a0bb1..65ea57b427a1 100644
+> --- a/net/rxrpc/peer_object.c
+> +++ b/net/rxrpc/peer_object.c
+> @@ -22,6 +22,8 @@
+>  #include <net/ip6_route.h>
+>  #include "ar-internal.h"
+>
+> +static const struct sockaddr_rxrpc rxrpc_null_addr;
+> +
+>  /*
+>   * Hash a peer key.
+>   */
+> @@ -457,39 +459,51 @@ void rxrpc_destroy_all_peers(struct rxrpc_net *rxnet)
+>  }
+>
+>  /**
+> - * rxrpc_kernel_get_peer - Get the peer address of a call
+> + * rxrpc_kernel_get_call_peer - Get the peer address of a call
+>   * @sock: The socket on which the call is in progress.
+>   * @call: The call to query
+> - * @_srx: Where to place the result
+>   *
+> - * Get the address of the remote peer in a call.
+> + * Get a record for the remote peer in a call.
+>   */
+> -void rxrpc_kernel_get_peer(struct socket *sock, struct rxrpc_call *call,
+> -                          struct sockaddr_rxrpc *_srx)
+> +struct rxrpc_peer *rxrpc_kernel_get_call_peer(struct socket *sock, struct rxrpc_call *call)
+>  {
+> -       *_srx = call->peer->srx;
+> +       return call->peer;
+>  }
+> -EXPORT_SYMBOL(rxrpc_kernel_get_peer);
+> +EXPORT_SYMBOL(rxrpc_kernel_get_call_peer);
+>
+>  /**
+>   * rxrpc_kernel_get_srtt - Get a call's peer smoothed RTT
+> - * @sock: The socket on which the call is in progress.
+> - * @call: The call to query
+> - * @_srtt: Where to store the SRTT value.
+> + * @peer: The peer to query
+>   *
+> - * Get the call's peer smoothed RTT in uS.
+> + * Get the call's peer smoothed RTT in uS or UINT_MAX if we have no samples.
+>   */
+> -bool rxrpc_kernel_get_srtt(struct socket *sock, struct rxrpc_call *call,
+> -                          u32 *_srtt)
+> +unsigned int rxrpc_kernel_get_srtt(const struct rxrpc_peer *peer)
+>  {
+> -       struct rxrpc_peer *peer = call->peer;
+> +       return peer->rtt_count > 0 ? peer->srtt_us >> 3 : UINT_MAX;
+> +}
+> +EXPORT_SYMBOL(rxrpc_kernel_get_srtt);
+>
+> -       if (peer->rtt_count == 0) {
+> -               *_srtt = 1000000; /* 1S */
+> -               return false;
+> -       }
+> +/**
+> + * rxrpc_kernel_remote_srx - Get the address of a peer
+> + * @peer: The peer to query
+> + *
+> + * Get a pointer to the address from a peer record.  The caller is responsible
+> + * for making sure that the address is not deallocated.
+> + */
+> +const struct sockaddr_rxrpc *rxrpc_kernel_remote_srx(const struct rxrpc_peer *peer)
+> +{
+> +       return peer ? &peer->srx : &rxrpc_null_addr;
+> +}
+>
+> -       *_srtt = call->peer->srtt_us >> 3;
+> -       return true;
+> +/**
+> + * rxrpc_kernel_remote_addr - Get the peer transport address of a call
+> + * @peer: The peer to query
+> + *
+> + * Get a pointer to the transport address from a peer record.  The caller is
+> + * responsible for making sure that the address is not deallocated.
+> + */
+> +const struct sockaddr *rxrpc_kernel_remote_addr(const struct rxrpc_peer *peer)
+> +{
+> +       return (const struct sockaddr *)
+> +               (peer ? &peer->srx.transport : &rxrpc_null_addr.transport);
+>  }
+> -EXPORT_SYMBOL(rxrpc_kernel_get_srtt);
+> diff --git a/net/rxrpc/sendmsg.c b/net/rxrpc/sendmsg.c
+> index 8e0b94714e84..5677d5690a02 100644
+> --- a/net/rxrpc/sendmsg.c
+> +++ b/net/rxrpc/sendmsg.c
+> @@ -572,6 +572,7 @@ rxrpc_new_client_call_for_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg,
+>         __acquires(&call->user_mutex)
+>  {
+>         struct rxrpc_conn_parameters cp;
+> +       struct rxrpc_peer *peer;
+>         struct rxrpc_call *call;
+>         struct key *key;
+>
+> @@ -584,21 +585,29 @@ rxrpc_new_client_call_for_sendmsg(struct rxrpc_sock *rx, struct msghdr *msg,
+>                 return ERR_PTR(-EDESTADDRREQ);
+>         }
+>
+> +       peer = rxrpc_lookup_peer(rx->local, srx, GFP_KERNEL);
+> +       if (!peer) {
+> +               release_sock(&rx->sk);
+> +               return ERR_PTR(-ENOMEM);
+> +       }
+> +
+>         key = rx->key;
+>         if (key && !rx->key->payload.data[0])
+>                 key = NULL;
+>
+>         memset(&cp, 0, sizeof(cp));
+>         cp.local                = rx->local;
+> +       cp.peer                 = peer;
+>         cp.key                  = rx->key;
+>         cp.security_level       = rx->min_sec_level;
+>         cp.exclusive            = rx->exclusive | p->exclusive;
+>         cp.upgrade              = p->upgrade;
+>         cp.service_id           = srx->srx_service;
+> -       call = rxrpc_new_client_call(rx, &cp, srx, &p->call, GFP_KERNEL,
+> +       call = rxrpc_new_client_call(rx, &cp, &p->call, GFP_KERNEL,
+>                                      atomic_inc_return(&rxrpc_debug_id));
+>         /* The socket is now unlocked */
+>
+> +       rxrpc_put_peer(peer, rxrpc_peer_put_application);
+>         _leave(" = %p\n", call);
+>         return call;
+>  }
 
-Reinette
+rxrpc_kernel_remote_srx and rxrpc_kernel_remote_addr need an
+EXPORT_SYMBOL to be available to fs/afs when built as a module.
 
+Marc
