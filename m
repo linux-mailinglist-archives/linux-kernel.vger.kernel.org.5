@@ -2,265 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9296C7E676A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388AE7E675A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbjKIKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:07:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51774 "EHLO
+        id S232978AbjKIKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233557AbjKIKHW (ORCPT
+        with ESMTP id S232724AbjKIKG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:07:22 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F744358C
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:07:13 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6c3363a2b93so711728b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:07:13 -0800 (PST)
+        Thu, 9 Nov 2023 05:06:57 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D102D79;
+        Thu,  9 Nov 2023 02:06:48 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso8481851fa.0;
+        Thu, 09 Nov 2023 02:06:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699524433; x=1700129233; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=onLNc+Oko6/d4dZDi8m4Ahc5zglhx4oC8hmNsm3uUAA=;
-        b=CdwuVzTcLaNuBWm+5+Eyq35jTiVIQezZYsIJ/TuYU3pt1Cm54umZ2eQZ/7u92dCADF
-         mVmV/nvqCJrh9HIh3sURGPaARnApWRc39+IT95mTp/ryN3aV4BjyK0dTyGXe8OJcmshg
-         BrYsnYxfDR5Y0Onaai+8FCNo5TTuyV1p7O9ZQ=
+        d=gmail.com; s=20230601; t=1699524407; x=1700129207; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ziH0evbWe+MkV0AfceDy6ohEFNGYBOK5CmtTzEQCRBk=;
+        b=Svu4rloaqTvKWJznkkmEbTSi12m9NWSIYYE+3JkNvBD2ocih8/x93h7kERlfDxCGPu
+         DGXYCut5bKAte6jkv1XScxCn1Jp/7/HL8Ak+UsrVMHBpMjgoqLKFTpSSjyAUFTRvi5mb
+         LdHHDcfqyZpWW/RAsfpZYaL4+GxjCerkeF1f5ToB3DUmivR65+vzQ2XNPcmzkDIw/lIi
+         V7oFDfz4jV2iixTm1mXG9DPLXOKtZ03sMO28DAceENnLfehZGGTCymzMBVJpccVmnamH
+         B0F8OoQfOgMvVQp8CA44A08LsO2p5GYSUniylLUo9AlmnMJCj+QPrnDFzy1ghyotlV68
+         ILKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699524433; x=1700129233;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=onLNc+Oko6/d4dZDi8m4Ahc5zglhx4oC8hmNsm3uUAA=;
-        b=ZASseHrWJtujXdtzRqJLIi/BiddLHjgKQDqJkVWGahnR5OfJu0W0/pc56z8Hw5fjNQ
-         3r8j0BddmFx9HwJsqeKy+uaWtvHm+Rccf0t6EF5o6hUyznn3pv8RXEq57FfplavmtzOl
-         QNqzCn/CyxVj6a5ml+C3r5bnc3L71en+pyx17DyYnCSnBYI5A9T6+le5SCNKMOoyzC5T
-         fi8rT7CoLJ/vWhmynoPPtXVqTl6Lt4C8gTIUPMzjnlQxV+TIlUCtUY2vjsZeY11iO55b
-         YeccZVJvpCEahAZVqFJD5FKH2e7zVIQf2qga3zmKUGW/X4E++sWSqTw9Y2JtaAY6yUC2
-         6L7Q==
-X-Gm-Message-State: AOJu0YwQgj3nKPsWjW+LplRM+gL72b/+0cIVeGtyLIbMJED5hfVpDfXg
-        T5qS9hsN/Y7PJRhdUO4trEJZJw==
-X-Google-Smtp-Source: AGHT+IE47jHpK3aDbKhKoDgiHCyXY2l2uWAuEaUiNlv/nfVr6trsVMV2KYbXDfC5qwkSNTHKG8ky5g==
-X-Received: by 2002:a05:6a21:19a:b0:181:10ee:20d5 with SMTP id le26-20020a056a21019a00b0018110ee20d5mr6079204pzb.12.1699524433438;
-        Thu, 09 Nov 2023 02:07:13 -0800 (PST)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:6f57:d4c:468c:5daf])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170902d48d00b001c60ba709b7sm3127511plg.125.2023.11.09.02.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 02:07:12 -0800 (PST)
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        Chen-Yu Tsai <wenst@chromium.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Johan Hovold <johan@kernel.org>
-Subject: [RFC PATCH v2 7/7] arm64: dts: mediatek: mt8183-kukui: Merge Krane device trees
-Date:   Thu,  9 Nov 2023 18:06:04 +0800
-Message-ID: <20231109100606.1245545-8-wenst@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-In-Reply-To: <20231109100606.1245545-1-wenst@chromium.org>
-References: <20231109100606.1245545-1-wenst@chromium.org>
+        d=1e100.net; s=20230601; t=1699524407; x=1700129207;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ziH0evbWe+MkV0AfceDy6ohEFNGYBOK5CmtTzEQCRBk=;
+        b=W8VHwb6cUDnGcxTnZhBEgSSt2h5Y+0sQBKzSRJb8l/xdyAzo7BXRNQAty8s97jjDDd
+         MZtcoySY78LNrghCAueyzs4jvlE+dNDqhaPlfaFsVwPgAujxQXzaoljV/SSj3/SD31KE
+         VZjikLp46xhVo+js+Xj/HqTZ05tQXb3yK7YQg4a0m64WJvh+HTpoCR9Mjd+sAmpYSSOf
+         9g7y9Rl2IQ9kIyGlwU4H0+jq32d3obTdovAkzIFhktPtYRx2MXPervto0k5NVNsV2aWf
+         Kx0EG6KmJX6OtDPeSFZC3gBNp58/q+kW2c99QPtOaLEvED1cLOAvGB8wcjzftvP6EtN/
+         dM9A==
+X-Gm-Message-State: AOJu0YwT+d/iy4dmYaz2CVz/yY52UzpMv0Sg0z5pXVl3VrLcogTLA+Vh
+        RwLd/wMqRzSR3umNSr4jWBI=
+X-Google-Smtp-Source: AGHT+IEXVZ/aDOimk6Eks94c9xbwgB5ss6PN7WwJfVoVAEWfsiJeVVPWfibJtnLANdc0DIO/eVeb6g==
+X-Received: by 2002:a05:6512:488a:b0:509:b3f:8a7b with SMTP id eq10-20020a056512488a00b005090b3f8a7bmr939296lfb.22.1699524406879;
+        Thu, 09 Nov 2023 02:06:46 -0800 (PST)
+Received: from [192.168.12.204] (54-240-197-239.amazon.com. [54.240.197.239])
+        by smtp.gmail.com with ESMTPSA id j6-20020a5d6046000000b0032fc5f5abafsm7034674wrt.96.2023.11.09.02.06.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 02:06:46 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <b7d0c879-3c44-4f44-b796-78c0d3855976@xen.org>
+Date:   Thu, 9 Nov 2023 10:06:40 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v7 00/11] KVM: xen: update shared_info and vcpu_info
+ handling
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+References: <20231002095740.1472907-1-paul@xen.org>
+ <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
+ <bf34f990-4f32-4cd3-9dd0-df1cf9187b25@xen.org>
+ <117d1e78e7277177236dabc616ade178fdc336fa.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <117d1e78e7277177236dabc616ade178fdc336fa.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cases where the same Chromebook model is manufactured with different
-components (MIPI DSI panels, MIPI CSI camera sensors, or trackpad /
-touchscreens with conflicting addresses), a different SKU ID is
-allocated to each specific combination. This SKU ID is exported by the
-bootloader into the device tree, and can be used to "discover" which
-combination is present on the current machine.
+On 09/11/2023 10:02, David Woodhouse wrote:
+> On Thu, 2023-10-05 at 09:36 +0100, Paul Durrant wrote:
+>> On 05/10/2023 07:41, David Woodhouse wrote:
+>>> On Mon, 2023-10-02 at 09:57 +0000, Paul Durrant wrote:
+>>>> From: Paul Durrant <pdurrant@amazon.com>
+>>>>
+>>>> The following text from the original cover letter still serves as an
+>>>> introduction to the series:
+>>>>
+>>>> "Currently we treat the shared_info page as guest memory and the VMM
+>>>> informs KVM of its location using a GFN. However it is not guest memory as
+>>>> such; it's an overlay page. So we pointlessly invalidate and re-cache a
+>>>> mapping to the *same page* of memory every time the guest requests that
+>>>> shared_info be mapped into its address space. Let's avoid doing that by
+>>>> modifying the pfncache code to allow activation using a fixed userspace HVA
+>>>> as well as a GPA."
+>>>>
+>>>> This version of the series is functionally the same as version 6. I have
+>>>> simply added David Woodhouse's R-b to patch 11 to indicate that he has
+>>>> now fully reviewed the series.
+>>>
+>>> Thanks. I believe Sean is probably waiting for us to stop going back
+>>> and forth, and for the dust to settle. So for the record: I think I'm
+>>> done heckling and this is ready to go in.
+>>>
+>>> Are you doing the QEMU patches or am I?
+>>>
+>>
+>> I'll do the QEMU changes, once the patches hit kvm/next.
+> 
+> Note that I disabled migration support in QEMU for emulated Xen
+> guests. You might want that for testing, since the reason for this work
+> is to enable pause/serialize workflows.
+> 
+> Migration does work all the way up to XenStore itself, and
+> https://gitlab.com/qemu-project/qemu/-/commit/766804b101d *was* tested
+> with migration enabled. There are also unit tests for XenStore
+> serialize/deserialize.
+> 
+> I disabled it because the PV backends on the XenBus don't have
+> suspend/resume support. But a guest using other emulated net/disk
+> devices should still be able to suspend/resume OK if we just remove the
+> 'unmigratable' flag from xen_xenstore, I believe.
 
-Merge the separate Krane dtsi/dts files into one shared for all SKUs.
-A new device node is added for the alternative panel. Both it and the
-original panel are marked as "fail-needs-probe-panel" to let the
-hardware prober handle it.
-
-Also move the cros_ec node so that all node references are ordered
-alphabetically.
-
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
----
- arch/arm64/boot/dts/mediatek/Makefile         |  3 +-
- .../dts/mediatek/mt8183-kukui-krane-sku0.dts  | 24 ----------
- .../mediatek/mt8183-kukui-krane-sku176.dts    | 24 ----------
- ...ukui-krane.dtsi => mt8183-kukui-krane.dts} | 47 +++++++++++++++++--
- 4 files changed, 44 insertions(+), 54 deletions(-)
- delete mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
- delete mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
- rename arch/arm64/boot/dts/mediatek/{mt8183-kukui-krane.dtsi => mt8183-kukui-krane.dts} (86%)
-
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 7e365e9516ab..d4d97b315b2f 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -40,8 +40,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku16.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku272.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku288.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
--dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
--dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393216.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393217.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
-deleted file mode 100644
-index 4ac75806fa94..000000000000
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
-+++ /dev/null
-@@ -1,24 +0,0 @@
--// SPDX-License-Identifier: (GPL-2.0 OR MIT)
--/*
-- * Copyright 2019 Google LLC
-- *
-- * Device-tree for Krane sku0.
-- *
-- * SKU is a 8-bit value (0x00 == 0):
-- *  - Bits 7..4: Panel ID: 0x0 (AUO)
-- *  - Bits 3..0: SKU ID:   0x0 (default)
-- */
--
--/dts-v1/;
--#include "mt8183-kukui-krane.dtsi"
--
--/ {
--	model = "MediaTek krane sku0 board";
--	chassis-type = "tablet";
--	compatible = "google,krane-sku0", "google,krane", "mediatek,mt8183";
--};
--
--&panel {
--	status = "okay";
--	compatible = "auo,kd101n80-45na";
--};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-deleted file mode 100644
-index 095279e55d50..000000000000
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-+++ /dev/null
-@@ -1,24 +0,0 @@
--// SPDX-License-Identifier: (GPL-2.0 OR MIT)
--/*
-- * Copyright 2019 Google LLC
-- *
-- * Device-tree for Krane sku176.
-- *
-- * SKU is a 8-bit value (0xb0 == 176):
-- *  - Bits 7..4: Panel ID: 0xb (BOE)
-- *  - Bits 3..0: SKU ID:   0x0 (default)
-- */
--
--/dts-v1/;
--#include "mt8183-kukui-krane.dtsi"
--
--/ {
--	model = "MediaTek krane sku176 board";
--	chassis-type = "tablet";
--	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
--};
--
--&panel {
--        status = "okay";
--        compatible = "boe,tv101wum-nl6";
--};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dts
-similarity index 86%
-rename from arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-rename to arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dts
-index d5f41c6c9881..75a734c0fbcc 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dts
-@@ -1,12 +1,24 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MIT)
- /*
-  * Copyright 2019 Google LLC
-+ *
-+ * Device tree for Krane Chromebook family.
-+ *
-+ * SKU ID is a 8-bit value (0x00 == 0):
-+ *  - Bits 7..4: Panel ID: 0x0 (AUO)
-+ *                         0xb (BOE)
-+ *  - Bits 3..0: SKU ID:   0x0 (default)
-  */
- 
-+/dts-v1/;
- #include "mt8183-kukui.dtsi"
- #include "mt8183-kukui-audio-max98357a.dtsi"
- 
- / {
-+	model = "Google Krane Chromebook";
-+	chassis-type = "tablet";
-+	compatible = "google,krane", "mediatek,mt8183";
-+
- 	ppvarn_lcd: ppvarn-lcd {
- 		compatible = "regulator-fixed";
- 		regulator-name = "ppvarn_lcd";
-@@ -45,6 +57,34 @@ &bluetooth {
- 	firmware-name = "nvm_00440302_i2s_eu.bin";
- };
- 
-+&cros_ec {
-+	keyboard-controller {
-+		compatible = "google,cros-ec-keyb-switches";
-+	};
-+};
-+
-+&dsi0 {
-+	panel2@0 {
-+		compatible = "boe,tv101wum-nl6";
-+		reg = <0>;
-+		enable-gpios = <&pio 45 0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&panel_pins_default>;
-+		avdd-supply = <&ppvarn_lcd>;
-+		avee-supply = <&ppvarp_lcd>;
-+		pp1800-supply = <&pp1800_lcd>;
-+		backlight = <&backlight_lcd0>;
-+		rotation = <270>;
-+		status = "fail-needs-probe-panel";
-+
-+		port {
-+			endpoint {
-+				remote-endpoint = <&dsi_out>;
-+			};
-+		};
-+	};
-+};
-+
- &i2c0 {
- 	status = "okay";
- 
-@@ -343,10 +383,9 @@ rst_pin {
- 	};
- };
- 
--&cros_ec {
--	keyboard-controller {
--		compatible = "google,cros-ec-keyb-switches";
--	};
-+&panel {
-+	compatible = "auo,kd101n80-45na";
-+	status = "fail-needs-probe-panel";
- };
- 
- &qca_wifi {
--- 
-2.42.0.869.gea05f2083d-goog
+Ok. Enabling suspend/resume for backends really ought not to be that 
+hard. The main reason for this series was to enable pause 
+for-for-memory-reconfiguration but I can look into 
+suspend/resume/migrate once I've done the necessary re-work.
 
