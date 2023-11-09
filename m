@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A47E6CF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998837E6CF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 16:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbjKIPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 10:11:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        id S234626AbjKIPLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 10:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343540AbjKIPLZ (ORCPT
+        with ESMTP id S234597AbjKIPLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 10:11:25 -0500
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4D835B3
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:11:23 -0800 (PST)
-Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4084001846eso6370155e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:11:22 -0800 (PST)
+        Thu, 9 Nov 2023 10:11:37 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E113858
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 07:11:32 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6c320a821c4so906846b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 07:11:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699542681; x=1700147481; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8pQ0K76qmBVGT/CgHVEv31iCSF419asbcRbCGaHbMy8=;
-        b=HXmPIsyVZBhk7YQKAHvlH8qBF/pDdTeZNrusuKkTatH2PftRoNSSpbSpEQ0ijwxrTr
-         /mg9CGrq6NOVwePi8gFMqBi7nmEXGE61ECDEbinCHIwW7NT3WIFV5LDNTxkmCd6t4aDx
-         4VV1ARGOXREYXjvHag8m/qjY1Uyruggi7NlOe/4kVPReAGmcwdAKBmfDML8GEQsJymQ1
-         2Oxxl7h5RAXOUvaat6HkAH7DqetYLAnYzH46NNcIke/tGgjwJmxMC5O3IzXn5hXs6sKo
-         UOLNgjm1JxPUPJUwq0JmVgy0fbWMrRqWZygHanCHmkS8WkvZH5D6CpAYnup3J8TXJIUu
-         pINw==
+        d=ventanamicro.com; s=google; t=1699542691; x=1700147491; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O5v+dAwjm30e0kGB+NS1Oi1w8KzDlGIijfK5vUktEP8=;
+        b=cEOp1sMzJv8VacF/cxeL/ZOnaV7a6HN7mxabl9ywR8/liazX1sKTdtf175aZA1eKOf
+         ZaDvPmS1d4eENFYYNR5tlLu10beodO6uxBmeFmpXZTB+46xsnxgcg2oAVQIlBUVXeSko
+         hYxfVQm4Z3BkPMhYZIa28VRfoNsxmY1VyCPw5kwNE9U9DwSO2uH9WksIXce/HVjxZbAZ
+         v6D+DCSY1fvmweksMTpNyFW2IW5US6vMWyzwYA8t6tucb7aKlJdM8u6d0liz6A5JYqVg
+         31i8exexu3aHfu1IxFHSntxe0cA3PFZjeVdTY4UMxpAruv/P6IeZ2O73ETF7H9VnEF8s
+         66Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699542681; x=1700147481;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8pQ0K76qmBVGT/CgHVEv31iCSF419asbcRbCGaHbMy8=;
-        b=f1/0hRJDocHZ8YKciezKnHRtsLLAh6PaI4OWS+4MWiTtwkrgL4/SRcdFQqYW4iaEvd
-         KBf++ChgtgBwsSkxHcofRAYZFIZuW/gRAJkzq0HgVhdx00znAAN2g/o0HRJZVWlOzHkE
-         o56XMqpZl9/omfA7hxc5pZcmSSghEbO6BYkR1voGdSfZL6M3fv6fcGZDhtU5wLucd75c
-         N88hlsz+LknKqSOwER2rrd2U2Do/p4b+/LERALmKFFZRM3UyfGAQBuOQApCjsS4ZP5tT
-         KBw/ao4zCEO4ANBzXvmwO6v8VRk0ySsNjQx6qYqJ4PTSwRMJKBXdJufSfDXZMbB6Wbdo
-         LB/w==
-X-Gm-Message-State: AOJu0YzWkXgrburXIe0LMEGMy6FoNOLMueMpYXUZJo3qH+mLjz8uY9qN
-        Qg83djkFP4HbhVxbdmlcWrKY02ZeFOk=
-X-Google-Smtp-Source: AGHT+IE8K3FQIBkboGewhZkWrxz8SIQsGOaosh3E49HNMM/NkSBEmWFer7MvcowtiXDigjNNU8T+eElQX2s=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:c5e3:4628:e996:9f03])
- (user=glider job=sendgmr) by 2002:a5d:6990:0:b0:32f:7cfa:a4e5 with SMTP id
- g16-20020a5d6990000000b0032f7cfaa4e5mr83401wru.3.1699542681487; Thu, 09 Nov
- 2023 07:11:21 -0800 (PST)
-Date:   Thu,  9 Nov 2023 16:11:06 +0100
-In-Reply-To: <20231109151106.2385155-1-glider@google.com>
-Mime-Version: 1.0
-References: <20231109151106.2385155-1-glider@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231109151106.2385155-3-glider@google.com>
-Subject: [PATCH v12 3/3] lib/test_bitmap: use pr_info() for non-error messages
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
-        pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
-        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
-        alexandru.elisei@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1699542691; x=1700147491;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O5v+dAwjm30e0kGB+NS1Oi1w8KzDlGIijfK5vUktEP8=;
+        b=T9zni6VJH2jY9NxNvrZWLITI+b5oRZ9bMIDRZUrAbC6Nf1kJkDErEClHPvdYxkYhPK
+         P1teYMTZM9Eoob9ZIJn0ReXl/I1g0AJySKCieUqqkTV1JZmwizqZP1nICI1Hj1M35/kp
+         yadEkiMrzFP11KwLS+ixr+kFktNeww8m5d+v3KfAv9NAu4E4uMxjppW1o92+UyUF3Iax
+         gu6pP06lqJGeS1hWMvAN5YehUjmq/F7NUmeLYnGCyTlqikoGakzvnvfFtscjy36ONO9t
+         PWPE+wffDag7FP78LSwZfTtdiZSDvRlmuylAgQu8qpZYK+N0wizGDp7wFJam7NWSUQdR
+         Zv3Q==
+X-Gm-Message-State: AOJu0YwknGMHTxvPWjTyO+W3lByR8pyJyER7gdRaCwLinowByoujH0Y8
+        pHRl9EGB9BPffRgUVFhape29XOaV7NycljOBhH0CIQ==
+X-Google-Smtp-Source: AGHT+IGPQ9oO60T01y2Uku+Q2RO9uw7Rk3c5JPNl995y8AVjNbF2aI3KuXg25V5pcpsrcmm9QFYssA==
+X-Received: by 2002:a05:6a20:a127:b0:181:6bde:72aa with SMTP id q39-20020a056a20a12700b001816bde72aamr6001863pzk.42.1699542691541;
+        Thu, 09 Nov 2023 07:11:31 -0800 (PST)
+Received: from sunil-laptop ([106.51.188.78])
+        by smtp.gmail.com with ESMTPSA id o3-20020a62cd03000000b00686b649cdd0sm11221586pfg.86.2023.11.09.07.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 07:11:31 -0800 (PST)
+Date:   Thu, 9 Nov 2023 20:41:24 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] wifi: iwlwifi: Fix warning by adding dependency on DMI
+Message-ID: <ZUz2nLO28djDYZHJ@sunil-laptop>
+References: <20231109054027.2870124-1-sunilvl@ventanamicro.com>
+ <5a5203915a94a0299131d3e03d132c40bd98dee6.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a5203915a94a0299131d3e03d132c40bd98dee6.camel@sipsolutions.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pr_err() messages may be treated as errors by some log readers, so let
-us only use them for test failures. For non-error messages, replace them
-with pr_info().
+On Thu, Nov 09, 2023 at 10:09:53AM +0100, Johannes Berg wrote:
+> On Thu, 2023-11-09 at 11:10 +0530, Sunil V L wrote:
+> > This driver currently assumes CONFIG_DMI is enabled along with ACPI.
+> > This may not be true. Due to this, the kernel test bot reports new
+> > warning like below for RISC-V allyesconfig builds.
+> > 
+> > > > drivers/net/wireless/intel/iwlwifi/fw/acpi.c:1190:25:
+> > warning: '%s' directive argument is null [-Wformat-overflow=]
+> > 
+> > 1190 | "System vendor '%s' is not in the approved list, disabling PPAG.\n",
+> > 
+> > Fix the warning by adding dependency on CONFIG_DMI.
+> > 
+> 
+> Not sure that's the right fix - why not put checks in the code there?
+> 
+> Is it just a build warning?
+> 
+> maybe
+> 
+> -dmi_get_system_info(DMI_SYS_VENDOR)
+> +dmi_get_system_info(DMI_SYS_VENDOR) ?: "<unknown>"
+> 
+Thanks!, Johannes. It is a build warning because of allyesconfig build.
 
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Signed-off-by: Alexander Potapenko <glider@google.com>
----
- lib/test_bitmap.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Your suggestion works. I will send v2 with this solution.
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index 2761edbc83d73..8a8af5d28432e 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -484,7 +484,7 @@ static void __init test_bitmap_parselist(void)
- 		}
- 
- 		if (ptest.flags & PARSE_TIME)
--			pr_err("parselist: %d: input is '%s' OK, Time: %llu\n",
-+			pr_info("parselist: %d: input is '%s' OK, Time: %llu\n",
- 					i, ptest.in, time);
- 
- #undef ptest
-@@ -523,7 +523,7 @@ static void __init test_bitmap_printlist(void)
- 		goto out;
- 	}
- 
--	pr_err("bitmap_print_to_pagebuf: input is '%s', Time: %llu\n", buf, time);
-+	pr_info("bitmap_print_to_pagebuf: input is '%s', Time: %llu\n", buf, time);
- out:
- 	kfree(buf);
- 	kfree(bmap);
-@@ -601,7 +601,7 @@ static void __init test_bitmap_parse(void)
- 		}
- 
- 		if (test.flags & PARSE_TIME)
--			pr_err("parse: %d: input is '%s' OK, Time: %llu\n",
-+			pr_info("parse: %d: input is '%s' OK, Time: %llu\n",
- 					i, test.in, time);
- 	}
- }
-@@ -1357,7 +1357,7 @@ static void __init test_bitmap_read_perf(void)
- 		}
- 	}
- 	time = ktime_get() - time;
--	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-+	pr_info("Time spent in %s:\t%llu\n", __func__, time);
- }
- 
- static void __init test_bitmap_write_perf(void)
-@@ -1379,7 +1379,7 @@ static void __init test_bitmap_write_perf(void)
- 		}
- 	}
- 	time = ktime_get() - time;
--	pr_err("Time spent in %s:\t%llu\n", __func__, time);
-+	pr_info("Time spent in %s:\t%llu\n", __func__, time);
- }
- 
- #undef TEST_BIT_LEN
--- 
-2.42.0.869.gea05f2083d-goog
-
+Thanks,
+Sunil
