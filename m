@@ -2,147 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11C77E751D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973D77E7525
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 00:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345390AbjKIX2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 18:28:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S1345393AbjKIX3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 18:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjKIX2S (ORCPT
+        with ESMTP id S229613AbjKIX3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 18:28:18 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E32449A;
-        Thu,  9 Nov 2023 15:28:15 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 4BC0E10004D;
-        Fri, 10 Nov 2023 02:28:13 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4BC0E10004D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1699572493;
-        bh=hBV4Kz/pkzP2ImJmSP5L6G2sBvOO6GVXQ7O0hvmEr94=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=LaFmDnyre+AUarFmgL90jZYQZO+Y+FtAOwa6unAgVvyl/QYoCuiZ7wiMBwFWkYtxu
-         x3GnmkPgkz/o/MROXHKU595iUx6rNm2bvW4NInnW3j+/y3pFPWAT1MaQuMWng0nbIt
-         Y0fUlmDXwTBkfjGcEV8kwMcE9Rl/mC2mQqKQgdEz86iWW229/X+Tq6FfauRLU8SVwh
-         8xiuo+jYX3j0hSS3PmSOPxawWwezxUNDwHiHHZPFxrktmjJil0Ln5TvfFJ7sMm6/Qk
-         3wWVrTWImlZR15+9xevXHfOZhhm9uBeIIf7896jZkt5ihfvaRuh2t7GoejsjSRUWb3
-         VzhHdQmvFI20w==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 10 Nov 2023 02:28:13 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 10 Nov 2023 02:28:12 +0300
-Message-ID: <d5fab619-046a-484d-9d51-3a7fcc9e0a81@salutedevices.com>
-Date:   Fri, 10 Nov 2023 02:28:23 +0300
+        Thu, 9 Nov 2023 18:29:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C26420F;
+        Thu,  9 Nov 2023 15:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699572546; x=1731108546;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to;
+  bh=JPjZQMbec4yk3cmmYlBiwG89f7tqlr990Mxr1BtMikU=;
+  b=LaPGzsrtpC00l7IgL5OLBbjWFs2Ko080COu62Zs5+Qe7cNWcf249VsN5
+   tkB0nefsSMFIpJ35wwkLHV4lE7Z0rk1z/F9Ck35N/mSY4uRaorDTE9nCC
+   5MB6poRk+sKkZpZXpgFESo8PDWpbUoM4lYZ+GwWbeHHYUXx1RoPGAjBGf
+   y5LcwR3UGijbg2OWfqbWnD1cfTbrzA50WIcKKHr0f5ekgQIbV2SsSSr09
+   2kdYcR+qhDIpDiQ4hSJwTJBJINtXEvU0aIiwotWFpr1t3dK2kU/0o7/p3
+   qznc0wt7ivLgFKgLwtAIRw15BJaPvZRCCnnkvKBLMLv6lClsHY4uEqSlL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="387255865"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="387255865"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 15:29:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="4689399"
+Received: from tiwariv-mobl.amr.corp.intel.com (HELO [10.212.165.194]) ([10.212.165.194])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 15:29:05 -0800
+Content-Type: multipart/mixed; boundary="------------SgAPAoO5SU24KmWQvT1ZtW1K"
+Message-ID: <96b0d0b4-4563-4012-8147-4318b096a435@intel.com>
+Date:   Thu, 9 Nov 2023 15:29:05 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] leds: nic78bx: explicitly unregister LEDs at module's
- shutdown
+Subject: Re: [PATCH v15 09/23] x86/virt/tdx: Get module global metadata for
+ module initialization
 Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-CC:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "kernel@sberdevices.ru" <kernel@sberdevices.ru>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "vadimp@nvidia.com" <vadimp@nvidia.com>,
-        "lee@kernel.org" <lee@kernel.org>
-References: <20231025130737.2015468-1-gnstark@salutedevices.com>
- <20231025130737.2015468-3-gnstark@salutedevices.com>
- <810346b6-c8a4-8c40-8fe3-242332428313@csgroup.eu>
-From:   George Stark <gnstark@salutedevices.com>
-In-Reply-To: <810346b6-c8a4-8c40-8fe3-242332428313@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181258 [Nov 09 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/09 21:19:00 #22426256
-X-KSMG-AntiVirus-Status: Clean, skipped
+To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     x86@kernel.org, kirill.shutemov@linux.intel.com,
+        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
+        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
+        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
+        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <30906e3cf94fe48d713de21a04ffd260bd1a7268.1699527082.git.kai.huang@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <30906e3cf94fe48d713de21a04ffd260bd1a7268.1699527082.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Christophe.
+This is a multi-part message in MIME format.
+--------------SgAPAoO5SU24KmWQvT1ZtW1K
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thanks for the review.
+On 11/9/23 03:55, Kai Huang wrote:
+...> +	ret = read_sys_metadata_field16(MD_FIELD_ID_MAX_TDMRS,
+> +			&tdmr_sysinfo->max_tdmrs);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = read_sys_metadata_field16(MD_FIELD_ID_MAX_RESERVED_PER_TDMR,
+> +			&tdmr_sysinfo->max_reserved_per_tdmr);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = read_sys_metadata_field16(MD_FIELD_ID_PAMT_4K_ENTRY_SIZE,
+> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_4K]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = read_sys_metadata_field16(MD_FIELD_ID_PAMT_2M_ENTRY_SIZE,
+> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_2M]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return read_sys_metadata_field16(MD_FIELD_ID_PAMT_1G_ENTRY_SIZE,
+> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_1G]);
+> +}
 
+I kinda despise how this looks.  It's impossible to read.
 
-On 11/6/23 11:13, Christophe Leroy wrote:
- >
- >
- > Le 25/10/2023 à 15:07, George Stark a écrit :
- >> LEDs are registered using devm_led_classdev_register() and automatically
- >> unregistered after module's remove(). led_classdev_unregister() calls
- >> led_set_brightness() to turn off the LEDs and module's appropriate 
-callback
- >> uses resources those were destroyed already in module's remove().
- >> So explicitly unregister LEDs at module shutdown.
- >>
- >> Signed-off-by: George Stark <gnstark@salutedevices.com>
- >> ---
- >>    drivers/leds/leds-nic78bx.c | 4 ++++
- >>    1 file changed, 4 insertions(+)
- >>
- >> diff --git a/drivers/leds/leds-nic78bx.c b/drivers/leds/leds-nic78bx.c
- >> index f196f52eec1e..12b70fcad37f 100644
- >> --- a/drivers/leds/leds-nic78bx.c
- >> +++ b/drivers/leds/leds-nic78bx.c
- >> @@ -170,6 +170,10 @@ static int nic78bx_probe(struct platform_device 
-*pdev)
- >>    static int nic78bx_remove(struct platform_device *pdev)
- >>    {
- >>    	struct nic78bx_led_data *led_data = platform_get_drvdata(pdev);
- >> +	int i;
- >> +
- >> +	for (i = 0; i < ARRAY_SIZE(nic78bx_leds); i++)
- >> +		devm_led_classdev_unregister(&pdev->dev, &nic78bx_leds[i].cdev);
- >
- > The whole purpose of devm_ functions is that you don't need to call
- > unregister when removing the driver as the dev core will do it for you.
- > I understand your problem but I think this is not the solution.
+I'd much rather do something like the attached where you just map the
+field number to a structure member.  Note that this kind of structure
+could also be converted to leverage the bulk metadata query in the future.
 
-I agree my solution is questionable although 
-devm_led_classdev_unregister() is exists for some reason.
+Any objections to doing something more like the attached completely
+untested patch?
+--------------SgAPAoO5SU24KmWQvT1ZtW1K
+Content-Type: text/x-patch; charset=UTF-8; name="cleaner-tdx-metadata-0.patch"
+Content-Disposition: attachment; filename="cleaner-tdx-metadata-0.patch"
+Content-Transfer-Encoding: base64
 
-Probably it's not the best solution to remove led_set_brightness() from 
-led_classdev_unregister() either.
-Or we'll have to patch a lot of drivers which use led subsystem to call 
-led_set_brightness() manually to keep leds' previous behavior.
+CgotLS0KCiBiL2FyY2gveDg2L3ZpcnQvdm14L3RkeC90ZHguYyB8ICAgNTkgKysrKysrKysr
+KysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMzQg
+aW5zZXJ0aW9ucygrKSwgMjUgZGVsZXRpb25zKC0pCgpkaWZmIC1wdU4gYXJjaC94ODYvdmly
+dC92bXgvdGR4L3RkeC5jfmNsZWFuZXItdGR4LW1ldGFkYXRhLTAgYXJjaC94ODYvdmlydC92
+bXgvdGR4L3RkeC5jCi0tLSBhL2FyY2gveDg2L3ZpcnQvdm14L3RkeC90ZHguY35jbGVhbmVy
+LXRkeC1tZXRhZGF0YS0wCTIwMjMtMTEtMDkgMTQ6NTg6MDYuNTA0NTMxODg0IC0wODAwCisr
+KyBiL2FyY2gveDg2L3ZpcnQvdm14L3RkeC90ZHguYwkyMDIzLTExLTA5IDE1OjIyOjQ2Ljg5
+NTk0MTkwOCAtMDgwMApAQCAtMjU2LDUwICsyNTYsNTkgQEAgc3RhdGljIGludCByZWFkX3N5
+c19tZXRhZGF0YV9maWVsZCh1NjQgZgogCXJldHVybiAwOwogfQogCi1zdGF0aWMgaW50IHJl
+YWRfc3lzX21ldGFkYXRhX2ZpZWxkMTYodTY0IGZpZWxkX2lkLCB1MTYgKmRhdGEpCitzdGF0
+aWMgaW50IHJlYWRfc3lzX21ldGFkYXRhX2ZpZWxkMTYodTY0IGZpZWxkX2lkLAorCQkJCSAg
+ICAgaW50IG9mZnNldCwKKwkJCQkgICAgIHN0cnVjdCB0ZHhfdGRtcl9zeXNpbmZvICp0cykK
+IHsKLQl1NjQgX2RhdGE7CisJdTE2ICp0c19tZW1iZXIgPSAoKHZvaWQgKil0cykgKyBvZmZz
+ZXQ7CisJdTY0IHRtcDsKIAlpbnQgcmV0OwogCiAJaWYgKFdBUk5fT05fT05DRShNRF9GSUVM
+RF9JRF9FTEVfU0laRV9DT0RFKGZpZWxkX2lkKSAhPQogCQkJTURfRklFTERfSURfRUxFX1NJ
+WkVfMTZCSVQpKQogCQlyZXR1cm4gLUVJTlZBTDsKIAotCXJldCA9IHJlYWRfc3lzX21ldGFk
+YXRhX2ZpZWxkKGZpZWxkX2lkLCAmX2RhdGEpOworCXJldCA9IHJlYWRfc3lzX21ldGFkYXRh
+X2ZpZWxkKGZpZWxkX2lkLCAmdG1wKTsKIAlpZiAocmV0KQogCQlyZXR1cm4gcmV0OwogCi0J
+KmRhdGEgPSAodTE2KV9kYXRhOworCSp0c19tZW1iZXIgPSB0bXA7CiAKIAlyZXR1cm4gMDsK
+IH0KIAorc3RydWN0IGZpZWxkX21hcHBpbmcKK3sKKwl1NjQgZmllbGRfaWQ7CisJaW50IG9m
+ZnNldDsKK307CisKKyNkZWZpbmUgVERfU1lTSU5GT19NQVAoX2ZpZWxkX2lkLCBfb2Zmc2V0
+KSBcCisJeyAuZmllbGRfaWQgPSBNRF9GSUVMRF9JRF8jI19maWVsZF9pZCwJICAgXAorCSAg
+Lm9mZnNldCAgID0gb2Zmc2V0b2Yoc3RydWN0IHRkeF90ZG1yX3N5c2luZm8sX29mZnNldCkg
+fQorCitzdHJ1Y3QgZmllbGRfbWFwcGluZyBmaWVsZHNbXSA9IHsKKwlURF9TWVNJTkZPX01B
+UChNQVhfVERNUlMsCSAgICAgIG1heF90ZG1ycyksCisJVERfU1lTSU5GT19NQVAoTUFYX1JF
+U0VSVkVEX1BFUl9URE1SLCBtYXhfcmVzZXJ2ZWRfcGVyX3RkbXIpLAorCVREX1NZU0lORk9f
+TUFQKFBBTVRfNEtfRU5UUllfU0laRSwgICAgcGFtdF9lbnRyeV9zaXplW1REWF9QU180S10p
+LAorCVREX1NZU0lORk9fTUFQKFBBTVRfMk1fRU5UUllfU0laRSwgICAgcGFtdF9lbnRyeV9z
+aXplW1REWF9QU18yTV0pLAorCVREX1NZU0lORk9fTUFQKFBBTVRfMUdfRU5UUllfU0laRSwg
+ICAgcGFtdF9lbnRyeV9zaXplW1REWF9QU18xR10pLAorfTsKKwogc3RhdGljIGludCBnZXRf
+dGR4X3RkbXJfc3lzaW5mbyhzdHJ1Y3QgdGR4X3RkbXJfc3lzaW5mbyAqdGRtcl9zeXNpbmZv
+KQogewogCWludCByZXQ7CisJaW50IGk7CiAKLQlyZXQgPSByZWFkX3N5c19tZXRhZGF0YV9m
+aWVsZDE2KE1EX0ZJRUxEX0lEX01BWF9URE1SUywKLQkJCSZ0ZG1yX3N5c2luZm8tPm1heF90
+ZG1ycyk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKLQotCXJldCA9IHJlYWRfc3lzX21l
+dGFkYXRhX2ZpZWxkMTYoTURfRklFTERfSURfTUFYX1JFU0VSVkVEX1BFUl9URE1SLAotCQkJ
+JnRkbXJfc3lzaW5mby0+bWF4X3Jlc2VydmVkX3Blcl90ZG1yKTsKLQlpZiAocmV0KQotCQly
+ZXR1cm4gcmV0OwotCi0JcmV0ID0gcmVhZF9zeXNfbWV0YWRhdGFfZmllbGQxNihNRF9GSUVM
+RF9JRF9QQU1UXzRLX0VOVFJZX1NJWkUsCi0JCQkmdGRtcl9zeXNpbmZvLT5wYW10X2VudHJ5
+X3NpemVbVERYX1BTXzRLXSk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKKwlmb3IgKGkg
+PSAwOyBpIDwgQVJSQVlfU0laRShmaWVsZHMpOyBpKyspIHsKKwkJcmV0ID0gcmVhZF9zeXNf
+bWV0YWRhdGFfZmllbGQxNihmaWVsZHNbaV0uZmllbGRfaWQsCisJCQkJCQlmaWVsZHNbaV0u
+b2Zmc2V0LAorCQkJCQkJdGRtcl9zeXNpbmZvKTsKKwkJaWYgKHJldCkKKwkJCXJldHVybiBy
+ZXQ7CisJfQogCi0JcmV0ID0gcmVhZF9zeXNfbWV0YWRhdGFfZmllbGQxNihNRF9GSUVMRF9J
+RF9QQU1UXzJNX0VOVFJZX1NJWkUsCi0JCQkmdGRtcl9zeXNpbmZvLT5wYW10X2VudHJ5X3Np
+emVbVERYX1BTXzJNXSk7Ci0JaWYgKHJldCkKLQkJcmV0dXJuIHJldDsKLQotCXJldHVybiBy
+ZWFkX3N5c19tZXRhZGF0YV9maWVsZDE2KE1EX0ZJRUxEX0lEX1BBTVRfMUdfRU5UUllfU0la
+RSwKLQkJCSZ0ZG1yX3N5c2luZm8tPnBhbXRfZW50cnlfc2l6ZVtURFhfUFNfMUddKTsKKwly
+ZXR1cm4gMDsKIH0KIAogc3RhdGljIGludCBpbml0X3RkeF9tb2R1bGUodm9pZCkKXwo=
 
-Well if we can't easily unregister leds before module's remove() 
-callback is completed may be we can get rid of remove() itself and 
-manage all resources using devm API. In that case by the time 
-led_set_brightness() is called from led_classdev_unregister() all 
-dependent resources will be alive.
-I'll try it in the next patch series.
-
- >
- >>
- >>    	/* Lock LED register */
- >>    	outb(NIC78BX_LOCK_VALUE,
--- 
-Best regards
-George
+--------------SgAPAoO5SU24KmWQvT1ZtW1K--
