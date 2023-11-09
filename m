@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298DF7E745E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C7D7E7466
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345365AbjKIW2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S232970AbjKIWbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:31:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345361AbjKIW2U (ORCPT
+        with ESMTP id S231267AbjKIWbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:28:20 -0500
+        Thu, 9 Nov 2023 17:31:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA52D62;
-        Thu,  9 Nov 2023 14:28:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2257DC433C8;
-        Thu,  9 Nov 2023 22:28:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21303C01;
+        Thu,  9 Nov 2023 14:31:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E5DC433C7;
+        Thu,  9 Nov 2023 22:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699568898;
-        bh=zMVQ1ZqkBnfig6dJAO57aDj8+aPoUhjhlGfoj0AXYT8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=p/Gj5JjtybjIs5Z7sBzEMrqd1S9s2T9WlV89MhtyUN054SV2skgF2b46RRDkBaZf9
-         mrG/AIekSpEpkxvtXJ1mW0oM4cTb1HvSh/5YzYAYywFrBu/d8Pp4ngr58kZ+/+gc5t
-         XjFUSEs6MBVmgyMrQa6tkn6wZhqCMd4EJG2yRFNzebazo0sZNMHVX6BYoIL2a3fABe
-         m53pnvNXSozxWeewPg+BtxonmKlk6b70rlQHWkJ9vp2gyioupBm0pGZrcqk5gccBrm
-         KiLlpTqVrF3mePUjohgY+2xJlQxoqBXoL+xc3ymosgQXrfxnul6yulzOTBFmN6kmDQ
-         OwLJHG72D0WYg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0C730C43158;
-        Thu,  9 Nov 2023 22:28:18 +0000 (UTC)
-Subject: Re: [GIT PULL] pwm: Changes for v6.7-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231108130608.1321166-1-thierry.reding@gmail.com>
-References: <20231108130608.1321166-1-thierry.reding@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231108130608.1321166-1-thierry.reding@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-6.7-rc1
-X-PR-Tracked-Commit-Id: 40592064a1a536adcced4ffea435c392eb9e7192
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f3bfe643304143ce2727adc893cfa134ba27f968
-Message-Id: <169956889804.16549.2262448488713717828.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 Nov 2023 22:28:18 +0000
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        s=k20201202; t=1699569103;
+        bh=eQIy8OzgMGafbmuvUdri4QU/WFfrf6FPeSAilMINH0w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=q8glFZzn6SgDHtlfhq4O6xZ0G/5GX0BOJrQpDVDffzybJ4BrRMTKYRlIJsMj5xwjT
+         CvRd9e3A1krvDsPehYjyPzdoMlNcNaOvmHJrDn3zeV2vSqcRjlBw46e4uHr9G27k50
+         0Wy8oWhT3vJ36hdmPRGhX8hDqP6Ez/vWN4x4AApNY5EpVbkY1XFRzeCwZcgQn67h42
+         pMd+egpzqoAiIIq3Xn9qtCmG4Jj9kg+PqxzeN8jVgqj5mZS/QxFD7SRp2MvQHJ9Dzk
+         /YqFRx9R5hstLYKjdc8rH6ItctwdvVWY6jaJBPDYy55IpPR4C/GiENrQ9OLW+lZ6sC
+         3TsCS4An9a0YQ==
+Date:   Thu, 9 Nov 2023 16:31:40 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 2/3] PCI: brcmstb: Configure HW CLKREQ# mode
+ appropriate for downstream device
+Message-ID: <20231109223140.GA494906@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+-6iNxKavvTthcpWeMTu5FfeqZhvMbALK1WwdRqQhivHJFWTQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  8 Nov 2023 14:06:07 +0100:
+On Thu, Nov 09, 2023 at 05:06:15PM -0500, Jim Quinlan wrote:
+> ...
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-6.7-rc1
+> BTW, besides the RPi4, I haven't been able to find a Linux platform
+> where I can do
+> 
+>         echo $POLICY > /sys/module/pcie_aspm/parameters/policy
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f3bfe643304143ce2727adc893cfa134ba27f968
+This sounds like something we should fix.  What exactly happens?  I
+think this should be handled at pcie_aspm_set_policy(), so:
 
-Thank you!
+  /sys/module/pcie_aspm/parameters/policy doesn't exist (seems
+  unlikely)?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  Returns -EPERM (would indicate aspm_disabled)?
+
+  Returns -EINVAL (would indicate $POLICY doesn't match anything in
+  policy_str[])?
+
+  Returns 0 with no action (would indicate $POLICY is the same as the
+  current aspm_policy)?
+
+> It seems that the FW/ACPI typically locks this down.  I did see a
+> comment somewhere that
+> said that the reason it was locked down is because too many devices
+> cannot handle it.
+
+Do you have any details about FW/ACPI locking this down?
+aspm_disabled is set by the kernel "pcie_aspm=off" parameter (I assume
+you're not referring to this), if the FADT has ACPI_FADT_NO_ASPM set,
+or if a host bridge's _OSC is missing or failed (maybe [1] is the
+comment you saw?)
+
+These all *should* be unusual cases, so I'd be surprised if you're
+tripping over one of these.  I would NOT be surprised if we had some
+issue in pcie_config_aspm_link() or pcie_set_clkpm() that meant the
+policy change didn't work as intended, though.
+
+Bjorn
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/acpi/pci_root.c?id=v6.6#n617
+  
