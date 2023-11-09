@@ -2,59 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A8E7E6EB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6558B7E6EB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbjKIQa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S234611AbjKIQbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKIQa6 (ORCPT
+        with ESMTP id S229770AbjKIQbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:30:58 -0500
+        Thu, 9 Nov 2023 11:31:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD3B327D
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:30:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0E66C433C7;
-        Thu,  9 Nov 2023 16:30:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F3A35AD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:31:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35470C433C8;
+        Thu,  9 Nov 2023 16:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699547455;
-        bh=5/znY4HCFVEVBJydXXpYZ6FSw54o9hilGLCdUAKvJ6U=;
+        s=k20201202; t=1699547470;
+        bh=AK5QOaCNW1qivV+BYTR3YnR/G6fmazfZw1BFo9i/I8Y=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gaIHc/3eRrfzh8HmTNcsQUbkoyvp9byyCuRYpZFewfbEZM6iQHj26noMmqAAQEli0
-         lqunzQKVvm8mM3oQeekJaVRBAe/5XWX6Gz7EX/gdMpfBmNv29CHqgXVtXZox6jKS1X
-         2efpaJGdsuAk1L+6XTgU6io0Fpk1T83NJ31wPysNKWfBKdabnjsz/1whiffx92bmVJ
-         mvt19EvP3EDvct21zYSRdgIoknQ15tNN5W3lym8NXOExtB5KCa91rZi00KKDiz6fUW
-         bAaq0fiLBKv5D3fDcPEVySaG8N4IeOcFggwssjyA5w6TmL3+BvhZOzgDFWeBh4/Gr2
-         sHkz1k3vSWwFQ==
-Message-ID: <ac0cc141-05af-49bd-bf7b-e9f1e6d77f4f@kernel.org>
-Date:   Thu, 9 Nov 2023 17:30:49 +0100
+        b=dCDKHAWc8GzWZaHEeBRX7yAELr/JlykCtzuNyWDV8G6s4IJapux5ievprmDk8hoNh
+         +IfFY8UUNu7ys7ZoZpQSK4w0vcmV/7zw1cE8Gc7s7SQ01bW5yQh4I/zYsyY1rO8Y78
+         MnAQUmw4d0Dr6crv2EW+HDqcsYnILfzf1G7n7Wbtr1WNxJ8vBnKfivJ4yyQMxVbps7
+         e/DPY9xjHf6hk9dbNHNUv4ZXApTbklHffx++AjXNQgJ1kAlvKdJpZT+6CHAQjEJlnt
+         MQNdRR643rFePXalxe5mT7Jh5bSGMBczLeguxUTptvxc5ZW/0NBR+jVEXqec/vFocR
+         +TWwlH6TYnTLg==
+Message-ID: <e23e344f-8712-4bd9-a229-763adda6226e@kernel.org>
+Date:   Thu, 9 Nov 2023 17:31:04 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: clock: mediatek: Remove compatible for
+Subject: Re: [RESEND 2/3] dt-bindings: clock: mediatek: Remove compatible for
  MT8188 VPPSYS
 Content-Language: en-US
-To:     =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= 
-        <Yu-chang.Lee@mediatek.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "nfraprado@collabora.com" <nfraprado@collabora.com>,
-        "angelogioacchino.delregno@collabora.com" 
+To:     "yu-chang.lee" <yu-chang.lee@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?TmF0aGFuIEx1ICjlkYLmnbHpnJYp?= <Nathan.Lu@mediatek.com>,
-        =?UTF-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-References: <20231109082201.7698-1-yu-chang.lee@mediatek.com>
- <20231109082201.7698-3-yu-chang.lee@mediatek.com>
- <c28c99b8-36f8-479a-adbf-442c87062ca2@collabora.com>
- <5abd0e8f60ec569336fe650af1f69dcd5a53a23e.camel@mediatek.com>
+Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Nathan Lu <nathan.lu@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Garmin Chang <garmin.chang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231109111122.371-1-yu-chang.lee@mediatek.com>
+ <20231109111122.371-3-yu-chang.lee@mediatek.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -99,36 +96,24 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <5abd0e8f60ec569336fe650af1f69dcd5a53a23e.camel@mediatek.com>
+In-Reply-To: <20231109111122.371-3-yu-chang.lee@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 12:14, Yu-chang Lee (李禹璋) wrote:
-> On Thu, 2023-11-09 at 10:15 +0100, AngeloGioacchino Del Regno wrote:
->> Il 09/11/23 09:22, yu-chang.lee ha scritto:
->>> Remove VPPSYS0, VPPSYS1 compatible on Mediatek MT8188.
->>>
->>> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
->>
->> The mail recipients are wrong/incomplete. This patch cannot ever
->> possibly get
->> upstream if you don't Cc the right people/lists.
->>
->> Please use scripts/get_maintainer.pl to get the right list of
->> recipients and
->> resend.
->>
->> Thanks,
->> Angelo
->>
-> Thank for your time and patience, I already resend the same series with
-> list script provided.
+On 09/11/2023 12:11, yu-chang.lee wrote:
+> Remove VPPSYS0, VPPSYS1 compatible on Mediatek MT8188.
+> 
+> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
+> ---
 
-Oh, really? Please point me to this submission where you Cc all
-maintainers presented by get_maintainer.pl.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC (and consider --no-git-fallback argument). It might
+happen, that command when run on an older kernel, gives you outdated
+entries. Therefore please be sure you base your patches on recent Linux
+kernel.
 
 Best regards,
 Krzysztof
