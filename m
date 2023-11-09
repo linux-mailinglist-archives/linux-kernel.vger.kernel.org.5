@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3316C7E64BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D77C7E64CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbjKIHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S233022AbjKIHyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 02:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbjKIHwB (ORCPT
+        with ESMTP id S232613AbjKIHys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:52:01 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B07719A3
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 23:51:59 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b44befac59so1330402b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 23:51:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699516319; x=1700121119; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n8kI9UwJGdReYGKa944trNcHcU3YT757mZ4WuJyOmf4=;
-        b=NyKLgokmqH2Wh86sbPRwnkVgIiX6af8Nr5tukVIxo5Y5S/Zgzztj57X380x9lYahi2
-         UOkNprM/NaQegajEAYBuL3xy1BKIQCfVDJQNfolBjUDKnDAs+0d/uOdWOiAHsWvjGsOE
-         vPbUh7eVBslQkLNKGl1R1Q9CCuP4UvlUmsx0Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699516319; x=1700121119;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n8kI9UwJGdReYGKa944trNcHcU3YT757mZ4WuJyOmf4=;
-        b=SCf5f+RyWJSerteCQNQn2JweqqfYngzjcZyFMCF7MxH1CIP8IC989PRSu/pftVV0ol
-         Qlf8awt9MgzcX1bGTeQcf9w5pQHgdMQdAIuGyg2nnuIBksRABGADkYZxQL9DFMJNXreg
-         Ar3FSODEHKCfmGRQhRIyLKJ2q4UvraatvyZv4Z1Slcb8CC7uIaw65+R5l7bhSxmoImMP
-         a+kjP8pBJ0kDmCQCJKNW50Yohu1vnswVOJz9BwulrxCskRQ7J4/nbQavZSIQcXTDO7KJ
-         9Y49D5/VyDBKpVJ3bAy3UuQyFlrpb8lzNAoAhssvDUPYww7Mbmw7+3BqKILOdY64W4lr
-         +Sbw==
-X-Gm-Message-State: AOJu0YzhmFMFCs6vpv1ddi0rHt4m6C+irmTLGyS+8kWaH3ojARxWUtcE
-        by0rkuQmLCAS7nhERfzS4Pt/Rw==
-X-Google-Smtp-Source: AGHT+IEBqLRG+PgqmeeXfwxIbLp4SSXoXRShAqjC5aVkkgrVEdxU6mExfjBMSbXup0ylcw9XeWqkrQ==
-X-Received: by 2002:a05:6a21:6d90:b0:181:8654:8284 with SMTP id wl16-20020a056a216d9000b0018186548284mr9852558pzb.24.1699516319028;
-        Wed, 08 Nov 2023 23:51:59 -0800 (PST)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:30b0:eade:dcc0:28e8])
-        by smtp.gmail.com with ESMTPSA id h25-20020aa786d9000000b006be047268d5sm10418692pfo.174.2023.11.08.23.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 23:51:58 -0800 (PST)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] checkpatch: do not require an empty line before error injection
-Date:   Thu,  9 Nov 2023 16:51:38 +0900
-Message-ID: <20231109075147.2779461-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+        Thu, 9 Nov 2023 02:54:48 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5224E1716;
+        Wed,  8 Nov 2023 23:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1699516486; x=1731052486;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4pPfBmiUINhRoPJo2eY11blRCwfArWzDBp253sWlEgM=;
+  b=lmfL/xfVbi/FgjXF15FlM9eSRO6rBqoTuUQ1RwH1VPBmIgKFBIN5a6+p
+   dhtqBiW5BSEAPC5isoXJewBCe/nikxsx28nh82Rh1ByOWESasXcBW78KH
+   Haz8plwoLjIoOmASDkShf1afE860a50Tv0i3VTlEXMgps2WUnR0ShJUKs
+   QrAdaYlqSvKrX+dZB167+MBpqMpMbID2q8P51GJmt/r+mjhynp7GU0lOD
+   l1F4NS90rF+odv876hBsY6tiDHQznYgCRn2hyl9p4c2qY6N5ej0nhZKRF
+   t37SRElhaGDD1X/eMseLy2eGJ4Ez33IsfpOQYGPvI6L/PHkPZhGhp9YJd
+   g==;
+X-CSE-ConnectionGUID: se6pjHG5SuelUARNIWzFMg==
+X-CSE-MsgGUID: vlGbOKuDThK6JpzYW9mFPQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
+   d="asc'?scan'208";a="12060742"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Nov 2023 00:54:45 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 9 Nov 2023 00:54:35 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 9 Nov 2023 00:54:32 -0700
+Date:   Thu, 9 Nov 2023 07:54:07 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Jerry Shih <jerry.shih@sifive.com>
+CC:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>
+Subject: Re: [PATCH v3 06/20] riscv: add ISA extension parsing for vector
+ crypto
+Message-ID: <20231109-prevalent-serrated-d40eb5f71236@wendy>
+References: <20231107105556.517187-1-cleger@rivosinc.com>
+ <20231107105556.517187-7-cleger@rivosinc.com>
+ <5EF129A2-195B-4207-A2F6-DBA1FBB9F65D@sifive.com>
+ <20231109-revolver-heat-9f4788c51bbf@wendy>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LUyl317BBN37OabN"
+Content-Disposition: inline
+In-Reply-To: <20231109-revolver-heat-9f4788c51bbf@wendy>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALLOW_ERROR_INJECTION macro (just like EXPORT_SYMBOL) can immediately
-follow a function it annotates.
+--LUyl317BBN37OabN
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Nov 09, 2023 at 07:44:46AM +0000, Conor Dooley wrote:
+> On Thu, Nov 09, 2023 at 10:58:41AM +0800, Jerry Shih wrote:
+> > On Nov 7, 2023, at 18:55, Cl=E9ment L=E9ger <cleger@rivosinc.com> wrote:
+> > > +static const unsigned int riscv_zvknhb_exts[] =3D {
+> > > +	RISCV_ISA_EXT_ZVKNHA
+> > > +};
+> > > +
+> >=20
+> > > +	__RISCV_ISA_EXT_SUPERSET(zvknhb, RISCV_ISA_EXT_ZVKNHB, riscv_zvknhb=
+_exts),
+> > > +	__RISCV_ISA_EXT_BUNDLE(zvks, riscv_zvks_bundled_exts),
+> >=20
+> > The Zvknha and Zvknhb are exclusive. It's not the superset relationship.
+> >=20
+> > Please check:
+> > https://github.com/riscv/riscv-crypto/issues/364#issuecomment-1726782096
+>=20
+> You got a response to this on the previous version, but didn't engage
+> with it:
+> https://lore.kernel.org/all/c64d9ddb-edbd-4c8f-b56f-1b90d82100b7@rivosinc=
+=2Ecom/#t
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 25fdb7fda112..a94ed6c46a6d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4054,7 +4054,7 @@ sub process {
- 		if ($prevline =~ /^[\+ ]};?\s*$/ &&
- 		    $line =~ /^\+/ &&
- 		    !($line =~ /^\+\s*$/ ||
--		      $line =~ /^\+\s*(?:EXPORT_SYMBOL|early_param)/ ||
-+		      $line =~ /^\+\s*(?:EXPORT_SYMBOL|early_param|ALLOW_ERROR_INJECTION)/ ||
- 		      $line =~ /^\+\s*MODULE_/i ||
- 		      $line =~ /^\+\s*\#\s*(?:end|elif|else)/ ||
- 		      $line =~ /^\+[a-z_]*init/ ||
--- 
-2.42.0.869.gea05f2083d-goog
+Ahh, I now see what that happened. Your mailer is broken and puts the
+message-id of what you are replying to in the In-Reply-To and Reply-To
+headers. The former is correct, the latter is bogus & means you don't even
+get delivered the response.
 
+--LUyl317BBN37OabN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUyQHwAKCRB4tDGHoIJi
+0nowAP0W6kYqZfjp8aXoOoQXmmbdkMNZc5Iz55LCZY1/uNSHywD9EzrcQKDZ70d+
+CQXwkQCx/EhZ3XtYSRbz+3Q65lor3gQ=
+=zJio
+-----END PGP SIGNATURE-----
+
+--LUyl317BBN37OabN--
