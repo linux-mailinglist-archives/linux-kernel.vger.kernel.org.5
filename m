@@ -2,126 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69EC7E6AB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551F87E6ABA
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 13:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbjKIMg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 07:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
+        id S232777AbjKIMlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 07:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232103AbjKIMgz (ORCPT
+        with ESMTP id S230229AbjKIMk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 07:36:55 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE622D59;
-        Thu,  9 Nov 2023 04:36:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jawHYd18qCmR5/JuAbGIlQqrirbs4+bcC7vzDEl67ml+JSYijXeCQWc9drgw2DV60DosPUXdfl6j3y2lO9FuULFINENwZq9rFR+nQQeI64tSHeehU4aGHHqg6quXun8i78R5G0OGSaAvYd26RaIn70CmAvA2Z6CunNvYghctalxRWqnLygimWPBYSykxiwmSU/b6/p4PLMbyW9xACku5VN4fO8Tl4TgnVDX4uxHmmdj1v8bJcZyorTF/vYRxn6RsrEUxOBl8PLlomPVhJC8ObBD3ibtFXaIPQZ09HjWt9QH4ocUjcHbnFiqqj8Ot2t6Yi0iuv4LtRXsSQb7rSeFWoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lkD04HxgpRGiYc9+lSUHYR2nmHdzvYq/JR8z6G1+3ts=;
- b=gXd4wpHuqOyyxcerZO7CimxFStO4UWYdQLI3zsOt1/oNUuWlGS9gl6rn7o7BzmgP2tYTihBirJWtaacbvp0H46k5iPmCauZYG2w05T2ld6AcW2/daqAj4Zcea98zYyJAkBoQvPivWilZizo5gmZ1m0eMDDHFkulryN+r4gABu+d9pd67rtYe0BccGHoHXKvj59/ujv1JQKaP45SHBFVgKF3VXReIUYnW4hRFKfiz2OP4Mh8zO+vNHsUr11iFEfmaYuN4giMfl9JvY6bFzjyxQEjiNMS94Ge6X/2cSyZjti/jvASbgyNKctcShKA95Wv8tmEtopp3KudG+8smED0JmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=sunsite.dk smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lkD04HxgpRGiYc9+lSUHYR2nmHdzvYq/JR8z6G1+3ts=;
- b=kMGfKk6awqHA60jaKBjZbnkUy76HqO/cmFTt3u6VWFFN+iJVFqu22pDr08l7XaHkAG0CEwdGr8yZIzfP07Ys0pOX25G4C/El+5tAZ0VLKagKyF9DlAhUKRIZykFTZ6ax9iwSnH3xyaM0ZcescovxWT7prfTgswXcLmhJwMIw6/A=
-Received: from MN2PR16CA0064.namprd16.prod.outlook.com (2603:10b6:208:234::33)
- by BY5PR12MB4161.namprd12.prod.outlook.com (2603:10b6:a03:209::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Thu, 9 Nov
- 2023 12:36:49 +0000
-Received: from BL6PEPF0001AB77.namprd02.prod.outlook.com
- (2603:10b6:208:234:cafe::78) by MN2PR16CA0064.outlook.office365.com
- (2603:10b6:208:234::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
- Transport; Thu, 9 Nov 2023 12:36:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL6PEPF0001AB77.mail.protection.outlook.com (10.167.242.170) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6977.16 via Frontend Transport; Thu, 9 Nov 2023 12:36:49 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 9 Nov
- 2023 06:36:48 -0600
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Thu, 9 Nov 2023 06:36:45 -0600
-From:   Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-To:     <git@amd.com>, <michal.simek@amd.com>, <jacmet@sunsite.dk>,
-        <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
-        <shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>,
-        Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-Subject: [PATCH] serial: uartlite: Use dynamic allocation for major number
-Date:   Thu, 9 Nov 2023 18:06:40 +0530
-Message-ID: <20231109123640.1740310-1-manikanta.guntupalli@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 9 Nov 2023 07:40:59 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3D32590;
+        Thu,  9 Nov 2023 04:40:57 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6DC4721977;
+        Thu,  9 Nov 2023 12:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699533655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kBDurIQ5uqPNYzPg069Va7iaYE5q2cMCH1L1AF71VnM=;
+        b=UERc19i/58CHPOKnAxtzhjGF01dQY0FXYRsKov+eSSNOfzWQe1jdNK5iYYpdsSYM/fcpwE
+        ELjxm3MvWOmhxh0/QsGhga74/a/gvcVEA4gfm2pVMLR2UEmZXM+loZLcxmXyirLLXFFRZ9
+        zeOAw0f3HvdE5jghAXBM9HsWJaP1iQE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E92513524;
+        Thu,  9 Nov 2023 12:40:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id iioKF1fTTGVhOQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Thu, 09 Nov 2023 12:40:55 +0000
+Date:   Thu, 9 Nov 2023 13:40:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+Message-ID: <ZUzTVgK_i05uiHiB@tiehlicka>
+References: <20231108065818.19932-1-link@vivo.com>
+ <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+ <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+ <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com>
+ <ZUytB5lSwxeKkBW8@tiehlicka>
+ <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
+ <ZUy2-vrqDq7URzb6@tiehlicka>
+ <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB77:EE_|BY5PR12MB4161:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7adf5b1-7206-4069-2299-08dbe1208b0b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PF46qEESESBlU9uyKGL92zM6yhZVk236dVSlFV/g3yWw0prT8LJfAHXpQqD/9UwxxjKM/gx0hne3FIoZsi23JuGvgnFaic1uwZsBhEFMrdbDbO7hImnqyvAWGuOL7JQ71ehARYLsyecuYjAEzijDy6JY6lNxzPyW85+0HlGbpkZ5ppUleuUem9TGcEL+lJvpo5knS9NqceXWDlJ+Dx0vpG0Gwy8HBq6+/zFp6gqeU2jp5mUDGXYLgiuguxz/r6AMF9oiu5l2jefLX9fMKPxZ+oVtgAbJBmmrxZtC/JAVNyGRrA8LlkxswZUWsSedhoceGtam3DIv1dDvt9TJAp/8n7IAuEK7/JXIyWidLRN0EhaEYt8yBnxj7PWChNc5SRZbHzPBYDk+ThwaKL+YCt/S+XlBDF1BIrvqdk736+ZIJH2iQmumjyTijnDEwPAF45v7lYyB9Cj8k0+RWb/8PrSYK9IL0U+BqM3Aah1gTYZai/Fbb25IIfzixw+yXVEncgXMIzCKEu9UOcDbPcdm5mcDxm910p+2YCoLGWs1BF9ZCFyCdiU8C3mK01Qiq93nxjjA1sw0kDEytXlVqyDtVwnnOI4E8F4U1iY7m8x2kcoXa0mW8jNf/HHnAE8EDDc0p+oPtBRPItzHZn0Hsc69wqgRLMcdwi+9mRg4+WMwFK23qIJnQFhe1eqDm8YdYXZFEKZHyzrns147oqhc06b8gp2LAAnsPSdww/8iLDTD8SxJn0YrHIY5VQpNQkvUc8Yk6LBzew+kkdbdSy2VTxSr2Lsp6Q==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(136003)(346002)(396003)(230922051799003)(64100799003)(1800799009)(451199024)(82310400011)(186009)(46966006)(36840700001)(40470700004)(26005)(356005)(83380400001)(8676002)(4744005)(36756003)(8936002)(81166007)(82740400003)(36860700001)(4326008)(47076005)(2616005)(426003)(336012)(2906002)(1076003)(5660300002)(478600001)(40480700001)(86362001)(6666004)(40460700003)(966005)(41300700001)(70206006)(70586007)(110136005)(44832011)(54906003)(316002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 12:36:49.0554
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7adf5b1-7206-4069-2299-08dbe1208b0b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB77.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4161
+In-Reply-To: <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Device number 204 has a range of minors on major number.
-uart_register_driver is failing due to lack of minor numbers
-when more number of uart ports used. So, use dynamic allocation
-for major number to avoid minor number limitation on 204 major
-number.
+On Thu 09-11-23 18:50:36, Huan Yang wrote:
+> 
+> 在 2023/11/9 18:39, Michal Hocko 写道:
+> > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > 
+> > On Thu 09-11-23 18:29:03, Huan Yang wrote:
+> > > HI Michal Hocko,
+> > > 
+> > > Thanks for your suggestion.
+> > > 
+> > > 在 2023/11/9 17:57, Michal Hocko 写道:
+> > > > [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > > > 
+> > > > On Thu 09-11-23 11:38:56, Huan Yang wrote:
+> > > > [...]
+> > > > > > If so, is it better only to reclaim private anonymous pages explicitly?
+> > > > > Yes, in practice, we only proactively compress anonymous pages and do not
+> > > > > want to touch file pages.
+> > > > If that is the case and this is mostly application centric (which you
+> > > > seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
+> > > > instead.
+> > > Madvise  may not be applicable in this scenario.(IMO)
+> > > 
+> > > This feature is aimed at a core goal, which is to compress the anonymous
+> > > pages
+> > > of frozen applications.
+> > > 
+> > > How to detect that an application is frozen and determine which pages can be
+> > > safely reclaimed is the responsibility of the policy part.
+> > > 
+> > > Setting madvise for an application is an active behavior, while the above
+> > > policy
+> > > is a passive approach.(If I misunderstood, please let me know if there is a
+> > > better
+> > > way to set madvise.)
+> > You are proposing an extension to the pro-active reclaim interface so
+> > this is an active behavior pretty much by definition. So I am really not
+> > following you here. Your agent can simply scan the address space of the
+> > application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOUT)
+> > on the private memory is that is really what you want/need.
+>
+> There is a key point here. We want to use the grouping policy of memcg
+> to perform proactive reclamation with certain tendencies. Your
+> suggestion is to reclaim memory by scanning the task process space.
+> However, in the mobile field, memory is usually viewed at the
+> granularity of an APP.
 
-https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
-
-Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
----
- drivers/tty/serial/uartlite.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-index 404c14acafa5..c80ed0373b44 100644
---- a/drivers/tty/serial/uartlite.c
-+++ b/drivers/tty/serial/uartlite.c
-@@ -24,8 +24,8 @@
- #include <linux/pm_runtime.h>
+OK, sthis is likely a terminology gap on my end. By application you do
+not really mean a process but rather a whole cgroup. That would have
+been really useful to be explicit about.
  
- #define ULITE_NAME		"ttyUL"
--#define ULITE_MAJOR		204
--#define ULITE_MINOR		187
-+#define ULITE_MAJOR		0	/* use dynamic node allocation */
-+#define ULITE_MINOR		0
- #define ULITE_NR_UARTS		CONFIG_SERIAL_UARTLITE_NR_UARTS
- 
- /* ---------------------------------------------------------------------
+> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
+> according to the pre-grouped APP processes.
+> 
+> Of course, as you suggested, madvise can also achieve this, but
+> implementing it in the agent may be more complex.(In terms of
+> achieving the same goal, using memcg to group all the processes of an
+> APP and perform proactive reclamation is simpler than using madvise
+> and scanning multiple processes of an application using an agent?)
+
+It might be more involved but the primary question is whether it is
+usable for the specific use case. Madvise interface is not LRU aware but
+you are not really talking about that to be a requirement? So it would
+really help if you go deeper into details on how is the interface
+actually supposed to be used in your case.
+
+Also make sure to exaplain why you cannot use other existing interfaces.
+For example, why you simply don't decrease the limit of the frozen
+cgroup and rely on the normal reclaim process to evict the most cold
+memory? What are you basing your anon vs. file proportion decision on?
+
+In other words more details, ideally with some numbers and make sure to
+describe why existing APIs cannot be used. 
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
