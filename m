@@ -2,206 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDE87E7470
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52B57E7472
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 23:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345317AbjKIWis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 17:38:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        id S1345311AbjKIWka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 17:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbjKIWir (ORCPT
+        with ESMTP id S230339AbjKIWk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 17:38:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92794206
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 14:38:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699569524; x=1731105524;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=yguK5rz7hXUo99zF2zcnO3ClgIZT1lkI/iQz0FmXchw=;
-  b=fQg2yNbDy/vNwDMRNLYMNpRf6NulDykvCnUdjbNXxNhcuM31hTieQ58S
-   iIfUVD3fAvo6JX0iV7AZIO2eFTQv+tPzkPoKTDXR2Eh8WCbxpJsi7vTPN
-   SFErTmD9qZVRKNdhQORt2Dx9SFksbd69HVsEvtuLoW5j4fIANfnmRfpW4
-   m74+ffAiK3uph2TJfn4psqPyFdoVsTcg1ut+rlBJ5ISAMoF+H/fhaAFNF
-   bYwFNdsRyjaOcFQGgv3kXNw7n7VTbyyXTSYmC3BnAqk+v9IsSbrDrU/AV
-   20dx4/QtKwC1I7el3YgEJNmZSZexuAF5N9vDdfaQQz6kH8gVaGq9wVx7B
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="392960467"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="392960467"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 14:38:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="792694530"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="792694530"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 09 Nov 2023 14:38:42 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1Dfc-0009DY-0k;
-        Thu, 09 Nov 2023 22:38:40 +0000
-Date:   Fri, 10 Nov 2023 06:38:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/util.h:867:9: sparse: sparse: incorrect type in argument
- 1 (different address spaces)
-Message-ID: <202311100645.stmxM9O8-lkp@intel.com>
+        Thu, 9 Nov 2023 17:40:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E26B4206
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 14:40:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F10CC433C7;
+        Thu,  9 Nov 2023 22:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699569625;
+        bh=I9vnYUT5EwbBj4gKZfskPZcdeePW/vcdMZ/ipcSe6bg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=OkmpxAfV/vkOZ43LqBK8zWZzCgZrjZljMxcjl4bBz2TMFbozmCFllXFXKb4fJ70d7
+         wpIEWxVUTtKFF7IMmN8KtkguoU3Sp/WiJOlpxhfBNHZKdnc7+KnbK0ovs1hLWE1nIx
+         2IEA4OdHIstSME9/iqrl+AOhQ1hOkN0B/7LP4H7X8CX4qW1JzdoerLynO3NkGFUOUE
+         F9bYpHiXxRrKLS4IpZjnALTy4NqpWqeesRopGxKh3m4SRnVbfUZDerR60Z9CTsBmt3
+         1aO6xsmrLAkEMiUC0mhWGI/YvrK2OjwCHo36ajHaRnzODdAkz7U+p+lOIVziLuSS68
+         xKECwTYCWaNdg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F01F9C3274C;
+        Thu,  9 Nov 2023 22:40:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 0/2] riscv: Optimize bitops with Zbb extension
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <169956962496.25145.13807826919853509041.git-patchwork-notify@kernel.org>
+Date:   Thu, 09 Nov 2023 22:40:24 +0000
+References: <20231031064553.2319688-1-xiao.w.wang@intel.com>
+In-Reply-To: <20231031064553.2319688-1-xiao.w.wang@intel.com>
+To:     Wang@ci.codeaurora.org, Xiao W <xiao.w.wang@intel.com>
+Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, ardb@kernel.org,
+        anup@brainfault.org, haicheng.li@intel.com,
+        ajones@ventanamicro.com, yujie.liu@intel.com, charlie@rivosinc.com,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: 3598c56eb93b9774d3aa06b3e3c0eab0bbbc26f0 bcachefs: Consolidate trigger code a bit
-date:   3 weeks ago
-config: loongarch-randconfig-r132-20231107 (https://download.01.org/0day-ci/archive/20231110/202311100645.stmxM9O8-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231110/202311100645.stmxM9O8-lkp@intel.com/reproduce)
+Hello:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100645.stmxM9O8-lkp@intel.com/
+This series was applied to riscv/linux.git (for-next)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-sparse warnings: (new ones prefixed by >>)
-   fs/bcachefs/buckets.c: note: in included file:
-   fs/bcachefs/bcachefs.h:845:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/buckets.c: note: in included file:
-   fs/bcachefs/replicas.h:42:34: sparse: sparse: array of flexible structures
-   fs/bcachefs/buckets.c:1125:26: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:1125:26: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:1125:26: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:1154:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:1154:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:1154:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   fs/bcachefs/buckets.c:403:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:403:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:403:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:404:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bch_fs_usage *fs_usage @@     got struct bch_fs_usage [noderef] __percpu *fs_usage @@
-   fs/bcachefs/buckets.c:404:36: sparse:     expected struct bch_fs_usage *fs_usage
-   fs/bcachefs/buckets.c:404:36: sparse:     got struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:405:27: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:403:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:403:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:403:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:404:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bch_fs_usage *fs_usage @@     got struct bch_fs_usage [noderef] __percpu *fs_usage @@
-   fs/bcachefs/buckets.c:404:36: sparse:     expected struct bch_fs_usage *fs_usage
-   fs/bcachefs/buckets.c:404:36: sparse:     got struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:405:27: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c: note: in included file (through fs/bcachefs/super.h, fs/bcachefs/buckets.h, fs/bcachefs/alloc_background.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/buckets.c:403:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:403:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:403:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:404:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bch_fs_usage *fs_usage @@     got struct bch_fs_usage [noderef] __percpu *fs_usage @@
-   fs/bcachefs/buckets.c:404:36: sparse:     expected struct bch_fs_usage *fs_usage
-   fs/bcachefs/buckets.c:404:36: sparse:     got struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:405:27: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:403:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:403:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:403:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:404:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bch_fs_usage *fs_usage @@     got struct bch_fs_usage [noderef] __percpu *fs_usage @@
-   fs/bcachefs/buckets.c:404:36: sparse:     expected struct bch_fs_usage *fs_usage
-   fs/bcachefs/buckets.c:404:36: sparse:     got struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:405:27: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:403:18: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct bch_fs_usage [noderef] __percpu *fs_usage @@     got struct bch_fs_usage * @@
-   fs/bcachefs/buckets.c:403:18: sparse:     expected struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:403:18: sparse:     got struct bch_fs_usage *
-   fs/bcachefs/buckets.c:404:36: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct bch_fs_usage *fs_usage @@     got struct bch_fs_usage [noderef] __percpu *fs_usage @@
-   fs/bcachefs/buckets.c:404:36: sparse:     expected struct bch_fs_usage *fs_usage
-   fs/bcachefs/buckets.c:404:36: sparse:     got struct bch_fs_usage [noderef] __percpu *fs_usage
-   fs/bcachefs/buckets.c:405:27: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:1126:17: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:1127:17: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:1158:9: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/buckets.c:1159:38: sparse: sparse: dereference of noderef expression
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/buckets.c: note: in included file (through fs/bcachefs/vstructs.h, fs/bcachefs/bcachefs_format.h, fs/bcachefs/bcachefs.h):
->> fs/bcachefs/util.h:867:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] [usertype] __percpu *dst @@
-   fs/bcachefs/util.h:867:9: sparse:     expected void *ptr
-   fs/bcachefs/util.h:867:9: sparse:     got unsigned long long [noderef] [usertype] __percpu *dst
->> fs/bcachefs/util.h:867:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] [usertype] __percpu *dst @@
-   fs/bcachefs/util.h:867:9: sparse:     expected void *ptr
-   fs/bcachefs/util.h:867:9: sparse:     got unsigned long long [noderef] [usertype] __percpu *dst
->> fs/bcachefs/util.h:867:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] [usertype] __percpu *dst @@
-   fs/bcachefs/util.h:867:9: sparse:     expected void *ptr
-   fs/bcachefs/util.h:867:9: sparse:     got unsigned long long [noderef] [usertype] __percpu *dst
->> fs/bcachefs/util.h:867:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] [usertype] __percpu *dst @@
-   fs/bcachefs/util.h:867:9: sparse:     expected void *ptr
-   fs/bcachefs/util.h:867:9: sparse:     got unsigned long long [noderef] [usertype] __percpu *dst
+On Tue, 31 Oct 2023 14:45:51 +0800 you wrote:
+> Bitops optimization with specialized instructions is common practice in
+> popular ISAs, this patch set uses RISC-V Zbb extension to optimize four
+> bitops: __ffs, __fls, ffs and fls.
+> 
+> The first patch rearranges the content in hwcap.h and cpufeature.h, it helps
+> to avoid a cyclic header including issue for patch 2.
+> 
+> [...]
 
-vim +867 fs/bcachefs/util.h
+Here is the summary with links:
+  - [v5,1/2] riscv: Rearrange hwcap.h and cpufeature.h
+    https://git.kernel.org/riscv/c/e72c4333d2f2
+  - [v5,2/2] riscv: Optimize bitops with Zbb extension
+    https://git.kernel.org/riscv/c/457926b25320
 
-4c97e04aa8818da Kent Overstreet 2019-02-06  860  
-4c97e04aa8818da Kent Overstreet 2019-02-06  861  static inline void percpu_u64_set(u64 __percpu *dst, u64 src)
-4c97e04aa8818da Kent Overstreet 2019-02-06  862  {
-4c97e04aa8818da Kent Overstreet 2019-02-06  863  	int cpu;
-4c97e04aa8818da Kent Overstreet 2019-02-06  864  
-4c97e04aa8818da Kent Overstreet 2019-02-06  865  	for_each_possible_cpu(cpu)
-4c97e04aa8818da Kent Overstreet 2019-02-06  866  		*per_cpu_ptr(dst, cpu) = 0;
-109a4277124ca1a Kent Overstreet 2021-06-10 @867  	this_cpu_write(*dst, src);
-4c97e04aa8818da Kent Overstreet 2019-02-06  868  }
-4c97e04aa8818da Kent Overstreet 2019-02-06  869  
-
-:::::: The code at line 867 was first introduced by commit
-:::::: 109a4277124ca1a0ff670b519315c4f381c83ad3 bcachefs: Don't disable preemption unnecessarily
-
-:::::: TO: Kent Overstreet <kent.overstreet@gmail.com>
-:::::: CC: Kent Overstreet <kent.overstreet@linux.dev>
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
