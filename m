@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3F97E6195
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9787E6193
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 01:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbjKIAqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 19:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S231313AbjKIApw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 19:45:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231932AbjKIAqD (ORCPT
+        with ESMTP id S229565AbjKIApu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 19:46:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA4C19A3;
-        Wed,  8 Nov 2023 16:46:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699490761; x=1731026761;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=z2FrfTnHBfSdoKNm7WfvRCuIqwLKe5cJG+xNskgdhKY=;
-  b=jEMP188uoT4AUiJgSyDLGHw/FnHhpKV0+KAwPifMQ8du1ZGVLONdLc51
-   0D5TLn24ybyWgTcnRhJZ1Fzrx6607hKoCmpjnmpDBBWwI020Djb8caoN1
-   R1nb2H4K6NORxrueSKntjhOzk1Vtqj3J4Uai8XvS4fR3XX9B7MjFitaQc
-   adpRVCXr5ZcEZ4W1O60ipwALpzdEoMdaCXj8cjfgqRMQxuMAtilkkVgE0
-   HUyLZRbKglNTFMl8fHdCRp0GHo3bOjvj+CAJzFTScIkzIdigcKpXN2fqn
-   3z/94zGH3LPLXnY9e/FPu4a9vjWYBe3RAMEGhZ2iYW3t14YXD9vf4mh4l
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="2848928"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="2848928"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 16:46:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="792364352"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="792364352"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 08 Nov 2023 16:45:52 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0tB8-0008Lg-02;
-        Thu, 09 Nov 2023 00:45:50 +0000
-Date:   Thu, 9 Nov 2023 08:44:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        Wed, 8 Nov 2023 19:45:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645F492;
+        Wed,  8 Nov 2023 16:45:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C5CCC433C9;
+        Thu,  9 Nov 2023 00:45:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699490748;
+        bh=YRu4R22LiL/XRUCDX6bXCOEEuo4U/vGZY7DHbSLNVwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PLSjAiIMn2NBulFrRC52cwjm9YTPQLTE5AU/tlNolhqABeG0kKSss8R4fpWqjGE8U
+         Rn1xGX2bmuGIrkAs8XzOPZYAa8I91721ErFqWtfL1pgoCRp3VAu6pfTCjI3yzxAuIA
+         XlFVLE0/D0xJ8RbKVh9ech2e8MpnGlQfDnyRMNjVfJVsT1nviFshv1NHjgzalfmQGq
+         mK7vkrRBEYs9aQWWQnI8+52pSAvHYp6GLtCdoQk/myAbrGlvKDnxKQlqJgqLomPZtd
+         vFZELx41GJIYn6Vlhsn7GUylIPrN3wAl4VMzSMYjRisM3HWZr0B4AbQRhmlcv0c8zs
+         bNv88w6VSGAWA==
+Date:   Wed, 8 Nov 2023 16:45:45 -0800
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Indu Bhagat <indu.bhagat@oracle.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Geoff Levand <geoff@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-Message-ID: <202311090843.b8ISrsV1-lkp@intel.com>
-References: <20231108125843.3806765-18-arnd@kernel.org>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH RFC 00/10] perf: user space sframe unwinding
+Message-ID: <20231109004545.panz6kojksxfcjhi@treble>
+References: <cover.1699487758.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231108125843.3806765-18-arnd@kernel.org>
+In-Reply-To: <cover.1699487758.git.jpoimboe@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, Nov 08, 2023 at 04:41:05PM -0800, Josh Poimboeuf wrote:
+> Some distros have started compiling frame pointers into all their
+> packages to enable the kernel to do system-wide profiling of user space.
+> Unfortunately that creates a runtime performance penalty across the
+> entire system.  Using DWARF (or .eh_frame) instead isn't feasible
+> because of complexity and slowness.
+> 
+> For in-kernel unwinding we solved this problem with the creation of the
+> ORC unwinder for x86_64.  Similarly, for user space the GNU assembler
+> has created the SFrame ("Simple Frame") format starting with binutils
+> 2.40.
+> 
+> These patches add support for unwinding user space from the kernel using
+> SFrame with perf.  It should be easy to add user unwinding support for
+> other components like ftrace.
+> 
+> I tested it on Gentoo by recompiling everything with -Wa,-gsframe and
+> using a custom glibc patch (which I'll send in a reply to this email).
 
-kernel test robot noticed the following build errors:
+Here's my glibc patch:
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on next-20231108]
-[cannot apply to v6.6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231108125843.3806765-18-arnd%40kernel.org
-patch subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-config: powerpc64-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311090843.b8ISrsV1-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/platforms/ps3/gelic_udbg.c:59:1: warning: alignment 1 of 'struct debug_block' is less than 32 [-Wpacked-not-aligned]
-      59 | } __packed;
-         | ^
->> arch/powerpc/platforms/ps3/gelic_udbg.c:240:6: error: redefinition of 'udbg_shutdown_ps3gelic'
-     240 | void udbg_shutdown_ps3gelic(void)
-         |      ^~~~~~~~~~~~~~~~~~~~~~
-   In file included from arch/powerpc/platforms/ps3/gelic_udbg.c:17:
-   arch/powerpc/include/asm/ps3.h:520:20: note: previous definition of 'udbg_shutdown_ps3gelic' with type 'void(void)'
-     520 | static inline void udbg_shutdown_ps3gelic(void) {}
-         |                    ^~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/udbg_shutdown_ps3gelic +240 arch/powerpc/platforms/ps3/gelic_udbg.c
-
-c26afe9e8591f3 Hector Martin 2011-08-31  239  
-c26afe9e8591f3 Hector Martin 2011-08-31 @240  void udbg_shutdown_ps3gelic(void)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/elf/dl-load.c b/elf/dl-load.c
+index 2923b1141d..333d7c39fd 100644
+--- a/elf/dl-load.c
++++ b/elf/dl-load.c
+@@ -29,6 +29,7 @@
+ #include <bits/wordsize.h>
+ #include <sys/mman.h>
+ #include <sys/param.h>
++#include <sys/prctl.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <gnu/lib-names.h>
+@@ -88,6 +89,10 @@ struct filebuf
+ 
+ #define STRING(x) __STRING (x)
+ 
++#ifndef PT_GNU_SFRAME
++#define PT_GNU_SFRAME 0x6474e554
++#endif
++
+ 
+ int __stack_prot attribute_hidden attribute_relro
+ #if _STACK_GROWS_DOWN && defined PROT_GROWSDOWN
+@@ -1213,6 +1218,10 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
+ 	  l->l_relro_addr = ph->p_vaddr;
+ 	  l->l_relro_size = ph->p_memsz;
+ 	  break;
++
++	case PT_GNU_SFRAME:
++	  l->l_sframe_addr = ph->p_vaddr;
++	  break;
+ 	}
+ 
+     if (__glibc_unlikely (nloadcmds == 0))
+@@ -1263,6 +1272,8 @@ _dl_map_object_from_fd (const char *name, const char *origname, int fd,
+ 	l->l_map_start = l->l_map_end = 0;
+ 	goto lose;
+       }
++
++
+   }
+ 
+   if (l->l_ld != 0)
+@@ -1376,6 +1387,13 @@ cannot enable executable stack as shared object requires");
+ 	break;
+       }
+ 
++#define PR_ADD_SFRAME 71
++  if (l->l_sframe_addr != 0)
++  {
++    l->l_sframe_addr += l->l_addr;
++    __prctl(PR_ADD_SFRAME, l->l_sframe_addr, NULL, NULL, NULL);
++  }
++
+   /* We are done mapping in the file.  We no longer need the descriptor.  */
+   if (__glibc_unlikely (__close_nocancel (fd) != 0))
+     {
+diff --git a/include/link.h b/include/link.h
+index c6af095d87..36ac75680f 100644
+--- a/include/link.h
++++ b/include/link.h
+@@ -348,6 +348,8 @@ struct link_map
+     ElfW(Addr) l_relro_addr;
+     size_t l_relro_size;
+ 
++    ElfW(Addr) l_sframe_addr;
++
+     unsigned long long int l_serial;
+   };
+ 
