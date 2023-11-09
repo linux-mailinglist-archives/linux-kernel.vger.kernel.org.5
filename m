@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBBE7E730A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE727E730C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345197AbjKIUrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        id S1345217AbjKIUsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKIUrq (ORCPT
+        with ESMTP id S1345212AbjKIUsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:47:46 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2051.outbound.protection.outlook.com [40.107.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46CB449E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:47:43 -0800 (PST)
+        Thu, 9 Nov 2023 15:48:02 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2040.outbound.protection.outlook.com [40.107.92.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EDB44A6
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:48:00 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k78k2XWR3mFJf8JP/8npWosA1Uo4B5bylPkylarXSbWeSwqXpaIkJFh9kL/CJjXzCh3PbNfT10UdACm7/Zw1KD3TjyUmruzzIWQBY9XoW7xbFKuZY3DSxVgV2wWaiRIq4erb//9qWXJcpFQw2lC8xo2HMbXcB15KtBqquCaMGFlF4s+Z14ZgB8tY98jWawDSMUXkHmgJa42wpoPFzUMqXxcvCLe9hqp4ypn8+reyU1L3U4TXTIXljR2Y/VtLd80ATidBNJmxyAuKpR+xCYzvqz/brtxZRIqQd6NfSeqZSsI1z+v7XXz+edV/rxnCPHQ9KlNdKa9YsnDxyYJCUU43pA==
+ b=EdGFJEZqfzE5/K0EAnPx39ScTnmhHehBp6rLYoBvjB/SuVTVzxuXm9+Sy8WEC3GVQsDY9FnLLJl+vtgeacj4FKtv5FFp2mdJEq1/IwXx+2ckk6hV2Wx2ZhscXf7UoG42kE8jYs/TpnCXp7r63YWPaVgcI1di4s9wQnldSFEL+JbAFcLgoRIAlMESLnzlfP2erYd5E3OTEVeeik/EjS5eExDZxc4fy6heIbt/anDrmhyNveXyql9BrYRx/eg2vvvsF0DDhhyMWyddx4hN3IhFkTcpjyEZ8RiVadwuDWz/Sz1SCwMc3MW6O0xXFYwJumuqbtaKnrVcWHvp2+4ZGiq7pw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZfOHR7US1MYqX2eRxJKighP2vcp8ylRtwWVSfJQZTDE=;
- b=OWfIiuh5sAu5Yoc8ofsTBKlsWzSbpIno2HbqRUoDP/7v6uiVNRsSiPEL4VFKtBftw8BDFJndZ9hmX3nV6ygpoiMmzmBORsmO6TWykkipVxfa38pgRarKURJnSeOKcwA0cp/RLOM19HMcKLSDsuw+O06w+dYpv0uu20ljKMAkMq2DdhglQkKAJLAFK1Er9HP53s2Y2PnQnA11FtQ3xsvC/j3tjBFQr9CbQdViSkbUB5u/KCH43oCGLg/y66YjCyRZTLnAbIPGhIK7jrEtPOgsY1pjsTUmCRhPAcoeG3BR9klkpYDZEt8NIPLzXEbqsBk/AT2KqRHR1kxv8fnZXd8Nsw==
+ bh=6Uvil+pIEHAYN2gP5rg8Fyo3HiZ6YPItbGA4iwEQMrk=;
+ b=ItCwwQRyt1v/ge6rbealh6UhTj0Wasx5DTfly9yWasMz1Kozm5yW9zUf+F7gIFvPxP4yIfDwIpQAFv03JhlaY3+rmuvXs1DOuG6gvHbUnS8yjoQt1tiXP/yb57OIpE8b5G8Ovf6Un2NgawIrCg5SPe152dCV9P47fy0pgDTPZH1hyAem56a1pOxLwE4VtrrcpVWTQjUNqnZAgWu4QXdMxMwcuvcCyjAKH3eMmPJL5JCbFXPSOLJ316ysj9Hc4pouHh6YSgzDILS5m6KQuuLEBrak1ekQ2TKTzztsEY928jpCWjJTm9RkCvd4BDLf/f9wuOtYAVgRJOco0ApEuVxvGg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZfOHR7US1MYqX2eRxJKighP2vcp8ylRtwWVSfJQZTDE=;
- b=tm5/yurslpfxdD6lOxGqVGOMcRktAWhZG2yi5F3kheUHtg2FXNk+Utzr7wfxl6yZd7FAs7NXPR+e72s0LGmrsABYpgFBprxVplgD2o8yd5EyN4mnqHIn3nH8jBPHWUq2gOytFL7einIdsaSJObb6qPrLlb3BG6AjYqSziStjd70=
+ bh=6Uvil+pIEHAYN2gP5rg8Fyo3HiZ6YPItbGA4iwEQMrk=;
+ b=tYGlWvrXGkpFtwjPZWGU0HC4bvWCrMAj88mV+BK5SDYYJJH66JW6R01mWZ9MnJT69s9lIM3pDXzwfjDkdWs820T0DS50t5FGYPAfhZobr43SfU5vjDjw8RZtYWRKi2bR87oqoKP/ulaLsg4cKg6amOKMBOfimjFvhatU6MeV1Yo=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
  by DM6PR12MB4282.namprd12.prod.outlook.com (2603:10b6:5:223::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Thu, 9 Nov
- 2023 20:47:41 +0000
+ 2023 20:47:57 +0000
 Received: from MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
  ([fe80::1549:8c93:8585:ca1b%4]) with mapi id 15.20.6977.019; Thu, 9 Nov 2023
- 20:47:41 +0000
-Message-ID: <876af164-c326-4b26-ab56-790f9a36902e@amd.com>
-Date:   Thu, 9 Nov 2023 14:47:37 -0600
+ 20:47:56 +0000
+Message-ID: <7e611640-9e7a-42a1-b0d7-f8b76999e9b2@amd.com>
+Date:   Thu, 9 Nov 2023 14:47:55 -0600
 User-Agent: Mozilla Thunderbird
 From:   "Moger, Babu" <babu.moger@amd.com>
-Subject: Re: [PATCH v7 15/24] x86/resctrl: Allow arch to allocate memory
- needed in resctrl_arch_rmid_read()
+Subject: Re: [PATCH v7 16/24] x86/resctrl: Make resctrl_mounted checks
+ explicit
 Reply-To: babu.moger@amd.com
 To:     James Morse <james.morse@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
@@ -62,9 +62,9 @@ Cc:     Fenghua Yu <fenghua.yu@intel.com>,
         Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
         dfustini@baylibre.com, amitsinght@marvell.com
 References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-16-james.morse@arm.com>
+ <20231025180345.28061-17-james.morse@arm.com>
 Content-Language: en-US
-In-Reply-To: <20231025180345.28061-16-james.morse@arm.com>
+In-Reply-To: <20231025180345.28061-17-james.morse@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: SA1P222CA0018.NAMP222.PROD.OUTLOOK.COM
@@ -73,89 +73,86 @@ X-ClientProxiedBy: SA1P222CA0018.NAMP222.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM6PR12MB4282:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34ac8a06-b6df-4227-7269-08dbe1651db3
+X-MS-Office365-Filtering-Correlation-Id: 82d1c278-fbc3-4269-e334-08dbe165271d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MywC+1mgOUCuL8PqhHDjNQpI+5KpjbQe0Xw9S+r8jR3+ezr6JKmopJHnqOc+9XiYkNE0lzIJQ3CTqQCqy3jLXWziRbRcZEITiWsnbe5xtvOW5QcjwqU363JQTUhOBoUlImiAjKTi5oU0TXgzpm4jRQU0e3+T5VMnR8h6GtQoxgKYfRHzKIMG7fNQaw6Zxgm52L/JNutnqR61K4Bxelo1GHssZoFhnYp/X45Iqy9IGuxHTJHnnxEn5pV5RVsYMzukS7ZFDZu8vP6tZ2ui9z/6cqNowDDj9ZHiIP7jPvw46Vc4Y2keQTdt02+VQmMRz4jRuiLOKAW5xz9uyXsiRqKtfM0k8GZpPkFXzehjlK0+4ZWzbXdxnOL0BVkb+4aV1llnPcNro8AhoktDtdbWyMT2pay893itZgqmu/upOJ20wQKw5/abNCjpY0ud9ffM3yB5jEz6YxQAUgWB1Mq1mUys3k8PqtXWUbz/UwhcTgZUoNDfsZrU21kcpC2eCGldAVYo8KrvCYwngCfRHwwYEXygSqNl6LXnIih2Ostl7251qeyeDeQcwW7cR+d8vp/0iZPggGG1yH9q4ivY1FCFhLeyVj4EQTDNGdGWnABLo2kuJZJK8MWbu6hURrWHLUFRcrQJGQkfggpeLdRkQnydYXDdydOE35SF5l6cdzOl9kGAfdPP0IvG+CDHP9Wftqmj1/av
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(230173577357003)(230273577357003)(186009)(451199024)(64100799003)(1800799009)(5660300002)(6486002)(31686004)(26005)(6666004)(41300700001)(53546011)(6512007)(6506007)(36756003)(2616005)(31696002)(3450700001)(38100700002)(86362001)(7416002)(2906002)(316002)(8676002)(83380400001)(8936002)(4326008)(54906003)(478600001)(66556008)(66946007)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: zYSfjp8Qo48pnhadXvUtrInFU9cy3lba2jRMvZyv1ikE4CeE/ZjyQsfxyaNlekA5MnwNMxyAYibAuT8gs1IMCgMG0RH4Qf/ZjHMl2wNDFyB4NkaozXVWR9TFwPJ9W4N7w9DKst8mX2pDyn4VbZcQAIQxS+DloOzGn6RhgL/UavTNIriC3wz9mMfnY1aQZDcqMe6S3IdhYhFPiKGqhuC8P6YR34Z7LeThqkBWPpNv+zevge02szxOtqKAH+xxcW7KE8O7kQAQcWlrbsWsF5uhfuuE+rxYVfND87+/FoRHMJo4EoMxyLM9AlobR2KqtCY8RkHPM6v+sJp9R2jx8fM4Bi5RO0DBh7jo0sctH3wxpzVrhwF9falmWeQpKnVYsz2Lys2Uub8zaaEP6IyDiuCQp30OEvYY2Gu4PYmMh4IKThjPA/LQV++Wo7cVTIxC0QGNMfsSVh6bs1y4BrzsQi6B81unWVomphZZe3PjcXdUtqsW24hnKoyJE6/NGZSgO6q3amwkYB2oLyncu4rECS4KqpB5ky2C0EAXus8zK0qROhLVguS47SYvOe0HnvS7PGBYwcroyp7CnWzq9o16EulTTwMR3Hqrsx82wiPc5TkUOVNNB9HsbS19fYUfA35ux1cU+J1qI3ZQJUhgo2UBNnQfZg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(346002)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(5660300002)(6486002)(31686004)(26005)(41300700001)(53546011)(6512007)(6506007)(36756003)(2616005)(31696002)(3450700001)(38100700002)(86362001)(7416002)(2906002)(316002)(8676002)(83380400001)(8936002)(4326008)(54906003)(478600001)(66556008)(66946007)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZUlVQnl1R3ZjMGNSNUZtZUlrRXVXMlkyYmhOZmlMNGtab1pETWNZVnpjMWND?=
- =?utf-8?B?Mmt3eFljT0NDOE1wV293cFR0QmluTzI2VXJDZENkSjFGazBxWHBiUVNqbFM5?=
- =?utf-8?B?WFoxY3l2QmNjZWtyWXRpbC9RUGJhUTVJVk1rTHVQZHV6TERDNjVWenZESmY3?=
- =?utf-8?B?dDF1MmFkT1pBeStwUFNaMTRJTk5LbHFVYlhiRUhpdFFhc0VWbGMyODFzV0lm?=
- =?utf-8?B?dFpndGZ2SWsrVStVMDlITVRaMlRkVmNTbko1dmd2eUpqY0RpZis2by9FV1VZ?=
- =?utf-8?B?b095Ky8zcTNXRzY1SUxueTZYTzFaeUU1ei9LZ2FMbVN6eXlQZ0VNbEVYN3hK?=
- =?utf-8?B?dStaRDByMTJZLzlsZWhxR1dOQkxldEtaeld4b0JDMU40dVFCa3V3S3I1bkxp?=
- =?utf-8?B?TURLK21DdmVhNDluVHRBb28yeXAxSzN5alhTaUpQN00zeVpqVjZBemNVK2tY?=
- =?utf-8?B?QTRqQnEzRHF1ME81UWNJQnR4TU1mV1Zub1Y2amhrQnlBSDQ2elB4S0FZdUlw?=
- =?utf-8?B?QWE1ZzVyUnFkVFpXUEU1OXYzaEZJWVRrVVZMcjY1L1F0Z1RMU1JDTVdoMVhj?=
- =?utf-8?B?blNCclVyL2JVTzBCRUlURDNqZVVLWXVHRmpSMUNibEczTjlvTDFPRmkxWTZq?=
- =?utf-8?B?VlovV2lmNDBzc3liQjY5WS9BdkxZblcxanJ1NHVwbnFEM3AzeFhiL0hubmVn?=
- =?utf-8?B?NjhmMmFXVkhsbm5UeTFQZ0FDbU45SUNSbFJzN2RBaTVZaWhidkNvQWFZN1pY?=
- =?utf-8?B?anB6b1RqbVBXRWRJMzJ3VkxSM05DOC9zOFF2M3M2SWY0Vy9jblpubysyU0xK?=
- =?utf-8?B?akNaN0xESjRTTC9qd0FHamo2cDJYRG5QeFNOZDFJWW51Tm5uQ2JMamtZZ3FU?=
- =?utf-8?B?NUdubE1YY1hST2VaREpjalFIQXFZdGxWRGZxbmx6K1ZSQnRIa3MvSW83N1lv?=
- =?utf-8?B?MG41UkcxVTVLWWxCODY0YVJhZTcrWmxJVC9zYXBpeG1GaG9WL2dnYzQ3MUxM?=
- =?utf-8?B?dmdOVzI0YkJNbE0xVTlQY3RYM25acXhuTW5CQmFVRjFrR0dDSmZwejhwNXRi?=
- =?utf-8?B?VFlnYXM1aGJMdE1FTnpPWktXME5kRk1HQWcxcWdHZmhsZzRHUkR3dmV2L0Nx?=
- =?utf-8?B?N29BMFJISE9POHBOdnpxWm53SU16OFlwaVNRb3lUUUc2SGhvZkgxV0RrM3ZE?=
- =?utf-8?B?VXJ0NWFiQVF4bFJQVWgrbS9sSTY4b0RmZGZnN1g1VVJPY29BZnBIdVdSZCtU?=
- =?utf-8?B?Sk02VDBzek5qaHhVVHNCZjFPVDJnUHVPYkdsMHgzTzBPQUpIaThtV2NEeDlq?=
- =?utf-8?B?ZDFaRVBYdnBKcWlpbURWcEtRcWR2dGpUeFRXZm04UW8wVTRja21ORHVqaWV2?=
- =?utf-8?B?WllPNkZrN2U3TGxSWU13UjRKZVFGUEprc29WS1c5RW1ucStsVlVsZUI5bWQv?=
- =?utf-8?B?dnArN05WY2NjUW5WN2R5N3NJaEwyb1pKeis1bU5KZVh6U2dBWXpjaTBOeXYr?=
- =?utf-8?B?VTYyRUtTYVloWUJpbTdsOEFiMG5QeHpnTUR2eVNsWVRvRVViUFA5OFl5cGtL?=
- =?utf-8?B?V255T1V3SnFXc2pXM2NiK0ZVRi95SEgvUlRTOGdsUStvUUpBVXIyTmFzZ1dl?=
- =?utf-8?B?bkVsbzBZWCtnaU9ZZldWZ2R6TG1yWXd2UW1IYUtsaVFPbmpYdjdLMFgxV0tn?=
- =?utf-8?B?L2N6R3pQZDlvUURhRUFhN2FTU2Rla25wZm5pbUk5aGRmYnlCS3kybXo1clph?=
- =?utf-8?B?aDFBWnRvdDdBTUd2YUdkZkhFa2djOUtYZGFiZUxPTEovSUFRUWEwbXF2VDRu?=
- =?utf-8?B?c3o4c001ckg4TUFIcXMyc0RWWTRObGNYQmJZWEdXRC8vUVhCWm9LdXN2bGtT?=
- =?utf-8?B?endXZ1RSVE0vcnVoMEFtdHk1QU85L1k4NXlseTVjdE9BNWFoa2tuakM2L0Uy?=
- =?utf-8?B?UWoxOVY5cENvYmhMR3BTS1NmdUJuSDl5N2RKTi94dHI2SXdYdnp1R21qeXAv?=
- =?utf-8?B?dCtCK1lSeWRjWmhPUStJSHN5NE8wNE0rQzNLa1VFTlc1L0ZWalZLMWVTWjgy?=
- =?utf-8?B?cFlGQlZKdmRTQ3FkSnoydVA2eVpMTCsyWk5DUTVCMnRicVgwWDVnVmdCWWpL?=
- =?utf-8?Q?j+UY=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WjBoU2NvYXh5czZoU3BxUndGT0NncVB1cUw0RW9jNTE3cnhUSDFjazg4akJY?=
+ =?utf-8?B?ZEZnYXpuUjVJVUxxMzE1S2FHRE5XYTg1MGkwVGE4cFpRSUxId1B2ZkdKMlgv?=
+ =?utf-8?B?dFVPTHlULzN3SHFzaFpnY0dYd2tSd0RpUEExaU1FRFQ2ZzZrTmVzdi91bVNR?=
+ =?utf-8?B?Snl1eC9MTlFFWnZDT0IyNExqQmxBd2MwVDFLNHJpbzQvcWV1VG9vNkwrSFlo?=
+ =?utf-8?B?eEZaSHVaam1MdXU2bFVDOGVlVk9LeWQ3V3phWGh3UnJtTFg2SU8rTGpvRS81?=
+ =?utf-8?B?by85Ym1Fa3MyOC9NbWVMVGdXSFRmbm8xR21mTW1ySW5PajhQRjdubXV4VFRC?=
+ =?utf-8?B?cWZJblhuMlJ5L3RQMkxIL2ZUVFpqakgyN1VFNVZjUFVCZCs0QkhGenBnM1Bi?=
+ =?utf-8?B?RXgwQ0lQalBXbDE2ZkRQMmZ2WUl3bGVFb0hZRWEyNTlrUnRscURGQUlQdk5w?=
+ =?utf-8?B?NnFlSFlHR3NsWVBjTllkdlQ3N21EWWJIa2dUUkhzZDR3Yk05Vk5WRHpibklJ?=
+ =?utf-8?B?bVJjemlOMUtjU29OUnNmZXB2QmlRREhLRis1U2prOWo1OW5RNWdOdU5WZ2Na?=
+ =?utf-8?B?MktPTUh1a3F6bWE4RGU5UXkvTk9lb2JaeFJIeWE4TlNHVzdiaHg0NjQ0UU5z?=
+ =?utf-8?B?R1NMWWZobHBQOFVSQ05aT3J2dXJESmR1VWh6VzVUUkF3andVSjlicUZTZUh2?=
+ =?utf-8?B?cU04NFh3NTIwS3h3Rnc2OEpLWkhXOWtHYWg1WGhuNjFUT3JsWDgrWFJuOEFs?=
+ =?utf-8?B?ZVpzNGtpaWl3UUxCTGdRTzM5ejlCdmlYWTQ4dXoreTVDTEIvZitodHNGMDhp?=
+ =?utf-8?B?bTc4VHg1bkdqZHlxR1hTQm1TLzNKWGY0TEtxa1hkOFRSckY3cmt2b0RQWmRG?=
+ =?utf-8?B?blJQSEw4RXBXUlBoRGlpK2YxQXZiK2xLWGlRTWw2cmpuNlZ0bkR6RUFQQ3Iv?=
+ =?utf-8?B?OFB4cTRVSnU3TDdSVlFLMHVzNTVNdGxWNWFTb0h2ZmFQUWhydEtVMHdZNkFy?=
+ =?utf-8?B?VGVvUTFsQXJubE9KVysrNVBWQytibnpJK1FpYnNVUEtlVDQ4cmlVejBGQW00?=
+ =?utf-8?B?S0tFSWZPQmdGWW9nVGhTSE5sNTJSZHZlQTlLYVhTbXZ5OG12MVlBMyt3UXVN?=
+ =?utf-8?B?RW9tWDBodi9OUEJrUzZiTmdMemNETXVDNU52THk3QzRFZ29CQnczRlJ0N01O?=
+ =?utf-8?B?QXNVNTFNMkJFRGcvc09oMC9oTUgzUkFBYThwS2l5Uy9VS0xyUVhZRFJ5UXRK?=
+ =?utf-8?B?dDF2TUs2azZTanhqc1Zjek42eFVCeHZiSTBQNTNtRUNqRUV5WTc2RG9XRCth?=
+ =?utf-8?B?NitWOWIzNVYvYmVTeHFwS3RZT2NhMXVWM0s2N0R3Q3c2MWVuMGxyUmh0VnFU?=
+ =?utf-8?B?RWdQSnM3L1VOYXlaL0pWSndxdHBSWVF3MHJKYStLdmJldDRWRUUvTS9RWU5u?=
+ =?utf-8?B?S243TE15RnIraS9nMGNlUUN3MnFzWjU5RGRiUE5CbWUrWGVCVmF6RVV4VUNB?=
+ =?utf-8?B?TituR0hGWGpPV3oxcG5iOHhVTHlPS1BzUC9HaWU3ZDJUcDU1b3NZQ0trdmUy?=
+ =?utf-8?B?V0JIQkJ1ekpySHZxNU9UTXQzbEVyQWgybUlQNHBCMmkrZzBMb0NlU2MvVjJw?=
+ =?utf-8?B?Q1FRY1Bzc2RWOXAxT1V1SG42bFVHTUxCVUptbU1IeDZIQ01oNGZZazRkOGl2?=
+ =?utf-8?B?WTNKOVcxdnFKMytzL3p2RHRUUVE0bnJMOTJHNmpiajA3elFGbUF4VzJPQmps?=
+ =?utf-8?B?STFuTTZpZ0FCK0JockRkUSt2WkJwUDhJQ3MzQlY2TTJTaHFXN285RVZiTTIv?=
+ =?utf-8?B?clUxUFVaRTJhUGRrQVJrOXpyOGprVjVCTHB5WURpU2pVNnJwWXRFeVg1S3RV?=
+ =?utf-8?B?cGVKWUg2NlhqcWhNcEhsRjZhOERhQXJuNUZUckx0WXlIUEQrQVBSUDNVUUE0?=
+ =?utf-8?B?T3p3M3B6bVdpT09xenlBb1k4NFJiZDZUT3JLR2pPa1hnQmJYMDEyQ21qQWkx?=
+ =?utf-8?B?Rk0vNUhlaTJSY05Id3VvdUNTN2IwN0c1b0YrMnVzUUh6U3lpa2RCMTFVcml3?=
+ =?utf-8?B?MFlnVWgvV1p2OUxmY0NaVWtOd1FiNkN5ZkVDL2VVcExmY0tCSnBwTGxJTUlB?=
+ =?utf-8?Q?67ys=3D?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ac8a06-b6df-4227-7269-08dbe1651db3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82d1c278-fbc3-4269-e334-08dbe165271d
 X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 20:47:41.0319
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2023 20:47:56.8328
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k5igKRa+qa+N5Gh0Gb5fZiLiv3YpjfsaC/WOdnU5VaNhxItA6dBqw0vdWLmVxgIj
+X-MS-Exchange-CrossTenant-UserPrincipalName: b6vlbrn1zgwzMXxU5guJ3mrP/yPJ5g9yNNNpa9R45xRHEeE4TJyGiUJrKJjmElyS
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4282
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+
 
 On 10/25/23 13:03, James Morse wrote:
-> Depending on the number of monitors available, Arm's MPAM may need to
-> allocate a monitor prior to reading the counter value. Allocating a
-> contended resource may involve sleeping.
+> The rdt_enable_key is switched when resctrl is mounted, and used to
+> prevent a second mount of the filesystem. It also enables the
+> architecture's context switch code.
 > 
-> add_rmid_to_limbo() calls resctrl_arch_rmid_read() for multiple domains,
-> the allocation should be valid for all domains.
-
-This above sentence does not look correct after your previous patch [patch
-14].  You removed  resctrl_arch_rmid_read() from add_rmid_to_limbo().
-
-Otherwise looks good.
-
+> This requires another architecture to have the same set of static-keys,
+> as resctrl depends on them too. The existing users of these static-keys
+> are implicitly also checking if the filesystem is mounted.
 > 
-> __check_limbo() and mon_event_count() each make multiple calls to
-> resctrl_arch_rmid_read(), to avoid extra work on contended systems,
-> the allocation should be valid for multiple invocations of
-> resctrl_arch_rmid_read().
+> Make the resctrl_mounted checks explicit: resctrl can keep track of
+> whether it has been mounted once. This doesn't need to be combined with
+> whether the arch code is context switching the CLOSID.
 > 
-> Add arch hooks for this allocation, which need calling before
-> resctrl_arch_rmid_read(). The allocated monitor is passed to
-> resctrl_arch_rmid_read(), then freed again afterwards. The helper
-> can be called on any CPU, and can sleep.
+> rdt_mon_enable_key is never used just to test that resctrl is mounted,
+> but does also have this implication. Add a resctrl_mounted to all uses
+> of rdt_mon_enable_key. This will allow rdt_mon_enable_key to be swapped
+> with a helper in a subsequent patch.
+> 
+> This will allow the static-key changing to be moved behind resctrl_arch_
+> calls.
 > 
 > Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 > Tested-by: Peter Newman <peternewman@google.com>
@@ -164,209 +161,141 @@ Otherwise looks good.
 > Signed-off-by: James Morse <james.morse@arm.com>
 
 Reviewed-by: Babu Moger <babu.moger@amd.com>
-
+> 
 > ---
 > Changes since v3:
->  * Expanded comment.
->  * Removed stray header include.
->  * Reworded commit message.
->  * Made ctx a void * instead of an int.
+>  * Removed a newline.
+>  * Rephrased commit message
 > 
 > Changes since v4:
->  * Used IS_ERR() in more places.
+>  * Rephrased comment.
 > 
-> Changes since v5:
->  * Pass the error back from mon_event_read() as -EINVAL/Unavailable.
->  * Add some ratelimited warnings when failing to allocate a mon context
-> 
-> Changes since v6:
->  * Added a newline.
+> No changes since v6
 > ---
->  arch/x86/include/asm/resctrl.h            | 11 +++++++
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  7 +++++
->  arch/x86/kernel/cpu/resctrl/internal.h    |  1 +
->  arch/x86/kernel/cpu/resctrl/monitor.c     | 35 +++++++++++++++++++++--
->  include/linux/resctrl.h                   |  5 +++-
->  5 files changed, 55 insertions(+), 4 deletions(-)
+>  arch/x86/kernel/cpu/resctrl/internal.h |  1 +
+>  arch/x86/kernel/cpu/resctrl/monitor.c  | 12 ++++++++++--
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 23 +++++++++++++++++------
+>  3 files changed, 28 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
-> index 1d274dbabc44..29c4cc343787 100644
-> --- a/arch/x86/include/asm/resctrl.h
-> +++ b/arch/x86/include/asm/resctrl.h
-> @@ -136,6 +136,17 @@ static inline u32 resctrl_arch_rmid_idx_encode(u32 ignored, u32 rmid)
->  	return rmid;
->  }
->  
-> +/* x86 can always read an rmid, nothing needs allocating */
-> +struct rdt_resource;
-> +static inline void *resctrl_arch_mon_ctx_alloc(struct rdt_resource *r, int evtid)
-> +{
-> +	might_sleep();
-> +	return NULL;
-> +};
-> +
-> +static inline void resctrl_arch_mon_ctx_free(struct rdt_resource *r, int evtid,
-> +					     void *ctx) { };
-> +
->  void resctrl_cpu_detect(struct cpuinfo_x86 *c);
->  
->  #else
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index d07f99245851..a033e8e32108 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -546,6 +546,11 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
->  	rr->d = d;
->  	rr->val = 0;
->  	rr->first = first;
-> +	rr->arch_mon_ctx = resctrl_arch_mon_ctx_alloc(r, evtid);
-> +	if (IS_ERR(rr->arch_mon_ctx)) {
-> +		rr->err = -EINVAL;
-> +		return;
-> +	}
->  
->  	cpu = cpumask_any_housekeeping(&d->cpu_mask);
->  
-> @@ -559,6 +564,8 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
->  		smp_call_function_any(&d->cpu_mask, mon_event_count, rr, 1);
->  	else
->  		smp_call_on_cpu(cpu, smp_mon_event_count, rr, false);
-> +
-> +	resctrl_arch_mon_ctx_free(r, evtid, rr->arch_mon_ctx);
->  }
->  
->  int rdtgroup_mondata_show(struct seq_file *m, void *arg)
 > diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 33e24fcc8dd0..bb07b9b01e36 100644
+> index bb07b9b01e36..5ce49503fcd8 100644
 > --- a/arch/x86/kernel/cpu/resctrl/internal.h
 > +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -138,6 +138,7 @@ struct rmid_read {
->  	bool			first;
->  	int			err;
->  	u64			val;
-> +	void			*arch_mon_ctx;
->  };
+> @@ -145,6 +145,7 @@ extern bool rdt_alloc_capable;
+>  extern bool rdt_mon_capable;
+>  extern unsigned int rdt_mon_features;
+>  extern struct list_head resctrl_schema_all;
+> +extern bool resctrl_mounted;
 >  
->  extern bool rdt_alloc_capable;
+>  enum rdt_group_type {
+>  	RDTCTRL_GROUP = 0,
 > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index 409817b0ae2c..1ca8db8c82cc 100644
+> index 1ca8db8c82cc..843df6f64e0e 100644
 > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
 > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -269,7 +269,7 @@ static u64 mbm_overflow_count(u64 prev_msr, u64 cur_msr, unsigned int width)
+> @@ -837,7 +837,11 @@ void mbm_handle_overflow(struct work_struct *work)
 >  
->  int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->  			   u32 unused, u32 rmid, enum resctrl_event_id eventid,
-> -			   u64 *val)
-> +			   u64 *val, void *ignored)
->  {
->  	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
->  	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
-> @@ -324,9 +324,17 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
->  	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
->  	struct rmid_entry *entry;
->  	u32 idx, cur_idx = 1;
-> +	void *arch_mon_ctx;
->  	bool rmid_dirty;
->  	u64 val = 0;
+>  	mutex_lock(&rdtgroup_mutex);
 >  
-> +	arch_mon_ctx = resctrl_arch_mon_ctx_alloc(r, QOS_L3_OCCUP_EVENT_ID);
-> +	if (IS_ERR(arch_mon_ctx)) {
-> +		pr_warn_ratelimited("Failed to allocate monitor context: %ld",
-> +				    PTR_ERR(arch_mon_ctx));
-> +		return;
-> +	}
+> -	if (!static_branch_likely(&rdt_mon_enable_key))
+> +	/*
+> +	 * If the filesystem has been unmounted this work no longer needs to
+> +	 * run.
+> +	 */
+> +	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
+>  		goto out_unlock;
+>  
+>  	r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+> @@ -870,7 +874,11 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
+>  	unsigned long delay = msecs_to_jiffies(delay_ms);
+>  	int cpu;
+>  
+> -	if (!static_branch_likely(&rdt_mon_enable_key))
+> +	/*
+> +	 * When a domain comes online there is no guarantee the filesystem is
+> +	 * mounted. If not, there is no need to catch counter overflow.
+> +	 */
+> +	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
+>  		return;
+>  	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
+>  	dom->mbm_work_cpu = cpu;
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index fe6dfea471f2..9ce1f981c8e1 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -42,6 +42,9 @@ LIST_HEAD(rdt_all_groups);
+>  /* list of entries for the schemata file */
+>  LIST_HEAD(resctrl_schema_all);
+>  
+> +/* The filesystem can only be mounted once. */
+> +bool resctrl_mounted;
 > +
+>  /* Kernel fs node for "info" directory under root */
+>  static struct kernfs_node *kn_info;
+>  
+> @@ -881,7 +884,7 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
+>  	mutex_lock(&rdtgroup_mutex);
+>  
+>  	/* Return empty if resctrl has not been mounted. */
+> -	if (!static_branch_unlikely(&rdt_enable_key)) {
+> +	if (!resctrl_mounted) {
+>  		seq_puts(s, "res:\nmon:\n");
+>  		goto unlock;
+>  	}
+> @@ -2613,7 +2616,7 @@ static int rdt_get_tree(struct fs_context *fc)
 >  	/*
->  	 * Skip RMID 0 and start from RMID 1 and check all the RMIDs that
->  	 * are marked as busy for occupancy < threshold. If the occupancy
-> @@ -340,7 +348,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
->  
->  		entry = __rmid_entry(idx);
->  		if (resctrl_arch_rmid_read(r, d, entry->closid, entry->rmid,
-> -					   QOS_L3_OCCUP_EVENT_ID, &val)) {
-> +					   QOS_L3_OCCUP_EVENT_ID, &val,
-> +					   arch_mon_ctx)) {
->  			rmid_dirty = true;
->  		} else {
->  			rmid_dirty = (val >= resctrl_rmid_realloc_threshold);
-> @@ -353,6 +362,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
->  		}
->  		cur_idx = idx + 1;
+>  	 * resctrl file system can only be mounted once.
+>  	 */
+> -	if (static_branch_unlikely(&rdt_enable_key)) {
+> +	if (resctrl_mounted) {
+>  		ret = -EBUSY;
+>  		goto out;
 >  	}
-> +
-> +	resctrl_arch_mon_ctx_free(r, QOS_L3_OCCUP_EVENT_ID, arch_mon_ctx);
->  }
+> @@ -2674,8 +2677,10 @@ static int rdt_get_tree(struct fs_context *fc)
+>  	if (rdt_mon_capable)
+>  		static_branch_enable_cpuslocked(&rdt_mon_enable_key);
 >  
->  bool has_busy_rmid(struct rdt_domain *d)
-> @@ -533,7 +544,7 @@ static int __mon_event_count(u32 closid, u32 rmid, struct rmid_read *rr)
->  	}
+> -	if (rdt_alloc_capable || rdt_mon_capable)
+> +	if (rdt_alloc_capable || rdt_mon_capable) {
+>  		static_branch_enable_cpuslocked(&rdt_enable_key);
+> +		resctrl_mounted = true;
+> +	}
 >  
->  	rr->err = resctrl_arch_rmid_read(rr->r, rr->d, closid, rmid, rr->evtid,
-> -					 &tval);
-> +					 &tval, rr->arch_mon_ctx);
->  	if (rr->err)
->  		return rr->err;
+>  	if (is_mbm_enabled()) {
+>  		r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
+> @@ -2949,6 +2954,7 @@ static void rdt_kill_sb(struct super_block *sb)
+>  	static_branch_disable_cpuslocked(&rdt_alloc_enable_key);
+>  	static_branch_disable_cpuslocked(&rdt_mon_enable_key);
+>  	static_branch_disable_cpuslocked(&rdt_enable_key);
+> +	resctrl_mounted = false;
+>  	kernfs_kill_sb(sb);
+>  	mutex_unlock(&rdtgroup_mutex);
+>  	cpus_read_unlock();
+> @@ -3918,7 +3924,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
+>  	 * If resctrl is mounted, remove all the
+>  	 * per domain monitor data directories.
+>  	 */
+> -	if (static_branch_unlikely(&rdt_mon_enable_key))
+> +	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
+>  		rmdir_mondata_subdir_allrdtgrp(r, d->id);
 >  
-> @@ -744,11 +755,27 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
->  	if (is_mbm_total_enabled()) {
->  		rr.evtid = QOS_L3_MBM_TOTAL_EVENT_ID;
->  		rr.val = 0;
-> +		rr.arch_mon_ctx = resctrl_arch_mon_ctx_alloc(rr.r, rr.evtid);
-> +		if (IS_ERR(rr.arch_mon_ctx)) {
-> +			pr_warn_ratelimited("Failed to allocate monitor context: %ld",
-> +					    PTR_ERR(rr.arch_mon_ctx));
-> +			return;
-> +		}
-> +
->  		__mon_event_count(closid, rmid, &rr);
-> +
-> +		resctrl_arch_mon_ctx_free(rr.r, rr.evtid, rr.arch_mon_ctx);
->  	}
->  	if (is_mbm_local_enabled()) {
->  		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
->  		rr.val = 0;
-> +		rr.arch_mon_ctx = resctrl_arch_mon_ctx_alloc(rr.r, rr.evtid);
-> +		if (IS_ERR(rr.arch_mon_ctx)) {
-> +			pr_warn_ratelimited("Failed to allocate monitor context: %ld",
-> +					    PTR_ERR(rr.arch_mon_ctx));
-> +			return;
-> +		}
-> +
->  		__mon_event_count(closid, rmid, &rr);
+>  	if (is_mbm_enabled())
+> @@ -3995,8 +4001,13 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
+>  	if (is_llc_occupancy_enabled())
+>  		INIT_DELAYED_WORK(&d->cqm_limbo, cqm_handle_limbo);
 >  
->  		/*
-> @@ -758,6 +785,8 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
->  		 */
->  		if (is_mba_sc(NULL))
->  			mbm_bw_count(closid, rmid, &rr);
-> +
-> +		resctrl_arch_mon_ctx_free(rr.r, rr.evtid, rr.arch_mon_ctx);
->  	}
->  }
+> -	/* If resctrl is mounted, add per domain monitor data directories. */
+> -	if (static_branch_unlikely(&rdt_mon_enable_key))
+> +	/*
+> +	 * If the filesystem is not mounted then only the default resource group
+> +	 * exists. Creation of its directories is deferred until mount time
+> +	 * by rdt_get_tree() calling mkdir_mondata_all().
+> +	 * If resctrl is mounted, add per domain monitor data directories.
+> +	 */
+> +	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
+>  		mkdir_mondata_subdir_allrdtgrp(r, d);
 >  
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 8649fc84aac2..bf460c912bf5 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -235,6 +235,9 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
->   * @rmid:		rmid of the counter to read.
->   * @eventid:		eventid to read, e.g. L3 occupancy.
->   * @val:		result of the counter read in bytes.
-> + * @arch_mon_ctx:	An architecture specific value from
-> + *			resctrl_arch_mon_ctx_alloc(), for MPAM this identifies
-> + *			the hardware monitor allocated for this read request.
->   *
->   * Some architectures need to sleep when first programming some of the counters.
->   * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
-> @@ -248,7 +251,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
->   */
->  int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->  			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
-> -			   u64 *val);
-> +			   u64 *val, void *arch_mon_ctx);
->  
->  /**
->   * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
+>  	return 0;
 
 -- 
 Thanks
