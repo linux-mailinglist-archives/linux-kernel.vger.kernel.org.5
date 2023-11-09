@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8517E6E48
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364087E6E4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 17:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343808AbjKIQIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 11:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        id S232101AbjKIQLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 11:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbjKIQIg (ORCPT
+        with ESMTP id S229914AbjKIQLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 11:08:36 -0500
+        Thu, 9 Nov 2023 11:11:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB2A324A;
-        Thu,  9 Nov 2023 08:08:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B540BC433BB;
-        Thu,  9 Nov 2023 16:08:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0730F9
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 08:11:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA071C433C7;
+        Thu,  9 Nov 2023 16:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699546114;
-        bh=9jv2+syvODBbcmGY4ew2QNcGO1aZvABUK26yZSJvayg=;
+        s=k20201202; t=1699546261;
+        bh=C7jR2LQ8Z/vOJmqohoUAFoWt6yaYYGfydMvsWCPU5Xc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=an4/usvbiRel89q01Pnvd+TES/B31/7WCTra21aJC2vR167RVrBTD0T4l0Np+n4v2
-         EbNHWbE4mRlTd5664QNTBac6vz4tQNjuUPAC3mzSXSGjwmxfFbC0EtztrMUvvPWYxz
-         sWh1REN/5Ta35snZBzzhuRnh6NPnaQUCGtFqSS6jbo4+qkTAM968xLrAL3uV5ktTpn
-         y3QxjKJ6GsVIlGinqAPCFIpiDBiVj/TNhytdxD8mN4Z0u36nPI2e4kHizhl+ga9hTX
-         YcrNLvLA/u2tD3L89PolcPCLJ71qSrC12ls7rhoKQqiMWBmhKAiZSNIRpl39WLT7qF
-         OYkbTreIzsQaA==
-Date:   Thu, 9 Nov 2023 08:08:31 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
-        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
-        codalist@telemann.coda.cs.cmu.edu
-Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
- from ctl_table array
-Message-ID: <20231109160831.GA1933@sol.localdomain>
-References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
- <CGME20231108034239eucas1p2e5dacae548e47694184df217ee168da9@eucas1p2.samsung.com>
- <20231108034231.GB2482@sol.localdomain>
- <20231109160040.bahkcsp44t5xu7qo@localhost>
+        b=DroV/pppoEy9af18cjZfiWHM5mA82YjI/c8VWbbVOrCvkb1pUPQqxzUpFTVbxPDj5
+         WMvVyGBbHB2E8u4q6tZRslFV1677Q8B7+Gp3bTDeX++w8xCBiI/cCM/Mr9D5KVqgNz
+         vsJ4/k7xBZx2Sr4CZXDMaPEvQNW3e5LJkWluClpd0k/5zSaZuIjbRIhdinOU9lvjP+
+         wWtS/03iQNjKPOpkFjPYrUhebm7vnyVI3EbcNVvzA63Fv3c/Z9ozvOHRlCleBJckwm
+         4gV+lZEDID3DIRLqFssfWI6ffhsVvm4BTGaEcQI/Fot4m7rQ0luQPnAk/20/uUQ8fI
+         Xxcq+sRbD7sqA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0BECC40094; Thu,  9 Nov 2023 13:10:59 -0300 (-03)
+Date:   Thu, 9 Nov 2023 13:10:58 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 12/53] perf bpf: Don't synthesize BPF events when
+ disabled
+Message-ID: <ZU0Ekh3mrHZImqqk@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-13-irogers@google.com>
+ <ZUuz/8EC0orXCffn@kernel.org>
+ <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231109160040.bahkcsp44t5xu7qo@localhost>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW4ftvoUFnNfcZgBg7=SeaHmev7roFnix=+c+zSq3LawFQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 05:00:40PM +0100, Joel Granados wrote:
-> > >  static void __init fsverity_init_sysctl(void)
-> > >  {
-> > > +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> > >  	fsverity_sysctl_header = register_sysctl("fs/verity",
-> > >  						 fsverity_sysctl_table);
-> > > +#else
-> > > +	fsverity_sysctl_header = register_sysctl_sz("fs/verity",
-> > > +						 fsverity_sysctl_table, 0);
-> > > +#endif
-> > >  	if (!fsverity_sysctl_header)
-> > >  		panic("fsverity sysctl registration failed");
-> > 
-> > This does not make sense, and it causes a build error when CONFIG_FS_VERITY=y
-> > and CONFIG_FS_VERITY_BUILTIN_SIGNATURES=n.
-> > 
-> > I think all you need to do is delete the sentinel element, the same as
-> > everywhere else.  I just tested it, and it works fine.
-> I found the reason why I added the CONFIG_FS_VERITY_BUILTIN_SIGNATURES
-> here: it is related to
-> https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
-> where the directory is registered with an element only if
-> CONFIG_FS_VERITY_BUILTIN_SIGNATURES is defined. I had forgotten, but I
-> even asked for a clarification on the patch :).
+Em Wed, Nov 08, 2023 at 03:03:15PM -0800, Song Liu escreveu:
+> On Wed, Nov 8, 2023 at 8:15 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > Em Thu, Nov 02, 2023 at 10:56:54AM -0700, Ian Rogers escreveu:
+> > > If BPF sideband events are disabled on the command line, don't
+> > > synthesize BPF events too.
+> >
+> >
+> > Interesting, in 71184c6ab7e60fd5 ("perf record: Replace option
+> > --bpf-event with --no-bpf-event") we checked that, but only down at
+> > perf_event__synthesize_one_bpf_prog(), where we have:
+> >
+> >         if (!opts->no_bpf_event) {
+> >                 /* Synthesize PERF_RECORD_BPF_EVENT */
+> >                 *bpf_event = (struct perf_record_bpf_event)
+> >
+> >
+> > So we better remove that, now redundant check? I'll apply your patch as
+> > is and then we can remove that other check.
+> >
+> > Song, can I have your Acked-by or Reviewed-by, please?
+> >
+> > - Arnaldo
+> >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> I see that that patch made it to v6.6. So the solution is not to remove
-> the CONFIG_FS_VERITY_BUILTIN_SIGNATURES, but for me to rebase on top of
-> a more up to date base.
+> Good catch!
 > 
-> @Eric: Please get back to me if the patch in
-> https://lore.kernel.org/all/20230705212743.42180-3-ebiggers@kernel.org/
-> is no longer relevant.
-> 
-> Best.
+> Acked-by: Song Liu <song@kernel.org>
 
-Yes, that patch was merged in 6.6.  I don't think it really matters here though,
-other than the fact that it moved the code to a different file.  I believe all
-you need to do is remove the sentinel element, the same as anywhere else:
+Thanks, applied the patch with your Acked-by, will revisit this after
+this gets published.
 
-diff --git a/fs/verity/init.c b/fs/verity/init.c
-index a29f062f6047b..b64a76b9ac362 100644
---- a/fs/verity/init.c
-+++ b/fs/verity/init.c
-@@ -24,7 +24,6 @@ static struct ctl_table fsverity_sysctl_table[] = {
- 		.extra2         = SYSCTL_ONE,
- 	},
- #endif
--	{ }
- };
- 
- static void __init fsverity_init_sysctl(void)
+- Arnaldo
