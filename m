@@ -2,174 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9C07E64BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7A7E64D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbjKIHvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S233217AbjKIH6K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Nov 2023 02:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbjKIHv3 (ORCPT
+        with ESMTP id S232778AbjKIH6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:51:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCDE2D5B;
-        Wed,  8 Nov 2023 23:51:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699516287; x=1731052287;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0cMfRpPIb3ZyoA5ygGU0b4uzcRMvInU28zeRmynKs4k=;
-  b=jF7VlWae7MlLgR9ywvrw2SGnkma5XaPq1/QTp6PmpY2NWiA2fNM4Exdu
-   ZpxOckuJyECJVG3m78tAKqZjcabXJhMzDD2TYQzRQDXoakvLf0sbv3iJw
-   pqCJ4HEVOmIZMS3Lq/u9DdKCWSmsEn+Q5yjyWb081/HnHRhSAxM3SiOIo
-   bJ7FtIIepX90axuPHRL9BGEQyBtub6EIgUSne/tEcl11UM0p54LHu8QCu
-   7MjZeSHOxr+ETTX7wuXP55gOVsQq28hBfGs9VIJ9nw0nMI1qy2avFSrng
-   YmbhOskhUd9hMLXJ73HxZob8Z913I52tlYrJNbGuZFP8Hmo4embQW1SmQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="370139107"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="370139107"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:51:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="739765343"
-X-IronPort-AV: E=Sophos;i="6.03,288,1694761200"; 
-   d="scan'208";a="739765343"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 23:51:23 -0800
-Message-ID: <93a3da96-2e36-4ee9-a384-9dcc28c9f4ba@linux.intel.com>
-Date:   Thu, 9 Nov 2023 15:51:21 +0800
+        Thu, 9 Nov 2023 02:58:08 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8040D270C;
+        Wed,  8 Nov 2023 23:58:06 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id AC0898086;
+        Thu,  9 Nov 2023 15:57:59 +0800 (CST)
+Received: from EXMBX161.cuchost.com (172.16.6.71) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 9 Nov
+ 2023 15:57:59 +0800
+Received: from [192.168.125.131] (113.72.144.54) by EXMBX161.cuchost.com
+ (172.16.6.71) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 9 Nov
+ 2023 15:57:59 +0800
+Message-ID: <7c2e9b70-201c-45f8-9871-a823cc2ded16@starfivetech.com>
+Date:   Thu, 9 Nov 2023 15:51:25 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 19/19] KVM: selftests: Test PMC virtualization with
- forced emulation
+Subject: Re: [PATCH v7 2/3] clocksource: Add JH7110 timer driver
 Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231108003135.546002-1-seanjc@google.com>
- <20231108003135.546002-20-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231108003135.546002-20-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
+References: <20231019053501.46899-1-xingyu.wu@starfivetech.com>
+ <20231019053501.46899-3-xingyu.wu@starfivetech.com>
+ <3f76f965-7c7b-109e-2ee0-3033e332e84b@linaro.org>
+ <bb819333-52d3-49fc-9bb9-1a227bd5ca8f@starfivetech.com>
+ <d0e70434-e273-4799-c5ec-bbee1b3f5cc7@linaro.org>
+ <540136d4-6f8f-49a6-80ff-cc621f2f462b@starfivetech.com>
+ <65c38717-3e0c-46d3-a124-29cae48f1a2e@linaro.org>
+ <72ad5029-42b2-481a-887f-8f6079d8859b@starfivetech.com>
+ <a8f0011c-5689-4071-b5e0-90bd6b7c66bc@linaro.org>
+ <b402eb4d-a770-4988-8274-8a2544362229@starfivetech.com>
+ <1dd3d765-c583-4db9-a0aa-303bfcf871db@linaro.org>
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <1dd3d765-c583-4db9-a0aa-303bfcf871db@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [113.72.144.54]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX161.cuchost.com
+ (172.16.6.71)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/11/8 17:10, Daniel Lezcano wrote:
+> On 08/11/2023 04:45, Xingyu Wu wrote:
+>> On 2023/11/2 22:29, Daniel Lezcano wrote:
+> 
+> [ ... ]
+> 
+>> Thanks. The riscv-timer has a clocksource with a higher rating but a
+>> clockevent with lower rating[1] than jh7110-timer. I tested the
+>> jh7110-timer as clockevent and flagged as one shot, which could do
+>> some of the works instead of riscv-timer. And the current_clockevent
+>> changed to jh7110-timer.
+>>
+>> Because the jh7110-timer works as clocksource with lower rating and
+>> only will be used as global timer at CPU idle time. Is it necessary
+>> to be registered as clocksource? If not, should it just be registered
+>> as clockevent?
+> 
+> Yes, you can register the clockevent without the clocksource.
+> 
+> You mentioned the JH7110 has a better rating than the CPU architected timers. The rating is there to "choose" the best timer, so it is up to the author of the driver check against which timers it compares on the platform.
+> 
+> Usually, CPU timers are the best.
+> 
+> It is surprising the timer-riscv has a so low rating. You may double check if jh7110 is really better. If it is the case, then implementing a clockevent per cpu would make more sense, otherwise one clockevent as a global timer is enough.
+> 
+> Unused clocksource, clockevents should be stopped in case the firmware let them in a undetermined state.
+> 
+> 
 
-On 11/8/2023 8:31 AM, Sean Christopherson wrote:
-> Extend the PMC counters test to use forced emulation to verify that KVM
-> emulates counter events for instructions retired and branches retired.
-> Force emulation for only a subset of the measured code to test that KVM
-> does the right thing when mixing perf events with emulated events.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 44 +++++++++++++------
->   1 file changed, 30 insertions(+), 14 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index d775cc7e8fab..09332b3c0a69 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -21,6 +21,7 @@
->   
->   static uint8_t kvm_pmu_version;
->   static bool kvm_has_perf_caps;
-> +static bool is_forced_emulation_enabled;
->   
->   static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
->   						  void *guest_code,
-> @@ -34,6 +35,7 @@ static struct kvm_vm *pmu_vm_create_with_one_vcpu(struct kvm_vcpu **vcpu,
->   	vcpu_init_descriptor_tables(*vcpu);
->   
->   	sync_global_to_guest(vm, kvm_pmu_version);
-> +	sync_global_to_guest(vm, is_forced_emulation_enabled);
->   
->   	/*
->   	 * Set PERF_CAPABILITIES before PMU version as KVM disallows enabling
-> @@ -138,37 +140,50 @@ static void guest_assert_event_count(uint8_t idx,
->    * If CLFUSH{,OPT} is supported, flush the cacheline containing (at least) the
->    * start of the loop to force LLC references and misses, i.e. to allow testing
->    * that those events actually count.
-> + *
-> + * If forced emulation is enabled (and specified), force emulation on a subset
-> + * of the measured code to verify that KVM correctly emulates instructions and
-> + * branches retired events in conjunction with hardware also counting said
-> + * events.
->    */
-> -#define GUEST_MEASURE_EVENT(_msr, _value, clflush)				\
-> +#define GUEST_MEASURE_EVENT(_msr, _value, clflush, FEP)				\
->   do {										\
->   	__asm__ __volatile__("wrmsr\n\t"					\
->   			     clflush "\n\t"					\
->   			     "mfence\n\t"					\
->   			     "1: mov $" __stringify(NUM_BRANCHES) ", %%ecx\n\t"	\
-> -			     "loop .\n\t"					\
-> -			     "mov %%edi, %%ecx\n\t"				\
-> -			     "xor %%eax, %%eax\n\t"				\
-> -			     "xor %%edx, %%edx\n\t"				\
-> +			     FEP "loop .\n\t"					\
-> +			     FEP "mov %%edi, %%ecx\n\t"				\
-> +			     FEP "xor %%eax, %%eax\n\t"				\
-> +			     FEP "xor %%edx, %%edx\n\t"				\
->   			     "wrmsr\n\t"					\
->   			     :: "a"((uint32_t)_value), "d"(_value >> 32),	\
->   				"c"(_msr), "D"(_msr)				\
->   	);									\
->   } while (0)
->   
-> +#define GUEST_TEST_EVENT(_idx, _event, _pmc, _pmc_msr, _ctrl_msr, _value, FEP)	\
-> +do {										\
-> +	wrmsr(pmc_msr, 0);							\
-> +										\
-> +	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))				\
-> +		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflushopt 1f", FEP);	\
-> +	else if (this_cpu_has(X86_FEATURE_CLFLUSH))				\
-> +		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "clflush 1f", FEP);	\
-> +	else									\
-> +		GUEST_MEASURE_EVENT(_ctrl_msr, _value, "nop", FEP);		\
-> +										\
-> +	guest_assert_event_count(_idx, _event, _pmc, _pmc_msr);			\
-> +} while (0)
-> +
->   static void __guest_test_arch_event(uint8_t idx, struct kvm_x86_pmu_feature event,
->   				    uint32_t pmc, uint32_t pmc_msr,
->   				    uint32_t ctrl_msr, uint64_t ctrl_msr_value)
->   {
-> -	wrmsr(pmc_msr, 0);
-> +	GUEST_TEST_EVENT(idx, event, pmc, pmc_msr, ctrl_msr, ctrl_msr_value, "");
->   
-> -	if (this_cpu_has(X86_FEATURE_CLFLUSHOPT))
-> -		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflushopt 1f");
-> -	else if (this_cpu_has(X86_FEATURE_CLFLUSH))
-> -		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "clflush 1f");
-> -	else
-> -		GUEST_MEASURE_EVENT(ctrl_msr, ctrl_msr_value, "nop");
-> -
-> -	guest_assert_event_count(idx, event, pmc, pmc_msr);
-> +	if (is_forced_emulation_enabled)
-> +		GUEST_TEST_EVENT(idx, event, pmc, pmc_msr, ctrl_msr, ctrl_msr_value, KVM_FEP);
->   }
->   
->   #define X86_PMU_FEATURE_NULL						\
-> @@ -545,6 +560,7 @@ int main(int argc, char *argv[])
->   
->   	kvm_pmu_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION);
->   	kvm_has_perf_caps = kvm_cpu_has(X86_FEATURE_PDCM);
-> +	is_forced_emulation_enabled = kvm_is_forced_emulation_enabled();
->   
->   	test_intel_counters();
->   
+The interrupts of jh7110-timer each channel are global interrupts like SPI(Shared Peripheral Interrupt) not PPI (Private Peripheral Interrupt). They are up to PLIC to select which core to respond to. So it is hard to implement a clockevent per cpu core. I tested this with request_percpu_irq() and it failed.
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+I think it is enough to implement a clockevent as a global timer. Thank you for your advice.
 
+Best regards,
+Xingyu Wu
+
+>> [1
+>> https://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git/tree/drivers/clocksource/timer-riscv.c#n45
+>>
+>>  Thanks, Xingyu Wu
+> 
 
