@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBEA7E65C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16E17E65C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbjKIIy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 03:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        id S233903AbjKIIzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233801AbjKIIy6 (ORCPT
+        with ESMTP id S229697AbjKIIzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 03:54:58 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC851A4;
-        Thu,  9 Nov 2023 00:54:54 -0800 (PST)
-X-UUID: 3900c660da5e4cf2b348184e57410291-20231109
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:cda4ced0-dae3-4949-9d13-c6be1de23bf2,IP:15,
-        URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-15
-X-CID-INFO: VERSION:1.1.32,REQID:cda4ced0-dae3-4949-9d13-c6be1de23bf2,IP:15,UR
-        L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:9e98dd5f-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:231109163617DP84HWM9,BulkQuantity:1,Recheck:0,SF:66|38|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 3900c660da5e4cf2b348184e57410291-20231109
-X-User: heminhong@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <heminhong@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 187487715; Thu, 09 Nov 2023 16:54:44 +0800
-From:   heminhong <heminhong@kylinos.cn>
-To:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        heminhong <heminhong@kylinos.cn>
-Subject: [PATCH] tools/gpio: prevent resource leak
-Date:   Thu,  9 Nov 2023 16:54:19 +0800
-Message-Id: <20231109085419.84948-1-heminhong@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Thu, 9 Nov 2023 03:55:35 -0500
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBCD111
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:55:33 -0800 (PST)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7b625ed7208so224694241.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699520132; x=1700124932; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LW/Fx883nWIRZKyM7HAb/UStNZnvbG60FpXDwf7xK7Y=;
+        b=miA5Ux6BeoLkFdLSGXU2Gd0DrDaH5LsQLpxIbyvN2jV6Teh/ZNtmOJ599pe0EGfy9X
+         mX4dfVVsLeMPJlvjGtNr2mDvltwSZ+jOHBmNg+VQh9KyH/PL/QEi2VJU9XMH8xyAzAyu
+         jSgTHY+GFRl7Vsr+LgCkIHMbClE6iV1rHNloImwdpwRopWmzKPEGU5xRPRHzPx8WbyuK
+         I/iVowS9lnn4kBu0ebdTtxynUAVaR9tiJuhe0RRjL75xGQrg0gDiNRVOXRIxMezvafLj
+         kCWXLJTQBJB/5mjbjp4XRABK4KrmLQ6aWrcWq8oEKqxDjFDP57lWU61fRPbDQ7Pzs17h
+         TrxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699520132; x=1700124932;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LW/Fx883nWIRZKyM7HAb/UStNZnvbG60FpXDwf7xK7Y=;
+        b=iuOvSjK1Py+UyGf8PUj6rPIHOSqiu09NBwrrEhZiC9O+4Zr0gxRnEfykJyPJ1QAO/x
+         LSMNs42r2AY5lXQgtHn9/XudjVIcbBXIdAJtZ6k8olSRIk+h3qkhN0T7yZ/L3n+MsnYG
+         5ZFt3ClAsg8hMK6NMi8PXQxxMoXVkSY1UNRiEHiowRcZc1UmeyebUNiA2HxF1xrtJ0ge
+         nQnN+IfC6dn2t0K/Yag8He8MpD505VnkwS0fiS70YHNtPtczhKzArLj6VZ1npE5ZU6S8
+         RVQoOwhy3k6beuqeUQZgtzuz5nV3Ax9bqhLF+IvJhw8uzG+mhrkKUfQAXNSChDk3NP/a
+         mpyg==
+X-Gm-Message-State: AOJu0YwFDhIMSOfOBb0QLbyDkVKo961Vwa3gdpLih7Zfky80AcjCr8l0
+        j5A+q43HX2zK447QhpM7PtAeN88hgXhzxyyBoxeQMg==
+X-Google-Smtp-Source: AGHT+IFw1OMfZ7dogx5GHZ5PY3FJDFYi1Xj9fX4uGT6v90sIMw1YGf7XiATC8vKEmYII9um0nqZKnx8f2F+kXqvVgVE=
+X-Received: by 2002:a67:c282:0:b0:45f:65e9:f070 with SMTP id
+ k2-20020a67c282000000b0045f65e9f070mr3952209vsj.12.1699520132149; Thu, 09 Nov
+ 2023 00:55:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-35-pbonzini@redhat.com>
+ <CAF7b7mpmuYLTY6OQfRRoOryfO-2e1ZumQ6SCQDHHPD5XFyhFTQ@mail.gmail.com>
+In-Reply-To: <CAF7b7mpmuYLTY6OQfRRoOryfO-2e1ZumQ6SCQDHHPD5XFyhFTQ@mail.gmail.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Thu, 9 Nov 2023 08:54:55 +0000
+Message-ID: <CA+EHjTxxBUHX9Rg=vZ-UTWHUPKf0ujTsOsynueG7JAMt=GZQ0A@mail.gmail.com>
+Subject: Re: [PATCH 34/34] KVM: selftests: Add a memory region subtest to
+ validate invalid flags
+To:     Anish Moorthy <amoorthy@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the main() function, the open() function is used to open the file.
-When the file is successfully opened, fd is used to interact with the file,
-but the fd is not closed, it will cause resource leak.
+Hi Anish,
 
-Signed-off-by: heminhong <heminhong@kylinos.cn>
----
- tools/gpio/gpio-watch.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+On Thu, Nov 9, 2023 at 1:08=E2=80=AFAM Anish Moorthy <amoorthy@google.com> =
+wrote:
+>
+> Applying [1] and [2] reveals that this also breaks non-x86 builds- the
+> MEM_REGION_GPA/SLOT definitions are guarded behind an #ifdef
+> __x86_64__, while the usages introduced here aren't.
+>
+> Should
+>
+> On Sun, Nov 5, 2023 at 8:35=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.com=
+> wrote:
+> >
+> > +       test_invalid_memory_region_flags();
+>
+> be #ifdef'd, perhaps? I'm not quite sure what the intent is.
+>
+> Side note: I wasn't able to get [2] to apply by copy-pasting the diff
+> and trying "git apply", and that was after checking out the relevant
+> commit. Eventually I just did it manually. If anyone can successfully
+> apply it, please let me know what you did so I can see what I was
+> doing wrong :)
 
-diff --git a/tools/gpio/gpio-watch.c b/tools/gpio/gpio-watch.c
-index 41e76d244192..162c2a8f07c8 100644
---- a/tools/gpio/gpio-watch.c
-+++ b/tools/gpio/gpio-watch.c
-@@ -42,11 +42,14 @@ int main(int argc, char **argv)
- 		memset(&req, 0, sizeof(req));
- 
- 		req.offset = strtoul(argv[j], &end, 0);
--		if (*end != '\0')
-+		if (*end != '\0') {
-+			close(fd);
- 			goto err_usage;
-+		}
- 
- 		ret = ioctl(fd, GPIO_V2_GET_LINEINFO_WATCH_IOCTL, &req);
- 		if (ret) {
-+			close(fd);
- 			perror("unable to set up line watch");
- 			return EXIT_FAILURE;
- 		}
-@@ -58,6 +61,7 @@ int main(int argc, char **argv)
- 	for (;;) {
- 		ret = poll(&pfd, 1, 5000);
- 		if (ret < 0) {
-+			close(pfd.fd);
- 			perror("error polling the linechanged fd");
- 			return EXIT_FAILURE;
- 		} else if (ret > 0) {
-@@ -66,7 +70,7 @@ int main(int argc, char **argv)
- 			if (rd < 0 || rd != sizeof(chg)) {
- 				if (rd != sizeof(chg))
- 					errno = EIO;
--
-+				close(pfd.fd);
- 				perror("error reading line change event");
- 				return EXIT_FAILURE;
- 			}
-@@ -82,6 +86,7 @@ int main(int argc, char **argv)
- 				event = "config changed";
- 				break;
- 			default:
-+				close(pfd.fd);
- 				fprintf(stderr,
- 					"invalid event type received from the kernel\n");
- 				return EXIT_FAILURE;
-@@ -91,7 +96,7 @@ int main(int argc, char **argv)
- 			       chg.info.offset, event, (uint64_t)chg.timestamp_ns);
- 		}
- 	}
--
-+	close(pfd.fd);
- 	return 0;
- 
- err_usage:
--- 
-2.25.1
+For me I applied the whole series as follows:
 
+Checkout kvm-x86-next-2023.11.01 (45b890f7689e) from
+https://github.com/kvm-x86/linux.git . Then use b4:
+b4 am -o -  20231105163040.14904-1-pbonzini@redhat.com  | git am -3
+
+Cheers,
+/fuad
+
+>
+> [1] https://lore.kernel.org/kvm/20231108233723.3380042-1-amoorthy@google.=
+com/
+> [2] https://lore.kernel.org/kvm/affca7a8-116e-4b0f-9edf-6cdc05ba65ca@redh=
+at.com/
