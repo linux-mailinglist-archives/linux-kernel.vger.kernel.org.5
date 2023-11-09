@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B1E7E6791
+	by mail.lfdr.de (Postfix) with ESMTP id CAD027E6792
 	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbjKIKOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S232889AbjKIKO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbjKIKOu (ORCPT
+        with ESMTP id S232978AbjKIKOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:14:50 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A7A2D6A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:14:48 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4094301d505so4322995e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:14:48 -0800 (PST)
+        Thu, 9 Nov 2023 05:14:52 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700DF2D73
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 02:14:50 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c7420d5a83so4633231fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 02:14:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699524887; x=1700129687; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4oi3jXI7vrHdw4Az1EYDzA4Gdmd91pOzyx51udMAAeQ=;
-        b=wjI3aL7we4IRiPtB+26llD3AWM9EwxK8+G400/9pCEgdB3JPQy8H00AwqmEAxoOIKK
-         Z2sDS04rPIhcCGhWv2hPfq2jkeju0TDQ6KifZ8djti/MqKpv5cFoDPfilLUNA/cpyasq
-         hJH/ahUO8qRSkMr44NrogArcgqDGvCsqWLgcpBn0vmcKSKHML1VV8kIg57qB/MhASOJD
-         UEMWj1saPS/kcBz5u4w/noU0CRVqIIkp/6kjrbUF4XRkW4uL+DAuOlPTfGeEzz1kNY3N
-         XqwiNCnQ28TphdYd7533kBS30gyC8PJeJ/t5TtAfPrRXY7GXylqUvGQdR19Dwd5a7R66
-         DbSw==
+        d=linaro.org; s=google; t=1699524889; x=1700129689; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UZHd4Q0/7Gj/HYpU63Kx8UoTWa/0lydYthjIniNUNCQ=;
+        b=N5uDv07ImQLBw5fxm/msYLJ+xQaGauZUKIw/cPOycO6TKtzNrHV5G5kS5k15hQqVmM
+         Un5Q8QVOGRdjKiXGO2cr2uIu3NrxDfbyZG/t0PfLnHrdo6GsOR6aG+bCWN7yvrz+bnee
+         taNuZ+1QEEujvmuhG+T0OsGLRrV/rj86DPlx3IhRdkGGnXDcfb3cUAUfc/3dgXmlSG6i
+         QqmLXjvA7zj6ifG3DiXF8fDYtpMbwAO/JrgA5aMjaWYh7xTuC9G+wxVJaK/pMBvMCtoU
+         60Ck4BVxjH5uNVPxqfJX0jsWKDw0rx8KneR2V0tGf2ClWfiu5KsQw1y6T0vd4CUiY/hi
+         xddw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699524887; x=1700129687;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4oi3jXI7vrHdw4Az1EYDzA4Gdmd91pOzyx51udMAAeQ=;
-        b=YQHBeIVEcgWgG8lHRmxz469oE/YGPypqYuQ74nR8QhIbGgQVlB/uGUl+3reIgo7lES
-         PfjAFlglNslYxQ62deVLit9H5B7yvXFGubJygD1Z1OmiUDjen+6FmbksCt6KFWwdq+2O
-         1ORSugoVIJqCEMfy1r3mw596PdlKqVwsLiq5SHATBYl7IZL5sRdNOXo63YRdvc4aTPB9
-         Zn4c3IR3XOek/e0Xi9U6DwLOYnt421BvTuwrwJp9nsoLmKwlaHImp6pePpKW8jWsJBYJ
-         WFNfNEaNbSPPpi26Tey1HVa3MOO83gQMBeCoyV7hf1pXyJZdemaNQrbyXsWYjTNk189X
-         wIGQ==
-X-Gm-Message-State: AOJu0Yyrb3A6TKNYUdKj9BbLXue4gKGIfhSRksCSVnImkqs1B5VNc5jT
-        DXuqmy9PbAbO79+HBZTLRUE6dg==
-X-Google-Smtp-Source: AGHT+IGLiZmuTGbMYyyqS0Ud9k4f2BHvLpElKnJiu++mYwxV1ds6E0Yux6gLdmYe3xpB+kvAcq0ZeA==
-X-Received: by 2002:a05:600c:20d:b0:408:fba2:f4bc with SMTP id 13-20020a05600c020d00b00408fba2f4bcmr4093547wmi.24.1699524886779;
-        Thu, 09 Nov 2023 02:14:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699524889; x=1700129689;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UZHd4Q0/7Gj/HYpU63Kx8UoTWa/0lydYthjIniNUNCQ=;
+        b=ghe5EGmf8kcuWZlIjwzgdZaH0W1l+7GenfYerL6PE2/wn6vkXWhwz5ImzqVAEEyDs0
+         QuEE5uMxCbgavyxy9T9IzFvEcICYZ0V7rSnA4A/0GrpxID54KzVVjz+YfBX7YvVAms7Y
+         ws0QtZ/KweWn4zGMBT66LV5oTAd79iY8beuRuxDH6taK+QY7I2f+HCoCX9A9MsaGbXfq
+         16oGJoH1Zyxxs44d72vnUwmgrEK4jDD24EZwY467VIT/2o9r577iZ4Znkcn+gtZvrNTu
+         tlPapqvD1B9JYWmKb9RIeWcR8i1iDf3LYRqfOSsZQELI4HUYysCYCoLpytIxRTrsX7YU
+         VJEg==
+X-Gm-Message-State: AOJu0Yx/pvM3DUcXsuvM8Gc9XupRnhnb0rrKzjbbkB85rvrwg0FmlYnx
+        CtCsnJYQC/9nlcNBH+CtZ/RPdA==
+X-Google-Smtp-Source: AGHT+IFzSGT/2ARlAkyBpCbVthGu2S6+dkq+V3FmAfhv1iZuIGqmYIvAERnuPKPypzZ1uKKlA6pX/w==
+X-Received: by 2002:a05:6512:36d3:b0:500:b553:c09e with SMTP id e19-20020a05651236d300b00500b553c09emr864687lfs.32.1699524888525;
+        Thu, 09 Nov 2023 02:14:48 -0800 (PST)
 Received: from vingu-book.. ([2a01:e0a:f:6020:26e5:c6da:63bc:dd99])
-        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b003fefb94ccc9sm1611816wmq.11.2023.11.09.02.14.45
+        by smtp.gmail.com with ESMTPSA id m17-20020a05600c4f5100b003fefb94ccc9sm1611816wmq.11.2023.11.09.02.14.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 02:14:46 -0800 (PST)
+        Thu, 09 Nov 2023 02:14:48 -0800 (PST)
 From:   Vincent Guittot <vincent.guittot@linaro.org>
 To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
         paul.walmsley@sifive.com, palmer@dabbelt.com,
@@ -66,99 +67,214 @@ To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
 Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
         ajones@ventanamicro.com, lftan@kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v6 0/7] consolidate and cleanup CPU capacity
-Date:   Thu,  9 Nov 2023 11:14:31 +0100
-Message-Id: <20231109101438.1139696-1-vincent.guittot@linaro.org>
+Subject: [PATCH v6 1/7] topology: Add a new arch_scale_freq_reference
+Date:   Thu,  9 Nov 2023 11:14:32 +0100
+Message-Id: <20231109101438.1139696-2-vincent.guittot@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231109101438.1139696-1-vincent.guittot@linaro.org>
+References: <20231109101438.1139696-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the 1st part of consolidating how the max compute capacity is
-used in the scheduler and how we calculate the frequency for a level of
-utilization.
+Create a new method to get a unique and fixed max frequency. Currently
+cpuinfo.max_freq or the highest (or last) state of performance domain are
+used as the max frequency when computing the frequency for a level of
+utilization but:
+- cpuinfo_max_freq can change at runtime. boost is one example of
+  such change.
+- cpuinfo.max_freq and last item of the PD can be different leading to
+  different results between cpufreq and energy model.
 
-Fix some unconsistancy when computing frequency for an utilization. There
-can be a mismatch between energy model and schedutil.
+We need to save the reference frequency that has been used when computing
+the CPUs capacity and use this fixed and coherent value to convert between
+frequency and CPU's capacity.
 
-Next step will be to make a difference between the original
-max compute capacity of a CPU and what is currently available when
-there is a capping applying forever (i.e. seconds or more).
+In fact, we already save the frequency that has been used when computing
+the capacity of each CPU. We extend the precision to save kHz instead of
+MHz currently and we modify the type to be aligned with other variables
+used when converting frequency to capacity and the other way.
 
-Changes since v5:
-- remove useless return in freq_inv_set_max_ratio()
-- Add tags
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+---
+ arch/arm/include/asm/topology.h   |  1 +
+ arch/arm64/include/asm/topology.h |  1 +
+ arch/riscv/include/asm/topology.h |  1 +
+ drivers/base/arch_topology.c      | 29 ++++++++++++++---------------
+ include/linux/arch_topology.h     |  7 +++++++
+ include/linux/sched/topology.h    |  8 ++++++++
+ 6 files changed, 32 insertions(+), 15 deletions(-)
 
-Changes since v4:
-- Capitalize the verb in subject
-- Remove usless parentheses in cppc_get_dmi_max_khz()
-- Use freq_ref pattern everywhere
-- Fix MHz / kHz units conversion for cppc_cpufreq
-- Move default definition of arch_scale_freq_ref() in
-  include/linux/sched/topology.h beside arch_scale_cpu_capacity
-  which faces similar default declaration behavior. This location covers
-  all cases with arch and CONFIG_* which was not the case with previous
-  attempts.
-
-Changes since v3:
-- Split patch 5 cpufreq/cppc
-- Fix topology_init_cpu_capacity_cppc() 
-- Fix init if AMU ratio
-- Added some tags
-
-Changes since v2:
-- Remove the 1st patch which has been queued in tip
-- Rework how to initialize the reference frequency for cppc_cpufreq and
-  change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
-- Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
-  of the AMU ratio to be done when intializing cpu capacity and
-  capacity_ref_freq
-- Added some tags
-
-Changes since v1:
-- Fix typos
-- Added changes in cpufreq to use arch_scale_freq_ref() when calling
-  arch_set_freq_scale (patch 3).
-- arch_scale_freq_ref() is always defined and returns 0 (as proposed
-  by Ionela) when not defined by the arch. This simplifies the code with
-  the addition of patch 3.
-- Simplify Energy Model which always uses arch_scale_freq_ref(). The
-  latter returns 0 when not defined by arch instead of last item of the 
-  perf domain. This is not a problem because the function is only defined
-  for compilation purpose in this case and we don't care about the
-  returned value. (patch 5)
-- Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
-- Added reviewed tag for patch 1 which got a minor change but not for
-  others as I did some changes which could make previous reviewed tag
-  no more relevant.
-
-Vincent Guittot (7):
-  topology: Add a new arch_scale_freq_reference
-  cpufreq: Use the fixed and coherent frequency for scaling capacity
-  cpufreq/schedutil: Use a fixed reference frequency
-  energy_model: Use a fixed reference frequency
-  cpufreq/cppc: Move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
-  cpufreq/cppc: Set the frequency used for computing the capacity
-  arm64/amu: Use capacity_ref_freq to set AMU ratio
-
- arch/arm/include/asm/topology.h   |   1 +
- arch/arm64/include/asm/topology.h |   1 +
- arch/arm64/kernel/topology.c      |  26 +++---
- arch/riscv/include/asm/topology.h |   1 +
- drivers/acpi/cppc_acpi.c          | 104 ++++++++++++++++++++++
- drivers/base/arch_topology.c      |  56 ++++++++----
- drivers/cpufreq/cppc_cpufreq.c    | 139 ++++--------------------------
- drivers/cpufreq/cpufreq.c         |   4 +-
- include/acpi/cppc_acpi.h          |   2 +
- include/linux/arch_topology.h     |   8 ++
- include/linux/cpufreq.h           |   1 +
- include/linux/energy_model.h      |   6 +-
- include/linux/sched/topology.h    |   8 ++
- kernel/sched/cpufreq_schedutil.c  |  26 +++++-
- 14 files changed, 224 insertions(+), 159 deletions(-)
-
+diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+index c7d2510e5a78..853c4f81ba4a 100644
+--- a/arch/arm/include/asm/topology.h
++++ b/arch/arm/include/asm/topology.h
+@@ -13,6 +13,7 @@
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ #endif
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+index 9fab663dd2de..a323b109b9c4 100644
+--- a/arch/arm64/include/asm/topology.h
++++ b/arch/arm64/include/asm/topology.h
+@@ -23,6 +23,7 @@ void update_freq_counters_refs(void);
+ #define arch_set_freq_scale topology_set_freq_scale
+ #define arch_scale_freq_capacity topology_get_freq_scale
+ #define arch_scale_freq_invariant topology_scale_freq_invariant
++#define arch_scale_freq_ref topology_get_freq_ref
+ 
+ #ifdef CONFIG_ACPI_CPPC_LIB
+ #define arch_init_invariance_cppc topology_init_cpu_capacity_cppc
+diff --git a/arch/riscv/include/asm/topology.h b/arch/riscv/include/asm/topology.h
+index e316ab3b77f3..61183688bdd5 100644
+--- a/arch/riscv/include/asm/topology.h
++++ b/arch/riscv/include/asm/topology.h
+@@ -9,6 +9,7 @@
+ #define arch_set_freq_scale		topology_set_freq_scale
+ #define arch_scale_freq_capacity	topology_get_freq_scale
+ #define arch_scale_freq_invariant	topology_scale_freq_invariant
++#define arch_scale_freq_ref		topology_get_freq_ref
+ 
+ /* Replace task scheduler's default cpu-invariant accounting */
+ #define arch_scale_cpu_capacity	topology_get_cpu_scale
+diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+index b741b5ba82bd..e8d1cdf1f761 100644
+--- a/drivers/base/arch_topology.c
++++ b/drivers/base/arch_topology.c
+@@ -19,6 +19,7 @@
+ #include <linux/init.h>
+ #include <linux/rcupdate.h>
+ #include <linux/sched.h>
++#include <linux/units.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/thermal_pressure.h>
+@@ -26,7 +27,8 @@
+ static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+ static struct cpumask scale_freq_counters_mask;
+ static bool scale_freq_invariant;
+-static DEFINE_PER_CPU(u32, freq_factor) = 1;
++DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 1;
++EXPORT_PER_CPU_SYMBOL_GPL(capacity_freq_ref);
+ 
+ static bool supports_scale_freq_counters(const struct cpumask *cpus)
+ {
+@@ -170,9 +172,9 @@ DEFINE_PER_CPU(unsigned long, thermal_pressure);
+  * operating on stale data when hot-plug is used for some CPUs. The
+  * @capped_freq reflects the currently allowed max CPUs frequency due to
+  * thermal capping. It might be also a boost frequency value, which is bigger
+- * than the internal 'freq_factor' max frequency. In such case the pressure
+- * value should simply be removed, since this is an indication that there is
+- * no thermal throttling. The @capped_freq must be provided in kHz.
++ * than the internal 'capacity_freq_ref' max frequency. In such case the
++ * pressure value should simply be removed, since this is an indication that
++ * there is no thermal throttling. The @capped_freq must be provided in kHz.
+  */
+ void topology_update_thermal_pressure(const struct cpumask *cpus,
+ 				      unsigned long capped_freq)
+@@ -183,10 +185,7 @@ void topology_update_thermal_pressure(const struct cpumask *cpus,
+ 
+ 	cpu = cpumask_first(cpus);
+ 	max_capacity = arch_scale_cpu_capacity(cpu);
+-	max_freq = per_cpu(freq_factor, cpu);
+-
+-	/* Convert to MHz scale which is used in 'freq_factor' */
+-	capped_freq /= 1000;
++	max_freq = arch_scale_freq_ref(cpu);
+ 
+ 	/*
+ 	 * Handle properly the boost frequencies, which should simply clean
+@@ -279,13 +278,13 @@ void topology_normalize_cpu_scale(void)
+ 
+ 	capacity_scale = 1;
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+ 		capacity_scale = max(capacity, capacity_scale);
+ 	}
+ 
+ 	pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+ 	for_each_possible_cpu(cpu) {
+-		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
++		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+ 		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
+ 			capacity_scale);
+ 		topology_set_cpu_scale(cpu, capacity);
+@@ -321,15 +320,15 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+ 			cpu_node, raw_capacity[cpu]);
+ 
+ 		/*
+-		 * Update freq_factor for calculating early boot cpu capacities.
++		 * Update capacity_freq_ref for calculating early boot cpu capacities.
+ 		 * For non-clk CPU DVFS mechanism, there's no way to get the
+ 		 * frequency value now, assuming they are running at the same
+-		 * frequency (by keeping the initial freq_factor value).
++		 * frequency (by keeping the initial capacity_freq_ref value).
+ 		 */
+ 		cpu_clk = of_clk_get(cpu_node, 0);
+ 		if (!PTR_ERR_OR_ZERO(cpu_clk)) {
+-			per_cpu(freq_factor, cpu) =
+-				clk_get_rate(cpu_clk) / 1000;
++			per_cpu(capacity_freq_ref, cpu) =
++				clk_get_rate(cpu_clk) / HZ_PER_KHZ;
+ 			clk_put(cpu_clk);
+ 		}
+ 	} else {
+@@ -411,7 +410,7 @@ init_cpu_capacity_callback(struct notifier_block *nb,
+ 	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
+ 
+ 	for_each_cpu(cpu, policy->related_cpus)
+-		per_cpu(freq_factor, cpu) = policy->cpuinfo.max_freq / 1000;
++		per_cpu(capacity_freq_ref, cpu) = policy->cpuinfo.max_freq;
+ 
+ 	if (cpumask_empty(cpus_to_visit)) {
+ 		topology_normalize_cpu_scale();
+diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+index a07b510e7dc5..32c24ff4f2a8 100644
+--- a/include/linux/arch_topology.h
++++ b/include/linux/arch_topology.h
+@@ -27,6 +27,13 @@ static inline unsigned long topology_get_cpu_scale(int cpu)
+ 
+ void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity);
+ 
++DECLARE_PER_CPU(unsigned long, capacity_freq_ref);
++
++static inline unsigned long topology_get_freq_ref(int cpu)
++{
++	return per_cpu(capacity_freq_ref, cpu);
++}
++
+ DECLARE_PER_CPU(unsigned long, arch_freq_scale);
+ 
+ static inline unsigned long topology_get_freq_scale(int cpu)
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index de545ba85218..a6e04b4a21d7 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -279,6 +279,14 @@ void arch_update_thermal_pressure(const struct cpumask *cpus,
+ { }
+ #endif
+ 
++#ifndef arch_scale_freq_ref
++static __always_inline
++unsigned int arch_scale_freq_ref(int cpu)
++{
++	return 0;
++}
++#endif
++
+ static inline int task_node(const struct task_struct *p)
+ {
+ 	return cpu_to_node(task_cpu(p));
 -- 
 2.34.1
 
