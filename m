@@ -2,353 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9246F7E6711
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8627E6714
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 10:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjKIJr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 04:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S231658AbjKIJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 04:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjKIJr4 (ORCPT
+        with ESMTP id S229581AbjKIJsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 04:47:56 -0500
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04849271C
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:47:52 -0800 (PST)
-X-ASG-Debug-ID: 1699523267-086e236fee0dbf0001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id VEmC98HBBYLdXQLW (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 09 Nov 2023 17:47:47 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 9 Nov
- 2023 17:47:47 +0800
-Received: from xin.lan (10.32.64.1) by ZXBJMBX03.zhaoxin.com (10.29.252.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 9 Nov
- 2023 17:47:44 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From:   LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.7
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <x86@kernel.org>, <hpa@zytor.com>,
-        <seanjc@google.com>, <kim.phillips@amd.com>, <pbonzini@redhat.com>,
-        <babu.moger@amd.com>, <jiaxi.chen@linux.intel.com>,
-        <jmattson@google.com>, <pawan.kumar.gupta@linux.intel.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>,
-        <YunShen@zhaoxin.com>, <Leoliu@zhaoxin.com>,
-        LeoLiuoc <LeoLiu-oc@zhaoxin.com>
-Subject: [PATCH] crypto: x86/sm2 -add Zhaoxin SM2 algorithm implementation
-Date:   Thu, 9 Nov 2023 17:47:44 +0800
-X-ASG-Orig-Subj: [PATCH] crypto: x86/sm2 -add Zhaoxin SM2 algorithm implementation
-Message-ID: <20231109094744.545887-1-LeoLiu-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 9 Nov 2023 04:48:38 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7D4271C
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 01:48:36 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so986828a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:48:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699523314; x=1700128114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DilLKYDfiJHifO/My66ufTYoZBnb4NT+vvrqkX7FBNE=;
+        b=HUZ7LK7//OQZcRIixLlVUPSTAJUiKGzIciDJhOkpwgdYhdIvTAPbv0X1FOnSoodnQM
+         Of6cdJhMZkYPfxmlF3g4xMGZv6idHxw4KVBkH0meAlJT5IFGgcMLu371ZRmmJpsfuI/Q
+         Hk7vwAsT/wxiQkdlTgmCXfFtuhSfOOBhmaXSo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699523314; x=1700128114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DilLKYDfiJHifO/My66ufTYoZBnb4NT+vvrqkX7FBNE=;
+        b=T3d88ANzksvd8uQO0RPKcBzx4jE4kah//AAQ+wTESLYZD+Zyit4abl0nYH8jX2njjV
+         NLhxct3T9YRydw9I0D9Yd2Eznjiw2Zp2p9VaBCUlhi4uNEr5ZdNxHY6XJ5MT0uLslyDe
+         NUWY+w4A1YHyhqfd+XeZMRGB5iJPHpPEiJ4m+L1jDx5zGWLdhPONJfsFUOTSSddH/P/g
+         bPKOqXhXJSEFVgPzOgoc1rj3L09Y+lTJhB70UWp0G/c32iFoeCAcliCAFMlw+zRxR+Su
+         CIM6x+yici8HcJNWAKIxOVnj8XXxEKoxvmlvbFJ+fjaTtC1ygtU7tLTbeM05vFTzb2xF
+         jfaA==
+X-Gm-Message-State: AOJu0YwM3Vr2anpqQ/XD4hxDlw1zYloKiSSyaAuMKPydr8jUU/h8BwGQ
+        noT1AUS7n6lgs7hftplYxuW+ztbIz+yhE+O4IbOhIWqb
+X-Google-Smtp-Source: AGHT+IGTd+NnaqOv/IUc+RG6FO9yyE8qUZm5pJ2uEX9Yjqy1ARluvpaqvwtqlFgm4ZQUgEwtoYJymg==
+X-Received: by 2002:a50:a404:0:b0:543:caf4:e5bc with SMTP id u4-20020a50a404000000b00543caf4e5bcmr4282894edb.1.1699523313932;
+        Thu, 09 Nov 2023 01:48:33 -0800 (PST)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
+        by smtp.gmail.com with ESMTPSA id t28-20020a508d5c000000b0053e5a1bf77dsm8091260edt.88.2023.11.09.01.48.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 01:48:33 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40906fc54fdso4519375e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 01:48:33 -0800 (PST)
+X-Received: by 2002:a5d:64a9:0:b0:32f:7f09:160f with SMTP id
+ m9-20020a5d64a9000000b0032f7f09160fmr4230407wrp.12.1699523312965; Thu, 09 Nov
+ 2023 01:48:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.32.64.1]
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1699523267
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 8879
-X-Barracuda-BRTS-Status: 0
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.116511
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-57-benjamin.gaignard@collabora.com>
+ <20231109094311.yzmmn4vvskmrk4tk@chromium.org> <2f5ad14b-528d-4656-84d8-f85467c5b475@collabora.com>
+In-Reply-To: <2f5ad14b-528d-4656-84d8-f85467c5b475@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 9 Nov 2023 18:48:15 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CH=NoDUJArp=6_28WSgkQ3jTMR3SOyx1iYro-7e4c2hA@mail.gmail.com>
+Message-ID: <CAAFQd5CH=NoDUJArp=6_28WSgkQ3jTMR3SOyx1iYro-7e4c2hA@mail.gmail.com>
+Subject: Re: [PATCH v14 56/56] media: test-drivers: Use helper for DELETE_BUFS ioctl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
+On Thu, Nov 9, 2023 at 6:46=E2=80=AFPM Benjamin Gaignard
+<benjamin.gaignard@collabora.com> wrote:
+>
+>
+> Le 09/11/2023 =C3=A0 10:43, Tomasz Figa a =C3=A9crit :
+> > On Tue, Oct 31, 2023 at 05:31:04PM +0100, Benjamin Gaignard wrote:
+> >> Allow test drivers to use DELETE_BUFS by adding vb2_ioctl_delete_bufs(=
+) helper.
+> >>
+> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> >> ---
+> >>   drivers/media/test-drivers/vicodec/vicodec-core.c |  2 ++
+> >>   drivers/media/test-drivers/vimc/vimc-capture.c    |  2 ++
+> >>   drivers/media/test-drivers/visl/visl-video.c      |  2 ++
+> >>   drivers/media/test-drivers/vivid/vivid-core.c     | 13 ++++++++++---
+> >>   4 files changed, 16 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/drivers/media/test-drivers/vicodec/vicodec-core.c b/drive=
+rs/media/test-drivers/vicodec/vicodec-core.c
+> >> index 69cbe2c094e1..f14a8fd506d0 100644
+> >> --- a/drivers/media/test-drivers/vicodec/vicodec-core.c
+> >> +++ b/drivers/media/test-drivers/vicodec/vicodec-core.c
+> >> @@ -1339,6 +1339,7 @@ static const struct v4l2_ioctl_ops vicodec_ioctl=
+_ops =3D {
+> >>      .vidioc_prepare_buf     =3D v4l2_m2m_ioctl_prepare_buf,
+> >>      .vidioc_create_bufs     =3D v4l2_m2m_ioctl_create_bufs,
+> >>      .vidioc_expbuf          =3D v4l2_m2m_ioctl_expbuf,
+> >> +    .vidioc_delete_bufs     =3D v4l2_m2m_ioctl_delete_bufs,
+> >>
+> >>      .vidioc_streamon        =3D v4l2_m2m_ioctl_streamon,
+> >>      .vidioc_streamoff       =3D v4l2_m2m_ioctl_streamoff,
+> >> @@ -1725,6 +1726,7 @@ static int queue_init(void *priv, struct vb2_que=
+ue *src_vq,
+> >>      dst_vq->mem_ops =3D &vb2_vmalloc_memops;
+> >>      dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> >>      dst_vq->lock =3D src_vq->lock;
+> >> +    dst_vq->supports_delete_bufs =3D true;
+> > Since we have to explicitly provide the vidioc_delete_bufs callback any=
+way,
+> > is there any value in having a separate supports_delete_bufs flag? Or w=
+e
+> > envision that some drivers would support deleting buffers only for some
+> > queues?
+>
+> That exactly the case for Hantro driver, it can support deleting buffers =
+on
+> capture queue but not on output queue.
 
-Add support for SM2 (ShangMi 2) public key algorithm by Zhaoxin GMI
-Instruction. The purpose of this driver is to ensure that the application
-has both high performance and high security.
+Fair enough.
 
-Signed-off-by: LeoLiuoc <LeoLiu-oc@zhaoxin.com>
----
- arch/x86/crypto/Kconfig                |  11 ++
- arch/x86/crypto/Makefile               |   3 +
- arch/x86/crypto/sm2-zhaoxin-gmi_asm.S  |  59 ++++++++++
- arch/x86/crypto/sm2-zhaoxin-gmi_glue.c | 145 +++++++++++++++++++++++++
- arch/x86/include/asm/cpufeatures.h     |   2 +
- 5 files changed, 220 insertions(+)
- create mode 100644 arch/x86/crypto/sm2-zhaoxin-gmi_asm.S
- create mode 100644 arch/x86/crypto/sm2-zhaoxin-gmi_glue.c
-
-diff --git a/arch/x86/crypto/Kconfig b/arch/x86/crypto/Kconfig
-index 9bbfd01cfa2f..a771a9da2abd 100644
---- a/arch/x86/crypto/Kconfig
-+++ b/arch/x86/crypto/Kconfig
-@@ -519,4 +519,15 @@ config CRYPTO_CRCT10DIF_PCLMUL
- 	  Architecture: x86_64 using:
- 	  - PCLMULQDQ (carry-less multiplication)
- 
-+config CRYPTO_SM2_ZHAOXIN_GMI
-+	tristate "SM2 Cipher algorithm (Zhaoxin GMI Instruction)"
-+	depends on X86
-+	select CRYPTO_AKCIPHER
-+	select CRYPTO_MANAGER
-+	help
-+	  SM2 (ShangMi 2) public key algorithm by Zhaoxin GMI Instruction
-+
-+	  Published by State Encryption Management Bureau, China,
-+	  as specified by OSCCA GM/T 0003.1-2012 -- 0003.5-2012.
-+
- endmenu
-diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-index 9aa46093c91b..c23b328a3ecd 100644
---- a/arch/x86/crypto/Makefile
-+++ b/arch/x86/crypto/Makefile
-@@ -109,6 +109,9 @@ aria-aesni-avx2-x86_64-y := aria-aesni-avx2-asm_64.o aria_aesni_avx2_glue.o
- obj-$(CONFIG_CRYPTO_ARIA_GFNI_AVX512_X86_64) += aria-gfni-avx512-x86_64.o
- aria-gfni-avx512-x86_64-y := aria-gfni-avx512-asm_64.o aria_gfni_avx512_glue.o
- 
-+obj-$(CONFIG_CRYPTO_SM2_ZHAOXIN_GMI) += sm2-zhaoxin-gmi.o
-+sm2-zhaoxin-gmi-y := sm2-zhaoxin-gmi_asm.o sm2-zhaoxin-gmi_glue.o
-+
- quiet_cmd_perlasm = PERLASM $@
-       cmd_perlasm = $(PERL) $< > $@
- $(obj)/%.S: $(src)/%.pl FORCE
-diff --git a/arch/x86/crypto/sm2-zhaoxin-gmi_asm.S b/arch/x86/crypto/sm2-zhaoxin-gmi_asm.S
-new file mode 100644
-index 000000000000..4ee5194557a0
---- /dev/null
-+++ b/arch/x86/crypto/sm2-zhaoxin-gmi_asm.S
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Zhaoxin GMI implementation of a SM2 function
-+ *
-+ * Copyright(c) 2023 Zhaoxin Semiconductor LTD.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * Contact Information:
-+ *  YunShen <YunShen@zhaoxin.com>
-+ */
-+#include <linux/linkage.h>
-+
-+#define KEY_PTR     %rdi /* 1st arg */
-+#define HASH_PTR    %rsi /* 2nd arg */
-+#define SIG_PTR     %rdx /* 3rd arg */
-+#define SCRATCH_PTR %rcx /* 4rd arg */
-+#define VER_RESULT  %rax /* ret     */
-+
-+.text
-+.align 32
-+###############################################################################
-+# int zhaoxin_gmi_sm2_verify (
-+#         unsigned char *key, /*key*/
-+#         unsigned char *hash, /*hash*/
-+#         unsigned char *sig, /*signature*/
-+#         unsigned char *scratch /*8 kbytes scratch space*/
-+#     );
-+###############################################################################
-+SYM_FUNC_START(zhaoxin_gmi_sm2_verify)
-+	push %r12
-+	push %rbx
-+
-+	mov HASH_PTR, %rax
-+	mov KEY_PTR, %rbx
-+	mov SIG_PTR, %r12
-+	mov $8, %rdx
-+	mov SCRATCH_PTR, %rsi
-+	mov %r12, %rdi
-+
-+	.byte 0XF2
-+	.byte 0X0F
-+	.byte 0XA6
-+	.byte 0XC0
-+
-+	mov %rcx, %rax
-+
-+	pop %rbx
-+	pop %r12
-+
-+	RET
-+SYM_FUNC_END(zhaoxin_gmi_sm2_verify)
-diff --git a/arch/x86/crypto/sm2-zhaoxin-gmi_glue.c b/arch/x86/crypto/sm2-zhaoxin-gmi_glue.c
-new file mode 100644
-index 000000000000..4d0d18f68266
---- /dev/null
-+++ b/arch/x86/crypto/sm2-zhaoxin-gmi_glue.c
-@@ -0,0 +1,145 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * SM2 asymmetric public-key algorithm
-+ * as specified by OSCCA GM/T 0003.1-2012 -- 0003.5-2012 SM2 and
-+ * described at https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-+ *
-+ * Copyright (c) 2023 Shanghai Zhaoxin Semiconductor LTD.
-+ * Authors: YunShen <yunshen@zhaoxin.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/mpi.h>
-+#include <crypto/internal/akcipher.h>
-+#include <crypto/akcipher.h>
-+#include <crypto/sm2.h>
-+#include <asm/cpufeature.h>
-+#include <asm/processor.h>
-+#include <asm/cpu_device_id.h>
-+
-+#define SCRATCH_SIZE (4 * 2048)
-+
-+asmlinkage int zhaoxin_gmi_sm2_verify(unsigned char *key, unsigned char *hash, unsigned char *sig,
-+				unsigned char *scratch);
-+
-+struct sm2_cipher_data {
-+	u8 pub_key[65]; /* public key */
-+};
-+
-+/* Load supported features of the CPU to see if the SM2 is available. */
-+static int zhaoxin_gmi_available(void)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_SM2_EN)) {
-+		pr_err("can't enable hardware SM2 if Zhaoxin GMI SM2 is not enabled\n");
-+		return -ENODEV;
-+	}
-+	return 0;
-+}
-+
-+/* Zhaoxin sm2 verify function */
-+static int _zhaoxin_sm2_verify(struct sm2_cipher_data *ec, unsigned char *hash, unsigned char *sig)
-+{
-+	int ret = -EKEYREJECTED;
-+	uint64_t f_ok = 0;
-+	unsigned char *scratch = kzalloc(SCRATCH_SIZE, GFP_KERNEL);
-+
-+	f_ok = zhaoxin_gmi_sm2_verify(ec->pub_key, hash, sig, scratch);
-+	if (f_ok == 1)
-+		ret = 0;
-+
-+	kfree(scratch);
-+
-+	return ret;
-+}
-+
-+static int zhaoxin_sm2_verify(struct akcipher_request *req)
-+{
-+	struct crypto_akcipher *tfm = crypto_akcipher_reqtfm(req);
-+	struct sm2_cipher_data *ec = akcipher_tfm_ctx(tfm);
-+	unsigned char *buffer;
-+	int ret;
-+
-+	buffer = kmalloc(req->src_len + req->dst_len, GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	sg_pcopy_to_buffer(req->src, sg_nents_for_len(req->src, req->src_len + req->dst_len),
-+		buffer, req->src_len + req->dst_len, 0);
-+
-+	ret = _zhaoxin_sm2_verify(ec, buffer + req->src_len, buffer);
-+	kfree(buffer);
-+
-+	return ret;
-+}
-+
-+static int zhaoxin_sm2_set_pub_key(struct crypto_akcipher *tfm, const void *key,
-+				unsigned int keylen)
-+{
-+	struct sm2_cipher_data *ec = akcipher_tfm_ctx(tfm);
-+
-+	memcpy(ec->pub_key, key, keylen);
-+
-+	return 0;
-+}
-+
-+static unsigned int zhaoxin_sm2_max_size(struct crypto_akcipher *tfm)
-+{
-+	/* Unlimited max size */
-+	return PAGE_SIZE;
-+}
-+
-+static int zhaoxin_sm2_init_tfm(struct crypto_akcipher *tfm)
-+{
-+	return zhaoxin_gmi_available();
-+}
-+
-+static void zhaoxin_sm2_exit_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct sm2_cipher_data *ec = akcipher_tfm_ctx(tfm);
-+
-+	memset(ec, 0, sizeof(*ec));
-+}
-+
-+static struct akcipher_alg zhaoxin_sm2 = {
-+	.verify = zhaoxin_sm2_verify,
-+	.set_pub_key = zhaoxin_sm2_set_pub_key,
-+	.max_size = zhaoxin_sm2_max_size,
-+	.init = zhaoxin_sm2_init_tfm,
-+	.exit = zhaoxin_sm2_exit_tfm,
-+	.base = {
-+		.cra_name = "sm2",
-+		.cra_driver_name = "zhaoxin-gmi-sm2",
-+		.cra_priority = 150,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct sm2_cipher_data),
-+	},
-+};
-+
-+static const struct x86_cpu_id zhaoxin_sm2_cpu_ids[] = {
-+	X86_MATCH_FEATURE(X86_FEATURE_SM2, NULL),
-+	{}
-+};
-+MODULE_DEVICE_TABLE(x86cpu, zhaoxin_sm2_cpu_ids);
-+
-+static int __init zhaoxin_sm2_init(void)
-+{
-+	if (!x86_match_cpu(zhaoxin_sm2_cpu_ids)) {
-+		pr_err("The CPU isn't support hardware SM2.\n");
-+		return -ENODEV;
-+	}
-+
-+	return crypto_register_akcipher(&zhaoxin_sm2);
-+}
-+
-+static void __exit zhaoxin_sm2_exit(void)
-+{
-+	crypto_unregister_akcipher(&zhaoxin_sm2);
-+}
-+
-+module_init(zhaoxin_sm2_init);
-+module_exit(zhaoxin_sm2_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("YunShen <yunshen@zhaoxin.com>");
-+MODULE_DESCRIPTION("SM2 Zhaoxin GMI Algorithm");
-+MODULE_ALIAS_CRYPTO("zhaoxin-gmi-sm2");
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 4af140cf5719..07a78ec83bed 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -146,6 +146,8 @@
- #define X86_FEATURE_HYPERVISOR		( 4*32+31) /* Running on a hypervisor */
- 
- /* VIA/Cyrix/Centaur-defined CPU features, CPUID level 0xC0000001, word 5 */
-+#define X86_FEATURE_SM2			(5*32 + 0) /* SM2 ZhaoXin GMI present */
-+#define X86_FEATURE_SM2_EN			(5*32 + 1) /* SM2 ZhaoXin GMI enabled */
- #define X86_FEATURE_XSTORE		( 5*32+ 2) /* "rng" RNG present (xstore) */
- #define X86_FEATURE_XSTORE_EN		( 5*32+ 3) /* "rng_en" RNG enabled */
- #define X86_FEATURE_XCRYPT		( 5*32+ 6) /* "ace" on-CPU crypto (xcrypt) */
--- 
-2.34.1
-
+Best regards,
+Tomasz
