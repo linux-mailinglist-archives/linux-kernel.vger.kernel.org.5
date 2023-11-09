@@ -2,176 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE65F7E64CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 08:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5D77E64DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 09:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjKIHzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 02:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53426 "EHLO
+        id S233237AbjKIICV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 03:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbjKIHzj (ORCPT
+        with ESMTP id S232781AbjKIICT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 02:55:39 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EE81716;
-        Wed,  8 Nov 2023 23:55:37 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9becde9ea7bso349223166b.0;
-        Wed, 08 Nov 2023 23:55:37 -0800 (PST)
+        Thu, 9 Nov 2023 03:02:19 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4F02728
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 00:02:17 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32faea0fa1fso306009f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 00:02:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699516535; x=1700121335; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4DT7KbStmBKIyXguUJVsEhwW3sZLd8u/CViWdFU++us=;
-        b=PDzgTFvd+vBIfxWwAaPCtNmC6E9/9arN58U7XKlT67+1m0S8qhNjcl3yj8HGgLYQXb
-         eiiumBNylBlJETv+eEhY54Utk6xRCGqKAiZ1vASUuqfRjbP4z/o58w94TBBqW9dWSgeY
-         KLrfa7z/mdv3U7J8uzK1TAOLGC7riRbRCm6ScheKHPiUk4Egd1Dy/QPuZ2+2wOSHzwtB
-         bAfvnKwuMemfOWcwWAcQg94Veob2Jkb7+6JmhaDmib8CxOTwc+s3W9iZR8+TE7FJtSyY
-         VZlfu6JiqnrHFI8VsPY37rQVB09ZduCUilTPjUv+RBAWSlxQ84gAVebF3/CLRQLSE6FS
-         d9jQ==
+        d=linaro.org; s=google; t=1699516935; x=1700121735; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BFIkC1FD/Uwtc6W91szrKWUfuMQSfWOdpdRrkGpPlWo=;
+        b=wandipyuMnKwXtbw9p1ouX1bBBAKwqaOMFUPUELk5ndRj/7LDZz0XS++dUTnyR0idK
+         GuVHflK9OzRdyu5PcL5tNx/pvdeEkak9X3hSy6A2c/YfSS7kFgj9pHh+lmmahengJyaz
+         L85wQzqRINpJ/m7Q0+KkqQsQZ+oiqvrXV6koEhV48m8YFnB9Kl/NGUHu8WpU8J1Fu6gH
+         jWyUOLSAdwCzs6KK1n/yGLuihQo7NWugQagKR/WTs9kHm53FgMPgz1+4uZz9eifmmnQp
+         mgnSZqBaQSDNtZt2Zz/zHF8S30QOSBj6eVZVPDIrQdoKeBH7zCWKN6RzcOQp1ncvEwJh
+         3Bcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699516535; x=1700121335;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4DT7KbStmBKIyXguUJVsEhwW3sZLd8u/CViWdFU++us=;
-        b=wfev15Sq+ak0ImmOv/FpaMeDxH0S3SVi8TfsGjC+9ijHLuCJJDszOC5LQowaHHUj+e
-         mS/p60TBOTvGkhGblnOw+orToUfQoUmWda0pJiB0AGmTZPHrGk3rIELPGrrSHkGcnDJw
-         hRioYjGDwdrMXkp3yRzyaw9N1rX2Db1qlX7Lqqvu5THBJgyT+ZAoHI5jXaQD2831wVaO
-         p0BlD3tHMEBSn87/z54BCSmwzrbEyxdxQTUukMjuFjkMVd6LMHKyUWWcpkZecJoMaOMM
-         ahpHAEkslMoZmfXThfETS8CH97jVza42erJ6iAnPnx5cGOr/6kbDEevwniXCznXjHM40
-         nWFA==
-X-Gm-Message-State: AOJu0Yye6Graya7mkQYgjkbin5K5bD6cA3Ttu8NTo1JL17p9yq3dxyYu
-        K2mLlEnp2TJBoyGRyET75dw=
-X-Google-Smtp-Source: AGHT+IHoZaA0GKZk6O7gCurRmuDoN2dF5sTBZ6TfLPTfaTomNuRl4tfRrqcffYnM+MhuHKNZcDUzIw==
-X-Received: by 2002:a17:907:d89:b0:9bd:d405:4e8a with SMTP id go9-20020a1709070d8900b009bdd4054e8amr4394735ejc.17.1699516535329;
-        Wed, 08 Nov 2023 23:55:35 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:361b:8f29:1cbf:5e69? (p200300f6ef1b2000361b8f291cbf5e69.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:361b:8f29:1cbf:5e69])
-        by smtp.gmail.com with ESMTPSA id bo17-20020a170906d05100b009dddec5a96fsm2234918ejb.170.2023.11.08.23.55.34
+        d=1e100.net; s=20230601; t=1699516935; x=1700121735;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BFIkC1FD/Uwtc6W91szrKWUfuMQSfWOdpdRrkGpPlWo=;
+        b=WPBIibn3G/Nl+rkt2Rn7k7oMApp7f0d5q2ObQ8P3p1Pg9hMi6IW7TmPQifIHA8X+ZH
+         jMq0kp2ehNkTMkTca/kaoACUKJxiMhzt/2EOzpsSgnVG+RGIlHs1eXRx1ot/xJWdWMWm
+         /SbsiM61KfflfUj1WibWfhwh1QfHad7LXSGFCFNDpFGs0Fjcs15EJNJ1DrFYAl9DGV1U
+         3gBcai3Km2lSQ9UY70BXYDYKEnNo+AX1PzWJ/KxD+rmI9eS5NriWY1fmUQTusXDFWdnu
+         6ZS04vd16T0T6SBUIpfN/IprCMd5CB96YIK01sW/VI8Tja87lnS6uLk9jmZq/LK5LYCO
+         rFKQ==
+X-Gm-Message-State: AOJu0Yy2bLNSEYwDQ7/i4aEZhailKLRkB85OxE/7+hZbM5zc8eVRxehj
+        BIaLVp2C8V/tfbq0r7YxZZX2uA==
+X-Google-Smtp-Source: AGHT+IGPq2vMTt96ad/AZA6B76G5T/W9HPy/vLX/E2Tps70yhgvZu+0T0LFKA9SFn0wgyqBEQQ+EyQ==
+X-Received: by 2002:a5d:5986:0:b0:32f:b47c:f1f6 with SMTP id n6-20020a5d5986000000b0032fb47cf1f6mr4764971wri.32.1699516935529;
+        Thu, 09 Nov 2023 00:02:15 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n17-20020a5d67d1000000b003232380ffd7sm6758579wrw.102.2023.11.09.00.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 23:55:34 -0800 (PST)
-Message-ID: <9b9df9a9dec28ff46fef6df1c482e5a09f338891.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] iio: amplifiers: hmc425a: add support for
- ADRF5740 Attenuator
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Ana-Maria Cusco <anamaria.cuscoo@gmail.com>,
-        Ana-Maria Cusco <ana-maria.cusco@analog.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 09 Nov 2023 08:58:30 +0100
-In-Reply-To: <20231107132118.1165494-2-anamaria.cuscoo@gmail.com>
-References: <20231107132118.1165494-1-anamaria.cuscoo@gmail.com>
-         <20231107132118.1165494-2-anamaria.cuscoo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Thu, 09 Nov 2023 00:02:15 -0800 (PST)
+Date:   Thu, 9 Nov 2023 11:02:12 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev, Tuo Li <islituo@gmail.com>,
+        mchehab@kernel.org, yongsuyoo0215@gmail.com
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@outlook.com, Tuo Li <islituo@gmail.com>,
+        BassCheck <bass@buaa.edu.cn>
+Subject: Re: [PATCH] media: dvb-core: Fix a possible null-pointer dereference
+ due to data race in dvbdmx_write()
+Message-ID: <16d72edf-78de-4995-8821-e95973d5c474@kadam.mountain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108091300.3124649-1-islituo@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-07 at 15:21 +0200, Ana-Maria Cusco wrote:
-> From: Ana-Maria Cusco <ana-maria.cusco@analog.com>
->=20
-> This adds support for the Analog Devices ADRF5740 2 dB LSB, 4-Bit,
-> Silicon Digital Attenuator, 10 MHz to 60 GHz
->=20
-> Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
-> ---
-> =C2=A0drivers/iio/amplifiers/hmc425a.c | 23 +++++++++++++++++++++++
-> =C2=A01 file changed, 23 insertions(+)
->=20
-> diff --git a/drivers/iio/amplifiers/hmc425a.c
-> b/drivers/iio/amplifiers/hmc425a.c
-> index e87d35d50a95..ed4d72922696 100644
-> --- a/drivers/iio/amplifiers/hmc425a.c
-> +++ b/drivers/iio/amplifiers/hmc425a.c
-> @@ -5,6 +5,7 @@
-> =C2=A0 * Copyright 2020 Analog Devices Inc.
-> =C2=A0 */
-> =C2=A0
-> +#include <linux/bitops.h>
-> =C2=A0#include <linux/device.h>
-> =C2=A0#include <linux/err.h>
-> =C2=A0#include <linux/gpio/consumer.h>
-> @@ -22,6 +23,7 @@
-> =C2=A0enum hmc425a_type {
-> =C2=A0	ID_HMC425A,
-> =C2=A0	ID_HMC540S,
-> +	ID_ADRF5740
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct hmc425a_chip_info {
-> @@ -74,6 +76,10 @@ static int hmc425a_read_raw(struct iio_dev *indio_dev,
-> =C2=A0		case ID_HMC540S:
-> =C2=A0			gain =3D ~code * -1000;
-> =C2=A0			break;
-> +		case ID_ADRF5740:
-> +			code =3D code & BIT(3) ? code & ~BIT(2) : code;
-> +			gain =3D code * -2000;
-> +			break;
-> =C2=A0		}
-> =C2=A0
-> =C2=A0		*val =3D gain / 1000;
-> @@ -113,6 +119,10 @@ static int hmc425a_write_raw(struct iio_dev *indio_d=
-ev,
-> =C2=A0	case ID_HMC540S:
-> =C2=A0		code =3D ~((abs(gain) / 1000) & 0xF);
-> =C2=A0		break;
-> +	case ID_ADRF5740:
-> +		code =3D (abs(gain) / 2000) & 0xF;
-> +		code =3D code & BIT(3) ? code | BIT(2) : code;
-> +		break;
-> =C2=A0	}
-> =C2=A0
-> =C2=A0	mutex_lock(&st->lock);
-> @@ -165,6 +175,7 @@ static const struct iio_chan_spec hmc425a_channels[] =
-=3D {
-> =C2=A0static const struct of_device_id hmc425a_of_match[] =3D {
-> =C2=A0	{ .compatible =3D "adi,hmc425a", .data =3D (void *)ID_HMC425A },
-> =C2=A0	{ .compatible =3D "adi,hmc540s", .data =3D (void *)ID_HMC540S },
-> +	{ .compatible =3D "adi,adrf5740", .data =3D (void *)ID_ADRF5740 },
-> =C2=A0	{},
-> =C2=A0};
-> =C2=A0MODULE_DEVICE_TABLE(of, hmc425a_of_match);
-> @@ -188,6 +199,15 @@ static struct hmc425a_chip_info hmc425a_chip_info_tb=
-l[] =3D
-> {
-> =C2=A0		.gain_max =3D 0,
-> =C2=A0		.default_gain =3D -0x10, /* set default gain -15.0db*/
-> =C2=A0	},
-> +	[ID_ADRF5740] =3D {
-> +		.name =3D "adrf5740",
-> +		.channels =3D hmc425a_channels,
-> +		.num_channels =3D ARRAY_SIZE(hmc425a_channels),
-> +		.num_gpios =3D 4,
-> +		.gain_min =3D -22000,
-> +		.gain_max =3D 0,
-> +		.default_gain =3D 0xF, /* set default gain -22.0db*/
-> +	},
-> =C2=A0};
-> =C2=A0
-> =C2=A0static int hmc425a_probe(struct platform_device *pdev)
-> @@ -229,6 +249,9 @@ static int hmc425a_probe(struct platform_device *pdev=
-)
-> =C2=A0	indio_dev->info =3D &hmc425a_info;
-> =C2=A0	indio_dev->modes =3D INDIO_DIRECT_MODE;
-> =C2=A0
-> +	/* Set default gain */
-> +	hmc425a_write(indio_dev, st->gain);
-> +
+Hi Tuo,
 
-This is an unrelated change. It's simple enough to sneak it in but you shou=
-ld at
-least mention it in the commit message.
+kernel test robot noticed the following build warnings:
 
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-With that,
+url:    https://github.com/intel-lab-lkp/linux/commits/Tuo-Li/media-dvb-core-Fix-a-possible-null-pointer-dereference-due-to-data-race-in-dvbdmx_write/20231108-200849
+base:   git://linuxtv.org/media_tree.git master
+patch link:    https://lore.kernel.org/r/20231108091300.3124649-1-islituo%40gmail.com
+patch subject: [PATCH] media: dvb-core: Fix a possible null-pointer dereference due to data race in dvbdmx_write()
+config: x86_64-randconfig-161-20231108 (https://download.01.org/0day-ci/archive/20231109/202311090845.BlIvG8kE-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090845.BlIvG8kE-lkp@intel.com/reproduce)
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202311090845.BlIvG8kE-lkp@intel.com/
+
+smatch warnings:
+drivers/media/dvb-core/dvb_demux.c:1163 dvbdmx_write() warn: inconsistent returns '&dvbdemux->mutex'.
+
+vim +1163 drivers/media/dvb-core/dvb_demux.c
+
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1139  static int dvbdmx_write(struct dmx_demux *demux, const char __user *buf, size_t count)
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1140  {
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1141  	struct dvb_demux *dvbdemux = (struct dvb_demux *)demux;
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1142  	void *p;
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1143  
+eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1144  	mutex_lock(&dvbdemux->mutex);
+eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1145  	if ((!demux->frontend) || (demux->frontend->source != DMX_MEMORY_FE)) {
+eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1146  		mutex_unlock(&dvbdemux->mutex);
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1147  		return -EINVAL;
+eebefd4eafaa5d drivers/media/dvb-core/dvb_demux.c     Tuo Li         2023-11-08  1148  	}
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1149  
+c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1150  	p = memdup_user(buf, count);
+c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1151  	if (IS_ERR(p))
+c6cfe05532cf6e drivers/media/dvb/dvb-core/dvb_demux.c Julia Lawall   2010-05-22  1152  		return PTR_ERR(p);
+
+Need to drop the lock before returning.
+
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1153  	if (mutex_lock_interruptible(&dvbdemux->mutex)) {
+
+Wait, what?  Why are we taking the lock a second time?  This won't work.
+
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1154  		kfree(p);
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1155  		return -ERESTARTSYS;
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1156  	}
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1157  	dvb_dmx_swfilter(dvbdemux, p, count);
+947a080037c6ae drivers/media/dvb/dvb-core/dvb_demux.c Al Viro        2008-06-22  1158  	kfree(p);
+3593cab5d62c4c drivers/media/dvb/dvb-core/dvb_demux.c Ingo Molnar    2006-02-07  1159  	mutex_unlock(&dvbdemux->mutex);
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1160  
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1161  	if (signal_pending(current))
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1162  		return -EINTR;
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16 @1163  	return count;
+^1da177e4c3f41 drivers/media/dvb/dvb-core/dvb_demux.c Linus Torvalds 2005-04-16  1164  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
