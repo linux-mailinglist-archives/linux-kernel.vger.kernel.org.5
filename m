@@ -2,315 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3137E72BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0596F7E72C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 21:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345143AbjKIU0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 15:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40700 "EHLO
+        id S1345147AbjKIU10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 15:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKIU0U (ORCPT
+        with ESMTP id S1344938AbjKIU1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 15:26:20 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488FF44B6;
-        Thu,  9 Nov 2023 12:26:18 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9JY6br026296;
-        Thu, 9 Nov 2023 20:26:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=BSEFC97DPNuh2NKt1LnpDdqp0So3uF6/pbicepm5WAc=;
- b=mv+SxyeCa3ZSYSgf4anZeYTRG7BUGKuLQG+AepLDWWsPn5auvaj3htzJsnXjXhjOYYoz
- Uhti4VlqmNRJUPDCtbWVDbEc0yYtFWQyEpjxKHj+nUOQo4iKiUGPYexmt0ZgfTEUmoS+
- peqvT/nGajBvK7PTkO1JGlJcY4UetYCkNsBUYj95Q6O9mYayKth+aKZugb1VOzo1gUNL
- H55tG6j4D9us3Bry7h8/GiBy66BZOWbJXMxKBRLdCnsDTrZovR05kgRmtefbUlm5Lh/k
- 5zpVPOQ8TP6I968V0DQPYSxAPHZg4EaRKaG4WmZyEoV3a1tJrFIc81Kv66q6ReTV/UT7 vQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93rbrdhy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 09 Nov 2023 20:26:06 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A9KQ3xs008437
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Nov 2023 20:26:03 GMT
-Received: from [10.71.112.236] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 12:26:02 -0800
-Message-ID: <50931ba5-132f-3982-e33a-691583e3a71f@quicinc.com>
-Date:   Thu, 9 Nov 2023 12:25:59 -0800
+        Thu, 9 Nov 2023 15:27:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985193A98
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 12:27:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699561642; x=1731097642;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=enHXLPDZchUeKaed5qrSorYY9iKUN/ksSXTR4yNaJGA=;
+  b=bjK0629XMr5+KTsle2Ul0gh59WctGD+4a67rijgGL/hU5QFgDeig6g2J
+   mcz2kVbrQ3lgnBwszjhhSuO7HOHd00W7LsgaRKFYZU660GRMtYq3RFHT7
+   N9tao4adJeSCki+TD+EKVZQvGMply/wHRCqrPn3C+zOn2icfh1yyuT0ct
+   NfCGZUb82F8F98bjJVkhS+vF6mzNXRELfxXTNmFNN4eNU0v8IoCJwKJRu
+   ngdF4bz6+IXdIGhl03sCRZfmVXLnKlKhSI4RVFa7rWhx+QbCdmF9a3eIi
+   gUwAv/AgB7eIyUbuESQKKtUeGQVy6iN9FGKHnXbBT7dzwJ0AGxeVvKRBx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="389873992"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="389873992"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 12:27:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="880724957"
+X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
+   d="scan'208";a="880724957"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 09 Nov 2023 12:27:17 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1BcR-00097K-2H;
+        Thu, 09 Nov 2023 20:27:15 +0000
+Date:   Fri, 10 Nov 2023 04:26:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Byungchul Park <byungchul@sk.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     oe-kbuild-all@lists.linux.dev, kernel_team@skhynix.com,
+        akpm@linux-foundation.org, ying.huang@intel.com, namit@vmware.com,
+        xhao@linux.alibaba.com, mgorman@techsingularity.net,
+        hughd@google.com, willy@infradead.org, david@redhat.com,
+        peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com
+Subject: Re: [v4 1/3] mm/rmap: Recognize read-only TLB entries during batched
+ TLB flush
+Message-ID: <202311100429.nc4jJoNu-lkp@intel.com>
+References: <20231109045908.54996-2-byungchul@sk.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-Content-Language: en-US
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Johan Hovold <johan@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
-        <ahalaney@redhat.com>, <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-6-quic_kriskura@quicinc.com>
- <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
- <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
- <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
- <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
- <2b19b5e2-5eb0-49e0-8c47-8aff3d48f34e@quicinc.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <2b19b5e2-5eb0-49e0-8c47-8aff3d48f34e@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: udjM-C__RW-E6zGhcyWuGHZTcE8kHPzd
-X-Proofpoint-ORIG-GUID: udjM-C__RW-E6zGhcyWuGHZTcE8kHPzd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_14,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=999 impostorscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311090146
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109045908.54996-2-byungchul@sk.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Byungchul,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on tip/sched/core]
+[also build test ERROR on tip/x86/core tip/x86/mm linus/master v6.6 next-20231109]
+[cannot apply to akpm-mm/mm-everything]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Byungchul-Park/mm-rmap-Recognize-read-only-TLB-entries-during-batched-TLB-flush/20231109-163706
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/20231109045908.54996-2-byungchul%40sk.com
+patch subject: [v4 1/3] mm/rmap: Recognize read-only TLB entries during batched TLB flush
+config: arm64-randconfig-002-20231109 (https://download.01.org/0day-ci/archive/20231110/202311100429.nc4jJoNu-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100429.nc4jJoNu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100429.nc4jJoNu-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/rmap.c: In function 'fold_ubc_ro':
+>> mm/rmap.c:620:9: error: implicit declaration of function 'arch_tlbbatch_fold'; did you mean 'arch_tlbbatch_flush'? [-Werror=implicit-function-declaration]
+     620 |         arch_tlbbatch_fold(&tlb_ubc->arch, &tlb_ubc_ro->arch);
+         |         ^~~~~~~~~~~~~~~~~~
+         |         arch_tlbbatch_flush
+>> mm/rmap.c:626:9: error: implicit declaration of function 'arch_tlbbatch_clear'; did you mean 'arch_tlbbatch_flush'? [-Werror=implicit-function-declaration]
+     626 |         arch_tlbbatch_clear(&tlb_ubc_ro->arch);
+         |         ^~~~~~~~~~~~~~~~~~~
+         |         arch_tlbbatch_flush
+   cc1: some warnings being treated as errors
 
 
-On 11/9/2023 8:38 AM, Krishna Kurapati PSSNV wrote:
-> 
-> 
-> On 11/9/2023 8:48 PM, Johan Hovold wrote:
->> On Fri, Nov 03, 2023 at 03:34:52PM +0530, Krishna Kurapati PSSNV wrote:
->>> On 10/24/2023 12:26 PM, Johan Hovold wrote:
->>>> On Mon, Oct 23, 2023 at 10:42:31PM +0530, Krishna Kurapati PSSNV wrote:
->>>>> On 10/23/2023 7:37 PM, Johan Hovold wrote:
->>>>
->>>>>> Right. And I assume there are hs_phy_irqs also for the first two USB
->>>>>> controllers on sc8280xp?
->>>>
->>>>> There are, I can dig through and find out. Atleast in downstream I 
->>>>> don't
->>>>> see any use of them.
->>>>
->>>> Yes, please do post how these are wired as well for completeness.
->>
->> Did you find these two interrupts as well?
->>
->>
->>> Regarding the points of discussion we had last week on [1], here are
->>> some clarifications:
->>>
->>> 1. We do have hs_phy_irq 1/2/3/4 for tertiary port of Sc8280 as
->>> mentioned. Why do we need them and would we use it in multiport 
->>> targets ?
->>>
->>> DPSE and DMSE are single ended line state of DP and DM lines. The DP
->>> line and DM line stay in steady High or Low during suspend and they flip
->>> when there is a RESUME or REMOTE WAKE. This is what we do/check in
->>> dwc3_qcom_enable_interrupts call for dp/dm irq's based on usb2_speed.
->>
->> Right, this bit is clear.
->>
->>> Initially in QUSB2 targets, the interrupts were enabled and configured
->>> in phy and the wakeup was interrupt was read on hs_phy_irq vector - [2].
->>> In that case, we modify DP/DM interrupts in phy registers, specifically
->>> QUSB2PHY_INTR_CTRL and when wakeup signal comes in, hs_phy_irq is
->>> triggered. But in femto targets, this is done via DP/DM interrupts and
->>> there is no use of hs_phy_irq. Even hw folks confirmed they dont use
->>> hs_ph_irq in femto phy targets.
->>
->> Ok, thanks for pointing to QUSB2. The same mechanism is apparently used
->> in phy-qcom-usb-hs-28nm.c as well (even if the dtsi currently does not
->> define the wakeup interrupts).
->>
->> Furthermore, that implementation is broken and has never worked due to
->> another half-arsed, incomplete Qualcomm implementation. Specifically, no
->> one is changing the PHY mode based on the current speed before suspend
->> as commits like
->>
->>     3b3cd24ae61b ("phy: Add USB speed related PHY modes")
->>
->> and
->>
->>     891a96f65ac3 ("phy: qcom-qusb2: Add support for runtime PM")
->>
->> depend on. Guess I should go revert that mess too...
->>
->>> As an experiment, I tried to test wakeup by pressing buttons on
->>> connected keyboard when in suspend state or connecting/disconnecting
->>> keyboard in suspended state on different ports and only see dp/dm IRQ's
->>> getting fired although we register for hs_phy_irq as well:
->>>
->>> / # cat /proc/interrupts  |grep phy_
->>> 171:   1  0   0   0  0  0  0  0       PDC 127 Edge      dp_hs_phy_1
->>> 172:   2  0   0   0  0  0  0  0       PDC 126 Edge      dm_hs_phy_1
->>> 173:   3  0   0   0  0  0  0  0       PDC 129 Edge      dp_hs_phy_2
->>> 174:   4  0   0   0  0  0  0  0       PDC 128 Edge      dm_hs_phy_2
->>> 175:   0  0   0   0  0  0  0  0       PDC 131 Edge      dp_hs_phy_3
->>> 176:   2  0   0   0  0  0  0  0       PDC 130 Edge      dm_hs_phy_3
->>> 177:   2  0   0   0  0  0  0  0       PDC 133 Edge      dp_hs_phy_4
->>> 178:   5  0   0   0  0  0  0  0       PDC 132 Edge      dm_hs_phy_4
->>> 179:   0  0   0   0  0  0  0  0       PDC  16 Level     ss_phy_1
->>> 180:   0  0   0   0  0  0  0  0       PDC  17 Level     ss_phy_2
->>> 181:   0  0   0   0  0  0  0  0     GICv3 163 Level     hs_phy_1
->>> 182:   0  0   0   0  0  0  0  0     GICv3 168 Level     hs_phy_2
->>> 183:   0  0   0   0  0  0  0  0     GICv3 892 Level     hs_phy_3
->>> 184:   0  0   0   0  0  0  0  0     GICv3 891 Level     hs_phy_4
->>
->> Yes, but that doesn't really say much since you never enable the hs_phy
->> interrupt in the PHY on suspend.
-> 
-> I did register to and enabled the hs_phy_irq interrupt when I tested and 
-> posted the above table.
-> 
->>> Since the hs_phy_irq is applicable only for qusb2 targets, do we still
->>> need to add it to DT.
->>
->> Are you sure there's no support for hs_phy_irq also in the "femto" PHYs
->> and that it's just that there is currently no driver support for using
->> them?
->>
->> And why is it defined if there is truly no use for it?
-> 
-> Femto phy's have nothing to be configured for interrupts like we do for 
-> qusb2 phy's. I confirmed from hw validation team that they never used 
-> hs_phy_irq for validating wakeup. They only used dp/dm IRQ's for wakeup.
-> 
->> Also, if hs_phy_irq and dp/dm_phy_irq were mutually exclusive, why does
->> the following Qualcomm SoCs define all three?
->>
-> 
-> Similar to BAM IRQ's these might have been just ported over targets I 
-> believe. I say so because HW Validation team confirmed they don't use 
-> this interrupt at all on femto phy targets.
-> 
->>                - qcom,ipq4019-dwc3
->>                - qcom,ipq6018-dwc3
->>                - qcom,ipq8064-dwc3
->>                - qcom,ipq8074-dwc3
->>                - qcom,msm8994-dwc3
->>                - qcom,qcs404-dwc3
->>                - qcom,sc7180-dwc3
->>           - qcom,sc7280-dwc3
->>                - qcom,sdm670-dwc3
->>                - qcom,sdm845-dwc3
->>                - qcom,sdx55-dwc3
->>                - qcom,sdx65-dwc3
->>                - qcom,sm4250-dwc3
->>                - qcom,sm6125-dwc3
->>                - qcom,sm6350-dwc3
->>                - qcom,sm8150-dwc3
->>                - qcom,sm8250-dwc3
->>                - qcom,sm8350-dwc3
->>                - qcom,sm8450-dwc3
->>                - qcom,sm8550-dwc3
->>
->> Some of those use QUSB2 PHYs and some use "femto" PHYs.
->>  > And this comes from Qualcomm through commits like:
->>
->>     0b766e7fe5a2 ("arm64: dts: qcom: sc7180: Add USB related nodes")
->>     bb9efa59c665 ("arm64: dts: qcom: sc7280: Add USB related nodes")
->>
->>
->>> 3. ctrl_irq[1] usage:
->>>
->>> This is a feature of SNPS controller, not qcom glue wrapper, and is
->>> present on all targets (non-QC as well probably). As mentioned before on
->>> [3], this is used for HW acceleration.
->>>
->>> In host mode, XHCI spec does allow for multiple interrupters when
->>> multiple event rings are used. A possible usage is multiple execution
->>> environments something like what we are doing on mobile with ADSP audio
->>> offload [4]. Another possibility could be some of virtualization where
->>> host/hyp would manage the first interrupter and could allow a guest to
->>> operate only with the second (though current design does not go far
->>> enough to offer true isolation for real VM type workloads). The
->>> additional interrupts (ones other than ctrl_irq[0]) are either for
->>> virtualization use cases, or for our various “hw offload” features. In
->>> device mode, these are used for offloading tethering functionality to
->>> IPA FW.
->>
->> Ok, thanks for clarifying what you meant by "HW acceleration".
->>
->>> Since the DeviceTree passed to the OS, should describe the hardware to
->>> the OS, and should represent the hardware from the point-of-view of the
->>> OS, adding one interrupt (ctrl_irq[0]) might be sufficient as Linux
->>> would not use the other interrupts.
->>
->> I've only skimmed the virtualisation bits in xHCI spec, but it seems
->> Linux as VMM would still be involved in assigning these interrupts to
->> VMs.
+vim +620 mm/rmap.c
 
-Hi Krishna/Johan,
+   608	
+   609	void fold_ubc_ro(void)
+   610	{
+   611		struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
+   612		struct tlbflush_unmap_batch *tlb_ubc_ro = &current->tlb_ubc_ro;
+   613	
+   614		if (!tlb_ubc_ro->flush_required)
+   615			return;
+   616	
+   617		/*
+   618		 * Fold tlb_ubc_ro's data to tlb_ubc.
+   619		 */
+ > 620		arch_tlbbatch_fold(&tlb_ubc->arch, &tlb_ubc_ro->arch);
+   621		tlb_ubc->flush_required = true;
+   622	
+   623		/*
+   624		 * Reset tlb_ubc_ro's data.
+   625		 */
+ > 626		arch_tlbbatch_clear(&tlb_ubc_ro->arch);
+   627		tlb_ubc_ro->flush_required = false;
+   628	}
+   629	
 
-IMO it might be a bit premature to add definitions for how to utilize 
-secondary interrupters since design wise, there's nothing really too 
-well defined yet.  At least for the XHCI path, we will have a slew of 
-potential use cases for secondary interrupters, such as USB audio 
-offloading, or for VMMs, etc...  I've only heard mentions about some of 
-them after pushing the usb audio offloading series, but I don't have 
-much details on it.
-
-For example, for the USB audio offload path, the idea is to not have to 
-interrupt the apps proc, and allow for an external DSP to be managing 
-the event ring.
-
-> 
-> I didn't understand this sentence. Are you referring to cases where 
-> Linux needs to act as the entity using the ctrl_irq[1] ?
-> 
-> On QCOM SoC's, in reality (atleast in device mode) I can say that we 
-> create the event rings for IPA FW (which registers for ctrl_irq[1]) to 
-> use and read depevt's. We don't register or get this IRQ from DT and 
-> then provide to IPA (not even in downstream).
-> 
->>
->> This may possibly be something that we can ignore for now, but perhaps
->> someone more familiar with the hardware, like Thinh, can chime in.
->>
->>> Furthermore AFAIK even UEFI/Windows
->>> also use only ctrl_irq[0] for host mode in their execution environment
->>> today. Do we still need to add this to bindings and DT ?
->>
->> But the second interrupt is described in the ACPI tables, which means
->> that a simple driver update could (in theory) allow for it to be used.
->>
->> You need to get into the same mindset when it comes to devicetree. Even
->> if Linux currently does not use an interrupt, like the pwr_event_irq,
->> you should still add it so that when/if someone implements support for
->> it, an older platform using the original dt may also take advantage of
->> it.
-
-Yeah, I totally agree with this point, but I'm not sure if adding it 
-into the "interrupts" array is the way to go.  It would probably have to 
-change as support is added.
-
-Sorry for jumping in, but just giving my two cents since I'm the one 
-trying to do the initial push for the support for secondary interrupters :).
-
-Thanks
-Wesley Cheng
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
