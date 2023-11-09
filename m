@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 379BB7E6C79
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0647E6C81
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 15:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbjKIOeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 09:34:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        id S231538AbjKIOge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 09:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjKIOeJ (ORCPT
+        with ESMTP id S231963AbjKIOgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 09:34:09 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EBD2D78
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:34:06 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7bae0c07086so427951241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:34:06 -0800 (PST)
+        Thu, 9 Nov 2023 09:36:31 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D230DE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 06:36:29 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-49dc95be8c3so395318e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 06:36:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699540446; x=1700145246; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699540589; x=1700145389; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M1pa0v/X7UL1G6d0YgW+ZV2uzr9bDeP0CswrdUk62h0=;
-        b=OoEy1H0GENwUpNrwm1yFuQZclJk89mzjyjM8y0Z0RWzQncfUpCKBy2pGrIaHwXGg9h
-         3Fw4M7u7AoijDQpdvqfQd+mb2zvB9GlMu0lGsKIPaO0f7nFsWFS/WaXKo1l/vxuUBZ39
-         aIYhSlG2hP7DL/LBRldK8JTgxMdhrKhZTCDra7Y8xOIvuwP0zGN7ZN0x82O0yp4wYtPU
-         Mk5x+sN1D6ixEgWJCE0wUoxSv8L77ZtANyXi2AZJU1j4PWjw/BhJy5+1KODa+MaD2y1R
-         fwvPuhTkDms7Wh0nYB7Kk8K+zBmRdeN2Qx/tADsNDZ4TpwpDlZsbxsS7Hb7LEIZuu5FP
-         CU2g==
+        bh=i0W3+VXWhRt/YdsoX67KLjAW6NuBZU8bYSere/jdVKY=;
+        b=i5ewt4FOGo6smWsOwAKV6NYxq6RCpkAnHiAG9NyNqKFrTDluWjV5qYJROHwxTB5aOE
+         kr4hD/t/S9BeC4GOdXMxHpqhaI5jomGt1O5yzfG+t1M2ohQ2+XtkEn1CcvYNOAq6xSNT
+         qwr5enp6nysDnP79Ne5QOffoTsX8PJbqOIpC2GoVV+vcKT3UldkSvumWxpeAimV6F8/y
+         zjotjG2dhC1NQTsTj0lveHuNuIgmTe5oKh3O0RcfZQl9+5UdPeXyz5Cr4ZSnwvfj8zfK
+         9ATLORKdNvyjk3GLak3mpcijX+00xQdYja78+tzXoUz6WJdsE+u0uDAWGp4CmpklsjsV
+         UY4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699540446; x=1700145246;
+        d=1e100.net; s=20230601; t=1699540589; x=1700145389;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M1pa0v/X7UL1G6d0YgW+ZV2uzr9bDeP0CswrdUk62h0=;
-        b=UrdqEzWAKUbgcheUnjlNm3dzyEq4HmzsrwBrG+2sT34f5dfWRJIvrlcDHsL1zmqPpu
-         Qo6b5Vjz1qKHw4VPftJYXl8CfVt0tdaqR7/1osWyw0JzPpmRUbXHSQ2M0pzFbdCkEVWt
-         jgWJmayRvpL1afeUczXQDotro/90PbryB9tcK2QTMHW46iK6KOtsThgnBixsnDQIEQkg
-         m968WWzpBemlFQ/c7pF7KPyJ8cfdB6e0IjeGQ3LUqNDJjwycFWtJENjVYQ2/SlyyJXrL
-         VyxqDCxaebe0kM9gMA3AvNPpLOCVCvZYgYN2PcZSf6LK2EI7iIjmMesfcF5vaxlyRoSi
-         NpjA==
-X-Gm-Message-State: AOJu0YwcnkVFE6j+FBS0TefUv9e21q9E0Eu/yflgfD272ES6MdxSeDw2
-        xmEnFKusjbjWwV7QkCJRYHZ1YVLAvQ/SmuBRr7bpcw==
-X-Google-Smtp-Source: AGHT+IF6/SKb9tnG09SVJDC2YZw83HQI5NrFow5lKduMeIis/nLu15+6OXST1tbD5YFM40N7jd6Q4wzjCwruYdW5sh8=
-X-Received: by 2002:a67:c314:0:b0:45e:3e66:56ee with SMTP id
- r20-20020a67c314000000b0045e3e6656eemr4761621vsj.17.1699540445802; Thu, 09
- Nov 2023 06:34:05 -0800 (PST)
+        bh=i0W3+VXWhRt/YdsoX67KLjAW6NuBZU8bYSere/jdVKY=;
+        b=JCHaQlShXCTOHgyKcSDBOBMMDeZ7tqHZR6bBNoywCO0UoiKV7FpkwJAHpuE7zKGZZO
+         hlLRfNE2YeSeFuW3DQnCY+3GpOphGoQoCFQeylc+SfWk+Cz+78c+VQklvOJwMo6+RfvX
+         sZqvsBPezjrKBn5To7CAekLYtw4JKOqw/uOFJ0wr31o2BxCNbrHq6f4ZKQqHkTT67Ra4
+         4TpF5pTKXU+tAx2Muh8oDDDxp6W8Nha4OISY8mi6HCmFsXy7svnp1kglEfWuCXNWa0qq
+         ORByvkmdOlpulQefMMo9YCmSTKj+vgscggO1pMt59LFZT/A4MdZQL1rz4dBkkm+A/xcB
+         6Y3g==
+X-Gm-Message-State: AOJu0YzhpggmqfisMGHlbIRK2QuUAVFUPVuOtdgpTG+ENGlVVawo+vlF
+        gpaK81/fgzgRjX2oH4J6H4mcQYw0qnmoRw+Q83Qx8A==
+X-Google-Smtp-Source: AGHT+IHqR78r51+mkNsmu8vbLuPJOJ0ONXbMIC7PFt2VVqNIxbPsZ2d33+TtCWZ8rk4CcNkGNDd8TH4bwZO0fWWeMDo=
+X-Received: by 2002:a05:6122:1799:b0:4ac:7529:e903 with SMTP id
+ o25-20020a056122179900b004ac7529e903mr1581266vkf.13.1699540588528; Thu, 09
+ Nov 2023 06:36:28 -0800 (PST)
 MIME-Version: 1.0
 References: <20231030153210.139512-1-glider@google.com> <20231030153210.139512-2-glider@google.com>
  <093114e8-b02f-4df0-a0d4-8e9f86e2259d@intel.com> <CAG_fn=W3LqtdDoUDDVGn_=2+gvKNeCusH6yUzWmVmMmOLZp9jA@mail.gmail.com>
  <27f5d15b-28da-469b-9625-1c840f33b60d@intel.com>
 In-Reply-To: <27f5d15b-28da-469b-9625-1c840f33b60d@intel.com>
 From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 9 Nov 2023 15:33:25 +0100
-Message-ID: <CAG_fn=V2v41qFK8LRGX4j3-+is-pODu_FHVU0K5tsDVWoWopfw@mail.gmail.com>
+Date:   Thu, 9 Nov 2023 15:35:52 +0100
+Message-ID: <CAG_fn=XwzkiMwEAA2P5T+JGpuF7tyC=uJi_urHc17-Y3d5rXxw@mail.gmail.com>
 Subject: Re: [PATCH v11 2/2] lib/test_bitmap: add tests for bitmap_{read,write}()
 To:     Alexander Lobakin <aleksander.lobakin@intel.com>
 Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
@@ -85,78 +85,9 @@ On Thu, Nov 9, 2023 at 3:32=E2=80=AFPM Alexander Lobakin
 > > int)(x), (unsigned int)(y))
 >
 > Do we need explicit casts here tho?
->
-> >
-> > and throw __expect_eq_uint away.
-> >
-> >
-> >>> +     }
-> >>> +     time =3D ktime_get() - time;
-> >>> +     pr_err("Time spent in %s:\t%llu\n", __func__, time);
-> >>
-> >> pr_err() is for printing errors and is shown in red by some log reader=
-s.
-> >> Maybe use pr_info() or pr_notice()? Definitely not an error or even wa=
-rning.
-> >
-> > Note that test_bitmap.c has 17 calls of pr_err() and 7 calls of
-> > pr_warn(), which aren't really consistent (e.g. they are used in
-> > certain __check helpers instead of pr_err()), and the existing
-> > performance tests are calling pr_err().
->
-> Correct, and that's what caught my attention: visual grepping for bitmap
-> messages makes no sense because some of them are red even thought all
-> tests pass correctly.
->
-> > I can change that in a separate patch, if you think it's worth the
-> > effort: the error messages should probably remain pr_err(), but the
-> > informational ones could be made pr_info().
->
-> Sounds good to be, would be nice to see!
->
-> [...]
->
-> >>> @@ -1237,6 +1411,9 @@ static void __init selftest(void)
-> >>>       test_bitmap_cut();
-> >>>       test_bitmap_print_buf();
-> >>>       test_bitmap_const_eval();
-> >>> +     test_bitmap_read_write();
-> >>> +     test_bitmap_read_perf();
-> >>> +     test_bitmap_write_perf();
-> >>>
-> >>>       test_find_nth_bit();
-> >>>       test_for_each_set_bit();
-> >>
-> >> Thanks,
-> >> Olek
-> >
-> >
-> >
-> > --
-> > Alexander Potapenko
-> > Software Engineer
-> >
-> > Google Germany GmbH
-> > Erika-Mann-Stra=C3=9Fe, 33
-> > 80636 M=C3=BCnchen
-> >
-> > Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-> > Registergericht und -nummer: Hamburg, HRB 86891
-> > Sitz der Gesellschaft: Hamburg
->
-> Thanks,
-> Olek
 
-
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+We do.
+test_bitmap_arr64() passes u64 values to expect_eq_uint(), which
+results in test failures.
+We could add an explicit cast there instead, but I think it's more
+natural to let the users rely on expect_eq_uint() taking uints.
