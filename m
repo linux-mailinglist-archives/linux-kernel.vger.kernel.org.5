@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388AE7E675A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B637E676C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Nov 2023 11:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbjKIKHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 05:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S233801AbjKIKH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 05:07:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbjKIKG5 (ORCPT
+        with ESMTP id S233657AbjKIKHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 05:06:57 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D102D79;
-        Thu,  9 Nov 2023 02:06:48 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso8481851fa.0;
-        Thu, 09 Nov 2023 02:06:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699524407; x=1700129207; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ziH0evbWe+MkV0AfceDy6ohEFNGYBOK5CmtTzEQCRBk=;
-        b=Svu4rloaqTvKWJznkkmEbTSi12m9NWSIYYE+3JkNvBD2ocih8/x93h7kERlfDxCGPu
-         DGXYCut5bKAte6jkv1XScxCn1Jp/7/HL8Ak+UsrVMHBpMjgoqLKFTpSSjyAUFTRvi5mb
-         LdHHDcfqyZpWW/RAsfpZYaL4+GxjCerkeF1f5ToB3DUmivR65+vzQ2XNPcmzkDIw/lIi
-         V7oFDfz4jV2iixTm1mXG9DPLXOKtZ03sMO28DAceENnLfehZGGTCymzMBVJpccVmnamH
-         B0F8OoQfOgMvVQp8CA44A08LsO2p5GYSUniylLUo9AlmnMJCj+QPrnDFzy1ghyotlV68
-         ILKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699524407; x=1700129207;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:user-agent:mime-version:date
-         :message-id:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ziH0evbWe+MkV0AfceDy6ohEFNGYBOK5CmtTzEQCRBk=;
-        b=W8VHwb6cUDnGcxTnZhBEgSSt2h5Y+0sQBKzSRJb8l/xdyAzo7BXRNQAty8s97jjDDd
-         MZtcoySY78LNrghCAueyzs4jvlE+dNDqhaPlfaFsVwPgAujxQXzaoljV/SSj3/SD31KE
-         VZjikLp46xhVo+js+Xj/HqTZ05tQXb3yK7YQg4a0m64WJvh+HTpoCR9Mjd+sAmpYSSOf
-         9g7y9Rl2IQ9kIyGlwU4H0+jq32d3obTdovAkzIFhktPtYRx2MXPervto0k5NVNsV2aWf
-         Kx0EG6KmJX6OtDPeSFZC3gBNp58/q+kW2c99QPtOaLEvED1cLOAvGB8wcjzftvP6EtN/
-         dM9A==
-X-Gm-Message-State: AOJu0YwT+d/iy4dmYaz2CVz/yY52UzpMv0Sg0z5pXVl3VrLcogTLA+Vh
-        RwLd/wMqRzSR3umNSr4jWBI=
-X-Google-Smtp-Source: AGHT+IEXVZ/aDOimk6Eks94c9xbwgB5ss6PN7WwJfVoVAEWfsiJeVVPWfibJtnLANdc0DIO/eVeb6g==
-X-Received: by 2002:a05:6512:488a:b0:509:b3f:8a7b with SMTP id eq10-20020a056512488a00b005090b3f8a7bmr939296lfb.22.1699524406879;
-        Thu, 09 Nov 2023 02:06:46 -0800 (PST)
-Received: from [192.168.12.204] (54-240-197-239.amazon.com. [54.240.197.239])
-        by smtp.gmail.com with ESMTPSA id j6-20020a5d6046000000b0032fc5f5abafsm7034674wrt.96.2023.11.09.02.06.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 02:06:46 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: Paul Durrant <paul@xen.org>
-Message-ID: <b7d0c879-3c44-4f44-b796-78c0d3855976@xen.org>
-Date:   Thu, 9 Nov 2023 10:06:40 +0000
+        Thu, 9 Nov 2023 05:07:39 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A5030D2;
+        Thu,  9 Nov 2023 02:07:24 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1479B6607435;
+        Thu,  9 Nov 2023 10:07:21 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699524442;
+        bh=2u4132PKQo/IFXxEHHXQCfjEEBtnpTKPKk3Jkg0X8BA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=aPdvntNYeqjb+XoPa1QOJWzij5Diogua7gCy81chfR2XskUq1ILkXzf2tZRnG3JP7
+         phwa5ILJKXBUJNil2qBTzLotFJcrNeFLUPu1d7XoMzWtTPyFR1nLM6DwIxHdkvoj1/
+         Jp6XyNdh9JXMySrU9kpIB5DXb8A3RAHMx9n0kucsSkAZAzg9mkO+utTdnp+dE47s4z
+         uVauM1T92AGxYC5Vo2ibB5bJMDeIHosARg3QA0cjpXGm6PKhRK45DpdILnmtsPYnsf
+         mL5JH3wTXwWXQgMh75/hAjYMUUVm/cjfq6YltNYU97n0DQyVSdQAJouj849HgL22hl
+         WSSDwlp0gymLQ==
+Message-ID: <c4f47aaa-d712-4905-b77d-6fe1b897d94b@collabora.com>
+Date:   Thu, 9 Nov 2023 11:07:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Reply-To: paul@xen.org
-Subject: Re: [PATCH v7 00/11] KVM: xen: update shared_info and vcpu_info
- handling
+Subject: Re: [PATCH v14 23/56] media: pci: cx18: Stop direct calls to queue
+ num_buffers field
 Content-Language: en-US
-To:     David Woodhouse <dwmw2@infradead.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-References: <20231002095740.1472907-1-paul@xen.org>
- <6629b7f0b56e0fb2bad575a1d598cce26b1c6432.camel@infradead.org>
- <bf34f990-4f32-4cd3-9dd0-df1cf9187b25@xen.org>
- <117d1e78e7277177236dabc616ade178fdc336fa.camel@infradead.org>
-Organization: Xen Project
-In-Reply-To: <117d1e78e7277177236dabc616ade178fdc336fa.camel@infradead.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, Sergey Kozlov <serjk@netup.ru>,
+        Abylay Ospan <aospan@netup.ru>
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-24-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-24-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 10:02, David Woodhouse wrote:
-> On Thu, 2023-10-05 at 09:36 +0100, Paul Durrant wrote:
->> On 05/10/2023 07:41, David Woodhouse wrote:
->>> On Mon, 2023-10-02 at 09:57 +0000, Paul Durrant wrote:
->>>> From: Paul Durrant <pdurrant@amazon.com>
->>>>
->>>> The following text from the original cover letter still serves as an
->>>> introduction to the series:
->>>>
->>>> "Currently we treat the shared_info page as guest memory and the VMM
->>>> informs KVM of its location using a GFN. However it is not guest memory as
->>>> such; it's an overlay page. So we pointlessly invalidate and re-cache a
->>>> mapping to the *same page* of memory every time the guest requests that
->>>> shared_info be mapped into its address space. Let's avoid doing that by
->>>> modifying the pfncache code to allow activation using a fixed userspace HVA
->>>> as well as a GPA."
->>>>
->>>> This version of the series is functionally the same as version 6. I have
->>>> simply added David Woodhouse's R-b to patch 11 to indicate that he has
->>>> now fully reviewed the series.
->>>
->>> Thanks. I believe Sean is probably waiting for us to stop going back
->>> and forth, and for the dust to settle. So for the record: I think I'm
->>> done heckling and this is ready to go in.
->>>
->>> Are you doing the QEMU patches or am I?
->>>
->>
->> I'll do the QEMU changes, once the patches hit kvm/next.
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
+> This allows us to change how the number of buffers is computed in the
+> future.
 > 
-> Note that I disabled migration support in QEMU for emulated Xen
-> guests. You might want that for testing, since the reason for this work
-> is to enable pause/serialize workflows.
-> 
-> Migration does work all the way up to XenStore itself, and
-> https://gitlab.com/qemu-project/qemu/-/commit/766804b101d *was* tested
-> with migration enabled. There are also unit tests for XenStore
-> serialize/deserialize.
-> 
-> I disabled it because the PV backends on the XenBus don't have
-> suspend/resume support. But a guest using other emulated net/disk
-> devices should still be able to suspend/resume OK if we just remove the
-> 'unmigratable' flag from xen_xenstore, I believe.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-Ok. Enabling suspend/resume for backends really ought not to be that 
-hard. The main reason for this series was to enable pause 
-for-for-memory-reconfiguration but I can look into 
-suspend/resume/migrate once I've done the necessary re-work.
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+
+> CC: Sergey Kozlov <serjk@netup.ru>
+> CC: Abylay Ospan <aospan@netup.ru>
+> ---
+>   drivers/media/pci/cx18/cx18-streams.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/pci/cx18/cx18-streams.c b/drivers/media/pci/cx18/cx18-streams.c
+> index 597472754c4c..cfbc4a907802 100644
+> --- a/drivers/media/pci/cx18/cx18-streams.c
+> +++ b/drivers/media/pci/cx18/cx18-streams.c
+> @@ -104,6 +104,7 @@ static int cx18_queue_setup(struct vb2_queue *vq,
+>   			    unsigned int *nbuffers, unsigned int *nplanes,
+>   			    unsigned int sizes[], struct device *alloc_devs[])
+>   {
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+>   	struct cx18_stream *s = vb2_get_drv_priv(vq);
+>   	struct cx18 *cx = s->cx;
+>   	unsigned int szimage;
+> @@ -121,8 +122,8 @@ static int cx18_queue_setup(struct vb2_queue *vq,
+>   	 * Let's request at least three buffers: two for the
+>   	 * DMA engine and one for userspace.
+>   	 */
+> -	if (vq->num_buffers + *nbuffers < 3)
+> -		*nbuffers = 3 - vq->num_buffers;
+> +	if (q_num_bufs + *nbuffers < 3)
+> +		*nbuffers = 3 - q_num_bufs;
+>   
+>   	if (*nplanes) {
+>   		if (*nplanes != 1 || sizes[0] < szimage)
 
