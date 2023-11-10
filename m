@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB20E7E837A
+	by mail.lfdr.de (Postfix) with ESMTP id 626C27E8379
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345726AbjKJUIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S1345902AbjKJUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345235AbjKJUIr (ORCPT
+        with ESMTP id S234972AbjKJUIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:08:47 -0500
+        Fri, 10 Nov 2023 15:08:50 -0500
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98606C6
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:43 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dae71322ed4so3022351276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7551D1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:47 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da31ec03186so1935894276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699646923; x=1700251723; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699646927; x=1700251727; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=51fJBfx3imxlXxpJCLaVZXz5cvn77oR86IbzpiZXKNs=;
-        b=Z8z0hd3rLiSBV1f7Bl/bch+Tx+/+iZQFB1vZWYMcF4yhbJ2WW9dLRvw9ghPIw3ton/
-         D7VUgsAgzqGQBQiAIu6k0HE9GiL5tw1nYVvcl88RFGE36J+f6f2VAfFQSK0/xXPEo1FN
-         AHkz61ADkq3ZlXuHSIYA15/cfCcY1CkuzJ0c93ukLURMJ9HrLb09RiKnxdX4EEktjU6G
-         Z/7yB97kcUhDBlQaLTk5E6WnGD3MGnnubTqOkyAwzRlhhEMSOZocrY7UVFbvJnbA966R
-         VTPboVNN5AdLNxUroFO4CBImuDhi1wn1dmb9SiCMdGYTMJMuerSqsJLiRJDkAXIV/2/E
-         jNKw==
+        bh=IAkJ89LUqtxG0K+MSJnco+XQD27u+TKLaVoOcPh4bOc=;
+        b=JAujfGHJ8yOYNMAj+/UzMg5ghYS5kqcl7r5wvrjHHCdl2sM8xOiTkUGnVaF+EHQjJb
+         TmJhenOTUE/qPxBsjJBqd7QjAUK89cbdB2q1c7corDKfnE2MywVyc4qjt2FMEwkQaUqA
+         JLopDWEh9Zx6/9lehNFw0qyeeunwaCl3uO2oj/yVVL6EeBZFs80cjPKM1MxFsuubgqZm
+         22YQEEAIjx0YRE7ZRv6AW7TsH4v6Bk9y2NYAkZIXYVKPKPdyCQFiz5UYFVzVbqd8ZJbg
+         nAsYZInmjMEDKXuvMtX6lr2Urrl+kIUb81TOODAcX6wlIIdlBiY4HC+oOBC3CurBJGCu
+         Ll4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699646923; x=1700251723;
+        d=1e100.net; s=20230601; t=1699646927; x=1700251727;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=51fJBfx3imxlXxpJCLaVZXz5cvn77oR86IbzpiZXKNs=;
-        b=lYgXt3VwAwnZ0lkgOc0qkut0k0moZNdk9dUgaCC98wHyqEFKnuT1zY/LBn8m82pnVf
-         /MSVVKziIBj2n+Ei249WmWV5kIYRIbNNmlNhEoFp6beLERLBCIS6e8EE28Ar2VMxJ0L5
-         37ANspGg9yIuqTS6QagVrBWuMG0lkGYWTi1jiIpXq6LZ5b2yQQV2mpHqeH5ATFFLsych
-         0qjUNB/cdulbNCE/yKaeW+LuoXZNaCbcpLs4XYSPqnQgM1XOp6tQfuHj08+4BUr1h7/l
-         VErrF/Wvg7MhyZK+J+YisSYqt9D21kkFMKaspS31R8rwd1kJHYzSo0GWtaVrryrEIeMK
-         Xgzw==
-X-Gm-Message-State: AOJu0YxM31d8vZUV7b4jI8jVoqZ3pCa2F5TUZH3PvlTeBChGyfip58Rv
-        u7Oun6G+KNZ3iXRfH9aECcbjue4l6Pe9Qg==
-X-Google-Smtp-Source: AGHT+IGDK07iaPg+g9N2kLo9bN2a5OkVBolpHXkG2QTgPQJFeKS5zwURLPQj7RWzYTJuEXCxK3CW75e1iydlNQ==
+        bh=IAkJ89LUqtxG0K+MSJnco+XQD27u+TKLaVoOcPh4bOc=;
+        b=oXCzEf3OrSvNuiR0Hq7WtwjSaqPm0+5jQcevNeSDAAopZrfBk8PQJVLg55ww+wWx+Q
+         Wt5ICoBOYoOOu9JM1USrEenhO5/yysNNhnudHFDne7HMC1b+l4E5B7p73Dk/NA/lB6II
+         EB2Ln+ocxl4nj+cnazP0bcydgae8irfRftNp+IECFX3oVVl2JGTtBZzdNufplU+Nwpyb
+         NMW1pFyyvhtwSEnrLR1z/rUlKSr9WhTVt2JCg0ilo6MgzFY/bjaDsYc/itI/SmZVQYli
+         1QFPq8+ZzD21fcy9Dkv67dphR6NPnuL9WwqwYbcLN/6dGK0p0nF6JXrzvKG36e1JXyxs
+         pu6A==
+X-Gm-Message-State: AOJu0YxaeO4cykclkLEpzMubhJPmusX7u1s43rtnaocC4XfDt4016lYl
+        wv7TxUXyifxhP1OxS2IQhqmWl7dBPg3y2Q==
+X-Google-Smtp-Source: AGHT+IG2qICxw/Ih6W1d00Yw7wl6gZh00iMH2vxhyvW4HtVTUR9T6SIeeV3AzuFmY7j3gx/bERyrecNPMvP5+g==
 X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a05:6902:182:b0:d9a:ec95:9687 with SMTP
- id t2-20020a056902018200b00d9aec959687mr3348ybh.11.1699646922890; Fri, 10 Nov
- 2023 12:08:42 -0800 (PST)
-Date:   Sat, 11 Nov 2023 04:08:27 +0800
+ (user=davidgow job=sendgmr) by 2002:a05:6902:18d:b0:d89:42d7:e72d with SMTP
+ id t13-20020a056902018d00b00d8942d7e72dmr141489ybh.3.1699646927074; Fri, 10
+ Nov 2023 12:08:47 -0800 (PST)
+Date:   Sat, 11 Nov 2023 04:08:28 +0800
 In-Reply-To: <20231110200830.1832556-1-davidgow@google.com>
 Mime-Version: 1.0
 References: <20231110200830.1832556-1-davidgow@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231110200830.1832556-2-davidgow@google.com>
-Subject: [PATCH 2/3] drm/tests: Use KUNIT_DEFINE_ACTION_WRAPPER()
+Message-ID: <20231110200830.1832556-3-davidgow@google.com>
+Subject: [PATCH 3/3] drm/vc4: tests: Use KUNIT_DEFINE_ACTION_WRAPPER
 From:   David Gow <davidgow@google.com>
 To:     Nathan Chancellor <nathan@kernel.org>,
         Kees Cook <keescook@chromium.org>,
@@ -79,8 +79,7 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,9 +90,9 @@ In order to pass functions to kunit_add_action(), they need to be of the
 kunit_action_t type. While casting the function pointer can work, it
 will break control-flow integrity.
 
-drm_kunit_helpers already defines wrappers, but we now have a macro
-which does this automatically. Using this greatly reduces the
-boilerplate needed.
+vc4_mock already defines such a wrapper for drm_dev_unregister(), but it
+involves less boilerplate to use the new macro, so replace the manual
+implementation.
 
 Signed-off-by: David Gow <davidgow@google.com>
 ---
@@ -109,50 +108,29 @@ Cheers,
 -- David
 
 ---
- drivers/gpu/drm/tests/drm_kunit_helpers.c | 30 +++++++----------------
- 1 file changed, 9 insertions(+), 21 deletions(-)
+ drivers/gpu/drm/vc4/tests/vc4_mock.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-index bccb33b900f3..c251e6b34de0 100644
---- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-+++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-@@ -27,27 +27,15 @@ static struct platform_driver fake_platform_driver = {
- 	},
- };
+diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.c b/drivers/gpu/drm/vc4/tests/vc4_mock.c
+index 63ca46f4cb35..becb3dbaa548 100644
+--- a/drivers/gpu/drm/vc4/tests/vc4_mock.c
++++ b/drivers/gpu/drm/vc4/tests/vc4_mock.c
+@@ -153,12 +153,9 @@ static int __build_mock(struct kunit *test, struct drm_device *drm,
+ 	return 0;
+ }
  
--static void kunit_action_platform_driver_unregister(void *ptr)
+-static void kunit_action_drm_dev_unregister(void *ptr)
 -{
--	struct platform_driver *drv = ptr;
+-	struct drm_device *drm = ptr;
 -
--	platform_driver_unregister(drv);
--
+-	drm_dev_unregister(drm);
 -}
--
--static void kunit_action_platform_device_put(void *ptr)
--{
--	struct platform_device *pdev = ptr;
--
--	platform_device_put(pdev);
--}
--
--static void kunit_action_platform_device_del(void *ptr)
--{
--	struct platform_device *pdev = ptr;
--
--	platform_device_del(pdev);
--}
-+KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_driver_unregister,
-+			    platform_driver_unregister,
-+			    struct platform_driver *);
-+KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_device_put,
-+			    platform_device_put,
-+			    struct platform_device *);
-+KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_device_del,
-+			    platform_device_del,
-+			    struct platform_device *);
++KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_drm_dev_unregister,
++			    drm_dev_unregister,
++			    struct drm_device *);
  
- /**
-  * drm_kunit_helper_alloc_device - Allocate a mock device for a KUnit test
+ static struct vc4_dev *__mock_device(struct kunit *test, bool is_vc5)
+ {
 -- 
 2.42.0.869.gea05f2083d-goog
 
