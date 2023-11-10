@@ -2,109 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F847E854F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07617E8551
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjKJWGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 17:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        id S229573AbjKJWIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 17:08:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKJWGE (ORCPT
+        with ESMTP id S229379AbjKJWIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 17:06:04 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822F24229;
-        Fri, 10 Nov 2023 14:06:01 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b20577ef7bso2330781b3a.3;
-        Fri, 10 Nov 2023 14:06:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699653961; x=1700258761; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SQsMe074MamB2yzTQo6W7krdrCcJW4RDQzQCxoPsHD4=;
-        b=g7InLcbmdDLab1Lx4iUOYFwcWf5rys/9CPVZDHc+MVA9HxZd+N/QeHGCszQqNX52vA
-         AyUqHKWVqR4nTQGD9/jAeiiB9AmQ8ofIfxhCwFDBAdpDKMmXuDOHkicAMsX1B11aRz44
-         6/SDdn5J/WG4Ur7hXNtGN4ZUzS/vxFq+JEbomXPpr1fDq9wqk2eYqQbLBXJl6q6mI6SR
-         TCfykjAvK6dKJcBtJW5xxwNQiV9yzzKMAq0QNUA3P5RSntzPPO/FajSn5YW06S6KU0gM
-         l1Ky6N2wO5MThQe9e1c4BPdlAR7N+GyLXAn0odULZzvNKIxa6bRzkE9/+VP8A8dqWBa7
-         L4YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699653961; x=1700258761;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SQsMe074MamB2yzTQo6W7krdrCcJW4RDQzQCxoPsHD4=;
-        b=LuzAin1TvQG6FWeWVp3t1bTGWPnO4iL4cPooR1pQKpwBffv+vlbX06L0sYraMOosy+
-         aalQXCubrXtkNYGtJVsIqjEy74J04Csl8CgS+C2E/HaMta2WcX3Fkqem2ADTnSi8d4DG
-         cskTMDS3RPTL8jIPjG9AHZNJPDvWKq3kA9lL03dFxRw8VCRfJrJ4w6gFQCwiJ1zg+usX
-         voAmsvEAiN8wRSuf6Ir80jotFVObqepAXspPG2wc1H4zSaJg0gZZq+q5iKRe4P05kDPa
-         kEvEmjV81xRJ6543g2Kze7gITU8JYAm+hR1PrvhM3nuOSnyno3N6oq2JBmlGK7LwJBfV
-         MO2A==
-X-Gm-Message-State: AOJu0YwkuFq56nYqakA1iMFtVnF3ycVSh76G9776XySEBWUcWcnZ6li4
-        vCAXnYOVKUGhQXPjFnYP+6M5YaedZlM=
-X-Google-Smtp-Source: AGHT+IGmYD+iLSGJMZ1bWcW3JwFA+GQuAkLKnNRr9ZRnrpf2Iuo4IbP+yoj9cl8CDjWN8FMq3eC3SA==
-X-Received: by 2002:a05:6a21:7746:b0:181:a3ae:115b with SMTP id bc6-20020a056a21774600b00181a3ae115bmr438823pzc.61.1699653960858;
-        Fri, 10 Nov 2023 14:06:00 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:7384])
-        by smtp.gmail.com with ESMTPSA id fm26-20020a056a002f9a00b0068620bee456sm180253pfb.209.2023.11.10.14.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 14:06:00 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 10 Nov 2023 12:05:59 -1000
-From:   "tj@kernel.org" <tj@kernel.org>
-To:     John Groves <john@jagalactic.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        Gregory Price <gregory.price@memverge.com>,
-        "jgroves@micron.com" <jgroves@micron.com>
-Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
-Message-ID: <ZU6pR46kiuzPricM@slm.duckdns.org>
-References: <20231109002517.106829-1-gregory.price@memverge.com>
- <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
- <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
+        Fri, 10 Nov 2023 17:08:19 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2079.outbound.protection.outlook.com [40.107.94.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0374205;
+        Fri, 10 Nov 2023 14:08:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AtTV5tuSrQmacUVva3gQgEPlITnlswwmezhuONTzXoTTI8pI0NaWIyeZ6runTvLDab+3mm2PQ/5I0F6mT3S12woLvSOrkJhiIGLZIqRu62lrnT0PHb5pzHP40Pay3Vq+O6Z+fg7L6qHHCkrKDlOULqd0clAXXiwkMxDDvndMdNHUwbjtu8rUn2Fj34Ws1gr5rEw9u8RY+NtELBG+xwCVkfqJYgP3JV8MJy/JFBubLFN2wPOAqGbnHmFi3uO3jbGbc2LSK7Ym64DTK8mimgKkBpxGHgIpYByt2pCAdBAqW84kMLUq6lwnOeudhK+bmtKp0ac1/gFZZjxu9v1eEVVwOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Qa3PqD4sOPR/HFdOo2x936pkipuYUXli9vflwTmetfw=;
+ b=OJTYiXFQkm5rjRjqYW3aCxREDyMcC7GiR/hGfZvLWDJV4jLC0D3Au6auy87PKmcpQYVskY1sGBlIk4AaYcDOc1yEyee+apbR46A8GLK5OUNPbtJEKcuWzBwqr/nD7z7eFRr8IUGXgoV/Taley5rhlxl9wlhmdHsa3Sd5GF+zgYJBl6EmUgTGgO+1l66M+eIYSjdN+RSyTY/tgVJXzfpn3js6dqlojYrR1SAlmpSHBa53owtlRJ4/gSJ+MpN0puV4YJvljaHgp+J7oc7MgUZD5ytgJdk9qJw8LhgQSq44hS+XdJ/wq6oa6hmd7VRpf9KC0bS/sn1yQKTl9kT/2qghqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qa3PqD4sOPR/HFdOo2x936pkipuYUXli9vflwTmetfw=;
+ b=Ets9i2x0ODGncJohlvy4ilibYmZB/E+lEAFH3XVwlvkFi8+ud3SdciGy+wh8YVlReIwXyzpRCseFrTKmoRqCsucGJN/b8G/bYQwF5xNyEd/Z8gzFXfliChKO7javE/5jMG+MuemmLn5AWsLKnkCDcioMO8K4lZi0iBrMalbzwxA=
+Received: from CY5PR03CA0029.namprd03.prod.outlook.com (2603:10b6:930:8::30)
+ by CY8PR12MB7196.namprd12.prod.outlook.com (2603:10b6:930:58::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19; Fri, 10 Nov
+ 2023 22:08:13 +0000
+Received: from CY4PEPF0000EE3B.namprd03.prod.outlook.com
+ (2603:10b6:930:8:cafe::22) by CY5PR03CA0029.outlook.office365.com
+ (2603:10b6:930:8::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
+ Transport; Fri, 10 Nov 2023 22:08:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE3B.mail.protection.outlook.com (10.167.242.15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6977.21 via Frontend Transport; Fri, 10 Nov 2023 22:08:12 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 10 Nov
+ 2023 16:08:12 -0600
+Date:   Fri, 10 Nov 2023 16:07:56 -0600
+From:   Michael Roth <michael.roth@amd.com>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     Alexey Kardashevskiy <aik@amd.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        <kvm@vger.kernel.org>, <linux-coco@lists.linux.dev>,
+        <linux-mm@kvack.org>, <linux-crypto@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <jroedel@suse.de>,
+        <thomas.lendacky@amd.com>, <hpa@zytor.com>, <ardb@kernel.org>,
+        <pbonzini@redhat.com>, <vkuznets@redhat.com>,
+        <jmattson@google.com>, <luto@kernel.org>,
+        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
+        <pgonda@google.com>, <peterz@infradead.org>,
+        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
+        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
+        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <alpergun@google.com>, <jarkko@kernel.org>, <ashish.kalra@amd.com>,
+        <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
+        <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for
+ SNP_GUEST_REQUEST NAE event
+Message-ID: <20231110220756.7hhiy36jc6jiu7nm@amd.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-49-michael.roth@amd.com>
+ <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
+ <ZS614OSoritrE1d2@google.com>
+ <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+ <ZS_iS4UOgBbssp7Z@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZS_iS4UOgBbssp7Z@google.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3B:EE_|CY8PR12MB7196:EE_
+X-MS-Office365-Filtering-Correlation-Id: 74160f65-08e6-4019-9370-08dbe2398842
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1xpUF3nGWUErzC/4Un2J4zzu+1i3Q1dcMo1MGqVFf2IPWgXgdQdqk9+CLGeHDioH9D9KNuoFGXbXujCPyn149MjS8s7BPIyj/qvU23hhBfPdOPrUcgAHxSDkUaUXy7NHTwS/QvT9SlY49Ay7kX+YC8DdfPdEK1gOeHf47vDadSXPf3mwTM3gZYsgrZDV6Z/p7k1NR5DuCvABB6nXpmQJgJGuDXHrbP3MMqbxfxKjEracfEBCA3odA75c3M+jeqRftEcONhpp4WdIcfL3aua7uupBVHO/9KSDLwO3wojh9zby023Ik+DUQu+2BfTOn5A+iBgT/rWrkf+1BwuMhodcGQdOKxHIy+412MIi7SoVxLciwX8GYI5kykTp5HFhPPZdC6Plte9BM8KB/CrnGRMaCKqbb2+ruyKMv+N5a8R3EvrF9tvCc+DsYMRk27R3ZH9MRuw5C+PUzSYGEujZq3CHx9W1BI7mv6PT388CDMJ3ouAPi7B4dS2DCMTfZJRqTJ1KBlM+Cd5Ni/qJbMB53P8npXYichVe1KL1BT5kxL66k+CAPySJMjNlO2jXDwA5ODtb6qspwP2SKSlYDjhoVCt0Sc2Uu6GC8SrR2s+FsHbJR2QPZ6UzCdLR4ImKyFMHtULUTbxX0QQ+kcdfGXotyZXz75JbMxQQbS1rnrz0K+ky2QrY1IOeT6lu6bnXNMJplvkMxxJTy/cyI47K2C2zNLhG6EtbzCvyFqqH7uZBy+7coe3XZlwDCNQuSH1hsuNg1owEjTH8PiubDhaIdHZ6pcBBIg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(396003)(136003)(230922051799003)(1800799009)(451199024)(64100799003)(82310400011)(186009)(46966006)(36840700001)(40470700004)(36860700001)(478600001)(53546011)(6666004)(47076005)(26005)(16526019)(83380400001)(426003)(54906003)(316002)(40480700001)(70586007)(6916009)(70206006)(2616005)(1076003)(7406005)(5660300002)(82740400003)(40460700003)(44832011)(8676002)(66899024)(4326008)(8936002)(336012)(7416002)(41300700001)(36756003)(86362001)(2906002)(356005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 22:08:12.8728
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74160f65-08e6-4019-9370-08dbe2398842
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE3B.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7196
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Oct 18, 2023 at 06:48:59AM -0700, Sean Christopherson wrote:
+> On Wed, Oct 18, 2023, Alexey Kardashevskiy wrote:
+> > 
+> > On 18/10/23 03:27, Sean Christopherson wrote:
+> > > On Mon, Oct 16, 2023, Dionna Amalie Glaze wrote:
+> > > > > +
+> > > > > +       /*
+> > > > > +        * If a VMM-specific certificate blob hasn't been provided, grab the
+> > > > > +        * host-wide one.
+> > > > > +        */
+> > > > > +       snp_certs = sev_snp_certs_get(sev->snp_certs);
+> > > > > +       if (!snp_certs)
+> > > > > +               snp_certs = sev_snp_global_certs_get();
+> > > > > +
+> > > > 
+> > > > This is where the generation I suggested adding would get checked. If
+> > > > the instance certs' generation is not the global generation, then I
+> > > > think we need a way to return to the VMM to make that right before
+> > > > continuing to provide outdated certificates.
+> > > > This might be an unreasonable request, but the fact that the certs and
+> > > > reported_tcb can be set while a VM is running makes this an issue.
+> > > 
+> > > Before we get that far, the changelogs need to explain why the kernel is storing
+> > > userspace blobs in the first place.  The whole thing is a bit of a mess.
+> > > 
+> > > sev_snp_global_certs_get() has data races that could lead to variations of TOCTOU
+> > > bugs: sev_ioctl_snp_set_config() can overwrite psp_master->sev_data->snp_certs
+> > > while sev_snp_global_certs_get() is running.  If the compiler reloads snp_certs
+> > > between bumping the refcount and grabbing the pointer, KVM will end up leaking a
+> > > refcount and consuming a pointer without a refcount.
+> > > 
+> > > 	if (!kref_get_unless_zero(&certs->kref))
+> > > 		return NULL;
+> > > 
+> > > 	return certs;
+> > 
+> > I'm missing something here. The @certs pointer is on the stack,
+> 
+> No, nothing guarantees that @certs is on the stack and will never be reloaded.
+> sev_snp_certs_get() is in full view of sev_snp_global_certs_get(), so it's entirely
+> possible that it can be inlined.  Then you end up with:
+> 
+> 	struct sev_device *sev;
+> 
+> 	if (!psp_master || !psp_master->sev_data)
+> 		return NULL;
+> 
+> 	sev = psp_master->sev_data;
+> 	if (!sev->snp_initialized)
+> 		return NULL;
+> 
+> 	if (!sev->snp_certs)
+> 		return NULL;
+> 
+> 	if (!kref_get_unless_zero(&sev->snp_certs->kref))
+> 		return NULL;
+> 
+> 	return sev->snp_certs;
+> 
+> At which point the compiler could choose to omit a local variable entirely, it
+> could store @certs in a register and reload after kref_get_unless_zero(), etc.
+> If psp_master->sev_data->snp_certs is changed at any point, odd thing can happen.
+> 
+> That atomic operation in kref_get_unless_zero() might prevent a reload between
+> getting the kref and the return, but it wouldn't prevent a reload between the
+> !NULL check and kref_get_unless_zero().
+> 
+> > > If userspace wants to provide garbage to the guest, so be it, not KVM's problem.
+> > > That way, whether the VM gets the global cert or a per-VM cert is purely a userspace
+> > > concern.
+> > 
+> > The global cert lives in CCP (/dev/sev), the per VM cert lives in kvmvm_fd.
+> > "A la vcpu->run" is fine for the latter but for the former we need something
+> > else.
+> 
+> Why?  The cert ultimately comes from userspace, no?  Make userspace deal with it.
+> 
+> > And there is scenario when one global certs blob is what is needed and
+> > copying it over multiple VMs seems suboptimal.
+> 
+> That's a solvable problem.  I'm not sure I like the most obvious solution, but it
+> is a solution: let userspace define a KVM-wide blob pointer, either via .mmap()
+> or via an ioctl().
+> 
+> FWIW, there's no need to do .mmap() shenanigans, e.g. an ioctl() to set the
+> userspace pointer would suffice.  The benefit of a kernel controlled pointer is
+> that it doesn't require copying to a kernel buffer (or special code to copy from
+> userspace into guest).
+> 
+> Actually, looking at the flow again, AFAICT there's nothing special about the
+> target DATA_PAGE.  It must be SHARED *before* SVM_VMGEXIT_EXT_GUEST_REQUEST, i.e.
+> KVM doesn't need to do conversions, there's no kernel priveleges required, etc.
+> And the GHCB doesn't dictate ordering between storing the certificates and doing
+> the request.  That means the certificate stuff can be punted entirely to usersepace.
+> 
+> Heh, typing up the below, there's another bug: KVM will incorrectly "return" '0'
+> for non-SNP guests:
 
-On Thu, Nov 09, 2023 at 10:48:56PM +0000, John Groves wrote:
-> This approach checks all the important boxes: it only applies to apps where
-> it's enabled, the weighting can vary from one app to another, the
-> kernel is not affected, and the numa topology is not buried.
+Thanks for the catch, will fix that up.
 
-Can't it be a mempol property which is inherited by child processes? Then
-all you'll need is e.g. adding systemd support to configure this at service
-unit level. I'm having a bit of hard time seeing why this needs to be a
-cgroup feature when it doesn't involve dynamic resource accounting /
-enforcement at all.
+> 
+> 	unsigned long exitcode = 0;
+> 	u64 data_gpa;
+> 	int err, rc;
+> 
+> 	if (!sev_snp_guest(vcpu->kvm)) {
+> 		rc = SEV_RET_INVALID_GUEST; <= sets "rc", not "exitcode"
+> 		goto e_fail;
+> 	}
+> 
+> e_fail:
+> 	ghcb_set_sw_exit_info_2(svm->sev_es.ghcb, exitcode);
+> 
+> Which really highlights that we need to get test infrastructure up and running
+> for SEV-ES, SNP, and TDX.
+> 
+> Anyways, back to punting to userspace.  Here's a rough sketch.  The only new uAPI
+> is the definition of KVM_HC_SNP_GET_CERTS and its arguments.
 
-Thanks.
+This sketch seems like a good, flexible way to handle per-VM certs, but
+it does complicate things from a userspace perspective. As a basic
+requirement, all userspaces will need to provide a way to specify the
+initial blob (either a very verbose base64-encoded userspace cmdline param,
+or a filepatch that needs additional management to store and handle
+permissions/etc.), and also a means to update it (e.g. a HMP/QMP command
+for QEMU, some libvirt wrappers, etc.).
 
--- 
-tejun
+That's all well and good if you want to make use of per-VM certs, but we
+don't necessarily expect that most deployments will necessarily want to deal
+with per-VM certs, and would be happy with a system-wide one where they could
+simply issue the /dev/sev ioctl to inject one automatically for all guests.
+
+So we're sort of complicating the more common case to support a more niche
+one (as far as userspace is concerned anyway; as far as kernel goes, your
+approach is certainly simplest :)).
+
+Instead, maybe a compromise is warranted so the requirements on userspace
+side are less complicated for a more basic deployment:
+
+  1) If /dev/sev is used to set a global certificate, then that will be
+     used unconditionally by KVM, protected by simple dumb mutex during
+     usage/update.
+  2) If /dev/sev is not used to set the global certificate is the value
+     is NULL, we assume userspace wants full responsibility for managing
+     certificates and exit to userspace to request the certs in the manner
+     you suggested.
+
+Sean, Dionna, would this cover your concerns and address the certificate
+update use-case?
+
+-Mike
