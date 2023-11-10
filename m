@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BED4C7E8663
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA897E8665
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjKJXQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 18:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58724 "EHLO
+        id S1343985AbjKJXQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 18:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjKJXQG (ORCPT
+        with ESMTP id S229863AbjKJXQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 18:16:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4AD1B3;
-        Fri, 10 Nov 2023 15:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699658162; x=1731194162;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5dPcMFlaiWQAP/PNdkSWmTyVFd2Uq4xlZs9J5OOdZWs=;
-  b=iF1f/obdXLmGQRj257+IoisA4eXKAl8bxqV3uQq1uS+bFcfcvMJ7a7W/
-   r9p7CWXeJQyE6Dp0g5JDrgOQwNrh72uCqf1XvQFijV+4ne62MFD5B9NUw
-   Vj5H7MrMvX7qd1gCprdAX1d+xV21cxpGfbKOqJ2tbiFUfZDaCMsD3/0Zo
-   +JLhQo67BRJcf5GLoyT4Dw3SWzTjfUQCUTZvkQZIKH06wjpnDHGeMrfqf
-   4wcPBYfE8ZTak37gwtBK0TmcbkKFxDLNa2AUFDwnnmVvtJ36yM6Mp3HNw
-   Dc05OrVm9Z18u4lbbjowHf1J5//Q2akGGQHq8iYXZaoXlafigGiwDCWwk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="454543722"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="454543722"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 15:16:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="1011052062"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="1011052062"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Nov 2023 15:15:56 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1ajC-000A0S-1g;
-        Fri, 10 Nov 2023 23:15:54 +0000
-Date:   Sat, 11 Nov 2023 07:14:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v9 12/15] media: uapi: Declare interface types for Audio
-Message-ID: <202311110751.SQ7aHnyx-lkp@intel.com>
-References: <1699595289-25773-13-git-send-email-shengjiu.wang@nxp.com>
+        Fri, 10 Nov 2023 18:16:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DDA125
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:16:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82BE0C433C7;
+        Fri, 10 Nov 2023 23:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699658174;
+        bh=fIaDoeAJ5wEfd3OqiFmAviiP1M+nZrBz6caAN+IfwHE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uKGnaQ8aeJx2XbhW1g+57sxckv/co5/lbVNdOgEwSz1N4reK/MBR/a2xSiC3RWOqB
+         JUf8rwg+LznxWD/D05rUgWqp79yZ5J24OYnBeNQ80xF1NgW8XnRrZ49vpYgv0B5fhn
+         YPwumFdi6/7Yx+B6iaK9vYj/3KWLgB4Yrui79+OAZxGfS6HTp6VojG8O1lUksc4NUE
+         B+lBm+9udQDqEM5gJ2Kc4WhGDwrZ+sVjwJ3+Jdvi5wAnmHXha2L0ZRVfLgR5Mt6/F7
+         NjlU/YhswwRu9H6tlY2W8scb81qY1j0UQ6J8URn3XvrJgCr2QAdIjXF11rw+yvn/B8
+         E4z+bIfKpc6Ww==
+Date:   Fri, 10 Nov 2023 15:16:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+Message-ID: <20231110151612.3dcca11d@kernel.org>
+In-Reply-To: <3a1b5412bee202affc6a7cc74cd939e182b9a18e.camel@redhat.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+        <20231106024413.2801438-11-almasrymina@google.com>
+        <ZUk0FGuJ28s1d9OX@google.com>
+        <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+        <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+        <ZUlp8XutSAScKs_0@google.com>
+        <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
+        <3a1b5412bee202affc6a7cc74cd939e182b9a18e.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1699595289-25773-13-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,33 +74,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shengjiu,
+On Thu, 09 Nov 2023 12:05:37 +0100 Paolo Abeni wrote:
+> > I suppose we just disagree on the elegance of the API.
+> 
+> FWIW, I think sockopt +cmsg is the right API.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on media-tree/master]
-[also build test WARNING on broonie-sound/for-next tiwai-sound/for-next tiwai-sound/for-linus linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Shengjiu-Wang/ASoC-fsl_asrc-define-functions-for-memory-to-memory-usage/20231110-143635
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/1699595289-25773-13-git-send-email-shengjiu.wang%40nxp.com
-patch subject: [PATCH v9 12/15] media: uapi: Declare interface types for Audio
-reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110751.SQ7aHnyx-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311110751.SQ7aHnyx-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/output/media.h.rst:6: WARNING: undefined label: media-intf-t-v4l-audio (if the link has no caption the label must precede a section header)
-
-vim +6 Documentation/output/media.h.rst
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+FWIW it's fine by me as well.
