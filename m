@@ -2,154 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DDC7E77A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6AD7E77AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345756AbjKJCk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 21:40:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S1345771AbjKJCmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 21:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjKJCk1 (ORCPT
+        with ESMTP id S229632AbjKJCmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 21:40:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17D5270E;
-        Thu,  9 Nov 2023 18:40:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA8EC433C7;
-        Fri, 10 Nov 2023 02:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1699584025;
-        bh=oK/F0THfOnSL0dIVkI2dvSL2cmYdL74DCbYIUCPytVY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IYkK6ZugBoRE3kStmDD3GmhR9zqm8yZ3vHUbGYoOCSlruwYI7ljkYjxSGlsrcD8QQ
-         +HhHewygGeQvmOhB2RmnhHG//frOWRgIX3mOclFbvf9K+eDmzSdmzcGHyzLZWfRmXI
-         9GwjAQNlb6HVnqzAiwtQmJ6R3vAhvrJJdXMqjVAg=
-Date:   Thu, 9 Nov 2023 18:40:24 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     "Daniel Walker (danielwa)" <danielwa@cisco.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Pratyush Brahma <quic_pbrahma@quicinc.com>,
-        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-        Sean Anderson <sean.anderson@seco.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>
-Subject: Re: [PATCH 0/8] generic command line v6
-Message-Id: <20231109184024.80bfe8119da8c99b4737f31d@linux-foundation.org>
-In-Reply-To: <ZU2T3VPYosP+ZR1b@goliath>
-References: <20231110013817.2378507-1-danielwa@cisco.com>
-        <20231109175142.49428d5f51325680764663bf@linux-foundation.org>
-        <ZU2T3VPYosP+ZR1b@goliath>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thu, 9 Nov 2023 21:42:03 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5B3270E;
+        Thu,  9 Nov 2023 18:42:00 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AA2fW8w91944488, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AA2fW8w91944488
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Nov 2023 10:41:32 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 10 Nov 2023 10:41:32 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Fri, 10 Nov 2023 10:41:32 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f]) by
+ RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f%5]) with mapi id
+ 15.01.2507.034; Fri, 10 Nov 2023 10:41:32 +0800
+From:   Ricky WU <ricky_wu@realtek.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Lukas Wunner <lukas@wunner.de>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe Link Down
+Thread-Topic: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on
+ PCIe Link Down
+Thread-Index: AQHZ/+WX29Sx+yjN7keHtkFSV38Z/LBLoV4AgAIjnlCAAQSEgIABkvFwgABQjQCAHyoJAIADJpPQ
+Date:   Fri, 10 Nov 2023 02:41:32 +0000
+Message-ID: <d7cc9e658b114da7a9c32b383f06adc9@realtek.com>
+References: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+ <20231016093210.GA22952@wunner.de>
+ <263982e90fc046cf977ecb8727003690@realtek.com>
+ <20231018094435.GA21090@wunner.de>
+ <02ee7e47166a463d8d4e491b61cdd33f@realtek.com>
+ <20231019143504.GA25140@wunner.de>
+ <CAAd53p7jx=_Yh8sPwdsu-6Bc-hNgiExscMNGhgcbH=rzOBMOXQ@mail.gmail.com>
+In-Reply-To: <CAAd53p7jx=_Yh8sPwdsu-6Bc-hNgiExscMNGhgcbH=rzOBMOXQ@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.81.100]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 02:22:27 +0000 "Daniel Walker (danielwa)" <danielwa@cisco.com> wrote:
-
-> On Thu, Nov 09, 2023 at 05:51:42PM -0800, Andrew Morton wrote:
-> > On Thu,  9 Nov 2023 17:38:04 -0800 Daniel Walker <danielwa@cisco.com> wrote:
-> > 
-> > > This release is an up-rev of the v5 patches. No additional features have
-> > > been added. Some changes were mode to function names and some changes to
-> > > Kconfig dependencies. Also updated the config conversion for mips.
-> > > 
-> > > There are a number of people who have expressed interest in these
-> > > patches either by asking for them to be merge or testing them. If
-> > > people are so inclined please continue to request them to be merge
-> > > or to ask the status of the next release. It's helpful to motivate me to
-> > > release them again and for the maintainers to see the interest
-> > > generated.
-> > > 
-> > > These patches have been used by Cisco Systems, Inc. on millions of
-> > > released products to great effect. Hopefully they can be used by the
-> > > entire Linux eco system.
-> > > 
-> > 
-> > fyi, none of the above is suitable for a [0/N] changelog - it's all
-> > transitory stuff which tells readers nothing much about what the
-> > patchset does.
->  
-> I did not think about it this way. It's because I've submitted this so many
-> times. I guess I assume everyone knows what it is.
-
-This is all on the path to the mainline git history.  Think about how
-we want it presented to future readers.  10 years from now nobody will
-remember the v5 series email spray.
-
-> 
-> > In [1/8] I see "Even with mips and powerpc enhancement the needs of
-> > Cisco are not met on these platforms" and "This unified implementation
-> > offers the same functionality needed by Cisco on all platform which we
-> > enable it on".
-> > 
-> > Well OK, what are these needs?   What functionality changes does this
-> > patchset offer which Cisco finds useful?  IOW, what were the
-> > requirements?  What's wrong with the old code and how does this
-> > patchset fix/enhance that?
-> 
-> The limitation is that you can't append and prepend to the command line at the
-> same time in any of the architectures. Having access to both allows OEMs to deal
-> with broken bootloaders which can't easily be upgraded.
-
-I would never ever have guessed that from the emails I received!
-
-> Others have responded
-> that they also use these patches for this same reason.
-
-Citing this info in the [0/N] would be useful.
-
-> In 2/8 and 3/8 I modify the insert-sys-cert tool to allow modification of the
-> command line append and prepend after the build. This allow for an SDK
-> provided with a binary kernel and for the command line append/prepend to still
-> be modified identically to how that's done with certificates.
-
-And this.
-
-> Making all this generic means each platform has a unified set of command line
-> services. Cisco uses x86/arm32/arm64/mips/powerpc , and it's nice to have all
-> the same features across platforms.
-
-Sounds good.
-
-> > 
-> > I see the patchset updates nothing under Documentation/.  Should it do
-> > so?  Could it do so?
-> 
-> The only documentation is Kconfig descriptions and commit messages. I suppose it
-> could have something under Documentation/. The only part which could use more
-> documentation are the changes in 2/8 and 3/8. That feature is maybe confusing
-> and has limitations which are maybe not clear. Although the same limitation exist for
-> inserting certificates.
-
-Perhaps the new functionality could be described in
-Documentation/admin-guide/kernel-parameters.rst
-
-> > 
-> > I don't know what is the expected merge patch for this work.  I can
-> > grab them if no other maintainer is in the firing line.
-> 
-> merge patch ?
-
-"path", sorry.
-
-> Do you mean merge description ? I think your the maintainer in the
-> firing line for this one.
-
-OK.  
+PiBIaSBMdWthcyBhbmQgUmlja3ksDQo+IA0KPiBJIHRoaW5rIHRoZSBmb2xsb3dpbmcgYXBwcm9h
+Y2ggc2hvdWxkIGNvdmVyIGFsbCB0aGUgY2FzZXM/DQo+IFJpY2t5LCBjYW4geW91IHBsZWFzZSBn
+aXZlIGl0IGEgdHJ5Pw0KPiANCg0KVGhpcyBwYXRjaCBpcyBpbnZhbGlkIGZvciB0aGlzIGlzc3Vl
+LA0KUHJvYmxlbSByZWFwcGVhcnMgYWZ0ZXIgcGx1Z2dpbmcgYW5kIHVucGx1Z2dpbmcgdHdpY2UN
+CkRtZXNnIGFzIGJlbG93LA0KWy4uLl0NClsgIDM2MC43NzExNjFdIHBjaWVwb3J0IDAwMDA6MDA6
+MWMuMDogcGNpZWhwOiBTbG90KDgpOiBMaW5rIERvd24NClsgIDM2MC43NzExNjVdIHBjaWVwb3J0
+IDAwMDA6MDA6MWMuMDogcGNpZWhwOiBTbG90KDgpOiBDYXJkIG5vdCBwcmVzZW50DQpbICAzNjEu
+OTg2OTMyXSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IHBjaWVocDogU2xvdCg4KTogQ2FyZCBwcmVz
+ZW50DQpbICAzNjEuOTg2OTM3XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6IHBjaWVocDogU2xvdCg4
+KTogTGluayBVcA0KWyAgMzYyLjEyMDYzNV0gcGNpIDAwMDA6MDE6MDAuMDogWzE1Yjc6NTAwN10g
+dHlwZSAwMCBjbGFzcyAweDAxMDgwMg0KWyAgMzYyLjEyMDY5MV0gcGNpIDAwMDA6MDE6MDAuMDog
+cmVnIDB4MTA6IFttZW0gMHgwMDAwMDAwMC0weDAwMDAzZmZmIDY0Yml0XQ0KWyAgMzYyLjEyMDc0
+N10gcGNpIDAwMDA6MDE6MDAuMDogcmVnIDB4MjA6IFttZW0gMHgwMDAwMDAwMC0weDAwMDAwMGZm
+IDY0Yml0XQ0KWyAgMzYyLjEyMTYwNl0gcGNpIDAwMDA6MDE6MDAuMDogQkFSIDA6IGFzc2lnbmVk
+IFttZW0gMHhhM2IwMDAwMC0weGEzYjAzZmZmIDY0Yml0XQ0KWyAgMzYyLjEyMTY0Nl0gcGNpIDAw
+MDA6MDE6MDAuMDogQkFSIDQ6IGFzc2lnbmVkIFttZW0gMHhhM2IwNDAwMC0weGEzYjA0MGZmIDY0
+Yml0XQ0KWyAgMzYyLjEyMTY4Nl0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBQQ0kgYnJpZGdlIHRv
+IFtidXMgMDFdDQpbICAzNjIuMTIxNzAyXSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgYnJpZGdl
+IHdpbmRvdyBbaW8gIDB4NDAwMC0weDRmZmZdDQpbICAzNjIuMTIxNzQzXSBwY2llcG9ydCAwMDAw
+OjAwOjFjLjA6ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4YTNiMDAwMDAtMHhhNDRmZmZmZl0NClsg
+IDM2Mi4xMjE3NjFdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICBicmlkZ2Ugd2luZG93IFttZW0g
+MHhhMGEwMDAwMC0weGExM2ZmZmZmIDY0Yml0IHByZWZdDQpbICAzNjIuMTcxNzA5XSBudm1lIG52
+bWUwOiBwY2kgZnVuY3Rpb24gMDAwMDowMTowMC4wDQpbICAzNjIuMTcxNzI2XSBudm1lIDAwMDA6
+MDE6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpDQpbICAzNjIuMjU2NzI0XSBu
+dm1lIG52bWUwOiA0LzAvMCBkZWZhdWx0L3JlYWQvcG9sbCBxdWV1ZXMNClsgIDM2Mi4yNjE2NTZd
+ICBudm1lMG4xOiBwMSBwMg0KWyAgMzY5LjM0MzI0Nl0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBw
+Y2llaHA6IFNsb3QoOCk6IExpbmsgRG93bg0KWyAgMzY5LjQ1NzQ1MF0gcGNpZXBvcnQgMDAwMDow
+MDoxYy4wOiBwY2llaHA6IFNsb3QoOCk6IENhcmQgcHJlc2VudA0KWyAgMzY5LjQ1NzQ2Ml0gcGNp
+ZXBvcnQgMDAwMDowMDoxYy4wOiBwY2llaHA6IFNsb3QoOCk6IExpbmsgVXANClsgIDM2OS41OTI2
+MDBdIHBjaSAwMDAwOjAxOjAwLjA6IFsxMGVjOjUyNjFdIHR5cGUgMDAgY2xhc3MgMHhmZjAwMDAN
+ClsgIDM2OS41OTI2NTRdIHBjaSAwMDAwOjAxOjAwLjA6IHJlZyAweDEwOiBbbWVtIDB4YTNiMDAw
+MDAtMHhhM2IwMGZmZl0NClsgIDM2OS41OTI3NzZdIHBjaSAwMDAwOjAxOjAwLjA6IFVwc3RyZWFt
+IGJyaWRnZSdzIE1heCBQYXlsb2FkIFNpemUgc2V0IHRvIDEyOCAod2FzIDI1NiwgbWF4IDI1NikN
+ClsgIDM2OS41OTI3OTddIHBjaSAwMDAwOjAxOjAwLjA6IE1heCBQYXlsb2FkIFNpemUgc2V0IHRv
+IDEyOCAod2FzIDEyOCwgbWF4IDEyOCkNClsgIDM2OS41OTI5NjRdIHBjaSAwMDAwOjAxOjAwLjA6
+IHN1cHBvcnRzIEQxIEQyDQpbICAzNjkuNTkyOTcwXSBwY2kgMDAwMDowMTowMC4wOiBQTUUjIHN1
+cHBvcnRlZCBmcm9tIEQxIEQyIEQzaG90IEQzY29sZA0KWyAgMzY5LjU5MzY0Ml0gcGNpIDAwMDA6
+MDE6MDAuMDogQkFSIDA6IGFzc2lnbmVkIFttZW0gMHhhM2IwMDAwMC0weGEzYjAwZmZmXQ0KWyAg
+MzY5LjU5MzY2Ml0gcGNpZXBvcnQgMDAwMDowMDoxYy4wOiBQQ0kgYnJpZGdlIHRvIFtidXMgMDFd
+DQpbICAzNjkuNTkzNjc5XSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6ICAgYnJpZGdlIHdpbmRvdyBb
+aW8gIDB4NDAwMC0weDRmZmZdDQpbICAzNjkuNTkzNjkyXSBwY2llcG9ydCAwMDAwOjAwOjFjLjA6
+ICAgYnJpZGdlIHdpbmRvdyBbbWVtIDB4YTNiMDAwMDAtMHhhNDRmZmZmZl0NClsgIDM2OS41OTM3
+MDNdIHBjaWVwb3J0IDAwMDA6MDA6MWMuMDogICBicmlkZ2Ugd2luZG93IFttZW0gMHhhMGEwMDAw
+MC0weGExM2ZmZmZmIDY0Yml0IHByZWZdDQpbICAzNzIuNTczNzU3XSBwY2llcG9ydCAwMDAwOjAw
+OjFjLjA6IHBjaWVocDogU2xvdCg4KTogTGluayBEb3duDQpbICAzNzIuNTg2NjIwXSBCVUc6IHVu
+YWJsZSB0byBoYW5kbGUgcGFnZSBmYXVsdCBmb3IgYWRkcmVzczogZmZmZmM5MDAwMDA4OTAxMA0K
+WyAgMzcyLjU4NjYyNF0gI1BGOiBzdXBlcnZpc29yIHJlYWQgYWNjZXNzIGluIGtlcm5lbCBtb2Rl
+DQpbICAzNzIuNTg2NjI2XSAjUEY6IGVycm9yX2NvZGUoMHgwMDAwKSAtIG5vdC1wcmVzZW50IHBh
+Z2UNClsgIDM3Mi41ODY2MjddIFBHRCAxMDAwMDAwNjcgUDREIDEwMDAwMDA2NyBQVUQgMTAwMjBh
+MDY3IFBNRCAxMDAyMGIwNjcgUFRFIDANClsgIDM3Mi41ODY2MzJdIE9vcHM6IDAwMDAgWyMxXSBQ
+UkVFTVBUIFNNUCBQVEkNClsgIDM3Mi41ODY2MzRdIENQVTogMiBQSUQ6IDE1NyBDb21tOiBrd29y
+a2VyLzI6MiBOb3QgdGFpbnRlZCA2LjYuMC1yYzQgIzEyDQpbICAzNzIuNTg2NjM3XSBIYXJkd2Fy
+ZSBuYW1lOiBUbyBCZSBGaWxsZWQgQnkgTy5FLk0uIFRvIEJlIEZpbGxlZCBCeSBPLkUuTS4vSDM3
+ME0gUHJvNCwgQklPUyBQMy40MCAxMC8yNS8yMDE4DQpbICAzNzIuNTg2NjM5XSBXb3JrcXVldWU6
+IHBtIHBtX3J1bnRpbWVfd29yaw0KWyAgMzcyLjU4NjY0NF0gUklQOiAwMDEwOmlvcmVhZDMyKzB4
+MmUvMHg3MA0KWyAgMzcyLjU4NjY0N10gQ29kZTogZmYgMDMgMDAgNzcgMjUgNDggODEgZmYgMDAg
+MDAgMDEgMDAgNzcgMTQgOGIgMTUgOTggYWMgNTIgMDEgYjggZmYgZmYgZmYgZmYgODUgZDIgNzUg
+MTQgYzMgY2MgY2MgY2MgY2MgODkgZmEgZWQgYzMgY2MgY2MgY2MgY2MgPDhiPiAwNyBjMyBjYyBj
+YyBjYyBjYyA1NSA4MyBlYSAwMSA0OCA4OSBmZSA0OCBjNyBjNyBmOCA5NyA1NyA4NiA0OA0KWyAg
+MzcyLjU4NjY0OV0gUlNQOiAwMDE4OmZmZmZjOTAwMDA1NDNkNTAgRUZMQUdTOiAwMDAxMDI5Ng0K
+WyAgMzcyLjU4NjY1Ml0gUkFYOiBmZmZmYzkwMDAwMDg5MDAwIFJCWDogMDAwMDAwMDAwMDAwMDMy
+ZiBSQ1g6IDAwMDAwMDAwMDAwMDAwN2YNClsgIDM3Mi41ODY2NTNdIFJEWDogMDAwMDAwMDAwMDAw
+ZmYwMCBSU0k6IGZmZmZjOTAwMDAwODkwMTAgUkRJOiBmZmZmYzkwMDAwMDg5MDEwDQpbICAzNzIu
+NTg2NjU1XSBSQlA6IGZmZmZjOTAwMDA1NDNkNzAgUjA4OiBmZmZmYzkwMDAwMDg5MDEwIFIwOTog
+ZmZmZjg4ODE2YTEzMjM2OA0KWyAgMzcyLjU4NjY1Nl0gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIx
+MTogMDAwMDAwMDAwMDAwMDAwMyBSMTI6IDAwMDAwMDAwMDAwMDAwN2YNClsgIDM3Mi41ODY2NTdd
+IFIxMzogZmZmZjg4ODEwNjBlZDAwMCBSMTQ6IGZmZmY4ODgxMDYwZWQxMDAgUjE1OiAwMDAwMDAw
+MDAwMDA5MDAzDQpbICAzNzIuNTg2NjU5XSBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6
+ZmZmZjg4ODE2YTEwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICAzNzIuNTg2
+NjYxXSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpb
+ICAzNzIuNTg2NjYyXSBDUjI6IGZmZmZjOTAwMDAwODkwMTAgQ1IzOiAwMDAwMDAwMDQzMDMyMDA2
+IENSNDogMDAwMDAwMDAwMDM3MDZlMA0KWyAgMzcyLjU4NjY2NF0gQ2FsbCBUcmFjZToNClsgIDM3
+Mi41ODY2NjVdICA8VEFTSz4NClsgIDM3Mi41ODY2NjddICA/IHNob3dfcmVncysweDY4LzB4NzAN
+ClsgIDM3Mi41ODY2NzFdICA/IF9fZGllX2JvZHkrMHgyMC8weDcwDQpbICAzNzIuNTg2Njc0XSAg
+PyBfX2RpZSsweDJiLzB4NDANClsgIDM3Mi41ODY2NzddICA/IHBhZ2VfZmF1bHRfb29wcysweDE2
+MC8weDQ4MA0KWyAgMzcyLjU4NjY4MF0gID8gc2VhcmNoX2JwZl9leHRhYmxlcysweDYzLzB4OTAN
+ClsgIDM3Mi41ODY2ODRdICA/IGlvcmVhZDMyKzB4MmUvMHg3MA0KWyAgMzcyLjU4NjY4Nl0gID8g
+c2VhcmNoX2V4Y2VwdGlvbl90YWJsZXMrMHg1Zi8weDcwDQpbICAzNzIuNTg2Njg5XSAgPyBrZXJu
+ZWxtb2RlX2ZpeHVwX29yX29vcHMrMHhhMi8weDEyMA0KWyAgMzcyLjU4NjY5Ml0gID8gX19iYWRf
+YXJlYV9ub3NlbWFwaG9yZSsweDE3OS8weDIzMA0KWyAgMzcyLjU4NjY5Nl0gID8gYmFkX2FyZWFf
+bm9zZW1hcGhvcmUrMHgxNi8weDIwDQpbICAzNzIuNTg2Njk4XSAgPyBkb19rZXJuX2FkZHJfZmF1
+bHQrMHg4Yi8weGEwDQpbICAzNzIuNTg2NzAxXSAgPyBleGNfcGFnZV9mYXVsdCsweGU1LzB4MTgw
+DQpbICAzNzIuNTg2NzA1XSAgPyBhc21fZXhjX3BhZ2VfZmF1bHQrMHgyNy8weDMwDQpbICAzNzIu
+NTg2NzEwXSAgPyBpb3JlYWQzMisweDJlLzB4NzANClsgIDM3Mi41ODY3MTRdICA/IHJ0c3hfcGNp
+X3dyaXRlX3JlZ2lzdGVyKzB4NWIvMHg5MCBbcnRzeF9wY2ldDQpbICAzNzIuNTg2NzIzXSAgcnRz
+eF9zZXRfbDFvZmZfc3ViKzB4MWMvMHgzMCBbcnRzeF9wY2ldDQpbICAzNzIuNTg2NzMxXSAgcnRz
+NTI2MV9zZXRfbDFvZmZfY2ZnX3N1Yl9kMCsweDM2LzB4NDAgW3J0c3hfcGNpXQ0KWyAgMzcyLjU4
+Njc0MF0gIHJ0c3hfcGNpX3J1bnRpbWVfaWRsZSsweGM3LzB4MTYwIFtydHN4X3BjaV0NClsgIDM3
+Mi41ODY3NDhdICA/IF9fcGZ4X3BjaV9wbV9ydW50aW1lX2lkbGUrMHgxMC8weDEwDQpbICAzNzIu
+NTg2NzUxXSAgcGNpX3BtX3J1bnRpbWVfaWRsZSsweDM0LzB4NzANClsgIDM3Mi41ODY3NTNdICBy
+cG1faWRsZSsweGM0LzB4MmIwDQpbICAzNzIuNTg2NzU2XSAgcG1fcnVudGltZV93b3JrKzB4OTMv
+MHhjMA0KWyAgMzcyLjU4Njc1OV0gIHByb2Nlc3Nfc2NoZWR1bGVkX3dvcmtzKzB4OWEvMHgzOTAN
+ClsgIDM3Mi41ODY3NjJdICA/IF9fcGZ4X3dvcmtlcl90aHJlYWQrMHgxMC8weDEwDQpbICAzNzIu
+NTg2NzY0XSAgd29ya2VyX3RocmVhZCsweDE1Yi8weDJkMA0KWyAgMzcyLjU4Njc2N10gID8gX19w
+Znhfd29ya2VyX3RocmVhZCsweDEwLzB4MTANClsgIDM3Mi41ODY3NjldICBrdGhyZWFkKzB4MTA2
+LzB4MTQwDQpbICAzNzIuNTg2NzcxXSAgPyBfX3BmeF9rdGhyZWFkKzB4MTAvMHgxMA0KWyAgMzcy
+LjU4Njc3NF0gIHJldF9mcm9tX2ZvcmsrMHgzOS8weDYwDQpbICAzNzIuNTg2Nzc2XSAgPyBfX3Bm
+eF9rdGhyZWFkKzB4MTAvMHgxMA0KWyAgMzcyLjU4Njc3OF0gIHJldF9mcm9tX2ZvcmtfYXNtKzB4
+MWIvMHgzMA0KWyAgMzcyLjU4Njc4M10gIDwvVEFTSz4NClsgIDM3Mi41ODY3ODRdIE1vZHVsZXMg
+bGlua2VkIGluOiBudm1lIG52bWVfY29yZSBzbmRfaGRhX2NvZGVjX2hkbWkgc25kX2hkYV9jb2Rl
+Y19yZWFsdGVrIHNuZF9oZGFfY29kZWNfZ2VuZXJpYyBsZWR0cmlnX2F1ZGlvIG5sc19pc284ODU5
+XzEgc25kX3NvZl9wY2lfaW50ZWxfY25sIHNuZF9zb2ZfaW50ZWxfaGRhX2NvbW1vbiBzbmRfc29j
+X2hkYWNfaGRhIHNvdW5kd2lyZV9pbnRlbCBzb3VuZHdpcmVfZ2VuZXJpY19hbGxvY2F0aW9uIHNu
+ZF9zb2ZfaW50ZWxfaGRhX21saW5rIHNvdW5kd2lyZV9jYWRlbmNlIHNuZF9zb2ZfaW50ZWxfaGRh
+IHNuZF9zb2ZfcGNpIHNuZF9zb2ZfeHRlbnNhX2RzcCBzbmRfc29mIHNuZF9zb2ZfdXRpbHMgc25k
+X2hkYV9leHRfY29yZSBzbmRfc29jX2FjcGlfaW50ZWxfbWF0Y2ggc25kX3NvY19hY3BpIHNvdW5k
+d2lyZV9idXMgaW50ZWxfcmFwbF9tc3IgaW50ZWxfcmFwbF9jb21tb24gc25kX3NvY19jb3JlIHg4
+Nl9wa2dfdGVtcF90aGVybWFsIGludGVsX3Bvd2VyY2xhbXAgY29yZXRlbXAgc25kX2NvbXByZXNz
+IGFjOTdfYnVzIGt2bV9pbnRlbCBzbmRfcGNtX2RtYWVuZ2luZSBpOTE1IHNuZF9oZGFfaW50ZWwg
+c25kX2ludGVsX2RzcGNmZyBzbmRfaW50ZWxfc2R3X2FjcGkga3ZtIHNuZF9oZGFfY29kZWMgc25k
+X2hkYV9jb3JlIG1laV9oZGNwIGNyY3QxMGRpZl9wY2xtdWwgZ2hhc2hfY2xtdWxuaV9pbnRlbCBz
+bmRfaHdkZXAgc25kX3BjbSBzaGE1MTJfc3NzZTMgYWVzbmlfaW50ZWwgc25kX3NlcV9taWRpIGNy
+eXB0b19zaW1kIHNuZF9zZXFfbWlkaV9ldmVudCBjcnlwdGQgcmFwbCBzbmRfcmF3bWlkaSBpbnRl
+bF9jc3RhdGUgZHJtX2J1ZGR5IGJpbmZtdF9taXNjIHR0bSBzbmRfc2VxIGRybV9kaXNwbGF5X2hl
+bHBlciBqb3lkZXYgaW5wdXRfbGVkcyBjZWMgc25kX3NlcV9kZXZpY2Ugd21pX2Jtb2Ygc25kX3Rp
+bWVyIGVlMTAwNCBtZWlfbWUgcmNfY29yZSBzbmQgZHJtX2ttc19oZWxwZXIgbWVpIGludGVsX3Bj
+aF90aGVybWFsIGkyY19hbGdvX2JpdCBzb3VuZGNvcmUgbWFjX2hpZA0KWyAgMzcyLjU4NjgzNF0g
+IGFjcGlfdGFkIGFjcGlfcGFkIHNjaF9mcV9jb2RlbCBtc3IgcGFycG9ydF9wYyBwcGRldiBscCBw
+YXJwb3J0IGRybSByYW1vb3BzIHJlZWRfc29sb21vbiBlZmlfcHN0b3JlIGlwX3RhYmxlcyB4X3Rh
+YmxlcyBhdXRvZnM0IGhpZF9nZW5lcmljIHVzYmhpZCBoaWQgcnRzeF9wY2lfc2RtbWMgYWhjaSBp
+MmNfaTgwMSBlMTAwMGUgY3JjMzJfcGNsbXVsIHJ0c3hfcGNpIGkyY19zbWJ1cyB4aGNpX3BjaSBs
+aWJhaGNpIHhoY2lfcGNpX3JlbmVzYXMgdmlkZW8gd21pDQpbICAzNzIuNTg2ODU2XSBDUjI6IGZm
+ZmZjOTAwMDAwODkwMTANClsgIDM3Mi41ODY4NThdIC0tLVsgZW5kIHRyYWNlIDAwMDAwMDAwMDAw
+MDAwMDAgXS0tLQ0KWyAgMzcyLjc0NjgwOF0gUklQOiAwMDEwOmlvcmVhZDMyKzB4MmUvMHg3MA0K
+WyAgMzcyLjc0NjgxNl0gQ29kZTogZmYgMDMgMDAgNzcgMjUgNDggODEgZmYgMDAgMDAgMDEgMDAg
+NzcgMTQgOGIgMTUgOTggYWMgNTIgMDEgYjggZmYgZmYgZmYgZmYgODUgZDIgNzUgMTQgYzMgY2Mg
+Y2MgY2MgY2MgODkgZmEgZWQgYzMgY2MgY2MgY2MgY2MgPDhiPiAwNyBjMyBjYyBjYyBjYyBjYyA1
+NSA4MyBlYSAwMSA0OCA4OSBmZSA0OCBjNyBjNyBmOCA5NyA1NyA4NiA0OA0KWyAgMzcyLjc0Njgx
+OF0gUlNQOiAwMDE4OmZmZmZjOTAwMDA1NDNkNTAgRUZMQUdTOiAwMDAxMDI5Ng0KWyAgMzcyLjc0
+NjgyMV0gUkFYOiBmZmZmYzkwMDAwMDg5MDAwIFJCWDogMDAwMDAwMDAwMDAwMDMyZiBSQ1g6IDAw
+MDAwMDAwMDAwMDAwN2YNClsgIDM3Mi43NDY4MjNdIFJEWDogMDAwMDAwMDAwMDAwZmYwMCBSU0k6
+IGZmZmZjOTAwMDAwODkwMTAgUkRJOiBmZmZmYzkwMDAwMDg5MDEwDQpbICAzNzIuNzQ2ODI1XSBS
+QlA6IGZmZmZjOTAwMDA1NDNkNzAgUjA4OiBmZmZmYzkwMDAwMDg5MDEwIFIwOTogZmZmZjg4ODE2
+YTEzMjM2OA0KWyAgMzcyLjc0NjgyNl0gUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAw
+MDAwMDAwMDAwMyBSMTI6IDAwMDAwMDAwMDAwMDAwN2YNClsgIDM3Mi43NDY4MjhdIFIxMzogZmZm
+Zjg4ODEwNjBlZDAwMCBSMTQ6IGZmZmY4ODgxMDYwZWQxMDAgUjE1OiAwMDAwMDAwMDAwMDA5MDAz
+DQpbICAzNzIuNzQ2ODMwXSBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjg4ODE2
+YTEwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICAzNzIuNzQ2ODMyXSBDUzog
+IDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpbICAzNzIuNzQ2
+ODMzXSBDUjI6IGZmZmZjOTAwMDAwODkwMTAgQ1IzOiAwMDAwMDAwMTBhNTY0MDA0IENSNDogMDAw
+MDAwMDAwMDM3MDZlMA0KWyAgMzcyLjc0NjgzNV0gbm90ZToga3dvcmtlci8yOjJbMTU3XSBleGl0
+ZWQgd2l0aCBpcnFzIGRpc2FibGVkDQoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3JlbW92
+ZS5jIGIvZHJpdmVycy9wY2kvcmVtb3ZlLmMgaW5kZXgNCj4gZDc0OWVhODI1MGQ2Li45MDdkNjA1
+ODcyMjcgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvcGNpL3JlbW92ZS5jDQo+ICsrKyBiL2RyaXZl
+cnMvcGNpL3JlbW92ZS5jDQo+IEBAIC0xLDYgKzEsNyBAQA0KPiAgLy8gU1BEWC1MaWNlbnNlLUlk
+ZW50aWZpZXI6IEdQTC0yLjANCj4gICNpbmNsdWRlIDxsaW51eC9wY2kuaD4NCj4gICNpbmNsdWRl
+IDxsaW51eC9tb2R1bGUuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQo+ICAj
+aW5jbHVkZSAicGNpLmgiDQo+IA0KPiAgc3RhdGljIHZvaWQgcGNpX2ZyZWVfcmVzb3VyY2VzKHN0
+cnVjdCBwY2lfZGV2ICpkZXYpIEBAIC04OSw2ICs5MCw4IEBADQo+IHN0YXRpYyB2b2lkIHBjaV9y
+ZW1vdmVfYnVzX2RldmljZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiAgICAgICAgIHN0cnVjdCBw
+Y2lfYnVzICpidXMgPSBkZXYtPnN1Ym9yZGluYXRlOw0KPiAgICAgICAgIHN0cnVjdCBwY2lfZGV2
+ICpjaGlsZCwgKnRtcDsNCj4gDQo+ICsgICAgICAgcG1fcnVudGltZV9iYXJyaWVyKCZkZXYtPmRl
+dik7DQo+ICsNCj4gICAgICAgICBpZiAoYnVzKSB7DQo+ICAgICAgICAgICAgICAgICBsaXN0X2Zv
+cl9lYWNoX2VudHJ5X3NhZmUoY2hpbGQsIHRtcCwNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAmYnVzLT5kZXZpY2VzLCBidXNfbGlzdCkNCj4gDQo+IA0KDQo=
