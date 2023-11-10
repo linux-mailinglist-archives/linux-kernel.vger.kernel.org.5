@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACE67E83E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106547E801A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346075AbjKJUhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S235423AbjKJSFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjKJUgi (ORCPT
+        with ESMTP id S234670AbjKJSEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:36:38 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804DBD082
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:08:03 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-58a01a9fad0so417500eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:08:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699607283; x=1700212083; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zxSeprcxpBJUJjiwbfG8GWPRS8RElTLI/FQYj7xxayE=;
-        b=isYtwT8rcleuiwWC16HOSTNVm300khB9YRbDOIZDUFANkaxp+F9IT4LOHg9+B2iazq
-         pPpc3bmi4icOPOhSe7GUE5myhiZkBPFqp6YHx6UJFn9PBY7qneMgQNjK6g6YaERZLxFX
-         H1sivu937EX+91XnH/bJatKrIRmk7CLfk55E/Pd+HQciV1d3vxcHDsNxyl8t3Bhrbsin
-         0l2LWk6mdFTzO/3GybUZlVqdLU+gqIjzWtR6LcYHExdct8O8C2sJ9v72kjtcOemsUEGr
-         EHsSHLDsidJe5EyTlsUJVHA/xkfmg8GYjGEYApiQKFOroafkkVJnM5/Y2MP/zTNVhY1O
-         6Pmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699607283; x=1700212083;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zxSeprcxpBJUJjiwbfG8GWPRS8RElTLI/FQYj7xxayE=;
-        b=nC3328QDiiVn9qQk3uxPDWzqr11ymwwveWkz0/A8F0qXU9E3oUV072UR1E6b3InMlq
-         hFF9QdTgUown1xNj10a/D1UJEDjteLsEyjjaXWJxRejljWqqkXgET5Y6S8r2S4+Mo+Af
-         HpNpcURnQwNjV069mKYjDB1l0gNjc3QJkubr25wR3kGpdfTWNomMF/jePFB6sOdEr+DL
-         4ZoQCapV+CaVqDPmjHMnGH2gU0oiLp6X3I1N8lO+K8mKha0cwjR15ctUG/3BpbKyTTsP
-         66n3VbqziHIFwO/qQFTRPC2kUwFBIlaTyEbTwOTHiH6AikmT3WkUI2mJ8p8rsExChZi+
-         Litw==
-X-Gm-Message-State: AOJu0YzAsvNwapPbE4GBvqWaohtV84wPEJGkVzTP6rigyFU6cNBLniBS
-        xePWBT/g8cB0AyPpe81hKVCsLa/kjhnaTE7OPtE=
-X-Google-Smtp-Source: AGHT+IHZGKwNJULVZYp/FTNo7XCczOEocF0WYXXS6XOiq6YdFPcH0I8uV4qpu6MYg77gRkaT/D+lnKehW2EDq02/zJE=
-X-Received: by 2002:a05:6870:15d4:b0:1f0:4e1f:e09a with SMTP id
- k20-20020a05687015d400b001f04e1fe09amr950197oad.4.1699607282613; Fri, 10 Nov
- 2023 01:08:02 -0800 (PST)
+        Fri, 10 Nov 2023 13:04:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594FD2B7EB;
+        Fri, 10 Nov 2023 01:14:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BE67C433C8;
+        Fri, 10 Nov 2023 09:14:46 +0000 (UTC)
+Message-ID: <fc5fcc55-33b5-4b50-80b9-9532da449d51@xs4all.nl>
+Date:   Fri, 10 Nov 2023 10:14:45 +0100
 MIME-Version: 1.0
-References: <20231106193524.866104-1-jstultz@google.com>
-In-Reply-To: <20231106193524.866104-1-jstultz@google.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Fri, 10 Nov 2023 17:07:51 +0800
-Message-ID: <CAB8ipk8J0N-K10JdMoJw6a8WY3fzUeDWi2WYEou8=cAD78oBRA@mail.gmail.com>
-Subject: Re: [PATCH v6 00/20] Proxy Execution: A generalized form of Priority
- Inheritance v6
-To:     John Stultz <jstultz@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 54/56] media: v4l2: Add DELETE_BUFS ioctl
+Content-Language: en-US, nl
+To:     Tomasz Figa <tfiga@chromium.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-55-benjamin.gaignard@collabora.com>
+ <20231109093045.ucitckitlgjj3kyw@chromium.org>
+ <18ee19cc-e97b-4a5a-af7d-1e1bf7c91bc0@collabora.com>
+ <CAAFQd5CSNbOsefMca-CXCSWrXy+3TqVRMZsUanJqJ7Mp4AK-2g@mail.gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <CAAFQd5CSNbOsefMca-CXCSWrXy+3TqVRMZsUanJqJ7Mp4AK-2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,302 +94,472 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John
+On 10/11/2023 09:58, Tomasz Figa wrote:
+> On Thu, Nov 9, 2023 at 7:10 PM Benjamin Gaignard
+> <benjamin.gaignard@collabora.com> wrote:
+>>
+>>
+>> Le 09/11/2023 à 10:30, Tomasz Figa a écrit :
+>>> On Tue, Oct 31, 2023 at 05:31:02PM +0100, Benjamin Gaignard wrote:
+>>>> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
+>>>> The number of buffers to delete in given by count field of
+>>>> struct v4l2_delete_buffers and the range start at the index
+>>>> specified in the same structure.
+>>>>
+>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>> ---
+>>>>   .../userspace-api/media/v4l/user-func.rst     |  1 +
+>>>>   .../media/v4l/vidioc-delete-bufs.rst          | 80 +++++++++++++++++++
+>>>>   .../media/v4l/vidioc-reqbufs.rst              |  1 +
+>>>>   .../media/common/videobuf2/videobuf2-core.c   | 30 +++++++
+>>>>   .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++
+>>>>   drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+>>>>   drivers/media/v4l2-core/v4l2-ioctl.c          | 17 ++++
+>>>>   include/media/v4l2-ioctl.h                    |  4 +
+>>>>   include/media/videobuf2-core.h                | 12 +++
+>>>>   include/media/videobuf2-v4l2.h                | 13 +++
+>>>>   include/uapi/linux/videodev2.h                | 17 ++++
+>>>>   11 files changed, 196 insertions(+)
+>>>>   create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>>>
+>>>> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
+>>>> index 15ff0bf7bbe6..3fd567695477 100644
+>>>> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+>>>> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+>>>> @@ -17,6 +17,7 @@ Function Reference
+>>>>       vidioc-dbg-g-chip-info
+>>>>       vidioc-dbg-g-register
+>>>>       vidioc-decoder-cmd
+>>>> +    vidioc-delete-bufs
+>>>>       vidioc-dqevent
+>>>>       vidioc-dv-timings-cap
+>>>>       vidioc-encoder-cmd
+>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>>> new file mode 100644
+>>>> index 000000000000..4791df1395d6
+>>>> --- /dev/null
+>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>>> @@ -0,0 +1,80 @@
+>>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>>> +.. c:namespace:: V4L
+>>>> +
+>>>> +.. _VIDIOC_DELETE_BUFS:
+>>>> +
+>>>> +************************
+>>>> +ioctl VIDIOC_DELETE_BUFS
+>>>> +************************
+>>>> +
+>>>> +Name
+>>>> +====
+>>>> +
+>>>> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
+>>>> +Drivers using this feature must expose the ``V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS``
+>>>> +capability on the queue :c:func:`VIDIOC_REQBUFS` or :c:func:`VIDIOC_CREATE_BUFS`
+>>>> +are invoked.
+>>>> +
+>>>> +Synopsis
+>>>> +========
+>>>> +
+>>>> +.. c:macro:: VIDIOC_DELETE_BUFs
+>>>> +
+>>>> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *argp)``
+>>>> +
+>>>> +Arguments
+>>>> +=========
+>>>> +
+>>>> +``fd``
+>>>> +    File descriptor returned by :c:func:`open()`.
+>>>> +
+>>>> +``argp``
+>>>> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
+>>>> +
+>>>> +Description
+>>>> +===========
+>>>> +
+>>>> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl to
+>>>> +delete buffers from a queue.
+>>>> +
+>>>> +.. c:type:: v4l2_delete_buffers
+>>>> +
+>>>> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+>>>> +
+>>>> +.. flat-table:: struct v4l2_delete_buffers
+>>>> +    :header-rows:  0
+>>>> +    :stub-columns: 0
+>>>> +    :widths:       1 1 2
+>>>> +
+>>>> +    * - __u32
+>>>> +      - ``index``
+>>>> +      - The starting buffer index to delete.
+>>>> +    * - __u32
+>>>> +      - ``count``
+>>>> +      - The number of buffers to be deleted with indices 'index' until 'index + count - 1'.
+>>>> +        All buffers in this range must be valid and in DEQUEUED state.
+>>> I wonder if this wouldn't be an inconvenience for the userspace. Would
+>>> there be anything wrong with allowing ranges with holes?
+>>> (Agreed about the DEQUEUED part of course.)
+>>
+>> For me a range as to be valid but the matter of taste.
+>>
+> 
+> @Hans Verkuil do you have an opinion?
+> I could imagine that applications may want to just delete multiple
+> disjoint ranges in one ioctl, which wouldn't be possible if we
+> prohibit holes in the ranges.
 
-On Tue, Nov 7, 2023 at 3:37=E2=80=AFAM John Stultz <jstultz@google.com> wro=
-te:
->
-> Stabilizing this Proxy Execution series has unfortunately
-> continued to be a challenging task. Since the v5 release, I=E2=80=99ve
-> been focused on getting the deactivated/sleeping owner enqueuing
-> functionality, which I left out of v5, stabilized. I=E2=80=99ve managed
-> to rework enough to avoid the crashes previously tripped with the
-> locktorture & ww_mutex selftests, so I feel it=E2=80=99s much improved,
-> but I do still see some issues (blocked waitqueues and hung task
-> watchdogs firing) after stressing the system for many hours in a
-> 64 cpu qemu environment (though this issue seems to be introduced
-> earlier in the series with proxy-migration/return-migration).
->
-> I still haven=E2=80=99t had time to focus on testing and debugging the
-> chain migration patches. So I=E2=80=99ve left that patch out of this
-> submission for now, but will try to get it included in the next
-> revision.
->
-> This patch series is actually coarser than what I=E2=80=99ve been
-> developing with, as there are a number of small =E2=80=9Ctest=E2=80=9D st=
-eps to
-> help validate behavior I changed, which would then be replaced by
-> the real logic afterwards. Including those here would just cause
-> more work for reviewers, so I=E2=80=99ve folded them together, but if
-> you=E2=80=99re interested you can find the fine-grained tree here:
-> https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v6-6.6-fi=
-ne-grained
->   https://github.com/johnstultz-work/linux-dev.git proxy-exec-v6-6.6-fine=
--grained
->
-> As mentioned previously, this Proxy Execution series has a long
-> history: First described in a paper[1] by Watkins, Straub,
-> Niehaus, then from patches from Peter Zijlstra, extended with
-> lots of work by Juri Lelli, Valentin Schneider, and Connor
-> O'Brien. (and thank you to Steven Rostedt for providing
-> additional details here!)
->
-> So again, many thanks to those above, as all the credit for this
-> series really is due to them - while the mistakes are likely
-> mine.
->
-> Overview:
-> =E2=80=94----------
-> Proxy Execution is a generalized form of priority inheritance.
-> Classic priority inheritance works well for real-time tasks where
-> there is a straight forward priority order to how things are run.
-> But it breaks down when used between CFS or DEADLINE tasks, as
-> there are lots of parameters involved outside of just the task=E2=80=99s
-> nice value when selecting the next task to run (via
-> pick_next_task()).  So ideally we want to imbue the mutex holder
-> with all the scheduler attributes of  the blocked waiting task.
->
-> Proxy Execution does this via a few changes:
-> * Keeping tasks that are blocked on a mutex *on* the runqueue
-> * Keeping additional tracking of which mutex a task is blocked
->   on, and which task holds a specific mutex.
-> * Special handling for when we select a blocked task to run, so
->   that we instead run the mutex holder.
->
-> By leaving blocked tasks on the runqueue, we allow
-> pick_next_task() to choose the task that should run next (even if
-> it=E2=80=99s blocked waiting on a mutex). If we do select a blocked task,
-> we look at the task=E2=80=99s blocked_on mutex and from there look at the
-> mutex=E2=80=99s owner task. And in the simple case, the task which owns
-> the mutex is what we then choose to run, allowing it to release
-> the mutex.
->
-> This means that instead of just tracking =E2=80=9Ccurr=E2=80=9D, the sche=
-duler
-> needs to track both the scheduler context (what was picked and
-> all the state used for scheduling decisions), and the execution
-> context (what we=E2=80=99re actually running).
->
-> In this way, the mutex owner is run =E2=80=9Con behalf=E2=80=9D of the bl=
-ocked
-> task that was picked to run, essentially inheriting the scheduler
-> context of the waiting blocked task.
+First of all I want to state that I am mostly concentrating on patches 1-50 to get
+those merged first. The actual delete_bufs patches will need more review from me.
 
-How to prevent malicious programs? If a program takes a hotspot lock
-and never releases the lock, then there will be more and more blocked
-tasks, and then there will be more and more tasks on the runq, and
-because the block tasks are involved scheduling, it may cause the
-owner to always be in the running state. As a result, other tasks
-cannot be scheduled.
-Maybe we can use the hung-task mechanism to also detect such long-running t=
-asks?
-I will also think about this issue simultaneously. If there is a
-patch, I will send it here.
+That said, while I do not have a very strong opinion on this, I do feel it is better
+to be strict about this. It can always be relaxed later. Deleting buffers is an
+important operation, and userspace should know what it is doing. Deleting non-existing
+buffers seems iffy to me.
 
-On the other hand, regardless of the extreme situation like above, the
-impact of more tasks in runq on performance may require more testing.
+Regards,
 
-BR
+	Hans
 
----
-xuewen
+> 
+>>>
+>>>> +        In error case errno is set to ``EINVAL`` error code and index returns the index of
+>>>> +        the invalid buffer.
+>>>> +        If count and index are set to 0 :ref:`VIDIOC_DELETE_BUFS` will return 0.
+>>> Hmm, do we care about index if count is zero?
+>>
+>> No we don't I will change that.
+>>
+>>>
+>>>> +    * - __u32
+>>>> +      - ``type``
+>>>> +      - Type of the stream or buffers, this is the same as the struct
+>>>> +    :c:type:`v4l2_format` ``type`` field. See
+>>>> +    :c:type:`v4l2_buf_type` for valid values.
+>>>> +    * - __u32
+>>>> +      - ``reserved``\ [13]
+>>>> +      - A place holder for future extensions. Drivers and applications
+>>>> +    must set the array to zero.
+>>>> +
+>>>> +Return Value
+>>>> +============
+>>>> +
+>>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
+>>>> +appropriately. The generic error codes are described at the
+>>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
+>>>> +
+>>>> +EBUSY
+>>>> +    File I/O is in progress.
+>>>> +
+>>>> +EINVAL
+>>>> +    The buffer ``index`` doesn't exist in the queue.
+>>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>>> index 0b3a41a45d05..14d4a49c2945 100644
+>>>> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+>>>> @@ -121,6 +121,7 @@ aborting or finishing any DMA in progress, an implicit
+>>>>   .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+>>>>   .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+>>>>   .. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
+>>>> +.. _V4L2-BUF-CAP-SUPPORTS-DELETE-BUFS:
+>>>>
+>>>>   .. raw:: latex
+>>>>
+>>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> index 010a8bca0240..7068930a0ba6 100644
+>>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>>>> @@ -1665,6 +1665,36 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>>>>
+>>>> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, unsigned int count)
+>>>> +{
+>>>> +    unsigned int i, ret = 0;
+>>>> +
+>>>> +    if (start == 0 && count == 0)
+>>> I guess related to the earlier comment, but why do we care about start
+>>> being zero?
+>>>
+>>>> +            return 0;
+>>>> +
+>>>> +    mutex_lock(&q->mmap_lock);
+>>>> +
+>>>> +    for (i = start; i < start + count && i < q->max_num_buffers; i++) {
+>>>> +            struct vb2_buffer *vb = vb2_get_buffer(q, i);
+>>>> +
+>>>> +            if (!vb) {
+>>>> +                    ret = -EINVAL;
+>>>> +                    goto unlock;
+>>>> +            }
+>>>> +            if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+>>>> +                    ret = -EINVAL;
+>>>> +                    goto unlock;
+>>>> +            }
+>>>> +    }
+>>>> +    __vb2_queue_free(q, start, count);
+>>>> +    dprintk(q, 2, "buffers deleted\n");
+>>>> +
+>>>> +unlock:
+>>>> +    mutex_unlock(&q->mmap_lock);
+>>>> +    return ret;
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(vb2_core_delete_bufs);
+>>>> +
+>>>>   /*
+>>>>    * vb2_start_streaming() - Attempt to start streaming.
+>>>>    * @q:             videobuf2 queue
+>>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>> index 56daf3b5b2ba..f003618efbc1 100644
+>>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>>> @@ -694,6 +694,8 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
+>>>>      if (q->supports_requests)
+>>>>              *caps |= V4L2_BUF_CAP_SUPPORTS_REQUESTS;
+>>>>   #endif
+>>>> +    if (q->supports_delete_bufs)
+>>>> +            *caps |= V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
+>>>>   }
+>>>>
+>>>>   static void validate_memory_flags(struct vb2_queue *q,
+>>>> @@ -751,6 +753,12 @@ int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+>>>>
+>>>> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d)
+>>>> +{
+>>>> +    return vb2_core_delete_bufs(q, d->index, d->count);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
+>>>> +
+>>>>   int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>>>>   {
+>>>>      unsigned requested_planes = 1;
+>>>> @@ -1012,6 +1020,18 @@ EXPORT_SYMBOL_GPL(vb2_poll);
+>>>>
+>>>>   /* vb2 ioctl helpers */
+>>>>
+>>>> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
+>>>> +                      struct v4l2_delete_buffers *p)
+>>>> +{
+>>>> +    struct video_device *vdev = video_devdata(file);
+>>>> +
+>>>> +    if (vb2_queue_is_busy(vdev->queue, file))
+>>>> +            return -EBUSY;
+>>>> +
+>>>> +    return vb2_delete_bufs(vdev->queue, p);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(vb2_ioctl_delete_bufs);
+>>>> +
+>>>>   int vb2_ioctl_reqbufs(struct file *file, void *priv,
+>>>>                        struct v4l2_requestbuffers *p)
+>>>>   {
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+>>>> index f81279492682..215654fd6581 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-dev.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+>>>> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>>>>              SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
+>>>>              SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+>>>>              SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+>>>> +            SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUFS, vidioc_delete_bufs);
+>>>>      }
+>>>>
+>>>>      if (is_vid || is_vbi || is_meta) {
+>>>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>> index 4d90424cbfc4..e9dcf439f9f3 100644
+>>>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>>> @@ -489,6 +489,13 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+>>>>      v4l_print_format(&p->format, write_only);
+>>>>   }
+>>>>
+>>>> +static void v4l_print_delete_buffers(const void *arg, bool write_only)
+>>>> +{
+>>>> +    const struct v4l2_delete_buffers *p = arg;
+>>>> +
+>>>> +    pr_cont("index=%u, count=%u\n", p->index, p->count);
+>>>> +}
+>>>> +
+>>>>   static void v4l_print_streamparm(const void *arg, bool write_only)
+>>>>   {
+>>>>      const struct v4l2_streamparm *p = arg;
+>>>> @@ -2161,6 +2168,15 @@ static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
+>>>>      return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+>>>>   }
+>>>>
+>>>> +static int v4l_delete_bufs(const struct v4l2_ioctl_ops *ops,
+>>>> +                       struct file *file, void *fh, void *arg)
+>>>> +{
+>>>> +    struct v4l2_delete_buffers *delete = arg;
+>>>> +    int ret = check_fmt(file, delete->type);
+>>> Should we also have
+>>>
+>>>       memset_after(delete, 0, type);
+>>>
+>>> here similar to how other ioctl handlers clear the reserved fields?
+>>
+>> I will add it.
+>>
+>>>
+>>>> +
+>>>> +    return ret ? ret : ops->vidioc_delete_bufs(file, fh, delete);
+>>>> +}
+>>>> +
+>>>>   static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+>>>>                              struct file *file, void *fh, void *arg)
+>>>>   {
+>>>> @@ -2910,6 +2926,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+>>>>      IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
+>>>>      IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>>>>      IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+>>>> +    IOCTL_INFO(VIDIOC_DELETE_BUFS, v4l_delete_bufs, v4l_print_delete_buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_delete_buffers, type)),
+>>>>   };
+>>>>   #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>>>>
+>>>> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+>>>> index edb733f21604..55afbde54211 100644
+>>>> --- a/include/media/v4l2-ioctl.h
+>>>> +++ b/include/media/v4l2-ioctl.h
+>>>> @@ -163,6 +163,8 @@ struct v4l2_fh;
+>>>>    * :ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+>>>>    * @vidioc_prepare_buf: pointer to the function that implements
+>>>>    * :ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+>>>> + * @vidioc_delete_bufs: pointer to the function that implements
+>>>> + *  :ref:`VIDIOC_DELETE_BUFS <vidioc_delete_bufs>` ioctl
+>>>>    * @vidioc_overlay: pointer to the function that implements
+>>>>    * :ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+>>>>    * @vidioc_g_fbuf: pointer to the function that implements
+>>>> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+>>>>                                struct v4l2_create_buffers *b);
+>>>>      int (*vidioc_prepare_buf)(struct file *file, void *fh,
+>>>>                                struct v4l2_buffer *b);
+>>>> +    int (*vidioc_delete_bufs)(struct file *file, void *fh,
+>>>> +                              struct v4l2_delete_buffers *d);
+>>>>
+>>>>      int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
+>>>>      int (*vidioc_g_fbuf)(struct file *file, void *fh,
+>>>> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+>>>> index 288477075a0e..db3bd986624e 100644
+>>>> --- a/include/media/videobuf2-core.h
+>>>> +++ b/include/media/videobuf2-core.h
+>>>> @@ -507,6 +507,7 @@ struct vb2_buf_ops {
+>>>>    * @supports_requests: this queue supports the Request API.
+>>>>    * @requires_requests: this queue requires the Request API. If this is set to 1,
+>>>>    *         then supports_requests must be set to 1 as well.
+>>>> + * @supports_delete_bufs: this queue supports DELETE_BUFS ioctl.
+>>>>    * @uses_qbuf:     qbuf was used directly for this queue. Set to 1 the first
+>>>>    *         time this is called. Set to 0 when the queue is canceled.
+>>>>    *         If this is 1, then you cannot queue buffers from a request.
+>>>> @@ -595,6 +596,7 @@ struct vb2_queue {
+>>>>      unsigned int               quirk_poll_must_check_waiting_for_buffers:1;
+>>>>      unsigned int                    supports_requests:1;
+>>>>      unsigned int                    requires_requests:1;
+>>>> +    unsigned int                    supports_delete_bufs:1;
+>>>>      unsigned int                    uses_qbuf:1;
+>>>>      unsigned int                    uses_requests:1;
+>>>>      unsigned int                    allow_cache_hints:1;
+>>>> @@ -846,6 +848,16 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>>>>    */
+>>>>   int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb);
+>>>>
+>>>> +/**
+>>>> + * vb2_core_delete_bufs() -
+>>>> + * @q:              pointer to &struct vb2_queue with videobuf2 queue.
+>>>> + * @start:  first index of the range of buffers to delete.
+>>>> + * @count:  number of buffers to delete.
+>>>> + *
+>>>> + *  Return: returns zero on success; an error code otherwise.
+>>>> + */
+>>>> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, unsigned int count);
+>>>> +
+>>>>   /**
+>>>>    * vb2_core_qbuf() - Queue a buffer from userspace
+>>>>    *
+>>>> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
+>>>> index 5a845887850b..79cea8459f52 100644
+>>>> --- a/include/media/videobuf2-v4l2.h
+>>>> +++ b/include/media/videobuf2-v4l2.h
+>>>> @@ -118,6 +118,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
+>>>>    */
+>>>>   int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>>                  struct v4l2_buffer *b);
+>>>> +/**
+>>>> + * vb2_delete_bufs() - Delete buffers from the queue
+>>>> + *
+>>>> + * @q:              pointer to &struct vb2_queue with videobuf2 queue.
+>>>> + * @d:              delete parameter, passed from userspace to
+>>>> + *          &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver
+>>>> + *
+>>>> + * The return values from this function are intended to be directly returned
+>>>> + * from &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver.
+>>>> + */
+>>>> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d);
+>>>>
+>>>>   /**
+>>>>    * vb2_qbuf() - Queue a buffer from userspace
+>>>> @@ -334,6 +345,8 @@ int vb2_ioctl_streamon(struct file *file, void *priv, enum v4l2_buf_type i);
+>>>>   int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf_type i);
+>>>>   int vb2_ioctl_expbuf(struct file *file, void *priv,
+>>>>      struct v4l2_exportbuffer *p);
+>>>> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
+>>>> +                      struct v4l2_delete_buffers *p);
+>>>>
+>>>>   /* struct v4l2_file_operations helpers */
+>>>>
+>>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>>>> index 13ddb5abf584..96e105149906 100644
+>>>> --- a/include/uapi/linux/videodev2.h
+>>>> +++ b/include/uapi/linux/videodev2.h
+>>>> @@ -1036,6 +1036,7 @@ struct v4l2_requestbuffers {
+>>>>   #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF (1 << 5)
+>>>>   #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS             (1 << 6)
+>>>>   #define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS              (1 << 7)
+>>>> +#define V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS           (1 << 8)
+>>>>
+>>>>   /**
+>>>>    * struct v4l2_plane - plane info for multi-planar buffers
+>>>> @@ -2622,6 +2623,20 @@ struct v4l2_create_buffers {
+>>>>      __u32                   reserved[5];
+>>>>   };
+>>>>
+>>>> +/**
+>>>> + * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+>>>> + * @index:  the first buffer to be deleted
+>>>> + * @count:  number of buffers to delete
+>>>> + * @type:   enum v4l2_buf_type
+>>>> + * @reserved:       future extensions
+>>>> + */
+>>>> +struct v4l2_delete_buffers {
+>>>> +    __u32                   index;
+>>>> +    __u32                   count;
+>>>> +    __u32                   type;
+>>>> +    __u32                   reserved[13];
+>>>> +};
+>>>> +
+>>>>   /*
+>>>>    * I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
+>>>>    *
+>>>> @@ -2721,6 +2736,8 @@ struct v4l2_create_buffers {
+>>>>   #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip_info)
+>>>>
+>>>>   #define VIDIOC_QUERY_EXT_CTRL      _IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>>>> +#define VIDIOC_DELETE_BUFS  _IOWR('V', 104, struct v4l2_delete_buffers)
+>>>> +
+>>>>
+>>>>   /* Reminder: when adding new ioctls please add support for them to
+>>>>      drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+>>> Do we also need to add support for the new ioctl in there?
+>>
+>> It only use _u32, is aligned on cache boundary and doesn't use pointer.
+>> For me 32 and 64 bits structures are identical so it doesn't need to be convert.
+>> Maybe I'm wrong when testing it with pahole ?
+> 
+> Ah, right. I double checked the compat code and indeed if an ioctl is
+> not listed there, it will just use the default copy_from_user, so we
+> should be good.
+> 
+> Maybe one day we should update that comment to explain how to check if
+> it's necessary to add a compat handler.
+> 
+> Best regards,
+> Tomasz
 
->
-> As Connor outlined in a previous submission of this patch series,
-> this raises a number of complicated situations:  The mutex owner
-> might itself be blocked on another mutex, or it could be
-> sleeping, running on a different CPU, in the process of migrating
-> between CPUs, etc.
->
-> The complexity from this is imposing, but currently in Android we
-> have a large number of cases where we are seeing priority
-> inversion (not unbounded, but much longer than we=E2=80=99d like) between
-> =E2=80=9Cforeground=E2=80=9D and =E2=80=9Cbackground=E2=80=9D SCHED_NORMA=
-L applications. As a
-> result, currently we cannot usefully limit background activity
-> without introducing inconsistent behavior. So Proxy Execution is
-> a very attractive approach to resolving this critical issue.
->
->
-> New in v6:
-> ---------
-> * Big rework of blocked owner enqueuing, re-adding the
->   functionality to the series.
->
-> * Added a boot option proxy_exec=3D and additional logic to allow
->   the functionality to be boot time toggled.
->
-> * Minor tweaks to wake_q logic suggested by Waiman Long
->
-> * Minor fixups Reported-by: kernel test robot <lkp@intel.com>
->
-> * Various cleanups, optimizations as well as fixes for bugs found in v5
->
-> Also, I know Peter didn=E2=80=99t like the blocked_on wrappers, so I
-> previously dropped them, but I found them (and the debug checks
-> within) crucial to working out issues in this patch series. I=E2=80=99m
-> fine to consider dropping them later if they are still
-> objectionable, but their utility was too high at this point to
-> get rid of them.
->
->
-> Issues still to address:
-> =E2=80=94----------
-> * As already mentioned, the sleeping owner handling (where we
->   deactivate waiting tasks and enqueue them onto a list, then
->   reactivate them when the owner wakes up) has been very
->   difficult to get right. This is in part because when we want
->   to activate tasks, we=E2=80=99re already holding a task.pi_lock and a
->   rq_lock, just not the locks for the task we=E2=80=99re activating, nor
->   the rq we=E2=80=99re  enqueuing it onto. So there has to be a bit of
->   lock juggling to drop and acquire the right locks (in the right
->   order).
->
-> * Similarly as we=E2=80=99re often dealing with lists of tasks or chains
->   of tasks and mutexes, iterating across these chains of objects
->   can be done safely while holding the rq lock, but as these
->   chains can cross runqueues our ability to traverse the chains
->   safely is somewhat limited.
->
-> * Additionally, in the sleeping owner enqueueing as well as in
->   proxy return migration, we seem to be constantly working
->   against the proper locking order (task.pi_lock->rq lock
->   ->mutex.waitlock -> task.blocked_lock), having to repeatedly
->   =E2=80=9Cswim upstream=E2=80=9D where we need a higher order lock then =
-what
->   we=E2=80=99re already holding. Suggestions for different approaches to
->   the serialization or ways to move the logic outside of where
->   locks are already held would be appreciated.
->
-> * Still need to validate and re-add the chain migration patches
->   to ensure they resolve the RT/DL load balancing invariants.
->
-> * =E2=80=9Crq_selected()=E2=80=9D naming. Peter doesn=E2=80=99t like it, =
-but I=E2=80=99ve not
->   thought of a better name. Open to suggestions.
->
-> * As discussed at OSPM[2], I like to split pick_next_task() up
->   into two phases selecting and setting the next tasks, as
->   currently pick_next_task() assumes the returned task will be
->   run which results in various side-effects in sched class logic
->   when it=E2=80=99s run. I tried to take a pass at this earlier, but it=
-=E2=80=99s
->   hairy and lower on the priority list for now.
->
-> * CFS load balancing. Blocked tasks may carry forward load (PELT)
->   to the lock owner's CPU, so CPU may look like it is overloaded.
->
-> * Optimization to avoid migrating blocked tasks (to preserve
->   optimistic mutex spinning) if the runnable lock-owner at the
->   end of the blocked_on chain is already running (though this is
->   difficult due to the limitations from locking rules needed to
->   traverse the blocked on chain across run queues).
->
->
-> Performance:
-> =E2=80=94----------
-> This patch series switches mutexes to use handoff mode rather
-> than optimistic spinning. This is a potential concern where locks
-> are under high contention. However, earlier performance analysis
-> (on both x86 and mobile devices) did not see major regressions.
-> That said, Chenyu did report a regression[3], which I=E2=80=99ll need to
-> look further into. I also briefly re-tested with this v5 series
-> and saw some average latencies grow vs v4, suggesting the changes
-> to return-migration (and extra locking) have some impact. With v6
-> the extra overhead is reduced but still not as nice as v4. I=E2=80=99ll
-> be digging more there, but my priority is still stability over
-> speed at this point (it=E2=80=99s easier to validate correctness of
-> optimizations if the baseline isn=E2=80=99t crashing).
->
->
-> If folks find it easier to test/tinker with, this patch series
-> can also be found here:
->   https://github.com/johnstultz-work/linux-dev/commits/proxy-exec-v6-6.6
->   https://github.com/johnstultz-work/linux-dev.git proxy-exec-v6-6.6
->
-> Awhile back Sage Sharp had a nice blog post about types of
-> reviews [4], and while any review and feedback would be greatly
-> appreciated, those focusing on conceptual design or correctness
-> issues would be *especially* valued.
->
-> Thanks so much!
-> -john
->
-> [1] https://static.lwn.net/images/conf/rtlws11/papers/proc/p38.pdf
-> [2] https://youtu.be/QEWqRhVS3lI (video of my OSPM talk)
-> [3] https://lore.kernel.org/lkml/Y7vVqE0M%2FAoDoVbj@chenyu5-mobl1/
-> [4] https://sage.thesharps.us/2014/09/01/the-gentle-art-of-patch-review/
->
->
-> Cc: Joel Fernandes <joelaf@google.com>
-> Cc: Qais Yousef <qyousef@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Zimuzo Ezeozue <zezeozue@google.com>
-> Cc: Youssef Esmat <youssefesmat@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: "Paul E . McKenney" <paulmck@kernel.org>
-> Cc: kernel-team@android.com
->
->
-> John Stultz (8):
->   locking/mutex: Removes wakeups from under mutex::wait_lock
->   sched: Add CONFIG_PROXY_EXEC & boot argument to enable/disable
->   locking/mutex: Split blocked_on logic into two states (blocked_on and
->     blocked_on_waking)
->   sched: Fix runtime accounting w/ split exec & sched contexts
->   sched: Split out __sched() deactivate task logic into a helper
->   sched: Add a very simple proxy() function
->   sched: Add proxy deactivate helper
->   sched: Handle blocked-waiter migration (and return migration)
->
-> Juri Lelli (2):
->   locking/mutex: make mutex::wait_lock irq safe
->   locking/mutex: Expose __mutex_owner()
->
-> Peter Zijlstra (8):
->   sched: Unify runtime accounting across classes
->   locking/mutex: Rework task_struct::blocked_on
->   locking/mutex: Add task_struct::blocked_lock to serialize changes to
->     the blocked_on state
->   locking/mutex: Switch to mutex handoffs for CONFIG_PROXY_EXEC
->   sched: Split scheduler execution context
->   sched: Start blocked_on chain processing in proxy()
->   sched: Add blocked_donor link to task for smarter mutex handoffs
->   sched: Add deactivated (sleeping) owner handling to proxy()
->
-> Valentin Schneider (2):
->   locking/mutex: Add p->blocked_on wrappers for correctness checks
->   sched: Fix proxy/current (push,pull)ability
->
->  .../admin-guide/kernel-parameters.txt         |   4 +
->  include/linux/sched.h                         |  49 +-
->  init/Kconfig                                  |   7 +
->  init/init_task.c                              |   1 +
->  kernel/Kconfig.locks                          |   2 +-
->  kernel/fork.c                                 |   8 +-
->  kernel/locking/mutex-debug.c                  |   9 +-
->  kernel/locking/mutex.c                        | 163 ++--
->  kernel/locking/mutex.h                        |  25 +
->  kernel/locking/ww_mutex.h                     |  72 +-
->  kernel/sched/core.c                           | 723 ++++++++++++++++--
->  kernel/sched/deadline.c                       |  50 +-
->  kernel/sched/fair.c                           | 104 ++-
->  kernel/sched/rt.c                             |  77 +-
->  kernel/sched/sched.h                          |  61 +-
->  kernel/sched/stop_task.c                      |  13 +-
->  16 files changed, 1117 insertions(+), 251 deletions(-)
->
-> --
-> 2.42.0.869.gea05f2083d-goog
->
