@@ -2,207 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F577E7696
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285C97E7698
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345570AbjKJBcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:32:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S1345602AbjKJBd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKJBcc (ORCPT
+        with ESMTP id S229491AbjKJBdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:32:32 -0500
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84D4B44A4
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:32:30 -0800 (PST)
-X-AuditID: a67dfc5b-d85ff70000001748-c6-654d882de360
-Date:   Fri, 10 Nov 2023 10:32:24 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel_team@skhynix.com, akpm@linux-foundation.org,
-        namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Subject: Re: [v4 0/3] Reduce TLB flushes under some specific conditions
-Message-ID: <20231110013224.GD72073@system.software.com>
-References: <20231109045908.54996-1-byungchul@sk.com>
- <87il6bijtu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Thu, 9 Nov 2023 20:33:54 -0500
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3EF44A4
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:33:51 -0800 (PST)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231110013348epoutp046f7bc4b40c11f7b98b0951ece4a1bcc7~WHwfr3rNF1556615566epoutp041
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:33:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231110013348epoutp046f7bc4b40c11f7b98b0951ece4a1bcc7~WHwfr3rNF1556615566epoutp041
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699580028;
+        bh=EyjsNtWq3/Lnam+CZqeSLOeCVenh+Ro2Ki/oM0kxsak=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=EAaKBC+YwwzCdQFQ+b9qwkqXExw6pne5eutUvn3Y8tHWwQJ2/0CVxGGGhA0l5JMqI
+         tEGP4jMCUHQohQRbHP2X6rvinjHITTbCqFCe2OlTXlNkzhetc4x9S8UswFvma6fpzb
+         Q4Nm3JDo6BGrhL8Au0KJY2DzaSL6z6EiPhWN6cXY=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20231110013347epcas2p2c50a5e6c3203c60d998d723ec60fca36~WHwfB3eUD1693116931epcas2p2E;
+        Fri, 10 Nov 2023 01:33:47 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.36.91]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4SRLvG5qflz4x9Q0; Fri, 10 Nov
+        2023 01:33:46 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        83.23.10006.A788D456; Fri, 10 Nov 2023 10:33:46 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231110013346epcas2p37825f4b67674dd8aa3530f761256ef7d~WHwdzLUtB2802428024epcas2p3u;
+        Fri, 10 Nov 2023 01:33:46 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231110013346epsmtrp19bb1f272e426e8ff4a946e6562eef2b0~WHwdya_6Y2199621996epsmtrp1J;
+        Fri, 10 Nov 2023 01:33:46 +0000 (GMT)
+X-AuditID: b6c32a45-179ff70000002716-99-654d887a314f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B9.97.07368.A788D456; Fri, 10 Nov 2023 10:33:46 +0900 (KST)
+Received: from rack03.dsn.sec.samsung.com (unknown [10.229.95.126]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231110013345epsmtip2618c25208f5c03250dd104a12ae49541~WHwdiD7Om0278302783epsmtip2L;
+        Fri, 10 Nov 2023 01:33:45 +0000 (GMT)
+From:   SEO HOYOUNG <hy50.seo@samsung.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        kwangwon.min@samsung.com, kwmad.kim@samsung.com,
+        sh425.lee@samsung.com, sc.suh@samsung.com,
+        quic_nguyenb@quicinc.com, cpgs@samsung.com
+Cc:     SEO HOYOUNG <hy50.seo@samsung.com>
+Subject: [PATCH v2] scsi: ufs: core: Process abort completed command in MCQ
+ mode
+Date:   Fri, 10 Nov 2023 10:36:16 +0900
+Message-Id: <20231110013616.33590-1-hy50.seo@samsung.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87il6bijtu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNIsWRmVeSWpSXmKPExsXC9ZZnka5uh2+qweQXJhZz1q9hs/i84R+b
-        xYsN7YwWX9f/YrZ4+qmPxeLyrjlsFvfW/Ge1OL9rLavFjqX7mCwuHVjAZHF910NGi+O9B5gs
-        Nm+aymzx+wdQ3ZwpVhYnZ01mcRDw+N7ax+KxYFOpx+YVWh6L97xk8ti0qpPNY9OnSewe786d
-        Y/c4MeM3i8fOh5Ye804Gerzfd5XNY+svO4/Pm+Q83s1/yxbAF8Vlk5Kak1mWWqRvl8CVcXTr
-        P6aCTpOKrbv3sTQwflXrYuTkkBAwkWiYt48Jxv655w4riM0ioCox9cUNMJtNQF3ixo2fzCC2
-        iICGxKeFy9m7GLk4mAXeMEmcbt4GViQs4C6x69QdsCJeAQuJ7vPP2EBsIYFMiRudW1kh4oIS
-        J2c+YQGxmQW0JG78ewm0mAPIlpZY/o8DJMwpYCfxvPMb2BhRAWWJA9uOM4HskhBYxS6xae0E
-        RohDJSUOrrjBMoFRYBaSsbOQjJ2FMHYBI/MqRqHMvLLcxMwcE72MyrzMCr3k/NxNjMAoXFb7
-        J3oH46cLwYcYBTgYlXh4L1z3SRViTSwrrsw9xCjBwawkwnvBBCjEm5JYWZValB9fVJqTWnyI
-        UZqDRUmc1+hbeYqQQHpiSWp2ampBahFMlomDU6qBkcNjq9477uW7o6+eN4/ofbuEN7/CpmCr
-        oc9h58/3lkUuOV9dXLElzmxr8jmjTw2/09kEmn/3uqR/nLf+xyShBzPPnVihr/n43IOPq1dq
-        NX5ya6xVUrAPn3lbcO1ys5OfWM9nCG1+eHbpv7ylLYv6vFSuLtt3yU4qcdVa24R3io/LVBbP
-        LLYQ2qPEUpyRaKjFXFScCACANeEhvgIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC5WfdrKvb4ZtqsH67nMWc9WvYLD5v+Mdm
-        8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4vquh4wW
-        x3sPMFls3jSV2eL3D6C6OVOsLE7OmsziIOjxvbWPxWPBplKPzSu0PBbvecnksWlVJ5vHpk+T
-        2D3enTvH7nFixm8Wj50PLT3mnQz0eL/vKpvH4hcfmDy2/rLz+LxJzuPd/LdsAfxRXDYpqTmZ
-        ZalF+nYJXBlHt/5jKug0qdi6ex9LA+NXtS5GTg4JAROJn3vusILYLAKqElNf3ACz2QTUJW7c
-        +MkMYosIaEh8WricvYuRi4NZ4A2TxOnmbWBFwgLuErtO3QEr4hWwkOg+/4wNxBYSyJS40bmV
-        FSIuKHFy5hMWEJtZQEvixr+XTF2MHEC2tMTyfxwgYU4BO4nnnd/AxogKKEsc2HacaQIj7ywk
-        3bOQdM9C6F7AyLyKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMKaW1f6ZuIPxy2X3Q4wCHIxK
-        PLwXrvukCrEmlhVX5h5ilOBgVhLhvWACFOJNSaysSi3Kjy8qzUktPsQozcGiJM7rFZ6aICSQ
-        nliSmp2aWpBaBJNl4uCUamD0Uf6azbNMxf+gC3Om532th20mL+47M2/MWy436dL/z68XSNot
-        u//EmmFFySJXvXDb8Nt1XY+mHpth4i/z7ecq+1ORR77ffXHH1OnR3XBB3bX3bzlvfxrhanCF
-        q4dD6e/qW/xbvdXtb+z89XjG0zczGTw1j9dmF73Kudg06UBt8NuLQUt27016qcRSnJFoqMVc
-        VJwIAA5006mlAgAA
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLJsWRmVeSWpSXmKPExsWy7bCmqW5Vh2+qwZZDuhYP5m1js3j58yqb
+        xcGHnSwW0z78ZLZ4eUjTYvXiBywWi25sY7LYemMni8XNLUdZLC7vmsNm0X19B5vF8uP/mCym
+        vjjObtF19wajxdJ/b1kc+D0uX/H2mLDoAKPH9/UdbB4fn95i8Zi4p86jb8sqRo/Pm+Q82g90
+        MwVwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gCd
+        rqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMC/QK07MLS7NS9fLSy2xMjQwMDIF
+        KkzIzlg84ShjwTa+iufPulkaGE9wdzFyckgImEg8/HKPvYuRi0NIYAejxNsTv1ghnE+MEmtO
+        NkBlvjFKPHi8kQ2m5fiXy4wQib2MEvf2fmaGcH4wSrSve84IUsUmoCGx5tghJpCEiMAlJonW
+        e2vZQRLMAmoSn+8uYwGxhQWCJBr+7waLswioSnyZ0ghm8wpYSjQ2fmGEWCcvsajhNxNEXFDi
+        5MwnLBBz5CWat85mhqiZySHR89sBwnaR2PP4BAuELSzx6vgWdghbSuJlfxuUnS3RuGctlF0h
+        MXfzZKhdxhKznrUD2RxA8zUl1u/SBzElBJQljtyC2son0XH4L1Qnr0TDxt/sECW8Eh1tQhBh
+        JYkzc29DhSUkDs7OgTA9JG5srgWpEBKIlVixZgX7BEaFWUi+moXkq1kIFyxgZF7FKJZaUJyb
+        nlpsVGAIj97k/NxNjOB0rOW6g3Hy2w96hxiZOBgPMUpwMCuJ8F4w8UkV4k1JrKxKLcqPLyrN
+        SS0+xGgKDOeJzFKiyfnAjJBXEm9oYmlgYmZmaG5kamCuJM57r3VuipBAemJJanZqakFqEUwf
+        EwenVAMTv84mfr03MiJx+kZ9SWYX3vXL7/r+3HfjV5OvdwPjtqbtl3C7yMn6SNRh2eU5q86w
+        uPxaoXT7jmrlq3/8pw1NLM4ULa6pawv7deTZmaTVLnXLF++ctdjV+WmkeFgKx/HPCReuz+Xj
+        kL59QfeH46+3S1ybZ00v/vX9t9hUz4OLLvGeCX6TVspRriC/YafgxuzWKx08am2iajYbPvFk
+        ysrGrzmq/3H/Css9/KsVzSXmn3865zXPoh96jQ/3emrN7hDPYsm69nebfrmSa/j5s5H7+aSj
+        J2c0r7U6emOZ5KzpD58cvdX8wvm8rMVWYV2PaeyWXov3pXL1yec4XIy3/pO7Zv++gujJFWtv
+        PAs/6V/uoMRSnJFoqMVcVJwIAJhFWx9QBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMLMWRmVeSWpSXmKPExsWy7bCSvG5Vh2+qwb7brBYP5m1js3j58yqb
+        xcGHnSwW0z78ZLZ4eUjTYvXiBywWi25sY7LYemMni8XNLUdZLC7vmsNm0X19B5vF8uP/mCym
+        vjjObtF19wajxdJ/b1kc+D0uX/H2mLDoAKPH9/UdbB4fn95i8Zi4p86jb8sqRo/Pm+Q82g90
+        MwVwRHHZpKTmZJalFunbJXBlLJ5wlLFgG1/F82fdLA2MJ7i7GDk5JARMJI5/uczYxcjFISSw
+        m1Hi58oz7BAJCYn/i5uYIGxhifstR1ghir4xSiw6+IcFJMEmoCGx5tghsCIRgSdMEhObPUFs
+        ZgE1ic93l4HVCAsESDye9A2shkVAVeLLlEawBbwClhKNjV8YIRbISyxq+M0EEReUODnzCQvE
+        HHmJ5q2zmScw8s1CkpqFJLWAkWkVo2RqQXFuem6yYYFhXmq5XnFibnFpXrpecn7uJkZwPGhp
+        7GC8N/+f3iFGJg7GQ4wSHMxKIrwXTHxShXhTEiurUovy44tKc1KLDzFKc7AoifMazpidIiSQ
+        nliSmp2aWpBaBJNl4uCUamDaue5VZfqCHvnmZPddf41+i/71rPOOED7leEdV5vyt1If754jr
+        fjRlqFXw/OGstSjr7wZ944Rq9tUz4+a1OVju+8q589Kj7oLcy3u/dk5S3vkpzqiK751a4Y2V
+        O95OkopXjpMQqFo871VMbADju4ch21ob3kcekXNqqTmTNLm6TnxSR66CT/PzuZVz3lw492Hf
+        Xw/bt0vnfz81N+WaxuINkXnrCzaeNCq6+lM1eP3EwAMTTdT4i08sPBN7WD/hbKFs6d6Fd40L
+        tM4aXr5ZIDCT+Ykmg6ybaf+pyLnuGhNeu0gsTWja8ffBiunGxbkbfmrUtiwsOuzttkQ16Ost
+        uVs2JQ1z49SDbbi2vXDnnJ+rxFKckWioxVxUnAgAdU1E8vYCAAA=
+X-CMS-MailID: 20231110013346epcas2p37825f4b67674dd8aa3530f761256ef7d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-CPGSPASS: Y
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231110013346epcas2p37825f4b67674dd8aa3530f761256ef7d
+References: <CGME20231110013346epcas2p37825f4b67674dd8aa3530f761256ef7d@epcas2p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 01:20:29PM +0800, Huang, Ying wrote:
-> Byungchul Park <byungchul@sk.com> writes:
-> 
-> > Hi everyone,
-> >
-> > While I'm working with CXL memory, I have been facing migration overhead
-> > esp. TLB shootdown on promotion or demotion between different tiers.
-> > Yeah.. most TLB shootdowns on migration through hinting fault can be
-> > avoided thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
-> > flushing TLB in batch if PTE is inaccessible").
-> >
-> > However, it's only for ones using hinting fault. I thought it'd be much
-> > better if we have a general mechanism to reduce # of TLB flushes and
-> > TLB misses, that we can apply to any type of migration. I tried it only
-> > for tiering migration for now tho.
-> >
-> > I'm suggesting a mechanism to reduce TLB flushes by keeping source and
-> > destination of folios participated in the migrations until all TLB
-> > flushes required are done, only if those folios are not mapped with
-> > write permission PTE entries at all. I worked Based on v6.6-rc5.
-> >
-> > Can you believe it? I saw the number of TLB full flush reduced about
-> > 80% and iTLB miss reduced about 50%, and the time wise performance
-> > always shows at least 1% stable improvement with the workload I tested
-> > with, XSBench. However, I believe that it would help more with other
-> > ones or any real ones. It'd be appreciated to let me know if I'm missing
-> > something.
-> 
-> Can you help to test the effect of commit 7e12beb8ca2a ("migrate_pages:
-> batch flushing TLB") for your test case?  To test it, you can revert it
-> and compare the performance before and after the reverting.
+In MCQ mode, the case where OCS is updated to aborted is as follows
+ 1. when abort processing is completed
+ 2. When a duplicate command occurs
 
-I will.
+In case of 1 situation, cmd should be re-request.
+So in the case of cmd whose abort processing is completed in MCQ mode,
+the ufs driver needs to update to scsi with DID_REQUEUE.
 
-> And, how do you trigger migration when testing XSBench?  Use a tiered
-> memory system, and migrate pages between DRAM and CXL memory back and
-> forth?  If so, how many pages will you migrate for each migration?
+v1->v2: change the method of determinging mcq and legacy mode.
+check cqe value for checking mcq mode
 
-Honestly I've been focusing on the migration # and TLB #. I will get
-back to you.
+Signed-off-by: SEO HOYOUNG <hy50.seo@samsung.com>
+---
+ drivers/ufs/core/ufshcd.c | 8 +++++++-
+ include/ufs/ufshci.h      | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-	Byungchul
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 68d7da02944f..9a730a794b66 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -5307,6 +5307,7 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
+ 	enum utp_ocs ocs;
+ 	u8 upiu_flags;
+ 	u32 resid;
++	u8 eec;
+ 
+ 	upiu_flags = lrbp->ucd_rsp_ptr->header.flags;
+ 	resid = be32_to_cpu(lrbp->ucd_rsp_ptr->sr.residual_transfer_count);
+@@ -5371,7 +5372,12 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
+ 		}
+ 		break;
+ 	case OCS_ABORTED:
+-		result |= DID_ABORT << 16;
++		if (cqe) {
++			eec = le32_to_cpu(cqe->status) & MASK_EEC;
++			result |= eec ? (DID_ABORT << 16) : (DID_REQUEUE << 16);
++		} else {
++			result |= DID_ABORT << 16;
++		}
+ 		break;
+ 	case OCS_INVALID_COMMAND_STATUS:
+ 		result |= DID_REQUEUE << 16;
+diff --git a/include/ufs/ufshci.h b/include/ufs/ufshci.h
+index d5accacae6bc..9aefc7e6d0fc 100644
+--- a/include/ufs/ufshci.h
++++ b/include/ufs/ufshci.h
+@@ -465,6 +465,7 @@ enum utp_ocs {
+ 
+ enum {
+ 	MASK_OCS			= 0x0F,
++	MASK_EEC			= 0xF0,
+ };
+ 
+ /* The maximum length of the data byte count field in the PRDT is 256KB */
+-- 
+2.26.0
 
-> --
-> Best Regards,
-> Huang, Ying
-> 
-> >
-> > 	Byungchul
-> >
-> > ---
-> >
-> > Changes from v3:
-> >
-> > 	1. Don't use the kconfig, CONFIG_MIGRC, and remove sysctl knob,
-> > 	   migrc_enable. (feedbacked by Nadav)
-> > 	2. Remove the optimization skipping CPUs that have already
-> > 	   performed TLB flushes needed by any reason when performing
-> > 	   TLB flushes by migrc because I can't tell the performance
-> > 	   difference between w/ the optimization and w/o that.
-> > 	   (feedbacked by Nadav)
-> > 	3. Minimize arch-specific code. While at it, move all the migrc
-> >            declarations and inline functions from include/linux/mm.h to
-> >            mm/internal.h (feedbacked by Dave Hansen, Nadav)
-> > 	4. Separate a part making migrc paused when the system is in
-> > 	   high memory pressure to another patch. (feedbacked by Nadav)
-> > 	5. Rename:
-> > 	      a. arch_tlbbatch_clean() to arch_tlbbatch_clear(),
-> > 	      b. tlb_ubc_nowr to tlb_ubc_ro,
-> > 	      c. migrc_try_flush_free_folios() to migrc_flush_free_folios(),
-> > 	      d. migrc_stop to migrc_pause.
-> > 	   (feedbacked by Nadav)
-> > 	6. Use ->lru list_head instead of introducing a new llist_head.
-> > 	   (feedbacked by Nadav)
-> > 	7. Use non-atomic operations of page-flag when it's safe.
-> > 	   (feedbacked by Nadav)
-> > 	8. Use stack instead of keeping a pointer of 'struct migrc_req'
-> > 	   in struct task, which is for manipulating it locally.
-> > 	   (feedbacked by Nadav)
-> > 	9. Replace a lot of simple functions to inline functions placed
-> > 	   in a header, mm/internal.h. (feedbacked by Nadav)
-> > 	10. Add additional sufficient comments. (feedbacked by Nadav)
-> > 	11. Remove a lot of wrapper functions. (feedbacked by Nadav)
-> >
-> > Changes from RFC v2:
-> >
-> > 	1. Remove additional occupation in struct page. To do that,
-> > 	   unioned with lru field for migrc's list and added a page
-> > 	   flag. I know page flag is a thing that we don't like to add
-> > 	   but no choice because migrc should distinguish folios under
-> > 	   migrc's control from others. Instead, I force migrc to be
-> > 	   used only on 64 bit system to mitigate you guys from getting
-> > 	   angry.
-> > 	2. Remove meaningless internal object allocator that I
-> > 	   introduced to minimize impact onto the system. However, a ton
-> > 	   of tests showed there was no difference.
-> > 	3. Stop migrc from working when the system is in high memory
-> > 	   pressure like about to perform direct reclaim. At the
-> > 	   condition where the swap mechanism is heavily used, I found
-> > 	   the system suffered from regression without this control.
-> > 	4. Exclude folios that pte_dirty() == true from migrc's interest
-> > 	   so that migrc can work simpler.
-> > 	5. Combine several patches that work tightly coupled to one.
-> > 	6. Add sufficient comments for better review.
-> > 	7. Manage migrc's request in per-node manner (from globally).
-> > 	8. Add TLB miss improvement in commit message.
-> > 	9. Test with more CPUs(4 -> 16) to see bigger improvement.
-> >
-> > Changes from RFC:
-> >
-> > 	1. Fix a bug triggered when a destination folio at the previous
-> > 	   migration becomes a source folio at the next migration,
-> > 	   before the folio gets handled properly so that the folio can
-> > 	   play with another migration. There was inconsistency in the
-> > 	   folio's state. Fixed it.
-> > 	2. Split the patch set into more pieces so that the folks can
-> > 	   review better. (Feedbacked by Nadav Amit)
-> > 	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
-> > 	   (Feedbacked by Nadav Amit)
-> > 	4. Tried to add sufficient comments to explain the patch set
-> > 	   better. (Feedbacked by Nadav Amit)
-> >
-> > Byungchul Park (3):
-> >   mm/rmap: Recognize read-only TLB entries during batched TLB flush
-> >   mm: Defer TLB flush by keeping both src and dst folios at migration
-> >   mm: Pause migrc mechanism at high memory pressure
-> >
-> >  arch/x86/include/asm/tlbflush.h |   3 +
-> >  arch/x86/mm/tlb.c               |  11 ++
-> >  include/linux/mm_types.h        |  21 +++
-> >  include/linux/mmzone.h          |   9 ++
-> >  include/linux/page-flags.h      |   4 +
-> >  include/linux/sched.h           |   7 +
-> >  include/trace/events/mmflags.h  |   3 +-
-> >  mm/internal.h                   |  78 ++++++++++
-> >  mm/memory.c                     |  11 ++
-> >  mm/migrate.c                    | 266 ++++++++++++++++++++++++++++++++
-> >  mm/page_alloc.c                 |  30 +++-
-> >  mm/rmap.c                       |  35 ++++-
-> >  12 files changed, 475 insertions(+), 3 deletions(-)
