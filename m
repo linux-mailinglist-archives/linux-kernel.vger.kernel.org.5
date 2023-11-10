@@ -2,76 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5197E81F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942F87E821F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjKJSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        id S1344801AbjKJTBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKJSvH (ORCPT
+        with ESMTP id S235969AbjKJTAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:51:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776F72FEDF
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LSjiu5PwW127C9bZviFZwDU1KNrehXObzTk474onep4=; b=TZbKzbUXxrmYZmRPlGshsSFfYW
-        bg8n59u/i6MZJNW+Csk6uJIRv2R4aFZA6pEu5pBdQHbQxVpjjuEWsJpnkXPkDpiBzNzwDsHM8ZNf0
-        Y665S8SHd6/BbkCialvVo0eoigFuVfCBrl9q4AvBRVB0hdwn7YGF9hiSqtzHRNvabx5+VlVKB9xjS
-        ONMYdAnVq8Kci6HOngxFk62RUzIa72EVMjWl+Wk6v4QJG7LBnxUUpSW6SriAMHcDHaNZl0Xu4SgZb
-        sT2VByxpLRy731QJC2CGFL5P/4/U8hdHSZEY55jydwUH4RwOJ02BSu0ZQmOrydBYLIr7nsVALka+H
-        gzJRyYgQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r1VyO-00EqYU-IO; Fri, 10 Nov 2023 18:11:16 +0000
-Date:   Fri, 10 Nov 2023 18:11:16 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [PATCH v2 1/7] fs/proc/page: remove unneeded PageTail &&
- PageSlab check
-Message-ID: <ZU5yROwNmTZpyxb8@casper.infradead.org>
-References: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
- <20231110033324.2455523-2-wangkefeng.wang@huawei.com>
+        Fri, 10 Nov 2023 14:00:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933C71DF64;
+        Fri, 10 Nov 2023 10:24:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699640658; x=1731176658;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=iMLEVEwDpe0uU/yEiANhauWEw+kQk3zn+3BbIbhPfjc=;
+  b=ZWQuGxODaTgEDh3Qo7RhT2KPRNjVwlVhEo/E1dFl1/NVQ1wz2euKU7Q7
+   1rGUeYcxXfaZARcLSsuGiSjL4k57HVXSVF+X4Lv3W/ZkJ0iRFB+B9a+JO
+   05Ax8/gS6GguVlkbxnjhxydBkKdLdKUNZKDX+Rdom0haJU5H+7Uu78Ph/
+   QwWgnXinHxMZCJP1S8ev3EIEVXHlpmNVhFesPP0Mo4zg30qAG5PvAQOz3
+   QIsc62HESYF2XYKvOedApptJgAXB554pgAUeB9C9wwIn8bTRBAfPRfUOj
+   Ci50WK1QjtlL/ARXDex+q3PQEYcO+HKcCyObHPIuEzINllvybdsLaBu/O
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="375251902"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="375251902"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:23:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="798663737"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="798663737"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2023 10:23:08 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 46CA872F; Fri, 10 Nov 2023 20:23:07 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v3 00/25] i2c: designware: code consolidation & cleanups
+Date:   Fri, 10 Nov 2023 20:11:20 +0200
+Message-ID: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110033324.2455523-2-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 11:33:18AM +0800, Kefeng Wang wrote:
-> After commit dcb351cd095a ("page-flags: define behavior SL*B-related
-> flags on compound pages"), the slab could not be a tail, remove unneeded
-> PageTail && PageSlab check.
+The series now consists the following groups of patches:
+- fixing cleanup order in error path and remove (patches 1-5)
+- refactoring i2c_dw_*_lock_support() (patches 6-7)
+- refactoring module alias and device ID tables (patches 8-11)
+- unifying firmware parsing and configuring code (patches 12-16)
+- miscellaneous cleanups (patches 17-18,22-25)
+- consolidating PM ops (patch 19)
+- using device_set_node() for all drivers (patches 20-21)
 
-No, that's completely wrong.
+The "Consolidate PM ops" might be considered as rft, however I don't think
+we have any hardware where the behaviour will be changed, anyways, good
+to test.
 
- * PF_NO_TAIL:
- *     modifications of the page flag must be done on small or head pages,
- *     checks can be done on tail pages too.
+Changelog v3:
+- doubled the size of the series
+- fixed compilation error (LKP)
+- added tags (Andi)
 
-That's backed up by the code:
+v2: https://lore.kernel.org/r/20231109182823.3531846-1-andriy.shevchenko@linux.intel.com
 
-#define PF_NO_TAIL(page, enforce) ({                                    \
-                VM_BUG_ON_PGFLAGS(enforce && PageTail(page), page);     \
-                PF_POISONED_CHECK(compound_head(page)); })
+Changelog v2:
+- reworked the series to make it less twisted (Jarkko, Andi)
+- added tags to the patches that have been rebased (Andi, Mario, Jarkko)
+- introduced a few new changes (PM ops, export namespace)
 
-(enforce is set to 0 for the 'test')
+v1: https://lore.kernel.org/r/20230725143023.86325-1-andriy.shevchenko@linux.intel.com
 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Andy Shevchenko (25):
+  i2c: designware: Delete adapter before disabling in
+    i2c_dw_pci_remove()
+  i2c: designware: Fix PM calls order in dw_i2c_plat_probe()
+  i2c: designware: Fix reset call order in dw_i2c_plat_probe()
+  i2c: designware: Let PCI core to take care about interrupt vectors
+  i2c: designware: Fix lock probe call order in dw_i2c_plat_probe()
+  i2c: designware: Replace a while-loop by for-loop
+  i2c: designware: Save pointer to semaphore callbacks instead of index
+  i2c: designware: Add missing 'c' into PCI IDs variable name
+  i2c: designware: Replace MODULE_ALIAS() with MODULE_DEVICE_TABLE()
+  i2c: designware: Unify terminator in device ID tables
+  i2c: designware: Always provide device ID tables
+  i2c: designware: Drop return value from i2c_dw_acpi_configure()
+  i2c: designware: Drop return value from dw_i2c_of_configure()
+  i2c: designware: Rename dw_i2c_of_configure() -> i2c_dw_of_configure()
+  i2c: designware: Consolidate firmware parsing and configuring code
+  i2c: designware: Unify the firmware type checks
+  i2c: designware: Move exports to I2C_DW namespaces
+  i2c: designware: Remove ->disable() callback
+  i2c: designware: Consolidate PM ops
+  i2c: designware: Uninline i2c_dw_probe()
+  i2c: designware: Propagate firmware node
+  i2c: designware: Use pci_get_drvdata()
+  i2c: designware: Use temporary variable for struct device
+  i2c: designware: Get rid of redundant 'else'
+  i2c: designware: Fix spelling and other issues in the comments
 
-NAK
+ drivers/i2c/busses/i2c-designware-amdpsp.c  |  10 +-
+ drivers/i2c/busses/i2c-designware-common.c  | 166 +++++++++-
+ drivers/i2c/busses/i2c-designware-core.h    |  47 +--
+ drivers/i2c/busses/i2c-designware-master.c  |  19 +-
+ drivers/i2c/busses/i2c-designware-pcidrv.c  | 118 ++-----
+ drivers/i2c/busses/i2c-designware-platdrv.c | 337 +++++++-------------
+ drivers/i2c/busses/i2c-designware-slave.c   |  12 +-
+ 7 files changed, 338 insertions(+), 371 deletions(-)
+
+-- 
+2.43.0.rc1.1.gbec44491f096
+
