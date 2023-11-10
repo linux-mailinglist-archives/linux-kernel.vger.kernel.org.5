@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEFA7E816A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988797E80D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbjKJS1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S229884AbjKJSSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346015AbjKJSZ6 (ORCPT
+        with ESMTP id S1346111AbjKJSQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:25:58 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD2A2B7AF;
-        Fri, 10 Nov 2023 03:09:22 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAAgve8029049;
-        Fri, 10 Nov 2023 11:09:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=y1Bsfkel8W3lC6YtmqwhR4UW9ZqgUzbACQGFct4ivts=;
- b=iQkgyNv7kVPPYBnem12fpSs1sOXATBDaV9hH2tE4Q+ySM+9t0uM3YrKhQRPMmyCYe8lS
- fcGq/s8ooVrbdHJ00AS9iSXuDKe/HDSY7Q97Pg8qganEp8hSM/L2LMZzjbwH6j5u2/vK
- zvKK0MMZyZTPDBlMhDYUpv7qd2fV5RGckN1Kw/pdY+ceujF8+2bjlkCIXjJfWOLiOWqF
- S7oCX78oS2EggvotqgNEwtsKthyWHYfCwO2TO7kX6C0kZ7SAzhFubPKpT068USIgxe0q
- SoQ5CXkxtYvfEvn2jabSYuR50ZDtMJQf3UoaFtRdTOKIfXcmuiuE9wi5t9Mo4wL406x7 yA== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u9k0nrmvb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 11:09:20 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAAJtcj004132;
-        Fri, 10 Nov 2023 11:09:19 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w21ack9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 11:09:19 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AAB9G5o55968240
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Nov 2023 11:09:16 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55DE72004B;
-        Fri, 10 Nov 2023 11:09:16 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14B4020040;
-        Fri, 10 Nov 2023 11:09:16 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 10 Nov 2023 11:09:16 +0000 (GMT)
-From:   Thomas Richter <tmricht@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, sumanthk@linux.ibm.com
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH v3] perf report: Add s390 raw data interpretation for PAI counters
-Date:   Fri, 10 Nov 2023 12:09:08 +0100
-Message-Id: <20231110110908.2312308-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 10 Nov 2023 13:16:39 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933342B7B2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:09:33 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso14265455e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:09:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699614572; x=1700219372; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x0pADGJn0q6Hogb4HKG0TCZ/m/pzEDmxFAPr5TzrN0s=;
+        b=ahpsUV+yGii1Mbzz7EZoH8qUfw9v5o9HCaRHCh6WEiJo9vwPSK2lTyaS5m/JcqhpGh
+         rTVOF5KH3VSjlnmHVlbkRfOS1Izv1RE8yWlQvs2STdy57hdIVChigV9D4HgNG8REGOQs
+         kSaPffZXY2MUs6HDamSyk8E/zuAQM6/UIzYPvThWYIZEd7auc9Cg3BPtImZx0czGA75f
+         H1ea4Cr5PJauE+fveHVdZ/J7f+3xKoAQ9ZzcLH2+uPoOPWjnMc7/Ij+Dl8XNd3x3Fy1f
+         xBLjcqEsL07MsXUF+WreXAEe0fNQphUzpq9yQoDJD3buFmjO0sQLpcMFv9Q2E9Ijw2io
+         u9Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699614572; x=1700219372;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x0pADGJn0q6Hogb4HKG0TCZ/m/pzEDmxFAPr5TzrN0s=;
+        b=Tt1y4MHBiC3uA8rl4wlZ2lWe5vvSD+rAEqwIswuLlV8CEiiyg+uNvrDDYmWHDjBo+R
+         p1J3YvWbljFc1/MyNj0D79WcoeD3RyGn9eBG29Pd09ZVGXjz8od16k/LsbN/FYzbylnh
+         RcTCGZW2ZaffY0m8apczri3CZExPbgjQMaKxcxwfyqLb6oCEAGqRTupNDRsFCU576B8O
+         G70HkXqys1nfI0PFsX/RbnWcEJyzY+JyVbE2qQSVKG2cnUH4X+G4/a0/21xPxGAxmysT
+         lkkALQ+0NH6y68TPhJNvR0dKstThhY6dgINJkJkDBEEoGQdFMky8rdJN/urlqJLvoQJ3
+         UjrA==
+X-Gm-Message-State: AOJu0YzFGFoy67zgCfihKMPlnZ4eg6QYs9BnzpRAPWaCz/U6te4bXI3w
+        ktOmYL5UzEnvUpI18JVJjhSXcg==
+X-Google-Smtp-Source: AGHT+IGmC5Ai27yr496WtLN9GxMx8T4pEXQsdGZQKhCHPdnlNxA6SGjI5+iIDeSrR3auzeZjl5v3UA==
+X-Received: by 2002:a05:600c:a44:b0:40a:3e41:a258 with SMTP id c4-20020a05600c0a4400b0040a3e41a258mr4066695wmq.17.1699614571963;
+        Fri, 10 Nov 2023 03:09:31 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id jg25-20020a05600ca01900b00405718cbeadsm794518wmb.1.2023.11.10.03.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 03:09:31 -0800 (PST)
+Message-ID: <6d083c38-8807-47ad-8a05-37e89731de4f@linaro.org>
+Date:   Fri, 10 Nov 2023 11:09:29 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
+ switch video GDSC to HW mode
+Content-Language: en-US
+To:     Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
+ <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
+ <835a6add-81e9-42e4-abbe-91632aaa6bc9@linaro.org>
+ <dfc56206-6e8d-d932-6493-e74162855298@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <dfc56206-6e8d-d932-6493-e74162855298@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 84UcwRC6R8hxl-nDP6fdmQ3RdDoF6a02
-X-Proofpoint-GUID: 84UcwRC6R8hxl-nDP6fdmQ3RdDoF6a02
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_07,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 suspectscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311100090
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,206 +93,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 1bf54f32f525 ("s390/pai: Add support for cryptography counters")
-added support for Processor Activity Instrumentation Facility (PAI)
-counters.  These counters values are added as raw data with the perf
-sample during perf record.
-Now add support to display these counters in perf report command.
-The counter number, its assigned name and value is now printed in
-addition to the hexadecimal output.
+On 10/11/2023 08:29, Jagadeesh Kona wrote:
+> 
+> 
+> On 11/7/2023 6:35 PM, Bryan O'Donoghue wrote:
+>> On 01/11/2023 09:04, Abel Vesa wrote:
+>>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>
+>>> The current HW_CTRL flag switches the video GDSC to HW control mode as
+>>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
+>>> give consumer drivers more control and switch the GDSC mode as and when
+>>> required.
+>>>
+>>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
+>>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>>>
+>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>> ---
+>>>   drivers/clk/qcom/videocc-sc7180.c | 2 +-
+>>>   drivers/clk/qcom/videocc-sc7280.c | 2 +-
+>>>   drivers/clk/qcom/videocc-sdm845.c | 4 ++--
+>>>   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
+>>>   drivers/clk/qcom/videocc-sm8550.c | 4 ++--
+>>>   5 files changed, 8 insertions(+), 8 deletions(-)
+>>
+>> So.
+>>
+>> I'm assuming the rest of this series works however for sc8250 at least 
+>> this is a NAK, breaks venus on rb5.
+>>
+>> Reproduction:
+>>
+>> - Debian trixie rb5
+>> - Linux 6.6-rc3 + this patch
+>> - Attached defconfig
+>> - This file:
+>>    https://download.samplelib.com/mp4/sample-30s.mp4
+>> - This command:
+>>    ffplay -loglevel debug -code:video h264_v4l2m2m -i sample-30s.mp4
+>>
+>> Second play of file shows stuck gdsc as below
+>>
+>> I didn't try on rb3, I'd expect similar results. Does this work on 8550 ?
+>>
+>> [ 1601.581204] ------------[ cut here ]------------
+>> [ 1601.585983] mvs0_gdsc status stuck at 'off'
+>> [ 1601.586015] WARNING: CPU: 1 PID: 13372 at 
+>> drivers/clk/qcom/gdsc.c:178 gdsc_toggle_logic+0x16c/0x174
+>> [ 1601.599627] Modules linked in: nf_tables libcrc32c nfnetlink 
+>> snd_soc_hdmi_codec q6asm_dai q6routing q6afe_dai q6asm q6adm 
+>> q6afe_clocks snd_q6dsp_common q6afe q6core apr pdr_interface venus_enc 
+>> venus_dec qcom_camss videobuf2_dma_contig mcp251xfd imx412 
+>> videobuf2_dma_sg venus_core xhci_plat_hcd v4l2_fwnode fastrpc xhci_hcd 
+>> can_dev qrtr_smd lontium_lt9611uxc msm v4l2_async v4l2_mem2mem 
+>> qcom_spmi_adc_tm5 rtc_pm8xxx qcom_spmi_adc5 qcom_pon videobuf2_memops 
+>> crct10dif_ce qcom_spmi_temp_alarm videobuf2_v4l2 qcom_vadc_common 
+>> gpu_sched drm_dp_aux_bus videodev snd_soc_sm8250 drm_display_helper 
+>> snd_soc_qcom_sdw videobuf2_common snd_soc_qcom_common qrtr 
+>> i2c_qcom_cci soundwire_qcom mc i2c_qcom_geni spi_geni_qcom 
+>> phy_qcom_qmp_combo qcom_q6v5_pas qcom_rng soundwire_bus qcom_pil_info 
+>> snd_soc_lpass_va_macro qcom_q6v5 slimbus snd_soc_lpass_macro_common 
+>> qcom_sysmon snd_soc_lpass_wsa_macro display_connector qcom_common 
+>> socinfo qcom_glink_smem qmi_helpers drm_kms_helper mdt_loader qcom_wdt 
+>> icc_osm_l3 qnoc_sm8250 fuse drm backlight dm_mod
+>> [ 1601.599859]  ip_tables x_tables
+>> [ 1601.695314] CPU: 1 PID: 13372 Comm: video_decoder Not tainted 
+>> 6.6.0-rc3-00396-gdbc0d9fa7641-dirty #1
+>> [ 1601.704694] Hardware name: Qualcomm Technologies, Inc. Robotics RB5 
+>> (DT)
+>> [ 1601.711582] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS 
+>> BTYPE=--)
+>> [ 1601.718740] pc : gdsc_toggle_logic+0x16c/0x174
+>> [ 1601.723317] lr : gdsc_toggle_logic+0x16c/0x174
+>> [ 1601.727888] sp : ffff80008adab800
+>> [ 1601.731296] x29: ffff80008adab800 x28: ffffb661e8596210 x27: 
+>> ffffb661e855ad88
+>> [ 1601.738629] x26: 0000000000000000 x25: ffff100c0b5a0d28 x24: 
+>> ffffb6620fd92118
+>> [ 1601.745960] x23: ffffb6620fe1d3d8 x22: 0000000000000000 x21: 
+>> 0000000000000001
+>> [ 1601.753292] x20: 00000000ffffff92 x19: ffffb6620fd92118 x18: 
+>> ffffffffffc0d3e8
+>> [ 1601.760631] x17: 0000000000000000 x16: ffffb6620e269e14 x15: 
+>> 0000000000000028
+>> [ 1601.767973] x14: 0000000000000000 x13: ffff100d75c00000 x12: 
+>> 0000000000000894
+>> [ 1601.775304] x11: 00000000000002dc x10: ffff100d767044a0 x9 : 
+>> ffff100d75c00000
+>> [ 1601.782636] x8 : 00000000fffdffff x7 : ffff100d76700000 x6 : 
+>> 00000000000002dc
+>> [ 1601.789976] x5 : ffff100d7ef40d48 x4 : 40000000fffe02dc x3 : 
+>> ffff59ab6fa21000
+>> [ 1601.797306] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 
+>> ffff100cdacdec80
+>> [ 1601.804638] Call trace:
+>> [ 1601.807161]  gdsc_toggle_logic+0x16c/0x174
+>> [ 1601.811383]  gdsc_enable+0x60/0x27c
+>> [ 1601.814982]  _genpd_power_on+0x94/0x184
+>> [ 1601.818931]  genpd_power_on+0xa8/0x16c
+>> [ 1601.822791]  genpd_runtime_resume+0xd4/0x2a4
+>> [ 1601.827184]  __rpm_callback+0x48/0x1dc
+>> [ 1601.831045]  rpm_callback+0x6c/0x78
+>> [ 1601.834638]  rpm_resume+0x45c/0x6c8
+>> [ 1601.838231]  __pm_runtime_resume+0x4c/0x90
+>> [ 1601.842443]  coreid_power_v4+0x378/0x58c [venus_core]
+>> [ 1601.847695]  vdec_start_streaming+0xc0/0x4e8 [venus_dec]
+>> [ 1601.853169]  vb2_start_streaming+0x68/0x15c [videobuf2_common]
+>> [ 1601.859199]  vb2_core_streamon+0xf8/0x1bc [videobuf2_common]
+>> [ 1601.865032]  vb2_streamon+0x18/0x64 [videobuf2_v4l2]
+>> [ 1601.870174]  v4l2_m2m_ioctl_streamon+0x38/0x98 [v4l2_mem2mem]
+>> [ 1601.876134]  v4l_streamon+0x24/0x30 [videodev]
+>> [ 1601.880759]  __video_do_ioctl+0x15c/0x3c0 [videodev]
+>> [ 1601.885905]  video_usercopy+0x1f0/0x658 [videodev]
+>> [ 1601.890868]  video_ioctl2+0x18/0x28 [videodev]
+>> [ 1601.895481]  v4l2_ioctl+0x40/0x60 [videodev]
+>> [ 1601.899911]  __arm64_sys_ioctl+0xac/0xf0
+>> [ 1601.903958]  invoke_syscall+0x48/0x114
+>> [ 1601.907829]  el0_svc_common.constprop.0+0x40/0xe0
+>> [ 1601.912672]  do_el0_svc+0x1c/0x28
+>> [ 1601.916085]  el0_svc+0x40/0xe8
+>> [ 1601.919243]  el0t_64_sync_handler+0x100/0x12c
+>> [ 1601.923730]  el0t_64_sync+0x190/0x194
+>> [ 1601.927505] ---[ end trace 0000000000000000 ]---
+>> [ 1608.121533] ------------[ cut here ]------------
+>>
+>> And just reverting the one patch - yields
+>>
+>> [  157.083287] qcom-venus aa00000.video-codec: Failed to switch 
+>> power-domain:1 to SW mode
+>> [  162.004630] qcom-venus aa00000.video-codec: Failed to switch 
+>> power-domain:1 to SW mode
+>>
+>> I'll leave the testing here. Please fix !
+>>
+> 
+> Thanks Bryan for reporting this, this could be happening since GDSC 
+> might be left in HW control mode during power off sequence, so the 
+> subsequent GDSC enable is failing since GDSC is still in HW mode. I am 
+> checking internally on this and will get back.
 
-Output before:
- # perf report -D
+Great,
 
- 6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
-				303977/303977: 0 period: 1 addr: 0
- ... thread: paitest:303977
- ...... dso: <not found>
+Please remember to check for rb3 / sdm845 too.
 
- 0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
- .
- . ... raw event: size 72 bytes
- . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
- . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
- . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
- . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
- . 0040:  00 00 00 53 96 af 00 00                          ...S....
-
-Output after:
- # perf report -D
-
- 6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
-				303977/303977: 0 period: 1 addr: 0
- ... thread: paitest:303977
- ...... dso: <not found>
-
- 0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
- .
- . ... raw event: size 72 bytes
- . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
- . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
- . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
- . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
- . 0040:  00 00 00 53 96 af 00 00                          ...S....
-
-        Counter:007 km_aes_128 Value:0x00000000005396af     <--- new
-
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Tested-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
 ---
- tools/perf/util/s390-cpumcf-kernel.h |   2 +
- tools/perf/util/s390-sample-raw.c    | 104 ++++++++++++++++++++++++---
- 2 files changed, 98 insertions(+), 8 deletions(-)
-
-diff --git a/tools/perf/util/s390-cpumcf-kernel.h b/tools/perf/util/s390-cpumcf-kernel.h
-index f55ca07f3ca1..74b36644e384 100644
---- a/tools/perf/util/s390-cpumcf-kernel.h
-+++ b/tools/perf/util/s390-cpumcf-kernel.h
-@@ -12,6 +12,8 @@
- #define	S390_CPUMCF_DIAG_DEF	0xfeef	/* Counter diagnostic entry ID */
- #define	PERF_EVENT_CPUM_CF_DIAG	0xBC000	/* Event: Counter sets */
- #define PERF_EVENT_CPUM_SF_DIAG	0xBD000 /* Event: Combined-sampling */
-+#define PERF_EVENT_PAI_CRYPTO_ALL	0x1000 /* Event: CRYPTO_ALL */
-+#define PERF_EVENT_PAI_NNPA_ALL	0x1800 /* Event: NNPA_ALL */
- 
- struct cf_ctrset_entry {	/* CPU-M CF counter set entry (8 byte) */
- 	unsigned int def:16;	/* 0-15  Data Entry Format */
-diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
-index 115b16edb451..d4dc84aa889a 100644
---- a/tools/perf/util/s390-sample-raw.c
-+++ b/tools/perf/util/s390-sample-raw.c
-@@ -125,6 +125,9 @@ static int get_counterset_start(int setnr)
- 		return 128;
- 	case CPUMF_CTR_SET_MT_DIAG:		/* Diagnostic counter set */
- 		return 448;
-+	case PERF_EVENT_PAI_NNPA_ALL:		/* PAI NNPA counter set */
-+	case PERF_EVENT_PAI_CRYPTO_ALL:		/* PAI CRYPTO counter set */
-+		return setnr;
- 	default:
- 		return -1;
- 	}
-@@ -212,27 +215,112 @@ static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sample *sample)
- 	}
- }
- 
-+/*
-+ * Check for consistency of PAI_CRYPTO/PAI_NNPA raw data.
-+ */
-+struct pai_data {		/* Event number and value */
-+	u16 event_nr;
-+	u64 event_val;
-+} __packed;
-+
-+/*
-+ * Test for valid raw data. At least one PAI event should be in the raw
-+ * data section.
-+ */
-+static bool s390_pai_all_test(struct perf_sample *sample)
-+{
-+	unsigned char *buf = sample->raw_data;
-+	size_t len = sample->raw_size;
-+
-+	if (len < 0xa || !buf)
-+		return false;
-+	return true;
-+}
-+
-+static void s390_pai_all_dump(struct evsel *evsel, struct perf_sample *sample)
-+{
-+	size_t len = sample->raw_size, offset = 0;
-+	unsigned char *p = sample->raw_data;
-+	const char *color = PERF_COLOR_BLUE;
-+	struct pai_data pai_data;
-+	char *ev_name;
-+
-+	while (offset < len) {
-+		memcpy(&pai_data.event_nr, p, sizeof(pai_data.event_nr));
-+		pai_data.event_nr = be16_to_cpu(pai_data.event_nr);
-+		p += sizeof(pai_data.event_nr);
-+		offset += sizeof(pai_data.event_nr);
-+
-+		memcpy(&pai_data.event_val, p, sizeof(pai_data.event_val));
-+		pai_data.event_val = be64_to_cpu(pai_data.event_val);
-+		p += sizeof(pai_data.event_val);
-+		offset += sizeof(pai_data.event_val);
-+
-+		ev_name = get_counter_name(evsel->core.attr.config,
-+					   pai_data.event_nr, evsel->pmu);
-+		color_fprintf(stdout, color, "\tCounter:%03d %s Value:%#018lx\n",
-+			      pai_data.event_nr, ev_name ?: "<unknown>",
-+			      pai_data.event_val);
-+		free(ev_name);
-+
-+		if (offset + 0xa > len)
-+			break;
-+	}
-+	color_fprintf(stdout, color, "\n");
-+}
-+
- /* S390 specific trace event function. Check for PERF_RECORD_SAMPLE events
-- * and if the event was triggered by a counter set diagnostic event display
-- * its raw data.
-+ * and if the event was triggered by a
-+ * - counter set diagnostic event
-+ * - processor activity assist (PAI) crypto counter event
-+ * - processor activity assist (PAI) neural network processor assist (NNPA)
-+ *   counter event
-+ * display its raw data.
-  * The function is only invoked when the dump flag -D is set.
-+ *
-+ * Function evlist__s390_sample_raw() is defined as call back after it has
-+ * been verified that the perf.data file was created on s390 platform.
-  */
--void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event, struct perf_sample *sample)
-+void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event,
-+			     struct perf_sample *sample)
- {
-+	const char *pai_name;
- 	struct evsel *evsel;
- 
- 	if (event->header.type != PERF_RECORD_SAMPLE)
- 		return;
- 
- 	evsel = evlist__event2evsel(evlist, event);
--	if (evsel == NULL ||
--	    evsel->core.attr.config != PERF_EVENT_CPUM_CF_DIAG)
-+	if (!evsel)
- 		return;
- 
- 	/* Display raw data on screen */
--	if (!s390_cpumcfdg_testctr(sample)) {
--		pr_err("Invalid counter set data encountered\n");
-+	if (evsel->core.attr.config == PERF_EVENT_CPUM_CF_DIAG) {
-+		if (!evsel->pmu)
-+			evsel->pmu = perf_pmus__find("cpum_cf");
-+		if (!s390_cpumcfdg_testctr(sample))
-+			pr_err("Invalid counter set data encountered\n");
-+		else
-+			s390_cpumcfdg_dump(evsel->pmu, sample);
- 		return;
- 	}
--	s390_cpumcfdg_dump(evsel->pmu, sample);
-+
-+	switch (evsel->core.attr.config) {
-+	case PERF_EVENT_PAI_NNPA_ALL:
-+		pai_name = "NNPA_ALL";
-+		break;
-+	case PERF_EVENT_PAI_CRYPTO_ALL:
-+		pai_name = "CRYPTO_ALL";
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	if (!s390_pai_all_test(sample)) {
-+		pr_err("Invalid %s raw data encountered\n", pai_name);
-+	} else {
-+		if (!evsel->pmu)
-+			evsel->pmu = perf_pmus__find_by_type(evsel->core.attr.type);
-+		s390_pai_all_dump(evsel, sample);
-+	}
- }
--- 
-2.41.0
+bod
 
