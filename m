@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2407E8093
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4737E810D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344881AbjKJSPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:15:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        id S1345698AbjKJSXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343898AbjKJSOY (ORCPT
+        with ESMTP id S1346305AbjKJSVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:14:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F8F7687;
-        Thu,  9 Nov 2023 22:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699597955; x=1731133955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P+HrsfTgmIAQuHJtSIDJylsGuedtQJzyUXRzKrUPFZE=;
-  b=gM/Z/sXC1M6lin0iLAtVJHOIYq/3Om9u/JMwWFANqvTIAlwpi57WbU7u
-   ePvmUWwSqOU0QK7s3nKmnXF6AGutTGjjCUq/yTrAFTyHxH2zlkTKztCow
-   2wr64xNT5hWaOZRzIofaZOVNKkC0KlN4zDVGxD/D2Ab6i8tGyF95HswY3
-   EFyKfjOdqqMftIveIJdaPtxNnBorKnDLxZApyLcsueN+rJO0SEdzJ5wKz
-   RnaW+QlOVhm50F5G8fQWsuE68EnysvH6v5x7zObf9DO7vBmC/o/HZgJB7
-   wTEmxg5FsjrHIc+5WeCWEP39Wday0NjYERMseNO4sLrbsSoOcE6ME4OD+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370336242"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="370336242"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:23:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="4745660"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 09 Nov 2023 20:23:44 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1J3V-0009Q4-27;
-        Fri, 10 Nov 2023 04:23:41 +0000
-Date:   Fri, 10 Nov 2023 12:23:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pratyush Brahma <quic_pbrahma@quicinc.com>,
-        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-        Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic
- commandline
-Message-ID: <202311101224.evyh4zgY-lkp@intel.com>
-References: <20231110013817.2378507-6-danielwa@cisco.com>
+        Fri, 10 Nov 2023 13:21:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A977ECC
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:52:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1316C433C9;
+        Fri, 10 Nov 2023 04:26:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699590407;
+        bh=JxZCpSm1kqC+R+e83RfxzXa5n+CaQYu1rpOKJU4fHEA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilnOPJ/iNvgeKfC6n/vMMS4pyiQ3o7Bxh+4xnLKiMVs4JEQByAWOjidu1k+rGbpbi
+         8c3NIYHGZMA7jPlyV+hD9P6J6cEsyUzkLbc02Zily3KmP4Nv7/LSkRBZV4S03tVrQO
+         3rMWPmO9ppKALkP2RNe6wPEb3jpF8WVK7WFlHu4E=
+Date:   Fri, 10 Nov 2023 05:26:44 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shree Ramamoorthy <s-ramamoorthy@ti.com>
+Cc:     Julien Panis <jpanis@baylibre.com>,
+        Gairuboina Sirisha <sirisha.gairuboina@ltts.com>,
+        arnd@arndb.de, krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
+        linux-kernel@vger.kernel.org, d-gole@ti.com
+Subject: Re: [PATCH v1 0/3] TPS65224 PMIC driver
+Message-ID: <2023111007-siamese-crepe-9775@gregkh>
+References: <b9449689-73da-41a8-a94e-f82686ab0bb0@baylibre.com>
+ <20231107113740.1034738-1-sirisha.gairuboina@Ltts.com>
+ <2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com>
+ <818ecf7b-cd91-45ca-bb92-65f10f1ca1f0@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231110013817.2378507-6-danielwa@cisco.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <818ecf7b-cd91-45ca-bb92-65f10f1ca1f0@ti.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,67 +52,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Thu, Nov 09, 2023 at 10:22:00AM -0600, Shree Ramamoorthy wrote:
+> > I compared 'tps65224.h' with 'tps6594.h', especially register mapping.
+> > There are less resources in TPS65224, but I don't see any incompatibility
+> > between both PMIC register mappings. Some registers are not used by
+> > your TPS65224, and some interrupts are not used either (that's not a
+> > problem, they will not trigger, so). Beyond that, I2C and PFSM drivers
+> > perform the same things for both PMICs. That's why according to me,
+> > nothing prevents from re-using TPS6594 drivers. Even for ADC, which is
+> > specific to your TPS65224 indeed, the register range does not overlap
+> > with any of TPS6594 registers. You could conditionally add this driver
+> > (that's what we did in  'tps6594-core.c' for RTC driver, which is not
+> > used
+> > for one of the compatibles: you can do something similar for ADC).
+> > You will probably add support for others TPS65224 drivers over the next
+> > weeks: SPI, ESM, RTC, GPIOs, regulators, watchdog, and ADC. Most of them
+> > should be compatible with both TPS6594 and TPS65224, I think (even
+> > watchdog driver, which was not developed for TPS6594). ADC will not,
+> > but as explained above you can easily deal with this one thanks to
+> > the compatible.
+> > For 'tps65224-core.c' only, a little bit of work might be necessary to
+> > handle your TPS65224 specific functionalities. By using a different DT
+> > compatible string, your driver can then select different options (or
+> > maybe
+> > even different register ranges) for some features based on the
+> > compatible.
+> > But except for 'tps65xx-core.c', there is "sufficient overlap" to justify
+> > sharing as much as possible between TPS65224 and TPS6594, in my
+> > opinion.
+> 
+> 
+> TI is positioning TPS65224 as a separate family from TPS6594, but shared
+> software drivers for PMICs that have different use cases would lead to
+> confusion.
 
-kernel test robot noticed the following build warnings:
+Why?  No one cares what a driver's name is, only that it works for their
+hardware.  What different "use case" would cause problems here?
 
-[auto build test WARNING on v6.6]
-[cannot apply to arm64/for-next/core efi/next tip/x86/core robh/for-next linus/master next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Re-scoping the project to accommodate these suggestions would
+> negatively affect the timeline we are trying to meet.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Walker/CMDLINE-add-generic-builtin-command-line/20231110-094423
-base:   v6.6
-patch link:    https://lore.kernel.org/r/20231110013817.2378507-6-danielwa%40cisco.com
-patch subject: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic commandline
-config: loongarch-randconfig-002-20231110 (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/reproduce)
+There are no timelines/deadlines with kernel development, sorry, that's
+not our issue.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311101224.evyh4zgY-lkp@intel.com/
+> We want to include the
+> restructure that addresses the compatibility, register maps, and
+> functionality similarities, but it would best solved after the upcoming
+> deadline has been met.
 
-All warnings (new ones prefixed by >>):
+Again, no deadline here.  Please do the work properly, that's all we
+care about.
 
->> drivers/firmware/efi/libstub/efi-stub-helper.c:43: warning: expecting prototype for efi_handle_cmdline(). Prototype was for efi_handle_builtin_cmdline() instead
-   drivers/firmware/efi/libstub/efi-stub-helper.c:592: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
+> With the growth of PMIC software device drivers, we
+> would prefer to have a separate series with the suggested changes and proper
+> naming convention to address that while they overlap, the two PMICs devices
+> are not a subset.
 
+Why does the name matter?  Again, all that a user cares about is if
+their hardware device is supported, the name means nothing here.
 
-vim +43 drivers/firmware/efi/libstub/efi-stub-helper.c
+Please do the correct thing and add support for this device to the
+existing drivers, that's the correct thing to do.  You will save time
+and energy and code in the long-run, which is the important thing.
 
-    32	
-    33	/**
-    34	 * efi_handle_cmdline() - handle adding in built-in parts of the command line
-    35	 * @cmdline:	kernel command line
-    36	 *
-    37	 * Add in the generic parts of the commandline and start the parsing of the
-    38	 * command line.
-    39	 *
-    40	 * Return:	status code
-    41	 */
-    42	efi_status_t efi_handle_builtin_cmdline(char const *cmdline)
-  > 43	{
-    44		efi_status_t status = EFI_SUCCESS;
-    45	
-    46		if (sizeof(CMDLINE_STATIC_PREPEND) > 1)
-    47			status |= efi_parse_options(CMDLINE_STATIC_PREPEND);
-    48	
-    49		if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE))
-    50			status |= efi_parse_options(cmdline);
-    51	
-    52		if (sizeof(CMDLINE_STATIC_APPEND) > 1)
-    53			status |= efi_parse_options(CMDLINE_STATIC_APPEND);
-    54	
-    55		if (status != EFI_SUCCESS)
-    56			efi_err("Failed to parse options\n");
-    57	
-    58		return status;
-    59	}
-    60	
+There is a reason that Linux drivers are, on average, 1/3 smaller than
+other operating systems.  And that's because they share common code with
+other drivers.  You aren't allowed to just copy an existing one and add
+a few changes and make a whole new driver, you need to modify the
+current one.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+thanks,
+
+greg k-h
