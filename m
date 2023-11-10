@@ -2,267 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 797FE7E8346
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3ADD7E81D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236072AbjKJTqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S235822AbjKJSfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346619AbjKJTpp (ORCPT
+        with ESMTP id S235820AbjKJSev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:45:45 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E86D633FAC;
-        Fri, 10 Nov 2023 04:31:25 -0800 (PST)
-Received: from pwmachine.localnet (unknown [86.120.35.5])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 95BFF20B74C0;
-        Fri, 10 Nov 2023 04:31:23 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 95BFF20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1699619485;
-        bh=C85P1I7NvWAWo7sxjNOgFFh6UXPhwsCTC5ZmQIEklCQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFjHtKMedyiRJ/iGCGWGolcBgG6wRUF4pr3PRElNdEg3MncR3nnJIOebdZUjCjek5
-         zCvcXwcDK163rZCuxvIG2qsTcz+593UCFwidxW1mqLsI+tKBjk/06k9SHw9rjBl3o2
-         UkkP2iHrfcDYlgj4PrHaPhtmq/5XNKEekpgdGHsw=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH for-next] tracing/kprobes: Add symbol counting check when module loads
-Date:   Fri, 10 Nov 2023 14:31:18 +0200
-Message-ID: <5726678.DvuYhMxLoT@pwmachine>
-In-Reply-To: <169854904604.132316.12500381416261460174.stgit@devnote2>
-References: <169854904604.132316.12500381416261460174.stgit@devnote2>
+        Fri, 10 Nov 2023 13:34:51 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09B633FB8;
+        Fri, 10 Nov 2023 04:36:25 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACI1vm009871;
+        Fri, 10 Nov 2023 12:36:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=6yxpm78rFMLJRZodQU6fvWzHWHo52kLHQcZXjcXCYho=;
+ b=CUshjWI6AqCuWAQRw7N/TdCElHOQBFYdjvpaPkU9lTmEXg0CdhTm7dhCSBIpSHRm4ltq
+ X1s4tCPc2h9VFtWp9eSPhMYoaHbfd18tBBcrvPqK98goUrdFLLKFubwrBTuMoLt57td0
+ jEG35gYz3TlZfe+1V+t2Zn/F0zO6OM3SLVPN4LAhVemDmEaJfmLfukTLDVbpYmqBhhby
+ CPo40x+fKw+h514pLKuVbK9FyOOKs2Lrj9yBoLuJ1kYdxGIjUidozq8jUdTQrFMoQivc
+ AV/FDwBw/rC/cLB6hL8ZO/cqaGCbmkT4caCUcMKdUWpiuWk9eRf9rU3ZH1eOg2lDHk+Q fg== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u9kd5j13s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 12:36:15 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAB6Vbq004129;
+        Fri, 10 Nov 2023 12:32:03 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w21asmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 12:32:03 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AACW0MT30999020
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Nov 2023 12:32:00 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3F3CC20043;
+        Fri, 10 Nov 2023 12:32:00 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 08A8720040;
+        Fri, 10 Nov 2023 12:32:00 +0000 (GMT)
+Received: from [9.152.212.233] (unknown [9.152.212.233])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Nov 2023 12:31:59 +0000 (GMT)
+Message-ID: <6d5a8310-d3e4-4fa7-8103-b50b100e22f7@linux.ibm.com>
+Date:   Fri, 10 Nov 2023 13:31:59 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] perf report: Add s390 raw data interpretation for PAI
+ counters
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        sumanthk@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
+        hca@linux.ibm.com
+References: <20231110110908.2312308-1-tmricht@linux.ibm.com>
+ <ZU4d0G23WOKwpIwb@kernel.org>
+From:   Thomas Richter <tmricht@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <ZU4d0G23WOKwpIwb@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: AWfigPQbooAU8ChVKF1V67em-vc7D9Ls
+X-Proofpoint-GUID: AWfigPQbooAU8ChVKF1V67em-vc7D9Ls
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_09,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=653 adultscore=0
+ impostorscore=0 spamscore=0 priorityscore=1501 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311100103
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 11/10/23 13:10, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Nov 10, 2023 at 12:09:08PM +0100, Thomas Richter escreveu:
+>> commit 1bf54f32f525 ("s390/pai: Add support for cryptography counters")
+> 
+> Where is this commit?
+> 
+> ⬢[acme@toolbox perf-tools-next]$ git remote update torvalds
+> Fetching torvalds
+> remote: Enumerating objects: 25591, done.
+> remote: Counting objects: 100% (12820/12820), done.
+> remote: Compressing objects: 100% (2379/2379), done.
+> remote: Total 9481 (delta 8254), reused 8289 (delta 7086), pack-reused 0
+> Receiving objects: 100% (9481/9481), 1.76 MiB | 2.89 MiB/s, done.
+> Resolving deltas: 100% (8254/8254), completed with 1792 local objects.
+> From git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux
+>    d2f51b3516dade79..89cdf9d556016a54  master     -> torvalds/master
+> ⬢[acme@toolbox perf-tools-next]$ git show 1bf54f32f525
+> fatal: ambiguous argument '1bf54f32f525': unknown revision or path not in the working tree.
+> Use '--' to separate paths from revisions, like this:
+> 'git <command> [<revision>...] -- [<file>...]'
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> Looking using the description I get:
+> 
+> 39d62336f5c126ad s390/pai: add support for cryptography counters
+> 
+> Is this the one?
+> 
+> - Arnaldo
+> 
 
 
-Le dimanche 29 octobre 2023, 05:10:46 EET Masami Hiramatsu (Google) a =E9cr=
-it :
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->=20
-> Check the number of probe target symbols in the target module when
-> the module is loaded. If the probe is not on the unique name symbols
-> in the module, it will be rejected at that point.
->=20
-> Note that the symbol which has a unique name in the target module,
-> it will be accepted even if there are same-name symbols in the
-> kernel or other modules,
+Yep, I apologise for the cut & paste error, this is the commit number in question.
+Should I reset a corrected version?
 
-Sorry for the delay in my review, I just remember I should review your patc=
-h.
-I tested it on top of latest master and it return EINVAL instead of=20
-EADDRNOTAVAIL:
-# Behavior without the patch:
-root@vm-amd64:~# uname -r
-6.6.0-15859-g89cdf9d55601
-root@vm-amd64:~# echo 'p:myprobe name_show' > /sys/kernel/tracing/
-kprobe_events
-=2Dbash: echo: write error: Cannot assign requested address
-# With the patch:
-root@vm-amd64:~# uname -r
-6.6.0-15860-gd6a7e0f39ec5
-root@vm-amd64:~# echo 'p:myprobe name_show' > /sys/kernel/tracing/
-kprobe_events
-=2Dbash: echo: write error: Invalid argument
+Thanks
 
-I did not GDB to track down from where it comes (it is planned nonetheless)=
-,=20
-but is this behavior wanted?
-
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  kernel/trace/trace_kprobe.c |  112
-> ++++++++++++++++++++++++++----------------- 1 file changed, 68
-> insertions(+), 44 deletions(-)
->=20
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index e834f149695b..90cf2219adb4 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -670,6 +670,21 @@ static int register_trace_kprobe(struct trace_kprobe
-> *tk) return ret;
->  }
->=20
-> +static int validate_module_probe_symbol(const char *modname, const char
-> *symbol); +
-> +static int register_module_trace_kprobe(struct module *mod, struct
-> trace_kprobe *tk) +{
-> +	const char *p;
-> +	int ret =3D 0;
-> +
-> +	p =3D strchr(trace_kprobe_symbol(tk), ':');
-> +	if (p)
-> +		ret =3D validate_module_probe_symbol(module_name(mod), p++);
-> +	if (!ret)
-> +		ret =3D register_trace_kprobe(tk);
-> +	return ret;
-> +}
-> +
->  /* Module notifier call back, checking event on the module */
->  static int trace_kprobe_module_callback(struct notifier_block *nb,
->  				       unsigned long val, void *data)
-> @@ -688,7 +703,7 @@ static int trace_kprobe_module_callback(struct
-> notifier_block *nb, if (trace_kprobe_within_module(tk, mod)) {
->  			/* Don't need to check busy - this should have gone. */
->  			__unregister_trace_kprobe(tk);
-> -			ret =3D __register_trace_kprobe(tk);
-> +			ret =3D register_module_trace_kprobe(mod, tk);
->  			if (ret)
->  				pr_warn("Failed to re-register probe %s on %s:=20
-%d\n",
->  					trace_probe_name(&tk->tp),
-> @@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const char
-> *name, unsigned long unused) return 0;
->  }
->=20
-> -static unsigned int number_of_same_symbols(char *func_name)
-> +static unsigned int number_of_same_symbols(const char *mod, const char
-> *func_name) {
->  	struct sym_count_ctx ctx =3D { .count =3D 0, .name =3D func_name };
->=20
-> -	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-> +	if (!mod)
-> +		kallsyms_on_each_match_symbol(count_symbols, func_name,=20
-&ctx.count);
->=20
-> -	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-> +	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
->=20
->  	return ctx.count;
->  }
->=20
-> +static int validate_module_probe_symbol(const char *modname, const char
-> *symbol) +{
-> +	unsigned int count =3D number_of_same_symbols(modname, symbol);
-> +
-> +	if (count > 1) {
-> +		/*
-> +		 * Users should use ADDR to remove the ambiguity of
-> +		 * using KSYM only.
-> +		 */
-> +		return -EADDRNOTAVAIL;
-> +	} else if (count =3D=3D 0) {
-> +		/*
-> +		 * We can return ENOENT earlier than when register the
-> +		 * kprobe.
-> +		 */
-> +		return -ENOENT;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int validate_probe_symbol(char *symbol)
-> +{
-> +	char *mod =3D NULL, *p;
-> +	int ret;
-> +
-> +	p =3D strchr(symbol, ':');
-> +	if (p) {
-> +		mod =3D symbol;
-> +		symbol =3D p + 1;
-> +		*p =3D '\0';
-> +	}
-> +	ret =3D validate_module_probe_symbol(mod, symbol);
-> +	if (p)
-> +		*p =3D ':';
-> +	return ret;
-> +}
-> +
->  static int __trace_kprobe_create(int argc, const char *argv[])
->  {
->  	/*
-> @@ -859,6 +912,14 @@ static int __trace_kprobe_create(int argc, const char
-> *argv[]) trace_probe_log_err(0, BAD_PROBE_ADDR);
->  			goto parse_error;
->  		}
-> +		ret =3D validate_probe_symbol(symbol);
-> +		if (ret) {
-> +			if (ret =3D=3D -EADDRNOTAVAIL)
-> +				trace_probe_log_err(0, NON_UNIQ_SYMBOL);
-> +			else
-> +				trace_probe_log_err(0, BAD_PROBE_ADDR);
-> +			goto parse_error;
-> +		}
->  		if (is_return)
->  			ctx.flags |=3D TPARG_FL_RETURN;
->  		ret =3D kprobe_on_func_entry(NULL, symbol, offset);
-> @@ -871,31 +932,6 @@ static int __trace_kprobe_create(int argc, const char
-> *argv[]) }
->  	}
->=20
-> -	if (symbol && !strchr(symbol, ':')) {
-> -		unsigned int count;
-> -
-> -		count =3D number_of_same_symbols(symbol);
-> -		if (count > 1) {
-> -			/*
-> -			 * Users should use ADDR to remove the ambiguity of
-> -			 * using KSYM only.
-> -			 */
-> -			trace_probe_log_err(0, NON_UNIQ_SYMBOL);
-> -			ret =3D -EADDRNOTAVAIL;
-> -
-> -			goto error;
-> -		} else if (count =3D=3D 0) {
-> -			/*
-> -			 * We can return ENOENT earlier than when register the
-> -			 * kprobe.
-> -			 */
-> -			trace_probe_log_err(0, BAD_PROBE_ADDR);
-> -			ret =3D -ENOENT;
-> -
-> -			goto error;
-> -		}
-> -	}
-> -
->  	trace_probe_log_set_index(0);
->  	if (event) {
->  		ret =3D traceprobe_parse_event_name(&event, &group, gbuf,
-> @@ -1767,21 +1803,9 @@ create_local_trace_kprobe(char *func, void *addr,
-> unsigned long offs, char *event;
->=20
->  	if (func) {
-> -		unsigned int count;
-> -
-> -		count =3D number_of_same_symbols(func);
-> -		if (count > 1)
-> -			/*
-> -			 * Users should use addr to remove the ambiguity of
-> -			 * using func only.
-> -			 */
-> -			return ERR_PTR(-EADDRNOTAVAIL);
-> -		else if (count =3D=3D 0)
-> -			/*
-> -			 * We can return ENOENT earlier than when register the
-> -			 * kprobe.
-> -			 */
-> -			return ERR_PTR(-ENOENT);
-> +		ret =3D validate_probe_symbol(func);
-> +		if (ret)
-> +			return ERR_PTR(ret);
->  	}
->=20
->  	/*
-
-
-Best regards.
-
+-- 
+Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+--
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschäftsführung: David Faller
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
 
