@@ -2,243 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A0F7E8278
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23497E8081
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346398AbjKJTYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S235360AbjKJSMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346308AbjKJTYO (ORCPT
+        with ESMTP id S1345549AbjKJSLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:24:14 -0500
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770B025A11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:57:05 -0800 (PST)
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-280740f54b9so1806500a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:57:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699610225; x=1700215025;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uElrfL99man08MaXfRjAUPkmHhlLuvhOq09CZVDePPk=;
-        b=pSUldosqhpBkU4sNkG1z3L7uQUmtwK9C1O33TwNH/lo/rvZKGYiihcgC/JQdY8hovB
-         vUKkS9PKh2eGsf3a5SasWzWdNO//XnO5KLD4sZPgLfS6RExO6QO2Oif1BFSXi2ALoHLl
-         RVcvY4El5bPuEs2lJPTfnjQGAvKgGpQn4xgHJzclBd6Ilv9jn82/i6Qkwb6i4/YWxbcY
-         KbsZZjzbEcAjeh/Y4tLZs+yXNu2vfbKNFYMhdRYuw8i7T/H96M+OlMn/DlAlBrDuo7ny
-         dOmbxYrJ8M4SSGAENjUfUpCLuHdyJYMgvtJ07RBMKsBWPYNhpctceg74O6zZvMxW3bav
-         MPEA==
-X-Gm-Message-State: AOJu0YzeDnWqFgzRO5pnkxO44de1znFnh4mCcpSvMF8h1Ti20LZPcRn8
-        8csDdR0eD2AJrBjFjxi9BlC+vcZgizfxPBgPkUOFkPEdX/lQOBU=
-X-Google-Smtp-Source: AGHT+IHZgB8TBn84+deYrDwbV4qgAsho7MvIKInZTW3oomBLKcXD/g5pRu9JAfO/8V+MOMfSpsX8gDl8Dnqn3TEUFBZywYvFVFkN
+        Fri, 10 Nov 2023 13:11:12 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7293A7D8B;
+        Fri, 10 Nov 2023 02:01:39 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7gAej017261;
+        Fri, 10 Nov 2023 10:01:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vKCQmpof5NgLLxcXWN69NRzaO3733ATCxCp3ipi2n4k=;
+ b=Et+LYvC1koTbfOYVW1a3T/wDxiu4Khnb9Fwh2jfkdwLFl7sqzYHuP9mHXEZiIYE6yvOv
+ gTnC73SRr9iqdnaugD1f79n4B6aFcHGBmCmAOBwRAJ8W4AV7y/7r2+kkzUvv5RiVBh0Q
+ YETy7/Ia0xdKPDxVfCT/k2d5LjrHxBzqd9gLCTKWomhu451HF3Yl+i53rmcYqsiQZBo6
+ r291S1tzHECPMOWETvqWUSTw7uvc2IRMnkRPMPOyZddO5NafWt9BATNnKYpA+19HSePE
+ hPYgtDtHfQVuUIKUZqOv1n+/pXrCbeIZ1vn8mvFodxokwXrenvxBpjko+02C4xwta0/j qw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8u2buaq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 10:01:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AAA1Sjl008014
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 10:01:28 GMT
+Received: from [10.249.28.118] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 02:01:20 -0800
+Message-ID: <dc20ecc0-f930-49c5-9e21-5a6e4c8ce637@quicinc.com>
+Date:   Fri, 10 Nov 2023 15:31:15 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:3b47:b0:280:27a9:76bb with SMTP id
- ot7-20020a17090b3b4700b0028027a976bbmr1110719pjb.9.1699610224976; Fri, 10 Nov
- 2023 01:57:04 -0800 (PST)
-Date:   Fri, 10 Nov 2023 01:57:04 -0800
-In-Reply-To: <20231110063236.964222-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b76b5f0609c957b7@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
+ <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
+ <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
+ <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
+ <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
+ <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
+ <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
+ <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
+ <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
+ <2b19b5e2-5eb0-49e0-8c47-8aff3d48f34e@quicinc.com>
+ <ZU31gx-LY5GBJGPU@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZU31gx-LY5GBJGPU@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GUbyD6oZ358fERpMgh4DHH_-XU0Y2kUj
+X-Proofpoint-ORIG-GUID: GUbyD6oZ358fERpMgh4DHH_-XU0Y2kUj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_06,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=1 suspectscore=0
+ mlxlogscore=199 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 spamscore=1 malwarescore=0 adultscore=0 mlxscore=1
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311100081
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+>>>>>> There are, I can dig through and find out. Atleast in downstream I don't
+>>>>>> see any use of them.
+>>>>>
+>>>>> Yes, please do post how these are wired as well for completeness.
+>>>
+>>> Did you find these two interrupts as well?
+> 
+> Please answer.
+> 
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+Yes.
 
-finded: ffff8880294a4000, d: ffff8880294a2000, nfc_llcp_find_local
-finded: ffff8880294a4000, d: ffff8880294a2000, nfc_llcp_find_local
-finded: ffff8880294a4000, d: ffff8880294a2000, nfc_llcp_find_local
-==================================================================
-BUG: KASAN: slab-use-after-free in nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
-Read of size 4 at addr ffff8880294a2548 by task syz-executor.0/6008
+Controller-1:
+u_usb31_prim_mvs_wrapper_usb31_hs_phy_irq	SYS_apcsQgicSPI[806]
+Controller-2:
+u_usb31_prim_mvs_wrapper_usb31_hs_phy_irq	SYS_apcsQgicSPI[791]
 
-CPU: 0 PID: 6008 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-14263-gaea6bf908d73-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- nfc_alloc_send_skb+0x189/0x1c0 net/nfc/core.c:726
- nfc_llcp_send_ui_frame+0x2a6/0x670 net/nfc/llcp_commands.c:766
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x592/0x890 net/socket.c:2588
- ___sys_sendmsg net/socket.c:2642 [inline]
- __sys_sendmmsg+0x3b2/0x730 net/socket.c:2728
- __do_sys_sendmmsg net/socket.c:2757 [inline]
- __se_sys_sendmmsg net/socket.c:2754 [inline]
- __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2754
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7ff34a27cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff34af4f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 00007ff34a39bf80 RCX: 00007ff34a27cae9
-RDX: 0000000000000001 RSI: 00000000200013c0 RDI: 0000000000000004
-RBP: 00007ff34a2c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007ff34a39bf80 R15: 00007ffefd720258
- </TASK>
+>>>> As an experiment, I tried to test wakeup by pressing buttons on
+>>>> connected keyboard when in suspend state or connecting/disconnecting
+>>>> keyboard in suspended state on different ports and only see dp/dm IRQ's
+>>>> getting fired although we register for hs_phy_irq as well:
+>>>>
+>>>> / # cat /proc/interrupts  |grep phy_
+>>>> 171:   1  0   0   0  0  0  0  0       PDC 127 Edge      dp_hs_phy_1
+>>>> 172:   2  0   0   0  0  0  0  0       PDC 126 Edge      dm_hs_phy_1
+>>>> 173:   3  0   0   0  0  0  0  0       PDC 129 Edge      dp_hs_phy_2
+>>>> 174:   4  0   0   0  0  0  0  0       PDC 128 Edge      dm_hs_phy_2
+>>>> 175:   0  0   0   0  0  0  0  0       PDC 131 Edge      dp_hs_phy_3
+>>>> 176:   2  0   0   0  0  0  0  0       PDC 130 Edge      dm_hs_phy_3
+>>>> 177:   2  0   0   0  0  0  0  0       PDC 133 Edge      dp_hs_phy_4
+>>>> 178:   5  0   0   0  0  0  0  0       PDC 132 Edge      dm_hs_phy_4
+>>>> 179:   0  0   0   0  0  0  0  0       PDC  16 Level     ss_phy_1
+>>>> 180:   0  0   0   0  0  0  0  0       PDC  17 Level     ss_phy_2
+>>>> 181:   0  0   0   0  0  0  0  0     GICv3 163 Level     hs_phy_1
+>>>> 182:   0  0   0   0  0  0  0  0     GICv3 168 Level     hs_phy_2
+>>>> 183:   0  0   0   0  0  0  0  0     GICv3 892 Level     hs_phy_3
+>>>> 184:   0  0   0   0  0  0  0  0     GICv3 891 Level     hs_phy_4
+>>>
+>>> Yes, but that doesn't really say much since you never enable the hs_phy
+>>> interrupt in the PHY on suspend.
+>>
+>> I did register to and enabled the hs_phy_irq interrupt when I tested and
+>> posted the above table.
+> 
+> Yes, but, again, you never enabled them in the PHY (cf. QUSB2) so it's
+> hardly surprising that they do not fire.
+> 
+There is no register in femto phy address space of sc8280 (which I am 
+currently testing) where we can configure these registers like qusb2 phy's.
 
-Allocated by task 6008:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- nfc_allocate_device+0x12f/0x520 net/nfc/core.c:1065
- nci_allocate_device+0x1e2/0x360 net/nfc/nci/core.c:1179
- virtual_ncidev_open+0x75/0x1b0 drivers/nfc/virtual_ncidev.c:136
- misc_open+0x30b/0x380 drivers/char/misc.c:165
- chrdev_open+0x5ab/0x630 fs/char_dev.c:414
- do_dentry_open+0x8fd/0x1590 fs/open.c:948
- do_open fs/namei.c:3622 [inline]
- path_openat+0x2845/0x3280 fs/namei.c:3779
- do_filp_open+0x234/0x490 fs/namei.c:3809
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_openat fs/open.c:1471 [inline]
- __se_sys_openat fs/open.c:1466 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> Still good to know that requesting them doesn't trigger spurious
+> interrupts either since these are apparently enabled on most Qualcomm
+> SoCs even though they are not used. We should fix that too.
+> 
+>>>> Since the hs_phy_irq is applicable only for qusb2 targets, do we still
+>>>> need to add it to DT.
+>>>
+>>> Are you sure there's no support for hs_phy_irq also in the "femto" PHYs
+>>> and that it's just that there is currently no driver support for using
+>>> them?
+>>>
+>>> And why is it defined if there is truly no use for it?
+>>
+>> Femto phy's have nothing to be configured for interrupts like we do for
+>> qusb2 phy's. I confirmed from hw validation team that they never used
+>> hs_phy_irq for validating wakeup. They only used dp/dm IRQ's for wakeup.
+> 
+> Ok.
+> 
+> Is there some other (non-wakeup) functionality which may potentially use
+> this interrupt?
+> 
 
-Freed by task 6007:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
- device_release+0x95/0x1c0
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1ee/0x430 lib/kobject.c:733
- nfc_free_device include/net/nfc/nfc.h:213 [inline]
- nci_free_device+0x38/0x50 net/nfc/nci/core.c:1209
- virtual_ncidev_close+0x70/0x90 drivers/nfc/virtual_ncidev.c:164
- __fput+0x3cc/0xa10 fs/file_table.c:394
- __do_sys_close fs/open.c:1590 [inline]
- __se_sys_close+0x15f/0x220 fs/open.c:1575
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+The only info I (and hw validation team) got from design team is:
 
-The buggy address belongs to the object at ffff8880294a2000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1352 bytes inside of
- freed 2048-byte region [ffff8880294a2000, ffff8880294a2800)
+1. Common IRQ for power and special events
+2. Assert in case of remote wakeup, or resume when in Host or device 
+respectively
+3. Also upon disconnect while in suspend state.
 
-The buggy address belongs to the physical page:
-page:ffffea0000a52800 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294a0
-head:ffffea0000a52800 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012c42000 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 48, tgid 48 (kworker/u4:3), ts 69435126753, free_ts 69431633156
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x339a/0x3530 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc_node_track_caller+0xa5/0x230 mm/slab_common.c:1027
- kmalloc_reserve+0xf3/0x260 net/core/skbuff.c:582
- __alloc_skb+0x1b1/0x420 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1286 [inline]
- nlmsg_new include/net/netlink.h:1010 [inline]
- rtmsg_ifinfo_build_skb+0x89/0x280 net/core/rtnetlink.c:4067
- unregister_netdevice_many_notify+0xe2a/0x1710 net/core/dev.c:10987
- unregister_netdevice_many net/core/dev.c:11039 [inline]
- default_device_exit_batch+0x5c4/0x630 net/core/dev.c:11508
- ops_exit_list net/core/net_namespace.c:175 [inline]
- cleanup_net+0x767/0xb80 net/core/net_namespace.c:614
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1137 [inline]
- free_unref_page_prepare+0x92a/0xa50 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- discard_slab mm/slub.c:2116 [inline]
- __unfreeze_partials+0x1dc/0x220 mm/slub.c:2655
- put_cpu_partial+0x17b/0x250 mm/slub.c:2731
- __slab_free+0x2b6/0x390 mm/slub.c:3679
- qlink_free mm/kasan/quarantine.c:168 [inline]
- qlist_free_all+0x75/0xe0 mm/kasan/quarantine.c:187
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:294
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook+0x6c/0x3c0 mm/slab.h:763
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x1ad/0x3a0 mm/slub.c:3523
- __alloc_skb+0x181/0x420 net/core/skbuff.c:641
- alloc_skb include/linux/skbuff.h:1286 [inline]
- nlmsg_new include/net/netlink.h:1010 [inline]
- rtmsg_ifa+0x1f0/0x3b0 net/ipv4/devinet.c:1927
- __inet_del_ifa+0x86a/0x1020 net/ipv4/devinet.c:431
- inet_del_ifa net/ipv4/devinet.c:469 [inline]
- inetdev_destroy net/ipv4/devinet.c:322 [inline]
- inetdev_event+0x682/0x15b0 net/ipv4/devinet.c:1623
- notifier_call_chain+0x18c/0x3a0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2003 [inline]
- call_netdevice_notifiers net/core/dev.c:2017 [inline]
- unregister_netdevice_many_notify+0xd87/0x1710 net/core/dev.c:10983
+Same as what we understand as remote wakeup functionality.
 
-Memory state around the buggy address:
- ffff8880294a2400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880294a2480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880294a2500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                              ^
- ffff8880294a2580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880294a2600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+>>> Also, if hs_phy_irq and dp/dm_phy_irq were mutually exclusive, why does
+>>> the following Qualcomm SoCs define all three?
+>>>
+>>
+>> Similar to BAM IRQ's these might have been just ported over targets I
+>> believe. I say so because HW Validation team confirmed they don't use this
+>> interrupt at all on femto phy targets.
+> 
+> So then including the hs_phy_irq for most of these SoCs was a mistake
+> and we should drop it from the bindings?
+> 
+> What about the QUSB2 SoCs that also define DP/DM, are both useable
+> there?
+> 
+> And if so, is there any reason to prefer one mechanism over the other?
+> 
+No. I didn't ask this question to hw team whether dp/dm are used in 
+qusb2 phy targets. Let me ask them.
 
+While I do so, since there are no qusb2 targets present on femto phy's, 
+do you suggest we still add them to port structure in dwc3-qcom ? I am 
+inclined to add it because it would make implementation look cleaner 
+w.r.t code and also spurious interrupts are not getting triggered (which 
+was my primary concern as it was never tested).
 
-Tested on:
+I know that if hs_phy_irq is for qusb2 and dp/dm are for femto, the 
+cleanup would be big.
 
-commit:         aea6bf90 Merge tag 'f2fs-for-6.7-rc1' of git://git.ker..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1786a8fb680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1358ef87680000
-
+Regards,
+Krishna,
