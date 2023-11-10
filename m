@@ -2,59 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F369B7E818B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 989797E82D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbjKJS3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:29:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
+        id S1344954AbjKJTeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346584AbjKJS1A (ORCPT
+        with ESMTP id S235717AbjKJTdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:27:00 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AF624C01;
-        Fri, 10 Nov 2023 01:35:25 -0800 (PST)
-Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7F2B166073E5;
-        Fri, 10 Nov 2023 09:35:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699608924;
-        bh=zzFscefQrgc4TdbI+LfNRWkkOS6+9+C/l2hym7xAKOU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Ujoba2dM9hW8ryQCdIcptLKDQJGSJS0BCOSiGJ4LsCFaxP9IfPaEvTuMGnU9aiT4p
-         lP0smWeoZK4MAjRWP8JN/bPcd+WrUJbF5WiAKpU7JIoXzEl7Gcwac2PEqwpWaIi0wM
-         cBRCY0LYFBR0iyBtKMe4jozNJtko4IZjR1utl3nA5swJljUAGIHdxUQdPuWcljylIO
-         GW8cl61cCjjkGKAxF0S3a6MKRgK/h9oCcTla+BTzCVA9DpPWAHTbuCNFlm6S2RgqKc
-         8xwktd49BLoa/n6GQcQ/BLiDlehochHjOI4WN0fEUGlc5TfoG1HzcL/LIX4jK9yqAc
-         LLB2B+HGjLsTg==
-Message-ID: <0b79bb25-2e44-4a6d-b306-76477a2c8a08@collabora.com>
-Date:   Fri, 10 Nov 2023 10:35:20 +0100
+        Fri, 10 Nov 2023 14:33:47 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B761924C04
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:35:24 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507962561adso2599990e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:35:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699608923; x=1700213723; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FtekfsW92aAxO5tWYqkwt6k/7ffnjhMdgCX0hkH5iHo=;
+        b=L0F6wMNLBopXmUfOxm1tmJsOXeo6bpgD2BupYBAqTxQjwZfMzmGyBJt93HcOBgCy+D
+         BnNyiNUmcRGRgdUA68B//qd44Arpvm1FcWHnzMJpU3wHAHb/kR0WWWbKf6NjUkvw29Ev
+         khaXQdU68W7d3RcFsTFvntCEFUJDS1CHG6jq3T5VAHYF1ImsHM9jMTN8TgGURbAt5Um1
+         jZOz421YHgwYoH89IyVxbVVPlyPVMcy8MUIg3GJZ7WeE9qLb0nKXM6KJcnWK4FKHnFH+
+         BKywlYPDBqi9GP+gahVPTuiT66VokNEsUPLPJEqrjpksP7oINUB0af4tcj2GPN8yX5zH
+         vHBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699608923; x=1700213723;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FtekfsW92aAxO5tWYqkwt6k/7ffnjhMdgCX0hkH5iHo=;
+        b=OPkvIDZHpNQ2aZRDl8fTBufXZvkkqvVxtt9igzT99A4cBXbk0Z9uEXhRlND/1VbNdl
+         gsMr2fjJB82PQu6QpvUrtUqgRq5vDMB7Bx9yKPfrG1HX7yggd7mz6OqOo0/K38h8KAHK
+         9bWKfhiTryiUfVwfXHjEt3zq39s4BykD5t0iSrixzcc7Gmsi8kWYiVRz28joOpY1pg6J
+         9jhPDSNTevku0I6sJEZz8kR+4WURzbaOXTfKabfShIwikkrrSIlhGIrbenl5yBpEbUBW
+         EoLiyL6QcZgKpIFVjSCrVfOoKinAwNG08XhMWfzjrHZhUVZ1pyFVlwr8Mo1DeijeJdU+
+         4voQ==
+X-Gm-Message-State: AOJu0YyPju+E/tVv/7PyzaKYwGV5EsEbWy2DxMysEAOFcLyey4xUuaHj
+        wo6IivGxmo4JLiUILrVAxEnBHQ==
+X-Google-Smtp-Source: AGHT+IG2+V3ovERFSNRh2TJnHp7bmnc2t+ohxyCJ+0Ga2lzbOUtZb2Vh2Xpa+KUMrIz6w31sbVO6Mg==
+X-Received: by 2002:a05:6512:313a:b0:509:3bba:e8a with SMTP id p26-20020a056512313a00b005093bba0e8amr3570628lfd.39.1699608922950;
+        Fri, 10 Nov 2023 01:35:22 -0800 (PST)
+Received: from [192.168.7.189] (679773502.box.freepro.com. [212.114.21.58])
+        by smtp.gmail.com with ESMTPSA id g5-20020adff405000000b003313439c675sm1511328wro.66.2023.11.10.01.35.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 01:35:22 -0800 (PST)
+Message-ID: <bdc876bf-78a0-4dea-b090-5fbff5917deb@linaro.org>
+Date:   Fri, 10 Nov 2023 10:35:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 30/56] media: test-drivers: Stop direct calls to queue
- num_buffers field
-Content-Language: en-US
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Daniel Almeida <daniel.almeida@collabora.com>
-References: <20231109163512.179524-14-benjamin.gaignard@collabora.com>
- <20231109163512.179524-31-benjamin.gaignard@collabora.com>
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231109163512.179524-31-benjamin.gaignard@collabora.com>
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 6/7] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
+ Gear 5 support for SM8550
+Content-Language: en-US, fr
+To:     Can Guo <quic_cang@quicinc.com>, Can Guo <cang@qti.qualcomm.com>,
+        bvanassche@acm.org, mani@kernel.org, stanley.chu@mediatek.com,
+        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-7-git-send-email-cang@qti.qualcomm.com>
+ <e4bafeaf-bbeb-4990-b6f2-497159995910@linaro.org>
+ <c3fb1fa1-4ba6-613f-a545-79e0e4b2658f@quicinc.com>
+ <10cbb859-bdbf-4763-9887-fa13003b58cd@linaro.org>
+ <44554283-8436-2208-ab75-3e61d89dc96b@quicinc.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <44554283-8436-2208-ab75-3e61d89dc96b@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,181 +117,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-W dniu 9.11.2023 o 17:34, Benjamin Gaignard pisze:
-> Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
-> This allows us to change how the number of buffers is computed in the
-> future.
-> If 'min_buffers_needed' is set remove useless checks in queue setup
-> functions.
+On 10/11/2023 10:32, Can Guo wrote:
+> Hi Neil,
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Daniel Almeida <daniel.almeida@collabora.com>
-> ---
->   drivers/media/test-drivers/visl/visl-dec.c         | 4 ++--
->   drivers/media/test-drivers/vivid/vivid-meta-cap.c  | 3 ---
->   drivers/media/test-drivers/vivid/vivid-meta-out.c  | 5 +++--
->   drivers/media/test-drivers/vivid/vivid-touch-cap.c | 5 +++--
->   drivers/media/test-drivers/vivid/vivid-vbi-cap.c   | 3 ---
->   drivers/media/test-drivers/vivid/vivid-vbi-out.c   | 3 ---
->   drivers/media/test-drivers/vivid/vivid-vid-cap.c   | 3 ---
->   drivers/media/test-drivers/vivid/vivid-vid-out.c   | 5 +----
->   8 files changed, 9 insertions(+), 22 deletions(-)
+> On 11/10/2023 5:17 PM, neil.armstrong@linaro.org wrote:
+>> Hi,
+>>
+>> On 10/11/2023 10:03, Can Guo wrote:
+>>> Hi Neil,
+>>>
+>>> On 11/10/2023 4:47 PM, neil.armstrong@linaro.org wrote:
+>>>> Hi,
+>>>>
+>>>> On 07/11/2023 05:46, Can Guo wrote:
+>>>>> From: Can Guo <quic_cang@quicinc.com>
+>>>>>
+>>>>> On SM8550, two sets of UFS PHY settings are provided, one set is to support
+>>>>> HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
+>>>>> settings are programming different values to different registers, mixing
+>>>>> the two sets and/or overwriting one set with another set is definitely not
+>>>>> blessed by UFS PHY designers. In order to add HS-G5 support for SM8550, we
+>>>>> need to split the two sets into their dedicated tables, and leave only the
+>>>>> common settings in the .tlbs. To have the PHY programmed with the correct
+>>>>> set of PHY settings, the submode passed to PHY driver must be either HS-G4
+>>>>> or HS-G5.
+>>>>
+>>>> I guess I'll need to rebase my SM8650 UFS PHY driver to support both G4 and G5 modes
+>>>> at some point ?
+>>>
+>>>
+>>> Thank for reaching out. Yes, please.
+>>>
+>>> I can help review the PHY settings.
+>>
+>> Ok I'll try rebasing on this serie and add G5 support.
+>>
+>>>
+>>> BTW, are you enabling MCQ (by adding MCQ related DT) at the same time?
+>>
+>> I tested MCQ but it triggers the same issues we have with suspend/resume on SM8550 & SM8650,
+>> and the bindings are not present of the UFS qcom node.
 > 
-> diff --git a/drivers/media/test-drivers/visl/visl-dec.c b/drivers/media/test-drivers/visl/visl-dec.c
-> index ba20ea998d19..4672dc5e52bb 100644
-> --- a/drivers/media/test-drivers/visl/visl-dec.c
-> +++ b/drivers/media/test-drivers/visl/visl-dec.c
-> @@ -287,7 +287,7 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->   	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
->   
->   	len = 0;
-> -	for (i = 0; i < out_q->num_buffers; i++) {
-> +	for (i = 0; i < vb2_get_num_buffers(out_q); i++) {
->   		char entry[] = "index: %u, state: %s, request_fd: %d, ";
->   		u32 old_len = len;
->   		struct vb2_buffer *vb2;
-> @@ -347,7 +347,7 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->   	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
->   
->   	len = 0;
-> -	for (i = 0; i < cap_q->num_buffers; i++) {
-> +	for (i = 0; i < vb2_get_num_buffers(cap_q); i++) {
->   		u32 old_len = len;
->   		struct vb2_buffer *vb2;
->   		char *q_status;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-meta-cap.c b/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> index 780f96860a6d..0a718d037e59 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-meta-cap.c
-> @@ -30,9 +30,6 @@ static int meta_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->   		sizes[0] = size;
->   	}
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->   	*nplanes = 1;
->   	return 0;
->   }
-> diff --git a/drivers/media/test-drivers/vivid/vivid-meta-out.c b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> index 95835b52b58f..4a569a6e58be 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-meta-out.c
-> @@ -18,6 +18,7 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->   				struct device *alloc_devs[])
->   {
->   	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->   	unsigned int size =  sizeof(struct vivid_meta_out_buf);
->   
->   	if (!vivid_is_webcam(dev))
-> @@ -30,8 +31,8 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->   		sizes[0] = size;
->   	}
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
->   
->   	*nplanes = 1;
->   	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-touch-cap.c b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> index c7f6e23df51e..4b3c6ea0afde 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-> @@ -13,6 +13,7 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->   				 struct device *alloc_devs[])
->   {
->   	struct vivid_dev *dev = vb2_get_drv_priv(vq);
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
->   	struct v4l2_pix_format *f = &dev->tch_format;
->   	unsigned int size = f->sizeimage;
->   
-> @@ -23,8 +24,8 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
->   		sizes[0] = size;
->   	}
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> +	if (q_num_bufs + *nbuffers < 2)
-> +		*nbuffers = 2 - q_num_bufs;
->   
->   	*nplanes = 1;
->   	return 0;
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-cap.c b/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> index b65b02eeeb97..3840b3a664ac 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vbi-cap.c
-> @@ -134,9 +134,6 @@ static int vbi_cap_queue_setup(struct vb2_queue *vq,
->   
->   	sizes[0] = size;
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->   	*nplanes = 1;
->   	return 0;
->   }
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vbi-out.c b/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> index cd56476902a2..434a10676417 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vbi-out.c
-> @@ -30,9 +30,6 @@ static int vbi_out_queue_setup(struct vb2_queue *vq,
->   
->   	sizes[0] = size;
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->   	*nplanes = 1;
->   	return 0;
->   }
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> index 3a06df35a2d7..2804975fe278 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
-> @@ -117,9 +117,6 @@ static int vid_cap_queue_setup(struct vb2_queue *vq,
->   					dev->fmt_cap->data_offset[p];
->   	}
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->   	*nplanes = buffers;
->   
->   	dprintk(dev, 1, "%s: count=%d\n", __func__, *nbuffers);
+> Are you talking about suspend/resume fail with rpm/spm_lvl == 5? If yes, then Nitin and Naveen are working on fixing it.
 
-here the format specifier for "*nbuffers" is "%d"...
+Exact, if you have some changes for me to test, I'll be happy to have a run on 8550 and 8650.
 
-> diff --git a/drivers/media/test-drivers/vivid/vivid-vid-out.c b/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> index 184a6df2c29f..1653b2988f7e 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-vid-out.c
-> @@ -73,12 +73,9 @@ static int vid_out_queue_setup(struct vb2_queue *vq,
->   				       vfmt->data_offset[p] : size;
->   	}
->   
-> -	if (vq->num_buffers + *nbuffers < 2)
-> -		*nbuffers = 2 - vq->num_buffers;
-> -
->   	*nplanes = planes;
->   
-> -	dprintk(dev, 1, "%s: count=%d\n", __func__, *nbuffers);
-> +	dprintk(dev, 1, "%s: count=%u\n", __func__, *nbuffers);
+> 
+> If you have plan to enable UFS MCQ on SM8650 later, please let me know, I have some BUG fixes for it, we can co-work.
 
-... but here you change it to "%u". Is there a reason for these two to be
-different? I didn't notice it in the previous version but now it stands out
-clearly. Probably you changed to %u because of the type returned by
-vb2_get_num_buffers(). And, actually, *nbuffers _is_ unsigned, too.
+Yes I plan to when basic SM8650 support gets merged, same I'm able to test some changes if needed.
 
-Regards,
+Neil
 
-Andrzej
-
->   	for (p = 0; p < planes; p++)
->   		dprintk(dev, 1, "%s: size[%u]=%u\n", __func__, p, sizes[p]);
->   	return 0;
+> 
+> Thanks,
+> Can Guo
+> 
+>>
+>> Neil
+>>
+>>>
+>>> Thanks,
+>>> Can Guo.
+>>>
+>>>>
+>>>> Neil
+>>>>
+>>
 
