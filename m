@@ -2,286 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D907E76B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B467E76BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345729AbjKJBj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
+        id S1345643AbjKJBl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:41:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345697AbjKJBjq (ORCPT
+        with ESMTP id S234633AbjKJBlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:39:46 -0500
-Received: from rcdn-iport-5.cisco.com (rcdn-iport-5.cisco.com [173.37.86.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899B146B4;
-        Thu,  9 Nov 2023 17:39:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=5564; q=dns/txt; s=iport;
-  t=1699580378; x=1700789978;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=G3mzXCo9zuU2hguTVdS6rnUvvYqWcYPaShxuD6OBkN0=;
-  b=F2nUfxUCtcFveI3oyIjsm4cpIR/FGXOMK+WdV1NC63TpwUmtTPdnK4dn
-   wyjbd+xUeI5JWaDcewY1of+WBqNftJKnbd2E8CqXZ5ZWTtvZ030SeeMe2
-   66D5s2XYrC2cpyj2STElo1d0exYw0SWDqJBNkMXHMSvHTD/TfECxO/m7M
-   g=;
-X-CSE-ConnectionGUID: YdHHS5cKSjOdkXWDdGQbWA==
-X-CSE-MsgGUID: 3j2JtuLcRJaUnDnLONU/TA==
-X-IPAS-Result: =?us-ascii?q?A0ANAABsiE1lmJtdJa1aHAEBAQEBAQcBARIBAQQEAQGBe?=
- =?us-ascii?q?wcBAQsBhAdASIxvp0OBJQNWDwEBAQ9EBAEBhQYChyYCJjQJDgECBAEBAQEDA?=
- =?us-ascii?q?gMBAQEBAQEBAgEBBQEBAQIBBwQUAQEBAQEBAQEeGQUOECeFdYZNAwMyAUYQU?=
- =?us-ascii?q?VcGARKCfoJfA61YgiyBAbMogWgYgTABjEOBHoQ1JxuBSUSCUIItiwYEiSUHM?=
- =?us-ascii?q?oIig1KNS39HWhYdAwcDVikQKwcELSIGCRQtIwZRBBcRJAkTEj4EgWOBUQp/P?=
- =?us-ascii?q?w8OEYI/IgI9NhlIglsVQARGdhAqBBQXgRJuGxUeNxESFw0DCHQdAhEjPAMFA?=
- =?us-ascii?q?wQzChINCyEFFEIDQgZJCwMCGgUDAwSBNgUNHgIQLScDAxNNAhAUAzsDAwYDC?=
- =?us-ascii?q?zEDMFVEDFEDbx8aHAk8DwwfAhseDScoAjVDAxEFEgIWAyQZBEUDCQMHBUlAA?=
- =?us-ascii?q?wsYDUgRLDUGDhsGP3MHoVQBgQ+CBW6ScwqRS6BHhBeBX58qGjOqA5g/IKJxh?=
- =?us-ascii?q?UCBYzqBWzMaCBsVgyJSGQ+OLA0JkxIBXSMyOwIHCwEBAwmLSgEB?=
-IronPort-Data: A9a23:Qrw7/6MulgG1lqvvrR1KkMFynXyQoLVcMsEvi/4bfWQNrUol0WEGy
- WcZW2jXbK6IYWH1c4t2aNjgphtVsZ/RmIAyHHM5pCpnJ55oRWUpJjg4wmPYZX76whjrFRo/h
- ykmQoCdaphyFjmF/kvF3oHJ9RFUzbuPSqf3FNnKMyVwQR4MYCo6gHqPocZh6mJTqYb/W1jlV
- e/a+ZWFYwb8gmYsawr41orawP9RlKWq0N8nlgRWicBj5Df2i3QTBZQDEqC9R1OQrl58R7PSq
- 07rldlVz0uBl/sfIorNfoXTLiXmdoXv0T2m0RK6bUQNbi9q/UTe2o5jXBYVhNw+Zz+hx7idw
- /0V3XC8pJtA0qDkwIwgvxdk/y5WDKFm2ISaKluEs+ufzH35X3fD+v9RJRRjVWEY0r4f7WBm7
- /cULnUGaQqOwr7wy7OgQe4qjcMmRCXpFNpA4Tc7kneIVrB/HM2rr6bivbe02B88j8ZPEPLBb
- uISaCFka1LLZBgn1lI/UcljxL722iSjG9FegAmX/4gr/kzY9i547b7BNv7yXOHNeewAyy50o
- UqfrzimXXn2Lue3zTuD72LpheLVmy7/cJwdGaf+9fNwhlCXgGsJB3U+UVq9vOn8g1S7HtFSM
- UoZ/gIqrLMu7wqqSNfnVhG1qXLCuQQTM/JbGvEz7ACLjK/d+QefD3MsRyRELtchsaceQT0sy
- 0+Rh9isCTFxmLmUUm6GsLCGqTq4Im4SN2BqTSsFSxYVptziuJobkB3CVJBgHbSzg9mzHiv/q
- xia/HYWhLgJi8MPkaKh8jjvmD+loN7ASAI4/B7QWEq+4wh+IoWiYuSA9V/e5O0GKZuVVESHv
- 3EslM2X7eRIBpaI/ASUXeQGK6mj/f+FNTT0mENuFJgn/HKm/HvLVYlT+DRWIEZvL9ZBdzj0Z
- kPapQJW4tlUJnTCRaN+ZYO8D+wlzK34GNDoSPHfbpxVa540ehWO+ipvfkWXmWvk1lU3+YklP
- p2bWcWhF3AXDeJg1jXeb+wdy74w2icmxW6VQZ3hyAWP2qGRfnmIUfEILTOmceE96IuHrR/T/
- tIZMNGFoyizS8XkaSXRtIUUN11PcT4wBIv9rIpccevrzhda9H8JOvPx4Yh8cK9enYNZldf30
- n2SY0Vn4Q+q7ZHYEjmiZndmYbLpeJ9wq3MnICAhVWpEPVB+P+5DC49CKvMKkakbGP9LlqErE
- qFUEymUKrEeFWSdomV1gYzV9dQ6LHyWaRSy0z1JiQXTkrZ6TADPv9TjZAaqqG8FDzG8so01p
- LjIOuLnrXgrGVgK4CX+Ma/HI7aNUZ41xL4as6zgfoE7RakU2NI2QxEdd9duSy32FT3NxyGBy
- yGdCgoCqO/GrucdqYeY1P3Z89n1Q7AhQiK2+lU3C57obEE2GUL9med9vBqgIVgxqUutovz5P
- LUJpx0CGKdbxggiX3VA/0ZDlPJiuISHS05yxQV/F3KDdEWwFr5lORG7MTpn6MVwKktikVLuA
- Cqno4ACUZ3QYZ+NOABKfmINML/cvcz4bxGPt5zZ1m2gun8ulFdGOG0PVySxZNt1deAlaN91n
- rd96Kb7KWWX03IXDzpPtQgMn0zkE5DKe/xPWk0yaGMztjcW9w==
-IronPort-HdrOrdr: A9a23:b/Ygcq9TQsiw84BTBQ9uk+DjI+orL9Y04lQ7vn2ZhyY4TiX+rb
- HLoB1173HJYVoqMk3I3OrwW5VoIkmskKKdn7NxAV7KZmCP01dAbrsSj7cKqAeOJ8SRzINgPI
- 5bAs9D4aXLbWSTSa3BkXCF+xFK+qjgzJyV
-X-Talos-CUID: =?us-ascii?q?9a23=3Azo7SVGl8chH7+ZqbvLEe1TvEUczXOUzR7FfrfkS?=
- =?us-ascii?q?bMmRORL6ldnOc15purOM7zg=3D=3D?=
-X-Talos-MUID: 9a23:1okezwpl1HEpOPbxGLsez2pgbuV0/oClMmIErJMqve2jExE3Bx7I2Q==
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.03,291,1694736000"; 
-   d="scan'208";a="135016454"
-Received: from rcdn-core-4.cisco.com ([173.37.93.155])
-  by rcdn-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 01:38:35 +0000
-Received: from goliath.lan ([10.25.128.169])
-        by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTP id 3AA1cHVO011466;
-        Fri, 10 Nov 2023 01:38:34 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pratyush Brahma <quic_pbrahma@quicinc.com>,
-        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-        Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     xe-linux-external@cisco.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] CMDLINE: arm64: convert to generic builtin command line
-Date:   Thu,  9 Nov 2023 17:38:12 -0800
-Message-Id: <20231110013817.2378507-9-danielwa@cisco.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231110013817.2378507-1-danielwa@cisco.com>
-References: <20231110013817.2378507-1-danielwa@cisco.com>
+        Thu, 9 Nov 2023 20:41:24 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBCA44A6
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:41:22 -0800 (PST)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SRM3n51R2zfb83;
+        Fri, 10 Nov 2023 09:41:09 +0800 (CST)
+Received: from [10.174.176.88] (10.174.176.88) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 10 Nov 2023 09:41:20 +0800
+Message-ID: <bd728618-222b-43ba-8b47-91e90624b49c@huawei.com>
+Date:   Fri, 10 Nov 2023 09:41:19 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next V2] erofs: code clean up for function
+ erofs_read_inode()
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>, <xiang@kernel.org>,
+        <chao@kernel.org>
+CC:     <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <yangerkun@huawei.com>, <wozizhi@huawei.com>
+References: <20231109194821.1719430-1-wozizhi@huawei.com>
+ <4d4202a7-6648-9d2c-3f0b-079a165c2ebf@linux.alibaba.com>
+ <89069fa4-7347-4364-8793-1ce705a00b92@huawei.com>
+ <872a459d-449d-c057-625e-98c7c8b697ab@linux.alibaba.com>
+From:   Zizhi Wo <wozizhi@huawei.com>
+In-Reply-To: <872a459d-449d-c057-625e-98c7c8b697ab@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.25.128.169, [10.25.128.169]
-X-Outbound-Node: rcdn-core-4.cisco.com
+X-Originating-IP: [10.174.176.88]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This removes arm64 from the device tree handling of the
-command line arguments.
 
-The boot_command_line variable is populated inside the earliest
-user of the command line, which is in idreg-override.c.
 
-The device tree should not be needed to do any further handling
-of the boot command line options.
+在 2023/11/9 23:42, Gao Xiang 写道:
+> 
+> 
+> On 2023/11/9 21:45, Zizhi Wo wrote:
+>>
+>>
+>> 在 2023/11/9 21:14, Gao Xiang 写道:
+>>> Hi,
+>>>
+>>> On 2023/11/10 03:48, WoZ1zh1 wrote:
+>>>> Because variables "die" and "copied" only appear in case
+>>>> EROFS_INODE_LAYOUT_EXTENDED, move them from the outer space into this
+>>>> case. Also, call "kfree(copied)" earlier to avoid double free in the
+>>>> "error_out" branch. Some cleanups, no logic changes.
+>>>>
+>>>> Signed-off-by: WoZ1zh1 <wozizhi@huawei.com>
+>>>
+>>> Please help use your real name here...
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- arch/arm64/Kconfig                  | 33 +----------------------------
- arch/arm64/include/asm/setup.h      |  4 ++++
- arch/arm64/include/uapi/asm/setup.h |  2 ++
- arch/arm64/kernel/idreg-override.c  |  9 ++++----
- arch/arm64/kernel/pi/kaslr_early.c  | 14 ++++++------
- 5 files changed, 19 insertions(+), 43 deletions(-)
+Oh, I'm sorry for the confusion I caused you. I have changed my name on
+.gitconfig.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 78f20e632712..d3b7fd1080d0 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -131,6 +131,7 @@ config ARM64
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY
- 	select GENERIC_CLOCKEVENTS_BROADCAST
-+	select GENERIC_CMDLINE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_EARLY_IOREMAP
-@@ -2217,38 +2218,6 @@ config ARM64_ACPI_PARKING_PROTOCOL
- 	  protocol even if the corresponding data is present in the ACPI
- 	  MADT table.
- 
--config CMDLINE
--	string "Default kernel command string"
--	default ""
--	help
--	  Provide a set of default command-line options at build time by
--	  entering them here. As a minimum, you should specify the the
--	  root device (e.g. root=/dev/nfs).
--
--choice
--	prompt "Kernel command line type" if CMDLINE != ""
--	default CMDLINE_FROM_BOOTLOADER
--	help
--	  Choose how the kernel will handle the provided default kernel
--	  command line string.
--
--config CMDLINE_FROM_BOOTLOADER
--	bool "Use bootloader kernel arguments if available"
--	help
--	  Uses the command-line options passed by the boot loader. If
--	  the boot loader doesn't provide any, the default kernel command
--	  string provided in CMDLINE will be used.
--
--config CMDLINE_FORCE
--	bool "Always use the default kernel command string"
--	help
--	  Always use the default kernel command string, even if the boot
--	  loader passes other arguments to the kernel.
--	  This is useful if you cannot or don't want to change the
--	  command-line options your boot loader passes to the kernel.
--
--endchoice
--
- config EFI_STUB
- 	bool
- 
-diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
-index f4af547ef54c..5a8037262cbb 100644
---- a/arch/arm64/include/asm/setup.h
-+++ b/arch/arm64/include/asm/setup.h
-@@ -3,10 +3,13 @@
- #ifndef __ARM64_ASM_SETUP_H
- #define __ARM64_ASM_SETUP_H
- 
-+#ifndef __ASSEMBLY__
- #include <linux/string.h>
-+#endif
- 
- #include <uapi/asm/setup.h>
- 
-+#ifndef __ASSEMBLY__
- void *get_early_fdt_ptr(void);
- void early_fdt_map(u64 dt_phys);
- 
-@@ -30,5 +33,6 @@ static inline bool arch_parse_debug_rodata(char *arg)
- 	return false;
- }
- #define arch_parse_debug_rodata arch_parse_debug_rodata
-+#endif /* __ASSEMBLY__ */
- 
- #endif
-diff --git a/arch/arm64/include/uapi/asm/setup.h b/arch/arm64/include/uapi/asm/setup.h
-index 5d703888f351..f5fc5b806369 100644
---- a/arch/arm64/include/uapi/asm/setup.h
-+++ b/arch/arm64/include/uapi/asm/setup.h
-@@ -20,7 +20,9 @@
- #ifndef __ASM_SETUP_H
- #define __ASM_SETUP_H
- 
-+#ifndef __ASSEMBLY__
- #include <linux/types.h>
-+#endif
- 
- #define COMMAND_LINE_SIZE	2048
- 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 3addc09f8746..6334a9228909 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -9,6 +9,7 @@
- #include <linux/ctype.h>
- #include <linux/kernel.h>
- #include <linux/libfdt.h>
-+#include <linux/cmdline.h>
- 
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
-@@ -304,11 +305,11 @@ static __init void parse_cmdline(void)
- {
- 	const u8 *prop = get_bootargs_cmdline();
- 
--	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !prop)
--		__parse_cmdline(CONFIG_CMDLINE, true);
-+	strscpy(boot_command_line, prop, COMMAND_LINE_SIZE);
-+	cmdline_add_builtin(boot_command_line);
-+
-+	__parse_cmdline(boot_command_line, true);
- 
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
--		__parse_cmdline(prop, true);
- }
- 
- /* Keep checkers quiet */
-diff --git a/arch/arm64/kernel/pi/kaslr_early.c b/arch/arm64/kernel/pi/kaslr_early.c
-index 17bff6e399e4..1e00bc01fa7a 100644
---- a/arch/arm64/kernel/pi/kaslr_early.c
-+++ b/arch/arm64/kernel/pi/kaslr_early.c
-@@ -11,6 +11,7 @@
- #include <linux/types.h>
- #include <linux/sizes.h>
- #include <linux/string.h>
-+#include <linux/cmdline.h>
- 
- #include <asm/archrandom.h>
- #include <asm/memory.h>
-@@ -42,7 +43,7 @@ static bool cmdline_contains_nokaslr(const u8 *cmdline)
- 
- static bool is_kaslr_disabled_cmdline(void *fdt)
- {
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
-+	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
- 		int node;
- 		const u8 *prop;
- 
-@@ -54,16 +55,15 @@ static bool is_kaslr_disabled_cmdline(void *fdt)
- 		if (!prop)
- 			goto out;
- 
-+		if (cmdline_contains_nokaslr(CMDLINE_STATIC_APPEND))
-+			return true;
- 		if (cmdline_contains_nokaslr(prop))
- 			return true;
--
--		if (IS_ENABLED(CONFIG_CMDLINE_EXTEND))
--			goto out;
--
--		return false;
-+		if (cmdline_contains_nokaslr(CMDLINE_STATIC_PREPEND))
-+			return true;
- 	}
- out:
--	return cmdline_contains_nokaslr(CONFIG_CMDLINE);
-+	return cmdline_contains_nokaslr(cmdline_get_static_builtin());
- }
- 
- static u64 get_kaslr_seed(void *fdt)
--- 
-2.39.2
+>>>
+>>>> ---
+>>>>   fs/erofs/inode.c | 6 +++---
+>>>>   1 file changed, 3 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+>>>> index b8ad05b4509d..a388c93eec34 100644
+>>>> --- a/fs/erofs/inode.c
+>>>> +++ b/fs/erofs/inode.c
+>>>> @@ -19,7 +19,6 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>>>>       erofs_blk_t blkaddr, nblks = 0;
+>>>>       void *kaddr;
+>>>>       struct erofs_inode_compact *dic;
+>>>> -    struct erofs_inode_extended *die, *copied = NULL;
+>>>>       unsigned int ifmt;
+>>>>       int err;
+>>>> @@ -53,6 +52,8 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>>>>       switch (erofs_inode_version(ifmt)) {
+>>>>       case EROFS_INODE_LAYOUT_EXTENDED:
+>>>> +        struct erofs_inode_extended *die, *copied = NULL;
+>>>
+>>> Thanks for the patch, but in my own opinion:
+>>>
+>>> 1) It doesn't simplify the code
+>> OK, I'm sorry for the noise(;´༎ຶД༎ຶ`)
+>>>
+>>> 2) We'd like to avoid defining variables like this (in the
+>>>     switch block), and I even don't think this patch can compile.
+>> I tested this patch with gcc-12.2.1 locally and it compiled
+>> successfully. I'm not sure if this patch will fail in other environment
+>> with different compiler...
+> 
+> For example, it fails as below on gcc 10.2.1:
+> 
+> fs/erofs/inode.c: In function 'erofs_read_inode':
+> fs/erofs/inode.c:55:3: error: a label can only be part of a statement 
+> and a declaration is not a statement
+>     55 |   struct erofs_inode_extended *die, *copied = NULL;
+>        |   ^~~~~~
+> 
+Oh, I'm sorry about that! I still need to learn more. Thank you for your
+assistance!
 
+Thanks,
+Zizhi Wo
+>>
+>>> 3) The logic itself is also broken...
+> 
+> Maybe I was missing something, but this usage makes
+> me uneasy...
+> 
+> Thanks,
+> Gao Xiang
+> 
+>>
+>> Sorry, but I just don't understand why the logic itself is broken, and
+>> can you please explain more?
+>>
+>> Thanks,
+>> Zizhi Wo
+>>
+>>> Thanks,
+>>> Gao Xiang
+> 
