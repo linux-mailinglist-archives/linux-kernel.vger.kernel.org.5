@@ -2,269 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AC97E8327
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C877E8217
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346006AbjKJT4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        id S235918AbjKJS6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346708AbjKJTp7 (ORCPT
+        with ESMTP id S235775AbjKJS5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:45:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77512704D
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699640819; x=1731176819;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=z2K6kngVP4uhNfXXT9sNq6OSxYjOhSYj71MCgkUbDp8=;
-  b=G1vxiKAWYgjMwWPXQh1j1ipqytXw16ZfLFmrrJgTa4eyHcvakhllBrU0
-   naMiPpqJzqWkoOltu8eeqV+SzekC3E7RfyuM3gjZ3HLqWnrQP+V8C9D+c
-   Y9BjHSbh6qYEu7df9RXUBffykPns6ImhMkJMXIvJW1GHiANwS2WDlGPWh
-   GNlLnrFlxkPkUyFwR627xfm09hVWCX1UH0LP0DhkWQzhzYg2/f6qHF4Ii
-   SYYeE/xi9KEGSHlW7JTaEwOy2bIK6LjauizCKWD1Pi0XWPXzbrKTRpcaK
-   AWnfo3kMsO5xgidIyZ4HsRhOEdp7g0b2C8IRK3zd2YQVgnnCR4olwQAtB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="370422065"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="370422065"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:20:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="887407673"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="887407673"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2023 10:20:56 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1W7i-0009oD-1c;
-        Fri, 10 Nov 2023 18:20:54 +0000
-Date:   Sat, 11 Nov 2023 02:20:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Calvin Owens <calvinowens@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
-Message-ID: <202311110246.tkZYTtvq-lkp@intel.com>
+        Fri, 10 Nov 2023 13:57:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C6BA7514
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AYzXs18KczHZZgfg88rn8pPaVIFEs8IAZXIRxaB4Caw=; b=eHOalM+l0ZQToM45Svil6GXFwt
+        w+IMyi49T45a4BoKquvpt7Mu94nLpmGGhGXZf8GpqlSC1wWPsy/CzKUZ10R/fxxW5QmJT8ukHZ7L0
+        B4jk5h8yfHRbjUOFsEatlzwWVoN335hKdKKC+0B98J84/CKP/LT3JHw4W5eVXK/DjYM00lGVQ4VRL
+        zhGVNalB6eKGVI6na+OL1TINTSN4N5Rr45O7M/wdAo1tOcRAuNJIOXpc5wB8a+i83pBBBCDPuBv32
+        aEyRo2L24noyOb89ECBHxtBNmqbqxqZPU2ahYl68Xc+hrTfzXe/HUv8qV4PgzpBgnJxURivQZl2xC
+        q1RBVs6A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r1W6v-00EtIL-Bx; Fri, 10 Nov 2023 18:20:05 +0000
+Date:   Fri, 10 Nov 2023 18:20:05 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        David Hildenbrand <david@redhat.com>,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [PATCH v2 4/7] mm: huge_memory: use more folio api in
+ __split_huge_page_tail()
+Message-ID: <ZU50VbssgjiLC3Iu@casper.infradead.org>
+References: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
+ <20231110033324.2455523-5-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231110033324.2455523-5-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   89cdf9d556016a54ff6ddd62324aa5ec790c05cc
-commit: bdb4d100afe9818aebd1d98ced575c5ef143456c procfs: always expose /proc/<pid>/map_files/ and make it readable
-date:   8 years ago
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231111/202311110246.tkZYTtvq-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110246.tkZYTtvq-lkp@intel.com/reproduce)
+On Fri, Nov 10, 2023 at 11:33:21AM +0800, Kefeng Wang wrote:
+> Use more folio APIs to save six compound_head() calls in
+> __split_huge_page_tail().
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311110246.tkZYTtvq-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
->> fs/proc/base.c:2039:42: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:2138:48: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:1033:24: sparse: sparse: context imbalance in 'oom_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:1136:24: sparse: sparse: context imbalance in 'oom_score_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:2166:13: sparse: sparse: context imbalance in 'timers_start' - wrong count at exit
-   fs/proc/base.c:2192:36: sparse: sparse: context imbalance in 'timers_stop' - unexpected unlock
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/node.h:17,
-                    from include/linux/swap.h:10,
-                    from fs/proc/base.c:66:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/cgroup.h:19,
-                    from include/linux/memcontrol.h:22,
-                    from include/linux/swap.h:8:
-   include/linux/kernfs.h:424:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     424 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   In file included from fs/proc/base.c:94:
-   fs/proc/internal.h: In function 'name_to_int':
-   fs/proc/internal.h:117:28: warning: pointer targets in initialization of 'const char *' from 'const unsigned char *' differ in signedness [-Wpointer-sign]
-     117 |         const char *name = qstr->name;
-         |                            ^~~~
-   In file included from include/linux/fs.h:7,
-                    from include/linux/proc_fs.h:8,
-                    from fs/proc/base.c:54:
-   fs/proc/base.c: In function 'proc_fill_cache':
-   fs/proc/base.c:1814:39: warning: pointer targets in initialization of 'const unsigned char *' from 'const char *' differ in signedness [-Wpointer-sign]
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c:1814:39: note: (near initialization for 'qname.name')
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c: In function 'dname_to_vma_addr':
-   fs/proc/base.c:1846:34: warning: pointer targets in passing argument 1 of 'sscanf' differ in signedness [-Wpointer-sign]
-    1846 |         if (sscanf(dentry->d_name.name, "%lx-%lx", start, end) != 2)
-         |                    ~~~~~~~~~~~~~~^~~~~
-         |                                  |
-         |                                  const unsigned char *
-   In file included from include/asm-generic/bug.h:13,
-                    from arch/x86/include/asm/bug.h:35,
-                    from include/linux/bug.h:4,
-                    from include/linux/thread_info.h:11,
-                    from arch/x86/include/asm/uaccess.h:8,
-                    from fs/proc/base.c:50:
-   include/linux/kernel.h:418:12: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     418 | int sscanf(const char *, const char *, ...);
-         |            ^~~~~~~~~~~~
-   fs/proc/base.c: In function 'proc_map_files_readdir':
-   fs/proc/base.c:2123:49: warning: pointer targets in passing argument 1 of 'snprintf' differ in signedness [-Wpointer-sign]
-    2123 |                         info.len = snprintf(info.name,
-         |                                             ~~~~^~~~~
-         |                                                 |
-         |                                                 unsigned char *
-   include/linux/kernel.h:405:20: note: expected 'char *' but argument is of type 'unsigned char *'
-     405 | int snprintf(char *buf, size_t size, const char *fmt, ...);
-         |              ~~~~~~^~~
-   fs/proc/base.c:2135:40: warning: pointer targets in passing argument 3 of 'proc_fill_cache' differ in signedness [-Wpointer-sign]
-    2135 |                                       p->name, p->len,
-         |                                       ~^~~~~~
-         |                                        |
-         |                                        unsigned char *
-   fs/proc/base.c:1810:21: note: expected 'const char *' but argument is of type 'unsigned char *'
-    1810 |         const char *name, int len,
-         |         ~~~~~~~~~~~~^~~~
-   fs/proc/base.c: In function 'proc_flush_task_mnt':
-   fs/proc/base.c:2876:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2876 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2888:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2888 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2894:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2894 |         name.name = "task";
-         |                   ^
-   fs/proc/base.c:2895:31: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
-    2895 |         name.len = strlen(name.name);
-         |                           ~~~~^~~~~
-         |                               |
-         |                               const unsigned char *
-   In file included from arch/x86/include/asm/string.h:4,
-                    from include/linux/string.h:17,
-                    from include/linux/dynamic_debug.h:111,
-                    from include/linux/printk.h:277,
-                    from include/linux/kernel.h:13:
-   arch/x86/include/asm/string_64.h:64:27: note: expected 'const char *' but argument is of type 'const unsigned char *'
-      64 | size_t strlen(const char *s);
-         |               ~~~~~~~~~~~~^
-   fs/proc/base.c:2900:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2900 |         name.name = buf;
-
-vim +1980 fs/proc/base.c
-
-bdb4d100afe981 Calvin Owens         2015-09-09  1975  
-c52a47ace7ef58 Al Viro              2013-06-15  1976  static int
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1977  proc_map_files_instantiate(struct inode *dir, struct dentry *dentry,
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1978  			   struct task_struct *task, const void *ptr)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1979  {
-7b540d0646ce12 Al Viro              2012-08-27 @1980  	fmode_t mode = (fmode_t)(unsigned long)ptr;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1981  	struct proc_inode *ei;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1982  	struct inode *inode;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1983  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1984  	inode = proc_pid_make_inode(dir->i_sb, task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1985  	if (!inode)
-c52a47ace7ef58 Al Viro              2013-06-15  1986  		return -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1987  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1988  	ei = PROC_I(inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1989  	ei->op.proc_get_link = proc_map_files_get_link;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1990  
-bdb4d100afe981 Calvin Owens         2015-09-09  1991  	inode->i_op = &proc_map_files_link_inode_operations;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1992  	inode->i_size = 64;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1993  	inode->i_mode = S_IFLNK;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1994  
-7b540d0646ce12 Al Viro              2012-08-27  1995  	if (mode & FMODE_READ)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1996  		inode->i_mode |= S_IRUSR;
-7b540d0646ce12 Al Viro              2012-08-27  1997  	if (mode & FMODE_WRITE)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1998  		inode->i_mode |= S_IWUSR;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1999  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2000  	d_set_d_op(dentry, &tid_map_files_dentry_operations);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2001  	d_add(dentry, inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2002  
-c52a47ace7ef58 Al Viro              2013-06-15  2003  	return 0;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2004  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2005  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2006  static struct dentry *proc_map_files_lookup(struct inode *dir,
-00cd8dd3bf95f2 Al Viro              2012-06-10  2007  		struct dentry *dentry, unsigned int flags)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2008  {
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2009  	unsigned long vm_start, vm_end;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2010  	struct vm_area_struct *vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2011  	struct task_struct *task;
-c52a47ace7ef58 Al Viro              2013-06-15  2012  	int result;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2013  	struct mm_struct *mm;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2014  
-c52a47ace7ef58 Al Viro              2013-06-15  2015  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2016  	task = get_proc_task(dir);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2017  	if (!task)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2018  		goto out;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2019  
-c52a47ace7ef58 Al Viro              2013-06-15  2020  	result = -EACCES;
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2021  	if (!ptrace_may_access(task, PTRACE_MODE_READ))
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2022  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2023  
-c52a47ace7ef58 Al Viro              2013-06-15  2024  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2025  	if (dname_to_vma_addr(dentry, &vm_start, &vm_end))
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2026  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2027  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2028  	mm = get_task_mm(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2029  	if (!mm)
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2030  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2031  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2032  	down_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2033  	vma = find_exact_vma(mm, vm_start, vm_end);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2034  	if (!vma)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2035  		goto out_no_vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2036  
-05f564849d4949 Stanislav Kinsbursky 2012-11-26  2037  	if (vma->vm_file)
-7b540d0646ce12 Al Viro              2012-08-27  2038  		result = proc_map_files_instantiate(dir, dentry, task,
-7b540d0646ce12 Al Viro              2012-08-27 @2039  				(void *)(unsigned long)vma->vm_file->f_mode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2040  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2041  out_no_vma:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2042  	up_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2043  	mmput(mm);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2044  out_put_task:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2045  	put_task_struct(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2046  out:
-c52a47ace7ef58 Al Viro              2013-06-15  2047  	return ERR_PTR(result);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2048  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2049  
-
-:::::: The code at line 1980 was first introduced by commit
-:::::: 7b540d0646ce122f0ba4520412be91e530719742 proc_map_files_readdir(): don't bother with grabbing files
-
-:::::: TO: Al Viro <viro@zeniv.linux.org.uk>
-:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
