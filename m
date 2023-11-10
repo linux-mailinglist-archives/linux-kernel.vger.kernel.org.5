@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EE67E7E64
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA5E7E7E6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345913AbjKJRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S1346023AbjKJRok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345895AbjKJRns (ORCPT
+        with ESMTP id S1345890AbjKJRnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:43:48 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032E8A5DE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:00:25 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-107-mpQGjel4NGeU1hbYwlOghw-1; Fri, 10 Nov 2023 09:00:22 +0000
-X-MC-Unique: mpQGjel4NGeU1hbYwlOghw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 10 Nov
- 2023 09:00:21 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 10 Nov 2023 09:00:21 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        "imre.deak@intel.com" <imre.deak@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Build fail in drivers/gpu/drm/i915/display/intel_tc.c
-Thread-Topic: Build fail in drivers/gpu/drm/i915/display/intel_tc.c
-Thread-Index: AdoTX9s2sPRYSwRmSkOwOZ8JicXQjgAEEIUiABCaxIA=
-Date:   Fri, 10 Nov 2023 09:00:21 +0000
-Message-ID: <39709b4bb3e447159759a9923bd4a564@AcuMS.aculab.com>
-References: <4df68c74c4da46ac943ac21578e9b084@AcuMS.aculab.com>
- <ZU1shQH64ryxp/l5@ideak-desk.fi.intel.com>
- <CAHk-=wgiPxF6GnvaSGV+xOjcBO-T1vxLYhSvho0Q5Cdqw7t74w@mail.gmail.com>
-In-Reply-To: <CAHk-=wgiPxF6GnvaSGV+xOjcBO-T1vxLYhSvho0Q5Cdqw7t74w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 10 Nov 2023 12:43:43 -0500
+Received: from mail.venturelinkbiz.com (mail.venturelinkbiz.com [51.195.119.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8E2A5E8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:00:52 -0800 (PST)
+Received: by mail.venturelinkbiz.com (Postfix, from userid 1002)
+        id BCCA147E08; Fri, 10 Nov 2023 09:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=venturelinkbiz.com;
+        s=mail; t=1699606850;
+        bh=JBV4b8UUo1MSngn/QBoedt1Dv52bT8rWeq4R22MtJMs=;
+        h=Date:From:To:Subject:From;
+        b=nuHCTjQe/lQrrIZ1xfwlBWpyRCTGwfUs4gej64XhnxLQnuuEPR4w3pbMboDi1fjD+
+         dI8XsJ+FMwnzFcI11bVYZCM+THYbryx2InhPp2Q/Mp43uDt8Z68+HBVFRdB7TGacpr
+         XyrS4E5qKgtXAmh6pGJW33W5LFx6DTvPJCywGZS52SGBoxuy49POdVUjuTfinKUggI
+         n0mq/YHiN7rAvHprvq9HskLK83lsUOx/Shj3rSq+l81u+eVix7vNLGMYGRW55at7rK
+         kVA5h80lJhc20d73G4aPZy5rIKaonw57CC9FiFdhjuSorENZij0ITLu32BvdC6BJMC
+         ty1CC590XlFqw==
+Received: by mail.venturelinkbiz.com for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:00:49 GMT
+Message-ID: <20231110074500-0.1.3i.9pcn.0.126mqqj26z@venturelinkbiz.com>
+Date:   Fri, 10 Nov 2023 09:00:49 GMT
+From:   "Michal Rmoutil" <michal.rmoutil@venturelinkbiz.com>
+To:     <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?Q?Efektivn=C3=AD_sledov=C3=A1n=C3=AD_a_optimalizace_v=C3=BDroby_pro_va=C5=A1i_spole=C4=8Dnost?=
+X-Mailer: mail.venturelinkbiz.com
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS_A,URIBL_DBL_SPAM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTAgTm92ZW1iZXIgMjAyMyAwMDo1Mg0KPiAN
-Cj4gT24gVGh1LCA5IE5vdiAyMDIzIGF0IDE1OjM0LCBJbXJlIERlYWsgPGltcmUuZGVha0BpbnRl
-bC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gVGhlIGNvbXBpbGVyIHdhcm4gc2hvdWxkIGJlIGZpeGVk
-L3N1cHByZXNzZWQgYnk6DQo+ID4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjMxMDI2
-MTI1NjM2LjUwODAtMS1uaXJtb3kuZGFzQGludGVsLmNvbQ0KPiANCj4gVWdoLCBzbyBub3cgaXQn
-cyBhIGR5bmFtaWMgYWxsb2NhdGlvbiwgd2FzdGluZyBtZW1vcnksIGFuZCBhIHBvaW50ZXINCj4g
-dG8gaXQsIHVzaW5nIGFzIG11Y2ggbWVtb3J5IGFzIHRoZSBhcnJheSBkaWQgaW4gdGhlIGZpcnN0
-IHBsYWNlLg0KPiANCj4gQWxsIGJlY2F1c2Ugb2YgYSBwb2ludGxlc3Mgd2FybmluZyB0aGF0IHdh
-cyBhIGZhbHNlIHBvc2l0aXZlIC0gYW5kIHdhcw0KPiBhbHdheXMgaGFybWxlc3MgYW55d2F5LCBz
-aW5jZSBzbnByaW50ZigpIGlzIHNhZmUgKGllIGl0IHdhcyBvbmx5IGENCj4gIm1pZ2h0IGJlIHRy
-dW5jYXRlZCIpLg0KDQpUaGF0IGVudGlyZSB3YXJuaW5nIGZvciBzbnByaW50ZigpIGlzIGEgZmFs
-c2UgcG9zaXRpdmUuDQpUaGUgb25lcyB0aGF0IGFyZSBsaWtlbHkgdG8gb3ZlcmZsb3cgdW5leHBl
-Y3RlZGx5IGFyZSB0aGUgb25lcw0Kd2l0aCBhICIlcyIgZm9ybWF0IGZvciBhICdjaGFyIConIHBv
-aW50ZXIgd2hlcmUgdGhlcmUgaXMgbm8NCmltcGxpZWQgbGVuZ3RoLg0KDQpUaGUgc2FtZSBjaGVj
-ayBmb3IgcHJpbnRmKCkgdXNpbmcgdGhlIGltcGxpZWQgYnVmZmVyIGxlbmd0aA0KcHJvYmFibHkg
-ZG9lcyBtYWtlIHNlbnNlLg0KDQpJIGRvbid0IGV2ZW4gdGhpbmsgdGhlcmUgaXMgYSB3YXkgb2Yg
-YXZvaWRpbmcgaXQgb24gYSBjYXNlIGJ5IGNhc2UNCmJhc2lzIC0gYXBhcnQgZnJvbSBwYXNzaW5n
-IGJvdGggdGhlIGJ1ZmZlciBhZGRyZXNzIGFuZCBsZW5ndGgNCnRvIGFuIGlubGluZSBhc20gdGhh
-dCB0aGUgY29tcGlsZXIgaGFzIHRvIGFzc3VtZSBtaWdodCBjaGFuZ2UNCnRoZSB2YWx1ZXMsIGJ1
-dCB0aGF0IHRlbmRzIHRvIGdlbmVyYXRlIGFuIGV4dHJhICdtb3YnIGluc3RydWN0aW9uDQpmb3Ig
-bm8gZ29vZCByZWFzb24gYXQgYWxsLg0KDQo+IA0KPiBQbGVhc2UgZG9uJ3QgZG8gdGhpcy4gRWl0
-aGVyIGRvIHRoYXQgKCh0Y19wb3J0ICYgNykgKyAxKSBzdWdnZXN0aW9uIG9mDQo+IERhdmlkJ3Ms
-IG9yIGp1c3QgZG8gJyVjJyBhbmQgbWFrZSB0aGUgZXhwcmVzc2lvbiBiZQ0KPiANCj4gICAnMScg
-KyB0Y19wb3J0DQo+IA0KPiB3aGljaCBzaG91bGQgYmUgZmluZSBzaW5jZSBJOTE1X01BWF9QT1JU
-UyBpcyA4IG9yIHdoYXRldmVyLg0KDQpJZiBJJ2QgdGhvdWdoIGZvciAyIHNlY29uZHMgdGhhdCBp
-cyB3aGF0IEknZCBoYXZlIGRvbmUuDQpCdXQgSSB3YW50ZWQgdG8gZ2V0IHNvbWV0aGluZyB0aHJv
-dWdoIHRoZSBjb21waWxlci4NCg0KPiBJIGRvIHdvbmRlciB3aHkgdGhvc2UgcG9ydHMgYXJlIHBy
-aW50ZWQgb3V0IGFzICcxLTgnLCB3aGVuIHRoZSAnZW51bQ0KPiBwb3J0JyBpcyBQT1JUX0EuLkku
-DQoNClRoZXkgbG9vayBsaWtlIFRDX1BPUlRfWzEuLjZdIHRvIG1lIC0gdGhlIGVudW0gdmFsdWVz
-IGFyZSAwLi41DQp3aGljaCBpcyB3aHkgdGhlcmUgaXMgYSAncmFuZG9tJyAnKyAxJy4NCg0KCURh
-dmlkDQoNCj4gDQo+IFNvIGl0IHdvdWxkIGFjdHVhbGx5IGhhdmUgbWFkZSBtb3JlIHNlbnNlIHRv
-IHByaW50IHRoZW0gb3V0IGFzICVjIHdpdGgNCj4gdGhlIGV4cHJlc3Npb24gYmVpbmcNCj4gDQo+
-ICAgICdBJyt0Y19wb3J0DQo+IA0KPiBidXQgSSBndWVzcyBieSBub3cgcGVvcGxlIG1pZ2h0IGRl
-cGVuZCBvbiB0aGUgMS4uOCBuYW1pbmc/DQo+IA0KPiAgICAgICAgICAgICAgTGludXMNCg0KLQ0K
-UmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1p
-bHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVz
-KQ0K
+Dobr=C3=A9 r=C3=A1no,
 
+m=C3=A1te mo=C5=BEnost sledovat stav ka=C5=BEd=C3=A9ho stroje a v=C3=BDro=
+bn=C3=ADho procesu z kancel=C3=A1=C5=99e, konferen=C4=8Dn=C3=AD m=C3=ADst=
+nosti nebo dokonce z domova =C4=8Di na cest=C3=A1ch =E2=80=93 na va=C5=A1=
+em telefonu?
+
+Poskytujeme rychle implementovateln=C3=BD a snadno pou=C5=BEiteln=C3=BD n=
+=C3=A1stroj, kter=C3=BD zachyt=C3=AD i n=C4=9Bkolikasekundov=C3=BD mikrop=
+rostoj a okam=C5=BEit=C4=9B p=C5=99epo=C4=8D=C3=ADt=C3=A1 vyu=C5=BEit=C3=AD=
+ stroje v kontextu dan=C3=A9 v=C3=BDrobn=C3=AD zak=C3=A1zky.
+
+Kdykoli vid=C3=ADte stav objedn=C3=A1vky a jste informov=C3=A1ni o p=C5=99=
+=C3=ADpadn=C3=A9m sn=C3=AD=C5=BEen=C3=AD efektivity. Syst=C3=A9m s=C3=A1m=
+ analyzuje data a p=C5=99ipravuje cenn=C3=A9 reporty, co=C5=BE oper=C3=A1=
+tor=C5=AFm umo=C5=BE=C5=88uje soust=C5=99edit se na v=C3=BDrobn=C3=AD c=C3=
+=ADl.
+
+C=C3=ADl je jednoduch=C3=BD: jeden pohled =E2=80=93 cel=C3=A1 tov=C3=A1rn=
+a. =C4=8Cek=C3=A1m na odpov=C4=9B=C4=8F, jestli vid=C3=ADte mo=C5=BEnost =
+vyu=C5=BEit=C3=AD takov=C3=A9ho n=C3=A1stroje ve va=C5=A1=C3=AD firm=C4=9B=
+=2E
+
+
+Pozdravy
+Michal Rmoutil
