@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92CC7E86C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FF57E86B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:55:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbjKJX5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 18:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S229984AbjKJXzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 18:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235278AbjKJX5D (ORCPT
+        with ESMTP id S229477AbjKJXzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 18:57:03 -0500
-X-Greylist: delayed 313 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Nov 2023 15:56:35 PST
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AEA47BA;
-        Fri, 10 Nov 2023 15:56:35 -0800 (PST)
-Received: from localhost ([173.252.127.6]) by mrelay.perfora.net (mreueus003
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0LtYx8-1rQjKW1h12-010xXD; Sat, 11 Nov
- 2023 00:51:04 +0100
-From:   Jordan Rome <linux@jordanrome.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH perf] perf: get_perf_callchain return NULL for crosstask
-Date:   Fri, 10 Nov 2023 15:50:21 -0800
-Message-Id: <20231110235021.192796-1-linux@jordanrome.com>
-X-Mailer: git-send-email 2.39.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:a6BVsRL2QRpAGaOBDD1hPPv2MbJ4fjgivIhGK89IR6F1Es22JW5
- EjTfkYVl8kvZNLUGrRy5VhllM84wfApjuMhjhHU9ILgscjvmbFkwp6n0WWlEHZyEFsWuTKk
- uDb7MDVHxR7uBtqx4IfUjTkgKBWAGdgu0eYQtRMRhhoOFEGfbEtp2/Ep0Qo48svwQ0qqpN2
- g868W0KIFAKc6YEDAW6Sw==
-UI-OutboundReport: notjunk:1;M01:P0:/ES/WiAn14I=;UDkRPJ6QSK0f/ugHCl3Fxb640kB
- Ko1MpqQFSQrQH+1JMsU5rD9By19oUarED4fhbpGfhRGJNp+b5F/b5KbxHVPdF4Ru2IKMVOx0+
- ayGM25/ztCbgn0YVMk7V3FqIZh1xvPUa4dF/ZrFIVUg5HhK3wTM5/gPpnICeXGdl5aHt9ka+b
- GvnZcHih62dDioJ+y3qNiI8y6/e6OnhEmUhRgJTXoUZHx18BeeVqkp90bZfmjfsIjGekvE89O
- wOhbMuKn+lZQP+MMwcZsMUd8ikjGOe1mlcLOEJEn07xKQRctaMDXkbu6WL4jA6F/3XAZakLTM
- fU/qT/mbQLXuRjPfBVRTZXWBQvx3VL6Dv6C/jLKVnLL5wy1HkC3rowE0G02pIsukaLWv+QfAk
- 8eG6mWicO+vTpkjNfSyoA1y/nap20dX8R10rZ/xZkjlKKw01B5H7Ct6VRxz01/DJIX084/GVj
- VpKaxx/JKioGeCySB9MYs06+dzYfCwbqX1CgTIF50qWL3E/0vcNpAdRsZeqAFI45X5sZcPY8N
- J12poUZv6YosamRWCT1542GlyCNfdmRJAAPUgVPWEEmsnLxXV3w0pEufYYnmYQ2QF02yTio02
- SXkiyLae08ZUX1lBoQA0W0fYC9Xs3QyFczN9Fo/F2clpzmgfPsWXxNQMkmhu2axXG70+MxsTW
- G6Ae3uTt/5gAw9muWauTU9TEsRuKHdVHZS9EkN5OMgsn3uY+ra2F7oA2LH3XTHyqExwj57ZCg
- 7GJNJ1WHT8wDfUqOMQrwbmg03iI9m6XntrAsNaU7Dtxzy8oZyoLjhLkkI7QGqQuEMrGkqJQ9x
- 6HForIw+ibAA+EueskYQosMv6xxtCtACmyvkbqeS8Qji99dkqlCQauqF6gSU3oaL6wZbRe8mD
- 4RGZmyl9MB1+zYw==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 18:55:39 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F87420B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:34 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b31e000e97so35609347b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699660533; x=1700265333; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PY8LgwN808IydVRIyG0fx7z1NJlKrZCLfSJxMdvZJ8k=;
+        b=28XEm44pIR6dQ2xTd3KRVxDuOXSQAPzkTN+G6oIvUcTpZvus8PXlXlFjBtbjtSYixA
+         Xuf3lOLI+huPYrWYnBrX8MbVNHyguUykQDS/sW78EAzscQjlsbmHeacyOAwZ9Axls8Wh
+         yZ/bSbAS6Wpa7mxJYG2yitNv7p4JI5GO5G1a3bbdihfvUMOQxAc5IWpxVro+LxSZTRlS
+         FNIO6l5b3v0UEi/22deV6wj7LgEZK3pVq6iKlgHZFKCTW9elTiclt/GcYIy+0rP6cRjC
+         b1WUTCF6AOSK2FRe/fiPE4jspkmCuKo2I0csWOLiLa65/7ce4tAzChTeKNYYq5c6auu4
+         mMcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699660533; x=1700265333;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PY8LgwN808IydVRIyG0fx7z1NJlKrZCLfSJxMdvZJ8k=;
+        b=qCiu1/hrOcGlhJaZ5TmnkJQkNFrJ6nJrf2EajBZNMsxS/1BKkQDDVRL3tNFhFLTy9r
+         w/7/Kf94LMRBN7y0EhDZc0lPRA66r3KaOpVGUhif0hTpN7K078Mt6KIEP6oAdFNaov9/
+         Hu0jPvy+BCKoyNxqHuIfxTC8x2zLysPb9MzI4aS9mA/Z24U4jdRSB0fKPScuFKzNlTML
+         nzy7qc/1IlLhDSUu7Gr3lnyHyNHGnnuCE9gwtZlnXwbp2wC6AYOZH6eOXDs4QHV+0Ndm
+         hApiswXfG56V0VrIcvjYTEHHQc6xQEqIQqUJolAW9Sy84KUlRO3PO5po2WgJ2ZzGFYGQ
+         poMQ==
+X-Gm-Message-State: AOJu0Yx/vZCkTijP2d1CnhlIgVlxSv7BMmvtFAaXB+PpXC9pjZAKrIag
+        xsX5GgG0xSWSjrKuOBSYq7/EQcdI4mY=
+X-Google-Smtp-Source: AGHT+IFUT80IUQyz+DyvIJ1S3oZm0hrIuvXccKSjJSddXVOa73GAlW/yQGZGK6et3Ys0SEobeZ5TBSWMUnI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d78d:0:b0:5be:a164:5669 with SMTP id
+ z135-20020a0dd78d000000b005bea1645669mr18569ywd.7.1699660533389; Fri, 10 Nov
+ 2023 15:55:33 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 10 Nov 2023 15:55:19 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231110235528.1561679-1-seanjc@google.com>
+Subject: [PATCH 0/9] KVM: x86: Replace governed features with guest cpu_caps
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return NULL instead of returning 1 incorrect frame, which
-currently happens when trying to walk the user stack for
-any task that isn't current. Returning NULL is a better
-indicator that this behavior is not supported.
+Replace the poorly named, confusing, and high-maintenance "governed
+features" framework with a comprehensive guest cpu_caps implementation.
 
-This issue was found using bpf_get_task_stack inside a BPF
-iterator ("iter/task"), which iterates over all tasks. The
-single address/frame in the buffer when getting user stacks
-for tasks that aren't current could not be symbolized (testing
-multiple symbolizers).
+In short, snapshot all X86_FEATURE_* flags that KVM cares about so that
+all queries against guest capabilities are "fast", e.g. don't require
+manual enabling or judgment calls as to where a feature needs to be fast.
 
-Signed-off-by: Jordan Rome <linux@jordanrome.com>
----
- kernel/events/callchain.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+The guest_cpu_cap_* nomenclature follows the existing kvm_cpu_cap_*
+except for a few (maybe just one?) cases where guest cpu_caps need APIs
+that kvm_cpu_caps don't.  In theory, the similar names will make this
+approach more intuitive.
 
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index 1273be84392c..430fa544fa80 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -201,6 +201,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 	}
- 
- 	if (user) {
-+		if (crosstask)
-+			return NULL;
-+
- 		if (!user_mode(regs)) {
- 			if  (current->mm)
- 				regs = task_pt_regs(current);
-@@ -209,9 +212,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 		}
- 
- 		if (regs) {
--			if (crosstask)
--				goto exit_put;
--
- 			if (add_mark)
- 				perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
- 
-@@ -219,7 +219,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 		}
- 	}
- 
--exit_put:
- 	put_callchain_entry(rctx);
- 
- 	return entry;
+Sean Christopherson (9):
+  KVM: x86: Rename "governed features" helpers to use "guest_cpu_cap"
+  KVM: x86: Replace guts of "goverened" features with comprehensive
+    cpu_caps
+  KVM: x86: Initialize guest cpu_caps based on guest CPUID
+  KVM: x86: Avoid double CPUID lookup when updating MWAIT at runtime
+  KVM: x86: Drop unnecessary check that cpuid_entry2_find() returns
+    right leaf
+  KVM: x86: Update guest cpu_caps at runtime for dynamic CPUID-based
+    features
+  KVM: x86: Shuffle code to prepare for dropping guest_cpuid_has()
+  KVM: x86: Replace all guest CPUID feature queries with cpu_caps check
+  KVM: x86: Restrict XSAVE in cpu_caps based on KVM capabilities
+
+ arch/x86/include/asm/kvm_host.h  |  40 ++++++----
+ arch/x86/kvm/cpuid.c             | 102 +++++++++++++++++++-------
+ arch/x86/kvm/cpuid.h             | 121 +++++++++++--------------------
+ arch/x86/kvm/governed_features.h |  21 ------
+ arch/x86/kvm/lapic.c             |   2 +-
+ arch/x86/kvm/mmu/mmu.c           |   4 +-
+ arch/x86/kvm/mtrr.c              |   2 +-
+ arch/x86/kvm/reverse_cpuid.h     |  15 ----
+ arch/x86/kvm/smm.c               |  10 +--
+ arch/x86/kvm/svm/nested.c        |  22 +++---
+ arch/x86/kvm/svm/pmu.c           |   8 +-
+ arch/x86/kvm/svm/sev.c           |   4 +-
+ arch/x86/kvm/svm/svm.c           |  50 ++++++-------
+ arch/x86/kvm/svm/svm.h           |   4 +-
+ arch/x86/kvm/vmx/nested.c        |  18 ++---
+ arch/x86/kvm/vmx/pmu_intel.c     |   4 +-
+ arch/x86/kvm/vmx/sgx.c           |  14 ++--
+ arch/x86/kvm/vmx/vmx.c           |  63 ++++++++--------
+ arch/x86/kvm/vmx/vmx.h           |   2 +-
+ arch/x86/kvm/x86.c               |  72 +++++++++---------
+ 20 files changed, 282 insertions(+), 296 deletions(-)
+ delete mode 100644 arch/x86/kvm/governed_features.h
+
+
+base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
 -- 
-2.39.3
+2.42.0.869.gea05f2083d-goog
 
