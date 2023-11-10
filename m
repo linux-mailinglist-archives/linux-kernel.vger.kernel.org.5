@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD487E7EC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF277E7F66
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343911AbjKJRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        id S229379AbjKJRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344979AbjKJRqQ (ORCPT
+        with ESMTP id S229931AbjKJRwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:46:16 -0500
-Received: from mx.msync.work (mx.msync.work [62.182.159.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE8D6F87;
-        Thu,  9 Nov 2023 22:24:27 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0C23515675E;
-        Fri, 10 Nov 2023 06:00:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1699596008; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=pGAPimGotaSJcRtKrDnmSbjkSfOKuNnfaSzdhYkcmXo=;
-        b=g1QU7QP1VD0oscW8sjske7Ntfl7CbqIKOn2vcAlWA7LvoLMyKLBWvFM78k60qh24GHqB6z
-        xDYhNMyfSIQNLZTYhtWgffN1s5eXTUXft9oQaqoiF/fa0PBzGfv7P5VdkaxDbpXPmRWH7F
-        XFhLYYaB6djHz19uz9nGKwJ4PTz6ofeimGtx0/Qi3i0s0UTFD2PN8Tl1MqJtGW/W1u1f0h
-        zl983JV/CU/QvPATxM18yZp2hMoXRcMBbjHevmOpq7SxYLTqIeO7XHDZaNaBkpntoMNaY1
-        CSpFzdnKyldZZJPAOgo5grDfxTWvp+zqqY7SnT+UDrrUgF8CQnFzST+zSIxUbA==
-Message-ID: <d12f0909623088f1f66ab57b1868dee2e0fb6387.camel@lexina.in>
-Subject: Re: [PATCH] firmware: meson-sm: change sprintf to scnprintf
-From:   Viacheslav Bocharov <adeep@lexina.in>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Date:   Fri, 10 Nov 2023 09:00:06 +0300
-In-Reply-To: <bd3a9ca738444c99855c6aabe318e351@AcuMS.aculab.com>
-References: <20231109085029.2079176-1-adeep@lexina.in>
-         <bd3a9ca738444c99855c6aabe318e351@AcuMS.aculab.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Fri, 10 Nov 2023 12:52:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBEC524E;
+        Thu,  9 Nov 2023 22:14:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699596851; x=1731132851;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Cvu/feWwM6Drw45XaaoAHqUoqywA1BWLqtyRb/Y/siY=;
+  b=Ew/wlSVH73wlvBwZkMwGMiWWBX3RsIBE4N6yM2kA0wHsR87JHXLP1O5R
+   Sqr/H3/TTAk6ZqaNj3zwZ/UxvScEZuulx7ULu+BnifZkFYyDFWGDGbV72
+   YbZ/R7nlP0xyJMON304tp0Q8E5cF1M4oSrvWBgfsTO7dBAYcFMcPct3IC
+   q/nqMrscQDNohaMpOooUJLnC08VdJqzyZrjajJGG3Epbqi8HPY3aKMnYh
+   +H8deEgzPhVeTCY5FafizwPm9pS72vcxX1v84CE6Cr7QMTfEDBtWUd0pM
+   f3qWZf73hpRgMLNpps4QOYDwqJeaTsuHj2Q+exTO5oamfZ5K9KP7moOZ1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="380528796"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="380528796"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:07:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="740069660"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="740069660"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:07:05 -0800
+Message-ID: <c85ffcdc-bf0a-4047-a29d-0ee1b595a227@linux.intel.com>
+Date:   Fri, 10 Nov 2023 14:07:03 +0800
 MIME-Version: 1.0
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 08/26] KVM: x86/pmu: Disallow "fast" RDPMC for
+ architectural Intel PMUs
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Like Xu <likexu@tencent.com>
+References: <20231110021306.1269082-1-seanjc@google.com>
+ <20231110021306.1269082-9-seanjc@google.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <20231110021306.1269082-9-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 11/10/2023 10:12 AM, Sean Christopherson wrote:
+> Inject #GP on RDPMC if the "fast" flag is set for architectural Intel
+> PMUs, i.e. if the PMU version is non-zero.  Per Intel's SDM, and confirmed
+> on bare metal, the "fast" flag is supported only for non-architectural
+> PMUs, and is reserved for architectural PMUs.
+>
+>    If the processor does not support architectural performance monitoring
+>    (CPUID.0AH:EAX[7:0]=0), ECX[30:0] specifies the index of the PMC to be
+>    read. Setting ECX[31] selects “fast” read mode if supported. In this mode,
+>    RDPMC returns bits 31:0 of the PMC in EAX while clearing EDX to zero.
+>
+>    If the processor does support architectural performance monitoring
+>    (CPUID.0AH:EAX[7:0] ≠ 0), ECX[31:16] specifies type of PMC while ECX[15:0]
+>    specifies the index of the PMC to be read within that type. The following
+>    PMC types are currently defined:
+>    — General-purpose counters use type 0. The index x (to read IA32_PMCx)
+>      must be less than the value enumerated by CPUID.0AH.EAX[15:8] (thus
+>      ECX[15:8] must be zero).
+>    — Fixed-function counters use type 4000H. The index x (to read
+>      IA32_FIXED_CTRx) can be used if either CPUID.0AH.EDX[4:0] > x or
+>      CPUID.0AH.ECX[x] = 1 (thus ECX[15:5] must be 0).
+>    — Performance metrics use type 2000H. This type can be used only if
+>      IA32_PERF_CAPABILITIES.PERF_METRICS_AVAILABLE[bit 15]=1. For this type,
+>      the index in ECX[15:0] is implementation specific.
+>
+> WARN if KVM ever actually tries to complete RDPMC for a non-architectural
+> PMU as KVM doesn't support such PMUs, i.e. kvm_pmu_rdpmc() should reject
+> the RDPMC before getting to the Intel code.
+>
+> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
+> Fixes: 67f4d4288c35 ("KVM: x86: rdpmc emulation checks the counter incorrectly")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/vmx/pmu_intel.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index c6ea128ea7c8..80255f86072e 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -61,7 +61,19 @@ static struct kvm_pmc *intel_pmc_idx_to_pmc(struct kvm_pmu *pmu, int pmc_idx)
+>   
+>   static u32 intel_rdpmc_get_masked_idx(struct kvm_pmu *pmu, u32 idx)
+>   {
+> -	return idx & ~(INTEL_RDPMC_FIXED | INTEL_RDPMC_FAST);
+> +	/*
+> +	 * Fast RDPMC is only supported on non-architectural PMUs, which KVM
+> +	 * doesn't support.
+> +	 */
+> +	if (WARN_ON_ONCE(!pmu->version))
+> +		return idx & ~INTEL_RDPMC_FAST;
+> +
+> +	/*
+> +	 * Fixed PMCs are supported on all architectural PMUs.  Note, KVM only
+> +	 * emulates fixed PMCs for PMU v2+, but the flag itself is still valid,
+> +	 * i.e. let RDPMC fail due to accessing a non-existent counter.
+> +	 */
+> +	return idx & ~INTEL_RDPMC_FIXED;
+>   }
+>   
+>   static bool intel_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
 
-On Thu, 2023-11-09 at 17:59 +0000, David Laight wrote:
-> From: Viacheslav Bocharov
-> > Sent: 09 November 2023 08:50
-> >=20
-> > Update sprintf in serial_show frunction to scnprintf command to
-> > prevent sysfs buffer overflow (buffer always is PAGE_SIZE bytes).
->=20
-> Isn't the correct function sysfs_emit() ?
-Good catch. There's always something new to find)
-
-
-
-> In any case that particular example can't possibly overflow.
-Practically in this example, I agree. But nevertheless, ideologically,=C2=
-=A0
-a pointer to the buffer is passed to the function, but its size is not=C2=
-=A0
-passed. This may cause an overflow error when making changes in the=C2=A0
-code.=C2=A0Yes, the lengths of %12phN and PAGE_SIZE are very different at=
-=C2=A0
-the moment.=C2=A0But what happens if both of these numbers change=C2=A0
-unpredictably in future changes?
-
-
-> 	David
->=20
-> >=20
-> > Signed-off-by: Viacheslav Bocharov <adeep@lexina.in>
-> > ---
-> >  drivers/firmware/meson/meson_sm.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/firmware/meson/meson_sm.c b/drivers/firmware/meson=
-/meson_sm.c
-> > index ed60f1103053..c1c694b485ee 100644
-> > --- a/drivers/firmware/meson/meson_sm.c
-> > +++ b/drivers/firmware/meson/meson_sm.c
-> > @@ -265,7 +265,7 @@ static ssize_t serial_show(struct device *dev, stru=
-ct device_attribute *attr,
-> >  		return ret;
-> >  	}
-> >=20
-> > -	ret =3D sprintf(buf, "%12phN\n", &id_buf[SM_CHIP_ID_OFFSET]);
-> > +	ret =3D scnprintf(buf, PAGE_SIZE, "%12phN\n", &id_buf[SM_CHIP_ID_OFFS=
-ET]);
-> >=20
-> >  	kfree(id_buf);
-> >=20
-> > --
-> > 2.34.1
->=20
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
->=20
->=20
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
 
