@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D913E7E8144
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1853B7E7F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344339AbjKJS1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        id S230070AbjKJRxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346001AbjKJSZ5 (ORCPT
+        with ESMTP id S229481AbjKJRwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:25:57 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BB33367E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:23:03 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9becde9ea7bso638662266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:23:03 -0800 (PST)
+        Fri, 10 Nov 2023 12:52:45 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F44A33F83
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:24:20 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d10f94f70bso327968066b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:24:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699618982; x=1700223782; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699619058; x=1700223858; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NheLNV3Ua+9nO2D3pgEi4qpSiUXy5zhSL2AO/z8qXmU=;
-        b=l5nXoibuLfS/umdPcwSpUxMU/oV/M5UrNSS1Xok4vQJzuPpJksUuujkzEx7tX+UXz/
-         VhHg0Gg3EPuz/4ljdug2b40yormp6rq8tt6yCMGE2Lun5ICuia7nXzZwv64hw35mekbY
-         7oRWRApoJzDqi6+Tn4mKAf6cRnPtu9NK3D+TkS5GNphJkKp2oQJAt9JWyhW8+/qdb8Mc
-         5wGcYoHZ2tqS7ow8dQkNUodd0OpA8Xx3hfhckBIwf9lqqXOSowmQjTFkc4AdujPpHklU
-         YxsgpDE7jz3q/jaxtnhLWtRD+3oEGgciL6X67g94BqnBfFBmyud7F5CkrdjEio/2yNY9
-         YA6Q==
+        bh=7Zsf7JEF9G2S0gCX24v8Qass1UslutuFrUMowdFCYww=;
+        b=p0yYypNxeyZOwFuF/Rv+tqg0V9DgTKqawzLW+AKUwSzv7jteCrnzOdnimi20ToXxVV
+         3vaHrDmcm9RDkjVQ8NN+eJctTdkoehs0vqilYs8S8zT4kqcXw/yaJQfxkq9J+c102B4P
+         m7jrBnmaJUvnRWH+XUZhRZ+8FxaR+2kL4IV7T7qscou9IxlF7eNmm/TMMXOlX4Xqe/HP
+         SiDcOtubpvY1HUj6dj/l0mnfnnT2jMCueNbhH37E6RmXYwlIGUR+RohNLgiX0dTAJ8NE
+         u8EVvyw0uvvScElB9SG97qPj9yaZpseiRTHEm4uv/wLgX8VXGZJATHybQOfsYoFcaDmJ
+         40gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699618982; x=1700223782;
+        d=1e100.net; s=20230601; t=1699619058; x=1700223858;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NheLNV3Ua+9nO2D3pgEi4qpSiUXy5zhSL2AO/z8qXmU=;
-        b=QFBJACbcbL8vCcfe424Rd2kwLUlwoIDXbIXylXQKofmneXW5p6ptLJ2Cs3c0qeNea2
-         qTTNA6tpCc6wC4B01ljDYTdgrfn4JtiJN9iTNWcAto5o/8WQGC9A7BGSFnYeEt8PlNai
-         qK7e9X7KLbifKLnDcv9BZay7Tfs01pppkFTAo7SFHV2Jg/Ap9YW6Cm2R/Dhh+5Ij8jgf
-         5SkU52kvj25tJJadeJL2xmK1HMgO1IGmem3FA8nmxUVsMcl9KDPgXhEVhH64pLaCg1Ud
-         fNc+XCG+N+uqJnbFGGDZXhhKTa3T37PMMlRJQZuk8Jzz6fSxlq3Wq5QH2hI742XFfvlQ
-         I3Sg==
-X-Gm-Message-State: AOJu0YwEHXWgNRubO7utoXkfd9syvbgj+4cZwldOcEFOHBjQ694F3ivT
-        i00nFnUf9NZWBZnp4Pv8ovg1pw==
-X-Google-Smtp-Source: AGHT+IEfKhGT7aylCUtQaEIbvPqo35joO+W0xLkMOAI40MlBv/YyULegPUo8vYT+++DF4kdIWilbcA==
-X-Received: by 2002:a17:906:59a8:b0:9db:6437:ef42 with SMTP id m40-20020a17090659a800b009db6437ef42mr1847424ejs.18.1699618982247;
-        Fri, 10 Nov 2023 04:23:02 -0800 (PST)
+        bh=7Zsf7JEF9G2S0gCX24v8Qass1UslutuFrUMowdFCYww=;
+        b=s0pBdHZn4t7jkVDSN/F2WwZlcc+ydZQcXv3TODl0ZDOUSQwjfQCW4LwXpVSfKp6Xmh
+         8SgsmQqHM7zbtghj7YQnLmBAn+0De1rHNmubSMeQ8DrTAISGE+XBXFdz+A65pAmFgLab
+         FwA6ojkxb444hIvAnepaaJrmRBhg1LcsVOI4zFUloaDsUj2wggu11Tdpkys4iFxo4VB0
+         8EYddDC4YlSLXktGzn8S9NjAnD7GfHSyMocE+kKD5tPiHlEgpIcxKcL2dsjwq8cRNon2
+         vL/d2hX6hla5mP+Pw3FtHKBW4quxKrymg7xSiGnjjeJvYkmpCDnmPtCGU3lFhDNwMfpG
+         yOWA==
+X-Gm-Message-State: AOJu0YwmyQOdF9dJCy1Sx+6xSz6e0xfXrAWro/LeNHYqwH5PxyXIHMZI
+        6O0f7d1MlOFQjLjdGrZszextcg==
+X-Google-Smtp-Source: AGHT+IGBMZT8jJJ3VvtocSNOjD98iBlaQYUo7YcIt8tMuslt3z+wAjxAxdGyVD/TZHDVPoWNDbrrIw==
+X-Received: by 2002:a17:907:1ca3:b0:9bf:889e:32a4 with SMTP id nb35-20020a1709071ca300b009bf889e32a4mr6701472ejc.54.1699619058496;
+        Fri, 10 Nov 2023 04:24:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id z15-20020a1709060acf00b0099cb0a7098dsm3876197ejf.19.2023.11.10.04.23.00
+        by smtp.gmail.com with ESMTPSA id z15-20020a1709060acf00b0099cb0a7098dsm3876197ejf.19.2023.11.10.04.24.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 04:23:01 -0800 (PST)
-Message-ID: <7f02301c-17dd-415b-a5c0-7bebf8721a55@linaro.org>
-Date:   Fri, 10 Nov 2023 13:22:59 +0100
+        Fri, 10 Nov 2023 04:24:18 -0800 (PST)
+Message-ID: <afce202d-6234-4c5f-9018-facd9a56b5eb@linaro.org>
+Date:   Fri, 10 Nov 2023 13:24:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt bindings: mmc: arasan,sdci: Add gate property for
- Xilinx platforms
+Subject: Re: [PATCH v7 1/4] dt-bindings: pwm: Add OpenCores PWM module
 Content-Language: en-US
-To:     Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+To:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
         Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, git@amd.com, saikrishna12468@gmail.com
-References: <20231110081105.3295037-1-sai.krishna.potthuri@amd.com>
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <20231110062039.103339-1-william.qiu@starfivetech.com>
+ <20231110062039.103339-2-william.qiu@starfivetech.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,7 +117,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231110081105.3295037-1-sai.krishna.potthuri@amd.com>
+In-Reply-To: <20231110062039.103339-2-william.qiu@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -125,30 +130,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2023 09:11, Sai Krishna Potthuri wrote:
-> From: Swati Agarwal <swati.agarwal@amd.com>
+On 10/11/2023 07:20, William Qiu wrote:
+> Add documentation to describe OpenCores Pulse Width Modulation
+> controller driver.
 > 
-
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-It's: dt-bindings
-
-> Add gate property in example node for Xilinx platforms which will be used
-> to ungate the DLL clock. DLL clock is required for higher frequencies like
-> 50MHz, 100MHz and 200MHz.
-> DLL clock is automatically selected by the SD controller when the SD
-> output clock frequency is more than 25 MHz.
-> 
-> Signed-off-by: Swati Agarwal <swati.agarwal@amd.com>
-> Co-developed-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
-> Signed-off-by: Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
 > ---
-> Note: This patch only updates the example nodes with the gate property for
-> Xilinx platforms.
+>  .../bindings/pwm/opencores,pwm.yaml           | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+> new file mode 100644
+> index 000000000000..8f776bbc1112
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/opencores,pwm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OpenCores PWM controller
+> +
+> +maintainers:
+> +  - William Qiu <william.qiu@starfivetech.com>
+> +
+> +description:
+> +  OpenCores PTC ip core contains a PWM controller. When operating in PWM mode, the PTC core
+> +  generates binary signal with user-programmable low and high periods. All PTC counters and
+> +  registers are 32-bit.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Wrap at 80 (as Coding Style asks)
+
+> +
+> +allOf:
+> +  - $ref: pwm.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - starfive,jh7100-pwm
+> +              - starfive,jh7110-pwm
+> +          - const: opencores,pwm
+
+That's a very, very generic compatible. Are you sure, 100% sure, that
+all designs from OpenCores from now till next 100 years will be 100%
+compatible?
+
 
 Best regards,
 Krzysztof
