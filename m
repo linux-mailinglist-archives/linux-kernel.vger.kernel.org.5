@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E287E825F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0427F7E8261
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbjKJTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S1346055AbjKJTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:19:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbjKJTRn (ORCPT
+        with ESMTP id S1346046AbjKJTTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:17:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C5AB409
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:00:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C71C433C7;
-        Fri, 10 Nov 2023 19:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699642803;
-        bh=6EnUes9wTH1mI2Pr2tlR3oBu4IGmtLezlfYoFlsdZ8E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OPQgb5JlaM+x+2Dekdbo9oDYHDwX+9NJoWCXpqAcb2qbcBvv6DKNY4REflr39/OI9
-         tCehhLFF5L1w7+0uX9RZ7L7U2vs9oKfPcBdVQqpq2mah3RWHtRoP/9hF6ZoFhTlCje
-         BYOAtl8GTJgprK6sQaYUMCU28cHAR06bcF+NZ2FE00nXeTldDyvXJS6RSgH/yJDfi1
-         QACKelD8f/asbPLLZw9PPl7zuDnB2Ps/x53rFnBjn3wkzrtd1V4cyDsmImhynte/Sw
-         gDbO2DEwjgrEtlqlOtMS325TvL5M3c15/JFMMfLwegUxc4YDhADHX+cqNmejuKsMCw
-         TSlIXA71e7OZA==
-Date:   Fri, 10 Nov 2023 11:00:02 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Jong eon Park" <jongeon.park@samsung.com>
-Cc:     "'Paolo Abeni'" <pabeni@redhat.com>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Eric Dumazet'" <edumazet@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "'Dong ha Kang'" <dongha7.kang@samsung.com>
-Subject: Re: [PATCH] netlink: introduce netlink poll to resolve fast return
- issue
-Message-ID: <20231110110002.7279f895@kernel.org>
-In-Reply-To: <000001da13e5$d9b99e30$8d2cda90$@samsung.com>
-References: <CGME20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77@epcas1p4.samsung.com>
-        <20231103072209.1005409-1-jongeon.park@samsung.com>
-        <20231106154812.14c470c2@kernel.org>
-        <25c501da111e$d527b010$7f771030$@samsung.com>
-        <20231107085347.75bc3802@kernel.org>
-        <000001da13e5$d9b99e30$8d2cda90$@samsung.com>
+        Fri, 10 Nov 2023 14:19:05 -0500
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D918B2B793;
+        Fri, 10 Nov 2023 11:04:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699643075; x=1731179075;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:from:to:references:in-reply-to:subject;
+  bh=L3s6MCb/ddOZq92pe5PVKstKWmwAub27mVyvpvCtbZM=;
+  b=czq1qkBSGIathm+YSbtfFkRjXOrdy4dS3v5oVWs3LJ6MREFCyPFTkN9f
+   N9xB5v1qiZ9kcwkHLo4iVtwje/29zu3YOpSJCOd+2rDj1cL4+mlFmSQ/x
+   4CV7eJW56XuSyO+LeIDQPw6hE3P3xbQNAxqhvo6a0OBEe6HKDhsbwpjT9
+   c=;
+X-IronPort-AV: E=Sophos;i="6.03,291,1694736000"; 
+   d="scan'208";a="615422768"
+Subject: Re: [RFC 0/33] KVM: x86: hyperv: Introduce VSM support
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 19:04:31 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id 6F6E740BBD;
+        Fri, 10 Nov 2023 19:04:29 +0000 (UTC)
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.43.254:47554]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.4.34:2525] with esmtp (Farcaster)
+ id e5367148-3541-4113-bfc2-60c97d59a71c; Fri, 10 Nov 2023 19:04:28 +0000 (UTC)
+X-Farcaster-Flow-ID: e5367148-3541-4113-bfc2-60c97d59a71c
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 19:04:28 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 19:04:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 10 Nov 2023 19:04:20 +0000
+Message-ID: <CWVD6IUUDJ1H.27RK4NIBUTSD6@amazon.com>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <pbonzini@redhat.com>,
+        <vkuznets@redhat.com>, <anelkz@amazon.com>, <graf@amazon.com>,
+        <dwmw@amazon.co.uk>, <jgowans@amazon.com>, <corbert@lwn.net>,
+        <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Sean Christopherson <seanjc@google.com>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <ZUu9lwJHasi2vKGg@google.com>
+In-Reply-To: <ZUu9lwJHasi2vKGg@google.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 23:54:48 +0900 Jong eon Park wrote:
-> Interestingly, in this issue, even though netlink overrun frequently 
-> happened and caused POLLERRs, the user was managing it well through 
-> POLLIN and 'recv' function without a specific POLLERR handler. 
-> However, in the current situation, rcv queue is already empty and 
-> NETLINK_S_CONGESTED flag prevents any more incoming packets. This makes 
-> it impossible for the user to call 'recv'.
-> 
-> This "congested" situation is a bit ambiguous. The queue is empty, yet 
-> 'congested' remains. This means kernel can no longer deliver uevents 
-> despite the empty queue, and it lead to the persistent 'congested' status.
-> 
-> The reason for the difference in netlink lies in the NETLINK_S_CONGESTED 
-> flag. If it were UDP, upon seeing the empty queue, it might have kept 
-> pushing the received packets into the queue (making possible to call 
-> 'recv').
+On Wed Nov 8, 2023 at 4:55 PM UTC, Sean Christopherson wrote:
+> > This RFC series introduces the necessary infrastructure to emulate VSM
+> > enabled guests. It is a snapshot of the progress we made so far, and it=
+s
+> > main goal is to gather design feedback.
+>
+> Heh, then please provide an overview of the design, and ideally context a=
+nd/or
+> justification for various design decisions.  It doesn't need to be a prop=
+er design
+> doc, and you can certainly point at other documentation for explaining VS=
+M/VTLs,
+> but a few paragraphs and/or verbose bullet points would go a long way.
+>
+> The documentation in patch 33 provides an explanation of VSM itself, and =
+a little
+> insight into how userspace can utilize the KVM implementation.  But the d=
+ocumentation
+> provides no explanation of the mechanics that KVM *developers* care about=
+, e.g.
+> the use of memory attributes, how memory attributes are enforced, whether=
+ or not
+> an in-kernel local APIC is required, etc.
 
-I see, please add a comment saying that NETLINK_S_CONGESTED prevents
-new skbs from being queued before the new test in netlink_poll().
+Noted, I'll provide a design review on the next submission.
 
-Please repost next week (i.e. after the merge window) with subject
-tagged [PATCH net-next v2].
+> Nor does the documentation explain *why*, e.g. why store a separate set o=
+f memory
+> attributes per VTL "device", which by the by is broken and unnecessary.
+
+It's clear to me how the current implementation of VTL devices is
+broken. But unncessary? That made me think we could inject the VTL In
+the memory attribute key, for ex. with 'gfn | vtl << 58'. And then use
+generic API and a single xarray.
+
+Nicolas
