@@ -2,173 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 323377E85C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5817E85CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjKJWav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 17:30:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
+        id S229901AbjKJWfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 17:35:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235254AbjKJWa3 (ORCPT
+        with ESMTP id S1343903AbjKJWfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 17:30:29 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF59959DB;
-        Fri, 10 Nov 2023 14:29:38 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GQjQM8qwyEroilZhZwnspwXRlZQDnf/kpJ+GjV/1DJykTV8dD5WpBdoM3MCUgZsX9WVwtIqipauR9AOXmOK0G9Mj0KgjyyVdO1cf0aXPIcGLsb0KSVXKfC8jNyaVB7gXjldiUrLCpLnwg2WUT4ioe2fwpgbpmUNogDrrJ+pkg22bEL+qZxWIzEws9S+BmxBVWM36AxR2q+41Ha50C1+Fky4+maUitoJp1MEgY/3J8mBcN68rkg/l6VAt3f5YTCdv9qQIss0OaRQQFV3UJGxS/g90c0X+6Aw9HN0ogD9oTDfVhhPx8p65eY6H7iNfM24SWvIdPUsAS/RrarCKcarv2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CJ6HzzRCDC4mF5y3X9giyKkmGrV+CkPT9s51r/kBVE4=;
- b=HA6wgp+R2kQqrEe15MOaOXrtUfNZrJnjqItwST5BDS6Igt63lfevo9B32KTf/4csb8k78KbSImg66KogMTA6FLe82vuhV+6j4NzeguANDjUlnC9c5hix8bhh98H8D6MzztcPLor+DWPz1v1Nel5IKzf6SpT24/AByYowWsk3tcbo3IesRT4sOm2THjDuELZ+Fu1k3wnRYAhn1FVaU4VAJBPMmdUYHSGd0bRhtleAeZNsF+mVfEpQQmP9q4RuQZHJ62prQRarzb8bNx7p/LU+6DMDNxivPsODW4y7VD+mD+UgwpBVIyyeq6Fe57HlABK6T3jJmEnrHvOs8ETNThYxMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CJ6HzzRCDC4mF5y3X9giyKkmGrV+CkPT9s51r/kBVE4=;
- b=Dm+U0w3ubVPlhfMP9gULdzMvCMigi0Wj7V9dMsfXMqJBkxeBRNGg8/kHSq0H7de8yjiwQqSAbxcpW24NIOeyGpPQRmHD+p3ESLZFKUrW+7klJDInyz72o5nDrDakdvD4v4rzxzfMMS2svqZwMO/XnX2kvp3R5SxOQGgarOjpyd8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by CH3PR17MB6714.namprd17.prod.outlook.com (2603:10b6:610:132::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.9; Fri, 10 Nov
- 2023 22:29:34 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7002.010; Fri, 10 Nov 2023
- 22:29:33 +0000
-Date:   Fri, 10 Nov 2023 17:29:25 -0500
-From:   Gregory Price <gregory.price@memverge.com>
-To:     "tj@kernel.org" <tj@kernel.org>
-Cc:     John Groves <john@jagalactic.com>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mhocko@kernel.org" <mhocko@kernel.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "jgroves@micron.com" <jgroves@micron.com>
-Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
-Message-ID: <ZU6uxSrj75EiXise@memverge.com>
-References: <20231109002517.106829-1-gregory.price@memverge.com>
- <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
- <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
- <ZU6pR46kiuzPricM@slm.duckdns.org>
+        Fri, 10 Nov 2023 17:35:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39DCB0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 14:35:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699655739; x=1731191739;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hXVnzmw9r4mN0cI/H/aHH6CxAwEn9AjGj9KvVVTJb0Q=;
+  b=T+SjiaOyt6JvRcnenydh462AcxRRS47/ftALp5DVF2B8X8J/RX5YrhyE
+   Vp6TDxxzafCW04cz/QWtKgchA1updByq8vGA63gu2gpedgtzfBynltSl2
+   eqW7ry23aLuUPIcnPkmFh7pgXb5spraX2lr1g/OdK7BS7klQRm2FHdmuA
+   u0WdSLpcwzBNXhHNC6/kGq7xrkqv76UIC54bxLqRIWHVy0G5+F75GuTkh
+   Kh6MdIe4w0eEQTpehta6ID18UEWlJYt28LAMGOJNW7uY6sdvKDUMQT328
+   edE/Ad8onATmY4R+34V1n+PLFEClUFEc+/oWyLyy/zJ35UJp1iQQGzdzP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="370442493"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="370442493"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 14:35:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="834239973"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="834239973"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Nov 2023 14:35:37 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1a6B-0009z4-11;
+        Fri, 10 Nov 2023 22:35:35 +0000
+Date:   Sat, 11 Nov 2023 06:35:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     York Jasper Niebuhr <yjnworkstation@gmail.com>,
+        akpm@linux-foundation.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        York Jasper Niebuhr <yjnworkstation@gmail.com>
+Subject: Re: [PATCH] mm: exitz syscall
+Message-ID: <202311110615.TXNCRihT-lkp@intel.com>
+References: <20231110184720.39780-1-yjnworkstation@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZU6pR46kiuzPricM@slm.duckdns.org>
-X-ClientProxiedBy: SJ0PR03CA0070.namprd03.prod.outlook.com
- (2603:10b6:a03:331::15) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CH3PR17MB6714:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13b215eb-5256-48b2-1a97-08dbe23c8382
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jy4zek7vDboqlotz2wtfAa2akNGWkku3IEDq1zI1DpMN8c5Uf7iGZ78tfVCmpRlfvwghZCHtqHZWmJs3KTazOV7SX56EKJFlvPyF0lyG1Z4GJxy89lQWZidYcUnHuWJmHkl9VV/2ZaqYpGQTDDo8aiPL59EEnBK69nYKPQxfZlbOATUaxJKhKs46963UlD6aifwNZOeBjVvJBTGcx6SIA+FLthx0BI2shFLWTwb2vmh9OiA6HKO1O49LNMEv9Ke9z9O5pNt2MqeU6N59BjU+o3PWDfQHwzImx9O2OwOZ8S+juzzNuA0OoMB/Ot6bJn+ONQWH255MHPiZV7Y85QAuzm2BUVFbR55FR2FEEyCXLsTRmb9X5lTs1RzNHkh8rmt6EVkZpQeXymuRK860B668LzE5khBYQjiw/MvQ1l9PG34XRv+uER4x0T03+VM7hxFFniProFBv0HvtAbEmyRAZCOBUtHa5Q/hH6Z6IU5DBvBM3JauHyhMNlu241+1h6ZgZhicHw63J8VWGXCOVnc/aqhlf88edKqtoSZXFmATEnJJQZrf/R3Ed0kAL8BfhFUrWQ8kUcxnfLjiE8N8WAPynjPAyCmMWoYiGPVG9jQbnlzU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39840400004)(366004)(376002)(136003)(396003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2616005)(26005)(5660300002)(83380400001)(7416002)(6512007)(86362001)(36756003)(2906002)(38100700002)(8676002)(316002)(66946007)(54906003)(66476007)(6666004)(66556008)(6916009)(41300700001)(4326008)(6506007)(44832011)(8936002)(478600001)(6486002)(966005)(16393002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KhD1W7PcrTxKpYP67+AcLFC7Qoy0b+Djsapn3eOvvRO4SKSCPC0NC8O08NEo?=
- =?us-ascii?Q?O79j1a3pevwx0Hvkv//bY/lZ6zZ0sWdSl8n/DMO+owIuJyncnzWC58tb+cvD?=
- =?us-ascii?Q?Nhbu4NtO2bX0FaScgLnFgu874Y5qSV5QVwRcT+hJKecdq7hUiEHmKf/eRAT5?=
- =?us-ascii?Q?b5RPxHF4Xwb30asp2bqbIfJIotAhSIdVXyMtdvZ5E8+dPZI8H9XJNaLST+3j?=
- =?us-ascii?Q?EGggoHLaIEM2U5duLCVZUlg9sNEPvx0PtPif2ZeSqXYCWcVH9ZtSfY/Dk0ox?=
- =?us-ascii?Q?bftgFNerq/sbRpIxU8Ecd44ZMN2VBJGGj3rHSu69Zo0tNKgn6zQ7SYtIcCdW?=
- =?us-ascii?Q?dFBjBLZ2q4oxl2ROxU0p/nednahig9JxP/3wzROuzMVsNRshe11XWigRMN31?=
- =?us-ascii?Q?yAH4UP+UrGq+9BO0epUztw7fOCECB+OyJbvznbli48WyYl/+bEgoVdWMAm+U?=
- =?us-ascii?Q?bCvJgjczPz8nKsTU8iEpP1iYA9K1bWzCcgb8vbeUzDJFptR4KV1p+HJgHbHf?=
- =?us-ascii?Q?dy9BBPqOZQNc7wQGO7XnUhM1ehcRfK82zqitZrz/l1G4qF/NXVvomykm13dA?=
- =?us-ascii?Q?7IH1jhFYljPU3sQtCU1W0bdOSTVMOLnW55StOcwORtLaaJYm9oOa0rg87Pzp?=
- =?us-ascii?Q?4cyT32MTI/B18r7dM+kDaQx9jIZ36r/57Wek0RWJgwaJF9SUHxS4v37U+bTU?=
- =?us-ascii?Q?qs+i7H4zHiL6h6KGSjd3wx90AHxiHQP0SI34Y17uHbikDbgY3nu6iDtOG7zT?=
- =?us-ascii?Q?BamUeQg/Ap3YdQeFa+TN3ThP/LGVY+c4k4Fvsu5vystEVQKUfigHnHN/iVI+?=
- =?us-ascii?Q?K0TFPceC6Ov1vHSqwnzg2AO+LaV/p9KAfiljI7TdOdb4KKW26hAmeA3GcRyA?=
- =?us-ascii?Q?Fg9cPjiOt1zgxow8iXpJ1I8LrPCIaQZUwigrmjKIPg1aypRXq5a1YWDGBZd+?=
- =?us-ascii?Q?qdEkwvaAIzTnhOA+8wjLPVRc9zly1SW+0Vqy+veREM78N/nxg89i5lHQqj2B?=
- =?us-ascii?Q?o7KyHMKGXkICY/td0tQzXPFmANOoZFSXuzZSX6Id3IM2wEDywRWKIkB67A+Y?=
- =?us-ascii?Q?xnMJ3sPb57+mtZ0turVZ4wtYjwWu8lDvwQ6xRQ7wVLJvo0LVMsJ9fEBpy5ls?=
- =?us-ascii?Q?UNKfdmXs2Wn+Ks9UFR4ORAQjDph0qhYdBG7R1omMcE5odnV9df3ND5CH/rgh?=
- =?us-ascii?Q?kpDRllsz0UgG4b7NWArBVSm1Wrj8N5TKOsbE5X93dCSQAEfcjjXceXDy7zOX?=
- =?us-ascii?Q?Sb0Un6mOxqTLKCf6oNpQIfnRB6YQXYrtzchrWNHfOdcg7fMwEQmT+OktCZry?=
- =?us-ascii?Q?4ofY3ai7Z1KyJvleX96O1g0h/gyFvyIISPg6p8Ree833qfAVpeF4N5+cmC2w?=
- =?us-ascii?Q?ovFdsu0ieNhBXgS8nC8JreLw0q65htXMdnjEYGN3absxK0KUYdjtzJSuwIi9?=
- =?us-ascii?Q?JYSWilW8FzRo1hZlR9lHkTZm5WfzYyuEdIQV56QKflqNKBzbp2UJox0Xypwt?=
- =?us-ascii?Q?CVOanyXQVBL1B8uK9pHvMhbVHCSfJ5xeKbwKrjvyb03CyUJmKHBy8ZBKZf+b?=
- =?us-ascii?Q?/nuqf6gIwMPmB66AvzZlgqBGmaBWJwXdDa27k8Fxhptotc+sv8VtR9ycYiv3?=
- =?us-ascii?Q?Uw=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13b215eb-5256-48b2-1a97-08dbe23c8382
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 22:29:33.7238
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1LFtGjgZNYW39WiMDTibchSGHW9I/guWfXM2FyIIVz3nXZNGLPXdxXktnN328WMKQ2FMLINfvKIc3JIY1WVljPsjDBr1wL1AvUSO7+KkvI0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR17MB6714
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231110184720.39780-1-yjnworkstation@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:05:59PM -1000, tj@kernel.org wrote:
-> Hello,
-> 
-> On Thu, Nov 09, 2023 at 10:48:56PM +0000, John Groves wrote:
-> > This approach checks all the important boxes: it only applies to apps where
-> > it's enabled, the weighting can vary from one app to another, the
-> > kernel is not affected, and the numa topology is not buried.
-> 
-> Can't it be a mempol property which is inherited by child processes? Then
-> all you'll need is e.g. adding systemd support to configure this at service
-> unit level. I'm having a bit of hard time seeing why this needs to be a
-> cgroup feature when it doesn't involve dynamic resource accounting /
-> enforcement at all.
-> 
-> Thanks.
-> 
-> -- 
-> tejun
+Hi York,
 
-I did originally implement it this way, but note that it will either
-require some creative extension of set_mempolicy or even set_mempolicy2
-as proposed here:
+kernel test robot noticed the following build warnings:
 
-https://lore.kernel.org/all/20231003002156.740595-1-gregory.price@memverge.com/
+[auto build test WARNING on 8728c14129df7a6e29188a2e737b4774fb200953]
 
-One of the problems to consider is task migration.  If a task is
-migrated from one socket to another, for example by being moved to a new
-cgroup with a different cpuset - the weights might be completely nonsensical
-for the new allowed topology.
+url:    https://github.com/intel-lab-lkp/linux/commits/York-Jasper-Niebuhr/mm-exitz-syscall/20231111-031729
+base:   8728c14129df7a6e29188a2e737b4774fb200953
+patch link:    https://lore.kernel.org/r/20231110184720.39780-1-yjnworkstation%40gmail.com
+patch subject: [PATCH] mm: exitz syscall
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231111/202311110615.TXNCRihT-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110615.TXNCRihT-lkp@intel.com/reproduce)
 
-Unfortunately mpol has no way of being changed from outside the task
-itself once it's applied, other than changing its nodemasks via cpusets.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311110615.TXNCRihT-lkp@intel.com/
 
-So one concrete use case: kubernetes might like change cpusets or move
-tasks from one cgroup to another, or a vm might be migrated from one set
-of nodes to enother (technically not mutually exclusive here).  Some
-memory policy settings (like weights) may no longer apply when this
-happens, so it would be preferable to have a way to change them.
+All warnings (new ones prefixed by >>):
 
-~Gregory
+   In file included from kernel/exitz.c:4:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from kernel/exitz.c:4:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from kernel/exitz.c:4:
+   In file included from include/linux/syscalls.h:90:
+   In file included from include/trace/syscall.h:7:
+   In file included from include/linux/trace_events.h:9:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> kernel/exitz.c:73:6: warning: no previous prototype for function 'exit_memz' [-Wmissing-prototypes]
+      73 | void exit_memz(void)
+         |      ^
+   kernel/exitz.c:73:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+      73 | void exit_memz(void)
+         | ^
+         | static 
+   13 warnings generated.
+
+
+vim +/exit_memz +73 kernel/exitz.c
+
+    69	
+    70	/*
+    71	 * Overwrite any memory associated to current process with zeros.
+    72	 */
+  > 73	void exit_memz(void)
+    74	{
+    75		if (!(current->ezflags & EZ_MEM))
+    76			return;
+    77	
+    78		struct vm_area_struct *vma;
+    79	
+    80		VMA_ITERATOR(vmi, current->mm, 0);
+    81	
+    82		for_each_vma(vmi, vma) {
+    83			memz_range(vma->vm_start, vma->vm_end);
+    84		}
+    85	}
+    86	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
