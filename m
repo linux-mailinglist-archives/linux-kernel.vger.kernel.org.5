@@ -2,177 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AB47E818C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A897E8304
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345800AbjKJS3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52196 "EHLO
+        id S1345967AbjKJTkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346576AbjKJS1A (ORCPT
+        with ESMTP id S236251AbjKJTjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:27:00 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82C324488
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:31:05 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-545557de8e6so21834a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699608664; x=1700213464; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ksKC5N5S1VwyLBs8puatXQ5O6wSMGiBfXyqCMNWeYS0=;
-        b=GLlmWqNxmYnB2EqluZiCz+8D0g4pXZpw8oYS4Pu0rDkOkG4mLp7P5dywjCL3MKM8pF
-         GNkSz/bI+hDLcu9gkjtcRhFDSezB6SoINxEs5bpMs6i/BuhPG7KiV0iRXWRj//SkXL3R
-         U7zazpVKD3PYbMXUgXKcH+w9SSKZR6BW5+z3mIMOFeDmSjMf6qqGP/llZIDnV6HZLqrJ
-         1lQfsYZdAkOfLs3qG/17zNkep1NQPWneAP150QFMn52QFDW/21AdwIs5ujKRQZaXzqLv
-         1LSG/8uO89HG6EQm09Hnb7UEWCuS9EEkeD7C66JxPy/atUuWNtDUi7cWbNPLa8F/cHL5
-         XErg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699608664; x=1700213464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ksKC5N5S1VwyLBs8puatXQ5O6wSMGiBfXyqCMNWeYS0=;
-        b=bov072VQinn1u7oP45qLP3l55zMgxLFTX4f6DE2FTuoFOrHFn/7+K1AXiJLajefTOo
-         +0OX4At9im71RyteLqvUQije+DIB/PFInPV7t8xORJwKGkiMtf9XC8xku2gsEYGGGMaX
-         GzZgPuQfPclp9szaSQqapwgbiJjtXG9tX67y9aOrvvJ9cskBdeLBwXqatGAVOqGHNmmw
-         2E+boxI2Y4mz/po0tSjFOt7eqjSOZnP0qjMrMc3p+wBJ+sz36+WjPTFxs3mK4Htx3Zq1
-         XTF7B+Et8v43XXGZo8Ix9ECvV5x2VvWV41H+TdziFim1uMsfDZ52G3iZGKQVd6kCXI2P
-         1oqA==
-X-Gm-Message-State: AOJu0YyntVH7YKFe8sXXuEJTY+5QdL73j8beR6hHekBsvcgzgmUggTCW
-        Rqeb/aBklXCnyCtxGt8OE5d69LyIlwxAOSVGt0CPjA==
-X-Google-Smtp-Source: AGHT+IGcsfjTyKWdpxswyD/khdOvVcyNQpeNRxwBtmA6S2pZzXcxgaiSZg7dqCQNUa8KOrtv0uaK5Oi+Gtl9Nk9nbpA=
-X-Received: by 2002:a05:6402:1484:b0:544:466b:3b20 with SMTP id
- e4-20020a056402148400b00544466b3b20mr299720edv.5.1699608663758; Fri, 10 Nov
- 2023 01:31:03 -0800 (PST)
+        Fri, 10 Nov 2023 14:39:45 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C182449C;
+        Fri, 10 Nov 2023 01:32:37 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7gVJO023963;
+        Fri, 10 Nov 2023 09:32:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=J8CUOcVNtXMG+Wdf+AgFdvrZxjQP6WHf4jYZkMvKEJo=;
+ b=dIIYD+yc6YgAoOeHmHE6IvO8hiHFTijJRqXz9B3u0o5mrL91GcALQYnxpt1uE0+k51/e
+ 6A62aAhYyhdoU2q0nekhpV8rdcbekfEIV0pLKdujiTj9xtgXfZDqdfQGxUUfbR7d2v4n
+ knfuxS5ZiPG45mPaXEUnwZGOFcgxV9FaA3i4T4anRGBXkHfhO2J0hPcGqpy5aNneX4C+
+ sAljy3ODnH4B6GAIOD73DPfCEAotYu2J/YS+47GIx3CjCs9PHDEiN7WT0A82h6pfq9OO
+ QoNLI/GCyne6LZEyVyDKgarmG0yGWnIEHHepKHfDq7xAspKQ9LUERsL93UuXzKJ4Fg// 3Q== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8u2tuam2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:32:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA9WIam010698
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:32:18 GMT
+Received: from [10.253.32.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 01:32:13 -0800
+Message-ID: <44554283-8436-2208-ab75-3e61d89dc96b@quicinc.com>
+Date:   Fri, 10 Nov 2023 17:32:11 +0800
 MIME-Version: 1.0
-References: <ZU3EZKQ3dyLE6T8z@debian.debian>
-In-Reply-To: <ZU3EZKQ3dyLE6T8z@debian.debian>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 10 Nov 2023 10:30:49 +0100
-Message-ID: <CANn89iKZYsWGT1weXZ6W7_z28dqJwTZeg+2_Lw+x+6spUHp8Eg@mail.gmail.com>
-Subject: Re: [PATCH net-next] packet: add a generic drop reason for receive
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Weongyo Jeong <weongyo.linux@gmail.com>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Brouer <jesper@cloudflare.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 6/7] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
+ Gear 5 support for SM8550
+To:     <neil.armstrong@linaro.org>, Can Guo <cang@qti.qualcomm.com>,
+        <bvanassche@acm.org>, <mani@kernel.org>,
+        <stanley.chu@mediatek.com>, <adrian.hunter@intel.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
+ <1699332374-9324-7-git-send-email-cang@qti.qualcomm.com>
+ <e4bafeaf-bbeb-4990-b6f2-497159995910@linaro.org>
+ <c3fb1fa1-4ba6-613f-a545-79e0e4b2658f@quicinc.com>
+ <10cbb859-bdbf-4763-9887-fa13003b58cd@linaro.org>
+Content-Language: en-US
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <10cbb859-bdbf-4763-9887-fa13003b58cd@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: pXi8uldaBjguBnCF2HeH4Bcf9NAS3uqM
+X-Proofpoint-GUID: pXi8uldaBjguBnCF2HeH4Bcf9NAS3uqM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_06,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=849 bulkscore=0 adultscore=0 clxscore=1015 spamscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311100077
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 6:49=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wrote=
-:
->
-> Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
-> from consume_skb to kfree_skb to improve error handling. However, this
-> could bring a lot of noises when we monitor real packet drops in
-> kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
-> can be freed, not actual packets.
->
-> Adding a generic drop reason to allow distinguish these "clone drops".
->
-> [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxLFU=
-K2Zj08A8MrLk9jzg@mail.gmail.com/
-> Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
->  include/net/dropreason-core.h |  6 ++++++
->  net/packet/af_packet.c        | 16 +++++++++++++---
->  2 files changed, 19 insertions(+), 3 deletions(-)
->
-> diff --git a/include/net/dropreason-core.h b/include/net/dropreason-core.=
-h
-> index 845dce805de7..6ff543fe8a8b 100644
-> --- a/include/net/dropreason-core.h
-> +++ b/include/net/dropreason-core.h
-> @@ -81,6 +81,7 @@
->         FN(IPV6_NDISC_NS_OTHERHOST)     \
->         FN(QUEUE_PURGE)                 \
->         FN(TC_ERROR)                    \
-> +       FN(PACKET_SOCK_ERROR)           \
->         FNe(MAX)
->
->  /**
-> @@ -348,6 +349,11 @@ enum skb_drop_reason {
->         SKB_DROP_REASON_QUEUE_PURGE,
->         /** @SKB_DROP_REASON_TC_ERROR: generic internal tc error. */
->         SKB_DROP_REASON_TC_ERROR,
-> +       /**
-> +        * @SKB_DROP_REASON_PACKET_SOCK_ERROR: generic packet socket erro=
-rs
-> +        * after its filter matches an incoming packet.
-> +        */
-> +       SKB_DROP_REASON_PACKET_SOCK_ERROR,
->         /**
->          * @SKB_DROP_REASON_MAX: the maximum of core drop reasons, which
->          * shouldn't be used as a real 'reason' - only for tracing code g=
-en
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index a84e00b5904b..94b8a9d8e038 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -2128,6 +2128,7 @@ static int packet_rcv(struct sk_buff *skb, struct n=
-et_device *dev,
->         int skb_len =3D skb->len;
->         unsigned int snaplen, res;
->         bool is_drop_n_account =3D false;
-> +       enum skb_drop_reason drop_reason =3D SKB_DROP_REASON_NOT_SPECIFIE=
-D;
->
->         if (skb->pkt_type =3D=3D PACKET_LOOPBACK)
->                 goto drop;
-> @@ -2161,6 +2162,10 @@ static int packet_rcv(struct sk_buff *skb, struct =
-net_device *dev,
->         res =3D run_filter(skb, sk, snaplen);
->         if (!res)
->                 goto drop_n_restore;
-> +
-> +       /* skb will only be "consumed" not "dropped" before this */
-> +       drop_reason =3D SKB_DROP_REASON_PACKET_SOCK_ERROR;
-> +
->         if (snaplen > res)
->                 snaplen =3D res;
->
-> @@ -2230,7 +2235,7 @@ static int packet_rcv(struct sk_buff *skb, struct n=
-et_device *dev,
->         if (!is_drop_n_account)
->                 consume_skb(skb);
->         else
-> -               kfree_skb(skb);
-> +               kfree_skb_reason(skb, drop_reason);
->         return 0;
+Hi Neil,
 
+On 11/10/2023 5:17 PM, neil.armstrong@linaro.org wrote:
+> Hi,
+> 
+> On 10/11/2023 10:03, Can Guo wrote:
+>> Hi Neil,
+>>
+>> On 11/10/2023 4:47 PM, neil.armstrong@linaro.org wrote:
+>>> Hi,
+>>>
+>>> On 07/11/2023 05:46, Can Guo wrote:
+>>>> From: Can Guo <quic_cang@quicinc.com>
+>>>>
+>>>> On SM8550, two sets of UFS PHY settings are provided, one set is to 
+>>>> support
+>>>> HS-G5, another set is to support HS-G4 and lower gears. The two sets 
+>>>> of PHY
+>>>> settings are programming different values to different registers, 
+>>>> mixing
+>>>> the two sets and/or overwriting one set with another set is 
+>>>> definitely not
+>>>> blessed by UFS PHY designers. In order to add HS-G5 support for 
+>>>> SM8550, we
+>>>> need to split the two sets into their dedicated tables, and leave 
+>>>> only the
+>>>> common settings in the .tlbs. To have the PHY programmed with the 
+>>>> correct
+>>>> set of PHY settings, the submode passed to PHY driver must be either 
+>>>> HS-G4
+>>>> or HS-G5.
+>>>
+>>> I guess I'll need to rebase my SM8650 UFS PHY driver to support both 
+>>> G4 and G5 modes
+>>> at some point ?
+>>
+>>
+>> Thank for reaching out. Yes, please.
+>>
+>> I can help review the PHY settings.
+> 
+> Ok I'll try rebasing on this serie and add G5 support.
+> 
+>>
+>> BTW, are you enabling MCQ (by adding MCQ related DT) at the same time?
+> 
+> I tested MCQ but it triggers the same issues we have with suspend/resume 
+> on SM8550 & SM8650,
+> and the bindings are not present of the UFS qcom node.
 
-1) Note that net-next is currently closed.
+Are you talking about suspend/resume fail with rpm/spm_lvl == 5? If yes, 
+then Nitin and Naveen are working on fixing it.
 
-2) Now we have 0e84afe8ebfb ("net: dropreason: add SKB_CONSUMED reason")
+If you have plan to enable UFS MCQ on SM8650 later, please let me know, 
+I have some BUG fixes for it, we can co-work.
 
-it is time we replace the various constructs which do not help readability:
+Thanks,
+Can Guo
 
-if (something)
-     consume_skb(skb);
-else
-     kfree_skb_reason(skb, drop_reason);
-
-By:
-
-kfree_skb_reason(skb, drop_reason);
-
-(By using drop_reason =3D=3D SKB_CONSUMED when appropriate)
+> 
+> Neil
+> 
+>>
+>> Thanks,
+>> Can Guo.
+>>
+>>>
+>>> Neil
+>>>
+> 
