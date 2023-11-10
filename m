@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4147E8299
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DC77E8305
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236013AbjKJT2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S1344875AbjKJTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:33:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235930AbjKJT2T (ORCPT
+        with ESMTP id S229604AbjKJTc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:19 -0500
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7A269926;
-        Fri, 10 Nov 2023 09:57:53 -0800 (PST)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 99D8C58726689; Fri, 10 Nov 2023 18:57:48 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 9220D60D2EA0B;
-        Fri, 10 Nov 2023 18:57:48 +0100 (CET)
-Date:   Fri, 10 Nov 2023 18:57:48 +0100 (CET)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH rebased] kbuild: rpm-pkg: Fix build with non-default
- MODLIB
-In-Reply-To: <20231110174422.GY6241@kitsune.suse.cz>
-Message-ID: <9924rs47-0029-0227-p927-980rs881126p@vanv.qr>
-References: <20231009140733.GV6241@kitsune.suse.cz> <CAK7LNAQQMFUt4R1m_U8kBY5=BvxD_dMuE4MD4kpd48WK1E+AGA@mail.gmail.com> <20231010101552.GW6241@kitsune.suse.cz> <CAK7LNASX2_-xt3Qvxie_G=Q4fuVYR6eE47QjQ5NZf7QxY-4_tQ@mail.gmail.com> <20231017104453.GG6241@kitsune.suse.cz>
- <CAK7LNASKPg0JK0QsLGb1Rfx2ysvHJTm3NFOvtwOpZRz4-20T8w@mail.gmail.com> <20231017122747.GH6241@kitsune.suse.cz> <CAK7LNAT3N82cJD3GsF+yUBEfPNOBkhzYPk37q3k0HdU7ukz9vQ@mail.gmail.com> <20231017151050.GJ6241@kitsune.suse.cz> <p86sq573-s32q-6792-4978-43s1pn91r027@vanv.qr>
- <20231110174422.GY6241@kitsune.suse.cz>
-User-Agent: Alpine 2.26 (LSU 649 2022-06-02)
+        Fri, 10 Nov 2023 14:32:59 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE6B31E69
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:01:13 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507adc3381cso2990077e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1699639247; x=1700244047; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YE6wSSy+yGYDG+b6Y+tJNP7bCqAo8fMg9L3es6MuY0k=;
+        b=QOQytouZObwQerNbimQb0bW3bYTMgVbJX5Ymfix8L17+uIr7S5dk0v/5nAh1ThlDDx
+         Cy0e4o6JF1ZWPukQLGynytrNB5YgrD9/TpvqJbI5w3LjYbNcuDr32t+l7OvW8WQ/MXuw
+         9X3uOZLJgh5IPg3zEnjRIAcBpiWdI/14Fzabw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699639247; x=1700244047;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YE6wSSy+yGYDG+b6Y+tJNP7bCqAo8fMg9L3es6MuY0k=;
+        b=ENMwOOdCMPSxLQV0s7mmJ9MAgJX4UdOLO0tHM4ktsfe7BzXjtphPL0MRDFvPkcnETf
+         QRwjahxApAlSj+Rwp5lMTExeBxvfa1JVDFO27kR5nDMXwP8GrtszHTjXwt6O8B1daq0Y
+         neFoH9mjmfAsi0bikev3nBcVVqhpzvSYn29khgVfHjCYMZCQjrhN7BxQOjvPSSVCDN8i
+         17DxOZoaFImeEH3RU53PmAuF/fF5rXJG9qh7787PqNiqx3qEWgwr1AD5TRdL0zN/wiVf
+         K2lsMI27BPVaocd2RzQ3DZcvtmyyLZjLdgkxMGzY18OduAVyWAGyUQSG88fsgGu5NF/B
+         QCDQ==
+X-Gm-Message-State: AOJu0Yywt4R/h+qotmNpLUym23XCFcZ7y0vNeRlTl/bxI7WY4nwHlQOe
+        vuX3Uodw58aluEK7G8rjoTTvu134PmZSsR92a2afW4cI
+X-Google-Smtp-Source: AGHT+IEvFoGGpaLKXcG/E0rN/tgs92uKJu7KapATJ0h5tDs5WqPCr/g9Cd0WintxFxLs7GJ46D252Q==
+X-Received: by 2002:a05:6512:374c:b0:507:ad92:18d1 with SMTP id a12-20020a056512374c00b00507ad9218d1mr3970049lfs.68.1699639247429;
+        Fri, 10 Nov 2023 10:00:47 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id a7-20020a194f47000000b005079ec79bfesm3103lfk.93.2023.11.10.10.00.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 10:00:47 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-507bd19eac8so3016720e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:00:46 -0800 (PST)
+X-Received: by 2002:a05:6512:3592:b0:500:d4d9:25b5 with SMTP id
+ m18-20020a056512359200b00500d4d925b5mr4178037lfr.56.1699639246516; Fri, 10
+ Nov 2023 10:00:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20231109174044.269054-1-idryomov@gmail.com>
+In-Reply-To: <20231109174044.269054-1-idryomov@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 10 Nov 2023 10:00:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgZmHfx1UFOkYpwBZk7gf7hGQKeFgevYzOH269Qw0d5Ew@mail.gmail.com>
+Message-ID: <CAHk-=wgZmHfx1UFOkYpwBZk7gf7hGQKeFgevYzOH269Qw0d5Ew@mail.gmail.com>
+Subject: Re: [GIT PULL] Ceph updates for 6.7-rc1
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Friday 2023-11-10 18:44, Michal Suchánek wrote:
->> It's a complicated mumble-jumble. Prior art exists as in:
->> 
->>  /opt/vendorThing/bin/...
->>  /usr/X11R6/lib/libXi.so.6 [host binary]
->>  /usr/x86_64-w64-mingw32/bin/as [host binary]
->>  /usr/x86_64-w64-mingw32/sys-root/mingw/bin/as.exe [foreign binary]
->>  /usr/platform/SUNW,Ultra-2/lib/libprtdiag_psr.so.1 [looks foreign]
->> 
->> The use of suffix-based naming must have been established sometime
->> near the end of the 90s or the start of 2000s as the first biarch
->> Linux distros emerged. Probably in gcc or glibc sources one will find
->> the root of where the use of suffix identifiers like /usr/lib64
->> started. Leaves the question open "why".
+On Thu, 9 Nov 2023 at 09:41, Ilya Dryomov <idryomov@gmail.com> wrote:
 >
->That's pretty clear: to be able to install libraries for multiple
->architectures at the same time.
+> There are a few conflicts in fs/ceph/inode.c caused by a clash between
+> the conversion to new timestamp accessors in VFS and logging changes in
+> CephFS.  I have the resolution in for-linus-merged, it's the same as in
+> linux-next.
 
-Well, what I tried to express or imply was something like:
+My resolution ended up different, because I just couldn't deal with
+the incorrect printouts of times, and changed the bogus occurrences of
+"%lld.%ld" to "%lld.%09ld" while doing the other conflict resolutions.
 
-“ we could (should?) have used /usr/<triplet>/lib rather than
-  /usr/lib<suffixortriplet> all along, because at some point, there *will* be
-  someone who wants to provide not only arch-different libraries, but *also*
-  arch-different binaries (for whatever reason).
+Other than that I think it's just whitespace differences.
+
+               Linus
