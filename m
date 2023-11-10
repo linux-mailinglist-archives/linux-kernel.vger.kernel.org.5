@@ -2,46 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078507E8036
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E5E7E7FF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344319AbjKJSIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
+        id S235333AbjKJSBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235368AbjKJSFa (ORCPT
+        with ESMTP id S235272AbjKJSAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:05:30 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 560D686AD;
-        Fri, 10 Nov 2023 02:16:43 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 795A8106F;
-        Fri, 10 Nov 2023 02:17:27 -0800 (PST)
-Received: from bogus (unknown [10.57.41.96])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72E873F6C4;
-        Fri, 10 Nov 2023 02:16:39 -0800 (PST)
-Date:   Fri, 10 Nov 2023 10:15:07 +0000
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     rafael@kernel.org, rui.zhang@intel.com, lenb@kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>, lpieralisi@kernel.org,
-        guohanjun@huawei.com, linux-acpi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, treding@nvidia.com,
-        jonathanh@nvidia.com, bbasu@nvidia.com, sanjayc@nvidia.com,
-        ksitaraman@nvidia.com, srikars@nvidia.com, jbrasen@nvidia.com
-Subject: Re: [Patch v6 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
- pctg for Tegra241
-Message-ID: <20231110101507.GB1505974@bogus>
-References: <20231109183322.28039-1-sumitg@nvidia.com>
- <20231109183322.28039-3-sumitg@nvidia.com>
+        Fri, 10 Nov 2023 13:00:23 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B89727B3C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:16:07 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A8B3E66073FE;
+        Fri, 10 Nov 2023 10:16:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699611365;
+        bh=bhKTkPpbRe4c7/93JBUfBNKrd7X4LpGsLretpqpBw30=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fpe/8ClVsoQUU2PiDztG/jFexCdkqB1LrlzjG4YGx/gyBm3Rkj7AayOFFB1QoAB9t
+         afAaqsuQISlGYEJtoRrDr+SShX1QVBswhmmFmDk562JdUn4ZEBILCVApST6BgmMHN4
+         xeJzhqqF5Z/LKLCmidHC8AMJVxf5ZC3TxrwmijMC4Wgz2fsonru2uYBQVaLGjV/02Y
+         qFt0L7mPVYDxSKqdKJm963/4BCo2xbKROTSHDFYRVwVxQjuofHWkTjwi4UKtg4Ym9Y
+         wiDLK+bij25avAC4Sk86JdawidztntTjx9jYmSYAIk+lJSvHyxVKfaC73ejZK07WIh
+         HdNV1UrIcK4cA==
+Date:   Fri, 10 Nov 2023 11:16:01 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 11/26] drm/shmem-helper: Prepare
+ drm_gem_shmem_free() to shrinker addition
+Message-ID: <20231110111601.5d6bd1ab@collabora.com>
+In-Reply-To: <20231029230205.93277-12-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-12-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109183322.28039-3-sumitg@nvidia.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,88 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:03:22AM +0530, Sumit Gupta wrote:
-> From: Srikar Srimath Tirumala <srikars@nvidia.com>
+On Mon, 30 Oct 2023 02:01:50 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> Prepare drm_gem_shmem_free() to addition of memory shrinker support
+> to drm-shmem by adding and using variant of put_pages() that doesn't
+> touch reservation lock. Reservation shouldn't be touched because lockdep
+> will trigger a bogus warning about locking contention with fs_reclaim
+> code paths that can't happen during the time when GEM is freed and
+> lockdep doesn't know about that.
 > 
-> Current implementation of processor_thermal performs software throttling
-> in fixed steps of "20%" which can be too coarse for some platforms.
-> We observed some performance gain after reducing the throttle percentage.
-> Change the CPUFREQ thermal reduction percentage and maximum thermal steps
-> to be configurable. Also, update the default values of both for Nvidia
-> Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
-> and accordingly the maximum number of thermal steps are increased as they
-> are derived from the reduction percentage.
-> 
-> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
-> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 > ---
->  drivers/acpi/arm64/Makefile          |  1 +
->  drivers/acpi/arm64/thermal_cpufreq.c | 22 +++++++++++++
->  drivers/acpi/internal.h              |  9 +++++
->  drivers/acpi/processor_thermal.c     | 49 +++++++++++++++++++++++-----
->  4 files changed, 72 insertions(+), 9 deletions(-)
->  create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 35 +++++++++++++-------------
+>  1 file changed, 18 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
-> index 143debc1ba4a..726944648c9b 100644
-> --- a/drivers/acpi/arm64/Makefile
-> +++ b/drivers/acpi/arm64/Makefile
-> @@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT) 	+= gtdt.o
->  obj-$(CONFIG_ACPI_APMT) 	+= apmt.o
->  obj-$(CONFIG_ARM_AMBA)		+= amba.o
->  obj-y				+= dma.o init.o
-> +obj-y				+= thermal_cpufreq.o
-> diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
-> new file mode 100644
-> index 000000000000..40d5806ed528
-> --- /dev/null
-> +++ b/drivers/acpi/arm64/thermal_cpufreq.c
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/acpi.h>
-> +
-> +#include "../internal.h"
-> +
-> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
-> +#define SMCCC_SOC_ID_T241      0x036b0241
-
-Sorry for missing this earlier. Not sure if the above define needs to be
-conditional. Even if it has to be, CONFIG_ARM_SMCCC_SOC_ID is more
-appropriate.
-
-> +
-> +int acpi_arch_thermal_cpufreq_pctg(void)
-> +{
-> +	s32 soc_id = arm_smccc_get_soc_id_version();
-> +
-> +	/*
-> +	 * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
-> +	 * reduce the CPUFREQ Thermal reduction percentage to 5%.
-> +	 */
-> +	if (soc_id == SMCCC_SOC_ID_T241)
-> +		return 5;
-> +
-> +	return 0;
-> +}
-> +#endif
-> diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-> index 866c7c4ed233..ee213a8cddc5 100644
-> --- a/drivers/acpi/internal.h
-> +++ b/drivers/acpi/internal.h
-> @@ -85,6 +85,15 @@ bool acpi_scan_is_offline(struct acpi_device *adev, bool uevent);
->  acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
->  void acpi_scan_table_notify(void);
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 08b5a57c59d8..24ff2b99e75b 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -128,6 +128,22 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
 >  
-> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+> +static void
+> +drm_gem_shmem_free_pages(struct drm_gem_shmem_object *shmem)
+> +{
+> +	struct drm_gem_object *obj = &shmem->base;
+> +
+> +#ifdef CONFIG_X86
+> +	if (shmem->map_wc)
+> +		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> +#endif
+> +
+> +	drm_gem_put_pages(obj, shmem->pages,
+> +			  shmem->pages_mark_dirty_on_put,
+> +			  shmem->pages_mark_accessed_on_put);
+> +	shmem->pages = NULL;
+> +}
+> +
+>  /**
+>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
+>   * @shmem: shmem GEM object to free
+> @@ -142,8 +158,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  	if (obj->import_attach) {
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>  	} else {
+> -		dma_resv_lock(shmem->base.resv, NULL);
+> -
+>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+>  
+>  		if (shmem->sgt) {
+> @@ -157,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  
 
-It looks weird to add a such specific ARM config option in generic ACPI
-code/header.
+If you drop the dma_resv_lock/unlock(), you should also replace the
+drm_gem_shmem_put_pages_locked() by a drm_gem_shmem_free_pages() in this
+commit.
 
-Does it make sense to add some new config this new feature you are adding
-or just use ARM64 and have CONFIG_HAVE_ARM_SMCCC_DISCOVERY check internally
-in the arch specific call.
+>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
+> -
+> -		dma_resv_unlock(shmem->base.resv);
+>  	}
+>  
+>  	drm_gem_object_release(obj);
+> @@ -208,21 +220,10 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
+>   */
+>  void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+>  {
+> -	struct drm_gem_object *obj = &shmem->base;
+> -
+>  	dma_resv_assert_held(shmem->base.resv);
+>  
+> -	if (refcount_dec_and_test(&shmem->pages_use_count)) {
+> -#ifdef CONFIG_X86
+> -		if (shmem->map_wc)
+> -			set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> -#endif
+> -
+> -		drm_gem_put_pages(obj, shmem->pages,
+> -				  shmem->pages_mark_dirty_on_put,
+> -				  shmem->pages_mark_accessed_on_put);
+> -		shmem->pages = NULL;
+> -	}
+> +	if (refcount_dec_and_test(&shmem->pages_use_count))
+> +		drm_gem_shmem_free_pages(shmem);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
+>  
 
--- 
-Regards,
-Sudeep
