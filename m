@@ -2,144 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1AA7E77D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AC47E77DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345786AbjKJC7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 21:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S1345768AbjKJDJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:09:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKJC7W (ORCPT
+        with ESMTP id S229491AbjKJDJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 21:59:22 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C694229
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 18:59:20 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7b9c8706fc1so660361241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 18:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699585156; x=1700189956; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cYA5rJpCEqdhu1Dq/5dPoAwsI72d8BAvhnJXT+T4oos=;
-        b=FGLTudEtOtFLIoL/GgWV+ido8gkPePNSUayf3jA0TleplXe5ND+6j+yHdWxD5mQ5c7
-         Hkcols3CmcF/qhhySrbQd27M5TWfAW9Jds6COx/zPN8yYGGqmfjETSwFBn4WiVebY0ZG
-         CYw4yEwu88nhX894adxRz7OGl8YbUQtB+R4hrCu5Y3TcBqVuBPMFpj9BO+TrVq6bDb8e
-         jh897MsIQuhJ0E5UVhvGpZLU0L8dI1q0/xgB5RDX6NLRRqbh4xqUPmVWi9gOZOpXP3dr
-         kJsQEhtm1C+WNEPY0sYxX9me0I6Lr8q/t4J4OpDf9aSfunXhGyDIDqDqf0YGZFe4PBGn
-         I3VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699585156; x=1700189956;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cYA5rJpCEqdhu1Dq/5dPoAwsI72d8BAvhnJXT+T4oos=;
-        b=Bf69uAJV/MJCdE75/YFTGqgPHr6QaQSCqf8sZ3Cf95bU4F+6CkEpXii9s6098U75IH
-         fqI/VgkaFWWQ0bnrRe6Kd9EUouHOLz26Whllr2hAb0px2PWZHfYBFxxNJBoInfDffy/2
-         M4eVPleexFSZ/dExEjLV69E1jUP8+SP+K15qGOJrQUsV7BSVjGLz3wJidjxbi4x/lVEP
-         pa5pWH3Wo6f2u+DjWJ84QwFULs2cUr+9edtmr9prZp1e2w72zVDtKo7W4UHR9iOjpKSO
-         iBlOqlgsyyJGbYJGKoURD2kiFc0+Te6ZjTdaSlGlgeRGS4bsa46x4u6joYr5t+xKoc/0
-         d3hQ==
-X-Gm-Message-State: AOJu0Yw73mNYYuH8DwNfPK9Sx5UOszMUD7sbK08DVcZdUXgQUyBwOIgp
-        NaFKvhU1IPdBv0jxJHXMVB5Xpd/m3SeIUAWFaf6F+A==
-X-Google-Smtp-Source: AGHT+IFOryz0B149KznbXpgkBi69phioiLVC4R9PWdX35ZPDwW1mQdW7sr2TdvnDfhWAyV20CN9DNjJoJE0dCWxIRHw=
-X-Received: by 2002:a05:6102:205a:b0:45e:fe97:70a8 with SMTP id
- q26-20020a056102205a00b0045efe9770a8mr6645348vsr.22.1699585155651; Thu, 09
- Nov 2023 18:59:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-5-almasrymina@google.com> <076fa6505f3e1c79cc8acdf9903809fad6c2fd31.camel@redhat.com>
-In-Reply-To: <076fa6505f3e1c79cc8acdf9903809fad6c2fd31.camel@redhat.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 9 Nov 2023 18:59:04 -0800
-Message-ID: <CAHS8izOGSE-PJ1uShkH_Mr6kUoC1EjM_9P1J=_TO6nLFP9K53Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 04/12] netdev: support binding dma-buf to netdevice
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 9 Nov 2023 22:09:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C5D44B8
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:09:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E6FC433C7;
+        Fri, 10 Nov 2023 03:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699585791;
+        bh=T5JFCl6pmHxnPp19gCV70nzGUuLkfaMSJI9G9sJJ8RE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kgyhaT0qs0lzlsqe+KNr9Xx965v8ny0bpvbcDRvKzPFEjJUVERxIVB61e4tlKnM3p
+         on+ySaG2yFlyBK5VLpRc0fBzFjL7Zpe7+STCn5W9fJyK/7R6TKmr2n2YqysqxjpERE
+         tHsDk9EyelY6zp7gWmRHO2iNczkUGAuxHAXTrxguie3RJP6U1EaemZRyjcsu/y0oTP
+         AQnM5qWOyfmxmOB/jVFvd0MBO63uLHoOtqlYJ4BQ3t2kMEsJJHVTSaAVpTYEz7XFzw
+         Am96XC45QSCv0Ors/JcPlr8Eo7MuYBX/a13MmP98xiZDpvvB7IX54ubTr9gqrjcWwo
+         xIEi07Gh3nabw==
+Date:   Fri, 10 Nov 2023 12:09:45 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH v2 12/31] function_graph: Have the instances use
+ their own ftrace_ops for filtering
+Message-Id: <20231110120945.749393c36bdee5fe9bd2d257@kernel.org>
+In-Reply-To: <20231109211848.10a5e224@gandalf.local.home>
+References: <169945345785.55307.5003201137843449313.stgit@devnote2>
+        <169945360154.55307.2938894711228282149.stgit@devnote2>
+        <20231110105154.df937bf9f200a0c16806c522@kernel.org>
+        <20231109211848.10a5e224@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 12:30=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> I'm trying to wrap my head around the whole infra... the above line is
-> confusing. Why do you increment dma_addr? it will be re-initialized in
-> the next iteration.
->
+On Thu, 9 Nov 2023 21:18:48 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-That is just a mistake, sorry. Will remove this increment.
+> On Fri, 10 Nov 2023 10:51:54 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > So this patch registers ftrace_ops for each fgraph_ops to ftrace.
+> > This means that the ftrace_graph_func() will be called twice or more
+> > on the same function.
+> > Thus should I call ftrace_startup() once when the first fgraph_ops
+> > is registered? 
+> > No, it's not enough. Actually each fgraph_ops can have different filters.
+> > We need to define a shared filter and combine new filters to one and
+> > use it. We also need to do it when a fgraph is unregistered.
+> > 
+> > Is there any function which makes a new filter from two (or more) filters?
+> 
+> So I'm guessing that we need to have a fgraph_set_filter*() operations?
+> 
+> When one gets added, it needs to update the ftrace_ops to include the added
+> functions. Or we need to have a way to create a new hash from all the
+> registered fgraph_ops, and have that for the ftrace_ops. Then when it gets
+> called, if it has more than one registered function, it needs to iterate
+> over the list?
 
-On Thu, Nov 9, 2023 at 1:29=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:> >>>
-> >>> gen_pool_destroy BUG_ON() if it's not empty at the time of destroying=
-.
-> >>> Technically that should never happen, because
-> >>> __netdev_devmem_binding_free() should only be called when the refcoun=
-t
-> >>> hits 0, so all the chunks have been freed back to the gen_pool. But,
-> >>> just in case, I don't want to crash the server just because I'm
-> >>> leaking a chunk... this is a bit of defensive programming that is
-> >>> typically frowned upon, but the behavior of gen_pool is so severe I
-> >>> think the WARN() + check is warranted here.
-> >>
-> >> It seems it is pretty normal for the above to happen nowadays because =
-of
-> >> retransmits timeouts, NAPI defer schemes mentioned below:
-> >>
-> >> https://lkml.kernel.org/netdev/168269854650.2191653.846525980849826981=
-5.stgit@firesoul/
-> >>
-> >> And currently page pool core handles that by using a workqueue.
-> >
-> > Forgive me but I'm not understanding the concern here.
-> >
-> > __netdev_devmem_binding_free() is called when binding->ref hits 0.
-> >
-> > binding->ref is incremented when an iov slice of the dma-buf is
-> > allocated, and decremented when an iov is freed. So,
-> > __netdev_devmem_binding_free() can't really be called unless all the
-> > iovs have been freed, and gen_pool_size() =3D=3D gen_pool_avail(),
-> > regardless of what's happening on the page_pool side of things, right?
->
-> I seems to misunderstand it. In that case, it seems to be about
-> defensive programming like other checking.
->
-> By looking at it more closely, it seems napi_frag_unref() call
-> page_pool_page_put_many() directly=EF=BC=8C which means devmem seems to
-> be bypassing the napi_safe optimization.
->
-> Can napi_frag_unref() reuse napi_pp_put_page() in order to reuse
-> the napi_safe optimization?
->
+Yes, that is one option, update a global common hash and introduce a new
+common ftrace function to run function_graph_enter().
 
-I think it already does. page_pool_page_put_many() is only called if
-!recycle or !napi_pp_put_page(). In that case
-page_pool_page_put_many() is just a replacement for put_page(),
-because this 'page' may be an iov.
+Or, I think keep the current one but iterate ftrace_ops to callback the
+function_graph_enter() with ftrace_ops. Then we can get appropriate
+fgraph_ops. Ftrace push return trace can skip pushing if ret == return_to_handler.
+(maybe this is better to reuse ftrace)
 
---=20
-Thanks,
-Mina
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> > 
+> > Or, maybe we can make the common callback to find the previous ret entry on
+> > the ret_stack and reuse it. (In this case we don't need loop on each
+> > fgraph_array entry)
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
