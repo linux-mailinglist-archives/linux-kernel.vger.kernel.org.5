@@ -2,61 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDB47E7FF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2646A7E81DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234631AbjKJSDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
+        id S1345339AbjKJSfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:35:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbjKJSBt (ORCPT
+        with ESMTP id S235824AbjKJSew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:01:49 -0500
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439FF29536
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:39:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1699612775; x=1699871975;
-        bh=zRwWsMDd5Kf2yQpedEA3Ka2dLpgNvYvwuOL0uYq4mxY=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=ktdtSKOA9fil4F06AF8zSWq3uMPFOkrgZZS6atSxG4D6py1timaFJz9vuwidShDJf
-         V2RIS55K9uRYUGW+4sHxFX3FGI3PF0YEihYKn+pDU+b8CIaK2JujJxhx0/jILFCkXp
-         QNshvnRllSNMTK6TxC0l4H+Nv2RvnI5qaEFMkBHwoLEdK3A7yuxpSOM0l3iSt19iVJ
-         KYqxD1MIJAE/KasNMSmL3VXPEAW7nQv5zp58jNLVF0/eXgkWKYIDTbo3BLXWfTU/0b
-         5uXlUc4LuM+nOgHRNCJN7w/KrC6Gaare/kFQOEczKwMhvJEXHiZXC+PdT04ytZNcAL
-         uPLKuIMxg400Q==
-Date:   Fri, 10 Nov 2023 10:39:17 +0000
-To:     Javier Martinez Canillas <javierm@redhat.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     linux-kernel@vger.kernel.org, Sima Vetter <daniel.vetter@ffwll.ch>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Bilal Elmoussaoui <belmouss@redhat.com>,
-        Erico Nunes <nunes.erico@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 6/6] drm/todo: Add entry about implementing buffer age for damage tracking
-Message-ID: <Qk7PzUNb_mQOUoclJb_UZkCxPr6GpbX-DftrnR9OKDwSfdDHuwhUnOXbqKU-M_v6q1YgEphShJYnc9o-LW7pN6bMOiNbpcVBsrDvUofFs_M=@emersion.fr>
-In-Reply-To: <20231109172449.1599262-7-javierm@redhat.com>
-References: <20231109172449.1599262-1-javierm@redhat.com> <20231109172449.1599262-7-javierm@redhat.com>
-Feedback-ID: 1358184:user:proton
+        Fri, 10 Nov 2023 13:34:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FCB2953B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699612800; x=1731148800;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=aiWafxryBwfpkTrcwmhJTaMpDr70Q1+h/+e7js8bdjA=;
+  b=AUWuV9S+KUFOkcrkwwMbFF6L61LyZhBGUOPm/6x1avTEM5+jcDd4Hzyt
+   Uvp/OXZgBsaO41/joQwOndLwATeAFBkzBcwFviyJUD/w3gsruBKI/xEVg
+   vfBjXPGf51ORehpYQ1wskCZALBQwb7Mwuw62oCdVjZPmb9k6LzrAY9Fyo
+   os3UHpdAzlHdgxsPxveFJMr47ugnNU/efp54EUfEClw6HlEDAm+iSLIxH
+   Cjw43tYsvE0AjCrUP0m9R3Yrs1cUYYYcA0w9IHsoSejcPgvnZfljl8v8b
+   ljemnK50MUS5lbl8ozGGHmX9UsBrN26fjk9zIdomCBboVwX5E0elwol3B
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375207250"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="375207250"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 02:40:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="887327528"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="887327528"
+Received: from amirafax-mobl4.gar.corp.intel.com (HELO [10.249.254.223]) ([10.249.254.223])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 02:39:57 -0800
+Message-ID: <92cfbfd9-b9d0-68b4-6375-a0d460f23dbc@linux.intel.com>
+Date:   Fri, 10 Nov 2023 11:39:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH drm-misc-next v9 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231108001259.15123-1-dakr@redhat.com>
+ <20231108001259.15123-10-dakr@redhat.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <20231108001259.15123-10-dakr@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_FILL_THIS_FORM_SHORT,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Simon Ser <contact@emersion.fr>
+
+On 11/8/23 01:12, Danilo Krummrich wrote:
+> Implement reference counting for struct drm_gpuvm.
+>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+
+Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+
+
+> ---
+>   drivers/gpu/drm/drm_gpuvm.c            | 56 +++++++++++++++++++++-----
+>   drivers/gpu/drm/nouveau/nouveau_uvmm.c | 20 ++++++---
+>   include/drm/drm_gpuvm.h                | 31 +++++++++++++-
+>   3 files changed, 90 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+> index 53e2c406fb04..ef968eba6fe6 100644
+> --- a/drivers/gpu/drm/drm_gpuvm.c
+> +++ b/drivers/gpu/drm/drm_gpuvm.c
+> @@ -746,6 +746,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+>   	gpuvm->rb.tree = RB_ROOT_CACHED;
+>   	INIT_LIST_HEAD(&gpuvm->rb.list);
+>   
+> +	kref_init(&gpuvm->kref);
+> +
+>   	gpuvm->name = name ? name : "unknown";
+>   	gpuvm->flags = flags;
+>   	gpuvm->ops = ops;
+> @@ -770,15 +772,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+>   }
+>   EXPORT_SYMBOL_GPL(drm_gpuvm_init);
+>   
+> -/**
+> - * drm_gpuvm_destroy() - cleanup a &drm_gpuvm
+> - * @gpuvm: pointer to the &drm_gpuvm to clean up
+> - *
+> - * Note that it is a bug to call this function on a manager that still
+> - * holds GPU VA mappings.
+> - */
+> -void
+> -drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+> +static void
+> +drm_gpuvm_fini(struct drm_gpuvm *gpuvm)
+>   {
+>   	gpuvm->name = NULL;
+>   
+> @@ -790,7 +785,35 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+>   
+>   	drm_gem_object_put(gpuvm->r_obj);
+>   }
+> -EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
+> +
+> +static void
+> +drm_gpuvm_free(struct kref *kref)
+> +{
+> +	struct drm_gpuvm *gpuvm = container_of(kref, struct drm_gpuvm, kref);
+> +
+> +	drm_gpuvm_fini(gpuvm);
+> +
+> +	if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
+> +		return;
+> +
+> +	gpuvm->ops->vm_free(gpuvm);
+> +}
+> +
+> +/**
+> + * drm_gpuvm_put() - drop a struct drm_gpuvm reference
+> + * @gpuvm: the &drm_gpuvm to release the reference of
+> + *
+> + * This releases a reference to @gpuvm.
+> + *
+> + * This function may be called from atomic context.
+> + */
+> +void
+> +drm_gpuvm_put(struct drm_gpuvm *gpuvm)
+> +{
+> +	if (gpuvm)
+> +		kref_put(&gpuvm->kref, drm_gpuvm_free);
+> +}
+> +EXPORT_SYMBOL_GPL(drm_gpuvm_put);
+>   
+>   static int
+>   __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+> @@ -839,11 +862,21 @@ drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+>   {
+>   	u64 addr = va->va.addr;
+>   	u64 range = va->va.range;
+> +	int ret;
+>   
+>   	if (unlikely(!drm_gpuvm_range_valid(gpuvm, addr, range)))
+>   		return -EINVAL;
+>   
+> -	return __drm_gpuva_insert(gpuvm, va);
+> +	ret = __drm_gpuva_insert(gpuvm, va);
+> +	if (likely(!ret))
+> +		/* Take a reference of the GPUVM for the successfully inserted
+> +		 * drm_gpuva. We can't take the reference in
+> +		 * __drm_gpuva_insert() itself, since we don't want to increse
+> +		 * the reference count for the GPUVM's kernel_alloc_node.
+> +		 */
+> +		drm_gpuvm_get(gpuvm);
+> +
+> +	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(drm_gpuva_insert);
+>   
+> @@ -876,6 +909,7 @@ drm_gpuva_remove(struct drm_gpuva *va)
+>   	}
+>   
+>   	__drm_gpuva_remove(va);
+> +	drm_gpuvm_put(va->vm);
+>   }
+>   EXPORT_SYMBOL_GPL(drm_gpuva_remove);
+>   
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> index 54be12c1272f..cb2f06565c46 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> @@ -1780,6 +1780,18 @@ nouveau_uvmm_bo_unmap_all(struct nouveau_bo *nvbo)
+>   	}
+>   }
+>   
+> +static void
+> +nouveau_uvmm_free(struct drm_gpuvm *gpuvm)
+> +{
+> +	struct nouveau_uvmm *uvmm = uvmm_from_gpuvm(gpuvm);
+> +
+> +	kfree(uvmm);
+> +}
+> +
+> +static const struct drm_gpuvm_ops gpuvm_ops = {
+> +	.vm_free = nouveau_uvmm_free,
+> +};
+> +
+>   int
+>   nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+>   			   void *data,
+> @@ -1830,7 +1842,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+>   		       NOUVEAU_VA_SPACE_END,
+>   		       init->kernel_managed_addr,
+>   		       init->kernel_managed_size,
+> -		       NULL);
+> +		       &gpuvm_ops);
+>   	/* GPUVM takes care from here on. */
+>   	drm_gem_object_put(r_obj);
+>   
+> @@ -1849,8 +1861,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+>   	return 0;
+>   
+>   out_gpuvm_fini:
+> -	drm_gpuvm_destroy(&uvmm->base);
+> -	kfree(uvmm);
+> +	drm_gpuvm_put(&uvmm->base);
+>   out_unlock:
+>   	mutex_unlock(&cli->mutex);
+>   	return ret;
+> @@ -1902,7 +1913,6 @@ nouveau_uvmm_fini(struct nouveau_uvmm *uvmm)
+>   
+>   	mutex_lock(&cli->mutex);
+>   	nouveau_vmm_fini(&uvmm->vmm);
+> -	drm_gpuvm_destroy(&uvmm->base);
+> -	kfree(uvmm);
+> +	drm_gpuvm_put(&uvmm->base);
+>   	mutex_unlock(&cli->mutex);
+>   }
+> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+> index 0c2e24155a93..4e6e1fd3485a 100644
+> --- a/include/drm/drm_gpuvm.h
+> +++ b/include/drm/drm_gpuvm.h
+> @@ -247,6 +247,11 @@ struct drm_gpuvm {
+>   		struct list_head list;
+>   	} rb;
+>   
+> +	/**
+> +	 * @kref: reference count of this object
+> +	 */
+> +	struct kref kref;
+> +
+>   	/**
+>   	 * @kernel_alloc_node:
+>   	 *
+> @@ -273,7 +278,23 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+>   		    u64 start_offset, u64 range,
+>   		    u64 reserve_offset, u64 reserve_range,
+>   		    const struct drm_gpuvm_ops *ops);
+> -void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
+> +
+> +/**
+> + * drm_gpuvm_get() - acquire a struct drm_gpuvm reference
+> + * @gpuvm: the &drm_gpuvm to acquire the reference of
+> + *
+> + * This function acquires an additional reference to @gpuvm. It is illegal to
+> + * call this without already holding a reference. No locks required.
+> + */
+> +static inline struct drm_gpuvm *
+> +drm_gpuvm_get(struct drm_gpuvm *gpuvm)
+> +{
+> +	kref_get(&gpuvm->kref);
+> +
+> +	return gpuvm;
+> +}
+> +
+> +void drm_gpuvm_put(struct drm_gpuvm *gpuvm);
+>   
+>   bool drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
+>   bool drm_gpuvm_interval_empty(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
+> @@ -673,6 +694,14 @@ static inline void drm_gpuva_init_from_op(struct drm_gpuva *va,
+>    * operations to drivers.
+>    */
+>   struct drm_gpuvm_ops {
+> +	/**
+> +	 * @vm_free: called when the last reference of a struct drm_gpuvm is
+> +	 * dropped
+> +	 *
+> +	 * This callback is mandatory.
+> +	 */
+> +	void (*vm_free)(struct drm_gpuvm *gpuvm);
+> +
+>   	/**
+>   	 * @op_alloc: called when the &drm_gpuvm allocates
+>   	 * a struct drm_gpuva_op
