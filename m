@@ -2,185 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204307E7645
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E137E7648
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345664AbjKJBC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S1345498AbjKJBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:04:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345578AbjKJBCM (ORCPT
+        with ESMTP id S229572AbjKJBER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:02:12 -0500
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E072244B3
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:02:09 -0800 (PST)
-X-AuditID: a67dfc5b-d85ff70000001748-cc-654d810e1540
-Date:   Fri, 10 Nov 2023 10:02:01 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
-        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
-        "hughd@google.com" <hughd@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
- at migration
-Message-ID: <20231110010201.GA72073@system.software.com>
-References: <20231030072540.38631-1-byungchul@sk.com>
- <20231030072540.38631-3-byungchul@sk.com>
- <63C530D3-3A1D-4BE9-8AA7-EFF5B895BE80@vmware.com>
- <20231030125129.GD81877@system.software.com>
- <20231108041208.GA40954@system.software.com>
- <C47A7C40-BE3E-4F0F-B854-D40D4795A236@vmware.com>
+        Thu, 9 Nov 2023 20:04:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC203AA0
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:04:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699578255; x=1731114255;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=wWQ8L5zvh72IG5VMXG+uMJvdCYw0je9ei7amOqLX6RU=;
+  b=j3gJeQL7zHySn2bhs7bXPB+wbx9hjnC247ocLd/MVNjuqjUMrK0jOkeN
+   EnU5Ygp191/Jqi5FcVHeZCnkzfi/XHWZVwW9h0ZDwhTdzNi/ZK/22Umdx
+   HHD4opBvipkUgbJjjFgMoO1dNJpXqrA1sNtdDK8BNZdoBZNK8ZQshbqgZ
+   oztrJX1NAACTr+7rmMaAeTEHe4UXmIWxHQrY6vZik38WWDr1i8G0vznFB
+   xOJg1HNLaEXVg59LzQI0IvSsXAyl8uJX0+7X3Wha03TRuTYr5Tv5jtWcz
+   jhVXYgyheB/ysKVf1qGNx2L8pL1eDgj9iCW4qoAtylOOAD2gIRp4h6gR7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="454410990"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="454410990"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:04:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713498300"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="713498300"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2023 17:04:11 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1FwM-0009K2-31;
+        Fri, 10 Nov 2023 01:04:06 +0000
+Date:   Fri, 10 Nov 2023 09:03:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn:
+ inconsistent indenting
+Message-ID: <202311100842.OUiGSWxX-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <C47A7C40-BE3E-4F0F-B854-D40D4795A236@vmware.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsXC9ZZnkS5/o2+qQccaNos564HE5w3/2Cxe
-        bGhntPi6/hezxdNPfSwWl3fNYbO4t+Y/q8X5XWtZLXYs3cdkcenAAiaL67seMloc7z3AZLF5
-        01Rmi98/gOrmTLGyODlrMouDgMf31j4WjwWbSj02r9DyWLznJZPHplWdbB6bPk1i93h37hy7
-        x4kZv1k8dj609Jh3MtDj/b6rbB5bf9l5fN4k5/Fu/lu2AL4oLpuU1JzMstQifbsEroz7x9qZ
-        Ch6IV8yZeYupgXGBYBcjJ4eEgInElZUr2GDsvW3P2EFsFgFViSe9OxhBbDYBdYkbN34yg9gi
-        AooSh/bfA4szC7xjlfj+SRPEFhaIlvi09xVYL6+AhUTXkkbWLkYuDiGB5UwS69pnskAkBCVO
-        znzCAtGsLvFn3iWgoRxAtrTE8n8cEGF5ieats8F2cQrYSdyb0wlWLiqgLHFg23EmiDu3sUt0
-        bk6CsCUlDq64wTKBUXAWkg2zkGyYhbBhFpINCxhZVjEKZeaV5SZm5pjoZVTmZVboJefnbmIE
-        xuyy2j/ROxg/XQg+xCjAwajEw3vhuk+qEGtiWXFl7iFGCQ5mJRHeCyZAId6UxMqq1KL8+KLS
-        nNTiQ4zSHCxK4rxG38pThATSE0tSs1NTC1KLYLJMHJxSDYwa+w6t1JCeeI/DotLR916Qemap
-        nd2ia40HH27yv960wqFiakqj7aVftm4zc39/sXyUL1m6s/ZGjdelG4x8f6sltm2L+Xjd8OZq
-        /t+M89iXnvt78lnW26Xarhk1UXOfmn/QdSvXmcOYd9akbX0Wk+yL71c/24b4rviq/nKVDe9i
-        KWaG4jMfIzOVWIozEg21mIuKEwFQEDrb1QIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsXC5WfdrMvX6JtqsOekjsWc9WvYLD5v+Mdm
-        8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4vquh4wW
-        x3sPMFls3jSV2eL3D6C6OVOsLE7OmsziIOjxvbWPxWPBplKPzSu0PBbvecnksWlVJ5vHpk+T
-        2D3enTvH7nFixm8Wj50PLT3mnQz0eL/vKpvH4hcfmDy2/rLz+LxJzuPd/LdsAfxRXDYpqTmZ
-        ZalF+nYJXBn3j7UzFTwQr5gz8xZTA+MCwS5GTg4JAROJvW3P2EFsFgFViSe9OxhBbDYBdYkb
-        N34yg9giAooSh/bfA4szC7xjlfj+SRPEFhaIlvi09xVYL6+AhUTXkkbWLkYuDiGB5UwS69pn
-        skAkBCVOznzCAtGsLvFn3iWgoRxAtrTE8n8cEGF5ieats8F2cQrYSdyb0wlWLiqgLHFg23Gm
-        CYx8s5BMmoVk0iyESbOQTFrAyLKKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMAaX1f6ZuIPx
-        y2X3Q4wCHIxKPLwXrvukCrEmlhVX5h5ilOBgVhLhvWACFOJNSaysSi3Kjy8qzUktPsQozcGi
-        JM7rFZ6aICSQnliSmp2aWpBaBJNl4uCUamA8F5Kf3SdX3HPMtXuRd5NwzyuuTdkH4qIvr+Rb
-        emjvwyP7nz1Ov+uqGsZ9oFH6ieWnlRpVb44u/7by1oRe3ZrdLyJN1PVtvOPvKEYoOzpqTfn5
-        JndqMvtbMT8B+bcNVQd4XOamTerasbPHPsrjBN8sLZ9PDbMYGTl/WdtPFw6IK1+w55r74UVK
-        LMUZiYZazEXFiQClF+oAvQIAAA==
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:16:57AM +0000, Nadav Amit wrote:
-> 
-> 
-> > On Nov 8, 2023, at 6:12 AM, Byungchul Park <byungchul@sk.com> wrote:
-> > 
-> > !! External Email
-> > 
-> > On Mon, Oct 30, 2023 at 09:51:30PM +0900, Byungchul Park wrote:
-> >>>> diff --git a/mm/memory.c b/mm/memory.c
-> >>>> index 6c264d2f969c..75dc48b6e15f 100644
-> >>>> --- a/mm/memory.c
-> >>>> +++ b/mm/memory.c
-> >>>> @@ -3359,6 +3359,19 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
-> >>>>  if (vmf->page)
-> >>>>          folio = page_folio(vmf->page);
-> >>>> 
-> >>>> + /*
-> >>>> +  * This folio has its read copy to prevent inconsistency while
-> >>>> +  * deferring TLB flushes. However, the problem might arise if
-> >>>> +  * it's going to become writable.
-> >>>> +  *
-> >>>> +  * To prevent it, give up the deferring TLB flushes and perform
-> >>>> +  * TLB flush right away.
-> >>>> +  */
-> >>>> + if (folio && migrc_pending_folio(folio)) {
-> >>>> +         migrc_unpend_folio(folio);
-> >>>> +         migrc_try_flush_free_folios(NULL);
-> >>> 
-> >>> So many potential function calls… Probably they should have been combined
-> >>> into one and at least migrc_pending_folio() should have been an inline
-> >>> function in the header.
-> >> 
-> >> I will try to change it as you mention.
-> >> 
-> >>>> + }
-> >>>> +
-> >>> 
-> >>> What about mprotect? I thought David has changed it so it can set writable
-> >>> PTEs.
-> >> 
-> >> I will check it out.
-> > 
-> > I found mprotect stuff is already performing TLB flushes needed for it.
-> > So some redundant TLB flushes might happen by migrc but it's not that
-> > harmful I think. Thanks.
-> 
-> Let me explain the scenario I am concerned with. Assume page P is RO, and
-> moves from Psrc to Pdst. Pointer “p” points to P. Initially (*p == 0).
-> 
-> Let’s also assume we also have an atomic variable “a”. Initially (a == 0).
-> 
-> I hope I got the migration function names right, but I hope the problem
-> itself can be clear regardless. 
-> 
-> CPU0			CPU1			CPU2		CPU3
-> ----			----			----		----
-> 			(user-mode)		(user-mode)		
-> 
-> 			Access *p
-> 			[Psrc cached in TLB]
->  
-> migrate_pages_batch()
-> -> migrate_folio_unmap()
-> 
-> [ PTE updated, 
->   still no flush ]
-> 
-> 								mprotect(p,
-> 									RW)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   a12deb44f9734dc25970c266249b272e44d3d1b5
+commit: 80396a47490936f73729548310ad60e9f5df61c9 bcachefs: Break up bch2_journal_write()
+date:   4 days ago
+config: i386-randconfig-141-20231108 (https://download.01.org/0day-ci/archive/20231110/202311100842.OUiGSWxX-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231110/202311100842.OUiGSWxX-lkp@intel.com/reproduce)
 
-Here,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311100842.OUiGSWxX-lkp@intel.com/
 
-mprotect()
-   do_mprotect_pkey()
-      tlb_finish_mmu()
-         tlb_flush_mmu()
+New smatch warnings:
+fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn: inconsistent indenting
 
-I thought TLB flush for mprotect() is performed by tlb_flush_mmu() so
-any cached TLB entries on other CPUs can have chance to update. Could
-you correct me if I get it wrong? Thanks.
+Old smatch warnings:
+fs/bcachefs/journal_io.c:132 journal_entry_add() warn: missing error code 'ret'
 
-	Byungchul
+vim +1839 fs/bcachefs/journal_io.c
 
-> 
-> 								[ Psrc is
-> 								  RW ]
-> 
-> 								[ flush
-> 								  deferred]
-> 
-> 
-> 						*p = 1  # Pdst
-> 						
-> 						xchg(&a, 1)
-> 			mfence
-> 			if (a == 1)
-> 			  assert(*p == 1);
-> 
-> 
-> 				
-> Now at this point the assertion might fail. CPU2 wrote into Pdst, whereas
-> CPU1 reads from Psrc. But based on x86 memory model, userspace might not
-> expect this scenario to be possible, hence leading to bugs.
+  1808	
+  1809	static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *w)
+  1810	{
+  1811		struct bch_fs *c = container_of(j, struct bch_fs, journal);
+  1812		int error = bch2_journal_error(j);
+  1813	
+  1814		/*
+  1815		 * If the journal is in an error state - we did an emergency shutdown -
+  1816		 * we prefer to continue doing journal writes. We just mark them as
+  1817		 * noflush so they'll never be used, but they'll still be visible by the
+  1818		 * list_journal tool - this helps in debugging.
+  1819		 *
+  1820		 * There's a caveat: the first journal write after marking the
+  1821		 * superblock dirty must always be a flush write, because on startup
+  1822		 * from a clean shutdown we didn't necessarily read the journal and the
+  1823		 * new journal write might overwrite whatever was in the journal
+  1824		 * previously - we can't leave the journal without any flush writes in
+  1825		 * it.
+  1826		 *
+  1827		 * So if we're in an error state, and we're still starting up, we don't
+  1828		 * write anything at all.
+  1829		 */
+  1830		if (error && test_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags))
+  1831			return -EIO;
+  1832	
+  1833		if (error ||
+  1834		    w->noflush ||
+  1835		    (!w->must_flush &&
+  1836		     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
+  1837		     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
+  1838			     w->noflush = true;
+> 1839			SET_JSET_NO_FLUSH(w->data, true);
+  1840			w->data->last_seq	= 0;
+  1841			w->last_seq		= 0;
+  1842	
+  1843			j->nr_noflush_writes++;
+  1844		} else {
+  1845			j->last_flush_write = jiffies;
+  1846			j->nr_flush_writes++;
+  1847			clear_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags);
+  1848		}
+  1849	
+  1850		return 0;
+  1851	}
+  1852	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
