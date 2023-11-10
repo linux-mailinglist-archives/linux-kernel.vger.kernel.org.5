@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5794D7E7F99
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6137E7E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234916AbjKJR4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S229656AbjKJRqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:46:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjKJRzg (ORCPT
+        with ESMTP id S234627AbjKJRpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:55:36 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279EB7EC6;
-        Thu,  9 Nov 2023 22:51:07 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA6lrgR027588;
-        Fri, 10 Nov 2023 06:51:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=V7//rzm0Vc6gRUccaNxuf92FXW8iQnpRbtYEynu/M1A=;
- b=FvJ6aouQ1USTO+O41FZIwM3zhw3LdtyIHXXf8NNIHyTwtgT/VhZBbmskB8njAAl/1XPe
- OvfHAd4/3To5dkbW7rt8lmgfEnE2LNdwwR+vSshFxWchrG5X1TFuYpQJVL1cqq7R/Mgl
- j2JoOjL6KeP7+woOPbGUwJzxXhAXuUVVnMyGkSCi8Obu4KtL9fxXe5uXT7corgiZJaoh
- JVPgIMmhzk3sFkbe3YjQkczwMeB6sV9XoDRiX6mURV7lCt5+Hy6K5grV+xDfzbDwI8cA
- NsYJY+tKYuPQ6wxOkWkqTfdor6fKZ9ZD5t80iKPO2GivJD9289/gStBzw4onB0myjD8H 4A== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8w0ntfe3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 06:51:03 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA6p2QO025060
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 06:51:02 GMT
-Received: from hu-skakitap-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Thu, 9 Nov 2023 22:50:58 -0800
-From:   Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
-Subject: [PATCH 4/4] clk: qcom: videocc-sm8150: Add runtime PM support
-Date:   Fri, 10 Nov 2023 12:20:29 +0530
-Message-ID: <20231110065029.2117212-5-quic_skakitap@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231110065029.2117212-1-quic_skakitap@quicinc.com>
-References: <20231110065029.2117212-1-quic_skakitap@quicinc.com>
+        Fri, 10 Nov 2023 12:45:33 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1B27EF8
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:54:20 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so2709816a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:54:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1699599258; x=1700204058; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wmi+Ckwu6O18+Q2KnA1YMX6KRmhCQb+yV/WW9qhuH6w=;
+        b=WFVkCBzpww4pC3E5jmuP3ABfTSZjwCs/KY3UDU/bmRo0xZG5X/S03rsysUxLw0m5/v
+         i87UEumxp//8gU6d1GvS2bI7Q9yGiAsqqItp9OBDVXpCM59Ku2SDRucMyc9X5k37GYuh
+         AWDsDAb58szrKJeO+p0jWFIyD8LVPyKcPwOXB7qYvkehwLrjXSv1lDbZspFHTPXVhGQi
+         EK0o0rz85lggO9JgvsZN6XzVxQMoEBRfeluAEb72vVpHTWR3gUZVm//CaA1Ppj3lxqzs
+         zlcuveQHUSypvk8YZM228G+w1w6e2UwDgBrRTx43WYGVWm/ZZSEkZg51QUinYlrPTWr/
+         zuOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699599258; x=1700204058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wmi+Ckwu6O18+Q2KnA1YMX6KRmhCQb+yV/WW9qhuH6w=;
+        b=IsSm6UH4i/xj0cBfJr7XhjjifBlUfuImrPO7ifLoVaLkkSVH8UX23zNB9OeQAaTHIz
+         X94PHgu5iIU/dOqfhscWqRTiTOihuSSKmC40grOGzZHdqc2azFuGj/6qi8SsrMNVDJiv
+         pgr2AvEkpgCaIcSn58WBWk2/29PV0whxbaNWUykN+bhBxhLVKSBGcQldgU8m2eeQxjSF
+         8oFwbL6RwMWCY6dxpg8AKegDOYJI6UWM64xwYDgAvB6DE3IvjhNfSrPRA5HMGKedqM1V
+         Ri/pLDKcTtsJuW7XL1fQy6hB895/XnWxu13smWnSrny2KA+SK0RCgOGrpxi3ZOpBehMQ
+         ycIw==
+X-Gm-Message-State: AOJu0YySbxr0PX98yEqcaeFZrTMpwyIP/dUcDfv76UPxIOTLIZTdtpZP
+        DXiN+Fa2bz8sPP4jk+LyFQsa0HvM1eohbSn0yf1WAg==
+X-Google-Smtp-Source: AGHT+IFgg5UMeRs3kcPYSsskdYLDKVicMfj7fvfD8PWlyTapiaUXT1r0RAnUvrhJoocQ0eqXrNYvIy4lsxHHfQ6NlWM=
+X-Received: by 2002:a50:9eeb:0:b0:53f:a377:7287 with SMTP id
+ a98-20020a509eeb000000b0053fa3777287mr5446010edf.18.1699599258586; Thu, 09
+ Nov 2023 22:54:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 3_dLioCJruMzL0PcbEX2sCLyeANEyBST
-X-Proofpoint-ORIG-GUID: 3_dLioCJruMzL0PcbEX2sCLyeANEyBST
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_03,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 bulkscore=0 phishscore=0 spamscore=0
- adultscore=0 impostorscore=0 mlxlogscore=999 priorityscore=1501
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311100056
+References: <20231108105639.70088-1-haifeng.xu@shopee.com> <6da49b39-653a-1eda-2d21-1f1b50cb14f0@redhat.com>
+ <5086cd5b-a832-4250-9927-4b300d2f611e@shopee.com>
+In-Reply-To: <5086cd5b-a832-4250-9927-4b300d2f611e@shopee.com>
+From:   Tang Yizhou <yizhou.tang@shopee.com>
+Date:   Fri, 10 Nov 2023 14:54:07 +0800
+Message-ID: <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
+Subject: Re: [PATCH] locking/rwsem: Remove unnessary check in rwsem_down_read_slowpath()
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     Waiman Long <longman@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -85,61 +71,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add runtime PM support to ensure the supply rails are enabled
-when necessary.
+On Thu, Nov 9, 2023 at 11:17=E2=80=AFAM Haifeng Xu <haifeng.xu@shopee.com> =
+wrote:
+>
+> reader          writer                                  reader
+>
+> acquire
+> release
+>                 rwsem_write_trylock
+>                         set RWSEM_WRITER_LOCKED
+>                                                         rwsem_down_read_s=
+lowpath
+>                         set owner
+>
+> If prev lock holder is a reader, when it releases the lock, the owner isn=
+'t cleared(CONFIG_DEBUG_RWSEMS isn't enabled).
+> A writer comes and can set the RWSEM_WRITER_LOCKED bit succsessfully, the=
+n a new reader run into slow path, before
+> the writer set the owner, the new reader will see that both the RWSEM_REA=
+DER_OWNED bit and RWSEM_WRITER_LOCKED bit are
+> set.
+>
 
-Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
----
- drivers/clk/qcom/videocc-sm8150.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+For the above example, it won't cause a problem. When the writer
+successfully sets RWSEM_WRITER_LOCKED, the reader, when reading rcnt
+through rwsem_down_read_slowpath(), will see that rcnt is 0 and will
+jump to the queue label.
 
-diff --git a/drivers/clk/qcom/videocc-sm8150.c b/drivers/clk/qcom/videocc-sm8150.c
-index ddfe784fb9e1..e56dfcea05c6 100644
---- a/drivers/clk/qcom/videocc-sm8150.c
-+++ b/drivers/clk/qcom/videocc-sm8150.c
-@@ -6,6 +6,7 @@
- #include <linux/clk-provider.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
- #include <dt-bindings/clock/qcom,videocc-sm8150.h>
-@@ -241,17 +242,32 @@ MODULE_DEVICE_TABLE(of, video_cc_sm8150_match_table);
- static int video_cc_sm8150_probe(struct platform_device *pdev)
- {
- 	struct regmap *regmap;
-+	int ret;
-+
-+	ret = devm_pm_runtime_enable(&pdev->dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
-+	if (ret)
-+		return ret;
- 
- 	regmap = qcom_cc_map(pdev, &video_cc_sm8150_desc);
--	if (IS_ERR(regmap))
-+	if (IS_ERR(regmap)) {
-+		pm_runtime_put(&pdev->dev);
- 		return PTR_ERR(regmap);
-+	}
- 
- 	clk_trion_pll_configure(&video_pll0, regmap, &video_pll0_config);
- 
- 	/* Keep VIDEO_CC_XO_CLK ALWAYS-ON */
- 	regmap_update_bits(regmap, 0x984, 0x1, 0x1);
- 
--	return qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-+	ret = qcom_cc_really_probe(pdev, &video_cc_sm8150_desc, regmap);
-+
-+	pm_runtime_put(&pdev->dev);
-+
-+	return ret;
- }
- 
- static struct platform_driver video_cc_sm8150_driver = {
--- 
-2.25.1
-
+Thanks,
+Tang
