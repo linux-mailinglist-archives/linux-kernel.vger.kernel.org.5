@@ -2,192 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E857E7FB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A1F7E80C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235429AbjKJR5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
+        id S1345047AbjKJSRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:17:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbjKJRz1 (ORCPT
+        with ESMTP id S1344997AbjKJSP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:55:27 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2057.outbound.protection.outlook.com [40.107.244.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4BE24485;
-        Fri, 10 Nov 2023 01:28:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I9Ln8lIztQECjVOPuaN6oZTSIUukP2QVG8CWermSO6gHWklVYDCSQ7KexrGg9UBGELd227cBKMY6sAnL8q3+tRW5XyMEhV4xrmIY3GmaRgeOJj7H2ZTrVW5KVpY3Jm8ukdNzRQQJZ1eQfiRzR4UN6kTDextLEtzebXADmPHDVS0VRWXPl7jxhQeu5fTglfI+iH64yszdJxm00/8wcVC+btIAHATTRsRz65eSMpePho/vYfY/VJi2yqPhFkrZWTiTR0dnAlhSly7kYqUgKWb5NkSEcF28ZbOq4ifAnFTryHuIBDZh3A03kmfEay+cizaTUDFzsi6gFjcvBMDgoOvVug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D0qRfr1msQijQTrSWrcS9QbGkrNRBJOY5Lm/8T3AjlE=;
- b=ANmyTpxvnyTHtZP0vhXOK2gdYsOx1pGH1vuF/yon7pU58ZrELHiYbIBXGY0kwJj23v7HIea2kaJ6UJseiUzsFQrOpTK9jmgXWN/7DEJDcQ0S9mIfWZVWw++AWqzvYLxfY3y26sPeA3ISeYJUkZET20WqiQx+hX2sZGl3LGGEeWfipcBTHMxcTwF4WTE7qPA5ACW9yNMK9Esv9doMGFg9tKKrifN9sNOx+BuatBYI8rOTa5SHj4pdrvcJxXQPJU0P7LE97JwiB26ab6/n+PLzibKHU89fzGyJ/LECbpz1C1RSybVZG9cB9JZUPzafwBtf2N8crUSh5ny5vIWf9F2rmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D0qRfr1msQijQTrSWrcS9QbGkrNRBJOY5Lm/8T3AjlE=;
- b=h6z4oSgGfG/P6Z4IWJ2MPkbXh3ttCbabNJbBMxABbFs+TEI4NssiL7yzIo+cIxge7PtmROq0DbAVZToKx4O/O1BTZqmhfmjHOvbz/Kq21rByKYMixCIPxNrac2sU8tmOxK4NZ5PZROOru3iph2ty9r3ud8BPzZqkCw1s4A21y+A=
-Received: from DM4PR12MB6109.namprd12.prod.outlook.com (2603:10b6:8:ae::11) by
- DS0PR12MB7727.namprd12.prod.outlook.com (2603:10b6:8:135::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.31; Fri, 10 Nov 2023 09:28:40 +0000
-Received: from DM4PR12MB6109.namprd12.prod.outlook.com
- ([fe80::46d8:a18a:12a:5e1b]) by DM4PR12MB6109.namprd12.prod.outlook.com
- ([fe80::46d8:a18a:12a:5e1b%3]) with mapi id 15.20.6954.028; Fri, 10 Nov 2023
- 09:28:40 +0000
-From:   "Guntupalli, Manikanta" <manikanta.guntupalli@amd.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "git (AMD-Xilinx)" <git@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "jacmet@sunsite.dk" <jacmet@sunsite.dk>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>,
-        "Goud, Srinivas" <srinivas.goud@amd.com>,
-        "Datta, Shubhrajyoti" <shubhrajyoti.datta@amd.com>,
-        "manion05gk@gmail.com" <manion05gk@gmail.com>
-Subject: RE: [PATCH] serial: uartlite: Use dynamic allocation for major number
-Thread-Topic: [PATCH] serial: uartlite: Use dynamic allocation for major
- number
-Thread-Index: AQHaEwlt1sGLuI9yokCsNfjgH8r8ILBx+OyAgAEfE5A=
-Date:   Fri, 10 Nov 2023 09:28:40 +0000
-Message-ID: <DM4PR12MB6109220B13FCD2B1D7B48B3C8CAEA@DM4PR12MB6109.namprd12.prod.outlook.com>
-References: <20231109123640.1740310-1-manikanta.guntupalli@amd.com>
- <2023110915-trusting-pointer-40b0@gregkh>
-In-Reply-To: <2023110915-trusting-pointer-40b0@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB6109:EE_|DS0PR12MB7727:EE_
-x-ms-office365-filtering-correlation-id: ded4364b-5da6-4a8b-4c31-08dbe1cf6d0f
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qoaowA2KtnfAfU21m6oSYAB4ILNF0D/GqMwvcVUxc6rSASAyzdIRlyKcJUC7s5bUp2/EJHuDBsjbNMKmLScfdERl0djwDZ2WZxOzjwbg+Cyk6981TkEoE1m20sG6iSHwkKY/8Oe/xUHF6iSHfaqhpEURcXlAuHeYwX1bUxlN2PQ5XSNhOr/F4fpz46LRxOEtve/uLJnnac9dKPdztYXaM/PQnhuYvyajBtj79uctrl8Gpjka5ZFvVorlKNEm9LU3p5CB1y0k4pR1QZnanOyeZlautXZO2u9QRSR2JJbqpKnCL0NvE0MEfUUnWJMvpVi4nOaVzrhy3QMg/TKgon4gRRubPLlRxgCAOg1XQo5VTU/9OUHp60fFHM5SKRi7vfiJwY4BeXN+jZkvlsXuDv+/n72YSe+FruFgyCKOlcz5Xc9A0G/4xrAc1hVmaQz1UtNeh3QISXcIfcPb5sZH/Y88uMXNuh/6E/X9hK6YE7IvXda3/q0r0telUGMORrqam2+E2SqIs1/GxDTV/LTjyuXnP+YiuViHB/lhUH3S6MZV0m20OvOxfuMaoHD3Aco+/M+GxE8JCx/ETqL9D/ReV+/QxGiSRLtpgKSwkBlDDBWCg8s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6109.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(396003)(366004)(39860400002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(9686003)(966005)(7696005)(6506007)(71200400001)(53546011)(478600001)(2906002)(83380400001)(41300700001)(26005)(5660300002)(64756008)(6916009)(66946007)(66476007)(316002)(66446008)(66556008)(76116006)(52536014)(8676002)(8936002)(4326008)(38070700009)(33656002)(38100700002)(122000001)(86362001)(54906003)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EjzqKr8m8BrRmXzn6epY4Qua+IJdgBawcgJYczoSdtcvAc5ctAKdrhcMykfp?=
- =?us-ascii?Q?5kUrnAaBm/zsRul482ojdBUVkmuv3sp5yAB7D+suiNARSHLkxcPRssoCaRbh?=
- =?us-ascii?Q?st2k415XhfvvfLmSaouvD22Bwl3gXnFVg0d+Z/8dDAT8MS7BeSltpDAddB0r?=
- =?us-ascii?Q?R2GhjMOKfnLBRE8gCiXIE8NmiM66ER/LTnHYH5BckR5uR3cUhNHCbTj3WdUA?=
- =?us-ascii?Q?4nZclZa06JXdm2JkwH7FRMG+niZqhb5uFk0zXJcZBPE/+E4TU/ooA8WCsWIV?=
- =?us-ascii?Q?XzkLszsq1lAO6TEaArjKQcwXNRQVax9o+ajLDDet6l5Uj68jdYFiKCcDtD6c?=
- =?us-ascii?Q?gIBmVSw2agclKn2bIuz08EGpoXKuuKsJPAnFZcLKFRMFDtUmdI9VMbaDOdrx?=
- =?us-ascii?Q?AKzoQDmNzcIJz73TtQo8ZnXBCKePqfJOSeeezg0wF2q8l6bxSTpGzuSpTw2y?=
- =?us-ascii?Q?VEEd+qnswaexuf3E/BVjzU0W7uHKBTBrrKM5bhnXArILFWeAIipm7uuH5u3/?=
- =?us-ascii?Q?q+RS4dfNwBrBVLnUepS/VPyvvuEhfXYrUA5utUk7jNKn+V547fz/m5GDgLdR?=
- =?us-ascii?Q?ASX3ooFGyWImMaFbWPsCnxgy1F06thoExy8KyxNlPpkaUxo6OHhsmIFZffm4?=
- =?us-ascii?Q?PCjxIt81WxG5l+G1BYNftc5UDzIYSE2RBv+gT3ZgmHrm7/B0gLIiRbyyaJea?=
- =?us-ascii?Q?/tiBelrm9LxXnroAdMLYCVuSA1ZkwFdhEqhB18dnMgqFHAqXH6arDOlUNs2O?=
- =?us-ascii?Q?xiAuSO3EYKWPzC3eGXjX0yoBUBtpqrLcRk7ODxuN/yUFLaaOGDGPESlkYkH1?=
- =?us-ascii?Q?tmNuCS942MCuBey5R2ND39qd65t5qiTbLtfHSDQL29tS8N0DPY+9q6nXKnYr?=
- =?us-ascii?Q?pq0PgC/BLYcodcw/0ol7hlxObis5v1Y06yVJCqhjHUcqbmqEOxgY00hpn/wp?=
- =?us-ascii?Q?kKbNTjSWJ+dncTrVBYzlpEL0l9k89ZO55x1kzv1w6+jRBLH8eV6pDteFZhW+?=
- =?us-ascii?Q?bDlUYr17lESXuCIbwh5lD8PQN5dq6jbJLwsZJmbUM6QQT1uEMRi1X2hkQH2v?=
- =?us-ascii?Q?UiMzocPjJsJBU8yvGIyhnonA4BvB7fBN1sx3JGrVBYUGFSvOmtqmox+ENcFf?=
- =?us-ascii?Q?S2yu3e2PN9I5zGPb5X4tLcEQK1WujObTlVq7blbWDdezZuNqozc+PcYHP+rn?=
- =?us-ascii?Q?+1f3DJRbXzxbNu5jYh17VA6IyCUgmHKg1ht8pjN2+Aei2p7ULz0S6e00N0go?=
- =?us-ascii?Q?1sAJG1YlavrvlT4JR7g0fRORQxWoh0y2zzhWMRrOKDngofUs2MZQ9QxHWSTF?=
- =?us-ascii?Q?jXAoKF0yibxKvJtJ7D3mZtxcvGsK/MCBUopV9uPqy4CHEultwjc8Ddgp66Cr?=
- =?us-ascii?Q?9KbVt1Si7tzAR9s1dVDLJBzAJrBMy3tNwZ3TVUQXCrifmhAeaF8itHkKCzlu?=
- =?us-ascii?Q?2H2/QzEqdsPkt3KvPsYbHA0Go7k+k6rkzBpsggpIs5tNQuTOFWlKW56drKxf?=
- =?us-ascii?Q?5P9SzALn84oNQWvxp9P4YtPFu7BGgB9wmfOviLjS+0lckFyLa6pl/naaY/Ng?=
- =?us-ascii?Q?3UCavxSJPLGdp8TX1YE=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 10 Nov 2023 13:15:26 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810AE24484
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:30:44 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5437269a661so5966983a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:30:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura.hr; s=sartura; t=1699608643; x=1700213443; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rkNN8+PjnJ5Ef46R2X9sE8qx4x4isQxNOv4iGhlDVRw=;
+        b=rbBog5pyOhfxKqUSCaXySxYXppt/708RL5o04jGpslRlgL29BffDpBY9NdUKaUwWQa
+         6/UIaHyqTANUBIrPS2941NyPSR9yGSjpG5gTGkXrCQc1PyXZvGbEkMu1taNzFKjvGstD
+         7dLjbDkIPJlngs7QngDgpoCdqv8G/1jwgOePijeRlIHSlmVRUSpvJJMIUAqcW6VO7Cf0
+         CJASVo+FgiYO+FMEPotP8ETAdyNNg0cNE+HC23bT94lkS+8Ayr6lxCG7ACoHueXNIocM
+         xPAE3aTFIgudUEmg3gxdf+fThe0Zt1UOSenCgEmu84hlltecjdbCVdXOt2bBmvoU+MmM
+         j7rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699608643; x=1700213443;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rkNN8+PjnJ5Ef46R2X9sE8qx4x4isQxNOv4iGhlDVRw=;
+        b=fFbxqkJmrAv84aqCoAsx2KSjZEZdUyQZm6bjRJlS7FimNYyKbGc/Lmaxnxo6mb1kS7
+         V85P3Xv4CTx4yn0NpuA4u2thYeiaSNVOLSkE0oh84ZbHXU+Z4PCyZxGOxHFQWdUK0VgG
+         YLjgHSdBk5niqHLCbCpzMoTNf0zJR0Z1gHphkcJS1IEok2zy+ZoNRcHooD/JH7nEn3qA
+         OrDpn4DnMLx2oGXLonZ+RQL1gFZusRpGMZ7PogakslRVPl5F1sRV6MkpLNoJgEkvKZlt
+         l62mFH5zi9uC87r4YD0JhD1MiHuKkBrwEbKBeSs36RsNYLGBFcRGInBfL2dZqKOG2FrF
+         HFVw==
+X-Gm-Message-State: AOJu0YzvFbp+bvD2Ni52pG0xaqFCN8kVD8luBOdZl4zquQMfvd40Lqhl
+        OZcfwr4oYrhbf7ZLZ7H3KqfKTg==
+X-Google-Smtp-Source: AGHT+IGrq9EMu2rzFwR4CptNlJT8qkAN1l9yBCm3T0SUuvlgbNK0GYonHNm+aPvGsjAH9Vh9pfdabg==
+X-Received: by 2002:a17:906:3bcb:b0:9ae:5513:e475 with SMTP id v11-20020a1709063bcb00b009ae5513e475mr1885957ejf.9.1699608642876;
+        Fri, 10 Nov 2023 01:30:42 -0800 (PST)
+Received: from fedora.. (cpezg-94-253-128-32-cbl.xnet.hr. [94.253.128.32])
+        by smtp.googlemail.com with ESMTPSA id dt14-20020a170907728e00b009e5d30422ebsm917829ejc.101.2023.11.10.01.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 01:30:42 -0800 (PST)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     andi.shyti@kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        linus.walleij@linaro.org, wsa@kernel.org,
+        codrin.ciubotariu@microchip.com
+Cc:     Robert Marko <robert.marko@sartura.hr>, stable@vger.kernel.org
+Subject: [PATCH] Revert "i2c: pxa: move to generic GPIO recovery"
+Date:   Fri, 10 Nov 2023 10:30:11 +0100
+Message-ID: <20231110093039.190076-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6109.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ded4364b-5da6-4a8b-4c31-08dbe1cf6d0f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2023 09:28:40.7224
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MYF1ofRKPoLrpki53qhOv7vBTER5Jx9pryO+yP2n1O/Y1PobcuAkkLo7gNShB77tozw9G0hPF1RJesRIcTDDGw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7727
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+This reverts commit 0b01392c18b9993a584f36ace1d61118772ad0ca.
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Thursday, November 9, 2023 6:50 PM
-> To: Guntupalli, Manikanta <manikanta.guntupalli@amd.com>
-> Cc: git (AMD-Xilinx) <git@amd.com>; Simek, Michal
-> <michal.simek@amd.com>; jacmet@sunsite.dk; jirislaby@kernel.org; linux-
-> serial@vger.kernel.org; linux-kernel@vger.kernel.org; Pandey, Radhey Shya=
-m
-> <radhey.shyam.pandey@amd.com>; Goud, Srinivas
-> <srinivas.goud@amd.com>; Datta, Shubhrajyoti
-> <shubhrajyoti.datta@amd.com>; manion05gk@gmail.com
-> Subject: Re: [PATCH] serial: uartlite: Use dynamic allocation for major n=
-umber
->=20
-> On Thu, Nov 09, 2023 at 06:06:40PM +0530, Manikanta Guntupalli wrote:
-> > Device number 204 has a range of minors on major number.
-> > uart_register_driver is failing due to lack of minor numbers when more
-> > number of uart ports used.
->=20
-> So you need more than the 4 allocated to you?
-Yes, we have a customer who has 32 uartlite instances in his board.
->=20
-> > So, use dynamic allocation
-> > for major number to avoid minor number limitation on 204 major number.
-> >
-> > https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
->=20
-> What does this break by doing this?
-uart_register_driver() is failing due to lack of minor numbers when the cus=
-tomer
-has 32 uartlite instances in his board.
->=20
-> Also, you forgot to update the documentation :(
-We will update the documentation.
->=20
-> And how was this tested? =20
-We tested on both ZCU106 AMD/Xilinx evaluation board with 32 uartlite insta=
-nces with customer design.
+Conversion of PXA to generic I2C recovery, makes the I2C bus completely
+lock up if recovery pinctrl is present in the DT and I2C recovery is
+enabled.
 
->What about older systems with static device nodes,
-> are you sure none are out there for this old hardware anymore?
-Shall we use below approach to support both legacy hardware and hardware wi=
-th more number of uartlite instances use case. Please suggest.
-diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-index 404c14acafa5..517f1f34143d 100644
---- a/drivers/tty/serial/uartlite.c
-+++ b/drivers/tty/serial/uartlite.c
-@@ -24,8 +24,13 @@
- #include <linux/pm_runtime.h>
-=20
- #define ULITE_NAME             "ttyUL"
-+#if (CONFIG_SERIAL_UARTLITE_NR_UARTS > 4)
-+#define ULITE_MAJOR             0       /* use dynamic node allocation */
-+#define ULITE_MINOR             0
-+#else
- #define ULITE_MAJOR            204
- #define ULITE_MINOR            187
-+#endif
- #define ULITE_NR_UARTS         CONFIG_SERIAL_UARTLITE_NR_UARTS
+So, until the generic I2C recovery can also work with PXA lets revert
+to have working I2C and I2C recovery again.
 
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: stable@vger.kernel.org # 5.11+
+---
+ drivers/i2c/busses/i2c-pxa.c | 76 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 68 insertions(+), 8 deletions(-)
 
-Thanks,
-Manikanta.
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 1d7648242749..76f79b68cef8 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -265,6 +265,9 @@ struct pxa_i2c {
+ 	u32			hs_mask;
+ 
+ 	struct i2c_bus_recovery_info recovery;
++	struct pinctrl		*pinctrl;
++	struct pinctrl_state	*pinctrl_default;
++	struct pinctrl_state	*pinctrl_recovery;
+ };
+ 
+ #define _IBMR(i2c)	((i2c)->reg_ibmr)
+@@ -1299,12 +1302,13 @@ static void i2c_pxa_prepare_recovery(struct i2c_adapter *adap)
+ 	 */
+ 	gpiod_set_value(i2c->recovery.scl_gpiod, ibmr & IBMR_SCLS);
+ 	gpiod_set_value(i2c->recovery.sda_gpiod, ibmr & IBMR_SDAS);
++
++	WARN_ON(pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery));
+ }
+ 
+ static void i2c_pxa_unprepare_recovery(struct i2c_adapter *adap)
+ {
+ 	struct pxa_i2c *i2c = adap->algo_data;
+-	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+ 	u32 isr;
+ 
+ 	/*
+@@ -1318,7 +1322,7 @@ static void i2c_pxa_unprepare_recovery(struct i2c_adapter *adap)
+ 		i2c_pxa_do_reset(i2c);
+ 	}
+ 
+-	WARN_ON(pinctrl_select_state(bri->pinctrl, bri->pins_default));
++	WARN_ON(pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default));
+ 
+ 	dev_dbg(&i2c->adap.dev, "recovery: IBMR 0x%08x ISR 0x%08x\n",
+ 	        readl(_IBMR(i2c)), readl(_ISR(i2c)));
+@@ -1340,20 +1344,76 @@ static int i2c_pxa_init_recovery(struct pxa_i2c *i2c)
+ 	if (IS_ENABLED(CONFIG_I2C_PXA_SLAVE))
+ 		return 0;
+ 
+-	bri->pinctrl = devm_pinctrl_get(dev);
+-	if (PTR_ERR(bri->pinctrl) == -ENODEV) {
+-		bri->pinctrl = NULL;
++	i2c->pinctrl = devm_pinctrl_get(dev);
++	if (PTR_ERR(i2c->pinctrl) == -ENODEV)
++		i2c->pinctrl = NULL;
++	if (IS_ERR(i2c->pinctrl))
++		return PTR_ERR(i2c->pinctrl);
++
++	if (!i2c->pinctrl)
++		return 0;
++
++	i2c->pinctrl_default = pinctrl_lookup_state(i2c->pinctrl,
++						    PINCTRL_STATE_DEFAULT);
++	i2c->pinctrl_recovery = pinctrl_lookup_state(i2c->pinctrl, "recovery");
++
++	if (IS_ERR(i2c->pinctrl_default) || IS_ERR(i2c->pinctrl_recovery)) {
++		dev_info(dev, "missing pinmux recovery information: %ld %ld\n",
++			 PTR_ERR(i2c->pinctrl_default),
++			 PTR_ERR(i2c->pinctrl_recovery));
++		return 0;
++	}
++
++	/*
++	 * Claiming GPIOs can influence the pinmux state, and may glitch the
++	 * I2C bus. Do this carefully.
++	 */
++	bri->scl_gpiod = devm_gpiod_get(dev, "scl", GPIOD_OUT_HIGH_OPEN_DRAIN);
++	if (bri->scl_gpiod == ERR_PTR(-EPROBE_DEFER))
++		return -EPROBE_DEFER;
++	if (IS_ERR(bri->scl_gpiod)) {
++		dev_info(dev, "missing scl gpio recovery information: %pe\n",
++			 bri->scl_gpiod);
++		return 0;
++	}
++
++	/*
++	 * We have SCL. Pull SCL low and wait a bit so that SDA glitches
++	 * have no effect.
++	 */
++	gpiod_direction_output(bri->scl_gpiod, 0);
++	udelay(10);
++	bri->sda_gpiod = devm_gpiod_get(dev, "sda", GPIOD_OUT_HIGH_OPEN_DRAIN);
++
++	/* Wait a bit in case of a SDA glitch, and then release SCL. */
++	udelay(10);
++	gpiod_direction_output(bri->scl_gpiod, 1);
++
++	if (bri->sda_gpiod == ERR_PTR(-EPROBE_DEFER))
++		return -EPROBE_DEFER;
++
++	if (IS_ERR(bri->sda_gpiod)) {
++		dev_info(dev, "missing sda gpio recovery information: %pe\n",
++			 bri->sda_gpiod);
+ 		return 0;
+ 	}
+-	if (IS_ERR(bri->pinctrl))
+-		return PTR_ERR(bri->pinctrl);
+ 
+ 	bri->prepare_recovery = i2c_pxa_prepare_recovery;
+ 	bri->unprepare_recovery = i2c_pxa_unprepare_recovery;
++	bri->recover_bus = i2c_generic_scl_recovery;
+ 
+ 	i2c->adap.bus_recovery_info = bri;
+ 
+-	return 0;
++	/*
++	 * Claiming GPIOs can change the pinmux state, which confuses the
++	 * pinctrl since pinctrl's idea of the current setting is unaffected
++	 * by the pinmux change caused by claiming the GPIO. Work around that
++	 * by switching pinctrl to the GPIO state here. We do it this way to
++	 * avoid glitching the I2C bus.
++	 */
++	pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
++
++	return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
+ }
+ 
+ static int i2c_pxa_probe(struct platform_device *dev)
+-- 
+2.41.0
 
