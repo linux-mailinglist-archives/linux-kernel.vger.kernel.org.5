@@ -2,330 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 169257E83F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEF37E7F72
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346419AbjKJUcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:32:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S229832AbjKJRyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:54:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344581AbjKJUbc (ORCPT
+        with ESMTP id S229604AbjKJRwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:31:32 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A8C3AE3B;
-        Fri, 10 Nov 2023 07:34:50 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc394f4cdfso17889345ad.0;
-        Fri, 10 Nov 2023 07:34:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699630490; x=1700235290; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=LOTAcu4FmLa0ZO5e/oRiQFa94EdrML0eRYVvFKo0n7w=;
-        b=S0rLqJeiDW64851X+KMapNgz8+jmjd7syBqL09nLK6kcoVqbckk0LJpGprKvEiHBr2
-         INmxIA/Ba4wKsZ07/pJa9SKYIelNXazWGBKjs1truOJoLSs1X20NNwLrIrhg9mn46Mn0
-         cXAddpoGXLEkTjqKBohqbEJAgN0gQOrwPdUz+wmRYAi8ZyAP37QfHpF9dseaenl0Inly
-         AyhCG5nSoc7esWGFp3onB/HIqTcoV3782L3RiQ59VMjswwyQ1okO4HyZhLr8PVuRc6yq
-         FcYbdtg/g1W1fdr+4tqigp7g2x2LHq7q6eZFVCiV+PWmcLBKlm8FZVh8BKbdkCOk3zyM
-         xK+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699630490; x=1700235290;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LOTAcu4FmLa0ZO5e/oRiQFa94EdrML0eRYVvFKo0n7w=;
-        b=Yo46bMHcIqHJrtoEMoeC3YkwnIqLqfsIQYc9aLPHStt66PZAvZIEDk/4tG0RzrSpry
-         1B9MsgjeTO70Hm3Y8Xw6sLnJV9xo2S60O6VrUpJRiMxl6uP/NyeOSUurYURzeZW7hOZ6
-         VqZeFZt70aUqrSsJFbtJz6R/eutSEOxSqvQSWjJnoH+gXrC4M0XFQHFWmMdhQZL7GCih
-         YAS+oopLq5LYGBA+J1WynfWws8S5pQfTDGZUu5ygdDr9T8Qgw9rRM6/LxKkaYOVOKPy1
-         X91TgkcvaGP9eHpUqSJAmv/wKHXs1K0KrzArbXJaiH+m0ZsUq7vDimt663biiRHfpBMR
-         B8KQ==
-X-Gm-Message-State: AOJu0Yxcj3zCzFPvvEsa63T6PJOhZZAbpHPxyf7G7roiAxZefnPIfjUR
-        HdbZelW4Nejq1ckl4Zp0ioQ=
-X-Google-Smtp-Source: AGHT+IHsMQ2Z1fVX2V6vFRC918SDXXUwAN1cGrm2Pu93OANrkqIk6CjfGgySZ4JBSbFcWaUkiVKpaw==
-X-Received: by 2002:a17:902:e84f:b0:1b5:561a:5ca9 with SMTP id t15-20020a170902e84f00b001b5561a5ca9mr9190228plg.50.1699630489743;
-        Fri, 10 Nov 2023 07:34:49 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902eb0600b001cc3b988fd6sm5493973plb.265.2023.11.10.07.34.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 07:34:48 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <84782418-958c-4477-a9d1-e1eb2714b225@roeck-us.net>
-Date:   Fri, 10 Nov 2023 07:34:46 -0800
+        Fri, 10 Nov 2023 12:52:50 -0500
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2078.outbound.protection.outlook.com [40.107.20.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199FA3AE3D;
+        Fri, 10 Nov 2023 07:36:53 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SNSFRIqUj9wuZhNpIuoSfjS6UmDkj6brNV2y7+TN2nTqa/lfGLrG+6PROxQRZNWTFhAFB75oQyYERGdOQ2wN1LmCFfwBcZ2f8BjGxY4PSkBWwQzOQtQkpzIelZq3noB1x73oz0vyXNyF/k6o71Md+CwdwXSqM7XXQXNA63gZLyym1I8kjNnmI7Q1Tt8UgUnetDtDW1fmkGm5Ckff539x7STCue1Wo22hxkvrJl6bipOrBhnQE/7SiOc9z4C9MKKo8XWpoMrxWBkpYEgcF5eyiru+P9hJirF65f3/iWnpcsyuA+dZoKAbrT1AjRCxyglAdlQkS5fBnB8rGvj2F1Okyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3znICEULwDOmgOPhI57f8Q0snBcjBQHEFLGeQ9Zlw2Y=;
+ b=ff7w7J7nuCAMzf6ezz8lit6EF6P56wVBmnC/BV2Sl885AhRKKmADnyT5gTfnTCWUSzSMSd/I0h4JtuIjatOii6zyjsaWBi8pnLqniB9hP5U6oH07onXj+N57E4M0KDGQBskdm4tn80W98uiqvt7jl5EIXT5ps+SnEQJoitgtlIltt2/OdWCZ0nS9kbKBXq4VTryPfYXrNilR9dQSCrZoM1iQsyNqr/HUCAmtJ8swotpUPtErx9l31dztUm6g/Bb46EmBRr/G4PiGyYwF6jefPnDJF150IBciVuMd18qfU2SGuTC7C1Xqtfwhfor59N1pUrLJqq+/9SaxPdwa6e2ghg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3znICEULwDOmgOPhI57f8Q0snBcjBQHEFLGeQ9Zlw2Y=;
+ b=jC1ujoestyI4FNfCOiPdSA2o+PAwIOLJH5sn2oW5eeb4MnPJfCbhbDP/C8lQHtKMszNr0L7rd4H+i2CeXro1g7x/MtC9PTWmZaFlCfggZxxtO2jq4aYerH89Tcz8F3WZzgiMn5gg+To3vo7kChZMBDSJPOTgxJ2shw99PX2zKXk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DB9PR04MB9703.eurprd04.prod.outlook.com (2603:10a6:10:302::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.10; Fri, 10 Nov
+ 2023 15:36:49 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::55e7:3fd0:68f4:8885]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::55e7:3fd0:68f4:8885%4]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
+ 15:36:49 +0000
+Date:   Fri, 10 Nov 2023 10:36:43 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev, joy.zou@nxp.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
+        vkoul@kernel.org
+Subject: Re: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for
+ i.MX95
+Message-ID: <ZU5OC4FqQ9DQF+Co@lizhi-Precision-Tower-5810>
+References: <20231109212059.1894646-1-Frank.Li@nxp.com>
+ <20231109212059.1894646-5-Frank.Li@nxp.com>
+ <f095ba95-ce76-4821-87b7-083f4162fc63@linaro.org>
+ <ZU5FN1dECvzDIUHb@lizhi-Precision-Tower-5810>
+ <93f1625f-ce01-4628-91e2-e3bfd024466c@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93f1625f-ce01-4628-91e2-e3bfd024466c@linaro.org>
+X-ClientProxiedBy: PH8PR02CA0006.namprd02.prod.outlook.com
+ (2603:10b6:510:2d0::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] hwmon: (pmbus) Add support for MPS Multi-phase
- mp5990
-Content-Language: en-US
-To:     Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20231109044844.614007-1-peteryin.openbmc@gmail.com>
- <20231109044844.614007-3-peteryin.openbmc@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231109044844.614007-3-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DB9PR04MB9703:EE_
+X-MS-Office365-Filtering-Correlation-Id: 901a05b7-4eb8-4f9b-bd97-08dbe202db14
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sn9kv/3q3lQQ7obVKolIfkzJR5pAe331i7oy5s6hMTuTV8Ax5gjz1YYGEJejSDjDVfUfbY7NDvSb+f+qDEPtAB4eZADeYcemXEasu+PbA3zHqcLEy4tT7WniputNvtS0N8TlTLyU7b7j4YN1J4f2a2kN1UjuDeqKqowRZu5MtXBLtC5mpCcLLaXC14qP5bgYX4LvA5+iJxYt6UliYdiIFeXbfvzHbKuIYl7vruJC9UIuVYl//3y5qeQdnNhiG5ZopNhTZObIbR1xlPy48nAKIsGXJODBef4PtBvxQhZw9OvPBwMtgx5AvluA8r2WR7KBpzoNWIVxCzYJNjOjan7lRmnEYcyTvH77FpwMDljTCOziMRjVEAN/Ov7+hfPvoTjJjcjIsIBGKbJifLank1ADUNv1aQYo/s4IDmSNdbooKoIni6I6ly0B197xo5sHdqTKN+uCqpNa3Zrw45KIV6N9PIVXKApcy8URBm8lKwF2uzrGj1raFXKKfBDmN8m8Kaf++7phXJgyiPgX1gSOBGaH7zEHh371uUtKv8EjxMGAvmcl5XVDEeWO2bf+6FsWCVfW+69vYOXwAyRAwuVQdT7KHjSIWpnsVJXioNq6J0hcXucTzwNEtLcAnUMYjmc0OsKhggkbg7visFx9gaoakjm9tg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(396003)(366004)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(52116002)(9686003)(26005)(6512007)(86362001)(38350700005)(38100700002)(478600001)(83380400001)(2906002)(5660300002)(6506007)(53546011)(6666004)(8936002)(4326008)(8676002)(66476007)(66946007)(66556008)(316002)(6916009)(41300700001)(33716001)(6486002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E6s/JytFLpEM+iQ+QHdXR/4VtLPUHDIgJbq6ZaPNKR5B+QSvy9Qs3Hz0xjBO?=
+ =?us-ascii?Q?k2WBMATQJlWesbNJDgWnujCeqw9CMkAAZMM7t5Dkm4rTOo6HMIocph2QNS5y?=
+ =?us-ascii?Q?vuwjydlt4CnWi0Y4rxjmUwhGdagFfQB2jHWItRpmPxznYexQdvu7TPrkpLCb?=
+ =?us-ascii?Q?J9Dvv9bY5iTxJvPTU9dWqMNdw7PJVuqe+/bAKFskwgBiKmnSmbvH2lH81awX?=
+ =?us-ascii?Q?tkWtrwKOtLcx0OclIp6zH8xes9tDnTre+JxBH/hO69izzSlAU0pJ8KeIPvf3?=
+ =?us-ascii?Q?K0kIu0ia4qlByslt0bDPQzqRFAtnM/QaGurvPlNRRZLNmH7fMeejxgPfHA3v?=
+ =?us-ascii?Q?SVhyWHl9av6Wu0/8tdcK1z+sj330R+neU74D3LxKr+E3Eb7yMl3YiNOUMT9Q?=
+ =?us-ascii?Q?UVNNXM8Q5DeMGpVVFzRD8c6oLyjDuSBYr8k+hVV/4BH78NsxxLBlmWaw7pVO?=
+ =?us-ascii?Q?qvTgIhpgI5TcwwvFxkSvvTRAMXFW27fhlcXn/7qUTLxeBnD6/6RFWiHl0bQT?=
+ =?us-ascii?Q?EQe7hX8W5ZuoN62GnN55Na//oEn1l1E4Vb35tHpvbS4FwraB93Zeu4ixU4VE?=
+ =?us-ascii?Q?lSrx6nk4mmL/6GribDh4jiDFJkm+Mgiqy8F8EMeFQ16yLXm24hrIsSf7zjEx?=
+ =?us-ascii?Q?n3zm1tqyHrX5cyFKvBrhK01DGfWpKgQ5JRREjJj1zgvDOa60siuGkXPY+cRQ?=
+ =?us-ascii?Q?MyCSo28ioKdw/mhSh8zhah2WbGkHqYVgvvCrB6HH1cm7eo+61RuEJWCZVPpq?=
+ =?us-ascii?Q?sd60aDd7wp/a608bMHAuecfANeg8qSo/jyo9D7KcTsck0kif+9CxJyOFWr8T?=
+ =?us-ascii?Q?jkWI3mWY9l1iLJQhKPb/Qt8qrNiqB8Y1wgxZWnd3Sb4HYKXHAXW0Se4B7mMn?=
+ =?us-ascii?Q?4S4nYXAsS+v46FgT+3zeIBzVhG5cH1MkWUzxdUEv00mV/T4V+AvxNAYkOnXU?=
+ =?us-ascii?Q?famhWictx28B7YMeUDTeFggVDUgHoayweWCUPnDqDxweWT0LMz0B/n9+68bz?=
+ =?us-ascii?Q?UrGJGlA88FrNQD1xuIwUi4XxOJjlEoNKuT2ehGzG2xeKIZhO5M5rUd7FYv17?=
+ =?us-ascii?Q?kOusSlx+vX6oxd3BZBQ0vQmrfnJfBtFJhCKwM1dIkAfdjcKoCHSQCNqH3FI6?=
+ =?us-ascii?Q?skz6SfOYWDW0qWXzvW/TxxIPYeWulSSyp6Yu5iIXlyVBpbV5wMKL0x9BrU0x?=
+ =?us-ascii?Q?MiNerhvNZL01CVd/0j+jZ2EzAL+Q4zE24SftbbBP6fmNi3elxdL9oN/vjt+A?=
+ =?us-ascii?Q?1Zcn65hLyN0+TeDiX9EkZv7kO3LsVQVD8IHqU3KrMlLqG3jcGHute825fBPj?=
+ =?us-ascii?Q?LydKOd1Oe6HIAPvlvZUOlk0klLar5hcjURbqGXS/BE4kuaw2Lwrcn9OBDTlT?=
+ =?us-ascii?Q?QsErX4y1SyPziIXy6EPNd9qeD3EAZbHrIqRO+z7fuszZwzf+fz8LR6rD3zTg?=
+ =?us-ascii?Q?sFAa0QhlSbHTpLLkSf7VcwK09X2o45LRDyGTtqUEbS10S3QTW3SVS5nELAmr?=
+ =?us-ascii?Q?v2o7x2l82x9p/sER5lCKjhY3zcXFt+AFVVDcXxapMbiKFnR6HZ3aqZgtKRrx?=
+ =?us-ascii?Q?bsjBUudFMGQYjuydOaQeRGuEI7Rgi+razKTCdzZ7?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 901a05b7-4eb8-4f9b-bd97-08dbe202db14
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 15:36:49.7742
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6r96sL0ZwH9jPdCRn7mthxvr9XEU5dnnEAvpINs1uBjE6/5gESfehexgucG3TqazraOp0Nw2wVzm0ivl2aXcaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9703
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 20:48, Peter Yin wrote:
-> Add support for mp5990 device from Monolithic Power Systems, Inc. (MPS)
-> vendor. This is a Hot-Swap Controller.
+On Fri, Nov 10, 2023 at 04:10:46PM +0100, Krzysztof Kozlowski wrote:
+> On 10/11/2023 15:59, Frank Li wrote:
+> >>>
+> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>> ---
+> >>
+> >> Three kbuild reports with build failures.
+> >>
+> >> I have impression this was never build-tested and reviewed internally
+> >> before posting. We had such talk ~month ago and I insisted on some
+> >> internal review prior submitting to mailing list. I did not insist on
+> >> internal building of patches, because it felt obvious, so please kindly
+> >> thoroughly build, review and test your patches internally, before using
+> >> the community for this. I am pretty sure NXP can build the code they send.
+> > 
+> > This build error happen at on special uncommon platform m6800. 
 > 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
->   Documentation/hwmon/index.rst  |  1 +
->   Documentation/hwmon/mp5990.rst | 84 +++++++++++++++++++++++++++++++++
->   drivers/hwmon/pmbus/Kconfig    |  9 ++++
->   drivers/hwmon/pmbus/Makefile   |  1 +
->   drivers/hwmon/pmbus/mp5990.c   | 86 ++++++++++++++++++++++++++++++++++
->   5 files changed, 181 insertions(+)
->   create mode 100644 Documentation/hwmon/mp5990.rst
->   create mode 100644 drivers/hwmon/pmbus/mp5990.c
+> Indeed csky and alpha are special. Let's see if LKP will find other
+> platforms as well.
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 042e1cf9501b..8c70e10fc795 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -157,6 +157,7 @@ Hardware Monitoring Kernel Drivers
->      mp2888
->      mp2975
->      mp5023
-> +   mp5990
->      nct6683
->      nct6775
->      nct7802
-> diff --git a/Documentation/hwmon/mp5990.rst b/Documentation/hwmon/mp5990.rst
-> new file mode 100644
-> index 000000000000..d2da0f767530
-> --- /dev/null
-> +++ b/Documentation/hwmon/mp5990.rst
-> @@ -0,0 +1,84 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Kernel driver mp5990
-> +====================
-> +
-> +Supported chips:
-> +
-> +  * MPS MP5990
-> +
-> +    Prefix: 'mp5990'
-> +
-> +  * Datasheet
-> +
-> +    Publicly available at the MPS website : https://www.monolithicpower.com/en/mp5990.html
-> +
-> +Author:
-> +
-> +	Peter Yin <peteryin.openbmc@gmail.com>
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for Monolithic Power Systems, Inc. (MPS)
-> +MP5990 Hot-Swap Controller.
-> +
-> +Device compliant with:
-> +
-> +- PMBus rev 1.3 interface.
-> +
-> +Device supports direct format for reading input voltage, output voltage,
-> +output current, input power and temperature.
-> +
+> > Patch is tested in imx95 arm64 platform.
+> 
+> That's not enough. It's trivial to build test on riscv, ppc, x86_64 and
+> i386. Building on only one platform is not that much.
+> 
+> > 
+> > I have not machine to cover all platform.
+> 
+> I was able to do it as a hobbyist, on my poor laptop. What is exactly
+> the problem that as hobbyist I can, but NXP cannot?
 
-The device also supports linear mode according to its datasheet.
+There are also difference configs. I think 'kernel test robot' is very good
+tools. If there are guide to mirror it, we can try. It is not neccesary to
+duplicate to develop a build test infrastrue.
 
-> +The driver exports the following attributes via the 'sysfs' files
-> +for input voltage:
-> +
-> +**in1_input**
-> +
-> +**in1_label**
-> +
-> +**in1_max**
-> +
-> +**in1_max_alarm**
-> +
-> +**in1_min**
-> +
-> +**in1_min_alarm**
-> +
-> +The driver provides the following attributes for output voltage:
-> +
-> +**in2_input**
-> +
-> +**in2_label**
-> +
-> +**in2_alarm**
-> +
-> +The driver provides the following attributes for output current:
-> +
-> +**curr1_input**
-> +
-> +**curr1_label**
-> +
-> +**curr1_alarm**
-> +
-> +**curr1_max**
-> +
-> +The driver provides the following attributes for input power:
-> +
-> +**power1_input**
-> +
-> +**power1_label**
-> +
-> +**power1_alarm**
-> +
-> +The driver provides the following attributes for temperature:
-> +
-> +**temp1_input**
-> +
-> +**temp1_max**
-> +
-> +**temp1_max_alarm**
-> +
-> +**temp1_crit**
-> +
-> +**temp1_crit_alarm**
-> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-> index 270b6336b76d..65a116f7744d 100644
-> --- a/drivers/hwmon/pmbus/Kconfig
-> +++ b/drivers/hwmon/pmbus/Kconfig
-> @@ -326,6 +326,15 @@ config SENSORS_MP5023
->   	  This driver can also be built as a module. If so, the module will
->   	  be called mp5023.
->   
-> +config SENSORS_MP5990
-> +	tristate "MPS MP5990"
-> +	help
-> +	  If you say yes here you get hardware monitoring support for MPS
-> +	  MP5990.
-> +
-> +	  This driver can also be built as a module. If so, the module will
-> +	  be called mp5990.
-> +
->   config SENSORS_MPQ7932_REGULATOR
->   	bool "Regulator support for MPQ7932"
->   	depends on SENSORS_MPQ7932 && REGULATOR
-> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-> index 84ee960a6c2d..212d9ca0acc9 100644
-> --- a/drivers/hwmon/pmbus/Makefile
-> +++ b/drivers/hwmon/pmbus/Makefile
-> @@ -35,6 +35,7 @@ obj-$(CONFIG_SENSORS_MAX8688)	+= max8688.o
->   obj-$(CONFIG_SENSORS_MP2888)	+= mp2888.o
->   obj-$(CONFIG_SENSORS_MP2975)	+= mp2975.o
->   obj-$(CONFIG_SENSORS_MP5023)	+= mp5023.o
-> +obj-$(CONFIG_SENSORS_MP5990)	+= mp5990.o
->   obj-$(CONFIG_SENSORS_MPQ7932)	+= mpq7932.o
->   obj-$(CONFIG_SENSORS_PLI1209BC)	+= pli1209bc.o
->   obj-$(CONFIG_SENSORS_PM6764TR)	+= pm6764tr.o
-> diff --git a/drivers/hwmon/pmbus/mp5990.c b/drivers/hwmon/pmbus/mp5990.c
-> new file mode 100644
-> index 000000000000..fb3ac9c5d44e
-> --- /dev/null
-> +++ b/drivers/hwmon/pmbus/mp5990.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Driver for MPS MP5990 Hot-Swap Controller
-> + */
-> +
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/pmbus.h>
+The issue is not that run build test. The key problem is how to know a
+protential problem will be exist, and limited a build/config scrope.
 
-Not used in this driver.
+Even I have risc\ppc\x86_64 built before I submmit patch, still can't
+capture build error if I missed just one platform mc6800.
 
-> +#include "pmbus.h"
-> +
-> +static int mp5990_read_byte_data(struct i2c_client *client, int page, int reg)
-> +{
-> +	switch (reg) {
-> +	case PMBUS_VOUT_MODE:
-> +		/* The datasheet does not support the VOUT command,
+For `readq` error also depend on the configs.
 
-Standard multi-line comments, please. This is not the networking subsystem.
+Actually, we major focus on test edmav1, .... v5 at difference platforms
+before submit patches. 
 
-> +		 * but the device responds with a default value of 0x17.
-> +		 * In the standard, 0x17 represents linear mode. However,
-> +		 * for the MP5990, the VOUT linear mode is linear11, not linear16.
-> +		 * Therefore, we should enforce the VOUT in the direct format.
-> +		 */
-> +		return PB_VOUT_MODE_DIRECT;
-
-This doesn't take into account that the reporting mode is set in
-EFUSE_CFG bit 9 (RPT_FORMAT). If the chip is configured to report its data
-in linear mode, all readings will be wrong if the exponent is != 0 and
-for negative values.
-
-The driver could enforce direct mode by explicitly configuring EFUSE_CFG,
-but that is not guaranteed to work because the chip could be write
-protected. It would be necessary to disable write protection first,
-making this a bit complicated. Alternatively, the reading of VOUT could
-be adjusted in linear mode to linear16 if the chip is configured to
-report data in linear mode. I would personally prefer this solution.
-Either case, this needs to be handled.
-
-Guenter
-
+> 
+> Best regards,
+> Krzysztof
+> 
