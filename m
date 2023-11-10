@@ -2,156 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5444A7E829A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93F67E8032
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346226AbjKJTUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        id S235225AbjKJSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjKJTUU (ORCPT
+        with ESMTP id S235528AbjKJSEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:20:20 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2083.outbound.protection.outlook.com [40.107.94.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405A37AC9;
-        Fri, 10 Nov 2023 07:26:39 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i8FHpbe85vKFDVEwHAeIIpaqthrZkZ08um/kAzOZpjHfPYI2U84ja63wTC9bk8quSurtXQArygAU7NTDx9anTwoa6+SXNgXFWRrLRDmtps9ZvWE7HMaeESNOcN7vf3MYR2KCwWFKS9ZO8thM15gwNA4rrU6/0SY6+IvcvXzCGGc4pPJn786Mh2IdMhvgB8WWzepIIZmiqA5BrnS/z+S16/drrBfUV6U2G0a0SPK/HPJNnJZbJHYcOW/138djFWzff61Ja1BQtD2l6kFEkvjaXNyHeAOTrsXFfj2Y9ZAFOC4qIHjsTBbuBXV6CMCsvk5rR4ZqDKvpPP7H/N3Nzs8cVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=adD0Y6g68I9viqMEMz6mnEW34J2ahp7sMOEBYwQwrmQ=;
- b=eNzngTM18fJOkbj9h4USYul1ySlsCjkzUZbpNtJEG8b/qxoR44Itnx4Tava7nvoY0W9dfKTLJGfJYeE6cWgw2Lr4AZ1ro2LIOekD0bhlOs/m0FX5ScMdQe8SD0oYou/DqA9xIAKL257ik3/Dr5CeGCnMDTjqMJppLetAOK5NQ3gcGYk+Nyy5p2WIQvkSPIGaMFbpI+qObL5+8Qjno/U4MX6IspgWS0d9303txVkLz5KNNoe1XUD6Xx6J7ZRsYIRUQwdWDYy0dadnnyswHvSdHrp/KZnbG8Cf4Kwc1LtLBrIE8Dq9N5sh70/XtamRQfwXrUx+F0TdQUYwhPHB3aKjkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 137.201.242.130) smtp.rcpttodomain=memverge.com smtp.mailfrom=micron.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=micron.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=adD0Y6g68I9viqMEMz6mnEW34J2ahp7sMOEBYwQwrmQ=;
- b=AtC1HlHHWxzK0vqJcGXpYTDC/XlMULWI72hsiK/Q2WktChppJ6/xufwzk25vJPR2AlShfrc6OYaKWjjmMPpEyMCF5hT+hpbiL2UOhg3EZJBEEr2BMLpf4OuAN4jOt8BWfcihK2p2hWVKuJjGIf7mMD6hoVoAQR7moFLQvsKcAG8FxaWQLKVHOr+jaJiZ3zLVUie7Y+NPmXejIUnjpoV523pZpwv81KrgSUM2XjE6puzfDjvSu6DJYp+W1QflrDPcXR0EgxWukRR0n7e4ussuweP2b/UwoGqw0vop1NQGHXabTbUxcE3ZG5fPU33hWZjauAtXr6w3iJBoNyvE9ciJaQ==
-Received: from SJ0PR13CA0193.namprd13.prod.outlook.com (2603:10b6:a03:2c3::18)
- by PH0PR08MB7132.namprd08.prod.outlook.com (2603:10b6:510:74::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Fri, 10 Nov
- 2023 15:26:34 +0000
-Received: from DS3PEPF000099E0.namprd04.prod.outlook.com
- (2603:10b6:a03:2c3:cafe::e1) by SJ0PR13CA0193.outlook.office365.com
- (2603:10b6:a03:2c3::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
- Transport; Fri, 10 Nov 2023 15:26:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 137.201.242.130)
- smtp.mailfrom=micron.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=micron.com;
-Received-SPF: Pass (protection.outlook.com: domain of micron.com designates
- 137.201.242.130 as permitted sender) receiver=protection.outlook.com;
- client-ip=137.201.242.130; helo=mail.micron.com; pr=C
-Received: from mail.micron.com (137.201.242.130) by
- DS3PEPF000099E0.mail.protection.outlook.com (10.167.17.203) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.16 via Frontend Transport; Fri, 10 Nov 2023 15:26:33 +0000
-Received: from BOW36EX19A.micron.com (137.201.85.33) by BOW36EX19A.micron.com
- (137.201.85.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Fri, 10 Nov
- 2023 08:26:32 -0700
-Received: from VENKATARAVI-LAP.micron.com (10.3.116.60) by
- RestrictedRelay36EX19A.micron.com (137.201.85.33) with Microsoft SMTP Server
- id 15.2.1258.12 via Frontend Transport; Fri, 10 Nov 2023 08:26:25 -0700
-From:   Ravi Jonnalagadda <ravis.opensrc@micron.com>
-To:     <gregory.price@memverge.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <ying.huang@intel.com>,
-        <akpm@linux-foundation.org>, <mhocko@kernel.org>, <tj@kernel.org>,
-        <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <corbet@lwn.net>,
-        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
-        <muchun.song@linux.dev>,
-        Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>,
-        Ravi Jonnalagadda <ravis.opensrc@micron.com>
-Subject: Re: [RFC PATCH v4 2/3] mm/mempolicy: implement weighted interleave
-Date:   Fri, 10 Nov 2023 20:56:06 +0530
-Message-ID: <20231110152606.123-1-ravis.opensrc@micron.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231109002517.106829-3-gregory.price@memverge.com>
-References: <20231109002517.106829-3-gregory.price@memverge.com>
+        Fri, 10 Nov 2023 13:04:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A73AE2F;
+        Fri, 10 Nov 2023 07:32:33 -0800 (PST)
+Date:   Fri, 10 Nov 2023 16:32:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699630350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=5pONqvq00ZWF43iaVMB/aICHR3Gy9ZQ2cA4AU79+avw=;
+        b=AVSJcxZ0BIrak3EOz0DPbG025+17yvRHntHyW/MInhViNlBEyO9OaVnnxvs/zpkTI1krYe
+        UaJkaoTS3DKrJ55tTLZN9Fok/yfr7lAEafLpn/zTEeF7tjiR5BSV48XN2KM9rnqoRakld7
+        22cXz0LIroJwob+HpxgfgyH5EA1BYmcBzU4xlaVu+o313u06Mjy9xAPq0oqnF3T15XCzII
+        ajh2oPOCKItoo9qL6TBPyTlF7QgvZwZVY/JOD1ZoHHxTjno0rICV2vFoi8upbBRQhLsRNt
+        kGHEls9NLSzw2Qt2mbEmMrDmqQzrIEv2ETJGM/T5DfKsCMIy7HRIjObPdU2syw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699630350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=5pONqvq00ZWF43iaVMB/aICHR3Gy9ZQ2cA4AU79+avw=;
+        b=NI6/hrxldYS+udzE50hjCw5dwcgEOJirkhTXJPk7TpX4ZFMAL8Yds/BDybwfGA0F9nsjhw
+        r6iYfZGlUbapU5Aw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [ANNOUNCE] v6.6-rt14
+Message-ID: <20231110153229.9CLWVN0E@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-MT-Whitelisted: matched
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E0:EE_|PH0PR08MB7132:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f84d4c9-40ac-4a70-25e6-08dbe2016c13
-X-EXT-ByPass: 1
-X-MT-RULE-Whitelisted: Triggered
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z8guBpB1TM+wkzi7cErnBmJaItrQGkQwpOLKDUDy7NNUBd89bzcAMSVs9Zlf4SfLF1JRa2hjUTFPhBJQq0KEWuW27e0AHt1jHtuzX4mQvE/IZdC35N3bgt/g0fZJaNRWooeTOayEFrfHWvhUoBBtk8eJQ0wbiaKUx4kArnoXvBHg4xCdKwW9Nl2TE7gEKXmRBDWD9FA5SQ10VLtyJbpFWJYm92Rh8MU0Q+5JobnO+FXU5aK2Zitwzh5/7TLVioFjqaBHWKDNDm4YqdawEVkpMS/vi5nW8YAoHeNLtdfOp7Qcnw2OwkFdJomPArUe857w2N59LwTVfK+Qkm7LSIVaW/PocS1Lbwju1bYlRn2r/8SeMolTQXAX23b6OTQMkHthiZ3BAwSzt9waMvo8uDpeUbvl5JxQ31iy1mumKNomhDRv0LS2qXz4r5x2eXG75/OkscBLkLgn9ERghAFkQhuJI9c0qS1lPMOh65QASFmrKSZWKAh+psuu4FIwYegkawzAOzemH+P3iZ5qUkjIXkPTYvLCN/ADL2jrL/IVZEPdcrKZwPL8b5vG23REC22H8CsTqFXdn91oP3XNAj4JBXa4FnfM2ORoUw+poCvCZGjTanHNsnxZX/rsAJzJsN011slgCPjQNJzcId3ZauYQWtAW1amrNz/s/HgHJvcPYbHJcrvMo0WKmwQUU96M/4BMCCGt5yHySpZKBxjjXws/8LA3l8pog4m1tH98xtHVb3ACqiekjxbf7b0PFJBuDUckLp3SilNE3Yforzqvh4mntIEE4Q==
-X-Forefront-Antispam-Report: CIP:137.201.242.130;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.micron.com;PTR:masquerade.micron.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(346002)(396003)(230922051799003)(186009)(1800799009)(82310400011)(451199024)(64100799003)(46966006)(40470700004)(36840700001)(2616005)(7696005)(7416002)(41300700001)(26005)(107886003)(1076003)(5660300002)(40460700003)(6666004)(40480700001)(426003)(336012)(2906002)(8676002)(8936002)(86362001)(6916009)(7636003)(356005)(70206006)(316002)(54906003)(70586007)(82740400003)(478600001)(47076005)(36860700001)(36756003)(4326008)(16393002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 15:26:33.8158
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f84d4c9-40ac-4a70-25e6-08dbe2016c13
-X-MS-Exchange-CrossTenant-Id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f38a5ecd-2813-4862-b11b-ac1d563c806f;Ip=[137.201.242.130];Helo=[mail.micron.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E0.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR08MB7132
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Gregory Price wrote:=0D
-=0D
->Implements interleave weighting for bandwidth optimization.=0D
->=0D
->The mempolicy MPOL_INTERLEAVE utilizes the node weights to implement=0D
->weighted interleave.=0D
->=0D
->There are 3 integration points:=0D
->=0D
->interleave_nodes:=0D
->  Counts the number of allocations as they occur, and applies the=0D
->  weight for the current node.  When the weight reaches 0, switch=0D
->  to the next node.=0D
->=0D
->offset_il_node:=0D
->  Gets the total weight of the nodemask as well as each individual=0D
->  node weight, then calculates the node based on the given index n.=0D
->=0D
->bulk_array_interleave:=0D
->  Gets the total weight of the nodemask as well as each individual=0D
->  node weight, then calculates the number of "interleave rounds" as=0D
->  well as any delta ("partial round").  Calculates the number of=0D
->  pages for each node and allocates them.=0D
->=0D
->  If a node was scheduled for interleave via interleave_nodes, the=0D
->  current weight (pol->cur_weight) will be allocated first, before=0D
->  the remaining bulk calculation is done. This simplifies the=0D
->  calculation at the cost of an additional allocation call.=0D
->=0D
->The functions mempolicy_get_il_weight and mempolicy_get_il_weights=0D
->were added so that should mempolicy be extended in the future to=0D
->include local mempolicy weights, there is a clear integration point.=0D
->=0D
->Signed-off-by: Gregory Price <gregory.price@memverge.com>=0D
-=0D
-Thank you for the collaboration.=0D
-Please add the following signatures to this commit.=0D
-Co-authored-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>=0D
-Co-authored-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>=0D
-Signed-off-by: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>=0D
-Signed-off-by: Ravi Jonnalagadda <ravis.opensrc@micron.com>=0D
-=0D
---=0D
-Best Regards,=0D
-Ravi Jonnalagadda=
+Dear RT folks!
+
+I'm pleased to announce the v6.6-rt14 patch set. 
+
+Changes since v6.6-rt13:
+
+  - The kernel test robot reported a compile warning in the !PRINTK
+    case. Patch by John Ogness.
+
+  - The PREEMPT_RT patch can be enabled on RiscV. It has been reported
+    by a few people that it works without any warnings. Tests by a wider 
+    user base is appreciated.
+
+Known issues
+     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
+     hist" as trigger. It is not yet understood. The report is at
+	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+
+The delta patch against v6.6-rt13 is appended below and can be found here:
+ 
+     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rt13-rt14.patch.xz
+
+You can get this release via the git tree at:
+
+    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rt14
+
+The RT patch against v6.6 can be found here:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rt14.patch.xz
+
+The split quilt queue is available at:
+
+    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rt14.tar.xz
+
+Sebastian
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 9c48fecc67191..ecf9db99a9272 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -48,6 +48,7 @@ config RISCV
+ 	select ARCH_SUPPORTS_HUGETLBFS if MMU
+ 	select ARCH_SUPPORTS_PAGE_TABLE_CHECK if MMU
+ 	select ARCH_SUPPORTS_PER_VMA_LOCK if MMU
++	select ARCH_SUPPORTS_RT
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USES_CFI_TRAPS if CFI_CLANG
+@@ -135,6 +136,7 @@ config RISCV
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
+ 	select HAVE_PREEMPT_DYNAMIC_KEY if !XIP_KERNEL
++	select HAVE_PREEMPT_AUTO
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RETHOOK if !XIP_KERNEL
+ 	select HAVE_RSEQ
+diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
+index d0345bd659c94..23fed53b88157 100644
+--- a/arch/riscv/include/asm/cpufeature.h
++++ b/arch/riscv/include/asm/cpufeature.h
+@@ -30,6 +30,4 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
+ /* Per-cpu ISA extensions. */
+ extern struct riscv_isainfo hart_isa[NR_CPUS];
+ 
+-void check_unaligned_access(int cpu);
+-
+ #endif
+diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+index 1833beb00489c..c5aebcdafd7b2 100644
+--- a/arch/riscv/include/asm/thread_info.h
++++ b/arch/riscv/include/asm/thread_info.h
+@@ -85,6 +85,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
+  * - pending work-to-be-done flags are in lowest half-word
+  * - other flags in upper half-word(s)
+  */
++#define TIF_ARCH_RESCHED_LAZY	0	/* Lazy rescheduling */
+ #define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
+ #define TIF_SIGPENDING		2	/* signal pending */
+ #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
+@@ -99,6 +100,7 @@ int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
+ #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+ #define _TIF_NOTIFY_SIGNAL	(1 << TIF_NOTIFY_SIGNAL)
+ #define _TIF_UPROBE		(1 << TIF_UPROBE)
++#define _TIF_ARCH_RESCHED_LAZY	(1 << TIF_ARCH_RESCHED_LAZY)
+ 
+ #define _TIF_WORK_MASK \
+ 	(_TIF_NOTIFY_RESUME | _TIF_SIGPENDING | _TIF_NEED_RESCHED | \
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 1cfbba65d11ae..07c7baac014db 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/bitmap.h>
++#include <linux/cpuhotplug.h>
+ #include <linux/ctype.h>
+ #include <linux/log2.h>
+ #include <linux/memory.h>
+@@ -29,6 +30,7 @@
+ 
+ #define MISALIGNED_ACCESS_JIFFIES_LG2 1
+ #define MISALIGNED_BUFFER_SIZE 0x4000
++#define MISALIGNED_BUFFER_ORDER get_order(MISALIGNED_BUFFER_SIZE)
+ #define MISALIGNED_COPY_SIZE ((MISALIGNED_BUFFER_SIZE / 2) - 0x80)
+ 
+ unsigned long elf_hwcap __read_mostly;
+@@ -556,24 +558,19 @@ unsigned long riscv_get_elf_hwcap(void)
+ 	return hwcap;
+ }
+ 
+-void check_unaligned_access(int cpu)
++static int check_unaligned_access(void *param)
+ {
++	int cpu = smp_processor_id();
+ 	u64 start_cycles, end_cycles;
+ 	u64 word_cycles;
+ 	u64 byte_cycles;
+ 	int ratio;
+ 	unsigned long start_jiffies, now;
+-	struct page *page;
++	struct page *page = param;
+ 	void *dst;
+ 	void *src;
+ 	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
+ 
+-	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
+-	if (!page) {
+-		pr_warn("Can't alloc pages to measure memcpy performance");
+-		return;
+-	}
+-
+ 	/* Make an unaligned destination buffer. */
+ 	dst = (void *)((unsigned long)page_address(page) | 0x1);
+ 	/* Unalign src as well, but differently (off by 1 + 2 = 3). */
+@@ -626,7 +623,7 @@ void check_unaligned_access(int cpu)
+ 		pr_warn("cpu%d: rdtime lacks granularity needed to measure unaligned access speed\n",
+ 			cpu);
+ 
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	if (word_cycles < byte_cycles)
+@@ -640,18 +637,83 @@ void check_unaligned_access(int cpu)
+ 		(speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
+ 
+ 	per_cpu(misaligned_access_speed, cpu) = speed;
+-
+-out:
+-	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
+-}
+-
+-static int check_unaligned_access_boot_cpu(void)
+-{
+-	check_unaligned_access(0);
+ 	return 0;
+ }
+ 
+-arch_initcall(check_unaligned_access_boot_cpu);
++static void check_unaligned_access_nonboot_cpu(void *param)
++{
++	unsigned int cpu = smp_processor_id();
++	struct page **pages = param;
++
++	if (smp_processor_id() != 0)
++		check_unaligned_access(pages[cpu]);
++}
++
++static int riscv_online_cpu(unsigned int cpu)
++{
++	static struct page *buf;
++
++	/* We are already set since the last check */
++	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
++		return 0;
++
++	buf = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
++	if (!buf) {
++		pr_warn("Allocation failure, not measuring misaligned performance\n");
++		return -ENOMEM;
++	}
++
++	check_unaligned_access(buf);
++	__free_pages(buf, MISALIGNED_BUFFER_ORDER);
++	return 0;
++}
++
++/* Measure unaligned access on all CPUs present at boot in parallel. */
++static int check_unaligned_access_all_cpus(void)
++{
++	unsigned int cpu;
++	unsigned int cpu_count = num_possible_cpus();
++	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
++				     GFP_KERNEL);
++
++	if (!bufs) {
++		pr_warn("Allocation failure, not measuring misaligned performance\n");
++		return 0;
++	}
++
++	/*
++	 * Allocate separate buffers for each CPU so there's no fighting over
++	 * cache lines.
++	 */
++	for_each_cpu(cpu, cpu_online_mask) {
++		bufs[cpu] = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
++		if (!bufs[cpu]) {
++			pr_warn("Allocation failure, not measuring misaligned performance\n");
++			goto out;
++		}
++	}
++
++	/* Check everybody except 0, who stays behind to tend jiffies. */
++	on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
++
++	/* Check core 0. */
++	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
++
++	/* Setup hotplug callback for any new CPUs that come online. */
++	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
++				  riscv_online_cpu, NULL);
++
++out:
++	for_each_cpu(cpu, cpu_online_mask) {
++		if (bufs[cpu])
++			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
++	}
++
++	kfree(bufs);
++	return 0;
++}
++
++arch_initcall(check_unaligned_access_all_cpus);
+ 
+ #ifdef CONFIG_RISCV_ALTERNATIVE
+ /*
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 1b8da4e40a4d6..2cb5e651412cb 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -246,7 +246,6 @@ asmlinkage __visible void smp_callin(void)
+ 
+ 	numa_add_cpu(curr_cpuid);
+ 	set_cpu_online(curr_cpuid, 1);
+-	check_unaligned_access(curr_cpuid);
+ 
+ 	if (has_vector()) {
+ 		if (riscv_v_setup_vsize())
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index db8329091bb82..a3ae0710346cd 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -178,7 +178,7 @@ static inline void nbcon_seq_force(struct console *con, u64 seq) { }
+ static inline bool nbcon_alloc(struct console *con) { return false; }
+ static inline void nbcon_init(struct console *con) { }
+ static inline void nbcon_free(struct console *con) { }
+-enum nbcon_prio nbcon_get_default_prio(void) { return NBCON_PRIO_NONE; }
++static inline enum nbcon_prio nbcon_get_default_prio(void) { return NBCON_PRIO_NONE; }
+ static inline void nbcon_atomic_flush_all(void) { }
+ static bool nbcon_atomic_emit_next_record(struct console *con) { return false; }
+ 
+diff --git a/localversion-rt b/localversion-rt
+index 9f7d0bdbffb18..08b3e75841adc 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt13
++-rt14
