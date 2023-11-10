@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B048B7E81B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3C47E81D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345871AbjKJSch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:32:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        id S229744AbjKJSh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346605AbjKJSbX (ORCPT
+        with ESMTP id S1345062AbjKJSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:31:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32997693
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:33:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699598033; x=1731134033;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=66YBL6PfrqVg04K0JChX/7lt+q7ycdrEOKTR8Zp9r54=;
-  b=LwYf1tPjWRsEKtDoI2ttzQQsMGQBqZhXmun/BvqXxXAMNcOo9P7rXeX/
-   nib8CC2WR0NFNL/oDTvbwFF5hOdrj5PX/sb31SXG40oWF/pta3Mk3oVBY
-   S1vQZoewCOoCp4JCer2qAS8F6EsCIDZJwOEKwghStgZea7vxkU9A+i9E4
-   0OJzpTeOjFZAwye+OruSbDcXY6N5qpAP5D64uCrIj11RYk4XHm4fGOHap
-   rAcZXiD4bFQUmlSW/kOExscrx5EEQjL1wakQcC4sQLWRzfUQzNWAUXBJX
-   67qY8ZllHuqh3lZbd1YuJ3SdLoulGStyFajJTTQi1I55Vk9TTU96bMT7J
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="393014375"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="393014375"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:33:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="834073028"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="834073028"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Nov 2023 22:33:49 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1L5P-0009Sm-2I;
-        Fri, 10 Nov 2023 06:33:47 +0000
-Date:   Fri, 10 Nov 2023 14:33:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrea Parri <parri.andrea@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        charlie@rivosinc.com, rehn@rivosinc.com, paulmck@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com
-Subject: Re: [PATCH 1/2] locking: Introduce prepare_sync_core_cmd()
-Message-ID: <202311101405.3plnlyj4-lkp@intel.com>
-References: <ZU0sliwUQJyNAH1y@andrea>
+        Fri, 10 Nov 2023 13:34:54 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26EA76AF;
+        Thu,  9 Nov 2023 22:36:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6dqdlP6AxTKMdU01n11JFGLaHz+ZMH6iLEES/JhpcoI=; b=g8BgUbS8v3nwxx7xg+ggb+VBMM
+        Ssr7GN17YWFa7BYF2o8RsuocbEVVPSGrluBypv/KAgOaGHba6nwG7d/r/uHoV52lOvtM9PX0g9ptN
+        EJkP7arbniWJ8ZWUzRqciozisg/jdXTJgUS5mvXmw60HRvjqgEcdJoJ/eGOFoPFGr0Z9suV33wQhj
+        k3EYVpeWFsKKNARTn8G95q1ttJiEdR4FGaxgy9uqe5WFdVzdInzmO05bkYQ9736/K428MxJNZZqOb
+        Te+xbgbmOox63eDUx3Sc31DZiYNrU3bc4QAZr92yIPqp3HP5o2+nIZU+X1jhrDjV4Y+AJcgsPSbYL
+        1sf59gng==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r1L8J-007yZG-1y;
+        Fri, 10 Nov 2023 06:36:47 +0000
+Date:   Thu, 9 Nov 2023 22:36:47 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     ed.tsai@mediatek.com
+Cc:     ming.lei@redhat.com, hch@lst.de, Jens Axboe <axboe@kernel.dk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        wsd_upstream@mediatek.com, chun-hung.wu@mediatek.com,
+        casper.li@mediatek.com, will.shiu@mediatek.com,
+        light.hsieh@mediatek.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] block: limit the extract size to align queue limit
+Message-ID: <ZU3Pf0o2RCZ+dGNa@infradead.org>
+References: <20231110051950.21972-1-ed.tsai@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZU0sliwUQJyNAH1y@andrea>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+In-Reply-To: <20231110051950.21972-1-ed.tsai@mediatek.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,66 +58,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrea,
+On Fri, Nov 10, 2023 at 01:19:49PM +0800, ed.tsai@mediatek.com wrote:
+> +	if (bdev && blk_queue_pci_p2pdma(bdev->bd_disk->queue))
+>  		extraction_flags |= ITER_ALLOW_P2PDMA;
 
-kernel test robot noticed the following build errors:
+As pointed out in reply to Ming, you really need to first figure out
+if we can assume we have a valid bdev or not, and if not pass all the
+relevant information separately.
 
-[auto build test ERROR on tip/sched/core]
-[also build test ERROR on linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> +	if (bdev && bio_op(bio) != REQ_OP_ZONE_APPEND) {
+> +		unsigned int max = queue_max_bytes(bdev_get_queue(bdev));
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrea-Parri/locking-Introduce-prepare_sync_core_cmd/20231110-035816
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/ZU0sliwUQJyNAH1y%40andrea
-patch subject: [PATCH 1/2] locking: Introduce prepare_sync_core_cmd()
-config: riscv-allnoconfig (https://download.01.org/0day-ci/archive/20231110/202311101405.3plnlyj4-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101405.3plnlyj4-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311101405.3plnlyj4-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/sync_core.h:6,
-                    from include/linux/sched/mm.h:10,
-                    from include/linux/xarray.h:19,
-                    from include/linux/list_lru.h:14,
-                    from include/linux/fs.h:13,
-                    from include/linux/huge_mm.h:8,
-                    from include/linux/mm.h:1075,
-                    from arch/riscv/kernel/asm-offsets.c:10:
-   arch/riscv/include/asm/sync_core.h: In function 'prepare_sync_core_cmd':
->> arch/riscv/include/asm/sync_core.h:20:36: error: 'mm_context_t' has no member named 'icache_stale_mask'
-      20 |         cpumask_setall(&mm->context.icache_stale_mask);
-         |                                    ^
-   make[3]: *** [scripts/Makefile.build:116: arch/riscv/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1202: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:234: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +20 arch/riscv/include/asm/sync_core.h
-
-    13	
-    14	/*
-    15	 * Ensure the next switch_mm() on every CPU issues a core serializing
-    16	 * instruction for the given @mm.
-    17	 */
-    18	static inline void prepare_sync_core_cmd(struct mm_struct *mm)
-    19	{
-  > 20		cpumask_setall(&mm->context.icache_stale_mask);
-    21	}
-    22	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The higher level code must not look at queue_max_bytes, that is only
+used for splitting and might not even be initialized.
