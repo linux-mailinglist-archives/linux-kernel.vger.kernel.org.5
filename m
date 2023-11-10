@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C670D7E80F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F40D7E81D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346131AbjKJSUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        id S1344787AbjKJSh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKJSRZ (ORCPT
+        with ESMTP id S1344843AbjKJSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:17:25 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4AAC2AD37
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:00:38 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc9784dbc1so16421085ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:00:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1699614038; x=1700218838; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2jwNwfpxjtptLy1F0nwNpWWvyagycEyL720lh2jZDW0=;
-        b=eoUGjp4FTDg+HB/16CVgv2JwICrQcsRG3yt1MykKUsRfNMU5cttanjw7mXmIwKags/
-         s9q4CHbcyDctyFh97dgjA9lkNAoMsNxNsCcN1vw/j5KazNu3dewkzlA2jKpD2i+zAl+R
-         i5RlYLCF7x6VsT/qqVlFz+sl7axGJge2IqA1c65a4aiMdt6R/JNzfXhR3Gf1cm8yxPgk
-         ym3AgrW9GDqA43InzII6MKTnTln0IoNaqLxbzZ2sSkKwKxB2nEcutlbXLICjsjO7oREK
-         bCbM/G6ilurJKzZ0SxuBw0g8X0YlRFfSwaBTpSUkT775J26Gh/j02MeJDBVwz4jsmoAN
-         Igsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699614038; x=1700218838;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2jwNwfpxjtptLy1F0nwNpWWvyagycEyL720lh2jZDW0=;
-        b=Fw/3AzswQXzaFmaV8xIkZi5LLtMcWhYBVKauMmzdbc9rUEle1zMCgpZyvYJhxNLm0X
-         wExE26nCjW1KwMzIAZK2mfGx9l0ByKNI4qK6/CkSAuIafMqdRmmnxQBJaZhNe+Md387m
-         gLruUb+O6F9SjZpleeDF5rLXzUyps1Xp1d9qqg/CQrqQxiMgeiHGiGCdasxzheWT3Z48
-         2E9XFFWDDRvkHsFHU/o0cpCXElHK0lOvJ5GeyK249K0DBIF8Gd7WJVxjZnBsWWN3nqGy
-         BLNgswrGC9LAeZcGawumafNRDxXUSg3UHs9nQdQ68gR4TW85Fop3+6OxkuCOQf5iSYL/
-         vBKA==
-X-Gm-Message-State: AOJu0YxkDhBD8CnrJfmM+AX/2D/CMaZp6mdZJKwLrcEWn1YeJNb5M9+C
-        hj3LF7VGsOJ7M7kHxXth9CfKhQ==
-X-Google-Smtp-Source: AGHT+IFZ2GRY0U1BKY37Mj49LbEaENLVUdoY2xSW0blo37BoRDQewBGLoIMWIG8wm12aPGielaJTIA==
-X-Received: by 2002:a17:902:dacb:b0:1c9:e765:e14a with SMTP id q11-20020a170902dacb00b001c9e765e14amr9169334plx.1.1699614038017;
-        Fri, 10 Nov 2023 03:00:38 -0800 (PST)
-Received: from [10.54.24.52] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001c9b8f76a89sm5082132plh.82.2023.11.10.03.00.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 03:00:37 -0800 (PST)
-Message-ID: <89bd35a9-ea64-4974-af8e-a033b93d005a@shopee.com>
-Date:   Fri, 10 Nov 2023 19:00:33 +0800
+        Fri, 10 Nov 2023 13:34:54 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0DFC2AD3C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:01:28 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8A25A66073EB;
+        Fri, 10 Nov 2023 11:01:26 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699614087;
+        bh=M7g15Ds3YB0rAZrwMqFqhvf/l8gr3sjjjFteM0C28zs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hbb8LDTQq4RSYvyQKXhwzEaFY3S/PSmM2XeVj8XNi5/pmEFm+CXppTiuTj7QD4CZx
+         8co2y4KUpNxbre2QFzUUcxRA8sCPdl2Z+jxgtbG+80PTAsE9BoMeC5F14w0W1jgmz/
+         OV5w1DJ/ocBfKg7xRQQelCeq/r68xhZxMOmsrL02W9qe9LuCWJhmbL6HHGAUD/0Ttf
+         gHYguXb0/fxr81PZJhFrPt7GM8DXDF0KWVIHuuXNSLRCIbzrQHP/Aq36d0BSVXWFpV
+         IZTIsIKBR0jzOw9XBpgwo9WUTuSuRdYKExb716IYVxzMjqPM6sGpodGY933J8AqFLT
+         c9mLE9lfwOacw==
+Date:   Fri, 10 Nov 2023 12:01:23 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 17/26] drm/v3d: Explicitly get and put drm-shmem
+ pages
+Message-ID: <20231110120123.65f399af@collabora.com>
+In-Reply-To: <20231029230205.93277-18-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-18-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] locking/rwsem: Remove unnessary check in
- rwsem_down_read_slowpath()
-To:     Tang Yizhou <yizhou.tang@shopee.com>
-Cc:     Waiman Long <longman@redhat.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20231108105639.70088-1-haifeng.xu@shopee.com>
- <6da49b39-653a-1eda-2d21-1f1b50cb14f0@redhat.com>
- <5086cd5b-a832-4250-9927-4b300d2f611e@shopee.com>
- <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -78,48 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 30 Oct 2023 02:01:56 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-
-On 2023/11/10 14:54, Tang Yizhou wrote:
-> On Thu, Nov 9, 2023 at 11:17 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
->>
->> reader          writer                                  reader
->>
->> acquire
->> release
->>                 rwsem_write_trylock
->>                         set RWSEM_WRITER_LOCKED
->>                                                         rwsem_down_read_slowpath
->>                         set owner
->>
->> If prev lock holder is a reader, when it releases the lock, the owner isn't cleared(CONFIG_DEBUG_RWSEMS isn't enabled).
->> A writer comes and can set the RWSEM_WRITER_LOCKED bit succsessfully, then a new reader run into slow path, before
->> the writer set the owner, the new reader will see that both the RWSEM_READER_OWNED bit and RWSEM_WRITER_LOCKED bit are
->> set.
->>
+> To simplify the drm-shmem refcnt handling, we're moving away from
+> the implicit get_pages() that is used by get_pages_sgt(). From now on
+> drivers will have to pin pages while they use sgt. V3D driver doesn't
+> support shrinker, hence pages are pinned and sgt is valid as long as
+> pages' use-count > 0.
 > 
-> For the above example, it won't cause a problem. When the writer
-> successfully sets RWSEM_WRITER_LOCKED, the reader, when reading rcnt
-> through rwsem_down_read_slowpath(), will see that rcnt is 0 and will
-> jump to the queue label.
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> ---
+>  drivers/gpu/drm/v3d/v3d_bo.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 > 
-> Thanks,
-> Tang
+> diff --git a/drivers/gpu/drm/v3d/v3d_bo.c b/drivers/gpu/drm/v3d/v3d_bo.c
+> index 42cd874f6810..0597c6b01b6c 100644
+> --- a/drivers/gpu/drm/v3d/v3d_bo.c
+> +++ b/drivers/gpu/drm/v3d/v3d_bo.c
+> @@ -47,6 +47,9 @@ void v3d_free_object(struct drm_gem_object *obj)
+>  	/* GPU execution may have dirtied any pages in the BO. */
+>  	bo->base.pages_mark_dirty_on_put = true;
+>  
+> +	if (!obj->import_attach)
+> +		drm_gem_shmem_put_pages(&bo->base);
+> +
+>  	drm_gem_shmem_free(&bo->base);
+>  }
+>  
+> @@ -135,12 +138,18 @@ struct v3d_bo *v3d_bo_create(struct drm_device *dev, struct drm_file *file_priv,
+>  		return ERR_CAST(shmem_obj);
+>  	bo = to_v3d_bo(&shmem_obj->base);
+>  
+> -	ret = v3d_bo_create_finish(&shmem_obj->base);
+> +	ret = drm_gem_shmem_get_pages(shmem_obj);
+>  	if (ret)
+>  		goto free_obj;
+>  
+> +	ret = v3d_bo_create_finish(&shmem_obj->base);
+> +	if (ret)
+> +		goto put_pages;
+> +
+>  	return bo;
+>  
+> +put_pages:
+> +	drm_gem_shmem_put_pages(shmem_obj);
+>  free_obj:
+>  	drm_gem_shmem_free(shmem_obj);
+>  	return ERR_PTR(ret);
 
-In this case, rcnt is not 0, it's 1, because rwsem_read_trylock() has add RWSEM_READER_BIAS, so if more than one new reader comes,
-it could be the case.
-
-reader		writer					reader									reader
-
-acquire
-release
-		rwsem_write_trylock
-			set RWSEM_WRITER_LOCKED
-							rwsem_down_read_slowpath						rwsem_down_read_slowpath
-			
-								...									check RWSEM_WRITER_LOCKED bit(rcnt=2)
-								
-
-								count = atomic_long_add_return(adjustment, &sem->count);
-
-			set owner
