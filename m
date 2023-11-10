@@ -2,197 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53E37E8110
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DA07E8047
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345156AbjKJSXM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 13:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S235701AbjKJSIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346325AbjKJSVN (ORCPT
+        with ESMTP id S1345580AbjKJSGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:21:13 -0500
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20AF2B7CC;
-        Fri, 10 Nov 2023 01:24:59 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5bf5d6eaf60so17754297b3.2;
-        Fri, 10 Nov 2023 01:24:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699608298; x=1700213098;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KmyygXGlWqHLIcYJDnrqzZMuJVEgqUclqA12kn4gnFE=;
-        b=NiQu3GsbIMv6LSvCp8jhSgx+jRxZsbNu9V+EdBYoAEBxjHwGJzk7pJ71BfDX/UH7Wz
-         ECHr3lABQC+1VZ10KOQzAZMPB8Bz5dNPcfMo1/0DVmltRYF8eUt6YUizB/FZaKCFENeQ
-         TxF8D7whdKLkSABdJuZbfso8bUdVG9auUJwLIe7zW6zpA8tbd4ivo/e8U2/8/rHkcfnM
-         hXx/BytyoA1ZZkKLCep3bXHW5EvrIN61PPgo69rKyn4wicbYC3w7l9C/JKfYt5V8zHUs
-         B9U/G6g0+cc+lHlX9EvzVb7ekJ9NN4klXdY78jToGhtM6/yk5xM7NvIBU4bnXAM7s8cm
-         EbQg==
-X-Gm-Message-State: AOJu0YzIGX77uXdW2SL8+LwpzYWu+SupiR+qujqjNw3a5kjx48AIDHtl
-        TLMJxfiPGuIKQTLf2z6Bxv+y6GskDiXDig==
-X-Google-Smtp-Source: AGHT+IFoXrgCJRz7afFo0PwLPyK/4l+eLOmgJ+1kz5XbwTzyyUuxMlnex9ZLprOuCx2YEjtbrcBq7A==
-X-Received: by 2002:a81:8305:0:b0:5a7:b973:db3c with SMTP id t5-20020a818305000000b005a7b973db3cmr8225093ywf.34.1699608298636;
-        Fri, 10 Nov 2023 01:24:58 -0800 (PST)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id h83-20020a816c56000000b005af9da2225bsm8481335ywc.20.2023.11.10.01.24.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 01:24:58 -0800 (PST)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so2038406276.1;
-        Fri, 10 Nov 2023 01:24:57 -0800 (PST)
-X-Received: by 2002:a25:bc90:0:b0:d9b:4a28:f66 with SMTP id
- e16-20020a25bc90000000b00d9b4a280f66mr7552303ybk.53.1699608297683; Fri, 10
- Nov 2023 01:24:57 -0800 (PST)
+        Fri, 10 Nov 2023 13:06:39 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8672B7C8;
+        Fri, 10 Nov 2023 01:25:34 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 13A0F66073D3;
+        Fri, 10 Nov 2023 09:25:32 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699608333;
+        bh=n3+n4ksLRFYR42r5lq33koWRbtaxd52htHZoJWv8Q2c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=mOD4VV5XkUr+52siDkPiIOaMx3IS3FOP/uD/XzskUk9EQBcQ5ReyAB2vNY+Dt52Ed
+         fVRkhuhHFSlJf5wGMZpBtOMVTXkftf18t0vYFYBuQasAjWad71XARhpmz6ghjaRwUA
+         ifI2jPLDFhheIv2D2IUHNNzfCYYzMKVlz2Jk+jjuf0Pw82JjbvrggCk3F50xfZg782
+         R9m83Ernj1bylVxDMyqT6TDZKsU9nifIDCOdHsDPfIqwn4NSCyHMIDOB21YpJuKtDn
+         QSK/n2BYzQdLt5B6N5+IR2WA7dO0crqUpW97Fs8SAhZnABE+zSle1oi0erDWOeBClK
+         g0dSUGCaQIbug==
+Message-ID: <78109ad6-afbc-46eb-ba25-b4fc35c59c3c@collabora.com>
+Date:   Fri, 10 Nov 2023 10:25:31 +0100
 MIME-Version: 1.0
-References: <20231031064553.2319688-1-xiao.w.wang@intel.com> <20231031064553.2319688-3-xiao.w.wang@intel.com>
-In-Reply-To: <20231031064553.2319688-3-xiao.w.wang@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 10 Nov 2023 10:24:46 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUQGtenM=_sNntW4mQ0K-7G=5_OhxG-AgQffMbR276W1w@mail.gmail.com>
-Message-ID: <CAMuHMdUQGtenM=_sNntW4mQ0K-7G=5_OhxG-AgQffMbR276W1w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] riscv: Optimize bitops with Zbb extension
-To:     Xiao Wang <xiao.w.wang@intel.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, ardb@kernel.org, anup@brainfault.org,
-        haicheng.li@intel.com, ajones@ventanamicro.com,
-        yujie.liu@intel.com, charlie@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 19/56] media: dvb-core: Do not initialize twice queue
+ num_buffer field
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231109163512.179524-14-benjamin.gaignard@collabora.com>
+ <20231109163512.179524-20-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231109163512.179524-20-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiao,
+W dniu 9.11.2023 o 17:34, Benjamin Gaignard pisze:
+> The above memset already zeroed all the ctx fields, it is useless
+> to do it here again.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-On Tue, Oct 31, 2023 at 7:37 AM Xiao Wang <xiao.w.wang@intel.com> wrote:
-> This patch leverages the alternative mechanism to dynamically optimize
-> bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
-> Zbb ext is not supported by the runtime CPU, legacy implementation is
-> used. If Zbb is supported, then the optimized variants will be selected
-> via alternative patching.
->
-> The legacy bitops support is taken from the generic C implementation as
-> fallback.
->
-> If the parameter is a build-time constant, we leverage compiler builtin to
-> calculate the result directly, this approach is inspired by x86 bitops
-> implementation.
->
-> EFI stub runs before the kernel, so alternative mechanism should not be
-> used there, this patch introduces a macro NO_ALTERNATIVE for this purpose.
->
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-Thanks for your patch, which is now commit 457926b253200bd9 ("riscv:
-Optimize bitops with Zbb extension") in riscv/for-next.
+> ---
+>   drivers/media/dvb-core/dvb_vb2.c | 3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/media/dvb-core/dvb_vb2.c b/drivers/media/dvb-core/dvb_vb2.c
+> index 3a966fdf814c..167ff82a6fed 100644
+> --- a/drivers/media/dvb-core/dvb_vb2.c
+> +++ b/drivers/media/dvb-core/dvb_vb2.c
+> @@ -167,8 +167,6 @@ int dvb_vb2_init(struct dvb_vb2_ctx *ctx, const char *name, int nonblocking)
+>   
+>   	memset(ctx, 0, sizeof(struct dvb_vb2_ctx));
+>   	q->type = DVB_BUF_TYPE_CAPTURE;
+> -	/**capture type*/
+> -	q->is_output = 0;
+>   	/**only mmap is supported currently*/
+>   	q->io_modes = VB2_MMAP;
+>   	q->drv_priv = ctx;
+> @@ -177,7 +175,6 @@ int dvb_vb2_init(struct dvb_vb2_ctx *ctx, const char *name, int nonblocking)
+>   	q->ops = &dvb_vb2_qops;
+>   	q->mem_ops = &vb2_vmalloc_memops;
+>   	q->buf_ops = &dvb_vb2_buf_ops;
+> -	q->num_buffers = 0;
+>   	ret = vb2_core_queue_init(q);
+>   	if (ret) {
+>   		ctx->state = DVB_VB2_STATE_NONE;
 
-> --- a/arch/riscv/include/asm/bitops.h
-> +++ b/arch/riscv/include/asm/bitops.h
-> @@ -15,13 +15,261 @@
->  #include <asm/barrier.h>
->  #include <asm/bitsperlong.h>
->
-> +#if !defined(CONFIG_RISCV_ISA_ZBB) || defined(NO_ALTERNATIVE)
->  #include <asm-generic/bitops/__ffs.h>
-> -#include <asm-generic/bitops/ffz.h>
-> -#include <asm-generic/bitops/fls.h>
->  #include <asm-generic/bitops/__fls.h>
-> +#include <asm-generic/bitops/ffs.h>
-> +#include <asm-generic/bitops/fls.h>
-> +
-> +#else
-> +#include <asm/alternative-macros.h>
-> +#include <asm/hwcap.h>
-> +
-> +#if (BITS_PER_LONG == 64)
-> +#define CTZW   "ctzw "
-> +#define CLZW   "clzw "
-> +#elif (BITS_PER_LONG == 32)
-> +#define CTZW   "ctz "
-> +#define CLZW   "clz "
-> +#else
-> +#error "Unexpected BITS_PER_LONG"
-> +#endif
-> +
-> +static __always_inline unsigned long variable__ffs(unsigned long word)
-> +{
-> +       int num;
-> +
-> +       asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-> +                                     RISCV_ISA_EXT_ZBB, 1)
-> +                         : : : : legacy);
-> +
-> +       asm volatile (".option push\n"
-> +                     ".option arch,+zbb\n"
-> +                     "ctz %0, %1\n"
-> +                     ".option pop\n"
-> +                     : "=r" (word) : "r" (word) :);
-> +
-> +       return word;
-> +
-> +legacy:
-> +       num = 0;
-> +#if BITS_PER_LONG == 64
-> +       if ((word & 0xffffffff) == 0) {
-> +               num += 32;
-> +               word >>= 32;
-> +       }
-> +#endif
-> +       if ((word & 0xffff) == 0) {
-> +               num += 16;
-> +               word >>= 16;
-> +       }
-> +       if ((word & 0xff) == 0) {
-> +               num += 8;
-> +               word >>= 8;
-> +       }
-> +       if ((word & 0xf) == 0) {
-> +               num += 4;
-> +               word >>= 4;
-> +       }
-> +       if ((word & 0x3) == 0) {
-> +               num += 2;
-> +               word >>= 2;
-> +       }
-> +       if ((word & 0x1) == 0)
-> +               num += 1;
-> +       return num;
-> +}
-
-Surely we can do better than duplicating include/asm-generic/bitops/__ffs.h?
-
-E.g. rename the generic implementation to generic___ffs():
-
-    -static __always_inline unsigned long __ffs(unsigned long word)
-    +static __always_inline unsigned long generic__ffs(unsigned long word)
-     {
-             ...
-     }
-
-    +#ifndef __ffs
-    +#define __ffs(x) generic__ffs(x)
-    +#endif
-
-and explicitly calling the generic one here?
-
-Same comment for the other functions.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
