@@ -2,145 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D27C7E8104
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814247E8007
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345966AbjKJSUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
+        id S235718AbjKJSEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345111AbjKJSRY (ORCPT
+        with ESMTP id S235841AbjKJSCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:17:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB7EA752C;
-        Fri, 10 Nov 2023 05:48:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699624122; x=1731160122;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=i4DGycXr5ls5BoujGjeZj8UmFRoUHSyqGt7yLUkrRBM=;
-  b=SzvoKxA9GZuawdbURVB17nAqv5ZuxtmLb/mB7aenLcP/AiZEeeHNUhfu
-   GcKwxrKICtZ0lDNAbKEFa0mRcy2DAQEC6gz8ED0c5vEN5PaPdU2fJiLx7
-   cWoBdcr7O81akw9xi3AkqwP4lBq4bymzJ55RD0UJ+WL4+2SsmLU36VrWU
-   aDkoYDwY1LFd3Vo/QCBqajD8zPgECrCTGxqjlstOzwf/Ff8OzoHO4GFTj
-   Wwl5/E4z6ZRBjy6uQ6Aj1B8YqF/uYkyCR/YcTIvrpB9x2YEjBKF3lkHO+
-   h5G0Na9WA292cg2u3jBHjq5xlV87CFAzaP6mWixtEZ2NR1DdYFZGi3Rsx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="389044834"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="389044834"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 05:48:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="763762260"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="763762260"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 05:48:42 -0800
-Received: from [10.212.121.231] (shassa2x-mobl1.gar.corp.intel.com [10.212.121.231])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id BFD8D580D69;
-        Fri, 10 Nov 2023 05:48:40 -0800 (PST)
-Message-ID: <2f306eda-953b-4390-8db1-0b3ab4e16213@linux.intel.com>
-Date:   Fri, 10 Nov 2023 08:48:39 -0500
+        Fri, 10 Nov 2023 13:02:55 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2F9A753A;
+        Fri, 10 Nov 2023 05:49:36 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id BB71C3200A2B;
+        Fri, 10 Nov 2023 08:49:32 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 10 Nov 2023 08:49:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1699624172; x=1699710572; bh=gr
+        ojPZKgF7i4ycqWyl3K3qTSTs7COURoVDRKuNTUh/M=; b=nh4WX7/90u4Gme0x9f
+        1uVVxdYgdkllPoE0w+fySPgMK1A/brPAhRGEvzdJOiAre58FQcJJVnwntB/kc05V
+        eWs+EdPSM2+Lz/qojlylNUeTHuJEKb6T46VTozIyiN8tcTUSWSQEedKwKd0BzRVu
+        qN5aQP2i1fnl3AXsYVqOQwRUMACE6F2vkqveUoE88YVXpUI0G6Rz0fvhEp+A4WhW
+        EQiq7wQ7efxFk3caHmEb0/1usexPcla08oXwhJWnNezebKDTg85DiEFTQZsqi2G3
+        NOem1u0/NEuC3W2uC170sYAuo5GGMfIFOqJqvij0zwjBbtVpH0kmHFHiEqfi0MIW
+        11Yw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1699624172; x=1699710572; bh=grojPZKgF7i4y
+        cqWyl3K3qTSTs7COURoVDRKuNTUh/M=; b=iNLZwafpnPL0lFgVfmEOjglV4izfn
+        7OjB/cdtwIolXThMkdjoQLesS7aYCyx9QBay/rlgZvC9rDql+8R8ur4x2YBRQizr
+        +P8udFmmZfGrLb2qxKyjz7rGlrIaHHwD+Gt+2TS8CsOLJpuJhizRHjbtt6hk4805
+        bzQmm6DCWJSmIEN4+vFIBoc68KrMKOLHVKT3EE2RRGlOfgLXhg3nlYaXu/Amk9q/
+        TszC9qs4g4PSVXHr1aRHxG1J1leEmQX/va329eada/7QatpQ/lGcmD5PDgXl8qou
+        9LfieCPTrNRoFNljgOj6+1DyCZyZTSu8SGSKgdSx7xspDu1eaAajnWrkA==
+X-ME-Sender: <xms:7DROZZ0_hgUG9L4dTBBXenyfWx4sBzXAuBwmIUSK985PlcUXD-J_jg>
+    <xme:7DROZQFAAgqfWQ7jUzmqywdH5YmZOdyAmPIHx2EzPCawsT0Ua-aPIGX2MCdHcvgKI
+    q59hcQ9XW3pouqH_Do>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvfedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:7DROZZ5-wh6otOKEuk4WIgfKBHPe2YcYLyyykC_5qqtB2AQj_SjXAA>
+    <xmx:7DROZW1JHdnintBg4QsvWRFflXTgNHN_Z8s9hG4UjF4tayflPIHgjA>
+    <xmx:7DROZcH1LzQgdRlgQoaRgJy-92gyXyBbdwU1VorEHz1ybICdzeiIMw>
+    <xmx:7DROZYgLrQQPJDF_WrN2dHalA0rkpc-vr_CPcThEVWYSD2u8Fox7_Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0AEE1B60089; Fri, 10 Nov 2023 08:49:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 05/26] KVM: x86/pmu: Get eventsel for fixed counters
- from perf
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231110021306.1269082-1-seanjc@google.com>
- <20231110021306.1269082-6-seanjc@google.com>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231110021306.1269082-6-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <13bb798d-0631-4b89-ab28-2c3ef78847d8@app.fastmail.com>
+In-Reply-To: <20231110114400.30882-1-lukas.bulwahn@gmail.com>
+References: <20231110114400.30882-1-lukas.bulwahn@gmail.com>
+Date:   Fri, 10 Nov 2023 14:49:10 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Helge Deller" <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vgacon: drop IA64 reference in VGA_CONSOLE dependency list
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 10, 2023, at 12:44, Lukas Bulwahn wrote:
+> Commit e9e3300b6e77 ("vgacon: rework Kconfig dependencies") turns the
+> dependencies into a positive list of supported architectures, which
+> includes the IA64 architecture, but in the meantime, this architecture is
+> removed in commit cf8e8658100d ("arch: Remove Itanium (IA-64)
+> architecture").
+>
+> Drop the reference to IA64 architecture in the dependency list of the
+> VGA_CONSOLE config definition.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
+Thanks for the cleanup,
 
-On 2023-11-09 9:12 p.m., Sean Christopherson wrote:
-> Get the event selectors used to effectively request fixed counters for
-> perf events from perf itself instead of hardcoding them in KVM and hoping
-> that they match the underlying hardware.  While fixed counters 0 and 1 use
-> architectural events, as of ffbe4ab0beda ("perf/x86/intel: Extend the
-> ref-cycles event to GP counters") fixed counter 2 (reference TSC cycles)
-> may use a software-defined pseudo-encoding or a real hardware-defined
-> encoding.
-> 
-> Reported-by: Kan Liang <kan.liang@linux.intel.com>
-> Closes: https://lkml.kernel.org/r/4281eee7-6423-4ec8-bb18-c6aeee1faf2c%40linux.intel.com
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+I was aware of this one, but decided to keep the vgacon cleanup
+in a state that would independently work on ia64.
 
-Thanks,
-Kan
->  arch/x86/kvm/vmx/pmu_intel.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index c9df139efc0c..3bac3b32b485 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -406,24 +406,28 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   * result is the same (ignoring the fact that using a general purpose counter
->   * will likely exacerbate counter contention).
->   *
-> - * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
-> - * as there is no architectural general purpose encoding for reference cycles.
-> + * Forcibly inlined to allow asserting on @index at build time, and there should
-> + * never be more than one user.
->   */
-> -static u64 intel_get_fixed_pmc_eventsel(int index)
-> +static __always_inline u64 intel_get_fixed_pmc_eventsel(unsigned int index)
->  {
-> -	const struct {
-> -		u8 event;
-> -		u8 unit_mask;
-> -	} fixed_pmc_events[] = {
-> -		[0] = { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIONS. */
-> -		[1] = { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
-> -		[2] = { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLES*/
-> +	const enum perf_hw_id fixed_pmc_perf_ids[] = {
-> +		[0] = PERF_COUNT_HW_INSTRUCTIONS,
-> +		[1] = PERF_COUNT_HW_CPU_CYCLES,
-> +		[2] = PERF_COUNT_HW_REF_CPU_CYCLES,
->  	};
-> +	u64 eventsel;
->  
-> -	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) != KVM_PMC_MAX_FIXED);
-> +	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_perf_ids) != KVM_PMC_MAX_FIXED);
-> +	BUILD_BUG_ON(index >= KVM_PMC_MAX_FIXED);
->  
-> -	return (fixed_pmc_events[index].unit_mask << 8) |
-> -		fixed_pmc_events[index].event;
-> +	/*
-> +	 * Yell if perf reports support for a fixed counter but perf doesn't
-> +	 * have a known encoding for the associated general purpose event.
-> +	 */
-> +	eventsel = perf_get_hw_event_config(fixed_pmc_perf_ids[index]);
-> +	WARN_ON_ONCE(!eventsel && index < kvm_pmu_cap.num_counters_fixed);
-> +	return eventsel;
->  }
->  
->  static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+    Arnd
