@@ -2,205 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443407E80D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676177E81D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345037AbjKJSTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S1345768AbjKJSfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346159AbjKJSQn (ORCPT
+        with ESMTP id S1344720AbjKJSex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:16:43 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A83A38EA7;
-        Fri, 10 Nov 2023 06:28:03 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507973f3b65so2909603e87.3;
-        Fri, 10 Nov 2023 06:28:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699626482; x=1700231282; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lmt2rY/D/CtOpYCyO0BO3zcHPLGs1JE21dVJIkVZZMQ=;
-        b=XEpbuUGpeql5W7m1dEFVEb+F8gMc08FKBibXPne405GHqC5X7JVX3LcvKqFyhR5T3L
-         90OMKDZUkXr712GxrYpEzwFwbIzUIiY47OFm4Xyfbs4w4m8Dy6QRRVhqSjdtFL3MtS0K
-         ERLqkWC6UuLiPZRPBsPOGrfKNiqkXq3yGSHREZQK8+xxcEEt2OQeoC94dmB2LYG6uPaD
-         EdwM+RHxwpmEzQoPJECej/n1FkBUUD7bg6+BH/XCO5kASIYXuVJ7EWB1Z+Kr3cz3nZCi
-         C1cvdIFqnMi7MuTbri8O5RubsM5rKs6Bl0HfoUDl2XqN5ZnC/a5MoBbsuQ3EdQp+DEjM
-         lGjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699626482; x=1700231282;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lmt2rY/D/CtOpYCyO0BO3zcHPLGs1JE21dVJIkVZZMQ=;
-        b=K8xlq4Q7FP2AlUCdPFdKlLEN4BP02kk4cba7W6QIIx4BEa/QxDnvuU93k/V0lXuktL
-         L3UpPjvUf9T4KMAEgCeblWRpWVBG7rWsJR2ZHHsvRT5lBUzQ7VUnJ1SVXlo0R40JSdWu
-         aSgCDj4EvXRBvO0y36QwxpnuUDJtBONCL8KZpJFg+Z+kPpOlgOVhd0z+RhXowGP0ZNAq
-         peU/2bY+bT0XrCWWng2ks+DWb0/Jw41ZkcU55RqWGv+7x7moDTLIxdUnIuiutipUKgnH
-         CKfGv5AK2E7WWOUKKelFwpzyh+jZsIl8LHIkGir+GCkD1YXL+2vdRIrqfO18+K4tLLQx
-         wE6g==
-X-Gm-Message-State: AOJu0Yziq5jVDWUQN9Ner4vR5bqW3THigAz3vWn6v3XGSS1ib7JkpWoH
-        +5cLABZ7EUuffE253pZQEHHEBqzd2wHX0w==
-X-Google-Smtp-Source: AGHT+IFTo4QzKaHnf9JDfRPiLL22Yfoec65OGGtyn4UX6ZCRDspRCqMEHROz96TnecT8pMjBqFvQ1w==
-X-Received: by 2002:a19:7107:0:b0:507:9787:6776 with SMTP id m7-20020a197107000000b0050797876776mr3970775lfc.5.1699626481467;
-        Fri, 10 Nov 2023 06:28:01 -0800 (PST)
-Received: from [192.168.8.100] ([148.252.132.154])
-        by smtp.gmail.com with ESMTPSA id r5-20020a5d6945000000b0032fdcbfb093sm2003034wrw.81.2023.11.10.06.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 06:28:00 -0800 (PST)
-Message-ID: <3687e70e-29e6-34af-c943-8c0830ff92b8@gmail.com>
-Date:   Fri, 10 Nov 2023 14:26:46 +0000
+        Fri, 10 Nov 2023 13:34:53 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2087.outbound.protection.outlook.com [40.107.94.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F025338E9E
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:26:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MAMSOqV9pP2EdHc7T7GjGKdDPl9UTnKD56K51eY2VgfuwTY8M4W6s0O5t95LtsJC996e1afOJylTVfojMeRVNElnJXvde8uAp4R9owbXTcyvI59SA+Y4S2Z5pmzjIht4V4Z3VGmf4yk/WzHvANpUSBwWU39HIdyJEQADvsR/KSK8BbjPjx3GpTNpINPnxlWYHhLew+EPwu3AXOL+gkmiNmnULz7lRHPQiYiR+SKr4Vfesmj9VTO1qRh1pG0CSa6EEvuBC916xVN5czIfCsrzAsK5hiou1ATBzKnD+HsQp9aSO11z0Za0446XLlTxG0ENG1LipzbBG0Bh19mmeM78YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xgGCqMqul7q4lQCVRMNd8p0coaOrLfdPgFD69v6hjU4=;
+ b=oLOe8TDa1B/GT8xEzPJ3POH9jg05Kdz9LJlpa069anOZmXketMktmgftUoIlH3SBkFMuAtNLj4j3jQImDxqxlMrb1dOp5sEkt2MZYNqYv2TH7T0Mcw3ZIhQOYy6n0Aca7SxEjYLfXrMWkz8SqegN+S9c0naqlsdIYrKgees5+c/nJU/tzQGYX573kUBuSzgFODBpZJjlDY2EGTucHG4scsEzCt3alX7+Wu8Egp78vuLNELLsL61GfsLhTFvga8/ezNLTYnGCQdOjSMhXwmGgVRwigidjfJ7UIivTWQD5u3RW8KaFAFnO9I9vcg8v8GCCmq8gOBhleE6tvE8dekNj7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xgGCqMqul7q4lQCVRMNd8p0coaOrLfdPgFD69v6hjU4=;
+ b=FOnD76HWlbDiDKDbKBnHnaKaFLx1hsYPSCrtemAJow3WbIFMKH1fWsx5GTiPUPOk+2LXlVqhuuzZZQNgALCA5VBrIGjGitmd7Lk8jPr9Ztu4ZwqLqRhiWrIiGxeBMq/vTPs2J9dZTpfk5V/iHccDkA807XgcYXYEzelPy5Ca/YOMAwCWbx/lDc+U+prGRa/oE0uicXi0c4wKxmDDShRbjsCcKOKmtsw+LFOpIM/ROeDLSp32OzuNQ0l6/H+oja5/Sbw/9Qfg4RfmpaMRumiybRAR8lqbxLsTxXfgFugPUblu2OlLBtumWsGLz6X1mfEQIuF50+pKN2NkzZtnOyhjZA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ2PR12MB9138.namprd12.prod.outlook.com (2603:10b6:a03:565::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Fri, 10 Nov
+ 2023 14:26:51 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
+ 14:26:51 +0000
+Date:   Fri, 10 Nov 2023 10:26:49 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, ankita@nvidia.com,
+        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
+        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
+        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
+        jhubbard@nvidia.com, danw@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231110142649.GO4488@nvidia.com>
+References: <ZRKW6uDR/+eXYMzl@lpieralisi>
+ <ZRLiDf204zCpO6Mv@arm.com>
+ <ZR6IZwcFNw55asW0@lpieralisi>
+ <20231012123541.GB11824@willie-the-truck>
+ <ZSf6Ue09IO6QMBs1@arm.com>
+ <20231012144807.GA12374@willie-the-truck>
+ <ZSgsKSCv-zWgtWkm@arm.com>
+ <20231013092934.GA13524@willie-the-truck>
+ <ZSlBOiebenPKXBY4@arm.com>
+ <ZUz78gFPgMupew+m@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUz78gFPgMupew+m@lpieralisi>
+X-ClientProxiedBy: SN7P220CA0003.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:806:123::8) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
-To:     Mina Almasry <almasrymina@google.com>,
-        David Ahern <dsahern@kernel.org>, David Wei <dw@davidwei.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-6-almasrymina@google.com>
- <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
- <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
- <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
- <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
-Content-Language: en-US
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB9138:EE_
+X-MS-Office365-Filtering-Correlation-Id: 402569de-826b-4b4a-4bcf-08dbe1f9146b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Eq/1aGeSrgZKTp6Azl1ZYAloBXkHAT+Myj4z2273BGM+DC6PYoXriyl9uuLIbrD1bRdDO8nV7J142mosIaPEXr/YkExAr5fqJuikX7czCjaVQu7WpW6H1jo9soY2Psx5krLdWEW0VXG93mfr9NnU41X8N/5Pun6e9Bpl68v3ALNaN8nzsBeEzjVbBV2Yyh6OPmt6iGqo3/a4XUngn9cOdKSMoITQKHe8UNvBTmUjIAL862MUIGeUcc84e5SRwxIE0LmyOKJJw7jJ7WxV8pBtu0XEhd78H7ScZr972cAknQl0cl2QE69HZN/bwRC/vQNrGrEv04lxcJPO7A68g3XH2eVEpOmfZnzwrd7Genk2xBGVi3LnLIwErgo2ciC58vFrJvNbbxch3sBW5bdyB1yMi8Zvf78/z8+OKs0ZeFse2TLZ+KkgPO6R8E7njv2SMNv3hsFgFWYxjbW22shiJvBdFPX6wFBCVYVasbs5mc2FFJFP8IuSPQd0s9A6/vpzvx0BWVaf2u8OXJaavcL34FkH2pMLKoFKWvk9Djm9vNyQ32ceYSwCIaddw3eEG5ayUkIX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(136003)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6486002)(83380400001)(38100700002)(66946007)(6916009)(6506007)(2616005)(66556008)(66476007)(26005)(6512007)(54906003)(1076003)(478600001)(5660300002)(8676002)(36756003)(86362001)(8936002)(2906002)(33656002)(41300700001)(4326008)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j6izuEmhaG05QhXrhrNKyP3xgM27WjQ8PzmqjvX28Dm7oxPuThB+Cp0fZCBK?=
+ =?us-ascii?Q?Lu+lD1CJr6/WKGvTODgMG17GcUmJ1ALFi7mepchcGa4h6wT/hjbq2txEZrvO?=
+ =?us-ascii?Q?Xxp24O0QzeziCo82VidYiAZuSvRw6whimeL91Du6VAie79yY+lcYmYhewgPG?=
+ =?us-ascii?Q?Qh/j2qHm+iJ+OYbHOjCNrfTqAYwQhmCORE1Fmb2tsZ9zY9JpNb2DNlsip+5T?=
+ =?us-ascii?Q?NPQxHzNZQ01NzVvLsqgb7AewY9pFV0XPrqGzv+w1g97iwbrEJDjMCPJraVhX?=
+ =?us-ascii?Q?iyIqj4rrhmWpl9HeVq89gbrqY9KtLMOXJdNfxRF8YXvrMhVbfaY1i1IlB7kV?=
+ =?us-ascii?Q?Q+mda21UX3WWM3lnk3syXVjBwJ4fHTFkPcdnFjlAomQFszHzF3YhXDWjYciP?=
+ =?us-ascii?Q?pH3sm7aU8+0Yn/UNAY458g6St7JHgFN/Vps1DH6yDvzZVbPPViLhxcIynwWq?=
+ =?us-ascii?Q?bCGGKo3e5HBRMHhnWUIq2luTQxJxb6cgKZz/qUqa//zaLNxE/moebBlapV7s?=
+ =?us-ascii?Q?uxtXFNM5KZYcS12Ud+0KN3seN6weJrbnKPNlOn2qXl+H0IBfjn71lnogPVD8?=
+ =?us-ascii?Q?9fpjtvlkqkPUouFqkvK6HgRGCo+NkAnlcyqCRv5N7jQoBOtvnsD9aLA767t4?=
+ =?us-ascii?Q?RliJCXr1MCVKjQCEYd+y4YCtqxR/fpxz4QbG4iQKVPLXu4GIY7wEm71Sjkn8?=
+ =?us-ascii?Q?sz2E5NaUx8maTRjvIkoLFmIStPLIjAtJocidnDvwrUM7tRUnQkL3nWwQUz9x?=
+ =?us-ascii?Q?R1CvvziMbzN1nuqjs+YsCzzUStdNOrGR93Zxx+9UdBf9Ux2Mc3QJUv1v5Bvu?=
+ =?us-ascii?Q?OjIcTxrYYVPAV4ocykaWbagtzU6f1hVeijcG+dQdKtKjNZ//AcDcPX+DlIp9?=
+ =?us-ascii?Q?yqNZVRCqfUqYnJOxGC3u6R1EzzkDyweQ1cuptAlXH/1YGDvk6eYGNUS7t5mw?=
+ =?us-ascii?Q?ojHamikZvqrLZLVqV0twNfi/p0t2SWAKxIkBb0Y4mUBEHaVxUAPrJIOFqpCD?=
+ =?us-ascii?Q?LCLrVNjx9XAHmKID2Wnbbuy0hyqgrXFGg3wlCI0UmxxoFeztGNtx98K2oYDF?=
+ =?us-ascii?Q?cfoAnfYiHBOQ73CX7n0qJRYUqofCyVpzjvdcWq+jzR+mM7yvxg+Zo5YZmqnc?=
+ =?us-ascii?Q?yGJp1o9Y0AMO1069KOS81bl3JB7AkMSA6P1cRfVL2QZmnwk/kygsADszVykp?=
+ =?us-ascii?Q?74cZ85PJ5HIGg8y/NEpryQcjr2grlmDsUC9p4Uw2n+SourDd05rorUQMieQw?=
+ =?us-ascii?Q?XMIW+SqD60HmIzfofDoZugn3G0NmaTu9/DSatxzTCsiPjp5c25NvgGEyGjcN?=
+ =?us-ascii?Q?gBB9VBv+AacB9hfi737lv/Py3c+knnkf6x6js3OLj/kZWEW3SPtGkvMYHsY3?=
+ =?us-ascii?Q?BR38nYXuqLw/MoNT1nz/aQKBk8hrDxRZmZ5eYmRY0HPeP8+Sl3AYL8pDocD7?=
+ =?us-ascii?Q?9b2wNdSpfEHObUsp4L9f7oHi+LMlR6QZVLZgsgZhuUcWWG9Rh4RhTBMdMDuH?=
+ =?us-ascii?Q?Om31E90ppQ2Z4WPbf7WxD2O21G1Zs5yuY0eQ1ws+HO8wW/KIW+RI9797rwc3?=
+ =?us-ascii?Q?CsmEM6XdFtUUqrzyH/8=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 402569de-826b-4b4a-4bcf-08dbe1f9146b
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 14:26:51.0601
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Cr0FCYoTM0h6b36qLYXgJN8thjO/yKvMSfwy3d/Ric8ysfShF72tgI/dHPa/064s
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9138
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 23:03, Mina Almasry wrote:
-> On Tue, Nov 7, 2023 at 2:55 PM David Ahern <dsahern@kernel.org> wrote:
->>
->> On 11/7/23 3:10 PM, Mina Almasry wrote:
->>> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
->>>>
->>>> On 11/5/23 7:44 PM, Mina Almasry wrote:
->>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>>> index eeeda849115c..1c351c138a5b 100644
->>>>> --- a/include/linux/netdevice.h
->>>>> +++ b/include/linux/netdevice.h
->>>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
->>>>>   };
->>>>>
->>>>>   #ifdef CONFIG_DMA_SHARED_BUFFER
->>>>> +struct page_pool_iov *
->>>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
->>>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
->>>>
->>>> netdev_{alloc,free}_dmabuf?
->>>>
->>>
->>> Can do.
->>>
->>>> I say that because a dmabuf can be host memory, at least I am not aware
->>>> of a restriction that a dmabuf is device memory.
->>>>
->>>
->>> In my limited experience dma-buf is generally device memory, and
->>> that's really its use case. CONFIG_UDMABUF is a driver that mocks
->>> dma-buf with a memfd which I think is used for testing. But I can do
->>> the rename, it's more clear anyway, I think.
->>
->> config UDMABUF
->>          bool "userspace dmabuf misc driver"
->>          default n
->>          depends on DMA_SHARED_BUFFER
->>          depends on MEMFD_CREATE || COMPILE_TEST
->>          help
->>            A driver to let userspace turn memfd regions into dma-bufs.
->>            Qemu can use this to create host dmabufs for guest framebuffers.
->>
->>
->> Qemu is just a userspace process; it is no way a special one.
->>
->> Treating host memory as a dmabuf should radically simplify the io_uring
->> extension of this set.
-> 
-> I agree actually, and I was about to make that comment to David Wei's
-> series once I have the time.
-> 
-> David, your io_uring RX zerocopy proposal actually works with devmem
-> TCP, if you're inclined to do that instead, what you'd do roughly is
-> (I think):
-That would be a Frankenstein's monster api with no good reason for it.
-You bind memory via netlink because you don't have a proper context to
-work with otherwise, io_uring serves as the context with a separate and
-precise abstraction around queues. Same with dmabufs, it totally makes
-sense for device memory, but wrapping host memory into a file just to
-immediately unwrap it back with no particular benefits from doing so
-doesn't seem like a good uapi. Currently, the difference will be
-hidden by io_uring.
+On Thu, Nov 09, 2023 at 04:34:10PM +0100, Lorenzo Pieralisi wrote:
 
-And we'd still need to have a hook in pp's get page to grab buffers from
-the buffer ring instead of refilling via SO_DEVMEM_DONTNEED and a
-callback for when skbs are dropped. It's just instead of a new pp ops
-it'll be a branch in the devmem path. io_uring might want to use the
-added iov format in the future for device memory or even before that,
-io_uring doesn't really care whether it's pages or not.
+> Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
+> trigger any issue on guest device reclaim use cases either (ie device
+> MMIO unmap followed by a device reset) at least for PCIe devices, in that
+> in PCIe a device reset is architected and carried out through PCI config
+> space transactions that are naturally ordered wrt MMIO transactions
+> according to the PCI ordering rules.
 
-It's also my big concern from how many optimisations it'll fence us off.
-With the current io_uring RFC I can get rid of all buffer atomic
-refcounting and replace it with a single percpu counting per skb.
-Hopefully, that will be doable after we place it on top of pp providers.
+This is not how I see that thread concluding..
 
+The device reclaim problem belongs solely to VFIO, not KVM. VFIO must
+ensure global ordering of access before the VMA is unmaped and access
+after, that includes ordering whatever mechanism the VFIO driver uses
+for reset.
 
-> - Allocate a memfd,
-> - Use CONFIG_UDMABUF to create a dma-buf out of that memfd.
-> - Bind the dma-buf to the NIC using the netlink API in this RFC.
-> - Your io_uring extensions and io_uring uapi should work as-is almost
-> on top of this series, I think.
-> 
-> If you do this the incoming packets should land into your memfd, which
-> may or may not work for you. In the future if you feel inclined to use
-> device memory, this approach that I'm describing here would be more
-> extensible to device memory, because you'd already be using dma-bufs
-> for your user memory; you'd just replace one kind of dma-buf (UDMABUF)
-> with another.
-> 
->> That the io_uring set needs to dive into
->> page_pools is just wrong - complicating the design and code and pushing
->> io_uring into a realm it does not need to be involved in.
+If there are quirky SOCs, or non-PCI devices that need something
+stronger than the TLBI/etc sequence it should be fixed in VFIO (or
+maybe even the arch code), not by blocking NORMAL_NC in the KVM. Such
+a quirky SOC would broadly have security issues beyond KVM.
 
-I disagree. How does it complicate it? io_uring will be just a yet another
-provider implementing the callbacks of the API created for such use cases
-and not changing common pp/net bits. The rest of code is in io_uring
-implementing interaction with userspace and other usability features, but
-there will be anyway some amount of code if we want to have a convenient
-and performant api via io_uring.
+> It is worth noting that currently, to map devices MMIO space to user
+> space in a device pass-through use case the VFIO framework applies memory
+> attributes derived from pgprot_noncached() settings applied to VMAs, which
 
+Sometimes. VFIO uses a mix of pgprot_noncached and pgprot_device. AFAIK
+we should change to to always use pgprot_device..
 
->>
->> Most (all?) of this patch set can work with any memory; only device
->> memory is unreadable.
-
--- 
-Pavel Begunkov
+Thanks,
+Jason
