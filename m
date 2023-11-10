@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631EF7E82E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1227E8050
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbjKJTeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43930 "EHLO
+        id S1344832AbjKJSJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235805AbjKJTdp (ORCPT
+        with ESMTP id S230265AbjKJSAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:33:45 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50DE8258
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 23:08:19 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo2727801a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 23:08:19 -0800 (PST)
+        Fri, 10 Nov 2023 13:00:09 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F737EC3
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:52:16 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5099184f8a3so1302441e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:52:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699600098; x=1700204898; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1699599134; x=1700203934; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dZ5I37JGrY2zZSTONC18xz0l/b9uhi0RSjhBoapvPxY=;
-        b=Nr/JBVnYlL54rCUPXjuZQj39KwEA9vm/PpUwHcvYeDU5EenvmXj8A0v2WNdx8+dA6W
-         KdORA2ORG3X7MTdITgkXniErRhFzPoun7868N9iibhHRXskioBdlPD51kV9D0AVr/o9I
-         Ge1BMVa2xXaDoUZvdWJ9kEF3zDRQZHWOUTNSk=
+        bh=ya35gQLbH0OD06LsUVIlkA9NvLzAOYIwP2xIsPJPE5Y=;
+        b=L8ZzBJqOlp0z2974llPTZEowtbRbwp0P1ulzHR3kubWMeyUhgVGrXt5JHHaQtEMKpL
+         SDBnGeWio+p5Q9tVobQqB8CbPzIMrZYFOVNPskJU3kc+u6rD5sZmDH3FgSXC5JvYHXM6
+         FsPJb7PUeW6gB58q+WFPerPNEkmtVXDZ7IvN8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699600098; x=1700204898;
+        d=1e100.net; s=20230601; t=1699599134; x=1700203934;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dZ5I37JGrY2zZSTONC18xz0l/b9uhi0RSjhBoapvPxY=;
-        b=hG0vEq7EYDG217fDLv8bhoXTGhe2gdiCJX+8j2gFPoQSRhDgYa5hWNV+XMgrMQOihu
-         lXjh46SyVVTulzAF9rWoGEpKaifiZnFrfIhDj/0dsZ5GT6PdqDtLuUheeP4J/gGlyK41
-         DYpReCczJURYLNuLYPluoMHB76pEPRAXR/L1klGhh0s6/oDv0zAzfxmdO9N5bXZZN7k+
-         5LXZBzMCDoEUQgVYq5lu16xfnPcUyBAmkQmQzlyUjRN9TL5iSuXCWzEb0LVnyMVueGFW
-         4BcXAURQDAHDHeTqPPK9tWp5CDU1MvI6BVbyaOkZQCTv/mLM98F+aEDmMD+UJhi5tHqX
-         o+YQ==
-X-Gm-Message-State: AOJu0Yw8lIw7cODIfpW0n8EmZxEFNiFHmdse4W7e1L1YGrnew1ERR3FS
-        w8p3C79Xst/iJXGcM5VxGpko11RJAuGRjET14V1i+u8zcYiTDtr5
-X-Google-Smtp-Source: AGHT+IHRrSOKFPIlFjr8Bhd0Vb8KE+RrMTXKE6i9bTjVib1dsexoFzAXOfaFWhzyXEtlxPWScmQQdNHWO/Kis2fCLUM=
-X-Received: by 2002:a50:a6ce:0:b0:543:5f7a:9e27 with SMTP id
- f14-20020a50a6ce000000b005435f7a9e27mr5809505edc.12.1699592153827; Thu, 09
- Nov 2023 20:55:53 -0800 (PST)
+        bh=ya35gQLbH0OD06LsUVIlkA9NvLzAOYIwP2xIsPJPE5Y=;
+        b=WLJ1SVaedCW5CX1LRbcfh+mTozpBrMFb6eKCeQu1YVj5FduFZ+71zByk+pj+ySHpaE
+         WPM+9cxQp6k95+lZW5xazxbOL5u+zTsCjmSHyOTOHDTUOiZoRBi6eLpojQHCnYQwtssT
+         IFoIS4JNddy49gYy8tNTAtorPtmik6Exq2k/n6SShRAl6/hdYfjcuaNemtYgA+Hu2Ozp
+         8t5JAeAQah1lzsZuPnwJLNsialA1bt1kxz5S7Se+qPmC3Yq2yAmNebh19YFAqMeb6FUU
+         zUXVIdxxM6Yx4C7LcI2zZI145w+04cA+D07Fu51W/z3pg6DTslmfPlv9mxbWOGGdL5pn
+         BJEQ==
+X-Gm-Message-State: AOJu0YzXjsoHoitBuhYLpdpR/6xq/A8EABR/YcChnmGhSkLNA6f60znN
+        PY+yIfpsXdYOLRSj7pKyxquZM1dLHwhm73k82nPoTjmk7Fk1Bj6O
+X-Google-Smtp-Source: AGHT+IGNIclidNAlX0bKuPEoO8+P0utqB9UWfIj7BHmAgCgipVSJkQHDhkEHEBzr+YUc1On/0f+M/uFn2Xfgq20iyX0=
+X-Received: by 2002:a50:d65c:0:b0:53d:eca8:8775 with SMTP id
+ c28-20020a50d65c000000b0053deca88775mr6077048edj.26.1699592222329; Thu, 09
+ Nov 2023 20:57:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20231110002340.3612515-1-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231110002340.3612515-1-alexey.pakhunov@spacex.com>
+References: <20231110002340.3612515-1-alexey.pakhunov@spacex.com> <20231110002340.3612515-2-alexey.pakhunov@spacex.com>
+In-Reply-To: <20231110002340.3612515-2-alexey.pakhunov@spacex.com>
 From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Thu, 9 Nov 2023 20:55:42 -0800
-Message-ID: <CACKFLim_W+4Sz6YAr42+X0re6Lwq2VmPXti2dxFEh291j9q7tw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
+Date:   Thu, 9 Nov 2023 20:56:51 -0800
+Message-ID: <CACKFLinOyTgH9STGbFc89sr6eqEiFeWWDvD4DurJjq3_-7+y+A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] tg3: Increment tx_dropped in tg3_tso_bug()
 To:     alexey.pakhunov@spacex.com
 Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         siva.kallam@broadcom.com, prashant@broadcom.com
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000002148330609c6fcc4"
+        boundary="000000000000b053230609c6c2af"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -66,7 +66,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000002148330609c6fcc4
+--000000000000b053230609c6c2af
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
@@ -74,8 +74,8 @@ On Thu, Nov 9, 2023 at 4:24=E2=80=AFPM <alexey.pakhunov@spacex.com> wrote:
 >
 > From: Alex Pakhunov <alexey.pakhunov@spacex.com>
 >
-> This change moves [rt]x_dropped counters to tg3_napi so that they can be
-> updated by a single writer, race-free.
+> tg3_tso_bug() drops a packet if it cannot be segmented for any reason.
+> The number of discarded frames should be incremented accordingly.
 >
 > Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
 > Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
@@ -83,7 +83,7 @@ On Thu, Nov 9, 2023 at 4:24=E2=80=AFPM <alexey.pakhunov@spacex.com> wrote:
 Thanks.
 Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 
---0000000000002148330609c6fcc4
+--000000000000b053230609c6c2af
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -154,13 +154,13 @@ hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
 E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
 aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
 EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBKp6cuXFa2zE/rwj8ZgLvutKRDMHro8
-pw1WuHjn4qskMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEx
-MDA3MDgxOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOJdBDTGK7zYgvlmeacSHEwRyeU3AO+l
+jLH5zjeGNwPOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEx
+MDA2NTIxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
 SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQCCcOzvWvlYys+FPFeRW0076y7UbiuN+6XAdn8aTNM63mfFxHfh
-Lyr0+EuZgxowJBGIs/wKOlIjsbqq3jND7vpv2sTNxkPjn+/dv+PLoGZSc9zAlL4M/GcsSpOuN/EC
-ZtX6ZWcLHz98G3G9AgsN1cvpisaYfGCsntPzshmcYCm9REIPMqb06MHt2Ht8mojbegpMoOOYCNdh
-MS3SDzZtHqgOGVVcAAnotatpMje0eE4ZI43tuv8PJRkIXvFipQAqX/ejmn7LfjT4suj5P4OyGbQa
-p5HMoMDO/qxW4ZmAjt6ubv8/nmxEDMxsZhCI5HqChTlv/AB8OG7gxGBc29RFixC6
---0000000000002148330609c6fcc4--
+ATANBgkqhkiG9w0BAQEFAASCAQASQPKCDNEod/Eth1au2b/xwcNCh4OxulFtaK70s9yahNls9hLA
+SPi7xqrklzVALJO+r6BcDAc1sMuUT+ANwoe+kCQMdekoXzxeBsOEXa4GXlQ6aWRUIg2CxgWAXOdX
+B6OYcMJY7vn+0K8Ae8nnfun0weOs+/Pg4juqOKzL9yT8GqaAthS/zVPD+VZ47LlZ2q0jRnyNjMBN
+wdYPRjAqVvrrxDaRAa9Lyrq168IqG6T5SZE6rr0QTN9HA1O+6nxR1k+hukuxOcTK/GJM1ystTLfW
+eqlazJkfjJjdcaiNBMk/sQcElkaD310ZK1kDs7zHdp2L6hQRqY6Hgv5K1QeyIy0u
+--000000000000b053230609c6c2af--
