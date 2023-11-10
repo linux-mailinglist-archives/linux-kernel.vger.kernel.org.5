@@ -2,173 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD69F7E782C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8857E7831
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345845AbjKJDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:41:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        id S1345850AbjKJDnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:43:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234897AbjKJDlL (ORCPT
+        with ESMTP id S1345807AbjKJDnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:41:11 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31A92D6B;
-        Thu,  9 Nov 2023 19:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1699587663;
-        bh=YOCyMuYL5I88d66lN6C2ldLGMCIsUO0ppwylpN45zyo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Wn9r2B2oowVuwO3Zl60Sr9Z7DSIDr8i4EJteomcnu3WFRku9t2zjeGtWw/AfYoOq5
-         XerWwP5hl6W2IDQ5oXo+OZXfKtozNy1mBrujHuJp4zzE9/45aaZipxAREYXOxgQXjR
-         xx19dsVEjqqJPfYy9EFUE6ihgIPQKmEaihSxSFNcCQ/L/9u8gV3yA/STX7nGjo0Ay1
-         OCJMdsK73uaxkAAVAiTIRUL555Hy0+R21BiuN73bxY9L0vGIsep9+GApy/PVgwZ/He
-         2F3mvN8a7FGyoZXJ8CxS3uCxTiW7jZu6MLPM2TNQPrzMidLoukJmFiTgUaJ+eTYqfU
-         wzdmlm/HPhRgQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRPjy5kW7z4x2W;
-        Fri, 10 Nov 2023 14:40:54 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Geoff Levand <geoff@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-In-Reply-To: <202311090843.b8ISrsV1-lkp@intel.com>
-References: <20231108125843.3806765-18-arnd@kernel.org>
- <202311090843.b8ISrsV1-lkp@intel.com>
-Date:   Fri, 10 Nov 2023 14:40:51 +1100
-Message-ID: <87h6lu8ed8.fsf@mail.lhotse>
+        Thu, 9 Nov 2023 22:43:05 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8634687;
+        Thu,  9 Nov 2023 19:43:03 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA39MGe008932;
+        Fri, 10 Nov 2023 03:42:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GA1k1EoHAjRIkDRMPTj7Sehuf5ZQHogrwImmPswx02w=;
+ b=Kx9hdP2xROE+38yF1+tJNvOICwb0uWeaF1dg5/cPOReR102ixDySR60TkLFstLEu2EYy
+ U/5bS6xjQQ7PBsHIJ2YKTI8hUoUBIUxobiwcJRXAbRXAJ/2JR3DIW8zUvY85Hj1IayOg
+ s9VIciPEceIuf8a+5Fp9Ng5ULBbsi752C9siB6cM6ltu3KinxKNjREs/HVtkHChqRde2
+ h5l6J9wFot75GNCDkCZCVmWymzYvhEyt70+KtfXWh8f2e55NflnuRrKLaRG+GpcvnaD/
+ Rrl6WomW4n6+VGvYQV7m8zpIFi+Iv7VjlBs3Afli50yI5dxCdEZowOEnZUXxzuaNKQ1x Kg== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93tq93fx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 03:42:57 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA3gvXw020776
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 03:42:57 GMT
+Received: from [10.253.38.123] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
+ 2023 19:42:54 -0800
+Message-ID: <28bae567-23ae-4b06-b77b-946cf46aa74e@quicinc.com>
+Date:   Fri, 10 Nov 2023 11:42:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] bus: mhi: host: Take irqsave lock after TRE is
+ generated
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>,
+        Hemant Kumar <quic_hemantk@quicinc.com>,
+        Lazarus Motha <quic_lmotha@quicinc.com>
+References: <1699341365-47737-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699341365-47737-5-git-send-email-quic_qianyu@quicinc.com>
+ <20231109162933.GK3752@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231109162933.GK3752@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cAB7eTfDVLoZyfuO4RN088p8e95o-FBw
+X-Proofpoint-ORIG-GUID: cAB7eTfDVLoZyfuO4RN088p8e95o-FBw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=879
+ spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311100030
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
-> Hi Arnd,
+
+On 11/10/2023 12:29 AM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 07, 2023 at 03:16:05PM +0800, Qiang Yu wrote:
+>> From: Hemant Kumar <quic_hemantk@quicinc.com>
+>>
+>> Take irqsave lock after TRE is generated to avoid deadlock due to core
+>> getting interrupts enabled as local_bh_enable must not be called with
+>> irqs disabled based on upstream patch.
+>>
+> You still didn't address any of the comments provided by Jeff in v2.
 >
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on next-20231108]
-> [cannot apply to v6.6]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/20231108125843.3806765-18-arnd%40kernel.org
-> patch subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-> config: powerpc64-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/config)
-> compiler: powerpc64-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311090843.b8ISrsV1-lkp@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->    arch/powerpc/platforms/ps3/gelic_udbg.c:59:1: warning: alignment 1 of 'struct debug_block' is less than 32 [-Wpacked-not-aligned]
->       59 | } __packed;
->          | ^
->>> arch/powerpc/platforms/ps3/gelic_udbg.c:240:6: error: redefinition of 'udbg_shutdown_ps3gelic'
->      240 | void udbg_shutdown_ps3gelic(void)
->          |      ^~~~~~~~~~~~~~~~~~~~~~
->    In file included from arch/powerpc/platforms/ps3/gelic_udbg.c:17:
->    arch/powerpc/include/asm/ps3.h:520:20: note: previous definition of 'udbg_shutdown_ps3gelic' with type 'void(void)'
->      520 | static inline void udbg_shutdown_ps3gelic(void) {}
->          |                    ^~~~~~~~~~~~~~~~~~~~~~
+> - Mani
 
-As pointed out by Arnd this is due to there being two symbols that
-control the gelic_udbg.c code.
+Hi Mani, thanks for review. Sorry, missing this part. Will change to 
+following commit message.
 
-I don't see the need for PS3GELIC_UDBG, without PPC_EARLY_DEBUG_PS3GELIC
-it just causes gelic_udbg.c to be built, but never called.
+If CONFIG_TRACE_IRQFLAGS is enabled, irq will be enabled once 
+__local_bh_enable_ip
+is called as part of write_unlock_bh. Hence, let's take irqsave lock 
+after TRE is
+generated to avoid running write_unlock_bh when irqsave lock is held.
 
-The diff below fixes the error AFAICS.
-
-I can just fold it in if you're happy with that Arnd.
-
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index ea4033abc07d..8c80b154e814 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -271,7 +271,6 @@ config PPC_EARLY_DEBUG_USBGECKO
- config PPC_EARLY_DEBUG_PS3GELIC
- 	bool "Early debugging through the PS3 Ethernet port"
- 	depends on PPC_PS3
--	select PS3GELIC_UDBG
- 	help
- 	  Select this to enable early debugging for the PlayStation3 via
- 	  UDP broadcasts sent out through the Ethernet port.
-diff --git a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
-index a44869e5ea70..e9c1087dd42e 100644
---- a/arch/powerpc/platforms/ps3/Kconfig
-+++ b/arch/powerpc/platforms/ps3/Kconfig
-@@ -167,16 +167,4 @@ config PS3_LPM
- 	  profiling support of the Cell processor with programs like
- 	  perfmon2, then say Y or M, otherwise say N.
- 
--config PS3GELIC_UDBG
--	bool "PS3 udbg output via UDP broadcasts on Ethernet"
--	depends on PPC_PS3
--	help
--	  Enables udbg early debugging output by sending broadcast UDP
--	  via the Ethernet port (UDP port number 18194).
--
--	  This driver uses a trivial implementation and is independent
--	  from the main PS3 gelic network driver.
--
--	  If in doubt, say N here.
--
- endmenu
-diff --git a/arch/powerpc/platforms/ps3/Makefile b/arch/powerpc/platforms/ps3/Makefile
-index 86bf2967a8d4..bc79bb124d1e 100644
---- a/arch/powerpc/platforms/ps3/Makefile
-+++ b/arch/powerpc/platforms/ps3/Makefile
-@@ -3,7 +3,7 @@ obj-y += setup.o mm.o time.o hvcall.o htab.o repository.o
- obj-y += interrupt.o exports.o os-area.o
- obj-y += system-bus.o
- 
--obj-$(CONFIG_PS3GELIC_UDBG) += gelic_udbg.o
-+obj-$(CONFIG_PPC_EARLY_DEBUG_PS3GELIC) += gelic_udbg.o
- obj-$(CONFIG_SMP) += smp.o
- obj-$(CONFIG_SPU_BASE) += spu.o
- obj-y += device-init.o
-
-
-cheers
+>> Signed-off-by: Hemant Kumar <quic_hemantk@quicinc.com>
+>> Signed-off-by: Lazarus Motha <quic_lmotha@quicinc.com>
+>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>> ---
+>>   drivers/bus/mhi/host/main.c | 13 +++++--------
+>>   1 file changed, 5 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>> index b137d54..93b5110 100644
+>> --- a/drivers/bus/mhi/host/main.c
+>> +++ b/drivers/bus/mhi/host/main.c
+>> @@ -1129,17 +1129,15 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
+>>   	if (unlikely(MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)))
+>>   		return -EIO;
+>>   
+>> -	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
+>> -
+>>   	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
+>> -	if (unlikely(ret)) {
+>> -		ret = -EAGAIN;
+>> -		goto exit_unlock;
+>> -	}
+>> +	if (unlikely(ret))
+>> +		return -EAGAIN;
+>>   
+>>   	ret = mhi_gen_tre(mhi_cntrl, mhi_chan, buf_info, mflags);
+>>   	if (unlikely(ret))
+>> -		goto exit_unlock;
+>> +		return ret;
+>> +
+>> +	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
+>>   
+>>   	/* Packet is queued, take a usage ref to exit M3 if necessary
+>>   	 * for host->device buffer, balanced put is done on buffer completion
+>> @@ -1159,7 +1157,6 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
+>>   	if (dir == DMA_FROM_DEVICE)
+>>   		mhi_cntrl->runtime_put(mhi_cntrl);
+>>   
+>> -exit_unlock:
+>>   	read_unlock_irqrestore(&mhi_cntrl->pm_lock, flags);
+>>   
+>>   	return ret;
+>> -- 
+>> 2.7.4
+>>
+>>
