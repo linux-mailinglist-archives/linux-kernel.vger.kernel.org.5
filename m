@@ -2,210 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CA87E818E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F5C7E816D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346037AbjKJS34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
+        id S1345842AbjKJS2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346603AbjKJS1C (ORCPT
+        with ESMTP id S1346056AbjKJS0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:27:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD272BE09
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:19:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7238FC433C7;
-        Fri, 10 Nov 2023 09:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699607946;
-        bh=b9jyp9d6eUs12groes8KvuLudG/6cY80nzVdpBVlpl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i/15eAPSmNar0fmxrbidbkveb69ykFpmetwPD7Yza1TswwTh+IpgJSSIMHqzZNP9R
-         y5zAQ2Xgo4NVYjaMLLxRV+fKgppRoxikGpT8QuJVGwVFHJaX6m1BDUiFI53AkD7Dbz
-         DyACF7jrbVQmI5Jnpy08C5eX54ntRlki7xM+T2Y0m2YS4H/Xz3fMr2EJwl3mwn7UDv
-         sjZg3ZAHHD5t+GMii5Cj+4M6636v+g9yQBPCcq/Vf3X1RyLQ1J7vLUK5eyGvqYYDyQ
-         dEgZLzY2ud9Jql0Gk5YRq3ySoVaFUhITcouW50caJp5GhCovdhVD99hjRRxMa7yL65
-         BLTtCnLJ6qZJg==
-Received: from johan by theta with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r1NfH-0002iZ-2T;
-        Fri, 10 Nov 2023 10:18:59 +0100
-Date:   Fri, 10 Nov 2023 10:18:59 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-Message-ID: <ZU31gx-LY5GBJGPU@hovoldconsulting.com>
-References: <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
- <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
- <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
- <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
- <2b19b5e2-5eb0-49e0-8c47-8aff3d48f34e@quicinc.com>
+        Fri, 10 Nov 2023 13:26:01 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C928D2BE11;
+        Fri, 10 Nov 2023 01:20:10 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7gKUU022729;
+        Fri, 10 Nov 2023 09:20:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=oSNnDU6xlPnzZURmfi26Tj3BiUebfuDYWVDpH+fPwyw=;
+ b=Eqsft7z2+rm0XWqAMQvQ1zLHzxuII/+mW1eCqpG3zHAry0WH9dtS0T7WxLT5g+bFvE1B
+ h7JQC1ZXolA4v6hG83z7Kl3irrVoduTnVWxG9oVAUIGHVzd1ZgePii/+V8Inuy6ekgGA
+ yCliYkdT05ZVu6NHrBeWySuuRsx0NeiS73aekPWVX0crzUOfKQ16wJeY9OfF4fb+Qh+K
+ P90X8QFpfV/rHzOdOY7EhvcEh0WrgONGfmnXR+o6nKWjxZsYOEBEbD84Eyotd2IDcBae
+ w0nV157/vxgRdO8K9eN1+u3BLgI/1zNEipb4fDNPGTBWclR27U4SVdPlX/tS1LiH1JHp sQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8u2tu9tv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:20:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA9K3jO023716
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:20:03 GMT
+Received: from hu-mmanikan-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 01:19:56 -0800
+From:   Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <quic_eberman@quicinc.com>,
+        <quic_gurus@quicinc.com>, <bartosz.golaszewski@linaro.org>,
+        <quic_mmanikan@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_varada@quicinc.com>
+Subject: [PATCH v6 00/11] Add multipd remoteproc support
+Date:   Fri, 10 Nov 2023 14:49:28 +0530
+Message-ID: <20231110091939.3025413-1-quic_mmanikan@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b19b5e2-5eb0-49e0-8c47-8aff3d48f34e@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: h-7j5tJZ8C7sT4Q0Kx3hxzoSgjSP3-ch
+X-Proofpoint-GUID: h-7j5tJZ8C7sT4Q0Kx3hxzoSgjSP3-ch
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_05,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=708 bulkscore=0 adultscore=0 clxscore=1011 spamscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311100075
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:08:12PM +0530, Krishna Kurapati PSSNV wrote:
-> On 11/9/2023 8:48 PM, Johan Hovold wrote:
-> > On Fri, Nov 03, 2023 at 03:34:52PM +0530, Krishna Kurapati PSSNV wrote:
-> > > On 10/24/2023 12:26 PM, Johan Hovold wrote:
-> > > > On Mon, Oct 23, 2023 at 10:42:31PM +0530, Krishna Kurapati PSSNV wrote:
-> > > > > On 10/23/2023 7:37 PM, Johan Hovold wrote:
-> > > > 
-> > > > > > Right. And I assume there are hs_phy_irqs also for the first two USB
-> > > > > > controllers on sc8280xp?
-> > > > 
-> > > > > There are, I can dig through and find out. Atleast in downstream I don't
-> > > > > see any use of them.
-> > > > 
-> > > > Yes, please do post how these are wired as well for completeness.
-> > 
-> > Did you find these two interrupts as well?
+APSS brings Q6 out of reset and then Q6 brings
+WCSS block (wifi radio's) out of reset.
 
-Please answer.
+				   ---------------
+			      -->  |WiFi 2G radio|
+			      |	   --------------
+			      |
+--------	-------	      |
+| APSS | --->   |QDSP6|  -----|
+---------	-------       |
+                              |
+      			      |
+			      |   --------------
+			      --> |WiFi 5G radio|
+				  --------------
 
-> > > As an experiment, I tried to test wakeup by pressing buttons on
-> > > connected keyboard when in suspend state or connecting/disconnecting
-> > > keyboard in suspended state on different ports and only see dp/dm IRQ's
-> > > getting fired although we register for hs_phy_irq as well:
-> > > 
-> > > / # cat /proc/interrupts  |grep phy_
-> > > 171:   1  0   0   0  0  0  0  0       PDC 127 Edge      dp_hs_phy_1
-> > > 172:   2  0   0   0  0  0  0  0       PDC 126 Edge      dm_hs_phy_1
-> > > 173:   3  0   0   0  0  0  0  0       PDC 129 Edge      dp_hs_phy_2
-> > > 174:   4  0   0   0  0  0  0  0       PDC 128 Edge      dm_hs_phy_2
-> > > 175:   0  0   0   0  0  0  0  0       PDC 131 Edge      dp_hs_phy_3
-> > > 176:   2  0   0   0  0  0  0  0       PDC 130 Edge      dm_hs_phy_3
-> > > 177:   2  0   0   0  0  0  0  0       PDC 133 Edge      dp_hs_phy_4
-> > > 178:   5  0   0   0  0  0  0  0       PDC 132 Edge      dm_hs_phy_4
-> > > 179:   0  0   0   0  0  0  0  0       PDC  16 Level     ss_phy_1
-> > > 180:   0  0   0   0  0  0  0  0       PDC  17 Level     ss_phy_2
-> > > 181:   0  0   0   0  0  0  0  0     GICv3 163 Level     hs_phy_1
-> > > 182:   0  0   0   0  0  0  0  0     GICv3 168 Level     hs_phy_2
-> > > 183:   0  0   0   0  0  0  0  0     GICv3 892 Level     hs_phy_3
-> > > 184:   0  0   0   0  0  0  0  0     GICv3 891 Level     hs_phy_4
-> > 
-> > Yes, but that doesn't really say much since you never enable the hs_phy
-> > interrupt in the PHY on suspend.
-> 
-> I did register to and enabled the hs_phy_irq interrupt when I tested and
-> posted the above table.
+Problem here is if any radio crashes, subsequently other
+radio also should crash because Q6 crashed. Let's say
+2G radio crashed, Q6 should pass this info to APSS. Only
+Q6 processor interrupts registered with APSS. Obviously
+Q6 should crash and raise fatal interrupt to APSS. Due
+to this 5G radio also crashed. But no issue in 5G radio,
+because of 2G radio crash 5G radio also impacted.
 
-Yes, but, again, you never enabled them in the PHY (cf. QUSB2) so it's
-hardly surprising that they do not fire.
+In multi pd model, this problem is resolved. Here WCSS
+functionality (WiFi radio's) moved out from Q6 root pd
+to a separate user pd. Due to this, radio's independently
+pass their status info to APPS with out crashing Q6. So
+other radio's won't be impacted.
 
-Still good to know that requesting them doesn't trigger spurious
-interrupts either since these are apparently enabled on most Qualcomm
-SoCs even though they are not used. We should fix that too.
+Pd means protection domain. It's similar to process in Linux.
+Here QDSP6 processor runs each wifi radio functionality on a
+separate process. One process can't access other process
+resources, so this is termed as PD i.e protection domain.
 
-> > > Since the hs_phy_irq is applicable only for qusb2 targets, do we still
-> > > need to add it to DT.
-> > 
-> > Are you sure there's no support for hs_phy_irq also in the "femto" PHYs
-> > and that it's just that there is currently no driver support for using
-> > them?
-> > 
-> > And why is it defined if there is truly no use for it?
-> 
-> Femto phy's have nothing to be configured for interrupts like we do for
-> qusb2 phy's. I confirmed from hw validation team that they never used
-> hs_phy_irq for validating wakeup. They only used dp/dm IRQ's for wakeup.
+ APPS				QDSP6
+-------                      -------------
+|     |	 Crash notification  |		|	----------
+|     |<---------------------|----------|-------|WiFi    |
+|     |			     |		|    |->|2G radio|
+|     |			     |	-------	|    | 	----------
+|     |	     		     |	|     |	|    |
+|Root |	 Start/stop  Q6	     |	|  R  | |    |
+|PD   |<---------------------|->|     | |    |
+|rproc|  Crash notification  |	|  O  | |    |
+|     |			     |	|     |	|    |
+|User |Start/stop UserPD1(2G)|  |  O  | |    |
+|PD1  |----------------------|->|     |-|----|
+|rproc|			     |	|  T  |	|    |
+|     |			     |	|     | |    |
+|User |Start/stop UserPD2(5G)|	|  P  | |    |
+|PD2  |----------------------|->|     |-|----|
+|rproc|			     |	|  D  |	|    |
+|     |			     |	-------	|    |	-----------
+|     |	Crash notification   |		|    |->|WiFi	  |
+|     |<---------------------|----------|-------|5G radio |
+-------			     |		|	-----------
+                             ------------
 
-Ok.
+According to linux terminology, here consider Q6 as root
+i.e it provide all services, WCSS (wifi radio's) as user
+i.e it uses services provided by root.
 
-Is there some other (non-wakeup) functionality which may potentially use
-this interrupt?
+Since Q6 root & WCSS user pd's able to communicate with
+APSS individually, multipd remoteproc driver registers
+each PD with rproc framework. Here clients (Wifi host drivers)
+intrested on WCSS PD rproc, so multipd driver start's root
+pd in the context of WCSS user pd rproc start. Similarly
+on down path, root pd will be stopped after wcss user pd
+stopped.
 
-> > Also, if hs_phy_irq and dp/dm_phy_irq were mutually exclusive, why does
-> > the following Qualcomm SoCs define all three?
-> > 
-> 
-> Similar to BAM IRQ's these might have been just ported over targets I
-> believe. I say so because HW Validation team confirmed they don't use this
-> interrupt at all on femto phy targets.
+Here WCSS(user) PD is dependent on Q6(root) PD, so first
+q6 pd should be up before wcss pd. After wcss pd goes down,
+q6 pd should be turned off.
 
-So then including the hs_phy_irq for most of these SoCs was a mistake
-and we should drop it from the bindings?
+IPQ5332, IPQ9574 supports multipd remoteproc driver.
 
-What about the QUSB2 SoCs that also define DP/DM, are both useable
-there?
+[V6]:
+	- Added user pd remoteproc nodes in RDP442 dts
+	- Removed extern keyword from msa lock/unlock
+	  function prototype
 
-And if so, is there any reason to prefer one mechanism over the other?
+[V5]:
+	- Fixed all comments and rebased on linux-next.
+	- Exported symbols to resolve errors reported here
+https://lore.kernel.org/oe-kbuild-all/202307301307.LGjSxmY8-lkp@intel.com/
 
-> >                - qcom,ipq4019-dwc3
-> >                - qcom,ipq6018-dwc3
-> >                - qcom,ipq8064-dwc3
-> >                - qcom,ipq8074-dwc3
-> >                - qcom,msm8994-dwc3
-> >                - qcom,qcs404-dwc3
-> >                - qcom,sc7180-dwc3
-> > 	      - qcom,sc7280-dwc3
-> >                - qcom,sdm670-dwc3
-> >                - qcom,sdm845-dwc3
-> >                - qcom,sdx55-dwc3
-> >                - qcom,sdx65-dwc3
-> >                - qcom,sm4250-dwc3
-> >                - qcom,sm6125-dwc3
-> >                - qcom,sm6350-dwc3
-> >                - qcom,sm8150-dwc3
-> >                - qcom,sm8250-dwc3
-> >                - qcom,sm8350-dwc3
-> >                - qcom,sm8450-dwc3
-> >                - qcom,sm8550-dwc3
-> > 
-> > Some of those use QUSB2 PHYs and some use "femto" PHYs.
+[V4]:
+	- Fixed all comments and rebased on linux-next.
+	- All userpd's rproc handles stored in linked list.
+	- Removed data members from compatible specific data structure.
+	- In probe itself, traverse for each userpd and call
+	  'q6_register_userpd()'.
 
-> > > Since the DeviceTree passed to the OS, should describe the hardware to
-> > > the OS, and should represent the hardware from the point-of-view of the
-> > > OS, adding one interrupt (ctrl_irq[0]) might be sufficient as Linux
-> > > would not use the other interrupts.
-> > 
-> > I've only skimmed the virtualisation bits in xHCI spec, but it seems
-> > Linux as VMM would still be involved in assigning these interrupts to
-> > VMs.
-> 
-> I didn't understand this sentence. Are you referring to cases where Linux
-> needs to act as the entity using the ctrl_irq[1] ?
+[V3]:
+	- Fixed all comments and rebased on linux-next.
+	- IPQ5018 support is dropped because it's base port
+	  patches not yet merged.
+	- IPQ5332 support is added with below patches.
+	  [03/11], [05/11], [06/11], [07/11], [10/11].
 
-It seems Linux acting as VMM would need to be involved in configuring
-such interrupts and passing them to the VM that eventually use them.
+[V2]:
+	- Fixed all comments and rebased on linux-next.
+	- since clocks handled by QDSP6 firmware
+ 	  Added [04/13], [05/13], [06/13], [07/13] patches.
 
-> On QCOM SoC's, in reality (atleast in device mode) I can say that we create
-> the event rings for IPA FW (which registers for ctrl_irq[1]) to use and read
-> depevt's. We don't register or get this IRQ from DT and then provide to IPA
-> (not even in downstream).
+Manikanta Mylavarapu (11):
+  dt-bindings: remoteproc: qcom: Add support for multipd model
+  clk: qcom: ipq5332: remove q6 bring up clocks
+  clk: qcom: ipq9574: remove q6 bring up clocks
+  dt-bindings: clock: qcom: gcc-ipq5332: remove q6 bring up clock macros
+  dt-bindings: clock: qcom: gcc-ipq9574: remove q6 bring up clock macros
+  firmware: qcom_scm: ipq5332: add support to pass metadata size
+  firmware: qcom_scm: ipq5332: add msa lock/unlock support
+  remoteproc: qcom: q6v5: Add multipd interrupts support
+  remoteproc: qcom: Add Hexagon based multipd rproc driver
+  arm64: dts: qcom: ipq5332: Add nodes to bringup multipd
+  arm64: dts: qcom: ipq9574: Add nodes to bring up multipd
 
-Yeah, I don't know how such things would best be handled.
+ .../bindings/remoteproc/qcom,multipd-pil.yaml | 189 +++++
+ arch/arm64/boot/dts/qcom/ipq5332-rdp441.dts   |  21 +
+ arch/arm64/boot/dts/qcom/ipq5332-rdp442.dts   |  59 ++
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi         |  59 ++
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  59 ++
+ drivers/clk/qcom/gcc-ipq5332.c                | 380 ---------
+ drivers/clk/qcom/gcc-ipq9574.c                | 326 -------
+ drivers/firmware/qcom/qcom_scm.c              |  86 ++
+ drivers/firmware/qcom/qcom_scm.h              |   3 +
+ drivers/remoteproc/Kconfig                    |  19 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/qcom_q6v5.c                |  41 +-
+ drivers/remoteproc/qcom_q6v5.h                |  11 +
+ drivers/remoteproc/qcom_q6v5_mpd.c            | 802 ++++++++++++++++++
+ include/dt-bindings/clock/qcom,ipq5332-gcc.h  |  20 -
+ include/dt-bindings/clock/qcom,ipq9574-gcc.h  |  18 -
+ include/linux/firmware/qcom/qcom_scm.h        |   2 +
+ 17 files changed, 1349 insertions(+), 747 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,multipd-pil.yaml
+ create mode 100644 drivers/remoteproc/qcom_q6v5_mpd.c
 
-Johan
+
+base-commit: 8728c14129df7a6e29188a2e737b4774fb200953
+-- 
+2.34.1
+
