@@ -2,278 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7207E7FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443407E80D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjKJR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:57:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S1345037AbjKJSTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbjKJRz4 (ORCPT
+        with ESMTP id S1346159AbjKJSQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:55:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2439338E97
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:25:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699626300; x=1731162300;
-  h=date:from:to:cc:subject:message-id;
-  bh=tf3Ax1RnJnaT0lHSLPhgwb10XO/zSGRUdu4TwNwpQt8=;
-  b=iCwlsdaZyf2QOHp4/XnIVT8cGlxcNZZoqcUqVS62lHZOf9ok7QafW9br
-   GSdkhISQTyzKYDJkUllEWQ+aTlRi19FuNQl6Eb0IySU8RK1p/DAAu/enA
-   HJXi9hqw/Y+MxRiZNljWwyQBp+RXTsKv0wijiT4mnw1O0RUzlOghs+weo
-   H0T455aglNR7/pHZRSqFGKhwt7JsHi6fnNFbRbUB4USXBl9NncAp1bwuU
-   dB3oEuRhRoiehDXUgO5nkAZC7T6rTrNVF+pEySS0B5TbA3SqzHT0skf+S
-   /1bNZSNCdVOIlWvC+fChS/U4dzTwdRuK3psIxMhbuzQKemV2Gy6sxUObJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="456687358"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="456687358"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:24:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="937181497"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="937181497"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2023 06:24:58 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1SRM-0009dW-0F;
-        Fri, 10 Nov 2023 14:24:56 +0000
-Date:   Fri, 10 Nov 2023 22:24:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- ec9aedb2aa1ab7ac420c00b31f5edc5be15ec167
-Message-ID: <202311102208.ZeMtu3Jo-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 13:16:43 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A83A38EA7;
+        Fri, 10 Nov 2023 06:28:03 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507973f3b65so2909603e87.3;
+        Fri, 10 Nov 2023 06:28:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699626482; x=1700231282; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lmt2rY/D/CtOpYCyO0BO3zcHPLGs1JE21dVJIkVZZMQ=;
+        b=XEpbuUGpeql5W7m1dEFVEb+F8gMc08FKBibXPne405GHqC5X7JVX3LcvKqFyhR5T3L
+         90OMKDZUkXr712GxrYpEzwFwbIzUIiY47OFm4Xyfbs4w4m8Dy6QRRVhqSjdtFL3MtS0K
+         ERLqkWC6UuLiPZRPBsPOGrfKNiqkXq3yGSHREZQK8+xxcEEt2OQeoC94dmB2LYG6uPaD
+         EdwM+RHxwpmEzQoPJECej/n1FkBUUD7bg6+BH/XCO5kASIYXuVJ7EWB1Z+Kr3cz3nZCi
+         C1cvdIFqnMi7MuTbri8O5RubsM5rKs6Bl0HfoUDl2XqN5ZnC/a5MoBbsuQ3EdQp+DEjM
+         lGjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699626482; x=1700231282;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lmt2rY/D/CtOpYCyO0BO3zcHPLGs1JE21dVJIkVZZMQ=;
+        b=K8xlq4Q7FP2AlUCdPFdKlLEN4BP02kk4cba7W6QIIx4BEa/QxDnvuU93k/V0lXuktL
+         L3UpPjvUf9T4KMAEgCeblWRpWVBG7rWsJR2ZHHsvRT5lBUzQ7VUnJ1SVXlo0R40JSdWu
+         aSgCDj4EvXRBvO0y36QwxpnuUDJtBONCL8KZpJFg+Z+kPpOlgOVhd0z+RhXowGP0ZNAq
+         peU/2bY+bT0XrCWWng2ks+DWb0/Jw41ZkcU55RqWGv+7x7moDTLIxdUnIuiutipUKgnH
+         CKfGv5AK2E7WWOUKKelFwpzyh+jZsIl8LHIkGir+GCkD1YXL+2vdRIrqfO18+K4tLLQx
+         wE6g==
+X-Gm-Message-State: AOJu0Yziq5jVDWUQN9Ner4vR5bqW3THigAz3vWn6v3XGSS1ib7JkpWoH
+        +5cLABZ7EUuffE253pZQEHHEBqzd2wHX0w==
+X-Google-Smtp-Source: AGHT+IFTo4QzKaHnf9JDfRPiLL22Yfoec65OGGtyn4UX6ZCRDspRCqMEHROz96TnecT8pMjBqFvQ1w==
+X-Received: by 2002:a19:7107:0:b0:507:9787:6776 with SMTP id m7-20020a197107000000b0050797876776mr3970775lfc.5.1699626481467;
+        Fri, 10 Nov 2023 06:28:01 -0800 (PST)
+Received: from [192.168.8.100] ([148.252.132.154])
+        by smtp.gmail.com with ESMTPSA id r5-20020a5d6945000000b0032fdcbfb093sm2003034wrw.81.2023.11.10.06.27.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 06:28:00 -0800 (PST)
+Message-ID: <3687e70e-29e6-34af-c943-8c0830ff92b8@gmail.com>
+Date:   Fri, 10 Nov 2023 14:26:46 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
+To:     Mina Almasry <almasrymina@google.com>,
+        David Ahern <dsahern@kernel.org>, David Wei <dw@davidwei.uk>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-6-almasrymina@google.com>
+ <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
+ <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
+ <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
+ <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
+Content-Language: en-US
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izMKDOw5_y2MLRfuJHs=ai+sZ6GF7Rg1NuR_JqONg-5u5Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: ec9aedb2aa1ab7ac420c00b31f5edc5be15ec167  x86/acpi: Ignore invalid x2APIC entries
+On 11/7/23 23:03, Mina Almasry wrote:
+> On Tue, Nov 7, 2023 at 2:55 PM David Ahern <dsahern@kernel.org> wrote:
+>>
+>> On 11/7/23 3:10 PM, Mina Almasry wrote:
+>>> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
+>>>>
+>>>> On 11/5/23 7:44 PM, Mina Almasry wrote:
+>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>>>> index eeeda849115c..1c351c138a5b 100644
+>>>>> --- a/include/linux/netdevice.h
+>>>>> +++ b/include/linux/netdevice.h
+>>>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
+>>>>>   };
+>>>>>
+>>>>>   #ifdef CONFIG_DMA_SHARED_BUFFER
+>>>>> +struct page_pool_iov *
+>>>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
+>>>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
+>>>>
+>>>> netdev_{alloc,free}_dmabuf?
+>>>>
+>>>
+>>> Can do.
+>>>
+>>>> I say that because a dmabuf can be host memory, at least I am not aware
+>>>> of a restriction that a dmabuf is device memory.
+>>>>
+>>>
+>>> In my limited experience dma-buf is generally device memory, and
+>>> that's really its use case. CONFIG_UDMABUF is a driver that mocks
+>>> dma-buf with a memfd which I think is used for testing. But I can do
+>>> the rename, it's more clear anyway, I think.
+>>
+>> config UDMABUF
+>>          bool "userspace dmabuf misc driver"
+>>          default n
+>>          depends on DMA_SHARED_BUFFER
+>>          depends on MEMFD_CREATE || COMPILE_TEST
+>>          help
+>>            A driver to let userspace turn memfd regions into dma-bufs.
+>>            Qemu can use this to create host dmabufs for guest framebuffers.
+>>
+>>
+>> Qemu is just a userspace process; it is no way a special one.
+>>
+>> Treating host memory as a dmabuf should radically simplify the io_uring
+>> extension of this set.
+> 
+> I agree actually, and I was about to make that comment to David Wei's
+> series once I have the time.
+> 
+> David, your io_uring RX zerocopy proposal actually works with devmem
+> TCP, if you're inclined to do that instead, what you'd do roughly is
+> (I think):
+That would be a Frankenstein's monster api with no good reason for it.
+You bind memory via netlink because you don't have a proper context to
+work with otherwise, io_uring serves as the context with a separate and
+precise abstraction around queues. Same with dmabufs, it totally makes
+sense for device memory, but wrapping host memory into a file just to
+immediately unwrap it back with no particular benefits from doing so
+doesn't seem like a good uapi. Currently, the difference will be
+hidden by io_uring.
 
-elapsed time: 1453m
+And we'd still need to have a hook in pp's get page to grab buffers from
+the buffer ring instead of refilling via SO_DEVMEM_DONTNEED and a
+callback for when skbs are dropped. It's just instead of a new pp ops
+it'll be a branch in the devmem path. io_uring might want to use the
+added iov format in the future for device memory or even before that,
+io_uring doesn't really care whether it's pages or not.
 
-configs tested: 201
-configs skipped: 142
+It's also my big concern from how many optimisations it'll fence us off.
+With the current io_uring RFC I can get rid of all buffer atomic
+refcounting and replace it with a single percpu counting per skb.
+Hopefully, that will be doable after we place it on top of pp providers.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-tested configs:
-alpha                            alldefconfig   gcc  
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231110   gcc  
-arc                   randconfig-002-20231110   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                          gemini_defconfig   gcc  
-arm                         lpc32xx_defconfig   clang
-arm                        multi_v7_defconfig   gcc  
-arm                        mvebu_v5_defconfig   clang
-arm                   randconfig-001-20231110   gcc  
-arm                   randconfig-002-20231110   gcc  
-arm                   randconfig-003-20231110   gcc  
-arm                   randconfig-004-20231110   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231110   gcc  
-arm64                 randconfig-002-20231110   gcc  
-arm64                 randconfig-003-20231110   gcc  
-arm64                 randconfig-004-20231110   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231110   gcc  
-csky                  randconfig-002-20231110   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231110   gcc  
-i386         buildonly-randconfig-002-20231110   gcc  
-i386         buildonly-randconfig-003-20231110   gcc  
-i386         buildonly-randconfig-004-20231110   gcc  
-i386         buildonly-randconfig-005-20231110   gcc  
-i386         buildonly-randconfig-006-20231110   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231110   gcc  
-i386                  randconfig-002-20231110   gcc  
-i386                  randconfig-003-20231110   gcc  
-i386                  randconfig-004-20231110   gcc  
-i386                  randconfig-005-20231110   gcc  
-i386                  randconfig-006-20231110   gcc  
-i386                  randconfig-011-20231110   gcc  
-i386                  randconfig-012-20231110   gcc  
-i386                  randconfig-013-20231110   gcc  
-i386                  randconfig-014-20231110   gcc  
-i386                  randconfig-015-20231110   gcc  
-i386                  randconfig-016-20231110   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231110   gcc  
-loongarch             randconfig-002-20231110   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                     cu1830-neo_defconfig   clang
-mips                 decstation_r4k_defconfig   gcc  
-mips                           gcw0_defconfig   gcc  
-mips                           jazz_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-mips                           mtx1_defconfig   clang
-mips                        qi_lb60_defconfig   clang
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231110   gcc  
-nios2                 randconfig-002-20231110   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231110   gcc  
-parisc                randconfig-002-20231110   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                 canyonlands_defconfig   gcc  
-powerpc                    klondike_defconfig   gcc  
-powerpc                   microwatt_defconfig   clang
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                  mpc885_ads_defconfig   clang
-powerpc                      pcm030_defconfig   gcc  
-powerpc                     powernv_defconfig   clang
-powerpc               randconfig-001-20231110   gcc  
-powerpc               randconfig-002-20231110   gcc  
-powerpc               randconfig-003-20231110   gcc  
-powerpc                    sam440ep_defconfig   gcc  
-powerpc                      tqm8xx_defconfig   gcc  
-powerpc64             randconfig-001-20231110   gcc  
-powerpc64             randconfig-002-20231110   gcc  
-powerpc64             randconfig-003-20231110   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231110   gcc  
-riscv                 randconfig-002-20231110   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231110   gcc  
-s390                  randconfig-002-20231110   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20231110   gcc  
-sh                    randconfig-002-20231110   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231110   gcc  
-sparc                 randconfig-002-20231110   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231110   gcc  
-sparc64               randconfig-002-20231110   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231110   gcc  
-um                    randconfig-002-20231110   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231110   gcc  
-x86_64       buildonly-randconfig-002-20231110   gcc  
-x86_64       buildonly-randconfig-003-20231110   gcc  
-x86_64       buildonly-randconfig-004-20231110   gcc  
-x86_64       buildonly-randconfig-005-20231110   gcc  
-x86_64       buildonly-randconfig-006-20231110   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231110   gcc  
-x86_64                randconfig-002-20231110   gcc  
-x86_64                randconfig-003-20231110   gcc  
-x86_64                randconfig-004-20231110   gcc  
-x86_64                randconfig-005-20231110   gcc  
-x86_64                randconfig-006-20231110   gcc  
-x86_64                randconfig-011-20231110   gcc  
-x86_64                randconfig-012-20231110   gcc  
-x86_64                randconfig-013-20231110   gcc  
-x86_64                randconfig-014-20231110   gcc  
-x86_64                randconfig-015-20231110   gcc  
-x86_64                randconfig-016-20231110   gcc  
-x86_64                randconfig-071-20231110   gcc  
-x86_64                randconfig-072-20231110   gcc  
-x86_64                randconfig-073-20231110   gcc  
-x86_64                randconfig-074-20231110   gcc  
-x86_64                randconfig-075-20231110   gcc  
-x86_64                randconfig-076-20231110   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                              defconfig   gcc  
-xtensa                randconfig-001-20231110   gcc  
-xtensa                randconfig-002-20231110   gcc  
+> - Allocate a memfd,
+> - Use CONFIG_UDMABUF to create a dma-buf out of that memfd.
+> - Bind the dma-buf to the NIC using the netlink API in this RFC.
+> - Your io_uring extensions and io_uring uapi should work as-is almost
+> on top of this series, I think.
+> 
+> If you do this the incoming packets should land into your memfd, which
+> may or may not work for you. In the future if you feel inclined to use
+> device memory, this approach that I'm describing here would be more
+> extensible to device memory, because you'd already be using dma-bufs
+> for your user memory; you'd just replace one kind of dma-buf (UDMABUF)
+> with another.
+> 
+>> That the io_uring set needs to dive into
+>> page_pools is just wrong - complicating the design and code and pushing
+>> io_uring into a realm it does not need to be involved in.
+
+I disagree. How does it complicate it? io_uring will be just a yet another
+provider implementing the callbacks of the API created for such use cases
+and not changing common pp/net bits. The rest of code is in io_uring
+implementing interaction with userspace and other usability features, but
+there will be anyway some amount of code if we want to have a convenient
+and performant api via io_uring.
+
+
+>>
+>> Most (all?) of this patch set can work with any memory; only device
+>> memory is unreadable.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Pavel Begunkov
