@@ -2,66 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEB57E8045
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443297E8103
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235712AbjKJSI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55484 "EHLO
+        id S1346240AbjKJSVD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 13:21:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345745AbjKJSGv (ORCPT
+        with ESMTP id S1344850AbjKJSRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:06:51 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FD62810A
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:17:43 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3764166073F9;
-        Fri, 10 Nov 2023 10:17:41 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699611462;
-        bh=tC5sjf8JC5T2/oyASwUzhHg2NFb01acCe9klcjlI0uY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kb0noODfQiq2ijYfkjrIhVkonAhY7ZXSwkp3IleOgNqmbC6Xh7oxHzauYZTlp7K20
-         AOEOHxqbHMt82LZPUH1OObIXxPvulwwRsizpMT8zhQARfXv2HVB9iZujGcgrxxQyhx
-         alQ58eOSwm6eX8s9rqhQs24/QH2Lw3aZSh20IhqfGFzUqgwpYORJWYEBf9R4FdzvMt
-         Ari1bqARnv2H7VYbdEQom16EjWh4IvJWr/Wm4M2H85hrEIlOy/xu8rMLzRtyc+hLrl
-         0tK0FkPF4cWKJLKDetHSVWuP/8IEdhOq9POq24Xjd2JtsXHzYyYhdcrPtHD6IsX4+x
-         +coW0J+FRJuog==
-Date:   Fri, 10 Nov 2023 11:17:37 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 12/26] drm/shmem-helper: Make
- drm_gem_shmem_get_pages() public
-Message-ID: <20231110111737.212f9454@collabora.com>
-In-Reply-To: <20231029230205.93277-13-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-13-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 10 Nov 2023 13:17:40 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA0B32810B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:18:13 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 153F7106F;
+        Fri, 10 Nov 2023 02:18:58 -0800 (PST)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 566393F6C4;
+        Fri, 10 Nov 2023 02:18:12 -0800 (PST)
+Date:   Fri, 10 Nov 2023 10:18:09 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 06/12] bus: sun50i-de2: Convert to platform remove
+ callback returning void
+Message-ID: <20231110101809.78f64217@donnerap.manchester.arm.com>
+In-Reply-To: <20231109202830.4124591-7-u.kleine-koenig@pengutronix.de>
+References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
+        <20231109202830.4124591-7-u.kleine-koenig@pengutronix.de>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,61 +50,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 02:01:51 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+On Thu,  9 Nov 2023 21:28:36 +0100
+Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
 
-> We're going to move away from having implicit get_pages() done by
-> get_pages_sgt() to ease simplify refcnt handling. Drivers will manage
+Hi,
 
-Nit: ease or simplify, not both.
-
-> get/put_pages() by themselves. Expose the drm_gem_shmem_get_pages()
-> in a public drm-shmem API.
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
 > 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
 > ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 10 +++++++++-
->  include/drm/drm_gem_shmem_helper.h     |  1 +
->  2 files changed, 10 insertions(+), 1 deletion(-)
+>  drivers/bus/sun50i-de2.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index 24ff2b99e75b..ca6f422c0dfc 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -227,7 +227,14 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+> diff --git a/drivers/bus/sun50i-de2.c b/drivers/bus/sun50i-de2.c
+> index 414f29cdedf0..3339311ce068 100644
+> --- a/drivers/bus/sun50i-de2.c
+> +++ b/drivers/bus/sun50i-de2.c
+> @@ -24,10 +24,9 @@ static int sun50i_de2_bus_probe(struct platform_device *pdev)
+>  	return 0;
 >  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
 >  
-> -static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
-> +/*
-> + * drm_gem_shmem_get_pages - Increase use count on the backing pages for a shmem GEM object
-> + * @shmem: shmem GEM object
-> + *
-> + * This function Increases the use count and allocates the backing pages if
-> + * use-count equals to zero.
-> + */
-> +int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
+> -static int sun50i_de2_bus_remove(struct platform_device *pdev)
+> +static void sun50i_de2_bus_remove(struct platform_device *pdev)
 >  {
->  	int ret;
->  
-> @@ -240,6 +247,7 @@ static int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem)
->  
->  	return ret;
+>  	sunxi_sram_release(&pdev->dev);
+> -	return 0;
 >  }
-> +EXPORT_SYMBOL_GPL(drm_gem_shmem_get_pages);
 >  
->  static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->  {
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index e7b3f4c02bf5..45cd293e10a4 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -110,6 +110,7 @@ struct drm_gem_shmem_object {
->  struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t size);
->  void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem);
+>  static const struct of_device_id sun50i_de2_bus_of_match[] = {
+> @@ -37,7 +36,7 @@ static const struct of_device_id sun50i_de2_bus_of_match[] = {
 >  
-> +int drm_gem_shmem_get_pages(struct drm_gem_shmem_object *shmem);
->  void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem);
->  int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem);
->  void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem);
+>  static struct platform_driver sun50i_de2_bus_driver = {
+>  	.probe = sun50i_de2_bus_probe,
+> -	.remove = sun50i_de2_bus_remove,
+> +	.remove_new = sun50i_de2_bus_remove,
+>  	.driver = {
+>  		.name = "sun50i-de2-bus",
+>  		.of_match_table = sun50i_de2_bus_of_match,
 
