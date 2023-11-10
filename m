@@ -2,138 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3067E8263
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FA17E82EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345715AbjKJTTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S1345243AbjKJTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346096AbjKJTTn (ORCPT
+        with ESMTP id S230107AbjKJTez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:19:43 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2043.outbound.protection.outlook.com [40.92.89.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF152EF38;
-        Fri, 10 Nov 2023 11:07:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QABjSKEfKCbKTcFgvIX9Hyg/EdYwWeo+YNnxd/b0gEohN/ZRwL/DBa7hLPt4+tfrmE69/EoyoiUoQxHlyFGoMm4hxJ13C4Aa2e70n/eTVybJHESWrPQMm2uhDsJ5bCSU9VmBTMQTzkkvtflrIKIW6jQjMPbTuNpdz/ALXvM0OyFHmMSjC5wTJhYyeCAF8zCR8wvXnjoLZbT2wVTXn0vN92DT3+KSP5YAM/4KQNIDW0Vmkr+2OsMwDumx4A912ujc75/O7/GRggytquGgFwdIxUVrGUnN0gl0OvrM1hsdJm3qU4iJ9o2MV28cyXex8CPYRxgVfjpJZUdgcxgXGDxH5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=92E9ItfYieonP35ZSDNlZ5zXLpNStjSEh2Ht2aJ77GM=;
- b=BAkxdEM22XE4geaTnu7fdDPXq+UZyWmILXBsmhQYhEl4MC84FsJl+kXt/9P2KZUF7sGNdQe5g5PZKRYYZE7RohbSjguXHLXS6Y3AZEoPxObui50AphOT7lpEkcuEm+b+fkjHvNgMi28KaLBsNKHwCq/w9ux3VW9d0XMGq8Ja3xVruegNfLLMnqPPQyAv7jOgFPDZcpYNx1tnvWEwZd6fjfLEGqUw+HKPFm4gRYTyVrakpL5Ut7Rt5zDdmyFpFYHAL76MJjQeoTIqDfMTfCXVuQONDcWYW5KX1+RSvAW45XKSeV6AN5325HOhGpgd0+nfSwb1B6riDEVL7KUOOMC7qQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=92E9ItfYieonP35ZSDNlZ5zXLpNStjSEh2Ht2aJ77GM=;
- b=uyQUkJ98BL17AFQuUrE3RRl8ZA0yd2NMzw2Dxbx1ytXk8ooks3zO/oTmPaHq1l8wGA5TryNtRCdHAsBu2K6mYYGwsAdpze4212xivZL5X+KaeTH6nHiaOeNNafbg3NHBH1YISfREf0ycQ25U9PDjwYvjRUMSobOVqgknaOLDwOPpUUqylVEDzPc/NIPSH3Wr5Hf5jatT0IOOdqyJ/NFEgOmwIBwn1BvFqYUT7aAxXD5K6uYvMhdBbDn9rYGGWJK2X0tjVP0QPmpfo87VgI8QTWJ7C0buWGT3FcnNIM5I6WIcBTogBGP2ymE0ir6DeS3K6nDqJU8U3n8614IFXQ3gYQ==
-Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
- (2603:10a6:20b:63e::17) by GV2PR02MB9424.eurprd02.prod.outlook.com
- (2603:10a6:150:e3::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19; Fri, 10 Nov
- 2023 19:07:29 +0000
-Received: from AS8PR02MB10217.eurprd02.prod.outlook.com
- ([fe80::2b9c:230f:3297:57e8]) by AS8PR02MB10217.eurprd02.prod.outlook.com
- ([fe80::2b9c:230f:3297:57e8%6]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
- 19:07:29 +0000
-From:   David Binderman <dcb314@hotmail.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "irogers@google.com" <irogers@google.com>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: linux-6.6/tools/perf/util/bpf_map.c:50:8: style: Suspicious condition
-Thread-Topic: linux-6.6/tools/perf/util/bpf_map.c:50:8: style: Suspicious
- condition
-Thread-Index: AQHaFAit7umFVzO0jEuo+/jUnZw6ew==
-Date:   Fri, 10 Nov 2023 19:07:29 +0000
-Message-ID: <AS8PR02MB102175ECBFEE1AD4D124C9DE69CAEA@AS8PR02MB10217.eurprd02.prod.outlook.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [c2ujlTM7bpwMdiPb8UMqMcHwwwN3HgL2]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR02MB10217:EE_|GV2PR02MB9424:EE_
-x-ms-office365-filtering-correlation-id: bddef1c6-2f45-422b-50ca-08dbe22048c9
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S2Wqsh68HsYnKRGmgvhwVIRG7oL2nkUOl3FVFpiuwAW6EdSxYWV4njDP9ycKVFrpxvoo8VUBoeDOzw9mUkCpyfTRCmoPYYpQkemNXTmLXnOEQpo6wTGGwsY+C/pHwRzbQoThDax5Y90ySsHSRrnUCtnO8L+UPswWuE0REVe3AFIgYU5wRVBaPByUSEMKUvNx1IqFQ8RT/BGGpCX6FrgribBve9JUy4yv7asbFVnrhF4Zegf1Vs1wWCXhac6cXTjuyBZN9cHU4H9JT/EadfX5RSdUYPer+OScV59izDjdOa9sRR0S6N28JOgXYMdTt9rPyhNtbERlvrrZ/orLa80bj7GAGxucYOqGq8gkEjL1xL5XMm44owgjavxKYaMnX8p/I9blq79jy0ms8/LH79RcnoMg9/PdfJkQ45k9mxyhyUEDRsuFLp4m2XK1yqbwZyyYufGYZv+93hgG+HiBacB1unhtSUwojplxBMbuHgZzEFTHvSG38su8GDQtsIb+bl9J9+9AsGjVkwvmaNjg3+aMX/8w1xdwTPZP+ib+qYHFIExFJ54vYLs0rVIGxzUPdXS0
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?aG6NImPF3tYbNYsOMuYUIBvCao9JIUwHcBowUJDtMf6Ja74AXo2cGx7kjb?=
- =?iso-8859-1?Q?SVR3U45V5En2OkVsXotoWW3Y4APNaJGErAvPiq6rignusUg61dOeIenWW8?=
- =?iso-8859-1?Q?VgwkbUZWUvqoZwzKmALTe6qvvvYBzuQohl1HnTpTtnS+xkurX/Bs5othin?=
- =?iso-8859-1?Q?k5RLaHOMlsy9DJLK2O1iCdg54qVuNei52JRYubqwvh5jM2SPL+DrfSCGGs?=
- =?iso-8859-1?Q?94raEcBT5q1j6GkNot/75Frn2RHEiLJ6aNUensRIQcgTuVPZbRLjd6wjHK?=
- =?iso-8859-1?Q?xknZ5kO1LFvJCypx8v+fis/6f7lqWW5Yfc8sWAzXHFGph+zkVtIjiJzj3S?=
- =?iso-8859-1?Q?naf6TwHNY+4ZHnv3NXwqvv9NR0rILwoYy3YojfNM1yd02kSPPLl06jz/vd?=
- =?iso-8859-1?Q?VPSRXV8JSDmrJz9unyLlcDKAo7xWkXGW2nJEuCA+6di/XHGo0YYW9uW3So?=
- =?iso-8859-1?Q?kdgZSoFPCEeR+Z1dSDB1rl2K1QvleGBR1zbUowLXqmdohbdsiwvwqZNq2X?=
- =?iso-8859-1?Q?J/jySGRgncLQzb3HrF1WeL5SHLUOskIQnAAJ9/6hN9d143YnNZbO6yZL1F?=
- =?iso-8859-1?Q?GyOIPbn3WAoZz2KCNZkMzycIpi6AeMcY4Uyg2lJlypVmvhjUtSExgaG4lq?=
- =?iso-8859-1?Q?O5KFSw/sSjTT0vF6ibBSxYzJ3DUcPuoHw5t6+ewhEFImj6/ruvBN3FKFCn?=
- =?iso-8859-1?Q?qsntJnLFcJR8eHZ7yNz9bO2DDlVnYbuYDJ9DXkSDUk0V7byF/7lAZ9ggF2?=
- =?iso-8859-1?Q?LxtU7DZ+nBtVDVpxGYA/XQYazTKEwaYBDYtPnkQ67UlEvmyVKT6O61GcRb?=
- =?iso-8859-1?Q?bd94gsZWrlu011hdU5P+n57l7lCGan2CKqrv2YXR11QI7K/xZJ+Ec0i2EI?=
- =?iso-8859-1?Q?+nHQATIiceXeyAjQ+nAZ9+/Jrdv/IXdFvmRKIwjcD7Hoc+B997QVaKh1wX?=
- =?iso-8859-1?Q?W7JNUhVPAl5gLsG96qX1IE6QZeHl7Dgh31NMghk1zLUc9t5hZRwDd1gWlv?=
- =?iso-8859-1?Q?agkSNhmRb/SwKUa5PTnhzXgWk4p5fCf6vZVnO8ZfUuOZj+1ozbN2DgcyzP?=
- =?iso-8859-1?Q?Srz7WwBwkb9fE6gvkGTjT1HK/jxFomcLXkO/83lE2bNdbQazryK2CUyoWj?=
- =?iso-8859-1?Q?MK9yfz3mExkKjjtFHO0PEjgBDhIRXYqwOtRbMQr3IYouTvSJ9LP+2xH7y/?=
- =?iso-8859-1?Q?4G7fRCW2v9Xbalh92ebB8KclbS3HiGY6UuLOpbzaol4vHILI8ITqJZPx?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 10 Nov 2023 14:34:55 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE69C11414
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:11:06 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so2446560b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:11:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699643466; x=1700248266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BbEbYA9xamOrAMfvycHRway68YHS/nLJtvjFfgGL1Mc=;
+        b=cgmicyGaaPyKcFPqRkTaKw9yMP1zODLEqEhDZNKIglQuvhGkFXUv6pu+PxmM32DWBP
+         vyeGubcu6SCWCHDKxMklAKamj/+1KXy8I4EBkNSyHl6rFudm6NdjI4GZ9JbwUY3LcCQV
+         2Ny/ZMaUJG+oYzrA6AgcKrS7tXntsV9foydbaNjDEy7LE8bI8dsn57Q6oKRIuHoYDzrf
+         BdCqAatA3rV2VvzSnhLgvUR0IrYEiRACD/9gSUzSrX1LTxf01yFfH4MKaLM4rxJXqzvb
+         Q9hn/b1mntSRRBLSg1ukLdZsAmt3RMAovc6IHFvu2lX69UgGjaEPByS2LtyoL7YbZ4W8
+         +dRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699643466; x=1700248266;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BbEbYA9xamOrAMfvycHRway68YHS/nLJtvjFfgGL1Mc=;
+        b=H6rsD63Aug9VLcrGTxxkHc38VZVGaKY59BgOUirC9oS8/49mZgSK8GnCF2Cuh919OT
+         sW/qerizZmPrSarl4X5wOadrSrENkXKtRQW7u2nelyQVUxAQ707XRHZevCY1QdxOW4/s
+         K1emK9FfJ1M/NvIQJFWvDSxkYMVtbyBwVCs0l6D1Nv5zC9MlCR1lSQNig1DKnKH+B389
+         7pZkzj8Bkn5WLEZE/jRNl7DJ3+IhjZBC02ZD8PDvmjKDouYpyLJOsEIccNR7VTQTPL8w
+         PXB2PLE3Wq0FgTyoYewuFAZA+M1PTrqfjNJcknkd2z51Wb7T3MoH7SeDcqBBbsFsBzBa
+         zDvg==
+X-Gm-Message-State: AOJu0YzkrauOAK6PuNyR532SW1LGVt48V3nL7DTngqPl5CwK3nAE7lQ7
+        OmL+LwNj10piAzosMzEA9vM=
+X-Google-Smtp-Source: AGHT+IE43TNuGQWohhIGg54xObrNbXPCGBQ46cNESuWQKjQAy9BT56Sn9aSe/EHJMF5gcuvLcJsumA==
+X-Received: by 2002:a05:6a20:6a9c:b0:185:ebfc:974 with SMTP id bi28-20020a056a206a9c00b00185ebfc0974mr35305pzb.7.1699643466251;
+        Fri, 10 Nov 2023 11:11:06 -0800 (PST)
+Received: from omkarwagle.hsd1.ca.comcast.net (c-73-92-27-236.hsd1.ca.comcast.net. [73.92.27.236])
+        by smtp.gmail.com with ESMTPSA id u16-20020a056a00125000b0068c90e1ec84sm36974pfi.167.2023.11.10.11.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 11:11:05 -0800 (PST)
+From:   Omkar Wagle <ov.wagle@gmail.com>
+To:     catalin.marinas@arm.com
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Omkar Wagle <ov.wagle@gmail.com>
+Subject: [PATCH] mm: kmemleak: Remove security and coding style warning
+Date:   Fri, 10 Nov 2023 11:11:02 -0800
+Message-Id: <20231110191102.2029-1-ov.wagle@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-ab7de.templateTenant
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB10217.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: bddef1c6-2f45-422b-50ca-08dbe22048c9
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Nov 2023 19:07:29.0452
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR02MB9424
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there,=0A=
-=0A=
-Static analyser cppcheck says:=0A=
-=0A=
-linux-6.6/tools/perf/util/bpf_map.c:50:8: style: Suspicious condition (assi=
-gnment + comparison); Clarify expression with parentheses. [clarifyConditio=
-n]=0A=
-=0A=
-Source code is=0A=
-=0A=
-    while ((err =3D bpf_map_get_next_key(fd, prev_key, key) =3D=3D 0)) {=0A=
-=0A=
-Suggest new code:=0A=
-=0A=
-    while ((err =3D bpf_map_get_next_key(fd, prev_key, key)) =3D=3D 0) {=0A=
-=0A=
-Regards=0A=
-=0A=
-David Binderman=0A=
-=0A=
+Remove the security warning arised due to the use of strncpy
+Resolve coding style warning
+
+Signed-off-by: Omkar Wagle<ov.wagle@gmail.com>
+---
+ mm/kmemleak.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/mm/kmemleak.c b/mm/kmemleak.c
+index 1eacca03bedd..93b77288754a 100644
+--- a/mm/kmemleak.c
++++ b/mm/kmemleak.c
+@@ -1,6 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * mm/kmemleak.c
+  *
+  * Copyright (C) 2008 ARM Limited
+  * Written by Catalin Marinas <catalin.marinas@arm.com>
+@@ -97,7 +96,7 @@
+ #include <linux/crc32.h>
+ 
+ #include <asm/sections.h>
+-#include <asm/processor.h>
++#include <linux/processor.h>
+ #include <linux/atomic.h>
+ 
+ #include <linux/kasan.h>
+@@ -368,6 +367,7 @@ static void print_unreferenced(struct seq_file *seq,
+ 
+ 	for (i = 0; i < nr_entries; i++) {
+ 		void *ptr = (void *)entries[i];
++
+ 		warn_or_seq_printf(seq, "    [<%pK>] %pS\n", ptr, ptr);
+ 	}
+ }
+@@ -406,10 +406,11 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
+ 	unsigned long untagged_ptr = (unsigned long)kasan_reset_tag((void *)ptr);
+ 
+ 	while (rb) {
+-		struct kmemleak_object *object;
++		struct kmemleak_object *object = NULL;
+ 		unsigned long untagged_objp;
+ 
+ 		object = rb_entry(rb, struct kmemleak_object, rb_node);
++
+ 		untagged_objp = (unsigned long)kasan_reset_tag((void *)object->pointer);
+ 
+ 		if (untagged_ptr < untagged_objp)
+@@ -674,10 +675,10 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
+ 	/* task information */
+ 	if (in_hardirq()) {
+ 		object->pid = 0;
+-		strncpy(object->comm, "hardirq", sizeof(object->comm));
++		strscpy(object->comm, "hardirq", sizeof(object->comm));
+ 	} else if (in_serving_softirq()) {
+ 		object->pid = 0;
+-		strncpy(object->comm, "softirq", sizeof(object->comm));
++		strscpy(object->comm, "softirq", sizeof(object->comm));
+ 	} else {
+ 		object->pid = current->pid;
+ 		/*
+@@ -686,7 +687,7 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
+ 		 * dependency issues with current->alloc_lock. In the worst
+ 		 * case, the command line is not correct.
+ 		 */
+-		strncpy(object->comm, current->comm, sizeof(object->comm));
++		strscpy(object->comm, current->comm, sizeof(object->comm));
+ 	}
+ 
+ 	/* kernel backtrace */
+@@ -1662,6 +1663,7 @@ static void kmemleak_scan(void)
+ 		rcu_read_lock();
+ 		for_each_process_thread(g, p) {
+ 			void *stack = try_get_task_stack(p);
++
+ 			if (stack) {
+ 				scan_block(stack, stack + THREAD_SIZE, NULL);
+ 				put_task_stack(p);
+@@ -1768,6 +1770,7 @@ static int kmemleak_scan_thread(void *arg)
+ 	 */
+ 	if (first_run) {
+ 		signed long timeout = msecs_to_jiffies(SECS_FIRST_SCAN * 1000);
++
+ 		first_run = 0;
+ 		while (timeout && !kthread_should_stop())
+ 			timeout = schedule_timeout_interruptible(timeout);
+@@ -2013,7 +2016,7 @@ static ssize_t kmemleak_write(struct file *file, const char __user *user_buf,
+ 	else if (strncmp(buf, "scan=off", 8) == 0)
+ 		stop_scan_thread();
+ 	else if (strncmp(buf, "scan=", 5) == 0) {
+-		unsigned secs;
++		unsigned int secs;
+ 		unsigned long msecs;
+ 
+ 		ret = kstrtouint(buf + 5, 0, &secs);
+@@ -2130,8 +2133,7 @@ static int __init kmemleak_boot_config(char *str)
+ 	else if (strcmp(str, "on") == 0) {
+ 		kmemleak_skip_disable = 1;
+ 		stack_depot_request_early_init();
+-	}
+-	else
++	} else
+ 		return -EINVAL;
+ 	return 0;
+ }
+-- 
+2.34.1
+
