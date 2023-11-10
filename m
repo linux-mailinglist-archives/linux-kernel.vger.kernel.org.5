@@ -2,177 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E0F7E7F6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 046657E7E7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjKJRxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        id S1345949AbjKJRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjKJRwt (ORCPT
+        with ESMTP id S1344174AbjKJRo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:52:49 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF142AD0E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:54:01 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7507266073E5;
-        Fri, 10 Nov 2023 10:53:58 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699613639;
-        bh=7zX1VEgiMUv93VPzTl7ntimr/mmmRRrBd4yOYvFZgw0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GUde9qeoRMAqb2soKoAU2Sc+G067iLuAB0lGwLT2YtUX5rujIXF6eSzPXtzjMfipR
-         Z4FXCU/AjXv1hkE7VbaU8S9Ch0s2SMO+DcKXEtg6ja9wPomqMSbdPPhT4anyZOZb1B
-         XqQdljSwKx8pv0ha2ZKddptU2VzkXLTg9HQYnGDoJ+lge2IbiMY3MEhof0atyKwyq7
-         9ToH3OK/CnHj3YKv8hCIKIyFo0TqB7om/P5E0ZIXQa/qAueGRYU3GFb5m7RYW6hxnV
-         69IQJuMjrsVoknd5TitRYxRHiDaBj1DVT4Q/SOHHsrAZZsDV1D2kxOG+3BbViet9rW
-         lGcqj1IVUrMjw==
-Date:   Fri, 10 Nov 2023 11:53:54 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put
- drm-shmem pages
-Message-ID: <20231110115354.356c87f7@collabora.com>
-In-Reply-To: <20231029230205.93277-16-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-16-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 10 Nov 2023 12:44:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD0A2AD16;
+        Fri, 10 Nov 2023 02:55:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96045C433CA;
+        Fri, 10 Nov 2023 10:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699613749;
+        bh=RXAfJy6nVK1MJToiQzsFVKZg55+RyTigmmxRjOy2q20=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y63pPfubX5FHv9hUsmnxHwBXZY4mQJgLq2JtmrYVTJk/I2S1BXkd5Nn+MFblIC7xk
+         uUkkfyM/ufjrKskwquv3wyGUfGc6BXEvt9NlZPtY1kmdLcrNJGxPY3Wdcv/2+GUZ+t
+         WATx1VXK0FTDCOfCzZeGLcPffbQ1RGRNs6/En2DE=
+Date:   Fri, 10 Nov 2023 11:55:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Guntupalli, Manikanta" <manikanta.guntupalli@amd.com>
+Cc:     "git (AMD-Xilinx)" <git@amd.com>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "jacmet@sunsite.dk" <jacmet@sunsite.dk>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>,
+        "Goud, Srinivas" <srinivas.goud@amd.com>,
+        "Datta, Shubhrajyoti" <shubhrajyoti.datta@amd.com>,
+        "manion05gk@gmail.com" <manion05gk@gmail.com>
+Subject: Re: [PATCH] serial: uartlite: Use dynamic allocation for major number
+Message-ID: <2023111052-unread-drum-895d@gregkh>
+References: <20231109123640.1740310-1-manikanta.guntupalli@amd.com>
+ <2023110915-trusting-pointer-40b0@gregkh>
+ <DM4PR12MB6109220B13FCD2B1D7B48B3C8CAEA@DM4PR12MB6109.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM4PR12MB6109220B13FCD2B1D7B48B3C8CAEA@DM4PR12MB6109.namprd12.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 02:01:54 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> To simplify the drm-shmem refcnt handling, we're moving away from
-> the implicit get_pages() that is used by get_pages_sgt(). From now on
-> drivers will have to pin pages while they use sgt. Panfrost's shrinker
-> doesn't support swapping out BOs, hence pages are pinned and sgt is valid
-> as long as pages' use-count > 0.
+On Fri, Nov 10, 2023 at 09:28:40AM +0000, Guntupalli, Manikanta wrote:
+> Hi Greg,
 > 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_gem.c | 17 +++++++++++++++++
->  drivers/gpu/drm/panfrost/panfrost_mmu.c |  6 ++----
->  2 files changed, 19 insertions(+), 4 deletions(-)
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Thursday, November 9, 2023 6:50 PM
+> > To: Guntupalli, Manikanta <manikanta.guntupalli@amd.com>
+> > Cc: git (AMD-Xilinx) <git@amd.com>; Simek, Michal
+> > <michal.simek@amd.com>; jacmet@sunsite.dk; jirislaby@kernel.org; linux-
+> > serial@vger.kernel.org; linux-kernel@vger.kernel.org; Pandey, Radhey Shyam
+> > <radhey.shyam.pandey@amd.com>; Goud, Srinivas
+> > <srinivas.goud@amd.com>; Datta, Shubhrajyoti
+> > <shubhrajyoti.datta@amd.com>; manion05gk@gmail.com
+> > Subject: Re: [PATCH] serial: uartlite: Use dynamic allocation for major number
+> > 
+> > On Thu, Nov 09, 2023 at 06:06:40PM +0530, Manikanta Guntupalli wrote:
+> > > Device number 204 has a range of minors on major number.
+> > > uart_register_driver is failing due to lack of minor numbers when more
+> > > number of uart ports used.
+> > 
+> > So you need more than the 4 allocated to you?
+> Yes, we have a customer who has 32 uartlite instances in his board.
+> > 
+> > > So, use dynamic allocation
+> > > for major number to avoid minor number limitation on 204 major number.
+> > >
+> > > https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
+> > 
+> > What does this break by doing this?
+> uart_register_driver() is failing due to lack of minor numbers when the customer
+> has 32 uartlite instances in his board.
+> > 
+> > Also, you forgot to update the documentation :(
+> We will update the documentation.
+> > 
+> > And how was this tested?  
+> We tested on both ZCU106 AMD/Xilinx evaluation board with 32 uartlite instances with customer design.
 > 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> index 6b77d8cebcb2..bb9d43cf7c3c 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> @@ -47,8 +47,13 @@ static void panfrost_gem_free_object(struct drm_gem_object *obj)
->  			}
->  		}
->  		kvfree(bo->sgts);
-> +
-> +		drm_gem_shmem_put_pages(&bo->base);
->  	}
->  
-> +	if (!bo->is_heap && !obj->import_attach)
-> +		drm_gem_shmem_put_pages(&bo->base);
-> +
->  	drm_gem_shmem_free(&bo->base);
->  }
->  
-> @@ -269,6 +274,7 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
->  {
->  	struct drm_gem_shmem_object *shmem;
->  	struct panfrost_gem_object *bo;
-> +	int err;
->  
->  	/* Round up heap allocations to 2MB to keep fault handling simple */
->  	if (flags & PANFROST_BO_HEAP)
-> @@ -282,7 +288,18 @@ panfrost_gem_create(struct drm_device *dev, size_t size, u32 flags)
->  	bo->noexec = !!(flags & PANFROST_BO_NOEXEC);
->  	bo->is_heap = !!(flags & PANFROST_BO_HEAP);
->  
-> +	if (!bo->is_heap) {
-> +		err = drm_gem_shmem_get_pages(shmem);
+> >What about older systems with static device nodes,
+> > are you sure none are out there for this old hardware anymore?
+> Shall we use below approach to support both legacy hardware and hardware with more number of uartlite instances use case. Please suggest.
 
-Hm, there was no drm_gem_shmem_get_pages_sgt() call here, why should we
-add a drm_gem_shmem_get_pages()? What we should do instead is add a
-drm_gem_shmem_get_pages() for each drm_gem_shmem_get_pages_sgt() we
-have in the driver (in panfrost_mmu_map()), and add
-drm_gem_shmem_put_pages() calls where they are missing
-(panfrost_mmu_unmap()).
+Yes, that looks much better, also update the Kconfig entry for
+CONFIG_SERIAL_UARTLITE_NR_UARTS as well so that people know the
+major/minor will be dynamic and will not be the other entry if they ask
+for over 4.
 
-> +		if (err)
-> +			goto err_free;
-> +	}
-> +
->  	return bo;
-> +
-> +err_free:
-> +	drm_gem_shmem_free(&bo->base);
-> +
-> +	return ERR_PTR(err);
->  }
->  
->  struct drm_gem_object *
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index 770dab1942c2..ac145a98377b 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -504,7 +504,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  		if (IS_ERR(pages[i])) {
->  			ret = PTR_ERR(pages[i]);
->  			pages[i] = NULL;
-> -			goto err_pages;
-> +			goto err_unlock;
->  		}
->  	}
->  
-> @@ -512,7 +512,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
->  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
->  	if (ret)
-> -		goto err_pages;
-> +		goto err_unlock;
+thanks,
 
-Feels like the panfrost_gem_mapping object should hold a ref on the BO
-pages, not the BO itself, because, ultimately, the user of the BO is
-the GPU. This matches what I was saying about moving get/put_pages() to
-panfrost_mmu_map/unmap(): everytime a panfrost_gem_mapping becomes
-active, to want to take a pages ref, every time it becomes inactive,
-you should release the pages ref.
-
->  
->  	ret = dma_map_sgtable(pfdev->dev, sgt, DMA_BIDIRECTIONAL, 0);
->  	if (ret)
-> @@ -535,8 +535,6 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  
->  err_map:
->  	sg_free_table(sgt);
-> -err_pages:
-> -	drm_gem_shmem_put_pages_locked(&bo->base);
->  err_unlock:
->  	dma_resv_unlock(obj->resv);
->  err_bo:
-
+greg k-h
