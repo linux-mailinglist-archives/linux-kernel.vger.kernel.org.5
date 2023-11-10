@@ -2,117 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E0F7E75EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF207E75F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345462AbjKJA36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:29:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
+        id S1345493AbjKJAai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKJA35 (ORCPT
+        with ESMTP id S229581AbjKJAag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:29:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A0A2D7C;
-        Thu,  9 Nov 2023 16:29:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699576194; x=1731112194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RXQEk8DTnU62l10vBMRLP0Yzm/Zzrw5CoP6dtFdQlqY=;
-  b=cDjwMwSq0bd4++enIL+e4q1XVoVh3humWpsqE73mR0JqcfCbGX25DwQS
-   ak8Rf7k0yz//07jWtpXsGwn9D1g+2XgOFlE/TKqcmqmBnToIr2B2jLmK6
-   Vs/vhh0TGHI9hamtE0YAbm/1aMmaoc7KJ14tLaLEKbwEADEMW1P0S4HYW
-   3FCCw8+zF5Srg601I7zqX50OhtRWJCoCyQ6UUjVm3YoT65iejrBeXJdxc
-   FuC22ase8Wh8wlrKVbTD51AmH1QL6fUXg9W1+103HOwhnMUclFjCOtaoy
-   MpMwHpvYjgIphGHNgJfJaJjorv3IwQINxgY26w4ghGMVFrvl64ggiuqIt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="369437727"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="369437727"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:29:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="792716398"
-X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="792716398"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:29:54 -0800
-Date:   Thu, 9 Nov 2023 16:29:53 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Isaku Yamahata <isaku.yamahata@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>, isaku.yamahata@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>
-Subject: Re: KVM: X86: Make bus clock frequency for vapic timer (bus lock ->
- bus clock) (was Re: [PATCH 0/2] KVM: X86: Make bus lock frequency for vapic
- timer) configurable
-Message-ID: <20231110002953.GB1102144@ls.amr.corp.intel.com>
-References: <cover.1699383993.git.isaku.yamahata@intel.com>
- <20231107192933.GA1102144@ls.amr.corp.intel.com>
- <CALMp9eR8Jnn0g0XBpTKTfKKOtRmFwAWuLAKcozuOs6KAGZ6MQQ@mail.gmail.com>
- <20231108235456.GB1132821@ls.amr.corp.intel.com>
- <ZU0BASXWcck85r90@google.com>
+        Thu, 9 Nov 2023 19:30:36 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E542D7C;
+        Thu,  9 Nov 2023 16:30:34 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r1FPd-00041W-2M;
+        Fri, 10 Nov 2023 00:30:17 +0000
+Date:   Fri, 10 Nov 2023 00:30:13 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 1/2] dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988
+ watchdog and toprgu
+Message-ID: <6912f6f406bc45674020681184f3eeca2f2cb63f.1699576174.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZU0BASXWcck85r90@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 07:55:45AM -0800,
-Sean Christopherson <seanjc@google.com> wrote:
+Add binding description for mediatek,mt7988-wdt.
 
-> On Wed, Nov 08, 2023, Isaku Yamahata wrote:
-> > On Tue, Nov 07, 2023 at 12:03:35PM -0800, Jim Mattson <jmattson@google.com> wrote:
-> > > I think I know the answer, but do you have any tests for this new feature?
-> > 
-> > If you mean kvm kselftest, no.
-> > I have
-> > - TDX patched qemu
-> > - kvm-unit-tests: test_apic_timer_one_shot() @ kvm-unit-tests/x86/apic.c
-> >   TDX version is found at https://github.com/intel/kvm-unit-tests-tdx
-> >   We're planning to upstream the changes for TDX
-> > 
-> > How far do we want to go?
-> > - Run kvm-unit-tests with TDX. What I have right now.
-> > - kvm-unit-tests: extend qemu for default VM case and update
-> >   test_apic_timer_one_host()
-> 
-> Hrm, I'm not sure that we can do a whole lot for test_apic_timer_one_shot().  Or
-> rather, I'm not sure it's worth the effort to try and add coverage beyond what's
-> already there.
-> 
-> As for TDX, *if* we extend KUT, please don't make it depend on TDX.  Very few people
-> have access to TDX platforms and anything CoCo is pretty much guaranteed to be harder
-> to debug.
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ .../bindings/watchdog/mediatek,mtk-wdt.yaml          |  1 +
+ include/dt-bindings/reset/mediatek,mt7988-resets.h   | 12 ++++++++++++
+ 2 files changed, 13 insertions(+)
+ create mode 100644 include/dt-bindings/reset/mediatek,mt7988-resets.h
 
-It made the test cases work with TDX + UEFI bios by adjusting command line to
-invoke qemu.  And skip unsuitable tests.
-Maybe we can generalize the way to twist qemu command line.
-
-
-> > - kselftest
-> >   Right now kvm kselftest doesn't have test cases even for in-kernel IRQCHIP
-> >   creation.
-> 
-> Selftests always create an in-kernel APIC.  And I think selftests are perfectly
-> suited to complement the coverage provided by KUT.  Specifically, the failure
-> scenario for this is that KVM emulates at 1Ghz whereas TDX advertises 25Mhz, i.e.
-> the test case we want is to verify that the APIC timer doesn't expire early.
-> 
-> There's no need for any APIC infrastructure, e.g. a selftest doesn't even need to
-> handle an interrupt.  Get the TSC frequency from KVM, program up an arbitrary APIC
-> bus clock frequency, set TMICT such that it expires waaaay in the future, and then
-> verify that the APIC timer counts reasonably close to the programmed frequency.
-> E.g. if the test sets the bus clock to 25Mhz, the "drift" due to KVM counting at
-> 1Ghz should be super obvious.
-
-Oh, only check the register value without interrupt. Good idea.  Let me give it
-a try.
+diff --git a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
+index cc502838bc398..8d2520241e37f 100644
+--- a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
++++ b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
+@@ -25,6 +25,7 @@ properties:
+           - mediatek,mt6735-wdt
+           - mediatek,mt6795-wdt
+           - mediatek,mt7986-wdt
++          - mediatek,mt7988-wdt
+           - mediatek,mt8183-wdt
+           - mediatek,mt8186-wdt
+           - mediatek,mt8188-wdt
+diff --git a/include/dt-bindings/reset/mediatek,mt7988-resets.h b/include/dt-bindings/reset/mediatek,mt7988-resets.h
+new file mode 100644
+index 0000000000000..fa7c937505e08
+--- /dev/null
++++ b/include/dt-bindings/reset/mediatek,mt7988-resets.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++
++/* TOPRGU resets */
++#define MT7988_TOPRGU_SGMII0_GRST		1
++#define MT7988_TOPRGU_SGMII1_GRST		2
++#define MT7988_TOPRGU_XFI0_GRST			12
++#define MT7988_TOPRGU_XFI1_GRST			13
++#define MT7988_TOPRGU_XFI_PEXTP0_GRST		14
++#define MT7988_TOPRGU_XFI_PEXTP1_GRST		15
++#define MT7988_TOPRGU_XFI_PLL_GRST		16
++
++#define MT7988_TOPRGU_SW_RST_NUM		24
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.42.1
