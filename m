@@ -2,195 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D709C7E81A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769977E7E5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346148AbjKJSaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        id S1345968AbjKJRoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345663AbjKJS1O (ORCPT
+        with ESMTP id S235008AbjKJRnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:27:14 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2059.outbound.protection.outlook.com [40.107.92.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF7626595;
-        Thu,  9 Nov 2023 22:20:04 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oYdRE+TvYp9sS/jmG8WyPrt7nnwPKV0NLPZ/bIwVcCzHO7/dx3HlQX6m0jYUGB3c0r5S7u8mXJ9sSc2Wlw6fwDfOYgrZAtCzD7NmJZtBlj6ZY5UAFo5H5IfF9t5xUGGxTaKd9I5FjTgusJcOxZV+XPKYCQMIBsl/f/5a8ap7xxsf5nNn9+v7JrvGVCs+YDqGegsVGwMPsDmSNTQPoOmMxdxEYBvdAWwxyMqpNzWg2+55K5w4EVcSezXKaP9JX9d36zNGEqItC3l4bdkN3vpr8FptqPW9RVz7wf1XNzcUxMC8qTo1Jb6GN+ugMb286p/a6xqB5S6igaa0+yjGeNxJkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W2IjFB2Py0Qm69uOKPb9IPDrnGI6L9Ns2AaebZ3f+NM=;
- b=dEtik4TqvHLT5w+cfxt6WDG2tmzs0Gmf3O1SHx7s3W8hNog+K8n6XAGBSFCyvytteOywzSwVoSoqiHPWdkvMdU9FAa+LWcy8Kom2a66AwU4yBjF2rBirDn6BDsIbTvUYvjtkbnAtgrX/unlRSJnLVDgcTh34vaasScj7ANxrq+ds/RyzvhG8l0Fy6wwu0dOvbqgVTFr5G2rLjlUGKlOKEs7Ay9SgZwTeICfbYF0n0uzhv6xlQHRiodC7cJC+Bl46P11Kch1MJF7trXvLegX4eBCiHWijLxyXPRkLNYC+LiNr8YzICKJcypeOlCG1JSbnH968VKyOj4PBVahMgb7/6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W2IjFB2Py0Qm69uOKPb9IPDrnGI6L9Ns2AaebZ3f+NM=;
- b=fxmA4oPMx5TU6y0ZPxYmPqRYm5Ik5KSygCpz8SBWEb4vc7fwdO/VO/lULbz5JSDKExUG2jO9I3K45QY9iQMnEr3A4eu9DIcuS0vtum4QUW41kXL8S/nOqXcgu3Rr07VtRLd4j4oERm6EUDuxs+PgxUXbWbk0n5/hSCCg3v+Ixu0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6) by
- MW3PR12MB4363.namprd12.prod.outlook.com (2603:10b6:303:56::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.19; Fri, 10 Nov 2023 05:31:23 +0000
-Received: from DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::5287:5f3:34f:4402]) by DM4PR12MB6351.namprd12.prod.outlook.com
- ([fe80::5287:5f3:34f:4402%7]) with mapi id 15.20.6954.028; Fri, 10 Nov 2023
- 05:31:23 +0000
-Message-ID: <665cb7da-3d7e-4323-9a07-d4f59102c5f1@amd.com>
-Date:   Fri, 10 Nov 2023 13:31:09 +0800
-User-Agent: Mozilla Thunderbird
-Cc:     majun@amd.com
-Subject: Re: [Patch v13 0/9] Enable Wifi RFI interference mitigation feature
- support
-Content-Language: en-US
-To:     Ma Jun <Jun.Ma2@amd.com>, amd-gfx@lists.freedesktop.org,
-        lenb@kernel.org, johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20231030071832.2217118-1-Jun.Ma2@amd.com>
-From:   "Ma, Jun" <majun@amd.com>
-In-Reply-To: <20231030071832.2217118-1-Jun.Ma2@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG3P274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::17)
- To DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6)
+        Fri, 10 Nov 2023 12:43:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084AA7AAB
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699598492; x=1731134492;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=qX+PU4tzyzOQ2/Q80/XRzxTEAv2/ABl2VsarYdLMBrU=;
+  b=DG8koIpLm55SqQNkkIrlWUfkqWC1w1RzfeFRU8FzW0reuuTweLrt+Oie
+   ourWSkt8kwY7zkfAeVsYTxMrs1yM6qpGUUoKHcGyS7p7kxN1C99A8iV3c
+   CtFOQ2xY7nr0GTZI5fsAjtxMrKngPgcKgloDAqTKEPFC3Ok7gZhukxuBM
+   ww1P+PHelHRX8cqMgarkYEgwwd7VU1CbSQFR9xITfwM02NK1fATb+O59P
+   SUnjIz/uTfAfRpF4Gh8IBHyJPqEZCmjo5PVyMIzX+65JvHzv4IbwV/U/k
+   s4mXmMIXNaBPFaqD45IzZY2WDQP4QZXWFX+wqAsgkIwDwGF68jiPaD5sw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="369466962"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="369466962"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 21:34:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="937085005"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="937085005"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 21:34:16 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "zhangpeng (AS)" <zhangpeng362@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        lstoakes@gmail.com, hughd@google.com, david@redhat.com,
+        fengwei.yin@intel.com, vbabka@suse.cz, peterz@infradead.org,
+        mgorman@suse.de, mingo@redhat.com, riel@redhat.com,
+        hannes@cmpxchg.org, Nanyong Sun <sunnanyong@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [Question]: major faults are still triggered after mlockall
+ when numa balancing
+In-Reply-To: <ZU0WkMR1s7QNG9RZ@casper.infradead.org> (Matthew Wilcox's message
+        of "Thu, 9 Nov 2023 17:27:44 +0000")
+References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
+        <ZU0WkMR1s7QNG9RZ@casper.infradead.org>
+Date:   Fri, 10 Nov 2023 13:32:15 +0800
+Message-ID: <874jhugom8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6351:EE_|MW3PR12MB4363:EE_
-X-MS-Office365-Filtering-Correlation-Id: b655a1cd-bf58-4fc3-f6fb-08dbe1ae4678
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OVXqpOTGUjkR0w63DG9B+sgISTHyrwfsPwFqMlPP99QhJvP51w2oXXuox5QJSJAnANz8oxzglkpV3Iy4Fyv44hATu8J0+5n5IkjpdtQV2j8AiH6nmA8zHQLiphCSnTnZbLyB1S6UHFTyhzE4L8eiOOvccHQJ6gfr+9MhByf/bCmzO4Nz2boce7au4TTz2AKZqznZbx81ZyCoOgZ1orUI0PRzDYxn24kTTShsGf10e+AERtMgk1zPEQS3RTYzGQsDF13ga9si9NmNst8GUrJ+Z3ugu1Ri8y0xi3JUG3iu3JNh/17deXrkxkXzff48SPVrRinBad75qKhj+uQb1R3eSWq3o9RM3h5KPUpVXEBT+juU2LW+lidcirrGf+MCvonOCX0+sjjN9fECuwGZkyGa0WPeLfqFaE6Ojie0BLdXLiaLn0FkhbVbI2gLdLv5m3tsav58TzMDZWFOeuGPWSUZZxGeT4/bNwF8D/1OxjfqBgwDauFscQm/TwVyuLAJKalH+kiuewu5ssk0ZfhO1ELGP/fzNQr3GIhRQyf6/8EpLT3N2KOHhoVlIONXlDh1DqYUNEjOKWQeOoZ643x2dSvLUbcOW9eY98DpraBLnXf99V9JZ99FJLyEAd4UU/0MuYR/SVfMk95vJre87u99wcht0RYbeaC8n1sSbFK7A4TTAhk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6351.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(376002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(26005)(2616005)(6512007)(83380400001)(31686004)(6666004)(36756003)(53546011)(478600001)(6506007)(6486002)(316002)(2906002)(66946007)(66556008)(66476007)(41300700001)(5660300002)(31696002)(7416002)(38100700002)(4326008)(8676002)(8936002)(921008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUhzMFlGOXkrSGhsZlJJUk4ybVB2NDNkemdQR29HT2NGVFI2U2k2Y2J3N25R?=
- =?utf-8?B?ZFgwTE5RRnYzdjNBbXZNeWh3TVFtRDhvRFkzYmc3N241d0U5S250TU1jUFNj?=
- =?utf-8?B?bDRlNUIzcUZtcHFndWNXQVFUd2l4Nkk4cFdNS1BiUWNkRngxakZZZGVDQjd2?=
- =?utf-8?B?cnJSVnpwV2swZkRYeXV1L21lZEptZWF3dWVvcldQNjVXNHFmeTRoMXJGQ0o5?=
- =?utf-8?B?ZU8xSXcrK1dXRXZZU3c3UkpjaEFPbEFZTkVJYzlmNTlRMlliSFFHUHA5TzZq?=
- =?utf-8?B?Sm1PeCtiNWtVWWZqWHJ2MDhWUEgxK2htMm50WG9ieFdnZGNBMzZLVXhYc3dk?=
- =?utf-8?B?ZzBJd25nZjMwenhLaGJycUI3SWxjM2VUcHBNVkhMc1BrWFJtam42QUNvdnNv?=
- =?utf-8?B?Y0dScDl1N21Bb2N6MFc3aTZFZVJZbkN6Y0o1WjhwaWhnVVZtU28veVdrdlFo?=
- =?utf-8?B?RE1sTENYL2drcElQZ0dMUUpRVUNtMGR4bFlXdzRDbzBTR2IzbW9LVitMV1dF?=
- =?utf-8?B?ZkhkeHIvNndUTEhINkhqSXYzUzdCTzFnZWRHcVkxdFVndVdTKzk3SjVlaldT?=
- =?utf-8?B?VUFjQ2kxTENuWTkxOGt0bXNYaXArbTlJSUY0bHc2dDc2Uk9BM1UxWjBKSVA0?=
- =?utf-8?B?NDVuU0wxMFRpbjBTWElVbWlrejQ1OFJOU1VuZ0p4eFVIY2J4Ny96SCtUQSt6?=
- =?utf-8?B?dDlia1ROUVhtMnpvNmJpSHphRnRZejV4OVJpazdxKzlvekkwcjFmY01waGNI?=
- =?utf-8?B?ZStKTENOZVMyZ1BIcXprbk40czk4NWFSeUxvSHlkMmRjZWVQUXZ2VUl1aDFQ?=
- =?utf-8?B?aGtmUnJKRWM4Ly9aUWNSUlVFMjN2RzJvSTdIcEhsR3ZqWGE1a0JQVWhTL01U?=
- =?utf-8?B?VkRSTkhHcnNPbzZoT2MyK1VLTEtqYVQ5Uy9PQzJvMXFuSmlkZUVES3JGYjZB?=
- =?utf-8?B?dmsxME5iRytDUWhGU3gvVFkwUENXUkFUdXJRQURLb1ZhZEVOd3k0eG9HUGQx?=
- =?utf-8?B?MFI4ek13OGVLZlFMbEpUbjJzMGRuQzFiR1lub0ttNE1rc3RsRmFucXZLNjZn?=
- =?utf-8?B?VUdaZVNENU9vbklQMDlFTDZDUUtJdVczZ2xoVkJvYkp0RmUrUWJVRHI1ZURC?=
- =?utf-8?B?UzcxNU9jeDFRakp2WTNlUVVlMXRkbFo0NUw0bTU4V0N5cnJML0s0OXI3bTZk?=
- =?utf-8?B?Q2xMZzNncjFHK05iQVNzaXEvYXN6VFllcndad3I2OWVVZ2szbm1BbEpvMzdz?=
- =?utf-8?B?V25yOE51OU9ZVXBCMlM5S2xQb1BGeVRYcGRqUGdHcE5iZk5YL293eVJ3N0xm?=
- =?utf-8?B?Qlh4TnBYSTJUSDd2ZWt6cjZVeHY0bE1qVVpXME5sY05oV2krKzFuQlV0b2Ft?=
- =?utf-8?B?TFV3MTlDWUN6WmNtTEpqWTVUNlV1SFJVQ2hjbm9IYVY5WHBkSFZzcjZpYlc0?=
- =?utf-8?B?V3lkQmF2ZExUUlJaQUFYb3NJMFNraHhlRDgxcnZTd3lnOFczTk5hdjVibU9o?=
- =?utf-8?B?Q0pqU3pGZTVVVXZHOFcxTXowc0EreWhXaFNLTHNPazc5VHJNdlRHaVdIWUVE?=
- =?utf-8?B?dlFNYWZTSEFxcU9jcjlBb2N0ay9SSzRUdC9NNmNNY0k5NUFXZnlJbDVZc1lv?=
- =?utf-8?B?dHJmOUZaZEYzZGVVcHdWL1RqK2k4Nis3N2IyQUxKMUVNVUo5NExRSEs5ZkZ3?=
- =?utf-8?B?MHhUeVZMYjl5YkhpZzJDZGxETHEzTDZhOExTWlFrcFZ2WEIxOFFtaGJJUlFF?=
- =?utf-8?B?bGxuU2dNcHVxeDlGU0xSTk1VWEg3TVJoWTVtN2R6dEs4VEtFMWs4TkQ5QVVF?=
- =?utf-8?B?VGlONFM0MEUzU0FCNlpxOUJ0Nm5rSEUrdWlmUUVGZzJLNUVud3lZUnJaeVFy?=
- =?utf-8?B?aVRLSUxvMGVabm83Y29TTFJyZkpVY2tmcDZqU09TMUpBdWR2eFdCb01iL00r?=
- =?utf-8?B?bWd5WlErYVJ0cWF1dXdxT2hSK2lVOWlYa1EwL3RQUVVUVVJoYnJNTGFORlo0?=
- =?utf-8?B?YkpnMStrcEM1VHc4cHpJek1wMEoyT0FrbkpCeW5GdXJ0SjZOUFFIMnBHM0hC?=
- =?utf-8?B?V0xlN25FSUZ5L2E4WUN3bUI2VlM0eXk0OHNsR3B3d2xXeklNMjIxYTNqWmNq?=
- =?utf-8?Q?IOgPjCa6jnEBgKgT7JHoJgihd?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b655a1cd-bf58-4fc3-f6fb-08dbe1ae4678
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6351.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 05:31:22.8323
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: veYcbKh+rMsqz6ff5c7FGE6YSKLmyhVKxCOQxpY5xFAuK8khJtkhSt3vL2k58pgv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4363
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping...
-Any other comments?
+Matthew Wilcox <willy@infradead.org> writes:
 
-Regards,
-Ma Jun
+> On Thu, Nov 09, 2023 at 09:47:24PM +0800, zhangpeng (AS) wrote:
+>> There is a stage in numa fault which will set pte as 0 in do_numa_page() :
+>> ptep_modify_prot_start() will clear the vmf->pte, until
+>> ptep_modify_prot_commit() assign a value to the vmf->pte.
+>
+> [...]
+>
+>> Our problem scenario is as follows:
+>> 
+>> task 1                      task 2
+>> ------                      ------
+>> /* scan global variables */
+>> do_numa_page()
+>>   spin_lock(vmf->ptl)
+>>   ptep_modify_prot_start()
+>>   /* set vmf->pte as null */
+>>                             /* Access global variables */
+>>                             handle_pte_fault()
+>>                               /* no pte lock */
+>>                               do_pte_missing()
+>>                                 do_fault()
+>>                                   do_read_fault()
+>>   ptep_modify_prot_commit()
+>>   /* ptep update done */
+>>   pte_unmap_unlock(vmf->pte, vmf->ptl)
+>>                                     do_fault_around()
+>>                                     __do_fault()
+>>                                       filemap_fault()
+>>                                         /* page cache is not available
+>>                                         and a major fault is triggered */
+>>                                         do_sync_mmap_readahead()
+>>                                         /* page_not_uptodate and goto
+>>                                         out_retry. */
+>> 
+>> Is there any way to avoid such a major fault?
+>
+> Yes, this looks like a bug.
+>
+> It seems to me that the easiest way to fix this is not to zero the pte
+> but to make it protnone?  That would send task 2 into do_numa_page()
+> where it would take the ptl, then check pte_same(), see that it's
+> changed and goto out, which will end up retrying the fault.
 
-On 10/30/2023 3:18 PM, Ma Jun wrote:
-> Due to electrical and mechanical constraints in certain platform designs there
-> may be likely interference of relatively high-powered harmonics of the (G-)DDR
-> memory clocks with local radio module frequency bands used by Wifi 6/6e/7. To
-> mitigate possible RFI interference we introuduced WBRF(Wifi Band RFI mitigation Feature).
-> Producers can advertise the frequencies in use and consumers can use this information
-> to avoid using these frequencies for sensitive features.
-> 
-> The whole patch set is based on Linux 6.6.0-rc6. With some brief introductions
-> as below:
-> Patch1:      Document about WBRF
-> Patch2:      Core functionality setup for WBRF feature support
-> Patch3 - 4:  Bring WBRF support to wifi subsystem.
-> Patch5 - 9:  Bring WBRF support to AMD graphics driver.
-> 
-> Evan Quan (6):
->   cfg80211: expose nl80211_chan_width_to_mhz for wide sharing
->   wifi: mac80211: Add support for WBRF features
->   drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
->   drm/amd/pm: setup the framework to support Wifi RFI mitigation feature
->   drm/amd/pm: add flood detection for wbrf events
->   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
-> 
-> Ma Jun (3):
->   Documentation/driver-api: Add document about WBRF mechanism
->   platform/x86/amd: Add support for AMD ACPI based Wifi band RFI
->     mitigation feature
->   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.0
-> 
->  Documentation/driver-api/wbrf.rst             |  76 ++++
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  17 +
->  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c     | 208 +++++++++
->  drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  42 ++
->  .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |   3 +-
->  .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |   3 +-
->  .../pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |   5 +-
->  .../pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |   3 +-
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |   3 +-
->  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |   4 +
->  .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |  48 ++
->  .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  22 +
->  .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  |  13 +
->  drivers/gpu/drm/amd/pm/swsmu/smu_internal.h   |   3 +
->  drivers/platform/x86/amd/Kconfig              |  15 +
->  drivers/platform/x86/amd/Makefile             |   1 +
->  drivers/platform/x86/amd/wbrf.c               | 413 ++++++++++++++++++
->  include/linux/acpi_amd_wbrf.h                 |  94 ++++
->  include/net/cfg80211.h                        |   9 +
->  net/mac80211/Makefile                         |   2 +
->  net/mac80211/chan.c                           |   9 +
->  net/mac80211/ieee80211_i.h                    |   7 +
->  net/mac80211/main.c                           |   2 +
->  net/mac80211/wbrf.c                           |  95 ++++
->  net/wireless/chan.c                           |   3 +-
->  26 files changed, 1094 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/driver-api/wbrf.rst
->  create mode 100644 drivers/platform/x86/amd/wbrf.c
->  create mode 100644 include/linux/acpi_amd_wbrf.h
->  create mode 100644 net/mac80211/wbrf.c
-> 
+There are other places in the kernel where the PTE is cleared, for
+example, move_ptes() in mremap.c.  IIUC, we need to audit all them.
+
+Another possible solution is to check PTE again with PTL held before
+reading in file data.  This will increase the overhead of major fault
+path.  Is it acceptable?
+
+> I'm not particularly expert at page table manipulation, so I'll let
+> somebody who is propose an actual patch.  Or you could try to do it?
+
+--
+Best Regards,
+Huang, Ying
