@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC177E822A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B4C7E832A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbjKJTEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S1346441AbjKJTtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:49:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235971AbjKJTDi (ORCPT
+        with ESMTP id S236314AbjKJTtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:03:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4F84C06;
-        Fri, 10 Nov 2023 10:27:06 -0800 (PST)
+        Fri, 10 Nov 2023 14:49:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4A512C917;
+        Fri, 10 Nov 2023 10:31:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699640826; x=1731176826;
+  t=1699641116; x=1731177116;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=lpWh4uAOv4LsodGDZzPPgdeMwQAJY/mrq6JPPyeOyOE=;
-  b=MDOopHTvMBeQjdyNQJuUa/j5arW7d+mII+NL7vVeiz5BdMIhl2kcp5W5
-   4zBYjBB9de29EDbOmKxzk25o411tSq0c+izwykQ2687kKQIkvjNlDpGOc
-   FSU59maSQfropo4qRJikOHDdBvFwlMsWjXLcBJ9jZhcW7Ju5wOyxLNxb4
-   VeB5SP1RoFGKcVo4qBg6jqWI7mb16pckXVrf9Ie0GXY7oxXidJkW1Asu8
-   WZs5iKQ46L5yQ2C8y1hukoAZA6BsKlSztKqPXdO89zoPbjekU/BqPl/f2
-   AJCJzvkE94mf1qKwBGrTWmZVZ80e6fMZJV2j0G5FYoGlVCWGU/wwjrPoV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="375251991"
+  bh=ogMo2ROZ1IRQfZGGc0DiQKwc3w6L4EKaxN3bgiF6KaQ=;
+  b=mDr/5Nv4e4uaa7nUd41A2dSB1aQ9Z48N7Aw6lrMxKNr7SAyBoxHFSmMd
+   M1mak7toTMNIl0PbWFIGK6OiZ4+Jqj5i180gbkNjLGhwe12JH9HWc4Fbi
+   bN9Fi6hCVQCy/vO6TNBZaipvK47Csjzgaeusbcmz6g1XsE0tZ43CdVerC
+   NimkKUsRN9m6dut0bqwXmlaIwGSLkU1z+TpVUszbZFy7YNSOtTgFAKgPH
+   Ob04uUJKsKvb8Aql2iJAwIGjE1upJCrbuW8Cy9HjeSpRK0FkFqLL/P1yd
+   LAW4Xupy+vhXZNcmfwdILThERPV2axsM1U88BJdr2fqiLHSC8qHsGvQa4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="380606876"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="375251991"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:23:32 -0800
+   d="scan'208";a="380606876"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:29:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="798663774"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="792912170"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="798663774"
+   d="scan'208";a="792912170"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2023 10:23:28 -0800
+  by orsmga008.jf.intel.com with ESMTP; 10 Nov 2023 10:29:40 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5CEE88E3; Fri, 10 Nov 2023 20:23:08 +0200 (EET)
+        id 6D374918; Fri, 10 Nov 2023 20:23:08 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
@@ -53,182 +53,52 @@ Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Andi Shyti <andi.shyti@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 23/25] i2c: designware: Use temporary variable for struct device
-Date:   Fri, 10 Nov 2023 20:11:43 +0200
-Message-ID: <20231110182304.3894319-24-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 24/25] i2c: designware: Get rid of redundant 'else'
+Date:   Fri, 10 Nov 2023 20:11:44 +0200
+Message-ID: <20231110182304.3894319-25-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
 References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use temporary variable for struct device to make code neater.
+In the snippets like the following
 
+	if (...)
+		return / goto / break / continue ...;
+	else
+		...
+
+the 'else' is redundant. Get rid of it.
+
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/i2c/busses/i2c-designware-pcidrv.c  | 24 +++++++-------
- drivers/i2c/busses/i2c-designware-platdrv.c | 35 ++++++++++-----------
- 2 files changed, 27 insertions(+), 32 deletions(-)
+ drivers/i2c/busses/i2c-designware-common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index 826c0c0a7c8d..34002c5eb67c 100644
---- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -207,6 +207,7 @@ static const struct software_node dgpu_node = {
- static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 			    const struct pci_device_id *id)
- {
-+	struct device *device = &pdev->dev;
- 	struct dw_i2c_dev *dev;
- 	struct i2c_adapter *adap;
- 	int r;
-@@ -214,25 +215,22 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 	struct dw_scl_sda_cfg *cfg;
+diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+index 45b5c910b8db..5e28f50e4ce6 100644
+--- a/drivers/i2c/busses/i2c-designware-common.c
++++ b/drivers/i2c/busses/i2c-designware-common.c
+@@ -639,10 +639,10 @@ int i2c_dw_handle_tx_abort(struct dw_i2c_dev *dev)
  
- 	if (id->driver_data >= ARRAY_SIZE(dw_pci_controllers))
--		return dev_err_probe(&pdev->dev, -EINVAL,
--				     "Invalid driver data %ld\n",
-+		return dev_err_probe(device, -EINVAL, "Invalid driver data %ld\n",
- 				     id->driver_data);
- 
- 	controller = &dw_pci_controllers[id->driver_data];
- 
- 	r = pcim_enable_device(pdev);
- 	if (r)
--		return dev_err_probe(&pdev->dev, r,
--				     "Failed to enable I2C PCI device\n");
-+		return dev_err_probe(device, r, "Failed to enable I2C PCI device\n");
- 
- 	pci_set_master(pdev);
- 
- 	r = pcim_iomap_regions(pdev, 1 << 0, pci_name(pdev));
- 	if (r)
--		return dev_err_probe(&pdev->dev, r,
--				     "I/O memory remapping failed\n");
-+		return dev_err_probe(device, r, "I/O memory remapping failed\n");
- 
--	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-+	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
- 		return -ENOMEM;
- 
-@@ -242,7 +240,7 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 
- 	dev->get_clk_rate_khz = controller->get_clk_rate_khz;
- 	dev->base = pcim_iomap_table(pdev)[0];
--	dev->dev = &pdev->dev;
-+	dev->dev = device;
- 	dev->irq = pci_irq_vector(pdev, 0);
- 	dev->flags |= controller->flags;
- 
-@@ -281,14 +279,14 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
- 		dev->slave = i2c_new_ccgx_ucsi(&dev->adapter, dev->irq, &dgpu_node);
- 		if (IS_ERR(dev->slave))
--			return dev_err_probe(dev->dev, PTR_ERR(dev->slave),
-+			return dev_err_probe(device, PTR_ERR(dev->slave),
- 					     "register UCSI failed\n");
- 	}
- 
--	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
--	pm_runtime_use_autosuspend(&pdev->dev);
--	pm_runtime_put_autosuspend(&pdev->dev);
--	pm_runtime_allow(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(device, 1000);
-+	pm_runtime_use_autosuspend(device);
-+	pm_runtime_put_autosuspend(device);
-+	pm_runtime_allow(device);
- 
- 	return 0;
+ 	if (abort_source & DW_IC_TX_ARB_LOST)
+ 		return -EAGAIN;
+-	else if (abort_source & DW_IC_TX_ABRT_GCALL_READ)
++	if (abort_source & DW_IC_TX_ABRT_GCALL_READ)
+ 		return -EINVAL; /* wrong msgs[] data */
+-	else
+-		return -EIO;
++
++	return -EIO;
  }
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index 1b76f721bf81..02dc1d1001f2 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -237,6 +237,7 @@ static int dw_i2c_plat_get_reset(struct dw_i2c_dev *dev)
  
- static int dw_i2c_plat_probe(struct platform_device *pdev)
- {
-+	struct device *device = &pdev->dev;
- 	struct i2c_adapter *adap;
- 	struct dw_i2c_dev *dev;
- 	int irq, ret;
-@@ -245,15 +246,15 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
--	dev = devm_kzalloc(&pdev->dev, sizeof(struct dw_i2c_dev), GFP_KERNEL);
-+	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
- 	if (!dev)
- 		return -ENOMEM;
- 
--	dev->flags = (uintptr_t)device_get_match_data(&pdev->dev);
--	if (device_property_present(&pdev->dev, "wx,i2c-snps-model"))
-+	dev->flags = (uintptr_t)device_get_match_data(device);
-+	if (device_property_present(device, "wx,i2c-snps-model"))
- 		dev->flags = MODEL_WANGXUN_SP;
- 
--	dev->dev = &pdev->dev;
-+	dev->dev = device;
- 	dev->irq = irq;
- 	platform_set_drvdata(pdev, dev);
- 
-@@ -276,11 +277,11 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 	i2c_dw_configure(dev);
- 
- 	/* Optional interface clock */
--	dev->pclk = devm_clk_get_optional(&pdev->dev, "pclk");
-+	dev->pclk = devm_clk_get_optional(device, "pclk");
- 	if (IS_ERR(dev->pclk))
- 		return PTR_ERR(dev->pclk);
- 
--	dev->clk = devm_clk_get_optional(&pdev->dev, NULL);
-+	dev->clk = devm_clk_get_optional(device, NULL);
- 	if (IS_ERR(dev->clk))
- 		return PTR_ERR(dev->clk);
- 
-@@ -306,23 +307,19 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
- 	adap->nr = -1;
- 
--	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
--		dev_pm_set_driver_flags(&pdev->dev,
--					DPM_FLAG_SMART_PREPARE);
--	} else {
--		dev_pm_set_driver_flags(&pdev->dev,
--					DPM_FLAG_SMART_PREPARE |
--					DPM_FLAG_SMART_SUSPEND);
--	}
-+	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
-+		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE);
-+	else
-+		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE | DPM_FLAG_SMART_SUSPEND);
- 
--	device_enable_async_suspend(&pdev->dev);
-+	device_enable_async_suspend(device);
- 
- 	/* The code below assumes runtime PM to be disabled. */
--	WARN_ON(pm_runtime_enabled(&pdev->dev));
-+	WARN_ON(pm_runtime_enabled(device));
- 
--	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
--	pm_runtime_use_autosuspend(&pdev->dev);
--	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(device, 1000);
-+	pm_runtime_use_autosuspend(device);
-+	pm_runtime_set_active(device);
- 
- 	ret = dw_i2c_plat_pm_setup(dev);
- 	if (ret)
+ int i2c_dw_set_fifo_size(struct dw_i2c_dev *dev)
 -- 
 2.43.0.rc1.1.gbec44491f096
 
