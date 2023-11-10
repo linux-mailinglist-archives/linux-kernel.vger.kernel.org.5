@@ -2,124 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39C77E7822
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17447E7827
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345836AbjKJDiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
+        id S1345815AbjKJDjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:39:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbjKJDiL (ORCPT
+        with ESMTP id S234897AbjKJDjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:38:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C975468A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:37:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699587444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pROeszy9ePncz4nZyjZpb065/8N1ucMk0OODbP+hams=;
-        b=b5345Xd4CfAHxovucD90DpRX2u+HjGodmOo2tM1PmGl9pbs2YS6YMFg3bqB0yoWOn1BbbP
-        kSRaQ7GbD/VFxoBBbMZmqlPSaliyNc6mf939PPMsN/5At0ps8De3tzo/lvpMo0Zeyv3N1Z
-        QtstkZ2hLbue4IfyLhwRBcqnee8hqNw=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-bRY2qTLhM2meYUnbKYPvnA-1; Thu, 09 Nov 2023 22:37:23 -0500
-X-MC-Unique: bRY2qTLhM2meYUnbKYPvnA-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b3ecd1be0bso67900b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:37:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699587442; x=1700192242;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pROeszy9ePncz4nZyjZpb065/8N1ucMk0OODbP+hams=;
-        b=G7E8TQQ1QXv96Dxa1E+tLNBwUlWiLq6S2NtY9lVRo9I2hMqsuu0jY3SWoxwldaERfu
-         TaTiOmPBC2XEfBQuG8rZHk/AnxgDE+iHTDq8xv5RavozHYZYeQ7+mIXWk/u5viwk/bYw
-         9PGy15c1yRVdK+DnzeyMJAveYQRN/1/bwJp0W6+EHSGun5Zbm5XUr3JHD2oUs729KZq1
-         On5pBkVA0OwhBpYUXazPpj/ltF+pbIw246uTlR+KA9ySmpTg2j+PqkIaZlg8i2MtIYOa
-         dq8xGuXU3QRy9Z/upgJe8mazIW1PU71LgMfSEFW71SPivUrzcKAPpF8pVmxQzpxzDtuS
-         mRPg==
-X-Gm-Message-State: AOJu0YykeQJOWmbQTa+sGt+BP1m2fiV/rNxqMnSflL7D/yg4zuESkujG
-        jgGlmHkT4YLXo29szQ8BfgZd0r6b6ka5XkiyS78tqznMOv6prJ6eRqgANCQbpk2iAHBGeK7lnI8
-        uDiqlrnpQRaBlYN+91aMMgKBw
-X-Received: by 2002:a05:6808:199c:b0:3a9:e8e2:579d with SMTP id bj28-20020a056808199c00b003a9e8e2579dmr8276251oib.2.1699587442424;
-        Thu, 09 Nov 2023 19:37:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFPdXOyaUAzV6aldemEymWFIQu5uK8SS6EoZEeBtta4Ue7SEB3JH44cFaCIyyqf1iZkLKsTPg==
-X-Received: by 2002:a05:6808:199c:b0:3a9:e8e2:579d with SMTP id bj28-20020a056808199c00b003a9e8e2579dmr8276228oib.2.1699587442206;
-        Thu, 09 Nov 2023 19:37:22 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id e8-20020a63d948000000b005a9b20408a7sm5370547pgj.23.2023.11.09.19.37.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 19:37:21 -0800 (PST)
-Message-ID: <fd78bb81-1f83-13a4-ec37-3fe0cd040ec0@redhat.com>
-Date:   Fri, 10 Nov 2023 11:37:16 +0800
+        Thu, 9 Nov 2023 22:39:16 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC3A4681;
+        Thu,  9 Nov 2023 19:39:14 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA2QepE028397;
+        Fri, 10 Nov 2023 03:39:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=UFNPkU5RcOUlMNZKNlJJTvF2hAP+Gw6TIMJUjo7Cyts=;
+ b=M0MY7l75Dn1Ew3cxRg7vsP+S6dcKSKzIxa0T1oC7egaggSknP5K7KCMBOUwOifaxt/Bl
+ B/MsktPsEomZin7a7eHWOlnD6AMonOwovmtJMI1khsmxHLTddiRawq07KF4sOrFQvolB
+ vP0jl8Rkte62jhbcw7s4YK8BInDuHBJuUoRTa7o2kKMuUQKe1ftZMfFGZNp+HKBAk6EE
+ oACOztX6Wa/uqRTNYgvxYcJRcvRu3yTDZmDQY5BrO+FmI6B9rlhzLzHR+7Eabuqxggvw
+ ILuRa3sQOHr2pKZo57T4nZ1HDeiqNeJLPkNtbLHY5cvAxMF4VbA0o6BLcVIB3U5wZCtJ /A== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u99e90b67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 03:39:02 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA3d1mN004691
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 03:39:01 GMT
+Received: from [10.253.38.123] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
+ 2023 19:38:59 -0800
+Message-ID: <808f8982-8c2c-40ed-9fb9-1c9932c8db28@quicinc.com>
+Date:   Fri, 10 Nov 2023 11:38:42 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 14/22] arm64: convert to arch_cpu_is_hotpluggable()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] bus: mhi: host: Avoid processing buffer and event
+ of a disable channel
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
+References: <1699341365-47737-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699341365-47737-4-git-send-email-quic_qianyu@quicinc.com>
+ <20231109163253.GL3752@thinkpad>
 Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLq-00CTxq-CF@rmk-PC.armlinux.org.uk>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <E1r0JLq-00CTxq-CF@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231109163253.GL3752@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JO5oR0dYS5W6vdd0xyvRG2VVeITJUZZe
+X-Proofpoint-ORIG-GUID: JO5oR0dYS5W6vdd0xyvRG2VVeITJUZZe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=737 bulkscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311100029
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 11/10/2023 12:32 AM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 07, 2023 at 03:16:04PM +0800, Qiang Yu wrote:
+>> Ckeck mhi channel state after getting chan->lock to ensure that we only
+>> queue buffer to an enabled channel and process event of an enabled channel.
+>>
+> This commit message doesn't give proper explanation on how the channel can go to
+> disabled state in between parse_xfer_event() and mhi_gen_tre().
+>
+> - Mani
 
-On 11/7/23 18:30, Russell King (Oracle) wrote:
-> Convert arm64 to use the arch_cpu_is_hotpluggable() helper rather than
-> arch_register_cpu().
-> 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->   arch/arm64/kernel/setup.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 165bd2c0dd5a..42c690bb2d60 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -402,13 +402,9 @@ static inline bool cpu_can_disable(unsigned int cpu)
->   	return false;
->   }
->   
-> -int arch_register_cpu(int num)
-> +bool arch_cpu_is_hotpluggable(int num)
->   {
-> -	struct cpu *cpu = &per_cpu(cpu_devices, num);
-> -
-> -	cpu->hotpluggable = cpu_can_disable(num);
-> -
-> -	return register_cpu(cpu, num);
-> +	return cpu_can_disable(num);
->   }
->   
->   static void dump_kernel_offset(void)
+Hi Mani. How about following commit message
 
--- 
-Shaoqin
+MHI channel state is protected by mhi_chan->lock. Hence, after core drops
+mhi_chan->lock during processing xfer event, it can not prevent channel
+state being changed if client closes channel or driver is removed at this
+time. So let's check mhi channel state after getting chan->lock again to 
+avoid
+queuing buffer to a disabled channel in xfer callback and stop processing
+event of the disabled channel.
 
+>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>> ---
+>>   drivers/bus/mhi/host/main.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>> index a236dc2..b137d54 100644
+>> --- a/drivers/bus/mhi/host/main.c
+>> +++ b/drivers/bus/mhi/host/main.c
+>> @@ -672,6 +672,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>   			}
+>>   
+>>   			read_lock_bh(&mhi_chan->lock);
+>> +			if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
+>> +				goto end_process_tx_event;
+>>   		}
+>>   		break;
+>>   	} /* CC_EOT */
+>> @@ -1211,6 +1213,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>>   
+>>   	/* Protect accesses for reading and incrementing WP */
+>>   	write_lock_bh(&mhi_chan->lock);
+>> +	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
+>> +		return -EINVAL;
+>>   
+>>   	buf_ring = &mhi_chan->buf_ring;
+>>   	tre_ring = &mhi_chan->tre_ring;
+>> -- 
+>> 2.7.4
+>>
+>>
