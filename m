@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5797E817D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625D37E81AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345149AbjKJS3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S235756AbjKJSc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346506AbjKJS0y (ORCPT
+        with ESMTP id S1346599AbjKJSbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:26:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D423B24C1C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699609205; x=1731145205;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KSYtIowPTOFzxauX4JUkX/8mXpoYMUvd3xexE6SC60M=;
-  b=CDYQN6e5LA6yrOKCBDOHLntSiBgyem0x3gf3MikpudkZMC8OGp5awEtY
-   SDjFL1ZKqjLay/lVyA4d5CqxiKk63G1TBBO0DoEyiWWRQf1XITLBHOE/c
-   5K/2bqiyXVmoXkFt/gIq1GtM863wlRUaUu30iKxnPXhb4+hB15XAJoaxV
-   bbiv5vINozyrJ6EsWBIwF3rrFGNRngcGZ2CAWrxJqkXtlm0dDJHJ6iHdR
-   i8S41pEbw/OsZvxOa37EQaAVWfWhy/q/9JHvQ0gwPQp+egRfe38vifS03
-   zItl47DAIJx1uP3Ki0+EAx7sjBQXBmXhwdotChvMvztBFmC131xVx9lGj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="421253178"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="421253178"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 01:40:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="740113471"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="740113471"
-Received: from amirafax-mobl4.gar.corp.intel.com (HELO [10.249.254.223]) ([10.249.254.223])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 01:40:01 -0800
-Message-ID: <f7a64e17-d8b0-a20a-4e27-46f448a10bd4@linux.intel.com>
-Date:   Fri, 10 Nov 2023 10:39:59 +0100
+        Fri, 10 Nov 2023 13:31:22 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E022BE18;
+        Fri, 10 Nov 2023 01:43:24 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bd0e1b1890so1623431b3a.3;
+        Fri, 10 Nov 2023 01:43:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699609404; x=1700214204; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=iorbhtxe+SuUlX9pZn59oXYfHVn9gJDUalRXUUEqouE=;
+        b=HPzpQXfpovJFXzPCvoevCTAwmr5GPOfmNV9T/L2PFLcsvDJUB6x1DKjLvVfY8cF5V+
+         4MTt35O1iG2kn3MLCVjhLr8AIjGOu3ECvgunp8G9FNebXCVknuzQ5gEQ1dEV2vrwhvB9
+         uK7xZ6Gt+fD2pL7AMi7MWqsrXUn4/5WRiHSFITh1VO4CMTrMUOC+6AtrxqcRG/ZVna1z
+         s6VBoD0a2zfFP2zTZb3u6Q6Oui/Rh0r8QwCLJSoxPPe2f3UYzF/AK4bVZ7Z3AYw2oqpP
+         mawyAFPW0cJpoyM3/4tMEj5MViTsmW5O4KHndmAL23B367l0jo/kIb7aaHC11yR+k1xk
+         8FpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699609404; x=1700214204;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iorbhtxe+SuUlX9pZn59oXYfHVn9gJDUalRXUUEqouE=;
+        b=Iie7dXPJ+c6SHtlRuFtYod38iL/pCRZE44hb9oqyDtj//9KfHZw/TTLEB1v1e07BK3
+         Aji9jtIT8lckIgQAZT9pMrKr+2SpKFzZYSlKS5tAgpCfsp8L6PZ5B3WqRKxJI3gYj2mU
+         +AN4+CHwI7lIghUS7uQlYIxsLqzBoh2UW5qTzB/yQTW0z9y+3VjM36ysYy8E7qRIW3EI
+         LUrfUo/vAZ0dLRj8bjRkxzHQXmXUkw7i3IaMZDuZkSHfp3/Hr7RL/t2qX2SO2GZ0z2Hg
+         Xu3qniqVknUrdAGEDn8E89tCw8y2jl7OZZoL/RPR6hIAgNybdW9ovumAH8XLpXmgaEJD
+         4KQw==
+X-Gm-Message-State: AOJu0YxcbdbOQ7Z75CJMayCJrqZ9x0oKPGNx8+aUAsLqifzJuG5cqfl1
+        msfrfwfKlI+FTQPNq0GPKtM=
+X-Google-Smtp-Source: AGHT+IF6iIKwi8qPcC3X/WAVbk7h0MDTocQ3QffR5jmeGKuAy6EQr9tQLUI3Nk+mN2nGhDGHW1ZJ1Q==
+X-Received: by 2002:a05:6a20:e119:b0:15d:2bff:77b with SMTP id kr25-20020a056a20e11900b0015d2bff077bmr8946305pzb.34.1699609404192;
+        Fri, 10 Nov 2023 01:43:24 -0800 (PST)
+Received: from [10.10.14.80] (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id u12-20020a17090282cc00b001c0de73564dsm4924848plz.205.2023.11.10.01.43.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 01:43:23 -0800 (PST)
+Message-ID: <d1d7428e-ab0d-4483-b28d-3a8599cbf73f@gmail.com>
+Date:   Fri, 10 Nov 2023 17:41:09 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
- drm_gpuvm structures
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20231109044844.614007-1-peteryin.openbmc@gmail.com>
+ <20231109044844.614007-2-peteryin.openbmc@gmail.com>
+ <f9d25b19-ef26-480a-ae47-60dcba704ee5@linaro.org>
 Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        boris.brezillon@collabora.com, faith@gfxstrand.net,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231101233113.8059-10-dakr@redhat.com>
- <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com> <ZUTyGTxcH7WlHKsv@pollux>
- <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
- <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
- <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com> <ZUjZFFtLM435tTxJ@pollux>
- <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com> <ZUj0DdYZUgjhcvf5@pollux>
- <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com> <ZUkXkJ+zT7OFGosC@pollux>
- <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
- <6c536c94-7072-403c-9c63-d932252fd66b@amd.com>
- <4532d9d5-4c5a-4639-8136-d3ba9995d7b6@redhat.com>
- <1d4ca394-ee0c-4617-adbe-1d47e295c8fb@amd.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <1d4ca394-ee0c-4617-adbe-1d47e295c8fb@amd.com>
+From:   PeterYin <peteryin.openbmc@gmail.com>
+In-Reply-To: <f9d25b19-ef26-480a-ae47-60dcba704ee5@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,220 +83,55 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/10/23 09:50, Christian König wrote:
-> Am 09.11.23 um 19:34 schrieb Danilo Krummrich:
->> On 11/9/23 17:03, Christian König wrote:
->>> Am 09.11.23 um 16:50 schrieb Thomas Hellström:
->>>> [SNIP]
->>>>>>
->>>> Did we get any resolution on this?
->>>>
->>>> FWIW, my take on this is that it would be possible to get GPUVM to 
->>>> work both with and without internal refcounting; If with, the 
->>>> driver needs a vm close to resolve cyclic references, if without 
->>>> that's not necessary. If GPUVM is allowed to refcount in mappings 
->>>> and vm_bos, that comes with a slight performance drop but as Danilo 
->>>> pointed out, the VM lifetime problem iterating over a vm_bo's 
->>>> mapping becomes much easier and the code thus becomes easier to 
->>>> maintain moving forward. That convinced me it's a good thing.
->>>
->>> I strongly believe you guys stumbled over one of the core problems 
->>> with the VM here and I think that reference counting is the right 
->>> answer to solving this.
->>>
->>> The big question is that what is reference counted and in which 
->>> direction does the dependency points, e.g. we have here VM, BO, 
->>> BO_VM and Mapping objects.
->>>
->>> Those patches here suggest a counted Mapping -> VM reference and I'm 
->>> pretty sure that this isn't a good idea. What we should rather 
->>> really have is a BO -> VM or BO_VM ->VM reference. In other words 
->>> that each BO which is part of the VM keeps a reference to the VM.
->>
->> We have both. Please see the subsequent patch introducing VM_BO 
->> structures for that.
->>
->> As I explained, mappings (struct drm_gpuva) keep a pointer to their 
->> VM they're mapped
->> in and besides that it doesn't make sense to free a VM that still 
->> contains mappings,
->> the reference count ensures that. This simply ensures memory safety.
->>
->>>
->>> BTW: At least in amdgpu we can have BOs which (temporary) doesn't 
->>> have any mappings, but are still considered part of the VM.
->>
->> That should be possible.
->>
->>>
->>>>
->>>> Another issue Christian brought up is that something intended to be 
->>>> embeddable (a base class) shouldn't really have its own refcount. I 
->>>> think that's a valid point. If you at some point need to derive 
->>>> from multiple such structs each having its own refcount, things 
->>>> will start to get weird. One way to resolve that would be to have 
->>>> the driver's subclass provide get() and put() ops, and export a 
->>>> destructor for the base-class, rather than to have the base-class 
->>>> provide the refcount and a destructor  ops.
->>
->> GPUVM simply follows the same pattern we have with drm_gem_objects. 
->> And I think it makes
->> sense. Why would we want to embed two struct drm_gpuvm in a single 
->> driver structure?
->
-> Because you need one drm_gpuvm structure for each application using 
-> the driver? Or am I missing something?
->
-> As far as I can see a driver would want to embed that into your fpriv 
-> structure which is allocated during drm_driver.open callback.
 
-I was thinking more of the general design of a base-class that needs to 
-be refcounted. Say a driver vm that inherits from gpu-vm, gem_object and 
-yet another base-class that supplies its own refcount. What's the 
-best-practice way to do refcounting? All base-classes supplying a 
-refcount of its own, or the subclass supplying a refcount and the 
-base-classes supply destroy helpers.
-
-But to be clear this is nothing I see needing urgent attention.
-
->
+Krzysztof Kozlowski 於 11/9/23 16:56 寫道:
+> On 09/11/2023 05:48, Peter Yin wrote:
+>> Add a device tree bindings for mp5990 device.
 >>
->>>
->>> Well, I have never seen stuff like that in the kernel. Might be that 
->>> this works, but I would rather not try if avoidable.
->>>
->>>>
->>>> That would also make it possible for the driver to decide the 
->>>> context for the put() call: If the driver needs to be able to call 
->>>> put() from irq / atomic context but the base-class'es destructor 
->>>> doesn't allow atomic context, the driver can push freeing out to a 
->>>> work item if needed.
->>>>
->>>> Finally, the refcount overflow Christian pointed out. Limiting the 
->>>> number of mapping sounds like a reasonable remedy to me.
->>>
->>> Well that depends, I would rather avoid having a dependency for 
->>> mappings.
->>>
->>> Taking the CPU VM handling as example as far as I know 
->>> vm_area_structs doesn't grab a reference to their mm_struct either. 
->>> Instead they get automatically destroyed when the mm_struct is 
->>> destroyed.
+>> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+>> ---
+>>   .../devicetree/bindings/hwmon/mps,mp5990.yaml | 41 +++++++++++++++++++
+>>   1 file changed, 41 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
 >>
->> Certainly, that would be possible. However, thinking about it, this 
->> might call for
->> huge trouble.
->>
->> First of all, we'd still need to reference count a GPUVM and take a 
->> reference for each
->> VM_BO, as we do already. Now instead of simply increasing the 
->> reference count for each
->> mapping as well, we'd need a *mandatory* driver callback that is 
->> called when the GPUVM
->> reference count drops to zero. Maybe something like vm_destroy().
->>
->> The reason is that GPUVM can't just remove all mappings from the tree 
->> nor can it free them
->> by itself, since drivers might use them for tracking their allocated 
->> page tables and/or
->> other stuff.
->>
->> Now, let's think about the scope this callback might be called from. 
->> When a VM_BO is destroyed
->> the driver might hold a couple of locks (for Xe it would be the VM's 
->> shared dma-resv lock and
->> potentially the corresponding object's dma-resv lock if they're not 
->> the same already). If
->> destroying this VM_BO leads to the VM being destroyed, the drivers 
->> vm_destroy() callback would
->> be called with those locks being held as well.
->>
->> I feel like doing this finally opens the doors of the locking hell 
->> entirely. I think we should
->> really avoid that.
-
-I don't think we need to worry much about this particular locking hell 
-because if we hold, for example a vm and bo resv when putting the vm_bo, 
-we need to keep additional strong references for the bo / vm pointer we 
-use for unlocking. Hence putting the vm_bo under those locks can never 
-lead to the vm getting destroyed.
-
-Also, don't we already sort of have a mandatory vm_destroy callback?
-
-+	if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
-+		return;
-
-
-
->
-> That's a really good point, but I fear exactly that's the use case.
->
-> I would expect that VM_BO structures are added in the 
-> drm_gem_object_funcs.open callback and freed in 
-> drm_gem_object_funcs.close.
->
-> Since it is perfectly legal for userspace to close a BO while there 
-> are still mappings (can trivial be that the app is killed) I would 
-> expect that the drm_gem_object_funcs.close handling is something like 
-> asking drm_gpuvm destroying the VM_BO and getting the mappings which 
-> should be cleared in the page table in return.
->
-> In amdgpu we even go a step further and the VM structure keeps track 
-> of all the mappings of deleted VM_BOs so that higher level can query 
-> those and clear them later on.
->
-> Background is that the drm_gem_object_funcs.close can't fail, but it 
-> can perfectly be that the app is killed because of an OOM situation 
-> and we can't do page tables updates in that moment because of this.
->
->>
->>>
->>> Which makes sense in that case because when the mm_struct is gone 
->>> the vm_area_struct doesn't make sense any more either.
->>>
->>> What we clearly need is a reference to prevent the VM or at least 
->>> the shared resv to go away to early.
->>
->> Yeah, that was a good hint and we've covered that.
->>
->>>
->>> Regards,
->>> Christian.
->>>
->>>>
->>>> But I think all of this is fixable as follow-ups if needed, unless 
->>>> I'm missing something crucial.
->>
->> Fully agree, I think at this point we should go ahead and land this 
->> series.
-
-+1.
-
-/Thomas
-
-
->>
->
-> Yeah, agree this is not UAPI so not nailed in stone. Feel free to add 
-> my acked-by as well if you want.
->
-> Only keep in mind that when you give drivers some functionality in a 
-> common component they usually expect to keep that functionality.
->
-> For example changing the dma_resv object to make sure that drivers 
-> can't cause use after free errors any more was an extremely annoying 
-> experience since every user of those interface had to change at once.
->
-> Regards,
-> Christian.
->
->>
->>>>
->>>> Just my 2 cents.
->>>>
->>>> /Thomas
->>>>
->>>>
->>>
->>
->
+>> diff --git a/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml b/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
+>> new file mode 100644
+>> index 000000000000..bfd0cf7d3470
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
+>> @@ -0,0 +1,41 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/hwmon/mps,mp5990.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Monolithic Power Systems Devices MP5990 Hot-Swap Controller
+>> +
+>> +maintainers:
+>> +  - Peter Yin <peteryin.openbmc@gmail.com>
+>> +
+>> +description: |
+>> +  Monolithic Power Systems Devices MP5990 Hot-Swap Controller
+>> +
+>> +  Datasheets:
+>> +  https://www.monolithicpower.com/en/mp5990.html
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: mps,mp5990
+>> +
+>> +  reg:
+>> +    maxItems: 1
+> 
+> This is missing some properties... or is a candidate for
+> trivial-devices.yaml.
+> 
+> I guess it is fine as initial submission:
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Best regards,
+> Krzysztof
+> 
+OK, I will move to trivial-devices, thanks.
