@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5587E7E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D494E7E845E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345457AbjKJRpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S1346257AbjKJUmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345957AbjKJRoJ (ORCPT
+        with ESMTP id S1346225AbjKJUlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:44:09 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0591A39CEE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:22 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-daa2684f67eso1691291276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:21 -0800 (PST)
+        Fri, 10 Nov 2023 15:41:44 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0348371E7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:50 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507f1c29f25so2823708e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699627881; x=1700232681; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0mloYI4ZoLlQinekJcU/lurgLOSGND62aO9fKE274N0=;
-        b=A0RhG0QzUR2cP7qmBFogt1s+A3mu+i+sr05ow5cRIJGSQOzcKQ8DFkKZBMKLFrYmO/
-         KRPQj8GslF9joEmC8E+Fvq+IXAK3qZxlIytoa/In0dxtTQ25zhPDIkCy9fAuTVjSHy9F
-         ZwWdtPPdR8wfzJwXxfqr7Nh7mHguvRtlbl1745I30oloZTMj3y392Dqy1euN2F1wjCnm
-         VCAbuqtRI09rD10x3jdjN/YJQwkjXJZkQnvNc+CfXzk1pHa7W9pcQHpccJo+xmoS2iAd
-         d0u7CReIoZAl2BpgZaj6PSpDtq3Be2nksYXXB1vxV+HESvM7rHHVD9kRKuzejF5QFEyu
-         iLmg==
+        d=semihalf.com; s=google; t=1699627909; x=1700232709; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Mvi7lav8JrZRYFQ+CoUkEYfxxgB5+JW9swJ4hiybl8=;
+        b=GXiXYlfZ+pJhnm/PjXeJmABrjGuK6bTE3ngz8Ypc8hRW5DFxsQnZGPtC8hbdI8xdu4
+         JiWPjEOX67QKGe5FBJobtjSr3hOYno3AvDzFnwyHwUzYdbesKN8A4KB2vAHWSwM/boJx
+         fwDo+MKBmu5IYCavFGNfApIxgajy+92+XpSm0rs93QxStbN89FkAN1sbP/WueYz6xJFl
+         HAkBuYgGZGjZ5Rm40MjJydsi6GV1RKUFULG4vBFRqS1XZGQYBvROqJm+wQLz4PUoYLTy
+         TxZZEKOvczi421nTZiRI8NjK8ieLydQ2LvsWbVg038QNxxY50jvaQW9v3X/cXeuGcbs6
+         hkvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699627881; x=1700232681;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0mloYI4ZoLlQinekJcU/lurgLOSGND62aO9fKE274N0=;
-        b=FWk61FwSttG1L6+5ojPBQnhs2AqTBBmG1bhY6jyToFgueZFoq6vr9U+AqSFotUoAat
-         m/ZHj31Ri212IPi0nmsA9ixN7C/QTstlPPQB2hEYEVMygE/jVEX8E0jYF7KI7VFtRPXJ
-         zH9iRW8BJIKKZHzuAvmCfcDy3zuSzzBv8Ypp3cGLdDJwfjE3q5Abb5x0BOv8oWfc3Dqc
-         emyuUAT7KZWzexbzlYjGP+e+Pk1OhmbmyinZwi96Dr5raKys/WmH4PJKAJv9LxavImoD
-         3ghiKAYrf28rODHubgygDslGAblwT6kwOLLCHJ7lokbJZUrG5u64LBdxXk0NU7c+rxYx
-         wVuA==
-X-Gm-Message-State: AOJu0YwHpd23uckWy6q9BA5i4ddFwk3lWYd00MHQkSX1tgQUOJAZ3LpP
-        fp2nLClM9XNBLXRMc2OwM5UA9fIDBpw=
-X-Google-Smtp-Source: AGHT+IH3/OeuatOzR2sFBSWymG2OgAYclU8eTE9kiFo/7nRT84eGi909cRo3wqw1PhQmUAKhID8qy0DK6Ig=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:384:b0:da0:37e1:558e with SMTP id
- f4-20020a056902038400b00da037e1558emr91865ybs.6.1699627881224; Fri, 10 Nov
- 2023 06:51:21 -0800 (PST)
-Date:   Fri, 10 Nov 2023 06:51:19 -0800
-In-Reply-To: <5d0c1946-0b22-4983-868b-db7f79fe16bc@linux.intel.com>
-Mime-Version: 1.0
-References: <20231110021306.1269082-1-seanjc@google.com> <20231110021306.1269082-8-seanjc@google.com>
- <5d0c1946-0b22-4983-868b-db7f79fe16bc@linux.intel.com>
-Message-ID: <ZU5DZ110JPvcmZp0@google.com>
-Subject: Re: [PATCH v8 07/26] KVM: x86/pmu: Apply "fast" RDPMC only to Intel PMUs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699627909; x=1700232709;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Mvi7lav8JrZRYFQ+CoUkEYfxxgB5+JW9swJ4hiybl8=;
+        b=aBVcAxBH8eCNfe5WjoCqh06NDCanMAeaR6sJ7+0VkMY8OTnMiySlvTHndBmnFdzrQK
+         NYlqyzHfoTV5EtNd2Q54edsHStXFqQzReThAYsG107PzXxKP8TmYWaqh9C9MYxD9nvlk
+         db27ctPnD1sM4F4mh6P85cINf3b8eEDjTwmAoCGVlyZK597CWeiBQ6sSzM4vT0eJpa4E
+         91qp6EMsH97iSdvTOI67b0SLGFB+UZ7heK/68Y9jcJN29FIXz2TtTftIGmU89cyfeSll
+         bu0eT4lQ0zy051hpdWUdtUx8sh3oZ6V79XjUSVYJBXxwOlDcF3YfPsdWC/jpk0Pi3stG
+         ozxQ==
+X-Gm-Message-State: AOJu0YxpyEuZOX1JMlSjgk2GaRSZWvvsJ1BIzEiPo3C2oEjAdezZR2HL
+        zqFwcJr6VD1aHtodwGuo8dJtKVAALcS6UI+bpxo3
+X-Google-Smtp-Source: AGHT+IHDGtAWuHGdBX3OpRSPta7vwVkXkLgCdzLshmpa67UAo2J4X9u84Iqw0CinBX7CCPHtuReKq+0mwKx0DtLyOgo=
+X-Received: by 2002:a19:4f01:0:b0:503:385c:4319 with SMTP id
+ d1-20020a194f01000000b00503385c4319mr3532227lfb.19.1699627908829; Fri, 10 Nov
+ 2023 06:51:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-8-lb@semihalf.com>
+ <CAJfuBxzWSyw-Xp3k5WzOexbRZFydCUp_nX4A_BZs8Gq0OE2U7Q@mail.gmail.com>
+In-Reply-To: <CAJfuBxzWSyw-Xp3k5WzOexbRZFydCUp_nX4A_BZs8Gq0OE2U7Q@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Fri, 10 Nov 2023 15:51:37 +0100
+Message-ID: <CAK8ByeL=A6xC=q8Ah4im4JQGUcN_NZNg10pSezBPCeKW9J_DeQ@mail.gmail.com>
+Subject: Re: [PATCH v1 07/12] dyndbg: repack struct _ddebug
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023, Dapeng Mi wrote:
-> 
-> On 11/10/2023 10:12 AM, Sean Christopherson wrote:
-> > Move the handling of "fast" RDPMC instructions, which drop bits 63:31 of
-> 
-> 63:32?
+sob., 4 lis 2023 o 02:49 <jim.cromie@gmail.com> napisa=C5=82(a):
+>
+> On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.=
+com> wrote:
+> >
+> > From: Jim Cromie <jim.cromie@gmail.com>
+> >
+> > Move the JUMP_LABEL to the top of the struct, since theyre both
+> > align(8) and this closes a pahole (unfortunately trading for padding,
+> > but still).
+> >
+> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+>
+> let me add, I havent really tested this, nevermind thorough.
+> specifically, I didnt look for any offset dependence on the static-key
+> inside their container.
+> Conversely, maybe theres a free default or something in there.
+>
 
-Oof, yeah.
+Any idea how to properly test the relocation of the key ?
 
-> > @@ -55,12 +59,17 @@ static struct kvm_pmc *intel_pmc_idx_to_pmc(struct kvm_pmu *pmu, int pmc_idx)
-> >   	}
-> >   }
-> > +static u32 intel_rdpmc_get_masked_idx(struct kvm_pmu *pmu, u32 idx)
-> 
-> inline?
 
-No, for functions that are visible only to the local compilation unit, there's
-no reason to use "inline".  "inline" is just a hint, and modern compilers are
-smart enough to inline functions when appropriate without a hint, e.g. gcc and
-clang inline this on all my configurations.  Compilers may also ignore the hint,
-e.g. KASAN=y tends to produce some really amusing results.
 
-A longer explanation/rant here: https://lore.kernel.org/all/ZAdfX+S323JVWNZC@google.com
+> > ---
+> >  include/linux/dynamic_debug.h | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debu=
+g.h
+> > index 497130816e9c..b9237e4ecd1b 100644
+> > --- a/include/linux/dynamic_debug.h
+> > +++ b/include/linux/dynamic_debug.h
+> > @@ -14,6 +14,12 @@
+> >   * the special section is treated as an array of these.
+> >   */
+> >  struct _ddebug {
+> > +#ifdef CONFIG_JUMP_LABEL
+> > +       union {
+> > +               struct static_key_true dd_key_true;
+> > +               struct static_key_false dd_key_false;
+> > +       } key;
+> > +#endif
+> >         /*
+> >          * These fields are used to drive the user interface
+> >          * for selecting and displaying debug callsites.
+> > @@ -53,12 +59,6 @@ struct _ddebug {
+> >  #define _DPRINTK_FLAGS_DEFAULT 0
+> >  #endif
+> >         unsigned int flags:8;
+> > -#ifdef CONFIG_JUMP_LABEL
+> > -       union {
+> > -               struct static_key_true dd_key_true;
+> > -               struct static_key_false dd_key_false;
+> > -       } key;
+> > -#endif
+> >  } __attribute__((aligned(8)));
+> >
+> >  enum class_map_type {
+> > --
+> > 2.42.0.869.gea05f2083d-goog
+> >
