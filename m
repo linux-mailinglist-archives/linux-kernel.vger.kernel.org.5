@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B907E768D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EE27E768F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345580AbjKJB2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
+        id S234858AbjKJB3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKJB2Y (ORCPT
+        with ESMTP id S229491AbjKJB3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:28:24 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD9F44B9;
-        Thu,  9 Nov 2023 17:28:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1699579698;
-        bh=dmuzaMMRBU3HdG40Tz/vWvs2KQopBltoB/JEWdN41Eo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mixpMI6Y4wLj4HJgs7h98AJAsRNEEKWkPZHul2IANWCuD7GNfrw43Gmitj6peCgmm
-         cHWSmOE5mfwFfvyq1VK+azSeZP4vAnLMS0vRLnDHkj8jS+1DqMaWsfCOZa3mZ819yF
-         neYU2JNss5KyLH+LuhWj9LWE+Po2ZXZWRlU0BZZBa61jfeYpBulY438nST33ZQNpTJ
-         NBZUdPtDd09nycpl7pKwzWc4EBEJ+Y28RAgL/d+JT/0RjlhhaSS2+s/VFtx6QeAItI
-         yuIodV9P0bIY8ngImek2PzfkwoGThF2veB6N2RaKiYHRZuoEzWH9Q53EzsmfMgQqbC
-         9AfjO693C4CDA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRLmy11Rvz4x1v;
-        Fri, 10 Nov 2023 12:28:17 +1100 (AEDT)
-Date:   Fri, 10 Nov 2023 12:28:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     syzbot <syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] linux-next build error (16)
-Message-ID: <20231110122817.47d72603@canb.auug.org.au>
-In-Reply-To: <0000000000002167ca0609c1f5d5@google.com>
-References: <0000000000002167ca0609c1f5d5@google.com>
+        Thu, 9 Nov 2023 20:29:36 -0500
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1933844A4
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:29:33 -0800 (PST)
+X-UUID: 957cf0ca7f6811ee8051498923ad61e6-20231110
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ae3NgNwi5jbYlghW361nXVBAg4ZT3Zsh9YIiZ0bSJr8=;
+        b=JB0W8ZVoFu1JlA1tLm4Ep5Yc233T3vuCHAKJoLkNg+yuxvhlwHS0sVhE6O4bk1D+Vr+MwpawPWo1eh11kdBA6o1NAbA+gEDY2UDxXvybBXws2cDYSAVm/hxXzLEVRS5UILQnhfZhUSpkR1McNzEPfFuGhC0NeVYxd4aKfYp0kxE=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:97b6f439-8915-4597-969b-1d32e5be9704,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:364b77b,CLOUDID:a6dbe35f-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 957cf0ca7f6811ee8051498923ad61e6-20231110
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <stuart.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 466670699; Fri, 10 Nov 2023 09:29:25 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 10 Nov 2023 09:29:24 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 10 Nov 2023 09:29:24 +0800
+From:   Stuart Lee <stuart.lee@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Stuart Lee <stuart.lee@mediatek.com>,
+        Lancelot Wu <lancelot.wu@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 0/1] Fix access violation in mtk_drm_crtc_dma_dev_get
+Date:   Fri, 10 Nov 2023 09:29:13 +0800
+Message-ID: <20231110012914.14884-1-stuart.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ZB7n9vr3vnJsSzUJcC.0+hE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ZB7n9vr3vnJsSzUJcC.0+hE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add error handling to check NULL input in
+mtk_drm_crtc_dma_dev_get function.
 
-Hi syzbot,
+While display path is not configured correctly, none of crtc is
+established. So the caller of mtk_drm_crtc_dma_dev_get may pass
+input parameter *crtc as NULL, Which may cause coredump when
+we try to get the container of NULL pointer.
 
-On Thu, 09 Nov 2023 17:08:26 -0800 syzbot <syzbot+c65436ac3463dd64e422@syzk=
-aller.appspotmail.com> wrote:
->=20
-> syzbot found the following issue on:
->=20
-> HEAD commit:    b622d91ca201 Add linux-next specific files for 20231109
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16a51397680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D159f4f31622eb=
-7ff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc65436ac3463dd6=
-4e422
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com
->=20
-> failed to run ["make" "-j" "64" "ARCH=3Dx86_64" "oldconfig"]: exit status=
- 2
->=20
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->=20
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->=20
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->=20
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
+Stuart Lee (1):
+  drm/mediatek: Fix access violation in mtk_drm_crtc_dma_dev_get
 
-#syz set subsystems: crypto
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.18.0
 
---Sig_/ZB7n9vr3vnJsSzUJcC.0+hE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVNhzEACgkQAVBC80lX
-0Gxhegf+OI3RvI3R+XGuFYCvEvIf2fn2rHa3rqdx4LjV+39+RBaxJzzTTq3XwBy+
-X9wbfE7xdNwWk0Ms7js5WwlZivnzGquejqJ03Qm/KlFhsscJwF0NwVMJ9+zmwVwV
-fMXT3hmaQoVRoxq8DmUY/93kYrgLNH0+qCippn7GjHuuFHKTtSYe9qD7xLETqggc
-oJo+LybtyYnC58NDZMIoR8Qn/m7FMFfSBpy4mgm/ExFH1Yfk+48BAUWj9uDFeZ5I
-8t4EiHxs917JGFy5Xjg7ms6i5AXh3O7QkneJLuzCm2GKFzIlegXmIpLj4G1kx32+
-VVBJF1dqByZ7fy6ainmn4aFx+JHZfA==
-=Kwrz
------END PGP SIGNATURE-----
-
---Sig_/ZB7n9vr3vnJsSzUJcC.0+hE--
