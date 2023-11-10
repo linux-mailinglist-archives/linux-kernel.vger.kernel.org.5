@@ -2,84 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7797E81BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63517E84E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345478AbjKJSd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:33:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S1346387AbjKJVCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 16:02:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345346AbjKJScR (ORCPT
+        with ESMTP id S235995AbjKJVC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:32:17 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E773325A0D;
-        Fri, 10 Nov 2023 01:56:29 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA9iHNL015268;
-        Fri, 10 Nov 2023 09:56:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dqcOp6uMPuE83dY6kYaHOebngUiHYiPNDGtrKbD1kfY=;
- b=ct5HEE+gnitLwXmqC+KnyB5l/UMTkyESttAYm0AEzg3wis/kH+6aJlECw6tcig2JGcV+
- 4TiM3uyQwiRIRxtDF/GRGOo/z1xycN4q3Hj5jlIUEHbBWrlVU0nQztsgw5cpmWu/sfX+
- kwt2qz7s/AWC1ig2WrWM3SmjuZG+b3fLeC6yV8rP8gMl0QJ03oHu2hmoyIVoF7x66ZLY
- 96/6EuGtmNNWkaP6G/l2J5mjMHBopcLd1uiYFNcbWrST2Mt7HAX/ldh2wrSSYCdZQfzV
- b34SP9+3rCfzdAPXBrZsU+ZO3yjEMjWg4Q33tEdFkgJw1JC7BptnURdDevSUgKv4oQNQ HQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u9h9v84qm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 09:56:14 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA9uDOP029435
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 09:56:13 GMT
-Received: from [10.253.8.167] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
- 2023 01:56:11 -0800
-Message-ID: <3dd470a9-257e-e2c7-c71a-0c216cf7db88@quicinc.com>
-Date:   Fri, 10 Nov 2023 17:56:09 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/3] net: phy: at803x: add QCA8084 ethernet phy support
-Content-Language: en-US
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231108113445.24825-1-quic_luoj@quicinc.com>
- <20231108113445.24825-2-quic_luoj@quicinc.com>
- <20231108131250.66d1c236@fedora>
- <423a3ee3-bed5-02f9-f872-7b5dba64f994@quicinc.com>
- <20231109101618.009efb45@fedora>
- <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
- <46d61a29-96bf-868b-22b9-a31e48576803@quicinc.com>
- <20231110103328.0bc3d28f@fedora>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <20231110103328.0bc3d28f@fedora>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Fri, 10 Nov 2023 16:02:27 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11E825A0C;
+        Fri, 10 Nov 2023 01:56:25 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8AF8F21904;
+        Fri, 10 Nov 2023 09:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699610183; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=r+fQQTIv4A8QYO3rQSNawWUwM4gFhzmYNLlY8WDs4oE=;
+        b=LMFR++GPRwNYOIed9gVH53TfIe3eVvY2ITXAgMS9OqCj1u3U1QSXFnM/DI3+VI/HCOA2cy
+        ViOTnVltbnx+QRcb1LOiLO1WORh2uYqk3FoFGZ9eVg788iTG+wnK1KyYQo7jhMepjTuEej
+        Cch+kdEREFFHTq6HKhA3Bha4JWfjDrs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699610183;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=r+fQQTIv4A8QYO3rQSNawWUwM4gFhzmYNLlY8WDs4oE=;
+        b=ffmnyEZfQyvPs33m6veSV9RAc4R8zWrLNwq6XWL9eEDhT7TOMvIMuk2K+c9OzoUUq2y0mH
+        iDYT0ElJznEBRrCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5EF5F138FC;
+        Fri, 10 Nov 2023 09:56:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +TcdFkf+TWXeUwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 10 Nov 2023 09:56:23 +0000
+Date:   Fri, 10 Nov 2023 10:56:22 +0100
+Message-ID: <87sf5eq6d5.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] sound fixes for 6.7-rc1
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rKUGGD6_5vdy8zfqH4Q7fuTFkZrctYtN
-X-Proofpoint-ORIG-GUID: rKUGGD6_5vdy8zfqH4Q7fuTFkZrctYtN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_06,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=580 adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311100080
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,76 +69,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[ Resent since I couldn't see my previous post on ML;
+  please disregard if you've already received the previous post ]
 
+Linus,
 
-On 11/10/2023 5:33 PM, Maxime Chevallier wrote:
-> On Fri, 10 Nov 2023 17:17:58 +0800
-> Jie Luo <quic_luoj@quicinc.com> wrote:
-> 
->> On 11/10/2023 4:53 PM, Jie Luo wrote:
->>>
->>>
->>> On 11/9/2023 5:16 PM, Maxime Chevallier wrote:
->>>> Hello,
->>>>
->>>> On Thu, 9 Nov 2023 16:32:36 +0800
->>>> Jie Luo <quic_luoj@quicinc.com> wrote:
->>>>
->>>> [...]
->>>>   
->>>>>> What I understand from this is that this PHY can be used either as a
->>>>>> switch, in which case port 4 would be connected to the host interface
->>>>>> at up to 2.5G, or as a quad-phy, but since it uses QUSGMII the link
->>>>>> speed would be limited to 1G per-port, is that correct ?
->>>>>
->>>>> When the PHY works on the interface mode QUSGMII for quad-phy, all 4
->>>>> PHYs can support to the max link speed 2.5G, actually the PHY can
->>>>> support to max link speed 2.5G for all supported interface modes
->>>>> including qusgmii and sgmii.
->>>>
->>>> I'm a bit confused then, as the USGMII spec says that Quad USGMII really
->>>> is for quad 10/100/1000 speeds, using 10b/8b encoding.
->>>>
->>>> Aren't you using the USXGMII mode instead, which can convey 4 x 2.5Gbps
->>>>  Â  with 66b/64b encoding ?
->>>>
->>>> Thanks,
->>>>
->>>> Maxime
->>>
->>> Hi Maxime,
->>> Yes, for quad PHY mode, it is using 66b/64 encoding.
->>>
->>> it seems that PHY_INTERFACE_MODE_USXGMII is for single port,
->>> so i take the interface name PHY_INTERFACE_MODE_QUSGMII for
->>> quad PHYs here.
->>>
->>> can we apply PHY_INTERFACE_MODE_USXGMII to quad PHYs in this
->>> case(qca8084 quad PHY mode)?
->>>
->>> Thanks,
->>> Jie.
->>
->> one more thing, if we use the PHY_INTERFACE_MODE_USXGMII for
->> the quad PHY here, the MAC serdes can't distinguish the actual
->> mode PHY_INTERFACE_MODE_USXGMII and 10G-QXGMII(qca8084 quad phy mode),
->> the MAC serdes has the different configurations for usxgmii(10g single
->> port) and qxsgmii(quad PHY).
-> 
-> Yes you do need a way to know which mode to use, what I'm wondering is
-> that the usxgmii spec actually defines something like 9 different modes
-> ( 1/2/4/8 ports, with a total bandwidth ranging from 2.5Gbps to 20 Gbps
-> ), should we define a phy mode for all of these variants, or should we
-> have another way of getting the mode variant (like, saying I want to
-> use usxgmii, in 4 ports mode, with the serdes at 10.3125Gbps).
-> 
-> That being said, QUSGMII already exists to define a specific variant of
-> USGMII, so maybe adding 10G-QXGMII is fine...
+please pull sound fixes for v6.7-rc1 from:
 
-Yes, Maxime, I agree with this solution, the name 10G-QXGMII is exactly
-the working mode of qca8084 quad phy mode.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-6.7-rc1
 
-> 
-> Also, net-next is still currently closed.
+The topmost commit is bce36aa682da7ca996d4a02636ebfb6b5f2c3f83
 
-Ok, thanks for this reminder.
+----------------------------------------------------------------
+
+sound fixes for 6.7-rc1
+
+A collection of fixes for RC1.  Majority of changes are various
+ASoC driver-specific small fixes and usual HD-audio quirks, while
+there are a couple of core changes: a fix in ALSA core procfs code
+to avoid deadlocks at disconnection and an ASoC core fix for DAPM
+clock widgets.
+
+----------------------------------------------------------------
+
+Alex Spataru (1):
+      ALSA: hda/realtek: Add quirk for ASUS UX7602ZM
+
+Alexander Koskovich (1):
+      ALSA: hda: Add ASRock X670E Taichi to denylist
+
+David Lin (1):
+      ASoC: nau8540: Add self recovery to improve capture quility
+
+David Rau (1):
+      ASoC: da7219: Improve system suspend and resume handling
+
+Eugen Hristev (2):
+      ASoC: mediatek: mt8186_mt6366_rt1019_rt5682s: trivial: fix error messages
+      ASoC: SOF: sof-client: trivial: fix comment typo
+
+Jerome Brunet (2):
+      ASoC: hdmi-codec: register hpd callback on component probe
+      ASoC: dapm: fix clock get name
+
+Kailang Yang (1):
+      ALSA: hda/realtek: Add support dual speaker for Dell
+
+Nathan Chancellor (1):
+      ASoC: codecs: aw88399: Fix -Wuninitialized in aw_dev_set_vcalb()
+
+Rob Herring (1):
+      ASoC: rockchip: Fix unused rockchip_i2s_tdm_match warning for !CONFIG_OF
+
+Shuming Fan (1):
+      ASoC: rt712-sdca: fix speaker route missing issue
+
+Syed Saba Kareem (1):
+      ASoC: amd: acp: fix for i2s mode register field update
+
+Takashi Iwai (1):
+      ALSA: info: Fix potential deadlock at disconnection
+
+Tony Lindgren (1):
+      ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
+
+Uwe Kleine-König (1):
+      OSS: dmasound/paula: Convert to platform remove callback returning void
+
+Vitalii Torshyn (1):
+      ALSA: hda: ASUS UM5302LA: Added quirks for cs35L41/10431A83 on i2c bus
+
+Weidong Wang (3):
+      ASoC: codecs: Modify the maximum value of calib
+      ASoC: codecs: Modify the wrong judgment of re value
+      ASoC: codecs: Modify macro value error
+
+---
+ sound/core/info.c                                  | 21 ++++++----
+ sound/oss/dmasound/dmasound_paula.c                |  7 ++--
+ sound/pci/hda/hda_intel.c                          |  1 +
+ sound/pci/hda/patch_realtek.c                      | 47 +++++++++++++++++----
+ sound/soc/amd/acp/acp-i2s.c                        |  4 +-
+ sound/soc/codecs/aw88395/aw88395.c                 |  2 +-
+ sound/soc/codecs/aw88399.c                         |  8 ++--
+ sound/soc/codecs/aw88399.h                         |  2 +-
+ sound/soc/codecs/da7219-aad.c                      |  9 +++-
+ sound/soc/codecs/hdmi-codec.c                      | 27 ++++++++----
+ sound/soc/codecs/nau8540.c                         | 49 ++++++++++++++++++++++
+ sound/soc/codecs/nau8540.h                         | 15 +++++++
+ sound/soc/codecs/rt712-sdca.c                      | 14 +++----
+ .../mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c |  4 +-
+ sound/soc/rockchip/rockchip_i2s_tdm.c              |  2 +-
+ sound/soc/soc-dapm.c                               |  2 +-
+ sound/soc/sof/sof-client.c                         |  2 +-
+ sound/soc/ti/omap-mcbsp.c                          |  6 ++-
+ 18 files changed, 171 insertions(+), 51 deletions(-)
+
