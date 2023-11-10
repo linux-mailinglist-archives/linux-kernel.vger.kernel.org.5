@@ -2,167 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528CF7E7829
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD69F7E782C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345832AbjKJDk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:40:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S1345845AbjKJDlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345800AbjKJDk1 (ORCPT
+        with ESMTP id S234897AbjKJDlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:40:27 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431E144BD;
-        Thu,  9 Nov 2023 19:40:25 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA2RCQp011798;
-        Fri, 10 Nov 2023 03:40:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=H3TWk7+4y1gJTkIKtnz7CfGBX9WDO7ArE0fYsNIipiE=;
- b=k56nCrzqGU55hzTgCmwnbTPpFNAiXIdYEi7fLqqWq6AWGAmtlaRfap9ux3J3WFsyrC08
- FGMdawhdfwYNAtJ5f7jY25K0HHxzuEeoncf6cDLe0sa2t89Y9779Osrb/RnRL1LbqkKt
- HXLn6mwgRun42otXTrJHPlJHNH2x8/JclZ6GIaN1ihy4v2wzTRKEylZnQ0dy4FrhcFtd
- d9pM/cNxO7svEbz1MG9wMBvijJeKC3/NloFN4afb4CkzWk4ZPO3v6E+acMlJJDfdWgSI
- ve2mfx8/ZFmyqLaQDWUjCA9qlYNOwPhXyAYfOSLeCOXHtNET1YIpz7fJr2NJdoJ+1Wun IA== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93qy92x9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 03:40:09 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA3e9bO007047
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 03:40:09 GMT
-Received: from [10.253.38.123] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
- 2023 19:40:06 -0800
-Message-ID: <fa1fa85a-0ef4-4e77-876e-c4c3e54fbb1f@quicinc.com>
-Date:   Fri, 10 Nov 2023 11:40:06 +0800
+        Thu, 9 Nov 2023 22:41:11 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31A92D6B;
+        Thu,  9 Nov 2023 19:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1699587663;
+        bh=YOCyMuYL5I88d66lN6C2ldLGMCIsUO0ppwylpN45zyo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Wn9r2B2oowVuwO3Zl60Sr9Z7DSIDr8i4EJteomcnu3WFRku9t2zjeGtWw/AfYoOq5
+         XerWwP5hl6W2IDQ5oXo+OZXfKtozNy1mBrujHuJp4zzE9/45aaZipxAREYXOxgQXjR
+         xx19dsVEjqqJPfYy9EFUE6ihgIPQKmEaihSxSFNcCQ/L/9u8gV3yA/STX7nGjo0Ay1
+         OCJMdsK73uaxkAAVAiTIRUL555Hy0+R21BiuN73bxY9L0vGIsep9+GApy/PVgwZ/He
+         2F3mvN8a7FGyoZXJ8CxS3uCxTiW7jZu6MLPM2TNQPrzMidLoukJmFiTgUaJ+eTYqfU
+         wzdmlm/HPhRgQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRPjy5kW7z4x2W;
+        Fri, 10 Nov 2023 14:40:54 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+In-Reply-To: <202311090843.b8ISrsV1-lkp@intel.com>
+References: <20231108125843.3806765-18-arnd@kernel.org>
+ <202311090843.b8ISrsV1-lkp@intel.com>
+Date:   Fri, 10 Nov 2023 14:40:51 +1100
+Message-ID: <87h6lu8ed8.fsf@mail.lhotse>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] bus: mhi: host: Avoid processing buffer and event
- of a disable channel
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        <oe-kbuild@lists.linux.dev>, <mani@kernel.org>,
-        <quic_jhugo@quicinc.com>
-CC:     <lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
-        <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <12ceff53-bbd0-4e12-9597-f6a4bfd0f87f@kadam.mountain>
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <12ceff53-bbd0-4e12-9597-f6a4bfd0f87f@kadam.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: t1_0Fnd_Ogvb2yQpD1OjtjC5RS77qzv0
-X-Proofpoint-GUID: t1_0Fnd_Ogvb2yQpD1OjtjC5RS77qzv0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- spamscore=0 clxscore=1011 malwarescore=0 priorityscore=1501 suspectscore=0
- mlxscore=0 lowpriorityscore=0 mlxlogscore=907 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311100030
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/8/2023 2:48 PM, Dan Carpenter wrote:
-> Hi Qiang,
+kernel test robot <lkp@intel.com> writes:
+> Hi Arnd,
 >
-> kernel test robot noticed the following build warnings:
+> kernel test robot noticed the following build errors:
 >
+> [auto build test ERROR on linus/master]
+> [also build test ERROR on next-20231108]
+> [cannot apply to v6.6]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
 > https://git-scm.com/docs/git-format-patch#_base_tree_information]
 >
-> url:    https://github.com/intel-lab-lkp/linux/commits/Qiang-Yu/bus-mhi-host-Add-spinlock-to-protect-WP-access-when-queueing-TREs/20231107-151918
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git mhi-next
-> patch link:    https://lore.kernel.org/r/1699341365-47737-4-git-send-email-quic_qianyu%40quicinc.com
-> patch subject: [PATCH v3 3/4] bus: mhi: host: Avoid processing buffer and event of a disable channel
-> config: x86_64-randconfig-161-20231107 (https://download.01.org/0day-ci/archive/20231108/202311080155.MiyREgoQ-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080155.MiyREgoQ-lkp@intel.com/reproduce)
+> url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
+> base:   linus/master
+> patch link:    https://lore.kernel.org/r/20231108125843.3806765-18-arnd%40kernel.org
+> patch subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+> config: powerpc64-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/config)
+> compiler: powerpc64-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/reproduce)
 >
 > If you fix the issue in a separate patch/commit (i.e. not just a new version of
 > the same patch/commit), kindly add following tags
 > | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202311080155.MiyREgoQ-lkp@intel.com/
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311090843.b8ISrsV1-lkp@intel.com/
 >
-> smatch warnings:
-> drivers/bus/mhi/host/main.c:1257 mhi_gen_tre() warn: inconsistent returns '&mhi_chan->lock'.
+> All errors (new ones prefixed by >>):
 >
-> vim +1257 drivers/bus/mhi/host/main.c
->
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1204  int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1205  			struct mhi_buf_info *info, enum mhi_flags flags)
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1206  {
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1207  	struct mhi_ring *buf_ring, *tre_ring;
-> 84f5f31f110e5e drivers/bus/mhi/host/main.c Manivannan Sadhasivam 2022-03-01  1208  	struct mhi_ring_element *mhi_tre;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1209  	struct mhi_buf_info *buf_info;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1210  	int eot, eob, chain, bei;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1211  	int ret;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1212
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1213  	/* Protect accesses for reading and incrementing WP */
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1214  	write_lock_bh(&mhi_chan->lock);
-> 6025cde6ecb13c drivers/bus/mhi/host/main.c Qiang Yu              2023-11-07  1215  	if (mhi_chan->ch_state != MHI_CH_STATE_ENABLED)
-> 6025cde6ecb13c drivers/bus/mhi/host/main.c Qiang Yu              2023-11-07  1216  		return -EINVAL;
->
-> This looks like two people submitted patches on the same day?
-> We should unlock before returning?
-Yes, we should unlock before return, will change in next version patch. 
-Thank you.
->
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1217
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1218  	buf_ring = &mhi_chan->buf_ring;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1219  	tre_ring = &mhi_chan->tre_ring;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1220
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1221  	buf_info = buf_ring->wp;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1222  	WARN_ON(buf_info->used);
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1223  	buf_info->pre_mapped = info->pre_mapped;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1224  	if (info->pre_mapped)
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1225  		buf_info->p_addr = info->p_addr;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1226  	else
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1227  		buf_info->v_addr = info->v_addr;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1228  	buf_info->cb_buf = info->cb_buf;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1229  	buf_info->wp = tre_ring->wp;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1230  	buf_info->dir = mhi_chan->dir;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1231  	buf_info->len = info->len;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1232
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1233  	if (!info->pre_mapped) {
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1234  		ret = mhi_cntrl->map_single(mhi_cntrl, buf_info);
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1235  		if (ret) {
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1236  			write_unlock_bh(&mhi_chan->lock);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1237  			return ret;
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1238  		}
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1239  	}
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1240
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1241  	eob = !!(flags & MHI_EOB);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1242  	eot = !!(flags & MHI_EOT);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1243  	chain = !!(flags & MHI_CHAIN);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1244  	bei = !!(mhi_chan->intmod);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1245
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1246  	mhi_tre = tre_ring->wp;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1247  	mhi_tre->ptr = MHI_TRE_DATA_PTR(buf_info->p_addr);
-> cd116318803f5e drivers/bus/mhi/core/main.c Hemant Kumar          2020-05-21  1248  	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1249  	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1250
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1251  	/* increment WP */
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1252  	mhi_add_ring_element(mhi_cntrl, tre_ring);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1253  	mhi_add_ring_element(mhi_cntrl, buf_ring);
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1254
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1255  	write_unlock_bh(&mhi_chan->lock);
-> da05b5d43f483c drivers/bus/mhi/host/main.c Bhaumik Bhatt         2023-11-07  1256
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20 @1257  	return 0;
-> 189ff97cca53e3 drivers/bus/mhi/core/main.c Manivannan Sadhasivam 2020-02-20  1258  }
->
+>    arch/powerpc/platforms/ps3/gelic_udbg.c:59:1: warning: alignment 1 of 'struct debug_block' is less than 32 [-Wpacked-not-aligned]
+>       59 | } __packed;
+>          | ^
+>>> arch/powerpc/platforms/ps3/gelic_udbg.c:240:6: error: redefinition of 'udbg_shutdown_ps3gelic'
+>      240 | void udbg_shutdown_ps3gelic(void)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~
+>    In file included from arch/powerpc/platforms/ps3/gelic_udbg.c:17:
+>    arch/powerpc/include/asm/ps3.h:520:20: note: previous definition of 'udbg_shutdown_ps3gelic' with type 'void(void)'
+>      520 | static inline void udbg_shutdown_ps3gelic(void) {}
+>          |                    ^~~~~~~~~~~~~~~~~~~~~~
+
+As pointed out by Arnd this is due to there being two symbols that
+control the gelic_udbg.c code.
+
+I don't see the need for PS3GELIC_UDBG, without PPC_EARLY_DEBUG_PS3GELIC
+it just causes gelic_udbg.c to be built, but never called.
+
+The diff below fixes the error AFAICS.
+
+I can just fold it in if you're happy with that Arnd.
+
+diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
+index ea4033abc07d..8c80b154e814 100644
+--- a/arch/powerpc/Kconfig.debug
++++ b/arch/powerpc/Kconfig.debug
+@@ -271,7 +271,6 @@ config PPC_EARLY_DEBUG_USBGECKO
+ config PPC_EARLY_DEBUG_PS3GELIC
+ 	bool "Early debugging through the PS3 Ethernet port"
+ 	depends on PPC_PS3
+-	select PS3GELIC_UDBG
+ 	help
+ 	  Select this to enable early debugging for the PlayStation3 via
+ 	  UDP broadcasts sent out through the Ethernet port.
+diff --git a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
+index a44869e5ea70..e9c1087dd42e 100644
+--- a/arch/powerpc/platforms/ps3/Kconfig
++++ b/arch/powerpc/platforms/ps3/Kconfig
+@@ -167,16 +167,4 @@ config PS3_LPM
+ 	  profiling support of the Cell processor with programs like
+ 	  perfmon2, then say Y or M, otherwise say N.
+ 
+-config PS3GELIC_UDBG
+-	bool "PS3 udbg output via UDP broadcasts on Ethernet"
+-	depends on PPC_PS3
+-	help
+-	  Enables udbg early debugging output by sending broadcast UDP
+-	  via the Ethernet port (UDP port number 18194).
+-
+-	  This driver uses a trivial implementation and is independent
+-	  from the main PS3 gelic network driver.
+-
+-	  If in doubt, say N here.
+-
+ endmenu
+diff --git a/arch/powerpc/platforms/ps3/Makefile b/arch/powerpc/platforms/ps3/Makefile
+index 86bf2967a8d4..bc79bb124d1e 100644
+--- a/arch/powerpc/platforms/ps3/Makefile
++++ b/arch/powerpc/platforms/ps3/Makefile
+@@ -3,7 +3,7 @@ obj-y += setup.o mm.o time.o hvcall.o htab.o repository.o
+ obj-y += interrupt.o exports.o os-area.o
+ obj-y += system-bus.o
+ 
+-obj-$(CONFIG_PS3GELIC_UDBG) += gelic_udbg.o
++obj-$(CONFIG_PPC_EARLY_DEBUG_PS3GELIC) += gelic_udbg.o
+ obj-$(CONFIG_SMP) += smp.o
+ obj-$(CONFIG_SPU_BASE) += spu.o
+ obj-y += device-init.o
+
+
+cheers
