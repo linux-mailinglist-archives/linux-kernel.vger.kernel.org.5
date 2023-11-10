@@ -2,53 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 492587E8123
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD207E7F69
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbjKJSYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:24:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        id S229668AbjKJRxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:53:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235618AbjKJSXT (ORCPT
+        with ESMTP id S229516AbjKJRwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:23:19 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B0E0A9EE0;
-        Fri, 10 Nov 2023 00:30:59 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73B9B106F;
-        Fri, 10 Nov 2023 00:31:43 -0800 (PST)
-Received: from [192.168.1.25] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 221603F6C4;
-        Fri, 10 Nov 2023 00:30:51 -0800 (PST)
-Message-ID: <00ce01bf-1612-46cd-926d-ac283cfddff9@arm.com>
-Date:   Fri, 10 Nov 2023 09:30:47 +0100
+        Fri, 10 Nov 2023 12:52:46 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF5C900D;
+        Fri, 10 Nov 2023 00:32:32 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7exJO018675;
+        Fri, 10 Nov 2023 08:32:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=25mtvY+NTGW9DCzRWztwAgArQMlHdGCwKfpiRg2qsK0=;
+ b=FwrtrwUR95NVAjgV+k2R1coe7//+z1by3KpeZ2ar/C6mL+a9qpqXnnmGLkicsvdpWo+i
+ 57SpGz7kl52hKEbeMj4N83SaeKDiq0OmblPkAFaO8JHRqIvnx0IIg3PY6djISSgVvr9Q
+ VJk+gcBi21KmJCdnZOYDGNcBWe9hj8653HA3JskDbSagkHTO6i3BRY41mIM830f38us4
+ NdkP0xozw92ZmEgZmGtWMIiTTedesHjZj8JTPfEL+CRpglbiLrZ7WdpUadQfc/TF74N7
+ YK7zcD1ECARn2y7bhBDNIm7fH3ffZsDrJBdY3HMPI4CXBJx1b4q/Zu9FjuxupNIeyf+M fw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8y39aevj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 08:32:21 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA8WKhs016764
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 08:32:20 GMT
+Received: from [10.217.216.47] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 00:32:13 -0800
+Message-ID: <d716fbbe-b681-af41-bfe7-85448cc47c7c@quicinc.com>
+Date:   Fri, 10 Nov 2023 14:02:10 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/7] consolidate and cleanup CPU capacity
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
-        lukasz.luba@arm.com, ionela.voinescu@arm.com,
-        beata.michalska@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
-        ajones@ventanamicro.com, lftan@kernel.org
-References: <20231109101438.1139696-1-vincent.guittot@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
+ switch video GDSC to HW mode
 Content-Language: en-US
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20231109101438.1139696-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-media@vger.kernel.org>
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
+ <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
+ <v4dnsawo7s74spccrsvjwmal73tqfq4aptiny25tyyp6ungxha@jlbywvcssqtl>
+From:   Jagadeesh Kona <quic_jkona@quicinc.com>
+In-Reply-To: <v4dnsawo7s74spccrsvjwmal73tqfq4aptiny25tyyp6ungxha@jlbywvcssqtl>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: uP73AjW-MR_JJ8huakF3mrlf6qgG7jJS
+X-Proofpoint-ORIG-GUID: uP73AjW-MR_JJ8huakF3mrlf6qgG7jJS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_04,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=947 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311100071
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,90 +97,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For a CPPC platform + EM/EAS (but without AMU):
-Tested-by: Pierre Gondois <pierre.gondois@arm.com>
 
-On 11/9/23 11:14, Vincent Guittot wrote:
-> This is the 1st part of consolidating how the max compute capacity is
-> used in the scheduler and how we calculate the frequency for a level of
-> utilization.
+
+On 11/4/2023 1:45 AM, Bjorn Andersson wrote:
+> On Wed, Nov 01, 2023 at 11:04:10AM +0200, Abel Vesa wrote:
+>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>
+>> The current HW_CTRL flag switches the video GDSC to HW control mode as
+>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
+>> give consumer drivers more control and switch the GDSC mode as and when
+>> required.
+>>
+>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
+>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>>
 > 
-> Fix some unconsistancy when computing frequency for an utilization. There
-> can be a mismatch between energy model and schedutil.
+> This states what the code currently does, and what the new code will do.
+> But I don't find that it adequately describes _why_ this is done.
 > 
-> Next step will be to make a difference between the original
-> max compute capacity of a CPU and what is currently available when
-> there is a capping applying forever (i.e. seconds or more).
 > 
-> Changes since v5:
-> - remove useless return in freq_inv_set_max_ratio()
-> - Add tags
+> In the current implementation, the hardware is might collapse the GDSC
+> anytime between gdsc_enable() and gdsc_disable(). By giving "drivers
+> more control" the time spent in this state is reduced to some fraction
+> of that span, which to me implies higher power consumption.
 > 
-> Changes since v4:
-> - Capitalize the verb in subject
-> - Remove usless parentheses in cppc_get_dmi_max_khz()
-> - Use freq_ref pattern everywhere
-> - Fix MHz / kHz units conversion for cppc_cpufreq
-> - Move default definition of arch_scale_freq_ref() in
->    include/linux/sched/topology.h beside arch_scale_cpu_capacity
->    which faces similar default declaration behavior. This location covers
->    all cases with arch and CONFIG_* which was not the case with previous
->    attempts.
+> Under the assumption that we don't want to consume more power without
+> reason, I'm forced to guess that there might be some scenarios that we
+> want this feature to keep the GDSC non-collapsed against the indication
+> of the hardware - to avoid some instability somewhere, perhaps?
 > 
-> Changes since v3:
-> - Split patch 5 cpufreq/cppc
-> - Fix topology_init_cpu_capacity_cppc()
-> - Fix init if AMU ratio
-> - Added some tags
+
+Thanks Bjorn for your review. Sure, will update commit text with details 
+in next series.
+
+Normally, consumers will enable the GDSC and then the required clocks. 
+If GDSC is moved to HW mode in gdsc_enable() itself, the subsequent 
+clocks enablement that are dependent on GDSC might fail since GDSC could 
+be turned off by HW. The consumers can still switch the GDSC to HW mode 
+with new API right after the clocks are enabled and the control will be 
+taken back to SW mode just before disabling the GDSC, so even with the 
+newer implementation, HW can collapse the GDSC anytime for most of the 
+duration between gdsc_enable() and gdsc_disable(). This API adds more 
+flexibility for consumer drivers to control the GDSC mode as per their
+requirements.
+
+Thanks,
+Jagadeesh
+
+> Regards,
+> Bjorn
 > 
-> Changes since v2:
-> - Remove the 1st patch which has been queued in tip
-> - Rework how to initialize the reference frequency for cppc_cpufreq and
->    change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
-> - Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
->    of the AMU ratio to be done when intializing cpu capacity and
->    capacity_ref_freq
-> - Added some tags
-> 
-> Changes since v1:
-> - Fix typos
-> - Added changes in cpufreq to use arch_scale_freq_ref() when calling
->    arch_set_freq_scale (patch 3).
-> - arch_scale_freq_ref() is always defined and returns 0 (as proposed
->    by Ionela) when not defined by the arch. This simplifies the code with
->    the addition of patch 3.
-> - Simplify Energy Model which always uses arch_scale_freq_ref(). The
->    latter returns 0 when not defined by arch instead of last item of the
->    perf domain. This is not a problem because the function is only defined
->    for compilation purpose in this case and we don't care about the
->    returned value. (patch 5)
-> - Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
-> - Added reviewed tag for patch 1 which got a minor change but not for
->    others as I did some changes which could make previous reviewed tag
->    no more relevant.
-> 
-> Vincent Guittot (7):
->    topology: Add a new arch_scale_freq_reference
->    cpufreq: Use the fixed and coherent frequency for scaling capacity
->    cpufreq/schedutil: Use a fixed reference frequency
->    energy_model: Use a fixed reference frequency
->    cpufreq/cppc: Move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
->    cpufreq/cppc: Set the frequency used for computing the capacity
->    arm64/amu: Use capacity_ref_freq to set AMU ratio
-> 
->   arch/arm/include/asm/topology.h   |   1 +
->   arch/arm64/include/asm/topology.h |   1 +
->   arch/arm64/kernel/topology.c      |  26 +++---
->   arch/riscv/include/asm/topology.h |   1 +
->   drivers/acpi/cppc_acpi.c          | 104 ++++++++++++++++++++++
->   drivers/base/arch_topology.c      |  56 ++++++++----
->   drivers/cpufreq/cppc_cpufreq.c    | 139 ++++--------------------------
->   drivers/cpufreq/cpufreq.c         |   4 +-
->   include/acpi/cppc_acpi.h          |   2 +
->   include/linux/arch_topology.h     |   8 ++
->   include/linux/cpufreq.h           |   1 +
->   include/linux/energy_model.h      |   6 +-
->   include/linux/sched/topology.h    |   8 ++
->   kernel/sched/cpufreq_schedutil.c  |  26 +++++-
->   14 files changed, 224 insertions(+), 159 deletions(-)
-> 
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>> ---
+>>   drivers/clk/qcom/videocc-sc7180.c | 2 +-
+>>   drivers/clk/qcom/videocc-sc7280.c | 2 +-
+>>   drivers/clk/qcom/videocc-sdm845.c | 4 ++--
+>>   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
+>>   drivers/clk/qcom/videocc-sm8550.c | 4 ++--
+>>   5 files changed, 8 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/clk/qcom/videocc-sc7180.c b/drivers/clk/qcom/videocc-sc7180.c
+>> index 5b9b54f616b8..51439f7ba70c 100644
+>> --- a/drivers/clk/qcom/videocc-sc7180.c
+>> +++ b/drivers/clk/qcom/videocc-sc7180.c
+>> @@ -166,7 +166,7 @@ static struct gdsc vcodec0_gdsc = {
+>>   	.pd = {
+>>   		.name = "vcodec0_gdsc",
+>>   	},
+>> -	.flags = HW_CTRL,
+>> +	.flags = HW_CTRL_TRIGGER,
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   };
+>>   
+>> diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc-sc7280.c
+>> index 615695d82319..3d07b1e95986 100644
+>> --- a/drivers/clk/qcom/videocc-sc7280.c
+>> +++ b/drivers/clk/qcom/videocc-sc7280.c
+>> @@ -236,7 +236,7 @@ static struct gdsc mvs0_gdsc = {
+>>   		.name = "mvs0_gdsc",
+>>   	},
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>> -	.flags = HW_CTRL | RETAIN_FF_ENABLE,
+>> +	.flags = HW_CTRL_TRIGGER | RETAIN_FF_ENABLE,
+>>   };
+>>   
+>>   static struct gdsc mvsc_gdsc = {
+>> diff --git a/drivers/clk/qcom/videocc-sdm845.c b/drivers/clk/qcom/videocc-sdm845.c
+>> index c77a4dd5d39c..dad011c48973 100644
+>> --- a/drivers/clk/qcom/videocc-sdm845.c
+>> +++ b/drivers/clk/qcom/videocc-sdm845.c
+>> @@ -260,7 +260,7 @@ static struct gdsc vcodec0_gdsc = {
+>>   	},
+>>   	.cxcs = (unsigned int []){ 0x890, 0x930 },
+>>   	.cxc_count = 2,
+>> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
+>> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   };
+>>   
+>> @@ -271,7 +271,7 @@ static struct gdsc vcodec1_gdsc = {
+>>   	},
+>>   	.cxcs = (unsigned int []){ 0x8d0, 0x950 },
+>>   	.cxc_count = 2,
+>> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
+>> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   };
+>>   
+>> diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
+>> index ad46c4014a40..c1b73d852f1c 100644
+>> --- a/drivers/clk/qcom/videocc-sm8250.c
+>> +++ b/drivers/clk/qcom/videocc-sm8250.c
+>> @@ -293,7 +293,7 @@ static struct gdsc mvs0_gdsc = {
+>>   	.pd = {
+>>   		.name = "mvs0_gdsc",
+>>   	},
+>> -	.flags = HW_CTRL,
+>> +	.flags = HW_CTRL_TRIGGER,
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   };
+>>   
+>> @@ -302,7 +302,7 @@ static struct gdsc mvs1_gdsc = {
+>>   	.pd = {
+>>   		.name = "mvs1_gdsc",
+>>   	},
+>> -	.flags = HW_CTRL,
+>> +	.flags = HW_CTRL_TRIGGER,
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   };
+>>   
+>> diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
+>> index f3c9dfaee968..404c6600edae 100644
+>> --- a/drivers/clk/qcom/videocc-sm8550.c
+>> +++ b/drivers/clk/qcom/videocc-sm8550.c
+>> @@ -322,7 +322,7 @@ static struct gdsc video_cc_mvs0_gdsc = {
+>>   	},
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   	.parent = &video_cc_mvs0c_gdsc.pd,
+>> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
+>> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
+>>   };
+>>   
+>>   static struct gdsc video_cc_mvs1c_gdsc = {
+>> @@ -347,7 +347,7 @@ static struct gdsc video_cc_mvs1_gdsc = {
+>>   	},
+>>   	.pwrsts = PWRSTS_OFF_ON,
+>>   	.parent = &video_cc_mvs1c_gdsc.pd,
+>> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
+>> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
+>>   };
+>>   
+>>   static struct clk_regmap *video_cc_sm8550_clocks[] = {
+>>
+>> -- 
+>> 2.34.1
+>>
