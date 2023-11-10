@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EB67E8510
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD017E8515
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjKJV3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 16:29:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38262 "EHLO
+        id S229810AbjKJVcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 16:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKJV3p (ORCPT
+        with ESMTP id S229436AbjKJVcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 16:29:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0BC420B;
-        Fri, 10 Nov 2023 13:29:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699651781; x=1731187781;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NA23B0Hz907EL3uQodBGpP4znG68sVHIJYpbYAN5Xys=;
-  b=MoyDEIGyPVaHxhR2ucYoyf2O9JFpfE9xhTZHf+tlT9S7f9Rf3f+jP7AA
-   bcMcXMqE30JIem5Hx7lBHJpoZiaoEpw8NbxFav1oWHJnYx6G0ZV1E3vUR
-   tRAFf/m8IfBrVag5ayyQaY6LkQB9aaET1udqDFOj7ovS6hZ36dbr/0VaE
-   sllcIny1Xt2i2pl/bG7sCNBJDSLICaETUr4z3KwHk3kAALn/LNOOjG+hq
-   ZU3l05IpmnWwOskWUGDTihOL4Zpd1yRzhwHTuVuZzISCqzDkbseJISLeJ
-   xio2+atwoPEkPzmR+YOV4Xo2VQHpo0TvUY/tCz7krvqtvoqApOLWhpJ3b
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="476460859"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="476460859"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 13:29:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="881059314"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="881059314"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Nov 2023 13:29:38 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1Z4K-0009v0-1j;
-        Fri, 10 Nov 2023 21:29:36 +0000
-Date:   Sat, 11 Nov 2023 05:29:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v7 2/2] rtc: max31335: add driver support
-Message-ID: <202311110508.MdqXcQsW-lkp@intel.com>
-References: <20231109101449.8347-2-antoniu.miclaus@analog.com>
+        Fri, 10 Nov 2023 16:32:06 -0500
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683DC4205;
+        Fri, 10 Nov 2023 13:32:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699651924; x=1731187924;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yqcEiMovyEdWADV3nVvr7tGxPcK5AkK82nsGuLxcaeM=;
+  b=gy55nQLLiHNCjYJO8oZ2fpeUwT+ymQR5EjJbs6D6sden9BzAn2vPvYyq
+   BN/Pw1f/6jxg5gGvYJHQLnZXgNnJXOH0ZHl41UdmEFkEdLigNORAlYp2w
+   UpqBIx/F3qIh9ptHCgRahEgrvejFYCdvDEci3+yuJaP1w0mh0fAzNDW/Q
+   s=;
+X-IronPort-AV: E=Sophos;i="6.03,293,1694736000"; 
+   d="scan'208";a="367405578"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 21:32:00 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com (Postfix) with ESMTPS id 452D2A0D1B;
+        Fri, 10 Nov 2023 21:31:59 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:42729]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.49.85:2525] with esmtp (Farcaster)
+ id cc3de777-ea4a-4c4d-95f7-1c856f0df8d4; Fri, 10 Nov 2023 21:31:58 +0000 (UTC)
+X-Farcaster-Flow-ID: cc3de777-ea4a-4c4d-95f7-1c856f0df8d4
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 21:31:58 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.170.8) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
+ Fri, 10 Nov 2023 21:31:55 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <bragathemanick0908@gmail.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+        <ralf@linux-mips.org>,
+        <syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com>,
+        <kuniyu@amazon.com>
+Subject: Re: [PATCH] net: memory leak in nr_rx_frame
+Date:   Fri, 10 Nov 2023 13:31:47 -0800
+Message-ID: <20231110213147.68823-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231110173632.2511-1-bragathemanick0908@gmail.com>
+References: <20231110173632.2511-1-bragathemanick0908@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109101449.8347-2-antoniu.miclaus@analog.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.8]
+X-ClientProxiedBy: EX19D036UWC001.ant.amazon.com (10.13.139.233) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Antoniu,
+From: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Date: Fri, 10 Nov 2023 23:06:32 +0530
+> The condition (make = nr_make_new(sk)) == NULL suggests
+> that nr_make_new allocates memory and returns a pointer.
+> If this allocation fails (returns NULL), it indicates a
+> potential memory leak.
 
-kernel test robot noticed the following build warnings:
+If make is NULL, nothing is allocated and leaked here, and
+your code will never be executed as "if (make)" is always false.
 
-[auto build test WARNING on abelloni/rtc-next]
-[also build test WARNING on linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Antoniu-Miclaus/rtc-max31335-add-driver-support/20231109-231755
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-patch link:    https://lore.kernel.org/r/20231109101449.8347-2-antoniu.miclaus%40analog.com
-patch subject: [PATCH v7 2/2] rtc: max31335: add driver support
-config: x86_64-randconfig-123-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110508.MdqXcQsW-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110508.MdqXcQsW-lkp@intel.com/reproduce)
+> 
+> Added sock_put() for make which can potentially solve
+> this issue
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311110508.MdqXcQsW-lkp@intel.com/
+Sounds like the patch is not tested with kmemleak.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/rtc/rtc-max31335.c:504:22: sparse: sparse: symbol 'max31335_clk_init' was not declared. Should it be static?
->> drivers/rtc/rtc-max31335.c:527:21: sparse: sparse: symbol 'max31335_nvmem_cfg' was not declared. Should it be static?
 
-vim +/max31335_clk_init +504 drivers/rtc/rtc-max31335.c
+> 
+> Reported-by: syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> ---
+>  net/netrom/af_netrom.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
+> index 0eed00184adf..7d7cda4ae300 100644
+> --- a/net/netrom/af_netrom.c
+> +++ b/net/netrom/af_netrom.c
+> @@ -970,6 +970,8 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
+>  		nr_transmit_refusal(skb, 0);
+>  		if (sk)
+>  			sock_put(sk);
+> +		if (make)
+> +			sock_put(make);
 
-   503	
- > 504	struct clk_init_data max31335_clk_init = {
-   505		.name = "max31335-clkout",
-   506		.ops = &max31335_clkout_ops,
-   507	};
-   508	
-   509	static int max31335_nvmem_reg_read(void *priv, unsigned int offset,
-   510					   void *val, size_t bytes)
-   511	{
-   512		struct max31335_data *max31335 = priv;
-   513		unsigned int reg = MAX31335_TS0_SEC_1_128 + offset;
-   514	
-   515		return regmap_bulk_read(max31335->regmap, reg, val, bytes);
-   516	}
-   517	
-   518	static int max31335_nvmem_reg_write(void *priv, unsigned int offset,
-   519					    void *val, size_t bytes)
-   520	{
-   521		struct max31335_data *max31335 = priv;
-   522		unsigned int reg = MAX31335_TS0_SEC_1_128 + offset;
-   523	
-   524		return regmap_bulk_write(max31335->regmap, reg, val, bytes);
-   525	}
-   526	
- > 527	struct nvmem_config max31335_nvmem_cfg = {
-   528		.reg_read = max31335_nvmem_reg_read,
-   529		.reg_write = max31335_nvmem_reg_write,
-   530		.word_size = 8,
-   531		.size = MAX31335_RAM_SIZE,
-   532	};
-   533	
+Also, make could be uninitialised here if the first two
+condition is true.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+   if (sk == NULL || sk_acceptq_is_full(sk) ||
+
+
+>  		return 0;
+>  	}
+>  
+> -- 
+> 2.34.1
