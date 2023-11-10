@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B64E7E8079
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4D27E8292
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344783AbjKJSLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:11:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S1346379AbjKJTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345501AbjKJSLK (ORCPT
+        with ESMTP id S1346294AbjKJTYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:11:10 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF7D5BB0
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:16:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1699597013;
-        bh=k0KT7Oc2LV3aJGmLjsBXdbW4OHO2DCMqzsHH5BrfELg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=JSm2Pp03lkuqDWdRwEMo9S5q57PZwl9vN6GV6MhXcLtNfKtXhuJMDIdsmnCHWCF78
-         RFlV6VS2qsWX/9UX747o1ZHNpIUIbS86oBi78Oe9z+OdCrQ2bBQTm0Uso8BnbozgQZ
-         pBBOKo5MR3VQqVdia5hsizzklFqwulN0vGFOiKUW+U6kcI6vyEdDw38PEwIkXnZvxn
-         toxVAS0dOfanZFErxdXqAcAnWbRBhEk4y4+a+HVUi4kUjTdhOJkyaTOvz24CDHWwYp
-         PEzVLqlQHZt8/3hfp+1dI7qe4Vzi0LJclv+JXZGTGPKNlxY/pauVX/y10bUy8J1o8W
-         bWNO6Bdw8kYzA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRT9w6gPLz4x1v;
-        Fri, 10 Nov 2023 17:16:52 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] powerpc: Fix signature of pfn_to_kaddr()
-In-Reply-To: <CACRpkdbL1mfcAz9sPn89UGSQ6tb=jF6nRYAwp9Qz8zLXLLU_UA@mail.gmail.com>
-References: <20231106-virt-to-pfn-fix-ppc-v1-1-93197a7ccab4@linaro.org>
- <87ttpyw1ez.fsf@mail.lhotse>
- <CACRpkdbL1mfcAz9sPn89UGSQ6tb=jF6nRYAwp9Qz8zLXLLU_UA@mail.gmail.com>
-Date:   Fri, 10 Nov 2023 17:16:52 +1100
-Message-ID: <87bkc28757.fsf@mail.lhotse>
+        Fri, 10 Nov 2023 14:24:14 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AE065B4
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:20:21 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5b62a669d61so1551190a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:20:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699597221; x=1700202021;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M6ZTIW0nJvg/Pvwl8BUP22grVmSeKmDG9VljJuX/gy0=;
+        b=hcZq/V16ieFwVr2gVq/Nl2ONnQa8XgcsatALwxRJC5TYMLTljjyhUmZE/ZDcvGYXyz
+         ee7zPMXE9dc5pTsLtGl8er3Ut9Sll6LeI+Z7/MhPYrAa/Q2D9wzvrn/Wl7KIuBEhDmyO
+         AQXrHfRdRmCCeDaUKc7zmLDR28hm4iSY6SyU8TEv1k92rzIbcnV8e6DIq2UIoR4dDs4z
+         LPV103+GYR+BYs1bRSVf7SgC5TrCsejjUAUTd+fBgkeMIfEFqDXvFhtR9dZHffAjOCA1
+         2eZdC6hWtOPOjIDBItkQCJUEeaFFvRa1wJxdHqvBRObKGwSz447tU6+JbO8LYNLnep2S
+         iodg==
+X-Gm-Message-State: AOJu0YzMR6Et3qdNSpCP5ngqhKFsaboMyP5gbfocigvWtsy6VmCmyLIx
+        dXU+ZBT596NHqXYL3UFMubKBt1AzUPhxahrv91k7OPJ7v5/h
+X-Google-Smtp-Source: AGHT+IFNbEp9pq1C80XpZ9STEIpqibJ528nZPKEBt7T2pboMUs4KZ80hxHt3MunbPNbWFVi7h0IufPBXarUAwKmIwqGRUCYmIaDB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6a02:590:b0:5bd:d8a5:4a89 with SMTP id
+ by16-20020a056a02059000b005bdd8a54a89mr1242795pgb.7.1699597220960; Thu, 09
+ Nov 2023 22:20:20 -0800 (PST)
+Date:   Thu, 09 Nov 2023 22:20:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009df08a0609c6500d@google.com>
+Subject: [syzbot] Monthly nfc report (Nov 2023)
+From:   syzbot <syzbot+listb191c32316a03efee658@syzkaller.appspotmail.com>
+To:     krzysztof.kozlowski@linaro.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,56 +54,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Walleij <linus.walleij@linaro.org> writes:
-> On Tue, Nov 7, 2023 at 6:57=E2=80=AFAM Michael Ellerman <mpe@ellerman.id.=
-au> wrote:
->
->> I'm struggling to connect the removal of const with those bug reports.
->> It looks like all those warnings are about 0xc000000000000000 being
->> outside the range of unsigned long when building 32-bit.
->
-> Aha right. I wonder what actually causes that.
+Hello nfc maintainers/developers,
 
-It is the 32-bit VDSO being built:
+This is a 31-day syzbot report for the nfc subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/nfc
 
-      VDSO32C arch/powerpc/kernel/vdso/vgettimeofday-32.o
-    In file included from <built-in>:4:
-    In file included from /home/michael/linux/lib/vdso/gettimeofday.c:5:
-    In file included from ../include/vdso/datapage.h:137:
-    In file included from ../arch/powerpc/include/asm/vdso/gettimeofday.h:7:
-    ../arch/powerpc/include/asm/page.h:230:9: warning: result of comparison=
- of constant 13835058055282163712 with expression of type 'unsigned long' i=
-s always true [-Wtautological-constant-out-of-range-compare]
-      230 |         return __pa(kaddr) >> PAGE_SHIFT;
-          |                ^~~~~~~~~~~
-    ../arch/powerpc/include/asm/page.h:217:37: note: expanded from macro '_=
-_pa'
-      217 |         VIRTUAL_WARN_ON((unsigned long)(x) < PAGE_OFFSET);     =
-         \
-          |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-    ../arch/powerpc/include/asm/page.h:202:73: note: expanded from macro 'V=
-IRTUAL_WARN_ON'
-      202 | #define VIRTUAL_WARN_ON(x)      WARN_ON(IS_ENABLED(CONFIG_DEBUG=
-_VIRTUAL) && (x))
-          |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~^~~
-    ../arch/powerpc/include/asm/bug.h:88:25: note: expanded from macro 'WAR=
-N_ON'
-       88 |         int __ret_warn_on =3D !!(x);                           =
-   \
-          |                                ^
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 18 have been fixed so far.
 
+Some of the still happening issues:
 
-Which is a bit of a frankenstein, because we're building 32-bit VDSO
-code for a 64-bit kernel, and using some of the kernel headers for that.
+Ref Crashes Repro Title
+<1> 680     Yes   INFO: task hung in rfkill_global_led_trigger_worker (2)
+                  https://syzkaller.appspot.com/bug?extid=2e39bc6569d281acbcfb
+<2> 3       Yes   memory leak in skb_copy (2)
+                  https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
+<3> 1       Yes   memory leak in virtual_ncidev_write (2)
+                  https://syzkaller.appspot.com/bug?extid=6b7c68d9c21e4ee4251b
 
-So the warning is correct, we are doing a tautological comparison.
-Except that we're not actually using that code in the VDSO, it's just
-included in the VDSO because it needs PAGE_SHIFT.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Anyway none of that is your fault, you just had the misfortune of
-touching page.h :)
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
-I think I see a way to clean it up. Will send a patch.
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
 
-cheers
+You may send multiple commands in a single email message.
