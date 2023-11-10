@@ -2,311 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6AB7E83FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C037E7F9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346080AbjKJUbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S235410AbjKJR5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjKJUb2 (ORCPT
+        with ESMTP id S230153AbjKJRza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:31:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478593C6D4;
-        Fri, 10 Nov 2023 08:12:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699632777; x=1731168777;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wUfYwyCiDGF76qwBnpKb0ZJXikuRl8lLIINyKn84nMo=;
-  b=DFopqBSurNJsBRLpcp3Em9tDqqrYU0tLLMhe1scUwnBc2IBaGmxqE0k4
-   /1WDLmOeXq9/wdHsVvcEM2OKY9nkThFBNA3d6f3urFXOyq3iA3FQdZ82d
-   Ly47Bb/h4t3r4tkah/FtkVfQUv4kNpg/mg2DK7n5EoDNeI8JIwsGfW7tY
-   CeFvEdrkGVpjYzH0KQtlzUu5Qz0O6nJwW3dJk+2J6SYEdumWW4vx6rNJt
-   YiJsI4RrFFZ1kZz1r/Q8kySAAyY83gf7l9nMYNAqKcomyvbdFXiFq2U/W
-   nI4nLzItAcjGViDdFICBqo5fJbaEu5cJ2AUowQQsGBhGr7f9F88AKJJad
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="369533668"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="369533668"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 08:12:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="713671678"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="713671678"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 10 Nov 2023 08:12:51 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1U7l-0009iU-0p;
-        Fri, 10 Nov 2023 16:12:49 +0000
-Date:   Sat, 11 Nov 2023 00:12:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pratyush Brahma <quic_pbrahma@quicinc.com>,
-        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-        Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        xe-linux-external@cisco.com, Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] CMDLINE: add generic builtin command line
-Message-ID: <202311102331.GllFaI9t-lkp@intel.com>
-References: <20231110013817.2378507-2-danielwa@cisco.com>
+        Fri, 10 Nov 2023 12:55:30 -0500
+Received: from sequoia-grove.ad.secure-endpoints.com (sequoia-grove.ad.secure-endpoints.com [IPv6:2001:470:1f07:f77:70f5:c082:a96a:5685])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DC53BF36
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:12:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/relaxed;
+        d=auristor.com; s=MDaemon; r=y; t=1699632742; x=1700237542;
+        i=jaltman@auristor.com; q=dns/txt; h=Message-ID:Date:
+        MIME-Version:User-Agent:Subject:Content-Language:From:To:Cc:
+        References:Organization:In-Reply-To:Content-Type; bh=s/S2XJeP5uA
+        OK/Q5ok6yMZjpVOTgqNky4tFYkE1+jgc=; b=q8IAZCGSOUEzVCspxngZnT04hI8
+        f1Yaf7Ik9M3D/XxLMVjK3vQb1Z7j64WRnuVmfFCX2HyJbm2nn42H2VQo7ElrWSsU
+        nXaugTzlnupKy6fneV77Kibw9TeQSq7odyCzTS20mJyfW9IoUe4M0Rj8z+nYLo3v
+        IHoUu4X7QcF2BT5E=
+X-MDAV-Result: clean
+X-MDAV-Processed: sequoia-grove.ad.secure-endpoints.com, Fri, 10 Nov 2023 11:12:22 -0500
+Received: from [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4] by auristor.com (IPv6:2001:470:1f07:f77:28d9:68fb:855d:c2a5) (MDaemon PRO v23.5.1c) 
+        with ESMTPSA id md5001003742809.msg; Fri, 10 Nov 2023 11:12:21 -0500
+X-Spam-Processed: sequoia-grove.ad.secure-endpoints.com, Fri, 10 Nov 2023 11:12:21 -0500
+        (not processed: message from trusted or authenticated source)
+X-MDRemoteIP: 2603:7000:73d:b00:d023:ff5f:54c2:9ec4
+X-MDHelo: [IPV6:2603:7000:73d:b00:d023:ff5f:54c2:9ec4]
+X-MDArrival-Date: Fri, 10 Nov 2023 11:12:21 -0500
+X-MDOrigin-Country: US, NA
+X-Authenticated-Sender: jaltman@auristor.com
+X-Return-Path: prvs=1678d0c34b=jaltman@auristor.com
+X-Envelope-From: jaltman@auristor.com
+X-MDaemon-Deliver-To: linux-kernel@vger.kernel.org
+Message-ID: <65411680-edf9-4670-be49-b73cc845c1cf@auristor.com>
+Date:   Fri, 10 Nov 2023 11:12:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110013817.2378507-2-danielwa@cisco.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/41] rxrpc: Fix RTT determination to use PING ACKs as a
+ source
+Content-Language: en-US
+From:   Jeffrey E Altman <jaltman@auristor.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <6fadc6aa-4078-4f12-a4c7-235267d6e0b1@auristor.com>
+ <20231109154004.3317227-1-dhowells@redhat.com>
+ <20231109154004.3317227-2-dhowells@redhat.com>
+ <3327953.1699567608@warthog.procyon.org.uk>
+ <c19af528-1aad-412c-8362-275c791dd76f@auristor.com>
+Organization: AuriStor, Inc.
+In-Reply-To: <c19af528-1aad-412c-8362-275c791dd76f@auristor.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms020704020002070703040701"
+X-MDCFSigsAdded: auristor.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+This is a cryptographically signed message in MIME format.
 
-kernel test robot noticed the following build errors:
+--------------ms020704020002070703040701
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-[auto build test ERROR on v6.6]
-[cannot apply to arm64/for-next/core efi/next tip/x86/core robh/for-next linus/master next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 11/10/2023 9:15 AM, Jeffrey E Altman wrote:
+>
+>> I'm not sure how expanding it internally to 64-bits actually helps 
+>> since the
+>> upper 32 bits is not visible to the peer.
+> rxrpc_complete_rtt_probe contains the following logic that relies on 
+> after() being able to detect
+> a serial number wrap.
+>
+>         /* If a later serial is being acked, then mark this slot as
+>          * being available.
+>          */
+>
+>         if (after(acked_serial, orig_serial)) {
+>             trace_rxrpc_rtt_rx(call, rxrpc_rtt_rx_obsolete, i,
+>                        orig_serial, acked_serial, 0, 0);
+>             clear_bit(i + RXRPC_CALL_RTT_PEND_SHIFT, &call->rtt_avail);
+>             smp_wmb();
+>             set_bit(i, &call->rtt_avail);
+>         }
+>
+> Otherwise, acked_serial = 0x01 will be considered smaller than 
+> orig_serial = 0xfffffffe and the slot will not be marked available.
+>
+> I will note that there is a similar problem with rxrpc_seq_t values 
+> which are u32 on the wire but which will wrap for calls that transmit 
+> more than approximately 5.5TB of data. Calls of this size are unlikely 
+> for a cache manager but are common for any service transmitting volume 
+> dumps. 
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Walker/CMDLINE-add-generic-builtin-command-line/20231110-094423
-base:   v6.6
-patch link:    https://lore.kernel.org/r/20231110013817.2378507-2-danielwa%40cisco.com
-patch subject: [PATCH 1/8] CMDLINE: add generic builtin command line
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231110/202311102331.GllFaI9t-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311102331.GllFaI9t-lkp@intel.com/reproduce)
+I misread the definition of after() which is
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311102331.GllFaI9t-lkp@intel.com/
+     static inline bool after(u32 seq1, u32 seq2)
+     {
+             return (s32)(seq1 - seq2) > 0;
+     }
 
-All error/warnings (new ones prefixed by >>):
+This is sufficient to detect the serial number and sequence number wrapping.
 
-   In file included from include/linux/kernel.h:15,
-                    from include/linux/interrupt.h:6,
-                    from arch/sparc/include/asm/setup.h:8,
-                    from lib/generic_cmdline.S:5:
->> include/linux/align.h:8: warning: "ALIGN" redefined
-       8 | #define ALIGN(x, a)             __ALIGN_KERNEL((x), (a))
-         | 
-   In file included from include/linux/export.h:6,
-                    from lib/generic_cmdline.S:2:
-   include/linux/linkage.h:103: note: this is the location of the previous definition
-     103 | #define ALIGN __ALIGN
-         | 
-   In file included from include/linux/kcsan-checks.h:13,
-                    from include/linux/instrumented.h:12,
-                    from include/linux/atomic/atomic-instrumented.h:17,
-                    from include/linux/atomic.h:82,
-                    from include/asm-generic/bitops/lock.h:5,
-                    from arch/sparc/include/asm/bitops_64.h:52,
-                    from arch/sparc/include/asm/bitops.h:5,
-                    from include/linux/bitops.h:68,
-                    from include/linux/kernel.h:22:
->> include/linux/compiler_attributes.h:55: warning: "__always_inline" redefined
-      55 | #define __always_inline                 inline __attribute__((__always_inline__))
-         | 
-   In file included from include/linux/stddef.h:5,
-                    from include/linux/kernel.h:18:
-   include/uapi/linux/stddef.h:8: note: this is the location of the previous definition
-       8 | #define __always_inline inline
-         | 
->> include/linux/compiler_attributes.h:91:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-      91 | #if __has_attribute(__copy__)
-         |     ^~~~~~~~~~~~~~~
->> include/linux/compiler_attributes.h:91:20: error: missing binary operator before token "("
-      91 | #if __has_attribute(__copy__)
-         |                    ^
-   include/linux/compiler_attributes.h:104:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     104 | #if __has_attribute(__counted_by__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:104:20: error: missing binary operator before token "("
-     104 | #if __has_attribute(__counted_by__)
-         |                    ^
->> include/linux/compiler_attributes.h:107: warning: "__counted_by" redefined
-     107 | # define __counted_by(member)
-         | 
-   include/uapi/linux/stddef.h:55: note: this is the location of the previous definition
-      55 | #define __counted_by(m)
-         | 
-   include/linux/compiler_attributes.h:116:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     116 | #if __has_attribute(__diagnose_as_builtin__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:116:20: error: missing binary operator before token "("
-     116 | #if __has_attribute(__diagnose_as_builtin__)
-         |                    ^
-   include/linux/compiler_attributes.h:139:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     139 | #if __has_attribute(__designated_init__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:139:20: error: missing binary operator before token "("
-     139 | #if __has_attribute(__designated_init__)
-         |                    ^
-   include/linux/compiler_attributes.h:150:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     150 | #if __has_attribute(__error__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:150:20: error: missing binary operator before token "("
-     150 | #if __has_attribute(__error__)
-         |                    ^
-   include/linux/compiler_attributes.h:161:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     161 | #if __has_attribute(__externally_visible__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:161:20: error: missing binary operator before token "("
-     161 | #if __has_attribute(__externally_visible__)
-         |                    ^
-   include/linux/compiler_attributes.h:198:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     198 | #if __has_attribute(__no_caller_saved_registers__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:198:20: error: missing binary operator before token "("
-     198 | #if __has_attribute(__no_caller_saved_registers__)
-         |                    ^
-   include/linux/compiler_attributes.h:209:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     209 | #if __has_attribute(__noclone__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:209:20: error: missing binary operator before token "("
-     209 | #if __has_attribute(__noclone__)
-         |                    ^
-   include/linux/compiler_attributes.h:226:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     226 | #if __has_attribute(__fallthrough__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:226:20: error: missing binary operator before token "("
-     226 | #if __has_attribute(__fallthrough__)
-         |                    ^
-   include/linux/compiler_attributes.h:252:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     252 | #if __has_attribute(__nonstring__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:252:20: error: missing binary operator before token "("
-     252 | #if __has_attribute(__nonstring__)
-         |                    ^
-   include/linux/compiler_attributes.h:264:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     264 | #if __has_attribute(__no_profile_instrument_function__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:264:20: error: missing binary operator before token "("
-     264 | #if __has_attribute(__no_profile_instrument_function__)
-         |                    ^
-   include/linux/compiler_attributes.h:283:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     283 | #if __has_attribute(__no_stack_protector__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:283:20: error: missing binary operator before token "("
-     283 | #if __has_attribute(__no_stack_protector__)
-         |                    ^
-   include/linux/compiler_attributes.h:294:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     294 | #if __has_attribute(__overloadable__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:294:20: error: missing binary operator before token "("
-     294 | #if __has_attribute(__overloadable__)
-         |                    ^
-   include/linux/compiler_attributes.h:313:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     313 | #if __has_attribute(__pass_dynamic_object_size__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:313:20: error: missing binary operator before token "("
-     313 | #if __has_attribute(__pass_dynamic_object_size__)
-         |                    ^
-   include/linux/compiler_attributes.h:318:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     318 | #if __has_attribute(__pass_object_size__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:318:20: error: missing binary operator before token "("
-     318 | #if __has_attribute(__pass_object_size__)
-         |                    ^
-   include/linux/compiler_attributes.h:363:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     363 | #if __has_attribute(__warning__)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:363:20: error: missing binary operator before token "("
-     363 | #if __has_attribute(__warning__)
-         |                    ^
-   include/linux/compiler_attributes.h:380:5: warning: "__has_attribute" is not defined, evaluates to 0 [-Wundef]
-     380 | #if __has_attribute(disable_sanitizer_instrumentation)
-         |     ^~~~~~~~~~~~~~~
-   include/linux/compiler_attributes.h:380:20: error: missing binary operator before token "("
-     380 | #if __has_attribute(disable_sanitizer_instrumentation)
-         |                    ^
+What it doesn't provide is a method for rxrpc tracing and /proc file to 
+report on the total number of packets that have been sent or received on 
+a call or connection which might or might not be important depending 
+upon the use case.
+
+Jeffrey Altman
 
 
-vim +91 include/linux/compiler_attributes.h
+--------------ms020704020002070703040701
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-86cffecdeaa278 Kees Cook      2021-11-05   45  
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   46  /*
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   47   * Note: users of __always_inline currently do not write "inline" themselves,
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   48   * which seems to be required by gcc to apply the attribute according
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   49   * to its docs (and also "warning: always_inline function might not be
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   50   * inlinable [-Wattributes]" is emitted).
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   51   *
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   52   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-always_005finline-function-attribute
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   53   * clang: mentioned
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   54   */
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30  @55  #define __always_inline                 inline __attribute__((__always_inline__))
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   56  
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   57  /*
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   58   * The second argument is optional (default 0), so we use a variadic macro
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   59   * to make the shorthand.
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   60   *
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   61   * Beware: Do not apply this to functions which may return
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   62   * ERR_PTRs. Also, it is probably unwise to apply it to functions
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   63   * returning extra information in the low bits (but in that case the
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   64   * compiler should see some alignment anyway, when the return value is
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   65   * massaged by 'flags = ptr & 3; ptr &= ~3;').
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   66   *
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   67   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-assume_005faligned-function-attribute
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   68   * clang: https://clang.llvm.org/docs/AttributeReference.html#assume-aligned
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   69   */
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   70  #define __assume_aligned(a, ...)        __attribute__((__assume_aligned__(a, ## __VA_ARGS__)))
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   71  
-54da6a0924311c Peter Zijlstra 2023-05-26   72  /*
-54da6a0924311c Peter Zijlstra 2023-05-26   73   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#index-cleanup-variable-attribute
-54da6a0924311c Peter Zijlstra 2023-05-26   74   * clang: https://clang.llvm.org/docs/AttributeReference.html#cleanup
-54da6a0924311c Peter Zijlstra 2023-05-26   75   */
-54da6a0924311c Peter Zijlstra 2023-05-26   76  #define __cleanup(func)			__attribute__((__cleanup__(func)))
-54da6a0924311c Peter Zijlstra 2023-05-26   77  
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   78  /*
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   79   * Note the long name.
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   80   *
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   81   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-const-function-attribute
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   82   */
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   83  #define __attribute_const__             __attribute__((__const__))
-a3f8a30f3f0079 Miguel Ojeda   2018-08-30   84  
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   85  /*
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   86   * Optional: only supported since gcc >= 9
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   87   * Optional: not supported by clang
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   88   *
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   89   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-copy-function-attribute
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   90   */
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08  @91  #if __has_attribute(__copy__)
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   92  # define __copy(symbol)                 __attribute__((__copy__(symbol)))
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   93  #else
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   94  # define __copy(symbol)
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   95  #endif
-c0d9782f5b6d71 Miguel Ojeda   2019-02-08   96  
-c8248faf3ca276 Kees Cook      2023-08-17   97  /*
-c8248faf3ca276 Kees Cook      2023-08-17   98   * Optional: only supported since gcc >= 14
-c8248faf3ca276 Kees Cook      2023-08-17   99   * Optional: only supported since clang >= 18
-c8248faf3ca276 Kees Cook      2023-08-17  100   *
-c8248faf3ca276 Kees Cook      2023-08-17  101   *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
-c8248faf3ca276 Kees Cook      2023-08-17  102   * clang: https://reviews.llvm.org/D148381
-c8248faf3ca276 Kees Cook      2023-08-17  103   */
-c8248faf3ca276 Kees Cook      2023-08-17  104  #if __has_attribute(__counted_by__)
-c8248faf3ca276 Kees Cook      2023-08-17  105  # define __counted_by(member)		__attribute__((__counted_by__(member)))
-c8248faf3ca276 Kees Cook      2023-08-17  106  #else
-c8248faf3ca276 Kees Cook      2023-08-17 @107  # define __counted_by(member)
-c8248faf3ca276 Kees Cook      2023-08-17  108  #endif
-c8248faf3ca276 Kees Cook      2023-08-17  109  
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+DHEwggXSMIIEuqADAgECAhBAAYJpmi/rPn/F0fJyDlzMMA0GCSqGSIb3DQEBCwUAMDoxCzAJ
+BgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEz
+MB4XDTIyMDgwNDE2MDQ0OFoXDTI1MTAzMTE2MDM0OFowcDEvMC0GCgmSJomT8ixkAQETH0Ew
+MTQxMEQwMDAwMDE4MjY5OUEyRkQyMDAwMjMzQ0QxGTAXBgNVBAMTEEplZmZyZXkgRSBBbHRt
+YW4xFTATBgNVBAoTDEF1cmlTdG9yIEluYzELMAkGA1UEBhMCVVMwggEiMA0GCSqGSIb3DQEB
+AQUAA4IBDwAwggEKAoIBAQCkC7PKBBZnQqDKPtZPMLAy77zo2DPvwtGnd1hNjPvbXrpGxUb3
+xHZRtv179LHKAOcsY2jIctzieMxf82OMyhpBziMPsFAG/ukihBMFj3/xEeZVso3K27pSAyyN
+fO/wJ0rX7G+ges22Dd7goZul8rPaTJBIxbZDuaykJMGpNq4PQ8VPcnYZx+6b+nJwJJoJ46kI
+EEfNh3UKvB/vM0qtxS690iAdgmQIhTl+qfXq4IxWB6b+3NeQxgR6KLU4P7v88/tvJTpxIKkg
+9xj89ruzeThyRFd2DSe3vfdnq9+g4qJSHRXyTft6W3Lkp7UWTM4kMqOcc4VSRdufVKBQNXjG
+IcnhAgMBAAGjggKcMIICmDAOBgNVHQ8BAf8EBAMCBPAwgYQGCCsGAQUFBwEBBHgwdjAwBggr
+BgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVudHJ1c3QuY29tMEIGCCsGAQUF
+BzAChjZodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NlcnRzL3RydXN0aWRjYWEx
+My5wN2MwHwYDVR0jBBgwFoAULbfeG1l+KpguzeHUG+PFEBJe6RQwCQYDVR0TBAIwADCCASsG
+A1UdIASCASIwggEeMIIBGgYLYIZIAYb5LwAGAgEwggEJMEoGCCsGAQUFBwIBFj5odHRwczov
+L3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRpZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRt
+bDCBugYIKwYBBQUHAgIwga0MgapUaGlzIFRydXN0SUQgQ2VydGlmaWNhdGUgaGFzIGJlZW4g
+aXNzdWVkIGluIGFjY29yZGFuY2Ugd2l0aCBJZGVuVHJ1c3QncyBUcnVzdElEIENlcnRpZmlj
+YXRlIFBvbGljeSBmb3VuZCBhdCBodHRwczovL3NlY3VyZS5pZGVudHJ1c3QuY29tL2NlcnRp
+ZmljYXRlcy9wb2xpY3kvdHMvaW5kZXguaHRtbDBFBgNVHR8EPjA8MDqgOKA2hjRodHRwOi8v
+dmFsaWRhdGlvbi5pZGVudHJ1c3QuY29tL2NybC90cnVzdGlkY2FhMTMuY3JsMB8GA1UdEQQY
+MBaBFGphbHRtYW5AYXVyaXN0b3IuY29tMB0GA1UdDgQWBBQB+nzqgljLocLTsiUn2yWqEc2s
+gjAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQELBQADggEBAJwV
+eycprp8Ox1npiTyfwc5QaVaqtoe8Dcg2JXZc0h4DmYGW2rRLHp8YL43snEV93rPJVk6B2v4c
+WLeQfaMrnyNeEuvHx/2CT44cdLtaEk5zyqo3GYJYlLcRVz6EcSGHv1qPXgDT0xB/25etwGYq
+utYF4Chkxu4KzIpq90eDMw5ajkexw+8ARQz4N5+d6NRbmMCovd7wTGi8th/BZvz8hgKUiUJo
+Qle4wDxrdXdnIhCP7g87InXKefWgZBF4VX21t2+hkc04qrhIJlHrocPG9mRSnnk2WpsY0MXt
+a8ivbVKtfpY7uSNDZSKTDi1izEFH5oeQdYRkgIGb319a7FjslV8wggaXMIIEf6ADAgECAhBA
+AXA7OrqBjMk8rp4OuNQSMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxJzAlBgNVBAMTHklkZW5UcnVzdCBDb21tZXJjaWFsIFJvb3QgQ0EgMTAe
+Fw0yMDAyMTIyMTA3NDlaFw0zMDAyMTIyMTA3NDlaMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQK
+EwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRydXN0SUQgQ0EgQTEzMIIBIjANBgkqhkiG9w0BAQEF
+AAOCAQ8AMIIBCgKCAQEAu6sUO01SDD99PM+QdZkNxKxJNt0NgQE+Zt6ixaNP0JKSjTd+SG5L
+wqxBWjnOgI/3dlwgtSNeN77AgSs+rA4bK4GJ75cUZZANUXRKw/et8pf9Qn6iqgB63OdHxBN/
+15KbM3HR+PyiHXQoUVIevCKW8nnlWnnZabT1FejOhRRKVUg5HACGOTfnCOONrlxlg+m1Vjgn
+o1uNqNuLM/jkD1z6phNZ/G9IfZGI0ppHX5AA/bViWceX248VmefNhSR14ADZJtlAAWOi2un0
+3bqrBPHA9nDyXxI8rgWLfUP5rDy8jx2hEItg95+ORF5wfkGUq787HBjspE86CcaduLka/Bk2
+VwIDAQABo4IChzCCAoMwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwgYkG
+CCsGAQUFBwEBBH0wezAwBggrBgEFBQcwAYYkaHR0cDovL2NvbW1lcmNpYWwub2NzcC5pZGVu
+dHJ1c3QuY29tMEcGCCsGAQUFBzAChjtodHRwOi8vdmFsaWRhdGlvbi5pZGVudHJ1c3QuY29t
+L3Jvb3RzL2NvbW1lcmNpYWxyb290Y2ExLnA3YzAfBgNVHSMEGDAWgBTtRBnA0/AGi+6ke75C
+5yZUyI42djCCASQGA1UdIASCARswggEXMIIBEwYEVR0gADCCAQkwSgYIKwYBBQUHAgEWPmh0
+dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20vY2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRl
+eC5odG1sMIG6BggrBgEFBQcCAjCBrQyBqlRoaXMgVHJ1c3RJRCBDZXJ0aWZpY2F0ZSBoYXMg
+YmVlbiBpc3N1ZWQgaW4gYWNjb3JkYW5jZSB3aXRoIElkZW5UcnVzdCdzIFRydXN0SUQgQ2Vy
+dGlmaWNhdGUgUG9saWN5IGZvdW5kIGF0IGh0dHBzOi8vc2VjdXJlLmlkZW50cnVzdC5jb20v
+Y2VydGlmaWNhdGVzL3BvbGljeS90cy9pbmRleC5odG1sMEoGA1UdHwRDMEEwP6A9oDuGOWh0
+dHA6Ly92YWxpZGF0aW9uLmlkZW50cnVzdC5jb20vY3JsL2NvbW1lcmNpYWxyb290Y2ExLmNy
+bDAdBgNVHQ4EFgQULbfeG1l+KpguzeHUG+PFEBJe6RQwHQYDVR0lBBYwFAYIKwYBBQUHAwIG
+CCsGAQUFBwMEMA0GCSqGSIb3DQEBCwUAA4ICAQB/7BKcygLX6Nl4a03cDHt7TLdPxCzFvDF2
+bkVYCFTRX47UfeomF1gBPFDee3H/IPlLRmuTPoNt0qjdpfQzmDWN95jUXLdLPRToNxyaoB5s
+0hOhcV6H08u3FHACBif55i0DTDzVSaBv0AZ9h1XeuGx4Fih1Vm3Xxz24GBqqVudvPRLyMJ7u
+6hvBqTIKJ53uCs3dyQLZT9DXnp+kJv8y7ZSAY+QVrI/dysT8avtn8d7k7azNBkfnbRq+0e88
+QoBnel6u+fpwbd5NLRHywXeH+phbzULCa+bLPRMqJaW2lbhvSWrMHRDy3/d8HvgnLCBFK2s4
+Spns4YCN4xVcbqlGWzgolHCKUH39vpcsDo1ymZFrJ8QR6ihIn8FmJ5oKwAnnd/G6ADXFC9bu
+db9+532phSAXOZrrecIQn+vtP366PC+aClAPsIIDJDsotS5z4X2JUFsNIuEgXGqhiKE7SuZb
+rFG9sdcLprSlJN7TsRDc0W2b9nqwD+rj/5MN0C+eKwha+8ydv0+qzTyxPP90KRgaegGowC4d
+UsZyTk2n4Z3MuAHX5nAZL/Vh/SyDj/ajorV44yqZBzQ3ChKhXbfUSwe2xMmygA2Z5DRwMRJn
+p/BscizYdNk2WXJMTnH+wVLN8sLEwEtQR4eTLoFmQvrK2AMBS9kW5sBkMzINt/ZbbcZ3F+eA
+MDGCAxQwggMQAgEBME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEXMBUG
+A1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwDQYJYIZIAWUDBAIBBQCg
+ggGXMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTExMDE2
+MTIxM1owLwYJKoZIhvcNAQkEMSIEIJwT/0k/76oMiiyT9iK+/82oaTWEGBMgiK/lWi0xEJpN
+MF0GCSsGAQQBgjcQBDFQME4wOjELMAkGA1UEBhMCVVMxEjAQBgNVBAoTCUlkZW5UcnVzdDEX
+MBUGA1UEAxMOVHJ1c3RJRCBDQSBBMTMCEEABgmmaL+s+f8XR8nIOXMwwXwYLKoZIhvcNAQkQ
+AgsxUKBOMDoxCzAJBgNVBAYTAlVTMRIwEAYDVQQKEwlJZGVuVHJ1c3QxFzAVBgNVBAMTDlRy
+dXN0SUQgQ0EgQTEzAhBAAYJpmi/rPn/F0fJyDlzMMGwGCSqGSIb3DQEJDzFfMF0wCwYJYIZI
+AWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
+hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwDQYJKoZIhvcNAQEBBQAEggEABLIS
+iGWtDBMDUr1eVu7ocXjmfVArHv0lcwqLBcHm0XndsTd64WUo3vo+ioVZIOIUlwMFzzMCy5bv
+sY0m5/W/E8w87k277Oa7dZW5HZ56zFQmtnAL7p9iaRme40wmynbscMkPQAtc0xzlQJgiR3FW
+cmujBvhECK5rmF787hORDKsFYRU0lr2wrDofyHZnFuI0kMMN9+j5ZvncEbb8kMbOi+rGL4AU
+Y87gFd45EGWHvSjkrZaFnqVC7QWY3n4BXKJzmm4+CbnNvtnkjhxxgPzeEtjb5/0j0430xeh9
+hrCBuQ2JKeIynuOXpec0R4WfOjPblUp04zf2wCy/cTKvl5FvxwAAAAAAAA==
+--------------ms020704020002070703040701--
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
