@@ -2,172 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDAF7E804A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78597E81B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344789AbjKJSJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        id S234969AbjKJSc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbjKJSAJ (ORCPT
+        with ESMTP id S1344887AbjKJSbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:00:09 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381182AD2A;
-        Fri, 10 Nov 2023 02:58:35 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so1727581b3a.3;
-        Fri, 10 Nov 2023 02:58:35 -0800 (PST)
+        Fri, 10 Nov 2023 13:31:48 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53292AD26
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:58:22 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so1727444b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:58:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699613914; x=1700218714; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rgCullXs69eYhISfXuDpHxjryEOlOpmI+uw8NW6NNb4=;
-        b=ifCvakJ0vl9wmUWX2XTa/QoQkBQUWKcs8tm6sTxQfqDiLRdsjUGtndEGAmEna25PcT
-         qs/JYNJO2FfOnyMapQsEed1iclBoJ7AQXz8mHzBZOqonlC5oJDUU61fMXPGBIMDkWt8O
-         snjJ8GDydOqFWK4llU5ZFfPTc9JJPpCWGUsPiQsNotzvYf+jAl/evu2hUVAr0SU17xJ0
-         nyPMlVbpOp06S8V/kwYe3T6vIe97lrijq/wceoako9JFtOdOZpsmbzAFB4BCO+joMYVv
-         H4lkThX2WR8AIORrixqRWh0oAWUbwnsM3qD6pfCUKsKp9JyLbVfMV9+z10wLQDzcPbsQ
-         syoQ==
+        d=gmail.com; s=20230601; t=1699613902; x=1700218702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w5IUeWekHfreeoT4d6rzGP0QBd9dD1NqeQcWvgmcT6s=;
+        b=nbCcLv5XOsNUco79Obe/BF0oLZM0NFeZF05xbHzPtN9WXY8IASZXedjtdRebEOU7OX
+         eWqq2iw5OCclCzFWOo0+EgyTHTFEI/FJTK8CTTb03SbIkWXT6mtH6+VOSVJ/oboNUsUY
+         1//NpzVU7YLmxjeWcg61MPwJ4F7t4T8GgQoAhTGYyQeldndOOMUWk+3lnyoruAxaPmVL
+         z2WoCS8nEY/h/y06mruX+FHqhykizwG0Iq0LPmUrmIOGToNDC3jRDS1n569V8SaMzcnx
+         XXdFGkFNLIF2B2VgyxVSg2Jgs9351wNSaP6fjUXN8WsrjHmB1/ffm6CQNeOSNj1q7DFp
+         DYJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699613914; x=1700218714;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rgCullXs69eYhISfXuDpHxjryEOlOpmI+uw8NW6NNb4=;
-        b=Bw4UL6DUfqUzqDukUJxmrxHhr/8tmtV9HeawBs2nvdwzmEkmKtJp7W/z/rjDM7B2HP
-         B4irlDs3rrsWZNDsO4jQOT/MuMm3Wq/ZkeS1Zr711cytpwetMM9hV8jvCXelNhajcfaI
-         lsphGbDHlEzatXXCMdQy3PmCgNBfktYYjO53ptTVveTtcFmnX/3u38GNlNt1X81BvHvf
-         JsA690hlUoUxJfZqfWRzRbBsg1mWA1/tw7yQRODOM7uHNQEtHLTfYTfaBwGj9xkwhPt7
-         uk4yowkA1JlFqbwfIpHYjMR+Ai6CMdSm58OHgpc7bMygwek/85pOwNww1IRxaMNOcqse
-         bekw==
-X-Gm-Message-State: AOJu0YxcM6JGwdWqbPRakjRwLVT/1dMfu9neoOrKf8oJT8ed0djdjBtl
-        X3/3CL43zMPRpe+1hqWNGLBPV6rAG+GGnw==
-X-Google-Smtp-Source: AGHT+IEQZj+JOsqGYgZ8zjnhecxauxVdWisXmGc0MRIjquJPWv/siqqO9vhcdG7oRGhlxy9dE/sW8g==
-X-Received: by 2002:a05:6a20:5504:b0:181:261f:f368 with SMTP id ko4-20020a056a20550400b00181261ff368mr6412147pzb.53.1699613914507;
-        Fri, 10 Nov 2023 02:58:34 -0800 (PST)
-Received: from dragonet (dragonet.kaist.ac.kr. [143.248.133.220])
-        by smtp.gmail.com with ESMTPSA id j8-20020a17090276c800b001bb97e51ab4sm5103694plt.98.2023.11.10.02.58.31
+        d=1e100.net; s=20230601; t=1699613902; x=1700218702;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w5IUeWekHfreeoT4d6rzGP0QBd9dD1NqeQcWvgmcT6s=;
+        b=T0covWzehxLFD8/j/j9jHS8KnipXoYTTV2FsfbSBaWek8l/0B3PZY/sqjfhdiHoRZp
+         KAJd7LaUH9EJ50K9dl6K2Lsu2eD9UoS/qXgQZk1sXwucHIZNIIUioTjtaMToV+4aOFpl
+         1AMKOG45LG9/6nFt6CqxelcUlgEvPLSYMyleF4oLViWpqb0O8AM1+mfpCKjiBzSXH4sf
+         p4yD6KDSjl9jkbEn8GnvqPbi9andypL4QeeHuhfVK5t1Ni8woMaGwvzeD3uxU2yFdoRu
+         0pnio58EgY/+4QYrwI0AKaqJ0wMkHlJTcMrfVV/vYwREgXhSa89uYQS1eOfC+aEtZFVH
+         2i/g==
+X-Gm-Message-State: AOJu0YwTaGai//gbknfSVbCLCqEBEw7ilNYwm4dMfoAp0+GK5185E74z
+        eieD7yvEQwd4LHkyB/StSauH8YHWxuanr5Eb
+X-Google-Smtp-Source: AGHT+IG6aZsLMX7XHC7FMoJY28qDjYKmoVJwl7FdMYZxT4Mf1xNfM2KWIQDP6hlhCCL74Xm3jdldtw==
+X-Received: by 2002:a05:6a20:a4a5:b0:17f:d42e:202c with SMTP id y37-20020a056a20a4a500b0017fd42e202cmr5312588pzk.49.1699613902213;
+        Fri, 10 Nov 2023 02:58:22 -0800 (PST)
+Received: from anfanite396-Predator-PH315-51.gateway.iitmandi.ac.in ([14.139.34.101])
+        by smtp.gmail.com with ESMTPSA id q7-20020a17090a178700b00277337818afsm1469131pja.0.2023.11.10.02.58.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 02:58:34 -0800 (PST)
-Date:   Fri, 10 Nov 2023 19:57:23 +0900
-From:   "Dae R. Jeong" <threeearcat@gmail.com>
-To:     borisp@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     ywchoi@casys.kaist.ac.kr
-Subject: [PATCH] tls: fix missing memory barrier in tls_init
-Message-ID: <ZU4Mk_RfzvRpwkmX@dragonet>
+        Fri, 10 Nov 2023 02:58:21 -0800 (PST)
+From:   Dipam Turkar <dipamt1729@gmail.com>
+To:     jani.nikula@linux.intel.com
+Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        tvrtko.ursulin@linux.intel.com, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, airlied@gmail.com,
+        Dipam Turkar <dipamt1729@gmail.com>
+Subject: [PATCH] Remove custom dumb_map_offset implementations in i915 driver
+Date:   Fri, 10 Nov 2023 16:28:11 +0530
+Message-Id: <20231110105811.380646-1-dipamt1729@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In tls_init(), a write memory barrier is missing, and store-store
-reordering may cause NULL dereference in tls_{setsockopt,getsockopt}.
+Making i915 use drm_gem_create_mmap_offset() instead of its custom
+implementations for associating GEM object with a fake offset.
 
-CPU0                               CPU1
------                              -----
-// In tls_init()
-// In tls_ctx_create()
-ctx = kzalloc()
-ctx->sk_proto = READ_ONCE(sk->sk_prot) -(1)
-
-// In update_sk_prot()
-WRITE_ONCE(sk->sk_prot, tls_prots)     -(2)
-
-                                   // In sock_common_setsockopt()
-                                   READ_ONCE(sk->sk_prot)->setsockopt()
-
-                                   // In tls_{setsockopt,getsockopt}()
-                                   ctx->sk_proto->setsockopt()    -(3)
-
-In the above scenario, when (1) and (2) are reordered, (3) can observe
-the NULL value of ctx->sk_proto, causing NULL dereference.
-
-To fix it, we rely on rcu_assign_pointer() which implies the release
-barrier semantic. By moving rcu_assign_pointer() after ctx is fully
-initialized, we can ensure that all fields of ctx are visible when
-changing sk->sk_prot.
-
-Also, as Sabrina suggested, this patch gets rid of tls_ctx_create(),
-and move all that into tls_init().
-
-Signed-off-by: Dae R. Jeong <threeearcat@gmail.com>
+Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
 ---
- net/tls/tls_main.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ drivers/gpu/drm/i915/gem/i915_gem_mman.c | 192 -----------------------
+ drivers/gpu/drm/i915/gem/i915_gem_mman.h |   4 -
+ drivers/gpu/drm/i915/i915_driver.c       |   3 +-
+ 3 files changed, 2 insertions(+), 197 deletions(-)
 
-diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-index 1c2c6800949d..235fa93dc7ef 100644
---- a/net/tls/tls_main.c
-+++ b/net/tls/tls_main.c
-@@ -806,22 +806,6 @@ static int tls_setsockopt(struct sock *sk, int level, int optname,
- 	return do_tls_setsockopt(sk, optname, optval, optlen);
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+index aa4d842d4c5a..6b73fe509270 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+@@ -600,198 +600,6 @@ void i915_gem_object_release_mmap_offset(struct drm_i915_gem_object *obj)
+ 	spin_unlock(&obj->mmo.lock);
  }
  
--struct tls_context *tls_ctx_create(struct sock *sk)
+-static struct i915_mmap_offset *
+-lookup_mmo(struct drm_i915_gem_object *obj,
+-	   enum i915_mmap_type mmap_type)
 -{
--	struct inet_connection_sock *icsk = inet_csk(sk);
--	struct tls_context *ctx;
+-	struct rb_node *rb;
 -
--	ctx = kzalloc(sizeof(*ctx), GFP_ATOMIC);
--	if (!ctx)
--		return NULL;
+-	spin_lock(&obj->mmo.lock);
+-	rb = obj->mmo.offsets.rb_node;
+-	while (rb) {
+-		struct i915_mmap_offset *mmo =
+-			rb_entry(rb, typeof(*mmo), offset);
 -
--	mutex_init(&ctx->tx_lock);
--	rcu_assign_pointer(icsk->icsk_ulp_data, ctx);
--	ctx->sk_proto = READ_ONCE(sk->sk_prot);
--	ctx->sk = sk;
--	return ctx;
+-		if (mmo->mmap_type == mmap_type) {
+-			spin_unlock(&obj->mmo.lock);
+-			return mmo;
+-		}
+-
+-		if (mmo->mmap_type < mmap_type)
+-			rb = rb->rb_right;
+-		else
+-			rb = rb->rb_left;
+-	}
+-	spin_unlock(&obj->mmo.lock);
+-
+-	return NULL;
 -}
 -
- static void build_proto_ops(struct proto_ops ops[TLS_NUM_CONFIG][TLS_NUM_CONFIG],
- 			    const struct proto_ops *base)
- {
-@@ -933,6 +917,7 @@ static void build_protos(struct proto prot[TLS_NUM_CONFIG][TLS_NUM_CONFIG],
+-static struct i915_mmap_offset *
+-insert_mmo(struct drm_i915_gem_object *obj, struct i915_mmap_offset *mmo)
+-{
+-	struct rb_node *rb, **p;
+-
+-	spin_lock(&obj->mmo.lock);
+-	rb = NULL;
+-	p = &obj->mmo.offsets.rb_node;
+-	while (*p) {
+-		struct i915_mmap_offset *pos;
+-
+-		rb = *p;
+-		pos = rb_entry(rb, typeof(*pos), offset);
+-
+-		if (pos->mmap_type == mmo->mmap_type) {
+-			spin_unlock(&obj->mmo.lock);
+-			drm_vma_offset_remove(obj->base.dev->vma_offset_manager,
+-					      &mmo->vma_node);
+-			kfree(mmo);
+-			return pos;
+-		}
+-
+-		if (pos->mmap_type < mmo->mmap_type)
+-			p = &rb->rb_right;
+-		else
+-			p = &rb->rb_left;
+-	}
+-	rb_link_node(&mmo->offset, rb, p);
+-	rb_insert_color(&mmo->offset, &obj->mmo.offsets);
+-	spin_unlock(&obj->mmo.lock);
+-
+-	return mmo;
+-}
+-
+-static struct i915_mmap_offset *
+-mmap_offset_attach(struct drm_i915_gem_object *obj,
+-		   enum i915_mmap_type mmap_type,
+-		   struct drm_file *file)
+-{
+-	struct drm_i915_private *i915 = to_i915(obj->base.dev);
+-	struct i915_mmap_offset *mmo;
+-	int err;
+-
+-	GEM_BUG_ON(obj->ops->mmap_offset || obj->ops->mmap_ops);
+-
+-	mmo = lookup_mmo(obj, mmap_type);
+-	if (mmo)
+-		goto out;
+-
+-	mmo = kmalloc(sizeof(*mmo), GFP_KERNEL);
+-	if (!mmo)
+-		return ERR_PTR(-ENOMEM);
+-
+-	mmo->obj = obj;
+-	mmo->mmap_type = mmap_type;
+-	drm_vma_node_reset(&mmo->vma_node);
+-
+-	err = drm_vma_offset_add(obj->base.dev->vma_offset_manager,
+-				 &mmo->vma_node, obj->base.size / PAGE_SIZE);
+-	if (likely(!err))
+-		goto insert;
+-
+-	/* Attempt to reap some mmap space from dead objects */
+-	err = intel_gt_retire_requests_timeout(to_gt(i915), MAX_SCHEDULE_TIMEOUT,
+-					       NULL);
+-	if (err)
+-		goto err;
+-
+-	i915_gem_drain_freed_objects(i915);
+-	err = drm_vma_offset_add(obj->base.dev->vma_offset_manager,
+-				 &mmo->vma_node, obj->base.size / PAGE_SIZE);
+-	if (err)
+-		goto err;
+-
+-insert:
+-	mmo = insert_mmo(obj, mmo);
+-	GEM_BUG_ON(lookup_mmo(obj, mmap_type) != mmo);
+-out:
+-	if (file)
+-		drm_vma_node_allow_once(&mmo->vma_node, file);
+-	return mmo;
+-
+-err:
+-	kfree(mmo);
+-	return ERR_PTR(err);
+-}
+-
+-static int
+-__assign_mmap_offset(struct drm_i915_gem_object *obj,
+-		     enum i915_mmap_type mmap_type,
+-		     u64 *offset, struct drm_file *file)
+-{
+-	struct i915_mmap_offset *mmo;
+-
+-	if (i915_gem_object_never_mmap(obj))
+-		return -ENODEV;
+-
+-	if (obj->ops->mmap_offset)  {
+-		if (mmap_type != I915_MMAP_TYPE_FIXED)
+-			return -ENODEV;
+-
+-		*offset = obj->ops->mmap_offset(obj);
+-		return 0;
+-	}
+-
+-	if (mmap_type == I915_MMAP_TYPE_FIXED)
+-		return -ENODEV;
+-
+-	if (mmap_type != I915_MMAP_TYPE_GTT &&
+-	    !i915_gem_object_has_struct_page(obj) &&
+-	    !i915_gem_object_has_iomem(obj))
+-		return -ENODEV;
+-
+-	mmo = mmap_offset_attach(obj, mmap_type, file);
+-	if (IS_ERR(mmo))
+-		return PTR_ERR(mmo);
+-
+-	*offset = drm_vma_node_offset_addr(&mmo->vma_node);
+-	return 0;
+-}
+-
+-static int
+-__assign_mmap_offset_handle(struct drm_file *file,
+-			    u32 handle,
+-			    enum i915_mmap_type mmap_type,
+-			    u64 *offset)
+-{
+-	struct drm_i915_gem_object *obj;
+-	int err;
+-
+-	obj = i915_gem_object_lookup(file, handle);
+-	if (!obj)
+-		return -ENOENT;
+-
+-	err = i915_gem_object_lock_interruptible(obj, NULL);
+-	if (err)
+-		goto out_put;
+-	err = __assign_mmap_offset(obj, mmap_type, offset, file);
+-	i915_gem_object_unlock(obj);
+-out_put:
+-	i915_gem_object_put(obj);
+-	return err;
+-}
+-
+-int
+-i915_gem_dumb_mmap_offset(struct drm_file *file,
+-			  struct drm_device *dev,
+-			  u32 handle,
+-			  u64 *offset)
+-{
+-	struct drm_i915_private *i915 = to_i915(dev);
+-	enum i915_mmap_type mmap_type;
+-
+-	if (HAS_LMEM(to_i915(dev)))
+-		mmap_type = I915_MMAP_TYPE_FIXED;
+-	else if (pat_enabled())
+-		mmap_type = I915_MMAP_TYPE_WC;
+-	else if (!i915_ggtt_has_aperture(to_gt(i915)->ggtt))
+-		return -ENODEV;
+-	else
+-		mmap_type = I915_MMAP_TYPE_GTT;
+-
+-	return __assign_mmap_offset_handle(file, handle, mmap_type, offset);
+-}
+-
+ /**
+  * i915_gem_mmap_offset_ioctl - prepare an object for GTT mmap'ing
+  * @dev: DRM device
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.h b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
+index 196417fd0f5c..253435795caf 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_mman.h
++++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
+@@ -20,10 +20,6 @@ struct mutex;
+ int i915_gem_mmap_gtt_version(void);
+ int i915_gem_mmap(struct file *filp, struct vm_area_struct *vma);
  
- static int tls_init(struct sock *sk)
- {
-+	struct inet_connection_sock *icsk = inet_csk(sk);
- 	struct tls_context *ctx;
- 	int rc = 0;
+-int i915_gem_dumb_mmap_offset(struct drm_file *file_priv,
+-			      struct drm_device *dev,
+-			      u32 handle, u64 *offset);
+-
+ void __i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
+ void i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
  
-@@ -954,14 +939,27 @@ static int tls_init(struct sock *sk)
+diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
+index d50347e5773a..a18a33896ba4 100644
+--- a/drivers/gpu/drm/i915/i915_driver.c
++++ b/drivers/gpu/drm/i915/i915_driver.c
+@@ -42,6 +42,7 @@
+ #include <drm/drm_aperture.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_ioctl.h>
++#include <drm/drm_gem.h>
+ #include <drm/drm_managed.h>
+ #include <drm/drm_probe_helper.h>
  
- 	/* allocate tls context */
- 	write_lock_bh(&sk->sk_callback_lock);
--	ctx = tls_ctx_create(sk);
-+	ctx = kzalloc(sizeof(*ctx), GFP_ATOMIC);
- 	if (!ctx) {
- 		rc = -ENOMEM;
- 		goto out;
- 	}
+@@ -1826,7 +1827,7 @@ static const struct drm_driver i915_drm_driver = {
+ 	.gem_prime_import = i915_gem_prime_import,
  
-+	mutex_init(&ctx->tx_lock);
-+	ctx->sk_proto = READ_ONCE(sk->sk_prot);
-+	ctx->sk = sk;
- 	ctx->tx_conf = TLS_BASE;
- 	ctx->rx_conf = TLS_BASE;
-+	/* rcu_assign_pointer() should be called after initialization of
-+	 * all fields of ctx. It ensures that all fields of ctx are
-+	 * visible before changing sk->sk_prot, and prevents reading of
-+	 * uninitialized fields in tls_{getsockopt,setsockopt}. Note that
-+	 * we do not need a read barrier in tls_{getsockopt,setsockopt} as
-+	 * there is an address dependency between
-+	 * sk->sk_proto->{getsockopt,setsockopt} and ctx->sk_proto.
-+	 */
-+	rcu_assign_pointer(icsk->icsk_ulp_data, ctx);
-+
- 	update_sk_prot(sk, ctx);
- out:
- 	write_unlock_bh(&sk->sk_callback_lock);
+ 	.dumb_create = i915_gem_dumb_create,
+-	.dumb_map_offset = i915_gem_dumb_mmap_offset,
++	.dumb_map_offset = drm_gem_dumb_mmap_offset,
+ 
+ 	.ioctls = i915_ioctls,
+ 	.num_ioctls = ARRAY_SIZE(i915_ioctls),
 -- 
-2.42.1
+2.34.1
 
