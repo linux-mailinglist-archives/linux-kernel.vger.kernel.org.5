@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C75C7E819F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89DB7E7F85
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346479AbjKJSbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        id S232970AbjKJRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:54:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235713AbjKJS2d (ORCPT
+        with ESMTP id S230171AbjKJRx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:28:33 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE62D41324
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:52:46 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bcdfcde944so201476b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:52:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699635166; x=1700239966; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IxqRDZ+ztZSd9qnawgjaQAg5ACh45Q6dnAez8SycqZU=;
-        b=nAzPVWGhBTJKVemy7yzWl4jGVHQT2WWCcTbrSF29/tkQQzNQrnIsG9bh8GQWOHRzJP
-         2H9Lch+J3DiuErMV5yr9uoxcc8I/B59y8X4Z56m7EaShkT5M3kFYdt501DTHLndiu1Jz
-         Rspd2U5wBsOiXCKC+y71bwDevMatO2tiDcFMbG9+I8H6eqHV0GayZLsO8FxuVcoKZ4ok
-         rcRF5nh3hvu52wM52xZW9cP42C2r5xJuwfIuypqPx+9oxgDMwJKYr0yNCMDwV7/ZFdKl
-         0tpFcVs+0g+o4iq0OwPFf3tYBrW5Bxc6LO9mJ1opcMljLq+xzYZn4FRlmx0+zdexfORv
-         L1uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699635166; x=1700239966;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IxqRDZ+ztZSd9qnawgjaQAg5ACh45Q6dnAez8SycqZU=;
-        b=NFibCZXUPBl0BrrHP2FETRdc4bpZ6qTGWx+pFWeROvYXSUt2ZuwQFhqptXTQde9Lmv
-         R7pecOw6wnpT5TlVJBUe2HwOXxqGoVDqIC7537ztZQtQSVqOB8V2sN4V7u5wUVtiWM8O
-         RKu0lwc4J8tlHBBQYaS1iQc5eepyAgOEjtn9j0isX69dhZf2lA1E9e6enUsUbmStAXtD
-         BNQdBMsBCVi5AmZs3PmEC358OwXWSVm0EAlhTCShzEVl7IGn9EaMsca8mK7EArFGQItl
-         QYoVYtKi6tcogfpGpZAdRWfF20OU3AORCaxLg1qeWgTwWGleDBCFL4yqIWqqEIORedYD
-         andg==
-X-Gm-Message-State: AOJu0Yzga2o7gcYOs6NUWR5t00wIE2d8Nm1mlICMvvp6eTd/mtxFBBFB
-        5epxdfbPDMJCCv5+ou+LN80=
-X-Google-Smtp-Source: AGHT+IEGxk/jLqGJA0yS3ZeTi81R4xE2ZufSKB2Rtpbbh9NrGc0xsWCOW69zHXopVbKhjoSWZEwD/w==
-X-Received: by 2002:a05:6a21:329b:b0:133:6e3d:68cd with SMTP id yt27-20020a056a21329b00b001336e3d68cdmr10384496pzb.3.1699635166235;
-        Fri, 10 Nov 2023 08:52:46 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id ka19-20020a056a00939300b006905f6bfc37sm12797665pfb.31.2023.11.10.08.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 08:52:45 -0800 (PST)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     bleung@chromium.org, tzungbi@kernel.org
-Cc:     groeck@chromium.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2] platform/chrome: sensorhub: Fix typos
-Date:   Sat, 11 Nov 2023 00:52:39 +0800
-Message-Id: <20231110165239.1559109-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ZU3GbHTA3x19h2Zi@google.com>
-References: <ZU3GbHTA3x19h2Zi@google.com>
+        Fri, 10 Nov 2023 12:53:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1311941B28
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:53:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699635200; x=1731171200;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=bum07ot+EhHhU0+B8hXeh/y26CaVcozlLP9PAvyQoHU=;
+  b=LIeC4QqbwUigNx4YlY2CLgHmwoznMxGn3ZOYzVjFJn2ErgK10xOdbTI0
+   JMHtfT+HMgyw40rN6ciOQ1UOQ9g2xf8LQUppHSoyOfXYhOrdOvuUE3XVX
+   cQwa4FfBpBum7Zbpgp+G0DHE17jQYk2zRjiEwbb/s25ki5OcHcLpHtyaT
+   lYvktBPN8I/YGE9MLfk9xk6oWnaLTDeTzENKw7ZFhAebr8wuFtqeRmifq
+   zzEz8QweHzp78A2uXeL8VNlHxFQvsKdvFXsOjYUhgB0Fkpr4b6fyfx3MQ
+   WW9oNej3APEtTZKXc6RH/neKxivazvBKSmCDHVhL+ze0e0qDiQKd8Cl9h
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="394111916"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="394111916"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 08:53:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="881006458"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="881006458"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Nov 2023 08:53:18 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1Uku-0009kt-1E;
+        Fri, 10 Nov 2023 16:53:16 +0000
+Date:   Sat, 11 Nov 2023 00:53:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn:
+ inconsistent indenting
+Message-ID: <202311110013.AMJ0IWhw-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,72 +62,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace 'preceeds' with 'precedes' in the comment.
-Replace 'porod' with 'period' in the comment.
-Replace 'noone' with 'no one' in the comment.
-Replace 'lantency' with 'latency' in the comment.
-Replace 'kifo' with 'kfifo' in the comment.
-Replace 'change' with 'chance' in the comment.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   89cdf9d556016a54ff6ddd62324aa5ec790c05cc
+commit: 80396a47490936f73729548310ad60e9f5df61c9 bcachefs: Break up bch2_journal_write()
+date:   5 days ago
+config: i386-randconfig-141-20231108 (https://download.01.org/0day-ci/archive/20231111/202311110013.AMJ0IWhw-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110013.AMJ0IWhw-lkp@intel.com/reproduce)
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
-v1 -> v2:
- * Separate patch series into two patches.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311110013.AMJ0IWhw-lkp@intel.com/
 
- drivers/platform/chrome/cros_ec_sensorhub_ring.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+New smatch warnings:
+fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn: inconsistent indenting
 
-diff --git a/drivers/platform/chrome/cros_ec_sensorhub_ring.c b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
-index 71948dade0e2..9e17f7483ca0 100644
---- a/drivers/platform/chrome/cros_ec_sensorhub_ring.c
-+++ b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
-@@ -103,7 +103,7 @@ EXPORT_SYMBOL_GPL(cros_ec_sensorhub_unregister_push_data);
-  * @sensorhub: Sensor Hub object
-  * @on: true when events are requested.
-  *
-- * To be called before sleeping or when noone is listening.
-+ * To be called before sleeping or when no one is listening.
-  * Return: 0 on success, or an error when we can not communicate with the EC.
-  *
-  */
-@@ -175,8 +175,8 @@ static s64 cros_ec_sensor_ring_median(s64 *array, size_t length)
-  *
-  * While a and b are recorded at accurate times (due to the EC real time
-  * nature); c is pretty untrustworthy, even though it's recorded the
-- * first thing in ec_irq_handler(). There is a very good change we'll get
-- * added lantency due to:
-+ * first thing in ec_irq_handler(). There is a very good chance we'll get
-+ * added latency due to:
-  *   other irqs
-  *   ddrfreq
-  *   cpuidle
-@@ -511,7 +511,7 @@ cros_ec_sensor_ring_process_event(struct cros_ec_sensorhub *sensorhub,
-  *                                 ringbuffer.
-  *
-  * This is the new spreading code, assumes every sample's timestamp
-- * preceeds the sample. Run if tight_timestamps == true.
-+ * precedes the sample. Run if tight_timestamps == true.
-  *
-  * Sometimes the EC receives only one interrupt (hence timestamp) for
-  * a batch of samples. Only the first sample will have the correct
-@@ -595,7 +595,7 @@ cros_ec_sensor_ring_spread_add(struct cros_ec_sensorhub *sensorhub,
- 			} else {
- 				/*
- 				 * Push first sample in the batch to the,
--				 * kifo, it's guaranteed to be correct, the
-+				 * kfifo, it's guaranteed to be correct, the
- 				 * rest will follow later on.
- 				 */
- 				sample_idx = 1;
-@@ -701,7 +701,7 @@ cros_ec_sensor_ring_spread_add(struct cros_ec_sensorhub *sensorhub,
-  *           last_out -->
-  *
-  *
-- * We spread time for the samples using perod p = (current - TS1)/4.
-+ * We spread time for the samples using period p = (current - TS1)/4.
-  * between TS1 and TS2: [TS1+p/4, TS1+2p/4, TS1+3p/4, current_timestamp].
-  *
-  */
+Old smatch warnings:
+fs/bcachefs/journal_io.c:132 journal_entry_add() warn: missing error code 'ret'
+
+vim +1839 fs/bcachefs/journal_io.c
+
+  1808	
+  1809	static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *w)
+  1810	{
+  1811		struct bch_fs *c = container_of(j, struct bch_fs, journal);
+  1812		int error = bch2_journal_error(j);
+  1813	
+  1814		/*
+  1815		 * If the journal is in an error state - we did an emergency shutdown -
+  1816		 * we prefer to continue doing journal writes. We just mark them as
+  1817		 * noflush so they'll never be used, but they'll still be visible by the
+  1818		 * list_journal tool - this helps in debugging.
+  1819		 *
+  1820		 * There's a caveat: the first journal write after marking the
+  1821		 * superblock dirty must always be a flush write, because on startup
+  1822		 * from a clean shutdown we didn't necessarily read the journal and the
+  1823		 * new journal write might overwrite whatever was in the journal
+  1824		 * previously - we can't leave the journal without any flush writes in
+  1825		 * it.
+  1826		 *
+  1827		 * So if we're in an error state, and we're still starting up, we don't
+  1828		 * write anything at all.
+  1829		 */
+  1830		if (error && test_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags))
+  1831			return -EIO;
+  1832	
+  1833		if (error ||
+  1834		    w->noflush ||
+  1835		    (!w->must_flush &&
+  1836		     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
+  1837		     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
+  1838			     w->noflush = true;
+> 1839			SET_JSET_NO_FLUSH(w->data, true);
+  1840			w->data->last_seq	= 0;
+  1841			w->last_seq		= 0;
+  1842	
+  1843			j->nr_noflush_writes++;
+  1844		} else {
+  1845			j->last_flush_write = jiffies;
+  1846			j->nr_flush_writes++;
+  1847			clear_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags);
+  1848		}
+  1849	
+  1850		return 0;
+  1851	}
+  1852	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
