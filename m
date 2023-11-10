@@ -2,127 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E137E7648
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F957E764C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345498AbjKJBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        id S1345545AbjKJBE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjKJBER (ORCPT
+        with ESMTP id S229572AbjKJBEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:04:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC203AA0
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:04:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699578255; x=1731114255;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=wWQ8L5zvh72IG5VMXG+uMJvdCYw0je9ei7amOqLX6RU=;
-  b=j3gJeQL7zHySn2bhs7bXPB+wbx9hjnC247ocLd/MVNjuqjUMrK0jOkeN
-   EnU5Ygp191/Jqi5FcVHeZCnkzfi/XHWZVwW9h0ZDwhTdzNi/ZK/22Umdx
-   HHD4opBvipkUgbJjjFgMoO1dNJpXqrA1sNtdDK8BNZdoBZNK8ZQshbqgZ
-   oztrJX1NAACTr+7rmMaAeTEHe4UXmIWxHQrY6vZik38WWDr1i8G0vznFB
-   xOJg1HNLaEXVg59LzQI0IvSsXAyl8uJX0+7X3Wha03TRuTYr5Tv5jtWcz
-   jhVXYgyheB/ysKVf1qGNx2L8pL1eDgj9iCW4qoAtylOOAD2gIRp4h6gR7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="454410990"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="454410990"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:04:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713498300"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="713498300"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 09 Nov 2023 17:04:11 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1FwM-0009K2-31;
-        Fri, 10 Nov 2023 01:04:06 +0000
-Date:   Fri, 10 Nov 2023 09:03:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn:
- inconsistent indenting
-Message-ID: <202311100842.OUiGSWxX-lkp@intel.com>
+        Thu, 9 Nov 2023 20:04:55 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8033AA7
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:04:52 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-409299277bbso10181895e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 17:04:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699578291; x=1700183091; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bnRFy/M2jUBSi2yJpJIE9XBcd/KDatAYWr+zVtKN5/g=;
+        b=aZTNyfxdt00yg5wx4r1amcEQK5jlKbJ4CL85lWNfnkfAOBVPxalp9lgk3ZHBI8gigi
+         I7mWDr8b7P/MtahGCycgPE++K4lMmXVyosY1uutASdVoHRvpe7v2S7ozC7hSDQgtu1eV
+         YPosdNKYfMOMxOUdmlbxlrAp82JMGfNusnBQXZ4Se2BKpYIHL3ZwgwD57w8cP9JL7p3z
+         DdkmqlpE2KNnj8KJMs1KM+QaVG0EhNOI91VBYIyAnqSODMYtFnaM+UcopV/tclQgQiGg
+         rFWcDSTbm/gLbzTIjfiIBG45oiQN2HWqGgdT7/khllgpBxdaGx8riDRt3F4Jv/Bh/PY1
+         YjdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699578291; x=1700183091;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bnRFy/M2jUBSi2yJpJIE9XBcd/KDatAYWr+zVtKN5/g=;
+        b=vU3g/B351gMSyWixCGCG4Qqm8zZ0SbWHblANcej4TMuy5B6irtX6siF0Yl0S5H4e4o
+         PgIVNs+e6CGyUgP1bCqVz7492Bj9cSr65QZs4i44UGINXsp8dzGSZTzFJ9DyrKZPDV51
+         Ik8x13uAS6UytVFvf8/6t5CMlTASgzqbt4y8soqugqgV6OPD3ckroLp8WesU4cVKmjZc
+         HrI9kwRHc8EuafzcWGI+8DCSnhl+qRazDbj2msuS32ZTEGrTp1Y6rXZ6iLzx+oks2AH9
+         1y/+CffUztNGdePe71q0qPs5xf8NYuVAC9YCmpV4ZLAbnk93sMsMo3Jdi6mhz+NDRb31
+         JtIQ==
+X-Gm-Message-State: AOJu0Ywvy0aiWBApO7Nr4i+xS/vKU8MQOehfTdFhxITfxOI+Dcs6gg/9
+        jV1LHQnENdnMJ0CV/xrNOtElyE5UqMOSgtsHIPsCeQ==
+X-Google-Smtp-Source: AGHT+IG65IwkOlcXL9Tw+iHoLLZZZ9IFXokPpE0lWYS5v4Z3T00EQAKHzf9QLLE/zHZcTCfvPWbLDA==
+X-Received: by 2002:a5d:47ca:0:b0:32d:ad4a:bcef with SMTP id o10-20020a5d47ca000000b0032dad4abcefmr5733784wrc.2.1699578290007;
+        Thu, 09 Nov 2023 17:04:50 -0800 (PST)
+Received: from [127.0.0.1] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id d1-20020a056000114100b00326f0ca3566sm820562wrx.50.2023.11.09.17.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 17:04:49 -0800 (PST)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v5 0/6] media: qcom: camss: Add sc8280xp support
+Date:   Fri, 10 Nov 2023 01:04:45 +0000
+Message-Id: <20231110-b4-camss-sc8280xp-v5-0-7f4947cc59c8@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAK2BTWUC/23OwQoCIRCA4VcJzxnjqKWdeo/o4JiWULuLxlLEv
+ nsWBBt5/Afmm3myEnIKhW0XT5bDmErquxp6uWD+7LpT4OlYmyGgFAIEJ8W9u5bCizdo4D5wCIK
+ sCISCIqt7Qw4x3T/m/lD7nMqtz4/PiVG8p18NG9ooOHBr7Toq8mSi2l1S53K/6vOJvbkR54RsE
+ VgJ2riojqilQ/gj5JzQLUJWQpH0coMxQuMLNSdsi1CV0MZpQx4Bov0hpml6AZ6vujd8AQAA
+To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   a12deb44f9734dc25970c266249b272e44d3d1b5
-commit: 80396a47490936f73729548310ad60e9f5df61c9 bcachefs: Break up bch2_journal_write()
-date:   4 days ago
-config: i386-randconfig-141-20231108 (https://download.01.org/0day-ci/archive/20231110/202311100842.OUiGSWxX-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231110/202311100842.OUiGSWxX-lkp@intel.com/reproduce)
+V5:
+- Fixes the lower case 0x0c to 0x0C not sure how Konrad even saw this.
+- Drops frequency table to just individual frequencies not full array of
+  opps - Konrad
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100842.OUiGSWxX-lkp@intel.com/
+- As explained doesn't change the finding of frequencies.
+  Current array size will ensure testing if (freq[x]) succeeds though I
+  do agree this should be changed up.
 
-New smatch warnings:
-fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn: inconsistent indenting
+  Plan to restructure struct params for specificity to VFE, CSID and will
+  incorporate this change then.
+  Link: https://lore.kernel.org/all/e80d4026-a525-48ef-b53a-f1276dd316e6@linaro.org
 
-Old smatch warnings:
-fs/bcachefs/journal_io.c:132 journal_entry_add() warn: missing error code 'ret'
+-  Reset sequence
 
-vim +1839 fs/bcachefs/journal_io.c
+   Right now the reset works. I agree qcom's downstream has more stuff in
+   it. I've logged a task to evaluate expansion of the reset and to test
+   across multiple platforms.
 
-  1808	
-  1809	static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *w)
-  1810	{
-  1811		struct bch_fs *c = container_of(j, struct bch_fs, journal);
-  1812		int error = bch2_journal_error(j);
-  1813	
-  1814		/*
-  1815		 * If the journal is in an error state - we did an emergency shutdown -
-  1816		 * we prefer to continue doing journal writes. We just mark them as
-  1817		 * noflush so they'll never be used, but they'll still be visible by the
-  1818		 * list_journal tool - this helps in debugging.
-  1819		 *
-  1820		 * There's a caveat: the first journal write after marking the
-  1821		 * superblock dirty must always be a flush write, because on startup
-  1822		 * from a clean shutdown we didn't necessarily read the journal and the
-  1823		 * new journal write might overwrite whatever was in the journal
-  1824		 * previously - we can't leave the journal without any flush writes in
-  1825		 * it.
-  1826		 *
-  1827		 * So if we're in an error state, and we're still starting up, we don't
-  1828		 * write anything at all.
-  1829		 */
-  1830		if (error && test_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags))
-  1831			return -EIO;
-  1832	
-  1833		if (error ||
-  1834		    w->noflush ||
-  1835		    (!w->must_flush &&
-  1836		     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
-  1837		     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
-  1838			     w->noflush = true;
-> 1839			SET_JSET_NO_FLUSH(w->data, true);
-  1840			w->data->last_seq	= 0;
-  1841			w->last_seq		= 0;
-  1842	
-  1843			j->nr_noflush_writes++;
-  1844		} else {
-  1845			j->last_flush_write = jiffies;
-  1846			j->nr_flush_writes++;
-  1847			clear_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags);
-  1848		}
-  1849	
-  1850		return 0;
-  1851	}
-  1852	
+   For now not required for this drop.
 
+- _src clocks
+
+  One assumes the reason at some stage in time we didn't have SET_PARENT in
+  our CAMCC which meant setting _src clocks was necessary. In any case it
+  ought not to be necessary now.
+
+  Removing the _src from existing platforms should be trivial however we
+  might find that as a result some of the CAMCC drivers need to be updated.
+
+  That obviously is a separate series.
+
+Link to v4: https://lore.kernel.org/r/20231109-b4-camss-sc8280xp-v4-0-58a58bc200f9@linaro.org
+Link to tree: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v5
+
+V4:
+- Drops all _src clocks and _SRC indexes in series.
+  True enough the CAMCC driver has all of the appropriate SET_PARENT flags
+  so there's no need to represent _src clocks. - Konrad
+
+- I've opted not to split C-PHY and D-PHY init sequences up unless/until
+  we have a C-PHY init sequence upstream. - bod/Konrad
+
+- b4 trailes --update -> + Konrad's Acks
+
+Link to v3: https://lore.kernel.org/r/20231105-b4-camss-sc8280xp-v3-0-4b3c372ff0f4@linaro.org
+Link to tree: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v4
+
+V3:
+- Strip pointer to dependencies from yaml patch
+  I was hoping the robot would understand the links but it doesn't -
+  Krzysztof
+
+Link to v2: https://lore.kernel.org/r/20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v3
+
+V2:
+- Rebase to capture is_lite flag from named power-domain series
+- Amends commit log of final patch to give more detail on rename - Konrad
+- Opted not to change switch() statements with returns. - bod/Konrad
+
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
+
+Requires the named power-domain patches which apply to media-tree/*:
+https://lore.kernel.org/linux-arm-msm/20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org/
+b4 shazam e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org
+
+Link to v1:
+https://lore.kernel.org/r/20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v2
+
+V1:
+sc8280xp is the SoC found in the Lenovo X13s. This series adds support to
+bring up the CSIPHY, CSID, VFE/RDI interfaces.
+
+A number of precursor patches make this series smaller overall than
+previous series.
+
+sc8280xp provides
+
+- 4 x VFE, 4 RDI per VFE
+- 4 x VFE Lite, 4 RDI per VFE
+- 4 x CSID
+- 4 x CSID Lite
+- 4 x CSI PHY
+
+I've taken the yaml from a dtsi series and included it here since 1) I sent
+the yaml to the wrong person and 2) it already has RB from Krzysztof.
+
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
+
+Requires the named power-domain patches which apply to media-tree/* :
+https://lore.kernel.org/linux-arm-msm/20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org/
+b4 shazam 20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org
+
+To use the camera on x13s with say Google Hangouts or Microsoft Teams you
+will need to
+
+1. Run Firefox
+2. Update about:config to enable pipewire
+3. Use this WIP version of libcamera
+   https://gitlab.freedesktop.org/camera/libcamera-softisp
+
+A working bootable tree can be found here:
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/lenovo-x13s-linux-6.5.y
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp
+
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+Bryan O'Donoghue (6):
+      media: dt-bindings: media: camss: Add qcom,sc8280xp-camss binding
+      media: qcom: camss: Add CAMSS_SC8280XP enum
+      media: qcom: camss: csiphy-3ph: Add Gen2 v1.1 two-phase MIPI CSI-2 DPHY init
+      media: qcom: camss: Add sc8280xp resource details
+      media: qcom: camss: Add sc8280xp support
+      media: qcom: camss: vfe-17x: Rename camss-vfe-170 to camss-vfe-17x
+
+ .../bindings/media/qcom,sc8280xp-camss.yaml        | 512 +++++++++++++++++++++
+ drivers/media/platform/qcom/camss/Makefile         |   2 +-
+ .../platform/qcom/camss/camss-csiphy-3ph-1-0.c     | 108 ++++-
+ drivers/media/platform/qcom/camss/camss-csiphy.c   |   1 +
+ .../camss/{camss-vfe-170.c => camss-vfe-17x.c}     |   0
+ drivers/media/platform/qcom/camss/camss-vfe.c      |  25 +-
+ drivers/media/platform/qcom/camss/camss-video.c    |   1 +
+ drivers/media/platform/qcom/camss/camss.c          | 307 ++++++++++++
+ drivers/media/platform/qcom/camss/camss.h          |   1 +
+ 9 files changed, 948 insertions(+), 9 deletions(-)
+---
+base-commit: 89e965e1a58f58cd359472b14c0cc25587bcf264
+change-id: 20231101-b4-camss-sc8280xp-0e1b91eb21bf
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
