@@ -2,37 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 540A07E816F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34147E80D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346110AbjKJS2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:28:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        id S1345623AbjKJSSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235341AbjKJSZe (ORCPT
+        with ESMTP id S1346046AbjKJSQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:25:34 -0500
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A996FAC;
-        Thu,  9 Nov 2023 22:26:28 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vw3PLXK_1699595621;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vw3PLXK_1699595621)
-          by smtp.aliyun-inc.com;
-          Fri, 10 Nov 2023 13:53:42 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] hwmon: Fix some kernel-doc comments
-Date:   Fri, 10 Nov 2023 13:53:41 +0800
-Message-Id: <20231110055341.39939-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Fri, 10 Nov 2023 13:16:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7365FC3
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:17:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C48C433CD;
+        Fri, 10 Nov 2023 05:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699595869;
+        bh=2/thsE8VetqAibMAzzhFVOgZBh0xwtrq6qPa9DCL+Eo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kTbaD2G9YsrVBFVDGQ5rvtAoCiaMYxJ65o2ddmy1z6WU4P1hLLyHeAJhcT/9SaCvE
+         +VmAVvRFnODJ5K1d3f9EzcyqOeAWw/nemuUv0KOAwEQbNj7Gf7Az9rDZSiZj8mSCJP
+         j+Wp6yxjw04YCqnT7rZAUWpHY//RKkZ4nGJUOh86uW0wlFHLJLSYRPGXyq5loxr+mp
+         LsC58N26XCAW7gPkGAVi1RFc6vzLP22Dspbr+nE4qqq00g7i51AJ3VqRnEvxHNibXa
+         d3lckb6SaSWvFzZPkdXcQTY32Lkr46scnonjHyv1ZWvSrabOaZnQoIqPPyIIfy2NbL
+         gZ6cMxBEnF/zA==
+Date:   Fri, 10 Nov 2023 13:57:46 +0800
+From:   Tzung-Bi Shih <tzungbi@kernel.org>
+To:     Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc:     bleung@chromium.org, groeck@chromium.org,
+        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 7/7] platform/chrome: Implement quickselect for median
+ calculation
+Message-ID: <ZU3GWkKczNV-AQA4@google.com>
+References: <20231109185439.1535962-1-visitorckw@gmail.com>
+ <20231109185439.1535962-8-visitorckw@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109185439.1535962-8-visitorckw@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,39 +51,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some kernel-doc comments to silence the warnings:
-drivers/hwmon/sht4x.c:65: warning: Function parameter or member 'valid' not described in 'sht4x_data'
-drivers/hwmon/sht4x.c:73: warning: Function parameter or member 'data' not described in 'sht4x_read_values'
-drivers/hwmon/sht4x.c:73: warning: Excess function parameter 'sht4x_data' description in 'sht4x_read_values'
+On Fri, Nov 10, 2023 at 02:54:39AM +0800, Kuan-Wei Chiu wrote:
+>  /*
+>   * cros_ec_sensor_ring_median: Gets median of an array of numbers
+>   *
+> - * For now it's implemented using an inefficient > O(n) sort then return
+> - * the middle element. A more optimal method would be something like
+> - * quickselect, but given that n = 64 we can probably live with it in the
+> - * name of clarity.
+> + * It's implemented using the quickselect algorithm, which achieves an
+> + * average time complexity of O(n) the middle element. In the worst case,
+> + * the runtime of quickselect could regress to O(n^2). To mitigate this,
+> + * algorithms like median-of-medians exist, which can guarantee O(n) even
+> + * in the worst case. However, these algorithms come with a higher
+> + * overhead and are more complex to implement, making quickselect a
+> + * pragmatic choice for our use case.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7220
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/hwmon/sht4x.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I am wondering if the patch helps given that n = 64.
 
-diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-index 7ee797410458..4883755d4b1e 100644
---- a/drivers/hwmon/sht4x.c
-+++ b/drivers/hwmon/sht4x.c
-@@ -49,6 +49,7 @@ DECLARE_CRC8_TABLE(sht4x_crc8_table);
-  * struct sht4x_data - All the data required to operate an SHT4X chip
-  * @client: the i2c client associated with the SHT4X
-  * @lock: a mutex that is used to prevent parallel access to the i2c client
-+ * @valid: validity of fields below
-  * @update_interval: the minimum poll interval
-  * @last_updated: the previous time that the SHT4X was polled
-  * @temperature: the latest temperature value received from the SHT4X
-@@ -66,7 +67,7 @@ struct sht4x_data {
- 
- /**
-  * sht4x_read_values() - read and parse the raw data from the SHT4X
-- * @sht4x_data: the struct sht4x_data to use for the lock
-+ * @data: the struct sht4x_data to use for the lock
-  * Return: 0 if successful, -ERRNO if not
-  */
- static int sht4x_read_values(struct sht4x_data *data)
--- 
-2.20.1.7.g153144c
+>  static s64 cros_ec_sensor_ring_median(s64 *array, size_t length)
+>  {
+> -	sort(array, length, sizeof(s64), cros_ec_sensor_ring_median_cmp, NULL);
+> -	return array[length / 2];
+> +	const int k = length / 2;
 
+`k` doesn't help readability.  Could you put `length / 2` to the code inline
+or at least give it a better name.
+
+> +	int lo = 0;
+> +	int hi = length - 1;
+> +
+> +	while (lo <= hi) {
+> +		int mid = lo + (hi - lo) / 2;
+> +		int pivot, pivot_index;
+> +		int i = lo - 1;
+
+The be clear, I would prefer to initialize `i` when we really use it (i.e. at
+the for-loop).
+
+> +
+> +		/* We employ the median-of-three rule to choose the pivot, mitigating
+
+https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
+
+> +		 * worst-case scenarios such as already sorted arrays and aiming to reduce
+> +		 * the expected number of necessary comparisons. This strategy enhances the
+> +		 * algorithm's performance and ensures a more balanced partitioning.
+> +         */
+
+$ ./scripts/checkpatch.pl --strict ...
+ERROR: code indent should use tabs where possible
+#284: FILE: drivers/platform/chrome/cros_ec_sensorhub_ring.c:171:
++         */$
+
+> +		if (array[lo] > array[mid])
+> +			cros_ec_sensor_ring_median_swap(&array[lo],
+> +							&array[mid]);
+
+It can fit into 100-column.
+
+> +		if (array[lo] > array[hi])
+> +			cros_ec_sensor_ring_median_swap(&array[lo], &array[hi]);
+> +		if (array[mid] < array[hi])
+> +			cros_ec_sensor_ring_median_swap(&array[mid],
+> +							&array[hi]);
+
+Ditto.
+
+> +
+> +		pivot = array[hi];
+> +
+> +		for (int j = lo; j < hi; j++)
+> +			if (array[j] < pivot)
+> +				cros_ec_sensor_ring_median_swap(&array[++i],
+> +								&array[j]);
+
+Ditto.
+
+> +		cros_ec_sensor_ring_median_swap(&array[i + 1], &array[hi]);
+> +		pivot_index = i + 1;
+> +		if (pivot_index == k)
+> +			return array[pivot_index];
+> +		if (pivot_index > k)
+> +			hi = pivot_index - 1;
+> +		else
+> +			lo = pivot_index + 1;
+
+Add a comment and thus `pivot_index` can be eliminated.
