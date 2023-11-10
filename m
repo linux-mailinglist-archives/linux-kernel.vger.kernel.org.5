@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B51E97E8119
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE987E7E4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345665AbjKJSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
+        id S1343849AbjKJRnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:43:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345292AbjKJSW6 (ORCPT
+        with ESMTP id S234766AbjKJRmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:22:58 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39EA43F1D
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:19:41 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so3926195a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:19:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699636780; x=1700241580; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ng5PxaHEUakeDJDrRTqAaFPDP7NquJ67qdCuJTYti9U=;
-        b=P1w6LNW215qlv/aq0OAY7cGFT/JZZ/sKP1yfeLZ88yuwIH0RUJ8NklJZjss5bKvmH3
-         9uB9D/SuX4/BjF97Vc+TyCBKmNEwqxgE9/lDn+ntZ+rbDz+YWgtvrwFzUbnYkT6eMc1/
-         /OM1WeSPw5j4Y8QI2NUYTrTkRkR60o2Gn2xac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699636780; x=1700241580;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ng5PxaHEUakeDJDrRTqAaFPDP7NquJ67qdCuJTYti9U=;
-        b=jp7wGVGnku/Wx7/9YKB6P1gF2vkGJgC845jQRtEoDr+Cns8Ho1xuGODEIY6GVyeKx3
-         5kKVYcDsbifyG1xfKB2Vi37jOYydYH/oHMWx72EpLbEYXw4Y+ZVK93jLHwWTaMxEGAU5
-         vT6Y4ErCSr1Po8zkPovqxgBaSBvP5RstkEPvb21RGmVBzADZM5l0HaNwTEA7KSwZCv2p
-         vodtSHlMyqeHdd8aDdFiIZVzj65O5c0KhDLi4hb2/PU7f4WkDO+r5IIJAFgQuPY+zGAq
-         aPgjt5bq7czGa+VOGqOIpc67T10Fl6B6wFwJJiIBW6mryL8Ut5Ro9XylY/qkFKokUgoK
-         f24w==
-X-Gm-Message-State: AOJu0YzaerGjtDIF03Uq6f1FcZVfz1lfylw2WMC9wLqICe3XmklZiePe
-        uDxMd1iR79Na7quxgoW+UnP4VWG2hXkss2oLXf4YDWlW
-X-Google-Smtp-Source: AGHT+IGSxDotoYlhaj849V7CplZ4mgYPBbcXvyzt59Pb7iGBj2qMYWMtkCByQnmAcIlk0Lt8oWonrQ==
-X-Received: by 2002:aa7:d387:0:b0:53d:a1c0:410f with SMTP id x7-20020aa7d387000000b0053da1c0410fmr15688edq.2.1699636779926;
-        Fri, 10 Nov 2023 09:19:39 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id r20-20020aa7cb94000000b00543597cd190sm1350083edt.47.2023.11.10.09.19.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 09:19:39 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so3925022a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:19:39 -0800 (PST)
-X-Received: by 2002:a05:6402:2805:b0:544:a26c:804c with SMTP id
- h5-20020a056402280500b00544a26c804cmr9296ede.16.1699636778871; Fri, 10 Nov
- 2023 09:19:38 -0800 (PST)
+        Fri, 10 Nov 2023 12:42:00 -0500
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB985446C3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:23:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=x9s/LbhV6ymMyl2qdLIGf9X5DBfCTAfDF4eYJOh9Vx0=; b=Rkji7kiMy3kxAH1nXHMd2o11vW
+        YkoQAPbjQkUUCVyHGx3ZCOv54R91m7pMbf9s7MKo9JChwsa5O7RIOU+iV5k6XJDR1XZ3d5coTfna4
+        tg+3k/5mZOd5vHXYQbG608Uj0B+syDGE6Uu95R8SKwyU3hcPddOBAJu91GYZO49UyLymGpLyIU26J
+        xv8o4eyZFkrNXPz91IQYXIzYMNzRPVWDCf+ViigyzJ2SXIwtRBj8+asXia15DVpx7Sy8DrB1dA+HT
+        AevadpkkluIvrmtJU0oU17Ey6W64MSnXWXJDl83330V7b8hCHGSrmwVzVoxkg1Lp+aFO1Qmi7a0Jl
+        IuNRbBdg==;
+Received: from pool-96-246-156-208.nycmny.fios.verizon.net ([96.246.156.208] helo=X1.myfiosgateway.com)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1r1VEF-001ikc-7x; Fri, 10 Nov 2023 18:23:35 +0100
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, ray.huang@amd.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v2] drm/amd: Document device reset methods
+Date:   Fri, 10 Nov 2023 12:23:28 -0500
+Message-ID: <20231110172328.27451-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <CAJvTdKn-xtmin9OjnzHg8wy4PM8Lc3Per=3y3UWORhjdroYP3w@mail.gmail.com>
-In-Reply-To: <CAJvTdKn-xtmin9OjnzHg8wy4PM8Lc3Per=3y3UWORhjdroYP3w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 10 Nov 2023 09:19:22 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjvJ44a9Z=tkR2o-heQ4XLp0sgynDOhe6JH2fgg=MMMXA@mail.gmail.com>
-Message-ID: <CAHk-=wjvJ44a9Z=tkR2o-heQ4XLp0sgynDOhe6JH2fgg=MMMXA@mail.gmail.com>
-Subject: Re: [GIT PULL] turbostat for Linux-6.7
-To:     Len Brown <lenb@kernel.org>
-Cc:     Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 at 21:03, Len Brown <lenb@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
+Document what each amdgpu driver reset method does.
 
-Even though this is a user-space tool, not kernel code per se, I
-really want a signed tag..
+Signed-off-by: André Almeida <andrealmeid@igalia.com>
+---
+v2: Add more details and small correction (Alex)
 
-And yes, I'm trying to get to that point even for kernel.org accounts. Please?
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-              Linus
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+index a79d53bdbe13..c4675572f907 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -504,6 +504,31 @@ struct amdgpu_allowed_register_entry {
+ 	bool grbm_indexed;
+ };
+ 
++/**
++ * enum amd_reset_method - Methods for resetting AMD GPU devices
++ *
++ * @AMD_RESET_METHOD_NONE: The device will not be reset.
++ * @AMD_RESET_LEGACY: Method reserved for SI, CIK and VI ASICs.
++ * @AMD_RESET_MODE0: Reset the entire ASIC. Not currently available for the
++ *                   any device.
++ * @AMD_RESET_MODE1: Resets all IP blocks on the ASIC (SDMA, GFX, VCN, etc.)
++ *                   individually. Suitable only for some discrete GPU, not
++ *                   available for all ASICs.
++ * @AMD_RESET_MODE2: Resets a lesser level of IPs compared to MODE1. Which IPs
++ *                   are reset depends on the ASIC. Notably doesn't reset IPs
++ *                   shared with the CPU on APUs or the memory controllers (so
++ *                   VRAM is not lost). Not available on all ASICs.
++ * @AMD_RESET_BACO: BACO (Bus Alive, Chip Off) method powers off and on the card
++ *                  but without powering off the PCI bus. Suitable only for
++ *                  discrete GPUs.
++ * @AMD_RESET_PCI: Does a full bus reset using core Linux subsystem PCI reset
++ *                 and does a secondary bus reset or FLR, depending on what the
++ *                 underlying hardware supports.
++ *
++ * Methods available for AMD GPU driver for resetting the device. Not all
++ * methods are suitable for every device. User can overwrite the method using
++ * module parameter `reset_method`.
++ */
+ enum amd_reset_method {
+ 	AMD_RESET_METHOD_NONE = -1,
+ 	AMD_RESET_METHOD_LEGACY = 0,
+-- 
+2.42.1
+
