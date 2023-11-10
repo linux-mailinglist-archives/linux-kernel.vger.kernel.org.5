@@ -2,236 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 521147E7FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F1F7E82FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbjKJSDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:03:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        id S1346388AbjKJTkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235435AbjKJSCW (ORCPT
+        with ESMTP id S235926AbjKJTjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:02:22 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434BB25089
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:45:44 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-45dad6ece90so848463137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699609543; x=1700214343; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7pUm/c3POcD26li8+Wke26dcOs+wqv0EJOUWvylNJQo=;
-        b=wYXDWjn7U63zYTzMWT2KkWW3kr8rgGqbDhEyIZZ5Ty4YEcIia9r48p4Dy+2CpAYXB7
-         l+/H/1gWi2YA6I13l4MSSKx7OpCK5aBvOUdy0a9KsF4UTae49Np2UUrswYYXoUhqrnE0
-         8gKbE3zhta89j3NLl92qaHlyyjmWh3+4kPnJ4Jf3RS193wHSWKQBQ/G16Y3PzcFsfQI5
-         iqrYZX93Jvm3B6Sz81vD44uR6HsFywTXRgUS0r/Sfl/Gy7aI9zXhn9gMnm8BCNGtm8+z
-         u45Qgm4wKz9o197av3qEsTzpCIB3+N9cwR5YFs8wn4E3nYRLdvwK8NNSjkTy+9MREi5z
-         E93w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699609543; x=1700214343;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7pUm/c3POcD26li8+Wke26dcOs+wqv0EJOUWvylNJQo=;
-        b=pRC+OP2WkXqjP0CPIBE6z6cu5D8b2ZU6WqIzAK9sTNURTtXYtg2XiV9IQk8d3SIjcC
-         RZSBWlbiW72Mu0GxyToJgvrruMKBAltN+hn58gqLvqQKC1XZ9V8LErNY6/hmBhfIkD73
-         jnsTGuyaT3pWoCcrQFBGBmVxsck7KO63CqS0JvtbVDRNpZPuMgyKSi6O4r6GJvDHMkWF
-         xT+ylmPJdCWBHDLdHVlr7wYM3/yMZmkZNBkLCgM+4qg/Wi1dMiAhbYwcDJxwIB6QfKod
-         UaLllLI0Hmd0u+6TNb9OVoFF6kjTViRMwwb4+kOZHJHxFG8XenUb6s1Zbw0+g2fsrg8O
-         Zutw==
-X-Gm-Message-State: AOJu0YxwGb6meACuaG92P2O5YfVES6nlq4WUTOf882hizs4hhCBhVCEx
-        dGr2nh7vyi6+pu9yBRRMhlgK0JpB6OQAgwqoc/nshA==
-X-Google-Smtp-Source: AGHT+IGwONXBFBpAhD15bfaIVPNRmPgG1R+yrVeei2EXlwNf647dy9292PLH34LJT3G6STTIfr9u5/CLo0iSwGhMU3o=
-X-Received: by 2002:a67:c381:0:b0:45d:a4a6:6fae with SMTP id
- s1-20020a67c381000000b0045da4a66faemr6419953vsj.30.1699609542944; Fri, 10 Nov
- 2023 01:45:42 -0800 (PST)
+        Fri, 10 Nov 2023 14:39:45 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2074.outbound.protection.outlook.com [40.107.237.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C917E2508F;
+        Fri, 10 Nov 2023 01:46:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oRpovgU9nxgmuQ0AeVptsu1xYdMnzOlrW2S2S3lg7DaKe+ECLG4gqs/8oiWrZbv9U8Pp6xvj4wOYZCwd782gyWlTE2TrJKcYvhr3yHdsMLVF2Lh27l130HduRmacGBSl6Z0fnPiTuhqXT/FCJ+ai/kR3rOdNNPtSiBeNfBZLIE3R+px/3m86pGOi4Jv6x0OPQSC3FEppUIgZQ4gy+v2rsU9HHYDvCukbxwykvpEbYR51OQlA8cYMPkCCqSIiIeZcn+V/EWK0Zalk1TUcxPUKMRSBVwNYRgFWTUxDXR9NxaIo2xBhVLjHT/R36wDhT6O/ir8QzKDkoi6uWO0UiBiiPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tu69UdR1l4uAzcW1HKByJdIrDMQCaDkxBQ5nInXxSZY=;
+ b=l8+43dg74KVCNB/pms9olP2JUmcdnJ4zCE5VvYwI3p6/DXnGP+A3/VVejCpLh1FJtkVJfF1MDu/AG9RlsTfPxsWamVr6Db8KuKwxKV6GliMBcBXHckQC6i3II+gSzjNYV/zCIoj60K0uglQFmDkOvdCU8MhzRMn4VDreJgAASyYvXcFQdxvJdX0xHAqD+31znN0JKLpNhzP3eibg8ptm4tL6tusp5jVFeNlcoI4zapp82qUX61IXBX7yIOEeg0/A/yiAf299XuFEd9Fu+Dk9G4jQkJ+Jo2BfJaHvJHtVv/lXwyEwUfSe8J3ApmCgESgaanwbx3hDjauqYRfW1tB/tQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tu69UdR1l4uAzcW1HKByJdIrDMQCaDkxBQ5nInXxSZY=;
+ b=FQY6adheShZA2Dfz9ww4DGAcqAEx5jPTyQ7Ae+txm1m2MrQ70f7OH291QYO1TyYvr/3wI9dOKGNQALSBjQW8HEDFJS0fD++EX6Fo2pn78GcjQlu8wde1Gq9UCSaZv5CMvyd0waDRJHeviHur/+xwZHApbwL3nSKmDthSJKc3f8g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6588.namprd12.prod.outlook.com (2603:10b6:510:210::10)
+ by BY5PR12MB4243.namprd12.prod.outlook.com (2603:10b6:a03:20f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Fri, 10 Nov
+ 2023 09:46:22 +0000
+Received: from PH7PR12MB6588.namprd12.prod.outlook.com
+ ([fe80::ffab:2acc:cf5:1616]) by PH7PR12MB6588.namprd12.prod.outlook.com
+ ([fe80::ffab:2acc:cf5:1616%7]) with mapi id 15.20.6954.028; Fri, 10 Nov 2023
+ 09:46:21 +0000
+Message-ID: <f42bf6b7-75b8-124b-c79e-ad7a9b706990@amd.com>
+Date:   Fri, 10 Nov 2023 15:16:08 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 1/2] perf tool AMD: Use non-precise cycles as default
+ event on certain Zen2 processors
+Content-Language: en-US
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     acme@kernel.org, kim.phillips@amd.com, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, changbin.du@huawei.com,
+        yangjihong1@huawei.com, zwisler@chromium.org,
+        wangming01@loongson.cn, chenhuacai@kernel.org,
+        kprateek.nayak@amd.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
+        ananth.narayan@amd.com, santosh.shukla@amd.com,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+References: <20231107083331.901-1-ravi.bangoria@amd.com>
+ <CAM9d7cgs9Wk0OFoea4jOote-drHjvCimJyt7GWdO2Giw=d7Jog@mail.gmail.com>
+From:   Ravi Bangoria <ravi.bangoria@amd.com>
+In-Reply-To: <CAM9d7cgs9Wk0OFoea4jOote-drHjvCimJyt7GWdO2Giw=d7Jog@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1PR01CA0144.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:68::14) To PH7PR12MB6588.namprd12.prod.outlook.com
+ (2603:10b6:510:210::10)
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-5-almasrymina@google.com> <076fa6505f3e1c79cc8acdf9903809fad6c2fd31.camel@redhat.com>
- <CAHS8izOGSE-PJ1uShkH_Mr6kUoC1EjM_9P1J=_TO6nLFP9K53Q@mail.gmail.com> <aec0f586-c3b9-8da8-6a39-f313105267f8@huawei.com>
-In-Reply-To: <aec0f586-c3b9-8da8-6a39-f313105267f8@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 10 Nov 2023 01:45:29 -0800
-Message-ID: <CAHS8izP64Q3cP5vJ5ESQH9Y3fkSn8RCS+T84orKhK5=pzdJCLA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 04/12] netdev: support binding dma-buf to netdevice
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6588:EE_|BY5PR12MB4243:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2c8ad9a-72ae-4301-0a42-08dbe1d1e4c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gBAVU0ykVV2A0dCWzkiTa1+YN6qKG+OoW9Th3mPgvUV70dn2D4PU7jOkthsUqgyy6f7ShXGRWDyUYaiIfO2GIEn9r32NiLcrTJRWL1jBX3V6ClUrfR3xE4YmNPO0Y5T3bslbAUzbQNCfffcJdpbnYja5Ixe2xdxMcUqFo9RNbpa3jcLXQh7WmH2eqA0giesdkOgXg1YZ9JzvX43SqKzPDRbxy6NWJv0e2K8ejycWJwDAN6ZL656d1POHi0oZ+d9IHnZ09LuIPjm/8cDECDb61oaLftgZS9oDguvkU61GWeA/1hU1IjVrBLP4QCJv6rOtNvPK671DPfzDGK+ZIJRpw91F1v9zSploh+rqWuq8Gku7I5dIQoTX9okZMooTggNoDe6Q6FFeKD4QHaQLsZfBfb9lcYuh+k3iOMGdiqF5H5/Jpi7Q9rjMA+lOJzyJcKly/M7OdGDaVkhf/ZNvGC4fD62V+vMzduoC0biK1Qw0dltCUvbdAl1pY6rXvAmHI9HF0KHkUJaQT9uSHwAwac8kGJzCgnYqTLnxAjMATzRuiJARLcFnfj0G9UO+uBJsm3UIGDQb7dDihkCIvzSrV78ReOjhY+ZX+LCtKbtnxMQJ8InFajg47Ri8xmYzaELJE5+eLR2vW8EwxVT8pzpPOPJ45FltgXuGeTURzHSZ/Tz9WxYMQmizNb1kgSCKH0lMzPoh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6588.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(39860400002)(136003)(366004)(230173577357003)(230922051799003)(230273577357003)(451199024)(64100799003)(1800799009)(186009)(316002)(2616005)(26005)(83380400001)(66946007)(6666004)(6506007)(478600001)(6512007)(66556008)(2906002)(8676002)(8936002)(36756003)(66476007)(38100700002)(5660300002)(4326008)(41300700001)(31696002)(6486002)(4744005)(44832011)(7416002)(86362001)(6916009)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXlldTN4VWVESmVEelhlNjhjaUhIaXNtckhibW1XZ2xwK2RCc3hGNHR0b2Jz?=
+ =?utf-8?B?RE0xUEo4Tms4RXlNZS9nb0FhOU9wbmFuTG9sUWkxdzhTRkNyNm5DMWt6K3h4?=
+ =?utf-8?B?NGpYMExGUUxpcHJnTGhwVzgyVVlYc3AxN3JLRVdRQnBFekNKNzJHa2lTcUZa?=
+ =?utf-8?B?czQreHhvQ2RBTjEwRytwRFFrSVJsSFAyS0JNaHkvMWhLcm9Ma0JrQmtkN1do?=
+ =?utf-8?B?ak1lNWMxZlRBVGNOVVpGaWE3ZmliNm0rNkQ1S1BDUEFLTWpQbnduVGcwWUpB?=
+ =?utf-8?B?a3p5SXpaTndKSlJTOW80blZob0RmVnYyZC9PSVlVa0Ywcmt5UXlQZGRpQXpF?=
+ =?utf-8?B?WnJ0eHMxdGxFRzJ6ckwwZ0hndHBQNlppMFZPYW53VlpseHNEZ3AyN0RzTnNk?=
+ =?utf-8?B?Tk5XSGdIeW14Z1hzMW9SeEFzZXNQRHdjNzIyT3RuQ3V6M0dTYVdrZEIrYmdv?=
+ =?utf-8?B?MjlHdjVoeFN5UkUxMnpTUjdheG56dTFHam1wcHA5cEF5SDFXOXZQT0M2bk9q?=
+ =?utf-8?B?ME5NUitEQlNSS1crVUloSGd1WUcwb1BEYnlvN1JYQmF1Unl5QlZHOGFOOEVE?=
+ =?utf-8?B?dGFpZm1BeXh5VGJhYzNmRGZBWU5PcjdBODZyOW5xbHFWMER4VU0xdi9jTWEy?=
+ =?utf-8?B?alpKUUI5V3Q0c2NhanBiWFFkNVE1citQWHM3MmY3QmJnQjNTQ0Z6cmhGSGE2?=
+ =?utf-8?B?dUphR254NnJKaFpna2loRTM0eFJVSHJyN0Zhd0NrNXpvb21hWmc0SlRYM3Zl?=
+ =?utf-8?B?aktlTFBRdDlsY3MzYUR6dWVFMTFKeVgwSUZsMFJ3c1N5a05RZjN6VVZDS1Nq?=
+ =?utf-8?B?LzVmclJTcEZab1RIc1l5M1RxcThsV2xMWGpZeng5dlNZSm5Wd2lSNnFUU2U1?=
+ =?utf-8?B?bTZiZ0lIVDFnLzJxZHhDQVdpTFo5N0M0c0I2YnM0OTJMbFlxYVJSZ3RkV1hw?=
+ =?utf-8?B?ZExtVUtQMXRKYTNnRXpadkNnOGl1OW5sMzlJL3BDVHg5a214MWhlT0dHMDZn?=
+ =?utf-8?B?SnNJZTdRZnZFdmNzQlI1T29wbnJRbVorYnFPNUVMT2tFMmNGb0w3djVoYzFh?=
+ =?utf-8?B?VW0vVXltZWUyZXJsSjRFbGRwR1IrTEtQWkhmN25HRkV2a1M3NXoxWXI5UGph?=
+ =?utf-8?B?dVR4RGRJQktTQmh0aVZleDVhR0hSeEZSSnhWc1NqNHhYSjZ3K0dyYlEydzVl?=
+ =?utf-8?B?SU1OeWZhVjhGeGlYU3ljSzdUK0tDZ2ZWUlNOSEFoK3ExNUJnWEdIMHp3Sk1U?=
+ =?utf-8?B?WVUxeE1Ha0VNK051eWVoZjR3WEpHZE9IU2JOSkJFK2E4WldpOE9IVWQxamEv?=
+ =?utf-8?B?NWtZYUV0WVB3Q1JUQWhVNjNJQmhtNXMrNUJ3K1R6SitYUVBUNzVWNVl4REla?=
+ =?utf-8?B?YURocWxkeko2NGUyeUhFTXpNeHY5RytoWkUxblJjdU5HcWwyNGxvc2RPS1lp?=
+ =?utf-8?B?N0Y4dzUvQUlodGw4ZEl0ZXZXQ0k0WHFZSlBqSDdzeXJVSXhNNDkzcVdzS2kr?=
+ =?utf-8?B?aGRzMzE5UEYyTDhveEp4RFFBRHZTYUNEOHAyQVVPMGJSNnB2L083Tmp3OVJK?=
+ =?utf-8?B?eEV1c1dvUVJWZENXYWxQeWxLd1FZSlFwb2FvaWw4YXU3ejNEZEVjemVUenZ3?=
+ =?utf-8?B?ZUoraUwxV0JWdHpnU1FjcU02NFNNaC9EYWJEZXNHWWFMWnMzejhRZG9aUkpu?=
+ =?utf-8?B?LzZHKytrd01laElTOTZ1d2ZSNng0bTV6WlhFT013Q3JjNGRHQXBWV3NvMGhD?=
+ =?utf-8?B?VytzMlpaOUE0OVBBNi90V0tkVGlNOWJDaWhwQS9LUkhiT2dmM1pvMldlalc3?=
+ =?utf-8?B?d0VjSVlITlU3V3E4MllsYlllSy9NaWlzQlNkREp5K1hWcHN6bmdTUVMyTC9k?=
+ =?utf-8?B?ekgvdGpsSCtFNGxSQjM0eWdvQXl6WE05VkxiNmtSa0p1U3Z4K2dja3lIUU9J?=
+ =?utf-8?B?RWh1K1dOa2EwRklaM2RGa3FwamhWYnA5b3V4N1c1dGM0eXBaZWJyVzdNUVVa?=
+ =?utf-8?B?Ny9JR3IyemtXTWZnVDk0YkNKU0JSN1FZNjRHOHRncVF4dDZwUlU3WjVTNlhH?=
+ =?utf-8?B?amNjUUhtbStveE9yeStGRERoMlJieGlFWkhxRHRMSWt0WVg5UHYxc05EWnc4?=
+ =?utf-8?Q?vNQTLIZcm+FepWmeo+POvY7sW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2c8ad9a-72ae-4301-0a42-08dbe1d1e4c3
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6588.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 09:46:20.8976
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0+1pOcTH/XI2ZBvrnAseBXoaIHszFrJK0QlroKqi8ZdaH2dlcSFhoA34Xsn8agwmpbWROdqTgz44QkKuwntT4Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4243
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 11:38=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/11/10 10:59, Mina Almasry wrote:
-> > On Thu, Nov 9, 2023 at 12:30=E2=80=AFAM Paolo Abeni <pabeni@redhat.com>=
- wrote:
-> >>
-> >> I'm trying to wrap my head around the whole infra... the above line is
-> >> confusing. Why do you increment dma_addr? it will be re-initialized in
-> >> the next iteration.
-> >>
-> >
-> > That is just a mistake, sorry. Will remove this increment.
->
-> You seems to be combining comments in different thread and replying in
-> one thread, I am not sure that is a good practice and I almost missed the
-> reply below as I don't seem to be cc'ed.
->
+Hi Namhyung,
 
-Sorry about that.
+>> By default, Perf uses precise cycles event when no explicit event is
+>> specified by user. Precise cycles event is forwarded to ibs_op// pmu
+>> on AMD. However, IBS has hw issue on certain Zen2 processors where
+>> it might raise NMI without sample_valid bit set, which causes Unknown
+>> NMI warnings. (Erratum #1215: IBS (Instruction Based Sampling) Counter
+>> Valid Value May be Incorrect After Exit From Core C6 (CC6) State.) So,
+>> use non-precise cycles as default event on affected processors.
+> 
+> It seems like a kernel issue, do we have a kernel patch not to forward
+> precise cycles or instructions events to IBS on the affected CPUs?
 
-> >
-> > On Thu, Nov 9, 2023 at 1:29=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei=
-.com> wrote:> >>>
-> >>>>> gen_pool_destroy BUG_ON() if it's not empty at the time of destroyi=
-ng.
-> >>>>> Technically that should never happen, because
-> >>>>> __netdev_devmem_binding_free() should only be called when the refco=
-unt
-> >>>>> hits 0, so all the chunks have been freed back to the gen_pool. But=
-,
-> >>>>> just in case, I don't want to crash the server just because I'm
-> >>>>> leaking a chunk... this is a bit of defensive programming that is
-> >>>>> typically frowned upon, but the behavior of gen_pool is so severe I
-> >>>>> think the WARN() + check is warranted here.
-> >>>>
-> >>>> It seems it is pretty normal for the above to happen nowadays becaus=
-e of
-> >>>> retransmits timeouts, NAPI defer schemes mentioned below:
-> >>>>
-> >>>> https://lkml.kernel.org/netdev/168269854650.2191653.8465259808498269=
-815.stgit@firesoul/
-> >>>>
-> >>>> And currently page pool core handles that by using a workqueue.
-> >>>
-> >>> Forgive me but I'm not understanding the concern here.
-> >>>
-> >>> __netdev_devmem_binding_free() is called when binding->ref hits 0.
-> >>>
-> >>> binding->ref is incremented when an iov slice of the dma-buf is
-> >>> allocated, and decremented when an iov is freed. So,
-> >>> __netdev_devmem_binding_free() can't really be called unless all the
-> >>> iovs have been freed, and gen_pool_size() =3D=3D gen_pool_avail(),
-> >>> regardless of what's happening on the page_pool side of things, right=
-?
-> >>
-> >> I seems to misunderstand it. In that case, it seems to be about
-> >> defensive programming like other checking.
-> >>
-> >> By looking at it more closely, it seems napi_frag_unref() call
-> >> page_pool_page_put_many() directly=EF=BC=8C which means devmem seems t=
-o
-> >> be bypassing the napi_safe optimization.
-> >>
-> >> Can napi_frag_unref() reuse napi_pp_put_page() in order to reuse
-> >> the napi_safe optimization?
-> >>
-> >
-> > I think it already does. page_pool_page_put_many() is only called if
-> > !recycle or !napi_pp_put_page(). In that case
-> > page_pool_page_put_many() is just a replacement for put_page(),
-> > because this 'page' may be an iov.
->
-> Is there a reason why not calling napi_pp_put_page() for devmem too
-> instead of calling page_pool_page_put_many()? mem provider has a
-> 'release_page' ops, calling page_pool_page_put_many() directly here
-> seems to be bypassing the 'release_page' ops, which means devmem is
-> bypassing most of the main features of page pool.
->
+I'm not sure how it's a kernel issue. User can use ibs_op// pmu directly
+and might hit the hw bug.
 
-I think we're still calling napi_pp_put_page() as normal:
-
- /**
-@@ -3441,13 +3466,13 @@ bool napi_pp_put_page(struct page *page, bool
-napi_safe);
- static inline void
- napi_frag_unref(skb_frag_t *frag, bool recycle, bool napi_safe)
- {
--       struct page *page =3D skb_frag_page(frag);
--
- #ifdef CONFIG_PAGE_POOL
--       if (recycle && napi_pp_put_page(page, napi_safe))
-+       if (recycle && napi_pp_put_page(frag->bv_page, napi_safe))
-                return;
-+       page_pool_page_put_many(frag->bv_page, 1);
-+#else
-+       put_page(skb_frag_page(frag));
- #endif
--       put_page(page);
- }
-
-The code change here is to replace put_page() with
-page_pool_page_put_many(), only, because bv_page may be a
-page_pool_iov, so we need to use page_pool_page_put_many() which
-handles page_pool_iov correcly. I did not change whether or not
-napi_pp_put_page() is called. It's still called if recycle=3D=3Dtrue.
-
-> As far as I can tell, the main features of page pool:
-> 1. Allow lockless allocation and freeing in pool->alloc cache by
->    utilizing NAPI non-concurrent context.
-> 2. Allow concurrent allocation and freeing in pool->ring cache by
->    utilizing ptr_ring.
-> 3. Allow dma map/unmap and cache sync optimization.
-> 4. Allow detailed stats logging and tracing.
-> 5. Allow some bulk allocation and freeing.
-> 6. support both skb packet and xdp frame.
->
-> I am wondering what is the main features that devmem is utilizing
-> by intergrating into page pool?
->
-> It seems the driver can just call netdev_alloc_devmem() and
-> napi_frag_unref() can call netdev_free_devmem() directly without
-> intergrating into page pool and it should just works too?
->
-> Maybe we should consider creating a new thin layer, in order to
-> demux to page pool, devmem or other mem type if my suggestion does
-> not work out too?
->
-
-I went through this discussion with Jesper on RFC v2 in this thread:
-
-https://lore.kernel.org/netdev/CAHS8izOVJGJH5WF68OsRWFKJid1_huzzUK+hpKbLcL4=
-pSOD1Jw@mail.gmail.com/T/#ma9285d53735d82cc315717db67a1796477c89d86
-
-which culminates with that email where he seems on board with the
-change from a performance POV, and seems on board with hiding the
-memory type implementation from the drivers. That thread fully goes
-over the tradeoffs of integrating over the page pool or creating new
-ones. Integrating with the page pool abstracts most of the devmem
-implementation (and other memory types) from the driver. It reuses
-page pool features like page recycling for example.
-
---=20
 Thanks,
-Mina
+Ravi
