@@ -2,51 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0174E7E80D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D27C7E8104
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345709AbjKJSTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        id S1345966AbjKJSUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346175AbjKJSQq (ORCPT
+        with ESMTP id S1345111AbjKJSRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:16:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A56C37AF9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 05:48:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E63DC433C8;
-        Fri, 10 Nov 2023 13:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699624095;
-        bh=pZ8aJuV2KsVuZiJJPUJVNZcJ8el4lhhalq2w7PkrUTo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W/krW53+BRT4JGtLpBr/mvjqVWq/HeHSW3CWLLU2YXXobeSJErYVhIR+0Fo5phhZH
-         J4bpH/qH4etORqvKrXNo068V+oWzF+E64/mBvzUyVGJlU98Ry2ZoT8VYA1Sp5VzdeX
-         dlLSEZVOf+GvWYjbznn750a/9SpB6BXdfXuH4PsTi1jwWENcV+MaW+GOI/cbBNAU7L
-         ITvEUqraOEAS6hKbor+6W8zO+WdXmYsGYNUG2m6qq1aAT4DtDa/RxTocbiAT6MMjxL
-         ciPBHSa43/qzSB7sfkyCwJN+7SpCPw0oBx26Pfd2yOfwekyXiNNCJozTGJKza93RFB
-         8FsmrF9WY5KnA==
-Received: from johan by theta with local (Exim 4.96.2)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1r1Rrl-0008LS-2n;
-        Fri, 10 Nov 2023 14:48:09 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH] dt-bindings: usb: hcd: add missing phy name to example
-Date:   Fri, 10 Nov 2023 14:48:02 +0100
-Message-ID: <20231110134802.32060-1-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.42.1
+        Fri, 10 Nov 2023 13:17:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB7EA752C;
+        Fri, 10 Nov 2023 05:48:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699624122; x=1731160122;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=i4DGycXr5ls5BoujGjeZj8UmFRoUHSyqGt7yLUkrRBM=;
+  b=SzvoKxA9GZuawdbURVB17nAqv5ZuxtmLb/mB7aenLcP/AiZEeeHNUhfu
+   GcKwxrKICtZ0lDNAbKEFa0mRcy2DAQEC6gz8ED0c5vEN5PaPdU2fJiLx7
+   cWoBdcr7O81akw9xi3AkqwP4lBq4bymzJ55RD0UJ+WL4+2SsmLU36VrWU
+   aDkoYDwY1LFd3Vo/QCBqajD8zPgECrCTGxqjlstOzwf/Ff8OzoHO4GFTj
+   Wwl5/E4z6ZRBjy6uQ6Aj1B8YqF/uYkyCR/YcTIvrpB9x2YEjBKF3lkHO+
+   h5G0Na9WA292cg2u3jBHjq5xlV87CFAzaP6mWixtEZ2NR1DdYFZGi3Rsx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="389044834"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="389044834"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 05:48:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="763762260"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="763762260"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 05:48:42 -0800
+Received: from [10.212.121.231] (shassa2x-mobl1.gar.corp.intel.com [10.212.121.231])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id BFD8D580D69;
+        Fri, 10 Nov 2023 05:48:40 -0800 (PST)
+Message-ID: <2f306eda-953b-4390-8db1-0b3ab4e16213@linux.intel.com>
+Date:   Fri, 10 Nov 2023 08:48:39 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 05/26] KVM: x86/pmu: Get eventsel for fixed counters
+ from perf
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Like Xu <likexu@tencent.com>
+References: <20231110021306.1269082-1-seanjc@google.com>
+ <20231110021306.1269082-6-seanjc@google.com>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231110021306.1269082-6-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,28 +75,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The example host controller node has two PHYs and therefore needs two
-PHY names.
 
-Fixes: 3aa3c66aedef ("dt-bindings: usb: Bring back phy-names")
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- Documentation/devicetree/bindings/usb/usb-hcd.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/usb-hcd.yaml b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-index 692dd60e3f73..45a19d4928af 100644
---- a/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-+++ b/Documentation/devicetree/bindings/usb/usb-hcd.yaml
-@@ -41,7 +41,7 @@ examples:
-   - |
-     usb {
-         phys = <&usb2_phy1>, <&usb3_phy1>;
--        phy-names = "usb";
-+        phy-names = "usb2", "usb3";
-         #address-cells = <1>;
-         #size-cells = <0>;
- 
--- 
-2.42.1
+On 2023-11-09 9:12 p.m., Sean Christopherson wrote:
+> Get the event selectors used to effectively request fixed counters for
+> perf events from perf itself instead of hardcoding them in KVM and hoping
+> that they match the underlying hardware.  While fixed counters 0 and 1 use
+> architectural events, as of ffbe4ab0beda ("perf/x86/intel: Extend the
+> ref-cycles event to GP counters") fixed counter 2 (reference TSC cycles)
+> may use a software-defined pseudo-encoding or a real hardware-defined
+> encoding.
+> 
+> Reported-by: Kan Liang <kan.liang@linux.intel.com>
+> Closes: https://lkml.kernel.org/r/4281eee7-6423-4ec8-bb18-c6aeee1faf2c%40linux.intel.com
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
 
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
+>  arch/x86/kvm/vmx/pmu_intel.c | 30 +++++++++++++++++-------------
+>  1 file changed, 17 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index c9df139efc0c..3bac3b32b485 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -406,24 +406,28 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   * result is the same (ignoring the fact that using a general purpose counter
+>   * will likely exacerbate counter contention).
+>   *
+> - * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
+> - * as there is no architectural general purpose encoding for reference cycles.
+> + * Forcibly inlined to allow asserting on @index at build time, and there should
+> + * never be more than one user.
+>   */
+> -static u64 intel_get_fixed_pmc_eventsel(int index)
+> +static __always_inline u64 intel_get_fixed_pmc_eventsel(unsigned int index)
+>  {
+> -	const struct {
+> -		u8 event;
+> -		u8 unit_mask;
+> -	} fixed_pmc_events[] = {
+> -		[0] = { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIONS. */
+> -		[1] = { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
+> -		[2] = { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLES*/
+> +	const enum perf_hw_id fixed_pmc_perf_ids[] = {
+> +		[0] = PERF_COUNT_HW_INSTRUCTIONS,
+> +		[1] = PERF_COUNT_HW_CPU_CYCLES,
+> +		[2] = PERF_COUNT_HW_REF_CPU_CYCLES,
+>  	};
+> +	u64 eventsel;
+>  
+> -	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) != KVM_PMC_MAX_FIXED);
+> +	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_perf_ids) != KVM_PMC_MAX_FIXED);
+> +	BUILD_BUG_ON(index >= KVM_PMC_MAX_FIXED);
+>  
+> -	return (fixed_pmc_events[index].unit_mask << 8) |
+> -		fixed_pmc_events[index].event;
+> +	/*
+> +	 * Yell if perf reports support for a fixed counter but perf doesn't
+> +	 * have a known encoding for the associated general purpose event.
+> +	 */
+> +	eventsel = perf_get_hw_event_config(fixed_pmc_perf_ids[index]);
+> +	WARN_ON_ONCE(!eventsel && index < kvm_pmu_cap.num_counters_fixed);
+> +	return eventsel;
+>  }
+>  
+>  static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
