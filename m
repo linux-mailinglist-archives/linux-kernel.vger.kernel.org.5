@@ -2,129 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2EB7E7FEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C52B07EA927
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbjKJSBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:01:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
+        id S229742AbjKNDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 22:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235262AbjKJSAX (ORCPT
+        with ESMTP id S229626AbjKNDbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:00:23 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC1633677
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:26:42 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507c1936fd5so3413234e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 04:26:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699619200; x=1700224000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vbt3drzH6qk5bCWArsPemY04IIl/cwsmy/leESa8QcA=;
-        b=SuHXJkIcrLQjvNsTMmhw/YnHSw9Lp0TiM9rYq0lLffTZATc/Rore3icDkMYLfgx/Rn
-         YYeO72nbh/XgarKv3jHX4Yt3CTaM6tL3yQnKUv4RlE57PF2TijhuiLqTyroS53r2R5xc
-         5yuDoEgoaAHIDwPFio5/wpAgkDeS0EWyyGSHhmvS25PtUYXm7qL4zSmn4Fx7qbKOSq3b
-         4T0Kt5shjvyDVxLSZxZI5CQgK1HTp4XebzmytEy21PGlmgwCwA4TX6u4n+2IDrgHKu0X
-         ZrI1HXfRKjf8iwtC42ghVOLJSga1o9OpeClItAid97iOI0RapSN8xWd/rxg0GCsRaJZO
-         7GPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699619200; x=1700224000;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vbt3drzH6qk5bCWArsPemY04IIl/cwsmy/leESa8QcA=;
-        b=LOwDYn1h5neS0f8IP0PGcLZOPYkMyIvaEWgQ5d7F0UycZpTW7YUcaKGErVNbsK8TS0
-         /sybjGppvmTQH1ocUHSRiKKy0jf3LCiL3J0hCmRgO+IFcrKEzvJHooDOIn4BdYvsJVF+
-         PDsQxjd3LGr86/wMjoue5q26VufPc+t13TqqfI0oWdZcJZoKC1gplwqKiPdoA0totFah
-         lMoa+b2fG0klz/j/fZFNuuB/2pLR3X9L7umEmQfQwSFl3id8O4no3zIMzWcaFBvLFtZk
-         lotIZUv+A+9o7po4WR66jS8sBkY97FpUDGbL7gJhlhQ8D3c3arEsOC1gu1zezPENrZjq
-         43fg==
-X-Gm-Message-State: AOJu0Yw7nTARIMct7lLmxvES69y1EX7jspNNZOmJjd+tXp61lKDAJMc8
-        kF1xm33vKmDqO9MlaadnSky3IA==
-X-Google-Smtp-Source: AGHT+IFo23qlHctwNYuSs93xlQPGA1oCz5oMynSoQzr47pICWmuEFh+5o92Fz7jLKHrPH/3TRo/4eg==
-X-Received: by 2002:ac2:44ac:0:b0:504:b84f:7b19 with SMTP id c12-20020ac244ac000000b00504b84f7b19mr770535lfm.20.1699619200440;
-        Fri, 10 Nov 2023 04:26:40 -0800 (PST)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id f19-20020a2e9193000000b002c0055834b3sm257685ljg.4.2023.11.10.04.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 04:26:40 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v6.7-rc1
-Date:   Fri, 10 Nov 2023 13:26:38 +0100
-Message-Id: <20231110122638.21897-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 13 Nov 2023 22:31:43 -0500
+Received: from ns3154000.ip-51-89-173.eu (ns3154000.ip-51-89-173.eu [51.89.173.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB6A18C
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:31:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=corptia.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID
+        :Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=AuFOzWEY1p4B/ao4HYur+KTak9IfXFRGw/OWFKPeT54=; b=s/67x5HFer4cDvGt1V/nKkcg9K
+        o6N+kPYKXfSOxo7DhunR80rI5onLE3nqH7pv1ryQFUntMRAnV689tVRYmtZKUNtyfbBc5Jv/3J0aj
+        VPJSuETUGeXKE3Ht+VKHrceJ0a8zXMOJzX3n4/LckcYXfMecV7kU9Joo/yWeLdXENtsTQHKl2TQ0Z
+        2ihcF17YTXVyBKwQsYeFqNEY/Y/tqyX4woCzJ/zFtSHMfG4k3lilQgW7dLC7jvG65Ouq62njyIKBT
+        B+UyqiA4GGmryUz76ycJbgnbRM1/MAp65n+I8fdSci4CXHM4hsCyZ0VfSLREh5w0aLed87jtu9HKy
+        JaL6nAlw==;
+Received: from [46.183.223.78] (port=58971 helo=corptia.com)
+        by ns3154000.ip-51-89-173.eu with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.2)
+        (envelope-from <jobs@corptia.com>)
+        id 1r1QbS-0004yZ-04
+        for linux-kernel@vger.kernel.org;
+        Fri, 10 Nov 2023 12:27:09 +0000
+Reply-To: projects@adnoc-suppplier.com
+From:   Abu Dhabi National Oil Company <jobs@corptia.com>
+To:     linux-kernel@vger.kernel.org
+Subject: VENDORS EOI
+Date:   10 Nov 2023 14:27:07 +0200
+Message-ID: <20231110142707.51156DFB93BEAC05@corptia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - ns3154000.ip-51-89-173.eu
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - corptia.com
+X-Get-Message-Sender-Via: ns3154000.ip-51-89-173.eu: authenticated_id: jobs@corptia.com
+X-Authenticated-Sender: ns3154000.ip-51-89-173.eu: jobs@corptia.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Here's a PR with a couple of MMC fixes intended for v6.7-rc1. Details about the
-highlights are as usual found in the signed tag.
+Greetings of the day,
 
-Please pull this in!
+We are inviting your esteemed company for vendor registration and=20
+intending partners for Abu Dhabi National Oil Company (ADNOC)
+2023/2024 projects.
 
-Kind regards
-Ulf Hansson
+These projects are open for all companies around the world, if=20
+you have intention to participate in the process, please confirm=20
+your interest by asking for Vendor Questionnaire and EOI.
 
+We appreciate your interest in this invitation, and look forward=20
+to your early response.
 
-The following changes since commit 8f6f76a6a29f36d2f3e4510d0bde5046672f6924:
-
-  Merge tag 'mm-nonmm-stable-2023-11-02-14-08' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm (2023-11-02 20:53:31 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v6.7-2
-
-for you to fetch changes up to 015c9cbcf0ad709079117d27c2094a46e0eadcdb:
-
-  mmc: sdhci-pci-gli: GL9750: Mask the replay timer timeout of AER (2023-11-07 13:08:12 +0100)
-
-----------------------------------------------------------------
-MMC core:
- - Fix broken cache-flush support for Micron eMMCs
- - Revert "mmc: core: Capture correct oemid-bits for eMMC cards"
-
-MMC host:
- - sdhci_am654: Fix TAP value parsing for legacy speed mode
- - sdhci-pci-gli: Fix support for ASPM mode for GL9755/GL9750
- - vub300: Fix an error path in probe
-
-----------------------------------------------------------------
-Bean Huo (1):
-      mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
-
-Dan Carpenter (1):
-      mmc: vub300: fix an error code
-
-Dominique Martinet (1):
-      Revert "mmc: core: Capture correct oemid-bits for eMMC cards"
-
-Nitin Yadav (1):
-      mmc: sdhci_am654: fix start loop index for TAP value parsing
-
-Victor Shih (2):
-      mmc: sdhci-pci-gli: GL9755: Mask the replay timer timeout of AER
-      mmc: sdhci-pci-gli: GL9750: Mask the replay timer timeout of AER
-
- drivers/mmc/core/block.c         |  4 +++-
- drivers/mmc/core/card.h          |  4 ++++
- drivers/mmc/core/mmc.c           | 10 +++++++---
- drivers/mmc/core/quirks.h        |  7 ++++---
- drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
- drivers/mmc/host/sdhci_am654.c   |  2 +-
- drivers/mmc/host/vub300.c        |  1 +
- include/linux/mmc/card.h         |  2 ++
- 8 files changed, 38 insertions(+), 8 deletions(-)
+Kind Regards,
+Mr. Mohamed Ghazi B.
+Senior Project Manager
+projects@adnoc-suppplier.com
