@@ -2,230 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD7C7E82FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3547E82DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344364AbjKJTgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
+        id S236071AbjKJTgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235940AbjKJTfX (ORCPT
+        with ESMTP id S229475AbjKJTga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:35:23 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EFF670E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:32:11 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0c7d27fb0so2816971276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:32:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699644730; x=1700249530; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rscOOVYju3IYaiMVnVP6ynDkK2d19s0rTRPZn172d+w=;
-        b=kIY2MI5DJM/qzI+uyaJ+zXU+ZLkWnPqKz4qr6Hbe0AIIZnNxy6OZyl8NAvbJYCWDO9
-         X8anEtkCWZioYhCqIV4l79Sf+3t0jb/YMpjyNDhbpgLmO6qRYCpFB50OmxkM8zSddNxn
-         fGAd/uraB1xQ8IVEI2i0mkh3tnnDFXoItoMyq3jlNJFp6R95LqGY9EL3jJRi+2H5V6C9
-         CM3SeGmJat1BcHy+idyBWYaJQqhbDaItOSh5cp94gO/xB+U11EGFTeJB2S0LVbDkG7fP
-         J5QwD13ehBl8oBW3qlPad/j6VmJu+HmRbkh+Y1BM5Nmervx4Z/W/Eb1fZHpgimydjqN5
-         IBMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699644730; x=1700249530;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rscOOVYju3IYaiMVnVP6ynDkK2d19s0rTRPZn172d+w=;
-        b=BpqVHWXEcz1ZAk86evfVA9tQStuwoSNq7GpSm7mYAJNcFCx2HqTz3j1EpQ43qcl72n
-         R14S3KbVFfsPWLfHf1GUKb4tYopJMCaVVqqt3q32cHyHRzDZAXAVeUCaeFUuuleemzAG
-         hGBmnbIHVW/Z1CSEDh6NkX1BObiEGyioBbuZpCFgRpqAzPNqw9J+GqjTqB0I/LeTYmQn
-         y3kn11Aworf7Jjr3CVNELqj6U4KUS1lcKiMDqpnMIFKLgE4l8aBfdXlWayk29vZxRO/q
-         ca3DmWq2oKLK8XJQZheLoEys52HLlcLiUlxon7aMF6AiXC/Uwrbr3j46BxTpnTQkgJbB
-         dl7w==
-X-Gm-Message-State: AOJu0YzCdyIl3dGArTy8NJzPIoikNsanR75pO/CFmxZB1OqHI8XfXotO
-        5L30CUA1xPzp4EroL6/4RoeWsjsKruw=
-X-Google-Smtp-Source: AGHT+IHHBCWk9v52Oayu+9pKnzADg1rJkQ9vJxLG4FzLGShvKXoBpg0SlnafNs/DMgJlK4ypSOG/E3KH84E=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:9c03:0:b0:d9d:973:a78b with SMTP id
- c3-20020a259c03000000b00d9d0973a78bmr1918ybo.3.1699644730558; Fri, 10 Nov
- 2023 11:32:10 -0800 (PST)
-Date:   Fri, 10 Nov 2023 11:32:08 -0800
-In-Reply-To: <CWVBQQ6GVQVG.2FKWLPBUF77UT@amazon.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <ZUu9lwJHasi2vKGg@google.com>
- <ZUvUZytj1AabvvrB@google.com> <CWVBQQ6GVQVG.2FKWLPBUF77UT@amazon.com>
-Message-ID: <ZU6FOF0qUAv8b1zm@google.com>
-Subject: Re: [RFC 0/33] KVM: x86: hyperv: Introduce VSM support
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, anelkz@amazon.com, graf@amazon.com,
-        dwmw@amazon.co.uk, jgowans@amazon.com, corbert@lwn.net,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 14:36:30 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2081.outbound.protection.outlook.com [40.107.220.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E51CBEA;
+        Fri, 10 Nov 2023 11:35:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dmzJFeBReC/LrS4cpwVja8h24Ra83ERiTTHM5EHEhYbPI9+Nfsa98aR0hUaYHGRgEGXvfNat2oe5ddWkZ+liMLdYqe6Yf7GP3EEGA4oe6M8jplSdNM08VCSS2jxKUNnCezx9XEfHREE5lzd0ZyHCDfGJUc0s7eTEBNPSySjSBqY776lRTjQkpKNpKt2zwFR+TIHUyTfABaZlI4q18dlidjv5cEHGGt64OhiVjL/OghDj1iXyZdG0IfQqSfFANhWmi7ZH0sg0vXy7NXWFjmits0Mt0WrycLGbmeLfIILzl9F2BUpoPo8bh5I1OyB4xcQj3T2T2ZVG3MOrDit9F0l/CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hNriyK82rdMHYkGAu2d2nxk3DoFjIOYlJcXsBLU8iIU=;
+ b=cujZLyUFFNIt8kKokdP5BersprPmF2ILpd+bjmKV7jCqk1YTyCWEN3htza8i5mFSKCV4Jx08/cfHIpkyjq5JC6byzIsBfUIDbGHec2/UYtwAZIlJGrYqbPg8INwFKT8+UK5+CCjDY+N3UHQXJRH4Nc38nLDmClrOqCxEW42o3VJYH7Xz52iufdec2hqex8fYg+qMZoaVAbnvRmywzkHByH4fvxkozqV8wnXIbmFTMH5Z/2yGoDcg323DR8gSqOjVe5Gi7kcDBJZL7if6DtZCKgTqZOg3S3DuxOxMs+hBgaeuiHsF7A1YAGqtxYXf5AfQTYFaFaj3h318KNexATDsVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hNriyK82rdMHYkGAu2d2nxk3DoFjIOYlJcXsBLU8iIU=;
+ b=4emFbpLzxApqinz7zujKkHlyUrK6W+jQiwVQCWrOb7rdt1C1BLyLspiEemMhJNqCJDgFIW6Vf1txVhydLL5YAnF6kJhHhoFheOEGvJqTWkutIR7j6+08zwfn10o7elZwWo4cxryommuQ5jiKlcmmPwZnPZEjbUczhVlZz+Bmz08=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by IA1PR12MB7613.namprd12.prod.outlook.com (2603:10b6:208:42a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Fri, 10 Nov
+ 2023 19:35:03 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6954.027; Fri, 10 Nov 2023
+ 19:35:03 +0000
+Message-ID: <77e95133-a5b0-4c75-9df8-34bff49f0217@amd.com>
+Date:   Fri, 10 Nov 2023 13:35:00 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 25/25] i2c: designware: Fix spelling and other issues
+ in the comments
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
+ <20231110182304.3894319-26-andriy.shevchenko@linux.intel.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20231110182304.3894319-26-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0056.namprd11.prod.outlook.com
+ (2603:10b6:806:d0::31) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB7613:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4de95e37-7f0c-445f-332e-08dbe224228c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UPfF0R8yBNZ4duS4ZENCGqO1y1OTV/VAGM8ustxhc0cAsRq+/VAhyaBRrEPz2sGnqzJ2E5QMGVyqfGTmgVhbAmd21hM5NtrSS6uhk4reytBcrUjOnktZhyAp0GVhdPjWxzhyjmKaiYM00X6+PFl5OW9ly3gcZ+fbxTPszRlNgCYoLLi1wQQTa0zFdNy+Psv8B0jqoJmgXFYjfD7d/Gjf/nzb86GVVfzeT+TmuNYvY5c+vNpd806xdwpAtsZqiHnsp7q/H2XnFB6apG92//5VjK5IAwRWflfqcJ10iwwyxEh3QwSXWeiK6AWCEncvxzskd80Mn+SZSWvTv51gSkQEBxQ72ZimE7Zzuio80JkxZTc7bWbxZMDoE3hDnAEJBAAiqduITcuu/XyLLfjkWVUPKXuFY1jiJDiZS2PMucOSG4jbb+dFbR1dV3Ng2i/NuhFZgrPTts934y/GxI/iOrO2m41HdXMsIp6FZ/8ezxVAA6Qp+kdn52lIuivDQPW7WXDsZQKTHd4d8Pc8SpP+V2gFktBAb9MAnPbB+KuxFphm37IggHq3/X3W8VFLl1Z75B55UdXUZ4AiLQOuqg9si30tHtI53sMWlsxSzsP3SphH2xx6kuCqXpHeFdqKglMDH/bpjMXMOdRnN+xEy9YeLFm25Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(2616005)(83380400001)(66946007)(26005)(478600001)(6506007)(110136005)(66556008)(6486002)(53546011)(6512007)(2906002)(4326008)(8676002)(316002)(36756003)(8936002)(41300700001)(5660300002)(38100700002)(31696002)(44832011)(30864003)(7416002)(86362001)(54906003)(31686004)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L25XYitIZFc4RTZKK3ZQSkVxZGpKOWlKek9WYjE4SFp3Y0V1VmlDT0NIY05P?=
+ =?utf-8?B?ejVNTVFUTVhlaFF3aEhCMStRRmEzc2xHRDJubVVvS01Sc0hlbmtZSlZQZWgv?=
+ =?utf-8?B?blBzeHFhbDl1YUxpQ3hhVU96VWpUcEJudU1La0Erd1dHdUl0NXdzdGxxVlhu?=
+ =?utf-8?B?a0VuQ21RMUtPK0hpNnBTbkVVVXdwbTJtWkJYRUxpRDRpMmt2QWEwOHVWYVhr?=
+ =?utf-8?B?cDFrdDNjSDZ4c2FHUEJiei9rVmNRNW5nTXkxWVVlQVRtUWRIdHRsVi9XZjQ5?=
+ =?utf-8?B?VzZ1MW9mbkdYZ1BnR2RuSW4yUlVrWDVMVG9zK1dQRHJ2SVROdlMwNXd2TFp4?=
+ =?utf-8?B?NWlIYVcxUXl5bW83RjYrV2FKam9uOFV6U2ZmcVBTa3JJYnZtWUtnR1dZWmlm?=
+ =?utf-8?B?dXl5a0RUV2syaXJRTEhmQWJtUXk5MHFMSmk4VEo5blhBTlpQdWZsdkJhckFK?=
+ =?utf-8?B?WStWWVc5ZEJGWTgyazNRVnQ3S3lBOFVUam9xVjU3NktoeTU1U1YzTGlSQUZw?=
+ =?utf-8?B?Zm5NZnVSV3hHTy9JcU0xWlBFNnZ5SkJkOTlWTVFweWpieUVIRi9WS3NRWDdJ?=
+ =?utf-8?B?SU9Da2J0MmJ2OVYrcUVjZEhlMjR4UXR0WXNLUW0xNVI1TXVnS0c3MWtUMGVD?=
+ =?utf-8?B?TStTY2VzdDJNNGI2eUR6UUV3QUoxYWxvaFdsNU1pMG9rcUtyWlVUZjRtWDhG?=
+ =?utf-8?B?Y2QzZVUrMDBKTnExTXVJc2E4b2FSOUMyb3lNNEF0VW43bkJ3R2VOZksxVW5I?=
+ =?utf-8?B?SnhGZFI1UjhoOUFiVWRZV0I4QnNZL01NL0NrQ2ZNWWE2Sm1tU0VaTGZQeVk3?=
+ =?utf-8?B?WExjR3lKc09oTC9JN2Y3SDNId3hVK0xzblBGWUtRRmpmdDFnbHlHWTNxZE9x?=
+ =?utf-8?B?UkN5RVg4bmxwRG5RMWFEcUtrWUhKMU5Idi9EeklwUXZSejFSQlE3KzFwR3hq?=
+ =?utf-8?B?clRLN1ZsS1NFYjJubm8zQUg0ZWVHeXozbWVVLzZqQXBHSXFmTWZ6ZGE3eDhh?=
+ =?utf-8?B?RjhuVzRQdk9PL0c5aWwra29rbVZ4YmZsVVRtcUNsRVhVQm9mSlhPNDlKZXl1?=
+ =?utf-8?B?OWd4VTY0L0d2UG5zRGNmZ3ZMMTUwN2MxUWIwK3NMVmlHSlhCVFRkUkVhZzcr?=
+ =?utf-8?B?dWU5ZWw1ZlkrcGhrTGs0eUs1cEs4K3hGelRQNzJIU1Z6a3JoNkZyTlNwd1BP?=
+ =?utf-8?B?eWRIL1R0aXVyZE5tc0RYQU5ETm5MWGNGMVk4TDlwdFpTSURvL3hZRVFOSGNX?=
+ =?utf-8?B?UTFKNm1ONnA3TjRnWXRBbEdqQjNjZnMzTWthSTUxY0lTeEJVMnVEOHBqeHI3?=
+ =?utf-8?B?clJ0Wld4a2RmUmJHWlpVeWVPQSt6REZFQWFPemR5YkMrczQ4RExvZGZVRkow?=
+ =?utf-8?B?UGd4dXYyMHdFUSt6MDRMM2tVbk9ucDV4T2JuTkExVFU1bFpHbG55SUNRNmk3?=
+ =?utf-8?B?bmQrZVVMbzJreHpPd0xtaVlibjg3cCtrTlBSL2lEcDQ5S3Q1WkNPTEk5LzIw?=
+ =?utf-8?B?Q1RNZkhGZlVtYWYxV1FHaEhWb0lzWFRLSTZnZjgwZGhvYUYrblA0SzlrcXBN?=
+ =?utf-8?B?SXI1RlNRVVNHQ3B1aGI3MVNKaUVRbW1KaVZGb2RzWEtWVXp5bndRUWdWUlEr?=
+ =?utf-8?B?U2V0Y0tPZUx3MDZ1WTFDOERoVkNvRDk4Q3F1QnVZUk85b2xOTHFnelBVMUNR?=
+ =?utf-8?B?dHh0enVoU2RZR1loSUlpaGloOHl1M0pDR1BFZHJ5Mkc3aWl5bFhvWFVJcnZL?=
+ =?utf-8?B?S1ppeXJWMzZNdkVKZjkwZmpCemE0TTZJSG1DL3d6VnJhaDlUTzJCeWI2Y2Nh?=
+ =?utf-8?B?RHRaZlRtSEExdyszMUo3Nm53L2Z1SnMxNkZnZFk5Q1FiWExSRTBXL295aW9N?=
+ =?utf-8?B?ZGpWRFF2Sjh1UHBkT1BYbFZMOTBoOTF0b3RYWkFZZFMwNWFBUWhsckNJQzJ3?=
+ =?utf-8?B?QldTUHZKOHhyODVBSWVLZ2k3ZkhMVUc2Z3E3NXVWamtYWUdvUXB3ZUZLS3BO?=
+ =?utf-8?B?dE5BLzZOWXpzOGNxQW1NNmIxUHIyZ1lZc2JyOVBZWU1HRkR6S0hIV2dXT2tk?=
+ =?utf-8?B?OE5rcXRVdW42RUp0U3hGOUdHekd1TnhTRzNhSVZqQk9SVU9YdWRQZWkvWnpS?=
+ =?utf-8?Q?+jufBx45+foEHa/hNHH0gD6+I?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4de95e37-7f0c-445f-332e-08dbe224228c
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 19:35:03.1305
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S9EjEuH3Wx2Uc9A3wh0KV33DwCbZViGCEgaVB/QQUFVmBXzvFAXQw55KorbAHFyqMaF5nN4HLH/w1hVMBZWg3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7613
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023, Nicolas Saenz Julienne wrote:
-> On Wed Nov 8, 2023 at 6:33 PM UTC, Sean Christopherson wrote:
-> >  - What is the split between userspace and KVM?  How did you arrive at =
-that split?
->=20
-> Our original design, which we discussed in the KVM forum 2023 [1] and is
-> public [2], implemented most of VSM in-kernel. Notably we introduced VTL
-> awareness in struct kvm_vcpu.
+On 11/10/2023 12:11, Andy Shevchenko wrote:
+> Fix spelling and other issues, such as kernel-doc reported about,
+> in the comments. While at it, fix some indentation issues as well.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/i2c/busses/i2c-designware-amdpsp.c  | 10 +++++-----
+>   drivers/i2c/busses/i2c-designware-common.c  |  8 +++++---
+>   drivers/i2c/busses/i2c-designware-core.h    | 10 +++++-----
+>   drivers/i2c/busses/i2c-designware-master.c  | 15 +++++++++------
+>   drivers/i2c/busses/i2c-designware-platdrv.c |  4 ++--
+>   drivers/i2c/busses/i2c-designware-slave.c   |  6 ++++--
+>   6 files changed, 30 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-designware-amdpsp.c b/drivers/i2c/busses/i2c-designware-amdpsp.c
+> index 63454b06e5da..8fbd2a10c31a 100644
+> --- a/drivers/i2c/busses/i2c-designware-amdpsp.c
+> +++ b/drivers/i2c/busses/i2c-designware-amdpsp.c
+> @@ -155,7 +155,7 @@ static void psp_release_i2c_bus_deferred(struct work_struct *work)
+>   
+>   	/*
+>   	 * If there is any pending transaction, cannot release the bus here.
+> -	 * psp_release_i2c_bus will take care of this later.
+> +	 * psp_release_i2c_bus() will take care of this later.
+>   	 */
+>   	if (psp_i2c_access_count)
+>   		goto cleanup;
+> @@ -210,12 +210,12 @@ static void psp_release_i2c_bus(void)
+>   {
+>   	mutex_lock(&psp_i2c_access_mutex);
+>   
+> -	/* Return early if mailbox was malfunctional */
+> +	/* Return early if mailbox was malfunctioned */
+>   	if (psp_i2c_mbox_fail)
+>   		goto cleanup;
+>   
+>   	/*
+> -	 * If we are last owner of PSP semaphore, need to release aribtration
+> +	 * If we are last owner of PSP semaphore, need to release arbitration
+>   	 * via mailbox.
+>   	 */
+>   	psp_i2c_access_count--;
+> @@ -235,9 +235,9 @@ static void psp_release_i2c_bus(void)
+>   
+>   /*
+>    * Locking methods are based on the default implementation from
+> - * drivers/i2c/i2c-core-base.c, but with psp acquire and release operations
+> + * drivers/i2c/i2c-core-base.c, but with PSP acquire and release operations
+>    * added. With this in place we can ensure that i2c clients on the bus shared
+> - * with psp are able to lock HW access to the bus for arbitrary number of
+> + * with PSP are able to lock HW access to the bus for arbitrary number of
+>    * operations - that is e.g. write-wait-read.
+>    */
+>   static void i2c_adapter_dw_psp_lock_bus(struct i2c_adapter *adapter,
+> diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+> index 5e28f50e4ce6..91bdedbe1a02 100644
+> --- a/drivers/i2c/busses/i2c-designware-common.c
+> +++ b/drivers/i2c/busses/i2c-designware-common.c
+> @@ -127,6 +127,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
+>    * Autodetects needed register access mode and creates the regmap with
+>    * corresponding read/write callbacks. This must be called before doing any
+>    * other register access.
+> + *
+> + * Return: 0 on success, or negative errno otherwise.
+>    */
+>   int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
+>   {
+> @@ -174,7 +176,7 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
+>   	/*
+>   	 * Note we'll check the return value of the regmap IO accessors only
+>   	 * at the probe stage. The rest of the code won't do this because
+> -	 * basically we have MMIO-based regmap so non of the read/write methods
+> +	 * basically we have MMIO-based regmap, so none of the read/write methods
+>   	 * can fail.
+>   	 */
+>   	dev->map = devm_regmap_init(dev->dev, NULL, dev, &map_cfg);
+> @@ -336,7 +338,7 @@ static u32 i2c_dw_acpi_round_bus_speed(struct device *device)
+>   
+>   	acpi_speed = i2c_acpi_find_bus_speed(device);
+>   	/*
+> -	 * Some DSTDs use a non standard speed, round down to the lowest
+> +	 * Some DSDTs use a non standard speed, round down to the lowest
+>   	 * standard speed.
+>   	 */
+>   	for (i = 0; i < ARRAY_SIZE(supported_speeds); i++) {
+> @@ -532,7 +534,7 @@ void __i2c_dw_disable(struct dw_i2c_dev *dev)
+>   
+>   		/*
+>   		 * Wait 10 times the signaling period of the highest I2C
+> -		 * transfer supported by the driver (for 400KHz this is
+> +		 * transfer supported by the driver (for 400kHz this is
+>   		 * 25us) as described in the DesignWare I2C databook.
+>   		 */
+>   		usleep_range(25, 250);
+> diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
+> index 7479cb3a450d..5405d4da2b7d 100644
+> --- a/drivers/i2c/busses/i2c-designware-core.h
+> +++ b/drivers/i2c/busses/i2c-designware-core.h
+> @@ -141,10 +141,10 @@
+>   #define DW_IC_SLAVE				1
+>   
+>   /*
+> - * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register
+> + * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register.
+>    *
+> - * Only expected abort codes are listed here
+> - * refer to the datasheet for the full list
+> + * Only expected abort codes are listed here,
+> + * refer to the datasheet for the full list.
+>    */
+>   #define ABRT_7B_ADDR_NOACK			0
+>   #define ABRT_10ADDR1_NOACK			1
+> @@ -201,7 +201,7 @@ struct i2c_dw_semaphore_callbacks;
+>    * @rst: optional reset for the controller
+>    * @slave: represent an I2C slave device
+>    * @get_clk_rate_khz: callback to retrieve IP specific bus speed
+> - * @cmd_err: run time hadware error code
+> + * @cmd_err: run time hardware error code
+>    * @msgs: points to an array of messages currently being transferred
+>    * @msgs_num: the number of elements in msgs
+>    * @msg_write_idx: the element index of the current tx message in the msgs array
+> @@ -236,7 +236,7 @@ struct i2c_dw_semaphore_callbacks;
+>    * @release_lock: function to release a hardware lock on the bus
+>    * @semaphore_idx: Index of table with semaphore type attached to the bus. It's
+>    *	-1 if there is no semaphore.
+> - * @shared_with_punit: true if this bus is shared with the SoCs PUNIT
+> + * @shared_with_punit: true if this bus is shared with the SoC's PUNIT
+>    * @init: function to initialize the I2C hardware
+>    * @set_sda_hold_time: callback to retrieve IP specific SDA hold timing
+>    * @mode: operation mode - DW_IC_MASTER or DW_IC_SLAVE
+> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+> index bd3c8db521de..4ef4160db01f 100644
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -168,12 +168,14 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
+>   }
+>   
+>   /**
+> - * i2c_dw_init_master() - Initialize the designware I2C master hardware
+> + * i2c_dw_init_master() - Initialize the DesignWare I2C master hardware
+>    * @dev: device private data
+>    *
+>    * This functions configures and enables the I2C master.
+>    * This function is called during I2C init function, and in case of timeout at
+>    * run time.
+> + *
+> + * Return: 0 on success, or negative errno otherwise.
+>    */
+>   static int i2c_dw_init_master(struct dw_i2c_dev *dev)
+>   {
+> @@ -314,7 +316,7 @@ static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs,
+>   		/*
+>   		 * Initiate the i2c read/write transaction of buffer length,
+>   		 * and poll for bus busy status. For the last message transfer,
+> -		 * update the command with stopbit enable.
+> +		 * update the command with stop bit enable.
+>   		 */
+>   		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
+>   			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
+> @@ -421,7 +423,7 @@ static int txgbe_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msg
+>   
+>   /*
+>    * Initiate (and continue) low level master read/write transaction.
+> - * This function is only called from i2c_dw_isr, and pumping i2c_msg
+> + * This function is only called from i2c_dw_isr(), and pumping i2c_msg
+>    * messages into the tx buffer.  Even if the size of i2c_msg data is
+>    * longer than the size of the tx buffer, it handles everything.
+>    */
+> @@ -459,7 +461,8 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
+>   			buf = msgs[dev->msg_write_idx].buf;
+>   			buf_len = msgs[dev->msg_write_idx].len;
+>   
+> -			/* If both IC_EMPTYFIFO_HOLD_MASTER_EN and
+> +			/*
+> +			 * If both IC_EMPTYFIFO_HOLD_MASTER_EN and
+>   			 * IC_RESTART_EN are set, we must manually
+>   			 * set restart bit between messages.
+>   			 */
+> @@ -949,7 +952,7 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
+>   	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
+>   	adap->bus_recovery_info = rinfo;
+>   
+> -	dev_info(dev->dev, "running with gpio recovery mode! scl%s",
+> +	dev_info(dev->dev, "running with GPIO recovery mode! scl%s",
+>   		 rinfo->sda_gpiod ? ",sda" : "");
+>   
+>   	return 0;
+> @@ -1053,7 +1056,7 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
+>   	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr, irq_flags,
+>   			       dev_name(dev->dev), dev);
+>   	if (ret) {
+> -		dev_err(dev->dev, "failure requesting irq %i: %d\n",
+> +		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
+>   			dev->irq, ret);
+>   		return ret;
+>   	}
+> diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+> index 02dc1d1001f2..fa9c0c56b11e 100644
+> --- a/drivers/i2c/busses/i2c-designware-platdrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+> @@ -72,7 +72,7 @@ static int bt1_i2c_write(void *context, unsigned int reg, unsigned int val)
+>   		return ret;
+>   
+>   	return regmap_write(dev->sysmap, BT1_I2C_CTL,
+> -		BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
+> +			    BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
+>   }
+>   
+>   static struct regmap_config bt1_i2c_cfg = {
+> @@ -304,7 +304,7 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+>   	adap = &dev->adapter;
+>   	adap->owner = THIS_MODULE;
+>   	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
+> -					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+> +				       I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+>   	adap->nr = -1;
+>   
+>   	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
+> diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
+> index 5abd5ec41954..21d80fe81cfe 100644
+> --- a/drivers/i2c/busses/i2c-designware-slave.c
+> +++ b/drivers/i2c/busses/i2c-designware-slave.c
+> @@ -32,12 +32,14 @@ static void i2c_dw_configure_fifo_slave(struct dw_i2c_dev *dev)
+>   }
+>   
+>   /**
+> - * i2c_dw_init_slave() - Initialize the designware i2c slave hardware
+> + * i2c_dw_init_slave() - Initialize the DesignWare i2c slave hardware
+>    * @dev: device private data
+>    *
+>    * This function configures and enables the I2C in slave mode.
+>    * This function is called during I2C init function, and in case of timeout at
+>    * run time.
+> + *
+> + * Return: 0 on success, or negative errno otherwise.
+>    */
+>   static int i2c_dw_init_slave(struct dw_i2c_dev *dev)
+>   {
+> @@ -264,7 +266,7 @@ int i2c_dw_probe_slave(struct dw_i2c_dev *dev)
+>   	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr_slave,
+>   			       IRQF_SHARED, dev_name(dev->dev), dev);
+>   	if (ret) {
+> -		dev_err(dev->dev, "failure requesting irq %i: %d\n",
+> +		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
+>   			dev->irq, ret);
+>   		return ret;
+>   	}
 
-...
-
-> So we decided to move all this complexity outside of struct kvm_vcpu
-> and, as much as possible, out of the kernel. We figures out the basic
-> kernel building blocks that are absolutely necessary, and let user-space
-> deal with the rest.
-
-Sorry, I should have been more clear.  What's the split in terms of respons=
-ibilities,
-i.e. what will KVM's ABI look like?  E.g. if the vCPU=3D>VTLs setup is nons=
-ensical,
-does KVM care?
-
-My general preference is for KVM to be as permissive as possible, i.e. let
-userspace do whatever it wants so long as it doesn't place undue burden on =
-KVM.
-But at the same time I don't to end up in a similar boat as many of the par=
-avirt
-features, where things just stop working if userspace or the guest makes a =
-goof.
-
-> >  - Why not make VTLs a first-party concept in KVM?  E.g. rather than bu=
-ry info
-> >    in a VTL device and APIC ID groups, why not modify "struct kvm" to s=
-upport
-> >    replicating state that needs to be tracked per-VTL?  Because of how =
-memory
-> >    attributes affect hugepages, duplicating *memslots* might actually b=
-e easier
-> >    than teaching memslots to be VTL-aware.
->=20
-> I do agree that we need to introduce some level VTL awareness into
-> memslots. There's the hugepages issues you pointed out. But it'll be
-> also necessary once we look at how to implement overlay pages that are
-> per-VTL. (A topic I didn't mention in the series as I though I had
-> managed to solve memory protections while avoiding the need for multiple
-> slots). What I have in mind is introducing a memory slot address space
-> per-VTL, similar to how we do things with SMM.
-
-Noooooooo (I hate memslot address spaces :-) )
-
-Why not represent each VTL with a separate "struct kvm" instance?  That wou=
-ld
-naturally provide per-VTL behavior for:
-
-  - APIC groups
-  - memslot overlays
-  - memory attributes (and their impact on hugepages)
-  - MMU pages
-
-The only (obvious) issue with that approach would be cross-VTL operations. =
- IIUC,
-sending IPIs across VTLs isn't allowed, but even if it were, that should be=
- easy
-enough to solve, e.g. KVM already supports posting interrupts from non-KVM =
-sources.
-
-GVA=3D>GPA translation would be trickier, but that patch suggests you want =
-to handle
-that in userspace anyways.  And if translation is a rare/slow path, maybe i=
-t could
-simply be punted to userspace?
-
-  NOTE: The hypercall implementation is incomplete and only shared for
-  completion. Additionally we'd like to move the VTL aware parts to
-  user-space.
-
-Ewww, and looking at what it would take to support cross-VM translations sh=
-ows
-another problem with using vCPUs to model VTLs.  Nothing prevents userspace=
- from
-running a virtual CPU at multiple VTLs concurrently, which means that anyth=
-ing
-that uses kvm_hv_get_vtl_vcpu() is unsafe, e.g. walk_mmu->gva_to_gpa() coul=
-d be
-modified while kvm_hv_xlate_va_walk() is running.
-
-I suppose that's not too hard to solve, e.g. mutex_trylock() and bail if so=
-mething
-holds the other kvm_vcpu/VTL's mutex.  Though ideally, KVM would punt all c=
-ross-VTL
-operations to userspace.  :-)
-
-If punting to userspace isn't feasible, using a struct kvm per VTL probably=
- wouldn't
-make the locking and concurrency problems meaningfully easier or harder to =
-solve.
-E.g. KVM could require VTLs, i.e. "struct kvm" instances that are part of a=
- single
-virtual machine, to belong to the same process.  That'd avoid headaches wit=
-h
-mm_struct, at which point I don't _think_ getting and using a kvm_vcpu from=
- a
-different kvm would need special handling?
-
-Heh, another fun one, the VTL handling in kvm_hv_send_ipi() is wildly broke=
-n, the
-in_vtl field is consumed before send_ipi is read from userspace.
-
-	union hv_input_vtl *in_vtl;
-	u64 valid_bank_mask;
-	u32 vector;
-	bool all_cpus;
-	u8 vtl;
-
-	/* VTL is at the same offset on both IPI types */
-	in_vtl =3D &send_ipi.in_vtl;
-	vtl =3D in_vtl->use_target_vtl ? in_vtl->target_vtl : kvm_hv_get_active_vt=
-l(vcpu);
-
-> >    E.g. if 90% of the state is guaranteed to be identical for a given
-> >    vCPU across execution contexts, then modeling that with separate
-> >    kvm_vcpu structures is very inefficient.  I highly doubt it's 90%,
-> >    but it might be quite high depending on how much the TFLS restricts
-> >    the state of the vCPU, e.g. if it's 64-bit only.
->=20
-> For the record here's the private VTL state (TLFS 15.11.1):
->=20
-> "In general, each VTL has its own control registers, RIP register, RSP
->  register, and MSRs:
->=20
->  SYSENTER_CS, SYSENTER_ESP, SYSENTER_EIP, STAR, LSTAR, CSTAR, SFMASK,
->  EFER, PAT, KERNEL_GSBASE, FS.BASE, GS.BASE, TSC_AUX
->  HV_X64_MSR_HYPERCALL
->  HV_X64_MSR_GUEST_OS_ID
->  HV_X64_MSR_REFERENCE_TSC
->  HV_X64_MSR_APIC_FREQUENCY
->  HV_X64_MSR_EOI
->  HV_X64_MSR_ICR
->  HV_X64_MSR_TPR
->  HV_X64_MSR_APIC_ASSIST_PAGE
->  HV_X64_MSR_NPIEP_CONFIG
->  HV_X64_MSR_SIRBP
->  HV_X64_MSR_SCONTROL
->  HV_X64_MSR_SVERSION
->  HV_X64_MSR_SIEFP
->  HV_X64_MSR_SIMP
->  HV_X64_MSR_EOM
->  HV_X64_MSR_SINT0 =E2=80=93 HV_X64_MSR_SINT15
->  HV_X64_MSR_STIMER0_COUNT =E2=80=93 HV_X64_MSR_STIMER3_COUNT
->  Local APIC registers (including CR8/TPR)
-
-Ugh, the APIC state is quite the killer.  And I gotta image things like CET=
- and
-FRED are only going to increase that list.
