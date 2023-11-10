@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B93717E80AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B237E8107
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344717AbjKJSRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
+        id S1344438AbjKJSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235520AbjKJSOp (ORCPT
+        with ESMTP id S1345176AbjKJSS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:14:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850FB8260;
-        Thu,  9 Nov 2023 23:11:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699600283; x=1731136283;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=CFrsyyYaC5+GirTFxIWyuSUnIgbvfSGgrSzOo8xJlhI=;
-  b=hq0RJ0Xh+cJQpi/CQZ9YvU70MztW/cMhyXPN+2VQ1LFWHE0rOsCmSEPw
-   5TfB+S1fueihwLTHWG+T1yZml2odEuoqnuj0bLdmQIlVVJliSm39i9HyB
-   sLSJZOVybHpCcf/9RkHVkZhU5w+dX13dG0Yiu/sJiObXMwsnXM6bjiX1A
-   sA8EpjMY687UvwWEtcPRLUQpD05DmgbH7wFtbIwYpGg1b6weWdgVGoRx/
-   cUk+QwE+lDeGxA4561/EHjoVKoKpj0O+NYq28bzc20LtPCvKprJpPx7V2
-   EJ4BzKzhZ9kPFQhpCLxTpOr2BvYiVD622L5xZaHmY/cK/zt5GuJJDvLKu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="3164315"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="3164315"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:02:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="1095079230"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="1095079230"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:02:01 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Liu Shixin" <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, <cgroups@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <opensource.kernel@vivo.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-In-Reply-To: <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com> (Huan Yang's
-        message of "Fri, 10 Nov 2023 10:44:45 +0800")
-References: <20231108065818.19932-1-link@vivo.com>
-        <ZUuV9xOZ5k7Ia_V2@tiehlicka>
-        <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
-        <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com>
-        <ZUytB5lSwxeKkBW8@tiehlicka>
-        <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
-        <ZUy2-vrqDq7URzb6@tiehlicka>
-        <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
-        <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com>
-Date:   Fri, 10 Nov 2023 12:00:00 +0800
-Message-ID: <878r76gsvz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Fri, 10 Nov 2023 13:18:26 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBBB72A5
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:29:39 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA3vsew010482;
+        Fri, 10 Nov 2023 04:00:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+m4TOSrhua6AyhvcRL7JIj8vxb8M64dgXd5oxhdIgfs=;
+ b=HE6SqNpEZZFRbG+8evVynaBhaurH1IHrHBoV2Bb5zCn1UwI63SgY/zVdVc0LFpQhZeDp
+ 6kLBMXdRBiADY/zbvyd0WH59L72Vt45B/U2oJ8gUAcccGK4ru2koGYlxWZ1TIpc4ZRdc
+ ixCiAYN7c5DYkliOlcgmW5EQo5Ou9NkgOzt74c6LtSDFLeLbZsZIqoQKLDE7Us3HcYUX
+ 6WgiZmYbe6I1MMIpWlIDTEg9aeE+R1xo4iQlfKb1clf7U6AjOePjZEcW08B6UHFKK8Cu
+ XsAGboJdYxgXLmWy7v0U/gd2wdZCOqHNc2k6V0JjYDZcOy7c5LhCQQtEXJY/wm7RCFkF /A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u9d2p8291-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 04:00:39 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AA40deO020244;
+        Fri, 10 Nov 2023 04:00:39 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u9d2p8285-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 04:00:39 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA1UKgN004176;
+        Fri, 10 Nov 2023 04:00:38 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w218f7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 04:00:37 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AA40awA44565058
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Nov 2023 04:00:36 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1EABB20040;
+        Fri, 10 Nov 2023 04:00:36 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66CAE2005A;
+        Fri, 10 Nov 2023 04:00:32 +0000 (GMT)
+Received: from [9.43.54.75] (unknown [9.43.54.75])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Nov 2023 04:00:32 +0000 (GMT)
+Message-ID: <42fbe90e-dd41-4934-bf03-a0f672d7095c@linux.ibm.com>
+Date:   Fri, 10 Nov 2023 09:30:31 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Question]: major faults are still triggered after mlockall when
+ numa balancing
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, Matthew Wilcox <willy@infradead.org>,
+        lstoakes@gmail.com, hughd@google.com, david@redhat.com,
+        vbabka@suse.cz, peterz@infradead.org, mgorman@suse.de,
+        mingo@redhat.com, riel@redhat.com, ying.huang@intel.com,
+        hannes@cmpxchg.org, Nanyong Sun <sunnanyong@huawei.com>
+References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
+ <CAHbLzkqEytFbRoHU3=Y85tmTQ--XVQpwhVEXgDN0ss_PPv8VGA@mail.gmail.com>
+ <648aa9dc-fc42-4f28-af9a-b24adfdcd43d@intel.com>
+ <56e1e123-f593-443a-be5b-754cbfb0e611@huawei.com>
+ <98479379-0fff-409a-a60d-2233da114588@intel.com>
+Content-Language: en-US
+From:   Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
+In-Reply-To: <98479379-0fff-409a-a60d-2233da114588@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FFyhId3LGLMy6LsRqkt7d5XKuzVoDoSi
+X-Proofpoint-GUID: o0P4BwdIzG5XoXSJ-VlNaKGHxmKmeLMT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 clxscore=1011 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 priorityscore=1501 adultscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311100032
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,132 +105,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huan Yang <link@vivo.com> writes:
-
-> =E5=9C=A8 2023/11/10 9:19, Huang, Ying =E5=86=99=E9=81=93:
->> [Some people who received this message don't often get email from ying.h=
-uang@intel.com. Learn why this is important at https://aka.ms/LearnAboutSen=
-derIdentification ]
+On 11/10/23 9:20 AM, Yin, Fengwei wrote:
+> 
+> 
+> On 11/10/2023 11:39 AM, Kefeng Wang wrote:
 >>
->> Huan Yang <link@vivo.com> writes:
 >>
->>> =E5=9C=A8 2023/11/9 18:39, Michal Hocko =E5=86=99=E9=81=93:
->>>> [Some people who received this message don't often get email from mhoc=
-ko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSender=
-Identification ]
+>> On 2023/11/10 9:57, Yin, Fengwei wrote:
+>>>
+>>>
+>>> On 11/10/2023 6:54 AM, Yang Shi wrote:
+>>>> On Thu, Nov 9, 2023 at 5:48 AM zhangpeng (AS) <zhangpeng362@huawei.com> wrote:
+>>>>>
+>>>>> Hi everyone,
+>>>>>
+>>>>> There is a performance issue that has been bothering us recently.
+>>>>> This problem can reproduce in the latest mainline version (Linux 6.6).
+>>>>>
+>>>>> We use mlockall(MCL_CURRENT | MCL_FUTURE) in the user mode process
+>>>>> to avoid performance problems caused by major fault.
+>>>>>
+>>>>> There is a stage in numa fault which will set pte as 0 in do_numa_page() :
+>>>>> ptep_modify_prot_start() will clear the vmf->pte, until
+>>>>> ptep_modify_prot_commit() assign a value to the vmf->pte.
+>>>>>
+>>>>> For the data segment of the user-mode program, the global variable area
+>>>>> is a private mapping. After the pagecache is loaded, the private
+>>>>> anonymous page is generated after the COW is triggered. Mlockall can
+>>>>> lock COW pages (anonymous pages), but the original file pages cannot
+>>>>> be locked and may be reclaimed. If the global variable (private anon page)
+>>>>> is accessed when vmf->pte is zero which is concurrently set by numa fault,
+>>>>> a file page fault will be triggered.
+>>>>>
+>>>>> At this time, the original private file page may have been reclaimed.
+>>>>> If the page cache is not available at this time, a major fault will be
+>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>
+>>>>> Our problem scenario is as follows:
+>>>>>
+>>>>> task 1                      task 2
+>>>>> ------                      ------
+>>>>> /* scan global variables */
+>>>>> do_numa_page()
+>>>>>     spin_lock(vmf->ptl)
+>>>>>     ptep_modify_prot_start()
+>>>>>     /* set vmf->pte as null */
+>>>>>                               /* Access global variables */
+>>>>>                               handle_pte_fault()
+>>>>>                                 /* no pte lock */
+>>>>>                                 do_pte_missing()
+>>>>>                                   do_fault()
+>>>>>                                     do_read_fault()
+>>>>>     ptep_modify_prot_commit()
+>>>>>     /* ptep update done */
+>>>>>     pte_unmap_unlock(vmf->pte, vmf->ptl)
+>>>>>                                       do_fault_around()
+>>>>>                                       __do_fault()
+>>>>>                                         filemap_fault()
+>>>>>                                           /* page cache is not available
+>>>>>                                           and a major fault is triggered */
+>>>>>                                           do_sync_mmap_readahead()
+>>>>>                                           /* page_not_uptodate and goto
+>>>>>                                           out_retry. */
+>>>>>
+>>>>> Is there any way to avoid such a major fault?
 >>>>
->>>> On Thu 09-11-23 18:29:03, Huan Yang wrote:
->>>>> HI Michal Hocko,
->>>>>
->>>>> Thanks for your suggestion.
->>>>>
->>>>> =E5=9C=A8 2023/11/9 17:57, Michal Hocko =E5=86=99=E9=81=93:
->>>>>> [Some people who received this message don't often get email from mh=
-ocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSend=
-erIdentification ]
->>>>>>
->>>>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
->>>>>> [...]
->>>>>>>> If so, is it better only to reclaim private anonymous pages explic=
-itly?
->>>>>>> Yes, in practice, we only proactively compress anonymous pages and =
-do not
->>>>>>> want to touch file pages.
->>>>>> If that is the case and this is mostly application centric (which you
->>>>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
->>>>>> instead.
->>>>> Madvise  may not be applicable in this scenario.(IMO)
->>>>>
->>>>> This feature is aimed at a core goal, which is to compress the anonym=
-ous
->>>>> pages
->>>>> of frozen applications.
->>>>>
->>>>> How to detect that an application is frozen and determine which pages=
- can be
->>>>> safely reclaimed is the responsibility of the policy part.
->>>>>
->>>>> Setting madvise for an application is an active behavior, while the a=
-bove
->>>>> policy
->>>>> is a passive approach.(If I misunderstood, please let me know if ther=
-e is a
->>>>> better
->>>>> way to set madvise.)
->>>> You are proposing an extension to the pro-active reclaim interface so
->>>> this is an active behavior pretty much by definition. So I am really n=
-ot
->>>> following you here. Your agent can simply scan the address space of the
->>>> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOU=
-T)
->>>> on the private memory is that is really what you want/need.
->>> There is a key point here. We want to use the grouping policy of memcg
->>> to perform
->>> proactive reclamation with certain tendencies. Your suggestion is to
->>> reclaim memory
->>> by scanning the task process space. However, in the mobile field,
->>> memory is usually
->>> viewed at the granularity of an APP.
+>>>> IMHO I don't think it is a bug. The man page quoted by Willy says "All
+>>>> mapped pages are guaranteed to be resident in RAM when the call
+>>>> returns successfully", but the later COW already made the file page
+>>>> unmapped, right? The PTE pointed to the COW'ed anon page.
+>>>> Hypothetically if we kept the file page mlocked and unmapped,
+>>>> munlock() would have not munlocked the file page at all, it would be
+>>>> mlocked in memory forever.
+>>> But in this case, even the COW page is mlocked. There is small window
+>>> that PTE is set to null in do_numa_page(). data segment access (it's to
+>>> COW page which has nothing to do with original page cache) happens in
+>>> this small window will trigger filemap_fault() to fault in original
+>>> page cache.
 >>>
->>> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
->>> according
->>> to the pre-grouped APP processes.
+>>> I had thought to do double check whether vmf->pte is NULL in do_read_fault().
+>>> But it's not reliable enough.
 >>>
->>> Of course, as you suggested, madvise can also achieve this, but
->>> implementing it in
->>> the agent may be more complex.(In terms of achieving the same goal,
->>> using memcg
->>> to group all the processes of an APP and perform proactive reclamation
->>> is simpler
->>> than using madvise and scanning multiple processes of an application
->>> using an agent?)
->> I still think that it's not too complex to use process_madvise() to do
->> this.  For each process of the application, the agent can read
->> /proc/PID/maps to get all anonymous address ranges, then call
->> process_madvise(MADV_PAGEOUT) to reclaim pages.  This can even filter
->> out shared anonymous pages.  Does this work for you?
+>>> Matthew's idea to use protnone to block both hardware accessing and
+>>> do_pte_missing() looks more promising to me.
+>>
+>> Actual， we could revert the following patch to avoid this issue,
+>> but this workaroud from ppc...
+>>
+>> commit cee216a696b2004017a5ecb583366093d90b1568
+>> Author: Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+>> Date:   Fri Feb 24 14:59:13 2017 -0800
+>>
+>>     mm/autonuma: don't use set_pte_at when updating protnone ptes
+>>
+>>     Architectures like ppc64, use privilege access bit to mark pte non
+>>     accessible.  This implies that kernel can do a copy_to_user to an
+>>     address marked for numa fault.  This also implies that there can be a
+>>     parallel hardware update for the pte.  set_pte_at cannot be used in such
+>>     scenarios.  Hence switch the pte update to use ptep_get_and_clear and
+>>     set_pte_at combination.
+> Oh. This means the protnone doesn't work for PPC.
+> 
 >
-> Thanks for this suggestion. This way can avoid touch shared anonymous, it=
-'s
-> pretty well. But, I have some doubts about this, CPU resources are
-> usually limited in
-> embedded devices, and power consumption must also be taken into
-> consideration.
->
-> If this approach is adopted, the agent needs to periodically scan
-> frozen applications
-> and set pageout for the address space. Is the frequency of this active
-> operation more
-> complex and unsuitable for embedded devices compared to reclamation based=
- on
-> memcg grouping features?
 
-In memcg based solution, when will you start the proactive reclaiming?
-You can just replace the reclaiming part of the solution from memcg
-proactive reclaiming to process_madvise(MADV_PAGEOUT).  Because you can
-get PIDs in a memcg.  Is it possible?
+That is correct. I am yet to read the full thread. Can we make ptep_modify_prot_start()
+not to mark pte = 0 ? One of the requirement for powerpc is to mark it hardware invalid
+such that not TLB entries get inserted after that. Other options is to get a proper
+pte_update API for generic kernel so that architectures can do this without marking the
+pte invalid. 
 
-> In addition, without LRU, it is difficult to control the reclamation
-> of only partially cold
-> anonymous page data of frozen applications. For example, if I only
-> want to proactively
-> reclaim 100MB of anonymous pages and issue the proactive reclamation
-> interface,
-> we can use the LRU feature to only reclaim 100MB of cold anonymous pages.
-> However, this cannot be achieved through madvise.(If I have
-> misunderstood something,
-> please correct me.)
 
-IIUC, it should be OK to reclaim all private anonymous pages of an
-application in your specific use case?  If you really want to restrict
-the number of pages reclaimed, it's possible too.  You can restrict the
-size of address range to call process_madvise(MADV_PAGEOUT), and check
-the RSS of the application.  The accuracy of the number reclaimed isn't
-good.  But I think that it should OK in practice?
+-aneesh
 
-BTW: how do you know the number of pages to be reclaimed proactively in
-memcg proactive reclaiming based solution?
 
---
-Best Regards,
-Huang, Ying
