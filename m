@@ -2,124 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD017E8515
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFA27E8519
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjKJVcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 16:32:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S229594AbjKJVdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 16:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKJVcG (ORCPT
+        with ESMTP id S229471AbjKJVdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 16:32:06 -0500
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683DC4205;
-        Fri, 10 Nov 2023 13:32:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1699651924; x=1731187924;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yqcEiMovyEdWADV3nVvr7tGxPcK5AkK82nsGuLxcaeM=;
-  b=gy55nQLLiHNCjYJO8oZ2fpeUwT+ymQR5EjJbs6D6sden9BzAn2vPvYyq
-   BN/Pw1f/6jxg5gGvYJHQLnZXgNnJXOH0ZHl41UdmEFkEdLigNORAlYp2w
-   UpqBIx/F3qIh9ptHCgRahEgrvejFYCdvDEci3+yuJaP1w0mh0fAzNDW/Q
-   s=;
-X-IronPort-AV: E=Sophos;i="6.03,293,1694736000"; 
-   d="scan'208";a="367405578"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 21:32:00 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2c-m6i4x-dc7c3f8b.us-west-2.amazon.com (Postfix) with ESMTPS id 452D2A0D1B;
-        Fri, 10 Nov 2023 21:31:59 +0000 (UTC)
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:42729]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.49.85:2525] with esmtp (Farcaster)
- id cc3de777-ea4a-4c4d-95f7-1c856f0df8d4; Fri, 10 Nov 2023 21:31:58 +0000 (UTC)
-X-Farcaster-Flow-ID: cc3de777-ea4a-4c4d-95f7-1c856f0df8d4
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 10 Nov 2023 21:31:58 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.170.8) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
- Fri, 10 Nov 2023 21:31:55 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <bragathemanick0908@gmail.com>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <pabeni@redhat.com>,
-        <ralf@linux-mips.org>,
-        <syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com>,
-        <kuniyu@amazon.com>
-Subject: Re: [PATCH] net: memory leak in nr_rx_frame
-Date:   Fri, 10 Nov 2023 13:31:47 -0800
-Message-ID: <20231110213147.68823-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231110173632.2511-1-bragathemanick0908@gmail.com>
-References: <20231110173632.2511-1-bragathemanick0908@gmail.com>
+        Fri, 10 Nov 2023 16:33:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9088E4205
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 13:33:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3250C433C9;
+        Fri, 10 Nov 2023 21:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699652000;
+        bh=2A5emeoFaW6SfVPuP6ICYHNdvN2k2OlVvkzhivtgSU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OL3/gDVCDj0ENfFBpGtZ814MXkpUyTExFJpMM9gnCGmqHwRSL6tqMC+BSepg4WbAU
+         FyZ6u4MvUFAEsBo7V4hxlY8DUOiwvMtjANO8o76vKvFAcx2WFdMo2CH1gQF0NCkDTA
+         WJkXEzrxa0HqVqjfUu1jkrlgzv+54OoexhAhjv9ZB6e1/JTkpmcBoctBFB3OpuKzQB
+         ezE+C+2l2HFOqd8nZqYw8wuao6Q9qt0VLR0fcmnb0dW2E+U/L/cIl5h2ngQctOfiM6
+         SAEf6LG8sGlbQ5l6/Iez9FXi8OiBvKgUPxj6Ad1m6ssyOl0izyaQSOkLag6fEylZ51
+         dItD/PQB2KwHg==
+Date:   Fri, 10 Nov 2023 13:33:17 -0800
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [POC 0/7] livepatch: Make livepatch states, callbacks, and
+ shadow variables work together
+Message-ID: <20231110213317.g4wz3j3flj7u2qg2@treble>
+References: <20231110170428.6664-1-pmladek@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.170.8]
-X-ClientProxiedBy: EX19D036UWC001.ant.amazon.com (10.13.139.233) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231110170428.6664-1-pmladek@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-Date: Fri, 10 Nov 2023 23:06:32 +0530
-> The condition (make = nr_make_new(sk)) == NULL suggests
-> that nr_make_new allocates memory and returns a pointer.
-> If this allocation fails (returns NULL), it indicates a
-> potential memory leak.
-
-If make is NULL, nothing is allocated and leaked here, and
-your code will never be executed as "if (make)" is always false.
-
-
+On Fri, Nov 10, 2023 at 06:04:21PM +0100, Petr Mladek wrote:
+> This POC is a material for the discussion "Simplify Livepatch Callbacks,
+> Shadow Variables, and States handling" at LPC 2013, see
+> https://lpc.events/event/17/contributions/1541/
 > 
-> Added sock_put() for make which can potentially solve
-> this issue
+> It obsoletes the patchset adding the garbage collection of shadow
+> variables. This new solution is based on ideas from Nicolai Stange.
+> And it should also be in sync with Josh's ideas mentioned into
+> the thread about the garbage collection, see
+> https://lore.kernel.org/r/20230204235910.4j4ame5ntqogqi7m@treble
 
-Sounds like the patch is not tested with kmemleak.
+Nice!  I like how it brings the "features" together and makes them easy
+to use.  This looks like a vast improvement.
 
+Was there a reason to change the naming?  I'm thinking
 
-> 
-> Reported-by: syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
-> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-> ---
->  net/netrom/af_netrom.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
-> index 0eed00184adf..7d7cda4ae300 100644
-> --- a/net/netrom/af_netrom.c
-> +++ b/net/netrom/af_netrom.c
-> @@ -970,6 +970,8 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
->  		nr_transmit_refusal(skb, 0);
->  		if (sk)
->  			sock_put(sk);
-> +		if (make)
-> +			sock_put(make);
+  setup / enable / disable / release
 
-Also, make could be uninitialised here if the first two
-condition is true.
+is less precise than
 
-   if (sk == NULL || sk_acceptq_is_full(sk) ||
+  pre_patch / post_patch / pre_unpatch / post_unpatch.
 
+Also, I'm thinking "replaced" instead of "obsolete" would be more
+consistent with the existing terminology.
 
->  		return 0;
->  	}
->  
-> -- 
-> 2.34.1
+For example, in __klp_enable_patch():
+
+	ret = klp_setup_states(patch);
+	if (ret)
+		goto err;
+
+	if (patch->replace)
+		klp_disable_obsolete_states(patch);
+
+it's not immediately clear why "disable obsolete" would be the "replace"
+counterpart to "setup".
+
+Similarly, in klp_complete_transition():
+
+	if (klp_transition_patch->replace && klp_target_state == KLP_PATCHED) {
+		klp_unpatch_replaced_patches(klp_transition_patch);
+		klp_discard_nops(klp_transition_patch);
+		klp_release_obsolete_states(klp_transition_patch);
+	}
+
+it's a little jarring to have "unpatch replaced" followed by "release
+obsolete".
+
+So instead of:
+
+  int  klp_setup_states(struct klp_patch *patch);
+  void klp_enable_states(struct klp_patch *patch);
+  void klp_disable_states(struct klp_patch *patch);
+  void klp_release_states(struct klp_patch *patch);
+
+  void klp_enable_obsolete_states(struct klp_patch *patch);
+  void klp_disable_obsolete_states(struct klp_patch *patch);
+  void klp_release_obsolete_states(struct klp_patch *patch);
+
+how about something like:
+
+  int  klp_states_pre_patch(void);
+  void klp_states_post_patch(void);
+  void klp_states_pre_unpatch(void);
+  void klp_states_post_unpatch(void);
+
+  void klp_states_post_patch_replaced(void);
+  void klp_states_pre_unpatch_replaced(void);
+  void klp_states_post_unpatch_replaced(void);
+
+?
+
+(note that passing klp_transition_patch might be optional since state.c
+already has visibility to it anyway)
+
+-- 
+Josh
