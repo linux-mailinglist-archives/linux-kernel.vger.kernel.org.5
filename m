@@ -2,161 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5603B7E7677
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B427E76BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345579AbjKJBVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
+        id S1345683AbjKJBlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:41:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjKJBVM (ORCPT
+        with ESMTP id S1345783AbjKJBks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:21:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2CA4228;
-        Thu,  9 Nov 2023 17:21:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699579270; x=1731115270;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=oSLgzdqqUi7SDhMmhRVGvgJyNjx+NqyiNkbZfvYhL7w=;
-  b=a1SpVoq9PGXDVS8WxW6cFdUwYTPuusuIEB4TkT1hFrakA+0Gb8H9KDWk
-   Q8/qBYiHEVEoebYiP9QCuOSEkeUalXdyoleAJfI475EMzdc98HloQpKJz
-   k6lTChnBFt91wJsD6iI+OKs2qnVMlfQcJdzcquI9bSqiOFtHyN69CrT7H
-   28monfGGSj1yJUUYwqumJvgDXASHv7K5cO1W84kA9q+/mUUNxp9Dj3Nlg
-   KvuNvRpbJMyeK7xeulJFpMFkwBIAD3r2nf3J8H0aC/seWnNrahra7vwvr
-   Izj07sZj+phlVlsOftBthg9gQ/SvD20mYSQzRW29pB0arK4MBXd+S6sZz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="476339535"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="476339535"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:21:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="763611091"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="763611091"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:21:03 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        "Shakeel Butt" <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Liu Shixin" <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, <cgroups@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <opensource.kernel@vivo.com>
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-In-Reply-To: <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com> (Huan Yang's
-        message of "Thu, 9 Nov 2023 18:50:36 +0800")
-References: <20231108065818.19932-1-link@vivo.com>
-        <ZUuV9xOZ5k7Ia_V2@tiehlicka>
-        <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
-        <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com>
-        <ZUytB5lSwxeKkBW8@tiehlicka>
-        <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
-        <ZUy2-vrqDq7URzb6@tiehlicka>
-        <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
-Date:   Fri, 10 Nov 2023 09:19:02 +0800
-Message-ID: <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 9 Nov 2023 20:40:48 -0500
+X-Greylist: delayed 592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Nov 2023 17:40:29 PST
+Received: from mail-m17244.xmail.ntesmail.com (mail-m17244.xmail.ntesmail.com [45.195.17.244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D44689;
+        Thu,  9 Nov 2023 17:40:28 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=Rdm9QD4yO6LRbZBNE1A/b+RLokMwSHSQFNyKUAJYTpR4K9xUU8zLPUZ5xR2J69Hxh5A0rXeerIurDn+8czNto4RCBLRqAHgX00bVVDTTD9FXb6CpWOWOHChw2uUyUEgO1exOq+Sf/pstX5QlCHztlp7pu5XOyhEmIdKHwx5I/FI=;
+        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+        bh=P0GaHyRA5mwU4r4OqdCotWnXqFS5RSLvYdfU/GQ9YsU=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.49] (unknown [58.22.7.114])
+        by mail-m11877.qiye.163.com (Hmail) with ESMTPA id C3D5D4001CD;
+        Fri, 10 Nov 2023 09:23:39 +0800 (CST)
+Message-ID: <53059eca-5c55-6dde-6246-40ed9f2dca91@rock-chips.com>
+Date:   Fri, 10 Nov 2023 09:23:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 3/4] dt-bindings: clock: rk3588: export PCLK_VO1GRF clk
+ id
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Cc:     Conor Dooley <conor@kernel.org>, mturquette@baylibre.com,
+        sboyd@kernel.org, kever.yang@rock-chips.com, heiko@sntech.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        huangtao@rock-chips.com, andy.yan@rock-chips.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20231108061822.4871-1-zhangqing@rock-chips.com>
+ <20231108061822.4871-4-zhangqing@rock-chips.com>
+ <20231108-donation-uncertain-c4d0f560c420@spud>
+ <2e520a06-0ff1-76ef-2a72-ab6663738b45@rock-chips.com>
+ <20231109-send-pushchair-45b37551102a@wendy>
+ <a11c847c-4f95-ea7b-3497-6ada0586c486@rock-chips.com>
+ <dee8031f-d739-442c-988c-3df61d92c0d3@linaro.org>
+ <f013df81-670e-37c4-c1a7-e1302352ca20@rock-chips.com>
+ <f58c8f3f-7b34-47e7-a33a-bddb6106fec7@linaro.org>
+From:   zhangqing <zhangqing@rock-chips.com>
+In-Reply-To: <f58c8f3f-7b34-47e7-a33a-bddb6106fec7@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQkxMH1ZOHRhLTRgYHxgaQhpVEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
+        kG
+X-HM-Tid: 0a8bb6d3dea32eb3kusnc3d5d4001cd
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PzY6Qww6Czw0IQ01E0IcMxxC
+        GCJPCT1VSlVKTUJCTkxCT0lKS0tNVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
+        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUxLTkI3Bg++
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huan Yang <link@vivo.com> writes:
 
-> =E5=9C=A8 2023/11/9 18:39, Michal Hocko =E5=86=99=E9=81=93:
->> [Some people who received this message don't often get email from mhocko=
-@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderId=
-entification ]
+在 2023/11/9 18:24, Krzysztof Kozlowski 写道:
+> On 09/11/2023 11:05, zhangqing wrote:
+>> 在 2023/11/9 17:21, Krzysztof Kozlowski 写道:
+>>> On 09/11/2023 09:06, zhangqing wrote:
+>>>> 在 2023/11/9 15:29, Conor Dooley 写道:
+>>>>> On Thu, Nov 09, 2023 at 02:27:38PM +0800, zhangqing wrote:
+>>>>>> Hi:
+>>>>>>
+>>>>>> 在 2023/11/8 20:01, Conor Dooley 写道:
+>>>>>>> On Wed, Nov 08, 2023 at 02:18:21PM +0800, Elaine Zhang wrote:
+>>>>>>>> export PCLK_VO1GRF for DT.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+>>>>>>>> ---
+>>>>>>>>      include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
+>>>>>>>>      1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>>> index 5790b1391201..50ba72980190 100644
+>>>>>>>> --- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>>> +++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
+>>>>>>>> @@ -733,8 +733,9 @@
+>>>>>>>>      #define ACLK_AV1_PRE			718
+>>>>>>>>      #define PCLK_AV1_PRE			719
+>>>>>>>>      #define HCLK_SDIO_PRE			720
+>>>>>>>> +#define PCLK_VO1GRF			721
+>>>>>>>> -#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
+>>>>>>>> +#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
+>>>>>>> This definition is part of the ABI, if it is safe to change it, then it
+>>>>>>> is safe to delete it.
+>>>>>> The new ID is to solve the niu clock dependency problem(Used in PATCH V5
+>>>>>> 4/4).This new ID will also be used in DTS in the future.
+>>>>>>
+>>>>>> CLK_NR_CLKS represents the number of clocks used by the
+>>>>>> drivers/clk/rockchip/clk-rkxxx.c. It is safe to modify it, but cannot delete
+>>>>>> it.
+>>>>> Then delete it from the header and move it to clk-rkxxx.c
+>>>> I don't think it's more appropriate to move to clk-rkxxx.c.
+>>>> Because if there are new requirements later, and add new clk id, it is
+>>>> not in the same file, maybe forget to modify CLK_NR_CLKS.
+>>> Then you are not allowed to change it. It's part of ABI.
+>> If you just don't want me to modify CLK_NR_CLKS, can I use an unused ID,
+>> like [PATCH V4 3/4]:
 >>
->> On Thu 09-11-23 18:29:03, Huan Yang wrote:
->>> HI Michal Hocko,
->>>
->>> Thanks for your suggestion.
->>>
->>> =E5=9C=A8 2023/11/9 17:57, Michal Hocko =E5=86=99=E9=81=93:
->>>> [Some people who received this message don't often get email from mhoc=
-ko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSender=
-Identification ]
->>>>
->>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
->>>> [...]
->>>>>> If so, is it better only to reclaim private anonymous pages explicit=
-ly?
->>>>> Yes, in practice, we only proactively compress anonymous pages and do=
- not
->>>>> want to touch file pages.
->>>> If that is the case and this is mostly application centric (which you
->>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
->>>> instead.
->>> Madvise  may not be applicable in this scenario.(IMO)
->>>
->>> This feature is aimed at a core goal, which is to compress the anonymous
->>> pages
->>> of frozen applications.
->>>
->>> How to detect that an application is frozen and determine which pages c=
-an be
->>> safely reclaimed is the responsibility of the policy part.
->>>
->>> Setting madvise for an application is an active behavior, while the abo=
-ve
->>> policy
->>> is a passive approach.(If I misunderstood, please let me know if there =
-is a
->>> better
->>> way to set madvise.)
->> You are proposing an extension to the pro-active reclaim interface so
->> this is an active behavior pretty much by definition. So I am really not
->> following you here. Your agent can simply scan the address space of the
->> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOUT)
->> on the private memory is that is really what you want/need.
-> There is a key point here. We want to use the grouping policy of memcg
-> to perform
-> proactive reclamation with certain tendencies. Your suggestion is to
-> reclaim memory
-> by scanning the task process space. However, in the mobile field,
-> memory is usually
-> viewed at the granularity of an APP.
+>> -#define MBIST_MCLK_PDM1                        24
+>> +#define PCLK_VO1GRF                    24
+> You cannot change the ABI.
 >
-> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
-> according
-> to the pre-grouped APP processes.
+> I don't understand why do you insist on this path. You got clear
+> comments: either this is ABI, so it cannot be changed, or it has to be
+> dropped. You know insist on some third path. There is no such.
+Ok , I'll drop this change in PATCH V6.
 >
-> Of course, as you suggested, madvise can also achieve this, but
-> implementing it in
-> the agent may be more complex.(In terms of achieving the same goal,
-> using memcg
-> to group all the processes of an APP and perform proactive reclamation
-> is simpler
-> than using madvise and scanning multiple processes of an application
-> using an agent?)
+> Best regards,
+> Krzysztof
+>
+-- 
+张晴
+瑞芯微电子股份有限公司
+Rockchip Electronics Co.,Ltd
+地址：福建省福州市铜盘路软件大道89号软件园A区21号楼
+Add:No.21 Building, A District, No.89 Software Boulevard Fuzhou, Fujian 350003, P.R.China
+Tel:+86-0591-83991906-8601
+邮编：350003
+E-mail:elaine.zhang@rock-chips.com
+****************************************************************************
+保密提示：本邮件及其附件含有机密信息，仅发送给本邮件所指特定收件人。若非该特定收件人，请勿复制、使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件或其他方式即刻告知发件人。福州瑞芯微电子有限公司拥有本邮件信息的著作权及解释权，禁止任何未经授权许可的侵权行为。
 
-I still think that it's not too complex to use process_madvise() to do
-this.  For each process of the application, the agent can read
-/proc/PID/maps to get all anonymous address ranges, then call
-process_madvise(MADV_PAGEOUT) to reclaim pages.  This can even filter
-out shared anonymous pages.  Does this work for you?
+IMPORTANT NOTICE: This email is from Fuzhou Rockchip Electronics Co., Ltd .The contents of this email and any attachments may contain information that is privileged, confidential and/or exempt from disclosure under applicable law and relevant NDA. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or use of the information is STRICTLY PROHIBITED. Please immediately contact the sender as soon as possible and destroy the material in its entirety in any format. Thank you.
 
---
-Best Regards,
-Huang, Ying
+****************************************************************************
+
