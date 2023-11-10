@@ -2,309 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728ED7E7FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3852A7E7F81
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbjKJSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:00:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
+        id S230219AbjKJRy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:54:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbjKJR7b (ORCPT
+        with ESMTP id S230179AbjKJRx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:59:31 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3138E39742
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:36:45 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-45f19811ae5so1380645137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:36:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699627004; x=1700231804; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8lXgHfjhLQ1Wv745j16/Mu5J6Uz3eXfZfSC2W4ANLQ=;
-        b=fJXEP42W3UIevc0rzbpnGO2c6LYI75AjNDHtk8pDzNHZXH5VhqcVHAkApl46emr6et
-         gDhJjMvikgfFjB6nKJNQ0tHQAm8neuIIsgdxgLDYicJZr8OjtnDNKrqzTQxqWJwd3ycr
-         bzgqXXE1ZjYh+o0hcpAEe+6ZQSLI+TuVoBvA05dVqq+nU8mIWM9fd5WBGk6mDXt66RA2
-         xSiH471HVMVFjgIx0uay01BLxBAEG4xMlRZYN5ptozQnmGr+prFtx3ETWmf7gkd9+OVI
-         RAItCdBbkDj5VX1kygtCMmFr1uK7KnJkoL/zu9NwYW0xfnAY6GZgjVruoR/aClf7pt15
-         WRRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699627004; x=1700231804;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8lXgHfjhLQ1Wv745j16/Mu5J6Uz3eXfZfSC2W4ANLQ=;
-        b=rCu3ZBqA9GkOOwnKR8/29Smzn+e4W00fjOEGSFFM/vwQOctT8srUOiAxs/KANIN9T7
-         ALNRVeHQLhTTibNV5UvTSwOtv9HEx9dDH9KSA57EQYFtp/jGCHcVWyFuY3ze4IrdOday
-         YdHyPIf8z7mlpAMsYk4G8UdI6e2IQki5dezUw+aS5sq2sYi6qlcgX+xfdx3NFlUdPSNg
-         os37rXAXq8Oa9pAdEz5PFcoaMQih4Ed2/kuUktBfLar5uF9WzB6A2DI0EJnkFafrlwfY
-         gv/XMLvAuJhttPTjm1uFozVhuKY4IT/WV69zbUTV8jhX2YjOn/rHkgMEU7PSLzN6mKKy
-         eTgg==
-X-Gm-Message-State: AOJu0Yw5/BYQQjzWEseFRFrCAOaZuOeCN5+FQVKzUb9nyNkBT3ZGYE2b
-        Cepn8bvzUaN0u4HNMA676W5hMY8I2lbSmkzDHYczyQ==
-X-Google-Smtp-Source: AGHT+IEUdKQuuZDHxAEIKk0jvynrARkMCYqZ+prBHZYSGA5W6fLsZmxUN30C493LT5BDM5Xf/vCM1+1igAQ5ojd9gwQ=
-X-Received: by 2002:a05:6102:53cc:b0:452:7341:a098 with SMTP id
- bs12-20020a05610253cc00b004527341a098mr1143167vsb.0.1699627004219; Fri, 10
- Nov 2023 06:36:44 -0800 (PST)
+        Fri, 10 Nov 2023 12:53:27 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AC939743;
+        Fri, 10 Nov 2023 06:37:27 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 056B43200A3E;
+        Fri, 10 Nov 2023 09:37:25 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 10 Nov 2023 09:37:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1699627045; x=1699713445; bh=rcShLJQwdFk7RsRNeX/c7tzR8HZJvtQVuGp
+        bMnSXorU=; b=ejl4Mjlp2pQSGeExypcwTNxzCQO8IJu70TTC8Kj7iX5mlgA2I+1
+        Ah0nlJrsJ+kEXHNgFfNOdUsXDBk6IIkkVMpD/aIt1xhb+OCdFXTfaFEnLEV3Uyir
+        oKMbSXn3coiZqkAmaNAfIHujPXMfEdLN6+XxhgEopiF8K7xPyU7maQwK1MRsTptl
+        a10LC73nvkcbN7fdpfyZJ1piKNsrXnCGtF1zk+B+G3KJtXzuH4RXlC41MKVF/Qpa
+        Lod7rCIdQNETyDAXP12nF7honJUFTO9cDbYeW/KglyVj5+h09j95Fea/7c8lWqN9
+        RjJNVlaigDJZXxroIiXIuqb0KM6KMeqjtJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1699627045; x=1699713445; bh=rcShLJQwdFk7RsRNeX/c7tzR8HZJvtQVuGp
+        bMnSXorU=; b=mkAJRz8ihbAnP7FL8q5xk6+4rmo+5X2GNjdExNJVd4CG+PAeZ5j
+        K/udUAelOOksx18MGauQCOFHy+6TyiQTKkAJWQFGFtsxYCwgx03jN0UWzfJB04Lj
+        TdwjqvhROdFn489Q0hslUQf1FgelecTaTLMH9chvoAVhiiomYYl6z5Z1pHD++1IP
+        AAsjFy+/eqveHRD9IXx1lSoBPx/rqJFlCOqRMp6hhGd3hNwthVLv3PuWNgA64dog
+        2h3U/ReK7n7Cs81T8NNtOVenpA8ehUGqLjmm/PE0waH7bajbatzVkMwwZWY52HIy
+        ySVoN6Nsq80VSn98i0E9R3AEfRHncLdtWgA==
+X-ME-Sender: <xms:JEBOZd6CwVfUWQj_21-V4Dki7JL9gUN0AlGZinej3FgM5zfNai0UiQ>
+    <xme:JEBOZa5IlqnsuEOQE6fz4i6ZkfRlVgnhwc2ONHZADJOZ9QxwKEv6ioi2wHzN_aMK-
+    sd6wQm7XCQ24dPGhfU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvfedgieegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:JEBOZUeeERb75L_fGrTXVE81bjnNfxtcUnyJf31mJ1iyWZFFwcmOuw>
+    <xmx:JEBOZWKaC_rdROcG14Lll1CUt5xfi_e10sk8_B8YBhUB8Oz4_sANMA>
+    <xmx:JEBOZRKMQG6h6D6YnqZzLSYUbvNnaXhf2VTprYNF5li_r3bdvSDB9A>
+    <xmx:JUBOZeFqg4kUEj6SC61u-1UOR1NmzwY1Dk9NDTRLTqeftbFBpxOe3Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C643AB60089; Fri, 10 Nov 2023 09:37:24 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-References: <20231108102755.93079-1-jens.wiklander@linaro.org> <20231108102755.93079-2-jens.wiklander@linaro.org>
-In-Reply-To: <20231108102755.93079-2-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 10 Nov 2023 20:06:33 +0530
-Message-ID: <CAFA6WYPqkRdGc6R6Q=w0YJ=SN9FvQ48qDEc6d05gOyyV6x066g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] optee: add page list to kernel private shared memory
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Shyam Saini <shyamsaini@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <2c56410f-2762-4b3c-b37e-e8db75d30560@app.fastmail.com>
+In-Reply-To: <49c002db-fb3e-4e2c-adb4-0be05d4b27e6@gpxsee.org>
+References: <20231023160539.1537355-1-arnd@kernel.org>
+ <20231023160539.1537355-2-arnd@kernel.org>
+ <25173a48-529c-463b-88aa-2ee75dd604ff@gpxsee.org>
+ <75a110d5-c544-44b3-8155-ddfadbe1bd88@app.fastmail.com>
+ <49c002db-fb3e-4e2c-adb4-0be05d4b27e6@gpxsee.org>
+Date:   Fri, 10 Nov 2023 15:37:04 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     =?UTF-8?Q?Martin_T=C5=AFma?= <tumic@gpxsee.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Martin Tuma" <martin.tuma@digiteqautomotive.com>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: pci: mgb4: remove bogus 'select' statements
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+On Wed, Nov 8, 2023, at 19:33, Martin T=C5=AFma wrote:
+> On 08. 11. 23 17:13, Arnd Bergmann wrote:
+>> On Fri, Oct 27, 2023, at 16:17, Martin T=C5=AFma wrote:
+>>> On 23. 10. 23 18:05, Arnd Bergmann wrote:
+>>>> From: Arnd Bergmann <arnd@arndb.de>
+>
+> On SoCs you probably get a kernel configuration that is missing some=20
+> feature but still boots up when you do not select/depend on the exact=20
+> controller, but in the case of the mgb4 PCIe card you get a driver tha=
+t=20
+> does not work at all (The SPI_XILINX dependency could theoretically be=20
+> made configurable, but you would lose the ability to flash the correct=20
+> FW for the current HW module and the access to the card's serial numbe=
+r.=20
+> I2C and XDMA are crucial.).
 
-On Wed, 8 Nov 2023 at 15:57, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Until now has kernel private shared memory allocated as dynamic shared
-> memory (not from the static shared memory pool) been returned without a
-> list of physical pages on allocations via RPC. To support allocations
-> larger than one page add a list of physical pages for all allocations
-> larger than one page.
->
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  drivers/tee/optee/core.c    | 40 +++++++++++++++++++++++++--------
->  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
->  2 files changed, 52 insertions(+), 33 deletions(-)
->
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index 2a258bd3b6b5..a425eca0173d 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -27,6 +27,7 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
->                                                    unsigned long start))
->  {
->         unsigned int order = get_order(size);
-> +       unsigned int nr_pages = 1 << order;
->         struct page *page;
->         int rc = 0;
->
-> @@ -39,12 +40,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
->                 return -ENOMEM;
->
->         shm->kaddr = page_address(page);
-> -       shm->paddr = page_to_phys(page);
->         shm->size = PAGE_SIZE << order;
->
-> -       if (shm_register) {
-> -               unsigned int nr_pages = 1 << order, i;
-> +       /*
-> +        * If memory is registered immediately use a temporary page list
-> +        * and free it directly after the registration is completed.
-> +        *
-> +        * Else, if we have allocated more than one page store a page
-> +        * list in the struct tee_shm.
-> +        *
-> +        * Else, store the physical address of the single page that was
-> +        * allocated.
-> +        *
-> +        * optee_pool_op_free_helper() is responsible for freeing the
-> +        * resourses allocated in this function.
-> +        */
+My point was that we do this all the time for things that are
+essential: if your clock controller or the irqchip have
+no driver, then the camera device won't work, but neither
+would anything else.
 
-It looks a bit complex to me. Do we really need it to be conditional?
-I was thinking if we can simplify this API as follows:
+So in a SoC setting, you really just need to enable all
+the drivers for devices on that chip through the .config.
 
-int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
-                               size_t size, size_t align,
-                               int (*shm_register)(struct tee_shm *shm))
-{
-        unsigned int order = get_order(size);
-        unsigned int nr_pages = 1 << order, i;
-        struct page **pages;
-        struct page *page;
-        int rc = 0;
+>> Since this is a PCI device, it's a bit different, so maybe
+>> something like this would work to correctly document which
+>> dependencies are required at build time vs run time:
+>>=20
+>> --- a/drivers/media/pci/mgb4/Kconfig
+>> +++ b/drivers/media/pci/mgb4/Kconfig
+>> @@ -1,15 +1,13 @@
+>>   # SPDX-License-Identifier: GPL-2.0-only
+>>   config VIDEO_MGB4
+>>          tristate "Digiteq Automotive MGB4 support"
+>> -       depends on VIDEO_DEV && PCI && I2C && DMADEVICES && SPI && MT=
+D && IIO
+>> +       depends on VIDEO_DEV && PCI && I2C && SPI && MTD && IIO
+>>          depends on COMMON_CLK
+>> +       depends on XILINX_XDMA
+>> +       depends on (I2C_XILINX && SPI_XILINX) || COMPILE_TEST
+>>          select VIDEOBUF2_DMA_SG
+>>          select IIO_BUFFER
+>>          select IIO_TRIGGERED_BUFFER
+>> -       select I2C_XILINX
+>> -       select SPI_XILINX
+>> -       select MTD_SPI_NOR
+>> -       select XILINX_XDMA
+>>          help
+>>            This is a video4linux driver for Digiteq Automotive MGB4 g=
+rabber
+>>            cards.
+>>=20
+>
+> My motivation when using "select" was to help people using "make=20
+> menuconfig" to get the module selected/configured as they will usually=20
+> not know that there are some Xilinx IP cores used that need separate=20
+> drivers and the menuconfig GUI simply hides the mgb4 option making it=20
+> almost impossible just from the menus to find out what has to be selec=
+ted.
+>
+> But when there are reasons, why to chose "depends on" (like various=20
+> configurations, tests or the "readability" of the dependencies) than I=
+'m=20
+> ok with your patch proposal.
 
-        /*
-         * Ignore alignment since this is already going to be page aligned
-         * and there's no need for any larger alignment.
-         */
-        page = alloc_pages(GFP_KERNEL | __GFP_ZERO, order);
-        if (!page)
-                return -ENOMEM;
+The main reason to use 'depends on' over 'select' here is that
+mixing the two is a common source of dependency loops that end
+up breaking the build. As a rule of thumb, I would use 'select'
+only for symbols that others already select, or that are hidden
+from visibility.
 
-        shm->kaddr = page_address(page);
-        shm->paddr = page_to_phys(page);
-        shm->size = PAGE_SIZE << order;
-
-        pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-        if (!pages) {
-                rc = -ENOMEM;
-                goto err;
-        }
-
-        for (i = 0; i < nr_pages; i++)
-                pages[i] = page + i;
-
-        shm->pages = pages;
-        shm->num_pages = nr_pages;
-
-        if (shm_register) {
-                rc = shm_register(shm);
-                if (rc)
-                        goto err;
-        }
-
-        return 0;
-
-err:
-        kfree(pages);
-        free_pages((unsigned long)shm->kaddr, order);
-        return rc;
-}
-
--Sumit
-
-> +       if (shm_register || nr_pages > 1) {
->                 struct page **pages;
-> +               unsigned int i;
->
->                 pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
->                 if (!pages) {
-> @@ -55,17 +68,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
->                 for (i = 0; i < nr_pages; i++)
->                         pages[i] = page + i;
->
-> -               rc = shm_register(shm->ctx, shm, pages, nr_pages,
-> -                                 (unsigned long)shm->kaddr);
-> -               kfree(pages);
-> -               if (rc)
-> -                       goto err;
-> +               if (shm_register) {
-> +                       rc = shm_register(shm->ctx, shm, pages, nr_pages,
-> +                                         (unsigned long)shm->kaddr);
-> +                       kfree(pages);
-> +                       if (rc)
-> +                               goto err;
-> +               } else {
-> +                       shm->pages = pages;
-> +                       shm->num_pages = nr_pages;
-> +               }
-> +       } else {
-> +               shm->paddr = page_to_phys(page);
->         }
->
->         return 0;
-> -
->  err:
->         free_pages((unsigned long)shm->kaddr, order);
-> +       shm->kaddr = NULL;
->         return rc;
->  }
->
-> @@ -77,6 +97,8 @@ void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
->                 shm_unregister(shm->ctx, shm);
->         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
->         shm->kaddr = NULL;
-> +       kfree(shm->pages);
-> +       shm->pages = NULL;
->  }
->
->  static void optee_bus_scan(struct work_struct *work)
-> diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> index d5b28fd35d66..b69410c7cc0a 100644
-> --- a/drivers/tee/optee/smc_abi.c
-> +++ b/drivers/tee/optee/smc_abi.c
-> @@ -678,10 +678,11 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
->                                           struct optee_msg_arg *arg,
->                                           struct optee_call_ctx *call_ctx)
->  {
-> -       phys_addr_t pa;
->         struct tee_shm *shm;
->         size_t sz;
->         size_t n;
-> +       struct page **pages;
-> +       size_t page_count;
->
->         arg->ret_origin = TEEC_ORIGIN_COMMS;
->
-> @@ -716,32 +717,23 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
->                 return;
->         }
->
-> -       if (tee_shm_get_pa(shm, 0, &pa)) {
-> -               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> -               goto bad;
-> -       }
-> -
-> -       sz = tee_shm_get_size(shm);
-> -
-> -       if (tee_shm_is_dynamic(shm)) {
-> -               struct page **pages;
-> +       /*
-> +        * If there are pages it's dynamically allocated shared memory (not
-> +        * from the reserved shared memory pool) and needs to be
-> +        * registered.
-> +        */
-> +       pages = tee_shm_get_pages(shm, &page_count);
-> +       if (pages) {
->                 u64 *pages_list;
-> -               size_t page_num;
-> -
-> -               pages = tee_shm_get_pages(shm, &page_num);
-> -               if (!pages || !page_num) {
-> -                       arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
-> -                       goto bad;
-> -               }
->
-> -               pages_list = optee_allocate_pages_list(page_num);
-> +               pages_list = optee_allocate_pages_list(page_count);
->                 if (!pages_list) {
->                         arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
->                         goto bad;
->                 }
->
->                 call_ctx->pages_list = pages_list;
-> -               call_ctx->num_entries = page_num;
-> +               call_ctx->num_entries = page_count;
->
->                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT |
->                                       OPTEE_MSG_ATTR_NONCONTIG;
-> @@ -752,17 +744,22 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
->                 arg->params[0].u.tmem.buf_ptr = virt_to_phys(pages_list) |
->                         (tee_shm_get_page_offset(shm) &
->                          (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
-> -               arg->params[0].u.tmem.size = tee_shm_get_size(shm);
-> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
->
-> -               optee_fill_pages_list(pages_list, pages, page_num,
-> +               optee_fill_pages_list(pages_list, pages, page_count,
->                                       tee_shm_get_page_offset(shm));
->         } else {
-> +               phys_addr_t pa;
-> +
-> +               if (tee_shm_get_pa(shm, 0, &pa)) {
-> +                       arg->ret = TEEC_ERROR_BAD_PARAMETERS;
-> +                       goto bad;
-> +               }
-> +
->                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT;
->                 arg->params[0].u.tmem.buf_ptr = pa;
-> -               arg->params[0].u.tmem.size = sz;
-> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
->         }
-> +       arg->params[0].u.tmem.size = tee_shm_get_size(shm);
-> +       arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
->
->         arg->ret = TEEC_SUCCESS;
->         return;
-> --
-> 2.34.1
->
+      Arnd
