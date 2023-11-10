@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E00D67E7F7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B1D7E8706
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjKJRyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S1345003AbjKKAzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjKJRxZ (ORCPT
+        with ESMTP id S229729AbjKKAzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:53:25 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA3C431E7;
-        Fri, 10 Nov 2023 09:07:48 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1r1Uyl-0007Mv-3C;
-        Fri, 10 Nov 2023 17:07:36 +0000
-Date:   Fri, 10 Nov 2023 17:07:31 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988
- watchdog and toprgu
-Message-ID: <ZU5jU-T0m5QW4ZeF@makrotopia.org>
-References: <2678cb48-1d2b-47bc-9272-06d9aa140c58@collabora.com>
- <ZU47hV1i66WN8nZJ@makrotopia.org>
- <d7b72b3e-c8f4-4675-ae62-26f5ae576f0a@linaro.org>
- <ZU5A59KO8Y_Q97IG@makrotopia.org>
- <a56cfe76-ab03-4187-b6f1-04a5c3414e64@linaro.org>
- <ZU5DVNOmtyFwUTdC@makrotopia.org>
- <708046ae-a821-420c-959a-ab5cb712aa9e@linaro.org>
- <ZU5IcrjqQpwMopJC@makrotopia.org>
- <6576d4a6-31fa-4780-9a8a-5a1d1974836f@linaro.org>
- <bb0ed593-082b-4edd-9a1e-78cccf796677@linaro.org>
+        Fri, 10 Nov 2023 19:55:31 -0500
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D64F4682
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:55:28 -0800 (PST)
+Received: from letrec.thunk.org ([172.59.192.143])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3AB0t1E0028402
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 19:55:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1699664106; bh=KGrCo0EAEmidC19jfpkh83o8LjlI6ymESMr0sKB5j0A=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=AYRe7UydBBubaW7sb4UEwm3rmq27RLIsAOoGYn0bEqX7/1DTOMjg7JEYiRuecpWUu
+         7joHrfDoCZgZ+z0fM+sK4zbQEbH0/f5MSfb/7Od0HMKHh+iMIh/q1v27UC+YzDH3Ku
+         sOUC7BVviAOJ3CkkKDHQ34vjxSEPgA4FCQ34q/lKT8G8KlaXP3X8rL83TD+W05shQ6
+         ZZTJGugsZMvxTe8DJ6gEjYxKX747cZtJvG0LmKMVe8vJvoi3w5X5jVIYJoM4nqnVM7
+         eD7+9XtwgkTZaKdI2ktkABOkLQeAQrxvPzYxjUGJBfXimRv0qEnLimiqivcIqkNhPL
+         yUcpVyTbKG9ZA==
+Received: by letrec.thunk.org (Postfix, from userid 15806)
+        id B4E848C02FA; Fri, 10 Nov 2023 12:08:35 -0500 (EST)
+Date:   Fri, 10 Nov 2023 12:08:35 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
+Message-ID: <ZU5jkxVyudIiciNX@mit.edu>
+References: <000000000000cfd180060910a687@google.com>
+ <875y2lmxys.ffs@tglx>
+ <CANp29Y7EQ0cLf23coqFLLRHbA5rJjq0q1-6G7nnhxqBOUA7apw@mail.gmail.com>
+ <87r0l8kv1s.ffs@tglx>
+ <CANp29Y5BnnYBauXyHmUKrgrn5LZpz8nDuZFTwLLB7WHq4DS6Wg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bb0ed593-082b-4edd-9a1e-78cccf796677@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CANp29Y5BnnYBauXyHmUKrgrn5LZpz8nDuZFTwLLB7WHq4DS6Wg@mail.gmail.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 04:21:35PM +0100, Krzysztof Kozlowski wrote:
-> On 10/11/2023 16:15, Krzysztof Kozlowski wrote:
-> >>>> So adding the file to include/dt-bindings/reset/ should go into a
-> >>>> seperate patch? Because including it with the driver itself gave me
-> >>>> a checkpath warning telling me that dt-bindings should go seperate,
-> >>>> which is why I included it with the binding docs.
-> >>>
-> >>> No, I said the hunk should be dropped. Removed.
-> >>
-> >> I guess we are somehow misunderstanding each other.
-> >> Lets go with an example. I can put the header into a commit of its own,
-> >> just like commit
-> >> 5794dda109fc8 dt-bindings: reset: mt7986: Add reset-controller header file
-> >> https://lore.kernel.org/r/20220105100456.7126-2-sam.shih@mediatek.com
-> >>
-> >> Would that be acceptable? And if not, why?
-> > 
-> > ...this question.
-
-... which you didn't answer. Sorry, but it's not helpful to be polemic
-or ironic in a code review involving non-native English speakers
-trying to understand each others.
-
-> > 
-> > Again, whether this is separate patch - it is still hunk which I think
-> > should be removed. I gave the reason "why" in this mail thread and in
-> > multiple other discussions.
+On Thu, Nov 09, 2023 at 09:00:18PM -0800, Aleksandr Nogikh wrote:
 > 
-> I gave you clear reasoning 7 hours ago:
-> https://lore.kernel.org/all/59629ec1-cc0c-4c5a-87cc-ea30d64ec191@linaro.org/
-> to which you did not respond.
+> The reproducer does work on the attached disk image, but definitely
+> not very often. I've just run it 10 times or so and got interleaved
+> BUG/KFENCE bug reports like this (twice):
+> https://pastebin.com/W0TkRsnw
+> 
+> These seem to be related to ext4 rather than hrtimers though.
 
-Because it doesn't match anything existing regarding MediaTek reset
-drivers, and I was assuming there must be some kind of misunderstanding,
-which is why I replied to your later email in the same thread.
+So what would be nice is if there was a way to ask the syzkaller
+tester to use a different config or to change the reproducer somehow
+--- for example, is it *really* necessary to twiddle the bluetooth
+subsystem, as demonstrated by the spew in the console?
 
-My assumption that the problem was merely having documentation and
-header combined in a single commit stems from the fact that a very
-similar patch for MT7986[1] was Ack'ed by Rob Herring about a year and
-a half ago; hence the rule you apply here may have always existed, but
-apparently then hasn't been applied in the past.
+I've certainly spent hours cutting down the reproducer to a simple C
+program which is readable by humans, which makes it *clear* the syzbot
+minimizer doesn't do a good job.  Why should a time-limited maintainer
+spend hours trying to cut down the reproducer, when a robot should be
+able to do that for us?  And when often it doesn't reproduce on
+anything via syzbot test, but not when run using KVM, this is why we
+need to have a simple way of trigger a test where things are as close
+as possible to whatever syzbot is using.
 
-Literally *all* existing dt-binding headers for MediaTek SoCs follow a
-direct 1:1 mapping of reset bit in hardware and reset number in the
-header files. The driver is simple, all it cares about is the maximum
-number defined in the header (and I like that, because it makes it very
-easy to add new SoCs). At this point the abstraction needed to
-fulfill your request doesn't exist, not for any of the SoCs using
-mtk_wdt.c. It can be implemented, surely, it's a problem computers can
-solve. If that's what you (and current maintainers of that driver)
-would want me to implement, please say so clearly and spell it out.
+Cheers,
 
-Also be clear about if all the other existing headers need to be
-converted, mappings for all SoCs created in the driver, ... all before
-support for MT7988 can go in?
-Or should the existing headers for other MediaTek SoCs remain
-untouched because they are already considered stable API or something?
-
-
-Thank you for your patiente!
-
-
-Daniel
-
-
-[1]: https://lore.kernel.org/all/Yd4uplioThv8eJJE@robh.at.kernel.org/
+						- Ted
