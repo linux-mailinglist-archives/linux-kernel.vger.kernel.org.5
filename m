@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4A17E7E5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3359D7E83ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229723AbjKJRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        id S235537AbjKJUcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbjKJRnl (ORCPT
+        with ESMTP id S230163AbjKJUbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:43:41 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059477688
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:32:41 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc1682607eso16694425ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:32:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699597960; x=1700202760;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ujl3jIy32sZVS9KiR+zaT0iaqG18G/enwiDyAL/Fxo8=;
-        b=izFRBnCokJz/xGKelx6dj8/7hdvZ6OswpBho5jq4V8SHYjEDjcyzZzFX0B0PbLSRFQ
-         nuTL0jmELch9miyajjpok9jRUxxyZg3IV71dwguYuqD7ho8gaVn47mcGmd5lGMK/Z//+
-         YJ8GvDrnL+9tqijEq+HJcNVE6zAQpi0g2iDz7XC2pRwFj/HaA12m9oBnxfO8JOe0m95y
-         U9qm/uY8zmz46QSRgXJjRLtwHekiPdtkEIAsdUnpsNa5XHwrhonMieslliNDYcvER3ST
-         9mdiXvQzjHGsECUYRE0vHRtXQlm//anS2QISRdT+LuFuTpwlx4IHXarDBlnGdre81rmR
-         eBfg==
-X-Gm-Message-State: AOJu0Yz1tSRLVmkua7X179A8dzDLQCgSsijWXnB9c6/sMWQPLpFcyUo8
-        JBZ+VBvs2fbkBFS5VaKs3vC3LrrcmhBx3jd/Pi98/TzkYjb3eHs=
-X-Google-Smtp-Source: AGHT+IF6rj6OHOqRBNLOEkIFwzv/EM5p9cltFO9tdpF+K87G+ARPLrrw390+9onNT29yEb9Kg41XGkkDP1/EZDKNHGnvKsFJ9Gd1
+        Fri, 10 Nov 2023 15:31:31 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791D5768C;
+        Thu,  9 Nov 2023 22:32:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699597978;
+        bh=Ber9iHljyDuWmHX2CkDEf1plokLEZ1gOavg04qYWnaE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=coyWwJPUdq0UAm5elYxafSItveRp3c78H7RWI4brgoI6AbZ3OE8I4B8FbjDRAl2Az
+         p3M/SKH9I/dNbDKVvbbwTerhggKz0lR42V+uNSqNQq84BdJx+Rk4S6ZWG9NSYzNblB
+         WUyW3wWVNLEJmHklZWwm6NBMfmT8qXiLlW77+oA/9npNxymb+1RhQQaHqW6RFrtZri
+         jPbXjI3k2Nn8sjZCTzoovtvmA2NUU5KRnBCLtKpCzT8xBIqwNuyu68to/tmkEOiyZN
+         IMymnTWOO5cMJi0PP8+qxzoYxem0g8uR7MpoYA2zBzMlCkb3O1eElhsykpdcO/oEsM
+         0sO7vCqQ+SgAA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRTXT2t4gz4x5p;
+        Fri, 10 Nov 2023 17:32:57 +1100 (AEDT)
+Date:   Fri, 10 Nov 2023 17:32:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     syzbot <syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] linux-next build error (16)
+Message-ID: <20231110173243.673501c6@canb.auug.org.au>
+In-Reply-To: <c673ae1d-4eed-4e8e-9772-1de2e67a1d9a@infradead.org>
+References: <0000000000002167ca0609c1f5d5@google.com>
+        <20231110122817.47d72603@canb.auug.org.au>
+        <c673ae1d-4eed-4e8e-9772-1de2e67a1d9a@infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:6b02:b0:1cc:3597:9e2f with SMTP id
- o2-20020a1709026b0200b001cc35979e2fmr998719plk.2.1699597960584; Thu, 09 Nov
- 2023 22:32:40 -0800 (PST)
-Date:   Thu, 09 Nov 2023 22:32:40 -0800
-In-Reply-To: <0000000000007323f20609b7cfbb@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b3a5370609c67cfe@google.com>
-Subject: Re: [syzbot] [PATCH] test aea6bf908d73
-From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/XLV3ybuK17zgTG4T_xG9Wtm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+--Sig_/XLV3ybuK17zgTG4T_xG9Wtm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-***
+Hi Randy,
 
-Subject: [PATCH] test aea6bf908d73
-Author: lizhi.xu@windriver.com
+On Thu, 9 Nov 2023 20:10:04 -0800 Randy Dunlap <rdunlap@infradead.org> wrot=
+e:
+>
+> On 11/9/23 17:28, Stephen Rothwell wrote:
+> > Hi syzbot,
+> >=20
+> > On Thu, 09 Nov 2023 17:08:26 -0800 syzbot <syzbot+c65436ac3463dd64e422@=
+syzkaller.appspotmail.com> wrote: =20
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    b622d91ca201 Add linux-next specific files for 20231109
+> >> git tree:       linux-next
+> >> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16a5139768=
+0000
+> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D159f4f3162=
+2eb7ff
+> >> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc65436ac3463=
+dd64e422
+> >>
+> >> IMPORTANT: if you fix the issue, please add the following tag to the c=
+ommit:
+> >> Reported-by: syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com
+> >>
+> >> failed to run ["make" "-j" "64" "ARCH=3Dx86_64" "oldconfig"]: exit sta=
+tus 2
+> >>
+> >> ---
+> >> This report is generated by a bot. It may contain errors.
+> >> See https://goo.gl/tpsmEJ for more information about syzbot.
+> >> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >>
+> >> syzbot will keep track of this issue. See:
+> >> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >>
+> >> If the report is already addressed, let syzbot know by replying with:
+> >> #syz fix: exact-commit-title
+> >>
+> >> If you want to overwrite report's subsystems, reply with:
+> >> #syz set subsystems: new-subsystem
+> >> (See the list of subsystem names on the web dashboard) =20
+> >=20
+> > #syz set subsystems: crypto
+> >  =20
+>=20
+> This is a kconfig error. Masahiro has dropped the patch that causes it.
+>=20
+> https://lore.kernel.org/linux-kbuild/eb9cb563-d480-4000-8feb-b63b856235c3=
+@smile.fr/T/#m8762579bdcc368380788fe7a545e788ddfb306c7
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git aea6bf908d73
+Right you are.
 
-diff --git a/net/nfc/llcp_commands.c b/net/nfc/llcp_commands.c
-index e2680a3bef79..6ba43a0369d3 100644
---- a/net/nfc/llcp_commands.c
-+++ b/net/nfc/llcp_commands.c
-@@ -738,7 +738,7 @@ int nfc_llcp_send_ui_frame(struct nfc_llcp_sock *sock, u8 ssap, u8 dsap,
- 
- 	pr_debug("Send UI frame len %zd\n", len);
- 
--	local = sock->local;
-+	local = nfc_llcp_find_local(sock->dev);
- 	if (local == NULL)
- 		return -ENODEV;
- 
-diff --git a/net/nfc/llcp_core.c b/net/nfc/llcp_core.c
-index 1dac28136e6a..150d0e24e27c 100644
---- a/net/nfc/llcp_core.c
-+++ b/net/nfc/llcp_core.c
-@@ -284,6 +284,7 @@ struct nfc_llcp_local *nfc_llcp_find_local(struct nfc_dev *dev)
- 	spin_lock(&llcp_devices_lock);
- 	list_for_each_entry(local, &llcp_devices, list)
- 		if (local->dev == dev) {
-+			printk("finded: %p, d: %p, %s\n", local, dev, __func__);
- 			res = nfc_llcp_local_get(local);
- 			break;
- 		}
-@@ -299,6 +300,7 @@ static struct nfc_llcp_local *nfc_llcp_remove_local(struct nfc_dev *dev)
- 	spin_lock(&llcp_devices_lock);
- 	list_for_each_entry_safe(local, tmp, &llcp_devices, list)
- 		if (local->dev == dev) {
-+			printk("deled: l: %p, d: %p, %s\n", local, dev, __func__);
- 			list_del(&local->list);
- 			spin_unlock(&llcp_devices_lock);
- 			return local;
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/XLV3ybuK17zgTG4T_xG9Wtm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVNzosACgkQAVBC80lX
+0GwZkgf/cLL23bXueIbhmTWwHzH4AeSN5QmNEzM8PWnBK0LrQZ30k2YMfn1BMuz1
+LPgCZzccBP/OZLS+5helXLCwHT3s4OGGwBrVuUkvl7WsYa/kYiEOniJjZhyJLpz/
+rcp/zphH5gs0oRdLTW619pKtImLG57EfwwrYLZ5lDlLsFRajdsoCSGcENOOmRQ0K
+YUprh+7+w0FrpHYozjGPyliURfQizgerq5cebQtzgmtkf5RgKCXN+IgrTrfkfXXl
+tDxDerwUkZpYb9wm/uEDuH5HgutaWzXkjG1MFfIos2ewVwImDANrZZzJo09JqgWA
+oTPROG2l2cB8QJVtXZUs7DoHY0ycow==
+=nZBy
+-----END PGP SIGNATURE-----
+
+--Sig_/XLV3ybuK17zgTG4T_xG9Wtm--
