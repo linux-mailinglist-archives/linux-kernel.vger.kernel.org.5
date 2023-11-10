@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 225677E7820
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39C77E7822
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345840AbjKJDho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
+        id S1345836AbjKJDiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbjKJDhn (ORCPT
+        with ESMTP id S234633AbjKJDiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:37:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2443B4687
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:36:57 -0800 (PST)
+        Thu, 9 Nov 2023 22:38:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C975468A
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:37:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699587416;
+        s=mimecast20190719; t=1699587444;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HClD7CV8xk/CCQ0atS0PXuNYo2X0BsEeurSAtsmTxpQ=;
-        b=cQpTBzlZiAd5YaigPsFlZ0xVbr0A0J5aGwSxijR+rGqQx2k9vq9zUk2GcIZailkdTi6N0v
-        BYvDduQG3025ZbN7XipPI8t+w7ac5pFAKm8c8C45bqh35zxnHSWSD+T+iZWLvrYN02Me2L
-        pUuuWkmoQvVJ2ekUtPfuzBZtJcZyBMY=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=pROeszy9ePncz4nZyjZpb065/8N1ucMk0OODbP+hams=;
+        b=b5345Xd4CfAHxovucD90DpRX2u+HjGodmOo2tM1PmGl9pbs2YS6YMFg3bqB0yoWOn1BbbP
+        kSRaQ7GbD/VFxoBBbMZmqlPSaliyNc6mf939PPMsN/5At0ps8De3tzo/lvpMo0Zeyv3N1Z
+        QtstkZ2hLbue4IfyLhwRBcqnee8hqNw=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-DLB2AC_sOJqAUA5tgFvwkA-1; Thu, 09 Nov 2023 22:36:55 -0500
-X-MC-Unique: DLB2AC_sOJqAUA5tgFvwkA-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5bdb39cd60dso5070a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:36:55 -0800 (PST)
+ us-mta-160-bRY2qTLhM2meYUnbKYPvnA-1; Thu, 09 Nov 2023 22:37:23 -0500
+X-MC-Unique: bRY2qTLhM2meYUnbKYPvnA-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b3ecd1be0bso67900b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:37:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699587414; x=1700192214;
+        d=1e100.net; s=20230601; t=1699587442; x=1700192242;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HClD7CV8xk/CCQ0atS0PXuNYo2X0BsEeurSAtsmTxpQ=;
-        b=WUsQzZPsTgUqnk9Np4Xj1GT7q5DoLUuUyJJpyS7g54y4CyX4o0IY64/ammVpUaJxS5
-         8Hg5vvsR6OiQqtFVLO7bH8kb+keQ5m3hxVNfF/MZFhPo7mu4cq0iDMOMqq/y8scqcRDi
-         4cUlH8gY2fmgYYkati3J4EfhOhN6d7lfVviWsgLCo5MKcNaGareAcPqszEg3VIdlhr57
-         9HhQKl9AkAX0lf7eb46sApOjQ6GKs9fSPVHeS5y99KBwhQPmE03p1dKrcvseKDR3ZxnF
-         WduvVeA1tbEGYE6tdd8NgZnPyq7vw6K7hBTag0llQXqWgZ3DtR9BcV6HicK+z99NN9Z8
-         dT+A==
-X-Gm-Message-State: AOJu0Yw/Eg3riAZsZUkCiyNzR/XNqqFU7kTxVCyVQYqPhG/pEqS/YHyk
-        9uq7jqDa/22COXUz8Aztj0GCicyOY/zxMJN1Pt4fmm/e5cY+fyeFus9Yg0cITDqYubNMNAum/re
-        JLcuuQr9FUNbDPNdY50iWFr63
-X-Received: by 2002:a05:6a20:7d9b:b0:183:e7bb:591b with SMTP id v27-20020a056a207d9b00b00183e7bb591bmr7377781pzj.3.1699587414397;
-        Thu, 09 Nov 2023 19:36:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEtZaVuVapXbb3y/agfJhHkenHQPRDZ+pGnicgr3kUFB4Kcn/5cEWlfctiRqhGPrLHUlDRuVQ==
-X-Received: by 2002:a05:6a20:7d9b:b0:183:e7bb:591b with SMTP id v27-20020a056a207d9b00b00183e7bb591bmr7377759pzj.3.1699587413961;
-        Thu, 09 Nov 2023 19:36:53 -0800 (PST)
+        bh=pROeszy9ePncz4nZyjZpb065/8N1ucMk0OODbP+hams=;
+        b=G7E8TQQ1QXv96Dxa1E+tLNBwUlWiLq6S2NtY9lVRo9I2hMqsuu0jY3SWoxwldaERfu
+         TaTiOmPBC2XEfBQuG8rZHk/AnxgDE+iHTDq8xv5RavozHYZYeQ7+mIXWk/u5viwk/bYw
+         9PGy15c1yRVdK+DnzeyMJAveYQRN/1/bwJp0W6+EHSGun5Zbm5XUr3JHD2oUs729KZq1
+         On5pBkVA0OwhBpYUXazPpj/ltF+pbIw246uTlR+KA9ySmpTg2j+PqkIaZlg8i2MtIYOa
+         dq8xGuXU3QRy9Z/upgJe8mazIW1PU71LgMfSEFW71SPivUrzcKAPpF8pVmxQzpxzDtuS
+         mRPg==
+X-Gm-Message-State: AOJu0YykeQJOWmbQTa+sGt+BP1m2fiV/rNxqMnSflL7D/yg4zuESkujG
+        jgGlmHkT4YLXo29szQ8BfgZd0r6b6ka5XkiyS78tqznMOv6prJ6eRqgANCQbpk2iAHBGeK7lnI8
+        uDiqlrnpQRaBlYN+91aMMgKBw
+X-Received: by 2002:a05:6808:199c:b0:3a9:e8e2:579d with SMTP id bj28-20020a056808199c00b003a9e8e2579dmr8276251oib.2.1699587442424;
+        Thu, 09 Nov 2023 19:37:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFPdXOyaUAzV6aldemEymWFIQu5uK8SS6EoZEeBtta4Ue7SEB3JH44cFaCIyyqf1iZkLKsTPg==
+X-Received: by 2002:a05:6808:199c:b0:3a9:e8e2:579d with SMTP id bj28-20020a056808199c00b003a9e8e2579dmr8276228oib.2.1699587442206;
+        Thu, 09 Nov 2023 19:37:22 -0800 (PST)
 Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id iy18-20020a170903131200b001cc2bc10510sm4267420plb.128.2023.11.09.19.36.48
+        by smtp.gmail.com with ESMTPSA id e8-20020a63d948000000b005a9b20408a7sm5370547pgj.23.2023.11.09.19.37.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 19:36:53 -0800 (PST)
-Message-ID: <7e7f37c9-c364-7749-c700-8bc29ac0c5d1@redhat.com>
-Date:   Fri, 10 Nov 2023 11:36:47 +0800
+        Thu, 09 Nov 2023 19:37:21 -0800 (PST)
+Message-ID: <fd78bb81-1f83-13a4-ec37-3fe0cd040ec0@redhat.com>
+Date:   Fri, 10 Nov 2023 11:37:16 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH RFC 13/22] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
+Subject: Re: [PATCH RFC 14/22] arm64: convert to arch_cpu_is_hotpluggable()
 Content-Language: en-US
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -79,9 +78,9 @@ Cc:     Salil Mehta <salil.mehta@huawei.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
+ <E1r0JLq-00CTxq-CF@rmk-PC.armlinux.org.uk>
 From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r0JLq-00CTxq-CF@rmk-PC.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -91,94 +90,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 11/7/23 18:30, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
+> Convert arm64 to use the arch_cpu_is_hotpluggable() helper rather than
+> arch_register_cpu().
 > 
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
-> 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
-> 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
-> 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
-> 
-> This patch also has the effect of moving the registration of CPUs from
-> subsys to driver core initialisation, prior to any initcalls running.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 > ---
-> Changes since RFC v2:
->   * Add note about initialisation order change.
-> ---
->   arch/arm64/Kconfig           |  1 +
->   arch/arm64/include/asm/cpu.h |  1 -
->   arch/arm64/kernel/setup.c    | 13 ++++---------
->   3 files changed, 5 insertions(+), 10 deletions(-)
+>   arch/arm64/kernel/setup.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 7b071a00425d..84bce830e365 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -132,6 +132,7 @@ config ARM64
->   	select GENERIC_ARCH_TOPOLOGY
->   	select GENERIC_CLOCKEVENTS_BROADCAST
->   	select GENERIC_CPU_AUTOPROBE
-> +	select GENERIC_CPU_DEVICES
->   	select GENERIC_CPU_VULNERABILITIES
->   	select GENERIC_EARLY_IOREMAP
->   	select GENERIC_IDLE_POLL_SETUP
-> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
-> index f3034099fd95..b1e43f56ee46 100644
-> --- a/arch/arm64/include/asm/cpu.h
-> +++ b/arch/arm64/include/asm/cpu.h
-> @@ -38,7 +38,6 @@ struct cpuinfo_32bit {
->   };
->   
->   struct cpuinfo_arm64 {
-> -	struct cpu	cpu;
->   	struct kobject	kobj;
->   	u64		reg_ctr;
->   	u64		reg_cntfrq;
 > diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 417a8a86b2db..165bd2c0dd5a 100644
+> index 165bd2c0dd5a..42c690bb2d60 100644
 > --- a/arch/arm64/kernel/setup.c
 > +++ b/arch/arm64/kernel/setup.c
-> @@ -402,19 +402,14 @@ static inline bool cpu_can_disable(unsigned int cpu)
+> @@ -402,13 +402,9 @@ static inline bool cpu_can_disable(unsigned int cpu)
 >   	return false;
 >   }
 >   
-> -static int __init topology_init(void)
-> +int arch_register_cpu(int num)
+> -int arch_register_cpu(int num)
+> +bool arch_cpu_is_hotpluggable(int num)
 >   {
-> -	int i;
-> +	struct cpu *cpu = &per_cpu(cpu_devices, num);
->   
-> -	for_each_possible_cpu(i) {
-> -		struct cpu *cpu = &per_cpu(cpu_data.cpu, i);
-> -		cpu->hotpluggable = cpu_can_disable(i);
-> -		register_cpu(cpu, i);
-> -	}
-> +	cpu->hotpluggable = cpu_can_disable(num);
->   
-> -	return 0;
-> +	return register_cpu(cpu, num);
+> -	struct cpu *cpu = &per_cpu(cpu_devices, num);
+> -
+> -	cpu->hotpluggable = cpu_can_disable(num);
+> -
+> -	return register_cpu(cpu, num);
+> +	return cpu_can_disable(num);
 >   }
-> -subsys_initcall(topology_init);
 >   
 >   static void dump_kernel_offset(void)
->   {
 
 -- 
 Shaoqin
