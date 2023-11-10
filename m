@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467687E83F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB977E83BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346156AbjKJUct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S1345088AbjKJU0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:26:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346082AbjKJUcN (ORCPT
+        with ESMTP id S234845AbjKJU00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:32:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D13240AE9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:50:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699635004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MqxqWzAGv5fAoXTt67WoZDzwOtx7uJzJ1csLkrDayk=;
-        b=DB0KCRViPZQTnyGMHaCF0PawJdHS4qN2G1BIb0qg/In8iaq9JBYZmbRKoRGKFEMOMt+d29
-        WJm07I/+POcF18Mn+uoTxPnkjmtkZa+U9MvUHCsnFmtvMNuf5RlelJuCEQ5GxZcI4gHsYG
-        JxfQhxi8JpORzsBqKhxYavKYZHNAI98=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-183-ov4JUfviPoOfO0Lru1u3DA-1; Fri, 10 Nov 2023 11:50:02 -0500
-X-MC-Unique: ov4JUfviPoOfO0Lru1u3DA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32f8c4e9b88so1497270f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:50:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699635002; x=1700239802;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/MqxqWzAGv5fAoXTt67WoZDzwOtx7uJzJ1csLkrDayk=;
-        b=QHt6SrG5IsPSuUln4w7hMCb8sa2RDGg6fPaomuMJxpzqVPqM2cUeehNiv2E1Y0iLG1
-         BTzI1vWGI1FdbZgSHxARYPym3dX1BIekAc7oiX+/ILgRlQD8EBGMEpyVo5EyI2W7QUmi
-         fGDa0bopu4atk6jYEcy5DkwnxXNOmX5KZJ4DyF84A8p05PNimWBxanfukMgdpulG0Hix
-         M0jK0Bs+6z+/A5GDea8zOQgXUXitq9U5zn7hllnaJUBCN7vTpQ6dQmwtBEHZ2M0orDFK
-         yCrCOCwdxICBKK1awAtG+QW21eS/LCn5SHp4wU7MeylexzBbG1GoIwILaRoI3Weu4yeW
-         zMlg==
-X-Gm-Message-State: AOJu0YzOjhgy6TQxOtU5+UAk5o0jJEVH5Pt/PIMqW7u0c4n5Ntm/7xnT
-        Rah3FUnJbgb/895Dowbtpoq/irxVXioacCmP7TwdFC+bHBUUZCq7ywkIulu9AdxmONGYI40egOR
-        jjpv2Aw4ciKfOcx6pDUMMSk5J
-X-Received: by 2002:a5d:6c65:0:b0:331:3d55:ebcb with SMTP id r5-20020a5d6c65000000b003313d55ebcbmr2366083wrz.24.1699635001758;
-        Fri, 10 Nov 2023 08:50:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH++7Tz4VWFO0D3PcP4B0LxW7JEEViGQisWX5q3UOeSjzyRnxQ4E20jZar4BcXAFi5u69IOWQ==
-X-Received: by 2002:a5d:6c65:0:b0:331:3d55:ebcb with SMTP id r5-20020a5d6c65000000b003313d55ebcbmr2366057wrz.24.1699635001427;
-        Fri, 10 Nov 2023 08:50:01 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id p5-20020adfe605000000b0032db8f7f378sm2257722wrm.71.2023.11.10.08.50.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 08:50:01 -0800 (PST)
-Message-ID: <49456cc4-5ec6-47bb-bbc6-b6a78b45dd8c@redhat.com>
-Date:   Fri, 10 Nov 2023 17:49:59 +0100
+        Fri, 10 Nov 2023 15:26:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1B041B2B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:53:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699635205; x=1731171205;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=R9/TiweBvX/91g5bNaHjTqb1OT2ta6eiBlXafdqpk7k=;
+  b=As66f9zKLSqMTbd+uhLwoRkFn6gYj3km2C49jHRCDmhrC8tQap7jLvJv
+   1g5eGHkN19i3/04wQJl+lk3ZAzuAp+iHWqqnVPcg1WrWvGadXHhG1JljS
+   QobCYb2IG2U1Q9+2E2OAzF03SJTXSCyT5XY0X/vXTee9swyQW0UW21EFG
+   Eg0yqEAB8fI7fVMu6ZpQMK0TkNt6eBI5aOrs9CAdM/4Q/2/OjOgE4nLKV
+   NUYzf4COBwvS+m2PeE0HsS7hKxDoD0Sq1kQFcFZDi88MKSmDph9bqou7A
+   xAIhCfRZ2VCb/Rlv/yMsF4qmf8c7Gkp2rMHAVuyyb7bTC5bmJdsaFiYTJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="393079654"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="393079654"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 08:53:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="937207578"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="937207578"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2023 08:53:18 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1Uku-0009ko-03;
+        Fri, 10 Nov 2023 16:53:16 +0000
+Date:   Sat, 11 Nov 2023 00:52:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dipam Turkar <dipamt1729@gmail.com>, jani.nikula@linux.intel.com
+Cc:     oe-kbuild-all@lists.linux.dev, Dipam Turkar <dipamt1729@gmail.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        rodrigo.vivi@intel.com, airlied@gmail.com
+Subject: Re: [Intel-gfx] [PATCH] Remove custom dumb_map_offset
+ implementations in i915 driver
+Message-ID: <202311110053.K5lNjN1W-lkp@intel.com>
+References: <20231110105811.380646-1-dipamt1729@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
- drm_gpuvm structures
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        boris.brezillon@collabora.com, faith@gfxstrand.net,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231101233113.8059-10-dakr@redhat.com>
- <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com> <ZUTyGTxcH7WlHKsv@pollux>
- <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
- <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
- <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com> <ZUjZFFtLM435tTxJ@pollux>
- <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com> <ZUj0DdYZUgjhcvf5@pollux>
- <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com> <ZUkXkJ+zT7OFGosC@pollux>
- <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
- <6c536c94-7072-403c-9c63-d932252fd66b@amd.com>
- <4532d9d5-4c5a-4639-8136-d3ba9995d7b6@redhat.com>
- <1d4ca394-ee0c-4617-adbe-1d47e295c8fb@amd.com>
- <f7a64e17-d8b0-a20a-4e27-46f448a10bd4@linux.intel.com>
- <e9da2add-20e0-437a-b325-2d3309f84eaa@amd.com>
- <7b5b3a51-6b70-b5ba-1017-b79f1519ed09@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <7b5b3a51-6b70-b5ba-1017-b79f1519ed09@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+In-Reply-To: <20231110105811.380646-1-dipamt1729@gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,141 +69,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/23 11:52, Thomas Hellström wrote:
-> 
-> On 11/10/23 11:42, Christian König wrote:
->> Am 10.11.23 um 10:39 schrieb Thomas Hellström:
->>>
->>> [SNIP]
->>
->>> I was thinking more of the general design of a base-class that needs to be refcounted. Say a driver vm that inherits from gpu-vm, gem_object and yet another base-class that supplies its own refcount. What's the best-practice way to do refcounting? All base-classes supplying a refcount of its own, or the subclass supplying a refcount and the base-classes supply destroy helpers.
->>
->> From my experience the most common design pattern in the Linux kernel is that you either have reference counted objects which contain a private pointer (like struct file, struct inode etc..) or the lifetime is defined by the user of the object instead of reference counting and in this case you can embed it into your own object.
->>
->>>
->>> But to be clear this is nothing I see needing urgent attention.
->>>
->>>>
->>>>>
->>>>>>
->>>>>> Well, I have never seen stuff like that in the kernel. Might be that this works, but I would rather not try if avoidable.
->>>>>>
->>>>>>>
->>>>>>> That would also make it possible for the driver to decide the context for the put() call: If the driver needs to be able to call put() from irq / atomic context but the base-class'es destructor doesn't allow atomic context, the driver can push freeing out to a work item if needed.
->>>>>>>
->>>>>>> Finally, the refcount overflow Christian pointed out. Limiting the number of mapping sounds like a reasonable remedy to me.
->>>>>>
->>>>>> Well that depends, I would rather avoid having a dependency for mappings.
->>>>>>
->>>>>> Taking the CPU VM handling as example as far as I know vm_area_structs doesn't grab a reference to their mm_struct either. Instead they get automatically destroyed when the mm_struct is destroyed.
->>>>>
->>>>> Certainly, that would be possible. However, thinking about it, this might call for
->>>>> huge trouble.
->>>>>
->>>>> First of all, we'd still need to reference count a GPUVM and take a reference for each
->>>>> VM_BO, as we do already. Now instead of simply increasing the reference count for each
->>>>> mapping as well, we'd need a *mandatory* driver callback that is called when the GPUVM
->>>>> reference count drops to zero. Maybe something like vm_destroy().
->>>>>
->>>>> The reason is that GPUVM can't just remove all mappings from the tree nor can it free them
->>>>> by itself, since drivers might use them for tracking their allocated page tables and/or
->>>>> other stuff.
->>>>>
->>>>> Now, let's think about the scope this callback might be called from. When a VM_BO is destroyed
->>>>> the driver might hold a couple of locks (for Xe it would be the VM's shared dma-resv lock and
->>>>> potentially the corresponding object's dma-resv lock if they're not the same already). If
->>>>> destroying this VM_BO leads to the VM being destroyed, the drivers vm_destroy() callback would
->>>>> be called with those locks being held as well.
->>>>>
->>>>> I feel like doing this finally opens the doors of the locking hell entirely. I think we should
->>>>> really avoid that.
->>>
->>> I don't think we need to worry much about this particular locking hell because if we hold
->>
->> I have to agree with Danilo here. Especially you have cases where you usually lock BO->VM (for example eviction) as well as cases where you need to lock VM->BO (command submission).
->>
->> Because of this in amdgpu we used (or abused?) the dma_resv of the root BO as lock for the VM. Since this is a ww_mutex locking it in both VM, BO as well as BO, VM order works.
-> 
-> Yes, gpuvm is doing the same. (although not necessarily using the page-table root bo, but any bo of the driver's choice). But I read it as Danilo feared the case where the VM destructor was called with a VM resv (or possibly bo resv) held. I meant the driver can easily ensure that's not happening, and in some cases it can't happen.
+Hi Dipam,
 
-Right, that's what I meant. However, this also comes down to what Christian means. When the callback
-is called with the resv locks held, we'd potentially have this locking inversion between
-VM lock -> resv lock and resv lock -> VM lock.
+kernel test robot noticed the following build errors:
 
-> 
-> Thanks,
-> 
-> Thomas
-> 
-> 
-> 
->>
->> Regards,
->> Christian.
->>
->>> , for example a vm and bo resv when putting the vm_bo, we need to keep additional strong references for the bo / vm pointer we use for unlocking. Hence putting the vm_bo under those locks can never lead to the vm getting destroyed.
->>>
->>> Also, don't we already sort of have a mandatory vm_destroy callback?
->>>
->>> +    if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
->>> +        return;
->>>
->>>
->>>
->>>>
->>>> That's a really good point, but I fear exactly that's the use case.
->>>>
->>>> I would expect that VM_BO structures are added in the drm_gem_object_funcs.open callback and freed in drm_gem_object_funcs.close.
->>>>
->>>> Since it is perfectly legal for userspace to close a BO while there are still mappings (can trivial be that the app is killed) I would expect that the drm_gem_object_funcs.close handling is something like asking drm_gpuvm destroying the VM_BO and getting the mappings which should be cleared in the page table in return.
->>>>
->>>> In amdgpu we even go a step further and the VM structure keeps track of all the mappings of deleted VM_BOs so that higher level can query those and clear them later on.
->>>>
->>>> Background is that the drm_gem_object_funcs.close can't fail, but it can perfectly be that the app is killed because of an OOM situation and we can't do page tables updates in that moment because of this.
->>>>
->>>>>
->>>>>>
->>>>>> Which makes sense in that case because when the mm_struct is gone the vm_area_struct doesn't make sense any more either.
->>>>>>
->>>>>> What we clearly need is a reference to prevent the VM or at least the shared resv to go away to early.
->>>>>
->>>>> Yeah, that was a good hint and we've covered that.
->>>>>
->>>>>>
->>>>>> Regards,
->>>>>> Christian.
->>>>>>
->>>>>>>
->>>>>>> But I think all of this is fixable as follow-ups if needed, unless I'm missing something crucial.
->>>>>
->>>>> Fully agree, I think at this point we should go ahead and land this series.
->>>
->>> +1.
->>>
->>> /Thomas
->>>
->>>
->>>>>
->>>>
->>>> Yeah, agree this is not UAPI so not nailed in stone. Feel free to add my acked-by as well if you want.
->>>>
->>>> Only keep in mind that when you give drivers some functionality in a common component they usually expect to keep that functionality.
->>>>
->>>> For example changing the dma_resv object to make sure that drivers can't cause use after free errors any more was an extremely annoying experience since every user of those interface had to change at once.
->>>>
->>>> Regards,
->>>> Christian.
->>>>
->>>>>
->>>>>>>
->>>>>>> Just my 2 cents.
->>>>>>>
->>>>>>> /Thomas
->>>>>>>
->>>>>>>
->>>>>>
->>>>>
->>>>
->>
-> 
+[auto build test ERROR on drm-tip/drm-tip]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Dipam-Turkar/Remove-custom-dumb_map_offset-implementations-in-i915-driver/20231110-185942
+base:   git://anongit.freedesktop.org/drm/drm-tip drm-tip
+patch link:    https://lore.kernel.org/r/20231110105811.380646-1-dipamt1729%40gmail.com
+patch subject: [Intel-gfx] [PATCH] Remove custom dumb_map_offset implementations in i915 driver
+config: x86_64-randconfig-012-20231110 (https://download.01.org/0day-ci/archive/20231111/202311110053.K5lNjN1W-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110053.K5lNjN1W-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311110053.K5lNjN1W-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/i915/gem/i915_gem_mman.c: In function 'i915_gem_mmap_offset_ioctl':
+>> drivers/gpu/drm/i915/gem/i915_gem_mman.c:673:16: error: implicit declaration of function '__assign_mmap_offset_handle' [-Werror=implicit-function-declaration]
+     673 |         return __assign_mmap_offset_handle(file, args->handle, type, &args->offset);
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/i915/gem/i915_gem_mman.c: In function 'i915_gem_fb_mmap':
+>> drivers/gpu/drm/i915/gem/i915_gem_mman.c:896:23: error: implicit declaration of function 'mmap_offset_attach' [-Werror=implicit-function-declaration]
+     896 |                 mmo = mmap_offset_attach(obj, mmap_type, NULL);
+         |                       ^~~~~~~~~~~~~~~~~~
+>> drivers/gpu/drm/i915/gem/i915_gem_mman.c:896:21: warning: assignment to 'struct i915_mmap_offset *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     896 |                 mmo = mmap_offset_attach(obj, mmap_type, NULL);
+         |                     ^
+   cc1: some warnings being treated as errors
+--
+>> drivers/gpu/drm/i915/i915_driver.c:1826:28: error: 'drm_gem_dumb_mmap_offset' undeclared here (not in a function); did you mean 'drm_gem_dumb_map_offset'?
+    1826 |         .dumb_map_offset = drm_gem_dumb_mmap_offset,
+         |                            ^~~~~~~~~~~~~~~~~~~~~~~~
+         |                            drm_gem_dumb_map_offset
+
+
+vim +/__assign_mmap_offset_handle +673 drivers/gpu/drm/i915/gem/i915_gem_mman.c
+
+cc662126b4134e Abdiel Janulgue   2019-12-04  603  
+b414fcd5be0b00 Chris Wilson      2019-05-28  604  /**
+cc662126b4134e Abdiel Janulgue   2019-12-04  605   * i915_gem_mmap_offset_ioctl - prepare an object for GTT mmap'ing
+b414fcd5be0b00 Chris Wilson      2019-05-28  606   * @dev: DRM device
+b414fcd5be0b00 Chris Wilson      2019-05-28  607   * @data: GTT mapping ioctl data
+b414fcd5be0b00 Chris Wilson      2019-05-28  608   * @file: GEM object info
+b414fcd5be0b00 Chris Wilson      2019-05-28  609   *
+b414fcd5be0b00 Chris Wilson      2019-05-28  610   * Simply returns the fake offset to userspace so it can mmap it.
+b414fcd5be0b00 Chris Wilson      2019-05-28  611   * The mmap call will end up in drm_gem_mmap(), which will set things
+b414fcd5be0b00 Chris Wilson      2019-05-28  612   * up so we can get faults in the handler above.
+b414fcd5be0b00 Chris Wilson      2019-05-28  613   *
+b414fcd5be0b00 Chris Wilson      2019-05-28  614   * The fault handler will take care of binding the object into the GTT
+b414fcd5be0b00 Chris Wilson      2019-05-28  615   * (since it may have been evicted to make room for something), allocating
+b414fcd5be0b00 Chris Wilson      2019-05-28  616   * a fence register, and mapping the appropriate aperture address into
+b414fcd5be0b00 Chris Wilson      2019-05-28  617   * userspace.
+b414fcd5be0b00 Chris Wilson      2019-05-28  618   */
+b414fcd5be0b00 Chris Wilson      2019-05-28  619  int
+cc662126b4134e Abdiel Janulgue   2019-12-04  620  i915_gem_mmap_offset_ioctl(struct drm_device *dev, void *data,
+b414fcd5be0b00 Chris Wilson      2019-05-28  621  			   struct drm_file *file)
+b414fcd5be0b00 Chris Wilson      2019-05-28  622  {
+cc662126b4134e Abdiel Janulgue   2019-12-04  623  	struct drm_i915_private *i915 = to_i915(dev);
+cc662126b4134e Abdiel Janulgue   2019-12-04  624  	struct drm_i915_gem_mmap_offset *args = data;
+cc662126b4134e Abdiel Janulgue   2019-12-04  625  	enum i915_mmap_type type;
+126d5de38542d4 Chris Wilson      2019-12-04  626  	int err;
+cc662126b4134e Abdiel Janulgue   2019-12-04  627  
+8d65859a4cbae9 Chris Wilson      2019-12-07  628  	/*
+8d65859a4cbae9 Chris Wilson      2019-12-07  629  	 * Historically we failed to check args.pad and args.offset
+8d65859a4cbae9 Chris Wilson      2019-12-07  630  	 * and so we cannot use those fields for user input and we cannot
+8d65859a4cbae9 Chris Wilson      2019-12-07  631  	 * add -EINVAL for them as the ABI is fixed, i.e. old userspace
+8d65859a4cbae9 Chris Wilson      2019-12-07  632  	 * may be feeding in garbage in those fields.
+8d65859a4cbae9 Chris Wilson      2019-12-07  633  	 *
+8d65859a4cbae9 Chris Wilson      2019-12-07  634  	 * if (args->pad) return -EINVAL; is verbotten!
+8d65859a4cbae9 Chris Wilson      2019-12-07  635  	 */
+8d65859a4cbae9 Chris Wilson      2019-12-07  636  
+126d5de38542d4 Chris Wilson      2019-12-04  637  	err = i915_user_extensions(u64_to_user_ptr(args->extensions),
+126d5de38542d4 Chris Wilson      2019-12-04  638  				   NULL, 0, NULL);
+126d5de38542d4 Chris Wilson      2019-12-04  639  	if (err)
+126d5de38542d4 Chris Wilson      2019-12-04  640  		return err;
+cc662126b4134e Abdiel Janulgue   2019-12-04  641  
+cc662126b4134e Abdiel Janulgue   2019-12-04  642  	switch (args->flags) {
+cc662126b4134e Abdiel Janulgue   2019-12-04  643  	case I915_MMAP_OFFSET_GTT:
+5c24c9d227e9bb Michał Winiarski  2021-12-19  644  		if (!i915_ggtt_has_aperture(to_gt(i915)->ggtt))
+cc662126b4134e Abdiel Janulgue   2019-12-04  645  			return -ENODEV;
+cc662126b4134e Abdiel Janulgue   2019-12-04  646  		type = I915_MMAP_TYPE_GTT;
+cc662126b4134e Abdiel Janulgue   2019-12-04  647  		break;
+cc662126b4134e Abdiel Janulgue   2019-12-04  648  
+cc662126b4134e Abdiel Janulgue   2019-12-04  649  	case I915_MMAP_OFFSET_WC:
+bdd8b6c98239ca Lucas De Marchi   2021-12-01  650  		if (!pat_enabled())
+cc662126b4134e Abdiel Janulgue   2019-12-04  651  			return -ENODEV;
+cc662126b4134e Abdiel Janulgue   2019-12-04  652  		type = I915_MMAP_TYPE_WC;
+cc662126b4134e Abdiel Janulgue   2019-12-04  653  		break;
+cc662126b4134e Abdiel Janulgue   2019-12-04  654  
+cc662126b4134e Abdiel Janulgue   2019-12-04  655  	case I915_MMAP_OFFSET_WB:
+cc662126b4134e Abdiel Janulgue   2019-12-04  656  		type = I915_MMAP_TYPE_WB;
+cc662126b4134e Abdiel Janulgue   2019-12-04  657  		break;
+cc662126b4134e Abdiel Janulgue   2019-12-04  658  
+cc662126b4134e Abdiel Janulgue   2019-12-04  659  	case I915_MMAP_OFFSET_UC:
+bdd8b6c98239ca Lucas De Marchi   2021-12-01  660  		if (!pat_enabled())
+cc662126b4134e Abdiel Janulgue   2019-12-04  661  			return -ENODEV;
+cc662126b4134e Abdiel Janulgue   2019-12-04  662  		type = I915_MMAP_TYPE_UC;
+cc662126b4134e Abdiel Janulgue   2019-12-04  663  		break;
+cc662126b4134e Abdiel Janulgue   2019-12-04  664  
+7961c5b60f23df Maarten Lankhorst 2021-07-14  665  	case I915_MMAP_OFFSET_FIXED:
+7961c5b60f23df Maarten Lankhorst 2021-07-14  666  		type = I915_MMAP_TYPE_FIXED;
+7961c5b60f23df Maarten Lankhorst 2021-07-14  667  		break;
+7961c5b60f23df Maarten Lankhorst 2021-07-14  668  
+cc662126b4134e Abdiel Janulgue   2019-12-04  669  	default:
+cc662126b4134e Abdiel Janulgue   2019-12-04  670  		return -EINVAL;
+cc662126b4134e Abdiel Janulgue   2019-12-04  671  	}
+cc662126b4134e Abdiel Janulgue   2019-12-04  672  
+cf3e3e86d77970 Maarten Lankhorst 2021-06-10 @673  	return __assign_mmap_offset_handle(file, args->handle, type, &args->offset);
+cc662126b4134e Abdiel Janulgue   2019-12-04  674  }
+cc662126b4134e Abdiel Janulgue   2019-12-04  675  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
