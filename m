@@ -2,159 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B907E82A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F058E7E827A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236117AbjKJTXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
+        id S1345927AbjKJTXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236156AbjKJTXS (ORCPT
+        with ESMTP id S1346033AbjKJTXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:23:18 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D263F5B9C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:20:28 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7ba0c234135so763061241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699644028; x=1700248828; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8TlWo1vYeGdzuVuCQORa0xZC4CeIlKfvMlohZKb/QW0=;
-        b=Gha1uf9llCfCG8I9FHl2fYaWyqHZpn7yyzytzuuANl9LHCQBMyTjwqOU7ZIkbsEXJG
-         TdC6bDSbUsN6LgjcintoAjYWmjwjN7P1N3BJ3kCIOCB7LTK9xOMHoo5l76ieSAnf3f+L
-         epeq6v+TKDEtcZ1yu6DPhiQRAfTrTgBDN0ZS0Ndi7qGrCEFty5DxDDSHt+5UqgFYHfOJ
-         6mGmEk6CSgTbF5JM/D75kD0iR9KT5v4jLPqNbS+v6oaB/f7CqeqafIFlfsDboScDmLe9
-         5qzcjYiX2CYSygRxdbz1HlKGDUpg+dTWL33JzyulfrevXVH/BNoeRj/GNahzrA0pd6i6
-         GJtQ==
+        Fri, 10 Nov 2023 14:23:15 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A93147F8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:20:05 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc9eb5b944so30246685ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:20:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699644028; x=1700248828;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8TlWo1vYeGdzuVuCQORa0xZC4CeIlKfvMlohZKb/QW0=;
-        b=kZSepOzFzG1ZLkXbA3xTLPWYtt+xFPk4ijA8saEX8G1BaNh5qpht62F25NxsTaiylx
-         lufOxs+o1PEGoDmIIIB7GFZ2Q63muxsWz+jk4Oggbnt5+bDPeNEMUR9WOkezH61lfTR3
-         THLABPjWDPnOh+Uyy9sWw9AWn1e68c/uMDTnaylYZsqTfVV0uLphqqryjmoyvQ5Il4nV
-         n45oRWTR0YF5tnLOqp9DTtDaiwPBxUYMrP5V7BrHWrTKA8m1e6NL5ane95ZUcP+fcaNA
-         GGH2UbHxquy89H3MS5ZKgYOHZ44qPRfv58YLCrH2wT+uvgrJd5zfPuyWZ9kgrKAJT0dl
-         m6fw==
-X-Gm-Message-State: AOJu0Yyrnkkg3/Sj1bGcFBka2roQIIO7jCGzN7ytBBvI0PlV3Db+y6Es
-        Nw9Is4Ja9LllEcOBckVwuFd7XSQrXA/elr+w+4A=
-X-Google-Smtp-Source: AGHT+IG3aRFWJUpgbhiHngNVKGiKGuhGe18uw98Z5TXQLQbUKCqRsmPpVgxqpGewQTKfTXcIqMVwIrLsLOn+2Jmbfds=
-X-Received: by 2002:a67:e04e:0:b0:452:78ea:4aec with SMTP id
- n14-20020a67e04e000000b0045278ea4aecmr347767vsl.7.1699644027871; Fri, 10 Nov
- 2023 11:20:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699644005; x=1700248805;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7owKO54t8TVhRvZCU1D3o/HtWZw6Mjm2N6ztAvNpWSQ=;
+        b=BsWGKBItNDewP55xAEXqH/8J1SOxAZNHoiTIl8VokFaELSyE2M/ytiBEdaHzeerVWv
+         RxtioFwyOOnR0H7fjaqKEcVr2cMgomXfMOqHuMWHm/nNqEwWAX06qyocPAaK7TofkdNj
+         0NTuIqoXQ6YcTWmxnxUU3vcP76Sy/anwedGHWehcUDaboW61wiXRn4V1WHYU3fs4adP+
+         d3FB5s2XBrLWGpS2XbPKN16CvMCm9CkD+Z9LL/9GSw7yUt3eYmmHtUVhlCnJRMDl8/T5
+         dY9q0bdJkjqhV+ri89vrEKnZJkOnUa7zVYE+umsUbNhRoOiU+uWUA5BiWXU/CrZ8bQ4I
+         4uqg==
+X-Gm-Message-State: AOJu0YwzFLxmgdiNoj/uo0bYiffvUi7fs0UVDbwnidC13F5kZTC2EQOv
+        5GpCXpAJoLw0YnoqC8PhuRESwoELD+2Dg0PT/aCI1c7KgwARo5E=
+X-Google-Smtp-Source: AGHT+IEes58+JS89oVMXVu2kmDT7N2vdWplD+mAjX7+J/vjJpQlkT0BSJvG6HNxoN5Pgvwbnq6i9yiKtCTinTbqOZc4dPEChEv2O
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-5-lb@semihalf.com>
- <20231106185513.79411f9a@gandalf.local.home> <CAK8Bye+eAad4Lx6BWztD4Eax_WLyGB39oV2VFDfL5pGJJTYgcw@mail.gmail.com>
-In-Reply-To: <CAK8Bye+eAad4Lx6BWztD4Eax_WLyGB39oV2VFDfL5pGJJTYgcw@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Fri, 10 Nov 2023 12:20:01 -0700
-Message-ID: <CAJfuBxxxW5qHRNRXfkNZwvKrLWeTVWZL2QQQck-YednN=QQ0fQ@mail.gmail.com>
-Subject: Re: [PATCH v1 04/12] dyndbg: add 2 trace-events: pr_debug, dev_dbg
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
+X-Received: by 2002:a17:903:26cd:b0:1cc:19e8:da32 with SMTP id
+ jg13-20020a17090326cd00b001cc19e8da32mr12344plb.0.1699644005450; Fri, 10 Nov
+ 2023 11:20:05 -0800 (PST)
+Date:   Fri, 10 Nov 2023 11:20:05 -0800
+In-Reply-To: <GV1PR10MB6563B11E4E004F66BD31E37DE8AEA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000308aa10609d13593@google.com>
+Subject: Re: [syzbot] general protection fault in blk_mq_free_rqs
+From:   syzbot <syzbot+7295389ef2000630244b@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yuran.pereira@hotmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 7:51=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
->
-> wt., 7 lis 2023 o 00:55 Steven Rostedt <rostedt@goodmis.org> napisa=C5=82=
-(a):
-> >
-> > On Fri,  3 Nov 2023 14:10:03 +0100
-> > =C5=81ukasz Bartosik <lb@semihalf.com> wrote:
-> >
-> > > +/* capture pr_debug() callsite descriptor and message */
-> > > +TRACE_EVENT(prdbg,
-> > > +         TP_PROTO(const struct _ddebug *desc, const char *text, size=
-_t len),
-> > > +
-> > > +         TP_ARGS(desc, text, len),
-> > > +
-> > > +         TP_STRUCT__entry(
-> > > +                     __field(const struct _ddebug *, desc)
-> > > +                     __dynamic_array(char, msg, len + 1)
-> > > +                 ),
-> > > +
-> > > +         TP_fast_assign(
-> > > +                     __entry->desc =3D desc;
-> > > +                     /*
-> > > +                      * Each trace entry is printed in a new line.
-> > > +                      * If the msg finishes with '\n', cut it off
-> > > +                      * to avoid blank lines in the trace.
-> > > +                      */
-> > > +                     if (len > 0 && (text[len - 1] =3D=3D '\n'))
-> > > +                             len -=3D 1;
-> > > +
-> > > +                     memcpy(__get_str(msg), text, len);
-> > > +                     __get_str(msg)[len] =3D 0;
-> > > +                 ),
-> > > +
-> >
-> >
-> > > +         TP_printk("%s.%s %s", __entry->desc->modname,
-> > > +                   __entry->desc->function, __get_str(msg))
-> > > +);
-> > > +
-> >
-> > That TP_printk() is dangerous. How do you know __entry->desc still exis=
-ts
-> > when reading the buffer?
-> >
-> > Is the struct _ddebug permanent? Can it be freed? If so, the above can
-> > easily cause a crash.
-> >
->
-> I assume that we're talking here about the scenario where TP prdbg is
-> called and before TP_printk runs _ddebug pointer
-> becomes invalid, is that correct ? If so then I believe this also
-> applied to __dynamic_pr_debug and other dyndbg functions because there
-> is also potential for _ddebug pointer to become invalid (in case of
-> rrmod) before a function dereferences it.
->
-> Would it be acceptable to increase reference count of a module and
-> hold it until at least one callsite in that module is enabled ?
-> This  would ensure that passed pointer to a _ddebug struct is valid.
->
+Hello,
 
-Im not understanding you, but I dont think its on-point -
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in kernfs_remove_by_name_ns
 
-a loadable module might write lots to trace-log, and each trace-entry
-would have the descriptor address, with which it could deref and print 3 fi=
-elds.
-Then rmmod happens, all the module mem is freed, and reused for someth9ing =
-else.
-
-then someone cats trace, and the descriptor addrs are used to render
-the tracelog.
-BOOM.
+------------[ cut here ]------------
+kernfs: can not remove 'nr_tags', no directory
+WARNING: CPU: 0 PID: 5711 at fs/kernfs/dir.c:1662 kernfs_remove_by_name_ns+0x102/0x120 fs/kernfs/dir.c:1662
+Modules linked in:
+CPU: 0 PID: 5711 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-15957-g826c484166f0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:kernfs_remove_by_name_ns+0x102/0x120 fs/kernfs/dir.c:1662
+Code: 05 54 ff e8 d0 bc 74 ff bb fe ff ff ff 89 d8 5b 5d 41 5c 41 5d c3 e8 bd bc 74 ff 4c 89 e6 48 c7 c7 a0 b0 20 8a e8 9e 1f 3b ff <0f> 0b eb d5 e8 05 1e c8 ff e9 60 ff ff ff e8 fb 1d c8 ff e9 27 ff
+RSP: 0018:ffffc90003577a48 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8149ce16
+RDX: ffff888019661dc0 RSI: ffffffff8149ce23 RDI: 0000000000000001
+RBP: ffffffff8cd13840 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: ffffffff8a6a1200
+R13: 0000000000000000 R14: ffffffff8a6a1120 R15: 0000000000000002
+FS:  00007ff8f2c4e6c0(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff8f1b9d0b0 CR3: 0000000074800000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kernfs_remove_by_name include/linux/kernfs.h:623 [inline]
+ remove_files+0x96/0x1c0 fs/sysfs/group.c:28
+ sysfs_remove_group+0x87/0x170 fs/sysfs/group.c:292
+ sysfs_remove_groups fs/sysfs/group.c:316 [inline]
+ sysfs_remove_groups+0x5c/0xa0 fs/sysfs/group.c:308
+ __kobject_del+0x83/0x1e0 lib/kobject.c:592
+ kobject_del lib/kobject.c:624 [inline]
+ kobject_del+0x3b/0x60 lib/kobject.c:616
+ blk_mq_unregister_hctx block/blk-mq-sysfs.c:155 [inline]
+ blk_mq_unregister_hctx block/blk-mq-sysfs.c:144 [inline]
+ blk_mq_sysfs_unregister_hctxs+0x24a/0x2d0 block/blk-mq-sysfs.c:283
+ __blk_mq_update_nr_hw_queues block/blk-mq.c:4727 [inline]
+ blk_mq_update_nr_hw_queues+0x8a3/0x1350 block/blk-mq.c:4773
+ nbd_start_device+0x157/0xd70 drivers/block/nbd.c:1362
+ nbd_start_device_ioctl drivers/block/nbd.c:1412 [inline]
+ __nbd_ioctl drivers/block/nbd.c:1487 [inline]
+ nbd_ioctl+0x553/0xcc0 drivers/block/nbd.c:1527
+ blkdev_ioctl+0x2f2/0x750 block/ioctl.c:633
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18b/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3b/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7ff8f1a7ad39
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff8f2c4e0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ff8f1b9bf80 RCX: 00007ff8f1a7ad39
+RDX: 0000000000000000 RSI: 000000000000ab03 RDI: 0000000000000007
+RBP: 00007ff8f2c4e120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007ff8f1b9bf80 R15: 00007fffa28dad08
+ </TASK>
 
 
+Tested on:
 
-> > -- Steve
+commit:         826c4841 Merge tag '6.7-rc-smb3-server-part2' of git:/..
+git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=129ef91f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=58c022b9cf7593c8
+dashboard link: https://syzkaller.appspot.com/bug?extid=7295389ef2000630244b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
