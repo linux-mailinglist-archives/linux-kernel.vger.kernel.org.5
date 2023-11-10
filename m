@@ -2,96 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3BD7E8195
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D367E8072
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346052AbjKJSaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        id S1345251AbjKJSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbjKJS1G (ORCPT
+        with ESMTP id S1344741AbjKJSIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:27:06 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E6B3976F;
-        Fri, 10 Nov 2023 06:41:34 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAEeYvL028447;
-        Fri, 10 Nov 2023 14:41:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uPKrSbtoy5UrkG1Rsr0gu52n6i0oPXj7F74DpghJe08=;
- b=YANxTIPX/p3Bley2JQBqaRbHW54MyOQ9+HRUescqmkwN00VjSCTQcvOeIRpeZKGhueGb
- VLCuZ+8ShZiOjBsdMX/mKeXVbu3JErCJefibY1cnpcl6gu47HOtoqqoJN7b3YmBs3Zr2
- PVEONscsaMnFmBqU8a0+Jg8mN8HWX3AbDGh0idzwyH2hOxpd9CHm09Ejc0WYDX8/57oN
- g6PZP5n82tla40Tq2GjM0i2JDutXBGksvlF2K3VxHMwoEYZNLaAYzhG4BLhr0zUR5DP1
- io/pMLHyEEvRXgOOSoBH5rX9soxgIvYCnlYM1OCB2EBB8ZoVrEnE+9cxtOjfKqV+Lsn9 tQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93tqadmx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 14:41:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AAEf0El024208
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 14:41:00 GMT
-Received: from [10.253.32.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
- 2023 06:40:55 -0800
-Message-ID: <1ac5ae60-7e76-43f2-8b3d-c286eade0251@quicinc.com>
-Date:   Fri, 10 Nov 2023 22:40:53 +0800
+        Fri, 10 Nov 2023 13:08:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECD839770;
+        Fri, 10 Nov 2023 06:42:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8B73C433C7;
+        Fri, 10 Nov 2023 14:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699627322;
+        bh=r1u4S6czlGhgJr3DSHZB1Nz2Yr5vLHsBgbtwT8LGonA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jeZGc+RXq0whsJf3Tj83XQod+vt8TsuDXIyAKqe3UJhwW+HMN9jR42ZyDve31pWUc
+         WCputicK5jjb5eFtCoY1mmmV8ATY+2xlHL+mvmBkxsPDTTiz3/Crlj4lM1qUElDhXj
+         YcJT7LFrp/ZRScU54AypyrsDkcTM5gv2toTSvnYApspJgYWH1juzbSMUqYWtwmV+z3
+         yL2vkSM1RxJYipYM0x682SNxwWh9T/ojfgeL96cELAzo7LH0ZZQXKyF0N2WhZ/53Hx
+         QWz9BTxCQ3B1kiI/4NLeKW7vIBI04m4gPqTnVRqcCo+CbkGvQQfGEW5IDh1F0YP4hk
+         rWa3ob4QSAl+A==
+Date:   Fri, 10 Nov 2023 15:41:59 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Marco Pagani <marpagan@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [RFC PATCH v2] drm/test: add a test suite for GEM objects backed
+ by shmem
+Message-ID: <dqpsjdpedvpbooffrn2nwg6hxr2bhdizwx27icwz2dx5bgsho4@id5drrg66e7h>
+References: <20231108134205.111478-1-marpagan@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
- Gear 5 support for SM8550
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Can Guo <cang@qti.qualcomm.com>, <bvanassche@acm.org>,
-        <stanley.chu@mediatek.com>, <adrian.hunter@intel.com>,
-        <beanhuo@micron.com>, <avri.altman@wdc.com>,
-        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        "Kishon Vijay Abraham I" <kishon@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1699332374-9324-7-git-send-email-cang@qti.qualcomm.com>
- <CAA8EJpqEkkEoQ9vncNJU1t=mKbvBXKk1FUxnmGTE0Q++sf=oXA@mail.gmail.com>
- <20231108054942.GF3296@thinkpad>
- <CAA8EJpoCZChHDQLF0QHN0PkRUWV20thXMQvK-sH2fpYaC1zcvg@mail.gmail.com>
- <20231109032418.GA3752@thinkpad>
- <CAA8EJpoZUf9Ku5meH5VAcSkCbna__5LdPi8rgnN0tyBc-UzzWw@mail.gmail.com>
- <20231109104250.GF3752@thinkpad>
- <CAA8EJpp+wfe5wUj0FAMY2g3J8v7F8DVf8Bi3BwrAuCp-n=PFJg@mail.gmail.com>
- <20231109160430.GG3752@thinkpad>
- <CAA8EJpq+R4QsQSn1_sf1_dkh8mOmWLtBm7SSa953s8jRQR-pAg@mail.gmail.com>
- <20231110131803.GA5025@thinkpad>
-Content-Language: en-US
-From:   Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231110131803.GA5025@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: PB9oFDcRvzphHgZ5qJMWOYGfVjfP8eW8
-X-Proofpoint-ORIG-GUID: PB9oFDcRvzphHgZ5qJMWOYGfVjfP8eW8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_12,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
- spamscore=0 phishscore=0 impostorscore=0 bulkscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311100121
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5f7kz7hlopnaynsr"
+Content-Disposition: inline
+In-Reply-To: <20231108134205.111478-1-marpagan@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -101,289 +59,498 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--5f7kz7hlopnaynsr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 11/10/2023 9:18 PM, Manivannan Sadhasivam wrote:
-> On Fri, Nov 10, 2023 at 12:11:46AM +0200, Dmitry Baryshkov wrote:
->> On Thu, 9 Nov 2023 at 18:04, Manivannan Sadhasivam <mani@kernel.org> wrote:
->>>
->>> On Thu, Nov 09, 2023 at 01:00:51PM +0200, Dmitry Baryshkov wrote:
->>>> On Thu, 9 Nov 2023 at 12:43, Manivannan Sadhasivam <mani@kernel.org> wrote:
->>>>>
->>>>> On Thu, Nov 09, 2023 at 11:40:51AM +0200, Dmitry Baryshkov wrote:
->>>>>> On Thu, 9 Nov 2023 at 05:24, Manivannan Sadhasivam <mani@kernel.org> wrote:
->>>>>>>
->>>>>>> On Wed, Nov 08, 2023 at 08:56:16AM +0200, Dmitry Baryshkov wrote:
->>>>>>>> On Wed, 8 Nov 2023 at 07:49, Manivannan Sadhasivam <mani@kernel.org> wrote:
->>>>>>>>>
->>>>>>>>> On Tue, Nov 07, 2023 at 03:18:09PM +0200, Dmitry Baryshkov wrote:
->>>>>>>>>> On Tue, 7 Nov 2023 at 06:47, Can Guo <cang@qti.qualcomm.com> wrote:
->>>>>>>>>>>
->>>>>>>>>>> From: Can Guo <quic_cang@quicinc.com>
->>>>>>>>>>>
->>>>>>>>>>> On SM8550, two sets of UFS PHY settings are provided, one set is to support
->>>>>>>>>>> HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
->>>>>>>>>>> settings are programming different values to different registers, mixing
->>>>>>>>>>> the two sets and/or overwriting one set with another set is definitely not
->>>>>>>>>>> blessed by UFS PHY designers. In order to add HS-G5 support for SM8550, we
->>>>>>>>>>> need to split the two sets into their dedicated tables, and leave only the
->>>>>>>>>>> common settings in the .tlbs. To have the PHY programmed with the correct
->>>>>>>>>>> set of PHY settings, the submode passed to PHY driver must be either HS-G4
->>>>>>>>>>> or HS-G5.
->>>>>>>>>>>
->>>>>>>>>
->>>>>>>>> You should also mention that this issue is also present in G4 supported targets.
->>>>>>>>> And a note that it will get fixed later.
->>>>>>>>>
->>>>>>>>>>> Signed-off-by: Can Guo <quic_cang@quicinc.com>
->>>>>>>>>>> ---
->>>>>>>>>>>   drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
->>>>>>>>>>>   drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
->>>>>>>>>>>   .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |  12 +++
->>>>>>>>>>>   drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 112 ++++++++++++++++++---
->>>>>>>>>>>   4 files changed, 115 insertions(+), 13 deletions(-)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
->>>>>>>>>>> index c23d5e4..e563af5 100644
->>>>>>>>>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
->>>>>>>>>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h
->>>>>>>>>>> @@ -18,6 +18,7 @@
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_BIST_FIXED_PAT_CTRL            0x060
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_TX_HSGEAR_CAPABILITY           0x074
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_RX_HSGEAR_CAPABILITY           0x0bc
->>>>>>>>>>> +#define QPHY_V6_PCS_UFS_RX_HS_G5_SYNC_LENGTH_CAPABILITY        0x12c
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_DEBUG_BUS_CLKSEL               0x158
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_LINECFG_DISABLE                        0x17c
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_RX_MIN_HIBERN8_TIME            0x184
->>>>>>>>>>> @@ -27,5 +28,6 @@
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_READY_STATUS                   0x1a8
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_TX_MID_TERM_CTRL1              0x1f4
->>>>>>>>>>>   #define QPHY_V6_PCS_UFS_MULTI_LANE_CTRL1               0x1fc
->>>>>>>>>>> +#define QPHY_V6_PCS_UFS_RX_HSG5_SYNC_WAIT_TIME         0x220
->>>>>>>>>>>
->>>>>>>>>>>   #endif
->>>>>>>>>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
->>>>>>>>>>> index f420f8f..ef392ce 100644
->>>>>>>>>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
->>>>>>>>>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h
->>>>>>>>>>> @@ -56,6 +56,8 @@
->>>>>>>>>>>   #define QSERDES_V6_COM_SYS_CLK_CTRL                            0xe4
->>>>>>>>>>>   #define QSERDES_V6_COM_SYSCLK_BUF_ENABLE                       0xe8
->>>>>>>>>>>   #define QSERDES_V6_COM_PLL_IVCO                                        0xf4
->>>>>>>>>>> +#define QSERDES_V6_COM_CMN_IETRIM                              0xfc
->>>>>>>>>>> +#define QSERDES_V6_COM_CMN_IPTRIM                              0x100
->>>>>>>>>>>   #define QSERDES_V6_COM_SYSCLK_EN_SEL                           0x110
->>>>>>>>>>>   #define QSERDES_V6_COM_RESETSM_CNTRL                           0x118
->>>>>>>>>>>   #define QSERDES_V6_COM_LOCK_CMP_EN                             0x120
->>>>>>>>>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
->>>>>>>>>>> index 15bcb4b..48f31c8 100644
->>>>>>>>>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
->>>>>>>>>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h
->>>>>>>>>>> @@ -10,10 +10,20 @@
->>>>>>>>>>>   #define QSERDES_UFS_V6_TX_RES_CODE_LANE_RX                     0x2c
->>>>>>>>>>>   #define QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_TX              0x30
->>>>>>>>>>>   #define QSERDES_UFS_V6_TX_RES_CODE_LANE_OFFSET_RX              0x34
->>>>>>>>>>> +#define QSERDES_UFS_V6_TX_LANE_MODE_1                          0x7c
->>>>>>>>>>> +#define QSERDES_UFS_V6_TX_FR_DCC_CTRL                          0x108
->>>>>>>>>>>
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE2          0x08
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_FO_GAIN_RATE4          0x10
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_SO_GAIN_RATE4          0x24
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_FASTLOCK_COUNT_HIGH_RATE4       0x54
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE2                   0xd4
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_FO_GAIN_RATE4                   0xdc
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_SO_GAIN_RATE4                   0xf0
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_UCDR_PI_CONTROLS                     0xf4
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_VGA_CAL_MAN_VAL                      0x178
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_EQ_OFFSET_ADAPTOR_CNTRL1             0x1bc
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_OFFSET_ADAPTOR_CNTRL3                        0x1c4
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B0                     0x208
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B1                     0x20c
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE_0_1_B3                     0x214
->>>>>>>>>>> @@ -25,6 +35,8 @@
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE3_B5                                0x264
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE3_B8                                0x270
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE4_B3                                0x280
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_MODE_RATE4_B4                                0x284
->>>>>>>>>>>   #define QSERDES_UFS_V6_RX_MODE_RATE4_B6                                0x28c
->>>>>>>>>>> +#define QSERDES_UFS_V6_RX_DLL0_FTUNE_CTRL                      0x2f8
->>>>>>>>>>>
->>>>>>>>>>>   #endif
->>>>>>>>>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
->>>>>>>>>>> index 3927eba..e0a01497 100644
->>>>>>>>>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
->>>>>>>>>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
->>>>>>>>>>> @@ -649,32 +649,51 @@ static const struct qmp_phy_init_tbl sm8550_ufsphy_serdes[] = {
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x11),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_HS_SWITCH_SEL_1, 0x00),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_EN, 0x01),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
->>>>>>>>>>> +
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_INITVAL2, 0x00),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x41),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x7f),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x06),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x4c),
->>>>>>>>>>> +};
->>>>>>>>>>> +
->>>>>>>>>>> +static const struct qmp_phy_init_tbl sm8550_ufsphy_hs_b_serdes[] = {
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x44),
->>>>>>>>>>> +};
->>>>>>>>>>> +
->>>>>>>>>>> +static const struct qmp_phy_init_tbl sm8550_ufsphy_g4_serdes[] = {
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_IVCO, 0x0f),
->>>>>>>>>>>          QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x0a),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x18),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x14),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x99),
->>>>>>>>>>> -       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x07),
->>>>>>>>>>
->>>>>>>>>> Aside from moving these registers to the HS_G4 table, you are also
->>>>>>>>>> changing these registers. It makes me think that there was an error in
->>>>>>>>>> the original programming sequence.
->>>>>>>>>> If that is correct, could you please split the patch into two pieces:
->>>>>>>>>> - Fix programming sequence (add proper Fixes tags)
->>>>>>>>>> - Split G4 and G5 tables.
->>>>>>>>>
->>>>>>>>> Ack
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>>> +
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x4c),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x0a),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x18),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x14),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x99),
->>>>>>>>>>> +       QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x07),
->>>>>>>>>>
->>>>>>>>>> I see all the MODE1 registers being only present in G4 and G5 tables.
->>>>>>>>>> Should they be programmed for the modes lower than G4?
->>>>>>>>>>
->>>>>>>>>
->>>>>>>>> We use G4 table for all the modes <= G4.
->>>>>>>>
->>>>>>>> Could you please point me how it's handled?
->>>>>>>> In the patch I see just:
->>>>>>>>
->>>>>>>>         if (qmp->submode == UFS_HS_G4)
->>>>>>>>                 qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g4);
->>>>>>>>         else if (qmp->submode == UFS_HS_G5)
->>>>>>>>                 qmp_ufs_serdes_init(qmp, &cfg->tbls_hs_g5);
->>>>>>>>
->>>>>>>> Which looks like two special cases (HS_G4 and HS_G5) and nothing for
->>>>>>>> anything else.
->>>>>>>>
->>>>>>>
->>>>>>> Yes, and the UFS driver passes only G4/G5. For all the gears <=G4, G4 init
->>>>>>> sequence will be used and for G5, G5 sequence will be used.
->>>>>>>
->>>>>>
->>>>>> That's what I could not find in the UFS driver. I see a call to
->>>>>> `phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);` and
->>>>>> host->phy_gear is initialised to UFS_HS_G2.
->>>>>>
->>>>>
->>>>> You need to check the UFS driver changes in this series to get the complete
->>>>> picture as the logic is getting changed.
->>>>>
->>>>> It is common to get confused because of the way the UFS driver (qcom mostly)
->>>>> handles the PHY init sequence programming. We used to have only one init
->>>>> sequence for older targets and life was easy. But when I wanted to add G4
->>>>> support for SM8250, I learned that there are 2 separate init sequences. One for
->>>>> non-G4 and other for G4. So I used the phy_sub_mode property to pass the
->>>>> relevant mode from the UFS driver to the PHY driver and programmed the sequence
->>>>> accordingly. This got extended to non-G5 and G5 now.
->>>>>
->>>>> Now, the UFS driver will start probing from a low gear for older targets (G2)
->>>>> and G4/G5 for newer ones then scale up based on the device and host capability.
->>>>> For older targets, the common table (tbls) will be used if the submode doesn't
->>>>> match G4/G5. But for newer targets, the UFS driver will _only_ pass G4 or G5 as
->>>>> the phy_gear, so those specific sequence will only be used.
->>>>>
->>>>> Hope I'm clear.
->>>>
->>>> Yes, it is now clear, thank you!
->>>>
->>>> Would it be possible / feasible / logical to maintain this idea even
->>>> for newer platforms (leaving the HS_A  / HS_B aside)?
->>>>
->>>> tbls - works for HS_G2
->>>> tbls + tbls_g4 - works for HS_G4
->>>> tbls + tbls_g5 - works for HS_G5
->>>>
->>>
->>> No. The PHY team only gives 2 init sequences for any SoC now.
->>
->> Ack. Then the code should become
->> if (HS_G5)
->>     program(tbls_hs_g5)
->> else
->>     program(tbls_hs_g4);
->>
-> 
-> This should work. Even if we have to accomodate G6 in the future, we can use
-> "else if" for that and keep G4 as the "else" condition. This logic can also be
-> optimized in the future.
+On Wed, Nov 08, 2023 at 02:42:03PM +0100, Marco Pagani wrote:
+> This patch introduces an initial KUnit test suite for GEM objects
+> backed by shmem buffers.
+>=20
+> Suggested-by: Javier Martinez Canillas <javierm@redhat.com>
+> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>=20
+> v2:
+> - Improved description of test cases
+> - Cleaner error handling using KUnit actions
+> - Alphabetical order in Kconfig and Makefile
+> ---
+>  drivers/gpu/drm/Kconfig                    |   9 +-
+>  drivers/gpu/drm/tests/Makefile             |   5 +-
+>  drivers/gpu/drm/tests/drm_gem_shmem_test.c | 381 +++++++++++++++++++++
+>  3 files changed, 389 insertions(+), 6 deletions(-)
+>  create mode 100644 drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>=20
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index 3eee8636f847..a2551c8c393a 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -76,14 +76,15 @@ config DRM_KUNIT_TEST
+>  	tristate "KUnit tests for DRM" if !KUNIT_ALL_TESTS
+>  	depends on DRM && KUNIT
+>  	select PRIME_NUMBERS
+> +	select DRM_BUDDY
+>  	select DRM_DISPLAY_DP_HELPER
+>  	select DRM_DISPLAY_HELPER
+> -	select DRM_LIB_RANDOM
+> -	select DRM_KMS_HELPER
+> -	select DRM_BUDDY
+> +	select DRM_EXEC
+>  	select DRM_EXPORT_FOR_TESTS if m
+> +	select DRM_GEM_SHMEM_HELPER
+> +	select DRM_KMS_HELPER
+>  	select DRM_KUNIT_TEST_HELPERS
+> -	select DRM_EXEC
+> +	select DRM_LIB_RANDOM
+>  	default KUNIT_ALL_TESTS
+>  	help
+>  	  This builds unit tests for DRM. This option is not useful for
+> diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makef=
+ile
+> index ba7baa622675..d6183b3d7688 100644
+> --- a/drivers/gpu/drm/tests/Makefile
+> +++ b/drivers/gpu/drm/tests/Makefile
+> @@ -9,15 +9,16 @@ obj-$(CONFIG_DRM_KUNIT_TEST) +=3D \
+>  	drm_connector_test.o \
+>  	drm_damage_helper_test.o \
+>  	drm_dp_mst_helper_test.o \
+> +	drm_exec_test.o \
+>  	drm_format_helper_test.o \
+>  	drm_format_test.o \
+>  	drm_framebuffer_test.o \
+> +	drm_gem_shmem_test.o \
+>  	drm_managed_test.o \
+>  	drm_mm_test.o \
+>  	drm_modes_test.o \
+>  	drm_plane_helper_test.o \
+>  	drm_probe_helper_test.o \
+> -	drm_rect_test.o	\
+> -	drm_exec_test.o
+> +	drm_rect_test.o
 
-That would make dual init meaningless for old targets. Say on SM8450, 
-the initial PHY gear is G2, with the "else" condition, during the first 
-init, G4 table would be programmed, then gear negotiation happens btw 
-host and device and the negotiated gear is G3 (assume a UFS2.x is 
-connected). During the 2nd init, the "else" condition would __again__ 
-program the G4 table - it is not programming the non-G4 table for power 
-saving. The dual init is supposed to find the optimal PHY settings, but 
-the "else" condition is programming G4 table unconditinally.
+Thanks for reordering the tests and symbols, but they should part of a
+preliminary patch.
 
-With the original code change in this patch, the dual init works as it 
-is for old targets. say SM8450, the initial PHY gear is G2, during the 
-2nd init, it is programming the non-G4 table (assume a UFS2.x is 
-connected), but not the G4 table.
+>  CFLAGS_drm_mm_test.o :=3D $(DISABLE_STRUCTLEAK_PLUGIN)
+> diff --git a/drivers/gpu/drm/tests/drm_gem_shmem_test.c b/drivers/gpu/drm=
+/tests/drm_gem_shmem_test.c
+> new file mode 100644
+> index 000000000000..983380490673
+> --- /dev/null
+> +++ b/drivers/gpu/drm/tests/drm_gem_shmem_test.c
+> @@ -0,0 +1,381 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KUnit test suite for GEM objects backed by shmem buffers
+> + *
+> + * Copyright (C) 2023 Red Hat, Inc.
+> + *
+> + * Author: Marco Pagani <marpagan@redhat.com>
+> + */
+> +
+> +#include <linux/dma-buf.h>
+> +#include <linux/iosys-map.h>
+> +#include <linux/sizes.h>
+> +
+> +#include <kunit/test.h>
+> +
+> +#include <drm/drm_device.h>
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_gem.h>
+> +#include <drm/drm_gem_shmem_helper.h>
+> +#include <drm/drm_kunit_helpers.h>
+> +
+> +#define TEST_SIZE		SZ_1M
+> +#define TEST_BYTE		0xae
+> +
+> +struct fake_dev {
+> +	struct drm_device drm_dev;
+> +	struct device *dev;
 
-Thanks,
-Can Guo.
-> 
-> - Mani
-> 
->>>
->>> - Mani
->>>
->>>> I mean here that the PHY driver should not depend on the knowledge
->>>> that the UFS driver will not be setting HS_G2 for some particular
->>>> platform and ideally it should continue working if at some point we
->>>> change the UFS driver to set HS_G2.
->>>>
->>>>
->>>>>
->>>>> - Mani
->>>>>
->>>>>> Maybe we should change the condition here (in the PHY driver) to:
->>>>>>
->>>>>> if (qmp->submode <= UFS_HS_G4)
->>>>>>
->>>>>> ?
->>>>>> --
->>>>>> With best wishes
->>>>>> Dmitry
->>>>>
->>>>> --
->>>>> மணிவண்ணன் சதாசிவம்
->>>>
->>>>
->>>>
->>>> --
->>>> With best wishes
->>>> Dmitry
->>>
->>> --
->>> மணிவண்ணன் சதாசிவம்
->>
->>
->>
->> -- 
->> With best wishes
->> Dmitry
-> 
+AFAICS, you're not using the dev pointer anywhere. You could remove the
+fake_dev struct entirely and pass the drm_device pointer in test->priv
+
+> +};
+> +
+> +/*
+> + * Wrappers to avoid an explicit type casting when passing action
+> + * functions to kunit_add_action().
+> + */
+> +static void kfree_wrapper(void *p)
+> +{
+> +	kfree(p);
+> +}
+> +
+> +static void sg_free_table_wrapper(void *sgt)
+> +{
+> +	sg_free_table(sgt);
+> +}
+> +
+> +static void drm_gem_shmem_free_wrapper(void *shmem)
+> +{
+> +	drm_gem_shmem_free(shmem);
+> +}
+
+I think you need to explicitly cast the pointer (or do a temporary
+assignment to the proper type) to avoid a compiler warning.
+
+> +/*
+> + * Test creating a shmem GEM object backed by shmem buffer. The test
+> + * case succeeds if the GEM object is successfully allocated with the
+> + * shmem file node and object functions attributes set, and the size
+> + * attribute is equal to the correct size.
+> + */
+
+Thanks for all those comments, it's super helpful
+
+> +static void drm_gem_shmem_test_obj_create(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +	KUNIT_EXPECT_EQ(test, shmem->base.size, TEST_SIZE);
+> +	KUNIT_EXPECT_NOT_NULL(test, shmem->base.filp);
+> +	KUNIT_EXPECT_NOT_NULL(test, shmem->base.funcs);
+> +
+> +	drm_gem_shmem_free(shmem);
+> +}
+> +
+> +/*
+> + * Test creating a shmem GEM object from a scatter/gather table exported
+> + * via a DMA-BUF. The test case succeed if the GEM object is successfully
+> + * created with the shmem file node attribute equal to NULL and the sgt
+> + * attribute pointing to the scatter/gather table that has been imported.
+> + */
+> +static void drm_gem_shmem_test_obj_create_private(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	struct drm_gem_object *gem_obj;
+> +	struct dma_buf buf_mock;
+> +	struct dma_buf_attachment attach_mock;
+> +	struct sg_table *sgt;
+> +	char *buf;
+> +	int ret;
+> +
+> +	/* Create a mock scatter/gather table */
+> +	buf =3D kunit_kzalloc(test, TEST_SIZE, GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, buf);
+> +
+> +	sgt =3D kzalloc(sizeof(*sgt), GFP_KERNEL);
+> +	KUNIT_ASSERT_NOT_NULL(test, sgt);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, kfree_wrapper, sgt);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D sg_alloc_table(sgt, 1, GFP_KERNEL);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, sg_free_table_wrapper, sgt);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	sg_init_one(sgt->sgl, buf, TEST_SIZE);
+> +
+> +	/* Init a mock DMA-BUF */
+> +	buf_mock.size =3D TEST_SIZE;
+> +	attach_mock.dmabuf =3D &buf_mock;
+> +
+> +	gem_obj =3D drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &attach=
+_mock, sgt);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+> +	KUNIT_EXPECT_EQ(test, gem_obj->size, TEST_SIZE);
+> +	KUNIT_EXPECT_NULL(test, gem_obj->filp);
+> +	KUNIT_EXPECT_NOT_NULL(test, gem_obj->funcs);
+> +
+> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+> +	kunit_remove_action(test, sg_free_table_wrapper, sgt);
+> +	kunit_remove_action(test, kfree_wrapper, sgt);
+> +
+> +	shmem =3D to_drm_gem_shmem_obj(gem_obj);
+> +	KUNIT_EXPECT_PTR_EQ(test, shmem->sgt, sgt);
+> +
+> +	drm_gem_shmem_free(shmem);
+> +}
+> +
+> +/*
+> + * Test pinning backing pages for a shmem GEM object. The test case
+> + * succeeds if a suitable number of backing pages are allocated, and
+> + * the pages table counter attribute is increased by one.
+> + */
+> +static void drm_gem_shmem_test_pin_pages(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	int i, ret;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 0);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D drm_gem_shmem_pin(shmem);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +	KUNIT_ASSERT_NOT_NULL(test, shmem->pages);
+> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 1);
+> +
+> +	for (i =3D 0; i < (shmem->base.size >> PAGE_SHIFT); i++)
+> +		KUNIT_ASSERT_NOT_NULL(test, shmem->pages[i]);
+> +
+> +	drm_gem_shmem_unpin(shmem);
+> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 0);
+> +}
+> +
+> +/*
+> + * Test creating a virtual mapping for a shmem GEM object. The test
+> + * case succeeds if the backing memory is mapped and the reference
+> + * counter for virtual mapping is increased by one. Moreover, the test
+> + * case writes and then reads a test pattern over the mapped memory.
+> + */
+> +static void drm_gem_shmem_test_vmap(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	struct iosys_map map;
+> +	int ret, i;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +	KUNIT_EXPECT_NULL(test, shmem->vaddr);
+> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 0);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D drm_gem_shmem_vmap(shmem, &map);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +	KUNIT_ASSERT_NOT_NULL(test, shmem->vaddr);
+> +	KUNIT_ASSERT_FALSE(test, iosys_map_is_null(&map));
+> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 1);
+> +
+> +	iosys_map_memset(&map, 0, TEST_BYTE, TEST_SIZE);
+> +	for (i =3D 0; i < TEST_SIZE; i++)
+> +		KUNIT_EXPECT_EQ(test, iosys_map_rd(&map, i, u8), TEST_BYTE);
+> +
+> +	drm_gem_shmem_vunmap(shmem, &map);
+> +	KUNIT_EXPECT_NULL(test, shmem->vaddr);
+> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 0);
+> +}
+> +
+> +/*
+> + * Test exporting a scatter/gather table of pinned pages suitable for
+> + * PRIME usage from a shmem GEM object. The test case succeeds if a
+> + * scatter/gather table large enough to accommodate the backing memory
+> + * is successfully exported.
+> + */
+> +static void drm_gem_shmem_test_get_pages_sgt(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	struct sg_table *sgt;
+> +	struct scatterlist *sg;
+> +	unsigned int si, len =3D 0;
+> +	int ret;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D drm_gem_shmem_pin(shmem);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	sgt =3D drm_gem_shmem_get_sg_table(shmem);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+> +	KUNIT_EXPECT_NULL(test, shmem->sgt);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, sg_free_table_wrapper, sgt);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	for_each_sgtable_sg(sgt, sg, si) {
+> +		KUNIT_EXPECT_NOT_NULL(test, sg);
+> +		len +=3D sg->length;
+> +	}
+> +
+> +	KUNIT_EXPECT_GE(test, len, TEST_SIZE);
+> +}
+> +
+> +/*
+> + * Test pinning pages and exporting a scatter/gather table suitable for
+> + * driver usage from a shmem GEM object. The test case succeeds if the
+> + * backing pages are pinned and a scatter/gather table large enough to
+> + * accommodate the backing memory is successfully exported.
+> + */
+> +static void drm_gem_shmem_test_get_sg_table(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	struct sg_table *sgt;
+> +	struct scatterlist *sg;
+> +	unsigned int si, len, ret =3D 0;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+> +	sgt =3D drm_gem_shmem_get_pages_sgt(shmem);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+> +	KUNIT_ASSERT_NOT_NULL(test, shmem->pages);
+> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 1);
+> +	KUNIT_EXPECT_PTR_EQ(test, sgt, shmem->sgt);
+> +
+> +	for_each_sgtable_sg(sgt, sg, si) {
+> +		KUNIT_EXPECT_NOT_NULL(test, sg);
+> +		len +=3D sg->length;
+> +	}
+> +
+> +	KUNIT_EXPECT_GE(test, len, TEST_SIZE);
+> +}
+> +
+> +/*
+> + * Test updating the madvise state of a shmem GEM object. The test
+> + * case checks that the function for setting madv updates it only if
+> + * its current value is greater or equal than zero and returns false
+> + * if it has a negative value.
+> + */
+> +static void drm_gem_shmem_test_madvise(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	int ret;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +	KUNIT_ASSERT_EQ(test, shmem->madv, 0);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D drm_gem_shmem_madvise(shmem, 1);
+> +	KUNIT_EXPECT_TRUE(test, ret);
+> +	KUNIT_ASSERT_EQ(test, shmem->madv, 1);
+> +
+> +	/* Set madv to a negative value */
+> +	ret =3D drm_gem_shmem_madvise(shmem, -1);
+> +	KUNIT_EXPECT_FALSE(test, ret);
+> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+> +
+> +	/* Check that madv cannot be set back to a positive value */
+> +	ret =3D drm_gem_shmem_madvise(shmem, 0);
+> +	KUNIT_EXPECT_FALSE(test, ret);
+> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+> +}
+> +
+> +/*
+> + * Test purging a shmem GEM object. First, assert that a newly created
+> + * shmem GEM object is not purgeable. Then, set madvise to a positive
+> + * value and call drm_gem_shmem_get_pages_sgt() to pin and dma-map the
+> + * backing pages. Finally, assert that the shmem GEM object is now
+> + * purgeable and purge it.
+> + */
+> +static void drm_gem_shmem_test_purge(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev =3D test->priv;
+> +	struct drm_gem_shmem_object *shmem;
+> +	struct sg_table *sgt;
+> +	int ret;
+> +
+> +	shmem =3D drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+> +
+> +	ret =3D kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shm=
+em);
+> +	KUNIT_ASSERT_EQ(test, ret, 0);
+> +
+> +	ret =3D drm_gem_shmem_is_purgeable(shmem);
+> +	KUNIT_EXPECT_FALSE(test, ret);
+> +
+> +	ret =3D drm_gem_shmem_madvise(shmem, 1);
+> +	KUNIT_EXPECT_TRUE(test, ret);
+> +
+> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+> +	sgt =3D drm_gem_shmem_get_pages_sgt(shmem);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+> +
+> +	ret =3D drm_gem_shmem_is_purgeable(shmem);
+> +	KUNIT_EXPECT_TRUE(test, ret);
+> +
+> +	drm_gem_shmem_purge(shmem);
+> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+> +	KUNIT_EXPECT_NULL(test, shmem->sgt);
+> +	KUNIT_EXPECT_EQ(test, shmem->madv, -1);
+> +}
+> +
+> +static int drm_gem_shmem_test_init(struct kunit *test)
+> +{
+> +	struct fake_dev *fdev;
+> +	struct device *dev;
+> +
+> +	/* Allocate a parent device */
+> +	dev =3D drm_kunit_helper_alloc_device(test);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> +
+> +	/*
+> +	 * The DRM core will automatically initialize the GEM core and create
+> +	 * a DRM Memory Manager object which provides an address space pool
+> +	 * for GEM objects allocation.
+> +	 */
+> +	fdev =3D drm_kunit_helper_alloc_drm_device(test, dev, struct fake_dev,
+> +						 drm_dev, DRIVER_GEM);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, fdev);
+> +
+> +	fdev->dev =3D dev;
+> +	test->priv =3D fdev;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct kunit_case drm_gem_shmem_test_cases[] =3D {
+> +	KUNIT_CASE(drm_gem_shmem_test_obj_create),
+> +	KUNIT_CASE(drm_gem_shmem_test_obj_create_private),
+> +	KUNIT_CASE(drm_gem_shmem_test_pin_pages),
+> +	KUNIT_CASE(drm_gem_shmem_test_vmap),
+> +	KUNIT_CASE(drm_gem_shmem_test_get_pages_sgt),
+> +	KUNIT_CASE(drm_gem_shmem_test_get_sg_table),
+> +	KUNIT_CASE(drm_gem_shmem_test_madvise),
+> +	KUNIT_CASE(drm_gem_shmem_test_purge),
+> +	{}
+> +};
+> +
+> +static struct kunit_suite drm_gem_shmem_suite =3D {
+> +	.name =3D "drm_gem_shmem",
+> +	.init =3D drm_gem_shmem_test_init,
+> +	.test_cases =3D drm_gem_shmem_test_cases
+> +};
+> +
+> +kunit_test_suite(drm_gem_shmem_suite);
+
+Looks great otherwise, thanks!
+Maxime
+
+--5f7kz7hlopnaynsr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZU5BNwAKCRDj7w1vZxhR
+xd8BAQCWQfZ2OUNNLGx+mO3N4bk72Lqzux9XJTMEhqQKbwFPJwD+J6F3JeK2aGcw
+HnOZStcGzpv8ESgnBrcVBVAhp0/Nrg0=
+=2My6
+-----END PGP SIGNATURE-----
+
+--5f7kz7hlopnaynsr--
