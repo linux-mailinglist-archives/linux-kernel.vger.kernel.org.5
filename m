@@ -2,81 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 142B77E84BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B002C7E84B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346542AbjKJUrv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 15:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
+        id S1345026AbjKJUs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235697AbjKJUrX (ORCPT
+        with ESMTP id S229884AbjKJUsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:47:23 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D4C1BDD;
-        Fri, 10 Nov 2023 12:46:23 -0800 (PST)
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1c:f269::1])
-        by madras.collabora.co.uk (Postfix) with ESMTP id 3EE0266073EF;
-        Fri, 10 Nov 2023 20:46:22 +0000 (GMT)
-From:   "Daniel Almeida" <daniel.almeida@collabora.com>
-In-Reply-To: <20231030193406.70126-3-detlev.casanova@collabora.com>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Fri, 10 Nov 2023 20:46:21 +0000
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>
-To:     "Detlev Casanova" <detlev.casanova@collabora.com>
+        Fri, 10 Nov 2023 15:48:53 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392BF11D
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:48:46 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40a279663a2so2341315e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:48:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1699649324; x=1700254124; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7mFNPT/uy0UMAnz/Ugx6DLKoCv+d+mLnO+112jTH4fI=;
+        b=JVLbGBAG1rn8EIsyAHqdbZhlg+kaeV756X/7AFMTFX855Nhb/oEWy2SxuKNnGH3iW0
+         GhmpNiKJ0ApuVJO+clziDihv3aj9UkxzouJaYbOJCy1OumL4921rPW7BEXdEmqdTMx9C
+         thKPGkWY9MS9HyNdzvScOGmrappmvGjVoLCSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699649324; x=1700254124;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7mFNPT/uy0UMAnz/Ugx6DLKoCv+d+mLnO+112jTH4fI=;
+        b=EDfaTyMgx7XOwB6FBMfKnwy7YssGZFWXpTNnPmKkMoxkNezLLyEjBPehqrQZsG+wG2
+         W6gPsxOzI+R0gJ/ijatEpZEWQTO8lPNxOgCbTCmdqCZT2NoiQsKkyPmZ1NMStwJzKiKS
+         72fXKZwSIDtkmym5fKP4NJ7hNZmZyIqgRMIvcKEZoRSa8Wep3AYV7ohRIA4W0015FoaM
+         OEmzA/NkqQFQO7Z88E+UIrUPUaLUlW66e1gSbartlqf0nje0kb54nqOMGwum6kkpxkZJ
+         f61vmoAUYffxVaI6t7nELPB3YxRphVCOn5aKWBhUoM7KebyGVIyn84IE3YtPJ8a5lEtI
+         Z9sg==
+X-Gm-Message-State: AOJu0YwcjdRVU0HgpUyUJI++hyisnQHaSrMgXYN3Rav5JQ1DT1Og0NuA
+        66AcrSnuD2KFqKbqI2Zh4mfMXo/IYlOuigICB1I=
+X-Google-Smtp-Source: AGHT+IGoZwONoDkaC8fs7HGaBOTdrqDo5nO9foSKlzle+lzhC0apVkOsBrbNDD/8jqAvLzH16IcxKA==
+X-Received: by 2002:a5d:648c:0:b0:331:3d16:51e3 with SMTP id o12-20020a5d648c000000b003313d1651e3mr263761wri.7.1699649324575;
+        Fri, 10 Nov 2023 12:48:44 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id n2-20020a5d4202000000b0032d886039easm117216wrq.14.2023.11.10.12.48.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 12:48:44 -0800 (PST)
+Date:   Fri, 10 Nov 2023 21:48:42 +0100
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@gmail.com>
+Subject: [PULL] drm fixes for 6.7-rc1
+Message-ID: <ZU6XKgI7FZsIJWoq@phenom.ffwll.local>
+Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@gmail.com>
 MIME-Version: 1.0
-Message-ID: <6093-654e9680-3-67fa3a80@264835418>
-Subject: =?utf-8?q?Re=3A?= [PATCH 2/2] =?utf-8?q?doc=3A?==?utf-8?q?_visl=3A?= Add 
- AV1 support
-User-Agent: SOGoMail 5.8.4
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Operating-System: Linux phenom 6.5.0-1-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Detlev,
+Hi Linus
 
-This does not apply anymore (media_tree/master -> 2e6bf8ce2af120df033fee1ec42f5e78596f5c44)
+Dave's vpn to the big machine died, so it's on me to do fixes pr this and
+next week while everyone else is at plumbers.
 
-As for the changes,
+drm fixes for 6.7-rc1
 
-Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
+- big pile of amd fixes, but mostly hw support newly added in 6.7
+- i915 fixes, mostly minor things
+- qxl memory leak fix
+- vc4 uaf fix in mock helpers
+- syncobj fix for DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE
 
-> Add AV1 information in visl documentation.
-> 
-> Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
-> ---
->  Documentation/admin-guide/media/visl.rst | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/media/visl.rst b/Documentation/admin-guide/media/visl.rst
-> index 7d2dc78341c9..64229857c17c 100644
-> --- a/Documentation/admin-guide/media/visl.rst
-> +++ b/Documentation/admin-guide/media/visl.rst
-> @@ -71,6 +71,7 @@ The following codecs are supported:
->  - VP9
->  - H.264
->  - HEVC
-> +- AV1
->  
->  visl trace events
->  -----------------
-> @@ -79,6 +80,7 @@ The trace events are defined on a per-codec basis, e.g.:
->  .. code-block:: bash
->  
->          $ ls /sys/kernel/debug/tracing/events/ | grep visl
-> +        visl_av1_controls
->          visl_fwht_controls
->          visl_h264_controls
->          visl_hevc_controls
-> -- 
-> 2.41.0
->
+Cheers!
 
+The following changes since commit 9ccde17d46554dbb2757c427f2cdf67688701f96:
+
+  Merge tag 'amd-drm-next-6.7-2023-11-03' of https://gitlab.freedesktop.org/agd5f/linux into drm-next (2023-11-06 11:25:14 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-next-2023-11-10
+
+for you to fetch changes up to 03df0fc007ca4713fa1e716329af556f981807e4:
+
+  Merge tag 'amd-drm-next-6.7-2023-11-10' of https://gitlab.freedesktop.org/agd5f/linux into drm-next (2023-11-10 20:51:38 +0100)
+
+----------------------------------------------------------------
+drm fixes for 6.7-rc1
+
+- big pile of amd fixes, but mostly hw support newly added in 6.7
+- i915 fixes, mostly minor things
+- qxl memory leak fix
+- vc4 uaf fix in mock helpers
+- syncobj fix for DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE
+
+----------------------------------------------------------------
+Alex Deucher (2):
+      drm/amdgpu: fix AGP init order
+      drm/amdgpu: move UVD and VCE sched entity init after sched init
+
+Alvin Lee (1):
+      drm/amd/display: For cursor P-State allow for SubVP
+
+Anthony Koo (2):
+      drm/amd/display: [FW Promotion] Release 0.0.189.0
+      drm/amd/display: [FW Promotion] Release 0.0.190.0
+
+Aric Cyr (3):
+      drm/amd/display: 3.2.257
+      drm/amd/display: 3.2.258
+      drm/amd/display: Promote DAL to 3.2.259
+
+Arnd Bergmann (1):
+      drm/i915/mtl: avoid stringop-overflow warning
+
+Bragatheswaran Manickavel (1):
+      drm/amd/display: avoid variable reinitialization
+
+Chaitanya Dhere (1):
+      drm/amd/display: Remove references to unused dml arch version
+
+Chaitanya Kumar Borah (1):
+      drm/i915/mtl: Support HBR3 rate with C10 phy and eDP in MTL
+
+Christian König (3):
+      drm/amdgpu: fix error handling in amdgpu_bo_list_get()
+      drm/amdgpu: lower CS errors to debug severity
+      drm/amdgpu: fix error handling in amdgpu_vm_init
+
+ChunTao Tso (1):
+      drm/amd/display: amend HPD handler for Replay
+
+Daniel Miess (3):
+      drm/amd/display: On boot disable domain22 force power on
+      drm/amd/display: Enable RCO options for dcn35
+      drm/amd/display: Enable physymclk RCO
+
+Daniel Vetter (3):
+      Merge tag 'drm-intel-next-fixes-2023-11-08' of git://anongit.freedesktop.org/drm/drm-intel into drm-next
+      Merge tag 'drm-misc-fixes-2023-11-08' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
+      Merge tag 'amd-drm-next-6.7-2023-11-10' of https://gitlab.freedesktop.org/agd5f/linux into drm-next
+
+David Yat Sin (1):
+      drm/amdgpu: Change extended-scope MTYPE on GC 9.4.3
+
+Dennis Chan (2):
+      drm/amd/display: Introduce flag for disabling Replay desync recovery
+      drm/amd/display: Revise Replay Desync Error IRQ handle
+
+Erik Kurzinger (1):
+      drm/syncobj: fix DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE
+
+Fangzhi Zuo (1):
+      drm/amd/display: Allow 16 max_slices for DP2 DSC
+
+Felix Kuehling (1):
+      drm/amdgpu: Fix possible null pointer dereference
+
+George Shen (3):
+      drm/amd/display: Update test link rate DPCD bit field to match spec
+      drm/amd/display: Update DP HPO MSA with colorimetry from test request
+      drm/amd/display: Set stream's DP test pattern upon test request
+
+Harshit Mogalapalli (1):
+      i915/perf: Fix NULL deref bugs with drm_dbg() calls
+
+Hawking Zhang (2):
+      drm/amdgpu: Support multiple error query modes
+      drm/amdgpu: correct acclerator check architecutre dump
+
+Hunter Chasens (1):
+      drm: amd: Resolve Sphinx unexpected indentation warning
+
+Ilya Bakoulin (1):
+      drm/amd/display: Fix missing blendTF programming
+
+Jiadong Zhu (1):
+      drm/amdgpu/soc21: add mode2 asic reset for SMU IP v14.0.0
+
+JinZe.Xu (1):
+      drm/amd/display: decouple dmcub execution to reduce lock granularity
+
+Joshua Aberback (1):
+      drm/amd/display: Remove unused duplicate register definition
+
+José Pekkarinen (1):
+      drm/amd/display: remove duplicated argument
+
+Kunwu Chan (1):
+      drm/i915: Fix potential spectre vulnerability
+
+Le Ma (1):
+      drm/amd/pm: raise the deep sleep clock threshold for smu 13.0.6
+
+Lijo Lazar (3):
+      drm/amdgpu: Fix sdma 4.4.2 doorbell rptr/wptr init
+      drm/amd/pm: Hide irrelevant pm device attributes
+      drm/amd/pm: Hide pp_dpm_pcie device attribute
+
+Mario Limonciello (1):
+      drm/amd: Explicitly check for GFXOFF to be enabled for s0ix
+
+Maxime Ripard (1):
+      drm/vc4: tests: Fix UAF in the mock helpers
+
+Nirmoy Das (3):
+      drm/i915: Flush WC GGTT only on required platforms
+      drm/i915/mtl: Apply notify_guc to all GTs
+      drm/i915/tc: Fix -Wformat-truncation in intel_tc_port_init
+
+Ovidiu Bunea (1):
+      drm/amd/display: Disable OTG for mode timing switch on DCN35
+
+Rodrigo Siqueira (1):
+      drm/amd/display: Create optc.h file
+
+Roman Li (1):
+      drm/amd/display: Add missing dml2 init value for dcn35
+
+Sung Joon Kim (3):
+      drm/amd/display: Fix FRL assertion on boot
+      drm/amd/display: Enable more IPS options
+      drm/amd/display: Fix handling duplicate planes on one stream
+
+Surbhi Kakarya (1):
+      drm/amd: Disable XNACK on SRIOV environment
+
+Taimur Hassan (1):
+      drm/amd/display: Fix OTG disable workaround logic
+
+Tao Zhou (3):
+      drm/amdgpu: handle extra UE register entries for gfx v9_4_3
+      drm/amdgpu: add RAS reset/query operations for XGMI v6_4
+      drm/amdgpu: Don't warn for unsupported set_xgmi_plpd_mode
+
+Tim Huang (2):
+      drm/amd/pm: not stop rlc for IMU enabled APUs when suspend
+      drm/amdgpu: move kfd_resume before the ip late init
+
+Victor Lu (6):
+      drm/amdgpu: Add flag to enable indirect RLCG access for gfx v9.4.3
+      drm/amdgpu: Add xcc param to SRIOV kiq write and WREG32_SOC15_IP_NO_KIQ (v4)
+      drm/amdgpu: Skip PCTL0_MMHUB_DEEPSLEEP_IB write in jpegv4.0.3 under SRIOV
+      drm/amdgpu: Do not program PF-only regs in hdp_v4_0.c under SRIOV (v2)
+      drm/amdgpu: Use correct KIQ MEC engine for gfx9.4.3 (v5)
+      drm/amdgpu: Change WREG32_RLC to WREG32_SOC15_RLC where inst != 0 (v2)
+
+Ville Syrjälä (1):
+      drm/i915: Bump GLK CDCLK frequency when driving multiple pipes
+
+Vitaly Prosyak (1):
+      drm/amdgpu: fix software pci_unplug on some chips
+
+Wenjing Liu (1):
+      drm/amd/display: save and restore mall state when applying minimal transition
+
+Yang Wang (7):
+      drm/amdgpu: correct amdgpu ip block rev info
+      drm/amdgpu: correct smu v13.0.6 umc ras error check
+      drm/amdgpu: refine smu v13.0.6 mca dump driver
+      drm/amdgpu: disable smu v13.0.6 mca debug mode by default
+      drm/amdgpu: add pcs xgmi v6.4.0 ras support
+      drm/amdgpu: correct mca debugfs dump reg list
+      drm/amdgpu: add smu v13.0.6 pcs xgmi ras error query support
+
+Yihan Zhu (1):
+      drm/amd/display: DCN35 Disable cm power optimization
+
+Zongmin Zhou (1):
+      drm/qxl: prevent memory leak
+
+ drivers/accel/ivpu/ivpu_hw_37xx.c                  |  11 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h                |  13 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c           |   3 +
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c    |  40 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c  |  42 ++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c        |   1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c             |   5 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ctx.c            |  15 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 114 ++++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c            |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.h            |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c            |   5 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mca.c            | 182 ++++++++++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mca.h            |  60 +++-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_object.c         |   3 -
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c            | 102 ++++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.h            |   8 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.c            |  22 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_uvd.h            |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vce.c            |  22 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vce.h            |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_virt.c           |  19 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_virt.h           |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             |  37 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c           | 218 ++++++++++++-
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_4_3.c            |  49 ++-
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c             |   3 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c             |   3 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c              |   1 +
+ drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c              |   1 +
+ drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c              |   1 +
+ drivers/gpu/drm/amd/amdgpu/gmc_v9_0.c              |  35 +-
+ drivers/gpu/drm/amd/amdgpu/hdp_v4_0.c              |   4 +
+ drivers/gpu/drm/amd/amdgpu/jpeg_v4_0_3.c           |  16 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_4_2.c           |  27 +-
+ drivers/gpu/drm/amd/amdgpu/soc15_common.h          |  14 +-
+ drivers/gpu/drm/amd/amdgpu/soc21.c                 |   1 +
+ drivers/gpu/drm/amd/amdgpu/umc_v12_0.c             |   4 +-
+ drivers/gpu/drm/amd/amdgpu/umc_v12_0.h             |   3 +
+ drivers/gpu/drm/amd/amdgpu/uvd_v3_1.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/uvd_v4_2.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/uvd_v5_0.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/uvd_v6_0.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c              |   4 -
+ drivers/gpu/drm/amd/amdgpu/vce_v2_0.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/vce_v3_0.c              |   2 -
+ drivers/gpu/drm/amd/amdgpu/vce_v4_0.c              |   5 -
+ drivers/gpu/drm/amd/amdkfd/kfd_process.c           |   7 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c               |   8 +-
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c  |   3 +
+ .../drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h    |   2 +-
+ .../amd/display/dc/clk_mgr/dcn35/dcn35_clk_mgr.c   |  21 +-
+ drivers/gpu/drm/amd/display/dc/core/dc.c           |  27 +-
+ drivers/gpu/drm/amd/display/dc/dc.h                |   2 +-
+ drivers/gpu/drm/amd/display/dc/dc_dmub_srv.c       |  74 +++++
+ drivers/gpu/drm/amd/display/dc/dc_dmub_srv.h       |   8 +
+ drivers/gpu/drm/amd/display/dc/dc_dp_types.h       |   3 +-
+ drivers/gpu/drm/amd/display/dc/dc_types.h          |   4 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_abm.h       |  15 -
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.h  | 186 +----------
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_dsc.c   |  10 +-
+ drivers/gpu/drm/amd/display/dc/dcn35/dcn35_dccg.c  |  73 +++--
+ .../gpu/drm/amd/display/dc/dcn35/dcn35_pg_cntl.c   |  10 +-
+ .../gpu/drm/amd/display/dc/dcn35/dcn35_pg_cntl.h   |   1 +
+ .../gpu/drm/amd/display/dc/dcn35/dcn35_resource.c  |  37 ++-
+ .../amd/display/dc/dml/dcn30/display_mode_vba_30.c |   2 +-
+ .../amd/display/dc/dml2/dml2_dc_resource_mgmt.c    |  61 ++--
+ .../drm/amd/display/dc/dml2/dml2_internal_types.h  |   4 +-
+ .../amd/display/dc/dml2/dml2_translation_helper.c  |  55 +++-
+ .../amd/display/dc/dml2/dml2_translation_helper.h  |   2 +-
+ drivers/gpu/drm/amd/display/dc/dml2/dml2_utils.c   |  18 +-
+ drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.c |   2 +-
+ drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c        |  11 +
+ .../gpu/drm/amd/display/dc/hwss/dce/dce_hwseq.h    |  18 +-
+ .../drm/amd/display/dc/hwss/dcn32/dcn32_hwseq.c    |  17 +-
+ .../drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c    |  34 +-
+ drivers/gpu/drm/amd/display/dc/inc/hw/dccg.h       |   5 +
+ drivers/gpu/drm/amd/display/dc/inc/hw/dsc.h        |   2 +
+ drivers/gpu/drm/amd/display/dc/inc/hw/optc.h       | 219 +++++++++++++
+ drivers/gpu/drm/amd/display/dc/inc/hw/pg_cntl.h    |   2 +
+ .../amd/display/dc/link/accessories/link_dp_cts.c  |  17 +-
+ .../dc/link/protocols/link_dp_irq_handler.c        |  15 +-
+ drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h    |  25 +-
+ drivers/gpu/drm/amd/pm/amdgpu_dpm.c                |  12 +-
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c                 |  29 +-
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   5 +-
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   | 359 +++++++++------------
+ drivers/gpu/drm/display/drm_dp_mst_topology.c      |   6 +-
+ drivers/gpu/drm/drm_syncobj.c                      |   3 +-
+ drivers/gpu/drm/i915/display/intel_cdclk.c         |  12 +
+ drivers/gpu/drm/i915/display/intel_dp.c            |   2 +-
+ drivers/gpu/drm/i915/display/intel_tc.c            |  11 +-
+ drivers/gpu/drm/i915/gem/i915_gem_context.c        |   1 +
+ drivers/gpu/drm/i915/gt/intel_ggtt.c               |  35 +-
+ drivers/gpu/drm/i915/gt/intel_rc6.c                |  16 +-
+ drivers/gpu/drm/i915/i915_debugfs_params.c         |   9 +-
+ drivers/gpu/drm/i915/i915_perf.c                   |  15 +-
+ drivers/gpu/drm/logicvc/Kconfig                    |   2 +
+ drivers/gpu/drm/qxl/qxl_display.c                  |   3 +
+ drivers/gpu/drm/vc4/tests/vc4_mock_crtc.c          |   2 +-
+ drivers/gpu/drm/vc4/tests/vc4_mock_output.c        |   2 +-
+ 102 files changed, 1803 insertions(+), 852 deletions(-)
+ create mode 100644 drivers/gpu/drm/amd/display/dc/inc/hw/optc.h
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
