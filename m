@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE47A7E7800
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6947E7805
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345712AbjKJDa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:30:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
+        id S1345801AbjKJDdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjKJDa0 (ORCPT
+        with ESMTP id S232516AbjKJDdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:30:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4C14681
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:30:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 481B4C433C9;
-        Fri, 10 Nov 2023 03:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699587024;
-        bh=rtAxl1XIygp6DGaBTvt0mWqDxNItsd1DoVkKb9H5nU8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jxOo+PaEXuse7iXtrzf0N7TggUmafmOoE9JQnEXmLUqUDU8intKyyZTNJI9jgUSce
-         LNT2TA/t90LnF4ul22QS6gIB3NmzapUtNaY7hi+MPZzoS/LBACg1QZovMTZZwXd5Cx
-         bSTxS1pM0k2DyxAUubeBhKc2Q10Z6u6l0pF5YoTnr89EtykTd3QvvuQYkUxz2JbYwc
-         lyzxC42Xk3QU1RPq9KcX6aw5bQ8LhnVBwwNydpnGOXbdKeGE0sF7ywyacxMBDqGqPs
-         PKbFXiyTe/bYDDggdyOgMAuuBZloGzNmPHb0Mihz1c8Cfow18BmhC2Lpn/JuLbF7/e
-         Uzqt579hHuMWw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2CD20C691EF;
-        Fri, 10 Nov 2023 03:30:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 9 Nov 2023 22:33:53 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B9E4682
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:33:50 -0800 (PST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SRPSZ0PHHzMmkl;
+        Fri, 10 Nov 2023 11:29:18 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 10 Nov 2023 11:33:47 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gregory Price <gregory.price@memverge.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 0/7] mm: remove page idle and young wrapper
+Date:   Fri, 10 Nov 2023 11:33:17 +0800
+Message-ID: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv3] selftests: bpf: xskxceiver: ksft_print_msg: fix format type
- error
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169958702417.21601.7609791725807208554.git-patchwork-notify@kernel.org>
-Date:   Fri, 10 Nov 2023 03:30:24 +0000
-References: <20231109174328.1774571-1-anders.roxell@linaro.org>
-In-Reply-To: <20231109174328.1774571-1-anders.roxell@linaro.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, andrii.nakryiko@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Convert to use folio idle and young functions instead of page ones,
+then remove all page idle and young wrapper.
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+v2:
+- remove useless PageTail && PageSlab check 
+- collect Gregory Price's work, see patch3
 
-On Thu,  9 Nov 2023 18:43:28 +0100 you wrote:
-> Crossbuilding selftests/bpf for architecture arm64, format specifies
-> type error show up like.
-> 
-> xskxceiver.c:912:34: error: format specifies type 'int' but the argument
-> has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
->  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
->                                                                 ~~
->                                                                 %llu
->                 __func__, pkt->pkt_nb, meta->count);
->                                        ^~~~~~~~~~~
-> xskxceiver.c:929:55: error: format specifies type 'unsigned long long' but
->  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
->  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
->                                     ~~~~             ^~~~
-> 
-> [...]
+Kefeng Wang (7):
+  fs/proc/page: remove unneeded PageTail && PageSlab check
+  fs/proc/page: use a folio in stable_page_flags()
+  fs/proc/page: respect folio head-page flag placement
+  mm: huge_memory: use more folio api in __split_huge_page_tail()
+  mm: task_mmu: use a folio in smaps_account()
+  mm: task_mmu: use a folio in clear_refs_pte_range()
+  page_idle: kill page idle and young wrapper
 
-Here is the summary with links:
-  - [PATCHv3] selftests: bpf: xskxceiver: ksft_print_msg: fix format type error
-    https://git.kernel.org/bpf/bpf/c/fe69a1b1b6ed
+ fs/proc/page.c            | 41 ++++++++++++++++++---------------------
+ fs/proc/task_mmu.c        | 28 +++++++++++++-------------
+ include/linux/page_idle.h | 25 ------------------------
+ mm/huge_memory.c          | 12 ++++++------
+ 4 files changed, 40 insertions(+), 66 deletions(-)
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.27.0
 
