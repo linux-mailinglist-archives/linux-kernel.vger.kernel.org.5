@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4C27E800D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04EB7E7FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjKJSEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S230251AbjKJR5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235858AbjKJSC5 (ORCPT
+        with ESMTP id S235606AbjKJRz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:02:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A11E39CD4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:48:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5A12C433C7;
-        Fri, 10 Nov 2023 14:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699627723;
-        bh=67X2QpL1k/tzuflgDk/rSr/3uNaGV1pZVgtU3XFWA4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=upPWFizS8bmsYb2YUmDIIJC+3+Cce/6EagrzOPUGXQOM3ORz2nTdVJgMmjgee9QZL
-         LfGRBULui93yS+XnhQeyFUNFM2ixafwUuVELbZ9psa/pFvo9elecGsfmXRnhDoHH94
-         2f5Kqi1ocC6EN4l8DB0nuyk3OShzydO879mSP3/wpGuaH6QiTWhqOWYDdDDzXdwdwn
-         nHAROc2H33LqUdhCOyAK85ErahEjLCF+J6F8WGG19hOH16t0ebIagboBhbLe8kwcsX
-         d1/Gi8jEQ/FZBys6a0SV63OjMw0JWds2e20fhA1+jBNoAUUcA0veJKvoSMm96ozp3v
-         ETI6pBGwNelsg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E8A7540094; Fri, 10 Nov 2023 11:48:39 -0300 (-03)
-Date:   Fri, 10 Nov 2023 11:48:39 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Fangrui Song <maskray@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v2 2/2] perf test: Add support for setting objdump binary
- via perf config
-Message-ID: <ZU5Cx4LTrB5q0sIG@kernel.org>
-References: <20231106151051.129440-1-james.clark@arm.com>
- <20231106151051.129440-3-james.clark@arm.com>
- <ZUv1TgveArYdvTsl@kernel.org>
- <2e0fb2d4-1410-6a7e-902d-8249a9ea523a@arm.com>
- <ZU0FaXoGf/HcLBlb@kernel.org>
- <da4e59bc-759e-4ccc-2c5b-b8acf7049847@arm.com>
+        Fri, 10 Nov 2023 12:55:58 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E41639CDC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:49:46 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso3427918a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:49:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1699627784; x=1700232584; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LuC1ebddOcbyFtgoooZ0RpCVM2XC/YrD0lA+By0aFZM=;
+        b=ovJw+g3Ow4qsloxW1nhSr4b1vLnsY1NgsUMixZ5Rym+8Z32oNiExKSqyDWTPmF3yHT
+         cGqh4Tl7nNY6l2aUea3tg3bGS61375hxmPnxE0s52NS9wK3P7VB1IyohadHCqD8lOs7d
+         afTxhImcAjIJ07EIjebyIY1+cEzWr4yCg/ToQlA1SNM0ERyQGYPeLzXkr+2+xMqQPd5K
+         cVJvieJQr/dNczMaW5veuxinoZeuKBauJwGtI7eG18VWvy1wdk0W8d8xA+RZVJEEMQgH
+         0hDAoAJ/HR7by98Ym3x1gTP+Y35thbDq2IKW9oLZoG8OzQZzoJbwDBZujZwejugjwEpD
+         eUqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699627784; x=1700232584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LuC1ebddOcbyFtgoooZ0RpCVM2XC/YrD0lA+By0aFZM=;
+        b=XCjdo/q7WpqJ3E4p6x8DVQmA2UmrQB50VjOs7accx7zH4YbHjnYMhjnx9+wY/XLgg/
+         RkQTndM4i6Z1fc7Aj1xinTHy/sbtPg81gyXiFafzycjnz6s+8RGG8AoHB/hBJhLLZOrl
+         McmdSZwzsa/nFNQ6Y14nnZnERyiLvKRyzrwQuvw7PJLoP9087dMdAKees7SVpvHLLcfh
+         XsUnUTSrLeSHuZ105TLwLSQbadVpGAOLCLxZftcHKj/e3cYUpYBTjgIEgCZ4a5GTZXCz
+         wy8c1hlE5c7DCPKvuu6anfjZe0ue04rCjec7rTiq7iXmRmdDse/uwBRPoNTe2eFeP96+
+         cFug==
+X-Gm-Message-State: AOJu0YzSCfrisgAEkXqGqG0XDmIw4nIsswj2GnIUVnYVZwzkNp8XeJ3i
+        H7yfPL4QMPZtEMt3LvmWpO/jMjx7DxICPVLLYgNg
+X-Google-Smtp-Source: AGHT+IFC34HniD3bfQ+SadGlhNQcbQcSgMw/Yjqcsu/lvb/M+C3lRv38bIXk8en4VNCRu7HUCjV+ToeGwiy1E0iW+AM=
+X-Received: by 2002:a50:d481:0:b0:53f:b964:ddb1 with SMTP id
+ s1-20020a50d481000000b0053fb964ddb1mr6210389edi.37.1699627784060; Fri, 10 Nov
+ 2023 06:49:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da4e59bc-759e-4ccc-2c5b-b8acf7049847@arm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231103131011.1316396-1-lb@semihalf.com> <CAJfuBxz8mORgH9WaGVPsu7Z1cpgqWuJLxZNgFt1ocKa1sze5sw@mail.gmail.com>
+In-Reply-To: <CAJfuBxz8mORgH9WaGVPsu7Z1cpgqWuJLxZNgFt1ocKa1sze5sw@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Fri, 10 Nov 2023 15:49:32 +0100
+Message-ID: <CAK8Bye+MdinpzXAd+CMBp80rsmhqbrmMTJZ6LQrUYjVDVjVZYg@mail.gmail.com>
+Subject: Re: [PATCH v1 00/12] dyndbg: add support for writing debug logs to trace
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,127 +80,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 10, 2023 at 01:57:11PM +0000, James Clark escreveu:
-> 
-> 
-> On 09/11/2023 16:14, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Nov 09, 2023 at 10:26:34AM +0000, James Clark escreveu:
-> >>
-> >>
-> >> On 08/11/2023 20:53, Arnaldo Carvalho de Melo wrote:
-> >>> Em Mon, Nov 06, 2023 at 03:10:49PM +0000, James Clark escreveu:
-> >>>> Add a perf config variable that does the same thing as "perf test
-> >>>> --objdump <x>".
-> >>>>
-> >>>> Also update the man page.
-> >>>
-> >>> That is ok, if one wants to change objdump just for testing, as a
-> >>> followup improvement it may be interesting to allow that for the other
-> >>> tools that have --objdump as well as to add this as a global option,
-> >>> that affects all tools, no?
-> >>
-> >> For the tools they already all share annotate.objdump in the config. Do
-> >> you mean that the tests could share the same config instead?
-> > 
-> > Probably.
-> >  
-> >> Maybe I could have used annotate.objdump for the tests, but it was used
-> >> in a slightly different way, and I thought it would be easier for people
-> >> to find if it started with "test."
-> > 
-> > Well, we can have both, with "test." overriding "annotate."?
-> > 
-> 
-> Yeah overriding could work. IMO just one config value is probably enough
-> though, so we could change it to annotate.objdump in the tests too, and
-> remove the docs change. At least until someone has a usecase for a
-> separate config value for the tests and then add the overriding behavior.
-> 
-> I don't have any strong feelings about either way.
+sob., 4 lis 2023 o 02:25 <jim.cromie@gmail.com> napisa=C5=82(a):
+>
+> Hi =C5=81ukasz,
+>
+> can I haz a git remote url ?
+> no webmail antics that way.
+>
 
-We didn't publish any new version with test.objdump=, so please consider
-submitting a patch for perf-tools-next making annotate.objdump= be used
-in 'perf test' as well, update the documentation stating that this
-applies to 'perf test' as well.
+Here you are https://chromium.googlesource.com/chromiumos/third_party/kerne=
+l/+log/refs/sandbox/ukaszb/dyndbg_trace_v1
 
-- Arnaldo
- 
-> > Anyway, I applied this patch locally, now trying to fix some unrelated
-> > problem that is making 'perf test' fail so that I can push
-> > perf-tools-next publicly.
-> > 
-> > - Arnaldo
-> >  
-> >>>
-> >>> Anyway, applied both patches.
-> >>>
-> >>> - Arnaldo
-> >>>  
-> >>>> Signed-off-by: James Clark <james.clark@arm.com>
-> >>>> ---
-> >>>>  tools/perf/Documentation/perf-config.txt |  4 ++++
-> >>>>  tools/perf/tests/builtin-test.c          | 12 ++++++++++++
-> >>>>  2 files changed, 16 insertions(+)
-> >>>>
-> >>>> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-> >>>> index 0b4e79dbd3f6..16398babd1ef 100644
-> >>>> --- a/tools/perf/Documentation/perf-config.txt
-> >>>> +++ b/tools/perf/Documentation/perf-config.txt
-> >>>> @@ -722,6 +722,10 @@ session-<NAME>.*::
-> >>>>  		Defines new record session for daemon. The value is record's
-> >>>>  		command line without the 'record' keyword.
-> >>>>  
-> >>>> +test.*::
-> >>>> +
-> >>>> +	test.objdump::
-> >>>> +		objdump binary to use for disassembly and annotations.
-> >>>>  
-> >>>>  SEE ALSO
-> >>>>  --------
-> >>>> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> >>>> index a8d17dd50588..113e92119e1d 100644
-> >>>> --- a/tools/perf/tests/builtin-test.c
-> >>>> +++ b/tools/perf/tests/builtin-test.c
-> >>>> @@ -14,6 +14,7 @@
-> >>>>  #include <sys/wait.h>
-> >>>>  #include <sys/stat.h>
-> >>>>  #include "builtin.h"
-> >>>> +#include "config.h"
-> >>>>  #include "hist.h"
-> >>>>  #include "intlist.h"
-> >>>>  #include "tests.h"
-> >>>> @@ -514,6 +515,15 @@ static int run_workload(const char *work, int argc, const char **argv)
-> >>>>  	return -1;
-> >>>>  }
-> >>>>  
-> >>>> +static int perf_test__config(const char *var, const char *value,
-> >>>> +			     void *data __maybe_unused)
-> >>>> +{
-> >>>> +	if (!strcmp(var, "test.objdump"))
-> >>>> +		test_objdump_path = value;
-> >>>> +
-> >>>> +	return 0;
-> >>>> +}
-> >>>> +
-> >>>>  int cmd_test(int argc, const char **argv)
-> >>>>  {
-> >>>>  	const char *test_usage[] = {
-> >>>> @@ -541,6 +551,8 @@ int cmd_test(int argc, const char **argv)
-> >>>>          if (ret < 0)
-> >>>>                  return ret;
-> >>>>  
-> >>>> +	perf_config(perf_test__config, NULL);
-> >>>> +
-> >>>>  	/* Unbuffered output */
-> >>>>  	setvbuf(stdout, NULL, _IONBF, 0);
-> >>>>  
-> >>>> -- 
-> >>>> 2.34.1
-> >>>>
-> >>>
-> > 
-> 
+> On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.=
+com> wrote:
+> >
+> > Add support for writing debug logs to trace events and trace instances.
+> > The rationale behing this feature is to be able to redirect debug logs
+> > (per each callsite indivdually) to trace to aid in debugging. The debug
+> > logs output to trace can be enabled with T flag. Additionally trace
+> > destination can be provided to the T flag after ":". The trace destinat=
+ion
+> > field is used to determine where debug logs will be written. Setting tr=
+ace
+> > destination value to 0 (default) enables output to prdbg and devdbg tra=
+ce
+>
+> isnt +p independent of dest var ?  its just "on" to syslog.
+>
 
--- 
+Yes +p would be independent from +T so that a given callsite debug log
+could be written both to syslog and trace.
 
-- Arnaldo
+> > events. Setting trace destination value to a value in range of [1..255]
+> > enables output to trace instance identified by trace destination value.
+> > For example when trace destination value is 2 then debug logs will
+> > be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
+> >
+> > Usage examples:
+> >
+> > localhost ~ # echo "module thunderbolt =3DpT:7" >
+> >                                 <debugfs>/dynamic_debug/control
+> >
+> > This will enable output of debug logs to trace instance
+> > <debugfs>/tracing/instances/dyndbg_inst_7 and debug logs will
+> > be written to the syslog also because p flag is set.
+> >
+> > localhost ~ # echo "module thunderbolt =3DpT:7,l" >
+> >                                 <debugfs>/dynamic_debug/control
+> >
+> > When trace destination is followed by another flag then trace
+> > destination has to be followed by ",".
+> >
+> > localhost ~ # echo "module thunderbolt =3DpTl" >
+> >                                 <debugfs>/dynamic_debug/control
+> >
+> > When trace destination is not provided explicitly then its value
+> > defaults to 0. In this case debug logs will be written to the prdbg
+> > and devdbg trace events.
+> >
+> > localhost ~ # echo "module thunderbolt =3DT:25" >
+> >                                 <debugfs>/dynamic_debug/control
+> >
+> > This will enable output of debug logs to trace instance
+> > <debugfs>/tracing/instances/dyndbg_inst_25 with debug logs output
+> > to syslog disabled.
+> >
+> > Given trace instance will not be initialized until debug logs are
+> > requested to be written to it and afer init it will persist until
+> > reboot.
+> >
+>
+> that (delayed init) might be a problem,
+> user side will have to look for the appearance of traces ?
+>
+
+With open/close commands you proposed this will become obsolete.
+
+> Also, I have some reservations about exposing numeric destinations -
+> the user(space) must then decide/coordinate what dest-number
+> is used for which instance/purpose.
+>
+> It would be fine for 1 customer, but might be a little tedious for many,
+> who now have to coordinate.  A bit like a shared/party line in the early
+> days of rural telephone.
+>
+
+Nice comparison :). But it was pretty "socializing" as everyone could
+hear a conversation which took place on such a line.
+
+> As I recall, an early early version of classmaps used numeric classes,
+> (taken straight from drm_debug_category).
+> As Jason noted (more diplomatically than I assimilated)
+> it was kind of arbitrary and obscure/obtuse/unhelpful numbering.
+>
+> It is why I added classnames, with the bonus that
+> the name->num mapping was also a validation step
+> against known CLASSMAP_DEFINE-itions
+> (if you knew DRM drivers knew "DRM_KMS_CORE",
+>  you knew what you were asking for)
+>
+> Your earlier version had a dest keyword which maybe fits better with this=
+ point.
+> that said, it was in a selector position, so it doesnt work grammatically=
+.
+>
+> So, what do you think about a new command:
+>
+> echo <<EoCMDBlk
+> open kms-stream
+> class DRM_UT_CORE +T  # global
+> class DRM_UT_KMS +T:kms-stream
+> EoCMDBlk \
+> > /proc/dynamic/debug
+>
+> this allows tracking names, assigning ids, erroring when all used,
+> and validating names > control
+> without exposing the numbers.
+>
+> the open/close changes are (would be) persistent
+>
+> the thing it doesnt allow is pre-selecting the destination,
+> then arming it later with a +T
+>
+> so it doesnt (wouldnt) play super-nice with
+> echo 0x1F > /sys/module/drm/parameters/debug_trace
+>
+> that said, we can preset the dst:
+>
+> echo <<EoCMDBlk
+> open drm-kms-stream
+> open drm-core-stream
+> class DRM_UT_CORE -T:drm-core-stream
+> class DRM_UT_KMS -T:drm-kms-stream
+> EoCMDBlk \
+> > /proc/dynamic/debug
+>
+> then enable whatever is preset selectively:
+>
+> echo $I_forgot_the_bit > /sys/module/drm/parameters/debug_trace
+> OR
+> echo class DRM_UT_KMS +T > /proc/dynamic/debug
+>
+
+I agree that numbers are not very meaningful, I asked question related to y=
+our
+proposal in revisited comment.
+
+
+>
+>
+>
+>
+>
+>
+> > Please note that output of debug logs to syslog (p flag) and trace
+> > (T flag) can be independently enabled/disabled for each callsite.
+> >
+>
+> so its the specific wording I previously grumbled about, I think.
+>
+> >
+> >
+> > Jim I took the liberty and based my work on your patches you pointed me
+> > to https://github.com/jimc/linux/tree/dd-kitchen-sink. I picked up
+> > the commits relevant to trace from the dd-kitchen-sink branch.
+> > The only changes I introduced in your commits were related to checkpatc=
+h
+> > complains. There are two errors still left:
+>
+> Bah - macros !
+> I'll look at your diffs in git :-)
+>
+> >
+> > 1)
+> > ERROR: need consistent spacing around '*' (ctx:WxV)
+> > 140: FILE: lib/dynamic_debug.c:1070:
+> > +                                 va_list *args)
+> >
+> > Which seems to be a false positive to me.
+> >
+> > 2)
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 62: FILE: include/trace/stages/stage3_trace_output.h:12:
+> > +#define TP_printk_no_nl(fmt, args...) fmt, args
+> >
+> > I have not figured out how to fix it.
+>
+> those 2  no_nl   patches were pretty exploratory,
+> IIRC, Steve was inclined to add the \n  when not already in the format.
+> It would be variation-proof
+>
+>
+> >
+> > Changes:
+> > V1) Major rework after receiving feedback in
+> > https://lore.kernel.org/all/20230915154856.1896062-1-lb@semihalf.com/
+> >
+> > Jim Cromie (7):
+> >   dyndbg: add _DPRINTK_FLAGS_ENABLED
+> >   dyndbg: add _DPRINTK_FLAGS_TRACE
+> >   dyndbg: add write-events-to-tracefs code
+> >   dyndbg: add 2 trace-events: pr_debug, dev_dbg
+> >   tracefs: add TP_printk_no_nl - RFC
+> >   trace: use TP_printk_no_nl in dyndbg:prdbg,devdbg
+> >   dyndbg: repack struct _ddebug
+> >
+> > =C5=81ukasz Bartosik (5):
+> >   dyndbg: move flags field to a new structure
+> >   dyndbg: add trace destination field to _ddebug
+> >   dyndbg: add processing of T(race) flag argument
+> >   dyndbg: write debug logs to trace instance
+> >   dyndbg: add trace support for hexdump
+> >
+> >  .../admin-guide/dynamic-debug-howto.rst       |   5 +-
+> >  MAINTAINERS                                   |   1 +
+> >  include/linux/dynamic_debug.h                 |  57 ++-
+> >  include/trace/events/dyndbg.h                 |  54 +++
+> >  include/trace/stages/stage3_trace_output.h    |   3 +
+> >  include/trace/stages/stage7_class_define.h    |   3 +
+> >  lib/Kconfig.debug                             |   1 +
+> >  lib/dynamic_debug.c                           | 414 +++++++++++++++---
+> >  8 files changed, 465 insertions(+), 73 deletions(-)
+> >  create mode 100644 include/trace/events/dyndbg.h
+> >
+> > --
+> > 2.42.0.869.gea05f2083d-goog
+> >
