@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863E07E81CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC7E7E8275
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345861AbjKJSeL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 13:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S1346033AbjKJT25 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 14:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346043AbjKJSc6 (ORCPT
+        with ESMTP id S1344862AbjKJT2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:32:58 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE266A5B;
-        Thu,  9 Nov 2023 22:20:52 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        Fri, 10 Nov 2023 14:28:25 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9796A59;
+        Thu,  9 Nov 2023 22:20:51 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
         (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 5852A24DFED;
-        Fri, 10 Nov 2023 14:20:41 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 10 Nov
- 2023 14:20:41 +0800
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id BEFAF24E0B4;
+        Fri, 10 Nov 2023 14:20:42 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 10 Nov
+ 2023 14:20:42 +0800
 Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
  by EXMBX168.cuchost.com (172.16.6.78) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 10 Nov 2023 14:20:40 +0800
+ 15.0.1497.42; Fri, 10 Nov 2023 14:20:41 +0800
 From:   William Qiu <william.qiu@starfivetech.com>
 To:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-riscv@lists.infradead.org>, <linux-pwm@vger.kernel.org>
@@ -42,10 +42,12 @@ CC:     Emil Renner Berthing <kernel@esmil.dk>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
         William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v7 0/4] StarFive's Pulse Width Modulation driver support
-Date:   Fri, 10 Nov 2023 14:20:35 +0800
-Message-ID: <20231110062039.103339-1-william.qiu@starfivetech.com>
+Subject: [PATCH v7 1/4] dt-bindings: pwm: Add OpenCores PWM module
+Date:   Fri, 10 Nov 2023 14:20:36 +0800
+Message-ID: <20231110062039.103339-2-william.qiu@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231110062039.103339-1-william.qiu@starfivetech.com>
+References: <20231110062039.103339-1-william.qiu@starfivetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [171.223.208.138]
@@ -53,7 +55,7 @@ X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
  (172.16.6.78)
 X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,79 +64,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add documentation to describe OpenCores Pulse Width Modulation
+controller driver.
 
-This patchset adds initial rudimentary support for the StarFive
-Pulse Width Modulation controller driver. And this driver will
-be used in StarFive's VisionFive 2 board.The first patch add
-Documentations for the device and Patch 2 adds device probe for
-the module.
-
-Changes v6->v7:
-- Rebased to v6.6.
-- Added dependency architecture.
-- Adopted new rounding algorithm.
-- Added limitation descripton.
-- Used function interfaces instead of macro definitions.
-- Followed the linux coding style.
-
-Changes v5->v6:
-- Rebased to v6.6rc5.
-- Changed driver into a generic OpenCores driver.
-- Modified dt-bindings description into OpenCores.
-- Uesd the StarFive compatible string to parameterize.
-
-Changes v4->v5:
-- Rebased to v6.6rc2.
-- Updated macro definition indent.
-- Replaced the clock initializes the interface.
-- Fixed patch description.
-
-Changes v3->v4:
-- Rebased to v6.5rc7.
-- Sorted the header files in alphabetic order.
-- Changed iowrite32() to writel().
-- Added a way to turn off.
-- Modified polarity inversion implementation.
-- Added 7100 support.
-- Added dts patches.
-- Used the various helpers in linux/math.h.
-- Corrected formatting problems.
-- Renamed dtbinding  to 'starfive,jh7100-pwm.yaml'.
-- Dropped the redundant code.
-
-Changes v2->v3:
-- Fixed some formatting issues.
-
-Changes v1->v2:
-- Renamed the dt-binding 'pwm-starfive.yaml' to 'starfive,jh7110-pwm.yaml'.
-- Dropped the compatible's Items.
-- Dropped the unuse defines.
-- Modified the code to follow the Linux coding style.
-- Changed return value to dev_err_probe.
-- Dropped the unnecessary local variable.
-
-The patch series is based on v6.6.
-
-William Qiu (4):
-  dt-bindings: pwm: Add OpenCores PWM module
-  pwm: opencores: Add PWM driver support
-  riscv: dts: starfive: jh7110: Add PWM node and pins configuration
-  riscv: dts: starfive: jh7100: Add PWM node and pins configuration
-
- .../bindings/pwm/opencores,pwm.yaml           |  56 +++++
- MAINTAINERS                                   |   7 +
- .../boot/dts/starfive/jh7100-common.dtsi      |  24 ++
- arch/riscv/boot/dts/starfive/jh7100.dtsi      |   9 +
- .../jh7110-starfive-visionfive-2.dtsi         |  22 ++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      |   9 +
- drivers/pwm/Kconfig                           |  12 +
- drivers/pwm/Makefile                          |   1 +
- drivers/pwm/pwm-ocores.c                      | 236 ++++++++++++++++++
- 9 files changed, 376 insertions(+)
+Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+---
+ .../bindings/pwm/opencores,pwm.yaml           | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
- create mode 100644 drivers/pwm/pwm-ocores.c
 
---
+diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+new file mode 100644
+index 000000000000..8f776bbc1112
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/opencores,pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OpenCores PWM controller
++
++maintainers:
++  - William Qiu <william.qiu@starfivetech.com>
++
++description:
++  OpenCores PTC ip core contains a PWM controller. When operating in PWM mode, the PTC core
++  generates binary signal with user-programmable low and high periods. All PTC counters and
++  registers are 32-bit.
++
++allOf:
++  - $ref: pwm.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - starfive,jh7100-pwm
++              - starfive,jh7110-pwm
++          - const: opencores,pwm
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  "#pwm-cells":
++    const: 3
++
++required:
++  - compatible
++  - reg
++  - clocks
++
++additionalProperties: false
++
++examples:
++  - |
++    pwm@12490000 {
++        compatible = "starfive,jh7110-pwm", "opencores,pwm";
++        reg = <0x12490000 0x10000>;
++        clocks = <&clkgen 181>;
++        resets = <&rstgen 109>;
++        #pwm-cells = <3>;
++    };
+-- 
 2.34.1
 
