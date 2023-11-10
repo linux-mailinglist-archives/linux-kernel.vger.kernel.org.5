@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B2D7E833D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688217E8343
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345945AbjKJTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        id S230108AbjKJT4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:56:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346572AbjKJTyk (ORCPT
+        with ESMTP id S1346496AbjKJTzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:54:40 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06931FEE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:51:45 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-45ef8c21e8aso1074258137.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:51:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699645905; x=1700250705; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1XHT4YSLzPD/E8aj03B/6V64jSf/rAM4u8ZPBVxJtgk=;
-        b=gJsUryOieQmHFPWcN/IIO8N7qMephByNSoGaukKAWSWqNu/TlgsUndtml3Kkzk8bEE
-         C/W7GbrFNZUHfUiJeinPf5PQU1j3nu+yTa73g5fkLsmmDmhBgq8pPdZgTU+kW/AzvFBS
-         eXKVP6yQh2WFUgO/djQj9KStxPogP/gcUcYQ04kB8Lk/SO8EubIh5I5sZGUF5l4R/reL
-         q/UCQkC97bH80CIcj4ikhMjf0QgPzaS0VxUozKqilRLkzZeGHNEXvT+KNO4RxWGJU9Fa
-         dzn6cVlgoOryHcgKNfhUAesuXBxxVn4sfaFuTVy4LOoCxiEBV7vlQ5E55T6E+mPDKkdH
-         JL5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699645905; x=1700250705;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1XHT4YSLzPD/E8aj03B/6V64jSf/rAM4u8ZPBVxJtgk=;
-        b=oB+aNDg24NtVMAduVzZvoFj2vZX/HU/yzaoKKiGxLitR/3gAPSKEMVeE95DOgIqqIq
-         xizPKR5a3L3QBJC+6HntHJh6cFIPFw7U3kNtoBsp1jfJShwFeJnab7Tk3fMnJJlMTJsl
-         V7Me/Ex9BNbgPafcSZdmQLjZxEIC/MdUJJbRYjdJSFB/3AOb5Ra0CGP9De002jYhnH+C
-         62eTasAMEx6E3jtq5x7LH17ZWqiOv5RCUiegKof85QogHk3gwG1tq0muRpA8CMwOeMzs
-         mtP7lhNvMdtGJAB7aIRzVBNmJSuTyHbpNlm/uLXpIJ+sCOULUvUSVHM/3wG+BpkktDVt
-         EiYw==
-X-Gm-Message-State: AOJu0YyGXe2wholCqbIa3R9vE+ksjrgy2pYStVqx7G9F2LbPw9KdbvyN
-        lYa+7p8oaO+yvLSiSsN95R7pKRIukq0IKfFHWMA=
-X-Google-Smtp-Source: AGHT+IGIoxi8Adc0PKUN/X2JFJaZMPpzAtI9aV0sUTO+URwu3Mk2KEMp+ocOENtvW0QERXWv1U+hrhrMiRxCx6HEu6c=
-X-Received: by 2002:a05:6102:94b:b0:45d:987d:debe with SMTP id
- a11-20020a056102094b00b0045d987ddebemr475932vsi.3.1699645904678; Fri, 10 Nov
- 2023 11:51:44 -0800 (PST)
+        Fri, 10 Nov 2023 14:55:33 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D56268B4;
+        Fri, 10 Nov 2023 11:54:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mo3k6I3L3+GaMcPE9W8IN9T7AObg33M0tnp9fSppm7I2/LPuQ01fvN5xCzFHvPV9FklloyS2iASNPyhGljNo/hMfOzLArTkG4QBLsgFTR5QYkH0FewtmCWNe7VxrGc+An0q7hlb1jzoylRqsxKQJs/Dl9tJcRotEXOr/e0DCXxBZzzQ5anv5xjNxOoUZhlIDcZzdX/hmO5x/m3nBRGle2dHPnfWTLoZZiIK0wxyecKb7n4wDRihwomWJYB/Q49b7j/eN1OpZ97uZF3fmOZKVqJ7QGvZUfTSghLBQu/GAXYvY7yTTXO6jCyn+o3jAZhtwyvpQ1B9uWRZQ9Y2H0D+Mew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5un78N5+jUds3zCNWYGkXwpUGcb9pwtuVmOvn+vG6+g=;
+ b=QHMTCL6K8zA0AUBcjUkc1CbcPCVKn6V+yfJLgCd39uD21xK6QBSGQADwxgQj/giXx7i7WPzSFZKRmEVWwS/JjO4O3xyDNxpSRxsNQ91VgwR3xMH/e//WZ/kJXbXdn/zkXDEMCeiC0jJ3CfYDl2TBK9g00+QlDVoGCX8MrW0Xv9tO/XxB53Zc/mxJSpEB92pgn5SvMryJRi7GP1OdL9Mi6L7lKpsi0C8lM3OESMJUXsLWWDU9jyl2pDC24R/Iq3ZJlOTUzPGj++bBBT414jP/PAetYQnGRdwbZ6BZ5P9CNDHlMwe1Iw3DMPSkfClV202r25e0sdtOHbYkDPIe2grkBg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5un78N5+jUds3zCNWYGkXwpUGcb9pwtuVmOvn+vG6+g=;
+ b=p5Jk+7QKKq26MxfR03EpBuuzlDUpmrXloLoD/gB8sz1hXHJffWUEUG7rOx9CVmb/EsVjDnE6moGa1539yOW+fg2GFHhTwCTn6sg1ALmlfPpXSAbCY4Bx1V7ZCaTlUglbwTVNI0fLlUsepn5h9EOHzpAfmUldG4bk0cQtwoVWhjA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SJ0PR17MB5557.namprd17.prod.outlook.com (2603:10b6:a03:393::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.9; Fri, 10 Nov
+ 2023 19:54:53 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7002.010; Fri, 10 Nov 2023
+ 19:54:53 +0000
+Date:   Fri, 10 Nov 2023 14:54:49 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, akpm@linux-foundation.org,
+        mhocko@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, corbet@lwn.net, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZU6KiRv7iy/cUY7N@memverge.com>
+References: <20231109002517.106829-1-gregory.price@memverge.com>
+ <87zfzmf80q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zfzmf80q.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR13CA0070.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c4::15) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-11-lb@semihalf.com>
- <CAJfuBxxVGaqG4wVu-kM3ynA8ARTD6DFPBuz0a1GqunMqdvRBgQ@mail.gmail.com> <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com>
-In-Reply-To: <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Fri, 10 Nov 2023 12:51:18 -0700
-Message-ID: <CAJfuBxxTuiEun9YFtWY_99nvCwnJQ_LByJioOTxsCkMS6URQnw@mail.gmail.com>
-Subject: Re: [PATCH v1 10/12] dyndbg: add processing of T(race) flag argument
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SJ0PR17MB5557:EE_
+X-MS-Office365-Filtering-Correlation-Id: fbe52eac-d646-4b7f-29ec-08dbe226e7b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ygCsEckYGxQbY5Fk+kAkXixzlSI9OQqJq3C3dErJeDeXmYI7Ff9GFIqKRmZl8wPGsX04Eo+8AjLrQCEOwEbLwZXbGJbbxA01ZpC5TRflDoSwSiD7KOnY3cbVAhOzZdXoN/0zVujiJa03EqE0APEw7Xp9SyL0E7Xbkg15coSc+UXhedooPSjn6I2NrXRQnmxvTUqg6gdi5Mu3fIHmP2FzjXgddx1kcsjvuAk39PXl6a4WvUSRSQtX5eq9GW7zZ684XDwIKFnB2MuOJiY+BPNSeT3IZhu/BkbG/bxzw6LIeUK6DRl/mtwod5oaaQA6/TZOAkALZPDJBpQcrFSmHbK4mzv5bmDS3VTzuhE45dmdlSKeaYTvT0WLMTNjrlPL6jrOypy1jTPI0SnTTh4NQcca2W5AauYpGw7MMisoIs4oonTfcbEVTyV8oNhqV9bw1KUZvoOIgyRkiW4Fd8aBG+bkrcrOAQK0mvU8B+HspjcEoDFqNxlpUgirPnl5Aq2g5JbDG2ZI80Aypc+uQmruEbhpdtU4TnxGFQQf5/hyX/zPj/pq9SFzUCFDcRZfD6zap9CaCJdhvO+YKEw1LcDtcbvUzJyc0vRwBsuoTaZ6dIF4F+4LzEs7fEMYwd2//xbcnBa1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39840400004)(136003)(346002)(376002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(6512007)(6486002)(478600001)(2616005)(6666004)(6506007)(83380400001)(7416002)(26005)(2906002)(66476007)(41300700001)(44832011)(66556008)(66946007)(4326008)(6916009)(8676002)(8936002)(316002)(5660300002)(38100700002)(36756003)(86362001)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?khNQ6xcg1p90yHKbACXCFKc39HEbFJJisoMILo3STSYeCy0t3dpqPmjHFqZP?=
+ =?us-ascii?Q?Gp2cOQa+bwbDwJNJallvEp6VxTBzdEwdhgth0cPpU6qIlh4+V6P2NO1nS4SX?=
+ =?us-ascii?Q?VJANZVyyAThex6CqY+iB7l8PiWf22APpJz708xq1hRil8/rezuMOybjEBn7P?=
+ =?us-ascii?Q?2jRaqYxfVag/I0fe++KOexK3icwWN17XTa1UgpojBsU0jhDfKZOX9RkWICh4?=
+ =?us-ascii?Q?o+KJvPae1ir+4u3SQDPvmrDUlay0GNVuZe8mLqdIRjJcLY6HaST3EQNDw+cx?=
+ =?us-ascii?Q?zOF9OJLq3gYWdtUm352JCoGujUHCQN+eS7r0LlbevsGEhtBZGwZzEVLWJ4WT?=
+ =?us-ascii?Q?oYiZ9yZ+qPCLkw3chD4xtv6n2zAdzUlVepeGyf+k7g1FLT1cxkUNrWGns5vo?=
+ =?us-ascii?Q?5DgfHhowBdUB9XGKC9K6C0PkQMLcgRFmclQY7SGMSnRq1Vz954/mQe2MrZeX?=
+ =?us-ascii?Q?FwPalIqPIqqxYH5pEJxCNplFcEpfKpukP+VzV5c1Yks2iT2R16Ik7vD2vGmv?=
+ =?us-ascii?Q?1YZ8c3nbSlcd4tlPCPiPuK7Qvjfhq58ldVjB4K9RzwCQtL5ID13QM/K5nxOP?=
+ =?us-ascii?Q?4Kg9PwNCNhBXE+mvMnbN/HyIkxC4PzR1ho75XxKyI6DNCSYo08GYynakTwIP?=
+ =?us-ascii?Q?xY5OJ/ny4seT2vQ2I14Wf9zjtwvhLcg8/X6hV5+mj7Ja7kiCcz0P1uEhG9lw?=
+ =?us-ascii?Q?hMcvWGX8dCQX037xj9yt3f/f/VNNHva8Wtbu8+/Tbt0HQL/YyIaAsWXYtgiV?=
+ =?us-ascii?Q?daKuiVp2CHwrVcdvWIQNQoklgxXO3wQdQ/Aq6/UeBBIVEAVQkFxpkXAVcmvH?=
+ =?us-ascii?Q?qSukY544+4WWUHmtQm7q9Bi/hLPkw9AwDPZS2BHuLX0tZdt56unOirf1IbGJ?=
+ =?us-ascii?Q?dmXD4nRoWWjwz3JF+eYkE4W5+h8PtrAPWo/mscur4QgxCePI/OZ/CAinbxDj?=
+ =?us-ascii?Q?MgPvL9NH2Y3LWl90HlQcKEzdSuUS5KD8RJxss0BOP9VEO2euDEHxZXTm4ycb?=
+ =?us-ascii?Q?sykDGRzTworuitDdGId2rBc2lI1JQ7oFy5GO1OHNnuG94r6EWccqgZgG1xgD?=
+ =?us-ascii?Q?b2NvDlzMd+SujyDNHNZjHO0PuoYtT6iGsBu9VZbZmd+F6RlTo/EPLQpgMRt7?=
+ =?us-ascii?Q?N2DR4Z7mqW7EzXuzTz5sNtT6IB2EvT9Mq1EjdGegNWUnRlrCrArwgnfNk3ag?=
+ =?us-ascii?Q?0BzpqXjNzPWJAHWTuKjAWphHyU7ATZJpTVDwt1iCxfzv5OdgMjBIVubK9JhO?=
+ =?us-ascii?Q?8AgCJLG4fHASOyXkA4/TqXvcdwN+zO2wUDM+wz1FLnafOqgTly7Em/KMu59K?=
+ =?us-ascii?Q?LljvDacrNSwz7f0zpZ6ukiGzKYn8QPFZ8rQA7vkG9iu9/ZrG02q+hkuR2ghO?=
+ =?us-ascii?Q?Z2efm6sLkjQcufdxFBxlsC3VuovSezoUjyE9fGmaDzoTRHm2mcK8MkcFe8RQ?=
+ =?us-ascii?Q?vlj9/U5AU61DJVG1jONFYZ3e92yMQN/hk2HhgFBuNlYNzhiTJES0YBEa/v6N?=
+ =?us-ascii?Q?IpC9QdfWN7rO0/8e0dMQf2d2akOp5IDa93QzAhAtwOOAOPb0mSpZhPChoneL?=
+ =?us-ascii?Q?Iodep4OHQ+byx+m4LxyOx94VnL+9HE7QrV8l/kHRAr7j9KMLq+h21F6CMJuC?=
+ =?us-ascii?Q?ZA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbe52eac-d646-4b7f-29ec-08dbe226e7b8
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 19:54:52.9199
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g6yfi5kzXhOoqRhFI+tMxURcCuLvwl21P/zV2VhUIipZZgNRsyNOQ+fwvRvarmPhjRxwA4QMted4sWmR6ZEOJ/Wfd3Nzp8YKFgvGtRO3pIM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR17MB5557
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,91 +120,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 7:52=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
->
-> sob., 4 lis 2023 o 04:06 <jim.cromie@gmail.com> napisa=C5=82(a):
+On Fri, Nov 10, 2023 at 02:16:05PM +0800, Huang, Ying wrote:
+> Gregory Price <gourry.memverge@gmail.com> writes:
+> 
+> > This patchset implements weighted interleave and adds a new cgroup
+> > sysfs entry: cgroup/memory.interleave_weights (excluded from root).
 > >
-> > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihal=
-f.com> wrote:
-> > >
-> > > Add processing of argument provided to T(race) flag.
-> > > The argument value determines destination of debug logs:
-> > >
-> > > 0 - debug logs will be written to prdbg and devdbg trace events
-> > > [1..255] - debug logs will be written to trace instance
-> > >
-> > > A user can provide trace destination by folowing T flag with
-> > > ":" and trace destination value in range [0..255], for example:
-> > >
-> > > echo "module thunderbolt =3DpT:7" > /sys/kernel/debug/dynamic_debug/c=
-ontrol
-> > > echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug=
-/control
-> > >
-> > > When T flag with argument is followed by other flags then the next fl=
-ag has
-> > > to be preceded with ",".
-> > >
-> >
-> > the trailing , seems punctuation heavy.
-> > Could we just stipulate that any :string  (leading : trailing anything)
-> > be the last flag in the spec ?
-> > bare T flags are not constrained otherwise.
-> > seems fine as API-spec-by-error-codes.
-> >
->
-> I followed Jason's suggestion to use "," when T flag is not the last
-> flag and destination is explicitly provided for the T flag, like in
-> the example above
-> "echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug/co=
-ntrol".
->
-> With "," we can have the following cases:
-> - when T is the last flag then it doesn't need to be followed by ","
-> even if destination is explicitly provided, for example "lpT:7",
-> - when T is not the last flag and destination is explicitly provided
-> then "," has to be used before next flag, for example "lT:7,p",
-> - when T is not the last flag and destination is not explicitly
-> provided then "," is not required, for example "lTp",
->
-> Jim, Jason, would you please come to terms if we want to use "," or
-> just assume that T has to be the last flag in the spec ?
+> > The il_weight of a node is used by mempolicy to implement weighted
+> > interleave when `numactl --interleave=...` is invoked.  By default
+> > il_weight for a node is always 1, which preserves the default round
+> > robin interleave behavior.
+> 
+> IIUC, this makes it almost impossible to set the default weight of a
+> node from the node memory bandwidth information.  This will make the
+> life of users a little harder.
+> 
+> If so, how about use a new memory policy mode, for example
+> MPOL_WEIGHTED_INTERLEAVE, etc.
 >
 
-Im fine either way -   eliminating punctuation has a cost too,
-it adds some order dependency which isnt there now.
-If that complicates the code, no-good.
+weights are also inherited from parent cgroups, so if you set them in
+parent slices you can automatically set update system settings.
 
+by default the parent slice weights will always be 1 until set
+otherwise.  Once they're set, children inherit naturally.
 
-> >
-> >
-> >
-> > > When no value is provided trace destination defaults to 0, for exampl=
-e:
+Maybe there's an argument here for including interleave_weights in the
+root cgroup.
 
-That seems wrong now - it should default to whatever it was previously set =
-to,
-
-this allows setting a non-default dest while disabling the site:
-   echo class DRM_UT_CORE -T:core-log  > /proc/dynamic_debug/control
-
-then just enabling it later, to use the preset dest
-   echo class DRM_UT_CORE +T  > /proc/dynamic_debug/control
-or more likely:
-   echo 0x01 > /sys/module/drm/parameters/debug_trace
-
-this way, debug_trace is just like debug, but still can write to the
-separate trace-instances
-
-> > >
-> > > echo "module thunderbolt =3DT" > /sys/kernel/debug/dynamic_debug/cont=
-rol
-> > > echo "module thunderbolt =3DlTp" > /sys/kernel/debug/dynamic_debug/co=
-ntrol
-> >
-> > no colon after T means p is a flag, not a destination name
->
-> Yes, in this case p is a flag because when T is not followed
-> explicitly by destination then next character would be treated as
-> another flag.
+~Gregory
