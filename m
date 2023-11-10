@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C03D7E77F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4387E77FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbjKJD06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S234849AbjKJD16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:27:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjKJD05 (ORCPT
+        with ESMTP id S229616AbjKJD14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:26:57 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE4744B8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:26:55 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b497c8575aso1653901b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:26:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699586815; x=1700191615; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uGqxz8Jd/zanbd/e+X5hQTmawezc5bW600nwJml/3VE=;
-        b=Gq183UXOqYwU+VrTUZx2QO7kTtgl0J9ZOQLgtqRc+N5VbH59v31FVQvaPxb8M4oOZ1
-         3tm08bccMm6MnUupJIV6wlSAg9OavNCtoGJ1egvw7uAmwSL7/Vu5vepJL2Rp7TpwOrAr
-         BzAGfxdkoXVr0ZsO56Fj+cVumwOUYSZ6fp+4T8YfV3v4ssTFefRsdN1H720D19MsD/Ho
-         XWEunKIfWGeHuvQanPO/dyJTHonY2WJISUkIj5XUO0Cv2Lrn4mwqVBrFEf1Mh8fGfCQh
-         mK2vM6kcLqpY5mdVlTsrN2wVv5IRp+KW1BOfWEZE4lr9sZwKwiWMExwuvmL3+9aMb3+A
-         7YsA==
+        Thu, 9 Nov 2023 22:27:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700884687
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699586832;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AaVo9IVfWLz/BqLc17ue4Q1CD1g0z57ZzeqlpNNIaz0=;
+        b=WIURUzyA6M9RRENmBNZndsp8IWXr+RcE2wufYTNSRU74XAUgR4LWLE5BugBlLOZyyj9EqP
+        oq9p88giGQ0wVAFII2J6rBSV2iK9HIEAUnCD0Ewz1KDMqtPhSPHmDDpNg+pgHXbX96PUqK
+        0Wknqi834g0WkWp562IjoE8Uc1YfuP4=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-312-ZSa7sthxNe-NDoNPFU2Tzw-1; Thu, 09 Nov 2023 22:27:10 -0500
+X-MC-Unique: ZSa7sthxNe-NDoNPFU2Tzw-1
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6bdc140103bso50292b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:27:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699586815; x=1700191615;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uGqxz8Jd/zanbd/e+X5hQTmawezc5bW600nwJml/3VE=;
-        b=OuwWPVgeOKeFEQaFC/qvjxtg871GsnRC9LZ+Duer02nYKpj6zJErl+l/LEF/h/yBob
-         wWyUCac9byF1cYBGQ38ER28hjvFcXboqrxmGlaW3kIQAlxAl/3oNHN62fWf6RdgCE5x3
-         c2rkTf2e3PM1jLYfsgTm4YgoTuIJGK5Oz4NUt0UdzyWTlAB6BUelBHScj/U/UalxwEgx
-         JMCw2EuJeQYVT0Y7kFCtbfhzJwgO0Pv+qionA4eV1ktz2WFZ1T6/x5BwljKN6OxRvtQ1
-         YShs00WQHbUYkPF+OViUXgoTNssuuLKDJX3ttPpDRtF6B+qGeoaPElk3vMCuFu5UD8pJ
-         uZsw==
-X-Gm-Message-State: AOJu0YxA5aAQT9vNr/TMWl3RQf9C1/LUcwcwOoBli/ZgWPHdVWuUFlwa
-        O1bLusJRHDToqM+3eI04ujg=
-X-Google-Smtp-Source: AGHT+IHxpqm1RHfS/+2B2d2hW8vbZjUp8T1eU8hfkK8QRT8SVVQzoS1btARU1pAyNhXe60Uk74SgZQ==
-X-Received: by 2002:a05:6a00:150f:b0:6be:5a1a:3bb8 with SMTP id q15-20020a056a00150f00b006be5a1a3bb8mr7785919pfu.28.1699586814850;
-        Thu, 09 Nov 2023 19:26:54 -0800 (PST)
-Received: from localhost ([156.236.96.172])
-        by smtp.gmail.com with ESMTPSA id q4-20020a056a00084400b006c4d2479c1asm455799pfk.219.2023.11.09.19.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 19:26:54 -0800 (PST)
-Date:   Fri, 10 Nov 2023 11:26:50 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Ferry Meng <mengferry@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        huyue2@coolpad.com, zhangwen@coolpad.com
-Subject: Re: [PATCH v2] erofs: simplify erofs_read_inode()
-Message-ID: <20231110112650.000045c5.zbestahu@gmail.com>
-In-Reply-To: <20231109111822.17944-1-mengferry@linux.alibaba.com>
-References: <20231109111822.17944-1-mengferry@linux.alibaba.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+        d=1e100.net; s=20230601; t=1699586829; x=1700191629;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AaVo9IVfWLz/BqLc17ue4Q1CD1g0z57ZzeqlpNNIaz0=;
+        b=wTtp4+PDNnzz5QmZIFi7ll5uq/J+sth1ZODubWIPZbrUSmcCOvbbEtl4vIPV5xNHPK
+         NapVhCYIp1CwYiehGUY0MseK1PKho966FDL7cKEdpDEq2KwP4JZNg7mUqEjVnD800BGq
+         OW7Sh2h4zUGgeDK9K3vmIxga7uRo4prFu5iCBVwvgp3qY7taxIryy1KRy77TM8P7e2Pz
+         l2JM6ils5ewtCEtA79T0VrcWfQc2/AEYRe4kUQPZsJGtC9M4JLyumMFafkDSqOrsCzTN
+         aeZji4e/sz4bS0EGUwqDugT+1hW31wWLNj5qoQlrFbXX9GiZHaLx6mDjNsgsbn1S33sO
+         Oskg==
+X-Gm-Message-State: AOJu0YywZWS+t0T4HwflIRJWJiYtETXjZTY82vWw/heqlrPDjrmiGvOp
+        0F1NqzYkw7wkUIzn8dVxE4J5u/xapDrlyy1e/4aikrJrNlo2cuzCfsjSLMJU1xOcWAXNpJXqzkZ
+        Uw34WrrMoRJsBSd6UColsu0+L
+X-Received: by 2002:a05:6a20:7d9b:b0:183:e7bb:591b with SMTP id v27-20020a056a207d9b00b00183e7bb591bmr7360658pzj.3.1699586829273;
+        Thu, 09 Nov 2023 19:27:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG+bD56KpX+FmB2BSMLL1SeOrK5m+loI6ihIPtQEVukH9L6DA0riRGJoTQywaV/bE7t1yJhWw==
+X-Received: by 2002:a05:6a20:7d9b:b0:183:e7bb:591b with SMTP id v27-20020a056a207d9b00b00183e7bb591bmr7360636pzj.3.1699586828966;
+        Thu, 09 Nov 2023 19:27:08 -0800 (PST)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id ix22-20020a170902f81600b001b8a00d4f7asm4274245plb.9.2023.11.09.19.27.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 19:27:08 -0800 (PST)
+Message-ID: <b594e092-0002-61d8-fdb9-74fad2285245@redhat.com>
+Date:   Fri, 10 Nov 2023 11:27:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH RFC 09/22] drivers: base: add arch_cpu_is_hotpluggable()
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLQ-00CTxK-Ln@rmk-PC.armlinux.org.uk>
+Content-Language: en-US
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <E1r0JLQ-00CTxK-Ln@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Nov 2023 19:18:22 +0800
-Ferry Meng <mengferry@linux.alibaba.com> wrote:
 
-> After commit 1c7f49a76773 ("erofs: tidy up EROFS on-disk naming"),
-> there is a unique `union erofs_inode_i_u` so that we could parse
-> the union directly.
-> 
-> Besides, it also replaces `inode->i_sb` with `sb` for simplicity.
-> 
-> Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
 
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
+On 11/7/23 18:30, Russell King (Oracle) wrote:
+> The differences between architecture specific implementations of
+> arch_register_cpu() are down to whether the CPU is hotpluggable or not.
+> Rather than overriding the weak version of arch_register_cpu(), provide
+> a function that can be used to provide this detail instead.
+> 
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   drivers/base/cpu.c  | 11 ++++++++++-
+>   include/linux/cpu.h |  1 +
+>   2 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 58bb86091b34..221ffbeb1c9b 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -527,9 +527,18 @@ EXPORT_SYMBOL_GPL(cpu_is_hotpluggable);
+>   #ifdef CONFIG_GENERIC_CPU_DEVICES
+>   DEFINE_PER_CPU(struct cpu, cpu_devices);
+>   
+> +bool __weak arch_cpu_is_hotpluggable(int cpu)
+> +{
+> +	return false;
+> +}
+> +
+>   int __weak arch_register_cpu(int cpu)
+>   {
+> -	return register_cpu(&per_cpu(cpu_devices, cpu), cpu);
+> +	struct cpu *c = &per_cpu(cpu_devices, cpu);
+> +
+> +	c->hotpluggable = arch_cpu_is_hotpluggable(cpu);
+> +
+> +	return register_cpu(c, cpu);
+>   }
+>   
+>   #ifdef CONFIG_HOTPLUG_CPU
+> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+> index 1e982d63eae8..dcb89c987164 100644
+> --- a/include/linux/cpu.h
+> +++ b/include/linux/cpu.h
+> @@ -80,6 +80,7 @@ extern __printf(4, 5)
+>   struct device *cpu_device_create(struct device *parent, void *drvdata,
+>   				 const struct attribute_group **groups,
+>   				 const char *fmt, ...);
+> +extern bool arch_cpu_is_hotpluggable(int cpu);
+>   extern int arch_register_cpu(int cpu);
+>   extern void arch_unregister_cpu(int cpu);
+>   #ifdef CONFIG_HOTPLUG_CPU
+
+-- 
+Shaoqin
+
