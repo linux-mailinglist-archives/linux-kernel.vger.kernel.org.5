@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E67E7E4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE9F7E7F94
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345860AbjKJRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:43:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
+        id S230114AbjKJR4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:56:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235204AbjKJRl5 (ORCPT
+        with ESMTP id S235332AbjKJRzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:41:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6988446EE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:31:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C01DEC433C7;
-        Fri, 10 Nov 2023 17:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699637517;
-        bh=9S4+7npXA7Vr3v5S6ByF8ht9SKpSkLnhmp75JHaFpDE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A34D4Kg3ovovfu7SLkzb/2JvAWSCHLPdy5z5OH0rZ35L8xuVt5DuDqHtxuHZ4jG7A
-         KaXeUhfeT2wqmwhVsk0+/yalpiapqEU6zGSQNa5FzJqZveevon0j0nlFOEWrWH6QHD
-         6+0gtoNzyM1/g1sZU58GjtIUmQZr1ZNI0iBz0i35MsZe80hlGm7Sy9mXrSX0lA7PO1
-         TYwbPPvf38XUZWow2Pv59xd9vaxG1wxLZBn2ZNC+UKiwt9gZazeta6Z765kC5j6kKN
-         XuG1JQpi3sJ4V0sPFtAUDF77WyGHd80sTJArqvjV3F09DmhqLj46uu62+EqJNZ7IHX
-         oQok3IuJFQEVQ==
-Date:   Fri, 10 Nov 2023 17:31:51 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Johnathan Mantey <johnathanx.mantey@intel.com>
-Cc:     netdev@vger.kernel.org, sam@mendozajonas.com, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] ncsi: Revert NCSI link loss/gain commit
-Message-ID: <20231110173151.GA649059@kernel.org>
-References: <20231109205137.819392-1-johnathanx.mantey@intel.com>
+        Fri, 10 Nov 2023 12:55:17 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7F444BEC;
+        Fri, 10 Nov 2023 09:36:41 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc329ce84cso20251395ad.2;
+        Fri, 10 Nov 2023 09:36:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699637800; x=1700242600; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VMefGDLKvWgnCazLOoD6MwII7fE2JXpo8Fb4zAd+e64=;
+        b=gip2x7G+FJgtbex+quQLXKOnT/BFTp/O/4k8V28XGkF8Kr6ydAMZAgWl8tdKK4quTN
+         PHnh507/04FBFWEWYsbnRMpubrf+Jwqzjn5u1/87LkZVA9Ls1C0Rx+MlGlrut8T4aStv
+         XtC3qph8WLOb03FOd2tk2ZF1HzgSmXdt9/Y4vDyVZo47B2cfJNOfMSB2WM+XW15/En8n
+         1zKWUua2fzg+Jo33tBL2cFwIsGrOSp4EbTMO1u5kl0/3t7eaWZRcejPr2+ChHayF+kRF
+         JBAJuCkC0LmeYxLtn778LHbbGZFng38XUiHnjOGMpYZZcC5eUbttCtWlfNu0cJijKNww
+         UBNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699637800; x=1700242600;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VMefGDLKvWgnCazLOoD6MwII7fE2JXpo8Fb4zAd+e64=;
+        b=jcsH4D6Az5bu/vGhCmSX7y6G4Uk4Pkv9jSNudgSHZURWV7UBHn9yYXZxX7WON4NWGB
+         d+BZ+8X4AlXO2Us+c+LiS1Y6o9Hi0o/J4YxTzTampw062WRftGMgoX6SHflHY9ZmC2Gh
+         9oGQ426J+bOlJALZ21cdkl3R6DTmhmnKYYtQFwEAaXcwZ/vueDzY4SfvwsMRpxuaVU1a
+         e0WOhiSp6lHNfdLuBKIb6cKubTa8BjoXtB4IbX5gyGh6bGPCKOrf7RkzQXioBmwgr0mR
+         wNjeH4b9jU8npzeH5zIQ9JgRS4qddCmXyhpjRTx+9xTTX7zzdS4enkZGnLHcqu5xVoCO
+         I+Sw==
+X-Gm-Message-State: AOJu0YxgCkj4THsMY9/AS5eiLMmIt1385wtOEVwcIj6RIcR8fRbCT5oC
+        IIqyhwdbWbi2LP0c+ASzvSE=
+X-Google-Smtp-Source: AGHT+IFds+6JbdYb6/94zoTHlH98hiW+vPVcXNq5TOQwXY4OtmQDVFP55/urNParEbHgDCIxnBSF3w==
+X-Received: by 2002:a17:903:4281:b0:1cc:68c1:cab5 with SMTP id ju1-20020a170903428100b001cc68c1cab5mr8281383plb.14.1699637800483;
+        Fri, 10 Nov 2023 09:36:40 -0800 (PST)
+Received: from brag-vm.. ([2409:40f4:10f7:a461:5bd6:2f0d:5f21:24c6])
+        by smtp.gmail.com with ESMTPSA id ij27-20020a170902ab5b00b001c3a8b135ebsm5703329plb.282.2023.11.10.09.36.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 09:36:40 -0800 (PST)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     ralf@linux-mips.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
+Subject: [PATCH] net: memory leak in nr_rx_frame
+Date:   Fri, 10 Nov 2023 23:06:32 +0530
+Message-Id: <20231110173632.2511-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109205137.819392-1-johnathanx.mantey@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 12:51:37PM -0800, Johnathan Mantey wrote:
-> The NCSI commit
-> ncsi: Propagate carrier gain/loss events to the NCSI controller
-> introduced unwanted behavior.
-> 
-> The intent for the commit was to be able to detect carrier loss/gain
-> for just the NIC connected to the BMC. The unwanted effect is a
-> carrier loss for auxiliary paths also causes the BMC to lose
-> carrier. The BMC never regains carrier despite the secondary NIC
-> regaining a link.
-> 
-> This change, when merged, needs to be backported to stable kernels.
-> 5.4-stable, 5.10-stable, 5.15-stable, 6.1-stable, 6.5-stable
-> 
-> Fixes: 3780bb29311e ncsi: Propagate carrier gain/loss events to the
-> CC: stable@vger.kernel.org
-> Signed-off-by: Johnathan Mantey <johnathanx.mantey@intel.com>
+The condition (make = nr_make_new(sk)) == NULL suggests
+that nr_make_new allocates memory and returns a pointer.
+If this allocation fails (returns NULL), it indicates a
+potential memory leak.
 
-Hi Johnathan,
+Added sock_put() for make which can potentially solve
+this issue
 
-thanks for your patch.
-Some minor feedback from my side.
+Reported-by: syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+ net/netrom/af_netrom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-1. The correct format for the tag above is:
+diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
+index 0eed00184adf..7d7cda4ae300 100644
+--- a/net/netrom/af_netrom.c
++++ b/net/netrom/af_netrom.c
+@@ -970,6 +970,8 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
+ 		nr_transmit_refusal(skb, 0);
+ 		if (sk)
+ 			sock_put(sk);
++		if (make)
++			sock_put(make);
+ 		return 0;
+ 	}
+ 
+-- 
+2.34.1
 
-   Fixes: 3780bb29311e ("ncsi: Propagate carrier gain/loss events to the NCSI controller")
-
-2. I think it is usual to format the subject and commit messages for
-   revert commits a bit like this:
-
-   Subject: [PATCH net vX] Revert "ncsi: Propagate carrier gain/loss events to the NCSI controller"
-
-   This reverts commit 3780bb29311eccb7a1c9641032a112eed237f7e3.
-
-   The cited commit introduced unwanted behavior.
-
-   The intent for the commit was to be able to detect carrier loss/gain
-   for just the NIC connected to the BMC. The unwanted effect is a
-   carrier loss for auxiliary paths also causes the BMC to lose
-   carrier. The BMC never regains carrier despite the secondary NIC
-   regaining a link.
-
-   ...
