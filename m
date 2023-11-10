@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F247E7E6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5D97E7E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345890AbjKJRoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:44:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S1344834AbjKJRn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbjKJRnw (ORCPT
+        with ESMTP id S235230AbjKJRna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:43:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0401F83E7
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 23:17:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25074C433C8;
-        Fri, 10 Nov 2023 07:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699600666;
-        bh=mZiJ9Td++XlK5uAAB4qKyf/MCPDMIrq0nMmKby/gJag=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Rbi08Qqr2TYOjwc5dSkoT6yW5Ku4Ne2FfD8IwpZR93OJiz1jWrYIox5Cnoar3kj+3
-         lBiBZ8xC+m9BRFv1fIVcIvexFmpoBvH4yOZwMAuljOUP9cDO02npfNw/kXccfrP2Kl
-         T22qfAchu/gD2tJkVCKHw8pKBPDrCdGQnVlcPI0DAPCp4Mj08pEsvTCOV8Vchc4xzO
-         1hMtY62rTCv7SyL/F6seB8h3SWFqS5c+g5UqX29wbhVGUF/en0VQow0gD9XtvJxrwC
-         S1mpeztcpbAp608Sh5ZZyrGOPbAr0i0DuI5zUBp8dr6PXVJc2QjG6ny86Lt9HSc5nL
-         FSSqO3pckiE2Q==
-Date:   Fri, 10 Nov 2023 16:17:39 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Fri, 10 Nov 2023 12:43:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8BA83E8;
+        Thu,  9 Nov 2023 23:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699600695; x=1731136695;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NF0h8QzfztbFfHhC9cK2K5o6pamjC/MGDzjiJJkHWtk=;
+  b=FPDkfux8T/Bun4Ar3l/CBtKS1YHC+nqdusz7a3YnwjeIXGQn3xX33EwY
+   0c/BVaqBt34kitHmbPg35d7OGi9acQaQfTJdOzjwwWOhTfYmUNduwKZyx
+   hZb6Nd7xvabHPwMfbdQ7m3V2UdaWEhOcgONKJNdXgh3ScWgl1xNiOdZmw
+   Kxpf7PJdw3U0fQKuHuYcCC/38ANfBmcD/rUxuW29qvZrpd8EsnPgeA891
+   h6HaBAleEeOCD6clTXV7/a+anvB8ZE7KC8AyYtIM9kBajIl5cWiKCJr8h
+   35UcVBpp4fO4WCT6Z0jBmS+Xe1SeeUYJ888CZSQMFOJAQGbjD9aYMiJSp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="394051333"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="394051333"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 23:18:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="907397742"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="907397742"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Nov 2023 23:18:08 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1LmH-0009TW-2w;
+        Fri, 10 Nov 2023 07:18:05 +0000
+Date:   Fri, 10 Nov 2023 15:17:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pratyush Brahma <quic_pbrahma@quicinc.com>,
+        Tomas Mudrunka <tomas.mudrunka@gmail.com>,
+        Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH v2 26/31] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20231110161739.f0ff9c50f20ebcfb57be6459@kernel.org>
-In-Reply-To: <169945376173.55307.5892275268096520409.stgit@devnote2>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
-        <169945376173.55307.5892275268096520409.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/8] CMDLINE: x86: convert to generic builtin command line
+Message-ID: <202311101507.q12gPUvS-lkp@intel.com>
+References: <20231110013817.2378507-7-danielwa@cisco.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110013817.2378507-7-danielwa@cisco.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,140 +83,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Daniel,
 
-On Wed,  8 Nov 2023 23:29:22 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+kernel test robot noticed the following build warnings:
 
-> + */
-> +static inline int __fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +				   struct fprobe *fp, struct ftrace_regs *fregs,
-> +				   void *data)
-> +{
-> +	int ret = 0;
->  
-> +	if (fp->entry_handler) {
-> +		if (fp->exit_handler && fp->entry_data_size)
-> +			data += sizeof(unsigned long);
-> +		else
-> +			data = NULL;
-> +		ret = fp->entry_handler(fp, ip, parent_ip, fregs, data);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static inline int __fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +					  struct fprobe *fp, struct ftrace_regs *fregs,
-> +					  void *data)
-> +{
-> +	int ret;
->  	/*
->  	 * This user handler is shared with other kprobes and is not expected to be
->  	 * called recursively. So if any other kprobe handler is running, this will
-> @@ -108,45 +210,173 @@ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
->  	 */
->  	if (unlikely(kprobe_running())) {
->  		fp->nmissed++;
-> -		goto recursion_unlock;
-> +		return 0;
->  	}
->  
->  	kprobe_busy_begin();
-> -	__fprobe_handler(ip, parent_ip, ops, fregs);
-> +	ret = __fprobe_handler(ip, parent_ip, fp, fregs, data);
->  	kprobe_busy_end();
-> -
-> -recursion_unlock:
-> -	ftrace_test_recursion_unlock(bit);
-> +	return ret;
->  }
->  
-> -static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> -				unsigned long ret_ip, struct pt_regs *regs)
-> +static int fprobe_entry(unsigned long func, unsigned long ret_ip,
-> +			struct ftrace_regs *fregs, struct fgraph_ops *gops)
->  {
-> -	struct fprobe *fp = (struct fprobe *)data;
-> -	struct fprobe_rethook_node *fpr;
-> -	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
-> -	int bit;
-> +	struct fprobe_hlist_node *node, *first;
-> +	unsigned long header;
-> +	void *fgraph_data = NULL;
-> +	struct fprobe *fp;
-> +	int size, used, ret;
->  
-> -	if (!fp || fprobe_disabled(fp))
-> -		return;
-> +	if (WARN_ON_ONCE(!fregs))
-> +		return 0;
->  
-> -	fpr = container_of(rh, struct fprobe_rethook_node, node);
-> +	first = node = find_first_fprobe_node(func);
-> +	if (unlikely(!first))
-> +		return 0;
-> +
-> +	size = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		/*
-> +		 * Since fprobe can be enabled until the next loop, we ignore the
-> +		 * disabled flag in this loop.
-> +		 */
-> +		if (fp && fp->exit_handler)
-> +			size += FPROBE_HEADER_SIZE + fp->entry_data_size;
-> +	}
-> +	node = first;
-> +	/* size can be 0 because fp only has entry_handler. */
-> +	if (size) {
-> +		fgraph_data = fgraph_reserve_data(size);
-> +		if (unlikely(!fgraph_data)) {
-> +			hlist_for_each_entry_from_rcu(node, hlist) {
-> +				if (node->addr != func)
-> +					break;
-> +				fp = READ_ONCE(node->fp);
-> +				if (fp && !fprobe_disabled(fp))
-> +					fp->nmissed++;
-> +			}
-> +			return 0;
-> +		}
-> +	}
->  
->  	/*
-> -	 * we need to assure no calls to traceable functions in-between the
-> -	 * end of fprobe_handler and the beginning of fprobe_exit_handler.
-> +	 * TODO: recursion detection has been done in the fgraph. Thus we need
-> +	 * to add a callback to increment missed counter.
->  	 */
-> -	bit = ftrace_test_recursion_trylock(fpr->entry_ip, fpr->entry_parent_ip);
-> -	if (bit < 0) {
-> -		fp->nmissed++;
-> +	used = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		if (!fp || fprobe_disabled(fp))
-> +			continue;
-> +
-> +		if (fprobe_shared_with_kprobes(fp))
-> +			ret = __fprobe_kprobe_handler(func, ret_ip,
-> +					fp, fregs, fgraph_data + used);
-> +		else
-> +			ret = __fprobe_handler(func, ret_ip, fp,
-> +					fregs, fgraph_data + used);
+[auto build test WARNING on v6.6]
+[cannot apply to arm64/for-next/core efi/next tip/x86/core robh/for-next linus/master next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Walker/CMDLINE-add-generic-builtin-command-line/20231110-094423
+base:   v6.6
+patch link:    https://lore.kernel.org/r/20231110013817.2378507-7-danielwa%40cisco.com
+patch subject: [PATCH 6/8] CMDLINE: x86: convert to generic builtin command line
+config: x86_64-kismet-CONFIG_SYSTEM_EXTRA_CERTIFICATE-CONFIG_CMDLINE_EXTRA-0-0 (https://download.01.org/0day-ci/archive/20231110/202311101507.q12gPUvS-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20231110/202311101507.q12gPUvS-lkp@intel.com/reproduce)
 
-Since the fgraph callback is under rcu-locked but not preempt-disabled,
-fprobe unittest fails. I need to add preempt_disable_notrace() and
-preempt_enable_notrace() around this. Note that kprobe_busy_begin()/end()
-also access to per-cpu variable, so it requires to disable preemption.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311101507.q12gPUvS-lkp@intel.com/
 
-Thank you,
-
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for SYSTEM_EXTRA_CERTIFICATE when selected by CMDLINE_EXTRA
+   
+   WARNING: unmet direct dependencies detected for SYSTEM_EXTRA_CERTIFICATE
+     Depends on [n]: CRYPTO [=y] && SYSTEM_TRUSTED_KEYRING [=n]
+     Selected by [y]:
+     - CMDLINE_EXTRA [=y] && GENERIC_CMDLINE [=y] && CMDLINE_BOOL [=y]
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
