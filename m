@@ -2,136 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9447E83EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C556A7E8448
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344987AbjKJUeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:34:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56276 "EHLO
+        id S1344581AbjKJUiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjKJUea (ORCPT
+        with ESMTP id S235674AbjKJUht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:34:30 -0500
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6661727;
-        Fri, 10 Nov 2023 12:34:27 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 6ABCE3200A72;
-        Fri, 10 Nov 2023 15:34:23 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 10 Nov 2023 15:34:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1699648462; x=1699734862; bh=rP
-        L0L5KUQk+cK1C+LNi4k7UhNNxLQnP3AQ29ohc2S6w=; b=f8oAnehgRh8PEq3eUs
-        MniZgBbSOw79+dfkbvIH2lSHxPQb1kc66mslSpgxKLgFAWxNfHlLGp63tfI85+XG
-        v2NXInvz/ckYKVXc9DLPqt+oojxW0rWBL4Pfw1/gm1fQdmybY8aeVeIKBQLgWBWR
-        l52GjrvxdweYlnxxeWqH3jpixrOECZ8AhU00uPa/DCBmK0+M1qy7UNuqUbKFUZ/i
-        7HNzqqBX3jbcmG+VvEkew/oDSn3LWvQpM03OtNVRtmGGpFG5IBSb92EONUwK0on7
-        V/wLnPowXF9ZgKZF4P+60Cb45jy5TYDEoWNbBHSMFjaRJQ8swZR58rHn/sdbB0Cr
-        UOBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1699648462; x=1699734862; bh=rPL0L5KUQk+cK
-        1C+LNi4k7UhNNxLQnP3AQ29ohc2S6w=; b=ZqYdLONN2AWLGVBIM6Unf+gcUhyZA
-        F6Krek5NBsE7W3fMVLkwbSrKKrMtLs3QRiR2tUMhGU7FFHMxQ404xX+0O1kosxsL
-        v0NFf2HdQrxg5sjMu1zsDLzHyiDuJ5xveelcdR3Ay8HCY+kh0ZajB+qfVBLAOIXY
-        sVcX7SA7rNWY95zpWvl2ECYu2NcU6WAw9zGCACsXHdKuPzCu6FL9+qQ9o95pq0lC
-        1NhrkP6lT/86hm7uGH8dpXlHGh+8eyA/5z7LDSqczXaexk7NvXlECJv2yzTsDjB1
-        Yslmn5yBT/Elivl65FuOgiBxCk7eX5PfRITV5VvOAkhOBfytOUww7QTCg==
-X-ME-Sender: <xms:zpNOZd4U1bdb6Kw47cIAfGFDfKgaOCnfWT5HIDP4fDUjNqIUfZtdcA>
-    <xme:zpNOZa5yF7_7gn4Z7XFMe6a2nkOWpDO2RmkSyO2UPNuxokch9KgPEvgeIWH9daL-i
-    aWuH3pg1HkM-yL1qDI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvfedgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffegffdutddvhefffeeltefhjeejgedvleffjeeigeeuteelvdettddulefg
-    udfgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:zpNOZUeAzAFjQ85JPd7Y9S02tIxPiMUKFQTuE2OSCqxc7KU2rG4naA>
-    <xmx:zpNOZWLUqZcRGHYj1YMQsIVBHlcx9tVYVf72e7aGf00LITN-xTStTw>
-    <xmx:zpNOZRI-uypRNJGJLNyC8NBw6Q89rCcXdbSJvG0-_Fg7JCpFdrxMXg>
-    <xmx:zpNOZfi3GONl_F_o8RLZcOXDHLOLMQM7IRvnXedPjnv4JbjFml6qNQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 93796B60089; Fri, 10 Nov 2023 15:34:22 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
+        Fri, 10 Nov 2023 15:37:49 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA52255BB;
+        Fri, 10 Nov 2023 12:37:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1699648624; x=1700253424; i=quwenruo.btrfs@gmx.com;
+        bh=qvvS9IGzHxkGirdwRPiNhMStn206GjQsGeSNbw2pTFE=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=oJPzby8PuPMHx8rs0WrqERpgeuV50PPyfvJ6Lxi35cQn1knNki3XDJeyrDKjy75k
+         7vO5fzkfPAlmXpVRU1LAlRCUAsGACkmKx2xdx/qn0PKzhegbwvtmzHSfqw3By81uQ
+         YBTyVvbNFwp8YlhqTQfD3ne8PWkiGTG8q+TLpnyflZpPpv3vL30r4XB8+HzahoCv1
+         GptYduIEZJkKlBQoFfqjc31aKh/skTX1XhD7qQ8h2R2TR9/v2QIEDJTC0UskeE9AO
+         z9Le4CIseRiWIWM80LJ9AG/8YyAAsl4A4geO5S1H51PeCydQ+z3yqZEPZhvThYF2d
+         q26RtmmNQHnA2zLURA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6DWi-1r3k6p2Mqu-006bUE; Fri, 10
+ Nov 2023 21:37:04 +0100
+Message-ID: <9e0559d3-c46f-4da6-8974-3790f1dfd3d8@gmx.com>
+Date:   Sat, 11 Nov 2023 07:06:56 +1030
 MIME-Version: 1.0
-Message-Id: <6cce1756-db32-4486-96d0-320d08569fbf@app.fastmail.com>
-In-Reply-To: <20231110194827.122045-1-charles.kearney@hpe.com>
-References: <20231110194827.122045-1-charles.kearney@hpe.com>
-Date:   Fri, 10 Nov 2023 21:33:21 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     charles.kearney@hpe.com, "Verdun, Jean-Marie" <verdun@hpe.com>,
-        "Hawkins, Nick" <nick.hawkins@hpe.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        "Conor Dooley" <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 RESEND] ARM: dts: hpe: BUG: Correct GXP register ranges
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix warning in create_pending_snapshot
+Content-Language: en-US
+To:     Lizhi Xu <lizhi.xu@windriver.com>,
+        syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Cc:     boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000001959d30609bb5d94@google.com>
+ <20231110114806.3366681-1-lizhi.xu@windriver.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <20231110114806.3366681-1-lizhi.xu@windriver.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:y2/rm13Ua/iLDSuSpKzd8tvhWZy3qsPtOAkEPNOr0ss1SrddNuP
+ zRp1UWb+9NeAcgBbykLPcgXZy0BE4cYkvxM248nfjeFNIPQTLsGX37ggZHSwlpCaXM9yOnP
+ JHjHVgXB5BYROQp6VbMLuZfIcFz4aexnDjM9E9rtVNMWrtaU7i8Dw+e/rElwye9eYG2uIru
+ KjJGlZr7tuqWr1dnA6syw==
+UI-OutboundReport: notjunk:1;M01:P0:yKHwl+8Myls=;VKpHpTtmbElCfvWtc7Id7vlTzuB
+ UVgrkbIAXd8X+YKC63YSaAw+dhvKPTXnaGBEvX7+LzCa9w00OD1Aefgia2ODF1mYwFftOZNjA
+ Wjwr3MdpK2x4uL5QgQ6Z2dAUn+pz3PssCAgc7grLoTsljjO7LIqw3T4Ubeslz4qFEHt4afJ45
+ M/RPJYnHXlj0rUsmYHe396gmWPZkyWgwn8K57CtfTyjpnDwe2eto5cogn+sfaGwxrLBboQXI5
+ 7P0dKVnxgiSCNGqRi2nOJ6/v7j2bsj0hLDhRaZVUsy6arNrZ+PY378ji0hh6PqUz5qMsmSinL
+ TSVWPDn2IV3MzoN+XX6W0V3HjmdNZ4KYmTNeEHtFo4h4iCdFl7kysfKYD2gEzxp8irR7p1U5a
+ Q5SBHU5IS+V69id4BGFtGw3M6wH9lA38QAGPZS06AJW+dhT6DwXgGzZMOH14KggssZpI5retG
+ XEoB/ze8Jejpu3qMeWQxt2+64h6oK6HQilXMP1flUT9W5Tv4ZRrooCYgMAyr44r1sfcgoSHrP
+ 8zU3pEDaEwyQ2hp5SQl6pwkc6GDRLz+kgNwavgS7QEGf+dSSu3LInnSADPQFiWD+0h0jAQDEI
+ 3bUaWIB4FwD7Qsr9eFg5Ff7PGhXMwA8AH6nR8nktNBG32AwcIKI5MmcAC72dgagO7qLtd60Gu
+ rKsOBAiAb0HVEKnALzf7z/GG9/V6bXFXA3TzSHnM5C/CE7rXAK2YrRO8+dMiegm0ACuz5eUAJ
+ aGDhVwDB/bQp3/ErIlmx+OmbR123cA/nFTO5XVrMS+7/4Ou52JDrI/Q0dNXO/fkdMngfqQl4G
+ fGYJTl9dj+GNAHRrRM/joXQCf3HZV3EK9MRjN+ZJGOOcvVH6l4aid0UVaR2jK86k1F2zDxwGZ
+ pYsVSXR2UfK+BMM5XeKWfSMkLPiHzen15xxV0aqMl0PbdjUetMtgGZtM6KIPcw4SMWpR9OT18
+ Dy3RuxY9gm71aMLT5INQ8pg5KUY=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023, at 20:48, charles.kearney@hpe.com wrote:
-> -		ahb@c0000000 {
-> +		ahb@80000000 {
->  			compatible = "simple-bus";
->  			#address-cells = <1>;
->  			#size-cells = <1>;
-> -			ranges = <0x0 0xc0000000 0x30000000>;
->  			dma-ranges;
-> +			ranges = <0x00000000 0x80000000 0x20000000>,
-> +					 <0x40000000 0xc0000000 0x3fff0000>;
-> 
-> -			vic0: interrupt-controller@eff0000 {
-> +			vic0: interrupt-controller@4eff0000 {
->  				compatible = "arm,pl192-vic";
-> -				reg = <0xeff0000 0x1000>;
-> +				reg = <0x4eff0000 0x1000>;
->  				interrupt-controller;
->  				#interrupt-cells = <1>;
->  			};
-> 
-> -			vic1: interrupt-controller@80f00000 {
-> +			vic1: interrupt-controller@f00000 {
->  				compatible = "arm,pl192-vic";
-> -				reg = <0x80f00000 0x1000>;
-> +				reg = <0xf00000 0x1000>;
->  				interrupt-controller;
->  				#interrupt-cells = <1>;
->  			};
-> 
-> -			uarta: serial@e0 {
-> +			uarta: serial@400000e0 {
 
-Are these the actual addresses in the datasheet or
-did you just make up a mapping?
 
-If you have two separate address ranges, that would
-typically indicate that there are two distinct ahb
-instances that should be represented as separate
-bus nodes. With the new mapping, it looks like all the
-devices using vic0 are part of the same address range
-as vic0, which also indicates that they might
-be on one bus.
+On 2023/11/10 22:18, Lizhi Xu wrote:
+> r0 =3D open(&(0x7f0000000080)=3D'./file0\x00', 0x0, 0x0)
+> ioctl$BTRFS_IOC_QUOTA_CTL(r0, 0xc0109428, &(0x7f0000000000)=3D{0x1})
+> r1 =3D openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000100)=3D'blkio.b=
+fq.time_recursive\x00', 0x275a, 0x0)
+> ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)=3D{0x1, =
+0x100})
+> r2 =3D openat(0xffffffffffffff9c, &(0x7f0000000500)=3D'.\x00', 0x0, 0x0)
+> ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)=3D{{r2},
+>
+>  From the logs, it can be seen that syz can execute to btrfs_ioctl_qgrou=
+p_create()
+> through two paths.
+> Syz enters btrfs_ioctl_qgroup_create() by calling ioctl$BTRFS_IOC_QGROUP=
+_CREATE(
+> r1, 0x4010942a,&(0x7f000000 640)=3D{0x1, 0x100}) or ioctl$BTRFS_IOC_SNAP=
+_CREATE(r0,
+> 0x50009401,&(0x7f000000 a80)=3D{r2}," respectively;
+>
+> The most crucial thing is that when calling ioctl$BTRFS_IOC_QGROUP_CREAT=
+E,
+> the passed parameter qgroupid value is 256, while BTRFS_FIRST_FREE_OBJEC=
+TID
+> is also equal to 256, indicating that the passed parameter qgroupid is
+> obviously incorrect.
 
-If this is a single ahb instance with multiple distinct
-address ranges, I would expect that you need to adapt
-the dma-ranges as well.
+This conclusion looks incorrect to me.
 
-     Arnd
+Subvolumes are allowed to have any id in the range
+[BTRFS_FIRST_TREE_OBJECTID, BTRFS_LAST_TREE_OBJECTID].
+
+In fact, you can easily create a subvolume with 256 as its subvolumeid.
+Just create an empty fs, and create a new subvolume in it, then you got;
+
+	item 11 key (256 ROOT_ITEM 0) itemoff 12961 itemsize 439
+		generation 7 root_dirid 256 bytenr 30441472 byte_limit 0 bytes_used 1638=
+4
+         ...
+
+So it's completely valid.
+
+
+The root cause is just snapshot creation conflicts with an existing qgroup=
+.
+
+Thanks,
+Qu
+>
+> Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmai=
+l.com
+> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation"=
+)
+> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+> ---
+>   fs/btrfs/ioctl.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 752acff2c734..21cf7a7f18ab 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -3799,6 +3799,11 @@ static long btrfs_ioctl_qgroup_create(struct file=
+ *file, void __user *arg)
+>   		goto out;
+>   	}
+>
+> +	if (sa->create && sa->qgroupid =3D=3D BTRFS_FIRST_FREE_OBJECTID) { > +=
+		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +
+>   	trans =3D btrfs_join_transaction(root);
+>   	if (IS_ERR(trans)) {
+>   		ret =3D PTR_ERR(trans);
