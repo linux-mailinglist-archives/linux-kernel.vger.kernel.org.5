@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 172887E7E51
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A30697E7EC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345936AbjKJRnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:43:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S1344959AbjKJRrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:47:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233925AbjKJRmj (ORCPT
+        with ESMTP id S1344711AbjKJRqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:42:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8BEB446C9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699637147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oM2mXDeA3Wf82Oz0QJWRHggvqKfyd3kHZcBXsRiuhQg=;
-        b=TfSR4+U+vukNTA5byyoGWj5YMw9cfbkyslFv8GsKU52eeqSpmDNbaczFHkX2ffcbftD52s
-        FyAWVcuF5WiMuZNjQhA6hgtLPw2dLXjYZmWHmrhEfu8A5QoBx62mufQZn/PRb+SSSOHR2g
-        GAtu8wKPX2X/iBpaa52aYZXlhpU9bYM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-427-pjuAe0pPOSO1_br2upm_yw-1; Fri, 10 Nov 2023 12:25:44 -0500
-X-MC-Unique: pjuAe0pPOSO1_br2upm_yw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 00A4185A5BD;
-        Fri, 10 Nov 2023 17:25:44 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3BB18502A;
-        Fri, 10 Nov 2023 17:25:43 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <c19af528-1aad-412c-8362-275c791dd76f@auristor.com>
-References: <c19af528-1aad-412c-8362-275c791dd76f@auristor.com> <6fadc6aa-4078-4f12-a4c7-235267d6e0b1@auristor.com> <20231109154004.3317227-1-dhowells@redhat.com> <20231109154004.3317227-2-dhowells@redhat.com> <3327953.1699567608@warthog.procyon.org.uk>
-To:     Jeffrey E Altman <jaltman@auristor.com>
-Cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/41] rxrpc: Fix RTT determination to use PING ACKs as a source
+        Fri, 10 Nov 2023 12:46:13 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE01244B7;
+        Fri, 10 Nov 2023 01:34:00 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SRYYF33dlz4f4PNl;
+        Fri, 10 Nov 2023 17:33:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 495A91A0173;
+        Fri, 10 Nov 2023 17:33:57 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgA3iA4E+U1l0pQlAg--.33627S4;
+        Fri, 10 Nov 2023 17:33:57 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, xni@redhat.com, yukuai3@huawei.com, neilb@suse.de
+Cc:     linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH -next 0/8] md: bugfix and cleanup for sync_thread
+Date:   Sat, 11 Nov 2023 01:28:26 +0800
+Message-Id: <20231110172834.3939490-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3399755.1699637142.1@warthog.procyon.org.uk>
-Date:   Fri, 10 Nov 2023 17:25:42 +0000
-Message-ID: <3399756.1699637142@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgA3iA4E+U1l0pQlAg--.33627S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY27AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JF
+        v_Gryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AK
+        xVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aV
+        AFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x2
+        0xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15Mc
+        Ij6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l
+        F7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0pREPfPUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeffrey E Altman <jaltman@auristor.com> wrote:
+Yu Kuai (8):
+  md: fix missing flush of sync_work
+  md: use interruptible apis in idle/frozen_sync_thread()
+  md: return error to user if idle/frozen_sync_thread() is interrupted
+  md: remove redundant md_wakeup_thread()
+  md: don't leave 'MD_RECOVERY_FROZEN' in error path of
+    md_set_readonly()
+  md: factor out a helper to stop sync_thread
+  md: use new helper to stop sync_thread in __md_stop_writes()
+  dm-raid: fix a deadlock in md_stop()
 
-> > I do ignore ack.serial == 0 for this purpose.
-> 
-> Zero has the special meaning - this ACK is not explicitly in response to a
-> received packet.
-> 
-> However, as mentioned, the serial number counter wraps frequently and most
-> RxRPC implementations
-> do not transition from serial 0xffffffff -> 0x00000001 when wrapping.
+ drivers/md/dm-raid.c |   3 +
+ drivers/md/md.c      | 195 +++++++++++++++++++++++++------------------
+ 2 files changed, 116 insertions(+), 82 deletions(-)
 
-I don't skip zero serial numbers either.  I'm not sure whether it would be
-better to do so.
-
-> Otherwise, acked_serial = 0x01 will be considered smaller than orig_serial =
-> 0xfffffffe and the slot will not be marked available.
-
-As you mentioned in your follow up email, after() deals with that by casting
-to signed, subtracting and then examining the result.
-
-David
-
+-- 
+2.39.2
 
