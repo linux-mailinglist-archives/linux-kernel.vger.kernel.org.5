@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252897E82A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 012F07E80C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346274AbjKJT3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41294 "EHLO
+        id S1345490AbjKJSST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345961AbjKJT2d (ORCPT
+        with ESMTP id S1345415AbjKJSPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:33 -0500
+        Fri, 10 Nov 2023 13:15:50 -0500
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F1F38EB5;
-        Fri, 10 Nov 2023 06:29:53 -0800 (PST)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACHZqe023416;
-        Fri, 10 Nov 2023 14:29:43 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F8638EB6;
+        Fri, 10 Nov 2023 06:29:56 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACERvX026574;
+        Fri, 10 Nov 2023 14:29:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=49XN1GLQjreRWjL6oCqCzu/eSUD1SvMvLMvnNGAx4Rg=;
- b=FxwDtfT88hTjkCcq3zGo1aOs5NQlpB/htknsNhF2UP8jItm+LPdGSWbs9JgJV1jz6xiT
- e6kM+KH9zE3uDNLQ5HN8O02ZFMSuwrsH4nIbBz9YGaVm3yPtB0j6GgPKvd+bv0LN4Qyx
- vZBonNdFhUCAaYT8GYPX8+bbERmss3hB+2rXCh2eEQ7dasJhUISdC4UhKLGqNc0jd/VM
- bRqTBzHOxDD75lTvKJESDMhM3TMLBOO4Y+k5dqxIa2u/4ub4PIxFmgeL2HLWoY/+aHdi
- oDOdzOvGyYiRurZfEQsqfBAXlTcHrczWp+rQe4HxglOZmD3+D6T4mo57OxaD2uXObwqX cA== 
+ content-transfer-encoding; s=corp-2023-03-30;
+ bh=sBjpIK++JXnPTXaWZkhseiMkubPswd2UzXR7UEnOCSk=;
+ b=JjyYfIHX6a4d+TmzxZxcF86krAqa08CaXhnTvC9+E+nTDUNqvb7buX35h3ytVxc1miUB
+ lOON7pvYFzWXcIAhLhu1AwWFtqagTIRAWOTmxFALfWQIgJzDxygLuwmex1jZUjsG3KlJ
+ OqHF05NORfhhu59mFIfCbiXyfjnprDOQVQh3klj+hCYzzRUAg77Zb3r/JiEuOzYJVBdm
+ iZ1BRP9hPNpE5ilEG0BHFBrU3yK9YpbaVvEZn7M88nkXykXY+0HEM1PK8IftJ6tiYDme
+ BcNWEhCjTQ0470KGMApqsCNkJAHHGj5Q33uwp4nBW4Is7TX21ZY++/m88nMmIESSa+8+ 6A== 
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w23pc08-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w23pcyr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Nov 2023 14:29:42 +0000
+        Fri, 10 Nov 2023 14:29:45 +0000
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACpZBP024974;
-        Fri, 10 Nov 2023 14:29:41 GMT
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACpJVB024860;
+        Fri, 10 Nov 2023 14:29:43 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u9fr6y1gd-1
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u9fr6y1hc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Nov 2023 14:29:41 +0000
+        Fri, 10 Nov 2023 14:29:43 +0000
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AAEQwWN000777;
-        Fri, 10 Nov 2023 14:29:40 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AAEQwWP000777;
+        Fri, 10 Nov 2023 14:29:43 GMT
 Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3u9fr6y1bq-3;
-        Fri, 10 Nov 2023 14:29:40 +0000
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3u9fr6y1bq-4;
+        Fri, 10 Nov 2023 14:29:43 +0000
 From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 To:     Jorge Lopez <jorge.lopez2@hp.com>,
         Hans de Goede <hdegoede@redhat.com>,
@@ -53,15 +53,15 @@ To:     Jorge Lopez <jorge.lopez2@hp.com>,
         platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
         error27@gmail.com, vegard.nossum@oracle.com,
-        harshit.m.mogalapalli@oracle.com, darren.kenny@oracle.com
-Subject: [PATCH v2 3/4] platform/x86: hp-bioscfg: move mutex_lock down in hp_add_other_attributes()
-Date:   Fri, 10 Nov 2023 06:29:18 -0800
-Message-ID: <20231110142921.3398072-3-harshit.m.mogalapalli@oracle.com>
+        harshit.m.mogalapalli@oracle.com, darren.kenny@oracle.com,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 4/4] platform/x86: hp-bioscfg: Fix error handling in hp_add_other_attributes()
+Date:   Fri, 10 Nov 2023 06:29:19 -0800
+Message-ID: <20231110142921.3398072-4-harshit.m.mogalapalli@oracle.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com>
 References: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
@@ -70,8 +70,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwa
  mlxlogscore=999 adultscore=0 mlxscore=0 spamscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
  definitions=main-2311100120
-X-Proofpoint-GUID: M3W31vooj76aZZdZy5EmvBhHoErN1uRh
-X-Proofpoint-ORIG-GUID: M3W31vooj76aZZdZy5EmvBhHoErN1uRh
+X-Proofpoint-ORIG-GUID: f495O1Enwq1l80b996G1gVIsuaffdqMb
+X-Proofpoint-GUID: f495O1Enwq1l80b996G1gVIsuaffdqMb
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
@@ -83,23 +83,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-attr_name_kobj's memory allocation is done with mutex_lock held, this
-probably is not needed.
+We have two issues:
+1. Memory leak of 'attr_name_kobj' in the error handling path.
+2. When kobject_init_and_add() fails on every subsequent error path call
+   kobject_put() to cleanup.
 
-Move the mutex_lock downward so we need not unlock when allocation
-fails.
+Both of these issues will be fixed when we add kobject_put() in the goto
+label, as kfree() is already part of kobject_put().
 
-Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Fixes: a34fc329b189 ("platform/x86: hp-bioscfg: bioscfg")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202309201412.on0VXJGo-lkp@intel.com/
 Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
 ---
- drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+Only compile tested, based on static analysis
+v1-> v2: Split this into mutliple patches doing one thing in a patch.
+---
+ drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-index 3b735b071a01..351d782f3e96 100644
+index 351d782f3e96..8c9f4f3227fc 100644
 --- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
 +++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-@@ -575,77 +575,75 @@ static void release_attributes_data(void)
+@@ -575,75 +575,77 @@ static void release_attributes_data(void)
  /**
   * hp_add_other_attributes() - Initialize HP custom attributes not
   * reported by BIOS and required to support Secure Platform and Sure
@@ -119,17 +127,11 @@ index 3b735b071a01..351d782f3e96 100644
  	int ret;
  	char *attr_name;
  
--	mutex_lock(&bioscfg_drv.mutex);
--
  	attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
--	if (!attr_name_kobj) {
--		ret = -ENOMEM;
--		goto err_other_attr_init;
--	}
-+	if (!attr_name_kobj)
-+		return -ENOMEM;
-+
-+	mutex_lock(&bioscfg_drv.mutex);
+ 	if (!attr_name_kobj)
+ 		return -ENOMEM;
+ 
+ 	mutex_lock(&bioscfg_drv.mutex);
  
  	/* Check if attribute type is supported */
  	switch (attr_type) {
@@ -146,14 +148,16 @@ index 3b735b071a01..351d782f3e96 100644
  	default:
  		pr_err("Error: Unknown attr_type: %d\n", attr_type);
  		ret = -EINVAL;
- 		goto err_other_attr_init;
+-		goto err_other_attr_init;
++		kfree(attr_name_kobj);
++		goto unlock_drv_mutex;
  	}
  
  	ret = kobject_init_and_add(attr_name_kobj, &attr_name_ktype,
  				   NULL, "%s", attr_name);
  	if (ret) {
  		pr_err("Error encountered [%d]\n", ret);
- 		kobject_put(attr_name_kobj);
+-		kobject_put(attr_name_kobj);
  		goto err_other_attr_init;
  	}
  
@@ -178,6 +182,8 @@ index 3b735b071a01..351d782f3e96 100644
  	return 0;
  
  err_other_attr_init:
++	kobject_put(attr_name_kobj);
++unlock_drv_mutex:
  	mutex_unlock(&bioscfg_drv.mutex);
  	return ret;
  }
