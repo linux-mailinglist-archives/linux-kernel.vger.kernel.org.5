@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEC57E807E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94D27E8060
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbjKJSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
+        id S1344968AbjKJSJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345573AbjKJSLN (ORCPT
+        with ESMTP id S1345984AbjKJSHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:11:13 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C922BE2F;
-        Fri, 10 Nov 2023 01:26:42 -0800 (PST)
+        Fri, 10 Nov 2023 13:07:04 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6783DA5DD;
+        Fri, 10 Nov 2023 01:27:25 -0800 (PST)
 Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: andrzej.p)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F05666073E2;
-        Fri, 10 Nov 2023 09:26:40 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 439A666073E2;
+        Fri, 10 Nov 2023 09:27:23 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699608401;
-        bh=gi6eNiomHAGLi9GNKFJFP416UqYP7sKqgmX+FgclTY0=;
+        s=mail; t=1699608444;
+        bh=jgC/HX0DCivudpq7G6ihAYUdFIx19Q8cGDVDSrd4fH4=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cigBLQcqBV90Hl5smGHz3i4Y2bQxHN/jELj7hTq9pCLQ3sNMgNuesh3AoF8Y2cTRk
-         W9lsEN72BiG8BgVnHSI+3u2A+IajCQpbesSsebnN14n778NAcIzGvl2Kdcw6fhkS5X
-         eZ123YfG+N9hVXfDiCh4ZxepXq5oiZhJ7ykNKj+TpllpWHY0KxjDuOKRUcj9lyp8PA
-         U/9MosoXdS1fEHo+Bp2g04o7o05tLhiEnW4nrEtmg+KX3FbydeZp7djQ9gpJX9b7et
-         HWhBkYsPjoD6ltQV/jrZ1MlvLW3DDegDkDfHb/omTqzD7umVUcN7vjlLaaEGWxgSxN
-         ss45pzKhVG6Zg==
-Message-ID: <7224be00-99cb-4134-b45f-98b92c1fb4da@collabora.com>
-Date:   Fri, 10 Nov 2023 10:26:40 +0100
+        b=ep3Y5wWKvqdYWq0GuLTK8Omn+oRHjIKlHMyuX6zi3I/dppgmWNgnn3sadX198vWE0
+         paBGvRYX5NIaY9ihOnNcLvhYDOo88sIE0zi4YSg3buLmuhzRKFC/l3hcMMVPzR+0DG
+         Wa0IfBuWlvuKGUdAAtxyMmV1rGjySZCIh/U0b/xVSSer2H7xPodA+3SCjbV4/O+tM3
+         Ss0mjgtPPSrT1Uhfux9iAFd/q+s+FvSD7K8Vn18Z8PoXMBi5QRehJ66YnK6k0xD1uU
+         02xvFLEtdA9RKd3gH6lXIIzDCQ8/LY62h60za2nIkdGdRcaJqbpYz7cfYeJ0tkDjZ5
+         w4CVFCMnh+8dw==
+Message-ID: <abd4fcc2-a450-4027-abef-98a689f502c6@collabora.com>
+Date:   Fri, 10 Nov 2023 10:27:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 25/56] media: pci: tw68: Stop direct calls to queue
- num_buffers field
+Subject: Re: [PATCH v15 26/56] media: i2c: video-i2c: Stop direct calls to
+ queue num_buffers field
 Content-Language: en-US
 To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
         mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
@@ -48,12 +48,11 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+        kernel@collabora.com, Matt Ranostay <matt.ranostay@konsulko.com>
 References: <20231109163512.179524-14-benjamin.gaignard@collabora.com>
- <20231109163512.179524-26-benjamin.gaignard@collabora.com>
+ <20231109163512.179524-27-benjamin.gaignard@collabora.com>
 From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-In-Reply-To: <20231109163512.179524-26-benjamin.gaignard@collabora.com>
+In-Reply-To: <20231109163512.179524-27-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,35 +69,32 @@ W dniu 9.11.2023 o 17:34, Benjamin Gaignard pisze:
 > Use vb2_get_num_buffers() to avoid using queue num_buffers field directly.
 > This allows us to change how the number of buffers is computed in the
 > future.
+> Fix the number of buffers computation at the same time.
 > 
 > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
 Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-> CC: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> CC: Matt Ranostay <matt.ranostay@konsulko.com>
 > ---
->   drivers/media/pci/tw68/tw68-video.c | 5 +++--
+>   drivers/media/i2c/video-i2c.c | 5 +++--
 >   1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/media/pci/tw68/tw68-video.c b/drivers/media/pci/tw68/tw68-video.c
-> index 773a18702d36..79b627ebc92a 100644
-> --- a/drivers/media/pci/tw68/tw68-video.c
-> +++ b/drivers/media/pci/tw68/tw68-video.c
-> @@ -360,13 +360,14 @@ static int tw68_queue_setup(struct vb2_queue *q,
->   			   unsigned int sizes[], struct device *alloc_devs[])
+> diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
+> index 178bd06cc2ed..ebf2ac98a068 100644
+> --- a/drivers/media/i2c/video-i2c.c
+> +++ b/drivers/media/i2c/video-i2c.c
+> @@ -405,9 +405,10 @@ static int queue_setup(struct vb2_queue *vq,
 >   {
->   	struct tw68_dev *dev = vb2_get_drv_priv(q);
-> -	unsigned tot_bufs = q->num_buffers + *num_buffers;
-> +	unsigned int q_num_bufs = vb2_get_num_buffers(q);
-> +	unsigned int tot_bufs = q_num_bufs + *num_buffers;
->   	unsigned size = (dev->fmt->depth * dev->width * dev->height) >> 3;
+>   	struct video_i2c_data *data = vb2_get_drv_priv(vq);
+>   	unsigned int size = data->chip->buffer_size;
+> +	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
 >   
->   	if (tot_bufs < 2)
->   		tot_bufs = 2;
->   	tot_bufs = tw68_buffer_count(size, tot_bufs);
-> -	*num_buffers = tot_bufs - q->num_buffers;
-> +	*num_buffers = tot_bufs - q_num_bufs;
->   	/*
->   	 * We allow create_bufs, but only if the sizeimage is >= as the
->   	 * current sizeimage. The tw68_buffer_count calculation becomes quite
+> -	if (vq->num_buffers + *nbuffers < 2)
+> -		*nbuffers = 2;
+> +	if (q_num_bufs + *nbuffers < 2)
+> +		*nbuffers = 2 - q_num_bufs;
+>   
+>   	if (*nplanes)
+>   		return sizes[0] < size ? -EINVAL : 0;
 
