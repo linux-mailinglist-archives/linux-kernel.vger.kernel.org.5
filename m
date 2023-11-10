@@ -2,189 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB5A7E7FC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728ED7E7FE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbjKJR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
+        id S230189AbjKJSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjKJR4P (ORCPT
+        with ESMTP id S231882AbjKJR7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:56:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250A338EBF;
-        Fri, 10 Nov 2023 06:35:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699626913; x=1731162913;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=uo06VXUB/vf5aOi2Yd+6utwASdeGhe7osoEmsxnb6cM=;
-  b=TpK99T54Gk6MrDn9+6PrQKX7Z5gvV8gMgQA2ycn243zcFyXq5AilwFzc
-   Bqu80dqzbQshq1vMA5IJXCP7Zgzi91Qjm1IQUqQjSj2wqKuxt7lOTGL5h
-   F+cK7cu8QV6HBN9quLWZF9ZoNKtd6yuOQ5oi4AUXzF72r5csMPpsXve/e
-   Kf1hQ6q2zuXM2KPaGthmeFKDB7iTbtfxEYCFMzvx7fJK4DXp30zX9JbaO
-   sLKYX2r/tP9lP88Pwkc/mtDa4C/FsOq94XhoB0NH0ym251fjnpE8iEoJR
-   cGZBYZpdjlITqJZmsHVEux5fs3qdiqaR0VpFwiwFNqCcnTn8zaiDP6OKh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11739533"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="11739533"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:35:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="880979315"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="880979315"
-Received: from joudin-mobl2.ger.corp.intel.com (HELO mciobota-mobl.ger.corp.intel.com) ([10.252.38.36])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:35:09 -0800
-Date:   Fri, 10 Nov 2023 16:35:07 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-cc:     Jorge Lopez <jorge.lopez2@hp.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, dan.carpenter@linaro.org,
-        kernel-janitors@vger.kernel.org, error27@gmail.com,
-        vegard.nossum@oracle.com, darren.kenny@oracle.com
-Subject: Re: [PATCH v2 3/4] platform/x86: hp-bioscfg: move mutex_lock down
- in hp_add_other_attributes()
-In-Reply-To: <20231110142921.3398072-3-harshit.m.mogalapalli@oracle.com>
-Message-ID: <8ebcdb8-e1a-11ce-c42b-e73bdf55a58@linux.intel.com>
-References: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com> <20231110142921.3398072-3-harshit.m.mogalapalli@oracle.com>
+        Fri, 10 Nov 2023 12:59:31 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3138E39742
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:36:45 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-45f19811ae5so1380645137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699627004; x=1700231804; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8lXgHfjhLQ1Wv745j16/Mu5J6Uz3eXfZfSC2W4ANLQ=;
+        b=fJXEP42W3UIevc0rzbpnGO2c6LYI75AjNDHtk8pDzNHZXH5VhqcVHAkApl46emr6et
+         gDhJjMvikgfFjB6nKJNQ0tHQAm8neuIIsgdxgLDYicJZr8OjtnDNKrqzTQxqWJwd3ycr
+         bzgqXXE1ZjYh+o0hcpAEe+6ZQSLI+TuVoBvA05dVqq+nU8mIWM9fd5WBGk6mDXt66RA2
+         xSiH471HVMVFjgIx0uay01BLxBAEG4xMlRZYN5ptozQnmGr+prFtx3ETWmf7gkd9+OVI
+         RAItCdBbkDj5VX1kygtCMmFr1uK7KnJkoL/zu9NwYW0xfnAY6GZgjVruoR/aClf7pt15
+         WRRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699627004; x=1700231804;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T8lXgHfjhLQ1Wv745j16/Mu5J6Uz3eXfZfSC2W4ANLQ=;
+        b=rCu3ZBqA9GkOOwnKR8/29Smzn+e4W00fjOEGSFFM/vwQOctT8srUOiAxs/KANIN9T7
+         ALNRVeHQLhTTibNV5UvTSwOtv9HEx9dDH9KSA57EQYFtp/jGCHcVWyFuY3ze4IrdOday
+         YdHyPIf8z7mlpAMsYk4G8UdI6e2IQki5dezUw+aS5sq2sYi6qlcgX+xfdx3NFlUdPSNg
+         os37rXAXq8Oa9pAdEz5PFcoaMQih4Ed2/kuUktBfLar5uF9WzB6A2DI0EJnkFafrlwfY
+         gv/XMLvAuJhttPTjm1uFozVhuKY4IT/WV69zbUTV8jhX2YjOn/rHkgMEU7PSLzN6mKKy
+         eTgg==
+X-Gm-Message-State: AOJu0Yw5/BYQQjzWEseFRFrCAOaZuOeCN5+FQVKzUb9nyNkBT3ZGYE2b
+        Cepn8bvzUaN0u4HNMA676W5hMY8I2lbSmkzDHYczyQ==
+X-Google-Smtp-Source: AGHT+IEUdKQuuZDHxAEIKk0jvynrARkMCYqZ+prBHZYSGA5W6fLsZmxUN30C493LT5BDM5Xf/vCM1+1igAQ5ojd9gwQ=
+X-Received: by 2002:a05:6102:53cc:b0:452:7341:a098 with SMTP id
+ bs12-20020a05610253cc00b004527341a098mr1143167vsb.0.1699627004219; Fri, 10
+ Nov 2023 06:36:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-782047625-1699626912=:1596"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231108102755.93079-1-jens.wiklander@linaro.org> <20231108102755.93079-2-jens.wiklander@linaro.org>
+In-Reply-To: <20231108102755.93079-2-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 10 Nov 2023 20:06:33 +0530
+Message-ID: <CAFA6WYPqkRdGc6R6Q=w0YJ=SN9FvQ48qDEc6d05gOyyV6x066g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] optee: add page list to kernel private shared memory
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Shyam Saini <shyamsaini@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Jens,
 
---8323329-782047625-1699626912=:1596
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 10 Nov 2023, Harshit Mogalapalli wrote:
-
-> attr_name_kobj's memory allocation is done with mutex_lock held, this
-
-Please use () with function names.
-
-> probably is not needed.
-
-Just remove probably.
-
-> Move the mutex_lock downward so we need not unlock when allocation
-> fails.
-
-Move allocation outside of mutex_lock() so unlock is not needed when
-allocation fails.
-
-The code change looks fine.
-
--- 
- i.
-
-> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+On Wed, 8 Nov 2023 at 15:57, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Until now has kernel private shared memory allocated as dynamic shared
+> memory (not from the static shared memory pool) been returned without a
+> list of physical pages on allocations via RPC. To support allocations
+> larger than one page add a list of physical pages for all allocations
+> larger than one page.
+>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 > ---
->  drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> index 3b735b071a01..351d782f3e96 100644
-> --- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> +++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> @@ -575,77 +575,75 @@ static void release_attributes_data(void)
->  /**
->   * hp_add_other_attributes() - Initialize HP custom attributes not
->   * reported by BIOS and required to support Secure Platform and Sure
->   * Start.
->   *
->   * @attr_type: Custom HP attribute not reported by BIOS
->   *
->   * Initialize all 2 types of attributes: Platform and Sure Start
->   * object.  Populates each attribute types respective properties
->   * under sysfs files.
->   *
->   * Returns zero(0) if successful. Otherwise, a negative value.
->   */
->  static int hp_add_other_attributes(int attr_type)
+>  drivers/tee/optee/core.c    | 40 +++++++++++++++++++++++++--------
+>  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
+>  2 files changed, 52 insertions(+), 33 deletions(-)
+>
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 2a258bd3b6b5..a425eca0173d 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -27,6 +27,7 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                                                    unsigned long start))
 >  {
->  	struct kobject *attr_name_kobj;
->  	int ret;
->  	char *attr_name;
->  
-> -	mutex_lock(&bioscfg_drv.mutex);
+>         unsigned int order = get_order(size);
+> +       unsigned int nr_pages = 1 << order;
+>         struct page *page;
+>         int rc = 0;
+>
+> @@ -39,12 +40,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                 return -ENOMEM;
+>
+>         shm->kaddr = page_address(page);
+> -       shm->paddr = page_to_phys(page);
+>         shm->size = PAGE_SIZE << order;
+>
+> -       if (shm_register) {
+> -               unsigned int nr_pages = 1 << order, i;
+> +       /*
+> +        * If memory is registered immediately use a temporary page list
+> +        * and free it directly after the registration is completed.
+> +        *
+> +        * Else, if we have allocated more than one page store a page
+> +        * list in the struct tee_shm.
+> +        *
+> +        * Else, store the physical address of the single page that was
+> +        * allocated.
+> +        *
+> +        * optee_pool_op_free_helper() is responsible for freeing the
+> +        * resourses allocated in this function.
+> +        */
+
+It looks a bit complex to me. Do we really need it to be conditional?
+I was thinking if we can simplify this API as follows:
+
+int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+                               size_t size, size_t align,
+                               int (*shm_register)(struct tee_shm *shm))
+{
+        unsigned int order = get_order(size);
+        unsigned int nr_pages = 1 << order, i;
+        struct page **pages;
+        struct page *page;
+        int rc = 0;
+
+        /*
+         * Ignore alignment since this is already going to be page aligned
+         * and there's no need for any larger alignment.
+         */
+        page = alloc_pages(GFP_KERNEL | __GFP_ZERO, order);
+        if (!page)
+                return -ENOMEM;
+
+        shm->kaddr = page_address(page);
+        shm->paddr = page_to_phys(page);
+        shm->size = PAGE_SIZE << order;
+
+        pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+        if (!pages) {
+                rc = -ENOMEM;
+                goto err;
+        }
+
+        for (i = 0; i < nr_pages; i++)
+                pages[i] = page + i;
+
+        shm->pages = pages;
+        shm->num_pages = nr_pages;
+
+        if (shm_register) {
+                rc = shm_register(shm);
+                if (rc)
+                        goto err;
+        }
+
+        return 0;
+
+err:
+        kfree(pages);
+        free_pages((unsigned long)shm->kaddr, order);
+        return rc;
+}
+
+-Sumit
+
+> +       if (shm_register || nr_pages > 1) {
+>                 struct page **pages;
+> +               unsigned int i;
+>
+>                 pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+>                 if (!pages) {
+> @@ -55,17 +68,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                 for (i = 0; i < nr_pages; i++)
+>                         pages[i] = page + i;
+>
+> -               rc = shm_register(shm->ctx, shm, pages, nr_pages,
+> -                                 (unsigned long)shm->kaddr);
+> -               kfree(pages);
+> -               if (rc)
+> -                       goto err;
+> +               if (shm_register) {
+> +                       rc = shm_register(shm->ctx, shm, pages, nr_pages,
+> +                                         (unsigned long)shm->kaddr);
+> +                       kfree(pages);
+> +                       if (rc)
+> +                               goto err;
+> +               } else {
+> +                       shm->pages = pages;
+> +                       shm->num_pages = nr_pages;
+> +               }
+> +       } else {
+> +               shm->paddr = page_to_phys(page);
+>         }
+>
+>         return 0;
 > -
->  	attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
-> -	if (!attr_name_kobj) {
-> -		ret = -ENOMEM;
-> -		goto err_other_attr_init;
-> -	}
-> +	if (!attr_name_kobj)
-> +		return -ENOMEM;
-> +
-> +	mutex_lock(&bioscfg_drv.mutex);
->  
->  	/* Check if attribute type is supported */
->  	switch (attr_type) {
->  	case HPWMI_SECURE_PLATFORM_TYPE:
->  		attr_name_kobj->kset = bioscfg_drv.authentication_dir_kset;
->  		attr_name = SPM_STR;
->  		break;
->  
->  	case HPWMI_SURE_START_TYPE:
->  		attr_name_kobj->kset = bioscfg_drv.main_dir_kset;
->  		attr_name = SURE_START_STR;
->  		break;
->  
->  	default:
->  		pr_err("Error: Unknown attr_type: %d\n", attr_type);
->  		ret = -EINVAL;
->  		goto err_other_attr_init;
->  	}
->  
->  	ret = kobject_init_and_add(attr_name_kobj, &attr_name_ktype,
->  				   NULL, "%s", attr_name);
->  	if (ret) {
->  		pr_err("Error encountered [%d]\n", ret);
->  		kobject_put(attr_name_kobj);
->  		goto err_other_attr_init;
->  	}
->  
->  	/* Populate attribute data */
->  	switch (attr_type) {
->  	case HPWMI_SECURE_PLATFORM_TYPE:
->  		ret = hp_populate_secure_platform_data(attr_name_kobj);
->  		break;
->  
->  	case HPWMI_SURE_START_TYPE:
->  		ret = hp_populate_sure_start_data(attr_name_kobj);
->  		break;
->  
->  	default:
->  		ret = -EINVAL;
->  	}
->  
->  	if (ret)
->  		goto err_other_attr_init;
->  
->  	mutex_unlock(&bioscfg_drv.mutex);
->  	return 0;
->  
->  err_other_attr_init:
->  	mutex_unlock(&bioscfg_drv.mutex);
->  	return ret;
+>  err:
+>         free_pages((unsigned long)shm->kaddr, order);
+> +       shm->kaddr = NULL;
+>         return rc;
 >  }
-> 
---8323329-782047625-1699626912=:1596--
+>
+> @@ -77,6 +97,8 @@ void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                 shm_unregister(shm->ctx, shm);
+>         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+>         shm->kaddr = NULL;
+> +       kfree(shm->pages);
+> +       shm->pages = NULL;
+>  }
+>
+>  static void optee_bus_scan(struct work_struct *work)
+> diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+> index d5b28fd35d66..b69410c7cc0a 100644
+> --- a/drivers/tee/optee/smc_abi.c
+> +++ b/drivers/tee/optee/smc_abi.c
+> @@ -678,10 +678,11 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                                           struct optee_msg_arg *arg,
+>                                           struct optee_call_ctx *call_ctx)
+>  {
+> -       phys_addr_t pa;
+>         struct tee_shm *shm;
+>         size_t sz;
+>         size_t n;
+> +       struct page **pages;
+> +       size_t page_count;
+>
+>         arg->ret_origin = TEEC_ORIGIN_COMMS;
+>
+> @@ -716,32 +717,23 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                 return;
+>         }
+>
+> -       if (tee_shm_get_pa(shm, 0, &pa)) {
+> -               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> -               goto bad;
+> -       }
+> -
+> -       sz = tee_shm_get_size(shm);
+> -
+> -       if (tee_shm_is_dynamic(shm)) {
+> -               struct page **pages;
+> +       /*
+> +        * If there are pages it's dynamically allocated shared memory (not
+> +        * from the reserved shared memory pool) and needs to be
+> +        * registered.
+> +        */
+> +       pages = tee_shm_get_pages(shm, &page_count);
+> +       if (pages) {
+>                 u64 *pages_list;
+> -               size_t page_num;
+> -
+> -               pages = tee_shm_get_pages(shm, &page_num);
+> -               if (!pages || !page_num) {
+> -                       arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> -                       goto bad;
+> -               }
+>
+> -               pages_list = optee_allocate_pages_list(page_num);
+> +               pages_list = optee_allocate_pages_list(page_count);
+>                 if (!pages_list) {
+>                         arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+>                         goto bad;
+>                 }
+>
+>                 call_ctx->pages_list = pages_list;
+> -               call_ctx->num_entries = page_num;
+> +               call_ctx->num_entries = page_count;
+>
+>                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT |
+>                                       OPTEE_MSG_ATTR_NONCONTIG;
+> @@ -752,17 +744,22 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                 arg->params[0].u.tmem.buf_ptr = virt_to_phys(pages_list) |
+>                         (tee_shm_get_page_offset(shm) &
+>                          (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+> -               arg->params[0].u.tmem.size = tee_shm_get_size(shm);
+> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>
+> -               optee_fill_pages_list(pages_list, pages, page_num,
+> +               optee_fill_pages_list(pages_list, pages, page_count,
+>                                       tee_shm_get_page_offset(shm));
+>         } else {
+> +               phys_addr_t pa;
+> +
+> +               if (tee_shm_get_pa(shm, 0, &pa)) {
+> +                       arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +                       goto bad;
+> +               }
+> +
+>                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT;
+>                 arg->params[0].u.tmem.buf_ptr = pa;
+> -               arg->params[0].u.tmem.size = sz;
+> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>         }
+> +       arg->params[0].u.tmem.size = tee_shm_get_size(shm);
+> +       arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>
+>         arg->ret = TEEC_SUCCESS;
+>         return;
+> --
+> 2.34.1
+>
