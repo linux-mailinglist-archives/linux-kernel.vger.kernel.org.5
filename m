@@ -2,112 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E807E84AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A850D7E7F5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346418AbjKJUvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S229633AbjKJRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236065AbjKJUvi (ORCPT
+        with ESMTP id S229479AbjKJRwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:51:38 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C40472D4C9;
-        Fri, 10 Nov 2023 03:11:39 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25C32106F;
-        Fri, 10 Nov 2023 03:12:24 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.41.131])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F23BD3F7C5;
-        Fri, 10 Nov 2023 03:11:36 -0800 (PST)
-Date:   Fri, 10 Nov 2023 11:11:31 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH v2 01/31] tracing: Add a comment about ftrace_regs
- definition
-Message-ID: <ZU4P45t-mDoyItg3@FVFF77S0Q05N>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
- <169945347160.55307.1488323435914144870.stgit@devnote2>
- <20231109081452.fd6e091df9df1bc7c5ced38b@kernel.org>
+        Fri, 10 Nov 2023 12:52:45 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BD72DE75
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:15:43 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9BF1A66073EB;
+        Fri, 10 Nov 2023 11:15:40 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699614941;
+        bh=IX+JT55IYP1u5VMEzIBMbRyK6BoNMKTFRZG8ZICiNpA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Nl1qwv/ExujGVRXi4s+XEQXd+vR1UNkr9UD1QSUFwFY7sbhDYRnmCdB7A+2yO9ar3
+         LTJfddwSoKWvGrI/54va3pfmN3G4jeH41dGnaJIT+b2JU0V/cay5bNiU23ySm8ecMI
+         iw1rMZMh7oidN2xpmemNKnZhg8U4+ZNDbU2Q+cqGWmrTHZHBbSLjbr8MP2NV2ahuZo
+         BgW4pVR/9FnnBS/3Lql2Mp2fXvqLFq+Z2MfiPP67djbsgPR2Oa0H2BE3F9iD0Yx5c8
+         LAuAbGWDtYL88bXyts34wJyXjyqkMj+R09jYk0AAbk5ILd/3YmMt90GMNccDe99QP7
+         R8Aizc3dMReQA==
+Date:   Fri, 10 Nov 2023 12:15:37 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 18/26] drm/shmem-helper: Change sgt allocation
+ policy
+Message-ID: <20231110121537.6f37c5a0@collabora.com>
+In-Reply-To: <20231029230205.93277-19-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-19-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109081452.fd6e091df9df1bc7c5ced38b@kernel.org>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 08:14:52AM +0900, Masami Hiramatsu wrote:
-> On Wed,  8 Nov 2023 23:24:32 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On Mon, 30 Oct 2023 02:01:57 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> In a preparation to addition of drm-shmem memory shrinker support, change
+> the SGT allocation policy in this way:
 > 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > To clarify what will be expected on ftrace_regs, add a comment to the
-> > architecture independent definition of the ftrace_regs.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > ---
-> >  Changes in v2:
-> >   - newly added.
-> > ---
-> >  include/linux/ftrace.h |   25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> > 
-> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > index e8921871ef9a..b174af91d8be 100644
-> > --- a/include/linux/ftrace.h
-> > +++ b/include/linux/ftrace.h
-> > @@ -118,6 +118,31 @@ extern int ftrace_enabled;
-> >  
-> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> >  
-> > +/**
-> > + * ftrace_regs - ftrace partial/optimal register set
-> > + *
-> > + * ftrace_regs represents a group of registers which is used at the
-> > + * function entry and exit. There are three types of registers.
-> > + *
-> > + * - Registers for passing the parameters to callee, including the stack
-> > + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-> > + * - Registers for passing the return values to caller.
-> > + *   (e.g. rax and rdx on x86_64)
-> > + * - Registers for hooking the function return including the frame pointer
-> > + *   (the frame pointer is architecture/config dependent)
-> > + *   (e.g. rbp and rsp for x86_64)
+> 1. SGT can be allocated only if shmem pages are pinned at the
+> time of allocation, otherwise allocation fails.
 > 
-> Oops, I found the program counter/instruction pointer must be saved too.
-> This is used for live patching. One question is that if the IP is modified
-> at the return handler, what should we do? Return to the specified address?
+> 2. Drivers must ensure that pages are pinned during the time of SGT usage
+> and should get new SGT if pages were unpinned.
 
-I'm a bit confused here; currently we use fgraph_ret_regs for function returns,
-are we going to replace that with ftrace_regs?
+In general, I would discourage drivers from caching the sgt returned by
+drm_gem_shmem_get_pages_sgt[_locked](), since the GEM SHMEM layer does
+the caching already, so calling drm_gem_shmem_get_pages_sgt_locked()
+should be pretty cheap. What this implies is that any portion of the
+code using an sgt returned by drm_gem_shmem_get_pages_sgt_locked() must
+be surrounded by get/pin_pages()/put/unpin_pages() calls unless the
+pages are known to be pinned for the whole BO lifetime. And of course,
+as soon as an MMU mapping is created, and even if the sgt is no longer
+accessed, the pages must remain pinned until the MMU mapping is torn
+down.
 
-I think it makes sense for the PC/IP to be the address the return handler will
-eventually return to (and hence allowing it to be overridden), but that does
-mean we'll need to go recover the return address *before* we invoke any return
-handlers.
+> 
+> This new policy is required by the shrinker because it will move pages
+> to/from SWAP unless pages are pinned, invalidating SGT pointer once pages
+> are relocated.
+> 
+> Previous patches prepared drivers to the new policy.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 
-Thanks,
-Mark.
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 51 +++++++++++++-------------
+>  1 file changed, 26 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index f371ebc6f85c..1420d2166b76 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -133,6 +133,14 @@ drm_gem_shmem_free_pages(struct drm_gem_shmem_object *shmem)
+>  {
+>  	struct drm_gem_object *obj = &shmem->base;
+>  
+> +	if (shmem->sgt) {
+> +		dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+> +				  DMA_BIDIRECTIONAL, 0);
+> +		sg_free_table(shmem->sgt);
+> +		kfree(shmem->sgt);
+> +		shmem->sgt = NULL;
+> +	}
+> +
+>  #ifdef CONFIG_X86
+>  	if (shmem->map_wc)
+>  		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> @@ -155,23 +163,12 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  {
+>  	struct drm_gem_object *obj = &shmem->base;
+>  
+> -	if (obj->import_attach) {
+> +	if (obj->import_attach)
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+> -	} else {
+> -		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+> -
+> -		if (shmem->sgt) {
+> -			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+> -					  DMA_BIDIRECTIONAL, 0);
+> -			sg_free_table(shmem->sgt);
+> -			kfree(shmem->sgt);
+> -		}
+> -		if (shmem->pages)
+> -			drm_gem_shmem_put_pages_locked(shmem);
+>  
+> -		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+> -		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
+> -	}
+> +	drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+> +	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+> +	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
+>  
+>  	drm_gem_object_release(obj);
+>  	kfree(shmem);
+> @@ -705,6 +702,9 @@ struct sg_table *drm_gem_shmem_get_sg_table(struct drm_gem_shmem_object *shmem)
+>  
+>  	drm_WARN_ON(obj->dev, obj->import_attach);
+>  
+> +	if (drm_WARN_ON(obj->dev, !shmem->pages))
+> +		return ERR_PTR(-ENOMEM);
+> +
+>  	return drm_prime_pages_to_sg(obj->dev, shmem->pages, obj->size >> PAGE_SHIFT);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_get_sg_table);
+> @@ -720,15 +720,10 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
+>  
+>  	drm_WARN_ON(obj->dev, obj->import_attach);
+>  
+> -	ret = drm_gem_shmem_get_pages_locked(shmem);
+> -	if (ret)
+> -		return ERR_PTR(ret);
+> -
+>  	sgt = drm_gem_shmem_get_sg_table(shmem);
+> -	if (IS_ERR(sgt)) {
+> -		ret = PTR_ERR(sgt);
+> -		goto err_put_pages;
+> -	}
+> +	if (IS_ERR(sgt))
+> +		return sgt;
+> +
+>  	/* Map the pages for use by the h/w. */
+>  	ret = dma_map_sgtable(obj->dev->dev, sgt, DMA_BIDIRECTIONAL, 0);
+>  	if (ret)
+> @@ -741,8 +736,6 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
+>  err_free_sgt:
+>  	sg_free_table(sgt);
+>  	kfree(sgt);
+> -err_put_pages:
+> -	drm_gem_shmem_put_pages_locked(shmem);
+>  	return ERR_PTR(ret);
+>  }
+>  
+> @@ -759,6 +752,14 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
+>   * and difference between dma-buf imported and natively allocated objects.
+>   * drm_gem_shmem_get_sg_table() should not be directly called by drivers.
+>   *
+> + * Drivers should adhere to these SGT usage rules:
+> + *
+> + * 1. SGT should be allocated only if shmem pages are pinned at the
+> + *    time of allocation, otherwise allocation will fail.
+> + *
+> + * 2. Drivers should ensure that pages are pinned during the time of
+> + *    SGT usage and should get new SGT if pages were unpinned.
+> + *
+>   * Returns:
+>   * A pointer to the scatter/gather table of pinned pages or errno on failure.
+>   */
+
