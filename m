@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72AF27E83E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CBC7E84DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbjKJUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S1346492AbjKJU56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235788AbjKJUgi (ORCPT
+        with ESMTP id S235976AbjKJU51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:36:38 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11hn2200.outbound.protection.outlook.com [52.100.171.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8891B93F4;
-        Fri, 10 Nov 2023 00:21:58 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ORFXeuKA49xKZGV/YQvx0NkeHQlYNUDjRaLz15v0CrXwSrWbUxiJx/0Aq/6TaJUwkK3tZqDLLO4+IFKj5OQET1WdLCIjE3BOg0c1EgFORmDre4WK6eLEZHkJYacF7EYvGkJiKpIX3dFaZ0uDr3lKJWCZIuOCkB40RXW7MpYzI+Y9O7TipOH46qK43svcN/TzaHxqDw20Q9y45BKzoPJ6YWOF29nXNra3JBArwoh0oDC3KLQ2lya5SK+DpVyLwibhnwr9OSKpNVs8ULg51F9NtS/Ph27BcvHwm91PvNPCxOXa1DbdbBnd41Uf8DnmLdeTTlkUCo+xuZmaJ9CEdD0nwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XmlqQZv4ZpxW6bx7c33HLMDpFfWnShpVJlmBeekA+Ro=;
- b=jxct1DCzSNU7mk1xv9NSjAFHBkos4RxdELVUCzbBddEXEHd6RSms1JwHQyAgWe3UfA1/sReu+Q3HnJ0fHLLtYNw3xHzE1sl7riTUHCy8tcqZzzxhJm1crajMtNUPjgmcwpksh4ouQMTrEhuJIfHL5JWM0YSQ9nl/EeBou5gz3PBGOYZKz6k7/wE571fbxeF91j6KVs3nlDYqM3IjUrMGl9EUwUrWsA/hpqOI5a+UwOUvtyUxuucboiBFCw856npT7lLZnDSaBRO3mkNqW/IUN5+Sa+8ymXeuQTOFgW5oJZ5JKt7xbOmTK8GaffyN3bi1MAgJPRLXLd1XmzxlepBxXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 192.147.44.15) smtp.rcpttodomain=gmail.com smtp.mailfrom=tw.synaptics.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=tw.synaptics.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tw.synaptics.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XmlqQZv4ZpxW6bx7c33HLMDpFfWnShpVJlmBeekA+Ro=;
- b=w3lSzuvXjNenenX+4jEWJQLkYSUmDtAaoxVKwhb46VI88a24E80YFKjaRId0UURhojJL8OX3EB1kBChKJPI6nGcqrMM1oliegsXG3aV3BRcsVUnf1KhWihJ9WVMx3yOKKFPPnUqYILLI7l/ExsrZtax0N8oUSnULFieVBtY4a9g=
-Received: from BL0PR02CA0113.namprd02.prod.outlook.com (2603:10b6:208:35::18)
- by DM4PR03MB6126.namprd03.prod.outlook.com (2603:10b6:5:395::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.7; Fri, 10 Nov
- 2023 08:21:55 +0000
-Received: from BL6PEPF0001AB52.namprd02.prod.outlook.com
- (2603:10b6:208:35:cafe::17) by BL0PR02CA0113.outlook.office365.com
- (2603:10b6:208:35::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
- Transport; Fri, 10 Nov 2023 08:21:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 192.147.44.15)
- smtp.mailfrom=tw.synaptics.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=tw.synaptics.com;
-Received-SPF: Pass (protection.outlook.com: domain of tw.synaptics.com
- designates 192.147.44.15 as permitted sender)
- receiver=protection.outlook.com; client-ip=192.147.44.15;
- helo=sjc1uvd-bld04.synaptics.com; pr=C
-Received: from sjc1uvd-bld04.synaptics.com (192.147.44.15) by
- BL6PEPF0001AB52.mail.protection.outlook.com (10.167.241.4) with Microsoft
- SMTP Server id 15.20.6977.16 via Frontend Transport; Fri, 10 Nov 2023
- 08:21:54 +0000
-From:   Marge Yang <marge.yang@tw.synaptics.com>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marge.yang@tw.synaptics.com
-Cc:     david.chiu@tw.synaptics.com, derek.cheng@tw.synaptics.com,
-        sam.tsai@synaptics.com, vincent.huang@tw.synaptics.com
-Subject: [PATCH V1] Input: synaptics-rmi4 - Enable support for F3A by default.
-Date:   Fri, 10 Nov 2023 08:21:48 +0000
-Message-Id: <20231110082148.1032629-1-marge.yang@tw.synaptics.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 10 Nov 2023 15:57:27 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5993F9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 00:22:48 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32fd7fc9f19so1027328f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 00:22:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699604567; x=1700209367; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aTIVXLLK4q+pbouuuJtCigGeTWAA7e0+2f78H2x4G6Q=;
+        b=c6UY0Euu8BVdPIZ0cV2PAfO7a3QrXKFSl6is5Zccu+x42EjR7kI/cLEYKQZtRPKwsS
+         nmQKBqzwoQjyROYFffI/38PXFC/tMZHq8X5NwJa56b+uOP6dv4QpKcyBfPa5LzYw4NDY
+         EvlNtmzyj37KsHVskbWcFPqHZQilgpYkLVlI0C/zrfou3aq6FnPnYntmLQRezi746TjH
+         O2tBdzZObvPOMGpT7dB1qNRzEJRmBCzqX7vp2cjH/YHi8gFiEQfEETFxIfTPPBK8Twjr
+         hQmyEUT0faPZ2eIxFwaOHh6AS/Xe4mfHi6Mze7P5INaK4p0UbVBWURfjjajS0I65ygx7
+         yG5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699604567; x=1700209367;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aTIVXLLK4q+pbouuuJtCigGeTWAA7e0+2f78H2x4G6Q=;
+        b=BvIYDH2QuxHfeTiH4ECsbodcHopG8PbcplC+soF6WPQApF2OVdBRQDAc6zXpUpCdnp
+         Ee8Z+mZ2qrWpog3nw0PMUOanA7Dlde2kP4oxExWEG0bgUT2G9a88dHPd24+5NgtEbjZE
+         3bIt8ULPkk15qGLWry+cVqa6H1hTFnXZk4XLlQee7x2zbRMwXdJFzVtEOMJG/WxGNW4y
+         rhND2hVu57BDBoXI3wCydC6B/IrdrGbkHx6yv2N9Tksixp4GlpzCyBTtgCYQy/O1CDlp
+         t34liSbtz7KBN+cvrc8ctyrroksR62OJoecBlwt4Zc2Em11V15q22yctAgT44ouInlqP
+         yinQ==
+X-Gm-Message-State: AOJu0YxiN0OVEvQeWhY9G8mMkySvnkM59Tv/sCDo35ddQCRwtpvbH9Ax
+        hwFsfgwOPWyQ6ATPw6QCVocjtw==
+X-Google-Smtp-Source: AGHT+IEJyqQ6B+o/tdaTdgQvnL6xgowMj5vmNkDs1Cwym+vefMYuKYGkJXo1eeyt8IRz8riAiA7/MQ==
+X-Received: by 2002:a5d:598d:0:b0:32f:811f:5046 with SMTP id n13-20020a5d598d000000b0032f811f5046mr5336044wri.11.1699604567235;
+        Fri, 10 Nov 2023 00:22:47 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id t12-20020a5d49cc000000b0032710f5584fsm1394240wrs.25.2023.11.10.00.22.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 00:22:46 -0800 (PST)
+Message-ID: <eede2e04-45e5-46fb-ba00-fec0a7862711@linaro.org>
+Date:   Fri, 10 Nov 2023 09:22:45 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/3] dt-bindings: input: microchip,cap11xx: add
+ advanced sensitivity settings
+Content-Language: en-US
+To:     Jiri Valek - 2N <jiriv@axis.com>,
+        krzysztof.kozlowski+dt@linaro.org, dmitry.torokhov@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        u.kleine-koenig@pengutronix.de
+References: <20231108155647.1812835-1-jiriv@axis.com>
+ <20231108155647.1812835-2-jiriv@axis.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231108155647.1812835-2-jiriv@axis.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB52:EE_|DM4PR03MB6126:EE_
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 2e78987a-b232-445f-ddf7-08dbe1c6199e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SdbvIVm4zo33GxmoYcs6LgApQPv8GeZeMHkEnfPyz94DZMrbsuhpVxob8pWDYPlWo/tdeae1hQYd7mhzHErx7gJS1z1HYDIrNqXfqx2d1KFXn54uStD+Z7hxhT/qU1xkyxAYKZjy++hZaEXXco8FftUMgvRZuh9+/sGGcvOmFPcSilvER93hDcQ0GJdfbY18k+c0+4OLMj1xU+hUcHpkdSRzpP+eAUJUejJEMxD0u8vpc9zGLgv4q3xNO6jjKTR2Z6asXa8n73CkZ68UsPV7mcJ+0lgkeIHnkUg2PTyad/SiHm2Wqqo9+jMXOjZKF8UKJVoeCW0iX9BLx+0Ec6sKLKW9LeCnU82J5a0hE5Asf2f16V2J7Hx4hA9/8+vhuVKM3o5mAB7HrO+Dybk+scxAepMS4so96sU/YpMzz/nImYI64pXpDHsZzoyYLyWrYrzPfVpzr1q1hoPzeHID8bkgAyErqTIV4dlG1iBbeEJWhsXOaDwNeyl4fpucyAn1rHzrCsovXqYawev+kZHkxuuIVt3fJOkzmSVeGZXNm/5bIVCn7bOnwUFGC/LhA/WTbwaX4Wt4e9HBHzyQ76RhiGJzyvmCh5q2JxiUsneLPfbLbCsT4DnlDN4+Y8Vc0bYOvITXB6keoOTCQVzgY4kTNFkiZ06Xkne3+xmsDcZCfEWyHzoiXVQvkMh7hE/3WCbhPmtZVIKJHYk5WdaJ+uBmIhKmdVSlYOylFPBvIDNZlH2CBxA30dJ5w2uZ4fd6+anaC8W+RcdUkAzatnLXiESqqZ6GLljUKR8PNJa/xKtdlSQazOOHkLzaB8fWEcaUJDBKJY59
-X-Forefront-Antispam-Report: CIP:192.147.44.15;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjc1uvd-bld04.synaptics.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(186009)(1800799009)(82310400011)(5400799018)(64100799003)(451199024)(46966006)(36840700001)(4744005)(107886003)(6512007)(6506007)(956004)(2616005)(6486002)(478600001)(6666004)(26005)(36860700001)(1076003)(4326008)(36736006)(2906002)(118246002)(44832011)(5660300002)(316002)(9316004)(41300700001)(83380400001)(70586007)(336012)(70206006)(8936002)(8676002)(34070700002)(356005)(82740400003)(47076005)(81166007)(86362001)(40480700001)(36900700001)(12100799048);DIR:OUT;SFP:1501;
-X-OriginatorOrg: tw.synaptics.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 08:21:54.3766
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e78987a-b232-445f-ddf7-08dbe1c6199e
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=335d1fbc-2124-4173-9863-17e7051a2a0e;Ip=[192.147.44.15];Helo=[sjc1uvd-bld04.synaptics.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB52.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR03MB6126
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,27 +122,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RMI4 F3A supports the touchpad GPIO function, it's designed to
-support more GPIOs and used on new touchpad. This patch will
-enable support of touchpad button.
+On 08/11/2023 16:56, Jiri Valek - 2N wrote:
+> Add support for advanced sensitivity settings and signal guard feature.
+> 
+> Signed-off-by: Jiri Valek - 2N <jiriv@axis.com>
+> ---
+>  .../bindings/input/microchip,cap11xx.yaml     | 76 ++++++++++++++++++-
+>  1 file changed, 73 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+> index 5b5d4f7d3482..aa97702c43ef 100644
+> --- a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+> +++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+> @@ -45,13 +45,13 @@ properties:
+>        Enables the Linux input system's autorepeat feature on the input device.
+>  
+>    linux,keycodes:
+> -    minItems: 6
+> -    maxItems: 6
+> +    minItems: 3
+> +    maxItems: 8
+>      description: |
+>        Specifies an array of numeric keycode values to
+>        be used for the channels. If this property is
+>        omitted, KEY_A, KEY_B, etc are used as defaults.
+> -      The array must have exactly six entries.
+> +      The number of entries must correspond to the number of channels.
+>  
+>    microchip,sensor-gain:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+> @@ -70,6 +70,55 @@ properties:
+>        open drain. This property allows using the active
+>        high push-pull output.
+>  
+> +  microchip,sensitivity-delta-sense:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 32
+> +    enum: [1, 2, 4, 8, 16, 32, 64, 128]
+> +    description:
+> +      Optional parameter. Controls the sensitivity multiplier of a touch detection.
+> +      At the more sensitive settings, touches are detected for a smaller delta
 
-Signed-off-by: Marge Yang <marge.yang@tw.synaptics.com>
----
- drivers/hid/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Which values are more sensitive?
 
-diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index e11c1c8..f3a989e 100644
---- a/drivers/hid/Kconfig
-+++ b/drivers/hid/Kconfig
-@@ -1082,6 +1082,7 @@ config HID_RMI
- 	select RMI4_F11
- 	select RMI4_F12
- 	select RMI4_F30
-+        select RMI4_F3A
- 	help
- 	Support for Synaptics RMI4 touchpads.
- 	Say Y here if you have a Synaptics RMI4 touchpads over i2c-hid or usbhid
--- 
-2.7.4
+> +      capacitance corresponding to a “lighter” touch.
+
+Looks like you use some non-ASCII characters for ".
+
+> +
+> +  microchip,signal-guard:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 3
+> +    maxItems: 8
+> +    items:
+> +      minimum: 0
+> +      maximum: 1
+> +    description: |
+> +      Optional parameter supported only for CAP129x.
+> +      0 - off
+> +      1 - on
+> +      The signal guard isolates the signal from virtual grounds.
+> +      If enabled then the behavior of the channel is changed to signal guard.
+> +      The number of entries must correspond to the number of channels.
+> +
+> +  microchip,input-treshold:
+
+typo: threshold
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 3
+> +    maxItems: 8
+> +    items:
+> +      minimum: 0
+> +      maximum: 127
+> +    description:
+> +      Optional parameter. Specifies the delta threshold that is used to
+
+Drop everywhere the "optional parameter". It's redundant. required:
+block tells what is / is not optional.
+
+> +      determine if a touch has been detected.
+
+In what units are the values?
+
+> +      The number of entries must correspond to the number of channels.
+> +
+> +  microchip,calib-sensitivity:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 3
+> +    maxItems: 8
+> +    items:
+> +      minimum: 1
+> +      maximum: 4
+> +    description:
+> +      Optional parameter supported only for CAP129x. Specifies an array of
+> +      numeric values that controls the gain used by the calibration routine to
+> +      enable sensor inputs to be more sensitive for proximity detection.
+
+Gain is usually in dB, isn't it?
+
+> +      The number of entries must correspond to the number of channels.
+> +
+>  patternProperties:
+>    "^led@[0-7]$":
+
+
+Best regards,
+Krzysztof
 
