@@ -2,187 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3267E8329
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B2D7E833D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345721AbjKJTxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S1345945AbjKJTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236179AbjKJTw4 (ORCPT
+        with ESMTP id S1346572AbjKJTyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:52:56 -0500
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFB68846;
-        Fri, 10 Nov 2023 11:48:51 -0800 (PST)
-Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAJgb89020145;
-        Fri, 10 Nov 2023 19:48:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=0/E/HjCmwE0fi71jwok3z9eyac/BTN3f7p312DifIaw=;
- b=FC+8OgDFWIT3nbzpxbY7oo/3cpkOnj2uqo2u6R7PvARJsK9EeBY/QDcZ1fh/0GGq1z/f
- GZNV6aX4HJFnimwVHNZb0Xt7W1Oa8R5LFYaM2zg8FTlMbvRyzIr1pfNuZkUszdum4dZK
- y0z3vCp2O3pQKrNRydXRRtb1jgKyjxjw4ikxZM7up//fgMJnGNdBOm85wo7D09I6BJJ7
- woCUdJIntRO9CktGfDFOy2eukAE9M9A5OUu4BUhZLY71BxJsjpxdQArbWlIs3tzjLD+T
- 2IP5FYnZ9ZgI6AC3vTCQ8GfDvDNp4wXI9450HKxZYsGK/cqfUmaii9JlDQ8JGLhqR+mR WQ== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3u9peqjchd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 19:48:36 +0000
-Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 42820805E7B;
-        Fri, 10 Nov 2023 19:48:36 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.39])
-        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTP id B8712804508;
-        Fri, 10 Nov 2023 19:48:31 +0000 (UTC)
-From:   charles.kearney@hpe.com
-To:     verdun@hpe.com, nick.hawkins@hpe.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        arnd@arndb.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Charles Kearney <charles.kearney@hpe.com>
-Subject: [PATCH v2 RESEND] ARM: dts: hpe: BUG: Correct GXP register ranges
-Date:   Fri, 10 Nov 2023 19:48:27 +0000
-Message-Id: <20231110194827.122045-1-charles.kearney@hpe.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 10 Nov 2023 14:54:40 -0500
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06931FEE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:51:45 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-45ef8c21e8aso1074258137.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699645905; x=1700250705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1XHT4YSLzPD/E8aj03B/6V64jSf/rAM4u8ZPBVxJtgk=;
+        b=gJsUryOieQmHFPWcN/IIO8N7qMephByNSoGaukKAWSWqNu/TlgsUndtml3Kkzk8bEE
+         C/W7GbrFNZUHfUiJeinPf5PQU1j3nu+yTa73g5fkLsmmDmhBgq8pPdZgTU+kW/AzvFBS
+         eXKVP6yQh2WFUgO/djQj9KStxPogP/gcUcYQ04kB8Lk/SO8EubIh5I5sZGUF5l4R/reL
+         q/UCQkC97bH80CIcj4ikhMjf0QgPzaS0VxUozKqilRLkzZeGHNEXvT+KNO4RxWGJU9Fa
+         dzn6cVlgoOryHcgKNfhUAesuXBxxVn4sfaFuTVy4LOoCxiEBV7vlQ5E55T6E+mPDKkdH
+         JL5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699645905; x=1700250705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1XHT4YSLzPD/E8aj03B/6V64jSf/rAM4u8ZPBVxJtgk=;
+        b=oB+aNDg24NtVMAduVzZvoFj2vZX/HU/yzaoKKiGxLitR/3gAPSKEMVeE95DOgIqqIq
+         xizPKR5a3L3QBJC+6HntHJh6cFIPFw7U3kNtoBsp1jfJShwFeJnab7Tk3fMnJJlMTJsl
+         V7Me/Ex9BNbgPafcSZdmQLjZxEIC/MdUJJbRYjdJSFB/3AOb5Ra0CGP9De002jYhnH+C
+         62eTasAMEx6E3jtq5x7LH17ZWqiOv5RCUiegKof85QogHk3gwG1tq0muRpA8CMwOeMzs
+         mtP7lhNvMdtGJAB7aIRzVBNmJSuTyHbpNlm/uLXpIJ+sCOULUvUSVHM/3wG+BpkktDVt
+         EiYw==
+X-Gm-Message-State: AOJu0YyGXe2wholCqbIa3R9vE+ksjrgy2pYStVqx7G9F2LbPw9KdbvyN
+        lYa+7p8oaO+yvLSiSsN95R7pKRIukq0IKfFHWMA=
+X-Google-Smtp-Source: AGHT+IGIoxi8Adc0PKUN/X2JFJaZMPpzAtI9aV0sUTO+URwu3Mk2KEMp+ocOENtvW0QERXWv1U+hrhrMiRxCx6HEu6c=
+X-Received: by 2002:a05:6102:94b:b0:45d:987d:debe with SMTP id
+ a11-20020a056102094b00b0045d987ddebemr475932vsi.3.1699645904678; Fri, 10 Nov
+ 2023 11:51:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: _1USLNSPgNeu86J2_zytf9cSNQAT2GEj
-X-Proofpoint-GUID: _1USLNSPgNeu86J2_zytf9cSNQAT2GEj
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_17,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 mlxlogscore=578
- priorityscore=1501 malwarescore=0 impostorscore=0 phishscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311100166
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-11-lb@semihalf.com>
+ <CAJfuBxxVGaqG4wVu-kM3ynA8ARTD6DFPBuz0a1GqunMqdvRBgQ@mail.gmail.com> <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com>
+In-Reply-To: <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 10 Nov 2023 12:51:18 -0700
+Message-ID: <CAJfuBxxTuiEun9YFtWY_99nvCwnJQ_LByJioOTxsCkMS6URQnw@mail.gmail.com>
+Subject: Re: [PATCH v1 10/12] dyndbg: add processing of T(race) flag argument
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Kearney <charles.kearney@hpe.com>
+On Fri, Nov 10, 2023 at 7:52=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
+om> wrote:
+>
+> sob., 4 lis 2023 o 04:06 <jim.cromie@gmail.com> napisa=C5=82(a):
+> >
+> > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihal=
+f.com> wrote:
+> > >
+> > > Add processing of argument provided to T(race) flag.
+> > > The argument value determines destination of debug logs:
+> > >
+> > > 0 - debug logs will be written to prdbg and devdbg trace events
+> > > [1..255] - debug logs will be written to trace instance
+> > >
+> > > A user can provide trace destination by folowing T flag with
+> > > ":" and trace destination value in range [0..255], for example:
+> > >
+> > > echo "module thunderbolt =3DpT:7" > /sys/kernel/debug/dynamic_debug/c=
+ontrol
+> > > echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug=
+/control
+> > >
+> > > When T flag with argument is followed by other flags then the next fl=
+ag has
+> > > to be preceded with ",".
+> > >
+> >
+> > the trailing , seems punctuation heavy.
+> > Could we just stipulate that any :string  (leading : trailing anything)
+> > be the last flag in the spec ?
+> > bare T flags are not constrained otherwise.
+> > seems fine as API-spec-by-error-codes.
+> >
+>
+> I followed Jason's suggestion to use "," when T flag is not the last
+> flag and destination is explicitly provided for the T flag, like in
+> the example above
+> "echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug/co=
+ntrol".
+>
+> With "," we can have the following cases:
+> - when T is the last flag then it doesn't need to be followed by ","
+> even if destination is explicitly provided, for example "lpT:7",
+> - when T is not the last flag and destination is explicitly provided
+> then "," has to be used before next flag, for example "lT:7,p",
+> - when T is not the last flag and destination is not explicitly
+> provided then "," is not required, for example "lTp",
+>
+> Jim, Jason, would you please come to terms if we want to use "," or
+> just assume that T has to be the last flag in the spec ?
+>
 
-Bug fix to correct memory ranges on GXP to include host registers. This
-corrects a issue where the host interrupt controller is not available.
+Im fine either way -   eliminating punctuation has a cost too,
+it adds some order dependency which isnt there now.
+If that complicates the code, no-good.
 
-Fixes: 53658de4fadb ("ARM: dts: Introduce HPE GXP Device tree")
 
-Reviewed-by: Nick Hawkins <nick.hawkins@hpe.com>
-Signed-off-by: Charles Kearney <charles.kearney@hpe.com>
----
- arch/arm/boot/dts/hpe/hpe-gxp.dtsi | 37 +++++++++++++++---------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+> >
+> >
+> >
+> > > When no value is provided trace destination defaults to 0, for exampl=
+e:
 
-diff --git a/arch/arm/boot/dts/hpe/hpe-gxp.dtsi b/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-index cf735b3c4f35..5de5ec4d833c 100644
---- a/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-+++ b/arch/arm/boot/dts/hpe/hpe-gxp.dtsi
-@@ -52,73 +52,74 @@ L2: cache-controller@b0040000 {
- 			cache-level = <2>;
- 		};
- 
--		ahb@c0000000 {
-+		ahb@80000000 {
- 			compatible = "simple-bus";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
--			ranges = <0x0 0xc0000000 0x30000000>;
- 			dma-ranges;
-+			ranges = <0x00000000 0x80000000 0x20000000>,
-+					 <0x40000000 0xc0000000 0x3fff0000>;
- 
--			vic0: interrupt-controller@eff0000 {
-+			vic0: interrupt-controller@4eff0000 {
- 				compatible = "arm,pl192-vic";
--				reg = <0xeff0000 0x1000>;
-+				reg = <0x4eff0000 0x1000>;
- 				interrupt-controller;
- 				#interrupt-cells = <1>;
- 			};
- 
--			vic1: interrupt-controller@80f00000 {
-+			vic1: interrupt-controller@f00000 {
- 				compatible = "arm,pl192-vic";
--				reg = <0x80f00000 0x1000>;
-+				reg = <0xf00000 0x1000>;
- 				interrupt-controller;
- 				#interrupt-cells = <1>;
- 			};
- 
--			uarta: serial@e0 {
-+			uarta: serial@400000e0 {
- 				compatible = "ns16550a";
--				reg = <0xe0 0x8>;
-+				reg = <0x400000e0 0x8>;
- 				interrupts = <17>;
- 				interrupt-parent = <&vic0>;
- 				clock-frequency = <1846153>;
- 				reg-shift = <0>;
- 			};
- 
--			uartb: serial@e8 {
-+			uartb: serial@400000e8 {
- 				compatible = "ns16550a";
--				reg = <0xe8 0x8>;
-+				reg = <0x400000e8 0x8>;
- 				interrupts = <18>;
- 				interrupt-parent = <&vic0>;
- 				clock-frequency = <1846153>;
- 				reg-shift = <0>;
- 			};
- 
--			uartc: serial@f0 {
-+			uartc: serial@400000f0 {
- 				compatible = "ns16550a";
--				reg = <0xf0 0x8>;
-+				reg = <0x400000f0 0x8>;
- 				interrupts = <19>;
- 				interrupt-parent = <&vic0>;
- 				clock-frequency = <1846153>;
- 				reg-shift = <0>;
- 			};
- 
--			usb0: usb@efe0000 {
-+			usb0: usb@4efe0000 {
- 				compatible = "hpe,gxp-ehci", "generic-ehci";
--				reg = <0xefe0000 0x100>;
-+				reg = <0x4efe0000 0x100>;
- 				interrupts = <7>;
- 				interrupt-parent = <&vic0>;
- 			};
- 
--			st: timer@80 {
-+			st: timer@40000080 {
- 				compatible = "hpe,gxp-timer";
--				reg = <0x80 0x16>;
-+				reg = <0x40000080 0x16>;
- 				interrupts = <0>;
- 				interrupt-parent = <&vic0>;
- 				clocks = <&iopclk>;
- 				clock-names = "iop";
- 			};
- 
--			usb1: usb@efe0100 {
-+			usb1: usb@4efe0100 {
- 				compatible = "hpe,gxp-ohci", "generic-ohci";
--				reg = <0xefe0100 0x110>;
-+				reg = <0x4efe0100 0x110>;
- 				interrupts = <6>;
- 				interrupt-parent = <&vic0>;
- 			};
--- 
-2.34.1
+That seems wrong now - it should default to whatever it was previously set =
+to,
 
+this allows setting a non-default dest while disabling the site:
+   echo class DRM_UT_CORE -T:core-log  > /proc/dynamic_debug/control
+
+then just enabling it later, to use the preset dest
+   echo class DRM_UT_CORE +T  > /proc/dynamic_debug/control
+or more likely:
+   echo 0x01 > /sys/module/drm/parameters/debug_trace
+
+this way, debug_trace is just like debug, but still can write to the
+separate trace-instances
+
+> > >
+> > > echo "module thunderbolt =3DT" > /sys/kernel/debug/dynamic_debug/cont=
+rol
+> > > echo "module thunderbolt =3DlTp" > /sys/kernel/debug/dynamic_debug/co=
+ntrol
+> >
+> > no colon after T means p is a flag, not a destination name
+>
+> Yes, in this case p is a flag because when T is not followed
+> explicitly by destination then next character would be treated as
+> another flag.
