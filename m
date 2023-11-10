@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E567E8297
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7637E8169
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346252AbjKJTV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S1345720AbjKJS1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346108AbjKJTV0 (ORCPT
+        with ESMTP id S1346156AbjKJS0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:21:26 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DB23A21D;
-        Fri, 10 Nov 2023 07:03:30 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-675b844adc7so12715196d6.0;
-        Fri, 10 Nov 2023 07:03:30 -0800 (PST)
+        Fri, 10 Nov 2023 13:26:17 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AB23A21E;
+        Fri, 10 Nov 2023 07:05:21 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-778a92c06d6so133833885a.2;
+        Fri, 10 Nov 2023 07:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699628609; x=1700233409; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699628721; x=1700233521; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=UV9ojQQV9lp7bWpImaulGYCMn8FCIA2tW0lvXELXeTo=;
-        b=OGZnRtoGTzxrHJ1CkPfGNRCsUBYcb41RHrq8jl/IVKkJkHd2qDhLdZ+1vWbmuGDk98
-         Hq1PECLZHWt8v/fJYhA/LtaG7S+bUJDjtorSPoul2danlBtsM/IN7okPt3fS+5cURGq+
-         N9ts7B/IdbxbasdmPI28qTqoY1NcH8jZQK3vx0vogTKkbDJHX+k+2f2PRe5yzsINMRoY
-         m9LkI1fgQqNawJ2TWiNcl20XGCPl1hi+8P4EgUr6EbtHmkc3TamOqOhddg5QYy9488Hk
-         j0gURBfgAThHcScoB9IytI5rxAheQUYCdqSQ0ML4t9TUgTJ5udYjdTkQPB6F7yVRk2OA
-         tcQQ==
+        bh=849p/NvESRZpFnJpVgwoxJCcpHggaarAP4BXMtHW02A=;
+        b=DF9HvdXtJtVa9t7pssm6x9AVhY0dqpE4wLJ5FlK+QH693f3JhLkY0ioXEizOA/fiRP
+         tQaRgoJUWknuuOZ25HNrHHErXKvaX6TEaXEGl/xIX+WbqSQmDrZmx/qgrEeP7S3AMPMX
+         ZJeaAuECQMr+LJ7o60cmTjOvJRRgwzVh36nwoNndHRnte7tqF649w0emFt5wEzP1wzyH
+         eHQWZ/vEjW69WopVeXygCWS8SLaNzo0HJNRGhRkHf9NbJ7JBGEmPNr+oUY05NOx0GT36
+         5Hh4v+21lWTGGmUXT0TLTZHbFSVIwtNXVxnvJlrKva7X4NClSmcvv/jYA7JzoxtfMSCg
+         tqlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699628609; x=1700233409;
+        d=1e100.net; s=20230601; t=1699628721; x=1700233521;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UV9ojQQV9lp7bWpImaulGYCMn8FCIA2tW0lvXELXeTo=;
-        b=ujW2Xv5A31juGkD0z1qOm5fsVkMeoRQjz/IHlvpKT/NeIEYFzq4Pepf4k/int4X0q/
-         Fm5Z4ARsupc7XjMr0fqG50LzUYu3wk7ItoP2XZ5zAUwsvWmQf7KKEvmoW9sbEtAJB5X5
-         YzeEMGOCbTRmGEJqOpntH6/PuAY36rs2JMTksf1FBXo0lFDj39TOyan0eBC1trHKrbnb
-         DTDe/c4BQPvGQ22qv9o0KYgcZ/3rXa0IEpj1N63267Phy7GvCt11QwU1zwuhJXSAmvaM
-         Ct3QJcOF81iBrizpy9mWuVbLMTXfELkvSKjSV3CnUmt93DOIgXlp3V02LseaoSAp9D2z
-         DCYw==
-X-Gm-Message-State: AOJu0YwQERNCt6PFVwx6XrC6nBVzxtCaKZWMfVDUJ2w40PjhoAT8drr6
-        gAHpw4eqAqAWRaTBa68hD5bFJJZdFVo=
-X-Google-Smtp-Source: AGHT+IGipuNGdVC4WHAspXXud93VmTTTX3JKUFiRbfJTY8s+prJPnI8DllVZSOcGFaDRXv2yyJlVew==
-X-Received: by 2002:a05:6214:f02:b0:65b:22cf:101e with SMTP id gw2-20020a0562140f0200b0065b22cf101emr9818586qvb.54.1699628609329;
-        Fri, 10 Nov 2023 07:03:29 -0800 (PST)
+        bh=849p/NvESRZpFnJpVgwoxJCcpHggaarAP4BXMtHW02A=;
+        b=CFFzIMbo5PlfS+qKd+nC1PiPWcHWxuB99dU5DamN+MQ/mqrH9NQ8oEUwwkt/Ef8F9F
+         Qu7aqDlAm4OnY+9BC6/SoLtT9FUmQUzKE6x3oTxTLvcyvXHIpLeX3o738e/ZD9yF4ojj
+         Cl3hm+/2j64tzeCumhBhSNwEQlqF+66XBhFgJVtnNW/HkCWPOaC5iAK3LRMzCzYcLPqu
+         ZGu8xBkfjkuGWNPKycO9G/GidqyEcPG1fgm6WLQyBzE8i5We7AWmxmWcBYZpjJtawj/k
+         us+YjGwhCMIzrnYXu0xgtQ0+YbKIZjVBo/cYAzOe1PbKq71qP4paHbpNw07xDKJBR6w0
+         +Xkg==
+X-Gm-Message-State: AOJu0Ywiahkg+x5U3JF0Jii8E85cfnPe8DweZdVFfJUunttooua965l6
+        xbnK1SE6qo+PCwoLtXj7lSXWbQpKVss=
+X-Google-Smtp-Source: AGHT+IGw02d1MIdMKxErKFoRT7igXRRoMVXqDq9TQ62bNdgZ8Xu1GktHunr2X7YCJrfStFkvF2C2nQ==
+X-Received: by 2002:a05:620a:29c6:b0:779:ebe0:b662 with SMTP id s6-20020a05620a29c600b00779ebe0b662mr7435660qkp.4.1699628720865;
+        Fri, 10 Nov 2023 07:05:20 -0800 (PST)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o6-20020a0cecc6000000b0063d5d173a51sm2966535qvq.50.2023.11.10.07.03.27
+        by smtp.gmail.com with ESMTPSA id ua13-20020a05620a698d00b00774652483b7sm748992qkn.33.2023.11.10.07.05.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 07:03:28 -0800 (PST)
+        Fri, 10 Nov 2023 07:05:20 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <40590367-0a38-4c4c-a608-1174a5ecd5ae@roeck-us.net>
-Date:   Fri, 10 Nov 2023 07:03:25 -0800
+Message-ID: <846cc6e5-1db0-4399-9525-917328e535c3@roeck-us.net>
+Date:   Fri, 10 Nov 2023 07:05:18 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] watchdog: rti_wdt: Use managed APIs to handle runtime
- PM
+Subject: Re: [PATCH 2/2] watchdog: rti_wdt: Drop RPM watchdog when unused
 Content-Language: en-US
 To:     Vignesh Raghavendra <vigneshr@ti.com>,
         Wim Van Sebroeck <wim@linux-watchdog.org>
@@ -65,7 +64,7 @@ Cc:     Tero Kristo <t-kristo@kernel.org>, linux-watchdog@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         afd@ti.com, n-francis@ti.com
 References: <20231110100726.2930218-1-vigneshr@ti.com>
- <20231110100726.2930218-2-vigneshr@ti.com>
+ <20231110100726.2930218-3-vigneshr@ti.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -110,7 +109,7 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231110100726.2930218-2-vigneshr@ti.com>
+In-Reply-To: <20231110100726.2930218-3-vigneshr@ti.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -125,121 +124,59 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/10/23 02:07, Vignesh Raghavendra wrote:
-> Switch to devm_pm_runtime_enable() to simplify error handling in driver
-> probe.
+> Do a RPM put if watchdog is not already started during probe and re
+> enable it in watchdog start.
 > 
-
-This also replaces the call to pm_runtime_resume_and_get() without explanation.
-Worse, the next patch conditionally re-introduces pm_runtime_put_sync()
-on the probe function.
-
+> On K3 SoCs, watchdogs and their corresponding CPUs are under same PD, so
+> if the reference count of unused watchdogs aren't dropped, it will lead
+> to CPU hotplug failures as Device Management firmware won't allow to
+> turn off the PD due to dangling reference count.
+> 
+> Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
 > Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 > ---
->   drivers/watchdog/rti_wdt.c | 30 ++++++++----------------------
->   1 file changed, 8 insertions(+), 22 deletions(-)
+>   drivers/watchdog/rti_wdt.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
 > 
 > diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-> index 8e1be7ba0103..163bdeb6929a 100644
+> index 163bdeb6929a..87f2c333a41d 100644
 > --- a/drivers/watchdog/rti_wdt.c
 > +++ b/drivers/watchdog/rti_wdt.c
-> @@ -236,12 +236,8 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   	if (wdt->freq < 32768)
->   		wdt->freq = wdt->freq * 9 / 10;
+> @@ -78,6 +78,9 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+>   	u32 timer_margin;
+>   	struct rti_wdt_device *wdt = watchdog_get_drvdata(wdd);
 >   
-> -	pm_runtime_enable(dev);
-> -	ret = pm_runtime_resume_and_get(dev);
-> -	if (ret < 0) {
-> -		pm_runtime_disable(&pdev->dev);
-> -		return dev_err_probe(dev, ret, "runtime pm failed\n");
-> -	}
-> +	devm_pm_runtime_enable(dev);
-
-devm_pm_runtime_enable() returns an error code. I don't think ignoring it
-is a good idea.
-
-> +	pm_runtime_get_noresume(dev);
-
-Is this functionally identical to pm_runtime_resume_and_get() ?
-That would require further explanation. Why is it not necessary
-to resume here ?
-
-Also, doesn't the next patch fix or at least modify this ?
-
->   
->   	platform_set_drvdata(pdev, wdt);
->   
-> @@ -260,7 +256,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   	wdt->base = devm_platform_ioremap_resource(pdev, 0);
->   	if (IS_ERR(wdt->base)) {
->   		ret = PTR_ERR(wdt->base);
-> -		goto err_iomap;
-> +		return ret;
->   	}
->   
->   	if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
-> @@ -286,7 +282,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   		ret = rti_wdt_setup_hw_hb(wdd, wsize);
->   		if (ret) {
->   			dev_err(dev, "bad window size.\n");
-> -			goto err_iomap;
-> +			return ret;
->   		}
->   
->   		last_ping = heartbeat_ms - time_left_ms;
-> @@ -301,7 +297,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   		ret = of_address_to_resource(node, 0, &res);
->   		if (ret) {
->   			dev_err(dev, "No memory address assigned to the region.\n");
-> -			goto err_iomap;
-> +			return ret;
->   		}
->   
->   		/*
-> @@ -312,15 +308,13 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   		reserved_mem_size = resource_size(&res);
->   		if (reserved_mem_size < RESERVED_MEM_MIN_SIZE) {
->   			dev_err(dev, "The size of reserved memory is too small.\n");
-> -			ret = -EINVAL;
-> -			goto err_iomap;
-> +			return -EINVAL;
->   		}
->   
->   		vaddr = memremap(paddr, reserved_mem_size, MEMREMAP_WB);
->   		if (!vaddr) {
->   			dev_err(dev, "Failed to map memory-region.\n");
-> -			ret = -ENOMEM;
-> -			goto err_iomap;
-> +			return -ENOMEM;
->   		}
->   
->   		if (vaddr[0] == PON_REASON_SOF_NUM &&
-> @@ -337,19 +331,13 @@ static int rti_wdt_probe(struct platform_device *pdev)
->   	ret = watchdog_register_device(wdd);
->   	if (ret) {
->   		dev_err(dev, "cannot register watchdog device\n");
-> -		goto err_iomap;
-> +		return ret;
->   	}
->   
+> +	if (pm_runtime_suspended(wdd->parent))
+> +		pm_runtime_get_sync(wdd->parent);
+> +
+>   	/* set timeout period */
+>   	timer_margin = (u64)wdd->timeout * wdt->freq;
+>   	timer_margin >>= WDT_PRELOAD_SHIFT;
+> @@ -337,6 +340,9 @@ static int rti_wdt_probe(struct platform_device *pdev)
 >   	if (last_ping)
 >   		watchdog_set_last_hw_keepalive(wdd, last_ping);
 >   
+> +	if (!watchdog_hw_running(wdd))
+> +		pm_runtime_put_sync(&pdev->dev);
+> +
+
+You will have to explain why this is needed here, but not as error handling,
+and why it is added in this patch after the changes in patch 1 of the series
+which essentially declared that no error cleanup would be needed under
+any circumstances.
+
+Guenter
+
 >   	return 0;
-> -
-> -err_iomap:
-> -	pm_runtime_put_sync(&pdev->dev);
-> -	pm_runtime_disable(&pdev->dev);
-> -
-> -	return ret;
 >   }
 >   
->   static void rti_wdt_remove(struct platform_device *pdev)
-> @@ -357,8 +345,6 @@ static void rti_wdt_remove(struct platform_device *pdev)
+> @@ -345,6 +351,9 @@ static void rti_wdt_remove(struct platform_device *pdev)
 >   	struct rti_wdt_device *wdt = platform_get_drvdata(pdev);
 >   
 >   	watchdog_unregister_device(&wdt->wdd);
-> -	pm_runtime_put(&pdev->dev);
-> -	pm_runtime_disable(&pdev->dev);
+> +
+> +	if (!pm_runtime_suspended(&pdev->dev))
+> +		pm_runtime_put_sync(&pdev->dev);
 >   }
 >   
 >   static const struct of_device_id rti_wdt_of_match[] = {
