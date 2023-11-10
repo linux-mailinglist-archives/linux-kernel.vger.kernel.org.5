@@ -2,186 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5147E768E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:28:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B907E768D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234801AbjKJB25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
+        id S1345580AbjKJB2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKJB2z (ORCPT
+        with ESMTP id S229491AbjKJB2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:28:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5367B133
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:28:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699579687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zC+u4Re2AoTUGpqWOoMx+tYjldUA5tL8xtOql2ozAF4=;
-        b=ikm9oFhPOb19kPDF/ogY5eyRNaXuCjl/99wVKoXm27tKhbLLoOqsMxz37O4X/P/pPh+IIu
-        mabszhLa1gSa+QtOvzYfUMpxmLB7w/Kz5P3/hScEXrBhoI2o6KlNXcXhIjvn8DwsFkLnbl
-        OtgAQlzihsRn+UzIepOT6dn9PQQ0PfE=
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
- [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-5lrvpXCGOE-yJoDAMY7t-w-1; Thu, 09 Nov 2023 20:28:06 -0500
-X-MC-Unique: 5lrvpXCGOE-yJoDAMY7t-w-1
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1d5f4d5d848so1392751fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 17:28:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699579685; x=1700184485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zC+u4Re2AoTUGpqWOoMx+tYjldUA5tL8xtOql2ozAF4=;
-        b=R6DeqjIyy9hGxySl9z99JsNvdpAUtylhEykOpmwqcVp4kPx+iZpByL4G3JmahCNNyY
-         /rK4Z4ej8jQ7htRlAxiYnYXm8PH0IMhDA4dFIxHk0XzuwvFCKzjikECC0GDwL2Nv0VUj
-         e/FbBmImLL7/mJvdr2+wgnS2vZ7hnoOXaZHexq0/j0rnYU4MU067aekikVIVNJB2yO7J
-         NyRRu5QVhVBAhZKflvyjU4L4WI7pvgLlbcS5/+XFXaaPQHcpt7fUFlEQ3zynGYq+uG1N
-         0nW7b4Z/iRIPGpYzQ0ES0NLJ/xY1mKhk2QJFAAa1fRi0ATKNSMdy0JqjGk7vfy5iMlIn
-         NRKQ==
-X-Gm-Message-State: AOJu0YwRIuem+3AvT/iyJPQWIlPGwZVnf6gkVO3jQZskZeIavljAKlE2
-        UZjU+dmhqI/FeCAXy6Rbd3bXG3B082tgwJ6s++OMqpeduIF5SUPoRo1Fi4A6PNdjzqKQAE6dG/y
-        RLrD+ieiD3nj26xacHvtPUdhYdMcs1fGTXb8dQU6Tatp5jVXrJDE=
-X-Received: by 2002:a05:6870:1314:b0:1ea:d76b:1457 with SMTP id 20-20020a056870131400b001ead76b1457mr6624726oab.7.1699579685234;
-        Thu, 09 Nov 2023 17:28:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGY6J8ZouDEA5qQMJiaMxmBZIrQRVPu28NAIQ+CGdUvmcYPLrHluYLqjgbiUv9YwzmkiYQWWU0SJT6gXHqvqxY=
-X-Received: by 2002:a05:6870:1314:b0:1ea:d76b:1457 with SMTP id
- 20-20020a056870131400b001ead76b1457mr6624714oab.7.1699579684985; Thu, 09 Nov
- 2023 17:28:04 -0800 (PST)
+        Thu, 9 Nov 2023 20:28:24 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD9F44B9;
+        Thu,  9 Nov 2023 17:28:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699579698;
+        bh=dmuzaMMRBU3HdG40Tz/vWvs2KQopBltoB/JEWdN41Eo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mixpMI6Y4wLj4HJgs7h98AJAsRNEEKWkPZHul2IANWCuD7GNfrw43Gmitj6peCgmm
+         cHWSmOE5mfwFfvyq1VK+azSeZP4vAnLMS0vRLnDHkj8jS+1DqMaWsfCOZa3mZ819yF
+         neYU2JNss5KyLH+LuhWj9LWE+Po2ZXZWRlU0BZZBa61jfeYpBulY438nST33ZQNpTJ
+         NBZUdPtDd09nycpl7pKwzWc4EBEJ+Y28RAgL/d+JT/0RjlhhaSS2+s/VFtx6QeAItI
+         yuIodV9P0bIY8ngImek2PzfkwoGThF2veB6N2RaKiYHRZuoEzWH9Q53EzsmfMgQqbC
+         9AfjO693C4CDA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SRLmy11Rvz4x1v;
+        Fri, 10 Nov 2023 12:28:17 +1100 (AEDT)
+Date:   Fri, 10 Nov 2023 12:28:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     syzbot <syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] linux-next build error (16)
+Message-ID: <20231110122817.47d72603@canb.auug.org.au>
+In-Reply-To: <0000000000002167ca0609c1f5d5@google.com>
+References: <0000000000002167ca0609c1f5d5@google.com>
 MIME-Version: 1.0
-References: <20231110010139.3901150-1-sarthakkukreti@chromium.org> <20231110010139.3901150-5-sarthakkukreti@chromium.org>
-In-Reply-To: <20231110010139.3901150-5-sarthakkukreti@chromium.org>
-From:   Yi Zhang <yi.zhang@redhat.com>
-Date:   Fri, 10 Nov 2023 09:27:48 +0800
-Message-ID: <CAHj4cs9pS0hgWBpz9bzoJBGwh1iK+0Nuzc5RmJNyZOR5s-7oLw@mail.gmail.com>
-Subject: Re: [PATCH] loop/010: Add test for mode 0 fallocate() on loop devices
-To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
-Cc:     dm-devel@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Mike Snitzer <snitzer@kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <david@fromorbit.com>,
-        Brian Foster <bfoster@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/ZB7n9vr3vnJsSzUJcC.0+hE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 9:02=E2=80=AFAM Sarthak Kukreti
-<sarthakkukreti@chromium.org> wrote:
->
-> A recent patch series[1] adds support for calling fallocate() in mode 0
+--Sig_/ZB7n9vr3vnJsSzUJcC.0+hE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The patch link is missing in this patch.
+Hi syzbot,
 
-> on block devices. This test adds a basic sanity test for loopback devices
-> setup on a sparse file and validates that writes to the loopback device
-> succeed, even when the underlying filesystem runs out of space.
->
-> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+On Thu, 09 Nov 2023 17:08:26 -0800 syzbot <syzbot+c65436ac3463dd64e422@syzk=
+aller.appspotmail.com> wrote:
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    b622d91ca201 Add linux-next specific files for 20231109
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16a51397680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D159f4f31622eb=
+7ff
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dc65436ac3463dd6=
+4e422
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+c65436ac3463dd64e422@syzkaller.appspotmail.com
+>=20
+> failed to run ["make" "-j" "64" "ARCH=3Dx86_64" "oldconfig"]: exit status=
+ 2
+>=20
 > ---
->  tests/loop/010     | 60 ++++++++++++++++++++++++++++++++++++++++++++++
->  tests/loop/010.out |  2 ++
->  2 files changed, 62 insertions(+)
->  create mode 100644 tests/loop/010
->  create mode 100644 tests/loop/010.out
->
-> diff --git a/tests/loop/010 b/tests/loop/010
-> new file mode 100644
-> index 0000000..091be5e
-> --- /dev/null
-> +++ b/tests/loop/010
-> @@ -0,0 +1,60 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-3.0+
-> +# Copyright (C) 2023 Google LLC.
-> +# Author: sarthakkukret@google.com (Sarthak Kukreti)
-> +#
-> +# Test if fallocate() on a loopback device provisions space on the under=
-lying
-> +# filesystem and writes on the loop device succeed, even if the lower
-> +# filesystem is filled up.
-> +
-> +. tests/loop/rc
-> +
-> +DESCRIPTION=3D"Loop device fallocate() space provisioning"
-> +QUICK=3D1
-> +
-> +requires() {
-> +       _have_program mkfs.ext4
-> +}
-> +
-> +test() {
-> +       echo "Running ${TEST_NAME}"
-> +
-> +       local mount_dir=3D"$TMPDIR/mnt"
-> +       mkdir -p ${mount_dir}
-> +
-> +       local image_file=3D"$TMPDIR/img"
-> +       truncate -s 1G "${image_file}"
-> +
-> +       local loop_device
-> +       loop_device=3D"$(losetup -P -f --show "${image_file}")"
-> +
-> +       mkfs.ext4 ${loop_device} &> /dev/null
-> +       mount -t ext4 ${loop_device} ${mount_dir}
-> +
-> +       local provisioned_file=3D"${mount_dir}/provisioned"
-> +       truncate -s 200M "${provisioned_file}"
-> +
-> +       local provisioned_loop_device
-> +       provisioned_loop_device=3D"$(losetup -P -f --show "${provisioned_=
-file}")"
-> +
-> +       # Provision space for the file: without provisioning support, thi=
-s fails
-> +       # with EOPNOTSUPP.
-> +       fallocate -l 200M "${provisioned_loop_device}"
-> +
-> +       # Fill the filesystem, this command will error out with ENOSPC.
-> +       local fs_fill_file=3D"${mount_dir}/fill"
-> +       dd if=3D/dev/zero of=3D"${fs_fill_file}" bs=3D1M count=3D1024 sta=
-tus=3Dnone &>/dev/null
-> +       sync
-> +
-> +       # Write to provisioned loop device, ensure that it does not run i=
-nto ENOSPC.
-> +       dd if=3D/dev/zero of=3D"${provisioned_loop_device}" bs=3D1M count=
-=3D200 status=3Dnone
-> +       sync
-> +
-> +       # Cleanup.
-> +       losetup --detach "${provisioned_loop_device}"
-> +       umount "${mount_dir}"
-> +       losetup --detach "${loop_device}"
-> +       rm "${image_file}"
-> +
-> +       echo "Test complete"
-> +}
-> \ No newline at end of file
-> diff --git a/tests/loop/010.out b/tests/loop/010.out
-> new file mode 100644
-> index 0000000..068c489
-> --- /dev/null
-> +++ b/tests/loop/010.out
-> @@ -0,0 +1,2 @@
-> +Running loop/009
-> +Test complete
-> --
-> 2.42.0.758.gaed0368e0e-goog
->
->
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>=20
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>=20
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
 
+#syz set subsystems: crypto
 
 --=20
-Best Regards,
-  Yi Zhang
+Cheers,
+Stephen Rothwell
 
+--Sig_/ZB7n9vr3vnJsSzUJcC.0+hE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVNhzEACgkQAVBC80lX
+0Gxhegf+OI3RvI3R+XGuFYCvEvIf2fn2rHa3rqdx4LjV+39+RBaxJzzTTq3XwBy+
+X9wbfE7xdNwWk0Ms7js5WwlZivnzGquejqJ03Qm/KlFhsscJwF0NwVMJ9+zmwVwV
+fMXT3hmaQoVRoxq8DmUY/93kYrgLNH0+qCippn7GjHuuFHKTtSYe9qD7xLETqggc
+oJo+LybtyYnC58NDZMIoR8Qn/m7FMFfSBpy4mgm/ExFH1Yfk+48BAUWj9uDFeZ5I
+8t4EiHxs917JGFy5Xjg7ms6i5AXh3O7QkneJLuzCm2GKFzIlegXmIpLj4G1kx32+
+VVBJF1dqByZ7fy6ainmn4aFx+JHZfA==
+=Kwrz
+-----END PGP SIGNATURE-----
+
+--Sig_/ZB7n9vr3vnJsSzUJcC.0+hE--
