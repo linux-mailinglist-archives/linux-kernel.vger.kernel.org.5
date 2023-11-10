@@ -2,435 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4141C7E8536
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6772F7E8545
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbjKJVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 16:42:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
+        id S229672AbjKJVuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 16:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjKJVmV (ORCPT
+        with ESMTP id S229463AbjKJVuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 16:42:21 -0500
+        Fri, 10 Nov 2023 16:50:35 -0500
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF354229;
-        Fri, 10 Nov 2023 13:42:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49088131
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 13:50:32 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y/LtWbgzJh/cBNdMrz8TukbyyTaldA3qrmhzzozD/Ai8G9NGakYjGPWyoGmr1NP/83kp4If5EEiXfbzqEEXaIVMjIFjCRjJKPA4yoZhfiIkf/UMAP/NY1wvDhrnxOrMN+z29/+XTzaRlht4V6y2uNPwvyHlLQ7/tMl4po4rwrljlHS4DE96ktVv/Mk7UslcXErPevOxNqBUWUMmP6Dl74ZXM8udBPYB9tWF1SthuUXIpTkT87C4MaoTMxNng1gNzNRWGnri7F29vXoKTBXdn3a81toxvw2pxUbrGbZnPUdGLm3ZpW9kWpao3rpA/GWJGZggJrYwKMi8ElZyY7q9BJg==
+ b=BcIV5eOto7CP/XD4hNOLXNUmOCUA/8dBVdQK5QpYGEciek/L2j+2AKD/ouLNOjmwKABMGAIlpP8Xwfu1IRxNpIrU23THZd5BBt/UNmN9fhlKGqTRSLClZRtePvxt8geqbZQnVv/MPxjtbeN1irk2V8vaNXen6m2ViJdxICyl2o+zCJoII0czCJHXNQwHrIshxfb5ijZ4yVibEQWbwHu4ggXVbvRfSFemWK9+GLeILnS7FImk2TFjkz0b1VudTzaef3Yl6YnLsxmHxL+zerc96x0XPbf/IxRXntTVZ93PlsU6UmrWJ2pH++Tbp+vV6xKy56Pji4Z01cv6EKpDFtrbYg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sLAecrq/PO8GEfZcEb1UYPRE2GGY25ecvFpuxsdXKgY=;
- b=MFX1jjnubBgzA8DvYvGWpj1pN0ORTVvIu6y5z6PHcjqwKfp5RKmeqfISukHWsAjGLXNYiNSUof2VZ16SVLPky2zCgN3GVX0C9TcqdSmJRYj2DM1o2X7jJrEqbqtfESpIo7NTqGZk9ktCk8DlrGPZxQ84mVfDuevX8Z/pKxQWMge75RgkPirOiy4wnLNteKEfGBIJ6BE2Ja8qmmjBCuKPNukZhe79LnI+37SMixhW/azubrWei3c5+SbSRQZqHTozxMqO2g/CCsHaKqQhaTv3p2ROHVf5yUl5hkOD0sahcX3bfNf7AJYsOYpyI1H1LL9DtyeiqgY8LrbbDOxCZm0J4w==
+ bh=UHulGFI3/RrwcNDLEvmaYyTiRgnj0xRZUknurGQI4jU=;
+ b=CrRcZ2xII5EMV7mMs6jQygXNz5suN0n91cwXOEhnSRq6BQo6OB6ffhK4cfCJ5/TVWnXHO89Q+QZiG6QxwDV3aJbiaevTF/r3mPoF8a0Hi/OJIoI8Vgra88wyAnglxZfDz2KE0btfEJaWzAfw+M26sxORbBxDaPKk5Y8tMYNbcobyQYrXgsmvzjtUudzcjUSaDkojd+WyPlJn8n1HCexNv524oN+gmXhIBClnJVDl15Rt/+Mp6fxM46OJ2f48uDCC+o0AMiRJ/V7Rx9NIYTcRPfQb6/JX3wBn0BYTJIGTXVkuGCLbZL3808bimXzGujSwRXm5h2/v9GS2i+xQF1j50g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sLAecrq/PO8GEfZcEb1UYPRE2GGY25ecvFpuxsdXKgY=;
- b=JD28p97Ebg1qFihaRX9FCxCAhu0/qhAbWMD/BnaUsao6C1TOu3cW3iIewh7mKi2nK8hACKugAj/MhYzp3d1UtemgNpzzVK5w6H69233ESFkXVNMX3ctgAyVJFLxQfHVIeQlz397/T6fBAmQy4cLbQLZbSpsL9B27olpJq6MSL68=
+ bh=UHulGFI3/RrwcNDLEvmaYyTiRgnj0xRZUknurGQI4jU=;
+ b=kaTddcNcMkjATFrM04lrohokBM0//hyz0xB1iVY1//bPu4y5Tfnw7K7PfuEQk3o4QkN3WtFF9/jzSh2pPfrMeztxy2r1LnnCqs6yB3Fbfor2nCg2iFAhdxOYg4TVZ2Eihik429iS/dRk296IM0zNiwwGyV7ZZKH9TcjZ6qjboRY=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH0PR12MB5284.namprd12.prod.outlook.com (2603:10b6:610:d7::13)
- by MN2PR12MB4111.namprd12.prod.outlook.com (2603:10b6:208:1de::22) with
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SJ0PR17MB4680.namprd17.prod.outlook.com (2603:10b6:a03:375::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19; Fri, 10 Nov
- 2023 21:42:14 +0000
-Received: from CH0PR12MB5284.namprd12.prod.outlook.com
- ([fe80::194a:56d:a41d:3c79]) by CH0PR12MB5284.namprd12.prod.outlook.com
- ([fe80::194a:56d:a41d:3c79%5]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
- 21:42:14 +0000
-Message-ID: <70155289-6232-4112-bea0-f57c679fb377@amd.com>
-Date:   Fri, 10 Nov 2023 16:42:11 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: add a debugfs interface for the DMUB
- trace mask
-Content-Language: en-US
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Fangzhi Zuo <jerry.zuo@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
-        Alan Liu <HaoPing.Liu@amd.com>,
-        Anthony Koo <anthony.koo@amd.com>, Aric Cyr <aric.cyr@amd.com>,
-        Mustapha Ghaddar <mghaddar@amd.com>,
-        Alvin Lee <alvin.lee2@amd.com>,
-        Tony Tascioglu <tony.tascioglu@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Reza Amini <reza.amini@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231110171811.11656-1-hamza.mahfooz@amd.com>
-From:   Aurabindo Pillai <aurabindo.pillai@amd.com>
-In-Reply-To: <20231110171811.11656-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR01CA0164.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:7e::27) To CH0PR12MB5284.namprd12.prod.outlook.com
- (2603:10b6:610:d7::13)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.10; Fri, 10 Nov
+ 2023 21:50:27 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7002.010; Fri, 10 Nov 2023
+ 21:50:27 +0000
+Date:   Fri, 10 Nov 2023 16:50:18 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2 2/7] fs/proc/page: use a folio in stable_page_flags()
+Message-ID: <ZU6lmvMpSfKjjYB3@memverge.com>
+References: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
+ <20231110033324.2455523-3-wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110033324.2455523-3-wangkefeng.wang@huawei.com>
+X-ClientProxiedBy: SJ0PR05CA0070.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::15) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR12MB5284:EE_|MN2PR12MB4111:EE_
-X-MS-Office365-Filtering-Correlation-Id: 276a4324-72e4-43a1-befd-08dbe235e747
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SJ0PR17MB4680:EE_
+X-MS-Office365-Filtering-Correlation-Id: e89d7538-a76c-4e4c-54e5-08dbe2370c99
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2eBIHdC8A7dvNyFiIkIGLn8gTDhu7xLfbl2VD3uzR6yaA+q8HRTSKEF6urvrbs8pN73LK4ISdwqobDslZFVie2kXPSrBFPgenIaxLm6VgtElSY34QKM2GdWGzgBYqG0BoxSCUFEwBJ7lNx5G/DhuJtbZWlu5pTW8E5G60sk6WjPKjBkJUklsvqGbCEqqMRB9agLzo/3y8tpXfyvZMzC25fkPHFZUl+rFjfrsIzn5sweU02CAevQYJHHjdad3xnnPGiBuDsHGHtdyrzBnCeZNoCflO7ujwvCJVSgh4xFaV+uptJ0tI7QP0WDQ7J4aO/BeZlJW8FsKF1ZVPMSXTBhq4fyeWn2x4vuEpjwxBUj6OUiFEw34Hs2AgUwyfpjtl5wQeZu0XFkfVDv4H1VqAZCfDU9O0nQXKTBEXuFYDDStoS9wIf0YgyvumBYRGBWOC+u0GoyQ2UmbrLVtWlbnt9AMdjM7XJYMtXvivWmYjzFf+c0g/yHMf8/ZYjfvwbmvZTS/WMak1mG+Kw+f8Xh55Bh9TWS7N1qI+R/NdTqkLJo+NeDrU4CWgeXsSIvN8WVFc3VUK1EIjU6fOu3/m5u9Y/ackRGOoxFvvjhc7SpDjdcOckk1FB2zj49G4THr32Rx7ihWxUgjboRirfYqzOLb4zRBwQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR12MB5284.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(136003)(346002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6506007)(83380400001)(8936002)(8676002)(4326008)(6486002)(2616005)(53546011)(31686004)(6666004)(26005)(44832011)(66556008)(66946007)(66476007)(316002)(54906003)(478600001)(6512007)(7416002)(5660300002)(38100700002)(4001150100001)(41300700001)(2906002)(36756003)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: bVkdLC1EaTnDhObJ4xJpeu6VTJp9kFoasKwavufE5Jh1dH+TNMWc5D6c3asWxgwqA8yRVtB2rSNtoVKTynlXcANljLB+QujIbTvGV+dnMYDg7JJMEsNwSPjpoj1Y9R+3c1VLWDbXRKP22TiFW1ynmedyaRaHmFfw4nxxOyFrpxtdmC6dgUoyqUmNBsnJEMDMPcp6wEiRcK7ucjyQjz1RlXMRQEqEIkNlS48WiyJr6YHXY4dURdc0finxTiU1tZuFWqdl/zIvc9eJ4DSgMzl6rdLWbBs07jpuWxYN8eF/dR//rWzictF5ASAdRP7vz6aKVCwxl4MWYC3hZSo6LXllC8cP2dxDkU+muDry8xDFrytRxUBCLWUJs0Q6a6uzPmWqiQqaYzZAhhib9OWgsYowXNF0LVCuLEskJ661BZfO2pqGK2MMBmHJQtqC5+/fSxQI8owO+J1wtEK0xNpryT7Mfqcarc13YzxGu24DnCbj288xrBYhDx/oTZRpX4o+sDg2rhhqphouVgroVz1Hxyxcw9/t6l36J1+rVPjB8RgJ4TsgdnFvBVeh1HflmiJG7WEp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(346002)(366004)(376002)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(86362001)(83380400001)(8936002)(8676002)(4326008)(6916009)(66476007)(54906003)(66556008)(316002)(4744005)(2906002)(44832011)(66946007)(478600001)(5660300002)(6512007)(6486002)(6666004)(6506007)(26005)(2616005)(38100700002)(41300700001)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dTY2ODJoeG9KY2NLWUJtVmU4amtXRm1MeFZhaWk2TGZRRVNtUzdEQXJnMkJs?=
- =?utf-8?B?OWdMUzhiaWF0dVNDT2JjbEwrUmJGOGwzTG5PUnM1eHRJWGRzc0JlRm4yVjl3?=
- =?utf-8?B?RWVLV2twRGcreFF0UC9QR1pEUGdSMmkrcFQ3T2dMdHRmOUZrNTJpUWIzcDI0?=
- =?utf-8?B?MnpUdFJNZEJ1UFNSZGl5YXIvL1U1TFE2WWZlZ25aVlNpSWlLVXBKVndLRkZm?=
- =?utf-8?B?MDhNelNsUEVzOGhhazhRVnk2M2c3VlV1MUxoUVNMWWJaZFJjR01sZmU0U3Z2?=
- =?utf-8?B?RXo2elN0VEo0djA1OEZROFM5dFdmUGpHeHFqQ2E2N2NINE5UL0dva1kwbEIy?=
- =?utf-8?B?SlJWQUlCdER2RkIxRTBZVFlKQXpyR0lKSVE1MVc5cDhzVXlKVHJsWUwwRzFL?=
- =?utf-8?B?VTFWV05ENUhIR1FBT2VBQnRwbVNtVFhEMkl0bU9MY1Z6QmFNRFh0TUg5VVQ3?=
- =?utf-8?B?UGVTODZZSkxwTkI3d0g5YTVYZmJEaW1pS2tpS2lyZy9GL0V5NjB6RVJFRTdS?=
- =?utf-8?B?K3pLSXhsdXFRaGNqSzd0T0dHUXVtY2JnYjVkVFJwa05GOTNCUEJQQlBCejY5?=
- =?utf-8?B?eTAyTnpkSFBGMkhoZzB1RXQzcWV3bjZ3UDQ3dzE3M3dybEd1a3d3emsrVXhC?=
- =?utf-8?B?MFZWUmFTNStKR0dVVVllU2k2TTl4ZWlLSjZhUFBKUDlDcTVDelBBYUVNRllH?=
- =?utf-8?B?VEtpOFdScmNYUjNyRzhnOWtZRnIxZzlZVUpqR29JVlMxWU9mOWVNS3BGQy9n?=
- =?utf-8?B?S2xEMGFUaWlkTEFyamFqT1BiL1VPb3N2WUdBTXRKdjVFL0lQWStEdWQvQ3hp?=
- =?utf-8?B?TG9HQVdFT2NYQ21taVNnMW9GVWJyanZkRC80bmtEY0V5TTlRUXhCY2paR2Fp?=
- =?utf-8?B?clBQTkkvUEZiSnhURUhmSzZnYlhsRXM3dnkwUnAvT25NbFVlUXRrR0VPcUNt?=
- =?utf-8?B?clRuRk1FYzFUQThoUHJiWDVrZnBsTlBWMENaZWd4M215MGE4VUc1TlFWdCtD?=
- =?utf-8?B?anNRVWE2NTRyS0VDbnZQbFlQV3FTWHZCN29LQXo1WUF5RUlUeFVFb1FpV1Fj?=
- =?utf-8?B?SGNRbldLbm5PcWQ4YVY3b3BJak1YcHkydStpZGl0djhNQ1Rpd1VGaWJWeDBP?=
- =?utf-8?B?L0FaSE43QzhvRDBuUHptZW9tNXp1UU1Za0ZLT1VxNTJaUnNWek0xdS9nSWxN?=
- =?utf-8?B?U2FUUVNxQ2paU2xyYjkzbTFreG82TFNLMEhyczhZbkZFb0Fqc1JQWHd1QS8z?=
- =?utf-8?B?b24rZER0Nk54amZrZWFsKzdlL1VOd2hkRk11aVlQT2JIaFFjbXFxQ0ZSYXVO?=
- =?utf-8?B?bGYxdkp6QlVwZVl1L0ZwMGQ2NlV6UDBBU2JzTVhYaHJZd2FJRTVrOUJwSmVB?=
- =?utf-8?B?YTg0NGlvbE9lYzNGZHB5b1M1dmZaRW5ETzM2ajg1MnlZMlo4azl0ZllzelBM?=
- =?utf-8?B?Ulh6OS9UWnMzR3VzSW5IdXcvNGhDUEJKWmNGWFdQUlhyTnRCeUlFejJuQURW?=
- =?utf-8?B?Qy8xT3YxZlFWUXR6T3lDZ3NRU3dUU2sreUEvcUZJTzFqbUFmekZvbWYveXlY?=
- =?utf-8?B?SUlUZHUycFJOV3BPTDJia28wbTl1Szg1Sk14YWl2dDNGTG5OMW9tcVlrQ1Bq?=
- =?utf-8?B?dnhhbnRtSnJtWnFLRmRpN3h2aWdHc3pwS0U0YzJNNGIyYlVIbHVUbUl1aHRZ?=
- =?utf-8?B?dWtoNVZENDhzWktFQ1Z1ZENhZDFvSVJ2YmtRK0pCZHRKNkpYRk5UNklwR0l3?=
- =?utf-8?B?cVl6YUhaTWJvSGRWMXZUeFg0azFBdkFaREpFUkNRSk94OUZZUE84eHdobFp3?=
- =?utf-8?B?bnZrZEZQQzZiQXVMekFDbHllcldOUEp5Q0crZHM0UzAzN21VVEdvUS9leXFq?=
- =?utf-8?B?ekJVRFdLdWQ0MjlkbE5abUhLV2k1V3FrNzZ5UCtEWUh2ZGJaTnpucmI3NXlr?=
- =?utf-8?B?WTRXWk9UTXBjelRxZlhIZ1FuSUZpWXVkU0hvZ1BSTW5xOEtCNFRUM1oyTkJG?=
- =?utf-8?B?ZmxjeThiUUlDQWRraFEvVEN1K0RjcmpSR29ML0QzSzlEYWtQdDc0amVkRDAz?=
- =?utf-8?B?TG1wZjZDMW5CdG5Da0g4dzNEVEU1UFdackMrcFNzd1FnckJqRm43eW94b3JE?=
- =?utf-8?Q?m8dMZ1zaROZ5WSLSHBwD+W9h7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 276a4324-72e4-43a1-befd-08dbe235e747
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR12MB5284.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Hlor/9gS/2GDSfhXKDM0z/i6vLfZF0SUyaObSpUwSt1mKliMMxeDy0txh7hs?=
+ =?us-ascii?Q?h2Lto4zDjlMtt2fs5xMxdItQfKz5N/yAXGuQszPvuCDO/YuJSp7SiASVPtvM?=
+ =?us-ascii?Q?drcKFpPVS4A03Fck29BpG4L/acJ9SwJD4QdU35a8XgLUavsniYPS99Iv9CkN?=
+ =?us-ascii?Q?L6bjb6hJoC0InNWSjpETGjLDH9KRUkutC0imAhGFurpBYRE2vQWbnpdfIvhi?=
+ =?us-ascii?Q?6IoHRECo+WLLNS8AXI/pTzzxC749nWLVTJ2iNCzZ18Da/QnnoWTxVNp0/7g2?=
+ =?us-ascii?Q?F3UHg8683KhWpOqVGmpOWAi9DtuViK3dESxCK3Gzi5T4I3OO/3cWRbXYsYI3?=
+ =?us-ascii?Q?66ODAVsoumeMPuxGtgNYIQ1VtSANVCv9i9vU05VqGMkeUZBxt252Y4AsvAaz?=
+ =?us-ascii?Q?VEHxBwk2yiM9dJbUkM6Y6lsU4jE88RU29JL4EB3HVKSRT1OvIjHbZ3V6rFWd?=
+ =?us-ascii?Q?S5u1f3fltGc/ws059Rvp/0MgJ71WJQKVjuicU1bjS0GqANOYf3aiu4GX4YUB?=
+ =?us-ascii?Q?pa1NQWI4ZneqcvWt5xhEM6HtWlPSgZKTBO4qdt9hSv1mvsgxC40qfah/HUe2?=
+ =?us-ascii?Q?/0UO+UvX8R/LaIDOkXFZrwJGeVp06UFl69rTXYt3eBu70IHBNqpOFr43OjCx?=
+ =?us-ascii?Q?u25TvhYvf5oVvn3bd76oFkVU0fuStHTj70rCdpZhxMMHQtUsMPr7KetyimDv?=
+ =?us-ascii?Q?c+zXFU6MxgxqXsd0/p6kztUWL8RmMgbepsLZEvpPUfK1TiPyfoXOhFXiKz1n?=
+ =?us-ascii?Q?3jcXLvn+4M2gC1LHtUmfh27YRsWaAJlIzcadGVud12OGn+H/dATBNGmTZyHG?=
+ =?us-ascii?Q?/YegIgm3aMVV83+NCURraubjCPmF43MYdcAoujU5l7Hf6HRs01Ol9ml7mWYV?=
+ =?us-ascii?Q?JYSJ8mB+B/J3eL1BdvPXqGukn7W6vMet53GxHXAjhMJxMu+KcHtotghtWXVO?=
+ =?us-ascii?Q?TJQmGkCCjA3mV+KwUzuuTVJzF3hK3aQNoi2bt+Ctu5F7fVLju9naDDfMKvhe?=
+ =?us-ascii?Q?ZDP+fzQ/58VhgKJ3nGOZi4zdHYAlseGEDyJQI/fWXgx4bLt9yyceldIwjjJu?=
+ =?us-ascii?Q?0exQ9WH/H6qagYBpIh4w1nz3Ra6wVrAVTGVV7jjtRB+1y/AQ+/Bq0z2hvzxO?=
+ =?us-ascii?Q?K7/HD03hEhZjf2y+tQ0x1PfVhO2i/LsHOULEqQtm6TMyfVQHKvEz8juDoI45?=
+ =?us-ascii?Q?HWXyjKLmmNxicfli7bcLzUoWQ1wyKoshuJNOgZAvDKJMeZu52RVURwF10hWO?=
+ =?us-ascii?Q?/RLnYD+uJ+zQlS+YjwJwFctRl78DzuWB4+wb6+E0evK/PyjLoloqMs8jc5DP?=
+ =?us-ascii?Q?nWrKdQ+txzzizyGBl9WwjQ1JONstIYps0hWXnW26acOePMfmpi/hZiFCwfex?=
+ =?us-ascii?Q?uzbdV2WudX1xDbI3haEYQ8Y+YAxjqFS0ajmkYD0nZ7XnrdD3+yr5+ERrBxIL?=
+ =?us-ascii?Q?g/ZcwjCJ1toJo8yYIAteYQlQTgfJ5/0zmm/73kvfmsR1QuEacUGyMqDNN4MW?=
+ =?us-ascii?Q?sktK/NNZZTlZkls2TjEKeY0JUgxUQRHiiSUOA6jO7jbMeeJGMbzEY90/dAwV?=
+ =?us-ascii?Q?dX46zO1ML7lzz5DBaE/FSOqykWqdm3LsmJplUmaM2viJKszmlfnA5QKJoCUn?=
+ =?us-ascii?Q?+w=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e89d7538-a76c-4e4c-54e5-08dbe2370c99
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 21:42:14.6546
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 21:50:26.7089
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u+9wXxAVZMU75bVrhsq2EIkTItPoIGUTqp/ftohsCdZFZAV/zcCSWLU+eRX/7bd6ZA6hrsjBjofnEqbcUD2OjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4111
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fo1xkT23uNAHN4rcYvvvkiTbRhtuBXICjJjTrxd78ALLLu5ae+9HzlSyL4Q1AtRL/JD1+tTbVBJMEveSlD1+3xyj47fbyp2QaLOn2ySb1vE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR17MB4680
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 10, 2023 at 11:33:19AM +0800, Kefeng Wang wrote:
+> Replace nine compound_head() calls with one page_folio().
+>
 
+Sorry to echo Matthew, but this commit message is extremely
+insufficient and just outright wrong.
 
-On 2023-11-10 12:18, Hamza Mahfooz wrote:
-> For features that are implemented primarily in DMUB (e.g. PSR), it is
-> useful to be able to trace them at a DMUB level from the kernel,
-> especially when debugging issues. So, introduce a debugfs interface that
-> is able to read and set the DMUB trace mask dynamically at runtime and
-> document how to use it.
-> 
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Single pass through, here's the real change list:
+
+1) changes PageFLAG() calls to folio_test_FLAG calls
+2) changes compound_head() flag checks to folio_test_FLAG checks
+3) change page count to folio ref count
+   -- without even looking... is this even correct? Need more
+      explanation here. Is page count === folio ref count?
+
+So there are really 3 changes in this patch set that should be broken
+out separately, even if they all depend on folio flags, because they
+need separate explanation and validation for correctness.
+
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 > ---
->   Documentation/gpu/amdgpu/display/dc-debug.rst | 41 +++++++++
->   .../gpu/amdgpu/display/trace-groups-table.csv | 29 ++++++
->   .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 91 +++++++++++++++++++
->   .../gpu/drm/amd/display/dmub/inc/dmub_cmd.h   | 40 +++++++-
->   4 files changed, 199 insertions(+), 2 deletions(-)
->   create mode 100644 Documentation/gpu/amdgpu/display/trace-groups-table.csv
+>  fs/proc/page.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> diff --git a/Documentation/gpu/amdgpu/display/dc-debug.rst b/Documentation/gpu/amdgpu/display/dc-debug.rst
-> index 40c55a618918..817631b1dbf3 100644
-> --- a/Documentation/gpu/amdgpu/display/dc-debug.rst
-> +++ b/Documentation/gpu/amdgpu/display/dc-debug.rst
-> @@ -75,3 +75,44 @@ change in real-time by using something like::
->   
->   When reporting a bug related to DC, consider attaching this log before and
->   after you reproduce the bug.
-> +
-> +DMUB Firmware Debug
-> +===================
-> +
-> +Sometimes, dmesg logs aren't enough. This is especially true if a feature is
-> +implemented primarily in DMUB firmware. In such cases, all we see in dmesg when
-> +an issue arises is some generic timeout error. So, to get more relevant
-> +information, we can trace DMUB commands by enabling the relevant bits in
-> +`amdgpu_dm_dmub_trace_mask`.
-> +
-> +Currently, we support the tracing of the following groups:
-> +
-> +Trace Groups
-> +------------
-> +
-> +.. csv-table::
-> +   :header-rows: 1
-> +   :widths: 1, 1
-> +   :file: ./trace-groups-table.csv
-> +
-> +**Note: Not all ASICs support all of the listed trace groups**
-> +
-> +So, to enable just PSR tracing you can use the following command::
-> +
-> +  # echo 0x8020 > /sys/kernel/debug/dri/0/amdgpu_dm_dmub_trace_mask
-> +
-> +Then, you need to enable logging trace events to the buffer, which you can do
-> +using the following::
-> +
-> +  # echo 1 > /sys/kernel/debug/dri/0/amdgpu_dm_dmcub_trace_event_en
-> +
-> +Lastly, after you are able to reproduce the issue you are trying to debug,
-> +you can disable tracing and read the trace log by using the following::
-> +
-> +  # echo 0 > /sys/kernel/debug/dri/0/amdgpu_dm_dmcub_trace_event_en
-> +  # cat /sys/kernel/debug/dri/0/amdgpu_dm_dmub_tracebuffer
-> +
-> +So, when reporting bugs related to features such as PSR and ABM, consider
-> +enabling the relevant bits in the mask before reproducing the issue and
-> +attach the log that you obtain from the trace buffer in any bug reports that you
-> +create.
-> diff --git a/Documentation/gpu/amdgpu/display/trace-groups-table.csv b/Documentation/gpu/amdgpu/display/trace-groups-table.csv
-> new file mode 100644
-> index 000000000000..3f6a50d1d883
-> --- /dev/null
-> +++ b/Documentation/gpu/amdgpu/display/trace-groups-table.csv
-> @@ -0,0 +1,29 @@
-> +Name, Mask Value
-> +INFO, 0x1
-> +IRQ SVC, 0x2
-> +VBIOS, 0x4
-> +REGISTER, 0x8
-> +PHY DBG, 0x10
-> +PSR, 0x20
-> +AUX, 0x40
-> +SMU, 0x80
-> +MALL, 0x100
-> +ABM, 0x200
-> +ALPM, 0x400
-> +TIMER, 0x800
-> +HW LOCK MGR, 0x1000
-> +INBOX1, 0x2000
-> +PHY SEQ, 0x4000
-> +PSR STATE, 0x8000
-> +ZSTATE, 0x10000
-> +TRANSMITTER CTL, 0x20000
-> +PANEL CNTL, 0x40000
-> +FAMS, 0x80000
-> +DPIA, 0x100000
-> +SUBVP, 0x200000
-> +INBOX0, 0x400000
-> +SDP, 0x4000000
-> +REPLAY, 0x8000000
-> +REPLAY RESIDENCY, 0x20000000
-> +CURSOR INFO, 0x80000000
-> +IPS, 0x100000000
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> index 13a177d34376..06a73f283e9d 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-> @@ -2971,6 +2971,94 @@ static int allow_edp_hotplug_detection_set(void *data, u64 val)
->   	return 0;
->   }
->   
-> +static int dmub_trace_mask_set(void *data, u64 val)
-> +{
-> +	struct amdgpu_device *adev = data;
-> +	struct dmub_srv *srv = adev->dm.dc->ctx->dmub_srv->dmub;
-> +	enum dmub_gpint_command cmd;
-> +	enum dmub_status status;
-> +	u64 mask = 0xffff;
-> +	u8 shift = 0;
-> +	u32 res;
-> +	int i;
-> +
-> +	if (!srv->fw_version)
-> +		return -EINVAL;
-> +
-> +	for (i = 0;  i < 4; i++) {
-> +		res = (val & mask) >> shift;
-> +
-> +		switch (i) {
-> +		case 0:
-> +			cmd = DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD0;
-> +			break;
-> +		case 1:
-> +			cmd = DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD1;
-> +			break;
-> +		case 2:
-> +			cmd = DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD2;
-> +			break;
-> +		case 3:
-> +			cmd = DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD3;
-> +			break;
-> +		}
-> +
-> +		status = dmub_srv_send_gpint_command(srv, cmd, res, 30);
-> +
-> +		if (status != DMUB_STATUS_OK)
-> +			return -ETIMEDOUT;
-
-dmub_srv_send_gpint_command() explicitly sends out DMUB_STATUS_TIMEOUT, 
-so it would nice to check that instead of sending out timeout error 
-unconditionally.
-
-if (status == DMUB_STATUS_TIMEOUT)
-	return -ETIMEDOUT
-else if (status != DMUB_STATUS_OK)
-	return -EIO; // or something else more suited
-
-> +
-> +		usleep_range(100, 1000);
-> +
-> +		mask <<= 16;
-> +		shift += 16;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int dmub_trace_mask_show(void *data, u64 *val)
-> +{
-> +	enum dmub_gpint_command cmd = DMUB_GPINT__GET_TRACE_BUFFER_MASK_WORD0;
-> +	struct amdgpu_device *adev = data;
-> +	struct dmub_srv *srv = adev->dm.dc->ctx->dmub_srv->dmub;
-> +	enum dmub_status status;
-> +	u8 shift = 0;
-> +	u64 raw = 0;
-> +	u64 res = 0;
-> +	int i = 0;
-> +
-> +	if (!srv->fw_version)
-> +		return -EINVAL;
-> +
-> +	while (i < 4) {
-> +		status = dmub_srv_send_gpint_command(srv, cmd, 0, 30);
-> +
-> +		if (status == DMUB_STATUS_OK) {
-> +			status = dmub_srv_get_gpint_response(srv, (u32 *) &raw);
-> +
-> +			if (status != DMUB_STATUS_OK)
-> +				return -ETIMEDOUT;
-> +		} else {
-> +			return -ETIMEDOUT;
-> +		}
-> +
-> +		usleep_range(100, 1000);
-> +
-> +		cmd++;
-> +		res |= (raw << shift);
-> +		shift += 16;
-> +		i++;
-> +	}
-> +
-> +	*val = res;
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_DEBUGFS_ATTRIBUTE(dmub_trace_mask_fops, dmub_trace_mask_show,
-> +			 dmub_trace_mask_set, "0x%llx\n");
-> +
->   /*
->    * Set dmcub trace event IRQ enable or disable.
->    * Usage to enable dmcub trace event IRQ: echo 1 > /sys/kernel/debug/dri/0/amdgpu_dm_dmcub_trace_event_en
-> @@ -3880,6 +3968,9 @@ void dtn_debugfs_init(struct amdgpu_device *adev)
->   	debugfs_create_file_unsafe("amdgpu_dm_force_timing_sync", 0644, root,
->   				   adev, &force_timing_sync_ops);
->   
-> +	debugfs_create_file_unsafe("amdgpu_dm_dmub_trace_mask", 0644, root,
-> +				   adev, &dmub_trace_mask_fops);
-> +
->   	debugfs_create_file_unsafe("amdgpu_dm_dmcub_trace_event_en", 0644, root,
->   				   adev, &dmcub_trace_event_state_fops);
->   
-> diff --git a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
-> index ed4379c04715..aa6e6923afed 100644
-> --- a/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
-> +++ b/drivers/gpu/drm/amd/display/dmub/inc/dmub_cmd.h
-> @@ -818,18 +818,54 @@ enum dmub_gpint_command {
->   	 * RETURN: Lower 32-bit mask.
->   	 */
->   	DMUB_GPINT__UPDATE_TRACE_BUFFER_MASK = 101,
-> +
->   	/**
-> -	 * DESC: Updates the trace buffer lower 32-bit mask.
-> +	 * DESC: Updates the trace buffer mask bit0~bit15.
->   	 * ARGS: The new mask
->   	 * RETURN: Lower 32-bit mask.
->   	 */
->   	DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD0 = 102,
-> +
->   	/**
-> -	 * DESC: Updates the trace buffer mask bi0~bit15.
-> +	 * DESC: Updates the trace buffer mask bit16~bit31.
->   	 * ARGS: The new mask
->   	 * RETURN: Lower 32-bit mask.
->   	 */
->   	DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD1 = 103,
-> +
-> +	/**
-> +	 * DESC: Updates the trace buffer mask bit32~bit47.
-> +	 * ARGS: The new mask
-> +	 * RETURN: Lower 32-bit mask.
-> +	 */
-> +	DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD2 = 114,
-> +
-> +	/**
-> +	 * DESC: Updates the trace buffer mask bit48~bit63.
-> +	 * ARGS: The new mask
-> +	 * RETURN: Lower 32-bit mask.
-> +	 */
-> +	DMUB_GPINT__SET_TRACE_BUFFER_MASK_WORD3 = 115,
-> +
-> +	/**
-> +	 * DESC: Read the trace buffer mask bi0~bit15.
-> +	 */
-> +	DMUB_GPINT__GET_TRACE_BUFFER_MASK_WORD0 = 116,
-> +
-> +	/**
-> +	 * DESC: Read the trace buffer mask bit16~bit31.
-> +	 */
-> +	DMUB_GPINT__GET_TRACE_BUFFER_MASK_WORD1 = 117,
-> +
-> +	/**
-> +	 * DESC: Read the trace buffer mask bi32~bit47.
-> +	 */
-> +	DMUB_GPINT__GET_TRACE_BUFFER_MASK_WORD2 = 118,
-> +
-> +	/**
-> +	 * DESC: Updates the trace buffer mask bit32~bit63.
-> +	 */
-> +	DMUB_GPINT__GET_TRACE_BUFFER_MASK_WORD3 = 119,
->   };
->   
->   /**
