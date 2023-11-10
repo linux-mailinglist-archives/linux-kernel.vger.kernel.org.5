@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC4D7E77ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6A07E77EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjKJDU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S231624AbjKJDWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:22:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjKJDU4 (ORCPT
+        with ESMTP id S229452AbjKJDWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:20:56 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0071644B8
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:20:53 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso1324647b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 19:20:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699586453; x=1700191253; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oLPVdcdPahvGqeZSn1hBEA6ty5PwVTcz/p3Am2TK/Fk=;
-        b=blh59K7sShwPHw1sSxE0DF1FhngWHMUepEgNDa/RefwBrdMU7L+Dpz7DLxObYIFc08
-         c4wXhNrp2T1YnqaXbsmu47tckRd7jJPdbfEM3EED7sQEKIOfTAslAeKBA/4F2sofwfxA
-         Jxmynf9EKTx6ndeI8StJakR99Mzr+CPdNu9+gS+iTy6BhQF74zvtlER4tCL70YdJGSS9
-         D+Mtf+NJ8y+Da56EH0dW90a3Pv3jND+hzrJWkB/qHI4dqSQHsNkqItJR5JK8nJ2L1kdH
-         8gi/hekMvcQsz5arc1KCZKCnSDK1GcCzeSQ6nRz0XVk76VS1koW/XTzZhrji4R0Ix8zV
-         JEGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699586453; x=1700191253;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oLPVdcdPahvGqeZSn1hBEA6ty5PwVTcz/p3Am2TK/Fk=;
-        b=UZAS6uLe8hmiSx7RNUvUWjkyjxzfNOy2n3xPIXiuQyaIJakZ1K5Ovmp24BDEiClM3z
-         Z0fBiVR1ilvPkzsf4Nq/slPwUQ70Y9t8yXVnlUiPCO+HVG79NjhXXsJ3JHUiGBYdzgx9
-         fYN9RUUXVx1eTshUZkqKRt01Sd2tmfYYAsCDmMn6k/tOLXo2zUwKSZJlRD/5XTSXfOTQ
-         1AantoLp5x74eq6Y83iKfWX/sWktoXQCG5YbdZxlDAV/GenbYMK1iXY15g0lSS9ne5kF
-         myMxss5eKxLLVUcABlrz+4xRhTEFvfw2BVP4TzndrfPLz9zMx8Zjwxof+TW+o5DVrYGz
-         G0ww==
-X-Gm-Message-State: AOJu0Yx3Ovc70lAUpN79jUbgAAq445AaTNM2UGxe8kjSYHPlJNww/T+1
-        tuJ0ZQB/ZN0kdROLlam+dcs=
-X-Google-Smtp-Source: AGHT+IEbiGefrbX9TVYVrDTntaCNttsNHYhV61VlArQP+GAeKY4rEaO/9nBy4qgKfCXGiAMzLbjsog==
-X-Received: by 2002:a62:e815:0:b0:6c4:d615:2169 with SMTP id c21-20020a62e815000000b006c4d6152169mr1293438pfi.10.1699586453333;
-        Thu, 09 Nov 2023 19:20:53 -0800 (PST)
-Received: from localhost ([107.155.12.245])
-        by smtp.gmail.com with ESMTPSA id du4-20020a056a002b4400b00694ebe2b0d4sm11448590pfb.191.2023.11.09.19.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 19:20:53 -0800 (PST)
-From:   chenqiwu <qiwuchen55@gmail.com>
-X-Google-Original-From: chenqiwu <qiwu.chen@transsion.com>
-To:     axboe@kernel.dk, keescook@chromium.org, akpm@linux-foundation.org,
-        npiggin@gmail.com, ebiederm@xmission.com
-Cc:     michael.christie@oracle.com, mark.rutland@arm.com,
-        jannh@google.com, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, chenqiwu <qiwu.chen@transsion.com>
-Subject: [PATCH v2] exit: dump thread info on global init exit
-Date:   Fri, 10 Nov 2023 11:20:43 +0800
-Message-Id: <20231110032043.34516-1-qiwu.chen@transsion.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 9 Nov 2023 22:22:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7B044B8;
+        Thu,  9 Nov 2023 19:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699586539; x=1731122539;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LyXh89DZFds6kfqwwgiPNw2dRbfgv6YGyU8KIF0+n1g=;
+  b=XVTRXLx0hdti7N+UfyyD79bsnJC9xs2atgxYKZ2xDPlApPkXMbCGlTZi
+   5UAIKeyTuanPocSzrMwiUU30hogQoFHW5v+0K81ukbUIL8dSLLFJM5ugA
+   0Src9g+BSUT6E5h+oF0tZpPAXytlkPvtjdF43cb9/ekoVCNB3UFkbEpdV
+   jys+d03Hi2uO3XiW2/9otn1XnqUN5/7VNzBaVYw+XCedyEXJVBU94+pYj
+   iI4OxF/nMpvtPhNTlqeOn6ExVXR2getYEwK0OSRO9U5D5fTMVznhv+aVG
+   RjF3OR0jxIiybTddWiyIn56znXIZ95EPAtoq8RyC/JEEpFhm25UGLjvyE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="8777558"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="8777558"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 19:22:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="1010837947"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="1010837947"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 19:22:15 -0800
+Message-ID: <5d0c1946-0b22-4983-868b-db7f79fe16bc@linux.intel.com>
+Date:   Fri, 10 Nov 2023 11:22:13 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 07/26] KVM: x86/pmu: Apply "fast" RDPMC only to Intel
+ PMUs
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Like Xu <likexu@tencent.com>
+References: <20231110021306.1269082-1-seanjc@google.com>
+ <20231110021306.1269082-8-seanjc@google.com>
+From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <20231110021306.1269082-8-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, there are various global init exit issues encountered
-on Andriod/linux system. It's hard to debug these issues on product
-environment without a usable coredump, This patch dump the last
-exit thread executable sections and regs to find the exit reason
-before panic.
 
-Signed-off-by: chenqiwu <qiwu.chen@transsion.com>
-Tested-by: chenqiwu <qiwu.chen@transsion.com>
----
- kernel/exit.c | 79 +++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 76 insertions(+), 3 deletions(-)
+On 11/10/2023 10:12 AM, Sean Christopherson wrote:
+> Move the handling of "fast" RDPMC instructions, which drop bits 63:31 of
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index ee9f43bed49a..af2e24bc3ecd 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -13,6 +13,7 @@
- #include <linux/sched/task.h>
- #include <linux/sched/task_stack.h>
- #include <linux/sched/cputime.h>
-+#include <linux/sched/debug.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/capability.h>
-@@ -806,6 +807,76 @@ static void synchronize_group_exit(struct task_struct *tsk, long code)
- 	spin_unlock_irq(&sighand->siglock);
- }
- 
-+/*
-+ * This function only dump thread executable sections to reduce maps space,
-+ * since an unhandled falut in user mode is likely generated from code section.
-+ */
-+static void dump_thread_maps_info(struct task_struct *tsk)
-+{
-+	struct vm_area_struct *vma;
-+	struct mm_struct *mm = tsk->mm;
-+
-+	if (!mmap_read_trylock(mm))
-+		return;
-+
-+	VMA_ITERATOR(vmi, mm, 0);
-+	pr_info("%s-%d: Dump maps info start\n", tsk->comm, task_pid_nr(tsk));
-+	for_each_vma(vmi, vma) {
-+		struct file *file = vma->vm_file;
-+		int flags = vma->vm_flags;
-+		unsigned long long pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
-+
-+		if (file) {
-+			if (flags & VM_EXEC) {
-+				char tpath[256] = {0};
-+				char *pathname = d_path(&file->f_path, tpath, sizeof(tpath));
-+
-+				pr_info("%08lx-%08lx %c%c%c%c %08llx %s\n",
-+					vma->vm_start, vma->vm_end,
-+					flags & VM_READ ? 'r' : '-',
-+					flags & VM_WRITE ? 'w' : '-',
-+					flags & VM_EXEC ? 'x' : '-',
-+					flags & VM_MAYSHARE ? 's' : 'p',
-+					pgoff, pathname);
-+			}
-+		} else {
-+			const char *name = arch_vma_name(vma);
-+
-+			if (!name) {
-+				struct mm_struct *mm = vma->vm_mm;
-+
-+				if (mm) {
-+					if (vma_is_initial_heap(vma))
-+						name = "[heap]";
-+					else if (vma_is_initial_stack(vma))
-+						name = "[stack]";
-+				} else {
-+					name = "[vdso]";
-+				}
-+			}
-+
-+			if (name && (flags & VM_EXEC)) {
-+				pr_info("%08lx-%08lx %c%c%c%c %08llx %s\n",
-+					vma->vm_start, vma->vm_end,
-+					flags & VM_READ ? 'r' : '-',
-+					flags & VM_WRITE ? 'w' : '-',
-+					flags & VM_EXEC ? 'x' : '-',
-+					flags & VM_MAYSHARE ? 's' : 'p', pgoff, name);
-+			}
-+		}
-+	}
-+	mmap_read_unlock(mm);
-+	pr_info("%s-%d: Dump maps info end\n", tsk->comm, task_pid_nr(tsk));
-+}
-+
-+static void dump_thread_info(struct task_struct *tsk)
-+{
-+	struct pt_regs *regs = task_pt_regs(tsk);
-+
-+	dump_thread_maps_info(tsk);
-+	show_regs(regs);
-+}
-+
- void __noreturn do_exit(long code)
- {
- 	struct task_struct *tsk = current;
-@@ -833,12 +904,14 @@ void __noreturn do_exit(long code)
- 	group_dead = atomic_dec_and_test(&tsk->signal->live);
- 	if (group_dead) {
- 		/*
--		 * If the last thread of global init has exited, panic
--		 * immediately to get a useable coredump.
-+		 * If the last thread of global init has exited, dump
-+		 * some usable information before panic.
- 		 */
--		if (unlikely(is_global_init(tsk)))
-+		if (unlikely(is_global_init(tsk))) {
-+			dump_thread_info(tsk);
- 			panic("Attempted to kill init! exitcode=0x%08x\n",
- 				tsk->signal->group_exit_code ?: (int)code);
-+		}
- 
- #ifdef CONFIG_POSIX_TIMERS
- 		hrtimer_cancel(&tsk->signal->real_timer);
--- 
-2.25.1
 
+63:32?
+
+
+> the count, to Intel.  The "fast" flag, and all flags for that matter, are
+> Intel-only and aren't supported by AMD.
+>
+> Opportunistically replace open coded bit crud with proper #defines.
+>
+> Fixes: ca724305a2b0 ("KVM: x86/vPMU: Implement AMD vPMU code for KVM")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/pmu.c           |  3 +--
+>   arch/x86/kvm/vmx/pmu_intel.c | 20 ++++++++++++++++----
+>   2 files changed, 17 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 99ed72966528..e3ba5e12c2e7 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -499,10 +499,9 @@ static int kvm_pmu_rdpmc_vmware(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+>   
+>   int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
+>   {
+> -	bool fast_mode = idx & (1u << 31);
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>   	struct kvm_pmc *pmc;
+> -	u64 mask = fast_mode ? ~0u : ~0ull;
+> +	u64 mask = ~0ull;
+>   
+>   	if (!pmu->version)
+>   		return 1;
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index 3bac3b32b485..c6ea128ea7c8 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -20,6 +20,10 @@
+>   #include "nested.h"
+>   #include "pmu.h"
+>   
+> +/* Perf's "BASE" is wildly misleading, this is a single-bit flag, not a base. */
+> +#define INTEL_RDPMC_FIXED	INTEL_PMC_FIXED_RDPMC_BASE
+> +#define INTEL_RDPMC_FAST	BIT(31)
+> +
+>   #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
+>   
+>   static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+> @@ -55,12 +59,17 @@ static struct kvm_pmc *intel_pmc_idx_to_pmc(struct kvm_pmu *pmu, int pmc_idx)
+>   	}
+>   }
+>   
+> +static u32 intel_rdpmc_get_masked_idx(struct kvm_pmu *pmu, u32 idx)
+
+
+inline?
+
+
+> +{
+> +	return idx & ~(INTEL_RDPMC_FIXED | INTEL_RDPMC_FAST);
+> +}
+> +
+>   static bool intel_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> -	bool fixed = idx & (1u << 30);
+> +	bool fixed = idx & INTEL_RDPMC_FIXED;
+>   
+> -	idx &= ~(3u << 30);
+> +	idx = intel_rdpmc_get_masked_idx(pmu, idx);
+>   
+>   	return fixed ? idx < pmu->nr_arch_fixed_counters
+>   		     : idx < pmu->nr_arch_gp_counters;
+> @@ -70,11 +79,14 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
+>   					    unsigned int idx, u64 *mask)
+>   {
+>   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> -	bool fixed = idx & (1u << 30);
+> +	bool fixed = idx & INTEL_RDPMC_FIXED;
+>   	struct kvm_pmc *counters;
+>   	unsigned int num_counters;
+>   
+> -	idx &= ~(3u << 30);
+> +	if (idx & INTEL_RDPMC_FAST)
+> +		*mask &= GENMASK_ULL(31, 0);
+> +
+> +	idx = intel_rdpmc_get_masked_idx(pmu, idx);
+>   	if (fixed) {
+>   		counters = pmu->fixed_counters;
+>   		num_counters = pmu->nr_arch_fixed_counters;
+Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
