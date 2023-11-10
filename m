@@ -2,171 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEF37E7F72
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30C87E82E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjKJRyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S236053AbjKJTkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjKJRwu (ORCPT
+        with ESMTP id S236081AbjKJTjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:52:50 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2078.outbound.protection.outlook.com [40.107.20.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199FA3AE3D;
-        Fri, 10 Nov 2023 07:36:53 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SNSFRIqUj9wuZhNpIuoSfjS6UmDkj6brNV2y7+TN2nTqa/lfGLrG+6PROxQRZNWTFhAFB75oQyYERGdOQ2wN1LmCFfwBcZ2f8BjGxY4PSkBWwQzOQtQkpzIelZq3noB1x73oz0vyXNyF/k6o71Md+CwdwXSqM7XXQXNA63gZLyym1I8kjNnmI7Q1Tt8UgUnetDtDW1fmkGm5Ckff539x7STCue1Wo22hxkvrJl6bipOrBhnQE/7SiOc9z4C9MKKo8XWpoMrxWBkpYEgcF5eyiru+P9hJirF65f3/iWnpcsyuA+dZoKAbrT1AjRCxyglAdlQkS5fBnB8rGvj2F1Okyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3znICEULwDOmgOPhI57f8Q0snBcjBQHEFLGeQ9Zlw2Y=;
- b=ff7w7J7nuCAMzf6ezz8lit6EF6P56wVBmnC/BV2Sl885AhRKKmADnyT5gTfnTCWUSzSMSd/I0h4JtuIjatOii6zyjsaWBi8pnLqniB9hP5U6oH07onXj+N57E4M0KDGQBskdm4tn80W98uiqvt7jl5EIXT5ps+SnEQJoitgtlIltt2/OdWCZ0nS9kbKBXq4VTryPfYXrNilR9dQSCrZoM1iQsyNqr/HUCAmtJ8swotpUPtErx9l31dztUm6g/Bb46EmBRr/G4PiGyYwF6jefPnDJF150IBciVuMd18qfU2SGuTC7C1Xqtfwhfor59N1pUrLJqq+/9SaxPdwa6e2ghg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3znICEULwDOmgOPhI57f8Q0snBcjBQHEFLGeQ9Zlw2Y=;
- b=jC1ujoestyI4FNfCOiPdSA2o+PAwIOLJH5sn2oW5eeb4MnPJfCbhbDP/C8lQHtKMszNr0L7rd4H+i2CeXro1g7x/MtC9PTWmZaFlCfggZxxtO2jq4aYerH89Tcz8F3WZzgiMn5gg+To3vo7kChZMBDSJPOTgxJ2shw99PX2zKXk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DB9PR04MB9703.eurprd04.prod.outlook.com (2603:10a6:10:302::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.10; Fri, 10 Nov
- 2023 15:36:49 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::55e7:3fd0:68f4:8885]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::55e7:3fd0:68f4:8885%4]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
- 15:36:49 +0000
-Date:   Fri, 10 Nov 2023 10:36:43 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        imx@lists.linux.dev, joy.zou@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
-        vkoul@kernel.org
-Subject: Re: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for
- i.MX95
-Message-ID: <ZU5OC4FqQ9DQF+Co@lizhi-Precision-Tower-5810>
-References: <20231109212059.1894646-1-Frank.Li@nxp.com>
- <20231109212059.1894646-5-Frank.Li@nxp.com>
- <f095ba95-ce76-4821-87b7-083f4162fc63@linaro.org>
- <ZU5FN1dECvzDIUHb@lizhi-Precision-Tower-5810>
- <93f1625f-ce01-4628-91e2-e3bfd024466c@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93f1625f-ce01-4628-91e2-e3bfd024466c@linaro.org>
-X-ClientProxiedBy: PH8PR02CA0006.namprd02.prod.outlook.com
- (2603:10b6:510:2d0::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Fri, 10 Nov 2023 14:39:47 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C75EA3AE3F
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 07:38:04 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc2a0c7c6cso22510655ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 07:38:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699630684; x=1700235484;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ur/WIJSmfPyJzvii2xW+yxcTVmdevk5HaQf1vEB1c9U=;
+        b=LbbEgFBCu0MKjlqvelK2UJuL5pNp0ne1Rz/JlPjKstOwnQ/+gxAUNs+1XUABUJ4Vqm
+         0BhKIoZzCtwJdkGDVdUY9Upo78Pr//tGmEQ5kYia/+ohPpNx2L8g87J35y4mSRf79nPM
+         yFLdTnIbbTbyWOewIzgr4TwS9lme2wbve9xS8zTd4J+0ZjFCZeqcSmvhbxRVM75gv4X/
+         eVhJYNdG24Gxzid2tND9dIhqY3FONki8gSleqo01tblwgiXpM1i/MLLhiColrjwQub21
+         qbzgmNgqnQBWYvaNBeQN3aC7Qb81JOeVw1Dp2/Et1Sl025koSseGt6arcDbym1XqynhA
+         QcYg==
+X-Gm-Message-State: AOJu0Yz2Va6khtCoKsUVuzsLh/zVj8qbObus26SJuctfnlatVyphIeID
+        uGxGJ2/+cucf2TLkdpi3BU9K82oYannHoj1WIE0OLXultB6TXt0=
+X-Google-Smtp-Source: AGHT+IG37jRbI9e49RJzeV69FmIrTK6cJ5DirCOs7ob1AAHNC1y0D6W4rEyxjBy8yK4hV0QUmaMDXWeiJ1QoX3q9/guaEoTMhD6N
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DB9PR04MB9703:EE_
-X-MS-Office365-Filtering-Correlation-Id: 901a05b7-4eb8-4f9b-bd97-08dbe202db14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sn9kv/3q3lQQ7obVKolIfkzJR5pAe331i7oy5s6hMTuTV8Ax5gjz1YYGEJejSDjDVfUfbY7NDvSb+f+qDEPtAB4eZADeYcemXEasu+PbA3zHqcLEy4tT7WniputNvtS0N8TlTLyU7b7j4YN1J4f2a2kN1UjuDeqKqowRZu5MtXBLtC5mpCcLLaXC14qP5bgYX4LvA5+iJxYt6UliYdiIFeXbfvzHbKuIYl7vruJC9UIuVYl//3y5qeQdnNhiG5ZopNhTZObIbR1xlPy48nAKIsGXJODBef4PtBvxQhZw9OvPBwMtgx5AvluA8r2WR7KBpzoNWIVxCzYJNjOjan7lRmnEYcyTvH77FpwMDljTCOziMRjVEAN/Ov7+hfPvoTjJjcjIsIBGKbJifLank1ADUNv1aQYo/s4IDmSNdbooKoIni6I6ly0B197xo5sHdqTKN+uCqpNa3Zrw45KIV6N9PIVXKApcy8URBm8lKwF2uzrGj1raFXKKfBDmN8m8Kaf++7phXJgyiPgX1gSOBGaH7zEHh371uUtKv8EjxMGAvmcl5XVDEeWO2bf+6FsWCVfW+69vYOXwAyRAwuVQdT7KHjSIWpnsVJXioNq6J0hcXucTzwNEtLcAnUMYjmc0OsKhggkbg7visFx9gaoakjm9tg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(396003)(366004)(136003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(52116002)(9686003)(26005)(6512007)(86362001)(38350700005)(38100700002)(478600001)(83380400001)(2906002)(5660300002)(6506007)(53546011)(6666004)(8936002)(4326008)(8676002)(66476007)(66946007)(66556008)(316002)(6916009)(41300700001)(33716001)(6486002)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E6s/JytFLpEM+iQ+QHdXR/4VtLPUHDIgJbq6ZaPNKR5B+QSvy9Qs3Hz0xjBO?=
- =?us-ascii?Q?k2WBMATQJlWesbNJDgWnujCeqw9CMkAAZMM7t5Dkm4rTOo6HMIocph2QNS5y?=
- =?us-ascii?Q?vuwjydlt4CnWi0Y4rxjmUwhGdagFfQB2jHWItRpmPxznYexQdvu7TPrkpLCb?=
- =?us-ascii?Q?J9Dvv9bY5iTxJvPTU9dWqMNdw7PJVuqe+/bAKFskwgBiKmnSmbvH2lH81awX?=
- =?us-ascii?Q?tkWtrwKOtLcx0OclIp6zH8xes9tDnTre+JxBH/hO69izzSlAU0pJ8KeIPvf3?=
- =?us-ascii?Q?K0kIu0ia4qlByslt0bDPQzqRFAtnM/QaGurvPlNRRZLNmH7fMeejxgPfHA3v?=
- =?us-ascii?Q?SVhyWHl9av6Wu0/8tdcK1z+sj330R+neU74D3LxKr+E3Eb7yMl3YiNOUMT9Q?=
- =?us-ascii?Q?UVNNXM8Q5DeMGpVVFzRD8c6oLyjDuSBYr8k+hVV/4BH78NsxxLBlmWaw7pVO?=
- =?us-ascii?Q?qvTgIhpgI5TcwwvFxkSvvTRAMXFW27fhlcXn/7qUTLxeBnD6/6RFWiHl0bQT?=
- =?us-ascii?Q?EQe7hX8W5ZuoN62GnN55Na//oEn1l1E4Vb35tHpvbS4FwraB93Zeu4ixU4VE?=
- =?us-ascii?Q?lSrx6nk4mmL/6GribDh4jiDFJkm+Mgiqy8F8EMeFQ16yLXm24hrIsSf7zjEx?=
- =?us-ascii?Q?n3zm1tqyHrX5cyFKvBrhK01DGfWpKgQ5JRREjJj1zgvDOa60siuGkXPY+cRQ?=
- =?us-ascii?Q?MyCSo28ioKdw/mhSh8zhah2WbGkHqYVgvvCrB6HH1cm7eo+61RuEJWCZVPpq?=
- =?us-ascii?Q?sd60aDd7wp/a608bMHAuecfANeg8qSo/jyo9D7KcTsck0kif+9CxJyOFWr8T?=
- =?us-ascii?Q?jkWI3mWY9l1iLJQhKPb/Qt8qrNiqB8Y1wgxZWnd3Sb4HYKXHAXW0Se4B7mMn?=
- =?us-ascii?Q?4S4nYXAsS+v46FgT+3zeIBzVhG5cH1MkWUzxdUEv00mV/T4V+AvxNAYkOnXU?=
- =?us-ascii?Q?famhWictx28B7YMeUDTeFggVDUgHoayweWCUPnDqDxweWT0LMz0B/n9+68bz?=
- =?us-ascii?Q?UrGJGlA88FrNQD1xuIwUi4XxOJjlEoNKuT2ehGzG2xeKIZhO5M5rUd7FYv17?=
- =?us-ascii?Q?kOusSlx+vX6oxd3BZBQ0vQmrfnJfBtFJhCKwM1dIkAfdjcKoCHSQCNqH3FI6?=
- =?us-ascii?Q?skz6SfOYWDW0qWXzvW/TxxIPYeWulSSyp6Yu5iIXlyVBpbV5wMKL0x9BrU0x?=
- =?us-ascii?Q?MiNerhvNZL01CVd/0j+jZ2EzAL+Q4zE24SftbbBP6fmNi3elxdL9oN/vjt+A?=
- =?us-ascii?Q?1Zcn65hLyN0+TeDiX9EkZv7kO3LsVQVD8IHqU3KrMlLqG3jcGHute825fBPj?=
- =?us-ascii?Q?LydKOd1Oe6HIAPvlvZUOlk0klLar5hcjURbqGXS/BE4kuaw2Lwrcn9OBDTlT?=
- =?us-ascii?Q?QsErX4y1SyPziIXy6EPNd9qeD3EAZbHrIqRO+z7fuszZwzf+fz8LR6rD3zTg?=
- =?us-ascii?Q?sFAa0QhlSbHTpLLkSf7VcwK09X2o45LRDyGTtqUEbS10S3QTW3SVS5nELAmr?=
- =?us-ascii?Q?v2o7x2l82x9p/sER5lCKjhY3zcXFt+AFVVDcXxapMbiKFnR6HZ3aqZgtKRrx?=
- =?us-ascii?Q?bsjBUudFMGQYjuydOaQeRGuEI7Rgi+razKTCdzZ7?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 901a05b7-4eb8-4f9b-bd97-08dbe202db14
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 15:36:49.7742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6r96sL0ZwH9jPdCRn7mthxvr9XEU5dnnEAvpINs1uBjE6/5gESfehexgucG3TqazraOp0Nw2wVzm0ivl2aXcaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9703
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:efc1:b0:1cc:56cc:787e with SMTP id
+ ja1-20020a170902efc100b001cc56cc787emr1335805plb.4.1699630684287; Fri, 10 Nov
+ 2023 07:38:04 -0800 (PST)
+Date:   Fri, 10 Nov 2023 07:38:04 -0800
+In-Reply-To: <GV1PR10MB656399107C3F56D67CBE65C2E8AEA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002fbb830609ce1b6b@google.com>
+Subject: Re: [syzbot] [usb] kernel BUG in __page_table_check_zero
+From:   syzbot <syzbot+7a9bbb158a7a1071eb27@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yuran.pereira@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 04:10:46PM +0100, Krzysztof Kozlowski wrote:
-> On 10/11/2023 15:59, Frank Li wrote:
-> >>>
-> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> >>> ---
-> >>
-> >> Three kbuild reports with build failures.
-> >>
-> >> I have impression this was never build-tested and reviewed internally
-> >> before posting. We had such talk ~month ago and I insisted on some
-> >> internal review prior submitting to mailing list. I did not insist on
-> >> internal building of patches, because it felt obvious, so please kindly
-> >> thoroughly build, review and test your patches internally, before using
-> >> the community for this. I am pretty sure NXP can build the code they send.
-> > 
-> > This build error happen at on special uncommon platform m6800. 
-> 
-> Indeed csky and alpha are special. Let's see if LKP will find other
-> platforms as well.
-> 
-> > Patch is tested in imx95 arm64 platform.
-> 
-> That's not enough. It's trivial to build test on riscv, ppc, x86_64 and
-> i386. Building on only one platform is not that much.
-> 
-> > 
-> > I have not machine to cover all platform.
-> 
-> I was able to do it as a hobbyist, on my poor laptop. What is exactly
-> the problem that as hobbyist I can, but NXP cannot?
+Hello,
 
-There are also difference configs. I think 'kernel test robot' is very good
-tools. If there are guide to mirror it, we can try. It is not neccesary to
-duplicate to develop a build test infrastrue.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+kernel BUG in __page_table_check_zero
 
-The issue is not that run build test. The key problem is how to know a
-protential problem will be exist, and limited a build/config scrope.
+RBP: 00007f6cf0ffe120 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000011012 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007f6cf1d9bf80 R15: 00007ffc98ff0338
+ </TASK>
+==> if* vma_use_count 1
+------------[ cut here ]------------
+kernel BUG at mm/page_table_check.c:146!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5467 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-15859-g89cdf9d55601-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:__page_table_check_zero+0x2d5/0x4a0 mm/page_table_check.c:146
+Code: 98 ff 48 ff cb e9 b5 fd ff ff e8 e6 9f 98 ff 48 ff cb e9 27 fe ff ff e8 d9 9f 98 ff 0f 0b e8 d2 9f 98 ff 0f 0b e8 cb 9f 98 ff <0f> 0b f3 0f 1e fa 4c 89 f6 48 81 e6 ff 0f 00 00 31 ff e8 f4 a3 98
+RSP: 0018:ffffc900049f7800 EFLAGS: 00010293
+RAX: ffffffff81f620c5 RBX: dffffc0000000000 RCX: ffff8880263f1dc0
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880160ea044
+RBP: ffff8880160ea044 R08: ffff8880160ea047 R09: 1ffff11002c1d408
+R10: dffffc0000000000 R11: ffffed1002c1d409 R12: 0000000000000000
+R13: 1ffffffff243299c R14: 000000000000000a R15: ffff8880160ea000
+FS:  00007f6cf0ffe6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f9eb7b1680 CR3: 000000001d34c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ page_table_check_free include/linux/page_table_check.h:41 [inline]
+ free_pages_prepare mm/page_alloc.c:1138 [inline]
+ __free_pages_ok+0xc43/0xd70 mm/page_alloc.c:1267
+ dec_usb_memory_use_count+0x259/0x350 drivers/usb/core/devio.c:198
+ usbdev_mmap+0x89e/0x9d0
+ call_mmap include/linux/fs.h:2025 [inline]
+ mmap_region+0xef2/0x2240 mm/mmap.c:2851
+ do_mmap+0x8d3/0xfa0 mm/mmap.c:1379
+ vm_mmap_pgoff+0x1dc/0x410 mm/util.c:546
+ ksys_mmap_pgoff+0x4ff/0x6d0 mm/mmap.c:1425
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f6cf1c7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6cf0ffe0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
+RAX: ffffffffffffffda RBX: 00007f6cf1d9bf80 RCX: 00007f6cf1c7cae9
+RDX: 0000000001000002 RSI: 0000000000400000 RDI: 0000000020000000
+RBP: 00007f6cf0ffe120 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000011012 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000000b R14: 00007f6cf1d9bf80 R15: 00007ffc98ff0338
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__page_table_check_zero+0x2d5/0x4a0 mm/page_table_check.c:146
+Code: 98 ff 48 ff cb e9 b5 fd ff ff e8 e6 9f 98 ff 48 ff cb e9 27 fe ff ff e8 d9 9f 98 ff 0f 0b e8 d2 9f 98 ff 0f 0b e8 cb 9f 98 ff <0f> 0b f3 0f 1e fa 4c 89 f6 48 81 e6 ff 0f 00 00 31 ff e8 f4 a3 98
+RSP: 0018:ffffc900049f7800 EFLAGS: 00010293
+RAX: ffffffff81f620c5 RBX: dffffc0000000000 RCX: ffff8880263f1dc0
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880160ea044
+RBP: ffff8880160ea044 R08: ffff8880160ea047 R09: 1ffff11002c1d408
+R10: dffffc0000000000 R11: ffffed1002c1d409 R12: 0000000000000000
+R13: 1ffffffff243299c R14: 000000000000000a R15: ffff8880160ea000
+FS:  00007f6cf0ffe6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f9eb7b1680 CR3: 000000001d34c000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Even I have risc\ppc\x86_64 built before I submmit patch, still can't
-capture build error if I missed just one platform mc6800.
 
-For `readq` error also depend on the configs.
+Tested on:
 
-Actually, we major focus on test edmav1, .... v5 at difference platforms
-before submit patches. 
+commit:         89cdf9d5 Merge tag 'net-6.7-rc1' of git://git.kernel.o..
+git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=107ab1c0e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=97c84b399d02b00b
+dashboard link: https://syzkaller.appspot.com/bug?extid=7a9bbb158a7a1071eb27
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17f7a747680000
 
-> 
-> Best regards,
-> Krzysztof
-> 
