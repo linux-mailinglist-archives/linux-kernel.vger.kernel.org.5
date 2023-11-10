@@ -2,215 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 893327E811D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AB17E814B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345827AbjKJSYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S1345485AbjKJS1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:27:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345550AbjKJSXB (ORCPT
+        with ESMTP id S1346166AbjKJS0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:23:01 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB75E38EB1;
-        Fri, 10 Nov 2023 06:29:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699626552; x=1731162552;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CQPhuJVE++kFC4YlmaSzuRfc+Fcx5R+kwL8SWtiz894=;
-  b=cO1voCd43gJ//mLu3etnJXj3+4wLQuKLVKPDnAK7/APNvakJiOhrHDE7
-   RjnasZu/0EhAl3i4WQ6uHvoR4sg667+eXUBJf3bFVD+SP26UiSPUOu3vB
-   iE39/1K3ttOGYQRnJ4uZoft3RSCdx7gItW4sHt/JW1gTiIxyHB5AXVkTX
-   sJDLXd687pWTxBHPOWLcZ08XNNnDJ+y2FWzFDojv2a2GU7QAHbwPFrU8V
-   9KVyFAU68eLgZtB1MDQ+aqTPLYrLK/lRkCQhK08pKlEasuWvkIVTrC0Gy
-   mKRZqZuECLQhZ0CUTor0FofaPZp6/3ReWwPl9Qc8YU9+yfaRWaKa/yKX4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="454490351"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="454490351"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:29:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="887364019"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="887364019"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2023 06:29:08 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1SVO-0009e6-1f;
-        Fri, 10 Nov 2023 14:29:06 +0000
-Date:   Fri, 10 Nov 2023 22:28:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, imx@lists.linux.dev, joy.zou@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
-        vkoul@kernel.org
-Subject: Re: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for
- i.MX95
-Message-ID: <202311102230.c9Xl4AcZ-lkp@intel.com>
-References: <20231109212059.1894646-5-Frank.Li@nxp.com>
+        Fri, 10 Nov 2023 13:26:18 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE85C38EB2;
+        Fri, 10 Nov 2023 06:29:46 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACG6TS016173;
+        Fri, 10 Nov 2023 14:29:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=cc2IZSjSnNHiy2QIB0+/f+2RU7KqGWzoeW8QFcJYNdA=;
+ b=M8TLXCg3QSHJ/5Yft550Bms06uWiPmen51kMx3Abj+OrcZknP1UzDVDLHHPPM5NJ6pbm
+ 4Sry0gW8viFYU818qWLdVC7DqJS7gwysIuoINBbbzs1vM7D8YyYDMUG+RiNZqKcPX4id
+ YTDZg0kR1vBu903/z88YN3xHp87NF3Jd6WJS5EJ7CxVY/XuTw7YXi5KJl/kfy0JEKUCb
+ ClymSeei36UdQt4VKsZ+/2F96Mo1jMD9RYRfj0Bow/t5mykyZVDSF9VrsZE8leFpa/9z
+ 22zbvGodTvbwr84lictvqBlcONIl/hg0On4s8DP7teoRPwk2aQePjWjqLU+GnRdAm+NJ gg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w26xaf7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Nov 2023 14:29:37 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AACqZCH024858;
+        Fri, 10 Nov 2023 14:29:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u9fr6y1cr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Nov 2023 14:29:35 +0000
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AAEQwWJ000777;
+        Fri, 10 Nov 2023 14:29:34 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3u9fr6y1bq-1;
+        Fri, 10 Nov 2023 14:29:34 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     Jorge Lopez <jorge.lopez2@hp.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com, vegard.nossum@oracle.com,
+        harshit.m.mogalapalli@oracle.com, darren.kenny@oracle.com
+Subject: [PATCH v2 1/4] platform/x86: hp-bioscfg: Remove unused obj in hp_add_other_attributes()
+Date:   Fri, 10 Nov 2023 06:29:16 -0800
+Message-ID: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109212059.1894646-5-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_11,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 mlxscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311100120
+X-Proofpoint-GUID: 7pP9WdKoisLQY_GW-fjfRwPDtljmk52i
+X-Proofpoint-ORIG-GUID: 7pP9WdKoisLQY_GW-fjfRwPDtljmk52i
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+acpi_object *obj is unused in this function, so delete it, also
+delete a unnecessary kfree(obj);
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+ drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-[auto build test ERROR on next-20231109]
-[also build test ERROR on linus/master v6.6]
-[cannot apply to vkoul-dmaengine/next v6.6 v6.6-rc7 v6.6-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-edma-involve-help-macro-fsl_edma_set-get-_tcd/20231110-053023
-base:   next-20231109
-patch link:    https://lore.kernel.org/r/20231109212059.1894646-5-Frank.Li%40nxp.com
-patch subject: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for i.MX95
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231110/202311102230.c9Xl4AcZ-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311102230.c9Xl4AcZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311102230.c9Xl4AcZ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/dma/mcf-edma-main.c: In function 'mcf_edma_probe':
-   drivers/dma/mcf-edma-main.c:205:46: warning: dereferencing 'void *' pointer
-     205 |                 iowrite32(0x0, &mcf_chan->tcd->csr);
-         |                                              ^~
->> drivers/dma/mcf-edma-main.c:205:46: error: request for member 'csr' in something not a structure or union
-
-
-vim +/csr +205 drivers/dma/mcf-edma-main.c
-
-af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  152  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  153  static int mcf_edma_probe(struct platform_device *pdev)
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  154  {
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  155  	struct mcf_edma_platform_data *pdata;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  156  	struct fsl_edma_engine *mcf_edma;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  157  	struct edma_regs *regs;
-923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  158  	int ret, i, chans;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  159  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  160  	pdata = dev_get_platdata(&pdev->dev);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  161  	if (!pdata) {
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  162  		dev_err(&pdev->dev, "no platform data supplied\n");
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  163  		return -EINVAL;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  164  	}
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  165  
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  166  	if (!pdata->dma_channels) {
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  167  		dev_info(&pdev->dev, "setting default channel number to 64");
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  168  		chans = 64;
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  169  	} else {
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  170  		chans = pdata->dma_channels;
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  171  	}
-0a46781c89dece drivers/dma/mcf-edma.c      Christophe JAILLET 2023-07-12  172  
-923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  173  	mcf_edma = devm_kzalloc(&pdev->dev, struct_size(mcf_edma, chans, chans),
-923b138388928a drivers/dma/mcf-edma.c      Christophe JAILLET 2023-05-06  174  				GFP_KERNEL);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  175  	if (!mcf_edma)
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  176  		return -ENOMEM;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  177  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  178  	mcf_edma->n_chans = chans;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  179  
-af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  180  	/* Set up drvdata for ColdFire edma */
-af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  181  	mcf_edma->drvdata = &mcf_data;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  182  	mcf_edma->big_endian = 1;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  183  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  184  	mutex_init(&mcf_edma->fsl_edma_mutex);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  185  
-4b23603a251d24 drivers/dma/mcf-edma.c      Tudor Ambarus      2022-11-10  186  	mcf_edma->membase = devm_platform_ioremap_resource(pdev, 0);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  187  	if (IS_ERR(mcf_edma->membase))
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  188  		return PTR_ERR(mcf_edma->membase);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  189  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  190  	fsl_edma_setup_regs(mcf_edma);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  191  	regs = &mcf_edma->regs;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  192  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  193  	INIT_LIST_HEAD(&mcf_edma->dma_dev.channels);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  194  	for (i = 0; i < mcf_edma->n_chans; i++) {
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  195  		struct fsl_edma_chan *mcf_chan = &mcf_edma->chans[i];
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  196  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  197  		mcf_chan->edma = mcf_edma;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  198  		mcf_chan->slave_id = i;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  199  		mcf_chan->idle = true;
-0fa89f972da607 drivers/dma/mcf-edma.c      Laurentiu Tudor    2019-01-18  200  		mcf_chan->dma_dir = DMA_NONE;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  201  		mcf_chan->vchan.desc_free = fsl_edma_free_desc;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  202  		vchan_init(&mcf_chan->vchan, &mcf_edma->dma_dev);
-7536f8b371adcc drivers/dma/mcf-edma-main.c Frank Li           2023-08-21  203  		mcf_chan->tcd = mcf_edma->membase + EDMA_TCD
-7536f8b371adcc drivers/dma/mcf-edma-main.c Frank Li           2023-08-21  204  				+ i * sizeof(struct fsl_edma_hw_tcd);
-7536f8b371adcc drivers/dma/mcf-edma-main.c Frank Li           2023-08-21 @205  		iowrite32(0x0, &mcf_chan->tcd->csr);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  206  	}
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  207  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  208  	iowrite32(~0, regs->inth);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  209  	iowrite32(~0, regs->intl);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  210  
-af802728e4ab07 drivers/dma/mcf-edma.c      Robin Gong         2019-06-25  211  	ret = mcf_edma->drvdata->setup_irq(pdev, mcf_edma);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  212  	if (ret)
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  213  		return ret;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  214  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  215  	dma_cap_set(DMA_PRIVATE, mcf_edma->dma_dev.cap_mask);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  216  	dma_cap_set(DMA_SLAVE, mcf_edma->dma_dev.cap_mask);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  217  	dma_cap_set(DMA_CYCLIC, mcf_edma->dma_dev.cap_mask);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  218  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  219  	mcf_edma->dma_dev.dev = &pdev->dev;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  220  	mcf_edma->dma_dev.device_alloc_chan_resources =
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  221  			fsl_edma_alloc_chan_resources;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  222  	mcf_edma->dma_dev.device_free_chan_resources =
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  223  			fsl_edma_free_chan_resources;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  224  	mcf_edma->dma_dev.device_config = fsl_edma_slave_config;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  225  	mcf_edma->dma_dev.device_prep_dma_cyclic =
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  226  			fsl_edma_prep_dma_cyclic;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  227  	mcf_edma->dma_dev.device_prep_slave_sg = fsl_edma_prep_slave_sg;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  228  	mcf_edma->dma_dev.device_tx_status = fsl_edma_tx_status;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  229  	mcf_edma->dma_dev.device_pause = fsl_edma_pause;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  230  	mcf_edma->dma_dev.device_resume = fsl_edma_resume;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  231  	mcf_edma->dma_dev.device_terminate_all = fsl_edma_terminate_all;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  232  	mcf_edma->dma_dev.device_issue_pending = fsl_edma_issue_pending;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  233  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  234  	mcf_edma->dma_dev.src_addr_widths = FSL_EDMA_BUSWIDTHS;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  235  	mcf_edma->dma_dev.dst_addr_widths = FSL_EDMA_BUSWIDTHS;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  236  	mcf_edma->dma_dev.directions =
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  237  			BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  238  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  239  	mcf_edma->dma_dev.filter.fn = mcf_edma_filter_fn;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  240  	mcf_edma->dma_dev.filter.map = pdata->slave_map;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  241  	mcf_edma->dma_dev.filter.mapcnt = pdata->slavecnt;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  242  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  243  	platform_set_drvdata(pdev, mcf_edma);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  244  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  245  	ret = dma_async_device_register(&mcf_edma->dma_dev);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  246  	if (ret) {
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  247  		dev_err(&pdev->dev,
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  248  			"Can't register Freescale eDMA engine. (%d)\n", ret);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  249  		return ret;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  250  	}
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  251  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  252  	/* Enable round robin arbitration */
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  253  	iowrite32(EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  254  
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  255  	return 0;
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  256  }
-e7a3ff92eaf19e drivers/dma/mcf-edma.c      Angelo Dureghello  2018-08-19  257  
-
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
+index 5798b49ddaba..0b563582d90d 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
+@@ -575,82 +575,80 @@ static void release_attributes_data(void)
+ /**
+  * hp_add_other_attributes() - Initialize HP custom attributes not
+  * reported by BIOS and required to support Secure Platform and Sure
+  * Start.
+  *
+  * @attr_type: Custom HP attribute not reported by BIOS
+  *
+  * Initialize all 2 types of attributes: Platform and Sure Start
+  * object.  Populates each attribute types respective properties
+  * under sysfs files.
+  *
+  * Returns zero(0) if successful. Otherwise, a negative value.
+  */
+ static int hp_add_other_attributes(int attr_type)
+ {
+ 	struct kobject *attr_name_kobj;
+-	union acpi_object *obj = NULL;
+ 	int ret;
+ 	char *attr_name;
+ 
+ 	mutex_lock(&bioscfg_drv.mutex);
+ 
+ 	attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
+ 	if (!attr_name_kobj) {
+ 		ret = -ENOMEM;
+ 		goto err_other_attr_init;
+ 	}
+ 
+ 	/* Check if attribute type is supported */
+ 	switch (attr_type) {
+ 	case HPWMI_SECURE_PLATFORM_TYPE:
+ 		attr_name_kobj->kset = bioscfg_drv.authentication_dir_kset;
+ 		attr_name = SPM_STR;
+ 		break;
+ 
+ 	case HPWMI_SURE_START_TYPE:
+ 		attr_name_kobj->kset = bioscfg_drv.main_dir_kset;
+ 		attr_name = SURE_START_STR;
+ 		break;
+ 
+ 	default:
+ 		pr_err("Error: Unknown attr_type: %d\n", attr_type);
+ 		ret = -EINVAL;
+ 		goto err_other_attr_init;
+ 	}
+ 
+ 	ret = kobject_init_and_add(attr_name_kobj, &attr_name_ktype,
+ 				   NULL, "%s", attr_name);
+ 	if (ret) {
+ 		pr_err("Error encountered [%d]\n", ret);
+ 		kobject_put(attr_name_kobj);
+ 		goto err_other_attr_init;
+ 	}
+ 
+ 	/* Populate attribute data */
+ 	switch (attr_type) {
+ 	case HPWMI_SECURE_PLATFORM_TYPE:
+ 		ret = hp_populate_secure_platform_data(attr_name_kobj);
+ 		if (ret)
+ 			goto err_other_attr_init;
+ 		break;
+ 
+ 	case HPWMI_SURE_START_TYPE:
+ 		ret = hp_populate_sure_start_data(attr_name_kobj);
+ 		if (ret)
+ 			goto err_other_attr_init;
+ 		break;
+ 
+ 	default:
+ 		ret = -EINVAL;
+ 		goto err_other_attr_init;
+ 	}
+ 
+ 	mutex_unlock(&bioscfg_drv.mutex);
+ 	return 0;
+ 
+ err_other_attr_init:
+ 	mutex_unlock(&bioscfg_drv.mutex);
+-	kfree(obj);
+ 	return ret;
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
