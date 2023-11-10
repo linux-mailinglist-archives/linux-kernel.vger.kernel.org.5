@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1FE7E780A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31417E7809
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 04:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345861AbjKJDeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 22:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
+        id S1345854AbjKJDeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 22:34:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbjKJDdx (ORCPT
+        with ESMTP id S1345803AbjKJDdy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 22:33:53 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1056F44BD
+        Thu, 9 Nov 2023 22:33:54 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D9744BD
         for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 19:33:51 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SRPV46W0Gz1P89B;
-        Fri, 10 Nov 2023 11:30:36 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SRPYb14PNzfb7T;
+        Fri, 10 Nov 2023 11:33:39 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         Gregory Price <gregory.price@memverge.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 3/7] fs/proc/page: respect folio head-page flag placement
-Date:   Fri, 10 Nov 2023 11:33:20 +0800
-Message-ID: <20231110033324.2455523-4-wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 4/7] mm: huge_memory: use more folio api in __split_huge_page_tail()
+Date:   Fri, 10 Nov 2023 11:33:21 +0800
+Message-ID: <20231110033324.2455523-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
 References: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
@@ -46,71 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kpageflags reads page-flags directly from the page, even when the
-respective flag is only updated on the headpage of a folio.
+Use more folio APIs to save six compound_head() calls in
+__split_huge_page_tail().
 
-Since most flags are stored in head flags, make k = folio->flags,
-and add new p = page->flags used for per-page flags.
-
-Originally-from: Gregory Price <gregory.price@memverge.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- fs/proc/page.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ mm/huge_memory.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/proc/page.c b/fs/proc/page.c
-index dcef02471f91..553a7c921cb4 100644
---- a/fs/proc/page.c
-+++ b/fs/proc/page.c
-@@ -110,8 +110,7 @@ static inline u64 kpf_copy_bit(u64 kflags, int ubit, int kbit)
- u64 stable_page_flags(struct page *page)
- {
- 	struct folio *folio;
--	u64 k;
--	u64 u;
-+	u64 k, p, u;
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 3f74a063f7d1..2b03c55ea425 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2509,13 +2509,13 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+ 	clear_compound_head(page_tail);
  
- 	/*
- 	 * pseudo flag: KPF_NOPAGE
-@@ -121,7 +120,8 @@ u64 stable_page_flags(struct page *page)
- 		return 1 << KPF_NOPAGE;
+ 	/* Finally unfreeze refcount. Additional reference from page cache. */
+-	page_ref_unfreeze(page_tail, 1 + (!PageAnon(head) ||
+-					  PageSwapCache(head)));
++	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
++					  folio_test_swapcache(folio)));
  
- 	folio = page_folio(page);
--	k = page->flags;
-+	k = folio->flags;
-+	p = page->flags;
- 	u = 0;
+-	if (page_is_young(head))
+-		set_page_young(page_tail);
+-	if (page_is_idle(head))
+-		set_page_idle(page_tail);
++	if (folio_test_young(folio))
++		folio_set_young(new_folio);
++	if (folio_test_idle(folio))
++		folio_set_idle(new_folio);
  
- 	/*
-@@ -202,7 +202,7 @@ u64 stable_page_flags(struct page *page)
- 	u |= kpf_copy_bit(k, KPF_MLOCKED,	PG_mlocked);
+ 	folio_xchg_last_cpupid(new_folio, folio_last_cpupid(folio));
  
- #ifdef CONFIG_MEMORY_FAILURE
--	u |= kpf_copy_bit(k, KPF_HWPOISON,	PG_hwpoison);
-+	u |= kpf_copy_bit(p, KPF_HWPOISON,	PG_hwpoison);
- #endif
- 
- #ifdef CONFIG_ARCH_USES_PG_UNCACHED
-@@ -211,13 +211,13 @@ u64 stable_page_flags(struct page *page)
- 
- 	u |= kpf_copy_bit(k, KPF_RESERVED,	PG_reserved);
- 	u |= kpf_copy_bit(k, KPF_MAPPEDTODISK,	PG_mappedtodisk);
--	u |= kpf_copy_bit(k, KPF_PRIVATE,	PG_private);
--	u |= kpf_copy_bit(k, KPF_PRIVATE_2,	PG_private_2);
--	u |= kpf_copy_bit(k, KPF_OWNER_PRIVATE,	PG_owner_priv_1);
-+	u |= kpf_copy_bit(p, KPF_PRIVATE,	PG_private);
-+	u |= kpf_copy_bit(p, KPF_PRIVATE_2,	PG_private_2);
-+	u |= kpf_copy_bit(p, KPF_OWNER_PRIVATE,	PG_owner_priv_1);
- 	u |= kpf_copy_bit(k, KPF_ARCH,		PG_arch_1);
- #ifdef CONFIG_ARCH_USES_PG_ARCH_X
--	u |= kpf_copy_bit(k, KPF_ARCH_2,	PG_arch_2);
--	u |= kpf_copy_bit(k, KPF_ARCH_3,	PG_arch_3);
-+	u |= kpf_copy_bit(p, KPF_ARCH_2,	PG_arch_2);
-+	u |= kpf_copy_bit(p, KPF_ARCH_3,	PG_arch_3);
- #endif
- 
- 	return u;
 -- 
 2.27.0
 
