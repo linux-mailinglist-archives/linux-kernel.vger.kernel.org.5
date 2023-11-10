@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194277E86B5
+	by mail.lfdr.de (Postfix) with ESMTP id 795B37E86B6
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344550AbjKJXzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 18:55:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
+        id S1344943AbjKJXzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 18:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjKJXzk (ORCPT
+        with ESMTP id S229813AbjKJXzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 18:55:40 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C592010A
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:37 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5afa86b8d66so36473597b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:37 -0800 (PST)
+        Fri, 10 Nov 2023 18:55:43 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CB410A
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:39 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b7f3f47547so2329953a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699660537; x=1700265337; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699660539; x=1700265339; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=u/XXiWlF6BUUu8dl994zQCq6OKzTOSt5eqMjS/tu3eo=;
-        b=G/lC/+RX78DBHsb3PTdqef+BdyZqGcyrzMjqafI1ntmtoqpZ9ky5fktBTabQTvoWfJ
-         FVLM9ZYux7zP/zSdvMqMHmgrjFpm9eHSnUrLytDrWSKj3tKR/C5XR+QhmelLp+u5ZHLL
-         GwWTs4GLENoLcflGOv8UFufBGPMSzvSYgyYVGyYf+GyPNTJONKrrxfReKCmQvH70XeQV
-         oNLL8BAmaXFbL5JLWe6yEDi7PzSTnqQPkqQL/BMQt2waXesuLL4mmcH0fqdBVNWBV2nm
-         Ih3oNu70w5PwRqiWL9TFCdCFcghwrVjU2dnOjsTpOYxK8mDbtyNNGSyrhn1CNsPlSini
-         ueAA==
+        bh=TEvKbmMv5tmjw9/hFI6q0BipOyhXYsOyAsnic4I0og0=;
+        b=g4ijxBWdm17Jo+gu7XmK8BjsbsuzuBAi0/n2lAj6WcX061eGxLk69ttoZy04zZ1IX2
+         IJZMEznmfBe4+VhNxr1GPWRRlyu0qEdTj2tV8YnQSbZpz8uhGbn6ef8x9hwBO7b74CqL
+         dC6qd8bTg1LNZYlmt/0w29pYSUzfKoICkKtJ+2oziHkJK7p1mm1ZVy7FGPo2gTsa9wkf
+         oqXwYEERZTHPGcrYzP77QQCcOUU3ie2UO1fKqKa5gk1N+EJEY59J4lNErHebff4jiPJ2
+         z2d5eE4ElspeNpP+Z/6fQLEzzBelAcBQgOhgOAf3BcwM0oju7HUFWT06Md16U/lTIkjq
+         xyBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699660537; x=1700265337;
+        d=1e100.net; s=20230601; t=1699660539; x=1700265339;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=u/XXiWlF6BUUu8dl994zQCq6OKzTOSt5eqMjS/tu3eo=;
-        b=bp4EG2OToyaxeOtbKnY12hWBhf5ZQCj5C6nLdMQz7jinWiDip1Ump1F0M1YpftGtTy
-         4irFXlCmd7pgaVOfFcQkfwNUkxOZT0gjOmmhpgDTYjCwknAr286W+tcx+gqxuQ/jwK8Y
-         NPDL1IhYVgWykaa0OMdMvT1C35uRauN9eZPsBx7pn3MDDMNp7lNMLaCVHPVRCVlmd5/M
-         tbYepYT26uhCvAgVStCJzppCMSpjseMZkvVDBUjbK/06ODHebUufViFyl8NiY5UAcw2l
-         nEFPKh3SR41i68liNe04yUecjFIRLXKNTAE7FlCdQT3j0w/a0YrVrJ1qYnsR0p7g/YW9
-         Y50w==
-X-Gm-Message-State: AOJu0YyjQQN0ZDMous9XN5JqDM202vw4q7bsACMH+dWhnG2SBi6AOb0n
-        5hSHQtiG/gNsSgf4zdMTqj7wL7JE5L4=
-X-Google-Smtp-Source: AGHT+IEdv5bxMYkF41KPqWKMHFEx13DMbsg/dC/mw7M/QWBaNkFG6vIFcI0rI1P+uyitAmJZvYcYDRIFfVg=
+        bh=TEvKbmMv5tmjw9/hFI6q0BipOyhXYsOyAsnic4I0og0=;
+        b=p4tPDS70R3k3ijh9CBJelMrPiwNenLaMkdmU8zPrJB4QGpQkznIOJQhlrzPNWrYaHq
+         f9df+c0DDZ4363dKaLH3NngR0A/NHuRRZnapXb7pItInrCabJA2msmKAsfb7idvE5e8C
+         K+dmC6+GRZs4MXHhNFqZHpWTkpSJc7sXLA3CYqyokizO28kLJYlD6wRYQevZnNGH8uGa
+         vHpNj6XzCOkHZedVEhxVYXCGx5OEQoTS5ZFXctBwL2LBPRqYbCPQUGDTMfBUsGiqzqvt
+         +BcsJxHVVU+Exg71g8VqCfwdpUEvR9gCLw9gWipgoWP1zpqlPNzM1Mi6vIVl5tC3wrVX
+         AUDg==
+X-Gm-Message-State: AOJu0YxnhoQRuCvhwY/LCy8OyYoArM278wjEKpdWxi8pPFRd2GiYdKcI
+        vicdu0m5jMskHKwkyLu8ejQft4ws9iQ=
+X-Google-Smtp-Source: AGHT+IGyNbSb+ql2rI0AnGy2mw0gzvn4bCOpj75pgm5vdF/yvPUf+ux5kb15qiGz3jZtJPrUM/bpTlDslBQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4894:0:b0:5a8:170d:45a9 with SMTP id
- v142-20020a814894000000b005a8170d45a9mr21242ywa.8.1699660537085; Fri, 10 Nov
- 2023 15:55:37 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:51c:b0:5bd:bb6b:78a with SMTP id
+ bx28-20020a056a02051c00b005bdbb6b078amr200071pgb.6.1699660539208; Fri, 10 Nov
+ 2023 15:55:39 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 10 Nov 2023 15:55:21 -0800
+Date:   Fri, 10 Nov 2023 15:55:22 -0800
 In-Reply-To: <20231110235528.1561679-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231110235528.1561679-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231110235528.1561679-3-seanjc@google.com>
-Subject: [PATCH 2/9] KVM: x86: Replace guts of "goverened" features with
- comprehensive cpu_caps
+Message-ID: <20231110235528.1561679-4-seanjc@google.com>
+Subject: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest CPUID
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,173 +71,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the internals of the governed features framework with a more
-comprehensive "guest CPU capabilities" implementation, i.e. with a guest
-version of kvm_cpu_caps.  Keep the skeleton of governed features around
-for now as vmx_adjust_sec_exec_control() relies on detecting governed
-features to do the right thing for XSAVES, and switching all guest feature
-queries to guest_cpu_cap_has() requires subtle and non-trivial changes,
-i.e. is best done as a standalone change.
+Initialize a vCPU's capabilities based on the guest CPUID provided by
+userspace instead of simply zeroing the entire array.  This will allow
+using cpu_caps to query *all* CPUID-based guest capabilities, i.e. will
+allow converting all usage of guest_cpuid_has() to guest_cpu_cap_has().
 
-Tracking *all* guest capabilities that KVM cares will allow excising the
-poorly named "governed features" framework, and effectively optimizes all
-KVM queries of guest capabilities, i.e. doesn't require making a
-subjective decision as to whether or not a feature is worth "governing",
-and doesn't require adding the code to do so.
+Zeroing the array was the logical choice when using cpu_caps was opt-in,
+e.g. "unsupported" was generally a safer default, and the whole point of
+governed features is that KVM would need to check host and guest support,
+i.e. making everything unsupported by default didn't require more code.
 
-The cost of tracking all features is currently 92 bytes per vCPU on 64-bit
-kernels: 100 bytes for cpu_caps versus 8 bytes for governed_features.
-That cost is well worth paying even if the only benefit was eliminating
-the "governed features" terminology.  And practically speaking, the real
-cost is zero unless those 92 bytes pushes the size of vcpu_vmx or vcpu_svm
-into a new order-N allocation, and if that happens there are better ways
-to reduce the footprint of kvm_vcpu_arch, e.g. making the PMU and/or MTRR
-state separate allocations.
+But requiring KVM to manually "enable" every CPUID-based feature in
+cpu_caps would require an absurd amount of boilerplate code.
 
-Suggested-by: Maxim Levitsky <mlevitsk@redhat.com>
+Follow existing CPUID/kvm_cpu_caps nomenclature where possible, e.g. for
+the change() and clear() APIs.  Replace check_and_set() with restrict() to
+try and capture that KVM is restricting userspace's desired guest feature
+set based on KVM's capabilities.
+
+This is intended to be gigantic nop, i.e. should not have any impact on
+guest or KVM functionality.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h | 40 ++++++++++++++++++++-------------
- arch/x86/kvm/cpuid.c            |  4 +---
- arch/x86/kvm/cpuid.h            | 14 ++++++------
- arch/x86/kvm/reverse_cpuid.h    | 15 -------------
- 4 files changed, 32 insertions(+), 41 deletions(-)
+ arch/x86/kvm/cpuid.c   | 43 +++++++++++++++++++++++++++++++++++++++---
+ arch/x86/kvm/cpuid.h   | 25 +++++++++++++++++++++---
+ arch/x86/kvm/svm/svm.c | 24 +++++++++++------------
+ arch/x86/kvm/vmx/vmx.c |  6 ++++--
+ 4 files changed, 78 insertions(+), 20 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index d7036982332e..1d43dd5fdea7 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -722,6 +722,22 @@ struct kvm_queued_exception {
- 	bool has_payload;
- };
- 
-+/*
-+ * Hardware-defined CPUID leafs that are either scattered by the kernel or are
-+ * unknown to the kernel, but need to be directly used by KVM.  Note, these
-+ * word values conflict with the kernel's "bug" caps, but KVM doesn't use those.
-+ */
-+enum kvm_only_cpuid_leafs {
-+	CPUID_12_EAX	 = NCAPINTS,
-+	CPUID_7_1_EDX,
-+	CPUID_8000_0007_EDX,
-+	CPUID_8000_0022_EAX,
-+	NR_KVM_CPU_CAPS,
-+
-+	NKVMCAPINTS = NR_KVM_CPU_CAPS - NCAPINTS,
-+};
-+
-+
- struct kvm_vcpu_arch {
- 	/*
- 	 * rip and regs accesses must go through
-@@ -840,23 +856,15 @@ struct kvm_vcpu_arch {
- 	struct kvm_hypervisor_cpuid kvm_cpuid;
- 
- 	/*
--	 * FIXME: Drop this macro and use KVM_NR_GOVERNED_FEATURES directly
--	 * when "struct kvm_vcpu_arch" is no longer defined in an
--	 * arch/x86/include/asm header.  The max is mostly arbitrary, i.e.
--	 * can be increased as necessary.
-+	 * Track the effective guest capabilities, i.e. the features the vCPU
-+	 * is allowed to use.  Typically, but not always, features can be used
-+	 * by the guest if and only if both KVM and userspace want to expose
-+	 * the feature to the guest.  A common exception is for virtualization
-+	 * holes, i.e. when KVM can't prevent the guest from using a feature,
-+	 * in which case the vCPU "has" the feature regardless of what KVM or
-+	 * userspace desires.
- 	 */
--#define KVM_MAX_NR_GOVERNED_FEATURES BITS_PER_LONG
--
--	/*
--	 * Track whether or not the guest is allowed to use features that are
--	 * governed by KVM, where "governed" means KVM needs to manage state
--	 * and/or explicitly enable the feature in hardware.  Typically, but
--	 * not always, governed features can be used by the guest if and only
--	 * if both KVM and userspace want to expose the feature to the guest.
--	 */
--	struct {
--		DECLARE_BITMAP(enabled, KVM_MAX_NR_GOVERNED_FEATURES);
--	} governed_features;
-+	u32 cpu_caps[NR_KVM_CPU_CAPS];
- 
- 	u64 reserved_gpa_bits;
- 	int maxphyaddr;
 diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 4f464187b063..4bf3c2d4dc7c 100644
+index 4bf3c2d4dc7c..5cf3d697ecb3 100644
 --- a/arch/x86/kvm/cpuid.c
 +++ b/arch/x86/kvm/cpuid.c
-@@ -327,9 +327,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+@@ -321,13 +321,51 @@ static bool kvm_cpuid_has_hyperv(struct kvm_cpuid_entry2 *entries, int nent)
+ 	return entry && entry->eax == HYPERV_CPUID_SIGNATURE_EAX;
+ }
+ 
++/*
++ * This isn't truly "unsafe", but all callers except kvm_cpu_after_set_cpuid()
++ * should use __cpuid_entry_get_reg(), which provides compile-time validation
++ * of the input.
++ */
++static u32 cpuid_get_reg_unsafe(struct kvm_cpuid_entry2 *entry, u32 reg)
++{
++	switch (reg) {
++	case CPUID_EAX:
++		return entry->eax;
++	case CPUID_EBX:
++		return entry->ebx;
++	case CPUID_ECX:
++		return entry->ecx;
++	case CPUID_EDX:
++		return entry->edx;
++	default:
++		WARN_ON_ONCE(1);
++		return 0;
++	}
++}
++
+ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
  	struct kvm_cpuid_entry2 *best;
  	bool allow_gbpages;
++	int i;
  
--	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
--	bitmap_zero(vcpu->arch.governed_features.enabled,
--		    KVM_MAX_NR_GOVERNED_FEATURES);
-+	memset(vcpu->arch.cpu_caps, 0, sizeof(vcpu->arch.cpu_caps));
+-	memset(vcpu->arch.cpu_caps, 0, sizeof(vcpu->arch.cpu_caps));
++	BUILD_BUG_ON(ARRAY_SIZE(reverse_cpuid) != NR_KVM_CPU_CAPS);
++
++	/*
++	 * Reset guest capabilities to userspace's guest CPUID definition, i.e.
++	 * honor userspace's definition for features that don't require KVM or
++	 * hardware management/support (or that KVM simply doesn't care about).
++	 */
++	for (i = 0; i < NR_KVM_CPU_CAPS; i++) {
++		const struct cpuid_reg cpuid = reverse_cpuid[i];
++
++		best = kvm_find_cpuid_entry_index(vcpu, cpuid.function, cpuid.index);
++		if (best)
++			vcpu->arch.cpu_caps[i] = cpuid_get_reg_unsafe(best, cpuid.reg);
++		else
++			vcpu->arch.cpu_caps[i] = 0;
++	}
  
  	/*
  	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
+@@ -342,8 +380,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	 */
+ 	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
+ 				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
+-	if (allow_gbpages)
+-		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
++	guest_cpu_cap_change(vcpu, X86_FEATURE_GBPAGES, allow_gbpages);
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 1);
+ 	if (best && apic) {
 diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index 245416ffa34c..9f18c4395b71 100644
+index 9f18c4395b71..1707ef10b269 100644
 --- a/arch/x86/kvm/cpuid.h
 +++ b/arch/x86/kvm/cpuid.h
-@@ -255,12 +255,12 @@ static __always_inline bool kvm_is_governed_feature(unsigned int x86_feature)
+@@ -263,11 +263,30 @@ static __always_inline void guest_cpu_cap_set(struct kvm_vcpu *vcpu,
+ 	vcpu->arch.cpu_caps[x86_leaf] |= __feature_bit(x86_feature);
  }
  
- static __always_inline void guest_cpu_cap_set(struct kvm_vcpu *vcpu,
--						     unsigned int x86_feature)
-+					      unsigned int x86_feature)
+-static __always_inline void guest_cpu_cap_check_and_set(struct kvm_vcpu *vcpu,
+-							unsigned int x86_feature)
++static __always_inline void guest_cpu_cap_clear(struct kvm_vcpu *vcpu,
++						unsigned int x86_feature)
  {
--	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
+-	if (kvm_cpu_cap_has(x86_feature) && guest_cpuid_has(vcpu, x86_feature))
 +	unsigned int x86_leaf = __feature_leaf(x86_feature);
- 
--	__set_bit(kvm_governed_feature_index(x86_feature),
--		  vcpu->arch.governed_features.enabled);
++
 +	reverse_cpuid_check(x86_leaf);
-+	vcpu->arch.cpu_caps[x86_leaf] |= __feature_bit(x86_feature);
++	vcpu->arch.cpu_caps[x86_leaf] &= ~__feature_bit(x86_feature);
++}
++
++static __always_inline void guest_cpu_cap_change(struct kvm_vcpu *vcpu,
++						 unsigned int x86_feature,
++						 bool guest_has_cap)
++{
++	if (guest_has_cap)
+ 		guest_cpu_cap_set(vcpu, x86_feature);
++	else
++		guest_cpu_cap_clear(vcpu, x86_feature);
++}
++
++static __always_inline void guest_cpu_cap_restrict(struct kvm_vcpu *vcpu,
++						   unsigned int x86_feature)
++{
++	if (!kvm_cpu_cap_has(x86_feature))
++		guest_cpu_cap_clear(vcpu, x86_feature);
  }
  
- static __always_inline void guest_cpu_cap_check_and_set(struct kvm_vcpu *vcpu,
-@@ -273,10 +273,10 @@ static __always_inline void guest_cpu_cap_check_and_set(struct kvm_vcpu *vcpu,
  static __always_inline bool guest_cpu_cap_has(struct kvm_vcpu *vcpu,
- 					      unsigned int x86_feature)
- {
--	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
-+	unsigned int x86_leaf = __feature_leaf(x86_feature);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 8a99a73b6ee5..5827328e30f1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4315,14 +4315,14 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
+ 	 * the guest read/write access to the host's XSS.
+ 	 */
+-	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+-	    boot_cpu_has(X86_FEATURE_XSAVES) &&
+-	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+-		guest_cpu_cap_set(vcpu, X86_FEATURE_XSAVES);
++	guest_cpu_cap_change(vcpu, X86_FEATURE_XSAVES,
++			     boot_cpu_has(X86_FEATURE_XSAVE) &&
++			     boot_cpu_has(X86_FEATURE_XSAVES) &&
++			     guest_cpuid_has(vcpu, X86_FEATURE_XSAVE));
  
--	return test_bit(kvm_governed_feature_index(x86_feature),
--			vcpu->arch.governed_features.enabled);
-+	reverse_cpuid_check(x86_leaf);
-+	return vcpu->arch.cpu_caps[x86_leaf] & __feature_bit(x86_feature);
- }
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_NRIPS);
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_TSCRATEMSR);
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_LBRV);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_NRIPS);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_TSCRATEMSR);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_LBRV);
  
- #endif
-diff --git a/arch/x86/kvm/reverse_cpuid.h b/arch/x86/kvm/reverse_cpuid.h
-index b81650678375..4b658491e8f8 100644
---- a/arch/x86/kvm/reverse_cpuid.h
-+++ b/arch/x86/kvm/reverse_cpuid.h
-@@ -6,21 +6,6 @@
- #include <asm/cpufeature.h>
- #include <asm/cpufeatures.h>
+ 	/*
+ 	 * Intercept VMLOAD if the vCPU mode is Intel in order to emulate that
+@@ -4330,12 +4330,12 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	 * SVM on Intel is bonkers and extremely unlikely to work).
+ 	 */
+ 	if (!guest_cpuid_is_intel(vcpu))
+-		guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_V_VMSAVE_VMLOAD);
++		guest_cpu_cap_restrict(vcpu, X86_FEATURE_V_VMSAVE_VMLOAD);
  
--/*
-- * Hardware-defined CPUID leafs that are either scattered by the kernel or are
-- * unknown to the kernel, but need to be directly used by KVM.  Note, these
-- * word values conflict with the kernel's "bug" caps, but KVM doesn't use those.
-- */
--enum kvm_only_cpuid_leafs {
--	CPUID_12_EAX	 = NCAPINTS,
--	CPUID_7_1_EDX,
--	CPUID_8000_0007_EDX,
--	CPUID_8000_0022_EAX,
--	NR_KVM_CPU_CAPS,
--
--	NKVMCAPINTS = NR_KVM_CPU_CAPS - NCAPINTS,
--};
--
- /*
-  * Define a KVM-only feature flag.
-  *
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_PAUSEFILTER);
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_PFTHRESHOLD);
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VGIF);
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VNMI);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PAUSEFILTER);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PFTHRESHOLD);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VGIF);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VNMI);
+ 
+ 	svm_recalc_instruction_intercepts(vcpu, svm);
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6328f0d47c64..5a056ad1ae55 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7757,9 +7757,11 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+ 	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+-		guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_XSAVES);
++		guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVES);
++	else
++		guest_cpu_cap_clear(vcpu, X86_FEATURE_XSAVES);
+ 
+-	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VMX);
++	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VMX);
+ 
+ 	vmx_setup_uret_msrs(vmx);
+ 
 -- 
 2.42.0.869.gea05f2083d-goog
 
