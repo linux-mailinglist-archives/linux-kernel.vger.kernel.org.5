@@ -2,196 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B946D7E8220
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA40F7E8225
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236008AbjKJTBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:01:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S235627AbjKJTDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:03:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235469AbjKJTBa (ORCPT
+        with ESMTP id S235303AbjKJTDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:01:30 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB059EED
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:23:02 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7aa161b2fso31755077b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699640581; x=1700245381; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/u2JG0fndtvz5StB0AokXkOquj7NpP7M8gj3x0QBG2E=;
-        b=kgceUlkFOWL5vxm8J4T3HW8CRJFhtUvNgQXZKG4NmhXHIykYFzOaH8R9t4BX7h6pcY
-         HnAGZDCjGPnos9hZqCDNV2l+emmhngiroS8qEFh+3weIBlUqS8XO242R4Zqy5ed49D/h
-         NAPXdCh011lwe3rpaMDBRWEQX1l7Z72wrQHpfKPLgk+HfW3rUsb0oX81O+V4HvUFf3+J
-         wa3wUoXgZf34b9iEXEEW9pJ76Rsj7Z1eFHQx5FB+ycxOuz1YOUa3cKpaFeuSRuBEQCyf
-         UU/rQZF+3oHacw25Ju4lyFult928U9vxNrPknXhgKTa4DoZ612/rCj4I5S8HYrEEEt4L
-         cPEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699640581; x=1700245381;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/u2JG0fndtvz5StB0AokXkOquj7NpP7M8gj3x0QBG2E=;
-        b=lpjWwBfxZKoqgBYTQy+Vb7gknQxwkkepfPbcC6XXtHapQjrQpaLZQfHF7RRhDB1xuP
-         Drk3Lbf1UxLAbUwqqYGYwxQyz9Tyv6k2vRVB2ftQA+k17+zaDyQw+AqZ+5QNDv8BmjyI
-         JbVJzyZYTYmF0GsKHoWJz+tiFEs+izc/Qgrs92A77XRlfXNEYqQpxSLIQoCvD2QTP9ej
-         OY/l4MKKlHMG08DvfH2sljEqdgHbqJdY3fFT8uCFvlzYEzi/Wpd2JW1huxL9WUM95jKy
-         SeAJKVeuPkPYwuycqyByp+f5ZyntwzUnnjK2lr16Q23xhY9WMMN4f3vsH8P/mDskm+rL
-         X0HQ==
-X-Gm-Message-State: AOJu0YxDSjh5rjdYgRom62OftVka42B0A7vmsxDUft4lMC4BD59Mz2aN
-        IlbzDM4sVadaOU+RI+sSV+h1hA6ZMvQ=
-X-Google-Smtp-Source: AGHT+IFilgu1/Q1EZiEoL3sTFYKCQfnhtgAeMBBAfAGcs6DHfZF6Y3nZ5EepLJy80XYZ0ZRT2keQkzxRdJY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ef0c:0:b0:5be:ae71:d70a with SMTP id
- o12-20020a81ef0c000000b005beae71d70amr242444ywm.4.1699640580898; Fri, 10 Nov
- 2023 10:23:00 -0800 (PST)
-Date:   Fri, 10 Nov 2023 10:22:59 -0800
-In-Reply-To: <956d8ee3-8b63-4a2d-b0c4-c0d3d74a0f6f@intel.com>
-Mime-Version: 1.0
-References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-16-pbonzini@redhat.com>
- <956d8ee3-8b63-4a2d-b0c4-c0d3d74a0f6f@intel.com>
-Message-ID: <ZU51A3U6E3aZXayC@google.com>
-Subject: Re: [PATCH 15/34] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 10 Nov 2023 14:03:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B89B4131D;
+        Fri, 10 Nov 2023 10:24:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62F8CC43391;
+        Fri, 10 Nov 2023 18:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699640650;
+        bh=5Cnpf5r8iWd0CmH6dX7jzJeU1NDBsOBBm+7XS06qRkg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tl1FHn9hBWjpY5JhlH9QfJvHRjysmHUYI0IjLduVnMIZYgJjZyr+sfk/ZZhdvI1hY
+         h5IH4BGndC7iBLeafXSLZofUqqxdJeg1WB0g1mF+/i/6loaSJ9RiUlNg8+AehwaBgo
+         g5+3x0gzZnSYhyDNNQpV7OPDowLc8aeIsNOZWDMo46xRi8PzY7a4vrGeRkqvbZa4xD
+         glIfoymeiQUIJhSne9NO7q648Bd0oOjNC+dMfyyEpcPKRjnlKU+shMdZhy1WWA1JaP
+         r9HnBciKjvR1NFqHIGGKSIcgNKsS0eAkYzwE1KilKGVyHTHDXJUiEwbL2V+JyTiLdZ
+         5gajgwpeUimZQ==
+Date:   Fri, 10 Nov 2023 18:23:57 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mehdi Djait <mehdi.djait@bootlin.com>, mchehab@kernel.org,
+        heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+        maxime.chevallier@bootlin.com, michael.riesch@wolfvision.net
+Subject: Re: [PATCH v10 1/3] media: dt-bindings: media: add bindings for
+ Rockchip CIF
+Message-ID: <20231110-appetizer-fame-2152806c7442@roley>
+References: <cover.1699460637.git.mehdi.djait@bootlin.com>
+ <037bcabf97294d37b271537e4b11fb88cf9bb6f6.1699460637.git.mehdi.djait@bootlin.com>
+ <20231109-closable-superglue-5e7f39739cf1@spud>
+ <ZU0avuRRaITV4jws@aptenodytes>
+ <e5b1f0dd-0aab-4ce5-82ba-879a4d736e7e@linaro.org>
+ <ZU0f33clFwlsTw16@aptenodytes>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tkoOwTNqqLjvCZ6v"
+Content-Disposition: inline
+In-Reply-To: <ZU0f33clFwlsTw16@aptenodytes>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023, Xiaoyao Li wrote:
-> On 11/6/2023 12:30 AM, Paolo Bonzini wrote:
-> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > index 68a144cb7dbc..a6de526c0426 100644
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -589,8 +589,20 @@ struct kvm_memory_slot {
-> >   	u32 flags;
-> >   	short id;
-> >   	u16 as_id;
-> > +
-> > +#ifdef CONFIG_KVM_PRIVATE_MEM
-> > +	struct {
-> > +		struct file __rcu *file;
-> > +		pgoff_t pgoff;
-> > +	} gmem;
-> > +#endif
-> >   };
-> > +static inline bool kvm_slot_can_be_private(const struct kvm_memory_slot *slot)
-> > +{
-> > +	return slot && (slot->flags & KVM_MEM_GUEST_MEMFD);
-> > +}
-> > +
-> 
-> maybe we can move this block and ...
-> 
-> <snip>
-> 
-> > @@ -2355,6 +2379,30 @@ bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
-> >   					struct kvm_gfn_range *range);
-> >   bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
-> >   					 struct kvm_gfn_range *range);
-> > +
-> > +static inline bool kvm_mem_is_private(struct kvm *kvm, gfn_t gfn)
-> > +{
-> > +	return IS_ENABLED(CONFIG_KVM_PRIVATE_MEM) &&
-> > +	       kvm_get_memory_attributes(kvm, gfn) & KVM_MEMORY_ATTRIBUTE_PRIVATE;
-> > +}
-> > +#else
-> > +static inline bool kvm_mem_is_private(struct kvm *kvm, gfn_t gfn)
-> > +{
-> > +	return false;
-> > +}
-> >   #endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
-> 
-> this block to Patch 18?
 
-It would work, but my vote is to keep them here to minimize the changes to common
-KVM code in the x86 enabling.  It's not a strong preference though.  Of course,
-at this point, fiddling with this sort of thing is probably a bad idea in terms
-of landing guest_memfd.
+--tkoOwTNqqLjvCZ6v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > @@ -4844,6 +4875,10 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
-> >   #ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> >   	case KVM_CAP_MEMORY_ATTRIBUTES:
-> >   		return kvm_supported_mem_attributes(kvm);
-> > +#endif
-> > +#ifdef CONFIG_KVM_PRIVATE_MEM
-> > +	case KVM_CAP_GUEST_MEMFD:
-> > +		return !kvm || kvm_arch_has_private_mem(kvm);
-> >   #endif
-> >   	default:
-> >   		break;
-> > @@ -5277,6 +5312,18 @@ static long kvm_vm_ioctl(struct file *filp,
-> >   	case KVM_GET_STATS_FD:
-> >   		r = kvm_vm_ioctl_get_stats_fd(kvm);
-> >   		break;
-> > +#ifdef CONFIG_KVM_PRIVATE_MEM
-> > +	case KVM_CREATE_GUEST_MEMFD: {
-> > +		struct kvm_create_guest_memfd guest_memfd;
-> 
-> Do we need a guard of below?
-> 
-> 		r = -EINVAL;
-> 		if (!kvm_arch_has_private_mem(kvm))
-> 			goto out;
+On Thu, Nov 09, 2023 at 07:07:27PM +0100, Paul Kocialkowski wrote:
+> On Thu 09 Nov 23, 18:53, Krzysztof Kozlowski wrote:
+> > On 09/11/2023 18:45, Paul Kocialkowski wrote:
+> > > On Thu 09 Nov 23, 17:24, Conor Dooley wrote:
+> > >> On Wed, Nov 08, 2023 at 05:38:56PM +0100, Mehdi Djait wrote:
+> > >>> Add a documentation for the Rockchip Camera Interface binding.
+> > >>>
+> > >>> the name of the file rk3066 is the first Rockchip SoC generation th=
+at uses cif
+> > >>> instead of the px30 which is just one of the many iterations of the=
+ unit.
+> > >>
+> > >> I think this is becoming ridiculous. You've now removed the compatib=
+le
+> > >> for the rk3066 but kept it in the filename. I don't understand the
+> > >> hangup about naming the file after the px30-vip, but naming it after
+> > >> something that is not documented here at all makes no sense to me.
+> > >> Either document the rk3066 properly, or remove all mention of it IMO.
+> > >=20
+> > > I think the opposite is ridiculous. We have spent some time investiga=
+ting the
+> > > history of this unit, to find out that RK3066 is the first occurence =
+where
+> > > it exists. Since we want the binding to cover all generations of the =
+same unit
+> > > and give it a name that reflects this, rk3066 is the natural choice t=
+hat comes
+> > > to mind. As far as I understand, this is the normal thing to do to na=
+me
+> > > bindings: name after the earliest known occurence of the unit.
+> > >=20
+> > > What is the rationale behind naming the file after a generation of th=
+e unit
+> > > that happens to be the one introducing the binding? This is neither t=
+he first
+> > > nor the last one to include this unit. The binding will be updated la=
+ter to
+> > > cover other generations. Do we want to rename the file each time an a=
+ generation
+> > > earlier than px30 is introduced? That sounds quite ridiculous too.
+> > >=20
+> > > We've done the research work to give it the most relevant name here.
+> > > I'd expect some strong arguments not to use it. Can you ellaborate?
+> >=20
+> > If you do not have rk3066 documented here, it might be added to entirely
+> > different file (for whatever reasons, including that binding would be
+> > quite different than px30). Thus you would have rk3066 in
+> > rockchip,rk3066-cif-added-later.yaml and px30 in rockchip,rk3066-cif.ya=
+ml
+>=20
+> As far as I could see we generally manage to include support for different
+> hardware setups in the same binding document using conditionals on the
+> compatible, so this feels a bit far-fetched.
+>=20
+> Of course you're the maintainer and have significantly more experience he=
+re
+> so there might be a lot that I'm not seeing, but I'm not very convinced b=
+y this
+> reasoning to be honest.
+>=20
+> > Just use the filename matching the compatible. That's what we always
+> > ask. In every review.
+>=20
+> Yeah and we very often end up with naming that is less than optimal (to s=
+tay
+> polite). I'm generally quite appalled by the overall lack of interest that
+> naming gets, as if it was something secondary. Naming is one of the most
+> important and difficult things in our field of work and it needs to be
+> considered with care.
+>=20
+> This is not just a problem with device-tree, it's a kernel-wide issue that
+> nobody seems to be interested in addressing. I'm quite unhappy to see tha=
+t when
+> time is spent trying to improve the situation on one particular instance,=
+ we are
+> shown the door because it doesn't match what is generally done (and often=
+ done
+> wrong).
+>=20
+> This is definitely a rant. I really want to express this issue loud and c=
+lear
+> and encourage everyone to consider it for what it is.
 
-Argh, yeah, that's weird since KVM_CAP_GUEST_MEMFD says "not supported" if the
-VM doesn't support private memory.
+Look chief, I do understand your frustration here, with the seemingly
+arbitrary naming etc. I'm apologise if using the word "ridiculous" earlier
+pissed you off. I'm sure you can similarly understand why we don't want
+to accept either having a compatible for the rk3066-cif in the file,
+when you are not yet sure of the correct constraints, or given your
+interest in naming, why calling it after something that it does not even
+document is misleading.
+Ultimately, I don't care what the file ends up being called when there
+are multiple devices documented in it. I'd ack a patch renaming to the
+=C5=93riginal incarnation of the IP when the documentation for that IP is
+added without a second thought.
 
-Enforcing that would break guest_memfd_test.c though.  And having to create a
-"special" VM just to test basic guest_memfd functionality would be quite
-annoying.
+--tkoOwTNqqLjvCZ6v
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So my vote is to do:
+-----BEGIN PGP SIGNATURE-----
 
-	case KVM_CAP_GUEST_MEMFD:
-		return IS_ENABLED(CONFIG_KVM_PRIVATE_MEM);
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU51MwAKCRB4tDGHoIJi
+0kScAQDf+B0t7fgSDHGxdUzFgfdNTZjMafc19Bc8+A8VwvxxowD8C1VXDUA8yC/A
+16c4pdrfajLloJy4M/muYCeWBytydQ0=
+=plf4
+-----END PGP SIGNATURE-----
 
-There's no harm to KVM if userspace creates a file it can't use, and at some
-point KVM will hopefully support guest_memfd irrespective of private memory.
+--tkoOwTNqqLjvCZ6v--
