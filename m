@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B9C7E84A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18027E8017
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbjKJUrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
+        id S235737AbjKJSFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:05:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236003AbjKJUrS (ORCPT
+        with ESMTP id S235721AbjKJSEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:47:18 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4D26A57
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:05 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5b99bfca064so1373012a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:05 -0800 (PST)
+        Fri, 10 Nov 2023 13:04:42 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C0C2B7FA
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:32 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b709048f32so1692390b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699607825; x=1700212625; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699607852; x=1700212652; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JNAKGQcfwtX1sEelGFUcCMMKPbFCHvv7FrRIow0M5oA=;
-        b=kD6KlBtSOJVn76Un+S+8+g470XuA8EJZrddiREBhESrNY0fbt/Y1vffed70qYBc588
-         h7ZLU8TTYLzI1PR/Kldxv93K7V7U3tBYCWroM/DbGWbLN3v1EkNt9Wm/Bd6IG7Cq1wHz
-         nZn6pg1ha6XLBUOpohzb49L0Bh1dcuBH8mCzdahf00F9mffrOT0n9RLBtWNrRxlGfbZ8
-         RISoGBcRIR/3S+2uOzYRbKcwx/1Li34xeCNi2r95xhyz7LjZgK/D5yhDSct7XcQbtqKv
-         RoT9XDxdKbkitmXVrUwbuF4uWkRLRu5mbflxDvc5fjlRN1tnlfxWaChRXZ9u+KU5xowm
-         HSag==
+        bh=9qMFA/4LVo9MaNuOmPJbDYsQ8leCjxXQe4RXEqsi7Vk=;
+        b=esARizgsre9kqI3zGeoLlST7/KVBkc09g1O66V8dft3tiL0cdPjQXa3/eEpBNtrjMl
+         9g57WteRLr177S2wGvOmavsFhopumQGUNMyhnFQZhmDZc6SjyaFqYByMWoe3Wp9q/OHJ
+         alsEFXvJrXZbXz8Z7MBEXyeOF6p70Q/9tBPnJkvD1pNreWgKtj4dTD0Q6GLyAQG8evmK
+         vvPpOM+6qr9361SziZG1CcmUi+sap15huml2Mu56zIoQSxUlxL9/wV/h4fPbJRSQnLS+
+         aYwoZf0Jb9EgehdeM/LphyuRJU1h9xY0dNlCLRRD24EfeC54slXfiedr4/it0W6uu5dd
+         z/0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699607825; x=1700212625;
+        d=1e100.net; s=20230601; t=1699607852; x=1700212652;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JNAKGQcfwtX1sEelGFUcCMMKPbFCHvv7FrRIow0M5oA=;
-        b=rYkyvIp3ibcaJe4R1u0o3kFU99kJa3Z7DP9fV3t0p0DNjVOepp2n6wfxUUkNtI4Vf/
-         C8WbLZYRgaZRlhsPVZagt8XjOvFnp4v3912gMYAgxRTA4W6VBYH3RIN49I9nCV2ZaCL3
-         gBWI919t1M8mJ2hovZZqvtX4j5z4IZrNN2LQ1/1JWUsHdn+sFLp9siZRHVC/1qrmxoM+
-         /FOZSrZhmeplLJAATIPtcv7XP1MJtToPmWHwfAF161TD/r3J0abizcUUc7xbzgwLeJF4
-         3IVszfOj0yZUBk3B8qVlB/+8G+F2RgC+54t5ywJNdaBwCUp0jeSiiEhdVQa6dcGD5oKi
-         B5VA==
-X-Gm-Message-State: AOJu0Ywd+tot5qyeWGnUkmP8xFdN1P3hqwo+lfO7dX9hzMC7+peQfrCX
-        l752qu7hILzbzOKZiTfJkLUAIQ==
-X-Google-Smtp-Source: AGHT+IEex3kLeiwKyEz2es872zjMNmrevn40/2l4PbaRjQ1owa57zfxwzE3YTcFU8WWcXat6tXWPLw==
-X-Received: by 2002:a17:90b:4b82:b0:280:74fc:ac2c with SMTP id lr2-20020a17090b4b8200b0028074fcac2cmr4523903pjb.13.1699607825201;
-        Fri, 10 Nov 2023 01:17:05 -0800 (PST)
+        bh=9qMFA/4LVo9MaNuOmPJbDYsQ8leCjxXQe4RXEqsi7Vk=;
+        b=ALfhSdO5aNhDKRm7XfPOTCksGuKSoiE5ScKEd3nKvXZpTitKX3dcWxi1+0sxgyQfl/
+         arLF5g83juOi+eZ0a5mK/WwpX2qLuKh3cWisLV3yUoVBkmVcRFFHQPZ7VMu0bXeADyPT
+         DFtGxTB8POwJ60pmms78EZO8t9lXTergcDzWmFJ7ZDJ6Ahb0atqmhhCFJ2nDHq/7I61l
+         jKFSj1zpsPWRJ5oIIUaZ7dmjflEUnxm+2Qyl8+yY04jmFeA/Dn99hmUMn+xQ9rUvUwUq
+         Ghj7g1MWnKHF/Q9TuLYpA3nD7uguC48pgdJDaw1W93fRqC8RHR3HsBZo2YAVHLxa/+sV
+         AXfA==
+X-Gm-Message-State: AOJu0YyIGQuuEZLRAG4w/kzanR9aQovJgA70Wd78cUkSQ8EMH14wfc1f
+        XsC32DaWDJyGOXeJ/56cRrebTg==
+X-Google-Smtp-Source: AGHT+IEf6ivgAkw6yVi3FBgNRxGS3TsVvGiByXO2mRhR+nd07TngiWoOOOYFgaeien5HK7d1Y0M7oA==
+X-Received: by 2002:a05:6a20:f3af:b0:153:353e:5e39 with SMTP id qr47-20020a056a20f3af00b00153353e5e39mr5947121pzb.51.1699607851729;
+        Fri, 10 Nov 2023 01:17:31 -0800 (PST)
 Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id m17-20020a17090a7f9100b0027ce254fed8sm5666457pjl.0.2023.11.10.01.17.04
+        by smtp.gmail.com with ESMTPSA id g8-20020a1709026b4800b001c771740da4sm4889837plt.195.2023.11.10.01.17.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 01:17:04 -0800 (PST)
-Date:   Fri, 10 Nov 2023 14:47:02 +0530
+        Fri, 10 Nov 2023 01:17:31 -0800 (PST)
+Date:   Fri, 10 Nov 2023 14:47:29 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Vincent Guittot <vincent.guittot@linaro.org>
 Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
@@ -66,17 +66,18 @@ Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
         linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
         conor.dooley@microchip.com, suagrfillet@gmail.com,
         ajones@ventanamicro.com, lftan@kernel.org
-Subject: Re: [PATCH v6 3/7] cpufreq/schedutil: Use a fixed reference frequency
-Message-ID: <20231110091702.z3phucnffoe44kxy@vireshk-i7>
+Subject: Re: [PATCH v6 5/7] cpufreq/cppc: Move and rename
+ cppc_cpufreq_{perf_to_khz|khz_to_perf}
+Message-ID: <20231110091729.jssgofhlcye4juev@vireshk-i7>
 References: <20231109101438.1139696-1-vincent.guittot@linaro.org>
- <20231109101438.1139696-4-vincent.guittot@linaro.org>
+ <20231109101438.1139696-6-vincent.guittot@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231109101438.1139696-4-vincent.guittot@linaro.org>
+In-Reply-To: <20231109101438.1139696-6-vincent.guittot@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,24 +86,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 09-11-23, 11:14, Vincent Guittot wrote:
-> cpuinfo.max_freq can change at runtime because of boost as an example. This
-> implies that the value could be different than the one that has been
-> used when computing the capacity of a CPU.
+> Move and rename cppc_cpufreq_perf_to_khz and cppc_cpufreq_khz_to_perf to
+> use them outside cppc_cpufreq in topology_init_cpu_capacity_cppc().
 > 
-> The new arch_scale_freq_ref() returns a fixed and coherent reference
-> frequency that can be used when computing a frequency based on utilization.
+> Modify the interface to use struct cppc_perf_caps *caps instead of
+> struct cppc_cpudata *cpu_data as we only use the fields of cppc_perf_caps.
 > 
-> Use this arch_scale_freq_ref() when available and fallback to
-> policy otherwise.
+> cppc_cpufreq was converting the lowest and nominal freq from MHz to kHz
+> before using them. We move this conversion inside cppc_perf_to_khz and
+> cppc_khz_to_perf to make them generic and usable outside cppc_cpufreq.
+> 
+> No functional change
 > 
 > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 > ---
->  kernel/sched/cpufreq_schedutil.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
+>  drivers/acpi/cppc_acpi.c       | 104 ++++++++++++++++++++++++
+>  drivers/cpufreq/cppc_cpufreq.c | 139 ++++-----------------------------
+>  include/acpi/cppc_acpi.h       |   2 +
+>  3 files changed, 123 insertions(+), 122 deletions(-)
 
 Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
