@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA0B7E8091
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D212F7E81DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344868AbjKJSPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47678 "EHLO
+        id S1345748AbjKJSht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235113AbjKJSOT (ORCPT
+        with ESMTP id S1345675AbjKJSfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:14:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846A039CCB
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:46:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8973C433C8;
-        Fri, 10 Nov 2023 14:46:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699627610;
-        bh=ADJXJUQ+yQCokhxG3Gpz902vfTvDUZW88gRg9FvUxeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0IMv16WHOf9OHJnWKO+KxsHFlUmJj2cGyUmKPf0XCoXfrBwnDkIJ4l3UwdkLuij6
-         Txyc1CeqIGDKWNgIH2xuW5SQ8VtLcs0izPCcEmi4VHJ/or4w9Hjod/jJMxhkpg520r
-         TTdEZIO1jLupxlG0c3qnwHgTJs8oMacLr3mQySvN+L5Cm+QbHVYMVDhj084EDaQJcu
-         GJBgCCyTDrWw85OJ7QSKfPLBGYbRydNizM/QKZH1P4hQCAp1/vouDq6KLd9FE4moNG
-         kYgZ4QKtywyrOLasZnlW5QzjkY0kBI0WbsMy/cnXZhoGmtAT1JPD/f2w09kaRTo3bi
-         vH1JKPnEPaqgg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8594C40094; Fri, 10 Nov 2023 11:46:46 -0300 (-03)
-Date:   Fri, 10 Nov 2023 11:46:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nikita Shubin <n.shubin@yadro.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2] perf vendor events riscv: add StarFive Dubhe-80 JSON
- file
-Message-ID: <ZU5CVv0U+Q4BmHeX@kernel.org>
-References: <20231103082441.1389842-1-jisheng.teoh@starfivetech.com>
- <CAP-5=fW4T_j02RLghg=_OB1TkRWFuHKOR59xFyEsdEH5gGnUPA@mail.gmail.com>
+        Fri, 10 Nov 2023 13:35:05 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C6C39CCA
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:47:37 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r1Smx-0007Pv-TJ; Fri, 10 Nov 2023 15:47:15 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r1Sms-0082mL-3F; Fri, 10 Nov 2023 15:47:10 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r1Smr-00GmoR-Q0; Fri, 10 Nov 2023 15:47:09 +0100
+Date:   Fri, 10 Nov 2023 15:47:09 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
+        Richard.Gong@amd.com, posteuca@mutex.one,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: amd: acp: add pm ops support for renoir
+ platform Add pm ops for renoir platform.
+Message-ID: <20231110144709.33z7qdl3dvb6pjkj@pengutronix.de>
+References: <20231110125214.2127139-1-Syed.SabaKareem@amd.com>
+ <20231110125214.2127139-2-Syed.SabaKareem@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z2bq2xkeirl6malp"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fW4T_j02RLghg=_OB1TkRWFuHKOR59xFyEsdEH5gGnUPA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20231110125214.2127139-2-Syed.SabaKareem@amd.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,18 +64,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 03, 2023 at 08:45:33AM -0700, Ian Rogers escreveu:
-> On Fri, Nov 3, 2023 at 1:27 AM Ji Sheng Teoh <jisheng.teoh@starfivetech.com> wrote:
 
-> > StarFive's Dubhe-80 supports raw event id 0x00 - 0x22.
-> > The raw events are enabled through PMU node of DT binding.
-> > Besides raw event, add standard RISC-V firmware events to
-> > support monitoring of firmware event.
+--z2bq2xkeirl6malp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
+Hello,
 
-Thanks, applied.
+the subject should be deduplicated.
 
-- Arnaldo
+On Fri, Nov 10, 2023 at 06:22:10PM +0530, Syed Saba Kareem wrote:
+> +static int __maybe_unused rn_pcm_resume(struct device *dev)
+
+If you use DEFINE_SIMPLE_DEV_PM_OPS below, you can drop the
+__maybe_unused here.
+
+> +{
+> [...]
+> +}
+> +
+> +static const struct dev_pm_ops rn_dma_pm_ops =3D {
+> +	SET_SYSTEM_SLEEP_PM_OPS(NULL, rn_pcm_resume)
+> +};
+> +
+>  static struct platform_driver renoir_driver =3D {
+>  	.probe =3D renoir_audio_probe,
+>  	.remove_new =3D renoir_audio_remove,
+>  	.driver =3D {
+>  		.name =3D "acp_asoc_renoir",
+> +		.pm =3D &rn_dma_pm_ops,
+>  	},
+>  };
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--z2bq2xkeirl6malp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVOQmwACgkQj4D7WH0S
+/k4H3Af9F+zM48KYYJ2LhyGdAwCIXHLLHtID1xORRtoppL1DvdGdGIgLxMNGil1D
+KKIElxqjCLkwI7z7pUpD3VrPIA3RVr8QkwUNebuNYCu/FeYVq/iq10xPCTyJ9XOB
+LeX920bHa8cELvuyZmdwo5fvTxVZYTEos+/gl9uYs7ZWOszPEmUug2+UXoaW+Xr7
+VIMVDIDX0+A9oPd/3LVzqMLerKQ+xTywlsJHKBn7jZ27Mty+EntVnwiJU3g1POXF
+1E1bAD4H2jxfQIF9CVoy8LX/6FgegHNX3jb8yaGYNSHKxOUYH4PZcAZ6rZDHCyFm
+5MW4QdZtuwxF8q5WxzTMUECjPP35FA==
+=Gcu+
+-----END PGP SIGNATURE-----
+
+--z2bq2xkeirl6malp--
