@@ -2,235 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE667E829F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 349B87E8190
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346478AbjKJT32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:29:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+        id S1346310AbjKJSaP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 13:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236093AbjKJT2m (ORCPT
+        with ESMTP id S1344930AbjKJS1I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A374FAF83
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699607079; x=1731143079;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=BmkXrVBhtqS6a5fh9xFjSV2+N/Kjk5n34a+QwEE9pvA=;
-  b=CAY5UOqbWXiJTKV4Tb2MTMVnfPt7I8G7sCI63EfIuMmyULt0Aul53K4Y
-   +8J+plJ2q1WmL6LPHRgzju7Wef73NrI3/b89rP5CBuRPhsfmE4DbGBquT
-   4d2L9mNEZnU940s55sTlsvJCB+GH5HZYYYtNKacc93O3qWexk2vyL1C0K
-   nhEVPbzNxVWa6VZpIj9ItU4V4SeWVH3O5J+8u4tJl8WXj5fEyEX0B6Zje
-   n54QXk6BsqJtZHKZ+PA41yFQBs/42IhU8IO/UcTI5OZal3gXDc0cc4KO2
-   95TqwoR6Hb+Dc328iuD51p2LmcGk6sVCsuOORJEpVUFzBuZDT+OawF51K
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="375198643"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="375198643"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 01:04:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="757155938"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="757155938"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Nov 2023 01:04:38 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 10 Nov 2023 01:04:38 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 10 Nov 2023 01:04:38 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 10 Nov 2023 01:04:38 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 10 Nov 2023 01:04:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AExOEF6n7+QnAhkMiB6ZRmsktOu4Lbcdz47O451pcEEO1/OnvxiK5awPbXS56OJ0UHrb0SLoQapgiUgcWwJxJoleU5487K6NCmzU0w88ubvHEiQlF2dhe1k2m5Nr6dPo+I9dNrtysBc2g6iLdmZeYd4UNZbc2+rtnw6lGWgHaNObmwuDDlVXeFWV4R8RWaX2LtBymYGZqduOkely8A3QlCLh/q3zVbWIG1licw/tQC2gfzXLYfdMzx2yV1iElRNjETzirVvBxkBPNdFsz6feg1+LFqFjTCdaQ6fZCpJ7fUQWw+fs+P4sPbWObR08Sfbbrqy0DZU415q0fYrBBzq2Rg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MCVqrHlgnLxznzemVtd+QTQ4KEjwGGfh9j2cnNDKsrI=;
- b=lHWw7dTYoLLPovNnr3vRCjDuy0ZsN1Ie5/iMGHYU3GBb1Zi4mWg5MbU1pWNPIgF+jlhRi1GYhUl6oBOcsXOP2v52LoP5lAXSjwAdUl8OiAwHztGPbyUW91RqgQ4kqYODUjHDIo/RrNrA2z6jjzbUbkHJ1usIfJcN28zUKOn003zmke4XZJFz9LPHa0eZtOUxw54nykXx9h7rHN2B4yFWfo1m/D5uRGus2JO2grGghpbz806Oh/oqkXyX85uzrhOw82Vodp21Z+KXe4KFGnVKr/FZTXlSfx6ro9SiO2mjnbSPosmf5belBa5nXvys7DUPqveNh2JCfuhThhk4mlLrBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by SA1PR11MB6615.namprd11.prod.outlook.com (2603:10b6:806:256::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Fri, 10 Nov
- 2023 09:04:35 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::53f6:8fa2:1b02:6012]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::53f6:8fa2:1b02:6012%3]) with mapi id 15.20.6954.029; Fri, 10 Nov 2023
- 09:04:35 +0000
-Message-ID: <2c95d0d0-a708-436f-a9d9-4b3d90eafb16@intel.com>
-Date:   Fri, 10 Nov 2023 17:04:26 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Question]: major faults are still triggered after mlockall when
- numa balancing
-Content-Language: en-US
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     "zhangpeng (AS)" <zhangpeng362@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <lstoakes@gmail.com>, <hughd@google.com>, <david@redhat.com>,
-        <vbabka@suse.cz>, <peterz@infradead.org>, <mgorman@suse.de>,
-        <mingo@redhat.com>, <riel@redhat.com>, <hannes@cmpxchg.org>,
-        Nanyong Sun <sunnanyong@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
- <ZU0WkMR1s7QNG9RZ@casper.infradead.org>
- <874jhugom8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <874jhugom8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2P153CA0014.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::6)
- To CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+        Fri, 10 Nov 2023 13:27:08 -0500
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EE3AF80;
+        Fri, 10 Nov 2023 01:04:51 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d9c66e70ebdso1843023276.2;
+        Fri, 10 Nov 2023 01:04:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699607091; x=1700211891;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHZPpTTWcN/qBtcyGF24DlgLlsqCltsVlukIwu8/1iQ=;
+        b=QiYKoo/QUg++OBz4Mna7w7ILuBGUOiWQYItNKUu+AfYr2EfW8cvfmn+flNQjapSixE
+         Z6mHN0nfOyVFvLbJGiqWGEEC4lyIDURfkftU26TrIw1tXdPCPSHdxYvm+R/fJrxEcXKL
+         EPvFe21+Va9CDkBr2QgY5usptWnWBU7CcEphBAN/1OvREB9t/SROT23hLrbCk8fWqj3Q
+         +COSxbSCZo/DlYg2cVHKw78jdn7rTpln/Wstn7WxhKWELYOtpNKZsNPOw2nak2zSN4yw
+         OGR83qmhtmrOwJDjEU6iPMb1+qtjnSm0KbPjWHOyZXGG+/ib7yS73FyYib2AMd+64BG9
+         1K7w==
+X-Gm-Message-State: AOJu0Yw9tJfdHIJh68sVqpefpk8PF6eOdJdnMIbRN9Pd8Ut9WEIk9NRV
+        KesGUyJsApzfcjHiTbk//ZPsWhbMDCEgKw==
+X-Google-Smtp-Source: AGHT+IEEa4GrP5RKDm7nfjuGhV+kD81VRn41CavZ63GmDswLUYsSSe4/1yhToJgXSgvu1T206jClXQ==
+X-Received: by 2002:a25:e441:0:b0:d78:f32:5849 with SMTP id b62-20020a25e441000000b00d780f325849mr6958918ybh.24.1699607090762;
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id g10-20020a5b070a000000b00da041da21e7sm7718137ybq.65.2023.11.10.01.04.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a7af52ee31so21843487b3.2;
+        Fri, 10 Nov 2023 01:04:50 -0800 (PST)
+X-Received: by 2002:a0d:dc85:0:b0:5a7:baae:329f with SMTP id
+ f127-20020a0ddc85000000b005a7baae329fmr7246797ywe.15.1699607089817; Fri, 10
+ Nov 2023 01:04:49 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|SA1PR11MB6615:EE_
-X-MS-Office365-Filtering-Correlation-Id: cdb560cf-28f1-444a-12f6-08dbe1cc0f7b
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cg09O+GqdpVAriNjVgAiVfluUg7+tem1emGAKLCA1bzmjpmFYYIxO3O4RdoPeaW/835ra8oPIWxVn4junsk6ZIXCH0+KtTiK7swkXKMCUjcuYy92HEXK4jYkaQlHQ3MDBWGnQpEUEaxFq5kgM71r+pLJ/sA8lnKd9dszYOt5X329HMc1IpLfqEebgxpNT2RDx/pYRO3kQC32OY6yWGHhqCFXK76kBAgg2TzThv0yTXbaT25r1rgicS7BYekIUJddj/eSk2lfiUhoAwjzkFvZ+BLoNKsMWyOn/jiNvOxqNCp8VrgOAiF/zzWNLegkZ4wHNR1E2BM2R2Sc8iyl/kcEuWIOBL2BoICV3HeBnm5OQLyrBo9Huyc+a3lSaBMZQiPzv8b/fkN3vsaPb/KfmX1EbNCRK7NrpnKG+kvgyW1jYkp22sk69Dq7tXfXL0iAk6bG6aq+NWBAgB9KywcSKDVRXGy1g9z9ZAT3wAvcdR69u+rEyxy8EVge8XjctqDybucu8ZgwqxBp8+qRcEmGXQ68EG4NkFDxuL0uYON4nsHkP4rZRyhdnssZ1ILUx8RC2AcnhWmbVqh/PwrD4KpDJw2VV1D/PRbrQbfvV6UuwxnfjVoOEa4sE7wENaqLwg9xKAvh+j8sra0gqt28OnMtO0F0YA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(39860400002)(366004)(136003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(7416002)(86362001)(31696002)(53546011)(6486002)(5660300002)(31686004)(316002)(8936002)(8676002)(4326008)(2906002)(41300700001)(38100700002)(54906003)(66476007)(110136005)(66556008)(83380400001)(26005)(36756003)(2616005)(82960400001)(66946007)(6512007)(6666004)(478600001)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a01XSkJ5d2h3T0xzSFFic2RFdS9OZWtxOCtFRGdYQXI4RDJQZ0pGQ0xQMGh1?=
- =?utf-8?B?VkhVUzQ3K3pGemJVQ093T0I1VWg1R3Ixam1IQkhZTFNNTVFhQ2xhMCtTY2xU?=
- =?utf-8?B?UWpGbTM1aEVoUFRvNUh2dEZqczl2MENqVTVySU4vUTI0OEh4WlRabTMvaTNT?=
- =?utf-8?B?SnRQZHM1azVpVGZWWWF0U3g5WldCZHEra1B2TkpLZkt3amFzYXFkTHNXdDZy?=
- =?utf-8?B?UisrYTBwd2VVTDgzSmlYMkI2ZWtUZmhodnh5UG9GdmRlMXVaNU95NWFtZDRE?=
- =?utf-8?B?WTNlRVlmNjZ6bmh3RFRSc1VRV29QUkJqc3ZjVnhGQ0RvNTRKakxqbDJlRGNB?=
- =?utf-8?B?R2xyaDdXNkR3b2FROG0wT3dvcVArOFNqOEV0UXphZkxWNEt1bFBDa0JtSHYv?=
- =?utf-8?B?ZW5PS3kwc2VTUVdwQys2UkhqQjhmcnJ1VlVpM0tueis0S0c1SGFEanpyS1p3?=
- =?utf-8?B?ZEw3elBhNjkzeDhiaHQrbEFqV3NFZ0hTd0FObzBnZ0JXY2xuc3BLRUdlbUpK?=
- =?utf-8?B?L2h3alJucDczNHVkaWtZVnZ4S2VsRjBidktiZy9BbUpXTFovVXpRcHpBQVhO?=
- =?utf-8?B?THBTUVh5QnRyWWJvQ1FEeE1pMHFTR3ZiMEJkUFcxQnlNOXcxbGhvdTJrL01i?=
- =?utf-8?B?WnNzdzM0RnRka1F0VnVSN1AvV3JiS25sUkx5c0s3QVpscmgrMzlTTWFkSFVu?=
- =?utf-8?B?Zm5OTnlUak9NbEkvdDZxczFVVEN4S0tlbXB0dUE2czhGNmFiQUJIWDMzTHJs?=
- =?utf-8?B?TG1GOU85c0lFbTFmTHNhY29aV0JWK3RBZ1E1T2V2dkd0b2VDL3pkdmRsNVNy?=
- =?utf-8?B?YWF1NVcrOGJPWFdQYS81NHNGRGVSMzEzZDhtcm9zcVArUWg3N2ZTNzU1ZVYw?=
- =?utf-8?B?MUZ6T3R5WThkMDNmWDZWclBWSllQb3QyeEFMeW91Y0E3TDd4UDZQSzRpamZJ?=
- =?utf-8?B?SlpueVBwaUFzNjJpcVNBbE92ak02a2hsUnJYekNpQlhUWkp4TkdRRnl3SkJ2?=
- =?utf-8?B?Q3dCNGdIejc1M3JCUGN3SXFEdG5nOXdWQ3VNeHJHTUNjVEhpanF1em9YQjBB?=
- =?utf-8?B?STdUL05YdVd4d1VVMjZjRkxndjNTMmErdmh3UGVKaTBDdjRIMVZYa1BQK2ZR?=
- =?utf-8?B?VzRTYW5Nazhqb3pQRmFCZWhmUnVqbUtkU094dmRjc21NNFhEdVA2NUo3NFVW?=
- =?utf-8?B?YlU1K2ZkeWJ5dm1OQ1VmeEd6V0tlb3dmWmkvT2tKRncvNDNjcWJsT0ZBTXlv?=
- =?utf-8?B?TkNhSHpQT0NWYnRSWUc5bTZxdW1ORlZmVmhsRWcvTVFlVUEvamZZQ3d3V1lF?=
- =?utf-8?B?dU1STlBOUWpMUjZJZXl0Y3VMZ1JkOUNZczhIbWNEczBlWVg5UzI3SElnYjdt?=
- =?utf-8?B?TmNrZVhwYkVnWmpGMnlGdS84dTQxOHdYbEI3YWg0TUJNZ3Bic2V0d1VNSlhm?=
- =?utf-8?B?VGJmaTNVaEEzc2JDaWJxRTRBLzM3WG1LaFlEZHBpaTZiUW9KZ2UxK3NyTDBJ?=
- =?utf-8?B?aXpFQUt6RGE4RysreVYvbG0vTzBQSlI5ejMzWTdNS2l3OHZUUkY2d1AzOEhM?=
- =?utf-8?B?Mi9KTGxMY3krK3ppdEJPdmd5M2VBc3Y1WjYrTUFvcStKUEtvWEY0cHVSRmlw?=
- =?utf-8?B?QWxrd0xnR0x6WEpkdWhJSG1DMWFONUpUQWJZMEc4d1ZQa3NmOTVqcmZveFJi?=
- =?utf-8?B?aU9BVUw2MTQ2YTZ5eHN5clp4dWF1MGxQMWZXUlo1azhZd1pmZmdGcUUrTXda?=
- =?utf-8?B?UmJLZzlPRjE4Y052SWxuM21LL1pzVnY3TTkxZVl1SkFYTk1aNXVlak1OMWhO?=
- =?utf-8?B?U1NsVklScjJJQnJwSVI0MEduV2pnSUlHYkZ1MG9BWnlnWXdZZUhaSEIwcWpx?=
- =?utf-8?B?b1NFajhhZXhOeEV0S2FHRlp3cTVLNUlONU9UOWJJZkZyVk5XUXdRczd2aitB?=
- =?utf-8?B?OGw1TUpRd1ZQakVpSEVoYzFxMS9TM2xwL3lLU3YwdkVidWo4TmRJakRQV0pG?=
- =?utf-8?B?Z25tT2JIMHAwWXhkcnRsbU5OTk5Kamd4eWNuTTJPSi9tN0hqVHBHaFpBalF0?=
- =?utf-8?B?RWhpZW1kN0cyeCtiK01HRWpRY3NXVVhKajBYSDJUc1JyZWZrekwrTXJlSnFy?=
- =?utf-8?Q?gKhoPuPG9bTDY2DKcoeKP0+Z/?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdb560cf-28f1-444a-12f6-08dbe1cc0f7b
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 09:04:35.5482
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rIbiFcDUuHBeelDl2RX1OANb9739i1f/DI2gauDRq5oEUH8BmyEVQ42S/klHS1Sv6FdnWVDLOdADzO6tYfKdsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6615
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <Yzv0wXi4Uu2WND37@gondor.apana.org.au> <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
+ <Y/MDmL02XYfSz8XX@gondor.apana.org.au> <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
+ <ZJ0RSuWLwzikFr9r@gondor.apana.org.au> <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
+ <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au> <CAHk-=wj0-QNH5gMeYs3b+LU-isJyE4Eu9p8vVH9fb-vHHmUw0g@mail.gmail.com>
+ <ZUSKk6Tb7+0n9X5s@gondor.apana.org.au> <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
+ <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
+In-Reply-To: <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 10 Nov 2023 10:04:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWWMABFmejXPEuKyvDC7CgUZSeWU6cR8qpBdVa9KiBdUQ@mail.gmail.com>
+Message-ID: <CAMuHMdWWMABFmejXPEuKyvDC7CgUZSeWU6cR8qpBdVa9KiBdUQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: jitterentropy - Hide esoteric Kconfig options
+ under FIPS and EXPERT
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Herbert, Yamada-san,
 
+On Mon, Nov 6, 2023 at 11:00 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> On Thu, Nov 02, 2023 at 08:32:36PM -1000, Linus Torvalds wrote:
+> > I think that would help the situation, but I assume the sizing for the
+> > jitter buffer is at least partly due to trying to account for cache
+> > sizing or similar issues?
+> >
+> > Which really means that I assume any static compile-time answer to
+> > that question is always wrong - whether you are an expert or not.
+> > Unless you are just building the thing for one particular machine.
+> >
+> > So I do think the problem is deeper than "this is a question only for
+> > experts". I definitely don't think you should ask a regular user (or
+> > even a distro kernel package manager). I suspect it's likely that the
+> > question is just wrong in general - because any particular one buffer
+> > size for any number of machines simply cannot be the right answer.
+> >
+> > I realize that the commit says "*allow* for configuration of memory
+> > size", but I really question the whole approach.
+>
+> Yes I think these are all valid points.  I just noticed that I
+> forgot to cc the author so let's see if Stephan has anything to
+> add.
+>
+> > But yes - hiding these questions from any reasonable normal user is at
+> > least a good first step.
+>
+> OK here's the patch:
+>
+> ---8<---
+> As JITTERENTROPY is selected by default if you enable the CRYPTO
+> API, any Kconfig options added there will show up for every single
+> user.  Hide the esoteric options under EXPERT as well as FIPS so
+> that only distro makers will see them.
+>
+> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-On 11/10/2023 1:32 PM, Huang, Ying wrote:
-> Matthew Wilcox <willy@infradead.org> writes:
-> 
->> On Thu, Nov 09, 2023 at 09:47:24PM +0800, zhangpeng (AS) wrote:
->>> There is a stage in numa fault which will set pte as 0 in do_numa_page() :
->>> ptep_modify_prot_start() will clear the vmf->pte, until
->>> ptep_modify_prot_commit() assign a value to the vmf->pte.
->>
->> [...]
->>
->>> Our problem scenario is as follows:
->>>
->>> task 1                      task 2
->>> ------                      ------
->>> /* scan global variables */
->>> do_numa_page()
->>>   spin_lock(vmf->ptl)
->>>   ptep_modify_prot_start()
->>>   /* set vmf->pte as null */
->>>                             /* Access global variables */
->>>                             handle_pte_fault()
->>>                               /* no pte lock */
->>>                               do_pte_missing()
->>>                                 do_fault()
->>>                                   do_read_fault()
->>>   ptep_modify_prot_commit()
->>>   /* ptep update done */
->>>   pte_unmap_unlock(vmf->pte, vmf->ptl)
->>>                                     do_fault_around()
->>>                                     __do_fault()
->>>                                       filemap_fault()
->>>                                         /* page cache is not available
->>>                                         and a major fault is triggered */
->>>                                         do_sync_mmap_readahead()
->>>                                         /* page_not_uptodate and goto
->>>                                         out_retry. */
->>>
->>> Is there any way to avoid such a major fault?
->>
->> Yes, this looks like a bug.
->>
->> It seems to me that the easiest way to fix this is not to zero the pte
->> but to make it protnone?  That would send task 2 into do_numa_page()
->> where it would take the ptl, then check pte_same(), see that it's
->> changed and goto out, which will end up retrying the fault.
-> 
-> There are other places in the kernel where the PTE is cleared, for
-> example, move_ptes() in mremap.c.  IIUC, we need to audit all them.
-> 
-> Another possible solution is to check PTE again with PTL held before
-> reading in file data.  This will increase the overhead of major fault
-> path.  Is it acceptable?
-What if we check the PTE without page table lock acquired?
+Thanks for your patch, which is now commit e7ed6473c2c8c4e4 ("crypto:
+jitterentropy - Hide esoteric Kconfig options under FIPS and EXPERT").
 
-Regards
-Yin, Fengwei
+> --- a/crypto/Kconfig
+> +++ b/crypto/Kconfig
+> @@ -1297,10 +1297,12 @@ config CRYPTO_JITTERENTROPY
+>
+>           See https://www.chronox.de/jent.html
+>
+> +if CRYPTO_JITTERENTROPY
+> +if CRYPTO_FIPS && EXPERT
+> +
+>  choice
+>         prompt "CPU Jitter RNG Memory Size"
+>         default CRYPTO_JITTERENTROPY_MEMSIZE_2
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The Jitter RNG measures the execution time of memory accesses.
+>           Multiple consecutive memory accesses are performed. If the memory
+> @@ -1344,7 +1346,6 @@ config CRYPTO_JITTERENTROPY_OSR
+>         int "CPU Jitter RNG Oversampling Rate"
+>         range 1 15
+>         default 1
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The Jitter RNG allows the specification of an oversampling rate (OSR).
+>           The Jitter RNG operation requires a fixed amount of timing
+> @@ -1359,7 +1360,6 @@ config CRYPTO_JITTERENTROPY_OSR
+>
+>  config CRYPTO_JITTERENTROPY_TESTINTERFACE
+>         bool "CPU Jitter RNG Test Interface"
+> -       depends on CRYPTO_JITTERENTROPY
+>         help
+>           The test interface allows a privileged process to capture
+>           the raw unconditioned high resolution time stamp noise that
+> @@ -1377,6 +1377,28 @@ config CRYPTO_JITTERENTROPY_TESTINTERFACE
+>
+>           If unsure, select N.
+>
+> +endif  # if CRYPTO_FIPS && EXPERT
+> +
+> +if !(CRYPTO_FIPS && EXPERT)
+> +
+> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKS
+> +       int
+> +       default 64
+> +
+> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE
+> +       int
+> +       default 32
+> +
+> +config CRYPTO_JITTERENTROPY_OSR
+> +       int
+> +       default 1
+> +
+> +config CRYPTO_JITTERENTROPY_TESTINTERFACE
+> +       bool
 
-> 
->> I'm not particularly expert at page table manipulation, so I'll let
->> somebody who is propose an actual patch.  Or you could try to do it?
-> 
-> --
-> Best Regards,
-> Huang, Ying
+This duplicates the symbols in the CRYPTO_FIPS && EXPERT section above,
+which is fragile.
+
+For the int and bool symbols, this can be handled without duplication
+using:
+
+     config CRYPTO_JITTERENTROPY_OSR
+    -       int "CPU Jitter RNG Oversampling Rate"
+    +       int "CPU Jitter RNG Oversampling Rate" if CRYPTO_FIPS && EXPERT
+
+     config CRYPTO_JITTERENTROPY_TESTINTERFACE
+    -       bool "CPU Jitter RNG Test Interface"
+    +       bool "CPU Jitter RNG Test Interface" if CRYPTO_FIPS && EXPERT
+
+Unfortunately the following does not work for the choice statement,
+although kconfig does not report an error:
+
+     choice
+    -       prompt "CPU Jitter RNG Memory Size"
+    +       prompt "CPU Jitter RNG Memory Size" if CRYPTO_FIPS && EXPERT
+             default CRYPTO_JITTERENTROPY_MEMSIZE_2
+
+Unlike for other symbol types, which just become silent if
+!(CRYPTO_FIPS && EXPERT), the choice is skipped completely if
+!(CRYPTO_FIPS && EXPERT), and CRYPTO_JITTERENTROPY_MEMSIZE_2 is not set.
+
+Yamada-san: Do you know why choice behaves differently?
+Is this easy to fix?
+
+Thanks!
+
+> +
+> +endif  # if !(CRYPTO_FIPS && EXPERT)
+> +endif  # if CRYPTO_JITTERENTROPY
+> +
+>  config CRYPTO_KDF800108_CTR
+>         tristate
+>         select CRYPTO_HMAC
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
