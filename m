@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF277E7F66
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3417E8046
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjKJRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
+        id S1343878AbjKJSIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:08:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjKJRwp (ORCPT
+        with ESMTP id S1345639AbjKJSGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:52:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBEC524E;
-        Thu,  9 Nov 2023 22:14:10 -0800 (PST)
+        Fri, 10 Nov 2023 13:06:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604BE44B3
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:11:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699596851; x=1731132851;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Cvu/feWwM6Drw45XaaoAHqUoqywA1BWLqtyRb/Y/siY=;
-  b=Ew/wlSVH73wlvBwZkMwGMiWWBX3RsIBE4N6yM2kA0wHsR87JHXLP1O5R
-   Sqr/H3/TTAk6ZqaNj3zwZ/UxvScEZuulx7ULu+BnifZkFYyDFWGDGbV72
-   YbZ/R7nlP0xyJMON304tp0Q8E5cF1M4oSrvWBgfsTO7dBAYcFMcPct3IC
-   q/nqMrscQDNohaMpOooUJLnC08VdJqzyZrjajJGG3Epbqi8HPY3aKMnYh
-   +H8deEgzPhVeTCY5FafizwPm9pS72vcxX1v84CE6Cr7QMTfEDBtWUd0pM
-   f3qWZf73hpRgMLNpps4QOYDwqJeaTsuHj2Q+exTO5oamfZ5K9KP7moOZ1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="380528796"
+  t=1699596705; x=1731132705;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=BwUK2lhp0aL0k4mLHSHuWAbnPDKPIUyDN82k4U5czaU=;
+  b=T67x3n8orx7g9I8xJB+UzyFh2k9njN3fA5z2n3TcEN2ysLy6KWMt0isx
+   zTdgT9PFWQENccS7TyBClr2erqgnyEgbGxT0Fn7WKPbbfvI+ZMJvYOqaQ
+   rEJPe7Hz8UVzHxQo9TXecUmka45bv6dCUa5uRHV0BkfeKeCaJ3rbqUx63
+   lBZZxR1Gue3wbdXxkW2E0cUO000F4ddAUwgAo3oElggiH68rh9seMCJLw
+   o8NgKkN/fRksBfqpUKVqaWP40M7ypxN8bO+Emch71IoWDGbbzP8pTEmJs
+   sMaxzmBn58liW/tHO+Ff9WQEH9HPcEv2yl86ClTnWNCO0nMZL+hZfwbk6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="393012192"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="380528796"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:07:08 -0800
+   d="scan'208";a="393012192"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:10:45 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="740069660"
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="907383922"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="740069660"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.5.53]) ([10.93.5.53])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 22:07:05 -0800
-Message-ID: <c85ffcdc-bf0a-4047-a29d-0ee1b595a227@linux.intel.com>
-Date:   Fri, 10 Nov 2023 14:07:03 +0800
+   d="scan'208";a="907383922"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Nov 2023 22:10:44 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1Kj3-0009SO-2K;
+        Fri, 10 Nov 2023 06:10:41 +0000
+Date:   Fri, 10 Nov 2023 14:09:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ognjen Galic <smclt30p@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Subject: drivers/platform/x86/thinkpad_acpi.c:9270: warning: Function
+ parameter or member 'method' not described in 'tpacpi_battery_acpi_eval'
+Message-ID: <202311101401.V95EdtRq-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 08/26] KVM: x86/pmu: Disallow "fast" RDPMC for
- architectural Intel PMUs
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-References: <20231110021306.1269082-1-seanjc@google.com>
- <20231110021306.1269082-9-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231110021306.1269082-9-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIMWL_WL_HIGH,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2023 10:12 AM, Sean Christopherson wrote:
-> Inject #GP on RDPMC if the "fast" flag is set for architectural Intel
-> PMUs, i.e. if the PMU version is non-zero.  Per Intel's SDM, and confirmed
-> on bare metal, the "fast" flag is supported only for non-architectural
-> PMUs, and is reserved for architectural PMUs.
->
->    If the processor does not support architectural performance monitoring
->    (CPUID.0AH:EAX[7:0]=0), ECX[30:0] specifies the index of the PMC to be
->    read. Setting ECX[31] selects “fast” read mode if supported. In this mode,
->    RDPMC returns bits 31:0 of the PMC in EAX while clearing EDX to zero.
->
->    If the processor does support architectural performance monitoring
->    (CPUID.0AH:EAX[7:0] ≠ 0), ECX[31:16] specifies type of PMC while ECX[15:0]
->    specifies the index of the PMC to be read within that type. The following
->    PMC types are currently defined:
->    — General-purpose counters use type 0. The index x (to read IA32_PMCx)
->      must be less than the value enumerated by CPUID.0AH.EAX[15:8] (thus
->      ECX[15:8] must be zero).
->    — Fixed-function counters use type 4000H. The index x (to read
->      IA32_FIXED_CTRx) can be used if either CPUID.0AH.EDX[4:0] > x or
->      CPUID.0AH.ECX[x] = 1 (thus ECX[15:5] must be 0).
->    — Performance metrics use type 2000H. This type can be used only if
->      IA32_PERF_CAPABILITIES.PERF_METRICS_AVAILABLE[bit 15]=1. For this type,
->      the index in ECX[15:0] is implementation specific.
->
-> WARN if KVM ever actually tries to complete RDPMC for a non-architectural
-> PMU as KVM doesn't support such PMUs, i.e. kvm_pmu_rdpmc() should reject
-> the RDPMC before getting to the Intel code.
->
-> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
-> Fixes: 67f4d4288c35 ("KVM: x86: rdpmc emulation checks the counter incorrectly")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/kvm/vmx/pmu_intel.c | 14 +++++++++++++-
->   1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index c6ea128ea7c8..80255f86072e 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -61,7 +61,19 @@ static struct kvm_pmc *intel_pmc_idx_to_pmc(struct kvm_pmu *pmu, int pmc_idx)
->   
->   static u32 intel_rdpmc_get_masked_idx(struct kvm_pmu *pmu, u32 idx)
->   {
-> -	return idx & ~(INTEL_RDPMC_FIXED | INTEL_RDPMC_FAST);
-> +	/*
-> +	 * Fast RDPMC is only supported on non-architectural PMUs, which KVM
-> +	 * doesn't support.
-> +	 */
-> +	if (WARN_ON_ONCE(!pmu->version))
-> +		return idx & ~INTEL_RDPMC_FAST;
-> +
-> +	/*
-> +	 * Fixed PMCs are supported on all architectural PMUs.  Note, KVM only
-> +	 * emulates fixed PMCs for PMU v2+, but the flag itself is still valid,
-> +	 * i.e. let RDPMC fail due to accessing a non-existent counter.
-> +	 */
-> +	return idx & ~INTEL_RDPMC_FIXED;
->   }
->   
->   static bool intel_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
+Hi Ognjen,
 
-Reviewed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+FYI, the error/warning still remains.
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   89cdf9d556016a54ff6ddd62324aa5ec790c05cc
+commit: 2801b9683f740012863f7f0b1f0bc770c417fe72 thinkpad_acpi: Add support for battery thresholds
+date:   6 years ago
+config: i386-randconfig-004-20230904 (https://download.01.org/0day-ci/archive/20231110/202311101401.V95EdtRq-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101401.V95EdtRq-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311101401.V95EdtRq-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/platform/x86/thinkpad_acpi.c: In function 'create_attr_set':
+   drivers/platform/x86/thinkpad_acpi.c:1034:31: warning: taking address of packed member of 'struct attribute_set_obj' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    1034 |         sobj->s.group.attrs = &sobj->a;
+         |                               ^~~~~~~~
+   drivers/platform/x86/thinkpad_acpi.c:1037:16: warning: taking address of packed member of 'struct attribute_set_obj' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    1037 |         return &sobj->s;
+         |                ^~~~~~~~
+   drivers/platform/x86/thinkpad_acpi.c: In function 'tpacpi_battery_store':
+   drivers/platform/x86/thinkpad_acpi.c:9451:27: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
+    9451 |                 if (value < 0 || value > 99)
+         |                           ^
+   drivers/platform/x86/thinkpad_acpi.c: In function 'thermal_get_sensor':
+   drivers/platform/x86/thinkpad_acpi.c:6224:20: warning: this statement may fall through [-Wimplicit-fallthrough=]
+    6224 |                 if (idx >= 8 && idx <= 15) {
+         |                    ^
+   drivers/platform/x86/thinkpad_acpi.c:6230:9: note: here
+    6230 |         case TPACPI_THERMAL_TPEC_8:
+         |         ^~~~
+   drivers/platform/x86/thinkpad_acpi.c: In function 'hotkey_notify':
+   drivers/platform/x86/thinkpad_acpi.c:4181:28: warning: this statement may fall through [-Wimplicit-fallthrough=]
+    4181 |                         if (tp_features.hotkey_wlsw &&
+         |                            ^
+   drivers/platform/x86/thinkpad_acpi.c:4189:17: note: here
+    4189 |                 default:
+         |                 ^~~~~~~
+>> drivers/platform/x86/thinkpad_acpi.c:9270: warning: Function parameter or member 'method' not described in 'tpacpi_battery_acpi_eval'
+>> drivers/platform/x86/thinkpad_acpi.c:9270: warning: Function parameter or member 'ret' not described in 'tpacpi_battery_acpi_eval'
+>> drivers/platform/x86/thinkpad_acpi.c:9270: warning: Function parameter or member 'param' not described in 'tpacpi_battery_acpi_eval'
+
+
+vim +9270 drivers/platform/x86/thinkpad_acpi.c
+
+  9263	
+  9264	/**
+  9265	 * This evaluates a ACPI method call specific to the battery
+  9266	 * ACPI extension. The specifics are that an error is marked
+  9267	 * in the 32rd bit of the response, so we just check that here.
+  9268	 */
+  9269	static acpi_status tpacpi_battery_acpi_eval(char *method, int *ret, int param)
+> 9270	{
+  9271		int response;
+  9272	
+  9273		if (!acpi_evalf(hkey_handle, &response, method, "dd", param)) {
+  9274			acpi_handle_err(hkey_handle, "%s: evaluate failed", method);
+  9275			return AE_ERROR;
+  9276		}
+  9277		if (response & METHOD_ERR) {
+  9278			acpi_handle_err(hkey_handle,
+  9279					"%s evaluated but flagged as error", method);
+  9280			return AE_ERROR;
+  9281		}
+  9282		*ret = response;
+  9283		return AE_OK;
+  9284	}
+  9285	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
