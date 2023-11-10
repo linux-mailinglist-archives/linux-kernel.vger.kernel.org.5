@@ -2,147 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEF57E7FED
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17877E84BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbjKJSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S234881AbjKJUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234659AbjKJR7y (ORCPT
+        with ESMTP id S235753AbjKJUrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:59:54 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D852B794;
-        Fri, 10 Nov 2023 03:05:17 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6c115026985so1968483b3a.1;
-        Fri, 10 Nov 2023 03:05:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699614316; x=1700219116; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kwtDltZqo6DRYNAe427685yCrF5zwVVyWvlJ8J0IIxE=;
-        b=GiTRKNP9dAwIYBs6SNkMWZd/vooYtvgKLg5dTG7wk0o7bSxqxPu3FgUnqtsZphFiXI
-         PWpZ0LQKcx92x8lQ6Gw2n5IqZGfXhaS/QpoSrkOJv0a4eSUM4WenOOGZMduuVjizV07b
-         fex/9BccWs2dCCBrVq5o2kMhPgf4j5fHhjqbsvC+dypUXKyxabbzLxDrthUEXW9Sv9hZ
-         xCY1NHqmkUUs74ozoLIj0KLCi5WqJgQu55gcqiRHEFJH748DHJWM5tRuzuJaRGbnQyv1
-         YoTRQe/6JOlQxDYjEIdRAI6T44l2Fwnzp3/siQ45XG/iEnZGEEaxNhGhjBbpis9k/qn9
-         ibUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699614316; x=1700219116;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kwtDltZqo6DRYNAe427685yCrF5zwVVyWvlJ8J0IIxE=;
-        b=lzwYuQE/tRcHEDPSA+e8U0Ai+yQQ56wGY6BAEWvfbq8YQ5Rrwi5Kk7gKFqF9hCix++
-         X61B164g3EHQzna01wDzCQUJ62MJPerOlpFDffUu2qio0RSEdFL4BW+JcPwGEa3c1fZ6
-         kgfUfyPdoNDmKMq2oktwYcFgt943/FJ60ozrrhM2g1Jr++MmT0SV3H5f65Gw9Zwvf2El
-         9g8oCXDbn5kIMGu+ESFEHDBoYU38VKtjooIXaiLUStJMBm7pH1jEtJ3qfQdTVj7260zW
-         UIRwI8+B2I7IE6N4kfzJBGK2xZjw0C1xHr16Nt2RyydRFiJDmC38FdePtfsSXq0shVUZ
-         SzvQ==
-X-Gm-Message-State: AOJu0Yy2NJzzcTkiUjFwCZmSuKbNiBqxCQEIU3BCO45qvgfFtzjPqRJV
-        nhSPX3rYEYsb5JH2gVnp6DM=
-X-Google-Smtp-Source: AGHT+IFFW5pDixabAM8siIP62wg5JRPJT9/pzTZ5dLjbDzNknwhVd78EnQPMrW0ubr+G7381zAUD/w==
-X-Received: by 2002:a17:90a:1a04:b0:281:61c:1399 with SMTP id 4-20020a17090a1a0400b00281061c1399mr4342992pjk.3.1699614316559;
-        Fri, 10 Nov 2023 03:05:16 -0800 (PST)
-Received: from dragonet (dragonet.kaist.ac.kr. [143.248.133.220])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001c726147a45sm5112612pli.190.2023.11.10.03.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 03:05:16 -0800 (PST)
-Date:   Fri, 10 Nov 2023 20:04:04 +0900
-From:   "Dae R. Jeong" <threeearcat@gmail.com>
-To:     Sabrina Dubroca <sd@queasysnail.net>
-Cc:     Jakub Kicinski <kuba@kernel.org>, borisp@nvidia.com,
-        john.fastabend@gmail.com, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ywchoi@casys.kaist.ac.kr
-Subject: Re: Missing a write memory barrier in tls_init()
-Message-ID: <ZU4OJG56g2V9z_H7@dragonet>
-References: <ZUNLocdNkny6QPn8@dragonet>
- <20231106143659.12e0d126@kernel.org>
- <ZUq-GrWMvbfhX74a@hog>
- <20231107185324.22eecf10@kernel.org>
- <ZUtP7lMqFnNK8lw_@hog>
- <ZU4Ecx2qbdqGfRVw@dragonet>
+        Fri, 10 Nov 2023 15:47:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C336F2B799;
+        Fri, 10 Nov 2023 03:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699614364; x=1731150364;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jSjaIeYVLujogtgrUxKvwBz6mq9OFmFnD9WaBUQ1vwE=;
+  b=ZnCSgE89Sc+IflHBpkzoHpbnJZnHR7WHNsUFESslJ8Zeb9ujeB7Hn/1S
+   2IXnWa1VmQjHjM8BpFyO4vZ8MGXqqQDnKEwmhDpXmNLuhaMBp95Inhx2R
+   U8Meo5ipTa2CCG3YMJ+ByJxNWwvsRH0JNMOzodDfKaba4lGNSvQugdV1O
+   lEkhiSMetPMreh4+V9QtLzVQlsgvIhmVU+4fk5vGqzr2/YDpEOYMzU4dp
+   787WhKBUO4jLvxneFcDyGGjG4qF596HjEvnC6XGK8lM5dWUap8+S2ybaT
+   8uiFNM/xXuqa/bgnYkH4nG1W3yH6UcLe2CQzVWeaJXH22OKxt3P2nr0B5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="421263017"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="421263017"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 03:06:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="880940762"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="880940762"
+Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.215.255.120]) ([10.215.255.120])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 03:06:00 -0800
+Message-ID: <7df1364d-c327-4053-8219-f267c2e8aeea@linux.intel.com>
+Date:   Fri, 10 Nov 2023 19:06:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZU4Ecx2qbdqGfRVw@dragonet>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 net 0/7] qbv cycle time extension/truncation
+Content-Language: en-US
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+ <20231108155144.xadpltcdw2rhdpkv@skbuf>
+From:   "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
+In-Reply-To: <20231108155144.xadpltcdw2rhdpkv@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 07:22:48PM +0900, Dae R. Jeong wrote:
-> On Wed, Nov 08, 2023 at 10:07:58AM +0100, Sabrina Dubroca wrote:
-> > 2023-11-07, 18:53:24 -0800, Jakub Kicinski wrote:
-> > > On Tue, 7 Nov 2023 23:45:46 +0100 Sabrina Dubroca wrote:
-> > > > Wouldn't it be enough to just move the rcu_assign_pointer after ctx is
-> > > > fully initialized, ie just before update_sk_prot? also clearer wrt
-> > > > RCU.
-> > > 
-> > > I'm not sure, IIUC rcu_assign_pointer() is equivalent to
-> > > WRITE_ONCE() on any sane architecture, it depends on address
-> > > dependencies to provide ordering.
-> > 
-> > Not what the doc says:
-> > 
-> >     /**
-> >      * rcu_assign_pointer() - assign to RCU-protected pointer
-> >      [...]
-> >      * Inserts memory barriers on architectures that require them
-> >      * (which is most of them), and also prevents the compiler from
-> >      * reordering the code that initializes the structure after the pointer
-> >      * assignment.
-> >      [...]
-> >      */
-> > 
-> > And it uses smp_store_release (unless writing NULL).
-> > 
-> 
-> I think Sabrina is right. We can rely on the release semantic implied
-> in rcu_assign_pointer(). Simply moving rcu_assign_pointer() to the end
-> of tls_ctx_create() should prevent a scenario what I thought (ie.,
-> store-store reordering between ctx->sk_proto and sk->sk_prot).
-> 
-> diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-> index 1c2c6800949d..d20b823c68d4 100644
-> --- a/net/tls/tls_main.c
-> +++ b/net/tls/tls_main.c
-> @@ -816,9 +816,9 @@ struct tls_context *tls_ctx_create(struct sock *sk)
->                 return NULL;
->  
->         mutex_init(&ctx->tx_lock);
-> -       rcu_assign_pointer(icsk->icsk_ulp_data, ctx);
->         ctx->sk_proto = READ_ONCE(sk->sk_prot);
->         ctx->sk = sk;
-> +       rcu_assign_pointer(icsk->icsk_ulp_data, ctx);
->         return ctx;
->  }
-> 
-> But what I also wonder is that, do we need to ensure that
-> ctx->{tx,rx}_conf is visible before updating sk->sk_prot? If so, as
-> Sabrina suggested, we may want to move rcu_assign_pointer() right
-> before update_sk_prot().
-> 
-> 
-> Best regards,
-> Dae R. Jeong
-
-I sent a patch by taking suggestions from Sabrina. The patches 1)
-moves rcu_assign_pointer() after fully initializing ctx, and 2) gets
-rid of tls_ctx_create().
-
-I'm not sure whether removing tls_ctx_create() is a good idea or not,
-but it still did not fully initialize ctx (i.e., ctx->{tx,rx}_conf).
-
-Let me know if there is any issue, then I will rewrite a patch.
 
 
-Best regards,
-Dae R. Jeong
+On 8/11/2023 11:51 pm, Vladimir Oltean wrote:
+> Hi Faizal,
+> 
+> On Tue, Nov 07, 2023 at 06:20:16AM -0500, Faizal Rahim wrote:
+>> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension,
+>> the Cycle Time Extension variable allows this extension of the last old
+>> cycle to be done in a defined way. If the last complete old cycle would
+>> normally end less than OperCycleTimeExtension nanoseconds before the new
+>> base time, then the last complete cycle before AdminBaseTime is reached
+>> is extended so that it ends at AdminBaseTime.
+>>
+>> Changes in v2:
+>>
+>> - Added 's64 cycle_time_correction' in 'sched_gate_list struct'.
+>> - Removed sched_changed created in v1 since the new cycle_time_correction
+>>    field can also serve to indicate the need for a schedule change.
+>> - Added 'bool correction_active' in 'struct sched_entry' to represent
+>>    the correction state from the entry's perspective and return corrected
+>>    interval value when active.
+>> - Fix cycle time correction logics for the next entry in advance_sched()
+>> - Fix and implement proper cycle time correction logics for current
+>>    entry in taprio_start_sched()
+>>
+>> v1 at:
+>> https://lore.kernel.org/lkml/20230530082541.495-1-muhammad.husaini.zulkifli@intel.com/
+> 
+> I like what came of this patch series. Thanks for following up and
+> taking over. I have some comments on individual patches.
+> 
+
+Hi Vladimir,
+
+Thanks a bunch for your review and your patience with some of my basic 
+mistakes.
+Appreciate the time and effort you put into it.
+I'll take a bit to double-check the code and retest some stuff.
+
+Will loop back with you soon.
+
+Cheers.
