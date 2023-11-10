@@ -2,211 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 858677E7684
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5147E768E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345599AbjKJBZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S234801AbjKJB25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345580AbjKJBZS (ORCPT
+        with ESMTP id S229491AbjKJB2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:25:18 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F1244A4
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:25:15 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-777745f1541so101199785a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 17:25:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699579514; x=1700184314; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:references:cc:to:from:content-language
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EpUnJqiUGSLxpIVZCLs3iuc/qoT2JsrHayU5aHdmSgw=;
-        b=H4p94s4E2h4rlQcZumdsH1DVFRg878a+3CAVuiEvT50Upm+L0DKmw3+QSiOV2X4J8g
-         +S8g+3ww0Av2TJ8r3+zzqS8rAe0GenfnyugZ2k+0+pXSVOL8YRA6rg+sZnogPiOGx+xo
-         nu69A3OuDc1NsCPse4o8qOu9XcbzMewhMFd3kwPxl53Y8X0EEah8QdmEYQjLtWgrVLpY
-         gkJ7LSrd8yED4r3fNUmPIiskZAtPv0+wM+NAqvv48o1TyVK/2Ly+RctGo7lRcpS1+CnW
-         8RnOlrHGQntwiKzbL2qb1EccdRMjKHQ73VfVHFWcaSdtXJS/m9VWaFFBOfrHYLzDkKhb
-         rgiQ==
+        Thu, 9 Nov 2023 20:28:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5367B133
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699579687;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zC+u4Re2AoTUGpqWOoMx+tYjldUA5tL8xtOql2ozAF4=;
+        b=ikm9oFhPOb19kPDF/ogY5eyRNaXuCjl/99wVKoXm27tKhbLLoOqsMxz37O4X/P/pPh+IIu
+        mabszhLa1gSa+QtOvzYfUMpxmLB7w/Kz5P3/hScEXrBhoI2o6KlNXcXhIjvn8DwsFkLnbl
+        OtgAQlzihsRn+UzIepOT6dn9PQQ0PfE=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-5lrvpXCGOE-yJoDAMY7t-w-1; Thu, 09 Nov 2023 20:28:06 -0500
+X-MC-Unique: 5lrvpXCGOE-yJoDAMY7t-w-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1d5f4d5d848so1392751fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 17:28:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699579514; x=1700184314;
-        h=in-reply-to:autocrypt:references:cc:to:from:content-language
-         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EpUnJqiUGSLxpIVZCLs3iuc/qoT2JsrHayU5aHdmSgw=;
-        b=WSu3QD0Kvw8sMvKqcesjINxxouhgKN/z1n3Amn6wovujKHpcd100he+l9Tdcz6HAnL
-         k96EOjlVzmMulqQ9neBNM1cJ6umOf6/0Hk4VXUW7uhQBcqV6PucYs3Ko8u5NswD7xeba
-         h2iND//tACeeGs7RerlSFww06DvJJmMs8pTfr7WWniMltE7sZNkA1Abg/4a2b5Y8j1Fd
-         QxmAhnTwrcoIl5usQkB/reZOc7bwnYOI0ktCjI9PNLPfcO2T7Q5a3OZ4jjPmXaWwypto
-         UnXUZvlluAaUY/yQHnJmEJZCKXFzA10EcCTGgXKtbtSpFYp9ptYJoiYG03sQ9xNrNb1A
-         5JSw==
-X-Gm-Message-State: AOJu0YxCepGKAtmQCJit3lP3jCNj9xZXG64F3mb8NN6qpzCVU+4Byu4H
-        hQsEadvWcA7+TNFvl10WYO8=
-X-Google-Smtp-Source: AGHT+IFtn34MZGOJTJPoUlS84mWDoS7tZj77ECGknkw0pwVUPjcpnDLuAHDZjQKn2w0ODzoMCoyY0A==
-X-Received: by 2002:a05:620a:944b:b0:776:5135:d96d with SMTP id sm11-20020a05620a944b00b007765135d96dmr4957508qkn.69.1699579513829;
-        Thu, 09 Nov 2023 17:25:13 -0800 (PST)
-Received: from [192.168.2.14] ([76.65.20.140])
-        by smtp.gmail.com with ESMTPSA id c12-20020a05620a11ac00b007756c8ce8f5sm340439qkk.59.2023.11.09.17.25.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 17:25:13 -0800 (PST)
-Message-ID: <42d3b0c0-bad6-4ac2-b755-6cbfc5ec5524@gmail.com>
-Date:   Thu, 9 Nov 2023 20:25:04 -0500
+        d=1e100.net; s=20230601; t=1699579685; x=1700184485;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zC+u4Re2AoTUGpqWOoMx+tYjldUA5tL8xtOql2ozAF4=;
+        b=R6DeqjIyy9hGxySl9z99JsNvdpAUtylhEykOpmwqcVp4kPx+iZpByL4G3JmahCNNyY
+         /rK4Z4ej8jQ7htRlAxiYnYXm8PH0IMhDA4dFIxHk0XzuwvFCKzjikECC0GDwL2Nv0VUj
+         e/FbBmImLL7/mJvdr2+wgnS2vZ7hnoOXaZHexq0/j0rnYU4MU067aekikVIVNJB2yO7J
+         NyRRu5QVhVBAhZKflvyjU4L4WI7pvgLlbcS5/+XFXaaPQHcpt7fUFlEQ3zynGYq+uG1N
+         0nW7b4Z/iRIPGpYzQ0ES0NLJ/xY1mKhk2QJFAAa1fRi0ATKNSMdy0JqjGk7vfy5iMlIn
+         NRKQ==
+X-Gm-Message-State: AOJu0YwRIuem+3AvT/iyJPQWIlPGwZVnf6gkVO3jQZskZeIavljAKlE2
+        UZjU+dmhqI/FeCAXy6Rbd3bXG3B082tgwJ6s++OMqpeduIF5SUPoRo1Fi4A6PNdjzqKQAE6dG/y
+        RLrD+ieiD3nj26xacHvtPUdhYdMcs1fGTXb8dQU6Tatp5jVXrJDE=
+X-Received: by 2002:a05:6870:1314:b0:1ea:d76b:1457 with SMTP id 20-20020a056870131400b001ead76b1457mr6624726oab.7.1699579685234;
+        Thu, 09 Nov 2023 17:28:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGY6J8ZouDEA5qQMJiaMxmBZIrQRVPu28NAIQ+CGdUvmcYPLrHluYLqjgbiUv9YwzmkiYQWWU0SJT6gXHqvqxY=
+X-Received: by 2002:a05:6870:1314:b0:1ea:d76b:1457 with SMTP id
+ 20-20020a056870131400b001ead76b1457mr6624714oab.7.1699579684985; Thu, 09 Nov
+ 2023 17:28:04 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
- Thunderbird/115.4.2
-Subject: Re: [PATCH drm-misc-next v6] drm/sched: implement dynamic job-flow
- control
-Content-Language: en-CA, en-US
-From:   Luben Tuikov <ltuikov89@gmail.com>
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        boris.brezillon@collabora.com, christian.koenig@amd.com,
-        faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231110001638.71750-1-dakr@redhat.com>
- <e2ec5036-81bd-490b-bdc2-fc215e14b8b1@gmail.com>
-Autocrypt: addr=ltuikov89@gmail.com; keydata=
- xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
- Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
- eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
- AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
- JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
- cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
- 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
- aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
-In-Reply-To: <e2ec5036-81bd-490b-bdc2-fc215e14b8b1@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------bPvpcKrN0Yc0NcbiEaGlhd20"
+References: <20231110010139.3901150-1-sarthakkukreti@chromium.org> <20231110010139.3901150-5-sarthakkukreti@chromium.org>
+In-Reply-To: <20231110010139.3901150-5-sarthakkukreti@chromium.org>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Fri, 10 Nov 2023 09:27:48 +0800
+Message-ID: <CAHj4cs9pS0hgWBpz9bzoJBGwh1iK+0Nuzc5RmJNyZOR5s-7oLw@mail.gmail.com>
+Subject: Re: [PATCH] loop/010: Add test for mode 0 fallocate() on loop devices
+To:     Sarthak Kukreti <sarthakkukreti@chromium.org>
+Cc:     dm-devel@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Mike Snitzer <snitzer@kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Chinner <david@fromorbit.com>,
+        Brian Foster <bfoster@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------bPvpcKrN0Yc0NcbiEaGlhd20
-Content-Type: multipart/mixed; boundary="------------kgLzOj4RzCBhSFeyZnEhB2ij";
- protected-headers="v1"
-From: Luben Tuikov <ltuikov89@gmail.com>
-To: Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com, daniel@ffwll.ch,
- matthew.brost@intel.com, boris.brezillon@collabora.com,
- christian.koenig@amd.com, faith@gfxstrand.net
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <42d3b0c0-bad6-4ac2-b755-6cbfc5ec5524@gmail.com>
-Subject: Re: [PATCH drm-misc-next v6] drm/sched: implement dynamic job-flow
- control
-References: <20231110001638.71750-1-dakr@redhat.com>
- <e2ec5036-81bd-490b-bdc2-fc215e14b8b1@gmail.com>
-In-Reply-To: <e2ec5036-81bd-490b-bdc2-fc215e14b8b1@gmail.com>
+On Fri, Nov 10, 2023 at 9:02=E2=80=AFAM Sarthak Kukreti
+<sarthakkukreti@chromium.org> wrote:
+>
+> A recent patch series[1] adds support for calling fallocate() in mode 0
 
---------------kgLzOj4RzCBhSFeyZnEhB2ij
-Content-Type: multipart/mixed; boundary="------------E8VXvVACxyfdc08ijFfa0Jwv"
+The patch link is missing in this patch.
 
---------------E8VXvVACxyfdc08ijFfa0Jwv
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> on block devices. This test adds a basic sanity test for loopback devices
+> setup on a sparse file and validates that writes to the loopback device
+> succeed, even when the underlying filesystem runs out of space.
+>
+> Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
+> ---
+>  tests/loop/010     | 60 ++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/loop/010.out |  2 ++
+>  2 files changed, 62 insertions(+)
+>  create mode 100644 tests/loop/010
+>  create mode 100644 tests/loop/010.out
+>
+> diff --git a/tests/loop/010 b/tests/loop/010
+> new file mode 100644
+> index 0000000..091be5e
+> --- /dev/null
+> +++ b/tests/loop/010
+> @@ -0,0 +1,60 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-3.0+
+> +# Copyright (C) 2023 Google LLC.
+> +# Author: sarthakkukret@google.com (Sarthak Kukreti)
+> +#
+> +# Test if fallocate() on a loopback device provisions space on the under=
+lying
+> +# filesystem and writes on the loop device succeed, even if the lower
+> +# filesystem is filled up.
+> +
+> +. tests/loop/rc
+> +
+> +DESCRIPTION=3D"Loop device fallocate() space provisioning"
+> +QUICK=3D1
+> +
+> +requires() {
+> +       _have_program mkfs.ext4
+> +}
+> +
+> +test() {
+> +       echo "Running ${TEST_NAME}"
+> +
+> +       local mount_dir=3D"$TMPDIR/mnt"
+> +       mkdir -p ${mount_dir}
+> +
+> +       local image_file=3D"$TMPDIR/img"
+> +       truncate -s 1G "${image_file}"
+> +
+> +       local loop_device
+> +       loop_device=3D"$(losetup -P -f --show "${image_file}")"
+> +
+> +       mkfs.ext4 ${loop_device} &> /dev/null
+> +       mount -t ext4 ${loop_device} ${mount_dir}
+> +
+> +       local provisioned_file=3D"${mount_dir}/provisioned"
+> +       truncate -s 200M "${provisioned_file}"
+> +
+> +       local provisioned_loop_device
+> +       provisioned_loop_device=3D"$(losetup -P -f --show "${provisioned_=
+file}")"
+> +
+> +       # Provision space for the file: without provisioning support, thi=
+s fails
+> +       # with EOPNOTSUPP.
+> +       fallocate -l 200M "${provisioned_loop_device}"
+> +
+> +       # Fill the filesystem, this command will error out with ENOSPC.
+> +       local fs_fill_file=3D"${mount_dir}/fill"
+> +       dd if=3D/dev/zero of=3D"${fs_fill_file}" bs=3D1M count=3D1024 sta=
+tus=3Dnone &>/dev/null
+> +       sync
+> +
+> +       # Write to provisioned loop device, ensure that it does not run i=
+nto ENOSPC.
+> +       dd if=3D/dev/zero of=3D"${provisioned_loop_device}" bs=3D1M count=
+=3D200 status=3Dnone
+> +       sync
+> +
+> +       # Cleanup.
+> +       losetup --detach "${provisioned_loop_device}"
+> +       umount "${mount_dir}"
+> +       losetup --detach "${loop_device}"
+> +       rm "${image_file}"
+> +
+> +       echo "Test complete"
+> +}
+> \ No newline at end of file
+> diff --git a/tests/loop/010.out b/tests/loop/010.out
+> new file mode 100644
+> index 0000000..068c489
+> --- /dev/null
+> +++ b/tests/loop/010.out
+> @@ -0,0 +1,2 @@
+> +Running loop/009
+> +Test complete
+> --
+> 2.42.0.758.gaed0368e0e-goog
+>
+>
 
-On 2023-11-09 19:57, Luben Tuikov wrote:
-> On 2023-11-09 19:16, Danilo Krummrich wrote:
-[snip]
->> @@ -667,6 +771,8 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
->>   * drm_sched_job_init - init a scheduler job
->>   * @job: scheduler job to init
->>   * @entity: scheduler entity to use
->> + * @credits: the number of credits this job contributes to the schedu=
-lers
->> + * credit limit
->>   * @owner: job owner for debugging
->>   *
->>   * Refer to drm_sched_entity_push_job() documentation
->> @@ -684,7 +790,7 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
->>   */
->>  int drm_sched_job_init(struct drm_sched_job *job,
->>  		       struct drm_sched_entity *entity,
->> -		       void *owner)
->> +		       u32 credits, void *owner)
->>  {
->>  	if (!entity->rq) {
->>  		/* This will most likely be followed by missing frames
->> @@ -695,7 +801,11 @@ int drm_sched_job_init(struct drm_sched_job *job,=
 
->>  		return -ENOENT;
->>  	}
->> =20
->> +	if (unlikely(!credits))
->> +		return -EINVAL;
->> +
->=20
-> This will most likely result in bad user experience (read: blank screen=
-),
-> and debugging this would be really hard without something to go by
-> in the kernel log.
->=20
-> (This was exactly the case with amdgpu when 56e449603f0ac5
-> ("drm/sched: Convert the GPU scheduler to variable number of run-queues=
-")=20
-> was being worked on and merged. Without the drm_err() on missing rq in
-> the lines immediately before the hunk above returning -ENOENT, there
-> was no indication why setting up an fb was failing very early on (blank=
- screen).)
->=20
-> So it is best to print a "[drm] *ERROR* "-equivalent string in the logs=
-,
-> so that we can make a note of this, without relying on drivers, old and=
- new, logging
-> that drm_sched_job_init() failed.
-
-If you add _exactly_ this,
-
-	if (unlikely(!credits)) {
-		pr_err("*ERROR* %s: credits cannot be 0!\n", __func__)
-		return -EINVAL;
-	}
-
-You can add my,
-
-Reviewed-by: Luben Tuikov <ltuikov89@gmail.com>
-
-and push it.
 --=20
-Regards,
-Luben
+Best Regards,
+  Yi Zhang
 
---------------E8VXvVACxyfdc08ijFfa0Jwv
-Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
-PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
-QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
-BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
-MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
-bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
-9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
-OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
-z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
-=3DqCaZ
------END PGP PUBLIC KEY BLOCK-----
-
---------------E8VXvVACxyfdc08ijFfa0Jwv--
-
---------------kgLzOj4RzCBhSFeyZnEhB2ij--
-
---------------bPvpcKrN0Yc0NcbiEaGlhd20
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZU2GcAUDAAAAAAAKCRBMFUeUMaM0r53R
-AP4m/2BjdiWwu8IVlgMIUrqMF3AM/9iDocTx2+iMM4NYTQEA2dsqYHnnTHFYCAsDILyTssactkuL
-aFOznk95n6x1NQU=
-=WX/n
------END PGP SIGNATURE-----
-
---------------bPvpcKrN0Yc0NcbiEaGlhd20--
