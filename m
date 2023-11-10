@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221377E8049
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA497E84C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235702AbjKJSIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S1346605AbjKJUwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345642AbjKJSGl (ORCPT
+        with ESMTP id S235946AbjKJUvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:06:41 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622DA28B0C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:23:38 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-6707401e22eso11896516d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:23:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699611817; x=1700216617; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5QkwWxIGEOurCFKWXSk9BruqjsYwly8P0Gesk2pyj0w=;
-        b=FDbLf3FGnVdR5E/WsV1HMu8xWevptE7QKJlGsykZ09rn3SvTaxJxv1ffFcU5F/guAs
-         uAi5Ixgkj6pHoIQs6XoI/XqFm0MwEQfa8HtgFu1Dl/xq+XYln3+uyd7FkUUu9cgqCNvZ
-         PktFJcgDzFg7Ac+ICAaNYHKt7wJbIM5UzwHvA=
+        Fri, 10 Nov 2023 15:51:48 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D4028B1C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:25:55 -0800 (PST)
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com [209.85.128.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0D38A409D6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1699611954;
+        bh=gPKnvjH5Hg4muGnCgN2WsdJlG6e8rKiWPTWzq5wjF2k=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=L5I/2emQcUGd9SQiSQ6H1ORrGk6OIhclu3IXnaAbIIdHrcsoRJElXngy5b3vVtv/P
+         FdNufWUTMU3J6zW2SeW+npMmo967PiIFVsyi142Xo8UEsdMh7TtUvJAoZtJ9ULvHuG
+         ymQ9nx+4syHtqnCGjCRbs4rE9TkegflAsUcTRYqxwcIGdBSHCVz188uktlLB3Aovly
+         0WIvSg7ap4cgdx02xA1al4uYmmZfkXY6Is3OYk+83QGunGWSRCrpXDWXBsghYKJHFU
+         C6U+5s6XMfoBZEdV6febgvvef4AnpnMvxBW5K9Pp2jvBtMZCywyHdRI39CF3tCV1UT
+         2GhPGpEZvx2rg==
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5a7d261a84bso27001297b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:25:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699611817; x=1700216617;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5QkwWxIGEOurCFKWXSk9BruqjsYwly8P0Gesk2pyj0w=;
-        b=lQI3UFr64DGtjojnC2+bwRa+mCi4tG0HniPwSRIndbjYFhmFPsOXhyLTOl7/wr6Yoi
-         NCkAXEVH4kccA7hthpFyG4n1VoxhnbZ2EUxYNOa5YpicE66MzdY/s2iv2ZxDG0MLzfV0
-         GWsOixdpyW309meU1USQFj/9wW+CbhAeBXDESHAVRR10NREWMje+b43be1cbK2fuC+jw
-         KukSvRpDLRfOznQCVfoOkad3s/vG/JpQqG9Oo6649hbZs9kHZOA9v9casfYIncj3zW/y
-         oZNbyn+sjgWLgd074dRWHd97NDsWhXyx8iDuspVJQOowyhLOIN6ugMwQddjz69npUD9A
-         /EDA==
-X-Gm-Message-State: AOJu0Yw9MM5H6dEyWNP3dzcI7/8zfA57mMehGY4aX3wmDz+c+9hjVNaH
-        279WWOgT6O70uEv6X2tKwziu8sxmHPYdE+XCeF2t1Q==
-X-Google-Smtp-Source: AGHT+IENbhNKrU9JKMVoNoHyG0IJmRadKeNt6P1c7mGY4/tGHSfa5JC4Bm4HjCQ0wUflngrkwD3tqQ==
-X-Received: by 2002:ad4:4d11:0:b0:670:faa7:d4ef with SMTP id l17-20020ad44d11000000b00670faa7d4efmr6376617qvl.23.1699611816919;
-        Fri, 10 Nov 2023 02:23:36 -0800 (PST)
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com. [209.85.219.51])
-        by smtp.gmail.com with ESMTPSA id p14-20020a0cc3ce000000b0066d11743b3esm2804983qvi.34.2023.11.10.02.23.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 02:23:36 -0800 (PST)
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6707401e22eso11896376d6.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:23:36 -0800 (PST)
-X-Received: by 2002:a05:6214:2a4b:b0:66d:1f29:3ea8 with SMTP id
- jf11-20020a0562142a4b00b0066d1f293ea8mr8383989qvb.57.1699611815808; Fri, 10
- Nov 2023 02:23:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699611952; x=1700216752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gPKnvjH5Hg4muGnCgN2WsdJlG6e8rKiWPTWzq5wjF2k=;
+        b=s0uylN91I1bqBUcoZ7CeLnXoenpXbKPYTgsx82zXBwZVmzdUTWIf9xerNWVkgaMhY5
+         lC98J4RjoRktPz6Py0TVpUbZf2CdI2RxoZsWaZCsSUNNvTpERo9LgaGcX0W+ENIwzVEh
+         NS0zVdvYVCwo5GheF+8WCqBjHAr0F8sUO0NZf1bDzajyGiKTjDdpu6B5bjbmdLKKl4Bo
+         8Z/SUVRTzjjrSdUIj3HPuwKqIF1zPH8CzLjgUbszfP8R0vlKwCMR0OM43kMZDcsY1b86
+         d3gic7m/7ukxpXZXEKi2mpluVi4Nqm0LClZ5OHwm0WIycu0s5tKzh/depQkaaztcjgWq
+         jo8Q==
+X-Gm-Message-State: AOJu0Yw8czR7zoBLsQRqQ/TbdIiwE/UwwcXSBx8kB81GGYcZfQ/em0DS
+        r6jnJFX1Zw74iWp/bMkd08FnyzQVfNPH6L8JF48PCXoooEEdgsS+BVU7AeUcBDrt/63BxgOtIIT
+        OGO6fAuls5fniRqBvOBbcsEXxOABQXk0ji3QVUgIFqSmiD4LlJzoXMMwUkg==
+X-Received: by 2002:a25:492:0:b0:da0:4c40:67b7 with SMTP id 140-20020a250492000000b00da04c4067b7mr7527216ybe.31.1699611952375;
+        Fri, 10 Nov 2023 02:25:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7Uzw6FsbRf6Dv35NVE2MMC+7rPWfQQ1o1KBRo2GlsBu+Q0CQ62RXpHoloA8Nr+Pl4ZHvt9PLk4RcUggImr4U=
+X-Received: by 2002:a25:492:0:b0:da0:4c40:67b7 with SMTP id
+ 140-20020a250492000000b00da04c4067b7mr7527211ybe.31.1699611952078; Fri, 10
+ Nov 2023 02:25:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20220920-resend-hwtimestamp-v7-0-cf1d78bb8821@chromium.org>
- <CANiDSCtC2zOKtopkuuqJYqi6+FQ1Kav6LfMH5gGhKrnDeG7GYw@mail.gmail.com> <CANiDSCteBUraA0UrLM-cU_GqDSWcWERJNV_xhsi3LNQZNvX5dA@mail.gmail.com>
-In-Reply-To: <CANiDSCteBUraA0UrLM-cU_GqDSWcWERJNV_xhsi3LNQZNvX5dA@mail.gmail.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Fri, 10 Nov 2023 11:23:24 +0100
-X-Gmail-Original-Message-ID: <CANiDSCu9Ca_rxhu=KJb6q2=UPcUjXu8VchLNHTjquCj5qf7rTw@mail.gmail.com>
-Message-ID: <CANiDSCu9Ca_rxhu=KJb6q2=UPcUjXu8VchLNHTjquCj5qf7rTw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/6] uvcvideo: Fixes for hw timestamping
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "hn.chen" <hn.chen@sunplusit.com>
+References: <20231108094303.46303-1-acelan.kao@canonical.com> <20231110053721.GG17433@black.fi.intel.com>
+In-Reply-To: <20231110053721.GG17433@black.fi.intel.com>
+From:   AceLan Kao <acelan.kao@canonical.com>
+Date:   Fri, 10 Nov 2023 18:25:41 +0800
+Message-ID: <CAFv23QnbG0QX=cGjVYA1GnQFf9HFd7M7gXuAxBDO4o-POvO9yg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] spi: Replace -ENOTSUPP with -EOPNOTSUPP in op checking
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,40 +83,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi Mika,
 
-Another friendly bi-monthly ping on this ...
-
-Regards!
-
-On Mon, 4 Sept 2023 at 13:55, Ricardo Ribalda <ribalda@chromium.org> wrote:
+Mika Westerberg <mika.westerberg@linux.intel.com> =E6=96=BC 2023=E5=B9=B411=
+=E6=9C=8810=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:37=E5=AF=AB=E9=
+=81=93=EF=BC=9A
 >
-> Hi Again
+> Hi,
 >
-> This has been waiting from March, and it has been already been
->
-> Reviewed-by: Sergey
-> and
-> Tested-by: Sunplus
->
-> Is there something that I can do to help merging this patchset?
->
-> Thanks!
->
-> On Tue, 15 Aug 2023 at 13:26, Ricardo Ribalda <ribalda@chromium.org> wrote:
+> On Wed, Nov 08, 2023 at 05:43:02PM +0800, AceLan Kao wrote:
+> > From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 > >
-> > Hi Laurent
+> > No functional changes are introduced by this patch; it's a code cleanup
+> > to use the correct error code.
+>
+> Probably good to mention here that this affect only the "SPI MEM"
+> drivers and the core parts. Also you could explain here that the reaosn
+> for this is to make sure we use unified "operation not supported" return
+> code accross these.
+Got it.
+>
+> Does some kernel-doc need updating as well to make sure the future
+> drivers will return the correct one if they do not support given
+> optional operations?
+I have no idea where to add this, do you mean add a section in
+Documentation/spi/spi-summary.rst?
+>
+> > Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 > >
-> > Could you give a look to this patchset?
-> >
-> > Thanks!
+> > ---
+> > v5. distinguish -EOPNOTSUPP from -ENOTSUPP
+> > ---
+> >  drivers/mtd/nand/spi/core.c | 2 +-
+> >  drivers/spi/atmel-quadspi.c | 2 +-
+> >  drivers/spi/spi-ath79.c     | 2 +-
+> >  drivers/spi/spi-bcm-qspi.c  | 2 +-
+> >  drivers/spi/spi-mem.c       | 6 +++---
+> >  drivers/spi/spi-npcm-fiu.c  | 2 +-
+> >  drivers/spi/spi-ti-qspi.c   | 4 ++--
+> >  drivers/spi/spi-wpcm-fiu.c  | 2 +-
 >
->
->
-> --
-> Ricardo Ribalda
-
-
-
--- 
-Ricardo Ribalda
+> I think you should include the SPI subsystem maintainer as well, at
+> least for visibility.
+Right, I should CC them.
