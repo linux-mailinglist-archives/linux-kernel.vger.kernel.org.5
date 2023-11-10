@@ -2,191 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BDD7E81A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8317E7FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346446AbjKJSbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
+        id S231267AbjKJR5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346119AbjKJS2Y (ORCPT
+        with ESMTP id S235675AbjKJR4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:28:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79D53B923
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 08:03:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699632225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7LLLmKlkTqdbQdg/nQJ6XhAMm0kN7EMtZc4aqahAzZY=;
-        b=EU/mlVW++FmUsQ3e0U4of8GphKP2XI5/iM5n0uFHX4Z3DehdF1SPftzsHXZSuSLWdEukW2
-        aUu1CMBB3DK/tUX+pIklVgIe8rMofI6Vv2kMAtR5CWOcoziWJZNRD4L38YSMDZKk7iuVOl
-        YQcDQ6PNxC3wN4oVX24ojL66nAAPhHk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-139-UzdHz-rJN-C_1u5cphBx7g-1; Fri, 10 Nov 2023 11:03:41 -0500
-X-MC-Unique: UzdHz-rJN-C_1u5cphBx7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CF577185A786;
-        Fri, 10 Nov 2023 16:03:40 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B54240C6EB9;
-        Fri, 10 Nov 2023 16:03:32 +0000 (UTC)
-Date:   Sat, 11 Nov 2023 00:03:26 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     ed.tsai@mediatek.com
-Cc:     hch@lst.de, Jens Axboe <axboe@kernel.dk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        wsd_upstream@mediatek.com, chun-hung.wu@mediatek.com,
-        casper.li@mediatek.com, will.shiu@mediatek.com,
-        light.hsieh@mediatek.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, ming.lei@redhat.com
-Subject: Re: [PATCH v2] block: limit the extract size to align queue limit
-Message-ID: <ZU5UTqnV4En0XBPB@fedora>
-References: <20231110051950.21972-1-ed.tsai@mediatek.com>
-MIME-Version: 1.0
+        Fri, 10 Nov 2023 12:56:03 -0500
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2066.outbound.protection.outlook.com [40.107.104.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223123BF07;
+        Fri, 10 Nov 2023 08:08:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J5gZuy1LRpTtNg30FEJTdSdK2TdL303yUn5s7kOolK7DQmeerZCre2XWjstfa9Ghi3CxfI8kawDZEgx6xcOiw5oitxpcjxy/6vup3+38QM63/VkH/ZNL8eObG3E3gwI025Pd5dMb6Ow4dTMJwll8se5bRK/6vU0G5O3MPTS7MpHs7RUXDJXMkadDDJpjDNxTmOTan4z9Y/r6ktzqyFKQt0bo08RqKzqDbIOO5KhVSrTj/LtdJCwZwEqQMHwE1MyzdkkI3d8KOuH58NsE3QE0mIasWTG865FKLAKvH94OS/5ZTudsnQFvf90JTX4LVlfWINq3Ce8U6ahv+mGZ1ebuEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7fFvWhxWtdcreFiDXZqyQ8BhOIaGiS5ukKnvKI4VEuM=;
+ b=jRudYe9oZcpQQXDV6Dj58yrAEJ27ZyzNYHbO/8OGS6NQLMjP8zlOwjit1aMVZj8yAEADSrdWral4Lfkyv3BGM6vTr4CoAJXyrIQvgwLkdS+nViV31TLA+g0W5l9i1DIUhE5OIooP+OEyNFpkttmvMH0YsUIeFvPqlMNbmM1G20AqDl4RzPYQsXiaL2UPJfKBKdYKLCTpk3ze/bFWP78r/p8fJnnwUh0RGazrqIVHtCMAED3dozr/tl7Y2hX1nu3Lh58GZF7zdNOwVr2aBheIDB8jvgr5gMVZLcqF1Kz8fV2EOsM8cdKYji9QrMp0Y8Yx3Qxxymu7hYqNVX/XNWE6kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7fFvWhxWtdcreFiDXZqyQ8BhOIaGiS5ukKnvKI4VEuM=;
+ b=PoP6fbs/842HX2neadKdrdRuZNw7G8Oe/6dOig4aScMPErLFsBtPI9dtopnRkvfZatABtjvvyU99CPWWpwItaHExlNCNk9ywvRxEpb8KoCoOCH7fuMxQAk7Jk4FQDecFp4KKMa/QyGtRCqqOaWAiUj1741li1bw3j/3SK/evGLA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PAXPR04MB8944.eurprd04.prod.outlook.com (2603:10a6:102:20f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.10; Fri, 10 Nov
+ 2023 16:08:41 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::55e7:3fd0:68f4:8885]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::55e7:3fd0:68f4:8885%4]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
+ 16:08:40 +0000
+Date:   Fri, 10 Nov 2023 11:08:33 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev, joy.zou@nxp.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
+        vkoul@kernel.org
+Subject: Re: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for
+ i.MX95
+Message-ID: <ZU5VgY3EHU6STHVX@lizhi-Precision-Tower-5810>
+References: <20231109212059.1894646-1-Frank.Li@nxp.com>
+ <20231109212059.1894646-5-Frank.Li@nxp.com>
+ <f095ba95-ce76-4821-87b7-083f4162fc63@linaro.org>
+ <ZU5FN1dECvzDIUHb@lizhi-Precision-Tower-5810>
+ <93f1625f-ce01-4628-91e2-e3bfd024466c@linaro.org>
+ <ZU5OC4FqQ9DQF+Co@lizhi-Precision-Tower-5810>
+ <1cde698d-6655-4cce-9ed6-e852b3aac8d9@linaro.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231110051950.21972-1-ed.tsai@mediatek.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1cde698d-6655-4cce-9ed6-e852b3aac8d9@linaro.org>
+X-ClientProxiedBy: SJ0PR05CA0084.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::29) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8944:EE_
+X-MS-Office365-Filtering-Correlation-Id: 930c52ac-ea94-42cd-1153-08dbe2074e1a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: D7Es0hpj49a0UU11lbjnl6A1STDMgV+fJdMtPQIKq0utC1h6qmNk/THs+AyaXmVddkPTFV3b/YdH8YLHuKYB8H7JekN/8fVqovNX8KpvygqgMxMCdRaATWIqn/DfHH37jsQg15sJuJh6s3aTNmG+sXy+3vTWAOh2VXlZ0ZV2qYCO0ADqO8uoihyIMKijL2bF+FQCqE/4xGcvHHbK8TsNR8OVkTAsN8qsadFjOVRQ1j3NXQiCL+pma0LY2iPHCxhaot5Sx2ba4R5UW0+uqdtP4x/X0+q5QLRQV3dkAjktqso11JULdWdTImZROl4KoCxU4vPkQlRXHyGkw3ZiJjJJ3CEpCJT4+xCmUpcAxH1ta1P7f7AEwRlPZcDE09bV9+VutA478/4ajMThxBer9XeAFgQal3XDHRwZWIPIjbcFGnj5Vl4R3PrB9RokjZCLuzMOUzrbZuyZAoNYvU5O9HXGsmSdIcct7dXyPCsCv4NCkS5Hi+7sZbd13wgQIT5jsrzDZNQ4NOKomVq7DkC632fYPULrx0YH8xBtwgSmwZM6nDNaelFF4SThPEunz0PSK/xt9AvbDpz5IU4ivwEIMlE8F8Ar+lbMA/XqWCFf+Bmu69HVs/O/5Bjc1iVFAXaVam1hS2Prw/fOVBAEAcrUBR1MEQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(366004)(376002)(136003)(39860400002)(396003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(83380400001)(86362001)(8676002)(4326008)(8936002)(6916009)(66556008)(66476007)(316002)(2906002)(66946007)(478600001)(5660300002)(9686003)(6512007)(6486002)(6666004)(52116002)(53546011)(6506007)(26005)(38350700005)(38100700002)(41300700001)(33716001)(21314003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gMGi90SzRUisMhxawdMwE3sEtj0Kt2aPP9prjj4KU7+886708aNlpRgN6AUO?=
+ =?us-ascii?Q?QkjGI5KPcs8H93B/1POccdmzlMy2chaTlYIs0zKShAYLYko69DY/pvIl+93Y?=
+ =?us-ascii?Q?NEdeimeIgWPWASr2yNyA6ZSYBAyDgZRM8ftELTe7cAvU+6wsnPjTVbOQ/t/S?=
+ =?us-ascii?Q?GIwBeWD7kC69HIIsKVQZoOt3lPrHXqZraADsggq2dRk7N1xxw9wXOmXVKnjp?=
+ =?us-ascii?Q?qtToyuG3Qm8DyjfA5TwPMbtqoKWfbizlh0WMIXVKTiqf5lvehykhu2sjl/AY?=
+ =?us-ascii?Q?LXBCh8erJY2GOWN5+PQqW41cWqbrL9JIfUXpPrgimHwQKenTk35P/zfjQkhG?=
+ =?us-ascii?Q?5lxP8WFgBZUVXay9x1cuAv0SbaB1TF0SdLR3QrRrZcx3escyvs3UlgEZGxFv?=
+ =?us-ascii?Q?/d3L6BWeIzFmoeuoG7I1l677W19ImRdes/pOF+hMr50TGpl6Oh0tWSuwuvJK?=
+ =?us-ascii?Q?P66igQhBRwLhURg3iBgTCJZQgYpNIGb4wvrNbV9T9c7IxVSLK0MrQzzacvCS?=
+ =?us-ascii?Q?c0+tFX3YiKSen2R2W3ZMuR9js3URoRvw/GZ8zOI0ZOOKz6VSlB4D4KDgqmJN?=
+ =?us-ascii?Q?ls1GBlonU5/PwpJ1AWjMDzE8vbMI0SiCFk8vzA9r+uhVsPgVl+A9b8/pInwy?=
+ =?us-ascii?Q?df7ZeBhkRqFogcOd6S93Y4TSW9h9H7bIamVvekqkpYmrJCdqasZE5ZqC8sSs?=
+ =?us-ascii?Q?OUpK1Inxx1mleLfMNepjssZrAHozjVvIQqV6eC+/zdllT1TU3oi/RtVTSfBv?=
+ =?us-ascii?Q?7PzwAiiEoS/od0Z/7blrrGJY0pCLIkpyyyzo5aB5DzE1mhhFLVAG1g38vpKa?=
+ =?us-ascii?Q?pYc2M/RtZdgvefVrqWLdCmsczpAPgzyL/EwGiHre0MhgH1XH7mgYRP/MWLT1?=
+ =?us-ascii?Q?MS5dbuG5eeOuLd2VidvMqKxWz5TPbEt5zki51e+mmknIE/5VCO2KDK29e/oW?=
+ =?us-ascii?Q?HhzhaV5UYEYJMSjaxqvURSOhoBz4d2Hx21oLhRcUGlry6IHov5G0fl/vWCP+?=
+ =?us-ascii?Q?0Ipx4+dw6t8i5PSoe3CEacYDK/Vm/k9X876tXu7dnTa3fEHEkrQj5OnqfFf5?=
+ =?us-ascii?Q?RGF3ie98/mJghuL/pat6lqGVcuMaJUaBVS4OMq/yAh05VPSHA3vkjU52zXyJ?=
+ =?us-ascii?Q?ArgkoeAHkTR6oaiNGSrA4CFbT28W9aU2GBOP3G52DHjFdCBTRPBqrbRZtYxt?=
+ =?us-ascii?Q?lAy0mA48/BigZXhr7y88dceYpkYQnmxA6VO41hH/Lh0c/umO4kww5uzBpDYc?=
+ =?us-ascii?Q?NE5NSy32e4ppWFtFaaOT4uiHB/P4Xhyqg0bxBNjyhhyWwMmO9G6vwF1hj2ej?=
+ =?us-ascii?Q?3unqo4RXah1dFxincOebS3JqDSVEwE3FK3IPA1nf+I0gEjiJ1V45O8JVyRTn?=
+ =?us-ascii?Q?F8RceNEUPe5+/+qke+p4l3Yp5+TjR+hIQLFDyKho+98Ru0hZV6Gj0qimQMzL?=
+ =?us-ascii?Q?jll2hRzI9oh7+VGmQ+St27XIGJjSD98LrjS06YTGw079N1KRVyzViif4pFlT?=
+ =?us-ascii?Q?k3WLjehaPmqF9v87V0u7eHHP7IcKwTBnxoCgpbP1NjqxGTv1g1TTh/ih1ne2?=
+ =?us-ascii?Q?Jphh0GOM5iXYbX8r9a6ok7vPllPPqZipPHd0x3pP?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 930c52ac-ea94-42cd-1153-08dbe2074e1a
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 16:08:40.7642
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zL6SOMnN4aydbCsJ7p8JAFSkqf7m5ipfsaegut1VU+IafcsktLfLAoIZLvOGWGYnwD9MlNaotCehMAyYbdqaxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8944
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 01:19:49PM +0800, ed.tsai@mediatek.com wrote:
-> From: Ed Tsai <ed.tsai@mediatek.com>
+On Fri, Nov 10, 2023 at 04:52:49PM +0100, Krzysztof Kozlowski wrote:
+> On 10/11/2023 16:36, Frank Li wrote:
+> > On Fri, Nov 10, 2023 at 04:10:46PM +0100, Krzysztof Kozlowski wrote:
+> >> On 10/11/2023 15:59, Frank Li wrote:
+> >>>>>
+> >>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>>>> ---
+> >>>>
+> >>>> Three kbuild reports with build failures.
+> >>>>
+> >>>> I have impression this was never build-tested and reviewed internally
+> >>>> before posting. We had such talk ~month ago and I insisted on some
+> >>>> internal review prior submitting to mailing list. I did not insist on
+> >>>> internal building of patches, because it felt obvious, so please kindly
+> >>>> thoroughly build, review and test your patches internally, before using
+> >>>> the community for this. I am pretty sure NXP can build the code they send.
+> >>>
+> >>> This build error happen at on special uncommon platform m6800. 
+> >>
+> >> Indeed csky and alpha are special. Let's see if LKP will find other
+> >> platforms as well.
+> >>
+> >>> Patch is tested in imx95 arm64 platform.
+> >>
+> >> That's not enough. It's trivial to build test on riscv, ppc, x86_64 and
+> >> i386. Building on only one platform is not that much.
+> >>
+> >>>
+> >>> I have not machine to cover all platform.
+> >>
+> >> I was able to do it as a hobbyist, on my poor laptop. What is exactly
+> >> the problem that as hobbyist I can, but NXP cannot?
+> > 
+> > There are also difference configs. I think 'kernel test robot' is very good
+> > tools. If there are guide to mirror it, we can try. It is not neccesary to
+> > duplicate to develop a build test infrastrue.
 > 
-> When an application performs a large IO, it fills and submits multiple
-> full bios to the block layer. Referring to commit 07173c3ec276
-> ("block: enable multipage bvecs"), the full bio size is no longer fixed
-> at 1MB but can vary based on the physical memory layout.
+> Sorry, there is no build infrastructure here. I done it on my laptop.
 > 
-> The size of the full bio no longer aligns with the maximum IO size of
-> the queue. Therefore, in a 64MB read, you may see many unaligned bios
-> being submitted.
+> > 
+> > The issue is not that run build test. The key problem is how to know a
+> > protential problem will be exist, and limited a build/config scrope.
 > 
-> Executing the command to perform a 64MB read:
+> These are all the trivial configs - allyes and allmod.
+
+Thanks let me know about allyes and allmod.
+
 > 
-> 	dd if=/data/test_file of=/dev/null bs=64m count=1 iflag=direct
+> > 
+> > Even I have risc\ppc\x86_64 built before I submmit patch, still can't
+> > capture build error if I missed just one platform mc6800.
 > 
-> It demonstrates the submission of numerous unaligned bios:
+> So you did not read these build reports. This is not "mc6800" platform.
+> This is allyes and allmod, the most obvious builds, after defconfig.
+
+Sorry, I have not read it carefully. Just glance happen at mcf_xxx. I known
+I missed test this platform.
+
+Generally, I read carefully when I work on the fix patches.
+
 > 
-> 	block_bio_queue: 254,52 R 2933336 + 2136
-> 	block_bio_queue: 254,52 R 2935472 + 2152
-> 	block_bio_queue: 254,52 R 2937624 + 2128
-> 	block_bio_queue: 254,52 R 2939752 + 2160
+> > 
+> > For `readq` error also depend on the configs.
 > 
-> This patch limits the number of extract pages to ensure that we submit
-> the bio once we fill enough pages, preventing the block layer from
-> spliting small I/Os in between.
+> Read again the build reports from LKP.
 > 
-> I performed the Antutu V10 Storage Test on a UFS 4.0 device, which
-> resulted in a significant improvement in the Sequential test:
+> > 
+> > Actually, we major focus on test edmav1, .... v5 at difference platforms
+> > before submit patches. 
 > 
-> Sequential Read (average of 5 rounds):
-> Original: 3033.7 MB/sec
-> Patched: 3520.9 MB/sec
 > 
-> Sequential Write (average of 5 rounds):
-> Original: 2225.4 MB/sec
-> Patched: 2800.3 MB/sec
+> Best regards,
+> Krzysztof
 > 
-> Link: https://lore.kernel.org/linux-arm-kernel/20231025092255.27930-1-ed.tsai@mediatek.com/
-> Signed-off-by: Ed Tsai <ed.tsai@mediatek.com>
-> 
-> ---
->  block/bio.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 816d412c06e9..8d3a112e68da 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1227,8 +1227,10 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  	iov_iter_extraction_t extraction_flags = 0;
->  	unsigned short nr_pages = bio->bi_max_vecs - bio->bi_vcnt;
->  	unsigned short entries_left = bio->bi_max_vecs - bio->bi_vcnt;
-> +	struct block_device *bdev = bio->bi_bdev;
->  	struct bio_vec *bv = bio->bi_io_vec + bio->bi_vcnt;
->  	struct page **pages = (struct page **)bv;
-> +	ssize_t max_extract = UINT_MAX - bio->bi_iter.bi_size;
->  	ssize_t size, left;
->  	unsigned len, i = 0;
->  	size_t offset;
-> @@ -1242,7 +1244,7 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  	BUILD_BUG_ON(PAGE_PTRS_PER_BVEC < 2);
->  	pages += entries_left * (PAGE_PTRS_PER_BVEC - 1);
->  
-> -	if (bio->bi_bdev && blk_queue_pci_p2pdma(bio->bi_bdev->bd_disk->queue))
-> +	if (bdev && blk_queue_pci_p2pdma(bdev->bd_disk->queue))
->  		extraction_flags |= ITER_ALLOW_P2PDMA;
->  
->  	/*
-> @@ -1252,16 +1254,21 @@ static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  	 * result to ensure the bio's total size is correct. The remainder of
->  	 * the iov data will be picked up in the next bio iteration.
->  	 */
-> -	size = iov_iter_extract_pages(iter, &pages,
-> -				      UINT_MAX - bio->bi_iter.bi_size,
-> +	if (bdev && bio_op(bio) != REQ_OP_ZONE_APPEND) {
-> +		unsigned int max = queue_max_bytes(bdev_get_queue(bdev));
-> +
-> +		max_extract = bio->bi_iter.bi_size ?
-> +			max - bio->bi_iter.bi_size & (max - 1) : max;
-> +	}
-> +	size = iov_iter_extract_pages(iter, &pages, max_extract,
->  				      nr_pages, extraction_flags, &offset);
-
-The above is just what I did in the 'slow path' of patch v2[1], and it can't work
-well for every extracting pages which is usually slow, and batching
-extracting pages should be done always, such as:
-
-1) build one ublk disk(suppose it is /dev/ublkb0) with max sectors of 32k:
-
-- rublk add null --io-buf-size=16384 -q 2	[2]
-
-2) run 64KB IO
-
-fio --direct=1 --size=230G --bsrange=64k-64k --runtime=20 --numjobs=2 --ioengine=libaio \
-	--iodepth=64 --iodepth_batch_submit=64 --iodepth_batch_complete_min=64 --group_reporting=1 \
-	--filename=/dev/ublkb0 --name=/dev/ublkb0-test-randread --rw=randread
-
-In my local VM, read BW is dropped to 3709MB/s from 20GB/s in the above
-fio test with this patch.
-
-The point is that:
-
-1) bio size alignment is only needed in case of multiple bios
-
-2) bio size alignment is needed only when the current bio is approaching
-to become FULL
-
-3) with multiple bvec, it is hard to know how many pages can be held
-in bvecs beforehand
-
-In short, running every alignment is much less efficient.
-
-
-[1] https://lore.kernel.org/linux-block/202311100354.HYfqOQ7o-lkp@intel.com/T/#u
-[2] install rublk via `cargo install --version=^0.1 rublk` and
-CONFIG_BLK_DEV_UBLK is required
-
-Thanks, 
-Ming
-
