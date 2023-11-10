@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71A67E7FC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D787E8031
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235661AbjKJR6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        id S235012AbjKJSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:07:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbjKJR4P (ORCPT
+        with ESMTP id S235686AbjKJSEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:56:15 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B36327048;
-        Fri, 10 Nov 2023 02:07:53 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AAA7bnJ112103;
-        Fri, 10 Nov 2023 04:07:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1699610857;
-        bh=mxg1FHFd1rRvOC36n+OHwsPn0OmqfcxRKRDGDy9uAcI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=DT+hVshrjO7vdhNxIT15tWkNSdAqW0Duo9P8wf7DC4oVXlFVeWvxcg8bGpUOZEbTG
-         Zjb+W7zqtG5NM5WAKE4iqXMkjL1jFW9y1buOnsrufpsoAd28YDouVEfTyZNRcnczXZ
-         njvC/676o5TyQUiT7WVWDcqXMVL50ybbZvjty4BI=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AAA7bKu003760
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 10 Nov 2023 04:07:37 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 10
- Nov 2023 04:07:37 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 10 Nov 2023 04:07:37 -0600
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AAA7S4r051776;
-        Fri, 10 Nov 2023 04:07:35 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Tero Kristo <t-kristo@kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>,
-        <n-francis@ti.com>
-Subject: [PATCH 2/2] watchdog: rti_wdt: Drop RPM watchdog when unused
-Date:   Fri, 10 Nov 2023 15:37:26 +0530
-Message-ID: <20231110100726.2930218-3-vigneshr@ti.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231110100726.2930218-1-vigneshr@ti.com>
-References: <20231110100726.2930218-1-vigneshr@ti.com>
+        Fri, 10 Nov 2023 13:04:55 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E182704C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:08:33 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D67ED66073F9;
+        Fri, 10 Nov 2023 10:08:30 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699610911;
+        bh=KCYQjuvBuxZp544n/rzQNo2zbiK+/sDsQ1UcXNqg44c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ga1uUKYEYCxW4M5uvTyMJDuwJVeGOEZ1DEQ98wI3oCLBEWy3cc8/mOKBCocZ5CuU+
+         +HNrw2nmDv1I60Kk7dZyOe1V60UfJx9TBu6TNhuh9jiC3cJ+Vcx+ThSpwkTq4poeUm
+         bj2JyogkeSVigN7Vyo35bL/Hi7djIgpLxgb6qWKPSnKITT4JeODZHplMr+aaFgQu0H
+         fsRTMlw5xC/jRBFTf9wF973yBzyhu0KrRXGjqPwb9Mu/dwdw28fKvxLLuABomhEoBt
+         fZtrxS16lXVRU3nK41IxD/cAYZg1hWSsaTZ2T/NzHAkBjSztxBR6qIRBnfNIwsY4Um
+         VVtL/U+4IFMwQ==
+Date:   Fri, 10 Nov 2023 11:08:27 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 05/26] drm/shmem-helper: Remove obsoleted is_iomem
+ test
+Message-ID: <20231110110827.403bdbeb@collabora.com>
+In-Reply-To: <20231029230205.93277-6-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-6-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do a RPM put if watchdog is not already started during probe and re
-enable it in watchdog start.
+On Mon, 30 Oct 2023 02:01:44 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-On K3 SoCs, watchdogs and their corresponding CPUs are under same PD, so
-if the reference count of unused watchdogs aren't dropped, it will lead
-to CPU hotplug failures as Device Management firmware won't allow to
-turn off the PD due to dangling reference count.
+> Everything that uses the mapped buffer should be agnostic to is_iomem.
+> The only reason for the is_iomem test is that we're setting shmem->vaddr
+> to the returned map->vaddr. Now that the shmem->vaddr code is gone, remove
+> the obsoleted is_iomem test to clean up the code.
+> 
+> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 
-Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/watchdog/rti_wdt.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
 
-diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-index 163bdeb6929a..87f2c333a41d 100644
---- a/drivers/watchdog/rti_wdt.c
-+++ b/drivers/watchdog/rti_wdt.c
-@@ -78,6 +78,9 @@ static int rti_wdt_start(struct watchdog_device *wdd)
- 	u32 timer_margin;
- 	struct rti_wdt_device *wdt = watchdog_get_drvdata(wdd);
- 
-+	if (pm_runtime_suspended(wdd->parent))
-+		pm_runtime_get_sync(wdd->parent);
-+
- 	/* set timeout period */
- 	timer_margin = (u64)wdd->timeout * wdt->freq;
- 	timer_margin >>= WDT_PRELOAD_SHIFT;
-@@ -337,6 +340,9 @@ static int rti_wdt_probe(struct platform_device *pdev)
- 	if (last_ping)
- 		watchdog_set_last_hw_keepalive(wdd, last_ping);
- 
-+	if (!watchdog_hw_running(wdd))
-+		pm_runtime_put_sync(&pdev->dev);
-+
- 	return 0;
- }
- 
-@@ -345,6 +351,9 @@ static void rti_wdt_remove(struct platform_device *pdev)
- 	struct rti_wdt_device *wdt = platform_get_drvdata(pdev);
- 
- 	watchdog_unregister_device(&wdt->wdd);
-+
-+	if (!pm_runtime_suspended(&pdev->dev))
-+		pm_runtime_put_sync(&pdev->dev);
- }
- 
- static const struct of_device_id rti_wdt_of_match[] = {
--- 
-2.42.0
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 154585ddae08..2cc0601865f6 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -315,12 +315,6 @@ int drm_gem_shmem_vmap_locked(struct drm_gem_shmem_object *shmem,
+>  
+>  	if (obj->import_attach) {
+>  		ret = dma_buf_vmap(obj->import_attach->dmabuf, map);
+> -		if (!ret) {
+> -			if (drm_WARN_ON(obj->dev, map->is_iomem)) {
+> -				dma_buf_vunmap(obj->import_attach->dmabuf, map);
+> -				return -EIO;
+> -			}
+> -		}
+>  	} else {
+>  		pgprot_t prot = PAGE_KERNEL;
+>  
 
