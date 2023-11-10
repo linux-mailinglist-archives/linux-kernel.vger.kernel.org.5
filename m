@@ -2,135 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626C27E8379
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95BB7E837F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345902AbjKJUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S1345235AbjKJUJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:09:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbjKJUIu (ORCPT
+        with ESMTP id S229590AbjKJUJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:08:50 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7551D1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:47 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da31ec03186so1935894276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:08:47 -0800 (PST)
+        Fri, 10 Nov 2023 15:09:45 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F07BC7
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:09:42 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41cb7720579so44841cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699646927; x=1700251727; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IAkJ89LUqtxG0K+MSJnco+XQD27u+TKLaVoOcPh4bOc=;
-        b=JAujfGHJ8yOYNMAj+/UzMg5ghYS5kqcl7r5wvrjHHCdl2sM8xOiTkUGnVaF+EHQjJb
-         TmJhenOTUE/qPxBsjJBqd7QjAUK89cbdB2q1c7corDKfnE2MywVyc4qjt2FMEwkQaUqA
-         JLopDWEh9Zx6/9lehNFw0qyeeunwaCl3uO2oj/yVVL6EeBZFs80cjPKM1MxFsuubgqZm
-         22YQEEAIjx0YRE7ZRv6AW7TsH4v6Bk9y2NYAkZIXYVKPKPdyCQFiz5UYFVzVbqd8ZJbg
-         nAsYZInmjMEDKXuvMtX6lr2Urrl+kIUb81TOODAcX6wlIIdlBiY4HC+oOBC3CurBJGCu
-         Ll4Q==
+        d=google.com; s=20230601; t=1699646981; x=1700251781; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/wtJyPVGXzuMJP+3PlJwZy5jGviDZFnnmGbzORztedw=;
+        b=ydAaPlv2uRfKk9XwP8npUHCZ+UnZRx3bo1mJtY92mHHLgMFXwMlF+gKyrGq+s73fb1
+         1C/c5Aqw1mI5x+nHfc6vnHelUpVCyHi2CrJ6wzW+0EtNoZxT09DTHgYSkKa/8kkBxgeb
+         fl/URsHI81psR7NXMCYz0kZeaGkunhNPkIyptV+Y2F8BOHLSWQjekWatws/OENPInUoC
+         PP3Lytv6XQHalxcdaklB0+5VCDhp8sC6Ve7Lqa1LV1/+lwDCC+KrMf5ACEHLGfHjG6Ev
+         v/sNdUKnEjOscn8LWjuu+0/nEwAvyn7Zcdq+/AMRghS5QA/eCT6wVSKiPGqP1NiFeR2Y
+         SEvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699646927; x=1700251727;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IAkJ89LUqtxG0K+MSJnco+XQD27u+TKLaVoOcPh4bOc=;
-        b=oXCzEf3OrSvNuiR0Hq7WtwjSaqPm0+5jQcevNeSDAAopZrfBk8PQJVLg55ww+wWx+Q
-         Wt5ICoBOYoOOu9JM1USrEenhO5/yysNNhnudHFDne7HMC1b+l4E5B7p73Dk/NA/lB6II
-         EB2Ln+ocxl4nj+cnazP0bcydgae8irfRftNp+IECFX3oVVl2JGTtBZzdNufplU+Nwpyb
-         NMW1pFyyvhtwSEnrLR1z/rUlKSr9WhTVt2JCg0ilo6MgzFY/bjaDsYc/itI/SmZVQYli
-         1QFPq8+ZzD21fcy9Dkv67dphR6NPnuL9WwqwYbcLN/6dGK0p0nF6JXrzvKG36e1JXyxs
-         pu6A==
-X-Gm-Message-State: AOJu0YxaeO4cykclkLEpzMubhJPmusX7u1s43rtnaocC4XfDt4016lYl
-        wv7TxUXyifxhP1OxS2IQhqmWl7dBPg3y2Q==
-X-Google-Smtp-Source: AGHT+IG2qICxw/Ih6W1d00Yw7wl6gZh00iMH2vxhyvW4HtVTUR9T6SIeeV3AzuFmY7j3gx/bERyrecNPMvP5+g==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a05:6902:18d:b0:d89:42d7:e72d with SMTP
- id t13-20020a056902018d00b00d8942d7e72dmr141489ybh.3.1699646927074; Fri, 10
- Nov 2023 12:08:47 -0800 (PST)
-Date:   Sat, 11 Nov 2023 04:08:28 +0800
-In-Reply-To: <20231110200830.1832556-1-davidgow@google.com>
-Mime-Version: 1.0
-References: <20231110200830.1832556-1-davidgow@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231110200830.1832556-3-davidgow@google.com>
-Subject: [PATCH 3/3] drm/vc4: tests: Use KUNIT_DEFINE_ACTION_WRAPPER
-From:   David Gow <davidgow@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Rae Moar <rmoar@google.com>, dlatypov@google.com,
-        Maxime Ripard <mripard@kernel.org>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     David Gow <davidgow@google.com>,
-        "=?UTF-8?q?Ma=C3=ADra=20Canal?=" <mairacanal@riseup.net>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        kunit-dev@googlegroups.com, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        d=1e100.net; s=20230601; t=1699646981; x=1700251781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/wtJyPVGXzuMJP+3PlJwZy5jGviDZFnnmGbzORztedw=;
+        b=Kimgh/OtRMxQYk2qqLW6CJdhCBpDkkCzBZwJIwQsifOG51zW/vt6il7LfOaOMU5Zyj
+         Kzu4I+6877CJK69s40ILAsL2wsrUPCXvFuItf0V7HR6ANtKAETkUu7tWySnEqiA4Iw1p
+         T3Rtys9nauJm51E9kNkzzDAomojJse4ovBtaHBjZAILbCqHgkrWjCCdi6BGJNh8mXx9s
+         WwPsYC5HJs2GRbj4AT7JqCgEDFCkOcrATczXfBbwSX4EhpL0lcXtYQleFmCRi9WMZXcD
+         QFcuMHVPd5DgHqZAGlwkgxoAL6SSpnJVCbgBsANKOcOjRmd0oJAF2bKIkxSmOAvbcs7n
+         UzRg==
+X-Gm-Message-State: AOJu0YwNaGlwnFyD/q22q1fV5Cyvy3n7s5YGHeNXb4VCQBZAvu8KFZHh
+        oW2i+zS1Zxl70ijZDwA0dC7Ygclg7Gd3JcsMLvffxQ==
+X-Google-Smtp-Source: AGHT+IGWmpVnmrAJW27NZfaLWBvYoSnnqVB8m1CH9cFWxSCzG1oiAGekP2IqG5cVv0JP21MqTdAhzjgewFcokICOxn4=
+X-Received: by 2002:ac8:4603:0:b0:41c:dad0:1c1c with SMTP id
+ p3-20020ac84603000000b0041cdad01c1cmr659988qtn.21.1699646981217; Fri, 10 Nov
+ 2023 12:09:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20231110170121.769221-1-herve.codina@bootlin.com>
+In-Reply-To: <20231110170121.769221-1-herve.codina@bootlin.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 10 Nov 2023 12:09:02 -0800
+Message-ID: <CAGETcx9gib6HC9TZNoJpS3RmnRt6_5UixRyvP6Mu_TbuxLO3fg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] driver core: Avoid using fwnode in __fwnode_link_del()
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to pass functions to kunit_add_action(), they need to be of the
-kunit_action_t type. While casting the function pointer can work, it
-will break control-flow integrity.
+On Fri, Nov 10, 2023 at 9:01=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
+com> wrote:
+>
+> A refcount issue can appeared in __fwnode_link_del() due to the
+> pr_debug() call:
+>   WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0x=
+e5/0x110
+>   Call Trace:
+>   <TASK>
+>   ? refcount_warn_saturate+0xe5/0x110
+>   ? __warn+0x81/0x130
+>   ? refcount_warn_saturate+0xe5/0x110
+>   ? report_bug+0x191/0x1c0
+>   ? srso_alias_return_thunk+0x5/0x7f
+>   ? prb_read_valid+0x1b/0x30
+>   ? handle_bug+0x3c/0x80
+>   ? exc_invalid_op+0x17/0x70
+>   ? asm_exc_invalid_op+0x1a/0x20
+>   ? refcount_warn_saturate+0xe5/0x110
+>   kobject_get+0x68/0x70
+>   of_node_get+0x1e/0x30
+>   of_fwnode_get+0x28/0x40
+>   fwnode_full_name_string+0x34/0x90
+>   fwnode_string+0xdb/0x140
+>   vsnprintf+0x17b/0x630
+>   va_format.isra.0+0x71/0x130
+>   vsnprintf+0x17b/0x630
+>   vprintk_store+0x162/0x4d0
+>   ? srso_alias_return_thunk+0x5/0x7f
+>   ? srso_alias_return_thunk+0x5/0x7f
+>   ? srso_alias_return_thunk+0x5/0x7f
+>   ? try_to_wake_up+0x9c/0x620
+>   ? rwsem_mark_wake+0x1b2/0x310
+>   vprintk_emit+0xe4/0x2b0
+>   _printk+0x5c/0x80
+>   __dynamic_pr_debug+0x131/0x160
+>   ? srso_alias_return_thunk+0x5/0x7f
+>   __fwnode_link_del+0x25/0xa0
+>   fwnode_links_purge+0x39/0xb0
+>   of_node_release+0xd9/0x180
+>   kobject_put+0x7b/0x190
+>   ...
+>
+> Indeed, an of_node is destroyed and so, of_node_release() is called
+> because the of_node refcount reached 0.
+> of_node_release() calls fwnode_links_purge() to purge the links and
+> ended with __fwnode_link_del() calls.
+> __fwnode_link_del calls pr_debug() to print the fwnodes (of_nodes)
+> involved in the link and so this call is done while one of them is no
+> more available (ie the one related to the of_node_release() call)
+>
+> Remove the pr_debug() call to avoid the use of the links fwnode while
+> destroying the fwnode itself.
+>
+> Fixes: ebd6823af378 ("driver core: Add debug logs when fwnode links are a=
+dded/deleted")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  drivers/base/core.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index f4b09691998e..62088c663014 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -109,8 +109,6 @@ int fwnode_link_add(struct fwnode_handle *con, struct=
+ fwnode_handle *sup)
+>   */
+>  static void __fwnode_link_del(struct fwnode_link *link)
+>  {
+> -       pr_debug("%pfwf Dropping the fwnode link to %pfwf\n",
+> -                link->consumer, link->supplier);
 
-vc4_mock already defines such a wrapper for drm_dev_unregister(), but it
-involves less boilerplate to use the new macro, so replace the manual
-implementation.
+Valid issue, but a NACK for the patch.
 
-Signed-off-by: David Gow <davidgow@google.com>
----
+The pr_debug has been very handy, so I don't want to delete it. Also,
+the fwnode link can't get deleted before the supplier/consumer. If it
+is, I need to take a closer look as I'd expect the list_del() to cause
+corruption. My guess is that the %pfwf is traversing stuff that's
+causing an issue. But let me take a closer look next week when I'll be
+at LPC.
 
-This patch should be a no-op, just moving to use a standard macro to
-implement these wrappers rather than hand-coding them.
+-Saravana
 
-Let me know if you'd prefer to take these in separately via the drm
-trees, or if you're okay with having this whole series go via
-kselftest/kunit.
-
-Cheers,
--- David
-
----
- drivers/gpu/drm/vc4/tests/vc4_mock.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.c b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-index 63ca46f4cb35..becb3dbaa548 100644
---- a/drivers/gpu/drm/vc4/tests/vc4_mock.c
-+++ b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-@@ -153,12 +153,9 @@ static int __build_mock(struct kunit *test, struct drm_device *drm,
- 	return 0;
- }
- 
--static void kunit_action_drm_dev_unregister(void *ptr)
--{
--	struct drm_device *drm = ptr;
--
--	drm_dev_unregister(drm);
--}
-+KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_drm_dev_unregister,
-+			    drm_dev_unregister,
-+			    struct drm_device *);
- 
- static struct vc4_dev *__mock_device(struct kunit *test, bool is_vc5)
- {
--- 
-2.42.0.869.gea05f2083d-goog
-
+>         list_del(&link->s_hook);
+>         list_del(&link->c_hook);
+>         kfree(link);
+> --
+> 2.41.0
+>
