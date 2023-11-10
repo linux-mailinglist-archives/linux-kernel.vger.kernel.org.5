@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 162567E8389
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F777E838D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345953AbjKJUMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:12:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39666 "EHLO
+        id S1344606AbjKJUOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344735AbjKJUMb (ORCPT
+        with ESMTP id S229584AbjKJUOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:12:31 -0500
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D464A9;
-        Fri, 10 Nov 2023 12:12:27 -0800 (PST)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1efabc436e4so1278547fac.1;
-        Fri, 10 Nov 2023 12:12:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699647146; x=1700251946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aYPa4O78Tl9tcmK397HC2WttsKjZOddgN547MJ4MmL0=;
-        b=OhS+YDKKYTq/d/EIv64xE31/aQrRpe+f5e6nJJ/BUQZhSPgCqc1299mvURN5OCDjJG
-         1xONDYvCqxpK3+8UcghUfSfEVV7zAUkxOILmYSz68s3PpU63cNX61YpttMssvrMH9oeg
-         Xs5/4+iipR7e+1GmPBCmKwHxjAdE7Z2FgMdKz7rr2e2F+c248UTDylajYBooOCeUU1gN
-         mV96/8AI01uS/+mb/2xX2ZWUG9gjqsLabQCRyHJiC6NoKYHQgzwq/4fuOjre1EGtIla2
-         3kh/LEcubORxxcwqiGduIReWUWp7Cxblr5cJ1xrmCGENjzhMF28L1VPIBBVu0fjn0SgH
-         dChw==
-X-Gm-Message-State: AOJu0YwVYiiJrpq4KTf57154O0OmPnHGl516tjFYBeVynmJ67S5PEJM1
-        SQQrkSzmDuoLP0p4Sny0qg==
-X-Google-Smtp-Source: AGHT+IGGXIL2O/re8npp6ti2/LlN+F5Sn3lm88DX439xHtC4GKBD8xBJhNWXN6GHMCBpDIWH4xG5Rw==
-X-Received: by 2002:a05:6870:2dc6:b0:1c8:c27f:7d9b with SMTP id op6-20020a0568702dc600b001c8c27f7d9bmr282410oab.27.1699647146338;
-        Fri, 10 Nov 2023 12:12:26 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id y22-20020a056870725600b001ea4324364csm52458oaf.12.2023.11.10.12.12.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 12:12:25 -0800 (PST)
-Received: (nullmailer pid 351692 invoked by uid 1000);
-        Fri, 10 Nov 2023 20:12:23 -0000
-Date:   Fri, 10 Nov 2023 14:12:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v8 02/12] dt-bindings: soc: amlogic,meson-gx-hhi-sysctrl:
- add example covering meson-axg-hhi-sysctrl
-Message-ID: <20231110201223.GA347493-robh@kernel.org>
-References: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-0-81e4aeeda193@linaro.org>
- <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-2-81e4aeeda193@linaro.org>
+        Fri, 10 Nov 2023 15:14:31 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E771344B3;
+        Fri, 10 Nov 2023 12:14:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1699647268; x=1731183268;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3tVJsMHXywNdu/lxHtHGdXO/ugKIDxyuytYpSVUfKts=;
+  b=yspVliIEvC72nf4ymJFr8xgS/GAWLOuvkFBgoHVOi30hgX1Nt4uysqv5
+   Irf6T8MKuOONJvZa96PMFaQ1kw+PyHubwbZgXX9Lt6r6VRS1MBJnCGbHC
+   mSgcS3P/fJShA/RoAuXU9FQSGK3obrFFg06TQgwjS5B8wDy2inpiq67V3
+   SMQlTkNLkpDk+q4hF4m64s2qFkRTQrzgsyMuJ96crS+19mOnsnNG/2eBE
+   X2yNwFJeRbWDEYoL5YpAlNiQQbBq5KfLhrg4k5INjO8WH3APYsZFtKta0
+   0oeKnBcRQDOLc7NBdNJtiE2rsYkRj6o8G2OXnHSP2+VKESjJjASdJ7Lub
+   Q==;
+X-CSE-ConnectionGUID: 0pnlH8zCQBubqT4ZdDxfxw==
+X-CSE-MsgGUID: AfSEwpGkSOCGbhn+rfs0fA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="11796744"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 10 Nov 2023 13:14:27 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 10 Nov 2023 13:13:46 -0700
+Received: from [10.171.248.20] (10.10.85.11) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Fri, 10 Nov 2023 13:13:44 -0700
+Message-ID: <4d505dd3-b289-4191-95f2-4a6eaa647e81@microchip.com>
+Date:   Fri, 10 Nov 2023 21:13:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109-amlogic-v6-4-upstream-dsi-ccf-vim3-v8-2-81e4aeeda193@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: atmel-mci: Use common error handling code in
+ atmci_of_init()
+Content-Language: en-US, fr
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kernel-janitors@vger.kernel.org>
+CC:     <cocci@inria.fr>, LKML <linux-kernel@vger.kernel.org>
+References: <c70c100a-ebfd-442e-875f-738593faf0dc@web.de>
+From:   Aubin Constans <aubin.constans@microchip.com>
+In-Reply-To: <c70c100a-ebfd-442e-875f-738593faf0dc@web.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:00:03AM +0100, Neil Armstrong wrote:
-> Add a thirst example covering the meson-axg-hhi-sysctrl variant and more
-> importantly the phy subnode.
+On 05/11/2023 16:50, Markus Elfring wrote:
+> Add a jump target so that a bit of exception handling can be better
+> reused at the end of this function.
 > 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+
+Acked-by: Aubin Constans <aubin.constans@microchip.com>
+
 > ---
->  .../soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml  | 41 ++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+>   drivers/mmc/host/atmel-mci.c | 18 ++++++++++--------
+>   1 file changed, 10 insertions(+), 8 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-> index 16977e4e4357..2edf4ccea845 100644
-> --- a/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-> +++ b/Documentation/devicetree/bindings/soc/amlogic/amlogic,meson-gx-hhi-sysctrl.yaml
-> @@ -158,3 +158,44 @@ examples:
->              };
->          };
->      };
+> diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
+> index dba826db739a..1e83119d1dcb 100644
+> --- a/drivers/mmc/host/atmel-mci.c
+> +++ b/drivers/mmc/host/atmel-mci.c
+> @@ -675,10 +675,9 @@ atmci_of_init(struct platform_device *pdev)
+>                                                "cd", GPIOD_IN, "cd-gpios");
+>                  err = PTR_ERR_OR_ZERO(pdata->slot[slot_id].detect_pin);
+>                  if (err) {
+> -                       if (err != -ENOENT) {
+> -                               of_node_put(cnp);
+> -                               return ERR_PTR(err);
+> -                       }
+> +                       if (err != -ENOENT)
+> +                               goto put_node;
 > +
-
-New example should be separate starting with a '-|'.
-
-> +    bus@ff63c000 {
-> +        compatible = "simple-bus";
-> +        reg = <0xff63c000 0x1c00>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges = <0x0 0xff63c000 0x1c00>;
-
-Why do you need all this? 1 cell is the default for examples.
-
-> +
-> +        system-controller@0 {
-> +            compatible = "amlogic,meson-axg-hhi-sysctrl", "simple-mfd", "syscon";
-> +            reg = <0 0x400>;
-> +
-> +            clock-controller {
-> +                compatible = "amlogic,axg-clkc";
-> +                #clock-cells = <1>;
-> +                clocks = <&xtal>;
-> +                clock-names = "xtal";
-> +            };
-> +
-> +            power-controller {
-> +                compatible = "amlogic,meson-axg-pwrc";
-> +                #power-domain-cells = <1>;
-> +                amlogic,ao-sysctrl = <&sysctrl_AO>;
-> +
-> +                resets = <&reset_viu>,
-> +                         <&reset_venc>,
-> +                         <&reset_vcbus>,
-> +                         <&reset_vencl>,
-> +                         <&reset_vid_lock>;
-> +                reset-names = "viu", "venc", "vcbus", "vencl", "vid_lock";
-> +                clocks = <&clk_vpu>, <&clk_vapb>;
-> +                clock-names = "vpu", "vapb";
-> +            };
-> +
-> +            phy {
-> +                compatible = "amlogic,axg-mipi-pcie-analog-phy";
-> +                #phy-cells = <0>;
-> +                status = "disabled";
-
-Examples should not be disabled.
-
-> +            };
-> +        };
-> +    };
+>                          pdata->slot[slot_id].detect_pin = NULL;
+>                  }
 > 
-> -- 
-> 2.34.1
+> @@ -690,15 +689,18 @@ atmci_of_init(struct platform_device *pdev)
+>                                                "wp", GPIOD_IN, "wp-gpios");
+>                  err = PTR_ERR_OR_ZERO(pdata->slot[slot_id].wp_pin);
+>                  if (err) {
+> -                       if (err != -ENOENT) {
+> -                               of_node_put(cnp);
+> -                               return ERR_PTR(err);
+> -                       }
+> +                       if (err != -ENOENT)
+> +                               goto put_node;
+> +
+>                          pdata->slot[slot_id].wp_pin = NULL;
+>                  }
+>          }
 > 
+>          return pdata;
+> +
+> +put_node:
+> +       of_node_put(cnp);
+> +       return ERR_PTR(err);
+>   }
+>   #else /* CONFIG_OF */
+>   static inline struct mci_platform_data*
+> --
+> 2.42.0
+> 
+
+Best regards,
+Aubin
