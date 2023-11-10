@@ -2,460 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600D97E76E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 787677E76E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345476AbjKJByJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:54:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52016 "EHLO
+        id S1345610AbjKJBzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKJByI (ORCPT
+        with ESMTP id S229572AbjKJBzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:54:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABE244BA;
-        Thu,  9 Nov 2023 17:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699581246; x=1731117246;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/ir+TT9QA0tCXZ0ZfOcG8EVOXV1LHqiUY1q9ig2bjkM=;
-  b=jX7rqwdoy7re55PLg9fCkFgsZrw/Y22aXr0qfLW4DxllkCBSmkDDr3sW
-   Ft1wJtq5axm8hHUbJIA8lwuMx84i9rYhnwQapqB2SoHijp9A7pcolWAx/
-   EdZVHubIT7skNAe4+2++dWpqTRlPc5pnziWJBMkwMZEumhTEKx4/PFqER
-   0QNGgg4DOCLXzRPXGEW59DQTHI/68No3V0vt2EO1ar4WjvQ6cjJyWWvex
-   A3kVtKnVyN5dnl9VDqP6iOS0LY6WBtpPCTsWgdL023pIE2ejh5GiorVcK
-   d0s4hVHKuvdx27RUaqC2vIVO0RbwuIYfyd7j1s/BjjjaZmJFqbw2VYEcA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="456612338"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="456612338"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:54:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="713510691"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="713510691"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.9.145]) ([10.93.9.145])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 17:53:48 -0800
-Message-ID: <956d8ee3-8b63-4a2d-b0c4-c0d3d74a0f6f@intel.com>
-Date:   Fri, 10 Nov 2023 09:53:41 +0800
+        Thu, 9 Nov 2023 20:55:35 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFFA44BD;
+        Thu,  9 Nov 2023 17:55:32 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA0hZ3Q026646;
+        Fri, 10 Nov 2023 01:55:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : from : subject : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=I8f9U6h678avASE+5LIilnUNQa6w5nRCNEZC/8kG+S4=;
+ b=EjM/6UG1svYBwMAc6oCuf67ksAuSyKJT2U+kN108ARMMCTybD6F6+sWZ6af/RreZOvux
+ HXaKyuOVRX0j47Ee2ydMUrWceIZXEoAT8/mMA7PnOHF8+hFWabE1GM1WWRTYUi/M4aJt
+ t9lI43SeoVYipiVcqWvU5mcnrB+I8lvszwnlP01L0k5jFHv6r7txAXEug/BmHD/WtRsW
+ +L4CCtQvOHkMH5mPInr8XE2o5qwrwm6gvdb8Rm6X7h4djmcg4UD84MpGnnFV4n514hJA
+ mmQgulKgyZFJPyx+8CQcz3QmBYnQRyyH8WsqdEm/6fb8J1yB6lsY59X+fQvMwoB2NLoX Bg== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93rbrwg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 01:55:29 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA1tSia011838
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 01:55:28 GMT
+Received: from [10.238.139.231] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 9 Nov
+ 2023 17:55:24 -0800
+Message-ID: <9b27add9-ba04-49b0-af60-a191866f9a40@quicinc.com>
+Date:   Fri, 10 Nov 2023 09:55:15 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/34] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231105163040.14904-1-pbonzini@redhat.com>
- <20231105163040.14904-16-pbonzini@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20231105163040.14904-16-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From:   hui liu <quic_huliu@quicinc.com>
+Subject: Re: [PATCH] ARM: dts: qcom: Add LPG LED device description
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_fenglinw@quicinc.com>,
+        <quic_uchheda@quicinc.com>, <kamalw@qti.qualcomm.com>
+References: <20231108-qcom_leds-v1-1-c3e1c8572cb0@quicinc.com>
+ <CAA8EJpogiYXVPCNXSu+kq29nbn1uxGDAYMn9+qk8CwDz0bfyjg@mail.gmail.com>
+In-Reply-To: <CAA8EJpogiYXVPCNXSu+kq29nbn1uxGDAYMn9+qk8CwDz0bfyjg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: l8HzW4ujkiqePDoorhTYl_kY_wYqEr29
+X-Proofpoint-ORIG-GUID: l8HzW4ujkiqePDoorhTYl_kY_wYqEr29
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=341 impostorscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311100015
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/2023 12:30 AM, Paolo Bonzini wrote:
-> From: Sean Christopherson <seanjc@google.com>
-> 
-> Introduce an ioctl(), KVM_CREATE_GUEST_MEMFD, to allow creating file-based
-> memory that is tied to a specific KVM virtual machine and whose primary
-> purpose is to serve guest memory.
-> 
-> A guest-first memory subsystem allows for optimizations and enhancements
-> that are kludgy or outright infeasible to implement/support in a generic
-> memory subsystem.  With guest_memfd, guest protections and mapping sizes
-> are fully decoupled from host userspace mappings.   E.g. KVM currently
-> doesn't support mapping memory as writable in the guest without it also
-> being writable in host userspace, as KVM's ABI uses VMA protections to
-> define the allow guest protection.  Userspace can fudge this by
-> establishing two mappings, a writable mapping for the guest and readable
-> one for itself, but that’s suboptimal on multiple fronts.
-> 
-> Similarly, KVM currently requires the guest mapping size to be a strict
-> subset of the host userspace mapping size, e.g. KVM doesn’t support
-> creating a 1GiB guest mapping unless userspace also has a 1GiB guest
-> mapping.  Decoupling the mappings sizes would allow userspace to precisely
-> map only what is needed without impacting guest performance, e.g. to
-> harden against unintentional accesses to guest memory.
-> 
-> Decoupling guest and userspace mappings may also allow for a cleaner
-> alternative to high-granularity mappings for HugeTLB, which has reached a
-> bit of an impasse and is unlikely to ever be merged.
-> 
-> A guest-first memory subsystem also provides clearer line of sight to
-> things like a dedicated memory pool (for slice-of-hardware VMs) and
-> elimination of "struct page" (for offload setups where userspace _never_
-> needs to mmap() guest memory).
-> 
-> More immediately, being able to map memory into KVM guests without mapping
-> said memory into the host is critical for Confidential VMs (CoCo VMs), the
-> initial use case for guest_memfd.  While AMD's SEV and Intel's TDX prevent
-> untrusted software from reading guest private data by encrypting guest
-> memory with a key that isn't usable by the untrusted host, projects such
-> as Protected KVM (pKVM) provide confidentiality and integrity *without*
-> relying on memory encryption.  And with SEV-SNP and TDX, accessing guest
-> private memory can be fatal to the host, i.e. KVM must be prevent host
-> userspace from accessing guest memory irrespective of hardware behavior.
-> 
-> Attempt #1 to support CoCo VMs was to add a VMA flag to mark memory as
-> being mappable only by KVM (or a similarly enlightened kernel subsystem).
-> That approach was abandoned largely due to it needing to play games with
-> PROT_NONE to prevent userspace from accessing guest memory.
-> 
-> Attempt #2 to was to usurp PG_hwpoison to prevent the host from mapping
-> guest private memory into userspace, but that approach failed to meet
-> several requirements for software-based CoCo VMs, e.g. pKVM, as the kernel
-> wouldn't easily be able to enforce a 1:1 page:guest association, let alone
-> a 1:1 pfn:gfn mapping.  And using PG_hwpoison does not work for memory
-> that isn't backed by 'struct page', e.g. if devices gain support for
-> exposing encrypted memory regions to guests.
-> 
-> Attempt #3 was to extend the memfd() syscall and wrap shmem to provide
-> dedicated file-based guest memory.  That approach made it as far as v10
-> before feedback from Hugh Dickins and Christian Brauner (and others) led
-> to it demise.
-> 
-> Hugh's objection was that piggybacking shmem made no sense for KVM's use
-> case as KVM didn't actually *want* the features provided by shmem.  I.e.
-> KVM was using memfd() and shmem to avoid having to manage memory directly,
-> not because memfd() and shmem were the optimal solution, e.g. things like
-> read/write/mmap in shmem were dead weight.
-> 
-> Christian pointed out flaws with implementing a partial overlay (wrapping
-> only _some_ of shmem), e.g. poking at inode_operations or super_operations
-> would show shmem stuff, but address_space_operations and file_operations
-> would show KVM's overlay.  Paraphrashing heavily, Christian suggested KVM
-> stop being lazy and create a proper API.
-> 
-> Link: https://lore.kernel.org/all/20201020061859.18385-1-kirill.shutemov@linux.intel.com
-> Link: https://lore.kernel.org/all/20210416154106.23721-1-kirill.shutemov@linux.intel.com
-> Link: https://lore.kernel.org/all/20210824005248.200037-1-seanjc@google.com
-> Link: https://lore.kernel.org/all/20211111141352.26311-1-chao.p.peng@linux.intel.com
-> Link: https://lore.kernel.org/all/20221202061347.1070246-1-chao.p.peng@linux.intel.com
-> Link: https://lore.kernel.org/all/ff5c5b97-acdf-9745-ebe5-c6609dd6322e@google.com
-> Link: https://lore.kernel.org/all/20230418-anfallen-irdisch-6993a61be10b@brauner
-> Link: https://lore.kernel.org/all/ZEM5Zq8oo+xnApW9@google.com
-> Link: https://lore.kernel.org/linux-mm/20230306191944.GA15773@monkey
-> Link: https://lore.kernel.org/linux-mm/ZII1p8ZHlHaQ3dDl@casper.infradead.org
-> Cc: Fuad Tabba <tabba@google.com>
-> Cc: Vishal Annapurve <vannapurve@google.com>
-> Cc: Ackerley Tng <ackerleytng@google.com>
-> Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Cc: Maciej Szmigiero <mail@maciej.szmigiero.name>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Quentin Perret <qperret@google.com>
-> Cc: Michael Roth <michael.roth@amd.com>
-> Cc: Wang <wei.w.wang@intel.com>
-> Cc: Liam Merwick <liam.merwick@oracle.com>
-> Cc: Isaku Yamahata <isaku.yamahata@gmail.com>
-> Co-developed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Co-developed-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Signed-off-by: Yu Zhang <yu.c.zhang@linux.intel.com>
-> Co-developed-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Co-developed-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Co-developed-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Message-Id: <20231027182217.3615211-17-seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->   Documentation/virt/kvm/api.rst |  69 ++++-
->   fs/anon_inodes.c               |   1 +
->   include/linux/kvm_host.h       |  48 +++
->   include/uapi/linux/kvm.h       |  15 +-
->   virt/kvm/Kconfig               |   4 +
->   virt/kvm/Makefile.kvm          |   1 +
->   virt/kvm/guest_memfd.c         | 538 +++++++++++++++++++++++++++++++++
->   virt/kvm/kvm_main.c            |  59 +++-
->   virt/kvm/kvm_mm.h              |  26 ++
->   9 files changed, 754 insertions(+), 7 deletions(-)
->   create mode 100644 virt/kvm/guest_memfd.c
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 083ed507e200..6d681f45969e 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6202,6 +6202,15 @@ superset of the features supported by the system.
->   :Parameters: struct kvm_userspace_memory_region2 (in)
->   :Returns: 0 on success, -1 on error
->   
-> +KVM_SET_USER_MEMORY_REGION2 is an extension to KVM_SET_USER_MEMORY_REGION that
-> +allows mapping guest_memfd memory into a guest.  All fields shared with
-> +KVM_SET_USER_MEMORY_REGION identically.  Userspace can set KVM_MEM_GUEST_MEMFD
-> +in flags to have KVM bind the memory region to a given guest_memfd range of
-> +[guest_memfd_offset, guest_memfd_offset + memory_size].  The target guest_memfd
-> +must point at a file created via KVM_CREATE_GUEST_MEMFD on the current VM, and
-> +the target range must not be bound to any other memory region.  All standard
-> +bounds checks apply (use common sense).
-> +
->   ::
->   
->     struct kvm_userspace_memory_region2 {
-> @@ -6210,9 +6219,24 @@ superset of the features supported by the system.
->   	__u64 guest_phys_addr;
->   	__u64 memory_size; /* bytes */
->   	__u64 userspace_addr; /* start of the userspace allocated memory */
-> +	__u64 guest_memfd_offset;
-> +	__u32 guest_memfd;
-> +	__u32 pad1;
-> +	__u64 pad2[14];
->     };
->   
-> -See KVM_SET_USER_MEMORY_REGION.
-> +A KVM_MEM_GUEST_MEMFD region _must_ have a valid guest_memfd (private memory) and
-> +userspace_addr (shared memory).  However, "valid" for userspace_addr simply
-> +means that the address itself must be a legal userspace address.  The backing
-> +mapping for userspace_addr is not required to be valid/populated at the time of
-> +KVM_SET_USER_MEMORY_REGION2, e.g. shared memory can be lazily mapped/allocated
-> +on-demand.
-> +
-> +When mapping a gfn into the guest, KVM selects shared vs. private, i.e consumes
-> +userspace_addr vs. guest_memfd, based on the gfn's KVM_MEMORY_ATTRIBUTE_PRIVATE
-> +state.  At VM creation time, all memory is shared, i.e. the PRIVATE attribute
-> +is '0' for all gfns.  Userspace can control whether memory is shared/private by
-> +toggling KVM_MEMORY_ATTRIBUTE_PRIVATE via KVM_SET_MEMORY_ATTRIBUTES as needed.
->   
->   4.141 KVM_SET_MEMORY_ATTRIBUTES
->   -------------------------------
-> @@ -6250,6 +6274,49 @@ the state of a gfn/page as needed.
->   
->   The "flags" field is reserved for future extensions and must be '0'.
->   
-> +4.142 KVM_CREATE_GUEST_MEMFD
-> +----------------------------
-> +
-> +:Capability: KVM_CAP_GUEST_MEMFD
-> +:Architectures: none
-> +:Type: vm ioctl
-> +:Parameters: struct kvm_create_guest_memfd(in)
-> +:Returns: 0 on success, <0 on error
-> +
-> +KVM_CREATE_GUEST_MEMFD creates an anonymous file and returns a file descriptor
-> +that refers to it.  guest_memfd files are roughly analogous to files created
-> +via memfd_create(), e.g. guest_memfd files live in RAM, have volatile storage,
-> +and are automatically released when the last reference is dropped.  Unlike
-> +"regular" memfd_create() files, guest_memfd files are bound to their owning
-> +virtual machine (see below), cannot be mapped, read, or written by userspace,
-> +and cannot be resized  (guest_memfd files do however support PUNCH_HOLE).
-> +
-> +::
-> +
-> +  struct kvm_create_guest_memfd {
-> +	__u64 size;
-> +	__u64 flags;
-> +	__u64 reserved[6];
-> +  };
-> +
-> +Conceptually, the inode backing a guest_memfd file represents physical memory,
-> +i.e. is coupled to the virtual machine as a thing, not to a "struct kvm".  The
-> +file itself, which is bound to a "struct kvm", is that instance's view of the
-> +underlying memory, e.g. effectively provides the translation of guest addresses
-> +to host memory.  This allows for use cases where multiple KVM structures are
-> +used to manage a single virtual machine, e.g. when performing intrahost
-> +migration of a virtual machine.
-> +
-> +KVM currently only supports mapping guest_memfd via KVM_SET_USER_MEMORY_REGION2,
-> +and more specifically via the guest_memfd and guest_memfd_offset fields in
-> +"struct kvm_userspace_memory_region2", where guest_memfd_offset is the offset
-> +into the guest_memfd instance.  For a given guest_memfd file, there can be at
-> +most one mapping per page, i.e. binding multiple memory regions to a single
-> +guest_memfd range is not allowed (any number of memory regions can be bound to
-> +a single guest_memfd file, but the bound ranges must not overlap).
-> +
-> +See KVM_SET_USER_MEMORY_REGION2 for additional details.
-> +
->   5. The kvm_run structure
->   ========================
->   
-> diff --git a/fs/anon_inodes.c b/fs/anon_inodes.c
-> index 3d4a27f8b4fe..6f3d31b4d1e3 100644
-> --- a/fs/anon_inodes.c
-> +++ b/fs/anon_inodes.c
-> @@ -181,6 +181,7 @@ struct file *anon_inode_create_getfile(const char *name,
->   	return __anon_inode_getfile(name, fops, priv, flags,
->   				    context_inode, true);
->   }
-> +EXPORT_SYMBOL_GPL(anon_inode_create_getfile);
->   
->   static int __anon_inode_getfd(const char *name,
->   			      const struct file_operations *fops,
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 68a144cb7dbc..a6de526c0426 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -589,8 +589,20 @@ struct kvm_memory_slot {
->   	u32 flags;
->   	short id;
->   	u16 as_id;
-> +
-> +#ifdef CONFIG_KVM_PRIVATE_MEM
-> +	struct {
-> +		struct file __rcu *file;
-> +		pgoff_t pgoff;
-> +	} gmem;
-> +#endif
->   };
->   
-> +static inline bool kvm_slot_can_be_private(const struct kvm_memory_slot *slot)
-> +{
-> +	return slot && (slot->flags & KVM_MEM_GUEST_MEMFD);
-> +}
-> +
-
-maybe we can move this block and ...
-
-<snip>
-
-> @@ -2355,6 +2379,30 @@ bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
->   					struct kvm_gfn_range *range);
->   bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
->   					 struct kvm_gfn_range *range);
-> +
-> +static inline bool kvm_mem_is_private(struct kvm *kvm, gfn_t gfn)
-> +{
-> +	return IS_ENABLED(CONFIG_KVM_PRIVATE_MEM) &&
-> +	       kvm_get_memory_attributes(kvm, gfn) & KVM_MEMORY_ATTRIBUTE_PRIVATE;
-> +}
-> +#else
-> +static inline bool kvm_mem_is_private(struct kvm *kvm, gfn_t gfn)
-> +{
-> +	return false;
-> +}
->   #endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
-
-this block to Patch 18?
 
 
-<snip>
+On 11/8/2023 2:59 PM, Dmitry Baryshkov wrote:
+> On Wed, 8 Nov 2023 at 08:05, Hui Liu via B4 Relay
+> <devnull+quic_huliu.quicinc.com@kernel.org> wrote:
+>>
+>> From: Hui Liu <quic_huliu@quicinc.com>
+>>
+>> Add LPG LED device description.
+> 
+> No. You are not adding "LPG LED device description". You are adding
+> definition for three LEDs.
+OK, I will update the commit in next patch.
 
-> @@ -4844,6 +4875,10 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
->   #ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
->   	case KVM_CAP_MEMORY_ATTRIBUTES:
->   		return kvm_supported_mem_attributes(kvm);
-> +#endif
-> +#ifdef CONFIG_KVM_PRIVATE_MEM
-> +	case KVM_CAP_GUEST_MEMFD:
-> +		return !kvm || kvm_arch_has_private_mem(kvm);
->   #endif
->   	default:
->   		break;
-> @@ -5277,6 +5312,18 @@ static long kvm_vm_ioctl(struct file *filp,
->   	case KVM_GET_STATS_FD:
->   		r = kvm_vm_ioctl_get_stats_fd(kvm);
->   		break;
-> +#ifdef CONFIG_KVM_PRIVATE_MEM
-> +	case KVM_CREATE_GUEST_MEMFD: {
-> +		struct kvm_create_guest_memfd guest_memfd;
+> 
+>>
+>> Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/pm8350c.dtsi | 22 ++++++++++++++++++++++
+>>   1 file changed, 22 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> index f28e71487d5c..11b9f384d99c 100644
+>> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> @@ -4,6 +4,7 @@
+>>    */
+>>
+>>   #include <dt-bindings/interrupt-controller/irq.h>
+>> +#include <dt-bindings/leds/common.h>
+>>   #include <dt-bindings/spmi/spmi.h>
+>>
+>>   &spmi_bus {
+>> @@ -34,6 +35,27 @@ pm8350c_pwm: pwm {
+>>                          compatible = "qcom,pm8350c-pwm";
+>>                          #pwm-cells = <2>;
+>>                          status = "disabled";
+>> +
+>> +                       #address-cells = <1>;
+>> +                       #size-cells = <0>;
+>> +
+>> +                       led@1 {
+>> +                               reg = <1>;
+>> +                               color = <LED_COLOR_ID_RED>;
+>> +                               label = "red";
+>> +                       };
+>> +
+>> +                       led@2 {
+>> +                               reg = <2>;
+>> +                               color = <LED_COLOR_ID_GREEN>;
+>> +                               label = "green";
+>> +                       };
+>> +
+>> +                       led@3 {
+>> +                               reg = <3>;
+>> +                               color = <LED_COLOR_ID_BLUE>;
+>> +                               label = "blue";
+> 
+> ... and these particular LEDs are board-specific. Please fill them in
+> the board file instead.
 
-Do we need a guard of below?
-
-		r = -EINVAL;
-		if (!kvm_arch_has_private_mem(kvm))
-			goto out;
-
-
-
-> +		r = -EFAULT;
-> +		if (copy_from_user(&guest_memfd, argp, sizeof(guest_memfd)))
-> +			goto out;
-> +
-> +		r = kvm_gmem_create(kvm, &guest_memfd);
-> +		break;
-> +	}
-> +#endif
->   	default:
->   		r = kvm_arch_vm_ioctl(filp, ioctl, arg);
->   	}
-> @@ -6409,6 +6456,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
->   	if (WARN_ON_ONCE(r))
->   		goto err_vfio;
->   
-> +	kvm_gmem_init(module);
-> +
->   	/*
->   	 * Registration _must_ be the very last thing done, as this exposes
->   	 * /dev/kvm to userspace, i.e. all infrastructure must be setup!
-> diff --git a/virt/kvm/kvm_mm.h b/virt/kvm/kvm_mm.h
-> index 180f1a09e6ba..ecefc7ec51af 100644
-> --- a/virt/kvm/kvm_mm.h
-> +++ b/virt/kvm/kvm_mm.h
-> @@ -37,4 +37,30 @@ static inline void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm,
->   }
->   #endif /* HAVE_KVM_PFNCACHE */
->   
-> +#ifdef CONFIG_KVM_PRIVATE_MEM
-> +void kvm_gmem_init(struct module *module);
-> +int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args);
-> +int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +		  unsigned int fd, loff_t offset);
-> +void kvm_gmem_unbind(struct kvm_memory_slot *slot);
-> +#else
-> +static inline void kvm_gmem_init(struct module *module)
-> +{
-> +
-> +}
-> +
-> +static inline int kvm_gmem_bind(struct kvm *kvm,
-> +					 struct kvm_memory_slot *slot,
-> +					 unsigned int fd, loff_t offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return -EIO;
-> +}
-> +
-> +static inline void kvm_gmem_unbind(struct kvm_memory_slot *slot)
-> +{
-> +	WARN_ON_ONCE(1);
-> +}
-> +#endif /* CONFIG_KVM_PRIVATE_MEM */
-> +
->   #endif /* __KVM_MM_H__ */
-
+Sure, I will add these node in board file.
+> 
+>> +                       };
+>>                  };
+>>          };
+>>   };
+>>
+>> ---
+>> base-commit: b9604be241587fb29c0f40450e53d0a37dc611b5
+>> change-id: 20231108-qcom_leds-c3b0b7029008
+>>
+>> Best regards,
+>> --
+>> Hui Liu <quic_huliu@quicinc.com>
+>>
+>>
+> 
+> 
