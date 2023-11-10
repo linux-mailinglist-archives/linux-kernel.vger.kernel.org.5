@@ -2,267 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3488F7E806C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB5A7E7FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345124AbjKJSKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        id S235590AbjKJR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344597AbjKJSI0 (ORCPT
+        with ESMTP id S229899AbjKJR4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:08:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615F339741
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:35:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699626905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E0jbSLocU8Qu+t0aHk24/qSe4dawu00kk74v0Zid600=;
-        b=hWrlm3a9XDPdDm2Vpq5VRRM4IfYZuRjPEOrhTCg+IEC993f5XOyb/EpS5MRsrw0OCkOZPQ
-        o9NOSS6HB990vu0npdjCtxZd4obCV2r+C/c2v7yrLnlI6iB/af04S4iTfYtVxUOCSNmS98
-        bbPj2MFn2v1wWLU7LfewSdtsAmIo6fY=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-58-vw51FS5xPzCGJNkOHf0xIg-1; Fri, 10 Nov 2023 09:35:03 -0500
-X-MC-Unique: vw51FS5xPzCGJNkOHf0xIg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9e5e190458dso111362266b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:35:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699626902; x=1700231702;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E0jbSLocU8Qu+t0aHk24/qSe4dawu00kk74v0Zid600=;
-        b=CJ8TpECY37XJ/SzJoPrk4rcIrquSClxjVMwqDOKweGgHrwHnHhiuMqYOewp7ce/49d
-         S6CxihXKfUvTP24lyDbl6k3sDnu78/U4yTFurR1berBqPsk0jInevEO1G9TN4lFbfyI/
-         e5A5WbArxlDhniTRx85wwUduucbOMMKhYvPXbfHAAo4yGr7Ph+E8TpdRLq7mJc6Hq5cI
-         5v1smoTvpUfnW4H+WNAk084tfPUzzHFLewW4GSlJAwv1dg8QU2sGlvB453cgUlPm0af1
-         /87KF1OqEvbJHbZMqHqF1EOLDEKInd+hDpQbMD0xEnhn/g72wIQ2dfEgCRPENMu8TFg2
-         I/Dg==
-X-Gm-Message-State: AOJu0YwBnj8My7UDOKS2x3PRjLNH4cGQKEEKvx1E6IBE+CRGrrvX/bJe
-        Siw/2ICe1uLZIMdsZ0P/FxvJ+IrnzPCtSAJLMHkwfKvF6YX89tt0X3BbmVj+wvOgzThfRZ//E0J
-        7SXLl3fBxW5bUtIyKYF1uQYjC
-X-Received: by 2002:a17:906:1c8e:b0:9d5:96e7:5ae1 with SMTP id g14-20020a1709061c8e00b009d596e75ae1mr2213150ejh.12.1699626902631;
-        Fri, 10 Nov 2023 06:35:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH9uHdtYMXLxTcY/0b1/LwOT+o0u++Jc/LSsPYHzKMr5iLqhZpN/FN2epi+fQaVQ3HJwY3CwQ==
-X-Received: by 2002:a17:906:1c8e:b0:9d5:96e7:5ae1 with SMTP id g14-20020a1709061c8e00b009d596e75ae1mr2213136ejh.12.1699626902351;
-        Fri, 10 Nov 2023 06:35:02 -0800 (PST)
-Received: from imammedo.users.ipa.redhat.com ([185.140.112.229])
-        by smtp.gmail.com with ESMTPSA id ti11-20020a170907c20b00b009e62bb0439bsm909806ejc.212.2023.11.10.06.35.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 06:35:01 -0800 (PST)
-Date:   Fri, 10 Nov 2023 15:35:00 +0100
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Stefan Roese <sr@denx.de>,
-        Jim Wilson <wilson@tuliptree.org>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pci: Work around ASMedia ASM2824 PCIe link training
- failures
-Message-ID: <20231110153500.316862fd@imammedo.users.ipa.redhat.com>
-In-Reply-To: <alpine.DEB.2.21.2201022100430.56863@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2201022100430.56863@angie.orcam.me.uk>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 10 Nov 2023 12:56:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250A338EBF;
+        Fri, 10 Nov 2023 06:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699626913; x=1731162913;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uo06VXUB/vf5aOi2Yd+6utwASdeGhe7osoEmsxnb6cM=;
+  b=TpK99T54Gk6MrDn9+6PrQKX7Z5gvV8gMgQA2ycn243zcFyXq5AilwFzc
+   Bqu80dqzbQshq1vMA5IJXCP7Zgzi91Qjm1IQUqQjSj2wqKuxt7lOTGL5h
+   F+cK7cu8QV6HBN9quLWZF9ZoNKtd6yuOQ5oi4AUXzF72r5csMPpsXve/e
+   Kf1hQ6q2zuXM2KPaGthmeFKDB7iTbtfxEYCFMzvx7fJK4DXp30zX9JbaO
+   sLKYX2r/tP9lP88Pwkc/mtDa4C/FsOq94XhoB0NH0ym251fjnpE8iEoJR
+   cGZBYZpdjlITqJZmsHVEux5fs3qdiqaR0VpFwiwFNqCcnTn8zaiDP6OKh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11739533"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="11739533"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:35:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="880979315"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="880979315"
+Received: from joudin-mobl2.ger.corp.intel.com (HELO mciobota-mobl.ger.corp.intel.com) ([10.252.38.36])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:35:09 -0800
+Date:   Fri, 10 Nov 2023 16:35:07 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+cc:     Jorge Lopez <jorge.lopez2@hp.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, dan.carpenter@linaro.org,
+        kernel-janitors@vger.kernel.org, error27@gmail.com,
+        vegard.nossum@oracle.com, darren.kenny@oracle.com
+Subject: Re: [PATCH v2 3/4] platform/x86: hp-bioscfg: move mutex_lock down
+ in hp_add_other_attributes()
+In-Reply-To: <20231110142921.3398072-3-harshit.m.mogalapalli@oracle.com>
+Message-ID: <8ebcdb8-e1a-11ce-c42b-e73bdf55a58@linux.intel.com>
+References: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com> <20231110142921.3398072-3-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-782047625-1699626912=:1596"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2 Jan 2022 23:25:25 +0000 (GMT)
-"Maciej W. Rozycki" <macro@orcam.me.uk> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Attempt to handle cases with a downstream port of the ASMedia ASM2824 
-> PCIe switch where link training never completes and the link continues 
-> switching between speeds indefinitely with the data link layer never 
-> reaching the active state.
+--8323329-782047625-1699626912=:1596
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 10 Nov 2023, Harshit Mogalapalli wrote:
+
+> attr_name_kobj's memory allocation is done with mutex_lock held, this
+
+Please use () with function names.
+
+> probably is not needed.
+
+Just remove probably.
+
+> Move the mutex_lock downward so we need not unlock when allocation
+> fails.
+
+Move allocation outside of mutex_lock() so unlock is not needed when
+allocation fails.
+
+The code change looks fine.
+
+-- 
+ i.
+
+> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+>  drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 > 
-> It has been observed with a downstream port of the ASMedia ASM2824 Gen 3 
-> switch wired to the upstream port of the Pericom PI7C9X2G304 Gen 2 
-> switch, using a Delock Riser Card PCI Express x1 > 2 x PCIe x1 device, 
-> P/N 41433, wired to a SiFive HiFive Unmatched board.  In this setup the 
-> switches are supposed to negotiate the link speed of preferably 5.0GT/s, 
-> falling back to 2.5GT/s.
-
-It looks like I might have similar issue on EPYC system with this switch.
-
-In my case ASM2824 switch board connected to EPYC's root port (via SlimSAS 8i cable and on upstream site it negotiates expected 8GT/s x8) 
-were supposed to provide 10x slots with PCIe x1 Gen3 links.
-However lspci shows that link is capped at 2.5GT/s and NVME plugged into one of
-the slots is downgraded to 2.5GT/s.
-
-I wonder if it could be fixed to get expected 8GT/s per lane.
-
-Downstream port in question:
-
-07:00.0 PCI bridge: ASMedia Technology Inc. ASM2824 PCIe Gen3 Packet Switch (rev 01) (prog-if 00 [Normal decode])
-Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-Latency: 0, Cache Line Size: 64 bytes
-Interrupt: pin A routed to IRQ 35
-IOMMU group: 20
-Bus: primary=07, secondary=08, subordinate=08, sec-latency=0
-I/O behind bridge: [disabled] [32-bit]
-Memory behind bridge: ee700000-ee7fffff [size=1M] [32-bit]
-Prefetchable memory behind bridge: [disabled] [64-bit]
-Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- <SERR- <PERR-
-BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16+ MAbort- >Reset- FastB2B-
-PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-Capabilities: [40] Power Management version 3
-Flags: PMEClk- DSI+ D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
-Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-Capabilities: [50] MSI: Enable+ Count=1/1 Maskable- 64bit+
-Address: 00000000fee00000 Data: 0000
-Capabilities: [80] Express (v2) Downstream Port (Slot+), MSI 00
-DevCap: MaxPayload 512 bytes, PhantFunc 0
-ExtTag+ RBE+
-DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
-RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
-MaxPayload 128 bytes, MaxReadReq 512 bytes
-DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-LnkCap: Port #0, Speed 2.5GT/s, Width x2, ASPM L1, Exit Latency L1 <64us
-ClockPM+ Surprise+ LLActRep+ BwNot+ ASPMOptComp+
-LnkCtl: ASPM Disabled; Disabled- CommClk+
-ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-LnkSta: Speed 2.5GT/s, Width x1
-TrErr- Train- SlotClk+ DLActive+ BWMgmt+ ABWMgmt-
-SltCap: AttnBtn- PwrCtrl- MRL- AttnInd- PwrInd- HotPlug- Surprise-
-Slot #0, PowerLimit 0W; Interlock- NoCompl-
-SltCtl: Enable: AttnBtn- PwrFlt- MRL- PresDet- CmdCplt- HPIrq- LinkChg-
-Control: AttnInd Unknown, PwrInd Unknown, Power- Interlock-
-SltSta: Status: AttnBtn- PowerFlt- MRL- CmdCplt- PresDet+ Interlock-
-Changed: MRL- PresDet- LinkState-
-DevCap2: Completion Timeout: Not Supported, TimeoutDis- NROPrPrP- LTR+
-10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-FRS- ARIFwd+
-AtomicOpsCap: Routing-
-DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled, ARIFwd-
-AtomicOpsCtl: EgressBlck-
-LnkCap2: Supported Link Speeds: 2.5-8GT/s, Crosslink- Retimer- 2Retimers- DRS-
-LnkCtl2: Target Link Speed: 8GT/s, EnterCompliance- SpeedDis+, Selectable De-emphasis: -3.5dB
-Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
-Compliance Preset/De-emphasis: -6dB de-emphasis, 0dB preshoot
-LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
-EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-Retimer- 2Retimers- CrosslinkRes: unsupported
-Capabilities: [c0] Subsystem: Device 0000:0000
-Capabilities: [100 v1] Advanced Error Reporting
-UESta: DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-UEMsk: DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-CESta: RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr-
-CEMsk: RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
-AERCap: First Error Pointer: 00, ECRCGenCap- ECRCGenEn- ECRCChkCap- ECRCChkEn-
-MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-HeaderLog: 00000000 00000000 00000000 00000000
-Capabilities: [140 v1] Power Budgeting <?>
-Capabilities: [160 v1] Latency Tolerance Reporting
-Max snoop latency: 0ns
-Max no snoop latency: 0ns
-Capabilities: [180 v1] Multicast
-McastCap: MaxGroups 64, ECRCRegen-
-McastCtl: NumGroups 1, Enable-
-McastBAR: IndexPos 0, BaseAddr 0000000000000000
-McastReceiveVec: 0000000000000000
-McastBlockAllVec: 0000000000000000
-McastBlockUntransVec: 0000000000000000
-McastOverlayBAR: OverlaySize 0 (disabled), BaseAddr 0000000000000000
-Capabilities: [1c0 v1] Secondary PCI Express
-LnkCtl3: LnkEquIntrruptEn- PerformEqu-
-LaneErrStat: 0
-Capabilities: [200 v1] Vendor Specific Information: ID=001a Rev=0 Len=000 <?>
-Kernel driver in use: pcieport
-
-NVME:
-
-08:00.0 Non-Volatile memory controller: Silicon Motion, Inc. SM2263EN/SM2263XT (DRAM-less) NVMe SSD Controllers (rev 03) (prog-if 02 [NVM Express])
-Subsystem: Biwin Storage Technology Co., Ltd. Device 2263
-Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-Latency: 0, Cache Line Size: 64 bytes
-Interrupt: pin A routed to IRQ 34
-NUMA node: 0
-IOMMU group: 20
-Region 0: Memory at ee700000 (64-bit, non-prefetchable) [size=16K]
-Capabilities: [40] Power Management version 3
-Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
-Capabilities: [50] MSI: Enable- Count=1/8 Maskable+ 64bit+
-Address: 0000000000000000 Data: 0000
-Masking: 00000000 Pending: 00000000
-Capabilities: [70] Express (v2) Endpoint, MSI 00
-DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s unlimited, L1 unlimited
-ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset+ SlotPowerLimit 0W
-DevCtl: CorrErr- NonFatalErr- FatalErr- UnsupReq-
-RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
-MaxPayload 128 bytes, MaxReadReq 512 bytes
-DevSta: CorrErr+ NonFatalErr- FatalErr- UnsupReq+ AuxPwr+ TransPend-
-LnkCap: Port #0, Speed 8GT/s, Width x4, ASPM L1, Exit Latency L1 <8us
-ClockPM+ Surprise- LLActRep- BwNot- ASPMOptComp+
-LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-LnkSta: Speed 2.5GT/s (downgraded), Width x1 (downgraded)
-TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-DevCap2: Completion Timeout: Range ABCD, TimeoutDis+ NROPrPrP- LTR+
-10BitTagComp- 10BitTagReq- OBFF Not Supported, ExtFmt- EETLPPrefix-
-EmergencyPowerReduction Not Supported, EmergencyPowerReductionInit-
-FRS- TPHComp- ExtTPHComp-
-AtomicOpsCap: 32bit- 64bit- 128bitCAS-
-DevCtl2: Completion Timeout: 50us to 50ms, TimeoutDis- LTR- 10BitTagReq- OBFF Disabled,
-AtomicOpsCtl: ReqEn-
-LnkCap2: Supported Link Speeds: 2.5-8GT/s, Crosslink- Retimer- 2Retimers- DRS-
-LnkCtl2: Target Link Speed: 8GT/s, EnterCompliance- SpeedDis-
-Transmit Margin: Normal Operating Range, EnterModifiedCompliance- ComplianceSOS-
-Compliance Preset/De-emphasis: -6dB de-emphasis, 0dB preshoot
-LnkSta2: Current De-emphasis Level: -3.5dB, EqualizationComplete- EqualizationPhase1-
-EqualizationPhase2- EqualizationPhase3- LinkEqualizationRequest-
-Retimer- 2Retimers- CrosslinkRes: unsupported
-Capabilities: [b0] MSI-X: Enable+ Count=16 Masked-
-Vector table: BAR=0 offset=00002000
-PBA: BAR=0 offset=00002100
-Capabilities: [100 v2] Advanced Error Reporting
-UESta: DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-UEMsk: DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt- UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-CESta: RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
-CEMsk: RxErr- BadTLP- BadDLLP- Rollover- Timeout- AdvNonFatalErr+
-AERCap: First Error Pointer: 00, ECRCGenCap+ ECRCGenEn- ECRCChkCap+ ECRCChkEn-
-MultHdrRecCap- MultHdrRecEn- TLPPfxPres- HdrLogCap-
-HeaderLog: 00000000 00000000 00000000 00000000
-Capabilities: [158 v1] Secondary PCI Express
-LnkCtl3: LnkEquIntrruptEn- PerformEqu-
-LaneErrStat: 0
-Capabilities: [178 v1] Latency Tolerance Reporting
-Max snoop latency: 0ns
-Max no snoop latency: 0ns
-Capabilities: [180 v1] L1 PM Substates
-L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+ ASPM_L1.1+ L1_PM_Substates+
-PortCommonModeRestoreTime=10us PortTPowerOnTime=10us
-L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2- ASPM_L1.1-
-T_CommonMode=0us LTR1.2_Threshold=0ns
-L1SubCtl2: T_PwrOn=10us
-Kernel driver in use: nvme
-Kernel modules: nvme
-
-
-full lspci output:
-https://pastebin.mozilla.org/Kb8Fs5Mj
-
-
-
-
+> diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
+> index 3b735b071a01..351d782f3e96 100644
+> --- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
+> +++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
+> @@ -575,77 +575,75 @@ static void release_attributes_data(void)
+>  /**
+>   * hp_add_other_attributes() - Initialize HP custom attributes not
+>   * reported by BIOS and required to support Secure Platform and Sure
+>   * Start.
+>   *
+>   * @attr_type: Custom HP attribute not reported by BIOS
+>   *
+>   * Initialize all 2 types of attributes: Platform and Sure Start
+>   * object.  Populates each attribute types respective properties
+>   * under sysfs files.
+>   *
+>   * Returns zero(0) if successful. Otherwise, a negative value.
+>   */
+>  static int hp_add_other_attributes(int attr_type)
+>  {
+>  	struct kobject *attr_name_kobj;
+>  	int ret;
+>  	char *attr_name;
+>  
+> -	mutex_lock(&bioscfg_drv.mutex);
+> -
+>  	attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
+> -	if (!attr_name_kobj) {
+> -		ret = -ENOMEM;
+> -		goto err_other_attr_init;
+> -	}
+> +	if (!attr_name_kobj)
+> +		return -ENOMEM;
+> +
+> +	mutex_lock(&bioscfg_drv.mutex);
+>  
+>  	/* Check if attribute type is supported */
+>  	switch (attr_type) {
+>  	case HPWMI_SECURE_PLATFORM_TYPE:
+>  		attr_name_kobj->kset = bioscfg_drv.authentication_dir_kset;
+>  		attr_name = SPM_STR;
+>  		break;
+>  
+>  	case HPWMI_SURE_START_TYPE:
+>  		attr_name_kobj->kset = bioscfg_drv.main_dir_kset;
+>  		attr_name = SURE_START_STR;
+>  		break;
+>  
+>  	default:
+>  		pr_err("Error: Unknown attr_type: %d\n", attr_type);
+>  		ret = -EINVAL;
+>  		goto err_other_attr_init;
+>  	}
+>  
+>  	ret = kobject_init_and_add(attr_name_kobj, &attr_name_ktype,
+>  				   NULL, "%s", attr_name);
+>  	if (ret) {
+>  		pr_err("Error encountered [%d]\n", ret);
+>  		kobject_put(attr_name_kobj);
+>  		goto err_other_attr_init;
+>  	}
+>  
+>  	/* Populate attribute data */
+>  	switch (attr_type) {
+>  	case HPWMI_SECURE_PLATFORM_TYPE:
+>  		ret = hp_populate_secure_platform_data(attr_name_kobj);
+>  		break;
+>  
+>  	case HPWMI_SURE_START_TYPE:
+>  		ret = hp_populate_sure_start_data(attr_name_kobj);
+>  		break;
+>  
+>  	default:
+>  		ret = -EINVAL;
+>  	}
+>  
+>  	if (ret)
+>  		goto err_other_attr_init;
+>  
+>  	mutex_unlock(&bioscfg_drv.mutex);
+>  	return 0;
+>  
+>  err_other_attr_init:
+>  	mutex_unlock(&bioscfg_drv.mutex);
+>  	return ret;
+>  }
+> 
+--8323329-782047625-1699626912=:1596--
