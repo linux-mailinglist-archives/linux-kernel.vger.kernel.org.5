@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2897E80DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B2A7E8000
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345728AbjKJSTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        id S235315AbjKJSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:03:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346212AbjKJSQu (ORCPT
+        with ESMTP id S235709AbjKJSCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:16:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA29ECD;
-        Fri, 10 Nov 2023 02:26:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F3DC433C7;
-        Fri, 10 Nov 2023 10:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699611996;
-        bh=n76Je2umvcSaid71IZlTqqdp2GtgwGMCUH+EilvbftA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cHwKi/IupLycs7qVNViSUZCNF2EdE8w0A3oyLL1gg8pMn7PY2KwYk+96d9QTz6HLj
-         5GN2CRrmBrtBhCIzZ/1hUdFmns1GU0kTyq5Raoh1uDlrZ0BSNQktYp3IQlw3VxHyuZ
-         34ZJDWTFir+mD4B+zblKcUCX105moXRE8YeStOxymxNV6VbBIsp3ZB7X4bHMk4oCZF
-         w6k+xuAysc0P392yIUhrRoItqIOZBSgwAgLObvox1d8RAeYeTAUpd1VVft+rc4S6Ot
-         PHNG1i9rwEi9wBGvjerGpKMmgY9hOe5k/bkwIEzy1r64a40jKa0xKSET61n8K8qYlz
-         yiYwcsMrU+dog==
-Date:   Fri, 10 Nov 2023 19:26:30 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 08/52] perf build: Add feature check for dwarf_getcfi()
-Message-Id: <20231110192630.fd212e5f98049f1cf9cea72f@kernel.org>
-In-Reply-To: <20231110000012.3538610-9-namhyung@kernel.org>
-References: <20231110000012.3538610-1-namhyung@kernel.org>
-        <20231110000012.3538610-9-namhyung@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 13:02:34 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDD428B33
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:29:41 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso16988275ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:29:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1699612181; x=1700216981; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nnpoVDYUjKd3G8MoAHqwJcbkn3YvVxdpV7jnAIYRk30=;
+        b=flxy7wLdaPIV2hoMl2P9zGsGxYIYkEugXlcX2aaDFGT5jxCiwCrJxCzCl2va13k7HM
+         gwfvCKetAA2eRzyniXXK7i/eIcHsBDj2rkHT5EQ5rq2sFbE0xEVh9v0BjVxHG4QTkvQ4
+         9xSsR59t7wmRX0IUaoXyq3lPuWxORkNc8QTr+aiPXFPUAzxf6kCoIgMXm9+ke0NsRrSU
+         ZnGlBji9Xh5g54FtDMITkBmd9YNxi11kxabJ0P/B1P/AHMxIj0iSwhfhkuGXuAmuFqat
+         saRYyNDGcI+Qm+hqBCe2jnRFJUnxxM3bUYVXhdIyAEUBAXe7OAtrox+XhYrTdBBVj9s9
+         llTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699612181; x=1700216981;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nnpoVDYUjKd3G8MoAHqwJcbkn3YvVxdpV7jnAIYRk30=;
+        b=v2rUGdNNnPkqWL6cgMeBqqxMvQIUP50OQBCvBjQbikULa7UhjST0ex+cAJtnqKgbls
+         VnFQFHMEp8x2b4hK4bwed2G1hH4K8ivJfvmShpf4rQPnHHxNfcSCXs5saL9tWbKR9sL1
+         CMF3WwnTW9PAPobvl/drauCqrAes1LYZyfQ96+xPKadWnATnDCHHxV+Fqd2rS820l9is
+         zM4loZZmQp8goITrGV7zouI6bVlO1TvrvtcsV0nMSLZLsxrBNKopfWM+t4KhO/rFDR4d
+         iudnwIjyYdn0OT0k0DdGscoh+PaqoErO20gDftUIJ7ug+DvGEanXHpSPjVXLAOWhHgdw
+         ascg==
+X-Gm-Message-State: AOJu0YzQmaUE8H9qRifKOXjrM3+FwiTjC5S/XxHa6bk83mTpU2p01k+D
+        rDswbK1v6DsfKa0dKd3LmLriCg==
+X-Google-Smtp-Source: AGHT+IGaShgv4q7rmDQV4setP1Ioo5vXHwXEr6plv9+vfdgvqbtUqJnkGbGK9nhBqlaF35N2CKkeDw==
+X-Received: by 2002:a17:902:b284:b0:1cc:2469:f2ff with SMTP id u4-20020a170902b28400b001cc2469f2ffmr7458444plr.9.1699612180724;
+        Fri, 10 Nov 2023 02:29:40 -0800 (PST)
+Received: from [10.54.24.52] ([143.92.118.3])
+        by smtp.gmail.com with ESMTPSA id ba2-20020a170902720200b001cc5d23275csm4983457plb.200.2023.11.10.02.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 02:29:40 -0800 (PST)
+Message-ID: <bc934b85-9371-4758-b595-814b98f9c595@shopee.com>
+Date:   Fri, 10 Nov 2023 18:29:36 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] locking/rwsem: Remove unnessary check in
+ rwsem_down_read_slowpath()
+To:     Tang Yizhou <yizhou.tang@shopee.com>
+Cc:     Waiman Long <longman@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org
+References: <20231108105639.70088-1-haifeng.xu@shopee.com>
+ <6da49b39-653a-1eda-2d21-1f1b50cb14f0@redhat.com>
+ <5086cd5b-a832-4250-9927-4b300d2f611e@shopee.com>
+ <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
+From:   Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Nov 2023 15:59:27 -0800
-Namhyung Kim <namhyung@kernel.org> wrote:
 
-> The dwarf_getcfi() is available on libdw 0.142+.  Instead of just
-> checking the version number, it'd be nice to have a config item to check
-> the feature at build time.
 
-Looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks!
-
+On 2023/11/10 14:54, Tang Yizhou wrote:
+> On Thu, Nov 9, 2023 at 11:17 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
+>>
+>> reader          writer                                  reader
+>>
+>> acquire
+>> release
+>>                 rwsem_write_trylock
+>>                         set RWSEM_WRITER_LOCKED
+>>                                                         rwsem_down_read_slowpath
+>>                         set owner
+>>
+>> If prev lock holder is a reader, when it releases the lock, the owner isn't cleared(CONFIG_DEBUG_RWSEMS isn't enabled).
+>> A writer comes and can set the RWSEM_WRITER_LOCKED bit succsessfully, then a new reader run into slow path, before
+>> the writer set the owner, the new reader will see that both the RWSEM_READER_OWNED bit and RWSEM_WRITER_LOCKED bit are
+>> set.
+>>
 > 
-> Suggested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/build/Makefile.feature            | 1 +
->  tools/build/feature/Makefile            | 4 ++++
->  tools/build/feature/test-dwarf_getcfi.c | 9 +++++++++
->  3 files changed, 14 insertions(+)
->  create mode 100644 tools/build/feature/test-dwarf_getcfi.c
+> For the above example, it won't cause a problem. When the writer
+> successfully sets RWSEM_WRITER_LOCKED, the reader, when reading rcnt
+> through rwsem_down_read_slowpath(), will see that rcnt is 0 and will
+> jump to the queue label.
 > 
-> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> index 934e2777a2db..64df118376df 100644
-> --- a/tools/build/Makefile.feature
-> +++ b/tools/build/Makefile.feature
-> @@ -32,6 +32,7 @@ FEATURE_TESTS_BASIC :=                  \
->          backtrace                       \
->          dwarf                           \
->          dwarf_getlocations              \
-> +        dwarf_getcfi                    \
->          eventfd                         \
->          fortify-source                  \
->          get_current_dir_name            \
-> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> index dad79ede4e0a..37722e509eb9 100644
-> --- a/tools/build/feature/Makefile
-> +++ b/tools/build/feature/Makefile
-> @@ -7,6 +7,7 @@ FILES=                                          \
->           test-bionic.bin                        \
->           test-dwarf.bin                         \
->           test-dwarf_getlocations.bin            \
-> +         test-dwarf_getcfi.bin                  \
->           test-eventfd.bin                       \
->           test-fortify-source.bin                \
->           test-get_current_dir_name.bin          \
-> @@ -154,6 +155,9 @@ endif
->  $(OUTPUT)test-dwarf_getlocations.bin:
->  	$(BUILD) $(DWARFLIBS)
->  
-> +$(OUTPUT)test-dwarf_getcfi.bin:
-> +	$(BUILD) $(DWARFLIBS)
-> +
->  $(OUTPUT)test-libelf-getphdrnum.bin:
->  	$(BUILD) -lelf
->  
-> diff --git a/tools/build/feature/test-dwarf_getcfi.c b/tools/build/feature/test-dwarf_getcfi.c
-> new file mode 100644
-> index 000000000000..50e7d7cb7bdf
-> --- /dev/null
-> +++ b/tools/build/feature/test-dwarf_getcfi.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <stdio.h>
-> +#include <elfutils/libdw.h>
-> +
-> +int main(void)
-> +{
-> +	Dwarf *dwarf = NULL;
-> +	return dwarf_getcfi(dwarf) == NULL;
-> +}
-> -- 
-> 2.42.0.869.gea05f2083d-goog
-> 
-> 
+> Thanks,
+> Tang
 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Yes, so if rcnt > 1, the RWSEM_WRITER_LOCKED bit couldn't be set?
