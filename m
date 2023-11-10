@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA00F7E828F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDB07E80EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346232AbjKJT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S1345484AbjKJSUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236216AbjKJT2Q (ORCPT
+        with ESMTP id S235314AbjKJSRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:16 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E0524C10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:38:04 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5b7fb057153so2017953a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:38:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699609084; x=1700213884;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8e3Mie9vqeABq5CdBOwS6PJBw1upFX7qypx2Dl9hvok=;
-        b=caO4ri/P9MBwYnxcTdQ2R/9sdNiNZec8Vrl5WZsZjQVI6VFuSxYODCnKfv7o8h+ag+
-         R8Wbuj8D7+Uh3UmkLzLy5VPejB8k9ZA5DYOpswIEBZHmToiOEyg5yYbHk2ryUmcnYsKC
-         JJPaJkSVBM6t+EwfS00cdVELekIOT7znE/OLQ34pB4MtNsHcI1BFd2Czi0x2MERY9zo0
-         JZ7BmPDmkb15sGXTr1HaU/3ydXuFDqMsjnPeYeo9pfUBy0Gi1aHxJwF3cAlJyi8NdR5t
-         1pWtpTG+OngFDBhV90VkvGzWiAoZQZ5DYuYoIhGiHQCe8rNXfK047JQ3iyWCFvWlh44d
-         GmDg==
-X-Gm-Message-State: AOJu0YxYYMjy2wIxPa3mKmNUSp4V9wDgivkGOocYfW6Ag9alg5D2cKNE
-        QGe0JCgevWdJTwAT2oSGBi8CQy5yvUdsdq9q/Ydor8m6cLpOn2c=
-X-Google-Smtp-Source: AGHT+IEzpP8yIFetn8tGZtkd1FzegaQBbbwFt2guVI0gceWQp0pthzKi47Dwkea6ppYXgmO61oEo7cd1DD/JtD/kyjryIgbx20zw
+        Fri, 10 Nov 2023 13:17:19 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC0F24C19;
+        Fri, 10 Nov 2023 01:38:20 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AA9cHfh105706;
+        Fri, 10 Nov 2023 03:38:17 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1699609097;
+        bh=e/z4IobkrHCnPhosJZd5RkzB3izt0JqBTe790Ch3USA=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=aXnVgiQswlPad2DphWvUS9KS9ke9OqQuEI4Udip6nKoBg2vMcTxbLxfSYP2/4ovRS
+         osigXOzZ3SfZeJ+xriXo6iBSHesyNsjDDLMJMEnsBg1pE5t1tqmWjsEVyEKpkfa7vZ
+         GGMbvsOGfNDyf/EvHrQGaQBc/eoLCq3MN7rDezKc=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AA9cHsr014520
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 10 Nov 2023 03:38:17 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 10
+ Nov 2023 03:38:16 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 10 Nov 2023 03:38:16 -0600
+Received: from [172.24.227.247] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AA9cDOh027218;
+        Fri, 10 Nov 2023 03:38:14 -0600
+Message-ID: <44f68604-b37d-56d9-6fc1-4c4cc503abd3@ti.com>
+Date:   Fri, 10 Nov 2023 15:08:13 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a65:6448:0:b0:585:6402:41e4 with SMTP id
- s8-20020a656448000000b00585640241e4mr1077680pgv.7.1699609084036; Fri, 10 Nov
- 2023 01:38:04 -0800 (PST)
-Date:   Fri, 10 Nov 2023 01:38:03 -0800
-In-Reply-To: <20231110062620.819348-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b60b4e0609c9131b@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
-From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] MAINTAINERS: net: Update reviewers for TI's Ethernet
+ drivers
+Content-Language: en-US
+To:     Roger Quadros <rogerq@kernel.org>, <netdev@vger.kernel.org>
+CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <s-vadapalli@ti.com>, <nm@ti.com>, <srk@ti.com>,
+        Md Danish Anwar <danishanwar@ti.com>
+References: <20231110084227.2616-1-r-gunasekaran@ti.com>
+ <78cf6806-0bdc-4b81-8d96-51a6f8fb168c@kernel.org>
+From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <78cf6806-0bdc-4b81-8d96-51a6f8fb168c@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Roger,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: lock held when returning to user space in btrfs_ioctl_qgroup_create
+On 11/10/23 2:21 PM, Roger Quadros wrote:
+> Hi Ravi,
+> 
+> On 10/11/2023 10:42, Ravi Gunasekaran wrote:
+>> Grygorii is no longer associated with TI and messages addressed to
+>> him bounce.
+>>
+>> Add Siddharth and myself as reviewers.
+>>
+>> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+>> ---
+>>  MAINTAINERS | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 7b151710e8c5..bd52c33bca02 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -21775,7 +21775,8 @@ F:	Documentation/devicetree/bindings/counter/ti-eqep.yaml
+>>  F:	drivers/counter/ti-eqep.c
+>>  
+>>  TI ETHERNET SWITCH DRIVER (CPSW)
+>> -R:	Grygorii Strashko <grygorii.strashko@ti.com>
+>> +R:	Siddharth Vadapalli <s-vadapalli@ti.com>
+>> +R:	Ravi Gunasekaran <r-gunasekaran@ti.com>
+> 
+> Could you please add me as Reviewer as well. Thanks!
 
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE (0x1)
-BTRFS info (device loop0): clearing compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-BTRFS info (device loop0): checking UUID tree
-================================================
-WARNING: lock held when returning to user space!
-6.6.0-syzkaller-15365-g305230142ae0-dirty #0 Not tainted
-------------------------------------------------
-syz-executor.0/5537 is leaving the kernel with locks still held!
-3 locks held by syz-executor.0/5537:
- #0: ffff88806e8a2608 (sb_internal#2){.+.+}-{0:0}, at: btrfs_ioctl_qgroup_create+0x103/0x200 fs/btrfs/ioctl.c:3802
- #1: ffff888052082390 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0x401/0xce0 fs/btrfs/transaction.c:294
- #2: ffff8880520823b8 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0x401/0xce0 fs/btrfs/transaction.c:294
+Thanks for volunteering to be a reviewer.
+
+I posted a v2 adding you as a reviewer.
+https://lore.kernel.org/all/20231110092749.3618-1-r-gunasekaran@ti.com/
+
+> 
+>>  L:	linux-omap@vger.kernel.org
+>>  L:	netdev@vger.kernel.org
+>>  S:	Maintained
+> 
+>> F:      drivers/net/ethernet/ti/cpsw*
+>> F:      drivers/net/ethernet/ti/davinci*
+> 
+> What about am65-cpsw*?
+> 
+> And drivers/net/ethernet/ti/icssg/*
+
+I would prefer a separate entry for ICSSG. Will let Danish comment on this.
+
+> 
+> I also see 
+> 
+> OMAP GPIO DRIVER
+> M:      Grygorii Strashko <grygorii.strashko@ti.com>
+> 
+> Maybe a separate patch to remove the invalid email-id?
+> 
+Yes, that's the plan. One of us from TI would be posting shortly.
 
 
-Tested on:
-
-commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=17cb5797680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11c9591f680000
-
+-- 
+Regards,
+Ravi
