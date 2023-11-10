@@ -2,231 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1CBC7E84DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0AB7E827E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346492AbjKJU56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        id S1346356AbjKJTVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbjKJU51 (ORCPT
+        with ESMTP id S235095AbjKJTVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:57:27 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5993F9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 00:22:48 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32fd7fc9f19so1027328f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 00:22:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699604567; x=1700209367; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aTIVXLLK4q+pbouuuJtCigGeTWAA7e0+2f78H2x4G6Q=;
-        b=c6UY0Euu8BVdPIZ0cV2PAfO7a3QrXKFSl6is5Zccu+x42EjR7kI/cLEYKQZtRPKwsS
-         nmQKBqzwoQjyROYFffI/38PXFC/tMZHq8X5NwJa56b+uOP6dv4QpKcyBfPa5LzYw4NDY
-         EvlNtmzyj37KsHVskbWcFPqHZQilgpYkLVlI0C/zrfou3aq6FnPnYntmLQRezi746TjH
-         O2tBdzZObvPOMGpT7dB1qNRzEJRmBCzqX7vp2cjH/YHi8gFiEQfEETFxIfTPPBK8Twjr
-         hQmyEUT0faPZ2eIxFwaOHh6AS/Xe4mfHi6Mze7P5INaK4p0UbVBWURfjjajS0I65ygx7
-         yG5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699604567; x=1700209367;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aTIVXLLK4q+pbouuuJtCigGeTWAA7e0+2f78H2x4G6Q=;
-        b=BvIYDH2QuxHfeTiH4ECsbodcHopG8PbcplC+soF6WPQApF2OVdBRQDAc6zXpUpCdnp
-         Ee8Z+mZ2qrWpog3nw0PMUOanA7Dlde2kP4oxExWEG0bgUT2G9a88dHPd24+5NgtEbjZE
-         3bIt8ULPkk15qGLWry+cVqa6H1hTFnXZk4XLlQee7x2zbRMwXdJFzVtEOMJG/WxGNW4y
-         rhND2hVu57BDBoXI3wCydC6B/IrdrGbkHx6yv2N9Tksixp4GlpzCyBTtgCYQy/O1CDlp
-         t34liSbtz7KBN+cvrc8ctyrroksR62OJoecBlwt4Zc2Em11V15q22yctAgT44ouInlqP
-         yinQ==
-X-Gm-Message-State: AOJu0YxiN0OVEvQeWhY9G8mMkySvnkM59Tv/sCDo35ddQCRwtpvbH9Ax
-        hwFsfgwOPWyQ6ATPw6QCVocjtw==
-X-Google-Smtp-Source: AGHT+IEJyqQ6B+o/tdaTdgQvnL6xgowMj5vmNkDs1Cwym+vefMYuKYGkJXo1eeyt8IRz8riAiA7/MQ==
-X-Received: by 2002:a5d:598d:0:b0:32f:811f:5046 with SMTP id n13-20020a5d598d000000b0032f811f5046mr5336044wri.11.1699604567235;
-        Fri, 10 Nov 2023 00:22:47 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id t12-20020a5d49cc000000b0032710f5584fsm1394240wrs.25.2023.11.10.00.22.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 00:22:46 -0800 (PST)
-Message-ID: <eede2e04-45e5-46fb-ba00-fec0a7862711@linaro.org>
-Date:   Fri, 10 Nov 2023 09:22:45 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/3] dt-bindings: input: microchip,cap11xx: add
- advanced sensitivity settings
+        Fri, 10 Nov 2023 14:21:22 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE89EC5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 00:25:45 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GMmG3m8COV8f9YJKnJQwY9LDRPFJtDyI7dXcBZ2FxywP2IgloWX8cShOfy6vDmveKXZrE1nQYeWz4ynkZaV+HVYaZ3i6tP1z9fd5qbeGSeBDp3e1hntfxA8DsBVaudab6ngepF18enalmSqZ0MAowSdP+AgoPlLuqvOFsOD9mfa43af7hQqtqzH+W2h9k46whlTjrS2eAE5O2ysHBLRNK7i1FNzr3rAAixmFfdQuXEkSmV5n2qbZ4YkvIwHT33l4AAEbrja04YzyfOokyPQMfq8tTE0neQfTGlr7XdLd9LSZJU6JSZPp11oiDKTKCRE6TZ+wdCfqFT4KJi5cIWO2bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZCiYDQyGe4rHbWT9wIjpaOWhtBBmZdBt0P6F36xj21M=;
+ b=H9jlIBMKrpIt1UWZ0W6ukB6Zz1op9w2UsCiPla8m9KZQkESg3REzuUw80BSL2Z0lHxIKY9Kbrfc+Krd9HBsKC3PR9fSVopkGcmTCT4Uy3GMF+U5M1dvxfRm6CtN05gB1vD6UPzZtdB6b//i09HCehZbcokZF2kkCmCicsqRPzYLgFMD2FmmEu6pKVPvvGCuvFcp7tFZGgRf+cJB5TXGrQQL1sgSmvYp2o7vODNz0B2x+dvcS28qV0MhvLQYB9O0LiOAwrtYWqgCVpZSEj29OgzNg/GOZE95wa1Yw1j4Tfr3aINN8KE5lGi54A+cIaYmjUvtUpDt5crpbXEkIHAIwpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZCiYDQyGe4rHbWT9wIjpaOWhtBBmZdBt0P6F36xj21M=;
+ b=oJl3xaKrKpc3QmNlq+O4qJQxbUiQ3jZ8pKSGsS51CC8u3Nfp+zkcOaMmNeUfMZ2QPExVulpI/N8A/nx2EDqUbcI/JwEX2V8CmJXBSXupnoiESUi243H1Ir04YTPfuiMnFTFboBKsriEAwVBgjjjvNyb7qceFlACBWQDaCTAdNIQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com (2603:10b6:a03:a6::22)
+ by MN0PR12MB6126.namprd12.prod.outlook.com (2603:10b6:208:3c6::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Fri, 10 Nov
+ 2023 08:25:40 +0000
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::c258:1e94:a85b:1510]) by BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::c258:1e94:a85b:1510%4]) with mapi id 15.20.6977.019; Fri, 10 Nov 2023
+ 08:25:39 +0000
+Message-ID: <6e26746d-5e4a-cc9e-fe5f-20187313fbfe@amd.com>
+Date:   Fri, 10 Nov 2023 13:55:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] drm/amd/pm: make power values signed
 Content-Language: en-US
-To:     Jiri Valek - 2N <jiriv@axis.com>,
-        krzysztof.kozlowski+dt@linaro.org, dmitry.torokhov@gmail.com
-Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        u.kleine-koenig@pengutronix.de
-References: <20231108155647.1812835-1-jiriv@axis.com>
- <20231108155647.1812835-2-jiriv@axis.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231108155647.1812835-2-jiriv@axis.com>
-Content-Type: text/plain; charset=UTF-8
+To:     =?UTF-8?Q?Jos=c3=a9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        evan.quan@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com,
+        skhan@linuxfoundation.org
+Cc:     jdelvare@suse.com, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        daniel@ffwll.ch, airlied@gmail.com, linux@roeck-us.net,
+        linux-kernel-mentees@lists.linux.dev
+References: <20231109084110.4056-1-jose.pekkarinen@foxhound.fi>
+From:   "Lazar, Lijo" <lijo.lazar@amd.com>
+In-Reply-To: <20231109084110.4056-1-jose.pekkarinen@foxhound.fi>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BMXP287CA0005.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::19) To BYAPR12MB4614.namprd12.prod.outlook.com
+ (2603:10b6:a03:a6::22)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4614:EE_|MN0PR12MB6126:EE_
+X-MS-Office365-Filtering-Correlation-Id: e45df5a9-eb37-46dd-4bec-08dbe1c69f23
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8Fm4F4DgqL0zvRXIa177oFSbFh+uPX7zV3nyLy0i2PirnkkSFgiTow9IQNuIU7S1T5LJNPAIAZYKQB+qety4b7xvanQDijefq6avS6sJ1Q7fZn4YTJcDX++sNQa3vt+QHcrjXQ9zatWhS3wGEq4urrSlzLJfr+V9hjM5kNMdPi0PDWaWTXge2xmCQgFbAw1RgOhWWDeAdZmmOKJFNRKK4HR03fAfH4Asgf1zuKbJ9V89bWQDZ+bon6rSrJ3Pigv4yCyC7otngWp/MiD8+sNkMWTSDgJJHmaWbesytuw9FNrabi2ud5sNSDzGfMOe94/MFCQOFC1amQ7lGPQEOPJyvQa4HcwUDBf+aNW5dS74acZVc+dBEWcxoMR3f+EhnFLwjepDbxsLnQJXnUzuROKT6knLCz6WMqkatsq2sdaO3fSAdxQPmVDuQnmRHfewempAt0Vi9wFJv4v6XRE6uC6sdfyl+etWDQfm6O1wZiooajbC1rZ8irFpJnds3lBIEUuUwe09BZVtpoFA6kgKRcyL3cCbLTa7wQtdWxvNkYpUNrGQSDwvcQUW/sMWzqcPzgNduoc9dPZEAai1qdn4ADpUQuV2I7o3eZKDbb1HtRej5LDqwtJWp7BO7YfhCjGIqx6Z46rfiPgY67D6ozxLxxHFKubZaEM56SeFQzoK/gSSiDg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4614.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(396003)(366004)(230922051799003)(230273577357003)(230173577357003)(1800799009)(64100799003)(451199024)(186009)(4326008)(316002)(8676002)(7416002)(478600001)(966005)(8936002)(83380400001)(66946007)(6666004)(6506007)(6512007)(53546011)(2616005)(6486002)(66556008)(66476007)(31686004)(41300700001)(2906002)(26005)(86362001)(31696002)(38100700002)(36756003)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3NWUUNqTTZyUWZ3V3M1dEM2Z01LNC9XT01ENGtpczkweUdzNzV4cFE0OFg0?=
+ =?utf-8?B?b1hQbUZXTzIvTWY2T0J6K0NNNTBpNGc2bmpxTmNsbzhrbG54UEJzc0puQ3RM?=
+ =?utf-8?B?SDZsdjFnZTdGRmlKU1VlNWlkc3FRcEdBaG1aZy93SzRNUjlIRGJENTk1QldY?=
+ =?utf-8?B?UlEyS1VrSDlwWlFnTjVrM0JabU9kTmpKb3hFWGhsVVBnYysxTjV2MjJKQ0x1?=
+ =?utf-8?B?UkhyYUpiWkxFSU9aTjh6WHpBRDJjSTFVMW54Yzg0V2R1RUJTWTFYeU9MTmNx?=
+ =?utf-8?B?dmNDSnhTNUdVa0Y2aytUN0NUREwyZk5CbTdSN1EyTGI0Skl0bzhiYTdiaEZY?=
+ =?utf-8?B?MnQyWkhnVDR0Z2F2d25PMXBXUlpkS1ZWaWR6VlVmNmxranFzRmlyNHdlVWNO?=
+ =?utf-8?B?aERBNlE5VVVSaVBtZzByRzBHL25tS1NlQU05Y0poT29JN2hhVVZNeDE4UFEv?=
+ =?utf-8?B?UDVrWlNxSWF6UUhRSXhES0ZQOWNHZnZaRmpsU1ZjQ1cySitsZzdkeTVadVBL?=
+ =?utf-8?B?TTJ2ZHFWY1YwUy9jUk9LUGp1ZEhJenFiOE1yaEdsS0ppS0pWSGxDVEx2UFVn?=
+ =?utf-8?B?SWlNbVJMeFJ3cnVYWERDMzdjN212VlZzOHA2TmV6bFdQVHlraXdHaVBjanEx?=
+ =?utf-8?B?VDhIeFhUVkJsK1pOSDNBaXJ0U0hzV1JRSUUzRGpkUHRndVZPUmFMTFB4UUM2?=
+ =?utf-8?B?TTdwRkF5YW5reTY5djlZcWYxOEFORUx1U2tqMlpKeFhlR1RuMVBmb2pnVXpR?=
+ =?utf-8?B?dU1lbDNBY2FOZnRLM3pHQzBpRnJSd05wUno1b043ZUJxYUZPNGpINGJ1QURB?=
+ =?utf-8?B?YTU5UkN5S1NNSmU0VmpoOEkxaWs0ajVnRE15UlE0OFlOQm1GVjNGbWQ0Wm9z?=
+ =?utf-8?B?eTlFank0S293THh6bVB0Q1FDRGdsVkFWRXhCK2creFBHaC9INWdya3BQbE42?=
+ =?utf-8?B?THZxQkpsNDFnWGlvZmlzQUoyQ2k3aHJiV2paWFYzVHU1dGtJMWltOWpjTVBI?=
+ =?utf-8?B?eGNtL3RBR2F0NzIwcnNadjdTRDY1dVpKckN4RjkzVmVHc3JzeEdqRHBtQ3RL?=
+ =?utf-8?B?OEtaczR2M0pjTGNLeDJyWnAvQjBhQkhMTkNUWWNhcjcvYUVjak5aYjF6S3Vo?=
+ =?utf-8?B?M3RBV1pUc01lRm54Vi91VkxKd1lRTjN2T0FkVGNuL1dIQ3JMdmMrb0ZtTVFI?=
+ =?utf-8?B?elBsUjc4WWhtODZ0NWV6dGk0MjFIZGdKaVE0elk0a28wKzd1ZGdpZlFZS05Z?=
+ =?utf-8?B?MWJHK0cwNU16UW5ua3BYOEJrRmF4b3hoVGl6QU1zN21yZmoyMmVmS0huazhS?=
+ =?utf-8?B?U2cyUnlwc2R6NkdyYW5lZ1BPUk16SlZZaEpvSnhIc2U3VFExZS90eFp5Y01O?=
+ =?utf-8?B?M2ZEL1VJSDNSTXk2UmZlVFc1NDFMQXRyYmRzalpva1JhRTZYdDVOQVcyMlFy?=
+ =?utf-8?B?T2IzcUtDazZWMEhZaElBY1Fkd29zQU1TeXptbTZDaGgyOHdtTmh6QlRnQkQ1?=
+ =?utf-8?B?bTB0MVNtcU9MdFpGUDRSUkkyNXljMXJQRGplY1ZXMUZzYXkrSlBpYm5RcDNX?=
+ =?utf-8?B?Yi8zeEZiZ1NZOWRyWXBPY1N6UjFPVVErRlpCMW9uSU8zUEFlMkdlQVRPRU9w?=
+ =?utf-8?B?bDdjU0lQRXI0ZFUyNmxNRGQ1eEFmUE96RmNNUDZyZHRCcHZaSkFMbFczMnQz?=
+ =?utf-8?B?UjZqa0JjYmVtbnR6TnRTZWJsWDhZTlk0SlIzTmtwakVWSkhGU0dQOWkvKzkw?=
+ =?utf-8?B?R3RLTm5jTUhZMGJVcGFDOFpsTVBRdVVHUm03WlRVMDBzZlNLQndEc3pyeVVM?=
+ =?utf-8?B?OUNEZEY1UFQ2dlVOY1NzelJDSDg2TUtab3RLbEhSUXpUd1orM3c0NkV3aDFn?=
+ =?utf-8?B?QTZLaUNvdEliZFFMMXNMdWovMUppNnFraVltaTk3RGQ3bHQ4em9RRHBsMGJw?=
+ =?utf-8?B?V3pGeGRnUjVLMnBEc21VZHFWenRrWHY4Um9FU0c5RGVLZERvWGxNNDFZTm1q?=
+ =?utf-8?B?VGFGYXR5N00yUHV4L2RBVjUxbGNaVFVzM2hncm5PNHdCT2pwVnl3VmZvNjM1?=
+ =?utf-8?B?OGh3aGh3eWQ2Wm5rSjBnbG50SUx4djd6c3dxaGtJZXJGalZPbWk3dDBhNjBi?=
+ =?utf-8?Q?g7Uq+cCSkDTGzuzfg07pURi4x?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e45df5a9-eb37-46dd-4bec-08dbe1c69f23
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4614.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 08:25:39.6398
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lzxh9P8mZGMViKlyxT8XpvmMUdw0XUG6d8rmJDwKhDp4Bl3XIjue5eUblWWPjtNy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6126
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/11/2023 16:56, Jiri Valek - 2N wrote:
-> Add support for advanced sensitivity settings and signal guard feature.
+
+
+On 11/9/2023 2:11 PM, José Pekkarinen wrote:
+> The following patch will convert the power values returned by
+> amdgpu_hwmon_get_power to signed, fixing the following warnings reported
+> by coccinelle:
 > 
-> Signed-off-by: Jiri Valek - 2N <jiriv@axis.com>
+> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2801:5-8: WARNING: Unsigned expression compared with zero: val < 0
+> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2814:5-8: WARNING: Unsigned expression compared with zero: val < 0
+> 
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
 > ---
->  .../bindings/input/microchip,cap11xx.yaml     | 76 ++++++++++++++++++-
->  1 file changed, 73 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-> index 5b5d4f7d3482..aa97702c43ef 100644
-> --- a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-> +++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-> @@ -45,13 +45,13 @@ properties:
->        Enables the Linux input system's autorepeat feature on the input device.
->  
->    linux,keycodes:
-> -    minItems: 6
-> -    maxItems: 6
-> +    minItems: 3
-> +    maxItems: 8
->      description: |
->        Specifies an array of numeric keycode values to
->        be used for the channels. If this property is
->        omitted, KEY_A, KEY_B, etc are used as defaults.
-> -      The array must have exactly six entries.
-> +      The number of entries must correspond to the number of channels.
->  
->    microchip,sensor-gain:
->      $ref: /schemas/types.yaml#/definitions/uint32
-> @@ -70,6 +70,55 @@ properties:
->        open drain. This property allows using the active
->        high push-pull output.
->  
-> +  microchip,sensitivity-delta-sense:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 32
-> +    enum: [1, 2, 4, 8, 16, 32, 64, 128]
-> +    description:
-> +      Optional parameter. Controls the sensitivity multiplier of a touch detection.
-> +      At the more sensitive settings, touches are detected for a smaller delta
+> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> index e7bb1d324084..913ff62d5d5e 100644
+> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> @@ -2795,7 +2795,7 @@ static ssize_t amdgpu_hwmon_show_power_avg(struct device *dev,
+>   					   struct device_attribute *attr,
+>   					   char *buf)
+>   {
+> -	unsigned int val;
+> +	int val;
 
-Which values are more sensitive?
+Hi Alex,
 
-> +      capacitance corresponding to a “lighter” touch.
+It's a different code in drm-next.
 
-Looks like you use some non-ASCII characters for ".
+https://gitlab.freedesktop.org/agd5f/linux/-/blob/amd-staging-drm-next/drivers/gpu/drm/amd/pm/amdgpu_pm.c#L2936
 
-> +
-> +  microchip,signal-guard:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 3
-> +    maxItems: 8
-> +    items:
-> +      minimum: 0
-> +      maximum: 1
-> +    description: |
-> +      Optional parameter supported only for CAP129x.
-> +      0 - off
-> +      1 - on
-> +      The signal guard isolates the signal from virtual grounds.
-> +      If enabled then the behavior of the channel is changed to signal guard.
-> +      The number of entries must correspond to the number of channels.
-> +
-> +  microchip,input-treshold:
+Thanks,
+Lijo
 
-typo: threshold
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 3
-> +    maxItems: 8
-> +    items:
-> +      minimum: 0
-> +      maximum: 127
-> +    description:
-> +      Optional parameter. Specifies the delta threshold that is used to
-
-Drop everywhere the "optional parameter". It's redundant. required:
-block tells what is / is not optional.
-
-> +      determine if a touch has been detected.
-
-In what units are the values?
-
-> +      The number of entries must correspond to the number of channels.
-> +
-> +  microchip,calib-sensitivity:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 3
-> +    maxItems: 8
-> +    items:
-> +      minimum: 1
-> +      maximum: 4
-> +    description:
-> +      Optional parameter supported only for CAP129x. Specifies an array of
-> +      numeric values that controls the gain used by the calibration routine to
-> +      enable sensor inputs to be more sensitive for proximity detection.
-
-Gain is usually in dB, isn't it?
-
-> +      The number of entries must correspond to the number of channels.
-> +
->  patternProperties:
->    "^led@[0-7]$":
-
-
-Best regards,
-Krzysztof
-
+>   
+>   	val = amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_AVG_POWER);
+>   
+> @@ -2806,7 +2806,7 @@ static ssize_t amdgpu_hwmon_show_power_input(struct device *dev,
+>   					     struct device_attribute *attr,
+>   					     char *buf)
+>   {
+> -	unsigned int val;
+> +	int val;
+>   
+>   	val = amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_INPUT_POWER);
+>   
