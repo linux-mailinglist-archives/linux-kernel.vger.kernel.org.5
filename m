@@ -2,155 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193937E8320
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C657E824E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236261AbjKJTuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:50:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55362 "EHLO
+        id S236047AbjKJTOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236341AbjKJTto (ORCPT
+        with ESMTP id S236106AbjKJTOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:49:44 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F549760
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:42:18 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc5b705769so21089495ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 10:42:18 -0800 (PST)
+        Fri, 10 Nov 2023 14:14:41 -0500
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1299217530;
+        Fri, 10 Nov 2023 10:46:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699641738; x=1700246538; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DowCvdW0pDIOEX7tuv7ZCgDtza6+DGAzWVpe/6IiP+A=;
-        b=NJvYE+Y+3hmhs9cgT3eBf17m0vk+Rz9eAp0d+MWATX+WCr5UamVSy6n8OgPpuZB3yh
-         xKVEItv0A9JocTQ1rRwaoJwqwfkg22S1xoa5hOeRop3ZAM7MgrSt47cCd8q7+6jZ2ER5
-         E0TJUbl56gGJV139fQquPwjTooDfRO88Alg1cT5aeHmShvyGotom10ZJOl+f0xwnW/Kx
-         R9uoj8Y9ueTDnTWti9ebrbtryjPCzSCtAtTYZvtWkk2UKKY291cV3kM9faGP/xAYkCJN
-         2c7E1wzmJNDARaMqkn2q2vmeC537vxyrE6414ShOhIJxRKy3qv+wUKSfj6JoQ6Wwaiaa
-         CxYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699641738; x=1700246538;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DowCvdW0pDIOEX7tuv7ZCgDtza6+DGAzWVpe/6IiP+A=;
-        b=MVIjTa5b2xGJU909ZfVyjnH1q5Ob3ppO2EF1VCyc2lKxXNxezVP94jGslykH+MFor0
-         FGh7GBKphhvCa7+GfNUWXrd7OaK9IcGhiKHizNep6dyuIsUUNBwmL/NGMACA1jqAKMaW
-         i4g+u6k2hkCBl2apmiiLWtHQXvM1sEYai7f1wia5wnksDbmObUFJSfwy5PQ0mgFCh2Vc
-         GmnQZl0fLi+nhsEuSgkQ0WDM3pbd7Ib2VaKyDy6ZMGynZZKl80PH1enrDikRohp93ieO
-         O1Cg+BET4r7mymoepqxUz/WsSMwAcM/c0AOAEm5hiPEmVttWmHEGYc0CavMzYcMd9H8E
-         /KPQ==
-X-Gm-Message-State: AOJu0Yw6VL5D9+GdA+CGPy+vzGQXmw5cRVzAOt0j+BjR3hR5a4Uki7kv
-        YjcoWGWQlgkBlvnhG4dHoGg=
-X-Google-Smtp-Source: AGHT+IEaHe6OpOyydZLuU/Eb6sIh2hJuHc+75WIRpZyaHbDGrKlsVr40ZUBVLX6h23BIrXqUvDQHQg==
-X-Received: by 2002:a17:902:d484:b0:1c9:bca2:d653 with SMTP id c4-20020a170902d48400b001c9bca2d653mr110956plg.11.1699641737756;
-        Fri, 10 Nov 2023 10:42:17 -0800 (PST)
-Received: from anfanite396-Predator-PH315-51.gateway.iitmandi.ac.in ([14.139.34.151])
-        by smtp.gmail.com with ESMTPSA id y12-20020a170902ed4c00b001b86dd825e7sm5705495plb.108.2023.11.10.10.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 10:42:17 -0800 (PST)
-From:   Dipam Turkar <dipamt1729@gmail.com>
-To:     jani.nikula@linux.intel.com
-Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        tvrtko.ursulin@linux.intel.com, airlied@gmail.com, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Dipam Turkar <dipamt1729@gmail.com>
-Subject: [PATCH v2] Remove custom dumb_map_offset implementations in i915 driver
-Date:   Sat, 11 Nov 2023 00:11:27 +0530
-Message-Id: <20231110184126.712310-1-dipamt1729@gmail.com>
-X-Mailer: git-send-email 2.34.1
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1699642019; x=1731178019;
+  h=mime-version:content-transfer-encoding:date:message-id:
+   cc:from:to:references:in-reply-to:subject;
+  bh=eUUQ7uJNPravSqJNpSE3V121J1GIxRJQS8MdayoT9IE=;
+  b=QqVm33ZW4UoBL9yG0WHc4Md3afUWpUx2fdaNDrZhoWJ9nWYthQUgS2+9
+   z6WAtBPYjwhb9SaX1zV/tvBbzqOr+MZju7dtSClv/vHFSioAo7tAkjDTB
+   pc3XW59UTQq+R4tZA4vQGaqqEEfbT7xLdOEeIxO51ycdlng+SR64og+bR
+   U=;
+X-IronPort-AV: E=Sophos;i="6.03,291,1694736000"; 
+   d="scan'208";a="362160415"
+Subject: Re: [RFC 02/33] KVM: x86: Introduce KVM_CAP_APIC_ID_GROUPS
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 18:46:55 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-26a610d2.us-west-2.amazon.com (Postfix) with ESMTPS id 2D06440E71;
+        Fri, 10 Nov 2023 18:46:54 +0000 (UTC)
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.10.100:14842]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.22.222:2525] with esmtp (Farcaster)
+ id 66695bcb-84df-4eee-8339-5eb6c43ea833; Fri, 10 Nov 2023 18:46:53 +0000 (UTC)
+X-Farcaster-Flow-ID: 66695bcb-84df-4eee-8339-5eb6c43ea833
+Received: from EX19D004EUC001.ant.amazon.com (10.252.51.190) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.79) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 18:46:52 +0000
+Received: from localhost (10.13.235.138) by EX19D004EUC001.ant.amazon.com
+ (10.252.51.190) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 18:46:48 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 10 Nov 2023 18:46:44 +0000
+Message-ID: <CWVCT1QRMRUJ.3TCT5GYO1XMZ9@amazon.com>
+CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <pbonzini@redhat.com>,
+        <vkuznets@redhat.com>, <anelkz@amazon.com>, <graf@amazon.com>,
+        <dwmw@amazon.co.uk>, <jgowans@amazon.com>, <corbert@lwn.net>,
+        <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <decui@microsoft.com>, <x86@kernel.org>,
+        <linux-doc@vger.kernel.org>, Anel Orazgaliyeva <anelkz@amazon.de>
+From:   Nicolas Saenz Julienne <nsaenz@amazon.com>
+To:     Sean Christopherson <seanjc@google.com>
+X-Mailer: aerc 0.15.2-182-g389d89a9362e-dirty
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+ <20231108111806.92604-3-nsaenz@amazon.com> <ZUvJp0XVVA_JrYDW@google.com>
+In-Reply-To: <ZUvJp0XVVA_JrYDW@google.com>
+X-Originating-IP: [10.13.235.138]
+X-ClientProxiedBy: EX19D033UWC004.ant.amazon.com (10.13.139.225) To
+ EX19D004EUC001.ant.amazon.com (10.252.51.190)
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Making i915 use drm_gem_create_mmap_offset() instead of its custom
-implementations for associating GEM object with a fake offset.
+On Wed Nov 8, 2023 at 5:47 PM UTC, Sean Christopherson wrote:
+> On Wed, Nov 08, 2023, Nicolas Saenz Julienne wrote:
+> > From: Anel Orazgaliyeva <anelkz@amazon.de>
+> >
+> > Introduce KVM_CAP_APIC_ID_GROUPS, this capability segments the VM's API=
+C
+> > ids into two. The lower bits, the physical APIC id, represent the part
+> > that's exposed to the guest. The higher bits, which are private to KVM,
+> > groups APICs together. APICs in different groups are isolated from each
+> > other, and IPIs can only be directed at APICs that share the same group
+> > as its source. Furthermore, groups are only relevant to IPIs, anything
+> > incoming from outside the local APIC complex: from the IOAPIC, MSIs, or
+> > PV-IPIs is targeted at the default APIC group, group 0.
+> >
+> > When routing IPIs with physical destinations, KVM will OR the source's
+> > vCPU APIC group with the ICR's destination ID and use that to resolve
+> > the target lAPIC.
+>
+> Is all of the above arbitrary KVM behavior or defined by the TLFS?
 
-Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
----
- drivers/gpu/drm/i915/gem/i915_gem_mman.c | 21 ---------------------
- drivers/gpu/drm/i915/gem/i915_gem_mman.h |  4 ----
- drivers/gpu/drm/i915/i915_driver.c       |  3 ++-
- 3 files changed, 2 insertions(+), 26 deletions(-)
+All this matches VSM's expectations to how interrupts are to be handled.
+But APIC groups is a concept we created with the aim of generalizing the
+behaviour as much as possible.
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-index aa4d842d4c5a..71d621a1f249 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-@@ -771,27 +771,6 @@ __assign_mmap_offset_handle(struct drm_file *file,
- 	return err;
- }
- 
--int
--i915_gem_dumb_mmap_offset(struct drm_file *file,
--			  struct drm_device *dev,
--			  u32 handle,
--			  u64 *offset)
--{
--	struct drm_i915_private *i915 = to_i915(dev);
--	enum i915_mmap_type mmap_type;
--
--	if (HAS_LMEM(to_i915(dev)))
--		mmap_type = I915_MMAP_TYPE_FIXED;
--	else if (pat_enabled())
--		mmap_type = I915_MMAP_TYPE_WC;
--	else if (!i915_ggtt_has_aperture(to_gt(i915)->ggtt))
--		return -ENODEV;
--	else
--		mmap_type = I915_MMAP_TYPE_GTT;
--
--	return __assign_mmap_offset_handle(file, handle, mmap_type, offset);
--}
--
- /**
-  * i915_gem_mmap_offset_ioctl - prepare an object for GTT mmap'ing
-  * @dev: DRM device
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.h b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
-index 196417fd0f5c..253435795caf 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_mman.h
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
-@@ -20,10 +20,6 @@ struct mutex;
- int i915_gem_mmap_gtt_version(void);
- int i915_gem_mmap(struct file *filp, struct vm_area_struct *vma);
- 
--int i915_gem_dumb_mmap_offset(struct drm_file *file_priv,
--			      struct drm_device *dev,
--			      u32 handle, u64 *offset);
--
- void __i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
- void i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
- 
-diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
-index d50347e5773a..48d7e53c49d6 100644
---- a/drivers/gpu/drm/i915/i915_driver.c
-+++ b/drivers/gpu/drm/i915/i915_driver.c
-@@ -42,6 +42,7 @@
- #include <drm/drm_aperture.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_ioctl.h>
-+#include <drm/drm_gem.h>
- #include <drm/drm_managed.h>
- #include <drm/drm_probe_helper.h>
- 
-@@ -1826,7 +1827,7 @@ static const struct drm_driver i915_drm_driver = {
- 	.gem_prime_import = i915_gem_prime_import,
- 
- 	.dumb_create = i915_gem_dumb_create,
--	.dumb_map_offset = i915_gem_dumb_mmap_offset,
-+	.dumb_map_offset = drm_gem_dumb_map_offset,
- 
- 	.ioctls = i915_ioctls,
- 	.num_ioctls = ARRAY_SIZE(i915_ioctls),
--- 
-2.34.1
+> > The APIC physical map is also made group aware in
+> > order to speed up this process. For the sake of simplicity, the logical
+> > map is not built while KVM_CAP_APIC_ID_GROUPS is in use and we defer IP=
+I
+> > routing to the slower per-vCPU scan method.
+>
+> Why?  I mean, I kinda sorta understand what it does for VSM, but it's not=
+ at all
+> obvious why this information needs to be shoved into the APIC IDs.  E.g. =
+why not
+> have an explicit group_id and then maintain separate optimization maps fo=
+r each?
 
+There are three tricks to APIC groups. One is IPI routing: for ex. the
+ICR phyical destination is mixed with the source vCPU's APIC group to
+find the destination vCPU. Another is presenting a coherent APIC ID
+across VTLs; switching VTLs shouldn't change the guest's view of the
+APIC ID. And ultimately keeps track of the vCPU's VTL level. I don't wee
+why we couldn't decouple them, as long as we keep filtering the APIC ID
+before it reaches the guest.
+
+> > This capability serves as a building block to implement virtualisation
+> > based security features like Hyper-V's Virtual Secure Mode (VSM). VSM
+> > introduces a para-virtualised switch that allows for guest CPUs to jump
+> > into a different execution context, this switches into a different CPU
+> > state, lAPIC state, and memory protections. We model this in KVM by
+>
+> Who is "we"?  As a general rule, avoid pronouns.  "we" and "us" in partic=
+ular
+> should never show up in a changelog.  I genuinely don't know if "we" mean=
+s
+> userspace or KVM, and the distinction matters because it clarifies whethe=
+r or
+> not KVM is actively involved in the modeling versus KVM being little more=
+ than a
+> dumb pipe to provide the plumbing.
+
+Sorry, I've been actively trying to avoid pronouns as you already
+mentioned it on a previous review. This one made it through the cracks.
+
+> > using distinct kvm_vcpus for each context.
+> >
+> > Moreover, execution contexts are hierarchical and its APICs are meant t=
+o
+> > remain functional even when the context isn't 'scheduled in'.
+>
+> Please explain the relationship and rules of execution contexts.  E.g. ar=
+e
+> execution contexts the same thing as VTLs?  Do all "real" vCPUs belong to=
+ every
+> execution context?  If so, is that a requirement?
+
+I left a note about this in my reply to your questions in the cover
+letter.
+
+> > For example, we have to keep track of
+> > timers' expirations, and interrupt execution of lesser priority context=
+s
+> > when relevant. Hence the need to alias physical APIC ids, while keeping
+> > the ability to target specific execution contexts.
+> >
+> > Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
+> > Co-developed-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> > ---
+>
+>
+> > diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> > index e1021517cf04..542bd208e52b 100644
+> > --- a/arch/x86/kvm/lapic.h
+> > +++ b/arch/x86/kvm/lapic.h
+> > @@ -97,6 +97,8 @@ void kvm_lapic_set_tpr(struct kvm_vcpu *vcpu, unsigne=
+d long cr8);
+> >  void kvm_lapic_set_eoi(struct kvm_vcpu *vcpu);
+> >  void kvm_lapic_set_base(struct kvm_vcpu *vcpu, u64 value);
+> >  u64 kvm_lapic_get_base(struct kvm_vcpu *vcpu);
+> > +int kvm_vm_ioctl_set_apic_id_groups(struct kvm *kvm,
+> > +                                 struct kvm_apic_id_groups *groups);
+> >  void kvm_recalculate_apic_map(struct kvm *kvm);
+> >  void kvm_apic_set_version(struct kvm_vcpu *vcpu);
+> >  void kvm_apic_after_set_mcg_cap(struct kvm_vcpu *vcpu);
+> > @@ -277,4 +279,35 @@ static inline u8 kvm_xapic_id(struct kvm_lapic *ap=
+ic)
+> >       return kvm_lapic_get_reg(apic, APIC_ID) >> 24;
+> >  }
+> >
+> > +static inline u32 kvm_apic_id(struct kvm_vcpu *vcpu)
+> > +{
+> > +     return vcpu->vcpu_id & ~vcpu->kvm->arch.apic_id_group_mask;
+>
+> This is *extremely* misleading.  KVM forces the x2APIC ID to match vcpu_i=
+d, but
+> in xAPIC mode the ID is fully writable.
+
+Yes, although I'm under the impression that no sane OS will do so. We
+can decouple the group from the APIC ID, but it still needs to be masked
+before presenting it to the guest. So I guess we'll have to deal with
+the eventuality of apic id writing one way or anoter (a warn only if VSM
+is enabled?).
+
+If we decide the APIC group uAPI is not worth it, we can always create
+an ad-hoc VSM one that explicitly sets the kvm_vcpu's VTL. Then route
+the VTL internally into the APIC which can use still groups (or a
+similar concept).
+
+Nicolas
