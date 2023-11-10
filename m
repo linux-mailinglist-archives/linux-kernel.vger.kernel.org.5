@@ -2,195 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8D27E77C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BA97E77C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345744AbjKJCwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 21:52:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S1345770AbjKJCxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 21:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKJCwN (ORCPT
+        with ESMTP id S229491AbjKJCxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 21:52:13 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FA52D64;
-        Thu,  9 Nov 2023 18:52:11 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1cc9b626a96so13155015ad.2;
-        Thu, 09 Nov 2023 18:52:11 -0800 (PST)
+        Thu, 9 Nov 2023 21:53:05 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6B02D64
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 18:53:03 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1706078276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 18:53:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699584731; x=1700189531; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=McT5MARLcUfJTGIDkAnx307QFnzMb994razTYXqedEA=;
-        b=a6O8i49TKIdn8Ik/FriyfSui7GBAoZQ90o1rI+R3g5+5069tQVk9UozrcIf4IJBQ7H
-         ppn3an3MKO8jrHHYo0lndsKyRLITRFqDyusN5t6RHKdgypes2bW6mdJyjTu8EHfjHzHG
-         x0miT+VekGBGMLmM1KcTmIOlTep0dF7cJ57MYyz/H7eqO1KkAIXxyhb63ym9vKpfC56U
-         d8LClqzE5p4+f3ZX3R40bQEh8Qu9AGfymiI7n65lCSiqesvSL/ujlHDI57mD4Mlwc2Oh
-         9tns0FvusVTlHOGD5gOvYESMY0XaFOseBUJlKs/JA8OwcjKKNq7vEBFqVpMgMvejuTXE
-         OhRw==
+        d=gmail.com; s=20230601; t=1699584782; x=1700189582; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LC0qRE5vEsKhfXvzBgzTdkiRaPsJ7E2Ot3UUajxveCQ=;
+        b=NuY4o2TvwtXLXsK9YqqrhDdJRGjj6VxDYvQHX26Evxfi5gyhxupvoK6P0TMyEHmC+Y
+         PaU0Ou1/wpdruD/C7Eq8YP5TiEobI/hy7S8d4SfNeWy3Lvk0JDKG1f6ZlVB51tEWKolE
+         agWx52BlHH2MJZOGjxbehj6sNAFHiM8cTTV8ZASM+AxoyrqNJenEAp8v9bwjhmhGWGNS
+         B4UoB7VPYYEhPOUJsD5yZBmNClmwlFgpbKYg7cSNKCDU/zSdWV/KZh2KP7ERmyAjfhUA
+         Hz0k552RwHjA0hxYzRnKVyLmwzoHhAunUDqFP2KVi0aKkyMTxpTlSLqbmVF3IqGImmC5
+         IxWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699584731; x=1700189531;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=McT5MARLcUfJTGIDkAnx307QFnzMb994razTYXqedEA=;
-        b=M07Db0SkEZGKvfoMEwM+ykZ+udL9LFoYnB3Cct5THrI5DI6hVLXyauGzOcYVrnC026
-         HXd/93rHcv9BHPnTC9T8lVBEWNWTrXg00zeDiaMTgnkyQYl5QujGqn3XDDoH0iCgW/wj
-         DjsokIDyHIlhvRulRSPyrvbOAD2TqwDLgzxiMvOVprTS2xM+1uy1JswfVN3o5CtZld2Z
-         AUt/YCqYmGp/ktJHQQhsr+v8BunJ2a/85BS9RlpdQd2Rxa0iala1cRE6SnsjQdDpeb/T
-         42SZnKqtgprNFx3fVaTl3HLCKUjLaAfP36joVPRxbcv0Hoo2BXYD/aa3mFa99iuF5pQV
-         24Qw==
-X-Gm-Message-State: AOJu0Yz8YZ0rjij6WGplbHnG3+krBdjYn4LUtL66h8va83S1yQrxHyqM
-        3yZAuyayPiSilmSCwzSXje8=
-X-Google-Smtp-Source: AGHT+IHMYN2ug885QMW0coGWX3rSUklCD/0HrKYb5OibqsywQRjREhgKyD+fuQK28pn0mpk8ryzOcw==
-X-Received: by 2002:a17:903:2341:b0:1cc:449b:41e3 with SMTP id c1-20020a170903234100b001cc449b41e3mr7154489plh.59.1699584730846;
-        Thu, 09 Nov 2023 18:52:10 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id a13-20020a170902b58d00b001bf6ea340b3sm4202241pls.116.2023.11.09.18.52.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 18:52:10 -0800 (PST)
-Message-ID: <23b71d3f-af12-5ec0-e23c-40b478d2ae9b@gmail.com>
-Date:   Fri, 10 Nov 2023 10:52:04 +0800
+        d=1e100.net; s=20230601; t=1699584782; x=1700189582;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LC0qRE5vEsKhfXvzBgzTdkiRaPsJ7E2Ot3UUajxveCQ=;
+        b=e+jEvSG6kUuy12rzRc2QqzkkbnCAooDRoeNeF49jJMKa4/9E6Nth1eo29DK/yGMRpi
+         yS11z7jdQpX9F+siQpiSTBw4sYtZGPdW1s78Ei6yUu7sqKUD838eYgOLy7cIJaI0bQcr
+         rAkEoanujy0y4LEPsC4KE4PmM4L1wEFEJUMj8Qrk/E8QAgkPzphAwjRUT6JK1Mu9n+FR
+         C7hCiopNh4NVbDtxW0Dr/ssqHvf+lcCP4ovu9jJNuhshH6bLW+WZj8G3eLCq5nrhrpgb
+         uo2GciYs1b+MZTku5m7DZZiJ4x/jl5LpzT1IBklYMN2tCHkhBe9q0O83nCVWtC53tlpW
+         SXKQ==
+X-Gm-Message-State: AOJu0Ywt4WE8avr3Fg4/Fz6De60wTTF4Vy9ev9Y9aYAXsb/k2XbQyuwz
+        2v+DOBZuMaUgfHo+Y6fC43fk1nbrrCa0dRON5Eg=
+X-Google-Smtp-Source: AGHT+IEWj83E6jgTyrXKcFnY2oOh7XD9fkfcOfX5Q8c/pUdNIxqtaHoQ0qMJ+knj8A/qxdqHJkDrLOrGRJMWTF23Lsg=
+X-Received: by 2002:a25:e008:0:b0:da0:c49a:5fdf with SMTP id
+ x8-20020a25e008000000b00da0c49a5fdfmr6812611ybg.7.1699584782168; Thu, 09 Nov
+ 2023 18:53:02 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [PATCH v8 00/26] KVM: x86/pmu: selftests: Fixes and new tests
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Jinrong Liang <ljr.kernel@gmail.com>
-References: <20231110021306.1269082-1-seanjc@google.com>
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-In-Reply-To: <20231110021306.1269082-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7108:6088:b0:351:e790:f457 with HTTP; Thu, 9 Nov 2023
+ 18:53:01 -0800 (PST)
+Reply-To: westerunionbankoffce@gmail.com
+From:   Office Director <officedirectorwutg@gmail.com>
+Date:   Fri, 10 Nov 2023 02:53:01 +0000
+Message-ID: <CAE1A5qkvc5FFyGH0OTSVALaXcmWBixpH-aFxbNquO=BVt2D23w@mail.gmail.com>
+Subject: w
+To:     officedirectorwutg@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/11/10 10:12, Sean Christopherson 写道:
-> Another round, another new pile of fixes and tests.  My apologies for
-> sending so many versions of this thing, I thought v7 was going to be the
-> last one.  *sigh*
-> 
-> Fix bugs where KVM incorrectly refuses to virtualize fixed counters and
-> events whose encodings match unsupported arch events, and add a PMU
-> counters selftest to verify the behavior.
-> 
-> As an aside, my hope is that in the long term, we can build out the PMU
-> selftests and deprecate the PMU tests in KUT so that we have everything
-> in-kernel and in one spot.
+--=20
 
-I am currently working on enhancing the PMU selftests to achieve this goal.
 
-> 
-> v8:
->   - Collect reviews. [Jim, Dapeng, Kan]
->   - Tweak names for the RDPMC flags in the selftests #defines.
->   - Get the event selectors used to virtualize fixed straight from perf
->     instead of hardcoding the (wrong) selectors in KVM. [Kan]
->   - Rename an "eventsel" field to "event" for a patch that gets blasted
->     away in the end anyways. [Jim]
->   - Add patches to fix RDPMC emulation and to test the behavior on Intel.
->     I spot tested on AMD and spent ~30 minutes trying to squeeze in the
->     bare minimum AMD support, but the PMU implementations between Intel
->     and AMD are juuuust different enough to make adding AMD support non-
->     trivial, and this series is already way too big.
+ Hell=C3=B3
 
-I'm working on selftests for AMD PMU counters. Can I post a separate 
-AMD PMU counters selftests patchset after this patchset is merged?
+T=C3=A1j=C3=A9koztatjuk =C3=96nt, hogy korm=C3=A1nyunk IMF, aki megtal=C3=
+=A1lta az =C3=96n e-mail
+c=C3=ADm=C3=A9t a csal=C3=A1s =C3=A1ldozatainak list=C3=A1j=C3=A1n, =C3=A9s=
+ k=C3=A1rtalan=C3=ADtja az alapj=C3=A1t. Ha
+val=C3=B3ban meg akarja kapni? T=C3=A1j=C3=A9koztasson minket, hogy tov=C3=
+=A1bbi
+r=C3=A9szleteket k=C3=B6z=C3=B6lj=C3=BCnk alapj=C3=A1val kapcsolatban
 
-Thanks，
 
-Jinrong
+.V=C3=A1rom, hogy hamarosan hallunk
 
->   
-> v7:
->   - https://lore.kernel.org/all/20231108003135.546002-1-seanjc@google.com
->   - Drop patches that unnecessarily sanitized supported CPUID. [Jim]
->   - Purge the array of architectural event encodings. [Jim, Dapeng]
->   - Clean up pmu.h to remove useless macros, and make it easier to use the
->     new macros. [Jim]
->   - Port more of pmu_event_filter_test.c to pmu.h macros. [Jim, Jinrong]
->   - Clean up test comments and error messages. [Jim]
->   - Sanity check the value provided to vcpu_set_cpuid_property(). [Jim]
-> 
-> v6:
->   - https://lore.kernel.org/all/20231104000239.367005-1-seanjc@google.com
->   - Test LLC references/misses with CFLUSH{OPT}. [Jim]
->   - Make the tests play nice without PERF_CAPABILITIES. [Mingwei]
->   - Don't squash eventsels that happen to match an unsupported arch event. [Kan]
->   - Test PMC counters with forced emulation (don't ask how long it took me to
->     figure out how to read integer module params).
-> 
-> v5: https://lore.kernel.org/all/20231024002633.2540714-1-seanjc@google.com
-> v4: https://lore.kernel.org/all/20230911114347.85882-1-cloudliang@tencent.com
-> v3: https://lore.kernel.org/kvm/20230814115108.45741-1-cloudliang@tencent.com
-> 
-> Jinrong Liang (7):
->    KVM: selftests: Add vcpu_set_cpuid_property() to set properties
->    KVM: selftests: Add pmu.h and lib/pmu.c for common PMU assets
->    KVM: selftests: Test Intel PMU architectural events on gp counters
->    KVM: selftests: Test Intel PMU architectural events on fixed counters
->    KVM: selftests: Test consistency of CPUID with num of gp counters
->    KVM: selftests: Test consistency of CPUID with num of fixed counters
->    KVM: selftests: Add functional test for Intel's fixed PMU counters
-> 
-> Sean Christopherson (19):
->    KVM: x86/pmu: Always treat Fixed counters as available when supported
->    KVM: x86/pmu: Allow programming events that match unsupported arch
->      events
->    KVM: x86/pmu: Remove KVM's enumeration of Intel's architectural
->      encodings
->    KVM: x86/pmu: Setup fixed counters' eventsel during PMU initialization
->    KVM: x86/pmu: Get eventsel for fixed counters from perf
->    KVM: x86/pmu: Don't ignore bits 31:30 for RDPMC index on AMD
->    KVM: x86/pmu: Apply "fast" RDPMC only to Intel PMUs
->    KVM: x86/pmu: Disallow "fast" RDPMC for architectural Intel PMUs
->    KVM: selftests: Drop the "name" param from KVM_X86_PMU_FEATURE()
->    KVM: selftests: Extend {kvm,this}_pmu_has() to support fixed counters
->    KVM: selftests: Expand PMU counters test to verify LLC events
->    KVM: selftests: Add a helper to query if the PMU module param is
->      enabled
->    KVM: selftests: Add helpers to read integer module params
->    KVM: selftests: Query module param to detect FEP in MSR filtering test
->    KVM: selftests: Move KVM_FEP macro into common library header
->    KVM: selftests: Test PMC virtualization with forced emulation
->    KVM: selftests: Add a forced emulation variation of KVM_ASM_SAFE()
->    KVM: selftests: Add helpers for safe and safe+forced RDMSR, RDPMC, and
->      XGETBV
->    KVM: selftests: Extend PMU counters test to validate RDPMC after WRMSR
-> 
->   arch/x86/include/asm/kvm-x86-pmu-ops.h        |   1 -
->   arch/x86/kvm/pmu.c                            |   4 +-
->   arch/x86/kvm/pmu.h                            |   1 -
->   arch/x86/kvm/svm/pmu.c                        |  10 +-
->   arch/x86/kvm/vmx/pmu_intel.c                  | 133 ++--
->   tools/testing/selftests/kvm/Makefile          |   2 +
->   .../selftests/kvm/include/kvm_util_base.h     |   4 +
->   tools/testing/selftests/kvm/include/pmu.h     |  97 +++
->   .../selftests/kvm/include/x86_64/processor.h  | 148 ++++-
->   tools/testing/selftests/kvm/lib/kvm_util.c    |  62 +-
->   tools/testing/selftests/kvm/lib/pmu.c         |  31 +
->   .../selftests/kvm/lib/x86_64/processor.c      |  15 +-
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 607 ++++++++++++++++++
->   .../kvm/x86_64/pmu_event_filter_test.c        | 143 ++---
->   .../smaller_maxphyaddr_emulation_test.c       |   2 +-
->   .../kvm/x86_64/userspace_msr_exit_test.c      |  29 +-
->   .../selftests/kvm/x86_64/vmx_pmu_caps_test.c  |   2 +-
->   17 files changed, 1035 insertions(+), 256 deletions(-)
->   create mode 100644 tools/testing/selftests/kvm/include/pmu.h
->   create mode 100644 tools/testing/selftests/kvm/lib/pmu.c
->   create mode 100644 tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> 
-> 
-> base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
-> 
-
+Szeretettel.
+Tony Albert
+Iroda igazgat=C3=B3ja
