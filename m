@@ -2,1390 +2,601 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EA97E82EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C1C7E7FE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346103AbjKJTj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:39:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        id S235676AbjKJSAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbjKJTjm (ORCPT
+        with ESMTP id S235686AbjKJR7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:39:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84CFA27C;
-        Fri, 10 Nov 2023 00:54:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC4CC433C7;
-        Fri, 10 Nov 2023 08:54:13 +0000 (UTC)
-Message-ID: <d6d63b37-d793-4858-8043-d6a9d362cfd8@xs4all.nl>
-Date:   Fri, 10 Nov 2023 09:54:13 +0100
+        Fri, 10 Nov 2023 12:59:46 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB4DAF96
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:05:39 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507c5249d55so2535129e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699607137; x=1700211937; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m94eBI6bYBpkxdqoKn9i809EPBzgPCcT6b/n5iRJ8W0=;
+        b=CwsfA5z/ei/zVZ0r2To+bFlqxo4ZtHhnkG0PLmko260j+KwiqvgWwp6xrOGYwmazUy
+         daxXilQ/CPYZPKY06DbvmsirS/SWTrmtQNkyb4lbojtJ/QGXPlgHQmrNnR28JSgl6oLh
+         fNTRjNU9ETcewYshtPlhZLOpqapGuo9c5HXhw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699607137; x=1700211937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m94eBI6bYBpkxdqoKn9i809EPBzgPCcT6b/n5iRJ8W0=;
+        b=ogSVmwKNnISvLgmNJBbOu35Mw9aY593LrdhX7bgXUWUqCUYg0ggpRzWj/JeD0WKC/D
+         wKFCPczVd7zKgWnrfFJiLMv+zLPcBv9/HwY8sS8Lv+Q963jhokg42spXd00RsQAYtzvx
+         4wCRERnUPNif9TKQZWy2JLngVq9y0xiIuZniHySq8tWdeUIFa4v9RWzFQbLRF5K9Ypy9
+         d6ghkBU/ij8Ucby/DFPIEiGBaKAv2Ki46fnnWrQkG2ptYh9Gw+t5u82++EyQ6GCiVOQE
+         KtrLoR4oavobnXdYt5/G6Futaj2h/FPoVsu819hyjTBb+VAEDku0tlu/CVxMLFRX+GDR
+         oABQ==
+X-Gm-Message-State: AOJu0YwokOcUOXGyozG2/8l5U3+SuO36igaaIwCvDDkTs2FP6rTgXtzS
+        z9nINmfobLgt3Cb+wuND6jEblyTAQ7nE12IUMJSTBg25
+X-Google-Smtp-Source: AGHT+IHdVLZ46/Hm66mDoXEqycJ7T9V1AIh0s/R1N7E6PQFBX3yezWEdcAdsHXE1o+BelLLlOZHjKg==
+X-Received: by 2002:ac2:410a:0:b0:509:8e86:909e with SMTP id b10-20020ac2410a000000b005098e86909emr3400950lfi.43.1699607136964;
+        Fri, 10 Nov 2023 01:05:36 -0800 (PST)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id y25-20020a0565123f1900b00501ce0cacb6sm1312928lfa.188.2023.11.10.01.05.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 01:05:36 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2c59a4dd14cso22524181fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:05:36 -0800 (PST)
+X-Received: by 2002:a5d:6c63:0:b0:32d:9fdc:a136 with SMTP id
+ r3-20020a5d6c63000000b0032d9fdca136mr5837194wrz.11.1699606707000; Fri, 10 Nov
+ 2023 00:58:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 14/15] media: imx-asrc: Add memory to memory driver
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-15-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1699595289-25773-15-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-55-benjamin.gaignard@collabora.com>
+ <20231109093045.ucitckitlgjj3kyw@chromium.org> <18ee19cc-e97b-4a5a-af7d-1e1bf7c91bc0@collabora.com>
+In-Reply-To: <18ee19cc-e97b-4a5a-af7d-1e1bf7c91bc0@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 10 Nov 2023 17:58:06 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5CSNbOsefMca-CXCSWrXy+3TqVRMZsUanJqJ7Mp4AK-2g@mail.gmail.com>
+Message-ID: <CAAFQd5CSNbOsefMca-CXCSWrXy+3TqVRMZsUanJqJ7Mp4AK-2g@mail.gmail.com>
+Subject: Re: [PATCH v14 54/56] media: v4l2: Add DELETE_BUFS ioctl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
+        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
+        gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+        nicolas.dufresne@collabora.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2023 06:48, Shengjiu Wang wrote:
-> Implement the ASRC memory to memory function using
-> the v4l2 framework, user can use this function with
-> v4l2 ioctl interface.
-> 
-> User send the output and capture buffer to driver and
-> driver store the converted data to the capture buffer.
-> 
-> This feature can be shared by ASRC and EASRC drivers
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  drivers/media/platform/nxp/Kconfig    |   14 +
->  drivers/media/platform/nxp/Makefile   |    1 +
->  drivers/media/platform/nxp/imx-asrc.c | 1235 +++++++++++++++++++++++++
->  3 files changed, 1250 insertions(+)
->  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> 
-> diff --git a/drivers/media/platform/nxp/Kconfig b/drivers/media/platform/nxp/Kconfig
-> index 40e3436669e2..6d55977977d6 100644
-> --- a/drivers/media/platform/nxp/Kconfig
-> +++ b/drivers/media/platform/nxp/Kconfig
-> @@ -67,3 +67,17 @@ config VIDEO_MX2_EMMAPRP
->  
->  source "drivers/media/platform/nxp/dw100/Kconfig"
->  source "drivers/media/platform/nxp/imx-jpeg/Kconfig"
-> +
-> +config VIDEO_IMX_ASRC
-> +	tristate "NXP i.MX ASRC M2M support"
-> +	depends on V4L_MEM2MEM_DRIVERS
-> +	depends on MEDIA_SUPPORT
-> +	select VIDEOBUF2_DMA_CONTIG
-> +	select V4L2_MEM2MEM_DEV
-> +	select MEDIA_CONTROLLER
-> +	select MEDIA_CONTROLLER_REQUEST_API
+On Thu, Nov 9, 2023 at 7:10=E2=80=AFPM Benjamin Gaignard
+<benjamin.gaignard@collabora.com> wrote:
+>
+>
+> Le 09/11/2023 =C3=A0 10:30, Tomasz Figa a =C3=A9crit :
+> > On Tue, Oct 31, 2023 at 05:31:02PM +0100, Benjamin Gaignard wrote:
+> >> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
+> >> The number of buffers to delete in given by count field of
+> >> struct v4l2_delete_buffers and the range start at the index
+> >> specified in the same structure.
+> >>
+> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> >> ---
+> >>   .../userspace-api/media/v4l/user-func.rst     |  1 +
+> >>   .../media/v4l/vidioc-delete-bufs.rst          | 80 +++++++++++++++++=
+++
+> >>   .../media/v4l/vidioc-reqbufs.rst              |  1 +
+> >>   .../media/common/videobuf2/videobuf2-core.c   | 30 +++++++
+> >>   .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++
+> >>   drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+> >>   drivers/media/v4l2-core/v4l2-ioctl.c          | 17 ++++
+> >>   include/media/v4l2-ioctl.h                    |  4 +
+> >>   include/media/videobuf2-core.h                | 12 +++
+> >>   include/media/videobuf2-v4l2.h                | 13 +++
+> >>   include/uapi/linux/videodev2.h                | 17 ++++
+> >>   11 files changed, 196 insertions(+)
+> >>   create mode 100644 Documentation/userspace-api/media/v4l/vidioc-dele=
+te-bufs.rst
+> >>
+> >> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Doc=
+umentation/userspace-api/media/v4l/user-func.rst
+> >> index 15ff0bf7bbe6..3fd567695477 100644
+> >> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+> >> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+> >> @@ -17,6 +17,7 @@ Function Reference
+> >>       vidioc-dbg-g-chip-info
+> >>       vidioc-dbg-g-register
+> >>       vidioc-decoder-cmd
+> >> +    vidioc-delete-bufs
+> >>       vidioc-dqevent
+> >>       vidioc-dv-timings-cap
+> >>       vidioc-encoder-cmd
+> >> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.=
+rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> >> new file mode 100644
+> >> index 000000000000..4791df1395d6
+> >> --- /dev/null
+> >> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> >> @@ -0,0 +1,80 @@
+> >> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> >> +.. c:namespace:: V4L
+> >> +
+> >> +.. _VIDIOC_DELETE_BUFS:
+> >> +
+> >> +************************
+> >> +ioctl VIDIOC_DELETE_BUFS
+> >> +************************
+> >> +
+> >> +Name
+> >> +=3D=3D=3D=3D
+> >> +
+> >> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
+> >> +Drivers using this feature must expose the ``V4L2_BUF_CAP_SUPPORTS_DE=
+LETE_BUFS``
+> >> +capability on the queue :c:func:`VIDIOC_REQBUFS` or :c:func:`VIDIOC_C=
+REATE_BUFS`
+> >> +are invoked.
+> >> +
+> >> +Synopsis
+> >> +=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +
+> >> +.. c:macro:: VIDIOC_DELETE_BUFs
+> >> +
+> >> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *a=
+rgp)``
+> >> +
+> >> +Arguments
+> >> +=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +
+> >> +``fd``
+> >> +    File descriptor returned by :c:func:`open()`.
+> >> +
+> >> +``argp``
+> >> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
+> >> +
+> >> +Description
+> >> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +
+> >> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl =
+to
+> >> +delete buffers from a queue.
+> >> +
+> >> +.. c:type:: v4l2_delete_buffers
+> >> +
+> >> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+> >> +
+> >> +.. flat-table:: struct v4l2_delete_buffers
+> >> +    :header-rows:  0
+> >> +    :stub-columns: 0
+> >> +    :widths:       1 1 2
+> >> +
+> >> +    * - __u32
+> >> +      - ``index``
+> >> +      - The starting buffer index to delete.
+> >> +    * - __u32
+> >> +      - ``count``
+> >> +      - The number of buffers to be deleted with indices 'index' unti=
+l 'index + count - 1'.
+> >> +        All buffers in this range must be valid and in DEQUEUED state=
+.
+> > I wonder if this wouldn't be an inconvenience for the userspace. Would
+> > there be anything wrong with allowing ranges with holes?
+> > (Agreed about the DEQUEUED part of course.)
+>
+> For me a range as to be valid but the matter of taste.
+>
 
-Just drop this, it is not needed as this driver doesn't use the Request API.
-In fact, I just posted a patch dropping this kernel config option completely.
+@Hans Verkuil do you have an opinion?
+I could imagine that applications may want to just delete multiple
+disjoint ranges in one ioctl, which wouldn't be possible if we
+prohibit holes in the ranges.
 
-Same for the next patch.
+> >
+> >> +        In error case errno is set to ``EINVAL`` error code and index=
+ returns the index of
+> >> +        the invalid buffer.
+> >> +        If count and index are set to 0 :ref:`VIDIOC_DELETE_BUFS` wil=
+l return 0.
+> > Hmm, do we care about index if count is zero?
+>
+> No we don't I will change that.
+>
+> >
+> >> +    * - __u32
+> >> +      - ``type``
+> >> +      - Type of the stream or buffers, this is the same as the struct
+> >> +    :c:type:`v4l2_format` ``type`` field. See
+> >> +    :c:type:`v4l2_buf_type` for valid values.
+> >> +    * - __u32
+> >> +      - ``reserved``\ [13]
+> >> +      - A place holder for future extensions. Drivers and application=
+s
+> >> +    must set the array to zero.
+> >> +
+> >> +Return Value
+> >> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +
+> >> +On success 0 is returned, on error -1 and the ``errno`` variable is s=
+et
+> >> +appropriately. The generic error codes are described at the
+> >> +:ref:`Generic Error Codes <gen-errors>` chapter.
+> >> +
+> >> +EBUSY
+> >> +    File I/O is in progress.
+> >> +
+> >> +EINVAL
+> >> +    The buffer ``index`` doesn't exist in the queue.
+> >> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst =
+b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> >> index 0b3a41a45d05..14d4a49c2945 100644
+> >> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> >> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
+> >> @@ -121,6 +121,7 @@ aborting or finishing any DMA in progress, an impl=
+icit
+> >>   .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
+> >>   .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
+> >>   .. _V4L2-BUF-CAP-SUPPORTS-MAX-NUM-BUFFERS:
+> >> +.. _V4L2-BUF-CAP-SUPPORTS-DELETE-BUFS:
+> >>
+> >>   .. raw:: latex
+> >>
+> >> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers=
+/media/common/videobuf2/videobuf2-core.c
+> >> index 010a8bca0240..7068930a0ba6 100644
+> >> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> >> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> >> @@ -1665,6 +1665,36 @@ int vb2_core_prepare_buf(struct vb2_queue *q, s=
+truct vb2_buffer *vb, void *pb)
+> >>   }
+> >>   EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+> >>
+> >> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, uns=
+igned int count)
+> >> +{
+> >> +    unsigned int i, ret =3D 0;
+> >> +
+> >> +    if (start =3D=3D 0 && count =3D=3D 0)
+> > I guess related to the earlier comment, but why do we care about start
+> > being zero?
+> >
+> >> +            return 0;
+> >> +
+> >> +    mutex_lock(&q->mmap_lock);
+> >> +
+> >> +    for (i =3D start; i < start + count && i < q->max_num_buffers; i+=
++) {
+> >> +            struct vb2_buffer *vb =3D vb2_get_buffer(q, i);
+> >> +
+> >> +            if (!vb) {
+> >> +                    ret =3D -EINVAL;
+> >> +                    goto unlock;
+> >> +            }
+> >> +            if (vb->state !=3D VB2_BUF_STATE_DEQUEUED) {
+> >> +                    ret =3D -EINVAL;
+> >> +                    goto unlock;
+> >> +            }
+> >> +    }
+> >> +    __vb2_queue_free(q, start, count);
+> >> +    dprintk(q, 2, "buffers deleted\n");
+> >> +
+> >> +unlock:
+> >> +    mutex_unlock(&q->mmap_lock);
+> >> +    return ret;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(vb2_core_delete_bufs);
+> >> +
+> >>   /*
+> >>    * vb2_start_streaming() - Attempt to start streaming.
+> >>    * @q:             videobuf2 queue
+> >> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers=
+/media/common/videobuf2/videobuf2-v4l2.c
+> >> index 56daf3b5b2ba..f003618efbc1 100644
+> >> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> >> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> >> @@ -694,6 +694,8 @@ static void fill_buf_caps(struct vb2_queue *q, u32=
+ *caps)
+> >>      if (q->supports_requests)
+> >>              *caps |=3D V4L2_BUF_CAP_SUPPORTS_REQUESTS;
+> >>   #endif
+> >> +    if (q->supports_delete_bufs)
+> >> +            *caps |=3D V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS;
+> >>   }
+> >>
+> >>   static void validate_memory_flags(struct vb2_queue *q,
+> >> @@ -751,6 +753,12 @@ int vb2_prepare_buf(struct vb2_queue *q, struct m=
+edia_device *mdev,
+> >>   }
+> >>   EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+> >>
+> >> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *=
+d)
+> >> +{
+> >> +    return vb2_core_delete_bufs(q, d->index, d->count);
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
+> >> +
+> >>   int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers =
+*create)
+> >>   {
+> >>      unsigned requested_planes =3D 1;
+> >> @@ -1012,6 +1020,18 @@ EXPORT_SYMBOL_GPL(vb2_poll);
+> >>
+> >>   /* vb2 ioctl helpers */
+> >>
+> >> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
+> >> +                      struct v4l2_delete_buffers *p)
+> >> +{
+> >> +    struct video_device *vdev =3D video_devdata(file);
+> >> +
+> >> +    if (vb2_queue_is_busy(vdev->queue, file))
+> >> +            return -EBUSY;
+> >> +
+> >> +    return vb2_delete_bufs(vdev->queue, p);
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(vb2_ioctl_delete_bufs);
+> >> +
+> >>   int vb2_ioctl_reqbufs(struct file *file, void *priv,
+> >>                        struct v4l2_requestbuffers *p)
+> >>   {
+> >> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-c=
+ore/v4l2-dev.c
+> >> index f81279492682..215654fd6581 100644
+> >> --- a/drivers/media/v4l2-core/v4l2-dev.c
+> >> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+> >> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct video_de=
+vice *vdev)
+> >>              SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_b=
+uf);
+> >>              SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+> >>              SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+> >> +            SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUFS, vidioc_delete_bu=
+fs);
+> >>      }
+> >>
+> >>      if (is_vid || is_vbi || is_meta) {
+> >> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2=
+-core/v4l2-ioctl.c
+> >> index 4d90424cbfc4..e9dcf439f9f3 100644
+> >> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> >> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> >> @@ -489,6 +489,13 @@ static void v4l_print_create_buffers(const void *=
+arg, bool write_only)
+> >>      v4l_print_format(&p->format, write_only);
+> >>   }
+> >>
+> >> +static void v4l_print_delete_buffers(const void *arg, bool write_only=
+)
+> >> +{
+> >> +    const struct v4l2_delete_buffers *p =3D arg;
+> >> +
+> >> +    pr_cont("index=3D%u, count=3D%u\n", p->index, p->count);
+> >> +}
+> >> +
+> >>   static void v4l_print_streamparm(const void *arg, bool write_only)
+> >>   {
+> >>      const struct v4l2_streamparm *p =3D arg;
+> >> @@ -2161,6 +2168,15 @@ static int v4l_prepare_buf(const struct v4l2_io=
+ctl_ops *ops,
+> >>      return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+> >>   }
+> >>
+> >> +static int v4l_delete_bufs(const struct v4l2_ioctl_ops *ops,
+> >> +                       struct file *file, void *fh, void *arg)
+> >> +{
+> >> +    struct v4l2_delete_buffers *delete =3D arg;
+> >> +    int ret =3D check_fmt(file, delete->type);
+> > Should we also have
+> >
+> >       memset_after(delete, 0, type);
+> >
+> > here similar to how other ioctl handlers clear the reserved fields?
+>
+> I will add it.
+>
+> >
+> >> +
+> >> +    return ret ? ret : ops->vidioc_delete_bufs(file, fh, delete);
+> >> +}
+> >> +
+> >>   static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+> >>                              struct file *file, void *fh, void *arg)
+> >>   {
+> >> @@ -2910,6 +2926,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[=
+] =3D {
+> >>      IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print=
+_freq_band, 0),
+> >>      IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print=
+_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+> >>      IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_q=
+uery_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+> >> +    IOCTL_INFO(VIDIOC_DELETE_BUFS, v4l_delete_bufs, v4l_print_delete_=
+buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_delete_buffers, =
+type)),
+> >>   };
+> >>   #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+> >>
+> >> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+> >> index edb733f21604..55afbde54211 100644
+> >> --- a/include/media/v4l2-ioctl.h
+> >> +++ b/include/media/v4l2-ioctl.h
+> >> @@ -163,6 +163,8 @@ struct v4l2_fh;
+> >>    * :ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+> >>    * @vidioc_prepare_buf: pointer to the function that implements
+> >>    * :ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+> >> + * @vidioc_delete_bufs: pointer to the function that implements
+> >> + *  :ref:`VIDIOC_DELETE_BUFS <vidioc_delete_bufs>` ioctl
+> >>    * @vidioc_overlay: pointer to the function that implements
+> >>    * :ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+> >>    * @vidioc_g_fbuf: pointer to the function that implements
+> >> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+> >>                                struct v4l2_create_buffers *b);
+> >>      int (*vidioc_prepare_buf)(struct file *file, void *fh,
+> >>                                struct v4l2_buffer *b);
+> >> +    int (*vidioc_delete_bufs)(struct file *file, void *fh,
+> >> +                              struct v4l2_delete_buffers *d);
+> >>
+> >>      int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i=
+);
+> >>      int (*vidioc_g_fbuf)(struct file *file, void *fh,
+> >> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-=
+core.h
+> >> index 288477075a0e..db3bd986624e 100644
+> >> --- a/include/media/videobuf2-core.h
+> >> +++ b/include/media/videobuf2-core.h
+> >> @@ -507,6 +507,7 @@ struct vb2_buf_ops {
+> >>    * @supports_requests: this queue supports the Request API.
+> >>    * @requires_requests: this queue requires the Request API. If this =
+is set to 1,
+> >>    *         then supports_requests must be set to 1 as well.
+> >> + * @supports_delete_bufs: this queue supports DELETE_BUFS ioctl.
+> >>    * @uses_qbuf:     qbuf was used directly for this queue. Set to 1 t=
+he first
+> >>    *         time this is called. Set to 0 when the queue is canceled.
+> >>    *         If this is 1, then you cannot queue buffers from a reques=
+t.
+> >> @@ -595,6 +596,7 @@ struct vb2_queue {
+> >>      unsigned int               quirk_poll_must_check_waiting_for_buff=
+ers:1;
+> >>      unsigned int                    supports_requests:1;
+> >>      unsigned int                    requires_requests:1;
+> >> +    unsigned int                    supports_delete_bufs:1;
+> >>      unsigned int                    uses_qbuf:1;
+> >>      unsigned int                    uses_requests:1;
+> >>      unsigned int                    allow_cache_hints:1;
+> >> @@ -846,6 +848,16 @@ int vb2_core_create_bufs(struct vb2_queue *q, enu=
+m vb2_memory memory,
+> >>    */
+> >>   int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb,=
+ void *pb);
+> >>
+> >> +/**
+> >> + * vb2_core_delete_bufs() -
+> >> + * @q:              pointer to &struct vb2_queue with videobuf2 queue=
+.
+> >> + * @start:  first index of the range of buffers to delete.
+> >> + * @count:  number of buffers to delete.
+> >> + *
+> >> + *  Return: returns zero on success; an error code otherwise.
+> >> + */
+> >> +int vb2_core_delete_bufs(struct vb2_queue *q, unsigned int start, uns=
+igned int count);
+> >> +
+> >>   /**
+> >>    * vb2_core_qbuf() - Queue a buffer from userspace
+> >>    *
+> >> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-=
+v4l2.h
+> >> index 5a845887850b..79cea8459f52 100644
+> >> --- a/include/media/videobuf2-v4l2.h
+> >> +++ b/include/media/videobuf2-v4l2.h
+> >> @@ -118,6 +118,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct v=
+4l2_create_buffers *create);
+> >>    */
+> >>   int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+> >>                  struct v4l2_buffer *b);
+> >> +/**
+> >> + * vb2_delete_bufs() - Delete buffers from the queue
+> >> + *
+> >> + * @q:              pointer to &struct vb2_queue with videobuf2 queue=
+.
+> >> + * @d:              delete parameter, passed from userspace to
+> >> + *          &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver
+> >> + *
+> >> + * The return values from this function are intended to be directly r=
+eturned
+> >> + * from &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver.
+> >> + */
+> >> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *=
+d);
+> >>
+> >>   /**
+> >>    * vb2_qbuf() - Queue a buffer from userspace
+> >> @@ -334,6 +345,8 @@ int vb2_ioctl_streamon(struct file *file, void *pr=
+iv, enum v4l2_buf_type i);
+> >>   int vb2_ioctl_streamoff(struct file *file, void *priv, enum v4l2_buf=
+_type i);
+> >>   int vb2_ioctl_expbuf(struct file *file, void *priv,
+> >>      struct v4l2_exportbuffer *p);
+> >> +int vb2_ioctl_delete_bufs(struct file *file, void *priv,
+> >> +                      struct v4l2_delete_buffers *p);
+> >>
+> >>   /* struct v4l2_file_operations helpers */
+> >>
+> >> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/video=
+dev2.h
+> >> index 13ddb5abf584..96e105149906 100644
+> >> --- a/include/uapi/linux/videodev2.h
+> >> +++ b/include/uapi/linux/videodev2.h
+> >> @@ -1036,6 +1036,7 @@ struct v4l2_requestbuffers {
+> >>   #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF (1 << 5)
+> >>   #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS             (1 << 6)
+> >>   #define V4L2_BUF_CAP_SUPPORTS_MAX_NUM_BUFFERS              (1 << 7)
+> >> +#define V4L2_BUF_CAP_SUPPORTS_DELETE_BUFS           (1 << 8)
+> >>
+> >>   /**
+> >>    * struct v4l2_plane - plane info for multi-planar buffers
+> >> @@ -2622,6 +2623,20 @@ struct v4l2_create_buffers {
+> >>      __u32                   reserved[5];
+> >>   };
+> >>
+> >> +/**
+> >> + * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+> >> + * @index:  the first buffer to be deleted
+> >> + * @count:  number of buffers to delete
+> >> + * @type:   enum v4l2_buf_type
+> >> + * @reserved:       future extensions
+> >> + */
+> >> +struct v4l2_delete_buffers {
+> >> +    __u32                   index;
+> >> +    __u32                   count;
+> >> +    __u32                   type;
+> >> +    __u32                   reserved[13];
+> >> +};
+> >> +
+> >>   /*
+> >>    * I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
+> >>    *
+> >> @@ -2721,6 +2736,8 @@ struct v4l2_create_buffers {
+> >>   #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip=
+_info)
+> >>
+> >>   #define VIDIOC_QUERY_EXT_CTRL      _IOWR('V', 103, struct v4l2_query=
+_ext_ctrl)
+> >> +#define VIDIOC_DELETE_BUFS  _IOWR('V', 104, struct v4l2_delete_buffer=
+s)
+> >> +
+> >>
+> >>   /* Reminder: when adding new ioctls please add support for them to
+> >>      drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+> > Do we also need to add support for the new ioctl in there?
+>
+> It only use _u32, is aligned on cache boundary and doesn't use pointer.
+> For me 32 and 64 bits structures are identical so it doesn't need to be c=
+onvert.
+> Maybe I'm wrong when testing it with pahole ?
 
-Regards,
+Ah, right. I double checked the compat code and indeed if an ioctl is
+not listed there, it will just use the default copy_from_user, so we
+should be good.
 
-	Hans
+Maybe one day we should update that comment to explain how to check if
+it's necessary to add a compat handler.
 
-> +	help
-> +	    Say Y if you want to add ASRC M2M support for NXP CPUs.
-> +	    It is a complement for ASRC M2P and ASRC P2M features.
-> +	    This option is only useful for out-of-tree drivers since
-> +	    in-tree drivers select it automatically.
-> diff --git a/drivers/media/platform/nxp/Makefile b/drivers/media/platform/nxp/Makefile
-> index 4d90eb713652..1325675e34f5 100644
-> --- a/drivers/media/platform/nxp/Makefile
-> +++ b/drivers/media/platform/nxp/Makefile
-> @@ -9,3 +9,4 @@ obj-$(CONFIG_VIDEO_IMX8MQ_MIPI_CSI2) += imx8mq-mipi-csi2.o
->  obj-$(CONFIG_VIDEO_IMX_MIPI_CSIS) += imx-mipi-csis.o
->  obj-$(CONFIG_VIDEO_IMX_PXP) += imx-pxp.o
->  obj-$(CONFIG_VIDEO_MX2_EMMAPRP) += mx2_emmaprp.o
-> +obj-$(CONFIG_VIDEO_IMX_ASRC) += imx-asrc.o
-> diff --git a/drivers/media/platform/nxp/imx-asrc.c b/drivers/media/platform/nxp/imx-asrc.c
-> new file mode 100644
-> index 000000000000..689e3cfa34d4
-> --- /dev/null
-> +++ b/drivers/media/platform/nxp/imx-asrc.c
-> @@ -0,0 +1,1235 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Copyright (C) 2014-2016 Freescale Semiconductor, Inc.
-> +// Copyright (C) 2019-2023 NXP
-> +//
-> +// Freescale ASRC Memory to Memory (M2M) driver
-> +
-> +#include <linux/dma/imx-dma.h>
-> +#include <linux/pm_runtime.h>
-> +#include <media/v4l2-ctrls.h>
-> +#include <media/v4l2-device.h>
-> +#include <media/v4l2-event.h>
-> +#include <media/v4l2-fh.h>
-> +#include <media/v4l2-ioctl.h>
-> +#include <media/v4l2-mem2mem.h>
-> +#include <media/videobuf2-dma-contig.h>
-> +#include <sound/dmaengine_pcm.h>
-> +#include <sound/fsl_asrc_common.h>
-> +
-> +#define V4L_CAP OUT
-> +#define V4L_OUT IN
-> +
-> +#define ASRC_xPUT_DMA_CALLBACK(dir) \
-> +	(((dir) == V4L_OUT) ? asrc_input_dma_callback \
-> +	: asrc_output_dma_callback)
-> +
-> +#define DIR_STR(dir) (dir) == V4L_OUT ? "out" : "cap"
-> +
-> +/* Maximum output and capture buffer size */
-> +#define ASRC_M2M_BUFFER_SIZE (512 * 1024)
-> +
-> +/* Maximum output and capture period size */
-> +#define ASRC_M2M_PERIOD_SIZE (48 * 1024)
-> +
-> +struct asrc_pair_m2m {
-> +	struct fsl_asrc_pair *pair;
-> +	struct asrc_m2m *m2m;
-> +	struct v4l2_fh fh;
-> +	struct v4l2_ctrl_handler ctrl_handler;
-> +	int channels[2];
-> +	unsigned int sequence[2];
-> +	s64 src_rate_off_prev;		/* Q31.32 */
-> +	s64 dst_rate_off_prev;		/* Q31.32 */
-> +	s64 src_rate_off_cur;		/* Q31.32 */
-> +	s64 dst_rate_off_cur;		/* Q31.32 */
-> +};
-> +
-> +struct asrc_m2m {
-> +	struct fsl_asrc_m2m_pdata pdata;
-> +	struct v4l2_device v4l2_dev;
-> +	struct v4l2_m2m_dev *m2m_dev;
-> +	struct video_device *dec_vdev;
-> +	struct mutex mlock; /* v4l2 ioctls serialization */
-> +	struct platform_device *pdev;
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	struct media_device	mdev;
-> +#endif
-> +};
-> +
-> +static u32 formats[] = {
-> +	V4L2_AUDIO_FMT_S8,
-> +	V4L2_AUDIO_FMT_S16_LE,
-> +	V4L2_AUDIO_FMT_U16_LE,
-> +	V4L2_AUDIO_FMT_S24_LE,
-> +	V4L2_AUDIO_FMT_S24_3LE,
-> +	V4L2_AUDIO_FMT_U24_LE,
-> +	V4L2_AUDIO_FMT_U24_3LE,
-> +	V4L2_AUDIO_FMT_S32_LE,
-> +	V4L2_AUDIO_FMT_U32_LE,
-> +	V4L2_AUDIO_FMT_S20_3LE,
-> +	V4L2_AUDIO_FMT_U20_3LE,
-> +	V4L2_AUDIO_FMT_FLOAT_LE,
-> +	V4L2_AUDIO_FMT_IEC958_SUBFRAME_LE,
-> +};
-> +
-> +#define NUM_FORMATS ARRAY_SIZE(formats)
-> +
-> +static const s64 asrc_v1_m2m_rates[] = {
-> +	5512, 8000, 11025, 12000, 16000,
-> +	22050, 24000, 32000, 44100,
-> +	48000, 64000, 88200, 96000,
-> +	128000, 176400, 192000,
-> +};
-> +
-> +static const s64 asrc_v2_m2m_rates[] = {
-> +	8000, 11025, 12000, 16000,
-> +	22050, 24000, 32000, 44100,
-> +	48000, 64000, 88200, 96000,
-> +	128000, 176400, 192000, 256000,
-> +	352800, 384000, 705600, 768000,
-> +};
-> +
-> +static u32 find_fourcc(snd_pcm_format_t format)
-> +{
-> +	snd_pcm_format_t fmt;
-> +	unsigned int k;
-> +
-> +	for (k = 0; k < NUM_FORMATS; k++) {
-> +		fmt = v4l2_fourcc_to_audfmt(formats[k]);
-> +		if (fmt == format)
-> +			return formats[k];
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static snd_pcm_format_t find_format(u32 fourcc)
-> +{
-> +	unsigned int k;
-> +
-> +	for (k = 0; k < NUM_FORMATS; k++) {
-> +		if (formats[k] == fourcc)
-> +			return v4l2_fourcc_to_audfmt(formats[k]);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int asrc_check_format(struct asrc_pair_m2m *pair_m2m, u8 dir, u32 format)
-> +{
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct fsl_asrc_m2m_pdata *pdata = &m2m->pdata;
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	snd_pcm_format_t fmt;
-> +	u64 format_bit = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < NUM_FORMATS; ++i) {
-> +		if (formats[i] == format) {
-> +			fmt = v4l2_fourcc_to_audfmt(formats[i]);
-> +			format_bit = pcm_format_to_bits(fmt);
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (dir == IN && !(format_bit & pdata->fmt_in))
-> +		return find_fourcc(pair->sample_format[V4L_OUT]);
-> +	if (dir == OUT && !(format_bit & pdata->fmt_out))
-> +		return find_fourcc(pair->sample_format[V4L_CAP]);
-> +
-> +	return format;
-> +}
-> +
-> +static int asrc_check_channel(struct asrc_pair_m2m *pair_m2m, u8 dir, u32 channels)
-> +{
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct fsl_asrc_m2m_pdata *pdata = &m2m->pdata;
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +
-> +	if (channels < pdata->chan_min || channels > pdata->chan_max)
-> +		return pair->channels;
-> +
-> +	return channels;
-> +}
-> +
-> +static inline struct asrc_pair_m2m *asrc_m2m_fh_to_ctx(struct v4l2_fh *fh)
-> +{
-> +	return container_of(fh, struct asrc_pair_m2m, fh);
-> +}
-> +
-> +/**
-> + * asrc_read_last_fifo: read all the remaining data from FIFO
-> + *	@pair: Structure pointer of fsl_asrc_pair
-> + *	@dma_vaddr: virtual address of capture buffer
-> + *	@length: payload length of capture buffer
-> + */
-> +static void asrc_read_last_fifo(struct fsl_asrc_pair *pair, void *dma_vaddr, u32 *length)
-> +{
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	enum asrc_pair_index index = pair->index;
-> +	u32 i, reg, size, t_size = 0, width;
-> +	u32 *reg32 = NULL;
-> +	u16 *reg16 = NULL;
-> +	u8  *reg24 = NULL;
-> +
-> +	width = snd_pcm_format_physical_width(pair->sample_format[V4L_CAP]);
-> +	if (width == 32)
-> +		reg32 = dma_vaddr + *length;
-> +	else if (width == 16)
-> +		reg16 = dma_vaddr + *length;
-> +	else
-> +		reg24 = dma_vaddr + *length;
-> +retry:
-> +	size = asrc->get_output_fifo_size(pair);
-> +	if (size + *length > ASRC_M2M_BUFFER_SIZE)
-> +		goto end;
-> +
-> +	for (i = 0; i < size * pair->channels; i++) {
-> +		regmap_read(asrc->regmap, asrc->get_fifo_addr(OUT, index), &reg);
-> +		if (reg32) {
-> +			*reg32++ = reg;
-> +		} else if (reg16) {
-> +			*reg16++ = (u16)reg;
-> +		} else {
-> +			*reg24++ = (u8)reg;
-> +			*reg24++ = (u8)(reg >> 8);
-> +			*reg24++ = (u8)(reg >> 16);
-> +		}
-> +	}
-> +	t_size += size;
-> +
-> +	/* In case there is data left in FIFO */
-> +	if (size)
-> +		goto retry;
-> +end:
-> +	/* Update payload length */
-> +	if (reg32)
-> +		*length += t_size * pair->channels * 4;
-> +	else if (reg16)
-> +		*length += t_size * pair->channels * 2;
-> +	else
-> +		*length += t_size * pair->channels * 3;
-> +}
-> +
-> +static int asrc_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = vb2_get_drv_priv(q);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	struct device *dev = &m2m->pdev->dev;
-> +	struct vb2_v4l2_buffer *buf;
-> +	bool request_flag = false;
-> +	int ret;
-> +
-> +	dev_dbg(dev, "Start streaming pair=%p, %d\n", pair, q->type);
-> +
-> +	ret = pm_runtime_get_sync(dev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to power up asrc\n");
-> +		goto err_pm_runtime;
-> +	}
-> +
-> +	/* Request asrc pair/context */
-> +	if (!pair->req_pair) {
-> +		/* flag for error handler of this function */
-> +		request_flag = true;
-> +
-> +		ret = asrc->request_pair(pair->channels, pair);
-> +		if (ret) {
-> +			dev_err(dev, "failed to request pair: %d\n", ret);
-> +			goto err_request_pair;
-> +		}
-> +
-> +		ret = asrc->m2m_prepare(pair);
-> +		if (ret) {
-> +			dev_err(dev, "failed to start pair part one: %d\n", ret);
-> +			goto err_start_part_one;
-> +		}
-> +
-> +		pair->req_pair = true;
-> +	}
-> +
-> +	/* Request dma channels */
-> +	if (V4L2_TYPE_IS_OUTPUT(q->type)) {
-> +		pair_m2m->sequence[V4L_OUT] = 0;
-> +		pair->dma_chan[V4L_OUT] = asrc->get_dma_channel(pair, IN);
-> +		if (!pair->dma_chan[V4L_OUT]) {
-> +			dev_err(dev, "[ctx%d] failed to get input DMA channel\n", pair->index);
-> +			ret = -EBUSY;
-> +			goto err_dma_channel;
-> +		}
-> +	} else {
-> +		pair_m2m->sequence[V4L_CAP] = 0;
-> +		pair->dma_chan[V4L_CAP] = asrc->get_dma_channel(pair, OUT);
-> +		if (!pair->dma_chan[V4L_CAP]) {
-> +			dev_err(dev, "[ctx%d] failed to get output DMA channel\n", pair->index);
-> +			ret = -EBUSY;
-> +			goto err_dma_channel;
-> +		}
-> +	}
-> +
-> +	v4l2_m2m_update_start_streaming_state(pair_m2m->fh.m2m_ctx, q);
-> +
-> +	return 0;
-> +
-> +err_dma_channel:
-> +	if (request_flag && asrc->m2m_unprepare)
-> +		asrc->m2m_unprepare(pair);
-> +err_start_part_one:
-> +	if (request_flag)
-> +		asrc->release_pair(pair);
-> +err_request_pair:
-> +	pm_runtime_put_sync(dev);
-> +err_pm_runtime:
-> +	/* Release buffers */
-> +	if (V4L2_TYPE_IS_OUTPUT(q->type)) {
-> +		while ((buf = v4l2_m2m_src_buf_remove(pair_m2m->fh.m2m_ctx)))
-> +			v4l2_m2m_buf_done(buf, VB2_BUF_STATE_QUEUED);
-> +	} else {
-> +		while ((buf = v4l2_m2m_dst_buf_remove(pair_m2m->fh.m2m_ctx)))
-> +			v4l2_m2m_buf_done(buf, VB2_BUF_STATE_QUEUED);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static void asrc_m2m_stop_streaming(struct vb2_queue *q)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = vb2_get_drv_priv(q);
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	struct device *dev = &m2m->pdev->dev;
-> +
-> +	dev_dbg(dev, "Stop streaming pair=%p, %d\n", pair, q->type);
-> +
-> +	v4l2_m2m_update_stop_streaming_state(pair_m2m->fh.m2m_ctx, q);
-> +
-> +	/* Stop & release pair/context */
-> +	if (asrc->m2m_stop)
-> +		asrc->m2m_stop(pair);
-> +
-> +	if (pair->req_pair) {
-> +		if (asrc->m2m_unprepare)
-> +			asrc->m2m_unprepare(pair);
-> +		asrc->release_pair(pair);
-> +		pair->req_pair = false;
-> +	}
-> +
-> +	/* Release dma channel */
-> +	if (V4L2_TYPE_IS_OUTPUT(q->type)) {
-> +		if (pair->dma_chan[V4L_OUT])
-> +			dma_release_channel(pair->dma_chan[V4L_OUT]);
-> +	} else {
-> +		if (pair->dma_chan[V4L_CAP])
-> +			dma_release_channel(pair->dma_chan[V4L_CAP]);
-> +	}
-> +
-> +	pm_runtime_put_sync(dev);
-> +}
-> +
-> +static int asrc_m2m_queue_setup(struct vb2_queue *q,
-> +				unsigned int *num_buffers, unsigned int *num_planes,
-> +				unsigned int sizes[], struct device *alloc_devs[])
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = vb2_get_drv_priv(q);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	u32 size;
-> +
-> +	/*
-> +	 * The capture buffer size depends on output buffer size
-> +	 * and the convert ratio.
-> +	 *
-> +	 * Here just use a fix length for capture and output buffer.
-> +	 * User need to care about it.
-> +	 */
-> +	if (V4L2_TYPE_IS_OUTPUT(q->type))
-> +		size = pair->buf_len[V4L_OUT];
-> +	else
-> +		size = pair->buf_len[V4L_CAP];
-> +
-> +	if (*num_planes)
-> +		return sizes[0] < size ? -EINVAL : 0;
-> +
-> +	*num_planes = 1;
-> +	sizes[0] = size;
-> +
-> +	return 0;
-> +}
-> +
-> +static void asrc_m2m_buf_queue(struct vb2_buffer *vb)
-> +{
-> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> +	struct asrc_pair_m2m *pair_m2m = vb2_get_drv_priv(vb->vb2_queue);
-> +
-> +	/* queue buffer */
-> +	v4l2_m2m_buf_queue(pair_m2m->fh.m2m_ctx, vbuf);
-> +}
-> +
-> +static const struct vb2_ops asrc_m2m_qops = {
-> +	.wait_prepare		= vb2_ops_wait_prepare,
-> +	.wait_finish		= vb2_ops_wait_finish,
-> +	.start_streaming	= asrc_m2m_start_streaming,
-> +	.stop_streaming		= asrc_m2m_stop_streaming,
-> +	.queue_setup		= asrc_m2m_queue_setup,
-> +	.buf_queue		= asrc_m2m_buf_queue,
-> +};
-> +
-> +/* Init video buffer queue for src and dst. */
-> +static int asrc_m2m_queue_init(void *priv, struct vb2_queue *src_vq,
-> +			       struct vb2_queue *dst_vq)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = priv;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	int ret;
-> +
-> +	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
-> +	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	src_vq->drv_priv = pair_m2m;
-> +	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-> +	src_vq->ops = &asrc_m2m_qops;
-> +	src_vq->mem_ops = &vb2_dma_contig_memops;
-> +	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> +	src_vq->lock = &m2m->mlock;
-> +	src_vq->dev = &m2m->pdev->dev;
-> +	src_vq->min_buffers_needed = 1;
-> +
-> +	ret = vb2_queue_init(src_vq);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
-> +	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-> +	dst_vq->drv_priv = pair_m2m;
-> +	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-> +	dst_vq->ops = &asrc_m2m_qops;
-> +	dst_vq->mem_ops = &vb2_dma_contig_memops;
-> +	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> +	dst_vq->lock = &m2m->mlock;
-> +	dst_vq->dev = &m2m->pdev->dev;
-> +	dst_vq->min_buffers_needed = 1;
-> +
-> +	ret = vb2_queue_init(dst_vq);
-> +	return ret;
-> +}
-> +
-> +static int asrc_m2m_op_s_ctrl(struct v4l2_ctrl *ctrl)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m =
-> +		container_of(ctrl->handler, struct asrc_pair_m2m, ctrl_handler);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	int ret = 0;
-> +
-> +	switch (ctrl->id) {
-> +	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:
-> +		pair->rate[V4L_OUT] = ctrl->qmenu_int[ctrl->val];
-> +		break;
-> +	case V4L2_CID_M2M_AUDIO_DEST_RATE:
-> +		pair->rate[V4L_CAP] = ctrl->qmenu_int[ctrl->val];
-> +		break;
-> +	case V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET:
-> +		pair_m2m->src_rate_off_cur = *ctrl->p_new.p_s64;
-> +		break;
-> +	case V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET:
-> +		pair_m2m->dst_rate_off_cur = *ctrl->p_new.p_s64;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct v4l2_ctrl_ops asrc_m2m_ctrl_ops = {
-> +	.s_ctrl = asrc_m2m_op_s_ctrl,
-> +};
-> +
-> +/* system callback for open() */
-> +static int asrc_m2m_open(struct file *file)
-> +{
-> +	struct asrc_m2m *m2m = video_drvdata(file);
-> +	struct fsl_asrc *asrc = m2m->pdata.asrc;
-> +	struct video_device *vdev = video_devdata(file);
-> +	struct fsl_asrc_pair *pair;
-> +	struct asrc_pair_m2m *pair_m2m;
-> +	int ret = 0;
-> +
-> +	if (mutex_lock_interruptible(&m2m->mlock))
-> +		return -ERESTARTSYS;
-> +
-> +	pair = kzalloc(sizeof(*pair) + asrc->pair_priv_size, GFP_KERNEL);
-> +	if (!pair) {
-> +		ret = -ENOMEM;
-> +		goto err_alloc_pair;
-> +	}
-> +
-> +	pair_m2m = kzalloc(sizeof(*pair_m2m), GFP_KERNEL);
-> +	if (!pair_m2m) {
-> +		ret = -ENOMEM;
-> +		goto err_alloc_pair_m2m;
-> +	}
-> +
-> +	pair->private = (void *)pair + sizeof(struct fsl_asrc_pair);
-> +	pair->asrc = asrc;
-> +
-> +	pair->buf_len[V4L_OUT] = ASRC_M2M_BUFFER_SIZE;
-> +	pair->buf_len[V4L_CAP] = ASRC_M2M_BUFFER_SIZE;
-> +
-> +	pair->channels = 2;
-> +	pair->rate[V4L_OUT] = 8000;
-> +	pair->rate[V4L_CAP] = 8000;
-> +	pair->sample_format[V4L_OUT] = SNDRV_PCM_FORMAT_S16_LE;
-> +	pair->sample_format[V4L_CAP] = SNDRV_PCM_FORMAT_S16_LE;
-> +
-> +	init_completion(&pair->complete[V4L_OUT]);
-> +	init_completion(&pair->complete[V4L_CAP]);
-> +
-> +	v4l2_fh_init(&pair_m2m->fh, vdev);
-> +	v4l2_fh_add(&pair_m2m->fh);
-> +	file->private_data = &pair_m2m->fh;
-> +
-> +	pair_m2m->pair = pair;
-> +	pair_m2m->m2m = m2m;
-> +	/* m2m context init */
-> +	pair_m2m->fh.m2m_ctx = v4l2_m2m_ctx_init(m2m->m2m_dev, pair_m2m,
-> +						 asrc_m2m_queue_init);
-> +	if (IS_ERR(pair_m2m->fh.m2m_ctx)) {
-> +		ret = PTR_ERR(pair_m2m->fh.m2m_ctx);
-> +		goto err_ctx_init;
-> +	}
-> +
-> +	v4l2_ctrl_handler_init(&pair_m2m->ctrl_handler, 4);
-> +
-> +	if (m2m->pdata.rate_min == 5512) {
-> +		v4l2_ctrl_new_int_menu(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +				       V4L2_CID_M2M_AUDIO_SOURCE_RATE,
-> +				       ARRAY_SIZE(asrc_v1_m2m_rates) - 1, 1, asrc_v1_m2m_rates);
-> +		v4l2_ctrl_new_int_menu(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +				       V4L2_CID_M2M_AUDIO_DEST_RATE,
-> +				       ARRAY_SIZE(asrc_v1_m2m_rates) - 1, 1, asrc_v1_m2m_rates);
-> +	} else {
-> +		v4l2_ctrl_new_int_menu(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +				       V4L2_CID_M2M_AUDIO_SOURCE_RATE,
-> +				       ARRAY_SIZE(asrc_v2_m2m_rates) - 1, 0, asrc_v2_m2m_rates);
-> +		v4l2_ctrl_new_int_menu(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +				       V4L2_CID_M2M_AUDIO_DEST_RATE,
-> +				       ARRAY_SIZE(asrc_v2_m2m_rates) - 1, 0, asrc_v2_m2m_rates);
-> +	}
-> +
-> +	v4l2_ctrl_new_std(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +			  V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET,
-> +			  0xFFFFFF0000000000, 0x7fffffffff, 1, 0);
-> +	v4l2_ctrl_new_std(&pair_m2m->ctrl_handler, &asrc_m2m_ctrl_ops,
-> +			  V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET,
-> +			  0xFFFFFF0000000000, 0x7fffffffff, 1, 0);
-> +
-> +	if (pair_m2m->ctrl_handler.error) {
-> +		ret = pair_m2m->ctrl_handler.error;
-> +		v4l2_ctrl_handler_free(&pair_m2m->ctrl_handler);
-> +		goto err_ctrl_handler;
-> +	}
-> +
-> +	pair_m2m->fh.ctrl_handler = &pair_m2m->ctrl_handler;
-> +
-> +	mutex_unlock(&m2m->mlock);
-> +
-> +	return 0;
-> +
-> +err_ctrl_handler:
-> +	v4l2_m2m_ctx_release(pair_m2m->fh.m2m_ctx);
-> +err_ctx_init:
-> +	v4l2_fh_del(&pair_m2m->fh);
-> +	v4l2_fh_exit(&pair_m2m->fh);
-> +	kfree(pair_m2m);
-> +err_alloc_pair_m2m:
-> +	kfree(pair);
-> +err_alloc_pair:
-> +	mutex_unlock(&m2m->mlock);
-> +	return ret;
-> +}
-> +
-> +static int asrc_m2m_release(struct file *file)
-> +{
-> +	struct asrc_m2m *m2m = video_drvdata(file);
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(file->private_data);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +
-> +	mutex_lock(&m2m->mlock);
-> +	v4l2_ctrl_handler_free(&pair_m2m->ctrl_handler);
-> +	v4l2_m2m_ctx_release(pair_m2m->fh.m2m_ctx);
-> +	v4l2_fh_del(&pair_m2m->fh);
-> +	v4l2_fh_exit(&pair_m2m->fh);
-> +	kfree(pair_m2m);
-> +	kfree(pair);
-> +	mutex_unlock(&m2m->mlock);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct v4l2_file_operations asrc_m2m_fops = {
-> +	.owner          = THIS_MODULE,
-> +	.open           = asrc_m2m_open,
-> +	.release        = asrc_m2m_release,
-> +	.poll           = v4l2_m2m_fop_poll,
-> +	.unlocked_ioctl = video_ioctl2,
-> +	.mmap           = v4l2_m2m_fop_mmap,
-> +};
-> +
-> +static int asrc_m2m_querycap(struct file *file, void *priv,
-> +			     struct v4l2_capability *cap)
-> +{
-> +	strscpy(cap->driver, "imx asrc m2m", sizeof(cap->driver));
-> +	strscpy(cap->card, "imx asrc m2m", sizeof(cap->card));
-> +	cap->device_caps = V4L2_CAP_STREAMING | V4L2_CAP_AUDIO_M2M;
-> +
-> +	return 0;
-> +}
-> +
-> +static int enum_fmt(struct v4l2_fmtdesc *f, u64 fmtbit)
-> +{
-> +	snd_pcm_format_t fmt;
-> +	int i, num;
-> +
-> +	num = 0;
-> +
-> +	for (i = 0; i < NUM_FORMATS; ++i) {
-> +		fmt = v4l2_fourcc_to_audfmt(formats[i]);
-> +		if (pcm_format_to_bits(fmt) & fmtbit) {
-> +			if (num == f->index)
-> +				break;
-> +			/*
-> +			 * Correct type but haven't reached our index yet,
-> +			 * just increment per-type index
-> +			 */
-> +			++num;
-> +		}
-> +	}
-> +
-> +	if (i < NUM_FORMATS) {
-> +		/* Format found */
-> +		f->pixelformat = formats[i];
-> +		return 0;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int asrc_m2m_enum_fmt_aud_cap(struct file *file, void *fh,
-> +				     struct v4l2_fmtdesc *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +
-> +	return enum_fmt(f, m2m->pdata.fmt_out);
-> +}
-> +
-> +static int asrc_m2m_enum_fmt_aud_out(struct file *file, void *fh,
-> +				     struct v4l2_fmtdesc *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +
-> +	return enum_fmt(f, m2m->pdata.fmt_in);
-> +}
-> +
-> +static int asrc_m2m_g_fmt_aud_cap(struct file *file, void *fh,
-> +				  struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +
-> +	f->fmt.audio.channels = pair->channels;
-> +	f->fmt.audio.buffersize = pair->buf_len[V4L_CAP];
-> +	f->fmt.audio.audioformat = find_fourcc(pair->sample_format[V4L_CAP]);
-> +
-> +	return 0;
-> +}
-> +
-> +static int asrc_m2m_g_fmt_aud_out(struct file *file, void *fh,
-> +				  struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +
-> +	f->fmt.audio.channels = pair->channels;
-> +	f->fmt.audio.buffersize = pair->buf_len[V4L_OUT];
-> +	f->fmt.audio.audioformat = find_fourcc(pair->sample_format[V4L_OUT]);
-> +
-> +	return 0;
-> +}
-> +
-> +/* output for asrc */
-> +static int asrc_m2m_s_fmt_aud_cap(struct file *file, void *fh,
-> +				  struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct device *dev = &m2m->pdev->dev;
-> +
-> +	f->fmt.audio.audioformat = asrc_check_format(pair_m2m, OUT, f->fmt.audio.audioformat);
-> +	f->fmt.audio.channels = asrc_check_channel(pair_m2m, OUT, f->fmt.audio.channels);
-> +
-> +	if (pair_m2m->channels[V4L_CAP] > 0 &&
-> +	    pair_m2m->channels[V4L_CAP] != f->fmt.audio.channels) {
-> +		dev_err(dev, "channels don't match for cap and out\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	pair_m2m->channels[V4L_CAP] = f->fmt.audio.channels;
-> +	pair->channels = f->fmt.audio.channels;
-> +	pair->sample_format[V4L_CAP] = find_format(f->fmt.audio.audioformat);
-> +
-> +	return 0;
-> +}
-> +
-> +/* input for asrc */
-> +static int asrc_m2m_s_fmt_aud_out(struct file *file, void *fh,
-> +				  struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct device *dev = &m2m->pdev->dev;
-> +
-> +	f->fmt.audio.audioformat = asrc_check_format(pair_m2m, IN, f->fmt.audio.audioformat);
-> +	f->fmt.audio.channels = asrc_check_channel(pair_m2m, IN, f->fmt.audio.channels);
-> +	if (pair_m2m->channels[V4L_OUT] > 0 &&
-> +	    pair_m2m->channels[V4L_OUT] != f->fmt.audio.channels) {
-> +		dev_err(dev, "channels don't match for cap and out\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	pair_m2m->channels[V4L_OUT] = f->fmt.audio.channels;
-> +	pair->channels = f->fmt.audio.channels;
-> +	pair->sample_format[V4L_OUT] = find_format(f->fmt.audio.audioformat);
-> +
-> +	return 0;
-> +}
-> +
-> +static int asrc_m2m_try_fmt_audio_cap(struct file *file, void *fh,
-> +				      struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +
-> +	f->fmt.audio.audioformat = asrc_check_format(pair_m2m, OUT, f->fmt.audio.audioformat);
-> +	f->fmt.audio.channels = asrc_check_channel(pair_m2m, OUT, f->fmt.audio.channels);
-> +
-> +	return 0;
-> +}
-> +
-> +static int asrc_m2m_try_fmt_audio_out(struct file *file, void *fh,
-> +				      struct v4l2_format *f)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = asrc_m2m_fh_to_ctx(fh);
-> +
-> +	f->fmt.audio.audioformat = asrc_check_format(pair_m2m, IN, f->fmt.audio.audioformat);
-> +	f->fmt.audio.channels = asrc_check_channel(pair_m2m, IN, f->fmt.audio.channels);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct v4l2_ioctl_ops asrc_m2m_ioctl_ops = {
-> +	.vidioc_querycap		= asrc_m2m_querycap,
-> +
-> +	.vidioc_enum_fmt_audio_cap	= asrc_m2m_enum_fmt_aud_cap,
-> +	.vidioc_enum_fmt_audio_out	= asrc_m2m_enum_fmt_aud_out,
-> +
-> +	.vidioc_g_fmt_audio_cap		= asrc_m2m_g_fmt_aud_cap,
-> +	.vidioc_g_fmt_audio_out		= asrc_m2m_g_fmt_aud_out,
-> +
-> +	.vidioc_s_fmt_audio_cap		= asrc_m2m_s_fmt_aud_cap,
-> +	.vidioc_s_fmt_audio_out		= asrc_m2m_s_fmt_aud_out,
-> +
-> +	.vidioc_try_fmt_audio_cap	= asrc_m2m_try_fmt_audio_cap,
-> +	.vidioc_try_fmt_audio_out	= asrc_m2m_try_fmt_audio_out,
-> +
-> +	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
-> +	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
-> +
-> +	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
-> +	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
-> +	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
-> +	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
-> +	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
-> +	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-> +	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
-> +	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
-> +};
-> +
-> +/* dma complete callback */
-> +static void asrc_input_dma_callback(void *data)
-> +{
-> +	struct fsl_asrc_pair *pair = (struct fsl_asrc_pair *)data;
-> +
-> +	complete(&pair->complete[V4L_OUT]);
-> +}
-> +
-> +/* dma complete callback */
-> +static void asrc_output_dma_callback(void *data)
-> +{
-> +	struct fsl_asrc_pair *pair = (struct fsl_asrc_pair *)data;
-> +
-> +	complete(&pair->complete[V4L_CAP]);
-> +}
-> +
-> +/* config dma channel */
-> +static int asrc_dmaconfig(struct asrc_pair_m2m *pair_m2m,
-> +			  struct dma_chan *chan,
-> +			  u32 dma_addr, dma_addr_t buf_addr, u32 buf_len,
-> +			  int dir, int width)
-> +{
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct device *dev = &m2m->pdev->dev;
-> +	struct dma_slave_config slave_config;
-> +	enum dma_slave_buswidth buswidth;
-> +	unsigned int sg_len, max_period_size;
-> +	struct scatterlist *sg;
-> +	int ret, i;
-> +
-> +	switch (width) {
-> +	case 8:
-> +		buswidth = DMA_SLAVE_BUSWIDTH_1_BYTE;
-> +		break;
-> +	case 16:
-> +		buswidth = DMA_SLAVE_BUSWIDTH_2_BYTES;
-> +		break;
-> +	case 24:
-> +		buswidth = DMA_SLAVE_BUSWIDTH_3_BYTES;
-> +		break;
-> +	case 32:
-> +		buswidth = DMA_SLAVE_BUSWIDTH_4_BYTES;
-> +		break;
-> +	default:
-> +		dev_err(dev, "invalid word width\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	memset(&slave_config, 0, sizeof(slave_config));
-> +	if (dir == V4L_OUT) {
-> +		slave_config.direction = DMA_MEM_TO_DEV;
-> +		slave_config.dst_addr = dma_addr;
-> +		slave_config.dst_addr_width = buswidth;
-> +		slave_config.dst_maxburst = asrc->m2m_get_maxburst(IN, pair);
-> +	} else {
-> +		slave_config.direction = DMA_DEV_TO_MEM;
-> +		slave_config.src_addr = dma_addr;
-> +		slave_config.src_addr_width = buswidth;
-> +		slave_config.src_maxburst = asrc->m2m_get_maxburst(OUT, pair);
-> +	}
-> +
-> +	ret = dmaengine_slave_config(chan, &slave_config);
-> +	if (ret) {
-> +		dev_err(dev, "failed to config dmaengine for %s task: %d\n",
-> +			DIR_STR(dir), ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	max_period_size = rounddown(ASRC_M2M_PERIOD_SIZE, width * pair->channels / 8);
-> +	/* scatter gather mode */
-> +	sg_len = buf_len / max_period_size;
-> +	if (buf_len % max_period_size)
-> +		sg_len += 1;
-> +
-> +	sg = kmalloc_array(sg_len, sizeof(*sg), GFP_KERNEL);
-> +	if (!sg)
-> +		return -ENOMEM;
-> +
-> +	sg_init_table(sg, sg_len);
-> +	for (i = 0; i < (sg_len - 1); i++) {
-> +		sg_dma_address(&sg[i]) = buf_addr + i * max_period_size;
-> +		sg_dma_len(&sg[i]) = max_period_size;
-> +	}
-> +	sg_dma_address(&sg[i]) = buf_addr + i * max_period_size;
-> +	sg_dma_len(&sg[i]) = buf_len - i * max_period_size;
-> +
-> +	pair->desc[dir] = dmaengine_prep_slave_sg(chan, sg, sg_len,
-> +						  slave_config.direction,
-> +						  DMA_PREP_INTERRUPT);
-> +	kfree(sg);
-> +	if (!pair->desc[dir]) {
-> +		dev_err(dev, "failed to prepare dmaengine for %s task\n", DIR_STR(dir));
-> +		return -EINVAL;
-> +	}
-> +
-> +	pair->desc[dir]->callback = ASRC_xPUT_DMA_CALLBACK(dir);
-> +	pair->desc[dir]->callback_param = pair;
-> +
-> +	return 0;
-> +}
-> +
-> +static void asrc_m2m_set_ratio_mod(struct asrc_pair_m2m *pair_m2m)
-> +{
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	s32 src_rate_int, dst_rate_int;
-> +	s64 src_rate_frac;
-> +	s64 dst_rate_frac;
-> +	u64 src_rate, dst_rate;
-> +	u64 ratio_pre, ratio_cur;
-> +	s64 ratio_diff;
-> +
-> +	if (!asrc->m2m_set_ratio_mod)
-> +		return;
-> +
-> +	if (pair_m2m->src_rate_off_cur == pair_m2m->src_rate_off_prev &&
-> +	    pair_m2m->dst_rate_off_cur == pair_m2m->dst_rate_off_prev)
-> +		return;
-> +
-> +	/*
-> +	 * use maximum rate 768kHz as limitation, then we can shift right 21 bit for
-> +	 * division
-> +	 */
-> +	src_rate_int = pair->rate[V4L_OUT];
-> +	src_rate_frac = pair_m2m->src_rate_off_prev;
-> +
-> +	src_rate = ((s64)src_rate_int << 32) + src_rate_frac;
-> +
-> +	dst_rate_int = pair->rate[V4L_CAP];
-> +	dst_rate_frac = pair_m2m->dst_rate_off_prev;
-> +
-> +	dst_rate = ((s64)dst_rate_int << 32) + dst_rate_frac;
-> +	dst_rate >>= 21;
-> +	do_div(src_rate, dst_rate);
-> +	ratio_pre = src_rate;
-> +
-> +	src_rate_frac = pair_m2m->src_rate_off_cur;
-> +	src_rate = ((s64)src_rate_int << 32) + src_rate_frac;
-> +
-> +	dst_rate_frac = pair_m2m->dst_rate_off_cur;
-> +	dst_rate = ((s64)dst_rate_int << 32) + dst_rate_frac;
-> +	dst_rate >>= 21;
-> +	do_div(src_rate, dst_rate);
-> +	ratio_cur = src_rate;
-> +
-> +	ratio_diff = ratio_cur - ratio_pre;
-> +	asrc->m2m_set_ratio_mod(pair, ratio_diff << 10);
-> +
-> +	pair_m2m->src_rate_off_prev = pair_m2m->src_rate_off_cur;
-> +	pair_m2m->dst_rate_off_prev = pair_m2m->dst_rate_off_cur;
-> +}
-> +
-> +/* main function of converter */
-> +static void asrc_m2m_device_run(void *priv)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = priv;
-> +	struct fsl_asrc_pair *pair = pair_m2m->pair;
-> +	struct asrc_m2m *m2m = pair_m2m->m2m;
-> +	struct fsl_asrc *asrc = pair->asrc;
-> +	struct device *dev = &m2m->pdev->dev;
-> +	enum asrc_pair_index index = pair->index;
-> +	struct vb2_v4l2_buffer *src_buf, *dst_buf;
-> +	unsigned int out_buf_len;
-> +	unsigned int cap_dma_len;
-> +	unsigned int width;
-> +	u32 fifo_addr;
-> +	int ret;
-> +
-> +	/* set ratio mod */
-> +	asrc_m2m_set_ratio_mod(pair_m2m);
-> +
-> +	src_buf = v4l2_m2m_next_src_buf(pair_m2m->fh.m2m_ctx);
-> +	dst_buf = v4l2_m2m_next_dst_buf(pair_m2m->fh.m2m_ctx);
-> +
-> +	src_buf->sequence = pair_m2m->sequence[V4L_OUT]++;
-> +	dst_buf->sequence = pair_m2m->sequence[V4L_CAP]++;
-> +
-> +	width = snd_pcm_format_physical_width(pair->sample_format[V4L_OUT]);
-> +	fifo_addr = asrc->paddr + asrc->get_fifo_addr(IN, index);
-> +	out_buf_len = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
-> +	if (out_buf_len < width * pair->channels / 8 ||
-> +	    out_buf_len > ASRC_M2M_BUFFER_SIZE ||
-> +	    out_buf_len % (width * pair->channels / 8)) {
-> +		dev_err(dev, "out buffer size is error: [%d]\n", out_buf_len);
-> +		goto end;
-> +	}
-> +
-> +	/* dma config for output dma channel */
-> +	ret = asrc_dmaconfig(pair_m2m,
-> +			     pair->dma_chan[V4L_OUT],
-> +			     fifo_addr,
-> +			     vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 0),
-> +			     out_buf_len, V4L_OUT, width);
-> +	if (ret) {
-> +		dev_err(dev, "out dma config error\n");
-> +		goto end;
-> +	}
-> +
-> +	width = snd_pcm_format_physical_width(pair->sample_format[V4L_CAP]);
-> +	fifo_addr = asrc->paddr + asrc->get_fifo_addr(OUT, index);
-> +	cap_dma_len = asrc->m2m_calc_out_len(pair, out_buf_len);
-> +	if (cap_dma_len > 0 && cap_dma_len <= ASRC_M2M_BUFFER_SIZE) {
-> +		/* dma config for capture dma channel */
-> +		ret = asrc_dmaconfig(pair_m2m,
-> +				     pair->dma_chan[V4L_CAP],
-> +				     fifo_addr,
-> +				     vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf, 0),
-> +				     cap_dma_len, V4L_CAP, width);
-> +		if (ret) {
-> +			dev_err(dev, "cap dma config error\n");
-> +			goto end;
-> +		}
-> +	} else if (cap_dma_len > ASRC_M2M_BUFFER_SIZE) {
-> +		dev_err(dev, "cap buffer size error\n");
-> +		goto end;
-> +	}
-> +
-> +	reinit_completion(&pair->complete[V4L_OUT]);
-> +	reinit_completion(&pair->complete[V4L_CAP]);
-> +
-> +	/* Submit DMA request */
-> +	dmaengine_submit(pair->desc[V4L_OUT]);
-> +	dma_async_issue_pending(pair->desc[V4L_OUT]->chan);
-> +	if (cap_dma_len > 0) {
-> +		dmaengine_submit(pair->desc[V4L_CAP]);
-> +		dma_async_issue_pending(pair->desc[V4L_CAP]->chan);
-> +	}
-> +
-> +	asrc->m2m_start(pair);
-> +
-> +	if (!wait_for_completion_interruptible_timeout(&pair->complete[V4L_OUT], 10 * HZ)) {
-> +		dev_err(dev, "out DMA task timeout\n");
-> +		goto end;
-> +	}
-> +
-> +	if (cap_dma_len > 0) {
-> +		if (!wait_for_completion_interruptible_timeout(&pair->complete[V4L_CAP], 10 * HZ)) {
-> +			dev_err(dev, "cap DMA task timeout\n");
-> +			goto end;
-> +		}
-> +	}
-> +
-> +	/* read the last words from FIFO */
-> +	asrc_read_last_fifo(pair, vb2_plane_vaddr(&dst_buf->vb2_buf, 0), &cap_dma_len);
-> +	/* update payload length for capture */
-> +	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, cap_dma_len);
-> +
-> +end:
-> +	src_buf = v4l2_m2m_src_buf_remove(pair_m2m->fh.m2m_ctx);
-> +	dst_buf = v4l2_m2m_dst_buf_remove(pair_m2m->fh.m2m_ctx);
-> +
-> +	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
-> +	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
-> +
-> +	v4l2_m2m_job_finish(m2m->m2m_dev, pair_m2m->fh.m2m_ctx);
-> +}
-> +
-> +static int asrc_m2m_job_ready(void *priv)
-> +{
-> +	struct asrc_pair_m2m *pair_m2m = priv;
-> +
-> +	if (v4l2_m2m_num_src_bufs_ready(pair_m2m->fh.m2m_ctx) > 0 &&
-> +	    v4l2_m2m_num_dst_bufs_ready(pair_m2m->fh.m2m_ctx) > 0) {
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct v4l2_m2m_ops asrc_m2m_ops = {
-> +	.job_ready = asrc_m2m_job_ready,
-> +	.device_run = asrc_m2m_device_run,
-> +};
-> +
-> +static const struct media_device_ops asrc_m2m_media_ops = {
-> +	.req_validate = vb2_request_validate,
-> +	.req_queue = v4l2_m2m_request_queue,
-> +};
-> +
-> +static int asrc_m2m_probe(struct platform_device *pdev)
-> +{
-> +	struct fsl_asrc_m2m_pdata *data = pdev->dev.platform_data;
-> +	struct device *dev = &pdev->dev;
-> +	struct asrc_m2m *m2m;
-> +	int ret;
-> +
-> +	m2m = devm_kzalloc(dev, sizeof(struct asrc_m2m), GFP_KERNEL);
-> +	if (!m2m)
-> +		return -ENOMEM;
-> +
-> +	m2m->pdata = *data;
-> +	m2m->pdev = pdev;
-> +
-> +	ret = v4l2_device_register(dev, &m2m->v4l2_dev);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register v4l2 device\n");
-> +		goto err_register;
-> +	}
-> +
-> +	m2m->m2m_dev = v4l2_m2m_init(&asrc_m2m_ops);
-> +	if (IS_ERR(m2m->m2m_dev)) {
-> +		dev_err(dev, "failed to register v4l2 device\n");
-> +		ret = PTR_ERR(m2m->m2m_dev);
-> +		goto err_m2m;
-> +	}
-> +
-> +	m2m->dec_vdev = video_device_alloc();
-> +	if (!m2m->dec_vdev) {
-> +		dev_err(dev, "failed to register v4l2 device\n");
-> +		ret = -ENOMEM;
-> +		goto err_vdev_alloc;
-> +	}
-> +
-> +	mutex_init(&m2m->mlock);
-> +
-> +	m2m->dec_vdev->fops = &asrc_m2m_fops;
-> +	m2m->dec_vdev->ioctl_ops = &asrc_m2m_ioctl_ops;
-> +	m2m->dec_vdev->minor = -1;
-> +	m2m->dec_vdev->release = video_device_release;
-> +	m2m->dec_vdev->lock = &m2m->mlock; /* lock for ioctl serialization */
-> +	m2m->dec_vdev->v4l2_dev = &m2m->v4l2_dev;
-> +	m2m->dec_vdev->vfl_dir = VFL_DIR_M2M;
-> +	m2m->dec_vdev->device_caps = V4L2_CAP_STREAMING | V4L2_CAP_AUDIO_M2M;
-> +
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	m2m->mdev.dev = &pdev->dev;
-> +	strscpy(m2m->mdev.model, M2M_DRV_NAME, sizeof(m2m->mdev.model));
-> +	snprintf(m2m->mdev.bus_info, sizeof(m2m->mdev.bus_info),
-> +		 "platform:%s", M2M_DRV_NAME);
-> +	media_device_init(&m2m->mdev);
-> +	m2m->mdev.ops = &asrc_m2m_media_ops;
-> +	m2m->v4l2_dev.mdev = &m2m->mdev;
-> +#endif
-> +
-> +	ret = video_register_device(m2m->dec_vdev, VFL_TYPE_AUDIO, -1);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register video device\n");
-> +		goto err_vdev_register;
-> +	}
-> +
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	ret = v4l2_m2m_register_media_controller(m2m->m2m_dev, m2m->dec_vdev,
-> +						 MEDIA_ENT_F_PROC_AUDIO_RESAMPLER);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to init mem2mem media controller\n");
-> +		goto error_v4l2;
-> +	}
-> +
-> +	ret = media_device_register(&m2m->mdev);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to register mem2mem media device\n");
-> +		goto error_m2m_mc;
-> +	}
-> +#endif
-> +
-> +	video_set_drvdata(m2m->dec_vdev, m2m);
-> +	platform_set_drvdata(pdev, m2m);
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	return 0;
-> +
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +error_m2m_mc:
-> +	v4l2_m2m_unregister_media_controller(m2m->m2m_dev);
-> +#endif
-> +error_v4l2:
-> +	video_unregister_device(m2m->dec_vdev);
-> +err_vdev_register:
-> +	video_device_release(m2m->dec_vdev);
-> +err_vdev_alloc:
-> +	v4l2_m2m_release(m2m->m2m_dev);
-> +err_m2m:
-> +	v4l2_device_unregister(&m2m->v4l2_dev);
-> +err_register:
-> +	return ret;
-> +}
-> +
-> +static void asrc_m2m_remove(struct platform_device *pdev)
-> +{
-> +	struct asrc_m2m *m2m = platform_get_drvdata(pdev);
-> +
-> +	pm_runtime_disable(&pdev->dev);
-> +#ifdef CONFIG_MEDIA_CONTROLLER
-> +	media_device_unregister(&m2m->mdev);
-> +	v4l2_m2m_unregister_media_controller(m2m->m2m_dev);
-> +#endif
-> +	video_unregister_device(m2m->dec_vdev);
-> +	video_device_release(m2m->dec_vdev);
-> +	v4l2_m2m_release(m2m->m2m_dev);
-> +	v4l2_device_unregister(&m2m->v4l2_dev);
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +/* suspend callback for m2m */
-> +static int asrc_m2m_suspend(struct device *dev)
-> +{
-> +	struct asrc_m2m *m2m = dev_get_drvdata(dev);
-> +	struct fsl_asrc *asrc = m2m->pdata.asrc;
-> +	struct fsl_asrc_pair *pair;
-> +	unsigned long lock_flags;
-> +	int i;
-> +
-> +	for (i = 0; i < PAIR_CTX_NUM; i++) {
-> +		spin_lock_irqsave(&asrc->lock, lock_flags);
-> +		pair = asrc->pair[i];
-> +		if (!pair || !pair->req_pair) {
-> +			spin_unlock_irqrestore(&asrc->lock, lock_flags);
-> +			continue;
-> +		}
-> +		if (!completion_done(&pair->complete[V4L_OUT])) {
-> +			if (pair->dma_chan[V4L_OUT])
-> +				dmaengine_terminate_all(pair->dma_chan[V4L_OUT]);
-> +			asrc_input_dma_callback((void *)pair);
-> +		}
-> +		if (!completion_done(&pair->complete[V4L_CAP])) {
-> +			if (pair->dma_chan[V4L_CAP])
-> +				dmaengine_terminate_all(pair->dma_chan[V4L_CAP]);
-> +			asrc_output_dma_callback((void *)pair);
-> +		}
-> +
-> +		if (asrc->m2m_pair_suspend)
-> +			asrc->m2m_pair_suspend(pair);
-> +
-> +		spin_unlock_irqrestore(&asrc->lock, lock_flags);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int asrc_m2m_resume(struct device *dev)
-> +{
-> +	struct asrc_m2m *m2m = dev_get_drvdata(dev);
-> +	struct fsl_asrc *asrc = m2m->pdata.asrc;
-> +	struct fsl_asrc_pair *pair;
-> +	unsigned long lock_flags;
-> +	int i;
-> +
-> +	for (i = 0; i < PAIR_CTX_NUM; i++) {
-> +		spin_lock_irqsave(&asrc->lock, lock_flags);
-> +		pair = asrc->pair[i];
-> +		if (!pair || !pair->req_pair) {
-> +			spin_unlock_irqrestore(&asrc->lock, lock_flags);
-> +			continue;
-> +		}
-> +		if (asrc->m2m_pair_resume)
-> +			asrc->m2m_pair_resume(pair);
-> +
-> +		spin_unlock_irqrestore(&asrc->lock, lock_flags);
-> +	}
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static const struct dev_pm_ops asrc_m2m_pm_ops = {
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(asrc_m2m_suspend,
-> +				      asrc_m2m_resume)
-> +};
-> +
-> +static struct platform_driver asrc_m2m_driver = {
-> +	.probe  = asrc_m2m_probe,
-> +	.remove_new = asrc_m2m_remove,
-> +	.driver = {
-> +		.name = M2M_DRV_NAME,
-> +		.pm = &asrc_m2m_pm_ops,
-> +	},
-> +};
-> +module_platform_driver(asrc_m2m_driver);
-> +
-> +MODULE_DESCRIPTION("Freescale ASRC M2M driver");
-> +MODULE_ALIAS("platform:" M2M_DRV_NAME);
-> +MODULE_LICENSE("GPL");
-
+Best regards,
+Tomasz
