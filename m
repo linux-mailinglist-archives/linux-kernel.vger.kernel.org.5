@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B1A7E838F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98BB7E8393
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344975AbjKJUPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S1345226AbjKJUPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjKJUPF (ORCPT
+        with ESMTP id S229620AbjKJUPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:15:05 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C143E421C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:14:59 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so3970788a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:14:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699647298; x=1700252098; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zd+JvFl7GwE5eEIj/Ew7unSI1M5/SrVTgPWAVUgLwtw=;
-        b=J1nZfWCQ4LX9AbNpXTyaqiGnDefy3ppp0olejQRzs24/qq3PU3kxfkvFb8+GUvKCeZ
-         uYFYLbqG1+PHXB8uzsvWCuicOOYiEaMNUDAmkf335fnj59jC7/tq6wMQjzAx+EQt2/RT
-         RsOuVNxLBa9PVI71tEXLXTsyXTNG3ReJs4zjI=
+        Fri, 10 Nov 2023 15:15:14 -0500
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95F1A9;
+        Fri, 10 Nov 2023 12:15:11 -0800 (PST)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3b2ec5ee2e4so1415637b6e.3;
+        Fri, 10 Nov 2023 12:15:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699647298; x=1700252098;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zd+JvFl7GwE5eEIj/Ew7unSI1M5/SrVTgPWAVUgLwtw=;
-        b=BuM7sHJBdiaU6+J4Ldv9Ctle0jlv/M/c5Xjda2j3+OWZEUH8dWh1qCPMBHH4L9iSza
-         H0s0uZYc8N8n7SqqnHdGC75r2k6NO68762MV0nLwOwwVNElXpGbdGTSzGDIEYZMuEjn9
-         KZeFmvv4I9jejDQJ4y0D4ZykL4GPmdOULJNVFi5lkKTQWzR9SYCW8yFH4T1TGErKK9x8
-         DsxFHMJXBSNTE38lZCQ2Kv5t1svHtqmdZrhwFc9Pe+v3l/TNty2bTDhFa155ybqIr/Ox
-         ORb9JrfiiNjS9tpF7WpPfdSsdo8FrEzc8Z1xMEL0XyXFnxNXEb/dd1xplCyDjKcQZEM/
-         ozVw==
-X-Gm-Message-State: AOJu0YxemdXvlwTO4hvHOlrzm9EUO8EHAw9Pse+vjCmYJPgT7AeHF3Ap
-        g/P22X1A4m6TbYyV9z53xzroKoCXXw/mxSjV8F9f56bu
-X-Google-Smtp-Source: AGHT+IE09sElWMwRy98c9ACHbJOsCJF5h4gNRxDtAz8eXv/aKFjiSSbW3NTeNmNwCihDk2M6MwZ0ww==
-X-Received: by 2002:a05:6402:1a36:b0:540:caed:3619 with SMTP id be22-20020a0564021a3600b00540caed3619mr248947edb.24.1699647297797;
-        Fri, 10 Nov 2023 12:14:57 -0800 (PST)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id b1-20020a50ccc1000000b00542df4a03d0sm40864edj.16.2023.11.10.12.14.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 12:14:57 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so3948228a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:14:57 -0800 (PST)
-X-Received: by 2002:a05:6402:35b:b0:542:d895:762a with SMTP id
- r27-20020a056402035b00b00542d895762amr214327edw.39.1699647296966; Fri, 10 Nov
- 2023 12:14:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699647311; x=1700252111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OQPaNqtA0VC0hVnwYelQKy0jI9tj6pJgT2JLADbDcD0=;
+        b=lfjTBj58EXzelXXObfs/uA84eN7LRaoNtXKbrFQe6nqfFYMzgGjzDbctb5fTOc87bP
+         SM4Ml5oL4raEP1CaPR/GEWWt42cQ74h2EV/tdxkv2C4V93bKWcm6jvwMzaE9+iW5OXP5
+         rdk3ka63L5eHipaa6CYao2HtcFE83T16Nn+wCKuSXggQMKcVGElNy1IVDPh4ZeNZsBHJ
+         howDrd5wGEdjtDTrK3WQ2Lvqnr6WQwzmGxFltrdYxfjeD58EyPLoOofb1is/6CyuSC7f
+         Hb3pad+8lMRxceqGOUIajKACtYUOMLqhEL+z5ovg1ge+30JV+L1Syp0v05+JjioHYMNn
+         QOXA==
+X-Gm-Message-State: AOJu0YyF/gVkl3mJrotqDuyaGb5HqNB3cdRB5mz70vCjg2A2voejjTzU
+        3zU52+omOBG0RNlTt2amgg==
+X-Google-Smtp-Source: AGHT+IFKsjlOyPXC6YCPR71oosv3AThTLCctELXTyDnJUUQ7cwL2z6lu8u2ZpGFiF6866UnyNInR/g==
+X-Received: by 2002:a05:6808:19a2:b0:3a1:e17a:b3fb with SMTP id bj34-20020a05680819a200b003a1e17ab3fbmr518472oib.1.1699647311070;
+        Fri, 10 Nov 2023 12:15:11 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id e23-20020aca1317000000b003af638fd8e4sm34328oii.55.2023.11.10.12.15.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 12:15:10 -0800 (PST)
+Received: (nullmailer pid 355923 invoked by uid 1000);
+        Fri, 10 Nov 2023 20:15:09 -0000
+Date:   Fri, 10 Nov 2023 14:15:09 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Robert Marko <robimarko@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [net-next RFC PATCH v6 4/4] dt-bindings: Document Marvell
+ Aquantia PHY
+Message-ID: <169964730814.355844.982448346272624402.robh@kernel.org>
+References: <20231109123253.3933-1-ansuelsmth@gmail.com>
+ <20231109123253.3933-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20231110095013.655597-1-thierry.reding@gmail.com> <CAHk-=wj=-dpdJv54NMawHSOZ_aM3oeaTdEVDeQM5OS9+5bi2eA@mail.gmail.com>
-In-Reply-To: <CAHk-=wj=-dpdJv54NMawHSOZ_aM3oeaTdEVDeQM5OS9+5bi2eA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 10 Nov 2023 12:14:40 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgXYxbw0-BoLne1A-x8wdgy1H8dQVLeeOPDRcUfeHRarA@mail.gmail.com>
-Message-ID: <CAHk-=wgXYxbw0-BoLne1A-x8wdgy1H8dQVLeeOPDRcUfeHRarA@mail.gmail.com>
-Subject: Re: [GIT PULL] pwm: Fixes for v6.7-rc1
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109123253.3933-4-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 at 12:10, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I have no idea why pr-tracker-bot isn't reacting to this one, but
-> here's the manual version of "it's pulled".
 
-Ahh, the original pull request email isn't on lore either, so it was
-lost somehow.
+On Thu, 09 Nov 2023 13:32:53 +0100, Christian Marangi wrote:
+> Document bindings for Marvell Aquantia PHY.
+> 
+> The Marvell Aquantia PHY require a firmware to work correctly and there
+> at least 3 way to load this firmware.
+> 
+> Describe all the different way and document the binding "firmware-name"
+> to load the PHY firmware from userspace.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> Changes v6:
+> - Add Reviewed-by tag
+> - Drop comments in dts examples
+> - Improve commit title
+> - Fix wrong reg in example
+> Changes v5:
+> - Drop extra entry not related to HW description
+> Changes v3:
+> - Make DT description more OS agnostic
+> - Use custom select to fix dtbs checks
+> Changes v2:
+> - Add DT patch
+> 
+>  .../bindings/net/marvell,aquantia.yaml        | 116 ++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> 
 
-         Linus
+Acked-by: Rob Herring <robh@kernel.org>
+
