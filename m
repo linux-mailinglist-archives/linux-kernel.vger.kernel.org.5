@@ -2,293 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5A17E8449
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5164A7E8444
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346678AbjKJUmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:42:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
+        id S1346200AbjKJUmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346625AbjKJUmG (ORCPT
+        with ESMTP id S1346139AbjKJUl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:42:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC4149E5;
-        Fri, 10 Nov 2023 12:41:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=xbcUpDlbQzcZtzSAWcv3Q7LJrTanIECAc3h72m1YlgE=; b=NXjTGPNA2/J+S0B69M9GryHSZy
-        JEUbI2a0TcAYRnGh16+i9v4DFgBnH83q3GPcVmkFYWeoL2adHr3jmgVG2axEPdWLdI+jor9FpoEB4
-        WOd9Nh4rje6m4Be73wVz7JajVwB7Jan9En5P94sI1bn6IbzMWrOZvu1ynUfk1Exyo9UtvvRaTOuli
-        UT4d0/S9wkysIlvVu4vAARkoMPnt9Ip/T/fESfI7hCRzWsnPwgaNjQq6wxrjMZc/qLz8aiJ6qT2cc
-        HBY6Q7ud4STl3KlqSrCt/oXDuxacuZuLcBHlCvpCK6j8ogowkjqKuJiYsJ7n9Cjn0Ra/nTJqxskGj
-        aq72S09w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r1YJd-00FUTA-Bl; Fri, 10 Nov 2023 20:41:21 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH v3 4/4] xfs: Remove mrlock wrapper
-Date:   Fri, 10 Nov 2023 20:41:19 +0000
-Message-Id: <20231110204119.3692023-5-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20231110204119.3692023-1-willy@infradead.org>
-References: <20231110204119.3692023-1-willy@infradead.org>
+        Fri, 10 Nov 2023 15:41:59 -0500
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE746B3;
+        Fri, 10 Nov 2023 12:41:27 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1f06931e4f7so1380280fac.1;
+        Fri, 10 Nov 2023 12:41:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699648886; x=1700253686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bBHIKLn/Yt1i+AZlSPolEYBWZ3bHmDQq+CYq1w7SUZQ=;
+        b=DjcM4lf/wdPyGGi+uf3IUCIh+zFDWe2tKmEylCIoJGoxYVg5i6SV1IF+h3fEfs0YWU
+         5KiEAWmB++23/0kcXZJ3OBsDQcGRmux0BhE2DmAkmNxz3R6slxy1gYqfKaJrDu2RTQx/
+         NWokevweiWO1Ujd6EqtWP/tS/dv1tt0nf6aqR4VkT0hbci0VjZMscpVtXWTAMNzynL3m
+         C12XpqMKt8Gj1q4r0ARDZFMRoUBpeL19yIVw3IJYGFF42vi9/kcvj4QL4VaQTYlocUlM
+         YZairyufLs7XKHdgoZFw4U9e9TlGzRSDsR4WN6K1HkxN90vqeOrq1oQaJWBDuHHCsOBp
+         s6MQ==
+X-Gm-Message-State: AOJu0Yy5ThfC4I7/yC9eI4+tlAY0at7+U2Q8EfI7ADbGoC2HQO645gX1
+        TqARGvPNMZN4p9YvYbGQCA==
+X-Google-Smtp-Source: AGHT+IGWPDVMk2FcTLN+vtGTQRj0d3U/p0JEK8eP2bUHcv7B2jUR734/Xzt7iQNmomOefFQYy76Dcw==
+X-Received: by 2002:a05:6870:d07:b0:1ef:b16f:d294 with SMTP id mk7-20020a0568700d0700b001efb16fd294mr347134oab.38.1699648886590;
+        Fri, 10 Nov 2023 12:41:26 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id zl25-20020a0568716d9900b001cc9bc7b569sm59526oab.27.2023.11.10.12.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 12:41:26 -0800 (PST)
+Received: (nullmailer pid 395677 invoked by uid 1000);
+        Fri, 10 Nov 2023 20:41:24 -0000
+Date:   Fri, 10 Nov 2023 14:41:24 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>, linux-serial@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        David Airlie <airlied@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-pwm@vger.kernel.org,
+        linux-sound@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>,
+        devicetree@vger.kernel.org,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        linux-i2c@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-rtc@vger.kernel.org, Tomasz Figa <tomasz.figa@gmail.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 08/17] dt-bindings: samsung: exynos-pmu: add specific
+ compatibles for existing SoC
+Message-ID: <169964888359.395618.988473791083039735.robh@kernel.org>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+ <20231108104343.24192-9-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108104343.24192-9-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mrlock was an rwsem wrapper that also recorded whether the lock was
-held for read or write.  Now that we can ask the generic code whether
-the lock is held for read or write, we can remove this wrapper and use
-an rwsem directly.
 
-As the comment says, we can't use lockdep to assert that the ILOCK is
-held for write, because we might be in a workqueue, and we aren't able
-to tell lockdep that we do in fact own the lock.
+On Wed, 08 Nov 2023 11:43:34 +0100, Krzysztof Kozlowski wrote:
+> Samsung Exynos SoC reuses several devices from older designs, thus
+> historically we kept the old (block's) compatible only.  This works fine
+> and there is no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
+> 
+> Add compatibles specific to each SoC in front of all old-SoC-like
+> compatibles.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> I propose to take the patch through Samsung SoC (me). See cover letter
+> for explanation.
+> ---
+>  .../devicetree/bindings/soc/samsung/exynos-pmu.yaml         | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/xfs/mrlock.h    | 78 ----------------------------------------------
- fs/xfs/xfs_inode.c | 22 +++++++------
- fs/xfs/xfs_inode.h |  2 +-
- fs/xfs/xfs_iops.c  |  4 +--
- fs/xfs/xfs_linux.h |  2 +-
- fs/xfs/xfs_super.c |  4 +--
- 6 files changed, 18 insertions(+), 94 deletions(-)
- delete mode 100644 fs/xfs/mrlock.h
-
-diff --git a/fs/xfs/mrlock.h b/fs/xfs/mrlock.h
-deleted file mode 100644
-index 79155eec341b..000000000000
---- a/fs/xfs/mrlock.h
-+++ /dev/null
-@@ -1,78 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (c) 2000-2006 Silicon Graphics, Inc.
-- * All Rights Reserved.
-- */
--#ifndef __XFS_SUPPORT_MRLOCK_H__
--#define __XFS_SUPPORT_MRLOCK_H__
--
--#include <linux/rwsem.h>
--
--typedef struct {
--	struct rw_semaphore	mr_lock;
--#if defined(DEBUG) || defined(XFS_WARN)
--	int			mr_writer;
--#endif
--} mrlock_t;
--
--#if defined(DEBUG) || defined(XFS_WARN)
--#define mrinit(mrp, name)	\
--	do { (mrp)->mr_writer = 0; init_rwsem(&(mrp)->mr_lock); } while (0)
--#else
--#define mrinit(mrp, name)	\
--	do { init_rwsem(&(mrp)->mr_lock); } while (0)
--#endif
--
--#define mrlock_init(mrp, t,n,s)	mrinit(mrp, n)
--#define mrfree(mrp)		do { } while (0)
--
--static inline void mraccess_nested(mrlock_t *mrp, int subclass)
--{
--	down_read_nested(&mrp->mr_lock, subclass);
--}
--
--static inline void mrupdate_nested(mrlock_t *mrp, int subclass)
--{
--	down_write_nested(&mrp->mr_lock, subclass);
--#if defined(DEBUG) || defined(XFS_WARN)
--	mrp->mr_writer = 1;
--#endif
--}
--
--static inline int mrtryaccess(mrlock_t *mrp)
--{
--	return down_read_trylock(&mrp->mr_lock);
--}
--
--static inline int mrtryupdate(mrlock_t *mrp)
--{
--	if (!down_write_trylock(&mrp->mr_lock))
--		return 0;
--#if defined(DEBUG) || defined(XFS_WARN)
--	mrp->mr_writer = 1;
--#endif
--	return 1;
--}
--
--static inline void mrunlock_excl(mrlock_t *mrp)
--{
--#if defined(DEBUG) || defined(XFS_WARN)
--	mrp->mr_writer = 0;
--#endif
--	up_write(&mrp->mr_lock);
--}
--
--static inline void mrunlock_shared(mrlock_t *mrp)
--{
--	up_read(&mrp->mr_lock);
--}
--
--static inline void mrdemote(mrlock_t *mrp)
--{
--#if defined(DEBUG) || defined(XFS_WARN)
--	mrp->mr_writer = 0;
--#endif
--	downgrade_write(&mrp->mr_lock);
--}
--
--#endif /* __XFS_SUPPORT_MRLOCK_H__ */
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index 1ed6bed19bec..7661084ca568 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -208,9 +208,9 @@ xfs_ilock(
- 	}
- 
- 	if (lock_flags & XFS_ILOCK_EXCL)
--		mrupdate_nested(&ip->i_lock, XFS_ILOCK_DEP(lock_flags));
-+		down_write_nested(&ip->i_lock, XFS_ILOCK_DEP(lock_flags));
- 	else if (lock_flags & XFS_ILOCK_SHARED)
--		mraccess_nested(&ip->i_lock, XFS_ILOCK_DEP(lock_flags));
-+		down_read_nested(&ip->i_lock, XFS_ILOCK_DEP(lock_flags));
- }
- 
- /*
-@@ -251,10 +251,10 @@ xfs_ilock_nowait(
- 	}
- 
- 	if (lock_flags & XFS_ILOCK_EXCL) {
--		if (!mrtryupdate(&ip->i_lock))
-+		if (!down_write_trylock(&ip->i_lock))
- 			goto out_undo_mmaplock;
- 	} else if (lock_flags & XFS_ILOCK_SHARED) {
--		if (!mrtryaccess(&ip->i_lock))
-+		if (!down_read_trylock(&ip->i_lock))
- 			goto out_undo_mmaplock;
- 	}
- 	return 1;
-@@ -303,9 +303,9 @@ xfs_iunlock(
- 		up_read(&VFS_I(ip)->i_mapping->invalidate_lock);
- 
- 	if (lock_flags & XFS_ILOCK_EXCL)
--		mrunlock_excl(&ip->i_lock);
-+		up_write(&ip->i_lock);
- 	else if (lock_flags & XFS_ILOCK_SHARED)
--		mrunlock_shared(&ip->i_lock);
-+		up_read(&ip->i_lock);
- 
- 	trace_xfs_iunlock(ip, lock_flags, _RET_IP_);
- }
-@@ -324,7 +324,7 @@ xfs_ilock_demote(
- 		~(XFS_IOLOCK_EXCL|XFS_MMAPLOCK_EXCL|XFS_ILOCK_EXCL)) == 0);
- 
- 	if (lock_flags & XFS_ILOCK_EXCL)
--		mrdemote(&ip->i_lock);
-+		downgrade_write(&ip->i_lock);
- 	if (lock_flags & XFS_MMAPLOCK_EXCL)
- 		downgrade_write(&VFS_I(ip)->i_mapping->invalidate_lock);
- 	if (lock_flags & XFS_IOLOCK_EXCL)
-@@ -338,10 +338,14 @@ xfs_assert_ilocked(
- 	struct xfs_inode	*ip,
- 	uint			lock_flags)
- {
-+	/*
-+	 * Sometimes we assert the ILOCK is held exclusively, but we're in
-+	 * a workqueue, so lockdep doesn't know we're the owner.
-+	 */
- 	if (lock_flags & XFS_ILOCK_SHARED)
--		rwsem_assert_held(&ip->i_lock.mr_lock);
-+		rwsem_assert_held(&ip->i_lock);
- 	else if (lock_flags & XFS_ILOCK_EXCL)
--		ASSERT(ip->i_lock.mr_writer);
-+		rwsem_assert_held_write_nolockdep(&ip->i_lock);
- 
- 	if (lock_flags & XFS_MMAPLOCK_SHARED)
- 		rwsem_assert_held(&VFS_I(ip)->i_mapping->invalidate_lock);
-diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-index dd8b8339ba1b..3cade5903fda 100644
---- a/fs/xfs/xfs_inode.h
-+++ b/fs/xfs/xfs_inode.h
-@@ -39,7 +39,7 @@ typedef struct xfs_inode {
- 
- 	/* Transaction and locking information. */
- 	struct xfs_inode_log_item *i_itemp;	/* logging information */
--	mrlock_t		i_lock;		/* inode lock */
-+	struct rw_semaphore	i_lock;		/* inode lock */
- 	atomic_t		i_pincount;	/* inode pin count */
- 	struct llist_node	i_gclist;	/* deferred inactivation list */
- 
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index e711668d601b..79010d60ee21 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1284,9 +1284,9 @@ xfs_setup_inode(
- 		 */
- 		lockdep_set_class(&inode->i_rwsem,
- 				  &inode->i_sb->s_type->i_mutex_dir_key);
--		lockdep_set_class(&ip->i_lock.mr_lock, &xfs_dir_ilock_class);
-+		lockdep_set_class(&ip->i_lock, &xfs_dir_ilock_class);
- 	} else {
--		lockdep_set_class(&ip->i_lock.mr_lock, &xfs_nondir_ilock_class);
-+		lockdep_set_class(&ip->i_lock, &xfs_nondir_ilock_class);
- 	}
- 
- 	/*
-diff --git a/fs/xfs/xfs_linux.h b/fs/xfs/xfs_linux.h
-index d7873e0360f0..ec3c6c138a63 100644
---- a/fs/xfs/xfs_linux.h
-+++ b/fs/xfs/xfs_linux.h
-@@ -22,7 +22,6 @@ typedef __u32			xfs_nlink_t;
- #include "xfs_types.h"
- 
- #include "kmem.h"
--#include "mrlock.h"
- 
- #include <linux/semaphore.h>
- #include <linux/mm.h>
-@@ -51,6 +50,7 @@ typedef __u32			xfs_nlink_t;
- #include <linux/notifier.h>
- #include <linux/delay.h>
- #include <linux/log2.h>
-+#include <linux/rwsem.h>
- #include <linux/spinlock.h>
- #include <linux/random.h>
- #include <linux/ctype.h>
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index 764304595e8b..cd0200ed51f0 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -724,9 +724,7 @@ xfs_fs_inode_init_once(
- 	/* xfs inode */
- 	atomic_set(&ip->i_pincount, 0);
- 	spin_lock_init(&ip->i_flags_lock);
--
--	mrlock_init(&ip->i_lock, MRLOCK_ALLOW_EQUAL_PRI|MRLOCK_BARRIER,
--		     "xfsino", ip->i_ino);
-+	init_rwsem(&ip->i_lock);
- }
- 
- /*
--- 
-2.42.0
+Acked-by: Rob Herring <robh@kernel.org>
 
