@@ -2,178 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C556A7E8448
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CC77E8453
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbjKJUiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 15:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
+        id S1346215AbjKJUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235674AbjKJUht (ORCPT
+        with ESMTP id S235493AbjKJUhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 15:37:49 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA52255BB;
-        Fri, 10 Nov 2023 12:37:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1699648624; x=1700253424; i=quwenruo.btrfs@gmx.com;
-        bh=qvvS9IGzHxkGirdwRPiNhMStn206GjQsGeSNbw2pTFE=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=oJPzby8PuPMHx8rs0WrqERpgeuV50PPyfvJ6Lxi35cQn1knNki3XDJeyrDKjy75k
-         7vO5fzkfPAlmXpVRU1LAlRCUAsGACkmKx2xdx/qn0PKzhegbwvtmzHSfqw3By81uQ
-         YBTyVvbNFwp8YlhqTQfD3ne8PWkiGTG8q+TLpnyflZpPpv3vL30r4XB8+HzahoCv1
-         GptYduIEZJkKlBQoFfqjc31aKh/skTX1XhD7qQ8h2R2TR9/v2QIEDJTC0UskeE9AO
-         z9Le4CIseRiWIWM80LJ9AG/8YyAAsl4A4geO5S1H51PeCydQ+z3yqZEPZhvThYF2d
-         q26RtmmNQHnA2zLURA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6DWi-1r3k6p2Mqu-006bUE; Fri, 10
- Nov 2023 21:37:04 +0100
-Message-ID: <9e0559d3-c46f-4da6-8974-3790f1dfd3d8@gmx.com>
-Date:   Sat, 11 Nov 2023 07:06:56 +1030
+        Fri, 10 Nov 2023 15:37:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4B4185
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 12:37:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE25C433C9;
+        Fri, 10 Nov 2023 20:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699648654;
+        bh=Gstp9yb61OjsTuHdpm83SN/hPjjO5FW+SEuM0791eZQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Y4fy5nMj8Rzgkjiieh+wEpbAA1v5K1FVdZlRte9lQ1mT4VjhzMMbLlmWYv81gVTGT
+         WW/uGbm+GBjrUquEJlpe7dhFBUbokGw5g8M/yuSmqNFMN9Pk48ebCh6dfOWBTR3bk+
+         cO1Db4pKQd9QbO7Ou0ubLc7NucXVupnKg/0yAvpn1Z3SY+AKOMNoDrJWMNAHDi+/rt
+         faIrmStpuLTXooDGsBL9hDanXwi+QVJlPGn8/decvcwUydszl7QOIZHAg3w7H52pt1
+         6kQpTwc1PNRlRwPGmHH/W9CRc/aAoOV31KiomD3olDvSokRtW5WWcZGByFU2l7r05K
+         vAucJEIphC33g==
+Date:   Fri, 10 Nov 2023 12:37:33 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <alexey.pakhunov@spacex.com>
+Cc:     <mchan@broadcom.com>, <vincent.wong2@spacex.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <siva.kallam@broadcom.com>, <prashant@broadcom.com>
+Subject: Re: [PATCH v2 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
+Message-ID: <20231110123733.42f31ddb@kernel.org>
+In-Reply-To: <20231110002340.3612515-1-alexey.pakhunov@spacex.com>
+References: <20231110002340.3612515-1-alexey.pakhunov@spacex.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix warning in create_pending_snapshot
-Content-Language: en-US
-To:     Lizhi Xu <lizhi.xu@windriver.com>,
-        syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
-Cc:     boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000001959d30609bb5d94@google.com>
- <20231110114806.3366681-1-lizhi.xu@windriver.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <20231110114806.3366681-1-lizhi.xu@windriver.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:y2/rm13Ua/iLDSuSpKzd8tvhWZy3qsPtOAkEPNOr0ss1SrddNuP
- zRp1UWb+9NeAcgBbykLPcgXZy0BE4cYkvxM248nfjeFNIPQTLsGX37ggZHSwlpCaXM9yOnP
- JHjHVgXB5BYROQp6VbMLuZfIcFz4aexnDjM9E9rtVNMWrtaU7i8Dw+e/rElwye9eYG2uIru
- KjJGlZr7tuqWr1dnA6syw==
-UI-OutboundReport: notjunk:1;M01:P0:yKHwl+8Myls=;VKpHpTtmbElCfvWtc7Id7vlTzuB
- UVgrkbIAXd8X+YKC63YSaAw+dhvKPTXnaGBEvX7+LzCa9w00OD1Aefgia2ODF1mYwFftOZNjA
- Wjwr3MdpK2x4uL5QgQ6Z2dAUn+pz3PssCAgc7grLoTsljjO7LIqw3T4Ubeslz4qFEHt4afJ45
- M/RPJYnHXlj0rUsmYHe396gmWPZkyWgwn8K57CtfTyjpnDwe2eto5cogn+sfaGwxrLBboQXI5
- 7P0dKVnxgiSCNGqRi2nOJ6/v7j2bsj0hLDhRaZVUsy6arNrZ+PY378ji0hh6PqUz5qMsmSinL
- TSVWPDn2IV3MzoN+XX6W0V3HjmdNZ4KYmTNeEHtFo4h4iCdFl7kysfKYD2gEzxp8irR7p1U5a
- Q5SBHU5IS+V69id4BGFtGw3M6wH9lA38QAGPZS06AJW+dhT6DwXgGzZMOH14KggssZpI5retG
- XEoB/ze8Jejpu3qMeWQxt2+64h6oK6HQilXMP1flUT9W5Tv4ZRrooCYgMAyr44r1sfcgoSHrP
- 8zU3pEDaEwyQ2hp5SQl6pwkc6GDRLz+kgNwavgS7QEGf+dSSu3LInnSADPQFiWD+0h0jAQDEI
- 3bUaWIB4FwD7Qsr9eFg5Ff7PGhXMwA8AH6nR8nktNBG32AwcIKI5MmcAC72dgagO7qLtd60Gu
- rKsOBAiAb0HVEKnALzf7z/GG9/V6bXFXA3TzSHnM5C/CE7rXAK2YrRO8+dMiegm0ACuz5eUAJ
- aGDhVwDB/bQp3/ErIlmx+OmbR123cA/nFTO5XVrMS+7/4Ou52JDrI/Q0dNXO/fkdMngfqQl4G
- fGYJTl9dj+GNAHRrRM/joXQCf3HZV3EK9MRjN+ZJGOOcvVH6l4aid0UVaR2jK86k1F2zDxwGZ
- pYsVSXR2UfK+BMM5XeKWfSMkLPiHzen15xxV0aqMl0PbdjUetMtgGZtM6KIPcw4SMWpR9OT18
- Dy3RuxY9gm71aMLT5INQ8pg5KUY=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 9 Nov 2023 16:23:39 -0800 alexey.pakhunov@spacex.com wrote:
+> +		for (i = 0; i < TG3_IRQ_MAX_VECS; ++i)
+> +		{
 
+checkpatch says:
 
-On 2023/11/10 22:18, Lizhi Xu wrote:
-> r0 =3D open(&(0x7f0000000080)=3D'./file0\x00', 0x0, 0x0)
-> ioctl$BTRFS_IOC_QUOTA_CTL(r0, 0xc0109428, &(0x7f0000000000)=3D{0x1})
-> r1 =3D openat$cgroup_ro(0xffffffffffffff9c, &(0x7f0000000100)=3D'blkio.b=
-fq.time_recursive\x00', 0x275a, 0x0)
-> ioctl$BTRFS_IOC_QGROUP_CREATE(r1, 0x4010942a, &(0x7f0000000640)=3D{0x1, =
-0x100})
-> r2 =3D openat(0xffffffffffffff9c, &(0x7f0000000500)=3D'.\x00', 0x0, 0x0)
-> ioctl$BTRFS_IOC_SNAP_CREATE(r0, 0x50009401, &(0x7f0000000a80)=3D{{r2},
->
->  From the logs, it can be seen that syz can execute to btrfs_ioctl_qgrou=
-p_create()
-> through two paths.
-> Syz enters btrfs_ioctl_qgroup_create() by calling ioctl$BTRFS_IOC_QGROUP=
-_CREATE(
-> r1, 0x4010942a,&(0x7f000000 640)=3D{0x1, 0x100}) or ioctl$BTRFS_IOC_SNAP=
-_CREATE(r0,
-> 0x50009401,&(0x7f000000 a80)=3D{r2}," respectively;
->
-> The most crucial thing is that when calling ioctl$BTRFS_IOC_QGROUP_CREAT=
-E,
-> the passed parameter qgroupid value is 256, while BTRFS_FIRST_FREE_OBJEC=
-TID
-> is also equal to 256, indicating that the passed parameter qgroupid is
-> obviously incorrect.
-
-This conclusion looks incorrect to me.
-
-Subvolumes are allowed to have any id in the range
-[BTRFS_FIRST_TREE_OBJECTID, BTRFS_LAST_TREE_OBJECTID].
-
-In fact, you can easily create a subvolume with 256 as its subvolumeid.
-Just create an empty fs, and create a new subvolume in it, then you got;
-
-	item 11 key (256 ROOT_ITEM 0) itemoff 12961 itemsize 439
-		generation 7 root_dirid 256 bytenr 30441472 byte_limit 0 bytes_used 1638=
-4
-         ...
-
-So it's completely valid.
-
-
-The root cause is just snapshot creation conflicts with an existing qgroup=
-.
-
-Thanks,
-Qu
->
-> Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmai=
-l.com
-> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation"=
-)
-> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-> ---
->   fs/btrfs/ioctl.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 752acff2c734..21cf7a7f18ab 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -3799,6 +3799,11 @@ static long btrfs_ioctl_qgroup_create(struct file=
- *file, void __user *arg)
->   		goto out;
->   	}
->
-> +	if (sa->create && sa->qgroupid =3D=3D BTRFS_FIRST_FREE_OBJECTID) { > +=
-		ret =3D -EINVAL;
-> +		goto out;
-> +	}
-> +
->   	trans =3D btrfs_join_transaction(root);
->   	if (IS_ERR(trans)) {
->   		ret =3D PTR_ERR(trans);
+ERROR: that open brace { should be on the previous line 
+-- 
+pw-bot: cr
