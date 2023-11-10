@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C997E8581
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8368F7E8585
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 23:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjKJWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 17:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
+        id S229749AbjKJWX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 17:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjKJWWP (ORCPT
+        with ESMTP id S229548AbjKJWX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 17:22:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5654229
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 14:21:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699654887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tg0wVWHnfhwo90mRsU0kU9KS8A8DGQq7gTBPmwLKhcI=;
-        b=ONYzEgsBeeDAvlcDEoh21ccwTeijNfohz+XSLnFHVnuSmcjGNesH/pTiILB2VtLtnKRZWa
-        yAMzSptYEdJxj6/3EIKlG4W1ElkFOFgGULCOeubN/dw/XJGi40W2qiC/P9qcRIY3fsocS0
-        RAOLtfm+NbhFooiyytNOxWRM64i0xHg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-613-EVslu0XCNTGQy-9oILGhIQ-1; Fri,
- 10 Nov 2023 17:21:23 -0500
-X-MC-Unique: EVslu0XCNTGQy-9oILGhIQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DCB551C0BA46;
-        Fri, 10 Nov 2023 22:21:22 +0000 (UTC)
-Received: from [10.22.32.62] (unknown [10.22.32.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EC4B1C060AE;
-        Fri, 10 Nov 2023 22:21:22 +0000 (UTC)
-Message-ID: <52f481a3-bf4f-85ae-9ae6-10a23b48c7c5@redhat.com>
-Date:   Fri, 10 Nov 2023 17:21:22 -0500
+        Fri, 10 Nov 2023 17:23:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07A5448C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 14:23:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CF0CC433C7;
+        Fri, 10 Nov 2023 22:23:51 +0000 (UTC)
+Date:   Fri, 10 Nov 2023 23:23:48 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [GIT PULL] fbdev fixes and updates for v6.7-rc1
+Message-ID: <ZU6tdJPgt4tin/TU@ls3530>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/4] locking: Add rwsem_assert_held() and
- rwsem_assert_held_write()
-Content-Language: en-US
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Mateusz Guzik <mjguzik@gmail.com>
-References: <20231110204119.3692023-1-willy@infradead.org>
- <20231110204119.3692023-2-willy@infradead.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20231110204119.3692023-2-willy@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/23 15:41, Matthew Wilcox (Oracle) wrote:
-> Modelled after lockdep_assert_held() and lockdep_assert_held_write(),
-> but are always active, even when lockdep is disabled.  Of course, they
-> don't test that _this_ thread is the owner, but it's sufficient to catch
-> many bugs and doesn't incur the same performance penalty as lockdep.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->   include/linux/rwbase_rt.h |  9 ++++++--
->   include/linux/rwsem.h     | 46 ++++++++++++++++++++++++++++++++++-----
->   2 files changed, 48 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
-> index 1d264dd08625..a04acd85705b 100644
-> --- a/include/linux/rwbase_rt.h
-> +++ b/include/linux/rwbase_rt.h
-> @@ -26,12 +26,17 @@ struct rwbase_rt {
->   	} while (0)
->   
->   
-> -static __always_inline bool rw_base_is_locked(struct rwbase_rt *rwb)
-> +static __always_inline bool rw_base_is_locked(const struct rwbase_rt *rwb)
->   {
->   	return atomic_read(&rwb->readers) != READER_BIAS;
->   }
->   
-> -static __always_inline bool rw_base_is_contended(struct rwbase_rt *rwb)
-> +static inline void rw_base_assert_held_write(const struct rwbase_rt *rwb)
-> +{
-> +	BUG_ON(atomic_read(&rwb->readers) != WRITER_BIAS);
-> +}
-> +
-> +static __always_inline bool rw_base_is_contended(const struct rwbase_rt *rwb)
->   {
->   	return atomic_read(&rwb->readers) > 0;
->   }
-> diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-> index 1dd530ce8b45..b5b34cca86f3 100644
-> --- a/include/linux/rwsem.h
-> +++ b/include/linux/rwsem.h
-> @@ -66,14 +66,24 @@ struct rw_semaphore {
->   #endif
->   };
->   
-> -/* In all implementations count != 0 means locked */
-> +#define RWSEM_UNLOCKED_VALUE		0UL
-> +#define RWSEM_WRITER_LOCKED		(1UL << 0)
-> +#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
-> +
->   static inline int rwsem_is_locked(struct rw_semaphore *sem)
->   {
-> -	return atomic_long_read(&sem->count) != 0;
-> +	return atomic_long_read(&sem->count) != RWSEM_UNLOCKED_VALUE;
->   }
->   
-> -#define RWSEM_UNLOCKED_VALUE		0L
-> -#define __RWSEM_COUNT_INIT(name)	.count = ATOMIC_LONG_INIT(RWSEM_UNLOCKED_VALUE)
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(atomic_long_read(&sem->count) == RWSEM_UNLOCKED_VALUE);
-> +}
-That is not correct. You mean "!= RWSEM_UNLOCKED_VALUE". Right?
-> +
-> +static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(!(atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED));
-> +}
->   
->   /* Common initializer macros and functions */
->   
-> @@ -152,11 +162,21 @@ do {								\
->   	__init_rwsem((sem), #sem, &__key);			\
->   } while (0)
->   
-> -static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
-> +static __always_inline int rwsem_is_locked(const struct rw_semaphore *sem)
->   {
->   	return rw_base_is_locked(&sem->rwbase);
->   }
->   
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	BUG_ON(!rwsem_is_locked(sem));
-> +}
-> +
+The following changes since commit be3ca57cfb777ad820c6659d52e60bbdd36bf5ff:
 
-There are some inconsistency in the use of WARN_ON() and BUG_ON() in the 
-assertions. For PREEMPT_RT, held_write is a BUG_ON. For non-PREEMPT_RT, 
-held is a BUG_ON. It is not clear why one is BUG_ON and other one is 
-WARN_ON. Is there a rationale for that?
+  Merge tag 'media/v6.7-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media (2023-11-06 15:06:06 -0800)
 
-BTW, we can actually check if the current process is the write-lock 
-owner of a rwsem, but not for a reader-owned rwsem.
+are available in the Git repository at:
 
-Cheers,
-Longman
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.7-rc1
 
+for you to fetch changes up to a5035c81847430dfa3482807b07325f29e9e8c09:
+
+  fbdev: fsl-diu-fb: mark wr_reg_wa() static (2023-11-10 09:16:02 +0100)
+
+----------------------------------------------------------------
+fbdev fixes and cleanups for 6.7-rc1:
+
+- fix double free and resource leaks in imsttfb
+- lots of remove callback cleanups and section mismatch fixes in omapfb,
+  amifb and atmel_lcdfb
+- error code fix and memparse simplification in omapfb
+
+----------------------------------------------------------------
+Andy Shevchenko (2):
+      fbdev: omapfb: Do not shadow error code from platform_get_irq()
+      fbdev: omapfb: Replace custom memparse() implementation
+
+Arnd Bergmann (2):
+      fbdev: hyperv_fb: fix uninitialized local variable use
+      fbdev: fsl-diu-fb: mark wr_reg_wa() static
+
+Christophe JAILLET (1):
+      fbdev: offb: Simplify offb_init_fb()
+
+Dan Carpenter (2):
+      fbdev: imsttfb: fix double free in probe()
+      fbdev: imsttfb: fix a resource leak in probe
+
+Philipp Stanner (1):
+      fbdev: viafb: use new array-copying-wrapper
+
+Uwe Kleine-König (23):
+      fbdev: omapfb: Drop unused remove function
+      fbdev: atmel_lcdfb: Stop using platform_driver_probe()
+      fbdev: omapfb/analog-tv: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/dpi: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/dsi-cm: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/dvi: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/hdmi: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/opa362: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/sharp-ls037v7dw01: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/tfp410: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: omapfb/tpd12s015: Don't put .remove() in .exit.text and drop suppress_bind_attrs
+      fbdev: atmel_lcdfb: Convert to platform remove callback returning void
+      fbdev: omapfb/analog-tv: Convert to platform remove callback returning void
+      fbdev: omapfb/dpi: Convert to platform remove callback returning void
+      fbdev: omapfb/dsi-cm: Convert to platform remove callback returning void
+      fbdev: omapfb/dvi: Convert to platform remove callback returning void
+      fbdev: omapfb/hdmi: Convert to platform remove callback returning void
+      fbdev: omapfb/opa362: Convert to platform remove callback returning void
+      fbdev: omapfb/sharp-ls037v7dw01: Convert to platform remove callback returning void
+      fbdev: omapfb/tfp410: Convert to platform remove callback returning void
+      fbdev: omapfb/tpd12s015: Convert to platform remove callback returning void
+      fbdev: amifb: Mark driver struct with __refdata to prevent section mismatch warning
+      fbdev: amifb: Convert to platform remove callback returning void
+
+ drivers/video/fbdev/amifb.c                        | 13 +++++---
+ drivers/video/fbdev/atmel_lcdfb.c                  | 18 +++++------
+ drivers/video/fbdev/fsl-diu-fb.c                   |  2 +-
+ drivers/video/fbdev/hyperv_fb.c                    |  2 ++
+ drivers/video/fbdev/imsttfb.c                      | 35 +++++++++++-----------
+ drivers/video/fbdev/offb.c                         |  8 ++---
+ drivers/video/fbdev/omap/omapfb_main.c             | 28 +++++++----------
+ .../omap2/omapfb/displays/connector-analog-tv.c    |  7 ++---
+ .../fbdev/omap2/omapfb/displays/connector-dvi.c    |  7 ++---
+ .../fbdev/omap2/omapfb/displays/connector-hdmi.c   |  7 ++---
+ .../fbdev/omap2/omapfb/displays/encoder-opa362.c   |  7 ++---
+ .../fbdev/omap2/omapfb/displays/encoder-tfp410.c   |  7 ++---
+ .../omap2/omapfb/displays/encoder-tpd12s015.c      |  7 ++---
+ .../video/fbdev/omap2/omapfb/displays/panel-dpi.c  |  7 ++---
+ .../fbdev/omap2/omapfb/displays/panel-dsi-cm.c     |  7 ++---
+ .../omapfb/displays/panel-sharp-ls037v7dw01.c      |  7 ++---
+ drivers/video/fbdev/omap2/omapfb/vrfb.c            |  9 +-----
+ drivers/video/fbdev/via/viafbdev.c                 |  2 +-
+ 18 files changed, 70 insertions(+), 110 deletions(-)
