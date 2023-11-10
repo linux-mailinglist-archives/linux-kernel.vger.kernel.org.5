@@ -2,241 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4357E77B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F38F7E77BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345781AbjKJCqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 21:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S1345754AbjKJCuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 21:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjKJCq2 (ORCPT
+        with ESMTP id S229491AbjKJCuw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 21:46:28 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2120.outbound.protection.outlook.com [40.107.215.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA78133;
-        Thu,  9 Nov 2023 18:46:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BoAdCnyFuZn91EZSTzZQDBqeqXq7f2lS7rhBwT4cwLwFDFc0nGHL/tg7sPBqO9WsPCH1rjvdfNh4k3vuM6N6SAnHYzrx+E4NWgJlzBQCjWRA9RLI7s2BjdkBlNL1NAppxWsu8u1gzZVY3umsU2eAaowLe1JOU+imew59aP+gnFVmvr63SDjrn60oWapipm8kYGhaT4Ir6TO/tGSzCju6DH/tLvUPBjXARTDDs2AOEvMVkfU4v8XolhdE8/Ex0ZCNgGaxOlc0jeqdF/1/CjwtPkIqmb+zAegNpYHP41h+bsoipUgHjI3c7AOUKuKwfb3Th9IKurEDh69PfaTQiJnTEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eWCUaVn263Bz0xoiETmgXPyffd0LpAzDQtWx2nPL7NM=;
- b=Rsp7297xZSF+IOVr/3fSS1OEoJ4Fczr1MzP0mFX/feJLfubfDewGMvrR9LUqf93h7QYV4o+JtYrWknhWTGzp6S24PTbWvQ5UhCegvsTNN4UVJpombslgzefxzN7RXQtSeLZgmMr9YCSXH/Nlib6rzauxbUDpKFqfumkilYgcJFngCOrBWWDRgQbDh2eU6Y19xovBZ+gg/501am6z1PyHjZNpSTHflUl7Sv6YysPDLs/0Osk17YbaY2+UWy6LDtkhKpWu19ufftT7fflo6XTOSOTM80tLtvz8b08CaVVOv0hBLTaEbMXZOjw3cXq7Qr4NIakbteXuVXj6vvNFomKAPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eWCUaVn263Bz0xoiETmgXPyffd0LpAzDQtWx2nPL7NM=;
- b=PAe2uygv9VedZIMGEGogLRRZWK7LttJk4mgKiBGnsxorO41mEqf4P2gl7t46AG37dPznLTZEsqARZPgGCfOs/qbdGbEYTvbf2pDbD+p6xQ3NPx/PzRaq7D0kbLN16ySp6sWKtlrCjd1Ado8iAaHTgwTrJanRpgvk25O0PJTJ1ef/46J82F4Aqw/IIpgizcDj0NQAtPVNlWnZIRr/5yjHgfNU58iK4f91xarC/0nuyM/PhfMOIYSTPySd5y6nQwbDFZmb6RSUggiHraHYs8CtRMxOlWCnWRSYmk76+AW8Nhsxze+HlUxrS4OLUUJCLpvQD/NbGNPOzK/8efa8sIhYtw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by SI2PR06MB3947.apcprd06.prod.outlook.com (2603:1096:4:f6::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.31; Fri, 10 Nov 2023 02:44:51 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%6]) with mapi id 15.20.6954.027; Fri, 10 Nov 2023
- 02:44:51 +0000
-Message-ID: <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com>
-Date:   Fri, 10 Nov 2023 10:44:45 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-References: <20231108065818.19932-1-link@vivo.com>
- <ZUuV9xOZ5k7Ia_V2@tiehlicka> <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
- <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com> <ZUytB5lSwxeKkBW8@tiehlicka>
- <6b539e16-c835-49ff-9fae-a65960567657@vivo.com> <ZUy2-vrqDq7URzb6@tiehlicka>
- <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
- <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Huan Yang <link@vivo.com>
-In-Reply-To: <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0183.apcprd04.prod.outlook.com
- (2603:1096:4:14::21) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Thu, 9 Nov 2023 21:50:52 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55412D5E;
+        Thu,  9 Nov 2023 18:50:49 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d264e67d8so9400996d6.1;
+        Thu, 09 Nov 2023 18:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699584649; x=1700189449; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=SvQNvQgrqyBQ7iUvXLfQuGRA0FKxbjcTIdzbdX/QTz8=;
+        b=Ksd4M7jq9kksyntqdOgko1crQ1bo4Ccv3iXSD3E+VGWjlHEbbl0LEslxs0AkypkSKt
+         jUOE4MCacQ1xDt4g4jLli46XWau18rNE1mkKb8zT5q+SkoYL+RTMBntXcGd/Te6GZtE8
+         KVGBS3TIW2lstYPAGHeeVq6NNvO511hcZzGQJ6XLz0no27D62xIavUJ1/tK1ioWCCO8m
+         38cijOrKYt2H/43l6a4Q62cgF7koEES2EeL8zgrai28ST0Q+5RmY5vWCyrgsPx1W0JnO
+         9Kpmygl/BX1hMZ+CFBgMUyYH4QlhF7moImNSHM+ufZwELFk6nsC+qu4I01Aakrsg7CiO
+         VhaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699584649; x=1700189449;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SvQNvQgrqyBQ7iUvXLfQuGRA0FKxbjcTIdzbdX/QTz8=;
+        b=rQrdHWFYPgAyivpPbKjVGvREjafEbzK1Te/OhqbZVKAET4lO5NAqnlYeYfcPqmc1LC
+         ZVQlcTGMbWSqiCgyL/DPdLZ94c5lWZWcgZYqiRlMbIp+OWBQebRoL34scQe9YyBUEyhG
+         kEwQ2lLxa6i66f4IY6V4gdFR3l1D/CxmDBRnXxTPuyM1o+nZr0tJ6F9bmjm8wD4pmBmc
+         k+IRI6rN3D3wabOtPFalSLrxBaFlNrWUlefXWll1wyKbH7RIqZeemNzOVMktdUkuBvGQ
+         A8YYFs0MIMSbk2cTvigm5ppD2JeQfY5pBhnc2M6RGWCPZ1CSrw3gop8GHm5UlNcfgDTn
+         J3JQ==
+X-Gm-Message-State: AOJu0Yxq/cq4DtNuo8ZgPafpcsFdjJeFbsnNppw9lH+QoiaNKFUw4AcW
+        v8zonUl1MOXwBXY1u9LuxeG2dliVyaI=
+X-Google-Smtp-Source: AGHT+IGgyQsvBiIDUl31JMsLzoT+sW7f3Mqnfju8kUTyTw4vs+aqNnSobg10EfNjGM9QrFJFTUHN6w==
+X-Received: by 2002:a05:6214:2b0a:b0:66d:6705:5c50 with SMTP id jx10-20020a0562142b0a00b0066d67055c50mr7634614qvb.44.1699584648958;
+        Thu, 09 Nov 2023 18:50:48 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l5-20020ac87245000000b0041e211c5d0bsm198461qtp.6.2023.11.09.18.50.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Nov 2023 18:50:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <0ddbc61b-8f66-46b0-801e-5bf57588e0d7@roeck-us.net>
+Date:   Thu, 9 Nov 2023 18:50:46 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|SI2PR06MB3947:EE_
-X-MS-Office365-Filtering-Correlation-Id: d5c6e6c3-bab4-4e3d-f74a-08dbe19702e2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dfpTcCt9jhKWVQ3VBSNpGX9irMfuD3ko6aXzp1vfVE2HLYsG1h9HQPK2Tyb6kWzZt+UHte93C70+TTDInHsMKAf0tdGyoItNqY7QppNx3QA5FSlPVKEVABiZDwPQmDpMwsARGSWcqqpNxVVhssAM2Po1d/Kz3+eTevvVNE4HRADfODkFO6yLcLcGjoyjb87b9sraHaCB3NaUj/T6GLxwUrOncRsxecFy5Ce+6xweu69Xy8lq/zkxVbid/ylFsX+QTQpqt0OlSC76uLR9Dbt7T9Cdma5TzrfvSPXHbFvlpjWE0ih/0gK8uHNckQoVSyiIqLydsxdt72+Y1jqX0L5mp2uAeCfioUMZYQKVXh4yFXpNvfxlQUKwoIrQUkGgElrB/o8tufUmar3lt10nNqQzqlvZsSRmK4ySozMVJ4h3XsbUyDy8dJLtnxzVrKAcc2bdJe3hN7pbDvOnWtus9YY9h61AxTGmHzDXbIr8O6Cv0eiU8TSNBiY+hqQ56Z9ruQ0iLX5tBtn9q6jih6LPoSYMBEqr2rQrXzzO5/miXeXcxIo39vsLggTS11tOqR6wI/M78wVt1qXg5jw6Pkncta77eA3XYkFanT3SYUT1YEJfNCThEpHycUJsoUdmIK1Jiv6K4tw5Y8NmBKIhKVP28w5FyJ4IO5Hn/SkK5QHT7/k02d0uMZ5bgeg8XrhJH8saKoGeQPNuQdlyiBOS4HB3qUoKI8ULGn5gdRxI9zq/RGpleGU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(396003)(346002)(136003)(230173577357003)(230273577357003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(83380400001)(2616005)(107886003)(966005)(478600001)(6486002)(8936002)(66476007)(36756003)(2906002)(7416002)(8676002)(4326008)(86362001)(6916009)(54906003)(38350700005)(5660300002)(66556008)(66946007)(31696002)(26005)(41300700001)(316002)(6506007)(52116002)(6666004)(31686004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S3dHamJBb3pFYVE4dFdGbEFidGtadHRJMEpqZnBNNWlpS3l4UjRBdVZkMWI5?=
- =?utf-8?B?YTdEdHRxOG5SS0YwZzVpaWVKYWh0UEEvMk1XcUhCaFNvd1dQSU9tY3hBRk1V?=
- =?utf-8?B?cXRrOFBJK3hVMDZQWUdNaHNqUXBGN2tCczlnaS9zN294aDFhSDZkOXVFU3N5?=
- =?utf-8?B?OTJBVkdtdENXZG1PUm5JSkx0ZWhRd1BqeVdPYjl2S1F5eFdsNXpCTFdJemht?=
- =?utf-8?B?eVBSODlxNlJ6WDd5ZUVlM3VaTzZFbERFaUJRb3lGNnpTSkZXeXBseittcEdN?=
- =?utf-8?B?cnVNZE90L0RGWUVuZko1dnNZeUFKem1tTUUzTGpxVEJqQTN2LzRsZzdNRG1O?=
- =?utf-8?B?MTVCVXYrMURkMlNlZk45T2hLNmZ6VnR2VDUrQVhkTnRyRHIybHlUQzBGRS9l?=
- =?utf-8?B?RlVkTnhmMTI0b0gvR3hhLzc4ejhqN0VsMlYvMy9henNTZllEY002MzArUEJV?=
- =?utf-8?B?cWRlWFh3QkxIc3BiS1BPZ2ZFSlM4aHcrK0tYVXhXaEkyOG03TTYrcDdHVFdp?=
- =?utf-8?B?cU5LaUFmdzdZd0lZNklqSWg4eXJWci91YTJVVTJvVExINzVwanIrNS8raytV?=
- =?utf-8?B?dHFtZldVR2M4b0ovUTBjRmMzQmxzYXRLems3L3ZQcUQ4KzNkaXF4RUcrcUoz?=
- =?utf-8?B?eWFhczJsSVN3ZjVOaWQ3UnhtajNUcUlkZnc5S3BOVTRRRm9ya0l2YzFzUFJL?=
- =?utf-8?B?dGdlTVdTbHR6WmgwZHFMVENhdDMyU0o5Vk5NWGZza2FsM1AwNVd1bGNjR1l0?=
- =?utf-8?B?LzMyczh3cHF3bEc2MXEyWGpOTTlnSDBHVGNEL1RVTHZBMGllT0NxNXJMbW53?=
- =?utf-8?B?T3pxd0UyOHBOazE4dU9JTmFoR3p5dWRSMytYU3Q0U2grcjdjcSszT0tJaHBL?=
- =?utf-8?B?ais5ZjFFSHQycER4d29vcVkwNExaOEtJZkpQTEVVS3ZITmhpLzg1OStnbFdQ?=
- =?utf-8?B?Snl5YU96bWNsYjNtMEpUc0IyamlDNmtKU3dmWHBPUHZpUVhBMnpXVzBSSFRR?=
- =?utf-8?B?Z3h1QWdjVW5MMUVFeStSNFloVDh2MzRLNE9JRjVJRFRLUjlheTFqSk5pbU9W?=
- =?utf-8?B?bmVDT0xSRDNmL1hoQzRqVVEyY0N3QWpoWklUMzBFVDJKeCtVTm5aK0l4QkE1?=
- =?utf-8?B?UTdmbDJZS3A2bHo0dXA1bnZFSisyMmJBeStNblduQjVWRWJvYS9TOFdFcUQ5?=
- =?utf-8?B?RCtIblY5N0VnV3haWE83WSszTWFKaGgrb2pwWm1ld0lsVnoyb0NCbi8rSm1T?=
- =?utf-8?B?NHdiYmtnR21NSFcyQWNyZWxvMUxvd1d6eVZEUXZPNm1MaytTa2dsM0JyaFRh?=
- =?utf-8?B?di9FaExWQm5IYjNiNGd0KzFLd0NsblJwaWpOSHZpblU4OVNZbUI1TmNuNldj?=
- =?utf-8?B?RkREZ3F1OVVUMHZ4NEswM1cwNXNNSjdYNzB5aVFYdDBCWldGWll5UGZzT3Zz?=
- =?utf-8?B?a2dxb2p1NTlGMlRRVnlsZk1GOTFCSTJVbjA0N3JRZFVGQzRJYXdBQngwRkhN?=
- =?utf-8?B?TmlsSXFSSjJkUFJiQ005SzhWYmNveVNuRzBWSEdqSE5XMWt5TGUxNTVocU5W?=
- =?utf-8?B?UzRROU1TM2p3S2VGS0FueDc5Ynd2UUpnS3FTNVdHS0d0UHQweXhWSzM1RG9L?=
- =?utf-8?B?YkQyVXQySy9WZ3QrZHNKSjIzcmQvaGtybUFoeTBLUGJ4YnA1Vms3ek9mUFRr?=
- =?utf-8?B?aWpyU01uVi8wNi9nT1I4aDg4UVlHeGpMVWJaNmMySnZRQlJrNmlxU3NyNVFp?=
- =?utf-8?B?cjdwOWZLdjFDa0RxTlhURU55YUtSYkNaLy9VUmFSZXN5YlVXUzAzYWdpeWEy?=
- =?utf-8?B?Q3ZadlRoZVB3S3NVdGpZcG51Wkw0anc0Y2M3emUvNmg4Z2tBVGhIWEVhS2xI?=
- =?utf-8?B?V2NHQmZwNlJIVGIxT1c3Yjl2QTNtWVRPRW1NTThIYjNyL1lVRGhSK0V6TEJv?=
- =?utf-8?B?RU9FQTAvODZPaXRXODRxZHhwVzQzQWRZUUxJaWJpTG41NU1YbkFtSjFOcldU?=
- =?utf-8?B?ZTltNnl3Rmg2bXE3WGgreE5Bdmo4UXpsZzdiZzlMQVRSbTcwTDN3TzExcVpL?=
- =?utf-8?B?cTVUS1ZZdzlJSnY5M2VzaVlmS3I4K1NRMEpUUVZ4MmtWb1JXWHBPYXpoTkNv?=
- =?utf-8?Q?d14OJTRYsDf2xfBI4GCViZ00O?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5c6e6c3-bab4-4e3d-f74a-08dbe19702e2
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 02:44:51.0809
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GzWjIoMGMgRsICgb2sWWeupvsvv3Sl69FBTHdu+964N3Gl/kgpmWkt+oISQ+GeDwkvvdKdiM2oz32bXqY99ggA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB3947
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] hwmon: Add a new macro sensor_sysfs_attr
+Content-Language: en-US
+To:     "Ma, Jun" <majun@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+        jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109051429.2250774-1-Jun.Ma2@amd.com>
+ <0ae6bcc2-a30d-4840-a21a-0de0b394c309@roeck-us.net>
+ <50372d43-f89e-4969-a609-d8e1ff2afdf6@amd.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <50372d43-f89e-4969-a609-d8e1ff2afdf6@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2023/11/10 9:19, Huang, Ying 写道:
-> [Some people who received this message don't often get email from ying.huang@intel.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> Huan Yang <link@vivo.com> writes:
->
->> 在 2023/11/9 18:39, Michal Hocko 写道:
->>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+On 11/9/23 17:15, Ma, Jun wrote:
+> Hi Guenter,
+> 
+> On 11/9/2023 1:28 PM, Guenter Roeck wrote:
+>> On 11/8/23 21:14, Ma Jun wrote:
+>>> The attribute definiations like &sensor_dev_attr_xx_xx.dev_attr.attr
+>>> are widely used in drivers. So add a new macro sensor_sysfs_attr t
+>>> to make it easier to understand and use.
 >>>
->>> On Thu 09-11-23 18:29:03, Huan Yang wrote:
->>>> HI Michal Hocko,
->>>>
->>>> Thanks for your suggestion.
->>>>
->>>> 在 2023/11/9 17:57, Michal Hocko 写道:
->>>>> [Some people who received this message don't often get email from mhocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->>>>>
->>>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
->>>>> [...]
->>>>>>> If so, is it better only to reclaim private anonymous pages explicitly?
->>>>>> Yes, in practice, we only proactively compress anonymous pages and do not
->>>>>> want to touch file pages.
->>>>> If that is the case and this is mostly application centric (which you
->>>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
->>>>> instead.
->>>> Madvise  may not be applicable in this scenario.(IMO)
->>>>
->>>> This feature is aimed at a core goal, which is to compress the anonymous
->>>> pages
->>>> of frozen applications.
->>>>
->>>> How to detect that an application is frozen and determine which pages can be
->>>> safely reclaimed is the responsibility of the policy part.
->>>>
->>>> Setting madvise for an application is an active behavior, while the above
->>>> policy
->>>> is a passive approach.(If I misunderstood, please let me know if there is a
->>>> better
->>>> way to set madvise.)
->>> You are proposing an extension to the pro-active reclaim interface so
->>> this is an active behavior pretty much by definition. So I am really not
->>> following you here. Your agent can simply scan the address space of the
->>> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOUT)
->>> on the private memory is that is really what you want/need.
->> There is a key point here. We want to use the grouping policy of memcg
->> to perform
->> proactive reclamation with certain tendencies. Your suggestion is to
->> reclaim memory
->> by scanning the task process space. However, in the mobile field,
->> memory is usually
->> viewed at the granularity of an APP.
+>>> For example, user can use the sensor_sysfs_attr(xx_xx) instead of
+>>> &sensor_dev_attr_xx_xx.dev_attr.attr
+>>>
+>>> Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
+>>> ---
+>>>    include/linux/hwmon-sysfs.h | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/include/linux/hwmon-sysfs.h b/include/linux/hwmon-sysfs.h
+>>> index d896713359cd..7feae637e3b5 100644
+>>> --- a/include/linux/hwmon-sysfs.h
+>>> +++ b/include/linux/hwmon-sysfs.h
+>>> @@ -14,6 +14,10 @@ struct sensor_device_attribute{
+>>>    	struct device_attribute dev_attr;
+>>>    	int index;
+>>>    };
+>>> +
+>>> +#define to_sensor_sysfs_attr(_name) \
+>>> +	(&sensor_dev_attr_##_name.dev_attr.attr)
+>>> +
+>>>    #define to_sensor_dev_attr(_dev_attr) \
+>>>    	container_of(_dev_attr, struct sensor_device_attribute, dev_attr)
+>>>    
 >>
->> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
->> according
->> to the pre-grouped APP processes.
->>
->> Of course, as you suggested, madvise can also achieve this, but
->> implementing it in
->> the agent may be more complex.(In terms of achieving the same goal,
->> using memcg
->> to group all the processes of an APP and perform proactive reclamation
->> is simpler
->> than using madvise and scanning multiple processes of an application
->> using an agent?)
-> I still think that it's not too complex to use process_madvise() to do
-> this.  For each process of the application, the agent can read
-> /proc/PID/maps to get all anonymous address ranges, then call
-> process_madvise(MADV_PAGEOUT) to reclaim pages.  This can even filter
-> out shared anonymous pages.  Does this work for you?
+>> No. This would just invite people to submit patches converting existing code
+>> to use this new macro. Instead of providing macros to support deprecated APIs,
+>> convert drivers to use an API which is not deprecated. This would for the
+> 
+> Which API is not deprecated do you mean?
+> 
 
-Thanks for this suggestion. This way can avoid touch shared anonymous, it's
-pretty well. But, I have some doubts about this, CPU resources are 
-usually limited in
-embedded devices, and power consumption must also be taken into 
-consideration.
+[devm_]hwmon_device_register_with_info(). I don't want to encourage
+the use of non-standard sysfs atributes either (and, no, I still
+don't accept the idea that "frequency" would be a hardware monitoring
+attribute).
 
-If this approach is adopted, the agent needs to periodically scan frozen 
-applications
-and set pageout for the address space. Is the frequency of this active 
-operation more
-complex and unsuitable for embedded devices compared to reclamation based on
-memcg grouping features?
-
-In addition, without LRU, it is difficult to control the reclamation of 
-only partially cold
-anonymous page data of frozen applications. For example, if I only want 
-to proactively
-reclaim 100MB of anonymous pages and issue the proactive reclamation 
-interface,
-we can use the LRU feature to only reclaim 100MB of cold anonymous pages.
-However, this cannot be achieved through madvise.(If I have 
-misunderstood something,
-please correct me.)
-
->
-> --
-> Best Regards,
-> Huang, Ying
-
--- 
-Thanks,
-Huan Yang
+Guenter
 
