@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B517E8066
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135277E8078
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344777AbjKJSKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        id S1345023AbjKJSKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235332AbjKJSH1 (ORCPT
+        with ESMTP id S1344171AbjKJSH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:07:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EB131E7D;
-        Fri, 10 Nov 2023 03:57:19 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4221E66073D6;
-        Fri, 10 Nov 2023 11:57:17 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699617438;
-        bh=yxdMDAZYCs0R8XzpVH/gErPFhSqVtu/4cjaOro2h2b4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=WO3nx56UqM87HIFLLfwM2R/w0GJjvdvHpUw6z00XcHu2y+woW1xgDbCtxrNmbLnbJ
-         etYOhBicHSRnRFOrs2OtpBKDwUUt9BfIC3SdbIFpOsOY4xeruQuEjin51sL+msfcei
-         YBN3so3JS8iJzJFVY+/AApKOYN90tP2IjNQqKDQEWW2QDN9BMANB9IYjCTtcRL3pnd
-         WoI/wxS/kE1UcePbmj8LvrfvAQRYxzvvExRX/UMuIATNSVY5Ros/TWFcBGBnIfYLWD
-         JqSK3iHF+sNyUgbFzfiPuY4mwZYYtZjL7xfp6qqLvVs3XA4C6in3jGgh9NvlYbCwze
-         jbVQZPB/+a2jg==
-Message-ID: <b56b155c-25c0-4958-9f59-20669ee2ea01@collabora.com>
-Date:   Fri, 10 Nov 2023 12:57:17 +0100
+        Fri, 10 Nov 2023 13:07:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEB831E6D;
+        Fri, 10 Nov 2023 04:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699617744; x=1731153744;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=D68uaaStYrSJHvcN7STtPBEb1wH/meEZbd+gmIVtvt0=;
+  b=IaM+N0IkcQm5n87ZEdys9oDGluZb3TVT7gohXyJ/m81L2Yy4s8cMNLac
+   otgEzjsH8hiD7hhH22Y11igDlp5rp/qXLVp582TTXqXfDf2/K39T+q6ea
+   c0JNmZyWdhHbVgaQQOeC97GQdKlZsKX+GBD4L9YKV7OdNreTz+FRWYlr4
+   S6BlYQXZ5HkM0/j6vVjjYG6uSlslDM1qBCYMNPtgRWsE6+ZpKBSAuRl21
+   bDFnMTaPWJbHNvrSpy9Aum3+Wvp3K8g5E/osMur1EjofIncS4x7uDFjPK
+   Vnt6O9JD2iq8lEJsjmPCcHQgTQqqclEDnJwQV3xN1erVcW56nX3+U8PIs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="476400714"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="476400714"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 04:02:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="887342622"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="887342622"
+Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
+  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2023 04:02:21 -0800
+Message-ID: <de798632-9977-45be-82f2-912081bdfad2@linux.intel.com>
+Date:   Fri, 10 Nov 2023 14:02:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] drm/mediatek: Fix access violation in
- mtk_drm_crtc_dma_dev_get
+Subject: Re: [PATCH v4] i2c: designware: Fix corrupted memory seen in the ISR
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jan Bottorff <janb@os.amperecomputing.com>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109031927.1990570-1-janb@os.amperecomputing.com>
+ <ZU0eJdwHXEoQ7mj2@smile.fi.intel.com>
 Content-Language: en-US
-To:     Stuart Lee <stuart.lee@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lancelot Wu <lancelot.wu@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>, stable@vger.kernel.org
-References: <20231110012914.14884-1-stuart.lee@mediatek.com>
- <20231110012914.14884-2-stuart.lee@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231110012914.14884-2-stuart.lee@mediatek.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <ZU0eJdwHXEoQ7mj2@smile.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,19 +68,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 10/11/23 02:29, Stuart Lee ha scritto:
-> Add error handling to check NULL input in
-> mtk_drm_crtc_dma_dev_get function.
+On 11/9/23 20:00, Andy Shevchenko wrote:
+> On Thu, Nov 09, 2023 at 03:19:27AM +0000, Jan Bottorff wrote:
+>> When running on a many core ARM64 server, errors were
+>> happening in the ISR that looked like corrupted memory. These
+>> corruptions would fix themselves if small delays were inserted
+>> in the ISR. Errors reported by the driver included "i2c_designware
+>> APMC0D0F:00: i2c_dw_xfer_msg: invalid target address" and
+>> "i2c_designware APMC0D0F:00:controller timed out" during
+>> in-band IPMI SSIF stress tests.
+>>
+>> The problem was determined to be memory writes in the driver were not
+>> becoming visible to all cores when execution rapidly shifted between
+>> cores, like when a register write immediately triggers an ISR.
+>> Processors with weak memory ordering, like ARM64, make no
+>> guarantees about the order normal memory writes become globally
+>> visible, unless barrier instructions are used to control ordering.
+>>
+>> To solve this, regmap accessor functions configured by this driver
+>> were changed to use non-relaxed forms of the low-level register
+>> access functions, which include a barrier on platforms that require
+>> it. This assures memory writes before a controller register access are
+>> visible to all cores. The community concluded defaulting to correct
+>> operation outweighed defaulting to the small performance gains from
+>> using relaxed access functions. Being a low speed device added weight to
+>> this choice of default register access behavior.
 > 
-> While display path is not configured correctly, none of crtc is
-> established. So the caller of mtk_drm_crtc_dma_dev_get may pass
-> input parameter *crtc as NULL, Which may cause coredump when
-> we try to get the container of NULL pointer.
+> ...
 > 
-> Fixes: cb1d6bcca542 ("drm/mediatek: Add dma dev get function")
-> Signed-off-by: Stuart Lee <stuart.lee@mediatek.com>
-> Cc: stable@vger.kernel.org
+>> v3->v4: add missing changelog
+> 
+> Side note: Usually it's enough to just reply to the patch with the changelog.
+> 
+> ...
+> 
+>> -	*val = swab32(readl_relaxed(dev->base + reg));
+>> +	*val = swab32(readl(dev->base + reg));
+> 
+>> -	writel_relaxed(swab32(val), dev->base + reg);
+>> +	writel(swab32(val), dev->base + reg);
+> 
+> I'm wondering why ioread32be() / iowrite32be() can't be used here...
+> 
+> Probably it would require to switch entire IO to use ioreadXX() /
+> iowriteXX() APIs and since we touch all of them (?) may be it makes
+> sense convert to use them at the same time. Dunno.
+> 
+I would say cosmetic conversions are better to go to another patch.
 
-Reviewed-by: AngeloGioacchino DEl Regno <angelogioacchino.delregno@collabora.com>
+For this patch:
 
-
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
