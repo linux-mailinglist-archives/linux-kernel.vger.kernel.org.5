@@ -2,195 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4EA7E82AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5972A7E81C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235967AbjKJT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
+        id S235832AbjKJSdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:33:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346326AbjKJT2e (ORCPT
+        with ESMTP id S1345836AbjKJScq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:34 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC7FF38792
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:07:16 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C42C12FC;
-        Fri, 10 Nov 2023 06:08:01 -0800 (PST)
-Received: from [10.57.36.221] (unknown [10.57.36.221])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D2B083F7C5;
-        Fri, 10 Nov 2023 06:07:13 -0800 (PST)
-Message-ID: <aefbde74-d34b-452d-b6a1-7417bc30dea4@arm.com>
-Date:   Fri, 10 Nov 2023 14:07:12 +0000
+        Fri, 10 Nov 2023 13:32:46 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4B738795
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:07:24 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40a46ea95f0so4445035e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699625243; x=1700230043; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Lab8I/AjLwx8QNQ8rr3txbgHn2fsKjkqhEzna/zmzw=;
+        b=pOES+n2F8B2QDH4/4oKWkP7kW3omn6lQJy3idaXgDpA59dEhNsx26nVp+X7R1IUbBr
+         qx4CyJtfQTQMRHj56mQMf99A7pcLZygxkPuhAJHzXmmLfKeBK0vdpnviGrCuBNhTK5x0
+         QBHcg3cUInh7PhBKSm7ODQc59uLSR3CJwmiLQ9qVqv9oTz0ytbxyg7p8TsfDTYvU6P5t
+         fP1bODYa1mVZCRYIYdNlvN7ZHC+M7D/2Jdr2VeGV8brrf+/qm7wzQMT5hKHx/tS5ojhU
+         buaJrovlA+NaZX1F8sbs5XO3803IqjKDR4tC8LmM2z8TVdXIXsPcUf2MEh/PqMaQI3rb
+         q0mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699625243; x=1700230043;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8Lab8I/AjLwx8QNQ8rr3txbgHn2fsKjkqhEzna/zmzw=;
+        b=WRSVDu5q1TV9lckwPpAWpQ0rWo09+qnmjQNjH4bB6bhY730VIDEGNWNgfTPMtDRjle
+         UTbU9ywVwfUomIsW2js3daOSFvH4AhaPPtpXDSWt2NGSgP4GSuUcfiq7dn+ixN09JLGX
+         IsDpEJH/RWPl6lKyfE+XhMoJmIdrQOt19FXJCTtqrx1ofGj/9+bW7GeADCyYoGgaFPAZ
+         cs/WJ3DRaKp3IudHJmRcz5P+JloxcPRcB/Y01BZ/vzIVB5mizlHMaj9GmMpz82C02Cph
+         OQAI87+3xYeYC39s/O3UfpK3iwddvMrpS7AaSOHgYs1RAAwAaVYEz6t/aGiCkCoq8dVm
+         RomA==
+X-Gm-Message-State: AOJu0YwTLkK4VPfYqXINGNLG15x+ANevIy3Qz6r00GyF1QvDc+RNfHi2
+        IrKOsfaCwI1vuAEUPCTQ0pEN8A==
+X-Google-Smtp-Source: AGHT+IG/nzRUsjO/+F11wysLbEQoEvuhHFDBxf/OGj/AjOAzkEpq6agysQ71COSHFWk4cO26ym7ZUg==
+X-Received: by 2002:a05:6000:18a1:b0:32f:bd90:c22 with SMTP id b1-20020a05600018a100b0032fbd900c22mr6532442wri.62.1699625243298;
+        Fri, 10 Nov 2023 06:07:23 -0800 (PST)
+Received: from alex-rivos.home (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id l10-20020a5d560a000000b0032f7865a4c7sm1983318wrv.21.2023.11.10.06.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 06:07:22 -0800 (PST)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH 0/2] riscv: Enable percpu page first chunk allocator
+Date:   Fri, 10 Nov 2023 15:07:19 +0100
+Message-Id: <20231110140721.114235-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/6] drm/panfrost: Implement ability to turn on/off GPU
- clocks in suspend
-Content-Language: en-GB
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        boris.brezillon@collabora.com
-Cc:     robh@kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, wenst@chromium.org,
-        kernel@collabora.com
-References: <20231109102543.42971-1-angelogioacchino.delregno@collabora.com>
- <20231109102543.42971-4-angelogioacchino.delregno@collabora.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <20231109102543.42971-4-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 10:25, AngeloGioacchino Del Regno wrote:
-> Currently, the GPU is being internally powered off for runtime suspend
-> and turned back on for runtime resume through commands sent to it, but
-> note that the GPU doesn't need to be clocked during the poweroff state,
-> hence it is possible to save some power on selected platforms.
-> 
-> Add suspend and resume handlers for full system sleep and then add
-> a new panfrost_gpu_pm enumeration and a pm_features variable in the
-> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
-> enable this power saving technique only on SoCs that are able to
-> safely use it.
-> 
-> Note that this was implemented only for the system sleep case and not
-> for runtime PM because testing on one of my MediaTek platforms showed
-> issues when turning on and off clocks aggressively (in PM runtime)
-> resulting in a full system lockup.
-> 
-> Doing this only for full system sleep never showed issues during my
-> testing by suspending and resuming the system continuously for more
-> than 100 cycles.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+While working with pcpu variables, I noticed that riscv did not support
+first chunk allocation in the vmalloc area which may be needed as a fallback
+in case of a sparse NUMA configuration.
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+patch 1 starts by introducing a new function flush_cache_vmap_early() which
+is needed since a new vmalloc mapping is established and directly accessed:
+on riscv, this would likely fail in case of a reordered access or if the
+uarch caches invalid entries in TLB.
 
-> ---
->  drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
->  drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
->  2 files changed, 68 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
-> index 28f7046e1b1a..b4ddbc3b8069 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
-> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
->  	panfrost_job_enable_interrupts(pfdev);
->  }
->  
-> -static int panfrost_device_resume(struct device *dev)
-> +static int panfrost_device_runtime_resume(struct device *dev)
->  {
->  	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->  
-> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
->  	return 0;
->  }
->  
-> -static int panfrost_device_suspend(struct device *dev)
-> +static int panfrost_device_runtime_suspend(struct device *dev)
->  {
->  	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->  
-> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
-> -			      panfrost_device_resume, NULL);
-> +static int panfrost_device_resume(struct device *dev)
-> +{
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
-> +		ret = clk_enable(pfdev->clock);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (pfdev->bus_clock) {
-> +			ret = clk_enable(pfdev->bus_clock);
-> +			if (ret)
-> +				goto err_bus_clk;
-> +		}
-> +	}
-> +
-> +	ret = pm_runtime_force_resume(dev);
-> +	if (ret)
-> +		goto err_resume;
-> +
-> +	return 0;
-> +
-> +err_resume:
-> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
-> +		clk_disable(pfdev->bus_clock);
-> +err_bus_clk:
-> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
-> +		clk_disable(pfdev->clock);
-> +	return ret;
-> +}
-> +
-> +static int panfrost_device_suspend(struct device *dev)
-> +{
-> +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = pm_runtime_force_suspend(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
-> +		if (pfdev->bus_clock)
-> +			clk_disable(pfdev->bus_clock);
-> +
-> +		clk_disable(pfdev->clock);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
-> +	RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
-> +	SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
-> +};
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> index 1ef38f60d5dc..d7f179eb8ea3 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
->  #define NUM_JOB_SLOTS 3
->  #define MAX_PM_DOMAINS 5
->  
-> +/**
-> + * enum panfrost_gpu_pm - Supported kernel power management features
-> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
-> + */
-> +enum panfrost_gpu_pm {
-> +	GPU_PM_CLK_DIS,
-> +};
-> +
->  struct panfrost_features {
->  	u16 id;
->  	u16 revision;
-> @@ -75,6 +83,9 @@ struct panfrost_compatible {
->  
->  	/* Vendor implementation quirks callback */
->  	void (*vendor_quirk)(struct panfrost_device *pfdev);
-> +
-> +	/* Allowed PM features */
-> +	u8 pm_features;
->  };
->  
->  struct panfrost_device {
+patch 2 simply enables the page percpu first chunk allocator in riscv.
+
+Alexandre Ghiti (2):
+  mm: Introduce flush_cache_vmap_early() and its riscv implementation
+  riscv: Enable pcpu page first chunk allocator
+
+ arch/riscv/Kconfig                  | 2 ++
+ arch/riscv/include/asm/cacheflush.h | 3 ++-
+ arch/riscv/include/asm/tlbflush.h   | 2 ++
+ arch/riscv/mm/kasan_init.c          | 8 ++++++++
+ arch/riscv/mm/tlbflush.c            | 5 +++++
+ include/asm-generic/cacheflush.h    | 6 ++++++
+ mm/percpu.c                         | 8 +-------
+ 7 files changed, 26 insertions(+), 8 deletions(-)
+
+-- 
+2.39.2
 
