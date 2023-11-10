@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B2A7E8000
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B5C7E8048
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbjKJSDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        id S235694AbjKJSIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235709AbjKJSCe (ORCPT
+        with ESMTP id S1345589AbjKJSGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:02:34 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDD428B33
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:29:41 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso16988275ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:29:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1699612181; x=1700216981; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nnpoVDYUjKd3G8MoAHqwJcbkn3YvVxdpV7jnAIYRk30=;
-        b=flxy7wLdaPIV2hoMl2P9zGsGxYIYkEugXlcX2aaDFGT5jxCiwCrJxCzCl2va13k7HM
-         gwfvCKetAA2eRzyniXXK7i/eIcHsBDj2rkHT5EQ5rq2sFbE0xEVh9v0BjVxHG4QTkvQ4
-         9xSsR59t7wmRX0IUaoXyq3lPuWxORkNc8QTr+aiPXFPUAzxf6kCoIgMXm9+ke0NsRrSU
-         ZnGlBji9Xh5g54FtDMITkBmd9YNxi11kxabJ0P/B1P/AHMxIj0iSwhfhkuGXuAmuFqat
-         saRYyNDGcI+Qm+hqBCe2jnRFJUnxxM3bUYVXhdIyAEUBAXe7OAtrox+XhYrTdBBVj9s9
-         llTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699612181; x=1700216981;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nnpoVDYUjKd3G8MoAHqwJcbkn3YvVxdpV7jnAIYRk30=;
-        b=v2rUGdNNnPkqWL6cgMeBqqxMvQIUP50OQBCvBjQbikULa7UhjST0ex+cAJtnqKgbls
-         VnFQFHMEp8x2b4hK4bwed2G1hH4K8ivJfvmShpf4rQPnHHxNfcSCXs5saL9tWbKR9sL1
-         CMF3WwnTW9PAPobvl/drauCqrAes1LYZyfQ96+xPKadWnATnDCHHxV+Fqd2rS820l9is
-         zM4loZZmQp8goITrGV7zouI6bVlO1TvrvtcsV0nMSLZLsxrBNKopfWM+t4KhO/rFDR4d
-         iudnwIjyYdn0OT0k0DdGscoh+PaqoErO20gDftUIJ7ug+DvGEanXHpSPjVXLAOWhHgdw
-         ascg==
-X-Gm-Message-State: AOJu0YzQmaUE8H9qRifKOXjrM3+FwiTjC5S/XxHa6bk83mTpU2p01k+D
-        rDswbK1v6DsfKa0dKd3LmLriCg==
-X-Google-Smtp-Source: AGHT+IGaShgv4q7rmDQV4setP1Ioo5vXHwXEr6plv9+vfdgvqbtUqJnkGbGK9nhBqlaF35N2CKkeDw==
-X-Received: by 2002:a17:902:b284:b0:1cc:2469:f2ff with SMTP id u4-20020a170902b28400b001cc2469f2ffmr7458444plr.9.1699612180724;
-        Fri, 10 Nov 2023 02:29:40 -0800 (PST)
-Received: from [10.54.24.52] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id ba2-20020a170902720200b001cc5d23275csm4983457plb.200.2023.11.10.02.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 02:29:40 -0800 (PST)
-Message-ID: <bc934b85-9371-4758-b595-814b98f9c595@shopee.com>
-Date:   Fri, 10 Nov 2023 18:29:36 +0800
+        Fri, 10 Nov 2023 13:06:39 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAFC28B35
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:30:13 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 87A2B66073F9;
+        Fri, 10 Nov 2023 10:30:10 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699612211;
+        bh=fmIgRldcPaxkMOahz2iminQvGRgsI7UzfHVaQEb2Rgc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SpZSbskcGN1cd5a251hFAMouFuhn7IptHfS0olNAx8thCCPaIGZS3DMtl9V7YgXY1
+         xnaI8XSzmJYUPHxXpk7KndsvqGItJXCrH/p/CikmqWVWWwAGUIWr9cr/Ahyy/iJ2H2
+         wiZrQNz68fn0djNX1yEgCPbhEe7tvS4vSU+dWlk3w2IknFoPLQTzNBFZfx4YolDO4e
+         +Gxy6EDyD6ngJtsMPNAX4o76Qm/5gYTrrGxVntuxT9v17SC/zpJ5XJI6TEMtr0X2id
+         /Tj9PLwq574xIw7+8YqWtJm19cfQDF5cv2WHozf1uyccvoR0RQuS4kbCjEMBP284M1
+         1v3KUHfjuBuow==
+Date:   Fri, 10 Nov 2023 11:30:07 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 14/26] drm/lima: Explicitly get and put drm-shmem
+ pages
+Message-ID: <20231110113007.600e72c1@collabora.com>
+In-Reply-To: <20231029230205.93277-15-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-15-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] locking/rwsem: Remove unnessary check in
- rwsem_down_read_slowpath()
-To:     Tang Yizhou <yizhou.tang@shopee.com>
-Cc:     Waiman Long <longman@redhat.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20231108105639.70088-1-haifeng.xu@shopee.com>
- <6da49b39-653a-1eda-2d21-1f1b50cb14f0@redhat.com>
- <5086cd5b-a832-4250-9927-4b300d2f611e@shopee.com>
- <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <CACuPKxnSKQuyWWCtjmmNWP0apja28jWpdYWaKWouArsQA02axQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -78,32 +69,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 30 Oct 2023 02:01:53 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-
-On 2023/11/10 14:54, Tang Yizhou wrote:
-> On Thu, Nov 9, 2023 at 11:17 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
->>
->> reader          writer                                  reader
->>
->> acquire
->> release
->>                 rwsem_write_trylock
->>                         set RWSEM_WRITER_LOCKED
->>                                                         rwsem_down_read_slowpath
->>                         set owner
->>
->> If prev lock holder is a reader, when it releases the lock, the owner isn't cleared(CONFIG_DEBUG_RWSEMS isn't enabled).
->> A writer comes and can set the RWSEM_WRITER_LOCKED bit succsessfully, then a new reader run into slow path, before
->> the writer set the owner, the new reader will see that both the RWSEM_READER_OWNED bit and RWSEM_WRITER_LOCKED bit are
->> set.
->>
+> To simplify the drm-shmem refcnt handling, we're moving away from
+> the implicit get_pages() that is used by get_pages_sgt(). From now on
+> drivers will have to pin pages while they use sgt. Lima driver doesn't
+> have shrinker, hence pages are pinned and sgt is valid as long as pages'
+> use-count > 0.
 > 
-> For the above example, it won't cause a problem. When the writer
-> successfully sets RWSEM_WRITER_LOCKED, the reader, when reading rcnt
-> through rwsem_down_read_slowpath(), will see that rcnt is 0 and will
-> jump to the queue label.
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/lima/lima_gem.c | 18 ++++++++++++++++--
+>  drivers/gpu/drm/lima/lima_gem.h |  1 +
+>  2 files changed, 17 insertions(+), 2 deletions(-)
 > 
-> Thanks,
-> Tang
+> diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+> index 988e74f67465..d255f5775dac 100644
+> --- a/drivers/gpu/drm/lima/lima_gem.c
+> +++ b/drivers/gpu/drm/lima/lima_gem.c
+> @@ -46,6 +46,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+>  			return -ENOMEM;
+>  		}
+>  
+> +		bo->put_pages = true;
+>  		bo->base.pages = pages;
+>  		refcount_set(&bo->base.pages_use_count, 1);
+>  
+> @@ -115,6 +116,7 @@ int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
+>  		return PTR_ERR(shmem);
+>  
+>  	obj = &shmem->base;
+> +	bo = to_lima_bo(obj);
+>  
+>  	/* Mali Utgard GPU can only support 32bit address space */
+>  	mask = mapping_gfp_mask(obj->filp->f_mapping);
+> @@ -123,13 +125,19 @@ int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
+>  	mapping_set_gfp_mask(obj->filp->f_mapping, mask);
+>  
+>  	if (is_heap) {
+> -		bo = to_lima_bo(obj);
+>  		err = lima_heap_alloc(bo, NULL);
+>  		if (err)
+>  			goto out;
+>  	} else {
+> -		struct sg_table *sgt = drm_gem_shmem_get_pages_sgt(shmem);
+> +		struct sg_table *sgt;
+> +
+> +		err = drm_gem_shmem_get_pages(shmem);
+> +		if (err)
+> +			goto out;
+> +
+> +		bo->put_pages = true;
+>  
+> +		sgt = drm_gem_shmem_get_pages_sgt(shmem);
+>  		if (IS_ERR(sgt)) {
+>  			err = PTR_ERR(sgt);
+>  			goto out;
 
-Yes, so if rcnt > 1, the RWSEM_WRITER_LOCKED bit couldn't be set?
+Pretty sure we don't need this put_pages flag. We can either check
+ba->base.base.pages or refcount_read(&bo->base.pages_use_count). Or,
+even better, if it's just used in the error path of the same function,
+simply have a dedicated error path for that case:
+
+	drm_gem_object_put(obj);
+	return 0;
+
+err_put_pages:
+	if (!is_heap)
+		drm_gem_shmem_put_pages(shmem);
+
+err_put_bo:
+	drm_gem_object_put(obj);
+	return err;
+}
+
+> @@ -139,6 +147,9 @@ int lima_gem_create_handle(struct drm_device *dev, struct drm_file *file,
+>  	err = drm_gem_handle_create(file, obj, handle);
+>  
+>  out:
+> +	if (err && bo->put_pages)
+> +		drm_gem_shmem_put_pages(shmem);
+> +
+>  	/* drop reference from allocate - handle holds it now */
+>  	drm_gem_object_put(obj);
+>  
+> @@ -152,6 +163,9 @@ static void lima_gem_free_object(struct drm_gem_object *obj)
+>  	if (!list_empty(&bo->va))
+>  		dev_err(obj->dev->dev, "lima gem free bo still has va\n");
+>  
+> +	if (bo->put_pages)
+> +		drm_gem_shmem_put_pages(&bo->base);
+
+This one can be replaced by
+
+	if (!is_heap || bo->base.base.pages)
+		drm_gem_shmem_put_pages(&bo->base);
+
+> +
+>  	drm_gem_shmem_free(&bo->base);
+>  }
+>  
+> diff --git a/drivers/gpu/drm/lima/lima_gem.h b/drivers/gpu/drm/lima/lima_gem.h
+> index ccea06142f4b..dc5a6d465c80 100644
+> --- a/drivers/gpu/drm/lima/lima_gem.h
+> +++ b/drivers/gpu/drm/lima/lima_gem.h
+> @@ -16,6 +16,7 @@ struct lima_bo {
+>  	struct list_head va;
+>  
+>  	size_t heap_size;
+> +	bool put_pages;
+>  };
+>  
+>  static inline struct lima_bo *
+
