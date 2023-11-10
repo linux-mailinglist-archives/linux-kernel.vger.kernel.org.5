@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A757E7718
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056087E771A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 03:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345698AbjKJCN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 21:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        id S1345693AbjKJCNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 21:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjKJCNY (ORCPT
+        with ESMTP id S1345727AbjKJCNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 21:13:24 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980E7468A
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 18:13:20 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9ab79816a9so1958132276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 18:13:20 -0800 (PST)
+        Thu, 9 Nov 2023 21:13:25 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A9F4695
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 18:13:21 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0ccfc4fc8so1990189276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 18:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699582398; x=1700187198; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699582400; x=1700187200; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=rhicNGhqq5fztpWLcEppgCSeLbp+B1utXe2pu96crUY=;
-        b=QShtZQss5ZMQEkFgfxVqnAZ6tK+XqK5FtxOwS+bbHxp7x9039XAD8O2cpGyNLnmwBq
-         fVQWpy6TIW6vvGkAJ85tgCDHkCJ1kRwrHP+mLaLBsI5OVZpD29BL7NaGoTHBdPx12YmR
-         oJ5B2DJMy1TDUxj3FZ+zCUEpV1X3PA/NBKkSKUo4fJUWuR18tcoJlYbdIPYHWeRoJeQG
-         HT/OiUblrV38LOb7u1ik4MqrLrcIhPlwzK9HEQbbWulLhHK1rOdHRYFQZ5K6UIDPRURi
-         rQd6InUeQtKWF2jsgEz4X59/zpXdfm11zQcH+Jn04Y8ZNW9z4Fk/1Ipx5hMYIooWxkth
-         A7ZQ==
+        bh=uDpdyO5wteS2tCSVyIlZrwaNpirFZhycmLzD5CPKCCU=;
+        b=qMXxfJ+lsiB4l4A6RJSu+pNo1t2eDnu+4Q0SzDS+F0wa9rlxvewJnWKHjFR7UFSytk
+         gvEINr9Pv93m6yKwpovM5aozYPHV4U+vQ1TTG+c7ia0CPLk1f6PtQIGOoLh10RKOP6QW
+         93jrx1wEFskG1U4eGSZWRCgD6QLJRVSzGSJ+bpQPP0OiHtWrq/7A2yA3P5ZJ0ka4mX+z
+         rIhXOJcGzK+p9NNa7DeaW6SFcY57s2arI8xVvEBtIM9jokiTqBxM8is8tumSBbr1M60d
+         LiuMsurxLIdr6CFcf9cvfvRlGS0dy0j/VoA69wyWxoza57XoAtMi5tos5t64q+LvMvcu
+         VrRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699582398; x=1700187198;
+        d=1e100.net; s=20230601; t=1699582400; x=1700187200;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rhicNGhqq5fztpWLcEppgCSeLbp+B1utXe2pu96crUY=;
-        b=TWdG/gw4DeaIeZuCBsAcWSIcQPDJa6+04iwNtkclstdUGjyys51fTsMJRZ/rGcqPAT
-         y2krDKNQMATjzqTtLv49x/6XuzVqcr1p8UE2eVf1LIkpfarwbU01v+yWD3MFGDHLAd4J
-         Tl/iW5KlIaFgoWbpZN0MOOV8rU4/wdtPgonZMaY7QEfahDn1rovv7Rw+NbLRtbdkYd/V
-         s0brESsKFoZ372QbmTgfaAi1TnXBfQrmD0ywjsSoQshx/I/c6Re2gx5DmSxFmczo97u5
-         2IGsoWv7hl5H/t5KQDKeCqdoui+V1mzpE9EFh96BPK7+afYrauKjIMa5X8m2jE1s4Ff0
-         NeKg==
-X-Gm-Message-State: AOJu0Yynjbxx0Yy6IrtZPaf3EnuOTySIrkGas5pMRGdXLi8svGMxEITB
-        H0E/UEsVTsWW+Yvx3XJ+jfFCWfbjxl8=
-X-Google-Smtp-Source: AGHT+IGCXDiHWVwjETF/f/ul/XmyTlRl6YEVHm954WDiLpmdCatrwW0Nxm68rtk/KxJmMp9ndUIiZmG2mzI=
+        bh=uDpdyO5wteS2tCSVyIlZrwaNpirFZhycmLzD5CPKCCU=;
+        b=KwHc0gEu5irCqH6Jx9IJicZWXSHdOua1L7thR6lLMzlEueFx0OOk6ZhM88CwgJ9et7
+         ctiFOKu66Hm04B3uWxjDd64ADRoHV7BP9QVqZbUUaRKT+JANHSh/CZEpGFmDA9/AQLWB
+         WzUJAPvMNAeCit2hoWk0/wwYU451a1UBlbcYVZrZ+LWdPGs0cjPkgS/vrJKZVGkExYcu
+         LYXnZYA17uuRjLqBJBtynjUs6E9FTSOQx0sBrkLlCfgImtLwm6Jlv2uf/WIFg57blvFi
+         6+0RCRFMBM6XQtD/t5LgZPyeoKBTtVPBnepjF+kQSFfCYLaBn47r+74uBIijnTzqveKs
+         Pcjg==
+X-Gm-Message-State: AOJu0YwZM1hZROsnMZGcY7Fzs1ZEAdg/PIr/V7TmSFtYg0Sug8dAp6L0
+        6H7oWbkYM6yzbnhyeckuszO7+zd9z0I=
+X-Google-Smtp-Source: AGHT+IE3hk2jW8uXQ54DbsLBHV3dm9I6uV2tMVC4BMKqHVvW/L2kF+m40xmeCrC9CkE/0s3M7H5X8gXIZ1Q=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:b4d:0:b0:d9a:d272:ee58 with SMTP id
- b13-20020a5b0b4d000000b00d9ad272ee58mr180101ybr.9.1699582398699; Thu, 09 Nov
- 2023 18:13:18 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:c083:0:b0:da3:7486:bc4b with SMTP id
+ c125-20020a25c083000000b00da37486bc4bmr185729ybf.3.1699582400454; Thu, 09 Nov
+ 2023 18:13:20 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  9 Nov 2023 18:12:43 -0800
+Date:   Thu,  9 Nov 2023 18:12:44 -0800
 In-Reply-To: <20231110021306.1269082-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231110021306.1269082-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231110021306.1269082-4-seanjc@google.com>
-Subject: [PATCH v8 03/26] KVM: x86/pmu: Remove KVM's enumeration of Intel's
- architectural encodings
+Message-ID: <20231110021306.1269082-5-seanjc@google.com>
+Subject: [PATCH v8 04/26] KVM: x86/pmu: Setup fixed counters' eventsel during
+ PMU initialization
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -71,122 +71,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop KVM's enumeration of Intel's architectural event encodings, and
-instead open code the three encodings (of which only two are real) that
-KVM uses to emulate fixed counters.  Now that KVM doesn't incorrectly
-enforce the availability of architectural encodings, there is no reason
-for KVM to ever care about the encodings themselves, at least not in the
-current format of an array indexed by the encoding's position in CPUID.
+Set the eventsel for all fixed counters during PMU initialization, the
+eventsel is hardcoded and consumed if and only if the counter is supported,
+i.e. there is no reason to redo the setup every time the PMU is refreshed.
 
-Opportunistically add a comment to explain why KVM cares about eventsel
-values for fixed counters.
+Configuring all KVM-supported fixed counter also eliminates a potential
+pitfall if/when KVM supports discontiguous fixed counters, in which case
+configuring only nr_arch_fixed_counters will be insufficient (ignoring the
+fact that KVM will need many other changes to support discontiguous fixed
+counters).
 
-Suggested-by: Jim Mattson <jmattson@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/pmu_intel.c | 72 ++++++++++++------------------------
- 1 file changed, 23 insertions(+), 49 deletions(-)
+ arch/x86/kvm/vmx/pmu_intel.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 7737ee2fc62f..c4f2c6a268e7 100644
+index c4f2c6a268e7..c9df139efc0c 100644
 --- a/arch/x86/kvm/vmx/pmu_intel.c
 +++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -22,52 +22,6 @@
- 
- #define MSR_PMC_FULL_WIDTH_BIT      (MSR_IA32_PMC0 - MSR_IA32_PERFCTR0)
- 
--enum intel_pmu_architectural_events {
--	/*
--	 * The order of the architectural events matters as support for each
--	 * event is enumerated via CPUID using the index of the event.
--	 */
--	INTEL_ARCH_CPU_CYCLES,
--	INTEL_ARCH_INSTRUCTIONS_RETIRED,
--	INTEL_ARCH_REFERENCE_CYCLES,
--	INTEL_ARCH_LLC_REFERENCES,
--	INTEL_ARCH_LLC_MISSES,
--	INTEL_ARCH_BRANCHES_RETIRED,
--	INTEL_ARCH_BRANCHES_MISPREDICTED,
--
--	NR_REAL_INTEL_ARCH_EVENTS,
--
--	/*
--	 * Pseudo-architectural event used to implement IA32_FIXED_CTR2, a.k.a.
--	 * TSC reference cycles.  The architectural reference cycles event may
--	 * or may not actually use the TSC as the reference, e.g. might use the
--	 * core crystal clock or the bus clock (yeah, "architectural").
--	 */
--	PSEUDO_ARCH_REFERENCE_CYCLES = NR_REAL_INTEL_ARCH_EVENTS,
--	NR_INTEL_ARCH_EVENTS,
--};
--
--static struct {
--	u8 eventsel;
--	u8 unit_mask;
--} const intel_arch_events[] = {
--	[INTEL_ARCH_CPU_CYCLES]			= { 0x3c, 0x00 },
--	[INTEL_ARCH_INSTRUCTIONS_RETIRED]	= { 0xc0, 0x00 },
--	[INTEL_ARCH_REFERENCE_CYCLES]		= { 0x3c, 0x01 },
--	[INTEL_ARCH_LLC_REFERENCES]		= { 0x2e, 0x4f },
--	[INTEL_ARCH_LLC_MISSES]			= { 0x2e, 0x41 },
--	[INTEL_ARCH_BRANCHES_RETIRED]		= { 0xc4, 0x00 },
--	[INTEL_ARCH_BRANCHES_MISPREDICTED]	= { 0xc5, 0x00 },
--	[PSEUDO_ARCH_REFERENCE_CYCLES]		= { 0x00, 0x03 },
--};
--
--/* mapping between fixed pmc index and intel_arch_events array */
--static int fixed_pmc_events[] = {
--	[0] = INTEL_ARCH_INSTRUCTIONS_RETIRED,
--	[1] = INTEL_ARCH_CPU_CYCLES,
--	[2] = PSEUDO_ARCH_REFERENCE_CYCLES,
--};
--
- static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+@@ -409,27 +409,21 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+  * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
+  * as there is no architectural general purpose encoding for reference cycles.
+  */
+-static void setup_fixed_pmc_eventsel(struct kvm_pmu *pmu)
++static u64 intel_get_fixed_pmc_eventsel(int index)
  {
- 	struct kvm_pmc *pmc;
-@@ -442,8 +396,29 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	return 0;
- }
- 
-+/*
-+ * Map fixed counter events to architectural general purpose event encodings.
-+ * Perf doesn't provide APIs to allow KVM to directly program a fixed counter,
-+ * and so KVM instead programs the architectural event to effectively request
-+ * the fixed counter.  Perf isn't guaranteed to use a fixed counter and may
-+ * instead program the encoding into a general purpose counter, e.g. if a
-+ * different perf_event is already utilizing the requested counter, but the end
-+ * result is the same (ignoring the fact that using a general purpose counter
-+ * will likely exacerbate counter contention).
-+ *
-+ * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
-+ * as there is no architectural general purpose encoding for reference cycles.
-+ */
- static void setup_fixed_pmc_eventsel(struct kvm_pmu *pmu)
- {
-+	const struct {
-+		u8 eventsel;
-+		u8 unit_mask;
-+	} fixed_pmc_events[] = {
-+		[0] = { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIONS. */
-+		[1] = { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
-+		[2] = { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLES*/
-+	};
- 	int i;
+ 	const struct {
+-		u8 eventsel;
++		u8 event;
+ 		u8 unit_mask;
+ 	} fixed_pmc_events[] = {
+ 		[0] = { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIONS. */
+ 		[1] = { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
+ 		[2] = { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLES*/
+ 	};
+-	int i;
  
  	BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) != KVM_PMC_MAX_FIXED);
-@@ -451,10 +426,9 @@ static void setup_fixed_pmc_eventsel(struct kvm_pmu *pmu)
- 	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
- 		int index = array_index_nospec(i, KVM_PMC_MAX_FIXED);
- 		struct kvm_pmc *pmc = &pmu->fixed_counters[index];
--		u32 event = fixed_pmc_events[index];
  
--		pmc->eventsel = (intel_arch_events[event].unit_mask << 8) |
--				 intel_arch_events[event].eventsel;
-+		pmc->eventsel = (fixed_pmc_events[index].unit_mask << 8) |
-+				 fixed_pmc_events[index].eventsel;
- 	}
+-	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+-		int index = array_index_nospec(i, KVM_PMC_MAX_FIXED);
+-		struct kvm_pmc *pmc = &pmu->fixed_counters[index];
+-
+-		pmc->eventsel = (fixed_pmc_events[index].unit_mask << 8) |
+-				 fixed_pmc_events[index].eventsel;
+-	}
++	return (fixed_pmc_events[index].unit_mask << 8) |
++		fixed_pmc_events[index].event;
  }
  
+ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+@@ -495,7 +489,6 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+ 						  kvm_pmu_cap.bit_width_fixed);
+ 		pmu->counter_bitmask[KVM_PMC_FIXED] =
+ 			((u64)1 << edx.split.bit_width_fixed) - 1;
+-		setup_fixed_pmc_eventsel(pmu);
+ 	}
+ 
+ 	for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
+@@ -573,6 +566,7 @@ static void intel_pmu_init(struct kvm_vcpu *vcpu)
+ 		pmu->fixed_counters[i].vcpu = vcpu;
+ 		pmu->fixed_counters[i].idx = i + INTEL_PMC_IDX_FIXED;
+ 		pmu->fixed_counters[i].current_config = 0;
++		pmu->fixed_counters[i].eventsel = intel_get_fixed_pmc_eventsel(i);
+ 	}
+ 
+ 	lbr_desc->records.nr = 0;
 -- 
 2.42.0.869.gea05f2083d-goog
 
