@@ -2,160 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BEF27E763B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204307E7645
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345588AbjKJBCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
+        id S1345664AbjKJBC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345585AbjKJBCD (ORCPT
+        with ESMTP id S1345578AbjKJBCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:02:03 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895C844A4
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:01:55 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-28120aa1c24so1316224a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 17:01:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699578115; x=1700182915; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oQQfAGVkAKgYf59iXbnKQtwf1SRSbMQhaeMVSM1Y7tg=;
-        b=GWrkSSWrCoK5rd5LUATh/8NA5igPFSS7+EfT2MTFQzFgaUNku1YWSLle0sJE1i5T82
-         XuaRptn52X738p248UZk0GiJ754Xr8J310YfnNW5Xbs5g4YNW3ktRYrPOUgfCDg8/PEJ
-         MxeaOV+AqGGdlSu0G8m/PSBEautfCt7GN+Fn4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699578115; x=1700182915;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oQQfAGVkAKgYf59iXbnKQtwf1SRSbMQhaeMVSM1Y7tg=;
-        b=qRI0uSYTA02/uirVlbRuk7u8irozLyAWybqqRngZJvks6gQ60uI/03Aidw0bsgPEsN
-         8MLxyUZr1QOTPjOadRSkgRJ5E65RjVi+XpfEEIbM0WsjEK5QwFiWkxPIs80K7yhK2DbE
-         P8JoVY2ncbZjTJMNMZwVGV/xvTae1LMHY15lq3hTH+OGA3pzWKj7mUxc9i2ln+rDe4mW
-         iLS/4Nh/aTgd3DsdWWNRa7WZlHLzOuNztawTiee4ezK4iRAJB9v2lbntXAnX9o86AD4N
-         vvb2ZL+b6fLAgOfaqB5dzEvvbKQBnm2pjv3iYmo2mPuu6iA3JgEWolF2+YWJSCLCoGRx
-         HIhA==
-X-Gm-Message-State: AOJu0Yx29PJjh8AR+2VTZ1w5xX2Hl734vlf+WEJ8Hm63KXOeb9XMKI1s
-        SLsBVAz7RCT1qiMERa0Kt7F4mA==
-X-Google-Smtp-Source: AGHT+IEsIfY/Y7KdBuWjcVyScz3wvYDxi5f/SaW4+80IzWig45+uhH/lxxVaTEsJIA97uxu9vBWmGw==
-X-Received: by 2002:a17:90b:4c50:b0:27f:fcc8:9196 with SMTP id np16-20020a17090b4c5000b0027ffcc89196mr3455145pjb.32.1699578114986;
-        Thu, 09 Nov 2023 17:01:54 -0800 (PST)
-Received: from localhost ([2620:15c:9d:2:e584:25c0:d29c:54c])
-        by smtp.gmail.com with UTF8SMTPSA id 4-20020a17090a018400b0028098225450sm470634pjc.1.2023.11.09.17.01.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Nov 2023 17:01:54 -0800 (PST)
-From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
-To:     dm-devel@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Mike Snitzer <snitzer@kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Dave Chinner <david@fromorbit.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Sarthak Kukreti <sarthakkukreti@chromium.org>
-Subject: [PATCH] loop/010: Add test for mode 0 fallocate() on loop devices
-Date:   Thu,  9 Nov 2023 17:01:39 -0800
-Message-ID: <20231110010139.3901150-5-sarthakkukreti@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-In-Reply-To: <20231110010139.3901150-1-sarthakkukreti@chromium.org>
-References: <20231110010139.3901150-1-sarthakkukreti@chromium.org>
+        Thu, 9 Nov 2023 20:02:12 -0500
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E072244B3
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:02:09 -0800 (PST)
+X-AuditID: a67dfc5b-d85ff70000001748-cc-654d810e1540
+Date:   Fri, 10 Nov 2023 10:02:01 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        "kernel_team@skhynix.com" <kernel_team@skhynix.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "xhao@linux.alibaba.com" <xhao@linux.alibaba.com>,
+        "mgorman@techsingularity.net" <mgorman@techsingularity.net>,
+        "hughd@google.com" <hughd@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "david@redhat.com" <david@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [v3 2/3] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <20231110010201.GA72073@system.software.com>
+References: <20231030072540.38631-1-byungchul@sk.com>
+ <20231030072540.38631-3-byungchul@sk.com>
+ <63C530D3-3A1D-4BE9-8AA7-EFF5B895BE80@vmware.com>
+ <20231030125129.GD81877@system.software.com>
+ <20231108041208.GA40954@system.software.com>
+ <C47A7C40-BE3E-4F0F-B854-D40D4795A236@vmware.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <C47A7C40-BE3E-4F0F-B854-D40D4795A236@vmware.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsXC9ZZnkS5/o2+qQccaNos564HE5w3/2Cxe
+        bGhntPi6/hezxdNPfSwWl3fNYbO4t+Y/q8X5XWtZLXYs3cdkcenAAiaL67seMloc7z3AZLF5
+        01Rmi98/gOrmTLGyODlrMouDgMf31j4WjwWbSj02r9DyWLznJZPHplWdbB6bPk1i93h37hy7
+        x4kZv1k8dj609Jh3MtDj/b6rbB5bf9l5fN4k5/Fu/lu2AL4oLpuU1JzMstQifbsEroz7x9qZ
+        Ch6IV8yZeYupgXGBYBcjJ4eEgInElZUr2GDsvW3P2EFsFgFViSe9OxhBbDYBdYkbN34yg9gi
+        AooSh/bfA4szC7xjlfj+SRPEFhaIlvi09xVYL6+AhUTXkkbWLkYuDiGB5UwS69pnskAkBCVO
+        znzCAtGsLvFn3iWgoRxAtrTE8n8cEGF5ieats8F2cQrYSdyb0wlWLiqgLHFg23EmiDu3sUt0
+        bk6CsCUlDq64wTKBUXAWkg2zkGyYhbBhFpINCxhZVjEKZeaV5SZm5pjoZVTmZVboJefnbmIE
+        xuyy2j/ROxg/XQg+xCjAwajEw3vhuk+qEGtiWXFl7iFGCQ5mJRHeCyZAId6UxMqq1KL8+KLS
+        nNTiQ4zSHCxK4rxG38pThATSE0tSs1NTC1KLYLJMHJxSDYwa+w6t1JCeeI/DotLR916Qemap
+        nd2ia40HH27yv960wqFiakqj7aVftm4zc39/sXyUL1m6s/ZGjdelG4x8f6sltm2L+Xjd8OZq
+        /t+M89iXnvt78lnW26Xarhk1UXOfmn/QdSvXmcOYd9akbX0Wk+yL71c/24b4rviq/nKVDe9i
+        KWaG4jMfIzOVWIozEg21mIuKEwFQEDrb1QIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsXC5WfdrMvX6JtqsOekjsWc9WvYLD5v+Mdm
+        8WJDO6PF1/W/mC2efupjsTg89ySrxeVdc9gs7q35z2pxftdaVosdS/cxWVw6sIDJ4vquh4wW
+        x3sPMFls3jSV2eL3D6C6OVOsLE7OmsziIOjxvbWPxWPBplKPzSu0PBbvecnksWlVJ5vHpk+T
+        2D3enTvH7nFixm8Wj50PLT3mnQz0eL/vKpvH4hcfmDy2/rLz+LxJzuPd/LdsAfxRXDYpqTmZ
+        ZalF+nYJXBn3j7UzFTwQr5gz8xZTA+MCwS5GTg4JAROJvW3P2EFsFgFViSe9OxhBbDYBdYkb
+        N34yg9giAooSh/bfA4szC7xjlfj+SRPEFhaIlvi09xVYL6+AhUTXkkbWLkYuDiGB5UwS69pn
+        skAkBCVOznzCAtGsLvFn3iWgoRxAtrTE8n8cEGF5ieats8F2cQrYSdyb0wlWLiqgLHFg23Gm
+        CYx8s5BMmoVk0iyESbOQTFrAyLKKUSQzryw3MTPHVK84O6MyL7NCLzk/dxMjMAaX1f6ZuIPx
+        y2X3Q4wCHIxKPLwXrvukCrEmlhVX5h5ilOBgVhLhvWACFOJNSaysSi3Kjy8qzUktPsQozcGi
+        JM7rFZ6aICSQnliSmp2aWpBaBJNl4uCUamA8F5Kf3SdX3HPMtXuRd5NwzyuuTdkH4qIvr+Rb
+        emjvwyP7nz1Ov+uqGsZ9oFH6ieWnlRpVb44u/7by1oRe3ZrdLyJN1PVtvOPvKEYoOzpqTfn5
+        JndqMvtbMT8B+bcNVQd4XOamTerasbPHPsrjBN8sLZ9PDbMYGTl/WdtPFw6IK1+w55r74UVK
+        LMUZiYZazEXFiQClF+oAvQIAAA==
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A recent patch series[1] adds support for calling fallocate() in mode 0
-on block devices. This test adds a basic sanity test for loopback devices
-setup on a sparse file and validates that writes to the loopback device
-succeed, even when the underlying filesystem runs out of space.
+On Thu, Nov 09, 2023 at 10:16:57AM +0000, Nadav Amit wrote:
+> 
+> 
+> > On Nov 8, 2023, at 6:12 AM, Byungchul Park <byungchul@sk.com> wrote:
+> > 
+> > !! External Email
+> > 
+> > On Mon, Oct 30, 2023 at 09:51:30PM +0900, Byungchul Park wrote:
+> >>>> diff --git a/mm/memory.c b/mm/memory.c
+> >>>> index 6c264d2f969c..75dc48b6e15f 100644
+> >>>> --- a/mm/memory.c
+> >>>> +++ b/mm/memory.c
+> >>>> @@ -3359,6 +3359,19 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+> >>>>  if (vmf->page)
+> >>>>          folio = page_folio(vmf->page);
+> >>>> 
+> >>>> + /*
+> >>>> +  * This folio has its read copy to prevent inconsistency while
+> >>>> +  * deferring TLB flushes. However, the problem might arise if
+> >>>> +  * it's going to become writable.
+> >>>> +  *
+> >>>> +  * To prevent it, give up the deferring TLB flushes and perform
+> >>>> +  * TLB flush right away.
+> >>>> +  */
+> >>>> + if (folio && migrc_pending_folio(folio)) {
+> >>>> +         migrc_unpend_folio(folio);
+> >>>> +         migrc_try_flush_free_folios(NULL);
+> >>> 
+> >>> So many potential function calls… Probably they should have been combined
+> >>> into one and at least migrc_pending_folio() should have been an inline
+> >>> function in the header.
+> >> 
+> >> I will try to change it as you mention.
+> >> 
+> >>>> + }
+> >>>> +
+> >>> 
+> >>> What about mprotect? I thought David has changed it so it can set writable
+> >>> PTEs.
+> >> 
+> >> I will check it out.
+> > 
+> > I found mprotect stuff is already performing TLB flushes needed for it.
+> > So some redundant TLB flushes might happen by migrc but it's not that
+> > harmful I think. Thanks.
+> 
+> Let me explain the scenario I am concerned with. Assume page P is RO, and
+> moves from Psrc to Pdst. Pointer “p” points to P. Initially (*p == 0).
+> 
+> Let’s also assume we also have an atomic variable “a”. Initially (a == 0).
+> 
+> I hope I got the migration function names right, but I hope the problem
+> itself can be clear regardless. 
+> 
+> CPU0			CPU1			CPU2		CPU3
+> ----			----			----		----
+> 			(user-mode)		(user-mode)		
+> 
+> 			Access *p
+> 			[Psrc cached in TLB]
+>  
+> migrate_pages_batch()
+> -> migrate_folio_unmap()
+> 
+> [ PTE updated, 
+>   still no flush ]
+> 
+> 								mprotect(p,
+> 									RW)
 
-Signed-off-by: Sarthak Kukreti <sarthakkukreti@chromium.org>
----
- tests/loop/010     | 60 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/loop/010.out |  2 ++
- 2 files changed, 62 insertions(+)
- create mode 100644 tests/loop/010
- create mode 100644 tests/loop/010.out
+Here,
 
-diff --git a/tests/loop/010 b/tests/loop/010
-new file mode 100644
-index 0000000..091be5e
---- /dev/null
-+++ b/tests/loop/010
-@@ -0,0 +1,60 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-3.0+
-+# Copyright (C) 2023 Google LLC.
-+# Author: sarthakkukret@google.com (Sarthak Kukreti)
-+#
-+# Test if fallocate() on a loopback device provisions space on the underlying
-+# filesystem and writes on the loop device succeed, even if the lower
-+# filesystem is filled up.
-+
-+. tests/loop/rc
-+
-+DESCRIPTION="Loop device fallocate() space provisioning"
-+QUICK=1
-+
-+requires() {
-+	_have_program mkfs.ext4
-+}
-+
-+test() {
-+	echo "Running ${TEST_NAME}"
-+
-+	local mount_dir="$TMPDIR/mnt"
-+	mkdir -p ${mount_dir}
-+
-+	local image_file="$TMPDIR/img"
-+	truncate -s 1G "${image_file}"
-+
-+	local loop_device
-+	loop_device="$(losetup -P -f --show "${image_file}")"
-+
-+	mkfs.ext4 ${loop_device} &> /dev/null
-+	mount -t ext4 ${loop_device} ${mount_dir}
-+
-+	local provisioned_file="${mount_dir}/provisioned"
-+	truncate -s 200M "${provisioned_file}"
-+
-+	local provisioned_loop_device
-+	provisioned_loop_device="$(losetup -P -f --show "${provisioned_file}")"
-+
-+	# Provision space for the file: without provisioning support, this fails
-+	# with EOPNOTSUPP.
-+	fallocate -l 200M "${provisioned_loop_device}"
-+
-+	# Fill the filesystem, this command will error out with ENOSPC.
-+	local fs_fill_file="${mount_dir}/fill"
-+	dd if=/dev/zero of="${fs_fill_file}" bs=1M count=1024 status=none &>/dev/null
-+	sync
-+
-+	# Write to provisioned loop device, ensure that it does not run into ENOSPC.
-+	dd if=/dev/zero of="${provisioned_loop_device}" bs=1M count=200 status=none
-+	sync
-+
-+	# Cleanup.
-+	losetup --detach "${provisioned_loop_device}"
-+	umount "${mount_dir}"
-+	losetup --detach "${loop_device}"
-+	rm "${image_file}"
-+
-+	echo "Test complete"
-+}
-\ No newline at end of file
-diff --git a/tests/loop/010.out b/tests/loop/010.out
-new file mode 100644
-index 0000000..068c489
---- /dev/null
-+++ b/tests/loop/010.out
-@@ -0,0 +1,2 @@
-+Running loop/009
-+Test complete
--- 
-2.42.0.758.gaed0368e0e-goog
+mprotect()
+   do_mprotect_pkey()
+      tlb_finish_mmu()
+         tlb_flush_mmu()
 
+I thought TLB flush for mprotect() is performed by tlb_flush_mmu() so
+any cached TLB entries on other CPUs can have chance to update. Could
+you correct me if I get it wrong? Thanks.
+
+	Byungchul
+
+> 
+> 								[ Psrc is
+> 								  RW ]
+> 
+> 								[ flush
+> 								  deferred]
+> 
+> 
+> 						*p = 1  # Pdst
+> 						
+> 						xchg(&a, 1)
+> 			mfence
+> 			if (a == 1)
+> 			  assert(*p == 1);
+> 
+> 
+> 				
+> Now at this point the assertion might fail. CPU2 wrote into Pdst, whereas
+> CPU1 reads from Psrc. But based on x86 memory model, userspace might not
+> expect this scenario to be possible, hence leading to bugs.
