@@ -2,284 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3CA7E82E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3207E8197
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345825AbjKJTeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56186 "EHLO
+        id S1345666AbjKJSaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235940AbjKJTds (ORCPT
+        with ESMTP id S1345133AbjKJS1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:33:48 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61DC2F340
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:21:18 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D191566071D4;
-        Fri, 10 Nov 2023 11:21:16 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699615277;
-        bh=XlfK0cZ7e+Elesjbsv7sYANR5q9yqJ5B618x/9UvH3Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IRny5HLJNiTBhTGDIjtZeuCwFe1yGtc4lvqLWqckDIK96IB/m5VeNHQmz5h4yQXxA
-         wecs4KRjKDkzteQ7tmeB23cGyzwj6c+AALTMZD6b2QvN9qlpYZRj4PRcYWZB9YoRRZ
-         UexE5wpqJ0QTgpc8bDp55N/UoV38RKw7zqHigRY8/HYiWwaT/6xDCoQHgAZ3cipN6y
-         IRi3a1RUtFItBvvFMDu4vLIflbHlTuX9uTWrN8hTO8mcjZDoH6Jkt8ngBs021YJlWx
-         VTrVVX+zYfbfmpu794HTLRHYQ46kivXAK+aB29MCrJsfdqWs9qUkogmzFiOCVmsPqY
-         LRM5ZL3bBTvCA==
-Date:   Fri, 10 Nov 2023 12:21:12 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v9 09/12] drm/gpuvm: reference count
- drm_gpuvm structures
-Message-ID: <20231110122112.4aeb2b39@collabora.com>
-In-Reply-To: <20231108001259.15123-10-dakr@redhat.com>
-References: <20231108001259.15123-1-dakr@redhat.com>
-        <20231108001259.15123-10-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 10 Nov 2023 13:27:09 -0500
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE452F36B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:25:05 -0800 (PST)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6b243dc6aeeso1851085b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:25:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699615505; x=1700220305;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S69SySV4t3v20UfQhfxcKtmq9Az4t+4vKaCb8J3vBms=;
+        b=LLVjH+R/0Ch/9vzdpn2XO5nQkmynZHvf+mhwOKfxzeY9mQoHhCXdst2C8WsRrzvKox
+         eTqnSGD8Z3ZSNcpxI0rrxrPrbd/wZ17tI+ZF38I50F/vxfFaP3sKIQKGpBHipb2JYl8l
+         6DKusvcwVp6XPO5BjAjEjNHhGPHXXoYsK4o6ihZNwIoG4uvTjE2hGYpOmqzEhk743eBg
+         BAILxFB/e7eCYJdghfknlfu8en+TqYqOcCu4LavFxPZU19OQshBtzXifI9CgxZtCg5mI
+         hkCpq617L+nqD5vTB7Hsjk/m/AjrN0mok+qB/9ASrbBJziO/puqOirqMWuzTU1IUCddX
+         hlxA==
+X-Gm-Message-State: AOJu0Yypnnnzsg5z6h7MsCZBOieYq4FnRi1Ys+gOok6pNq7tborvrUsf
+        WRFEF2R4IrpABsJU5DXmKk+5Juvu+gJK+JxFA7Lc4bmkhIVpUUE=
+X-Google-Smtp-Source: AGHT+IFY+Xe7wSPSJJ+Zks0T7gg/RTnNscxHQhFYdnk1wn3xTuEgyNBJrVICVHForHQFapBf2u4rpwXlkvDUrQHOULPrCMfLCIrX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:bd5:b0:6c3:4121:578d with SMTP id
+ x21-20020a056a000bd500b006c34121578dmr1110745pfu.2.1699615505380; Fri, 10 Nov
+ 2023 03:25:05 -0800 (PST)
+Date:   Fri, 10 Nov 2023 03:25:05 -0800
+In-Reply-To: <20231110110726.3060048-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000073fea30609ca92b5@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  8 Nov 2023 01:12:39 +0100
-Danilo Krummrich <dakr@redhat.com> wrote:
+Hello,
 
-> Implement reference counting for struct drm_gpuvm.
-> 
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
 
-> ---
->  drivers/gpu/drm/drm_gpuvm.c            | 56 +++++++++++++++++++++-----
->  drivers/gpu/drm/nouveau/nouveau_uvmm.c | 20 ++++++---
->  include/drm/drm_gpuvm.h                | 31 +++++++++++++-
->  3 files changed, 90 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-> index 53e2c406fb04..ef968eba6fe6 100644
-> --- a/drivers/gpu/drm/drm_gpuvm.c
-> +++ b/drivers/gpu/drm/drm_gpuvm.c
-> @@ -746,6 +746,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
->  	gpuvm->rb.tree = RB_ROOT_CACHED;
->  	INIT_LIST_HEAD(&gpuvm->rb.list);
->  
-> +	kref_init(&gpuvm->kref);
-> +
->  	gpuvm->name = name ? name : "unknown";
->  	gpuvm->flags = flags;
->  	gpuvm->ops = ops;
-> @@ -770,15 +772,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
->  }
->  EXPORT_SYMBOL_GPL(drm_gpuvm_init);
->  
-> -/**
-> - * drm_gpuvm_destroy() - cleanup a &drm_gpuvm
-> - * @gpuvm: pointer to the &drm_gpuvm to clean up
-> - *
-> - * Note that it is a bug to call this function on a manager that still
-> - * holds GPU VA mappings.
-> - */
-> -void
-> -drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
-> +static void
-> +drm_gpuvm_fini(struct drm_gpuvm *gpuvm)
->  {
->  	gpuvm->name = NULL;
->  
-> @@ -790,7 +785,35 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->  
->  	drm_gem_object_put(gpuvm->r_obj);
->  }
-> -EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
-> +
-> +static void
-> +drm_gpuvm_free(struct kref *kref)
-> +{
-> +	struct drm_gpuvm *gpuvm = container_of(kref, struct drm_gpuvm, kref);
-> +
-> +	drm_gpuvm_fini(gpuvm);
-> +
-> +	if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
-> +		return;
-> +
-> +	gpuvm->ops->vm_free(gpuvm);
-> +}
-> +
-> +/**
-> + * drm_gpuvm_put() - drop a struct drm_gpuvm reference
-> + * @gpuvm: the &drm_gpuvm to release the reference of
-> + *
-> + * This releases a reference to @gpuvm.
-> + *
-> + * This function may be called from atomic context.
-> + */
-> +void
-> +drm_gpuvm_put(struct drm_gpuvm *gpuvm)
-> +{
-> +	if (gpuvm)
-> +		kref_put(&gpuvm->kref, drm_gpuvm_free);
-> +}
-> +EXPORT_SYMBOL_GPL(drm_gpuvm_put);
->  
->  static int
->  __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
-> @@ -839,11 +862,21 @@ drm_gpuva_insert(struct drm_gpuvm *gpuvm,
->  {
->  	u64 addr = va->va.addr;
->  	u64 range = va->va.range;
-> +	int ret;
->  
->  	if (unlikely(!drm_gpuvm_range_valid(gpuvm, addr, range)))
->  		return -EINVAL;
->  
-> -	return __drm_gpuva_insert(gpuvm, va);
-> +	ret = __drm_gpuva_insert(gpuvm, va);
-> +	if (likely(!ret))
-> +		/* Take a reference of the GPUVM for the successfully inserted
-> +		 * drm_gpuva. We can't take the reference in
-> +		 * __drm_gpuva_insert() itself, since we don't want to increse
-> +		 * the reference count for the GPUVM's kernel_alloc_node.
-> +		 */
-> +		drm_gpuvm_get(gpuvm);
-> +
-> +	return ret;
->  }
->  EXPORT_SYMBOL_GPL(drm_gpuva_insert);
->  
-> @@ -876,6 +909,7 @@ drm_gpuva_remove(struct drm_gpuva *va)
->  	}
->  
->  	__drm_gpuva_remove(va);
-> +	drm_gpuvm_put(va->vm);
->  }
->  EXPORT_SYMBOL_GPL(drm_gpuva_remove);
->  
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> index 54be12c1272f..cb2f06565c46 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> @@ -1780,6 +1780,18 @@ nouveau_uvmm_bo_unmap_all(struct nouveau_bo *nvbo)
->  	}
->  }
->  
-> +static void
-> +nouveau_uvmm_free(struct drm_gpuvm *gpuvm)
-> +{
-> +	struct nouveau_uvmm *uvmm = uvmm_from_gpuvm(gpuvm);
-> +
-> +	kfree(uvmm);
-> +}
-> +
-> +static const struct drm_gpuvm_ops gpuvm_ops = {
-> +	.vm_free = nouveau_uvmm_free,
-> +};
-> +
->  int
->  nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
->  			   void *data,
-> @@ -1830,7 +1842,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
->  		       NOUVEAU_VA_SPACE_END,
->  		       init->kernel_managed_addr,
->  		       init->kernel_managed_size,
-> -		       NULL);
-> +		       &gpuvm_ops);
->  	/* GPUVM takes care from here on. */
->  	drm_gem_object_put(r_obj);
->  
-> @@ -1849,8 +1861,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
->  	return 0;
->  
->  out_gpuvm_fini:
-> -	drm_gpuvm_destroy(&uvmm->base);
-> -	kfree(uvmm);
-> +	drm_gpuvm_put(&uvmm->base);
->  out_unlock:
->  	mutex_unlock(&cli->mutex);
->  	return ret;
-> @@ -1902,7 +1913,6 @@ nouveau_uvmm_fini(struct nouveau_uvmm *uvmm)
->  
->  	mutex_lock(&cli->mutex);
->  	nouveau_vmm_fini(&uvmm->vmm);
-> -	drm_gpuvm_destroy(&uvmm->base);
-> -	kfree(uvmm);
-> +	drm_gpuvm_put(&uvmm->base);
->  	mutex_unlock(&cli->mutex);
->  }
-> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-> index 0c2e24155a93..4e6e1fd3485a 100644
-> --- a/include/drm/drm_gpuvm.h
-> +++ b/include/drm/drm_gpuvm.h
-> @@ -247,6 +247,11 @@ struct drm_gpuvm {
->  		struct list_head list;
->  	} rb;
->  
-> +	/**
-> +	 * @kref: reference count of this object
-> +	 */
-> +	struct kref kref;
-> +
->  	/**
->  	 * @kernel_alloc_node:
->  	 *
-> @@ -273,7 +278,23 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
->  		    u64 start_offset, u64 range,
->  		    u64 reserve_offset, u64 reserve_range,
->  		    const struct drm_gpuvm_ops *ops);
-> -void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
-> +
-> +/**
-> + * drm_gpuvm_get() - acquire a struct drm_gpuvm reference
-> + * @gpuvm: the &drm_gpuvm to acquire the reference of
-> + *
-> + * This function acquires an additional reference to @gpuvm. It is illegal to
-> + * call this without already holding a reference. No locks required.
-> + */
-> +static inline struct drm_gpuvm *
-> +drm_gpuvm_get(struct drm_gpuvm *gpuvm)
-> +{
-> +	kref_get(&gpuvm->kref);
-> +
-> +	return gpuvm;
-> +}
-> +
-> +void drm_gpuvm_put(struct drm_gpuvm *gpuvm);
->  
->  bool drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
->  bool drm_gpuvm_interval_empty(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
-> @@ -673,6 +694,14 @@ static inline void drm_gpuva_init_from_op(struct drm_gpuva *va,
->   * operations to drivers.
->   */
->  struct drm_gpuvm_ops {
-> +	/**
-> +	 * @vm_free: called when the last reference of a struct drm_gpuvm is
-> +	 * dropped
-> +	 *
-> +	 * This callback is mandatory.
-> +	 */
-> +	void (*vm_free)(struct drm_gpuvm *gpuvm);
-> +
->  	/**
->  	 * @op_alloc: called when the &drm_gpuvm allocates
->  	 * a struct drm_gpuva_op
+Tested on:
 
+commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=17929338e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10c4f8b7680000
+
+Note: testing is done by a robot and is best-effort only.
