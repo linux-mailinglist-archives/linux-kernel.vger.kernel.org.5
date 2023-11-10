@@ -2,159 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBD27E8290
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660A67E7F71
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346414AbjKJTYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S229695AbjKJRxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:53:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346344AbjKJTYP (ORCPT
+        with ESMTP id S229531AbjKJRws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:24:15 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2051.outbound.protection.outlook.com [40.107.6.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764F73A20E;
-        Fri, 10 Nov 2023 06:59:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oc+IMNeTYrel3FOICV+tHPPa32ENJs8l0QE5T1noRxGXXRLwfvkp2b+NiSmIoN25p9YFHHshlbuQpFCAUL4vITKboNOPbbUvnXdni6mNuC2EeyKWeuAC8vYKwVJvXCN3dyjGSPs7jlJWv3RcT8puqXywGQ6MtTUsVtdOrvAWE/QtEm3Lf6QjZH8PvkqUB9XnPWxky6k+GnGpzgq2WtKxzEiy0by014G8QrAGYbJQLrVPB/yf5gN6qi7Rbbkr+L1+cUoTAOBAadR46ylkUgsACJsdRAEVoc2F1xL2tBiM6ZeVdJ16ICnXbbVGNCQRf1gAemQ6Srde0da7oUMJNYKdQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kF4E8yiw3CLKfyWBsvzDUUOu0hXpHiVruycrkOmOgfM=;
- b=mH7mCBJZZtDquar2wi5evrOSkG3SVkm+GAx8h1O4WeBcY0Hbm11zrEa0unfp73+j5aQTu1j2VRoYZsGOMDkbwsGZDI23lzOJUaB7NEC1VKhcBGoVaEAv6qkMVUbtgX4XyagpE9bqb1GLWH6BHs0bxr1GR9Ley3/pun6u6rY0xAzErHX9vOfD1Q733VVQBW15Xd2wY0AW+MDi0NOgIDzf4OgFx4RLP+FSo9f9cQACL0U0VsW5C9tE7CtZCnjwXGTRpEVxDu1HS4kXtOZWKx5eB41J84KoaFx5JybHwnVHSxooja+te6K72KQrknqu8sGpaDQ7LGpGwPJp2VBRLkW3ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kF4E8yiw3CLKfyWBsvzDUUOu0hXpHiVruycrkOmOgfM=;
- b=kY3d9902Lov3MVcNnSDfXtq7SLX5U18rVyLqCh3RHWw4MN1kwJnrY4vI8ExlHM6YFXYtioC28uAew1ye3VtDxaKXIUCKKVPnDbMx5mjZuqJ6YFBhNis5/3OsWiW1jUB2jZY9GchKikDVLT4SWpWpXaBcH7wp00tXsIp/653gGBI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS5PR04MB10041.eurprd04.prod.outlook.com (2603:10a6:20b:67c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.15; Fri, 10 Nov
- 2023 14:59:11 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::55e7:3fd0:68f4:8885]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::55e7:3fd0:68f4:8885%4]) with mapi id 15.20.6977.018; Fri, 10 Nov 2023
- 14:59:11 +0000
-Date:   Fri, 10 Nov 2023 09:59:03 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
-        imx@lists.linux.dev, joy.zou@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
-        vkoul@kernel.org
-Subject: Re: [PATCH 4/4] dmaengine: fsl-edma: integrate TCD64 support for
- i.MX95
-Message-ID: <ZU5FN1dECvzDIUHb@lizhi-Precision-Tower-5810>
-References: <20231109212059.1894646-1-Frank.Li@nxp.com>
- <20231109212059.1894646-5-Frank.Li@nxp.com>
- <f095ba95-ce76-4821-87b7-083f4162fc63@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f095ba95-ce76-4821-87b7-083f4162fc63@linaro.org>
-X-ClientProxiedBy: SJ0PR05CA0026.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::31) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Fri, 10 Nov 2023 12:52:48 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120E03A208;
+        Fri, 10 Nov 2023 07:01:03 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id AF96C1F8BB;
+        Fri, 10 Nov 2023 15:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1699628461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=DFjs4EJ8cF9+Ldu+6JUHPp89Js3WVWNhjJccu4yYW4A=;
+        b=dbXfVDjmv0F1r3cSvNr7UQwKN7T2ctOhVDG0SNYkmEBIsbygBMeDj/rxAAwyAU7RMkp4TV
+        n+lhQdLECNLyIGJwHiyP4sn79nNMhflqxrDTgJo3n+qWDcK+Vcu2n23sKL4MMywD0FCTXM
+        4CjTzo6GN2vVNTPjiLIaCymFL1Gf1zI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1699628461;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=DFjs4EJ8cF9+Ldu+6JUHPp89Js3WVWNhjJccu4yYW4A=;
+        b=kwYuDmhbSNR4JPyPHDH6wAyUhpDzyMDakHMflw2V2E6+iynqVUsMO7ahMZAriiiquqlDz/
+        /aYTMgFg1hT48oCg==
+Received: from localhost.cz (unknown [10.100.229.110])
+        by relay2.suse.de (Postfix) with ESMTP id 5A0032D080;
+        Fri, 10 Nov 2023 15:01:01 +0000 (UTC)
+From:   Lukas Hruska <lhruska@suse.cz>
+To:     linux-debuggers@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Michal Koutny <mkoutny@suse.com>,
+        YOSHIDA Masanori <masanori.yoshida.tv@hitachi.com>
+Subject: [RFC PATCH 0/4 v1] LPC materials: livedump
+Date:   Fri, 10 Nov 2023 16:00:53 +0100
+Message-ID: <20231110150057.15717-1-lhruska@suse.cz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS5PR04MB10041:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65b23300-ffca-4eb1-e592-08dbe1fd98cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ozvPZDX7mLMQJnwghMKFLy088pWgc+WTMrICDu18rcXjy+UFkVsfwRj9eECMNPWCGuMzUuaSfw/UgNZTdCOe6GJj3qYIs9GilopFtaj6jST286wbG7Cs6m95dXdmIwYtwjvFOiJ67TQoHVLApgb8OYenfP3I0RwHqy8Rre0HgDlqpSOglg9P4eClruKvVr3gBJmjEpLVyBjyFATKqOkpfbRHqrnYCIBsavuOV0SpuXLIT/9HcRR86ki27c3EQmgozlO3+DffT1LSNfIb7/KwKxx4RbRGAYg/mAWmgCEUrIEVfsTT00oAmrm6jIObJj3lphhNY1WA5uCoyirQd4Mwt/WXFy/xzbbVMPFq8iXRFXEG+sx1tGH/+8C+OKy2s/Cy+1M4GL38FFgiA5CuJvMaJhwg++5Q7f7W/vrQUTtfNKFJI9i5r5mRfs1TWbcMnpFNQqZyJPmGtCjEPGmmV+/EQtojoMecxfd+tKmuWmgQnn+fDaXHtIy438qqwlunMLWxH114b9Mzke8X/tOG9MSnEcNphWfTcnzo8hcOpbLQjvKzVR/ltWPGDdtuXGrrORj5liTrPyF6iQ6Yq1hI1EbF99jezXZSIoF86dya1eO1IGfsFr9XOkYx/EuoH8JqW81o
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(376002)(396003)(366004)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(6486002)(6506007)(52116002)(9686003)(6512007)(53546011)(6666004)(478600001)(83380400001)(26005)(66476007)(66946007)(66556008)(38100700002)(316002)(6916009)(8676002)(2906002)(8936002)(41300700001)(33716001)(4326008)(86362001)(5660300002)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?atg3f9hE2xnGxEgD9xsTdxNyKF8Pv/lxaWo74L4EmpnaCobK7WXq7C+x790h?=
- =?us-ascii?Q?b87duZwbvbPQoHKB6dE694p8P5sgGr7hV6irr72ijEunYPkVw5FYU1uXRdLB?=
- =?us-ascii?Q?naD7S3qCCxRCeouveW2MZF34K+n+7YpRn6wacMgFcidmwgdStd+Ay6kkRMzx?=
- =?us-ascii?Q?ExSPeEJH9Dw2mpTlJKeh40LsLk0xrANWhh1fLHcxbggWhLfSXGi6HOC7nQm1?=
- =?us-ascii?Q?vCWnuuVe+aNKb4dlO+bTz+itQgIiG60cP5bv+cFn3fk+6Lb03jqUQUAJbNF0?=
- =?us-ascii?Q?RItLPsPh0wVdhJ/ni8JYX+a7xPbT4PXOirbhGD/Waf7p0m4Tyn3VGRNOchkf?=
- =?us-ascii?Q?YtdTO4QwHrxv90gmq3jPOkn+LKSpj1OZ7ohs7rvJ2nlDgPdWrIia1gYQnrBq?=
- =?us-ascii?Q?XpfUfnsLirXfAHUNPb1GggRRC3mysgH+bNl16E7T2OrQtsbKIds8JLLVFbcp?=
- =?us-ascii?Q?bSwVKfB6YAUqjz8Ri4FeYl1OTEMx85mcQTG9wIQy/Pikyv5zyYBTLt3CdJyu?=
- =?us-ascii?Q?qQcRIBDB34Af94vxGlPpRsfxxcwLNGjjAtid3b78JT1dnZFMCZa+nKM+BylO?=
- =?us-ascii?Q?vmc5oMbSXv+VLLpw13RX6No0vknx4NV5yTwDpCVhXliAL0ZxxWqQp3bguug2?=
- =?us-ascii?Q?+1e1pB6liJNdLpZf5YpFuh2rBFc9p0IFwEYgaYzGORYDo3ZSDDHvSC0GX6TJ?=
- =?us-ascii?Q?xpw5Fi3qgJNgxtC3H8Y6vyVuPWPOefdqIZU9BYQ1kIcXYDQp6cxlUTlDJJW7?=
- =?us-ascii?Q?PmpiwWWeI6BQuSYHkhr5RohN/VmpkgxoF5ravqavEUnNF87gyewZgO53OV3j?=
- =?us-ascii?Q?9hfouCrMR4MP2AA6HHF1k+L/s6BcgOhgFi5ZtBpder2E6oshJVC5bqdJi4E9?=
- =?us-ascii?Q?DNFkXPkKjNYwevrqSlznxfOgkfRYmkPTh0AkxymqpmQepjO2fagNT7LTP+In?=
- =?us-ascii?Q?QYcBV6Su+U5+ucsPotSROzBYEfWQVr4MijUQ5Dw/yu1lCwkt32hu/E/kaHzW?=
- =?us-ascii?Q?+c2lOgz2ZW/3h45GvkwwPdqKlldiZOcF9etl4czr/gqIC5g6JP3TyXar+V3c?=
- =?us-ascii?Q?hBrDWkD+3ydsAKpO1Wo5TE6Y5tZPcHzJ+A6ZnvrLKm/koi2dPfXhT0UmPujm?=
- =?us-ascii?Q?l9s7ZL3nYgkq+ff4qrH12OWO6rNPgdKOGfstscEh5fE59+u6rE8C4cbMmdE4?=
- =?us-ascii?Q?XGXgzgQ6uBII/SBCGHh77Qs2Ga8fvYxNC4BPxwGfo232DG1h7+BH6ddkXBnk?=
- =?us-ascii?Q?aZW5ABHvcNqam5i3Wit/Tjd5WS/YfKRN2vqWS3D2hQF4L0l42m1cBOo/LGsy?=
- =?us-ascii?Q?SzHOyQRrzjh22NyeLmGnIVyMW+6gaJ50JOmDGX61Gq98WC40Xet6lIsIfkRb?=
- =?us-ascii?Q?qYIymq8LVBNfrCoC9IQ3r+9YszCSJTqgfIhZCL3K4Y8zVW7BFB+nHjf/FYSI?=
- =?us-ascii?Q?Wym60tCIqucNVMoe5RSmSsCs+Q6IHCAIdW/YCOnm/217xP0V2PW/HF4tdi92?=
- =?us-ascii?Q?Mg2U52EsPCAg3dDGTu8E/+FLqlwACysa5TuhgZRPncuzqQpEP04wT/HmxEQT?=
- =?us-ascii?Q?DYFj++W4iWUnymCh89c=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65b23300-ffca-4eb1-e592-08dbe1fd98cd
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 14:59:11.1422
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bot/q5pJwlRrrDXruTW+/smkaRXMw3UXgaS+PZmcUN0bstKVTtSxNnQGt8oheZWuRvAGCzWBiOQxTVr8Dw8ooA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB10041
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 03:50:18PM +0100, Krzysztof Kozlowski wrote:
-> On 09/11/2023 22:20, Frank Li wrote:
-> > In i.MX95's edma version 5, the TCD structure is extended to support 64-bit
-> > addresses for fields like saddr and daddr. To prevent code duplication,
-> > employ help macros to handle the fields, as the field names remain the same
-> > between TCD and TCD64.
-> > 
-> > Change local variables related to TCD addresses from 'u32' to 'dma_addr_t'
-> > to accept 64-bit DMA addresses.
-> > 
-> > Change 'vtcd' type to 'void *' to avoid direct use. Use helper macros to
-> > access the TCD fields correctly.
-> > 
-> > Call 'dma_set_mask_and_coherent(64)' when TCD64 is supported.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> 
-> Three kbuild reports with build failures.
-> 
-> I have impression this was never build-tested and reviewed internally
-> before posting. We had such talk ~month ago and I insisted on some
-> internal review prior submitting to mailing list. I did not insist on
-> internal building of patches, because it felt obvious, so please kindly
-> thoroughly build, review and test your patches internally, before using
-> the community for this. I am pretty sure NXP can build the code they send.
+Quick note
+----------
 
-This build error happen at on special uncommon platform m6800. 
-Patch is tested in imx95 arm64 platform.
+This patchset is primarily here as materials for presentation at the
+Linux Plumber Conference. I will appreciate any feedback you can
+provide, whether in person at the conference or here. This patch is a
+continuation in the development of a long-unupdated patch by YOSHIDA
+Masanori. The last version was v3, see [1]
 
-I have not machine to cover all platform.
 
-Frank
+Summary
+-------
 
-> 
-> Thank you in advance.
-> 
-> Best regards,
-> Krzysztof
-> 
+Linux Kernel currently has a mechanism to create a dump of a whole memory for
+further debugging of an observed issue with the help of crashkernel.
+Unfortunately, we are unable to do this without restarting the host which causes
+a problem in case of having a high availability service running on the system
+experiencing some complex issue that cannot be debugged without the complete
+memory dump and hypervisor-assisted dumps are not an option on bare metal
+setups. For this purpose, there is a live dump mechanism being developed which
+was initially introduced by Yoshida Maasanori [1] in 2012. This PoC was already
+able to create a consistent image of memory with the support of dumping the data
+into a reserved raw block device.
+
+
+Mechanism overview
+------------------
+
+Live Dump is based on Copy-on-write technique. Basically processing is
+performed in the following order.
+(1) Suspends processing of all CPUs.
+(2) Makes pages (which you want to dump) read-only.
+(3) Dumps hard-to-handle pages (that cannot fault)
+(4) Resumes all CPUs
+(5) On page fault, dumps a faulting page.
+(6) Finally, dumps the rest of pages that are not updated.
+
+Page fault handler sends a dump request to the queue handled by
+"livedump" kthread which is in charge of dumping to disk. If ever the
+queue becomes full, livedump simply fails, since livedump's page fault
+can never sleep to wait for space.
+
+
+TODO
+----
+- Large page support
+	Currently livedump can dump only 4K pages, and so it splits all
+	pages in kernel space in advance. This may cause big TLB overhead.
+ - Other target storage support
+	Currently livedump can dump only to block device. Practically,
+	dumping to normal file is necessary.
+ - Other space/area support
+	Currently livedump write-protect only kernel's straight mapping
+	area. Pages in vmap area cannot be dumped consistently.
+- Other CPU architecture support
+	Currently livedump supports only x86-64.
+- Testing
+	Testbench and measurements to provide guarantees about
+	(non)intrusiveness of livedump mechanism under certain conditions.
+
+
+Summary of changes since 2012 version
+-------------------------------------
+- rebase for v6.2
+- fs/vmcore code modification to be reused by livedump
+- memdump output change to ELF format
+- crash tool modification not needed anymore
+- all loops through pfn's replaced with pagewalk
+- 5-level paging support
+- multiple bitmaps handling page-faults for correct restoration of PTE's state
+- rewrite API from ioctls to sysfs
+
+
+[1] https://lore.kernel.org/r/20121011055356.6719.46214.stgit@t3500.sdl.hitachi.co.jp/
+
+YOSHIDA Masanori (1):
+  livedump: Add memory dumping functionality
+
+Lukas Hruska (3):
+  crash/vmcore: VMCOREINFO creation from non-kdump kernel
+  livedump: Add write protection management
+  livedump: Add tools to make livedump creation easier
+
+ arch/x86/Kconfig                   |  29 ++
+ arch/x86/include/asm/wrprotect.h   |  39 ++
+ arch/x86/mm/Makefile               |   2 +
+ arch/x86/mm/fault.c                |   8 +
+ arch/x86/mm/wrprotect.c            | 744 +++++++++++++++++++++++++++++
+ fs/proc/vmcore.c                   |  57 +--
+ include/linux/crash_dump.h         |   2 +
+ kernel/Makefile                    |   1 +
+ kernel/crash_core.c                |  10 +-
+ kernel/crash_dump.c                |  38 ++
+ kernel/livedump/Makefile           |   2 +
+ kernel/livedump/core.c             | 262 ++++++++++
+ kernel/livedump/memdump.c          | 525 ++++++++++++++++++++
+ kernel/livedump/memdump.h          |  32 ++
+ kernel/livedump/memdump_trace.h    |  30 ++
+ tools/livedump/livedump.sh         |  44 ++
+ tools/livedump/livedump_extract.sh |  19 +
+ 17 files changed, 1803 insertions(+), 41 deletions(-)
+ create mode 100644 arch/x86/include/asm/wrprotect.h
+ create mode 100644 arch/x86/mm/wrprotect.c
+ create mode 100644 kernel/livedump/Makefile
+ create mode 100644 kernel/livedump/core.c
+ create mode 100644 kernel/livedump/memdump.c
+ create mode 100644 kernel/livedump/memdump.h
+ create mode 100644 kernel/livedump/memdump_trace.h
+ create mode 100755 tools/livedump/livedump.sh
+ create mode 100755 tools/livedump/livedump_extract.sh
+
