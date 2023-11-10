@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD207E7F69
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11B57E7FA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjKJRxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S234881AbjKJR46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjKJRwq (ORCPT
+        with ESMTP id S235367AbjKJRzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:52:46 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF5C900D;
-        Fri, 10 Nov 2023 00:32:32 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7exJO018675;
-        Fri, 10 Nov 2023 08:32:21 GMT
+        Fri, 10 Nov 2023 12:55:42 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DE09EF0;
+        Fri, 10 Nov 2023 00:33:31 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7gT4Y029128;
+        Fri, 10 Nov 2023 08:33:20 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=qcppdkim1;
- bh=25mtvY+NTGW9DCzRWztwAgArQMlHdGCwKfpiRg2qsK0=;
- b=FwrtrwUR95NVAjgV+k2R1coe7//+z1by3KpeZ2ar/C6mL+a9qpqXnnmGLkicsvdpWo+i
- 57SpGz7kl52hKEbeMj4N83SaeKDiq0OmblPkAFaO8JHRqIvnx0IIg3PY6djISSgVvr9Q
- VJk+gcBi21KmJCdnZOYDGNcBWe9hj8653HA3JskDbSagkHTO6i3BRY41mIM830f38us4
- NdkP0xozw92ZmEgZmGtWMIiTTedesHjZj8JTPfEL+CRpglbiLrZ7WdpUadQfc/TF74N7
- YK7zcD1ECARn2y7bhBDNIm7fH3ffZsDrJBdY3HMPI4CXBJx1b4q/Zu9FjuxupNIeyf+M fw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8y39aevj-1
+ bh=qgi/6ZmsAMu0M3Ful5hR6Pp9eqYEByDbCU19aAVLbJA=;
+ b=gWt4CxOsc81kHBT0iUUwQHxnitRMAUTo/BFK/vc4D1bJoL65jQwpHp6/VtTzjS8RV0RM
+ b6u6//t8tWLcnxYD3SsMs5a9pHMiealh4MHfGITUo1M3gg24/9V8lsxHjA1HHSYYe6cs
+ 1L0FuwM7TPWOBeQtYxt56NQgox/ODSPofdtQhkYnlpW8Bb9YMGlz9JMxDggm7wx50dEY
+ qt9K9afOGIp95uUbwxnepT1jO2wu3hj3yW+mIawW6yiRSHmy8Ag/c7rWRg5ceW/bYWuy
+ OOksSIlbRB+tBuaTlULZMVWzqfzOX5J4eFbvEWY2CWKrVoi/+gqBBD+jA+6HfnAPwirC yA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u99e90w8c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 08:32:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA8WKhs016764
+        Fri, 10 Nov 2023 08:33:20 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA8XJCK029098
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 08:32:20 GMT
-Received: from [10.217.216.47] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+        Fri, 10 Nov 2023 08:33:19 GMT
+Received: from [10.216.7.246] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
- 2023 00:32:13 -0800
-Message-ID: <d716fbbe-b681-af41-bfe7-85448cc47c7c@quicinc.com>
-Date:   Fri, 10 Nov 2023 14:02:10 +0530
+ 2023 00:33:12 -0800
+Message-ID: <d89efebe-19a1-8690-ebde-bad78e0c7682@quicinc.com>
+Date:   Fri, 10 Nov 2023 14:02:14 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
- switch video GDSC to HW mode
-Content-Language: en-US
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
+ Thunderbird/102.14.0
+Subject: Re: [PATCH V3 2/4] clk: qcom: branch: Add mem ops support for branch2
+ clocks
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <linux-media@vger.kernel.org>
-References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
- <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
- <v4dnsawo7s74spccrsvjwmal73tqfq4aptiny25tyyp6ungxha@jlbywvcssqtl>
-From:   Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <v4dnsawo7s74spccrsvjwmal73tqfq4aptiny25tyyp6ungxha@jlbywvcssqtl>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20231106103027.3988871-1-quic_imrashai@quicinc.com>
+ <20231106103027.3988871-3-quic_imrashai@quicinc.com>
+ <CAA8EJpqcyh1YrfHkdYaZfjyEDjKiV+HixrhcfPzsuTPwA5pzTQ@mail.gmail.com>
+Content-Language: en-US
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+In-Reply-To: <CAA8EJpqcyh1YrfHkdYaZfjyEDjKiV+HixrhcfPzsuTPwA5pzTQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+ nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uP73AjW-MR_JJ8huakF3mrlf6qgG7jJS
-X-Proofpoint-ORIG-GUID: uP73AjW-MR_JJ8huakF3mrlf6qgG7jJS
+X-Proofpoint-GUID: xrv6S76aioNvbKrsSJa2sPLcvmUjMgIQ
+X-Proofpoint-ORIG-GUID: xrv6S76aioNvbKrsSJa2sPLcvmUjMgIQ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-10_04,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 clxscore=1015 spamscore=0 phishscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=947 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311100071
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311100071
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -99,157 +95,131 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/4/2023 1:45 AM, Bjorn Andersson wrote:
-> On Wed, Nov 01, 2023 at 11:04:10AM +0200, Abel Vesa wrote:
->> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+On 11/6/2023 6:30 PM, Dmitry Baryshkov wrote:
+> On Mon, 6 Nov 2023 at 12:31, Imran Shaik <quic_imrashai@quicinc.com> wrote:
 >>
->> The current HW_CTRL flag switches the video GDSC to HW control mode as
->> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
->> give consumer drivers more control and switch the GDSC mode as and when
->> required.
+>> From: Taniya Das <quic_tdas@quicinc.com>
 >>
->> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
->> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>> Clock CBCRs with memories need an update for memory before enable/disable
+>> of the clock, which helps retain the respective block's register contents.
+>> Add support for the mem ops to handle this sequence.
 >>
+>> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
 > 
-> This states what the code currently does, and what the new code will do.
-> But I don't find that it adequately describes _why_ this is done.
-> 
-> 
-> In the current implementation, the hardware is might collapse the GDSC
-> anytime between gdsc_enable() and gdsc_disable(). By giving "drivers
-> more control" the time spent in this state is reduced to some fraction
-> of that span, which to me implies higher power consumption.
-> 
-> Under the assumption that we don't want to consume more power without
-> reason, I'm forced to guess that there might be some scenarios that we
-> want this feature to keep the GDSC non-collapsed against the indication
-> of the hardware - to avoid some instability somewhere, perhaps?
+> It would be nice to have a description of what is 'CBCR with memories'
+> and how does it differ from CBCR_FORCE_MEM_CORE_ON?
 > 
 
-Thanks Bjorn for your review. Sure, will update commit text with details 
-in next series.
+This mem_ops implementation is to enable/disable the memories in 
+ethernet PHY, prior to turning on the respective clocks. Where as the 
+FORCE_MEM_CORE_ON is to keep the memories awake even if the clock is gated.
 
-Normally, consumers will enable the GDSC and then the required clocks. 
-If GDSC is moved to HW mode in gdsc_enable() itself, the subsequent 
-clocks enablement that are dependent on GDSC might fail since GDSC could 
-be turned off by HW. The consumers can still switch the GDSC to HW mode 
-with new API right after the clocks are enabled and the control will be 
-taken back to SW mode just before disabling the GDSC, so even with the 
-newer implementation, HW can collapse the GDSC anytime for most of the 
-duration between gdsc_enable() and gdsc_disable(). This API adds more 
-flexibility for consumer drivers to control the GDSC mode as per their
-requirements.
-
-Thanks,
-Jagadeesh
-
-> Regards,
-> Bjorn
-> 
->> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 >> ---
->>   drivers/clk/qcom/videocc-sc7180.c | 2 +-
->>   drivers/clk/qcom/videocc-sc7280.c | 2 +-
->>   drivers/clk/qcom/videocc-sdm845.c | 4 ++--
->>   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
->>   drivers/clk/qcom/videocc-sm8550.c | 4 ++--
->>   5 files changed, 8 insertions(+), 8 deletions(-)
+>>   drivers/clk/qcom/clk-branch.c | 39 +++++++++++++++++++++++++++++++++++
+>>   drivers/clk/qcom/clk-branch.h | 21 +++++++++++++++++++
+>>   2 files changed, 60 insertions(+)
 >>
->> diff --git a/drivers/clk/qcom/videocc-sc7180.c b/drivers/clk/qcom/videocc-sc7180.c
->> index 5b9b54f616b8..51439f7ba70c 100644
->> --- a/drivers/clk/qcom/videocc-sc7180.c
->> +++ b/drivers/clk/qcom/videocc-sc7180.c
->> @@ -166,7 +166,7 @@ static struct gdsc vcodec0_gdsc = {
->>   	.pd = {
->>   		.name = "vcodec0_gdsc",
->>   	},
->> -	.flags = HW_CTRL,
->> +	.flags = HW_CTRL_TRIGGER,
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   };
->>   
->> diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc-sc7280.c
->> index 615695d82319..3d07b1e95986 100644
->> --- a/drivers/clk/qcom/videocc-sc7280.c
->> +++ b/drivers/clk/qcom/videocc-sc7280.c
->> @@ -236,7 +236,7 @@ static struct gdsc mvs0_gdsc = {
->>   		.name = "mvs0_gdsc",
->>   	},
->>   	.pwrsts = PWRSTS_OFF_ON,
->> -	.flags = HW_CTRL | RETAIN_FF_ENABLE,
->> +	.flags = HW_CTRL_TRIGGER | RETAIN_FF_ENABLE,
->>   };
->>   
->>   static struct gdsc mvsc_gdsc = {
->> diff --git a/drivers/clk/qcom/videocc-sdm845.c b/drivers/clk/qcom/videocc-sdm845.c
->> index c77a4dd5d39c..dad011c48973 100644
->> --- a/drivers/clk/qcom/videocc-sdm845.c
->> +++ b/drivers/clk/qcom/videocc-sdm845.c
->> @@ -260,7 +260,7 @@ static struct gdsc vcodec0_gdsc = {
->>   	},
->>   	.cxcs = (unsigned int []){ 0x890, 0x930 },
->>   	.cxc_count = 2,
->> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
->> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   };
->>   
->> @@ -271,7 +271,7 @@ static struct gdsc vcodec1_gdsc = {
->>   	},
->>   	.cxcs = (unsigned int []){ 0x8d0, 0x950 },
->>   	.cxc_count = 2,
->> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
->> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   };
->>   
->> diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
->> index ad46c4014a40..c1b73d852f1c 100644
->> --- a/drivers/clk/qcom/videocc-sm8250.c
->> +++ b/drivers/clk/qcom/videocc-sm8250.c
->> @@ -293,7 +293,7 @@ static struct gdsc mvs0_gdsc = {
->>   	.pd = {
->>   		.name = "mvs0_gdsc",
->>   	},
->> -	.flags = HW_CTRL,
->> +	.flags = HW_CTRL_TRIGGER,
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   };
->>   
->> @@ -302,7 +302,7 @@ static struct gdsc mvs1_gdsc = {
->>   	.pd = {
->>   		.name = "mvs1_gdsc",
->>   	},
->> -	.flags = HW_CTRL,
->> +	.flags = HW_CTRL_TRIGGER,
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   };
->>   
->> diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
->> index f3c9dfaee968..404c6600edae 100644
->> --- a/drivers/clk/qcom/videocc-sm8550.c
->> +++ b/drivers/clk/qcom/videocc-sm8550.c
->> @@ -322,7 +322,7 @@ static struct gdsc video_cc_mvs0_gdsc = {
->>   	},
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   	.parent = &video_cc_mvs0c_gdsc.pd,
->> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
->> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
->>   };
->>   
->>   static struct gdsc video_cc_mvs1c_gdsc = {
->> @@ -347,7 +347,7 @@ static struct gdsc video_cc_mvs1_gdsc = {
->>   	},
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   	.parent = &video_cc_mvs1c_gdsc.pd,
->> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
->> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
->>   };
->>   
->>   static struct clk_regmap *video_cc_sm8550_clocks[] = {
+>> diff --git a/drivers/clk/qcom/clk-branch.c b/drivers/clk/qcom/clk-branch.c
+>> index fc4735f74f0f..61bdd2147bed 100644
+>> --- a/drivers/clk/qcom/clk-branch.c
+>> +++ b/drivers/clk/qcom/clk-branch.c
+>> @@ -1,6 +1,7 @@
+>>   // SPDX-License-Identifier: GPL-2.0
+>>   /*
+>>    * Copyright (c) 2013, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
+>>    */
 >>
->> -- 
->> 2.34.1
+>>   #include <linux/kernel.h>
+>> @@ -134,6 +135,44 @@ static void clk_branch2_disable(struct clk_hw *hw)
+>>          clk_branch_toggle(hw, false, clk_branch2_check_halt);
+>>   }
 >>
+>> +static int clk_branch2_mem_enable(struct clk_hw *hw)
+>> +{
+>> +       struct clk_mem_branch *mem_br = to_clk_mem_branch(hw);
+>> +       struct clk_branch branch = mem_br->branch;
+>> +       const char *name = clk_hw_get_name(&branch.clkr.hw);
+>> +       u32 val;
+>> +       int ret;
+>> +
+>> +       regmap_update_bits(branch.clkr.regmap, mem_br->mem_enable_reg,
+>> +                       mem_br->mem_enable_ack_mask, mem_br->mem_enable_ack_mask);
+>> +
+>> +       ret = regmap_read_poll_timeout(branch.clkr.regmap, mem_br->mem_ack_reg,
+>> +                       val, val & mem_br->mem_enable_ack_mask, 0, 200);
+>> +       if (ret) {
+>> +               WARN(1, "%s mem enable failed\n", name);
+>> +               return ret;
+>> +       }
+>> +
+>> +       return clk_branch2_enable(hw);
+>> +}
+>> +
+>> +static void clk_branch2_mem_disable(struct clk_hw *hw)
+>> +{
+>> +       struct clk_mem_branch *mem_br = to_clk_mem_branch(hw);
+>> +
+>> +       regmap_update_bits(mem_br->branch.clkr.regmap, mem_br->mem_enable_reg,
+>> +                                               mem_br->mem_enable_ack_mask, 0);
+>> +
+>> +       return clk_branch2_disable(hw);
+>> +}
+>> +
+>> +const struct clk_ops clk_branch2_mem_ops = {
+>> +       .enable = clk_branch2_mem_enable,
+>> +       .disable = clk_branch2_mem_disable,
+>> +       .is_enabled = clk_is_enabled_regmap,
+>> +};
+>> +EXPORT_SYMBOL_GPL(clk_branch2_mem_ops);
+>> +
+>>   const struct clk_ops clk_branch2_ops = {
+>>          .enable = clk_branch2_enable,
+>>          .disable = clk_branch2_disable,
+>> diff --git a/drivers/clk/qcom/clk-branch.h b/drivers/clk/qcom/clk-branch.h
+>> index 0cf800b9d08d..8ffed603c050 100644
+>> --- a/drivers/clk/qcom/clk-branch.h
+>> +++ b/drivers/clk/qcom/clk-branch.h
+>> @@ -38,6 +38,23 @@ struct clk_branch {
+>>          struct clk_regmap clkr;
+>>   };
+>>
+>> +/**
+>> + * struct clk_mem_branch - gating clock which are associated with memories
+>> + *
+>> + * @mem_enable_reg: branch clock memory gating register
+>> + * @mem_ack_reg: branch clock memory ack register
+>> + * @mem_enable_ack_mask: branch clock memory enable and ack field in @mem_ack_reg
+>> + * @branch: branch clock gating handle
+>> + *
+>> + * Clock which can gate its memories.
+>> + */
+>> +struct clk_mem_branch {
+>> +       u32     mem_enable_reg;
+>> +       u32     mem_ack_reg;
+>> +       u32     mem_enable_ack_mask;
+>> +       struct clk_branch branch;
+>> +};
+>> +
+>>   /* Branch clock common bits for HLOS-owned clocks */
+>>   #define CBCR_CLK_OFF                   BIT(31)
+>>   #define CBCR_NOC_FSM_STATUS            GENMASK(30, 28)
+>> @@ -85,8 +102,12 @@ extern const struct clk_ops clk_branch_ops;
+>>   extern const struct clk_ops clk_branch2_ops;
+>>   extern const struct clk_ops clk_branch_simple_ops;
+>>   extern const struct clk_ops clk_branch2_aon_ops;
+>> +extern const struct clk_ops clk_branch2_mem_ops;
+>>
+>>   #define to_clk_branch(_hw) \
+>>          container_of(to_clk_regmap(_hw), struct clk_branch, clkr)
+>>
+>> +#define to_clk_mem_branch(_hw) \
+>> +       container_of(to_clk_branch(_hw), struct clk_mem_branch, branch)
+>> +
+>>   #endif
+>> --
+>> 2.25.1
+>>
+> 
+> 
