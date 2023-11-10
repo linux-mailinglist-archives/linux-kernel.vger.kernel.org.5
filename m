@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B427E76BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF0C7E7686
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 02:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345683AbjKJBlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 20:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
+        id S1345607AbjKJBZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 20:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345783AbjKJBks (ORCPT
+        with ESMTP id S1345580AbjKJBZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 20:40:48 -0500
-X-Greylist: delayed 592 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 09 Nov 2023 17:40:29 PST
-Received: from mail-m17244.xmail.ntesmail.com (mail-m17244.xmail.ntesmail.com [45.195.17.244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D44689;
-        Thu,  9 Nov 2023 17:40:28 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=Rdm9QD4yO6LRbZBNE1A/b+RLokMwSHSQFNyKUAJYTpR4K9xUU8zLPUZ5xR2J69Hxh5A0rXeerIurDn+8czNto4RCBLRqAHgX00bVVDTTD9FXb6CpWOWOHChw2uUyUEgO1exOq+Sf/pstX5QlCHztlp7pu5XOyhEmIdKHwx5I/FI=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=P0GaHyRA5mwU4r4OqdCotWnXqFS5RSLvYdfU/GQ9YsU=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.49] (unknown [58.22.7.114])
-        by mail-m11877.qiye.163.com (Hmail) with ESMTPA id C3D5D4001CD;
-        Fri, 10 Nov 2023 09:23:39 +0800 (CST)
-Message-ID: <53059eca-5c55-6dde-6246-40ed9f2dca91@rock-chips.com>
-Date:   Fri, 10 Nov 2023 09:23:39 +0800
+        Thu, 9 Nov 2023 20:25:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25A2182
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 17:25:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699579502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VOeaU4ehAGD9H3QjwT3Yo8UQTF0ixUxWvh3B6xsGYO0=;
+        b=GHp7PhuC4DfN4se6VOwVGFsM+p/8NJ9cCvZvCDrYGbX/M133RATwkRgRllWfGdZ/v37AvH
+        xl5rcJ7oANeAXMLUGhKwE+yRZtsa6V8Ac0cPC5Swf3e2Hg95eXH0hh+otrDJ1Ws+HjtPcj
+        15YMbN5j8ZCZq4BSsU6voEcpTTbCYbU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-681-lbsk-TDLMKGmNmB1vvx0GQ-1; Thu, 09 Nov 2023 20:24:56 -0500
+X-MC-Unique: lbsk-TDLMKGmNmB1vvx0GQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D7FB185A780;
+        Fri, 10 Nov 2023 01:24:55 +0000 (UTC)
+Received: from [10.22.10.178] (unknown [10.22.10.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F3362166B26;
+        Fri, 10 Nov 2023 01:24:54 +0000 (UTC)
+Message-ID: <21ebd168-8b3f-0efc-20f1-89173e79eaed@redhat.com>
+Date:   Thu, 9 Nov 2023 20:24:54 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 3/4] dt-bindings: clock: rk3588: export PCLK_VO1GRF clk
- id
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Cc:     Conor Dooley <conor@kernel.org>, mturquette@baylibre.com,
-        sboyd@kernel.org, kever.yang@rock-chips.com, heiko@sntech.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        huangtao@rock-chips.com, andy.yan@rock-chips.com,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-References: <20231108061822.4871-1-zhangqing@rock-chips.com>
- <20231108061822.4871-4-zhangqing@rock-chips.com>
- <20231108-donation-uncertain-c4d0f560c420@spud>
- <2e520a06-0ff1-76ef-2a72-ab6663738b45@rock-chips.com>
- <20231109-send-pushchair-45b37551102a@wendy>
- <a11c847c-4f95-ea7b-3497-6ada0586c486@rock-chips.com>
- <dee8031f-d739-442c-988c-3df61d92c0d3@linaro.org>
- <f013df81-670e-37c4-c1a7-e1302352ca20@rock-chips.com>
- <f58c8f3f-7b34-47e7-a33a-bddb6106fec7@linaro.org>
-From:   zhangqing <zhangqing@rock-chips.com>
-In-Reply-To: <f58c8f3f-7b34-47e7-a33a-bddb6106fec7@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/4] cgroup/cpuset: Improve CPU isolation in isolated
+ partitions
+Content-Language: en-US
+To:     "Zhang, Rui" <rui.zhang@intel.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "tj@kernel.org" <tj@kernel.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>
+Cc:     "pehunt@redhat.com" <pehunt@redhat.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20231025182555.4155614-1-longman@redhat.com>
+ <98bea19ca5eb5c19ef0ea55f5167237cc841fe9b.camel@intel.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <98bea19ca5eb5c19ef0ea55f5167237cc841fe9b.camel@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQkxMH1ZOHRhLTRgYHxgaQhpVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8bb6d3dea32eb3kusnc3d5d4001cd
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PzY6Qww6Czw0IQ01E0IcMxxC
-        GCJPCT1VSlVKTUJCTkxCT0lKS0tNVTMWGhIXVQETGhUcChIVHDsJFBgQVhgTEgsIVRgUFkVZV1kS
-        C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUxLTkI3Bg++
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/9/23 04:02, Zhang, Rui wrote:
+> Hi, Waiman,
+>
+> May I know which kernel this patch series is based on?
+>
+> I'd like to test this feature, but cannot apply it cleanly on top of
+> v6.6.
 
-在 2023/11/9 18:24, Krzysztof Kozlowski 写道:
-> On 09/11/2023 11:05, zhangqing wrote:
->> 在 2023/11/9 17:21, Krzysztof Kozlowski 写道:
->>> On 09/11/2023 09:06, zhangqing wrote:
->>>> 在 2023/11/9 15:29, Conor Dooley 写道:
->>>>> On Thu, Nov 09, 2023 at 02:27:38PM +0800, zhangqing wrote:
->>>>>> Hi:
->>>>>>
->>>>>> 在 2023/11/8 20:01, Conor Dooley 写道:
->>>>>>> On Wed, Nov 08, 2023 at 02:18:21PM +0800, Elaine Zhang wrote:
->>>>>>>> export PCLK_VO1GRF for DT.
->>>>>>>>
->>>>>>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->>>>>>>> ---
->>>>>>>>      include/dt-bindings/clock/rockchip,rk3588-cru.h | 3 ++-
->>>>>>>>      1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/include/dt-bindings/clock/rockchip,rk3588-cru.h b/include/dt-bindings/clock/rockchip,rk3588-cru.h
->>>>>>>> index 5790b1391201..50ba72980190 100644
->>>>>>>> --- a/include/dt-bindings/clock/rockchip,rk3588-cru.h
->>>>>>>> +++ b/include/dt-bindings/clock/rockchip,rk3588-cru.h
->>>>>>>> @@ -733,8 +733,9 @@
->>>>>>>>      #define ACLK_AV1_PRE			718
->>>>>>>>      #define PCLK_AV1_PRE			719
->>>>>>>>      #define HCLK_SDIO_PRE			720
->>>>>>>> +#define PCLK_VO1GRF			721
->>>>>>>> -#define CLK_NR_CLKS			(HCLK_SDIO_PRE + 1)
->>>>>>>> +#define CLK_NR_CLKS			(PCLK_VO1GRF + 1)
->>>>>>> This definition is part of the ABI, if it is safe to change it, then it
->>>>>>> is safe to delete it.
->>>>>> The new ID is to solve the niu clock dependency problem(Used in PATCH V5
->>>>>> 4/4).This new ID will also be used in DTS in the future.
->>>>>>
->>>>>> CLK_NR_CLKS represents the number of clocks used by the
->>>>>> drivers/clk/rockchip/clk-rkxxx.c. It is safe to modify it, but cannot delete
->>>>>> it.
->>>>> Then delete it from the header and move it to clk-rkxxx.c
->>>> I don't think it's more appropriate to move to clk-rkxxx.c.
->>>> Because if there are new requirements later, and add new clk id, it is
->>>> not in the same file, maybe forget to modify CLK_NR_CLKS.
->>> Then you are not allowed to change it. It's part of ABI.
->> If you just don't want me to modify CLK_NR_CLKS, can I use an unused ID,
->> like [PATCH V4 3/4]:
+It was originally based on the cgroup/for-6.7 branch. It should be 
+applicable to v6.7 kernel now.
+
+Cheers,
+Longman
+
+> thanks,
+> rui
+>
+> On Wed, 2023-10-25 at 14:25 -0400, Waiman Long wrote:
+>> v2:
+>>   - Add 2 read-only workqueue sysfs files to expose the user requested
+>>     cpumask as well as the isolated CPUs to be excluded from
+>>     wq_unbound_cpumask.
+>>   - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+>>     hold cpus_read_lock.
+>>   - Update the cpuset code to make sure the cpus_read_lock is held
+>>     whenever workqueue_unbound_exclude_cpumask() may be called.
 >>
->> -#define MBIST_MCLK_PDM1                        24
->> +#define PCLK_VO1GRF                    24
-> You cannot change the ABI.
->
-> I don't understand why do you insist on this path. You got clear
-> comments: either this is ABI, so it cannot be changed, or it has to be
-> dropped. You know insist on some third path. There is no such.
-Ok , I'll drop this change in PATCH V6.
->
-> Best regards,
-> Krzysztof
->
--- 
-张晴
-瑞芯微电子股份有限公司
-Rockchip Electronics Co.,Ltd
-地址：福建省福州市铜盘路软件大道89号软件园A区21号楼
-Add:No.21 Building, A District, No.89 Software Boulevard Fuzhou, Fujian 350003, P.R.China
-Tel:+86-0591-83991906-8601
-邮编：350003
-E-mail:elaine.zhang@rock-chips.com
-****************************************************************************
-保密提示：本邮件及其附件含有机密信息，仅发送给本邮件所指特定收件人。若非该特定收件人，请勿复制、使用或披露本邮件的任何内容。若误收本邮件，请从系统中永久性删除本邮件及所有附件，并以回复邮件或其他方式即刻告知发件人。福州瑞芯微电子有限公司拥有本邮件信息的著作权及解释权，禁止任何未经授权许可的侵权行为。
-
-IMPORTANT NOTICE: This email is from Fuzhou Rockchip Electronics Co., Ltd .The contents of this email and any attachments may contain information that is privileged, confidential and/or exempt from disclosure under applicable law and relevant NDA. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution, or use of the information is STRICTLY PROHIBITED. Please immediately contact the sender as soon as possible and destroy the material in its entirety in any format. Thank you.
-
-****************************************************************************
+>> Isolated cpuset partition can currently be created to contain an
+>> exclusive set of CPUs not used in other cgroups and with load
+>> balancing
+>> disabled to reduce interference from the scheduler.
+>>
+>> The main purpose of this isolated partition type is to dynamically
+>> emulate what can be done via the "isolcpus" boot command line option,
+>> specifically the default domain flag. One effect of the "isolcpus"
+>> option
+>> is to remove the isolated CPUs from the cpumasks of unbound
+>> workqueues
+>> since running work functions in an isolated CPU can be a major source
+>> of interference. Changing the unbound workqueue cpumasks can be done
+>> at
+>> run time by writing an appropriate cpumask without the isolated CPUs
+>> to
+>> /sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+>> cpuset partition and then write to the cpumask sysfs file to achieve
+>> similar level of CPU isolation. However, this manual process can be
+>> error prone.
+>>
+>> This patch series implements automatic exclusion of isolated CPUs
+>> from
+>> unbound workqueue cpumasks when an isolated cpuset partition is
+>> created
+>> and then adds those CPUs back when the isolated partition is
+>> destroyed.
+>>
+>> There are also other places in the kernel that look at the
+>> HK_FLAG_DOMAIN
+>> cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs
+>> from
+>> certain actions to further reduce interference. CPUs in an isolated
+>> cpuset partition will not be able to avoid those interferences yet.
+>> That
+>> may change in the future as the need arises.
+>>
+>> Waiman Long (4):
+>>    workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+>>      from wq_unbound_cpumask
+>>    selftests/cgroup: Minor code cleanup and reorganization of
+>>      test_cpuset_prs.sh
+>>    cgroup/cpuset: Keep track of CPUs in isolated partitions
+>>    cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
+>>
+>>   Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+>>   include/linux/workqueue.h                     |   2 +-
+>>   kernel/cgroup/cpuset.c                        | 286 +++++++++++++---
+>> --
+>>   kernel/workqueue.c                            |  91 +++++-
+>>   .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+>>   5 files changed, 438 insertions(+), 167 deletions(-)
+>>
 
