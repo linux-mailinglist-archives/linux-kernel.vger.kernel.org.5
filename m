@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5935C7E825E
+	by mail.lfdr.de (Postfix) with ESMTP id A2E287E825F
 	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345632AbjKJTRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:17:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
+        id S1345573AbjKJTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344735AbjKJTRS (ORCPT
+        with ESMTP id S235741AbjKJTRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:17:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12326ED09;
-        Fri, 10 Nov 2023 10:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699642646; x=1731178646;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=PsUHmw8XJtOySRw9f9IVC9DTbHAfdP93sARl5SFEqG0=;
-  b=AHDgGZbTrC4cWP1sLgvK3wN6AD+8plOFRveJ30vvrNfON/OhrjQDzy47
-   pfiCGmyqmAKPEZ2tqvBvmy8wJsiL+jRHGUFV14+q+/bLBpTi6WTs4ujZ2
-   qT/+Tk/Ro9rMzCShP5LbE9nlD1SDUQdi5LOQHcw989N7wLYsFvAumlQkr
-   vKF9o0qTe6YGq5A9y464qvqPJGbHCDFA08RF/WrKO1JlOZ0ghODqpyOW/
-   gx83BoGKCmrXT+e3TLu3YrIV0iqoRHHB8xGRdfYXwuiBYxTTGXw9vzH9B
-   CM8iegE9I5M/lGjnFWyIZ5K5eHCi1b8sbLxEna0M7+mQwQTMvyAe4vJxh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11772167"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="11772167"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:57:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="887414566"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="887414566"
-Received: from melindac-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.43.78])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:57:19 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 2683C103614; Fri, 10 Nov 2023 21:57:16 +0300 (+03)
-Date:   Fri, 10 Nov 2023 21:57:16 +0300
-From:   kirill.shutemov@linux.intel.com
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Kelley <mhklinux@outlook.com>,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        sashal@kernel.org
-Subject: Re: [PATCH] x86/mm: Check cc_vendor when printing memory encryption
- info
-Message-ID: <20231110185716.tyhfjim4cnxxboe4@box.shutemov.name>
-References: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
- <16ea75a9-8c94-4665-ae04-32d08aa4ebb2@intel.com>
- <58abbc79-64d4-41f9-9fd2-1de7826fbbf6@linux.microsoft.com>
- <ee9de366-6027-495a-98d9-b8b0cd866bf2@intel.com>
- <df95817a-4859-443a-9ac2-b09f102aff30@linux.microsoft.com>
- <20231110120601.3mbemh6djdazyzgb@box.shutemov.name>
- <6feecf9e-10cb-441f-97a4-65c98e130f7a@linux.microsoft.com>
- <20231110124626.ifq3hqaiqvgpnign@box>
- <5a80bfd8-7092-4a85-93a6-189a16725642@linux.microsoft.com>
+        Fri, 10 Nov 2023 14:17:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C5AB409
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 11:00:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C71C433C7;
+        Fri, 10 Nov 2023 19:00:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699642803;
+        bh=6EnUes9wTH1mI2Pr2tlR3oBu4IGmtLezlfYoFlsdZ8E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OPQgb5JlaM+x+2Dekdbo9oDYHDwX+9NJoWCXpqAcb2qbcBvv6DKNY4REflr39/OI9
+         tCehhLFF5L1w7+0uX9RZ7L7U2vs9oKfPcBdVQqpq2mah3RWHtRoP/9hF6ZoFhTlCje
+         BYOAtl8GTJgprK6sQaYUMCU28cHAR06bcF+NZ2FE00nXeTldDyvXJS6RSgH/yJDfi1
+         QACKelD8f/asbPLLZw9PPl7zuDnB2Ps/x53rFnBjn3wkzrtd1V4cyDsmImhynte/Sw
+         gDbO2DEwjgrEtlqlOtMS325TvL5M3c15/JFMMfLwegUxc4YDhADHX+cqNmejuKsMCw
+         TSlIXA71e7OZA==
+Date:   Fri, 10 Nov 2023 11:00:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Jong eon Park" <jongeon.park@samsung.com>
+Cc:     "'Paolo Abeni'" <pabeni@redhat.com>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Dumazet'" <edumazet@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'Dong ha Kang'" <dongha7.kang@samsung.com>
+Subject: Re: [PATCH] netlink: introduce netlink poll to resolve fast return
+ issue
+Message-ID: <20231110110002.7279f895@kernel.org>
+In-Reply-To: <000001da13e5$d9b99e30$8d2cda90$@samsung.com>
+References: <CGME20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77@epcas1p4.samsung.com>
+        <20231103072209.1005409-1-jongeon.park@samsung.com>
+        <20231106154812.14c470c2@kernel.org>
+        <25c501da111e$d527b010$7f771030$@samsung.com>
+        <20231107085347.75bc3802@kernel.org>
+        <000001da13e5$d9b99e30$8d2cda90$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a80bfd8-7092-4a85-93a6-189a16725642@linux.microsoft.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,23 +58,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 02:42:31PM +0100, Jeremi Piotrowski wrote:
-> On 10/11/2023 13:46, kirill.shutemov@linux.intel.com wrote:
-> > On Fri, Nov 10, 2023 at 01:27:08PM +0100, Jeremi Piotrowski wrote:
-> >>> Maybe just remove incorrect info and that's it?
-> >>>
-> >>
-> >> I disagree, other users and I find the print very useful to see which coco
-> >> platform the kernel is running on and which confidential computing features
-> >> the kernel detected. I'm willing to fix the code to report correct info.
-> > 
-> > For TDX, we already have "tdx: Guest detected" in dmesg. sme_early_init()
-> > can do something similar.
-> > 
+On Fri, 10 Nov 2023 23:54:48 +0900 Jong eon Park wrote:
+> Interestingly, in this issue, even though netlink overrun frequently 
+> happened and caused POLLERRs, the user was managing it well through 
+> POLLIN and 'recv' function without a specific POLLERR handler. 
+> However, in the current situation, rcv queue is already empty and 
+> NETLINK_S_CONGESTED flag prevents any more incoming packets. This makes 
+> it impossible for the user to call 'recv'.
 > 
-> That doesn't cover TDX guests with TD partitioning on Hyper-V.
+> This "congested" situation is a bit ambiguous. The queue is empty, yet 
+> 'congested' remains. This means kernel can no longer deliver uevents 
+> despite the empty queue, and it lead to the persistent 'congested' status.
+> 
+> The reason for the difference in netlink lies in the NETLINK_S_CONGESTED 
+> flag. If it were UDP, upon seeing the empty queue, it might have kept 
+> pushing the received packets into the queue (making possible to call 
+> 'recv').
 
-I am sure Hyper-V can report what mode it runs.
+I see, please add a comment saying that NETLINK_S_CONGESTED prevents
+new skbs from being queued before the new test in netlink_poll().
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Please repost next week (i.e. after the merge window) with subject
+tagged [PATCH net-next v2].
