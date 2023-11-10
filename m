@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34757E8172
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C877E81A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345980AbjKJS2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S1346403AbjKJSaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345759AbjKJSZr (ORCPT
+        with ESMTP id S1346091AbjKJS2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:25:47 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96DA39CE7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:10 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so3653517a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1699627869; x=1700232669; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BlU5fuUAAXzRyII6mZ8VRiyVHILwlJP0DbHkVOJMbeQ=;
-        b=h+Zs3+cowwBXMPtgAEcJa/9lmN+sm9XhtFrQlNuzSX7h3+JHG1OwxfAydQHseKCSkE
-         bOsLARcHvqwnLGF99MJuUTFJukzBvIvQ2Z3OzS1cbNbQUgO4txp1JOWQzcW/XsukVljX
-         knW3J6bi8kealBdNE3Ws4U5p1t9onziDyr9+e8Chg+9mPwpmt70g/UjFHiWFCxvoCfKd
-         crYu96timwJNzi3v+0kpnzVo3jkRDhZY0btZ5FmwxOvWCcWfXxESngZs/3Pe1yI0XmNx
-         4A88CiXeCE1XJN8lU8GwpIPDp9ff/vpa6vlElGCZl93MQbAOPT8AEmXnJBWKx9aks89E
-         c8Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699627869; x=1700232669;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BlU5fuUAAXzRyII6mZ8VRiyVHILwlJP0DbHkVOJMbeQ=;
-        b=mKnA7RH9abC//dtXQyrWhs3RFiposlsBra5ym4Wt1wc1x9tPDJ62qXLElwIf5BzTJJ
-         xT2LWF1Ifr1agpyNtHB3+QYyGp3VCkiWcoBtzGSCFWoeqQp3hX7OmUqoKWFyf8abyTYF
-         Yu3L3x7dn1ER8P7vLPZ+QIvcEbORZ8qyRmW5T82sMKbIKsxboIk/OPYKDI9x08SC7Whc
-         MqzbWSIlq9Jr6wmV61WMUHgsdYmSsrN6hX4P9Xx+3nzYDhHWqGo2DcCPldElzohcIfyJ
-         SITicIfIUAhQ6rvyIGiYNUObUuRH/yMZDuWIapUt8NT2dPymkj9B2fYRwoDTS+ySsapQ
-         UGgQ==
-X-Gm-Message-State: AOJu0YyuA2AHYpt7BwgRY84e2iapjtCPzN3UuyTnEtGkNzbSX99hh1tV
-        m8z67otiind2IlPb9/XHqFYdj0mHWENZ5UNDhuQB
-X-Google-Smtp-Source: AGHT+IHmy/qXxnVsqUrwt0UHvYdDawc0UVoFc15LekvC0wcMXIiaqsKO8DJvlJYknm4amEcJmaDUY3KdAGGFUo9XJKI=
-X-Received: by 2002:a50:8d12:0:b0:53e:8e2e:2b8f with SMTP id
- s18-20020a508d12000000b0053e8e2e2b8fmr6376591eds.9.1699627869203; Fri, 10 Nov
- 2023 06:51:09 -0800 (PST)
+        Fri, 10 Nov 2023 13:28:07 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B539CEB;
+        Fri, 10 Nov 2023 06:51:13 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r1Sqf-0006vh-2c;
+        Fri, 10 Nov 2023 14:51:05 +0000
+Date:   Fri, 10 Nov 2023 14:51:00 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988
+ watchdog and toprgu
+Message-ID: <ZU5DVNOmtyFwUTdC@makrotopia.org>
+References: <6912f6f406bc45674020681184f3eeca2f2cb63f.1699576174.git.daniel@makrotopia.org>
+ <2678cb48-1d2b-47bc-9272-06d9aa140c58@collabora.com>
+ <ZU47hV1i66WN8nZJ@makrotopia.org>
+ <d7b72b3e-c8f4-4675-ae62-26f5ae576f0a@linaro.org>
+ <ZU5A59KO8Y_Q97IG@makrotopia.org>
+ <a56cfe76-ab03-4187-b6f1-04a5c3414e64@linaro.org>
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-5-lb@semihalf.com>
- <20231106185513.79411f9a@gandalf.local.home>
-In-Reply-To: <20231106185513.79411f9a@gandalf.local.home>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Fri, 10 Nov 2023 15:50:58 +0100
-Message-ID: <CAK8Bye+eAad4Lx6BWztD4Eax_WLyGB39oV2VFDfL5pGJJTYgcw@mail.gmail.com>
-Subject: Re: [PATCH v1 04/12] dyndbg: add 2 trace-events: pr_debug, dev_dbg
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Jim Cromie <jim.cromie@gmail.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a56cfe76-ab03-4187-b6f1-04a5c3414e64@linaro.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 7 lis 2023 o 00:55 Steven Rostedt <rostedt@goodmis.org> napisa=C5=82(a=
-):
->
-> On Fri,  3 Nov 2023 14:10:03 +0100
-> =C5=81ukasz Bartosik <lb@semihalf.com> wrote:
->
-> > +/* capture pr_debug() callsite descriptor and message */
-> > +TRACE_EVENT(prdbg,
-> > +         TP_PROTO(const struct _ddebug *desc, const char *text, size_t=
- len),
-> > +
-> > +         TP_ARGS(desc, text, len),
-> > +
-> > +         TP_STRUCT__entry(
-> > +                     __field(const struct _ddebug *, desc)
-> > +                     __dynamic_array(char, msg, len + 1)
-> > +                 ),
-> > +
-> > +         TP_fast_assign(
-> > +                     __entry->desc =3D desc;
-> > +                     /*
-> > +                      * Each trace entry is printed in a new line.
-> > +                      * If the msg finishes with '\n', cut it off
-> > +                      * to avoid blank lines in the trace.
-> > +                      */
-> > +                     if (len > 0 && (text[len - 1] =3D=3D '\n'))
-> > +                             len -=3D 1;
-> > +
-> > +                     memcpy(__get_str(msg), text, len);
-> > +                     __get_str(msg)[len] =3D 0;
-> > +                 ),
-> > +
->
->
-> > +         TP_printk("%s.%s %s", __entry->desc->modname,
-> > +                   __entry->desc->function, __get_str(msg))
-> > +);
-> > +
->
-> That TP_printk() is dangerous. How do you know __entry->desc still exists
-> when reading the buffer?
->
-> Is the struct _ddebug permanent? Can it be freed? If so, the above can
-> easily cause a crash.
->
+On Fri, Nov 10, 2023 at 03:46:14PM +0100, Krzysztof Kozlowski wrote:
+> On 10/11/2023 15:40, Daniel Golle wrote:
+> > On Fri, Nov 10, 2023 at 03:20:53PM +0100, Krzysztof Kozlowski wrote:
+> >> On 10/11/2023 15:17, Daniel Golle wrote:
+> >>> On Fri, Nov 10, 2023 at 12:56:18PM +0100, AngeloGioacchino Del Regno wrote:
+> >>>> Il 10/11/23 01:30, Daniel Golle ha scritto:
+> >>>>> Add binding description for mediatek,mt7988-wdt.
+> >>>>>
+> >>>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> >>>>> ---
+> >>>>>   .../bindings/watchdog/mediatek,mtk-wdt.yaml          |  1 +
+> >>>>>   include/dt-bindings/reset/mediatek,mt7988-resets.h   | 12 ++++++++++++
+> >>>>>   2 files changed, 13 insertions(+)
+> >>>>>   create mode 100644 include/dt-bindings/reset/mediatek,mt7988-resets.h
+> >>>>>
+> >>>>> diff --git a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
+> >>>>> index cc502838bc398..8d2520241e37f 100644
+> >>>>> --- a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
+> >>>>> +++ b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
+> >>>>> @@ -25,6 +25,7 @@ properties:
+> >>>>>             - mediatek,mt6735-wdt
+> >>>>>             - mediatek,mt6795-wdt
+> >>>>>             - mediatek,mt7986-wdt
+> >>>>> +          - mediatek,mt7988-wdt
+> >>>>>             - mediatek,mt8183-wdt
+> >>>>>             - mediatek,mt8186-wdt
+> >>>>>             - mediatek,mt8188-wdt
+> >>>>> diff --git a/include/dt-bindings/reset/mediatek,mt7988-resets.h b/include/dt-bindings/reset/mediatek,mt7988-resets.h
+> >>>>> new file mode 100644
+> >>>>> index 0000000000000..fa7c937505e08
+> >>>>> --- /dev/null
+> >>>>> +++ b/include/dt-bindings/reset/mediatek,mt7988-resets.h
+> >>>>> @@ -0,0 +1,12 @@
+> >>>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> >>>>> +
+> >>>>> +/* TOPRGU resets */
+> >>>>
+> >>>> The first reset is zero, the second reset is one.
+> >>>>
+> >>>> Where's the zero'th reset? :-)
+> >>>
+> >>> Currently the reset numbers represent the corresponding bit positions in
+> >>> the toprgu register, as this is how the mtk-wdt driver is organized.
+> >>>
+> >>> So there is probably something at bit 0, and also at bit 3~11 and
+> >>> maybe also 17~23, but it's unknown and may be added later once known
+> >>> and/or needed.
+> >>
+> >> There is no need to put register bits, which are not used by the driver,
+> >> in the bindings.
+> > 
+> > There aren't. That's why there isn't a zero'th reset (and also not 3~11, 17~24).
+> > 
+> > Or should the driver be reorganized to provide a mapping of logical to
+> > physical resets, and then have only the needed once present and start
+> > counting logical resets from 0? This is doable, of course, but it's a
+> > bit of effort just for the aesthetical goal of starting to count from
+> > zero and continous in header file.
+> > 
+> > And, of course, chances are that other currently still unused bits
+> > will be needed at a later point which then would mean having to add
+> > them in at least 2 places (header file and mapping logical<->physical)
+> > where as currently it would just mean adding a line defining it in the
+> > header file.
+> 
+> You can do it, but it's not what I wrote here. So bear with me:
+> 
+> "There is no need to put register bits in the bindings."
+> 
+> You replied "There aren't", which I don't understand in this context. I
+> can be clearer:
+> Drop this hunk.
 
-I assume that we're talking here about the scenario where TP prdbg is
-called and before TP_printk runs _ddebug pointer
-becomes invalid, is that correct ? If so then I believe this also
-applied to __dynamic_pr_debug and other dyndbg functions because there
-is also potential for _ddebug pointer to become invalid (in case of
-rrmod) before a function dereferences it.
+So adding the file to include/dt-bindings/reset/ should go into a
+seperate patch? Because including it with the driver itself gave me
+a checkpath warning telling me that dt-bindings should go seperate,
+which is why I included it with the binding docs.
 
-Would it be acceptable to increase reference count of a module and
-hold it until at least one callsite in that module is enabled ?
-This  would ensure that passed pointer to a _ddebug struct is valid.
-
-> -- Steve
+> 
+> > 
+> > A quick looks at all the other headers in
+> > include/dt-binding/reset/mt*-resets.h also shows that currently all of
+> > them have unused bits and e.g. infracfg on MT7986 starts counting from
+> > 6.
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
