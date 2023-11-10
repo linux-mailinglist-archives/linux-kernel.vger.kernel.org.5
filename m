@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3547E82DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11D67E82F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbjKJTgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
+        id S1346455AbjKJTm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 14:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjKJTga (ORCPT
+        with ESMTP id S1346335AbjKJTl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:36:30 -0500
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2081.outbound.protection.outlook.com [40.107.220.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E51CBEA;
-        Fri, 10 Nov 2023 11:35:08 -0800 (PST)
+        Fri, 10 Nov 2023 14:41:59 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2048.outbound.protection.outlook.com [40.107.94.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E267D59D0;
+        Fri, 10 Nov 2023 11:37:04 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dmzJFeBReC/LrS4cpwVja8h24Ra83ERiTTHM5EHEhYbPI9+Nfsa98aR0hUaYHGRgEGXvfNat2oe5ddWkZ+liMLdYqe6Yf7GP3EEGA4oe6M8jplSdNM08VCSS2jxKUNnCezx9XEfHREE5lzd0ZyHCDfGJUc0s7eTEBNPSySjSBqY776lRTjQkpKNpKt2zwFR+TIHUyTfABaZlI4q18dlidjv5cEHGGt64OhiVjL/OghDj1iXyZdG0IfQqSfFANhWmi7ZH0sg0vXy7NXWFjmits0Mt0WrycLGbmeLfIILzl9F2BUpoPo8bh5I1OyB4xcQj3T2T2ZVG3MOrDit9F0l/CQ==
+ b=lOOBSYMzGQV9LoY2sDZVjdf8YEZY7pAKIxjsr+ybyaXvF6go6+cnUK6UjWvly+98CjBEO63dT6bKb0CBMde8pH6+2lrbWtQ1YbaZqHe2h3Oah4DYt/uHje/RUIVJsIAHiSX4LSpUXNX/coz5AKCixcr4OIny6blDuun6MDF4+fBZV+lwNcTG8vAz48oXyz8PQ0YPTSKb4mg+NzuU25ESJQPKiHPbsK5HCISS0Nd21Bk+Lr1z5BErBd1cEKlvKLkK0/VLv6hj9KngYpg4lvOX9gKFhRZFCgLL/wi7+Uxfsf9Zna7paJnHSRkvZEHhcFXHr8hm/U1Sd/yLLX+OUTRiow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hNriyK82rdMHYkGAu2d2nxk3DoFjIOYlJcXsBLU8iIU=;
- b=cujZLyUFFNIt8kKokdP5BersprPmF2ILpd+bjmKV7jCqk1YTyCWEN3htza8i5mFSKCV4Jx08/cfHIpkyjq5JC6byzIsBfUIDbGHec2/UYtwAZIlJGrYqbPg8INwFKT8+UK5+CCjDY+N3UHQXJRH4Nc38nLDmClrOqCxEW42o3VJYH7Xz52iufdec2hqex8fYg+qMZoaVAbnvRmywzkHByH4fvxkozqV8wnXIbmFTMH5Z/2yGoDcg323DR8gSqOjVe5Gi7kcDBJZL7if6DtZCKgTqZOg3S3DuxOxMs+hBgaeuiHsF7A1YAGqtxYXf5AfQTYFaFaj3h318KNexATDsVA==
+ bh=bEnq+xum48GXSRsKHLUlx6AUUu7p8cM/jsczLhtmqqo=;
+ b=Y9P9VJwwEmC65wSXYWY3dwz4X3envN2kF248ab3Ki9pnycSMZoJ5ktDt1kiH4nngYZhWHM9O5Np2q0MplJFa6ZjPUnlAIn7tjyYriJLPiF61Md2RUGO0aB3goCBziqQjRGYAt8AuU7sxZYENN7qN5UF5cuSNXk74RrgTsMpLM18FZmPcuL1gjnY5r0wEegxCom4O++zTHSExv5g48XI7vD7Ct7JKbhvdws+6hyWPmMfrSVFAnRR7OUQcNZw2HFwVyCPv8LCSdinBBvSgTq0c0xNE2HDaDMy69oURI4x/cCxTuZjz5533MGLHlGrguiz62cP0VkvDPGWTL6svTu2ytQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hNriyK82rdMHYkGAu2d2nxk3DoFjIOYlJcXsBLU8iIU=;
- b=4emFbpLzxApqinz7zujKkHlyUrK6W+jQiwVQCWrOb7rdt1C1BLyLspiEemMhJNqCJDgFIW6Vf1txVhydLL5YAnF6kJhHhoFheOEGvJqTWkutIR7j6+08zwfn10o7elZwWo4cxryommuQ5jiKlcmmPwZnPZEjbUczhVlZz+Bmz08=
+ bh=bEnq+xum48GXSRsKHLUlx6AUUu7p8cM/jsczLhtmqqo=;
+ b=Mo/1ov8UAAlxwSG7LaU9YZpHs9XGmx4EvKrddlXM88ODNUyaKoSOac9TzdWTgyv+pbuH4jT1900izgjQogKqAXXdLfwxZ/579xXXX6gJr9WvhSk7jeZpidogHh1NJIstKuraHTffynSMzHZekmKDEY07rZ5/2OABe7+vclM6dxs=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by IA1PR12MB7613.namprd12.prod.outlook.com (2603:10b6:208:42a::19) with
+ by IA1PR12MB8310.namprd12.prod.outlook.com (2603:10b6:208:3ff::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Fri, 10 Nov
- 2023 19:35:03 +0000
+ 2023 19:37:01 +0000
 Received: from MN0PR12MB6101.namprd12.prod.outlook.com
  ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
  ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6954.027; Fri, 10 Nov 2023
- 19:35:03 +0000
-Message-ID: <77e95133-a5b0-4c75-9df8-34bff49f0217@amd.com>
-Date:   Fri, 10 Nov 2023 13:35:00 -0600
+ 19:37:01 +0000
+Message-ID: <92e374bd-cb58-4bde-9e84-b7cbaf6fa541@amd.com>
+Date:   Fri, 10 Nov 2023 13:36:58 -0600
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 25/25] i2c: designware: Fix spelling and other issues
- in the comments
+Subject: Re: [PATCH v3 23/25] i2c: designware: Use temporary variable for
+ struct device
 Content-Language: en-US
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Jarkko Nikula <jarkko.nikula@linux.intel.com>,
@@ -57,71 +57,71 @@ Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Hans de Goede <hdegoede@redhat.com>
 References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
- <20231110182304.3894319-26-andriy.shevchenko@linux.intel.com>
+ <20231110182304.3894319-24-andriy.shevchenko@linux.intel.com>
 From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20231110182304.3894319-26-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231110182304.3894319-24-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0056.namprd11.prod.outlook.com
- (2603:10b6:806:d0::31) To MN0PR12MB6101.namprd12.prod.outlook.com
+X-ClientProxiedBy: DM6PR07CA0098.namprd07.prod.outlook.com
+ (2603:10b6:5:337::31) To MN0PR12MB6101.namprd12.prod.outlook.com
  (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB7613:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4de95e37-7f0c-445f-332e-08dbe224228c
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|IA1PR12MB8310:EE_
+X-MS-Office365-Filtering-Correlation-Id: 713df221-9b82-4830-b3de-08dbe2246937
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UPfF0R8yBNZ4duS4ZENCGqO1y1OTV/VAGM8ustxhc0cAsRq+/VAhyaBRrEPz2sGnqzJ2E5QMGVyqfGTmgVhbAmd21hM5NtrSS6uhk4reytBcrUjOnktZhyAp0GVhdPjWxzhyjmKaiYM00X6+PFl5OW9ly3gcZ+fbxTPszRlNgCYoLLi1wQQTa0zFdNy+Psv8B0jqoJmgXFYjfD7d/Gjf/nzb86GVVfzeT+TmuNYvY5c+vNpd806xdwpAtsZqiHnsp7q/H2XnFB6apG92//5VjK5IAwRWflfqcJ10iwwyxEh3QwSXWeiK6AWCEncvxzskd80Mn+SZSWvTv51gSkQEBxQ72ZimE7Zzuio80JkxZTc7bWbxZMDoE3hDnAEJBAAiqduITcuu/XyLLfjkWVUPKXuFY1jiJDiZS2PMucOSG4jbb+dFbR1dV3Ng2i/NuhFZgrPTts934y/GxI/iOrO2m41HdXMsIp6FZ/8ezxVAA6Qp+kdn52lIuivDQPW7WXDsZQKTHd4d8Pc8SpP+V2gFktBAb9MAnPbB+KuxFphm37IggHq3/X3W8VFLl1Z75B55UdXUZ4AiLQOuqg9si30tHtI53sMWlsxSzsP3SphH2xx6kuCqXpHeFdqKglMDH/bpjMXMOdRnN+xEy9YeLFm25Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(2616005)(83380400001)(66946007)(26005)(478600001)(6506007)(110136005)(66556008)(6486002)(53546011)(6512007)(2906002)(4326008)(8676002)(316002)(36756003)(8936002)(41300700001)(5660300002)(38100700002)(31696002)(44832011)(30864003)(7416002)(86362001)(54906003)(31686004)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: sNjA1L26C0TMIKL3LbG0LkQK3knJiCSjD/Uh7P+T49zBVtf9UMYLTJIWtaDQppY/vVYDfWWqxYuj3SbC2u9o6YnXgiB/eYCLuJu1TYgWXKsYldfLMEdeqEHYo7GOgKjjW5F/7zoBcfVg2XPM1cZ7qQFQsNpbAvOi3GY4Q1pFbdHb7RiQm43/BaMmr/FCjO1AO/VAQBal+ozZG7lFkMBQM0MhQPk7cTehcAxEUGfU0Hcji3OQM2NGxFSk0enXWOMQC3pcR+H5aFRZBeN1EPjTxth38GOjldWATpo5yRpvIjyG1DnZJ0MqblHzW/MAaMjA9MwVBKjuhCQGeRLO7GUB+Xc8Tllwa4votxYh0KRZJ5efgz658dZBnsSdUq/Q4yKYivd8FZxAzC7VJr6ImdLVq61qiM9OaqnFr0dHTmhjbHV9ld6lqtOE7bAHU2O5qYyFE8I9964KZpCBG8bns45e+2l311p0DrfABCO/RsKkcnLkyI8xLX53HO30+e3UzK5W7rOD6tuoF0pzVHeQ0V5YG5qd57MDnyznlOkIaofkSx8iTfi/YOLb/LVh0/Dr5vWcfchyD9AyG8bg5/rZ1cWNifYQ1E4G5zzJXxYJCo7LvwjUVY5uCEXF2P0CLgtG18j/lyXGofLNzt2QcXY3tsGwnQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(2616005)(83380400001)(66946007)(26005)(6666004)(478600001)(6506007)(110136005)(66556008)(6486002)(53546011)(6512007)(2906002)(4326008)(8676002)(316002)(36756003)(8936002)(41300700001)(5660300002)(38100700002)(31696002)(44832011)(7416002)(86362001)(54906003)(31686004)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L25XYitIZFc4RTZKK3ZQSkVxZGpKOWlKek9WYjE4SFp3Y0V1VmlDT0NIY05P?=
- =?utf-8?B?ejVNTVFUTVhlaFF3aEhCMStRRmEzc2xHRDJubVVvS01Sc0hlbmtZSlZQZWgv?=
- =?utf-8?B?blBzeHFhbDl1YUxpQ3hhVU96VWpUcEJudU1La0Erd1dHdUl0NXdzdGxxVlhu?=
- =?utf-8?B?a0VuQ21RMUtPK0hpNnBTbkVVVXdwbTJtWkJYRUxpRDRpMmt2QWEwOHVWYVhr?=
- =?utf-8?B?cDFrdDNjSDZ4c2FHUEJiei9rVmNRNW5nTXkxWVVlQVRtUWRIdHRsVi9XZjQ5?=
- =?utf-8?B?VzZ1MW9mbkdYZ1BnR2RuSW4yUlVrWDVMVG9zK1dQRHJ2SVROdlMwNXd2TFp4?=
- =?utf-8?B?NWlIYVcxUXl5bW83RjYrV2FKam9uOFV6U2ZmcVBTa3JJYnZtWUtnR1dZWmlm?=
- =?utf-8?B?dXl5a0RUV2syaXJRTEhmQWJtUXk5MHFMSmk4VEo5blhBTlpQdWZsdkJhckFK?=
- =?utf-8?B?WStWWVc5ZEJGWTgyazNRVnQ3S3lBOFVUam9xVjU3NktoeTU1U1YzTGlSQUZw?=
- =?utf-8?B?Zm5NZnVSV3hHTy9JcU0xWlBFNnZ5SkJkOTlWTVFweWpieUVIRi9WS3NRWDdJ?=
- =?utf-8?B?SU9Da2J0MmJ2OVYrcUVjZEhlMjR4UXR0WXNLUW0xNVI1TXVnS0c3MWtUMGVD?=
- =?utf-8?B?TStTY2VzdDJNNGI2eUR6UUV3QUoxYWxvaFdsNU1pMG9rcUtyWlVUZjRtWDhG?=
- =?utf-8?B?Y2QzZVUrMDBKTnExTXVJc2E4b2FSOUMyb3lNNEF0VW43bkJ3R2VOZksxVW5I?=
- =?utf-8?B?SnhGZFI1UjhoOUFiVWRZV0I4QnNZL01NL0NrQ2ZNWWE2Sm1tU0VaTGZQeVk3?=
- =?utf-8?B?WExjR3lKc09oTC9JN2Y3SDNId3hVK0xzblBGWUtRRmpmdDFnbHlHWTNxZE9x?=
- =?utf-8?B?UkN5RVg4bmxwRG5RMWFEcUtrWUhKMU5Idi9EeklwUXZSejFSQlE3KzFwR3hq?=
- =?utf-8?B?clRLN1ZsS1NFYjJubm8zQUg0ZWVHeXozbWVVLzZqQXBHSXFmTWZ6ZGE3eDhh?=
- =?utf-8?B?RjhuVzRQdk9PL0c5aWwra29rbVZ4YmZsVVRtcUNsRVhVQm9mSlhPNDlKZXl1?=
- =?utf-8?B?OWd4VTY0L0d2UG5zRGNmZ3ZMMTUwN2MxUWIwK3NMVmlHSlhCVFRkUkVhZzcr?=
- =?utf-8?B?dWU5ZWw1ZlkrcGhrTGs0eUs1cEs4K3hGelRQNzJIU1Z6a3JoNkZyTlNwd1BP?=
- =?utf-8?B?eWRIL1R0aXVyZE5tc0RYQU5ETm5MWGNGMVk4TDlwdFpTSURvL3hZRVFOSGNX?=
- =?utf-8?B?UTFKNm1ONnA3TjRnWXRBbEdqQjNjZnMzTWthSTUxY0lTeEJVMnVEOHBqeHI3?=
- =?utf-8?B?clJ0Wld4a2RmUmJHWlpVeWVPQSt6REZFQWFPemR5YkMrczQ4RExvZGZVRkow?=
- =?utf-8?B?UGd4dXYyMHdFUSt6MDRMM2tVbk9ucDV4T2JuTkExVFU1bFpHbG55SUNRNmk3?=
- =?utf-8?B?bmQrZVVMbzJreHpPd0xtaVlibjg3cCtrTlBSL2lEcDQ5S3Q1WkNPTEk5LzIw?=
- =?utf-8?B?Q1RNZkhGZlVtYWYxV1FHaEhWb0lzWFRLSTZnZjgwZGhvYUYrblA0SzlrcXBN?=
- =?utf-8?B?SXI1RlNRVVNHQ3B1aGI3MVNKaUVRbW1KaVZGb2RzWEtWVXp5bndRUWdWUlEr?=
- =?utf-8?B?U2V0Y0tPZUx3MDZ1WTFDOERoVkNvRDk4Q3F1QnVZUk85b2xOTHFnelBVMUNR?=
- =?utf-8?B?dHh0enVoU2RZR1loSUlpaGloOHl1M0pDR1BFZHJ5Mkc3aWl5bFhvWFVJcnZL?=
- =?utf-8?B?S1ppeXJWMzZNdkVKZjkwZmpCemE0TTZJSG1DL3d6VnJhaDlUTzJCeWI2Y2Nh?=
- =?utf-8?B?RHRaZlRtSEExdyszMUo3Nm53L2Z1SnMxNkZnZFk5Q1FiWExSRTBXL295aW9N?=
- =?utf-8?B?ZGpWRFF2Sjh1UHBkT1BYbFZMOTBoOTF0b3RYWkFZZFMwNWFBUWhsckNJQzJ3?=
- =?utf-8?B?QldTUHZKOHhyODVBSWVLZ2k3ZkhMVUc2Z3E3NXVWamtYWUdvUXB3ZUZLS3BO?=
- =?utf-8?B?dE5BLzZOWXpzOGNxQW1NNmIxUHIyZ1lZc2JyOVBZWU1HRkR6S0hIV2dXT2tk?=
- =?utf-8?B?OE5rcXRVdW42RUp0U3hGOUdHekd1TnhTRzNhSVZqQk9SVU9YdWRQZWkvWnpS?=
- =?utf-8?Q?+jufBx45+foEHa/hNHH0gD6+I?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ck5XaCtnZ0drRVVDdkNFZldFdmNhNkdOMHJNUm1DSzFnaUNKMEZ2UXUrYmVV?=
+ =?utf-8?B?Ty9IM09IM3ZYc0pTYmtNTjZOaEVYRHJNLzUvVlE2bERLY3p1L0tZVDRYWmkx?=
+ =?utf-8?B?UklFSTM2TDhwcTZ5eXlJeUw2SUUwWWNqTG5jMUd3K0RPYWlKTi85aVJWRDFF?=
+ =?utf-8?B?ZEVBcDh3Wk80ZFd1bXhCS3ppWnpHcFNRZHFoZnJrN3JZc0Q5Y2YxenJaS2E0?=
+ =?utf-8?B?WDlKSlBSd0NNRU84UlFSOU93WTB6YWw3cXQydXVUR3hqdDB3VlpJTU1WeUNz?=
+ =?utf-8?B?Z2V2ZDUvYksrSHlwOFI0RTJ6MjJ6T2tQaFF6MloxL2xwMnFpeEpSclgzdDFn?=
+ =?utf-8?B?N1YrRVJ1Ri9sWDJhbnl1U2pzbEVCM1dTemNHUGpmYkxXaE9acE1hWkhMN2NM?=
+ =?utf-8?B?OGFIenlnTzVmS1l4SVl1TU8rdHlrRTZFYnZNVFNBZmowcmhxcmR4cHlEZWhr?=
+ =?utf-8?B?R09sa2RDMjRSOEZJUDA2dUdieDNSbVYvNHVEMmNaTTM4NUhJUDZQajZqc09q?=
+ =?utf-8?B?djZWeTJWdXNoSWk2MGJrU0tya3VYMHR2Y0F4Tnl1UmN3enhIWGRkTWNCUWV1?=
+ =?utf-8?B?ZEhNRnV5VVFLWlN6eGFaeEN1dCtyQkMwSFpBU1pMWVhHcmlmeFZnZ2UwNTRw?=
+ =?utf-8?B?cmt0VEUzd0tYQkRzUTZIVis3VGpyMVNxQlUvcmJaL3FsRzNDa2FoK1Vtd0tV?=
+ =?utf-8?B?cndQZEtua1VzYXl3bVNyN3dQNmpNQXZMNG1HOVR1VHhKaVNEWWRBbEpyTUlW?=
+ =?utf-8?B?cjU0N0NNMXJqZDlEcVpWdGl5cHBmSUNOSWpjMHQ2ZG0xNkViaE9vKys5ZzZP?=
+ =?utf-8?B?UURhQWl6aWxjUjN1WHk5V0RaUVpCOUlDK0F1c3NrNVlRTTdzOE5iMVQxWFVm?=
+ =?utf-8?B?RFViTlpYMEJkOUdNR1VSK3VsMzEwVzAzSkRGNjYvUFVzTG54bEhINlVWcHN0?=
+ =?utf-8?B?MGUwTndwdXZJVFIxWmNWcEpvYlRnK0RGRG1jTXBGbDBnUllmYmhTK0g0Y2Fo?=
+ =?utf-8?B?Mi8velRwMk1oS0ttTlRJU2s2bXFlaHpVT0tMbUtEMk5DVXdOeEVvajVpakJP?=
+ =?utf-8?B?YkJqZTNESDNIblJPOFBRSklkK041Yi9kZEdpSExPNTBtVElpWkJCeWI1Kytj?=
+ =?utf-8?B?alF2REQwb0l1T0drQjNYNHgzZ09rUitzSEMxQlZkU0U0bWZQTWh0K1dVWlF3?=
+ =?utf-8?B?V0lMUWY2UmRnVXM2aFZvQzhXQy9wYjE3Z0x1OHU4eTNFekh3bzBmWG9KNkE3?=
+ =?utf-8?B?am1CQUx5d3h1MmE5TUtxbGRxM2g5MEJVYmlkWk9XRW9uamdTdXV3SjZIS0dE?=
+ =?utf-8?B?NUF1MnFiWFQyTUcyaWVPcG94Rlc3YWtKeXdlUGFpUmx5VEVwWFdaM0dZNUtH?=
+ =?utf-8?B?cmRublVUQ0Z4N3F0V1dURytwakJXTndHYzBXWFBOM1VHbmRRQmRjUStHellN?=
+ =?utf-8?B?akN3ejdvd1FSbFozaE1TT1JIMUJMZHlIR2I1UytmUFF4cU4zcWhQMmRGaGFC?=
+ =?utf-8?B?VmV3VFBHSmczdXlLMkVJV1NMekdPYnlVOUNKYWJhQVdXYUdVYmpqb2VDeGVv?=
+ =?utf-8?B?MHdhbk9iOFFvRUhEQlB1Rm5JVVBNMFU5SzVQakR4cjZ0dW95U3BwcHBlc0ha?=
+ =?utf-8?B?RUtVUmZTeXFCd2Rscm9ON2w2VytpbXZrd1JITE5ha3VyaDA2RGh1U1dTeHQv?=
+ =?utf-8?B?N0RMa0RPdXdPVU5sZGMzdkVIU2pMNEFLcGt0YnlGQjEwUHhGWWVzZzhvZm1I?=
+ =?utf-8?B?c0hLT1RhZWxpcWRjT2JiV1J4YzZ2cW5YdFdMbHJkQVkxeFFmK1k0bS81WWNu?=
+ =?utf-8?B?bWJXdVlZS1BVTC9QVU1FeWM5TWhvSFBIRFVkQXJUV0tyaVNGbnhYOGtmalZz?=
+ =?utf-8?B?djZFUVZKYlhzU2pQYkNvQzZzSzNrTm5sOVhhdTdldlljWkU5dG5PNzVOUk8r?=
+ =?utf-8?B?RkxseDdrdC9sVVh5S01YRGl0MzI1QnMySnpWVS9zR2pxUWhNbStXWFgyczl0?=
+ =?utf-8?B?RzMxMTZHVFV6dU9XMVJUOUFmbUNtcnpRbmUxRmNQUzNNclVzZjJrSEJuVkNG?=
+ =?utf-8?B?U2cwZXp1QWYxbUVqZ1hXVVQ1R3Z4QytnYXU3THIrNU41MFV4K0laYXZqWFBo?=
+ =?utf-8?Q?uGj6nFyeS2qRZE4maaBaEB79N?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4de95e37-7f0c-445f-332e-08dbe224228c
+X-MS-Exchange-CrossTenant-Network-Message-Id: 713df221-9b82-4830-b3de-08dbe2246937
 X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 19:35:03.1305
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 19:37:01.6485
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S9EjEuH3Wx2Uc9A3wh0KV33DwCbZViGCEgaVB/QQUFVmBXzvFAXQw55KorbAHFyqMaF5nN4HLH/w1hVMBZWg3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7613
+X-MS-Exchange-CrossTenant-UserPrincipalName: /k+W/8mUj07Jv+bam7bA2L/DrAp1qIt2fObreiEQ1XUGpwohntAk58cjR2BccujmFGIidjX7SbjI/5k0ZNHY7g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8310
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -133,251 +133,163 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/10/2023 12:11, Andy Shevchenko wrote:
-> Fix spelling and other issues, such as kernel-doc reported about,
-> in the comments. While at it, fix some indentation issues as well.
+> Use temporary variable for struct device to make code neater.
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 > ---
->   drivers/i2c/busses/i2c-designware-amdpsp.c  | 10 +++++-----
->   drivers/i2c/busses/i2c-designware-common.c  |  8 +++++---
->   drivers/i2c/busses/i2c-designware-core.h    | 10 +++++-----
->   drivers/i2c/busses/i2c-designware-master.c  | 15 +++++++++------
->   drivers/i2c/busses/i2c-designware-platdrv.c |  4 ++--
->   drivers/i2c/busses/i2c-designware-slave.c   |  6 ++++--
->   6 files changed, 30 insertions(+), 23 deletions(-)
+>   drivers/i2c/busses/i2c-designware-pcidrv.c  | 24 +++++++-------
+>   drivers/i2c/busses/i2c-designware-platdrv.c | 35 ++++++++++-----------
+>   2 files changed, 27 insertions(+), 32 deletions(-)
 > 
-> diff --git a/drivers/i2c/busses/i2c-designware-amdpsp.c b/drivers/i2c/busses/i2c-designware-amdpsp.c
-> index 63454b06e5da..8fbd2a10c31a 100644
-> --- a/drivers/i2c/busses/i2c-designware-amdpsp.c
-> +++ b/drivers/i2c/busses/i2c-designware-amdpsp.c
-> @@ -155,7 +155,7 @@ static void psp_release_i2c_bus_deferred(struct work_struct *work)
->   
->   	/*
->   	 * If there is any pending transaction, cannot release the bus here.
-> -	 * psp_release_i2c_bus will take care of this later.
-> +	 * psp_release_i2c_bus() will take care of this later.
->   	 */
->   	if (psp_i2c_access_count)
->   		goto cleanup;
-> @@ -210,12 +210,12 @@ static void psp_release_i2c_bus(void)
+> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> index 826c0c0a7c8d..34002c5eb67c 100644
+> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> @@ -207,6 +207,7 @@ static const struct software_node dgpu_node = {
+>   static int i2c_dw_pci_probe(struct pci_dev *pdev,
+>   			    const struct pci_device_id *id)
 >   {
->   	mutex_lock(&psp_i2c_access_mutex);
+> +	struct device *device = &pdev->dev;
+>   	struct dw_i2c_dev *dev;
+>   	struct i2c_adapter *adap;
+>   	int r;
+> @@ -214,25 +215,22 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+>   	struct dw_scl_sda_cfg *cfg;
 >   
-> -	/* Return early if mailbox was malfunctional */
-> +	/* Return early if mailbox was malfunctioned */
->   	if (psp_i2c_mbox_fail)
->   		goto cleanup;
+>   	if (id->driver_data >= ARRAY_SIZE(dw_pci_controllers))
+> -		return dev_err_probe(&pdev->dev, -EINVAL,
+> -				     "Invalid driver data %ld\n",
+> +		return dev_err_probe(device, -EINVAL, "Invalid driver data %ld\n",
+>   				     id->driver_data);
 >   
->   	/*
-> -	 * If we are last owner of PSP semaphore, need to release aribtration
-> +	 * If we are last owner of PSP semaphore, need to release arbitration
->   	 * via mailbox.
->   	 */
->   	psp_i2c_access_count--;
-> @@ -235,9 +235,9 @@ static void psp_release_i2c_bus(void)
+>   	controller = &dw_pci_controllers[id->driver_data];
 >   
->   /*
->    * Locking methods are based on the default implementation from
-> - * drivers/i2c/i2c-core-base.c, but with psp acquire and release operations
-> + * drivers/i2c/i2c-core-base.c, but with PSP acquire and release operations
->    * added. With this in place we can ensure that i2c clients on the bus shared
-> - * with psp are able to lock HW access to the bus for arbitrary number of
-> + * with PSP are able to lock HW access to the bus for arbitrary number of
->    * operations - that is e.g. write-wait-read.
->    */
->   static void i2c_adapter_dw_psp_lock_bus(struct i2c_adapter *adapter,
-> diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-> index 5e28f50e4ce6..91bdedbe1a02 100644
-> --- a/drivers/i2c/busses/i2c-designware-common.c
-> +++ b/drivers/i2c/busses/i2c-designware-common.c
-> @@ -127,6 +127,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
->    * Autodetects needed register access mode and creates the regmap with
->    * corresponding read/write callbacks. This must be called before doing any
->    * other register access.
-> + *
-> + * Return: 0 on success, or negative errno otherwise.
->    */
->   int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
->   {
-> @@ -174,7 +176,7 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
->   	/*
->   	 * Note we'll check the return value of the regmap IO accessors only
->   	 * at the probe stage. The rest of the code won't do this because
-> -	 * basically we have MMIO-based regmap so non of the read/write methods
-> +	 * basically we have MMIO-based regmap, so none of the read/write methods
->   	 * can fail.
->   	 */
->   	dev->map = devm_regmap_init(dev->dev, NULL, dev, &map_cfg);
-> @@ -336,7 +338,7 @@ static u32 i2c_dw_acpi_round_bus_speed(struct device *device)
+>   	r = pcim_enable_device(pdev);
+>   	if (r)
+> -		return dev_err_probe(&pdev->dev, r,
+> -				     "Failed to enable I2C PCI device\n");
+> +		return dev_err_probe(device, r, "Failed to enable I2C PCI device\n");
 >   
->   	acpi_speed = i2c_acpi_find_bus_speed(device);
->   	/*
-> -	 * Some DSTDs use a non standard speed, round down to the lowest
-> +	 * Some DSDTs use a non standard speed, round down to the lowest
->   	 * standard speed.
->   	 */
->   	for (i = 0; i < ARRAY_SIZE(supported_speeds); i++) {
-> @@ -532,7 +534,7 @@ void __i2c_dw_disable(struct dw_i2c_dev *dev)
+>   	pci_set_master(pdev);
 >   
->   		/*
->   		 * Wait 10 times the signaling period of the highest I2C
-> -		 * transfer supported by the driver (for 400KHz this is
-> +		 * transfer supported by the driver (for 400kHz this is
->   		 * 25us) as described in the DesignWare I2C databook.
->   		 */
->   		usleep_range(25, 250);
-> diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-> index 7479cb3a450d..5405d4da2b7d 100644
-> --- a/drivers/i2c/busses/i2c-designware-core.h
-> +++ b/drivers/i2c/busses/i2c-designware-core.h
-> @@ -141,10 +141,10 @@
->   #define DW_IC_SLAVE				1
+>   	r = pcim_iomap_regions(pdev, 1 << 0, pci_name(pdev));
+>   	if (r)
+> -		return dev_err_probe(&pdev->dev, r,
+> -				     "I/O memory remapping failed\n");
+> +		return dev_err_probe(device, r, "I/O memory remapping failed\n");
 >   
->   /*
-> - * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register
-> + * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register.
->    *
-> - * Only expected abort codes are listed here
-> - * refer to the datasheet for the full list
-> + * Only expected abort codes are listed here,
-> + * refer to the datasheet for the full list.
->    */
->   #define ABRT_7B_ADDR_NOACK			0
->   #define ABRT_10ADDR1_NOACK			1
-> @@ -201,7 +201,7 @@ struct i2c_dw_semaphore_callbacks;
->    * @rst: optional reset for the controller
->    * @slave: represent an I2C slave device
->    * @get_clk_rate_khz: callback to retrieve IP specific bus speed
-> - * @cmd_err: run time hadware error code
-> + * @cmd_err: run time hardware error code
->    * @msgs: points to an array of messages currently being transferred
->    * @msgs_num: the number of elements in msgs
->    * @msg_write_idx: the element index of the current tx message in the msgs array
-> @@ -236,7 +236,7 @@ struct i2c_dw_semaphore_callbacks;
->    * @release_lock: function to release a hardware lock on the bus
->    * @semaphore_idx: Index of table with semaphore type attached to the bus. It's
->    *	-1 if there is no semaphore.
-> - * @shared_with_punit: true if this bus is shared with the SoCs PUNIT
-> + * @shared_with_punit: true if this bus is shared with the SoC's PUNIT
->    * @init: function to initialize the I2C hardware
->    * @set_sda_hold_time: callback to retrieve IP specific SDA hold timing
->    * @mode: operation mode - DW_IC_MASTER or DW_IC_SLAVE
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index bd3c8db521de..4ef4160db01f 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -168,12 +168,14 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
->   }
+> -	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+> +	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
+>   	if (!dev)
+>   		return -ENOMEM;
 >   
->   /**
-> - * i2c_dw_init_master() - Initialize the designware I2C master hardware
-> + * i2c_dw_init_master() - Initialize the DesignWare I2C master hardware
->    * @dev: device private data
->    *
->    * This functions configures and enables the I2C master.
->    * This function is called during I2C init function, and in case of timeout at
->    * run time.
-> + *
-> + * Return: 0 on success, or negative errno otherwise.
->    */
->   static int i2c_dw_init_master(struct dw_i2c_dev *dev)
->   {
-> @@ -314,7 +316,7 @@ static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs,
->   		/*
->   		 * Initiate the i2c read/write transaction of buffer length,
->   		 * and poll for bus busy status. For the last message transfer,
-> -		 * update the command with stopbit enable.
-> +		 * update the command with stop bit enable.
->   		 */
->   		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
->   			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
-> @@ -421,7 +423,7 @@ static int txgbe_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msg
+> @@ -242,7 +240,7 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
 >   
->   /*
->    * Initiate (and continue) low level master read/write transaction.
-> - * This function is only called from i2c_dw_isr, and pumping i2c_msg
-> + * This function is only called from i2c_dw_isr(), and pumping i2c_msg
->    * messages into the tx buffer.  Even if the size of i2c_msg data is
->    * longer than the size of the tx buffer, it handles everything.
->    */
-> @@ -459,7 +461,8 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
->   			buf = msgs[dev->msg_write_idx].buf;
->   			buf_len = msgs[dev->msg_write_idx].len;
+>   	dev->get_clk_rate_khz = controller->get_clk_rate_khz;
+>   	dev->base = pcim_iomap_table(pdev)[0];
+> -	dev->dev = &pdev->dev;
+> +	dev->dev = device;
+>   	dev->irq = pci_irq_vector(pdev, 0);
+>   	dev->flags |= controller->flags;
 >   
-> -			/* If both IC_EMPTYFIFO_HOLD_MASTER_EN and
-> +			/*
-> +			 * If both IC_EMPTYFIFO_HOLD_MASTER_EN and
->   			 * IC_RESTART_EN are set, we must manually
->   			 * set restart bit between messages.
->   			 */
-> @@ -949,7 +952,7 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
->   	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
->   	adap->bus_recovery_info = rinfo;
+> @@ -281,14 +279,14 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+>   	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
+>   		dev->slave = i2c_new_ccgx_ucsi(&dev->adapter, dev->irq, &dgpu_node);
+>   		if (IS_ERR(dev->slave))
+> -			return dev_err_probe(dev->dev, PTR_ERR(dev->slave),
+> +			return dev_err_probe(device, PTR_ERR(dev->slave),
+>   					     "register UCSI failed\n");
+>   	}
 >   
-> -	dev_info(dev->dev, "running with gpio recovery mode! scl%s",
-> +	dev_info(dev->dev, "running with GPIO recovery mode! scl%s",
->   		 rinfo->sda_gpiod ? ",sda" : "");
+> -	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+> -	pm_runtime_use_autosuspend(&pdev->dev);
+> -	pm_runtime_put_autosuspend(&pdev->dev);
+> -	pm_runtime_allow(&pdev->dev);
+> +	pm_runtime_set_autosuspend_delay(device, 1000);
+> +	pm_runtime_use_autosuspend(device);
+> +	pm_runtime_put_autosuspend(device);
+> +	pm_runtime_allow(device);
 >   
 >   	return 0;
-> @@ -1053,7 +1056,7 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
->   	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr, irq_flags,
->   			       dev_name(dev->dev), dev);
->   	if (ret) {
-> -		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-> +		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
->   			dev->irq, ret);
->   		return ret;
->   	}
+>   }
 > diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-> index 02dc1d1001f2..fa9c0c56b11e 100644
+> index 1b76f721bf81..02dc1d1001f2 100644
 > --- a/drivers/i2c/busses/i2c-designware-platdrv.c
 > +++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-> @@ -72,7 +72,7 @@ static int bt1_i2c_write(void *context, unsigned int reg, unsigned int val)
->   		return ret;
+> @@ -237,6 +237,7 @@ static int dw_i2c_plat_get_reset(struct dw_i2c_dev *dev)
 >   
->   	return regmap_write(dev->sysmap, BT1_I2C_CTL,
-> -		BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
-> +			    BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
->   }
+>   static int dw_i2c_plat_probe(struct platform_device *pdev)
+>   {
+> +	struct device *device = &pdev->dev;
+>   	struct i2c_adapter *adap;
+>   	struct dw_i2c_dev *dev;
+>   	int irq, ret;
+> @@ -245,15 +246,15 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+>   	if (irq < 0)
+>   		return irq;
 >   
->   static struct regmap_config bt1_i2c_cfg = {
-> @@ -304,7 +304,7 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
->   	adap = &dev->adapter;
->   	adap->owner = THIS_MODULE;
->   	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
-> -					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
-> +				       I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+> -	dev = devm_kzalloc(&pdev->dev, sizeof(struct dw_i2c_dev), GFP_KERNEL);
+> +	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
+>   	if (!dev)
+>   		return -ENOMEM;
+>   
+> -	dev->flags = (uintptr_t)device_get_match_data(&pdev->dev);
+> -	if (device_property_present(&pdev->dev, "wx,i2c-snps-model"))
+> +	dev->flags = (uintptr_t)device_get_match_data(device);
+> +	if (device_property_present(device, "wx,i2c-snps-model"))
+>   		dev->flags = MODEL_WANGXUN_SP;
+>   
+> -	dev->dev = &pdev->dev;
+> +	dev->dev = device;
+>   	dev->irq = irq;
+>   	platform_set_drvdata(pdev, dev);
+>   
+> @@ -276,11 +277,11 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+>   	i2c_dw_configure(dev);
+>   
+>   	/* Optional interface clock */
+> -	dev->pclk = devm_clk_get_optional(&pdev->dev, "pclk");
+> +	dev->pclk = devm_clk_get_optional(device, "pclk");
+>   	if (IS_ERR(dev->pclk))
+>   		return PTR_ERR(dev->pclk);
+>   
+> -	dev->clk = devm_clk_get_optional(&pdev->dev, NULL);
+> +	dev->clk = devm_clk_get_optional(device, NULL);
+>   	if (IS_ERR(dev->clk))
+>   		return PTR_ERR(dev->clk);
+>   
+> @@ -306,23 +307,19 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+>   					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
 >   	adap->nr = -1;
 >   
->   	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
-> diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
-> index 5abd5ec41954..21d80fe81cfe 100644
-> --- a/drivers/i2c/busses/i2c-designware-slave.c
-> +++ b/drivers/i2c/busses/i2c-designware-slave.c
-> @@ -32,12 +32,14 @@ static void i2c_dw_configure_fifo_slave(struct dw_i2c_dev *dev)
->   }
+> -	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
+> -		dev_pm_set_driver_flags(&pdev->dev,
+> -					DPM_FLAG_SMART_PREPARE);
+> -	} else {
+> -		dev_pm_set_driver_flags(&pdev->dev,
+> -					DPM_FLAG_SMART_PREPARE |
+> -					DPM_FLAG_SMART_SUSPEND);
+> -	}
+> +	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
+> +		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE);
+> +	else
+> +		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE | DPM_FLAG_SMART_SUSPEND);
 >   
->   /**
-> - * i2c_dw_init_slave() - Initialize the designware i2c slave hardware
-> + * i2c_dw_init_slave() - Initialize the DesignWare i2c slave hardware
->    * @dev: device private data
->    *
->    * This function configures and enables the I2C in slave mode.
->    * This function is called during I2C init function, and in case of timeout at
->    * run time.
-> + *
-> + * Return: 0 on success, or negative errno otherwise.
->    */
->   static int i2c_dw_init_slave(struct dw_i2c_dev *dev)
->   {
-> @@ -264,7 +266,7 @@ int i2c_dw_probe_slave(struct dw_i2c_dev *dev)
->   	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr_slave,
->   			       IRQF_SHARED, dev_name(dev->dev), dev);
->   	if (ret) {
-> -		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-> +		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
->   			dev->irq, ret);
->   		return ret;
->   	}
+> -	device_enable_async_suspend(&pdev->dev);
+> +	device_enable_async_suspend(device);
+>   
+>   	/* The code below assumes runtime PM to be disabled. */
+> -	WARN_ON(pm_runtime_enabled(&pdev->dev));
+> +	WARN_ON(pm_runtime_enabled(device));
+>   
+> -	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+> -	pm_runtime_use_autosuspend(&pdev->dev);
+> -	pm_runtime_set_active(&pdev->dev);
+> +	pm_runtime_set_autosuspend_delay(device, 1000);
+> +	pm_runtime_use_autosuspend(device);
+> +	pm_runtime_set_active(device);
+>   
+>   	ret = dw_i2c_plat_pm_setup(dev);
+>   	if (ret)
 
