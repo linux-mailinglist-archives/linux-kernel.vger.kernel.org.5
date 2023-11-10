@@ -2,49 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4737E810D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284E67E80D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345698AbjKJSXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
+        id S1345520AbjKJSSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346305AbjKJSVM (ORCPT
+        with ESMTP id S1345997AbjKJSQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:21:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A977ECC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:52:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1316C433C9;
-        Fri, 10 Nov 2023 04:26:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699590407;
-        bh=JxZCpSm1kqC+R+e83RfxzXa5n+CaQYu1rpOKJU4fHEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ilnOPJ/iNvgeKfC6n/vMMS4pyiQ3o7Bxh+4xnLKiMVs4JEQByAWOjidu1k+rGbpbi
-         8c3NIYHGZMA7jPlyV+hD9P6J6cEsyUzkLbc02Zily3KmP4Nv7/LSkRBZV4S03tVrQO
-         3rMWPmO9ppKALkP2RNe6wPEb3jpF8WVK7WFlHu4E=
-Date:   Fri, 10 Nov 2023 05:26:44 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Shree Ramamoorthy <s-ramamoorthy@ti.com>
-Cc:     Julien Panis <jpanis@baylibre.com>,
-        Gairuboina Sirisha <sirisha.gairuboina@ltts.com>,
-        arnd@arndb.de, krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
-        linux-kernel@vger.kernel.org, d-gole@ti.com
-Subject: Re: [PATCH v1 0/3] TPS65224 PMIC driver
-Message-ID: <2023111007-siamese-crepe-9775@gregkh>
-References: <b9449689-73da-41a8-a94e-f82686ab0bb0@baylibre.com>
- <20231107113740.1034738-1-sirisha.gairuboina@Ltts.com>
- <2f467b0a-1d11-4ec7-8ca6-6c4ba66e5887@baylibre.com>
- <818ecf7b-cd91-45ca-bb92-65f10f1ca1f0@ti.com>
+        Fri, 10 Nov 2023 13:16:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916097D81;
+        Thu,  9 Nov 2023 22:43:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699598587; x=1731134587;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6rPjgNdLm9P1GsH5aFoRapsyWJVU0NC9QYCgapwVwvw=;
+  b=IEYJVZRHMdXR4uQanDlFnH4aDayATEiM7TCcUdY3PgmAcXBLkw8cJJ+N
+   T7g27v0l+XP36UOBNuIyFxU8NW43R1GROGfkqCLfUD9aKk8GZ+QiP2cPi
+   93Yi/mmY66LHCvz9QIo9gh2MYC5MdFjaBF7l7072aK8L7UQbAsrR3p9kl
+   g94SH4j37qhDPHU0/WgvDc4B4KT+BGE2wzQWBdOokg4JCrQlJ6DpJqKL9
+   zMc70zHDZegb6aApqsLmEwyi9IWtrLlEdy83dHVwJ8iStlM/fAZlpgdAV
+   1t7XrV2sDYUMxPVGsKXrDbU91cQlIe/JH4KIMnWW6/vnvazrW0u8A0Asx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="454430534"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="454430534"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:34:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="11759952"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 09 Nov 2023 20:34:44 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1JE9-0009QI-2X;
+        Fri, 10 Nov 2023 04:34:41 +0000
+Date:   Fri, 10 Nov 2023 12:34:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     WoZ1zh1 <wozizhi@huawei.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, akpm@linux-foundation.org, oleg@redhat.com,
+        jlayton@kernel.org, dchinner@redhat.com, cyphar@cyphar.com,
+        shr@devkernel.io
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        wozizhi@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next V2] proc: support file->f_pos checking in mem_lseek
+Message-ID: <202311101239.ihy4cKpf-lkp@intel.com>
+References: <20231109102658.2075547-1-wozizhi@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <818ecf7b-cd91-45ca-bb92-65f10f1ca1f0@ti.com>
+In-Reply-To: <20231109102658.2075547-1-wozizhi@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,75 +68,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 10:22:00AM -0600, Shree Ramamoorthy wrote:
-> > I compared 'tps65224.h' with 'tps6594.h', especially register mapping.
-> > There are less resources in TPS65224, but I don't see any incompatibility
-> > between both PMIC register mappings. Some registers are not used by
-> > your TPS65224, and some interrupts are not used either (that's not a
-> > problem, they will not trigger, so). Beyond that, I2C and PFSM drivers
-> > perform the same things for both PMICs. That's why according to me,
-> > nothing prevents from re-using TPS6594 drivers. Even for ADC, which is
-> > specific to your TPS65224 indeed, the register range does not overlap
-> > with any of TPS6594 registers. You could conditionally add this driver
-> > (that's what we did in  'tps6594-core.c' for RTC driver, which is not
-> > used
-> > for one of the compatibles: you can do something similar for ADC).
-> > You will probably add support for others TPS65224 drivers over the next
-> > weeks: SPI, ESM, RTC, GPIOs, regulators, watchdog, and ADC. Most of them
-> > should be compatible with both TPS6594 and TPS65224, I think (even
-> > watchdog driver, which was not developed for TPS6594). ADC will not,
-> > but as explained above you can easily deal with this one thanks to
-> > the compatible.
-> > For 'tps65224-core.c' only, a little bit of work might be necessary to
-> > handle your TPS65224 specific functionalities. By using a different DT
-> > compatible string, your driver can then select different options (or
-> > maybe
-> > even different register ranges) for some features based on the
-> > compatible.
-> > But except for 'tps65xx-core.c', there is "sufficient overlap" to justify
-> > sharing as much as possible between TPS65224 and TPS6594, in my
-> > opinion.
-> 
-> 
-> TI is positioning TPS65224 as a separate family from TPS6594, but shared
-> software drivers for PMICs that have different use cases would lead to
-> confusion.
+Hi WoZ1zh1,
 
-Why?  No one cares what a driver's name is, only that it works for their
-hardware.  What different "use case" would cause problems here?
+kernel test robot noticed the following build warnings:
 
-> Re-scoping the project to accommodate these suggestions would
-> negatively affect the timeline we are trying to meet.
+[auto build test WARNING on next-20231108]
 
-There are no timelines/deadlines with kernel development, sorry, that's
-not our issue.
+url:    https://github.com/intel-lab-lkp/linux/commits/WoZ1zh1/proc-support-file-f_pos-checking-in-mem_lseek/20231109-103353
+base:   next-20231108
+patch link:    https://lore.kernel.org/r/20231109102658.2075547-1-wozizhi%40huawei.com
+patch subject: [PATCH -next V2] proc: support file->f_pos checking in mem_lseek
+config: um-allnoconfig (https://download.01.org/0day-ci/archive/20231110/202311101239.ihy4cKpf-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101239.ihy4cKpf-lkp@intel.com/reproduce)
 
-> We want to include the
-> restructure that addresses the compatibility, register maps, and
-> functionality similarities, but it would best solved after the upcoming
-> deadline has been met.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311101239.ihy4cKpf-lkp@intel.com/
 
-Again, no deadline here.  Please do the work properly, that's all we
-care about.
+All warnings (new ones prefixed by >>):
 
-> With the growth of PMIC software device drivers, we
-> would prefer to have a separate series with the suggested changes and proper
-> naming convention to address that while they overlap, the two PMICs devices
-> are not a subset.
+   In file included from fs/proc/base.c:68:
+   In file included from include/linux/swap.h:9:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     547 |         val = __raw_readb(PCI_IOBASE + addr);
+         |                           ~~~~~~~~~~ ^
+   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
+      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+         |                                                   ^
+   In file included from fs/proc/base.c:68:
+   In file included from include/linux/swap.h:9:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
+         |                                                         ~~~~~~~~~~ ^
+   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
+      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+         |                                                   ^
+   In file included from fs/proc/base.c:68:
+   In file included from include/linux/swap.h:9:
+   In file included from include/linux/memcontrol.h:13:
+   In file included from include/linux/cgroup.h:26:
+   In file included from include/linux/kernel_stat.h:9:
+   In file included from include/linux/interrupt.h:11:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/um/include/asm/hardirq.h:5:
+   In file included from include/asm-generic/hardirq.h:17:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/um/include/asm/io.h:24:
+   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     584 |         __raw_writeb(value, PCI_IOBASE + addr);
+         |                             ~~~~~~~~~~ ^
+   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
+         |                                                       ~~~~~~~~~~ ^
+   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     692 |         readsb(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     700 |         readsw(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     708 |         readsl(PCI_IOBASE + addr, buffer, count);
+         |                ~~~~~~~~~~ ^
+   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     717 |         writesb(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     726 |         writesw(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
+     735 |         writesl(PCI_IOBASE + addr, buffer, count);
+         |                 ~~~~~~~~~~ ^
+>> fs/proc/base.c:912:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+     912 |         case SEEK_SET:
+         |         ^
+   fs/proc/base.c:912:2: note: insert '__attribute__((fallthrough));' to silence this warning
+     912 |         case SEEK_SET:
+         |         ^
+         |         __attribute__((fallthrough)); 
+   fs/proc/base.c:912:2: note: insert 'break;' to avoid fall-through
+     912 |         case SEEK_SET:
+         |         ^
+         |         break; 
+   13 warnings generated.
 
-Why does the name matter?  Again, all that a user cares about is if
-their hardware device is supported, the name means nothing here.
 
-Please do the correct thing and add support for this device to the
-existing drivers, that's the correct thing to do.  You will save time
-and energy and code in the long-run, which is the important thing.
+vim +912 fs/proc/base.c
 
-There is a reason that Linux drivers are, on average, 1/3 smaller than
-other operating systems.  And that's because they share common code with
-other drivers.  You aren't allowed to just copy an existing one and add
-a few changes and make a whole new driver, you need to modify the
-current one.
+   903	
+   904	loff_t mem_lseek(struct file *file, loff_t offset, int orig)
+   905	{
+   906		loff_t ret = 0;
+   907	
+   908		spin_lock(&file->f_lock);
+   909		switch (orig) {
+   910		case SEEK_CUR:
+   911			offset += file->f_pos;
+ > 912		case SEEK_SET:
+   913			/* to avoid userland mistaking f_pos=-9 as -EBADF=-9 */
+   914			if ((unsigned long long)offset >= -MAX_ERRNO)
+   915				ret = -EOVERFLOW;
+   916			break;
+   917		default:
+   918			ret = -EINVAL;
+   919		}
+   920		if (!ret) {
+   921			if (offset < 0 && !(unsigned_offsets(file))) {
+   922				ret = -EINVAL;
+   923			} else {
+   924				file->f_pos = offset;
+   925				ret = file->f_pos;
+   926				force_successful_syscall_return();
+   927			}
+   928		}
+   929	
+   930		spin_unlock(&file->f_lock);
+   931		return ret;
+   932	}
+   933	
 
-thanks,
-
-greg k-h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
