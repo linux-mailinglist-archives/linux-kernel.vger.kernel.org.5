@@ -2,112 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF40F7E828C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5847E7FFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjKJTYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32904 "EHLO
+        id S235263AbjKJSDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346258AbjKJTYL (ORCPT
+        with ESMTP id S235702AbjKJSCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:24:11 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785632B7FE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:58 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54553e4888bso2700716a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699607877; x=1700212677; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4LYDpBcl0MlEH+R1oWmv0xRfeWfotESF7unF3rtHosM=;
-        b=ctgh/v6P7PGtWsqzmBXVNaa3RTWxGLNZ1z/PZVK8DdmLD1DUizCahIAn1rxnmqcCvm
-         D9Drs5rkdEVkQI0Xn9NvZBAmDQ6ERUQMTI0ZkWSZPKzC1PsE9pVkPhx1vSYklkP0C6UF
-         teVMNxtDaMF0vare7+0l+VbJ5P3qUDPLF/qGU5d6gkK39ac/NbDtG4DtOusJgEQaj+wr
-         s7xpyyNQhJGizLXenmo4nt9fNaW+xIgiGoPKSRUK4ZbpOqQeBNpMen+OvjK+HD3uit/U
-         kU1yHgKUdFnyjVTSwpUm40BIZ7gM3qLdTylaMStF5vMSWDGKHioXe/xVe/CjoP/xrICB
-         WuwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699607877; x=1700212677;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4LYDpBcl0MlEH+R1oWmv0xRfeWfotESF7unF3rtHosM=;
-        b=pI/wgmWS8YK6CwaKRXYGYqQsxzsVMk1pyDFc3vDWBToZbPUjz1/ft07LFftshVU4l2
-         fdTMWCg5Vb13NpZQmq/mILJkBd8xM1oLBh8TOfPc0gKc7ximnO+tl5sfcaPPWea/O7LU
-         Sa06OfvPOxR/fo83f/I57SDhEsy9R0+qR3Ooraq9ujukz+1rTziob+UOaGqLIRFu1cAx
-         1rd220j90+4h4yJjvFNdvvd3jqV3T8Z54LsoeFqqZewyTrsNmxQmn1zb5z186MknbXr1
-         QrXhjnku/5I1/RVjz/q6O58AdHMj9LUXIAU/ewDH0xspoftkzG/kc+R+o9ZtuGmP9mUu
-         po7Q==
-X-Gm-Message-State: AOJu0YxXWVHR3oVADyU5E06dlL11+EIm93c50ZikQXupv1IO/FMrST1h
-        sJ3BU2en2GHsxMVlM0G4UJEBNQ==
-X-Google-Smtp-Source: AGHT+IEi+jnigMNlZUp5tY2hieuoJdQ+0SEgWhSPbTbvPnM2yM5Sou8lXJBCGZLHxF5rHcGAfKoDWQ==
-X-Received: by 2002:a17:907:7b95:b0:9c7:59d1:b2c9 with SMTP id ne21-20020a1709077b9500b009c759d1b2c9mr6807869ejc.17.1699607876897;
-        Fri, 10 Nov 2023 01:17:56 -0800 (PST)
-Received: from [192.168.7.189] (679773502.box.freepro.com. [212.114.21.58])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05600c350700b004090ca6d785sm4601196wmq.2.2023.11.10.01.17.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 01:17:56 -0800 (PST)
-Message-ID: <10cbb859-bdbf-4763-9887-fa13003b58cd@linaro.org>
-Date:   Fri, 10 Nov 2023 10:17:55 +0100
+        Fri, 10 Nov 2023 13:02:34 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4946D2B7F7;
+        Fri, 10 Nov 2023 01:18:18 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7ffkm031309;
+        Fri, 10 Nov 2023 09:18:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=G+Zc568Gz0SZ9OiI5OVsUfmYySCMQqqPWyjqT7w2RyA=;
+ b=Sw97PmtNok4qQCownr4UpQJ92SW3DjxoYPy2bGkRbTluWnhVMNJa+E6IZBUrM+gHKyw0
+ Umput+sHnHdrmtJveUAsMI48lo+Bl6cd6K/gnp8bIoFq16Oae5CCa8NdDZAtOzUyJuaU
+ oh7pvCFYv7qvjHcJUw1Uy3BX9NXhaUMJazSxmP1zdVU7hBxazlBJJPXdmcw3kIvug+d6
+ 86vJSTNGzLzn3fL6KsPZ72af2GirguPTcAn30qjLfyMYjiI8B5h0Af7iZoiUKi1PGEm3
+ f3SLBHHCXlKjB7c5/F6wu4fWq+Nwt7tkOfMVl3LkEoy7KYha5Rd0Pqws5N0Hw8mH9Mvq RA== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u9f3k0e2b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:18:03 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA9I3o5019512
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Nov 2023 09:18:03 GMT
+Received: from [10.253.8.167] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 01:18:00 -0800
+Message-ID: <46d61a29-96bf-868b-22b9-a31e48576803@quicinc.com>
+Date:   Fri, 10 Nov 2023 17:17:58 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 6/7] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
- Gear 5 support for SM8550
-Content-Language: en-US, fr
-To:     Can Guo <quic_cang@quicinc.com>, Can Guo <cang@qti.qualcomm.com>,
-        bvanassche@acm.org, mani@kernel.org, stanley.chu@mediatek.com,
-        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1699332374-9324-1-git-send-email-cang@qti.qualcomm.com>
- <1699332374-9324-7-git-send-email-cang@qti.qualcomm.com>
- <e4bafeaf-bbeb-4990-b6f2-497159995910@linaro.org>
- <c3fb1fa1-4ba6-613f-a545-79e0e4b2658f@quicinc.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <c3fb1fa1-4ba6-613f-a545-79e0e4b2658f@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/3] net: phy: at803x: add QCA8084 ethernet phy support
+Content-Language: en-US
+From:   Jie Luo <quic_luoj@quicinc.com>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231108113445.24825-1-quic_luoj@quicinc.com>
+ <20231108113445.24825-2-quic_luoj@quicinc.com>
+ <20231108131250.66d1c236@fedora>
+ <423a3ee3-bed5-02f9-f872-7b5dba64f994@quicinc.com>
+ <20231109101618.009efb45@fedora>
+ <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
+In-Reply-To: <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: S-SObheDVJ-FTaJteoWKc8E6pU-F3R-6
+X-Proofpoint-GUID: S-SObheDVJ-FTaJteoWKc8E6pU-F3R-6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_05,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 mlxlogscore=482
+ malwarescore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311100075
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,50 +86,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 10/11/2023 10:03, Can Guo wrote:
-> Hi Neil,
+
+On 11/10/2023 4:53 PM, Jie Luo wrote:
 > 
-> On 11/10/2023 4:47 PM, neil.armstrong@linaro.org wrote:
->> Hi,
+> 
+> On 11/9/2023 5:16 PM, Maxime Chevallier wrote:
+>> Hello,
 >>
->> On 07/11/2023 05:46, Can Guo wrote:
->>> From: Can Guo <quic_cang@quicinc.com>
+>> On Thu, 9 Nov 2023 16:32:36 +0800
+>> Jie Luo <quic_luoj@quicinc.com> wrote:
+>>
+>> [...]
+>>
+>>>> What I understand from this is that this PHY can be used either as a
+>>>> switch, in which case port 4 would be connected to the host interface
+>>>> at up to 2.5G, or as a quad-phy, but since it uses QUSGMII the link
+>>>> speed would be limited to 1G per-port, is that correct ?
 >>>
->>> On SM8550, two sets of UFS PHY settings are provided, one set is to support
->>> HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
->>> settings are programming different values to different registers, mixing
->>> the two sets and/or overwriting one set with another set is definitely not
->>> blessed by UFS PHY designers. In order to add HS-G5 support for SM8550, we
->>> need to split the two sets into their dedicated tables, and leave only the
->>> common settings in the .tlbs. To have the PHY programmed with the correct
->>> set of PHY settings, the submode passed to PHY driver must be either HS-G4
->>> or HS-G5.
+>>> When the PHY works on the interface mode QUSGMII for quad-phy, all 4
+>>> PHYs can support to the max link speed 2.5G, actually the PHY can
+>>> support to max link speed 2.5G for all supported interface modes
+>>> including qusgmii and sgmii.
 >>
->> I guess I'll need to rebase my SM8650 UFS PHY driver to support both G4 and G5 modes
->> at some point ?
+>> I'm a bit confused then, as the USGMII spec says that Quad USGMII really
+>> is for quad 10/100/1000 speeds, using 10b/8b encoding.
+>>
+>> Aren't you using the USXGMII mode instead, which can convey 4 x 2.5Gbps
+>>   with 66b/64b encoding ?
+>>
+>> Thanks,
+>>
+>> Maxime
 > 
+> Hi Maxime,
+> Yes, for quad PHY mode, it is using 66b/64 encoding.
 > 
-> Thank for reaching out. Yes, please.
+> it seems that PHY_INTERFACE_MODE_USXGMII is for single port,
+> so i take the interface name PHY_INTERFACE_MODE_QUSGMII for
+> quad PHYs here.
 > 
-> I can help review the PHY settings.
-
-Ok I'll try rebasing on this serie and add G5 support.
-
-> 
-> BTW, are you enabling MCQ (by adding MCQ related DT) at the same time?
-
-I tested MCQ but it triggers the same issues we have with suspend/resume on SM8550 & SM8650,
-and the bindings are not present of the UFS qcom node.
-
-Neil
-
+> can we apply PHY_INTERFACE_MODE_USXGMII to quad PHYs in this
+> case(qca8084 quad PHY mode)?
 > 
 > Thanks,
-> Can Guo.
-> 
->>
->> Neil
->>
+> Jie.
 
+one more thing, if we use the PHY_INTERFACE_MODE_USXGMII for
+the quad PHY here, the MAC serdes can't distinguish the actual
+mode PHY_INTERFACE_MODE_USXGMII and 10G-QXGMII(qca8084 quad phy mode),
+the MAC serdes has the different configurations for usxgmii(10g single 
+port) and qxsgmii(quad PHY).
