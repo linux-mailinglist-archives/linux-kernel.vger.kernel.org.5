@@ -2,165 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1227E8050
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88DB7E7FDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344832AbjKJSJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:09:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S235156AbjKJSAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:00:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbjKJSAJ (ORCPT
+        with ESMTP id S235332AbjKJR7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:00:09 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F737EC3
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:52:16 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5099184f8a3so1302441e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:52:16 -0800 (PST)
+        Fri, 10 Nov 2023 12:59:20 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2E67ABD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 22:42:51 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-407da05f05aso11580735e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 22:42:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699599134; x=1700203934; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ya35gQLbH0OD06LsUVIlkA9NvLzAOYIwP2xIsPJPE5Y=;
-        b=L8ZzBJqOlp0z2974llPTZEowtbRbwp0P1ulzHR3kubWMeyUhgVGrXt5JHHaQtEMKpL
-         SDBnGeWio+p5Q9tVobQqB8CbPzIMrZYFOVNPskJU3kc+u6rD5sZmDH3FgSXC5JvYHXM6
-         FsPJb7PUeW6gB58q+WFPerPNEkmtVXDZ7IvN8=
+        d=sifive.com; s=google; t=1699598569; x=1700203369; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/6sAETdwuHDStPNydylggHJXqBMcNQvpufLInsKoFd0=;
+        b=LFG13Qvh4C5WW4CBQo4D75kx911DJGmK6FkC37kGv9jb/2QAO4XJLiBciNE/De3IVd
+         5BGQP2GzOCdULhLQvKw0rbZNLhSzPLvaAG53+xUqTRz+xPfkw6FZEVrX/7m1svpwvuD+
+         haTA8cIa+pXVKFH8BtWi86oZjx6WQl7LOAZBVp5830/oSAzi9EAjJ1yq3Ck+e4Vo+fdX
+         a66OiYkTi9ajVllAYfAyhSo9pZ5ly10it5L8q7muhzdtChCqJ2nugNIbRl23W1Ol83Em
+         s/vMRvgrYQvc0T46DDHcKiPyX/rHkS72mtAJGupeUG2eA/hQD9s6G4nmo7KKU7cpJi8n
+         xztQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699599134; x=1700203934;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ya35gQLbH0OD06LsUVIlkA9NvLzAOYIwP2xIsPJPE5Y=;
-        b=WLJ1SVaedCW5CX1LRbcfh+mTozpBrMFb6eKCeQu1YVj5FduFZ+71zByk+pj+ySHpaE
-         WPM+9cxQp6k95+lZW5xazxbOL5u+zTsCjmSHyOTOHDTUOiZoRBi6eLpojQHCnYQwtssT
-         IFoIS4JNddy49gYy8tNTAtorPtmik6Exq2k/n6SShRAl6/hdYfjcuaNemtYgA+Hu2Ozp
-         8t5JAeAQah1lzsZuPnwJLNsialA1bt1kxz5S7Se+qPmC3Yq2yAmNebh19YFAqMeb6FUU
-         zUXVIdxxM6Yx4C7LcI2zZI145w+04cA+D07Fu51W/z3pg6DTslmfPlv9mxbWOGGdL5pn
-         BJEQ==
-X-Gm-Message-State: AOJu0YzXjsoHoitBuhYLpdpR/6xq/A8EABR/YcChnmGhSkLNA6f60znN
-        PY+yIfpsXdYOLRSj7pKyxquZM1dLHwhm73k82nPoTjmk7Fk1Bj6O
-X-Google-Smtp-Source: AGHT+IGNIclidNAlX0bKuPEoO8+P0utqB9UWfIj7BHmAgCgipVSJkQHDhkEHEBzr+YUc1On/0f+M/uFn2Xfgq20iyX0=
-X-Received: by 2002:a50:d65c:0:b0:53d:eca8:8775 with SMTP id
- c28-20020a50d65c000000b0053deca88775mr6077048edj.26.1699592222329; Thu, 09
- Nov 2023 20:57:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699598569; x=1700203369;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/6sAETdwuHDStPNydylggHJXqBMcNQvpufLInsKoFd0=;
+        b=bMD374ZFOU1hQg75+8RDU/6HWcwenSk7yEjgsRFT7tmvsKKepLF67kGjo6oyNfNMWF
+         7GtpKw+0MA7AVkgoK+vyII+BOWqAAHsVqWU7y6KLo0HG04DvB+mQgEuzJO46r+3EGvCl
+         oRyH/HPv0G+maLf26cp2+R2Qto3EfLBnf7haVuH84XQ4Gy1XoZBFB0awjkuNnDgiHHHd
+         pB3/jVcWOYpOP/v0xcgRERBluTSAp79Eu36z95Psl99qdrCKkRPTxoqe9pr+DfOh7s+H
+         fYjVHhUwEhqlxwcq19U7Ay66dglN+8UHhgmkGHgdusScQZe718+OxhAL7TSvKitnDRWx
+         3WYQ==
+X-Gm-Message-State: AOJu0YzAnn7+E26hn3t7Qahx3U5zGJI7KLeSMOASbZzyTkMdyk8AMYVh
+        H0ayj6CRJNZphcI4tyXpjzQpKS5SuPILVZzVTTjX7exMlEz7IWMYukc=
+X-Google-Smtp-Source: AGHT+IFiskVXU4f6KHS4fu76MT4C8NU0DvvVemixeUs0gO7+UD6OZvL9Om2hT/7BdlRp17/BfrmrUlL9CXx9Ip2tQFo=
+X-Received: by 2002:a2e:98c7:0:b0:2c6:f3fd:7f0 with SMTP id
+ s7-20020a2e98c7000000b002c6f3fd07f0mr5711888ljj.19.1699592304043; Thu, 09 Nov
+ 2023 20:58:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20231110002340.3612515-1-alexey.pakhunov@spacex.com> <20231110002340.3612515-2-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231110002340.3612515-2-alexey.pakhunov@spacex.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Thu, 9 Nov 2023 20:56:51 -0800
-Message-ID: <CACKFLinOyTgH9STGbFc89sr6eqEiFeWWDvD4DurJjq3_-7+y+A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] tg3: Increment tx_dropped in tg3_tso_bug()
-To:     alexey.pakhunov@spacex.com
-Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        siva.kallam@broadcom.com, prashant@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b053230609c6c2af"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231025183644.8735-1-jerry.shih@sifive.com> <20231025183644.8735-7-jerry.shih@sifive.com>
+ <20231102051639.GF1498@sol.localdomain> <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
+ <20231109071623.GB1245@sol.localdomain>
+In-Reply-To: <20231109071623.GB1245@sol.localdomain>
+From:   Andy Chiu <andy.chiu@sifive.com>
+Date:   Fri, 10 Nov 2023 12:58:12 +0800
+Message-ID: <CABgGipXnGVB770ZA=60rD-6Hi5Fv_wh3tST+G+VFbTmMYzz0Mw@mail.gmail.com>
+Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS implementations
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Jerry Shih <jerry.shih@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, greentime.hu@sifive.com,
+        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
+        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
+        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b053230609c6c2af
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Hi Eric,
 
-On Thu, Nov 9, 2023 at 4:24=E2=80=AFPM <alexey.pakhunov@spacex.com> wrote:
+On Thu, Nov 9, 2023 at 3:16=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> w=
+rote:
 >
-> From: Alex Pakhunov <alexey.pakhunov@spacex.com>
+> On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
+> > On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
+> > > On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
+> > >> +static int ecb_encrypt(struct skcipher_request *req)
+> > >> +{
+> > >> +  struct crypto_skcipher *tfm =3D crypto_skcipher_reqtfm(req);
+> > >> +  const struct riscv64_aes_ctx *ctx =3D crypto_skcipher_ctx(tfm);
+> > >> +  struct skcipher_walk walk;
+> > >> +  unsigned int nbytes;
+> > >> +  int err;
+> > >> +
+> > >> +  /* If we have error here, the `nbytes` will be zero. */
+> > >> +  err =3D skcipher_walk_virt(&walk, req, false);
+> > >> +  while ((nbytes =3D walk.nbytes)) {
+> > >> +          kernel_vector_begin();
+> > >> +          rv64i_zvkned_ecb_encrypt(walk.src.virt.addr, walk.dst.vir=
+t.addr,
+> > >> +                                   nbytes & AES_BLOCK_VALID_SIZE_MA=
+SK,
+> > >> +                                   &ctx->key);
+> > >> +          kernel_vector_end();
+> > >> +          err =3D skcipher_walk_done(
+> > >> +                  &walk, nbytes & AES_BLOCK_REMAINING_SIZE_MASK);
+> > >> +  }
+> > >> +
+> > >> +  return err;
+> > >> +}
+> > >
+> > > There's no fallback for !crypto_simd_usable() here.  I really like it=
+ this way.
+> > > However, for it to work (for skciphers and aeads), RISC-V needs to al=
+low the
+> > > vector registers to be used in softirq context.  Is that already the =
+case?
+> >
+> > The kernel-mode-vector could be enabled in softirq, but we don't have n=
+esting
+> > vector contexts. Will we have the case that kernel needs to jump to sof=
+tirq for
+> > encryptions during the regular crypto function? If yes, we need to have=
+ fallbacks
+> > for all algorithms.
 >
-> tg3_tso_bug() drops a packet if it cannot be segmented for any reason.
-> The number of discarded frames should be incremented accordingly.
+> Are you asking what happens if a softirq is taken while the CPU is betwee=
+n
+> kernel_vector_begin() and kernel_vector_end()?  I think that needs to be
+> prevented by making kernel_vector_begin() and kernel_vector_end() disable=
+ and
+> re-enable softirqs, like what kernel_neon_begin() and kernel_neon_end() d=
+o on
+> arm64.  Refer to commit 13150149aa6ded which implemented that behavior on=
+ arm64.
+
+Yes, if making Vector available to softirq context is a must, then it
+is reasonable to call local_bh_disable() in kernel_vector_begin().
+However, softirq would not be the only user for Vector and disabling
+it may cause extra latencies. Meanwhile, simply disabling bh in
+kernel_vector_begin() will conflict with the patch[1] that takes an
+approach to run Preemptible Vector. Though it is not clear yet on
+whether we should run Vector without turning off preemption, I have
+tested running preemptible Vector and observed some latency
+improvements without sacrificing throughput. We will have a discussion
+on LPC2023[2] and it'd be great if you could join or continue to
+discuss it here.
+
+Approaches can be done such as nesting, if running Vector in softirq
+is required. Since it requires extra save/restore on nesting, I think
+we should run some tests to get more performance (latency/throughput)
+figure let the result decide the final direction. For example, we
+could run Vector in either nesting with preempt-V and  non-nesting
+without preempt-V and compare the following performance catachristics:
+ - System-wide latency impact
+ - Latency and throughput of softirq-Vector itself
+
 >
-> Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-> Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
+> - Eric
 
-Thanks.
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+ - [1] https://lore.kernel.org/all/20231019154552.23351-6-andy.chiu@sifive.=
+com/
+ - [2] https://lpc.events/event/17/contributions/1474/
 
---000000000000b053230609c6c2af
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOJdBDTGK7zYgvlmeacSHEwRyeU3AO+l
-jLH5zjeGNwPOMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEx
-MDA2NTIxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQASQPKCDNEod/Eth1au2b/xwcNCh4OxulFtaK70s9yahNls9hLA
-SPi7xqrklzVALJO+r6BcDAc1sMuUT+ANwoe+kCQMdekoXzxeBsOEXa4GXlQ6aWRUIg2CxgWAXOdX
-B6OYcMJY7vn+0K8Ae8nnfun0weOs+/Pg4juqOKzL9yT8GqaAthS/zVPD+VZ47LlZ2q0jRnyNjMBN
-wdYPRjAqVvrrxDaRAa9Lyrq168IqG6T5SZE6rr0QTN9HA1O+6nxR1k+hukuxOcTK/GJM1ystTLfW
-eqlazJkfjJjdcaiNBMk/sQcElkaD310ZK1kDs7zHdp2L6hQRqY6Hgv5K1QeyIy0u
---000000000000b053230609c6c2af--
+Regard,
+Andy
