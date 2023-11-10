@@ -2,186 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A4E7E75E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E0F7E75EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 01:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345363AbjKJA0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Nov 2023 19:26:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S1345462AbjKJA36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Nov 2023 19:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjKJA0D (ORCPT
+        with ESMTP id S229581AbjKJA35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Nov 2023 19:26:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A1A199E
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 16:26:01 -0800 (PST)
+        Thu, 9 Nov 2023 19:29:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A0A2D7C;
+        Thu,  9 Nov 2023 16:29:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699575961; x=1731111961;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=lomnTx7H6owC/l/yhJve0BjwYQf6KNddh3ixHN8le78=;
-  b=NrO3tPpqm+pMhgfktJHrg1YDPEkTis8P8A5HoF3nkAedWZlVnS2cCJ5F
-   yEjgy67/ZPDgy8ZAnk6nQt00QZirM9yWRV1cxfBEr/9W7QfnqNbDgaQBx
-   d2k2oY62HsDzFZQlHlwrP0niz5fXeq3m4wfNlZw1CBca3p6Q5UMhvtz9o
-   0nVa6FHCr/D8c3dQxkQpOgOv9V1fkpWOVX1chZtM//TkvcPR68wUFeUZe
-   VYwDDnxFE55UW0qpy4Z4y8K+b3BSlJeK9b8VcSE494I5XkQZDIEyh12yW
-   XI5F1iiUQxwj5G2NDxo4QiCPxGUytb1lJgqdp00UIsXJxIpNqjYxVOp5l
+  t=1699576194; x=1731112194;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RXQEk8DTnU62l10vBMRLP0Yzm/Zzrw5CoP6dtFdQlqY=;
+  b=cDjwMwSq0bd4++enIL+e4q1XVoVh3humWpsqE73mR0JqcfCbGX25DwQS
+   ak8Rf7k0yz//07jWtpXsGwn9D1g+2XgOFlE/TKqcmqmBnToIr2B2jLmK6
+   Vs/vhh0TGHI9hamtE0YAbm/1aMmaoc7KJ14tLaLEKbwEADEMW1P0S4HYW
+   3FCCw8+zF5Srg601I7zqX50OhtRWJCoCyQ6UUjVm3YoT65iejrBeXJdxc
+   FuC22ase8Wh8wlrKVbTD51AmH1QL6fUXg9W1+103HOwhnMUclFjCOtaoy
+   MpMwHpvYjgIphGHNgJfJaJjorv3IwQINxgY26w4ghGMVFrvl64ggiuqIt
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="389911619"
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="369437727"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="389911619"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:26:01 -0800
+   d="scan'208";a="369437727"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:29:54 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="763596481"
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="792716398"
 X-IronPort-AV: E=Sophos;i="6.03,290,1694761200"; 
-   d="scan'208";a="763596481"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 09 Nov 2023 16:25:59 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1FLR-0009IE-1l;
-        Fri, 10 Nov 2023 00:25:57 +0000
-Date:   Fri, 10 Nov 2023 08:24:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Felipe Balbi <felipe.balbi@linux.intel.com>
-Subject: drivers/usb/gadget/function/f_fs.c:2857:32: sparse: sparse:
- incorrect type in assignment (different base types)
-Message-ID: <202311100753.AFPzkLIa-lkp@intel.com>
+   d="scan'208";a="792716398"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 16:29:54 -0800
+Date:   Thu, 9 Nov 2023 16:29:53 -0800
+From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+        Jim Mattson <jmattson@google.com>, isaku.yamahata@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>
+Subject: Re: KVM: X86: Make bus clock frequency for vapic timer (bus lock ->
+ bus clock) (was Re: [PATCH 0/2] KVM: X86: Make bus lock frequency for vapic
+ timer) configurable
+Message-ID: <20231110002953.GB1102144@ls.amr.corp.intel.com>
+References: <cover.1699383993.git.isaku.yamahata@intel.com>
+ <20231107192933.GA1102144@ls.amr.corp.intel.com>
+ <CALMp9eR8Jnn0g0XBpTKTfKKOtRmFwAWuLAKcozuOs6KAGZ6MQQ@mail.gmail.com>
+ <20231108235456.GB1132821@ls.amr.corp.intel.com>
+ <ZU0BASXWcck85r90@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <ZU0BASXWcck85r90@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc986ab839c844e78a2333a02e55f02c9e57935
-commit: bdcc03cef0fd8abc6eaeec6ac47e54ae8f8c625f usb: gadget: f_fs: preserve wMaxPacketSize across usb_ep_autoconfig() call
-date:   4 years, 9 months ago
-config: i386-randconfig-062-20230912 (https://download.01.org/0day-ci/archive/20231110/202311100753.AFPzkLIa-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311100753.AFPzkLIa-lkp@intel.com/reproduce)
+On Thu, Nov 09, 2023 at 07:55:45AM -0800,
+Sean Christopherson <seanjc@google.com> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311100753.AFPzkLIa-lkp@intel.com/
+> On Wed, Nov 08, 2023, Isaku Yamahata wrote:
+> > On Tue, Nov 07, 2023 at 12:03:35PM -0800, Jim Mattson <jmattson@google.com> wrote:
+> > > I think I know the answer, but do you have any tests for this new feature?
+> > 
+> > If you mean kvm kselftest, no.
+> > I have
+> > - TDX patched qemu
+> > - kvm-unit-tests: test_apic_timer_one_shot() @ kvm-unit-tests/x86/apic.c
+> >   TDX version is found at https://github.com/intel/kvm-unit-tests-tdx
+> >   We're planning to upstream the changes for TDX
+> > 
+> > How far do we want to go?
+> > - Run kvm-unit-tests with TDX. What I have right now.
+> > - kvm-unit-tests: extend qemu for default VM case and update
+> >   test_apic_timer_one_host()
+> 
+> Hrm, I'm not sure that we can do a whole lot for test_apic_timer_one_shot().  Or
+> rather, I'm not sure it's worth the effort to try and add coverage beyond what's
+> already there.
+> 
+> As for TDX, *if* we extend KUT, please don't make it depend on TDX.  Very few people
+> have access to TDX platforms and anything CoCo is pretty much guaranteed to be harder
+> to debug.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/usb/gadget/function/f_fs.c:2857:32: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] wMaxPacketSize @@     got restricted __le16 [usertype] wMaxPacketSize @@
-   drivers/usb/gadget/function/f_fs.c:2857:32: sparse:     expected unsigned short [usertype] wMaxPacketSize
-   drivers/usb/gadget/function/f_fs.c:2857:32: sparse:     got restricted __le16 [usertype] wMaxPacketSize
->> drivers/usb/gadget/function/f_fs.c:2882:36: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] wMaxPacketSize @@     got unsigned short [usertype] wMaxPacketSize @@
-   drivers/usb/gadget/function/f_fs.c:2882:36: sparse:     expected restricted __le16 [usertype] wMaxPacketSize
-   drivers/usb/gadget/function/f_fs.c:2882:36: sparse:     got unsigned short [usertype] wMaxPacketSize
+It made the test cases work with TDX + UEFI bios by adjusting command line to
+invoke qemu.  And skip unsuitable tests.
+Maybe we can generalize the way to twist qemu command line.
 
-vim +2857 drivers/usb/gadget/function/f_fs.c
 
-  2788	
-  2789	static int __ffs_func_bind_do_descs(enum ffs_entity_type type, u8 *valuep,
-  2790					    struct usb_descriptor_header *desc,
-  2791					    void *priv)
-  2792	{
-  2793		struct usb_endpoint_descriptor *ds = (void *)desc;
-  2794		struct ffs_function *func = priv;
-  2795		struct ffs_ep *ffs_ep;
-  2796		unsigned ep_desc_id;
-  2797		int idx;
-  2798		static const char *speed_names[] = { "full", "high", "super" };
-  2799	
-  2800		if (type != FFS_DESCRIPTOR)
-  2801			return 0;
-  2802	
-  2803		/*
-  2804		 * If ss_descriptors is not NULL, we are reading super speed
-  2805		 * descriptors; if hs_descriptors is not NULL, we are reading high
-  2806		 * speed descriptors; otherwise, we are reading full speed
-  2807		 * descriptors.
-  2808		 */
-  2809		if (func->function.ss_descriptors) {
-  2810			ep_desc_id = 2;
-  2811			func->function.ss_descriptors[(long)valuep] = desc;
-  2812		} else if (func->function.hs_descriptors) {
-  2813			ep_desc_id = 1;
-  2814			func->function.hs_descriptors[(long)valuep] = desc;
-  2815		} else {
-  2816			ep_desc_id = 0;
-  2817			func->function.fs_descriptors[(long)valuep]    = desc;
-  2818		}
-  2819	
-  2820		if (!desc || desc->bDescriptorType != USB_DT_ENDPOINT)
-  2821			return 0;
-  2822	
-  2823		idx = ffs_ep_addr2idx(func->ffs, ds->bEndpointAddress) - 1;
-  2824		if (idx < 0)
-  2825			return idx;
-  2826	
-  2827		ffs_ep = func->eps + idx;
-  2828	
-  2829		if (unlikely(ffs_ep->descs[ep_desc_id])) {
-  2830			pr_err("two %sspeed descriptors for EP %d\n",
-  2831				  speed_names[ep_desc_id],
-  2832				  ds->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
-  2833			return -EINVAL;
-  2834		}
-  2835		ffs_ep->descs[ep_desc_id] = ds;
-  2836	
-  2837		ffs_dump_mem(": Original  ep desc", ds, ds->bLength);
-  2838		if (ffs_ep->ep) {
-  2839			ds->bEndpointAddress = ffs_ep->descs[0]->bEndpointAddress;
-  2840			if (!ds->wMaxPacketSize)
-  2841				ds->wMaxPacketSize = ffs_ep->descs[0]->wMaxPacketSize;
-  2842		} else {
-  2843			struct usb_request *req;
-  2844			struct usb_ep *ep;
-  2845			u8 bEndpointAddress;
-  2846			u16 wMaxPacketSize;
-  2847	
-  2848			/*
-  2849			 * We back up bEndpointAddress because autoconfig overwrites
-  2850			 * it with physical endpoint address.
-  2851			 */
-  2852			bEndpointAddress = ds->bEndpointAddress;
-  2853			/*
-  2854			 * We back up wMaxPacketSize because autoconfig treats
-  2855			 * endpoint descriptors as if they were full speed.
-  2856			 */
-> 2857			wMaxPacketSize = ds->wMaxPacketSize;
-  2858			pr_vdebug("autoconfig\n");
-  2859			ep = usb_ep_autoconfig(func->gadget, ds);
-  2860			if (unlikely(!ep))
-  2861				return -ENOTSUPP;
-  2862			ep->driver_data = func->eps + idx;
-  2863	
-  2864			req = usb_ep_alloc_request(ep, GFP_KERNEL);
-  2865			if (unlikely(!req))
-  2866				return -ENOMEM;
-  2867	
-  2868			ffs_ep->ep  = ep;
-  2869			ffs_ep->req = req;
-  2870			func->eps_revmap[ds->bEndpointAddress &
-  2871					 USB_ENDPOINT_NUMBER_MASK] = idx + 1;
-  2872			/*
-  2873			 * If we use virtual address mapping, we restore
-  2874			 * original bEndpointAddress value.
-  2875			 */
-  2876			if (func->ffs->user_flags & FUNCTIONFS_VIRTUAL_ADDR)
-  2877				ds->bEndpointAddress = bEndpointAddress;
-  2878			/*
-  2879			 * Restore wMaxPacketSize which was potentially
-  2880			 * overwritten by autoconfig.
-  2881			 */
-> 2882			ds->wMaxPacketSize = wMaxPacketSize;
-  2883		}
-  2884		ffs_dump_mem(": Rewritten ep desc", ds, ds->bLength);
-  2885	
-  2886		return 0;
-  2887	}
-  2888	
+> > - kselftest
+> >   Right now kvm kselftest doesn't have test cases even for in-kernel IRQCHIP
+> >   creation.
+> 
+> Selftests always create an in-kernel APIC.  And I think selftests are perfectly
+> suited to complement the coverage provided by KUT.  Specifically, the failure
+> scenario for this is that KVM emulates at 1Ghz whereas TDX advertises 25Mhz, i.e.
+> the test case we want is to verify that the APIC timer doesn't expire early.
+> 
+> There's no need for any APIC infrastructure, e.g. a selftest doesn't even need to
+> handle an interrupt.  Get the TSC frequency from KVM, program up an arbitrary APIC
+> bus clock frequency, set TMICT such that it expires waaaay in the future, and then
+> verify that the APIC timer counts reasonably close to the programmed frequency.
+> E.g. if the test sets the bus clock to 25Mhz, the "drift" due to KVM counting at
+> 1Ghz should be super obvious.
 
+Oh, only check the register value without interrupt. Good idea.  Let me give it
+a try.
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
