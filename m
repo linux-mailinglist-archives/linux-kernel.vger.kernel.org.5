@@ -2,148 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C877E81A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A477E80DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346403AbjKJSaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
+        id S1345770AbjKJSTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346091AbjKJS2H (ORCPT
+        with ESMTP id S1345013AbjKJSP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:28:07 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B539CEB;
-        Fri, 10 Nov 2023 06:51:13 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1r1Sqf-0006vh-2c;
-        Fri, 10 Nov 2023 14:51:05 +0000
-Date:   Fri, 10 Nov 2023 14:51:00 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: watchdog: mediatek,mtk-wdt: add MT7988
- watchdog and toprgu
-Message-ID: <ZU5DVNOmtyFwUTdC@makrotopia.org>
-References: <6912f6f406bc45674020681184f3eeca2f2cb63f.1699576174.git.daniel@makrotopia.org>
- <2678cb48-1d2b-47bc-9272-06d9aa140c58@collabora.com>
- <ZU47hV1i66WN8nZJ@makrotopia.org>
- <d7b72b3e-c8f4-4675-ae62-26f5ae576f0a@linaro.org>
- <ZU5A59KO8Y_Q97IG@makrotopia.org>
- <a56cfe76-ab03-4187-b6f1-04a5c3414e64@linaro.org>
+        Fri, 10 Nov 2023 13:15:26 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E28E39CF0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:29 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso3497933a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:51:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1699627888; x=1700232688; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSMR8dxyjzyEm0qfqsXvPIA/2B69sE2CBTnv1SPmJOY=;
+        b=O5LYlaWQNptiwrEMWAJMYqiOZ5YcD2l75FGzLcaJQqNZnQJcqGl8Gy6GsZ1/+crFCA
+         j6L99KOgCx85qegsy/LzdB9UsXHBt7AAjgcbJYp6HKKjxuqL4uaDCYFIt6vxAQtkS1FN
+         Ilh0HMwUf+HJJcXrSHrt74lL/swTr4SWFQZCJ/xTamZ8AzecPkS1+aAzv3CcQDJwiIav
+         KCbn12BmiInLfYQaBGcKgYt7yilkHEJq9W62DkIAuIuWZ2SHXLMyOLBC7vM6zb15iW3x
+         okwo06lG6CNvUT5WUXMzRdYGNvwiKeVxzLUtaPMExXGnf+gZ41wEx0BKgrOawbV9gEvx
+         fqww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699627888; x=1700232688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xSMR8dxyjzyEm0qfqsXvPIA/2B69sE2CBTnv1SPmJOY=;
+        b=mnEXVuuGlOxq3FwcJI4QPwcdCftOemXlz5QQmZtQUiYyBiwjZOs0BAg/00gHjN5RUW
+         Q2xT84mBco3ue4vpnVtArKVv56XRnNpY5Hexogm9GOauw/ow7x2VDF1RSUVPT+M3hzH7
+         uQ6B5FnfXlKmOA4U6Vo5L3X6tw7Iqub8mlYCGsYY+/IQtUmZ7djwoItftHPhdqcJs5Nu
+         rd7Kak5Boq+HxA6rE40+ebkgtlhpcNL3ra3/L8jCJTsMbHZATIxPI82R+8oJ1hET7/5t
+         DCvRYOfbrqFvwaLBXqxAzD/cleJ1sCgSU5a8jrXb6oleX05hQPN3NWvHvv2mc+ZBcC3N
+         NMBQ==
+X-Gm-Message-State: AOJu0Yzw9683q/n/4Zb3GtQ1LO4A7wV4MmwXTl/8hQ7E8x6m8UaKLGbZ
+        IHp/h/sWejqTC6A+K4PyWNqUa26LiHG/OGmM3hY2
+X-Google-Smtp-Source: AGHT+IEBJy7pW09ZpWJE+X5ayh6GPav+IfFA4hHpT9tyAqBCmyass9F8ujOQ0E+xfVqLvEP2dNCIfJkRZcEalLlgt+E=
+X-Received: by 2002:a50:d741:0:b0:540:2ece:79 with SMTP id i1-20020a50d741000000b005402ece0079mr7759670edj.10.1699627888118;
+ Fri, 10 Nov 2023 06:51:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a56cfe76-ab03-4187-b6f1-04a5c3414e64@linaro.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-7-lb@semihalf.com>
+ <20231106194500.123a517e@gandalf.local.home>
+In-Reply-To: <20231106194500.123a517e@gandalf.local.home>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Fri, 10 Nov 2023 15:51:17 +0100
+Message-ID: <CAK8ByeKz1uxFqTPHxkj0+1fiU-gFN4q+_rGHWmE2U-rSY=sRdg@mail.gmail.com>
+Subject: Re: [PATCH v1 06/12] trace: use TP_printk_no_nl in dyndbg:prdbg,devdbg
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Jim Cromie <jim.cromie@gmail.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 03:46:14PM +0100, Krzysztof Kozlowski wrote:
-> On 10/11/2023 15:40, Daniel Golle wrote:
-> > On Fri, Nov 10, 2023 at 03:20:53PM +0100, Krzysztof Kozlowski wrote:
-> >> On 10/11/2023 15:17, Daniel Golle wrote:
-> >>> On Fri, Nov 10, 2023 at 12:56:18PM +0100, AngeloGioacchino Del Regno wrote:
-> >>>> Il 10/11/23 01:30, Daniel Golle ha scritto:
-> >>>>> Add binding description for mediatek,mt7988-wdt.
-> >>>>>
-> >>>>> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> >>>>> ---
-> >>>>>   .../bindings/watchdog/mediatek,mtk-wdt.yaml          |  1 +
-> >>>>>   include/dt-bindings/reset/mediatek,mt7988-resets.h   | 12 ++++++++++++
-> >>>>>   2 files changed, 13 insertions(+)
-> >>>>>   create mode 100644 include/dt-bindings/reset/mediatek,mt7988-resets.h
-> >>>>>
-> >>>>> diff --git a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
-> >>>>> index cc502838bc398..8d2520241e37f 100644
-> >>>>> --- a/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
-> >>>>> +++ b/Documentation/devicetree/bindings/watchdog/mediatek,mtk-wdt.yaml
-> >>>>> @@ -25,6 +25,7 @@ properties:
-> >>>>>             - mediatek,mt6735-wdt
-> >>>>>             - mediatek,mt6795-wdt
-> >>>>>             - mediatek,mt7986-wdt
-> >>>>> +          - mediatek,mt7988-wdt
-> >>>>>             - mediatek,mt8183-wdt
-> >>>>>             - mediatek,mt8186-wdt
-> >>>>>             - mediatek,mt8188-wdt
-> >>>>> diff --git a/include/dt-bindings/reset/mediatek,mt7988-resets.h b/include/dt-bindings/reset/mediatek,mt7988-resets.h
-> >>>>> new file mode 100644
-> >>>>> index 0000000000000..fa7c937505e08
-> >>>>> --- /dev/null
-> >>>>> +++ b/include/dt-bindings/reset/mediatek,mt7988-resets.h
-> >>>>> @@ -0,0 +1,12 @@
-> >>>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-> >>>>> +
-> >>>>> +/* TOPRGU resets */
-> >>>>
-> >>>> The first reset is zero, the second reset is one.
-> >>>>
-> >>>> Where's the zero'th reset? :-)
-> >>>
-> >>> Currently the reset numbers represent the corresponding bit positions in
-> >>> the toprgu register, as this is how the mtk-wdt driver is organized.
-> >>>
-> >>> So there is probably something at bit 0, and also at bit 3~11 and
-> >>> maybe also 17~23, but it's unknown and may be added later once known
-> >>> and/or needed.
-> >>
-> >> There is no need to put register bits, which are not used by the driver,
-> >> in the bindings.
-> > 
-> > There aren't. That's why there isn't a zero'th reset (and also not 3~11, 17~24).
-> > 
-> > Or should the driver be reorganized to provide a mapping of logical to
-> > physical resets, and then have only the needed once present and start
-> > counting logical resets from 0? This is doable, of course, but it's a
-> > bit of effort just for the aesthetical goal of starting to count from
-> > zero and continous in header file.
-> > 
-> > And, of course, chances are that other currently still unused bits
-> > will be needed at a later point which then would mean having to add
-> > them in at least 2 places (header file and mapping logical<->physical)
-> > where as currently it would just mean adding a line defining it in the
-> > header file.
-> 
-> You can do it, but it's not what I wrote here. So bear with me:
-> 
-> "There is no need to put register bits in the bindings."
-> 
-> You replied "There aren't", which I don't understand in this context. I
-> can be clearer:
-> Drop this hunk.
+wt., 7 lis 2023 o 01:45 Steven Rostedt <rostedt@goodmis.org> napisa=C5=82(a=
+):
+>
+> On Fri,  3 Nov 2023 14:10:05 +0100
+> =C5=81ukasz Bartosik <lb@semihalf.com> wrote:
+>
+> > index ccc5bcb070f9..91dcdbe059c0 100644
+> > --- a/include/trace/events/dyndbg.h
+> > +++ b/include/trace/events/dyndbg.h
+> > @@ -20,20 +20,10 @@ TRACE_EVENT(prdbg,
+> >
+> >           TP_fast_assign(
+> >                       __entry->desc =3D desc;
+> > -                     /*
+> > -                      * Each trace entry is printed in a new line.
+> > -                      * If the msg finishes with '\n', cut it off
+> > -                      * to avoid blank lines in the trace.
+> > -                      */
+> > -                     if (len > 0 && (text[len - 1] =3D=3D '\n'))
+> > -                             len -=3D 1;
+> > -
+> >                       memcpy(__get_str(msg), text, len);
+> > -                     __get_str(msg)[len] =3D 0;
+> >                   ),
+> >
+> > -         TP_printk("%s.%s %s", __entry->desc->modname,
+> > -                   __entry->desc->function, __get_str(msg))
+> > +         TP_printk_no_nl("%s", __get_str(msg))
+> >  );
+> >
+>
+> Instead of adding the TP_printk_no_nl() (Which I still do not like), we
+> could add a:
+>
+>         __get_str_strip_nl(msg)
+>
+> That will do the above loop. Which will move the processing to read side
+> (slow path).
+>
+> And then we could update libtraceevent to handle that too.
+>
 
-So adding the file to include/dt-bindings/reset/ should go into a
-seperate patch? Because including it with the driver itself gave me
-a checkpath warning telling me that dt-bindings should go seperate,
-which is why I included it with the binding docs.
+Thanks Steve.
 
-> 
-> > 
-> > A quick looks at all the other headers in
-> > include/dt-binding/reset/mt*-resets.h also shows that currently all of
-> > them have unused bits and e.g. infracfg on MT7986 starts counting from
-> > 6.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+Jim, if you don't mind I will make the suggested changes ?
+
+> -- Steve
