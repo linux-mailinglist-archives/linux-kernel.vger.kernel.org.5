@@ -2,123 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10FE7E80FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41C27E81D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345936AbjKJSUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        id S1346025AbjKJSfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344438AbjKJSRU (ORCPT
+        with ESMTP id S1345132AbjKJSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:17:20 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46062AD30
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:59:19 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 45E7066073F9;
-        Fri, 10 Nov 2023 10:59:17 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699613958;
-        bh=ZwpoO39PwAcjfL9GkpofbSRYEQHZvFcfLJvO8dVtaOY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hCwmaf1/GH2BOD+QU8ObZlILAodHTzNOczSmHflRumj1efPx3yYxSSS9u67/DiPc9
-         akCQp8c8oTOmR8KC+mUyP97IXWHGAnBWXdAyB2TqgNfS5I+YUO0ix490jHP7+jz5c2
-         H+2AkWtC8sXPXWLw+FbbyF2to86qEcIqtFjO/qNOkrVZq5xsZ+GX7TVYtFtRQSN6+O
-         qdC7dMsQMct6JEA0CziZ7/54ZwAM2TtiWCQ6Sm5T78vZBA/A3AgfvN97u3kJLBlmWq
-         MFuCUM9UOE59hK9dNfyWC+XWCy9ivT0Au5UIlH8rH9uluauoeexGSdEr/4/wj5O3Z/
-         Yry6w8sobEgdg==
-Date:   Fri, 10 Nov 2023 11:59:13 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 16/26] drm/virtio: Explicitly get and put drm-shmem
- pages
-Message-ID: <20231110115913.48f5672b@collabora.com>
-In-Reply-To: <20231029230205.93277-17-dmitry.osipenko@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-17-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 10 Nov 2023 13:34:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3FF62AD34;
+        Fri, 10 Nov 2023 03:00:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699614014; x=1731150014;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MiCyv/x6x7GRWVTPYnX8fRfSIKJ4fUfhhPf+IF7d+s8=;
+  b=TPIwepSFIhgEXHpBIg3cx4ULHnxjSBbm8UtE74P6rrJGML0MItcMHtnF
+   FXWl4ppL28T1zF2vmSGDv/RebaKOk4j+JhbJAnWPf3e95/5V744whNQFo
+   o8oQT8PvIF+hWTXZjwrO8F9aoH4wY/1JmVWMbH5eophugn1wd7ASz2Y3j
+   WsCioaHzcFPKpjio8cJ6xb0OmzdGDAZOWPKcKXuI90w7/IqL5ty7F+TsR
+   5ljZ2Slyk1MhuPdT3oxt48ojWaCOrCr0eDoNKY5Q8mY5gZfKT4LWDZIrW
+   MGdlbc7gut4tbOin2tw5sSARC0ylctkPNUL4UANbolAhEHxt8cvfy7A+T
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="389029012"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="389029012"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 03:00:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="854367833"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="854367833"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Nov 2023 03:00:09 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1PF9-0009YM-36;
+        Fri, 10 Nov 2023 11:00:07 +0000
+Date:   Fri, 10 Nov 2023 18:59:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     ed.tsai@mediatek.com, ming.lei@redhat.com, hch@lst.de,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     oe-kbuild-all@lists.linux.dev, wsd_upstream@mediatek.com,
+        chun-hung.wu@mediatek.com, casper.li@mediatek.com,
+        will.shiu@mediatek.com, light.hsieh@mediatek.com,
+        Ed Tsai <ed.tsai@mediatek.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] block: limit the extract size to align queue limit
+Message-ID: <202311101853.9N398fyj-lkp@intel.com>
+References: <20231110051950.21972-1-ed.tsai@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110051950.21972-1-ed.tsai@mediatek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 02:01:55 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+Hi,
 
-> We're moving away from implicit get_pages() that is done by
-> get_pages_sgt() to simplify the refcnt handling. Drivers will have
-> to pin pages while they use sgt. VirtIO-GPU doesn't support shrinker,
-> hence pages are pinned and sgt is valid as long as pages' use-count > 0.
-> 
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+[auto build test WARNING on axboe-block/for-next]
+[also build test WARNING on hch-configfs/for-next linus/master v6.6 next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> ---
->  drivers/gpu/drm/virtio/virtgpu_object.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
-> index ee5d2a70656b..998f8b05ceb1 100644
-> --- a/drivers/gpu/drm/virtio/virtgpu_object.c
-> +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
-> @@ -67,6 +67,7 @@ void virtio_gpu_cleanup_object(struct virtio_gpu_object *bo)
->  
->  	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
->  	if (virtio_gpu_is_shmem(bo)) {
-> +		drm_gem_shmem_put_pages(&bo->base);
->  		drm_gem_shmem_free(&bo->base);
->  	} else if (virtio_gpu_is_vram(bo)) {
->  		struct virtio_gpu_object_vram *vram = to_virtio_gpu_vram(bo);
-> @@ -196,9 +197,13 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
->  		return PTR_ERR(shmem_obj);
->  	bo = gem_to_virtio_gpu_obj(&shmem_obj->base);
->  
-> +	ret = drm_gem_shmem_get_pages(shmem_obj);
-> +	if (ret)
-> +		goto err_free_gem;
-> +
->  	ret = virtio_gpu_resource_id_get(vgdev, &bo->hw_res_handle);
->  	if (ret < 0)
-> -		goto err_free_gem;
-> +		goto err_put_pages;
->  
->  	bo->dumb = params->dumb;
->  
-> @@ -243,6 +248,8 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
->  	kvfree(ents);
->  err_put_id:
->  	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
-> +err_put_pages:
-> +	drm_gem_shmem_put_pages(shmem_obj);
->  err_free_gem:
->  	drm_gem_shmem_free(shmem_obj);
->  	return ret;
+url:    https://github.com/intel-lab-lkp/linux/commits/ed-tsai-mediatek-com/block-limit-the-extract-size-to-align-queue-limit/20231110-142205
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+patch link:    https://lore.kernel.org/r/20231110051950.21972-1-ed.tsai%40mediatek.com
+patch subject: [PATCH v2] block: limit the extract size to align queue limit
+config: arc-randconfig-002-20231110 (https://download.01.org/0day-ci/archive/20231110/202311101853.9N398fyj-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101853.9N398fyj-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311101853.9N398fyj-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   block/bio.c: In function '__bio_iov_iter_get_pages':
+>> block/bio.c:1261:29: warning: suggest parentheses around '-' in operand of '&' [-Wparentheses]
+    1261 |                         max - bio->bi_iter.bi_size & (max - 1) : max;
+         |                         ~~~~^~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +1261 block/bio.c
+
+  1214	
+  1215	/**
+  1216	 * __bio_iov_iter_get_pages - pin user or kernel pages and add them to a bio
+  1217	 * @bio: bio to add pages to
+  1218	 * @iter: iov iterator describing the region to be mapped
+  1219	 *
+  1220	 * Extracts pages from *iter and appends them to @bio's bvec array.  The pages
+  1221	 * will have to be cleaned up in the way indicated by the BIO_PAGE_PINNED flag.
+  1222	 * For a multi-segment *iter, this function only adds pages from the next
+  1223	 * non-empty segment of the iov iterator.
+  1224	 */
+  1225	static int __bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+  1226	{
+  1227		iov_iter_extraction_t extraction_flags = 0;
+  1228		unsigned short nr_pages = bio->bi_max_vecs - bio->bi_vcnt;
+  1229		unsigned short entries_left = bio->bi_max_vecs - bio->bi_vcnt;
+  1230		struct block_device *bdev = bio->bi_bdev;
+  1231		struct bio_vec *bv = bio->bi_io_vec + bio->bi_vcnt;
+  1232		struct page **pages = (struct page **)bv;
+  1233		ssize_t max_extract = UINT_MAX - bio->bi_iter.bi_size;
+  1234		ssize_t size, left;
+  1235		unsigned len, i = 0;
+  1236		size_t offset;
+  1237		int ret = 0;
+  1238	
+  1239		/*
+  1240		 * Move page array up in the allocated memory for the bio vecs as far as
+  1241		 * possible so that we can start filling biovecs from the beginning
+  1242		 * without overwriting the temporary page array.
+  1243		 */
+  1244		BUILD_BUG_ON(PAGE_PTRS_PER_BVEC < 2);
+  1245		pages += entries_left * (PAGE_PTRS_PER_BVEC - 1);
+  1246	
+  1247		if (bdev && blk_queue_pci_p2pdma(bdev->bd_disk->queue))
+  1248			extraction_flags |= ITER_ALLOW_P2PDMA;
+  1249	
+  1250		/*
+  1251		 * Each segment in the iov is required to be a block size multiple.
+  1252		 * However, we may not be able to get the entire segment if it spans
+  1253		 * more pages than bi_max_vecs allows, so we have to ALIGN_DOWN the
+  1254		 * result to ensure the bio's total size is correct. The remainder of
+  1255		 * the iov data will be picked up in the next bio iteration.
+  1256		 */
+  1257		if (bdev && bio_op(bio) != REQ_OP_ZONE_APPEND) {
+  1258			unsigned int max = queue_max_bytes(bdev_get_queue(bdev));
+  1259	
+  1260			max_extract = bio->bi_iter.bi_size ?
+> 1261				max - bio->bi_iter.bi_size & (max - 1) : max;
+  1262		}
+  1263		size = iov_iter_extract_pages(iter, &pages, max_extract,
+  1264					      nr_pages, extraction_flags, &offset);
+  1265		if (unlikely(size <= 0))
+  1266			return size ? size : -EFAULT;
+  1267	
+  1268		nr_pages = DIV_ROUND_UP(offset + size, PAGE_SIZE);
+  1269	
+  1270		if (bdev) {
+  1271			size_t trim = size & (bdev_logical_block_size(bdev) - 1);
+  1272			iov_iter_revert(iter, trim);
+  1273			size -= trim;
+  1274		}
+  1275	
+  1276		if (unlikely(!size)) {
+  1277			ret = -EFAULT;
+  1278			goto out;
+  1279		}
+  1280	
+  1281		for (left = size, i = 0; left > 0; left -= len, i++) {
+  1282			struct page *page = pages[i];
+  1283	
+  1284			len = min_t(size_t, PAGE_SIZE - offset, left);
+  1285			if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+  1286				ret = bio_iov_add_zone_append_page(bio, page, len,
+  1287						offset);
+  1288				if (ret)
+  1289					break;
+  1290			} else
+  1291				bio_iov_add_page(bio, page, len, offset);
+  1292	
+  1293			offset = 0;
+  1294		}
+  1295	
+  1296		iov_iter_revert(iter, left);
+  1297	out:
+  1298		while (i < nr_pages)
+  1299			bio_release_page(bio, pages[i++]);
+  1300	
+  1301		return ret;
+  1302	}
+  1303	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
