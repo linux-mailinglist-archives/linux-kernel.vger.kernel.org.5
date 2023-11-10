@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1197E82B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277F57E8467
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346428AbjKJTYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
+        id S1346640AbjKJUmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:42:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235273AbjKJTYR (ORCPT
+        with ESMTP id S1346450AbjKJUlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:24:17 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764F8A751C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 05:23:11 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4083f613272so15772345e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 05:23:11 -0800 (PST)
+        Fri, 10 Nov 2023 15:41:47 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4519A7521
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 05:24:42 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4083f61312eso15107415e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 05:24:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699622590; x=1700227390; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699622681; x=1700227481; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BYdCghmYd1Gd+wVY9twL2PNBn7/RrEI+qPFM3x//Sis=;
-        b=l3qVCSMp87zdU4x5KtBnAEU6vxjLkYSZJeY5KDzNP8spgDTd6miSi3S/HqzzZmAWmf
-         7p4Wv0B5IHqqYohuQM6mui7D85ISY25deralQ1NL60eijtSADkeiG5D9nEb0beMcbGDE
-         Stfgdrp7BzfLGK8+qEAgEuuwnqx0rmbDKXGSo2euMXjLv5skDLnJwrMImwBsqD/u1BBf
-         MzqQ21lpeF26JpUcBisEXZjSeynGnVDUx9oq6e1D4dI2G2HZI7q37Um+fpe8YLRzeANy
-         DXLhuFR7ks6fKEQ4I+7W1Xfkj6OEVZz1voBmpTTsVS0Yw8RsGUpl20p3rIBZUnLDKHZW
-         mbJA==
+        bh=mnZfV2q0+s2CpN5/DatQthuQNf7R4Y9ktwlMu9GlmRg=;
+        b=F4xnra2iF6rJJ+g9+H5wfBVUEWN+AyKQSk3W5RKvmfYVY4MQxouhwBDYpqCvFXNUFL
+         AoPgNsOgE2KNfg4vdCR5+VqQaa3zi9pnGY1Ft7UM8zMrGlYM0GFME/VvNAUa2h1UA3yO
+         +W4wtVlh1c22XbAB8cFncy8BN1dPa6E27JWLwDcg+TgTt5I9DcnXsZAKwggoEVaYMrBJ
+         i7UUnBWwsyW/OVIsxB3qNPAUc+XCoCPtmrSyVrfhVoxHj2zYaT1Hl9x0FkTvbyoJntJn
+         0D3v5qyd4i1H6O1TcpG02/wKrPY2mS+4jDer24dfIlwI5lkkmD55yeTZ93yxCa0p4JT+
+         QMzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699622590; x=1700227390;
+        d=1e100.net; s=20230601; t=1699622681; x=1700227481;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BYdCghmYd1Gd+wVY9twL2PNBn7/RrEI+qPFM3x//Sis=;
-        b=Rz+NrFhYr7xTfO7DGMo1oaDVuSN1swWrV0GDgELUhIdPDn+IJcJEyIGi+TVw3m9bZG
-         aLJxZILpjHgn0VtOgt3b27GiuKEm3fPGeDg1rfnkie8Ui6vZoEYW2dcCQS/mRMnOJhaB
-         L7lyQKkqS1HTV4Ex0td67oyH80wUmRcP5RRsRQQDAfLD5MNfMIy6X4DForw05VBKgpiz
-         cqpABzk17VnLNCbkTSY2h9LWV3o7JdzYOn/YYRodQj5K0Vh4CR18K8E4wVi0sVLzoW9M
-         D/1T+dSBsz27jhpFxAhOgLC3iqtHAm4rh9LUfMM+0iA74g0kmxEgPEO2zJXJHftMXIa6
-         Qjlg==
-X-Gm-Message-State: AOJu0YySu9UuQDoQUEr0UpTS6PuWWClPrH+D495f7D1gbKDSiv1DBMzb
-        4LQaqEydSdDyuU/VpNvYeBN5Sg==
-X-Google-Smtp-Source: AGHT+IE95msiQt+QGvFTMOS1WPz9UddiJxhiVBF1CyYOsty0Tskrxtvc9jQfKczT52RCWQBoXMmzJQ==
-X-Received: by 2002:a05:600c:19cd:b0:409:3f53:c9c7 with SMTP id u13-20020a05600c19cd00b004093f53c9c7mr6691665wmq.35.1699622589872;
-        Fri, 10 Nov 2023 05:23:09 -0800 (PST)
+        bh=mnZfV2q0+s2CpN5/DatQthuQNf7R4Y9ktwlMu9GlmRg=;
+        b=p30aFa2cszlqyD3UDuJz6cPPyimGYU88nta/UGEBoxD1bYj9DtQ7lIU6Ih1X4MsfdI
+         NE+384uNBpXfQuWRmFK+tpJsRL9WcmpEc4U8eXIaxS0xhtcRd/Chse8lJvGG1Fehy+Fe
+         9QJ/XeMMf/KxeruEiZqh37fA32LLg/VNaVbD3G/5kzLqwEq9u+eBV796Fgu1t4PBqZ5g
+         Lm+XQFBzS0rTzQPzRNWWSwgAS1r1Nj2xDYNXq7GbjL6h6vf36vrJ6Ul7CAHNTPlv6vvZ
+         Sz3qkd64qPJ3nE0pvHdt5RbX4AReSVwaWFT3yuT2z3f9p/qTj/xuK1Uw2U2lRZaDTmbq
+         A1Yw==
+X-Gm-Message-State: AOJu0Yz10wtqECErvlddm51pyPfNjqex7j2oK/qZCw3u9aR4BtHefsLn
+        xeWxfbZKmdOc/eVdjkz1yq+UuQ==
+X-Google-Smtp-Source: AGHT+IExN1tN1zWwTXGu79ToYWmaOD8R+0nkqDdsx+Z8vmuOqz8sCII3ySxe/8NC79hrJGmcraqczA==
+X-Received: by 2002:a05:600c:4e8a:b0:408:4266:12db with SMTP id f10-20020a05600c4e8a00b00408426612dbmr7150306wmq.13.1699622681107;
+        Fri, 10 Nov 2023 05:24:41 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id 8-20020a05600c22c800b0040303a9965asm5083419wmg.40.2023.11.10.05.23.08
+        by smtp.gmail.com with ESMTPSA id 8-20020a05600c22c800b0040303a9965asm5083419wmg.40.2023.11.10.05.24.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 05:23:09 -0800 (PST)
-Message-ID: <a7497ecd-8516-4f6d-8ea6-5c2f7a5ea276@linaro.org>
-Date:   Fri, 10 Nov 2023 14:23:07 +0100
+        Fri, 10 Nov 2023 05:24:40 -0800 (PST)
+Message-ID: <8d9ec256-fbea-4711-966c-8c68d83eeb1f@linaro.org>
+Date:   Fri, 10 Nov 2023 14:24:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V6 1/4] dt-bindings: clock: add Amlogic C3 PLL clock
- controller bindings
+Subject: Re: [PATCH V6 2/4] dt-bindings: clock: add Amlogic C3 peripherals
+ clock controller bindings
 Content-Language: en-US
 To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
         linux-arm-kernel@lists.infradead.org,
@@ -71,7 +71,7 @@ Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Chuan Liu <chuan.liu@amlogic.com>
 References: <20231106085554.3237511-1-xianwei.zhao@amlogic.com>
- <20231106085554.3237511-2-xianwei.zhao@amlogic.com>
+ <20231106085554.3237511-3-xianwei.zhao@amlogic.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -117,12 +117,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231106085554.3237511-2-xianwei.zhao@amlogic.com>
+In-Reply-To: <20231106085554.3237511-3-xianwei.zhao@amlogic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,16 +131,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 06/11/2023 09:55, Xianwei Zhao wrote:
-> Add the PLL clock controller dt-bindings for Amlogic C3 SoC family.
-> 
-> Co-developed-by: Chuan Liu <chuan.liu@amlogic.com>
-> Signed-off-by: Chuan Liu <chuan.liu@amlogic.com>
-> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
-> ---
+> @@ -0,0 +1,237 @@
 
+A nit, subject: drop second/last, redundant "bindings". The
+"dt-bindings" prefix is already stating that these are bindings.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+> +/*
+> + * Copyright (c) 2023 Amlogic, Inc. All rights reserved.
+> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLOCK_AMLOGIC_C3_PERIPHERALS_CLKC_H
+> +#define _DT_BINDINGS_CLOCK_AMLOGIC_C3_PERIPHERALS_CLKC_H
+> +
+> +#define CLKID_PLL_SRC				0
+> +#define CLKID_MCLK_PLL_SRC			1
+> +#define CLKID_DDR_PLL_SRC			2
+> +#define CLKID_DDR_PHY_SRC                       3
 
+Fix the indentation. In all other patchses as well.
 
 Best regards,
 Krzysztof
