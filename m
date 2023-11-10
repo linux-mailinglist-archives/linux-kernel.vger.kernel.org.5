@@ -2,132 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1057E7E68
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93717E80AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346015AbjKJRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:44:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S1344717AbjKJSRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344461AbjKJRns (ORCPT
+        with ESMTP id S235520AbjKJSOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:43:48 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC9983DE
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 23:22:14 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2ea7cc821so956257b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Nov 2023 23:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1699600933; x=1700205733; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YGF1v/gqhKIfK3lN8tg1lEaaH/f3W7AggG6onMYyyAU=;
-        b=J27hK+MC7SB5PysUftF2ZIcAu4TZD3SaITjwHVvHk2D8+kKxH8GfZpw174cul0c6ys
-         9EocHJH7Pk4+Xe4g75O+0KxXprFd3sxABQYGYQtCpuBeKUD6kHykYgJI/ZUzBksMjpUm
-         vD0DJGI5GnMgVfQ+HHmhGaZCU8KU0h0g5tyOr6DnN8TBJpFmUq+Z5y0DpVnW7g8QVVxr
-         Ox0YIK2OK8Q03SmjVrdsstvQFFZeDGXLHkKUTaN8d81QQVCw1UYyBl4BK/SUhBychBqm
-         uxONQFGjuduZifVmisnJ6btjRbVeoV96lMzm4ZRXUAE3NqFXbMt85qkqiUn+sSev/Brw
-         bQtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699600933; x=1700205733;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YGF1v/gqhKIfK3lN8tg1lEaaH/f3W7AggG6onMYyyAU=;
-        b=kMLKeAez27tnAK/qSx5X+jX+q5klAr+LTARXrXWl36hF4i648k/OlZcORUF+SXJGDE
-         ms/7EmeCco/DkCrUSf0RbK1jNwGC9P4qlBmu84VqcNb+tNUGrVIEc5GxyYaJhm3Gl16q
-         VAKLHtQfZ58fdEzw1gSNc44MAIYXOoQH44tvFPq6zbTnUCDEHpy9Kaa/6GaNThJW8ssP
-         82gVib1zVAlmfkc9vV5pK5TNwjGCv6H6RfuJoLZF28Br5JSdAml+UgFzc9WmY5Zjg17q
-         5ZxlVwGaFCypsqJOwpBq/auHShh+VJuDoiUFnmP1Q/PzMpp88taFUp1kIgKEeuz+vTo4
-         cMGw==
-X-Gm-Message-State: AOJu0YzJA4hw8i7YwCkuYS2F3J+qEgB/4PF9+hMu6XN93OqA2zhnCzQl
-        EzJeHgKm12pcSVMtNe0IhDxHpUO7PfH2ULuQ9K4Vgw==
-X-Google-Smtp-Source: AGHT+IH9dKkq1F5Ww/wHqKo0Olzi4faKaa+VUqagiGOI3qwKWLaQqIZvl/khSG+4iZp6x2Dc6RGO1Q==
-X-Received: by 2002:a67:ef49:0:b0:452:6178:642c with SMTP id k9-20020a67ef49000000b004526178642cmr6819492vsr.1.1699588687911;
-        Thu, 09 Nov 2023 19:58:07 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0? ([2402:7500:4ce:aeef:99fc:78aa:eebe:b7e0])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001cc307bcdbdsm4303356plg.211.2023.11.09.19.58.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Nov 2023 19:58:07 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS
- implementations
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231109071623.GB1245@sol.localdomain>
-Date:   Fri, 10 Nov 2023 11:58:02 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+        Fri, 10 Nov 2023 13:14:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850FB8260;
+        Thu,  9 Nov 2023 23:11:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699600283; x=1731136283;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=CFrsyyYaC5+GirTFxIWyuSUnIgbvfSGgrSzOo8xJlhI=;
+  b=hq0RJ0Xh+cJQpi/CQZ9YvU70MztW/cMhyXPN+2VQ1LFWHE0rOsCmSEPw
+   5TfB+S1fueihwLTHWG+T1yZml2odEuoqnuj0bLdmQIlVVJliSm39i9HyB
+   sLSJZOVybHpCcf/9RkHVkZhU5w+dX13dG0Yiu/sJiObXMwsnXM6bjiX1A
+   sA8EpjMY687UvwWEtcPRLUQpD05DmgbH7wFtbIwYpGg1b6weWdgVGoRx/
+   cUk+QwE+lDeGxA4561/EHjoVKoKpj0O+NYq28bzc20LtPCvKprJpPx7V2
+   EJ4BzKzhZ9kPFQhpCLxTpOr2BvYiVD622L5xZaHmY/cK/zt5GuJJDvLKu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="3164315"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="3164315"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:02:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="1095079230"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="1095079230"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:02:01 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        "Shakeel Butt" <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        "Liu Shixin" <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, <cgroups@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <opensource.kernel@vivo.com>
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+In-Reply-To: <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com> (Huan Yang's
+        message of "Fri, 10 Nov 2023 10:44:45 +0800")
+References: <20231108065818.19932-1-link@vivo.com>
+        <ZUuV9xOZ5k7Ia_V2@tiehlicka>
+        <ccc4094a-54de-4ce4-b8f6-76ee46d8d02d@vivo.com>
+        <87msvniplj.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <1e699ff2-0841-490b-a8e7-bb87170d5604@vivo.com>
+        <ZUytB5lSwxeKkBW8@tiehlicka>
+        <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
+        <ZUy2-vrqDq7URzb6@tiehlicka>
+        <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
+        <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com>
+Date:   Fri, 10 Nov 2023 12:00:00 +0800
+Message-ID: <878r76gsvz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <659DE1CF-4F42-4935-9DFD-E127269CEC54@sifive.com>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231102051639.GF1498@sol.localdomain>
- <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
- <20231109071623.GB1245@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 9, 2023, at 15:16, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
->> On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
->>> On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
->>>> +static int ecb_encrypt(struct skcipher_request *req)
->>>> +{
->>>=20
->>> There's no fallback for !crypto_simd_usable() here.  I really like =
-it this way.
->>> However, for it to work (for skciphers and aeads), RISC-V needs to =
-allow the
->>> vector registers to be used in softirq context.  Is that already the =
-case?
->>=20
->> The kernel-mode-vector could be enabled in softirq, but we don't have =
-nesting
->> vector contexts. Will we have the case that kernel needs to jump to =
-softirq for
->> encryptions during the regular crypto function? If yes, we need to =
-have fallbacks
->> for all algorithms.
->=20
-> Are you asking what happens if a softirq is taken while the CPU is =
-between
-> kernel_vector_begin() and kernel_vector_end()?  I think that needs to =
-be
-> prevented by making kernel_vector_begin() and kernel_vector_end() =
-disable and
-> re-enable softirqs, like what kernel_neon_begin() and =
-kernel_neon_end() do on
-> arm64.  Refer to commit 13150149aa6ded which implemented that behavior =
-on arm64.
->=20
-> - Eric
+Huan Yang <link@vivo.com> writes:
 
-The current kernel-mode-vector implementation, it only calls =
-`preempt_disable()` during
-vector context. So, we will hit nesting vector context issue from =
-softirq which also use
-kernel-vector.
-https://lore.kernel.org/all/20230721112855.1006-1-andy.chiu@sifive.com/
+> =E5=9C=A8 2023/11/10 9:19, Huang, Ying =E5=86=99=E9=81=93:
+>> [Some people who received this message don't often get email from ying.h=
+uang@intel.com. Learn why this is important at https://aka.ms/LearnAboutSen=
+derIdentification ]
+>>
+>> Huan Yang <link@vivo.com> writes:
+>>
+>>> =E5=9C=A8 2023/11/9 18:39, Michal Hocko =E5=86=99=E9=81=93:
+>>>> [Some people who received this message don't often get email from mhoc=
+ko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSender=
+Identification ]
+>>>>
+>>>> On Thu 09-11-23 18:29:03, Huan Yang wrote:
+>>>>> HI Michal Hocko,
+>>>>>
+>>>>> Thanks for your suggestion.
+>>>>>
+>>>>> =E5=9C=A8 2023/11/9 17:57, Michal Hocko =E5=86=99=E9=81=93:
+>>>>>> [Some people who received this message don't often get email from mh=
+ocko@suse.com. Learn why this is important at https://aka.ms/LearnAboutSend=
+erIdentification ]
+>>>>>>
+>>>>>> On Thu 09-11-23 11:38:56, Huan Yang wrote:
+>>>>>> [...]
+>>>>>>>> If so, is it better only to reclaim private anonymous pages explic=
+itly?
+>>>>>>> Yes, in practice, we only proactively compress anonymous pages and =
+do not
+>>>>>>> want to touch file pages.
+>>>>>> If that is the case and this is mostly application centric (which you
+>>>>>> seem to be suggesting) then why don't you use madvise(MADV_PAGEOUT)
+>>>>>> instead.
+>>>>> Madvise  may not be applicable in this scenario.(IMO)
+>>>>>
+>>>>> This feature is aimed at a core goal, which is to compress the anonym=
+ous
+>>>>> pages
+>>>>> of frozen applications.
+>>>>>
+>>>>> How to detect that an application is frozen and determine which pages=
+ can be
+>>>>> safely reclaimed is the responsibility of the policy part.
+>>>>>
+>>>>> Setting madvise for an application is an active behavior, while the a=
+bove
+>>>>> policy
+>>>>> is a passive approach.(If I misunderstood, please let me know if ther=
+e is a
+>>>>> better
+>>>>> way to set madvise.)
+>>>> You are proposing an extension to the pro-active reclaim interface so
+>>>> this is an active behavior pretty much by definition. So I am really n=
+ot
+>>>> following you here. Your agent can simply scan the address space of the
+>>>> application it is going to "freeze" and call pidfd_madvise(MADV_PAGEOU=
+T)
+>>>> on the private memory is that is really what you want/need.
+>>> There is a key point here. We want to use the grouping policy of memcg
+>>> to perform
+>>> proactive reclamation with certain tendencies. Your suggestion is to
+>>> reclaim memory
+>>> by scanning the task process space. However, in the mobile field,
+>>> memory is usually
+>>> viewed at the granularity of an APP.
+>>>
+>>> Therefore, after an APP is frozen, we hope to reclaim memory uniformly
+>>> according
+>>> to the pre-grouped APP processes.
+>>>
+>>> Of course, as you suggested, madvise can also achieve this, but
+>>> implementing it in
+>>> the agent may be more complex.(In terms of achieving the same goal,
+>>> using memcg
+>>> to group all the processes of an APP and perform proactive reclamation
+>>> is simpler
+>>> than using madvise and scanning multiple processes of an application
+>>> using an agent?)
+>> I still think that it's not too complex to use process_madvise() to do
+>> this.  For each process of the application, the agent can read
+>> /proc/PID/maps to get all anonymous address ranges, then call
+>> process_madvise(MADV_PAGEOUT) to reclaim pages.  This can even filter
+>> out shared anonymous pages.  Does this work for you?
+>
+> Thanks for this suggestion. This way can avoid touch shared anonymous, it=
+'s
+> pretty well. But, I have some doubts about this, CPU resources are
+> usually limited in
+> embedded devices, and power consumption must also be taken into
+> consideration.
+>
+> If this approach is adopted, the agent needs to periodically scan
+> frozen applications
+> and set pageout for the address space. Is the frequency of this active
+> operation more
+> complex and unsuitable for embedded devices compared to reclamation based=
+ on
+> memcg grouping features?
 
-Maybe we could use the `simd_register_aeads_compat()` wrapping as x86 =
-platform
-first in a simpler way first.
+In memcg based solution, when will you start the proactive reclaiming?
+You can just replace the reclaiming part of the solution from memcg
+proactive reclaiming to process_madvise(MADV_PAGEOUT).  Because you can
+get PIDs in a memcg.  Is it possible?
 
--Jerry=
+> In addition, without LRU, it is difficult to control the reclamation
+> of only partially cold
+> anonymous page data of frozen applications. For example, if I only
+> want to proactively
+> reclaim 100MB of anonymous pages and issue the proactive reclamation
+> interface,
+> we can use the LRU feature to only reclaim 100MB of cold anonymous pages.
+> However, this cannot be achieved through madvise.(If I have
+> misunderstood something,
+> please correct me.)
+
+IIUC, it should be OK to reclaim all private anonymous pages of an
+application in your specific use case?  If you really want to restrict
+the number of pages reclaimed, it's possible too.  You can restrict the
+size of address range to call process_madvise(MADV_PAGEOUT), and check
+the RSS of the application.  The accuracy of the number reclaimed isn't
+good.  But I think that it should OK in practice?
+
+BTW: how do you know the number of pages to be reclaimed proactively in
+memcg proactive reclaiming based solution?
+
+--
+Best Regards,
+Huang, Ying
