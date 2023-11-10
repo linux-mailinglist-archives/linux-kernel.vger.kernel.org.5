@@ -2,115 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702757E82AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AF67E7FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346466AbjKJT3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S235343AbjKJSA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236016AbjKJT2m (ORCPT
+        with ESMTP id S229683AbjKJR7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:28:42 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AE58253
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 23:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699599988; x=1700204788; i=deller@gmx.de;
-        bh=zOdtjhaIenhyimwheJBqU7h0lGLGDz7g9pte3YxcbEM=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-        b=V+U3sZ8hMohk8t6pcvyV0nySOMiw1gx5Ga7L56sN7XX3sSUz8s6gXfoDW5P0ghcG
-         obsFcFGsxxQ5teeSbKQNH3CvHwQj7C9RSmcg7cLbEITIePKY0S/OxKCwWWBEo3cQX
-         6teevxsU1UpW9UihQ0ysFQLm7euwIEjNrD3oFcNNsVCZ00dVslMxykzC+aSp/zwLK
-         YrggrosxCzjEwLHaZzIEzCLJ87C7wlnu6zSBwwrBsALXihL+a2VP6dgaUoh6mgTc9
-         b/T9ngjJTSZUkaQCHOa6wbB77cL/ZOxVQrW4BrG3XpkbMvE/cFmW8zalnU3pNj1zG
-         6IPJBhbt9vHZiWm+tA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.152.22]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MiJZE-1reEa231B0-00fSHV; Fri, 10
- Nov 2023 08:06:28 +0100
-Message-ID: <e0890b48-d630-4179-89a2-86bb953ae2bf@gmx.de>
-Date:   Fri, 10 Nov 2023 08:06:28 +0100
+        Fri, 10 Nov 2023 12:59:23 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F4983C8
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Nov 2023 23:17:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BlCzEPXbvMCZRXVVOXqvg5O/BUQYHhtLXr5fHqo53IdXlXm1d5Jhca86jznJEPZQSViqFeKTrsYjtRWvOzrEtmq0ngf6OYJhkCA58XrD5t9ZvPVHkdu/di5p+ioTEUDe4PRc7b/RStTeXThmKvqK0a7WGmUQw5gcJ5mMJGTs/dPY1bwB9KyftLIjBRyYzmoZHGpDHZoHaafXZAVGPQV0q+PJ0tlvvZWC1X6FKKt1olfsHymMJRryDqZrOTud3p0NPOy+6v7oCo1ypa6rRvlsuQgKN+ZxhteoAh/o9rx1cVLzfI9Qt501yq7LL1QdMZHznuRr+4aPFs4K3mbhLaSH+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tq7/cKFN1f+HNAcAQKknLCIVYUptrCayshJDgblJ0Vg=;
+ b=ADsEmdNO5aQLPK1kzNNJ+QJejcQ7bY3daVl+TJpmxlyKJvVt8TS0SF42NUiCvDOq20JWHFHrTr8hN/vkZnpidIHD1DTqNDs0v0dP5Bg3tNSv6V+7M7tsubRdieOj6gQU+OGzUGkMjtEHhWJr04834IXPwBGor0aUvudDUjy2d1chtE2lLeiSBSstDlhsAItDUS5UScD3uElmP1dOqUq2dwq7ORc47x8Qq9HG3isAP35+SJCdIYH3rrQkErbbs3PgiUb13jSpQbQVhuLAXvB0Bk3qptt7OJPqMZRQORg6+k0we/oifWGzMKXKjCHHaqu1H7j7ikciCE6TgleuQXXu6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=chromium.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tq7/cKFN1f+HNAcAQKknLCIVYUptrCayshJDgblJ0Vg=;
+ b=YvyJU1fBrJ53rgM9vTdf5/2LIyKAWcrbuoN9BhTWCx459zs7aE4/Z0jGR1o92H1GRAgSMfrbBe9O9rhO9cpbgBUjMZKsvCu1voszF+ZYIkaV7rtRIdwT3aZs8JGgUEW+q3Htp7CzpTDjV8qWqsvrkBEHyTBsvuzhcluklLnfzw4=
+Received: from MW2PR16CA0007.namprd16.prod.outlook.com (2603:10b6:907::20) by
+ LV3PR12MB9401.namprd12.prod.outlook.com (2603:10b6:408:21c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Fri, 10 Nov
+ 2023 07:16:56 +0000
+Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
+ (2603:10b6:907:0:cafe::20) by MW2PR16CA0007.outlook.office365.com
+ (2603:10b6:907::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19 via Frontend
+ Transport; Fri, 10 Nov 2023 07:16:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6977.16 via Frontend Transport; Fri, 10 Nov 2023 07:16:56 +0000
+Received: from jenkins-julia.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 10 Nov
+ 2023 01:16:50 -0600
+From:   Julia Zhang <julia.zhang@amd.com>
+To:     Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <amd-gfx@lists.freedesktop.org>,
+        <virtualization@lists.linux-foundation.org>
+CC:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Erik Faye-Lund <kusmabite@gmail.com>,
+        =?UTF-8?q?Marek=20Ol=C5=A1=C3=A1k?= <marek.olsak@amd.com>,
+        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+        Honglei Huang <honglei1.huang@amd.com>,
+        Chen Jiqian <Jiqian.Chen@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Julia Zhang <julia.zhang@amd.com>
+Subject: [PATCH 0/2] Add RESOURCE_GET_LAYOUT ioctl
+Date:   Fri, 10 Nov 2023 15:16:30 +0800
+Message-ID: <20231110071632.24612-1-julia.zhang@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/22] fbdev/fsl-diu-fb: mark wr_reg_wa() static
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-22-arnd@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20231108125843.3806765-22-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6kDMcs86IPEWFleDGKDc3P5UnvS7gGsJ+K1nrEfeSO/wFk408XO
- 4SntItnA2Leuzi+oF31U3iTL3gQ1x4I8M9u+UlXsgg11LAXhaZDxZ7lYd4XGMyv80VWtw7y
- R3jMNIBsnqD4FLz12FNH4a20KFq6n3Jw8uVoCfJnzwNyCOB1SnKYDYFquxKaE18IULrPBQ2
- dPmdp6+ThLg1bgRmmm+wg==
-UI-OutboundReport: notjunk:1;M01:P0:7osXESTX6Zs=;N4zrjFgggK3O2U32DiOhhUL0dRj
- HrqcScV7A+48yLXCjz6XvSZDk73Yk1pi47sAVvF1fIoiM7Ic6ld0SJ5qLFHz50EHJIU4ibtKx
- xgUsdBeP13AwimLI02hR+ftdnpuJXSY/obPtIg/0Aq05LAlrz8w++QwGrh35jDWIu5U0VzmX/
- UUtde/Gc+l0OYAdPWPVhd/a2dFC5/ltesfwiqLXURQAh+jcgtK1lxmA1HIoKxdPh3xuF6D89o
- PflDHdQh5LCGP6eQxltSEFOiTQPadiRk+kVFQaFMYn3xUeuo8VWL4TH+d1ZpGcpXXeAsmi/Jd
- WShoUsS1566tyg9j9OwU5UNaCMz11d9yREv/hKtYdLdYRrf8A5vAE1haTMV1jwxgI48ZkcMzr
- su3+vK/7W5WlcwPTrhm+0ijriEHwcxUqFO2jIXyQGmBvqMwEHUqsZXyCWo3FRacNNQiVmmBsx
- uIlvPbEf1bbjdmnRccfPcD2RZtMy6RgL3ln35cC5WEjLHFW0wTUsgkoZlH8BhjB4fNvizY7WI
- zm4xllUX2X24SmfGlg1Za7loXStdAziyiLpjmG1zNThO1Rl6ViDpdONkvhxsqIrdlzAGLas4H
- Bvw5+37V7u/f7O2mX5kBbBoipihH0rSgaYA8NsIWIGaQM11H/OC0G1y63T7VBkA8JgJVED45a
- svKr9e/akfI7AXHkU5xwSazqSd+pbFI4/vlFEYBkSWyaxuk0NuLeJ90O/sp7b4g7rG2RSXJe7
- ISeugvFlUMnLpf4QncfA2Mw6JKcUAioL1IQ5xSiXHOByFeQEfdFAR71iu2uhWGj2xOvLEBbiN
- Erz0zojy1gckHvKEHH1+2gw7QkayW0xSz5WMYhH78XUEJ4HILnw8ktvoyOP0VwtVeQ/447k69
- Tba3LxRMPfwe2W3zYzhtW9IQFj5vDvdM0erzlcdTjcgWwgkFYZTtKHLHwzuo4OyNDh9JC+VIj
- tMloxKW8mUzcrKsec50fcvKBHs8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|LV3PR12MB9401:EE_
+X-MS-Office365-Filtering-Correlation-Id: b99b1a3b-07e9-497a-0841-08dbe1bd05e6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: A9z6gnFQOBw7Mt9AvShFTwJFi1RXYYrjzg3BkM/3eUpOVl3c7xOWzU1KDtwGkiZodZUJWgAKSsK7VZe4BZXV6M0p9VsSqz24Xl7hNeepg17i74Yp4VW9/YDelpsEVsCl6TI23R80ELPyVh384p3rWHt7qEgj9P5FLRfLfFETZLbIAHFaoOpcGQzojdmpKGr7w6iwLubB5RYRgdqVyShYZBOYy9oxQD+UHzHTmWW+UVxuXRL55tYkq35PYdaPXFaz/+91Sj7NV57cF4NqI5ckTUZCgX8TFBL6v6Qk9Ya6nAEJuy4lqQIQ0Uxn3DTYgSaL5GVlB0LMMO0OuQicih4WmUnH2JsjLEqRRYTtiwtTNP5Ao1yKWvCTZNog52zQcZ/giXfBjzxWXXT15h6EGSzvhsM5h0O8tVnTzcHWD1+UfoeJmH4ifUGa72sy6Q88iZPSC2xjunGG1rJY6TYb089mvWUYrAtVuhzUdxTWM4DyFJ2lfjf+zLeo09NsWRa6NaqoA7HFGuhrx08La+oT+55JCeyC3cZagd+T1vmxiWMjnuRr4RQCP24wXTPagvV6EPHh1rpPoeiM1JJkss3KB0BCRMaYZSElipXnZV/PzI3IqGEDq7XG5m/B8sviuif47wt5ZS8qbBOSU3BbqY61Xe9lITixqkYPZCjoUUyI+kinOLK2QRgWVxQwl7U/gzbTlsJSyq5p76KFkzH3vQxe8yGwP4nj0lym8NbDCeq5b9MuplIA0MHvYqUjJpZ8qJu/Vx/r
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(82310400011)(64100799003)(1800799009)(451199024)(186009)(46966006)(36840700001)(40470700004)(40480700001)(40460700003)(83380400001)(36860700001)(47076005)(36756003)(86362001)(4326008)(44832011)(41300700001)(4744005)(8676002)(8936002)(2906002)(478600001)(356005)(16526019)(966005)(6666004)(82740400003)(81166007)(7696005)(5660300002)(110136005)(70206006)(7416002)(316002)(426003)(26005)(2616005)(336012)(70586007)(1076003)(54906003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2023 07:16:56.5524
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b99b1a3b-07e9-497a-0841-08dbe1bd05e6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EC.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9401
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 13:58, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> wr_reg_wa() is not an appropriate name for a global function, and doesn'=
-t need
-> to be global anyway, so mark it static and avoid the warning:
->
-> drivers/video/fbdev/fsl-diu-fb.c:493:6: error: no previous prototype for=
- 'wr_reg_wa' [-Werror=3Dmissing-prototypes]
->
-> Fixes: 0d9dab39fbbe ("powerpc/5121: fsl-diu-fb: fix issue with re-enabli=
-ng DIU area descriptor")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This is to add a new ioctl RESOURCE_GET_LAYOUT to virtio-gpu to get the
+information about how the host has actually allocated the buffer. It is
+implemented to query the stride of linear buffer for dGPU prime on guest VM,
+related mesa mr: https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/23896
 
-applied this patch to the fbdev git tree.
+Daniel Stone (1):
+  drm/virtio: Implement RESOURCE_GET_LAYOUT ioctl
 
-Thanks!
-Helge
+Julia Zhang (1):
+  drm/virtio: Modify RESOURCE_GET_LAYOUT ioctl
 
+ drivers/gpu/drm/virtio/virtgpu_drv.c   |  1 +
+ drivers/gpu/drm/virtio/virtgpu_drv.h   | 22 ++++++++-
+ drivers/gpu/drm/virtio/virtgpu_ioctl.c | 66 ++++++++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_kms.c   |  8 +++-
+ drivers/gpu/drm/virtio/virtgpu_vq.c    | 63 ++++++++++++++++++++++++
+ include/uapi/drm/virtgpu_drm.h         | 21 ++++++++
+ include/uapi/linux/virtio_gpu.h        | 30 ++++++++++++
+ 7 files changed, 208 insertions(+), 3 deletions(-)
 
-> ---
->   drivers/video/fbdev/fsl-diu-fb.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/video/fbdev/fsl-diu-fb.c b/drivers/video/fbdev/fsl-=
-diu-fb.c
-> index 7fbd9f069ac2..0bced82fa494 100644
-> --- a/drivers/video/fbdev/fsl-diu-fb.c
-> +++ b/drivers/video/fbdev/fsl-diu-fb.c
-> @@ -490,7 +490,7 @@ static enum fsl_diu_monitor_port fsl_diu_name_to_por=
-t(const char *s)
->    * Workaround for failed writing desc register of planes.
->    * Needed with MPC5121 DIU rev 2.0 silicon.
->    */
-> -void wr_reg_wa(u32 *reg, u32 val)
-> +static void wr_reg_wa(u32 *reg, u32 val)
->   {
->   	do {
->   		out_be32(reg, val);
+-- 
+2.34.1
 
