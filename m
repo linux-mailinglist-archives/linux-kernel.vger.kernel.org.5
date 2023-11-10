@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2077E7E7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B317E7F9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235108AbjKJRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        id S235238AbjKJR4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345947AbjKJRoN (ORCPT
+        with ESMTP id S231319AbjKJRzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:44:13 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077842E5E3;
-        Fri, 10 Nov 2023 03:19:04 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso1554313b3a.1;
-        Fri, 10 Nov 2023 03:19:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699615143; x=1700219943; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=whk9fs0zCzhy1i9O39uD7og53FJTww2F/GslFxYNQj8=;
-        b=HS9dQxGOly8V3hsO71myRrVbdvysy7N2eJAZ399ypwaGCb30g7acqPvP/EGCndrn/W
-         XYMAuiCMe/FA+LcNEn3A+AFbBW8laF2cLsYK4YNZhJj7X9NeaFbTakF+FebCRa3j8U8E
-         Ixr8DEeYB4bLe467jyofxeye+4DNzNlQ4RadNT90dOONlwgClqY+SsP54z0ELzXhNaEv
-         mG9nA2SCBtxt5rI2Cwrt032+JqH1onAqxJzAOSouA8UZ1agLfT/yIDcSU1eFlQRmEAEI
-         tDLMC8cMBT5bVTNPuhAupdjX307ENsruBN5O+WOnPJ9OweNupcUvOCjSnxDcEcAVcucJ
-         XvAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699615143; x=1700219943;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=whk9fs0zCzhy1i9O39uD7og53FJTww2F/GslFxYNQj8=;
-        b=j0goO4CAaPRiE7SfWibZCIjzHDz5GpOG+QK4e0VhDXTt4GQN5INB/wM+fZZwXt7sD8
-         NhzwrbSzsyW0kz7Wy/n6A2FIYk0zg5Z7/jsTqkowKDMDplr7SytBAW0MT+/U380DNGru
-         t+XqhTyF1k8haP79/8OBbD8gFB52SNxSr+6nIp77rC7yRmqEubzKCTT53b7Q/xaXMR3s
-         QTzJHdo6S5bI0Lt2zyI76ze0XbtDJ6MR/O4g2DJho8oPJhFZsBP9PW/JM3NjKLtySKec
-         oap7AZRdsFQ4ptv0DmfJYpqw892CCU5Ah8kuoMn0QGkzSFQSzJdTh9Bxz7oqfKsRr8Qg
-         Ehxg==
-X-Gm-Message-State: AOJu0Yw3+k/pSqX8T8DiuvbzzvzftNUjg47BlZJk12OaKN1G0KIi1rzO
-        2HNGWGUt5pr+i9g9URToGQw=
-X-Google-Smtp-Source: AGHT+IGw4vv33oM9rlOTVNJk3OnzI5FpCQaZiu4GqoW3Mqur9SQA9+xVcTPzCOz+GRTd4FlS7wIZVQ==
-X-Received: by 2002:a05:6a00:6c87:b0:68f:cb69:8e66 with SMTP id jc7-20020a056a006c8700b0068fcb698e66mr4055742pfb.15.1699615143426;
-        Fri, 10 Nov 2023 03:19:03 -0800 (PST)
-Received: from ubuntu.. ([202.166.220.102])
-        by smtp.gmail.com with ESMTPSA id b15-20020a056a0002cf00b00690c0cf97c9sm12444462pft.73.2023.11.10.03.19.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 03:19:03 -0800 (PST)
-From:   Dipendra Khadka <kdipendra88@gmail.com>
-To:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com
-Cc:     Dipendra Khadka <kdipendra88@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+44c2416196b7c607f226@syzkaller.appspotmail.com
-Subject: [PATCH v2] Fixes the null pointer deferences in nsim_bpf
-Date:   Fri, 10 Nov 2023 11:18:23 +0000
-Message-Id: <20231110111823.2775-1-kdipendra88@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231110084425.2123-1-kdipendra88@gmail.com>
-References: <20231110084425.2123-1-kdipendra88@gmail.com>
+        Fri, 10 Nov 2023 12:55:35 -0500
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EB22E5F4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 03:20:06 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 77FD53200A7D;
+        Fri, 10 Nov 2023 06:20:03 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 10 Nov 2023 06:20:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1699615202; x=1699701602; bh=od
+        rwaD2WbWl9QIXV6S63xcSUQgU7RAQjz3aDEgQNnQA=; b=S9xHaNbE7zd/i1/hCm
+        RraRG57Kfe0Kx1dI3w4MIVQcmupgWSnGJZ3lFtBwvvxjwU4RKcxrHmZWsmvf20fn
+        oQ1+sLvnCzGku+ClQ2NcjzqH41FGhHigruCMdHL7sm4ndlIGbO/85TC1XtxTJLuW
+        //YjHpk4ww18ZIc7SNf0Z+h63865fcoeqNCIK7zWZpeGgAfvymNmZ3owcMvLvOc2
+        ZzbSf1QQXq/PMiiJgyc4eCqtJDYnXBjsHqMXdfXjjHPRlQL0LXYHJv63kiFXbiyj
+        0iT2yBqk0BecmaST5S2lwLQIxA2p3sHakk2QfoUsqLcr3wLt/xeJesHx3HVpAujk
+        WyeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1699615202; x=1699701602; bh=odrwaD2WbWl9Q
+        IXV6S63xcSUQgU7RAQjz3aDEgQNnQA=; b=g3Ln4oWW9qoFZeKtM8x57cEtirJRe
+        7yv/U4SczJmaK4mkx/UArXatjDqrEwnHUKe/MhCecPvLsROzKCgAuFT5YwsglHzy
+        Z0d/EkqY18bSrNGU3InSAw7KVOcPoA00wHK7QJ+tySNe09c+46zXCzmayBN99UCV
+        13a3tE3UKLLbhz7c93EGF5+z7XRFfAUGdnftf9b8dBexldqkDCwYKzXVitbTzuz3
+        gsPeROblHKpaanvqlPCybAo09X32iLcBw+plvVsbQRS3wEN/bvv7Bc/5BpiEq80J
+        jQdt8AGQ4usJx1EVjiuD9DXQWTQxALAQCtFK1aZ/BM5lRq6lIonP+OAUg==
+X-ME-Sender: <xms:4hFOZRmxD8JJtuaYTT6hgXwMuoooBmoHZQ4_lRZOdKmZO4TtI77ucA>
+    <xme:4hFOZc35zPJhKnpWVJ1d5tNdCVZxGlhHCbLGgKU5HukPAs2xIKaWVsitTSs_b0te9
+    -HLZhKeW2SWlrZXT4M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvfedgvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:4hFOZXriEJChqxzA1M1AhJd3QLuPo93t7Q0MuQVmrbi88yW7ubutpQ>
+    <xmx:4hFOZRl2BVyXcpsR6vRYf7Ecd6z1GcicX_4v7uxPrOI4TJVJvDMisw>
+    <xmx:4hFOZf2Cvd_UQjL6GnWY3pFDGisWdVYyFHeazwDw6zVTBBxtji_Htg>
+    <xmx:4hFOZdASJVr6eKirQysMZWjNDGkjLeNCnZQi2PmA18JmvxV2KPwKaQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 65624B60089; Fri, 10 Nov 2023 06:20:02 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <571ed28a-9690-4f85-9122-4b0f76975cb3@app.fastmail.com>
+In-Reply-To: <20231110103120.387517-1-thuth@redhat.com>
+References: <20231110103120.387517-1-thuth@redhat.com>
+Date:   Fri, 10 Nov 2023 12:19:42 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Thomas Huth" <thuth@redhat.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org,
+        "Greg Ungerer" <gerg@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzkaller found a null pointer dereference in nsim_bpf
-originating from the lack of a null check for state.
+On Fri, Nov 10, 2023, at 11:31, Thomas Huth wrote:
+> We should not use any CONFIG switches in uapi headers since
+> these only work during kernel compilation. They are not defined
+> for userspace. Let's use the __mcoldfire__ switch from the
+> compiler here instead.
+>
+> Signed-off-by: Thomas Huth <thuth@redhat.com>
+> ---
+>  Marked as RFC since I didn't test it - I'd appreciate if someone
+>  could give it a try on a real system.
+>
+>  arch/m68k/include/uapi/asm/ptrace.h | 2 +-
+>  scripts/headers_install.sh          | 1 -
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/m68k/include/uapi/asm/ptrace.h 
+> b/arch/m68k/include/uapi/asm/ptrace.h
+> index 5b50ea592e00..ebd9fccb3d11 100644
+> --- a/arch/m68k/include/uapi/asm/ptrace.h
+> +++ b/arch/m68k/include/uapi/asm/ptrace.h
+> @@ -39,7 +39,7 @@ struct pt_regs {
+>    long     d0;
+>    long     orig_d0;
+>    long     stkadj;
+> -#ifdef CONFIG_COLDFIRE
+> +#ifdef __mcoldfire__
+>    unsigned format :  4; /* frame format specifier */
+>    unsigned vector : 12; /* vector offset */
+>    unsigned short sr;
 
-This patch fixes the issue by adding a check for state
-in two functions nsim_prog_set_loaded() and nsim_setup_prog_hw_checks()
+I think this should be harmless, but I'm not sure we even
+need the structure in a uapi header: about half the architectures
+define this in a user-visible way, while the others don't.
 
-Reported-by: syzbot+44c2416196b7c607f226@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com./bug?extid=44c2416196b7c607f226
-Fixes: 31d3ad832948 ("netdevsim: add bpf offload support")
-Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
----
- drivers/net/netdevsim/bpf.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+On csky, powerpc and microblaze, pt_regs is used inside
+of the 'struct sigcontext' definition, but I don't think
+this was ever the case on m68k.
 
-diff --git a/drivers/net/netdevsim/bpf.c b/drivers/net/netdevsim/bpf.c
-index f60eb97e3a62..5d755da3c736 100644
---- a/drivers/net/netdevsim/bpf.c
-+++ b/drivers/net/netdevsim/bpf.c
-@@ -97,7 +97,8 @@ static void nsim_prog_set_loaded(struct bpf_prog *prog, bool loaded)
- 		return;
- 
- 	state = prog->aux->offload->dev_priv;
--	state->is_loaded = loaded;
-+	if (state)
-+		state->is_loaded = loaded;
- }
- 
- static int
-@@ -317,9 +318,11 @@ nsim_setup_prog_hw_checks(struct netdevsim *ns, struct netdev_bpf *bpf)
- 	}
- 
- 	state = bpf->prog->aux->offload->dev_priv;
--	if (WARN_ON(strcmp(state->state, "xlated"))) {
--		NSIM_EA(bpf->extack, "offloading program in bad state");
--		return -EINVAL;
-+	if (state) {
-+		if (WARN_ON(strcmp(state->state, "xlated"))) {
-+			NSIM_EA(bpf->extack, "offloading program in bad state");
-+			return -EINVAL;
-+		}
- 	}
- 	return 0;
- }
--- 
-2.34.1
+The other one that is accessed in userspace is 'struct
+user_regs_struct', but this one is actually not in the
+uapi headers on m68k or x86.
 
+     Arnd
