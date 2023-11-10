@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D7F7E8043
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 258087E7F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344620AbjKJSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33178 "EHLO
+        id S229931AbjKJR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:56:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345545AbjKJSGh (ORCPT
+        with ESMTP id S229982AbjKJRz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:06:37 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E94A2B7FF
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:18:06 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5bdf5a025c1so1396044a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 01:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699607886; x=1700212686; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qQTkE1ZnpGXcZrl7W6lR4eKSn0Z1KI5/u9IM9eBWdzI=;
-        b=aZV2WbWJN/MupF53Gl5WDyBX4VnHbTtk3PCCM/99/x6RApuoK7xeoksvPU6VwvyrqM
-         X2ou80ymLE/EJkub+m0GtsKNUqILZoZMV/4M7bz1GsvKE5NcUlgxQN1aRoOrbjVXofnh
-         +aBzgYGURDHKOOIAZtnc692snRHBgC+00WwWGT4obxw4OcIhAccCpkd++O9PYfsEeu4H
-         1uHqU0FucU15gp8uH04VGF5KygK9SRKG7ijc2LwulLwdxduWBOWjXtzEi8LuRkcMah9y
-         GKkMqGUpxn9CUnCzb/4v/SXskuUe5K/irfmxvx0AuY5dOCZKGMQOzjNwXPLbjrXeh0Cb
-         8iWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699607886; x=1700212686;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qQTkE1ZnpGXcZrl7W6lR4eKSn0Z1KI5/u9IM9eBWdzI=;
-        b=aIJIdMObNRSpe4q7ztQhYibL5Yd/YsTrQwkPoLy2SL45kSqR67hjkMizav+89aDYJq
-         H6a3nkSHRBuDu1GUNsiARMe0fO0C4pkqFLvFucS1Cbdu+rSB25dIX0pxbS5BAP6cr7xG
-         0iF+P7wDDWPY1eQZeVSq7G7w5AC5OfGsMLDETOA3hHGTU3pj26sepGBD1bLbidis3tBG
-         KhOuzuiW5AM4Mk+6avzlsGFhQcmRrde8d/gdAsEGChn1CrXkuO8BK9OORXctX0j7iACo
-         6RfVucZNKiFHHJEfl7PlvbMaJsuU3XVVkHzLU5o7zLMeLzPZ19ax0pJKfAgEbIdinMRR
-         q78w==
-X-Gm-Message-State: AOJu0YzLvov4y9TjBCNy55+TjLf2AebqxJlBXofkN8rEXXJztGfXcqgy
-        CcWkEZRgGLhfvgiUIBo7NdCnag==
-X-Google-Smtp-Source: AGHT+IGife7skzKrRrmxXSpDW1iTw6SRyJPT40pz+mavprG4ApUvNEQqFPvzfzolUakrl+Owq+kyyg==
-X-Received: by 2002:a17:90b:3887:b0:280:e0:9071 with SMTP id mu7-20020a17090b388700b0028000e09071mr4653129pjb.28.1699607885946;
-        Fri, 10 Nov 2023 01:18:05 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id g13-20020a17090ae58d00b0027d12b1e29dsm1149227pjz.25.2023.11.10.01.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 01:18:05 -0800 (PST)
-Date:   Fri, 10 Nov 2023 14:48:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com,
-        ionela.voinescu@arm.com, pierre.gondois@arm.com,
-        beata.michalska@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
-        conor.dooley@microchip.com, suagrfillet@gmail.com,
-        ajones@ventanamicro.com, lftan@kernel.org
-Subject: Re: [PATCH v6 6/7] cpufreq/cppc: Set the frequency used for
- computing the capacity
-Message-ID: <20231110091803.2xqtodhyxtuxdbba@vireshk-i7>
-References: <20231109101438.1139696-1-vincent.guittot@linaro.org>
- <20231109101438.1139696-7-vincent.guittot@linaro.org>
+        Fri, 10 Nov 2023 12:55:28 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9772BE05;
+        Fri, 10 Nov 2023 01:18:44 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BEDE2FF803;
+        Fri, 10 Nov 2023 09:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699607923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JlHs147ceVaFirZwP9qhanL87eStUsCEVWoYX0Pd7Pw=;
+        b=WcN6uEqQTLiAg07Mww8Xh5wguLtukWcC1ATSbprEnegZPropbKOUss8DiJHoGmsJvQBpEI
+        zyoZrTY/WSNPOwcVUyEApnCxqYU3O1WpHqBni9wTioYN8nNwT50hm6ooD0A/P0ZiuSz2zW
+        +tUJlWFOymHBmdii+dH/kzSUpysOob9N6ugznEBd1m/GXe2TXP+QPtwlWWyPJtCrKR+qvL
+        JeMA+j07lGMHEPap/tJo4LYlAt8zDwy/HK7eDPcr6GzATnFKEA5/5BMifUEOclER4I+2YJ
+        iC/sI4oItUB8DxR9KMjus/qAjn/R8eCtHEE0czSfgbXJZB5ZqTBtHmH/rK6jAw==
+Date:   Fri, 10 Nov 2023 10:18:41 +0100
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] net: phy: at803x: add QCA8084 ethernet phy
+ support
+Message-ID: <20231110101841.27aba547@fedora>
+In-Reply-To: <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
+References: <20231108113445.24825-1-quic_luoj@quicinc.com>
+        <20231108113445.24825-2-quic_luoj@quicinc.com>
+        <20231108131250.66d1c236@fedora>
+        <423a3ee3-bed5-02f9-f872-7b5dba64f994@quicinc.com>
+        <20231109101618.009efb45@fedora>
+        <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109101438.1139696-7-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: maxime.chevallier@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-11-23, 11:14, Vincent Guittot wrote:
-> Save the frequency associated to the performance that has been used when
-> initializing the capacity of CPUs.
-> Also, cppc cpufreq driver can register an artificial energy model. In such
-> case, it needs the frequency for this compute capacity.
-> 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/base/arch_topology.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
+On Fri, 10 Nov 2023 16:53:39 +0800
+Jie Luo <quic_luoj@quicinc.com> wrote:
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> On 11/9/2023 5:16 PM, Maxime Chevallier wrote:
+> > Hello,
+> >=20
+> > On Thu, 9 Nov 2023 16:32:36 +0800
+> > Jie Luo <quic_luoj@quicinc.com> wrote:
+> >=20
+> > [...]
+> >  =20
+> >>> What I understand from this is that this PHY can be used either as a
+> >>> switch, in which case port 4 would be connected to the host interface
+> >>> at up to 2.5G, or as a quad-phy, but since it uses QUSGMII the link
+> >>> speed would be limited to 1G per-port, is that correct ? =20
+> >>
+> >> When the PHY works on the interface mode QUSGMII for quad-phy, all 4
+> >> PHYs can support to the max link speed 2.5G, actually the PHY can
+> >> support to max link speed 2.5G for all supported interface modes
+> >> including qusgmii and sgmii. =20
+> >=20
+> > I'm a bit confused then, as the USGMII spec says that Quad USGMII really
+> > is for quad 10/100/1000 speeds, using 10b/8b encoding.
+> >=20
+> > Aren't you using the USXGMII mode instead, which can convey 4 x 2.5Gbps
+> >   with 66b/64b encoding ?
+> >=20
+> > Thanks,
+> >=20
+> > Maxime =20
+>=20
+> Hi Maxime,
+> Yes, for quad PHY mode, it is using 66b/64 encoding.
+>=20
+> it seems that PHY_INTERFACE_MODE_USXGMII is for single port,
+> so i take the interface name PHY_INTERFACE_MODE_QUSGMII for
+> quad PHYs here.
 
--- 
-viresh
+I see, when I added the QUSGMII mode I wrongly stated that it came from
+the USXGMII spec where it really comes from USGMII, my bad.
+
+> can we apply PHY_INTERFACE_MODE_USXGMII to quad PHYs in this
+> case(qca8084 quad PHY mode)?
+
+=46rom what I can see, the USXGMII mode in the kernel is used as the
+single-port 10G mode of usxgmii. You might need to create a new mode
+for quad usxgmii at 10G, the spec calls it 10G-QXGMII I think, but as
+the spec defines quite a lot of modes, should we define all of them or
+rely on some other parameters to select the actual mode ?
+
+Andrew, Heiner, Russell, what do you think ?
+
+Maxime
+
+> Thanks,
+> Jie.
+
