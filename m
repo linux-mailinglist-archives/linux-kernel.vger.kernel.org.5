@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2857C7E80DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:19:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27FB7E813D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345617AbjKJSSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:18:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S1346168AbjKJSU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 13:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346058AbjKJSQd (ORCPT
+        with ESMTP id S229582AbjKJSRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:16:33 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F343A205
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:56:59 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0c7d27fb0so2527803276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:56:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699628219; x=1700233019; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F1V/300+xWnAnwKdMsbjGUliUN30rs1/xBn5NBDIxfI=;
-        b=dOSmT82877Rp1xmkoDaltiaoVgfV1JBFKfR3Eazpe3jGvGKNM96J+PViP74iIk62bU
-         3HxZIHHcwnhsfVyY9yUrYz65+uLzSBblO6zNFrMt1Rh58haC6Oqs/tlMBh3oqFF7gahk
-         HwUBdVbwzP33OB0J78BkAqL2wSs7dYFR79caMaxLYmXvH7xv2t3gloSY+QuV/Vb6cKxx
-         kY0Boc74vaAR1N74n2QWblXDkY0jMHdrRWmwKM9b27kY49Cl0rTmEYcKwwdzRC1e/76W
-         NZ4PnOSr77vF1sCG/x3vTozhizfKXPz/OjcSrj5lr2JEMcjvB6poqYWHFDC6oupm2+O2
-         AIuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699628219; x=1700233019;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F1V/300+xWnAnwKdMsbjGUliUN30rs1/xBn5NBDIxfI=;
-        b=PY4ckmR1zClVVBUAJhUi43ONeGz0nItiCGpf46egSVeq12Zn++109Bn+Dw5Fl1oXQ8
-         tD3Vb7tlijYwz0tFM81jf1teb68XA0WxPomymyTnnNA6z9WSHaPS7TJUEUE6w0/Rb9Bm
-         z+r/zQAC5csV5/rrzKrWUzz7vOITuFz5dX1EtAoeQecq7lqLTOTO9u4QE9dJU40jsq79
-         5arDCspuzxMb7DJfNr46LGLHVT5j0uKuARtcmzF8u1N9J2PQjcplM/yGbxpap5Ly+deh
-         26FeKvbOcyokTRihxscWo8kjghjPPi9PoJpO9U2iPLySD+x//vLO/YZfO2LzlQezE6Ep
-         T+3g==
-X-Gm-Message-State: AOJu0YweL5AoZ9c9l+Ld96lC5WvJsqC0OcSnWC+Lf+tDDGDNr9EHgpPl
-        WbiFLoDFT1SpVKem9A1Jq2jbb5R46zk=
-X-Google-Smtp-Source: AGHT+IGQQ94Jip81SrrWdG7OjYYcza9XRu3pKVZNh6sGbJ1fShKRc5nNwka3brsZBy1qO94ybUhnFiOwTFo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:24c:b0:da3:ba0f:c84f with SMTP id
- k12-20020a056902024c00b00da3ba0fc84fmr216147ybs.4.1699628218895; Fri, 10 Nov
- 2023 06:56:58 -0800 (PST)
-Date:   Fri, 10 Nov 2023 06:56:57 -0800
-In-Reply-To: <6e101707-f652-73f8-5052-b4c6c351e308@oracle.com>
-Mime-Version: 1.0
-References: <20231110022857.1273836-1-seanjc@google.com> <6e101707-f652-73f8-5052-b4c6c351e308@oracle.com>
-Message-ID: <ZU5Euc29B_UjiUot@google.com>
-Subject: Re: [PATCH 00/10] KVM: x86/pmu: Optimize triggering of emulated events
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>,
-        Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Fri, 10 Nov 2023 13:17:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00AA3A20B
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 06:57:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699628265; x=1731164265;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=zXn/NiYr993eJ0lWZOpY0CPK+pSL/1ZYUOBzqIGz7dA=;
+  b=BFsiqyP6pQGs3ZPDZm8lUffBc0fj9SV6mBf90TKGjofRXiMnK7uAUv67
+   dvkBFwiiBd+TPTk/RJuyeoB5pwTK+X67XMyrry/toTGjPzFB4kU0yHPTJ
+   TMaWjIzVEFXvCdvgj4L0xXNRObwoHIS9IjnHxEfTEb3/VTY2MFKwxn41H
+   ru1WGIjuN1F6xSjanbQ6xWHxTBHOmOVeC2zSDZoiwDVYfHpWkYETUD0/5
+   NlOh9xeK9CI/jSIXKmc0HF2GkACq0dEKGGtA8QsY8LnAB2W2DPUIHMDzY
+   zc3PuBMklk+xc8sVhupk45TZibHpAF8GNRoLzz2pD0/ncCjCIk+DsMsnq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="387354948"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="387354948"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 06:57:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="880984537"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="880984537"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Nov 2023 06:57:43 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1Sx3-0009fU-2v;
+        Fri, 10 Nov 2023 14:57:41 +0000
+Date:   Fri, 10 Nov 2023 22:57:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Zach O'Keefe <zokeefe@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: mm/khugepaged.c:747:25: sparse: sparse: symbol
+ 'khugepaged_collapse_control' was not declared. Should it be static?
+Message-ID: <202311102258.uFby3wrM-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023, Dongli Zhang wrote:
-> Hi Sean,
-> 
-> On 11/9/23 18:28, Sean Christopherson wrote:
-> > 
-> > base-commit: ef1883475d4a24d8eaebb84175ed46206a688103
-> 
-> May I have a silly question?
-> 
-> May I have the tree that the commit is the base? I do not find it in kvm-x86.
-> 
-> https://github.com/kvm-x86/linux/commit/ef1883475d4a24d8eaebb84175ed46206a688103
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   89cdf9d556016a54ff6ddd62324aa5ec790c05cc
+commit: 34d6b470ab9cf3a038f9bcd0f8cf09016a2e6fbe mm/khugepaged: add struct collapse_control
+date:   1 year, 2 months ago
+config: i386-randconfig-062-20230909 (https://download.01.org/0day-ci/archive/20231110/202311102258.uFby3wrM-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311102258.uFby3wrM-lkp@intel.com/reproduce)
 
-It's kvm-x86/next (which I failed to explicitly call out), plus two PMU series
-as mentioned in the cover letter.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311102258.uFby3wrM-lkp@intel.com/
 
-  https://lore.kernel.org/all/20231103230541.352265-1-seanjc@google.com
-  https://lore.kernel.org/all/20231110021306.1269082-1-seanjc@google.com
+sparse warnings: (new ones prefixed by >>)
+>> mm/khugepaged.c:747:25: sparse: sparse: symbol 'khugepaged_collapse_control' was not declared. Should it be static?
+
+vim +/khugepaged_collapse_control +747 mm/khugepaged.c
+
+   745	
+   746	
+ > 747	struct collapse_control khugepaged_collapse_control = {
+   748		.last_target_node = NUMA_NO_NODE,
+   749	};
+   750	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
