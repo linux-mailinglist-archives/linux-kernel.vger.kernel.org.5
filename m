@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBFB7E8226
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC177E84CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344836AbjKJTD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S235837AbjKJU4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236002AbjKJTDI (ORCPT
+        with ESMTP id S230250AbjKJU41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:03:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5BC293E3;
-        Fri, 10 Nov 2023 10:26:29 -0800 (PST)
+        Fri, 10 Nov 2023 15:56:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7B87693;
+        Fri, 10 Nov 2023 10:32:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699640789; x=1731176789;
+  t=1699641144; x=1731177144;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=fA4wI6REMt5xrvlGqZW7ug+64blc2EEl5FTiwCmCoEA=;
-  b=kWln275sYwY6XZHSIKU+u8znkJPYlcZNh+mXpoq8IBOq3k5FvJnASdg+
-   TAPkEScjOBqlAeWKUKGmlYO5GlS2PqwO8P/W8Q5FmAQ3LqctqqtOSaPMG
-   EGe0l+p+BGz95rvbptdUSzw9X9t0/mmRj9M6ouXW03QQr+uPzC9WwQr1I
-   gi6hu4N3ln10UqN5vJDNaoiDRCli6yvDsXlutiwYBJX5vAFi3mhB9VBid
-   NAahQmMLhl3C/cLfwLedMOd4N4FyHaNrom0AU+rV9iZV+ISpIfad9+NO5
-   lUyjJj2hvPm8nge7NN8C8SiI5lgTiUbudVF45scfnmJbB3Zio6cd0FeGJ
+  bh=bEJAV9zxfyI2elm8JN4vfIfB/68Bb0SGglHF3L4Fy+Y=;
+  b=aCJIZksonkYiMiWdefRMRkeGVig9iU8p98Cg3KYv0yyKgye3yzTvrtev
+   XmpwRrWS/tUVDtFMlHgrE6gR4uCvXssgrHsDFdcAK6whAOoUsXjQjIwjG
+   wSRwhjQxF98frtUFcjr0olnoxuJ7G84SXd4+a7ZKm+lM9N1CI+pr7a1rf
+   pagsbr+MrseWLs1OQLPsia4LXdRuYZDXsYtmtXIT/JpWje4029VEw4iVX
+   0R/DBp76W/MkyZ268q7hyIoZl0O5t37Mvpg7/A+z1oS+219pfbWY2dOmC
+   JT+Jx5SMPzbsXmIErOl8cLtg/SOBOM1ZBR5oUduAiK+nQerhive0LQlE9
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="375251968"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="456715067"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="375251968"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:23:32 -0800
+   d="scan'208";a="456715067"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 10:29:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="798663772"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="763808264"
 X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="798663772"
+   d="scan'208";a="763808264"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2023 10:23:25 -0800
+  by orsmga002.jf.intel.com with ESMTP; 10 Nov 2023 10:29:40 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4593F8D1; Fri, 10 Nov 2023 20:23:08 +0200 (EET)
+        id 571888E8; Fri, 10 Nov 2023 20:23:08 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
@@ -53,87 +53,49 @@ Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Andi Shyti <andi.shyti@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
         Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 21/25] i2c: designware: Propagate firmware node
-Date:   Fri, 10 Nov 2023 20:11:41 +0200
-Message-ID: <20231110182304.3894319-22-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 22/25] i2c: designware: Use pci_get_drvdata()
+Date:   Fri, 10 Nov 2023 20:11:42 +0200
+Message-ID: <20231110182304.3894319-23-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
 References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Propagate firmware node by using a specific API call, i.e. device_set_node().
+Use the wrapper function for getting the driver data using pci_dev
+instead of using dev_get_drvdata() with &pdev->dev, so we can directly
+pass a struct pci_dev. This is a purely cosmetic change.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/i2c/busses/i2c-designware-common.c  | 2 ++
- drivers/i2c/busses/i2c-designware-pcidrv.c  | 2 --
- drivers/i2c/busses/i2c-designware-platdrv.c | 3 ---
- 3 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/i2c/busses/i2c-designware-pcidrv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index 68d6a1c642a0..45b5c910b8db 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -715,6 +715,8 @@ void i2c_dw_disable(struct dw_i2c_dev *dev)
- 
- int i2c_dw_probe(struct dw_i2c_dev *dev)
- {
-+	device_set_node(&dev->adapter.dev, dev_fwnode(dev->dev));
-+
- 	switch (dev->mode) {
- 	case DW_IC_SLAVE:
- 		return i2c_dw_probe_slave(dev);
 diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index c9eb01a16048..f9fbd41c188d 100644
+index f9fbd41c188d..826c0c0a7c8d 100644
 --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
 +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -9,7 +9,6 @@
-  * Copyright (C) 2009 Provigent Ltd.
-  * Copyright (C) 2011, 2015, 2016 Intel Corporation.
-  */
--#include <linux/acpi.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/errno.h>
-@@ -273,7 +272,6 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
- 	adap = &dev->adapter;
- 	adap->owner = THIS_MODULE;
- 	adap->class = 0;
--	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
- 	adap->nr = controller->bus_num;
+@@ -102,7 +102,7 @@ static u32 mfld_get_clk_rate_khz(struct dw_i2c_dev *dev)
  
- 	r = i2c_dw_probe(dev);
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index d9a64006a3d6..1b76f721bf81 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -8,7 +8,6 @@
-  * Copyright (C) 2007 MontaVista Software Inc.
-  * Copyright (C) 2009 Provigent Ltd.
-  */
--#include <linux/acpi.h>
- #include <linux/clk-provider.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
-@@ -305,8 +304,6 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 	adap->owner = THIS_MODULE;
- 	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
- 					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
--	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
--	adap->dev.of_node = pdev->dev.of_node;
- 	adap->nr = -1;
+ static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+ {
+-	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
++	struct dw_i2c_dev *dev = pci_get_drvdata(pdev);
  
- 	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
+ 	switch (pdev->device) {
+ 	case 0x0817:
+@@ -152,7 +152,7 @@ static u32 navi_amd_get_clk_rate_khz(struct dw_i2c_dev *dev)
+ 
+ static int navi_amd_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+ {
+-	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
++	struct dw_i2c_dev *dev = pci_get_drvdata(pdev);
+ 
+ 	dev->flags |= MODEL_AMD_NAVI_GPU;
+ 	dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
 -- 
 2.43.0.rc1.1.gbec44491f096
 
