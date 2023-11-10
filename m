@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076AB7E82DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 20:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE4C7E8459
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 21:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235392AbjKJTlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 14:41:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
+        id S1346627AbjKJUmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 15:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346447AbjKJTkm (ORCPT
+        with ESMTP id S1346273AbjKJUlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 14:40:42 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10EDA277;
-        Fri, 10 Nov 2023 00:54:00 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AA7gTfg005899;
-        Fri, 10 Nov 2023 08:53:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4LcmdEDJvQ7VFdwA8ju7LruDX+WMtBJRIlXAucQVs6c=;
- b=SiEpNg1Q7/7aNdpXYqKXZ4HGTh9/tTYfZ7gkhSi0/3NbDOCrPhm3GWTL/AbSxoPFnarn
- jxwiqt/zcD3tOlmsJjo1Nt6Zpfc+vVml/SmjJrIlXkdjJvnby4dc136QyM94ED91VRUu
- Cl4RgHyytl5jVSdIh8Za0jtNKX45RE26Z9iEhd7gIrI4Va0HHGX0jwm469BEbtr9liCp
- CHFEplPkUeQf/LSn2H7HdhaNWQpJVB10B6Ne2ZJqSd1/fl3qcm3dkvCCTY6fkjL+DM/A
- zpNiTWpovcQWJGEPkvQ3h4rcx4MvPXFiQ6zjoDWUHtMYuBF4C36wcpJ9nk4FfaGnZbwG OQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u9g4n07bn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 08:53:46 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AA8rjqE010864
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Nov 2023 08:53:45 GMT
-Received: from [10.253.8.167] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
- 2023 00:53:43 -0800
-Message-ID: <0898312d-4796-c142-6401-c9d802d19ff4@quicinc.com>
-Date:   Fri, 10 Nov 2023 16:53:39 +0800
+        Fri, 10 Nov 2023 15:41:45 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B610EA27D;
+        Fri, 10 Nov 2023 00:54:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=u8052caqSNt3af6DzeiZMofvFARC4Kcew0q/mv0AkUE=; b=eRSvftjkjscZdlIzAGYnHH+mCb
+        eJv7Q7N1M5DJC/5JXhgsDiDSEEoNotwJxxH4umHm97Q06EIxLrwmqmo1mUb4IR8pj1P1jwh4VwAxj
+        OHzBFF0spuZUlXJ17MfpYjVtSK2edEQko3bPcc4wQsclDjXJBEfH5e3JD7fb9ae/lhoEMecXAaXqk
+        1j8iyuFbsoLZY9OQpGAYmhJzhkuP+1x6ngan+I2d/m7Xhh9OLXrM3As0nN880dSCwXcBduX0xAXgC
+        xKwiMdqWAJ+ywY2gpw2ZU1qwpKoiGgllcZ6gf1A5oKOkeDPUusJvn9s2XNpxyI5dg/+wd0tyBUGwp
+        QOwiwivA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49306)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r1NHG-0003Lv-28;
+        Fri, 10 Nov 2023 08:54:10 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r1NHC-0001Q8-OY; Fri, 10 Nov 2023 08:54:06 +0000
+Date:   Fri, 10 Nov 2023 08:54:06 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH 3/8] net: pcs: pcs-mtk-lynxi: use 2500Base-X without
+ AN
+Message-ID: <ZU3vrhJe7WmyeVHA@shell.armlinux.org.uk>
+References: <cover.1699565880.git.daniel@makrotopia.org>
+ <091e466912f1333bb76d23e95dc6019c9b71645f.1699565880.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/3] net: phy: at803x: add QCA8084 ethernet phy support
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231108113445.24825-1-quic_luoj@quicinc.com>
- <20231108113445.24825-2-quic_luoj@quicinc.com>
- <20231108131250.66d1c236@fedora>
- <423a3ee3-bed5-02f9-f872-7b5dba64f994@quicinc.com>
- <20231109101618.009efb45@fedora>
-Content-Language: en-US
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <20231109101618.009efb45@fedora>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZQ4CdfVpa1DUCHPD-ol5lFEPEejbFqeI
-X-Proofpoint-GUID: ZQ4CdfVpa1DUCHPD-ol5lFEPEejbFqeI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_04,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 mlxscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=516
- bulkscore=0 adultscore=0 suspectscore=0 impostorscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311100073
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <091e466912f1333bb76d23e95dc6019c9b71645f.1699565880.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 09, 2023 at 09:51:22PM +0000, Daniel Golle wrote:
+> Using 2500Base-T SFP modules e.g. on the BananaPi R3 requires manually
+> disabling auto-negotiation, e.g. using ethtool. While a proper fix
+> using SFP quirks is being discussed upstream, bring a work-around to
+> restore user experience to what it was before the switch to the
+> dedicated SGMII PCS driver.
 
+No.
 
-On 11/9/2023 5:16 PM, Maxime Chevallier wrote:
-> Hello,
-> 
-> On Thu, 9 Nov 2023 16:32:36 +0800
-> Jie Luo <quic_luoj@quicinc.com> wrote:
-> 
-> [...]
-> 
->>> What I understand from this is that this PHY can be used either as a
->>> switch, in which case port 4 would be connected to the host interface
->>> at up to 2.5G, or as a quad-phy, but since it uses QUSGMII the link
->>> speed would be limited to 1G per-port, is that correct ?
->>
->> When the PHY works on the interface mode QUSGMII for quad-phy, all 4
->> PHYs can support to the max link speed 2.5G, actually the PHY can
->> support to max link speed 2.5G for all supported interface modes
->> including qusgmii and sgmii.
-> 
-> I'm a bit confused then, as the USGMII spec says that Quad USGMII really
-> is for quad 10/100/1000 speeds, using 10b/8b encoding.
-> 
-> Aren't you using the USXGMII mode instead, which can convey 4 x 2.5Gbps
->   with 66b/64b encoding ?
-> 
-> Thanks,
-> 
-> Maxime
+> @@ -129,7 +138,8 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+>  	if (neg_mode & PHYLINK_PCS_NEG_INBAND)
+>  		sgm_mode |= SGMII_REMOTE_FAULT_DIS;
+>  
+> -	if (neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED) {
+> +	if (neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED &&
+> +	    interface != PHY_INTERFACE_MODE_2500BASEX) {
+>  		if (interface == PHY_INTERFACE_MODE_SGMII)
+>  			sgm_mode |= SGMII_SPEED_DUPLEX_AN;
+>  		bmcr = BMCR_ANENABLE;
 
-Hi Maxime,
-Yes, for quad PHY mode, it is using 66b/64 encoding.
+Phylink is asking you to have inband enabled. If inband needs to be
+disabled, then we need to arrange for phylink to pass
+PHYLINK_PCS_NEG_INBAND_DISABLED.
 
-it seems that PHY_INTERFACE_MODE_USXGMII is for single port,
-so i take the interface name PHY_INTERFACE_MODE_QUSGMII for
-quad PHYs here.
+Please don't hack special handling and behaviour into drivers.
 
-can we apply PHY_INTERFACE_MODE_USXGMII to quad PHYs in this
-case(qca8084 quad PHY mode)?
+Thanks.
 
-Thanks,
-Jie.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
