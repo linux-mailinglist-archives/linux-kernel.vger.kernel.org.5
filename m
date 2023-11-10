@@ -2,130 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFA27E8519
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCCA7E8531
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 22:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbjKJVdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 16:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S229679AbjKJVkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 16:40:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjKJVdX (ORCPT
+        with ESMTP id S229471AbjKJVkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 16:33:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9088E4205
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 13:33:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3250C433C9;
-        Fri, 10 Nov 2023 21:33:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699652000;
-        bh=2A5emeoFaW6SfVPuP6ICYHNdvN2k2OlVvkzhivtgSU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OL3/gDVCDj0ENfFBpGtZ814MXkpUyTExFJpMM9gnCGmqHwRSL6tqMC+BSepg4WbAU
-         FyZ6u4MvUFAEsBo7V4hxlY8DUOiwvMtjANO8o76vKvFAcx2WFdMo2CH1gQF0NCkDTA
-         WJkXEzrxa0HqVqjfUu1jkrlgzv+54OoexhAhjv9ZB6e1/JTkpmcBoctBFB3OpuKzQB
-         ezE+C+2l2HFOqd8nZqYw8wuao6Q9qt0VLR0fcmnb0dW2E+U/L/cIl5h2ngQctOfiM6
-         SAEf6LG8sGlbQ5l6/Iez9FXi8OiBvKgUPxj6Ad1m6ssyOl0izyaQSOkLag6fEylZ51
-         dItD/PQB2KwHg==
-Date:   Fri, 10 Nov 2023 13:33:17 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Nicolai Stange <nstange@suse.de>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [POC 0/7] livepatch: Make livepatch states, callbacks, and
- shadow variables work together
-Message-ID: <20231110213317.g4wz3j3flj7u2qg2@treble>
-References: <20231110170428.6664-1-pmladek@suse.com>
+        Fri, 10 Nov 2023 16:40:01 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F5BA9;
+        Fri, 10 Nov 2023 13:39:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=zv4p0IORXbUduRi4hB1ViF0SxIffSRz9cFMe9JTmeIQ=;
+        t=1699652398; x=1700861998; b=S4RLP2TGncVD+SsWLHv6/8l3YTBVtDi0qZK8MKnEE6dG45g
+        5GP0lEuMgoTgKz/mgEH/o41FCZ+DWSzu+NKXD3XrKsoOwX65zY8UEe9n8AIOsacpBn7MPR7I3P2/n
+        90dYK+MbxGlJdocf+QSv0Gd5eDhkWSL89j0Dvwh/V/uvvcqLDoG0a6iZky/Jx4kIwM2ul6QlMEWHu
+        oNnqZx3b+N4W4F2khVYrTVEV3G0s/WV52DQ/2umYPQ+V6+OSr2wVJ+RAJxYjdx6VgS8W5U/UAdFuT
+        KO14sf/uwdxdw72CeZQnGy2ukNmd/wDVjxyQKFXcO8fzLEeDF4Gr5EIeVMoxMPlA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r1ZEJ-00000003DcW-2daU;
+        Fri, 10 Nov 2023 22:39:55 +0100
+Message-ID: <c4c14b15d5e0c2e4650b50ef7ae9d8755f83900e.camel@sipsolutions.net>
+Subject: Re: [PATCH] mwifiex: clean up some inconsistent indenting
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        briannorris@chromium.org
+Cc:     kvalo@kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Date:   Fri, 10 Nov 2023 22:39:54 +0100
+In-Reply-To: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
+References: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231110170428.6664-1-pmladek@suse.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 06:04:21PM +0100, Petr Mladek wrote:
-> This POC is a material for the discussion "Simplify Livepatch Callbacks,
-> Shadow Variables, and States handling" at LPC 2013, see
-> https://lpc.events/event/17/contributions/1541/
-> 
-> It obsoletes the patchset adding the garbage collection of shadow
-> variables. This new solution is based on ideas from Nicolai Stange.
-> And it should also be in sync with Josh's ideas mentioned into
-> the thread about the garbage collection, see
-> https://lore.kernel.org/r/20230204235910.4j4ame5ntqogqi7m@treble
+On Fri, 2023-11-10 at 16:33 +0800, Jiapeng Chong wrote:
+> No functional modification involved.
+>=20
+> drivers/net/wireless/marvell/mwifiex/sta_event.c:789 mwifiex_process_sta_=
+event() warn: inconsistent indenting.
 
-Nice!  I like how it brings the "features" together and makes them easy
-to use.  This looks like a vast improvement.
+OK, sure ...
 
-Was there a reason to change the naming?  I'm thinking
+> +++ b/drivers/net/wireless/marvell/mwifiex/sta_event.c
+> @@ -762,7 +762,7 @@ int mwifiex_process_sta_event(struct mwifiex_private =
+*priv)
+>  		mwifiex_dbg(adapter, EVENT, "info: EVENT: AWAKE\n");
+>  		if (!adapter->pps_uapsd_mode &&
+>  		    (priv->port_open ||
+> -		     (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
+> +		    (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
+>  		    priv->media_connected && adapter->sleep_period.period) {
+>  			adapter->pps_uapsd_mode =3D true;
+>  			mwifiex_dbg(adapter, EVENT,
+> @@ -773,7 +773,7 @@ int mwifiex_process_sta_event(struct mwifiex_private =
+*priv)
+>  			if (mwifiex_check_last_packet_indication(priv)) {
+>  				if (adapter->data_sent ||
+>  				    (adapter->if_ops.is_port_ready &&
+> -				     !adapter->if_ops.is_port_ready(priv))) {
+> +				    !adapter->if_ops.is_port_ready(priv))) {
+>  					adapter->ps_state =3D PS_STATE_AWAKE;
+>  					adapter->pm_wakeup_card_req =3D false;
+>  					adapter->pm_wakeup_fw_try =3D false;
 
-  setup / enable / disable / release
 
-is less precise than
+Seems fine.
 
-  pre_patch / post_patch / pre_unpatch / post_unpatch.
+> @@ -781,12 +781,10 @@ int mwifiex_process_sta_event(struct mwifiex_privat=
+e *priv)
+>  					break;
+>  				}
+>  				if (!mwifiex_send_null_packet
+> -					(priv,
+> -					 MWIFIEX_TxPD_POWER_MGMT_NULL_PACKET |
+> -					 MWIFIEX_TxPD_POWER_MGMT_LAST_PACKET))
+> -						adapter->ps_state =3D
+> -							PS_STATE_SLEEP;
+> -					return 0;
+> +				    (priv, MWIFIEX_TxPD_POWER_MGMT_NULL_PACKET |
+> +				     MWIFIEX_TxPD_POWER_MGMT_LAST_PACKET))
+> +					adapter->ps_state =3D PS_STATE_SLEEP;
+> +				return 0;
+>=20
 
-Also, I'm thinking "replaced" instead of "obsolete" would be more
-consistent with the existing terminology.
+=F0=9F=A4=B7=E2=80=8D=E2=99=80=EF=B8=8F=EF=B8=8F
+That's not really an improvement is it? You've just indented the
+function arguments as if they were part another part of the condition? I
+mean, sure, it was awful - but ... maybe better break the 80 cols rule
+(which isn't one any more anyway)?
 
-For example, in __klp_enable_patch():
-
-	ret = klp_setup_states(patch);
-	if (ret)
-		goto err;
-
-	if (patch->replace)
-		klp_disable_obsolete_states(patch);
-
-it's not immediately clear why "disable obsolete" would be the "replace"
-counterpart to "setup".
-
-Similarly, in klp_complete_transition():
-
-	if (klp_transition_patch->replace && klp_target_state == KLP_PATCHED) {
-		klp_unpatch_replaced_patches(klp_transition_patch);
-		klp_discard_nops(klp_transition_patch);
-		klp_release_obsolete_states(klp_transition_patch);
-	}
-
-it's a little jarring to have "unpatch replaced" followed by "release
-obsolete".
-
-So instead of:
-
-  int  klp_setup_states(struct klp_patch *patch);
-  void klp_enable_states(struct klp_patch *patch);
-  void klp_disable_states(struct klp_patch *patch);
-  void klp_release_states(struct klp_patch *patch);
-
-  void klp_enable_obsolete_states(struct klp_patch *patch);
-  void klp_disable_obsolete_states(struct klp_patch *patch);
-  void klp_release_obsolete_states(struct klp_patch *patch);
-
-how about something like:
-
-  int  klp_states_pre_patch(void);
-  void klp_states_post_patch(void);
-  void klp_states_pre_unpatch(void);
-  void klp_states_post_unpatch(void);
-
-  void klp_states_post_patch_replaced(void);
-  void klp_states_pre_unpatch_replaced(void);
-  void klp_states_post_unpatch_replaced(void);
-
-?
-
-(note that passing klp_transition_patch might be optional since state.c
-already has visibility to it anyway)
-
--- 
-Josh
+johannes
