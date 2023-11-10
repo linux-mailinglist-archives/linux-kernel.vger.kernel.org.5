@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761147E7F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE6B7E7E43
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 18:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbjKJRyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 12:54:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S1344152AbjKJRmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 12:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjKJRxT (ORCPT
+        with ESMTP id S229746AbjKJRlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 12:53:19 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E77742C22;
-        Fri, 10 Nov 2023 09:01:27 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPA id C14F360005;
-        Fri, 10 Nov 2023 17:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699635686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xEm3o8VU+39ALGHyQKeorPBmsousXOC90k2SfHr6l+8=;
-        b=akEddODtZEANlh32ZjSuOqfH9OK2OytJ70Ew/Ly8Ab5NURRRE4ozxB0zfFCHCcZ7wuloAO
-        5XVpuDCbWUHw41I5C0TYDWV1e/cTXvG8jxDVqUMuEBnePr96w8Vrm5bMLAwhVooARZ/vEd
-        rDfqqXPNDLxEXcaLHDkmJf+4mCesbVL1xmEx+jc2ZRBU1E7a8k6yMtJi9qnJuSGXi7jOL4
-        ka3EMTDWJGjasU4jtE03UiaQWb0hAma7qFqL6OLBWSP5DWPcScArcPnSuNCdobgYVrklqG
-        43PH6RASlV6flnurH5hzK7/5gk9GL1hseswLHho4YDPcDpD6wU573tpPfxpC4g==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH 1/1] driver core: Avoid using fwnode in __fwnode_link_del()
-Date:   Fri, 10 Nov 2023 18:01:20 +0100
-Message-ID: <20231110170121.769221-1-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 10 Nov 2023 12:41:53 -0500
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B5342C27
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:01:51 -0800 (PST)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1f066fc2a28so1187304fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 09:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699635711; x=1700240511; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sMrYZbRlgCXN0jdJWgsU4bTo4xTt1FXQt6GOccDcYUQ=;
+        b=ItN7kX3/CuRvB0MH+zoAN3i7E+huuMVkzGLkLS8+VrRPWKKUkDoax/abFFzU4fLATm
+         +Nnfr3DOFiYpejkkJZKXzqXX6MKRyu6fKombrUyU0vjDykgxBEWNqBt0XY7QEeVekAJd
+         TbTKI3ARIYrgxlZ1KM6iut1uZ/CYvYleB3qVE8/qyEAaS4Vrk0F8PU6yxxztW1th9xLP
+         JcXccy09v3zjv2XQuQFIgyRtGLhyT2IuCYhHDijNm1Azu6LgeeCSihXHL47KtIUvM4Sx
+         hFFF8GdoVdIf3XMFQ1uG7pv3sasSZZoZddLID+MRnoVBkDsyvV/cHwrn7XSzaRYX5Xfz
+         LG3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699635711; x=1700240511;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sMrYZbRlgCXN0jdJWgsU4bTo4xTt1FXQt6GOccDcYUQ=;
+        b=i8s8sEUq3T9y/f8Sxgdsj1Rd5yOD7s+mYVI+4mwl6+POzc7JmDsuQ1jnpOFpWDrGpR
+         u/RGal6SAAS/4sf0RXI26s+Mwq1L5yU82KU40OKvXU9R4tJveUqryD6chYV+I1Z/mc0r
+         GEaUe4iRDQkfFGcnyihaxYh/pf9f8y0EgdVqPrZm3ZyN47C5GQjMntTiGnTPjUwTnTVT
+         mtwnNtHAk6SdOck/WAbo7oucFuY9gxTlgqGirs+wyiwcjC5qoPDLckvA6P0GToWXOqa1
+         6DnEE/5wdMpvbWw7hCorf6bEimH4WVYfpTQkloGSDXuCwBuBJqSATC7+aXC5t5JgrAWw
+         iD2A==
+X-Gm-Message-State: AOJu0YzgopRjN0KQ08WHV5BpTYqSWmK2UwDu/XUMgT70xUYGGyte+uVb
+        5X8yiHgHiE+ZLqRbf5ULAkFxxWgiKbtU4LTLr/Y=
+X-Google-Smtp-Source: AGHT+IFl+/Nl/Vd6SMC08TbrrJikc5Cwz1liEKDu9OSvpC5Ug3/XWtCFUFE0q3JqNBokWuXM1Cv+CweVjxik2T5qJ+E=
+X-Received: by 2002:a05:6870:1090:b0:1f0:d96:8d9f with SMTP id
+ 16-20020a056870109000b001f00d968d9fmr7573876oaq.57.1699635710907; Fri, 10 Nov
+ 2023 09:01:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+References: <20231110155548.20599-1-andrealmeid@igalia.com>
+In-Reply-To: <20231110155548.20599-1-andrealmeid@igalia.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 10 Nov 2023 12:01:39 -0500
+Message-ID: <CADnq5_MOQXiUkyobpuEAnNmcX2jFbEvva+1bm4hrRQ0aguPFag@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd: Document device reset methods
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, alexander.deucher@amd.com,
+        ray.huang@amd.com, christian.koenig@amd.com, kernel-dev@igalia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A refcount issue can appeared in __fwnode_link_del() due to the
-pr_debug() call:
-  WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0xe5/0x110
-  Call Trace:
-  <TASK>
-  ? refcount_warn_saturate+0xe5/0x110
-  ? __warn+0x81/0x130
-  ? refcount_warn_saturate+0xe5/0x110
-  ? report_bug+0x191/0x1c0
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? prb_read_valid+0x1b/0x30
-  ? handle_bug+0x3c/0x80
-  ? exc_invalid_op+0x17/0x70
-  ? asm_exc_invalid_op+0x1a/0x20
-  ? refcount_warn_saturate+0xe5/0x110
-  kobject_get+0x68/0x70
-  of_node_get+0x1e/0x30
-  of_fwnode_get+0x28/0x40
-  fwnode_full_name_string+0x34/0x90
-  fwnode_string+0xdb/0x140
-  vsnprintf+0x17b/0x630
-  va_format.isra.0+0x71/0x130
-  vsnprintf+0x17b/0x630
-  vprintk_store+0x162/0x4d0
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? srso_alias_return_thunk+0x5/0x7f
-  ? try_to_wake_up+0x9c/0x620
-  ? rwsem_mark_wake+0x1b2/0x310
-  vprintk_emit+0xe4/0x2b0
-  _printk+0x5c/0x80
-  __dynamic_pr_debug+0x131/0x160
-  ? srso_alias_return_thunk+0x5/0x7f
-  __fwnode_link_del+0x25/0xa0
-  fwnode_links_purge+0x39/0xb0
-  of_node_release+0xd9/0x180
-  kobject_put+0x7b/0x190
-  ...
+On Fri, Nov 10, 2023 at 10:56=E2=80=AFAM Andr=C3=A9 Almeida <andrealmeid@ig=
+alia.com> wrote:
+>
+> Document what each amdgpu driver reset method does.
+>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
+dgpu/amdgpu.h
+> index a79d53bdbe13..500f86c79eb7 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -504,6 +504,26 @@ struct amdgpu_allowed_register_entry {
+>         bool grbm_indexed;
+>  };
+>
+> +/**
+> + * enum amd_reset_method - Methods for resetting AMD GPU devices
+> + *
+> + * @AMD_RESET_METHOD_NONE: The device will not be reset.
+> + * @AMD_RESET_LEGACY: Method reserved for SI/CIK asics.
 
-Indeed, an of_node is destroyed and so, of_node_release() is called
-because the of_node refcount reached 0.
-of_node_release() calls fwnode_links_purge() to purge the links and
-ended with __fwnode_link_del() calls.
-__fwnode_link_del calls pr_debug() to print the fwnodes (of_nodes)
-involved in the link and so this call is done while one of them is no
-more available (ie the one related to the of_node_release() call)
+This also applies to VI asics.
 
-Remove the pr_debug() call to avoid the use of the links fwnode while
-destroying the fwnode itself.
+> + * @AMD_RESET_MODE0: High level PCIe reset.
 
-Fixes: ebd6823af378 ("driver core: Add debug logs when fwnode links are added/deleted")
-Cc: stable@vger.kernel.org
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- drivers/base/core.c | 2 --
- 1 file changed, 2 deletions(-)
+Resets the entire ASIC.  Here for completeness, but not actually
+available to the driver.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index f4b09691998e..62088c663014 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -109,8 +109,6 @@ int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup)
-  */
- static void __fwnode_link_del(struct fwnode_link *link)
- {
--	pr_debug("%pfwf Dropping the fwnode link to %pfwf\n",
--		 link->consumer, link->supplier);
- 	list_del(&link->s_hook);
- 	list_del(&link->c_hook);
- 	kfree(link);
--- 
-2.41.0
+> + * @AMD_RESET_MODE1: Resets each IP block (SDMA, GFX, VCN, etc.) individ=
+ually.
+> + *                   Suitable only for some discrete GPUs.
 
+Resets all IPs on the asic.  Not available on all asics.
+
+> + * @AMD_RESET_MODE2: Resets only the GFX block. Useful for APUs, giving =
+that
+> + *                   the rest of IP blocks and SMU is shared with the CP=
+U.
+
+Resets a lesser level of IPs compared to MODE1.  Which IPs are reset
+depends on the asic.  Notably doesn't reset IPs shared with the CPU on
+APUs or the memory controllers (so VRAM is not lost).  Not available
+on all asics.
+
+> + * @AMD_RESET_BACO: BACO (Bus Alive, Chip Off) method powers off and on =
+the card
+> + *                  but without powering off the PCI bus. Suitable only =
+for
+> + *                  discrete GPUs.
+> + * @AMD_RESET_PCI: Does a full bus reset, including powering on and off =
+the
+> + *                 card.
+
+This calls into the core Linux PCI reset code and does a secondary bus
+reset or FLR, depending on what the underlying hardware supports.
+
+> + *
+> + * Methods available for AMD GPU driver for resetting the device. Not al=
+l
+> + * methods are suitable for every device. User can overwrite the method =
+using
+> + * module parameter `reset_method`.
+> + */
+>  enum amd_reset_method {
+>         AMD_RESET_METHOD_NONE =3D -1,
+>         AMD_RESET_METHOD_LEGACY =3D 0,
+> --
+> 2.42.1
+>
