@@ -2,249 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054977E8B90
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 17:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530DC7E8B94
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 17:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjKKQS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 11:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        id S231309AbjKKQXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 11:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjKKQS6 (ORCPT
+        with ESMTP id S229797AbjKKQXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 11:18:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C5EEA
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 08:18:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699719534; x=1731255534;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=PZjo+7huWc7gsxAJq9vb23Q6wNAN+H+pc7xiLHTJTk0=;
-  b=hMHsbOyvCXr/S4LmhachvvDnvlzp3zaRYjgfZjUWFvEHERuil0Blv9F5
-   cgccGU1oov30O5On+nY9yzDwgFM55TgOLm3jt3A824KIXTSdmwSY5AQaa
-   glaB/GhgvfIGNmEP7YQu/sirPPyIUTu9rkp/zqrINaFasWtBJDxs26cgk
-   WxHLuC8508LBnt3jmD6Hd9NK0ukJFrysAG0FvWCEXAsFErbHkPSL+RvSN
-   4LV1dz5UV4t05IXCKkNO95/gtwWjeleyPYTvnbt0jmdKpuObXBhjcAf+H
-   jKscAYPNzWASTEsFxDlNo2C4008BEwTT8HejOPgwekcVdDAgiHQ5msnjC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="456781837"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="456781837"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 08:18:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="907678117"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="907678117"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Nov 2023 08:18:52 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1qh8-000AZs-1O;
-        Sat, 11 Nov 2023 16:18:50 +0000
-Date:   Sun, 12 Nov 2023 00:17:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/btree_gc.c:1304:17: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202311120044.n5XJIFIC-lkp@intel.com>
+        Sat, 11 Nov 2023 11:23:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075413A97
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 08:23:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 711F6C433C8;
+        Sat, 11 Nov 2023 16:23:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699719784;
+        bh=5ApyJFLP36dXfmFHh7CpSrZFu9/cV8AIr8fMVRrW0j8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pS+4nXjE01DaLYcI3BzoTy7ROuV7ZjJuf9sU7AFjCuONU1cMYhz4hj2InxpGGaScv
+         y628VcTDA5JPQbKgL5oBTj+oLlxcr0xTHyahhoxXR8ZE5TVuZT/ee3noAUc2c62pFI
+         jeJ7+QuQD0xGvEufBOAvJJqbfAoLadDwmiXoo5AafafkEeytyRjl/1l13uX6KQJUum
+         zh5NFTVvg++CnybV4YFJhcj0fFfmofbytNbM5RERiTDKHNLSiNk/DylJMndLgbrfPg
+         6TYsjJFnptSOzHx0Iq2VgpbMd0gOIqtPgAfKCGEb/q5AViFOO8g9VqGTqH2dbr8PBZ
+         8JD2Whb9Ce52A==
+Date:   Sat, 11 Nov 2023 16:23:00 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: display/msm: qcom,sm8150-mdss: correct DSI
+ PHY compatible
+Message-ID: <20231111-underwear-elf-17d4a88f5332@squawk>
+References: <20231111142017.51922-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lcK6iluwpXLPr5CJ"
 Content-Disposition: inline
+In-Reply-To: <20231111142017.51922-1-krzysztof.kozlowski@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
-commit: 822835ffeae411bbc8af104da9331fdf63a7bc12 bcachefs: Fold bucket_state in to BCH_DATA_TYPES()
-date:   3 weeks ago
-config: loongarch-randconfig-r132-20231107 (https://download.01.org/0day-ci/archive/20231112/202311120044.n5XJIFIC-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231112/202311120044.n5XJIFIC-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311120044.n5XJIFIC-lkp@intel.com/
+--lcK6iluwpXLPr5CJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sparse warnings: (new ones prefixed by >>)
-   fs/bcachefs/btree_gc.c: note: in included file (through fs/bcachefs/btree_locking.h):
-   fs/bcachefs/btree_iter.h:204:8: sparse: sparse: duplicate inline
-   fs/bcachefs/btree_gc.c: note: in included file (through fs/bcachefs/bcachefs.h):
-   fs/bcachefs/bcachefs_format.h:1274:45: sparse: sparse: array of flexible structures
-   fs/bcachefs/bcachefs_format.h:1289:42: sparse: sparse: array of flexible structures
-   fs/bcachefs/btree_gc.c: note: in included file:
-   fs/bcachefs/bcachefs.h:834:9: sparse: sparse: array of flexible structures
-   fs/bcachefs/btree_gc.c:854:45: sparse: sparse: mixing different enum types:
-   fs/bcachefs/btree_gc.c:854:45: sparse:    unsigned int enum btree_id
-   fs/bcachefs/btree_gc.c:854:45: sparse:    unsigned int enum btree_node_type
-   fs/bcachefs/btree_gc.c:1000:45: sparse: sparse: mixing different enum types:
-   fs/bcachefs/btree_gc.c:1000:45: sparse:    unsigned int enum btree_id
-   fs/bcachefs/btree_gc.c:1000:45: sparse:    unsigned int enum btree_node_type
-   fs/bcachefs/btree_gc.c:1215:47: sparse: sparse: cast removes address space '__percpu' of expression
-   fs/bcachefs/btree_gc.c:1215:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [noderef] [usertype] __percpu * @@     got void * @@
-   fs/bcachefs/btree_gc.c:1215:47: sparse:     expected unsigned long long [noderef] [usertype] __percpu *
-   fs/bcachefs/btree_gc.c:1215:47: sparse:     got void *
-   fs/bcachefs/btree_gc.c:1231:47: sparse: sparse: cast removes address space '__percpu' of expression
-   fs/bcachefs/btree_gc.c:1231:47: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [noderef] [usertype] __percpu * @@     got void * @@
-   fs/bcachefs/btree_gc.c:1231:47: sparse:     expected unsigned long long [noderef] [usertype] __percpu *
-   fs/bcachefs/btree_gc.c:1231:47: sparse:     got void *
->> fs/bcachefs/btree_gc.c:1304:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     expected void *ptr
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/btree_gc.c:1304:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     expected void *ptr
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/btree_gc.c:1304:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     expected void *ptr
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     got unsigned long long [noderef] __percpu *
->> fs/bcachefs/btree_gc.c:1304:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned long long [noderef] __percpu * @@
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     expected void *ptr
-   fs/bcachefs/btree_gc.c:1304:17: sparse:     got unsigned long long [noderef] __percpu *
-   fs/bcachefs/btree_gc.c: note: in included file (through fs/bcachefs/buckets.h, fs/bcachefs/alloc_background.h):
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/extents.h:145:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] @@     got unsigned int const [usertype] csum @@
-   fs/bcachefs/extents.h:145:44: sparse:     expected restricted __le32 [usertype]
-   fs/bcachefs/extents.h:145:44: sparse:     got unsigned int const [usertype] csum
-   fs/bcachefs/extents.h:159:44: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] @@     got unsigned long long const [usertype] csum_hi:16 @@
-   fs/bcachefs/extents.h:159:44: sparse:     expected restricted __le16 [usertype]
-   fs/bcachefs/extents.h:159:44: sparse:     got unsigned long long const [usertype] csum_hi:16
-   fs/bcachefs/btree_gc.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
-   include/linux/seqlock.h:269:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   include/linux/seqlock.h:269:9: sparse:     expected void *ptr
-   include/linux/seqlock.h:269:9: sparse:     got unsigned int [noderef] __percpu *
+On Sat, Nov 11, 2023 at 03:20:17PM +0100, Krzysztof Kozlowski wrote:
+> Qualcomm SM8150 MDSS comes with a bit different 7nm DSI PHY with its own
+> compatible.  DTS already use it:
+>=20
+>   sa8155p-adp.dtb: display-subsystem@ae00000: phy@ae94400:compatible:0: '=
+qcom,dsi-phy-7nm' was expected
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-vim +1304 fs/bcachefs/btree_gc.c
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-  1277	
-  1278	static int bch2_gc_start(struct bch_fs *c,
-  1279				 bool metadata_only)
-  1280	{
-  1281		struct bch_dev *ca = NULL;
-  1282		unsigned i;
-  1283	
-  1284		BUG_ON(c->usage_gc);
-  1285	
-  1286		c->usage_gc = __alloc_percpu_gfp(fs_usage_u64s(c) * sizeof(u64),
-  1287						 sizeof(u64), GFP_KERNEL);
-  1288		if (!c->usage_gc) {
-  1289			bch_err(c, "error allocating c->usage_gc");
-  1290			return -ENOMEM;
-  1291		}
-  1292	
-  1293		for_each_member_device(ca, c, i) {
-  1294			BUG_ON(ca->buckets_gc);
-  1295			BUG_ON(ca->usage_gc);
-  1296	
-  1297			ca->usage_gc = alloc_percpu(struct bch_dev_usage);
-  1298			if (!ca->usage_gc) {
-  1299				bch_err(c, "error allocating ca->usage_gc");
-  1300				percpu_ref_put(&ca->ref);
-  1301				return -ENOMEM;
-  1302			}
-  1303	
-> 1304			this_cpu_write(ca->usage_gc->d[BCH_DATA_free].buckets,
-  1305				       ca->mi.nbuckets - ca->mi.first_bucket);
-  1306		}
-  1307	
-  1308		return 0;
-  1309	}
-  1310	
+Thanks,
+Conor.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  .../devicetree/bindings/display/msm/qcom,sm8150-mdss.yaml   | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sm8150-md=
+ss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sm8150-mdss.ya=
+ml
+> index a2a8be7f64a9..c0d6a4fdff97 100644
+> --- a/Documentation/devicetree/bindings/display/msm/qcom,sm8150-mdss.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/qcom,sm8150-mdss.yaml
+> @@ -69,7 +69,7 @@ patternProperties:
+> =20
+>      properties:
+>        compatible:
+> -        const: qcom,dsi-phy-7nm
+> +        const: qcom,dsi-phy-7nm-8150
+> =20
+>  unevaluatedProperties: false
+> =20
+> @@ -247,7 +247,7 @@ examples:
+>          };
+> =20
+>          dsi0_phy: phy@ae94400 {
+> -            compatible =3D "qcom,dsi-phy-7nm";
+> +            compatible =3D "qcom,dsi-phy-7nm-8150";
+>              reg =3D <0x0ae94400 0x200>,
+>                    <0x0ae94600 0x280>,
+>                    <0x0ae94900 0x260>;
+> @@ -318,7 +318,7 @@ examples:
+>          };
+> =20
+>          dsi1_phy: phy@ae96400 {
+> -            compatible =3D "qcom,dsi-phy-7nm";
+> +            compatible =3D "qcom,dsi-phy-7nm-8150";
+>              reg =3D <0x0ae96400 0x200>,
+>                    <0x0ae96600 0x280>,
+>                    <0x0ae96900 0x260>;
+> --=20
+> 2.34.1
+>=20
+
+--lcK6iluwpXLPr5CJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZU+qYQAKCRB4tDGHoIJi
+0pNbAQC10CbyYHGczoldMb1DAzsqaJQkprUd25qRJzlQcGnX9gD9HeEvukvY6AyL
+iTOIv+rcLmiuz0PVJXyBzl3XhKQi2gs=
+=yiQ2
+-----END PGP SIGNATURE-----
+
+--lcK6iluwpXLPr5CJ--
