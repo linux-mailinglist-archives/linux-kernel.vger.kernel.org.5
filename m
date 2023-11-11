@@ -2,145 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE11C7E8D1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 23:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2607E8D26
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 23:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjKKWVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 17:21:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S229791AbjKKWgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 17:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjKKWVp (ORCPT
+        with ESMTP id S229436AbjKKWgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 17:21:45 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B251B30D5;
-        Sat, 11 Nov 2023 14:21:41 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50a6ff9881fso2877118e87.1;
-        Sat, 11 Nov 2023 14:21:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699741300; x=1700346100; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=vTv8KziSQNanprIcdAtBsLfUhuVbJahhzU1G4OvvbRI=;
-        b=BaicL5s9MJQAx4zl5Yq39ttxc05RAhXuKsvckph0ShZM4Uav3TDOlIo2ThAb9F/cj5
-         vg4rYF3f5TAdASY/+WGNenCdOngUv4YqXMnH17AlRXLxHiRHDi3aJvzKIOPu88TKCjEe
-         WJ8a5i0yRSOMoGLkBck2SxekTy5Du7TLxzTsYy8XhlzUBnh9aUnUH+HuhQJhVMXyOinz
-         YcTxXCgvzcfTXaXADsVtdUv/OOGd5Fsa7CLEbtJ0xAWIaXx2e7OSZuHnxlKbTgR5NpNE
-         8VKc54wErR3FaqyAok81/fwv0hq/PKv5tueZJFToTNpuqkP0dNjb7MLl3c+uWrKu89nn
-         gPow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699741300; x=1700346100;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vTv8KziSQNanprIcdAtBsLfUhuVbJahhzU1G4OvvbRI=;
-        b=aPB2CgQ+3u23Q+nf0YgzPeYf/k7hKjrcWFvt93EIq6t1ytAFON4aVJ4c2nU9L6fc2s
-         MXc3tM47LGCPjiyfTspPEthmcisrbf9PKfhukm05MzfhgufKhZj4gXCq/d7n+EuGDC/j
-         UECINDX+Nt6aMzT/33yVHNvjOrZlCOVMBOZ0/Psc35PZrDwPCUdMdlG8SM/hr5uB1i6H
-         sdaHFY6Qdodjez0QxX0nfukK7dEauko4BZ5AMwNfUYIh3EBjDiZZzeRN4k8K6cdxzQBi
-         OtnMkY/pnf/UAN3xEN5MzStIonUbHqKr5b4iX11Eh4PFKoMkuMz3iRoAvq2G/HqvNC2y
-         r3uw==
-X-Gm-Message-State: AOJu0Yy1m6BlXbxJArsBMnuU4hJTBg6aRRobUkyFt9TGGCzctnsLGnWa
-        iY3vvtA5f3V24H8xxf3oMFNIVqxzj3ecchTxGGPovuehWrYHEoHA
-X-Google-Smtp-Source: AGHT+IFt5i4orSfmVg/MsRnAdwT9Os00tSkiaSen/rA6V+YBlMb/0tvlGU5oxxbwchVW6f+WZJ8Ls223H3ZcPCSqF+c=
-X-Received: by 2002:a05:6512:3f0:b0:50a:6fc5:e95c with SMTP id
- n16-20020a05651203f000b0050a6fc5e95cmr1565177lfq.60.1699741299543; Sat, 11
- Nov 2023 14:21:39 -0800 (PST)
-MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Sat, 11 Nov 2023 16:21:28 -0600
-Message-ID: <CAH2r5muWrqOdEDUhmYHgX2Pr0yWSMrFLPms+4pqwrZaMr4i7Og@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
+        Sat, 11 Nov 2023 17:36:07 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEAED8
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 14:36:04 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 354AD40E018F;
+        Sat, 11 Nov 2023 22:36:01 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id qK2TaQqZPyfQ; Sat, 11 Nov 2023 22:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699742158; bh=OzpHat8gl6GM/lll5lsFrRpwrAFV28c7ZVp9i2lyeyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iqcup+2/ExOwtUXb2HHhkumK+PI1LXbsxmsbEr3tgSW5/ji2yCwpMznyCx1Hj/qzZ
+         Dzm1FS736pzbo3Dh4qlmncRGVt3wRarlyftURpzCqpCZC9L2J/NLfw9rZcRn04Nsrr
+         3mkvXdy2+VK7I6YLV2CJdWwEyotp+ADiPbfJdMiOXkbZzuj4Cmgch6qNkz6TpGUliB
+         UBZLByWXZKjfE1SU9kT3DacaH6mweo0GAZaHAWETqEx6ufCItk5cqq/4P8jk93fBwG
+         e6vhIdNxBxZMa/WpQfYEzSTNTRys+z+0y8nHXlWR74o8VZLo5ww7CLKuGbViFFeHiR
+         k6UZjpgYrBakBBQcnq1YR4VvZhdqBqntTBs39sJSaw3ebLafcmUtihGXFaTqQsQAMM
+         hW56LbYWVYmJvFMlWGAjoX2AUYOfV64dhIaIq7NVdy5zGkeqXThEt7pJ/9um/i36On
+         HO1OJsKsZiQimD0Dqcnxp0BKYb8c8t2ChDLwXK0/+NPVH7Lzk17IlpOLkmzE8GfS6R
+         o9ynNJoLz8OOgGrDEpqmyisL3rCAk198FpcJOCogP5LendnISEPZkV13etfCDKVUGW
+         R4vIt0eiss2rff5d223GZ39BuHiax72fblEk8SYG69Mz6vp13qNLhzwLGCrmf6YVld
+         DNW25ES66ZdXjitlvaf8JXNk=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9F3A40E0171;
+        Sat, 11 Nov 2023 22:35:54 +0000 (UTC)
+Date:   Sat, 11 Nov 2023 23:35:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] x86/microcode for 6.7
+Message-ID: <20231111223549.GBZVABxWKgkuGNhEqe@fat_crate.local>
+References: <20231103110600.GAZUTUGFjhoLm1KZzE@fat_crate.local>
+ <CAHk-=wg=+8rceshMkB4VnKxmRccVLtBLPBawnewZuuqyx5U=3A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg=+8rceshMkB4VnKxmRccVLtBLPBawnewZuuqyx5U=3A@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 766e9cf3bd64c45fcace3acc6f8b3df815448ea3:
+On Sat, Nov 11, 2023 at 02:19:00PM -0800, Linus Torvalds wrote:
+> Can we please stop doing this insanity? It's not helpful.
 
-  Merge tag '6.7-rc-smb3-client-fixes-part1' of
-git://git.samba.org/sfrench/cifs-2.6 (2023-11-04 09:13:50 -1000)
+Yeah, it is on the todo list. I'll take a look next week.
 
-are available in the Git repository at:
+Thx.
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc-smb3-client-fixes-part2
+-- 
+Regards/Gruss,
+    Boris.
 
-for you to fetch changes up to fd2bd7c0539e28f267a84da8d68f9378511b50a7:
-
-  cifs: update internal module version number for cifs.ko (2023-11-10
-09:33:26 -0600)
-
-----------------------------------------------------------------
-Sixteen smb3/cifs client fixes
-- ctime caching fix (for setxattr)
-- encryption fix
-- DNS resolver mount fix
-- two debugging improvements
-- six multichannel fixes including cases where server stops or starts
-supporting multichannel after mount
-- reconnect fix
-- three minor cleanups
-
-This P/R does not include the patches for perf improvement for caching
-of root directory, and the one to support key rotation, and the
-O_TMPFILE fix (those are still being tested).  An additional
-multichannel locking fix is also being investigated.
-----------------------------------------------------------------
-David Howells (1):
-      cifs: Fix encryption of cleared, but unset rq_iter data buffers
-
-Paulo Alcantara (1):
-      smb: client: fix mount when dns_resolver key is not available
-
-Shyam Prasad N (7):
-      cifs: handle cases where a channel is closed
-      cifs: distribute channels across interfaces based on speed
-      cifs: account for primary channel in the interface list
-      cifs: do not pass cifs_sb when trying to add channels
-      cifs: reconnect work should have reference on server struct
-      cifs: handle when server starts supporting multichannel
-      cifs: handle when server stops supporting multichannel
-
-Steve French (7):
-      smb3: minor RDMA cleanup
-      smb3: more minor cleanups for session handling routines
-      smb3: minor cleanup of session handling code
-      smb3: fix caching of ctime on setxattr
-      smb3: allow dumping session and tcon id to improve stats
-analysis and debugging
-      Missing field not being returned in ioctl CIFS_IOC_GET_MNT_INFO
-      cifs: update internal module version number for cifs.ko
-
- fs/smb/client/cifs_debug.c    |  25 ++++++++-
- fs/smb/client/cifs_ioctl.h    |   6 +++
- fs/smb/client/cifsfs.h        |   4 +-
- fs/smb/client/cifsglob.h      |  16 ++++--
- fs/smb/client/cifsproto.h     |   7 ++-
- fs/smb/client/connect.c       |  48 ++++++++++++++---
- fs/smb/client/dfs.c           |  18 +++++--
- fs/smb/client/fs_context.h    |   1 +
- fs/smb/client/ioctl.c         |  26 ++++++++++
- fs/smb/client/namespace.c     |  17 +++++-
- fs/smb/client/sess.c          | 259
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------
- fs/smb/client/smb2ops.c       |   6 +++
- fs/smb/client/smb2pdu.c       | 131
-++++++++++++++++++++++++++++++++++++++++++-----
- fs/smb/client/smb2transport.c |   8 ++-
- fs/smb/client/transport.c     |   2 +-
- fs/smb/client/xattr.c         |   5 +-
- 16 files changed, 491 insertions(+), 88 deletions(-)
-
-
---
-Thanks,
-
-Steve
+https://people.kernel.org/tglx/notes-about-netiquette
