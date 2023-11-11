@@ -2,166 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2507E8CB2
+	by mail.lfdr.de (Postfix) with ESMTP id 378BC7E8CB0
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 21:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjKKUsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 15:48:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S229666AbjKKUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 15:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKKUsv (ORCPT
+        with ESMTP id S229436AbjKKUt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 15:48:51 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC42D73;
-        Sat, 11 Nov 2023 12:48:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
-        s=s31663417; t=1699735704; x=1700340504; i=quwenruo.btrfs@gmx.com;
-        bh=TgFPOslhJOQ9qs98yLRjNcSGkGecPQbUrWbyHjijZdU=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=ZwRxKRMgIl1MWZzW6+omuPubI6dfNBN034QeH00rW/4OQnI8FJQCrjabePshr0Lq
-         HaVibQI0xVVKaBAP8Ta/ELZyHXuLIarDKwuwyevy7biuv6RKx6TMasY2Bdxx9mI4E
-         a7icdjopw1Z3wYJyOdPCoBtVEkKfYRfx7k9HR8VjWQ3EagC/Jh3PHKHDgkUt9ocEr
-         3rOatIoZDJfB+CxZgRVGLqCxtLtF/vp/xhFVxBJXJQdqghFrBp+H6/IdEqCORL3M7
-         gjXsbCanxYAXtbJlQi6yl7Z9R/m9M9fMHMvMbVEmrsE2Yyb5QkUYpK13VRtKNi1CR
-         ScM9LSEwXYmxZGQAzg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1rKQDc0kCy-00yhg8; Sat, 11
- Nov 2023 21:48:24 +0100
-Message-ID: <ae67f48e-a1f3-4d45-8eca-fa42f0fcb5b8@gmx.com>
-Date:   Sun, 12 Nov 2023 07:18:16 +1030
+        Sat, 11 Nov 2023 15:49:28 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A8330C2
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 12:49:23 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4084095722aso25285175e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 12:49:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699735762; x=1700340562; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zzxKG8FmQG/QiSceBe9NLjt7GSztbReGb177SqO02RA=;
+        b=kX/kZTonsEkLGMYQZDrFfrZTnwo3Sb46n8qZg1mAIRXC0x4PFPiAs4tBGllovOH36Q
+         49bkr3ysua4ADJTjbVg9qKKMH13AOx1qWNI+7KGQBNOPR/eDzgVy85oNehpenN+8RsmS
+         AtRh8cPMwMwwFrjcRT69aOf38PDpwTAo9/gHqZjVvC4QnI8yylekj63AdhZ4mPO92RxS
+         vsARFk3WFCfoQc8L22AtQq7IDgY3PhxXBkfNpnu8sfzPfqH1nyPl5EnNi74LDGbuzYD/
+         ykv8NBZBD7JBL/iDgIb7ZpvqYo2c+7p2fIbbcUJMQP2fcBC1jU3CcTnq+TZpioIe+k+q
+         zXTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699735762; x=1700340562;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zzxKG8FmQG/QiSceBe9NLjt7GSztbReGb177SqO02RA=;
+        b=Cl0Ndob3GVafXgZycC8k/7elx+9oyXVBzCkteyDbOtN+z/0mH1eIVkBP62Gom/yp/X
+         BfR0NehXdudxDtP+8SW6HT45EjZA4t8c6QxmkOKJ0EBh/woWgAE6y0zT9YKMqiZSF5Ue
+         8vT7K04vGwWtioXft1TH0daGcS+UI2EoaUDyelR2oA2qdGDx9SKcZ/28leVj/WLM4FNr
+         Q0Lyy7bE1Rc4tsZCs+DebEkE0QwOd/i8XsW2EPxYzFDfbKWJfi7/f78sTi3Y1gLQ2MvP
+         VKV4b1lCDmsJvHxFZCTuLZ2gHPcbHKAtI4jH37ej+FCWyCCkDKesWT0WTm+tTrwAz02h
+         zQiw==
+X-Gm-Message-State: AOJu0YyMrecPi6r85hDRXPCM1XYe8KXl/nxPHbx1hG7UBOsYwIOFnW/x
+        iwFCpkud5KUeXPLdXaXmSBVYxQ==
+X-Google-Smtp-Source: AGHT+IGq6iWtEtCacNYFkoPOd1d+bCOaS3T0W8tGIc01caux6dOOsSo2ncPZB/+eM1mLqDqakLRVAA==
+X-Received: by 2002:a05:600c:19cd:b0:405:36a0:108f with SMTP id u13-20020a05600c19cd00b0040536a0108fmr2338642wmq.41.1699735762281;
+        Sat, 11 Nov 2023 12:49:22 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id t9-20020a05600c198900b00407752bd834sm3121226wmq.1.2023.11.11.12.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 12:49:21 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v5 0/3] mailbox/arm64: qcom: rework compatibles for fallback (continued)
+Date:   Sat, 11 Nov 2023 21:49:13 +0100
+Message-Id: <20231111204916.35835-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] test 305230142ae0
-To:     Edward Adam Davis <eadavis@qq.com>, willy@infradead.org
-Cc:     boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-References: <ZU8dS0dlOGOblbxf@casper.infradead.org>
- <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
-Content-Language: en-US
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+hLGTdZv3iptvCjS7ha0sAWDfEJNPI6Tt7PTlZss1eGzxUEnRDA
- 3Y3H3z9bpaGlJernznmFPWY6HDdNErxaot1rS+0Y/k/2EyRP1tnSLCmrHCMotDpZZyHrsa3
- 89UPcS+V+j5Nn7XmsivFDk2KBg1uwj+yiSunvkSbjdaiuD2rjsyKNO0duPLeU/lkE+9jcKj
- daTlkl/s972FmKs6f95gg==
-UI-OutboundReport: notjunk:1;M01:P0:/Bugbo+DcYE=;n3pcwbrm7CrlQo4cmn6tPc0Va5Y
- UCTKFhOLc4MojHJlLhKxbxU06JOe1wDFpunh4gqEnEwg34zY/epnipIxMC+fzXn/10wDRKzlu
- qFQ0TNZoIuXDA0PzaAJZDmrr2q2tc3024jFVUpZkSMQlZjTX95UF5sgvnkEvthdskBxqyH3r0
- EP5p/tdb9JzTqTKS39CHYrPmgLRLFMx9nnVLoGMTQMzGkFpSFN4uWWZ5Z5SLNnehEw9wQtbuE
- /mBGRSP+nbgfPJtsYBCIwkBZJx0fJrdO2oassDW0n1SUPQ0SnOQT7UJprKFGG1+UtHr29fTTW
- EUXU46AoeCLsieCGoF73MLb60UG2vdpgqcrGL0fcjWP0N0zdEKCO9o3YpS1wYZHt2Nj6Tymq1
- ECuYVUSn3XjtmXRuiDGBo64J118qKvmeIC5RP8F+3C4pXZ47lh4Sao9Jfj/s55Zbja26y48gy
- y792VobwF0kaDCIZg3IV1qncPgjqZdIPQn70LYkKAMDF7PI9fIk2aDNhNC7sxJjjVgbhKVLDj
- 8jgGBJ52RmAS7zpmD/LEh+ENFu2fzw4TXRs5XvTlXJ12Yab6wJ/jPOG9T3IgaplDfoHAhINri
- 8ICHA/8aTSi3Bz+uQyBnpwBi/u7psyGGhK3I1jBOj3QMnBo7ohZdNOoqbUXPrpwh0qfU3iGgU
- 6w6yAh9eIweq8PfAeqe9umJQxKPlh2NC2ETxXPdWBBhqkzIh0aoaPxqHUGyTB2/MUyOxSSaTR
- +lmPDT5pnhGVfJivjWtRbSv92TEESTs9Mgc7GJL3Yop1yaB0CmqdJhfP4gskkbJjuhAlMFzz3
- Uj5SrfdlkD5Jqf6xnqp3e8rEtBZfWeMMSyDcgGtDm6FQEnTzeEvz8kEdWxhvQMUnRYPMWx1o2
- JcmgF/2w1QMm/8BqFR74rcPTTd+IYqS2ABtE//RB2qeFfl6s49v9dZ8cXhH5kcHnCebEC3Qsi
- xfMTFdEjjFRZp22e4p9cyBXKG9c=
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Changes since v4
+================
+v3: https://lore.kernel.org/linux-devicetree/20230322174148.810938-1-krzysztof.kozlowski@linaro.org/
+v4: https://lore.kernel.org/linux-devicetree/20230327140752.163009-1-krzysztof.kozlowski@linaro.org/
 
-On 2023/11/11 18:43, Edward Adam Davis wrote:
-> On Sat, 11 Nov 2023 06:20:59 +0000, Matthew Wilcox wrote:
->>> +++ b/fs/btrfs/disk-io.c
->>> @@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *r=
-oot, u64 *objectid)
->>>   		goto out;
->>>   	}
->>>
->>> -	*objectid =3D root->free_objectid++;
->>> +	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
->>> +	*objectid =3D root->free_objectid;
->>
->> This looks buggy to me.  Let's say that free_objectid is currently 3.
->>
->> Before, it would assign 3 to *objectid, and increment free_objectid to
->> 4.  After (assuming the loop terminates on first iteration), it will
->> increment free_objectid to 4, then assign 4 to *objectid.
->>
->> I think you meant to write:
->>
->> 	while (find_qgroup_rb(root->fs_info, root->free_objectid))
->> 		root->free_objectid++;
->> 	*objectid =3D root->free_objectid++;
-> Yes, your guess is correct.
->>
->> And the lesson here is that more compact code is not necessarily more
->> correct code.
->>
->> (I'm not making any judgement about whether this is the correct fix;
->> I don't understand btrfs well enough to have an opinion.  Just that
->> this is not an equivalent transformation)
-> I don't have much knowledge about btrfs too, but one thing is clear: the=
- qgroupid
-> taken by create_snapshot() is calculated from btrfs_get_free_ojectid().
-> At the same time, when calculating the new value in btrfs_get_free_oject=
-id(),
-> it is clearly unreasonable to not determine whether the new value exists=
- in the
-> qgroup_tree tree.
+Important: v3 and v4 are quite different.
 
-Nope, it's totally wrong.
+v3 did not reach full consensus, so I prepared v4 doing a subset of the
+original change. Then DTS pieces from the v3 were applied, without bindings
+and driver.  OTOH, bindings and driver were applied from v4.
+So we have DTS from v3 and driver+bindings from v4.
 
-Qgroupid is bound to subvolumeid, thus getting a different id for
-qgroupid is going to screw the whole thing up.
+This leaves us in inconsistent state and several warnings:
+['qcom,msm8976-apcs-kpss-global', 'qcom,msm8994-apcs-kpss-global', 'syscon'] is too long
+['qcom,msm8998-apcs-hmss-global', 'qcom,msm8994-apcs-kpss-global'] is too long
+['qcom,sm6115-apcs-hmss-global', 'qcom,msm8994-apcs-kpss-global'] is too long
+['qcom,sdm660-apcs-hmss-global', 'qcom,msm8994-apcs-kpss-global'] is too long
+['qcom,sm6125-apcs-hmss-global', 'qcom,msm8994-apcs-kpss-global'] is too long
 
-> Perhaps there are other methods to obtain a new qgroupid, but before obt=
-aining
-> a new value, it is necessary to perform a duplicate value judgment on qg=
-roup_tree,
-> otherwise similar problems may still occur.
+Bring back changes from v3, to align bindings and driver with DTS.
 
-If you don't really understand the context, the fix is never going to be
-correct.
+Changes since v3
+================
+1. Narrow the scope of the patches after feedback from Dmitry - only few
+   variants are made compatible.
 
-Thanks,
-Qu
+Changes since v2
+================
+1. Split fixes to separate patchset which is now dependency:
+   https://lore.kernel.org/linux-arm-msm/20230322173559.809805-1-krzysztof.kozlowski@linaro.org/T/#t
+2. Add Ack
+3. No other changes, as discussion with Dmitry did not reach conclusion on incompatibility.
 
->
-> edward
->
->
+Changes since v1
+================
+1. Rebase
+2. Make msm8994 fallback for several variants, not msm8953, because the latter
+   actually might take some clocks.
+3. Two new patches for SDX55.
+4. Minor corrections in bindings style.
+v1: https://lore.kernel.org/all/20230202161856.385825-1-krzysztof.kozlowski@linaro.org/
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (3):
+  dt-bindings: mailbox: qcom,apcs-kpss-global: drop duplicated
+    qcom,ipq8074-apcs-apps-global
+  dt-bindings: mailbox: qcom,apcs-kpss-global: use fallbacks
+  mailbox: qcom-apcs-ipc: re-organize compatibles with fallbacks
+
+ .../mailbox/qcom,apcs-kpss-global.yaml        | 62 +++++++++++++------
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c       | 10 +--
+ 2 files changed, 48 insertions(+), 24 deletions(-)
+
+-- 
+2.34.1
+
