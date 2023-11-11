@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 075947E8AE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 13:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621B37E8AF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 13:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjKKMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 07:42:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
+        id S231176AbjKKMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 07:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbjKKMmT (ORCPT
+        with ESMTP id S230216AbjKKMs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 07:42:19 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFD62D7C
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:42:15 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso4632041a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:42:15 -0800 (PST)
+        Sat, 11 Nov 2023 07:48:57 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4466330C0
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:48:53 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9e28724ac88so464531866b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:48:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699706534; x=1700311334; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sidnzx2KfTitgRW3cI1BL2jDTHBsxVQkPDHZklMEDiI=;
-        b=nykK3KVhj49YqjxQezlerU9rBkZ1TC01rsi/VIlmpc0TDB7WBOETBjC6akYHFeh0J7
-         BKg3b5ka5YFglY+N4pP60ZKPSU6LpVgBb8/uNvCTY2dH0u0ZTd0thttaqfYosasp2dgc
-         IsDUtzojecjM+7kjyoicqcZ5OEtPYFHs7KviBk/JJC6aAnpDqo/u8sk34tRAec2EjAMW
-         1rY+Hh8xJefaG2ACGNhuL9xeCTvK8m1CIWmGyjeQocMRhjDUe/z0rxef2ixszVw6WLoH
-         8t9fy8WHXme8+6c4Mx8n2DKZTGuSkisEhx5HOnvN74m+N8FEUwl49sNRvOi5gnjYmRi/
-         zt2A==
+        d=linaro.org; s=google; t=1699706931; x=1700311731; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9KXJpYZzRkCqTvec87XlahQByPlsLnbY5jFrjhVHCwQ=;
+        b=wjgvYG2HN/u86xSLGle+8wxl7COfXHblojJKkzF1Q8ybtxhxwAx7n2GtJHqQzlDVQ+
+         nWKg2npY4EzY9qq0daXkQK4q6TJAENqpUPptjWviu5rLELPU+gpD8XkRy50s8NVp8+3t
+         ZNt85edTF2iIDRyeT9P/C5fCM4IXgW2i6VICHQDTi7wNfwhg6OOeuCOmEPGwt22in3BZ
+         zp84NN+Q2XMH50gfteQNXWKm+L2MxIGvRJN/9Aj5DLm29Y3FJxZhCUsPXxGA8rgS8YUo
+         hU/rNYc8FxTXZmCvwKnP3tBO6LAW/JhRcMAr8CgSU96kq6z2Fu/CiKTkOt3rbjnKlyxj
+         ShMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699706534; x=1700311334;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Sidnzx2KfTitgRW3cI1BL2jDTHBsxVQkPDHZklMEDiI=;
-        b=We1fc2oKRZMhEIMI4EbkrqAJKB8d8ci5u2mwWx92pwThN5r7UXWvEY6wG70vZWjvZ8
-         zqaYKuXqcFoG9vdM7JGdbd9U6ffBGfPEoR54IPlUiNfOYg/y+w8vwJRp99hJ45L9HQGN
-         W1bgi2hwGrGFPZS9ipJ+oCrYWKNGyUFR1qXjym4Szyn4ZP8yhXxz2bEu3SV7bPKV+HBg
-         Q4sqjz+8dXAqpqrx8diouJTLjJhsqTwZ4rR5svnV9/DbJHIfOjXQr4h7SG5SsMv6wfLg
-         mEI20Tq7o1il60Zccjs89gnPeOPZa1cXKyBLrxzMvDDfKBizU6oXpuPCJH4dwCWDSzrg
-         5WpA==
-X-Gm-Message-State: AOJu0Ywfudd/6MHtsIy0IPonmN6NLD3ch+4ZuKkf6Nzkc65JaTgT9xKz
-        QuSChN5INFJnaGowHCJdxfCXIQ==
-X-Google-Smtp-Source: AGHT+IFWiRpXg1Oo51Bb6d1CTy9DOtAZcNMYn0/9Q+atdOAyyDnIUa7TN1UkTogf8lCOHHSih891lw==
-X-Received: by 2002:a05:6402:40e:b0:53e:7d60:58bb with SMTP id q14-20020a056402040e00b0053e7d6058bbmr1276894edv.27.1699706533727;
-        Sat, 11 Nov 2023 04:42:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699706931; x=1700311731;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9KXJpYZzRkCqTvec87XlahQByPlsLnbY5jFrjhVHCwQ=;
+        b=fPyzu9dBe7pOVYjeccm+uG6HPdo0lhNmC4zkK35Ub31C2gb7+7aMlYVNBFakwdIIJd
+         GKd4hcENYz+k04O50QhVMuWcFIauW1+6NmvIdGNxVA9PaRHTeu/wGv44vOqlxE4lkvPL
+         +EbD1uq4di1rn2qbN0GbqQTcMdX+pG56yW/xdNtLMgkUaHx5ypP04RXizwgt4/B31x8+
+         R+gFDggh/xTKTWhhnhMVS6qDFIUvFPJwTjKc7qaqpnLvmCtXkdV6DRvP6dnuH5WY+Qm4
+         59oxD+33MKdkeho6CzSBhAExfm7fekMSQF0J6aeDOKv7/CD+pxNuwoiLb/L3ZStR3Xa+
+         uuEQ==
+X-Gm-Message-State: AOJu0YzKtpkAGt8KARiiMfcRVqkJY1sdljox8B+hmOmu993DG1bT8XGy
+        2OQQej48qHL8UAOiMlCP8pi3TQ==
+X-Google-Smtp-Source: AGHT+IFix718UahWWr38N7cLqjT3VKT/ONBu0qEgIoL5lRKExo0ymCSOmmMfkI/WARsZpx3IKL5SJQ==
+X-Received: by 2002:a17:906:24d9:b0:9d3:ccf0:7617 with SMTP id f25-20020a17090624d900b009d3ccf07617mr990320ejb.44.1699706931444;
+        Sat, 11 Nov 2023 04:48:51 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id z37-20020a509e28000000b0053e88c4d004sm948255ede.66.2023.11.11.04.42.12
+        by smtp.gmail.com with ESMTPSA id s15-20020a170906bc4f00b00992ea405a79sm1015062ejv.166.2023.11.11.04.48.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Nov 2023 04:42:13 -0800 (PST)
-Message-ID: <05fd5db6-c481-4499-90c2-a7e47e084c77@linaro.org>
-Date:   Sat, 11 Nov 2023 13:42:11 +0100
+        Sat, 11 Nov 2023 04:48:50 -0800 (PST)
+Message-ID: <0ccee72f-98ac-4a08-9253-9c22dad4d95a@linaro.org>
+Date:   Sat, 11 Nov 2023 13:48:48 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: Revert "arm64: dts: qcom: qrb5165-rb5:
- enable DP altmode"
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20231111094645.12520-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 6/8] dt-bindings: reserved-memory: Add secure CMA
+ reserved memory range
 Content-Language: en-US
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, tjmercier@google.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
+        kuohong.wang@mediatek.com,
+        Vijayanand Jitta <quic_vjitta@quicinc.com>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        ckoenig.leichtzumerken@gmail.com
+References: <20231111111559.8218-1-yong.wu@mediatek.com>
+ <20231111111559.8218-7-yong.wu@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,7 +125,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231111094645.12520-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231111111559.8218-7-yong.wu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -126,17 +138,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2023 10:46, Krzysztof Kozlowski wrote:
-> This reverts commit b3dea914127e9065df003002ed13a2ef40d19877.
+On 11/11/2023 12:15, Yong Wu wrote:
+> Add a binding for describing the secure CMA reserved memory range. The
+> memory range also will be defined in the TEE firmware. It means the TEE
+> will be configured with the same address/size that is being set in this
+> DT node.
 > 
-> The commit introduced unsupported and undocumented properties:
-> 
->   qrb5165-rb5.dtb: pmic@2: typec@1500:connector: 'altmodes' does not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
 
-I forgot to Cc Dmitry, author of reverted commit. I bounced the original
-email to him and Cc-ing him here as well.
+What was the outcome of previous discussion? I don't see any references
+to the conclusion and your changelog "Reword the dt-binding description"
+is way too generic.
+
+You must explain what happened here.
+
+>  .../reserved-memory/secure_cma_region.yaml    | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/reserved-memory/secure_cma_region.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/reserved-memory/secure_cma_region.yaml b/Documentation/devicetree/bindings/reserved-memory/secure_cma_region.yaml
+> new file mode 100644
+> index 000000000000..8ab559595fbe
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/reserved-memory/secure_cma_region.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/reserved-memory/secure_cma_region.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Secure Reserved CMA Region
+> +
+> +description:
+> +  This binding describes a CMA region that can dynamically transition
+
+Describe the hardware or firmware, not the binding. Drop first four
+words and rephrase it.
+
+> +between secure and non-secure states that a TEE can allocate memory
+> +from.
+
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
+
+Do not send untested code.
+
+> +
+> +maintainers:
+> +  - Yong Wu <yong.wu@mediatek.com>
+> +
+> +allOf:
+> +  - $ref: reserved-memory.yaml
+> +
+> +properties:
+> +  compatible:
+> +    const: secure_cma_region
+
+Still wrong compatible. Look at other bindings - there is nowhere
+underscore. Look at other reserved memory bindings especially.
+
+Also, CMA is a Linux thingy, so either not suitable for bindings at all,
+or you need Linux specific compatible. I don't quite get why do you even
+put CMA there - adding Linux specific stuff will get obvious pushback...
+
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reusable
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +
+
+Stray blank line.
+
+> +    reserved-memory {
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        ranges;
+> +
+> +        reserved-memory@80000000 {
+> +            compatible = "secure_cma_region";
+> +            reusable;
+> +            reg = <0x80000000 0x18000000>;
+
+reg is second property. Open DTS and check how it is there.
+
+> +        };
+> +    };
 
 Best regards,
 Krzysztof
