@@ -2,142 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DEC7E87EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9CA7E87E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345390AbjKKBpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S230450AbjKKBpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjKKBpY (ORCPT
+        with ESMTP id S230101AbjKKBpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:45:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76DD469E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:45:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699667114; x=1731203114;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=hoE15GUkBeBlmu+UGbCa6plgbqYe6vQ+rfZohN372jo=;
-  b=XLDFUrfAMWsLLhzT9ft+hqzE/TovfH2l4X9o6hwZm6WcdIHHI3rwHIVY
-   XQPyBt6hFPbrGWySCgu4lvHAHh+40KR4Jg7XxhHP2lydhrqEFhg1BdbzV
-   uhjI+pZcWZIQ3p6df7Q3UonP7qL1j4TGPVSOpk9orwdDy4TG7reXB18iN
-   tSkKrFFY9FCQE+ZEVf5m+gHROyZ7fbUJzCFQ1Hq0CRnVqGFJLZcFIZ2Nv
-   AEhQX+q0Uy8JgWMoMouITo5Awa0upP/mQG/ta/UJym998FpDhy+JQU1JX
-   gPULmePDvVadp/yn/jxWX+CME1q9DRsbpM47jkyI5DQT7Gaxt/5YVUg1e
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="369580971"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="369580971"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 17:45:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="1011070623"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="1011070623"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Nov 2023 17:45:14 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 10 Nov 2023 17:45:13 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 10 Nov 2023 17:45:13 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 10 Nov 2023 17:45:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bYVrmubKrjokH/8GP+Y84YNORUmMW8A22y5o1pVPSG/eIRqO3+b0Rj8E1eUR8x0NiP5oWk2QsmxTgBY+eGjq3V3HCJOsyxA61LG7C5DqWS8xq3f3458dMBOf1YK5Hn/eFFeIcJTs1H+gdBP6uPUzj5aB9Pnw1dTGhRPlfYg8CowWBUAQLDziJIaRc76jOpGpHRU5dUlwOjURxr09/U9GHHYQt3OQYxcxqlPFlhnHi/wVp4FTei/OOPaRfCWDQ/m/jSZMtu1k2SuVSLpQVkW8zIVwWR3xerjFk5IJeMQJzQeHvCyNEzYmeZCxIWesO5WriSxCqcNpcvZRR2sCmj2x5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CMdZ7/kZ09Wpg77XQVm0gAzXMJrwQhyc0ijxPKHeFes=;
- b=ig0ypPQ1VvYCHdC5VYRBUpsVepomToDFJlQcqklIWeo2aEUZKNu2Z64/HjHVXz2MDq8h1Zb5vTJQ0NdcG3YmqoXbQQhMneYZGgh+lMuBKagllFokUiRbH2JXbBNAL83FvFIgKX/X4O+mAtd5L+EVYRAEfHxS5a63FaOVbJRhxJWIHd8ZN4J+TKiaLsKyqSoHDTRUIZ7I1dStjNqySWbHEpHOviSOnNLL40/e+oBHg0oUQ+5QwpNVabQZ4vG0x/hm2birdf1/x7R5mM9wiubfiBC3jb3l8PqRMmyt6h9Mldhr9LQMyky9zFoc/b4m5N7/6jQUbDYbs7nL10qqGosnuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
- by MN0PR11MB6229.namprd11.prod.outlook.com (2603:10b6:208:3c6::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.19; Sat, 11 Nov
- 2023 01:45:04 +0000
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::2f1a:e62e:9fff:ae67]) by BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::2f1a:e62e:9fff:ae67%4]) with mapi id 15.20.6954.029; Sat, 11 Nov 2023
- 01:45:04 +0000
-Date:   Sat, 11 Nov 2023 09:44:55 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     kernel test robot <lkp@intel.com>
-CC:     Feng Tang <feng.tang@intel.com>, <oe-kbuild-all@lists.linux.dev>,
+        Fri, 10 Nov 2023 20:45:11 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0386744B6;
+        Fri, 10 Nov 2023 17:45:08 -0800 (PST)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231111014506epoutp0285d29a625763b71e5998f0ea08c322ac~WbjpfdGon2312923129epoutp02g;
+        Sat, 11 Nov 2023 01:45:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231111014506epoutp0285d29a625763b71e5998f0ea08c322ac~WbjpfdGon2312923129epoutp02g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699667106;
+        bh=k/QIzEUVs632d7e9vKbhVey91b2FJwfTo0v9Xig3aQE=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=p5ZdQvw2Efz5h3+5qE9ucD4zEkSvFvLgSGfXheLLZ+TDsvn9yrl9OgdyT6ToKdW2g
+         6WaQyP9XXXVqY5YqlHaEi6FarzhQOXX/9SLcFUWoCWbV/YonUgoTKI4g5nPUEzWA4j
+         nzxuw5bX8DaOQdIUEu4YKeI+1yXjvhCav2ZfOqo8=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20231111014505epcas5p4f6f60a280d1bcb3c2023dae1249a193f~WbjogXvBN1775317753epcas5p43;
+        Sat, 11 Nov 2023 01:45:05 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.182]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4SRz5r0sW5z4x9Pr; Sat, 11 Nov
+        2023 01:45:04 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D1.9D.09672.F9CDE456; Sat, 11 Nov 2023 10:45:04 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231111014503epcas5p4b6fcd417b9b00ea976a67e780bf45d35~Wbjmx_92w0588305883epcas5p4T;
+        Sat, 11 Nov 2023 01:45:03 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231111014503epsmtrp21a68ea7a06abb2c4c2d4596b27a9d932~WbjmvVFWZ2934729347epsmtrp2J;
+        Sat, 11 Nov 2023 01:45:03 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff700000025c8-64-654edc9f4cd0
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B1.73.18939.F9CDE456; Sat, 11 Nov 2023 10:45:03 +0900 (KST)
+Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231111014457epsmtip12910759dec7bd74ed5fd1f185e724780~WbjhjePfl1789717897epsmtip1Q;
+        Sat, 11 Nov 2023 01:44:57 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
+        "'David Airlie'" <airlied@gmail.com>,
+        "'Daniel Vetter'" <daniel@ffwll.ch>,
+        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
+        "'Maxime Ripard'" <mripard@kernel.org>,
+        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
+        "'Conor Dooley'" <conor+dt@kernel.org>,
+        "'Andi Shyti'" <andi.shyti@kernel.org>,
+        "'Jonathan Cameron'" <jic23@kernel.org>,
+        "'Lars-Peter Clausen'" <lars@metafoo.de>,
+        "'Lee Jones'" <lee@kernel.org>,
+        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
+        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
+        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
+        "'Linus Walleij'" <linus.walleij@linaro.org>,
+        "'Thierry Reding'" <thierry.reding@gmail.com>,
+        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "'Alessandro Zummo'" <a.zummo@towertech.it>,
+        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
+        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
+        "'Jiri Slaby'" <jirislaby@kernel.org>,
+        "'Liam Girdwood'" <lgirdwood@gmail.com>,
+        "'Mark Brown'" <broonie@kernel.org>,
+        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
+        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: ERROR: start_text address is c000000000000900, should be
- c000000000000200
-Message-ID: <ZU7cl10jIY4Mpq49@rli9-mobl>
-References: <202311110405.PqH7IcX7-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <202311110405.PqH7IcX7-lkp@intel.com>
-X-ClientProxiedBy: SG2PR04CA0157.apcprd04.prod.outlook.com (2603:1096:4::19)
- To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
+In-Reply-To: <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+Subject: RE: [PATCH 16/17] arm64: dts: exynos850: add specific compatibles
+ to several blocks
+Date:   Sat, 11 Nov 2023 07:14:56 +0530
+Message-ID: <05ac01da1440$b059f980$110dec80$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|MN0PR11MB6229:EE_
-X-MS-Office365-Filtering-Correlation-Id: f63b23a6-2ced-4050-860c-08dbe257d2f8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2mndCtUfOzflziTUvnuQEd7MV3r7TLkmn6ufMj+bBuuzCAyj8Z3FQoVvj1aKIxsMPuOnfe7//1eDYzi+ifKfAYz7MLYUWxLzJwka/qGqHgQ4ig/nTXNVpEq6CTtdZw6vfkZp1TbzcO615MnJijYUYDE93Dg9rviKuD2cfHd05l4Oo74mvFyp/eIlCVMJ0W8BPU1RP/kRx4S75Zy1wurgcYrCpwa/i11QpUAyaRAfS0V57ecM1Pv8aADwvc04aEFtCW331Hfs6ec8iyv7KXWbl+aXT4UYqhhoQnFJctljF1NnAxcLSG+XUPaMJ2lgWCxyubYNaLxUpExXByr5iZ0JWNBIxoB9HwvR4kPXghJKo60omwQTSwY6ipWTRsRBJiKr3m/hN4J3ESB9Vp/t0vJ+6Dz0NonQyWn5OY3Hv3fNGmFkCVuUNJdB9nuoTDxlyuCpfNIny1v3mT2wumN8/s6kQCRbvE55E33WbM7qvZAKZzwk4S8++wWJsZeonUAGbTJHZjJZlI/HhqWY+NFmS0qRft5ELrNGWHxBQZdUobVbzBkNgQ59sCr2/JautG0aO4NiKqr2X1DSW8s0sjCW5Z3l2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(230922051799003)(1800799009)(186009)(451199024)(33716001)(44832011)(4326008)(8676002)(6862004)(8936002)(2906002)(5660300002)(82960400001)(86362001)(6666004)(26005)(6486002)(508600001)(966005)(6506007)(6512007)(83380400001)(38100700002)(9686003)(54906003)(66946007)(66556008)(316002)(6636002)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MDlXy59/Vobj5GVex9iBLBY+dFcLJX8zSyEGaWbpINbtEaJyeA161MREvUSa?=
- =?us-ascii?Q?eFXROs0/kpcFqih8ame4si4hE9+1VmRSnlK85zc12JQhDPrHQwQQzluApCay?=
- =?us-ascii?Q?uHQ9bNhSr0hkmBt9XLBPNQRldec5TcO350CnCU+bL0ef2zW+tpZx92exoH2R?=
- =?us-ascii?Q?aadUILLxjgP6e933ipKtvdocpGN2yInfMKIYmhNkZDL6vRvyvP0AHb0JHrAs?=
- =?us-ascii?Q?T2xyhvsfoHDDjZQyEfaDgTSJV74aeh+2plPqJNCt3KkoFjbxPm/xabHDXURM?=
- =?us-ascii?Q?Jz9MjfeI/aLZ1vretIob/rmEv5SnhyzZ44NEq1wA9oMZty0QMiLjwFFQoEzg?=
- =?us-ascii?Q?KrNPmOXgadpZktjQ3Wdur9JHxjvUQvKgdILi9U7odG9AYwTWWPACAIYueWDN?=
- =?us-ascii?Q?rRU6YM15C07S+VzS4Z0o0uYNycJBuUC9jdHGH5a2jvC3BlCwmFkTsWb77nrC?=
- =?us-ascii?Q?HxJK6CO4jtr566L9yrUum3A+JgFDYwXtushQPxIR1D3+rtzlmw7QXwmbqCWR?=
- =?us-ascii?Q?H7X9dItFweR/es01FpGDUULHollBr6/cqxd1KlARkLHw7c8BG4byQzvKsGg/?=
- =?us-ascii?Q?0V+c2q4AoDDLkt5xjJajJt3OXmeIcBf1+SZAhtgXBeCOsdjaFhm+bnfXb9H6?=
- =?us-ascii?Q?ikFxPFuSsCtLtfVoK4rbEW9xSQpV720pce37DpZwBGj9pAQ45GD0YSPXutit?=
- =?us-ascii?Q?PN65eKZO2G7jTG3gqsUbdH5rx6/hYyMUXnSXhtZNyAG77rmhGls8Q7F2k9su?=
- =?us-ascii?Q?DTEp+QP2zwlDiXnONIIljHhLwQT5SU6HTCW2DWfXban6vgvD7fXfEPkPawID?=
- =?us-ascii?Q?09Lm08xC5kmDB8IkZLwx9tyQacgZ/j7qHeSdYe4uA+MxmKifkz2ggQaPglKM?=
- =?us-ascii?Q?uv3cQDyx7++1Q0GGzzVZ6DFfO0X/7o8yFGV0pdX8WVavPPLLPrnOx7ZqJRvX?=
- =?us-ascii?Q?liQhM4ysC35MQJsxbyXPvAwNed4yWutwWicNkIjfsQ2pCBe0WSr1mE30kqQF?=
- =?us-ascii?Q?vevzHExLdas6WQS/K0Os087cBTI9TPKa6VCXB80lsAxDmGcEfm8tHBqTpntW?=
- =?us-ascii?Q?EfAWnD4c102sW7Tzw036iEYm6HFLVLVUoc2BluTF01knX5avHju7KKn+p9m6?=
- =?us-ascii?Q?bo6/QpF1+ycKMyZDGLoYy5/UrYC7SVV07aA23subxV9z25gSXnIs9VGhmhdI?=
- =?us-ascii?Q?k9+E8xZZZziO2UHk9O6c5BSoqTT5v9YQFLSK8lswKV7uzOlxUvQrYdyuPtpv?=
- =?us-ascii?Q?Y7ZNsoBt7OytMMQ0EE2bozoieyGaSeRuExsYlVYPNs3FH4o/mmJ+yU49Wfec?=
- =?us-ascii?Q?/YEFb5xA6M+PaYSwslv+vPlh7M1u3i1SNSwhvJh2PmM6jc9Zqh08UvHvNktQ?=
- =?us-ascii?Q?g0n2mvpNhiyqze1LTfm+xur5qPZrZ1RaKwzM1jyB+mlXE+lkEsMpeJTSLpbw?=
- =?us-ascii?Q?gxEdFNdEgYvcfB0hFhvuzxXaiGLW26Ghkcu5ZDCJ6MtHld0FiI/WWFao6tH7?=
- =?us-ascii?Q?UNNhyzggOGHhvIx/17zll3Vx7b90nJAgatIQQeqmiPTQ/GTdTHoZML7TGXER?=
- =?us-ascii?Q?TGHFnpfwMigfvO4zYudLNTYISqzTAikffKC3EDjX?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f63b23a6-2ced-4050-860c-08dbe257d2f8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2023 01:45:03.5964
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pJBkKbVVkVVKa8YYoedM/dJQqvC54lX+lTm0MNWXdsEJJA9/2XfSh1ZSIXNcDLQJtq7uaPZSf2LbLvUTmtEKQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6229
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQGB5OKjAR6316Sw5zQT0A==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xTVxTHc99r3ytmuLeK49I57V5iHGxAC6VeNkE3cXsJhtW4ZZlR8Q1e
+        gABtbYtD3aaiQvkNEyeiQEECs2JQRERchxQQUSJj/JobBBAYDLBT+ZFUENZS3Pzvc8/5fu+5
+        59wcAS6cJkWCKKWO0yjZGJpYwatucN/gaegN4SRX41FJexeJ7vYUYyjJUkqiznYzhvpn9ACd
+        HhwmULnpAYYWq7NxVNj4gI86Z/4h0PELFQT6/XkiHw0kGDFkyV+DMsYGcWSauE6iklOFfFST
+        WMRDs516DOXMl2Gocqibj64VzgOkfzENUEGjhYc6as8TqHExE6C+PiNAdy51Eii37RcMtV5I
+        J1H+Xzk4Knp6nYcSk0v56KSpkUQNk0l8NJphk1hrC3jIWGu7r2oym4/+zD4FUPPlL7e4M1em
+        EgimoPwwY5o18JibeX0kU2lMJpje7p9t8ZYdTF1+Ocn0pzZjzLWSI0zJpJnPZL6QMBlVRsBc
+        u3+YOVNgxZipyrUKalf0pkiODec0Yk4ZpgqPUkYE0ME7Q7eG+sklUk+pP9pIi5VsLBdAB21X
+        eH4SFWObLy0+wMbE2UIKVqulvQM3aVRxOk4cqdLqAmhOHR6jlqm9tGysNk4Z4aXkdB9IJRIf
+        P5twX3TkXcMMqV4k4xcfDuFHQQ+RApwEkJJBS/MVfgpYIRBStwAcHurn2RNC6hmA95LcHQkb
+        69ue4y8dCWlPlx03AcwZWcAdhzEATaUlfLuKoDxhzYVEwp5woW45w466R0v3OlHbYOrACczO
+        q6i9sHviJ2BnHrUezpWdW3qUM+UPS8YqgYPfgC1nh5e8OPUeLC2aWH6GGFpHSpeKuVAfw9sz
+        c4RD4wr/bmok7YUhdXUFfDbdTzoMQfCHUusyr4LjzVXLLIJTFpPNLLAxA4vnRY5wJHxcVgEc
+        vBne7jzPs0twyh1W1Ho7Sq2E6XPDmMPpDPWJQod6PTxu6eI5+C2YnZrKdzAD9WnHlgf3G4AV
+        YwMgC4jzXuky75Uu817pJu//ygbAMwI3Tq2NjeC0fmpfJffNfx8epoqtBEvr5xFcAx4NPPEy
+        A0wAzAAKcNrF+VfZdk7oHM4ePMRpVKGauBhOawZ+ttFn46LVYSrb/ip1oVKZv0Qml8tl/r5y
+        Ke3qPHEyP1xIRbA6Lprj1JzmpQ8TOImOYmkF91ZOpkyMum2oH8+N/25hMKR49UrZGe/C0bSH
+        7SN7e0wb13S3a/DmN7t667XnPly4WOG680D8Db2faC379lXfBB19I8KqAn7VC+nqJ5wQKTYv
+        To4FTsqL4Sw57bN7vaL1xPc+O0a9dtdqOwYYg+GLpGra5zQx/nnut6N7FPnrPn3xflb1ay2+
+        gZcyoU/H/kOtwe5uAVlTYy0ZTU7m/XM+p/Z19hxskL2+5/5H1QZRZlAT+CwnW8Ft/eNH2+Ls
+        qu+jG8pXmcVfPx5Ne3cx+VjsRY82aEx1e3aL9b4TXZwrj2adLiv1R6LWWVqL/KVWj/kefGiL
+        xQrP1oV8JUnvz32H5mkjWakHrtGy/wJbOt4ZBwUAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTdxTG87+9L6Vb9VpYuEPSzDJHhPBiYMmZW4y6mN1sZkOSCWtMXC13
+        6KBQWnUMYuZgQygOJLpsK+sLUmvWdasWi9BRR0onMFhnR1GIEEGFstigREAYVAZttvDtyXme
+        53fOh8PnibxEHP9o0TFOVSQrlJACvLVLIk4xjLzLpWt+2QAm3yAFPbcvYHB62kyB3+fG4O5c
+        NYKvxx+QYHV5MVhpbeCBweMlwD/3iITKZhsJQ/9UETBWYcFgWhcPdVPjPHA9dFBgOmcgoK2q
+        CYd5fzUG55cvYWC/f4uAFsMygurQLAK9ZxqHAef3JHhW6hGMjloQ3PjRT8K3f17HoL/5Kwp0
+        k+d50DTjwKGqxkzAly4PBV3B0wQE6lYji049DhbnKu9qsIGAOw3nEHT/lLNrG3v5SQXJ6q3l
+        rGveiLPt2lGKtVtqSHbkVsfqvHc/+6vOSrF3a7sxtsX0GWsKugm2PpTO1l21ILalr5z9Rr+I
+        sU/s4ixaKngjjys8eoJTpe38UHDE19NFKkNU6fiwhjyFfKQGRfEZOpOpODNDaJCAL6KvIcb7
+        +DIeMTYzt6+cpSI6mvnhWYCKhCYRUz8VwtYMkk5h2pqrwqQYeljI9I28Fwl5ETM7dZFYM6Lo
+        vUzt2BfhQjR9kPkjYEJrGqe3MkuXGsNlIf0aY5qyo4jexPR+9yB8BY9OZiaGJ/7X5qaHvMhF
+        LzGLE2YisngP0zm3REYysczfv3mos0ikXYfSrkNp16G06ypGhFvQC5xSrchXyJXbU9Uyhfp4
+        UX6qvFhhR+GXS8puQ2ZbKNWNMD5yI4bPk8QIb2bu40TCPNmnZZyq+JDqeCGndqPNfFwSK0wo
+        rMkT0fmyY1wBxyk51X8uxo+KO4WltR38q06br99bHPTMHJAvGBeCadvu9dk/NtpvzvcnuuRj
+        jlhdIPd+CpeSIzo8Z3Nmn9y9x/lq1gnfFcOjyjsxYhi6phY38ts7N8p+PpyheXE+vvtlxcbk
+        mqHe358WtOJ6QuDoASM2q5E8J+goGEUOwZZNj5eku22D8i1iD+/eO2e00k+0xT3JmZ8nngyQ
+        LVb7SHccPWDNuiAtK48aT4ipTS/t1+za+opUWeYnX7c1RmdXvr+D99GGwZJnNp0/caJjaqB6
+        cIVot5WoFrS5+RmG9Dfjb9B1sx/szynXSEtKqenn386dDDyVw0ySd58wIWeHZbkg49D1oYqd
+        nW8hCa4+ItuexFOpZf8CsUhtquEDAAA=
+X-CMS-MailID: 20231111014503epcas5p4b6fcd417b9b00ea976a67e780bf45d35
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231108104459epcas5p47aa72d33e09f5b33aa01be1e0a034107
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+        <CGME20231108104459epcas5p47aa72d33e09f5b33aa01be1e0a034107@epcas5p4.samsung.com>
+        <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -145,30 +160,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 04:52:23AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   89cdf9d556016a54ff6ddd62324aa5ec790c05cc
-> commit: cf536e185869d4815d506e777bcca6edd9966a6e Makefile: extend 32B aligned debug option to 64B aligned
-> date:   2 years, 6 months ago
-> config: powerpc64-buildonly-randconfig-r003-20211118 (https://download.01.org/0day-ci/archive/20231111/202311110405.PqH7IcX7-lkp@intel.com/config)
-> compiler: powerpc64-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110405.PqH7IcX7-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311110405.PqH7IcX7-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
 
-Kindly ignore this report, we would try to enable LD_HEAD_STUB_CATCH option.
-Sorry for the noise.
 
-> 
-> >> ERROR: start_text address is c000000000000900, should be c000000000000200
->    ERROR: try to enable LD_HEAD_STUB_CATCH config option
->    ERROR: see comments in arch/powerpc/tools/head_check.sh
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
+> Sent: Wednesday, November 8, 2023 4:14 PM
+> Exynos850 reuses several devices from older designs, thus historically we
+> kept the old (block's) compatible only.  This works fine and there is no =
+bug
+> here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
+>=20
+> Add compatibles specific to Exynos850 in front of all old-SoC-like compat=
+ibles.
+> This will also help reviews of new code using existing DTS as template.  =
+No
+> functional impact on Linux drivers behavior.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
+> ---
+Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+
+>  arch/arm64/boot/dts/exynos/exynos850.dtsi =7C 34 +++++++++++++----------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
+>=20
+(...)
+
