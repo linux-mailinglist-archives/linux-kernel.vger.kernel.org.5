@@ -2,117 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165087E88BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEE37E88BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjKKDBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 22:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        id S1345538AbjKKDCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 22:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjKKDBJ (ORCPT
+        with ESMTP id S230207AbjKKDCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 22:01:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5113C0E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:01:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 607F4C433C7;
-        Sat, 11 Nov 2023 03:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699671665;
-        bh=2LhQYw/i4O/j2ctPROiuf3u6PzGIF0+bsBDBydGMZnE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tWAMWOx4vhvFMzdCZw6QmWxI/wokCMAA5N6nkHSFK3FCHvTa950ut+pR4uCTztS4M
-         groOXHFxJtReonezDIWs77kjY534etk4wnryxh7YD5hfiG5GEQgj/tYFXsHtgr+Uej
-         dgzm4euuJqb46sr/ZEDFz8XekUc0FhUQQaog+FGt+p9/g9Y2A94DrNJNvenDUl/PTv
-         TNfueI8VSr+gMjn4reVKUZkcGHV8n4OyihM0OGEqyb57TTZ5CoqK0fQRKXBkherQPA
-         fG5OjsKU7ZlxkQEB43zEQL465PC/eZC3C2N8uxn14zV18VZMNfyhG6dn1MdVnuY/Ny
-         WOZz1Tay24Z0A==
-Date:   Sat, 11 Nov 2023 12:01:00 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH v2 26/31] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20231111120100.a3cb8ffadd274bbe6f79bac9@kernel.org>
-In-Reply-To: <20231110204422.05ac4581@gandalf.local.home>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
-        <169945376173.55307.5892275268096520409.stgit@devnote2>
-        <20231110161739.f0ff9c50f20ebcfb57be6459@kernel.org>
-        <20231110204422.05ac4581@gandalf.local.home>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 22:02:10 -0500
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77C74204
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:02:05 -0800 (PST)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6b6f4c118a9so2612722b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:02:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699671725; x=1700276525;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9jmJ7vtILvW5Bu4JsBMcm4CthTppMk6zGeMu/ZDO0s=;
+        b=gLIbnyu9TXVRw+Oo0PMCqwIKKavNxvZSek8RaTEtGJHJq6rzM4vq/D9HrnPL7xnuKh
+         qHfcpiz3ExIDA0+VSvLW61WWfEcsplgn/BRsFmtZ8pcbBRyugvW0vo3cdaR2JyNTMngm
+         t3P0SN9FGp9x2cDjoO4LxV378nfYe7bEUWyy3NFo1W9hoYKlgm9kstA4Lu6Vni332A6T
+         YYUn9oE4VktEWScDKkCP9LzV+05vBuCOS8J80TSpG6RPQ0gahgRrrC1MT+nCAQfuuFkI
+         7v4ThQJ88p+kLzMMOoDxV9/n8Y4z6QtsCYv4sVOkXUxKXVC5yONaInk/jWicpdcPELPS
+         6hmA==
+X-Gm-Message-State: AOJu0YwsFKARo2SNSJh+IXDUv3pxmlou1ZTOdV5fgWduHTSFykfvy5+G
+        y4sQa/Wt6BDcNz3/3v1Sgk0LmIAa8TrZEgc9mC8MKM+K0Exi
+X-Google-Smtp-Source: AGHT+IHz6gCjQEgVol8OZonb4ZBbxzpBelGeiz//Vk4U60W3RTW4YNJNYzMwSQG62xH84vLXSmH5kFbyqVdSXDRm1YTXkL/+BpqO
+MIME-Version: 1.0
+X-Received: by 2002:a05:6a00:4519:b0:6bc:8df2:a536 with SMTP id
+ cw25-20020a056a00451900b006bc8df2a536mr245432pfb.1.1699671725404; Fri, 10 Nov
+ 2023 19:02:05 -0800 (PST)
+Date:   Fri, 10 Nov 2023 19:02:05 -0800
+In-Reply-To: <tencent_A2614970C3AB4447D761576DC6D73362A305@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d7a5f0609d7a92a@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 20:44:22 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hello,
 
-> On Fri, 10 Nov 2023 16:17:39 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > +	used = 0;
-> > > +	hlist_for_each_entry_from_rcu(node, hlist) {
-> > > +		if (node->addr != func)
-> > > +			break;
-> > > +		fp = READ_ONCE(node->fp);
-> > > +		if (!fp || fprobe_disabled(fp))
-> > > +			continue;
-> > > +
-> > > +		if (fprobe_shared_with_kprobes(fp))
-> > > +			ret = __fprobe_kprobe_handler(func, ret_ip,
-> > > +					fp, fregs, fgraph_data + used);
-> > > +		else
-> > > +			ret = __fprobe_handler(func, ret_ip, fp,
-> > > +					fregs, fgraph_data + used);  
-> > 
-> > 
-> > Since the fgraph callback is under rcu-locked but not preempt-disabled,
-> 
-> rcu-locked? The only rcu-locked is task rcu.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Hmm, it might be my misread. But I don't get any warning from
-find_first_fprobe_node(), which uses hlist_for_each_entry_rcu()
-so isn't it rcu locked?
-
-> 
-> > fprobe unittest fails. I need to add preempt_disable_notrace() and
-> > preempt_enable_notrace() around this. Note that kprobe_busy_begin()/end()
-> > also access to per-cpu variable, so it requires to disable preemption.
-> 
-> 
-> Just around the __fprobe_*handler()? Or the loop?
-
-Just around the __fprobe*handler().
-
-Thank you,
+fs/btrfs/qgroup.h:432: multiple definition of `exist_qgroup_rb'; fs/btrfs/super.o:fs/btrfs/qgroup.h:432: first defined here
 
 
-> 
-> -- Steve
+Tested on:
 
+commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17cc7338e80000
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
