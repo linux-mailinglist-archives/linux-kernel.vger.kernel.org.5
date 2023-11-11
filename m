@@ -2,201 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 202287E8953
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 06:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 661D37E8951
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 06:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345810AbjKKEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 23:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
+        id S230297AbjKKFEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 00:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345579AbjKKEtP (ORCPT
+        with ESMTP id S229666AbjKKFEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 23:49:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AED3C15
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 20:49:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA1BEC433C8;
-        Sat, 11 Nov 2023 04:49:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699678151;
-        bh=wLa3/4DyAaT4E/tFa9AXdUKW7rjugUNIJ1QPdxeplNE=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=EX1s6WJWvgiGrBoDpUi+jX5uSn8QxWGCyVGqRDJkzyzQ+57tySFgVEOq2bhHMoH/7
-         m1zMAuKVh8oC4I1IbAbALOaJeApkACbtW1CSLkHyk8h06CXxAxAShkxfh34gWWkDvr
-         uxZyX5hwin2FKC1HFU95SPczDhzWnPtTe0IUdHQZ9TDVhru6mjtaIPc/S7JQuMfO7D
-         5bS8mc0EFDXtX9xzz3khm8blwGFmrQmwVMq7ysybgyRIsQcayJxQl31tedOjfEtz3G
-         mUr7nYQ0cwvr6aJc5ANuHAvpErYnPqw512OE7ZaZNcYvC+B2eG3nYd/MRCPjD5ez4X
-         43RH2tI/cB44w==
-Message-ID: <a69b7544-2312-486c-d655-8b86e370c55e@kernel.org>
-Date:   Sat, 11 Nov 2023 12:49:08 +0800
+        Sat, 11 Nov 2023 00:04:32 -0500
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91553C15
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 21:04:29 -0800 (PST)
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28035cf4306so3443316a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 21:04:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699679069; x=1700283869;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cppaf70FMfubnxWjlk2mRgI1rT/pt4p4L8LawsuULfg=;
+        b=OJ7ShD1AGQylei13OepEfbzyMkvypzSztN5y7UruBI49z8TGdLNv+ogoBsAqgbGBBw
+         jGgBVAVVI/OSiEJ9yfqftYPzO7/MkyMvmtywbIRolqJp444HG+76krnfnAgrrIBEoi0w
+         GpW4o89eYTYlKSObtedoFUSS7Kud9+hHHmZTT/EHHq+tp6rm/3QSSp4YeS+1ayUGIMvL
+         x1t471xV16PSjVHkjp35F+kj7IuCX4oUnnjv/L0lmfI4A7yVUJ1veqmXlwnl0KsfUseE
+         A0Vb+78Z53BYFZuzsR8reyGHQBqvfevwl/aFZnvJ6IJN1VO47zPeeGo6l351uQxjCUbb
+         HpDA==
+X-Gm-Message-State: AOJu0YwMdfP/GVHw3GKc6YKkz/lq4dcQtlZL8sRYV+A5QHBb6+jFVpGr
+        IOya1nQBW+iCiZW2dR0Wqon6OXL/2nZEX+5lSc8laHNGiay2cvY=
+X-Google-Smtp-Source: AGHT+IEfzE8EyrzI3WKUrjS/b5/giazQ9EKDnwZn6lzDUHBgfGZVHp1ol0QqpaRW3iGpV9L+jse3A6iRYu0inwF7Rfe4y9zDhVDM
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-To:     Wu Bo <wubo.oduw@gmail.com>, Wu Bo <bo.wu@vivo.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20231030094024.263707-1-bo.wu@vivo.com>
- <c181256e-9f6e-d43e-4d02-a7d8d5286d56@kernel.org>
- <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
-Content-Language: en-US
-From:   Chao Yu <chao@kernel.org>
-Subject: Re: [PATCH 1/1] f2fs: fix fallocate failed under pinned block
- situation
-In-Reply-To: <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:4285:b0:1cc:166f:91c8 with SMTP id
+ ju5-20020a170903428500b001cc166f91c8mr280800plb.1.1699679069510; Fri, 10 Nov
+ 2023 21:04:29 -0800 (PST)
+Date:   Fri, 10 Nov 2023 21:04:29 -0800
+In-Reply-To: <0000000000001959d30609bb5d94@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ba4c10609d95fcf@google.com>
+Subject: Re: [syzbot] [PATCH] test 305230142ae0
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/8 21:48, Wu Bo wrote:
-> On 2023/11/7 22:39, Chao Yu wrote:
->> On 2023/10/30 17:40, Wu Bo wrote:
->>> If GC victim has pinned block, it can't be recycled.
->>> And if GC is foreground running, after many failure try, the pinned file
->>> is expected to be clear pin flag. To enable the section be recycled.
->>>
->>> But when fallocate trigger FG_GC, GC can never recycle the pinned
->>> section. Because GC will go to stop before the failure try meet the
->>> threshold:
->>>      if (has_enough_free_secs(sbi, sec_freed, 0)) {
->>>          if (!gc_control->no_bg_gc &&
->>>              total_sec_freed < gc_control->nr_free_secs)
->>>              goto go_gc_more;
->>>          goto stop;
->>>      }
->>>
->>> So when fallocate trigger FG_GC, at least recycle one.
->>
->> Hmm... it may break pinfile's semantics at least on one pinned file?
->> In this case, I prefer to fail fallocate() rather than unpinning file,
->> in order to avoid leaving invalid LBA references of unpinned file held
->> by userspace.
-> 
-> As f2fs designed now, FG_GC is able to unpin the pinned file.
-> 
-> fallocate() triggered FG_GC, but can't recycle space.  It breaks the
-> design logic of FG_GC.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Yes, contradictoriness exists.
+***
 
-IMO, unpin file by GC looks more dangerous, it may cause potential data
-corruption w/ below case:
-1. app pins file & holds LBAs of data blocks.
-2. GC unpins file and migrates its data to new LBAs.
-3. other file reuses previous LBAs.
-4. app read/write data via previous LBAs.
+Subject: [PATCH] test 305230142ae0
+Author: eadavis@qq.com
 
-So I suggest to normalize use of pinfile and do not add more unpin cases
-in filesystem inner processes.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 305230142ae0
 
-> 
-> This issue is happened in Android OTA scenario.  fallocate() always
-> return failure cause OTA fail.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 401ea09ae4b8..97050a3edc32 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
+ 		goto out;
+ 	}
+ 
+-	*objectid = root->free_objectid++;
++	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
++	*objectid = root->free_objectid;
+ 	ret = 0;
+ out:
+ 	mutex_unlock(&root->objectid_mutex);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index edb84cc03237..3705e7d57057 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -171,7 +171,7 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u64 progress_objectid,
+ static void qgroup_rescan_zero_tracking(struct btrfs_fs_info *fs_info);
+ 
+ /* must be called with qgroup_ioctl_lock held */
+-static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
++struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
+ 					   u64 qgroupid)
+ {
+ 	struct rb_node *n = fs_info->qgroup_tree.rb_node;
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 855a4f978761..96c6aa31ca91 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -425,4 +425,6 @@ bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info);
+ int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+ 			      struct btrfs_squota_delta *delta);
+ 
++struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
++                                            u64 qgroupid);
+ #endif
+-- 
+2.25.1
 
-Can you please check why other pinned files were so fragmented that f2fs_gc()
-can not recycle one free section?
-
-Thanks,
-
-> 
->    And this commit changed previous behavior of fallocate():
-> 
-> Commit 2e42b7f817ac ("f2fs: stop allocating pinned sections if EAGAIN
-> happens")
-> 
-> Before this commit, if fallocate() meet this situation, it will trigger
-> FG_GC to recycle pinned space finally.
-> 
-> FG_GC is expected to recycle pinned space when there is no more free
-> space.  And this is the right time to do it when fallocate() need free
-> space.
-> 
-> It is weird when f2fs shows enough spare space but can't fallocate(). So
-> I think it should be fixed.
-> 
->>
->> Thoughts?
->>
->> Thanks,
->>
->>>
->>> This issue can be reproduced by filling f2fs space as following layout.
->>> Every segment has one block is pinned:
->>> +-+-+-+-+-+-+-----+-+
->>> | | |p| | | | ... | | seg_n
->>> +-+-+-+-+-+-+-----+-+
->>> +-+-+-+-+-+-+-----+-+
->>> | | |p| | | | ... | | seg_n+1
->>> +-+-+-+-+-+-+-----+-+
->>> ...
->>> +-+-+-+-+-+-+-----+-+
->>> | | |p| | | | ... | | seg_n+k
->>> +-+-+-+-+-+-+-----+-+
->>>
->>> And following are steps to reproduce this issue:
->>> dd if=/dev/zero of=./f2fs_pin.img bs=2M count=1024
->>> mkfs.f2fs f2fs_pin.img
->>> mkdir f2fs
->>> mount f2fs_pin.img ./f2fs
->>> cd f2fs
->>> dd if=/dev/zero of=./large_padding bs=1M count=1760
->>> ./pin_filling.sh
->>> rm padding*
->>> sync
->>> touch fallocate_40m
->>> f2fs_io pinfile set fallocate_40m
->>> fallocate -l 41943040 fallocate_40m
->>>
->>> fallocate always fail with EAGAIN even there has enough free space.
->>>
->>> 'pin_filling.sh' is:
->>> count=1
->>> while :
->>> do
->>>       # filling the seg space
->>>       for i in {1..511}:
->>>       do
->>>           name=padding_$count-$i
->>>           echo write $name
->>>           dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
->>>           if [ $? -ne 0 ]; then
->>>                   exit 0
->>>           fi
->>>       done
->>>       sync
->>>
->>>       # pin one block in a segment
->>>       name=pin_file$count
->>>       dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
->>>       sync
->>>       f2fs_io pinfile set $name
->>>       count=$(($count + 1))
->>> done
->>>
->>> Signed-off-by: Wu Bo <bo.wu@vivo.com>
->>> ---
->>>    fs/f2fs/file.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>> index ca5904129b16..e8a13616543f 100644
->>> --- a/fs/f2fs/file.c
->>> +++ b/fs/f2fs/file.c
->>> @@ -1690,7 +1690,7 @@ static int f2fs_expand_inode_data(struct inode
->>> *inode, loff_t offset,
->>>                .init_gc_type = FG_GC,
->>>                .should_migrate_blocks = false,
->>>                .err_gc_skipped = true,
->>> -            .nr_free_secs = 0 };
->>> +            .nr_free_secs = 1 };
->>>        pgoff_t pg_start, pg_end;
->>>        loff_t new_size;
->>>        loff_t off_end;
