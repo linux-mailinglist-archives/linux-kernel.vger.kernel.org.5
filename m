@@ -2,72 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AD47E88E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D32A7E88EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345635AbjKKDOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 22:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S230161AbjKKDUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 22:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjKKDOI (ORCPT
+        with ESMTP id S229647AbjKKDUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 22:14:08 -0500
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0343D55
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:14:05 -0800 (PST)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc5ef7e815so26069955ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:14:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699672445; x=1700277245;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7zsQfK3khrVm7AtTi6cOcJgERlxBmSXjFeSSjk7EZFI=;
-        b=voi8aj57NG0pUPLT5oxeiirNoHOfcTa+0QtrRe+UAiNgEi1rzoFK7vD6iVf8qyPMPq
-         GK7+tPXLmFxnaDDImuzxrUduRFqXczlK/kL9VTiQByZfkG+5piwefr5Nlji7SWSirKxc
-         LKWQ4xGSIACkQ76a5M2XcEaY0xVwYsjUZOhhf10cHITGQe7fju89iZhZvTtV6MgvgXTx
-         UDWdY60v0fEVdPuFowYE7ReSiiHNiPc2LV6SUcmihFwfBH30iuzgxYzx/kBkvdnooS6n
-         wThqblPhGoJb88icgVs6SVHe1lQnMt8R9wcD2gOCus+6/gmKT2wpk35nq0m2OidjI1lo
-         r+Yg==
-X-Gm-Message-State: AOJu0Yy592X1AgUBdi4woiqLNZ6j5rGWrCtFZYaLCfLvJTwIYfXrbQg0
-        JEATwdOyReouDsGGC7xDDrzx2WVaC0+D55Nn0Y5EhAfvMK3j
-X-Google-Smtp-Source: AGHT+IFzZkyZwvkXOQKh6ZRqLmBmrC5pcpNN90X6ZrCVFYh6HTF02yhEdoWwF9W8WOcO/EbGN5ro/waB31436o6Sqjdm05G/DsAr
+        Fri, 10 Nov 2023 22:20:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510152591;
+        Fri, 10 Nov 2023 19:20:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699672840; x=1731208840;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ARkRUyOLAIpmhjp2siRoxLvSfsSs3MBz/hMYy9pew/w=;
+  b=AOPVxStzq3WLv8dklIznsqvANgMNRoeoe/egCa3ClRsLuMEVgLMQs/Jj
+   e+4T7c3uEDQK4cF1aXzK7gRUVHruqks0BVQFCXCvHXf3kDOdxAkcS/sx5
+   5J1FL/6jau0pHgcZoYdKLpDiAOSnMtEDBLDZS9V6ECGKKPhczDYUUYCLU
+   4jMiIG8md9RTD8b/H0EeqTVOwhWwVEyfOFtEHWzjOkf9jLSgFM6DsvvnE
+   Lrnr1eGLjkFaGzfLr/X/5lTPG7NsFfi+i3C2enwcFoHWyGghM8tRseg2Y
+   lFxdZSqVP2jDWxs3LMu77kl3tCwPyLwW1VLvgF3KARmSudjKWSV1JZvzW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="375286638"
+X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
+   d="scan'208";a="375286638"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 19:20:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="792980847"
+X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
+   d="scan'208";a="792980847"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 10 Nov 2023 19:20:37 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1eXy-000AAc-2V;
+        Sat, 11 Nov 2023 03:20:34 +0000
+Date:   Sat, 11 Nov 2023 11:19:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [POC 1/7] livepatch: Add callbacks for introducing and removing
+ states
+Message-ID: <202311111107.avVIpRi2-lkp@intel.com>
+References: <20231110170428.6664-2-pmladek@suse.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:9b90:b0:1ca:2620:78ad with SMTP id
- y16-20020a1709029b9000b001ca262078admr305962plp.8.1699672445411; Fri, 10 Nov
- 2023 19:14:05 -0800 (PST)
-Date:   Fri, 10 Nov 2023 19:14:05 -0800
-In-Reply-To: <tencent_4FE7DB06CC92DC064989ABAECD6EC7CCB706@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000057e8d10609d7d4b2@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
-From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110170428.6664-2-pmladek@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Petr,
 
-syzbot tried to test the proposed patch but the build/boot failed:
+kernel test robot noticed the following build warnings:
 
-fs/btrfs/qgroup.h:433: undefined reference to `find_qgroup_rb'
+[auto build test WARNING on shuah-kselftest/next]
+[also build test WARNING on shuah-kselftest/fixes linus/master v6.6 next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Petr-Mladek/livepatch-Add-callbacks-for-introducing-and-removing-states/20231111-014906
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
+patch link:    https://lore.kernel.org/r/20231110170428.6664-2-pmladek%40suse.com
+patch subject: [POC 1/7] livepatch: Add callbacks for introducing and removing states
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231111/202311111107.avVIpRi2-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111107.avVIpRi2-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311111107.avVIpRi2-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/livepatch/state.c:121:6: warning: no previous prototype for function 'is_state_in_other_patches' [-Wmissing-prototypes]
+   bool is_state_in_other_patches(struct klp_patch *patch, struct klp_state *state)
+        ^
+   kernel/livepatch/state.c:121:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   bool is_state_in_other_patches(struct klp_patch *patch, struct klp_state *state)
+   ^
+   static 
+   1 warning generated.
 
 
-Tested on:
+vim +/is_state_in_other_patches +121 kernel/livepatch/state.c
 
-commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11ce1eff680000
+   120	
+ > 121	bool is_state_in_other_patches(struct klp_patch *patch, struct klp_state *state)
+   122	{
+   123		struct klp_patch *old_patch;
+   124		struct klp_state *old_state;
+   125	
+   126		klp_for_each_patch(old_patch) {
+   127			if (old_patch == patch)
+   128				continue;
+   129	
+   130			klp_for_each_state(old_patch, old_state) {
+   131				if (old_state->id == state->id)
+   132					return true;
+   133			}
+   134		}
+   135	
+   136		return false;
+   137	}
+   138	
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
