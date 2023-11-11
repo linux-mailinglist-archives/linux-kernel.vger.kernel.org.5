@@ -2,152 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DA67E8815
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D2B7E8821
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjKKCHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S1344561AbjKKCPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 21:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKKCHr (ORCPT
+        with ESMTP id S229462AbjKKCPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:07:47 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5F83C0E;
-        Fri, 10 Nov 2023 18:07:43 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so2380803b3a.2;
-        Fri, 10 Nov 2023 18:07:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699668462; x=1700273262; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=us4PH3hYSKV8M14QXIBOyvA+4JqUtwc0XH3JtG4nmDY=;
-        b=H2SACKIh/aE8QyI9hmjRYgDpTcn2jhbedsoYWNKoryJo5gw9y7qRdGpdtzhyqtnT7Z
-         IyaivMsC/o5jYmUFamrLMj9RntR/nwl0g8dafIeGJTDW1dg07ALue77KOXLepq+enGS/
-         46tLvitQ3NET2vdPyIV9R5noUpnuWGcuaKZFdOLL/A6ZVNgLawVy4M7OTyxSymo48bNO
-         HambX9i5EFqNPBzmShFNds6UgrMK1QOYi+0O1wvZdNrMiLyN3/KUQzJbTENNA1dIR3Pk
-         sLNfBM82Q/cDLg4xKsWzYCoMR8jLVOchb6lHHLHwP7it+gpT9+Y2FpIlCv+CcExXeIRc
-         MOmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699668462; x=1700273262;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=us4PH3hYSKV8M14QXIBOyvA+4JqUtwc0XH3JtG4nmDY=;
-        b=P3pAzLvZOpeLxQh1oPV5tCz10xk/ZcK6+p1XPqbHMSICLemiCMoao0Fn93PwvSljmH
-         tjFsMNIqa+73RiZuFPzZote0LUUHJzU/pYFtXtZS8/kmgo83fIPYQjn3/RPy3fcM03jE
-         di23VitBv5Eu+qCedPXRgS5DssTX9yqAtCntMxo+PTXY9YA961PaNu50GmizlzC1X2w3
-         18XvVDFf61EYsOCH7JI7yNpqe1tacImlH4kwsLNq4KWyWOdwTq8eoMHrJ+5AnthPbMWH
-         Gik916q8RqHs9OnMEeupN7x7U8sC/pig4zFqCZDF+RZc6NmAN7jElCXn9bpnQ85mjdht
-         1vWQ==
-X-Gm-Message-State: AOJu0Yw/tHvbPAotgeLg+64ZdE3AKl9yrM+SdGSmFxycEjAa73UqYBjY
-        /AIBS52Bc/9wmLOlW2no107JkTRlazE60A==
-X-Google-Smtp-Source: AGHT+IHNBBW3BK8jyaoUi7xXcxcZdBpSdb0qc7l3zTckarw97gd+X2tbBj1Oc1EwReuZ3Rk530zP9g==
-X-Received: by 2002:a05:6a20:ce83:b0:131:b3fa:eaaa with SMTP id if3-20020a056a20ce8300b00131b3faeaaamr588855pzb.61.1699668462452;
-        Fri, 10 Nov 2023 18:07:42 -0800 (PST)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b001a9b29b6759sm308895pll.183.2023.11.10.18.07.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 18:07:41 -0800 (PST)
-Message-ID: <60585667-70ca-4ace-8d8f-dbdd8d4428a6@gmail.com>
-Date:   Sat, 11 Nov 2023 09:07:35 +0700
+        Fri, 10 Nov 2023 21:15:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359EA3C0C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:15:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699668917; x=1731204917;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X5ZgYENX2ryWN2rp/ksyXUh7LLw2nbyq8iiQXJOMI0Q=;
+  b=WTkKqwO/XT/COjWMb6TvAMxQReHLTOx/NzcsDrzVl10bNPLkMfjMU0YP
+   FJarK+fYEXNtzzBzVKQfpTIgZiHxUbz2Bf1WJdn4h2XM8DcXWiX6lNDZl
+   AZSOlZHbqTxX8oxSvf6lR7ep3PP+jIRhFOYQ0Skz72VtWvz5aOpMDY97h
+   mYUxX7l8RsFgpGM8WA6Fh+gJY0cXWUJYOBGGZRkOIvMAz4+iRoGFlQHE0
+   By7vyT83iuGH8JFN+bGI5unwzc6ZBX2ox6JQHLHkPeheGG3H2Llg+GbmN
+   zE0iqYAu7tUe23VDGS1PZQgLHCCUstk9W0F1G+HLHEqSnVYasu2Lkr31G
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11801997"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="11801997"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 18:15:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="798721003"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="798721003"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2023 18:15:14 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1dWi-000A8w-0o;
+        Sat, 11 Nov 2023 02:15:12 +0000
+Date:   Sat, 11 Nov 2023 10:13:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     WoZ1zh1 <wozizhi@huawei.com>, xiang@kernel.org, chao@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-erofs@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, wozizhi@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH -next V2] erofs: code clean up for function
+ erofs_read_inode()
+Message-ID: <202311111038.Atx87gVV-lkp@intel.com>
+References: <20231109194821.1719430-1-wozizhi@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Ping-Ke Shih <pkshih@realtek.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jian-Hong Pan <jhp@endlessos.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: The PCIe AER error flood between PCIe bridge and Realtek's
- RTL8723BE makes system hang
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109194821.1719430-1-wozizhi@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi WoZ1zh1,
 
-I notice a bug report on Bugzilla [1]. Quoting from it:
+kernel test robot noticed the following build errors:
 
-> We have an ASUS X555UQ laptop equipped with Intel i7-6500U CPU and Realtek RTL8723BE PCIe Wireless adapter.
-> 
-> We tested it with kernel 6.6.  System keeps showing AER error message flood, even hangs up, until rtl8723be's ASPM is disabled.
-> 
-> kernel: pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
-> kernel: pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00000001/00002000
-> kernel: pcieport 0000:00:1c.5:    [ 0] RxErr                  (First)
-> kernel: pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-> kernel: pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-> kernel: pcieport 0000:00:1c.5: AER: Multiple Corrected error received: 0000:00:1c.5
-> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-> 
-> Here is the PCI tree:
-> $ lspci -tv
-> -[0000:00]-+-00.0  Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers
->            +-02.0  Intel Corporation Skylake GT2 [HD Graphics 520]
->            +-04.0  Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem
->            +-14.0  Intel Corporation Sunrise Point-LP USB 3.0 xHCI Controller
->            +-14.2  Intel Corporation Sunrise Point-LP Thermal subsystem
->            +-15.0  Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0
->            +-15.1  Intel Corporation Sunrise Point-LP Serial IO I2C Controller #1
->            +-16.0  Intel Corporation Sunrise Point-LP CSME HECI #1
->            +-17.0  Intel Corporation Sunrise Point-LP SATA Controller [AHCI mode]
->            +-1c.0-[01]----00.0  NVIDIA Corporation GM108M [GeForce 940MX]
->            +-1c.4-[02]----00.0  Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
->            +-1c.5-[03]----00.0  Realtek Semiconductor Co., Ltd. RTL8723BE PCIe Wireless Network Adapter
->            +-1f.0  Intel Corporation Sunrise Point-LP LPC Controller
->            +-1f.2  Intel Corporation Sunrise Point-LP PMC
->            +-1f.3  Intel Corporation Sunrise Point-LP HD Audio
->            \-1f.4  Intel Corporation Sunrise Point-LP SMBus
+[auto build test ERROR on next-20231109]
 
-And then the reporter found that it was ASPM bug:
+url:    https://github.com/intel-lab-lkp/linux/commits/WoZ1zh1/erofs-code-clean-up-for-function-erofs_read_inode/20231110-033810
+base:   next-20231109
+patch link:    https://lore.kernel.org/r/20231109194821.1719430-1-wozizhi%40huawei.com
+patch subject: [PATCH -next V2] erofs: code clean up for function erofs_read_inode()
+config: i386-buildonly-randconfig-004-20231111 (https://download.01.org/0day-ci/archive/20231111/202311111038.Atx87gVV-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111038.Atx87gVV-lkp@intel.com/reproduce)
 
-> Notice a long time ago discussion mail: Dmesg filled with "AER: Corrected error received" [1]
-> 
-> So, I force write 1 to clear Receiver Error Status bit of Correctable Error Status Register, like
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 9c8fd69ae5ad..39faedd2ec8e 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1141,8 +1160,9 @@ static void aer_isr_one_error(struct aer_rpc *rpc,
->                         e_info.multi_error_valid = 0;
->                 aer_print_port_info(pdev, &e_info);
->  
-> -               if (find_source_device(pdev, &e_info))
-> -                       aer_process_err_devices(&e_info);
-> +               //if (find_source_device(pdev, &e_info))
-> +               //      aer_process_err_devices(&e_info);
-> +               pci_write_config_dword(pdev, pdev->aer_cap + PCI_ERR_COR_STATUS, 0x1);
->         }
->  
->         if (e_src->status & PCI_ERR_ROOT_UNCOR_RCV) {
-> 
-> Then, system should clear the error right away.  However, system still get the AER flood ...
-> 
-> Seems that we still have to disable rtl8723be's ASPM.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311111038.Atx87gVV-lkp@intel.com/
 
-See Bugzilla for the full thread and attached full kernel logs.
+All errors (new ones prefixed by >>):
 
-Thanks.
+   fs/erofs/inode.c: In function 'erofs_read_inode':
+>> fs/erofs/inode.c:55:3: error: a label can only be part of a statement and a declaration is not a statement
+      55 |   struct erofs_inode_extended *die, *copied = NULL;
+         |   ^~~~~~
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218127
+
+vim +55 fs/erofs/inode.c
+
+    10	
+    11	static void *erofs_read_inode(struct erofs_buf *buf,
+    12				      struct inode *inode, unsigned int *ofs)
+    13	{
+    14		struct super_block *sb = inode->i_sb;
+    15		struct erofs_sb_info *sbi = EROFS_SB(sb);
+    16		struct erofs_inode *vi = EROFS_I(inode);
+    17		const erofs_off_t inode_loc = erofs_iloc(inode);
+    18	
+    19		erofs_blk_t blkaddr, nblks = 0;
+    20		void *kaddr;
+    21		struct erofs_inode_compact *dic;
+    22		unsigned int ifmt;
+    23		int err;
+    24	
+    25		blkaddr = erofs_blknr(sb, inode_loc);
+    26		*ofs = erofs_blkoff(sb, inode_loc);
+    27	
+    28		kaddr = erofs_read_metabuf(buf, sb, blkaddr, EROFS_KMAP);
+    29		if (IS_ERR(kaddr)) {
+    30			erofs_err(sb, "failed to get inode (nid: %llu) page, err %ld",
+    31				  vi->nid, PTR_ERR(kaddr));
+    32			return kaddr;
+    33		}
+    34	
+    35		dic = kaddr + *ofs;
+    36		ifmt = le16_to_cpu(dic->i_format);
+    37	
+    38		if (ifmt & ~EROFS_I_ALL) {
+    39			erofs_err(inode->i_sb, "unsupported i_format %u of nid %llu",
+    40				  ifmt, vi->nid);
+    41			err = -EOPNOTSUPP;
+    42			goto err_out;
+    43		}
+    44	
+    45		vi->datalayout = erofs_inode_datalayout(ifmt);
+    46		if (vi->datalayout >= EROFS_INODE_DATALAYOUT_MAX) {
+    47			erofs_err(inode->i_sb, "unsupported datalayout %u of nid %llu",
+    48				  vi->datalayout, vi->nid);
+    49			err = -EOPNOTSUPP;
+    50			goto err_out;
+    51		}
+    52	
+    53		switch (erofs_inode_version(ifmt)) {
+    54		case EROFS_INODE_LAYOUT_EXTENDED:
+  > 55			struct erofs_inode_extended *die, *copied = NULL;
+    56	
+    57			vi->inode_isize = sizeof(struct erofs_inode_extended);
+    58			/* check if the extended inode acrosses block boundary */
+    59			if (*ofs + vi->inode_isize <= sb->s_blocksize) {
+    60				*ofs += vi->inode_isize;
+    61				die = (struct erofs_inode_extended *)dic;
+    62			} else {
+    63				const unsigned int gotten = sb->s_blocksize - *ofs;
+    64	
+    65				copied = kmalloc(vi->inode_isize, GFP_NOFS);
+    66				if (!copied) {
+    67					err = -ENOMEM;
+    68					goto err_out;
+    69				}
+    70				memcpy(copied, dic, gotten);
+    71				kaddr = erofs_read_metabuf(buf, sb, blkaddr + 1,
+    72							   EROFS_KMAP);
+    73				if (IS_ERR(kaddr)) {
+    74					erofs_err(sb, "failed to get inode payload block (nid: %llu), err %ld",
+    75						  vi->nid, PTR_ERR(kaddr));
+    76					kfree(copied);
+    77					return kaddr;
+    78				}
+    79				*ofs = vi->inode_isize - gotten;
+    80				memcpy((u8 *)copied + gotten, kaddr, *ofs);
+    81				die = copied;
+    82			}
+    83			vi->xattr_isize = erofs_xattr_ibody_size(die->i_xattr_icount);
+    84	
+    85			inode->i_mode = le16_to_cpu(die->i_mode);
+    86			switch (inode->i_mode & S_IFMT) {
+    87			case S_IFREG:
+    88			case S_IFDIR:
+    89			case S_IFLNK:
+    90				vi->raw_blkaddr = le32_to_cpu(die->i_u.raw_blkaddr);
+    91				break;
+    92			case S_IFCHR:
+    93			case S_IFBLK:
+    94				inode->i_rdev =
+    95					new_decode_dev(le32_to_cpu(die->i_u.rdev));
+    96				break;
+    97			case S_IFIFO:
+    98			case S_IFSOCK:
+    99				inode->i_rdev = 0;
+   100				break;
+   101			default:
+   102				kfree(copied);
+   103				goto bogusimode;
+   104			}
+   105			i_uid_write(inode, le32_to_cpu(die->i_uid));
+   106			i_gid_write(inode, le32_to_cpu(die->i_gid));
+   107			set_nlink(inode, le32_to_cpu(die->i_nlink));
+   108	
+   109			/* extended inode has its own timestamp */
+   110			inode_set_ctime(inode, le64_to_cpu(die->i_mtime),
+   111					le32_to_cpu(die->i_mtime_nsec));
+   112	
+   113			inode->i_size = le64_to_cpu(die->i_size);
+   114	
+   115			/* total blocks for compressed files */
+   116			if (erofs_inode_is_data_compressed(vi->datalayout))
+   117				nblks = le32_to_cpu(die->i_u.compressed_blocks);
+   118			else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+   119				/* fill chunked inode summary info */
+   120				vi->chunkformat = le16_to_cpu(die->i_u.c.format);
+   121			kfree(copied);
+   122			break;
+   123		case EROFS_INODE_LAYOUT_COMPACT:
+   124			vi->inode_isize = sizeof(struct erofs_inode_compact);
+   125			*ofs += vi->inode_isize;
+   126			vi->xattr_isize = erofs_xattr_ibody_size(dic->i_xattr_icount);
+   127	
+   128			inode->i_mode = le16_to_cpu(dic->i_mode);
+   129			switch (inode->i_mode & S_IFMT) {
+   130			case S_IFREG:
+   131			case S_IFDIR:
+   132			case S_IFLNK:
+   133				vi->raw_blkaddr = le32_to_cpu(dic->i_u.raw_blkaddr);
+   134				break;
+   135			case S_IFCHR:
+   136			case S_IFBLK:
+   137				inode->i_rdev =
+   138					new_decode_dev(le32_to_cpu(dic->i_u.rdev));
+   139				break;
+   140			case S_IFIFO:
+   141			case S_IFSOCK:
+   142				inode->i_rdev = 0;
+   143				break;
+   144			default:
+   145				goto bogusimode;
+   146			}
+   147			i_uid_write(inode, le16_to_cpu(dic->i_uid));
+   148			i_gid_write(inode, le16_to_cpu(dic->i_gid));
+   149			set_nlink(inode, le16_to_cpu(dic->i_nlink));
+   150	
+   151			/* use build time for compact inodes */
+   152			inode_set_ctime(inode, sbi->build_time, sbi->build_time_nsec);
+   153	
+   154			inode->i_size = le32_to_cpu(dic->i_size);
+   155			if (erofs_inode_is_data_compressed(vi->datalayout))
+   156				nblks = le32_to_cpu(dic->i_u.compressed_blocks);
+   157			else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+   158				vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
+   159			break;
+   160		default:
+   161			erofs_err(inode->i_sb,
+   162				  "unsupported on-disk inode version %u of nid %llu",
+   163				  erofs_inode_version(ifmt), vi->nid);
+   164			err = -EOPNOTSUPP;
+   165			goto err_out;
+   166		}
+   167	
+   168		if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
+   169			if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL) {
+   170				erofs_err(inode->i_sb,
+   171					  "unsupported chunk format %x of nid %llu",
+   172					  vi->chunkformat, vi->nid);
+   173				err = -EOPNOTSUPP;
+   174				goto err_out;
+   175			}
+   176			vi->chunkbits = sb->s_blocksize_bits +
+   177				(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
+   178		}
+   179		inode_set_mtime_to_ts(inode,
+   180				      inode_set_atime_to_ts(inode, inode_get_ctime(inode)));
+   181	
+   182		inode->i_flags &= ~S_DAX;
+   183		if (test_opt(&sbi->opt, DAX_ALWAYS) && S_ISREG(inode->i_mode) &&
+   184		    (vi->datalayout == EROFS_INODE_FLAT_PLAIN ||
+   185		     vi->datalayout == EROFS_INODE_CHUNK_BASED))
+   186			inode->i_flags |= S_DAX;
+   187	
+   188		if (!nblks)
+   189			/* measure inode.i_blocks as generic filesystems */
+   190			inode->i_blocks = round_up(inode->i_size, sb->s_blocksize) >> 9;
+   191		else
+   192			inode->i_blocks = nblks << (sb->s_blocksize_bits - 9);
+   193		return kaddr;
+   194	
+   195	bogusimode:
+   196		erofs_err(inode->i_sb, "bogus i_mode (%o) @ nid %llu",
+   197			  inode->i_mode, vi->nid);
+   198		err = -EFSCORRUPTED;
+   199	err_out:
+   200		DBG_BUGON(1);
+   201		erofs_put_metabuf(buf);
+   202		return ERR_PTR(err);
+   203	}
+   204	
 
 -- 
-An old man doll... just what I always wanted! - Clara
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
