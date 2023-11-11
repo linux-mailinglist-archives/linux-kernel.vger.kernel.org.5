@@ -2,71 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1EE7E893A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 05:33:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 202287E8953
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 06:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344752AbjKKEc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 23:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
+        id S1345810AbjKKEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 23:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjKKEc5 (ORCPT
+        with ESMTP id S1345579AbjKKEtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 23:32:57 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8551FD7;
-        Fri, 10 Nov 2023 20:32:53 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so4355357a12.0;
-        Fri, 10 Nov 2023 20:32:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699677172; x=1700281972; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+1LAJp2By4zZWFpPX7rxfXeSMFnxE7/94UDqW/5rzVc=;
-        b=MG7SR1DPlxw2jEAEYwfKTJsTwRUGpiXWvWl77P1h3igalsjatSyCiiXDWfBn6QWac5
-         cbzV0ZX1ll0KcLP30CDr245ei9xp48/C52XIvI9b7dR8IdIc5HNJJP1FTJ3gTO4yRN9t
-         9sy7arJAB9EGMUtYBCjnxKLU5O9TVT6rmLx+xYIKPLx7NojIIbT+YWzCd8/jq7VR4M0T
-         Hm7txQbx0PGmQncCxFX+4QN+dtfghY4PhpnoeOB1Br3oa61yQOWzwqxvzBhbpapuyl2U
-         oJa93/Mvyt5aga3LrvRjdYEug0oq9ZYXH5Uv7Tm3RlD3hqopZNsCyBext41xN2H5ssRX
-         GLFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699677172; x=1700281972;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+1LAJp2By4zZWFpPX7rxfXeSMFnxE7/94UDqW/5rzVc=;
-        b=jGi7srhexLbmdT6xYsKlFLyxLOjXVl4aT8j5RAW5Syl7hq3Qfb7vlnLRZ6VO+hmE/+
-         s5VdrV8Kg/w3LVpGUSMnmYiIw7JVZJZJN9vppwt+LzThX2N8eW9Jew4ihRNzjXU1CrIa
-         CJPp7nhTKbsq3u9gSWL4tR6mtwNLKIBiEczLe942UP++KefPnQ5vzkreCroN187yVW9w
-         okMKlQuZXmAfwoSXdaPaKx9Lmillm9duHmbd7e1kgE60hj8dpOG01wKfnqYml7cCJ/TX
-         HmwU8FVO+P3bHYi0RqA49SzTPKv2/2LdqLxpMxHValO2evOtUKMqJi2CTX0HuUHBlu1Z
-         pomQ==
-X-Gm-Message-State: AOJu0YwNmzmqQDrBr65XoGlgKpgEgORYpOdF/HL1wTorxeP7cXMufVp3
-        g6yQlwjs/OIbJhBjqzjGv63MAMaZYjbHA2dmOk0=
-X-Google-Smtp-Source: AGHT+IHBSFjMd61UgVKV/ASu7RdIpB1lscOrNSkuDSCW1og64A5iVZmaoVtWhLv5D1qQykp+me0NlXAWtLJPKcjXXB0=
-X-Received: by 2002:a05:6402:5162:b0:532:bed7:d0dd with SMTP id
- d2-20020a056402516200b00532bed7d0ddmr733083ede.5.1699677171944; Fri, 10 Nov
- 2023 20:32:51 -0800 (PST)
+        Fri, 10 Nov 2023 23:49:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AED3C15
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 20:49:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA1BEC433C8;
+        Sat, 11 Nov 2023 04:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699678151;
+        bh=wLa3/4DyAaT4E/tFa9AXdUKW7rjugUNIJ1QPdxeplNE=;
+        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+        b=EX1s6WJWvgiGrBoDpUi+jX5uSn8QxWGCyVGqRDJkzyzQ+57tySFgVEOq2bhHMoH/7
+         m1zMAuKVh8oC4I1IbAbALOaJeApkACbtW1CSLkHyk8h06CXxAxAShkxfh34gWWkDvr
+         uxZyX5hwin2FKC1HFU95SPczDhzWnPtTe0IUdHQZ9TDVhru6mjtaIPc/S7JQuMfO7D
+         5bS8mc0EFDXtX9xzz3khm8blwGFmrQmwVMq7ysybgyRIsQcayJxQl31tedOjfEtz3G
+         mUr7nYQ0cwvr6aJc5ANuHAvpErYnPqw512OE7ZaZNcYvC+B2eG3nYd/MRCPjD5ez4X
+         43RH2tI/cB44w==
+Message-ID: <a69b7544-2312-486c-d655-8b86e370c55e@kernel.org>
+Date:   Sat, 11 Nov 2023 12:49:08 +0800
 MIME-Version: 1.0
-References: <20231110235021.192796-1-linux@jordanrome.com> <CAEf4BzaWtOeTBb_+b7Td3NHaKjZU+OohuBJje_nvw9kd6xPA3g@mail.gmail.com>
- <CA+QiOd4X_=rZ5s=XgxBrmSkoepJLFmN4p+3q-0ST9j1sj_BhPw@mail.gmail.com>
-In-Reply-To: <CA+QiOd4X_=rZ5s=XgxBrmSkoepJLFmN4p+3q-0ST9j1sj_BhPw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Nov 2023 20:32:40 -0800
-Message-ID: <CAEf4BzZT_H1rac3DsSeOdUe2oLEzXkY0EMEnyo-KXXhT=z2djQ@mail.gmail.com>
-Subject: Re: [PATCH perf] perf: get_perf_callchain return NULL for crosstask
-To:     Jordan Rome <linux@jordanrome.com>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Wu Bo <wubo.oduw@gmail.com>, Wu Bo <bo.wu@vivo.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20231030094024.263707-1-bo.wu@vivo.com>
+ <c181256e-9f6e-d43e-4d02-a7d8d5286d56@kernel.org>
+ <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH 1/1] f2fs: fix fallocate failed under pinned block
+ situation
+In-Reply-To: <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,82 +56,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 4:43=E2=80=AFPM Jordan Rome <linux@jordanrome.com> =
-wrote:
->
-> On Fri, Nov 10, 2023 at 7:10=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Nov 10, 2023 at 3:51=E2=80=AFPM Jordan Rome <linux@jordanrome.c=
-om> wrote:
-> > >
-> > > Return NULL instead of returning 1 incorrect frame, which
-> > > currently happens when trying to walk the user stack for
-> > > any task that isn't current. Returning NULL is a better
-> > > indicator that this behavior is not supported.
-> > >
-> > > This issue was found using bpf_get_task_stack inside a BPF
-> > > iterator ("iter/task"), which iterates over all tasks. The
-> > > single address/frame in the buffer when getting user stacks
-> > > for tasks that aren't current could not be symbolized (testing
-> > > multiple symbolizers).
-> > >
-> > > Signed-off-by: Jordan Rome <linux@jordanrome.com>
-> > > ---
-> > >  kernel/events/callchain.c | 7 +++----
-> > >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> > > index 1273be84392c..430fa544fa80 100644
-> > > --- a/kernel/events/callchain.c
-> > > +++ b/kernel/events/callchain.c
-> > > @@ -201,6 +201,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init=
-_nr, bool kernel, bool user,
-> > >         }
-> > >
-> > >         if (user) {
-> > > +               if (crosstask)
-> > > +                       return NULL;
-> >
-> > I think you need that goto exit_put here.
-> >
->
-> Why is that? Wouldn't that be the same behavior that already exists?
-> That being said we can probably move this check above get_callchain_entry
-> and exit earlier.
+On 2023/11/8 21:48, Wu Bo wrote:
+> On 2023/11/7 22:39, Chao Yu wrote:
+>> On 2023/10/30 17:40, Wu Bo wrote:
+>>> If GC victim has pinned block, it can't be recycled.
+>>> And if GC is foreground running, after many failure try, the pinned file
+>>> is expected to be clear pin flag. To enable the section be recycled.
+>>>
+>>> But when fallocate trigger FG_GC, GC can never recycle the pinned
+>>> section. Because GC will go to stop before the failure try meet the
+>>> threshold:
+>>>      if (has_enough_free_secs(sbi, sec_freed, 0)) {
+>>>          if (!gc_control->no_bg_gc &&
+>>>              total_sec_freed < gc_control->nr_free_secs)
+>>>              goto go_gc_more;
+>>>          goto stop;
+>>>      }
+>>>
+>>> So when fallocate trigger FG_GC, at least recycle one.
+>>
+>> Hmm... it may break pinfile's semantics at least on one pinned file?
+>> In this case, I prefer to fail fallocate() rather than unpinning file,
+>> in order to avoid leaving invalid LBA references of unpinned file held
+>> by userspace.
+> 
+> As f2fs designed now, FG_GC is able to unpin the pinned file.
+> 
+> fallocate() triggered FG_GC, but can't recycle space.  It breaks the
+> design logic of FG_GC.
 
-If I read the code right, get_callchain_entry() does expect
-put_callchain_entry(), which you are breaking with this return NULL.
+Yes, contradictoriness exists.
 
-But indeed, checking it early and bailing out might be the best solution he=
-re.
+IMO, unpin file by GC looks more dangerous, it may cause potential data
+corruption w/ below case:
+1. app pins file & holds LBAs of data blocks.
+2. GC unpins file and migrates its data to new LBAs.
+3. other file reuses previous LBAs.
+4. app read/write data via previous LBAs.
 
->
-> > > +
-> > >                 if (!user_mode(regs)) {
-> > >                         if  (current->mm)
-> > >                                 regs =3D task_pt_regs(current);
-> > > @@ -209,9 +212,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init=
-_nr, bool kernel, bool user,
-> > >                 }
-> > >
-> > >                 if (regs) {
-> > > -                       if (crosstask)
-> > > -                               goto exit_put;
-> > > -
-> > >                         if (add_mark)
-> > >                                 perf_callchain_store_context(&ctx, PE=
-RF_CONTEXT_USER);
-> > >
-> > > @@ -219,7 +219,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init=
-_nr, bool kernel, bool user,
-> > >                 }
-> > >         }
-> > >
-> > > -exit_put:
-> > >         put_callchain_entry(rctx);
-> > >
-> > >         return entry;
-> > > --
-> > > 2.39.3
-> > >
+So I suggest to normalize use of pinfile and do not add more unpin cases
+in filesystem inner processes.
+
+> 
+> This issue is happened in Android OTA scenario.  fallocate() always
+> return failure cause OTA fail.
+
+Can you please check why other pinned files were so fragmented that f2fs_gc()
+can not recycle one free section?
+
+Thanks,
+
+> 
+>    And this commit changed previous behavior of fallocate():
+> 
+> Commit 2e42b7f817ac ("f2fs: stop allocating pinned sections if EAGAIN
+> happens")
+> 
+> Before this commit, if fallocate() meet this situation, it will trigger
+> FG_GC to recycle pinned space finally.
+> 
+> FG_GC is expected to recycle pinned space when there is no more free
+> space.  And this is the right time to do it when fallocate() need free
+> space.
+> 
+> It is weird when f2fs shows enough spare space but can't fallocate(). So
+> I think it should be fixed.
+> 
+>>
+>> Thoughts?
+>>
+>> Thanks,
+>>
+>>>
+>>> This issue can be reproduced by filling f2fs space as following layout.
+>>> Every segment has one block is pinned:
+>>> +-+-+-+-+-+-+-----+-+
+>>> | | |p| | | | ... | | seg_n
+>>> +-+-+-+-+-+-+-----+-+
+>>> +-+-+-+-+-+-+-----+-+
+>>> | | |p| | | | ... | | seg_n+1
+>>> +-+-+-+-+-+-+-----+-+
+>>> ...
+>>> +-+-+-+-+-+-+-----+-+
+>>> | | |p| | | | ... | | seg_n+k
+>>> +-+-+-+-+-+-+-----+-+
+>>>
+>>> And following are steps to reproduce this issue:
+>>> dd if=/dev/zero of=./f2fs_pin.img bs=2M count=1024
+>>> mkfs.f2fs f2fs_pin.img
+>>> mkdir f2fs
+>>> mount f2fs_pin.img ./f2fs
+>>> cd f2fs
+>>> dd if=/dev/zero of=./large_padding bs=1M count=1760
+>>> ./pin_filling.sh
+>>> rm padding*
+>>> sync
+>>> touch fallocate_40m
+>>> f2fs_io pinfile set fallocate_40m
+>>> fallocate -l 41943040 fallocate_40m
+>>>
+>>> fallocate always fail with EAGAIN even there has enough free space.
+>>>
+>>> 'pin_filling.sh' is:
+>>> count=1
+>>> while :
+>>> do
+>>>       # filling the seg space
+>>>       for i in {1..511}:
+>>>       do
+>>>           name=padding_$count-$i
+>>>           echo write $name
+>>>           dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
+>>>           if [ $? -ne 0 ]; then
+>>>                   exit 0
+>>>           fi
+>>>       done
+>>>       sync
+>>>
+>>>       # pin one block in a segment
+>>>       name=pin_file$count
+>>>       dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
+>>>       sync
+>>>       f2fs_io pinfile set $name
+>>>       count=$(($count + 1))
+>>> done
+>>>
+>>> Signed-off-by: Wu Bo <bo.wu@vivo.com>
+>>> ---
+>>>    fs/f2fs/file.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>> index ca5904129b16..e8a13616543f 100644
+>>> --- a/fs/f2fs/file.c
+>>> +++ b/fs/f2fs/file.c
+>>> @@ -1690,7 +1690,7 @@ static int f2fs_expand_inode_data(struct inode
+>>> *inode, loff_t offset,
+>>>                .init_gc_type = FG_GC,
+>>>                .should_migrate_blocks = false,
+>>>                .err_gc_skipped = true,
+>>> -            .nr_free_secs = 0 };
+>>> +            .nr_free_secs = 1 };
+>>>        pgoff_t pg_start, pg_end;
+>>>        loff_t new_size;
+>>>        loff_t off_end;
