@@ -2,74 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4097E89A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 08:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896797E89A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 08:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjKKHlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 02:41:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        id S230122AbjKKHxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 02:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKKHlJ (ORCPT
+        with ESMTP id S229451AbjKKHw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 02:41:09 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C847111
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 23:41:06 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc2be064b8so27811545ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 23:41:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699688465; x=1700293265;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iaux92PJYZTL0kp1IwDlCOwvY0ZFwenHEfGoD4BOQs4=;
-        b=RFfNq9Xw7W7gs9zyaFnaxRIvKKtEL3IJpzFcejCYKbQiHJSTzX8EwMumHkq7+FPZFu
-         r8IE20synaj3jUUN0XBsXivEhMezL2QTrQ0LqAAi7jPXiMZA0WDqqvJr4mQmt8DcdXkk
-         LidSlnRC6dI1eip4GBU5x43suQIMCDaRUbL7hMC3hUGuLmC/J6I4QSKS2AA4AtbEuA3T
-         /AxqL3qpn1WqlnxPd8zwYaRG2yf1LDDY3iQ7RUvWDfv8MbcsaIMPk6Wd5CLIwrKQ1MR4
-         020Fm5z3MFbbIfp1Jkfpm+IaDjIbps1iwCh+hvRrXLlNwA/VTytxKyEiWCuotmNpJoSU
-         fp9w==
-X-Gm-Message-State: AOJu0Yz2px0tkjkjnmpGhCVzEVnajk4YV/kWYuCZPbMv5YA4Ym9pDfzK
-        epBbBE/4A9YpB1CDzFziGLZ1NZw4W2W9aW1kKv3+rRmXgxY0
-X-Google-Smtp-Source: AGHT+IHQWifihUiNyVnvsKs//g/oiz4HVTr9Kl7hnFONToJAY+P+vFwYU+axvlEQvkjU4QJKOVTuqfprUw+ahRiLcfzryPRNAfe1
+        Sat, 11 Nov 2023 02:52:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7D03C0C;
+        Fri, 10 Nov 2023 23:52:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699689176; x=1731225176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P35mStZNxkg9uguD+AoPwvrzhuSkOSt4IKHX8z0Mqy4=;
+  b=JvPpD1bBfwJRVHP2MurUBft1eBvhMayx3jYO3r+VFbFlcKhk+E+3wnQc
+   DEoS8FseMsbwNE0+m2vEJvRFRKm4OaY/IVyIV5XtU9SqHlkYIStmsLOFV
+   FzofGQQOlNdtMKSST0Ua/HFQFp7KGPnjMYNxKsCMijReamm9GRWv8bNHi
+   /MRdkPRjtHi1Uh2krnly035m7Liq1/7iRmlEd0zJ5Fu0ZXBaDUSY/4Xb3
+   cld7PvEeb3S1KPvvxQDPa4NaTdzN1b1H5IcRmffqv65uz78ygpCzrxizD
+   QWb7oPPYA4Q1QLIa3rVbubHTcOee3dAzkrVTBiuRH/jzIwexVSNOSrThD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="454563867"
+X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
+   d="scan'208";a="454563867"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 23:52:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="854557822"
+X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
+   d="scan'208";a="854557822"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 10 Nov 2023 23:52:51 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1inR-000AJC-2C;
+        Sat, 11 Nov 2023 07:52:49 +0000
+Date:   Sat, 11 Nov 2023 15:52:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_parass@quicinc.com,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: Re: [PATCH v4] bus: mhi: host: Add tracing support
+Message-ID: <202311111502.wEcI1Okb-lkp@intel.com>
+References: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:70c8:b0:1c9:f267:1661 with SMTP id
- l8-20020a17090270c800b001c9f2671661mr1196913plt.2.1699688465591; Fri, 10 Nov
- 2023 23:41:05 -0800 (PST)
-Date:   Fri, 10 Nov 2023 23:41:05 -0800
-In-Reply-To: <c124498e96926ac872888f6aba09f9b9@foxhound.fi>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003874fd0609db8f57@google.com>
-Subject: Re: [syzbot] [block?] memory leak in iov_iter_extract_pages
-From:   syzbot <syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com>
-To:     jose.pekkarinen@foxhound.fi, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Krishna,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+kernel test robot noticed the following build warnings:
 
-Reported-and-tested-by: syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
+[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
 
-Tested on:
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231111-135816
+base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
+patch link:    https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461%40quicinc.com
+patch subject: [PATCH v4] bus: mhi: host: Add tracing support
+config: csky-randconfig-002-20231111 (https://download.01.org/0day-ci/archive/20231111/202311111502.wEcI1Okb-lkp@intel.com/config)
+compiler: csky-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111502.wEcI1Okb-lkp@intel.com/reproduce)
 
-commit:         5a6a09e9 Merge tag 'cgroup-for-6.7' of git://git.kerne..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=126ba588e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=492c9379bc08e464
-dashboard link: https://syzkaller.appspot.com/bug?extid=cb729843d0f42a5c1a50
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=168693e0e80000
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311111502.wEcI1Okb-lkp@intel.com/
 
-Note: testing is done by a robot and is best-effort only.
+All warnings (new ones prefixed by >>):
+
+   In file included from include/trace/define_trace.h:102,
+                    from drivers/bus/mhi/host/trace.h:225,
+                    from drivers/bus/mhi/host/init.c:24:
+   drivers/bus/mhi/host/./trace.h: In function 'trace_event_raw_event_mhi_process_ctrl_ev_ring':
+>> drivers/bus/mhi/host/./trace.h:141:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+     141 |                 __entry->rp = (u64)rp;
+         |                               ^
+   include/trace/trace_events.h:402:11: note: in definition of macro 'DECLARE_EVENT_CLASS'
+     402 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   drivers/bus/mhi/host/./trace.h:123:1: note: in expansion of macro 'TRACE_EVENT'
+     123 | TRACE_EVENT(mhi_process_ctrl_ev_ring,
+         | ^~~~~~~~~~~
+   drivers/bus/mhi/host/./trace.h:139:9: note: in expansion of macro 'TP_fast_assign'
+     139 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+   In file included from include/trace/define_trace.h:103:
+   drivers/bus/mhi/host/./trace.h: In function 'perf_trace_mhi_process_ctrl_ev_ring':
+>> drivers/bus/mhi/host/./trace.h:141:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+     141 |                 __entry->rp = (u64)rp;
+         |                               ^
+   include/trace/perf.h:51:11: note: in definition of macro 'DECLARE_EVENT_CLASS'
+      51 |         { assign; }                                                     \
+         |           ^~~~~~
+   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
+      44 |                              PARAMS(assign),                   \
+         |                              ^~~~~~
+   drivers/bus/mhi/host/./trace.h:123:1: note: in expansion of macro 'TRACE_EVENT'
+     123 | TRACE_EVENT(mhi_process_ctrl_ev_ring,
+         | ^~~~~~~~~~~
+   drivers/bus/mhi/host/./trace.h:139:9: note: in expansion of macro 'TP_fast_assign'
+     139 |         TP_fast_assign(
+         |         ^~~~~~~~~~~~~~
+
+
+vim +141 drivers/bus/mhi/host/./trace.h
+
+   124	
+   125		TP_PROTO(const char *name, struct mhi_ring_element *rp, __le64 ptr,
+   126			 __le32 dword0, __le32 dword1),
+   127	
+   128		TP_ARGS(name, rp, ptr, dword0, dword1),
+   129	
+   130		TP_STRUCT__entry(
+   131			__field(u64, rp)
+   132			__field(__le64, ptr)
+   133			__string(name, name)
+   134			__field(__le32, dword0)
+   135			__field(__le32, dword1)
+   136			__field(int, state)
+   137		),
+   138	
+   139		TP_fast_assign(
+   140			__assign_str(name, name);
+ > 141			__entry->rp = (u64)rp;
+   142			__entry->ptr = ptr;
+   143			__entry->dword0 = dword0;
+   144			__entry->dword1 = dword1;
+   145			__entry->state = MHI_TRE_GET_EV_STATE(rp);
+   146		),
+   147	
+   148		TP_printk("%s: RP:0x%llx Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
+   149			  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
+   150			  __entry->dword1, mhi_state_str(__entry->state))
+   151	);
+   152	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
