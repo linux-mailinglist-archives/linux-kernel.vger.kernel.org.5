@@ -2,53 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C675E7E876D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1E77E8770
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345176AbjKKBTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        id S1345124AbjKKBYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKKBTJ (ORCPT
+        with ESMTP id S229729AbjKKBYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:19:09 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB7D422D
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:19:06 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc591d8177so28285595ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:19:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699665546; x=1700270346;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FPKMLLuC0lmtrX8uqBQvklqk38SAanPbuVSQNwb92EU=;
-        b=qr3JCQhrodMiYai+/+HEMMCMawxK6VMSdNl1lZgXIQ7jsV80ZndDPbDtpNA5hXUg1s
-         Cx8SHrkSVDby4bEt0GFdPAvXuXvcFbdBo0XubTjuiun4ceVdoPjPPq0fKRaSJ7iblKtr
-         Lpdv2IXyyCWtyvo+I33hVhBAzzty+LArqbsuyukrMjuNeClX6OGHykqBRxZugbMhcylK
-         Oz/UCDzaJXc2xNMbRP+z4NKctaKN9gnDDe/iMIrDkRhW14pIATvOaNHS4WhBZGUQFg4O
-         xih3tU2WoNL34egdefTALgywzxH23pWojBYRA3WeS3ymPLhWL//dl8KOg46pb2vBHMmX
-         SqEA==
-X-Gm-Message-State: AOJu0Yxk68BpuQBrUxGiA2nODT8HiBrFsCZYpluvz7DewTQtG7n8aHQH
-        hDlsM6sEKa7LeZz2RNgLf4aZVB/3iMzUndQhnVbSJnHjUuAM
-X-Google-Smtp-Source: AGHT+IHShXUi+CRWycdsfzUHN4x5ZR58fQJc08Swtf5VWDrsiGTGDL+Grjzh9Op3OwW+sbBYeK4zQMAb9/dUZhxB2PbBaY6X13wF
+        Fri, 10 Nov 2023 20:24:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FF744B3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699665805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=o1A+pdnJXjMJkQyrzlTB6QKNGSkUIRGvX4wgLP5GhCI=;
+        b=UKP/+5Ztv0O2fl2yKfeEOtcyXs88gjy97no4cWxWqnKWsSTOzHDncAm3To/ylwkebexZuH
+        cTTMqGw2dyqGlnNr1dD+KMfRUQoEUArhbx/kc1HZq50MBt5vxAcD6wrgeC9b/dIgOrDMuR
+        g/x4kPOL+eaDuKaqq1VSKUWsywrqEhU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-552-ThnGvmezNLe8DU_L2mMylA-1; Fri,
+ 10 Nov 2023 20:23:21 -0500
+X-MC-Unique: ThnGvmezNLe8DU_L2mMylA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F0BBC1C0518A;
+        Sat, 11 Nov 2023 01:23:20 +0000 (UTC)
+Received: from localhost (unknown [10.22.9.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8161FC1596F;
+        Sat, 11 Nov 2023 01:23:20 +0000 (UTC)
+Date:   Fri, 10 Nov 2023 22:23:19 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        stable-rt <stable-rt@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 4.14.328-rt156
+Message-ID: <169966573344.87715.14465550502037567772@localhost.localdomain>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:efd3:b0:1cc:533e:f52b with SMTP id
- ja19-20020a170902efd300b001cc533ef52bmr251169plb.4.1699665546267; Fri, 10 Nov
- 2023 17:19:06 -0800 (PST)
-Date:   Fri, 10 Nov 2023 17:19:06 -0800
-In-Reply-To: <tencent_1252E00673099CEECDAECC0CAA67E306C706@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001f546a0609d639f6@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
-From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,20 +68,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello RT-list!
 
-syzbot tried to test the proposed patch but the build/boot failed:
+I'm pleased to announce the 4.14.328-rt156 stable release.
 
-fs/btrfs/disk-io.c:4934:9: error: call to undeclared function 'find_qgroup_rb'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
-fs/btrfs/disk-io.c:4934:61: error: expected ')'
+This release is just an update to the new stable 4.14.328
+version and no RT specific changes have been made.
 
+You can get this release via the git tree at:
 
-Tested on:
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=124c62b7680000
+  branch: v4.14-rt
+  Head SHA1: 45b1e061478c963779792ea50ecd2462e75a76a4
+
+Or to build 4.14.328-rt156 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.328.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older/patch-4.14.328-rt156.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
 
