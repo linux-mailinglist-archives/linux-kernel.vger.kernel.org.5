@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1BD7E8C5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 20:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BDD7E8C67
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 20:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbjKKTwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 14:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49040 "EHLO
+        id S229633AbjKKTxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 14:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjKKTwB (ORCPT
+        with ESMTP id S229436AbjKKTxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 14:52:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA3E385F
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 11:51:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 043A8C433CB;
-        Sat, 11 Nov 2023 19:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699732318;
-        bh=kMgwL6cTB03XK32KetgmN3BkF483jEjd+jRzvnJeMmE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dc3w/pDkeygruWNLWcZ3r6ddONQVkasoj4IVP2cvBKKYgRf2XvlS7Fr5/HqpY51jj
-         l8X2sUc9Sm8sAB5U6x3nOzy1A8K8W2wvmbBYpRSBM3AKWUzJDpSjLHHNOapJr8cMs5
-         13glumUVEUFEBvcoaIr9Na+3IOVIYCBSk3J7352P1/rxebI3QsvVG3zXPePxlCy1UH
-         WMmyclBxsLAdSY7+RmcTskirvndDQ4dYrv9xoXmFnxRQHQE0O4KuWJCimjfHDB/iW1
-         geiA+r+9Pp3UbXGcVViay3XeA0Np02wJfRfEv9auaEDLZtRKW6cIjJfyWwiMhzgptU
-         XTZF9wxPAv06Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DE315E00083;
-        Sat, 11 Nov 2023 19:51:57 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Sat, 11 Nov 2023 14:53:36 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3768385F;
+        Sat, 11 Nov 2023 11:53:33 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40a4d04af5cso3846045e9.0;
+        Sat, 11 Nov 2023 11:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699732412; x=1700337212; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/VCZuqrElRyiEpHz6VhAAB6ifUe/eycXTPkzvJwzq9U=;
+        b=K3/ASwSCFBDgGbIEVFcIgm7F6e52Tn0krxYjJSdyjeMxdSMZ4gX2cg6ftOG3aIYj+y
+         8mdb2zjB9o2gP4nwRiA8wxC+S1I5Kl4kRxwu1uwqx92Ftg7HHuD9vfPlCk8Sp2/RTQy7
+         m7/yPl/dDHB6nPJTAS3J8to84Wgccu4JhTpT/XzGcfA2+oUFX2tUhS8D60SqLn4hB8Pk
+         sinnfNj+fG8hIpJCeKNGEsOOl+a2NxH0t2erLo94NttBaGVgTNd/0EtB9l9rUEM4k34L
+         epuJYv69Upu4nhcuPu8GXnMCb+5P9cisAMHJWy7Ir2mxwP6wv8ytk5l9PzqQ8ObYH6Uq
+         /uMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699732412; x=1700337212;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/VCZuqrElRyiEpHz6VhAAB6ifUe/eycXTPkzvJwzq9U=;
+        b=K6+4uf/3JoqEfSivk429u/kUaZ72CXuYoRdGFDDPCYNu8VcTXefkPPyFhjrON5xVwd
+         YqdfjzUnnNTLRMUa9CCJW8at7iOWYGfk2EYi9uEKgTTf0j+I85H7qZQtpPmV4/tqmzpC
+         HTh+gg+qoHOz+IhahkKrxVhULnflqobG0nHQ9YDx4kebGDdkuij924M7JKxODJREZWBT
+         yCcg0hFfEPmd4o47UqExr9uFmywA2CQLkk0HrKfX9OwLSokAYM7F7ERzE/Tzk6DpIl27
+         VY4zmoQpS5Q0CyVZOmkY5Fv6I5qOT5fa/qeJA1IKRkDukgK+edT+mZ4FbbaVYhEOBRYI
+         TRCg==
+X-Gm-Message-State: AOJu0Yxu4ExNR+jSuWVkB2qG1JzfClgDp7kIGnVWrg9ARiecT9ErOSSt
+        Rdv5ECbCk2XL0axByq4AB8o=
+X-Google-Smtp-Source: AGHT+IGbKUlRfd3HWOHCEAQ/ZJ7CEL3cGM1FkjzQbqKP34p8L6l+aUA1RC5xSpHcoA8b4fohVzadhw==
+X-Received: by 2002:a05:600c:1c05:b0:40a:5080:724 with SMTP id j5-20020a05600c1c0500b0040a50800724mr20284wms.20.1699732411981;
+        Sat, 11 Nov 2023 11:53:31 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id fl23-20020a05600c0b9700b0040a45fffd27sm5364255wmb.10.2023.11.11.11.53.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 11:53:31 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] regulator: palmas: remove redundant initialization of pointer pdata
+Date:   Sat, 11 Nov 2023 19:53:30 +0000
+Message-Id: <20231111195330.338324-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v4] net: ti: icssg-prueth: Add missing icss_iep_put to
- error path
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169973231790.11806.9879405241139030767.git-patchwork-notify@kernel.org>
-Date:   Sat, 11 Nov 2023 19:51:57 +0000
-References: <7a4e5c5b-e397-479b-b1cb-4b50da248f21@siemens.com>
-In-Reply-To: <7a4e5c5b-e397-479b-b1cb-4b50da248f21@siemens.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, danishanwar@ti.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, diogo.ivo@siemens.com, nm@ti.com,
-        baocheng.su@siemens.com, wojciech.drewek@intel.com,
-        rogerq@kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,31 +71,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Pointer pdata is being initialized with a value that is never read. It is
+being re-assigned later on with the return from a devm_kzalloc call.
+Remove the redundant initialization, cleans up clang scan build warning:
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+drivers/regulator/palmas-regulator.c:1597:36: warning: Value stored
+to 'pdata' during its initialization is never read [deadcode.DeadStores]
 
-On Fri, 10 Nov 2023 17:13:02 +0100 you wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-> Analogously to prueth_remove, just also taking care for NULL'ing the
-> iep pointers.
-> 
-> Fixes: 186734c15886 ("net: ti: icssg-prueth: add packet timestamping and ptp support")
-> Fixes: 443a2367ba3c ("net: ti: icssg-prueth: am65x SR2.0 add 10M full duplex support")
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-> 
-> [...]
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/regulator/palmas-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [net,v4] net: ti: icssg-prueth: Add missing icss_iep_put to error path
-    https://git.kernel.org/netdev/net/c/e409d7346648
-
-You are awesome, thank you!
+diff --git a/drivers/regulator/palmas-regulator.c b/drivers/regulator/palmas-regulator.c
+index e0dc033aae0f..60656a815b9e 100644
+--- a/drivers/regulator/palmas-regulator.c
++++ b/drivers/regulator/palmas-regulator.c
+@@ -1594,7 +1594,7 @@ static const struct of_device_id of_palmas_match_tbl[] = {
+ static int palmas_regulators_probe(struct platform_device *pdev)
+ {
+ 	struct palmas *palmas = dev_get_drvdata(pdev->dev.parent);
+-	struct palmas_pmic_platform_data *pdata = dev_get_platdata(&pdev->dev);
++	struct palmas_pmic_platform_data *pdata;
+ 	struct device_node *node = pdev->dev.of_node;
+ 	struct palmas_pmic_driver_data *driver_data;
+ 	struct regulator_config config = { };
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.2
 
