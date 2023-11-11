@@ -2,103 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509CB7E8CB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 21:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2507E8CB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 21:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjKKUrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 15:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        id S229717AbjKKUsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 15:48:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKKUre (ORCPT
+        with ESMTP id S229588AbjKKUsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 15:47:34 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F16E2D77
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 12:47:30 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9e623356e59so266704266b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 12:47:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699735649; x=1700340449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Peg1pxCwGlnhNKPOTBWdvFK6RQItCTgLiK4ys22+0zI=;
-        b=q1zBnuKZgE8y/IgPhTpQCy1JhBOB4879vLQuhvTmXNGAOT70oRsrnWRRGMi+K/RpkN
-         pasJP1BhPp3rX9kXmXOQCaGTDBDWBV0vNF3o5Z3avjHm2jk6etL0Rw8ljatHsvGNOTeC
-         YM1eQjy4eku2213kDgS+yYpdAQv9lYfUAatfKcE8N6ajJG5TnSjNG0rz/qinNLexK2oj
-         iqOBfYznH9pIPFdJPPDx4MnkakKLo1IuDaYjqxztISHt/wJwhrvIE8HBYuUU5JxD+Tzz
-         CilP9Gb0oEAMG7cLW57MBOQcyhm3x1E94+wLbpyeX9voe7FzynlrcmgTZ58lEs2ckjew
-         tMqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699735649; x=1700340449;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Peg1pxCwGlnhNKPOTBWdvFK6RQItCTgLiK4ys22+0zI=;
-        b=vxVT2OgtMBxzOO63O9cm9jQpDu3I4CPEbq0XqNfvRjihZRB3B4T6JOn/2Kd2WasPOY
-         EQMz4MlYp+u/JRum+RCuL9HEUOrSCzYosEjR1ZYhq7Kbp8NjmFewjDylqgLF7PblVTOT
-         TEI/oX+JJILXt5MMUx9F2DCabtLui1pUIFX0030SuUGm9noXDqanXlTf+D0IDP0L1FfV
-         kLfQPu+/iPO3lAgt0fev4adjw5+7KLzu+oMh0A5o0rHI3jbjiFrlkYM0QidQKwlJuNXD
-         roYzTAHmiFRlHSuyn8VjV2SLW6XCFm7JtdrrhoeAI8yO/bURU2fgSkWpOAyfJZN1wiY7
-         GaPw==
-X-Gm-Message-State: AOJu0YzsUBz8+T+Rxfi3xsYMGhPPdsXnYebS1L0fXERpWedskA0isCPD
-        sipFsP/0O2GyFN5UkdsmYVPtfg==
-X-Google-Smtp-Source: AGHT+IE/AWG1HaOZp60zhem7NngI/0APEHckp98uQ4HTdPA7+GViVgAA3x2I697DRgKOwHFqYwMXbw==
-X-Received: by 2002:a17:906:234d:b0:9d3:f436:6809 with SMTP id m13-20020a170906234d00b009d3f4366809mr1743119eja.39.1699735649053;
-        Sat, 11 Nov 2023 12:47:29 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id dc3-20020a170906c7c300b009b947f81c4asm1547346ejb.155.2023.11.11.12.47.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 12:47:28 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: sc8180x: align APSS with bindings
-Date:   Sat, 11 Nov 2023 21:47:25 +0100
-Message-Id: <20231111204725.35707-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Sat, 11 Nov 2023 15:48:51 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CC42D73;
+        Sat, 11 Nov 2023 12:48:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1699735704; x=1700340504; i=quwenruo.btrfs@gmx.com;
+        bh=TgFPOslhJOQ9qs98yLRjNcSGkGecPQbUrWbyHjijZdU=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=ZwRxKRMgIl1MWZzW6+omuPubI6dfNBN034QeH00rW/4OQnI8FJQCrjabePshr0Lq
+         HaVibQI0xVVKaBAP8Ta/ELZyHXuLIarDKwuwyevy7biuv6RKx6TMasY2Bdxx9mI4E
+         a7icdjopw1Z3wYJyOdPCoBtVEkKfYRfx7k9HR8VjWQ3EagC/Jh3PHKHDgkUt9ocEr
+         3rOatIoZDJfB+CxZgRVGLqCxtLtF/vp/xhFVxBJXJQdqghFrBp+H6/IdEqCORL3M7
+         gjXsbCanxYAXtbJlQi6yl7Z9R/m9M9fMHMvMbVEmrsE2Yyb5QkUYpK13VRtKNi1CR
+         ScM9LSEwXYmxZGQAzg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MyKDU-1rKQDc0kCy-00yhg8; Sat, 11
+ Nov 2023 21:48:24 +0100
+Message-ID: <ae67f48e-a1f3-4d45-8eca-fa42f0fcb5b8@gmx.com>
+Date:   Sun, 12 Nov 2023 07:18:16 +1030
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] test 305230142ae0
+To:     Edward Adam Davis <eadavis@qq.com>, willy@infradead.org
+Cc:     boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+References: <ZU8dS0dlOGOblbxf@casper.infradead.org>
+ <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
+Content-Language: en-US
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <tencent_82622979A3A74448177BF772E6D1736E4305@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+hLGTdZv3iptvCjS7ha0sAWDfEJNPI6Tt7PTlZss1eGzxUEnRDA
+ 3Y3H3z9bpaGlJernznmFPWY6HDdNErxaot1rS+0Y/k/2EyRP1tnSLCmrHCMotDpZZyHrsa3
+ 89UPcS+V+j5Nn7XmsivFDk2KBg1uwj+yiSunvkSbjdaiuD2rjsyKNO0duPLeU/lkE+9jcKj
+ daTlkl/s972FmKs6f95gg==
+UI-OutboundReport: notjunk:1;M01:P0:/Bugbo+DcYE=;n3pcwbrm7CrlQo4cmn6tPc0Va5Y
+ UCTKFhOLc4MojHJlLhKxbxU06JOe1wDFpunh4gqEnEwg34zY/epnipIxMC+fzXn/10wDRKzlu
+ qFQ0TNZoIuXDA0PzaAJZDmrr2q2tc3024jFVUpZkSMQlZjTX95UF5sgvnkEvthdskBxqyH3r0
+ EP5p/tdb9JzTqTKS39CHYrPmgLRLFMx9nnVLoGMTQMzGkFpSFN4uWWZ5Z5SLNnehEw9wQtbuE
+ /mBGRSP+nbgfPJtsYBCIwkBZJx0fJrdO2oassDW0n1SUPQ0SnOQT7UJprKFGG1+UtHr29fTTW
+ EUXU46AoeCLsieCGoF73MLb60UG2vdpgqcrGL0fcjWP0N0zdEKCO9o3YpS1wYZHt2Nj6Tymq1
+ ECuYVUSn3XjtmXRuiDGBo64J118qKvmeIC5RP8F+3C4pXZ47lh4Sao9Jfj/s55Zbja26y48gy
+ y792VobwF0kaDCIZg3IV1qncPgjqZdIPQn70LYkKAMDF7PI9fIk2aDNhNC7sxJjjVgbhKVLDj
+ 8jgGBJ52RmAS7zpmD/LEh+ENFu2fzw4TXRs5XvTlXJ12Yab6wJ/jPOG9T3IgaplDfoHAhINri
+ 8ICHA/8aTSi3Bz+uQyBnpwBi/u7psyGGhK3I1jBOj3QMnBo7ohZdNOoqbUXPrpwh0qfU3iGgU
+ 6w6yAh9eIweq8PfAeqe9umJQxKPlh2NC2ETxXPdWBBhqkzIh0aoaPxqHUGyTB2/MUyOxSSaTR
+ +lmPDT5pnhGVfJivjWtRbSv92TEESTs9Mgc7GJL3Yop1yaB0CmqdJhfP4gskkbJjuhAlMFzz3
+ Uj5SrfdlkD5Jqf6xnqp3e8rEtBZfWeMMSyDcgGtDm6FQEnTzeEvz8kEdWxhvQMUnRYPMWx1o2
+ JcmgF/2w1QMm/8BqFR74rcPTTd+IYqS2ABtE//RB2qeFfl6s49v9dZ8cXhH5kcHnCebEC3Qsi
+ xfMTFdEjjFRZp22e4p9cyBXKG9c=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SC8180x APSS Devicetree bindings expect qcom,sc8180x-apss-shared to use
-qcom,sdm845-apss-shared fallback:
 
-  sc8180x-lenovo-flex-5g.dtb: mailbox@17c00000: compatible: 'oneOf' conditional failed, one must be fixed:
-    ['qcom,sc8180x-apss-shared'] is too short
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/sc8180x.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2023/11/11 18:43, Edward Adam Davis wrote:
+> On Sat, 11 Nov 2023 06:20:59 +0000, Matthew Wilcox wrote:
+>>> +++ b/fs/btrfs/disk-io.c
+>>> @@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *r=
+oot, u64 *objectid)
+>>>   		goto out;
+>>>   	}
+>>>
+>>> -	*objectid =3D root->free_objectid++;
+>>> +	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
+>>> +	*objectid =3D root->free_objectid;
+>>
+>> This looks buggy to me.  Let's say that free_objectid is currently 3.
+>>
+>> Before, it would assign 3 to *objectid, and increment free_objectid to
+>> 4.  After (assuming the loop terminates on first iteration), it will
+>> increment free_objectid to 4, then assign 4 to *objectid.
+>>
+>> I think you meant to write:
+>>
+>> 	while (find_qgroup_rb(root->fs_info, root->free_objectid))
+>> 		root->free_objectid++;
+>> 	*objectid =3D root->free_objectid++;
+> Yes, your guess is correct.
+>>
+>> And the lesson here is that more compact code is not necessarily more
+>> correct code.
+>>
+>> (I'm not making any judgement about whether this is the correct fix;
+>> I don't understand btrfs well enough to have an opinion.  Just that
+>> this is not an equivalent transformation)
+> I don't have much knowledge about btrfs too, but one thing is clear: the=
+ qgroupid
+> taken by create_snapshot() is calculated from btrfs_get_free_ojectid().
+> At the same time, when calculating the new value in btrfs_get_free_oject=
+id(),
+> it is clearly unreasonable to not determine whether the new value exists=
+ in the
+> qgroup_tree tree.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-index a34f438ef2d9..6f5c07fa6c2e 100644
---- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
-@@ -3421,7 +3421,7 @@ intc: interrupt-controller@17a00000 {
- 		};
- 
- 		apss_shared: mailbox@17c00000 {
--			compatible = "qcom,sc8180x-apss-shared";
-+			compatible = "qcom,sc8180x-apss-shared", "qcom,sdm845-apss-shared";
- 			reg = <0x0 0x17c00000 0x0 0x1000>;
- 			#mbox-cells = <1>;
- 		};
--- 
-2.34.1
+Nope, it's totally wrong.
 
+Qgroupid is bound to subvolumeid, thus getting a different id for
+qgroupid is going to screw the whole thing up.
+
+> Perhaps there are other methods to obtain a new qgroupid, but before obt=
+aining
+> a new value, it is necessary to perform a duplicate value judgment on qg=
+roup_tree,
+> otherwise similar problems may still occur.
+
+If you don't really understand the context, the fix is never going to be
+correct.
+
+Thanks,
+Qu
+
+>
+> edward
+>
+>
