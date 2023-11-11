@@ -2,70 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A817E89DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E70A7E89E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbjKKIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 03:31:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
+        id S230288AbjKKIh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 03:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjKKIb2 (ORCPT
+        with ESMTP id S229881AbjKKIhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 03:31:28 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47254469D
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:31:25 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507f1c29f25so3806801e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699691483; x=1700296283; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CnzMPSuSkDs43Z3P5R9j6n7+bWlsIBEP8r17ky0zTro=;
-        b=cV9L0FL/5lKZyX18sKNTuhEvl2Nchv1x80QKBd4EDvSrGJkrvHjKU8JHdqgmHDWAhH
-         +8noZ3z1EmsM2i6qyDlgZGfVFbY+kTbFqIN+hSXBnPpko58IiXYS3M+7YVKUYotY4RzC
-         MmUnJhRptvgo5MR0NZoGMMqMklNyuiwGuLMoe+sfVk+bGG+znHCn66/zNUpLGtJ+ZEqq
-         YxzspKdqLZydaD6Of4Ca4F7zTqkWmelCWMExSkjDpmurk1tNmmAf4O0jm+lGMR5xW1jl
-         sNqeS+XSRQPNzbbRpmcCl6KK5KNOBfi4p0lKZT0ey6kFR6hxZWH3kzdIhuQtihkU6E/P
-         7DqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699691483; x=1700296283;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnzMPSuSkDs43Z3P5R9j6n7+bWlsIBEP8r17ky0zTro=;
-        b=GWZkb1WdxIteB4nCh3EN1s/OirLRquF4aCQfKNOoIMVvvm54htGbO7vwakBk8BPFr9
-         qjwXyUgLTXyPbLieN70+unI/p8tOV+9SmW1YvKZxL/Lx6w/cx2g4QV6toFUSs3TIeO38
-         bOgtiG+CwbcyQTkSXlWHYkYeoauvV9a1WuS4rzLKDSmRpTs5ULVURBy3ogyE+FFYmQVA
-         7BPNTV7hJprQQTXGTNZLq2hTpxR2DMvjrvL0R5ksALaLHcCFjx8N3schn5AJbh+wAUev
-         haUnxHnldkM0H5kfLYrQFVefJecHiuc9RmCww7bHGGuwgl2BsX16FV6zn4roksycDPCI
-         bE/g==
-X-Gm-Message-State: AOJu0Yxzip/U+15RDyeEhVSLcCLGLPYh/taQjK6pgLTA04p2sqR3B4aG
-        SVT2qn37e5NOZuMhxrYGeLR6K94nK/45xLAsgo8=
-X-Google-Smtp-Source: AGHT+IELK3Jp5o8QXO7eI93fMAFpbKC2f3FagLHhgYb/6DMOHmsvKBQnhpOM1YShIk5J/joBlvbrofzWhq+QJPHovzY=
-X-Received: by 2002:a19:3809:0:b0:50a:6375:d5f1 with SMTP id
- f9-20020a193809000000b0050a6375d5f1mr804587lfa.60.1699691483119; Sat, 11 Nov
- 2023 00:31:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20231111042926.52990-1-amworsley@gmail.com> <20231111042926.52990-2-amworsley@gmail.com>
-In-Reply-To: <20231111042926.52990-2-amworsley@gmail.com>
-From:   Andrew Worsley <amworsley@gmail.com>
-Date:   Sat, 11 Nov 2023 19:31:11 +1100
-Message-ID: <CA+Y=x3mF4jFX7PiJQ-1Gk9zyBE1mwZaF_GLYjSspT+mxtMn4GQ@mail.gmail.com>
-Subject: Re: [PATCH] Fix failure of simpledrm probe when trying to grab FB
- from the EFI-based Framebuffer
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Sat, 11 Nov 2023 03:37:55 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FED33C3C;
+        Sat, 11 Nov 2023 00:37:52 -0800 (PST)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0C4FD20B74C0;
+        Sat, 11 Nov 2023 00:37:52 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0C4FD20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1699691872;
+        bh=zbDWAPIzznRNV4elr6XvwFsGYrHF7a5O7SZKO+Ys2fU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tNT+XvlHT2BC8YzvppYf4rY9JG7lwqdImsQ8lCLh+JCNuJzwIvJ37pj8C15bMhAhJ
+         s07GqOoQve+WmQi4emGwWsCQNEUXxmD6CXX9yCHmWSbbl8scnpXwS8Dr7LQAlFCB6w
+         cHgj6kdSUB988nnsSS2kMp1jw6Kf+80XHrLDcQRc=
+From:   Saurabh Sengar <ssengar@linux.microsoft.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ssengar@microsoft.com
+Subject: [PATCH v2] x86/hyperv: Fix the detection of E820_TYPE_PRAM in a Gen2 VM
+Date:   Sat, 11 Nov 2023 00:37:47 -0800
+Message-Id: <1699691867-9827-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,79 +47,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's inline - part of the email - not an attachment?
+A Gen2 VM doesn't support legacy PCI/PCIe, so both raw_pci_ops and
+raw_pci_ext_ops are NULL, and pci_subsys_init() -> pcibios_init()
+doesn't call pcibios_resource_survey() -> e820__reserve_resources_late();
+as a result, any emulated persistent memory of E820_TYPE_PRAM (12) via
+the kernel parameter memmap=nn[KMG]!ss is not added into iomem_resource
+and hence can't be detected by register_e820_pmem().
 
-I can see it in the copy that went to me...
+Fix this by directly calling e820__reserve_resources_late() in
+hv_pci_init(), which is called from arch_initcall(pci_arch_init).
 
-Andrew
+It's ok to move a Gen2 VM's e820__reserve_resources_late() from
+subsys_initcall(pci_subsys_init) to arch_initcall(pci_arch_init) because
+the code in-between doesn't depend on the E820 resources.
+e820__reserve_resources_late() depends on e820__reserve_resources(),
+which has been called earlier from setup_arch().
 
-On Sat, 11 Nov 2023 at 15:30, Andrew Worsley <amworsley@gmail.com> wrote:
->
->    The simpledrm.c does not call aperture_remove_conflicting_devices() in it's probe
->    function as the drivers/video/aperture.c documentation says it should. Consequently
->    it's request for the FB memory fails.
->
-> ...
-> [    3.085302] simple-framebuffer bd58dc000.framebuffer: [drm] *ERROR* could not acquire memory range [??? 0xffff6e1d8629d580-0x2a5000001a7 flags 0x0]: -16
-> [    3.086433] simple-framebuffer: probe of bd58dc000.framebuffer failed with error -16
-> ...
->
->    In my case no driver provided /dev/dri/card0 device is available on boot up and X
->    fails to start as per this from X start up log.
->
-> ...
-> [     5.616] (WW) Falling back to old probe method for modesetting
-> [     5.616] (EE) open /dev/dri/card0: No such file or directory
-> ...
->
->    Fault confirmed and fixed on Asahi 6.5.0 kernel with both CONFIG_FB_EFI and
->    CONFIG_DRM_SIMPLEDRM config options set.
->
-> Signed-off-by: Andrew Worsley <amworsley@gmail.com>
-> ---
->  drivers/gpu/drm/tiny/simpledrm.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->
-> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
-> index 5fefc895bca2..e55a536b04cf 100644
-> --- a/drivers/gpu/drm/tiny/simpledrm.c
-> +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> @@ -8,6 +8,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/pm_domain.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/aperture.h>
->
->  #include <drm/drm_aperture.h>
->  #include <drm/drm_atomic.h>
-> @@ -828,6 +829,13 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
->         if (mem) {
->                 void *screen_base;
->
-> +               ret = aperture_remove_conflicting_devices(mem->start, resource_size(mem),
-> +                       DRIVER_NAME);
-> +               if (ret) {
-> +                       drm_err(dev, "aperture_remove_conflicting_devices: failed:%d\n",
-> +                           __func__, ret);
-> +                       return ERR_PTR(ret);
-> +               }
->                 ret = devm_aperture_acquire_from_firmware(dev, mem->start, resource_size(mem));
->                 if (ret) {
->                         drm_err(dev, "could not acquire memory range %pr: %d\n", mem, ret);
-> @@ -848,6 +856,13 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
->                 if (!res)
->                         return ERR_PTR(-EINVAL);
->
-> +               ret = aperture_remove_conflicting_devices(res->start, resource_size(res),
-> +                       DRIVER_NAME);
-> +               if (ret) {
-> +                       drm_err(dev, "aperture_remove_conflicting_devices: failed:%d\n",
-> +                           __func__, ret);
-> +                       return ERR_PTR(ret);
-> +               }
->                 ret = devm_aperture_acquire_from_firmware(dev, res->start, resource_size(res));
->                 if (ret) {
->                         drm_err(dev, "could not acquire memory range %pr: %d\n", res, ret);
-> --
-> 2.42.0
->
+For a Gen-2 VM, the new hv_pci_init() also adds any memory of
+E820_TYPE_PMEM (7) into iomem_resource, and acpi_nfit_register_region() ->
+acpi_nfit_insert_resource() -> region_intersects() returns
+REGION_INTERSECTS, so the memory of E820_TYPE_PMEM won't get added twice.
+
+Changed the local variable "int gen2vm" to "bool gen2vm".
+
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+---
+[V2] Rebase to latest
+
+ arch/x86/hyperv/hv_init.c | 25 +++++++++++++++++++++----
+ 1 file changed, 21 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+index 21556ad87f4b..8f3a4d16bb79 100644
+--- a/arch/x86/hyperv/hv_init.c
++++ b/arch/x86/hyperv/hv_init.c
+@@ -15,6 +15,7 @@
+ #include <linux/io.h>
+ #include <asm/apic.h>
+ #include <asm/desc.h>
++#include <asm/e820/api.h>
+ #include <asm/sev.h>
+ #include <asm/ibt.h>
+ #include <asm/hypervisor.h>
+@@ -286,15 +287,31 @@ static int hv_cpu_die(unsigned int cpu)
+ 
+ static int __init hv_pci_init(void)
+ {
+-	int gen2vm = efi_enabled(EFI_BOOT);
++	bool gen2vm = efi_enabled(EFI_BOOT);
+ 
+ 	/*
+-	 * For Generation-2 VM, we exit from pci_arch_init() by returning 0.
+-	 * The purpose is to suppress the harmless warning:
++	 * A Generation-2 VM doesn't support legacy PCI/PCIe, so both
++	 * raw_pci_ops and raw_pci_ext_ops are NULL, and pci_subsys_init() ->
++	 * pcibios_init() doesn't call pcibios_resource_survey() ->
++	 * e820__reserve_resources_late(); as a result, any emulated persistent
++	 * memory of E820_TYPE_PRAM (12) via the kernel parameter
++	 * memmap=nn[KMG]!ss is not added into iomem_resource and hence can't be
++	 * detected by register_e820_pmem(). Fix this by directly calling
++	 * e820__reserve_resources_late() here: e820__reserve_resources_late()
++	 * depends on e820__reserve_resources(), which has been called earlier
++	 * from setup_arch(). Note: e820__reserve_resources_late() also adds
++	 * any memory of E820_TYPE_PMEM (7) into iomem_resource, and
++	 * acpi_nfit_register_region() -> acpi_nfit_insert_resource() ->
++	 * region_intersects() returns REGION_INTERSECTS, so the memory of
++	 * E820_TYPE_PMEM won't get added twice.
++	 *
++	 * We return 0 here so that pci_arch_init() won't print the warning:
+ 	 * "PCI: Fatal: No config space access function found"
+ 	 */
+-	if (gen2vm)
++	if (gen2vm) {
++		e820__reserve_resources_late();
+ 		return 0;
++	}
+ 
+ 	/* For Generation-1 VM, we'll proceed in pci_arch_init().  */
+ 	return 1;
+-- 
+2.34.1
+
