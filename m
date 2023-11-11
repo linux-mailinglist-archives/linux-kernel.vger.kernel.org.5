@@ -2,157 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B127E87F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 018B87E87FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345440AbjKKBqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48050 "EHLO
+        id S1345066AbjKKBty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjKKBp7 (ORCPT
+        with ESMTP id S230070AbjKKBtx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:45:59 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DC0449A;
-        Fri, 10 Nov 2023 17:45:56 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231111014554epoutp01fb86d2c6357c226f27098220f02060d0~WbkWh2cK-2782027820epoutp01j;
-        Sat, 11 Nov 2023 01:45:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231111014554epoutp01fb86d2c6357c226f27098220f02060d0~WbkWh2cK-2782027820epoutp01j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699667154;
-        bh=pmPCvpEQALsN2I+z2mdUOLAfesbaw0dmr1s6esTrmwM=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=rk/VnfhwOir17zh6etek14ytr7EuArzKJdnZPSXpap8K2N1CaYJ0yinihj9aqTD28
-         p7iZJYobSFiBBoi4h7qZa4Oiz16cVCe7fGYAOwULdgIhE/pc2lq9QdBbBGIA0KKlRm
-         DKJwy0WggijLlen+KSmEHzxq75+EKGe4FVgX4eIU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20231111014554epcas5p493bb28599928ed4789b47172fe7d1467~WbkWR5WD12395723957epcas5p4l;
-        Sat, 11 Nov 2023 01:45:54 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.175]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SRz6n28PJz4x9Pr; Sat, 11 Nov
-        2023 01:45:53 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.BE.08567.1DCDE456; Sat, 11 Nov 2023 10:45:53 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231111014552epcas5p17256164fc9ca6ea2b575207f03919877~WbkUnwO9c2897028970epcas5p1I;
-        Sat, 11 Nov 2023 01:45:52 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231111014552epsmtrp1036115db57eb4aaba270dfbeb1040557~WbkUmN2lP3109231092epsmtrp1_;
-        Sat, 11 Nov 2023 01:45:52 +0000 (GMT)
-X-AuditID: b6c32a44-617fd70000002177-14-654edcd17e98
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        79.73.18939.0DCDE456; Sat, 11 Nov 2023 10:45:52 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231111014547epsmtip1027d013442d29eabc5f9d04f6fa045be~WbkPd9a2L2014520145epsmtip1F;
-        Sat, 11 Nov 2023 01:45:47 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'David Airlie'" <airlied@gmail.com>,
-        "'Daniel Vetter'" <daniel@ffwll.ch>,
-        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
-        "'Maxime Ripard'" <mripard@kernel.org>,
-        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andi Shyti'" <andi.shyti@kernel.org>,
-        "'Jonathan Cameron'" <jic23@kernel.org>,
-        "'Lars-Peter Clausen'" <lars@metafoo.de>,
-        "'Lee Jones'" <lee@kernel.org>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Thierry Reding'" <thierry.reding@gmail.com>,
-        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "'Alessandro Zummo'" <a.zummo@towertech.it>,
-        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        "'Jiri Slaby'" <jirislaby@kernel.org>,
-        "'Liam Girdwood'" <lgirdwood@gmail.com>,
-        "'Mark Brown'" <broonie@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-18-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 17/17] arm64: dts: exynosautov9: add specific
- compatibles to several blocks
-Date:   Sat, 11 Nov 2023 07:15:46 +0530
-Message-ID: <05ad01da1440$cdb40340$691c09c0$@samsung.com>
-MIME-Version: 1.0
+        Fri, 10 Nov 2023 20:49:53 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D654496
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:49:49 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b064442464so36309787b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:49:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699667388; x=1700272188; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xSVkGOQ6Je2Nvd4/Iw08tctHiARRNVZTWxkSrnRPly4=;
+        b=fudsWKeWi/4dJZzg/r2Z+mvQOKy6Vo45qFSELBv1xieC8SBgTOR1yowiwqOcn98Owr
+         XMGfqwo87qxugnqTOenu4Gm9Vk1iluFbAjqFYkGNwEOfVCNbRBJwG8ILG4rJHs0S7ICK
+         Ch/NAta3CETcWIgsrLhW7UVA6ROk8ABDcvxYEb1H4Qw5EkynG9aea1ig20XhWv07A9Mr
+         jaK3aOxOPM9FWaqFU23QMsOkb11D/5SgrSApsLqHvU2rc4MWRt0+4lmO5etvzSv4Eftk
+         ZvX67vj0LdxJ8R7bYvlooqZhDj6sb7PtTVsl6yAcwDggBz/eeobE1DVT+doXXu0OUlcO
+         RZhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699667388; x=1700272188;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSVkGOQ6Je2Nvd4/Iw08tctHiARRNVZTWxkSrnRPly4=;
+        b=FQTp9/2KOL25/Gymt1ia77lUqdJEzwl/MViV1V469+JHBNIpmCAuuzZuwcT9o3v9Cq
+         tqrlqi7TlQ+AXCNBT7wsto5SweAPYRJbEky6zAtQHsQk/bzf1fxhCssNm36oxmlLOenK
+         GDyq/zsA06KssYN6O5qNJ3chZy9/xESGCfjjM5vnnyoqPVxD+96PySK8qxyQYXMm5kFv
+         JSUPUZai6F+Kmm15pDrMrB58n4SYucHK8Ue5F145DG7nRanAOy8uuekFiwkhFwrO35TK
+         CZgA13LsgUvhaPMsTfwMq3B18guzi6O6pjgsoVLNiDAuanMMAO2dvnQlDZn49kyGK1xZ
+         Jyig==
+X-Gm-Message-State: AOJu0YxXf0zkxnteUuG7WuynR6d3oE94Pcw1TfKhW9xw28LuUFjPVqTk
+        BKUWQoPTEGBsg56ypw/FyQVx+G6NQ1Rt
+X-Google-Smtp-Source: AGHT+IFSKHK8rNVtGq6xSzwzFHWKLOlchqnfAcYRbzjW2Gxy8VQh38Q0Vvu6iYAwEy08vUf+okshZZlASqdj
+X-Received: from davidai2.mtv.corp.google.com ([2620:15c:211:201:77fa:5ee:8100:77])
+ (user=davidai job=sendgmr) by 2002:a25:318a:0:b0:d9a:36cd:482e with SMTP id
+ x132-20020a25318a000000b00d9a36cd482emr19289ybx.13.1699667388440; Fri, 10 Nov
+ 2023 17:49:48 -0800 (PST)
+Date:   Fri, 10 Nov 2023 17:49:28 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231111014933.1934562-1-davidai@google.com>
+Subject: [PATCH v4 0/2] Improve VM CPUfreq and task placement behavior
+From:   David Dai <davidai@google.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        David Dai <davidai@google.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQGBpPEAAjHDf/Cw3p3ngA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0zTVxTHc3+P/qqu5mfFeYfGsDqzgQHaQbuLAUbk4U/nHM4EzLIFG/oL
-        EKB0LUzRJTIN5SUwBIM0tIAQwCrpVh7BMkSwWt1MeYqoMMZgysMxJ68JOFb4oeO/z/me77nn
-        nnNz+bhwmnLmxygTWbVSHifirScabrq6uXf2H2LFQzUUqui8T6E7Dy5hKG2ykkI9nW0YGpxJ
-        B+jC0AgPXW22Y2ipIQ9HJVY7iXpm/uKhs+UmHuqb15LotzNGDE3qt6Oc0SEcNU/UO47LLyFR
-        o7aMQLM96RgqWKzCkHm4l0S1JYsApb+aBshgnSRQt6WYh6xLuQANDBgBun2lh4cutl/H0L3y
-        bArpnxTgqOzvegJpMypJlNpspdDNZ2kkeprjsLy0GAhktDjOq3uWR6LHefkA2WrCA1yZH6bO
-        8BjD1VNM82wpwVzTDVCM2ZjBY/p7f3Lodw8zLfqrFDOYZcOY2orTTMWzNpLJfSVmcuqMgKn9
-        5RRTaHiJMVPmHaH0F7G+0axcwapdWGVkgiJGGeUn+uRIRGCEVCaWuEt80EciF6U8nvUTBR0M
-        dQ+JiXMsWOTyjTwuySGFyjUakae/rzohKZF1iU7QJPqJWJUiTuWt8tDI4zVJyigPJZu4RyIW
-        fyh1GI/FRleZRkjVz9SJB/qHvBRQzcsE6/iQ9oY3ZkpBJljPF9JNANptVowLXgBoy7SDN4HF
-        Mke+LjGabPgyC+lrAM4X7+RMowCaa8uw5QSPdoeN5VrecsKJbhLA7pbfieXEOjoYtkxdXGm+
-        mZbD9uE7YJkJehdsaC5a0QW0D3xeZyY53gTvFo2s1OL0blhZNoFzt3CBL/+oXPE40Xthy6/V
-        FOfZCsduWSnOU78eZlZ8znEQTKlOX9U3w3Fb3So7w7FcrYP5DmbgpUVnTo6Gf1aZAMcfwxs9
-        xcSyBaddocniyXXaCLMXRjCuUgDTtULOvQuenbxPcLwN5mVlra6Ngfey21aX2wVgdmsf/j1w
-        0a0ZUrdmSN2aYXT/dy4FhBG8w6o08VFspFQlUbLH37x3ZEK8Gax8P7egRtBX8q9HG8D4oA1A
-        Pi5yEnR4H2SFAoU8+SSrTohQJ8WxmjYgdWw+D3feEpng+L/KxAiJt4/YWyaTeft4ySSirYKJ
-        VL1CSEfJE9lYllWx6td1GH+dcwqWlFPW5Iqb97z942iHOrD6M6el925tmd5QSCpDzHcN1oD0
-        jufhngH/EPteiIZb9wkWQhvOdeiSR5vH9uffblQgVJNZKI3psi6UH02ztx8QvPXVC0PvuCaM
-        nN0uau3PzJdVzXVqv00tORmuHoncn/zoVIYBhg6K6wIPP9zUxL67d/5w5XeLlz3C7OrT3bnS
-        gglJCuX5WNpInbDprwhQ/MyY//gHipCva8b1T48xBxe2Dwrv9Xp4Wc77nrus22Caef9Lwhic
-        HdO64eTOUv+ijK4W+lP7bkXtdfORC4uPwrwsW9yG8p7MKe39O7Y5uctkHof6jup1llrT+bLW
-        4JSczfD4RhGhiZZL3HC1Rv4fd75WOwcFAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfVDTdRzH/f6eh437NUi/B+XlujrDBDw8+9KlZw+cvz+6JLrq8o90wU8g
-        Gew2SHno8CDHwAJBPXC5DQSWzNVkPEjIWIxNwsnEQBYHSCMeJImwhd08HoLt6vjvdZ/3+/P6
-        fP/4MrjIRYYxqemZvDxdkiamgojWbvG2Xf2j7/LRFtNzqO7uPRr95L6MoaJ5PY0G79owNL6o
-        AuiCZ5JCRosLQ6ut5TjS2V0kGlz8k0KFtSYK/fJESaJfCwwYmtc8i0ofeHBkedhCo7pzOhK1
-        KWsI9HhQhaHzS99iyPzbEImadEsAqZb/BkhrnyfQQPslCtlXywAaGzMAdPPqIIWq7nRi6Hbt
-        1zTSTJ/HUc2jFgIpi/UkOm2x06h7rohEM6VrFV+7lkCG9jVf81w5iUbKzwHU891HB17mrnkL
-        KE5rzOUsj6sJ7gf1GM2ZDcUUNzrUsTbvfY+zaow0N36mB+Oa6vK5ujkbyZUtR3OlzQbANTlz
-        uUqtD+O85m3x7OGg15P4tNTPeXnU/qNBKQXFnUBmo09OfFmDnwLVVAkQMJDdAw2mHrwEBDEi
-        9jqA7TcekYEgHLobz9IBDoENKzN0oDQNoONmE1gPKHYXbKtV+k2h7LAQOkcPBUouAGe7m/2B
-        gI2DVm+Vn0PYI/DWjXFsnQn2RdhqueifC9lYuNBsJgP8NOy9OEmsM87uhFPDU/+zvuYhHnjR
-        89A3pScDh9+E1vtX6EBnK5x12OmzQKTeoFJvUKk3qNQbVqoBYQDP8DKFNFmaKNsdqZBIFVnp
-        yZGJGVIz8H+5iIQ2oDctR9oAxgAbgAwuDhX273mHFwmTJNk5vDzjiDwrjVfYQDhDiLcKX0gr
-        ThKxyZJM/jjPy3j5fynGCMJOYbkf7uvQdmmmszWfbg79xtm/4wt31HjfkGlTQ0XlVSA2h33S
-        EV72z2n7AZeuRHVicsJ2+3p0T19q9Bn3k6hjwbErR1/Ncg6Dsr2a/vQtVxKUbM5KYuHee6Uf
-        Gx0Vnre9M/eXJC2CRLVk561FacbCyI98+UFVzsktMfGz33flyQ3H4AlV6/xo8MQDq+791e3G
-        eIfzD3fvJoc179IbWfWH/2oM66yvGnFcrkyIrIqITSEm1R+4SuIG7qQUen4ufIXxRLxECroE
-        MXGVTwV/FRrjO76wL8874EvdfmHztfpDjXE7dH2CBl2XS0YU5U/nW2SN2ba3QjIXXjtI/P6Z
-        umKqY3F/p5hQpEh2R+ByheRf5sU5kOEDAAA=
-X-CMS-MailID: 20231111014552epcas5p17256164fc9ca6ea2b575207f03919877
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104502epcas5p335e39d7cc94ca84aa4423ceee1a0a315
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-        <CGME20231108104502epcas5p335e39d7cc94ca84aa4423ceee1a0a315@epcas5p3.samsung.com>
-        <20231108104343.24192-18-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,TVD_PH_BODY_ACCOUNTS_PRE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -160,31 +87,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This patch series is a continuation of the talk Saravana gave at LPC 2022
+titled "CPUfreq/sched and VM guest workload problems" [1][2][3]. The gist
+of the talk is that workloads running in a guest VM get terrible task
+placement and CPUfreq behavior when compared to running the same workload
+in the host. Effectively, no EAS(Energy Aware Scheduling) for threads
+inside VMs. This would make power and performance terrible just by running
+the workload in a VM even if we assume there is zero virtualization
+overhead.
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> ExynosAutov9 reuses several devices from older designs, thus historically=
- we
-> kept the old (block's) compatible only.  This works fine and there is no =
-bug
-> here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
->=20
-> Add compatibles specific to ExynosAutov9 in front of all old-SoC-like
-> compatibles.  This will also help reviews of new code using existing DTS =
-as
-> template.  No functional impact on Linux drivers behavior.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> ---
+With this series, a workload running in a VM gets the same task placement
+and CPUfreq behavior as it would when running in the host.
 
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+The idea is to improve VM CPUfreq/sched behavior by:
+- Having guest kernel do accurate load tracking by taking host CPU
+  arch/type and frequency into account.
+- Sharing vCPU frequency requirements with the host so that the
+  host can do proper frequency scaling and task placement on the host side.
 
->  arch/arm64/boot/dts/exynos/exynosautov9.dtsi =7C 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->=20
-(...)
+Based on feedback from RFC v1 proposal[4], we've revised our
+implementation to using MMIO reads and writes to pass information
+from/to host instead of using hypercalls. In our example, the
+VMM(Virtual Machine Manager) translates the frequency requests into
+Uclamp_min and applies it to the vCPU thread as a hint to the host
+kernel.
+
+To achieve the results below, configure the host to:
+- Affine vCPUs to specific clusters.
+- Set vCPU capacity to match the host CPU they are running on.
+
+To make it easy for folks to try this out with CrosVM, we have put up
+userspace patches[5][6]. With those patches, you can configure CrosVM
+correctly by adding the options "--host-cpu-topology" and "--virt-cpufreq".
+
+Results:
+=3D=3D=3D=3D=3D=3D=3D=3D
+
+Here are some side-by-side comparisons of RFC v1 proposal vs the current
+patch series and are labelled as follows.
+
+- (RFC v1) UtilHyp =3D hypercall + util_guest
+- (current) UClampMMIO =3D MMIO + UClamp_min
+
+Use cases running a minimal system inside a VM on a Pixel 6:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+FIO
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+| Usecase(avg MB/s) | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Seq Write         |     13.3 |    16.4 |   +23% |       13.4 |    +1% |
++-------------------+----------+---------+--------+------------+--------+
+| Rand Write        |     11.2 |    12.9 |   +15% |       11.2 |     0% |
++-------------------+----------+---------+--------+------------+--------+
+| Seq Read          |      100 |     168 |   +68% |        136 |   +36% |
++-------------------+----------+---------+--------+------------+--------+
+| Rand Read         |     20.5 |    35.6 |   +74% |       29.5 |   +44% |
++-------------------+----------+---------+--------+------------+--------+
+
+CPU-based ML Inference Benchmark
+Lower is better
++----------------+----------+------------+--------+------------+--------+
+| Test Case (ms) | Baseline | UtilHyp    | %delta | UClampMMIO | %delta |
++----------------+----------+------------+--------+------------+--------+
+| Cached Sample  |          |            |        |            |        |
+| Inference      |     3.40 |       2.37 |   -30% |       2.97 |   -13% |
++----------------+----------+------------+--------+------------+--------+
+| Small Sample   |          |            |        |            |        |
+| Inference      |     9.87 |       6.78 |   -31% |       7.92 |   -20% |
++----------------+----------+------------+--------+------------+--------+
+| Large Sample   |          |            |        |            |        |
+| Inference      |    33.35 |      26.74 |   -20% |      31.48 |    -6% |
++----------------+----------+------------+--------+------------+--------+
+
+Use cases running Android inside a VM on a Chromebook:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+
+PCMark (Emulates real world usecases)
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+| Test Case (score) | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Weighted Total    |     5970 |    7162 |   +20% |       6782 |   +14% |
++-------------------+----------+---------+--------+------------+--------+
+| Web Browsing      |     5558 |    5877 |    +6% |       5729 |    +3% |
++-------------------+----------+---------+--------+------------+--------+
+| Video Editing     |     4921 |    5140 |    +4% |       5079 |    +3% |
++-------------------+----------+---------+--------+------------+--------+
+| Writing           |     6864 |    9111 |   +33% |       8171 |   +10% |
++-------------------+----------+---------+--------+------------+--------+
+| Photo Editing     |     7983 |   11349 |   +42% |      10313 |   +29% |
++-------------------+----------+---------+--------+------------+--------+
+| Data Manipulation |     5814 |    6051 |    +4% |       6051 |    +1% |
++-------------------+----------+---------+--------+------------+--------+
+
+PCMark Performance/mAh
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Score/mAh         |       85 |     102 |   +20% |         94 |    10% |
++-------------------+----------+---------+--------+------------+--------+
+
+Roblox
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| FPS               |    20.88 |   25.64 |   +23% |      24.05 |   +15% |
++-------------------+----------+---------+--------+------------+--------+
+
+Roblox Frames/mAh
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Frames/mAh        |    85.29 |  102.31 |   +20% |     94.20  |    10% |
++-------------------+----------+---------+--------+------------+--------+
+
+We've simplified our implementation based on community feedback to make
+it less intrusive and to use a more generic MMIO interface for
+communication with the host. The results show that the current design
+still has tangible improvements over baseline. We'll continue looking
+into ways to reduce the overhead of the MMIO read/writes and submit
+separate and generic patches for that if we find any good optimizations.
+
+Thanks,
+David & Saravana
+
+Cc: Saravana Kannan <saravanak@google.com>
+Cc: Quentin Perret <qperret@google.com>
+Cc: Masami Hiramatsu <mhiramat@google.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc: Gupta Pankaj <pankaj.gupta@amd.com>
+Cc: Mel Gorman <mgorman@suse.de>
+
+v3 -> v4:
+-Fixed dt-binding formatting issues
+-Added additional dt-binding descriptions for =E2=80=9CHW interfaces=E2=80=
+=9D
+-Changed dt-binding to =E2=80=9Cqemu,virtual-cpufreq=E2=80=9D
+-Fixed Kconfig formatting issues
+-Removed frequency downscaling when requesting frequency updates
+-Removed ops and cpufreq driver data
+-Added check to limit freq_scale to 1024
+-Added KHZ in the register offset naming
+-Added comments to explain FIE and not allowing dvfs_possible_from_any_cpu
+
+v2 -> v3:
+- Dropped patches adding new hypercalls
+- Dropped patch adding util_guest in sched/fair
+- Cpufreq driver now populates frequency using opp bindings
+- Removed transition_delay_us=3D1 cpufreq setting as it was configured too
+  agressively and resulted in poor I/O performance
+- Modified guest cpufreq driver to read/write MMIO regions instead of
+  using hypercalls to communicate with the host
+- Modified guest cpufreq driver to pass frequency info instead of
+  utilization of the current vCPU's runqueue which now takes
+  iowait_boost into account from the schedutil governor
+- Updated DT bindings for a virtual CPU frequency device
+Userspace changes:
+- Updated CrosVM patches to emulate a virtual cpufreq device
+- Updated to newer userspace binaries when collecting more recent
+  benchmark data
+
+v1 -> v2:
+- No functional changes.
+- Added description for EAS and removed DVFS in coverletter.
+- Added a v2 tag to the subject.
+- Fixed up the inconsistent "units" between tables.
+- Made sure everyone is To/Cc-ed for all the patches in the series.
+
+[1] - https://lpc.events/event/16/contributions/1195/
+[2] - https://lpc.events/event/16/contributions/1195/attachments/970/1893/L=
+PC%202022%20-%20VM%20DVFS.pdf
+[3] - https://www.youtube.com/watch?v=3DhIg_5bg6opU
+[4] - https://lore.kernel.org/all/20230331014356.1033759-1-davidai@google.c=
+om/
+[5] - https://chromium-review.googlesource.com/c/crosvm/crosvm/+/4208668
+[6] - https://chromium-review.googlesource.com/q/topic:%22virtcpufreq-v4%22
+
+David Dai (2):
+  dt-bindings: cpufreq: add virtual cpufreq device
+  cpufreq: add virtual-cpufreq driver
+
+ .../cpufreq/qemu,cpufreq-virtual.yaml         |  99 +++++++++
+ drivers/cpufreq/Kconfig                       |  15 ++
+ drivers/cpufreq/Makefile                      |   1 +
+ drivers/cpufreq/virtual-cpufreq.c             | 201 ++++++++++++++++++
+ include/linux/arch_topology.h                 |   1 +
+ 5 files changed, 317 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-=
+virtual.yaml
+ create mode 100644 drivers/cpufreq/virtual-cpufreq.c
+
+--=20
+2.42.0.869.gea05f2083d-goog
 
