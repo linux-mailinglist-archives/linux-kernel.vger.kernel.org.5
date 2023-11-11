@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32DD7E8B6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 16:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C6A7E8B68
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 16:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbjKKPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 10:45:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S231283AbjKKPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 10:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjKKPp2 (ORCPT
+        with ESMTP id S229797AbjKKPo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 10:45:28 -0500
-X-Greylist: delayed 348 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 11 Nov 2023 07:45:24 PST
-Received: from sandeen.net (sandeen.net [63.231.237.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72B1D3AA6;
-        Sat, 11 Nov 2023 07:45:24 -0800 (PST)
-Received: from [10.0.0.71] (liberator.sandeen.net [10.0.0.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id 9F63848C731;
-        Sat, 11 Nov 2023 09:39:35 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 sandeen.net 9F63848C731
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net;
-        s=default; t=1699717175;
-        bh=j0rUQNp7+k+JUcTe52x69W9xIhdzt2MRqrIL4QneJX0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=OvTVRBMfjxa++uidmOz6iUD7dDnUqru3TTBrtnVHRflOE89DAG3TjMXp8JHKlr2hn
-         3Ja+fWmr9J7HRhg3xidXuE7+eI5fgS/eT2eNFThpUyvm5vRprbcu09T6vFR+UsljxH
-         3RS5mhT7NyjmaIo78ScT1rslid5BtQ59IH8xaUBL2tIbIhHd3xvOxy8SfO5xWhiKE2
-         B6dafLiOsYc4VHzFwLL0Rh8kZf7y0hWocOgpDWqlhpJBdBXZYw6vrjMhHDhxOwb4sy
-         991ZbGcJR57ovMq3sDKB77tRr/SJxp1wLvGWVBuKvoxyVmmslFXdBJYnpUhce0fxHC
-         2Cl+sI/iJ7Xug==
-Message-ID: <b726a650-0568-4972-85cf-ea8858305c3b@sandeen.net>
-Date:   Sat, 11 Nov 2023 09:39:34 -0600
+        Sat, 11 Nov 2023 10:44:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B42C4
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 07:44:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699717465; x=1731253465;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=N61T92yXfW/0ymwwtf27YmFi1YNwp0sVTZf9lYAfMjs=;
+  b=W4nnjKy0HjX7OauSEfM8WL7b1UuhphDf5/Wo1y/Q4V2NwdGxidMSDuRJ
+   FsNxhOlfrBRKrUeKbIq3S+OkxeYn9h4xpx2DiDow66VNc3HcWllUymToV
+   Txay3P6hlw5qIlbqqwORCZlSDE5DCNu2MPO5Gjo2rxJrZevbkkFFPfHdq
+   x7np/wbGJSnhfwzwbAeK3FpqcZixeqXY2sw9NNy2s0tZaJkGyAgkdRdRU
+   8o1DQqgBCdAxdWbHO1LMtVj1sMdEOBqfK7ELZj5y2nEcSSFmNcfkYZzBq
+   WnXXit5/xfHeqscIZnxWtEcEMc0HSw3Zl2+BwT1IhpRYAJeg0LtYrsKag
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="11833007"
+X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
+   d="scan'208";a="11833007"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 07:44:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="1095392438"
+X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
+   d="scan'208";a="1095392438"
+Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Nov 2023 07:44:22 -0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] sched/fair: Remove unnecessary 'curr' reset for pick_next_entity()
+Date:   Sat, 11 Nov 2023 23:43:18 +0800
+Message-Id: <20231111154318.87777-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] xfs: Remove unused function
-Content-Language: en-US
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Bill O'Donnell <bodonnel@redhat.com>, chandan.babu@oracle.com,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20231103073040.649-1-jiapeng.chong@linux.alibaba.com>
- <ZUqPdhc4RQxL8TVB@redhat.com> <20231107204405.GP1205143@frogsfrogsfrogs>
-From:   Eric Sandeen <sandeen@sandeen.net>
-In-Reply-To: <20231107204405.GP1205143@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 2:44 PM, Darrick J. Wong wrote:
-> On Tue, Nov 07, 2023 at 01:26:46PM -0600, Bill O'Donnell wrote:
->> On Fri, Nov 03, 2023 at 03:30:40PM +0800, Jiapeng Chong wrote:
->>> The function are defined in the bitmap.c file, but not called
->>> elsewhere, so delete the unused function.
->>>
->>> fs/xfs/scrub/bitmap.c:55:1: warning: unused function 'xbitmap_tree_iter_next'.
->>>
->>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->>> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7137
->>> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
->>
->> Makes sense.
->> Reviewed-by: Bill O'Donnell <bodonnel@redhat.com>
-> 
-> I disagree -- I added redundant forward declarations here so I wouldn't
-> have to go digging through the 150LOC definition of INTERVAL_TREE_DEFINE
-> to figure out what helper functions were actually being defined by the
-> macro.  They'll trigger compiler errors if the definition of
-> INTERVAL_TREE_DEFINE ever drifts away from my understanding of it at the
-> time I wrote the code.
+After commit 4c456c9ad334 ("sched/fair: Remove unused 'curr'
+argument from pick_next_entity()"), there is no need to
+reset 'curr' to NULL because it will not be used by
+pick_next_entity().
 
-And the comment above those declarations say as much, but Jiapeng Chong seems to
-be getting a legitimate warning as a result, and AFAICT xbitmap_tree_iter_next
-really isn't used in the codebase. Maybe it's worth commenting it out or
-#ifdefing it, while leaving it around for reference as you intended?
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ kernel/sched/fair.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-(I'm sympathetic to the macro-generated function hell, for sure.)
-
--Eric
-
-> --D
-> 
->>
->>
->>> ---
->>>  fs/xfs/scrub/bitmap.c | 4 ----
->>>  1 file changed, 4 deletions(-)
->>>
->>> diff --git a/fs/xfs/scrub/bitmap.c b/fs/xfs/scrub/bitmap.c
->>> index e0c89a9a0ca0..ba4b18e40faa 100644
->>> --- a/fs/xfs/scrub/bitmap.c
->>> +++ b/fs/xfs/scrub/bitmap.c
->>> @@ -48,10 +48,6 @@ static inline struct xbitmap_node *
->>>  xbitmap_tree_iter_first(struct rb_root_cached *root, uint64_t start,
->>>  			uint64_t last);
->>>  
->>> -static inline struct xbitmap_node *
->>> -xbitmap_tree_iter_next(struct xbitmap_node *node, uint64_t start,
->>> -		       uint64_t last);
->>> -
->>>  INTERVAL_TREE_DEFINE(struct xbitmap_node, bn_rbnode, uint64_t,
->>>  		__bn_subtree_last, START, LAST, static inline, xbitmap_tree)
->>>  
->>> -- 
->>> 2.20.1.7.g153144c
->>>
->>
-> 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2048138ce54b..ddea1be43710 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8198,8 +8198,6 @@ static struct task_struct *pick_task_fair(struct rq *rq)
+ 		if (curr) {
+ 			if (curr->on_rq)
+ 				update_curr(cfs_rq);
+-			else
+-				curr = NULL;
+ 
+ 			if (unlikely(check_cfs_rq_runtime(cfs_rq)))
+ 				goto again;
+@@ -8249,8 +8247,6 @@ pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf
+ 		if (curr) {
+ 			if (curr->on_rq)
+ 				update_curr(cfs_rq);
+-			else
+-				curr = NULL;
+ 
+ 			/*
+ 			 * This call to check_cfs_rq_runtime() will do the
+-- 
+2.25.1
 
