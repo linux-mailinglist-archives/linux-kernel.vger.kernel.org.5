@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D847E8A32
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 11:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A8E7E8A30
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 11:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbjKKKXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 05:23:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S230369AbjKKKXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 05:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjKKKXS (ORCPT
+        with ESMTP id S230211AbjKKKXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 05:23:18 -0500
+        Sat, 11 Nov 2023 05:23:20 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0403A9D
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:23:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372069F
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:23:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699698194; x=1731234194;
+  t=1699698196; x=1731234196;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=82b6d+TVSPMsv+QjC9mdvOo8nMCmZgm0t36wMEnL3c4=;
-  b=n7sl+G7kF9ITamQh4a5SEiKGG+PVcWJz0Ur3tlgHEVBa0wa56zSjhRkP
-   c5j7T2h3gZ7dIDPAOu65/CDNt5FZYyFOQpnosQjBCg8GUCKTDlWPAcKsd
-   KZYN25PBqxgSjUpWJP3fVHkJvBRnseKF6T5XPr0g48MMkaXhQGuBt1Xez
-   u7pfN12+jyABCNGm232/kSYL+mBWheb3vNR46htORDTX40BwhL9houPqn
-   gusRkMARBg22+EGHGm8F8Y5wy3zllm+3AFi5t/G0XGekJpKKgOXtCmL2e
-   f06A9gWIjd3X31WYTUY/Qz8EGobY5kghxLHQKbHqPDi424wtnb5+qEnTb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="390075535"
+  bh=6dhJDCo2Sx7Nuc9ZuhnfAD+Xq8KlFKrWMzhR+b1b9eQ=;
+  b=cNCqh27xNvQ1TDpu+RfxMy00TIkwMFIvTpGNIa1Jhpu7RtiVxzIGGKKs
+   LZDtn+5irJpCrAzMiXBofT04BfWlqeylSpY92K+eKxisM0SrEAK5DYogr
+   HiZYziO27sItKDj/+B8wVCYPftvxSRAjV6DvPBIDQ8aLkfaRFItG+qzCC
+   cBmDzu5Gx3zLcY5ejK0T+QVsB+o5+wnx4EWaPVu46RLrbfrtRh/64MAq6
+   aHMYJAVb5DLMrj8o2JNH+LszdbfXK+Yl7oQMSMJrbl1FCZuOQdZV7mvWc
+   29SKiB+/QWWSRkrBodyu3/N6zt08NntZxsSaXSlRAqcm7kg4s4ofPdv8Y
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="390075539"
 X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="390075535"
+   d="scan'208";a="390075539"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 02:23:14 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="793029087"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="793029086"
 X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="793029087"
+   d="scan'208";a="793029086"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
   by orsmga008.jf.intel.com with ESMTP; 11 Nov 2023 02:23:12 -0800
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r1l8v-000AMo-2c;
+        id 1r1l8v-000AMq-34;
         Sat, 11 Nov 2023 10:23:09 +0000
-Date:   Sat, 11 Nov 2023 18:22:52 +0800
+Date:   Sat, 11 Nov 2023 18:22:54 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Paul Burton <paul.burton@mips.com>
-Subject: drivers/irqchip/irq-ath79-misc.c:29:5: warning: no previous
- prototype for 'get_c0_perfcount_int'
-Message-ID: <202311111847.SpxiCHnp-lkp@intel.com>
+        Ingo Molnar <mingo@kernel.org>
+Subject: arch/x86/kernel/cpu/common.c:111:43: sparse: sparse: cast truncates
+ bits from constant value (fffff becomes ffff)
+Message-ID: <202311111812.GT19bClP-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -65,136 +65,127 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
-commit: a1e8783db8e0d58891681bc1e6d9ada66eae8e20 MIPS: perf: ath79: Fix perfcount IRQ assignment
-date:   4 years, 7 months ago
-config: mips-randconfig-r005-20210928 (https://download.01.org/0day-ci/archive/20231111/202311111847.SpxiCHnp-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111847.SpxiCHnp-lkp@intel.com/reproduce)
+commit: 38e9e81f4c81c75799b002d5811de7241b307676 x86/gdt: Use bitfields for initialization
+date:   6 years ago
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231111/202311111812.GT19bClP-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111812.GT19bClP-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111847.SpxiCHnp-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311111812.GT19bClP-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+   arch/x86/kernel/cpu/common.c:446:44: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got char ( * )[40] @@
+   arch/x86/kernel/cpu/common.c:446:44: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
+   arch/x86/kernel/cpu/common.c:446:44: sparse:     got char ( * )[40]
+   arch/x86/kernel/cpu/common.c:1301:1: sparse: sparse: symbol 'irq_stack_union' redeclared with different type (different address spaces):
+   arch/x86/kernel/cpu/common.c:1301:1: sparse:    union irq_stack_union [addressable] [noderef] [toplevel] <asn:3> irq_stack_union
+   arch/x86/kernel/cpu/common.c: note: in included file (through arch/x86/include/asm/cpufeature.h, arch/x86/include/asm/thread_info.h, include/linux/thread_info.h, ...):
+   arch/x86/include/asm/processor.h:385:1: sparse: note: previously declared as:
+   arch/x86/include/asm/processor.h:385:1: sparse:    union irq_stack_union extern [addressable] [toplevel] irq_stack_union
+   arch/x86/kernel/cpu/common.c:1313:53: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected char *[addressable] [noderef] [toplevel] <asn:3> irq_stack_ptr @@     got char [noderef] <asn:3> * @@
+   arch/x86/kernel/cpu/common.c:1313:53: sparse:     expected char *[addressable] [noderef] [toplevel] <asn:3> irq_stack_ptr
+   arch/x86/kernel/cpu/common.c:1313:53: sparse:     got char [noderef] <asn:3> *
+   arch/x86/kernel/cpu/common.c:1532:33: sparse: sparse: incorrect type in initializer (different modifiers) @@     expected char *estacks @@     got char [noderef] * @@
+   arch/x86/kernel/cpu/common.c:1532:33: sparse:     expected char *estacks
+   arch/x86/kernel/cpu/common.c:1532:33: sparse:     got char [noderef] *
+>> arch/x86/kernel/cpu/common.c:111:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c:112:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c:113:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c:114:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c:115:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c:116:43: sparse: sparse: cast truncates bits from constant value (fffff becomes ffff)
+   arch/x86/kernel/cpu/common.c: note: in included file (through include/linux/bitops.h, include/linux/kernel.h, include/linux/list.h, ...):
+   arch/x86/include/asm/bitops.h:115:37: sparse: sparse: cast truncates bits from constant value (ffffff7f becomes 7f)
+   arch/x86/include/asm/bitops.h:115:37: sparse: sparse: cast truncates bits from constant value (ffffff7f becomes 7f)
+   In file included from arch/x86/include/asm/page_types.h:47,
+                    from arch/x86/include/asm/page.h:8,
+                    from arch/x86/include/asm/thread_info.h:11,
+                    from include/linux/thread_info.h:37,
+                    from arch/x86/include/asm/preempt.h:6,
+                    from include/linux/preempt.h:80,
+                    from include/linux/spinlock.h:50,
+                    from include/linux/mmzone.h:7,
+                    from include/linux/bootmem.h:7,
+                    from arch/x86/kernel/cpu/common.c:1:
+   arch/x86/include/asm/page_64_types.h:22:21: warning: initialized field overwritten [-Woverride-init]
+      22 | #define DEBUG_STKSZ (PAGE_SIZE << DEBUG_STACK_ORDER)
+         |                     ^
+   arch/x86/kernel/cpu/common.c:1328:51: note: in expansion of macro 'DEBUG_STKSZ'
+    1328 |           [DEBUG_STACK - 1]                     = DEBUG_STKSZ
+         |                                                   ^~~~~~~~~~~
+   arch/x86/include/asm/page_64_types.h:22:21: note: (near initialization for 'exception_stack_sizes[2]')
+      22 | #define DEBUG_STKSZ (PAGE_SIZE << DEBUG_STACK_ORDER)
+         |                     ^
+   arch/x86/kernel/cpu/common.c:1328:51: note: in expansion of macro 'DEBUG_STKSZ'
+    1328 |           [DEBUG_STACK - 1]                     = DEBUG_STKSZ
+         |                                                   ^~~~~~~~~~~
 
-   include/linux/device.h:686:13: note: in expansion of macro 'unlikely'
-     686 |         if (unlikely(check_mul_overflow(n, size, &bytes)))
-         |             ^~~~~~~~
-   include/linux/compiler.h:64:25: note: previous declaration here
-      64 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:56:23: note: in expansion of macro '__trace_if'
-      56 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/linux/device.h:686:9: note: in expansion of macro 'if'
-     686 |         if (unlikely(check_mul_overflow(n, size, &bytes)))
-         |         ^~
-   include/linux/device.h: In function 'device_lock_assert':
-   include/linux/compiler.h:25:39: warning: ignoring attribute 'section ("\"_ftrace_annotated_branch\"")' because it conflicts with previous 'section ("\"_ftrace_branch\"")' [-Wattributes]
-      25 |                         static struct ftrace_likely_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:69:30: note: in definition of macro '__trace_if'
-      69 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   include/asm-generic/bug.h:123:9: note: in expansion of macro 'if'
-     123 |         if (unlikely(__ret_warn_on))                                    \
-         |         ^~
-   include/linux/compiler.h:48:26: note: in expansion of macro '__branch_check__'
-      48 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-         |                          ^~~~~~~~~~~~~~~~
-   include/asm-generic/bug.h:123:13: note: in expansion of macro 'unlikely'
-     123 |         if (unlikely(__ret_warn_on))                                    \
-         |             ^~~~~~~~
-   include/linux/lockdep.h:380:17: note: in expansion of macro 'WARN_ON'
-     380 |                 WARN_ON(debug_locks && !lockdep_is_held(l));    \
-         |                 ^~~~~~~
-   include/linux/device.h:1227:9: note: in expansion of macro 'lockdep_assert_held'
-    1227 |         lockdep_assert_held(&dev->mutex);
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:64:25: note: previous declaration here
-      64 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:56:23: note: in expansion of macro '__trace_if'
-      56 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   include/asm-generic/bug.h:123:9: note: in expansion of macro 'if'
-     123 |         if (unlikely(__ret_warn_on))                                    \
-         |         ^~
-   include/linux/lockdep.h:380:17: note: in expansion of macro 'WARN_ON'
-     380 |                 WARN_ON(debug_locks && !lockdep_is_held(l));    \
-         |                 ^~~~~~~
-   include/linux/device.h:1227:9: note: in expansion of macro 'lockdep_assert_held'
-    1227 |         lockdep_assert_held(&dev->mutex);
-         |         ^~~~~~~~~~~~~~~~~~~
-   arch/mips/include/asm/ptrace.h: In function 'regs_get_register':
-   include/linux/compiler.h:25:39: warning: ignoring attribute 'section ("\"_ftrace_annotated_branch\"")' because it conflicts with previous 'section ("\"_ftrace_branch\"")' [-Wattributes]
-      25 |                         static struct ftrace_likely_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:69:30: note: in definition of macro '__trace_if'
-      69 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   arch/mips/include/asm/ptrace.h:86:9: note: in expansion of macro 'if'
-      86 |         if (unlikely(offset > MAX_REG_OFFSET))
-         |         ^~
-   include/linux/compiler.h:48:26: note: in expansion of macro '__branch_check__'
-      48 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-         |                          ^~~~~~~~~~~~~~~~
-   arch/mips/include/asm/ptrace.h:86:13: note: in expansion of macro 'unlikely'
-      86 |         if (unlikely(offset > MAX_REG_OFFSET))
-         |             ^~~~~~~~
-   include/linux/compiler.h:64:25: note: previous declaration here
-      64 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:56:23: note: in expansion of macro '__trace_if'
-      56 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   arch/mips/include/asm/ptrace.h:86:9: note: in expansion of macro 'if'
-      86 |         if (unlikely(offset > MAX_REG_OFFSET))
-         |         ^~
-   arch/mips/include/asm/ptrace.h: In function 'die_if_kernel':
-   include/linux/compiler.h:25:39: warning: ignoring attribute 'section ("\"_ftrace_annotated_branch\"")' because it conflicts with previous 'section ("\"_ftrace_branch\"")' [-Wattributes]
-      25 |                         static struct ftrace_likely_data                \
-         |                                       ^~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:69:30: note: in definition of macro '__trace_if'
-      69 |                 ______r = !!(cond);                                     \
-         |                              ^~~~
-   arch/mips/include/asm/ptrace.h:171:9: note: in expansion of macro 'if'
-     171 |         if (unlikely(!user_mode(regs)))
-         |         ^~
-   include/linux/compiler.h:48:26: note: in expansion of macro '__branch_check__'
-      48 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
-         |                          ^~~~~~~~~~~~~~~~
-   arch/mips/include/asm/ptrace.h:171:13: note: in expansion of macro 'unlikely'
-     171 |         if (unlikely(!user_mode(regs)))
-         |             ^~~~~~~~
-   include/linux/compiler.h:64:25: note: previous declaration here
-      64 |                         ______f = {                                     \
-         |                         ^~~~~~~
-   include/linux/compiler.h:56:23: note: in expansion of macro '__trace_if'
-      56 | #define if(cond, ...) __trace_if( (cond , ## __VA_ARGS__) )
-         |                       ^~~~~~~~~~
-   arch/mips/include/asm/ptrace.h:171:9: note: in expansion of macro 'if'
-     171 |         if (unlikely(!user_mode(regs)))
-         |         ^~
-   drivers/irqchip/irq-ath79-misc.c: At top level:
->> drivers/irqchip/irq-ath79-misc.c:29:5: warning: no previous prototype for 'get_c0_perfcount_int' [-Wmissing-prototypes]
-      29 | int get_c0_perfcount_int(void)
-         |     ^~~~~~~~~~~~~~~~~~~~
-   drivers/irqchip/irq-ath79-misc.c:184:13: warning: no previous prototype for 'ath79_misc_irq_init' [-Wmissing-prototypes]
-     184 | void __init ath79_misc_irq_init(void __iomem *regs, int irq,
-         |             ^~~~~~~~~~~~~~~~~~~
+vim +111 arch/x86/kernel/cpu/common.c
 
+0a488a53d7ca46 arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  100  
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  101  DEFINE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page) = { .gdt = {
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  102  #ifdef CONFIG_X86_64
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  103  	/*
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  104  	 * We need valid kernel segments for data and code in long mode too
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  105  	 * IRET will check the segment types  kkeil 2000/10/28
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  106  	 * Also sysret mandates a special GDT layout
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  107  	 *
+9766cdbcb26038 arch/x86/kernel/cpu/common.c  Jaswinder Singh Rajput    2009-03-14  108  	 * TLS descriptors are currently at a different place compared to i386.
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  109  	 * Hopefully nobody expects them at a fixed place (Wine?)
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  110  	 */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19 @111  	[GDT_ENTRY_KERNEL32_CS]		= GDT_ENTRY_INIT(0xc09b, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  112  	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(0xa09b, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  113  	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(0xc093, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  114  	[GDT_ENTRY_DEFAULT_USER32_CS]	= GDT_ENTRY_INIT(0xc0fb, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  115  	[GDT_ENTRY_DEFAULT_USER_DS]	= GDT_ENTRY_INIT(0xc0f3, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  116  	[GDT_ENTRY_DEFAULT_USER_CS]	= GDT_ENTRY_INIT(0xa0fb, 0, 0xfffff),
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  117  #else
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  118  	[GDT_ENTRY_KERNEL_CS]		= GDT_ENTRY_INIT(0xc09a, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  119  	[GDT_ENTRY_KERNEL_DS]		= GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  120  	[GDT_ENTRY_DEFAULT_USER_CS]	= GDT_ENTRY_INIT(0xc0fa, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  121  	[GDT_ENTRY_DEFAULT_USER_DS]	= GDT_ENTRY_INIT(0xc0f2, 0, 0xfffff),
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  122  	/*
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  123  	 * Segments used for calling PnP BIOS have byte granularity.
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  124  	 * They code segments and data segments have fixed 64k limits,
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  125  	 * the transfer segment sizes are set at run time.
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  126  	 */
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  127  	/* 32-bit code */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  128  	[GDT_ENTRY_PNPBIOS_CS32]	= GDT_ENTRY_INIT(0x409a, 0, 0xffff),
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  129  	/* 16-bit code */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  130  	[GDT_ENTRY_PNPBIOS_CS16]	= GDT_ENTRY_INIT(0x009a, 0, 0xffff),
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  131  	/* 16-bit data */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  132  	[GDT_ENTRY_PNPBIOS_DS]		= GDT_ENTRY_INIT(0x0092, 0, 0xffff),
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  133  	/* 16-bit data */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  134  	[GDT_ENTRY_PNPBIOS_TS1]		= GDT_ENTRY_INIT(0x0092, 0, 0),
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  135  	/* 16-bit data */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  136  	[GDT_ENTRY_PNPBIOS_TS2]		= GDT_ENTRY_INIT(0x0092, 0, 0),
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  137  	/*
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  138  	 * The APM segments have byte granularity and their bases
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  139  	 * are set at run time.  All have 64k limits.
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  140  	 */
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  141  	/* 32-bit code */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  142  	[GDT_ENTRY_APMBIOS_BASE]	= GDT_ENTRY_INIT(0x409a, 0, 0xffff),
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  143  	/* 16-bit code */
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  144  	[GDT_ENTRY_APMBIOS_BASE+1]	= GDT_ENTRY_INIT(0x009a, 0, 0xffff),
+6842ef0e85a9cc arch/x86/kernel/cpu/common.c  Glauber de Oliveira Costa 2008-01-30  145  	/* data */
+72c4d853024426 arch/x86/kernel/cpu/common.c  Ingo Molnar               2009-08-03  146  	[GDT_ENTRY_APMBIOS_BASE+2]	= GDT_ENTRY_INIT(0x4092, 0, 0xffff),
+bf50467204b435 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  147  
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  148  	[GDT_ENTRY_ESPFIX_SS]		= GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
+1e5de18278e686 arch/x86/kernel/cpu/common.c  Akinobu Mita              2009-07-19  149  	[GDT_ENTRY_PERCPU]		= GDT_ENTRY_INIT(0xc092, 0, 0xfffff),
+60a5317ff0f42d arch/x86/kernel/cpu/common.c  Tejun Heo                 2009-02-09  150  	GDT_STACK_CANARY_INIT
+950ad7ff6ec17f arch/x86/kernel/cpu/common.c  Yinghai Lu                2008-09-04  151  #endif
+06deef892c7327 arch/x86/kernel/cpu/common.c  Brian Gerst               2009-01-21  152  } };
+7a61d35d4b4056 arch/i386/kernel/cpu/common.c Jeremy Fitzhardinge       2007-05-02  153  EXPORT_PER_CPU_SYMBOL_GPL(gdt_page);
+ae1ee11be77f51 arch/i386/kernel/cpu/common.c Rusty Russell             2007-05-02  154  
 
-vim +/get_c0_perfcount_int +29 drivers/irqchip/irq-ath79-misc.c
+:::::: The code at line 111 was first introduced by commit
+:::::: 1e5de18278e6862f4198412b5059a03770fa816a x86: Introduce GDT_ENTRY_INIT()
 
-    28	
-  > 29	int get_c0_perfcount_int(void)
-    30	{
-    31		return ath79_perfcount_irq;
-    32	}
-    33	EXPORT_SYMBOL_GPL(get_c0_perfcount_int);
-    34	
+:::::: TO: Akinobu Mita <akinobu.mita@gmail.com>
+:::::: CC: Ingo Molnar <mingo@elte.hu>
 
 -- 
 0-DAY CI Kernel Test Service
