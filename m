@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA6F7E87D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3517E87DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345269AbjKKBoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        id S1345307AbjKKBoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKKBoG (ORCPT
+        with ESMTP id S1345553AbjKKBoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:44:06 -0500
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA61422D
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:44:03 -0800 (PST)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc9eb5b944so32487345ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:44:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699667043; x=1700271843;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZuRccP5it1BDeQaqIb5yxoW0JgWVRO0qF5fPiNs/sjg=;
-        b=a4GjJ6inLhwC+euOjGSwt04zQY/o3df6SnCMm3lNRzDYL/Q2VRP1OUVmJOKsxtcOjZ
-         c7jCM8y3cGeqalII/BxT6oNLIKW0JYIG5mQlHipwRXXMk8QV0ZAf1RLJvmtiI/MwOkcl
-         O+UG8gr638h8fRfEsmLbysMTaCoR9/ivN9Vk5Q7LMPhtiKEqd7/6bemObInMMm0X9dwV
-         SYzmvR3U0I+ssjyzHnGTgwptEKWIRdTFHcH6CFFI1YvXARTIzofk5VV3rDf8z3/x8kXn
-         tDJk1IFAfIpejNWw7EBCRC28z5gIUpGDTutJ7YRRhfrStv1yJfzN8Emmlg2kpVOux+Hv
-         wVZA==
-X-Gm-Message-State: AOJu0Yw0FzOC9L7qS2Wk/uKHyGbkLeBg6tZgau04DkLLwAp59qEbRsDa
-        hUi7gWn0CgJbaussWy5eyeCbbp4aRc5JesA4oIHUPv8DfP+c
-X-Google-Smtp-Source: AGHT+IEoU9iAhqau//8oj6PwJOkCd7n865VKPodSDq0NZhEpk1C1Mg6quCsuTJ/AqenGXLpeW/VDOonQahBXFbxvsSi3wwXFuMC9
+        Fri, 10 Nov 2023 20:44:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819FC44B5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:44:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C1ADC433C7;
+        Sat, 11 Nov 2023 01:44:16 +0000 (UTC)
+Date:   Fri, 10 Nov 2023 20:44:22 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH v2 26/31] fprobe: Rewrite fprobe on function-graph
+ tracer
+Message-ID: <20231110204422.05ac4581@gandalf.local.home>
+In-Reply-To: <20231110161739.f0ff9c50f20ebcfb57be6459@kernel.org>
+References: <169945345785.55307.5003201137843449313.stgit@devnote2>
+        <169945376173.55307.5892275268096520409.stgit@devnote2>
+        <20231110161739.f0ff9c50f20ebcfb57be6459@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:70c8:b0:1c9:f267:1661 with SMTP id
- l8-20020a17090270c800b001c9f2671661mr1039429plt.2.1699667043224; Fri, 10 Nov
- 2023 17:44:03 -0800 (PST)
-Date:   Fri, 10 Nov 2023 17:44:03 -0800
-In-Reply-To: <tencent_51DB92C1C65949A12EC3AED2CC8967F44606@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005913c20609d69245@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
-From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 10 Nov 2023 16:17:39 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+> > +	used = 0;
+> > +	hlist_for_each_entry_from_rcu(node, hlist) {
+> > +		if (node->addr != func)
+> > +			break;
+> > +		fp = READ_ONCE(node->fp);
+> > +		if (!fp || fprobe_disabled(fp))
+> > +			continue;
+> > +
+> > +		if (fprobe_shared_with_kprobes(fp))
+> > +			ret = __fprobe_kprobe_handler(func, ret_ip,
+> > +					fp, fregs, fgraph_data + used);
+> > +		else
+> > +			ret = __fprobe_handler(func, ret_ip, fp,
+> > +					fregs, fgraph_data + used);  
+> 
+> 
+> Since the fgraph callback is under rcu-locked but not preempt-disabled,
 
-fs/btrfs/disk-io.c:4934:61: error: expected ')'
+rcu-locked? The only rcu-locked is task rcu.
+
+> fprobe unittest fails. I need to add preempt_disable_notrace() and
+> preempt_enable_notrace() around this. Note that kprobe_busy_begin()/end()
+> also access to per-cpu variable, so it requires to disable preemption.
 
 
-Tested on:
+Just around the __fprobe_*handler()? Or the loop?
 
-commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16e441ff680000
-
+-- Steve
