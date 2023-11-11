@@ -2,167 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 084A87E89F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B88627E8A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 10:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbjKKIx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 03:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S230306AbjKKJLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 04:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjKKIx1 (ORCPT
+        with ESMTP id S229803AbjKKJLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 03:53:27 -0500
+        Sat, 11 Nov 2023 04:11:40 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FFA3C3C
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:52:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59B93AA2
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 01:10:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699692757;
+        s=mimecast20190719; t=1699693849;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=TYs9FeoeYol+rxwOreW/7O3xwXAsfGjJ3zubYSRMfKc=;
-        b=iQlJlXgikABPZQeEvrk9CAovzYTr7TpLr8A4DTt2lV8ZVVlViN97y0r6OPP4WGrjI7Ytg/
-        6frkTv6U0PrefICBkjtwHpilVMBe+RNm26AOsA+HLCz/fmKDrvuvq9Wt31tMbtwURBIhlK
-        g39m1JaC2/6IoLMilYast8/30txmNgA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=7c/Lm/uJDATCAgPRHFNpVgc8PBzSucZIj3Gj3ErqE9E=;
+        b=ZGNoxyrgCVI+tISyX3/mx2xbRK6ZHfkdRnyVAIORUZOGGX6cA5SyxO+PWpDEorjlWjN87t
+        5zs2hhXe9NNxQwkGPk/MRPjGX4rKkECuoPZD9gQuin12ebsRghe5Lp14Z9FUKymOzWJYwU
+        qzV49FEAmQ62E1Mdy5Sqb7OdyPEK/10=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-nIHtv1wZOpa80aLFaJqzsA-1; Sat, 11 Nov 2023 03:52:35 -0500
-X-MC-Unique: nIHtv1wZOpa80aLFaJqzsA-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-542fe446d45so2198329a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:52:35 -0800 (PST)
+ us-mta-541-S9Icv50kPMOYamG8LbMkog-1; Sat, 11 Nov 2023 04:10:47 -0500
+X-MC-Unique: S9Icv50kPMOYamG8LbMkog-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5079a8c68c6so2678031e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 01:10:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699692754; x=1700297554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TYs9FeoeYol+rxwOreW/7O3xwXAsfGjJ3zubYSRMfKc=;
-        b=glnV4imtq2s63Fb35OIX98Tuqnpn+KpDq7ij5bLoerd/CnBx/ufw0aDy3bAd3g0Bwr
-         wbI/do33z/qV4lg4HF3Gz7t7PxPKcKi5BLaCeI7xgsJOLN8sACqP29ys3/4W71446N81
-         W1Q2KO68Z+NgGXrD4ssiLQf4g8UqqJ0E2VDtESnVYtGSWeRkI6Sw7ZRpXhPVBSokw3so
-         Xzs8jxItdBNNNy04YSih39gdJEurceQNeVNT3Um83yQILdphi34CX0hWF8nU9WjOQ0bK
-         G33A2gBYmAwvcXDg6IoTDzL7cdpDC5d/BKvnaFotrWUYB7ysClm5OmEGPByzqt4fk6O5
-         xLVg==
-X-Gm-Message-State: AOJu0Yy7iuiCaaJTfPzTu//Pf/x7wPydND12YOdzMJ+zLRYcTcD6KUvg
-        3dnbXNCUk0QClka6397TlZ0H/juBYRkvueIWZbYX4mNXAIp4FmqyRidF4smhrY/Xn8pDr3rOc3V
-        9Qz5CFqS+IFs2VL5ejqBiqLw5QuH+ymlzdoSs9LPx
-X-Received: by 2002:a05:6402:2022:b0:543:54da:1a37 with SMTP id ay2-20020a056402202200b0054354da1a37mr991756edb.6.1699692754326;
-        Sat, 11 Nov 2023 00:52:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFJYQWi2V3D3IDvJp5SQ14/RkGN22eRWhQZh6OTfPD2qJKV3eHpl7I/7gtmLEJi8hEXvDDKu9DjUh/0rkj69YA=
-X-Received: by 2002:a05:6402:2022:b0:543:54da:1a37 with SMTP id
- ay2-20020a056402202200b0054354da1a37mr991749edb.6.1699692754051; Sat, 11 Nov
- 2023 00:52:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699693846; x=1700298646;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7c/Lm/uJDATCAgPRHFNpVgc8PBzSucZIj3Gj3ErqE9E=;
+        b=DYqH/gEzqBpoaDadf9DX8m0uvp2R+wKq0uzDHT3B0jNzLoikKzK5PyIxHfPOMTOekN
+         cSdQAuW7+bHYu33bBuwQQ+ByHoHu5T6UTZeIeN6jC+CTM7jvzzo6klI8IFLkitVJNyyL
+         qsYMJiadLYVUngGZDB6/BCOV0kTCZanSWVFN4e1nEshWKQ05jJgY1au9HHybKCFkeKVi
+         jYo16HwM16q69DWAMbDhojJtMCyO4NW/olUqXbUCFtJldsQvVZFeFCCOL7oGzissmGfb
+         IWvWiqX4QIcOnipjFYjRzy4m20+6pxLFenUv1qNxi+VFP6fe76JVZYnElbdI81vQq7QA
+         awSg==
+X-Gm-Message-State: AOJu0YxX0sA+C5Syk4ZSBx50Pkl0zXUHySSRt5+8gMGk9CbpiTPw+yyM
+        MvpnYwdVzrHJLXJD1YOWBrzN50z1c5FJebUKd3CO/9t6rIohv2cFbQ/8Vr/XzxUnm7YyOx3clzd
+        k8+H93K3r+BNfaP8Kb0aoMhIN
+X-Received: by 2002:ac2:5551:0:b0:509:2b80:f90c with SMTP id l17-20020ac25551000000b005092b80f90cmr749741lfk.68.1699693845894;
+        Sat, 11 Nov 2023 01:10:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHPc9NJxiye/TNgxXuVbWNyzEeyOp6micERKdg2Co2s8cthNpH2I7hrfr/C39Ll0Y6NaWzR1A==
+X-Received: by 2002:ac2:5551:0:b0:509:2b80:f90c with SMTP id l17-20020ac25551000000b005092b80f90cmr749726lfk.68.1699693845545;
+        Sat, 11 Nov 2023 01:10:45 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id l5-20020adfa385000000b0032da8fb0d05sm1070611wrb.110.2023.11.11.01.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 01:10:45 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Andrew Worsley <amworsley@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Fix failure of simpledrm probe when trying to grab FB
+ from the EFI-based Framebuffer
+In-Reply-To: <CA+Y=x3mF4jFX7PiJQ-1Gk9zyBE1mwZaF_GLYjSspT+mxtMn4GQ@mail.gmail.com>
+References: <20231111042926.52990-1-amworsley@gmail.com>
+ <20231111042926.52990-2-amworsley@gmail.com>
+ <CA+Y=x3mF4jFX7PiJQ-1Gk9zyBE1mwZaF_GLYjSspT+mxtMn4GQ@mail.gmail.com>
+Date:   Sat, 11 Nov 2023 10:10:44 +0100
+Message-ID: <87cywgac4r.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
- <20231108062306.33f5dcd0@dryade> <CAO-hwJK_xp1A=dEOV-2v3KJAf0bRLDWNcrFQeBpgEuxT-qSBnw@mail.gmail.com>
- <ZUtTpKyP0oxWhnn8@fedora> <CAO-hwJLjtjdr2gtrOWJFPZ-38YzKB8XfhDKWf_2jUPeiaP3EcA@mail.gmail.com>
- <CAO-hwJKNcwcDGEh33NZq4kSYtoxZzg9M2nzE_hVDYNFgA4g_dg@mail.gmail.com>
- <_DEF7tHL1p_ExY7GJlJvT5gRA7ZvNnVMJuURb8_WCV-0fbYXkLN2p5zHloi6wiJPNzGEjFAkq2sjbCU633_eNF_cGm0rAbmCOOIOfwe1jWo=@protonmail.com>
- <CAO-hwJ+zm=R7NwrALaLVmfPDtMNXpj0eoQgLkiS1wa6wd+hu+A@mail.gmail.com>
- <CAO-hwJKJW5jGDdaaS8eB7kcLQUvWO_1XkOzJG4HAcaRzw1cGnQ@mail.gmail.com> <7wmtNlKuYResf5cFQ7M2QTalzIUtw0I6ohvPcz69Jo1c8flezyIlnJu1IwAgXhJ-u0NlRL3IV7HnL0Kza6fVBqd7X7jhc-Z6QCi3oqHEvpY=@protonmail.com>
-In-Reply-To: <7wmtNlKuYResf5cFQ7M2QTalzIUtw0I6ohvPcz69Jo1c8flezyIlnJu1IwAgXhJ-u0NlRL3IV7HnL0Kza6fVBqd7X7jhc-Z6QCi3oqHEvpY=@protonmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Sat, 11 Nov 2023 09:52:21 +0100
-Message-ID: <CAO-hwJJ+nx72_TPfxcWRPBDZdDaPrO5yMNH4Y_mj6ej651Mesw@mail.gmail.com>
-Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
-To:     David Revoy <davidrevoy@protonmail.com>
-Cc:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
-        Eric GOUYER <folays@gmail.com>,
-        Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
-        jkosina@suse.cz, jason.gerecke@wacom.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Andrew Worsley <amworsley@gmail.com> writes:
 
-On Thu, Nov 9, 2023 at 11:04=E2=80=AFPM David Revoy <davidrevoy@protonmail.=
-com> wrote:
+> It's inline - part of the email - not an attachment?
 >
-> Hi Benjamin,
+> I can see it in the copy that went to me...
 >
-> Thank you it works! =F0=9F=8E=89 =F0=9F=8E=89 =F0=9F=8E=89
+> Andrew
 >
-> > I've pushed an update of the file[0], turns out I made several mistakes=
-.
-> > As a general rule of thumb, you can follow the MR I've opened at [1],
-> > click on the pipeline, open the last job ("make release"), then browse
-> > the artifacts and pull the file from there.
-> > [...]
-> > > But just to be sure, you don't have a custom configuration in place
-> > > for that tablet device?
-> > [...]
-> > [0] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/jobs/5139939=
-2/artifacts/file/udev-hid-bpf_0.1.0.tar.xz
-> > [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_reques=
-ts/27
->
-> I tested the latest artifact on kernel 6.5.8-200.fc38.x86_64 and I also r=
-emoved my custom configuration at startup (I had not much: an hwdb files fo=
-r the 24 Pro =E2=88=92mainly for frame buttons=E2=88=92 and an xsetwacom ba=
-sh script for each tablet).
->
-> During the tests, the styluses of both 24 Pro and 16 Pro Gen2 worked perf=
-ectly: right-click on upper button out-of-the-box, and the eraser tip of th=
-e 16 Pro Gen2 continued to erase as expected.
+> On Sat, 11 Nov 2023 at 15:30, Andrew Worsley <amworsley@gmail.com> wrote:
+>>
+>>    The simpledrm.c does not call aperture_remove_conflicting_devices() in it's probe
+>>    function as the drivers/video/aperture.c documentation says it should. Consequently
+>>    it's request for the FB memory fails.
+>>
 
-While polishing the patches yesterday I realized that there was a bug
-on the 24 Pro: it would never send proximity out events unless on a
-very specific case: if you hold the pen perfectly vertical. This might
-have an effect on the session and the pen behavior.
+The current behaviour is correct since aperture_remove_conflicting_devices()
+is for native drivers to remove simple framebuffer devices such as simpledrm,
+simplefb, efifb, etc.
 
-Could you please once again attach the hid-recorder of the Pro 24
-while doing the following sequence:
-- touch with the tip of the stylus the tablet
-- while touching, press the upper button (the problematic one)
-- still while touching, release the button
-- remove the stylus
+>> ...
+>> [    3.085302] simple-framebuffer bd58dc000.framebuffer: [drm] *ERROR* could not acquire memory range [??? 0xffff6e1d8629d580-0x2a5000001a7 flags 0x0]: -16
+>> [    3.086433] simple-framebuffer: probe of bd58dc000.framebuffer failed with error -16
+>> ...
+>>
 
-I need it to check what the device is sending when an "eraser mode
-button" is pressed while the tip is touching the surface. Because I
-think that's the only one problematic proximity out event as it would
-"break" the current touch.
+This is -EBUSY. What is your kernel configuration? Can you share it please.
 
-I have created another MR[2] to fix that, and I would appreciate it if
-you could also give a test of the artifacts of job 51469284[3].
+>>    In my case no driver provided /dev/dri/card0 device is available on boot up and X
+>>    fails to start as per this from X start up log.
+>>
+>> ...
+>> [     5.616] (WW) Falling back to old probe method for modesetting
+>> [     5.616] (EE) open /dev/dri/card0: No such file or directory
+>> ...
+>>
+>>    Fault confirmed and fixed on Asahi 6.5.0 kernel with both CONFIG_FB_EFI and
+>>    CONFIG_DRM_SIMPLEDRM config options set.
+>>
+>> Signed-off-by: Andrew Worsley <amworsley@gmail.com>
+>> ---
 
-The points to check are:
-- if you right click while touching the surface, do you still get only
-a right click or some weird glitches in addition to it?
-- if you right click while not touching (hovering), no glitches?
+I wonder if this is anothe side effect of commit 60aebc955949
+("drivers/firmware: Move sysfb_init() from device_initcall to
+subsys_initcall_sync").
 
-Cheers,
-Benjamin
+Can you try reverting that one and see if it helps?
 
->
-> I could also target with xsetwacom this 'button 3' of the styluses, and I=
- tested random available shortcuts (but I'll keep default right-click).
->
-> So, good job, and many thanks!
->
-> I want now to write a follow-up after the first blog-post. I see it is a =
-MR [1], maybe it means if it get merged it will be part of libevdev? What w=
-ould you advice to write for the ones who want to benefit from the fix?
->
-> Thanks again,
-> David
->
-> [1] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests=
-/27
->
+>>  drivers/gpu/drm/tiny/simpledrm.c | 15 +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+>> index 5fefc895bca2..e55a536b04cf 100644
+>> --- a/drivers/gpu/drm/tiny/simpledrm.c
+>> +++ b/drivers/gpu/drm/tiny/simpledrm.c
+>> @@ -8,6 +8,7 @@
+>>  #include <linux/platform_device.h>
+>>  #include <linux/pm_domain.h>
+>>  #include <linux/regulator/consumer.h>
+>> +#include <linux/aperture.h>
+>>
+>>  #include <drm/drm_aperture.h>
+>>  #include <drm/drm_atomic.h>
+>> @@ -828,6 +829,13 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+>>         if (mem) {
+>>                 void *screen_base;
+>>
+>> +               ret = aperture_remove_conflicting_devices(mem->start, resource_size(mem),
+>> +                       DRIVER_NAME);
+>> +               if (ret) {
 
-[2] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/3=
-0
-[3] https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/jobs/51469284
+DRM drivers should use drm_aperture_remove_framebuffers() instead. But
+this shouldn't be needed for the simpledrm driver as mentioned, since
+there shouldn't be another device grabbing this aperture at this point.
+
+I would rather try to understand what is going on in your setup and why 
+the acquire is returning -EBUSY.
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
