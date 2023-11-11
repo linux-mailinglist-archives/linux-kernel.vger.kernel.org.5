@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEE37E88BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44F77E88C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 04:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345538AbjKKDCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 22:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S1345730AbjKKDCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 22:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjKKDCK (ORCPT
+        with ESMTP id S234845AbjKKDCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 22:02:10 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77C74204
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:02:05 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6b6f4c118a9so2612722b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 19:02:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699671725; x=1700276525;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m9jmJ7vtILvW5Bu4JsBMcm4CthTppMk6zGeMu/ZDO0s=;
-        b=gLIbnyu9TXVRw+Oo0PMCqwIKKavNxvZSek8RaTEtGJHJq6rzM4vq/D9HrnPL7xnuKh
-         qHfcpiz3ExIDA0+VSvLW61WWfEcsplgn/BRsFmtZ8pcbBRyugvW0vo3cdaR2JyNTMngm
-         t3P0SN9FGp9x2cDjoO4LxV378nfYe7bEUWyy3NFo1W9hoYKlgm9kstA4Lu6Vni332A6T
-         YYUn9oE4VktEWScDKkCP9LzV+05vBuCOS8J80TSpG6RPQ0gahgRrrC1MT+nCAQfuuFkI
-         7v4ThQJ88p+kLzMMOoDxV9/n8Y4z6QtsCYv4sVOkXUxKXVC5yONaInk/jWicpdcPELPS
-         6hmA==
-X-Gm-Message-State: AOJu0YwsFKARo2SNSJh+IXDUv3pxmlou1ZTOdV5fgWduHTSFykfvy5+G
-        y4sQa/Wt6BDcNz3/3v1Sgk0LmIAa8TrZEgc9mC8MKM+K0Exi
-X-Google-Smtp-Source: AGHT+IHz6gCjQEgVol8OZonb4ZBbxzpBelGeiz//Vk4U60W3RTW4YNJNYzMwSQG62xH84vLXSmH5kFbyqVdSXDRm1YTXkL/+BpqO
+        Fri, 10 Nov 2023 22:02:22 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405BD449A;
+        Fri, 10 Nov 2023 19:02:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Jd3dbI5OGBjKBW+7cOzwRrn7JY1+6AG5uhO4OH3lR4k=; b=FRbxmVQSM/vQbxXwlO3/8GjdIR
+        YH4VKN2LWodCq68nLjxwR4fyLRjABZz02tpPD7Sgxf1fKuOhAImUT6agC8priqrfO4NCrfZz1oD6Q
+        Aw+0VOHoFWc6B6Y2g+TWKek1IFc3SwkOPKRnxQt1NK0boq+Z4h744VJ/Utw9wNhPVPNow0mUgzZ/F
+        WxUmmVbsaVRgRKQnVGUJUakA3jPbUGldLFyhKZaWt3wtp7XRFYZ+iAwuGWmMtqczisTRxoFDECTlH
+        GpWq5TBcCdltp4qpm/QqAwTAEzGSkidpV6TC2CCX4I3QxxRgJiv8bcieKtDqeB10D4vDEhXMLEEWb
+        9S7RT8Jg==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r1eGE-009uCi-0H;
+        Sat, 11 Nov 2023 03:02:15 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Jiri Slaby <jslaby@suse.cz>, linux-mips@vger.kernel.org
+Subject: [PATCH] MIPS: SGI-IP27: hubio: fix nasid kernel-doc warning
+Date:   Fri, 10 Nov 2023 19:02:13 -0800
+Message-ID: <20231111030213.31595-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:4519:b0:6bc:8df2:a536 with SMTP id
- cw25-20020a056a00451900b006bc8df2a536mr245432pfb.1.1699671725404; Fri, 10 Nov
- 2023 19:02:05 -0800 (PST)
-Date:   Fri, 10 Nov 2023 19:02:05 -0800
-In-Reply-To: <tencent_A2614970C3AB4447D761576DC6D73362A305@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d7a5f0609d7a92a@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
-From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+ip27-hubio.c:32: warning: Function parameter or member 'nasid' not described in 'hub_pio_map'
+ip27-hubio.c:32: warning: Excess function parameter 'hub' description in 'hub_pio_map'
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Fixes: 4bf841ebf17a ("MIPS: SGI-IP27: get rid of compact node ids")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: lore.kernel.org/r/202311101336.BUL1JuvU-lkp@intel.com
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Jiri Slaby <jslaby@suse.cz>
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/sgi-ip27/ip27-hubio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-fs/btrfs/qgroup.h:432: multiple definition of `exist_qgroup_rb'; fs/btrfs/super.o:fs/btrfs/qgroup.h:432: first defined here
-
-
-Tested on:
-
-commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17cc7338e80000
-
+diff -- a/arch/mips/sgi-ip27/ip27-hubio.c b/arch/mips/sgi-ip27/ip27-hubio.c
+--- a/arch/mips/sgi-ip27/ip27-hubio.c
++++ b/arch/mips/sgi-ip27/ip27-hubio.c
+@@ -21,7 +21,7 @@ static int force_fire_and_forget = 1;
+ /**
+  * hub_pio_map	-  establish a HUB PIO mapping
+  *
+- * @hub:	hub to perform PIO mapping on
++ * @nasid:	nasid to perform PIO mapping on
+  * @widget:	widget ID to perform PIO mapping for
+  * @xtalk_addr: xtalk_address that needs to be mapped
+  * @size:	size of the PIO mapping
