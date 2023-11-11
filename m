@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 562C47E8BFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 18:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B627E8C05
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 19:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbjKKRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 12:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45624 "EHLO
+        id S229511AbjKKSRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 13:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKKRw2 (ORCPT
+        with ESMTP id S229379AbjKKSRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 12:52:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF71C3A82
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 09:52:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEABDC433C7;
-        Sat, 11 Nov 2023 17:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699725145;
-        bh=Orr1lVXJAQNOiV1zw2p7Bmk4rVn6JX2v4Z6LPYrVrlM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hQ1cu9soq/zEhp4wwheNh28rvVac5cdJuUhrhjg1ieBqtxHdDcQGzSeh+l0jLEuS1
-         pMbUagz8aIk6uakbvaLu0nr8d/5tXNbJPEu1ojHzqO2DsdFkS1vUs0bVEdwIEJ+IGK
-         LlD5OlQWylD6m5ysrBy91/014CtokHp+hrLPZc5kqkp8/jkOuBea80D9ms7mhGCPwf
-         ZrDxaVKE9OoOzlRjtM+kuGPgk6EwV/V9rvIlK85/A1aYgbuVmjzh+nmW5o/Y8ry4kO
-         HxJepwXPUbUzoeF//ymz+RnVJIoCswOX1nGRxOFYHurlneNr1a9Rcu2sxui9HxKkzT
-         Qza1qWAJKQDbQ==
-Date:   Sat, 11 Nov 2023 09:52:22 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Andy Chiu <andy.chiu@sifive.com>,
-        Jerry Shih <jerry.shih@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated
- AES-CBC/CTR/ECB/XTS implementations
-Message-ID: <20231111175222.GB998@sol.localdomain>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231102051639.GF1498@sol.localdomain>
- <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
- <20231109071623.GB1245@sol.localdomain>
- <CABgGipXnGVB770ZA=60rD-6Hi5Fv_wh3tST+G+VFbTmMYzz0Mw@mail.gmail.com>
- <20231110054428.GC6572@sol.localdomain>
- <CAMj1kXHGWmdnOChbmiYhEib2Dgun0k8PVW5v_kLb-6c1BEhS=Q@mail.gmail.com>
+        Sat, 11 Nov 2023 13:17:07 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDE42D77;
+        Sat, 11 Nov 2023 10:17:04 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d216597f64so497340366b.3;
+        Sat, 11 Nov 2023 10:17:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699726622; x=1700331422; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=iLuEzbxCacp3MJuD2sq/malMmeZbiXSi7sKc98mPqeE=;
+        b=b3jGZdYBro3u4CRtpRNRZFhXsrF0+7EtM1vzeEKdKTFiblbF4c/lhZZ1AZxB0LIKEk
+         hZZ6kp+eh/WSu+RuYIMstEcEfqjPMrI5tmkPq8lHhV6kJWei6Xu3NERqrus/tvgVYw4G
+         mVDnJEccF2ECLA5+NgcvJdoxDYeEM8z211GCv7YHDfZzNZMxCDenSZXebp+Re6fgV+ni
+         8hJjMQuIfiTuimvFgbUCjEzTu4Fo2S2s5SEa/PJ4KzN+oqKTsJcuS5K2F4pliMYv1/ob
+         T5LrmiAbCcgv/zTHNqpCmMESqmuUL++QqPq7XV1L2QyXR+KDilVWkZfFYIJxGfOsy1s1
+         v9Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699726622; x=1700331422;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iLuEzbxCacp3MJuD2sq/malMmeZbiXSi7sKc98mPqeE=;
+        b=EBAbPDR7EOO7xIgiq/sE8J8nx2I4GG7mZ/hio44wTu4/9WyPI9bcz/YCfADvOfgulw
+         M3rxMSnjevCfnvqjat2iCTpwZulCusTbdMb7SHeKQM7IAv6mmdQQvfXXcUMLAtfTsGrk
+         kCsjXI1QKyDxnyPjLNs+EP2jjHsk2kp5y9eAzOWEy+t3P6bWdV+QFPsSpCeUvXnkBtdd
+         0U86HADVoRMIq6LeFK9k0cpr/aFTV6cdrzeivyWs7T0al9I0ArnURjThNPcy/+J2lWJK
+         K1yosPXSHYISPk5ijORuJxzKjlfqgnmpnun1CH9UqCTQ1XY5ax63j5t3joHxn/c0uxT7
+         A/oA==
+X-Gm-Message-State: AOJu0YxKOdA+lEIK9rE4ZDSmrveMJk1+JoufJhcCYrwQrfOiZPB+KTXz
+        0V3PNiGdD8YSR7ve14Z/3Q0=
+X-Google-Smtp-Source: AGHT+IEDbzhIvDoTtTIO7699ndejAsJBgxyjAfB3uYsWxfNIE697mLnVZS+alZkpukir2ua//9SI7Q==
+X-Received: by 2002:a17:907:bb8a:b0:9e4:197e:a5dc with SMTP id xo10-20020a170907bb8a00b009e4197ea5dcmr1881564ejc.44.1699726622139;
+        Sat, 11 Nov 2023 10:17:02 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id y19-20020a170906525300b009a13fdc139fsm1383683ejm.183.2023.11.11.10.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 10:17:01 -0800 (PST)
+Message-ID: <654fc51d.170a0220.c0817.43cd@mx.google.com>
+X-Google-Original-Message-ID: <ZU/FF8vEGwlFRbm0@Ansuel-xps.>
+Date:   Sat, 11 Nov 2023 19:16:55 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Simon Horman <horms@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Robert Marko <robimarko@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH v6 3/4] net: phy: aquantia: add firmware
+ load support
+References: <20231109123253.3933-1-ansuelsmth@gmail.com>
+ <20231109123253.3933-3-ansuelsmth@gmail.com>
+ <20231110195628.GA673918@kernel.org>
+ <654eae99.df0a0220.14db7.0cb8@mx.google.com>
+ <e75a8874-5ffe-4d8d-bcb9-27d8dff1cd09@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMj1kXHGWmdnOChbmiYhEib2Dgun0k8PVW5v_kLb-6c1BEhS=Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <e75a8874-5ffe-4d8d-bcb9-27d8dff1cd09@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,97 +89,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 09:08:31PM +1000, Ard Biesheuvel wrote:
-> On Fri, 10 Nov 2023 at 15:44, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > On Fri, Nov 10, 2023 at 12:58:12PM +0800, Andy Chiu wrote:
-> > > Hi Eric,
+On Sat, Nov 11, 2023 at 04:46:42PM +0100, Andrew Lunn wrote:
+> On Fri, Nov 10, 2023 at 11:28:36PM +0100, Christian Marangi wrote:
+> > On Fri, Nov 10, 2023 at 07:57:02PM +0000, Simon Horman wrote:
+> > > On Thu, Nov 09, 2023 at 01:32:52PM +0100, Christian Marangi wrote:
+> > > > From: Robert Marko <robimarko@gmail.com>
+> > > > 
+> > > > Aquantia PHY-s require firmware to be loaded before they start operating.
+> > > > It can be automatically loaded in case when there is a SPI-NOR connected
+> > > > to Aquantia PHY-s or can be loaded from the host via MDIO.
+> > > > 
+> > > > This patch adds support for loading the firmware via MDIO as in most cases
+> > > > there is no SPI-NOR being used to save on cost.
+> > > > Firmware loading code itself is ported from mainline U-boot with cleanups.
+> > > > 
+> > > > The firmware has mixed values both in big and little endian.
+> > > > PHY core itself is big-endian but it expects values to be in little-endian.
+> > > > The firmware is little-endian but CRC-16 value for it is stored at the end
+> > > > of firmware in big-endian.
+> > > > 
+> > > > It seems the PHY does the conversion internally from firmware that is
+> > > > little-endian to the PHY that is big-endian on using the mailbox
+> > > > but mailbox returns a big-endian CRC-16 to verify the written data
+> > > > integrity.
+> > > > 
+> > > > Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > > 
+> > > Hi Christian and Robert,
+> > > 
+> > > thanks for your patch-set.
+> > > 
+> > > I spotted some minor endien issues which I have highlighted below.
+> > > 
+> > > ...
 > > >
-> > > On Thu, Nov 9, 2023 at 3:16 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> > > >
-> > > > On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
-> > > > > On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
-> > > > > > On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
-> > > > > >> +static int ecb_encrypt(struct skcipher_request *req)
-> > > > > >> +{
-> > > > > >> +  struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
-> > > > > >> +  const struct riscv64_aes_ctx *ctx = crypto_skcipher_ctx(tfm);
-> > > > > >> +  struct skcipher_walk walk;
-> > > > > >> +  unsigned int nbytes;
-> > > > > >> +  int err;
-> > > > > >> +
-> > > > > >> +  /* If we have error here, the `nbytes` will be zero. */
-> > > > > >> +  err = skcipher_walk_virt(&walk, req, false);
-> > > > > >> +  while ((nbytes = walk.nbytes)) {
-> > > > > >> +          kernel_vector_begin();
-> > > > > >> +          rv64i_zvkned_ecb_encrypt(walk.src.virt.addr, walk.dst.virt.addr,
-> > > > > >> +                                   nbytes & AES_BLOCK_VALID_SIZE_MASK,
-> > > > > >> +                                   &ctx->key);
-> > > > > >> +          kernel_vector_end();
-> > > > > >> +          err = skcipher_walk_done(
-> > > > > >> +                  &walk, nbytes & AES_BLOCK_REMAINING_SIZE_MASK);
-> > > > > >> +  }
-> > > > > >> +
-> > > > > >> +  return err;
-> > > > > >> +}
-> > > > > >
-> > > > > > There's no fallback for !crypto_simd_usable() here.  I really like it this way.
-> > > > > > However, for it to work (for skciphers and aeads), RISC-V needs to allow the
-> > > > > > vector registers to be used in softirq context.  Is that already the case?
-> > > > >
-> > > > > The kernel-mode-vector could be enabled in softirq, but we don't have nesting
-> > > > > vector contexts. Will we have the case that kernel needs to jump to softirq for
-> > > > > encryptions during the regular crypto function? If yes, we need to have fallbacks
-> > > > > for all algorithms.
-> > > >
-> > > > Are you asking what happens if a softirq is taken while the CPU is between
-> > > > kernel_vector_begin() and kernel_vector_end()?  I think that needs to be
-> > > > prevented by making kernel_vector_begin() and kernel_vector_end() disable and
-> > > > re-enable softirqs, like what kernel_neon_begin() and kernel_neon_end() do on
-> > > > arm64.  Refer to commit 13150149aa6ded which implemented that behavior on arm64.
+> > 
+> > Hi Simon,
+> > 
+> > thanks for the check!
+> > 
+> > > > +/* load data into the phy's memory */
+> > > > +static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+> > > > +			      const u8 *data, size_t len)
+> > > > +{
+> > > > +	u16 crc = 0, up_crc;
+> > > > +	size_t pos;
+> > > > +
+> > > > +	/* PHY expect addr in LE */
+> > > > +	addr = cpu_to_le32(addr);
+> > > 
+> > > The type of addr is host byte-order,
+> > > but here it is assigned a little-endian value.
+> > > 
+> > > Flagged by Sparse.
+> > > 
+> > > > +
+> > > > +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> > > > +		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> > > > +		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+> > > > +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> > > > +		      VEND1_GLOBAL_MAILBOX_INTERFACE3,
+> > > > +		      VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR(addr));
+> > > 
+> > > VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR() performs a bit-shift on addr,
+> > > and applies a mask which is in host-byte order.
+> > > But, as highlighted above, addr is a little-endian value.
+> > > This does not seem right.
 > > >
-> > > Yes, if making Vector available to softirq context is a must, then it
-> > > is reasonable to call local_bh_disable() in kernel_vector_begin().
-> > > However, softirq would not be the only user for Vector and disabling
-> > > it may cause extra latencies. Meanwhile, simply disabling bh in
-> > > kernel_vector_begin() will conflict with the patch[1] that takes an
-> > > approach to run Preemptible Vector. Though it is not clear yet on
-> > > whether we should run Vector without turning off preemption, I have
-> > > tested running preemptible Vector and observed some latency
-> > > improvements without sacrificing throughput. We will have a discussion
-> > > on LPC2023[2] and it'd be great if you could join or continue to
-> > > discuss it here.
-> > >
-> > > Approaches can be done such as nesting, if running Vector in softirq
-> > > is required. Since it requires extra save/restore on nesting, I think
-> > > we should run some tests to get more performance (latency/throughput)
-> > > figure let the result decide the final direction. For example, we
-> > > could run Vector in either nesting with preempt-V and  non-nesting
-> > > without preempt-V and compare the following performance catachristics:
-> > >  - System-wide latency impact
-> > >  - Latency and throughput of softirq-Vector itself
-> >
-> > The skcipher and aead APIs do indeed need to work in softirq context.
-> >
-> > It's possible to use a fallback, either by falling back to scalar instructions
-> > or by punting the encryption/decryption operation to a workqueue using
-> > crypto/simd.c.  However, both approaches have some significant disadvantages.
-> > It was nice that the need for them on arm64 was eliminated by commit
-> > 13150149aa6ded.  Note that it's possible to yield the vector unit occasionally,
-> > to keep preemption and softirqs from being disabled for too long.
-> >
+> > 
+> > It's really just some magic to split the addr and swap if we are not
+> > in little-endian. The passed addr are defined here in the code and are
+> > hardcoded, they doesn't come from the firmware. What I can do is just
+> > recast __le32 to u32 again with __force to mute the warning...
+> > 
+> > Resulting in this snippet:
+> > 
+> > 	__le32 addr;
+> > 	size_t pos;
+> > 
+> > 	/* PHY expect addr in LE */
+> > 	addr = cpu_to_le32(load_addr);
+> > 
+> > 	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+> > 	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE3,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR((__force u32)addr));
+> > 	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE4,
+> > 		      VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR((__force u32)addr));
+> > 
+> > Also things needs to be casted to u16 anyway as phy_write_mmd expect a
+> > u16. And as you said FILED_PREP will use int (from the define) so I
+> > wonder if a more clean way would be just addr = (__force u32)cpu_to_le32(load_addr)
+> > resulting in a simple bswap32 if we are in big-endian.
+> > 
+> > Would love some feedback about this.
 > 
-> It is also quite feasible to start out with an implementation of
-> kernel_vector_begin() that preserves all vector registers eagerly in a
-> special per-CPU allocation if the call is made in softirq context (and
-> BUG when called in hardirq/NMI context). This was my initial approach
-> on arm64 too.
+> I don't think sparse is giving much value here. As you say,
+> phy_write_mmd() expects a u16, host endian. The endianness of the bus
+> is well defined in 802.3, and we expect the MDIO bus driver to take
+> care of converting host endian to whatever is needed by the
+> hardware. And typically, that is nothing since it is all integrated.
 > 
-> Assuming that RiSC-V systems with vector units are not flooding the
-> market just yet, this gives you some time to study the issue without
-> the need to implement non-vector fallback crypto algorithms
-> everywhere.
+> There does not appear to be a cpu_to_le32() without sparse markup. So
+> i think you are forced to use the ugly __force. I would do that as
+> soon as possible, as part of the cpu_to_le32() line.
+> 
+> > > This is all hidden by a cast in VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR()
+> > > This seems dangerous to me.
+> 
+> That cast could be made more visible. The macro itself looks safe on
+> different endians. It uses > and & operations. So try taking the cast
+> out of the macro and make it part of the phy_write_mmd() call? I
+> assume the cast is needed because you get a compiler warning, passing
+> a u32 when a u16 is expected?
+>
 
-Yes, that solution would be fine too.
+The cast is a handy way to cut the other 16bit. We make them 0 anyway by
+the FIELD_PREP. So yes I think I can just drop the cast there and put it
+in the write_mmd. (it's the same thing just making it more clear)
 
-- Eric
+I'm not including your tag in the next revision as I will make these
+changes.
+
+-- 
+	Ansuel
