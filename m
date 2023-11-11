@@ -2,271 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB407E8B42
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 15:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443C97E8B45
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 15:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbjKKOpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 09:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        id S231255AbjKKOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 09:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjKKOpD (ORCPT
+        with ESMTP id S231224AbjKKOrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 09:45:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55B63AA8
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 06:44:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699713899; x=1731249899;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=nGThmn244lw7LSM9OvXpI+S/eU8tx0PV47aYK0e5KVo=;
-  b=fIQZ5PO+kiWei98mESPwtGGgMve2EhW4lduH6VKxJ/Bs32wWDTU+sSKZ
-   JwXgtfCp03dPoEGAWCp0BtbXoUCwHIYnIUulACpc8GZLaPjqdJjVhkgIR
-   8TmOx7iwJPF9ikzwaWL8pQ+sbtB63Hpx83fSz87tVS92LgKlFpvSQ06s8
-   H6okkzra5Ru5YwVH5LvUKjrAndxRN0m86XIYAkLKYKVid+L0oTowf++IA
-   GpJLYA8Rq56AIsbYqkjzHS+FcOlZmECDSJqsdbSUJ+qibTAiF3TXASsDI
-   XkgouUIpZamvUcILW4QymPoXij80sOAtSFR/eIQlBh/mG2FLvuBlAaHKa
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="3293156"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="3293156"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 06:44:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="854604536"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="854604536"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Nov 2023 06:44:56 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1pEE-000AW6-2a;
-        Sat, 11 Nov 2023 14:44:54 +0000
-Date:   Sat, 11 Nov 2023 22:43:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kernel/events/core.c:4881:24: sparse: sparse: incorrect type in
- assignment (different base types)
-Message-ID: <202311112205.oMWYlOQe-lkp@intel.com>
+        Sat, 11 Nov 2023 09:47:10 -0500
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131C43AB9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 06:47:07 -0800 (PST)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-280051630e5so3553493a91.0
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 06:47:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699714025; x=1700318825;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iQm1NCJBI3DVkYRlCskxdiSqXN+6wR7W71BOolJrFkg=;
+        b=TE26WyzZ1Lvnv9Oq/nvIRINIk837rjCuwOE846iJUo/b/qb6/g7DD84hZ5zhF9AB2Z
+         QtsKfIQ5l0P7NeLBOzaJFBysObjcs1DD/vMK7r8NJhhbXX3LtPRR4JgMKsotVYnUTXoL
+         bPgYwBlEz900xm7ER32nC/o9+14v8SD3MtOqb1wgT9EKXKTo5TFFcRmq1wrM788yrbdn
+         k8CIPhmUnNcSrakBjq5pOlMxWK3um+BeGJGZDzSFJ3jG+XySyjVeTChm8WeKsItMqJVo
+         ErB/+NuHv4L8y7xw7/HwJ/SU6W+N5iLiF+j80sRIBGkqlkgPXQ2W7Tm4vRMcO23wuORT
+         wQMQ==
+X-Gm-Message-State: AOJu0YyXYIwfBm0LPWftgiQvakPLfPh7xLALzSMDWxZ+hOlHZhEgeWVa
+        oZWBYwfCkVV+yUHIlne9w8F8aEXkmENH82lB1pFC6FqYWoxq5Ug=
+X-Google-Smtp-Source: AGHT+IGJfTLqodUJqbhIfQe5SsSj+AweEvHq0Gw2PSVXShS4l35EpwXmphWrYgSwl39hLMtGgfk4SdLVqUrFdQPobceaF7tKpphc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:d105:b0:27d:63e0:792 with SMTP id
+ l5-20020a17090ad10500b0027d63e00792mr541030pju.2.1699714025109; Sat, 11 Nov
+ 2023 06:47:05 -0800 (PST)
+Date:   Sat, 11 Nov 2023 06:47:04 -0800
+In-Reply-To: <GV1PR10MB656393AB6AC7AD6B055814C3E8ADA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000afbee90609e182ee@google.com>
+Subject: Re: [syzbot] [block?] WARNING in floppy_revalidate
+From:   syzbot <syzbot+c5732f0517748c2c8051@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yuran.pereira@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
-commit: ee219b946e4bf7df2d2c68dfaae1bdaa360ec2ea uapi: turn __poll_t sparse checks on by default
-date:   5 years ago
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231111/202311112205.oMWYlOQe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311112205.oMWYlOQe-lkp@intel.com/reproduce)
+Hello,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311112205.oMWYlOQe-lkp@intel.com/
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in floppy_revalidate
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/events/core.c:570:26: sparse: sparse: function 'perf_pmu_name' with external linkage has definition
-   kernel/events/core.c:1034:1: sparse: sparse: symbol 'perf_cgroup_switch' was not declared. Should it be static?
-   kernel/events/core.c:1132:22: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got int * @@
-   kernel/events/core.c:1132:22: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:1132:22: sparse:     got int *
-   kernel/events/core.c:1139:22: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got int * @@
-   kernel/events/core.c:1139:22: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:1139:22: sparse:     got int *
-   kernel/events/core.c:1382:15: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:1382:15: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:1382:15: sparse:    struct perf_event_context *
-   kernel/events/core.c:1395:28: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:1395:28: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:1395:28: sparse:    struct perf_event_context *
-   kernel/events/core.c:3083:18: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:3083:18: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:3083:18: sparse:    struct perf_event_context *
-   kernel/events/core.c:3084:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:3084:23: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:3084:23: sparse:    struct perf_event_context *
-   kernel/events/core.c:3115:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:3115:25: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:3115:25: sparse:    struct perf_event_context *
-   kernel/events/core.c:3116:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:3116:25: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:3116:25: sparse:    struct perf_event_context *
-   kernel/events/core.c:3139:43: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:3139:43: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:3139:43: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:3150:43: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:3150:43: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:3150:43: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:4119:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:4119:26: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:4119:26: sparse:     got struct perf_cpu_context *
->> kernel/events/core.c:4881:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __poll_t [usertype] events @@     got int @@
-   kernel/events/core.c:4881:24: sparse:     expected restricted __poll_t [usertype] events
-   kernel/events/core.c:4881:24: sparse:     got int
-   kernel/events/core.c:5068:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5068:22: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5068:22: sparse:    struct ring_buffer *
-   kernel/events/core.c:5197:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5197:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5197:14: sparse:    struct ring_buffer *
-   kernel/events/core.c:5230:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5230:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5230:14: sparse:    struct ring_buffer *
-   kernel/events/core.c:5287:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5287:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5287:14: sparse:    struct ring_buffer *
-   kernel/events/core.c:5373:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5373:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5373:14: sparse:    struct ring_buffer *
-   kernel/events/core.c:5386:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:5386:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:5386:14: sparse:    struct ring_buffer *
-   kernel/events/core.c:6646:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:6646:23: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:6646:23: sparse:    struct perf_event_context *
-   kernel/events/core.c:6736:13: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:6736:13: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/core.c:6736:13: sparse:    struct ring_buffer *
-   kernel/events/core.c:6744:43: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:6744:43: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:6744:43: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:7399:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:7399:23: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:7399:23: sparse:    struct perf_event_context *
-   kernel/events/core.c:8079:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:8079:9: sparse:    struct swevent_hlist [noderef] <asn:4> *
-   kernel/events/core.c:8079:9: sparse:    struct swevent_hlist *
-   kernel/events/core.c:9408:35: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected struct perf_cpu_context [noderef] <asn:3> * @@     got struct perf_cpu_context *[noderef] pmu_cpu_context @@
-   kernel/events/core.c:9408:35: sparse:     expected struct perf_cpu_context [noderef] <asn:3> *
-   kernel/events/core.c:9408:35: sparse:     got struct perf_cpu_context *[noderef] pmu_cpu_context
-   kernel/events/core.c:9425:24: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] <asn:3> *__pdata @@     got struct perf_cpu_context *[noderef] pmu_cpu_context @@
-   kernel/events/core.c:9425:24: sparse:     expected void [noderef] <asn:3> *__pdata
-   kernel/events/core.c:9425:24: sparse:     got struct perf_cpu_context *[noderef] pmu_cpu_context
-   kernel/events/core.c:9440:1: sparse: sparse: symbol 'dev_attr_nr_addr_filters' was not declared. Should it be static?
-   kernel/events/core.c:9491:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:9491:26: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:9491:26: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:9570:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected int *[noderef] pmu_disable_count @@     got int [noderef] <asn:3> * @@
-   kernel/events/core.c:9570:32: sparse:     expected int *[noderef] pmu_disable_count
-   kernel/events/core.c:9570:32: sparse:     got int [noderef] <asn:3> *
-   kernel/events/core.c:9610:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct perf_cpu_context *[noderef] pmu_cpu_context @@     got struct perf_cpu_context [noderef] <asn:3> * @@
-   kernel/events/core.c:9610:30: sparse:     expected struct perf_cpu_context *[noderef] pmu_cpu_context
-   kernel/events/core.c:9610:30: sparse:     got struct perf_cpu_context [noderef] <asn:3> *
-   kernel/events/core.c:9615:30: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct perf_cpu_context *[noderef] pmu_cpu_context @@     got struct perf_cpu_context [noderef] <asn:3> * @@
-   kernel/events/core.c:9615:30: sparse:     expected struct perf_cpu_context *[noderef] pmu_cpu_context
-   kernel/events/core.c:9615:30: sparse:     got struct perf_cpu_context [noderef] <asn:3> *
-   kernel/events/core.c:9622:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:9622:26: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:9622:26: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:9675:24: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] <asn:3> *__pdata @@     got int *[noderef] pmu_disable_count @@
-   kernel/events/core.c:9675:24: sparse:     expected void [noderef] <asn:3> *__pdata
-   kernel/events/core.c:9675:24: sparse:     got int *[noderef] pmu_disable_count
-   kernel/events/core.c:9696:24: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] <asn:3> *__pdata @@     got int *[noderef] pmu_disable_count @@
-   kernel/events/core.c:9696:24: sparse:     expected void [noderef] <asn:3> *__pdata
-   kernel/events/core.c:9696:24: sparse:     got int *[noderef] pmu_disable_count
-   kernel/events/core.c:10897:20: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:10897:20: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:10897:20: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:10898:20: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:10898:20: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:10898:20: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:11068:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:11068:9: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:11068:9: sparse:    struct perf_event_context *
-   kernel/events/core.c:11178:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/core.c:11178:17: sparse:    struct perf_event_context [noderef] <asn:4> *
-   kernel/events/core.c:11178:17: sparse:    struct perf_event_context *
-   kernel/events/core.c:11566:6: sparse: sparse: symbol 'perf_swevent_init_cpu' was not declared. Should it be static?
-   kernel/events/core.c:11631:26: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:11631:26: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:11631:26: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:156:9: sparse: sparse: context imbalance in 'perf_ctx_lock' - wrong count at exit
-   kernel/events/core.c:164:17: sparse: sparse: context imbalance in 'perf_ctx_unlock' - unexpected unlock
-   kernel/events/core.c:149:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:149:16: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:149:16: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:149:16: sparse: sparse: dereference of noderef expression
-   kernel/events/core.c:149:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:149:16: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:149:16: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:149:16: sparse: sparse: dereference of noderef expression
-   kernel/events/core.c:1132:22: sparse: sparse: dereference of noderef expression
-   kernel/events/core.c:1139:22: sparse: sparse: dereference of noderef expression
-   kernel/events/core.c: note: in included file (through include/linux/rculist.h, include/linux/dcache.h, include/linux/fs.h):
-   include/linux/rcupdate.h:686:9: sparse: sparse: context imbalance in 'perf_lock_task_context' - different lock contexts for basic block
-   kernel/events/core.c:1429:17: sparse: sparse: context imbalance in 'perf_pin_task_context' - unexpected unlock
-   kernel/events/core.c:149:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] <asn:3> *__vpp_verify @@     got struct perf_cpu_context * @@
-   kernel/events/core.c:149:16: sparse:     expected void const [noderef] <asn:3> *__vpp_verify
-   kernel/events/core.c:149:16: sparse:     got struct perf_cpu_context *
-   kernel/events/core.c:149:16: sparse: sparse: dereference of noderef expression
-   kernel/events/core.c:2538:9: sparse: sparse: context imbalance in '__perf_install_in_context' - wrong count at exit
---
->> kernel/events/ring_buffer.c:22:39: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int i @@     got restricted __poll_t [usertype] @@
-   kernel/events/ring_buffer.c:22:39: sparse:     expected int i
-   kernel/events/ring_buffer.c:22:39: sparse:     got restricted __poll_t [usertype]
-   kernel/events/ring_buffer.c:137:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer *
-   kernel/events/ring_buffer.c:137:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer *
-   kernel/events/ring_buffer.c:137:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer [noderef] <asn:4> *
-   kernel/events/ring_buffer.c:137:14: sparse:    struct ring_buffer *
-   kernel/events/ring_buffer.c:105:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
-     105 | static bool __always_inline
-         | ^~~~~~
-   kernel/events/ring_buffer.c:116:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
-     116 | static int __always_inline
-         | ^~~~~~
-   kernel/events/ring_buffer.c:416:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
-     416 | static bool __always_inline rb_need_aux_wakeup(struct ring_buffer *rb)
-         | ^~~~~~
+------------[ cut here ]------------
+WARNING: CPU: 2 PID: 5371 at drivers/block/floppy.c:999 schedule_bh drivers/block/floppy.c:999 [inline]
+WARNING: CPU: 2 PID: 5371 at drivers/block/floppy.c:999 process_fd_request drivers/block/floppy.c:2847 [inline]
+WARNING: CPU: 2 PID: 5371 at drivers/block/floppy.c:999 floppy_revalidate.isra.0+0x911/0xca0 drivers/block/floppy.c:4214
+Modules linked in:
+CPU: 2 PID: 5371 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-16159-g3ca112b71f35 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:schedule_bh drivers/block/floppy.c:999 [inline]
+RIP: 0010:process_fd_request drivers/block/floppy.c:2847 [inline]
+RIP: 0010:floppy_revalidate.isra.0+0x911/0xca0 drivers/block/floppy.c:4214
+Code: 07 0f 86 d2 f7 ff ff 48 89 de 48 c7 c7 20 ca f8 8c e8 43 9b 81 ff e9 be f7 ff ff e8 59 4f 0e fd e9 77 fa ff ff e8 df 7a ba fc <0f> 0b e9 04 fb ff ff e8 d3 7a ba fc 48 83 fb 07 0f 87 58 03 00 00
+RSP: 0018:ffffc9000383f8e8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff84c93273
+RDX: ffff888022140000 RSI: ffffffff84c93771 RDI: 0000000000000001
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff88801e762000 R14: 0000000000000050 R15: 0000000000000001
+FS:  00007f2ea16386c0(0000) GS:ffff88806ba00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2ea0588000 CR3: 0000000017284000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ floppy_open+0xa74/0xe00 drivers/block/floppy.c:4061
+ blkdev_get_whole+0x93/0x2c0 block/bdev.c:640
+ blkdev_get_by_dev.part.0+0x211/0xb20 block/bdev.c:795
+ blkdev_get_by_dev block/bdev.c:851 [inline]
+ bdev_open_by_dev+0x166/0x1c0 block/bdev.c:840
+ blkdev_open+0xe6/0x390 block/fops.c:600
+ do_dentry_open+0x8d4/0x18d0 fs/open.c:948
+ do_open fs/namei.c:3622 [inline]
+ path_openat+0x1d26/0x2c20 fs/namei.c:3779
+ do_filp_open+0x1cb/0x410 fs/namei.c:3809
+ do_sys_openat2+0x15c/0x1c0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0xe0 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f2ea0478640
+Code: 48 89 44 24 20 75 93 44 89 54 24 0c e8 09 7e 02 00 44 8b 54 24 0c 89 da 48 89 ee 41 89 c0 bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 38 44 89 c7 89 44 24 0c e8 5c 7e 02 00 8b 44
+RSP: 002b:00007f2ea1637c00 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f2ea0478640
+RDX: 0000000000000000 RSI: 00007f2ea1637ca0 RDI: 00000000ffffff9c
+RBP: 00007f2ea1637ca0 R08: 0000000000000000 R09: 002364662f766564
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f2ea058bf60 R15: 00007ffef761ff28
+ </TASK>
 
-vim +4881 kernel/events/core.c
 
-0793a61d4df8da kernel/perf_counter.c Thomas Gleixner           2008-12-04  4862  
-9dd957485d7d89 kernel/events/core.c  Al Viro                   2017-07-03  4863  static __poll_t perf_poll(struct file *file, poll_table *wait)
-0793a61d4df8da kernel/perf_counter.c Thomas Gleixner           2008-12-04  4864  {
-cdd6c482c9ff9c kernel/perf_event.c   Ingo Molnar               2009-09-21  4865  	struct perf_event *event = file->private_data;
-76369139ceb955 kernel/events/core.c  Frederic Weisbecker       2011-05-19  4866  	struct ring_buffer *rb;
-a9a08845e9acbd kernel/events/core.c  Linus Torvalds            2018-02-11  4867  	__poll_t events = EPOLLHUP;
-c7138f37f905bb kernel/perf_counter.c Peter Zijlstra            2009-03-24  4868  
-e708d7ad807374 kernel/events/core.c  Sebastian Andrzej Siewior 2014-08-04  4869  	poll_wait(file, &event->waitq, wait);
-179033b3e064d2 kernel/events/core.c  Jiri Olsa                 2014-08-07  4870  
-dc633982ff3f4f kernel/events/core.c  Jiri Olsa                 2014-09-12  4871  	if (is_event_hup(event))
-179033b3e064d2 kernel/events/core.c  Jiri Olsa                 2014-08-07  4872  		return events;
-c7138f37f905bb kernel/perf_counter.c Peter Zijlstra            2009-03-24  4873  
-10c6db110d0eb4 kernel/events/core.c  Peter Zijlstra            2011-11-26  4874  	/*
-9bb5d40cd93c9d kernel/events/core.c  Peter Zijlstra            2013-06-04  4875  	 * Pin the event->rb by taking event->mmap_mutex; otherwise
-9bb5d40cd93c9d kernel/events/core.c  Peter Zijlstra            2013-06-04  4876  	 * perf_event_set_output() can swizzle our rb and make us miss wakeups.
-10c6db110d0eb4 kernel/events/core.c  Peter Zijlstra            2011-11-26  4877  	 */
-10c6db110d0eb4 kernel/events/core.c  Peter Zijlstra            2011-11-26  4878  	mutex_lock(&event->mmap_mutex);
-9bb5d40cd93c9d kernel/events/core.c  Peter Zijlstra            2013-06-04  4879  	rb = event->rb;
-9bb5d40cd93c9d kernel/events/core.c  Peter Zijlstra            2013-06-04  4880  	if (rb)
-76369139ceb955 kernel/events/core.c  Frederic Weisbecker       2011-05-19 @4881  		events = atomic_xchg(&rb->poll, 0);
-10c6db110d0eb4 kernel/events/core.c  Peter Zijlstra            2011-11-26  4882  	mutex_unlock(&event->mmap_mutex);
-0793a61d4df8da kernel/perf_counter.c Thomas Gleixner           2008-12-04  4883  	return events;
-0793a61d4df8da kernel/perf_counter.c Thomas Gleixner           2008-12-04  4884  }
-0793a61d4df8da kernel/perf_counter.c Thomas Gleixner           2008-12-04  4885  
+Tested on:
 
-:::::: The code at line 4881 was first introduced by commit
-:::::: 76369139ceb955deefc509e6e12ce9d6ce50ccab perf: Split up buffer handling from core code
+commit:         3ca112b7 Merge tag 'probes-fixes-v6.7-rc1' of git://gi..
+git tree:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1491ec2f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=44a532e1ba684f13
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5732f0517748c2c8051
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-:::::: TO: Frederic Weisbecker <fweisbec@gmail.com>
-:::::: CC: Ingo Molnar <mingo@elte.hu>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Note: no patches were applied.
