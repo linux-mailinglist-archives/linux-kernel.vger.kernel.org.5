@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9D67E8728
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1543E7E872D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345052AbjKKA6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:58:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S1344851AbjKKBAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:00:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKKA6B (ORCPT
+        with ESMTP id S229729AbjKKBAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:58:01 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415F1448C;
-        Fri, 10 Nov 2023 16:57:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=x4QXI7bVNMeTlHpfe00+GeKDmQHX7YuFlvHKFeG+0Nw=;
-        t=1699664278; x=1700873878; b=SbGV64Rzgkvj4nqN2yYahBTyqWbYa7DVTMncsRLJRo24GvX
-        mCtniDPUP9sVN39/Aq/SKiSyZE6+a+qEuSdWDlzZnl0mPlh5Q3/m5JJZR0eGBCIzbj1AGw1pZV6EV
-        0FgPuOF77NURWw0DXrvnb5Qn5fwx2T7IiBiaPe6mnLf46x0vSoOmeltNQ0Xx+tLzsw/ZF+jGmbqI/
-        WcAuWSsWEZAL8Kn2blrBghplb8JCaG0j0pFNCK2hUUg0SBgvNJIqdeBL8xytr94oyT5Gy0EUcr9aB
-        QK/g0EwyPCjwUuN+5zSbhZ7xL+MRVOfxRYyYXG0NTO2migWS4jGFfD/1EYKBq8LQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1r1cJu-00000003Jqc-48AE;
-        Sat, 11 Nov 2023 01:57:55 +0100
-Message-ID: <455eae9e8a583d1ea5b8a3c59e134b85538fff39.camel@sipsolutions.net>
-Subject: Re: [PATCH] mwifiex: clean up some inconsistent indenting
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        briannorris@chromium.org
-Cc:     kvalo@kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Date:   Sat, 11 Nov 2023 01:57:53 +0100
-In-Reply-To: <76eeb452-dd61-44ce-ae9c-a8f8afa83fb8@quicinc.com>
-References: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
-         <76eeb452-dd61-44ce-ae9c-a8f8afa83fb8@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 10 Nov 2023 20:00:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC3B4228
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:59:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699664386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=OZqX4L0C5rtW9Z94fro7EVGdbdgTVYlzFcMIjE/e3rI=;
+        b=RxRiyu9z1rpfCl/pS8RN7TSYB9W9QnbFG6A7YizBZe0BaM+CSj+QImKWsK5OtOJX0WSxgu
+        fTVzpB+e7f3YDBobKw5oHvln9vSw4HAyV2UEDGoT09dpa5FrTNkCfBppGGqneAVT8OT9ov
+        Wj6W9ATjmJN3VNOzwQ9LcTiiqvK4dwo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-479-UJyp377lPqCAI_K--E2cUg-1; Fri,
+ 10 Nov 2023 19:59:45 -0500
+X-MC-Unique: UJyp377lPqCAI_K--E2cUg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8D6F929ABA2C;
+        Sat, 11 Nov 2023 00:59:44 +0000 (UTC)
+Received: from localhost (unknown [10.22.9.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0B5E40C6EB9;
+        Sat, 11 Nov 2023 00:59:43 +0000 (UTC)
+Date:   Fri, 10 Nov 2023 21:59:42 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        stable-rt <stable-rt@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Jeff Brady <jeffreyjbrady@gmail.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.199-rt97
+Message-ID: <169966380957.83297.12867433063716152688@localhost.localdomain>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-10 at 16:38 -0800, Jeff Johnson wrote:
-> > drivers/net/wireless/marvell/mwifiex/sta_event.c:789 mwifiex_process_st=
-a_event() warn: inconsistent indenting.
-> >=20
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Hello RT-list!
 
-> >  		if (!adapter->pps_uapsd_mode &&
-> >  		    (priv->port_open ||
-> > -		     (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
-> > +		    (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
->=20
-> this change looks incorrect to me
-> this condition is *inside* the parenthesis from the beginning of the
-> previous line, and hence this should align after that parenthesis, not
-> with that parenthesis, which is what the existing code is doing
+I'm pleased to announce the 5.10.199-rt97 stable release.
 
-Hah, you're right, I completely missed that! I guess someone should fix
-their tools :)
+This release is an update to the new stable 5.10.199 version and no
+RT-specific changes were made, with the exception of a fix to a build
+failure due to upstream changes affecting only the PREEMPT_RT code.
 
-johannes
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.10-rt
+  Head SHA1: 7f300821d150a083008d6a73224acfc7e3283b04
+
+Or to build 5.10.199-rt97 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.199.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.199-rt97.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
+
+RT Changes since v5.10.197-rt96:
+---
+
+Luis Claudio R. Goncalves (3):
+      net: replace raw_write_seqcount_t_begin by do_raw_write_seqcount_begin
+
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index 72be68652bb84..eee11a1c93216 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -195,7 +195,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ 		 * Variant of write_seqcount_t_begin() telling lockdep that a
+ 		 * trylock was attempted.
+ 		 */
+-		raw_write_seqcount_t_begin(s);
++		do_raw_write_seqcount_begin(s);
+ 		seqcount_acquire(&s->dep_map, 0, 1, _RET_IP_);
+ 		return true;
+ 	}
+
