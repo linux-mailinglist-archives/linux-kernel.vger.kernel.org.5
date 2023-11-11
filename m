@@ -2,159 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630947E8B07
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 14:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B74A7E8B0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 14:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbjKKNUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 08:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S231219AbjKKNZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 08:25:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjKKNUC (ORCPT
+        with ESMTP id S229874AbjKKNZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 08:20:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0447230E6;
-        Sat, 11 Nov 2023 05:19:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699708799; x=1731244799;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Yfgk6CCBGqckjRbY7YyOyRronAXE5qqlYifqaJYqfSM=;
-  b=PcvVrIHZs/dTKXo4LpjW5fBKG44WUuiiOQ3LV62BgRrTqpnhE/ErvVwI
-   Lbhqu9cXxe09tOc3EFDLnL/Vl8TkmrGlFxUYI2B1T2yWfMCgazH6kYbId
-   cJL5PeUPUqP48fhMzY3b/3Ujdrn69sdlCXcAFovau5xqQF2v73ktAYude
-   3nQ/gpJkrgi0kZkj0+/CA9AISa1Y9vT2umQftFOybYQK7z8S7d/2nyhuQ
-   miXnELJAQxJIteakLYmMivXwguS2gCoRa/FGLBWXyvMhs4otO7c0r+lFS
-   ibzjW15GufoTw8R0JcCW+dLSvVEKLhmXq5DDUBxpfCThLHrnKQvDtuozd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="476501200"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="476501200"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 05:19:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="829861140"
-X-IronPort-AV: E=Sophos;i="6.03,295,1694761200"; 
-   d="scan'208";a="829861140"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Nov 2023 05:19:54 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1ntw-000AT4-2T;
-        Sat, 11 Nov 2023 13:19:52 +0000
-Date:   Sat, 11 Nov 2023 21:19:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_parass@quicinc.com,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Subject: Re: [PATCH v4] bus: mhi: host: Add tracing support
-Message-ID: <202311112133.5QrqkZ0r-lkp@intel.com>
-References: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
+        Sat, 11 Nov 2023 08:25:37 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1273860;
+        Sat, 11 Nov 2023 05:25:33 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso2626626b3a.1;
+        Sat, 11 Nov 2023 05:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699709133; x=1700313933; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nwtFYnbCixJ5Fw6NUaR3fegQwEm8FPc3qFzpDeBrueY=;
+        b=kdWSE9MMxcI+tm+OdKDxN3Q05fvAQCS/PFX7XRYa5BSL8StKy3avy29o7FbVBlFWzp
+         8+K/0d6/e2g9J0f59Th8iHd26xr6Y+QsNKQ+83Sy2nPYH4VPHghuiN8NZR1/aBrJ9hC+
+         VbPmU9FlybJbay6PZg0X1lGVUh5Nd5SPmU7gluc+DEBbZ6E45qpaS/n0mMFITeAwx/nJ
+         aWAdhP54pXR95R/QykPwIA88vkPeaq50KIBcgpNlbq4qoxXanyASDLU6ehC90L+CN9hD
+         p/r29Kq07jz+4EFyDtNKig1rCFKBlmYI8EDSyju7YAYb+izVFE6j4q1Mi0POAQkOCXKw
+         n9cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699709133; x=1700313933;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nwtFYnbCixJ5Fw6NUaR3fegQwEm8FPc3qFzpDeBrueY=;
+        b=hDyuL8gOBy4ntqveMFxthT/jCVdvQLcqwcnZnsB6DfdAZvKsHQpgo19S9T8PLYWbq8
+         s/HEO96hY3IYPFR5zEIu7ACrosradZMfPV0ZdHIbzLNiAQ8WihfHA3meOrqo0ui3i+v9
+         FJFFsv5xQMBHpQdcstCb1FizbMNA+MDqKK9WmJzsyke+Brtc+exvvtSOqQRDC+OsF1oO
+         Xj8bpJmPtojk8XpE7vgZz5xnJqq/kEAfqDMLwbK+4tq+sbr+yTa8INg8stbt9FfiJauL
+         nPx01HbOiiVBcVQwTq7MPZGWIcEtOGz07fOVlqW4ZmddjZ2xAADFpVEQKhxAWGfLEJwS
+         KHCA==
+X-Gm-Message-State: AOJu0YyCC/NoHJyobx06SJg2evMDGv2PnH9X2j39ULtz9w3vHWhutvFc
+        t0dULoXV5FqervuzhyTRl38=
+X-Google-Smtp-Source: AGHT+IHzPYtkMKz6ouq/FZCD4NwGSwnTHf+SSme6Hnr+Nv2gUfZx1e8fPlKl8X1fv5+5mGe5ARLPYQ==
+X-Received: by 2002:a05:6a20:8e27:b0:13d:17cc:5bca with SMTP id y39-20020a056a208e2700b0013d17cc5bcamr1333545pzj.18.1699709133206;
+        Sat, 11 Nov 2023 05:25:33 -0800 (PST)
+Received: from localhost.localdomain ([112.96.225.120])
+        by smtp.gmail.com with ESMTPSA id ka16-20020a056a00939000b006c4d2479bf8sm1265616pfb.51.2023.11.11.05.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 05:25:32 -0800 (PST)
+From:   "shiqiang.deng" <shiqiang.deng213@gmail.com>
+To:     rafael@kernel.org, lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "shiqiang.deng" <shiqiang.deng213@gmail.com>
+Subject: [PATCH] ACPI: custom_method: fix a possible memory leak
+Date:   Sat, 11 Nov 2023 21:24:02 +0800
+Message-Id: <20231111132402.4142-1-shiqiang.deng213@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+In the cm_write() function, memory is allocated,
+and at the end of the function when uncopied_bytes is 0,
+the memory is freed. If uncopied_bytes is not equal to 0,
+a memory leak occurs.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: shiqiang.deng <shiqiang.deng213@gmail.com>
+---
+ drivers/acpi/custom_method.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231111-135816
-base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
-patch link:    https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461%40quicinc.com
-patch subject: [PATCH v4] bus: mhi: host: Add tracing support
-config: x86_64-randconfig-123-20231111 (https://download.01.org/0day-ci/archive/20231111/202311112133.5QrqkZ0r-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311112133.5QrqkZ0r-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311112133.5QrqkZ0r-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/bus/mhi/host/init.c: note: in included file (through include/trace/trace_events.h, include/trace/define_trace.h, drivers/bus/mhi/host/trace.h):
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: cast to restricted __le64
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le64 degrades to integer
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le64 degrades to integer
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: cast to restricted __le32
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le32 degrades to integer
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le32 degrades to integer
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: cast to restricted __le32
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le32 degrades to integer
->> drivers/bus/mhi/host/./trace.h:17:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: cast to restricted __le64
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le64 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le64 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: cast to restricted __le32
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: cast to restricted __le32
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:99:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: cast to restricted __le64
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le64 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le64 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: cast to restricted __le32
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: cast to restricted __le32
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le32 degrades to integer
-   drivers/bus/mhi/host/./trace.h:123:1: sparse: sparse: restricted __le32 degrades to integer
-
-vim +17 drivers/bus/mhi/host/./trace.h
-
-    16	
-  > 17	TRACE_EVENT(mhi_gen_tre,
-    18	
-    19		TP_PROTO(const char *name, int ch_num, u64 wp, __le64 tre_ptr,
-    20			 __le32 dword0, __le32 dword1),
-    21	
-    22		TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
-    23	
-    24		TP_STRUCT__entry(
-    25			__string(name, name)
-    26			__field(int, ch_num)
-    27			__field(u64, wp)
-    28			__field(__le64, tre_ptr)
-    29			__field(__le32, dword0)
-    30			__field(__le32, dword1)
-    31		),
-    32	
-    33		TP_fast_assign(
-    34			__assign_str(name, name);
-    35			__entry->ch_num = ch_num;
-    36			__entry->wp = wp;
-    37			__entry->tre_ptr = tre_ptr;
-    38			__entry->dword0 = dword0;
-    39			__entry->dword1 = dword1;
-    40		),
-    41	
-    42		TP_printk("%s: Chan: %d WP: 0x%llx TRE: 0x%llx 0x%08x 0x%08x\n",
-    43			  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
-    44			  __entry->dword0, __entry->dword1)
-    45	);
-    46	
-
+diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+index d39a9b474727..5103c7c3a6ce 100644
+--- a/drivers/acpi/custom_method.c
++++ b/drivers/acpi/custom_method.c
+@@ -77,6 +77,9 @@ static ssize_t cm_write(struct file *file, const char __user *user_buf,
+ 		if (ACPI_FAILURE(status))
+ 			return -EINVAL;
+ 		add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
++	} else {
++		kfree(buf);
++		buf = NULL;
+ 	}
+ 
+ 	return count;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.0
+
