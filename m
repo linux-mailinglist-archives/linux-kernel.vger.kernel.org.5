@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4CB7E8704
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2387E8703
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjKKAzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
+        id S230097AbjKKAzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbjKKAy6 (ORCPT
+        with ESMTP id S229560AbjKKAzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:54:58 -0500
+        Fri, 10 Nov 2023 19:55:02 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE334228;
-        Fri, 10 Nov 2023 16:54:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4753422D;
+        Fri, 10 Nov 2023 16:54:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699664096; x=1731200096;
+  t=1699664098; x=1731200098;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=4uIZuu0TuTDz28DR353gxEbj7Ysav5dxrUtDYZQ8g+U=;
-  b=nCnF+om0MoUKB9uV4TnZBfKNrbKuyALPK3TreoVSxA6M5On4xojHriOP
-   6KFo7A+nc+AxH5VWvyGYkf28fmOghQWug+9T1/Q/reCBb53dvk3paE+Jd
-   qe2M5tvfi7iLB4aGC1TpYMh3h/jTExPZHaMVk5FRcBazImePvDeHDFeYb
-   x/lIRQevg/hztAL/t6laRyNk+fn4M5etOLyAI9vFtATqShPPckKZyzlQN
-   QPHv6Ll6mqJ+//lc9DNcS82v9sRwVps/UNaCaUMfu/mTqgfnYpzYOitPQ
-   8a3Q4KDeJ+H/dImwkyL2fVuo6946ytRb86YrGPH/N2NATLLmHCmUSWPds
+  bh=KgItv/ApTMzbbLUCfMBBLavSFstnBCJW3M6AwXJNXEs=;
+  b=af4oH1iBscRPvXJmhaq6c71vJruimamYkkfFksUEpV8QDIzKD1VdQOAP
+   k2097SeFtVhF5LF7KGm9RdrTcH30jZPVrDOPxpnfyHOH4GAlWcOF9hYO7
+   6bvA5dMaJlt5YD/NUXL2sWjz+s+5cDGGGYJj2qNskNVwrqmX3E73ccgTJ
+   g6/NmhDIdy8it7wJmbiBrOYMhA+VUbLuu9Qh+fly80dg7ERFZpm8jQBMK
+   J9WJcDXDWJb/sP3wl5rCtafObSXnnpiE+SgzAr/hjdZ5wYJBDlaQgkcCy
+   vYit5lhHTWwDyuTFPDsjA9ETwvSTi0cH87POUuUQgslGsdKerxp2HLErj
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11798467"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11798478"
 X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="11798467"
+   d="scan'208";a="11798478"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 16:54:55 -0800
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 16:54:58 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="767442281"
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="767442282"
 X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="767442281"
+   d="scan'208";a="767442282"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
   by fmsmga007.fm.intel.com with ESMTP; 10 Nov 2023 16:54:53 -0800
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r1cGx-000A6D-29;
+        id 1r1cGx-000A69-1x;
         Sat, 11 Nov 2023 00:54:51 +0000
-Date:   Sat, 11 Nov 2023 08:54:08 +0800
+Date:   Sat, 11 Nov 2023 08:54:10 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Nicolai Stange <nstange@suse.de>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [POC 1/7] livepatch: Add callbacks for introducing and removing
- states
-Message-ID: <202311110829.UKC9GiUG-lkp@intel.com>
-References: <20231110170428.6664-2-pmladek@suse.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v9 15/15] media: vim2m-audio: add virtual driver for
+ audio memory to memory
+Message-ID: <202311110805.xhszmZN7-lkp@intel.com>
+References: <1699595289-25773-16-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231110170428.6664-2-pmladek@suse.com>
+In-Reply-To: <1699595289-25773-16-git-send-email-shengjiu.wang@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
@@ -71,57 +72,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+Hi Shengjiu,
 
 kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on shuah-kselftest/next]
-[also build test WARNING on shuah-kselftest/fixes linus/master v6.6 next-20231110]
+[auto build test WARNING on media-tree/master]
+[also build test WARNING on broonie-sound/for-next tiwai-sound/for-next tiwai-sound/for-linus linus/master v6.6 next-20231110]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Petr-Mladek/livepatch-Add-callbacks-for-introducing-and-removing-states/20231111-014906
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20231110170428.6664-2-pmladek%40suse.com
-patch subject: [POC 1/7] livepatch: Add callbacks for introducing and removing states
-config: x86_64-randconfig-006-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110829.UKC9GiUG-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110829.UKC9GiUG-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Shengjiu-Wang/ASoC-fsl_asrc-define-functions-for-memory-to-memory-usage/20231110-143635
+base:   git://linuxtv.org/media_tree.git master
+patch link:    https://lore.kernel.org/r/1699595289-25773-16-git-send-email-shengjiu.wang%40nxp.com
+patch subject: [PATCH v9 15/15] media: vim2m-audio: add virtual driver for audio memory to memory
+config: powerpc64-allyesconfig (https://download.01.org/0day-ci/archive/20231111/202311110805.xhszmZN7-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110805.xhszmZN7-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311110829.UKC9GiUG-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311110805.xhszmZN7-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> kernel/livepatch/state.c:121:6: warning: no previous prototype for 'is_state_in_other_patches' [-Wmissing-prototypes]
-     121 | bool is_state_in_other_patches(struct klp_patch *patch, struct klp_state *state)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/media/test-drivers/vim2m-audio.c:174:13: warning: variable 'dst_size' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+     174 |         } else if (q_data_src->rate * 2 == q_data_dst->rate) {
+         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/test-drivers/vim2m-audio.c:184:46: note: uninitialized use occurs here
+     184 |         vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
+         |                                                     ^~~~~~~~
+   drivers/media/test-drivers/vim2m-audio.c:174:9: note: remove the 'if' if its condition is always true
+     174 |         } else if (q_data_src->rate * 2 == q_data_dst->rate) {
+         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/media/test-drivers/vim2m-audio.c:137:24: note: initialize the variable 'dst_size' to silence this warning
+     137 |         int src_size, dst_size;
+         |                               ^
+         |                                = 0
+   1 warning generated.
 
 
-vim +/is_state_in_other_patches +121 kernel/livepatch/state.c
+vim +174 drivers/media/test-drivers/vim2m-audio.c
 
-   120	
- > 121	bool is_state_in_other_patches(struct klp_patch *patch, struct klp_state *state)
-   122	{
-   123		struct klp_patch *old_patch;
-   124		struct klp_state *old_state;
-   125	
-   126		klp_for_each_patch(old_patch) {
-   127			if (old_patch == patch)
-   128				continue;
-   129	
-   130			klp_for_each_state(old_patch, old_state) {
-   131				if (old_state->id == state->id)
-   132					return true;
-   133			}
-   134		}
-   135	
-   136		return false;
-   137	}
-   138	
+   123	
+   124	/*
+   125	 * mem2mem callbacks
+   126	 */
+   127	
+   128	/*
+   129	 * device_run() - prepares and starts the device
+   130	 */
+   131	static void device_run(void *priv)
+   132	{
+   133		struct audm2m_ctx *ctx = priv;
+   134		struct audm2m_dev *audm2m_dev;
+   135		struct vb2_v4l2_buffer *src_buf, *dst_buf;
+   136		struct audm2m_q_data *q_data_src, *q_data_dst;
+   137		int src_size, dst_size;
+   138		short *src_addr, *dst_addr;
+   139		int i;
+   140	
+   141		audm2m_dev = ctx->dev;
+   142	
+   143		q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
+   144		if (!q_data_src)
+   145			return;
+   146	
+   147		q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
+   148		if (!q_data_dst)
+   149			return;
+   150	
+   151		src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+   152		dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+   153		src_buf->sequence = q_data_src->sequence++;
+   154		dst_buf->sequence = q_data_dst->sequence++;
+   155		v4l2_m2m_buf_copy_metadata(src_buf, dst_buf, false);
+   156	
+   157		/* Process the conversion */
+   158		src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
+   159	
+   160		src_addr = vb2_plane_vaddr(&src_buf->vb2_buf, 0);
+   161		dst_addr = vb2_plane_vaddr(&dst_buf->vb2_buf, 0);
+   162	
+   163		if (q_data_src->rate == q_data_dst->rate) {
+   164			memcpy(dst_addr, src_addr, src_size);
+   165			dst_size = src_size;
+   166		} else if (q_data_src->rate == 2 * q_data_dst->rate) {
+   167			/* 8k to 16k */
+   168			for (i = 0; i < src_size / 2; i++) {
+   169				*dst_addr++ = *src_addr++;
+   170				src_addr++;
+   171			}
+   172	
+   173			dst_size = src_size / 2;
+ > 174		} else if (q_data_src->rate * 2 == q_data_dst->rate) {
+   175			/* 16k to 8k */
+   176			for (i = 0; i < src_size / 2; i++) {
+   177				*dst_addr++ = *src_addr;
+   178				*dst_addr++ = *src_addr++;
+   179			}
+   180	
+   181			dst_size = src_size * 2;
+   182		}
+   183	
+   184		vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
+   185	
+   186		src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
+   187		dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
+   188	
+   189		v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
+   190		v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
+   191		v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
+   192	}
+   193	
 
 -- 
 0-DAY CI Kernel Test Service
