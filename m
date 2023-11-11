@@ -2,149 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4907E8839
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B809E7E883A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjKKC10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        id S230022AbjKKC1u convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Nov 2023 21:27:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKKC1Y (ORCPT
+        with ESMTP id S229462AbjKKC1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:27:24 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D60F3C3C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:27:21 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-586940ee5a5so1328589eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:27:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699669640; x=1700274440; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SHEiP3XV2uBmn0PqLRLjX42b0E6uQ7KYb1D3uUIKBZU=;
-        b=IZhxsfs5YKWAQW/Z7SCoQQOHlrNh4j+rbUcdeInCDPNrWLclz0nTfh6/5vxijKdpru
-         o7nRt1tAsysA0Kfcy2I3VGIoOrAdHgPKQ7K2vrne1fZUm5ufyP4E39tq5x7/WbcjSCcH
-         jO1/eMXLBVc+uI7fx6UZ/hYV3bFwfIG0l7jUsv5XP1arCNecZOL5Ci/N0w3vgDI9RhWL
-         b2ViPqs6LlDJod1b0eK89EnLibkzVoVgYm/G20PUiSv+gTfrPncN4PGWJpa57IO+g54v
-         sl2WPWtOFew1bg22qyiF4HAlsJG4OkvpTKfD2Do4oyhcLqoten466DTsAhosWHYwxvGj
-         WzOA==
+        Fri, 10 Nov 2023 21:27:48 -0500
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93BF44B3;
+        Fri, 10 Nov 2023 18:27:45 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-28035cf6a30so2440833a91.3;
+        Fri, 10 Nov 2023 18:27:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699669640; x=1700274440;
+        d=1e100.net; s=20230601; t=1699669665; x=1700274465;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SHEiP3XV2uBmn0PqLRLjX42b0E6uQ7KYb1D3uUIKBZU=;
-        b=WtNOer99K3wlp313QbVSn440LFf+mvZsai1kfX7KgBQmwI4xwpdi6z5KyDEYBI2Sou
-         j9ydn9ml67C4sFKFArgjRoGC2kPWmtxQmz4vN/RM7kCuZ3uc80OY1YqloIzRsEimydE0
-         PqheLmfI75Mxyki0+S2dTqWfXv2zBqNMoRhfo8mF40GNNrAt0EaCiLXuKBc5/mW+RaLM
-         g00jznE1oJUsGNK6xm0uQJthsra++LjeB2RuQFlhhdXAo2TrUJpaDpBOHBG9fbN0H6Oj
-         fpAHl1dFVPKfrYa4qYtJYO5Sb0ObPO4ApHaRH1G9dKbqvAtE8AUCVoJhE+FRHjJZ/je7
-         WSZA==
-X-Gm-Message-State: AOJu0YyjedCSnGvNV+p+yiWzTkoAOdtyA6Zwm1PyQW69odXHDbB6tPDs
-        GbGUoI66HRgWYq0LAilNFj3D28/Q17vzoe1O9KN7alTKKiLaelhOCpSLzg==
-X-Google-Smtp-Source: AGHT+IGyBV+nVxcKXqDhr/jOsghB7xKbBgit+rRkn7+/EmvaA+hI7Vwg9695v7Wh5I5Hq/ZuyDfKvkdxmxTKCmeUs+M=
-X-Received: by 2002:a05:6358:7f1b:b0:16b:b980:d84b with SMTP id
- p27-20020a0563587f1b00b0016bb980d84bmr742598rwn.11.1699669639815; Fri, 10 Nov
- 2023 18:27:19 -0800 (PST)
+        bh=g5Sg9zl2/Jzlb48PWJ9qHhhq1o2YXxnmZN1o79Ovm5g=;
+        b=Ed5Ef8RJfghbbpMlLhLhpthRfFVSCrBWQkTSS23PjirESoFAgiMp/apPkG3R6A3Ek7
+         BHS+y5xUm8aZ5dC9+R4zixEcYkcOgrF2LNEiG+bTV1iOES0WDOhCoXIJ9aNdeG9Yz45A
+         txTNH+4mT09ckfXDsA8WZaXQQiyAQDP2pTDw9wc8sXQr0DcJ9hkXi0Rv+Wjom0LV3F1D
+         v92QAJ5U5SgujX1kzxzcEx9BGvWL0WlwtgqdokwyToOL68+ndnZVHolCtgnGz7SNwVhX
+         sVVal8wb9YXOL3omOb52HAwJriHopMdrewEBmsCP0MPbgxYX1ZO85U5rdJ2CgoVx6yDG
+         CaTg==
+X-Gm-Message-State: AOJu0Yxf2df4WDY9QBZrY1jVGVe+U4+Xs3MVdkDjKIEZZo2VTERqLLt5
+        DgJ7XYQCIMCkXZKceaRG2Hq5of/yCl2r2yHZZZo=
+X-Google-Smtp-Source: AGHT+IFJT/GE7XsIKWeegpPDXB2vEidUCs6t3J32mEXwB2x6MYR6YO1B05VwyOchlDPl21bc/r73Baf/pNfKM3XLF78=
+X-Received: by 2002:a17:90b:4ad1:b0:27d:375a:e322 with SMTP id
+ mh17-20020a17090b4ad100b0027d375ae322mr812696pjb.31.1699669664922; Fri, 10
+ Nov 2023 18:27:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-13-almasrymina@google.com> <20231110151335.38a1c6ec@kernel.org>
-In-Reply-To: <20231110151335.38a1c6ec@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 10 Nov 2023 18:27:08 -0800
-Message-ID: <CAHS8izNFnE8RGgBhKzxhVoKXtXgZGVQCLSdm4_dWNeH9Gx-WDQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 12/12] selftests: add ncdevmem, netcat for devmem TCP
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Stanislav Fomichev <sdf@google.com>
+References: <20231110000012.3538610-1-namhyung@kernel.org> <ZU4cmwfQSK5wXbAD@kernel.org>
+In-Reply-To: <ZU4cmwfQSK5wXbAD@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 10 Nov 2023 18:27:33 -0800
+Message-ID: <CAM9d7ciqiKMXqah34vGL_qqwL8Pm8uaNTokYq+=VwbV5qdrBxQ@mail.gmail.com>
+Subject: Re: [RFC 00/52] perf tools: Introduce data type profiling (v2)
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-trace-devel@vger.kernel.org,
+        linux-toolchains@vger.kernel.org, Ben Woodard <woodard@redhat.com>,
+        Joe Mario <jmario@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Blaikie <blaikie@google.com>,
+        Xu Liu <xliuprof@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Mark Wielaard <mark@klomp.org>,
+        Jason Merrill <jason@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 3:13=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
+On Fri, Nov 10, 2023 at 4:05 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> My brain is slightly fried after trying to catch up on the thread
-> for close to 2h. So forgive me if I'm missing something.
-> This applies to all emails I'm about to send :)
+> Em Thu, Nov 09, 2023 at 03:59:19PM -0800, Namhyung Kim escreveu:
+> > * Patch structure
+> >
+> > The patch 1-5 are cleanups and a fix that can be applied separately.
 >
-> On Sun,  5 Nov 2023 18:44:11 -0800 Mina Almasry wrote:
-> > +     trigger_device_reset();
->
-> The user space must not be responsible for the reset.
-> We can add some temporary "recreate page pools" ndo
-> until the queue API is ready.
->
+> Applied so far 1-9, will continue later.
 
-Thanks for the clear requirement. I clearly had something different in mind=
-.
-
-Might be dumb suggestions, but instead of creating a new ndo that we
-maybe end up wanting to deprecate once the queue API is ready, how
-about we use either of those existing APIs?
-
-+void netdev_reset(struct net_device *dev)
-+{
-+       int flags =3D ETH_RESET_ALL;
-+       int err;
-+
-+#if 1
-+       __dev_close(dev);
-+       err =3D __dev_open(dev, NULL);
-+#else
-+       err =3D dev->ethtool_ops->reset(dev, &flags);
-+#endif
-+}
-+
-
-I've tested both of these to work with GVE on both bind via the
-netlink API and unbind via the netlink socket close, but I'm not
-enough of an expert to tell if there is some bad side effect that can
-happen or something.
-
-> But it should not be visible to the user in any way.
->
-> And then the kernel can issue the same reset when the netlink
-> socket dies to flush device free lists.
->
-
-Sure thing, I can do that.
-
-> Maybe we should also add a "allow device/all-queues reload" flag
-> to the netlink API to differentiate drivers which can't implement
-> full queue API later on. We want to make sure the defaults work well
-> in our "target design", rather than at the first stage. And target
-> design will reload queues one by one.
-
-I can add a flag, yes.
-
---=20
-Thanks,
-Mina
+Great, thanks a lot!
+Namhyung
