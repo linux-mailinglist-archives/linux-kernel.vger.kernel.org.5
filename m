@@ -2,139 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E607C7E8831
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4907E8839
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345467AbjKKCYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S230085AbjKKC10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 21:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKKCYn (ORCPT
+        with ESMTP id S229462AbjKKC1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:24:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CFA3C0E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:24:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7965EC433C8;
-        Sat, 11 Nov 2023 02:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699669479;
-        bh=aIdbMSq84A3+20V/l6jBNeX8gsHkBhcldmzU2v6Ubf0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L9DUrkLZHHyvDa1HtWTbqbTpW2YUdXB0mEO3QfEPr4+9o5+EunMDmUuAnon+jHgpS
-         AKAuzQqzVRoUSgWMrrrcJdJcvWM5REgA76ujsqQtsZ4bMO0ADwUQkRM8YZkRMEsjGg
-         0kdAGA8g6hEevMAY1M7P09fWM/XxwBLzFG8ABNkcEWGZxTOZ68CLl76U0SZO2oKll6
-         tBYtOY4HhGEFj0lJVg6VaJMtajPSwB7/TO4DJM+LeaWQSYv6mR+6wYUPe3xfy6P7T1
-         7R5rBK1Wbg5IIEZmezub2+PAGq/zVkcJtAfFzbi1Z9R1SGSl1QKu+Rns6MljqupYLK
-         cErb0ls6spKxw==
-Date:   Sat, 11 Nov 2023 11:24:34 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH v2 01/31] tracing: Add a comment about ftrace_regs
- definition
-Message-Id: <20231111112434.2e8d76e59e6f5ed4f166ff6b@kernel.org>
-In-Reply-To: <ZU4P45t-mDoyItg3@FVFF77S0Q05N>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
-        <169945347160.55307.1488323435914144870.stgit@devnote2>
-        <20231109081452.fd6e091df9df1bc7c5ced38b@kernel.org>
-        <ZU4P45t-mDoyItg3@FVFF77S0Q05N>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 10 Nov 2023 21:27:24 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D60F3C3C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:27:21 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-586940ee5a5so1328589eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699669640; x=1700274440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SHEiP3XV2uBmn0PqLRLjX42b0E6uQ7KYb1D3uUIKBZU=;
+        b=IZhxsfs5YKWAQW/Z7SCoQQOHlrNh4j+rbUcdeInCDPNrWLclz0nTfh6/5vxijKdpru
+         o7nRt1tAsysA0Kfcy2I3VGIoOrAdHgPKQ7K2vrne1fZUm5ufyP4E39tq5x7/WbcjSCcH
+         jO1/eMXLBVc+uI7fx6UZ/hYV3bFwfIG0l7jUsv5XP1arCNecZOL5Ci/N0w3vgDI9RhWL
+         b2ViPqs6LlDJod1b0eK89EnLibkzVoVgYm/G20PUiSv+gTfrPncN4PGWJpa57IO+g54v
+         sl2WPWtOFew1bg22qyiF4HAlsJG4OkvpTKfD2Do4oyhcLqoten466DTsAhosWHYwxvGj
+         WzOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699669640; x=1700274440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SHEiP3XV2uBmn0PqLRLjX42b0E6uQ7KYb1D3uUIKBZU=;
+        b=WtNOer99K3wlp313QbVSn440LFf+mvZsai1kfX7KgBQmwI4xwpdi6z5KyDEYBI2Sou
+         j9ydn9ml67C4sFKFArgjRoGC2kPWmtxQmz4vN/RM7kCuZ3uc80OY1YqloIzRsEimydE0
+         PqheLmfI75Mxyki0+S2dTqWfXv2zBqNMoRhfo8mF40GNNrAt0EaCiLXuKBc5/mW+RaLM
+         g00jznE1oJUsGNK6xm0uQJthsra++LjeB2RuQFlhhdXAo2TrUJpaDpBOHBG9fbN0H6Oj
+         fpAHl1dFVPKfrYa4qYtJYO5Sb0ObPO4ApHaRH1G9dKbqvAtE8AUCVoJhE+FRHjJZ/je7
+         WSZA==
+X-Gm-Message-State: AOJu0YyjedCSnGvNV+p+yiWzTkoAOdtyA6Zwm1PyQW69odXHDbB6tPDs
+        GbGUoI66HRgWYq0LAilNFj3D28/Q17vzoe1O9KN7alTKKiLaelhOCpSLzg==
+X-Google-Smtp-Source: AGHT+IGyBV+nVxcKXqDhr/jOsghB7xKbBgit+rRkn7+/EmvaA+hI7Vwg9695v7Wh5I5Hq/ZuyDfKvkdxmxTKCmeUs+M=
+X-Received: by 2002:a05:6358:7f1b:b0:16b:b980:d84b with SMTP id
+ p27-20020a0563587f1b00b0016bb980d84bmr742598rwn.11.1699669639815; Fri, 10 Nov
+ 2023 18:27:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-13-almasrymina@google.com> <20231110151335.38a1c6ec@kernel.org>
+In-Reply-To: <20231110151335.38a1c6ec@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 10 Nov 2023 18:27:08 -0800
+Message-ID: <CAHS8izNFnE8RGgBhKzxhVoKXtXgZGVQCLSdm4_dWNeH9Gx-WDQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 12/12] selftests: add ncdevmem, netcat for devmem TCP
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 11:11:31 +0000
-Mark Rutland <mark.rutland@arm.com> wrote:
+On Fri, Nov 10, 2023 at 3:13=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> My brain is slightly fried after trying to catch up on the thread
+> for close to 2h. So forgive me if I'm missing something.
+> This applies to all emails I'm about to send :)
+>
+> On Sun,  5 Nov 2023 18:44:11 -0800 Mina Almasry wrote:
+> > +     trigger_device_reset();
+>
+> The user space must not be responsible for the reset.
+> We can add some temporary "recreate page pools" ndo
+> until the queue API is ready.
+>
 
-> On Thu, Nov 09, 2023 at 08:14:52AM +0900, Masami Hiramatsu wrote:
-> > On Wed,  8 Nov 2023 23:24:32 +0900
-> > "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> > 
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > To clarify what will be expected on ftrace_regs, add a comment to the
-> > > architecture independent definition of the ftrace_regs.
-> > > 
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > ---
-> > >  Changes in v2:
-> > >   - newly added.
-> > > ---
-> > >  include/linux/ftrace.h |   25 +++++++++++++++++++++++++
-> > >  1 file changed, 25 insertions(+)
-> > > 
-> > > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> > > index e8921871ef9a..b174af91d8be 100644
-> > > --- a/include/linux/ftrace.h
-> > > +++ b/include/linux/ftrace.h
-> > > @@ -118,6 +118,31 @@ extern int ftrace_enabled;
-> > >  
-> > >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> > >  
-> > > +/**
-> > > + * ftrace_regs - ftrace partial/optimal register set
-> > > + *
-> > > + * ftrace_regs represents a group of registers which is used at the
-> > > + * function entry and exit. There are three types of registers.
-> > > + *
-> > > + * - Registers for passing the parameters to callee, including the stack
-> > > + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-> > > + * - Registers for passing the return values to caller.
-> > > + *   (e.g. rax and rdx on x86_64)
-> > > + * - Registers for hooking the function return including the frame pointer
-> > > + *   (the frame pointer is architecture/config dependent)
-> > > + *   (e.g. rbp and rsp for x86_64)
-> > 
-> > Oops, I found the program counter/instruction pointer must be saved too.
-> > This is used for live patching. One question is that if the IP is modified
-> > at the return handler, what should we do? Return to the specified address?
-> 
-> I'm a bit confused here; currently we use fgraph_ret_regs for function returns,
-> are we going to replace that with ftrace_regs?
+Thanks for the clear requirement. I clearly had something different in mind=
+.
 
-Yes. It is limited and does not have APIs compatibility.
+Might be dumb suggestions, but instead of creating a new ndo that we
+maybe end up wanting to deprecate once the queue API is ready, how
+about we use either of those existing APIs?
 
-> 
-> I think it makes sense for the PC/IP to be the address the return handler will
-> eventually return to (and hence allowing it to be overridden), but that does
-> mean we'll need to go recover the return address *before* we invoke any return
-> handlers.
++void netdev_reset(struct net_device *dev)
++{
++       int flags =3D ETH_RESET_ALL;
++       int err;
++
++#if 1
++       __dev_close(dev);
++       err =3D __dev_open(dev, NULL);
++#else
++       err =3D dev->ethtool_ops->reset(dev, &flags);
++#endif
++}
++
 
-The actual return address has been recovered from shadow stack at first,
-and callback the handlers. See __ftrace_return_to_handler() and
-ftrace_pop_return_trace().
-So it is easy to set it to the ftrace_regs :)
+I've tested both of these to work with GVE on both bind via the
+netlink API and unbind via the netlink socket close, but I'm not
+enough of an expert to tell if there is some bad side effect that can
+happen or something.
 
-Thank you!
+> But it should not be visible to the user in any way.
+>
+> And then the kernel can issue the same reset when the netlink
+> socket dies to flush device free lists.
+>
 
-> 
-> Thanks,
-> Mark.
+Sure thing, I can do that.
 
+> Maybe we should also add a "allow device/all-queues reload" flag
+> to the netlink API to differentiate drivers which can't implement
+> full queue API later on. We want to make sure the defaults work well
+> in our "target design", rather than at the first stage. And target
+> design will reload queues one by one.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I can add a flag, yes.
+
+--=20
+Thanks,
+Mina
