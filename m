@@ -2,116 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDD37E86BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 00:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DF57E86CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345029AbjKJX4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 18:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        id S229968AbjKKAHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345124AbjKJX4B (ORCPT
+        with ESMTP id S229475AbjKKAHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 18:56:01 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D37478A
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:52 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5af592fed43so34315317b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 15:55:51 -0800 (PST)
+        Fri, 10 Nov 2023 19:07:52 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B12310A
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:07:48 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bd33abbb90so1927877a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:07:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699660551; x=1700265351; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=qmj7GZ0SAOjD/VDeZDIJ7y/K+3O78AzZdQ/afS++F9w=;
-        b=pM6pVi7nJiH1VW2fSQVC2iEpCLiB96dBV6OwYdYlfpC2N1QxzswHcd8WlRbLywOM35
-         ZU0cKFLTyFglKyY7QcsuxCqFncMlIlq5asWvP2HUd8dd5h84I3/LwsfLExd84Wno9ifx
-         /Blllg4y8tlAFu+xRkz98CaCTVKwiVRyDDKYALTv7/8jrhNr5VljzjscK4BXghdqH9J+
-         oPFovF+7+tk7V+J+BLwfVoU2hZkikHpOQ0gvgS+s2ADC+a3pXkriT4HbVv3FnAzJboAt
-         86CprFHucIdFj9otwpL9vtfHniVtlbBZRP0K+ee98Pgxw4lrFai5q5lzuz/O1dGqn6QZ
-         9kSQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699661268; x=1700266068; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oZOLx6piJ84WzMT/cgtNzYXyAwxaq83dr7vI8k16AOs=;
+        b=VpwjBRELtn3hl/lwknWR2q5pKLw7AUqGVcSQIfIb3qH/Qp95CSael2LxODcQZFRqy/
+         j7gzlGE/my7dcbuTVo+zsF2j61gF+6j0bUGh3AdBDsMVgiP21fvNWp0C9huXKnVov/yB
+         GkrhYD1E91olWVUjdLeto15o49XcVEi2SmCsPlV16hMpIzDX84m2K2nlvaAqSOD6zLBY
+         M0ZX0Iea1/MmQ8CwaWx3rENOe0xmnaGhuClBqSULxm9Lv8LGQwBcM5+eSnf0jA9c3R2D
+         NG4a0UsXXwAYY8JEZfzxhifRoxxd9y8P2JWVWbmC31KAEbq9mrB0o5fr5u1vi3uo6I3E
+         8dcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699660551; x=1700265351;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qmj7GZ0SAOjD/VDeZDIJ7y/K+3O78AzZdQ/afS++F9w=;
-        b=NiIWleVGmSEMGdb0x2a6ESxsk2Xbgi23ZROy7jjRNdjcuZ3HyKNXaykxkaNczcaGon
-         qDi4SO7b1e4K+QW2iV6B9jh0AJqllHTVlRKllKRf8T/qYgJjFqgSAXDwPwZDL74Gu3kg
-         g08UXV1/o3WHCl5fj3P2wsDLkRNFgiAAjCV4VI2NBPYqIZ6OWbRxwFv0AQqFYSPbEf9a
-         dNziKevsddkDxOKUXDcKVN2AgdyVAu/T2Uy+NXP0Zs8RQdQWXeIn6PyZrUmx7+40A5h2
-         RcnKu6m1z0+kJN/YataoxoA0eajb2oHgGzOsYaj0zbUxdHyQzXBRXMuRM7qfO9w5Hr6b
-         koCg==
-X-Gm-Message-State: AOJu0Yy2vxphkLH5YwQskQhsjB8kuRAJKEfKstwTkRiv23dVhJaNS8x8
-        W5+t8025dgH6+5VDKyrnJZiGC2Yn5xk=
-X-Google-Smtp-Source: AGHT+IEjA1FyHv2eFtTBRxlVBGlSko6kQgtbPOhwvosPV9tjPhS4aG+DEOi3c1T1lz38zGocB/oAF1i7h7w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:914e:0:b0:5a7:db29:40e3 with SMTP id
- i75-20020a81914e000000b005a7db2940e3mr21020ywg.7.1699660551073; Fri, 10 Nov
- 2023 15:55:51 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 10 Nov 2023 15:55:28 -0800
-In-Reply-To: <20231110235528.1561679-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20231110235528.1561679-1-seanjc@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231110235528.1561679-10-seanjc@google.com>
-Subject: [PATCH 9/9] KVM: x86: Restrict XSAVE in cpu_caps based on KVM capabilities
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699661268; x=1700266068;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oZOLx6piJ84WzMT/cgtNzYXyAwxaq83dr7vI8k16AOs=;
+        b=By1P42I6BOTW+MJ4ZTZvLfmoR7gRxfgyRZmhk583vnTBvMpSEK5ai5Eq3cG8KmoZH8
+         gN0Q0BKvCpKuhHlxRI6DhqWgWgPuP3z0CYPTLmKjKT68O0OickClkPdXpwC//hUCfXTb
+         7zpXBt2K38DKA4e7x8b5XuhvTwS79Fm2CIJLf/P9PxNEAQYggoROaQ3RH6VysCBaLroV
+         XdHu2Am2I50tbi5E2+XTfZ+VS1T6jc6kNONwAkHYExS5i0kxv6S6XWYljooMrsHJx4IY
+         XJNuZpcvGfWyHpr7Cq075LFo9480X+P6EeTPNKGl8/mgtNaerddqdPpJjZnh2yLEQM7Q
+         g80w==
+X-Gm-Message-State: AOJu0YxXJekIyF3OikECqzs2eSxsp/heEJwsN7kzr2Te5kjz8T/FY6nN
+        3rZ/6N8y4BYfvtD+VRLCp0MCvocFBAGPb8yNrw3XnQ==
+X-Google-Smtp-Source: AGHT+IEf3RnQ6vghHFIDkcaI3xfo22n0ICD/Y7dXSaL4pgL+HjLTqobf8F4Ab5nqLI350QpkYuW/Ow==
+X-Received: by 2002:a05:6a20:daa3:b0:14e:a1f0:a8ea with SMTP id iy35-20020a056a20daa300b0014ea1f0a8eamr792191pzb.3.1699661267932;
+        Fri, 10 Nov 2023 16:07:47 -0800 (PST)
+Received: from x1 ([2601:1c2:1800:f680:e564:eb78:dbd8:6618])
+        by smtp.gmail.com with ESMTPSA id p47-20020a056a0026ef00b00692754580f0sm272439pfw.187.2023.11.10.16.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Nov 2023 16:07:47 -0800 (PST)
+Date:   Fri, 10 Nov 2023 16:07:45 -0800
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v5 5/7] riscv: dts: thead: Add TH1520 mmc controllers and
+ sdhci clock
+Message-ID: <ZU7F0d+MCefRskPn@x1>
+References: <20231109-th1520-mmc-v5-0-018bd039cf17@baylibre.com>
+ <20231109-th1520-mmc-v5-5-018bd039cf17@baylibre.com>
+ <4cf3d481-c16d-4b1c-ab45-3ceff80b0b1b@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4cf3d481-c16d-4b1c-ab45-3ceff80b0b1b@linaro.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Restrict XSAVE in guest cpu_caps so that XSAVES dependencies on XSAVE are
-automatically handled instead of manually checking for host and guest
-XSAVE support.  Aside from modifying XSAVE in cpu_caps, this should be a
-glorified nop as KVM doesn't query guest XSAVE support (which is also why
-it wasn't/isn't a bug to leave XSAVE set in guest CPUID).
+On Fri, Nov 10, 2023 at 12:10:34PM +0100, Krzysztof Kozlowski wrote:
+> On 10/11/2023 06:41, Drew Fustini wrote:
+> > Add node for the SDHCI fixed clock. Add mmc0 node for the first mmc
+> > controller instance which is typically connected to the eMMC device.
+> > Add mmc1 node for the second mmc controller instance which is typically
+> > connected to microSD slot.
+> > 
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > ---
+> >  arch/riscv/boot/dts/thead/th1520.dtsi | 23 +++++++++++++++++++++++
+> >  1 file changed, 23 insertions(+)
+> > 
+> > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > index ff364709a6df..f5ec9326c4b8 100644
+> > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > @@ -134,6 +134,13 @@ uart_sclk: uart-sclk-clock {
+> >  		#clock-cells = <0>;
+> >  	};
+> >  
+> > +	sdhci_clk: sdhci-clock {
+> > +		compatible = "fixed-clock";
+> > +		clock-frequency = <198000000>;
+> > +		clock-output-names = "sdhci_clk";
+> > +		#clock-cells = <0>;
+> > +	};
+> > +
+> >  	soc {
+> >  		compatible = "simple-bus";
+> >  		interrupt-parent = <&plic>;
+> > @@ -292,6 +299,22 @@ dmac0: dma-controller@ffefc00000 {
+> >  			status = "disabled";
+> >  		};
+> >  
+> > +		mmc0: mmc@ffe7080000 {
+> > +			compatible = "thead,th1520-dwcmshc";
+> > +			reg = <0xff 0xe7080000 0x0 0x10000>;
+> > +			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
+> > +			clocks = <&sdhci_clk>;
+> > +			clock-names = "core";
+> 
+> You miss disable in each mmc node.
+> 
+> Best regards,
+> Krzysztof
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/svm.c | 2 +-
- arch/x86/kvm/vmx/vmx.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Thank you for reviewing. I will add 'status = "disabled"' to each node.
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9e3a9191dac1..6fe2d7bf4959 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4315,8 +4315,8 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
- 	 * the guest read/write access to the host's XSS.
- 	 */
-+	guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVE);
- 	guest_cpu_cap_change(vcpu, X86_FEATURE_XSAVES,
--			     boot_cpu_has(X86_FEATURE_XSAVE) &&
- 			     boot_cpu_has(X86_FEATURE_XSAVES) &&
- 			     guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE));
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 815692dc0aff..7645945af5c5 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7752,8 +7752,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	 * to the guest.  XSAVES depends on CR4.OSXSAVE, and CR4.OSXSAVE can be
- 	 * set if and only if XSAVE is supported.
- 	 */
--	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
--	    guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE))
-+	guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVE);
-+	if (guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE))
- 		guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVES);
- 	else
- 		guest_cpu_cap_clear(vcpu, X86_FEATURE_XSAVES);
--- 
-2.42.0.869.gea05f2083d-goog
-
+Drew
+> 
