@@ -2,195 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A617E874D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5CE7E8755
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345027AbjKKBGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        id S1345149AbjKKBI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:08:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKKBGB (ORCPT
+        with ESMTP id S229729AbjKKBI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:06:01 -0500
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451803C15;
-        Fri, 10 Nov 2023 17:05:57 -0800 (PST)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231111010554epoutp04f7569e2d3721674989d865169f3460f5~WbBbRaams1256512565epoutp04n;
-        Sat, 11 Nov 2023 01:05:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231111010554epoutp04f7569e2d3721674989d865169f3460f5~WbBbRaams1256512565epoutp04n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699664754;
-        bh=OK8Hf2MbmRbpLCdwcqyPVCkRDEUDM0EEeuyfYvSMGTE=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=U+L+4PTjL59ltw6vj+gMs4+z64S4fj2NS+3S7mV7B4wJvjLR/HHM7WWxZJa+pxkqW
-         sCAQH/Z/WS3V0scJ/84csTBV8OnBUSgrUmjbrl4siQwq4Nc2yGLGDk2EhLmQDH+3ab
-         3/YqslduUZ5rwhbGVE+5AqObwFiycNzHXHtqa8IQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231111010553epcas5p150c65d73f66f8136d1d1c4d351930d8d~WbBaovr9k1169411694epcas5p1z;
-        Sat, 11 Nov 2023 01:05:53 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4SRyDc2FP5z4x9Px; Sat, 11 Nov
-        2023 01:05:52 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FE.9B.09672.073DE456; Sat, 11 Nov 2023 10:05:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231111010551epcas5p1c47f739ffde8a0ad15a53d3ae8cdcbd1~WbBYO1i6c2981529815epcas5p1b;
-        Sat, 11 Nov 2023 01:05:51 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231111010551epsmtrp13205f26379a782b1c828ca176b302eb8~WbBYMXP960847408474epsmtrp15;
-        Sat, 11 Nov 2023 01:05:51 +0000 (GMT)
-X-AuditID: b6c32a4b-60bfd700000025c8-24-654ed370aee6
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        15.37.08755.F63DE456; Sat, 11 Nov 2023 10:05:51 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231111010545epsmtip1244a785fcd85e95ac50649a118f3b13b~WbBS-XRnp2920829208epsmtip1Q;
-        Sat, 11 Nov 2023 01:05:45 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'David Airlie'" <airlied@gmail.com>,
-        "'Daniel Vetter'" <daniel@ffwll.ch>,
-        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
-        "'Maxime Ripard'" <mripard@kernel.org>,
-        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andi Shyti'" <andi.shyti@kernel.org>,
-        "'Jonathan Cameron'" <jic23@kernel.org>,
-        "'Lars-Peter Clausen'" <lars@metafoo.de>,
-        "'Lee Jones'" <lee@kernel.org>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Thierry Reding'" <thierry.reding@gmail.com>,
-        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "'Alessandro Zummo'" <a.zummo@towertech.it>,
-        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        "'Jiri Slaby'" <jirislaby@kernel.org>,
-        "'Liam Girdwood'" <lgirdwood@gmail.com>,
-        "'Mark Brown'" <broonie@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-8-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 07/17] dt-bindings: serial: samsung: add specific
- compatibles for existing SoC
-Date:   Sat, 11 Nov 2023 06:35:44 +0530
-Message-ID: <05a301da143b$365fe090$a31fa1b0$@samsung.com>
+        Fri, 10 Nov 2023 20:08:28 -0500
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A027E448C
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:08:23 -0800 (PST)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc1ddb34ccso28236875ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:08:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699664903; x=1700269703;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dwdFPnuTOA9bzSYhfknyestbGOHfAOANZJb099tUQ0g=;
+        b=MJWULwlQgHR+6oUSXD/6WgOvSsUNnSxhy6HHtNvwJVkiMrjCRMayjyGUhzDRY5w5Di
+         XJ4CAFZogsP+yZEAbwQiviTe3stHCaqXTLF9zzJPg7LeDKINmnGq017Mfb4xHsesHZrH
+         gBx77q+lumUdCMzmoo7dkShhswJcCsussrA3Pcv9OP9r3GzcuCODxXYcUwQ9V/cf/0zk
+         piqM9H7bTGzs5pnlRcmpdgHv/rvkHrOBPo1xkVL5UoX2JfQF8a3oIWM+rI502YIM8N2R
+         Ix0ZjBELkGwPLCeDmdd+iT/wMWxiq0KyOYvBcF+eUPvdaE6Jv5d7iv/GAH9/jRk2y5XI
+         CYSA==
+X-Gm-Message-State: AOJu0YzceOM1+X3niNLwfv3bdqoTcT4deynM0HBG5pQrPpl7g8Lnlek1
+        RcODHCIX02000Dyn/M/c7NI2yY7OSucZ5uCc4uPykSezLxFh
+X-Google-Smtp-Source: AGHT+IF+oN9pCGz6CtQwFDycnMrLZbA5yVGGDmNRIscnoKmcaZaQf6Gfo4MxN3Qtqa06MwuRlceEYh0qLKl04qlDjngOhhlEd62X
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQF2IoecAc/Y/8+w4f3vwA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xTVxTHd997/YFZ8Vk13DHDoIQRUKCVghcUtmzEPQdxLE6nZgY7+gQE
-        2q4tImMTorP8qOKQH9saKBQQGUNx5ccQLTDoRKMBCUVIgCC/BoLWMQGDyFhLYeO/z/3e7zn3
-        nHNz2Dh3huXIjpEoablEFMdjbiDq2zzcvWTd+2l+l5GDyrp6WOhubwmG0szlLGTqasXQ0Fw6
-        QHnDY0xUZejA0HJ9No6KjB0MZJp7zkTnSquZqO+VioEen63EkLlwG8qaHMaRYbqOhcpyihio
-        QaUj0LwpHUO5r69iSD/6iIFqil4DlL40C5DWaCZQd2MBExmXLwE0OFgJ0J1fTEz0Y2cThh6U
-        XmShwj9zcaSbqSOQKqOcgc4bjCzU9jSNgSayLJaFRi2BKhst+WqfZjNQf3YOQO3XPn/fg7rx
-        4iyT0lYlU4b5YoK6qRlkUfrKDCY18Oi2Rb/3KdVcWMWihtTtGFVTlkKVPW1lUJeW+FRWbSWg
-        au4nUz9oFzDqhd4pnDwauyeaFolpuTMtiZSKYyRRQbzQAxEfRvj58wVeggC0i+csEcXTQbyQ
-        sHCvvTFxlgHznE+J4hIsUrhIoeD5BO+RSxOUtHO0VKEM4tEycZxMKPNWiOIVCZIobwmtDBTw
-        +Tv9LMbjsdFq3ceyHvbp3+oCUkEeKxPYsSEphM+uNOCZYAObS94CsKT+Dst2+BvA/qb01cM8
-        gFd/nWWshVyceYhZmUsaALxQR9t4EkDdZaWVmaQXbChVMa3BW8hbHNjdPEJYL+zIEFiUnwas
-        vJkUw/y8Cys6QbrBf+734VbmkAFwVje8ypvgvZ/GVjw4uR2W66ZxWxHOcGG8fKWgLeQHsKy4
-        gmXzOMAnfxhXqobkzQ0wteb2aqMh8P74FGbjzXCqvXZVd4RPLqkszLYwBUteO9rkaPjsajWw
-        8XuwxVRAWC046QGrG31sT9nDi4tjmC2SA9NVXJvbDZ4z9xA2fhtmq9WMteQVWQ62cXYBODy2
-        iH8PnDXrmtSsa1KzrhnN/w8XA6ISvEXLFPFRtMJP5iuhE//77EhpvB6s7J5naAMYefyXdyvA
-        2KAVQDbO28J5KAyjuRyxKOlrWi6NkCfE0YpW4GeZfDbuuDVSalleiTJCIAzgC/39/YUBvv4C
-        ngNn+nyhmEtGiZR0LE3LaPlaHMa2c0zFTkaVD+TyK1xCO2cht2Kf6wm1e1jPxpDA3CHpO0W+
-        z9NoM6/q55jPxmKhMJ+8+1HTl0mjsvgDX7jfFKl3OWmbr/TpuTtqiCnJxpjrLknxhxY5yRho
-        mjMv8VteDUiDsU4Ht/ztLx+iTM7v+9rdT9rv3L8tb3xh+U35bvza7Df3XLOWlra6ulTpD59O
-        vpzm/2CmfyZDlthrb+Bj796obVFeV+cfDz+UkZMf1vZVof3d3cemncy+LX3hbcm1vUdMwoIR
-        9eHFY/SRlA6mZ7M2+Gh7oIN9feJyyikH75dpvgcr7gTEbTrjrTl4psFHd/KEW8e25k++26H9
-        9o1OzejkxMSDLJ8EFY9QRIsEnrhcIfoX+HkwjQQFAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTVxiHd27vR+lsdlfdOANHsIlLKINBdNnZMlCnIzeZY+J0ZGQLlHHH
-        xyg0LW6dCBKYbYHwJUyxGS2Vptsq46Og1ioYS0UNimUUhQ0GRKAsNEBFnTUCo8AW/nvy/n7v
-        854/DpcjcBAB3PSsHFaWJc4Ukjz8QpcwKCy7P5aNuNLJR4a+AQrdvH8WQ6pZI4WcfTYMjT5W
-        A/Tj+ASJGjt6MbR8oYqDdPZeAjkfz5GoqKGZRIPPlAQaKzRhaLZuKyqfHuegjpnzFDJU6whk
-        Uepx9MSpxlDN858xZH5wj0BtuucAqRcfAaS1z+Ko3/oTiezLFQCNjJgA6j7nJFHt3U4M3W4o
-        o1DdVA0H6T3ncaQsNhLoRIedQl1uFYFc5SsVr1WLI5N1xdfuriLQn1XVAN34LX53CNOyUEgy
-        2sZcpuNJPc5c0oxQjNlUTDLD966szG/FMVfrGilmtPQGxrQZjjMGt41gKhYjmPJ2E2DaenKZ
-        01ovxiyYgw7QCbz3U9jM9G9Z2VvRSby0pqlWTNrPVfRZYgtABVUC/LiQ3gnLPA6sBPC4Avoy
-        gH91ezhrQSC831q5XtoMf11yrbKAngKw3ZTiY5IOg5YGJenjLfQQH/YMf7ImugOgy1uB+QI/
-        eh/UnVIBH2+mk+HtgZuEj3F6O1zqGVw9xqffhY/04+v8Mrx1ZgL3MYcOhZNDk/+zUT+z/rhg
-        6J00EmuHP4CG+l+otY4//Pu6naoEAs0GlWaDSrNBpdmwUg9wE3iNlcolqRJ5pDQyi/0uXC6W
-        yI9kpYZ/lS0xg9VPJwqxgIum+XAbwLjABiCXI9zCd+zczwr4KeLvj7Ky7ETZkUxWbgOBXFzo
-        z/efLksR0KniHPYblpWysv9SjOsXUIB170oCcUsLr1/Pq87Po0KVsScc1JfBX7S801LyteXt
-        9M+Lut4bymvoLRTWfjT2ad3wS8uH7M2bch7wdx9rjTm991KT2W1N5BU4Hi6J9FLjniBNRBr+
-        IZ2/q8nzVPiqNp65Wrr/mVARnvRP88z0SBPuPWATqEQ7MuYyrzU/1VvPHTyWcVfhcr5xppbe
-        Yd1WtK1zjB/mlKgXT70SOZhQHJX85ouks/Ls4T357sWFO4Hxx6X75iWl0cUXkx/mpF7b+sf8
-        CyKH1j9BEZU4R/9+NDhk9OTE3subegLKaw5LDrriZlW6qe0fB2gn03Ox0KFOUTQF1Z8NRKnt
-        TkWFp/KH6IyYQzFCXJ4mjhRxZHLxv6c487fjAwAA
-X-CMS-MailID: 20231111010551epcas5p1c47f739ffde8a0ad15a53d3ae8cdcbd1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104425epcas5p4c3a9e59951fa56f85b1076e788070176
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-        <CGME20231108104425epcas5p4c3a9e59951fa56f85b1076e788070176@epcas5p4.samsung.com>
-        <20231108104343.24192-8-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:25cf:b0:1cc:323c:fe4a with SMTP id
+ jc15-20020a17090325cf00b001cc323cfe4amr242167plb.12.1699664903193; Fri, 10
+ Nov 2023 17:08:23 -0800 (PST)
+Date:   Fri, 10 Nov 2023 17:08:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000caca800609d612cc@google.com>
+Subject: [syzbot] Monthly fs report (Nov 2023)
+From:   syzbot <syzbot+listd7ef1e6b20cd71d38256@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello fs maintainers/developers,
 
+This is a 31-day syzbot report for the fs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/fs
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Sent: Wednesday, November 8, 2023 4:14 PM
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine =
-and
-> there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
->=20
-> Add compatibles specific to each SoC in front of all old-SoC-like compati=
-bles.
->=20
-> Re-shuffle also the entries in compatibles, so the one-compatible-enum is
-> the first.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
->=20
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 50 issues are still open and 331 have been fixed so far.
 
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+Some of the still happening issues:
 
-> ---
->=20
-> I propose to take the patch through Samsung SoC (me). See cover letter fo=
-r
-> explanation.
-> ---
->  .../devicetree/bindings/serial/samsung_uart.yaml   =7C 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-(...)
+Ref  Crashes Repro Title
+<1>  3631    Yes   BUG: sleeping function called from invalid context in __getblk_gfp
+                   https://syzkaller.appspot.com/bug?extid=69b40dc5fd40f32c199f
+<2>  1500    Yes   possible deadlock in input_event (2)
+                   https://syzkaller.appspot.com/bug?extid=d4c06e848a1c1f9f726f
+<3>  359     Yes   BUG: sleeping function called from invalid context in __bread_gfp
+                   https://syzkaller.appspot.com/bug?extid=5869fb71f59eac925756
+<4>  254     No    KASAN: slab-use-after-free Read in __ext4_iget
+                   https://syzkaller.appspot.com/bug?extid=5407ecf3112f882d2ef3
+<5>  145     Yes   possible deadlock in pipe_write
+                   https://syzkaller.appspot.com/bug?extid=011e4ea1da6692cf881c
+<6>  75      Yes   BUG: sleeping function called from invalid context in bdev_getblk
+                   https://syzkaller.appspot.com/bug?extid=51c61e2b1259fcd64071
+<7>  57      Yes   WARNING in path_openat
+                   https://syzkaller.appspot.com/bug?extid=be8872fcb764bf9fea73
+<8>  47      Yes   INFO: task hung in filename_create (4)
+                   https://syzkaller.appspot.com/bug?extid=72c5cf124089bc318016
+<9>  43      No    INFO: task hung in __fdget_pos (4)
+                   https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
+<10> 40      Yes   INFO: rcu detected stall in sys_clock_adjtime
+                   https://syzkaller.appspot.com/bug?extid=25b7addb06e92c482190
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
