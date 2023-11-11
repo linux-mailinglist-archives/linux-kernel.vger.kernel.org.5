@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8FA7E89DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A817E89DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjKKIab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 03:30:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S230269AbjKKIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 03:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjKKIaa (ORCPT
+        with ESMTP id S230256AbjKKIb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 03:30:30 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001023C15;
-        Sat, 11 Nov 2023 00:30:25 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AB8KPVt000864;
-        Sat, 11 Nov 2023 08:30:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6oio5Qy8QsXoJhLnkZbCRQo07ka9yYrRvnwasgLvLIg=;
- b=pnkXTb6F2Ih/MbTijpLkDAvO7k8vL1kENKEw6CCpnnV38aySlLisjXHAGRhGOup4U9e6
- 23MPbWYnDgSb8wbi8Un1hiGDRY5hCO0c0cUZSTumkEWCYO+aPxrGoUekUYKbvRd0Vzi3
- DDtbrbKTI6mvJsG8ocrBXN7hppMwtIzSFDnj83Rk9jwPr9eri4rWnvUL/mFbInrx4UQ7
- 4y5OBv9Ijf7e9Z5WqehK8PSrlGypLyR4FfR7g9MG+cCpi6VgGmlV8PTUhquTrbUlaiw/
- 3a4ty410q8Yy4cEZswZg/4e9q885fjLJxYv0AokoU/Dxdbz0YUY+jpxOh9qzA7850YmY kA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ua2sw07pv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Nov 2023 08:30:13 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AB8UCrj025810
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Nov 2023 08:30:12 GMT
-Received: from [10.216.34.97] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sat, 11 Nov
- 2023 00:30:05 -0800
-Message-ID: <bc3e9da6-c932-46a0-923a-44be817bd129@quicinc.com>
-Date:   Sat, 11 Nov 2023 14:00:02 +0530
+        Sat, 11 Nov 2023 03:31:28 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47254469D
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:31:25 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507f1c29f25so3806801e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:31:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699691483; x=1700296283; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CnzMPSuSkDs43Z3P5R9j6n7+bWlsIBEP8r17ky0zTro=;
+        b=cV9L0FL/5lKZyX18sKNTuhEvl2Nchv1x80QKBd4EDvSrGJkrvHjKU8JHdqgmHDWAhH
+         +8noZ3z1EmsM2i6qyDlgZGfVFbY+kTbFqIN+hSXBnPpko58IiXYS3M+7YVKUYotY4RzC
+         MmUnJhRptvgo5MR0NZoGMMqMklNyuiwGuLMoe+sfVk+bGG+znHCn66/zNUpLGtJ+ZEqq
+         YxzspKdqLZydaD6Of4Ca4F7zTqkWmelCWMExSkjDpmurk1tNmmAf4O0jm+lGMR5xW1jl
+         sNqeS+XSRQPNzbbRpmcCl6KK5KNOBfi4p0lKZT0ey6kFR6hxZWH3kzdIhuQtihkU6E/P
+         7DqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699691483; x=1700296283;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CnzMPSuSkDs43Z3P5R9j6n7+bWlsIBEP8r17ky0zTro=;
+        b=GWZkb1WdxIteB4nCh3EN1s/OirLRquF4aCQfKNOoIMVvvm54htGbO7vwakBk8BPFr9
+         qjwXyUgLTXyPbLieN70+unI/p8tOV+9SmW1YvKZxL/Lx6w/cx2g4QV6toFUSs3TIeO38
+         bOgtiG+CwbcyQTkSXlWHYkYeoauvV9a1WuS4rzLKDSmRpTs5ULVURBy3ogyE+FFYmQVA
+         7BPNTV7hJprQQTXGTNZLq2hTpxR2DMvjrvL0R5ksALaLHcCFjx8N3schn5AJbh+wAUev
+         haUnxHnldkM0H5kfLYrQFVefJecHiuc9RmCww7bHGGuwgl2BsX16FV6zn4roksycDPCI
+         bE/g==
+X-Gm-Message-State: AOJu0Yxzip/U+15RDyeEhVSLcCLGLPYh/taQjK6pgLTA04p2sqR3B4aG
+        SVT2qn37e5NOZuMhxrYGeLR6K94nK/45xLAsgo8=
+X-Google-Smtp-Source: AGHT+IELK3Jp5o8QXO7eI93fMAFpbKC2f3FagLHhgYb/6DMOHmsvKBQnhpOM1YShIk5J/joBlvbrofzWhq+QJPHovzY=
+X-Received: by 2002:a19:3809:0:b0:50a:6375:d5f1 with SMTP id
+ f9-20020a193809000000b0050a6375d5f1mr804587lfa.60.1699691483119; Sat, 11 Nov
+ 2023 00:31:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 02/13] dt-bindings: usb: Add bindings for multiport
- properties on DWC3 controller
-To:     Johan Hovold <johan@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        "Wesley Cheng" <quic_wcheng@quicinc.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
- <20230828133033.11988-3-quic_kriskura@quicinc.com>
- <ZU4wA9xhfjYBCaTU@hovoldconsulting.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZU4wA9xhfjYBCaTU@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _GkF51NF8E-IZV4xko6SsTN60Gr-a9gA
-X-Proofpoint-GUID: _GkF51NF8E-IZV4xko6SsTN60Gr-a9gA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-11_06,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- adultscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311110070
+References: <20231111042926.52990-1-amworsley@gmail.com> <20231111042926.52990-2-amworsley@gmail.com>
+In-Reply-To: <20231111042926.52990-2-amworsley@gmail.com>
+From:   Andrew Worsley <amworsley@gmail.com>
+Date:   Sat, 11 Nov 2023 19:31:11 +1100
+Message-ID: <CA+Y=x3mF4jFX7PiJQ-1Gk9zyBE1mwZaF_GLYjSspT+mxtMn4GQ@mail.gmail.com>
+Subject: Re: [PATCH] Fix failure of simpledrm probe when trying to grab FB
+ from the EFI-based Framebuffer
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,64 +73,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's inline - part of the email - not an attachment?
 
+I can see it in the copy that went to me...
 
-On 11/10/2023 6:58 PM, Johan Hovold wrote:
-> On Mon, Aug 28, 2023 at 07:00:22PM +0530, Krishna Kurapati wrote:
->> Add bindings to indicate properties required to support multiport
->> on Synopsys DWC3 controller.
->>
->> Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> ---
->>   .../devicetree/bindings/usb/snps,dwc3.yaml          | 13 +++++++------
->>   1 file changed, 7 insertions(+), 6 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> index a696f23730d3..5bc941355b43 100644
->> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> @@ -85,15 +85,16 @@ properties:
->>   
->>     phys:
->>       minItems: 1
->> -    maxItems: 2
->> +    maxItems: 8
->>   
->>     phy-names:
->>       minItems: 1
->> -    maxItems: 2
->> -    items:
->> -      enum:
->> -        - usb2-phy
->> -        - usb3-phy
->> +    maxItems: 8
->> +    oneOf:
->> +      - items:
->> +          enum: [ usb2-phy, usb3-phy ]
->> +      - items:
->> +          pattern: "^usb[23]-port[0-3]$"
-> 
-> Shouldn't this just be
-> 
-> 	pattern: "^usb[23]-[0-3]$"
-> 
-> so that it matches the names that are used by the nvidia bindings?
-> 
-> We already have some inconsistency in that Amlogic uses a variant based
-> on the legacy names that needlessly includes "phy" in the names:
-> 
-> 	const: usb2-phy0
-> 	const: usb2-phy1
-> 	const: usb3-phy0
-> 	...
-> 
-> I don't think we should be introducing a third naming scheme here so I
-> suggest just following the nvidia bindings.
-> 
-In that case, why don't we use  "^usb[23]-phy[0-3]$". I think its close 
-to what we have on dwc3 core already today (usb2-phy/usb3-phy).
+Andrew
 
-Regards,
-Krishna,
+On Sat, 11 Nov 2023 at 15:30, Andrew Worsley <amworsley@gmail.com> wrote:
+>
+>    The simpledrm.c does not call aperture_remove_conflicting_devices() in it's probe
+>    function as the drivers/video/aperture.c documentation says it should. Consequently
+>    it's request for the FB memory fails.
+>
+> ...
+> [    3.085302] simple-framebuffer bd58dc000.framebuffer: [drm] *ERROR* could not acquire memory range [??? 0xffff6e1d8629d580-0x2a5000001a7 flags 0x0]: -16
+> [    3.086433] simple-framebuffer: probe of bd58dc000.framebuffer failed with error -16
+> ...
+>
+>    In my case no driver provided /dev/dri/card0 device is available on boot up and X
+>    fails to start as per this from X start up log.
+>
+> ...
+> [     5.616] (WW) Falling back to old probe method for modesetting
+> [     5.616] (EE) open /dev/dri/card0: No such file or directory
+> ...
+>
+>    Fault confirmed and fixed on Asahi 6.5.0 kernel with both CONFIG_FB_EFI and
+>    CONFIG_DRM_SIMPLEDRM config options set.
+>
+> Signed-off-by: Andrew Worsley <amworsley@gmail.com>
+> ---
+>  drivers/gpu/drm/tiny/simpledrm.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+> index 5fefc895bca2..e55a536b04cf 100644
+> --- a/drivers/gpu/drm/tiny/simpledrm.c
+> +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/regulator/consumer.h>
+> +#include <linux/aperture.h>
+>
+>  #include <drm/drm_aperture.h>
+>  #include <drm/drm_atomic.h>
+> @@ -828,6 +829,13 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+>         if (mem) {
+>                 void *screen_base;
+>
+> +               ret = aperture_remove_conflicting_devices(mem->start, resource_size(mem),
+> +                       DRIVER_NAME);
+> +               if (ret) {
+> +                       drm_err(dev, "aperture_remove_conflicting_devices: failed:%d\n",
+> +                           __func__, ret);
+> +                       return ERR_PTR(ret);
+> +               }
+>                 ret = devm_aperture_acquire_from_firmware(dev, mem->start, resource_size(mem));
+>                 if (ret) {
+>                         drm_err(dev, "could not acquire memory range %pr: %d\n", mem, ret);
+> @@ -848,6 +856,13 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+>                 if (!res)
+>                         return ERR_PTR(-EINVAL);
+>
+> +               ret = aperture_remove_conflicting_devices(res->start, resource_size(res),
+> +                       DRIVER_NAME);
+> +               if (ret) {
+> +                       drm_err(dev, "aperture_remove_conflicting_devices: failed:%d\n",
+> +                           __func__, ret);
+> +                       return ERR_PTR(ret);
+> +               }
+>                 ret = devm_aperture_acquire_from_firmware(dev, res->start, resource_size(res));
+>                 if (ret) {
+>                         drm_err(dev, "could not acquire memory range %pr: %d\n", res, ret);
+> --
+> 2.42.0
+>
