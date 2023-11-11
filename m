@@ -2,128 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C309B7E8991
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D897E8992
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjKKGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 01:52:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
+        id S230085AbjKKGzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 01:55:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjKKGwE (ORCPT
+        with ESMTP id S229584AbjKKGzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 01:52:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE021716
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 22:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699685522; x=1731221522;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=D/Ym0syXN0CjtRQavxwU85mnwe2o6+O0A84AlHvyvi8=;
-  b=AcZxhEXVQoblOuXxuIEnvUixV3K/nYYw1uIcX7VBbpYYxuSj6YI4ssn/
-   n+beEZuad7RWc3PK5DAtwck5yaLAsleDy2CpndUa1FgPUqrkh0BtyG1TD
-   a9zNtXrvcIZiT97AjgWf6KNokBk3qedszyjq/AoOH58IPUgWwX1pVzUZ8
-   Qxrx0jfqFsxJHh4kVhnAARH/+QT6OG5A+tH+wKk8ihIBAmiYIF9nRDxLL
-   qVVDszRVD/NVbx1ucZbMJ2i9i+NMtMbjoodhwj76Vs375JMN9RcMnCTrf
-   G/yaoE7J8TpI1iFn9lDvb6BxZXTPnTXdhabpKBaQd1qUIJq9jXQ7UNeKG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="8909897"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="8909897"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 22:52:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="937331054"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="937331054"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 10 Nov 2023 22:51:59 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1hqX-000AHW-26;
-        Sat, 11 Nov 2023 06:51:57 +0000
-Date:   Sat, 11 Nov 2023 14:51:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Melissa Wen <melissa.srw@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dave Airlie <airlied@redhat.com>
-Subject: drivers/gpu/drm/tests/drm_format_helper_test.c:757:36: sparse:
- sparse: incorrect type in argument 2 (different base types)
-Message-ID: <202311111442.HJ4fGRDW-lkp@intel.com>
+        Sat, 11 Nov 2023 01:55:08 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68DF111;
+        Fri, 10 Nov 2023 22:55:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+        s=s31663417; t=1699685689; x=1700290489; i=quwenruo.btrfs@gmx.com;
+        bh=Z/yMQVtlmfvx60UqgtCWtgn1md3kTutFJEuE9ZbaY7A=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=udEvQdrOhTZfkrDScyKONhS0Zt1IC9naxG2OPVx/ehbdyeM5NLPUh5sEa0zvKxQD
+         iRA2ffUbRF2J27j12GRagF3FFAVzP/3fbkR10bHcodBar5hZOIc57GrwSw97Gpwl0
+         viDlNwC9uP6rC0UMS7fefamPLZp5xVNGJDwlDtwGESMbqITr1gPz7fsI5BJsv2yNL
+         mL9O8U+g37oHu23GJ3UP4a4SckXYi9YjcD9lEFPoPkee3hN5KvgktCgVSfpMOWuMD
+         AEQaVlkbHsjo04O6tBI8OQOZyOTOebW4UbfKmsFJIwPqoYvg3aZkT8a1Y4EZ2d1+Z
+         HlUa5umxe/VbE8Fv4A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.117] ([122.151.37.21]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MQvD5-1qmfLL2eJj-00O0Cy; Sat, 11
+ Nov 2023 07:54:49 +0100
+Message-ID: <8800d890-e16c-4388-97c6-e55fd3ca7515@gmx.com>
+Date:   Sat, 11 Nov 2023 17:24:42 +1030
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix warning in create_pending_snapshot
+Content-Language: en-US
+To:     Edward Adam Davis <eadavis@qq.com>,
+        syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com
+Cc:     boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000001959d30609bb5d94@google.com>
+ <tencent_DB6BA6C1B369A367C96C83A36457D7735705@qq.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <tencent_DB6BA6C1B369A367C96C83A36457D7735705@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1l30kIq/YQdCcM5jK1zccgSQvIQpBUaGRl66qg3vrnBkBPCPCG0
+ pVVL3+f0oBR3eXn6s+xmv6/ecSnHwkxe2zvhCb70FUmWcrvWLVN67AcGG1Aa1l3trXU0IE+
+ 5IxuBJ5B+UpArcycvcRrDiK/CuvRrVIO+pUiEqZETpQRMC+KBbL5zR6y5/VY22ghLYOBFaU
+ mFjgG0Znh5/vqBa5nDBFg==
+UI-OutboundReport: notjunk:1;M01:P0:OefP0VUvbjs=;0Wo0jL/1Zw4/X3nbiSNMCm/aYTo
+ OzzLCjD3mf37rlszWDU2120L4KXiOdc8WD0W9x3BpPbZ0vtJ58ihaLdglGRwTGZrUz8QgXKy9
+ 5vKj+/WI76j9v6TqOIArRCSc+aDajqYYZ1D+7XYekE8yu0IOW//YR6nnYZZXcWytZLgBrhW8+
+ 4fueDRsfhjBms/aTGvYcE+xyEyjpAFKfXEHLkS3yc7kvF4GYwLtAITnjkwvP39Uq3rBDAMzGL
+ RY2xDHq0Q4zRqp7E27sL5CaILP8vc3Z2iYY4D7baQnENKKtjHjt4W0aexD9VAxtAmO/twi7dL
+ ZzpeueWbWiE3SCOHYMaVSvUKKkCzaOgYFfH0pZBhom/y5uaMRA2lTmsQEqFmM9YGOIkZn9CLx
+ KO2Hm+sN3paasrtgLIbkahJz86ttUk9PRZE73N8qxflNAdGYZI6OEwpRmxH4YzjKHjkHuqY0C
+ lYUFtOvMEu65PtUS3DAbSc6M8Oesc0OvToJHbVtFbti0Gb5ZD/xl8llhieUGwHnJbhhqjElgX
+ L643NG7c85CGOj/7/hC3ST5dYLUuliPiMGSHBcbiunkf9wRR+RyOCMYUT839EwZVeIJGk0rq4
+ 6Jqi1lnqyPM2v9BNRr7BsWtk/9+OWYAslMh8B06F0T5HCgw5SukvI9YAA9xC+I3WazGy+wlm1
+ nQ0mcAYLiY6CV/oJEUmZ3Sb9EYSyBZB6Zb5ghIw2EHcAnYi50GkcB9D536MnIV5UHMPfcg2Ci
+ glf4rGaMJumopKUpoUGUPFC9A/95h6uzE3O5aUC3Kx1BBaJqyXLmL2FRS8uhum5IxO2S2c839
+ wdxDqKj/+LPscUc+XZcflNSxHpA0pb5hwVqo/2U2lQlWid8C+GHGKFY8lRbsWW1lBfopf913r
+ gqwk8sdO8ApooidMU7tzsfRkPe0QDj6KgvZ6C+jahyC9gE2CfRjRPdy8DkUBQCnCnGBhwFb5i
+ EnKSYscdx7MdLQpjtIA1g4zAXpk=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
-commit: c37ea39c1fa880da0d7fd2c719e5c96be19f0fc5 Merge tag 'drm-misc-next-2023-01-12' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-date:   10 months ago
-config: i386-randconfig-062-20230909 (https://download.01.org/0day-ci/archive/20231111/202311111442.HJ4fGRDW-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111442.HJ4fGRDW-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111442.HJ4fGRDW-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/tests/drm_format_helper_test.c:757:36: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted __le32 const [usertype] *buf @@     got unsigned int [usertype] *[assigned] buf @@
-   drivers/gpu/drm/tests/drm_format_helper_test.c:757:36: sparse:     expected restricted __le32 const [usertype] *buf
-   drivers/gpu/drm/tests/drm_format_helper_test.c:757:36: sparse:     got unsigned int [usertype] *[assigned] buf
+On 2023/11/11 15:36, Edward Adam Davis wrote:
+> The create_snapshot will use the objectid that already exists in the qgr=
+oup_tree
+> tree, so when calculating the free_ojectid, it is added to determine whe=
+ther it
+> exists in the qgroup_tree tree.
+>
+> Reported-and-tested-by: syzbot+4d81015bc10889fd12ea@syzkaller.appspotmai=
+l.com
+> Fixes: 6ed05643ddb1 ("btrfs: create qgroup earlier in snapshot creation"=
+)
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>   fs/btrfs/disk-io.c | 3 ++-
+>   fs/btrfs/qgroup.c  | 2 +-
+>   fs/btrfs/qgroup.h  | 2 ++
+>   3 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 401ea09ae4b8..97050a3edc32 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *roo=
+t, u64 *objectid)
+>   		goto out;
+>   	}
+>
+> -	*objectid =3D root->free_objectid++;
+> +	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
 
-vim +757 drivers/gpu/drm/tests/drm_format_helper_test.c
+I don't think this is correct.
 
-175073d694cd9db Thomas Zimmermann 2023-01-02  729  
-453114319699b6b José Expósito     2022-09-26  730  static void drm_test_fb_xrgb8888_to_xrgb2101010(struct kunit *test)
-453114319699b6b José Expósito     2022-09-26  731  {
-453114319699b6b José Expósito     2022-09-26  732  	const struct convert_xrgb8888_case *params = test->param_value;
-453114319699b6b José Expósito     2022-09-26  733  	const struct convert_to_xrgb2101010_result *result = &params->xrgb2101010_result;
-453114319699b6b José Expósito     2022-09-26  734  	size_t dst_size;
-4db88a9026c2205 Thomas Zimmermann 2023-01-02  735  	u32 *buf = NULL;
-58f5d9830da0d4f Thomas Zimmermann 2023-01-02  736  	__le32 *xrgb8888 = NULL;
-453114319699b6b José Expósito     2022-09-26  737  	struct iosys_map dst, src;
-453114319699b6b José Expósito     2022-09-26  738  
-453114319699b6b José Expósito     2022-09-26  739  	struct drm_framebuffer fb = {
-453114319699b6b José Expósito     2022-09-26  740  		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-453114319699b6b José Expósito     2022-09-26  741  		.pitches = { params->pitch, 0, 0 },
-453114319699b6b José Expósito     2022-09-26  742  	};
-453114319699b6b José Expósito     2022-09-26  743  
-453114319699b6b José Expósito     2022-09-26  744  	dst_size = conversion_buf_size(DRM_FORMAT_XRGB2101010,
-453114319699b6b José Expósito     2022-09-26  745  				       result->dst_pitch, &params->clip);
-453114319699b6b José Expósito     2022-09-26  746  	KUNIT_ASSERT_GT(test, dst_size, 0);
-453114319699b6b José Expósito     2022-09-26  747  
-453114319699b6b José Expósito     2022-09-26  748  	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-453114319699b6b José Expósito     2022-09-26  749  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-453114319699b6b José Expósito     2022-09-26  750  	iosys_map_set_vaddr(&dst, buf);
-453114319699b6b José Expósito     2022-09-26  751  
-58f5d9830da0d4f Thomas Zimmermann 2023-01-02  752  	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-453114319699b6b José Expósito     2022-09-26  753  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-453114319699b6b José Expósito     2022-09-26  754  	iosys_map_set_vaddr(&src, xrgb8888);
-453114319699b6b José Expósito     2022-09-26  755  
-453114319699b6b José Expósito     2022-09-26  756  	drm_fb_xrgb8888_to_xrgb2101010(&dst, &result->dst_pitch, &src, &fb, &params->clip);
-7089003304c6765 David Gow         2022-10-19 @757  	buf = le32buf_to_cpu(test, buf, dst_size / sizeof(u32));
-a52a5451f43bb76 Maíra Canal       2022-10-25  758  	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-453114319699b6b José Expósito     2022-09-26  759  }
-453114319699b6b José Expósito     2022-09-26  760  
+Firstly you didn't take qgroup_ioctl_lock.
 
-:::::: The code at line 757 was first introduced by commit
-:::::: 7089003304c67658caead22f841840fc4a26b198 drm: tests: Fix a buffer overflow in format_helper_test
+Secondly, please explain why you believe the free objectid of a
+subvolume is related to the qgroup id?
 
-:::::: TO: David Gow <davidgow@google.com>
-:::::: CC: Javier Martinez Canillas <javierm@redhat.com>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For any one who really wants to fix the syzbot bug, please explain the
+bug clearly before doing any fix.
+
+If you can not explain the bug clearly, then you're doing it wrong.
+
+Thanks,
+Qu
+
+> +	*objectid =3D root->free_objectid;
+>   	ret =3D 0;
+>   out:
+>   	mutex_unlock(&root->objectid_mutex);
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index edb84cc03237..3705e7d57057 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -171,7 +171,7 @@ qgroup_rescan_init(struct btrfs_fs_info *fs_info, u6=
+4 progress_objectid,
+>   static void qgroup_rescan_zero_tracking(struct btrfs_fs_info *fs_info)=
+;
+>
+>   /* must be called with qgroup_ioctl_lock held */
+> -static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_inf=
+o,
+> +struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
+>   					   u64 qgroupid)
+>   {
+>   	struct rb_node *n =3D fs_info->qgroup_tree.rb_node;
+> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+> index 855a4f978761..96c6aa31ca91 100644
+> --- a/fs/btrfs/qgroup.h
+> +++ b/fs/btrfs/qgroup.h
+> @@ -425,4 +425,6 @@ bool btrfs_check_quota_leak(struct btrfs_fs_info *fs=
+_info);
+>   int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+>   			      struct btrfs_squota_delta *delta);
+>
+> +struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
+> +                                            u64 qgroupid);
+>   #endif
