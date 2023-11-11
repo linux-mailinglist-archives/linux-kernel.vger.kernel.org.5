@@ -2,192 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A527E87A6
+	by mail.lfdr.de (Postfix) with ESMTP id ECE4E7E87A7
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjKKBha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        id S230122AbjKKBh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKKBh2 (ORCPT
+        with ESMTP id S229836AbjKKBhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:37:28 -0500
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF1CB0;
-        Fri, 10 Nov 2023 17:37:24 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231111013722epoutp03c90c9b4bbcd6e2a0252148c281a1ecc9~Wbc5MlTTu2453124531epoutp03_;
-        Sat, 11 Nov 2023 01:37:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231111013722epoutp03c90c9b4bbcd6e2a0252148c281a1ecc9~Wbc5MlTTu2453124531epoutp03_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699666642;
-        bh=gbHmcKeJCmy6vX/fRMijapz+vC1LEThWZweLB4eFrWQ=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=kT+7KJlM5Jln6yaxHx3RheWkKtuOBzRqxSdWziv/cCBaLn3/LMEt6oJ8oATPwnVsJ
-         pw0yIZeP6AqEEsrBLoS5jSwVnVZ2T7qZPgf2rwMLK6BwOEpDjUmJ/Nu59+X5vqAl5b
-         CjeqGQLHP69ALxGC8bABFlg3bHmpvnbgYZ78YH3I=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20231111013721epcas5p4b61117cea83325bca2ce782ac2bd0c2d~Wbc47PCth2030120301epcas5p4g;
-        Sat, 11 Nov 2023 01:37:21 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.180]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SRyww23xfz4x9Pq; Sat, 11 Nov
-        2023 01:37:20 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        98.5E.08567.0DADE456; Sat, 11 Nov 2023 10:37:20 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231111013719epcas5p23433820ac418efb4ae8ed7444c1f469c~Wbc27X4uX1319013190epcas5p2Z;
-        Sat, 11 Nov 2023 01:37:19 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231111013719epsmtrp2d274a918e822d1b10747e3e81d8f32ba~Wbc26Csxe2526625266epsmtrp2m;
-        Sat, 11 Nov 2023 01:37:19 +0000 (GMT)
-X-AuditID: b6c32a44-617fd70000002177-60-654edad03e62
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A4.65.07368.FCADE456; Sat, 11 Nov 2023 10:37:19 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231111013714epsmtip2863217e779baf9c208de64d8f87fb409~WbcxwLrM70315803158epsmtip2l;
-        Sat, 11 Nov 2023 01:37:14 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'David Airlie'" <airlied@gmail.com>,
-        "'Daniel Vetter'" <daniel@ffwll.ch>,
-        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
-        "'Maxime Ripard'" <mripard@kernel.org>,
-        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andi Shyti'" <andi.shyti@kernel.org>,
-        "'Jonathan Cameron'" <jic23@kernel.org>,
-        "'Lars-Peter Clausen'" <lars@metafoo.de>,
-        "'Lee Jones'" <lee@kernel.org>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Thierry Reding'" <thierry.reding@gmail.com>,
-        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "'Alessandro Zummo'" <a.zummo@towertech.it>,
-        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        "'Jiri Slaby'" <jirislaby@kernel.org>,
-        "'Liam Girdwood'" <lgirdwood@gmail.com>,
-        "'Mark Brown'" <broonie@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-12-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 11/17] ASoC: dt-bindings: samsung-i2s: add specific
- compatibles for existing SoC
-Date:   Sat, 11 Nov 2023 07:07:13 +0530
-Message-ID: <05a701da143f$9bf634f0$d3e29ed0$@samsung.com>
+        Fri, 10 Nov 2023 20:37:54 -0500
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8164686
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:37:51 -0800 (PST)
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-280997b23eeso2587411a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:37:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699666671; x=1700271471;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ht3AJHcFshZgfyUBgkQ6SpFcmhkxhD1wFBZ8f4r5U8Q=;
+        b=kXDmy9HdhWbQVEVvcsbGWYl7mEKh+cok91aDj5yePTmby1Jk5qzd7JvUSfgWUeLJkC
+         /3Z5u2+oQEfvwdld/0gzJNfDQv/YUz0ek58oKXWUvWxPBN37z9hJky87HVH6xb4X7QaA
+         mZSQlpFl5D49ngf6I3IUcUhEljnSNyrFcOVQZ0r/VBdktSKYPRZ9qY/ggEzKtEuUaOkC
+         izG3zGCu92uDk4ELg7/83act/L/m2qM+QMOyjNsxj8rZeUx8gUNGz+qbT542tZ63ZHcD
+         NgKDLZVYqeIzW00A+IQqHvdpOb9O8byN+ZEHPQIlw9mQQO6aqN+tDyH4aUAc3zarC+8S
+         JkIw==
+X-Gm-Message-State: AOJu0Ywc6VwOL56HzSJ8zSqg3EqQYBwDY0jo6tPLnJYi6Xul6HFOCczh
+        Q3EuOWx5JYkgZxfzy4OWwQTFd1e6G9SJZxHN4qaK2ipVs9O/gJo=
+X-Google-Smtp-Source: AGHT+IE94UzeZVEgRTPrFlYzrwd2JEbuDCmY3/uTx852QHtzKYKVOnwdAHB821u12lO3Nu5sP5ZL0PxFcoGk49A2DBy9uRdu8Hq3
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQGe2eQ6AdHtUH6w4LCY0A==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta1ATVxjt3exuAmM6a0S5xlZjxhfpEBINcEGpnYq6bdXBdmprpy1GskJK
-        SNIk1AfjFEERcRQz0AF5GmHAiTAUMIjBVCdEHgUFJeK7VgqCRaBtlBaLpQmrrf/OPd8593zf
-        d+fyOIInXCFPrTUxBq1SIyb98YbmIElw9+1NjOyylUTlV69zUduNkxg6OFrBRe6rTgzdf5oJ
-        0HcP+klU5biCoakGMweVuq4QyP10jETpZTUkuvksg0A/p1kxNFr8Bjo69ICDHMM2LirPKSVQ
-        Y4YFR+PuTAzlTlZiqO6XXgLVl04ClPn8CUAlrlEc9diLSOSaygbo3j0rQC2n3STK7/oBQ51l
-        R7io+GEuB1l+t+Eo41AFgQ44XFzU/PgggQaPeiUT9hIcWe3e+848NhPojjkHoNbqT94Jor/3
-        pJF0SVUK7Rg/gdPnCu5x6TrrIZK+23vey7dvpi8UV3Hp+4dbMbq+/Fu6/LGToLOfy+ijZ6yA
-        ru9IofNKJjDaUzc/hvoscVUCo1QxBhGjjdOp1Nr4KPEHH8WuiQ0Nk8mD5REoXCzSKpOYKHH0
-        hpjgdWqNd8Fi0TdKTbKXilEajeKQt1cZdMkmRpSgM5qixIxepdEr9FKjMsmYrI2XahlTpFwm
-        Wx7qFW5LTLhp7yT1+3m7aut/xFNBK5kF/HiQUsDOrhNYFvDnCagmAJ35tzjs4Q8A87IKgU8l
-        oMYB7M33e+loa24hWd4BYEf2C8MQgD/lnJ0ukFQwbCzLIH2FAKqJD3su9OG+gh+1FrrtuVwf
-        nkXtgM9yU6cTcGoxPORJn+b5VAQcdFZxWDwTth/vn/ZyqLdghWWYw3YhghMDFYQPB1DvQsu+
-        IoLVBMJHl1xcXzCkHP6wummEyxqiYdHBLozFs+CvrWde8ELoGXV4O+V5MQ1PTgpZOgGOVNYA
-        Fq+GF91FuE/CoYJgjT2EjXodHvm7H2OdfJiZIWDVi2H66HWcxfOg+fBhgsU0HL+aRbK7ugZg
-        Yd9+8hgQFbwyZcErUxa8Mk3B/8knAG4Fcxm9MSmeiQvVy7XMzv/eO06XVAemv58kuhHcLP1H
-        6gQYDzgB5HHEAfxuxQZGwFcpd+9hDLpYQ7KGMTpBqHf1Zo5wdpzO+3+1pli5IkKmCAsLU0Ss
-        CJOLA/nDB4pVAipeaWISGUbPGF76MJ6fMBWT9m3/SjS2qHljh8FWCc+3pGxJfdqsVi/pvra9
-        M35JwZyJU9LopvwtwZZa9T5LWq2thdz45pM5E7ue7b2rckqKu8bK7WMz9ss/Xvn5xVXSzQv7
-        LqWVpFSur1rScUAU9J7hWMjdiIU7um/X3gnfOz9kmJhKSswjWpcbq5f91r5aFDkYeIGcbb/1
-        5byhkxLkCqzpWTESk3jLY9pKpK6bsr2Gf5qx8mHogHHFplN16QuWPnJfLjweYFn/12nY1nB/
-        jfDDtvgb2t5sVZTUM7dEs5uxVY9vvXRk2W332X0z+woF4VZHD1i4iBeC/CLVMZ6BGV9v3pYv
-        2bM+88+d7y/4omzX0gW9XefMYtyYoJRLOAaj8l9NnEQfBwUAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTZxiH/U7PpXRrcqgmnoEZ0mQbY4DtdO7TGbxEkxMz5wWSZVtwdvas
-        GmjpWmDMZshg62UGKsqAFWkp7epWapgFGmRWlrYWCFtZtQhyGRpBmBAIAd24Omizhf+evL/f
-        +7zfHx+bxQtiMeyzshxGIRNl8XEO6vLy45K7+99jBCOF8dAa7CFgR28dAjVTNgKGgh4EDj/V
-        AvjdwxEcOtwBBD53lbGgyRfAYOjpNA6LLQ047FtQY/BBkR2BUzVbYOn4QxZ0TzQT0HrZhMEW
-        tRmFz0JaBJYvXUWg89E9DDaalgDULs8BaPRNofBu6xUc+p7rARwasgPorw/hsKr7FgJ/s5QQ
-        sOZxOQuaZ5pRqNbZMPiN20dA76QGg2Olq5X5ViMK7a2rvqbJMgwOlF0GsP3a+/tep3+eLcJp
-        o0NFu5/VovQNwxBBO+06nB68d3N13nmcbqtxEPTwhXaEbrSep62THozWLwvo0iY7oBu7VHSl
-        cR6hZ50vHyM/5OwRM1ln8xjFttRTnDM/XvsdlS8T+Z1eB1YIbuHfgig2Re6gOrz+VeaweeQv
-        gBpqWsQiQSzVe/0iEeGN1E8rY0Sk9BhQF8wlyFqAk8lUi0UdNm0i73OprsGja8wjA4BaKlKu
-        cRR5iAq1lodFG0kx9cOcOdxHyVco3WxxeM4ld1FjHgcrwtFU5/cj6BqzyDeo0fuj/7PNPMGK
-        PGgrNT9qwyJ3D1Dmr65gkc5m6q/bPuIi4BnWqQzrVIZ1KsO6lVqA2sFLjFwplUhPC+VCGfN5
-        ilIkVebKJCmns6VOEP51iQkt4E/TSooHIGzgARSbxd/E/WPHuwyPKxZ9cY5RZH+syM1ilB4Q
-        y0b5m7nCqmoxj5SIcphMhpEziv9ShB0VU4i8dYdRSJItr1oebLiaOp0j2p0XHesX1rVXP8FL
-        qsfVFbtT/1F8/SZnMSnRrrl0pyAotiaJ/X2BQyp5c7ybbzp47IX+iq5TaZlGlzZwRPVk7+3M
-        hPHPDlNf1u0JFv7acDKhyjWdkdFQHt1bcKStrF4nilfEFL84UnwjsMVwwMbfH6fV96Ql+/fO
-        ONuCC+ydGQOcXOHJmfr5lYMTNxfjvOe28zKRbT3yeMHht++m5aqmuuZcbZ8MJzjzBSfslR0V
-        yv0F/vSdBZ/mDS4AmX7l0d/ZpqPDl+r3aYSN5yur9Zbrfd1JE827pOkS1WvpA3KfbvtHWzcI
-        NP1Ebf47MqtD7PyAjyrPiISJLIVS9C80+5lK5AMAAA==
-X-CMS-MailID: 20231111013719epcas5p23433820ac418efb4ae8ed7444c1f469c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104441epcas5p37483641314b35da23d838c3679bdd157
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-        <CGME20231108104441epcas5p37483641314b35da23d838c3679bdd157@epcas5p3.samsung.com>
-        <20231108104343.24192-12-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:2dcc:b0:280:2f43:1f32 with SMTP id
+ sk12-20020a17090b2dcc00b002802f431f32mr196239pjb.2.1699666671364; Fri, 10 Nov
+ 2023 17:37:51 -0800 (PST)
+Date:   Fri, 10 Nov 2023 17:37:51 -0800
+In-Reply-To: <0000000000001959d30609bb5d94@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002ef35d0609d67c95@google.com>
+Subject: Re: [syzbot] [PATCH] test 305230142ae0
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
+***
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine =
-and
-> there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
->=20
-> Add compatibles specific to each SoC in front of all old-SoC-like compati=
-bles.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
->=20
+Subject: [PATCH] test 305230142ae0
+Author: eadavis@qq.com
 
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 305230142ae0
 
-> ---
->=20
-> I propose to take the patch through Samsung SoC (me). See cover letter fo=
-r
-> explanation.
-> ---
->  .../mfd/samsung,exynos5433-lpass.yaml         =7C  2 +-
->  .../bindings/sound/samsung-i2s.yaml           =7C 19 ++++++++++++-------
->  2 files changed, 13 insertions(+), 8 deletions(-)
-(...)
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 401ea09ae4b8..d2b6e4d18c89 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
+ 		goto out;
+ 	}
+ 
+-	*objectid = root->free_objectid++;
++	while (find_qgroup_rb(root->fs_info, root->free_objectid++);
++	*objectid = root->free_objectid;
+ 	ret = 0;
+ out:
+ 	mutex_unlock(&root->objectid_mutex);
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 855a4f978761..05b4b8dd0fcb 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -425,4 +425,6 @@ bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info);
+ int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+ 			      struct btrfs_squota_delta *delta);
+ 
++static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
++                                            u64 qgroupid);
+ #endif
+-- 
+2.25.1
 
