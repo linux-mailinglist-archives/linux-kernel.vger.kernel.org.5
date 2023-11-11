@@ -2,177 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163D07E8A7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 12:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AE67E8A81
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 12:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbjKKLIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 06:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        id S230408AbjKKLQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 06:16:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjKKLIs (ORCPT
+        with ESMTP id S229972AbjKKLQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 06:08:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EE53AA8
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 03:08:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FBB9C433CB;
-        Sat, 11 Nov 2023 11:08:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699700924;
-        bh=4+LCQxi4lcuWpBaGMskF95LLHsU3UkyAxY2T1MywU04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=clkbeG9q9sb2fwcbWoyoubJxsdJWMxIyp7Tbr7gfLrqVwHjBqTM7wNE4RVJHKjcVV
-         XH0jKeTYnPbPy9NL/Hlsp5PbGQ9bTwKiilREeEsed3J496rIRVKpLc82X8UUr0tz8x
-         g7ToGxDWR7jdOEXjLo8pPG9MH3Xvxta2AjLZ/qSdFpWa7EqATaRx3GB99kKl1Xzbwy
-         K4OUiB7S2FOiw8hfqpeuiFxf0/mbm6XZAi6Q/TqGGDH+gb5FEVbLVq5oaorcOovZTc
-         LOPNmrwqmUU8z/1ITVSpLXtJJR5UCQh3KxD5YJuEt8eup8U0Ev8EfofArIUxBhxHNK
-         DoGDxp1bcjZoQ==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so40453311fa.1;
-        Sat, 11 Nov 2023 03:08:44 -0800 (PST)
-X-Gm-Message-State: AOJu0YyuvL60i6WzYZ6y1WTchYwf8zPngkRLVksmisRQXSn9qvI053su
-        qwR8d5OoOra90+TPsQOMQp3Ua2z52iRFumZm2nw=
-X-Google-Smtp-Source: AGHT+IEsPJvoBX6VUXhVuSDBLKI8ICH8hwYcv6uwJD08sO4fiU5Og3JL4cUOmsdgJm+IkH5mGmEeqn3siNM5C1jNg+4=
-X-Received: by 2002:a2e:22c3:0:b0:2c5:15dc:ba99 with SMTP id
- i186-20020a2e22c3000000b002c515dcba99mr1311935lji.51.1699700922378; Sat, 11
- Nov 2023 03:08:42 -0800 (PST)
+        Sat, 11 Nov 2023 06:16:32 -0500
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB363AA8;
+        Sat, 11 Nov 2023 03:16:23 -0800 (PST)
+X-UUID: bb35b3e4808311ee8051498923ad61e6-20231111
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=D2tKsXiy0X+1JGV/GrDN1OLzUO3UG44bCa8GSOX5Eqc=;
+        b=ZYVp65ZKL9ii//GMRU+3Tykq1kLMIacfXQ0nUO8RIrVzwDumVK/jnHAwyzRTIdCO350B7ZJCaScXLko1RgwVuKdL7aXewsLAdakY6gi0mB5K8pFqto0ZLA+RG7n66nS53yWTRj497ffjtTU2Ioy5z5VmrA+CbxLniS4hGITzO90=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:1bb9f16c-58c5-49af-bcbe-52e6832c6786,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:364b77b,CLOUDID:9e818872-1bd3-4f48-b671-ada88705968c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: bb35b3e4808311ee8051498923ad61e6-20231111
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 384052900; Sat, 11 Nov 2023 19:16:16 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sat, 11 Nov 2023 19:16:15 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sat, 11 Nov 2023 19:16:14 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, <tjmercier@google.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Yong Wu <yong.wu@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <jianjiao.zeng@mediatek.com>,
+        <kuohong.wang@mediatek.com>,
+        Vijayanand Jitta <quic_vjitta@quicinc.com>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        <ckoenig.leichtzumerken@gmail.com>
+Subject: [PATCH v2 0/8] dma-buf: heaps: Add secure heap
+Date:   Sat, 11 Nov 2023 19:15:51 +0800
+Message-ID: <20231111111559.8218-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231025183644.8735-1-jerry.shih@sifive.com> <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231102051639.GF1498@sol.localdomain> <39126F19-8FEB-4E18-B61D-4494B59C43A1@sifive.com>
- <20231109071623.GB1245@sol.localdomain> <CABgGipXnGVB770ZA=60rD-6Hi5Fv_wh3tST+G+VFbTmMYzz0Mw@mail.gmail.com>
- <20231110054428.GC6572@sol.localdomain>
-In-Reply-To: <20231110054428.GC6572@sol.localdomain>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 11 Nov 2023 21:08:31 +1000
-X-Gmail-Original-Message-ID: <CAMj1kXHGWmdnOChbmiYhEib2Dgun0k8PVW5v_kLb-6c1BEhS=Q@mail.gmail.com>
-Message-ID: <CAMj1kXHGWmdnOChbmiYhEib2Dgun0k8PVW5v_kLb-6c1BEhS=Q@mail.gmail.com>
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS implementations
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Andy Chiu <andy.chiu@sifive.com>,
-        Jerry Shih <jerry.shih@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 at 15:44, Eric Biggers <ebiggers@kernel.org> wrote:
->
-> On Fri, Nov 10, 2023 at 12:58:12PM +0800, Andy Chiu wrote:
-> > Hi Eric,
-> >
-> > On Thu, Nov 9, 2023 at 3:16=E2=80=AFPM Eric Biggers <ebiggers@kernel.or=
-g> wrote:
-> > >
-> > > On Tue, Nov 07, 2023 at 04:53:13PM +0800, Jerry Shih wrote:
-> > > > On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
-> > > > > On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
-> > > > >> +static int ecb_encrypt(struct skcipher_request *req)
-> > > > >> +{
-> > > > >> +  struct crypto_skcipher *tfm =3D crypto_skcipher_reqtfm(req);
-> > > > >> +  const struct riscv64_aes_ctx *ctx =3D crypto_skcipher_ctx(tfm=
-);
-> > > > >> +  struct skcipher_walk walk;
-> > > > >> +  unsigned int nbytes;
-> > > > >> +  int err;
-> > > > >> +
-> > > > >> +  /* If we have error here, the `nbytes` will be zero. */
-> > > > >> +  err =3D skcipher_walk_virt(&walk, req, false);
-> > > > >> +  while ((nbytes =3D walk.nbytes)) {
-> > > > >> +          kernel_vector_begin();
-> > > > >> +          rv64i_zvkned_ecb_encrypt(walk.src.virt.addr, walk.dst=
-.virt.addr,
-> > > > >> +                                   nbytes & AES_BLOCK_VALID_SIZ=
-E_MASK,
-> > > > >> +                                   &ctx->key);
-> > > > >> +          kernel_vector_end();
-> > > > >> +          err =3D skcipher_walk_done(
-> > > > >> +                  &walk, nbytes & AES_BLOCK_REMAINING_SIZE_MASK=
-);
-> > > > >> +  }
-> > > > >> +
-> > > > >> +  return err;
-> > > > >> +}
-> > > > >
-> > > > > There's no fallback for !crypto_simd_usable() here.  I really lik=
-e it this way.
-> > > > > However, for it to work (for skciphers and aeads), RISC-V needs t=
-o allow the
-> > > > > vector registers to be used in softirq context.  Is that already =
-the case?
-> > > >
-> > > > The kernel-mode-vector could be enabled in softirq, but we don't ha=
-ve nesting
-> > > > vector contexts. Will we have the case that kernel needs to jump to=
- softirq for
-> > > > encryptions during the regular crypto function? If yes, we need to =
-have fallbacks
-> > > > for all algorithms.
-> > >
-> > > Are you asking what happens if a softirq is taken while the CPU is be=
-tween
-> > > kernel_vector_begin() and kernel_vector_end()?  I think that needs to=
- be
-> > > prevented by making kernel_vector_begin() and kernel_vector_end() dis=
-able and
-> > > re-enable softirqs, like what kernel_neon_begin() and kernel_neon_end=
-() do on
-> > > arm64.  Refer to commit 13150149aa6ded which implemented that behavio=
-r on arm64.
-> >
-> > Yes, if making Vector available to softirq context is a must, then it
-> > is reasonable to call local_bh_disable() in kernel_vector_begin().
-> > However, softirq would not be the only user for Vector and disabling
-> > it may cause extra latencies. Meanwhile, simply disabling bh in
-> > kernel_vector_begin() will conflict with the patch[1] that takes an
-> > approach to run Preemptible Vector. Though it is not clear yet on
-> > whether we should run Vector without turning off preemption, I have
-> > tested running preemptible Vector and observed some latency
-> > improvements without sacrificing throughput. We will have a discussion
-> > on LPC2023[2] and it'd be great if you could join or continue to
-> > discuss it here.
-> >
-> > Approaches can be done such as nesting, if running Vector in softirq
-> > is required. Since it requires extra save/restore on nesting, I think
-> > we should run some tests to get more performance (latency/throughput)
-> > figure let the result decide the final direction. For example, we
-> > could run Vector in either nesting with preempt-V and  non-nesting
-> > without preempt-V and compare the following performance catachristics:
-> >  - System-wide latency impact
-> >  - Latency and throughput of softirq-Vector itself
->
-> The skcipher and aead APIs do indeed need to work in softirq context.
->
-> It's possible to use a fallback, either by falling back to scalar instruc=
-tions
-> or by punting the encryption/decryption operation to a workqueue using
-> crypto/simd.c.  However, both approaches have some significant disadvanta=
-ges.
-> It was nice that the need for them on arm64 was eliminated by commit
-> 13150149aa6ded.  Note that it's possible to yield the vector unit occasio=
-nally,
-> to keep preemption and softirqs from being disabled for too long.
->
+This patchset adds three secure heaps:
+1) secure_mtk_cm: secure chunk memory for MediaTek SVP (Secure Video Path).
+   The buffer is reserved for the secure world after bootup and it is used
+   for vcodec's ES/working buffer;
+2) secure_mtk_cma: secure CMA memory for MediaTek SVP. This buffer is
+   dynamically reserved for the secure world and will be got when we start
+   playing secure videos, Once the security video playing is complete, the
+   CMA will be released. This heap is used for the vcodec's frame buffer. 
+3) secure_cma: Use the kerne CMA ops as the allocation ops. 
+   currently it is a draft version for Vijay and Jaskaran.
 
-It is also quite feasible to start out with an implementation of
-kernel_vector_begin() that preserves all vector registers eagerly in a
-special per-CPU allocation if the call is made in softirq context (and
-BUG when called in hardirq/NMI context). This was my initial approach
-on arm64 too.
+For the first two MediaTek heaps will be used v4l2[1] and drm[2], thus we
+cannot put it in v4l2 or drm, and create a common heap for them. Meanwhile
+We have a limited number of hardware entries to protect memory, we cannot
+protect memory arbitrarily, thus the secure memory management is actually
+inside OPTEE. The kernel just tells the TEE what size I want and the TEE
+will return a "secure handle".
 
-Assuming that RiSC-V systems with vector units are not flooding the
-market just yet, this gives you some time to study the issue without
-the need to implement non-vector fallback crypto algorithms
-everywhere.
+[1] https://lore.kernel.org/linux-mediatek/20231106120423.23364-1-yunfei.dong@mediatek.com/
+[2] https://lore.kernel.org/linux-mediatek/20231023044549.21412-1-jason-jh.lin@mediatek.com/
+
+Change note:
+v2: 1) Move John's patches into the vcodec patchset since they use the new
+       dma heap interface directly.
+       https://lore.kernel.org/linux-mediatek/20231106120423.23364-1-yunfei.dong@mediatek.com/
+    2) Reword the dt-binding description.
+    3) Rename the heap name from mtk_svp to secure_mtk_cm.
+       This means the current vcodec/DRM upstream code doesn't match this.
+    4) Add a normal CMA heap. currently it should be a draft version.
+    5) Regarding the UUID, I still use hard code, but put it in a private
+    data which allow the others could set their own UUID. What's more, UUID
+    is necessary for the session with TEE. If we don't have it, we can't
+    communicate with the TEE, including the get_uuid interface, which tries
+    to make uuid more generic, not working. If there is other way to make
+    UUID more general, please free to tell me.
+    
+v1: https://lore.kernel.org/linux-mediatek/20230911023038.30649-1-yong.wu@mediatek.com/
+    Base on v6.6-rc1.
+
+Yong Wu (8):
+  dma-buf: heaps: Initialize a secure heap
+  dma-buf: heaps: secure_heap: Add private heap ops
+  dma-buf: heaps: secure_heap: Initialize tee session
+  dma-buf: heaps: secure_heap: Add tee memory service call
+  dma-buf: heaps: secure_heap: Add dma_ops
+  dt-bindings: reserved-memory: Add secure CMA reserved memory range
+  dma_buf: heaps: secure_heap: Add a new MediaTek CMA heap
+  dma-buf: heaps: secure_heap: Add normal CMA heap
+
+ .../reserved-memory/secure_cma_region.yaml    |  44 ++
+ drivers/dma-buf/heaps/Kconfig                 |   7 +
+ drivers/dma-buf/heaps/Makefile                |   1 +
+ drivers/dma-buf/heaps/secure_heap.c           | 602 ++++++++++++++++++
+ 4 files changed, 654 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/secure_cma_region.yaml
+ create mode 100644 drivers/dma-buf/heaps/secure_heap.c
+
+-- 
+2.25.1
+
