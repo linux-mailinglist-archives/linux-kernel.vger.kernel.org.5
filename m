@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191147E885B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668B87E8861
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbjKKCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51348 "EHLO
+        id S1345458AbjKKCiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 21:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjKKCgB (ORCPT
+        with ESMTP id S229568AbjKKCh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:36:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7633C0E
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:35:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75F08C433C7;
-        Sat, 11 Nov 2023 02:35:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699670158;
-        bh=gY+gv6FuH7IyPZd+GcBbaxMFJ8nyFzbRgSyvPpB8WHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ht9uExB8i5dnk2CmKBU1mVcjqsdrsD2ZgLZevr8N30eX0ZSAYboFGGKykaf+sSld7
-         CGIVo25CwHPZiytr+teiiIPuigIDo+JPIkQyvN5n3iPDUMIc9jsF0NZEo7e+fDs8hI
-         ztRuR71feWJhW6c3gOy9FbB8al83VwWsa2jI6RDs8vnryE62nP6YASRYhTa1kayr6w
-         Da1EO6WGh1FXrOMerj2O/J/S46xnJ+wZhJFsdyYR1y51fhNB5Bz4l+uQ9vxyzm9yki
-         rXMDshUoip7ZzimtjecJgZVPpXDWmdS8vodHd4gqw3Sf3ZLjfhV8IAAtpr5Xj5Edg8
-         N5/Cmof6uQUjA==
-Date:   Fri, 10 Nov 2023 18:35:56 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: Re: [RFC PATCH v3 12/12] selftests: add ncdevmem, netcat for devmem
- TCP
-Message-ID: <20231110183556.2b7b7502@kernel.org>
-In-Reply-To: <CAHS8izNFnE8RGgBhKzxhVoKXtXgZGVQCLSdm4_dWNeH9Gx-WDQ@mail.gmail.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
-        <20231106024413.2801438-13-almasrymina@google.com>
-        <20231110151335.38a1c6ec@kernel.org>
-        <CAHS8izNFnE8RGgBhKzxhVoKXtXgZGVQCLSdm4_dWNeH9Gx-WDQ@mail.gmail.com>
+        Fri, 10 Nov 2023 21:37:58 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15073C0E
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:37:55 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc385e90e2so27925045ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:37:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699670275; x=1700275075;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSKrAPEQX8JBY5dcPA6aCmIIR2K68WR/P/3sBLwglFU=;
+        b=JmJVHq9YRxzVJtXWvj3czoMyqp/sz9JsDJTL885e5EEMiB8mWBWq+FQTYcJFk4It2K
+         IaiFlHZRjWIUGyjILLjDt5Zi4bAGhk0xEpH6QcWIRi0W/CWbUC5SvUU232eSGtPTCVWL
+         pOp0CHAxPC8D97MOuk2Qim0qbRn75Z/NG1N7Z5czzYw333CaAobYEl0AbwuRTKsADRYe
+         hNbtCucEue6sQxde1SIo66M9rk/BKo5vFer78DaM8bSjMgsNAXNhEaAbzKYQfKEvNwyd
+         CCyYjh45OvsSnXUorM324s3Fm8iJZE4RLnb3X/8WZlCYvHOlSiR3nwP6wbPIxHmigsoJ
+         W0GA==
+X-Gm-Message-State: AOJu0YwnH0Q1mlCzV4sbs38gPH87rrPuOfNc59LuVt1Clo9SIeu9UZw2
+        5VoDBr/ajMT2pwRQ/GeI636h/ZbJdg/O+HvZcvBM05TB+KiahXk=
+X-Google-Smtp-Source: AGHT+IHYHeEqvu83f0vaaqhxL1NS19rN5uc3EdvBLCqTArooc9M4DIEzRvdmqG89ywBFoz6ZT5+qj0rdZRKSHUFmYTghwufWC/65
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:428d:b0:1cc:3135:acbc with SMTP id
+ ju13-20020a170903428d00b001cc3135acbcmr268618plb.9.1699670275632; Fri, 10 Nov
+ 2023 18:37:55 -0800 (PST)
+Date:   Fri, 10 Nov 2023 18:37:55 -0800
+In-Reply-To: <0000000000001959d30609bb5d94@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000003bc4c0609d753f2@google.com>
+Subject: Re: [syzbot] [PATCH] test 305230142ae0
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 18:27:08 -0800 Mina Almasry wrote:
-> Thanks for the clear requirement. I clearly had something different in mind.
-> 
-> Might be dumb suggestions, but instead of creating a new ndo that we
-> maybe end up wanting to deprecate once the queue API is ready, how
-> about we use either of those existing APIs?
-> 
-> +void netdev_reset(struct net_device *dev)
-> +{
-> +       int flags = ETH_RESET_ALL;
-> +       int err;
-> +
-> +#if 1
-> +       __dev_close(dev);
-> +       err = __dev_open(dev, NULL);
-> +#else
-> +       err = dev->ethtool_ops->reset(dev, &flags);
-> +#endif
-> +}
-> +
-> 
-> I've tested both of these to work with GVE on both bind via the
-> netlink API and unbind via the netlink socket close, but I'm not
-> enough of an expert to tell if there is some bad side effect that can
-> happen or something.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-We generally don't accept drivers doing device reconfiguration with
-full close() + open() because if the open() fails your machine 
-may be cut off.
+***
 
-There are drivers which do it, but they are either old... or weren't
-reviewed hard enough.
+Subject: [PATCH] test 305230142ae0
+Author: eadavis@qq.com
 
-The driver should allocate memory and whether else it can without
-stopping the queues first. Once it has all those, stop the queues,
-reconfigure with already allocated resources, start queues, free old.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 305230142ae0
 
-Even without the queue API in place, good drivers do full device
-reconfig this way. Hence my mind goes towards a new (temporary?)
-ndo. It will be replaced by the queue API, but whoever implements
-it for now has to follow this careful reconfig strategy...
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 401ea09ae4b8..d2b6e4d18c89 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
+ 		goto out;
+ 	}
+ 
+-	*objectid = root->free_objectid++;
++	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
++	*objectid = root->free_objectid;
+ 	ret = 0;
+ out:
+ 	mutex_unlock(&root->objectid_mutex);
+diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
+index 855a4f978761..05b4b8dd0fcb 100644
+--- a/fs/btrfs/qgroup.h
++++ b/fs/btrfs/qgroup.h
+@@ -425,4 +425,6 @@ bool btrfs_check_quota_leak(struct btrfs_fs_info *fs_info);
+ int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
+ 			      struct btrfs_squota_delta *delta);
+ 
++static struct btrfs_qgroup *find_qgroup_rb(struct btrfs_fs_info *fs_info,
++                                            u64 qgroupid);
+ #endif
+-- 
+2.25.1
+
