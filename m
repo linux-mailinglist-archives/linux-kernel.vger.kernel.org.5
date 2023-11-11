@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F8A7E8C7D
+	by mail.lfdr.de (Postfix) with ESMTP id CD54E7E8C7E
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 21:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjKKUPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 15:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S229647AbjKKUQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 15:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKKUPu (ORCPT
+        with ESMTP id S229588AbjKKUQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 15:15:50 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A691D72;
-        Sat, 11 Nov 2023 12:15:47 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32d849cc152so2083476f8f.1;
-        Sat, 11 Nov 2023 12:15:47 -0800 (PST)
+        Sat, 11 Nov 2023 15:16:30 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A8A30CF;
+        Sat, 11 Nov 2023 12:16:25 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507962561adso4773544e87.0;
+        Sat, 11 Nov 2023 12:16:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699733745; x=1700338545; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lTOgoglzH1EfgfbAUkYEAdJDDyQ75EjhLpLWQWUsyKw=;
-        b=OPq1mZjMwX7fzEr3asVl5HeYCbTv3mir9KdSj4ZL8exwwwaA0Yc9tUnW/Fw973fiKj
-         lO4eHs0W4rbElQ+5Gs2jrjdnFtzf2KXaImUxFms+8aD2det7xPkcqlAenwH4OJeanCuq
-         NVzImi80cWraJQEiHh+Gzt6VRY+qkdsWFRP60y4hHVPvWZStprfyPiCzKFB4UdxC6DRY
-         dL0owwXXRfNLBewIuUBQpBY831aafGJFbehQjHjLwn/OS5/YtIdRrdNgqPObiasssUFl
-         Myf1IcdnArpH+LpmSPw/QPYaoTZD9kuIXVfV8NCOcqpa+3O7A0DgnZIuRXWILf1qgqPl
-         6X+g==
+        d=gmail.com; s=20230601; t=1699733783; x=1700338583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=anX/O1ZyHX/bAkTSiEeTTeh9inf0Mby4QqMwrhDOwKM=;
+        b=lru2VNGCM3WgcI2eim5RHvKMdk+N3ut+sfK71vz8JKvytCSVbzwNgSGkgnvo5EbtfU
+         3ttcTOkv4YSz5QeB/kumJVJT1bRnhXuV0/R+1GYqyJthA1ssoXa/rcA52wkJVBHY8jvv
+         1qUPliyvN6Gd7GnG4feFXq3+coFkizdSBIQjYk75K7xIwtUN4eJd13fmiO6r7qizuzi/
+         vLBPkRjJVDWOvYB+ZCN7yy3XrzdVZIVig2twsF2Wcv8sS3C3mBxKlYig494Dym2aTSp8
+         8DwoDiwnAj9Q+xczW9pXEhmafIqiUMs8lEoed6N9YnFccDl1JjOPqDRs9rRVPYmKsQLb
+         ZWhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699733745; x=1700338545;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lTOgoglzH1EfgfbAUkYEAdJDDyQ75EjhLpLWQWUsyKw=;
-        b=t/1Vuj7QCGv2utB95FYstD8glToyiwLLrIiZQ86qjVfuJscCwHgpBAw9ZXGKB3PkpU
-         K0okqJgBr9yFDgeejROP4Yls8IKfgPGbBdJvfHooNs3XVZMUwZCoBobgVUw8s/uRdbcB
-         /ct+J9gRfpFx0a16+zQ5IU22NI5wpZyJNvQEIr3tbeDrfM38yWjvGAnFBr7nqg+Qi5+u
-         Rsz0UuSeLQAkm3I68htlwpxLw/hHx/hp/ZN8jTUkj/gI7xAxvoizM1kPVR+HRzWzit93
-         nNrjz0oI9ijVNrxBPMdjXn1ypuEDZP9wH9lqQgl4vH1g8l2F9Tpxb4wq/RVBLwpRba7U
-         lFAw==
-X-Gm-Message-State: AOJu0YwcUdMmTkA0EkiB2+S9mQOWZ1rUAkwLe/AiNmR3cQmlg2tZK2V9
-        KyyUZSXUpZgF9keisoR/HTRd+XfKRChnWQ==
-X-Google-Smtp-Source: AGHT+IFgiQRYKSq1NmQS1+Bhfx9HsQFZ4b1N8o9+pr49u0Kien+9aI/5q1hIK2Nah+N7Hq5DvP48Zw==
-X-Received: by 2002:adf:eb10:0:b0:32f:7cea:2ea2 with SMTP id s16-20020adfeb10000000b0032f7cea2ea2mr1806062wrn.17.1699733745417;
-        Sat, 11 Nov 2023 12:15:45 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id j30-20020adfb31e000000b003197869bcd7sm2105431wrd.13.2023.11.11.12.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 12:15:44 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] thunderbolt: remove duplicated re-assignment of pointer 'out'
-Date:   Sat, 11 Nov 2023 20:15:43 +0000
-Message-Id: <20231111201543.338893-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1699733783; x=1700338583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=anX/O1ZyHX/bAkTSiEeTTeh9inf0Mby4QqMwrhDOwKM=;
+        b=C+XAwb2j33dv+AO0FcHPgearRzE8Ob6LwLXT9rHMTo1EBqLaICbqXg9fHZiTkZYRsU
+         4wDzLGaenoqy5tNDRBJaY8igOijO/oYIGRwWmy0yNkKB6s4w966xsGC/vyMm0n3JN+rm
+         ln0+XCzPy+8b63qGn98f/LzHT0Ir8YvanjrNFpa5z2arudbf02yjaZ9nebaYQBWL+Nhf
+         punB4h+LSm4oVdQantG90bIwjLxxDD79NZtg4+mpqLzssQgO4CB1t1A/uv//cupIxgKX
+         1GhT5fHBkarNxdLOYGWG2g4saDSpcq9D7qWUDQ5J5zJX5/ar1D7yuB9EvZdV9srNmnFi
+         MCGQ==
+X-Gm-Message-State: AOJu0Yz95ehFD/EXM1fMQuHD5hPksTD1E+7lpup9e7zsbAt7xC7drPvV
+        DN/jXUqR6X2l625aZM0utzSBAmfb6W4dTO1NWig=
+X-Google-Smtp-Source: AGHT+IHZtt6XxuQfcj7eNpCMe2MN3/Agc8m2uDdxVwJDhsRFIaxLiWj1nZwpJG7Qxxek/Nge6GRDJOUEXp22U8zxEIo=
+X-Received: by 2002:a19:381b:0:b0:509:8a5e:654d with SMTP id
+ f27-20020a19381b000000b005098a5e654dmr1592575lfa.21.1699733782837; Sat, 11
+ Nov 2023 12:16:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20231111172001.1259065-1-linux@jordanrome.com>
+In-Reply-To: <20231111172001.1259065-1-linux@jordanrome.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 11 Nov 2023 12:16:11 -0800
+Message-ID: <CAEf4BzYbjqsfG9yFsU3epT=Zp98LTEBuVNkkSSK3ab9pQtt8uA@mail.gmail.com>
+Subject: Re: [PATCH v2] perf: get_perf_callchain return NULL for crosstask
+To:     Jordan Rome <linux@jordanrome.com>
+Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,28 +73,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer 'out' is initialized and then a few statments later being
-re-assigned the same value. The second re-assignment is redundant and
-can be removed.
+On Sat, Nov 11, 2023 at 9:20=E2=80=AFAM Jordan Rome <linux@jordanrome.com> =
+wrote:
+>
+> Return NULL instead of returning 1 incorrect frame, which
+> currently happens when trying to walk the user stack for
+> any task that isn't current. Returning NULL is a better
+> indicator that this behavior is not supported.
+>
+> This issue was found using bpf_get_task_stack inside a BPF
+> iterator ("iter/task"), which iterates over all tasks. The
+> single address/frame in the buffer when getting user stacks
+> for tasks that aren't current could not be symbolized (testing
+> multiple symbolizers).
+>
+> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+> ---
+>
+> Changes in v2:
+> * move user and crosstask check before get_callchain_entry
+>
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/thunderbolt/tunnel.c | 2 --
- 1 file changed, 2 deletions(-)
+LGTM.
 
-diff --git a/drivers/thunderbolt/tunnel.c b/drivers/thunderbolt/tunnel.c
-index 7534cd3a81f4..8d45cb4f04ab 100644
---- a/drivers/thunderbolt/tunnel.c
-+++ b/drivers/thunderbolt/tunnel.c
-@@ -1313,8 +1313,6 @@ static void tb_dp_dump(struct tb_tunnel *tunnel)
- 		      "DP IN maximum supported bandwidth %u Mb/s x%u = %u Mb/s\n",
- 		      rate, lanes, tb_dp_bandwidth(rate, lanes));
- 
--	out = tunnel->dst_port;
--
- 	if (tb_port_read(out, &dp_cap, TB_CFG_PORT,
- 			 out->cap_adap + DP_LOCAL_CAP, 1))
- 		return;
--- 
-2.39.2
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
+> v1:
+> https://lore.kernel.org/linux-perf-users/CAEf4BzaWtOeTBb_+b7Td3NHaKjZU+Oo=
+huBJje_nvw9kd6xPA3g@mail.gmail.com/T/#t
+>
+>  kernel/events/callchain.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
+> index 1273be84392c..104ea2975a57 100644
+> --- a/kernel/events/callchain.c
+> +++ b/kernel/events/callchain.c
+> @@ -184,6 +184,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr,=
+ bool kernel, bool user,
+>         struct perf_callchain_entry_ctx ctx;
+>         int rctx;
+>
+> +       if (user && crosstask)
+> +               return NULL;
+> +
+>         entry =3D get_callchain_entry(&rctx);
+>         if (!entry)
+>                 return NULL;
+> @@ -209,9 +212,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr,=
+ bool kernel, bool user,
+>                 }
+>
+>                 if (regs) {
+> -                       if (crosstask)
+> -                               goto exit_put;
+> -
+>                         if (add_mark)
+>                                 perf_callchain_store_context(&ctx, PERF_C=
+ONTEXT_USER);
+>
+> @@ -219,7 +219,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr,=
+ bool kernel, bool user,
+>                 }
+>         }
+>
+> -exit_put:
+>         put_callchain_entry(rctx);
+>
+>         return entry;
+> --
+> 2.39.3
+>
