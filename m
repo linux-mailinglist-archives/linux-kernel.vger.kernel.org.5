@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CCD7E8976
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484867E8977
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbjKKGLi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 11 Nov 2023 01:11:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        id S230022AbjKKGMQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 11 Nov 2023 01:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjKKGLg (ORCPT
+        with ESMTP id S229502AbjKKGMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 01:11:36 -0500
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF8B1BD;
-        Fri, 10 Nov 2023 22:11:33 -0800 (PST)
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28010522882so2456204a91.0;
-        Fri, 10 Nov 2023 22:11:33 -0800 (PST)
+        Sat, 11 Nov 2023 01:12:14 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D173D55;
+        Fri, 10 Nov 2023 22:12:11 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d30d9f4549so1578452a34.0;
+        Fri, 10 Nov 2023 22:12:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699683093; x=1700287893;
+        d=1e100.net; s=20230601; t=1699683130; x=1700287930;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+ddHYTZTNQYfWPEsDiloeDxXlsjz6/dU2onUF8dEMH4=;
-        b=raVDB8lUl0J/OHule4jY+IxJFf2rh3BH1Gk/7piN76GcRVUubasGimu7qrNMYCLs+i
-         G8kcEi/MHbBPdmvr7NA3G8fS1/imAm2N38dO4Lc0qYxH0hP0gSSk2cLFUij5Gzl2O1sS
-         RtJ2yasuYGM6k6LQW0pdhqkmIIhrOpIARf/+PxaypNEycV4sZXyI3hQg9kqIUHfgOyxU
-         Yy3Z1DMA2xc/OzbpmcVnwfB50ndOZZqca5etTyFYl8qLWE5JdAT2RK+98aW8krAuXTlQ
-         iBFf5xfz3P/Wd+v1Yqx6eMolYES8y/ziC13bVGBOATJxzO3eOBit0G4SMSsOnROuPHA+
-         RlHA==
-X-Gm-Message-State: AOJu0YzRpnvRhmQbvXDJWrHH+aVBemaeoW8hX/6cQCOsBLso5cMx0iUD
-        WOfat9L9eO9xvFCm7If12xHeF342qVL09UJvwNU=
-X-Google-Smtp-Source: AGHT+IHrdZvyEETxsbZeZ11IPqRKILjddyJxt6+H0KgNg8gE81IGF5fzs/rzc9Egb7CEM44Ke15VqCxz3oHDBpbPUfg=
-X-Received: by 2002:a17:90b:4a4a:b0:27d:20ca:1156 with SMTP id
- lb10-20020a17090b4a4a00b0027d20ca1156mr836715pjb.34.1699683092874; Fri, 10
- Nov 2023 22:11:32 -0800 (PST)
+        bh=F18ZfBJDbteJpzF3orYa0y+zwvcNIr/l7qVlsuvq6RY=;
+        b=ciiKjWfOv5Br0/3YOAwqbIVtu9Ey/BNj8fhQDhDwD8HarF1V1uEyQVl9iyyfwS3gx4
+         J0D1QNK55QdK74fsy7rO0fgUDKehKuCBfGZpfj64KzJglrWEdmIE5qEq/kVxfsgikRRm
+         8p/4ET94b/sBTRu6Ef8Mm8nu4Ytk/k2xDp7sVqemPe+eDIoIgZET+SngIMtz5HdPieK+
+         CapXcLhmp6YVtDV4bXKq4tW/36atVdNVvKUX43x8G7BtA7ALcl0cWb8PbZvmHS5Qx4ap
+         TdzO/puD+ZDsHzQYrW0FU7QAk4rGHmTch5Y2WDMVSGNtrRkDif0adY1QX42KFcrAFbfs
+         0O+g==
+X-Gm-Message-State: AOJu0Ywd7ChJ8WoK3ZmcTccALk/+k02jZ7pD+j+yxDo1k7H3pfSYZwoy
+        38baNBLYf3sw9cboMSKOnac7eDrtKjVgL8YvbMA=
+X-Google-Smtp-Source: AGHT+IGm/ncW6tg2O+/GY8fy3Ui1xaM/XhX0zayiBwqhafMsRJUlmlrCiiMLnmQ4fMHM1pr2yytjj7ZAgno+DypQkLY=
+X-Received: by 2002:a05:6870:7d08:b0:1f4:a992:a15f with SMTP id
+ os8-20020a0568707d0800b001f4a992a15fmr1994226oab.43.1699683130507; Fri, 10
+ Nov 2023 22:12:10 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1699487758.git.jpoimboe@kernel.org> <f2c5130322a419ad04ea328a22fc2908487a1e25.1699487758.git.jpoimboe@kernel.org>
-In-Reply-To: <f2c5130322a419ad04ea328a22fc2908487a1e25.1699487758.git.jpoimboe@kernel.org>
+References: <cover.1699487758.git.jpoimboe@kernel.org> <6456d4d523841fb97b639433731540b8783529a1.1699487758.git.jpoimboe@kernel.org>
+In-Reply-To: <6456d4d523841fb97b639433731540b8783529a1.1699487758.git.jpoimboe@kernel.org>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 10 Nov 2023 22:11:21 -0800
-Message-ID: <CAM9d7chDdw4tMx9Vqw_P5D5K32pptHr4ncv8kQJr-bko6RLoBw@mail.gmail.com>
-Subject: Re: [PATCH RFC 02/10] perf: Remove get_perf_callchain() 'crosstask' argument
+Date:   Fri, 10 Nov 2023 22:11:59 -0800
+Message-ID: <CAM9d7chW3nL6zTzcPxBL-RQHyKPTuxR=hbrkexDBAPo4hNw=mw@mail.gmail.com>
+Subject: Re: [PATCH RFC 03/10] perf: Simplify get_perf_callchain() user logic
 To:     Josh Poimboeuf <jpoimboe@kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -70,13 +70,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Nov 8, 2023 at 4:44 PM Josh Poimboeuf <jpoimboe@kernel.org> wrote:
 >
-> get_perf_callchain() doesn't support cross-task unwinding, so it doesn't
-
-For only user stacks, but it seems there's no place to get cross-task kernel
-stacks too.
-
-> make much sense to have 'crosstask' as an argument.  Instead, have
-> perf_callchain() adjust 'user' accordingly.
+> Simplify the get_perf_callchain() user logic a bit.  task_pt_regs()
+> should never be NULL.
 >
 > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 
@@ -86,104 +81,41 @@ Thanks,
 Namhyung
 
 > ---
->  include/linux/perf_event.h | 2 +-
->  kernel/bpf/stackmap.c      | 5 ++---
->  kernel/events/callchain.c  | 6 +-----
->  kernel/events/core.c       | 8 ++++----
->  4 files changed, 8 insertions(+), 13 deletions(-)
->
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index f4b05954076c..2d8fa253b9df 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1534,7 +1534,7 @@ extern void perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct p
->  extern void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs);
->  extern struct perf_callchain_entry *
->  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
-> -                  u32 max_stack, bool crosstask, bool add_mark);
-> +                  u32 max_stack, bool add_mark);
->  extern int get_callchain_buffers(int max_stack);
->  extern void put_callchain_buffers(void);
->  extern struct perf_callchain_entry *get_callchain_entry(int *rctx);
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index b0b0fbff7c18..e4827ca5378d 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -294,8 +294,7 @@ BPF_CALL_3(bpf_get_stackid, struct pt_regs *, regs, struct bpf_map *, map,
->         if (max_depth > sysctl_perf_event_max_stack)
->                 max_depth = sysctl_perf_event_max_stack;
->
-> -       trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -                                  false, false);
-> +       trace = get_perf_callchain(regs, kernel, user, max_depth, false);
->
->         if (unlikely(!trace))
->                 /* couldn't fetch the stack trace */
-> @@ -421,7 +420,7 @@ static long __bpf_get_stack(struct pt_regs *regs, struct task_struct *task,
->                 trace = get_callchain_entry_for_task(task, max_depth);
->         else
->                 trace = get_perf_callchain(regs, kernel, user, max_depth,
-> -                                          false, false);
-> +                                          false);
->         if (unlikely(!trace))
->                 goto err_fault;
+>  kernel/events/callchain.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
 >
 > diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> index 1e135195250c..aa5f9d11c28d 100644
+> index aa5f9d11c28d..2bee8b6fda0e 100644
 > --- a/kernel/events/callchain.c
 > +++ b/kernel/events/callchain.c
-> @@ -178,7 +178,7 @@ put_callchain_entry(int rctx)
+> @@ -202,20 +202,18 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
 >
->  struct perf_callchain_entry *
->  get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
-> -                  u32 max_stack, bool crosstask, bool add_mark)
-> +                  u32 max_stack, bool add_mark)
->  {
->         struct perf_callchain_entry *entry;
->         struct perf_callchain_entry_ctx ctx;
-> @@ -209,9 +209,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
+>         if (user) {
+>                 if (!user_mode(regs)) {
+> -                       if  (current->mm)
+> -                               regs = task_pt_regs(current);
+> -                       else
+> -                               regs = NULL;
+> +                       if (!current->mm)
+> +                               goto exit_put;
+> +                       regs = task_pt_regs(current);
 >                 }
 >
->                 if (regs) {
-> -                       if (crosstask)
-> -                               goto exit_put;
-> -
->                         if (add_mark)
->                                 perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
+> -               if (regs) {
+> -                       if (add_mark)
+> -                               perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
+> +               if (add_mark)
+> +                       perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
 >
-> @@ -219,7 +216,6 @@ get_perf_callchain(struct pt_regs *regs, bool kernel, bool user,
->                 }
+> -                       perf_callchain_user(&ctx, regs);
+> -               }
+> +               perf_callchain_user(&ctx, regs);
 >         }
 >
-> -exit_put:
+> +exit_put:
 >         put_callchain_entry(rctx);
 >
 >         return entry;
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index b0d62df7df4e..5e41a3b70bcd 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -7592,16 +7592,16 @@ perf_callchain(struct perf_event *event, struct pt_regs *regs)
->  {
->         bool kernel = !event->attr.exclude_callchain_kernel;
->         bool user   = !event->attr.exclude_callchain_user;
-> -       /* Disallow cross-task user callchains. */
-> -       bool crosstask = event->ctx->task && event->ctx->task != current;
->         const u32 max_stack = event->attr.sample_max_stack;
->         struct perf_callchain_entry *callchain;
->
-> +       /* Disallow cross-task user callchains. */
-> +       user &= !event->ctx->task || event->ctx->task == current;
-> +
->         if (!kernel && !user)
->                 return &__empty_callchain;
->
-> -       callchain = get_perf_callchain(regs, kernel, user,
-> -                                      max_stack, crosstask, true);
-> +       callchain = get_perf_callchain(regs, kernel, user, max_stack, true);
->         return callchain ?: &__empty_callchain;
->  }
->
 > --
 > 2.41.0
 >
