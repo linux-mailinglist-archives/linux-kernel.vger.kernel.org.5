@@ -2,157 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3938A7E875B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4197E876A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345197AbjKKBJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58336 "EHLO
+        id S1344987AbjKKBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKKBJX (ORCPT
+        with ESMTP id S229729AbjKKBRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:09:23 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB5B4229;
-        Fri, 10 Nov 2023 17:09:20 -0800 (PST)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231111010918epoutp013bd552d728f7f7077a6e8f32d02214b3~WbEZRFc9x0401904019epoutp01g;
-        Sat, 11 Nov 2023 01:09:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231111010918epoutp013bd552d728f7f7077a6e8f32d02214b3~WbEZRFc9x0401904019epoutp01g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699664958;
-        bh=I76DPDgh0o5Xfv2AD6gxtqhB4FD5xMiDgU5bECKCc8s=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=VFjS3AlkZLsXc8Co/0oiwXolaA0ISt8A/tnNlzgRbHN/r/jW80FDGKxhKJWdRgY+T
-         hV7rAC0zmO79aEogXdaFpXfFgS/4gl6VqxQenWGusoL+EtUhRcMCi8XTmWNjk2oetm
-         kBJYr6EJvTzh9D1FX63m9zMOtRv6B1FK/LLC7iRs=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231111010917epcas5p191d87fb391a3ef1fc14f0f945c926871~WbEYIWY7s2822528225epcas5p1Q;
-        Sat, 11 Nov 2023 01:09:17 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SRyJW5V52z4x9Pq; Sat, 11 Nov
-        2023 01:09:15 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A1.41.19369.B34DE456; Sat, 11 Nov 2023 10:09:15 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231111010914epcas5p47647fd6b128e540aa43c15ced560da65~WbEVYrbCn1816018160epcas5p4s;
-        Sat, 11 Nov 2023 01:09:14 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231111010914epsmtrp12bc19c220ab08a3d1e980c20adf9688f~WbEVXNZTL0906709067epsmtrp1E;
-        Sat, 11 Nov 2023 01:09:14 +0000 (GMT)
-X-AuditID: b6c32a50-9e1ff70000004ba9-52-654ed43b53f9
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D3.C4.07368.A34DE456; Sat, 11 Nov 2023 10:09:14 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231111010908epsmtip2fa981f89c5d85784a526aa6192200bf5~WbEQLvKq-1719617196epsmtip2h;
-        Sat, 11 Nov 2023 01:09:08 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'David Airlie'" <airlied@gmail.com>,
-        "'Daniel Vetter'" <daniel@ffwll.ch>,
-        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
-        "'Maxime Ripard'" <mripard@kernel.org>,
-        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andi Shyti'" <andi.shyti@kernel.org>,
-        "'Jonathan Cameron'" <jic23@kernel.org>,
-        "'Lars-Peter Clausen'" <lars@metafoo.de>,
-        "'Lee Jones'" <lee@kernel.org>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Thierry Reding'" <thierry.reding@gmail.com>,
-        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "'Alessandro Zummo'" <a.zummo@towertech.it>,
-        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        "'Jiri Slaby'" <jirislaby@kernel.org>,
-        "'Liam Girdwood'" <lgirdwood@gmail.com>,
-        "'Mark Brown'" <broonie@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-9-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 08/17] dt-bindings: samsung: exynos-pmu: add specific
- compatibles for existing SoC
-Date:   Sat, 11 Nov 2023 06:39:07 +0530
-Message-ID: <05a401da143b$af73f890$0e5be9b0$@samsung.com>
+        Fri, 10 Nov 2023 20:17:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61963422D;
+        Fri, 10 Nov 2023 17:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699665418; x=1731201418;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=00UAaZ78oicw/s6rxiSDFduERCEerluh526ys0B5b9M=;
+  b=I6dS6NBUY+35ODA3mDdHMc2HPGpiGgBGZ7sGEkko/xF1TJiEdSHyRzqS
+   LAt6FwLMq3OfLIf3ExGsZLWepVH4LZNtJn9KQqHdvcERL+KHGdDxdiQIf
+   n1qFWFsv3sXNiS+wh+TCiTTIRU6V7WAHKcGiYcvvWAfiLDFXq2uRI0Sut
+   xKokmsfudEVSzzeLGQ8pf1CaEzD+7uhsuF6p0+mpUuAVOWmfM0cRm65uO
+   vxuQT77Oir/xwD5H8MEX7SXEytHGR/bdFPVAiXVlJkohjAvE24mSWS2W2
+   j5QvYaJ60Of666HMXqhwoF35i7Px+WnP9U8JH+X/zhAFyaMggonMYWbwE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="370451462"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="370451462"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 17:16:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="887464269"
+X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
+   d="scan'208";a="887464269"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2023 17:16:55 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1ccH-000A7C-1z;
+        Sat, 11 Nov 2023 01:16:53 +0000
+Date:   Sat, 11 Nov 2023 09:15:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>
+Subject: Re: [POC 5/7] livepatch: Convert klp module callbacks tests into
+ livepatch module tests
+Message-ID: <202311110928.Ui5NizhT-lkp@intel.com>
+References: <20231110170428.6664-6-pmladek@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQHRnrl8Ao0+UJ6w2TdhAA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xTVxzOuW3vLTU1V2DxrPhoujmnBmhdwcMUWTZ0V4sONZkO3VihNxSB
-        0rVlm3MZilDLmw5BILwh6ACDUlBEXgIbMB+IFCRaJjp0YJHNMRg40JVe3Pjv+335vt/jOzlc
-        luMkIeCGqnS0RiUPF+E89sW2dW+7bjbvpsXVnW+g0p4+AnXeKcbQyfEyApl7WjF0f9IAUMaD
-        YRxVNt7E0MuLRhYqaL/JQebJ33F0oqQKRwPP9Rw0FFOOofG8FShl5AELNVprCVSaXsBBdfoi
-        NpoyGzB0avYMhqp/7ecgU8EsQIa5vwDKbx9no976XBy1v0wFaHCwHKCfKsw4yupuwtD1kmQC
-        5T0+xUJFz2rZSB9fxkFxje0Eahs7yUG/pdgkM/X5bFReb+tXM2bkoHvGdIA6zu1/bx11fiIG
-        p/Irj1KNU4Vs6nLOIEFVl8fjlKW/wcZ37aGa8yoJ6n5iB0aZSqOp0rFWDpU6J6ZSasoBZbp2
-        lDqdP4NRE9Wr/MmAsC1KWq6gNUJaFRypCFWFeItk+wI/CPTwFEtcJV5ok0iokkfQ3iJfP3/X
-        7aHhtoBFwi/l4VE2yl+u1Yrct27RREbpaKEyUqvzFtFqRbhaqnbTyiO0UaoQNxWte1ciFm/0
-        sAk/D1NeeHmLra4nvs7MLSWOASOeABy4kJTCzqYrWALgcR3JBgD/NtXiTPEngC8e1RJMMQVg
-        VfZ19ivLnZH+BUsjgGmxl9hMMQJgZoWBNa/CSVdYV6K393Imr/Bhb/NDu92B9IXF5ht2kROp
-        hBWxz8A8ZpNr4PQfLTYNl8snvWB32tZ5mk8ug13Zw3Yri9wAy4qsLGYLIZx5VMaZx87k+7C3
-        bpBgNMvh6I/t9rUh2ciDvZaL+HxPaJtrmd7NeJ3gk44agsECOJqqJxgJBYtnBQythE/PVAEG
-        +8AWc659Mxa5DlbVuzOTlsLkf4YxxsmHBr0jo14DT4z3LUTlAo2JiRwGUzDuccpCUj0AXk5K
-        YaUBYc6iI3MWHZmz6Jic/ycXAnY5ENBqbUQIHeyhlriq6K/+e/DgyIhqYP9/6/3rQMX5ObdW
-        gHFBK4BclsiZf0vqRzvyFfIj39CayEBNVDitbQUetuSNLMFrwZG2D6zSBUqkXmKpp6en1Osd
-        T4loOd8al6dwJEPkOjqMptW05pUP4zoIjmFun2Xi6ceXZTd9m+1XuyTm3A6L/vboibVnFRoq
-        TwaV24I+fss3ueH5sErtS5SMFBLGI0E/JMl5qz6VVWUNWc89PDZhNb5pJZdoB4LnBOFJMt/D
-        n7gfDD5+cJflaaqlctf9usHhFyX98Ut7cs64yDx+Ucn97qK9ReR3H1lW86nojEOmWdrlaJPB
-        2iyOvrR3wBi7qdtniNzwRUKobFtLm3Rm2rh55ZjPZN3q2ysyOqZWnk3ddve2M3XtdMD+J4fU
-        wq07DbyIqLi+jYnuP6+Nnzl8lR8U/WHPvqvqlu8DqhMceDX1B/ycXt9pOlQG5koP3DWNCFfV
-        9GUV+R1I2XEj4FbXvYg9F0RsrVIuWc/SaOX/AvLTZTQIBQAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0xTdxTH97tv0M5LaeAqy4AmZlgGg4VkZ91C3ObmNTQO3TIT4xwNvSDy
-        atqyF24wnRU65BHAyRssVNexOMsjPFZxpRsCA1QqYKQqmSCuPGSoEyYyKtvCf598v9/zPeeP
-        w+DifnITk5CiEzQpyiQp5Uk0d0r9Q+SOnUKYxboBai9fpeHi8CkMjs2YaHBctmFw80EWguKx
-        2xTUW/sxWG4uwKHK3k+C48EsBUeMZykYWdSTcOuwGYOZiucgd3IMB6uriYbawioSWvQ1BDx0
-        ZGFQ9Pg0Bpbfh0hoqHqMIGvpPoJK+wwBg23lFNiX8xA4nWYEv37voODkwHkMfjMep6FiogiH
-        mrkmAvTZJhKOWu00dE4dI+FO7kpkoa2SAHPbSl/jVAEJ1wsKEXT9sGfrFv7H+cMUX1mfzlsf
-        VhN8a6mT5i3mbIofHfppRe/exXdU1NP8zW+6ML6hNoOvnbKRfN5SGJ/baEZ8Q286/23lAsbP
-        W56PZvd6vq4SkhI+FjQvRcZ4HjiaXUmom+hPq2b3ZSIDZUAeDMdGcMOTQ5gBeTJith1xizlN
-        /xp+3PC5fHqVvbnvntyhV0MTiBtvdZFug2JDuBaj/umAhL0m4npH33WzmO1DnPUvPzd7sNu4
-        U44+3IAYxpuN446c3+OWCXYz9+jeBcIti9hXuYH8SLcsYr247pLbhJtxNpgbvzb+P5tqXPjq
-        OQHcwriJXN36JjfY4qRXM77c3V/sdD4Sl66pKl1TVbqmqnTNSDUizGijoNYmxyfHhqvDU4RP
-        QrXKZG1aSnxobGqyBT19OVlQC7pR9STUhjAG2RDH4FKJ6FKEQhCLVMrPPhc0qR9p0pIErQ35
-        MYTUVxR+skwlZuOVOiFRENSC5j8XYzw2ZWIDZhaPCIzYXLLh+KO6P4or2MLyM2G9dfk5O//s
-        7CGmvU7M4cbI+74WU+YHsVe8l9/PiNl6ZkwWrI3pv6pTrO9h9nvzzq7dZRnTurC0CINXo0oe
-        XcLKFC0HXQq/gPZLsvTdz+aIInsGjT5fhnfmexz6+ZVt2RuDE+PTtbKD63fJ1/X7S869sKND
-        NBI0L+lbfEcdUly3rzVaFvW28IW8VrG9Ofar1+bkiXtV2xPuya+cDrpxq+iuMsF2AUlyoxO3
-        tMd1rDNIJ2T+swOOvKjrI2+85YJphTZQ51M4sPRhiE/Fof0v6jsCdqgDAs/GTdJRg898PcqW
-        Xyx7Gd6zVM/7pHaL/5YS2gPKcBmu0Sr/AWivBKrhAwAA
-X-CMS-MailID: 20231111010914epcas5p47647fd6b128e540aa43c15ced560da65
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104429epcas5p35afa44a49900db028d5873b220c7bb6b
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-        <CGME20231108104429epcas5p35afa44a49900db028d5873b220c7bb6b@epcas5p3.samsung.com>
-        <20231108104343.24192-9-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110170428.6664-6-pmladek@suse.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -160,33 +71,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Petr,
 
+kernel test robot noticed the following build errors:
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine =
-and
-> there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
->=20
-> Add compatibles specific to each SoC in front of all old-SoC-like compati=
-bles.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
->=20
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+[auto build test ERROR on shuah-kselftest/next]
+[also build test ERROR on shuah-kselftest/fixes linus/master v6.6 next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> ---
->=20
-> I propose to take the patch through Samsung SoC (me). See cover letter fo=
-r
-> explanation.
-> ---
->  .../devicetree/bindings/soc/samsung/exynos-pmu.yaml         =7C 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-(...)
+url:    https://github.com/intel-lab-lkp/linux/commits/Petr-Mladek/livepatch-Add-callbacks-for-introducing-and-removing-states/20231111-014906
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
+patch link:    https://lore.kernel.org/r/20231110170428.6664-6-pmladek%40suse.com
+patch subject: [POC 5/7] livepatch: Convert klp module callbacks tests into livepatch module tests
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20231111/202311110928.Ui5NizhT-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110928.Ui5NizhT-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311110928.Ui5NizhT-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> make[5]: *** No rule to make target 'lib/livepatch/test_klp_speaker2.o', needed by 'lib/livepatch/'.
+>> make[5]: *** No rule to make target 'lib/livepatch/test_klp_speaker_livepatch2.o', needed by 'lib/livepatch/'.
+   make[5]: *** [scripts/Makefile.build:243: lib/livepatch/test_klp_speaker.o] Error 1
+   make[5]: *** [scripts/Makefile.build:243: lib/livepatch/test_klp_speaker_livepatch.o] Error 1
+   make[5]: Target 'lib/livepatch/' not remade because of errors.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
