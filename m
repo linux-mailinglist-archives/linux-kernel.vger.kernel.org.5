@@ -2,184 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E647E8AB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 12:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0FA7E8AB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 12:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbjKKL1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 06:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
+        id S230200AbjKKL2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 06:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjKKL1T (ORCPT
+        with ESMTP id S229972AbjKKL2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 06:27:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67F7EA
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 03:27:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699702036; x=1731238036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rgIfOEiOZ989bKZFuB0N80EYz/nbfjUxtRAMd7EDRDw=;
-  b=if9YYYtVs38+6fi7K+rgnxk02n8cYv9iHq18N9sGwCTRd4l7a6jz3bBk
-   PLIgAn3i/cETFPxkAcVWINpff/LgNfa5XaoNBhendtsDDpaX2IjLQDTl6
-   6PPz7Qc2Y9YB9iBhbJyTrnBwLLvyUkB8gOsnA0Ytxigui6ISrvQSo6AN+
-   wrReZT4mtuw0V6e8fjuA7GyGBRqrDn4MYfQbG0MdLhHVE19myBqopORs/
-   DGbobmQOpVhkdznDNNf9TXZe2s90FRAtCzmT0JdL1BRbVoxJhHZ+7QnT4
-   bcS+HwnExz22xnW/R0C9+xgitl1Yl9LNXA8TUJschxkzpUEwBVNguI3Gx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11820606"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="11820606"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 03:27:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="1095362252"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="1095362252"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Nov 2023 03:27:10 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1m8p-000AOy-1u;
-        Sat, 11 Nov 2023 11:27:07 +0000
-Date:   Sat, 11 Nov 2023 19:26:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     John Stultz <jstultz@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH v6 12/20] sched: Fix runtime accounting w/ split exec &
- sched contexts
-Message-ID: <202311111917.FfLLB7kQ-lkp@intel.com>
-References: <20231106193524.866104-13-jstultz@google.com>
+        Sat, 11 Nov 2023 06:28:18 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E8B3862;
+        Sat, 11 Nov 2023 03:28:16 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6c398717726so2649646b3a.2;
+        Sat, 11 Nov 2023 03:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699702095; x=1700306895; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gvo63Ap3eCN7O+5c4nuw7iFnIW0OCrKiMm64henb2qA=;
+        b=WrjuV6CYIEx4LWwLG4khXzG+qmubmHG9zheAg+KlNTC61dPWJIzZag0QygZ5NR6s1d
+         QDXkkMnUxonNZHOftEEUr7+s39eI25Kk8yqpcRy9Iyfy0JpUYGNIDQJazjCsSWxCfdmp
+         ESu5gO8a0BnOhL+wZngCViHfGiXld/P/Vvltrl7tbnpa0vo1WjkyGPAXqAufkgCIuUb1
+         ZVtnuf/YK2c/aQ6e+32T2UGnFRJd96cx9e9hLk5DMDr8cAnTGDl9IatkJkjGIkBVMLZj
+         5rYGcAAakOaiG85rH+UaxguHjgCz3qcjMvl+BgTpsmTy5qHllgDWiN/IuMZmaiwPbn0R
+         nVPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699702095; x=1700306895;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gvo63Ap3eCN7O+5c4nuw7iFnIW0OCrKiMm64henb2qA=;
+        b=BGsPASy0nDYedxHilspunUxOty0NpBw4D6fpeA37CHRtgjAwelGbuznayjmfz7rWpq
+         LoQOwo51OeFibeEwVMZgy0mffUJl6xygfDaxlrRMZm4BDHAqucpKTekGD25g66t6IKe8
+         xx/k4Ala7FySYT5Jn+nhoaCOb0v8jV02Onjryv0g0AXllHVJI65gaQknFqmbGNouY22J
+         2ybdCAutlaohtk1sSX/p7acsTt1ur8Kr1Ubs8bgXrKWIwfzQ63bQkCl0/XMGWBEBLO9O
+         V6QvkyEq0U9+sF8abyvr5qMGdkQwXctijjAG3x3IpxyTZJzDi5L9MwW0Ax5LwTw3TYpM
+         NoBA==
+X-Gm-Message-State: AOJu0YwApQV9IDNOcVUmzo65i2DT+1drzIc1iT9/Hzz/2Ue87gMQYKu5
+        vQ5Ns0e/HEH07N1SarOesQ0X7yCOIQtdZilcmmw=
+X-Google-Smtp-Source: AGHT+IENPQo0bEs3lsJTUDUbui+ftHSAimNCdluqkm5kDIhjuu1++Xf6J2i55Ho8tyFnYGVZXqxe/xrksbMNWfKQ50Q=
+X-Received: by 2002:a05:6a20:4426:b0:181:16c7:6cd0 with SMTP id
+ ce38-20020a056a20442600b0018116c76cd0mr1449510pzb.17.1699702095344; Sat, 11
+ Nov 2023 03:28:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231106193524.866104-13-jstultz@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231025104457.628109-1-robimarko@gmail.com> <20231025104457.628109-2-robimarko@gmail.com>
+ <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
+ <20c8cfde-3f55-45c5-bc23-21979ac9680d@linaro.org> <CAOX2RU5-XFZhGzjigNtu-qFnPWDd2XkpGpY=HXWigRa5SXw4TA@mail.gmail.com>
+ <ef377506-4132-4805-a76e-18f241afe319@linaro.org> <CAOX2RU4K67evm10giQvF1rcfqTfR+e--KQT3ZePoHQoqASv_fg@mail.gmail.com>
+ <bdf6be0b-c137-48ce-8a3f-ab74bced6f87@linaro.org>
+In-Reply-To: <bdf6be0b-c137-48ce-8a3f-ab74bced6f87@linaro.org>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Sat, 11 Nov 2023 12:28:04 +0100
+Message-ID: <CAOX2RU4z1Dcs7ct0BAaS7wicYVmQEiSe74=w_grFDKQv22uoFg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Tue, 7 Nov 2023 at 22:51, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+>
+>
+> On 10/31/23 10:01, Robert Marko wrote:
+> > On Mon, 30 Oct 2023 at 22:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>
+> >> On 30.10.2023 21:37, Robert Marko wrote:
+> >>> On Mon, 30 Oct 2023 at 20:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>>>
+> >>>> On 29.10.2023 12:04, Robert Marko wrote:
+> >>>>> On Wed, 25 Oct 2023 at 12:45, Robert Marko <robimarko@gmail.com> wrote:
+> >>>>>>
+> >>>>>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
+> >>>>>> and drop the curent code that is de-asserting the USB GDSC-s as part of
+> >>>>>> the GCC probe.
+> >>>>>>
+> >>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>>>>
+> >>>>> Unfortunately, after testing on multiple devices I hit the same GDSC
+> >>>>> issue I had a long time ago
+> >>>>> that was the reason I did not send this upstream.
+> >>>>> It seems that USB3 port GDSC (USB0 GDSC in code) works just fine,
+> >>>>> however the USB2 one
+> >>>>> (USB1 GDSC in code) it is stuck off and USB2 port will fail due to this:
+> >>>>>      1.607531] ------------[ cut here ]------------
+> >>>>> [    1.607559] usb1_gdsc status stuck at 'off'
+> >>>>> [    1.607592] WARNING: CPU: 0 PID: 35 at gdsc_toggle_logic+0x16c/0x174
+> >>>>> [    1.615120] Modules linked in:
+> >>>> Can you dump GDSCR (the entire 32-bit register) at boot and when toggling?
+> >>>
+> >>> Sure, here it is:
+> >>> [    0.023760] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val: 0x8222004 init
+> >>> [    0.023782] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val: 0x8222004 init
+> >>> [    0.988626] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
+> >>> 0x8282000 before toggle
+> >>> [    1.202506] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
+> >>> 0x8282000 after toggle
+> >>> [    1.207208] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val:
+> >>> 0xa0282000 before toggle
+> >> Any chance
+> >>
+> >> .en_few_wait_val = 0x2
+> >>
+> >> (turning BIT(19) into BIT(17))
+> >>
+> >> will make a difference?
+> >
+> > Sadly, it makes no difference and GDSC status bit newer comes up which is
+> > rather weird as USB0 one seems to work just fine.
+> What if you add clk_ignore_unused?
 
-kernel test robot noticed the following build warnings:
+To the USB1 master clock or?
 
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on v6.6]
-[cannot apply to tip/sched/core tip/master linus/master tip/auto-latest next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+There is definitively something broken regarding the GDSC as
+GDSC_STATE bits (30-27)
+change from 0 to something on the USB0 GDSC but on GDSC1 they are 0 even after
+SW_OVERRIDE BIT(2) is set to 1, and the POWER BIT(31) newer changes to 1.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/John-Stultz/sched-Unify-runtime-accounting-across-classes/20231107-033946
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20231106193524.866104-13-jstultz%40google.com
-patch subject: [PATCH v6 12/20] sched: Fix runtime accounting w/ split exec & sched contexts
-config: x86_64-randconfig-121-20231111 (https://download.01.org/0day-ci/archive/20231111/202311111917.FfLLB7kQ-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111917.FfLLB7kQ-lkp@intel.com/reproduce)
+However, if you manually set BIT(2) to 1 then the USB1 master clock
+can come up so
+GDSC seems to work.
+USB1 (The USB2.0 HS) port is still broken after this if USB mass storage is used
+but that was present before the GDSC changes as well and I still need
+to figure out
+which quirk is missing for this.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111917.FfLLB7kQ-lkp@intel.com/
+Regards,
+Robert
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/fair.c:1116:49: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *running @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:1116:49: sparse:     expected struct task_struct *running
-   kernel/sched/fair.c:1116:49: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:1145:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:1145:36: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:1145:36: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:1191:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sched_entity const *se @@     got struct sched_entity [noderef] __rcu * @@
-   kernel/sched/fair.c:1191:32: sparse:     expected struct sched_entity const *se
-   kernel/sched/fair.c:1191:32: sparse:     got struct sched_entity [noderef] __rcu *
-   kernel/sched/fair.c:8053:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:8053:36: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:8053:36: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:8086:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:8086:37: sparse:     expected struct task_struct *tsk
-   kernel/sched/fair.c:8086:37: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:8333:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/fair.c:8333:38: sparse:     expected struct task_struct *curr
-   kernel/sched/fair.c:8333:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/fair.c:6369:35: sparse: sparse: marked inline, but without a definition
-   kernel/sched/fair.c: note: in included file:
-   kernel/sched/sched.h:2344:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2166:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2166:32: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2166:32: sparse:    struct task_struct *
-   kernel/sched/sched.h:2166:32: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2166:32: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2166:32: sparse:    struct task_struct *
-
-vim +1116 kernel/sched/fair.c
-
-  1102	
-  1103	static s64 update_curr_se(struct rq *rq, struct sched_entity *se)
-  1104	{
-  1105		u64 now = rq_clock_task(rq);
-  1106		s64 delta_exec;
-  1107	
-  1108		/* Calculate the delta from selected se */
-  1109		delta_exec = now - se->exec_start;
-  1110		if (unlikely(delta_exec <= 0))
-  1111			return delta_exec;
-  1112	
-  1113		/* Update selected se's exec_start */
-  1114		se->exec_start = now;
-  1115		if (entity_is_task(se)) {
-> 1116			struct task_struct *running = rq->curr;
-  1117			/*
-  1118			 * If se is a task, we account the time
-  1119			 * against the running task, as w/ proxy-exec
-  1120			 * they may not be the same.
-  1121			 */
-  1122			running->se.exec_start = now;
-  1123			running->se.sum_exec_runtime += delta_exec;
-  1124		} else {
-  1125			/* If not task, account the time against se */
-  1126			se->sum_exec_runtime += delta_exec;
-  1127		}
-  1128	
-  1129		if (schedstat_enabled()) {
-  1130			struct sched_statistics *stats;
-  1131	
-  1132			stats = __schedstats_from_se(se);
-  1133			__schedstat_set(stats->exec_max,
-  1134					max(delta_exec, stats->exec_max));
-  1135		}
-  1136	
-  1137		return delta_exec;
-  1138	}
-  1139	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Konrad
