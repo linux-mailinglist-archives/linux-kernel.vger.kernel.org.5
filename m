@@ -2,69 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 896797E89A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 08:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D27E89B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 09:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjKKHxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 02:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S230163AbjKKIBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 03:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjKKHw7 (ORCPT
+        with ESMTP id S229831AbjKKIBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 02:52:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7D03C0C;
-        Fri, 10 Nov 2023 23:52:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699689176; x=1731225176;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P35mStZNxkg9uguD+AoPwvrzhuSkOSt4IKHX8z0Mqy4=;
-  b=JvPpD1bBfwJRVHP2MurUBft1eBvhMayx3jYO3r+VFbFlcKhk+E+3wnQc
-   DEoS8FseMsbwNE0+m2vEJvRFRKm4OaY/IVyIV5XtU9SqHlkYIStmsLOFV
-   FzofGQQOlNdtMKSST0Ua/HFQFp7KGPnjMYNxKsCMijReamm9GRWv8bNHi
-   /MRdkPRjtHi1Uh2krnly035m7Liq1/7iRmlEd0zJ5Fu0ZXBaDUSY/4Xb3
-   cld7PvEeb3S1KPvvxQDPa4NaTdzN1b1H5IcRmffqv65uz78ygpCzrxizD
-   QWb7oPPYA4Q1QLIa3rVbubHTcOee3dAzkrVTBiuRH/jzIwexVSNOSrThD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="454563867"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="454563867"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 23:52:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="854557822"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="854557822"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 10 Nov 2023 23:52:51 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1inR-000AJC-2C;
-        Sat, 11 Nov 2023 07:52:49 +0000
-Date:   Sat, 11 Nov 2023 15:52:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_parass@quicinc.com,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Subject: Re: [PATCH v4] bus: mhi: host: Add tracing support
-Message-ID: <202311111502.wEcI1Okb-lkp@intel.com>
-References: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
+        Sat, 11 Nov 2023 03:01:33 -0500
+Received: from 9.mo576.mail-out.ovh.net (9.mo576.mail-out.ovh.net [46.105.56.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89157E9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 00:01:27 -0800 (PST)
+Received: from director4.ghost.mail-out.ovh.net (unknown [10.108.4.192])
+        by mo576.mail-out.ovh.net (Postfix) with ESMTP id 9E7C42941A
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 07:53:36 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-2vwkh (unknown [10.110.103.46])
+        by director4.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 8B18D1FD79;
+        Sat, 11 Nov 2023 07:53:35 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.98])
+        by ghost-submission-6684bf9d7b-2vwkh with ESMTPSA
+        id KHK6B/8yT2XtNCAA2VPDxA
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Sat, 11 Nov 2023 07:53:35 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-98R002f02f12a8-1316-49d4-8944-53b4aa49b7cd,
+                    DC6A8148E91F6D752E7FDAB9719B82BE7AA2FAC4) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 213.216.210.72
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     viro@zeniv.linux.org.uk, skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev,
+        syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
+Subject: [PATCH] iov_iter: fix memleak in iov_iter_extract_pages
+Date:   Sat, 11 Nov 2023 09:53:22 +0200
+Message-Id: <20231111075323.208181-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 3674937299206317576
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddvgedguddutdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhephffvvefufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepveevieelueekfeejveekffduheehtddvuefhgfetledvjeeifeehffevlefhkeehnecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecukfhppeduvdejrddtrddtrddupddvudefrddvudeirddvuddtrdejvddpfeejrdehledrudegvddrleeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehjeeipdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,97 +54,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+syzbot reports there is a memory leak in iov_iter_extract_pages where in
+the unlikely case of having an error in pin_user_pages_fast, the pages
+aren't free. This patch will free it before returning. Output of mem
+leak follows:
 
-kernel test robot noticed the following build warnings:
+BUG: memory leak
+unreferenced object 0xffff888109d2e400 (size 1024):
+  comm "syz-executor121", pid 5006, jiffies 4294943225 (age 17.760s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
+    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
+    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
+    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
+    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
+    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
+    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
+    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
+    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
+    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-[auto build test WARNING on 3006adf3be79cde4d14b1800b963b82b6e5572e0]
+BUG: memory leak
+unreferenced object 0xffff888109d2dc00 (size 1024):
+  comm "syz-executor121", pid 5007, jiffies 4294943747 (age 12.540s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
+    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
+    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
+    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
+    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
+    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
+    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
+    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
+    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
+    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/bus-mhi-host-Add-tracing-support/20231111-135816
-base:   3006adf3be79cde4d14b1800b963b82b6e5572e0
-patch link:    https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461%40quicinc.com
-patch subject: [PATCH v4] bus: mhi: host: Add tracing support
-config: csky-randconfig-002-20231111 (https://download.01.org/0day-ci/archive/20231111/202311111502.wEcI1Okb-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111502.wEcI1Okb-lkp@intel.com/reproduce)
+BUG: memory leak
+unreferenced object 0xffff888109d2d800 (size 1024):
+  comm "syz-executor121", pid 5010, jiffies 4294944269 (age 7.320s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 [inline]
+    [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+    [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+    [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+    [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+    [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 [inline]
+    [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_user_pages lib/iov_iter.c:1765 [inline]
+    [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 lib/iov_iter.c:1831
+    [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 block/blk-map.c:297
+    [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 block/blk-map.c:664
+    [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+    [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 block/blk-map.c:724
+    [<ffffffff82ca0925>] sg_io+0x285/0x510 drivers/scsi/scsi_ioctl.c:456
+    [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480 drivers/scsi/scsi_ioctl.c:820
+    [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 drivers/scsi/scsi_ioctl.c:903
+    [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+    [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+    [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+    [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111502.wEcI1Okb-lkp@intel.com/
+Reported-by: syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?id=99c8551967f413d108cfdd2950a0cb5652de07b8
+Fixes: 7d58fe7310281 ("iov_iter: Add a function to extract a page list from an iterator")
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+---
+ lib/iov_iter.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-All warnings (new ones prefixed by >>):
-
-   In file included from include/trace/define_trace.h:102,
-                    from drivers/bus/mhi/host/trace.h:225,
-                    from drivers/bus/mhi/host/init.c:24:
-   drivers/bus/mhi/host/./trace.h: In function 'trace_event_raw_event_mhi_process_ctrl_ev_ring':
->> drivers/bus/mhi/host/./trace.h:141:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     141 |                 __entry->rp = (u64)rp;
-         |                               ^
-   include/trace/trace_events.h:402:11: note: in definition of macro 'DECLARE_EVENT_CLASS'
-     402 |         { assign; }                                                     \
-         |           ^~~~~~
-   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
-      44 |                              PARAMS(assign),                   \
-         |                              ^~~~~~
-   drivers/bus/mhi/host/./trace.h:123:1: note: in expansion of macro 'TRACE_EVENT'
-     123 | TRACE_EVENT(mhi_process_ctrl_ev_ring,
-         | ^~~~~~~~~~~
-   drivers/bus/mhi/host/./trace.h:139:9: note: in expansion of macro 'TP_fast_assign'
-     139 |         TP_fast_assign(
-         |         ^~~~~~~~~~~~~~
-   In file included from include/trace/define_trace.h:103:
-   drivers/bus/mhi/host/./trace.h: In function 'perf_trace_mhi_process_ctrl_ev_ring':
->> drivers/bus/mhi/host/./trace.h:141:31: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     141 |                 __entry->rp = (u64)rp;
-         |                               ^
-   include/trace/perf.h:51:11: note: in definition of macro 'DECLARE_EVENT_CLASS'
-      51 |         { assign; }                                                     \
-         |           ^~~~~~
-   include/trace/trace_events.h:44:30: note: in expansion of macro 'PARAMS'
-      44 |                              PARAMS(assign),                   \
-         |                              ^~~~~~
-   drivers/bus/mhi/host/./trace.h:123:1: note: in expansion of macro 'TRACE_EVENT'
-     123 | TRACE_EVENT(mhi_process_ctrl_ev_ring,
-         | ^~~~~~~~~~~
-   drivers/bus/mhi/host/./trace.h:139:9: note: in expansion of macro 'TP_fast_assign'
-     139 |         TP_fast_assign(
-         |         ^~~~~~~~~~~~~~
-
-
-vim +141 drivers/bus/mhi/host/./trace.h
-
-   124	
-   125		TP_PROTO(const char *name, struct mhi_ring_element *rp, __le64 ptr,
-   126			 __le32 dword0, __le32 dword1),
-   127	
-   128		TP_ARGS(name, rp, ptr, dword0, dword1),
-   129	
-   130		TP_STRUCT__entry(
-   131			__field(u64, rp)
-   132			__field(__le64, ptr)
-   133			__string(name, name)
-   134			__field(__le32, dword0)
-   135			__field(__le32, dword1)
-   136			__field(int, state)
-   137		),
-   138	
-   139		TP_fast_assign(
-   140			__assign_str(name, name);
- > 141			__entry->rp = (u64)rp;
-   142			__entry->ptr = ptr;
-   143			__entry->dword0 = dword0;
-   144			__entry->dword1 = dword1;
-   145			__entry->state = MHI_TRE_GET_EV_STATE(rp);
-   146		),
-   147	
-   148		TP_printk("%s: RP:0x%llx Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
-   149			  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
-   150			  __entry->dword1, mhi_state_str(__entry->state))
-   151	);
-   152	
-
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index 27234a820eeb..c3fd0448dead 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -1780,8 +1780,10 @@ static ssize_t iov_iter_extract_user_pages(struct iov_iter *i,
+ 	if (!maxpages)
+ 		return -ENOMEM;
+ 	res = pin_user_pages_fast(addr, maxpages, gup_flags, *pages);
+-	if (unlikely(res <= 0))
++	if (unlikely(res <= 0)) {
++		kvfree(*pages);
+ 		return res;
++	}
+ 	maxsize = min_t(size_t, maxsize, res * PAGE_SIZE - offset);
+ 	iov_iter_advance(i, maxsize);
+ 	return maxsize;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
