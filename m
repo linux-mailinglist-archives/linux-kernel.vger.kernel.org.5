@@ -2,151 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8267E8C16
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 19:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CDF7E8C19
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 19:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjKKSTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 13:19:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S229519AbjKKSWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 13:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKKSTS (ORCPT
+        with ESMTP id S229379AbjKKSWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 13:19:18 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17323A87
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 10:19:14 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso24298665e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 10:19:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1699726753; x=1700331553; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AwX19YfB6xOhuhaF7AppkIuMTVamx0JcuT0ZkB4r4gk=;
-        b=JPeefGKltNE5iHQjlhMW1ZtRuy77a6KdZazye1IEpUqU8AY3Y/jrDvtBjZ/7lZIR5C
-         5shHQVcRsfVPLNJAKSpNlv+X9mcZRtrn7njn50O60UXj5bbf3rGKCgwsY+SHQVxDXtF9
-         4tDqGmy7wwP/Zvfcwp+BOLipYaowBaLVLDkd4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699726753; x=1700331553;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AwX19YfB6xOhuhaF7AppkIuMTVamx0JcuT0ZkB4r4gk=;
-        b=eQppbn2JVCumctecDrxYjqWrT0dsJfFaeKxnSHpqHYyEZ2/dOBIPkTYbBbcqlkIHxf
-         7zAFJMnuSFFaYhCPuU5j5+EjSHai4cQYe9cEOHKsl0zv/B2zvlQ8TevEAMkNljd7dVJw
-         w7Abec2wEBhs1ZPpRcXlnJgDw/ESXyu0tftOOwIdopCQr8+h0xa8IijCARaKKXTjMtoj
-         eby1gOvzSC9Q2mpLHqW3bAHejhgP96whpGZXN4jz4rAnOe5ZcAsGTjsB+stukA3ClxEC
-         gaLTOouUXIJnM35To8zbXKPh5Mks4YH88gmLICgCC3dzrSo/zLQ4lRzj7NDomemGY834
-         STgg==
-X-Gm-Message-State: AOJu0YzylTj1PXlXaP1TQFeW2oxmBBcdh5BmyR6mxZQv9pgS/8czdyK3
-        JJ3wdBAM74vICEkMfxdaVuPl0w==
-X-Google-Smtp-Source: AGHT+IHg5soWlnqBqQeGVF4JBHuusXQx/LK1k/VZf2vI1qK7tIwInDyjuvITGYsQf3WL7k0RSZyESQ==
-X-Received: by 2002:a5d:5a87:0:b0:32f:7d50:62f8 with SMTP id bp7-20020a5d5a87000000b0032f7d5062f8mr7611665wrb.3.1699726753314;
-        Sat, 11 Nov 2023 10:19:13 -0800 (PST)
-Received: from [192.168.1.10] (host-92-26-107-252.as13285.net. [92.26.107.252])
-        by smtp.gmail.com with ESMTPSA id p11-20020a05600c1d8b00b003fe15ac0934sm6453897wms.1.2023.11.11.10.19.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Nov 2023 10:19:13 -0800 (PST)
-Message-ID: <a16d44c5-2e1a-4e9a-8ca1-c7ca564f61cd@citrix.com>
-Date:   Sat, 11 Nov 2023 18:19:12 +0000
+        Sat, 11 Nov 2023 13:22:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425503861
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 10:22:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9AC4C433CA
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 18:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699726953;
+        bh=CW5tpNdFHXddseGoEXwpAJxkp57G2fy3axYjwxjjpHo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZO32iDztMvq6aVkH3CzD0/r8MBcZaGFWO9eAU3Fq/0ZfNRrV8BpJOACzV+DIPoyUG
+         IT5GS/ncvux3wNqf1bUBAp/M/c4GaEQFY93g+dBXrAyeP1M/jyz603cvZlLK9U1ZlA
+         A539Yo8f45/h3KpDGlJy6QWg6z+ogtKq/MRI/c/jmymjKb10ez4nbOzp1U7abQKmzm
+         m0NJvEJ+wKmwOzLTesmf6SmGJ5yKW8zbGjBVLLnniJA3MHeMXIx7rNUMzpbAwEFoIz
+         W6+17450o2XA9mU1lTuekTAeL1zaZeCpYxUDmdkUDbYOquNyi6aBF3YAklbVqTUYPp
+         yWsGFiSiQaCPw==
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso27939065ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 10:22:33 -0800 (PST)
+X-Gm-Message-State: AOJu0YxWhtrCZZG9TCdtx8ovqaW9LGn/FpX8xzYsOVIT/BskM67Gs/oJ
+        W1YHHg9pR1v8+MpF2J3HY+ZzA0F24Bw3eFzpw/XvdQ==
+X-Google-Smtp-Source: AGHT+IFRst9RU625qAGHUXiFdwUcqInfH7cBpB6bfU2QT9KP7GwFE+6fAD0QjOLiwzcDhmCQ5NB2iGC3TieCzx5Ci+c=
+X-Received: by 2002:a17:90a:eac9:b0:27d:9f6:47a3 with SMTP id
+ ev9-20020a17090aeac900b0027d09f647a3mr2745035pjb.31.1699726932330; Sat, 11
+ Nov 2023 10:22:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 06/13] x86: Add early SHA support for Secure Launch
- early measurements
-Content-Language: en-GB
-To:     Eric Biggers <ebiggers@kernel.org>,
-        Ross Philipson <ross.philipson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kexec@lists.infradead.org, linux-efi@vger.kernel.org,
-        dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, ardb@kernel.org, mjg59@srcf.ucam.org,
-        James.Bottomley@hansenpartnership.com, luto@amacapital.net,
-        nivedita@alum.mit.edu, kanth.ghatraju@oracle.com,
-        trenchboot-devel@googlegroups.com
-References: <20231110222751.219836-1-ross.philipson@oracle.com>
- <20231110222751.219836-7-ross.philipson@oracle.com>
- <20231111174435.GA998@sol.localdomain>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20231111174435.GA998@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20231106231158.380730-1-nphamcs@gmail.com> <CAF8kJuPXBLpG2d4sje6ntrA+U-AnLzu3sNpJK02YxNcg04YNng@mail.gmail.com>
+ <CAKEwX=OgN_xQWrp_OYkK1BRq3DFW4he9OSycdjBm0BNy+vpPAg@mail.gmail.com>
+In-Reply-To: <CAKEwX=OgN_xQWrp_OYkK1BRq3DFW4he9OSycdjBm0BNy+vpPAg@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Sat, 11 Nov 2023 10:22:00 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuN--EUY95O1jpV39yv5FDu0OYanY6SZeBPk5ng4kRyrjA@mail.gmail.com>
+Message-ID: <CAF8kJuN--EUY95O1jpV39yv5FDu0OYanY6SZeBPk5ng4kRyrjA@mail.gmail.com>
+Subject: Re: [PATCH v4] zswap: memcontrol: implement zswap writeback disabling
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org,
+        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
+        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
+        muchun.song@linux.dev, Hugh Dickins <hughd@google.com>,
+        corbet@lwn.net, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2023 5:44 pm, Eric Biggers wrote:
-> On Fri, Nov 10, 2023 at 05:27:44PM -0500, Ross Philipson wrote:
->>  arch/x86/boot/compressed/early_sha1.c   | 12 ++++
->>  lib/crypto/sha1.c                       | 81 +++++++++++++++++++++++++
-> It's surprising to still see this new use of SHA-1 after so many people objected
-> to it in the v6 patchset.  It's also frustrating that the SHA-1 support is still
-> being obfuscated by being combined in one patch with SHA-2 support, perhaps in
-> an attempt to conflate the two algorithms and avoid having to give a rationale
-> for the inclusion of SHA-1.  Finally, new functions should not be added to
-> lib/crypto/sha1.c unless those functions have multiple users.
+On Fri, Nov 10, 2023 at 4:10=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+> > I notice the bool is between two integers.
+> > mem_cgroup structure has a few bool sprinkle in different locations.
+> > Arrange them together might save a few padding bytes. We can also
+> > consider using bit fields.
+> > It is a very minor point, the condition also exists before your change.
+>
+> This sounds like an optimization worthy of its own patch. Two random
+> thoughts however:
 
-The rational was given.  Let me reiterate it.
+Sure. I consider this a very minor point as well.
 
-There are real TPMs in the world that can't use SHA-2.  The use of SHA-1
-is necessary to support DRTM on such systems, and there are real users
-of such configurations.
+>
+> a) Can this be done at the compiler level? I believe you can reduce
+> the padding required by sorting the fields of a struct by its size, corre=
+ct?
+> That sounds like a job that a compiler should do for us...
 
-DRTM with SHA-1-only is a damnsight better than no DTRM, even if SHA-1
-is getting a little long in the tooth.
+According to the C standard, the struct member should be layered out
+in the order it was declared. There are too many codes that assume the
+first member has the same address of the struct. Consider we use
+struct for DMA descriptor as well, where the memory layout needs to
+match the underlying hardware. Re-ordering the members will be really
+bad there. There are gcc extensions to do structure member
+randomization. But the randomization layout is determined by the
+randomization seed. The compiler actually doesn't have the flexibility
+to rearrange the member orders to reduce the padding either.
 
-So unless you have a credible plan to upgrade every non-SHA-2 TPM in the
-world, you are deliberately breaking part of the usecase paying for the
-effort of trying to upstream DRTM support into Linux.
+>
+> b) Re: the bitfield idea, some of the fields are CONFIG-dependent (well
+> like this one). Might be a bit hairier to do it...
 
-~Andrew
+You can declare the bit field under preprocessor condition as well,
+just like a normal declare. Can you clarify why it is more hairier?
+The bitfield does not have a pointer address associated with it, the
+compiler can actually move the bit field bits around. You get the
+compiler to do it for you in this case.
+
+>
+> >
+> > >  #endif /* _LINUX_ZSWAP_H */
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index e43b5aba8efc..9cb3ea912cbe 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -5545,6 +5545,11 @@ mem_cgroup_css_alloc(struct cgroup_subsys_stat=
+e *parent_css)
+> > >         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
+> > >  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+> > >         memcg->zswap_max =3D PAGE_COUNTER_MAX;
+> > > +
+> > > +       if (parent)
+> > > +               WRITE_ONCE(memcg->zswap_writeback, READ_ONCE(parent->=
+zswap_writeback));
+> > > +       else
+> > > +               WRITE_ONCE(memcg->zswap_writeback, true);
+> >
+> > You can combine this two WRITE_ONCE to one
+> >
+> > bool writeback =3D !parent ||   READ_ONCE(parent->zswap_writeback);
+> > WRITE_ONCE(memcg->zswap_writeback, writeback);
+> >
+>
+> Yeah I originally did something similar, but then decided to do the if-el=
+se
+> instead. Honest no strong preference here - just felt that the if-else wa=
+s
+> cleaner at that moment.
+
+One WRITE_ONCE will produce slightly better machine code as less
+memory store instructions. Normally the compiler is allowed to do the
+common expression elimination to merge the write. However here it has
+explicite WRITE_ONCE, so the compiler has to place two memory stores
+instructions, because you have two WRITE_ONCE. My suggestion will only
+have one memory store instruction. I agree it is micro optimization.
+
+Chris
