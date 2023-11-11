@@ -2,136 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD1C7E880E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DA67E8815
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345470AbjKKCBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:01:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33342 "EHLO
+        id S230137AbjKKCHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 21:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKKCBq (ORCPT
+        with ESMTP id S229462AbjKKCHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:01:46 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2049.outbound.protection.outlook.com [40.107.223.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C163868
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:01:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WZSPRTqtR9aJ77JDXS+Km2K/M+mWDVhJqKLltpneFhN6kr09LqmY9xZeJzVcOI5LYUOlvqYIzGBugpOPXy1AFeqWEKStypEzDKU9UWylS89mPdWwJoBAoPNUJieM8jQH8SdRRZfjb9zkvrb+70sWzoKBUNwoVBcORyROLRNY+BqIIMzKdpAwWb0oSAJjY8+u1lnFhDxWAP/tjBWgSl85yLpTcoNfZWden7esjFu/AwEHIKnYSzUrW4AJrFmj/QAwPTLC0sOxOLyPmhL3070plLKpUD87cKpGo40ofnF+UqolovDTxRw1khCvLj23sJ5FXujqsu9gb0Xu7PiK0bX51g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eZNP/eIrIUThMx8ajUtI7m2oEVozcnaNrijevvyXsvw=;
- b=FttJbhLsze1K8I9zehGJ+tXk2JzC1qHgWgOe5jiGjf+RmoOUB6kYQnPeKDvyejFoUGRaMU4f3q/YH9Q4K11MKoOxa7H4xmC9bPFKlGppvNFGxIKzmEgZZU5lwAZZUraNsiKZOGzr6YIqfrZaWEILRHtnml+hMszy8JrfICQ+Mo/8SRvzxbwLWfduoLcf0EiAOTkXqLGVyg4Ozi2paNIO8s8i/fDhx3DVQKbncsQAzozFAoV/+HxDxk7VACFpsDXfBDGYrTSpT1g6MZOCCb+apMUjm3uQd8nllMbABgmJpvv6SzsprozKK83O5Jtt/LpC35XZTfVbi856IWksF/DXvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eZNP/eIrIUThMx8ajUtI7m2oEVozcnaNrijevvyXsvw=;
- b=Hgs7HVnMbsB2VnLFqd0jQXAHcxHL1aKnThioxCarl+H320JceZ6dVtUJnLMxOwNtf6gjWQ7zPJkonagZl7cNmprZ5Bn3P701m0I8qfJunGJA+Yv483/GuAHP8AUUGW22g7k2ZZWOchlaDeg/wuEwwuT/WT8zUU/f+lOGOKtVB0w=
-Received: from MW4PR03CA0254.namprd03.prod.outlook.com (2603:10b6:303:b4::19)
- by CH2PR12MB4118.namprd12.prod.outlook.com (2603:10b6:610:a4::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Sat, 11 Nov
- 2023 02:01:40 +0000
-Received: from MWH0EPF000989E7.namprd02.prod.outlook.com
- (2603:10b6:303:b4:cafe::9a) by MW4PR03CA0254.outlook.office365.com
- (2603:10b6:303:b4::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.21 via Frontend
- Transport; Sat, 11 Nov 2023 02:01:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E7.mail.protection.outlook.com (10.167.241.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6977.21 via Frontend Transport; Sat, 11 Nov 2023 02:01:40 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 10 Nov
- 2023 20:01:39 -0600
-From:   Michael Roth <michael.roth@amd.com>
-To:     <x86@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Joerg Roedel" <jroedel@suse.de>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86/sev: Fix overflow when computing address for PVALIDATE
-Date:   Fri, 10 Nov 2023 20:00:19 -0600
-Message-ID: <20231111020019.553664-1-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 10 Nov 2023 21:07:47 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5F83C0E;
+        Fri, 10 Nov 2023 18:07:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so2380803b3a.2;
+        Fri, 10 Nov 2023 18:07:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699668462; x=1700273262; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=us4PH3hYSKV8M14QXIBOyvA+4JqUtwc0XH3JtG4nmDY=;
+        b=H2SACKIh/aE8QyI9hmjRYgDpTcn2jhbedsoYWNKoryJo5gw9y7qRdGpdtzhyqtnT7Z
+         IyaivMsC/o5jYmUFamrLMj9RntR/nwl0g8dafIeGJTDW1dg07ALue77KOXLepq+enGS/
+         46tLvitQ3NET2vdPyIV9R5noUpnuWGcuaKZFdOLL/A6ZVNgLawVy4M7OTyxSymo48bNO
+         HambX9i5EFqNPBzmShFNds6UgrMK1QOYi+0O1wvZdNrMiLyN3/KUQzJbTENNA1dIR3Pk
+         sLNfBM82Q/cDLg4xKsWzYCoMR8jLVOchb6lHHLHwP7it+gpT9+Y2FpIlCv+CcExXeIRc
+         MOmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699668462; x=1700273262;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=us4PH3hYSKV8M14QXIBOyvA+4JqUtwc0XH3JtG4nmDY=;
+        b=P3pAzLvZOpeLxQh1oPV5tCz10xk/ZcK6+p1XPqbHMSICLemiCMoao0Fn93PwvSljmH
+         tjFsMNIqa+73RiZuFPzZote0LUUHJzU/pYFtXtZS8/kmgo83fIPYQjn3/RPy3fcM03jE
+         di23VitBv5Eu+qCedPXRgS5DssTX9yqAtCntMxo+PTXY9YA961PaNu50GmizlzC1X2w3
+         18XvVDFf61EYsOCH7JI7yNpqe1tacImlH4kwsLNq4KWyWOdwTq8eoMHrJ+5AnthPbMWH
+         Gik916q8RqHs9OnMEeupN7x7U8sC/pig4zFqCZDF+RZc6NmAN7jElCXn9bpnQ85mjdht
+         1vWQ==
+X-Gm-Message-State: AOJu0Yw/tHvbPAotgeLg+64ZdE3AKl9yrM+SdGSmFxycEjAa73UqYBjY
+        /AIBS52Bc/9wmLOlW2no107JkTRlazE60A==
+X-Google-Smtp-Source: AGHT+IHNBBW3BK8jyaoUi7xXcxcZdBpSdb0qc7l3zTckarw97gd+X2tbBj1Oc1EwReuZ3Rk530zP9g==
+X-Received: by 2002:a05:6a20:ce83:b0:131:b3fa:eaaa with SMTP id if3-20020a056a20ce8300b00131b3faeaaamr588855pzb.61.1699668462452;
+        Fri, 10 Nov 2023 18:07:42 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b001a9b29b6759sm308895pll.183.2023.11.10.18.07.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Nov 2023 18:07:41 -0800 (PST)
+Message-ID: <60585667-70ca-4ace-8d8f-dbdd8d4428a6@gmail.com>
+Date:   Sat, 11 Nov 2023 09:07:35 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E7:EE_|CH2PR12MB4118:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3f400989-f52a-4c9d-ec58-08dbe25a2547
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vG3oUN89JnmyheENDyRiieQeLEV7pkEWX0E92Rbm8N+bnOsjhO1IiyrO901v+pbaDpGT/iO8jy1I/WoeK8ddWU+rr++afCc8ga6ysB7kroP5UtsCTSbcXRJwrKShP4TC8JETXSpAhOw/kTD2CKWf5A6HXLkG8wXy9osZj9MpRChpNKGi0CY0B36mT1SRpeVFoqF56LzSyC3pKq7evau3cWsa4v0j7WDNEEqHaxjamHfh8mo4etLA62VMQKcUTqX1WvUtT9RuWiUhIIU1HYuAm4QJ2pZQE0dBeuAlJfYiepO/oWpbyqo3owULqcY4HMj9RDaT45blY7Fw3hw9XyicQFSa23VUwl3RM/CzBemDRUucx/A7Uzv3mSUctPUSdY6VaR/i5wSLr2lfTd8an2+WBPWXdvgwQdunqA6MwQ7t1Ld0zF9a50lnrb2cJ/lJtN1K3ScCClnVS/DvJzurR1eiXapoYwLthxztV4xlAY2gXltpX7XTIyMauMw+DDpickHANJ2oa5HawKyI5kbl5E3SxbHzIdUVApKXskmCzCvQbX4BmnKjTxvlJ7LakF4blFn2F+MLLyuFJ2stCOu015+w0riipnkq5cHMp447qTL2Z0nll7DV1OX7azYUvIOU2w1tm1ZBgH0iY5+yvvxVgvCnT6y2330KO1cgJKR8AkeNh3G5qWtwCrOGBmEHZhNVUpYHYbjZXeHX/kzxo4GuKu/9GZ6v+NdSlJqNObjVzIDOf4GG3N88EJD0kcjQ/gdz04IXYAyY9lQ6xsTp1VWLp6PGIw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(82310400011)(451199024)(1800799009)(186009)(64100799003)(36840700001)(46966006)(40470700004)(2616005)(40460700003)(40480700001)(82740400003)(44832011)(356005)(86362001)(5660300002)(47076005)(36860700001)(81166007)(316002)(2906002)(41300700001)(6666004)(1076003)(26005)(54906003)(8676002)(4326008)(70586007)(83380400001)(8936002)(426003)(16526019)(6916009)(70206006)(336012)(478600001)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2023 02:01:40.2055
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f400989-f52a-4c9d-ec58-08dbe25a2547
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E7.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4118
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jian-Hong Pan <jhp@endlessos.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: The PCIe AER error flood between PCIe bridge and Realtek's
+ RTL8723BE makes system hang
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GFN in the struct used for page-state change requests is a 40-bit
-bit-field, so attempts to shift it by PAGE_SHIFT to get an address will
-result in bits getting lost if they cross the 1TB boundary. This ends up
-causing crashes when booting 1TB SNP guests with kernels that support
-lazy-acceptance (without kernel-side lazy-acceptance support, OVMF
-handles the PVALIDATE for GFNs in the upper address ranges, so this
-overflow condition is never encountered by the kernel).
+Hi,
 
-Fix this by casting the 40-bit GFN field to a 64-bit type before
-converting it to an address.
+I notice a bug report on Bugzilla [1]. Quoting from it:
 
-Fixes: 6c3211796326 ("x86/sev: Add SNP-specific unaccepted memory support")
-Signed-off-by: Michael Roth <michael.roth@amd.com>
----
- arch/x86/kernel/sev-shared.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> We have an ASUS X555UQ laptop equipped with Intel i7-6500U CPU and Realtek RTL8723BE PCIe Wireless adapter.
+> 
+> We tested it with kernel 6.6.  System keeps showing AER error message flood, even hangs up, until rtl8723be's ASPM is disabled.
+> 
+> kernel: pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
+> kernel: pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00000001/00002000
+> kernel: pcieport 0000:00:1c.5:    [ 0] RxErr                  (First)
+> kernel: pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+> kernel: pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+> kernel: pcieport 0000:00:1c.5: AER: Multiple Corrected error received: 0000:00:1c.5
+> kernel: pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+> 
+> Here is the PCI tree:
+> $ lspci -tv
+> -[0000:00]-+-00.0  Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers
+>            +-02.0  Intel Corporation Skylake GT2 [HD Graphics 520]
+>            +-04.0  Intel Corporation Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem
+>            +-14.0  Intel Corporation Sunrise Point-LP USB 3.0 xHCI Controller
+>            +-14.2  Intel Corporation Sunrise Point-LP Thermal subsystem
+>            +-15.0  Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0
+>            +-15.1  Intel Corporation Sunrise Point-LP Serial IO I2C Controller #1
+>            +-16.0  Intel Corporation Sunrise Point-LP CSME HECI #1
+>            +-17.0  Intel Corporation Sunrise Point-LP SATA Controller [AHCI mode]
+>            +-1c.0-[01]----00.0  NVIDIA Corporation GM108M [GeForce 940MX]
+>            +-1c.4-[02]----00.0  Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
+>            +-1c.5-[03]----00.0  Realtek Semiconductor Co., Ltd. RTL8723BE PCIe Wireless Network Adapter
+>            +-1f.0  Intel Corporation Sunrise Point-LP LPC Controller
+>            +-1f.2  Intel Corporation Sunrise Point-LP PMC
+>            +-1f.3  Intel Corporation Sunrise Point-LP HD Audio
+>            \-1f.4  Intel Corporation Sunrise Point-LP SMBus
 
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index ccb0915e84e1..d92e048f4235 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -1083,7 +1083,7 @@ static void pvalidate_pages(struct snp_psc_desc *desc)
- 	for (i = 0; i <= desc->hdr.end_entry; i++) {
- 		e = &desc->entries[i];
- 
--		vaddr = (unsigned long)pfn_to_kaddr(e->gfn);
-+		vaddr = (unsigned long)pfn_to_kaddr((unsigned long)e->gfn);
- 		size = e->pagesize ? RMP_PG_SIZE_2M : RMP_PG_SIZE_4K;
- 		validate = e->operation == SNP_PAGE_STATE_PRIVATE;
- 
+And then the reporter found that it was ASPM bug:
+
+> Notice a long time ago discussion mail: Dmesg filled with "AER: Corrected error received" [1]
+> 
+> So, I force write 1 to clear Receiver Error Status bit of Correctable Error Status Register, like
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index 9c8fd69ae5ad..39faedd2ec8e 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -1141,8 +1160,9 @@ static void aer_isr_one_error(struct aer_rpc *rpc,
+>                         e_info.multi_error_valid = 0;
+>                 aer_print_port_info(pdev, &e_info);
+>  
+> -               if (find_source_device(pdev, &e_info))
+> -                       aer_process_err_devices(&e_info);
+> +               //if (find_source_device(pdev, &e_info))
+> +               //      aer_process_err_devices(&e_info);
+> +               pci_write_config_dword(pdev, pdev->aer_cap + PCI_ERR_COR_STATUS, 0x1);
+>         }
+>  
+>         if (e_src->status & PCI_ERR_ROOT_UNCOR_RCV) {
+> 
+> Then, system should clear the error right away.  However, system still get the AER flood ...
+> 
+> Seems that we still have to disable rtl8723be's ASPM.
+
+See Bugzilla for the full thread and attached full kernel logs.
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218127
+
 -- 
-2.25.1
-
+An old man doll... just what I always wanted! - Clara
