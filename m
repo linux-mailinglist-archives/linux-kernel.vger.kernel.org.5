@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF637E8A5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 11:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF8C7E8A5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 11:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbjKKKnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 05:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S230368AbjKKKpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 05:45:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbjKKKm5 (ORCPT
+        with ESMTP id S229956AbjKKKpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 05:42:57 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571734687
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:42:51 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so4666563a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:42:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1699699369; x=1700304169; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=57XfclRA1DPTjEGTeta8gbvZTvGhPeSww56J1vwZoGA=;
-        b=bqRVzsokysWOjTYqiiyzz63kLTJ12L/yQx9u0AoEXyg3teldFilGzA6jx9bjpv9PCd
-         8LHXBX6yxFrCkOVfFOU4DIIT/aM1is3JoeApWBvzi8KYjpdsfavhvdc4gI9WWsM4Aqcm
-         yoTOvWWWGCaiJmHWLZ/gZBA+60j2PYWk/w/bQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699699369; x=1700304169;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=57XfclRA1DPTjEGTeta8gbvZTvGhPeSww56J1vwZoGA=;
-        b=GjFUAbKlzf9sQZ0q2eqkrFDFRUBbEfQK9/mN5dxcX3721EAQ3iv6ojY6irTAXVbhkC
-         FrtSfoqdbsxbEppyMHLghZReNTzdcdxCyuCsXa+63XSkQsvM03FJ9DpqsdkwDhM22ijQ
-         wzvOLL+Hq6w5SGfrEw5fhlYd5j9yczsLQ60hApzYqHcTW7SPjAeqldpGRuiBN20aqQOe
-         p/ZbDteIPX2UH4J4vN81wOL6KUihdR//AuiURkdtBsUCitf+KhxzHT3LpEdkOp9Hih6f
-         oCOOvFclbklrW3WmqMEsNY4dGCuwN9PAdi82bCRf8VElZayftuKgr8lJpPADJ2cuukgF
-         iHwA==
-X-Gm-Message-State: AOJu0YwsXR1RcprHV8MtkXVeOKR2Nv8u6Ul0QdWfzXvUQyTCkERTbBRK
-        z4T9Yqz4VLxDQGy60X6/9BHTPaCDMlqjhpXD+MGCyw==
-X-Google-Smtp-Source: AGHT+IF51sz/9Eym2oiwu4zOU3bpJ1pg92NvUM3b8/mDpd88MUL1wczf210dAwnnzyMpQ5H7XMHxcg==
-X-Received: by 2002:a17:906:361a:b0:9dd:bd42:4ec2 with SMTP id q26-20020a170906361a00b009ddbd424ec2mr908050ejb.10.1699699369457;
-        Sat, 11 Nov 2023 02:42:49 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-79-20-97-182.retail.telecomitalia.it. [79.20.97.182])
-        by smtp.gmail.com with ESMTPSA id ga33-20020a1709070c2100b0099e12a49c8fsm872183ejc.173.2023.11.11.02.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 02:42:49 -0800 (PST)
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-amarula@amarulasolutions.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 10/10] fbdev: imxfb: add '*/' on a separate line in block comment
-Date:   Sat, 11 Nov 2023 11:41:59 +0100
-Message-ID: <20231111104225.136512-11-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231111104225.136512-1-dario.binacchi@amarulasolutions.com>
-References: <20231111104225.136512-1-dario.binacchi@amarulasolutions.com>
+        Sat, 11 Nov 2023 05:45:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6463AA6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:45:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01504C433C7;
+        Sat, 11 Nov 2023 10:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699699520;
+        bh=7QU9G6Pt0jobK5bptvySxSMCA2aLwKQOGddcVU+8egc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hCxthHA8jUEej9Oo3FBMYJ3kt6G0T3Kq5fz4PKwPqLSij2agcf6zZojrd7bx4owJ/
+         qt4/fG5YAvkQkG3ygL9Ye3O0OoROV4nlLAxFtOqWWh9QOs10AEHTJ3/pjJb4mfdG0i
+         a8fl5ThCQAqozqwuWswYg5kJZe2jPwrJz94rgB+RMn8Ng5q8YFHHK3LzfP1VEuog/Z
+         4v/oVTWIyqOGQYMMbW0/O/NYbQHO0mmt0mJloVGG7VNEQHFJfgtpigy9MuCMidaOkv
+         EZC64C+T5BJnMEN5WV36bUClEvJGQxsgxedqJD5RiQL7j+jn27Wb/jUBKI6LDu0gi6
+         Wt/+A30ao3y7w==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1r1lUK-0001L6-1z;
+        Sat, 11 Nov 2023 11:45:16 +0100
+Date:   Sat, 11 Nov 2023 11:45:16 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Stanley Chang <stanley_chang@realtek.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] usb: dwc3: add device put function to decrement the
+ ref-counted reference
+Message-ID: <ZU9bPMHqz7Gj4rHj@hovoldconsulting.com>
+References: <20231107091252.11783-1-stanley_chang@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107091252.11783-1-stanley_chang@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux kernel coding style uses '*/' on a separate line at the end of
-multi line comments.
+On Tue, Nov 07, 2023 at 05:12:51PM +0800, Stanley Chang wrote:
+> When the function exits, the count should be decremented via
+> platform_device_put and of_node_put.
 
-Fix block comments by moving '*/' at the end of block comments on a
-separate line as reported by checkpatch:
+This isn't really a self-contained commit message (and your use of
+'count' is too vague). You're also changing two functions in two
+different ways here.
 
-WARNING: Block comments use a trailing */ on a separate line
+> Fixes: 34c200483569 ("usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver")
+> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+> ---
+>  drivers/usb/dwc3/dwc3-rtk.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-rtk.c b/drivers/usb/dwc3/dwc3-rtk.c
+> index 590028e8fdcb..9d6f2a8bd6ce 100644
+> --- a/drivers/usb/dwc3/dwc3-rtk.c
+> +++ b/drivers/usb/dwc3/dwc3-rtk.c
+> @@ -187,6 +187,7 @@ static enum usb_device_speed __get_dwc3_maximum_speed(struct device_node *np)
+>  
+>  	ret = match_string(speed_names, ARRAY_SIZE(speed_names), maximum_speed);
+>  
+> +	of_node_put(dwc3_np);
 
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+You're still leaking a reference in the of_property_read_string() error
+path just above.
 
----
+>  	return (ret < 0) ? USB_SPEED_UNKNOWN : ret;
+>  }
+>  
+> @@ -339,6 +340,8 @@ static int dwc3_rtk_probe_dwc3_core(struct dwc3_rtk *rtk)
+>  
+>  	switch_usb2_role(rtk, rtk->cur_role);
+>  
+> +	platform_device_put(dwc3_pdev);
+> +	of_node_put(dwc3_node);
 
- drivers/video/fbdev/imxfb.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Please keep the new line before return for readability.
 
-diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
-index 8d6943f0bfca..a4dbc72f93c3 100644
---- a/drivers/video/fbdev/imxfb.c
-+++ b/drivers/video/fbdev/imxfb.c
-@@ -946,8 +946,10 @@ static int imxfb_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto failed_init;
- 
--	/* Calculate maximum bytes used per pixel. In most cases this should
--	 * be the same as m->bpp/8 */
-+	/*
-+	 * Calculate maximum bytes used per pixel. In most cases this should
-+	 * be the same as m->bpp/8
-+	 */
- 	m = &fbi->mode[0];
- 	bytes_per_pixel = (m->bpp + 7) / 8;
- 	for (i = 0; i < fbi->num_modes; i++, m++)
--- 
-2.42.0
+>  	return 0;
+>  
+>  err_pdev_put:
 
+Johan
