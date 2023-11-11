@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D2B7E8821
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2D27E8822
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 03:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344561AbjKKCPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 21:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        id S1345362AbjKKCP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 21:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjKKCPU (ORCPT
+        with ESMTP id S229462AbjKKCPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 21:15:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359EA3C0C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 18:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699668917; x=1731204917;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=X5ZgYENX2ryWN2rp/ksyXUh7LLw2nbyq8iiQXJOMI0Q=;
-  b=WTkKqwO/XT/COjWMb6TvAMxQReHLTOx/NzcsDrzVl10bNPLkMfjMU0YP
-   FJarK+fYEXNtzzBzVKQfpTIgZiHxUbz2Bf1WJdn4h2XM8DcXWiX6lNDZl
-   AZSOlZHbqTxX8oxSvf6lR7ep3PP+jIRhFOYQ0Skz72VtWvz5aOpMDY97h
-   mYUxX7l8RsFgpGM8WA6Fh+gJY0cXWUJYOBGGZRkOIvMAz4+iRoGFlQHE0
-   By7vyT83iuGH8JFN+bGI5unwzc6ZBX2ox6JQHLHkPeheGG3H2Llg+GbmN
-   zE0iqYAu7tUe23VDGS1PZQgLHCCUstk9W0F1G+HLHEqSnVYasu2Lkr31G
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="11801997"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="11801997"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 18:15:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="798721003"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="798721003"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 10 Nov 2023 18:15:14 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1dWi-000A8w-0o;
-        Sat, 11 Nov 2023 02:15:12 +0000
-Date:   Sat, 11 Nov 2023 10:13:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     WoZ1zh1 <wozizhi@huawei.com>, xiang@kernel.org, chao@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, wozizhi@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH -next V2] erofs: code clean up for function
- erofs_read_inode()
-Message-ID: <202311111038.Atx87gVV-lkp@intel.com>
-References: <20231109194821.1719430-1-wozizhi@huawei.com>
+        Fri, 10 Nov 2023 21:15:54 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A423C0C;
+        Fri, 10 Nov 2023 18:15:50 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AB1ZKQD010029;
+        Sat, 11 Nov 2023 02:15:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=V5vmmfFRfMOjr/pwgxiEu1F1p2ZqSvUhcEkulhxITVw=;
+ b=JXGpSIl2tMk9q9bTytndU7MR2N+rlAvzWg+Vp4hPFqx764Oc/jDzGTlqDNuiNcJkGCm8
+ z7k++l93on0uVJHDasUXVgGiViMXFgrmhkBwmlqPi1jE3GeUiLoYp465O+Z2AieZPRWu
+ TKfeGK4ZEGmZmCUZAAMzhNMHbX9MW7wS1dyvjIisN/ZKauVxRwhpxIY33iW+H/Qtoyl2
+ jSVmz34s4NV9afkz9+E4CZG26wlYmYf+Jg7FeMn688yC/F3w4nDjQVuZTrPZY1K6ks0m
+ cQlgoiXS3o85vyDaU89ayYBmu02eVnTPYBRSr6i2dJckLsycg/8qHPAQ3dbp+gTumxVh bA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u93r0ktwx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Nov 2023 02:15:42 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AB2Fguv026520
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Nov 2023 02:15:42 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 10 Nov 2023 18:15:38 -0800
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date:   Sat, 11 Nov 2023 07:44:41 +0530
+Subject: [PATCH v3] bus: mhi: host: Add tracing support
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109194821.1719430-1-wozizhi@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAJLjTmUC/3XMQQ6CMBCF4auQrq3ptNBQV97DGFPLVGYhYAuNh
+ nB3CyuNcfm/5H0zixgIIzsUMwuYKFLf5VC7grnWdjfk1ORmUkgFQlTcj8E6vMRpGPowcl1r05R
+ QaVCG5dMQ0NNzA0/n3C3FsQ+vzU+wrn+pBBy4VFZ6ZUpvS3N8TOSoc3vX39mKJfkBgPoBZAY01
+ kY5FCCu1TewLMsb+fqVV+8AAAA=
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
+        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699668938; l=12394;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=iEU0SaMPKeYKHiWHmaA9fg8H+hgn9YL8UTuW/DJ/+sk=;
+ b=FRQW3+ag7IDa2m8qYhGSUJUNQUGsGM39lBV395JXK55jyEI9Y6F0YRTTnPiAfnrlndG+8TDE5
+ llSm3uONf8CB1g8u0HEZKsC0cANpVQHEiBlshNT0PFFewYLvZ5CUTx5
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZqyOZdiV7oG5SOfRLpzaFBx8bvRfRnFP
+X-Proofpoint-ORIG-GUID: ZqyOZdiV7oG5SOfRLpzaFBx8bvRfRnFP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_21,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1011 impostorscore=0 mlxscore=0 suspectscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=999 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311110016
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,231 +93,407 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi WoZ1zh1,
+This change adds ftrace support for following functions which
+helps in debugging the issues when there is Channel state & MHI
+state change and also when we receive data and control events:
+1. mhi_intvec_mhi_states
+2. mhi_process_data_event_ring
+3. mhi_process_ctrl_ev_ring
+4. mhi_gen_tre
+5. mhi_update_channel_state
+6. mhi_tryset_pm_state
+7. mhi_pm_st_worker
 
-kernel test robot noticed the following build errors:
+Where ever we added trace events removing debug messages.
 
-[auto build test ERROR on next-20231109]
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+Changes in v3:
+- move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
+- we can include driver header files.
+- Use macros directly in the trace events as suggested Jeffrey Hugo.
+- Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
+- removed the mhi_to_physical function as this can give security issues.
+- removed macros to define strings as we can get those from driver headers.
+- Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
 
-url:    https://github.com/intel-lab-lkp/linux/commits/WoZ1zh1/erofs-code-clean-up-for-function-erofs_read_inode/20231110-033810
-base:   next-20231109
-patch link:    https://lore.kernel.org/r/20231109194821.1719430-1-wozizhi%40huawei.com
-patch subject: [PATCH -next V2] erofs: code clean up for function erofs_read_inode()
-config: i386-buildonly-randconfig-004-20231111 (https://download.01.org/0day-ci/archive/20231111/202311111038.Atx87gVV-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111038.Atx87gVV-lkp@intel.com/reproduce)
+Changes in v2:
+- Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
+- Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+- Fixed the kernel test rebot issues.
+- Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
+---
+ drivers/bus/mhi/host/init.c     |   3 +
+ drivers/bus/mhi/host/internal.h |   1 +
+ drivers/bus/mhi/host/main.c     |  24 +++--
+ drivers/bus/mhi/host/pm.c       |   6 +-
+ drivers/bus/mhi/host/trace.h    | 224 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 245 insertions(+), 13 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111038.Atx87gVV-lkp@intel.com/
+diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+index f78aefd2d7a3..6acb85f4c5f8 100644
+--- a/drivers/bus/mhi/host/init.c
++++ b/drivers/bus/mhi/host/init.c
+@@ -20,6 +20,9 @@
+ #include <linux/wait.h>
+ #include "internal.h"
+ 
++#define CREATE_TRACE_POINTS
++#include "trace.h"
++
+ static DEFINE_IDA(mhi_controller_ida);
+ 
+ const char * const mhi_ee_str[MHI_EE_MAX] = {
+diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
+index 2e139e76de4c..a02a71605907 100644
+--- a/drivers/bus/mhi/host/internal.h
++++ b/drivers/bus/mhi/host/internal.h
+@@ -7,6 +7,7 @@
+ #ifndef _MHI_INT_H
+ #define _MHI_INT_H
+ 
++#include "trace.h"
+ #include "../common.h"
+ 
+ extern struct bus_type mhi_bus_type;
+diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+index dcf627b36e82..7fe8b2dd9e24 100644
+--- a/drivers/bus/mhi/host/main.c
++++ b/drivers/bus/mhi/host/main.c
+@@ -491,11 +491,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+ 
+ 	state = mhi_get_mhi_state(mhi_cntrl);
+ 	ee = mhi_get_exec_env(mhi_cntrl);
+-	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+-		TO_MHI_EXEC_STR(mhi_cntrl->ee),
+-		mhi_state_str(mhi_cntrl->dev_state),
+-		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+ 
++	trace_mhi_intvec_states(mhi_cntrl->mhi_dev->name, mhi_cntrl->ee,
++				mhi_cntrl->dev_state, ee, state);
+ 	if (state == MHI_STATE_SYS_ERR) {
+ 		dev_dbg(dev, "System error detected\n");
+ 		pm_state = mhi_tryset_pm_state(mhi_cntrl,
+@@ -832,6 +830,10 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+ 	while (dev_rp != local_rp) {
+ 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+ 
++		trace_mhi_process_ctrl_ev_ring(mhi_cntrl->mhi_dev->name, (u64)local_rp,
++					       local_rp->ptr, local_rp->dword[0],
++					       local_rp->dword[1]);
++
+ 		switch (type) {
+ 		case MHI_PKT_TYPE_BW_REQ_EVENT:
+ 		{
+@@ -997,6 +999,9 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+ 	while (dev_rp != local_rp && event_quota > 0) {
+ 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+ 
++		trace_mhi_process_data_event_ring(mhi_cntrl->mhi_dev->name, local_rp->ptr,
++						  local_rp->dword[0], local_rp->dword[1]);
++
+ 		chan = MHI_TRE_GET_EV_CHID(local_rp);
+ 
+ 		WARN_ON(chan >= mhi_cntrl->max_chan);
+@@ -1235,6 +1240,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+ 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
+ 	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
+ 
++	trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, (u64)mhi_tre,
++			  mhi_tre->ptr, mhi_tre->dword[0], mhi_tre->dword[1]);
+ 	/* increment WP */
+ 	mhi_add_ring_element(mhi_cntrl, tre_ring);
+ 	mhi_add_ring_element(mhi_cntrl, buf_ring);
+@@ -1327,9 +1334,8 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+ 	int ret;
+ 
+-	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
+-		TO_CH_STATE_TYPE_STR(to_state));
+-
++	trace_mhi_update_channel_state_start(mhi_cntrl->mhi_dev->name, mhi_chan->chan,
++					     to_state);
+ 	switch (to_state) {
+ 	case MHI_CH_STATE_TYPE_RESET:
+ 		write_lock_irq(&mhi_chan->lock);
+@@ -1396,9 +1402,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+ 		write_unlock_irq(&mhi_chan->lock);
+ 	}
+ 
+-	dev_dbg(dev, "%d: Channel state change to %s successful\n",
+-		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+-
++	trace_mhi_update_channel_state_end(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
+ exit_channel_update:
+ 	mhi_cntrl->runtime_put(mhi_cntrl);
+ 	mhi_device_put(mhi_cntrl->mhi_dev);
+diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+index 8a4362d75fc4..e32afdc92fde 100644
+--- a/drivers/bus/mhi/host/pm.c
++++ b/drivers/bus/mhi/host/pm.c
+@@ -123,6 +123,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
+ 	if (unlikely(!(dev_state_transitions[index].to_states & state)))
+ 		return cur_state;
+ 
++	trace_mhi_tryset_pm_state(mhi_cntrl->mhi_dev->name, state);
+ 	mhi_cntrl->pm_state = state;
+ 	return mhi_cntrl->pm_state;
+ }
+@@ -753,7 +754,6 @@ void mhi_pm_st_worker(struct work_struct *work)
+ 	struct mhi_controller *mhi_cntrl = container_of(work,
+ 							struct mhi_controller,
+ 							st_worker);
+-	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 
+ 	spin_lock_irq(&mhi_cntrl->transition_lock);
+ 	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
+@@ -761,8 +761,8 @@ void mhi_pm_st_worker(struct work_struct *work)
+ 
+ 	list_for_each_entry_safe(itr, tmp, &head, node) {
+ 		list_del(&itr->node);
+-		dev_dbg(dev, "Handling state transition: %s\n",
+-			TO_DEV_STATE_TRANS_STR(itr->state));
++
++		trace_mhi_pm_st_transition(mhi_cntrl->mhi_dev->name, itr->state);
+ 
+ 		switch (itr->state) {
+ 		case DEV_ST_TRANSITION_PBL:
+diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+new file mode 100644
+index 000000000000..66d0d96db1d9
+--- /dev/null
++++ b/drivers/bus/mhi/host/trace.h
+@@ -0,0 +1,224 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM mhi_host
++
++#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_EVENT_MHI_HOST_H
++
++#include <linux/tracepoint.h>
++#include <linux/trace_seq.h>
++#include "../common.h"
++#include "internal.h"
++
++TRACE_EVENT(mhi_gen_tre,
++
++	TP_PROTO(const char *name, int ch_num, u64 wp, __le64 tre_ptr,
++		 __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, ch_num)
++		__field(u64, wp)
++		__field(__le64, tre_ptr)
++		__field(__le32, dword0)
++		__field(__le32, dword1)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ch_num = ch_num;
++		__entry->wp = wp;
++		__entry->tre_ptr = tre_ptr;
++		__entry->dword0 = dword0;
++		__entry->dword1 = dword1;
++	),
++
++	TP_printk("%s: Chan: %d WP: 0x%llx TRE: 0x%llx 0x%08x 0x%08x\n",
++		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
++		  __entry->dword0, __entry->dword1)
++);
++
++TRACE_EVENT(mhi_intvec_states,
++
++	TP_PROTO(const char *name, int local_ee, int state, int dev_ee, int dev_state),
++
++	TP_ARGS(name, local_ee, state, dev_ee, dev_state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, local_ee)
++		__field(int, state)
++		__field(int, dev_ee)
++		__field(int, dev_state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->local_ee = local_ee;
++		__entry->state = state;
++		__entry->dev_ee = dev_ee;
++		__entry->dev_state = dev_state;
++	),
++
++	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
++		  __get_str(name),
++		  TO_MHI_EXEC_STR(__entry->local_ee),
++		  mhi_state_str(__entry->state),
++		  TO_MHI_EXEC_STR(__entry->dev_ee),
++		  mhi_state_str(__entry->dev_state))
++);
++
++TRACE_EVENT(mhi_tryset_pm_state,
++
++	TP_PROTO(const char *name, int pm_state),
++
++	TP_ARGS(name, pm_state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, pm_state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		if (pm_state)
++			pm_state = __fls(pm_state);
++		__entry->pm_state = pm_state;
++	),
++
++	TP_printk("%s: PM state: %s\n", __get_str(name),
++		  to_mhi_pm_state_str(__entry->pm_state))
++);
++
++TRACE_EVENT(mhi_process_data_event_ring,
++
++	TP_PROTO(const char *name, __le64 ptr, __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, ptr, dword0, dword1),
++
++	TP_STRUCT__entry(
++		__field(__le64, ptr)
++		__string(name, name)
++		__field(__le32, dword0)
++		__field(__le32, dword1)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ptr = ptr;
++		__entry->dword0 = dword0;
++		__entry->dword1 = dword1;
++	),
++
++	TP_printk("%s: Processing Event:0x%llx 0x%08x 0x%08x\n",
++		  __get_str(name), __entry->ptr, __entry->dword0, __entry->dword1)
++);
++
++TRACE_EVENT(mhi_process_ctrl_ev_ring,
++
++	TP_PROTO(const char *name, u64 rp, __le64 ptr, __le32 dword0, __le32 dword1),
++
++	TP_ARGS(name, rp, ptr, dword0, dword1),
++
++	TP_STRUCT__entry(
++		__field(u64, rp)
++		__field(__le64, ptr)
++		__string(name, name)
++		__field(__le32, dword0)
++		__field(__le32, dword1)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->rp = rp;
++		__entry->ptr = ptr;
++		__entry->dword0 = dword0;
++		__entry->dword1 = dword1;
++		__entry->state = MHI_TRE_GET_EV_STATE(rp);
++	),
++
++	TP_printk("%s: RP:0x%llx Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
++		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
++		  __entry->dword1, mhi_state_str(__entry->state))
++);
++
++TRACE_EVENT(mhi_update_channel_state_start,
++
++	TP_PROTO(const char *name, int ch_num, int state),
++
++	TP_ARGS(name, ch_num, state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, ch_num)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ch_num = ch_num;
++		__entry->state = state;
++	),
++
++	TP_printk("%s: ch%d: Updating state to: %s\n",
++		  __get_str(name), __entry->ch_num,
++		  TO_CH_STATE_TYPE_STR(__entry->state))
++);
++
++TRACE_EVENT(mhi_update_channel_state_end,
++
++	TP_PROTO(const char *name, int ch_num, int state),
++
++	TP_ARGS(name, ch_num, state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, ch_num)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->ch_num = ch_num;
++		__entry->state = state;
++	),
++
++	TP_printk("%s: ch%d: Updated state to: %s\n",
++		  __get_str(name), __entry->ch_num,
++		  TO_CH_STATE_TYPE_STR(__entry->state))
++);
++
++TRACE_EVENT(mhi_pm_st_transition,
++
++	TP_PROTO(const char *name, int state),
++
++	TP_ARGS(name, state),
++
++	TP_STRUCT__entry(
++		__string(name, name)
++		__field(int, state)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, name);
++		__entry->state = state;
++	),
++
++	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
++		  TO_DEV_STATE_TRANS_STR(__entry->state))
++);
++
++#endif
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH .
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE trace
++
++#include <trace/define_trace.h>
 
-All errors (new ones prefixed by >>):
+---
+base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
+change-id: 20231005-ftrace_support-6869d4156139
 
-   fs/erofs/inode.c: In function 'erofs_read_inode':
->> fs/erofs/inode.c:55:3: error: a label can only be part of a statement and a declaration is not a statement
-      55 |   struct erofs_inode_extended *die, *copied = NULL;
-         |   ^~~~~~
-
-
-vim +55 fs/erofs/inode.c
-
-    10	
-    11	static void *erofs_read_inode(struct erofs_buf *buf,
-    12				      struct inode *inode, unsigned int *ofs)
-    13	{
-    14		struct super_block *sb = inode->i_sb;
-    15		struct erofs_sb_info *sbi = EROFS_SB(sb);
-    16		struct erofs_inode *vi = EROFS_I(inode);
-    17		const erofs_off_t inode_loc = erofs_iloc(inode);
-    18	
-    19		erofs_blk_t blkaddr, nblks = 0;
-    20		void *kaddr;
-    21		struct erofs_inode_compact *dic;
-    22		unsigned int ifmt;
-    23		int err;
-    24	
-    25		blkaddr = erofs_blknr(sb, inode_loc);
-    26		*ofs = erofs_blkoff(sb, inode_loc);
-    27	
-    28		kaddr = erofs_read_metabuf(buf, sb, blkaddr, EROFS_KMAP);
-    29		if (IS_ERR(kaddr)) {
-    30			erofs_err(sb, "failed to get inode (nid: %llu) page, err %ld",
-    31				  vi->nid, PTR_ERR(kaddr));
-    32			return kaddr;
-    33		}
-    34	
-    35		dic = kaddr + *ofs;
-    36		ifmt = le16_to_cpu(dic->i_format);
-    37	
-    38		if (ifmt & ~EROFS_I_ALL) {
-    39			erofs_err(inode->i_sb, "unsupported i_format %u of nid %llu",
-    40				  ifmt, vi->nid);
-    41			err = -EOPNOTSUPP;
-    42			goto err_out;
-    43		}
-    44	
-    45		vi->datalayout = erofs_inode_datalayout(ifmt);
-    46		if (vi->datalayout >= EROFS_INODE_DATALAYOUT_MAX) {
-    47			erofs_err(inode->i_sb, "unsupported datalayout %u of nid %llu",
-    48				  vi->datalayout, vi->nid);
-    49			err = -EOPNOTSUPP;
-    50			goto err_out;
-    51		}
-    52	
-    53		switch (erofs_inode_version(ifmt)) {
-    54		case EROFS_INODE_LAYOUT_EXTENDED:
-  > 55			struct erofs_inode_extended *die, *copied = NULL;
-    56	
-    57			vi->inode_isize = sizeof(struct erofs_inode_extended);
-    58			/* check if the extended inode acrosses block boundary */
-    59			if (*ofs + vi->inode_isize <= sb->s_blocksize) {
-    60				*ofs += vi->inode_isize;
-    61				die = (struct erofs_inode_extended *)dic;
-    62			} else {
-    63				const unsigned int gotten = sb->s_blocksize - *ofs;
-    64	
-    65				copied = kmalloc(vi->inode_isize, GFP_NOFS);
-    66				if (!copied) {
-    67					err = -ENOMEM;
-    68					goto err_out;
-    69				}
-    70				memcpy(copied, dic, gotten);
-    71				kaddr = erofs_read_metabuf(buf, sb, blkaddr + 1,
-    72							   EROFS_KMAP);
-    73				if (IS_ERR(kaddr)) {
-    74					erofs_err(sb, "failed to get inode payload block (nid: %llu), err %ld",
-    75						  vi->nid, PTR_ERR(kaddr));
-    76					kfree(copied);
-    77					return kaddr;
-    78				}
-    79				*ofs = vi->inode_isize - gotten;
-    80				memcpy((u8 *)copied + gotten, kaddr, *ofs);
-    81				die = copied;
-    82			}
-    83			vi->xattr_isize = erofs_xattr_ibody_size(die->i_xattr_icount);
-    84	
-    85			inode->i_mode = le16_to_cpu(die->i_mode);
-    86			switch (inode->i_mode & S_IFMT) {
-    87			case S_IFREG:
-    88			case S_IFDIR:
-    89			case S_IFLNK:
-    90				vi->raw_blkaddr = le32_to_cpu(die->i_u.raw_blkaddr);
-    91				break;
-    92			case S_IFCHR:
-    93			case S_IFBLK:
-    94				inode->i_rdev =
-    95					new_decode_dev(le32_to_cpu(die->i_u.rdev));
-    96				break;
-    97			case S_IFIFO:
-    98			case S_IFSOCK:
-    99				inode->i_rdev = 0;
-   100				break;
-   101			default:
-   102				kfree(copied);
-   103				goto bogusimode;
-   104			}
-   105			i_uid_write(inode, le32_to_cpu(die->i_uid));
-   106			i_gid_write(inode, le32_to_cpu(die->i_gid));
-   107			set_nlink(inode, le32_to_cpu(die->i_nlink));
-   108	
-   109			/* extended inode has its own timestamp */
-   110			inode_set_ctime(inode, le64_to_cpu(die->i_mtime),
-   111					le32_to_cpu(die->i_mtime_nsec));
-   112	
-   113			inode->i_size = le64_to_cpu(die->i_size);
-   114	
-   115			/* total blocks for compressed files */
-   116			if (erofs_inode_is_data_compressed(vi->datalayout))
-   117				nblks = le32_to_cpu(die->i_u.compressed_blocks);
-   118			else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-   119				/* fill chunked inode summary info */
-   120				vi->chunkformat = le16_to_cpu(die->i_u.c.format);
-   121			kfree(copied);
-   122			break;
-   123		case EROFS_INODE_LAYOUT_COMPACT:
-   124			vi->inode_isize = sizeof(struct erofs_inode_compact);
-   125			*ofs += vi->inode_isize;
-   126			vi->xattr_isize = erofs_xattr_ibody_size(dic->i_xattr_icount);
-   127	
-   128			inode->i_mode = le16_to_cpu(dic->i_mode);
-   129			switch (inode->i_mode & S_IFMT) {
-   130			case S_IFREG:
-   131			case S_IFDIR:
-   132			case S_IFLNK:
-   133				vi->raw_blkaddr = le32_to_cpu(dic->i_u.raw_blkaddr);
-   134				break;
-   135			case S_IFCHR:
-   136			case S_IFBLK:
-   137				inode->i_rdev =
-   138					new_decode_dev(le32_to_cpu(dic->i_u.rdev));
-   139				break;
-   140			case S_IFIFO:
-   141			case S_IFSOCK:
-   142				inode->i_rdev = 0;
-   143				break;
-   144			default:
-   145				goto bogusimode;
-   146			}
-   147			i_uid_write(inode, le16_to_cpu(dic->i_uid));
-   148			i_gid_write(inode, le16_to_cpu(dic->i_gid));
-   149			set_nlink(inode, le16_to_cpu(dic->i_nlink));
-   150	
-   151			/* use build time for compact inodes */
-   152			inode_set_ctime(inode, sbi->build_time, sbi->build_time_nsec);
-   153	
-   154			inode->i_size = le32_to_cpu(dic->i_size);
-   155			if (erofs_inode_is_data_compressed(vi->datalayout))
-   156				nblks = le32_to_cpu(dic->i_u.compressed_blocks);
-   157			else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
-   158				vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
-   159			break;
-   160		default:
-   161			erofs_err(inode->i_sb,
-   162				  "unsupported on-disk inode version %u of nid %llu",
-   163				  erofs_inode_version(ifmt), vi->nid);
-   164			err = -EOPNOTSUPP;
-   165			goto err_out;
-   166		}
-   167	
-   168		if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
-   169			if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL) {
-   170				erofs_err(inode->i_sb,
-   171					  "unsupported chunk format %x of nid %llu",
-   172					  vi->chunkformat, vi->nid);
-   173				err = -EOPNOTSUPP;
-   174				goto err_out;
-   175			}
-   176			vi->chunkbits = sb->s_blocksize_bits +
-   177				(vi->chunkformat & EROFS_CHUNK_FORMAT_BLKBITS_MASK);
-   178		}
-   179		inode_set_mtime_to_ts(inode,
-   180				      inode_set_atime_to_ts(inode, inode_get_ctime(inode)));
-   181	
-   182		inode->i_flags &= ~S_DAX;
-   183		if (test_opt(&sbi->opt, DAX_ALWAYS) && S_ISREG(inode->i_mode) &&
-   184		    (vi->datalayout == EROFS_INODE_FLAT_PLAIN ||
-   185		     vi->datalayout == EROFS_INODE_CHUNK_BASED))
-   186			inode->i_flags |= S_DAX;
-   187	
-   188		if (!nblks)
-   189			/* measure inode.i_blocks as generic filesystems */
-   190			inode->i_blocks = round_up(inode->i_size, sb->s_blocksize) >> 9;
-   191		else
-   192			inode->i_blocks = nblks << (sb->s_blocksize_bits - 9);
-   193		return kaddr;
-   194	
-   195	bogusimode:
-   196		erofs_err(inode->i_sb, "bogus i_mode (%o) @ nid %llu",
-   197			  inode->i_mode, vi->nid);
-   198		err = -EFSCORRUPTED;
-   199	err_out:
-   200		DBG_BUGON(1);
-   201		erofs_put_metabuf(buf);
-   202		return ERR_PTR(err);
-   203	}
-   204	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
+
