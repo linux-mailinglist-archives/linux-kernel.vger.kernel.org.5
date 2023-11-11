@@ -2,156 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DE47E8726
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9D67E8728
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345146AbjKKA6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
+        id S1345052AbjKKA6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKKA6C (ORCPT
+        with ESMTP id S229560AbjKKA6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:58:02 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71FA422D;
-        Fri, 10 Nov 2023 16:57:57 -0800 (PST)
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231111005755epoutp011d21acc0c4dbbebb5fffcb42672f9b4b~Wa6dVu1UY1970019700epoutp01i;
-        Sat, 11 Nov 2023 00:57:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231111005755epoutp011d21acc0c4dbbebb5fffcb42672f9b4b~Wa6dVu1UY1970019700epoutp01i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699664275;
-        bh=B4DS7GYDmEcj1GlZgxRqsLrP7yYRyuSdQG1LT92Uka4=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=XjAjBgvqkhEZEsV55TVYKM+TXWdZWEDsMYg+tvv20aeio95p9ZIltMFlVuh1/ocHX
-         nrQFJavog0wzIPwVPFmjQTnzUNcNDf344Yatv28FG1Z0V+CiwA/HQ505oxcjSxyLlM
-         ueqrsoxTb4UhYCvwJPHZd3GXUQ12Y2LlrJ8nCbrk=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20231111005754epcas5p48dc26e3247e22b826ba79751e5f750a6~Wa6cNAgXG2925329253epcas5p4C;
-        Sat, 11 Nov 2023 00:57:54 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.182]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SRy3N6GJLz4x9Pv; Sat, 11 Nov
-        2023 00:57:52 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8C.2A.09634.091DE456; Sat, 11 Nov 2023 09:57:52 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231111005751epcas5p36fd668ed88edc7b401899d167f1304c6~Wa6ZK9Cfa2862628626epcas5p3d;
-        Sat, 11 Nov 2023 00:57:51 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231111005751epsmtrp2c05199891aa55def4bb99570177aa3bc~Wa6ZJiGYh0060400604epsmtrp2y;
-        Sat, 11 Nov 2023 00:57:51 +0000 (GMT)
-X-AuditID: b6c32a49-eebff700000025a2-61-654ed190f306
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2D.94.07368.F81DE456; Sat, 11 Nov 2023 09:57:51 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231111005745epsmtip2694890a6735cd8afdca478991f6d4423~Wa6UArs0e1304513045epsmtip2R;
-        Sat, 11 Nov 2023 00:57:45 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
-        "'David Airlie'" <airlied@gmail.com>,
-        "'Daniel Vetter'" <daniel@ffwll.ch>,
-        "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
-        "'Maxime Ripard'" <mripard@kernel.org>,
-        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>,
-        "'Andi Shyti'" <andi.shyti@kernel.org>,
-        "'Jonathan Cameron'" <jic23@kernel.org>,
-        "'Lars-Peter Clausen'" <lars@metafoo.de>,
-        "'Lee Jones'" <lee@kernel.org>,
-        "'Ulf Hansson'" <ulf.hansson@linaro.org>,
-        "'Tomasz Figa'" <tomasz.figa@gmail.com>,
-        "'Sylwester Nawrocki'" <s.nawrocki@samsung.com>,
-        "'Linus Walleij'" <linus.walleij@linaro.org>,
-        "'Thierry Reding'" <thierry.reding@gmail.com>,
-        =?utf-8?Q?'Uwe_Kleine-K=C3=B6nig'?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "'Alessandro Zummo'" <a.zummo@towertech.it>,
-        "'Alexandre Belloni'" <alexandre.belloni@bootlin.com>,
-        "'Greg Kroah-Hartman'" <gregkh@linuxfoundation.org>,
-        "'Jiri Slaby'" <jirislaby@kernel.org>,
-        "'Liam Girdwood'" <lgirdwood@gmail.com>,
-        "'Mark Brown'" <broonie@kernel.org>,
-        "'Jaehoon Chung'" <jh80.chung@samsung.com>,
-        "'Sam Protsenko'" <semen.protsenko@linaro.org>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-In-Reply-To: <20231108104343.24192-5-krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH 04/17] dt-bindings: mmc: samsung,exynos-dw-mshc: add
- specific compatibles for existing SoC
-Date:   Sat, 11 Nov 2023 06:27:44 +0530
-Message-ID: <05a001da143a$18508600$48f19200$@samsung.com>
-MIME-Version: 1.0
+        Fri, 10 Nov 2023 19:58:01 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415F1448C;
+        Fri, 10 Nov 2023 16:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=x4QXI7bVNMeTlHpfe00+GeKDmQHX7YuFlvHKFeG+0Nw=;
+        t=1699664278; x=1700873878; b=SbGV64Rzgkvj4nqN2yYahBTyqWbYa7DVTMncsRLJRo24GvX
+        mCtniDPUP9sVN39/Aq/SKiSyZE6+a+qEuSdWDlzZnl0mPlh5Q3/m5JJZR0eGBCIzbj1AGw1pZV6EV
+        0FgPuOF77NURWw0DXrvnb5Qn5fwx2T7IiBiaPe6mnLf46x0vSoOmeltNQ0Xx+tLzsw/ZF+jGmbqI/
+        WcAuWSsWEZAL8Kn2blrBghplb8JCaG0j0pFNCK2hUUg0SBgvNJIqdeBL8xytr94oyT5Gy0EUcr9aB
+        QK/g0EwyPCjwUuN+5zSbhZ7xL+MRVOfxRYyYXG0NTO2migWS4jGFfD/1EYKBq8LQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r1cJu-00000003Jqc-48AE;
+        Sat, 11 Nov 2023 01:57:55 +0100
+Message-ID: <455eae9e8a583d1ea5b8a3c59e134b85538fff39.camel@sipsolutions.net>
+Subject: Re: [PATCH] mwifiex: clean up some inconsistent indenting
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        briannorris@chromium.org
+Cc:     kvalo@kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Date:   Sat, 11 Nov 2023 01:57:53 +0100
+In-Reply-To: <76eeb452-dd61-44ce-ae9c-a8f8afa83fb8@quicinc.com>
+References: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
+         <76eeb452-dd61-44ce-ae9c-a8f8afa83fb8@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGWJB6kbFUwx2+cGuz2YrV1SxstmQIJIkcXAUX8Bruw4bJlkA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA01TfVRTZRjvvXe7m55GF8TjO6LamekJFdyErReTsuTUTVdCSpzq5BpwAw4w
-        1i6oSX5BfB/AiZby/bEzcloqoE10wRlLQUz5mMQpEVAEERwaw3MQOLRxsfzv9z6/3/P8nud5
-        z8PHPSZ4XvxYdRKtVavixcRizvlmnzd8D3V8TEumTvggfcdNHmr5swpDmXYDD9k6LBjqm8wC
-        6OjAIIFOma9jaO68Dkfl1utcZJscJ1Ba9WkC9TzN4KL+VCOG7KXeKP/+AI7Mo+d4SF9YzkWm
-        jEoOemLLwtCRmRoM1d7t5qK68hmAsmYdAJVZ7RzU1VBCIOtcAUC9vUaALp+0EejYjd8wdK06
-        j4dKh47gqPLxOQ7KyDZwUbrZykPNY5lcNJzvlEw1lHGQscFZr35Mx0V/6woBuvJz+EYf6sxE
-        KkGVnUqhzE8qONSFol4eVWvMJqhb3Zec8dZQqrH0FI/qy72CUXX6/ZR+zMKlCmYlVH69EVB1
-        bSnUj2VTGDVR+2oI+XnchhhaFUVrRbQ6MjEqVh0dJN6yTblJKZNLpL7SQPSmWKRWJdBB4mBF
-        iO/7sfHOBYtFO1Xxyc5QiIphxGvf3qBNTE6iRTGJTFKQmNZExWsCNH6MKoFJVkf7qemk9VKJ
-        ZJ3MKfwqLqZt0M7TDPB3N5sucA6ACl4OWMSHZACsNadxc8Bivgd5EcCzF5uAi/Ag/wHw6oMt
-        LPEEwOOdA5xnGbaxfpwlzAC2z6Ry2Md9AFtv18yrCNIXmqozCBfhSV4UwK7GO06Cz19EBsPi
-        g0IXXEJq4L3uJS45h1wB56YaCRcWkIHwZHMBYLE7bD0+OF8SJ1dDQ+UozjYhglP3DFwX9iTf
-        gxPFfxCsZhkc+d3Kc9lC0rwYjsyMLHQdDNuysxaSl8AHV+oX5veCE3Yz4eoHkhSsmvFiwzHw
-        Yc1pwOJ3YJOtZL57nPSBpxvWslZuMG96EGMzBTArw4NVr4Bp9psLpi9DXW4ul8UUHMrtB+ym
-        OgA84LiKHQKiouemLHpuyqLnpin637kCcIxASGuYhGiakWmkanrXf98dmZhQC+avb9WHJtDb
-        /8jPAjA+sADIx8WegvYABe0hiFJ9u4fWJiq1yfE0YwEy5+p1uNfSyETn+aqTlNKAQEmAXC4P
-        CPSXS8XLBKPppVEeZLQqiY6jaQ2tfZaH8Rd5HcAy+d93ui/zns65lZfbE1RoCVP6p7578HH/
-        +Oan4Q79S8zImr/gtHdVypmIHbsjtn9p7Cf2aE3uuzWHrIrXhpeGPjR9d6K4c4fkxTHhrxnt
-        W6vuxolvr14e0XMYm90KVur3Bl0zb3esk9e772vy1DmYPZfat+3z6S20fOIdXPNpRXTJZzos
-        M+hrhcFtXNHS0fJRVdfygz8Mf3BX9JbyTuv4UJokxX9/MffG1Aubn04XGN1y+uw7w0ZXfWFM
-        r+P5XT2mEE56C78Rnr1hwC9PrFYe1i/teCVM5jBtX69+/dEGW9jhjdJdRjsYbJddjwkF2M5w
-        aY1AWCFfs3LvT2HpfvccR3NW/iLmMDEq6Spcy6j+BdzQmo0GBQAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1DTZRzH7/n+2pdx0y+TOx5BjFYqQfwyzUcDrqMf973kCq2uDutqJ18G
-        JxtzQ6zGhVoi0MngwEaj/YpFMujIjRlRk90YoiegXENFRLHABdtRNqBbJxKw6vjvfZ/36/P6
-        PH88NC4cJqPpQlkJp5CJi0QUnzjfK3osST38Kpd6vD4cmYdHeOjSja8wdGq2hYc8wy4M3Z2v
-        BOjMvUkKtTuGMLR0vg5HBvcQiTzzv1Pok+YOCt38u4JEEycsGJrVbUI1v93DkcNn5yFzvYFE
-        XRUmAi14KjHU8PAbDFl/vU4im+EhQJWLcwDp3bME+rn7Swq5l9QAjY9bALrY5qFQ49ULGBpo
-        Ps1DuvsNODI9sBOooqqFRCcdbh7q9Z8ikbdmGQl26wlk6V72dfrrSDRWVw9Q/7dvPf8U+13g
-        BMXq21WsY8FIsD9ox3ms1VJFsbev/7Q8v7yP7dG189i7n/VjrM1czpr9LpJVL6ayNZ0WwNqu
-        qFiNPoixAevmHCaXn57HFRWWcoqUzPf5BfrAWSAfpT9QaybJY6CRVw3CaMjsgB7/BF4N+LSQ
-        +RHAcyMBMlTEwBvnav+FNsDWR15eCLoP4B1vG7FSUEwS7GquoFZyJDMqgFduvxaCBgG069zL
-        WpoOY16ETcc3rjAbGBmcmdaAlUwwW+BSsGd1V8Dshm29ahDKEfDyF5OrfpxJhFOjU//nFpMP
-        Dz0oDganWsjQ3SwYaBqkQkwUnO5z82qBULtGpV2j0q5RadesGAFhARs5uVIqkR5Mk6fJuKPJ
-        SrFUeUQmST5YLLWC1V+XEN8F7hgeJbsARgMXgDQuihRc25HNCQV54g8/4hTF7ymOFHFKF4ih
-        CVGUIK2xKU/ISMQl3CGOk3OK/1qMDos+hj1xmHq9VWN9MmnnzHR6vtStnLGUKMu9vk+3Xcyh
-        99QZU96wvXNLVbtOHK7q973iE43yd01sHXu5I9209fOI1MSbmZ2xBqPTMPeg19awv8N5yJII
-        n7n0V3mcqsy72R5nY+y5A/HTpzV7xe3OsgOZWIzK3vPs9xm/ZDuXtvHzY6Iz+yV/4vNjMn5S
-        WeC5W0O73HOt8c6zzS/RCwPFhYpqE77z48IqoU6eI43VGU/G+td32QwZbdeUg33Gw46yMxEj
-        +eLUAkWP++j2rNLIrJQ3E1/Y8nQ2u7h7U3Bfwrvm0qi3t2cfKC51BHJdGeESuP+qc2/01+vi
-        Z4WPX3D8oemL2rNeRCgLxGkJuEIp/gcK6mv/5AMAAA==
-X-CMS-MailID: 20231111005751epcas5p36fd668ed88edc7b401899d167f1304c6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231108104415epcas5p45b4bec9400bef99cd35ef137b91eda96
-References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
-        <CGME20231108104415epcas5p45b4bec9400bef99cd35ef137b91eda96@epcas5p4.samsung.com>
-        <20231108104343.24192-5-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -160,38 +57,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2023-11-10 at 16:38 -0800, Jeff Johnson wrote:
+> > drivers/net/wireless/marvell/mwifiex/sta_event.c:789 mwifiex_process_st=
+a_event() warn: inconsistent indenting.
+> >=20
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 
+> >  		if (!adapter->pps_uapsd_mode &&
+> >  		    (priv->port_open ||
+> > -		     (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
+> > +		    (priv->bss_mode =3D=3D NL80211_IFTYPE_ADHOC)) &&
+>=20
+> this change looks incorrect to me
+> this condition is *inside* the parenthesis from the beginning of the
+> previous line, and hence this should align after that parenthesis, not
+> with that parenthesis, which is what the existing code is doing
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
-> Sent: Wednesday, November 8, 2023 4:14 PM
-(...)
-> Samsung Exynos SoC reuses several devices from older designs, thus
-> historically we kept the old (block's) compatible only.  This works fine =
-and
-> there is no bug here, however guidelines expressed in
-> Documentation/devicetree/bindings/writing-bindings.rst state that:
-> 1. Compatibles should be specific.
-> 2. We should add new compatibles in case of bugs or features.
->=20
-> Add compatibles specific to each SoC in front of all old-SoC-like compati=
-bles.
->=20
-> While re-indenting the first enum, put also axis,artpec8-dw-mshc in
-> alphabetical order.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski=40linaro.org>
->=20
-> ---
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+Hah, you're right, I completely missed that! I guess someone should fix
+their tools :)
 
->=20
-> I propose to take the patch through Samsung SoC (me). See cover letter fo=
-r
-> explanation.
-> ---
->  .../bindings/mmc/samsung,exynos-dw-mshc.yaml  =7C 25 ++++++++++++------
-> -
->  1 file changed, 16 insertions(+), 9 deletions(-)
-(...)
-
+johannes
