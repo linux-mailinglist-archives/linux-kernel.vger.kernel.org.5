@@ -2,142 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 292A77E86D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05A27E86DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjKKAMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        id S1344364AbjKKARe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjKKAMv (ORCPT
+        with ESMTP id S229667AbjKKARd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:12:51 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422B448C
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:12:48 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so417465166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:12:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699661564; x=1700266364; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pdD5p4ZJ2xs0jbe3PMitwqM3ZIGCltDGGJH36M99UsU=;
-        b=fqYN2+rU2CvlaGYYA/V27aZdltIgkzZH8YgqjH8HLg3rgfCTTVe4slozxyHFuecxjl
-         4z3sZ3i0lkHvoVY47sx3Y5n2CnAIypGMJTe7rsujmeiAGmOduRJCbX0mntKmi7L/wvzL
-         t7y5Sjy+2HRGt4BzJzFDVDLNlhjCuOt7uITjI=
+        Fri, 10 Nov 2023 19:17:33 -0500
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3596B3C3D
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:17:29 -0800 (PST)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-6baaa9c0ba5so2496155b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:17:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699661564; x=1700266364;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pdD5p4ZJ2xs0jbe3PMitwqM3ZIGCltDGGJH36M99UsU=;
-        b=dOuZWIoFddJj60O38Yw/RpYD4IsDoSSPFNrMsKRyd1f4hQ7uJHGJcP/VttJZEskQl1
-         ik7alvAg3Zgz92Tybwb1gnYoVPuWfqZ6lkk7KZPFZhgZ5RWPophUA5tCHQn46fjm2Loi
-         RAR4oq/lwaz9YCJbssxB1aBeWoFXzFvS0oVd8Volv250UqpD61MvCdr7y4GDAccY1x9K
-         FFVWkCU66cxmBpkfT3h3u1ybP+LC/0+W1DHduLa/DcQ/rgsiXHnR0OQbtEIJO0Rk29lb
-         R2Pu4fSheXWqJufkx4dSJlpVdB0SjBuyHxn4dN5tBI0Tp2xUWSx8t9KBlbxEbHxDt27I
-         ct4Q==
-X-Gm-Message-State: AOJu0Ywpm0BQLEVWbKoGiYw0f4jGNY4SKr70Jtc7HbOWleiQYieF4q6a
-        TReqnwZy53JnCqfgW0sZxd48z9YRRVzohvft7I2cUEgu
-X-Google-Smtp-Source: AGHT+IFICVwA9MZH7x1Pf+xMyoal0B7u9O8eVZo3WRmNvmybIg0+HCZW/Go9NxBZlr/HYq8hjVq8gA==
-X-Received: by 2002:a17:906:c7ca:b0:9e1:21d:fdb1 with SMTP id dc10-20020a170906c7ca00b009e1021dfdb1mr274723ejb.29.1699661564011;
-        Fri, 10 Nov 2023 16:12:44 -0800 (PST)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id l26-20020a170906231a00b009e50ea0a05asm239073eja.99.2023.11.10.16.12.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 16:12:43 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so2299a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:12:43 -0800 (PST)
-X-Received: by 2002:a05:600c:1c11:b0:3f6:f4b:d4a6 with SMTP id
- j17-20020a05600c1c1100b003f60f4bd4a6mr5724wms.7.1699661542490; Fri, 10 Nov
- 2023 16:12:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699661848; x=1700266648;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FlObPBRipr7QG5n1UjlXxQ9MYBDyrAAHU5ysht5qkY0=;
+        b=I8f8vchyk0lYZty2khWolmIO52jDIm1fFf5LQbZs455EcYy1Ra3Sb1FnWuQj+SEoM0
+         lFFHLqCxGJQfka8g9xB6UhWNB4C9DiTMSDXnhprUqQVJk2HBmkIDmlOtN0rtwgyH/RIo
+         Qf7sZrPaoBcMlCIR69ybOWyAT7VY9D2yEMER5IHaCfheNOhWWc/69RKRNODAOyEnfcaS
+         Ejiruq+U9aY3JuJp7aI1Z7LgLplEjVtNgqDRc8ELIakoAMtlIcP9BMo2jO8iPu9kcH++
+         GBHdcjYkwMnJ7H01zbWEP4Qse0af82xqrHeZLp+X6fe2UlFnW7IY+MjFzm/oVAd4zEUq
+         pUJw==
+X-Gm-Message-State: AOJu0YzThw5hLyRqxwzlA15CxfapP6UJyPQ3ylHPHZJb/rNUbpxiMXIz
+        pn1lP5YhFG2hv/aN/lLXfBERNhLC6iKs3261wlq67AGHknSe
+X-Google-Smtp-Source: AGHT+IEIOkL5pWDPSteicMdD+j6LEq4q7tbzXlkjH8awDFC6XuXC+TGeVENj8rcRv3n/BApbU7E5uxDU5NX0gIMpBgo9oT3JjvHm
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <859ac058-c50a-4eb8-99b6-3011ef4e7529@collabora.com>
- <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com>
-In-Reply-To: <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 10 Nov 2023 16:12:06 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VUZy9DaZgKafSpXXopD5k8ExGSR97BjAqC5tupPoxNfQ@mail.gmail.com>
-Message-ID: <CAD=FV=VUZy9DaZgKafSpXXopD5k8ExGSR97BjAqC5tupPoxNfQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
+X-Received: by 2002:a62:d45c:0:b0:6be:3dca:7d9d with SMTP id
+ u28-20020a62d45c000000b006be3dca7d9dmr140697pfl.5.1699661848662; Fri, 10 Nov
+ 2023 16:17:28 -0800 (PST)
+Date:   Fri, 10 Nov 2023 16:17:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ba5cfd0609d55c40@google.com>
+Subject: [syzbot] [bpf?] INFO: rcu detected stall in sys_unshare (9)
+From:   syzbot <syzbot+872bccd9a68c6ba47718@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Thu, Nov 9, 2023 at 5:52=E2=80=AFAM Rob Herring <robh+dt@kernel.org> wro=
-te:
->
-> > > End of background from Doug's cover letter.
-> >
-> > I think that using "status" is not a good idea, I find that confusing.
->
-> "status" is what defines a device's state in terms of enabled,
-> present, available. That's exactly what we're expressing here.
->
-> Now, I do not think we should be mixing the device class (e.g.
-> touchscreen) into status. I said this on v1, but apparently that was
-> not listened to.
+syzbot found the following issue on:
 
-Interesting. I must have missed the "don't mix device class into
-status" part. Do you have a link to your post about that? Maybe
-there's other stuff I missed... Having the device class stuck at the
-end there was at least part of my last post [1] which gathered no
-response.
+HEAD commit:    d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f706eb680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1156a047680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1400ef87680000
 
-I think one of the reasons that I felt we needed to mux the device
-class into status was that it was going to make the code a lot less
-fragile. Everything I've seen indicates that you don't want us to
-create a "HW prober" node that could be used to provide relevant
-phandles for different classes of devices, so the "HW prober" code
-needs to either search through the whole device tree for a status of
-"failed-needs-probe" or needs to contain per-board, hardcoded,
-fully-qualified paths.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/38e8e9ac2457/disk-d2f51b35.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b68cb55b3341/vmlinux-d2f51b35.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a16207c0a2b9/bzImage-d2f51b35.xz
 
-I don't think we want to include hardcoded, fully-qualified paths in
-the code. That would mean that if someone changed a node name
-somewhere in the path to one of the devices that we're dealing with
-then it would break.
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-So if we're searching the whole device tree for "failed-needs-probe"
-then we need to figure out which devices are related to each other. If
-a given board has second sources for MIPI panels, touchscreens, and
-trackpads then we need to know which of the "failed-needs-probe"
-devices are trackpads, which are touchscreens, and which are MIPI
-panels. Do you have any suggestions for how we should do that? Maybe
-it was in some other thread that I missed? I guess we could have a
-board-specific table mapping (compatible + node name + reg) to a
-class, but that feels awkward.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b50a5b680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b50a5b680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b50a5b680000
 
-[1] https://lore.kernel.org/r/CAD=3DFV=3DUjVAgT-febtj4=3DUZ2GQp01D-ern2Ff9+=
-ODcHeQBOsdTQ@mail.gmail.com
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+872bccd9a68c6ba47718@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P5082/1:b..l
+rcu: 	(detected by 0, t=10503 jiffies, g=4817, q=37 ncpus=2)
+task:syz-executor172 state:R  running task     stack:27680 pid:5082  tgid:5082  ppid:5079   flags:0x00000002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5376 [inline]
+ __schedule+0xee2/0x59a0 kernel/sched/core.c:6688
+ preempt_schedule_irq+0x52/0x90 kernel/sched/core.c:7008
+ irqentry_exit+0x35/0x80 kernel/entry/common.c:432
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5721
+Code: c1 05 dd 7d 99 7e 83 f8 01 0f 85 b0 02 00 00 9c 58 f6 c4 02 0f 85 9b 02 00 00 48 85 ed 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc90003c6f6f8 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff9200078dee1 RCX: 0000000000000001
+RDX: 1ffff11002ffd157 RSI: ffffffff8accbc20 RDI: ffffffff8b2e7fc0
+RBP: 0000000000000200 R08: 0000000000000000 R09: fffffbfff23e2bd0
+R10: ffffffff91f15e87 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffff8cfacfe0 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ is_bpf_text_address+0x36/0x1a0 kernel/bpf/core.c:733
+ kernel_text_address kernel/extable.c:125 [inline]
+ kernel_text_address+0x85/0xf0 kernel/extable.c:94
+ __kernel_text_address+0xd/0x30 kernel/extable.c:79
+ unwind_get_return_address+0x78/0xe0 arch/x86/kernel/unwind_orc.c:369
+ arch_stack_walk+0xbe/0x170 arch/x86/kernel/stacktrace.c:26
+ stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc+0x60/0x100 mm/slab_common.c:1020
+ kmalloc_array include/linux/slab.h:637 [inline]
+ kcalloc include/linux/slab.h:668 [inline]
+ cache_create_net+0xa0/0x220 net/sunrpc/cache.c:1749
+ rsi_cache_create_net net/sunrpc/auth_gss/svcauth_gss.c:2033 [inline]
+ gss_svc_init_net+0x122/0x660 net/sunrpc/auth_gss/svcauth_gss.c:2093
+ ops_init+0xb9/0x650 net/core/net_namespace.c:136
+ setup_net+0x422/0xa40 net/core/net_namespace.c:339
+ copy_net_ns+0x2fa/0x670 net/core/net_namespace.c:491
+ create_new_namespaces+0x3ea/0xb10 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:228
+ ksys_unshare+0x443/0x9b0 kernel/fork.c:3433
+ __do_sys_unshare kernel/fork.c:3504 [inline]
+ __se_sys_unshare kernel/fork.c:3502 [inline]
+ __x64_sys_unshare+0x31/0x40 kernel/fork.c:3502
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f00801172f7
+RSP: 002b:00007ffd109dd1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 00007ffd109dd208 RCX: 00007f00801172f7
+RDX: 00007f0080115e79 RSI: 00007ffd109dd280 RDI: 0000000040000000
+RBP: 00000000000f4240 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000555556d1d370
+R13: 0000000000000003 R14: 0000000000000003 R15: 00007ffd109dd240
+ </TASK>
+rcu: rcu_preempt kthread starved for 10544 jiffies! g4817 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:27632 pid:17    tgid:17    ppid:2      flags:0x00004000
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5376 [inline]
+ __schedule+0xee2/0x59a0 kernel/sched/core.c:6688
+ __schedule_loop kernel/sched/core.c:6763 [inline]
+ schedule+0xe7/0x270 kernel/sched/core.c:6778
+ schedule_timeout+0x157/0x2c0 kernel/time/timer.c:2167
+ rcu_gp_fqs_loop+0x1ec/0xb10 kernel/rcu/tree.c:1626
+ rcu_gp_kthread+0x249/0x380 kernel/rcu/tree.c:1825
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+rcu: Stack dump where RCU GP kthread last ran:
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 5110 Comm: syz-executor172 Not tainted 6.6.0-syzkaller-14651-gd2f51b3516da #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:__lock_acquire+0x16/0x5de0 kernel/locking/lockdep.c:4992
+Code: 00 e9 58 fe ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 41 57 41 89 cf 49 89 fa 48 b9 00 00 00 00 00 fc ff df 41 56 41 55 <41> 89 f5 41 54 41 89 d4 55 44 89 cd 53 48 81 ec 10 01 00 00 48 8b
+RSP: 0018:ffffc90003e0fba0 EFLAGS: 00000006
+RAX: 0000000000000200 RBX: 1ffff920007c1f7f RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888079bed720
+RBP: 0000000000000200 R08: 0000000000000001 R09: 0000000000000000
+R10: ffff888079bed720 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff888079bed720 R15: 0000000000000001
+FS:  0000555556d1d3c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f008012d4c0 CR3: 000000006f293000 CR4: 0000000000350ef0
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
+ __might_fault mm/memory.c:5955 [inline]
+ __might_fault+0x11f/0x1a0 mm/memory.c:5948
+ clear_rseq_cs kernel/rseq.c:257 [inline]
+ rseq_ip_fixup kernel/rseq.c:291 [inline]
+ __rseq_handle_notify_resume+0xd5b/0x1010 kernel/rseq.c:329
+ rseq_handle_notify_resume include/linux/sched.h:2361 [inline]
+ rseq_signal_deliver include/linux/sched.h:2370 [inline]
+ setup_rt_frame arch/x86/kernel/signal.c:211 [inline]
+ handle_signal arch/x86/kernel/signal.c:266 [inline]
+ arch_do_signal_or_restart+0x431/0x7f0 arch/x86/kernel/signal.c:311
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
+ do_syscall_64+0x4b/0x110 arch/x86/entry/common.c:88
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f0080115e79
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd109dd1d8 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00007f0080115e79
+RDX: 000000002006b000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00000000000f4240 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000555556d1d370
+R13: 0000000000000002 R14: 00007ffd109dd250 R15: 00007ffd109dd240
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
