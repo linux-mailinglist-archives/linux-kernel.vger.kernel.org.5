@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6457E86F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C257E86F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344293AbjKKAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:34:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        id S230196AbjKKAjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjKKAen (ORCPT
+        with ESMTP id S229560AbjKKAjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:34:43 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACE74212
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:34:35 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-66d2f3bb312so16213596d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:34:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699662874; x=1700267674; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0C7o/f+L7uo4NWltZBaeo9zpZA8oTQ6ntV0FIDWJnuE=;
-        b=Ho54tjUpUKbdxBbCVVqR/aaQUnf9PTE7mnNH2tpNC4jgX6O+B0Yky3VdkaRsh1ZPdH
-         Bbn4g0ksGLabaagIPOgIj/Bkd2a9IwCZxF24Is7YqdMGG3jKxY1tybXXvvHZIwmy3/tH
-         4qHEcxOzBOuwLqO1y1aabB3giXkZcZyWZjcnXMy+NXqFftorh18cHUoNJcfeC695md8K
-         hw0nUboKqGQoRiYHVB6B+FxEZ3ABjBrEgLSUa0bX25rpCPV+tHhdm2fW57f3M70YLkas
-         1NyR967nxf9mcN8RiRY7ptrFFeXqOBWqbM/4KPcixDzLkpcRxBIBSkhinAx1x7tg7VXM
-         pqUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699662874; x=1700267674;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0C7o/f+L7uo4NWltZBaeo9zpZA8oTQ6ntV0FIDWJnuE=;
-        b=dX6Oan8cPe/IgPT1Z2Y0ChF55fk1wAH9IJh0yIdiWKWKlmIlC4KZTKl40ZfY/zQmcr
-         ixAWblcPKugwC5cjDypeMGI04x3JXOIIt17htGz6eQNjJadE3LBSTGj9FvYgjok20Tfu
-         Yq/HyVBBTiSn2JIomHv4OFv8VIDGw0hLOhwEfq1mZrX2jY3Rh1uJosVphQBwWipiTD+b
-         GrTLb4AxFY8GVWDe44VgCYivWsfB3a+nnQmVnV/ci5i7wZ+G4krIR8zkFEAQePGZMknY
-         fVOb/pkgQjEKwbajAyw64VtrVm5NFOm9lUDYg19p4tPnq35rRW2LBzCvyWJ02LaUwvO8
-         XF7Q==
-X-Gm-Message-State: AOJu0Yx38YlEe5JO1SPorMraTVb1ipZk794eFLaLoD9GvZv5KN46Xs00
-        +HWPgfwy+/Rye9B25A5xZU6pY8Ep0ldE7Rkxbt2j/z8VEWPHyg==
-X-Google-Smtp-Source: AGHT+IHIh4UqMHAwsou0uBfJPV39V5EK2cOgk5wYssTsPnP1IxmFVRcptuEsKm9ZjEGxa7vIVMqs4/KdSxwhmNe4HUI=
-X-Received: by 2002:a0c:e805:0:b0:670:710f:2042 with SMTP id
- y5-20020a0ce805000000b00670710f2042mr939501qvn.15.1699662874672; Fri, 10 Nov
- 2023 16:34:34 -0800 (PST)
+        Fri, 10 Nov 2023 19:39:07 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86DC3C3D;
+        Fri, 10 Nov 2023 16:39:03 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AB0K4e3024678;
+        Sat, 11 Nov 2023 00:38:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Y6r0UHon3q8rn/jGHAPfVTSmLPFbIaTGUL112a4ldAM=;
+ b=MRZqAxjKig8hdYAtWXTt4u3VdnrSg+h+LpncEG7HMh5RBGyk/xSr5p3DRItOK3ue56TO
+ RyiNEqbsxj71QPOTOqB0/nkQ7ytWl03qGAm/0oHpzZOQBxOTVUsSl+XeQghO8rieUgi1
+ B3CtmnyYZea1QIu/0CWx4sdkfUTRodlbvx4HzrpwPtJRsxNuQ7p2OOD/QLfSlT3Z8tRK
+ e+v9DxFJyO8QxZZQbQgFRJTy3F3OF8DjDORFmbxFATQbw6En5ty/M/MJTCQivBcPnk/p
+ +ME1rz+rO0n4FJv39F29UWfVGcB1VzNuAu4Uk37LQgjd0KoUCp+D1N3DcsjHfZzx4nV8 IA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u9h9va141-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Nov 2023 00:38:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AB0cviT031705
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Nov 2023 00:38:57 GMT
+Received: from [10.110.6.241] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
+ 2023 16:38:56 -0800
+Message-ID: <76eeb452-dd61-44ce-ae9c-a8f8afa83fb8@quicinc.com>
+Date:   Fri, 10 Nov 2023 16:38:55 -0800
 MIME-Version: 1.0
-References: <1699594629-3816-1-git-send-email-hyeongtak.ji@gmail.com>
- <20231110182240.65426-1-sj@kernel.org> <20231110103122.21d5fb5f3d60f1f4f5bd143f@linux-foundation.org>
-In-Reply-To: <20231110103122.21d5fb5f3d60f1f4f5bd143f@linux-foundation.org>
-From:   Hyeongtak Ji <hyeongtak.ji@gmail.com>
-Date:   Sat, 11 Nov 2023 09:34:24 +0900
-Message-ID: <CAFY0u4RTPbx1qYgESignpnLb71oVqLg8xZoqfO8genoOnSJf5A@mail.gmail.com>
-Subject: Re: [PATCH] mm/damon/core.c: avoid unintentional filtering out of schemes
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Hyeongtak Ji <hyeongtak.ji@sk.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mwifiex: clean up some inconsistent indenting
+Content-Language: en-US
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        <briannorris@chromium.org>
+CC:     <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Abaci Robot <abaci@linux.alibaba.com>
+References: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231110083327.7022-1-jiapeng.chong@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mVg7v09LYon4zmtThHv4UEIZV0i9p9YN
+X-Proofpoint-ORIG-GUID: mVg7v09LYon4zmtThHv4UEIZV0i9p9YN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-10_21,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=976 adultscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311110003
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 3:31=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Fri, 10 Nov 2023 18:22:40 +0000 SeongJae Park <sj@kernel.org> wrote:
->
-> > Hello Hyueongtak,
-> >
-> > On Fri, 10 Nov 2023 14:37:09 +0900 Hyeongtak Ji <hyeongtak.ji@gmail.com=
-> wrote:
-> >
-> > > The function '__damos_filter_out()' causes DAMON to always filter out
-> > > schemes whose filter type is anon or memcg if its matching value is s=
-et
-> > > to false.
-> > >
-> > > This commit addresses the issue by ensuring that '__damos_filter_out(=
-)'
-> > > no longer applies to filters whose type is 'anon' or 'memcg'.
-> >
-> > Nice catch, thank you!
-> >
-> > checkpatch.pl shows one warning, though:
-> >
-> >     WARNING: From:/Signed-off-by: email address mismatch: 'From: Hyeong=
-tak Ji <hyeongtak.ji@gmail.com>' !=3D 'Signed-off-by: Hyeongtak Ji <hyeongt=
-ak.ji@sk.com>'
->
-> This can be addressed by including an explicit From: line at start of
-> changelog.  Which should we use?
+On 11/10/2023 12:33 AM, Jiapeng Chong wrote:
+> No functional modification involved.
+> 
+> drivers/net/wireless/marvell/mwifiex/sta_event.c:789 mwifiex_process_sta_event() warn: inconsistent indenting.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7226
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/net/wireless/marvell/mwifiex/sta_event.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/marvell/mwifiex/sta_event.c b/drivers/net/wireless/marvell/mwifiex/sta_event.c
+> index df9cdd10a494..9dd3b6d71026 100644
+> --- a/drivers/net/wireless/marvell/mwifiex/sta_event.c
+> +++ b/drivers/net/wireless/marvell/mwifiex/sta_event.c
+> @@ -762,7 +762,7 @@ int mwifiex_process_sta_event(struct mwifiex_private *priv)
+>  		mwifiex_dbg(adapter, EVENT, "info: EVENT: AWAKE\n");
+>  		if (!adapter->pps_uapsd_mode &&
+>  		    (priv->port_open ||
+> -		     (priv->bss_mode == NL80211_IFTYPE_ADHOC)) &&
+> +		    (priv->bss_mode == NL80211_IFTYPE_ADHOC)) &&
 
-Please use <hyeongtak.ji@sk.com> if it's possible.
+this change looks incorrect to me
+this condition is *inside* the parenthesis from the beginning of the
+previous line, and hence this should align after that parenthesis, not
+with that parenthesis, which is what the existing code is doing
 
->
-> > >
-> > > Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-> >
-> > Reviewed-by: SeongJae Park <sj@kernel.org>
->
-> I'll add
->
-> Fixes: ab9bda001b681 ("mm/damon/core: introduce address range type damos =
-filter")
-> Cc: <stable@vger.kernel.org>
->
+>  		    priv->media_connected && adapter->sleep_period.period) {
+>  			adapter->pps_uapsd_mode = true;
+>  			mwifiex_dbg(adapter, EVENT,
+> @@ -773,7 +773,7 @@ int mwifiex_process_sta_event(struct mwifiex_private *priv)
+>  			if (mwifiex_check_last_packet_indication(priv)) {
+>  				if (adapter->data_sent ||
+>  				    (adapter->if_ops.is_port_ready &&
+> -				     !adapter->if_ops.is_port_ready(priv))) {
+> +				    !adapter->if_ops.is_port_ready(priv))) {
+
+same thing here
+
+>  					adapter->ps_state = PS_STATE_AWAKE;
+>  					adapter->pm_wakeup_card_req = false;
+>  					adapter->pm_wakeup_fw_try = false;
+
