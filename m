@@ -2,96 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF217E8A12
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 10:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F4E7E8A17
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 10:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjKKJsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 04:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S230341AbjKKJt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 04:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjKKJsI (ORCPT
+        with ESMTP id S229803AbjKKJtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 04:48:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4D43868;
-        Sat, 11 Nov 2023 01:48:05 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AB9lqvQ027650;
-        Sat, 11 Nov 2023 09:47:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EArrppmS9FdoyRjpdteRNy11j3gNXGWyBi80uF9WpbM=;
- b=NtXNvikdMGIDl1TCsr2WEKoWUgUud8rMNt43+b4ioN3lnyIRZ8EM6YlzfmxqlunTku4o
- EqT4vva4iUO7Qm6dLOduyGEGZ5rdeOSRNkuAiv2G+y9F/s1hV+bm3h5xp2Qux1xEsAC6
- 6RSJbEBm+GdPoxWijqwe7GiBMq6V021rn5FYISduLKt1HoT/eMxQt/dtMT+CLp3OPZJH
- vNgUsS1LjEw+mVvJQ/oEMEoO/DELNK0BNjybufIEikv2W4SZIJQMwt2zx/BE7+0KdRfD
- AAtRt7cImu0Wpl3n9xbuFSjKDaqz1wroJwUCUztYX5Sw1L48OelcRG2maYXZoo90xfLN Nw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ua2sw0a7j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Nov 2023 09:47:52 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AB9lpt1023857
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Nov 2023 09:47:51 GMT
-Received: from [10.216.34.97] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sat, 11 Nov
- 2023 01:47:44 -0800
-Message-ID: <c8b0af46-6513-43fc-994d-4d04f6c65b5e@quicinc.com>
-Date:   Sat, 11 Nov 2023 15:17:40 +0530
+        Sat, 11 Nov 2023 04:49:55 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ACA3AAE
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 01:49:44 -0800 (PST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SS9nC6cDQzrT1b;
+        Sat, 11 Nov 2023 17:46:23 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 11 Nov 2023 17:49:38 +0800
+Message-ID: <438ba640-c205-4034-886e-6a7231f3d210@huawei.com>
+Date:   Sat, 11 Nov 2023 17:49:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 02/13] dt-bindings: usb: Add bindings for multiport
- properties on DWC3 controller
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-References: <20230828133033.11988-1-quic_kriskura@quicinc.com>
- <20230828133033.11988-3-quic_kriskura@quicinc.com>
- <ZU4wA9xhfjYBCaTU@hovoldconsulting.com>
- <bc3e9da6-c932-46a0-923a-44be817bd129@quicinc.com>
+Subject: Re: [PATCH v2 3/7] fs/proc/page: respect folio head-page flag
+ placement
 Content-Language: en-US
-In-Reply-To: <bc3e9da6-c932-46a0-923a-44be817bd129@quicinc.com>
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gregory Price <gregory.price@memverge.com>
+References: <20231110033324.2455523-1-wangkefeng.wang@huawei.com>
+ <20231110033324.2455523-4-wangkefeng.wang@huawei.com>
+ <ZU50JT0OVdAh9q5W@casper.infradead.org>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <ZU50JT0OVdAh9q5W@casper.infradead.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: W0Old6QqYucfWI7FwvMn6_ca6I76Jk4I
-X-Proofpoint-GUID: W0Old6QqYucfWI7FwvMn6_ca6I76Jk4I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-11_08,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- adultscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311110081
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -100,66 +56,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/11/2023 2:00 PM, Krishna Kurapati PSSNV wrote:
+On 2023/11/11 2:19, Matthew Wilcox wrote:
+> On Fri, Nov 10, 2023 at 11:33:20AM +0800, Kefeng Wang wrote:
+>> kpageflags reads page-flags directly from the page, even when the
+>> respective flag is only updated on the headpage of a folio.
+>>
+>> Since most flags are stored in head flags, make k = folio->flags,
+>> and add new p = page->flags used for per-page flags.
 > 
-> 
-> On 11/10/2023 6:58 PM, Johan Hovold wrote:
->> On Mon, Aug 28, 2023 at 07:00:22PM +0530, Krishna Kurapati wrote:
->>> Add bindings to indicate properties required to support multiport
->>> on Synopsys DWC3 controller.
->>>
->>> Suggested-by: Bjorn Andersson <quic_bjorande@quicinc.com>
->>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>> ---
->>>   .../devicetree/bindings/usb/snps,dwc3.yaml          | 13 +++++++------
->>>   1 file changed, 7 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml 
->>> b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>> index a696f23730d3..5bc941355b43 100644
->>> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->>> @@ -85,15 +85,16 @@ properties:
->>>     phys:
->>>       minItems: 1
->>> -    maxItems: 2
->>> +    maxItems: 8
->>>     phy-names:
->>>       minItems: 1
->>> -    maxItems: 2
->>> -    items:
->>> -      enum:
->>> -        - usb2-phy
->>> -        - usb3-phy
->>> +    maxItems: 8
->>> +    oneOf:
->>> +      - items:
->>> +          enum: [ usb2-phy, usb3-phy ]
->>> +      - items:
->>> +          pattern: "^usb[23]-port[0-3]$"
->>
->> Shouldn't this just be
->>
->>     pattern: "^usb[23]-[0-3]$"
->>
->> so that it matches the names that are used by the nvidia bindings?
->>
->> We already have some inconsistency in that Amlogic uses a variant based
->> on the legacy names that needlessly includes "phy" in the names:
->>
->>     const: usb2-phy0
->>     const: usb2-phy1
->>     const: usb3-phy0
->>     ...
->>
->> I don't think we should be introducing a third naming scheme here so I
->> suggest just following the nvidia bindings.
->> > In that case, why don't we use  "^usb[23]-phy[0-3]$". I think its close
-> to what we have on dwc3 core already today (usb2-phy/usb3-phy).
-> 
-I mean, it isn't needless. It is a phy and shouldn't the binding suggest 
-that and include "-phy" in the name ?
+> You'd do better to steal Greg's commit message.
 
-Regards,
-Krishna,
+Sure
+
+> 
+>> Originally-from: Gregory Price <gregory.price@memverge.com>
+>> Suggested-by: Matthew Wilcox <willy@infradead.org>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> 
+>> @@ -202,7 +202,7 @@ u64 stable_page_flags(struct page *page)
+>>   	u |= kpf_copy_bit(k, KPF_MLOCKED,	PG_mlocked);
+>>   
+>>   #ifdef CONFIG_MEMORY_FAILURE
+>> -	u |= kpf_copy_bit(k, KPF_HWPOISON,	PG_hwpoison);
+>> +	u |= kpf_copy_bit(p, KPF_HWPOISON,	PG_hwpoison);
+> 
+> This is correct.
+> 
+>> @@ -211,13 +211,13 @@ u64 stable_page_flags(struct page *page)
+>>   
+>>   	u |= kpf_copy_bit(k, KPF_RESERVED,	PG_reserved);
+>>   	u |= kpf_copy_bit(k, KPF_MAPPEDTODISK,	PG_mappedtodisk);
+>> -	u |= kpf_copy_bit(k, KPF_PRIVATE,	PG_private);
+>> -	u |= kpf_copy_bit(k, KPF_PRIVATE_2,	PG_private_2);
+>> -	u |= kpf_copy_bit(k, KPF_OWNER_PRIVATE,	PG_owner_priv_1);
+>> +	u |= kpf_copy_bit(p, KPF_PRIVATE,	PG_private);
+>> +	u |= kpf_copy_bit(p, KPF_PRIVATE_2,	PG_private_2);
+>> +	u |= kpf_copy_bit(p, KPF_OWNER_PRIVATE,	PG_owner_priv_1);
+> 
+> This is not.  PG_private is not, I believe, set on tail pages.
+> Ditto the other two.  If you know differently ... ?
+
+k = folio->flags, p = page->flags
+as PG_private/private_2/owner_priv_1 use PF_ANY page policy,
+so they should per-page check, confused...
+
+See checked page flags,
+
+PG_error        PF_NO_TAIL
+PG_dirty        PF_HEAD
+PG_uptodate     PF_NO_TAIL
+PG_writeback    PF_NO_TAIL
+PG_lru          PF_HEAD
+PG_referenced 	PF_HEAD
+PG_active       PF_HEAD
+PG_reclaim      PF_NO_TAIL
+PG_swapbacked   PF_NO_TAIL
+PG_unevictable  PF_HEAD
+PG_mlocked      PF_NO_TAIL
+PG_hwpoison     PF_ANY
+PG_uncached     PF_NO_COMPOUND	
+PG_reserved     PF_NO_COMPOUND
+PG_mappedtodisk PF_NO_TAIL
+PG_private      PF_ANY
+PG_private_2    PF_ANY
+PG_owner_priv_1 PF_ANY
+
+above part has 4 types,
+
+1) PF_HEAD        - should use k
+
+2) PF_ANY         - should use p
+
+3) PF_NO_TAIL
+    - PageXXX will check head page flags, so suppose to use k,
+      but here use bit check, I wonder it should use p?
+
+4) PF_NO_COMPOUND
+   - should per-page check
+> 
+>>   #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+>> -	u |= kpf_copy_bit(k, KPF_ARCH_2,	PG_arch_2);
+>> -	u |= kpf_copy_bit(k, KPF_ARCH_3,	PG_arch_3);
+>> +	u |= kpf_copy_bit(p, KPF_ARCH_2,	PG_arch_2);
+>> +	u |= kpf_copy_bit(p, KPF_ARCH_3,	PG_arch_3);
+>>   #endif
+> 
+> I also don't think this is correct, but there are many uses of
+> PG_arch* and I may have missed something.
+> 
+
+And 3 arch page flags,
+
+PG_arch_1
+  - PG_dcache_clean, from achetlb.rst, I think it is per-folio, use k
+	
+PG_arch_2
+  - only arm64 mte, PG_mte_tagged
+PG_arch_3
+  - only arm64 mte, PG_mte_lock
+
+the two PG_arch only used by arm64 mte, they are per-page flag, use p
+
+Correct me if I am wrong, thanks.
+
