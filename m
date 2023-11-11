@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719167E897D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641D37E8982
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 07:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjKKGVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 01:21:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        id S229932AbjKKGZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 01:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjKKGVQ (ORCPT
+        with ESMTP id S229584AbjKKGZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 01:21:16 -0500
+        Sat, 11 Nov 2023 01:25:20 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500D11BD;
-        Fri, 10 Nov 2023 22:21:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC011BD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 22:25:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HjnXgPbnUna/oPgDe8pEjrr2CwDcTyuc+FlgnPW0cEU=; b=LEndJGQIQvi05zDNMiV2VbqNWw
-        QtZjw7fZehxVtinobkFEIB0CmpZhTCBVAun9aIyFYPuY5ZZ/bdcEKeaxwJcuJBOAHC1hFp3JI2L3S
-        uJg+zFEiMGAIuL0aZbs/60b3dpkki+9fC+Nuxyknv5K8bbWm2HynYnSjxG2zh/mEK3N4IihxzcinA
-        Hj28C5DGl9xC6AWA9p0COKynwntiWbGP9Tav34JFfMiEwZfkx1DhKzXlC4mZmLMNIeMOH6ui6g0AK
-        x2U8dgZoHix86uO3+8OmLMLkLI1GPpxuwS8Pd9WBmPFF71bZ5xUDGyAR+Z5tdyqLVBehBBAL8FFDV
-        cbvopBIQ==;
+        bh=EBZKrJAdeTHdt+fXmPtrVcfH5epTVqfv+vgHAQN0udk=; b=I3f8kNkpX208PMuq0FCBAZZdrB
+        Chyn3Q0cPxHanUM/v6cHMmBqBrKuWzuQtps8SQcSe5eK+ZgJwZX7nD1ECilSkkW1GIQg4bPgstWqj
+        55N9u6n2NB+4jB8hvwu++rnToycTHLCXEj1qX1/6wKJm7LsN1F7vR8jd/87qzd6HfS0avj7o1n3zA
+        dr07QpktvS228chaHGx92w4I4QsvVvc7NjMzieSWFL0sBR2lncROC+WEaRKDBF0UILFemM2m5JHRb
+        Dp6SYJZxGwLI4zIRMVeIrhrLKGg9WMxd+v/ZhSRQaO6K/O00RqPsKMno5tGMzjYYkVchXzXh1O3Sc
+        cfDbCG1A==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r1hMZ-000Kw2-Ej; Sat, 11 Nov 2023 06:20:59 +0000
-Date:   Sat, 11 Nov 2023 06:20:59 +0000
+        id 1r1hQb-000NKL-9A; Sat, 11 Nov 2023 06:25:09 +0000
+Date:   Sat, 11 Nov 2023 06:25:09 +0000
 From:   Matthew Wilcox <willy@infradead.org>
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com,
-        boris@bur.io, clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] btrfs: fix warning in create_pending_snapshot
-Message-ID: <ZU8dS0dlOGOblbxf@casper.infradead.org>
-References: <0000000000001959d30609bb5d94@google.com>
- <tencent_DB6BA6C1B369A367C96C83A36457D7735705@qq.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Zhiguo Jiang <justinjiang@vivo.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH v2 1/1] mm: ALLOC_HIGHATOMIC flag allocation issue
+Message-ID: <ZU8eRWQvk/Mm4VHO@casper.infradead.org>
+References: <20231109073133.792-1-justinjiang@vivo.com>
+ <20231109073133.792-2-justinjiang@vivo.com>
+ <20231109094954.dd4b2a5b1f5dfcc9a721edba@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tencent_DB6BA6C1B369A367C96C83A36457D7735705@qq.com>
+In-Reply-To: <20231109094954.dd4b2a5b1f5dfcc9a721edba@linux-foundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -52,31 +52,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 01:06:01PM +0800, Edward Adam Davis wrote:
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4931,7 +4931,8 @@ int btrfs_get_free_objectid(struct btrfs_root *root, u64 *objectid)
->  		goto out;
->  	}
->  
-> -	*objectid = root->free_objectid++;
-> +	while (find_qgroup_rb(root->fs_info, root->free_objectid++));
-> +	*objectid = root->free_objectid;
+On Thu, Nov 09, 2023 at 09:49:54AM -0800, Andrew Morton wrote:
+> On Thu,  9 Nov 2023 15:31:33 +0800 Zhiguo Jiang <justinjiang@vivo.com> wrote:
+> 
+> > Add a new bool* argument to pass return flag instead of *alloc_flags
+> > and add the related comments.
+> 
+> Please retain (and update) the changelog with each version of a patch.
+> 
+> For reviewers (please), here's the v1 changelog:
 
-This looks buggy to me.  Let's say that free_objectid is currently 3.
+This patch isn't diffed against the current tree.  It can't be reviewed.
 
-Before, it would assign 3 to *objectid, and increment free_objectid to
-4.  After (assuming the loop terminates on first iteration), it will
-increment free_objectid to 4, then assign 4 to *objectid.
-
-I think you meant to write:
-
-	while (find_qgroup_rb(root->fs_info, root->free_objectid))
-		root->free_objectid++;
-	*objectid = root->free_objectid++;
-
-And the lesson here is that more compact code is not necessarily more
-correct code.
-
-(I'm not making any judgement about whether this is the correct fix;
-I don't understand btrfs well enough to have an opinion.  Just that
-this is not an equivalent transformation)
