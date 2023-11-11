@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4197E876A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C675E7E876D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 02:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344987AbjKKBRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 20:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S1345176AbjKKBTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 20:19:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKKBRC (ORCPT
+        with ESMTP id S229729AbjKKBTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 20:17:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61963422D;
-        Fri, 10 Nov 2023 17:16:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699665418; x=1731201418;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=00UAaZ78oicw/s6rxiSDFduERCEerluh526ys0B5b9M=;
-  b=I6dS6NBUY+35ODA3mDdHMc2HPGpiGgBGZ7sGEkko/xF1TJiEdSHyRzqS
-   LAt6FwLMq3OfLIf3ExGsZLWepVH4LZNtJn9KQqHdvcERL+KHGdDxdiQIf
-   n1qFWFsv3sXNiS+wh+TCiTTIRU6V7WAHKcGiYcvvWAfiLDFXq2uRI0Sut
-   xKokmsfudEVSzzeLGQ8pf1CaEzD+7uhsuF6p0+mpUuAVOWmfM0cRm65uO
-   vxuQT77Oir/xwD5H8MEX7SXEytHGR/bdFPVAiXVlJkohjAvE24mSWS2W2
-   j5QvYaJ60Of666HMXqhwoF35i7Px+WnP9U8JH+X/zhAFyaMggonMYWbwE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="370451462"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="370451462"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2023 17:16:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="887464269"
-X-IronPort-AV: E=Sophos;i="6.03,293,1694761200"; 
-   d="scan'208";a="887464269"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 10 Nov 2023 17:16:55 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1ccH-000A7C-1z;
-        Sat, 11 Nov 2023 01:16:53 +0000
-Date:   Sat, 11 Nov 2023 09:15:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Nicolai Stange <nstange@suse.de>,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Mladek <pmladek@suse.com>
-Subject: Re: [POC 5/7] livepatch: Convert klp module callbacks tests into
- livepatch module tests
-Message-ID: <202311110928.Ui5NizhT-lkp@intel.com>
-References: <20231110170428.6664-6-pmladek@suse.com>
+        Fri, 10 Nov 2023 20:19:09 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB7D422D
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:19:06 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc591d8177so28285595ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 17:19:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699665546; x=1700270346;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FPKMLLuC0lmtrX8uqBQvklqk38SAanPbuVSQNwb92EU=;
+        b=qr3JCQhrodMiYai+/+HEMMCMawxK6VMSdNl1lZgXIQ7jsV80ZndDPbDtpNA5hXUg1s
+         Cx8SHrkSVDby4bEt0GFdPAvXuXvcFbdBo0XubTjuiun4ceVdoPjPPq0fKRaSJ7iblKtr
+         Lpdv2IXyyCWtyvo+I33hVhBAzzty+LArqbsuyukrMjuNeClX6OGHykqBRxZugbMhcylK
+         Oz/UCDzaJXc2xNMbRP+z4NKctaKN9gnDDe/iMIrDkRhW14pIATvOaNHS4WhBZGUQFg4O
+         xih3tU2WoNL34egdefTALgywzxH23pWojBYRA3WeS3ymPLhWL//dl8KOg46pb2vBHMmX
+         SqEA==
+X-Gm-Message-State: AOJu0Yxk68BpuQBrUxGiA2nODT8HiBrFsCZYpluvz7DewTQtG7n8aHQH
+        hDlsM6sEKa7LeZz2RNgLf4aZVB/3iMzUndQhnVbSJnHjUuAM
+X-Google-Smtp-Source: AGHT+IHShXUi+CRWycdsfzUHN4x5ZR58fQJc08Swtf5VWDrsiGTGDL+Grjzh9Op3OwW+sbBYeK4zQMAb9/dUZhxB2PbBaY6X13wF
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110170428.6664-6-pmladek@suse.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:efd3:b0:1cc:533e:f52b with SMTP id
+ ja19-20020a170902efd300b001cc533ef52bmr251169plb.4.1699665546267; Fri, 10 Nov
+ 2023 17:19:06 -0800 (PST)
+Date:   Fri, 10 Nov 2023 17:19:06 -0800
+In-Reply-To: <tencent_1252E00673099CEECDAECC0CAA67E306C706@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001f546a0609d639f6@google.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in create_pending_snapshot
+From:   syzbot <syzbot+4d81015bc10889fd12ea@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
+Hello,
 
-kernel test robot noticed the following build errors:
+syzbot tried to test the proposed patch but the build/boot failed:
 
-[auto build test ERROR on shuah-kselftest/next]
-[also build test ERROR on shuah-kselftest/fixes linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+fs/btrfs/disk-io.c:4934:9: error: call to undeclared function 'find_qgroup_rb'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+fs/btrfs/disk-io.c:4934:61: error: expected ')'
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Petr-Mladek/livepatch-Add-callbacks-for-introducing-and-removing-states/20231111-014906
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20231110170428.6664-6-pmladek%40suse.com
-patch subject: [POC 5/7] livepatch: Convert klp module callbacks tests into livepatch module tests
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20231111/202311110928.Ui5NizhT-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311110928.Ui5NizhT-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311110928.Ui5NizhT-lkp@intel.com/
+Tested on:
 
-All errors (new ones prefixed by >>):
+commit:         30523014 Merge tag 'pm-6.7-rc1-2' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d81015bc10889fd12ea
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=124c62b7680000
 
->> make[5]: *** No rule to make target 'lib/livepatch/test_klp_speaker2.o', needed by 'lib/livepatch/'.
->> make[5]: *** No rule to make target 'lib/livepatch/test_klp_speaker_livepatch2.o', needed by 'lib/livepatch/'.
-   make[5]: *** [scripts/Makefile.build:243: lib/livepatch/test_klp_speaker.o] Error 1
-   make[5]: *** [scripts/Makefile.build:243: lib/livepatch/test_klp_speaker_livepatch.o] Error 1
-   make[5]: Target 'lib/livepatch/' not remade because of errors.
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
