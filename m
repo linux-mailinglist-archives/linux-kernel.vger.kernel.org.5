@@ -2,154 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 383EF7E8AD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 13:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3E37E8AD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 13:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbjKKMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 07:03:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
+        id S231148AbjKKMLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 07:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbjKKMDt (ORCPT
+        with ESMTP id S229987AbjKKMLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 07:03:49 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AF43ABA
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:03:44 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9F92C40E0176;
-        Sat, 11 Nov 2023 12:03:41 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 02PzBCe1tIYh; Sat, 11 Nov 2023 12:03:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699704218; bh=mnLg2AFo7cZ77HTtx0K5iZojbFqgyb/zAT0td59x9aQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OG82pIYpt34ZvrDM+b5xlw88HDBzTd9XIhAVkZanBvaUgp1s/Os7aZj2E0XgmHosU
-         Qi9occJ6BHCpMoS5YjP1Tfl0XIHewMgh1ognZSYib3/28O3N60uKU4VIfjqrSUPri6
-         M/+97PmtFHNZr8F97YaKQCvcn8RPa18UdDgxtn+oV6waABDbijt2ZBjwzIosXqN8Bw
-         vJtO664TKu0aNa+W2S2cmi6uUZa/sphNJ7yX2ueT7ORHDa7p7Nbda2THvFXOE7alRU
-         OEZlL5tZcsCNGTngbQVwWIEfOlKxOsugG8k+18iQJDUnGK8ZE31ajoG+lHZ7X9Exz5
-         KmwF7vY8gVCjk7uq6vTL1dfj9dUW2RPU3iUR5NRrM98DD3hpBZPlvFkpI2xBx4+oj9
-         MTjOa+O+rKUz2j4vcn8eTpza6pnSKXExrppGqx1HCo2XQpXCjPyks40H4LV6fo3PhF
-         EIro3YLmi7SLZbDt9kTnqwWl3ToHSojQtdXoJh+391C7XLFlEyX2DMTzxIwSNbIz8t
-         YsblvcTBR1eqYu4+fs6PPEpuhMqZsVCQop10DwXFZS9B4ggnMXiioKwJHRqnASysM0
-         znyinIGp4O+iBNSUkkPXn0OP/VHK98YeDq+VGufPhiaML61Q6AI1RD4Uh5RC1rB8hV
-         tTZmzMBqYcWUdEmqyat63W9E=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7DDFB40E0032;
-        Sat, 11 Nov 2023 12:03:29 +0000 (UTC)
-Date:   Sat, 11 Nov 2023 13:03:23 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     nouveau@lists.freedesktop.org
-Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
-Message-ID: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
+        Sat, 11 Nov 2023 07:11:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FD23AA6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 04:11:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4064C433C7;
+        Sat, 11 Nov 2023 12:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699704660;
+        bh=yPCWcBAfG/u6d4A2IxQav/QG52PrTiH0rCXIFF7fnwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n4SuLcF4G96RgHmy7+4Jq4HBt+G8NxoEdOIRGuSf+2JzCR1kVdyIK4M+twtX6PGt0
+         U1bnkmvS1bQW2aNomw2+4f+0BTX/Oj99ncE8b4v9XW7naFOQjBLe9VbSYsmg4C4aj/
+         n0K7k16rzOPzd9+SQu2NFndEGd7TWH9Zqy+5WkCqrkxYpM+ouZotUI1fj6Jwfd72cc
+         NRHHhUWYgk7lTdngMYIBYfX29ti0+GfzcW/QQvpYeA4qHpiDdG/KG8yq0wMg5fKQTI
+         ztRnVR6D6S2IrzyOo3gKcT1WTbxM4tvALgfMPo++H20XJGoM4sYK5nepUIKy8JqtCK
+         W0yxBGG7wxwgQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F276F40094; Sat, 11 Nov 2023 09:10:56 -0300 (-03)
+Date:   Sat, 11 Nov 2023 09:10:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        sumanthk@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH v3] perf report: Add s390 raw data interpretation for PAI
+ counters
+Message-ID: <ZU9vUEzF4opW5Gb/@kernel.org>
+References: <20231110110908.2312308-1-tmricht@linux.ibm.com>
+ <ZU4d0G23WOKwpIwb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZU4d0G23WOKwpIwb@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Fri, Nov 10, 2023 at 09:10:56AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Nov 10, 2023 at 12:09:08PM +0100, Thomas Richter escreveu:
+> > commit 1bf54f32f525 ("s390/pai: Add support for cryptography counters")
+> 
+> Where is this commit?
+> 
+> ⬢[acme@toolbox perf-tools-next]$ git remote update torvalds
+> Fetching torvalds
+> remote: Enumerating objects: 25591, done.
+> remote: Counting objects: 100% (12820/12820), done.
+> remote: Compressing objects: 100% (2379/2379), done.
+> remote: Total 9481 (delta 8254), reused 8289 (delta 7086), pack-reused 0
+> Receiving objects: 100% (9481/9481), 1.76 MiB | 2.89 MiB/s, done.
+> Resolving deltas: 100% (8254/8254), completed with 1792 local objects.
+> From git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux
+>    d2f51b3516dade79..89cdf9d556016a54  master     -> torvalds/master
+> ⬢[acme@toolbox perf-tools-next]$ git show 1bf54f32f525
+> fatal: ambiguous argument '1bf54f32f525': unknown revision or path not in the working tree.
+> Use '--' to separate paths from revisions, like this:
+> 'git <command> [<revision>...] -- [<file>...]'
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> Looking using the description I get:
+> 
+> 39d62336f5c126ad s390/pai: add support for cryptography counters
+> 
+> Is this the one?
+> 
+> - Arnaldo
+> 
+> > added support for Processor Activity Instrumentation Facility (PAI)
+> > counters.  These counters values are added as raw data with the perf
+> > sample during perf record.
+> > Now add support to display these counters in perf report command.
+> > The counter number, its assigned name and value is now printed in
+> > addition to the hexadecimal output.
+> > 
+> > Output before:
+> >  # perf report -D
+> > 
+> >  6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
+> > 				303977/303977: 0 period: 1 addr: 0
+> >  ... thread: paitest:303977
+> >  ...... dso: <not found>
+> > 
+> >  0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
+> >  .
+> >  . ... raw event: size 72 bytes
+> >  . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
+> >  . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
+> >  . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
+> >  . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
+> >  . 0040:  00 00 00 53 96 af 00 00                          ...S....
+> > 
+> > Output after:
+> >  # perf report -D
+> > 
+> >  6 514766399626050 0x7b058 [0x48]: PERF_RECORD_SAMPLE(IP, 0x1):
+> > 				303977/303977: 0 period: 1 addr: 0
+> >  ... thread: paitest:303977
+> >  ...... dso: <not found>
+> > 
+> >  0x7b0a0@/root/perf.data.paicrypto [0x48]: event: 9
+> >  .
+> >  . ... raw event: size 72 bytes
+> >  . 0000:  00 00 00 09 00 01 00 48 00 00 00 00 00 00 00 00  .......H........
+> >  . 0010:  00 04 a3 69 00 04 a3 69 00 01 d4 2d 76 de a0 bb  ...i...i...-v...
+> >  . 0020:  00 00 00 00 00 01 5c 53 00 00 00 06 00 00 00 00  ......\S........
+> >  . 0030:  00 00 00 00 00 00 00 01 00 00 00 0c 00 07 00 00  ................
+> >  . 0040:  00 00 00 53 96 af 00 00                          ...S....
+> > 
+> >         Counter:007 km_aes_128 Value:0x00000000005396af     <--- new
+> > 
+> > Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> > Tested-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> > Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> > ---
+> >  tools/perf/util/s390-cpumcf-kernel.h |   2 +
+> >  tools/perf/util/s390-sample-raw.c    | 104 ++++++++++++++++++++++++---
+> >  2 files changed, 98 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/s390-cpumcf-kernel.h b/tools/perf/util/s390-cpumcf-kernel.h
+> > index f55ca07f3ca1..74b36644e384 100644
+> > --- a/tools/perf/util/s390-cpumcf-kernel.h
+> > +++ b/tools/perf/util/s390-cpumcf-kernel.h
+> > @@ -12,6 +12,8 @@
+> >  #define	S390_CPUMCF_DIAG_DEF	0xfeef	/* Counter diagnostic entry ID */
+> >  #define	PERF_EVENT_CPUM_CF_DIAG	0xBC000	/* Event: Counter sets */
+> >  #define PERF_EVENT_CPUM_SF_DIAG	0xBD000 /* Event: Combined-sampling */
+> > +#define PERF_EVENT_PAI_CRYPTO_ALL	0x1000 /* Event: CRYPTO_ALL */
+> > +#define PERF_EVENT_PAI_NNPA_ALL	0x1800 /* Event: NNPA_ALL */
+> >  
+> >  struct cf_ctrset_entry {	/* CPU-M CF counter set entry (8 byte) */
+> >  	unsigned int def:16;	/* 0-15  Data Entry Format */
+> > diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
+> > index 115b16edb451..d4dc84aa889a 100644
+> > --- a/tools/perf/util/s390-sample-raw.c
+> > +++ b/tools/perf/util/s390-sample-raw.c
+> > @@ -125,6 +125,9 @@ static int get_counterset_start(int setnr)
+> >  		return 128;
+> >  	case CPUMF_CTR_SET_MT_DIAG:		/* Diagnostic counter set */
+> >  		return 448;
+> > +	case PERF_EVENT_PAI_NNPA_ALL:		/* PAI NNPA counter set */
+> > +	case PERF_EVENT_PAI_CRYPTO_ALL:		/* PAI CRYPTO counter set */
+> > +		return setnr;
+> >  	default:
+> >  		return -1;
+> >  	}
+> > @@ -212,27 +215,112 @@ static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sample *sample)
+> >  	}
+> >  }
+> >  
+> > +/*
+> > + * Check for consistency of PAI_CRYPTO/PAI_NNPA raw data.
+> > + */
+> > +struct pai_data {		/* Event number and value */
+> > +	u16 event_nr;
+> > +	u64 event_val;
+> > +} __packed;
 
-this is ontop of Linus' tree from the 4th (lemme know if I should try
-the latest) on one of my test boxes:
 
-nouveau 0000:01:00.0: vgaarb: deactivate vga console
-Console: switching to colour dummy device 80x25
-nouveau 0000:01:00.0: NVIDIA GT218 (0a8280b1)
-CE: hpet increased min_delta_ns to 20115 nsec
-nouveau 0000:01:00.0: bios: version 70.18.49.00.00
-nouveau 0000:01:00.0: fb: 1024 MiB DDR3
-nouveau 0000:01:00.0: DRM: VRAM: 1024 MiB
-nouveau 0000:01:00.0: DRM: GART: 1048576 MiB
-nouveau 0000:01:00.0: DRM: TMDS table version 2.0
-nouveau 0000:01:00.0: DRM: MM: using COPY for buffer copies
-------------[ cut here ]------------
-nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
-WARNING: CPU: 4 PID: 786 at drivers/gpu/drm/nouveau/dispnv50/disp.c:2731 nv50_display_init+0x28c/0x4f0 [nouveau]
-Modules linked in: nouveau(+) drm_ttm_helper ttm video drm_exec drm_gpuvm gpu_sched drm_display_helper wmi
-CPU: 4 PID: 786 Comm: systemd-udevd Not tainted 6.6.0+ #1
-Hardware name: MICRO-STAR INTERNATIONAL CO.,LTD MS-7599/870-C45 (MS-7599), BIOS V1.15 03/04/2011
-RIP: 0010:nv50_display_init+0x28c/0x4f0 [nouveau]
-Code: 4c 8b 6f 50 4d 85 ed 75 03 4c 8b 2f e8 6d 47 37 e1 48 c7 c1 4c 55 2d a0 48 89 c6 4c 89 ea 48 c7 c7 42 55 2d a0 e8 44 83 e8 e0 <0f> 0b 48 8b 43 08 49 39 c6 48 8d 58 f8 0f 85 41 ff ff ff 48 8d 7c
-RSP: 0018:ffffc9000031ba98 EFLAGS: 00010286
-RAX: 000000000000002e RBX: ffff888100a21400 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: ffffc9000031b9b0 RDI: 0000000000000001
-RBP: ffff888104eadad0 R08: ffff888136ffdfe8 R09: 0000000000000058
-R10: 0000000000000289 R11: ffff888136401cd8 R12: ffff888104ead800
-R13: ffff888100abddf0 R14: ffff888104eadab0 R15: 0000000000000000
-FS:  00007fef9c8e38c0(0000) GS:ffff88812f500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fef9ce9d258 CR3: 000000010330e000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- ? __warn+0x97/0x160
- ? nv50_display_init+0x28c/0x4f0 [nouveau]
- ? report_bug+0x1ec/0x200
- ? handle_bug+0x3c/0x70
- ? exc_invalid_op+0x1f/0x90
- ? asm_exc_invalid_op+0x16/0x20
- ? nv50_display_init+0x28c/0x4f0 [nouveau]
- ? nv50_display_init+0x28c/0x4f0 [nouveau]
- ? sched_set_fifo+0x46/0x60
- nouveau_display_init+0xa0/0xd0 [nouveau]
- nouveau_drm_device_init+0x42a/0x990 [nouveau]
- nouveau_drm_probe+0x105/0x240 [nouveau]
- ? __pm_runtime_resume+0x68/0xa0
- pci_device_probe+0xaa/0x140
- really_probe+0xc2/0x2d0
- __driver_probe_device+0x73/0x120
- driver_probe_device+0x2c/0xb0
- __driver_attach+0xa0/0x150
- ? __device_attach_driver+0xc0/0xc0
- bus_for_each_dev+0x67/0xa0
- bus_add_driver+0x10e/0x210
- driver_register+0x5c/0x120
- ? 0xffffffffa0336000
- do_one_initcall+0x44/0x200
- ? kmalloc_trace+0x37/0xc0
- do_init_module+0x64/0x230
- init_module_from_file+0x8d/0xd0
- idempotent_init_module+0x15a/0x210
- __x64_sys_finit_module+0x67/0xb0
- do_syscall_64+0x41/0xf0
- entry_SYSCALL_64_after_hwframe+0x4b/0x53
-RIP: 0033:0x7fef9cda5ee9
-Code: 08 44 89 e0 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d f7 ee 0e 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffeb60299e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-RAX: ffffffffffffffda RBX: 000055b322ddf5a0 RCX: 00007fef9cda5ee9
-RDX: 0000000000000000 RSI: 00007fef9cf45e2d RDI: 0000000000000012
-RBP: 0000000000020000 R08: 0000000000000000 R09: 000055b322ddf690
-R10: 0000000000000012 R11: 0000000000000246 R12: 00007fef9cf45e2d
-R13: 0000000000000000 R14: 000055b322dcb940 R15: 000055b322ddf5a0
- </TASK>
----[ end trace 0000000000000000 ]---
-[drm] Initialized nouveau 1.4.0 20120801 for 0000:01:00.0 on minor 0
-fbcon: nouveaudrmfb (fb0) is primary device
-Console: switching to colour frame buffer device 210x65
-nouveau 0000:01:00.0: [drm] fb0: nouveaudrmfb frame buffer device
+We'll have to disable this warning:
+
+  19    10.55 debian:experimental-x-mips    : FAIL gcc version 12.3.0 (Debian 12.3.0-6)
+    util/s390-sample-raw.c:222:13: error: packed attribute causes inefficient alignment for 'event_nr' [-Werror=attributes]
+      222 |         u16 event_nr;
+          |             ^~~~~~~~
+    cc1: all warnings being treated as errors
+  20    10.58 debian:experimental-x-mips64  : FAIL gcc version 12.3.0 (Debian 12.3.0-6)
+    util/s390-sample-raw.c:222:13: error: packed attribute causes inefficient alignment for 'event_nr' [-Werror=attributes]
+      222 |         u16 event_nr;
+          |             ^~~~~~~~
+    cc1: all warnings being treated as errors
+  21    10.89 debian:experimental-x-mipsel  : FAIL gcc version 12.3.0 (Debian 12.3.0-6)
+    util/s390-sample-raw.c:222:13: error: packed attribute causes inefficient alignment for 'event_nr' [-Werror=attributes]
+      222 |         u16 event_nr;
+          |             ^~~~~~~~
+    cc1: all warnings being treated as errors
+
+Like I did in:
+
+commit a399ee6773d6a0203f9bd764f8bd9d978878cef1
+Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date:   Thu Nov 9 16:34:09 2023 -0300
+
+    tools: Disable __packed attribute compiler warning due to -Werror=attributes
+
+    +++ b/tools/include/asm-generic/unaligned.h
+@@ -8,6 +8,7 @@
+  */
+ #pragma GCC diagnostic push
+ #pragma GCC diagnostic ignored "-Wpacked"
++#pragma GCC diagnostic ignored "-Wattributes"
+
+I'll do it while waiting for flights later today.
+
+- Arnaldo
+
+> > +/*
+> > + * Test for valid raw data. At least one PAI event should be in the raw
+> > + * data section.
+> > + */
+> > +static bool s390_pai_all_test(struct perf_sample *sample)
+> > +{
+> > +	unsigned char *buf = sample->raw_data;
+> > +	size_t len = sample->raw_size;
+> > +
+> > +	if (len < 0xa || !buf)
+> > +		return false;
+> > +	return true;
+> > +}
+> > +
+> > +static void s390_pai_all_dump(struct evsel *evsel, struct perf_sample *sample)
+> > +{
+> > +	size_t len = sample->raw_size, offset = 0;
+> > +	unsigned char *p = sample->raw_data;
+> > +	const char *color = PERF_COLOR_BLUE;
+> > +	struct pai_data pai_data;
+> > +	char *ev_name;
+> > +
+> > +	while (offset < len) {
+> > +		memcpy(&pai_data.event_nr, p, sizeof(pai_data.event_nr));
+> > +		pai_data.event_nr = be16_to_cpu(pai_data.event_nr);
+> > +		p += sizeof(pai_data.event_nr);
+> > +		offset += sizeof(pai_data.event_nr);
+> > +
+> > +		memcpy(&pai_data.event_val, p, sizeof(pai_data.event_val));
+> > +		pai_data.event_val = be64_to_cpu(pai_data.event_val);
+> > +		p += sizeof(pai_data.event_val);
+> > +		offset += sizeof(pai_data.event_val);
+> > +
+> > +		ev_name = get_counter_name(evsel->core.attr.config,
+> > +					   pai_data.event_nr, evsel->pmu);
+> > +		color_fprintf(stdout, color, "\tCounter:%03d %s Value:%#018lx\n",
+> > +			      pai_data.event_nr, ev_name ?: "<unknown>",
+> > +			      pai_data.event_val);
+> > +		free(ev_name);
+> > +
+> > +		if (offset + 0xa > len)
+> > +			break;
+> > +	}
+> > +	color_fprintf(stdout, color, "\n");
+> > +}
+> > +
+> >  /* S390 specific trace event function. Check for PERF_RECORD_SAMPLE events
+> > - * and if the event was triggered by a counter set diagnostic event display
+> > - * its raw data.
+> > + * and if the event was triggered by a
+> > + * - counter set diagnostic event
+> > + * - processor activity assist (PAI) crypto counter event
+> > + * - processor activity assist (PAI) neural network processor assist (NNPA)
+> > + *   counter event
+> > + * display its raw data.
+> >   * The function is only invoked when the dump flag -D is set.
+> > + *
+> > + * Function evlist__s390_sample_raw() is defined as call back after it has
+> > + * been verified that the perf.data file was created on s390 platform.
+> >   */
+> > -void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event, struct perf_sample *sample)
+> > +void evlist__s390_sample_raw(struct evlist *evlist, union perf_event *event,
+> > +			     struct perf_sample *sample)
+> >  {
+> > +	const char *pai_name;
+> >  	struct evsel *evsel;
+> >  
+> >  	if (event->header.type != PERF_RECORD_SAMPLE)
+> >  		return;
+> >  
+> >  	evsel = evlist__event2evsel(evlist, event);
+> > -	if (evsel == NULL ||
+> > -	    evsel->core.attr.config != PERF_EVENT_CPUM_CF_DIAG)
+> > +	if (!evsel)
+> >  		return;
+> >  
+> >  	/* Display raw data on screen */
+> > -	if (!s390_cpumcfdg_testctr(sample)) {
+> > -		pr_err("Invalid counter set data encountered\n");
+> > +	if (evsel->core.attr.config == PERF_EVENT_CPUM_CF_DIAG) {
+> > +		if (!evsel->pmu)
+> > +			evsel->pmu = perf_pmus__find("cpum_cf");
+> > +		if (!s390_cpumcfdg_testctr(sample))
+> > +			pr_err("Invalid counter set data encountered\n");
+> > +		else
+> > +			s390_cpumcfdg_dump(evsel->pmu, sample);
+> >  		return;
+> >  	}
+> > -	s390_cpumcfdg_dump(evsel->pmu, sample);
+> > +
+> > +	switch (evsel->core.attr.config) {
+> > +	case PERF_EVENT_PAI_NNPA_ALL:
+> > +		pai_name = "NNPA_ALL";
+> > +		break;
+> > +	case PERF_EVENT_PAI_CRYPTO_ALL:
+> > +		pai_name = "CRYPTO_ALL";
+> > +		break;
+> > +	default:
+> > +		return;
+> > +	}
+> > +
+> > +	if (!s390_pai_all_test(sample)) {
+> > +		pr_err("Invalid %s raw data encountered\n", pai_name);
+> > +	} else {
+> > +		if (!evsel->pmu)
+> > +			evsel->pmu = perf_pmus__find_by_type(evsel->core.attr.type);
+> > +		s390_pai_all_dump(evsel, sample);
+> > +	}
+> >  }
+> > -- 
+> > 2.41.0
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
 
 -- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+- Arnaldo
