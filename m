@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB577E86F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6457E86F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbjKKA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:29:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S1344293AbjKKAep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345082AbjKKA3r (ORCPT
+        with ESMTP id S230003AbjKKAen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:29:47 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BF744B3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:29:43 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c51682fddeso40189181fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:29:43 -0800 (PST)
+        Fri, 10 Nov 2023 19:34:43 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACE74212
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:34:35 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-66d2f3bb312so16213596d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:34:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699662581; x=1700267381; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699662874; x=1700267674; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vc6pY2X/kV1rFostxbU0Y7TflzeE7tCSZzGD8ktPRxY=;
-        b=jSAgbWkfaqPN63IjKYHgnYJy7gkJ9DsSiN63/p8YfiK7Dq1QC4+zc66Jj/NtsA6Y/M
-         +EpoQtOtHxNPxiqS8ZFhCC4D4K9MKOFMv9xPfWyvDF7y33EiZXOA2ubBILs5nE+J6RCd
-         9oQ84lc7z93rLwoEuqkRgdTsHiksPlEug3U9A=
+        bh=0C7o/f+L7uo4NWltZBaeo9zpZA8oTQ6ntV0FIDWJnuE=;
+        b=Ho54tjUpUKbdxBbCVVqR/aaQUnf9PTE7mnNH2tpNC4jgX6O+B0Yky3VdkaRsh1ZPdH
+         Bbn4g0ksGLabaagIPOgIj/Bkd2a9IwCZxF24Is7YqdMGG3jKxY1tybXXvvHZIwmy3/tH
+         4qHEcxOzBOuwLqO1y1aabB3giXkZcZyWZjcnXMy+NXqFftorh18cHUoNJcfeC695md8K
+         hw0nUboKqGQoRiYHVB6B+FxEZ3ABjBrEgLSUa0bX25rpCPV+tHhdm2fW57f3M70YLkas
+         1NyR967nxf9mcN8RiRY7ptrFFeXqOBWqbM/4KPcixDzLkpcRxBIBSkhinAx1x7tg7VXM
+         pqUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699662581; x=1700267381;
+        d=1e100.net; s=20230601; t=1699662874; x=1700267674;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vc6pY2X/kV1rFostxbU0Y7TflzeE7tCSZzGD8ktPRxY=;
-        b=dElid4QncBHNl/XogHguDUDVAKWjBDDbnFN6dAPI3EoW/7cryPrzNRUb7cgdC8LYft
-         jl+PCt+XJvuVYeI9L1GmQGcjq+kXdVElQBY6JUhFZ678kqwrnKKh8k8lXTPUdSVcEQcS
-         1gaEOhiQfEXeCtSVkEWHokr1yKdgjqhScbH0hfqJUvLFhYHLr1ddp8msWbVHXmPAD6IN
-         2ld3MHVw7Dw/lSowIeZKdmMebrzefhk9rJ6UqytHJboMsZ/azCauUaTCR/BPvqhq2X9c
-         FnNfXfg5DkfnedM8TgPou3rfjPkJOuYsjaspZbDJELh4stPeGygM0wTc9dDqPEoNMdxA
-         UU7Q==
-X-Gm-Message-State: AOJu0Yx1Pku89qzMB/yXnjYaP/RmtucVzaOXQ8Fl2lmb/hHK0cmn5FgX
-        9wNqCv6dY4jqUolirp5wvjR19taxnnfqtwjiIOl+i56l
-X-Google-Smtp-Source: AGHT+IGgQ9ebTuEpfoyE+lz0SVYi0pg9MI9g2kXxTUbjgfkCKJ/Ilq8cvYuqcZyxjaH92Yzob2if3Q==
-X-Received: by 2002:a05:6512:3049:b0:508:15dc:ec11 with SMTP id b9-20020a056512304900b0050815dcec11mr228708lfb.30.1699662581647;
-        Fri, 10 Nov 2023 16:29:41 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id be40-20020a056512252800b00507a62cb135sm99488lfb.179.2023.11.10.16.29.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Nov 2023 16:29:41 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-507a5edc2ebso499e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:29:41 -0800 (PST)
-X-Received: by 2002:a05:600c:1c91:b0:405:35bf:7362 with SMTP id
- k17-20020a05600c1c9100b0040535bf7362mr34662wms.0.1699662560938; Fri, 10 Nov
- 2023 16:29:20 -0800 (PST)
+        bh=0C7o/f+L7uo4NWltZBaeo9zpZA8oTQ6ntV0FIDWJnuE=;
+        b=dX6Oan8cPe/IgPT1Z2Y0ChF55fk1wAH9IJh0yIdiWKWKlmIlC4KZTKl40ZfY/zQmcr
+         ixAWblcPKugwC5cjDypeMGI04x3JXOIIt17htGz6eQNjJadE3LBSTGj9FvYgjok20Tfu
+         Yq/HyVBBTiSn2JIomHv4OFv8VIDGw0hLOhwEfq1mZrX2jY3Rh1uJosVphQBwWipiTD+b
+         GrTLb4AxFY8GVWDe44VgCYivWsfB3a+nnQmVnV/ci5i7wZ+G4krIR8zkFEAQePGZMknY
+         fVOb/pkgQjEKwbajAyw64VtrVm5NFOm9lUDYg19p4tPnq35rRW2LBzCvyWJ02LaUwvO8
+         XF7Q==
+X-Gm-Message-State: AOJu0Yx38YlEe5JO1SPorMraTVb1ipZk794eFLaLoD9GvZv5KN46Xs00
+        +HWPgfwy+/Rye9B25A5xZU6pY8Ep0ldE7Rkxbt2j/z8VEWPHyg==
+X-Google-Smtp-Source: AGHT+IHIh4UqMHAwsou0uBfJPV39V5EK2cOgk5wYssTsPnP1IxmFVRcptuEsKm9ZjEGxa7vIVMqs4/KdSxwhmNe4HUI=
+X-Received: by 2002:a0c:e805:0:b0:670:710f:2042 with SMTP id
+ y5-20020a0ce805000000b00670710f2042mr939501qvn.15.1699662874672; Fri, 10 Nov
+ 2023 16:34:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <20231109100606.1245545-7-wenst@chromium.org>
- <20231110210443.GA419831-robh@kernel.org>
-In-Reply-To: <20231110210443.GA419831-robh@kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 10 Nov 2023 16:29:08 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XARZpeEZo-i+CNTAH=AQrxPfwnzSMXDWx6Pvj4k6cP8g@mail.gmail.com>
-Message-ID: <CAD=FV=XARZpeEZo-i+CNTAH=AQrxPfwnzSMXDWx6Pvj4k6cP8g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 6/7] dt-bindings: arm: mediatek: Remove SKU
- specific compatibles for Google Krane
-To:     Rob Herring <robh@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
+References: <1699594629-3816-1-git-send-email-hyeongtak.ji@gmail.com>
+ <20231110182240.65426-1-sj@kernel.org> <20231110103122.21d5fb5f3d60f1f4f5bd143f@linux-foundation.org>
+In-Reply-To: <20231110103122.21d5fb5f3d60f1f4f5bd143f@linux-foundation.org>
+From:   Hyeongtak Ji <hyeongtak.ji@gmail.com>
+Date:   Sat, 11 Nov 2023 09:34:24 +0900
+Message-ID: <CAFY0u4RTPbx1qYgESignpnLb71oVqLg8xZoqfO8genoOnSJf5A@mail.gmail.com>
+Subject: Re: [PATCH] mm/damon/core.c: avoid unintentional filtering out of schemes
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hyeongtak Ji <hyeongtak.ji@sk.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,43 +71,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Nov 10, 2023 at 1:04=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On Sat, Nov 11, 2023 at 3:31=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
 >
-> On Thu, Nov 09, 2023 at 06:06:03PM +0800, Chen-Yu Tsai wrote:
-> > In cases where the same Chromebook model is manufactured with different
-> > components (MIPI DSI panels, MIPI CSI camera sensors, or trackpad /
-> > touchscreens with conflicting addresses), a different SKU ID is
-> > allocated to each specific combination. This SKU ID is exported by the
-> > bootloader into the device tree, and can be used to "discover" which
-> > combination is present on the current machine. Thus we no longer have
-> > to specify separate compatible strings for each of them.
+> On Fri, 10 Nov 2023 18:22:40 +0000 SeongJae Park <sj@kernel.org> wrote:
 >
-> You just broke an existing kernel with a new DT having this change.
+> > Hello Hyueongtak,
+> >
+> > On Fri, 10 Nov 2023 14:37:09 +0900 Hyeongtak Ji <hyeongtak.ji@gmail.com=
+> wrote:
+> >
+> > > The function '__damos_filter_out()' causes DAMON to always filter out
+> > > schemes whose filter type is anon or memcg if its matching value is s=
+et
+> > > to false.
+> > >
+> > > This commit addresses the issue by ensuring that '__damos_filter_out(=
+)'
+> > > no longer applies to filters whose type is 'anon' or 'memcg'.
+> >
+> > Nice catch, thank you!
+> >
+> > checkpatch.pl shows one warning, though:
+> >
+> >     WARNING: From:/Signed-off-by: email address mismatch: 'From: Hyeong=
+tak Ji <hyeongtak.ji@gmail.com>' !=3D 'Signed-off-by: Hyeongtak Ji <hyeongt=
+ak.ji@sk.com>'
 >
-> Just because you come up with a new way to do things, doesn't mean you
-> can remove the old way.
+> This can be addressed by including an explicit From: line at start of
+> changelog.  Which should we use?
 
-I was wondering about that, actually. My understanding was that what
-Chen-Yu was doing here was correct, but I'm happy to be educated.
+Please use <hyeongtak.ji@sk.com> if it's possible.
 
-Specifically, I think that after his series old device trees will
-continue to boot just fine. ...so if someone took a device tree from
-before his series and booted it on a kernel after his series that
-everything would be hunky dory. If that doesn't work then, I agree,
-that should be fixed.
-
-However, here, he is documenting what the "latest and greatest" device
-tree should look at and that matches what's checked into the "dts"
-directory. In general, I thought that yaml files didn't necessarily
-always document old/deprecated ways of doing things and just focused
-on documenting the new/best way.
-
-Now, obviously, if someone took a new device tree and tried to put it
-on an old kernel then it wouldn't work, but I was always under the
-impression that wasn't a requirement.
-
-
--Doug
+>
+> > >
+> > > Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> >
+> > Reviewed-by: SeongJae Park <sj@kernel.org>
+>
+> I'll add
+>
+> Fixes: ab9bda001b681 ("mm/damon/core: introduce address range type damos =
+filter")
+> Cc: <stable@vger.kernel.org>
+>
