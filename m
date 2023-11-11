@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E2B7E8A3E
+	by mail.lfdr.de (Postfix) with ESMTP id 07ED37E8A3D
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 11:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjKKKla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 05:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S230299AbjKKKmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 05:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjKKKl2 (ORCPT
+        with ESMTP id S229956AbjKKKmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 05:41:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0971E9F;
-        Sat, 11 Nov 2023 02:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699699285; x=1731235285;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yDgF8fRMeA3utzT1N//rBGwE20ulKHntUEzKVUCPbnU=;
-  b=G/7AFJnh69xdrRicGTJKuADo1fv8bkTSUiiTach0yrvgqavPR1oR6V7Y
-   6v9ALgaZnVS8GA/WpHOsRlOj4/0QrasJz2ld4LFyoqU5Z2ZrhFxkjjrrL
-   WNfvb19z/vu4Yt1IK57WzKDNx4vEKu4JmnXVdJkLO/1/Spw+cZqqOHs1+
-   mH1qalv/5lv9jsnPfbaOKWIpkKsWsyV9Zje6GFxRVaeu5uttU0Hv9niZ5
-   utNYeq4Bjav+68aUXyNQYf94Nd/nDPhFCKiYzzqrw4PDF5+nsVK7qReNz
-   N11ppo/6vgTcWA/lUaRjTT2DS3GHld321k21owcJKXjF1dPOScZovh36W
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="394171552"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="394171552"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 02:41:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10890"; a="1095355185"
-X-IronPort-AV: E=Sophos;i="6.03,294,1694761200"; 
-   d="scan'208";a="1095355185"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Nov 2023 02:41:18 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r1lQS-000ANh-2o;
-        Sat, 11 Nov 2023 10:41:16 +0000
-Date:   Sat, 11 Nov 2023 18:41:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ross Philipson <ross.philipson@oracle.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
-        kexec@lists.infradead.org, linux-efi@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        ross.philipson@oracle.com, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        ardb@kernel.org, mjg59@srcf.ucam.org,
-        James.Bottomley@hansenpartnership.com, luto@amacapital.net,
-        nivedita@alum.mit.edu, kanth.ghatraju@oracle.com,
-        trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v7 09/13] x86: Secure Launch SMP bringup support
-Message-ID: <202311111806.sbmcWUN1-lkp@intel.com>
-References: <20231110222751.219836-10-ross.philipson@oracle.com>
+        Sat, 11 Nov 2023 05:42:40 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA07B3AA6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:42:37 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9e1021dbd28so457252066b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 02:42:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1699699356; x=1700304156; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ge0gNi9DVXfC2vKDgGEclw0Ori58fekABd1HKK5RJHA=;
+        b=MbbU5Gvv4vY/L2xQb9BPBSBuz7AttYNt7KrblUKUMWD8MIAYUh9aCcMfrTOimHshHe
+         ZdJ1nkCamch7LQLY+9ZFu4f5qy8z9FWYu3edY4qBE1d1obd3AUdUq27wvlVyXK5QOY8I
+         BKUC1ICenXwIPVnHF+58SG/z7whQKmQvw2NgI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699699356; x=1700304156;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ge0gNi9DVXfC2vKDgGEclw0Ori58fekABd1HKK5RJHA=;
+        b=lhTUboeAnr7P34kTCvXjNp4jFNQHZxTpjDRdsiEA9LPb1TWdAUCZHInrRRiDr5mnaq
+         0RaIv8UiAeawS2pK0z8csJj4kMJDK4odxFvRpZyy2i/6HE98siV034tvHjy9k7+pb/nZ
+         24ZzR2fxaAzATTLrAyaF9tGjtQDbW51/ZFpyrRJJyjcd7ZPEwKKDe/3qd4OSe9DYsWya
+         CLO0EprE4bBvW7d7MsE3n5F3U1vXaFFSDgrSi4z5K9fSZ2YnAFKQwGfYiciQt+93DYIV
+         7x3iViVlfhP1meS/Zp4ZKKQNHDNNH/TmW4m/4LD240qX59qvJIiYZzb3rat6CBEX9wkK
+         2gzQ==
+X-Gm-Message-State: AOJu0YxncToK9qARpvoW+Xh+6EOn9kHmjnhUuY4JqiVwznoCKgl9U5Hc
+        9KuE6UTxroIei6e6ki/9wJLrQonzrLfQ5bicMcfHuA==
+X-Google-Smtp-Source: AGHT+IHi7umdHJSN/J3vKG6LIaXqc2IzKyZTj5K72HPZNOWFZKca+Sq8nOJ2Izx28leKgWLIeRgloQ==
+X-Received: by 2002:a17:906:4c84:b0:9cb:5a8a:b19d with SMTP id q4-20020a1709064c8400b009cb5a8ab19dmr929295eju.5.1699699355850;
+        Sat, 11 Nov 2023 02:42:35 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-79-20-97-182.retail.telecomitalia.it. [79.20.97.182])
+        by smtp.gmail.com with ESMTPSA id ga33-20020a1709070c2100b0099e12a49c8fsm872183ejc.173.2023.11.11.02.42.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 02:42:35 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-amarula@amarulasolutions.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Helge Deller <deller@gmx.de>, Martin Kaiser <martin@kaiser.cx>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH 00/10] Fix left margin setup and code cleanup
+Date:   Sat, 11 Nov 2023 11:41:49 +0100
+Message-ID: <20231111104225.136512-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110222751.219836-10-ross.philipson@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,126 +74,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ross,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on tip/x86/core]
-[also build test WARNING on herbert-cryptodev-2.6/master herbert-crypto-2.6/master linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ross-Philipson/x86-boot-Place-kernel_info-at-a-fixed-offset/20231111-063453
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20231110222751.219836-10-ross.philipson%40oracle.com
-patch subject: [PATCH v7 09/13] x86: Secure Launch SMP bringup support
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231111/202311111806.sbmcWUN1-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231111/202311111806.sbmcWUN1-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311111806.sbmcWUN1-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> arch/x86/kernel/smpboot.c:1097:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (slaunch_is_txt_launch())
-               ^~~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/kernel/smpboot.c:1107:6: note: uninitialized use occurs here
-           if (ret)
-               ^~~
-   arch/x86/kernel/smpboot.c:1097:2: note: remove the 'if' if its condition is always false
-           if (slaunch_is_txt_launch())
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/kernel/smpboot.c:1046:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
+This series was created with the intention of fixing the left margin
+setting. At the same time, I made some changes with the aim of making
+the code more readable, as well as removing the errors/warnings
+reported by checkpatch.
 
 
-vim +1097 arch/x86/kernel/smpboot.c
+Dario Binacchi (10):
+  fbdev: imxfb: fix left margin setting
+  fbdev: imxfb: move PCR bitfields near their offset
+  fbdev: imxfb: use BIT, FIELD_{GET,PREP} and GENMASK macros
+  fbdev: imxfb: replace some magic numbers with constants
+  fbdev: imxfb: add missing SPDX tag
+  fbdev: imxfb: drop ftrace-like logging
+  fbdev: imxfb: add missing spaces after ','
+  fbdev: imxfb: Fix style warnings relating to printk()
+  fbdev: imxfb: use __func__ for function name
+  fbdev: imxfb: add '*/' on a separate line in block comment
 
-  1036	
-  1037	/*
-  1038	 * NOTE - on most systems this is a PHYSICAL apic ID, but on multiquad
-  1039	 * (ie clustered apic addressing mode), this is a LOGICAL apic ID.
-  1040	 * Returns zero if startup was successfully sent, else error code from
-  1041	 * ->wakeup_secondary_cpu.
-  1042	 */
-  1043	static int do_boot_cpu(u32 apicid, int cpu, struct task_struct *idle)
-  1044	{
-  1045		unsigned long start_ip = real_mode_header->trampoline_start;
-  1046		int ret;
-  1047	
-  1048	#ifdef CONFIG_X86_64
-  1049		/* If 64-bit wakeup method exists, use the 64-bit mode trampoline IP */
-  1050		if (apic->wakeup_secondary_cpu_64)
-  1051			start_ip = real_mode_header->trampoline_start64;
-  1052	#endif
-  1053		idle->thread.sp = (unsigned long)task_pt_regs(idle);
-  1054		initial_code = (unsigned long)start_secondary;
-  1055	
-  1056		if (IS_ENABLED(CONFIG_X86_32)) {
-  1057			early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
-  1058			initial_stack  = idle->thread.sp;
-  1059		} else if (!(smpboot_control & STARTUP_PARALLEL_MASK)) {
-  1060			smpboot_control = cpu;
-  1061		}
-  1062	
-  1063		/* Enable the espfix hack for this CPU */
-  1064		init_espfix_ap(cpu);
-  1065	
-  1066		/* So we see what's up */
-  1067		announce_cpu(cpu, apicid);
-  1068	
-  1069		/*
-  1070		 * This grunge runs the startup process for
-  1071		 * the targeted processor.
-  1072		 */
-  1073		if (x86_platform.legacy.warm_reset) {
-  1074	
-  1075			pr_debug("Setting warm reset code and vector.\n");
-  1076	
-  1077			smpboot_setup_warm_reset_vector(start_ip);
-  1078			/*
-  1079			 * Be paranoid about clearing APIC errors.
-  1080			*/
-  1081			if (APIC_INTEGRATED(boot_cpu_apic_version)) {
-  1082				apic_write(APIC_ESR, 0);
-  1083				apic_read(APIC_ESR);
-  1084			}
-  1085		}
-  1086	
-  1087		smp_mb();
-  1088	
-  1089		/*
-  1090		 * Wake up a CPU in difference cases:
-  1091		 * - Intel TXT DRTM launch uses its own method to wake the APs
-  1092		 * - Use a method from the APIC driver if one defined, with wakeup
-  1093		 *   straight to 64-bit mode preferred over wakeup to RM.
-  1094		 * Otherwise,
-  1095		 * - Use an INIT boot APIC message
-  1096		 */
-> 1097		if (slaunch_is_txt_launch())
-  1098			slaunch_wakeup_cpu_from_txt(cpu, apicid);
-  1099		else if (apic->wakeup_secondary_cpu_64)
-  1100			ret = apic->wakeup_secondary_cpu_64(apicid, start_ip);
-  1101		else if (apic->wakeup_secondary_cpu)
-  1102			ret = apic->wakeup_secondary_cpu(apicid, start_ip);
-  1103		else
-  1104			ret = wakeup_secondary_cpu_via_init(apicid, start_ip);
-  1105	
-  1106		/* If the wakeup mechanism failed, cleanup the warm reset vector */
-  1107		if (ret)
-  1108			arch_cpuhp_cleanup_kick_cpu(cpu);
-  1109		return ret;
-  1110	}
-  1111	
+ drivers/video/fbdev/imxfb.c | 179 ++++++++++++++++++++----------------
+ 1 file changed, 102 insertions(+), 77 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
