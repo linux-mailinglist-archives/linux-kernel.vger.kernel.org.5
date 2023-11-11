@@ -2,237 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05A27E86DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F467E86DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Nov 2023 01:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344364AbjKKARe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 19:17:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        id S1344717AbjKKAUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Nov 2023 19:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjKKARd (ORCPT
+        with ESMTP id S229667AbjKKAUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 19:17:33 -0500
-Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3596B3C3D
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:17:29 -0800 (PST)
-Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-6baaa9c0ba5so2496155b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:17:29 -0800 (PST)
+        Fri, 10 Nov 2023 19:20:08 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8398C4212
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:20:05 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-45dadc5bf51so1155013137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 16:20:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699662004; x=1700266804; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uiLyu8Jad+xuEzlGvDNOLZJnruEW/vsNXZTwPbmXtIA=;
+        b=cmjYZPk+AXZKHEuNf+jPHe8yM4OpgYe58ND6BXRkXgE4tQSoIPVsyReIGlxIWvMejO
+         w/ILgTqcgYUaamt5+ZQCpBW5j4FNGs4q3RCYZvSWPurMqLOv4KvuKahwEXqxxp4+33Rb
+         L6p+kgtntoY6D1+AJXAHk2C8Bx2ugx9FjMjR2P+gB/QDW+2uDueB+xRNLaPzDPeACAKE
+         4xYzDZnQKxva6LlqcdvUsBbXqYDX+DFl8WJGc+v49ycjrzRIfyTnw0Ju++5HhJd9ZPDU
+         eFNu48PTedjTM+oImxVBX5wuKD2m9uN/47IzsYkEW5s8NLtrRaZOBUc929sgYaSKM2OO
+         EUSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699661848; x=1700266648;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FlObPBRipr7QG5n1UjlXxQ9MYBDyrAAHU5ysht5qkY0=;
-        b=I8f8vchyk0lYZty2khWolmIO52jDIm1fFf5LQbZs455EcYy1Ra3Sb1FnWuQj+SEoM0
-         lFFHLqCxGJQfka8g9xB6UhWNB4C9DiTMSDXnhprUqQVJk2HBmkIDmlOtN0rtwgyH/RIo
-         Qf7sZrPaoBcMlCIR69ybOWyAT7VY9D2yEMER5IHaCfheNOhWWc/69RKRNODAOyEnfcaS
-         Ejiruq+U9aY3JuJp7aI1Z7LgLplEjVtNgqDRc8ELIakoAMtlIcP9BMo2jO8iPu9kcH++
-         GBHdcjYkwMnJ7H01zbWEP4Qse0af82xqrHeZLp+X6fe2UlFnW7IY+MjFzm/oVAd4zEUq
-         pUJw==
-X-Gm-Message-State: AOJu0YzThw5hLyRqxwzlA15CxfapP6UJyPQ3ylHPHZJb/rNUbpxiMXIz
-        pn1lP5YhFG2hv/aN/lLXfBERNhLC6iKs3261wlq67AGHknSe
-X-Google-Smtp-Source: AGHT+IEIOkL5pWDPSteicMdD+j6LEq4q7tbzXlkjH8awDFC6XuXC+TGeVENj8rcRv3n/BApbU7E5uxDU5NX0gIMpBgo9oT3JjvHm
+        d=1e100.net; s=20230601; t=1699662004; x=1700266804;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uiLyu8Jad+xuEzlGvDNOLZJnruEW/vsNXZTwPbmXtIA=;
+        b=bFRZ1RLdRKhg8QdfHJxsseDlZVhpqeLGO/0B3vf8n+ww6OeLyMWxoa+UqoH/yc6paQ
+         L1JEd/p+Iv6xDptQjZkF4IPnr2FnIN3GHQ4K5EuOtO31bhJ9UKuaIsxWZOuOBAu3H0GY
+         85MWYRmjwuW+zOxlAk0epWBkBPKon1UlpsIcaRJpywrQIp3Z06QB4IgqlyDNm8Xm+ibu
+         Fq1fzeWWgOi5ODzj1Irl4Pk7eQrr+wAUlSXDCgTHx7oh1demnYsAYcxXbjYBDdmeRQ9S
+         cYATMaVId4sPXfe9KPClDSADeI9IGCmq7r2EohUMjRuxu8QFvDZc6W3PO0ZO0499SNC7
+         TZBA==
+X-Gm-Message-State: AOJu0Yx4YM9FgjpCYihHTKgurIH1Q2AI3mXTpBTGKegk/QlKd+pg/TJJ
+        m7UWBrJH3kuCKnqOaxsjTkqWFp5n0TRMcUlhNbA=
+X-Google-Smtp-Source: AGHT+IEJjDviy7RflK9oVh4TAx9wToxuF5Hht08onsebFhZvg/X8xZVsbGSGIX9hjcY7M2ctA5V9gjzrq1REwZJCNFY=
+X-Received: by 2002:a05:6102:209e:b0:461:da:544 with SMTP id
+ h30-20020a056102209e00b0046100da0544mr78194vsr.15.1699662004494; Fri, 10 Nov
+ 2023 16:20:04 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a62:d45c:0:b0:6be:3dca:7d9d with SMTP id
- u28-20020a62d45c000000b006be3dca7d9dmr140697pfl.5.1699661848662; Fri, 10 Nov
- 2023 16:17:28 -0800 (PST)
-Date:   Fri, 10 Nov 2023 16:17:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ba5cfd0609d55c40@google.com>
-Subject: [syzbot] [bpf?] INFO: rcu detected stall in sys_unshare (9)
-From:   syzbot <syzbot+872bccd9a68c6ba47718@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <20230425222446.170486-1-jim.cromie@gmail.com> <ZEwBcOdV1br94T5N@arm.com>
+In-Reply-To: <ZEwBcOdV1br94T5N@arm.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 10 Nov 2023 17:19:38 -0700
+Message-ID: <CAJfuBxwdrL=4nKntHF69PkJ=tzHvECh4Ro6EFZamtwJgnN_SKQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] kmemleak report format changes
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Apr 28, 2023 at 11:25=E2=80=AFAM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Tue, Apr 25, 2023 at 04:24:43PM -0600, Jim Cromie wrote:
+> > If format changes are not /sys/** ABI violating, heres 3 minor ones:
+> >
+> > 1st strips "age <increasing>" from output.  This makes the output
+> > idempotent; unchanging until a new leak is reported.
+> >
+> > 2nd adds the backtrace.checksum to the "backtrace:" line.  This lets a
+> > user see repeats without actually reading the whole backtrace.  So now
+> > the backtrace line looks like this:
+> >
+> >   backtrace (ck 603070071):  # also see below
+> >
+> > Q: should ck be spelled crc ? it feels more communicative.
+>
+> These all would make sense (and 'crc' sounds better) if they were done
+> from the start. I know there are test scripts out there parsing the
+> kmemleak sysfs file. I can't tell whether these changes would break
+> them.
+>
+> Cc'ing Dmitry, I think syzbot was regularly checking kmemleak (not sure
+> it still does).
+>
 
-syzbot found the following issue on:
+I took a look at syzkaller repo, found kmemleak parsing in
+executor/common_linux.h
+in static void check_leaks(char** frames, int nframes)
 
-HEAD commit:    d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f706eb680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1156a047680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1400ef87680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/38e8e9ac2457/disk-d2f51b35.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b68cb55b3341/vmlinux-d2f51b35.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a16207c0a2b9/bzImage-d2f51b35.xz
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b50a5b680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b50a5b680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b50a5b680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+872bccd9a68c6ba47718@syzkaller.appspotmail.com
-
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P5082/1:b..l
-rcu: 	(detected by 0, t=10503 jiffies, g=4817, q=37 ncpus=2)
-task:syz-executor172 state:R  running task     stack:27680 pid:5082  tgid:5082  ppid:5079   flags:0x00000002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0xee2/0x59a0 kernel/sched/core.c:6688
- preempt_schedule_irq+0x52/0x90 kernel/sched/core.c:7008
- irqentry_exit+0x35/0x80 kernel/entry/common.c:432
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:lock_acquire+0x1ef/0x510 kernel/locking/lockdep.c:5721
-Code: c1 05 dd 7d 99 7e 83 f8 01 0f 85 b0 02 00 00 9c 58 f6 c4 02 0f 85 9b 02 00 00 48 85 ed 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
-RSP: 0018:ffffc90003c6f6f8 EFLAGS: 00000206
-RAX: dffffc0000000000 RBX: 1ffff9200078dee1 RCX: 0000000000000001
-RDX: 1ffff11002ffd157 RSI: ffffffff8accbc20 RDI: ffffffff8b2e7fc0
-RBP: 0000000000000200 R08: 0000000000000000 R09: fffffbfff23e2bd0
-R10: ffffffff91f15e87 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffffff8cfacfe0 R15: 0000000000000000
- rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- rcu_read_lock include/linux/rcupdate.h:747 [inline]
- is_bpf_text_address+0x36/0x1a0 kernel/bpf/core.c:733
- kernel_text_address kernel/extable.c:125 [inline]
- kernel_text_address+0x85/0xf0 kernel/extable.c:94
- __kernel_text_address+0xd/0x30 kernel/extable.c:79
- unwind_get_return_address+0x78/0xe0 arch/x86/kernel/unwind_orc.c:369
- arch_stack_walk+0xbe/0x170 arch/x86/kernel/stacktrace.c:26
- stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc+0x60/0x100 mm/slab_common.c:1020
- kmalloc_array include/linux/slab.h:637 [inline]
- kcalloc include/linux/slab.h:668 [inline]
- cache_create_net+0xa0/0x220 net/sunrpc/cache.c:1749
- rsi_cache_create_net net/sunrpc/auth_gss/svcauth_gss.c:2033 [inline]
- gss_svc_init_net+0x122/0x660 net/sunrpc/auth_gss/svcauth_gss.c:2093
- ops_init+0xb9/0x650 net/core/net_namespace.c:136
- setup_net+0x422/0xa40 net/core/net_namespace.c:339
- copy_net_ns+0x2fa/0x670 net/core/net_namespace.c:491
- create_new_namespaces+0x3ea/0xb10 kernel/nsproxy.c:110
- unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:228
- ksys_unshare+0x443/0x9b0 kernel/fork.c:3433
- __do_sys_unshare kernel/fork.c:3504 [inline]
- __se_sys_unshare kernel/fork.c:3502 [inline]
- __x64_sys_unshare+0x31/0x40 kernel/fork.c:3502
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f00801172f7
-RSP: 002b:00007ffd109dd1d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
-RAX: ffffffffffffffda RBX: 00007ffd109dd208 RCX: 00007f00801172f7
-RDX: 00007f0080115e79 RSI: 00007ffd109dd280 RDI: 0000000040000000
-RBP: 00000000000f4240 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000555556d1d370
-R13: 0000000000000003 R14: 0000000000000003 R15: 00007ffd109dd240
- </TASK>
-rcu: rcu_preempt kthread starved for 10544 jiffies! g4817 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:27632 pid:17    tgid:17    ppid:2      flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0xee2/0x59a0 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xe7/0x270 kernel/sched/core.c:6778
- schedule_timeout+0x157/0x2c0 kernel/time/timer.c:2167
- rcu_gp_fqs_loop+0x1ec/0xb10 kernel/rcu/tree.c:1626
- rcu_gp_kthread+0x249/0x380 kernel/rcu/tree.c:1825
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-rcu: Stack dump where RCU GP kthread last ran:
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 5110 Comm: syz-executor172 Not tainted 6.6.0-syzkaller-14651-gd2f51b3516da #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:__lock_acquire+0x16/0x5de0 kernel/locking/lockdep.c:4992
-Code: 00 e9 58 fe ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 41 57 41 89 cf 49 89 fa 48 b9 00 00 00 00 00 fc ff df 41 56 41 55 <41> 89 f5 41 54 41 89 d4 55 44 89 cd 53 48 81 ec 10 01 00 00 48 8b
-RSP: 0018:ffffc90003e0fba0 EFLAGS: 00000006
-RAX: 0000000000000200 RBX: 1ffff920007c1f7f RCX: dffffc0000000000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888079bed720
-RBP: 0000000000000200 R08: 0000000000000001 R09: 0000000000000000
-R10: ffff888079bed720 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000000 R14: ffff888079bed720 R15: 0000000000000001
-FS:  0000555556d1d3c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f008012d4c0 CR3: 000000006f293000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5718
- __might_fault mm/memory.c:5955 [inline]
- __might_fault+0x11f/0x1a0 mm/memory.c:5948
- clear_rseq_cs kernel/rseq.c:257 [inline]
- rseq_ip_fixup kernel/rseq.c:291 [inline]
- __rseq_handle_notify_resume+0xd5b/0x1010 kernel/rseq.c:329
- rseq_handle_notify_resume include/linux/sched.h:2361 [inline]
- rseq_signal_deliver include/linux/sched.h:2370 [inline]
- setup_rt_frame arch/x86/kernel/signal.c:211 [inline]
- handle_signal arch/x86/kernel/signal.c:266 [inline]
- arch_do_signal_or_restart+0x431/0x7f0 arch/x86/kernel/signal.c:311
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x4b/0x110 arch/x86/entry/common.c:88
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f0080115e79
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd109dd1d8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00007f0080115e79
-RDX: 000000002006b000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 00000000000f4240 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000555556d1d370
-R13: 0000000000000002 R14: 00007ffd109dd250 R15: 00007ffd109dd240
- </TASK>
+this parse just counts occurrences of "unreferenced object",
+it does not expect to find "age" nor would it (apparently) choke on
+"crc" being added.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+There are also a few kmemleak refs in several github repos
+3 have updates since 2020.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+perf-monitor  has 2 forks, both have the same minor compile
+warning-turned-error.
+umemleak makes mention of kmemleak, but it has no code, just a readme.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+QED: there are no kmemleak parsers in public github repos that would
+break with these changes
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+While there may be parsers on the dark-web,
+ISTM none could be relying upon "age" in any meaningful way.
+and none are likely to choke because "(crc: <foo>)"
+was added to the stack trace display.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+If these patches spend some time in purgatory (in linux-next or
+linux-eventually)
+perhaps the remaining risks can be discounted ?
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
 
-If you want to undo deduplication, reply with:
-#syz undup
+
+
+
+
+
+
+> > NB: with ck exposed, it becomes possible to do a "selective clear",
+> > something like:
+> >
+> >   echo drop 603070071 > /sys/kernel/debug/kmemleak
+> >
+> > The 3rd patch takes __init off of kmemleak_test_init().  This fixes a
+> > bare-pointer in the 2nd line of the backtrace below, which previously
+> > looked like:
+> >
+> >     [<00000000ef738764>] 0xffffffffc02350a2
+> >
+> > NB: this happens still/again, after rmmod kmemleak-test.
+> >
+> > unreferenced object 0xffff888005d9ca40 (size 32):
+> >   comm "modprobe", pid 412, jiffies 4294703300
+> >   hex dump (first 32 bytes):
+> >     00 cd d9 05 80 88 ff ff 40 cf d9 05 80 88 ff ff  ........@.......
+> >     14 a7 c4 f6 7d f9 87 10 00 00 00 00 00 00 00 00  ....}...........
+> >   backtrace (ck 1354775490):
+> >     [<000000002c474f61>] kmalloc_trace+0x26/0x90
+> >     [<00000000b26599c1>] kmemleak_test_init+0x58/0x2d0 [kmemleak_test]
+> >     [<0000000044d13990>] do_one_initcall+0x43/0x210
+> >     [<00000000131bc505>] do_init_module+0x4a/0x210
+> >     [<00000000b2902890>] __do_sys_finit_module+0x93/0xf0
+> >     [<00000000673fdce2>] do_syscall_64+0x34/0x80
+> >     [<00000000357a2d80>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>
+> --
+> Catalin
