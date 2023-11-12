@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2EF67E9260
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7725C7E9263
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbjKLTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 14:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S231934AbjKLT4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 14:56:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbjKLTvV (ORCPT
+        with ESMTP id S230092AbjKLT4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 14:51:21 -0500
+        Sun, 12 Nov 2023 14:56:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4378136
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:51:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18A7CC433C8;
-        Sun, 12 Nov 2023 19:51:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEDD136
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:56:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FFABC433C7;
+        Sun, 12 Nov 2023 19:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699818676;
-        bh=f/4S7FI52mCchbVDxW+qnUwpaqkZ5LrMF0Zm8xHVglI=;
+        s=k20201202; t=1699818966;
+        bh=1C1MtKpveJD7sT2SfOQ62rJYeWw1bMc/CqvKgThfMCY=;
         h=From:To:Cc:Subject:Date:From;
-        b=FI+o3K77vKwtr3eh6pr0PyVPPrjyTpDOfLpDbq6ZhUYdryxWqa/p0o1syGJeY0yq0
-         em27v4lVFETJkl0ldFpQWRph01DARqCkM2qzyA50GnfJspW92r4qilsZgi1vOGyeop
-         nXjyBGQWZfR+jTIg8/5Y9rm9BWSevr3i9SQAWJxfR8BkkEoxc2k7rSc6VGHLjroknX
-         EBaBgZtNZqAmngbMlgLEa3dqlc0I15YSh+72QrMcvQMUzJCA5UM09Oi36Uxu3I33Fz
-         Hw0j67xjV419CPZh00xutDfoScwiwsirMlTIJctiQQMKn4X69H2omhUdFZuLVl131G
-         LiKSPyhJAKpmw==
+        b=TQ2myIiV5uNBkEXu368kssk8OZ+f1FbRv2+7LKxwyINFP7t7TyuGTKQDWi5r6XGUd
+         m69TSleYR+GV7CSGBPNptdcpfOPOKnfnzl8uzILtV5IEHNA3sinlcNp2ElwYAyh4Sn
+         dr8wwb9bH4z5ZjArfn5V9xnKf22Ah1PBWFTfvOeVcZh7scO14NaOuHos8rspFEXCuG
+         NLkcB1bBWmIn4ZT6NjinYyuKv3jp3cOOAblYd2KeTYfLJqvjt/2aGcJkq3BzbVVSrt
+         7B2PTgY5WB3Sj4ntiiEXdthfNFcyIns98hiXr8DJFkPk8AcEBJNb6dDcD/PrSo/acY
+         sdj9acMinucjA==
 From:   SeongJae Park <sj@kernel.org>
 Cc:     damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC IDEA] ACMA: Access/Contiguity-aware Memory Auto-scaling
-Date:   Sun, 12 Nov 2023 19:51:14 +0000
-Message-Id: <20231112195114.61474-1-sj@kernel.org>
+        linux-kernel@vger.kernel.org, sj@kernel.org
+Subject: [RFC IDEA] DAMOS-based Tiered-Memory Management
+Date:   Sun, 12 Nov 2023 19:56:02 +0000
+Message-Id: <20231112195602.61525-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -51,442 +50,196 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hello,
 
 
-I'd like to share an idea for making systems automatically scale up/down memory
-in an access/contiguity-awared way.  It is designed for memory efficiency of
-free pages reporting-like collaboration based memory oversubscribed virtual
-machine systems, but it might also be potentially useful for memory/power
-efficiency and memory contiguity of general systems.  There is no
-implementation at the moment, but I'd like to hear any comments or concerns
-about the idea first if anyone has.  I will also share this in the upcoming
-kernel summit DAMON talk[1]'s future plans part.
+There were a few attempts to use DAMON at tiered memory management, from the
+pretty early days of DAMON[1].  I also wanted to dive deep on this topic[2] but
+didn't get time for this, unfortunately.  Meanwhile, a few people thankfully
+shared their own approaches and results with me, sometimes in public, and
+sometimes in private.
+
+They used varying approaches and the results were also very different.  Some
+folks achieved nice results, while it was only waste of time for someone.
+Nonetheless, what I commonly heard about from such grateful sharing was the
+difficulty of DAMON tuning[3,4].  My proposal for the tuning difficulty wa
+auto-tuning DAMOS aggressiveness based on feedbacks, which could be provided by
+user, or DAMON can collect on its own.  It is still not done, but an early
+version of the implementation has recently shared.  I'd like to share my
+humble concept level idea of using the auto-tuning feature for somewhat
+reasonable or at least worthy to try DAMOS-based tiered memory management.
 
 Background
 ==========
 
-On memory oversubscribed virtual machine systems, free pages reporting could be
-used as a core of the collaborative memory management.  That is, the kernel of
-guests report free pages to the host, and the host utilizes the reported pages
-for other guests.  When the guest accesses the reported guest-physical page
-again, the host knows that via the page fault mechanism, allocates a
-host-physical page, and provide it to the guest.
+Please read DAMOS auto-tuning RFC patchset[1]'s coverletter and the first patch
+for the overall concept and the implementation detail.  In short, the feature
+allow users define aimed system status (e.g., 0.05% memory PSI and/or 50% free
+memory ratios), and let DAMOS control its aggressiveness on its own to achieve
+the goals.  If it is under-achieving the goals, DAMOS increases its
+aggressiveness, and vice versa.  Under the limited aggressiveness, DAMOS
+applies the action to pages that more prioritized for the action.  For example,
+colder pages are more prioritized for 'pageout' action.
 
-Requirements
-------------
+DAMOS-based Tiered-Memory Management Idea
+=========================================
 
-For maximizing the memory efficiency of such systems, below properties are
-required to guest machines.
+The idea is to set DAMOS schemes for each tiered memory node, like below.
 
-1. Being memory frugal.  The guest should use memory only as really needed.
-Otherwise, only insufficient amounts of memory are freed and reported to the
-host while the guest is wasting the host-physical pages to accommodate not
-really needed data.  As a result, the host level memory efficiency is degraded.
+1. If the node has a lower node, demote cold pages of the
+node to the lower node using DAMOS, colder pages first.  Let DAMOS auto-tune
+the aggressiveness of the demotion scheme aiming small amount of (e.g., 5%)
+free memory of the current node.
 
-2. Report-time contiguity of free pages.  To reduce the overhead of the free
-pages reporting, the feature usually works for not every single page but for
-contiguous free pages of user-specifiable granularity (e.g., 2 MiB).  Hence,
-even if there are many free pages in a guest, if the free pages are not
-report-granularity-contiguous, those cannot be reported to the host.
+2. If the node has a higher node, promote hot pages in the node to the upper
+node using DAMOS, more hot pages first.  Let DAMOS auto-tune the aggressiveness
+of the promotion scheme aiming high utilization rate (e.g., 96%) of the upper
+node.
 
-3. Post-report contiguity of free pages.  In some cases, the host's page size
-could be different from (usually larger than) that of the guest.  For example,
-the host can manage the memory with 2 MiB-sized pages while the guest is using
-4 KiB-sized pages.  In this case, the host-guest page mapping works in the
-host-side page size.  Hence, even if only one page among a reported contiguous
-free pages are allocated again and accessed, the whole reported contiguous
-chunk should be returned to the guest.  This kind of ping pong itself could
-also consume some resources.
+The aims of the demotion scheme and the promotion scheme are set to conflict a
+little bit, like above example.
 
-4. Minimizing the metadata for reported pages.  Even though the guests report
-free pages, the metadata for the pages (e.g., 'struct page') still exist and
-consume memory.  Ideally, guests should have only metadata for really needed
-pages.
+Discussion
+==========
 
-Possible Approach and Limitations
----------------------------------
+The simple scheme can be easily extended to multiple tiered memory nodes.
+Higher node will keep high utilization with relatively hot pages, while lower
+nodes will have only relatively cold pages that cannot be accommodated in
+higher nodes due to out of the space.
 
-There are kernel features that could be used from the guests' user space for
-the requirements.  DAMON-based proactive reclamation[2] could be turned on for
-being memory frugal with only minimum performance impact.  Proactive compaction
-can periodically run for the report-time contiguity of free pages.  Memory
-hot-unplugging can be used for freeing the metadata of free pages[3].  The
-guest would need to hot-plug the memory blocks again depending on memory
-demands.  This may require some changes in the kernel for user-space driven
-hot-[un]plugging of memory, and reporting hot-unplugged memory to the host.
+Because the utilization goal and the free memory goal overlap, DAMOS will
+continue moving cold pages down and hot pages up.  Since the demotion is for
+coldest pages of the node, and the aggressiveness auto-tuning will make the
+aggressiveness under the small overlap small, the overhead will be only modest.
 
-This approach could work, but has some limitations.  Firstly, memory
-hot-[un]plugging needs isolation/migration of the whole pages in the target
-block.  This takes time, and could fail for any page isolation/migration
-failures.    Periodic compaction could also partially fail due to page
-isolation/migration failures.  It could also waste resources for compacting too
-much memory, while required contiguity is only report-granularity.  There is no
-way to avoid the compacted regions being defragmented again.  We were unable to
-find a good existing solution for the post-report contiguity.  Finally,
-efficiently controlling these multiple different kernel features from user
-space is complex and challenging.
-
-ACMA: Access/Contiguity-aware Memory Auto-scaling
-=================================================
-
-We therefore propose a new kernel feature for the requirements, namely
-Access/Contiguity-aware Memory Auto-scaling (ACMA).
-
-Definitions
------------
-
-ACMA defines a metric called DAMON-detected working set.  This is a set of
-memory regions that DAMON has detected access to those regions within a
-user-specifiable time interval, say, one minute.
-
-ACMA also defines a new operation called stealing.  It receives a contiguous
-memory region as its input, and allocates the pages of the region.  If some
-pages in the region are not free, migrate those out.  Hence it could be thought
-of a variant, or a wrapper of memory offlining or alloc_contig_range().  If the
-allocation is successful, it further reports the region as safe to use to the
-host.  ACMA manages the stealing status of each memory block.  If the entire
-page of a memory block is stolen, it further hot-unplug the block.
-
-It further defines a new operation called stolen pages returning.  The action
-receives an amount of memory size as input.  If there are not-yet-hot-unplugged
-stolen pages of the size, it frees the page.  If there are no such stolen pages
-but a hot-unplugged stolen memory block, it hot-plugs the block again, closer
-to the not-hot-unplugged blocks first.  Then the guest users can allocate pages
-of returned ones and access it.  When they access it, the host will notify that
-via page fault and assign/map a host-physical page for that.
-
-Workflow
---------
-
-With these definitions, ACMA behaves based on system status as follows.
-
-Phase 0. It periodically monitors the DAMON-based working set size and free
-memory size of the system.
-
-Phase 1. If the free memory to the working set size ratio is more than a
-threshold (high), say, 2:1 (200%), ACMA steals report-granularity contiguous
-non-working set pages in the last not-yet-hot-unplugged memory block, colder
-pages first.  The ratio will decrease.
-
-Phase 2. If the free memory to the working set size ratio becomes less than a
-threshold (normal), say, 1:1 (100%), ACMA stops stealing and start reclaiming
-non-workingset pages, colder pages first.  The ratio will increase.  The
-reclamation is continued until the ratio becomes higher than the normal
-threshold.
-
-Phase 3. If the non-workingset reclamation is not increasing the ratio and it
-becomes less than yet another threshold (low), say, 1:2 (50%), ACMA starts
-returning stolen pages until the free memory to the working set ratio becomes
-higher than the low threshold.
-
-Expectations
-------------
-
-Since ACMA does stealing in phase 1, which does a sort of compaction on its
-own, in free pages report-granularity, it does compaction only as much as
-really required.  Because the stealing targets colder pages first, it will only
-rarely conflict with users of the pages.  Hence less isolation/migration
-failures, which results in more stealing success is expected.
-
-Since ACMA-stolen pages are allocated to ACMA, which is in kernel space, no
-other in-guest components can use it before ACMA returns those.  Hence,
-after-report contiguity is kept, unless working set size, which represents real
-memory demand, grows enough to make ACMA work in the phase 3.
-
-Since ACMA does proactive non-workingset cold-pages first reclamation in
-phase 2, the guest becomes memory frugal with minimum performance degradation.
-
-Because the phase changes based on free memory to working set size ratio, the
-guest system is guaranteed to have only the working set plus normal-high
-(100%-200% in this example) working set size proportional free memory.  This
-wouldn't be true if the working set size is more than 50% of all available
-guest-physical memory of the guest.  In this case, if memory demands continues
-increasing, any system has no way but OOM.  The host might be able to detect
-this and add more guest-physical memory so that ACMA can hot-plug those
-automatically, though.  Because stealing does hot-unplugging of the memory,
-'struct page' for only really needed pages are used.
-
-Hence, ACMA provides monitored access pattern based contiguity-aware real
-memory demands based memory scaling without unnecessary metadata.
-
-Implementation
---------------
-
-Implementation detail is to-be-discussed, but we could implement ACMA using
-DAMOS.  That is, the stealing and stolen pages return operation could be
-implemented as a new DAMOS action.  The working set size monitoring can be
-natively done with DAMON.  The three phases can each be implemented as a DAMOS
-scheme.  The free memory to the working set size ratio based activation and
-deactivation of the schemes can be done using the aim-oriented auto-tuning of
-DAMOS[4].  We could add PSI goals to the schemes, too.
-
-For example, below DAMOS schemes in the DAMO json input format could be
-imagined.  Note that this is not what is currently supported.
-
-    [
-        {
-            "action": "acma_steal",
-            "access_pattern": {
-                "sz_bytes": { "min": "2 MB", "max": "max" },
-                "nr_accesses": { "max": "0 %" },
-                "age": { "min": "1 minute" }
-            },
-            "auto_tuning_aims": [
-                {
-                    "metric": "workingset_to_free_mem_ratio",
-                    "workingset_min_age": "1 minute", "target": 1.0
-                },
-                { "metric": "psi_mem_ratio", "target": 0.001, },
-            ],
-        },
-        {
-            "action": "pageout",
-            "access_pattern": {
-                "nr_accesses": { "max": "0 %" },
-                "age": { "min": "1 minute" }
-            },
-            "auto_tuning_aims": [
-                {
-                    "metric": "free_mem_to_workingset_ratio",
-                    "workingset_min_age": "1 minute", "target": 1.0
-                },
-                { "metric": "psi_mem_ratio", "target": 0.001, },
-            ],
-        },
-        {
-            "action": "acma_return",
-            "auto_tuning_aims": [
-                {
-                    "metric": "free_mem_to_workingset_ratio",
-                    "workingset_min_age": "1 minute", "target": 0.5
-                },
-            ],
-        }
-    ]
-
-Potential Benefits for General Usage
-====================================
-
-ACMA is basically designed for memory overcommitted virtual machine systems, as
-described above.  However, it could be useful for general systems that memory
-can be physically hot-[un]pluggable.  It could help improve memory efficiency
-of physical clusters, and save power for unused DRAM or memory devices.
-
-We could also think about extending ACMA to provide a contiguous memory
-allocation interface.  Since stolen pages are report-granularity or memory
-block-granularity contiguous and isolated from the system's other components,
-ACMA could allocate contiguous memory from the stolen memory, without high
-latency.  If the report granularity and required contiguous memory allocation
-size is same (e.g., 2 MiB default free pages reporting granularity and 2 MiB
-hugepages), it would be especially efficient.  In this case, ACMA may stand for
-Access-aware Contiguous Memory Allocator.
+If the system needs to being memory frugal, we may apply
+Access/Contiguity-aware Memory Auto-Scalaing (ACMA)[6] to the lowest node.
+Note that ACMA removes unnecessary memory blocks one by one and add those back
+as needed.  As a result, the system will have only necessary nodes.
 
 Request For Comments
 ====================
 
 This is in very early stage.  No enough survey of related works is done, and no
-implementation is made at all.  That said, I hope to share what I'm gonna do,
-and get any comment if possible, not to only success, but rather to learn from
-you and develop it together, or even fail fast.
+implementation of the demote/promote DAMOS action are made.  An early version
+of the aim-oriented DAMOS aggressive auto tuning is available, though.  I even
+have no good test setup for tiered memory system.  That said, I hope to get any
+comments or concern about this humble early idea if someone have.  That's not
+to only make it success as is, but rather to learn from you and develop it
+together, or even fail fast.
 
-Example ACMA Operation Scenario
-===============================
+Example Operation Scenario
+==========================
 
-Let’s assume a guest using 2MiB size pages.  Each memory block has 9 pages, and
-also 1 page for metadata of the 9 pages.  The system has 10 memory blocks, so
-200 MiB memory in total.
+Let's suppose a system is having a DRAM and a CXL-based slower node, each can
+accommodate 10 pages.
 
-Let’s represent the state of each page as below.
+And the system is configured as the idea is proposed above.  The free memory
+ratio and memory utilization ratio goals are set as 5% and 96%.  That is, we
+have the demote DAMOS scheme for DRAM node, and promote DAMOS scheme for CXL
+node.
 
-U: stolen-and-unplugged page
-M: metadata of the pages in the page block
-S: stolen-but-not-yet-unplugged page
-F: Free page
-C: Non-free (assigned) cold (non-workingset) page
-H: Non-free (assigned) hot (workingset) page
+Let's also represent the hotness of each page in five level, from 0 (cold) to 4
+(hot).  And let's represent free pages as 'F'.
 
-And the proposed system is configured like above implementation example.  To
-summarize it again,
+Then a state of the system may represented like below:
 
-* Steal 2MiB-contiguous cold memory in last plugged memory block, when
-  free memory to working set rate > 100%
-* Reclaim cold pages if free memory to working set rate <= 100%
-* Return stolen memory if free memory to working set rate < 50%
+    Node 0 (DRAM): 43210 43210  (100% util,   0% free)
+    Node 1 (CXL):  FFFFF FFFFF  (  0% util, 100% free)
 
-The initial state could look like below.
+Cold Pages-only Pingpong
+------------------------
 
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MCCCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+Since DRAM node is having 0% free memory ratio, which is under-achieving the
+goal of the demote scheme, demote scheme is activated.  Meanwhile, since DRAM
+node utilization ratio is 100%, which is higher than the goal of the promote
+scheme (96%), the promote scheme does nothing.  Hence, cold pages in Node 0 are
+demoted, colder one first.
 
-    Free mem to working set rate: 63 pages / 9 pages = 700 %
+    Node 0 (DRAM): 4321F 43210  ( 95% util,   5% free)
+    Node 1 (CXL):  FFFF0 FFFFF  (  5% util,  95% free)
 
-Stealing memory (down-scaling)
-------------------------------
+The goal of demote scheme is met, so demote scheme stops.  The DRAM utilization
+ratio is below the promote scheme's goal (96%) now.  So the scheme is activated
+and promote hot pages of the node, more hot one first.  It promotes the coldest
+one in this case, though, since that's the only one page that can be promoted.
 
-Since free memory to workingset ratio is larger than 100%, cold pages stealing
-works.  Stolen pages are reported to the host.  As more pages are stolen, the
-free memory to workingset ratio decreases.  For example, if hot/cold pages are
-stable and four free pages are stolen, the status looks like below.  Note that
-ACMA can steal allocated-cold pages, too.
+    Node 0 (DRAM): 43210 43210  (100% util,   0% free)
+    Node 1 (CXL):  FFFFF FFFFF  (  0% util, 100% free)
 
-    MFSFSFSSFF MFFFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MCCCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+Then promote scheme again deactivated, and demote scheme activated.  Coldest
+page demoted.
 
-    Free mem to working set rate: 59 pages / 9 pages = 655 %
+    Node 0 (DRAM): 43210 4321F  ( 95% util,   5% free)
+    Node 1 (CXL):  FFFFF FFFF0  (  5% util,  95% free)
 
-Stealing works for only the last not-yet-unplugged block.  Once all pages of
-the block are stolen, the entire block is unplugged.  The metadata for the
-block also becomes available to the host.  Stealing continues to the next
-block.
+Then promote scheme again activated, and demote scheme deactivated.  The
+hottest page in CXL memory promoted.  The hottest page is the colest one in CXL
+node this time again, though.
 
-    UUUUUUUUUU MFSFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MFFFFFFFFF
-    MFFFFFFFFF MCCCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+    Node 0 (DRAM): 43210 43210  (100% util,   0% free)
+    Node 1 (CXL):  FFFFF FFFFF  (  0% util, 100% free)
 
-    Free mem to working set rate: 52 pages / 9 pages = 577 %
+In this way, DRAM node keeps high utilization ratio with only hot pages, while
+only cold pages move back and forth between the two nodes.
 
-Reclamation helps stealing
---------------------------
+Handling of Hotness Changed Pages
+---------------------------------
 
-And the stealing continues... Until free memory to working set rate reaches
-100%.
+Let's assume the two cold pages are in CXL node.
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFFFFFFFF MCCCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+    Node 0 (DRAM): 4321F 4321F  ( 90% util,  10% free)
+    Node 1 (CXL):  FFFF0 FFFF0  ( 10% util,  90% free)
 
-    Free mem to working set rate: 9 pages / 9 pages = 100 %
+And let's assume the demoted pages become hot.
 
-Now stealing stops, and proactive reclamation starts.  It reclaims cold pages,
-making those free pages.
+    Node 0 (DRAM): 4321F 4321F  ( 90% util,  10% free)
+    Node 1 (CXL):  FFFF3 FFFF2  ( 10% util,  90% free)
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFFFFFFFF MCFCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+The promotion scheme will promote the hottest page.
 
-    Free mem to working set rate: 10 pages / 9 pages = 111 %
+    Node 0 (DRAM): 43213 4321F  ( 95% util,   5% free)
+    Node 1 (CXL):  FFFFF FFFF2  (  5% util,  95% free)
 
-Now reclamation is deactivated, and stealing be activated.
+The other page in CXL also get promoted following the goals.
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFSFFFFFF MCFCCCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+    Node 0 (DRAM): 43213 43212  (100% util,   0% free)
+    Node 1 (CXL):  FFFFF FFFFF  (  0% util, 100% free)
 
-    Free mem to working set rate: 9 pages / 9 pages = 100 %
+Now, the demotion scheme demotes cold pages of the DRAM node, not the now-hot
+just promoted pages.
 
-Ping pong of reclamation-stealing continues.  Reclaim,
+    Node 0 (DRAM): 432F3 43212  ( 95% util,   5% free)
+    Node 1 (CXL):  FFF1F FFFFF  (  5% util,  95% free)
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFSFFFFFF MCFCFCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+Unless the now-coldest pages be hot, only they will continue being promoted and
+demoted.
 
-    Free mem to working set rate: 10 pages / 9 pages = 111 %
+Extension
+---------
 
-and then Steal.
+The schemes can be extended for more than two nodes scenario.  For example,
+below system can be configured.  Let's assume CXL2 node is slower than CXL
+node.
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFSSFFFFF MCFCFCCCCC
-    MCCCCCCCCC MHHHHHHHHH
+    Node 0 (DRAM): 44444 4443F  ( 95% util,   5% free)
+    Node 1 (CXL):  33333 3321F  ( 95% util,   5% free)
+    Node 2 (CXL2): 11111 100FF  ( 90% util,  19% free)
 
-    Free mem to working set rate: 9 pages / 9 pages = 100 %
+A demote scheme for Node 0, which aims 5% free memory rate of Node 0, is
+configured.
 
-Eventually, converges to system having only workingset and
-workingset-sufficient amount (workingset size) of free memory.
+For Node 1, two schemes are made.  One promote scheme which aims 96%
+utilization of Node 0, and one demote scheme which aims 5% free memory of
+Node 1.
 
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFFFFFFFF MHHHHHHHHH
+And Node 2 also has one promote scheme which aims 96% utilization of Node 1.
 
-    Free mem to working set rate: 9 pages / 9 pages = 100 %
+In the way, higher nodes get high utilization with hot pages.  If working set
+is enough to be accommodated in 95% of highest node, all working set will be
+placed in the node.
 
-In this state, proactive reclaim is still active, but do nothing since no
-allocated cold pages exist.
 
-Stollen pages returning
------------------------
-
-User could start allocating more pages and accessing those frequently (make
-hot).  In other words, working set could increase.  Then free memory to
-workingset size ratio decreases.
-
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFFFFFHFF MHHHHHHHHH
-
-    Free mem to working set rate: 8 pages / 10 pages = 80 %
-
-Proactive reclaim is still active, but doesn’t increase the free memory, since
-no allocated and cold page exists.  This situation continues until stolen pages
-returning threshold is met (free memory to working set 50%).
-
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFHFHFHFF MHHHHHHHHH
-
-    Free mem to working set rate: 6 pages / 12 pages = 50 %
-
-If the user stops increasing the working set, this could be a stabilized state.
-
-If the user adds one more hot page, the state becomes like below.
-
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    MFFHFHHHFF MHHHHHHHHH
-
-    Free mem to working set rate: 5 pages / 13 pages = 38 %
-
-Now stolen pages returning is activated.  Since there is no
-stolen-but-plugged page, it plugs the last unplugged memory block.
-
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU MFFFFFFFFF
-    MFFHFHHHFF MHHHHHHHHH
-
-    Free mem to working set rate: 14 pages / 13 pages = 107 %
-
-It increased the free memory to working set ratio to a high level, so returning
-and proactive reclamation stops.  Stealing is again activated, decreasing the
-free memory to working set ratio.
-
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU UUUUUUUUUU
-    UUUUUUUUUU MFFFSFFFFF
-    MFFHFHHHFF MHHHHHHHHH
-
-    Free mem to working set rate: 13 pages / 13 pages = 100 %
-
-In this way, the system will always have a real working set (hot pages) plus
-50-100% of the working set size free memory, and let the host uses the
-remaining guest-physical memory.
-
-[1] https://lpc.events/event/17/contributions/1624/
-[2] https://docs.kernel.org/admin-guide/mm/damon/reclaim.html
-[3] https://docs.kernel.org/admin-guide/mm/memory-hotplug.html#phases-of-memory-hotunplug
-[4] https://lore.kernel.org/damon/20231112194607.61399-1-sj@kernel.org/
+[1] https://lore.kernel.org/linux-mm/cover.1640171137.git.baolin.wang@linux.alibaba.com/
+[2] https://lore.kernel.org/linux-mm/20230105221109.53398-1-sj@kernel.org/
+[3] https://lore.kernel.org/linux-mm/20230219203138.4873-1-sj@kernel.org/
+[4] https://lwn.net/Articles/931812/
+[5] https://lore.kernel.org/damon/20231112194607.61399-1-sj@kernel.org/
+[6] https://lore.kernel.org/damon/20231112195114.61474-1-sj@kernel.org/
