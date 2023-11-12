@@ -2,175 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ED57E8F5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 10:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 309F07E8F67
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 10:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjKLJnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 04:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S230198AbjKLJyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 04:54:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLJnA (ORCPT
+        with ESMTP id S229441AbjKLJyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 04:43:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BBE2D64
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 01:42:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699782177; x=1731318177;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dE0hghh+wuYV8oKVl43s7OS4ftZk66STgAdHkYO/4fw=;
-  b=NaCebm40VgNDzxSf/X11YVs4DsdpQbPxeYlEx+7e0UffwoHdr+ZSsOx7
-   VF7UwcCgkb3nXu1SjGPj2tDNbF9iWJZFUvdAX4gNl9Dl6nGTcGCNrXE5o
-   DKLovac9dlQ8ZRjSvfzs0jiEZdhBw9DYSrCe0Qx/UitegVIgSqDin3FhJ
-   9W8j2pz05KMYPOgt6RQDGHcQfKTok037k+RZASP6OBYk0lDczsnax29Gd
-   Rs498Iv9E52KjQAHShBzHcjL/v922sCrtrBlO9hMPJmW2LMVG3Uffpafg
-   iC8ckU0fiAhU+9HQBmpR9BLM6xny5AmX8f91D6+u9mHrFKoHCSQcbTvU6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="421418571"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="421418571"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 01:42:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="907800337"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="907800337"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Nov 2023 01:42:54 -0800
-From:   Xiao Wang <xiao.w.wang@intel.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     anup@brainfault.org, haicheng.li@intel.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xiao Wang <xiao.w.wang@intel.com>
-Subject: [PATCH] riscv: Optimize hweight API with Zbb extension
-Date:   Sun, 12 Nov 2023 17:52:44 +0800
-Message-Id: <20231112095244.4015351-1-xiao.w.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 12 Nov 2023 04:54:37 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E28A2D62;
+        Sun, 12 Nov 2023 01:54:34 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4079ed65471so28067715e9.1;
+        Sun, 12 Nov 2023 01:54:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699782873; x=1700387673; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4Y+xqbrN1WZa/CB0XAzBxnbgNyp0CPoCcb3whiJBwOM=;
+        b=h1tmaTEap+cEWHjp0IT7aJ7J11vjnilX0zeP1BDNIx9ZauAd/GnQUWe5WtSe4NiuDs
+         S0dftR+z2qyfDZ2qgHyVZMtH6ZjPN+cwsYoaUEZ4Rf7pC3xrfrZGioP/Z0hlgCUk8eO5
+         uRXRI45/1JXHUFmy/HQAc0ObgwxNLB5bkFdGcxNIJhSOjyecMixAV+t9upAw8ql5iRGg
+         1gtlGPcpy5hC0P7QRpgvJxcQ9hp2caKoBWbwN7QbM60USDQusONerNkmYXO8XhQswzF9
+         tXZgRyfAKIOUbX48heQVBm3tWOu3TS10d3G3uEfIa/s+JYkdCWEFjORchr+3odCQHqqW
+         WI3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699782873; x=1700387673;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Y+xqbrN1WZa/CB0XAzBxnbgNyp0CPoCcb3whiJBwOM=;
+        b=adOumkhkKkF8WrxHMGy1oTPjoNczzSgsBfm1JL0wqw8aAdH5MceldBr+MJOrhPzOs5
+         xD7u7Xqa8Gv9GBIPGddgezCcaYE5D5xYvDXVjYXbs7VW063KPP0iGo/a1WaF5lNCxMUB
+         UiztQ/XCSeVOHExO62kSWjQJ8x80BazhdW7b+8mqSWyf7p/bgdj0vSEgib1vrqnNI/N0
+         RUuhdnZx7kP0GKOIR38V0rvqNYFq+qH5DtCCs4NsAu6ZjVIlMwF/fnOUiu8WBgp8wVlv
+         cNUvz1yxfRnZ4yHrofKTLl9kv4CRP86iMZJE1YxicllXCVzAXHfsM3tBR09Xb4XKaRsr
+         gvVA==
+X-Gm-Message-State: AOJu0YwvGTscYj+7tgoaOtPXjjTixk6d8aEWKV5OtcRIGB9F9ylyzpoo
+        cx+syQ0BcFylzWfqVS5Lozc=
+X-Google-Smtp-Source: AGHT+IFhdvWQPiABEirvH8ajDQ/MWsIvLSNfMwdx+zFoWJPmRJ2z1VQ0IEmCdwejJCxks9UbmV1IRQ==
+X-Received: by 2002:a05:600c:d8:b0:405:4a78:a890 with SMTP id u24-20020a05600c00d800b004054a78a890mr3175157wmm.8.1699782872537;
+        Sun, 12 Nov 2023 01:54:32 -0800 (PST)
+Received: from eagle-5590.. ([91.196.221.26])
+        by smtp.gmail.com with ESMTPSA id w23-20020a05600c2a1700b003fe23b10fdfsm10200942wme.36.2023.11.12.01.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Nov 2023 01:54:32 -0800 (PST)
+From:   Ronald Monthero <debug.penguin32@gmail.com>
+To:     al@alarsen.net
+Cc:     keescook@chromium.org, gustavoars@kernel.org,
+        Ronald Monthero <debug.penguin32@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] qnx4: fix to avoid panic due to buffer overflow
+Date:   Sun, 12 Nov 2023 19:53:53 +1000
+Message-Id: <20231112095353.579855-1-debug.penguin32@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Hamming Weight of a number is the total number of bits set in it, so
-the cpop/cpopw instruction from Zbb extension can be used to accelerate
-hweight() API.
+qnx4 dir name length can vary to be of maximum size
+QNX4_NAME_MAX or QNX4_SHORT_NAME_MAX depending on whether
+'link info' entry is stored and the status byte is set.
+So to avoid buffer overflow check di_fname length
+fetched from (struct qnx4_inode_entry *)
+before use in strlen to avoid buffer overflow.
 
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+panic context
+[ 4849.636861] detected buffer overflow in strlen
+[ 4849.636897] ------------[ cut here ]------------
+[ 4849.636902] kernel BUG at lib/string.c:1165!
+[ 4849.636917] invalid opcode: 0000 [#2] SMP PTI
+..
+[ 4849.637047] Call Trace:
+[ 4849.637053]  <TASK>
+[ 4849.637059]  ? show_trace_log_lvl+0x1d6/0x2ea
+[ 4849.637075]  ? show_trace_log_lvl+0x1d6/0x2ea
+[ 4849.637095]  ? qnx4_find_entry.cold+0xc/0x18 [qnx4]
+[ 4849.637111]  ? show_regs.part.0+0x23/0x29
+[ 4849.637123]  ? __die_body.cold+0x8/0xd
+[ 4849.637135]  ? __die+0x2b/0x37
+[ 4849.637147]  ? die+0x30/0x60
+[ 4849.637161]  ? do_trap+0xbe/0x100
+[ 4849.637171]  ? do_error_trap+0x6f/0xb0
+[ 4849.637180]  ? fortify_panic+0x13/0x15
+[ 4849.637192]  ? exc_invalid_op+0x53/0x70
+[ 4849.637203]  ? fortify_panic+0x13/0x15
+[ 4849.637215]  ? asm_exc_invalid_op+0x1b/0x20
+[ 4849.637228]  ? fortify_panic+0x13/0x15
+[ 4849.637240]  ? fortify_panic+0x13/0x15
+[ 4849.637251]  qnx4_find_entry.cold+0xc/0x18 [qnx4]
+[ 4849.637264]  qnx4_lookup+0x3c/0xa0 [qnx4]
+[ 4849.637275]  __lookup_slow+0x85/0x150
+[ 4849.637291]  walk_component+0x145/0x1c0
+[ 4849.637304]  ? path_init+0x2c0/0x3f0
+[ 4849.637316]  path_lookupat+0x6e/0x1c0
+[ 4849.637330]  filename_lookup+0xcf/0x1d0
+[ 4849.637341]  ? __check_object_size+0x1d/0x30
+[ 4849.637354]  ? strncpy_from_user+0x44/0x150
+[ 4849.637365]  ? getname_flags.part.0+0x4c/0x1b0
+[ 4849.637375]  user_path_at_empty+0x3f/0x60
+[ 4849.637383]  vfs_statx+0x7a/0x130
+[ 4849.637393]  do_statx+0x45/0x80
+..
+
+Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
 ---
- arch/riscv/include/asm/arch_hweight.h | 78 +++++++++++++++++++++++++++
- arch/riscv/include/asm/bitops.h       |  4 +-
- 2 files changed, 81 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/include/asm/arch_hweight.h
+ fs/qnx4/namei.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/riscv/include/asm/arch_hweight.h b/arch/riscv/include/asm/arch_hweight.h
-new file mode 100644
-index 000000000000..c20236a0725b
---- /dev/null
-+++ b/arch/riscv/include/asm/arch_hweight.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Based on arch/x86/include/asm/arch_hweight.h
-+ */
+diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
+index 8d72221735d7..825b891a52b3 100644
+--- a/fs/qnx4/namei.c
++++ b/fs/qnx4/namei.c
+@@ -40,6 +40,13 @@ static int qnx4_match(int len, const char *name,
+ 	} else {
+ 		namelen = QNX4_SHORT_NAME_MAX;
+ 	}
 +
-+#ifndef _ASM_RISCV_HWEIGHT_H
-+#define _ASM_RISCV_HWEIGHT_H
-+
-+#include <asm/alternative-macros.h>
-+#include <asm/hwcap.h>
-+
-+#if (BITS_PER_LONG == 64)
-+#define CPOPW	"cpopw "
-+#elif (BITS_PER_LONG == 32)
-+#define CPOPW	"cpop "
-+#else
-+#error "Unexpected BITS_PER_LONG"
-+#endif
-+
-+static __always_inline unsigned int __arch_hweight32(unsigned int w)
-+{
-+#ifdef CONFIG_RISCV_ISA_ZBB
-+	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-+				      RISCV_ISA_EXT_ZBB, 1)
-+			  : : : : legacy);
-+
-+	asm (".option push\n"
-+	     ".option arch,+zbb\n"
-+	     CPOPW "%0, %0\n"
-+	     ".option pop\n"
-+	     : "+r" (w) : :);
-+
-+	return w;
-+
-+legacy:
-+#endif
-+	return __sw_hweight32(w);
-+}
-+
-+static inline unsigned int __arch_hweight16(unsigned int w)
-+{
-+	return __arch_hweight32(w & 0xffff);
-+}
-+
-+static inline unsigned int __arch_hweight8(unsigned int w)
-+{
-+	return __arch_hweight32(w & 0xff);
-+}
-+
-+#if BITS_PER_LONG == 64
-+static __always_inline unsigned long __arch_hweight64(__u64 w)
-+{
-+# ifdef CONFIG_RISCV_ISA_ZBB
-+	asm_volatile_goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
-+				      RISCV_ISA_EXT_ZBB, 1)
-+			  : : : : legacy);
-+
-+	asm (".option push\n"
-+	     ".option arch,+zbb\n"
-+	     "cpop %0, %0\n"
-+	     ".option pop\n"
-+	     : "+r" (w) : :);
-+
-+	return w;
-+
-+legacy:
-+# endif
-+	return __sw_hweight64(w);
-+}
-+#else /* BITS_PER_LONG == 64 */
-+static inline unsigned long __arch_hweight64(__u64 w)
-+{
-+	return  __arch_hweight32((u32)w) +
-+		__arch_hweight32((u32)(w >> 32));
-+}
-+#endif /* !(BITS_PER_LONG == 64) */
-+
-+#endif /* _ASM_RISCV_HWEIGHT_H */
-diff --git a/arch/riscv/include/asm/bitops.h b/arch/riscv/include/asm/bitops.h
-index b212c2708cda..f7c167646460 100644
---- a/arch/riscv/include/asm/bitops.h
-+++ b/arch/riscv/include/asm/bitops.h
-@@ -271,7 +271,9 @@ static __always_inline int variable_fls(unsigned int x)
- #include <asm-generic/bitops/fls64.h>
- #include <asm-generic/bitops/sched.h>
- 
--#include <asm-generic/bitops/hweight.h>
-+#include <asm/arch_hweight.h>
-+
-+#include <asm-generic/bitops/const_hweight.h>
- 
- #if (BITS_PER_LONG == 64)
- #define __AMO(op)	"amo" #op ".d"
++	/** qnx4 dir name length can vary, check the di_fname
++	 * fetched from (struct qnx4_inode_entry *) before use in
++	 * strlen to avoid panic due to buffer overflow"
++	 */
++	if (strnlen(de->di_fname, namelen) >= sizeof(de->di_fname))
++		return -ENAMETOOLONG;
+ 	thislen = strlen( de->di_fname );
+ 	if ( thislen > namelen )
+ 		thislen = namelen;
 -- 
-2.25.1
+2.34.1
 
