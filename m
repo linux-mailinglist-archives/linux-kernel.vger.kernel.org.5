@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BDB7E9151
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E9B7E9153
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjKLPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S231697AbjKLPIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLPIM (ORCPT
+        with ESMTP id S229588AbjKLPIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:08:12 -0500
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F5A2D63
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:08:07 -0800 (PST)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id 2C4CrUKVuFh5i2C4CrGN2t; Sun, 12 Nov 2023 16:08:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1699801685;
-        bh=HsPvZv0x+A3KoodF5NWXigZeG3z5ocFLVuOCH93t+Qg=;
-        h=From:To:Cc:Subject:Date;
-        b=CyH3It+lkPlnNtgWnGGIZlRHNIVvTEXPaf9I0NdXq2LolJUOESKjWozbDw47R37KF
-         zUkYSWt6GBsiJCv6puZYCx7moe2Sd0fY72z+hsmxMznUeLnacVPG4zwiHHiv3I2M5l
-         XgbulJd1u0Z4kb2opca5zN5Iq36XQOLl8CCSWL+UjOBjmg+ag0LAoIMFiZZmUn78tO
-         +DR9EPRdddqo0uxgmJJDOI/AhdzMlwaJtVzw7t3m/N88fcmYRvJMGqNRJkXP/fc9I9
-         aMK0r/mLfJdkw6JbdAb/Ixqjvm6PU7a1/j94QAIa9u3ac5DkIU2k9ZkgCz3TVz1qnn
-         Q4zKiXHv28r6g==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 12 Nov 2023 16:08:05 +0100
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-ide@vger.kernel.org
-Subject: [PATCH] ata: pata_pxa: convert not to use dma_request_slave_channel()
-Date:   Sun, 12 Nov 2023 16:07:59 +0100
-Message-Id: <f177835b7f0db810a132916c8a281bbdaf47f9d3.1699801657.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Sun, 12 Nov 2023 10:08:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DC32D62
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:08:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8569FC433C7;
+        Sun, 12 Nov 2023 15:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699801692;
+        bh=9dF+0JI/eQhGfiqVoGiTOUqlLKlURi7RIuQwNfR8aFU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cIp05Og0NKsLWtH/DJ6TtFoxq8flmM2NWanVktsP4EJ5BX2x2qsdsF2M7YRDndts+
+         lnnNBQV+ADRqpS6DoUG++u0M2ohMktp204LWwBCbCXUMHnbQO/VGfDAOLyl+QTxagk
+         ffpqf8A0pG4Wdcnne4ePXdT7KVhjRXnZDW8FLqgRR46m1sMdg0rLyXnbzHFjcxgpSW
+         Exnk9jkJt1C6y+P+kIJgurcSje8VpHh35ezM0uKkMH29DU+AuNkLvsQu9yQRNumDS4
+         ljD5ww9ufGt7zUf6GlevCjA6pQGTgI3FlOHJku3q+LF14Jznx6/RsyDV4ON0fGjJbv
+         pMkd5OKAZYsDQ==
+Received: from [185.201.63.253] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r2C4H-00CSPQ-U1;
+        Sun, 12 Nov 2023 15:08:10 +0000
+Date:   Sun, 12 Nov 2023 15:08:05 +0000
+Message-ID: <87edgvxb56.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Paran Lee <p4ranlee@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        shjy180909@gmail.com, austindh.kim@gmail.com
+Subject: Re: [PATCH] irqdesc: Fail check on early_irq_init allocation.
+In-Reply-To: <1f6e21c1-7340-ed40-f2a7-66c063b453cb@gmail.com>
+References: <20231111170035.10386-1-p4ranlee@gmail.com>
+        <87fs1bxe9h.wl-maz@kernel.org>
+        <1f6e21c1-7340-ed40-f2a7-66c063b453cb@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.201.63.253
+X-SA-Exim-Rcpt-To: p4ranlee@gmail.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, shjy180909@gmail.com, austindh.kim@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_request_slave_channel() is deprecated. dma_request_chan() should
-be used directly instead.
+On Sun, 12 Nov 2023 14:19:28 +0000,
+Paran Lee <p4ranlee@gmail.com> wrote:
+> On 2023-11-12 =EC=98=A4=ED=9B=84 11:00, Marc Zyngier wrote:
+>=20
+> Thanks for the code review Marc!
+>=20
+> I think function alloc_descs() in irqdesc.c has also alloc_desc() fail
+> handling, and there's kernel-wide code consistency checking for
+> allocation failures, and I thought it would be nice to mark it.
 
-Switch to the preferred function and update the error handling accordingly.
+alloc_descs() and early_irq_init() are very different beasts. The
+former can be used *at any time* over the kernel's lifetime, while the
+latter is only used *once*. This makes a whole lot a difference, don't
+you think?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/ata/pata_pxa.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> So that the code is aware of it.
+>=20
+> Even if it panics with a null derefence reference.
 
-diff --git a/drivers/ata/pata_pxa.c b/drivers/ata/pata_pxa.c
-index 5275c6464f57..0c9c9cf63d36 100644
---- a/drivers/ata/pata_pxa.c
-+++ b/drivers/ata/pata_pxa.c
-@@ -274,9 +274,8 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	/*
- 	 * Request the DMA channel
- 	 */
--	data->dma_chan =
--		dma_request_slave_channel(&pdev->dev, "data");
--	if (!data->dma_chan)
-+	data->dma_chan = dma_request_chan(&pdev->dev, "data");
-+	if (IS_ERR(data->dma_chan))
- 		return -EBUSY;
- 	ret = dmaengine_slave_config(data->dma_chan, &config);
- 	if (ret < 0) {
--- 
-2.34.1
+Don't you think it is a bit pointless to trade a fatal error for
+another one?
 
+>=20
+> > A failing allocation already results in a massive splat describing how
+> > the allocation failed. Further use of the NULL pointer will also
+> > result in a terminal oops, particularly if this happens this early in
+> > the boot sequence.
+> >=20
+> > So what do these BUG_ON() calls buy us?
+> >=20
+> > 	M.
+> >=20
+>=20
+> If anyone has any ideas on how to get a little fancier with the allocatio=
+n,
+> I'll send a v2 patch in that direction.
+
+It's not about being fancy. It is about being useful. Your BUG_ON()s
+are not making things any better for early allocation failures.
+
+A much better idea would be to *get rid* of early allocation failures
+altogether, by moving all architectures to SPARSE_IRQ and making sure
+that NR_LEGAY_IRQ is always zero, meaning there is nothing to
+allocate. That would be something useful.
+
+But adding random BUG_ON() based on the dogma that all allocations
+must be checked doesn't bring value to the kernel as a whole.
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
