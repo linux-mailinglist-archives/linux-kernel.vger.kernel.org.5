@@ -2,161 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 051FD7E91DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 18:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316D47E91E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 19:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbjKLRyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 12:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
+        id S231865AbjKLSAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 13:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKLRyw (ORCPT
+        with ESMTP id S230092AbjKLSAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 12:54:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9517D2715
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 09:54:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699811689; x=1731347689;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Jn6NYa8UYloGVmszKp9PNtBd9iWMHjWefpDrR4Zr14Q=;
-  b=ZDHDReyMHx97OZ7MenaUTdQCXUXRoIIlNrtv5z8J+jEwiBDFwMiYYpXJ
-   nGc2pWQZOF/Mo4YaO88QNAD2Jk4wQnAfhS7kQQHstsPNxc7UKxXioFUOe
-   dQAG42ApgP2Hc0/qlIII0JATFikbYvRfZiGqtEB9h3MgnbUGI/dzdR0oW
-   K+V1Yx3RdN0Fdd/ciqZwH0cF/qbZtDLGSanxk+poNExx6vpnHi/V1v1S0
-   rmdPLOFd2nqmut0YPw8kvU17eU+RrQeWSBauCFrd0Br+7u/+kozJWXj4v
-   IEbvzfholcQNWV2Xe9mqskbhgpaGG3j2ScXqucppu5+OYJTFJqcJ9WxrD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="456836757"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="456836757"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 09:54:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="834543864"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="834543864"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Nov 2023 09:54:47 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2EfV-000BOw-0c;
-        Sun, 12 Nov 2023 17:54:45 +0000
-Date:   Mon, 13 Nov 2023 01:54:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Borislav Petkov (AMD)" <bp@alien8.de>
-Subject: arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter
- or member 'var' not described in 'mtrr_overwrite_state'
-Message-ID: <202311130104.9xKAKzke-lkp@intel.com>
+        Sun, 12 Nov 2023 13:00:52 -0500
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468671BE7;
+        Sun, 12 Nov 2023 10:00:49 -0800 (PST)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1eb6c559ab4so2191461fac.0;
+        Sun, 12 Nov 2023 10:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699812048; x=1700416848; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YfKjTNPjLOgd1jDpWmUB18irX4zVfrahQ01NcwWX1j8=;
+        b=aET9zyyUd5aLPSCnScWfUmePCK08538scYb1OpqpViWbSlhkjpK6wOYbWwj09rrQon
+         tMk9dDIrTZGRFoiDhv8nYgCAc8a06E3hzmco5j+OJIUDIv85z9VSyCjMcwuN2VgKO7yw
+         rfRM46TrGw00rQz7EKSVguy+hZc+ow7TVqMAJYChFVySynmk2Oir2upxCUsc5VCp+sCp
+         yGvRaeV2uC26Slqu6v712CFAx9fOso5OvhP3K35ZZa2KsRCf4GkseoSFcG7x88aM/CgU
+         2bh8K5jTXulp5/GYC2cTl+a14wvX9QC3VV2RAalVdeyoX4Ftjhq4M4ng3pnUFCFgc3z3
+         tPMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699812048; x=1700416848;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YfKjTNPjLOgd1jDpWmUB18irX4zVfrahQ01NcwWX1j8=;
+        b=jHBcbGziwb+TPdIuP/2PeRVJx08Rqh1fXINgLArHGLewDestXHlnZax8cp9uyqKKLR
+         xYgmfFljJMjeoDa1n4M4hm+j4KHbbcjns1zO7hljzHUe9nRC3E3LY7mVDyIJu04OuLtn
+         +gs13E/NasXtXuDXQB+OmMXT48Hf/6hTey2v7iMoBySfVPW9CkDTW/L3YpfEg1yWb6p2
+         M2ZICbamALJAK1MIPXPRwpVGnDqY02cfV3FBqNLqLYQFDiKsPrO1LXRC13Z1Wm4zghVo
+         gTJWeKr4wxXNvbnlsCntgs1PBxH877+LN/Zf8Qu6530PEDG9Jb/EBarRLJwcsHPwBiq0
+         dv0Q==
+X-Gm-Message-State: AOJu0Yz+MOJE70afq20Jl90DE2gpgxaPFZcO+AL3Y0D03RbUBiyLW3de
+        51QJn1Ld9unA07XDO2iEAGk9IfzesGlclEo6R1U=
+X-Google-Smtp-Source: AGHT+IH9fCeY0p+889Hq5E/FeznaMxKk7hWotHF2e82tGctkmrbNfl7InHIcS1n/Xm3M6i7unsWVB+A73D9Q09eat1c=
+X-Received: by 2002:a05:6870:cd0e:b0:1e9:dae7:f58a with SMTP id
+ qk14-20020a056870cd0e00b001e9dae7f58amr6491610oab.22.1699812048373; Sun, 12
+ Nov 2023 10:00:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231112132736.175494-1-sashal@kernel.org> <20231112132736.175494-9-sashal@kernel.org>
+In-Reply-To: <20231112132736.175494-9-sashal@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Sun, 12 Nov 2023 13:00:37 -0500
+Message-ID: <CADnq5_OyK=rDH38Q8Kiyq9BhWuihgd8wX7XKAffxwkO4w+ksog@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.6 09/11] drm/amd: Fix UBSAN array-index-out-of-bounds
+ for Powerplay headers
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
+On Sun, Nov 12, 2023 at 8:27=E2=80=AFAM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> From: Alex Deucher <alexander.deucher@amd.com>
+>
+> [ Upstream commit 49afe91370b86566857a3c2c39612cf098110885 ]
+>
+> For pptable structs that use flexible array sizes, use flexible arrays.
+>
+> Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2039926
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-FYI, the error/warning still remains.
+I don't think any of these UBSAN flexible array changes are stable material=
+.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1b907d0507354b74a4f2c286380cd6059af79248
-commit: 29055dc74287467bd7a053d60b4afe753832960d x86/mtrr: Support setting MTRR state for software defined MTRRs
-date:   5 months ago
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231113/202311130104.9xKAKzke-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231113/202311130104.9xKAKzke-lkp@intel.com/reproduce)
+Alex
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311130104.9xKAKzke-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_fixed'
-   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_fixed'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'partial_end' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'repeat' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup_variable'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'num_var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'def_type' not described in 'mtrr_overwrite_state'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup'
-
-
-vim +259 arch/x86/kernel/cpu/mtrr/generic.c
-
-   246	
-   247	/**
-   248	 * mtrr_overwrite_state - set static MTRR state
-   249	 *
-   250	 * Used to set MTRR state via different means (e.g. with data obtained from
-   251	 * a hypervisor).
-   252	 * Is allowed only for special cases when running virtualized. Must be called
-   253	 * from the x86_init.hyper.init_platform() hook.  It can be called only once.
-   254	 * The MTRR state can't be changed afterwards.  To ensure that, X86_FEATURE_MTRR
-   255	 * is cleared.
-   256	 */
-   257	void mtrr_overwrite_state(struct mtrr_var_range *var, unsigned int num_var,
-   258				  mtrr_type def_type)
- > 259	{
-   260		unsigned int i;
-   261	
-   262		/* Only allowed to be called once before mtrr_bp_init(). */
-   263		if (WARN_ON_ONCE(mtrr_state_set))
-   264			return;
-   265	
-   266		/* Only allowed when running virtualized. */
-   267		if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
-   268			return;
-   269	
-   270		/*
-   271		 * Only allowed for special virtualization cases:
-   272		 * - when running as Hyper-V, SEV-SNP guest using vTOM
-   273		 * - when running as Xen PV guest
-   274		 * - when running as SEV-SNP or TDX guest to avoid unnecessary
-   275		 *   VMM communication/Virtualization exceptions (#VC, #VE)
-   276		 */
-   277		if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP) &&
-   278		    !hv_is_isolation_supported() &&
-   279		    !cpu_feature_enabled(X86_FEATURE_XENPV) &&
-   280		    !cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-   281			return;
-   282	
-   283		/* Disable MTRR in order to disable MTRR modifications. */
-   284		setup_clear_cpu_cap(X86_FEATURE_MTRR);
-   285	
-   286		if (var) {
-   287			if (num_var > MTRR_MAX_VAR_RANGES) {
-   288				pr_warn("Trying to overwrite MTRR state with %u variable entries\n",
-   289					num_var);
-   290				num_var = MTRR_MAX_VAR_RANGES;
-   291			}
-   292			for (i = 0; i < num_var; i++)
-   293				mtrr_state.var_ranges[i] = var[i];
-   294			num_var_ranges = num_var;
-   295		}
-   296	
-   297		mtrr_state.def_type = def_type;
-   298		mtrr_state.enabled |= MTRR_STATE_MTRR_ENABLED;
-   299	
-   300		mtrr_state_set = 1;
-   301	}
-   302	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  .../drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h |  4 ++--
+>  .../amd/pm/powerplay/hwmgr/vega10_pptable.h   | 24 +++++++++----------
+>  2 files changed, 14 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+> index 7a31cfa5e7fb4..df7cab1a571b3 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+> @@ -367,7 +367,7 @@ typedef struct _ATOM_Tonga_VCE_State_Record {
+>  typedef struct _ATOM_Tonga_VCE_State_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;
+> -       ATOM_Tonga_VCE_State_Record entries[1];
+> +       ATOM_Tonga_VCE_State_Record entries[];
+>  } ATOM_Tonga_VCE_State_Table;
+>
+>  typedef struct _ATOM_Tonga_PowerTune_Table {
+> @@ -481,7 +481,7 @@ typedef struct _ATOM_Tonga_Hard_Limit_Record {
+>  typedef struct _ATOM_Tonga_Hard_Limit_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;
+> -       ATOM_Tonga_Hard_Limit_Record entries[1];
+> +       ATOM_Tonga_Hard_Limit_Record entries[];
+>  } ATOM_Tonga_Hard_Limit_Table;
+>
+>  typedef struct _ATOM_Tonga_GPIO_Table {
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h b/dr=
+ivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+> index 8b0590b834cca..de2926df5ed74 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+> @@ -129,7 +129,7 @@ typedef struct _ATOM_Vega10_State {
+>  typedef struct _ATOM_Vega10_State_Array {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                         /* Nu=
+mber of entries. */
+> -       ATOM_Vega10_State states[1];                             /* Dynam=
+ically allocate entries. */
+> +       ATOM_Vega10_State states[];                             /* Dynami=
+cally allocate entries. */
+>  } ATOM_Vega10_State_Array;
+>
+>  typedef struct _ATOM_Vega10_CLK_Dependency_Record {
+> @@ -169,37 +169,37 @@ typedef struct _ATOM_Vega10_GFXCLK_Dependency_Table=
+ {
+>  typedef struct _ATOM_Vega10_MCLK_Dependency_Table {
+>      UCHAR ucRevId;
+>      UCHAR ucNumEntries;                                         /* Numbe=
+r of entries. */
+> -    ATOM_Vega10_MCLK_Dependency_Record entries[1];            /* Dynamic=
+ally allocate entries. */
+> +    ATOM_Vega10_MCLK_Dependency_Record entries[];            /* Dynamica=
+lly allocate entries. */
+>  } ATOM_Vega10_MCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_SOCCLK_Dependency_Table {
+>      UCHAR ucRevId;
+>      UCHAR ucNumEntries;                                         /* Numbe=
+r of entries. */
+> -    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamica=
+lly allocate entries. */
+> +    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamical=
+ly allocate entries. */
+>  } ATOM_Vega10_SOCCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_DCEFCLK_Dependency_Table {
+>      UCHAR ucRevId;
+>      UCHAR ucNumEntries;                                         /* Numbe=
+r of entries. */
+> -    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamica=
+lly allocate entries. */
+> +    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamical=
+ly allocate entries. */
+>  } ATOM_Vega10_DCEFCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_PIXCLK_Dependency_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                         /* Nu=
+mber of entries. */
+> -       ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynam=
+ically allocate entries. */
+> +       ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynami=
+cally allocate entries. */
+>  } ATOM_Vega10_PIXCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_DISPCLK_Dependency_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                         /* Nu=
+mber of entries.*/
+> -       ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynam=
+ically allocate entries. */
+> +       ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynami=
+cally allocate entries. */
+>  } ATOM_Vega10_DISPCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_PHYCLK_Dependency_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                         /* Nu=
+mber of entries. */
+> -       ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynam=
+ically allocate entries. */
+> +       ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynami=
+cally allocate entries. */
+>  } ATOM_Vega10_PHYCLK_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_MM_Dependency_Record {
+> @@ -213,7 +213,7 @@ typedef struct _ATOM_Vega10_MM_Dependency_Record {
+>  typedef struct _ATOM_Vega10_MM_Dependency_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                         /* Nu=
+mber of entries */
+> -       ATOM_Vega10_MM_Dependency_Record entries[1];             /* Dynam=
+ically allocate entries */
+> +       ATOM_Vega10_MM_Dependency_Record entries[];             /* Dynami=
+cally allocate entries */
+>  } ATOM_Vega10_MM_Dependency_Table;
+>
+>  typedef struct _ATOM_Vega10_PCIE_Record {
+> @@ -225,7 +225,7 @@ typedef struct _ATOM_Vega10_PCIE_Record {
+>  typedef struct _ATOM_Vega10_PCIE_Table {
+>         UCHAR  ucRevId;
+>         UCHAR  ucNumEntries;                                        /* Nu=
+mber of entries */
+> -       ATOM_Vega10_PCIE_Record entries[1];                      /* Dynam=
+ically allocate entries. */
+> +       ATOM_Vega10_PCIE_Record entries[];                      /* Dynami=
+cally allocate entries. */
+>  } ATOM_Vega10_PCIE_Table;
+>
+>  typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
+> @@ -235,7 +235,7 @@ typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
+>  typedef struct _ATOM_Vega10_Voltage_Lookup_Table {
+>         UCHAR ucRevId;
+>         UCHAR ucNumEntries;                                          /* N=
+umber of entries */
+> -       ATOM_Vega10_Voltage_Lookup_Record entries[1];             /* Dyna=
+mically allocate entries */
+> +       ATOM_Vega10_Voltage_Lookup_Record entries[];             /* Dynam=
+ically allocate entries */
+>  } ATOM_Vega10_Voltage_Lookup_Table;
+>
+>  typedef struct _ATOM_Vega10_Fan_Table {
+> @@ -327,7 +327,7 @@ typedef struct _ATOM_Vega10_VCE_State_Record {
+>  typedef struct _ATOM_Vega10_VCE_State_Table {
+>      UCHAR ucRevId;
+>      UCHAR ucNumEntries;
+> -    ATOM_Vega10_VCE_State_Record entries[1];
+> +    ATOM_Vega10_VCE_State_Record entries[];
+>  } ATOM_Vega10_VCE_State_Table;
+>
+>  typedef struct _ATOM_Vega10_PowerTune_Table {
+> @@ -427,7 +427,7 @@ typedef struct _ATOM_Vega10_Hard_Limit_Record {
+>  typedef struct _ATOM_Vega10_Hard_Limit_Table {
+>      UCHAR ucRevId;
+>      UCHAR ucNumEntries;
+> -    ATOM_Vega10_Hard_Limit_Record entries[1];
+> +    ATOM_Vega10_Hard_Limit_Record entries[];
+>  } ATOM_Vega10_Hard_Limit_Table;
+>
+>  typedef struct _Vega10_PPTable_Generic_SubTable_Header {
+> --
+> 2.42.0
+>
