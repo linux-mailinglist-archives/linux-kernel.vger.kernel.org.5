@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809277E9180
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFA37E9183
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbjKLPss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S231650AbjKLPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjKLPsp (ORCPT
+        with ESMTP id S231624AbjKLPss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:48:45 -0500
+        Sun, 12 Nov 2023 10:48:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12F3273F;
-        Sun, 12 Nov 2023 07:48:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4742FC433C8;
-        Sun, 12 Nov 2023 15:48:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4782737;
+        Sun, 12 Nov 2023 07:48:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5E2BC433C8;
+        Sun, 12 Nov 2023 15:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699804121;
-        bh=Fq4DNVxRFX5KFS8TdcnOw7rG9zQ2vaJ/xNu5x6DYaEo=;
+        s=k20201202; t=1699804124;
+        bh=VvasmWmuUkVFb4Rzqz2xkBM+ndmJKBYSPi5Ywx0daa0=;
         h=From:To:Cc:Subject:Date:From;
-        b=TOwGVBpRb0VSOAFvrbPAn0hdIsBBmmzjcbjXxc/o/DJrHX93bQIu5vrH7iqMSr+RK
-         aqUJ1vZIhYl0a6aNVFL7t+fnqWVU3e9EOJZaEJoGe8UDwwcgocjTIUo263yhoK075K
-         K653w02AYK9BGNfph7CUtg8jNDed5GnPeycPjk636lDaFdKq94bkNxGVbJIZIxO1W1
-         Zn7e0ho72GUDfQZu2KnmD9seU+NyNPFK4v3gCnRPABTrdKGEp+3IHJ3ugRyfVMiAYP
-         usILdv4FblnyulTqxvYfTvIvdw6WfuVPw/pGjF7bcFGAoiRoAMEzDtc0tLmofxoVwj
-         /fsqOfQG57viQ==
+        b=H3bHIkmUFgy89dakAjEdOMtLoLtkGAu8VBgZ3GcMudwG4SVIc75hgmwFYltkDZ4lM
+         LlaCRcN88xe3b01wgQAxjhJk4c3Ggt6k4rSZvgSUF7jBMJo5DS0TFccy8gscqRHmRc
+         2nk4+D+3fSLczs0SXmhNGu7g5o/4B4F9ZsiVcUf2NV8N+Tg1lApy733YKRZ/GW6qm2
+         RZD5tQb0Gkech3KHThLiTwIylHXcAFVUjMR83N+WpQVQGm/I2x/3N3Gcx2TNTa62dR
+         67g1SkCeW+FxMRqmyuFrl8jR7TBwPNp2Ixdxga5IcKH1mdIxluGcJ5wKsLvAh8O4pu
+         ZhDH3rku1oc+Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Philipp Stanner <pstanner@redhat.com>,
         Dave Airlie <airlied@redhat.com>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
         linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1] i2c: dev: copy userspace array safely
-Date:   Sun, 12 Nov 2023 10:48:36 -0500
-Message-ID: <20231112154836.229233-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15] i2c: dev: copy userspace array safely
+Date:   Sun, 12 Nov 2023 10:48:41 -0500
+Message-ID: <20231112154841.229268-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.62
+X-stable-base: Linux 5.15.138
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -70,7 +70,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/i2c/i2c-dev.c b/drivers/i2c/i2c-dev.c
-index ab0adaa130dae..dd35f341b16fd 100644
+index 6fd2b6718b086..9fefceb3a95d4 100644
 --- a/drivers/i2c/i2c-dev.c
 +++ b/drivers/i2c/i2c-dev.c
 @@ -450,8 +450,8 @@ static long i2cdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
