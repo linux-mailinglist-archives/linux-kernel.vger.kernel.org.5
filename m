@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB957E9125
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:19:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B4B7E9131
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjKLOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 09:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
+        id S231419AbjKLO0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 09:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLOTk (ORCPT
+        with ESMTP id S229588AbjKLO0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 09:19:40 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A7B2D54
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:19:37 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2801d7f46f9so2984775a91.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:19:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699798777; x=1700403577; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h2x7te98qyLMcqqpUUp3QdWFkHj0fDiNUEndC2gQVTo=;
-        b=Ir23/EU1O+12W0lOnexue5cYHlTTj8CaRLqaj+zUDl0NzeRYuk9+53jQ7rwjDurfr0
-         0QQ7pWQez/iMBLIBx5BFuiHaQ+LFSUIshB82uLaEUPMt4/OQna3jRvCSwpJRo0gbXynX
-         jxAzjuEGajFz0juv9Wv/e+wOZ3wcOxw9VagBTG9BC8yFYAPl41hR5qjwtfQ/Z+2kq6+G
-         EsylGFrCVqTDx34ve+G9ICU//Ii4LP3qMEVkMm0ciM8UezU3rMnAYNCkAj2QXKZtYobz
-         pxuoWoSPJnO7wgsUPjV+Zybl114jJ6UqFZRbsuLIArmS0O19VG8nKb3VN19tbd5LB3t0
-         znrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699798777; x=1700403577;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h2x7te98qyLMcqqpUUp3QdWFkHj0fDiNUEndC2gQVTo=;
-        b=OBibyyjEnV/zdtzrx1Meg2XDdcyJMZw9R2HuzxvM1UNT5wSUAoaBE7pJeFvn3YWA3z
-         L05/uqtBSTkQghB1HYU7LAifu5YsZesVagxiJP47Lc76ySPJcL/ux6KpYX0+ek9JqGzZ
-         tI+KQo4yw7xoYxzkCuqJt3eAyFVMUxnzpc8ZeTSjXtndl44goyNsMpv1j6YcM8irEGA8
-         r0sdfhkC01J2q/3yMCK0bLSrHUKB1Syd1tw5g36qlfSjcYzPaGVIOk1qayKzhbX6NeAC
-         ZYJk/P+os33z8VYkxG11HTYS5uNP9mPv2zlJ9ZSjPmZR59QxiwRyh5OZn20xUZWageGL
-         0VNA==
-X-Gm-Message-State: AOJu0Yxp4j0EnU4mWRy54+/w1msT9oYv++U8mw4lHMdJux0PgE5o80HW
-        ZV1cQQRNM5AouddanUy3yCo=
-X-Google-Smtp-Source: AGHT+IFs7vRYO/jBIOBCxjC6BPwaui3YL+LZjNHUb5A+HtKgGCC2hf1mCj5CKjsqS0s8MQ9QM+cOow==
-X-Received: by 2002:a17:90b:1b46:b0:281:10d:6067 with SMTP id nv6-20020a17090b1b4600b00281010d6067mr2267502pjb.16.1699798777109;
-        Sun, 12 Nov 2023 06:19:37 -0800 (PST)
-Received: from [220.72.86.232] ([220.72.86.232])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001c9bc811d59sm2600124plf.307.2023.11.12.06.19.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 06:19:36 -0800 (PST)
-Message-ID: <1f6e21c1-7340-ed40-f2a7-66c063b453cb@gmail.com>
-Date:   Sun, 12 Nov 2023 23:19:28 +0900
+        Sun, 12 Nov 2023 09:26:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE252D57
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:26:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A2FC433C8;
+        Sun, 12 Nov 2023 14:26:28 +0000 (UTC)
+Date:   Sun, 12 Nov 2023 09:26:26 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Milian Wolff <milian.wolff@kdab.com>
+Cc:     akaher@vmware.com, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mhiramat@kernel.org
+Subject: Re: NULL pointer dereference regression when running `chmod -R
+ root:tracing /sys/kernel/debug/tracing`
+Message-ID: <20231112092626.5a93e49d@rorschach.local.home>
+In-Reply-To: <20231112071439.188bcf4e@gandalf.local.home>
+References: <20231105160139.660634360@goodmis.org>
+        <20231112104158.6638-1-milian.wolff@kdab.com>
+        <20231112071439.188bcf4e@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] irqdesc: Fail check on early_irq_init allocation.
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        shjy180909@gmail.com, austindh.kim@gmail.com
-References: <20231111170035.10386-1-p4ranlee@gmail.com>
- <87fs1bxe9h.wl-maz@kernel.org>
-Content-Language: ko
-From:   Paran Lee <p4ranlee@gmail.com>
-In-Reply-To: <87fs1bxe9h.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-11-12 오후 11:00, Marc Zyngier wrote:
-
-Thanks for the code review Marc!
-
-I think function alloc_descs() in irqdesc.c has also alloc_desc() fail
-handling, and there's kernel-wide code consistency checking for
-allocation failures, and I thought it would be nice to mark it.
-So that the code is aware of it.
-
-Even if it panics with a null derefence reference.
-
-> A failing allocation already results in a massive splat describing how
-> the allocation failed. Further use of the NULL pointer will also
-> result in a terminal oops, particularly if this happens this early in
-> the boot sequence.
+On Sun, 12 Nov 2023 07:14:39 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+> > With 6.6.1 and 9aaee3eebc91dd9ccebf6b6bc8a5f59d04ef718b reverted,
+> > the above `chmod` command works. With a normal 6.6.1 build, or re-applying
+> > the patch again, the command fails and `dmesg` shows:  
 > 
-> So what do these BUG_ON() calls buy us?
-> 
-> 	M.
-> 
+> Thanks for the report. I'll work on it on my way to Plumbers.
 
-If anyone has any ideas on how to get a little fancier with the allocation,
-I'll send a v2 patch in that direction.
+Can you test this patch?
 
-BR
-Paran Lee
+Note, this code was rewritten for 6.7 so it probably doesn't affect
+that tree, but I'm going to test to make sure, just in case.
+
+Also, this shows I need to add a selftest to cover this case.
+
+Thanks,
+
+-- Steve
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 5fcfb634fec2..efbdc47c74dc 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -113,14 +113,14 @@ static int eventfs_set_attr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 
+ 	mutex_lock(&eventfs_mutex);
+ 	ef = dentry->d_fsdata;
+-	if (ef->is_freed) {
++	if (ef && ef->is_freed) {
+ 		/* Do not allow changes if the event is about to be removed. */
+ 		mutex_unlock(&eventfs_mutex);
+ 		return -ENODEV;
+ 	}
+ 
+ 	ret = simple_setattr(idmap, dentry, iattr);
+-	if (!ret)
++	if (!ret && ef)
+ 		update_attr(ef, iattr);
+ 	mutex_unlock(&eventfs_mutex);
+ 	return ret;
