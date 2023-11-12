@@ -2,162 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1753F7E8EE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 08:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546957E8F01
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 08:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjKLHQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 02:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
+        id S230290AbjKLHjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 02:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLHQI (ORCPT
+        with ESMTP id S229599AbjKLHjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 02:16:08 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD8A2D54;
-        Sat, 11 Nov 2023 23:16:04 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2802c41b716so2880281a91.1;
-        Sat, 11 Nov 2023 23:16:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699773364; x=1700378164; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gop7WM26jCIuZ6HhuXXtjpUt3mNf1DilLo5pNYto5PI=;
-        b=HKaUUwFVtAmS3dpLSI2qfbHt5ejM68wuTw6Sy52mv0O1bNFKO9PQApC8NSV/STqfaE
-         xjoKp7Zm9rGRbhHeEak2tQ6nXC3FW3AJt9n4xrVGijWeFoWamHLL9M33H8/H7kLxBCu9
-         TUnnakQ6461Jd4xSpU03dFhqnIFHIUR/VlvmRTmwTEDyzdQ2gBraZAsT2BwDV3rGBBOp
-         CJBT80swA/77/QN0Tlu7jNsHYbRp0J2t2+zcdYW1cHAqMSQQ2owdavPyIlYpGLaw2YIK
-         mPZ0O/tfh0xqz2NhbMNZyNuXEyX1F8ZBAodYXm52JSxy2JZVtxcIa8UQ0gChrSJqlErJ
-         W7VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699773364; x=1700378164;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gop7WM26jCIuZ6HhuXXtjpUt3mNf1DilLo5pNYto5PI=;
-        b=LmTjTP9o46K/ZdLqkgVlOhq8ccqh0n83RAXSBek1JJTq4f6x9GRkqIFPo+oRMXxdLA
-         RKKKCiD7N46BhCZmPAfnjp2OHDFy0fCqUFdHMtNyXCG8JnM4xnDbrBzEWyhtOncr1ose
-         R1L2r1QqcLUoU6y3dF1WqliaiIZ5QWA4WqYL9W1TEaUXatacBO+omOGDEKe27L0GnuK7
-         JkKpsDkti0jCda0rRqke6YI0pBG4UlEnqdF9LokA12N3taCfLrFNS3GJHP5ReSvgAeQs
-         syCwzXfHj8Smg60mpOMrjLl6ZujCRcxlq5L/yDdG1JJTR8Pw0m2LZ2TKGmUJDnUgxhj5
-         9sWw==
-X-Gm-Message-State: AOJu0YyYAKYuoEuOPNbzWNiv3EdsAInMlt0p8N7ONvKCjHQkW+ZJf2n7
-        pmLIJHti88gtcjaPUrawwZw=
-X-Google-Smtp-Source: AGHT+IFVfFgHSLI6DErH8Pen00pHogOVowf1UHo4ZLwbRQP3JHyUwflp7/oqzeGZ0ESTvUczOQlFpg==
-X-Received: by 2002:a05:6a20:7faa:b0:184:26d8:cf5c with SMTP id d42-20020a056a207faa00b0018426d8cf5cmr2900849pzj.0.1699773363488;
-        Sat, 11 Nov 2023 23:16:03 -0800 (PST)
-Received: from DESKTOP-NK4TH6S.localdomain ([220.72.86.232])
-        by smtp.gmail.com with ESMTPSA id s15-20020a170902ea0f00b001bc930d4517sm2190987plg.42.2023.11.11.23.15.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 23:16:01 -0800 (PST)
-From:   Paran Lee <p4ranlee@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Li Dong <lidong@vivo.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shjy180909@gmail.com, austindh.kim@gmail.com, honggyu.kp@gmail.com,
-        Paran Lee <p4ranlee@gmail.com>
-Subject: [PATCH] perf script python: Fail check on dynamic allocation.
-Date:   Sun, 12 Nov 2023 16:14:47 +0900
-Message-Id: <20231112071446.7811-1-p4ranlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 12 Nov 2023 02:39:16 -0500
+Received: from mail.tkos.co.il (wiki.tkos.co.il [84.110.109.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE572D77
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 23:39:11 -0800 (PST)
+Received: from tarshish (unknown [10.0.8.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.tkos.co.il (Postfix) with ESMTPS id C606C440394;
+        Sun, 12 Nov 2023 09:38:08 +0200 (IST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tkos.co.il;
+        s=default; t=1699774688;
+        bh=CT+4CTFw3TWups965GYXi3kRzFYumSfG7ykeet06X+Q=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to:From;
+        b=bhw7d3xBy9NQ3TQC6P+MHKyj3rncKvZmIZJRmPXI1e2PnhZS5rHhlBEISOjJnW0No
+         9dXTtjiK6ht5C8HYmYy+jYhT0QjiTAAv/xgSHMOFq+EuCnUzuXjL4BAe2Svc6XFo59
+         wYLO+VutkrA9bW3WqDVKBD7Yu8xvTg046vN0UrRxGCUgTmRcjdZ2pSOBfaJiJEtB8C
+         BLAaHRQktThnRbvl7qQ5fKjJMRpTT33b4b1ewOM9p1bIpo16SA3N7IidxT3VYsHx0T
+         wWKAc1SCXEoSLqtVD+2A2NlKhkOvdWi4sDkHZeBf6EYSYmu+v+8rga54/xea+WW1YK
+         cYqoI4cRaOffA==
+References: <9af8a19c3398e7dc09cfc1fbafed98d795d9f83e.1699464622.git.baruch@tkos.co.il>
+ <ZU0QEL9ByWNYVki1@arm.com>
+User-agent: mu4e 1.9.21; emacs 29.1
+From:   Baruch Siach <baruch@tkos.co.il>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Cc:     Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ramon Fried <ramon@neureality.ai>, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] arm64: DMA zone above 4GB
+Date:   Sun, 12 Nov 2023 09:25:46 +0200
+In-reply-to: <ZU0QEL9ByWNYVki1@arm.com>
+Message-ID: <877cmn7750.fsf@tarshish>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is Ommitted PyList_New() Fail check
-and set_regs_in_dict(), python_start_script()
-dynamic allocation checking.
+Hi Catalin, Petr,
 
-Signed-off-by: Paran Lee <p4ranlee@gmail.com>
----
- .../scripting-engines/trace-event-python.c     | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+Thanks for your detailed response.
 
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 94312741443a..0847c50d4601 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -353,6 +353,8 @@ static PyObject *get_field_numeric_entry(struct tep_event *event,
- 
- 	if (is_array) {
- 		list = PyList_New(field->arraylen);
-+		if (!list)
-+			Py_FatalError("couldn't create Python list");
- 		item_size = field->size / field->arraylen;
- 		n_items = field->arraylen;
- 	} else {
-@@ -754,7 +756,7 @@ static void regs_map(struct regs_dump *regs, uint64_t mask, const char *arch, ch
- 	}
- }
- 
--static void set_regs_in_dict(PyObject *dict,
-+static int set_regs_in_dict(PyObject *dict,
- 			     struct perf_sample *sample,
- 			     struct evsel *evsel)
- {
-@@ -770,6 +772,9 @@ static void set_regs_in_dict(PyObject *dict,
- 	 */
- 	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
- 	char *bf = malloc(size);
-+	if (!bf)
-+		return -1;
-+	}
- 
- 	regs_map(&sample->intr_regs, attr->sample_regs_intr, arch, bf, size);
- 
-@@ -781,6 +786,8 @@ static void set_regs_in_dict(PyObject *dict,
- 	pydict_set_item_string_decref(dict, "uregs",
- 			_PyUnicode_FromString(bf));
- 	free(bf);
-+
-+	return 0;
- }
- 
- static void set_sym_in_dict(PyObject *dict, struct addr_location *al,
-@@ -920,7 +927,8 @@ static PyObject *get_perf_sample_dict(struct perf_sample *sample,
- 			PyLong_FromUnsignedLongLong(sample->cyc_cnt));
- 	}
- 
--	set_regs_in_dict(dict, sample, evsel);
-+	if (!set_regs_in_dict(dict, sample, evsel))
-+		Py_FatalError("Failed to setting regs in dict");
- 
- 	return dict;
- }
-@@ -1918,12 +1926,18 @@ static int python_start_script(const char *script, int argc, const char **argv,
- 	scripting_context->session = session;
- #if PY_MAJOR_VERSION < 3
- 	command_line = malloc((argc + 1) * sizeof(const char *));
-+	if(!command_line) {
-+		return -1;
-+	}
- 	command_line[0] = script;
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = argv[i - 1];
- 	PyImport_AppendInittab(name, initperf_trace_context);
- #else
- 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
-+	if(!command_line) {
-+		return -1;
-+	}
- 	command_line[0] = Py_DecodeLocale(script, NULL);
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
+See below a few comments and questions.
+
+On Thu, Nov 09 2023, Catalin Marinas wrote:
+> On Wed, Nov 08, 2023 at 07:30:22PM +0200, Baruch Siach wrote:
+>> Consider a bus with this 'dma-ranges' property:
+>> 
+>>   #address-cells = <2>;
+>>   #size-cells = <2>;
+>>   dma-ranges = <0x00000000 0xc0000000 0x00000008 0x00000000 0x0 0x40000000>;
+>> 
+>> Devices under this bus can see 1GB of DMA range between 3GB-4GB. This
+>> range is mapped to CPU memory at 32GB-33GB.
+>
+> Is this on real hardware or just theoretical for now (the rest of your
+> email implies it's real)? Normally I'd expected the first GB (or first
+> two) of RAM from 32G to be aliased to the lower 32-bit range for the CPU
+> view as well, not just for devices. You'd then get a ZONE_DMA without
+> having to play with DMA offsets.
+
+This hardware is currently in fabrication past tapeout. Software tests
+are running on FPGA models and software simulators.
+
+CPU view of the 3GB-4GB range is not linear with DMA addresses. That is,
+for offset N where 0 <= N <= 1GB, the CPU address 3GB+N does not map to
+the same physical location of DMA address 3GB+N. Hardware engineers are
+not sure this is fixable. So as is often the case we look at software to
+save us. After all, from hardware perspective this design "works".
+
+>> Current zone_sizes_init() code considers 'dma-ranges' only when it maps
+>> to RAM under 4GB, because zone_dma_bits is limited to 32. In this case
+>> 'dma-ranges' is ignored in practice, since DMA/DMA32 zones are both
+>> assumed to be located under 4GB. The result is that the stmmac driver
+>> DMA buffers allocation GFP_DMA32 flag has no effect. As a result DMA
+>> buffer allocations fail.
+>> 
+>> The patch below is a crude workaround hack. It makes the  DMA zone
+>> cover the 1GB memory area that is visible to stmmac DMA as follows:
+>> 
+>> [    0.000000] Zone ranges:
+>> [    0.000000]   DMA      [mem 0x0000000800000000-0x000000083fffffff]
+>> [    0.000000]   DMA32    empty
+>> [    0.000000]   Normal   [mem 0x0000000840000000-0x0000000bffffffff]
+>> ...
+>> [    0.000000] software IO TLB: mapped [mem 0x000000083bfff000-0x000000083ffff000] (64MB)
+>> 
+>> With this hack the stmmac driver works on my platform with no
+>> modification.
+>> 
+>> Clearly this can't be the right solutions. zone_dma_bits is now wrong for
+>> one. It probably breaks other code as well.
+>
+> zone_dma_bits ends up as 36 if I counted correctly. So DMA_BIT_MASK(36)
+> is 0xf_ffff_ffff and the phys_limit for your device is below this mask,
+> so dma_direct_optimal_gfp_mask() does end up setting GFP_DMA. However,
+> looking at how it sets GFP_DMA32, it is obvious that the code is not set
+> up for such configurations. I'm also not a big fan of zone_dma_bits
+> describing a mask that goes well above what the device can access.
+>
+> A workaround would be for zone_dma_bits to become a *_limit and sort out
+> all places where we compare masks with masks derived from zone_dma_bits
+> (e.g. cma_in_zone(), dma_direct_supported()).
+
+I was also thinking along these lines. I wasn't sure I see the entire
+picture, so I hesitated to suggest a patch. Specifically, the assumption
+that DMA range limits are power of 2 looks deeply ingrained in the
+code. Another assumption is that DMA32 zone is in low 4GB range.
+
+I can work on an RFC implementation of this approach.
+
+Petr suggested a more radical solution of per bus DMA constraints to
+replace DMA/DMA32 zones. As Petr acknowledged, this does not look like a
+near future solution.
+
+> Alternatively, take the DMA offset into account when comparing the
+> physical address corresponding to zone_dma_bits and keep zone_dma_bits
+> small (phys offset subtracted, so in your case it would be 30 rather
+> than 36).
+
+I am not following here. Care to elaborate?
+
+Thanks,
+baruch
+
 -- 
-2.25.1
-
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
