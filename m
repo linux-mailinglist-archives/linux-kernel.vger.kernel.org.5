@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC3F7E9165
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0932B7E9169
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjKLPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:17:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S231743AbjKLPVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLPRZ (ORCPT
+        with ESMTP id S229588AbjKLPVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:17:25 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BBA2688;
-        Sun, 12 Nov 2023 07:17:22 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACFH16i031655;
-        Sun, 12 Nov 2023 15:17:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=rshSxOKREaibv4UeEAeF1J8j26NHtl8y6YdFV0mWAao=;
- b=mhKept8LBjbPMF83lvOBnRL2xRfDjnKbhrX0HNlMThTUc67MzIbLzNJTAjwN98ahxJUs
- Q0DC6nX4v0qbXtRyRHxDKBiGrIUH7Hib34p1+Vzw0rbYR17w+WLxQfeycP+ChXrInspl
- ORzokMDHDabRXRum3O4Vf/0+tVSs/Lipy5oJF26+WbKu7pRL44eU3W8yehtlRJm9HhG3
- l2ZIRskieCKOUud9SDf3HUhJe/bJJac46xGNK3pXLOR7gDbBvsY7SKhEsnyInMTqu4uj
- VErsWGlMQ/oFXMzwWG/iQCScdZ1v1WzsFfhLX3tWa7DlqUeO/3dIGLu//LdhBYxQ9Ahn KQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ua2wfhvtk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 12 Nov 2023 15:17:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ACFGxUj003702
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 12 Nov 2023 15:16:59 GMT
-Received: from [10.79.43.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 12 Nov
- 2023 07:16:53 -0800
-Message-ID: <857eda79-ce06-4afb-1393-c6d14dcda8a2@quicinc.com>
-Date:   Sun, 12 Nov 2023 20:46:50 +0530
+        Sun, 12 Nov 2023 10:21:51 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4856A2592
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:21:48 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1ce1603f5cdso4267455ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:21:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699802508; x=1700407308; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hwAN54Xoik+Feb3mCch+2bZAbzYnD5M1v5iLrQuVXB8=;
+        b=hO5a24gj7AiXIMgm/q29s60RnZiDZ2mK6suQWGyV5N3NiCMZbRnK7uI5Qa8MHRhbYc
+         ORA/5XDkCQTbIuLB1HaYGYWeC0LgYnpaVaxX03ZvoK6d0qtQ+jM/AD6Kkmb6kxWLGT2n
+         t/ly0tLZqtAUFnbHs0uh74PJhCHK7UheGo7GDN2abvyBdoLIjf7l3OaUDTp0Hh3W8TdP
+         wnELZOoDSCMImyZNO1H7AkV7SdSIA5HM2LoI5Kih+TNoCWyb79kHjVeRAeReSbuNwMr6
+         3UIqP5TdlwNr5vJy5rgWtXg+wg064DJJCdWmoxuPX8yMnWNXr1ZtZNk/CW0iP+H2E6eL
+         Oyew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699802508; x=1700407308;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hwAN54Xoik+Feb3mCch+2bZAbzYnD5M1v5iLrQuVXB8=;
+        b=h5owavLDifmdZx30eR0OPwureXsMqTCQ58XwSjIFrghB1SoJN0Opmt+Ritj72W6943
+         LrhKngson6Qh7wK4fHJZoL/I94PabmJHWqAk2JTeFvSeaLy+p199VIYghAlHQR8S6yNG
+         /P1s0U9zoG3XjWEiCWIaiAMTOoZctauhE/fmFL+KqXOiBpQJfeBR7rS6d5vwVRR+stj0
+         oKiiquVOFXfP215B+LPxZPjMTfQDyZG6B5psTVAsCa0xwEVFJMpz+CnYDdBdDfjZg/LB
+         t3Q3ygP/KArNJVNbOcBg8r9u4M8Tc8ZiczLuhxy9BrPjiC9Crgp0iW3prR5FeavDbdB8
+         BPhw==
+X-Gm-Message-State: AOJu0YyCZHUdRewI2GGPNqtVCG9mWU8OihbCv80vBKpP1TWyzPyyXSTD
+        VR/crYGqUlWOoDpVGk9x7kLGSRINBSMApaKb
+X-Google-Smtp-Source: AGHT+IHA+T3o8pU2uFblZMWxTHMyQamRP/be5ZMI7/TJEpAqpmn1OLHzFSrlq6DgcaM0YWSyWFT0/g==
+X-Received: by 2002:a17:90a:8a15:b0:280:1d6c:a6a8 with SMTP id w21-20020a17090a8a1500b002801d6ca6a8mr2680866pjn.23.1699802507597;
+        Sun, 12 Nov 2023 07:21:47 -0800 (PST)
+Received: from [220.72.86.232] ([220.72.86.232])
+        by smtp.gmail.com with ESMTPSA id 15-20020a17090a030f00b0027d0c3507fcsm4970504pje.9.2023.11.12.07.21.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 07:21:47 -0800 (PST)
+Message-ID: <13dfd533-daf4-3b35-3d68-5c72a294db3c@gmail.com>
+Date:   Mon, 13 Nov 2023 00:21:43 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 0/3] dt-bindings: Document gpi/scm/smmu for SC8380XP
-Content-Language: en-US
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
-CC:     <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
-        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
-        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
-References: <20231025140640.22601-1-quic_sibis@quicinc.com>
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <20231025140640.22601-1-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 88i6J94PxPNfGStcfcL4Gb-BKWOZF9MO
-X-Proofpoint-ORIG-GUID: 88i6J94PxPNfGStcfcL4Gb-BKWOZF9MO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-12_12,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- phishscore=0 clxscore=1011 mlxscore=0 impostorscore=0 malwarescore=0
- bulkscore=0 priorityscore=1501 adultscore=0 mlxlogscore=815
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311120134
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] irqdesc: Fail check on early_irq_init allocation.
+Content-Language: ko
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        shjy180909@gmail.com, austindh.kim@gmail.com
+References: <20231111170035.10386-1-p4ranlee@gmail.com>
+ <87fs1bxe9h.wl-maz@kernel.org>
+ <1f6e21c1-7340-ed40-f2a7-66c063b453cb@gmail.com>
+ <87edgvxb56.wl-maz@kernel.org>
+From:   Paran Lee <p4ranlee@gmail.com>
+In-Reply-To: <87edgvxb56.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'll be re-spinning the series with a part number change please refrain
-from picking this up as is. Thanks.
 
--Sibi
 
-On 10/25/23 19:36, Sibi Sankar wrote:
-> This series documents gpu/scm/smmu for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
+On 2023-11-13 오전 12:08, Marc Zyngier wrote:
+
+Thanks for the great feedback Marc!
+
+The review has taught me a lot of things I didn't realized
+I'll try to do better in the direction you suggested. To be useful.
+
+> A much better idea would be to *get rid* of early allocation failures
+> altogether, by moving all architectures to SPARSE_IRQ and making sure
+> that NR_LEGAY_IRQ is always zero, meaning there is nothing to
+> allocate. That would be something useful.
 > 
-> Dependencies: None
-> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+> But adding random BUG_ON() based on the dogma that all allocations
+> must be checked doesn't bring value to the kernel as a whole.
 > 
-> Rajendra Nayak (1):
->    dt-bindings: arm-smmu: Add compatible for SC8380XP SoC
-> 
-> Sibi Sankar (2):
->    dt-bindings: dma: qcom: gpi: add compatible for SC8380XP
->    dt-bindings: firmware: qcom,scm: document SCM on SC8380XP SoCs
-> 
->   Documentation/devicetree/bindings/dma/qcom,gpi.yaml      | 1 +
->   Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
->   Documentation/devicetree/bindings/iommu/arm,smmu.yaml    | 2 ++
->   3 files changed, 4 insertions(+)
-> 
+> 	M.
+
+Thanks so much!
+
+BR
+Paran Lee
