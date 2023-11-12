@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1FE87E9160
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC3F7E9165
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbjKLPP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34946 "EHLO
+        id S231713AbjKLPR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:17:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjKLPPZ (ORCPT
+        with ESMTP id S229588AbjKLPRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:15:25 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D080B30F7;
-        Sun, 12 Nov 2023 07:15:21 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so5583812a12.2;
-        Sun, 12 Nov 2023 07:15:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699802120; x=1700406920; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kWkWGOolKVqLhuHATbl4rWq/d1njCCLIAQIEOqDgmtE=;
-        b=lE3yf2SWstVWrrCPxuhZ2lsJEgSKWpAHgj9ZdtkESBCdQekc0JwIrSM/9R06dPc0RY
-         mwgRjdSCUVXwEuSTRd1UItBnPRstGZyLqRdvgej3r7+s4fAebXEUj9h2OhdOKp14DPzl
-         on44FfFgZY3z/qN8jikj5nAdPDXEcsfQZUQU9driudNUzuAxYe4kYOHjxCFrlRQwO0B+
-         U61MxwvTHKpY7HyTPTdRoSrlNcdAJWbfUv97ZkV8L8QI7uZF5dZt8RIwijk0fs7ENlvE
-         FQm0ohYMMU7carVLJw8aZDPu5Do64gtcli4mpTgAT1iXvdv7HmZOxEBHETAngDrp4ZmJ
-         ZuWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699802120; x=1700406920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kWkWGOolKVqLhuHATbl4rWq/d1njCCLIAQIEOqDgmtE=;
-        b=GoUbb4TTGJL4vQhHTvjfBI/9uHGJGwJ9qBkOV6Irk3eETGfnEzhZ+tZUpnum6gxnHW
-         6XF8mVaqiHKpDTNw5Yh8aHIg87qhWhSmShL3MlSXnQbE2IfitT5n0/vdfKeXDmOHUBa8
-         DrrlkJWmrjPk1ZnH3Blr33GX0WSx6wBm+U4rFlT23r49xdZqIuHlcEIBOaJ9jSLLfm2I
-         FjqkdknYlthiaz8qKD0KIc0I7cFVWzQZefwVnf5Hcpia0ZaV9jHS2Gvz6X4mb6D70HOd
-         BdxNWjetkrqE2SJk5SM4wgfH3kdacV45kX41N3BcoPwlaQPLDy87C0/K4qYOCtEN6Fj1
-         UYnQ==
-X-Gm-Message-State: AOJu0YzT9sbNKqcYdgJ62uFc7KeDCtKWx4Ftiq46n9NbIzpzkWSOYefo
-        RQERy19tpDrEMBIIGUkuuwcyfgFxIYta2mnUh58=
-X-Google-Smtp-Source: AGHT+IHhcQeZS4l0FxVUjzLdh/PvSOf9/l30fg+7Wb3JlcfIf/QP6qN0xgz8NAEBPl3e+fd9MzqNOR/UxXMO7eKmF7U=
-X-Received: by 2002:aa7:c691:0:b0:543:6588:555e with SMTP id
- n17-20020aa7c691000000b005436588555emr2935394edq.9.1699802120036; Sun, 12 Nov
- 2023 07:15:20 -0800 (PST)
+        Sun, 12 Nov 2023 10:17:25 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BBA2688;
+        Sun, 12 Nov 2023 07:17:22 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACFH16i031655;
+        Sun, 12 Nov 2023 15:17:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=rshSxOKREaibv4UeEAeF1J8j26NHtl8y6YdFV0mWAao=;
+ b=mhKept8LBjbPMF83lvOBnRL2xRfDjnKbhrX0HNlMThTUc67MzIbLzNJTAjwN98ahxJUs
+ Q0DC6nX4v0qbXtRyRHxDKBiGrIUH7Hib34p1+Vzw0rbYR17w+WLxQfeycP+ChXrInspl
+ ORzokMDHDabRXRum3O4Vf/0+tVSs/Lipy5oJF26+WbKu7pRL44eU3W8yehtlRJm9HhG3
+ l2ZIRskieCKOUud9SDf3HUhJe/bJJac46xGNK3pXLOR7gDbBvsY7SKhEsnyInMTqu4uj
+ VErsWGlMQ/oFXMzwWG/iQCScdZ1v1WzsFfhLX3tWa7DlqUeO/3dIGLu//LdhBYxQ9Ahn KQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ua2wfhvtk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 12 Nov 2023 15:17:00 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ACFGxUj003702
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 12 Nov 2023 15:16:59 GMT
+Received: from [10.79.43.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 12 Nov
+ 2023 07:16:53 -0800
+Message-ID: <857eda79-ce06-4afb-1393-c6d14dcda8a2@quicinc.com>
+Date:   Sun, 12 Nov 2023 20:46:50 +0530
 MIME-Version: 1.0
-References: <CACkBjsbUytfJS1ns0pp=o=Lk5qbQ5weD4_f8bPFrW5oV0tCXZw@mail.gmail.com>
-In-Reply-To: <CACkBjsbUytfJS1ns0pp=o=Lk5qbQ5weD4_f8bPFrW5oV0tCXZw@mail.gmail.com>
-From:   Andrei Matei <andreimatei1@gmail.com>
-Date:   Sun, 12 Nov 2023 10:15:08 -0500
-Message-ID: <CABWLsev9g8UP_c3a=1qbuZUi20tGoUXoU07FPf-5FLvhOKOY+Q@mail.gmail.com>
-Subject: Re: bpf: incorrect stack_depth after var off stack access causes OOB
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH 0/3] dt-bindings: Document gpi/scm/smmu for SC8380XP
+Content-Language: en-US
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
+        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
+        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
+        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
+References: <20231025140640.22601-1-quic_sibis@quicinc.com>
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <20231025140640.22601-1-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 88i6J94PxPNfGStcfcL4Gb-BKWOZF9MO
+X-Proofpoint-ORIG-GUID: 88i6J94PxPNfGStcfcL4Gb-BKWOZF9MO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-12_12,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ phishscore=0 clxscore=1011 mlxscore=0 impostorscore=0 malwarescore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 mlxlogscore=815
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311120134
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the report, Hao. I'll reacquaint myself with this code and
-investigate tomorrow.
+I'll be re-spinning the series with a part number change please refrain
+from picking this up as is. Thanks.
 
+-Sibi
 
-On Sun, Nov 12, 2023 at 8:57=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
-:
->
-> Hi,
->
-> The verifier allows stack access with var off, but the stack depth is
-> only updated
-> with `fix` off. For the following program, the verifier incorrectly
-> marks stack_depth
-> as 221, yet the smin of r8 is -12 and is overlooked, and thus the interpr=
-eter
-> incorrectly calls `__bpf_prog_run224`, leading to the OOB:
->
-> (bf) r6 =3D r10                      ; R6_w=3Dfp0 R10=3Dfp0
-> (bc) w8 =3D w6                       ; R6_w=3Dfp0
-> R8_w=3Dscalar(smin=3D0,smax=3Dumax=3D429496729)
-> (47) r8 |=3D -12                     ;
-> R8_w=3Dscalar(smin=3Dsmin32=3D-12,smax=3Dsmax32=3D-1,umin)
-> (0f) r8 +=3D r10
-> (72) *(u8 *)(r8 -221) =3D -19       ;
-> R8_w=3Dfp(off=3D0,smin=3Dsmin32=3D-12,smax=3Dsmax32=3D-1,..
-> (95) exit
->
-> verification time 231 usec
-> stack depth 221
-> processed 12 insns (limit 1000000) max_states_per_insn 0 total_states
-> 0 peak_states 0 m0
->
-> This C program can cause a stack OOB access:
-> C Repro: https://pastebin.com/raw/5ReUbCar
-> OOB: https://pastebin.com/raw/DzVz3NDn
->
-> Andrei, you added support for stack access with var off in
-> `01f810ace9ed3`, in which only
-> `allocated_stack` is updated, should we also update stack depth?
->
-> Best
-> Hao Sun
+On 10/25/23 19:36, Sibi Sankar wrote:
+> This series documents gpu/scm/smmu for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
+> 
+> Dependencies: None
+> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+> 
+> Rajendra Nayak (1):
+>    dt-bindings: arm-smmu: Add compatible for SC8380XP SoC
+> 
+> Sibi Sankar (2):
+>    dt-bindings: dma: qcom: gpi: add compatible for SC8380XP
+>    dt-bindings: firmware: qcom,scm: document SCM on SC8380XP SoCs
+> 
+>   Documentation/devicetree/bindings/dma/qcom,gpi.yaml      | 1 +
+>   Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
+>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml    | 2 ++
+>   3 files changed, 4 insertions(+)
+> 
