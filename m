@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BBF7E8ECF
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293CD7E8ED2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbjKLGUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 01:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        id S231372AbjKLGVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 01:21:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbjKLGUA (ORCPT
+        with ESMTP id S231381AbjKLGV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 01:20:00 -0500
+        Sun, 12 Nov 2023 01:21:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2163B5B87
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:19:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F1EC433CC;
-        Sun, 12 Nov 2023 06:18:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B2949C6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:19:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33DF4C433CA;
+        Sun, 12 Nov 2023 06:19:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699769941;
-        bh=qRqp7QPejGbBbu5oKyIM5RFWyLdo559Kq9GxnASTbi4=;
+        s=k20201202; t=1699769947;
+        bh=NRQ3+7zYtWxcLMyaVKQL6b/W2ki6kHtASjhWDkIuCOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggOZX2kRI1MtgdsU3XRYcle/m3IZf5lFlvSEYa0dAcFri8lmz9B12mIjqRdjlTXpT
-         9eFDzbRis6FA35srzfdsZ1u+hdrQQVMKimjV/uEL8gk48FIJWD4Fq7mAEAar6U9BQA
-         UO4a6fHPSuSWXP7Uof/glDnhRF6GmGUcc2ukCjlha4UnHfycJl2E7Vmx63uepFbtX2
-         eSwGWL6bq0W+YoWoC5OdGwLBR3dmmolU6lxAdTgevj6QQ9NDteYmG5XgzL4wGhXiFx
-         mJWrDq5z/7tZHCpCSiEhZE6dgetUMoigTXmlWHhxf6Q40hsyiNK/Qs5ODE9ZGl3gwW
-         COGIgXRKibzXA==
+        b=VbI2EEzZrCv1lHLtCSo4ml+lsXoi2BDR011BlUq9xT0ZNKfCfIJqP1pKQzJBh8N7g
+         kiMUAnJS6x4AZgmjx2yE/Ll/Yh2fkJYiBAoM1ZsZW9v4oJc0VHf32QSGCngpncB27v
+         LrJ7/m8DB/od4SkM4KJERf+onE6k2uJojjXohO3T1P7hGXPF9PwyWGjUI50nFnK721
+         NoXn00HX/mfQHlJg2099EljXDIxLj0RA4ke7+vHnDG/TY9K29A8ZFU5Obq3R9yBR2D
+         rgeYSxG2x8DJrDFwGs5DcDwJRy82wG1hlg4UfnC8H60hdWaKQfalzVHUZciXmdD3qd
+         MVlNJeiEpTn4w==
 From:   guoren@kernel.org
 To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         tglx@linutronix.de, conor.dooley@microchip.com, heiko@sntech.de,
@@ -40,20 +40,14 @@ To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         hjl.tools@gmail.com
 Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [RFC PATCH V2 35/38] clocksource: riscv: s64ilp32: Use __riscv_xlen instead of CONFIG_32BIT
-Date:   Sun, 12 Nov 2023 01:15:11 -0500
-Message-Id: <20231112061514.2306187-36-guoren@kernel.org>
+Subject: [RFC PATCH V2 36/38] irqchip: riscv: s64ilp32: Use __riscv_xlen instead of CONFIG_32BIT
+Date:   Sun, 12 Nov 2023 01:15:12 -0500
+Message-Id: <20231112061514.2306187-37-guoren@kernel.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20231112061514.2306187-1-guoren@kernel.org>
 References: <20231112061514.2306187-1-guoren@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -66,22 +60,43 @@ must use __riscv_xlen to detect real machine XLEN for CSR access.
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- drivers/clocksource/timer-riscv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/irqchip/irq-riscv-intc.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index da3071b387eb..fe83b4e2005a 100644
---- a/drivers/clocksource/timer-riscv.c
-+++ b/drivers/clocksource/timer-riscv.c
-@@ -38,7 +38,7 @@ static int riscv_clock_next_event(unsigned long delta,
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 4adeee1bc391..ee3514ef4326 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -22,10 +22,7 @@ static struct irq_domain *intc_domain;
  
- 	csr_set(CSR_IE, IE_TIE);
- 	if (static_branch_likely(&riscv_sstc_available)) {
--#if defined(CONFIG_32BIT)
-+#if __riscv_xlen == 32
- 		csr_write(CSR_STIMECMP, next_tval & 0xFFFFFFFF);
- 		csr_write(CSR_STIMECMPH, next_tval >> 32);
- #else
+ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+ {
+-	unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+-
+-	if (unlikely(cause >= BITS_PER_LONG))
+-		panic("unexpected interrupt cause");
++	xlen_t cause = regs->cause & ~CAUSE_IRQ_FLAG;
+ 
+ 	generic_handle_domain_irq(intc_domain, cause);
+ }
+@@ -117,7 +114,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+ {
+ 	int rc;
+ 
+-	intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
++	intc_domain = irq_domain_create_linear(fn, __riscv_xlen,
+ 					       &riscv_intc_domain_ops, NULL);
+ 	if (!intc_domain) {
+ 		pr_err("unable to add IRQ domain\n");
+@@ -132,7 +129,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+ 
+ 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+ 
+-	pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
++	pr_info("%d local interrupts mapped\n", __riscv_xlen);
+ 
+ 	return 0;
+ }
 -- 
 2.36.1
 
