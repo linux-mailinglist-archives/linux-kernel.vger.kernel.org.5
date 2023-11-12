@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B1F7E90F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1197E90EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbjKLNeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56642 "EHLO
+        id S232852AbjKLNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:34:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbjKLNda (ORCPT
+        with ESMTP id S232708AbjKLNdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:33:30 -0500
+        Sun, 12 Nov 2023 08:33:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 837554C0A;
-        Sun, 12 Nov 2023 05:30:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36419C433AD;
-        Sun, 12 Nov 2023 13:30:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7352D49D1;
+        Sun, 12 Nov 2023 05:30:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63C5DC433BB;
+        Sun, 12 Nov 2023 13:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795810;
-        bh=rSHwLfhtCVBMigQms0wvzh98GAQWIiBb07jyHbJ1hXc=;
+        s=k20201202; t=1699795814;
+        bh=0ANct9uzWMSwze0AymbEtxpr/siGufLZfiZESREAaXE=;
         h=From:To:Cc:Subject:Date:From;
-        b=i9KM8E0BDEtlg1PVtdj+bCh8XBuLlxTl/b7LwIQ90dp2GSvxkKtVObRm9eGHfzU6K
-         GayTB2nMRV7hBSiht8sQd7ywP/RsUK9hUpDAijEAw7Ghup90uKEB0qTy5lmmxIcS/B
-         6yIMPZrOeH1jcoyiUSkHN+m+AiZ3U+t5qc5y5FxKiZXN9r1mPS81FsNckJCQntF9da
-         lihLLy6DfOnfwdljuMstopysG3gBnbB89eskNhrN8SGTXxAI/Svq4GUYeQ7NrwssJV
-         TdOo6WZlbaSpi+JmDuaogkTCl4lXv0HLFTQyuko/Ow+teBjidqSyLbQKR+EC2VuUqh
-         aVpVDMvbON6zw==
+        b=Sjm7gLHRaxgMBb9HcZRLm1YCBe7cA5fMyAyJh+yK9krGN2O63bzsvc/TOfVfG+iF+
+         TW50BJRYj9IBGY0iRFOzlsfSqJ9yRyFtHypXc3g7EwKDYAowS1wloWtZgFqEEOo9EG
+         2T+ROdK+DNkwxk3jg4YD6LmoqE7SNkDqcH16te/39KDmGds4s76BqazzZR3Hxw3bYV
+         aYD56VPX9OnxpF0a+5prTGJqXPwqgpb2+5kYIPRsffQ8ewuHp0Z4d+KXGq01yi9XWM
+         6w7jZeNazUzdS0PMVUQI4zxHG00A6XP99f6eJPNiDRp3NzWL4BW7ZZU3biILpi/Kx0
+         j7PkgZWgKaLPA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Douglas Anderson <dianders@chromium.org>,
         Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>, jason.wessel@windriver.com,
         kgdb-bugreport@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 5.15] kgdb: Flush console before entering kgdb on panic
-Date:   Sun, 12 Nov 2023 08:30:08 -0500
-Message-ID: <20231112133008.177262-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10] kgdb: Flush console before entering kgdb on panic
+Date:   Sun, 12 Nov 2023 08:30:11 -0500
+Message-ID: <20231112133011.177297-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.138
+X-stable-base: Linux 5.10.200
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -90,10 +90,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index 7beceb447211d..f40ca4f09afce 100644
+index 0f31b22abe8d9..ef54254a5dd13 100644
 --- a/kernel/debug/debug_core.c
 +++ b/kernel/debug/debug_core.c
-@@ -1018,6 +1018,9 @@ void kgdb_panic(const char *msg)
+@@ -1022,6 +1022,9 @@ void kgdb_panic(const char *msg)
  	if (panic_timeout)
  		return;
  
