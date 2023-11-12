@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 465B67E91F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 19:11:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FEE7E9200
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 19:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbjKLSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 13:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
+        id S231861AbjKLSfJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Nov 2023 13:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbjKLSLA (ORCPT
+        with ESMTP id S229738AbjKLSfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 13:11:00 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45D11BEF;
-        Sun, 12 Nov 2023 10:10:56 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A2C1640E018F;
-        Sun, 12 Nov 2023 18:10:54 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id o5jeVJy23QFH; Sun, 12 Nov 2023 18:10:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699812651; bh=P+Kou/jpj8gD2sM9ulpNQYbK457wnt04VLoVq55l99E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b7TNhQv+z2v4Uj9Dap4EN/O61lvCqJRdWVwBLIM6UmS+ulbY29Rxvvrx3qZpRSWmF
-         AeUJ7MTjrYYg/fhvbvVRrATM/21hQnlyfplMueSFBSKPoIdNwARVrlfKDCc/BHEkFt
-         jwe7ppfKCLDcg9aohDOeRiKrpqPAUP+m7djCbv8AlacX9JX9Lmvp/PB64VBNFJyFD0
-         L7GQvBSaxHmThr+NtKV069zdYbRcub0O/8s8sgBBNRQw6p/yJ+xwceiHjQ5LDkgDZu
-         Gkf+z8+BvG5CS247AjIUowXurGrZa+4KXbNgZ/qD0+IbTfmqmrmfsWGGQ7Y94NGcb0
-         qab+tjcU0tUeceqld8oZFrm9LplYkcbjS16iLOkv1+M/YncupJdtCFZyeSgLes9Cx5
-         0Ky+/MMUMRf0eSZ0xmelWs75IV0qTvm9uguSUXu+vub5jUyNABLCP2TnrhYwZ5e9Bg
-         KGpgGgWS1hm5r8snXRmnIj3jJ+P0cPJYXahgT/+wbCGOQnbLXiiz3jy6RRrJusfI80
-         h1pcgxW/QawzWAluiYxg7XjMup48z97Lcb/zHlSfvOG2EviO+Yt0+hwXy2lmys9KP8
-         jmsnc9qZlMpoxTLYYMpmVkxr1FwdpUTNfiLEASsqWq+37ukzGvJwpbQ2uwkXW9VbTt
-         ea7xHrE2jOSzNawFyWwchZew=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 85EFA40E0031;
-        Sun, 12 Nov 2023 18:10:42 +0000 (UTC)
-Date:   Sun, 12 Nov 2023 19:10:36 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
-        hpa@zytor.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to
- CONFIG_MICROCODE_AMD)
-Message-ID: <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+        Sun, 12 Nov 2023 13:35:07 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779A7100
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 10:35:04 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-267-SshIAShoPSO8B8sp4H7Q1A-1; Sun, 12 Nov 2023 18:35:01 +0000
+X-MC-Unique: SshIAShoPSO8B8sp4H7Q1A-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 12 Nov
+ 2023 18:35:00 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 12 Nov 2023 18:35:00 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kent Overstreet' <kent.overstreet@linux.dev>
+CC:     Colin Ian King <colin.i.king@gmail.com>,
+        Brian Foster <bfoster@redhat.com>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] bcachefs: remove redundant initialization of
+ variable level
+Thread-Topic: [PATCH][next] bcachefs: remove redundant initialization of
+ variable level
+Thread-Index: AQHaFOJc+UlSVVrZd0ysZR3wF8M1VrB1n1CggAAnbQCAATvAgA==
+Date:   Sun, 12 Nov 2023 18:34:59 +0000
+Message-ID: <d106f21ef1164241a275b1f11b82e7b7@AcuMS.aculab.com>
+References: <20231111204528.339603-1-colin.i.king@gmail.com>
+ <20231111210208.qra7xhf2nd4pqvst@moria.home.lan>
+ <184af6778ab64b3eb6a4a6071974d5e8@AcuMS.aculab.com>
+ <20231111233904.zxgqyw3epefiqiro@moria.home.lan>
+In-Reply-To: <20231111233904.zxgqyw3epefiqiro@moria.home.lan>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 04:03:32PM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> That's because dracut until the recent commit
-> https://github.com/dracutdevs/dracut/commit/6c80408c8644a0add1907b0593eb83f90d6247b1
-> looked for CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL in the config
-> file to decide what to include or not.
+From: Kent Overstreet
+> Sent: 11 November 2023 23:39
+> 
+> On Sat, Nov 11, 2023 at 09:19:40PM +0000, David Laight wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Sent: 11 November 2023 21:02
+> > > > Variable level is being initialized a value that is never read, the
+> > > > variable is being re-assigned another value several statements later
+> > > > on. The initialization is redundant and can be removed. Cleans up
+> > > > clang scan build warning:
+> > > >
+> > > > fs/bcachefs/btree_iter.c:1217:11: warning: Value stored to 'level'
+> > > > during its initialization is never read [deadcode.DeadStores]
+> > > >
+> > > > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> > >
+> > > since we're no longer gnu89, we can simply declare the variable when
+> > > it's first used, like so:
+> >
+> > ugg... I think that is still frowned upon.
+> > It makes it very difficult for the average human to find
+> > the variable declaration.
+> 
+> No, it's 2023, there's no good reason to be declaring variables before
+> giving them values.
 
-They've been told a bunch of times already that grepping .config for
-specific symbols is not how one should check whether one should add
-microcode blobs to the initrd or not because Kconfig symbols are not an
-ABI.
+The year has nothing to do with whether it is a good idea.
+It is epically bad without -Wshadow.
+(Have you ever played 'stop the declaration' in C++, it isn't fun.)
 
-And looking at that commit, now they're grepping for CONFIG_MICROCODE.
-And that'll break again if one day we decide to make the microcode
-loader built in unconditionally.
+Finding declarations is bad enough when they are at the top
+of a big block, never mind in the middle of a load of assignments.
 
-How to fix this reliably and properly?
+	David
 
-Honestly, I don't have a good idea. If we do something like this:
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-grep microcode_init System.map
-
-then that makes "microode_init" ABI and we won't be able to change it
-eva. I'd need to do some digging here...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
