@@ -2,272 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B0F7E935E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 00:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE667E935D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 00:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbjKLXhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 18:37:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S232239AbjKLXhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 18:37:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjKLXhq (ORCPT
+        with ESMTP id S229738AbjKLXhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 18:37:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBC41BFB
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 15:37:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699832263; x=1731368263;
-  h=date:from:to:cc:subject:message-id;
-  bh=TF52vms0dcM5QUvanhQ+I6TROnvAGhYf8FX+3SVtJ4c=;
-  b=Q8GBH9X0KuSJTCeSc+Y+051qTRFVtKjYkiOnYBN1k3BPQb24EnJJGhFf
-   +yDq1pPkeRgVjktN0iSGxZwu/VBAQRhafYYDg+j9IopO1w66VdAK4MLXs
-   szI6D8WbOKY9GVHf3CIkIgC11IgtwJCwKU+M4Pa6YkfiofvMvHrp/lMi8
-   Qs8Zgxv+xNlZnEp7OPx5dornZfNGh3mUFwCCPsdLCMWCl8b4ijBzZRfmQ
-   CuYPvb0KBXKQTOtP31nZduH6nLgeUBk4+T+f2x9xTrs3xz5zmqJUAwxrp
-   gkapJ1NIOjT7+1hPUTF1UD9S3WIDxPZmb7uNdPRHs2/cCsO9PEUc6lyqF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="393224115"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="393224115"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 15:37:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="5516298"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 12 Nov 2023 15:37:41 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2K1K-000BcS-30;
-        Sun, 12 Nov 2023 23:37:38 +0000
-Date:   Mon, 13 Nov 2023 07:37:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 1a88df0f443a4c2512a9062668bb09351c0cda86
-Message-ID: <202311130701.bzjjzTue-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 12 Nov 2023 18:37:42 -0500
+Received: from matoro.tk (unknown [IPv6:2600:1700:4b10:9d80::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AC1E1BF7;
+        Sun, 12 Nov 2023 15:37:37 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; bh=G9DOnKiqePfdjSNqfxs9XjDwYou9Jpa9MccluFS19vc=;
+ c=relaxed/relaxed; d=matoro.tk;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:In-Reply-To:Message-Id:Message-Id:References:References:Autocrypt:Openpgp;
+ i=@matoro.tk; s=20230917; t=1699832244; v=1; x=1700264244;
+ b=jhDtBx05KIuwgC3hHt1B2P2kj4oa158AsNfNoTLQuzNeUI0KJlDTzofXuxC8V0Tjrj4fq8O/
+ JvDi81bGPDK90hwMhVykcHO9ld05yULnPU5BMRWNJmkA/TPVU9639i2N7QFn7oEH5fM2y0RsylV
+ ss8b/IR855BpdAp4iKMYvyUTCmNH9khPHb2oMZRZIEntX+LvP+5bELuTd3nrXzZYvlDPySM19px
+ v/+nyazB2ZlCxSJY3K2NcQE/WHY9rkLSrc7f0WRR+SJSWlIyQGzb4Y2CIzxZiuUCzBefwtH1sxf
+ bLUv5mZ/o9TuGOrNPpdwAm3Scm2qLqkkES2XVeNNYcok7G4usvIHEz9Vxck7nEi6Uu9tXOlxGUK
+ kp9VEKXabNLX423u0lpIaBlhQh/8gqTzu2eP8zMf2lHj+Y7NUe5kOt4VDYcRlpVuB9M+K5DeeI1
+ 9n05onMc4n4Mh3HI57ix1sW6p+SpNt5lZ2iOMo40xLU0+cJBLAGfmwZ26/Z6lq24NfPi6nTG/i1
+ agQ34deYKYShDFXsp+rV9F++D5D6uBI9LzWPcU7AERgI1sgT/K5S9zlXEnyosp9F+CLVf10UASr
+ gX0ebmDCTEQ3q/pyGGDw/R7rjf7irA5g6vbQMJuPq+3Oi4y7Y2r0eM+mmmi1ok1Mismz4yHD/Ai
+ GTZY+HBxEDU=
+Received: by matoro.tk (envelope-sender
+ <matoro_mailinglist_kernel@matoro.tk>) with ESMTPS id 73f273a8; Sun, 12 Nov
+ 2023 18:37:24 -0500
+MIME-Version: 1.0
+Date:   Sun, 12 Nov 2023 18:37:24 -0500
+From:   matoro <matoro_mailinglist_kernel@matoro.tk>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Sam James <sam@gentoo.org>, linux-parisc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Bisected stability regression in 6.6
+In-Reply-To: <ZVE0DJ5LS/BSO9xy@p100>
+References: <75318812c588816e0c741b4cd094524f@matoro.tk>
+ <71ab4fa2-311f-4221-9f50-2f49f2f80b5c@gmx.de> <87edgw6kuz.fsf@gentoo.org>
+ <9a84b68e9a538a66842dccc5efb8bdf8@matoro.tk> <ZVE0DJ5LS/BSO9xy@p100>
+Message-ID: <43096cfbf1d87eff4cbd81c8a13a66f0@matoro.tk>
+X-Sender: matoro_mailinglist_kernel@matoro.tk
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 1a88df0f443a4c2512a9062668bb09351c0cda86  Merge branch into tip/master: 'x86/percpu'
+On 2023-11-12 15:22, Helge Deller wrote:
+> * matoro <matoro_mailinglist_kernel@matoro.tk>:
+>> On 2023-11-11 16:27, Sam James wrote:
+>> > Helge Deller <deller@gmx.de> writes:
+>> >
+>> > > On 11/11/23 07:31, matoro wrote:
+>> > > > Hi Helge, I have bisected a regression in 6.6 which is causing
+>> > > > userspace segfaults at a significantly increased rate in kernel 6.6.
+>> > > > There seems to be a pathological case triggered by the ninja build
+>> > > > tool.  The test case I have been using is cmake with ninja backend to
+>> > > > attempt to build the nghttp2 package.  In 6.6, this segfaults, not at
+>> > > > the same location every time, but with enough reliability that I was
+>> > > > able to use it as a bisection regression case, including immediately
+>> > > > after a reboot.  In the kernel log, these show up as "trap #15: Data
+>> > > > TLB miss fault" messages.  Now these messages can and do show up in
+>> > > > 6.5 causing segfaults, but never immediately after a reboot and
+>> > > > infrequently enough that the system is stable.  With kernel 6.6 I am
+>> > > > completely unable to build nghttp2 under any circumstances.
+>> > > >
+>> > > > I have bisected this down to the following commit:
+>> > > >
+>> > > > $ git bisect good
+>> > > > 3033cd4307681c60db6d08f398a64484b36e0b0f is the first bad commit
+>> > > > commit 3033cd4307681c60db6d08f398a64484b36e0b0f
+>> > > > Author: Helge Deller <deller@gmx.de>
+>> > > > Date:   Sat Aug 19 00:53:28 2023 +0200
+>> > > >
+>> > > >      parisc: Use generic mmap top-down layout and brk randomization
+>> > > >
+>> > > >      parisc uses a top-down layout by default that exactly fits
+>> > > > the generic
+>> > > >      functions, so get rid of arch specific code and use the
+>> > > > generic version
+>> > > >      by selecting ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT.
+>> > > >
+>> > > >      Note that on parisc the stack always grows up and a "unlimited stack"
+>> > > >      simply means that the value as defined in
+>> > > > CONFIG_STACK_MAX_DEFAULT_SIZE_MB
+>> > > >      should be used. So RLIM_INFINITY is not an indicator to use
+>> > > > the legacy
+>> > > >      memory layout.
+>> > > >
+>> > > >      Signed-off-by: Helge Deller <deller@gmx.de>
+>> > > >
+>> > > >   arch/parisc/Kconfig             | 17 +++++++++++++
+>> > > >   arch/parisc/kernel/process.c    | 14 -----------
+>> > > >   arch/parisc/kernel/sys_parisc.c | 54
+>> > > > +----------------------------------------
+>> > > >   mm/util.c                       |  5 +++-
+>> > > >   4 files changed, 22 insertions(+), 68 deletions(-)
+>> > >
+>> > > Thanks for your report!
+>> > > I think it's quite unlikely that this patch introduces such a bad
+>> > > regression.
+> 
+> I was wrong.
+> Indeed, by switching to the generic implementation with this patch
+> the calculation of mmap_base is wrong for parisc (because parisc
+> is the only architecture left where the stack grows upwards).
+> 
+> Could you please test the patch below. It did fixed the crashes
+> when building nghttp2 for me.
+> 
+> Helge
+> 
+> ---
+> 
+> From: Helge Deller <deller@gmx.de>
+> Subject: [PATCH] parisc: Adjust ARCH_MMAP_RND_BITS* to previous values
+> 
+> Matoro reported various userspace crashes in kernel 6.6 and bisected it to
+> commit 3033cd430768 ("parisc: Use generic mmap top-down layout and brk
+> randomization").
+> 
+> The problem is, that mmap_base is calculated wrongly for the
+> stack-grows-upwards case (as on parisc). On parisc, mmap_base is simply just
+> below the stack start.
+> 
+> Reported-by: matoro <matoro_mailinglist_kernel@matoro.tk>
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> Fixes: 3033cd430768 ("parisc: Use generic mmap top-down layout and brk 
+> randomization")
+> Cc:  <stable@vger.kernel.org> # v6.6+
+> 
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index a15ab147af2e..68cbe666510a 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -138,11 +138,11 @@ config ARCH_MMAP_RND_COMPAT_BITS_MIN
+>  	default 8
+> 
+>  config ARCH_MMAP_RND_BITS_MAX
+> -	default 24 if 64BIT
+> -	default 17
+> +	default 18 if 64BIT
+> +	default 13
+> 
+>  config ARCH_MMAP_RND_COMPAT_BITS_MAX
+> -	default 17
+> +	default 13
+> 
+>  # unless you want to implement ACPI on PA-RISC ... ;-)
+>  config PM
+> diff --git a/arch/parisc/include/asm/elf.h b/arch/parisc/include/asm/elf.h
+> index 140eaa97bf21..2d73d3c3cd37 100644
+> --- a/arch/parisc/include/asm/elf.h
+> +++ b/arch/parisc/include/asm/elf.h
+> @@ -349,15 +349,7 @@ struct pt_regs;	/* forward declaration... */
+> 
+>  #define ELF_HWCAP	0
+> 
+> -/* Masks for stack and mmap randomization */
+> -#define BRK_RND_MASK	(is_32bit_task() ? 0x07ffUL : 0x3ffffUL)
+> -#define MMAP_RND_MASK	(is_32bit_task() ? 0x1fffUL : 0x3ffffUL)
+> -#define STACK_RND_MASK	MMAP_RND_MASK
+> -
+> -struct mm_struct;
+> -extern unsigned long arch_randomize_brk(struct mm_struct *);
+> -#define arch_randomize_brk arch_randomize_brk
+> -
+> +#define STACK_RND_MASK	0x7ff	/* 8MB of VA */
+> 
+>  #define ARCH_HAS_SETUP_ADDITIONAL_PAGES 1
+>  struct linux_binprm;
+> diff --git a/arch/parisc/include/asm/processor.h 
+> b/arch/parisc/include/asm/processor.h
+> index ff6cbdb6903b..ece4b3046515 100644
+> --- a/arch/parisc/include/asm/processor.h
+> +++ b/arch/parisc/include/asm/processor.h
+> @@ -47,6 +47,8 @@
+> 
+>  #ifndef __ASSEMBLY__
+> 
+> +struct rlimit;
+> +unsigned long mmap_upper_limit(struct rlimit *rlim_stack);
+>  unsigned long calc_max_stack_size(unsigned long stack_max);
+> 
+>  /*
+> diff --git a/arch/parisc/kernel/sys_parisc.c 
+> b/arch/parisc/kernel/sys_parisc.c
+> index ab896eff7a1d..98af719d5f85 100644
+> --- a/arch/parisc/kernel/sys_parisc.c
+> +++ b/arch/parisc/kernel/sys_parisc.c
+> @@ -77,7 +77,7 @@ unsigned long calc_max_stack_size(unsigned long stack_max)
+>   * indicating that "current" should be used instead of a passed-in
+>   * value from the exec bprm as done with arch_pick_mmap_layout().
+>   */
+> -static unsigned long mmap_upper_limit(struct rlimit *rlim_stack)
+> +unsigned long mmap_upper_limit(struct rlimit *rlim_stack)
+>  {
+>  	unsigned long stack_base;
+> 
+> diff --git a/mm/util.c b/mm/util.c
+> index 8cbbfd3a3d59..0b7e715a71f2 100644
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -414,6 +414,15 @@ static int mmap_is_legacy(struct rlimit *rlim_stack)
+> 
+>  static unsigned long mmap_base(unsigned long rnd, struct rlimit 
+> *rlim_stack)
+>  {
+> +#ifdef CONFIG_STACK_GROWSUP
+> +	/*
+> +	 * For an upwards growing stack the calculation is much simpler.
+> +	 * Memory for the maximum stack size is reserved at the top of the
+> +	 * task. mmap_base starts directly below the stack and grows
+> +	 * downwards.
+> +	 */
+> +	return PAGE_ALIGN(mmap_upper_limit(rlim_stack) - rnd);
+> +#else
+>  	unsigned long gap = rlim_stack->rlim_cur;
+>  	unsigned long pad = stack_guard_gap;
+> 
+> @@ -431,6 +440,7 @@ static unsigned long mmap_base(unsigned long rnd, struct 
+> rlimit *rlim_stack)
+>  		gap = MAX_GAP;
+> 
+>  	return PAGE_ALIGN(STACK_TOP - gap - rnd);
+> +#endif
+>  }
+> 
+>  void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
 
-elapsed time: 721m
-
-configs tested: 195
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231112   gcc  
-arc                   randconfig-002-20231112   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                          pxa3xx_defconfig   gcc  
-arm                   randconfig-001-20231112   gcc  
-arm                   randconfig-002-20231112   gcc  
-arm                   randconfig-003-20231112   gcc  
-arm                   randconfig-004-20231112   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231112   gcc  
-arm64                 randconfig-002-20231112   gcc  
-arm64                 randconfig-003-20231112   gcc  
-arm64                 randconfig-004-20231112   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231112   gcc  
-csky                  randconfig-002-20231112   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231112   gcc  
-i386         buildonly-randconfig-002-20231112   gcc  
-i386         buildonly-randconfig-003-20231112   gcc  
-i386         buildonly-randconfig-004-20231112   gcc  
-i386         buildonly-randconfig-005-20231112   gcc  
-i386         buildonly-randconfig-006-20231112   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231112   gcc  
-i386                  randconfig-002-20231112   gcc  
-i386                  randconfig-003-20231112   gcc  
-i386                  randconfig-004-20231112   gcc  
-i386                  randconfig-005-20231112   gcc  
-i386                  randconfig-006-20231112   gcc  
-i386                  randconfig-011-20231112   gcc  
-i386                  randconfig-012-20231112   gcc  
-i386                  randconfig-013-20231112   gcc  
-i386                  randconfig-014-20231112   gcc  
-i386                  randconfig-015-20231112   gcc  
-i386                  randconfig-016-20231112   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231112   gcc  
-loongarch             randconfig-002-20231112   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-m68k                       m5208evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                            gpr_defconfig   gcc  
-mips                           ip32_defconfig   gcc  
-mips                     loongson1b_defconfig   gcc  
-nios2                         10m50_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231112   gcc  
-nios2                 randconfig-002-20231112   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231112   gcc  
-parisc                randconfig-002-20231112   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                 mpc837x_rdb_defconfig   gcc  
-powerpc                     mpc83xx_defconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc                      pmac32_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc               randconfig-001-20231112   gcc  
-powerpc               randconfig-002-20231112   gcc  
-powerpc               randconfig-003-20231112   gcc  
-powerpc                     redwood_defconfig   gcc  
-powerpc64             randconfig-001-20231112   gcc  
-powerpc64             randconfig-002-20231112   gcc  
-powerpc64             randconfig-003-20231112   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231112   gcc  
-riscv                 randconfig-002-20231112   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231112   gcc  
-s390                  randconfig-002-20231112   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          kfr2r09_defconfig   gcc  
-sh                    randconfig-001-20231112   gcc  
-sh                    randconfig-002-20231112   gcc  
-sh                           se7343_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                  sh7785lcr_32bit_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231112   gcc  
-sparc                 randconfig-002-20231112   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231112   gcc  
-sparc64               randconfig-002-20231112   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231112   gcc  
-um                    randconfig-002-20231112   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231112   gcc  
-x86_64       buildonly-randconfig-002-20231112   gcc  
-x86_64       buildonly-randconfig-003-20231112   gcc  
-x86_64       buildonly-randconfig-004-20231112   gcc  
-x86_64       buildonly-randconfig-005-20231112   gcc  
-x86_64       buildonly-randconfig-006-20231112   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231112   gcc  
-x86_64                randconfig-002-20231112   gcc  
-x86_64                randconfig-003-20231112   gcc  
-x86_64                randconfig-004-20231112   gcc  
-x86_64                randconfig-005-20231112   gcc  
-x86_64                randconfig-006-20231112   gcc  
-x86_64                randconfig-011-20231112   gcc  
-x86_64                randconfig-012-20231112   gcc  
-x86_64                randconfig-013-20231112   gcc  
-x86_64                randconfig-014-20231112   gcc  
-x86_64                randconfig-015-20231112   gcc  
-x86_64                randconfig-016-20231112   gcc  
-x86_64                randconfig-071-20231112   gcc  
-x86_64                randconfig-072-20231112   gcc  
-x86_64                randconfig-073-20231112   gcc  
-x86_64                randconfig-074-20231112   gcc  
-x86_64                randconfig-075-20231112   gcc  
-x86_64                randconfig-076-20231112   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20231112   gcc  
-xtensa                randconfig-002-20231112   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Works here!  Thanks Helge!!
