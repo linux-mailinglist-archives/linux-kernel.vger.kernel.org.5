@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2E77E90D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C6D7E912B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbjKLNbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:31:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
+        id S231490AbjKLOWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 09:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232614AbjKLNaS (ORCPT
+        with ESMTP id S232688AbjKLNae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:30:18 -0500
+        Sun, 12 Nov 2023 08:30:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA4E49E4;
-        Sun, 12 Nov 2023 05:29:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8386C433C9;
-        Sun, 12 Nov 2023 13:28:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28CE5249;
+        Sun, 12 Nov 2023 05:29:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6086C43397;
+        Sun, 12 Nov 2023 13:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795740;
-        bh=8GGQ5f9ftAw5kvq9oFlMaEXzoI12Sb3RwcqfpztGaPM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qCxvUHSvqWiBuBLwS3DdbtcyzejpxyQaOAWcZOOC+FE2rjffg0fEgDM4dlXD++ONq
-         X+gO0g50nxYRxmqUesFi3Dazh24uEja60cFR12Jgf/DPDkQsOpqkWaq1uY0o1YVMLL
-         SJLETTB0w0z160ZmB183dVZ0+xsp/t4qng1u9KW6DPAG76xocoT5Nu5Y8rBSkDnuAo
-         sF0A1h9kRBFt7vlBeYjAObPU5qsAQiyMV2mspACal5ZcJYo4VEz5SckWmNRZOOeep2
-         mQI+9fUeEOfeaOK6puFGsYTu/E+AACQZZL5cGVqNZIJFXvg0YsAbmGDgX+n9KCOhUK
-         ODLvV+FJhQnKg==
+        s=k20201202; t=1699795744;
+        bh=r1gw3hOsw+jtDnajYdiBQfXdRBa3YMT9bjyN5/VsQhE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c0t/1iBweiQS61FTKGeXNl7bPOyhWdxfvbiGgifadwSu4S7FxiQ9EpnjpE3NqVaeL
+         Smgg5/p2TQnMzZp6JSW7xmmsUnricPXG9F+7xrGAwSgfthbttHlK6f4Fwqo53Q1AgW
+         enT+3jZ1MZt4IaOxb+pEXUgvtCT05bzDSeUA/1eSZqMRNspf306JxTwCVXdmuONEgB
+         2sjGe4lT6P1mEqOAjR0aNf85iK1lHAJnidXOjUXIIY7ovF2UyU7QVG09XA6DpyejsV
+         gGI6307p7P9Ob8AujG5629MCssGbK4sefGZzXukQfSTS7I8K4tI45fl/CLchdOhqLZ
+         +4TQEtVX7TGeg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wayne Lin <wayne.lin@amd.com>, Jun Lei <jun.lei@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
-        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 8/8] drm/amd/display: Avoid NULL dereference of timing generator
-Date:   Sun, 12 Nov 2023 08:28:46 -0500
-Message-ID: <20231112132847.176473-8-sashal@kernel.org>
+Cc:     Rajeshwar R Shinde <coolrrsh@gmail.com>,
+        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sasha Levin <sashal@kernel.org>, hverkuil@xs4all.nl,
+        linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/6] media: gspca: cpia1: shift-out-of-bounds in set_flicker
+Date:   Sun, 12 Nov 2023 08:28:55 -0500
+Message-ID: <20231112132902.176672-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231112132847.176473-1-sashal@kernel.org>
-References: <20231112132847.176473-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.200
+X-stable-base: Linux 5.4.260
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wayne Lin <wayne.lin@amd.com>
+From: Rajeshwar R Shinde <coolrrsh@gmail.com>
 
-[ Upstream commit b1904ed480cee3f9f4036ea0e36d139cb5fee2d6 ]
+[ Upstream commit 099be1822d1f095433f4b08af9cc9d6308ec1953 ]
 
-[Why & How]
-Check whether assigned timing generator is NULL or not before
-accessing its funcs to prevent NULL dereference.
+Syzkaller reported the following issue:
+UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
+shift exponent 245 is too large for 32-bit type 'int'
 
-Reviewed-by: Jun Lei <jun.lei@amd.com>
-Acked-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Wayne Lin <wayne.lin@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+When the value of the variable "sd->params.exposure.gain" exceeds the
+number of bits in an integer, a shift-out-of-bounds error is reported. It
+is triggered because the variable "currentexp" cannot be left-shifted by
+more than the number of bits in an integer. In order to avoid invalid
+range during left-shift, the conditional expression is added.
+
+Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
+Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
+Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc_stream.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/gspca/cpia1.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-index d48fd87d3b953..8206c6edba746 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-@@ -534,7 +534,7 @@ uint32_t dc_stream_get_vblank_counter(const struct dc_stream_state *stream)
- 	for (i = 0; i < MAX_PIPES; i++) {
- 		struct timing_generator *tg = res_ctx->pipe_ctx[i].stream_res.tg;
+diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
+index d93d384286c16..de945e13c7c6b 100644
+--- a/drivers/media/usb/gspca/cpia1.c
++++ b/drivers/media/usb/gspca/cpia1.c
+@@ -18,6 +18,7 @@
  
--		if (res_ctx->pipe_ctx[i].stream != stream)
-+		if (res_ctx->pipe_ctx[i].stream != stream || !tg)
- 			continue;
+ #include <linux/input.h>
+ #include <linux/sched/signal.h>
++#include <linux/bitops.h>
  
- 		return tg->funcs->get_frame_count(tg);
-@@ -593,7 +593,7 @@ bool dc_stream_get_scanoutpos(const struct dc_stream_state *stream,
- 	for (i = 0; i < MAX_PIPES; i++) {
- 		struct timing_generator *tg = res_ctx->pipe_ctx[i].stream_res.tg;
+ #include "gspca.h"
  
--		if (res_ctx->pipe_ctx[i].stream != stream)
-+		if (res_ctx->pipe_ctx[i].stream != stream || !tg)
- 			continue;
- 
- 		tg->funcs->get_scanoutpos(tg,
+@@ -1027,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
+ 			sd->params.exposure.expMode = 2;
+ 			sd->exposure_status = EXPOSURE_NORMAL;
+ 		}
++		if (sd->params.exposure.gain >= BITS_PER_TYPE(currentexp))
++			return -EINVAL;
+ 		currentexp = currentexp << sd->params.exposure.gain;
+ 		sd->params.exposure.gain = 0;
+ 		/* round down current exposure to nearest value */
 -- 
 2.42.0
 
