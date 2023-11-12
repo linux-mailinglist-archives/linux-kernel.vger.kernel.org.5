@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7147E911C
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB957E9125
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:19:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjKLOMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 09:12:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
+        id S231441AbjKLOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 09:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLOMy (ORCPT
+        with ESMTP id S229441AbjKLOTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 09:12:54 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36182D54;
-        Sun, 12 Nov 2023 06:12:48 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6c4ed8eef16so1907661b3a.0;
-        Sun, 12 Nov 2023 06:12:48 -0800 (PST)
+        Sun, 12 Nov 2023 09:19:40 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A7B2D54
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:19:37 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2801d7f46f9so2984775a91.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699798368; x=1700403168; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TCvr0yTKicKszXc2n3f/nKPcI+6n8ysEnACBP1fLv1U=;
-        b=LFkpAqT/Jy8BvxR5EeIsVYeVaB+FSJKWDu5KYt38gnVf5gEOnQIBut6GkTJhtqH1Pv
-         a3KCTKDZ2JCcHF/WNnRRgsnskGq9PUloFonHI64OusCcViqub9LzcA02Q6yzpWksozVP
-         jrXkFjpBq6xK5ZP08RTzlctRg4FiQowHDbUnmNEu050ojpDHXaEkihoNUyj48b/L4RcY
-         MzDUc03JM/rEbpHFco8nD4WnGSFsqiJgADlDMHgBc6e31rW3Ab9KE0SQjiiy2qVOKWah
-         uKU2LyFR4M6174ZfyhTv1kJnFSSHKfEAtaNrW1wGthUoENy1YUaSzx5vjZAFsBLYLEnA
-         L8pQ==
+        d=gmail.com; s=20230601; t=1699798777; x=1700403577; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h2x7te98qyLMcqqpUUp3QdWFkHj0fDiNUEndC2gQVTo=;
+        b=Ir23/EU1O+12W0lOnexue5cYHlTTj8CaRLqaj+zUDl0NzeRYuk9+53jQ7rwjDurfr0
+         0QQ7pWQez/iMBLIBx5BFuiHaQ+LFSUIshB82uLaEUPMt4/OQna3jRvCSwpJRo0gbXynX
+         jxAzjuEGajFz0juv9Wv/e+wOZ3wcOxw9VagBTG9BC8yFYAPl41hR5qjwtfQ/Z+2kq6+G
+         EsylGFrCVqTDx34ve+G9ICU//Ii4LP3qMEVkMm0ciM8UezU3rMnAYNCkAj2QXKZtYobz
+         pxuoWoSPJnO7wgsUPjV+Zybl114jJ6UqFZRbsuLIArmS0O19VG8nKb3VN19tbd5LB3t0
+         znrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699798368; x=1700403168;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TCvr0yTKicKszXc2n3f/nKPcI+6n8ysEnACBP1fLv1U=;
-        b=D3UeKLSZWvDvRqRSyH8lSuCw4upL9uE8UoS3JAcf54XErsI8i44CgRcqN2dkJ4B+cP
-         JIGUjRmqlYVTE1k9LsQmG3BkTTY1+X5656D9xchdtpvNb9d1ai8Ufem1aQk3RKbpUH5w
-         gxiUkrpUxuVaCVKaNUcGi4GCAJG9wErVksN//m+pEUZ1fDsjG+L4jNKRmDQ7XsjYDIyt
-         Epsl3SGnCQeTtLhdXLVDHFxB8fnPrq2RcssOz7gP5b+NwsoeSO8aUYhoH1dlPK8UtZcw
-         6LOngqKtDpHKI5Zn0tNoEWIwg7iZQatMJ0COnn+fs+QGw9fhvSNe8Hw6IC9eDtU3nl0+
-         exuw==
-X-Gm-Message-State: AOJu0Yx8Tn3+koyNe0rRrNB/n5paTrPdvnDPp+Rf1BAIU5FW+mWUTGo/
-        DDxcIHrHZQOoE6Br89zjiCs=
-X-Google-Smtp-Source: AGHT+IEa52UGrTINC8r6UcUtaKBz+bSttXiaWAm3fVRDA/TY1Uke7Cq5Lz+3rtpTF4RUVIlONVaGVw==
-X-Received: by 2002:a05:6a00:408f:b0:6c6:9c3b:f0c5 with SMTP id bw15-20020a056a00408f00b006c69c3bf0c5mr4231803pfb.24.1699798368340;
-        Sun, 12 Nov 2023 06:12:48 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id e20-20020aa78c54000000b006870ed427b2sm2618022pfd.94.2023.11.12.06.12.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 06:12:47 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 0DE0D10475DAF; Sun, 12 Nov 2023 21:12:45 +0700 (WIB)
-Date:   Sun, 12 Nov 2023 21:12:45 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Cc:     Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        =?utf-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= 
-        <pinkflames.linux@gmail.com>,
-        Fabio Comolli <fabio.comolli@gmail.com>
-Subject: Re: Fwd: iwlmvm: Linux 6.7 pre-rc1 prints stack trace of
- iwl_op_mode_mvm_start; caused by commit b6e3d1ba4fcf
-Message-ID: <ZVDdXWNFSg48toP5@archie.me>
-References: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
+        d=1e100.net; s=20230601; t=1699798777; x=1700403577;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h2x7te98qyLMcqqpUUp3QdWFkHj0fDiNUEndC2gQVTo=;
+        b=OBibyyjEnV/zdtzrx1Meg2XDdcyJMZw9R2HuzxvM1UNT5wSUAoaBE7pJeFvn3YWA3z
+         L05/uqtBSTkQghB1HYU7LAifu5YsZesVagxiJP47Lc76ySPJcL/ux6KpYX0+ek9JqGzZ
+         tI+KQo4yw7xoYxzkCuqJt3eAyFVMUxnzpc8ZeTSjXtndl44goyNsMpv1j6YcM8irEGA8
+         r0sdfhkC01J2q/3yMCK0bLSrHUKB1Syd1tw5g36qlfSjcYzPaGVIOk1qayKzhbX6NeAC
+         ZYJk/P+os33z8VYkxG11HTYS5uNP9mPv2zlJ9ZSjPmZR59QxiwRyh5OZn20xUZWageGL
+         0VNA==
+X-Gm-Message-State: AOJu0Yxp4j0EnU4mWRy54+/w1msT9oYv++U8mw4lHMdJux0PgE5o80HW
+        ZV1cQQRNM5AouddanUy3yCo=
+X-Google-Smtp-Source: AGHT+IFs7vRYO/jBIOBCxjC6BPwaui3YL+LZjNHUb5A+HtKgGCC2hf1mCj5CKjsqS0s8MQ9QM+cOow==
+X-Received: by 2002:a17:90b:1b46:b0:281:10d:6067 with SMTP id nv6-20020a17090b1b4600b00281010d6067mr2267502pjb.16.1699798777109;
+        Sun, 12 Nov 2023 06:19:37 -0800 (PST)
+Received: from [220.72.86.232] ([220.72.86.232])
+        by smtp.gmail.com with ESMTPSA id n5-20020a170902e54500b001c9bc811d59sm2600124plf.307.2023.11.12.06.19.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 06:19:36 -0800 (PST)
+Message-ID: <1f6e21c1-7340-ed40-f2a7-66c063b453cb@gmail.com>
+Date:   Sun, 12 Nov 2023 23:19:28 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LtCOL7Zv4yuWkm+i"
-Content-Disposition: inline
-In-Reply-To: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] irqdesc: Fail check on early_irq_init allocation.
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        shjy180909@gmail.com, austindh.kim@gmail.com
+References: <20231111170035.10386-1-p4ranlee@gmail.com>
+ <87fs1bxe9h.wl-maz@kernel.org>
+Content-Language: ko
+From:   Paran Lee <p4ranlee@gmail.com>
+In-Reply-To: <87fs1bxe9h.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,33 +76,30 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---LtCOL7Zv4yuWkm+i
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 03, 2023 at 08:13:39PM +0700, Bagas Sanjaya wrote:
-> #regzbot introduced: b6e3d1ba4fcf02 https://bugzilla.kernel.org/show_bug.=
-cgi?id=3D218095
-> #regzbot title: new iwlwifi firmware statistics API triggers stack trace
->=20
+On 2023-11-12 오후 11:00, Marc Zyngier wrote:
 
-#regzbot monitor: https://lore.kernel.org/linux-wireless/CAHk-=3Dwix6kqQ5vH=
-ZXjOPpZBfM7mMm9bBZxi2Jh7XnaKCqVf94w@mail.gmail.com/
-#regzbot fix: wifi: iwlwifi: fix system commands group ordering
+Thanks for the code review Marc!
 
---=20
-An old man doll... just what I always wanted! - Clara
+I think function alloc_descs() in irqdesc.c has also alloc_desc() fail
+handling, and there's kernel-wide code consistency checking for
+allocation failures, and I thought it would be nice to mark it.
+So that the code is aware of it.
 
---LtCOL7Zv4yuWkm+i
-Content-Type: application/pgp-signature; name="signature.asc"
+Even if it panics with a null derefence reference.
 
------BEGIN PGP SIGNATURE-----
+> A failing allocation already results in a massive splat describing how
+> the allocation failed. Further use of the NULL pointer will also
+> result in a terminal oops, particularly if this happens this early in
+> the boot sequence.
+> 
+> So what do these BUG_ON() calls buy us?
+> 
+> 	M.
+> 
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVDdXQAKCRD2uYlJVVFO
-o8rvAPwJodW9tD6EUNvZDaoh3shGw2NQJrSPJOYTfTq6EqKdSgD/Xi0GqoReWa6B
-Lj2q+AyyKAOS7/ovhlAW7/fFTNFx/Qw=
-=vmFw
------END PGP SIGNATURE-----
+If anyone has any ideas on how to get a little fancier with the allocation,
+I'll send a v2 patch in that direction.
 
---LtCOL7Zv4yuWkm+i--
+BR
+Paran Lee
