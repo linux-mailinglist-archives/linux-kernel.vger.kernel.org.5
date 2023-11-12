@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A820F7E8F87
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 11:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44917E8F8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 12:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjKLKtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 05:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
+        id S231243AbjKLK6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 05:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLKtj (ORCPT
+        with ESMTP id S229441AbjKLK6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 05:49:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E0D2D57
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 02:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699786176; x=1731322176;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xn7r3qmALG7i+CZ9rriDy1dO7h/kNC9qfns82j/prrM=;
-  b=aVFtjnKDN5GJ9OoUCIfJb1FSUGgeAdbESxvM5ANC11fpQvNcXLdooKZB
-   5snUeauCO1S1L1O14+7wSSCVCxXqTS4bzRCaXTo8rAozxOmgoqoRet8Fr
-   KoGPFH6lIHyIewcr5jasnqPEaaUyiTgrbDQnn7qM1UmTaaARNaF0+5zQz
-   ZoeTZdq//ypcuOFosIo2VbUUUv6EYIWcqAR0jYOpDfmaxi3j23PQP+lqW
-   TWptml4vk80PEdfbXzQed6RmEpE3x3BpH7cMRHk07ORyfkvqQursBJliH
-   k0pvI1HPSXO1rrKbhJ/y8t+/kpKSpyMqMOkyl6fEvayoDt5Kfeueqesir
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="390130550"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="390130550"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 02:49:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="740531718"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="740531718"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 12 Nov 2023 02:49:34 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r281z-000B5y-1M;
-        Sun, 12 Nov 2023 10:49:31 +0000
-Date:   Sun, 12 Nov 2023 18:48:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: arch/x86/include/asm/pgtable_32.h:68:5: warning: "PTRS_PER_PMD" is
- not defined, evaluates to 0
-Message-ID: <202311121854.UxxoSqkX-lkp@intel.com>
+        Sun, 12 Nov 2023 05:58:02 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7C22D57;
+        Sun, 12 Nov 2023 02:57:56 -0800 (PST)
+X-UUID: 9eeb32bb3fb04d4ab49ba3f3031df80f-20231112
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:b31aca77-f427-4c47-b2b9-f3ea21d1e941,IP:15,
+        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-5
+X-CID-INFO: VERSION:1.1.32,REQID:b31aca77-f427-4c47-b2b9-f3ea21d1e941,IP:15,UR
+        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-5
+X-CID-META: VersionHash:5f78ec9,CLOUDID:413d4b95-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231112183317SMX1J234,BulkQuantity:1,Recheck:0,SF:44|66|38|24|17|19|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
+X-UUID: 9eeb32bb3fb04d4ab49ba3f3031df80f-20231112
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1214345310; Sun, 12 Nov 2023 18:57:41 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jeffrey.t.kirsher@intel.com,
+        shannon.nelson@amd.com
+Cc:     kunwu.chan@hotmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] i40e: Use correct buffer size
+Date:   Sun, 12 Nov 2023 18:57:14 +0800
+Message-Id: <20231112105714.3829869-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+The size of "i40e_dbg_command_buf" is 256, the size of "name" is
+at most 256, plus a null character and the format size,
+the total size should be 516.
 
-FYI, the error/warning still remains.
+Fixes: 02e9c290814c ("i40e: debugfs interface")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/net/ethernet/intel/i40e/i40e_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1b907d0507354b74a4f2c286380cd6059af79248
-commit: 80b6093b55e31c2c40ff082fb32523d4e852954f kbuild: add -Wundef to KBUILD_CPPFLAGS for W=1 builds
-date:   11 months ago
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231112/202311121854.UxxoSqkX-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311121854.UxxoSqkX-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311121854.UxxoSqkX-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from arch/x86/kernel/head_32.S:29:
->> arch/x86/include/asm/pgtable_32.h:68:5: warning: "PTRS_PER_PMD" is not defined, evaluates to 0 [-Wundef]
-      68 | #if PTRS_PER_PMD > 1
-         |     ^~~~~~~~~~~~
-
-
-vim +/PTRS_PER_PMD +68 arch/x86/include/asm/pgtable_32.h
-
-^1da177e4c3f41 include/asm-i386/pgtable.h        Linus Torvalds  2005-04-16  58  
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  59  /*
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  60   * This is used to calculate the .brk reservation for initial pagetables.
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  61   * Enough space is reserved to allocate pagetables sufficient to cover all
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  62   * of LOWMEM_PAGES, which is an upper bound on the size of the direct map of
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  63   * lowmem.
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  64   *
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  65   * With PAE paging (PTRS_PER_PMD > 1), we allocate PTRS_PER_PGD == 4 pages for
-ea3186b9572a1b arch/x86/include/asm/pgtable_32.h Arvind Sankar   2020-10-29  66   * the PMD's in addition to the pages required for the last level pagetables.
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  67   */
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08 @68  #if PTRS_PER_PMD > 1
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  69  #define PAGE_TABLE_SIZE(pages) (((pages) / PTRS_PER_PMD) + PTRS_PER_PGD)
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  70  #else
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  71  #define PAGE_TABLE_SIZE(pages) ((pages) / PTRS_PER_PGD)
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  72  #endif
-1e620f9b23e598 arch/x86/include/asm/pgtable_32.h Boris Ostrovsky 2016-12-08  73  
-
-:::::: The code at line 68 was first introduced by commit
-:::::: 1e620f9b23e598ab936ece12233e98e97930b692 x86/boot/32: Convert the 32-bit pgtable setup code from assembly to C
-
-:::::: TO: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-:::::: CC: Ingo Molnar <mingo@kernel.org>
-
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+index 999c9708def5..d3f07cecfe57 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+@@ -72,7 +72,7 @@ static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
+ {
+ 	struct i40e_pf *pf = filp->private_data;
+ 	int bytes_not_copied;
+-	int buf_size = 256;
++	int buf_size = 513;
+ 	char *buf;
+ 	int len;
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
