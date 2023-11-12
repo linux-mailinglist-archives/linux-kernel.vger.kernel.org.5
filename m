@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D0E7E8DC3
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDB87E8DC4
 	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjKLA4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 19:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S229893AbjKLAz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 19:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjKLAzu (ORCPT
+        with ESMTP id S229864AbjKLAzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 11 Nov 2023 19:55:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2894930F9;
-        Sat, 11 Nov 2023 16:55:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B3C5C433A9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26FE830CF;
+        Sat, 11 Nov 2023 16:55:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5AB5DC433CB;
         Sun, 12 Nov 2023 00:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1699750546;
-        bh=XrSajqyIX/GMIupsbLdryjwZSJcnce+GPP7KDkPQhtc=;
+        bh=+f1eXcr91euPusl3Xe/1/DfSwfjp6Uid8mOwDf2yltU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eWIdIwNOLNdqkngfPRmCRaOwzQqWEdVf4fyQfsJ9hX51PDQ3bhmSI9QZtsMgYrcIF
-         8aHZMYs4gOL/4gSqcMm7IRvWe1PcqRpqOtwPinsNQE/yPNH1jAjAZc0qUF+cE2rkNp
-         nglRwyteoICzPFjGnf2iZ6kKToydLI7h8VBgwrPRWc0yrSSWvf4CHXHy6ARxGcy9DF
-         YIFq9xAbPweOOdZvVR9AfcNgB3Ga1hsegS0aAjb+9DN11BMP4pAVieNjxsE9qae8rb
-         FS/26AIT3WSbus8G7Vwa6iQL37+L3sU0hhWl6PyV4EpenSbokJHdqOpR8gqAekhlG3
-         5K+C9ET1I0p3w==
+        b=H9MS3tqxULUVIVZESINTI28qjs/DgCx9l4kuIeVhz4pohNE2WbN6BAyRD14y7BF90
+         RY/kpgyT8TdPukD/AJXGR6o8Z2GVO/Tbn0sIbWVqCz5W7mWfsxghmcPMVtHUtZAPrC
+         qqNpGPrxFKZ3yyxP0rldcBKY2bhSoRfQtQVcL8qvIMNKeEmyCCrEvebptP7LgI0KBF
+         /AnhzXoAPcu8zsPopEYtFbsEgq1v9bjfR6k6cNBR6JEHcNqYRsqNMQaFXwH/40eL5s
+         lBAwWg+oSDpWNSMXZQtdILBi85B+aR6+jOZwz8NZST6UxEclBVUtElAOeYPYWgvOQi
+         DZpbY6goJKsuw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 68EEAE0008E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3BA38E00089;
         Sun, 12 Nov 2023 00:55:46 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/2] kbuild: unify vdso_install rules
+Subject: Re: [PATCH v3 0/9] RISC-V SBI debug console extension support
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169975054642.11360.1289704479646976676.git-patchwork-notify@kernel.org>
+Message-Id: <169975054624.11360.10545081285064306783.git-patchwork-notify@kernel.org>
 Date:   Sun, 12 Nov 2023 00:55:46 +0000
-References: <20231014105436.2119702-1-masahiroy@kernel.org>
-In-Reply-To: <20231014105436.2119702-1-masahiroy@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-        loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
-        x86@kernel.org, svens@linux.ibm.com, nicolas@fjasle.eu,
-        guoren@kernel.org, deller@gmx.de
+References: <20231020072140.900967-1-apatel@ventanamicro.com>
+In-Reply-To: <20231020072140.900967-1-apatel@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     linux-riscv@lists.infradead.org, pbonzini@redhat.com,
+        atishp@atishpatra.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, conor@kernel.org, ajones@ventanamicro.com,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,24 +60,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hello:
 
 This series was applied to riscv/linux.git (fixes)
-by Masahiro Yamada <masahiroy@kernel.org>:
+by Anup Patel <anup@brainfault.org>:
 
-On Sat, 14 Oct 2023 19:54:35 +0900 you wrote:
-> Currently, there is no standard implementation for vdso_install,
-> leading to various issues:
+On Fri, 20 Oct 2023 12:51:31 +0530 you wrote:
+> The SBI v2.0 specification is now frozen. The SBI v2.0 specification defines
+> SBI debug console (DBCN) extension which replaces the legacy SBI v0.1
+> functions sbi_console_putchar() and sbi_console_getchar().
+> (Refer v2.0-rc5 at https://github.com/riscv-non-isa/riscv-sbi-doc/releases)
 > 
->  1. Code duplication
-> 
->     Many architectures duplicate similar code just for copying files
->     to the install destination.
+> This series adds support for SBI debug console (DBCN) extension in KVM RISC-V
+> and Linux RISC-V.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,1/2] kbuild: unify vdso_install rules
-    https://git.kernel.org/riscv/c/56769ba4b297
-  - [v2,2/2] kbuild: unify no-compiler-targets and no-sync-config-targets
-    https://git.kernel.org/riscv/c/9d361173edc4
+  - [v3,1/9] RISC-V: Add defines for SBI debug console extension
+    https://git.kernel.org/riscv/c/dadf7886993c
+  - [v3,2/9] RISC-V: KVM: Change the SBI specification version to v2.0
+    https://git.kernel.org/riscv/c/b88e87a0a1ec
+  - [v3,3/9] RISC-V: KVM: Allow some SBI extensions to be disabled by default
+    https://git.kernel.org/riscv/c/56d8a385b605
+  - [v3,4/9] RISC-V: KVM: Forward SBI DBCN extension to user-space
+    https://git.kernel.org/riscv/c/c667ad229d13
+  - [v3,5/9] KVM: riscv: selftests: Add SBI DBCN extension to get-reg-list test
+    https://git.kernel.org/riscv/c/d9c00f44e5de
+  - [v3,6/9] RISC-V: Add stubs for sbi_console_putchar/getchar()
+    (no matching commit)
+  - [v3,7/9] tty/serial: Add RISC-V SBI debug console based earlycon
+    (no matching commit)
+  - [v3,8/9] tty: Add SBI debug console support to HVC SBI driver
+    (no matching commit)
+  - [v3,9/9] RISC-V: Enable SBI based earlycon support
+    (no matching commit)
 
 You are awesome, thank you!
 -- 
