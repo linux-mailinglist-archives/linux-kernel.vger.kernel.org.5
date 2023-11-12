@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCFD7E8E24
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 05:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C007E8E22
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 05:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjKLEMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 23:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
+        id S229960AbjKLEMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 23:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjKLEML (ORCPT
+        with ESMTP id S229601AbjKLEML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 11 Nov 2023 23:12:11 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A8730D1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384130D5;
         Sat, 11 Nov 2023 20:12:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699762328; x=1731298328;
+  t=1699762329; x=1731298329;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=xLzahHQ/E9A0FWloIOuFYyseO5OqbdkcivVWmoaEYAQ=;
-  b=cxzp4Fw83WOv2Y9+gcofcyH27FBYprYbLz4ST95C3J83d1IMqNjBg5K3
-   hka9af1fhgvJffgJdoMk+iiOITliXZhj8fNdrGeHa8UkeKh+rubGHa/nW
-   jSfwFd7oIhik+eERgM6m7SPVzPapWXfjt67VTvVa21d7PChp29CluK6QU
-   KlkVHm9SFp+4FOjPBPP95gZ+iV0kKAh6JyS3OUZLRflePNyB8oP4T7JD1
-   DcI73F4u1bWROWRkmKiCulYIvTBy7IF2c3JwFcW9PO3mF73bCn/TMgTIx
-   D8CnhFPf9hTkEBprkpLjB9y08KlXMIKgwtdCyG2mS0wgqSzhYgNmIorsG
+  bh=tKxaF+OKLwmoAMwaAxN7sL0lSOz2Mx8YYsRJLKhsXTQ=;
+  b=nvaugRDIYksMdxA2eLgYkX2XNCqrWeg5zSV5+wv4fWN1s98wN899mftp
+   EQN+Pj3YoLGtvplPY22ZJ4UbnWWdltEXo73tet2FD3qkiyymHj2h2P43O
+   Ph1wjf5x8U7vZ+GaG4jTgBUTDN6c7GwKUtpjJAHF1c1CXlfc1OcouxnCu
+   y4JQ5OkGQW02+dvMKm/LG0lj7woMQG+YnUk94JcrjC8CZ+fZYc9Oc3xdW
+   80ITCXlOTBg3gRR4P1T4aGn05/GnNnea/LJobdXimASuHXY4vL5qZ7aXm
+   cCTkSaN1UnyjjvmZLb47mbl9vdMWxOP03PogUCCmmEaVNM2dGGjquj4tm
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="476533846"
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="476533857"
 X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
-   d="scan'208";a="476533846"
+   d="scan'208";a="476533857"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 20:12:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="713936736"
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="713936740"
 X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
-   d="scan'208";a="713936736"
+   d="scan'208";a="713936740"
 Received: from srinivas-otcpl-7600.jf.intel.com (HELO jacob-builder.jf.intel.com) ([10.54.39.116])
   by orsmga003.jf.intel.com with ESMTP; 11 Nov 2023 20:12:07 -0800
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -52,9 +52,9 @@ Cc:     Raj Ashok <ashok.raj@intel.com>,
         peterz@infradead.org, seanjc@google.com,
         "Robin Murphy" <robin.murphy@arm.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH RFC 01/13] x86: Move posted interrupt descriptor out of vmx code
-Date:   Sat, 11 Nov 2023 20:16:31 -0800
-Message-Id: <20231112041643.2868316-2-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH RFC 02/13] x86: Add a Kconfig option for posted MSI
+Date:   Sat, 11 Nov 2023 20:16:32 -0800
+Message-Id: <20231112041643.2868316-3-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
 References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
@@ -70,253 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare native usage of posted interrupt, move PID declaration out of
-VMX code such that they can be shared.
+This option will be used to support delivering MSIs as posted
+interrupts. Interrupt remapping is required.
 
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- arch/x86/include/asm/posted_intr.h | 97 ++++++++++++++++++++++++++++++
- arch/x86/kvm/vmx/posted_intr.h     | 93 +---------------------------
- arch/x86/kvm/vmx/vmx.c             |  1 +
- arch/x86/kvm/vmx/vmx.h             |  2 +-
- 4 files changed, 100 insertions(+), 93 deletions(-)
- create mode 100644 arch/x86/include/asm/posted_intr.h
+ arch/x86/Kconfig | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/x86/include/asm/posted_intr.h b/arch/x86/include/asm/posted_intr.h
-new file mode 100644
-index 000000000000..9f2fa38fa57b
---- /dev/null
-+++ b/arch/x86/include/asm/posted_intr.h
-@@ -0,0 +1,97 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _X86_POSTED_INTR_H
-+#define _X86_POSTED_INTR_H
-+
-+#define POSTED_INTR_ON  0
-+#define POSTED_INTR_SN  1
-+
-+#define PID_TABLE_ENTRY_VALID 1
-+
-+/* Posted-Interrupt Descriptor */
-+struct pi_desc {
-+	u32 pir[8];     /* Posted interrupt requested */
-+	union {
-+		struct {
-+				/* bit 256 - Outstanding Notification */
-+			u16	on	: 1,
-+				/* bit 257 - Suppress Notification */
-+				sn	: 1,
-+				/* bit 271:258 - Reserved */
-+				rsvd_1	: 14;
-+				/* bit 279:272 - Notification Vector */
-+			u8	nv;
-+				/* bit 287:280 - Reserved */
-+			u8	rsvd_2;
-+				/* bit 319:288 - Notification Destination */
-+			u32	ndst;
-+		};
-+		u64 control;
-+	};
-+	u32 rsvd[6];
-+} __aligned(64);
-+
-+static inline bool pi_test_and_set_on(struct pi_desc *pi_desc)
-+{
-+	return test_and_set_bit(POSTED_INTR_ON,
-+			(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline bool pi_test_and_clear_on(struct pi_desc *pi_desc)
-+{
-+	return test_and_clear_bit(POSTED_INTR_ON,
-+			(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline bool pi_test_and_clear_sn(struct pi_desc *pi_desc)
-+{
-+	return test_and_clear_bit(POSTED_INTR_SN,
-+			(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline bool pi_test_and_set_pir(int vector, struct pi_desc *pi_desc)
-+{
-+	return test_and_set_bit(vector, (unsigned long *)pi_desc->pir);
-+}
-+
-+static inline bool pi_is_pir_empty(struct pi_desc *pi_desc)
-+{
-+	return bitmap_empty((unsigned long *)pi_desc->pir, NR_VECTORS);
-+}
-+
-+static inline void pi_set_sn(struct pi_desc *pi_desc)
-+{
-+	set_bit(POSTED_INTR_SN,
-+		(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline void pi_set_on(struct pi_desc *pi_desc)
-+{
-+	set_bit(POSTED_INTR_ON,
-+		(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline void pi_clear_on(struct pi_desc *pi_desc)
-+{
-+	clear_bit(POSTED_INTR_ON,
-+		(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline void pi_clear_sn(struct pi_desc *pi_desc)
-+{
-+	clear_bit(POSTED_INTR_SN,
-+		(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline bool pi_test_on(struct pi_desc *pi_desc)
-+{
-+	return test_bit(POSTED_INTR_ON,
-+			(unsigned long *)&pi_desc->control);
-+}
-+
-+static inline bool pi_test_sn(struct pi_desc *pi_desc)
-+{
-+	return test_bit(POSTED_INTR_SN,
-+			(unsigned long *)&pi_desc->control);
-+}
-+
-+#endif /* _X86_POSTED_INTR_H */
-diff --git a/arch/x86/kvm/vmx/posted_intr.h b/arch/x86/kvm/vmx/posted_intr.h
-index 26992076552e..6b2a0226257e 100644
---- a/arch/x86/kvm/vmx/posted_intr.h
-+++ b/arch/x86/kvm/vmx/posted_intr.h
-@@ -1,98 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #ifndef __KVM_X86_VMX_POSTED_INTR_H
- #define __KVM_X86_VMX_POSTED_INTR_H
--
--#define POSTED_INTR_ON  0
--#define POSTED_INTR_SN  1
--
--#define PID_TABLE_ENTRY_VALID 1
--
--/* Posted-Interrupt Descriptor */
--struct pi_desc {
--	u32 pir[8];     /* Posted interrupt requested */
--	union {
--		struct {
--				/* bit 256 - Outstanding Notification */
--			u16	on	: 1,
--				/* bit 257 - Suppress Notification */
--				sn	: 1,
--				/* bit 271:258 - Reserved */
--				rsvd_1	: 14;
--				/* bit 279:272 - Notification Vector */
--			u8	nv;
--				/* bit 287:280 - Reserved */
--			u8	rsvd_2;
--				/* bit 319:288 - Notification Destination */
--			u32	ndst;
--		};
--		u64 control;
--	};
--	u32 rsvd[6];
--} __aligned(64);
--
--static inline bool pi_test_and_set_on(struct pi_desc *pi_desc)
--{
--	return test_and_set_bit(POSTED_INTR_ON,
--			(unsigned long *)&pi_desc->control);
--}
--
--static inline bool pi_test_and_clear_on(struct pi_desc *pi_desc)
--{
--	return test_and_clear_bit(POSTED_INTR_ON,
--			(unsigned long *)&pi_desc->control);
--}
--
--static inline bool pi_test_and_clear_sn(struct pi_desc *pi_desc)
--{
--	return test_and_clear_bit(POSTED_INTR_SN,
--			(unsigned long *)&pi_desc->control);
--}
--
--static inline bool pi_test_and_set_pir(int vector, struct pi_desc *pi_desc)
--{
--	return test_and_set_bit(vector, (unsigned long *)pi_desc->pir);
--}
--
--static inline bool pi_is_pir_empty(struct pi_desc *pi_desc)
--{
--	return bitmap_empty((unsigned long *)pi_desc->pir, NR_VECTORS);
--}
--
--static inline void pi_set_sn(struct pi_desc *pi_desc)
--{
--	set_bit(POSTED_INTR_SN,
--		(unsigned long *)&pi_desc->control);
--}
--
--static inline void pi_set_on(struct pi_desc *pi_desc)
--{
--	set_bit(POSTED_INTR_ON,
--		(unsigned long *)&pi_desc->control);
--}
--
--static inline void pi_clear_on(struct pi_desc *pi_desc)
--{
--	clear_bit(POSTED_INTR_ON,
--		(unsigned long *)&pi_desc->control);
--}
--
--static inline void pi_clear_sn(struct pi_desc *pi_desc)
--{
--	clear_bit(POSTED_INTR_SN,
--		(unsigned long *)&pi_desc->control);
--}
--
--static inline bool pi_test_on(struct pi_desc *pi_desc)
--{
--	return test_bit(POSTED_INTR_ON,
--			(unsigned long *)&pi_desc->control);
--}
--
--static inline bool pi_test_sn(struct pi_desc *pi_desc)
--{
--	return test_bit(POSTED_INTR_SN,
--			(unsigned long *)&pi_desc->control);
--}
-+#include <asm/posted_intr.h>
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 66bfabae8814..f16882ddb390 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -463,6 +463,16 @@ config X86_X2APIC
  
- void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu);
- void vmx_vcpu_pi_put(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 72e3943f3693..d54fa0e06c70 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -66,6 +66,7 @@
- #include "vmx.h"
- #include "x86.h"
- #include "smm.h"
-+#include "posted_intr.h"
+ 	  If you don't know what to do here, say N.
  
- MODULE_AUTHOR("Qumranet");
- MODULE_LICENSE("GPL");
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index c2130d2c8e24..817b76794ee1 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -7,10 +7,10 @@
- #include <asm/kvm.h>
- #include <asm/intel_pt.h>
- #include <asm/perf_event.h>
-+#include <asm/posted_intr.h>
- 
- #include "capabilities.h"
- #include "../kvm_cache_regs.h"
--#include "posted_intr.h"
- #include "vmcs.h"
- #include "vmx_ops.h"
- #include "../cpuid.h"
++config X86_POSTED_MSI
++	bool "Enable MSI and MSI-x delivery by posted interrupts"
++	depends on X86_X2APIC && X86_64 && IRQ_REMAP
++	help
++	  This enables MSIs that are under IRQ remapping to be delivered as posted
++	  interrupts to the host kernel. IRQ throughput can potentially be improved
++	  by coalescing CPU notifications during high frequency IRQ bursts.
++
++	  If you don't know what to do here, say N.
++
+ config X86_MPPARSE
+ 	bool "Enable MPS table" if ACPI
+ 	default y
 -- 
 2.25.1
 
