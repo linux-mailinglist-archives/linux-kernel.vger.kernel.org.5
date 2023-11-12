@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BD77E8EB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8198E7E8EB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230301AbjKLGSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 01:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        id S231404AbjKLGR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 01:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjKLGRh (ORCPT
+        with ESMTP id S230242AbjKLGRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 01:17:37 -0500
+        Sun, 12 Nov 2023 01:17:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A023A87
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:17:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAE4C433C9;
-        Sun, 12 Nov 2023 06:17:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A356947B6
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:17:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2DD9C433D9;
+        Sun, 12 Nov 2023 06:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699769831;
-        bh=xvz1rya1E02xCfXGsQlwgCTl+atNWzPl7o+rS0iSLkM=;
+        s=k20201202; t=1699769837;
+        bh=yJ53jomTLG+j+rzKLDFglTmPOzUq4xATJqhV03Y8NDA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBDFivBo3T7J24ZloTMhISNIG/bND0s7vrrL2C1z8x/tqG8opLe99Kjlqlz3jI79y
-         uhVNHaWLH1ArFXGXJEiub688pP0XTpJCHrrhV2xUf6gEw2MjHITF02A1OGHKPSvyMm
-         gNV7Nk3ktsoNitWRPxry1/3uJKsYM9LO/fesvwLysYBUXJAdctqslxu60+Xi3YOeZG
-         Nz4hNdgyJbdNDW+icuW/5mS5/HQq4rq8O/X2y7OsxXv5Ro6gNIRmAyXqNN58djw1sI
-         PbAF/PpwCCzWVyeqctUo5NQ6CWFpLrSM5VNtrKLDVlU2i4CyPLVAQfVkRd+2tI6xaF
-         ABhUyCTRybIjg==
+        b=uXWH+71BlkB0gLhz3M2X15BE4B4oEYB9gyycQqZ8+FdLYqMz3funNQkzHc0Dy9XBp
+         8ObE/BWmXibABF2C3xM83Jafy7ZAcI0Mt/kEddZ5fp3qHw4s8Sm5JNY7WKFOnwlTHF
+         XebaLVFboE5rnhqBdO5/ZdqxwmPOogqsgCllKNUnGJo0WlEBkq4RTDjX8YLafHMWJ5
+         5PqFLGR5t8hI3HrTmU+l0D0GDKxB0il/JGfS2b455jexb153+6vOha/HJiAAaVRPMD
+         JUj6goF6Ow1Gm47Z17xP/gMVRHN6sFy0NoVDBX0XwqO3xDgrIkSCjn1gSZSqBbhqhi
+         fdcFURboW9taw==
 From:   guoren@kernel.org
 To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         tglx@linutronix.de, conor.dooley@microchip.com, heiko@sntech.de,
@@ -40,14 +40,13 @@ To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         hjl.tools@gmail.com
 Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [RFC PATCH V2 17/38] riscv: s64ilp32: Adjust TASK_SIZE for s64ilp32 kernel
-Date:   Sun, 12 Nov 2023 01:14:53 -0500
-Message-Id: <20231112061514.2306187-18-guoren@kernel.org>
+Subject: [RFC PATCH V2 18/38] riscv: s64ilp32: Add ebpf jit support
+Date:   Sun, 12 Nov 2023 01:14:54 -0500
+Message-Id: <20231112061514.2306187-19-guoren@kernel.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20231112061514.2306187-1-guoren@kernel.org>
 References: <20231112061514.2306187-1-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -61,49 +60,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-The RV64ILP32 32-bit Linux kernel uses the same userspace address range
-as the 64-bit Linux compat mode, about 2GB. They have no difference from
-the hardware view, and all are running ILP32 on a 64-bit ISA. But the
-standard 32ilp32 Linux has a slightly bigger userspace address space,
-about 2.4GB.
+The s64ilp32 uses the rv64 ISA instruction set, not the rv32 ISA. So
+bpf_jit_comp32.c can't be used for s64ilp32, and we use bpf_jit_comp64.c
+instead. This patch makes s64ilp32 ebpf jit correct and improves the
+performance because bpf_jit_comp32.c has significant gaps in mapping
+ebpf 64-bit ISA.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/include/asm/pgtable.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/riscv/include/asm/extable.h | 2 +-
+ arch/riscv/net/Makefile          | 6 +++---
+ arch/riscv/net/bpf_jit_comp64.c  | 6 +++---
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 75970ee2bda2..e5e7a929949a 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -839,20 +839,25 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-  * "load and store effective addresses, which are 64bits, must have bits
-  * 63–48 all equal to bit 47, or else a page-fault exception will occur."
-  */
-+#define TASK_SIZE_32	(_AC(0x80000000, UL) - PAGE_SIZE)
-+
- #ifdef CONFIG_64BIT
- #define TASK_SIZE_64	(PGDIR_SIZE * PTRS_PER_PGD / 2)
- #define TASK_SIZE_MIN	(PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
- 
- #ifdef CONFIG_COMPAT
--#define TASK_SIZE_32	(_AC(0x80000000, UL) - PAGE_SIZE)
- #define TASK_SIZE	(test_thread_flag(TIF_32BIT) ? \
- 			 TASK_SIZE_32 : TASK_SIZE_64)
- #else
- #define TASK_SIZE	TASK_SIZE_64
+diff --git a/arch/riscv/include/asm/extable.h b/arch/riscv/include/asm/extable.h
+index 3eb5c1f7bf34..7e22bb520309 100644
+--- a/arch/riscv/include/asm/extable.h
++++ b/arch/riscv/include/asm/extable.h
+@@ -38,7 +38,7 @@ bool fixup_exception(struct pt_regs *regs);
+ static inline bool fixup_exception(struct pt_regs *regs) { return false; }
  #endif
  
-+#else
-+#ifdef CONFIG_ARCH_RV64ILP32
-+#define TASK_SIZE	TASK_SIZE_32
+-#if defined(CONFIG_BPF_JIT) && defined(CONFIG_ARCH_RV64I)
++#if defined(CONFIG_BPF_JIT) && !defined(CONFIG_ARCH_RV32I)
+ bool ex_handler_bpf(const struct exception_table_entry *ex, struct pt_regs *regs);
  #else
- #define TASK_SIZE	FIXADDR_START
-+#endif
- #define TASK_SIZE_MIN	TASK_SIZE
- #endif
+ static inline bool
+diff --git a/arch/riscv/net/Makefile b/arch/riscv/net/Makefile
+index 9a1e5f0a94e5..907edce21acc 100644
+--- a/arch/riscv/net/Makefile
++++ b/arch/riscv/net/Makefile
+@@ -2,8 +2,8 @@
  
+ obj-$(CONFIG_BPF_JIT) += bpf_jit_core.o
+ 
+-ifeq ($(CONFIG_ARCH_RV64I),y)
+-	obj-$(CONFIG_BPF_JIT) += bpf_jit_comp64.o
+-else
++ifeq ($(CONFIG_ARCH_RV32I),y)
+ 	obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
++else
++	obj-$(CONFIG_BPF_JIT) += bpf_jit_comp64.o
+ endif
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index c648864c8cd1..ec0b7fb6982b 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -126,7 +126,7 @@ static u8 rv_tail_call_reg(struct rv_jit_context *ctx)
+ 
+ static bool is_32b_int(s64 val)
+ {
+-	return -(1L << 31) <= val && val < (1L << 31);
++	return -(1LL << 31) <= val && val < (1LL << 31);
+ }
+ 
+ static bool in_auipc_jalr_range(s64 val)
+@@ -135,8 +135,8 @@ static bool in_auipc_jalr_range(s64 val)
+ 	 * auipc+jalr can reach any signed PC-relative offset in the range
+ 	 * [-2^31 - 2^11, 2^31 - 2^11).
+ 	 */
+-	return (-(1L << 31) - (1L << 11)) <= val &&
+-		val < ((1L << 31) - (1L << 11));
++	return (-(1LL << 31) - (1LL << 11)) <= val &&
++		val < ((1LL << 31) - (1LL << 11));
+ }
+ 
+ /* Emit fixed-length instructions for address */
 -- 
 2.36.1
 
