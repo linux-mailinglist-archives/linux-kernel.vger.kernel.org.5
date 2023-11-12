@@ -2,212 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5E67E9140
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED39A7E9145
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjKLOmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 09:42:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
+        id S231487AbjKLOoG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Nov 2023 09:44:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKLOmf (ORCPT
+        with ESMTP id S229607AbjKLOoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 09:42:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F002D61
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699800151; x=1731336151;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=He2tsisvNal/rPlNHC59npYlS3mXk8AFx4LjcgHkzI8=;
-  b=cj3Rn+Kq+OKCvBr0ujp63Zl+rLSmzJl/K5KlGRAKUC87BNOTJX38Df7Z
-   2RrLcC9jBtRZLqEHeCh/rVwWtmeXjWc2v+izsKDIGRvPLCSGiaC+sZaMo
-   WjIkdGwHpVZLjIFJrlwvMER4Tm8oDx4XlP+LDLlYDgfT8PyFe2Fr7waiB
-   3f6+LcZdimY+BJ0NDrIB3TQXRisC1qcboUCXBZlaKmfFSoA4abykFAOQx
-   R1F97LZssPjslGj+cXjaTzKYVG4eaMZkfVX7uzXLA+6lBiP57E6us4dNb
-   vTPJTY5p4lqYpYK0ucYMX40FgeNqOk0gskHL26iQLxLhOfaFVwWE8rlsB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="369660513"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="369660513"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 06:42:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="793223767"
-X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
-   d="scan'208";a="793223767"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 12 Nov 2023 06:42:29 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2BfO-000BCo-1K;
-        Sun, 12 Nov 2023 14:42:26 +0000
-Date:   Sun, 12 Nov 2023 22:41:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        Andrew Worsley <amworsley@gmail.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
-        <dri-devel@lists.freedesktop.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] of/platform: Disable sysfb if a simple-framebuffer node
- is
-Message-ID: <202311122208.2emZJrfT-lkp@intel.com>
-References: <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
+        Sun, 12 Nov 2023 09:44:05 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7352D57;
+        Sun, 12 Nov 2023 06:44:02 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-582050ce2d8so415840eaf.0;
+        Sun, 12 Nov 2023 06:44:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699800242; x=1700405042;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f0a8CXLEZpahW3IPv8vcTRw+EWiu/yxFVb4isOKde8s=;
+        b=BleN5sP0jBaOFVzSKfFPrWjp2mdNtAhu1TzEl+HW3Zu/eDAKWylHnsxt81aRhdaDTA
+         0+Hmw+ha63uifRj/nmrTkoDtnpAs9HC/UNH3gAXUZ6SQnxk//BJIrsw2s7Se53fOMX2w
+         nUxy41odewsZw+3zfS2c536u01FcDAfS2NrJ0ch+8eFUsxKrinYRO0qm3GR67DUfZPC4
+         CzyFTavedfC66qIFYTCFtL8z0ZdEimL03/tBkHOKkjwT6xW//+0mh6dzasmQK1lPsn7A
+         9PQs7yy7kHFZ+g/Z2wTqSNJ+T1iDCn4c5TuCbiIfrbyuCdyeoBTcleSQ/LK8dVNLk1qL
+         Jrkg==
+X-Gm-Message-State: AOJu0Yy7IdJh/k1gzHHFTr5TnDoAXvD58YZEf095KZeD8MuYz40/ytUc
+        yBm3DIOsNwBaMStSnVtHlR9Xk+de8aMySYrFJgFI6LFu
+X-Google-Smtp-Source: AGHT+IHi9NJTrKDGu9WMJ2Mzn3zTE9sa0z3dteNscBR/YGmx3MwsyqyxhWnx5UcQZtEp1jjIVBMePaSkh1PcTs1IFfA=
+X-Received: by 2002:a4a:b1cb:0:b0:589:dc7a:75e5 with SMTP id
+ j11-20020a4ab1cb000000b00589dc7a75e5mr3582362ooo.1.1699800241866; Sun, 12 Nov
+ 2023 06:44:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231111132402.4142-1-shiqiang.deng213@gmail.com>
+In-Reply-To: <20231111132402.4142-1-shiqiang.deng213@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Sun, 12 Nov 2023 15:43:50 +0100
+Message-ID: <CAJZ5v0gPCp=3-1z6Ok1g=xkDMu6zN3C3iiH2mtEKXi9sheH7cw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: custom_method: fix a possible memory leak
+To:     "shiqiang.deng" <shiqiang.deng213@gmail.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+On Sat, Nov 11, 2023 at 2:25 PM shiqiang.deng
+<shiqiang.deng213@gmail.com> wrote:
+>
+> In the cm_write() function, memory is allocated,
+> and at the end of the function when uncopied_bytes is 0,
+> the memory is freed. If uncopied_bytes is not equal to 0,
+> a memory leak occurs.
+>
+> Signed-off-by: shiqiang.deng <shiqiang.deng213@gmail.com>
+> ---
+>  drivers/acpi/custom_method.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+> index d39a9b474727..5103c7c3a6ce 100644
+> --- a/drivers/acpi/custom_method.c
+> +++ b/drivers/acpi/custom_method.c
+> @@ -77,6 +77,9 @@ static ssize_t cm_write(struct file *file, const char __user *user_buf,
+>                 if (ACPI_FAILURE(status))
+>                         return -EINVAL;
+>                 add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
+> +       } else {
+> +               kfree(buf);
+> +               buf = NULL;
+>         }
+>
+>         return count;
+> --
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on drm-misc/drm-misc-next drm-tip/drm-tip linus/master v6.6 next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Javier-Martinez-Canillas/of-platform-Disable-sysfb-if-a-simple-framebuffer-node-is/20231112-183751
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/87a5rj9s37.fsf%40minerva.mail-host-address-is-not-set
-patch subject: [PATCH] of/platform: Disable sysfb if a simple-framebuffer node is
-config: arm-versatile_defconfig (https://download.01.org/0day-ci/archive/20231112/202311122208.2emZJrfT-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311122208.2emZJrfT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311122208.2emZJrfT-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/of/platform.c:635:4: error: call to undeclared function 'sysfb_disable'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     635 |                         sysfb_disable();
-         |                         ^
-   1 error generated.
-
-
-vim +/sysfb_disable +635 drivers/of/platform.c
-
-   545	
-   546	static int __init of_platform_default_populate_init(void)
-   547	{
-   548		struct device_node *node;
-   549	
-   550		device_links_supplier_sync_state_pause();
-   551	
-   552		if (!of_have_populated_dt())
-   553			return -ENODEV;
-   554	
-   555		if (IS_ENABLED(CONFIG_PPC)) {
-   556			struct device_node *boot_display = NULL;
-   557			struct platform_device *dev;
-   558			int display_number = 0;
-   559			int ret;
-   560	
-   561			/* Check if we have a MacOS display without a node spec */
-   562			if (of_property_present(of_chosen, "linux,bootx-noscreen")) {
-   563				/*
-   564				 * The old code tried to work out which node was the MacOS
-   565				 * display based on the address. I'm dropping that since the
-   566				 * lack of a node spec only happens with old BootX versions
-   567				 * (users can update) and with this code, they'll still get
-   568				 * a display (just not the palette hacks).
-   569				 */
-   570				dev = platform_device_alloc("bootx-noscreen", 0);
-   571				if (WARN_ON(!dev))
-   572					return -ENOMEM;
-   573				ret = platform_device_add(dev);
-   574				if (WARN_ON(ret)) {
-   575					platform_device_put(dev);
-   576					return ret;
-   577				}
-   578			}
-   579	
-   580			/*
-   581			 * For OF framebuffers, first create the device for the boot display,
-   582			 * then for the other framebuffers. Only fail for the boot display;
-   583			 * ignore errors for the rest.
-   584			 */
-   585			for_each_node_by_type(node, "display") {
-   586				if (!of_get_property(node, "linux,opened", NULL) ||
-   587				    !of_get_property(node, "linux,boot-display", NULL))
-   588					continue;
-   589				dev = of_platform_device_create(node, "of-display", NULL);
-   590				of_node_put(node);
-   591				if (WARN_ON(!dev))
-   592					return -ENOMEM;
-   593				boot_display = node;
-   594				display_number++;
-   595				break;
-   596			}
-   597			for_each_node_by_type(node, "display") {
-   598				char buf[14];
-   599				const char *of_display_format = "of-display.%d";
-   600	
-   601				if (!of_get_property(node, "linux,opened", NULL) || node == boot_display)
-   602					continue;
-   603				ret = snprintf(buf, sizeof(buf), of_display_format, display_number++);
-   604				if (ret < sizeof(buf))
-   605					of_platform_device_create(node, buf, NULL);
-   606			}
-   607	
-   608		} else {
-   609			/*
-   610			 * Handle certain compatibles explicitly, since we don't want to create
-   611			 * platform_devices for every node in /reserved-memory with a
-   612			 * "compatible",
-   613			 */
-   614			for_each_matching_node(node, reserved_mem_matches)
-   615				of_platform_device_create(node, NULL, NULL);
-   616	
-   617			node = of_find_node_by_path("/firmware");
-   618			if (node) {
-   619				of_platform_populate(node, NULL, NULL, NULL);
-   620				of_node_put(node);
-   621			}
-   622	
-   623			node = of_get_compatible_child(of_chosen, "simple-framebuffer");
-   624			if (node) {
-   625				/*
-   626				 * Since a "simple-framebuffer" device is already added
-   627				 * here, disable the Generic System Framebuffers (sysfb)
-   628				 * to prevent it from registering another device for the
-   629				 * system framebuffer later (e.g: using the screen_info
-   630				 * data that may had been filled as well).
-   631				 *
-   632				 * This can happen for example on DT systems that do EFI
-   633				 * booting and may provide a GOP table to the EFI stub.
-   634				 */
- > 635				sysfb_disable();
-   636				of_platform_device_create(node, NULL, NULL);
-   637				of_node_put(node);
-   638			}
-   639	
-   640			/* Populate everything else. */
-   641			of_platform_default_populate(NULL, NULL, NULL);
-   642		}
-   643	
-   644		return 0;
-   645	}
-   646	arch_initcall_sync(of_platform_default_populate_init);
-   647	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+That was discussed in the past and I still would rather drop this I/F
+completely instead of patching it for minor issues.
