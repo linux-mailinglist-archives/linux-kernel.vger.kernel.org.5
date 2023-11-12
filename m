@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A957E91A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 17:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C8C7E91A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 17:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjKLQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 11:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
+        id S231687AbjKLQ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 11:29:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbjKLQ3W (ORCPT
+        with ESMTP id S229782AbjKLQ3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 11:29:22 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33A010F
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:29:19 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo5668000a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:29:19 -0800 (PST)
+        Sun, 12 Nov 2023 11:29:55 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5632737
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:29:49 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5441ba3e53cso5462945a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:29:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1699806558; x=1700411358; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1699806588; x=1700411388; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HL6UrV6Yk16zCUvNvxw8pw9JIyP1jvvUIe/aBJPp93o=;
-        b=JIPyp1FibM+LzoAnxa2gzet51oyPPEV4OKgGS7aOfLYEPmihWwYWb5wEi2cLLMhLX8
-         dafqcaEmnsgSlx95FHgERxamk5uFqs65fZodDu0fXCX0taxPZUt6mq7n7q0/DRXwFpeT
-         2qCIR5SMDuIe2JmFK/dODAw50vJxZsggokTWqzajDsK2J1bePOdDDF2pogePTKLF8A2F
-         nRIooNrjDqEAKXcwhc46ybudcot5uSr6cdtdMeyqSPiwONQJKaE6yl/DCtceD69o2JIn
-         FrI500hGDUa5YRr8xyIqGeJb0avj0hWEJJAd3vza69CjfOPwIfLnUgRyOYuQvbQncfYx
-         h9pA==
+        bh=gm62BhUFg7/jJw+CbLyqySO8C8fljS493Q+iH7bdCTU=;
+        b=DpLChgyjmnkIGapK5bD1WOcdkYNf1hx01OOpnX/uG+pjKWEWGHGoIUnFo0JNIEbhV2
+         ToBBNX/FLgccLtDuRIhT9c3U5MsV/XmJS+60nrzWoiVsWjq8d5rAe5iL6t5Ypcpbh6Ee
+         23obIs0KXXcnkU7xsnAVQ1INWomI4n4WkcE1ip1UjQ10NLIetslr9N/b8uderKQQdJae
+         lfAEb7XVHRMZexNFc/S9i6Fg74/IbPK4CmOz4b+7yvcjHK8ZVvIaJHOFfruejydH0tDU
+         wYwwAQeA0BoN+18h5Y6pRfISVr5K8nryS4a5wpJesvFDaS+63NIqY3EtihN0NNT1wrwA
+         pyQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699806558; x=1700411358;
+        d=1e100.net; s=20230601; t=1699806588; x=1700411388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HL6UrV6Yk16zCUvNvxw8pw9JIyP1jvvUIe/aBJPp93o=;
-        b=c07/tux7q2B8HxXzle7wM+s9mh1m/2aNIp+Lk1ErpzTTGlqsNmY7HLc7MNqQCyTfJG
-         PhBPGXeRdZ6ZO94IcNagJuWvHcQOzImTwyq4uAFceEdziDIdJonCCuzW/52XmnxOSKX0
-         7jrBZpnDfm54cfDBDupGbu49a9hKf3o/Dlsy7tmj2I/PRn9z4sjuu3nckYGRv2nUCZE6
-         tlJ/HDu6FuPfafVwdUBg4fB8qWWi6fL+eRA6D879L4gQEEZ+B0GKi21XHjN570+ag7iy
-         yaeFwm2dTvdbcZ0hfTD9AZkj7at92Z6zJImWkKunuF8M7We792gOXqlZMKRybsGTpywP
-         ckLQ==
-X-Gm-Message-State: AOJu0YzV0b1allEcSvA5HIKuzhWHhamXxc+1Xhm8D0mNXPVSm9THkpep
-        hgp1BKyri64+CzgGagpTWy0nhQs/G30RNW24Fh+I
-X-Google-Smtp-Source: AGHT+IEoHDAzvLXOLBcsG3P1RG6+GC5TBfYuF5fmrYhQ3HEP+OF5LHAy3xPZcxE6qwkK16p8xGpiH6gOKc+IUqPgYTQ=
-X-Received: by 2002:a05:6402:78a:b0:540:ccde:5 with SMTP id
- d10-20020a056402078a00b00540ccde0005mr3303150edy.37.1699806558476; Sun, 12
- Nov 2023 08:29:18 -0800 (PST)
+        bh=gm62BhUFg7/jJw+CbLyqySO8C8fljS493Q+iH7bdCTU=;
+        b=BDMZaWDDpRdkDqxebEuTDRqSZ/gi9eIk8vvEX/tefTlNkBPtzwxaRcASU3av0ZRftg
+         DgNxs4cMFJo1hPMoRunS2UPyh4oyxVeunC1Strpspjvbnt3nJtQdjhlgTGMZyLTSbaht
+         fS7Db/lMlaYxpmnaQM/CnM0TpByLa0nNW2A8n7bVUkB2IGxxkbZTQe9yo4awIVw2aqtn
+         xxZtLNtVQ8qLWj4EKyv21S4863XZoY2oCPRCG4xeGvrm9/rnmZZM989gic09AipjysuX
+         yDgV8rB+/4R/BCX2zqilFvsYLHIxm1v1JkLvEjlyo345Zh14Q5oDjqRUv/nRVHTswRtI
+         O5xQ==
+X-Gm-Message-State: AOJu0Yypjt1ELnuQQ1kpcL9zmGO4WRf841iDt8r7UCSZaEQ6vhmiirur
+        Eiy1WjOjBcKpE+VbYXlRmrVNyATgIBzfXQfnSXi+
+X-Google-Smtp-Source: AGHT+IHJHFjdIChBCm03i4ru6pvx//kJm+fSJpBCtv1zofkuecKvh7zzSbn4i2iOlFvsVIim7F97wu9NZR5iArC+eTY=
+X-Received: by 2002:a50:ff0a:0:b0:53f:b9d2:d019 with SMTP id
+ a10-20020a50ff0a000000b0053fb9d2d019mr3312401edu.11.1699806587918; Sun, 12
+ Nov 2023 08:29:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-10-lb@semihalf.com>
- <CAJfuBxyvX41CCb27LWMDxZrQ5wwhuw36F_VmXyB3F9q7r1Kt2A@mail.gmail.com>
- <CAK8ByeKCcmd7-8Lsv5jQB-Po5UYeFRD-jB0e08BNBNUJ01UhNA@mail.gmail.com> <CAJfuBxxAnonb-+UrkVs=MiJ-g-5JDzzEn=GKs2gQvdqH8dGDVw@mail.gmail.com>
-In-Reply-To: <CAJfuBxxAnonb-+UrkVs=MiJ-g-5JDzzEn=GKs2gQvdqH8dGDVw@mail.gmail.com>
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-11-lb@semihalf.com>
+ <CAJfuBxxVGaqG4wVu-kM3ynA8ARTD6DFPBuz0a1GqunMqdvRBgQ@mail.gmail.com>
+ <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com> <CAJfuBxxTuiEun9YFtWY_99nvCwnJQ_LByJioOTxsCkMS6URQnw@mail.gmail.com>
+In-Reply-To: <CAJfuBxxTuiEun9YFtWY_99nvCwnJQ_LByJioOTxsCkMS6URQnw@mail.gmail.com>
 From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Sun, 12 Nov 2023 17:29:07 +0100
-Message-ID: <CAK8Bye+n=UBy60T56TJCat2n0LNfpfAeDG56QM41PWyUGzqRHg@mail.gmail.com>
-Subject: Re: [PATCH v1 09/12] dyndbg: add trace destination field to _ddebug
+Date:   Sun, 12 Nov 2023 17:29:36 +0100
+Message-ID: <CAK8Bye+jVZwAta7mfd=zY2qk84MR3dRrX-6iZYhijTcO-o_uFg@mail.gmail.com>
+Subject: Re: [PATCH v1 10/12] dyndbg: add processing of T(race) flag argument
 To:     jim.cromie@gmail.com
 Cc:     Jason Baron <jbaron@akamai.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -82,42 +82,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pt., 10 lis 2023 o 20:37 <jim.cromie@gmail.com> napisa=C5=82(a):
+pt., 10 lis 2023 o 20:51 <jim.cromie@gmail.com> napisa=C5=82(a):
 >
 > On Fri, Nov 10, 2023 at 7:52=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf=
 .com> wrote:
 > >
-> > sob., 4 lis 2023 o 02:39 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > sob., 4 lis 2023 o 04:06 <jim.cromie@gmail.com> napisa=C5=82(a):
 > > >
 > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semih=
 alf.com> wrote:
 > > > >
-> > > > Add trace destination field (trace_dst) to the _ddebug structure.
-> > > > The trace destination field is used to determine output of debug
-> > > > logs when +T is set. Setting trace_dst value to 0 (default) enables
-> > > > output to prdbg and devdbg trace events. Setting trace_dst value to
-> > > > a value in range of [1..255] enables output to trace instance.
+> > > > Add processing of argument provided to T(race) flag.
+> > > > The argument value determines destination of debug logs:
+> > > >
+> > > > 0 - debug logs will be written to prdbg and devdbg trace events
+> > > > [1..255] - debug logs will be written to trace instance
+> > > >
+> > > > A user can provide trace destination by folowing T flag with
+> > > > ":" and trace destination value in range [0..255], for example:
+> > > >
+> > > > echo "module thunderbolt =3DpT:7" > /sys/kernel/debug/dynamic_debug=
+/control
+> > > > echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_deb=
+ug/control
+> > > >
+> > > > When T flag with argument is followed by other flags then the next =
+flag has
+> > > > to be preceded with ",".
+> > > >
 > > >
-> > >
-> > > should we do some expectation setting here ?
-> > > 255 is something of a promise to more than tom,dick,harry.
-> > > 16-64 is more suggestive of a limited resource,
-> > > might encourage more judicious use.
+> > > the trailing , seems punctuation heavy.
+> > > Could we just stipulate that any :string  (leading : trailing anythin=
+g)
+> > > be the last flag in the spec ?
+> > > bare T flags are not constrained otherwise.
+> > > seems fine as API-spec-by-error-codes.
 > > >
 > >
-> > How about making it configurable in kernel Kconfig with default value
-> > set to 16 or 32 ?
+> > I followed Jason's suggestion to use "," when T flag is not the last
+> > flag and destination is explicitly provided for the T flag, like in
+> > the example above
+> > "echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug/=
+control".
+> >
+> > With "," we can have the following cases:
+> > - when T is the last flag then it doesn't need to be followed by ","
+> > even if destination is explicitly provided, for example "lpT:7",
+> > - when T is not the last flag and destination is explicitly provided
+> > then "," has to be used before next flag, for example "lT:7,p",
+> > - when T is not the last flag and destination is not explicitly
+> > provided then "," is not required, for example "lTp",
+> >
+> > Jim, Jason, would you please come to terms if we want to use "," or
+> > just assume that T has to be the last flag in the spec ?
 > >
 >
-> given the general dislike of extra knobs, it's not the battle I would cho=
-ose.
-> ISTM we could start small, add bits later (if needed)
-> maybe 16 is too parsimonious; esp if DRM wants multiple instances per
-> driver (device?)
+> Im fine either way -   eliminating punctuation has a cost too,
+> it adds some order dependency which isnt there now.
+> If that complicates the code, no-good.
 >
 
-If we don't want the extra config knob then I would opt for 64.
+Ok, I will keep the option to use "," to separate T with explicitly
+provided destination from a next flag.
 
 >
+> > >
+> > >
+> > >
+> > > > When no value is provided trace destination defaults to 0, for exam=
+ple:
 >
-> > > will look further later
+> That seems wrong now - it should default to whatever it was previously se=
+t to,
+>
+
+It was in my original proposal before you suggested to create
+open/close commands.
+
+
+> this allows setting a non-default dest while disabling the site:
+>    echo class DRM_UT_CORE -T:core-log  > /proc/dynamic_debug/control
+>
+> then just enabling it later, to use the preset dest
+>    echo class DRM_UT_CORE +T  > /proc/dynamic_debug/control
+> or more likely:
+>    echo 0x01 > /sys/module/drm/parameters/debug_trace
+>
+> this way, debug_trace is just like debug, but still can write to the
+> separate trace-instances
+>
+
+Ack, I also clarified my suggestion related to this topic in patch 11.
+
+
+
+> > > >
+> > > > echo "module thunderbolt =3DT" > /sys/kernel/debug/dynamic_debug/co=
+ntrol
+> > > > echo "module thunderbolt =3DlTp" > /sys/kernel/debug/dynamic_debug/=
+control
+> > >
+> > > no colon after T means p is a flag, not a destination name
+> >
+> > Yes, in this case p is a flag because when T is not followed
+> > explicitly by destination then next character would be treated as
+> > another flag.
