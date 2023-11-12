@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711DA7E90C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505F57E90CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjKLNbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:31:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        id S231814AbjKLNbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjKLN3P (ORCPT
+        with ESMTP id S232339AbjKLN3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:29:15 -0500
+        Sun, 12 Nov 2023 08:29:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C43A49DA;
-        Sun, 12 Nov 2023 05:28:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54827C433D9;
-        Sun, 12 Nov 2023 13:28:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52F23A81;
+        Sun, 12 Nov 2023 05:28:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A919EC433CD;
+        Sun, 12 Nov 2023 13:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795730;
-        bh=r1gw3hOsw+jtDnajYdiBQfXdRBa3YMT9bjyN5/VsQhE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=P3940uXgRUl6S4BbLXpBrnjIdhya9OEzM4dsMxXvN9H0zr33Fk8iYNuqurP/P90LQ
-         dmLuioeKuMsjDfvIEFbyYk6toDpvBxOyLKI+HTO6Jp9HVVR3s24pxaVFDzIOvEOm8/
-         t/fB0Npfm+AIny7f6GmGf6iXrbtD8XrNjCZNn4m32GOkUNHIEXsE86NISqOueeF6wS
-         n1ZHns6TE+/pbNCARTpIO1RqnewjlVOo1Nu6PbTebO7pp3oN/Ns53qqQH31aObWsoC
-         wpyTE/cSpIFwzdldzlG1A3bAytPhWQnFJJ3PxHVR6i/sC534Wk0ixmldIxZmO2xOeX
-         39cjVJez9R2oQ==
+        s=k20201202; t=1699795731;
+        bh=wz6u0otCbI9/mTC9pHfUdQXxln4wuyBg9Hk+Z9OYaBc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jnSU3AKW7g1Gb11vCsIwjRtWouPY2Dyd8v39+x9puj3EXTWyRU7SURl5IGjFfWKF5
+         u6VAR6ivpUORq45yemsaJIdrzPf7xPC+Vwhb27wL+M3jrXs4P8Ktd/nJ4cY/j376V7
+         pRzAGTrwCWh1LbjLMIWikqLNsj69P90aPTI5/y3FQcWw9IdLNRg1cU0KmbExVOjcq9
+         5NjTNy6qCDBbSP3Ded1TtAQEDEctw0FaLhPFRi8xGAfxLEe3502CuGoqKfOimfsUmr
+         JhhHxrqEKV4KcNZGG7208Jl5sXc2+feN7N3cfESjcpj5PFB5wOb3ZdxgIZheDy4/54
+         +58UKdXkkJZqw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rajeshwar R Shinde <coolrrsh@gmail.com>,
-        syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, hverkuil@xs4all.nl,
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
         linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/8] media: gspca: cpia1: shift-out-of-bounds in set_flicker
-Date:   Sun, 12 Nov 2023 08:28:39 -0500
-Message-ID: <20231112132847.176473-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 2/8] media: vivid: avoid integer overflow
+Date:   Sun, 12 Nov 2023 08:28:40 -0500
+Message-ID: <20231112132847.176473-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231112132847.176473-1-sashal@kernel.org>
+References: <20231112132847.176473-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -45,59 +45,53 @@ X-stable-base: Linux 5.10.200
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 099be1822d1f095433f4b08af9cc9d6308ec1953 ]
+[ Upstream commit 4567ebf8e8f9546b373e78e3b7d584cc30b62028 ]
 
-Syzkaller reported the following issue:
-UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
-shift exponent 245 is too large for 32-bit type 'int'
+Fixes these compiler warnings:
 
-When the value of the variable "sd->params.exposure.gain" exceeds the
-number of bits in an integer, a shift-out-of-bounds error is reported. It
-is triggered because the variable "currentexp" cannot be left-shifted by
-more than the number of bits in an integer. In order to avoid invalid
-range during left-shift, the conditional expression is added.
+drivers/media/test-drivers/vivid/vivid-rds-gen.c: In function 'vivid_rds_gen_fill':
+drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:56: warning: '.' directive output may be truncated writing 1 byte into a region of size between 0 and 3 [-Wformat-truncation=]
+  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
+      |                                                        ^
+drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:52: note: directive argument in the range [0, 9]
+  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
+      |                                                    ^~~~~~~~~
+drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:9: note: 'snprintf' output between 9 and 12 bytes into a destination of size 9
+  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  148 |                  freq / 16, ((freq & 0xf) * 10) / 16);
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/20230818164522.12806-1-coolrrsh@gmail.com
-Link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/cpia1.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/test-drivers/vivid/vivid-rds-gen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/gspca/cpia1.c b/drivers/media/usb/gspca/cpia1.c
-index d93d384286c16..de945e13c7c6b 100644
---- a/drivers/media/usb/gspca/cpia1.c
-+++ b/drivers/media/usb/gspca/cpia1.c
-@@ -18,6 +18,7 @@
- 
- #include <linux/input.h>
- #include <linux/sched/signal.h>
-+#include <linux/bitops.h>
- 
- #include "gspca.h"
- 
-@@ -1027,6 +1028,8 @@ static int set_flicker(struct gspca_dev *gspca_dev, int on, int apply)
- 			sd->params.exposure.expMode = 2;
- 			sd->exposure_status = EXPOSURE_NORMAL;
- 		}
-+		if (sd->params.exposure.gain >= BITS_PER_TYPE(currentexp))
-+			return -EINVAL;
- 		currentexp = currentexp << sd->params.exposure.gain;
- 		sd->params.exposure.gain = 0;
- 		/* round down current exposure to nearest value */
+diff --git a/drivers/media/test-drivers/vivid/vivid-rds-gen.c b/drivers/media/test-drivers/vivid/vivid-rds-gen.c
+index b5b104ee64c99..c57771119a34b 100644
+--- a/drivers/media/test-drivers/vivid/vivid-rds-gen.c
++++ b/drivers/media/test-drivers/vivid/vivid-rds-gen.c
+@@ -145,7 +145,7 @@ void vivid_rds_gen_fill(struct vivid_rds_gen *rds, unsigned freq,
+ 	rds->ta = alt;
+ 	rds->ms = true;
+ 	snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
+-		 freq / 16, ((freq & 0xf) * 10) / 16);
++		 (freq / 16) % 1000000, (((freq & 0xf) * 10) / 16) % 10);
+ 	if (alt)
+ 		strscpy(rds->radiotext,
+ 			" The Radio Data System can switch between different Radio Texts ",
 -- 
 2.42.0
 
