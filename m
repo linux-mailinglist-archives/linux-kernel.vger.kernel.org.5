@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9317E90E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AA17E90E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbjKLNcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S231422AbjKLNcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232026AbjKLNbP (ORCPT
+        with ESMTP id S232174AbjKLNbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:31:15 -0500
+        Sun, 12 Nov 2023 08:31:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7524695;
-        Sun, 12 Nov 2023 05:29:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2F1AC433AB;
-        Sun, 12 Nov 2023 13:29:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F4561AA;
+        Sun, 12 Nov 2023 05:29:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAC42C433CA;
+        Sun, 12 Nov 2023 13:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795767;
-        bh=zpefhsIhEu/dJOT1Eh1xs+buT9hmTS9Rb24DO8b8+jc=;
+        s=k20201202; t=1699795768;
+        bh=yVo8ubIcxefRIGAaASQcaSuRC+IULS1M2mBBNEePGy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JeOWPc1N85ynevhW3/9KLsxPZ/ALEx/oYABqcxrzsOF2SeIubXvo7Ay5zDkaKlZ7M
-         1E4IMnFctNrn0UEHAudAlbyABOOONAGcxq93jw59Q/b8tsaxHtetmIrQxD4K9yuSDK
-         PStg234msGFKUrrGgAYSovb6YGrZXxigb8qsF9bfgyPhodxFG8a3dso4cyEckC2M4E
-         W7XmKuciafYjbWxuC3ij7wmYURHvDvDYKjx3UXxCh2cA2kVpXBAiqAPZSle6gJ9zTF
-         NuNA84/N0LbELWaVIrPk5ZpWZbvYu7VibVVivnmT+ZesArQUnkoeUYmdny+zWEOi6v
-         FayvdOTVRy2nA==
+        b=QdoeTMiccy4L7RnHVZ7XaSj0foKGnu3tLb+3mPAogiVwd19boy93IktRI8K33Tp+V
+         GhaAJcb7ALsrelEiv59ssPrK5Rxy7S8Etr0cQEoT726L0PS0mPFmPWkNZ63VkE+iz2
+         sGipDkil3jseDvHb7MJ2LuUgLQEIeyGTQnXRx2JEjqTQpl53WoSSUHR7I/rzXgXEAy
+         NAqwzqp47YiHIFz1hT2FtLADVm/cN05dlbtxv+4FJRagq2yeG7qAAX4FOI90Frzzhg
+         OonxiuSNLzSm72IObOc7cca2C26fXpBeRuoybI9G0ML+Lm1Vqu0vgcPhpK62xq0Gu/
+         Q4XJHd2dGzyDw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
-        hverkuil@xs4all.nl, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 2/4] media: vivid: avoid integer overflow
-Date:   Sun, 12 Nov 2023 08:29:20 -0500
-Message-ID: <20231112132923.176955-2-sashal@kernel.org>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, swhiteho@redhat.com,
+        cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 4.14 3/4] gfs2: ignore negated quota changes
+Date:   Sun, 12 Nov 2023 08:29:21 -0500
+Message-ID: <20231112132923.176955-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231112132923.176955-1-sashal@kernel.org>
 References: <20231112132923.176955-1-sashal@kernel.org>
@@ -53,45 +54,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 4567ebf8e8f9546b373e78e3b7d584cc30b62028 ]
+[ Upstream commit 4c6a08125f2249531ec01783a5f4317d7342add5 ]
 
-Fixes these compiler warnings:
+When lots of quota changes are made, there may be cases in which an
+inode's quota information is increased and then decreased, such as when
+blocks are added to a file, then deleted from it. If the timing is
+right, function do_qc can add pending quota changes to a transaction,
+then later, another call to do_qc can negate those changes, resulting
+in a net gain of 0. The quota_change information is recorded in the qc
+buffer (and qd element of the inode as well). The buffer is added to the
+transaction by the first call to do_qc, but a subsequent call changes
+the value from non-zero back to zero. At that point it's too late to
+remove the buffer_head from the transaction. Later, when the quota sync
+code is called, the zero-change qd element is discovered and flagged as
+an assert warning. If the fs is mounted with errors=panic, the kernel
+will panic.
 
-drivers/media/test-drivers/vivid/vivid-rds-gen.c: In function 'vivid_rds_gen_fill':
-drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:56: warning: '.' directive output may be truncated writing 1 byte into a region of size between 0 and 3 [-Wformat-truncation=]
-  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
-      |                                                        ^
-drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:52: note: directive argument in the range [0, 9]
-  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
-      |                                                    ^~~~~~~~~
-drivers/media/test-drivers/vivid/vivid-rds-gen.c:147:9: note: 'snprintf' output between 9 and 12 bytes into a destination of size 9
-  147 |         snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  148 |                  freq / 16, ((freq & 0xf) * 10) / 16);
-      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is usually seen when files are truncated and the quota changes are
+negated by punch_hole/truncate which uses gfs2_quota_hold and
+gfs2_quota_unhold rather than block allocations that use gfs2_quota_lock
+and gfs2_quota_unlock which automatically do quota sync.
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+This patch solves the problem by adding a check to qd_check_sync such
+that net-zero quota changes already added to the transaction are no
+longer deemed necessary to be synced, and skipped.
+
+In this case references are taken for the qd and the slot from do_qc
+so those need to be put. The normal sequence of events for a normal
+non-zero quota change is as follows:
+
+gfs2_quota_change
+   do_qc
+      qd_hold
+      slot_hold
+
+Later, when the changes are to be synced:
+
+gfs2_quota_sync
+   qd_fish
+      qd_check_sync
+         gets qd ref via lockref_get_not_dead
+   do_sync
+      do_qc(QC_SYNC)
+         qd_put
+	    lockref_put_or_lock
+   qd_unlock
+      qd_put
+         lockref_put_or_lock
+
+In the net-zero change case, we add a check to qd_check_sync so it puts
+the qd and slot references acquired in gfs2_quota_change and skip the
+unneeded sync.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/vivid/vivid-rds-gen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/quota.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/media/platform/vivid/vivid-rds-gen.c b/drivers/media/platform/vivid/vivid-rds-gen.c
-index 53c7777dc0019..d2b014336f9c4 100644
---- a/drivers/media/platform/vivid/vivid-rds-gen.c
-+++ b/drivers/media/platform/vivid/vivid-rds-gen.c
-@@ -157,7 +157,7 @@ void vivid_rds_gen_fill(struct vivid_rds_gen *rds, unsigned freq,
- 	rds->ta = alt;
- 	rds->ms = true;
- 	snprintf(rds->psname, sizeof(rds->psname), "%6d.%1d",
--		 freq / 16, ((freq & 0xf) * 10) / 16);
-+		 (freq / 16) % 1000000, (((freq & 0xf) * 10) / 16) % 10);
- 	if (alt)
- 		strlcpy(rds->radiotext,
- 			" The Radio Data System can switch between different Radio Texts ",
+diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+index a833e2e071675..9cef9f1ab63fa 100644
+--- a/fs/gfs2/quota.c
++++ b/fs/gfs2/quota.c
+@@ -434,6 +434,17 @@ static int qd_check_sync(struct gfs2_sbd *sdp, struct gfs2_quota_data *qd,
+ 	    (sync_gen && (qd->qd_sync_gen >= *sync_gen)))
+ 		return 0;
+ 
++	/*
++	 * If qd_change is 0 it means a pending quota change was negated.
++	 * We should not sync it, but we still have a qd reference and slot
++	 * reference taken by gfs2_quota_change -> do_qc that need to be put.
++	 */
++	if (!qd->qd_change && test_and_clear_bit(QDF_CHANGE, &qd->qd_flags)) {
++		slot_put(qd);
++		qd_put(qd);
++		return 0;
++	}
++
+ 	if (!lockref_get_not_dead(&qd->qd_lockref))
+ 		return 0;
+ 
 -- 
 2.42.0
 
