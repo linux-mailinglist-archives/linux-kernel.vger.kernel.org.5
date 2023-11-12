@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577F97E9025
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8E37E9020
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbjKLNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        id S231939AbjKLNZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231934AbjKLNZJ (ORCPT
+        with ESMTP id S231941AbjKLNZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:25:09 -0500
+        Sun, 12 Nov 2023 08:25:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1828E49C6;
-        Sun, 12 Nov 2023 05:24:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A7AC43391;
-        Sun, 12 Nov 2023 13:24:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B330949DA;
+        Sun, 12 Nov 2023 05:24:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BFB8C433CC;
+        Sun, 12 Nov 2023 13:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795481;
-        bh=xaTo4/rQUf+2BsXc+915yJ1k0HsoSTYI/lTE7GmUkQw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OJpIXt+0C81IA63crOJ10MMzG1iK9aZhkXxKybU5sdCMAPEsRdfauZdo4B9MST2A0
-         QYTkhxYwvi8RiIdMUehvWWp5JjnBFeGwcng4e27OuTtDrFOWhrkTjV09n/5/Ah7M8M
-         WOB/59IGQN4/fhs++OCVw+nFBr2gsdpmJntbdt1/adVmncLEyEPTWyr6p39Rfstflp
-         MbSlvNmZssC6nejlmmIZOanyIIOoc9WsN96Whtc6Wa0h+XWht1vWcTloNFEM53aq3C
-         0x7qC0BgkL7tMaSFtzfFvn3gMvV3D6Xcz8aN40yXiq6BWXVePmGt9gb4If34IPqACM
-         KxJtByV1GHpBg==
+        s=k20201202; t=1699795486;
+        bh=bLEEQRy0ruNhv2+OyXHuZ6I30HdiPO+33fSao6p0PUs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sydTs7YZOECHdK84a5j0dQlapb+Gi0lu9tM+aQn8D4ohM/gv+CbLG2Lfjn8RpFnNV
+         kIsIYJ00JkzrTHc6EsYJpWBRnOnRI0IpyYQ8oC8XJr4FhySjsgwbuHtF7Tpez9DUJI
+         +qh+HDmVk62fqNSEHAWhCH96MlpqTOn/sDuQwp/N1B0yztqviiDU8NZ0+6mJQv/9IL
+         3oHZZzj7hvGKygioizjlHBiZhXbvS8wpWLTg+uj836c6mLu3nPQJAWBCbTzaatSsxD
+         TA/tPzK9bCdynofSua1MVMfyGeUEnFpMTigs3SQGabF5808dGpaHTk/Z2GnoNrmV6d
+         T5WnLZg7EfYLw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Billy Tsai <billy_tsai@aspeedtech.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>, linux-i3c@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 4/4] i3c: master: mipi-i3c-hci: Fix a kernel panic for accessing DAT_data.
-Date:   Sun, 12 Nov 2023 08:24:24 -0500
-Message-ID: <20231112132432.174680-4-sashal@kernel.org>
+Cc:     Axel Lin <axel.lin@ingics.com>,
+        Boris Brezillon <boris.brezillon@free-electrons.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        andi.shyti@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH AUTOSEL 5.10] i2c: sun6i-p2wi: Prevent potential division by zero
+Date:   Sun, 12 Nov 2023 08:24:42 -0500
+Message-ID: <20231112132442.174812-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231112132432.174680-1-sashal@kernel.org>
-References: <20231112132432.174680-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.138
+X-stable-base: Linux 5.10.200
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -53,80 +54,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit b53e9758a31c683fc8615df930262192ed5f034b ]
+[ Upstream commit 5ac61d26b8baff5b2e5a9f3dc1ef63297e4b53e7 ]
 
-The `i3c_master_bus_init` function may attach the I2C devices before the
-I3C bus initialization. In this flow, the DAT `alloc_entry`` will be used
-before the DAT `init`. Additionally, if the `i3c_master_bus_init` fails,
-the DAT `cleanup` will execute before the device is detached, which will
-execue DAT `free_entry` function. The above scenario can cause the driver
-to use DAT_data when it is NULL.
+Make sure we don't OOPS in case clock-frequency is set to 0 in a DT. The
+variable set here is later used as a divisor.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Link: https://lore.kernel.org/r/20231023080237.560936-1-billy_tsai@aspeedtech.com
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i3c/master/mipi-i3c-hci/dat_v1.c | 29 ++++++++++++++++--------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ drivers/i2c/busses/i2c-sun6i-p2wi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-index 97bb49ff5b53b..47b9b4d4ed3fc 100644
---- a/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-+++ b/drivers/i3c/master/mipi-i3c-hci/dat_v1.c
-@@ -64,15 +64,17 @@ static int hci_dat_v1_init(struct i3c_hci *hci)
- 		return -EOPNOTSUPP;
+diff --git a/drivers/i2c/busses/i2c-sun6i-p2wi.c b/drivers/i2c/busses/i2c-sun6i-p2wi.c
+index 2f6f6468214dd..4f7a4f5a1150a 100644
+--- a/drivers/i2c/busses/i2c-sun6i-p2wi.c
++++ b/drivers/i2c/busses/i2c-sun6i-p2wi.c
+@@ -201,6 +201,11 @@ static int p2wi_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
--	/* use a bitmap for faster free slot search */
--	hci->DAT_data = bitmap_zalloc(hci->DAT_entries, GFP_KERNEL);
--	if (!hci->DAT_data)
--		return -ENOMEM;
--
--	/* clear them */
--	for (dat_idx = 0; dat_idx < hci->DAT_entries; dat_idx++) {
--		dat_w0_write(dat_idx, 0);
--		dat_w1_write(dat_idx, 0);
-+	if (!hci->DAT_data) {
-+		/* use a bitmap for faster free slot search */
-+		hci->DAT_data = bitmap_zalloc(hci->DAT_entries, GFP_KERNEL);
-+		if (!hci->DAT_data)
-+			return -ENOMEM;
-+
-+		/* clear them */
-+		for (dat_idx = 0; dat_idx < hci->DAT_entries; dat_idx++) {
-+			dat_w0_write(dat_idx, 0);
-+			dat_w1_write(dat_idx, 0);
-+		}
- 	}
- 
- 	return 0;
-@@ -87,7 +89,13 @@ static void hci_dat_v1_cleanup(struct i3c_hci *hci)
- static int hci_dat_v1_alloc_entry(struct i3c_hci *hci)
- {
- 	unsigned int dat_idx;
-+	int ret;
- 
-+	if (!hci->DAT_data) {
-+		ret = hci_dat_v1_init(hci);
-+		if (ret)
-+			return ret;
++	if (clk_freq == 0) {
++		dev_err(dev, "clock-frequency is set to 0 in DT\n");
++		return -EINVAL;
 +	}
- 	dat_idx = find_first_zero_bit(hci->DAT_data, hci->DAT_entries);
- 	if (dat_idx >= hci->DAT_entries)
- 		return -ENOENT;
-@@ -103,7 +111,8 @@ static void hci_dat_v1_free_entry(struct i3c_hci *hci, unsigned int dat_idx)
- {
- 	dat_w0_write(dat_idx, 0);
- 	dat_w1_write(dat_idx, 0);
--	__clear_bit(dat_idx, hci->DAT_data);
-+	if (hci->DAT_data)
-+		__clear_bit(dat_idx, hci->DAT_data);
- }
- 
- static void hci_dat_v1_set_dynamic_addr(struct i3c_hci *hci,
++
+ 	if (of_get_child_count(np) > 1) {
+ 		dev_err(dev, "P2WI only supports one slave device\n");
+ 		return -EINVAL;
 -- 
 2.42.0
 
