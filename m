@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A651F7E913B
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 322157E9137
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbjKLOhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 09:37:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S229693AbjKLOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 09:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLOhH (ORCPT
+        with ESMTP id S229588AbjKLOg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 09:37:07 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8477E2D57;
-        Sun, 12 Nov 2023 06:37:04 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28023eadc70so2987844a91.2;
-        Sun, 12 Nov 2023 06:37:04 -0800 (PST)
+        Sun, 12 Nov 2023 09:36:28 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B048272C;
+        Sun, 12 Nov 2023 06:36:25 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-daf26d84100so2083012276.3;
+        Sun, 12 Nov 2023 06:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699799824; x=1700404624; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pW2hhtxGtA8CdhlmZmkyAlOcGzmFoAEuNXHaiEFYfis=;
-        b=H4Lz3P3ckVxq3B2vt2IoMbMVzhGnjQQRzFd7o6PxcUTgiRTC6wSVO/1f3/7xx4+t0e
-         QBkd8XoDoapKMMCTxszfS7TQ76m7LmUjMid2SkGG93Og8e4upVxLwE1L+CT/cZbDO0kj
-         KLHCw8cGlNb4Ydfe+HIVxgHqRcbg7twNvVEv+ufP9kKE4JJfzu+U43qdr/Nb5t3wCiYb
-         2Ep2LTsEdD26xXFw1nl3JjZGcSaTcKjRh6uRAh48zEJzcGdHZo77CWTUzXvAT1ZFJyOS
-         ciJhSQXf/Q98ZrzrU0hGKrQxQHH8KXOZu2sZBonOMZNlaunV1c/BuSVYHOWxDMcLB2rc
-         0JwA==
+        d=gmail.com; s=20230601; t=1699799784; x=1700404584; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iEg/GqZ9ffdr41qNZLmDnLzaDF78VTcwORCT27DAN2Y=;
+        b=LNKR18n0u6Rg6MWGzi7yc3uumFf2cp+54NlB94AEJoJ3ijW229GrR+ks+H/YSMXQeY
+         Yc8PUh5JAgQIe5ozMGc1ns95kk+VqCp8J3y6VsYR7rKSaczGSgKY5RmkbM4Lnx7VEOBO
+         BZKYXy7O3OPyramt9SaVPmP0UD3qP3TnBvN0xw8FanfoOCov3JrPWFspmJlCJPLskKAV
+         +pc8do96YIrmZ7+VKC1Bmy1VzlywNn7E2SSE/Schu+WImFPZbHwyZ2F9mo0tZE9XhwN3
+         RiNDiN4L+iE0FM6mNbRwPHweGDm4Fn0xStBQ0oU0oIXibHWZY94P7wroRApJ3NdRedVZ
+         6SMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699799824; x=1700404624;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pW2hhtxGtA8CdhlmZmkyAlOcGzmFoAEuNXHaiEFYfis=;
-        b=kIss7XpTIivgCB+0E5X/sx/gmVBiIg2UcQi20W2PMTpdlZW7TRXiJUTtmcwgrcX/Cm
-         wB3Lgh7vlkeDqDtJjMlXy4/JSwcv2S3sw1A6uYl8LcojlVq/TYAoRFmaaycC9UKQd3GJ
-         RBnBfZfxvccwUfihC1zjgB4dw9NKXZQYNRplZO/WuZ7nUy7L8W5B2MGh6dlpnRa38Mb8
-         Ky+66H2+c+Ss1AbzYmRh46KgE+mw587sbe5riUze+1yVprlmxU8DFjIPugLRFJSSwfCN
-         gCvRQUwWm5BYo3VW3MWCBhDI8wEnay8lm46PFtsydY2j1ud+To9D+CblXTy0MQU9sjta
-         3bmA==
-X-Gm-Message-State: AOJu0YzOAFsK4WyAHdOjIfVxdf44akbeCnHcqd3RaD46lIHHO+t1PQzv
-        msXhjraKCir5ifdgnXYPeNs=
-X-Google-Smtp-Source: AGHT+IGENpN5lbIIuI7hrQc2wnfe8JuETJJfh+PiGWrnyrxz5nkvHVzpSleYMjQ1RyvVw2ZgEAagpQ==
-X-Received: by 2002:a17:90b:3909:b0:27d:5964:4eec with SMTP id ob9-20020a17090b390900b0027d59644eecmr2353892pjb.1.1699799823835;
-        Sun, 12 Nov 2023 06:37:03 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.8])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902e98400b001b9c5e07bc3sm2642203plb.238.2023.11.12.06.37.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 06:37:03 -0800 (PST)
-From:   alexjlzheng@gmail.com
-X-Google-Original-From: alexjlzheng@tencent.com
-To:     david@fromorbit.com, chandan.babu@oracle.com
-Cc:     djwong@kernel.org, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jinliang Zheng <alexjlzheng@tencent.com>
-Subject: [PATCH v2 RESEND] xfs: remove redundant batch variables for serialization
-Date:   Sun, 12 Nov 2023 22:35:27 +0800
-Message-Id: <20231112143525.159566-1-alexjlzheng@tencent.com>
-X-Mailer: git-send-email 2.39.3
+        d=1e100.net; s=20230601; t=1699799784; x=1700404584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iEg/GqZ9ffdr41qNZLmDnLzaDF78VTcwORCT27DAN2Y=;
+        b=O3Gho7VuFPMsAjNdLYt977v3QeHenOUkgOoNc2hTTXxYOUCAtr3fLhNN3cEpMhspnZ
+         DsRzxH+TY2RNgkbUgan4/6ueqHv4D+1zCRJ2YSuJG1NfWvQkLXuS/Dt1GBGhQIggp+mr
+         zYghUaS/6+G6ys0m7TbzN9b9GVKJZX8AIbwZrgRBp04VCFJvDykzWl+Fv2P98aGYuaq4
+         aYvDHkgCzarCQe12au+pw+hCXFjG1mDXjssruTFuVwlV/KS1y0XejT/FXTLp/mQCwqHw
+         jZT2mPKR9nU+eHlZUe3MplDSdRalPgtDe5WLcw/m3KWt++1ebz/iMNVBK0bp7HRLNLgy
+         pMhQ==
+X-Gm-Message-State: AOJu0YyoEDnr+ds2YkPK7Gn90V6Gn3nQ4T6MZpU4KVCq0WZMZRPEnNwj
+        WSvp1ARyu3kPOWkj+qLhdai76oMX8YWf5KjEX+I=
+X-Google-Smtp-Source: AGHT+IHJa0K/SIYi3QocMqpFJT0NZRjKg9aj4dbl6NuINmOvWrcM2RDv6aqRpvXpgsslU63zozNcSbu+v5pingjjtYc=
+X-Received: by 2002:a25:ccd1:0:b0:da1:b041:70ac with SMTP id
+ l200-20020a25ccd1000000b00da1b04170acmr4479217ybf.10.1699799784545; Sun, 12
+ Nov 2023 06:36:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <0000000000003c31650609ecd824@google.com> <tencent_3FF186FD92C8C658498FEEEE6EDACC8BA706@qq.com>
+In-Reply-To: <tencent_3FF186FD92C8C658498FEEEE6EDACC8BA706@qq.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sun, 12 Nov 2023 16:36:13 +0200
+Message-ID: <CAOQ4uxgVPMHJifBZdrFwn+HoUTrj2Ma9ixrwurvU+=MUYB1_Tg@mail.gmail.com>
+Subject: Re: [PATCH] ovl: fix memory leak in ovl_parse_param
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,82 +71,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinliang Zheng <alexjlzheng@tencent.com>
+On Sun, Nov 12, 2023 at 12:35=E2=80=AFPM Edward Adam Davis <eadavis@qq.com>=
+ wrote:
+>
+> After failing to parse parameters in ovl_parse_param_lowerdir(), it is
+> necessary to update ctx->nr with the correct nr before using
+> ovl_reset_lowerdirs() to release l->name.
+>
+> Reported-and-tested-by: syzbot+26eedf3631650972f17c@syzkaller.appspotmail=
+.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  fs/overlayfs/params.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/overlayfs/params.c b/fs/overlayfs/params.c
+> index ddab9ea267d1..1f73f0173015 100644
+> --- a/fs/overlayfs/params.c
+> +++ b/fs/overlayfs/params.c
+> @@ -530,6 +530,7 @@ static int ovl_parse_param_lowerdir(const char *name,=
+ struct fs_context *fc)
+>         return 0;
+>
+>  out_put:
+> +       ctx->nr =3D nr;
+>         ovl_reset_lowerdirs(ctx);
+>
+>  out_err:
+> --
+> 2.25.1
+>
 
-Historically, when generic percpu counters were introduced in xfs for
-free block counters by commit 0d485ada404b ("xfs: use generic percpu
-counters for free block counter"), the counters used a custom batch
-size. In xfs_mod_freecounter(), originally named xfs_mod_fdblocks(),
-this patch attempted to serialize the program using a smaller batch size
-as parameter to the addition function as the counter approaches 0.
+Thanks for the patch!
 
-Commit 8c1903d3081a ("xfs: inode and free block counters need to use
-__percpu_counter_compare") pointed out the error in commit 0d485ada404b
-("xfs: use generic percpu counters for free block counter") mentioned
-above and said that "Because the counters use a custom batch size, the
-comparison functions need to be aware of that batch size otherwise the
-comparison does not work correctly". Then percpu_counter_compare() was
-replaced with __percpu_counter_compare() with parameter
-XFS_FDBLOCKS_BATCH.
+I prefer to fix it by eliminating the local vars instead of
+syncing with them:
 
-After commit 8c1903d3081a ("xfs: inode and free block counters need to
-use __percpu_counter_compare"), the existence of the batch variable is
-no longer necessary, so this patch is proposed to simplify the code by
-removing it.
+I've kept your commit message and tagged you as Co-authored-by:
+https://github.com/amir73il/linux/commit/97d58994e880ccb19e1b9b935928538903=
+fca41c
 
-Signed-off-by: Jinliang Zheng <alexjlzheng@tencent.com>
----
-Changelog:
-
-v2: Modify ambiguous commit message.
-
-v1: https://lore.kernel.org/linux-xfs/20230908235713.GP28202@frogsfrogsfrogs/T/#t
----
- fs/xfs/xfs_mount.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
-
-diff --git a/fs/xfs/xfs_mount.c b/fs/xfs/xfs_mount.c
-index aed5be5508fe..8e47a3040893 100644
---- a/fs/xfs/xfs_mount.c
-+++ b/fs/xfs/xfs_mount.c
-@@ -1144,7 +1144,6 @@ xfs_mod_freecounter(
- 	int64_t			lcounter;
- 	long long		res_used;
- 	uint64_t		set_aside = 0;
--	s32			batch;
- 	bool			has_resv_pool;
- 
- 	ASSERT(counter == &mp->m_fdblocks || counter == &mp->m_frextents);
-@@ -1177,20 +1176,6 @@ xfs_mod_freecounter(
- 		return 0;
- 	}
- 
--	/*
--	 * Taking blocks away, need to be more accurate the closer we
--	 * are to zero.
--	 *
--	 * If the counter has a value of less than 2 * max batch size,
--	 * then make everything serialise as we are real close to
--	 * ENOSPC.
--	 */
--	if (__percpu_counter_compare(counter, 2 * XFS_FDBLOCKS_BATCH,
--				     XFS_FDBLOCKS_BATCH) < 0)
--		batch = 1;
--	else
--		batch = XFS_FDBLOCKS_BATCH;
--
- 	/*
- 	 * Set aside allocbt blocks because these blocks are tracked as free
- 	 * space but not available for allocation. Technically this means that a
-@@ -1204,7 +1189,7 @@ xfs_mod_freecounter(
- 	 */
- 	if (has_resv_pool)
- 		set_aside = xfs_fdblocks_unavailable(mp);
--	percpu_counter_add_batch(counter, delta, batch);
-+	percpu_counter_add_batch(counter, delta, XFS_FDBLOCKS_BATCH);
- 	if (__percpu_counter_compare(counter, set_aside,
- 				     XFS_FDBLOCKS_BATCH) >= 0) {
- 		/* we had space! */
--- 
-2.39.3
-
+Thanks,
+Amir.
