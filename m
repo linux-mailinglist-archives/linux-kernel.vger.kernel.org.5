@@ -2,74 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE02B7E9155
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF957E9157
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjKLPJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:09:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38538 "EHLO
+        id S231515AbjKLPKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLPJH (ORCPT
+        with ESMTP id S229588AbjKLPKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:09:07 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD9E2D57
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:09:04 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5b9a1494e65so3257501a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:09:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699801744; x=1700406544;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=srdz066tvvTdM4CmNeOwelm2biHAQtgJiKmsTshSsQM=;
-        b=PTp3+q7tnP8UOLRZOLTP80Riu94rOlRlf3TYbdcsQfJdiKbG/gHF0Wb3q1dgDWZXqo
-         C2/HXA9HeFnlnzTC2Xen/AerZeCjRkjTlK9BWUoD0OazROAds4lJNZPaNCVrOjsZOdtL
-         lSJuN+WyMovw7RU7qjMP9K9vAYpuuEsm4UXywBHw0jDoUJvu3YaoJQ3vTAW+90UT4GBM
-         PB3pqRJ3gU5feS6jnAtYQmR3/G3mNmG7BaL63Vdnsw9/8t8leISoujLHUWCu+LJN5VXq
-         RCDvOmSQLh2WwTNnJiwwrnLCJ/Qecw+vJixkGIsX2eqIIwbC9T0ezl1fQzkvA6oUXnSo
-         c7fg==
-X-Gm-Message-State: AOJu0Yzm4UwcsOGFYpwa0Tbk3qtw+kpTIsymBNXk14hwfD0arVMlc5Wm
-        pO3WWn9U+pJiJhTx053SlAIcfx3S09B2NJVCmqIlRvGkuGM9
-X-Google-Smtp-Source: AGHT+IGs5Bkh6t4mkKR/0xr7IdzglfJ6hUWB8xmVEG9vXFMRG6t/rR+LHznVq6ba/NS14YuOHKxykcNXYixm3z/LZbZCrCy89uco
+        Sun, 12 Nov 2023 10:10:13 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A8DD54;
+        Sun, 12 Nov 2023 07:10:06 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r2C5t-0006fq-0O;
+        Sun, 12 Nov 2023 15:09:49 +0000
+Date:   Sun, 12 Nov 2023 15:09:42 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 5/8] mtd: ubi: attach MTD partition from device-tree
+Message-ID: <ZVDqtn1uuWrSLXNq@makrotopia.org>
+References: <cover.1691717480.git.daniel@makrotopia.org>
+ <df8cfc16a0047c1041a8f8d0069c6312bb83da0d.1691717480.git.daniel@makrotopia.org>
+ <226381209.31782.1696362327615.JavaMail.zimbra@nod.at>
+ <1863543078.49676.1696538801349.JavaMail.zimbra@nod.at>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a02:523:b0:5bd:9b7f:b08d with SMTP id
- bx35-20020a056a02052300b005bd9b7fb08dmr1552203pgb.0.1699801744211; Sun, 12
- Nov 2023 07:09:04 -0800 (PST)
-Date:   Sun, 12 Nov 2023 07:09:04 -0800
-In-Reply-To: <CAOQ4uxhnY+hzfCA7A2aTfVKsveR9g6Hn=FbFrjFuXs8w3sYX5Q@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000271e420609f5eff0@google.com>
-Subject: Re: [syzbot] [overlayfs?] memory leak in ovl_parse_param
-From:   syzbot <syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com>
-To:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1863543078.49676.1696538801349.JavaMail.zimbra@nod.at>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Richard,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+thank you for the review and sorry for my late reply to it.
 
-Reported-and-tested-by: syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com
+On Thu, Oct 05, 2023 at 10:46:41PM +0200, Richard Weinberger wrote:
+> ----- Ursprüngliche Mail -----
+> > Von: "richard" <richard@nod.at>
+> > ----- Ursprüngliche Mail -----
+> >> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> >> index e0618bbde3613..99b5f502c9dbc 100644
+> >> --- a/drivers/mtd/ubi/block.c
+> >> +++ b/drivers/mtd/ubi/block.c
+> >> @@ -470,7 +470,7 @@ int ubiblock_remove(struct ubi_volume_info *vi, bool force)
+> >> 	}
+> >> 
+> >> 	/* Found a device, let's lock it so we can check if it's busy */
+> >> -	mutex_lock(&dev->dev_mutex);
+> >> +	mutex_lock_nested(&dev->dev_mutex, SINGLE_DEPTH_NESTING);
+> > 
+> > The usage of mutex_lock_nested() in this patch looks fishy.
+> > Can you please elaborate a bit more why all these mutexes can be taken twice?
+> > (Any why not more often).
+> 
+> I think I figured myself.
+> ubiblock_ops->open() and ->release() are both called with disk->open_mutex held.
+> ubiblock_open() and ubiblock_release() take dev->dev_mutex.
+> So, the locking order is open_mutex, followed by dev_mutex.
+> 
+> On the other hand, ubiblock_remove() is called via UBI notify.
+> It takes first dev_mutex and then calls del_gendisk() which will trigger ubiblock_ops->release()
+> under disk->open_mutex but takes dev_mutex again.
+> So, we this not only takes a lock twice but also in reverse order.
+> mutex_lock_nested() might silence lockdep but I'm not sure whether this is safe at all.
 
-Tested on:
+I agree that the locking here is not trivial.
+Taking the same lock twice is that SINGLE_DEPTH_NESTING is intended
+for and resolves running into a deadlock otherwise.
+I'm not sure if the changed order of acquiring dev_mutex and open_mutex
+present a problem.
 
-commit:         97d58994 ovl: fix memory leak in ovl_parse_param()
-git tree:       https://github.com/amir73il/linux ovl-fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=12394b97680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ecfdf78a410c834
-dashboard link: https://syzkaller.appspot.com/bug?extid=26eedf3631650972f17c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+The detach-by-notification case is anyway quite exotic and I only see
+quite synthetic paths to actually get there (such as hotplug removal
+of the SPI controller providing access to SPI-NAND flash, which is how
+I was testing this...). To make things easier and more aligned with
+the original goal (being to attach a UBI device from DT, early enough
+to allow its use as NVMEM provider by other drivers) I suggest to for
+now only handle attachment by MTD notification (if linux,ubi compatible
+is present in DT) and keep handling detachment the way it is now.
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+This will (just like it is already now) result in "zombie" UBI devices
+being present after their MTD device has already been removed. Accessing
+them creates loud kernel warnings at best.
+
+Let me know if keeing detachment the way it is and only implementing
+attaching from MTD notification and device tree compatible would be ok
+with you.
+
+Thank you!
+
+
+Best regards
+
+
+Daniel
