@@ -2,154 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527977E91A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 17:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BF07E91A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 17:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbjKLQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 11:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
+        id S231624AbjKLQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 11:28:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjKLQVK (ORCPT
+        with ESMTP id S229607AbjKLQ2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 11:21:10 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D750D10F;
-        Sun, 12 Nov 2023 08:21:05 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9c41e95efcbso549071866b.3;
-        Sun, 12 Nov 2023 08:21:05 -0800 (PST)
+        Sun, 12 Nov 2023 11:28:40 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D23E10F
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:28:36 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so5672264a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 08:28:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699806064; x=1700410864; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1OrXFo0vPGL3hX7Hm59m5vH+8jZa+Ui82KckLq8z0Qk=;
-        b=Xy8wqJkWpRyA/r+Uf4bkb3xr37101c5MZ/+c2Bc1ajGl+34fGGIO7Ed5v20sdAhFIr
-         vaaphRwSxhHdlYFmbruAg8ahIDRtFfCDHEZa8AQdcTjF3I9Tqek7doSCbImRVuBrmviB
-         2SuvkEbxL9QRbHDpSf1ArjiE/LIf4eZU93JzRVVOCsRDu07O+wFX0zO+OoEDXOYK3AKg
-         64oWjarKAQh9VPtjtV4wFrG1CSPk5JcCLsKpqmxUt8PIOQ+I/01vq9jSJpofswEdBIOI
-         CThPSscDgROH/XwTaQiNM9Ig2C2EZOQvDG9XbebJPp9j2A2DwqkEGc2jqZ8/AyR84GX+
-         3Sag==
+        d=semihalf.com; s=google; t=1699806515; x=1700411315; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VCbs69Tds4xA2ve8042KTHQeH0ZiMjy62WCu32iSZ4o=;
+        b=m2e0inb+6Vxvcy64FLvQwPMYFXgicPxwexBYL2x/QhIsyWD20fgyzwiOw57FMUXpI3
+         jfKVZnsNnacFtjvEb5RXxQRLwyFW+OXQv7uoOaoeHXOenKStR1zV3e6lrOs4zDIoRoIa
+         gFvXScFVprqQrUdtqDmhOoj+TIcVAWmcYXEg7+7YwKwl1g19jL93eqh13CoYpr2KTNdW
+         psyNBzIzZmoLcLMXTwUUbmJ0qYyMcTb/WoiMz8+c5znCaEZ4OMr45fQjE09S3uV/bud1
+         Z4U2hngCTrle0FDBBc1hhnUfdXBrlxR+9n8tEvEzx9GUP7beWkU2c16JO4WCQ05m2TWY
+         1mQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699806064; x=1700410864;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1OrXFo0vPGL3hX7Hm59m5vH+8jZa+Ui82KckLq8z0Qk=;
-        b=QUeygmj8NsEN1eWaIR+/viVvtWXfXX3kj6GWolJG5jEyB3dS+0jn2lXjJ/GcFm68LD
-         P3MAodSd2veOj3iCYM0wPY1wmGIzkDlAoIz3ei3H3GV9bWjwV4LaniDfC5KS7cEX2qau
-         lI0zVqpuhL4uVd3zfS6k26odf6mczghpQiniLAb+jUDRTYpcV7svFGG6ivQbMhvHmZdI
-         GPLXBnKIQjhEi+OsesoIZ/4PFNsYbdmGDX4zKNTpXru8dWs97GK8jz578gOlb++HlwyI
-         ELN/5zBOSLXZxJ72sIrHT3dKVtYyGUZ++/fn6OcQExTHwrYsL2U8UvMlMhaugXlCFBoH
-         5uvg==
-X-Gm-Message-State: AOJu0Yw7o+uNpqDp+deR5MgGgd2ZHVB6caJ2EeKgXtZdB3J5DX2DZiDp
-        fJtImEkuTGT1gi7eAf4h/LY=
-X-Google-Smtp-Source: AGHT+IFWP1pZm7xQalD2dDe1I+aO4QjZCS/JCYouj88INnSLsVsC7z3DjkwWXEIXM1x1umSEi7tJwg==
-X-Received: by 2002:a17:906:5fc7:b0:9b2:aa2f:ab69 with SMTP id k7-20020a1709065fc700b009b2aa2fab69mr2712176ejv.30.1699806063828;
-        Sun, 12 Nov 2023 08:21:03 -0800 (PST)
-Received: from localhost.localdomain ([2a02:8109:8c00:3664:c3d6:f005:2a2d:87db])
-        by smtp.gmail.com with ESMTPSA id a5-20020a1709062b0500b009ae69c303aasm2731662ejg.137.2023.11.12.08.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 08:21:03 -0800 (PST)
-From:   Nik Bune <n2h9z4@gmail.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        skhan@linuxfoundation.org, afaerber@suse.de
-Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: watchdog: realtek,rtd1295-watchdog: convert txt to yaml
-Date:   Sun, 12 Nov 2023 17:20:49 +0100
-Message-Id: <20231112162049.12633-1-n2h9z4@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1699806515; x=1700411315;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VCbs69Tds4xA2ve8042KTHQeH0ZiMjy62WCu32iSZ4o=;
+        b=ID0nsdNb0nBITT7GUDuDE3cfieLsMqtwd8diOHhAtvKHLxIjFzA3Rv6WW77KHBCS1i
+         bPK2Ub4sgJmBPpQu3qAXe7evSQitZbyE+xai2BRkfyet5Ay3gwxwcGlHlIO6eFG8FYHf
+         SyzErg1m8V2cmWh80hzj1Ompfw6EAa0Zj1cOOQvECvaf55PlJ6TJBsBAefhmioPr8H9E
+         Jig2lKVEGUa3CG1GhhOsxqbEJXlR2aLxwri05v8gyxsdDp7fbnCBq5fheRS9HGsgrIMR
+         9/rWJkmT5lFyifxSNJnMIzDwO/mINBmo0L5kJxCUN97Pu0U1lpmrawwWu4hsEfjIqQ0u
+         2iMQ==
+X-Gm-Message-State: AOJu0Yw/SORZWltp3HKuzp3fQpQoj481ku82am2bjkrwIaM27wpX2TD5
+        AFB+cQIM4LVYhepdujUzUHx1Ag1DOjCss/M011uj
+X-Google-Smtp-Source: AGHT+IFuvMBh+5u5eIrx+y6uiAEUta5B44PaprHsuU3/24YXVfX/f36AJatOTUj1BT6FBDEXwPba0/YFZOKk6SUjRAU=
+X-Received: by 2002:a05:6402:609:b0:53f:8493:5b0b with SMTP id
+ n9-20020a056402060900b0053f84935b0bmr2693884edv.35.1699806514975; Sun, 12 Nov
+ 2023 08:28:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-5-lb@semihalf.com>
+ <20231106185513.79411f9a@gandalf.local.home> <CAK8Bye+eAad4Lx6BWztD4Eax_WLyGB39oV2VFDfL5pGJJTYgcw@mail.gmail.com>
+ <CAJfuBxxxW5qHRNRXfkNZwvKrLWeTVWZL2QQQck-YednN=QQ0fQ@mail.gmail.com>
+In-Reply-To: <CAJfuBxxxW5qHRNRXfkNZwvKrLWeTVWZL2QQQck-YednN=QQ0fQ@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Sun, 12 Nov 2023 17:28:23 +0100
+Message-ID: <CAK8Bye+L9Hri+mj1gc2Q8ydmtsYx=mk5+OQhXE-BHO+1VJruVw@mail.gmail.com>
+Subject: Re: [PATCH v1 04/12] dyndbg: add 2 trace-events: pr_debug, dev_dbg
+To:     jim.cromie@gmail.com
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert txt file to yaml. Add maintainers from git blame.
+pt., 10 lis 2023 o 20:20 <jim.cromie@gmail.com> napisa=C5=82(a):
+>
+> On Fri, Nov 10, 2023 at 7:51=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf=
+.com> wrote:
+> >
+> > wt., 7 lis 2023 o 00:55 Steven Rostedt <rostedt@goodmis.org> napisa=C5=
+=82(a):
+> > >
+> > > On Fri,  3 Nov 2023 14:10:03 +0100
+> > > =C5=81ukasz Bartosik <lb@semihalf.com> wrote:
+> > >
+> > > > +/* capture pr_debug() callsite descriptor and message */
+> > > > +TRACE_EVENT(prdbg,
+> > > > +         TP_PROTO(const struct _ddebug *desc, const char *text, si=
+ze_t len),
+> > > > +
+> > > > +         TP_ARGS(desc, text, len),
+> > > > +
+> > > > +         TP_STRUCT__entry(
+> > > > +                     __field(const struct _ddebug *, desc)
+> > > > +                     __dynamic_array(char, msg, len + 1)
+> > > > +                 ),
+> > > > +
+> > > > +         TP_fast_assign(
+> > > > +                     __entry->desc =3D desc;
+> > > > +                     /*
+> > > > +                      * Each trace entry is printed in a new line.
+> > > > +                      * If the msg finishes with '\n', cut it off
+> > > > +                      * to avoid blank lines in the trace.
+> > > > +                      */
+> > > > +                     if (len > 0 && (text[len - 1] =3D=3D '\n'))
+> > > > +                             len -=3D 1;
+> > > > +
+> > > > +                     memcpy(__get_str(msg), text, len);
+> > > > +                     __get_str(msg)[len] =3D 0;
+> > > > +                 ),
+> > > > +
+> > >
+> > >
+> > > > +         TP_printk("%s.%s %s", __entry->desc->modname,
+> > > > +                   __entry->desc->function, __get_str(msg))
+> > > > +);
+> > > > +
+> > >
+> > > That TP_printk() is dangerous. How do you know __entry->desc still ex=
+ists
+> > > when reading the buffer?
+> > >
+> > > Is the struct _ddebug permanent? Can it be freed? If so, the above ca=
+n
+> > > easily cause a crash.
+> > >
+> >
+> > I assume that we're talking here about the scenario where TP prdbg is
+> > called and before TP_printk runs _ddebug pointer
+> > becomes invalid, is that correct ? If so then I believe this also
+> > applied to __dynamic_pr_debug and other dyndbg functions because there
+> > is also potential for _ddebug pointer to become invalid (in case of
+> > rrmod) before a function dereferences it.
+> >
+> > Would it be acceptable to increase reference count of a module and
+> > hold it until at least one callsite in that module is enabled ?
+> > This  would ensure that passed pointer to a _ddebug struct is valid.
+> >
+>
+> Im not understanding you, but I dont think its on-point -
+>
+> a loadable module might write lots to trace-log, and each trace-entry
+> would have the descriptor address, with which it could deref and print 3 =
+fields.
+> Then rmmod happens, all the module mem is freed, and reused for someth9in=
+g else.
+>
+> then someone cats trace, and the descriptor addrs are used to render
+> the tracelog.
+> BOOM.
+>
 
-Signed-off-by: Nik Bune <n2h9z4@gmail.com>
----
- .../bindings/watchdog/realtek,rtd119x.txt     | 17 ---------
- .../watchdog/realtek,rtd1295-watchdog.yaml    | 38 +++++++++++++++++++
- 2 files changed, 38 insertions(+), 17 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml
+Jim, thanks for educating me on this one. I completely missed the fact
+that TP_printk is delayed until, for example as you mentioned cat is
+run on a trace.
 
-diff --git a/Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt b/Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt
-deleted file mode 100644
-index 05653054bd5b..000000000000
---- a/Documentation/devicetree/bindings/watchdog/realtek,rtd119x.txt
-+++ /dev/null
-@@ -1,17 +0,0 @@
--Realtek RTD1295 Watchdog
--========================
--
--Required properties:
--
--- compatible :  Should be "realtek,rtd1295-watchdog"
--- reg        :  Specifies the physical base address and size of registers
--- clocks     :  Specifies one clock input
--
--
--Example:
--
--	watchdog@98007680 {
--		compatible = "realtek,rtd1295-watchdog";
--		reg = <0x98007680 0x100>;
--		clocks = <&osc27M>;
--	};
-diff --git a/Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml b/Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml
-new file mode 100644
-index 000000000000..2a0ea1696317
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/realtek,rtd1295-watchdog.yaml
-@@ -0,0 +1,38 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/realtek,rtd1295-watchdog.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Realtek RTD1295 Watchdog
-+
-+maintainers:
-+  - Andreas Färber <afaerber@suse.de>
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+properties:
-+  compatible:
-+    const: realtek,rtd1295-watchdog
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    watchdog@98007680 {
-+        compatible = "realtek,rtd1295-watchdog";
-+        reg = <0x98007680 0x100>;
-+        clocks = <&osc27M>;
-+    };
--- 
-2.34.1
+I'll remove passing of _ddebug ptr to trace_prdbg and trace_devdbg
+functions. Probably also passing of dev ptr can removed from
+trace_devdbg.
 
+>
+>
+> > > -- Steve
