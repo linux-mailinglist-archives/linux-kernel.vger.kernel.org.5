@@ -2,130 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 505BD7E8DB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63BE7E8DB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjKLAqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 19:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
+        id S229848AbjKLAxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 19:53:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKLAqp (ORCPT
+        with ESMTP id S229436AbjKLAxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 19:46:45 -0500
-Received: from vps.thesusis.net (vps.thesusis.net [IPv6:2600:1f18:60b9:2f00:6f85:14c6:952:bad3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269142D77
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:46:42 -0800 (PST)
-Received: by vps.thesusis.net (Postfix, from userid 1000)
-        id 6442D148788; Sat, 11 Nov 2023 19:46:41 -0500 (EST)
-From:   Phillip Susi <phill@thesusis.net>
-To:     Luben Tuikov <luben.tuikov@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Radeon regression in 6.6 kernel
-Date:   Sat, 11 Nov 2023 19:46:41 -0500
-Message-ID: <87edgv4x3i.fsf@vps.thesusis.net>
+        Sat, 11 Nov 2023 19:53:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31E630F7
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699750421; x=1731286421;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5zVf3rY2XSqBS7Gz/wWCDMEQ9iDekJWIJObQ4CsDhvo=;
+  b=mqGmG6re76RQo2+tp9DI2U5v9FGs2WXOvENNy5G8RxRmUUyah1jwUUaa
+   N4PsSr8ZNXCU29fszx6+I4P3frM1Sy7QTqUEiSExrTS1GxdvXiAtJ5hcs
+   9TbkMAktoY3EDEGixbXSoYR411vE/PKY8NZod3IKt8n82k6RPvhIJoPNM
+   3S+pUK9xsl/1Gprnpj8wP8BQMLRcrhXgc8NEhN5VtcuUF/U14w3qr+oLc
+   AwhBvkxqN6iEZTH9RM/gy0L6PNmTi8q1zAEyYlISfn6JYZlwuWfOsk8VZ
+   xfIHrt1lKq/MnLfj/46qLbebvAgygLrLrDtqyOURzgr95MpwrvTVCiewg
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="369632734"
+X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
+   d="scan'208";a="369632734"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 16:53:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="854666319"
+X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
+   d="scan'208";a="854666319"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Nov 2023 16:53:40 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r1yjK-000AqQ-0G;
+        Sun, 12 Nov 2023 00:53:38 +0000
+Date:   Sun, 12 Nov 2023 08:52:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: kernel/time/hrtimer.c:1483:14: warning: variable
+ 'expires_in_hardirq' set but not used
+Message-ID: <202311120815.33YfGjzD-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I had been testing some things on a post 6.6-rc5 kernel for a week or
-two and then when I pulled to a post 6.6 release kernel, I found that
-system suspend was broken.  It seems that the radeon driver failed to
-suspend, leaving the display dead, the wayland display server hung, and
-the system still running.  I have been trying to bisect it for the last
-few days and have only been able to narrow it down to the following 3
-commits:
+Hi Sebastian,
 
-There are only 'skip'ped commits left to test.
-The first bad commit could be any of:
-56e449603f0ac580700621a356d35d5716a62ce5
-c07bf1636f0005f9eb7956404490672286ea59d3
-b70438004a14f4d0f9890b3297cd66248728546c
-We cannot bisect more!
+FYI, the error/warning still remains.
 
-It appears that there was a late merge in the 6.6 window that originally
-forked from the -rc2, as many of the later commits that I bisected had
-that version number.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
+commit: 73d20564e0dcae003e0d79977f044d5e57496304 hrtimer: Don't dereference the hrtimer pointer after the callback
+date:   3 years, 7 months ago
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231112/202311120815.33YfGjzD-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311120815.33YfGjzD-lkp@intel.com/reproduce)
 
-I couldn't get it more narrowed down because I had to skip the
-surrounding commits because they wouldn't even boot up to a gui desktop,
-let alone try to suspend.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311120815.33YfGjzD-lkp@intel.com/
 
-When system suspend fails, I find the following in my syslog after I
-have to magic-sysrq reboot because the the display is dead:
+All warnings (new ones prefixed by >>):
 
-Nov 11 18:44:39 faldara kernel: PM: suspend entry (deep)
-Nov 11 18:44:39 faldara kernel: Filesystems sync: 0.035 seconds
-Nov 11 18:44:40 faldara kernel: Freezing user space processes
-Nov 11 18:44:40 faldara kernel: Freezing user space processes completed (elapsed 0.001 seconds)
-Nov 11 18:44:40 faldara kernel: OOM killer disabled.
-Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks
-Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
-Nov 11 18:44:40 faldara kernel: printk: Suspending console(s) (use no_console_suspend to debug)
-Nov 11 18:44:40 faldara kernel: serial 00:01: disabled
-Nov 11 18:44:40 faldara kernel: e1000e: EEE TX LPI TIMER: 00000011
-Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Synchronizing SCSI cache
-Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Synchronizing SCSI cache
-Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Synchronizing SCSI cache
-Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Stopping disk
-Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Stopping disk
-Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Stopping disk
-Nov 11 18:44:40 faldara kernel: amdgpu: Move buffer fallback to memcpy unavailable
-Nov 11 18:44:40 faldara kernel: [TTM] Buffer eviction failed
-Nov 11 18:44:40 faldara kernel: [drm] evicting device resources failed
-Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: pci_pm_suspend(): amdgpu_pmops_suspend+0x0/0x80 [amdgpu] returns -19
-Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: dpm_run_callback(): pci_pm_suspend+0x0/0x170 returns -19
-Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: failed to suspend async: error -19
-Nov 11 18:44:40 faldara kernel: PM: Some devices failed to suspend, or early wake event detected
-Nov 11 18:44:40 faldara kernel: xhci_hcd 0000:06:00.0: xHC error in resume, USBSTS 0x401, Reinit
-Nov 11 18:44:40 faldara kernel: usb usb3: root hub lost power or was reset
-Nov 11 18:44:40 faldara kernel: usb usb4: root hub lost power or was reset
-Nov 11 18:44:40 faldara kernel: serial 00:01: activated
-Nov 11 18:44:40 faldara kernel: nvme nvme0: 4/0/0 default/read/poll queues
-Nov 11 18:44:40 faldara kernel: ata8: SATA link down (SStatus 0 SControl 300)
-Nov 11 18:44:40 faldara kernel: ata7: SATA link down (SStatus 0 SControl 300)
-Nov 11 18:44:40 faldara kernel: ata4: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-Nov 11 18:44:40 faldara kernel: ata1: SATA link down (SStatus 4 SControl 300)
-Nov 11 18:44:40 faldara kernel: ata3: SATA link down (SStatus 4 SControl 300)
-Nov 11 18:44:40 faldara kernel: ata4.00: configured for UDMA/133
-Nov 11 18:44:40 faldara kernel: OOM killer enabled.
-Nov 11 18:44:40 faldara kernel: Restarting tasks ... done.
-Nov 11 18:44:40 faldara kernel: random: crng reseeded on system resumption
-Nov 11 18:44:40 faldara kernel: PM: suspend exit
-Nov 11 18:44:40 faldara kernel: PM: suspend entry (s2idle)
-Nov 11 18:44:40 faldara systemd-networkd[384]: enp0s31f6: Gained IPv6LL
-Nov 11 18:44:40 faldara avahi-daemon[668]: Joining mDNS multicast group on interface enp0s31f6.IPv6 with address fe80::3ad5:47ff:fe0f:488a.
+   kernel/time/hrtimer.c:120:35: warning: initialized field overwritten [-Woverride-init]
+     120 |         [CLOCK_REALTIME]        = HRTIMER_BASE_REALTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:120:35: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
+   kernel/time/hrtimer.c:121:35: warning: initialized field overwritten [-Woverride-init]
+     121 |         [CLOCK_MONOTONIC]       = HRTIMER_BASE_MONOTONIC,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:121:35: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
+   kernel/time/hrtimer.c:122:35: warning: initialized field overwritten [-Woverride-init]
+     122 |         [CLOCK_BOOTTIME]        = HRTIMER_BASE_BOOTTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:122:35: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
+   kernel/time/hrtimer.c:123:35: warning: initialized field overwritten [-Woverride-init]
+     123 |         [CLOCK_TAI]             = HRTIMER_BASE_TAI,
+         |                                   ^~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:123:35: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
+   kernel/time/hrtimer.c: In function '__run_hrtimer':
+>> kernel/time/hrtimer.c:1483:14: warning: variable 'expires_in_hardirq' set but not used [-Wunused-but-set-variable]
+    1483 |         bool expires_in_hardirq;
+         |              ^~~~~~~~~~~~~~~~~~
 
-My video card is this:
 
-03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 23 (rev c7) (prog-if 00 [VGA controller])
-        Subsystem: Gigabyte Technology Co., Ltd Navi 23
-        Flags: bus master, fast devsel, latency 0, IRQ 139
-        Memory at e0000000 (64-bit, prefetchable) [size=256M]
-        Memory at f0000000 (64-bit, prefetchable) [size=2M]
-        I/O ports at e000 [size=256]
-        Memory at f7900000 (32-bit, non-prefetchable) [size=1M]
-        Expansion ROM at 000c0000 [disabled] [size=128K]
-        Capabilities: [48] Vendor Specific Information: Len=08 <?>
-        Capabilities: [50] Power Management version 3
-        Capabilities: [64] Express Legacy Endpoint, MSI 00
-        Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
-        Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
-        Capabilities: [150] Advanced Error Reporting
-        Capabilities: [200] Physical Resizable BAR
-        Capabilities: [240] Power Budgeting <?>
-        Capabilities: [270] Secondary PCI Express
-        Capabilities: [2a0] Access Control Services
-        Capabilities: [2d0] Process Address Space ID (PASID)
-        Capabilities: [320] Latency Tolerance Reporting
-        Capabilities: [410] Physical Layer 16.0 GT/s <?>
-        Capabilities: [440] Lane Margining at the Receiver <?>
-        Kernel driver in use: amdgpu
-        Kernel modules: amdgpu
+vim +/expires_in_hardirq +1483 kernel/time/hrtimer.c
+
+  1458	
+  1459	/*
+  1460	 * The write_seqcount_barrier()s in __run_hrtimer() split the thing into 3
+  1461	 * distinct sections:
+  1462	 *
+  1463	 *  - queued:	the timer is queued
+  1464	 *  - callback:	the timer is being ran
+  1465	 *  - post:	the timer is inactive or (re)queued
+  1466	 *
+  1467	 * On the read side we ensure we observe timer->state and cpu_base->running
+  1468	 * from the same section, if anything changed while we looked at it, we retry.
+  1469	 * This includes timer->base changing because sequence numbers alone are
+  1470	 * insufficient for that.
+  1471	 *
+  1472	 * The sequence numbers are required because otherwise we could still observe
+  1473	 * a false negative if the read side got smeared over multiple consequtive
+  1474	 * __run_hrtimer() invocations.
+  1475	 */
+  1476	
+  1477	static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
+  1478				  struct hrtimer_clock_base *base,
+  1479				  struct hrtimer *timer, ktime_t *now,
+  1480				  unsigned long flags) __must_hold(&cpu_base->lock)
+  1481	{
+  1482		enum hrtimer_restart (*fn)(struct hrtimer *);
+> 1483		bool expires_in_hardirq;
+  1484		int restart;
+  1485	
+  1486		lockdep_assert_held(&cpu_base->lock);
+  1487	
+  1488		debug_deactivate(timer);
+  1489		base->running = timer;
+  1490	
+  1491		/*
+  1492		 * Separate the ->running assignment from the ->state assignment.
+  1493		 *
+  1494		 * As with a regular write barrier, this ensures the read side in
+  1495		 * hrtimer_active() cannot observe base->running == NULL &&
+  1496		 * timer->state == INACTIVE.
+  1497		 */
+  1498		raw_write_seqcount_barrier(&base->seq);
+  1499	
+  1500		__remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE, 0);
+  1501		fn = timer->function;
+  1502	
+  1503		/*
+  1504		 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
+  1505		 * timer is restarted with a period then it becomes an absolute
+  1506		 * timer. If its not restarted it does not matter.
+  1507		 */
+  1508		if (IS_ENABLED(CONFIG_TIME_LOW_RES))
+  1509			timer->is_rel = false;
+  1510	
+  1511		/*
+  1512		 * The timer is marked as running in the CPU base, so it is
+  1513		 * protected against migration to a different CPU even if the lock
+  1514		 * is dropped.
+  1515		 */
+  1516		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
+  1517		trace_hrtimer_expire_entry(timer, now);
+  1518		expires_in_hardirq = lockdep_hrtimer_enter(timer);
+  1519	
+  1520		restart = fn(timer);
+  1521	
+  1522		lockdep_hrtimer_exit(expires_in_hardirq);
+  1523		trace_hrtimer_expire_exit(timer);
+  1524		raw_spin_lock_irq(&cpu_base->lock);
+  1525	
+  1526		/*
+  1527		 * Note: We clear the running state after enqueue_hrtimer and
+  1528		 * we do not reprogram the event hardware. Happens either in
+  1529		 * hrtimer_start_range_ns() or in hrtimer_interrupt()
+  1530		 *
+  1531		 * Note: Because we dropped the cpu_base->lock above,
+  1532		 * hrtimer_start_range_ns() can have popped in and enqueued the timer
+  1533		 * for us already.
+  1534		 */
+  1535		if (restart != HRTIMER_NORESTART &&
+  1536		    !(timer->state & HRTIMER_STATE_ENQUEUED))
+  1537			enqueue_hrtimer(timer, base, HRTIMER_MODE_ABS);
+  1538	
+  1539		/*
+  1540		 * Separate the ->running assignment from the ->state assignment.
+  1541		 *
+  1542		 * As with a regular write barrier, this ensures the read side in
+  1543		 * hrtimer_active() cannot observe base->running.timer == NULL &&
+  1544		 * timer->state == INACTIVE.
+  1545		 */
+  1546		raw_write_seqcount_barrier(&base->seq);
+  1547	
+  1548		WARN_ON_ONCE(base->running != timer);
+  1549		base->running = NULL;
+  1550	}
+  1551	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
