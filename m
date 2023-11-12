@@ -2,98 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857307E8F77
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 11:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2D27E8F7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 11:31:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjKLKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 05:16:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40388 "EHLO
+        id S230106AbjKLKZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 05:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLKQt (ORCPT
+        with ESMTP id S229441AbjKLKZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 05:16:49 -0500
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89072D5B
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 02:16:46 -0800 (PST)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-27ffe79ec25so3199015a91.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 02:16:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699784206; x=1700389006;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=szfYGuq6xLkwMb4SwvSEBi6GZzm4ffU+BRqEBByqr/c=;
-        b=t0O4anP9rMInViSKhRLz8FPGjSHiBwQZbHhGKKNYXEleQGadmAyuqML5SVkyiP8jOE
-         IDocRLGEw1NQRCpxjAzTuIrH0/YXWUjnewluyoRFVfOI/TYfC3P2b66/Kq7oy8wpMd9W
-         VCebQGVKADLBg1tyeBVKKBzCOFdbNUBlAatu0DaoJzOsNsQBQ/bcIUB+U+/GieiAiTRr
-         VlQ3HxIRvOChcSCOxSgN+E0Rkauat1vQuXZsg7eKJdtJl2rs4LIH7Fi0dzJRptHmTW3s
-         hVtRBUh/18S4ZKeSith2w7QSelonUBHHQl0nw1j+CbyVQ+CncYrc90uk4KfPwEtxQDwi
-         lwXA==
-X-Gm-Message-State: AOJu0YwKdoMS5Gy/rGX9+IkPYVvWVDvJRUcY1LIh7llx3qJKmrDv1Rsb
-        bWRvmkripZyIO8dqGdaqYdPLvf7WTv05GDUgZzavZAcg9NpBGaQ=
-X-Google-Smtp-Source: AGHT+IETiCAAZgRiYSLTpm8P4U3iwb/zgf//JPwvX5gzIw8Fkh8VGXuFZVh6gIXQlsVbUbcbOVbF9zVKbI/V7vPsL8B2U3cewJj3
+        Sun, 12 Nov 2023 05:25:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D65B2D61
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 02:25:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07C12C433C7;
+        Sun, 12 Nov 2023 10:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699784723;
+        bh=0QkLo9IpYIbHDWyOm+BKqCtxL99jBaY9bKdH4NXtmJQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aGCaXIxSRxIMnCY6UiUqIg0d1r5hI521GzoIUoSwW8kZJ862Zhzr+j7DcYlgCxU/1
+         IUgQ7RuEh7u8V6epkCzBWap/VA1XGRPeZo3H66vmzwzVz2ApYJLaHoy6DZIqnazI6u
+         0y1sbg0gXbjxTmImFcAFtAZ5x+hBAtxOJUpCSdgm9FNpQ281sMRZXup3WD2Z3SbPoa
+         ZvZKIr1JwLfIFQ9ctq9JaIIASrpDZBLYbXnoeX5F8VRWrTIVS48b3Ne8WZhiAexm/H
+         fI4EMnfBEdXLCqlTazld6QX3bTSZ28Y0ZtI623rOLzdinXwyStiVTeoYOhUCTu+eUG
+         V4NO1WLJEtUVQ==
+Date:   Sun, 12 Nov 2023 10:25:13 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Shigeru Yoshida <syoshida@redhat.com>
+Cc:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] tipc: Fix kernel-infoleak due to uninitialized TLV
+ value
+Message-ID: <20231112102513.GJ705326@kernel.org>
+References: <20231110163947.1605168-1-syoshida@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:2dcc:b0:280:2f43:1f32 with SMTP id
- sk12-20020a17090b2dcc00b002802f431f32mr1135879pjb.2.1699784206560; Sun, 12
- Nov 2023 02:16:46 -0800 (PST)
-Date:   Sun, 12 Nov 2023 02:16:46 -0800
-In-Reply-To: <000000000000f5ce160602f29dd6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d3b4b30609f1d94d@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
-From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110163947.1605168-1-syoshida@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rm9yIGFyY2hpdmFsIHB1cnBvc2VzLCBmb3J3YXJkaW5nIGFuIGluY29taW5nIGNvbW1hbmQgZW1h
-aWwgdG8KbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZy4KCioqKgoKU3ViamVjdDogUmU6IFtz
-eXpib3RdIFtidHJmcz9dIG1lbW9yeSBsZWFrIGluIGJ0cmZzX3JlZl90cmVlX21vZApBdXRob3I6
-IGJyYWdhdGhlbWFuaWNrMDkwOEBnbWFpbC5jb20KCiNzeXogdGVzdCANCmh0dHBzOi8vZ2l0Lmtl
-cm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdCANCjI1
-YWEwYmViYmE3Mg0KDQotLS0gYS9mcy9idHJmcy9yZWYtdmVyaWZ5LmMNCisrKyBiL2ZzL2J0cmZz
-L3JlZi12ZXJpZnkuYw0KQEAgLTc5MSw2ICs3OTEsNyBAQCBpbnQgYnRyZnNfcmVmX3RyZWVfbW9k
-KHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvLA0KIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-ZHVtcF9yZWZfYWN0aW9uKGZzX2luZm8sIHJhKTsNCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIGtm
-cmVlKHJlZik7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBrZnJlZShyYSk7DQorwqDCoMKgIMKg
-wqDCoCDCoMKgwqAga2ZyZWUocmUpOw0KIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgZ290byBvdXRf
-dW5sb2NrOw0KIMKgwqDCoMKgIMKgwqDCoCB9IGVsc2UgaWYgKGJlLT5udW1fcmVmcyA9PSAwKSB7
-DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBidHJmc19lcnIoZnNfaW5mbywNCkBAIC04MDAsNiAr
-ODAxLDcgQEAgaW50IGJ0cmZzX3JlZl90cmVlX21vZChzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNf
-aW5mbywNCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIGR1bXBfcmVmX2FjdGlvbihmc19pbmZvLCBy
-YSk7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBrZnJlZShyZWYpOw0KIMKgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAga2ZyZWUocmEpOw0KK8KgwqDCoCDCoMKgwqAgwqDCoMKgIGtmcmVlKHJlKTsNCiDC
-oMKgwqDCoCDCoMKgwqAgwqDCoMKgIGdvdG8gb3V0X3VubG9jazsNCiDCoMKgwqDCoCDCoMKgwqAg
-fQ0KQEAgLTgyMiw2ICs4MjQsNyBAQCBpbnQgYnRyZnNfcmVmX3RyZWVfbW9kKHN0cnVjdCBidHJm
-c19mc19pbmZvICpmc19pbmZvLA0KIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGR1bXBf
-cmVmX2FjdGlvbihmc19pbmZvLCByYSk7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-a2ZyZWUocmVmKTsNCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBrZnJlZShyYSk7DQor
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGtmcmVlKHJlKTsNCiDCoMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIMKgwqDCoCBnb3RvIG91dF91bmxvY2s7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCB9
-DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBleGlzdC0+bnVtX3JlZnMtLTsNCkBAIC04MzgsNiAr
-ODQxLDcgQEAgaW50IGJ0cmZzX3JlZl90cmVlX21vZChzdHJ1Y3QgYnRyZnNfZnNfaW5mbyAqZnNf
-aW5mbywNCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIGR1bXBfcmVmX2FjdGlvbihmc19pbmZvLCBy
-YSk7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBrZnJlZShyZWYpOw0KIMKgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAga2ZyZWUocmEpOw0KK8KgwqDCoCDCoMKgwqAgwqDCoMKgIGtmcmVlKHJlKTsNCiDC
-oMKgwqDCoCDCoMKgwqAgwqDCoMKgIGdvdG8gb3V0X3VubG9jazsNCiDCoMKgwqDCoCDCoMKgwqAg
-fQ0KIMKgwqDCoMKgIMKgwqDCoCBrZnJlZShyZWYpOw0KQEAgLTg0OSw2ICs4NTMsNyBAQCBpbnQg
-YnRyZnNfcmVmX3RyZWVfbW9kKHN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvLA0KIMKgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgZHVtcF9yZWZfYWN0aW9uKGZzX2luZm8sIHJhKTsNCiDCoMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIGtmcmVlKHJlZik7DQogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCBrZnJl
-ZShyYSk7DQorwqDCoMKgIMKgwqDCoCDCoMKgwqAga2ZyZWUocmUpOw0KIMKgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgZ290byBvdXRfdW5sb2NrOw0KIMKgwqDCoMKgIMKgwqDCoCB9DQogwqDCoMKgwqAg
-fQ0KQEAgLTg4MSw2ICs4ODYsOCBAQCBpbnQgYnRyZnNfcmVmX3RyZWVfbW9kKHN0cnVjdCBidHJm
-c19mc19pbmZvICpmc19pbmZvLA0KIMKgwqDCoMKgIH0NCiDCoMKgwqDCoCBsaXN0X2FkZF90YWls
-KCZyYS0+bGlzdCwgJmJlLT5hY3Rpb25zKTsNCiDCoMKgwqDCoCByZXQgPSAwOw0KK8KgwqDCoCBr
-ZnJlZShyYSk7DQorwqDCoMKgIGtmcmVlKHJlKTsNCiDCoG91dF91bmxvY2s6DQogwqDCoMKgwqAg
-c3Bpbl91bmxvY2soJmZzX2luZm8tPnJlZl92ZXJpZnlfbG9jayk7DQogwqBvdXQ6DQoNCg==
+On Sat, Nov 11, 2023 at 01:39:47AM +0900, Shigeru Yoshida wrote:
+> KMSAN reported the following kernel-infoleak issue:
+> 
+> =====================================================
+> BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+> BUG: KMSAN: kernel-infoleak in copy_to_user_iter lib/iov_iter.c:24 [inline]
+> BUG: KMSAN: kernel-infoleak in iterate_ubuf include/linux/iov_iter.h:29 [inline]
+> BUG: KMSAN: kernel-infoleak in iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+> BUG: KMSAN: kernel-infoleak in iterate_and_advance include/linux/iov_iter.h:271 [inline]
+> BUG: KMSAN: kernel-infoleak in _copy_to_iter+0x4ec/0x2bc0 lib/iov_iter.c:186
+>  instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+>  copy_to_user_iter lib/iov_iter.c:24 [inline]
+>  iterate_ubuf include/linux/iov_iter.h:29 [inline]
+>  iterate_and_advance2 include/linux/iov_iter.h:245 [inline]
+>  iterate_and_advance include/linux/iov_iter.h:271 [inline]
+>  _copy_to_iter+0x4ec/0x2bc0 lib/iov_iter.c:186
+>  copy_to_iter include/linux/uio.h:197 [inline]
+>  simple_copy_to_iter net/core/datagram.c:532 [inline]
+>  __skb_datagram_iter.5+0x148/0xe30 net/core/datagram.c:420
+>  skb_copy_datagram_iter+0x52/0x210 net/core/datagram.c:546
+>  skb_copy_datagram_msg include/linux/skbuff.h:3960 [inline]
+>  netlink_recvmsg+0x43d/0x1630 net/netlink/af_netlink.c:1967
+>  sock_recvmsg_nosec net/socket.c:1044 [inline]
+>  sock_recvmsg net/socket.c:1066 [inline]
+>  __sys_recvfrom+0x476/0x860 net/socket.c:2246
+>  __do_sys_recvfrom net/socket.c:2264 [inline]
+>  __se_sys_recvfrom net/socket.c:2260 [inline]
+>  __x64_sys_recvfrom+0x130/0x200 net/socket.c:2260
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Uninit was created at:
+>  slab_post_alloc_hook+0x103/0x9e0 mm/slab.h:768
+>  slab_alloc_node mm/slub.c:3478 [inline]
+>  kmem_cache_alloc_node+0x5f7/0xb50 mm/slub.c:3523
+>  kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:560
+>  __alloc_skb+0x2fd/0x770 net/core/skbuff.c:651
+>  alloc_skb include/linux/skbuff.h:1286 [inline]
+>  tipc_tlv_alloc net/tipc/netlink_compat.c:156 [inline]
+>  tipc_get_err_tlv+0x90/0x5d0 net/tipc/netlink_compat.c:170
+>  tipc_nl_compat_recv+0x1042/0x15d0 net/tipc/netlink_compat.c:1324
+>  genl_family_rcv_msg_doit net/netlink/genetlink.c:972 [inline]
+>  genl_family_rcv_msg net/netlink/genetlink.c:1052 [inline]
+>  genl_rcv_msg+0x1220/0x12c0 net/netlink/genetlink.c:1067
+>  netlink_rcv_skb+0x4a4/0x6a0 net/netlink/af_netlink.c:2545
+>  genl_rcv+0x41/0x60 net/netlink/genetlink.c:1076
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+>  netlink_unicast+0xf4b/0x1230 net/netlink/af_netlink.c:1368
+>  netlink_sendmsg+0x1242/0x1420 net/netlink/af_netlink.c:1910
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  __sock_sendmsg net/socket.c:745 [inline]
+>  ____sys_sendmsg+0x997/0xd60 net/socket.c:2588
+>  ___sys_sendmsg+0x271/0x3b0 net/socket.c:2642
+>  __sys_sendmsg net/socket.c:2671 [inline]
+>  __do_sys_sendmsg net/socket.c:2680 [inline]
+>  __se_sys_sendmsg net/socket.c:2678 [inline]
+>  __x64_sys_sendmsg+0x2fa/0x4a0 net/socket.c:2678
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Bytes 34-35 of 36 are uninitialized
+> Memory access of size 36 starts at ffff88802d464a00
+> Data copied to user address 00007ff55033c0a0
+> 
+> CPU: 0 PID: 30322 Comm: syz-executor.0 Not tainted 6.6.0-14500-g1c41041124bd #10
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+> =====================================================
+> 
+> tipc_add_tlv() puts TLV descriptor and value onto `skb`. This size is
+> calculated with TLV_SPACE() macro. It adds the size of struct tlv_desc and
+> the length of TLV value passed as an argument, and aligns the result to a
+> multiple of TLV_ALIGNTO, i.e., a multiple of 4 bytes.
+> 
+> If the size of struct tlv_desc plus the length of TLV value is not aligned,
+> the current implementation leaves the remaining bytes uninitialized. This
+> is the cause of the above kernel-infoleak issue.
+> 
+> This patch resolves this issue by clearing data up to an aligned size.
+> 
+> Fixes: d0796d1ef63d ("tipc: convert legacy nl bearer dump to nl compat")
+> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+
+Thanks Yoshida-san,
+
+I agree with both your analysis and that the fix is correct.
+I also agree that the problem was introduced by the cited commit.
+
+I did wonder if there would be an advantage to only zeroing the
+otherwise uninitialised portion of tlv, but I guess that the complexity
+isn't worth any gain: all of TLV likely fits into a single cacheline
+anyway.
+
+Reviewed-by: Simon Horman <horms@kernel.org>
+
+> ---
+>  net/tipc/netlink_compat.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+> index 5bc076f2fa74..c763008a8adb 100644
+> --- a/net/tipc/netlink_compat.c
+> +++ b/net/tipc/netlink_compat.c
+> @@ -102,6 +102,7 @@ static int tipc_add_tlv(struct sk_buff *skb, u16 type, void *data, u16 len)
+>  		return -EMSGSIZE;
+>  
+>  	skb_put(skb, TLV_SPACE(len));
+> +	memset(tlv, 0, TLV_SPACE(len));
+>  	tlv->tlv_type = htons(type);
+>  	tlv->tlv_len = htons(TLV_LENGTH(len));
+>  	if (len && data)
+> -- 
+> 2.41.0
+> 
+> 
