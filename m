@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D217E9098
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205F07E9090
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:31:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbjKLN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:28:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S232036AbjKLN2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbjKLN22 (ORCPT
+        with ESMTP id S231809AbjKLN23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:28:28 -0500
+        Sun, 12 Nov 2023 08:28:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D3246AE;
-        Sun, 12 Nov 2023 05:27:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3128C433CC;
-        Sun, 12 Nov 2023 13:27:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E38F46BE;
+        Sun, 12 Nov 2023 05:27:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14466C433CA;
+        Sun, 12 Nov 2023 13:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795661;
-        bh=y0TfggzpWPb/Wa1ssWhr5QrBaCm4qGZr1+mG4H75+iI=;
+        s=k20201202; t=1699795662;
+        bh=3nzoF+tSEZc5ik9xJbegJXdgsdemyYkX/ovnGBxRFcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rp+uNag7p/eUBqJrjcwFyacEd8gE47bjey8O33VwbQV3r9ztB2kF+rBI+0Q6IeA42
-         JI4HmPsS/iVd+02helf2/623Z2fbM91jG1O1wq/Hb3J3aDCuD0HIj42gkigmgw+Nuo
-         85nHhAkUJJOYnjlEGBarUs7s/vgEQsqH7G1ePqUX6pKk1sRh7xGB6stBwaF1rBdi7F
-         YC4Yn7y4Iw6Gc6hNooP3rqe+xUgBtpJyI9wirMJqclrv2vre+WSqsJS/TACaHdUx+O
-         bHQpv6VgXVLoGynSs65woUwSPQ2qlnsKdKw5HEa06CAhCaBkMaAvRfUkXsKMOTKPgx
-         nkwRO8q8QpmWA==
+        b=b0P51TRpdT3oMF8jIZRpH+sC96+Vq3nkpt4+OsWfsspKTFzY7/zEs17Nz8r/jp2nL
+         usrW/KL2HVD0qJ5RMjlyTHV5TtpWrh85VYtAQtWNqnTnX9mNtp+1Lx3PzTT8kB6OtP
+         NMggdfX412zUMaPs1qOZoXFE0RIMtHixIkcvCWEf9KECJy86VQnWIF4TdXkYToGjKK
+         OPchB6bea8Stf7idEx8sPRBq9umCUgp/Yk5LMv6HfzXuV5fpVy9pgOAvCmef5s4pOy
+         PwSkjP9vQVp65mHqMZdF6ultuzcXk2VMxwxJA3crZAGS8cLAV5vnrn2T/w2df7AIXB
+         XBZ8o37fnB/3w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 03/11] media: ipu-bridge: increase sensor_name size
-Date:   Sun, 12 Nov 2023 08:27:26 -0500
-Message-ID: <20231112132736.175494-3-sashal@kernel.org>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, swhiteho@redhat.com,
+        cluster-devel@redhat.com
+Subject: [PATCH AUTOSEL 6.6 04/11] gfs2: ignore negated quota changes
+Date:   Sun, 12 Nov 2023 08:27:27 -0500
+Message-ID: <20231112132736.175494-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231112132736.175494-1-sashal@kernel.org>
 References: <20231112132736.175494-1-sashal@kernel.org>
@@ -53,64 +54,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit 83d0d4cc1423194b580356966107379490edd02e ]
+[ Upstream commit 4c6a08125f2249531ec01783a5f4317d7342add5 ]
 
-Fixes this compiler warning:
+When lots of quota changes are made, there may be cases in which an
+inode's quota information is increased and then decreased, such as when
+blocks are added to a file, then deleted from it. If the timing is
+right, function do_qc can add pending quota changes to a transaction,
+then later, another call to do_qc can negate those changes, resulting
+in a net gain of 0. The quota_change information is recorded in the qc
+buffer (and qd element of the inode as well). The buffer is added to the
+transaction by the first call to do_qc, but a subsequent call changes
+the value from non-zero back to zero. At that point it's too late to
+remove the buffer_head from the transaction. Later, when the quota sync
+code is called, the zero-change qd element is discovered and flagged as
+an assert warning. If the fs is mounted with errors=panic, the kernel
+will panic.
 
-In file included from include/linux/property.h:14,
-                 from include/linux/acpi.h:16,
-                 from drivers/media/pci/intel/ipu-bridge.c:4:
-In function 'ipu_bridge_init_swnode_names',
-    inlined from 'ipu_bridge_create_connection_swnodes' at drivers/media/pci/intel/ipu-bridge.c:445:2,
-    inlined from 'ipu_bridge_connect_sensor' at drivers/media/pci/intel/ipu-bridge.c:656:3:
-include/linux/fwnode.h:81:49: warning: '%u' directive output may be truncated writing between 1 and 3 bytes into a region of size 2 [-Wformat-truncation=]
-   81 | #define SWNODE_GRAPH_PORT_NAME_FMT              "port@%u"
-      |                                                 ^~~~~~~~~
-drivers/media/pci/intel/ipu-bridge.c:384:18: note: in expansion of macro 'SWNODE_GRAPH_PORT_NAME_FMT'
-  384 |                  SWNODE_GRAPH_PORT_NAME_FMT, sensor->link);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/fwnode.h: In function 'ipu_bridge_connect_sensor':
-include/linux/fwnode.h:81:55: note: format string is defined here
-   81 | #define SWNODE_GRAPH_PORT_NAME_FMT              "port@%u"
-      |                                                       ^~
-In function 'ipu_bridge_init_swnode_names',
-    inlined from 'ipu_bridge_create_connection_swnodes' at drivers/media/pci/intel/ipu-bridge.c:445:2,
-    inlined from 'ipu_bridge_connect_sensor' at drivers/media/pci/intel/ipu-bridge.c:656:3:
-include/linux/fwnode.h:81:49: note: directive argument in the range [0, 255]
-   81 | #define SWNODE_GRAPH_PORT_NAME_FMT              "port@%u"
-      |                                                 ^~~~~~~~~
-drivers/media/pci/intel/ipu-bridge.c:384:18: note: in expansion of macro 'SWNODE_GRAPH_PORT_NAME_FMT'
-  384 |                  SWNODE_GRAPH_PORT_NAME_FMT, sensor->link);
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/media/pci/intel/ipu-bridge.c:382:9: note: 'snprintf' output between 7 and 9 bytes into a destination of size 7
-  382 |         snprintf(sensor->node_names.remote_port,
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  383 |                  sizeof(sensor->node_names.remote_port),
-      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  384 |                  SWNODE_GRAPH_PORT_NAME_FMT, sensor->link);
-      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is usually seen when files are truncated and the quota changes are
+negated by punch_hole/truncate which uses gfs2_quota_hold and
+gfs2_quota_unhold rather than block allocations that use gfs2_quota_lock
+and gfs2_quota_unlock which automatically do quota sync.
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+This patch solves the problem by adding a check to qd_check_sync such
+that net-zero quota changes already added to the transaction are no
+longer deemed necessary to be synced, and skipped.
+
+In this case references are taken for the qd and the slot from do_qc
+so those need to be put. The normal sequence of events for a normal
+non-zero quota change is as follows:
+
+gfs2_quota_change
+   do_qc
+      qd_hold
+      slot_hold
+
+Later, when the changes are to be synced:
+
+gfs2_quota_sync
+   qd_fish
+      qd_check_sync
+         gets qd ref via lockref_get_not_dead
+   do_sync
+      do_qc(QC_SYNC)
+         qd_put
+	    lockref_put_or_lock
+   qd_unlock
+      qd_put
+         lockref_put_or_lock
+
+In the net-zero change case, we add a check to qd_check_sync so it puts
+the qd and slot references acquired in gfs2_quota_change and skip the
+unneeded sync.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/media/ipu-bridge.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/gfs2/quota.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/media/ipu-bridge.h b/include/media/ipu-bridge.h
-index bdc654a455216..783bda6d5cc3f 100644
---- a/include/media/ipu-bridge.h
-+++ b/include/media/ipu-bridge.h
-@@ -108,7 +108,7 @@ struct ipu_node_names {
- 	char ivsc_sensor_port[7];
- 	char ivsc_ipu_port[7];
- 	char endpoint[11];
--	char remote_port[7];
-+	char remote_port[9];
- 	char vcm[16];
- };
+diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+index 171b2713d2e5e..41d0232532a03 100644
+--- a/fs/gfs2/quota.c
++++ b/fs/gfs2/quota.c
+@@ -457,6 +457,17 @@ static int qd_check_sync(struct gfs2_sbd *sdp, struct gfs2_quota_data *qd,
+ 	    (sync_gen && (qd->qd_sync_gen >= *sync_gen)))
+ 		return 0;
+ 
++	/*
++	 * If qd_change is 0 it means a pending quota change was negated.
++	 * We should not sync it, but we still have a qd reference and slot
++	 * reference taken by gfs2_quota_change -> do_qc that need to be put.
++	 */
++	if (!qd->qd_change && test_and_clear_bit(QDF_CHANGE, &qd->qd_flags)) {
++		slot_put(qd);
++		qd_put(qd);
++		return 0;
++	}
++
+ 	if (!lockref_get_not_dead(&qd->qd_lockref))
+ 		return 0;
  
 -- 
 2.42.0
