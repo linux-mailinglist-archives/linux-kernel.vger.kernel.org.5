@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99787E90AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3397E90A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjKLNau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S232959AbjKLNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:30:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbjKLN2s (ORCPT
+        with ESMTP id S231636AbjKLN2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:28:48 -0500
+        Sun, 12 Nov 2023 08:28:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1467946B0;
-        Sun, 12 Nov 2023 05:28:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16340C433CC;
-        Sun, 12 Nov 2023 13:28:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582D93862;
+        Sun, 12 Nov 2023 05:28:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90F4AC433C8;
+        Sun, 12 Nov 2023 13:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795723;
-        bh=/11RMCFgcQa0g4iUGJtS+Hm8/hhhwwKMBm0cv8C00L8=;
+        s=k20201202; t=1699795724;
+        bh=hdxK28Eo9S+RouVwlhaxKIMABP/G5jYBzxIG3cQQP5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aZ1/PcWBfg1CxYtTRWlxGZgThu8lfkXd3c+StXH1MV0FZJgLN9RDnyFiLlJ5YTTh4
-         t4xQnJrt/OfrD/frHmOglqODR+6XGUPp53eT/WCavZuJkthua9dQKoEliAu4GFUnFX
-         Hy/AQGRk5XCAzU+t2yUlpQOyOyFxt6lEcUUDORXcgCD6NASNuzODvSBfWvpjJYcp8f
-         10QSCNc0d2PtchLFpaq2vPCPQo706Fu3ZwJuCBDGiagmgH7y9ILAUtMS+946AMP8IF
-         JlYM3yGqfCYT+V5iDQFW3o8ONkxaDiJKGXglp+hMDsxV00XPlVsq2nuuyROZ9zqgkn
-         ARpd8b9xUVecw==
+        b=k6n9QtaNKW9qGyDzFQwLnqg0Mos86ZiRmff1hCLvoIlThx8b5z+DbnOW6aLKUm6fx
+         wsvaqUgiburg6FccKXQAG8xArVZR5SzqqXisICVJkwPL15fkFJMChQk96CrblwZY+z
+         FFX3xQExeehphz3x0tTTwnI8EPqDn651QpKDCfjTsxMl7rLVoX8zgd3FgCFfhxOHEG
+         4Pp3CQdTjvM2iAU3h0eNHg+44j9/q5keqqsRLgY7KcDAH5HOxNcVnG+0sD2QjIvn/x
+         u8v83QXA3oZapTXrpKeK33nwOqBTtFYi/gQryanHWi6rQM7aAuupnIOozDO9YTXhts
+         whzVic5Y+3sbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Sasha Levin <sashal@kernel.org>, airlied@linux.ie,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.15 8/9] drm/amd: Fix UBSAN array-index-out-of-bounds for Powerplay headers
-Date:   Sun, 12 Nov 2023 08:28:28 -0500
-Message-ID: <20231112132830.176228-8-sashal@kernel.org>
+Cc:     Wayne Lin <wayne.lin@amd.com>, Jun Lei <jun.lei@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        airlied@linux.ie, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.15 9/9] drm/amd/display: Avoid NULL dereference of timing generator
+Date:   Sun, 12 Nov 2023 08:28:29 -0500
+Message-ID: <20231112132830.176228-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231112132830.176228-1-sashal@kernel.org>
 References: <20231112132830.176228-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.138
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Deucher <alexander.deucher@amd.com>
+From: Wayne Lin <wayne.lin@amd.com>
 
-[ Upstream commit 49afe91370b86566857a3c2c39612cf098110885 ]
+[ Upstream commit b1904ed480cee3f9f4036ea0e36d139cb5fee2d6 ]
 
-For pptable structs that use flexible array sizes, use flexible arrays.
+[Why & How]
+Check whether assigned timing generator is NULL or not before
+accessing its funcs to prevent NULL dereference.
 
-Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2039926
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Acked-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Jun Lei <jun.lei@amd.com>
+Acked-by: Hersen Wu <hersenxs.wu@amd.com>
+Signed-off-by: Wayne Lin <wayne.lin@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h |  4 ++--
- .../amd/pm/powerplay/hwmgr/vega10_pptable.h   | 24 +++++++++----------
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_stream.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
-index b0ac4d121adca..5eeb49a08c997 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
-@@ -367,7 +367,7 @@ typedef struct _ATOM_Tonga_VCE_State_Record {
- typedef struct _ATOM_Tonga_VCE_State_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;
--	ATOM_Tonga_VCE_State_Record entries[1];
-+	ATOM_Tonga_VCE_State_Record entries[];
- } ATOM_Tonga_VCE_State_Table;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
+index f0f54f4d3d9bc..5dd57cf170f51 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
+@@ -562,7 +562,7 @@ uint32_t dc_stream_get_vblank_counter(const struct dc_stream_state *stream)
+ 	for (i = 0; i < MAX_PIPES; i++) {
+ 		struct timing_generator *tg = res_ctx->pipe_ctx[i].stream_res.tg;
  
- typedef struct _ATOM_Tonga_PowerTune_Table {
-@@ -482,7 +482,7 @@ typedef struct _ATOM_Tonga_Hard_Limit_Record {
- typedef struct _ATOM_Tonga_Hard_Limit_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;
--	ATOM_Tonga_Hard_Limit_Record entries[1];
-+	ATOM_Tonga_Hard_Limit_Record entries[];
- } ATOM_Tonga_Hard_Limit_Table;
+-		if (res_ctx->pipe_ctx[i].stream != stream)
++		if (res_ctx->pipe_ctx[i].stream != stream || !tg)
+ 			continue;
  
- typedef struct _ATOM_Tonga_GPIO_Table {
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-index 9c479bd9a786b..a372abcd01be6 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
-@@ -129,7 +129,7 @@ typedef struct _ATOM_Vega10_State {
- typedef struct _ATOM_Vega10_State_Array {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries. */
--	ATOM_Vega10_State states[1];                             /* Dynamically allocate entries. */
-+	ATOM_Vega10_State states[];                             /* Dynamically allocate entries. */
- } ATOM_Vega10_State_Array;
+ 		return tg->funcs->get_frame_count(tg);
+@@ -621,7 +621,7 @@ bool dc_stream_get_scanoutpos(const struct dc_stream_state *stream,
+ 	for (i = 0; i < MAX_PIPES; i++) {
+ 		struct timing_generator *tg = res_ctx->pipe_ctx[i].stream_res.tg;
  
- typedef struct _ATOM_Vega10_CLK_Dependency_Record {
-@@ -169,37 +169,37 @@ typedef struct _ATOM_Vega10_GFXCLK_Dependency_Table {
- typedef struct _ATOM_Vega10_MCLK_Dependency_Table {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;                                         /* Number of entries. */
--    ATOM_Vega10_MCLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+    ATOM_Vega10_MCLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_MCLK_Dependency_Table;
+-		if (res_ctx->pipe_ctx[i].stream != stream)
++		if (res_ctx->pipe_ctx[i].stream != stream || !tg)
+ 			continue;
  
- typedef struct _ATOM_Vega10_SOCCLK_Dependency_Table {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;                                         /* Number of entries. */
--    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_SOCCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_DCEFCLK_Dependency_Table {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;                                         /* Number of entries. */
--    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_DCEFCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_PIXCLK_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries. */
--	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_PIXCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_DISPCLK_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries.*/
--	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_DISPCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_PHYCLK_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries. */
--	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
-+	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
- } ATOM_Vega10_PHYCLK_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_MM_Dependency_Record {
-@@ -213,7 +213,7 @@ typedef struct _ATOM_Vega10_MM_Dependency_Record {
- typedef struct _ATOM_Vega10_MM_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries */
--	ATOM_Vega10_MM_Dependency_Record entries[1];             /* Dynamically allocate entries */
-+	ATOM_Vega10_MM_Dependency_Record entries[];             /* Dynamically allocate entries */
- } ATOM_Vega10_MM_Dependency_Table;
- 
- typedef struct _ATOM_Vega10_PCIE_Record {
-@@ -225,7 +225,7 @@ typedef struct _ATOM_Vega10_PCIE_Record {
- typedef struct _ATOM_Vega10_PCIE_Table {
- 	UCHAR  ucRevId;
- 	UCHAR  ucNumEntries;                                        /* Number of entries */
--	ATOM_Vega10_PCIE_Record entries[1];                      /* Dynamically allocate entries. */
-+	ATOM_Vega10_PCIE_Record entries[];                      /* Dynamically allocate entries. */
- } ATOM_Vega10_PCIE_Table;
- 
- typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
-@@ -235,7 +235,7 @@ typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
- typedef struct _ATOM_Vega10_Voltage_Lookup_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                          /* Number of entries */
--	ATOM_Vega10_Voltage_Lookup_Record entries[1];             /* Dynamically allocate entries */
-+	ATOM_Vega10_Voltage_Lookup_Record entries[];             /* Dynamically allocate entries */
- } ATOM_Vega10_Voltage_Lookup_Table;
- 
- typedef struct _ATOM_Vega10_Fan_Table {
-@@ -329,7 +329,7 @@ typedef struct _ATOM_Vega10_VCE_State_Table
- {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;
--    ATOM_Vega10_VCE_State_Record entries[1];
-+    ATOM_Vega10_VCE_State_Record entries[];
- } ATOM_Vega10_VCE_State_Table;
- 
- typedef struct _ATOM_Vega10_PowerTune_Table {
-@@ -432,7 +432,7 @@ typedef struct _ATOM_Vega10_Hard_Limit_Table
- {
-     UCHAR ucRevId;
-     UCHAR ucNumEntries;
--    ATOM_Vega10_Hard_Limit_Record entries[1];
-+    ATOM_Vega10_Hard_Limit_Record entries[];
- } ATOM_Vega10_Hard_Limit_Table;
- 
- typedef struct _Vega10_PPTable_Generic_SubTable_Header
+ 		tg->funcs->get_scanoutpos(tg,
 -- 
 2.42.0
 
