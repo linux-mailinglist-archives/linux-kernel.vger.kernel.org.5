@@ -2,51 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9573E7E8D9D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDA87E8D9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbjKLAAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 19:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        id S229814AbjKLAHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 19:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbjKLAAm (ORCPT
+        with ESMTP id S229548AbjKLAHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 19:00:42 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2A71991
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:00:39 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r1xu0-00012C-62; Sun, 12 Nov 2023 01:00:36 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r1xtz-008Mi1-EU; Sun, 12 Nov 2023 01:00:35 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r1xtz-0000yo-5O; Sun, 12 Nov 2023 01:00:35 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH RESEND] platform/goldfish: goldfish_pipe: Convert to platform remove callback returning void
-Date:   Sun, 12 Nov 2023 01:00:30 +0100
-Message-ID: <20231112000029.151117-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.42.0
+        Sat, 11 Nov 2023 19:07:13 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855643253;
+        Sat, 11 Nov 2023 16:07:10 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7ac61c58d85so135769039f.2;
+        Sat, 11 Nov 2023 16:07:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699747630; x=1700352430; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZIq6EzjNebTJSLRL1CT61ONPXQE/G9+uZ3pGYRIYVRQ=;
+        b=KhWyhN8+bcTfOVJtTNep3lEiPksZPPR9Ut0HKGBSy4Jd+gFqP2DfC9JjKQmhzSsIPM
+         GLUK3HdlUTLh8EGOpNPBFZDR0CFGLAsQ52BaSpO2K2bBbtST7dNWT+0HY3qIgYGvJaJN
+         KZbII1j0+v6Mbq9ivt3gohOTxKB5oGS/vvdjX1wvGsTBvoTGo82u0zF6ftuE7FPlXbY+
+         VivZCP1V/2dXpqbjOjwwVK1E3w22wRPryhQaWgAVY/CcmTutLCwm2+HHBeowIpEpz+9k
+         0PomXMocr6Lb5auKhTphknNjhhVzQwT8q9WHPstDe5224TmjCieJTyTKpL+WY503cj5q
+         DAOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699747630; x=1700352430;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZIq6EzjNebTJSLRL1CT61ONPXQE/G9+uZ3pGYRIYVRQ=;
+        b=JeH9ZK2uCDnJpQfITvG7ej/ECOmL6LSdCZzWINY91mQGpqPm04mSHiIX3iriqpp69a
+         P+oCKiZQFqMQBJgLXAIp6Biyo4RNgusOG8zJfZRiImU5zmcVH+0eXJDi7sq2t4OkeMM5
+         rxajH8AjzsG1ade+WTjjssAQ+HD7cXhFF15QGUa3LMhUrG5Zp09ZgHeyD+0Vwpa8ATf0
+         RW+q4686K5HZUrPn9Pp6cizd4vhizBLAt2rv703t65T2pd6O4/qqmIHK1+nQVnZYNiAg
+         VS/aL/HnnG1h4iGJYI6cZdqZ4QO2EvlH+n0RvVgrz/rVcb3tPjwQBUbQBBasFXryiihq
+         5X7g==
+X-Gm-Message-State: AOJu0YxJxi4VOcDM9aPj8R9OCJCSy1L2wvxGwGeF+nUAVwXCZjdmlpt9
+        T4/Do5Ax41qx4VQficdGf2xrdX6AoZTZ3MNrwlA=
+X-Google-Smtp-Source: AGHT+IGFQmTQBtABTIDx9JT7gq+afKVZZrIts5BpiQWRUEpwTHxC0AiBWp54Bi/ZiGbPnv3gbTAlTDyug+hkn7Fc3Ng=
+X-Received: by 2002:a05:6602:3799:b0:7a9:984c:1427 with SMTP id
+ be25-20020a056602379900b007a9984c1427mr4353142iob.21.1699747629734; Sat, 11
+ Nov 2023 16:07:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2303; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=aOJ8qiepFTNPlUt0Vzbc7ieu9ixr9dvNvLgionZx45o=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlUBWdlscZNB7DWPiDOYFsbgIJo20jGwfXcFBu5 qWNKVyGjbyJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZVAVnQAKCRCPgPtYfRL+ TkRFB/9Q8hFPnlPkI8ubGbFObHpVy176Qby2SURD2dwsy83Xrj6Hx+39gJeKVzzjOU9QJPmU3jn 264AhfFLOnSX1bD4jO7tcQZvdeMPCThN+te6evQiQzhhP3uahXJHn4HyTE3JA5ISC5VwoWaHBgp xp19NH/Tr8edBFSXjt4IcOsvw+4pt3zkH14HD2FyV5xzoMlnAuqERS33WD25cVVi7knbnK7UJ/B lP+lFKNzIk1LtrVRvfApHGAJfabJNuUj3Ra5/NKVqwzHjMFWUOBokv+Tuz2rdys1PviY7ObDIfV 4fsiVxLk3NMrYACW6qerIJVITMpXTdmxnVdSscntxN5q7C+1
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231106231158.380730-1-nphamcs@gmail.com> <CAF8kJuPXBLpG2d4sje6ntrA+U-AnLzu3sNpJK02YxNcg04YNng@mail.gmail.com>
+ <CAKEwX=OgN_xQWrp_OYkK1BRq3DFW4he9OSycdjBm0BNy+vpPAg@mail.gmail.com> <CAF8kJuN--EUY95O1jpV39yv5FDu0OYanY6SZeBPk5ng4kRyrjA@mail.gmail.com>
+In-Reply-To: <CAF8kJuN--EUY95O1jpV39yv5FDu0OYanY6SZeBPk5ng4kRyrjA@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Sat, 11 Nov 2023 16:06:58 -0800
+Message-ID: <CAKEwX=PT=5nvLhUyMmi=hq0_2H-4kmO9tOdqFvHEtaWF+e8M1Q@mail.gmail.com>
+Subject: Re: [PATCH v4] zswap: memcontrol: implement zswap writeback disabling
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org,
+        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
+        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
+        muchun.song@linux.dev, Hugh Dickins <hughd@google.com>,
+        corbet@lwn.net, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,65 +82,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+On Sat, Nov 11, 2023 at 10:22=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
+:
+>
+> On Fri, Nov 10, 2023 at 4:10=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+> > > I notice the bool is between two integers.
+> > > mem_cgroup structure has a few bool sprinkle in different locations.
+> > > Arrange them together might save a few padding bytes. We can also
+> > > consider using bit fields.
+> > > It is a very minor point, the condition also exists before your chang=
+e.
+> >
+> > This sounds like an optimization worthy of its own patch. Two random
+> > thoughts however:
+>
+> Sure. I consider this a very minor point as well.
+>
+> >
+> > a) Can this be done at the compiler level? I believe you can reduce
+> > the padding required by sorting the fields of a struct by its size, cor=
+rect?
+> > That sounds like a job that a compiler should do for us...
+>
+> According to the C standard, the struct member should be layered out
+> in the order it was declared. There are too many codes that assume the
+> first member has the same address of the struct. Consider we use
+> struct for DMA descriptor as well, where the memory layout needs to
+> match the underlying hardware. Re-ordering the members will be really
+> bad there. There are gcc extensions to do structure member
+> randomization. But the randomization layout is determined by the
+> randomization seed. The compiler actually doesn't have the flexibility
+> to rearrange the member orders to reduce the padding either.
+>
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-.remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+Ah I see. Yeah then it might be worth tweaking around manually.
+But yeah, we should do this separately from this patch.
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+> >
+> > b) Re: the bitfield idea, some of the fields are CONFIG-dependent (well
+> > like this one). Might be a bit hairier to do it...
+>
+> You can declare the bit field under preprocessor condition as well,
+> just like a normal declare. Can you clarify why it is more hairier?
+> The bitfield does not have a pointer address associated with it, the
+> compiler can actually move the bit field bits around. You get the
+> compiler to do it for you in this case.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+I see hmmm.
 
-this patch was part for a series containing 27 patches and the only one
-that wasn't applied. Probably it was missed because it was only Cc:d to
-lkml and had no other recipient.
+>
+> >
+> > >
+> > > >  #endif /* _LINUX_ZSWAP_H */
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index e43b5aba8efc..9cb3ea912cbe 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -5545,6 +5545,11 @@ mem_cgroup_css_alloc(struct cgroup_subsys_st=
+ate *parent_css)
+> > > >         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
+> > > >  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+> > > >         memcg->zswap_max =3D PAGE_COUNTER_MAX;
+> > > > +
+> > > > +       if (parent)
+> > > > +               WRITE_ONCE(memcg->zswap_writeback, READ_ONCE(parent=
+->zswap_writeback));
+> > > > +       else
+> > > > +               WRITE_ONCE(memcg->zswap_writeback, true);
+> > >
+> > > You can combine this two WRITE_ONCE to one
+> > >
+> > > bool writeback =3D !parent ||   READ_ONCE(parent->zswap_writeback);
+> > > WRITE_ONCE(memcg->zswap_writeback, writeback);
+> > >
+> >
+> > Yeah I originally did something similar, but then decided to do the if-=
+else
+> > instead. Honest no strong preference here - just felt that the if-else =
+was
+> > cleaner at that moment.
+>
+> One WRITE_ONCE will produce slightly better machine code as less
+> memory store instructions. Normally the compiler is allowed to do the
+> common expression elimination to merge the write. However here it has
+> explicite WRITE_ONCE, so the compiler has to place two memory stores
+> instructions, because you have two WRITE_ONCE. My suggestion will only
+> have one memory store instruction. I agree it is micro optimization.
+>
 
-Greg, you were the one accepting patches to this driver since 2021 (all
-two! :-), could you please pick up this patch, too?
+Ohh I did not think about this. Seems like my original version was more
+than just a clever one-liner haha.
 
-Best regards
-Uwe
+It's a bit of a micro-optimization indeed. But if for some reason I need
+to send v5 or a fixlet, I'll keep this in mind!
 
- drivers/platform/goldfish/goldfish_pipe.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thanks for the explanation, Chris!
 
-diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
-index 7737d56191d7..061aa9647c19 100644
---- a/drivers/platform/goldfish/goldfish_pipe.c
-+++ b/drivers/platform/goldfish/goldfish_pipe.c
-@@ -915,12 +915,11 @@ static int goldfish_pipe_probe(struct platform_device *pdev)
- 	return goldfish_pipe_device_init(pdev, dev);
- }
- 
--static int goldfish_pipe_remove(struct platform_device *pdev)
-+static void goldfish_pipe_remove(struct platform_device *pdev)
- {
- 	struct goldfish_pipe_dev *dev = platform_get_drvdata(pdev);
- 
- 	goldfish_pipe_device_deinit(pdev, dev);
--	return 0;
- }
- 
- static const struct acpi_device_id goldfish_pipe_acpi_match[] = {
-@@ -937,7 +936,7 @@ MODULE_DEVICE_TABLE(of, goldfish_pipe_of_match);
- 
- static struct platform_driver goldfish_pipe_driver = {
- 	.probe = goldfish_pipe_probe,
--	.remove = goldfish_pipe_remove,
-+	.remove_new = goldfish_pipe_remove,
- 	.driver = {
- 		.name = "goldfish_pipe",
- 		.of_match_table = goldfish_pipe_of_match,
-
-base-commit: 3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
--- 
-2.42.0
-
+> Chris
