@@ -2,107 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663877E90CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238F17E910E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjKLNb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:31:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44882 "EHLO
+        id S231618AbjKLNvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjKLN3k (ORCPT
+        with ESMTP id S231634AbjKLNv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:29:40 -0500
+        Sun, 12 Nov 2023 08:51:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F354C21;
-        Sun, 12 Nov 2023 05:28:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B347DC433CC;
-        Sun, 12 Nov 2023 13:28:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7EB4EC0;
+        Sun, 12 Nov 2023 05:28:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F339C433C7;
+        Sun, 12 Nov 2023 13:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795736;
-        bh=l+roqsthKupWX2mn5L8VaxW4bZ2+8pSXj16huIry9Ks=;
+        s=k20201202; t=1699795738;
+        bh=w4qN+a75YUNjsfpxnK3cPswg+fKzx5UswAxWVXOKX0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X8nAzxiv5AOJCNggGNfru3AwhKMvingjE7H1jVZCJf4PZcPjLa8X9XuHTWZgIV8vy
-         wFd1hgvHwtveMOHKr+cS6OJ+L0OIAISXEsgKIt92WYz0aXtVEUaAlQTHSubw6enSCj
-         Lkgw+ytRhcMb2y8foMibt9CXjGa/pk+xYkFkDA9+HSWHSfVzplnSHEbZbD29ntHuO8
-         ItCm3YmCLCw/4sg/rpo1aUb2RGjSQ4BWz0E428pWeFBjcildgVHfDBeVHs10tWDsId
-         Lk0DCSXR83cbk6rrGLQxG5nIAgGzCzZTzRYHloa4RDRUNmPyTHVt4F7ejakfpHCXD/
-         ai/awIaw7/BVw==
+        b=ssb07MW5IbTLAU//4PU7hH//17ZGdfC1L3cU8623I91buvqGEXhf3TSk32CShsbO6
+         7/4eWPo7oqhVfmEWVWO87eXdO8gqC1wabL5MetnnyDyhPJcCxok9jMWpzsVQVkWsa4
+         a0MoWGFMQEFLBgVslKvnQxOspocw7h4guk61b4nFGxkLVn8raZBa5u4xL6TzO70zMe
+         zB8cuDBLteAYicEO874vUk5kq4HmjdU+piDjwTdvSuGhgMUsa/neMYrW0AolP5SiTN
+         v5+nxmg5JJkthe+0vISamZHOuRk8QL0J6DTNL6BofpBvyX92Mu13T2/A20kbXDDHM8
+         0mjgNKOkzkBbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com,
-        "Ricardo B . Marliere" <ricardo@marliere.net>,
-        Sean Young <sean@mess.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sasha Levin <sashal@kernel.org>, gautammenghani201@gmail.com,
-        linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 6/8] media: imon: fix access to invalid resource for the second interface
-Date:   Sun, 12 Nov 2023 08:28:44 -0500
-Message-ID: <20231112132847.176473-6-sashal@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>, airlied@linux.ie,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 7/8] drm/amd: Fix UBSAN array-index-out-of-bounds for Powerplay headers
+Date:   Sun, 12 Nov 2023 08:28:45 -0500
+Message-ID: <20231112132847.176473-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231112132847.176473-1-sashal@kernel.org>
 References: <20231112132847.176473-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.200
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit a1766a4fd83befa0b34d932d532e7ebb7fab1fa7 ]
+[ Upstream commit 49afe91370b86566857a3c2c39612cf098110885 ]
 
-imon driver probes two USB interfaces, and at the probe of the second
-interface, the driver assumes blindly that the first interface got
-bound with the same imon driver.  It's usually true, but it's still
-possible that the first interface is bound with another driver via a
-malformed descriptor.  Then it may lead to a memory corruption, as
-spotted by syzkaller; imon driver accesses the data from drvdata as
-struct imon_context object although it's a completely different one
-that was assigned by another driver.
+For pptable structs that use flexible array sizes, use flexible arrays.
 
-This patch adds a sanity check -- whether the first interface is
-really bound with the imon driver or not -- for avoiding the problem
-above at the probe time.
-
-Reported-by: syzbot+59875ffef5cb9c9b29e9@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/000000000000a838aa0603cc74d6@google.com/
-Tested-by: Ricardo B. Marliere <ricardo@marliere.net>
-Link: https://lore.kernel.org/r/20230922005152.163640-1-ricardo@marliere.net
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2039926
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/imon.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h |  4 ++--
+ .../amd/pm/powerplay/hwmgr/vega10_pptable.h   | 24 +++++++++----------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/media/rc/imon.c b/drivers/media/rc/imon.c
-index 98a38755c694e..253a1d1a840a0 100644
---- a/drivers/media/rc/imon.c
-+++ b/drivers/media/rc/imon.c
-@@ -2430,6 +2430,12 @@ static int imon_probe(struct usb_interface *interface,
- 		goto fail;
- 	}
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+index 1e870f58dd12a..8f6ecbbfa5738 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+@@ -337,7 +337,7 @@ typedef struct _ATOM_Tonga_VCE_State_Record {
+ typedef struct _ATOM_Tonga_VCE_State_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;
+-	ATOM_Tonga_VCE_State_Record entries[1];
++	ATOM_Tonga_VCE_State_Record entries[];
+ } ATOM_Tonga_VCE_State_Table;
  
-+	if (first_if->dev.driver != interface->dev.driver) {
-+		dev_err(&interface->dev, "inconsistent driver matching\n");
-+		ret = -EINVAL;
-+		goto fail;
-+	}
-+
- 	if (ifnum == 0) {
- 		ictx = imon_init_intf0(interface, id);
- 		if (!ictx) {
+ typedef struct _ATOM_Tonga_PowerTune_Table {
+@@ -416,7 +416,7 @@ typedef struct _ATOM_Tonga_Hard_Limit_Record {
+ typedef struct _ATOM_Tonga_Hard_Limit_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;
+-	ATOM_Tonga_Hard_Limit_Record entries[1];
++	ATOM_Tonga_Hard_Limit_Record entries[];
+ } ATOM_Tonga_Hard_Limit_Table;
+ 
+ typedef struct _ATOM_Tonga_GPIO_Table {
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+index c934e9612c1b5..794889917ea1b 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+@@ -129,7 +129,7 @@ typedef struct _ATOM_Vega10_State {
+ typedef struct _ATOM_Vega10_State_Array {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                         /* Number of entries. */
+-	ATOM_Vega10_State states[1];                             /* Dynamically allocate entries. */
++	ATOM_Vega10_State states[];                             /* Dynamically allocate entries. */
+ } ATOM_Vega10_State_Array;
+ 
+ typedef struct _ATOM_Vega10_CLK_Dependency_Record {
+@@ -169,37 +169,37 @@ typedef struct _ATOM_Vega10_GFXCLK_Dependency_Table {
+ typedef struct _ATOM_Vega10_MCLK_Dependency_Table {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;                                         /* Number of entries. */
+-    ATOM_Vega10_MCLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++    ATOM_Vega10_MCLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_MCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_SOCCLK_Dependency_Table {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;                                         /* Number of entries. */
+-    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_SOCCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_DCEFCLK_Dependency_Table {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;                                         /* Number of entries. */
+-    ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++    ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_DCEFCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_PIXCLK_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                         /* Number of entries. */
+-	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_PIXCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_DISPCLK_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                         /* Number of entries.*/
+-	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_DISPCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_PHYCLK_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                         /* Number of entries. */
+-	ATOM_Vega10_CLK_Dependency_Record entries[1];            /* Dynamically allocate entries. */
++	ATOM_Vega10_CLK_Dependency_Record entries[];            /* Dynamically allocate entries. */
+ } ATOM_Vega10_PHYCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_MM_Dependency_Record {
+@@ -213,7 +213,7 @@ typedef struct _ATOM_Vega10_MM_Dependency_Record {
+ typedef struct _ATOM_Vega10_MM_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                         /* Number of entries */
+-	ATOM_Vega10_MM_Dependency_Record entries[1];             /* Dynamically allocate entries */
++	ATOM_Vega10_MM_Dependency_Record entries[];             /* Dynamically allocate entries */
+ } ATOM_Vega10_MM_Dependency_Table;
+ 
+ typedef struct _ATOM_Vega10_PCIE_Record {
+@@ -225,7 +225,7 @@ typedef struct _ATOM_Vega10_PCIE_Record {
+ typedef struct _ATOM_Vega10_PCIE_Table {
+ 	UCHAR  ucRevId;
+ 	UCHAR  ucNumEntries;                                        /* Number of entries */
+-	ATOM_Vega10_PCIE_Record entries[1];                      /* Dynamically allocate entries. */
++	ATOM_Vega10_PCIE_Record entries[];                      /* Dynamically allocate entries. */
+ } ATOM_Vega10_PCIE_Table;
+ 
+ typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
+@@ -235,7 +235,7 @@ typedef struct _ATOM_Vega10_Voltage_Lookup_Record {
+ typedef struct _ATOM_Vega10_Voltage_Lookup_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries;                                          /* Number of entries */
+-	ATOM_Vega10_Voltage_Lookup_Record entries[1];             /* Dynamically allocate entries */
++	ATOM_Vega10_Voltage_Lookup_Record entries[];             /* Dynamically allocate entries */
+ } ATOM_Vega10_Voltage_Lookup_Table;
+ 
+ typedef struct _ATOM_Vega10_Fan_Table {
+@@ -329,7 +329,7 @@ typedef struct _ATOM_Vega10_VCE_State_Table
+ {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;
+-    ATOM_Vega10_VCE_State_Record entries[1];
++    ATOM_Vega10_VCE_State_Record entries[];
+ } ATOM_Vega10_VCE_State_Table;
+ 
+ typedef struct _ATOM_Vega10_PowerTune_Table {
+@@ -432,7 +432,7 @@ typedef struct _ATOM_Vega10_Hard_Limit_Table
+ {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;
+-    ATOM_Vega10_Hard_Limit_Record entries[1];
++    ATOM_Vega10_Hard_Limit_Record entries[];
+ } ATOM_Vega10_Hard_Limit_Table;
+ 
+ typedef struct _Vega10_PPTable_Generic_SubTable_Header
 -- 
 2.42.0
 
