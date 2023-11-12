@@ -2,160 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF197E8E42
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 05:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B787E8E4A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 05:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjKLESa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 23:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
+        id S229987AbjKLEWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 23:22:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjKLES2 (ORCPT
+        with ESMTP id S229601AbjKLEWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 23:18:28 -0500
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C3330E6
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 20:18:25 -0800 (PST)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-6b2dff02dfcso3470765b3a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 20:18:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699762705; x=1700367505;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qWEoTwBlXjGTTrl0xPgTiw5vgCy7bqROUuWjF1tWseI=;
-        b=ZP33HYYn/l2emdJIWEfHoNZYY+klqTUYPHJzp1bqyffOTWnHolCA3XOh+bBXrve+WO
-         LhknNjGH4RsWQ1BEngxcL1D5neOI18mDwze49BvH7a1+wQjCEl7c1pn1UusyONyT7ciQ
-         vp/JCUcxD37D6N8j8KbvcS1l3RGw9zxLNxSKOkL/EMRZxirH+WZ3koVcK4+Mk324Jr2S
-         RgHI7H/kqQO0+vkxkxNMozS7/8FJMvvqRJbmPgtpq0+ouZJXUAT4oZNeH9dY/M5SkeCq
-         oHuvMGDjWq4Xud3PxOJ/wjTqain1xYMSWBnDyhsjtbjBy0LWLp/X6AAgSfDruir9F+33
-         RAXg==
-X-Gm-Message-State: AOJu0Yw8aQbNOscj1msHbB5hJCjveAu/hvqGE+fh6ErVFPHrVfOKfjuF
-        llIPUxY5wGMI70Pay8+V+Zx9znbv0Y0kEy69d4XoXlwdtNuC
-X-Google-Smtp-Source: AGHT+IHZ5YatetUTXqQsCd+tFcdXeuEetfUkqDqzA7IEbmiUgUyTV1jGMi+vSA4VND+qs4KiCqLnYHoIb85f+QrAzPtMoM9IiM0R
+        Sat, 11 Nov 2023 23:22:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232AB30D1;
+        Sat, 11 Nov 2023 20:22:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF58C433AB;
+        Sun, 12 Nov 2023 04:22:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699762926;
+        bh=FJL4JNEf9Nr1DoflQgnKi0tfP9lyYuVjCmmad2iv8TA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FacYEZCQKy7zh6VsDp47yhkL+9he5Y+BzcuRtc1i6KHlTBkqaeroQJJDPLMRFLWD9
+         QNhskha1onUHVMj2O/qk8mK8c0vJZhiTXumXWS0CGWZks5ZJFrR6dvkAIDGJkCeV/t
+         6amg22+gEIHVdyPSQgk0L9lJZr+X87dXFazyXH2ThFIzgEMWpLCJskz/nC6CtTqsA+
+         Z9NTC9QINWCby1hgnVCHVFMOnhZXaqZYk/4H/uttsH8za+SgromnkZZytr79DMdLq5
+         z6fSwHr0XX/U0fb4cdcZFZDuYKieV7M2bNXh4VB6zTAsNqvA0mOlgafeRuwkTVq4La
+         Yez2M8oVwyWiQ==
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so5252690a12.0;
+        Sat, 11 Nov 2023 20:22:06 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw1fRuDc9XcvafNK/1x/b/M4Fh4EyZo0KDm9eGurcS/rIWfQqv0
+        VjXPKVOG7l2f08dG09H3CibhTWMVH9X87+xsUQs=
+X-Google-Smtp-Source: AGHT+IGKtBb4zpepnAgJWTPQf4OFL8Yxg0IypTLD7L38xtqORdph/fQnU2/w9oi/MfemCZAy/+rZ76w/2ug+y+JaBNQ=
+X-Received: by 2002:a05:6402:3d9:b0:53f:731a:e513 with SMTP id
+ t25-20020a05640203d900b0053f731ae513mr2174574edw.25.1699762924720; Sat, 11
+ Nov 2023 20:22:04 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1884:b0:6c6:b762:ad8a with SMTP id
- x4-20020a056a00188400b006c6b762ad8amr574179pfh.0.1699762705017; Sat, 11 Nov
- 2023 20:18:25 -0800 (PST)
-Date:   Sat, 11 Nov 2023 20:18:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003c31650609ecd824@google.com>
-Subject: [syzbot] [overlayfs?] memory leak in ovl_parse_param
-From:   syzbot <syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com>
-To:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+References: <20231108125843.3806765-1-arnd@kernel.org> <20231108125843.3806765-13-arnd@kernel.org>
+In-Reply-To: <20231108125843.3806765-13-arnd@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 11 Nov 2023 23:21:53 -0500
+X-Gmail-Original-Message-ID: <CAJF2gTSEziwKn+f6DfZXRuzW1SXaWraKL2HdXMRkEOGyuHq3MQ@mail.gmail.com>
+Message-ID: <CAJF2gTSEziwKn+f6DfZXRuzW1SXaWraKL2HdXMRkEOGyuHq3MQ@mail.gmail.com>
+Subject: Re: [PATCH 12/22] csky: fix arch_jump_label_transform_static override
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Helge Deller <deller@gmx.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Timur Tabi <timur@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
+        linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Nov 8, 2023 at 8:02=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wrot=
+e:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The arch_jump_label_transform_static() function in csky was originally me=
+ant to
+> override the generic __weak function, but that got changed to an #ifndef =
+check.
+>
+> This showed up as a missing-prototype warning:
+> arch/csky/kernel/jump_label.c:43:6: error: no previous prototype for 'arc=
+h_jump_label_transform_static' [-Werror=3Dmissing-prototypes]
+>
+> Change the method to use the new method of having a #define and a prototy=
+pe
+> for the global function.
+>
+> Fixes: 7e6b9db27de9 ("jump_label: make initial NOP patching the special c=
+ase")
+> Fixes: 4e8bb4ba5a55 ("csky: Add jump-label implementation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/csky/include/asm/jump_label.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/arch/csky/include/asm/jump_label.h b/arch/csky/include/asm/j=
+ump_label.h
+> index d488ba6084bc..98a3f4b168bd 100644
+> --- a/arch/csky/include/asm/jump_label.h
+> +++ b/arch/csky/include/asm/jump_label.h
+> @@ -43,5 +43,10 @@ static __always_inline bool arch_static_branch_jump(st=
+ruct static_key *key,
+>         return true;
+>  }
+>
+> +enum jump_label_type;
+> +void arch_jump_label_transform_static(struct jump_entry *entry,
+> +                                     enum jump_label_type type);
+> +#define arch_jump_label_transform_static arch_jump_label_transform_stati=
+c
+> +
+>  #endif  /* __ASSEMBLY__ */
+>  #endif /* __ASM_CSKY_JUMP_LABEL_H */
+> --
+> 2.39.2
+>
+>
+Thank you!
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
-syzbot found the following issue on:
-
-HEAD commit:    13d88ac54ddd Merge tag 'vfs-6.7.fsid' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=121cf047680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ecfdf78a410c834
-dashboard link: https://syzkaller.appspot.com/bug?extid=26eedf3631650972f17c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15c7a6eb680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f8b787680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9bb27a01f17c/disk-13d88ac5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/fb496feed171/vmlinux-13d88ac5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f4da22719ffa/bzImage-13d88ac5.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com
-
-executing program
-BUG: memory leak
-unreferenced object 0xffff8881009b40a8 (size 8):
-  comm "syz-executor225", pid 5035, jiffies 4294944336 (age 13.730s)
-  hex dump (first 8 bytes):
-    2e 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<ffffffff8163331d>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff8163331d>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff8163331d>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff8163331d>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-    [<ffffffff8157e57c>] __do_kmalloc_node mm/slab_common.c:1006 [inline]
-    [<ffffffff8157e57c>] __kmalloc_node_track_caller+0x4c/0x150 mm/slab_common.c:1027
-    [<ffffffff8156da4c>] kstrdup+0x3c/0x70 mm/util.c:62
-    [<ffffffff81d0438a>] ovl_parse_param_lowerdir fs/overlayfs/params.c:496 [inline]
-    [<ffffffff81d0438a>] ovl_parse_param+0x70a/0xc70 fs/overlayfs/params.c:576
-    [<ffffffff8170542b>] vfs_parse_fs_param+0xfb/0x190 fs/fs_context.c:146
-    [<ffffffff81705556>] vfs_parse_fs_string+0x96/0xd0 fs/fs_context.c:188
-    [<ffffffff8170566f>] vfs_parse_monolithic_sep+0xdf/0x130 fs/fs_context.c:230
-    [<ffffffff816dff08>] do_new_mount fs/namespace.c:3333 [inline]
-    [<ffffffff816dff08>] path_mount+0xc48/0x10d0 fs/namespace.c:3664
-    [<ffffffff816e0b41>] do_mount fs/namespace.c:3677 [inline]
-    [<ffffffff816e0b41>] __do_sys_mount fs/namespace.c:3886 [inline]
-    [<ffffffff816e0b41>] __se_sys_mount fs/namespace.c:3863 [inline]
-    [<ffffffff816e0b41>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3863
-    [<ffffffff84b67d8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b67d8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-BUG: memory leak
-unreferenced object 0xffff88814002d070 (size 8):
-  comm "syz-executor225", pid 5036, jiffies 4294944900 (age 8.090s)
-  hex dump (first 8 bytes):
-    2e 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<ffffffff8163331d>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff8163331d>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff8163331d>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff8163331d>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
-    [<ffffffff8157e57c>] __do_kmalloc_node mm/slab_common.c:1006 [inline]
-    [<ffffffff8157e57c>] __kmalloc_node_track_caller+0x4c/0x150 mm/slab_common.c:1027
-    [<ffffffff8156da4c>] kstrdup+0x3c/0x70 mm/util.c:62
-    [<ffffffff81d0438a>] ovl_parse_param_lowerdir fs/overlayfs/params.c:496 [inline]
-    [<ffffffff81d0438a>] ovl_parse_param+0x70a/0xc70 fs/overlayfs/params.c:576
-    [<ffffffff8170542b>] vfs_parse_fs_param+0xfb/0x190 fs/fs_context.c:146
-    [<ffffffff81705556>] vfs_parse_fs_string+0x96/0xd0 fs/fs_context.c:188
-    [<ffffffff8170566f>] vfs_parse_monolithic_sep+0xdf/0x130 fs/fs_context.c:230
-    [<ffffffff816dff08>] do_new_mount fs/namespace.c:3333 [inline]
-    [<ffffffff816dff08>] path_mount+0xc48/0x10d0 fs/namespace.c:3664
-    [<ffffffff816e0b41>] do_mount fs/namespace.c:3677 [inline]
-    [<ffffffff816e0b41>] __do_sys_mount fs/namespace.c:3886 [inline]
-    [<ffffffff816e0b41>] __se_sys_mount fs/namespace.c:3863 [inline]
-    [<ffffffff816e0b41>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3863
-    [<ffffffff84b67d8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b67d8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--=20
+Best Regards
+ Guo Ren
