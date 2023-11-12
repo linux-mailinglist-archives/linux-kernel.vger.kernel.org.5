@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B247E8E60
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 05:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B8E7E8E6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 06:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjKLEwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 23:52:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
+        id S229939AbjKLFOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 00:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKLEww (ORCPT
+        with ESMTP id S229436AbjKLFN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 23:52:52 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F128430D5
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 20:52:48 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-113-74.bstnma.fios.verizon.net [173.48.113.74])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3AC4qHFg025618
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Nov 2023 23:52:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1699764741; bh=6eeV0JQAfBjKRrPx7Ol5znehKOwNsZTtSFwyplKveTA=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=A0AprTCXTkwN0jCF8UynimChnUMeGYcRmNvJjk4aXFijdqo69OKNda5nwUpWwyu7k
-         uh7/xVJxv/GVwvCnANRwrbg7bpzo/gAiH1EmwHFq1ZfvzDBoNpURfmS+8pPuFrrhSM
-         a6kk3fDldIZqdh+vY14pXBuXgcFEPImjodPu4r5d4142AHjeziC4HCKXt3BEmaR6x/
-         eFRZxAHjcYEUCfsz3IFwGosMozh486KDSsAGYWjXX+/oq/Z0u/7WFqYz4z8nPmD85m
-         rTIYpCZ6eAMoOADI2lscgLPxHwlP9WxCmAQorFEPyhQ+w6fR0LTqEsAcwF3Y3pfxGi
-         9Q/TCo6FQEAIg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2BFDB15C0243; Sat, 11 Nov 2023 23:52:17 -0500 (EST)
-Date:   Sat, 11 Nov 2023 23:52:17 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     York Jasper Niebuhr <yjnworkstation@gmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-security-module@vger.kernel.org,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH] exitz syscall
-Message-ID: <20231112045217.GA39417@mit.edu>
-References: <20231111125126.11665-1-yjnworkstation@gmail.com>
- <20231111132431.GA3717@1wt.eu>
+        Sun, 12 Nov 2023 00:13:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C81F30C5
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 21:13:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3362EC433C7;
+        Sun, 12 Nov 2023 05:13:50 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [GIT PULL] LoongArch changes for v6.7
+Date:   Sun, 12 Nov 2023 13:12:48 +0800
+Message-Id: <20231112051248.272444-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231111132431.GA3717@1wt.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 02:24:31PM +0100, Willy Tarreau wrote:
-> Hello,
-> 
-> On Sat, Nov 11, 2023 at 01:51:26PM +0100, York Jasper Niebuhr wrote:
-> > Adds a system call to flag a process' resources to be cleared on
-> > exit (or, in the case of memory, on free). Currently, only zeroing
-> > memory is implemented.
-> (...)
-> 
-> IMHO it does not make sense to add a syscall for this, please have a
-> look at prctl(2) instead, which is already used for similar settings.
+The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbebfa:
 
-Another reason to use prctl() is there are other cases when you'd want
-to zero a process's memory.  For example, if the process gets killed
-to some kind of signal, or when it gets OOM killed (where there is no
-system call which forces the process to exit).  Also, if you want to
-zero memory when the process exits, you'd want to zero the process
-memory on an exec(2).
+  Linux 6.6 (2023-10-29 16:31:08 -1000)
 
-Cheers,
+are available in the Git repository at:
 
-						- Ted
+  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-6.7
+
+for you to fetch changes up to 1d375d65466e5c8d7a9406826d80d475a22e8c6d:
+
+  selftests/bpf: Enable cpu v4 tests for LoongArch (2023-11-08 14:12:21 +0800)
+
+----------------------------------------------------------------
+LoongArch changes for v6.7
+
+1, Support PREEMPT_DYNAMIC with static keys;
+2, Relax memory ordering for atomic operations;
+3, Support BPF CPU v4 instructions for LoongArch;
+4, Some build and runtime warning fixes.
+
+Note: There is a conflicts in arch/loongarch/include/asm/inst.h but can
+be simply fixed by adjusting context.
+
+----------------------------------------------------------------
+Hengqi Chen (8):
+      LoongArch: Add more instruction opcodes and emit_* helpers
+      LoongArch: BPF: Support sign-extension load instructions
+      LoongArch: BPF: Support sign-extension mov instructions
+      LoongArch: BPF: Support unconditional bswap instructions
+      LoongArch: BPF: Support 32-bit offset jmp instructions
+      LoongArch: BPF: Support signed div instructions
+      LoongArch: BPF: Support signed mod instructions
+      selftests/bpf: Enable cpu v4 tests for LoongArch
+
+Huacai Chen (3):
+      Merge 'bpf-next 2023-10-16' into loongarch-next
+      LoongArch: Support PREEMPT_DYNAMIC with static keys
+      LoongArch/smp: Call rcutree_report_cpu_starting() earlier
+
+Nathan Chancellor (1):
+      LoongArch: Mark __percpu functions as always inline
+
+WANG Rui (2):
+      LoongArch: Disable module from accessing external data directly
+      LoongArch: Relax memory ordering for atomic operations
+
+ arch/loongarch/Kconfig                             |   1 +
+ arch/loongarch/Makefile                            |   2 +
+ arch/loongarch/include/asm/atomic.h                |  88 ++++++++++---
+ arch/loongarch/include/asm/inst.h                  |  13 ++
+ arch/loongarch/include/asm/percpu.h                |  10 +-
+ arch/loongarch/kernel/smp.c                        |   3 +-
+ arch/loongarch/net/bpf_jit.c                       | 143 ++++++++++++++++-----
+ tools/testing/selftests/bpf/progs/test_ldsx_insn.c |   3 +-
+ tools/testing/selftests/bpf/progs/verifier_bswap.c |   3 +-
+ tools/testing/selftests/bpf/progs/verifier_gotol.c |   3 +-
+ tools/testing/selftests/bpf/progs/verifier_ldsx.c  |   3 +-
+ tools/testing/selftests/bpf/progs/verifier_movsx.c |   3 +-
+ tools/testing/selftests/bpf/progs/verifier_sdiv.c  |   3 +-
+ 13 files changed, 215 insertions(+), 63 deletions(-)
