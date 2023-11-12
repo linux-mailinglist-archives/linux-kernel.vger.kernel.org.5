@@ -2,76 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C49947E92E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 22:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C665C7E92F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 23:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbjKLVZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 16:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
+        id S232392AbjKLWXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 17:23:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjKLVZU (ORCPT
+        with ESMTP id S229737AbjKLWXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 16:25:20 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E463211D;
-        Sun, 12 Nov 2023 13:25:17 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41cd6e1d4fbso22541711cf.1;
-        Sun, 12 Nov 2023 13:25:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699824316; x=1700429116; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yOSPMLYo2Er1eDVoJWgNm5S1s3Vd5FOOXWgd1fuJ8N4=;
-        b=l4mpKFpHSCXmtSa6bK6oQMnUpBWMDqCWvSYI5FfC/5xmZxasDY6+HBqLFiR7xKGLXX
-         n32CRQPM9bw/FkCtpobBi0LBI4rC69m9w4OyXDocXRZCiQH1FLTuIJXUFG9QWHN7Xj3d
-         0YXJjDaLwQebIBKQT+IsnIHCV2rTj3a5BfZBrvkBpZV9dBkUs7OrshiKGD41oCcWjwSX
-         xVgmHJc2as5OCTJ2nOwatrZo+5ijCw2sM8n+ys/Vbu/1FIfjfiAA0lAd6Z5jW/b1+JOY
-         ctuoRZDIdshFLpeaBxCf611ryoUF3VtzZvhYmxrdqfEz4Se/KenEcEfZ39AI0M7ALwwt
-         JBsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699824316; x=1700429116;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yOSPMLYo2Er1eDVoJWgNm5S1s3Vd5FOOXWgd1fuJ8N4=;
-        b=TSWjsA+ubBGPYTe8fooWYnEQvd7sKRQcquRfhNHRePII1QJvd0aDiv2xIE+ynlXM9O
-         EXdbH8rL6eSJoWuA9R96qYOus1gKeF/RFIubm/N0zgzTieYhnIL+j+9kzY7RW9ehZHGi
-         5qIvzawiaPPMYWh78KkiZr3EX3NCk4doM+QiirOSrdkmq7TcS7Mg3b0PQXzWqP3v7EWl
-         U7vDH3WUbvEM0NDJcVyJ+/BCdtdtPLzmufuDX3e2GB17huLzrsZbDXueQkzwGecN/nK4
-         G/dwn6eRtQcWxrLtnKe6kts0CPI3j5qY1AWI+MU72rWad6Y2WXbL+Q3JjEnySdlA3fke
-         0wmw==
-X-Gm-Message-State: AOJu0YyTl4PVjQNgQ2MkYhzHx0elmPeAPC8zrBxxvMqkpLFveD4rDHtS
-        V0iBU+iM7I984P4QABokILI=
-X-Google-Smtp-Source: AGHT+IF+zwg2Dbl1pdsQfv8ztEKfFQJdNbFe20Omwohg2mqPaiYfe4ISX8w3J3NCOYiXfxD8o6Qn5w==
-X-Received: by 2002:ac8:5c0c:0:b0:41c:d41b:1b99 with SMTP id i12-20020ac85c0c000000b0041cd41b1b99mr5125217qti.35.1699824316114;
-        Sun, 12 Nov 2023 13:25:16 -0800 (PST)
-Received: from localhost ([164.86.0.75])
-        by smtp.gmail.com with ESMTPSA id h12-20020ac8568c000000b00421b14f7e7csm1424378qta.48.2023.11.12.13.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 13:25:15 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 12 Nov 2023 15:25:07 -0600
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v3 1/3] cgroup/rstat: Reduce cpu_lock hold time in
- cgroup_rstat_flush_locked()
-Message-ID: <ZVFCs5MpynXgXnWY@mtj.duckdns.org>
-References: <20231104031303.592879-1-longman@redhat.com>
- <20231104031303.592879-2-longman@redhat.com>
+        Sun, 12 Nov 2023 17:23:49 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B2B99;
+        Sun, 12 Nov 2023 14:23:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699827822;
+        bh=gpKOZ2ZliO+ojYZiPqXGUp9onC1Hm/oLrNozyclSdjQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RB4fq6gB27P1LpBUYO4wUZJ25XEvUhmRegZaa5/4t2Sfz3g31Z6P+OoRrhU6SNQLv
+         wui9DIF1wt5KinWUV/VO2BUd9aCBsyBYVhzfV6HfSRkDcqOygFY8yzqeM4TgIBYhVC
+         RCyBI8VgCFH+InumoajjuX5JWq1WUpkkcllVb9c8tTV7TGRq1SmH981b/j3Djk5jqE
+         2cE0pqODJmiFnQlRIDlVOluFwR35PJ13LeKEQ/G4jxT6YAEaYTV/VMbE9o5JOdZH77
+         B3GwBuKMCzyKLJfOP4Kaa8p4teWSK6O0MJ1GH9EyWlulN1ZhK+XffFfMRL1KX+aG1D
+         8sOb4/bQL1Txw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ST6XY5tbFz4wdB;
+        Mon, 13 Nov 2023 09:23:41 +1100 (AEDT)
+Date:   Mon, 13 Nov 2023 09:23:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bcachefs tree with the origin tree
+Message-ID: <20231113092340.6555b428@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231104031303.592879-2-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Content-Type: multipart/signed; boundary="Sig_/GpQKy1LgZXVJwFlPpBVMGFS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,69 +52,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 11:13:01PM -0400, Waiman Long wrote:
-> When cgroup_rstat_updated() isn't being called concurrently with
-> cgroup_rstat_flush_locked(), its run time is pretty short. When
-> both are called concurrently, the cgroup_rstat_updated() run time
-> can spike to a pretty high value due to high cpu_lock hold time in
-> cgroup_rstat_flush_locked(). This can be problematic if the task calling
-> cgroup_rstat_updated() is a realtime task running on an isolated CPU
-> with a strict latency requirement. The cgroup_rstat_updated() call can
-> happen when there is a page fault even though the task is running in
-> user space most of the time.
-> 
-> The percpu cpu_lock is used to protect the update tree -
-> updated_next and updated_children. This protection is only needed when
-> cgroup_rstat_cpu_pop_updated() is being called. The subsequent flushing
-> operation which can take a much longer time does not need that protection
-> as it is already protected by cgroup_rstat_lock.
-> 
-> To reduce the cpu_lock hold time, we need to perform all the
-> cgroup_rstat_cpu_pop_updated() calls up front with the lock
-> released afterward before doing any flushing. This patch adds a new
-> cgroup_rstat_updated_list() function to return a singly linked list of
-> cgroups to be flushed.
-> 
-> Some instrumentation code are added to measure the cpu_lock hold time
-> right after lock acquisition to after releasing the lock. Parallel
-> kernel build on a 2-socket x86-64 server is used as the benchmarking
-> tool for measuring the lock hold time.
-> 
-> The maximum cpu_lock hold time before and after the patch are 100us and
-> 29us respectively. So the worst case time is reduced to about 30% of
-> the original. However, there may be some OS or hardware noises like NMI
-> or SMI in the test system that can worsen the worst case value. Those
-> noises are usually tuned out in a real production environment to get
-> a better result.
-> 
-> OTOH, the lock hold time frequency distribution should give a better
-> idea of the performance benefit of the patch.  Below were the frequency
-> distribution before and after the patch:
-> 
->      Hold time        Before patch       After patch
->      ---------        ------------       -----------
->        0-01 us           804,139         13,738,708
->       01-05 us         9,772,767          1,177,194
->       05-10 us         4,595,028              4,984
->       10-15 us           303,481              3,562
->       15-20 us            78,971              1,314
->       20-25 us            24,583                 18
->       25-30 us             6,908                 12
->       30-40 us             8,015
->       40-50 us             2,192
->       50-60 us               316
->       60-70 us                43
->       70-80 us                 7
->       80-90 us                 2
->         >90 us                 3
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+--Sig_/GpQKy1LgZXVJwFlPpBVMGFS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied this one to cgroup/for-6.8. Will wait for the updated version for
-the other patches.
+Hi all,
 
-Thanks.
+Today's linux-next merge of the bcachefs tree got a conflict in:
 
--- 
-tejun
+  fs/bcachefs/btree_types.h
+
+between commit:
+
+  ecae0bd5173b ("Merge tag 'mm-stable-2023-11-01-14-33' of git://git.kernel=
+.org/pub/scm/linux/kernel/git/akpm/mm")
+
+from the origin tree and commit:
+
+  ba1676c7af0c ("bcachefs: Split out btree_key_cache_types.h")
+
+from the bcachefs tree.
+
+I fixed it up (I kept the latter version of this file and applied the
+following merge resolution patch) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 13 Nov 2023 09:18:22 +1100
+Subject: [PATCH] fix up for "bcachefs: Split out btree_key_cache_types.h"
+
+interacting with "Merge tag 'mm-stable-2023-11-01-14-33' of git://git.kerne=
+l.org/pub/scm/linux/kernel/git/akpm/mm"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/bcachefs/btree_key_cache_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/bcachefs/btree_key_cache_types.h b/fs/bcachefs/btree_key_ca=
+che_types.h
+index cfd09f519965..290e4e57df5b 100644
+--- a/fs/bcachefs/btree_key_cache_types.h
++++ b/fs/bcachefs/btree_key_cache_types.h
+@@ -17,7 +17,7 @@ struct btree_key_cache {
+ 	struct list_head	freed_nonpcpu;
+ 	size_t			nr_freed_nonpcpu;
+=20
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
+ 	unsigned		shrink_iter;
+ 	struct btree_key_cache_freelist __percpu *pcpu_freed;
+=20
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GpQKy1LgZXVJwFlPpBVMGFS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVRUGwACgkQAVBC80lX
+0Gz4Awf8Co71eZaB+2nvtWugt1+RL3rK1nzB/wLZJSgOLDz9lrqsrfYJpZVp+mQX
+g0wobfaa30IIpkAj5R/a4UUW9SxSZEtrOXTdQRsoPQ4SdbYa8F1ZSgFVKVRiuTRe
+1PzaIDLxRNrPFib4qYgbYy2IrQLQiLFXrYJGu/00Ns4ZVZFx8iRZU1GENucEM/Cz
+U+cOkC89jXr5DYsDvSnBVnFq+TdqPEGRKHtl1/9yUjNRDj2c2zfMnMn9nxr5oDYG
+YpbJJaxwdK3wUKGqTt5wvtTA5gS2gvH+WuOJyaKg0b15mUndWsk2XYvS8tm0hmDD
+PfsTJcHS4NtmOSeEcNmZa6RIAHDQzg==
+=v7X1
+-----END PGP SIGNATURE-----
+
+--Sig_/GpQKy1LgZXVJwFlPpBVMGFS--
