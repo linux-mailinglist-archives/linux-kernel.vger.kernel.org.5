@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CE77E8EFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 08:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3157E8F00
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 08:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjKLHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 02:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        id S230263AbjKLHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 02:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjKLHhN (ORCPT
+        with ESMTP id S229599AbjKLHif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 02:37:13 -0500
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289F72D77
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 23:37:10 -0800 (PST)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id 251irZ6wGaq2K251irxRYF; Sun, 12 Nov 2023 08:37:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1699774628;
-        bh=+SExa3iRH7Ca8gW1D0XoaD0vtMK+3bmRILeHnVgGh+c=;
-        h=From:To:Cc:Subject:Date;
-        b=cOrQyt1SjHP/RA29twkYAzgtIAizHd/5aONl/TDF4wKEAiQLlJW8wk4YLPbY/PD0F
-         hHxsH2xuh4KI061eHKfdIJi5FCxG4jNSQYbXuf7azREDC+9FhdsiiSUpOwEMw3GvZS
-         5L9I+mhhID8YdVaS2ztTjyWJSO92FgoDkz2E1LwblGAHTpK90yJ4mioJFMN/Onc0Xw
-         aKZ2IXs8U755U7xLpmWa4MQGaXSCXmaRCt1Vbx7ZuhFz+NoP15doZ2V4Ze93i6fkib
-         cWp1rrzEsq+K5okptKbt63zHh3aG4EMDteovYnnGEyPt9ycwMFSJ/46lpv/rLRXMiL
-         hWgg4Fos297QA==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 12 Nov 2023 08:37:08 +0100
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-pci@vger.kernel.org
-Subject: [PATCH] PCI: kirin: Use devm_kasprintf()
-Date:   Sun, 12 Nov 2023 08:37:01 +0100
-Message-Id: <085fc5ac70fc8d73d5da197967e76d18f2ab5208.1699774592.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 12 Nov 2023 02:38:35 -0500
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A422D6B
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 23:38:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
+        ; s=ds202310; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GrIGxCuXgiA6tFH0F/7zz5pa+Gb6skRcxK7aJwyvGB0=; b=ciBZLMMauPiEdJxXwDa+d+2lFd
+        3X++Rij/j7KpZ32aiMnrbrgbU4r5EuO7RjLDYAApr17FemK37JEf7Qk/JhysK+a+YFIrPlFLDhWqt
+        lCyoJt7D9LPRkxz/sN0cJ0DBTZ5+6fcdkcEeKpViMKWUQbJRtS+ZscGQJqrlJ6nkdRl+lwk7IuE+9
+        6tKG/s6K5pLiTVzNQpxRYcjJETu1vnIIkExsceyr1E6uef/iJANk6cOb4J8kdsbdnXFN5E04vhzyj
+        nbZyth/wp9a2xz4DiaFuHlFH6kvRCvSGTuis+d1er6+f7lVMZt1GaaNqKCiV10U1QRawRptRX4b6p
+        QzF/8srQ==;
+Received: from [84.215.119.50] (port=51382 helo=[192.168.0.2])
+        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <Ywe_C4rlyn@su-phil.net>)
+        id 1r2537-00EGrC-K5
+        for linux-kernel@vger.kernel.org;
+        Sun, 12 Nov 2023 08:38:29 +0100
+Message-ID: <ebdf641e-19a3-4cf8-ad01-b9ee1ac04b0a@su-phil.net>
+Date:   Sun, 12 Nov 2023 08:38:29 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Ywe_C4rlyn@su-phil.net>
+Subject: My last post on Fair Pay, GNU etc.
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use devm_kasprintf() instead of hand writing it.
-This saves the need of an intermediate buffer.
+I´ve discussed Fair Pay, GNU etc, on this list. Not so much feedback, 
+but I know someone is listening.
 
-There was also no reason to use the _const() version of devm_kstrdup().
-The string was known be not constant.
+A few feedback mails have come.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/pci/controller/dwc/pcie-kirin.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+And the ultimate conclusion really is BTx. A symbolperfect intent for an 
+operating system, about the ultimate development of operating systems: 
+Bitstreams.
 
-diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-index 2ee146767971..d9e3514de0a0 100644
---- a/drivers/pci/controller/dwc/pcie-kirin.c
-+++ b/drivers/pci/controller/dwc/pcie-kirin.c
-@@ -366,7 +366,6 @@ static int kirin_pcie_get_gpio_enable(struct kirin_pcie *pcie,
- 				      struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	char name[32];
- 	int ret, i;
- 
- 	/* This is an optional property */
-@@ -387,9 +386,8 @@ static int kirin_pcie_get_gpio_enable(struct kirin_pcie *pcie,
- 		if (pcie->gpio_id_clkreq[i] < 0)
- 			return pcie->gpio_id_clkreq[i];
- 
--		sprintf(name, "pcie_clkreq_%d", i);
--		pcie->clkreq_names[i] = devm_kstrdup_const(dev, name,
--							    GFP_KERNEL);
-+		pcie->clkreq_names[i] = devm_kasprintf(dev, GFP_KERNEL,
-+						       "pcie_clkreq_%d", i);
- 		if (!pcie->clkreq_names[i])
- 			return -ENOMEM;
- 	}
--- 
-2.34.1
+I hope you will be part of realizing this.
 
+Please read an intro to the background philosophy on su-phil.net also.
+
+Peace.
