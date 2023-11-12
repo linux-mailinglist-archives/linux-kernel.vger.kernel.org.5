@@ -2,182 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE927E926F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 21:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751C57E9273
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 21:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbjKLUMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 15:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        id S232117AbjKLUOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 15:14:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjKLUMd (ORCPT
+        with ESMTP id S229664AbjKLUOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 15:12:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C182583
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 12:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=7IoGT0pwhX7axnPfvjlRN2Ueix49kn72W2HXHOjg48o=; b=clfnheAjxV2mUSCg8C8qoD0fyx
-        DlpJks1tMSZXX8PW4TDzctsvjxyYfY1k8jXMUhVl49vKugKlI+hsoIaUajMWZYEo7RZOq17TBhDse
-        7UAh3/iqFU3GchKbUNex/Gy76ZRfBrImmqAem9yxQ7DWlA0+t+Ki87eOiSLwn8EXtLMGgO0OPq1Lj
-        HulzGNugyrcJcd16HxqdxtKaDK1KmuHXIwLYyp+uNJXPjucgtj/9QtXz6NBm+WT1rIM8jXwphbIz/
-        FqFZyjeLtlxoCabzFZ166gDmU6j5igxGk9Sl2XyvAajTW71tWqZeoAqT53C+d2GNO7UrC6TgfrlkF
-        COXDVumg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r2GoP-009z9T-KX; Sun, 12 Nov 2023 20:12:08 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F3E6C300427; Sun, 12 Nov 2023 21:12:05 +0100 (CET)
-Date:   Sun, 12 Nov 2023 21:12:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [RFC] x86/kvm/emulate: Avoid RET for fastops
-Message-ID: <20231112201205.GB9987@noisy.programming.kicks-ass.net>
+        Sun, 12 Nov 2023 15:14:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDBE2116
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 12:14:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C9EDC433C8;
+        Sun, 12 Nov 2023 20:14:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699820074;
+        bh=oRGBYTEliw7AYNH0BwmcNNXHy3XA7EOZkxh+XB9u+Ok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ut0JJClrFdy6dOuewkyVjfw1vgHAeJAl8qrEiyAKAlJAh0XDXXOgn6ChGU7/PI9WY
+         4uqz1paKLXnHOT2mivdX7zlfp2SifYQyL10L129FKLp6fHTkpKa1EaLrAciVw1TPP5
+         Nr0r9PR0tH7iLbZPFNl0SjxtdGUpcnJHG4uuxBidNyOqf7iqQjJRDRz2zUclNb+RNy
+         ZocyNlCH0qSpUkqcWClsWjlxiiUgd+kpkeMh0ctD/tdPq7ZRmASNlWzc80FpF26ojo
+         CuLRCH3HFRcupN3rxgy2I5ORlgvyoJxeNoQ8xb6mRGY36KqoisripSZK+KoyL3ToKR
+         cDH4yN7xHSHJA==
+Date:   Sun, 12 Nov 2023 21:14:27 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Charles Mirabile <cmirabil@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, Seth Forshee <sforshee@kernel.org>
+Subject: Re: [PATCH v1 0/1] fs: Consider capabilities relative to namespace
+ for linkat permission check
+Message-ID: <20231112-bekriegen-branche-fbc86a9aaa5e@brauner>
+References: <20231110170615.2168372-1-cmirabil@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231110170615.2168372-1-cmirabil@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 10, 2023 at 12:06:14PM -0500, Charles Mirabile wrote:
+> This is a one line change that makes `linkat` aware of namespaces when
+> checking for capabilities.
+> 
+> As far as I can tell, the call to `capable` in this code dates back to
+> before the `ns_capable` function existed, so I don't think the author
+> specifically intended to prefer regular `capable` over `ns_capable`,
+> and no one has noticed or cared to change it yet... until now!
+> 
+> It is already hard enough to use `linkat` to link temporarily files
+> into the filesystem without the `/proc` workaround, and when moving
+> a program that was working fine on bare metal into a container,
+> I got hung up on this additional snag due to the lack of namespace
+> awareness in `linkat`.
 
-Inspired by the likes of ba5ca5e5e6a1 ("x86/retpoline: Don't clobber
-RFLAGS during srso_safe_ret()") I had it on my TODO to look at this,
-because the call-depth-tracking rethunk definitely also clobbers flags
-and that's a ton harder to fix.
+I agree that it would be nice to relax this a bit to make this play
+nicer with containers.
 
-Looking at this recently I noticed that there's really only one callsite
-(twice, the testcc thing is basically separate from the rest of the
-fastop stuff) and thus CALL+RET is totally silly, we can JMP+JMP.
+The current checks want to restrict scenarios where an application is
+able to create a hardlink for an arbitrary file descriptor it has
+received via e.g., SCM_RIGHTS or that it has inherited.
 
-The below implements this, and aside from objtool going apeshit (it
-fails to recognise the fastop JMP_NOSPEC as a jump-table and instead
-classifies it as a tail-call), it actually builds and the asm looks
-good sensible enough.
+So we want to somehow get a good enough approximation to the question
+whether the caller would have been able to open the source file.
 
-I've not yet figured out how to test this stuff, but does something like
-this look sane to you guys?
+When we check for CAP_DAC_READ_SEARCH in the caller's namespace we
+presuppose that the file is accessible in the current namespace and that
+CAP_DAC_READ_SEARCH would have been enough to open it. Both aren't
+necessarily true. Neither need the file be accessible, e.g., due to a
+chroot or pivot_root nor need CAP_DAC_READ_SEARCH be enough. For
+example, the file could be accessible in the caller's namespace but due
+to uid/gid mapping the {g,u}id of the file doesn't have a mapping in the
+caller's namespace. So that doesn't really cut it imho.
 
-Given that rethunks are quite fat and slow, this could be sold as a
-performance optimization I suppose.
+However, if we check for CAP_DAC_READ_SEARCH in the namespace the file
+was opened in that could work. We know that the file must've been
+accessible in the namespace the file was opened in and we
+know that the {g,u}id of the file must have been mapped in the namespace
+the file was opened in. So if we check that the caller does have
+CAP_DAC_READ_SEARCH in the opener's namespace we can approximate that
+the caller could've opened the file.
 
----
-
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index f93e9b96927a..2cd3b5a46e7a 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -412,6 +412,17 @@ static inline void call_depth_return_thunk(void) {}
- 	"call *%[thunk_target]\n",				\
- 	X86_FEATURE_RETPOLINE_LFENCE)
- 
-+# define JMP_NOSPEC						\
-+	ALTERNATIVE_2(						\
-+	ANNOTATE_RETPOLINE_SAFE					\
-+	"jmp *%[thunk_target]\n",				\
-+	"jmp __x86_indirect_thunk_%V[thunk_target]\n",		\
-+	X86_FEATURE_RETPOLINE,					\
-+	"lfence;\n"						\
-+	ANNOTATE_RETPOLINE_SAFE					\
-+	"jmp *%[thunk_target]\n",				\
-+	X86_FEATURE_RETPOLINE_LFENCE)
-+
- # define THUNK_TARGET(addr) [thunk_target] "r" (addr)
- 
- #else /* CONFIG_X86_32 */
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2673cd5c46cb..9aae15d223a8 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -294,7 +294,6 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
- 
- #define __FOP_FUNC(name) \
- 	".align " __stringify(FASTOP_SIZE) " \n\t" \
--	".type " name ", @function \n\t" \
- 	name ":\n\t" \
- 	ASM_ENDBR \
- 	IBT_NOSEAL(name)
-@@ -302,12 +301,15 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
- #define FOP_FUNC(name) \
- 	__FOP_FUNC(#name)
- 
--#define __FOP_RET(name) \
--	"11: " ASM_RET \
-+#define __FOP_JMP(name, label) \
-+	"11: jmp " label " ; int3 \n\t" \
- 	".size " name ", .-" name "\n\t"
- 
--#define FOP_RET(name) \
--	__FOP_RET(#name)
-+#define FOP_JMP(name, label) \
-+	__FOP_JMP(#name, #label)
-+
-+#define __FOP_RET(name) \
-+	__FOP_JMP(name, "fastop_return")
- 
- #define __FOP_START(op, align) \
- 	extern void em_##op(struct fastop *fake); \
-@@ -420,7 +422,7 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
- #define FOP_SETCC(op) \
- 	FOP_FUNC(op) \
- 	#op " %al \n\t" \
--	FOP_RET(op)
-+	FOP_JMP(op, setcc_return)
- 
- FOP_START(setcc)
- FOP_SETCC(seto)
-@@ -444,7 +446,7 @@ FOP_END;
- FOP_START(salc)
- FOP_FUNC(salc)
- "pushf; sbb %al, %al; popf \n\t"
--FOP_RET(salc)
-+FOP_JMP(salc, fastop_return)
- FOP_END;
- 
- /*
-@@ -1061,13 +1063,13 @@ static int em_bsr_c(struct x86_emulate_ctxt *ctxt)
- 	return fastop(ctxt, em_bsr);
- }
- 
--static __always_inline u8 test_cc(unsigned int condition, unsigned long flags)
-+static noinline u8 test_cc(unsigned int condition, unsigned long flags)
- {
- 	u8 rc;
- 	void (*fop)(void) = (void *)em_setcc + FASTOP_SIZE * (condition & 0xf);
- 
- 	flags = (flags & EFLAGS_MASK) | X86_EFLAGS_IF;
--	asm("push %[flags]; popf; " CALL_NOSPEC
-+	asm("push %[flags]; popf; " JMP_NOSPEC "; setcc_return:"
- 	    : "=a"(rc) : [thunk_target]"r"(fop), [flags]"r"(flags));
- 	return rc;
- }
-@@ -5101,14 +5103,14 @@ static void fetch_possible_mmx_operand(struct operand *op)
- 		kvm_read_mmx_reg(op->addr.mm, &op->mm_val);
- }
- 
--static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop)
-+static noinline int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop)
- {
- 	ulong flags = (ctxt->eflags & EFLAGS_MASK) | X86_EFLAGS_IF;
- 
- 	if (!(ctxt->d & ByteOp))
- 		fop += __ffs(ctxt->dst.bytes) * FASTOP_SIZE;
- 
--	asm("push %[flags]; popf; " CALL_NOSPEC " ; pushf; pop %[flags]\n"
-+	asm("push %[flags]; popf; " JMP_NOSPEC " ; fastop_return: ; pushf; pop %[flags]\n"
- 	    : "+a"(ctxt->dst.val), "+d"(ctxt->src.val), [flags]"+D"(flags),
- 	      [thunk_target]"+S"(fop), ASM_CALL_CONSTRAINT
- 	    : "c"(ctxt->src2.val));
+So that should allow us to enabled this for containers.
