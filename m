@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51697E925A
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AB47E925B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbjKLTqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 14:46:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
+        id S232200AbjKLTqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 14:46:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjKLTqT (ORCPT
+        with ESMTP id S232176AbjKLTqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 12 Nov 2023 14:46:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C9B1BFF
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:46:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2906DC433C7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972E42139
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:46:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B47C7C433C9;
         Sun, 12 Nov 2023 19:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699818375;
-        bh=3hLtCq4IeSzVAzt9xwdt8SFMTkOmxWIve71ZhjNphZs=;
+        s=k20201202; t=1699818376;
+        bh=aHVFSWkLgL3DSZk4BMjseldmOMFwERpUZXKvLSdezzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ilsJm/vrsBo6Yu1ARBJXfw+m015LoFYGrGhL/3VpYDAsxMUdX9vYwdMYJDtgee/3r
-         2BobP/nc2JGuXBqoYQqTNwcHNW5Ul9h5jQBXL8J9jNE/kU9f+YyP4IB3ucA1GKwMF/
-         aVX7CwYjHhsScSiQ6bEPXWZXfsqDaxSSXIIamlhSeqRsvgt7urc/TcfeDoBssuSlIs
-         5nsUjlIN3IEX+FEQIB4x0276ygds0KDvX8pHGguetiHuUDPLdMrlnI0JiCa8UY/bm7
-         Hd5jdrzrPWfkBHm2Us92VOCJDsEJu9z7ez2YSTrZ29EZEOa9USrpWHji/+z1pjDsqj
-         yaPQldDJREiJg==
+        b=IZqjkc6FTf18ZhcDORKrMuhByH+hD2Ss0jubtVf43EF5ai/X82RLUEbaKYzgzrYU9
+         z6lLO2EUuHLi77rriepOZl7QKtaMC8Lnri0kYl1PYU209QyxwYWYWi9JCcsCDjorSY
+         nX7TWmp0x/LbG5ORpd0gvkGY5iZ3V4vgnl0FRXB+P9gnFbOn20pXo3jAaOlyD6rwT3
+         EMOH773xXOzjDJZwTk0G2KvHE4Vh6Lo3Loq7gL6WzItm5OgzbL5eYpkwesgfSh4aAc
+         tfP0sImuju4Qi3qfRbyvnT60OF/mRJz+vhHo9fpIDgD5AGwY3tf9vxowqQUza3+BJo
+         jkDyFPFq0/qnA==
 From:   SeongJae Park <sj@kernel.org>
 Cc:     SeongJae Park <sj@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
         damon@lists.linux.dev, linux-mm@kvack.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 4/8] mm/damon/sysfs-schemes: implement a command for scheme quota goals only commit
-Date:   Sun, 12 Nov 2023 19:46:03 +0000
-Message-Id: <20231112194607.61399-5-sj@kernel.org>
+Subject: [RFC PATCH 5/8] mm/damon/core-test: add a unit test for the feedback loop algorithm
+Date:   Sun, 12 Nov 2023 19:46:04 +0000
+Message-Id: <20231112194607.61399-6-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231112194607.61399-1-sj@kernel.org>
 References: <20231112194607.61399-1-sj@kernel.org>
@@ -51,116 +53,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To update DAMOS quota goals, users need to enter 'commit' command to the
-'state' file of the kdamond, which reads and commits not only the goals
-but entire inputs.  It is inefficient.  Implement yet another 'state'
-file input command for reading and committing only the scheme quota
-goals, namely 'commit_schemes_quota_goals'.
+Implement a simple kunit test for testing the behavior of the core logic
+of the goal-oriented feedback-driven DAMOS quota auto-tuning.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- mm/damon/sysfs-common.h  |  3 +++
- mm/damon/sysfs-schemes.c | 16 ++++++++++++++++
- mm/damon/sysfs.c         | 27 +++++++++++++++++++++++++++
- 3 files changed, 46 insertions(+)
+ mm/damon/core-test.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/mm/damon/sysfs-common.h b/mm/damon/sysfs-common.h
-index 5ff081226e28..4c37a166eb81 100644
---- a/mm/damon/sysfs-common.h
-+++ b/mm/damon/sysfs-common.h
-@@ -56,3 +56,6 @@ int damon_sysfs_schemes_update_regions_stop(struct damon_ctx *ctx);
- int damon_sysfs_schemes_clear_regions(
- 		struct damon_sysfs_schemes *sysfs_schemes,
- 		struct damon_ctx *ctx);
-+
-+void damos_sysfs_set_quota_scores(struct damon_sysfs_schemes *sysfs_schemes,
-+		struct damon_ctx *ctx);
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 10d8678e48ea..273fb7862fce 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -1888,6 +1888,22 @@ static void damos_sysfs_set_quota_score(
- 	}
+diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
+index f405d79dc623..c2b8cb25a195 100644
+--- a/mm/damon/core-test.h
++++ b/mm/damon/core-test.h
+@@ -447,6 +447,37 @@ static void damos_test_filter_out(struct kunit *test)
+ 	damos_free_filter(f);
  }
  
-+void damos_sysfs_set_quota_scores(struct damon_sysfs_schemes *sysfs_schemes,
-+		struct damon_ctx *ctx)
++static void damon_test_feed_loop_next_input(struct kunit *test)
 +{
-+	struct damos *scheme;
-+	int i = 0;
++	unsigned long last_input = 900000, current_score = 200;
 +
-+	damon_for_each_scheme(scheme, ctx) {
-+		struct damon_sysfs_scheme *sysfs_scheme;
-+
-+		sysfs_scheme = sysfs_schemes->schemes_arr[i];
-+		damos_sysfs_set_quota_score(sysfs_scheme->quotas->goals,
-+				&scheme->quota);
-+		i++;
-+	}
-+}
-+
- static struct damos *damon_sysfs_mk_scheme(
- 		struct damon_sysfs_scheme *sysfs_scheme)
- {
-diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
-index 2d31390edfc0..f6952cec9f19 100644
---- a/mm/damon/sysfs.c
-+++ b/mm/damon/sysfs.c
-@@ -994,6 +994,11 @@ enum damon_sysfs_cmd {
- 	DAMON_SYSFS_CMD_OFF,
- 	/* @DAMON_SYSFS_CMD_COMMIT: Update kdamond inputs. */
- 	DAMON_SYSFS_CMD_COMMIT,
 +	/*
-+	 * @DAMON_SYSFS_CMD_COMMIT_SCHEMES_QUOTA_GOALS: Commit the quota goals
-+	 * to DAMON.
++	 * If current score is lower than the goal, which is always 10,000
++	 * (read the comment on damon_feed_loop_next_input()'s comment), next
++	 * input should be higher than the last input.
 +	 */
-+	DAMON_SYSFS_CMD_COMMIT_SCHEMES_QUOTA_GOALS,
- 	/*
- 	 * @DAMON_SYSFS_CMD_UPDATE_SCHEMES_STATS: Update scheme stats sysfs
- 	 * files.
-@@ -1025,6 +1030,7 @@ static const char * const damon_sysfs_cmd_strs[] = {
- 	"on",
- 	"off",
- 	"commit",
-+	"commit_schemes_quota_goals",
- 	"update_schemes_stats",
- 	"update_schemes_tried_bytes",
- 	"update_schemes_tried_regions",
-@@ -1351,6 +1357,24 @@ static int damon_sysfs_commit_input(struct damon_sysfs_kdamond *kdamond)
- 			kdamond->contexts->contexts_arr[0]);
- }
- 
-+static int damon_sysfs_commit_schemes_quota_goals(
-+		struct damon_sysfs_kdamond *sysfs_kdamond)
-+{
-+	struct damon_ctx *ctx;
-+	struct damon_sysfs_context *sysfs_ctx;
++	KUNIT_EXPECT_GT(test,
++			damon_feed_loop_next_input(last_input, current_score),
++			last_input);
 +
-+	if (!damon_sysfs_kdamond_running(sysfs_kdamond))
-+		return -EINVAL;
-+	/* TODO: Support multiple contexts per kdamond */
-+	if (sysfs_kdamond->contexts->nr != 1)
-+		return -EINVAL;
++	/*
++	 * If current score is higher than the goal, next input should be lower
++	 * than the last input.
++	 */
++	current_score = 250000000;
++	KUNIT_EXPECT_LT(test,
++			damon_feed_loop_next_input(last_input, current_score),
++			last_input);
 +
-+	ctx = sysfs_kdamond->damon_ctx;
-+	sysfs_ctx = sysfs_kdamond->contexts->contexts_arr[0];
-+	damos_sysfs_set_quota_scores(sysfs_ctx->schemes, ctx);
-+	return 0;
++	/*
++	 * The next input depends on the distance between the current score and
++	 * the goal
++	 */
++	KUNIT_EXPECT_GT(test,
++			damon_feed_loop_next_input(last_input, 200),
++			damon_feed_loop_next_input(last_input, 2000));
 +}
 +
- /*
-  * damon_sysfs_cmd_request_callback() - DAMON callback for handling requests.
-  * @c:		The DAMON context of the callback.
-@@ -1379,6 +1403,9 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
- 	case DAMON_SYSFS_CMD_COMMIT:
- 		err = damon_sysfs_commit_input(kdamond);
- 		break;
-+	case DAMON_SYSFS_CMD_COMMIT_SCHEMES_QUOTA_GOALS:
-+		err = damon_sysfs_commit_schemes_quota_goals(kdamond);
-+		break;
- 	case DAMON_SYSFS_CMD_UPDATE_SCHEMES_TRIED_BYTES:
- 		total_bytes_only = true;
- 		fallthrough;
+ static struct kunit_case damon_test_cases[] = {
+ 	KUNIT_CASE(damon_test_target),
+ 	KUNIT_CASE(damon_test_regions),
+@@ -463,6 +494,7 @@ static struct kunit_case damon_test_cases[] = {
+ 	KUNIT_CASE(damon_test_moving_sum),
+ 	KUNIT_CASE(damos_test_new_filter),
+ 	KUNIT_CASE(damos_test_filter_out),
++	KUNIT_CASE(damon_test_feed_loop_next_input),
+ 	{},
+ };
+ 
 -- 
 2.34.1
 
