@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE247E8F16
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB607E8F15
 	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 09:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjKLIBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 03:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        id S230395AbjKLIBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 03:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjKLIBp (ORCPT
+        with ESMTP id S230240AbjKLIBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 03:01:45 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B607230CB
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 00:01:42 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507a29c7eefso4625283e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 00:01:42 -0800 (PST)
+        Sun, 12 Nov 2023 03:01:47 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163C330CB
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 00:01:44 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507a0907896so4611681e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 00:01:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699776101; x=1700380901; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699776102; x=1700380902; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1YkEVGPbnVHL4DFLlBtIPj1GLSIh3cepxMx8cCgbs64=;
-        b=cBmwDQGrTkmSdSKV6sa+N1dNC1QkNQchWndIs2HhImACMyeNPD4C7O7WwAMpGS1BX2
-         9sjIL3vx6yNhlOdrJ5HeOWqB/rZOxPIJX4ocoI+rKHi7zBFIPQZepaZZyxpQSlPbif1l
-         1+ACwjiQ2gpGiFE/3kgy7AHzI0dBGjFUjda8hWnh3s2sCS09Zs1ARFVJkQtIDnZsUhmJ
-         zo1ogYtdkZDMiS9yco9pT4privbXvIUAgF10MRGghvRktkq4GXnk8Z5DkToxgNoBP7C8
-         37pAU7/x1eyphQbauCxL84BW21lwSBJCeK7d1SCAdP0wt1ELlX/NtCoGe6rT+nn5zjQ3
-         IBBw==
+        bh=TWIb1bx21KXA/e/moLxgTKfaIIIfJdvhi2i/+fjCaMI=;
+        b=Zyqy7KosIWld1AAcDop2Fe0xR4u0ng2f4tP9Wefxo5LTVBei80vsxg7ZrPcZYoYpKO
+         uG8Zkq1c3uVpqtXTGNt44mVVnHvt7LfUwhx8Kxrswp2WEdcBcdZEa1yOmC/DaoN7Z9Tl
+         tzNRB8OpMRM5nE5Byci6IqEk3990c+qqfoMo5jbzYzcUEgysLwRnQbjM9jcDqEg66i6g
+         BhBxHOcIYAzDeLqMnSYeUjpJ8OC6v2qflUwG76JCYOT4k2c+6okcf7igLqoheeNk7+HU
+         dZhyOhGMxG9CxaTziGU4EMX+mCZbiWg6VEa1rhXmMkwhLJ3q06AkV08trSYqbuZ4JGPQ
+         Zz3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699776101; x=1700380901;
+        d=1e100.net; s=20230601; t=1699776102; x=1700380902;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1YkEVGPbnVHL4DFLlBtIPj1GLSIh3cepxMx8cCgbs64=;
-        b=fFRzm1qdT/B4e7zq5QkATFdme+WMaF6guwhZjUprHMIHqyigALfAsEE4+/1UBRB5z2
-         I3x1rrkGlfJeg8d71bzqfLD0mdLEvHvQwIj/VoQaxHjinIe+sUCl6bRA2KDguPsU4V0y
-         5bRt2alGjCDw86zOeJgLy8eolFawl+iI5qKdLx95lfoVKAYKsE0oAcDNUy4CfPoLlTtw
-         UAoxHNSBWLgkdT1pNTvA/S8uqUA5cucehlxRg9O4NhrLs5nh2U7a8OcNWwG2ctuMPMLr
-         GvKoxp1rIrBnH0W4S21ASeCZpukciH1YAy+7Z+RUzbnmnGAW/+MVUenZLusGgO6vZ664
-         SZtQ==
-X-Gm-Message-State: AOJu0YwVQlUrVtc2Lz+X+ajXkaBfzmGH1r078hxHBBeRrej2aoFA/HOl
-        Q3rwE5MOVE8GPT97//pCNmH1Ow==
-X-Google-Smtp-Source: AGHT+IHckzJzCr9O+a6Q5rN/TZclctvopWIQCNS9enTdQVVVfe+8kPGEh77l+iGTPFvs3Szh6kwycQ==
-X-Received: by 2002:ac2:54b3:0:b0:507:b14f:e3bc with SMTP id w19-20020ac254b3000000b00507b14fe3bcmr2230278lfk.33.1699776100696;
-        Sun, 12 Nov 2023 00:01:40 -0800 (PST)
+        bh=TWIb1bx21KXA/e/moLxgTKfaIIIfJdvhi2i/+fjCaMI=;
+        b=pEKgvm2Rm7JvTtRy09IxUWz+qr4IFK1Ma0Mu6XnS7suT6ntZs0nsmk+7l4HPA7ApNR
+         dV2KWh/ULx7BgkmGbwDWngHWaszHY6zTO/9Lo3zo3B39UVcCeR6ZzurdsybR6r4xFwZ8
+         mjwpY8XWZjht2v+mPhm7NSwBaEvybP0ntrWCI0z/HIoQHNHa8ghGRRxn6LUti01LBOdc
+         Mg4+jv2r6SeLj2JrRqCOUz/6nP09uOqDSynvoOE5+wk6ZTrrknBycHxQaMk8ldcXSKvh
+         AMbKAt/XBL+BJUJCdPrmM1dwkyOAyG3C4yatfDe6jM9mew4MppDcb8htPUaBbmmIBTiQ
+         AAGA==
+X-Gm-Message-State: AOJu0YxNsatZIcZZ+/5PTULUBROsmIBHIDSrnYK2aEvIFo63ILImUgjZ
+        Muk8P2+kjQy8EcA1PGvO6E2fQg==
+X-Google-Smtp-Source: AGHT+IGn7yHakrWaPAN/7vTrfpqtai2xTB7Hn0e4NanBdRR9RU9Oh00G1L0zPbe4UogOqtyDxzn9pg==
+X-Received: by 2002:ac2:424a:0:b0:509:4511:8ec4 with SMTP id m10-20020ac2424a000000b0050945118ec4mr2078179lfl.38.1699776102364;
+        Sun, 12 Nov 2023 00:01:42 -0800 (PST)
 Received: from krzk-bin.monzoon.net (46-253-189-43.dynamic.monzoon.net. [46.253.189.43])
-        by smtp.gmail.com with ESMTPSA id bf17-20020a0564021a5100b0054351b5a768sm1940853edb.82.2023.11.12.00.01.39
+        by smtp.gmail.com with ESMTPSA id bf17-20020a0564021a5100b0054351b5a768sm1940853edb.82.2023.11.12.00.01.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 00:01:40 -0800 (PST)
+        Sun, 12 Nov 2023 00:01:41 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -60,9 +60,9 @@ To:     Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 2/3] ARM: dts: qcom: sdx65: correct clock order in DWC3 node
-Date:   Sun, 12 Nov 2023 09:01:35 +0100
-Message-Id: <20231112080136.12518-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/3] ARM: dts: qcom: ipq4019: correct clock order in DWC3 node
+Date:   Sun, 12 Nov 2023 09:01:36 +0100
+Message-Id: <20231112080136.12518-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231112080136.12518-1-krzysztof.kozlowski@linaro.org>
 References: <20231112080136.12518-1-krzysztof.kozlowski@linaro.org>
@@ -82,33 +82,26 @@ Align the order of clocks in Qualcomm DWC3 USB controller to match
 bindings.  Linux driver does not care about the order.  This fixes
 dtbs_check warning:
 
-  qcom-sdx65-mtp.dtb: usb@a6f8800: clock-names:3: 'sleep' was expected
-  qcom-sdx65-mtp.dtb: usb@a6f8800: clock-names:4: 'mock_utmi' was expected
+  qcom-ipq4018-ap120c-ac.dtb: usb@60f8800: clock-names:0: 'core' was expected
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm/boot/dts/qcom/qcom-sdx65.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-index 49c16ee2e169..7a86bcb52cfd 100644
---- a/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-sdx65.dtsi
-@@ -496,10 +496,10 @@ usb: usb@a6f8800 {
- 			clocks = <&gcc GCC_USB30_SLV_AHB_CLK>,
- 				 <&gcc GCC_USB30_MASTER_CLK>,
- 				 <&gcc GCC_USB30_MSTR_AXI_CLK>,
--				 <&gcc GCC_USB30_MOCK_UTMI_CLK>,
--				 <&gcc GCC_USB30_SLEEP_CLK>;
--			clock-names = "cfg_noc", "core", "iface", "mock_utmi",
--					"sleep";
-+				 <&gcc GCC_USB30_SLEEP_CLK>,
-+				 <&gcc GCC_USB30_MOCK_UTMI_CLK>;
-+			clock-names = "cfg_noc", "core", "iface", "sleep",
-+				      "mock_utmi";
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+index b93c7efda827..6357cd342b33 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi
+@@ -684,7 +684,7 @@ usb2: usb@60f8800 {
+ 			clocks = <&gcc GCC_USB2_MASTER_CLK>,
+ 				 <&gcc GCC_USB2_SLEEP_CLK>,
+ 				 <&gcc GCC_USB2_MOCK_UTMI_CLK>;
+-			clock-names = "master", "sleep", "mock_utmi";
++			clock-names = "core", "sleep", "mock_utmi";
+ 			ranges;
+ 			status = "disabled";
  
- 			assigned-clocks = <&gcc GCC_USB30_MOCK_UTMI_CLK>,
- 					  <&gcc GCC_USB30_MASTER_CLK>;
 -- 
 2.34.1
 
