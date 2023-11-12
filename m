@@ -2,59 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A727E9249
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE977E924C
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbjKLTir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 14:38:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S232151AbjKLTns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 14:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbjKLTip (ORCPT
+        with ESMTP id S229886AbjKLTnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 14:38:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52222139
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:38:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699817922; x=1731353922;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=6B4gEHCmKZknHpTAhOUVFA0kZjj45PJ9bFyvzn0eQCs=;
-  b=BPg1DWiu1Vo8o6ws+0OlqKw+S56rm5zsoDPEaPZoshog28pNvGK0MZP5
-   a3n3bZlofsZULtL9Y4QlThmiBBzz/qKtuRsNbz7d/3mp178vsrRuIfF5e
-   HKbNmcdkXjHdzIlqvuvXYCgGFJBd1v6EUM2yxv9LkNv5Kq+F+LRdH0Gyp
-   PsDqQlKy0ipnHNMXFsS/rFa1XcLhECcSYNUZK+5yTwyGo/aAy6WVe9NYY
-   xi/B03ikg3mt05j95IxP3T4VZdKO51B6KyssY5fJB1BvNm4bcnrMHSUlr
-   /nmYWlrOeamZ9LV8IPGLjfJswRybJ0CJg1dWAlFAtMDc12FrrzysFfW/N
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="387513740"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="387513740"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 11:38:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="12299841"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 12 Nov 2023 11:38:41 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2GI2-000BT4-2t;
-        Sun, 12 Nov 2023 19:38:38 +0000
-Date:   Mon, 13 Nov 2023 03:38:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Baisong Zhong <zhongbaisong@huawei.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: kernel/sched/rt.c:9:18: warning: 'max_rt_runtime' defined but not
- used
-Message-ID: <202311130334.4yJKVl38-lkp@intel.com>
+        Sun, 12 Nov 2023 14:43:47 -0500
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611791BFF;
+        Sun, 12 Nov 2023 11:43:42 -0800 (PST)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id A225B86A13;
+        Sun, 12 Nov 2023 20:43:39 +0100 (CET)
+From:   =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+To:     Markuss Broks <markuss.broks@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Karel Balej <balejk@matfyz.cz>,
+        =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] input: touchscreen: imagis: Add touch key support
+Date:   Sun, 12 Nov 2023 20:41:24 +0100
+Message-ID: <20231112194124.24916-1-duje.mihanovic@skole.hr>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,54 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baisong,
+IST3032C (and possibly some other models) has touch keys. Add support
+for them to the imagis driver.
 
-FYI, the error/warning still remains.
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+This patch depends on the series generalizing the driver and adding IST3032C
+support: https://lore.kernel.org/all/20231003133440.4696-1-karelb@gimli.ms.mff.cuni.cz/
+---
+ drivers/input/touchscreen/imagis.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1b907d0507354b74a4f2c286380cd6059af79248
-commit: 28f152cd0926596e69d412467b11b6fe6fe4e864 sched/rt: fix build error when CONFIG_SYSCTL is disable
-date:   1 year, 7 months ago
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231113/202311130334.4yJKVl38-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231113/202311130334.4yJKVl38-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311130334.4yJKVl38-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from kernel/sched/build_policy.c:43:
-   kernel/sched/rt.c:309:6: warning: no previous prototype for 'unregister_rt_sched_group' [-Wmissing-prototypes]
-     309 | void unregister_rt_sched_group(struct task_group *tg) { }
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/sched/rt.c:311:6: warning: no previous prototype for 'free_rt_sched_group' [-Wmissing-prototypes]
-     311 | void free_rt_sched_group(struct task_group *tg) { }
-         |      ^~~~~~~~~~~~~~~~~~~
-   kernel/sched/rt.c:313:5: warning: no previous prototype for 'alloc_rt_sched_group' [-Wmissing-prototypes]
-     313 | int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
-         |     ^~~~~~~~~~~~~~~~~~~~
-   kernel/sched/rt.c:716:6: warning: no previous prototype for 'sched_rt_bandwidth_account' [-Wmissing-prototypes]
-     716 | bool sched_rt_bandwidth_account(struct rt_rq *rt_rq)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~
->> kernel/sched/rt.c:9:18: warning: 'max_rt_runtime' defined but not used [-Wunused-const-variable=]
-       9 | static const u64 max_rt_runtime = MAX_BW;
-         |                  ^~~~~~~~~~~~~~
-
-
-vim +/max_rt_runtime +9 kernel/sched/rt.c
-
-d505b8af58912a Huaixin Chang  2020-04-25  @9  static const u64 max_rt_runtime = MAX_BW;
-ce0dbbbb30aee6 Clark Williams 2013-02-07  10  
-
-:::::: The code at line 9 was first introduced by commit
-:::::: d505b8af58912ae1e1a211fabc9995b19bd40828 sched: Defend cfs and rt bandwidth quota against overflow
-
-:::::: TO: Huaixin Chang <changhuaixin@linux.alibaba.com>
-:::::: CC: Peter Zijlstra <peterz@infradead.org>
-
+diff --git a/drivers/input/touchscreen/imagis.c b/drivers/input/touchscreen/imagis.c
+index 41f28e6e9cb1..5a54ce291655 100644
+--- a/drivers/input/touchscreen/imagis.c
++++ b/drivers/input/touchscreen/imagis.c
+@@ -30,6 +30,7 @@
+ #define IST3038C_FINGER_COUNT_MASK	GENMASK(15, 12)
+ #define IST3038C_FINGER_COUNT_SHIFT	12
+ #define IST3038C_FINGER_STATUS_MASK	GENMASK(9, 0)
++#define IST3032C_KEY_STATUS_MASK	GENMASK(20, 16)
+ 
+ #define IST3038B_REG_STATUS		0x20
+ #define IST3038B_REG_CHIPID		0x30
+@@ -43,6 +44,7 @@ struct imagis_properties {
+ 	unsigned int whoami_cmd;
+ 	unsigned int whoami_val;
+ 	bool protocol_b;
++	bool touch_keys_supported;
+ };
+ 
+ struct imagis_ts {
+@@ -95,7 +97,7 @@ static irqreturn_t imagis_interrupt(int irq, void *dev_id)
+ {
+ 	struct imagis_ts *ts = dev_id;
+ 	u32 intr_message, finger_status;
+-	unsigned int finger_count, finger_pressed;
++	unsigned int finger_count, finger_pressed, key_pressed;
+ 	int i;
+ 	int error;
+ 
+@@ -144,6 +146,11 @@ static irqreturn_t imagis_interrupt(int irq, void *dev_id)
+ 					IST3038C_AREA_SHIFT);
+ 	}
+ 
++	key_pressed = FIELD_GET(IST3032C_KEY_STATUS_MASK, intr_message);
++
++	input_report_key(ts->input_dev, KEY_APPSELECT, (key_pressed & BIT(0)));
++	input_report_key(ts->input_dev, KEY_BACK, (key_pressed & BIT(1)));
++
+ 	input_mt_sync_frame(ts->input_dev);
+ 	input_sync(ts->input_dev);
+ 
+@@ -229,6 +236,10 @@ static int imagis_init_input_dev(struct imagis_ts *ts)
+ 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
+ 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
+ 	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 16, 0, 0);
++	if (ts->tdata->touch_keys_supported) {
++		input_set_capability(input_dev, EV_KEY, KEY_BACK);
++		input_set_capability(input_dev, EV_KEY, KEY_APPSELECT);
++	}
+ 
+ 	touchscreen_parse_properties(input_dev, true, &ts->prop);
+ 	if (!ts->prop.max_x || !ts->prop.max_y) {
+@@ -370,6 +381,7 @@ static const struct imagis_properties imagis_3032c_data = {
+ 	.touch_coord_cmd = IST3038C_REG_TOUCH_COORD,
+ 	.whoami_cmd = IST3038C_REG_CHIPID,
+ 	.whoami_val = IST3032C_WHOAMI,
++	.touch_keys_supported = true,
+ };
+ 
+ static const struct imagis_properties imagis_3038b_data = {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.1
+
+
