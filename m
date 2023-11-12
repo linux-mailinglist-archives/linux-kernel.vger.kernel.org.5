@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29257E8DA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 505BD7E8DB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 01:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjKLAjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Nov 2023 19:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        id S229838AbjKLAqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Nov 2023 19:46:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKLAjP (ORCPT
+        with ESMTP id S229436AbjKLAqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Nov 2023 19:39:15 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09FB2D5E
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:39:11 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6ce31c4a653so1933339a34.3
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quora.org; s=google; t=1699749550; x=1700354350; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6SMdZhVnZz0fqTFpbpWpMnfjrZwQQWUBQ+09KRZM6bk=;
-        b=ND4G2PEVbqlRJ25gI11IFRVvGxJww1OY9oS90UtCWRpp/j5wsBzUdZDQfyvB5MCmPS
-         DcWKXPCROIT4HYEz2jDA9yuRmcIDYmLzk7ldoOYT3voiFDMjRYOzGcTSGGVU7SIJncr3
-         orJ5n0CrMjh9W8hQz38aUV6PZ4qJYR0bBLDTo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699749550; x=1700354350;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6SMdZhVnZz0fqTFpbpWpMnfjrZwQQWUBQ+09KRZM6bk=;
-        b=qV7o3+vT8244XMB6LKUj9TvXXlXq5uy1YDnMAo8b2Im6lwzF1EFCo+jbmCVlStwSim
-         /tFM2sB/QqwlOzlqOMMAWqUHGM0NPvOQgv4s7V899oyOzCmnF+naCyBqzTDDgWCjRZ7m
-         Mai2epGwJpXl7eLy0gjk2PjlDi8KUfY65KZ8fzm8klABgtcX6ddw2X86BCcLit/AD8tc
-         3xpGMDK5oG70HookVqFjzyLgMeFa4IeNbz+AODkI8P/2oxRvyKRqpCFh8a4aZEi7IQjC
-         SaBqgfoAyskclZILG4FOzLmn5WD0MG2c5MpczjXqROw5ijxMVhA9Mz5osheltnrfrvqR
-         AB0Q==
-X-Gm-Message-State: AOJu0Yx+V9v2M5NU2j6fLYdwdDy8nZdQDQVCMGmw4UalQD4GQEYpW3n8
-        YgwzUYDNObIqyTEDLOEo5WX8ew==
-X-Google-Smtp-Source: AGHT+IGND5EiY5rsM60+M9msCw+cxltmVHYmIfuK7Si2A9gvKX0asaZh1RIgrJ2nVqXvCxZ2VAtkHA==
-X-Received: by 2002:a05:6830:3499:b0:6d6:4c25:5a56 with SMTP id c25-20020a056830349900b006d64c255a56mr4958073otu.12.1699749550442;
-        Sat, 11 Nov 2023 16:39:10 -0800 (PST)
-Received: from nuc.. ([202.83.99.71])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170902a71700b001bc676df6a9sm1789682plq.132.2023.11.11.16.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 16:39:09 -0800 (PST)
-From:   Daniel J Blueman <daniel@quora.org>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel J Blueman <daniel@quora.org>
-Subject: [PATCH] bcachefs: Fix potential sleeping during mount
-Date:   Sun, 12 Nov 2023 00:38:41 +0000
-Message-Id: <20231112003841.20186-1-daniel@quora.org>
-X-Mailer: git-send-email 2.40.1
+        Sat, 11 Nov 2023 19:46:45 -0500
+Received: from vps.thesusis.net (vps.thesusis.net [IPv6:2600:1f18:60b9:2f00:6f85:14c6:952:bad3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269142D77
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 16:46:42 -0800 (PST)
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+        id 6442D148788; Sat, 11 Nov 2023 19:46:41 -0500 (EST)
+From:   Phillip Susi <phill@thesusis.net>
+To:     Luben Tuikov <luben.tuikov@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Radeon regression in 6.6 kernel
+Date:   Sat, 11 Nov 2023 19:46:41 -0500
+Message-ID: <87edgv4x3i.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During mount, bcachefs mount option processing may sleep while allocating a string buffer.
+I had been testing some things on a post 6.6-rc5 kernel for a week or
+two and then when I pulled to a post 6.6 release kernel, I found that
+system suspend was broken.  It seems that the radeon driver failed to
+suspend, leaving the display dead, the wayland display server hung, and
+the system still running.  I have been trying to bisect it for the last
+few days and have only been able to narrow it down to the following 3
+commits:
 
-Fix this by reference counting in order to take the atomic path.
+There are only 'skip'ped commits left to test.
+The first bad commit could be any of:
+56e449603f0ac580700621a356d35d5716a62ce5
+c07bf1636f0005f9eb7956404490672286ea59d3
+b70438004a14f4d0f9890b3297cd66248728546c
+We cannot bisect more!
 
-Signed-off-by: Daniel J Blueman <daniel@quora.org>
----
- fs/bcachefs/disk_groups.c | 2 ++
- 1 file changed, 2 insertions(+)
+It appears that there was a late merge in the 6.6 window that originally
+forked from the -rc2, as many of the later commits that I bisected had
+that version number.
 
-diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
-index 1f334124055b..4d0cb0ccff32 100644
---- a/fs/bcachefs/disk_groups.c
-+++ b/fs/bcachefs/disk_groups.c
-@@ -555,6 +555,7 @@ void bch2_target_to_text(struct printbuf *out, struct bch_fs *c, unsigned v)
- 	case TARGET_DEV: {
- 		struct bch_dev *ca;
- 
-+		out->atomic++;
- 		rcu_read_lock();
- 		ca = t.dev < c->sb.nr_devices
- 			? rcu_dereference(c->devs[t.dev])
-@@ -570,6 +571,7 @@ void bch2_target_to_text(struct printbuf *out, struct bch_fs *c, unsigned v)
- 		}
- 
- 		rcu_read_unlock();
-+		out->atomic--;
- 		break;
- 	}
- 	case TARGET_GROUP:
--- 
-2.40.1
+I couldn't get it more narrowed down because I had to skip the
+surrounding commits because they wouldn't even boot up to a gui desktop,
+let alone try to suspend.
 
+When system suspend fails, I find the following in my syslog after I
+have to magic-sysrq reboot because the the display is dead:
+
+Nov 11 18:44:39 faldara kernel: PM: suspend entry (deep)
+Nov 11 18:44:39 faldara kernel: Filesystems sync: 0.035 seconds
+Nov 11 18:44:40 faldara kernel: Freezing user space processes
+Nov 11 18:44:40 faldara kernel: Freezing user space processes completed (elapsed 0.001 seconds)
+Nov 11 18:44:40 faldara kernel: OOM killer disabled.
+Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks
+Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+Nov 11 18:44:40 faldara kernel: printk: Suspending console(s) (use no_console_suspend to debug)
+Nov 11 18:44:40 faldara kernel: serial 00:01: disabled
+Nov 11 18:44:40 faldara kernel: e1000e: EEE TX LPI TIMER: 00000011
+Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Synchronizing SCSI cache
+Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Synchronizing SCSI cache
+Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Synchronizing SCSI cache
+Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Stopping disk
+Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Stopping disk
+Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Stopping disk
+Nov 11 18:44:40 faldara kernel: amdgpu: Move buffer fallback to memcpy unavailable
+Nov 11 18:44:40 faldara kernel: [TTM] Buffer eviction failed
+Nov 11 18:44:40 faldara kernel: [drm] evicting device resources failed
+Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: pci_pm_suspend(): amdgpu_pmops_suspend+0x0/0x80 [amdgpu] returns -19
+Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: dpm_run_callback(): pci_pm_suspend+0x0/0x170 returns -19
+Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: failed to suspend async: error -19
+Nov 11 18:44:40 faldara kernel: PM: Some devices failed to suspend, or early wake event detected
+Nov 11 18:44:40 faldara kernel: xhci_hcd 0000:06:00.0: xHC error in resume, USBSTS 0x401, Reinit
+Nov 11 18:44:40 faldara kernel: usb usb3: root hub lost power or was reset
+Nov 11 18:44:40 faldara kernel: usb usb4: root hub lost power or was reset
+Nov 11 18:44:40 faldara kernel: serial 00:01: activated
+Nov 11 18:44:40 faldara kernel: nvme nvme0: 4/0/0 default/read/poll queues
+Nov 11 18:44:40 faldara kernel: ata8: SATA link down (SStatus 0 SControl 300)
+Nov 11 18:44:40 faldara kernel: ata7: SATA link down (SStatus 0 SControl 300)
+Nov 11 18:44:40 faldara kernel: ata4: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+Nov 11 18:44:40 faldara kernel: ata1: SATA link down (SStatus 4 SControl 300)
+Nov 11 18:44:40 faldara kernel: ata3: SATA link down (SStatus 4 SControl 300)
+Nov 11 18:44:40 faldara kernel: ata4.00: configured for UDMA/133
+Nov 11 18:44:40 faldara kernel: OOM killer enabled.
+Nov 11 18:44:40 faldara kernel: Restarting tasks ... done.
+Nov 11 18:44:40 faldara kernel: random: crng reseeded on system resumption
+Nov 11 18:44:40 faldara kernel: PM: suspend exit
+Nov 11 18:44:40 faldara kernel: PM: suspend entry (s2idle)
+Nov 11 18:44:40 faldara systemd-networkd[384]: enp0s31f6: Gained IPv6LL
+Nov 11 18:44:40 faldara avahi-daemon[668]: Joining mDNS multicast group on interface enp0s31f6.IPv6 with address fe80::3ad5:47ff:fe0f:488a.
+
+My video card is this:
+
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 23 (rev c7) (prog-if 00 [VGA controller])
+        Subsystem: Gigabyte Technology Co., Ltd Navi 23
+        Flags: bus master, fast devsel, latency 0, IRQ 139
+        Memory at e0000000 (64-bit, prefetchable) [size=256M]
+        Memory at f0000000 (64-bit, prefetchable) [size=2M]
+        I/O ports at e000 [size=256]
+        Memory at f7900000 (32-bit, non-prefetchable) [size=1M]
+        Expansion ROM at 000c0000 [disabled] [size=128K]
+        Capabilities: [48] Vendor Specific Information: Len=08 <?>
+        Capabilities: [50] Power Management version 3
+        Capabilities: [64] Express Legacy Endpoint, MSI 00
+        Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+        Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+        Capabilities: [150] Advanced Error Reporting
+        Capabilities: [200] Physical Resizable BAR
+        Capabilities: [240] Power Budgeting <?>
+        Capabilities: [270] Secondary PCI Express
+        Capabilities: [2a0] Access Control Services
+        Capabilities: [2d0] Process Address Space ID (PASID)
+        Capabilities: [320] Latency Tolerance Reporting
+        Capabilities: [410] Physical Layer 16.0 GT/s <?>
+        Capabilities: [440] Lane Margining at the Receiver <?>
+        Kernel driver in use: amdgpu
+        Kernel modules: amdgpu
