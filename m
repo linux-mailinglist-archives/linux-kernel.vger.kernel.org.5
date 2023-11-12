@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8E37E9020
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5127E9036
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 14:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjKLNZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 08:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        id S232005AbjKLN0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 08:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbjKLNZK (ORCPT
+        with ESMTP id S231761AbjKLNZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 08:25:10 -0500
+        Sun, 12 Nov 2023 08:25:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B330949DA;
-        Sun, 12 Nov 2023 05:24:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BFB8C433CC;
-        Sun, 12 Nov 2023 13:24:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA783A98;
+        Sun, 12 Nov 2023 05:24:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8ADBC433AB;
+        Sun, 12 Nov 2023 13:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699795486;
-        bh=bLEEQRy0ruNhv2+OyXHuZ6I30HdiPO+33fSao6p0PUs=;
+        s=k20201202; t=1699795490;
+        bh=fA/Gl85/aqYKqIqYNvGeoHYQKLCcLZ+PRdv4RZjBolk=;
         h=From:To:Cc:Subject:Date:From;
-        b=sydTs7YZOECHdK84a5j0dQlapb+Gi0lu9tM+aQn8D4ohM/gv+CbLG2Lfjn8RpFnNV
-         kIsIYJ00JkzrTHc6EsYJpWBRnOnRI0IpyYQ8oC8XJr4FhySjsgwbuHtF7Tpez9DUJI
-         +qh+HDmVk62fqNSEHAWhCH96MlpqTOn/sDuQwp/N1B0yztqviiDU8NZ0+6mJQv/9IL
-         3oHZZzj7hvGKygioizjlHBiZhXbvS8wpWLTg+uj836c6mLu3nPQJAWBCbTzaatSsxD
-         TA/tPzK9bCdynofSua1MVMfyGeUEnFpMTigs3SQGabF5808dGpaHTk/Z2GnoNrmV6d
-         T5WnLZg7EfYLw==
+        b=VfkWE/N82Aa9TlRCs4EA5pwjosr03DRRx4+Oi0Nq2vthBD+TsZ5stC0yC0QVuhx6X
+         hn8eDug8m9d82QaGAuuN4mZCda2LaLWjPRQfuN2qNvA1riGQQd9g6Kb05VpbmRrVKE
+         B+iAXO6hSE6HrFE+kvbmo9jTPBjYFEGnmGvfeejXNioEU2IEp2CnRfZEczF0DsqQy2
+         WQtv0+6nTJNU2YMlAGGRIDoSKYtNOby9Rgoyl3FWRiPPqLqLGfQ3Wb9hvBAsNO0Htr
+         t0prGrB8KxMVV3Php0hz01MEnz5ZkXIKHCYAjOUq3eUH2rIu6xwFHmlS6huodijOpu
+         XHLmry5QH19kw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Axel Lin <axel.lin@ingics.com>,
@@ -35,14 +35,14 @@ Cc:     Axel Lin <axel.lin@ingics.com>,
         andi.shyti@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
         samuel@sholland.org, linux-i2c@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10] i2c: sun6i-p2wi: Prevent potential division by zero
-Date:   Sun, 12 Nov 2023 08:24:42 -0500
-Message-ID: <20231112132442.174812-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4] i2c: sun6i-p2wi: Prevent potential division by zero
+Date:   Sun, 12 Nov 2023 08:24:46 -0500
+Message-ID: <20231112132446.174847-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.200
+X-stable-base: Linux 5.4.260
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -70,10 +70,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+)
 
 diff --git a/drivers/i2c/busses/i2c-sun6i-p2wi.c b/drivers/i2c/busses/i2c-sun6i-p2wi.c
-index 2f6f6468214dd..4f7a4f5a1150a 100644
+index 7c07ce116e384..540c33f4e3500 100644
 --- a/drivers/i2c/busses/i2c-sun6i-p2wi.c
 +++ b/drivers/i2c/busses/i2c-sun6i-p2wi.c
-@@ -201,6 +201,11 @@ static int p2wi_probe(struct platform_device *pdev)
+@@ -202,6 +202,11 @@ static int p2wi_probe(struct platform_device *pdev)
  		return -EINVAL;
  	}
  
