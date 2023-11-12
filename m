@@ -2,94 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751EC7E8FA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 12:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2160F7E8FAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 12:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjKLLvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 06:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
+        id S231384AbjKLLwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 06:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjKLLvl (ORCPT
+        with ESMTP id S231351AbjKLLwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 06:51:41 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B7A2116
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 03:51:37 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9db6cf8309cso541823866b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 03:51:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riscv-rocks.de; s=google; t=1699789896; x=1700394696; darn=vger.kernel.org;
-        h=organization:user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:mail-followup-to
-         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=njG1LYfJ1D0t6Vnt8KfjPbd1G+JUclxWyfb0D2370WQ=;
-        b=Yc2UBbMMFnwNzBykUhYMQbJmU0RSw0IHE8NDypw/AVFW6RckhuwADKxkC7+gpByM69
-         H1q4omGL7T0BxEh2TU8+bYUs4pEM8d/2j00hDVHMOpoy3KwimLYU0kBemHo/vCSluGjk
-         7B2c209lkoy/PgqF03BZ98kC0YhOD5YrNwpN4dxfQsH8qkQmlJXWOfU2v2NVHRKRt2qm
-         wYZiV4LqI9YBq3UL0Q3YF4LMAC2+zqm5ejK2a+RpOi4duEPtZrYukBiUWr6FHX3LKvQt
-         F9R8RipAAbcHTuyJOR65G88dWyTyHxB0sw3a80ZEXiGFRPpkFpSWlxHP/MqP8IRO9J5o
-         JUAA==
+        Sun, 12 Nov 2023 06:52:08 -0500
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21AA2116
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 03:52:04 -0800 (PST)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-280351c9fa1so3203027a91.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 03:52:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699789896; x=1700394696;
-        h=organization:user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:mail-followup-to
-         :reply-to:message-id:subject:cc:to:from:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=njG1LYfJ1D0t6Vnt8KfjPbd1G+JUclxWyfb0D2370WQ=;
-        b=LC28SG3pY1eVyN2493iVqcmC5SS2z7RgOi9vYNp23fuh2xOsOxRbUvXJQeRNDn3TvA
-         Z1DHj2d97mCCWNK46r7xr536SIiQiFJeJY2mJ+iQ8Oxq1StBDIEHfjtV4fmaVmcfdLu/
-         oji2/yz+7grbQ9eGEuwPzpI5Refjt+6aUjnawTzjl6QjIa4AF2MEeW2t6pNFevwq7nTw
-         hgiUPY3n9iTmItrdGcjVvIC1oWahgdrwRXd1chUEufQKIzChrAHLqLpAT9F/1LXzr4GN
-         wDIMOSTw7LqsyQttZOuMMkFuHgoN+fQAa3eW1GrS0NekjoDJzRnSamoBGQ4COZ+KWqIx
-         Ve2A==
-X-Gm-Message-State: AOJu0YyFEdQgnLiIZ+SQEQ+MInsFwiuUK0psDS2EcCTRSyNfZ3F/VnPY
-        2RJBDVBHlenQB5NG5jV2CClQkg==
-X-Google-Smtp-Source: AGHT+IFXwHmCb8+UXbJDQr9mH+3v47qKITPoQeDJPOTrs+Qqpsv15+ofpjrqITGfl4QURg1o8GL9sQ==
-X-Received: by 2002:a17:906:d8b:b0:9da:b1f1:ef47 with SMTP id m11-20020a1709060d8b00b009dab1f1ef47mr2667277eji.30.1699789895904;
-        Sun, 12 Nov 2023 03:51:35 -0800 (PST)
-Received: from fedora.fritz.box (p5494469c.dip0.t-ipconnect.de. [84.148.70.156])
-        by smtp.gmail.com with ESMTPSA id un1-20020a170907cb8100b009a9fbeb15f5sm2401633ejc.46.2023.11.12.03.51.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 03:51:35 -0800 (PST)
-Date:   Sun, 12 Nov 2023 12:51:33 +0100
-From:   Damian Tometzki <damian@riscv-rocks.de>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        =?utf-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= 
-        <pinkflames.linux@gmail.com>,
-        Fabio Comolli <fabio.comolli@gmail.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: Re: Fwd: iwlmvm: Linux 6.7 pre-rc1 prints stack trace of
- iwl_op_mode_mvm_start; caused by commit b6e3d1ba4fcf
-Message-ID: <ZVC8RbKEmulf2MsD@fedora.fritz.box>
-Reply-To: Damian Tometzki <damian@riscv-rocks.de>
-Mail-Followup-To: Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        =?utf-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= <pinkflames.linux@gmail.com>,
-        Fabio Comolli <fabio.comolli@gmail.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-References: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
- <ZVC0iq1FS02FjeTX@archie.me>
+        d=1e100.net; s=20230601; t=1699789924; x=1700394724;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Yq7kjtLnEXgDBkd/9lpck7RpwBJ8eB8dc7re6qNg9o=;
+        b=DzOcEyfDv/Q6ILmruJSHi/0mhWIqL7BpEyF/jQqXRvE7DHOQoqAC8kSHt+u72S8ZXn
+         TiV8e8UE6injo1lcMm6VombJEgKRB7dOz0xIU5e50eeYWe18fcbuqYgVpGZHAeYiiDSg
+         akxElimTlUGWyBSfVeGFLpZHkw3pbMac1MubqtEOAOvUVyybGnyfyvtINBCDPIQIqS3e
+         Kc3igtgnY6W8aGqkSf+Urn+HwpECxIAPMXXEKJKzlCfy19znK/kTgEe+s8nYtdUXqinD
+         zSviMGU8ZTD/ShlNvtI/kgjpjGpWAKy6XA00+AYzXGfXzbruJTMB0uP3M4SdI3e1BRQO
+         8t5A==
+X-Gm-Message-State: AOJu0Yz+D+fVeWdNQ3koxT/BeqeXp9vozP5nwFDtusyKMm+Nadg6Qk/s
+        fmB123p7lW84WZLuevweX9VHrppRdHI9hIqerb/f/OFOSv6j
+X-Google-Smtp-Source: AGHT+IEATttZMeg7BbYrGboUzfLXF1j0YPTHj10mk1+wmA+xFL0I/FG/uuYMmFihdWBmiqdRX4X9VhqRmiaEVxrbqP+J1S4KdKcM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZVC0iq1FS02FjeTX@archie.me>
-User-Agent: Mutt
-X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.6.0)
-Organization: Linux hacker
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,
+X-Received: by 2002:a17:90a:c28b:b0:27c:f4f8:5ee with SMTP id
+ f11-20020a17090ac28b00b0027cf4f805eemr1193072pjt.4.1699789924072; Sun, 12 Nov
+ 2023 03:52:04 -0800 (PST)
+Date:   Sun, 12 Nov 2023 03:52:03 -0800
+In-Reply-To: <7f87b3b9-6876-40d7-b159-94f2119851f9@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e04940609f32e7a@google.com>
+Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
+From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
+To:     bragathemanick0908@gmail.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,84 +55,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12. Nov 18:18, Bagas Sanjaya wrote:
-> Hi Niklāvs and Fabio,
-> 
-> On Fri, Nov 03, 2023 at 08:13:39PM +0700, Bagas Sanjaya wrote:
-> > Hi,
-> > 
-> > I notice a regression report on Bugzilla [1]. Quoting from it:
-> > 
-> > > When testing the branch that will become Linux 6.7-rc1, ever since commit b6e3d1ba4fcf02176846d03a930203d8133c0aaf I have observed the following abbreviated kernel stack trace (please see attachments for the full trace):
-> > > 
-> > > ```
-> > > [    6.733281]  ? __warn+0xc3/0x1d0
-> > > [    6.733284]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> > > [    6.733299]  ? report_bug+0x167/0x220
-> > > [    6.733301]  ? handle_bug+0x3d/0x90
-> > > [    6.733304]  ? exc_invalid_op+0x1a/0x60
-> > > [    6.733306]  ? asm_exc_invalid_op+0x1a/0x20
-> > > [    6.733309]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> > > [    6.733325]  _iwl_op_mode_start+0x66/0xe0 [iwlwifi]
-> > > [    6.733338]  iwl_opmode_register+0x87/0xd0 [iwlwifi]
-> > > [    6.733350]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> > > [    6.733364]  init_module+0x22/0xff0 [iwlmvm]
-> > > [    6.733378]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> > > [    6.733392]  do_one_initcall+0x129/0x380
-> > > [    6.733395]  ? idr_alloc_cyclic+0x148/0x1e0
-> > > [    6.733397]  ? security_kernfs_init_security+0x41/0x80
-> > > [    6.733399]  ? __kernfs_new_node+0x1be/0x250
-> > > [    6.733401]  ? preempt_count_add+0x55/0xb0
-> > > [    6.733404]  ? up_write+0x4a/0xe0
-> > > [    6.733406]  ? preempt_count_add+0x55/0xb0
-> > > [    6.733408]  ? sysvec_call_function+0xa4/0xb0
-> > > [    6.733410]  ? asm_sysvec_call_function+0x1a/0x20
-> > > [    6.733411]  ? free_unref_page_prepare+0xf3/0x410
-> > > [    6.733413]  ? preempt_count_add+0x62/0xb0
-> > > [    6.733415]  ? _raw_spin_trylock+0x19/0x60
-> > > [    6.733417]  ? _raw_spin_unlock+0x11/0x30
-> > > [    6.733419]  ? __kmem_cache_free+0x29a/0x3c0
-> > > [    6.733421]  ? vfree+0xd2/0x150
-> > > [    6.733422]  ? slab_post_alloc_hook+0x76/0x3d0
-> > > [    6.733425]  ? do_init_module+0x3f/0x230
-> > > [    6.733427]  ? __kmem_cache_alloc_node+0x1fe/0x2f0
-> > > [    6.733430]  do_init_module+0x7a/0x230
-> > > [    6.733432]  __se_sys_init_module+0x1a0/0x220
-> > > [    6.733435]  do_syscall_64+0x7a/0x100
-> > > [    6.733438]  ? syscall_exit_to_user_mode+0x2d/0x1d0
-> > > [    6.733440]  ? do_syscall_64+0x89/0x100
-> > > [    6.733442]  ? do_user_addr_fault+0x4e7/0x680
-> > > [    6.733444]  ? exc_page_fault+0x61/0x150
-> > > [    6.733446]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> > > ```
-> > > 
-> > > I did try reverting the offending commit but the result did not compile and I did not want to dig deeper to identify any subsequent commits what would need reverting to fix compilation.
-> > > 
-> > > If it's relevant, I'm building the kernel with Clang 17.0.4 toolchain by setting the LLVM=1 variable. CFI is enabled but I'm not sure if it's actually functional.
-> > 
-> > See Bugzilla for the full thread.
-> > 
-> > Anyway, I'm adding this regression to regzbot:
-> > 
-> > #regzbot introduced: b6e3d1ba4fcf02 https://bugzilla.kernel.org/show_bug.cgi?id=218095
-> > #regzbot title: new iwlwifi firmware statistics API triggers stack trace
-> > 
-> 
-> Emmanuel had sent a proposed fix at [1]. Please test.
-Hello together,
+Hello,
 
-i tested this fix and the dump is gone. It works. 
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: corrupted list in btrfs_ref_tree_mod
 
-Tested-by: Damian Tometzki <damian@riscv-rocks.de>
+list_add corruption. prev->next should be next (ffff888122a51108), but was 0000000000058000. (prev=ffff88810e236d50).
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:30!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 0 PID: 45 Comm: kworker/u4:2 Not tainted 6.5.0-rc5-syzkaller-00182-g25aa0bebba72-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: btrfs-qgroup-rescan btrfs_work_helper
+RIP: 0010:__list_add_valid+0x74/0x90 lib/list_debug.c:30
+Code: e2 fe 0f 0b 48 89 c1 48 c7 c7 68 ff af 85 e8 a3 d7 e2 fe 0f 0b 48 89 d1 48 89 c6 4c 89 c2 48 c7 c7 c0 ff af 85 e8 8c d7 e2 fe <0f> 0b 48 89 f2 48 89 c1 48 89 fe 48 c7 c7 18 00 b0 85 e8 75 d7 e2
+RSP: 0018:ffffc900001cf920 EFLAGS: 00010246
+RAX: 0000000000000075 RBX: ffff88810e236d50 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8131cbd0 RDI: 0000000000000001
+RBP: ffff888122a51108 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 205d353454202020 R12: 0000000000000000
+R13: ffff888122aec700 R14: ffff888122aec750 R15: ffff888122a510c0
+FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd2648f75e8 CR3: 000000010a57a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __list_add include/linux/list.h:69 [inline]
+ list_add_tail include/linux/list.h:102 [inline]
+ btrfs_ref_tree_mod+0x454/0xbb0 fs/btrfs/ref-verify.c:887
+ btrfs_free_tree_block+0x116/0x450 fs/btrfs/extent-tree.c:3250
+ __btrfs_cow_block+0x6a5/0xa30 fs/btrfs/ctree.c:601
+ btrfs_cow_block+0x154/0x2b0 fs/btrfs/ctree.c:712
+ btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:2194
+ btrfs_update_root+0x6f/0x500 fs/btrfs/root-tree.c:137
+ commit_fs_roots+0x236/0x360 fs/btrfs/transaction.c:1450
+ btrfs_commit_transaction+0x93e/0x15c0 fs/btrfs/transaction.c:2393
+ btrfs_qgroup_rescan_worker+0x389/0x610 fs/btrfs/qgroup.c:3417
+ btrfs_work_helper+0x158/0x540 fs/btrfs/async-thread.c:314
+ process_one_work+0x2f1/0x640 kernel/workqueue.c:2600
+ worker_thread+0x5c/0x5c0 kernel/workqueue.c:2751
+ kthread+0x12b/0x170 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x40 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__list_add_valid+0x74/0x90 lib/list_debug.c:30
+Code: e2 fe 0f 0b 48 89 c1 48 c7 c7 68 ff af 85 e8 a3 d7 e2 fe 0f 0b 48 89 d1 48 89 c6 4c 89 c2 48 c7 c7 c0 ff af 85 e8 8c d7 e2 fe <0f> 0b 48 89 f2 48 89 c1 48 89 fe 48 c7 c7 18 00 b0 85 e8 75 d7 e2
+RSP: 0018:ffffc900001cf920 EFLAGS: 00010246
 
-Many thanks
-Damian
-> 
-> Thanks.
-> 
-> [1]: https://lore.kernel.org/regressions/20231112100944.21177-1-emmanuel.grumbach@intel.com/
-> 
-> -- 
-> An old man doll... just what I always wanted! - Clara
+RAX: 0000000000000075 RBX: ffff88810e236d50 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff8131cbd0 RDI: 0000000000000001
+RBP: ffff888122a51108 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 205d353454202020 R12: 0000000000000000
+R13: ffff888122aec700 R14: ffff888122aec750 R15: ffff888122a510c0
+FS:  0000000000000000(0000) GS:ffff88813bc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd2648f75e8 CR3: 000000010a57a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
+
+Tested on:
+
+commit:         25aa0beb Merge tag 'net-6.5-rc6' of git://git.kernel.o..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10deb938e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16a72ca7680000
 
