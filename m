@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5124C7E918E
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B471F7E9190
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 16:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbjKLPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 10:50:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S231635AbjKLPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 10:51:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjKLPul (ORCPT
+        with ESMTP id S229782AbjKLPvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 10:50:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD89B270C
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:49:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699804192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1iGUBaKM2azxvdhKt2504NIadxJuEuzBdu7h+LqBo+w=;
-        b=dL2fOY+n9IQHfX8FcgAb1+apwkgg3BMUv9YD7JTchwYIVwtPS94p33eqG96aYy6c2S0ZWD
-        yKXDUkdhv14d0xn8QNLMFfCH2k2EbeGExmiRzJ3+fGyFBXY7WSXWv3SqguS7sUBglNmOI+
-        rDgmKkO1OIvLwUiqLppcgsjp+XtpBOA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-35-d3c2ag9EOu204FfuEj8IUA-1; Sun, 12 Nov 2023 10:49:51 -0500
-X-MC-Unique: d3c2ag9EOu204FfuEj8IUA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40839252e81so23619335e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:49:50 -0800 (PST)
+        Sun, 12 Nov 2023 10:51:23 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3422D46
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:51:19 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4083f613275so29550085e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 07:51:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=telus.net; s=google; t=1699804278; x=1700409078; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=06FGZWGUBCJOABY8OhfcQeWfBbAdPr3WTfWSMv9j+Xs=;
+        b=NZpnxj4b6aIC1LnVCsaASKH7F1nP+3ZdxuMOi+D2bNoDw0l/xeEpDUNIF2vr9nqSdP
+         0mAwTf9SGEbIKqcHa9WndYfBFpiP2M9fHBHQK3BuFChUlda3CEgZOaqJeSoW864UKu1k
+         BsxDmYLPJmH0GIntELpyZIkcJzQ7G673tqLsGP6fHV+ALk0xzGpMOk/f9kuls/mtbEFr
+         AH7FBkEkvhvRe0qxLo/E2SLx37k1nUaBCZyNpWbrRnCYD71eJie+QtcNEo1jXm7c7/ce
+         Pl736F0R59W2zcPtXl1OEDC3uZfFYbGLtXeZBuHD2ct8m+TeDk+fXyfKmldSm7JnpDMe
+         M+9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699804190; x=1700408990;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1iGUBaKM2azxvdhKt2504NIadxJuEuzBdu7h+LqBo+w=;
-        b=sUjh9sPkpdb5tjKUNMmSdeRgqPR0CgwnOp7gsO4rBd81rFAYg+htUVaW2oGd+DN71D
-         Y2W410SoubtMz4z2YfUCCusZcG+640affrZiYQMAVkpB9mQFrlhCNvVyMERqulq/yfMq
-         uuxE8B9aFxm0CTgXJ/SVMurSB8HJjGoZRhHiiBt5ilQNlyowWTe7o4QFehjWvjlAvJwq
-         KGgVppEh2B1WbOIsNRpk76p3kaHgoAKGOjrVuLeS40uPtFt1oFME4DJqo+Kt1l9cbXf7
-         /RfYDUHERBvcE3GRmTuvUDMIsbyKb4EuBRMjCTF6b7da1xneOcI7rwEPFR6nQeP+5PKJ
-         SyLg==
-X-Gm-Message-State: AOJu0YzjKb+1+FaOyj0b+xADeMjEXO85a8XOPdYCbWHg5Ny+XU3Xrtdq
-        Obj9UhkEsbHR8ODQv+nai+xTSqdGhgW0xzgWEnlgPqythx3xzHc63Nev4OQEEQTkZYJKN5Fj+OM
-        U5Ebd6thnSlobb7ESGqHKz6dt
-X-Received: by 2002:a05:600c:450a:b0:409:375:5a44 with SMTP id t10-20020a05600c450a00b0040903755a44mr3732203wmo.24.1699804190079;
-        Sun, 12 Nov 2023 07:49:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGUuuVMqtepn8YqkS2uXyv/BIU5zsNbbkXjFlgY9AV4c/T4BJKy5pu+jFjucMYUqC95FSxPsA==
-X-Received: by 2002:a05:600c:450a:b0:409:375:5a44 with SMTP id t10-20020a05600c450a00b0040903755a44mr3732194wmo.24.1699804189595;
-        Sun, 12 Nov 2023 07:49:49 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id z14-20020adff74e000000b0032f7865a4c7sm3530465wrp.21.2023.11.12.07.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 07:49:49 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Andrew Worsley <amworsley@gmail.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Fix failure of simpledrm probe when trying to grab FB
- from the EFI-based Framebuffer
-In-Reply-To: <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
-References: <20231111042926.52990-1-amworsley@gmail.com>
- <20231111042926.52990-2-amworsley@gmail.com>
- <CA+Y=x3mF4jFX7PiJQ-1Gk9zyBE1mwZaF_GLYjSspT+mxtMn4GQ@mail.gmail.com>
- <87cywgac4r.fsf@minerva.mail-host-address-is-not-set>
- <CA+Y=x3nift8Xt_zT1na7D3ReRwy6Lh66Cszz9zkBpkz7tka20w@mail.gmail.com>
- <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
-Date:   Sun, 12 Nov 2023 16:49:48 +0100
-Message-ID: <877cmn9dk3.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1699804278; x=1700409078;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=06FGZWGUBCJOABY8OhfcQeWfBbAdPr3WTfWSMv9j+Xs=;
+        b=vGsJGkGNIcIcdG9lowB4O7e/+CtOuM44o5qD8wMYQubZoZNVl0fkaTEorsR8NF35sq
+         JywgTcCtKr/ZCWPVSaiLEIuxoJRae24+f7tlbZl0sC1b4CSLwawsQpGkL+8lQvydwcFQ
+         Epdx2lMfLgRsV2JxaQWgYNx1keAQzNeD4/yn2Is6C4LgBwXLXbgf+vyCi6HeTt2VlyMp
+         4l932oxLtdpvS4a6gMjK5AGpn5wYVpb3t8ypkHjmzMqCEXvo5MwYBQeVAMJ5Ox2Ffryx
+         7rdRAiGLsZXYCObv0VgaNogoeOMWkUF6vAsV8mJuId6FMb8SpfAh5dm63iSgHH0Ac0QO
+         wf2Q==
+X-Gm-Message-State: AOJu0YwfmJonrVnhDhux8gYqsk6VaceV1m0MQ/SLO7KpmtF5QcZYK5LK
+        WQx3prXo2RihDHzUuORreYzjXV+SRi4EvCAIumCyww==
+X-Google-Smtp-Source: AGHT+IH655xfKIRArLgTo/emHQxkrBk5h0lVZ/QPaWgFBoXCKhuqJWeFEgT+w8xdiOqxPnWZcCILNf27KInac22sjaM=
+X-Received: by 2002:a05:600c:35c2:b0:408:80bb:ae80 with SMTP id
+ r2-20020a05600c35c200b0040880bbae80mr3996599wmq.7.1699804278030; Sun, 12 Nov
+ 2023 07:51:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJvTdKn-xtmin9OjnzHg8wy4PM8Lc3Per=3y3UWORhjdroYP3w@mail.gmail.com>
+ <CAHk-=wjvJ44a9Z=tkR2o-heQ4XLp0sgynDOhe6JH2fgg=MMMXA@mail.gmail.com> <CAJvTdK=OSTgYkut=-r95nAYOvVfUt3Cah92qudifeQW4ZJHT7Q@mail.gmail.com>
+In-Reply-To: <CAJvTdK=OSTgYkut=-r95nAYOvVfUt3Cah92qudifeQW4ZJHT7Q@mail.gmail.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Sun, 12 Nov 2023 07:51:08 -0800
+Message-ID: <CAAYoRsXvKwhrw3gRQJ-STO48_7yxEiqwt5tgzDbkzA--N_XX6A@mail.gmail.com>
+Subject: Re: [GIT PULL] turbostat for Linux-6.7 (with signed tag)
+To:     Len Brown <lenb@kernel.org>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Javier Martinez Canillas <javierm@redhat.com> writes:
+On Fri, Nov 10, 2023 at 7:39=E2=80=AFPM Len Brown <lenb@kernel.org> wrote:
+...
+>
+> (Same code as previous pull request, with addition of a signed tag.
+>  Hopefully it verifies okay at your end.)
+>
+> Turbostat features are now table-driven (Rui Zhang)
+> Add support for some new platforms (Sumeet Pawnikar, Rui Zhang)
+> Gracefully run in configs when CPUs are limited (Rui Zhang, Srinivas Pand=
+ruvada)
+> misc minor fixes.
 
-[...]
+Hi Len,
+What about the patches that have been submitted since your last turbostat u=
+pdate
+release of 2023.03.17? I submitted one on 2023.04.03. I haven't sent "RESEN=
+D"s,
+because I know you only do update releases every 1/2 year or so, and in the=
+ past
+you have always dealt with the interim patches then.
+
+Reference:
+https://patchwork.kernel.org/project/linux-pm/list/?series=3D&submitter=3D&=
+state=3D&q=3D&archive=3D&delegate=3D107
+
+... Doug
 
 >
-> Reported-by: Andrew Worsley <amworsley@gmail.com>
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
->  drivers/of/platform.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
+> thanks!
+> Len Brown, Intel Open Source Technology Center
 >
-
-Forgot to include the header file and just pointed out by the robot, so
-need the following snippet too:
-
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index f235ab55b91e..2894d03f4415 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -20,6 +20,7 @@
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/sysfb.h>
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+... [deleted]...
