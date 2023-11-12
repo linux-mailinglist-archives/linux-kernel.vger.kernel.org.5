@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E787E8F69
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 10:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E757E8F6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 11:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjKLJ6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 04:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        id S230481AbjKLKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 05:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjKLJ6H (ORCPT
+        with ESMTP id S229536AbjKLKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 04:58:07 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726DE2D57
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 01:58:04 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5be0d708b04so3580088a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 01:58:04 -0800 (PST)
+        Sun, 12 Nov 2023 05:03:58 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021292D61;
+        Sun, 12 Nov 2023 02:03:56 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2800bdf888dso2583376a91.1;
+        Sun, 12 Nov 2023 02:03:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699783435; x=1700388235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s63k/oeUAOEiHqZXShqq4HE+liPGc+BR6jSLnDlt2us=;
+        b=Yfs7L+Inx0WxENft2+lAnp2FmtsrIgU90g3TcxG25rUK8D5fLhMLcdfwiImKej4Xpr
+         hfJmvjABEwdqtJVEyUqKuNJZ6eHKZTpg/pB12BmmHt/cLtoExroK00677vgSTq1Li4sw
+         EPu+UR1a5j212F80oDL9nvRz0ACrhO6/XJ5JK1b7eAw/YQqQrhFJVnV0U+Eg4PPB+rcm
+         kUmHjdcDmazgRsG0T+2VAlCvIuZ8EWMgOsXY5HGNKkVe3nZe2F+7Bxr3REHEErIp64US
+         3V5CL8Mj95gUFKlPQL8tX+ZwYGjl6YyH1Fj+OlEvDvsSVtLFGZVBiPpDdZ/bPcy0iLYk
+         0XNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699783084; x=1700387884;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ScsTIr4Ho+xj9akmtxXhGGa0r7j40PjknK2yYSLuxZk=;
-        b=FhXlrWdXUgOzRaer0RRxcl2ciXoOvgwj8QN+ZL+TrI7c/3vv24RoGFIT4Mp1kRye23
-         1H/EJeoCMCyWJNTxcjPx7kWCM9IrFuAydNy76/Ey/VibOtVMtPbVbNsgCE1lwUAXsrZp
-         xc8pRJ5oHvWokzm1Q8z9NKCGKW3QGlZR/DuKCgeK9LYsJCyg1sx14XExj//S+Q5uA0ap
-         GIp7DtagqpzbMdDmavqpw1WdJsOldzCHQilBb6wAS+fP1LU/CKWwjq75UQI0nL5N0bSR
-         1pi6NjNVbiD+42OGokdyuRztaY5JarFFa/BRRC+09RXTuRzJpm3uVd1Jynjtqz+6GrJl
-         491w==
-X-Gm-Message-State: AOJu0YzG54RDcJnEQYiIDVF1Vrc45ZsAiEwBdy3KaOiGmoa24avzxVSq
-        d7hYjBeO/L4mRW7EAcy5tfEeFHwSEd+Z3e1/IekZtWOdhURN
-X-Google-Smtp-Source: AGHT+IFhsgDePioQmsk9vH54a/9qZX7jigVilDvOcKaCxIlT7ZnNylMuVEZveSEBOwMi37CAzLZiQqVcNAuAykw976Mz3RoQ0Ds6
+        d=1e100.net; s=20230601; t=1699783435; x=1700388235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s63k/oeUAOEiHqZXShqq4HE+liPGc+BR6jSLnDlt2us=;
+        b=MWN5Ota4BELEg0EEYwZHz3bAsBk+Gl+ZmmC6SoynmjvgfyIYMX43Ue+QHbg0rJWntW
+         urHklodnBKDwLsu29ATZd+cwGluAOT1rTklTcp+EfOemA5JfIhjyPkh2EhqsBUwn+59/
+         dIenrIOTf+7BqxRxVoIhCXcfeM91J/LWLvtMJ4+JYB5BAzB/LRL59IwCCzlOMMQhuSmX
+         mJoyv2KuJcVX9PqIGs3QZCCrGAvwE65iHejppQwmdPr0gWsBX8IQGzsNhJXNvhB1kh1a
+         jSPjsaj/OsCEfEVsHskdudDhYSf8MdSsKlwqtxvAecj49dn4tqU0U9X2rFO1CfioBtxX
+         vaqw==
+X-Gm-Message-State: AOJu0Yw/MeOS2zhLQ3V+Q6tQkLwzLqAxWlkur60GvjSZY69ChXRh2FNM
+        oAOCGIvjBdjwe3kWOrx4qN72kb9Jy+CZz7G2V560/eMXVnjdtg==
+X-Google-Smtp-Source: AGHT+IGjG5z/b7bhhJVnHm+C5wcylDhXbqxvoXWFwkHP0FCBrX04Rsqs1cPU5fFZGyv6mzEcoeIsosmaaPjliF60KOI=
+X-Received: by 2002:a17:90b:4c51:b0:280:a002:be85 with SMTP id
+ np17-20020a17090b4c5100b00280a002be85mr5987800pjb.20.1699783435348; Sun, 12
+ Nov 2023 02:03:55 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a63:c5e:0:b0:5be:3685:c1cd with SMTP id
- 30-20020a630c5e000000b005be3685c1cdmr943966pgm.8.1699783084053; Sun, 12 Nov
- 2023 01:58:04 -0800 (PST)
-Date:   Sun, 12 Nov 2023 01:58:03 -0800
-In-Reply-To: <143960be-a7d7-44fc-a69f-60e1d12eacdb@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eb9afb0609f196ea@google.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
-From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
-To:     bragathemanick0908@gmail.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231111125126.11665-1-yjnworkstation@gmail.com>
+ <20231111132431.GA3717@1wt.eu> <CAHk-=whTZDjeH2FJqBozjAF44sh4XVNQrt2xdQn_Ujt=Be6=dw@mail.gmail.com>
+In-Reply-To: <CAHk-=whTZDjeH2FJqBozjAF44sh4XVNQrt2xdQn_Ujt=Be6=dw@mail.gmail.com>
+From:   Jasper Niebuhr <yjnworkstation@gmail.com>
+Date:   Sun, 12 Nov 2023 11:03:43 +0100
+Message-ID: <CAMjCObv9Z+Ood9QFA_jSQ2roSEE6C_ip=KeyoChmtyi97UoU7g@mail.gmail.com>
+Subject: Re: [PATCH] exitz syscall
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Willy Tarreau <w@1wt.eu>, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        "tytso@mit.edu" <tytso@mit.edu>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Nov 12, 2023 at 2:24=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sat, 11 Nov 2023 at 05:24, Willy Tarreau <w@1wt.eu> wrote:
+> >
+> > IMHO it does not make sense to add a syscall for this, please have a
+> > look at prctl(2) instead, which is already used for similar settings.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+First of all, I had a look and now absolutely agree with this.
 
-failed to apply patch:
-checking file fs/btrfs/ref-verify.c
-Hunk #1 FAILED at 791.
-Hunk #2 FAILED at 800.
-2 out of 2 hunks FAILED
+> Honestly, I don't think it makes any sense at all.
+>
+> If the key manager people can't be bothered to keep track of their
+> keys, the kernel certainly shouldn't be bothered with this kind of
+> huge hammer.
+>
+> It looks like an active DoS attack to me, by anybody who just creates
+> a huge process and then sits there giggling as the machine comes to a
+> complete halt, with the kernel busy zeroing pointless crap.
 
+Fair point.
 
+Do you think it could make sense to enable zeroing on exit only for
+ranges of memory (base + len) with a config dictating the max amount
+of bytes (or pages or whatever) that a single process is allowed to
+flag for zeroing? This way the DoS issue is effectively solved and the
+config could always be set to 0 (by default I guess), which would
+effectively leave any common system unchanged. The users that actually
+want to use this feature could then decide on their own how much it is
+worth to them and how big of a task they want the kernel to perform at
+max on exit.
 
-Tested on:
+> Do it in user space. And if your user space randomly crashes, you have
+> other problems - but you can try to use ptrace to catch even that case
+> if you care.
+>
+>           Linus
 
-commit:         1b907d05 Merge tag '6.7-rc-smb3-client-fixes-part2' of..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1652c75b680000
+Unfortunately, ptrace is something many, including me, disable on
+systems that are meant to be as secure as possible.
 
+Kind Regards,
+Jasper
