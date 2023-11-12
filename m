@@ -2,267 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 097337E8E76
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 06:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848657E8E77
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 06:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjKLFc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 00:32:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S230043AbjKLFlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 00:41:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLFc1 (ORCPT
+        with ESMTP id S229441AbjKLFlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 00:32:27 -0500
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608C030D6
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 21:32:22 -0800 (PST)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1cc502d401eso38134505ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 21:32:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699767142; x=1700371942;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wecRkOhay6AJ4tUOWQxw2D+dWI3NX6R2AnmUaHgFBYA=;
-        b=WyQ9wNuZ+kxEifFO27tx3utiFIGkJRXi1+jcc/Hp8B8GsiooWnR5MzR0vefXPrzwS+
-         0/Am1y63fO5FlKJSQcmgZSg0+p5+kBObO2L1IbkTBN7ibsQORVtMRNKBmlefI6OBUR5g
-         rWjstbks6D1R0F2n3HwYxjZbSgGybkcQNC9jg/6IHMFkWOXcq1HUbzpmw6hlW+6Vuyq7
-         MeSV0icuV9AwOqkm5jpSW+dJGTouYeO8J8eINtDKZ5H6UVT/V13wJQVZPo9ly8Sxq75H
-         cVAEwCFnN1pEjUdmeC6J/PY0kJAYPBQddd9+WrPH6SJfQX0l6o66G870mvRci5ZWsqjU
-         Y8Aw==
-X-Gm-Message-State: AOJu0YwRhEBT6T/DSl/VIv+MMlnk5UtkPTrZE1V2jf2k3Y3s7xNNQQbN
-        izUGJ35e9kiL+An+IxaPu4/tZsoh3fC9kZdHwXJXIhgTvps9
-X-Google-Smtp-Source: AGHT+IG1lx/yjlVQF+HQZKha5UErC5X0xoo1VV0VVjq9IFSuxvVkPSBy0jQmUe83QpS3BWIxze+2mD29esKiUe9gptCTvSswx0jB
+        Sun, 12 Nov 2023 00:41:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD36F1718
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 21:41:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699767672; x=1731303672;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=JTxCdy75stR0mKYl6ULORAFOapELHcoaqszoGaFgzdM=;
+  b=kRUlVPTqxhaR8RpjaGprOEtmJFfzG8U0Mwb2BC2FzwJda9pDZlGnpSxc
+   kinEUtYZwNcF2XF7dPsOT4Vv/OF0iVSxLU9j1wcLSD+GeooTqOIWvkqkl
+   2yFNoIkYSDYaeXDb7GIeXobqH7cprk+WZZQXqIJ+Fn4fNN/y/jDxUm67m
+   gWHXDp9KAUQq42CgdGEsOMvySMOCjZLB8An9bNJzShCZaYQFGjj7blatw
+   3naIGNIjz8Fgj2cjeMUQntbtX1UIGAfGwNDb8Vklbq1x8R4wdTjqViZlC
+   4uEXpWOGyZOP81MtdwpqqJ2iIfZr3jCN0CvOojDJYij1w9nR4gNw7+twd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="11863431"
+X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
+   d="scan'208";a="11863431"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 21:41:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="713944395"
+X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
+   d="scan'208";a="713944395"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 11 Nov 2023 21:41:09 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r23DX-000AyE-1v;
+        Sun, 12 Nov 2023 05:41:07 +0000
+Date:   Sun, 12 Nov 2023 13:40:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: kernel/reboot.c:559: warning: Function parameter or member
+ 'poweroff_delay_ms' not described in 'hw_failure_emergency_poweroff'
+Message-ID: <202311121307.FDXuYvzi-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2790:b0:1cc:229a:89f7 with SMTP id
- jw16-20020a170903279000b001cc229a89f7mr1088141plb.5.1699767141922; Sat, 11
- Nov 2023 21:32:21 -0800 (PST)
-Date:   Sat, 11 Nov 2023 21:32:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1fda20609ede0d1@google.com>
-Subject: [syzbot] [squashfs?] KASAN: slab-out-of-bounds Write in
- squashfs_readahead (2)
-From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
-        squashfs-devel@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Matti,
 
-syzbot found the following issue on:
+FYI, the error/warning still remains.
 
-HEAD commit:    13d88ac54ddd Merge tag 'vfs-6.7.fsid' of git://git.kernel...
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=121965ef680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=604424eb051c2f696163
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b40c7b680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f691ef680000
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1b907d0507354b74a4f2c286380cd6059af79248
+commit: dfa19b11385d4cf8f0242fd93e2073e25183c331 reboot: Add hardware protection power-off
+date:   2 years, 5 months ago
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231112/202311121307.FDXuYvzi-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311121307.FDXuYvzi-lkp@intel.com/reproduce)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9e81dc4903c2/disk-13d88ac5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f40fd7326b3f/vmlinux-13d88ac5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2f399cd6ff7d/bzImage-13d88ac5.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/8e127c645a04/mount_0.gz
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311121307.FDXuYvzi-lkp@intel.com/
 
-The issue was bisected to:
+All warnings (new ones prefixed by >>):
 
-commit f268eedddf3595e85f8883dc50aed29654785696
-Author: Phillip Lougher <phillip@squashfs.org.uk>
-Date:   Sat Jun 11 03:21:32 2022 +0000
-
-    squashfs: extend "page actor" to handle missing pages
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1252b717680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1152b717680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1652b717680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+604424eb051c2f696163@syzkaller.appspotmail.com
-Fixes: f268eedddf35 ("squashfs: extend "page actor" to handle missing pages")
-
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-==================================================================
-BUG: KASAN: slab-out-of-bounds in __readahead_batch include/linux/pagemap.h:1364 [inline]
-BUG: KASAN: slab-out-of-bounds in squashfs_readahead+0x9a6/0x20d0 fs/squashfs/file.c:569
-Write of size 8 at addr ffff88801e393648 by task syz-executor100/5067
-
-CPU: 1 PID: 5067 Comm: syz-executor100 Not tainted 6.6.0-syzkaller-15156-g13d88ac54ddd #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- __readahead_batch include/linux/pagemap.h:1364 [inline]
- squashfs_readahead+0x9a6/0x20d0 fs/squashfs/file.c:569
- read_pages+0x183/0x830 mm/readahead.c:160
- page_cache_ra_unbounded+0x68e/0x7c0 mm/readahead.c:269
- page_cache_sync_readahead include/linux/pagemap.h:1266 [inline]
- filemap_get_pages+0x49c/0x2080 mm/filemap.c:2497
- filemap_read+0x42b/0x10b0 mm/filemap.c:2593
- __kernel_read+0x425/0x8b0 fs/read_write.c:428
- integrity_kernel_read+0xb0/0xf0 security/integrity/iint.c:221
- ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:485 [inline]
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0xad1/0x1b30 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x554/0xb30 security/integrity/ima/ima_api.c:290
- process_measurement+0x1373/0x21c0 security/integrity/ima/ima_main.c:359
- ima_file_check+0xf1/0x170 security/integrity/ima/ima_main.c:557
- do_open fs/namei.c:3624 [inline]
- path_openat+0x2893/0x3280 fs/namei.c:3779
- do_filp_open+0x234/0x490 fs/namei.c:3809
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_open fs/open.c:1463 [inline]
- __se_sys_open fs/open.c:1459 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1459
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f0e73d6c5f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd516ff158 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007f0e73d6c5f9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
-RBP: 00007f0e73ddf610 R08: 0000000000000225 R09: 0000000000000000
-R10: 00007ffd516ff020 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffd516ff328 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-Allocated by task 5067:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc+0xb9/0x230 mm/slab_common.c:1020
- kmalloc_array include/linux/slab.h:637 [inline]
- squashfs_readahead+0x30c/0x20d0 fs/squashfs/file.c:552
- read_pages+0x183/0x830 mm/readahead.c:160
- page_cache_ra_unbounded+0x68e/0x7c0 mm/readahead.c:269
- page_cache_sync_readahead include/linux/pagemap.h:1266 [inline]
- filemap_get_pages+0x49c/0x2080 mm/filemap.c:2497
- filemap_read+0x42b/0x10b0 mm/filemap.c:2593
- __kernel_read+0x425/0x8b0 fs/read_write.c:428
- integrity_kernel_read+0xb0/0xf0 security/integrity/iint.c:221
- ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:485 [inline]
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0xad1/0x1b30 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x554/0xb30 security/integrity/ima/ima_api.c:290
- process_measurement+0x1373/0x21c0 security/integrity/ima/ima_main.c:359
- ima_file_check+0xf1/0x170 security/integrity/ima/ima_main.c:557
- do_open fs/namei.c:3624 [inline]
- path_openat+0x2893/0x3280 fs/namei.c:3779
- do_filp_open+0x234/0x490 fs/namei.c:3809
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_open fs/open.c:1463 [inline]
- __se_sys_open fs/open.c:1459 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1459
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-The buggy address belongs to the object at ffff88801e393640
- which belongs to the cache kmalloc-8 of size 8
-The buggy address is located 0 bytes to the right of
- allocated 8-byte region [ffff88801e393640, ffff88801e393648)
-
-The buggy address belongs to the physical page:
-page:ffffea000078e4c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801e393230 pfn:0x1e393
-anon flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012c41280 0000000000000000 dead000000000001
-raw: ffff88801e393230 0000000080660063 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 10649202635, free_ts 9358727270
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x339a/0x3530 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1006 [inline]
- __kmalloc_node_track_caller+0xa5/0x230 mm/slab_common.c:1027
- kstrdup+0x3a/0x70 mm/util.c:62
- __kernfs_new_node+0x9d/0x870 fs/kernfs/dir.c:611
- kernfs_new_node+0x99/0x170 fs/kernfs/dir.c:679
- kernfs_create_link+0xa5/0x1f0 fs/kernfs/symlink.c:39
- sysfs_do_create_link_sd+0x85/0x100 fs/sysfs/symlink.c:44
- device_create_sys_dev_entry+0x10f/0x170 drivers/base/core.c:3451
- device_add+0x8cf/0xd30 drivers/base/core.c:3595
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1137 [inline]
- free_unref_page_prepare+0x92a/0xa50 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- vfree+0x186/0x2e0 mm/vmalloc.c:2842
- delayed_vfree_work+0x56/0x80 mm/vmalloc.c:2763
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Memory state around the buggy address:
- ffff88801e393500: 00 fc fc fc fc fa fc fc fc fc 05 fc fc fc fc 05
- ffff88801e393580: fc fc fc fc 00 fc fc fc fc 05 fc fc fc fc fa fc
->ffff88801e393600: fc fc fc 00 fc fc fc fc 00 fc fc fc fc 00 fc fc
-                                              ^
- ffff88801e393680: fc fc 00 fc fc fc fc 00 fc fc fc fc 00 fc fc fc
- ffff88801e393700: fc 00 fc fc fc fc fb fc fc fc fc 00 fc fc fc fc
-==================================================================
+   kernel/reboot.c:215: warning: Function parameter or member 'cmd' not described in 'do_kernel_restart'
+>> kernel/reboot.c:559: warning: Function parameter or member 'poweroff_delay_ms' not described in 'hw_failure_emergency_poweroff'
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+vim +559 kernel/reboot.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+   548	
+   549	static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
+   550				    hw_failure_emergency_poweroff_func);
+   551	
+   552	/**
+   553	 * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
+   554	 *
+   555	 * This may be called from any critical situation to trigger a system shutdown
+   556	 * after a given period of time. If time is negative this is not scheduled.
+   557	 */
+   558	static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
+ > 559	{
+   560		if (poweroff_delay_ms <= 0)
+   561			return;
+   562		schedule_delayed_work(&hw_failure_emergency_poweroff_work,
+   563				      msecs_to_jiffies(poweroff_delay_ms));
+   564	}
+   565	
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
