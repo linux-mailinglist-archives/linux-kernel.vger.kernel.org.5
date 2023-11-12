@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5831D7E8ECB
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2ADB7E8ECC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbjKLGTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 01:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
+        id S230441AbjKLGTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 01:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjKLGTU (ORCPT
+        with ESMTP id S231386AbjKLGTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 01:19:20 -0500
+        Sun, 12 Nov 2023 01:19:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC66A3C3C
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:18:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2612FC433D9;
-        Sun, 12 Nov 2023 06:18:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFF155BF
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:18:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3362C433C7;
+        Sun, 12 Nov 2023 06:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699769916;
-        bh=Yd1se3YAvTpm3f6jR2T3YyxOy5a1aI13dnazTuxGpzs=;
+        s=k20201202; t=1699769922;
+        bh=bS9zYu4p2fDX0v+IO9ccI6gNcdJmQYX5Su7I11BAbz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cib6Q1ZUgS2FaDH4BWH6sy+4T4ju7sE9ZqI/4WjqXf+/9wNUzo1g8Lh7AhURej2Dh
-         ds3OmIJ7NuwdMMJsmhVV83diwJFb4ycXr8DHEmtqAnEscuSNMaLmi6COUnDsGdvZNC
-         48epOdk0lVec54vwPX4+oawPbEHxi7LHNgplAYP+u7R6EFMpgZlqI1hKTTZyPAKqH+
-         FbHpWR6QnaaAFEwD1RB2SVt5Cs4BLe56fLDphnZjefH6nFyOwP6hZcQCB4hlMpIXU1
-         RPi2nAz7rtuiPBvt9l9ks0tz4U2y6cbPVa68u0jPbUIJk397571LXKTfGGugR1SMPJ
-         X+3T30N4ldZ7A==
+        b=eds0Ikvb4knSS+2emy3RCxl6MssNc5zSLI7TvAgF41P6aLGxzvhumme+tfoiJbZYR
+         E64mIZD3foSewobLLFWM8uEAYS2F7Kh6RRauO69qm7oFrRLBiW5gcTGx7lQquDH1H4
+         pyGzBxPO8sU1e4R2qo6ecYZVx0NP7Pn6xurHDlH/Gr544GTZVrrt/ofParw6Qb0Tpm
+         9o78tX8Aa4k8+RKVvEClQE4oPy776KWO5tvkrU2H3+Gs4WcLuzV1r+qVRi/fQ/GK8P
+         B5sTrI/oBj3IU/2VjqZLyF7Cy/1WyISInWnMyztHVxlQ5TsnAF6GPIStsmJkrSURHC
+         7/S9+w2Jg0xbg==
 From:   guoren@kernel.org
 To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         tglx@linutronix.de, conor.dooley@microchip.com, heiko@sntech.de,
@@ -40,9 +40,9 @@ To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         hjl.tools@gmail.com
 Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [RFC PATCH V2 31/38] riscv: s64ilp32: Add u32ilp32 signal support
-Date:   Sun, 12 Nov 2023 01:15:07 -0500
-Message-Id: <20231112061514.2306187-32-guoren@kernel.org>
+Subject: [RFC PATCH V2 32/38] riscv: s64ilp32: Validate harts by architecture name
+Date:   Sun, 12 Nov 2023 01:15:08 -0500
+Message-Id: <20231112061514.2306187-33-guoren@kernel.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20231112061514.2306187-1-guoren@kernel.org>
 References: <20231112061514.2306187-1-guoren@kernel.org>
@@ -60,137 +60,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-The u32ilp32 uses the compat_pt_regs instead of the native pt_regs, so
-we borrow the compat code to support the u32ilp32 signal procedure in
-the s64ilp32 kernel.
+When rv64ilp32 was introduced, the 32BIT would work with rv64,isa. So
+use the architecture name instead of the ABI width name. This is an
+addition to the commit: 069b0d517077 ("RISC-V: validate riscv,isa at
+boot, not during ISA string parsing").
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/include/asm/signal32.h |  2 +-
- arch/riscv/kernel/Makefile        |  1 +
- arch/riscv/kernel/signal.c        |  5 ++++-
- kernel/signal.c                   | 24 ++++++++++++++----------
- 4 files changed, 20 insertions(+), 12 deletions(-)
+ arch/riscv/kernel/cpu.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/include/asm/signal32.h b/arch/riscv/include/asm/signal32.h
-index cda62d7eb0a5..e47bb739e61a 100644
---- a/arch/riscv/include/asm/signal32.h
-+++ b/arch/riscv/include/asm/signal32.h
-@@ -3,7 +3,7 @@
- #ifndef __ASM_SIGNAL32_H
- #define __ASM_SIGNAL32_H
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index bc39fd16ab64..3c06ffc00fe0 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -66,10 +66,11 @@ int riscv_early_of_processor_hartid(struct device_node *node, unsigned long *har
+ 		return -ENODEV;
+ 	}
  
--#if IS_ENABLED(CONFIG_COMPAT)
-+#if IS_ENABLED(CONFIG_COMPAT) || IS_ENABLED(CONFIG_ARCH_RV64ILP32)
- int compat_setup_rt_frame(struct ksignal *ksig, sigset_t *set,
- 			  struct pt_regs *regs);
- long __riscv_compat_rt_sigreturn(void);
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index a4583a29b28b..e8af95298e98 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -97,6 +97,7 @@ obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o
- obj-$(CONFIG_EFI)		+= efi.o
- obj-$(CONFIG_COMPAT)		+= compat_syscall_table.o
- obj-$(CONFIG_COMPAT)		+= compat_signal.o
-+obj-$(CONFIG_ARCH_RV64ILP32)	+= compat_signal.o
+-	if (IS_ENABLED(CONFIG_32BIT) && strncasecmp(isa, "rv32ima", 7))
++	if (IS_ENABLED(CONFIG_RV32I) && strncasecmp(isa, "rv32ima", 7))
+ 		return -ENODEV;
  
- obj-$(CONFIG_64BIT)		+= pi/
- obj-$(CONFIG_ACPI)		+= acpi.o
-diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
-index 1c51a6783c98..95512af927dd 100644
---- a/arch/riscv/kernel/signal.c
-+++ b/arch/riscv/kernel/signal.c
-@@ -277,7 +277,10 @@ static long __riscv_rt_sigreturn(void)
+-	if (IS_ENABLED(CONFIG_64BIT) && strncasecmp(isa, "rv64ima", 7))
++	if ((IS_ENABLED(CONFIG_RV64I) || IS_ENABLED(CONFIG_RV64IILP32))
++				     && strncasecmp(isa, "rv64ima", 7))
+ 		return -ENODEV;
  
- SYSCALL_DEFINE0(rt_sigreturn)
- {
--	return __riscv_rt_sigreturn();
-+	if (test_thread_flag(TIF_32BIT) && !test_thread_flag(TIF_64ILP32))
-+		return __riscv_compat_rt_sigreturn();
-+	else
-+		return __riscv_rt_sigreturn();
- }
- 
- #ifdef CONFIG_COMPAT
-diff --git a/kernel/signal.c b/kernel/signal.c
-index b5370fe5c198..3ac7fa4f1761 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -3390,7 +3390,7 @@ int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from)
- 	return post_copy_siginfo_from_user(to, from);
- }
- 
--#ifdef CONFIG_COMPAT
-+#if IS_ENABLED(CONFIG_COMPAT) || IS_ENABLED(CONFIG_ARCH_RV64ILP32)
- /**
-  * copy_siginfo_to_external32 - copy a kernel siginfo into a compat user siginfo
-  * @to: compat siginfo destination
-@@ -3556,6 +3556,7 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
  	return 0;
- }
- 
-+#ifdef CONFIG_COMPAT
- static int __copy_siginfo_from_user32(int signo, struct kernel_siginfo *to,
- 				      const struct compat_siginfo __user *ufrom)
- {
-@@ -3567,6 +3568,7 @@ static int __copy_siginfo_from_user32(int signo, struct kernel_siginfo *to,
- 	from.si_signo = signo;
- 	return post_copy_siginfo_from_user32(to, &from);
- }
-+#endif /* CONFIG_COMPAT */
- 
- int copy_siginfo_from_user32(struct kernel_siginfo *to,
- 			     const struct compat_siginfo __user *ufrom)
-@@ -3578,7 +3580,7 @@ int copy_siginfo_from_user32(struct kernel_siginfo *to,
- 
- 	return post_copy_siginfo_from_user32(to, &from);
- }
--#endif /* CONFIG_COMPAT */
-+#endif
- 
- /**
-  *  do_sigtimedwait - wait for queued signals specified in @which
-@@ -4279,7 +4281,7 @@ int __save_altstack(stack_t __user *uss, unsigned long sp)
- 	return err;
- }
- 
--#ifdef CONFIG_COMPAT
-+#if IS_ENABLED(CONFIG_COMPAT) || IS_ENABLED(CONFIG_ARCH_HAS_64ILP32_KERNEL)
- static int do_compat_sigaltstack(const compat_stack_t __user *uss_ptr,
- 				 compat_stack_t __user *uoss_ptr)
- {
-@@ -4309,13 +4311,6 @@ static int do_compat_sigaltstack(const compat_stack_t __user *uss_ptr,
- 	return ret;
- }
- 
--COMPAT_SYSCALL_DEFINE2(sigaltstack,
--			const compat_stack_t __user *, uss_ptr,
--			compat_stack_t __user *, uoss_ptr)
--{
--	return do_compat_sigaltstack(uss_ptr, uoss_ptr);
--}
--
- int compat_restore_altstack(const compat_stack_t __user *uss)
- {
- 	int err = do_compat_sigaltstack(uss, NULL);
-@@ -4335,6 +4330,15 @@ int __compat_save_altstack(compat_stack_t __user *uss, unsigned long sp)
- }
- #endif
- 
-+#ifdef CONFIG_COMPAT
-+COMPAT_SYSCALL_DEFINE2(sigaltstack,
-+			const compat_stack_t __user *, uss_ptr,
-+			compat_stack_t __user *, uoss_ptr)
-+{
-+	return do_compat_sigaltstack(uss_ptr, uoss_ptr);
-+}
-+#endif
-+
- #ifdef __ARCH_WANT_SYS_SIGPENDING
- 
- /**
 -- 
 2.36.1
 
