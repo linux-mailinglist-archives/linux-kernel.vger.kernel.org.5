@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ADB7E8ECC
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C527E8ECD
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbjKLGTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 01:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
+        id S231217AbjKLGUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 01:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjKLGTa (ORCPT
+        with ESMTP id S231396AbjKLGTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 01:19:30 -0500
+        Sun, 12 Nov 2023 01:19:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFF155BF
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:18:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3362C433C7;
-        Sun, 12 Nov 2023 06:18:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE0959D7
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 22:18:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECE71C433C8;
+        Sun, 12 Nov 2023 06:18:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699769922;
-        bh=bS9zYu4p2fDX0v+IO9ccI6gNcdJmQYX5Su7I11BAbz8=;
+        s=k20201202; t=1699769928;
+        bh=cuF9JM0r/gsp1vghHnzFT7BkfhIYwfHcWZhIf27n2xY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eds0Ikvb4knSS+2emy3RCxl6MssNc5zSLI7TvAgF41P6aLGxzvhumme+tfoiJbZYR
-         E64mIZD3foSewobLLFWM8uEAYS2F7Kh6RRauO69qm7oFrRLBiW5gcTGx7lQquDH1H4
-         pyGzBxPO8sU1e4R2qo6ecYZVx0NP7Pn6xurHDlH/Gr544GTZVrrt/ofParw6Qb0Tpm
-         9o78tX8Aa4k8+RKVvEClQE4oPy776KWO5tvkrU2H3+Gs4WcLuzV1r+qVRi/fQ/GK8P
-         B5sTrI/oBj3IU/2VjqZLyF7Cy/1WyISInWnMyztHVxlQ5TsnAF6GPIStsmJkrSURHC
-         7/S9+w2Jg0xbg==
+        b=m3ZnNHPp3EJ0Y7agFTlRHB8X/PRo4qR3eYYHC7/GGu20rmlj22UU0PTGsvORZBD41
+         Z+EVPhN5T/bYe++fF/zfE0ELkpn3Rl+4JcZjYGnDj8dkve6+UH4nvo5DwIHyi5vocE
+         lEyIrJ7c07LGEPXju8fkDwtlWmfYYETHVZHKz0vDT4MojxgLB2IB9QAF+ZsLh63a03
+         pR2u2UEDc3ioOIihJNM3NSJpXwSI0R6vVBvEso2YO33TjSZPsiojurtrZ7sTarcJeo
+         6B4ZNSy9+D2Pazrrjl9Uf/Xtbmw46Z1+rZwN/cs4OQLG/0CrQeCn/UoGyKwwXBDYUl
+         mbwNziOgXRm7w==
 From:   guoren@kernel.org
 To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         tglx@linutronix.de, conor.dooley@microchip.com, heiko@sntech.de,
@@ -40,9 +40,9 @@ To:     arnd@arndb.de, guoren@kernel.org, palmer@rivosinc.com,
         hjl.tools@gmail.com
 Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [RFC PATCH V2 32/38] riscv: s64ilp32: Validate harts by architecture name
-Date:   Sun, 12 Nov 2023 01:15:08 -0500
-Message-Id: <20231112061514.2306187-33-guoren@kernel.org>
+Subject: [RFC PATCH V2 33/38] riscv: s64ilp32: Add rv64ilp32_defconfig
+Date:   Sun, 12 Nov 2023 01:15:09 -0500
+Message-Id: <20231112061514.2306187-34-guoren@kernel.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20231112061514.2306187-1-guoren@kernel.org>
 References: <20231112061514.2306187-1-guoren@kernel.org>
@@ -60,35 +60,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-When rv64ilp32 was introduced, the 32BIT would work with rv64,isa. So
-use the architecture name instead of the ABI width name. This is an
-addition to the commit: 069b0d517077 ("RISC-V: validate riscv,isa at
-boot, not during ISA string parsing").
+Follow the rv32_defconfig rule to add rv64ilp32_defconfig; the only
+difference is:
+-CONFIG_ARCH_RV32I=y
++CONFIG_ARCH_RV64ILP32=y
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
 ---
- arch/riscv/kernel/cpu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/riscv/Makefile               | 4 ++++
+ arch/riscv/configs/64ilp32.config | 2 ++
+ 2 files changed, 6 insertions(+)
+ create mode 100644 arch/riscv/configs/64ilp32.config
 
-diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index bc39fd16ab64..3c06ffc00fe0 100644
---- a/arch/riscv/kernel/cpu.c
-+++ b/arch/riscv/kernel/cpu.c
-@@ -66,10 +66,11 @@ int riscv_early_of_processor_hartid(struct device_node *node, unsigned long *har
- 		return -ENODEV;
- 	}
- 
--	if (IS_ENABLED(CONFIG_32BIT) && strncasecmp(isa, "rv32ima", 7))
-+	if (IS_ENABLED(CONFIG_RV32I) && strncasecmp(isa, "rv32ima", 7))
- 		return -ENODEV;
- 
--	if (IS_ENABLED(CONFIG_64BIT) && strncasecmp(isa, "rv64ima", 7))
-+	if ((IS_ENABLED(CONFIG_RV64I) || IS_ENABLED(CONFIG_RV64IILP32))
-+				     && strncasecmp(isa, "rv64ima", 7))
- 		return -ENODEV;
- 
- 	return 0;
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 3b1435bade49..d01f41fdf57f 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -205,3 +205,7 @@ rv32_defconfig:
+ PHONY += rv32_nommu_virt_defconfig
+ rv32_nommu_virt_defconfig:
+ 	$(Q)$(MAKE) -f $(srctree)/Makefile nommu_virt_defconfig 32-bit.config
++
++PHONY += rv64ilp32_defconfig
++rv64ilp32_defconfig:
++	$(Q)$(MAKE) -f $(srctree)/Makefile defconfig 64ilp32.config
+diff --git a/arch/riscv/configs/64ilp32.config b/arch/riscv/configs/64ilp32.config
+new file mode 100644
+index 000000000000..7d836aa2fae7
+--- /dev/null
++++ b/arch/riscv/configs/64ilp32.config
+@@ -0,0 +1,2 @@
++CONFIG_ARCH_RV64ILP32=y
++CONFIG_NONPORTABLE=y
 -- 
 2.36.1
 
