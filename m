@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848657E8E77
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 06:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACEB7E8E8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 07:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjKLFlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 00:41:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S229949AbjKLGNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 01:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKLFlO (ORCPT
+        with ESMTP id S229441AbjKLGNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 00:41:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD36F1718
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Nov 2023 21:41:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699767672; x=1731303672;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JTxCdy75stR0mKYl6ULORAFOapELHcoaqszoGaFgzdM=;
-  b=kRUlVPTqxhaR8RpjaGprOEtmJFfzG8U0Mwb2BC2FzwJda9pDZlGnpSxc
-   kinEUtYZwNcF2XF7dPsOT4Vv/OF0iVSxLU9j1wcLSD+GeooTqOIWvkqkl
-   2yFNoIkYSDYaeXDb7GIeXobqH7cprk+WZZQXqIJ+Fn4fNN/y/jDxUm67m
-   gWHXDp9KAUQq42CgdGEsOMvySMOCjZLB8An9bNJzShCZaYQFGjj7blatw
-   3naIGNIjz8Fgj2cjeMUQntbtX1UIGAfGwNDb8Vklbq1x8R4wdTjqViZlC
-   4uEXpWOGyZOP81MtdwpqqJ2iIfZr3jCN0CvOojDJYij1w9nR4gNw7+twd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="11863431"
-X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
-   d="scan'208";a="11863431"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2023 21:41:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="713944395"
-X-IronPort-AV: E=Sophos;i="6.03,296,1694761200"; 
-   d="scan'208";a="713944395"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 11 Nov 2023 21:41:09 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r23DX-000AyE-1v;
-        Sun, 12 Nov 2023 05:41:07 +0000
-Date:   Sun, 12 Nov 2023 13:40:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: kernel/reboot.c:559: warning: Function parameter or member
- 'poweroff_delay_ms' not described in 'hw_failure_emergency_poweroff'
-Message-ID: <202311121307.FDXuYvzi-lkp@intel.com>
+        Sun, 12 Nov 2023 01:13:51 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4742C2D46;
+        Sat, 11 Nov 2023 22:13:48 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso30423885ad.3;
+        Sat, 11 Nov 2023 22:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699769628; x=1700374428; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eOU/FVQME/8M+ZotWOiPunL1mimnTtMUIxdT/VvjGk=;
+        b=Rsp148KXcLRZqBkxGX2iOnwmHm9YDl9BqreImCEFlKRSjrnCcgoe5qrTEsF/sq5hU8
+         HUUqYXG9OvM+xlFFuT4d4AVZgv25tkiBMCb2OAuUoxofJfnBbBmtcr73t3pebn+BC97M
+         oG93UJoIP2N4Lb645p/xUlPZ++/iCte1W6jA/9DaOheVH9kw3aSWtndGHj9cvXjK1VD4
+         5qI/ybd8tP5GYht3Wf1b+XxQ4+IVQgXD7OZS/fIVSFOj/drMl9FPeQEdGV7pPCIHVe3k
+         aUtECr97iwzY+h0CEOgcjchhw7LLc1ffQL1287OYuPjXnuRFnTpv5m9YXD3vZN5GXSH5
+         hrPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699769628; x=1700374428;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7eOU/FVQME/8M+ZotWOiPunL1mimnTtMUIxdT/VvjGk=;
+        b=R+mVXU+P9mUC29+WccLuQN6n9UIwiXLHJaLkJ/BQqqlkiU5cfeJV6C9q10t5o/awN6
+         zKt6ZOdhB4CWkhM7rSRUQLWzxU3kQ5vyjqUKNlu+kbGGKLDaOqYzi9fbhmZV3XWZllvi
+         u+LnGNBrpq9/aawSwOhlNDDWytJvjT9AOcK7ic7ZhPzJ0a5dv1FsGq6wQi6DxCFfN1D6
+         D9epfE3Q0UGzwerfceWhvpyNrGKf28qZeikQYiQ2Sa8xs8VZnIJL0s92rp80EMG4HNuz
+         u2X5lAN7TwmHgaa2dCzNyTGardzyuyvPXnWRDIlkB6oMueOlyWfxKeeK1YETPmPQ/h1a
+         Bg/Q==
+X-Gm-Message-State: AOJu0YzWxJbQ4kwXJqeBN8G+ispAnb0cO0npEtJf7p1Kl46TwKnTME+Y
+        GcP/lTkVxRmr6nugQYAPIEM=
+X-Google-Smtp-Source: AGHT+IGy3DkHuF8vM7kFMYga9vnuoKWMVEH9Sqhe7qkgbshJvCdmkxHleF8+j++EdBQb4OanYYAqAQ==
+X-Received: by 2002:a17:903:124b:b0:1cc:3f10:4175 with SMTP id u11-20020a170903124b00b001cc3f104175mr4644630plh.28.1699769627644;
+        Sat, 11 Nov 2023 22:13:47 -0800 (PST)
+Received: from localhost.localdomain ([112.96.230.35])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001c72f4334afsm2104384plg.20.2023.11.11.22.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Nov 2023 22:13:47 -0800 (PST)
+From:   "shiqiang.deng" <shiqiang.deng213@gmail.com>
+To:     ardb@kernel.org, bp@alien8.de, kirill.shutemov@linux.intel.com
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "shiqiang.deng" <shiqiang.deng213@gmail.com>
+Subject: [PATCH] x86/efistub: resolve compilation errors
+Date:   Sun, 12 Nov 2023 14:13:20 +0800
+Message-Id: <20231112061320.85149-1-shiqiang.deng213@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matti,
+I found that under the conditions of
+CONFIG_EFI_HANDOVER_PROTOCOL=y and CONFIG_EFI_MIXED=y,
+there is a missing-prototypes error for the efi_handover_entry() function.
+Let's now fix it.
 
-FYI, the error/warning still remains.
+Signed-off-by: shiqiang.deng <shiqiang.deng213@gmail.com>
+---
+ drivers/firmware/efi/libstub/x86-stub.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1b907d0507354b74a4f2c286380cd6059af79248
-commit: dfa19b11385d4cf8f0242fd93e2073e25183c331 reboot: Add hardware protection power-off
-date:   2 years, 5 months ago
-config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20231112/202311121307.FDXuYvzi-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311121307.FDXuYvzi-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311121307.FDXuYvzi-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/reboot.c:215: warning: Function parameter or member 'cmd' not described in 'do_kernel_restart'
->> kernel/reboot.c:559: warning: Function parameter or member 'poweroff_delay_ms' not described in 'hw_failure_emergency_poweroff'
-
-
-vim +559 kernel/reboot.c
-
-   548	
-   549	static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
-   550				    hw_failure_emergency_poweroff_func);
-   551	
-   552	/**
-   553	 * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
-   554	 *
-   555	 * This may be called from any critical situation to trigger a system shutdown
-   556	 * after a given period of time. If time is negative this is not scheduled.
-   557	 */
-   558	static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
- > 559	{
-   560		if (poweroff_delay_ms <= 0)
-   561			return;
-   562		schedule_delayed_work(&hw_failure_emergency_poweroff_work,
-   563				      msecs_to_jiffies(poweroff_delay_ms));
-   564	}
-   565	
-
+diff --git a/drivers/firmware/efi/libstub/x86-stub.h b/drivers/firmware/efi/libstub/x86-stub.h
+index 37c5a36b9d8c..aa020f88ce68 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.h
++++ b/drivers/firmware/efi/libstub/x86-stub.h
+@@ -8,6 +8,11 @@ extern const u16 trampoline_ljmp_imm_offset;
+ void efi_adjust_memory_range_protection(unsigned long start,
+ 					unsigned long size);
+ 
++#ifdef CONFIG_EFI_HANDOVER_PROTOCOL
++void efi_handover_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg,
++					struct boot_params *boot_params);
++#endif
++
+ #ifdef CONFIG_X86_64
+ efi_status_t efi_setup_5level_paging(void);
+ void efi_5level_switch(void);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.0
+
