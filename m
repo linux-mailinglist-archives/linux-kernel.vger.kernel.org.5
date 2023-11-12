@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E574F7E913D
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5E67E9140
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 15:42:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbjKLOhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 09:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
+        id S231477AbjKLOmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 09:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbjKLOhL (ORCPT
+        with ESMTP id S229607AbjKLOmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 09:37:11 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB22B2D57;
-        Sun, 12 Nov 2023 06:37:07 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7d9d357faso40202717b3.0;
-        Sun, 12 Nov 2023 06:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699799827; x=1700404627; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qiTdi6HkTOICIVjp3Fua9oyqz+hmPpvk/xv8wWPEopg=;
-        b=GeLpvV77nK23Yf7hPuuS6wsb2y0nmVtS4js4yMsqu0sOOSMfcSGg1FU19gRmgeH0b1
-         WQSTkximzkFwJbVhTrFNo78X3Ow2uS/ewsWipg5QcpkMPLS9c9oZRdn6LWRoSzrVZ4bW
-         o/4d3xmNnZuQkLq99Vt3W8czr37LE/dK4ZGCxYrPen/0J9qz/GYr7r+uvH9IQH2G+mse
-         SqD4PL5Z8cDjkvFwCcAUBekvr7BjqPbELB23NF60vUM05orDQqS21MdqJxdbGms86WE/
-         R7UlaZA+Q4kbI9Kya1gjmnrTGRC3GwuNTaB1lDOCOwjlRka0s0Pd1Uvwjz0WgA4xZ/qr
-         OYkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699799827; x=1700404627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qiTdi6HkTOICIVjp3Fua9oyqz+hmPpvk/xv8wWPEopg=;
-        b=MPTDakCumaO7J61CcD6+9owZCQRF3tk7oyo3m0KJuetl9ijovPk9E2SgjatdX4qF/T
-         Cw7PXcQDPkJNsm38+o17lZpNpw1aWEdNuOTTCLoEBwtERwpRP2HD1PZMDZ3o+KN728Bt
-         uPDK6mWaO1yZtpWyIY7olaFyL55DhY5gw6cswo3HnaTPSAFo/euR5k8PCZnPFEoSXlcr
-         w76L9TyxXKE3wQn0lm3YxT8vea8sOYcRmtNxPOJ7RkpncVNsdx+YtKB3A4tQHHLAAoHe
-         XDVFKbVWYBFPIH0cFzJaJORMl44iPyPLUCypEKtAwdA7K9oKnZa/LUYxCtfLaV6eNE5N
-         G50A==
-X-Gm-Message-State: AOJu0Ywshx1iwh++R2CG+bTvKnVoVTkcxg/rf5+1cPUzTVLC9f5C+tnC
-        CUuyK20xhOlTOYXDWoWl+0WygcIhfSYBqu9jIZwxXxUyQqE=
-X-Google-Smtp-Source: AGHT+IHAoaDasX/DpvnYeJ01kgH85R0z8fwGmKpR4z1wrKTL5sT0uA+3KuNUns2ea6+nqgSmsL5nfE+pMdqwKxzM14U=
-X-Received: by 2002:a0d:d281:0:b0:5a7:be6b:41c4 with SMTP id
- u123-20020a0dd281000000b005a7be6b41c4mr4706520ywd.12.1699799826997; Sun, 12
- Nov 2023 06:37:06 -0800 (PST)
+        Sun, 12 Nov 2023 09:42:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F002D61
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 06:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699800151; x=1731336151;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=He2tsisvNal/rPlNHC59npYlS3mXk8AFx4LjcgHkzI8=;
+  b=cj3Rn+Kq+OKCvBr0ujp63Zl+rLSmzJl/K5KlGRAKUC87BNOTJX38Df7Z
+   2RrLcC9jBtRZLqEHeCh/rVwWtmeXjWc2v+izsKDIGRvPLCSGiaC+sZaMo
+   WjIkdGwHpVZLjIFJrlwvMER4Tm8oDx4XlP+LDLlYDgfT8PyFe2Fr7waiB
+   3f6+LcZdimY+BJ0NDrIB3TQXRisC1qcboUCXBZlaKmfFSoA4abykFAOQx
+   R1F97LZssPjslGj+cXjaTzKYVG4eaMZkfVX7uzXLA+6lBiP57E6us4dNb
+   vTPJTY5p4lqYpYK0ucYMX40FgeNqOk0gskHL26iQLxLhOfaFVwWE8rlsB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="369660513"
+X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
+   d="scan'208";a="369660513"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 06:42:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="793223767"
+X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
+   d="scan'208";a="793223767"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 12 Nov 2023 06:42:29 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r2BfO-000BCo-1K;
+        Sun, 12 Nov 2023 14:42:26 +0000
+Date:   Sun, 12 Nov 2023 22:41:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Andrew Worsley <amworsley@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR FIRMWARE FRAMEBUFFERS" 
+        <dri-devel@lists.freedesktop.org>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH] of/platform: Disable sysfb if a simple-framebuffer node
+ is
+Message-ID: <202311122208.2emZJrfT-lkp@intel.com>
+References: <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <0000000000003c31650609ecd824@google.com> <CAOQ4uxh3i=eLJZeNu7VWS9L7OaVVRgyX9Yqr5hx15h9dYmWaXQ@mail.gmail.com>
-In-Reply-To: <CAOQ4uxh3i=eLJZeNu7VWS9L7OaVVRgyX9Yqr5hx15h9dYmWaXQ@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sun, 12 Nov 2023 16:36:55 +0200
-Message-ID: <CAOQ4uxhnY+hzfCA7A2aTfVKsveR9g6Hn=FbFrjFuXs8w3sYX5Q@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] memory leak in ovl_parse_param
-To:     syzbot <syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5rj9s37.fsf@minerva.mail-host-address-is-not-set>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,128 +71,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 11:10=E2=80=AFAM Amir Goldstein <amir73il@gmail.com=
-> wrote:
->
-> On Sun, Nov 12, 2023 at 6:18=E2=80=AFAM syzbot
-> <syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    13d88ac54ddd Merge tag 'vfs-6.7.fsid' of git://git.kern=
-el...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D121cf047680=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Decfdf78a410=
-c834
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D26eedf3631650=
-972f17c
-> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D15c7a6eb6=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13f8b787680=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/9bb27a01f17c/d=
-isk-13d88ac5.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/fb496feed171/vmli=
-nux-13d88ac5.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/f4da22719ffa=
-/bzImage-13d88ac5.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+26eedf3631650972f17c@syzkaller.appspotmail.com
-> >
-> > executing program
-> > BUG: memory leak
-> > unreferenced object 0xffff8881009b40a8 (size 8):
-> >   comm "syz-executor225", pid 5035, jiffies 4294944336 (age 13.730s)
-> >   hex dump (first 8 bytes):
-> >     2e 00 00 00 00 00 00 00                          ........
-> >   backtrace:
-> >     [<ffffffff8163331d>] kmemleak_alloc_recursive include/linux/kmemlea=
-k.h:42 [inline]
-> >     [<ffffffff8163331d>] slab_post_alloc_hook mm/slab.h:766 [inline]
-> >     [<ffffffff8163331d>] slab_alloc_node mm/slub.c:3478 [inline]
-> >     [<ffffffff8163331d>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:=
-3517
-> >     [<ffffffff8157e57c>] __do_kmalloc_node mm/slab_common.c:1006 [inlin=
-e]
-> >     [<ffffffff8157e57c>] __kmalloc_node_track_caller+0x4c/0x150 mm/slab=
-_common.c:1027
-> >     [<ffffffff8156da4c>] kstrdup+0x3c/0x70 mm/util.c:62
-> >     [<ffffffff81d0438a>] ovl_parse_param_lowerdir fs/overlayfs/params.c=
-:496 [inline]
-> >     [<ffffffff81d0438a>] ovl_parse_param+0x70a/0xc70 fs/overlayfs/param=
-s.c:576
-> >     [<ffffffff8170542b>] vfs_parse_fs_param+0xfb/0x190 fs/fs_context.c:=
-146
-> >     [<ffffffff81705556>] vfs_parse_fs_string+0x96/0xd0 fs/fs_context.c:=
-188
-> >     [<ffffffff8170566f>] vfs_parse_monolithic_sep+0xdf/0x130 fs/fs_cont=
-ext.c:230
-> >     [<ffffffff816dff08>] do_new_mount fs/namespace.c:3333 [inline]
-> >     [<ffffffff816dff08>] path_mount+0xc48/0x10d0 fs/namespace.c:3664
-> >     [<ffffffff816e0b41>] do_mount fs/namespace.c:3677 [inline]
-> >     [<ffffffff816e0b41>] __do_sys_mount fs/namespace.c:3886 [inline]
-> >     [<ffffffff816e0b41>] __se_sys_mount fs/namespace.c:3863 [inline]
-> >     [<ffffffff816e0b41>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:386=
-3
-> >     [<ffffffff84b67d8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inl=
-ine]
-> >     [<ffffffff84b67d8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common=
-.c:82
-> >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> >
-> > BUG: memory leak
-> > unreferenced object 0xffff88814002d070 (size 8):
-> >   comm "syz-executor225", pid 5036, jiffies 4294944900 (age 8.090s)
-> >   hex dump (first 8 bytes):
-> >     2e 00 00 00 00 00 00 00                          ........
-> >   backtrace:
-> >     [<ffffffff8163331d>] kmemleak_alloc_recursive include/linux/kmemlea=
-k.h:42 [inline]
-> >     [<ffffffff8163331d>] slab_post_alloc_hook mm/slab.h:766 [inline]
-> >     [<ffffffff8163331d>] slab_alloc_node mm/slub.c:3478 [inline]
-> >     [<ffffffff8163331d>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:=
-3517
-> >     [<ffffffff8157e57c>] __do_kmalloc_node mm/slab_common.c:1006 [inlin=
-e]
-> >     [<ffffffff8157e57c>] __kmalloc_node_track_caller+0x4c/0x150 mm/slab=
-_common.c:1027
-> >     [<ffffffff8156da4c>] kstrdup+0x3c/0x70 mm/util.c:62
-> >     [<ffffffff81d0438a>] ovl_parse_param_lowerdir fs/overlayfs/params.c=
-:496 [inline]
-> >     [<ffffffff81d0438a>] ovl_parse_param+0x70a/0xc70 fs/overlayfs/param=
-s.c:576
-> >     [<ffffffff8170542b>] vfs_parse_fs_param+0xfb/0x190 fs/fs_context.c:=
-146
-> >     [<ffffffff81705556>] vfs_parse_fs_string+0x96/0xd0 fs/fs_context.c:=
-188
-> >     [<ffffffff8170566f>] vfs_parse_monolithic_sep+0xdf/0x130 fs/fs_cont=
-ext.c:230
-> >     [<ffffffff816dff08>] do_new_mount fs/namespace.c:3333 [inline]
-> >     [<ffffffff816dff08>] path_mount+0xc48/0x10d0 fs/namespace.c:3664
-> >     [<ffffffff816e0b41>] do_mount fs/namespace.c:3677 [inline]
-> >     [<ffffffff816e0b41>] __do_sys_mount fs/namespace.c:3886 [inline]
-> >     [<ffffffff816e0b41>] __se_sys_mount fs/namespace.c:3863 [inline]
-> >     [<ffffffff816e0b41>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:386=
-3
-> >     [<ffffffff84b67d8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inl=
-ine]
-> >     [<ffffffff84b67d8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common=
-.c:82
-> >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> >
-> >
->
-> #syz test: https://github.com/amir73il/linux ovl-fixes
+Hi Javier,
 
-Please test take #2:
-#syz test: https://github.com/amir73il/linux ovl-fixes
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on drm-misc/drm-misc-next drm-tip/drm-tip linus/master v6.6 next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Javier-Martinez-Canillas/of-platform-Disable-sysfb-if-a-simple-framebuffer-node-is/20231112-183751
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/87a5rj9s37.fsf%40minerva.mail-host-address-is-not-set
+patch subject: [PATCH] of/platform: Disable sysfb if a simple-framebuffer node is
+config: arm-versatile_defconfig (https://download.01.org/0day-ci/archive/20231112/202311122208.2emZJrfT-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311122208.2emZJrfT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311122208.2emZJrfT-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/of/platform.c:635:4: error: call to undeclared function 'sysfb_disable'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     635 |                         sysfb_disable();
+         |                         ^
+   1 error generated.
+
+
+vim +/sysfb_disable +635 drivers/of/platform.c
+
+   545	
+   546	static int __init of_platform_default_populate_init(void)
+   547	{
+   548		struct device_node *node;
+   549	
+   550		device_links_supplier_sync_state_pause();
+   551	
+   552		if (!of_have_populated_dt())
+   553			return -ENODEV;
+   554	
+   555		if (IS_ENABLED(CONFIG_PPC)) {
+   556			struct device_node *boot_display = NULL;
+   557			struct platform_device *dev;
+   558			int display_number = 0;
+   559			int ret;
+   560	
+   561			/* Check if we have a MacOS display without a node spec */
+   562			if (of_property_present(of_chosen, "linux,bootx-noscreen")) {
+   563				/*
+   564				 * The old code tried to work out which node was the MacOS
+   565				 * display based on the address. I'm dropping that since the
+   566				 * lack of a node spec only happens with old BootX versions
+   567				 * (users can update) and with this code, they'll still get
+   568				 * a display (just not the palette hacks).
+   569				 */
+   570				dev = platform_device_alloc("bootx-noscreen", 0);
+   571				if (WARN_ON(!dev))
+   572					return -ENOMEM;
+   573				ret = platform_device_add(dev);
+   574				if (WARN_ON(ret)) {
+   575					platform_device_put(dev);
+   576					return ret;
+   577				}
+   578			}
+   579	
+   580			/*
+   581			 * For OF framebuffers, first create the device for the boot display,
+   582			 * then for the other framebuffers. Only fail for the boot display;
+   583			 * ignore errors for the rest.
+   584			 */
+   585			for_each_node_by_type(node, "display") {
+   586				if (!of_get_property(node, "linux,opened", NULL) ||
+   587				    !of_get_property(node, "linux,boot-display", NULL))
+   588					continue;
+   589				dev = of_platform_device_create(node, "of-display", NULL);
+   590				of_node_put(node);
+   591				if (WARN_ON(!dev))
+   592					return -ENOMEM;
+   593				boot_display = node;
+   594				display_number++;
+   595				break;
+   596			}
+   597			for_each_node_by_type(node, "display") {
+   598				char buf[14];
+   599				const char *of_display_format = "of-display.%d";
+   600	
+   601				if (!of_get_property(node, "linux,opened", NULL) || node == boot_display)
+   602					continue;
+   603				ret = snprintf(buf, sizeof(buf), of_display_format, display_number++);
+   604				if (ret < sizeof(buf))
+   605					of_platform_device_create(node, buf, NULL);
+   606			}
+   607	
+   608		} else {
+   609			/*
+   610			 * Handle certain compatibles explicitly, since we don't want to create
+   611			 * platform_devices for every node in /reserved-memory with a
+   612			 * "compatible",
+   613			 */
+   614			for_each_matching_node(node, reserved_mem_matches)
+   615				of_platform_device_create(node, NULL, NULL);
+   616	
+   617			node = of_find_node_by_path("/firmware");
+   618			if (node) {
+   619				of_platform_populate(node, NULL, NULL, NULL);
+   620				of_node_put(node);
+   621			}
+   622	
+   623			node = of_get_compatible_child(of_chosen, "simple-framebuffer");
+   624			if (node) {
+   625				/*
+   626				 * Since a "simple-framebuffer" device is already added
+   627				 * here, disable the Generic System Framebuffers (sysfb)
+   628				 * to prevent it from registering another device for the
+   629				 * system framebuffer later (e.g: using the screen_info
+   630				 * data that may had been filled as well).
+   631				 *
+   632				 * This can happen for example on DT systems that do EFI
+   633				 * booting and may provide a GOP table to the EFI stub.
+   634				 */
+ > 635				sysfb_disable();
+   636				of_platform_device_create(node, NULL, NULL);
+   637				of_node_put(node);
+   638			}
+   639	
+   640			/* Populate everything else. */
+   641			of_platform_default_populate(NULL, NULL, NULL);
+   642		}
+   643	
+   644		return 0;
+   645	}
+   646	arch_initcall_sync(of_platform_default_populate_init);
+   647	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
