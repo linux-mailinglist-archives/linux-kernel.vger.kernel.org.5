@@ -2,88 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC99D7E924B
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D77D7E9252
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 20:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbjKLTmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 14:42:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
+        id S232161AbjKLTqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 14:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjKLTmQ (ORCPT
+        with ESMTP id S229886AbjKLTqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 14:42:16 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8DA1BFF
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:42:12 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507975d34e8so5363941e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:42:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699818131; x=1700422931; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ImXR9MiE3qi0DsdC8oVklUneX4f/mvjRK2z3vXRpxy0=;
-        b=gBPCvI5flUQMZY+jMnkbpP7H40hLJCBsrGN0OiBueUf3QAUsSnrHvprORwVWC1ax0A
-         8Omfm6zOrKXD0ZhmR1gwFCW6ySPeFXxf2zhm+AzSHeAmx+ane66/flWr92P6LC5rdUSc
-         iA0qD3cw/AxEgDrgx13OvsEE50b6R+6MsS/yQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699818131; x=1700422931;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ImXR9MiE3qi0DsdC8oVklUneX4f/mvjRK2z3vXRpxy0=;
-        b=rFf5071GtPlW4bkijn6Xl/j7VgC3yIGA5zX6oN9+f8yXK2/4Z1p8+cr2cJwlxusdix
-         icIAcBZ3jQl2Ivg9UbtTKgrStQJVGKCbKXOeFrsUBtUBomN11z/nbs2Pc137rHCSO7w9
-         PR/poAQ4IpbyyNUzwYFhvfFs1cte5QLLooO69vC1rO++ELxoHHo7LsRJogh+qpqt9jzr
-         49sw0lFhlxy6TpkofYsVncONlNKf7xd2rFdDwF3rsgNnX5hnlbZd2y3Bv6+XKCTo0Vzw
-         uAVgownlc4v37zZhXjF+4nUIfU7xJd/uZYELpmA+FKFG4bzYsDt/sNGeBtWgjgERoXVw
-         CM9Q==
-X-Gm-Message-State: AOJu0YxKWbLFuRoKc9rf3PGUgoa8MLiITGif9whXnUGy+LwFHXUlQwv2
-        0OpS93n/sB5PiK5LBSWjHk9eeo1atOzoCkgWjMW4Bl7+
-X-Google-Smtp-Source: AGHT+IE8dhIBbFVNIbjGImBa6I3++1vNroUg2ssr+FbLZU3yuS8eqzjAPHvmXfBiDTzmy1ux9lnUFg==
-X-Received: by 2002:a19:6509:0:b0:507:b099:749d with SMTP id z9-20020a196509000000b00507b099749dmr3099206lfb.15.1699818130608;
-        Sun, 12 Nov 2023 11:42:10 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id p12-20020ac246cc000000b0050481c400e9sm715291lfo.287.2023.11.12.11.42.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 11:42:10 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso5358589e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:42:10 -0800 (PST)
-X-Received: by 2002:a19:9116:0:b0:500:b553:c09e with SMTP id
- t22-20020a199116000000b00500b553c09emr2970053lfd.32.1699818129698; Sun, 12
- Nov 2023 11:42:09 -0800 (PST)
+        Sun, 12 Nov 2023 14:46:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880D01BFF
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 11:46:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA4CC433C8;
+        Sun, 12 Nov 2023 19:46:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699818373;
+        bh=MaALdKM6CkRciDDOKQFdOFbCFn9uUlJOWClVU8b34tU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SlZGuL1E4T3k46McUNsHAf1w2NuqPphfcHyZcICORU0yuRPWSemZxbxascnJEM4wO
+         RGqzaYcCZwNc+hn+tWm1S1rg4ApB0FK+txAtSBRj88bPz3KUp1YmgrU3mqneE/WQcQ
+         LRgOIygyg6GiR1u0UPKj92CP9Tdtpb1PRH9r1LNpaqAfPR82U92kkYKhr9mJuIPHKw
+         mNv4tk7df0CvkpvYf/ccAWDqGNUqntwiHu537rFik2Qun1QdCwd+uZU52uP49w90oJ
+         FjqEAQwnVGcI2+vci38RO6C4TlriKg9GeNRv8iftoLU5nESSXp+US/N05doraV0GvC
+         ANjnFjTnid49A==
+From:   SeongJae Park <sj@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/8] DAMOS: Introduce Aim-oriented Feedback-driven Aggressiveness Auto Tuning
+Date:   Sun, 12 Nov 2023 19:45:59 +0000
+Message-Id: <20231112194607.61399-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231103110600.GAZUTUGFjhoLm1KZzE@fat_crate.local>
- <CAHk-=wg=+8rceshMkB4VnKxmRccVLtBLPBawnewZuuqyx5U=3A@mail.gmail.com>
- <20231111223549.GBZVABxWKgkuGNhEqe@fat_crate.local> <20231112122309.GAZVDDrYRiH4RuVbRV@fat_crate.local>
-In-Reply-To: <20231112122309.GAZVDDrYRiH4RuVbRV@fat_crate.local>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 12 Nov 2023 11:41:53 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi_ko54kPH3Jc_eEXHrxjJOQ_TDkeo1cjU1pdeC+kzATg@mail.gmail.com>
-Message-ID: <CAHk-=wi_ko54kPH3Jc_eEXHrxjJOQ_TDkeo1cjU1pdeC+kzATg@mail.gmail.com>
-Subject: Re: [GIT PULL] x86/microcode for 6.7
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Nov 2023 at 04:23, Borislav Petkov <bp@alien8.de> wrote:
->
-> Yeah, so I think something along the lines of the below.
+Another candidate of the subject was "Let users feed and tame DAMOS".
 
-I can verify that this makes my boot logs look sane again.
+DAMOS Control Difficulty
+========================
 
-I'm not applying this directly, and will let you do the final version
-in the tip tree (split into two?), but thought I'd at least ack that
-it works for me.
+DAMOS helps users easily implementing effective access pattern aware
+system operations.  However, controlling DAMOS in wild is not that easy.
+The basic way to control DAMON is specifying the target access pattern.
+Hence, the user is assumed to know the access pattern of the system and
+the workloads well.  Though some good tools including DAMON can help
+that, it requires time and resource, and the cost depends on the
+complexity and the dynamicity of the system and workloads.  After all,
+the access pattern consist of three ranges, namely ranges of access
+rate, age, and size of the regions.  Tuning six parameters is already
+complex.  It is not doable for everyone.
 
-                 Linus
+To ease the control, DAMOS allows users to set the upper-limit of the
+schemes's aggressiveness, namely DAMOS quota.  Then DAMOS prioritizes
+regions to apply the action under the limit based on the action and the
+access pattern of the regions.  For example, use can ask DAMOS to page
+out up to 100 MiB of memory regions per second.  Then DAMOS pages out
+regions that not accessed for longer time first under the limit.  This
+allows users to set access pattern bit more naively, and focus on only
+the one parameter, the quota.  That is, the number of parameters to tune
+with special care can be reduced from six to one.
+
+Still, however, the optimal value for the quota depends on the system
+and the workloads' characteristics, so not that simple.  The number of
+parameters to tune can also increase again if the user needs to run
+multiple schemes, e.g., collapsing hot pages into THP while splitting
+cold pages into regular pages.
+
+In short, the existing approach asks users to find the perfect or
+adapted tuning and instruct DAMOS how to work.  It requires users to be
+deligent.  That's not a virtue of human, but the machine.
+
+Aim-oriented Feedback-driven DAMOS Quota Auto Tuning
+====================================================
+
+Most users would start using DAMOS since there is something they want to
+achieve with DAMOS.  Having such goal metrics like SLO is common.
+Hence, a better approach would be letting users inform DAMOS what they
+aim to achieve, and how well DAMOS is doing that.  Then DAMOS can
+somehow make it.  In detail, users provide feedback for each DAMOS
+scheme.  DAMOS then tune the quota of each scheme based on the users'
+feedback and the current quota values.
+
+This patchset implements the idea.
+
+Implementation
+--------------
+
+The core logic implementation is in the first patch.  In short, it uses
+below simple feedback loop algorithm to get next aggressiveness from the
+current aggressiveness and the feedback (target_core and current_score)
+for the current aggressiveness.
+
+    f(n, target_score, current_score) =
+        max(f(n - 1) * ((target_score - current_score) / target_score + 1), 1)
+
+Note that this algorithm assumes the aggressiveness and the score are
+positively proportional.  Making it true is the feedback provider's
+responsibility.
+
+Test Results
+------------
+
+To show if this provides the expected benefit, we extend the performance
+tests of damon-tests suite to support virtual address space-based
+proactive reclamation scheme that aims 0.5% last 10 seconds some memory
+PSI.  The test suite runs PARSEC3 and SPLASH-2X workloads with the
+scheme and measure the runtime, the RSS, and the PSI for memory (some).
+We do same with the same scheme but not having the goal, and yet another
+variant of it that the target access patterns of the scheme is tuned for
+each workload, in a offline-tuning approach named DAMOOS[1].
+
+The results that normalized to the output that made without any scheme
+are as below.  The PSI for original run (without any scheme) was zero.
+To avoid divide-by-zero, we normalize the value to that of Not-tuned
+scheme's result.
+
+    xx      Not-tuned         Offline-tuned     Online-tuned
+    RSS     0.622688178226118 0.787950678944904 0.740093483278979
+    runtime 1.11767826657912  1.0564674983585   1.0910833880499
+    PSI     1                 0.727521443794069 0.308498846350299
+
+The not-tuned scheme acheives about 38.7% memory saving but incur about
+11.7% runtime slowdown.  The offline-tuned scheme achieves about 22.2%
+memory saving with about 5.5% runtiem slowdown.  It also achieves about
+28.2% PSI saving.  The online-tuned scheme achieves about 26% memory
+saving with about 9.1% runtime slowdown.  It also achieves about 69.1%
+PSI saving.  Given the online-tuned version is using this RFC level
+implementation and the goal (0.5% last-10 secs memory PSI) was made
+after only a few experiments within a day, I think this results show
+some potential of this feedback-driven auto tuning approach.
+
+The test code is available[2], so you can reproduce on your system.
+
+
+[1] https://www.amazon.science/publications/daos-data-access-aware-operating-system
+[2] https://github.com/damonitor/damon-tests/commit/3f884e61193f0166b8724554b6d06b0c449a712d
+
+
+Patches Sequence
+================
+
+The first four patches implement the core logic and user interfaces for
+the auto tuning.  The first patch implements the core logic for the auto
+tuning, and the API for DAMOS users in the kernel space.  The second
+patch implements basic file operations of DAMON sysfs directories and
+files that will be used for setting the goals and providing the
+feedback.  The third patch connects the quota goals files inputs to the
+DAMOS core logic.  Finally the fourth patch implements a dedicated DAMOS
+sysfs command for efficiently committing the quota goals feedback.
+
+Two patches for simple test of the logic and interfaces follow.  The
+fifth patch implements the core logic unit test.  The sixth patch
+implements a selftest for the DAMON Sysfs interface for the goals.
+
+Finally, two patches for documentation follows.  The seventh patch
+documents the design of the feature.  The final eighth patch updates the
+usage document for the features.
+
+SeongJae Park (8):
+  mm/damon/core: implement goal-oriented feedback-driven quota
+    auto-tuning
+  mm/damon/sysfs-schemes: implement scheme quota goals directory
+  mm/damon/sysfs-schemes: commit damos quota goals user input to DAMOS
+    quota auto-tuning
+  mm/damon/sysfs-schemes: implement a command for scheme quota goals
+    only commit
+  mm/damon/core-test: add a unit test for the feedback loop algorithm
+  selftests/damon: test quota goals directory
+  Docs/mm/damon/design: Document DAMOS quota auto tuning
+  Docs/admin-guide/mm/damon/usage: update for quota goals
+
+ Documentation/admin-guide/mm/damon/usage.rst |  25 +-
+ Documentation/mm/damon/design.rst            |  11 +
+ include/linux/damon.h                        |  19 ++
+ mm/damon/core-test.h                         |  32 +++
+ mm/damon/core.c                              |  65 ++++-
+ mm/damon/sysfs-common.h                      |   3 +
+ mm/damon/sysfs-schemes.c                     | 272 ++++++++++++++++++-
+ mm/damon/sysfs.c                             |  27 ++
+ tools/testing/selftests/damon/sysfs.sh       |  27 ++
+ 9 files changed, 463 insertions(+), 18 deletions(-)
+
+
+base-commit: 4f26b84c39fbc6b03208674681bfde06e0bce25a
+-- 
+2.34.1
+
