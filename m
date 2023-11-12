@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 808F77E8FA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 12:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6047E8FA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Nov 2023 12:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjKLLSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 06:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
+        id S231356AbjKLLWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 06:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjKLLSo (ORCPT
+        with ESMTP id S229441AbjKLLWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 06:18:44 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77732D61;
-        Sun, 12 Nov 2023 03:18:40 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2e330033fso2174255b6e.3;
-        Sun, 12 Nov 2023 03:18:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699787920; x=1700392720; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tv8ACPVZgV0Pxa5en7zdw7RbJitiG8y+EBffkQkWb7Y=;
-        b=I8ad2Oh1bnWbpzIpr6NVCoCUdGv8bfQeOjOwDjE5mnN64CVdQeXTkG55nL7GccspR6
-         +Ldg3cdeunx2CFad5WAz22M4lwB9+3Az12yWWlILK+XAgv7rDetNanS5TKBT+dIC3t2+
-         YHx1mwf9/q3QnFVqbIJGPtGiaUwYTTH7P1PHhYAa+gdrovxtT+fxV6cBoCtT18nICZu5
-         IAtxyBxsJUL5yYWtYil1L6O5K4AKpYgquo6ZtzSkIWUiaKgpaQLjyzIaS/kEboOOz1v7
-         O71tUuZISWReO2NE7w/90CB5ha2Md/CJe9a2iPCNc6y7fDJ6Z2ukxT9MvVTUpeOKEKBH
-         doIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699787920; x=1700392720;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tv8ACPVZgV0Pxa5en7zdw7RbJitiG8y+EBffkQkWb7Y=;
-        b=T2dxrBMIYA03hok4UoCtW49j9A9aYODNwOExipDca4D6ej67rGGOQOEjACFNhh6KE5
-         cQVaCrth2qW911TUw7zyyZqAzLtLm1XGqSOiyvUgHTLzBzFWkbeIq8idK453TA/fZo3/
-         bG6ZEu2f3fVUGd1cDJQV2lLguYM9YSi3O272OssTdH1fdLU9JtXDggtIP/gTTLvoyC6g
-         RziAImv1qeAHq6ZaGQtT8Mo3VtiEz3hGEHHwEQI6Ic+dZDLeaEDSorHfb5dyISVZBBeC
-         i6EbPwNJ0Y8IIrlWG1V5asj9un9XMjq8pwpZryz/abTXWDDLUXE94yh5NdDHHEajEX+J
-         wBqg==
-X-Gm-Message-State: AOJu0YwqszlfQM/MNngdHIBU9xCwLtzmpbhSzWm2HaYvAoV+sK8x7o93
-        x2dtbvdEtEzrCtj5Zc9reV6CpVmc2zSWbw==
-X-Google-Smtp-Source: AGHT+IEPRPJW1QI/XCdMbL9xm1cmv0fOQqW/MYQ3+/W+n5yRUspIQECqB+RdWxnOXUpmRx22hLWDXg==
-X-Received: by 2002:a05:6808:164e:b0:3ab:5592:4704 with SMTP id az14-20020a056808164e00b003ab55924704mr5213025oib.2.1699787919776;
-        Sun, 12 Nov 2023 03:18:39 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id q23-20020a62e117000000b006c0328b2440sm2390072pfh.150.2023.11.12.03.18.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 03:18:38 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id B81D310299770; Sun, 12 Nov 2023 18:18:34 +0700 (WIB)
-Date:   Sun, 12 Nov 2023 18:18:34 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        =?utf-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= 
-        <pinkflames.linux@gmail.com>,
-        Fabio Comolli <fabio.comolli@gmail.com>
-Cc:     Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: Re: Fwd: iwlmvm: Linux 6.7 pre-rc1 prints stack trace of
- iwl_op_mode_mvm_start; caused by commit b6e3d1ba4fcf
-Message-ID: <ZVC0iq1FS02FjeTX@archie.me>
-References: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
+        Sun, 12 Nov 2023 06:22:32 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE147D54;
+        Sun, 12 Nov 2023 03:22:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699788149; x=1731324149;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YumjCao4NfDMti/9onGh5cRCBZAETxJB4XFxJqLYREk=;
+  b=CVUtGAPpDdJWf55ITx+yrPq83ZTtGASa1fJaQPAsHz/C2AXSG3jkAkpg
+   hIeHIHn0z5jABe2+UTJaJQyD8/oVK7eFGqYisSb1KTWrli4Id2zW1jPdx
+   Cz/lqfDP2umlebBuYzzWbStp23A0nYbJ9oQUAXcuufFiwDp8MoROClc0i
+   amNhdXjFtSxBF1zMif3ZOKR0JEkVWvW8ryhWzJ747RFLrxBjMdGL//puF
+   TL0rj0JCMDwHcAw4vmYcNRhNhFwO8AulReuCxb3kFlY5waDR8qPaEgbxW
+   dXi5ZliAD7qi0ugVreYXysRZBP7fMPJ8KvALZqH5xG9PefIQYqnG5u7+o
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="476548234"
+X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
+   d="scan'208";a="476548234"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 03:22:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10891"; a="1095518711"
+X-IronPort-AV: E=Sophos;i="6.03,297,1694761200"; 
+   d="scan'208";a="1095518711"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Nov 2023 03:22:26 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r28Xn-000B74-2t;
+        Sun, 12 Nov 2023 11:22:23 +0000
+Date:   Sun, 12 Nov 2023 19:21:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yuxi Wang <wyx137120466@gmail.com>, pavel@ucw.cz, lee@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Yuxi.Wang@monolithicpower.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] leds: add mp3326 driver
+Message-ID: <202311121908.Kyj8FdWx-lkp@intel.com>
+References: <20231108032921.3134115-3-wyx137120466@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w2PfOC9ZO3kyEIA4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231108032921.3134115-3-wyx137120466@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,100 +68,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yuxi,
 
---w2PfOC9ZO3kyEIA4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-Hi Nikl=C4=81vs and Fabio,
+[auto build test WARNING on lee-leds/for-leds-next]
+[also build test WARNING on robh/for-next pavel-leds/for-next linus/master v6.6 next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-On Fri, Nov 03, 2023 at 08:13:39PM +0700, Bagas Sanjaya wrote:
-> Hi,
->=20
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->=20
-> > When testing the branch that will become Linux 6.7-rc1, ever since comm=
-it b6e3d1ba4fcf02176846d03a930203d8133c0aaf I have observed the following a=
-bbreviated kernel stack trace (please see attachments for the full trace):
-> >=20
-> > ```
-> > [    6.733281]  ? __warn+0xc3/0x1d0
-> > [    6.733284]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> > [    6.733299]  ? report_bug+0x167/0x220
-> > [    6.733301]  ? handle_bug+0x3d/0x90
-> > [    6.733304]  ? exc_invalid_op+0x1a/0x60
-> > [    6.733306]  ? asm_exc_invalid_op+0x1a/0x20
-> > [    6.733309]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> > [    6.733325]  _iwl_op_mode_start+0x66/0xe0 [iwlwifi]
-> > [    6.733338]  iwl_opmode_register+0x87/0xd0 [iwlwifi]
-> > [    6.733350]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> > [    6.733364]  init_module+0x22/0xff0 [iwlmvm]
-> > [    6.733378]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> > [    6.733392]  do_one_initcall+0x129/0x380
-> > [    6.733395]  ? idr_alloc_cyclic+0x148/0x1e0
-> > [    6.733397]  ? security_kernfs_init_security+0x41/0x80
-> > [    6.733399]  ? __kernfs_new_node+0x1be/0x250
-> > [    6.733401]  ? preempt_count_add+0x55/0xb0
-> > [    6.733404]  ? up_write+0x4a/0xe0
-> > [    6.733406]  ? preempt_count_add+0x55/0xb0
-> > [    6.733408]  ? sysvec_call_function+0xa4/0xb0
-> > [    6.733410]  ? asm_sysvec_call_function+0x1a/0x20
-> > [    6.733411]  ? free_unref_page_prepare+0xf3/0x410
-> > [    6.733413]  ? preempt_count_add+0x62/0xb0
-> > [    6.733415]  ? _raw_spin_trylock+0x19/0x60
-> > [    6.733417]  ? _raw_spin_unlock+0x11/0x30
-> > [    6.733419]  ? __kmem_cache_free+0x29a/0x3c0
-> > [    6.733421]  ? vfree+0xd2/0x150
-> > [    6.733422]  ? slab_post_alloc_hook+0x76/0x3d0
-> > [    6.733425]  ? do_init_module+0x3f/0x230
-> > [    6.733427]  ? __kmem_cache_alloc_node+0x1fe/0x2f0
-> > [    6.733430]  do_init_module+0x7a/0x230
-> > [    6.733432]  __se_sys_init_module+0x1a0/0x220
-> > [    6.733435]  do_syscall_64+0x7a/0x100
-> > [    6.733438]  ? syscall_exit_to_user_mode+0x2d/0x1d0
-> > [    6.733440]  ? do_syscall_64+0x89/0x100
-> > [    6.733442]  ? do_user_addr_fault+0x4e7/0x680
-> > [    6.733444]  ? exc_page_fault+0x61/0x150
-> > [    6.733446]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> > ```
-> >=20
-> > I did try reverting the offending commit but the result did not compile=
- and I did not want to dig deeper to identify any subsequent commits what w=
-ould need reverting to fix compilation.
-> >=20
-> > If it's relevant, I'm building the kernel with Clang 17.0.4 toolchain b=
-y setting the LLVM=3D1 variable. CFI is enabled but I'm not sure if it's ac=
-tually functional.
->=20
-> See Bugzilla for the full thread.
->=20
-> Anyway, I'm adding this regression to regzbot:
->=20
-> #regzbot introduced: b6e3d1ba4fcf02 https://bugzilla.kernel.org/show_bug.=
-cgi?id=3D218095
-> #regzbot title: new iwlwifi firmware statistics API triggers stack trace
->=20
+url:    https://github.com/intel-lab-lkp/linux/commits/Yuxi-Wang/dt-bindings-leds-add-mps-mp3326-LED/20231108-113235
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git for-leds-next
+patch link:    https://lore.kernel.org/r/20231108032921.3134115-3-wyx137120466%40gmail.com
+patch subject: [PATCH 2/2] leds: add mp3326 driver
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231112/202311121908.Kyj8FdWx-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231112/202311121908.Kyj8FdWx-lkp@intel.com/reproduce)
 
-Emmanuel had sent a proposed fix at [1]. Please test.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311121908.Kyj8FdWx-lkp@intel.com/
 
-Thanks.
+All warnings (new ones prefixed by >>):
 
-[1]: https://lore.kernel.org/regressions/20231112100944.21177-1-emmanuel.gr=
-umbach@intel.com/
+>> drivers/leds/leds-mp3326.c:490:9: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+     490 |                         info[i].color_index = color;
+         |                              ^
+   drivers/leds/leds-mp3326.c:449:7: note: initialize the variable 'i' to silence this warning
+     449 |         int i;
+         |              ^
+         |               = 0
+   drivers/leds/leds-mp3326.c:546:37: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
+     546 |                 ret = mp3326_add_led(chip, child, i);
+         |                                                   ^
+   drivers/leds/leds-mp3326.c:542:7: note: initialize the variable 'i' to silence this warning
+     542 |         int i;
+         |              ^
+         |               = 0
+   2 warnings generated.
 
---=20
-An old man doll... just what I always wanted! - Clara
 
---w2PfOC9ZO3kyEIA4
-Content-Type: application/pgp-signature; name="signature.asc"
+vim +/i +490 drivers/leds/leds-mp3326.c
 
------BEGIN PGP SIGNATURE-----
+   440	
+   441	static int mp3326_add_led(struct mp3326 *chip, struct device_node *np, int index)
+   442	{
+   443		struct mp3326_led *led = &chip->leds[index];
+   444		struct mc_subled *info;
+   445		struct device_node *child;
+   446		struct led_classdev *cdev;
+   447		struct led_init_data init_data = {};
+   448		int ret;
+   449		int i;
+   450		int count;
+   451		u32 color = 0;
+   452		u32 reg = 0;
+   453	
+   454		ret = of_property_read_u32(np, "color", &color);
+   455		if (ret) {
+   456			dev_err(&chip->client->dev, "Miss color in the node\n");
+   457			return ret;
+   458		}
+   459		led->private_data = chip;
+   460		if (color == LED_COLOR_ID_RGB) {
+   461			count = of_get_child_count(np);
+   462			if (count != 3) {
+   463				dev_err(&chip->client->dev, "RGB must have three node.\n");
+   464				return -EINVAL;
+   465			}
+   466	
+   467			info = devm_kcalloc(&chip->client->dev, 3, sizeof(*info), GFP_KERNEL);
+   468			if (!info)
+   469				return -ENOMEM;
+   470	
+   471			for_each_available_child_of_node(np, child) {
+   472				ret = of_property_read_u32(child, "reg", &reg);
+   473				if (ret || reg > MAX_CHANNEL) {
+   474					dev_err(&chip->client->dev,
+   475					"reg must less or equal than %d\n", MAX_CHANNEL);
+   476					return -EINVAL;
+   477				}
+   478	
+   479				ret = of_property_read_u32(child, "color", &color);
+   480				if (ret) {
+   481					dev_err(&chip->client->dev, "color must have value\n");
+   482					return ret;
+   483				}
+   484	
+   485				if (color > 3 || !color) {
+   486					dev_err(&chip->client->dev,
+   487					"color must be Red, Green and Blue. The color is %d\n", color);
+   488					return ret;
+   489				}
+ > 490				info[i].color_index = color;
+   491				info[i].channel = reg - 1;
+   492				info[i].brightness = 0;
+   493				i++;
+   494			}
+   495	
+   496			led->subled_info = info;
+   497			led->num_colors = 3;
+   498			cdev = &led->cdev;
+   499			cdev->max_brightness = MAX_BRIGHTNESS;
+   500			cdev->brightness_set_blocking = led_brightness_set;
+   501			cdev->groups = led_sysfs_groups;
+   502			init_data.fwnode = &np->fwnode;
+   503	
+   504			ret = devm_led_classdev_register_ext(&chip->client->dev, &led->cdev, &init_data);
+   505	
+   506			if (ret) {
+   507				dev_err(&chip->client->dev, "Unable register multicolor:%s\n", cdev->name);
+   508				return ret;
+   509			}
+   510		} else {
+   511			ret = of_property_read_u32(np, "reg", &reg);
+   512			if (ret || reg > MAX_CHANNEL) {
+   513				dev_err(&chip->client->dev,
+   514				"reg must less or equal than %d\n", MAX_CHANNEL);
+   515				return -EINVAL;
+   516			}
+   517			info = devm_kcalloc(&chip->client->dev, 1, sizeof(*info), GFP_KERNEL);
+   518			led->num_colors = 1;
+   519			info[i].color_index = LED_COLOR_ID_WHITE;
+   520			info[i].channel = reg - 1;
+   521			info[i].brightness = 0;
+   522			led->subled_info = info;
+   523			cdev = &led->cdev;
+   524			cdev->max_brightness = MAX_BRIGHTNESS;
+   525			cdev->brightness_set_blocking = led_brightness_set;
+   526			cdev->groups = led_sysfs_groups;
+   527			init_data.fwnode = &np->fwnode;
+   528			ret = devm_led_classdev_register_ext(&chip->client->dev, &led->cdev, &init_data);
+   529			if (ret) {
+   530				dev_err(&chip->client->dev, "Unable register led:%s\n", cdev->name);
+   531				return ret;
+   532			}
+   533		}
+   534		return ret;
+   535	}
+   536	
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVC0igAKCRD2uYlJVVFO
-o8GvAQCgaaMgHyMNOGRExrMf9mhXIKx0v160v/eAArXomvKctgD+PlXLMd1ClK5P
-yWIoOBL7x8/x0kWSMUWrhMPTm8UU4wg=
-=9xij
------END PGP SIGNATURE-----
-
---w2PfOC9ZO3kyEIA4--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
