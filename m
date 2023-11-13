@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AD47EA0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4A37EA0CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjKMP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
+        id S231330AbjKMQAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKMP6u (ORCPT
+        with ESMTP id S229556AbjKMQAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:58:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D910DA;
-        Mon, 13 Nov 2023 07:58:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699891127; x=1731427127;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N7kzXyIt0QpnYXS9pgj96jxoxq8wbs0NMfKL/kdARyc=;
-  b=llTF/xRO7O7Ms0+N+EOg3tneafedQT5ZP31M2UofVtYKre/m/exStbht
-   BbW1CxuC2BcTv7o4V3/VzrNaJhHsNtW9SbuPiFmuBdnGYDcYUGLAfV650
-   SDPvVzILSzdWLXvn+a1U+8typ9CpN578fefP8THZnjBlgBXDHQSo3Cq0Z
-   I6TTd2fSltfdi2QKGT+IXfLImo4ZKoqBCSR2Bydfzs0Q/Q7KR2QGnYxub
-   WXFJs1UuP0rZZKPxVKlOTlD54149Rz8/JL2sLz1bJAUrnbgKMvDojrMst
-   NowhlB+3wTPxTfLIxYk8q4Jd6JOaUfBNZUSZEfqcjtIGs8lalnK1FRwoA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="12010577"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="12010577"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:58:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="908081388"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="908081388"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:58:37 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r2ZKd-0000000DbDj-05eK;
-        Mon, 13 Nov 2023 17:58:35 +0200
-Date:   Mon, 13 Nov 2023 17:58:34 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        mika.westerberg@linux.intel.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1 0/3] Use the standard _PM_OPS() export macro in Intel
- Tangier GPIO driver
-Message-ID: <ZVJHqrj5OzoWav5Z@smile.fi.intel.com>
-References: <20231113131600.10828-1-raag.jadav@intel.com>
+        Mon, 13 Nov 2023 11:00:51 -0500
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DD710EA;
+        Mon, 13 Nov 2023 08:00:48 -0800 (PST)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1f03db0a410so2712070fac.1;
+        Mon, 13 Nov 2023 08:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699891248; x=1700496048; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YCI3L64udzOVkgrvNBBuRjNKAjsQ4eF01P+K65TkA5w=;
+        b=RFSyHFH6XvoyfWOo/ITvLF/POfuQH3Srb7MtMR7jga6WOEDAriy/kOZBXw7cepgABn
+         dBUmkpAjR14pm7xbU0TBSnW062nW7Kp44fwbji1vaty5SR0+2JbGfEoJSjZPOKOLsmNy
+         LRSNt8qUcBRgEDe9xMnfsNTjseGniKstpHwPhdvjHZmoI+iXFXnTTTYgqcb1YYHLdQVs
+         doeX4qsMjfChp1bMMtpxsPBUtf1Yr/Y24U8qU3To/So93zYqno9EHmgw4jnkTH74HinD
+         3wiNcRxyfDBaJeCtjO7uaXRy7QbNwuozP89Pb1UmQ+WAPIbEQT0z+A4FkstXEX0zvq6M
+         2/gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699891248; x=1700496048;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YCI3L64udzOVkgrvNBBuRjNKAjsQ4eF01P+K65TkA5w=;
+        b=TfpOoydVMYW3TqEljlD/q/10ZFrMZo9PoXR2s63z8VffUdGxZO9Dv0vfqsv71xsMk6
+         pTwL4TgFjcX0ecKaocn5yJX0T2/1yjSWxi9aaXjfx4scPPkgrSHCfcv5by2eH5MgkXns
+         g0rID1hsGLpPwSy321huFedDpDfj+xy7wAEr/esvGGLbivViW5TdUyzlnebaeGIOxZ7Y
+         96kfN6l9yalsMyeEPmCoe9Bblyl4M9apeb9X++V7pFKH1eNyX0543R4mCo+z9iZ34fZr
+         2nRKpCQNuxBAOHjrLri6GPdOIWrSsXxZTLZ27ygD5Dve42aiBTxyuentjHvrZlHeljqB
+         m1UA==
+X-Gm-Message-State: AOJu0YzvKId4UsfqYjj1JKEHXVborRJkN8hQq4ztMhfdosY+bGi1SAxV
+        bDxuna7HS2eziUSTFCKGZDU=
+X-Google-Smtp-Source: AGHT+IH86Lvw+64cQ2bSyDXafINYo5kfidT2s9w5HvzhHpRJmHju1T6JxeDyWMwovvWP9+KLbWvwuA==
+X-Received: by 2002:a05:6870:f815:b0:1e9:b0be:d004 with SMTP id fr21-20020a056870f81500b001e9b0bed004mr8685638oab.47.1699891247803;
+        Mon, 13 Nov 2023 08:00:47 -0800 (PST)
+Received: from [0.0.0.0] (74.211.104.32.16clouds.com. [74.211.104.32])
+        by smtp.gmail.com with ESMTPSA id b187-20020a6334c4000000b0056b27af8715sm4213931pga.43.2023.11.13.08.00.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 08:00:47 -0800 (PST)
+Message-ID: <fdcc6a76-f724-422f-904a-eb980c4b458a@gmail.com>
+Date:   Tue, 14 Nov 2023 00:00:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113131600.10828-1-raag.jadav@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/4] SCSI: Fix issues between removing device and error
+ handle
+To:     Wenchao Hao <haowenchao2@huawei.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, louhongxiang@huawei.com
+References: <20231016020314.1269636-1-haowenchao2@huawei.com>
+Content-Language: en-US
+From:   Wenchao Hao <haowenchao22@gmail.com>
+In-Reply-To: <20231016020314.1269636-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 06:45:57PM +0530, Raag Jadav wrote:
-> This series exports pm_ops structure from Intel Tangier GPIO driver using
-> EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS() helper and reuses it into its users.
+On 10/16/23 10:03 AM, Wenchao Hao wrote:
+> I am testing SCSI error handle with my previous scsi_debug error
+> injection patches, and found some issues when removing device and
+> error handler happened together.
+> 
+> These issues are triggered because devices in removing would be skipped
+> when calling shost_for_each_device().
+> 
 
-Yet you missed --base...
+Friendly ping...
 
-Pushed to my review and testing queue, thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> Three issues are found:
+> 1. statistic info printed at beginning of scsi_error_handler is wrong
+> 2. device reset is not triggered
+> 3. IO requeued to request_queue would be hang after error handle
+> 
+> V3:
+>   - Update patch description
+>   - Update comments of functions added
+> 
+> V2:
+>   - Fix IO hang by run all devices' queue after error handler
+>   - Do not modify shost_for_each_device() directly but add a new
+>     helper to iterate devices but do not skip devices in removing
+> 
+> Wenchao Hao (4):
+>   scsi: core: Add new helper to iterate all devices of host
+>   scsi: scsi_error: Fix wrong statistic when print error info
+>   scsi: scsi_error: Fix device reset is not triggered
+>   scsi: scsi_core: Fix IO hang when device removing
+> 
+>  drivers/scsi/scsi.c        | 46 ++++++++++++++++++++++++++------------
+>  drivers/scsi/scsi_error.c  |  4 ++--
+>  drivers/scsi/scsi_lib.c    |  2 +-
+>  include/scsi/scsi_device.h | 25 ++++++++++++++++++---
+>  4 files changed, 57 insertions(+), 20 deletions(-)
+> 
 
