@@ -2,321 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D82AF7E9C0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DAE7E9C12
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjKMMWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:22:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
+        id S229810AbjKMMWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKMMWS (ORCPT
+        with ESMTP id S229761AbjKMMWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:22:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B9712B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:21:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699878093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=zIHSrYUcQnxoKXdjZZpZq5jMd/3daIfiQKpFrLHTsdU=;
-        b=FlvxRCSbov8rXM91fNKkRF9o8nuy8R4txs2FySiunWdxcYZ3q+jfMMQae+fNBUzDalBmrb
-        5AidbILvCT8/TXDMHibhNOjp4bTAT/SnwMZAHlQBISdYx/g+csWmDXzcBh75WAJ1kfM8Au
-        EOkfdce0hmnaU1LovkCB4SH3IX8aaxs=
-Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
- [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-oHEcuoKYNl-tF99gA0aDWA-1; Mon, 13 Nov 2023 07:21:31 -0500
-X-MC-Unique: oHEcuoKYNl-tF99gA0aDWA-1
-Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7bd9a477073so1559884241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:21:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699878091; x=1700482891;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIHSrYUcQnxoKXdjZZpZq5jMd/3daIfiQKpFrLHTsdU=;
-        b=cR/VqXmVXfVavchJhDvi0SSVRuSJAjIcp1K5/+MasRLursDNEHZzQsiplAjTiKZXPs
-         oFSF36bMAVw4Cah59mCrQjM+iyykQbPDGfsY47LavmUX5trcZkp64w3WwNQkSdFGpQ3z
-         r01BQ5ShzwSBrgXz2KZCe9lHBqJ4CUlGsC18VzAbD63hCZ/kdGEKr7SifhSGDu8o+Ajy
-         +bYpHCO7LutymwMTsZz6V0s8csy56bhn/z6cMc3IZrhQcoDZgN1nTs4UlB3Zuik/CFKZ
-         JlaA5gKzYf0eoB8kGmz+K0s2O9EkTldjkyi0MC+oM8MFK9lsoeM9jmrbcBVL4vUG0ewE
-         XgDw==
-X-Gm-Message-State: AOJu0YyGkpkwz0iaRkEJn0H1VBsmkrnm8aBwwRON3PY/W1Jz7XGyEl4I
-        QHJqk6qLUrbRnBi3e3dtF0YYcWY/a+Zgc5zF5SzWREKMTcIHsKF3Yju20STedF/VPaXEtQtbcnQ
-        M1wyiVyP5sVgqAeZeUcBN5vPp
-X-Received: by 2002:a67:f2c8:0:b0:457:670f:e2eb with SMTP id a8-20020a67f2c8000000b00457670fe2ebmr6417745vsn.20.1699878090975;
-        Mon, 13 Nov 2023 04:21:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFKSa6ruCnuzN9s2Ejc4l9S4h3ZVAauCQx41zE3qMS0kOL2lujOmHkFT5dC7rrBHQxe5Bi5+A==
-X-Received: by 2002:a67:f2c8:0:b0:457:670f:e2eb with SMTP id a8-20020a67f2c8000000b00457670fe2ebmr6417723vsn.20.1699878090682;
-        Mon, 13 Nov 2023 04:21:30 -0800 (PST)
-Received: from [192.168.157.67] ([12.191.197.195])
-        by smtp.googlemail.com with ESMTPSA id j22-20020ac874d6000000b00419801b1094sm1904299qtr.13.2023.11.13.04.21.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 04:21:29 -0800 (PST)
-Message-ID: <d3071794-7c02-4ca1-850d-1d5242de4f98@redhat.com>
-Date:   Mon, 13 Nov 2023 13:21:28 +0100
+        Mon, 13 Nov 2023 07:22:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68428D47;
+        Mon, 13 Nov 2023 04:22:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A62CDC433CC;
+        Mon, 13 Nov 2023 12:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699878149;
+        bh=iK08OXY6dY0EIsJ75ch5uI0DUUXVJGJlTdQYigZ01hg=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=rnhE9NFYihQUPPjLIKRhMijY8KEdLTiK9wYpdCjO141idobis2aZBenTLipsNxyGE
+         9QtX+Nqjj3Wd4MMOSnbB8mjQXgrsMUJJ60RVi7O5djFD/RwHDLahAIDcW75N8nny8b
+         KeZA377P/iXLWbCR+DXc6intGUtUZwlJSNJnA035wN9TTcGQCSn1kYXywL93wql/BD
+         gKFvMsr4fV06yeEpO6B9ld4zlZh7cmdWpP57kNf1mM9gMl8W08gLsInLn3X29Bw+4G
+         2nMidh6Jd0cT+iscjidxdQiMB8oQnwAXkFJml06EsiFAA5s1Nyhk1OcT8o6zLg7c3T
+         ZyaCDE3nDynVQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Luca Weiss <luca.weiss@fairphone.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Matti =?utf-8?Q?Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH 9/9] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable WiFi
+References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
+        <20231027-sc7280-remoteprocs-v1-9-05ce95d9315a@fairphone.com>
+        <12ea48bd-5022-4820-815a-89ef23ec9385@linaro.org>
+        <CWMK0AQRL87L.1F9MIDVQ4J439@fairphone.com>
+        <CAA8EJpqCeW8NVcrpwo6JVn0kE2W-QMELB1YH7i7pgOH6qiPbCQ@mail.gmail.com>
+Date:   Mon, 13 Nov 2023 14:22:22 +0200
+In-Reply-To: <CAA8EJpqCeW8NVcrpwo6JVn0kE2W-QMELB1YH7i7pgOH6qiPbCQ@mail.gmail.com>
+        (Dmitry Baryshkov's message of "Sat, 4 Nov 2023 15:23:38 +0200")
+Message-ID: <87zfzhu9kx.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 00/34] KVM: guest_memfd() and per-page attributes
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231105163040.14904-1-pbonzini@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20231105163040.14904-1-pbonzini@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 17:30, Paolo Bonzini wrote:
-> The "development cycle" for this version is going to be very short;
-> ideally, next week I will merge it as is in kvm/next, taking this through
-> the KVM tree for 6.8 immediately after the end of the merge window.
-> The series is still based on 6.6 (plus KVM changes for 6.7) so it
-> will require a small fixup for changes to get_file_rcu() introduced in
-> 6.7 by commit 0ede61d8589c ("file: convert to SLAB_TYPESAFE_BY_RCU").
-> The fixup will be done as part of the merge commit, and most of the text
-> above will become the commit message for the merge.
+(adding ath11k list)
 
-The changes from review are small enough and entirely in tests, so
-I went ahead and pushed it to kvm/next, together with "selftests: kvm/s390x: use vm_create_barebones()" which also fixed testcase failures (similar to the aarch64/page_fault_test.c hunk below).
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
 
-The guestmemfd branch on kvm.git was force-pushed, and can be used for further
-development if you don't want to run 6.7-rc1 for whatever reason.
+> [Added Kalle to the CC list]
+>
+> On Tue, 31 Oct 2023 at 12:31, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>
+>> On Mon Oct 30, 2023 at 8:26 PM CET, Konrad Dybcio wrote:
+>> > On 27.10.2023 16:20, Luca Weiss wrote:
+>> > > Now that the WPSS remoteproc is enabled, enable wifi so we can use it.
+>> > >
+>> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>> > > ---
+>> > >  arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 4 ++++
+>> > >  1 file changed, 4 insertions(+)
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>> > > index d65eef30091b..e7e20f73cbe6 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>> > > +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+>> > > @@ -713,3 +713,7 @@ &venus {
+>> > >     firmware-name = "qcom/qcm6490/fairphone5/venus.mbn";
+>> > >     status = "okay";
+>> > >  };
+>> > > +
+>> > > +&wifi {
+>> > > +   status = "okay";
+>> > qcom,ath11k-calibration-variant?
+>>
+>> What value would I put there for my device? Based on existing usages
+>> (mostly for ath10k) I'd say "Fairphone_5"?
+>
+> I think this is fine.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 38882263278d..926241e23aeb 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -1359,7 +1359,6 @@ yet and must be cleared on entry.
-  	__u64 guest_phys_addr;
-  	__u64 memory_size; /* bytes */
-  	__u64 userspace_addr; /* start of the userspace allocated memory */
--	__u64 pad[16];
-    };
-  
-    /* for kvm_userspace_memory_region::flags */
-diff --git a/tools/testing/selftests/kvm/aarch64/page_fault_test.c b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-index eb4217b7c768..08a5ca5bed56 100644
---- a/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-+++ b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
-@@ -705,7 +705,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
-  
-  	print_test_banner(mode, p);
-  
--	vm = ____vm_create(mode);
-+	vm = ____vm_create(VM_SHAPE(mode));
-  	setup_memslots(vm, p);
-  	kvm_vm_elf_load(vm, program_invocation_name);
-  	setup_ucall(vm);
-diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-index ea0ae7e25330..fd389663c49b 100644
---- a/tools/testing/selftests/kvm/guest_memfd_test.c
-+++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -6,14 +6,6 @@
-   */
-  
-  #define _GNU_SOURCE
--#include "test_util.h"
--#include "kvm_util_base.h"
--#include <linux/bitmap.h>
--#include <linux/falloc.h>
--#include <sys/mman.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--
-  #include <stdlib.h>
-  #include <string.h>
-  #include <unistd.h>
-@@ -21,6 +13,15 @@
-  #include <stdio.h>
-  #include <fcntl.h>
-  
-+#include <linux/bitmap.h>
-+#include <linux/falloc.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#include "test_util.h"
-+#include "kvm_util_base.h"
-+
-  static void test_file_read_write(int fd)
-  {
-  	char buf[64];
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index e4d2cd9218b2..1b58f943562f 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -819,6 +819,7 @@ static inline struct kvm_vm *vm_create_barebones(void)
-  	return ____vm_create(VM_SHAPE_DEFAULT);
-  }
-  
-+#ifdef __x86_64__
-  static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
-  {
-  	const struct vm_shape shape = {
-@@ -828,6 +829,7 @@ static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
-  
-  	return ____vm_create(shape);
-  }
-+#endif
-  
-  static inline struct kvm_vm *vm_create(uint32_t nr_runnable_vcpus)
-  {
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index d05d95cc3693..9b29cbf49476 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1214,7 +1214,7 @@ void vm_guest_mem_fallocate(struct kvm_vm *vm, uint64_t base, uint64_t size,
-  		TEST_ASSERT(region && region->region.flags & KVM_MEM_GUEST_MEMFD,
-  			    "Private memory region not found for GPA 0x%lx", gpa);
-  
--		offset = (gpa - region->region.guest_phys_addr);
-+		offset = gpa - region->region.guest_phys_addr;
-  		fd_offset = region->region.guest_memfd_offset + offset;
-  		len = min_t(uint64_t, end - gpa, region->region.memory_size - offset);
-  
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 343e807043e1..1efee1cfcff0 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -433,6 +433,7 @@ static void test_add_max_memory_regions(void)
-  }
-  
-  
-+#ifdef __x86_64__
-  static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
-  				     size_t offset, const char *msg)
-  {
-@@ -523,14 +524,13 @@ static void test_add_overlapping_private_memory_regions(void)
-  	close(memfd);
-  	kvm_vm_free(vm);
-  }
-+#endif
-  
-  int main(int argc, char *argv[])
-  {
-  #ifdef __x86_64__
-  	int i, loops;
--#endif
-  
--#ifdef __x86_64__
-  	/*
-  	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
-  	 * KVM_RUN fails with ENOEXEC or EFAULT.
-@@ -542,6 +542,7 @@ int main(int argc, char *argv[])
-  
-  	test_add_max_memory_regions();
-  
-+#ifdef __x86_64__
-  	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
-  	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
-  		test_add_private_memory_region();
-@@ -550,7 +551,6 @@ int main(int argc, char *argv[])
-  		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
-  	}
-  
--#ifdef __x86_64__
-  	if (argc > 1)
-  		loops = atoi_positive("Number of iterations", argv[1]);
-  	else
-diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
-index 2f02f6128482..13e72fcec8dd 100644
---- a/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
-@@ -1,6 +1,6 @@
-  // SPDX-License-Identifier: GPL-2.0-only
-  /*
-- * Copyright (C) 2022, Google LLC.
-+ * Copyright (C) 2023, Google LLC.
-   */
-  #include <linux/kvm.h>
-  #include <pthread.h>
+From style point of view I would prefer lower case and dashes, for
+example "fairphone-5" but I'm just nitpicking, uppercase and underscores
+work fine as well.
 
-Paolo
+If you have different SKUs or similar which need different ath11k board
+files being more specific like "fairphone-5-eu" and "fairphone-5-us" is
+one option. But I'm sure Luca knows best what is needed for Fairphone,
+just throwing out ideas here.
 
+>> And you mean I should add this property in dts before even looking into
+>> the firmware/calibration side of it?
+>
+> From my experience some (most?) of the device manufacturers do the
+> wrong thing here. They do not program a sensible board_id, leaving it
+> as 0xff or some other semi-random value. The calibration variant is
+> the only way for the kernel to distinguish between such poor devices.
+>
+> The kernel will do a smart thing though. If the device-specific
+> calibration data is not present, it will try to fall back to the
+> generic data.
+
+You are correct, just to be specific it's ath11k which will choose which
+board file to use. I recommend always setting
+qcom,ath11k-calibration-variant in DTS if you can.
+
+Back in the day I have tried to push for the firmware team to improve
+the board file selection but no success. So the only practical solution
+we have is qcom,ath11k-calibration-variant in DTS.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
