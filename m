@@ -2,182 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DA97EA331
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771177EA334
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:59:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbjKMS7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:59:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S231262AbjKMS7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjKMS7N (ORCPT
+        with ESMTP id S231635AbjKMS7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:59:13 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8885D10EC;
-        Mon, 13 Nov 2023 10:59:10 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADHiqMw019587;
-        Mon, 13 Nov 2023 18:59:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=cADs8qk2ppLthQt4oT8j8ZmUSa4B8v92ZlV1vefrQM4=;
- b=0eq9BDRyOuLbABYO8n9OkHk7WQTHyCLAyOcMxk6vHbGaCp2oR6NrsBwx4yCtsoRfsTzo
- hntauscF8FTL1pFdUzjnte/s7aWRB6LS34sKtvsyG2Mk/haG8Jq+0UXj3PGufiJQhEHH
- xoMRyMTMBkWnQi8wD1hx2S7DmAMFF0bXwq/TWVkpNujhDWiPCKNRDHz5169BPuV9yjVJ
- IzD5xIv26MCjtLNt4OhEH4rimQn81ZPDTAL1rKvkRN0B5+Uh03z/nIvsd099NM63UXRe
- gGl43EoAuwS97R9MubKmXEPgmUYtQnhOxlAW/TbovBWEZbkg1Ft4Pz+YE6PGzvfPk/TV dA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2m2bh29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Nov 2023 18:59:02 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADItAf1014991;
-        Mon, 13 Nov 2023 18:59:02 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxpuur09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Nov 2023 18:59:02 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ADIwtmT021868;
-        Mon, 13 Nov 2023 18:59:01 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3uaxpuuqw1-4;
-        Mon, 13 Nov 2023 18:59:01 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Jorge Lopez <jorge.lopez2@hp.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, vegard.nossum@oracle.com,
-        harshit.m.mogalapalli@oracle.com, darren.kenny@oracle.com
-Subject: [PATCH v3 4/4] platform/x86: hp-bioscfg: Remove unused obj in hp_add_other_attributes()
-Date:   Mon, 13 Nov 2023 10:58:50 -0800
-Message-ID: <20231113185852.3579970-4-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231113185852.3579970-1-harshit.m.mogalapalli@oracle.com>
-References: <20231113185852.3579970-1-harshit.m.mogalapalli@oracle.com>
+        Mon, 13 Nov 2023 13:59:44 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A621993
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:59:30 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-45f19811ae5so3149383137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:59:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699901969; x=1700506769; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vjSpxwY/F7fhr5L617ad0TV5lXXgN/8SlJHN2EzExHI=;
+        b=DiRmceM6LAduTOxkS3t4mq0GY/fvA3cxQoN1e7TahHqqLXlf4T7sdod5IJflH2HnAN
+         WoLg6kLS14tcucVw6oHKZd+SvtAiiDFdWcSZtXrMal2spZkmzT3ycJaSsNouHkE8YoeL
+         XYiVzSHkKlmSd3QAFVbz+xavFZseeUQPdoveF/qO8BACQNSlS7eu7dD/DdtvkrZFvfml
+         TsB83X4Y0MHIXiu9RDHx6TvVqWJOzYnQImFpXBxJ4wrbHhCPeIbMM/XwYVfUeK/3SsGk
+         9Cq9tW4/1lLJW46/5xoGfmGTIzinBwqyc+jMeH4DBc4IYi/qe281//IJ4wK0cIEPNKsH
+         KSLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699901969; x=1700506769;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vjSpxwY/F7fhr5L617ad0TV5lXXgN/8SlJHN2EzExHI=;
+        b=Y87Yex1bOKKduPm45pOXVdc4XKYcwdIKSK459ppH49GTvbjqr2FtzxafGrwSH0HUp4
+         xkHGFKK2P6GpasR3kjOw/Os/cRT0RnprkphApNBlcF0iM3/AiEqdqTSpvgoK3bPw39Im
+         rN25rTrJxhPYGg8ChzwOdZ3QWt3Bdzmcus6/mNyK8vPK24ccjz0/rO02AuIEC8BujR06
+         WSdavx9ae2MZQNsROnBC4wSDZy/ElUWcawf1Wxdq/7JqKkUMep3YJJ/LKO/GQeLWemCd
+         XjgiGIKBEihpfmQOiq9wC4Dv28NmlSpy2SCLAp++t9sAUxkP+6s/TJzz1QI4Sblu4gcs
+         YKAg==
+X-Gm-Message-State: AOJu0YyICMi8Ouv2bXdKTYNU6NGnvDIV559biSVG/p8yimqt+/e5rH0G
+        YB8L3alwPKO9BP+WAIQK3C9nGrXiufcly7eLvro=
+X-Google-Smtp-Source: AGHT+IGfYZsUat1BKfTV0ul7KQN61SFRLXJYsqDKc1hwpvTI8iJMzW9rTy2j3Z0mGLdS0obDstUWyvKfIpsS1oI8Wwo=
+X-Received: by 2002:a05:6102:5c5:b0:452:6d82:56e3 with SMTP id
+ v5-20020a05610205c500b004526d8256e3mr261792vsf.6.1699901969382; Mon, 13 Nov
+ 2023 10:59:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-13_09,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- phishscore=0 mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311130153
-X-Proofpoint-GUID: 7OWOZMsGqalXqO1_hyXQl7fJnb2xcVHP
-X-Proofpoint-ORIG-GUID: 7OWOZMsGqalXqO1_hyXQl7fJnb2xcVHP
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
+ <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
+ <CAK8ByeJ1fYSVaVQz3tERzj_5QNAN4Ggx850pKcAG3vhsoWnS+w@mail.gmail.com>
+ <CAJfuBxyu3VqakFNr4mW0h4QiPVSf-7HSPXobGO2_qC-H8yLgcw@mail.gmail.com> <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
+In-Reply-To: <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 13 Nov 2023 11:59:03 -0700
+Message-ID: <CAJfuBxz1=9o06Rj_mX-2aZXhCSF7rKxyusayPiy4RuJZ7qKbQw@mail.gmail.com>
+Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-acpi_object *obj is unused in this function, so delete it, also
-delete a unnecessary kfree(obj);
+On Sun, Nov 12, 2023 at 9:32=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
+om> wrote:
+>
+> pt., 10 lis 2023 o 21:03 <jim.cromie@gmail.com> napisa=C5=82(a):
+> >
+> > On Fri, Nov 10, 2023 at 7:53=E2=80=AFAM =C5=81ukasz Bartosik <lb@semiha=
+lf.com> wrote:
+> > >
+> > > sob., 4 lis 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > > >
+> > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@sem=
+ihalf.com> wrote:
+> > > > >
+> > > > > When trace is enabled (T flag is set) and trace_dst field is set
+> > > > > to value greater than 0 (0 is reserved for trace events) then
+> > > > > debug logs will be written to trace instance pointed by trace_dst
+> > > > > value, for example when trace_dst value is 2 then debug logs will
+> > > > > be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
+> > > > > Given trace instance will not be initialized until debug logs are
+> > > > > requested to be written to it and afer init will persist until
+> > > > > reboot.
+> > > > >
+> > > >
+> > > > restating 00 comments -
+> > > >
+> > > > you can get rid of integer destination ids by adding a new command:=
+ open/close
+> > > >
+> > > > $> echo  \
+> > > >  open kms-instance \;\
+> > > >  class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites \;\
+> > > > > /proc/dynamic_debug/control
+> > > >
+> > >
+> > > Instead of using above command to preset destination we could preset
+> > > destination with open command. I mean last successful
+> > > open would preset destination ? What do you think ?
+> > >
+> >
+> > I dont think it works - if open maps to a dest-number, (or implicit as
+> > TOP-of-stack)
+> > then you just have +T<dest-number>  (or +T <implicit tos>)
+> > rather than +T:dest-name
+> > and you still have to keep track of what dest-numbers were already used=
+.
+> > (or every new dest needs an explicit OPEN before it)
+> >
+> > and how do you then get back to default instance ?
+> > open 0 ?
+> > close <previous-handle> ?
+> >
+> >
+> > by using names, all opens can be at the top,
+> > (and thus document in 1 block all the named-instances)
+> > and any named dest that hasnt been opened is an error
+> > (not just reusing previous OPEN)
+> >
+>
+> Sorry, I should have been more specific with my proposal. Let me use
+> an example to clarify it:
+> open usb    # -> create trace instance "usb" and make it default
+> echo module usbcore +T > /proc/dynamic_debug/control ## --> write usbcore
+> ## debug logs to trace instance named usb
+> open tbt --> create trace instance "tbt" and make it default
+> echo module aaa +T:usb > /proc/dynamic_debug/control --> write aaa
+> debug logs to trace instance named usb, instance usb has to be used
+> explicitly
+>
+>                          because now tbt is default trace instance
 
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
-v2->v3: Add R.B from Ilpo and move this patch to end of the series.
----
- drivers/platform/x86/hp/hp-bioscfg/bioscfg.c | 2 --
- 1 file changed, 2 deletions(-)
+that feels too magical/ action at a distance.
 
-diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-index 6ddca857cc4d..8c9f4f3227fc 100644
---- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-+++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-@@ -575,80 +575,78 @@ static void release_attributes_data(void)
- /**
-  * hp_add_other_attributes() - Initialize HP custom attributes not
-  * reported by BIOS and required to support Secure Platform and Sure
-  * Start.
-  *
-  * @attr_type: Custom HP attribute not reported by BIOS
-  *
-  * Initialize all 2 types of attributes: Platform and Sure Start
-  * object.  Populates each attribute types respective properties
-  * under sysfs files.
-  *
-  * Returns zero(0) if successful. Otherwise, a negative value.
-  */
- static int hp_add_other_attributes(int attr_type)
- {
- 	struct kobject *attr_name_kobj;
--	union acpi_object *obj = NULL;
- 	int ret;
- 	char *attr_name;
- 
- 	attr_name_kobj = kzalloc(sizeof(*attr_name_kobj), GFP_KERNEL);
- 	if (!attr_name_kobj)
- 		return -ENOMEM;
- 
- 	mutex_lock(&bioscfg_drv.mutex);
- 
- 	/* Check if attribute type is supported */
- 	switch (attr_type) {
- 	case HPWMI_SECURE_PLATFORM_TYPE:
- 		attr_name_kobj->kset = bioscfg_drv.authentication_dir_kset;
- 		attr_name = SPM_STR;
- 		break;
- 
- 	case HPWMI_SURE_START_TYPE:
- 		attr_name_kobj->kset = bioscfg_drv.main_dir_kset;
- 		attr_name = SURE_START_STR;
- 		break;
- 
- 	default:
- 		pr_err("Error: Unknown attr_type: %d\n", attr_type);
- 		ret = -EINVAL;
- 		kfree(attr_name_kobj);
- 		goto unlock_drv_mutex;
- 	}
- 
- 	ret = kobject_init_and_add(attr_name_kobj, &attr_name_ktype,
- 				   NULL, "%s", attr_name);
- 	if (ret) {
- 		pr_err("Error encountered [%d]\n", ret);
- 		goto err_other_attr_init;
- 	}
- 
- 	/* Populate attribute data */
- 	switch (attr_type) {
- 	case HPWMI_SECURE_PLATFORM_TYPE:
- 		ret = hp_populate_secure_platform_data(attr_name_kobj);
- 		break;
- 
- 	case HPWMI_SURE_START_TYPE:
- 		ret = hp_populate_sure_start_data(attr_name_kobj);
- 		break;
- 
- 	default:
- 		ret = -EINVAL;
- 	}
- 
- 	if (ret)
- 		goto err_other_attr_init;
- 
- 	mutex_unlock(&bioscfg_drv.mutex);
- 	return 0;
- 
- err_other_attr_init:
- 	kobject_put(attr_name_kobj);
- unlock_drv_mutex:
- 	mutex_unlock(&bioscfg_drv.mutex);
--	kfree(obj);
- 	return ret;
- }
- 
--- 
-2.39.3
+ISTM it also muddles what the "default" is:
 
+my-default:
+what each callsite's current/preset dest is/was
+the only way to set it is with explicit [-+]T:outstream
+
+your-default:
+whatever was last opened. whether it was 2 or 50 lines above,
+or set weeks ago, the last time somebody opened an instance.
+
+and as more instances are created
+(potentially by different users?
+after all there are separate instances,
+and presumably separate interests),
+the default gets less predictable.
+
+
+> echo module bbb +T > /proc/dynamic_debug/control --> write bbb debug
+> logs to trace instance named tbt
+> close tbt --> close tbt trace instance, I omit this step but in order
+> for an instance to be successful closed it must not be used by any
+> callsite, after
+>                     closing tbt instance the usb becomes default instance
+
+so after 'close tbt',  the previous 'open usb' is now top-of-stack ?
+
+how does that affect all existing callsite-users of tbt ?
+do they continue to use the trace-instance theyve been writing to ?
+If not, then reverting to the global instance seems much more predictable.
+
+Or are you proposing that the close fails because the instance is still in =
+use ?
+this seems least surprising,
+and more robust in the face of the next 'open foo'
+which could otherwize reuse the dst_id mapped to tbt
+
+
+>
+> I agree that your method of setting default trace instance is more flexib=
+le:
+> class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites
+>
+> Maybe we can combine both to set default trace destination ?
+>
+> Also I think we need a reserved keyword for writing debug logs to
+> trace events - maybe "event" keyword ?
+
+do you mean "event" as a selector, like module, function, class, etc ?
+if so, what are the values ?
+any event under  /sys/kernel/debug/tracing/events/ ?
+
+how does this get used ?
+
+>
+>
+> >
+> > > >
+> > > > and +T  w/o dest means use existing setting, not just 0 (unless tha=
+ts
+> > > > the existing setting)
+> > > >
+> > >
+> > > Sounds good.
+> > >
+> >
+> > :-)
