@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DE77E9A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48B87E9A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjKMKYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:24:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S229556AbjKMK0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 05:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKMKYD (ORCPT
+        with ESMTP id S229462AbjKMK0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:24:03 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D866D75
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:24:00 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADAB5hh032232;
-        Mon, 13 Nov 2023 10:23:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=/el89RpK6GrxgAKwGeByCgZyLiPnTQGmfwfIpJgaHWY=;
- b=g9HV72w5RXc64MycrsYLPx1V6W2vFyjNTgj4PmcLMgv6iVj9el6CYh3G30YQHPtKd/Em
- 12WOIk76Qc1mWp+u8uODnT5bwuwhn3i8ZzKgsjib8SgOKI2qCtEvjw4zwHyyZmwgdG0f
- mNEPt8jVjO+Mh2HXNe9p+4yeR5C3rMqTNvHWEmsuBiMgJQe3tC2EngB7m43ZtUtY/h//
- Rlp5zQ0TIXsyQ6bO2DHY0tqP9Wg4P4ZWZXQ9yEbGaWw/WqujswOvizQ7q/MXA9ggp3tn
- 9OfAGqVeXC0Z4EhAwpNSoBOqPH8OH2Btu2xkk0PX4biHidxrsb8wyIjJpmnFvQndNFs7 og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ubh9ss3da-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:23:48 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AD9ZoRQ007992;
-        Mon, 13 Nov 2023 10:23:48 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ubh9ss3d3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:23:48 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADA450h017593;
-        Mon, 13 Nov 2023 10:23:47 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uap5jqx3s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:23:47 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ADANlth26804686
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Nov 2023 10:23:47 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E28C25804B;
-        Mon, 13 Nov 2023 10:23:46 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD6BC58055;
-        Mon, 13 Nov 2023 10:23:44 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Nov 2023 10:23:44 +0000 (GMT)
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 29/37] powerpc/nohash: Replace pte_user() by pte_read()
-In-Reply-To: <a67c0d93-f4e9-d5c5-a5ee-3347c80f0a64@csgroup.eu>
-References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
- <72cbb5be595e9ef884140def73815ed0b0b37010.1695659959.git.christophe.leroy@csgroup.eu>
- <877cn39jyp.fsf@linux.ibm.com>
- <02c4b724-f503-31ea-eb77-4b3cd6776fd8@csgroup.eu>
- <87zfzpznz5.fsf@linux.ibm.com>
- <a67c0d93-f4e9-d5c5-a5ee-3347c80f0a64@csgroup.eu>
-Date:   Mon, 13 Nov 2023 15:53:42 +0530
-Message-ID: <8734xa9ck1.fsf@linux.ibm.com>
+        Mon, 13 Nov 2023 05:26:18 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C50D78;
+        Mon, 13 Nov 2023 02:26:15 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so6552758a12.1;
+        Mon, 13 Nov 2023 02:26:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699871173; x=1700475973; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PCWL893/WA8glZkeLycvNct9u8/wkDSSjZw4ibjSloY=;
+        b=XaweZldFp70Nqy0NJ0I1PhczdN6zGMUNOg+tyLKP9ilv4JDt14o9VXRJi4IkzPwJSl
+         YLaIlPwJBGwDAU/B41WNjTBTGBB/3z1zmMHpZGpxKa3i1bKTUiNsdriBcSMRuHeIqQrE
+         67zDmZinHlGOJfSn5w5odwBzAZ0H4wipVH4WgzKlDVmsRAXL3sp6rrcEq/wFBj0zBPkC
+         DgFn21K49ze4Fmz7as8Q80/l1Mw6NhprZBoXVGE4mtBAlxKDV0px3ANAT+JLRaYCrJW7
+         1/tUEsWfQ2mzuKbecZ/2Dq4DJea3zAigRV/2LoBDuXUGhPQKiH15WU+B8a4HFaV/C7tL
+         WiHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699871173; x=1700475973;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PCWL893/WA8glZkeLycvNct9u8/wkDSSjZw4ibjSloY=;
+        b=VmegFaHoHVdYaUVwvP+sWfPBP0z0v2Hfx0x7DN1NB4PZDUkR33cDbRsVYJnzL0m5TQ
+         vofiMhr6eD+dDaR8eIy03MPBPDJUiMX1AQJ7m45RV0qhSEhVgAKfExuyuAbiGwRV/qml
+         cpm7ksuS26Pssg17vqi5RboPwvKmATVUsRyYmtdS3AWgi2FqjQ9xDZ/RCuelThYjG3SB
+         zKiIoxHp1t+urDm4dNZXXVYNBsurucwEAxnQ4TYo0yO5pRjE0EHuCbJItjkzX3mJ5P/0
+         L9TZlfMKnvbaOBY9bPovj4mIgLR8tK1bQ1C2jH+dgbv2x1T3SlcbMZQhTHpulvmz+hxW
+         q67Q==
+X-Gm-Message-State: AOJu0YxeX1UBNOMg95Jk5iaBv0ah03x8mQoWV5p/3WJPHpsXpDGLzdhp
+        E1X7p55vsILMWBx/zibWbNk=
+X-Google-Smtp-Source: AGHT+IFybFEqXMAVVGpXAbHOXDBXgGb29HHmZhRdMU5+W4p9ssmnLmNuY/XS2mItgs0e3tnBKDteUQ==
+X-Received: by 2002:aa7:d413:0:b0:53d:b1ca:293c with SMTP id z19-20020aa7d413000000b0053db1ca293cmr3684774edq.22.1699871173066;
+        Mon, 13 Nov 2023 02:26:13 -0800 (PST)
+Received: from ubuntu.. ([188.24.51.27])
+        by smtp.gmail.com with ESMTPSA id r20-20020aa7cfd4000000b005435c317fedsm3464940edy.80.2023.11.13.02.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 02:26:12 -0800 (PST)
+From:   Ana-Maria Cusco <anamaria.cuscoo@gmail.com>
+To:     Ana-Maria Cusco <ana-maria.cusco@analog.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] Add ADRF5740 driver
+Date:   Mon, 13 Nov 2023 12:25:33 +0200
+Message-Id: <20231113102535.51074-1-anamaria.cuscoo@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kWezu1NemtlRDHHLlJnFHG4bBIl3asNs
-X-Proofpoint-GUID: MbyKnkWoq-ElKU3Q_-zL1ZakD3MiMXty
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-12_24,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 malwarescore=0 suspectscore=0 spamscore=0
- mlxlogscore=570 impostorscore=0 priorityscore=1501 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311130084
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+From: Ana-Maria Cusco <ana-maria.cusco@analog.com>
 
-> Le 07/11/2023 =C3=A0 14:34, Aneesh Kumar K.V a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>=20
->>> Le 31/10/2023 =C3=A0 11:15, Aneesh Kumar K.V a =C3=A9crit=C2=A0:
->>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+This patch series adds support for the ADRF5740 Attenuator within the existing 
+HMC425A driver.
 
-....
+The ADRF5740 is a silicon, 4-bit digital attenuator with 22 dB
+attenuation control range in 2 dB steps.
+It offers parallel control mode through four digitally controlled inputs.
 
->>
->>=20
->> We are adding the pte flags check not the map addr check there. Somethin=
-g like this?
->
-> Well, ok, but then why do we want to do that check for ioremap() and not=
-=20
-> for everything else ? vmap() for instance will not perform any such=20
-> check. All it does is to clear the EXEC bit.
->
-> As far as I can see, no other architecture does such a check, so why is=20
-> it needed on powerpc at all ?
->
-> Regardless, comments below.
->
+V2 -> V3:
+* hmc425a.c: edit commit message to clarify the change related to default 
+attenuation setting.
 
-Looking at ioremap_prot() I am not clear whether we can really use the
-flag value argument as is. For ex: x86 does=20
+V1 -> V2:
+* dt-bindings: arrange entry in alphabetical order
+* improve title clarity
 
-pgprot2cachemode(__pgprot(prot_val))
+Ana-Maria Cusco (2):
+  iio: amplifiers: hmc425a: add support for ADRF5740 Attenuator
+  dt-bindings: iio: hmc425a: add entry for ADRF5740 Attenuator
 
-I see that we use ioremap_prot() for generic_access_phys() and with
-/dev/mem and __access_remote_vm() we can get called with a user pte
-mapping prot flags?=20
+ .../bindings/iio/amplifiers/adi,hmc425a.yaml  |  4 ++++
+ drivers/iio/amplifiers/hmc425a.c              | 23 +++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
-If such an prot value can be observed then the original change to clear
-EXEC and mark it privileged is required?
+-- 
+2.34.1
 
-	/* we don't want to let _PAGE_USER and _PAGE_EXEC leak out */
-	pte =3D pte_exprotect(pte);
-	pte =3D pte_mkprivileged(pte);
-
-
-We already handle exec in pgprot_nx() and we need add back
-pte_mkprivileged()?=20
-
-
--aneesh
