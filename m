@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5FD7E93D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C9E7E93DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 02:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbjKMA7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 19:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
+        id S232574AbjKMBFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 20:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjKMA7p (ORCPT
+        with ESMTP id S229650AbjKMBFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 19:59:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FAF1BD4
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:58:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699837137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cDT/Yw6MepTUY5berRyzp+iGTh5/71yTqnFQ/kYgufg=;
-        b=F2nQ34+LtuVNAzyHYMhY7XKF8bKgDNlg2lTV3kPzOyfNVqMTnoyZycOp3/kc191s/cPkOT
-        X9y36lz/hegBsN5yN0+KnUJa1Wh3z27wNu1V7y1dhKJHdpVpaZ/Uzz59iae17ivmd+/piC
-        IaPEuDzPSDJOa3dvZmFTGJa+XSk1Ruo=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-596-gILUsjvIPJaVSlaQY4mcTQ-1; Sun, 12 Nov 2023 19:58:56 -0500
-X-MC-Unique: gILUsjvIPJaVSlaQY4mcTQ-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc4cab731dso37756415ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:58:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699837135; x=1700441935;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cDT/Yw6MepTUY5berRyzp+iGTh5/71yTqnFQ/kYgufg=;
-        b=YTbaWVctYbQbGYo/qa6p8TUok685LNsAx6S9YJxpyA52l8FG9yIkUT7pMr0lI4xGQx
-         5acF52h3mdYA19mR9NHCa1FXrH3BGuVFONfYxEQ4gVWgnNrz+mI012lQF+kNEpZKr4XV
-         Y+6DSl0JhAZUxmdC9Q8Kn82/qF8mKUHAlJOZV8BOggj+76P+nZ3SVrXICCLzGjgb+3Yx
-         NifPWqWfWHpJQjIntMDV03bKGcG76+Wm/DHJT04vykRfbUM7tt/DM0KJZ96gihb4T/vZ
-         8WTonBtm4ISkq0X52s0ZOgb3gt5jxpL9E7lBWeuhVhuIl8I3BXChOKhgLAbbDeDPImxf
-         cBxQ==
-X-Gm-Message-State: AOJu0YytGKKhAIZvZ1CPvBINF5CeZjoLuU/XRo2dHfZyJ7rIQ9nxnJCX
-        h6KfRoSq98Xi5Xsj8yQNCcz3lnGgU+FkO7I5dvekIqgH3dWmzc9mrD6tc7s4A0t015+c1ULI4vo
-        y0hohzPa/H4beP87PO5ULnpw6
-X-Received: by 2002:a17:903:18a:b0:1c5:d063:b70e with SMTP id z10-20020a170903018a00b001c5d063b70emr3527465plg.53.1699837134995;
-        Sun, 12 Nov 2023 16:58:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEYIxs5W0nH5PRlEPeC7HszJcExOhwxIk5eQviHGK0uTrxM/8D+SW3tGS+WkqqASqjIUf7rPA==
-X-Received: by 2002:a17:903:18a:b0:1c5:d063:b70e with SMTP id z10-20020a170903018a00b001c5d063b70emr3527451plg.53.1699837134747;
-        Sun, 12 Nov 2023 16:58:54 -0800 (PST)
-Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001c5fc291ef9sm3053276plg.209.2023.11.12.16.58.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 16:58:54 -0800 (PST)
-Message-ID: <095c2d24-735b-4ce2-ba2e-9ec2164f2237@redhat.com>
-Date:   Mon, 13 Nov 2023 10:58:46 +1000
-MIME-Version: 1.0
+        Sun, 12 Nov 2023 20:05:03 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2095.outbound.protection.outlook.com [40.107.255.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C011BC0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 17:04:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a+5AtjmNXvcHXDJIQ4pGWjVGcuR9Mnenmf890/P38Xgc9tw0/P+1q61OLRLVgLwoGMNTceY9uh26nuJ1lH0umg4yKtefPXsG62/n+ahx/CWDKfdogmiBrMmwlBE/9cHE4t2i9t5RvCypNFBGsMdLBf0f0xNdHyedH+HMK8fFYHFHj7yVjXs0EovGL4Wv2fASkhPuyC6MkT0hYxbKASXpGr5gZOHMXy9vGrpYVl0mzYiJySeCaIwXyg9T4KsjyE0LQdzUiz8Mf1MCck95KYK/vgSLXKu34g9tNXgTGpnZrfab+hsd16s/ZJKdoGDXej9k7j0+cUtxi+YEim5Y6MPGJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=La5fEWIw+hFWkQDndzVcirIBF9c1GOrrlQpKtaE1nxE=;
+ b=JuEIDL5ihHcuE8jxkPUvqh2VQoPjhWQH3X0BpOHwzdYZzJKf8rqKYTSrjuYkn52ryCvz20nZ2SWd5c1nUhx7suycgcZscvpz7lNLPOBCGYNRP3IU9Dnkg/BRodfHGGw5X7EIb/IPAcFKNiS5Hv46Wj7hgzu7FCRTIFzzif5l5LsGHdTqzacwn2UAv2Gowr6TsDRUOONchwe2SQK5+3Mliy2bITJmZKb48XH8fxMQOpQe2HwXcttFNgoSGtqkWVA0FRuXTvpdDPNISCvzqGXlUHLqAmoyyyo6JjoVPH9bg/TM81jha70Ck2fZXhLlpH8xVBdZ1cOOQ9hXm7g3TSsYuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=La5fEWIw+hFWkQDndzVcirIBF9c1GOrrlQpKtaE1nxE=;
+ b=W6CVgL1YF7xnGqgs1bAe3Vc9PXqe7IKDeRb2ePOM1z+chGDJYC9HEjp5Rmh7wUwXdSQCk/DcS+761NG/alg979thudXPxYdp+85jnmeaNKBdlymKPQSAb3yNqyMzilT7DOxLWUAnuOhhtzjdjE/64NVLCYc2cI8mZvGotgtSfmg+q1KTPI5hO790U7WrowXzWCRniqXKRG68P4XgA2gLWcJBKHvsJ6Lm699hJ1D42yHOO+NdLr5GYtNOqULsbseusSead7ovd1znsyoUJqqf8Pf8TS37Z2J5phFAMyL0u+UEUQeWrSfraeOXTa+pYbVsQ4dZn8bdJGNSvEmFaTx8RA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by SEZPR06MB6287.apcprd06.prod.outlook.com (2603:1096:101:126::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 13 Nov
+ 2023 01:04:53 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb%4]) with mapi id 15.20.6954.027; Mon, 13 Nov 2023
+ 01:04:53 +0000
+Message-ID: <4911abfc-081f-4d3f-aa15-73c617a81c36@vivo.com>
+Date:   Mon, 13 Nov 2023 09:04:49 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 10/22] drivers: base: Move cpu_dev_init() after
- node_dev_init()
-Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLV-00CTxS-QB@rmk-PC.armlinux.org.uk>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JLV-00CTxS-QB@rmk-PC.armlinux.org.uk>
+Subject: Re: [PATCH v2 1/1] mm: ALLOC_HIGHATOMIC flag allocation issue
+To:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        opensource.kernel@vivo.com
+References: <20231109073133.792-1-justinjiang@vivo.com>
+ <20231109073133.792-2-justinjiang@vivo.com>
+ <20231109094954.dd4b2a5b1f5dfcc9a721edba@linux-foundation.org>
+ <ZU8eRWQvk/Mm4VHO@casper.infradead.org>
+From:   zhiguojiang <justinjiang@vivo.com>
+In-Reply-To: <ZU8eRWQvk/Mm4VHO@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2P153CA0008.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::19) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SEZPR06MB6287:EE_
+X-MS-Office365-Filtering-Correlation-Id: b13d33b6-8d60-496f-fbd6-08dbe3e48b54
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zZ4wN0SWvFcc4qHoltzgBYHfhyjvLM/ThsuN/o1FYINYT3nCTQ8tyU73HAoZ1/MUrG3p4ab5G+oPjx2fQ+OLTTwsNu30yY8qtpsk82gV4zE2G/STuf5wtDxRaBCzk1XmbG5A0n8UMYiZKN4macwN6P/bYEqhF8FONQb4ZR1CNzC3b+U1qnSk+AO7Uht8HNrlpgXeDRktZRc5w2OuU5EQhHFXLDBo8M62Y9apJSe0+AjhqXfpNzQjFodqMYiqabb0PsOM4ZCDTaIcHlf+8GgDz04k/d8uLopAUyh1FEnm8KCVjG/YYV60sFEuS+nP5gZc7Hq/EWJvnMQG/iJk7JYSbAAvNVB9jy7DOn8QuGFI9ULrYhDdKg/ClL7SgiBOWcGp9i874N7KD5yRP8mtIFOZl1M3stu/h+esXTwD17X+OLS7ZHbyI+AjV6KRvMY7JzOrnIzdA84gm9wEuafzxZAnCpWAb+6TUTDD5sr8BSbV0I7ClSJT3HBK2GrZldySeDkJ2UVH9feYx5pwM1jHsPwygKFSJXpJs3oeJGa3Np9axZwHZLrjHja5Kyw26BRlOxw2H5TQz5IrTE3HG20MuOTdCB9n6Ps4hJMW7T5A4jVXh5YH4CeDib5A4vnYstAScciVjjs7v32udZz1cfstsh8zHfEJEVSpSja6IXmpTwndl6TGy4UzHS2LeCNqtgXYEuS6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(39850400004)(346002)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(4326008)(8676002)(41300700001)(36756003)(2906002)(5660300002)(31696002)(8936002)(38100700002)(6512007)(6486002)(66556008)(966005)(66476007)(31686004)(4744005)(316002)(66946007)(2616005)(107886003)(38350700005)(86362001)(26005)(52116002)(110136005)(6506007)(83380400001)(478600001)(6666004)(43062005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y1lOZFNNY0FSR0JJb3loejZLN0Q5T3R3amo3bGlVcFhSR0ppN29BRzY2VTFy?=
+ =?utf-8?B?WnZUMk5vUlZJMXhoY0JXdkVyRlMxMXRiK3d5cTROQWRiUTk3aURlbWd6dkJV?=
+ =?utf-8?B?Y1NmSDdoZHJ4TkdURDAxTktrT1ZCeU9HRnpwSUN5eGloV0ZtcmhzelZabjBy?=
+ =?utf-8?B?dDV3TnNYaDc1MTNBeFg1K2FDdXNvemtVRGsvd2MxczVSU0dnVUJlNm1pbUFM?=
+ =?utf-8?B?SWRyVnM1bXc3eGIyeVhkdUhnL3Y2d0I5RzRwb0xQcTA2ZlN6eFpYdGsyWTBl?=
+ =?utf-8?B?Y01ZRkVBTTA2NkJVM0JyZnJoNHE0NVBMVHJCblliZVlsVjJzS2RkRG41cWFY?=
+ =?utf-8?B?TE40MzVDUXI2c1lGd0lvcHJkNjVTUThTa1VYTHBnY3A2ME5Yd0xoN1l1M3NP?=
+ =?utf-8?B?bERlVVNlYnVHRmtJTGFGMTVIbU5Pci85OWZGeGlzYWl5ODN5VDFieXFzNFdH?=
+ =?utf-8?B?STVHZW1EVVg2QjcwdElna0p0SnFqWGhJdzdYdExhTVF3QVRLT1dZdUV2dnFi?=
+ =?utf-8?B?M3NINk5FZVUzU29kMmhRbGs0MFJGMzBhcm0wK2pkY3g2VEJPSVRNVm5TM2lp?=
+ =?utf-8?B?b3NzSnJ6bUxSQi9aYU9hOGRzbFFQVDFOTUM3bmRHMFVoeVhMTEh6d0JFalN1?=
+ =?utf-8?B?ZTNPOGtBNTdMamVjeUJiMUdOdll0TVE4R0Q5SHFFbkhIem8rbDVISnBBeVo0?=
+ =?utf-8?B?bWZjODBNOGE0Yi83SDFqRFFqa0NRYkdSMkQzQjd4elF5TTVIZThYamdMZFhp?=
+ =?utf-8?B?SmxzUElWY0Q5UGdCNk9kaDNkUitqNTFHMTYvOUdSa1hGejJwUVYxNXJMY3Zw?=
+ =?utf-8?B?bmdnUXlxL2tPM210VVA3b1RCL1Zvb2kwazF0ZkFsS1VRSmFHcVcxN1lDNzhl?=
+ =?utf-8?B?Z05xYkg4SnhmVDlsQ0o0dThWZ3pseVhlZG0zTEM3NjJzSEVoSkFma0RhMlpM?=
+ =?utf-8?B?T3liT1VnMzlpTTZBSVBGdDdVdFE0clJ4RXNFcFRzalkvV3ZaNjloSm1jUCtH?=
+ =?utf-8?B?ZERtTzhQdTJSMDZ4S1FqMjNOOFNndkZRWTJOWThycTJNMk1TaUxlWWtGdHJV?=
+ =?utf-8?B?S0tHbWdPUHhDMzRzRUZWK0dhTXgzaE8zRmpSMFNJeEZFVUwydTk5UHR1VTdU?=
+ =?utf-8?B?d3Vzc2drWjhwcDZJbjBZYW1VOGlYWkp5K3ZRQnVXcWttb25DKy9SL3prYXVD?=
+ =?utf-8?B?eFhDS1FFZkJxUnpsZHJmazlTaTlKaWxGM21BMXduSnlveGY4dEhwa2tjQ2xv?=
+ =?utf-8?B?QSt1WURsNmxRb24wMURuamY5V3FqNGxWSVcrVmVmVFdhb1hFUGo4czBUQVUz?=
+ =?utf-8?B?YUsrRmpPeEpTMm5lZ1RtUVB5MWxKcUZMNGhZcWZRQ1M0ekMwWDFjcmd0NnZO?=
+ =?utf-8?B?ZVBNV2FiR1ZpN0h5ZUhUclQ0MkV0NjVTRTRIZXBOcE9VTDVGSndCcFJMV0Nw?=
+ =?utf-8?B?aW1pR2I3dER2a1E2SUUrbnAvWW1yaFA2RjFWeGFEZUNFWW4xSm5FYk5yRkJU?=
+ =?utf-8?B?dEZFdlhXYlZidkwvTkw3NVZLaDZxa0dQYnNUMjZWajJmeVFJcEZoRkYyNFc4?=
+ =?utf-8?B?RldGMTNaRGVwREVaWktIM1dweVVlbk9TcFhzT0k1SC9pa0tQSnJpQmpHM1dU?=
+ =?utf-8?B?YzlVVTlMY2cyczRIL3ZPd1F6VHBqVEFwSE1qZXg0MndyK2NDdlM1dUZzZkJx?=
+ =?utf-8?B?MitEd3lNMStOYTc3YzJLYXllRFhhNVRRSEpqRkw4QTI2NWhibzlUcm40UXo3?=
+ =?utf-8?B?SU85WGJNdXpKaWxUVTNSSlRlTkNyQU9nTXJkNGZrNHlnczFxVm5jSW5zR0or?=
+ =?utf-8?B?b1N5d2xnSVgrM2ExWFJKSnp4ek1uOFBPRDNzbURNSGIxWnFxck85OHFobDZu?=
+ =?utf-8?B?dmd5VE53RnZYZmRDeitCcVUrSnB3Z3BUNDA3c2NKczZmZFdia2EvOTZ6VC8v?=
+ =?utf-8?B?Tk1nUUoyTmY3RWhibEFvak56SkMzVGFVNXR2YjhpZ21lRExPdUVuM1lUbm81?=
+ =?utf-8?B?azFuYUE1NXVhWjhteWwwanh1WTlTSzdjMUd0ZnhqN0dQbE5wK1oyc3ErMnJ2?=
+ =?utf-8?B?SjB1dlgwaUo0WVUrSkdDMkZrVFphTkRoekJ5Y2hMUE5UNGtzd2ovV1ZSWGhw?=
+ =?utf-8?Q?U5N9X6OcfZQAK/wkTJrziEB0u?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b13d33b6-8d60-496f-fbd6-08dbe3e48b54
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 01:04:53.4231
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3RFvfH+OQoqTK9XNPGk0d9lGCiUiCqzjIFy0dXO7k+T1FqalsSelAT9IjbSjQfUN9R6O+qlxpFMaihaYD7S6Jg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6287
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -96,29 +129,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/7/23 20:30, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> NUMA systems require the node descriptions to be ready before CPUs are
-> registered. This is so that the node symlinks can be created in sysfs.
-> 
-> Currently no NUMA platform uses GENERIC_CPU_DEVICES, meaning that CPUs
-> are registered by arch code, instead of cpu_dev_init().
-> 
-> Move cpu_dev_init() after node_dev_init() so that NUMA architectures
-> can use GENERIC_CPU_DEVICES.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
-> Note: Jonathan's comment still needs addressing - see
->    https://lore.kernel.org/r/20230914121612.00006ac7@Huawei.com
-> ---
->   drivers/base/init.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+在 2023/11/11 14:25, Matthew Wilcox 写道:
+> On Thu, Nov 09, 2023 at 09:49:54AM -0800, Andrew Morton wrote:
+>> On Thu,  9 Nov 2023 15:31:33 +0800 Zhiguo Jiang <justinjiang@vivo.com> wrote:
+>>
+>>> Add a new bool* argument to pass return flag instead of *alloc_flags
+>>> and add the related comments.
+>> Please retain (and update) the changelog with each version of a patch.
+>>
+>> For reviewers (please), here's the v1 changelog:
+> This patch isn't diffed against the current tree.  It can't be reviewed.
+patch v1:
+https://lore.kernel.org/all/20231108065408.1861-1-justinjiang@vivo.com/
+patch v2:
+https://lore.kernel.org/all/20231109073133.792-2-justinjiang@vivo.com/
+patch v3:
+https://lore.kernel.org/all/20231110020840.1031-1-justinjiang@vivo.com/
 
-With Jonathan's comments addressed:
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+>
 
