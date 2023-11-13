@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182657E962F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4347E9644
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjKMEZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S233149AbjKMEhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjKMEZ3 (ORCPT
+        with ESMTP id S229793AbjKMEhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:25:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A456D4A
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:24:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699849481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+XpkXMncYpwBWWz5YM4lExGVyIZbJdd8k4LtapRIRSU=;
-        b=CVgF/Ab5eTL389IiMxk1obmpK8BphpKW201FcU8D1KN7NkiUIi8UPPNR4q01Eg4r9OF1l1
-        uEviu/PDGkxySk2TNj+KvRrAGGvLbQX/G4fMyBwILqqttdRI9nDWwZB/XSVMgXsEt4U2k6
-        Evumqg/SN6OZMATQ5yy2d/18NBybuL4=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-317-lmHQEctAP7Cr9uAYBcDkOA-1; Sun, 12 Nov 2023 23:24:36 -0500
-X-MC-Unique: lmHQEctAP7Cr9uAYBcDkOA-1
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b3edaef525so4686036b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:24:35 -0800 (PST)
+        Sun, 12 Nov 2023 23:37:13 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E131718
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:37:10 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc0d0a0355so28030105ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google; t=1699850229; x=1700455029; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d7VAuuJUScsrG8D+oIxoYLreMolx9A0hdp1gM6zx9CU=;
+        b=S1oVAvrBv+aVgFpWlYUu5JXisa8Dwhe5i2oR7SJqAQ6kDD20csWc0a1W4c8403/T+t
+         GlgXa9R3lQiNHHnfrFPp4yDQee7hJnCDdfZrQ9Ip4qvYREs/yUtCBVDg62wCTX+jtxlc
+         DfIF5vhulmbZMpHWfvlhHX2U6SSwnBY0UbOlcZ3o/uYjbM3U4ZwVTHxJo7FMVwadhMP7
+         Tt/nyCQOzlxi45UzPx59hcrdOnOICpzmxvDmvt3lli93WSykg2v1ms4VVtriQqnNNFym
+         I1m977JAUWJ2ca/VUJ15s7pst9T0Itkg2EvhWMWMrthhAH/fPRMkB4kKt/brIExwK4I/
+         +LwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699849475; x=1700454275;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+XpkXMncYpwBWWz5YM4lExGVyIZbJdd8k4LtapRIRSU=;
-        b=ttDUh/zVMIntiNM1tTi1/BmVWNfq+Z8/G4n+aavNVBgMnKDDR7H8P2Td3yS+z/jqap
-         dc+tgtOgR/4KIiFk77qekTT2fvbRRmt6Mw4b58FZWuwRyVz+TO6iuLc1+1wevTm7DTD+
-         sEsT13iurDPqLvkhVTw/UsS72pEG1BHEzvqfCHz6E3QEitxmkzzQGZGGGvoVPAaFidN4
-         DZLOq1TsfGwWKHfMuRJn9/IPO7MCqYPr4ueivGqGtCvA968o1MC4PO9ICWdtO+W0cHsv
-         ZDlNGTADB0Aw0cOGSjFs/kEOyOD/w7nWg20wP+0vdyCfO7FbG0nsAsNNIdJtZ9OQFWw8
-         XHSA==
-X-Gm-Message-State: AOJu0Yw8241DCizyJbraEgcEdk5x41JL/uYt1Mgt55lAqbATT0kfw4jd
-        /p7rgmwqAJiXv9wXytVLfW+Z0VsCZyj9EpbUDJVbw4fXrbt4EvPtHguNUqcMzW/3eUKGbg2L8Wm
-        fmydt6yU8fRZUKpbZogtUlZnh
-X-Received: by 2002:a05:6808:1907:b0:3b2:a9bd:c38f with SMTP id bf7-20020a056808190700b003b2a9bdc38fmr8909968oib.37.1699849475412;
-        Sun, 12 Nov 2023 20:24:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFGpLquY73YkMUU9Mlaw3xcZEgmE+1wMz9SoOzUS3eERBYDajACgA3kg4BM9OvwoIC+iQZINQ==
-X-Received: by 2002:a05:6808:1907:b0:3b2:a9bd:c38f with SMTP id bf7-20020a056808190700b003b2a9bdc38fmr8909944oib.37.1699849475200;
-        Sun, 12 Nov 2023 20:24:35 -0800 (PST)
-Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id fm6-20020a056a002f8600b006c4db182074sm3111661pfb.196.2023.11.12.20.24.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 20:24:34 -0800 (PST)
-Message-ID: <d07a9e11-9752-4155-bbaf-b759ec4f99ac@redhat.com>
-Date:   Mon, 13 Nov 2023 14:24:27 +1000
+        d=1e100.net; s=20230601; t=1699850229; x=1700455029;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d7VAuuJUScsrG8D+oIxoYLreMolx9A0hdp1gM6zx9CU=;
+        b=kY4jm7uFH5xFEcBF7tcHS8XuDzqkdveGmU5lmUATBcK2xQSkqTzg7ARYWqKZthXUFq
+         Lv+IlPpHxZjA85iQCV1iy3MsihFa+kdHMa/byEspIXoatHhLAyXXpg/5vD/KVcXdivaH
+         /VJEAqPaFwVr/ZWtu8Uhl52vmYS9GjtlNB4+r4BOd2aKOfCLPY8dG4vQ9bsd57e54Jix
+         M9O6U2q49e2CKBMJQsT/2m5Xa9jqEVEf0zK34Fg+sVFbPRJXrucCCmG/tPk9EzJaEBzk
+         xNIUS2uKGSbZ2cxJ25PO7BPlFAVBWK/lLVksn3zBlv8c3O1oChet/ZV3omlD2/FXN7gu
+         jEQw==
+X-Gm-Message-State: AOJu0YzoQ2MRB2GJ/72UbWR3Y6s7cQeTqwRDy83esO5CX78fNKKOn+eE
+        WF0VpZPmuFtSXjYU/qJND5etpg==
+X-Google-Smtp-Source: AGHT+IF9oBdLDvu7zgMRxBo24XkxPazV6MNbl+h0AEmKyXV3/JPezbKKr8P67KXv4niFvrKB0073hQ==
+X-Received: by 2002:a17:902:d50a:b0:1ca:4092:7200 with SMTP id b10-20020a170902d50a00b001ca40927200mr3546686plg.54.1699850229373;
+        Sun, 12 Nov 2023 20:37:09 -0800 (PST)
+Received: from localhost.localdomain ([123.51.167.56])
+        by smtp.googlemail.com with ESMTPSA id l18-20020a170902eb1200b001cc3b988fd6sm3245181plb.265.2023.11.12.20.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Nov 2023 20:37:08 -0800 (PST)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@endlessos.org,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH v2] rtlwifi: rtl8723be: Disable ASPM if RTL8723BE connects to Intel PCI bridge
+Date:   Mon, 13 Nov 2023 12:34:55 +0800
+Message-ID: <20231113043454.10053-2-jhp@endlessos.org>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <05390e0b-27fd-4190-971e-e70a498c8221@lwfinger.net>
+References: <05390e0b-27fd-4190-971e-e70a498c8221@lwfinger.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 22/22] riscv: convert to use
- arch_cpu_is_hotpluggable()
-Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JMV-00CTyh-It@rmk-PC.armlinux.org.uk>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JMV-00CTyh-It@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 20:31, Russell King (Oracle) wrote:
-> Convert riscv to use the arch_cpu_is_hotpluggable() helper rather than
-> arch_register_cpu().
-> 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
->   arch/riscv/kernel/setup.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
-> 
+Disable rtl8723be's ASPM if the Realtek RTL8723BE PCIe Wireless adapter
+connects to some Intel PCI bridges, such as Skylake and Kabylake.
+Otherwise, the PCI AER flood hangs system:
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
+pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00000001/00002000
+pcieport 0000:00:1c.5:    [ 0] RxErr                  (First)
+pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+pcieport 0000:00:1c.5: AER: Multiple Corrected error received: 0000:00:1c.5
+pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+
+Buglink: https://bugzilla.kernel.org/show_bug.cgi?id=218127
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+v2: Add the switch case's default condition with comment:
+    "The ASPM has already been enabled by initializing
+    rtl8723be_mod_params' aspm_support as 1."
+
+ .../wireless/realtek/rtlwifi/rtl8723be/sw.c   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+index 43b611d5288d..b20c0b9d8393 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+@@ -25,10 +25,34 @@ static void rtl8723be_init_aspm_vars(struct ieee80211_hw *hw)
+ {
+ 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+ 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
++	struct pci_dev *bridge_pdev;
+ 
+ 	/*close ASPM for AMD defaultly */
+ 	rtlpci->const_amdpci_aspm = 0;
+ 
++	/* Disable ASPM if RTL8723BE connects to some Intel PCI bridges, such as
++	 * Skylake and Kabylake. Otherwise, the PCI AER flood hangs system.
++	 */
++	bridge_pdev = rtlpci->pdev->bus->self;
++	if (bridge_pdev->vendor == PCI_VENDOR_ID_INTEL) {
++		switch(bridge_pdev->device) {
++		case 0x9d15:
++		/* PCI bridges on Skylake */
++		case 0xa110 ... 0xa11f:
++		case 0xa167 ... 0xa16a:
++		/* PCI bridges on Kabylake */
++		case 0xa290 ... 0xa29f:
++		case 0xa2e7 ... 0xa2ee:
++			rtlpriv->cfg->mod_params->aspm_support = 0;
++			break;
++		default:
++			/* The ASPM has already been enabled by initializing
++			 * rtl8723be_mod_params' aspm_support as 1.
++			 */
++			break;
++		}
++	}
++
+ 	/* ASPM PS mode.
+ 	 * 0 - Disable ASPM,
+ 	 * 1 - Enable ASPM without Clock Req,
+-- 
+2.42.1
 
