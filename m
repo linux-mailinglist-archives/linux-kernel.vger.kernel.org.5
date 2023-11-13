@@ -2,66 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FB87EA26C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FFD7EA26E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjKMRwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 12:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
+        id S231618AbjKMRxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 12:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMRw3 (ORCPT
+        with ESMTP id S229454AbjKMRxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 12:52:29 -0500
-Received: from mx5.spacex.com (mx5.spacex.com [192.31.242.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F510EC;
-        Mon, 13 Nov 2023 09:52:26 -0800 (PST)
-Received: from pps.filterd (mx5.spacex.com [127.0.0.1])
-        by mx5.spacex.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADG7ufB026420;
-        Mon, 13 Nov 2023 09:52:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spacex.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=dkim;
- bh=OAedADIDq7Yy/leBF8yLvmN9Q5ZHAfPjVXFuK05A8Vc=;
- b=mz296ekGLs70ZxPAJF0XIvMpdOeHglBRTI+pNcSlk4BrQP6Kr7Iigz1tY1KNi6o+jRRb
- /noTs+2XV351CMpprXq9xMVadi61hb7AQFoY+qvhHe2zFqb69kmT1w+Xa2Pm9+vBEf7g
- OqDpvec4eecutQir9Llv3fqzfU3yCQTkB6e0tnZvMJ+dcMwFGMNn01fOFRHR4WdaYlAa
- SKh1YUoJL1rRAV1qR2+8jTsfP0vCoomdmefdfXxUAGf4WisLB2qihxPE978d9mm3TYRw
- cY+pciNDAMxHo+dFYjrEFn02l4uAgPsNUvAE3nxeZOTUj3s2Jq94/uk930Ui01cWTM0U QQ== 
-Received: from smtp.spacex.corp ([10.34.3.234])
-        by mx5.spacex.com (PPS) with ESMTPS id 3ua7wsa55f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 13 Nov 2023 09:52:17 -0800
-Received: from apakhunov-z4.spacex.corp (10.1.32.161) by
- HT-DC-EX-D2-N2.spacex.corp (10.34.3.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 13 Nov 2023 09:52:16 -0800
-From:   Alex Pakhunov <alexey.pakhunov@spacex.com>
-To:     <andrew@lunn.ch>
-CC:     <alexey.pakhunov@spacex.com>, <linux-kernel@vger.kernel.org>,
-        <mchan@broadcom.com>, <netdev@vger.kernel.org>,
-        <prashant@broadcom.com>, <siva.kallam@broadcom.com>,
-        <vincent.wong2@spacex.com>
-Subject: Re: [PATCH v2 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
-Date:   Mon, 13 Nov 2023 09:52:04 -0800
-Message-ID: <20231113175204.4193922-1-alexey.pakhunov@spacex.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <7f1604fd-4bd6-4f16-8aed-2586afac7d15@lunn.ch>
-References: <7f1604fd-4bd6-4f16-8aed-2586afac7d15@lunn.ch>
+        Mon, 13 Nov 2023 12:53:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67292DB
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699897988; x=1731433988;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=udS9SfzTwwnCam3BM7zqV5qU6ZGdKL8Y0UdUz8KpRV8=;
+  b=fIBMRLnKnGsk4oJ5/OGJzZEU7ncj+hI4olfsOpNUdkl0CooCYn3beR6p
+   VaH5NxokhSfyRRF9XDpPiyPn4yEJkL0y0/zZRgZnIVyJRipNU7dqC1QTs
+   nlQvElYu2MkqGbvRYE93fU2Xavy6Xap4E+v0iF1wxkabyd9TCvOAi9dSz
+   V1ZFC1oJNj0c1pCmrgMUMOoXFmn9Wnpy1nJ/I67Dg4cdlGLPYtW9rnb/V
+   7S1GP7aWRuovkoOeA2J7YeDhSvmAYJmGuYNf8G2YMfRhn9jQPmkTqvz6c
+   UDrkBGejeDLfPxr/cCzKYVZSj1zMiFcN4+CRr+L6Ru8IdY6wyIWG7wsbM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="9122381"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="9122381"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 09:53:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="855030752"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="855030752"
+Received: from cgheban-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.92])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 09:53:03 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Dipam Turkar <dipamt1729@gmail.com>
+Cc:     joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        tvrtko.ursulin@linux.intel.com, airlied@gmail.com, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Dipam Turkar <dipamt1729@gmail.com>
+Subject: Re: [PATCH v2] Remove custom dumb_map_offset implementations in
+ i915 driver
+In-Reply-To: <20231110184126.712310-1-dipamt1729@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231110184126.712310-1-dipamt1729@gmail.com>
+Date:   Mon, 13 Nov 2023 19:53:01 +0200
+Message-ID: <875y25tu9u.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: ht-dc-ex-d4-n2.spacex.corp (10.34.3.240) To
- HT-DC-EX-D2-N2.spacex.corp (10.34.3.234)
-X-Proofpoint-GUID: _5hxAL3tMxclKqisjqg7aZvMArbTyrld
-X-Proofpoint-ORIG-GUID: _5hxAL3tMxclKqisjqg7aZvMArbTyrld
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 impostorscore=0 malwarescore=0 mlxscore=0 adultscore=0
- bulkscore=0 clxscore=1011 lowpriorityscore=0 spamscore=0 phishscore=0
- mlxlogscore=562 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311130147
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,27 +64,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, 11 Nov 2023, Dipam Turkar <dipamt1729@gmail.com> wrote:
+> Making i915 use drm_gem_create_mmap_offset() instead of its custom
+> implementations for associating GEM object with a fake offset.
 
-> Isn't this wrapping artificial? old_stats is of type
-> rtnl_link_stats64, so the counters are 64 bit.
+It would probably help a lot if your commit messages explained what you
+are trying to achieve and, especially, why. This only describes the
+patch in English.
 
-The wrapping here is needed as long as tnapi->[rt]x_dropped counters are 32
-bit wide. It makes sure the resulting value is correctly wrapped.
-tnapi->[rt]x_dropped counters are 32 bit on 32 bit systems to make sure
-they can be read atomically.
+BR,
+Jani.
 
-> Why not use include/linux/u64_stats_sync.h, which should cost you
-> nothing on 64 bit machines, and do the right thing on 32 bit machines.
+>
+> Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
+> ---
+>  drivers/gpu/drm/i915/gem/i915_gem_mman.c | 21 ---------------------
+>  drivers/gpu/drm/i915/gem/i915_gem_mman.h |  4 ----
+>  drivers/gpu/drm/i915/i915_driver.c       |  3 ++-
+>  3 files changed, 2 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+> index aa4d842d4c5a..71d621a1f249 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
+> @@ -771,27 +771,6 @@ __assign_mmap_offset_handle(struct drm_file *file,
+>  	return err;
+>  }
+>  
+> -int
+> -i915_gem_dumb_mmap_offset(struct drm_file *file,
+> -			  struct drm_device *dev,
+> -			  u32 handle,
+> -			  u64 *offset)
+> -{
+> -	struct drm_i915_private *i915 = to_i915(dev);
+> -	enum i915_mmap_type mmap_type;
+> -
+> -	if (HAS_LMEM(to_i915(dev)))
+> -		mmap_type = I915_MMAP_TYPE_FIXED;
+> -	else if (pat_enabled())
+> -		mmap_type = I915_MMAP_TYPE_WC;
+> -	else if (!i915_ggtt_has_aperture(to_gt(i915)->ggtt))
+> -		return -ENODEV;
+> -	else
+> -		mmap_type = I915_MMAP_TYPE_GTT;
+> -
+> -	return __assign_mmap_offset_handle(file, handle, mmap_type, offset);
+> -}
+> -
+>  /**
+>   * i915_gem_mmap_offset_ioctl - prepare an object for GTT mmap'ing
+>   * @dev: DRM device
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.h b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
+> index 196417fd0f5c..253435795caf 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_mman.h
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.h
+> @@ -20,10 +20,6 @@ struct mutex;
+>  int i915_gem_mmap_gtt_version(void);
+>  int i915_gem_mmap(struct file *filp, struct vm_area_struct *vma);
+>  
+> -int i915_gem_dumb_mmap_offset(struct drm_file *file_priv,
+> -			      struct drm_device *dev,
+> -			      u32 handle, u64 *offset);
+> -
+>  void __i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
+>  void i915_gem_object_release_mmap_gtt(struct drm_i915_gem_object *obj);
+>  
+> diff --git a/drivers/gpu/drm/i915/i915_driver.c b/drivers/gpu/drm/i915/i915_driver.c
+> index d50347e5773a..48d7e53c49d6 100644
+> --- a/drivers/gpu/drm/i915/i915_driver.c
+> +++ b/drivers/gpu/drm/i915/i915_driver.c
+> @@ -42,6 +42,7 @@
+>  #include <drm/drm_aperture.h>
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_ioctl.h>
+> +#include <drm/drm_gem.h>
+>  #include <drm/drm_managed.h>
+>  #include <drm/drm_probe_helper.h>
+>  
+> @@ -1826,7 +1827,7 @@ static const struct drm_driver i915_drm_driver = {
+>  	.gem_prime_import = i915_gem_prime_import,
+>  
+>  	.dumb_create = i915_gem_dumb_create,
+> -	.dumb_map_offset = i915_gem_dumb_mmap_offset,
+> +	.dumb_map_offset = drm_gem_dumb_map_offset,
+>  
+>  	.ioctls = i915_ioctls,
+>  	.num_ioctls = ARRAY_SIZE(i915_ioctls),
 
-It should be possible to use include/linux/u64_stats_sync.h but it seems
-like overkill in this case. First, we mostly care whether the counters are
-not zero and/or incremening. We typically don't care about the exact value.
-Second, the counters are unlikely to ever reach 4G. Essentially, they are
-incremented on memory allocation failures only meaning that the system need
-to be in a completely wedged state for a very long time for this to happen.
-
-Given the above additional complexity of u64_stats_sync.h does not seem to
-be worth it.
-
-Alex.
+-- 
+Jani Nikula, Intel
