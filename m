@@ -2,62 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C4F7E9C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D927E9C29
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjKMMkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        id S230163AbjKMMcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMMkU (ORCPT
+        with ESMTP id S230216AbjKMMcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:40:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73943171F;
-        Mon, 13 Nov 2023 04:40:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699879216; x=1731415216;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UjuuT7vwu5HyOEeJ+9HscGkad4vAsx/2d+SgD8lgWTY=;
-  b=IHfX4N36qtQ92iiKgJWgpbj7N6d1tyqNrrxiEVqDCPVYo8hOVDSoV0r8
-   2eS4+RphgumBp6h3JTCmmCZ85TIMT8/1WS047mn8fZxOMiW4XkpS94qsG
-   0htaa2cr0iKk7ZlTYUzRe0HlcVUeL1lXrwvAzlOCXDoxyWssHoK1WgLJj
-   UIwfpNb7/TySbLGc/jbuwP4l3iZBv+NR0zzmN2La2MSR4fJryrto6gvif
-   tztpJmDGiyCFO1/GZLn3L7NjTDTcTmyMaNUy0ObGFb0M6bLbLMLMvzJdw
-   7Fa6fDQmNtu94M6S+5Jd5I2MQo+UwzRKlcJ/FTUCo6k+Gi9n1sgpGVD14
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="375454571"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="375454571"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 04:39:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="767903399"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="767903399"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Nov 2023 04:39:56 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4EB607F1; Mon, 13 Nov 2023 14:31:49 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Raag Jadav <raag.jadav@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 2/2] pinctrl: intel: Add a generic Intel pin control platform driver
-Date:   Mon, 13 Nov 2023 14:28:48 +0200
-Message-ID: <20231113123147.4075203-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20231113123147.4075203-1-andriy.shevchenko@linux.intel.com>
-References: <20231113123147.4075203-1-andriy.shevchenko@linux.intel.com>
+        Mon, 13 Nov 2023 07:32:13 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846B81732;
+        Mon, 13 Nov 2023 04:32:09 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9e4675c7a5fso626358566b.0;
+        Mon, 13 Nov 2023 04:32:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699878728; x=1700483528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1BA37xzLMbaGEFB8hLhmjzvz9IlyQPVOmdDLVIho+g=;
+        b=eDGAJpdtanpmnu2UyGQu0RRFJbEHzYD7SPFGU3mzemtwc1M836U2a5qoonVqTcUBq6
+         SEz6CDa12R468ADCvJn+PIa1qf9dfSW4XYhUblIZ6Tw+J385cTMOlTHfJFRBZXEZEmrk
+         DG22KSji2hYqc2Ekq5yTjKCdHm1MwrpTjo+HZuSBhXeUWILbxsh5xDccrF3HtTdQ6q97
+         mVdIodHDS+2Zj88copV3QGObY/gqjwtWXx/TYO8jbUfTVZe1DToKjlYZtDeXV7eA2MMs
+         Jh6gGb0drehLSAWcrgEAL8X4EVHQ3Up+C0eKI78ldBiD+3W+AiH/9URbhsIF44eXGBG1
+         XRew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699878728; x=1700483528;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x1BA37xzLMbaGEFB8hLhmjzvz9IlyQPVOmdDLVIho+g=;
+        b=NtUrfCk5oLWY0sTvxWtV4zhTE8U7aYpijjYfJ1zZXPzZKHJRtU4a63wPOb5v/RKWSd
+         8Qxr+liHV+db8Q7UGDkaUj1uKlGbKu61xaGS2gxWgdznX7CVNoKXswPbMtTKXH4/M77s
+         ZDz8gTJ6QSMAqhjz2ubg40jJu/UidPJaSPBwBKn7xBORLx9zOEHPRFH9bqI8fn6mY/QZ
+         8pLYUiS5LQw81mR9g5Ykd1zeOjAfhJaR7fBfqww1tDer8aSU1yP+3iP6UNyMr+KkykC6
+         uoS3sYPT2+cxSeDHX2JCKh1uwctY0TJRKmsJ3scfe+M2lFrrjpJdirDUcE2bg8J2u6m4
+         3wmg==
+X-Gm-Message-State: AOJu0YyRG2G0rOMQSgP27lRArU7w9RBanzWfh6084uXYwq3Uig6yEl6O
+        Myh13KLygdkjAlhAR7566Lg=
+X-Google-Smtp-Source: AGHT+IHdv6FpGBoNZX6lKWCWGJ3sgmgVzfv+2IGImtL/y6l0K6r+Q6rEOV/VB3FfV2g/FqnaPVcplg==
+X-Received: by 2002:a17:906:bc54:b0:9d5:ecf9:e6b5 with SMTP id s20-20020a170906bc5400b009d5ecf9e6b5mr4641477ejv.59.1699878727732;
+        Mon, 13 Nov 2023 04:32:07 -0800 (PST)
+Received: from ?IPV6:2a01:c22:6e16:fe00:5105:d737:3805:1e81? (dynamic-2a01-0c22-6e16-fe00-5105-d737-3805-1e81.c22.pool.telefonica.de. [2a01:c22:6e16:fe00:5105:d737:3805:1e81])
+        by smtp.googlemail.com with ESMTPSA id y10-20020a1709064b0a00b009dd7bc622fbsm3964988eju.113.2023.11.13.04.32.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 04:32:07 -0800 (PST)
+Message-ID: <6f924890-a5a0-48b4-973d-3c0f88b0d294@gmail.com>
+Date:   Mon, 13 Nov 2023 13:32:07 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 15/20] drivers/gpu/drm/i915/display: remove I2C_CLASS_DDC
+ support
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231113112344.719-1-hkallweit1@gmail.com>
+ <20231113112344.719-16-hkallweit1@gmail.com> <87sf59vodx.fsf@intel.com>
+Content-Language: en-US
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <87sf59vodx.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,285 +127,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New generations of Intel platforms will provide better description
-of the pin control devices in the ACPI tables. Hence, we may provide
-a generic pin control platform driver to cover all of them.
-Currently the following Intel SoCs / platforms require this to be
-functional:
-- Lunar Lake
+On 13.11.2023 13:17, Jani Nikula wrote:
+> On Mon, 13 Nov 2023, Heiner Kallweit <hkallweit1@gmail.com> wrote:
+>> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+>> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+>> Class-based device auto-detection is a legacy mechanism and shouldn't
+>> be used in new code. So we can remove this class completely now.
+> 
+> So this is copy-pasted to all commits and the cover letter, but please
+> do explain why there are no functional changes here (or are there?),
+> without me having to go through the i2c stack and try to find the
+> commits alluded to in "After removal of the legacy ...".
+> 
+Legacy eeprom driver was marked deprecated 4 yrs ago with:
+3079b54aa9a0 ("eeprom: Warn that the driver is deprecated")
+Now it has been removed with:
+0113a99b8a75 ("eeprom: Remove deprecated legacy eeprom driver")
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/intel/Kconfig                 |  10 +
- drivers/pinctrl/intel/Makefile                |   1 +
- .../pinctrl/intel/pinctrl-intel-platform.c    | 225 ++++++++++++++++++
- 3 files changed, 236 insertions(+)
- create mode 100644 drivers/pinctrl/intel/pinctrl-intel-platform.c
+Declaration of I2C_CLASS_DDC support is a no-op now, so there's
+no functional change in this patch.
 
-diff --git a/drivers/pinctrl/intel/Kconfig b/drivers/pinctrl/intel/Kconfig
-index d66f4f6932d8..8c50bae85bca 100644
---- a/drivers/pinctrl/intel/Kconfig
-+++ b/drivers/pinctrl/intel/Kconfig
-@@ -37,6 +37,16 @@ config PINCTRL_INTEL
- 	select GPIOLIB
- 	select GPIOLIB_IRQCHIP
- 
-+config PINCTRL_INTEL_PLATFORM
-+	tristate "Intel pinctrl and GPIO platform driver"
-+	depends on ACPI
-+	select PINCTRL_INTEL
-+	help
-+	  This pinctrl driver provides an interface that allows configuring
-+	  of Intel PCH pins and using them as GPIOs. Currently the following
-+	  Intel SoCs / platforms require this to be functional:
-+	  - Lunar Lake
-+
- config PINCTRL_ALDERLAKE
- 	tristate "Intel Alder Lake pinctrl and GPIO driver"
- 	select PINCTRL_INTEL
-diff --git a/drivers/pinctrl/intel/Makefile b/drivers/pinctrl/intel/Makefile
-index f6d30f2d973a..96c93ed4bd58 100644
---- a/drivers/pinctrl/intel/Makefile
-+++ b/drivers/pinctrl/intel/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_PINCTRL_TANGIER)		+= pinctrl-tangier.o
- obj-$(CONFIG_PINCTRL_MERRIFIELD)	+= pinctrl-merrifield.o
- obj-$(CONFIG_PINCTRL_MOOREFIELD)	+= pinctrl-moorefield.o
- obj-$(CONFIG_PINCTRL_INTEL)		+= pinctrl-intel.o
-+obj-$(CONFIG_PINCTRL_INTEL_PLATFORM)	+= pinctrl-intel-platform.o
- obj-$(CONFIG_PINCTRL_ALDERLAKE)		+= pinctrl-alderlake.o
- obj-$(CONFIG_PINCTRL_BROXTON)		+= pinctrl-broxton.o
- obj-$(CONFIG_PINCTRL_CANNONLAKE)	+= pinctrl-cannonlake.o
-diff --git a/drivers/pinctrl/intel/pinctrl-intel-platform.c b/drivers/pinctrl/intel/pinctrl-intel-platform.c
-new file mode 100644
-index 000000000000..4a19ab3b4ba7
---- /dev/null
-+++ b/drivers/pinctrl/intel/pinctrl-intel-platform.c
-@@ -0,0 +1,225 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel PCH pinctrl/GPIO driver
-+ *
-+ * Copyright (C) 2021-2023, Intel Corporation
-+ * Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-+ */
-+
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
-+#include <linux/property.h>
-+#include <linux/string_helpers.h>
-+
-+#include <linux/pinctrl/pinctrl.h>
-+
-+#include "pinctrl-intel.h"
-+
-+struct intel_platform_pins {
-+	struct pinctrl_pin_desc *pins;
-+	size_t npins;
-+};
-+
-+static int intel_platform_pinctrl_prepare_pins(struct device *dev, size_t base,
-+					       const char *name, u32 size,
-+					       struct intel_platform_pins *pins)
-+{
-+	struct pinctrl_pin_desc *descs;
-+	char **pin_names;
-+	unsigned int i;
-+
-+	pin_names = devm_kasprintf_strarray(dev, name, size);
-+	if (IS_ERR(pin_names))
-+		return PTR_ERR(pin_names);
-+
-+	descs = devm_krealloc_array(dev, pins->pins, base + size, sizeof(*descs), GFP_KERNEL);
-+	if (!descs)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < size; i++) {
-+		unsigned int pin_number = base + i;
-+		char *pin_name = pin_names[i];
-+		struct pinctrl_pin_desc *desc;
-+
-+		/* Unify delimiter for pin name */
-+		strreplace(pin_name, '-', '_');
-+
-+		desc = &descs[pin_number];
-+		desc->number = pin_number;
-+		desc->name = pin_name;
-+	}
-+
-+	pins->pins = descs;
-+	pins->npins = base + size;
-+
-+	return 0;
-+}
-+
-+static int intel_platform_pinctrl_prepare_group(struct device *dev,
-+						struct fwnode_handle *child,
-+						struct intel_padgroup *gpp,
-+						struct intel_platform_pins *pins)
-+{
-+	size_t base = pins->npins;
-+	const char *name;
-+	u32 size;
-+	int ret;
-+
-+	ret = fwnode_property_read_string(child, "intc-gpio-group-name", &name);
-+	if (ret)
-+		return ret;
-+
-+	ret = fwnode_property_read_u32(child, "intc-gpio-pad-count", &size);
-+	if (ret)
-+		return ret;
-+
-+	ret = intel_platform_pinctrl_prepare_pins(dev, base, name, size, pins);
-+	if (ret)
-+		return ret;
-+
-+	gpp->base = base;
-+	gpp->size = size;
-+	gpp->gpio_base = INTEL_GPIO_BASE_MATCH;
-+
-+	return 0;
-+}
-+
-+static int intel_platform_pinctrl_prepare_community(struct device *dev,
-+						    struct intel_community *community,
-+						    struct intel_platform_pins *pins)
-+{
-+	struct fwnode_handle *child;
-+	struct intel_padgroup *gpps;
-+	unsigned int group;
-+	size_t ngpps;
-+	u32 offset;
-+	int ret;
-+
-+	ret = device_property_read_u32(dev, "intc-gpio-pad-ownership-offset", &offset);
-+	if (ret)
-+		return ret;
-+	community->padown_offset = offset;
-+
-+	ret = device_property_read_u32(dev, "intc-gpio-pad-configuration-lock-offset", &offset);
-+	if (ret)
-+		return ret;
-+	community->padcfglock_offset = offset;
-+
-+	ret = device_property_read_u32(dev, "intc-gpio-host-software-pad-ownership-offset", &offset);
-+	if (ret)
-+		return ret;
-+	community->hostown_offset = offset;
-+
-+	ret = device_property_read_u32(dev, "intc-gpio-gpi-interrupt-status-offset", &offset);
-+	if (ret)
-+		return ret;
-+	community->is_offset = offset;
-+
-+	ret = device_property_read_u32(dev, "intc-gpio-gpi-interrupt-enable-offset", &offset);
-+	if (ret)
-+		return ret;
-+	community->ie_offset = offset;
-+
-+	ngpps = device_get_child_node_count(dev);
-+	if (!ngpps)
-+		return -ENODEV;
-+
-+	gpps = devm_kcalloc(dev, ngpps, sizeof(*gpps), GFP_KERNEL);
-+	if (!gpps)
-+		return -ENOMEM;
-+
-+	group = 0;
-+	device_for_each_child_node(dev, child) {
-+		struct intel_padgroup *gpp = &gpps[group];
-+
-+		gpp->reg_num = group;
-+
-+		ret = intel_platform_pinctrl_prepare_group(dev, child, gpp, pins);
-+		if (ret)
-+			return ret;
-+
-+		group++;
-+	}
-+
-+	community->ngpps = ngpps;
-+	community->gpps = gpps;
-+
-+	return 0;
-+}
-+
-+static int intel_platform_pinctrl_prepare_soc_data(struct device *dev,
-+						   struct intel_pinctrl_soc_data *data)
-+{
-+	struct intel_platform_pins pins = {};
-+	struct intel_community *communities;
-+	size_t ncommunities;
-+	unsigned int i;
-+	int ret;
-+
-+	/* Version 1.0 of the specification assumes only a single community per device node */
-+	ncommunities = 1,
-+	communities = devm_kcalloc(dev, ncommunities, sizeof(*communities), GFP_KERNEL);
-+	if (!communities)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < ncommunities; i++) {
-+		struct intel_community *community = &communities[i];
-+
-+		community->barno = i;
-+		community->pin_base = pins.npins;
-+
-+		ret = intel_platform_pinctrl_prepare_community(dev, community, &pins);
-+		if (ret)
-+			return ret;
-+
-+		community->npins = pins.npins - community->pin_base;
-+	}
-+
-+	data->ncommunities = ncommunities;
-+	data->communities = communities;
-+
-+	data->npins = pins.npins;
-+	data->pins = pins.pins;
-+
-+	return 0;
-+}
-+
-+static int intel_platform_pinctrl_probe(struct platform_device *pdev)
-+{
-+	struct intel_pinctrl_soc_data *data;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	ret = intel_platform_pinctrl_prepare_soc_data(dev, data);
-+	if (ret)
-+		return ret;
-+
-+	return intel_pinctrl_probe(pdev, data);
-+}
-+
-+static const struct acpi_device_id intel_platform_pinctrl_acpi_match[] = {
-+	{ "INTC105F" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, intel_platform_pinctrl_acpi_match);
-+
-+static struct platform_driver intel_platform_pinctrl_driver = {
-+	.probe = intel_platform_pinctrl_probe,
-+	.driver = {
-+		.name = "intel-pinctrl",
-+		.acpi_match_table = intel_platform_pinctrl_acpi_match,
-+		.pm = pm_sleep_ptr(&intel_pinctrl_pm_ops),
-+	},
-+};
-+module_platform_driver(intel_platform_pinctrl_driver);
-+
-+MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
-+MODULE_DESCRIPTION("Intel PCH pinctrl/GPIO driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_IMPORT_NS(PINCTRL_INTEL);
--- 
-2.43.0.rc1.1.gbec44491f096
+If loaded manually, the legacy eeprom driver exposed the DDC EEPROM
+to userspace. If this functionality is needed, then now the DDC
+EEPROM has to be explicitly instantiated using at24.
+
+See also:
+https://docs.kernel.org/i2c/instantiating-devices.html
+
+
+> What does this mean?
+> 
+> 
+> BR,
+> Jani.
+> 
+Heiner
+
+> 
+>>
+>> Preferably this series should be applied via the i2c tree.
+>>
+>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+>>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_gmbus.c |    1 -
+>>  drivers/gpu/drm/i915/display/intel_sdvo.c  |    1 -
+>>  2 files changed, 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_gmbus.c b/drivers/gpu/drm/i915/display/intel_gmbus.c
+>> index 40d7b6f3f..e9e4dcf34 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_gmbus.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_gmbus.c
+>> @@ -899,7 +899,6 @@ int intel_gmbus_setup(struct drm_i915_private *i915)
+>>  		}
+>>  
+>>  		bus->adapter.owner = THIS_MODULE;
+>> -		bus->adapter.class = I2C_CLASS_DDC;
+>>  		snprintf(bus->adapter.name,
+>>  			 sizeof(bus->adapter.name),
+>>  			 "i915 gmbus %s", gmbus_pin->name);
+>> diff --git a/drivers/gpu/drm/i915/display/intel_sdvo.c b/drivers/gpu/drm/i915/display/intel_sdvo.c
+>> index a636f42ce..5e64d1baf 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_sdvo.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_sdvo.c
+>> @@ -3311,7 +3311,6 @@ intel_sdvo_init_ddc_proxy(struct intel_sdvo_ddc *ddc,
+>>  	ddc->ddc_bus = ddc_bus;
+>>  
+>>  	ddc->ddc.owner = THIS_MODULE;
+>> -	ddc->ddc.class = I2C_CLASS_DDC;
+>>  	snprintf(ddc->ddc.name, I2C_NAME_SIZE, "SDVO %c DDC%d",
+>>  		 port_name(sdvo->base.port), ddc_bus);
+>>  	ddc->ddc.dev.parent = &pdev->dev;
+>>
+> 
 
