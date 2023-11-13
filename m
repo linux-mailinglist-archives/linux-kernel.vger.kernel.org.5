@@ -2,71 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863747EA314
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510A27EA316
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjKMStu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        id S231618AbjKMSuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMStt (ORCPT
+        with ESMTP id S231607AbjKMSuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:49:49 -0500
-Received: from mx.manguebit.com (mx.manguebit.com [IPv6:2a01:4f8:1c1e:a2ae::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FB710F4;
-        Mon, 13 Nov 2023 10:49:46 -0800 (PST)
-Message-ID: <6bcf9eb2d4ca5faa17e8e0842c4d69fd.pc@manguebit.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-        s=dkim; t=1699901384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YdugKrF1IHQlb6TkxWiEpumPtlmZ379QWs8fZvedX24=;
-        b=YPH52W0vCrsa65YO0LWx28OiLIEZNBi9nurcA/VlQfU+CVhc4XSv9teWPiiXs1gcZ/1S6j
-        2z6MMwfd8OkzBd5XtpWD0d1jPzocppDfGsmsY3/drw2AAPshTJlSBzCpZUPzSLbrfuvkB6
-        ymCPO/7JjQd0NXRxBi4v+t/uLTYZ+SFDkZ71rVWk7UHbVdcKcTmE4govFPIHZNuaQcH2AV
-        8Y3iAank794IxdExgLcjag4xkxyEzScpvdSHjKN5QJUrslHk0waL+X4k7/muesei2Gq/NX
-        MK84RCVSmjfqn76DjhOU8Dt57bep+RotwQ0WgX5lh5w+ISu7XfufWzE4yVYqoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-        s=dkim; t=1699901384; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YdugKrF1IHQlb6TkxWiEpumPtlmZ379QWs8fZvedX24=;
-        b=IVzS7DHdzhuBCTwZEqcrJ0EebdfaWtnBVQZ6Tw+SV10HTFOC7qiUOOF+qiAgtNE2oqyUp3
-        yujSJGmPc3XaAqgWbbde5G+cSFKXbfvWPX/QKlhBwyCwj1gTti0B3O6RsFH0yfPyNR5cmQ
-        Va8kvIh3FMMkGlANinL+Cn7mBqvnXZ4eQ9jFKCa1hlIrTR54qLH1eRLh3q06w7kaRqcp52
-        oSF1FZ/aQEHG6tbAR+yDY9uOlLwGLZ9Vso6JZbxxQ5/MaLlAAbBZpoqsjMp8VBF1Bl44Q0
-        8tfv52fOJnxnh4V6zU67knG0RoWXoUnDTy4Ea8OKjFk0nd5Ztut2s8KFZrOyTw==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=pc@manguebit.com smtp.mailfrom=pc@manguebit.com
-ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1699901384; a=rsa-sha256;
-        cv=none;
-        b=govAlo1L714Gbqo1VbQfkM6vjRsK6bhNSG9DtUwjDdkU3lMBmC6+ud9z2NrKh9jj2D0PkB
-        yIRk3dPQksDdh6Yi04mjjjTA1RpTozaISCoZrZrYIJYaTqcHrd9VbN+ciUQ2OioDao8vu9
-        T8Ygh0cWuG/vVbIc+asUd+GgyLrWuhB5rsU8iuACu5+SNkWAG0m75Ykjzvec5KGLSpLOwe
-        AloD5BcZc6XOF4a+NTZXcw6jhI8WBqi87a2SU59AqC9+nTDJhw51fgsqhPgGblhGPWfBCd
-        olJoZV6+MNASjIPOVtxOL5/OR6QEOac9JvWGOdCc8SUlj7c2af8WnkYA58jEKw==
-From:   Paulo Alcantara <pc@manguebit.com>
-To:     Ekaterina Esina <eesina@astralinux.ru>,
-        Steve French <sfrench@samba.org>
-Cc:     Ekaterina Esina <eesina@astralinux.ru>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>, Aurelien Aptel <aaptel@suse.com>,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
-        Anastasia Belova <abelova@astralinux.ru>
-Subject: Re: [PATCH] cifs: fix check of rc in function generate_smb3signingkey
-In-Reply-To: <20231113164241.32310-1-eesina@astralinux.ru>
-References: <20231113164241.32310-1-eesina@astralinux.ru>
-Date:   Mon, 13 Nov 2023 15:49:41 -0300
+        Mon, 13 Nov 2023 13:50:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AAF171F;
+        Mon, 13 Nov 2023 10:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IGnj/oSG6+zMy3aPMMPNinY1f2iziubTjwUJyW/5HPI=; b=OuAHd8ldaeJn1DmSsSIjmFvKHh
+        cHW9zIRxkl/fBvKr5iuAOw3ZcguOeKFGMpEx/pyG/zWhseCXO+ECfn9vUts/OsifAzTEp6ZRFV5Zb
+        fzzsdUBdQqiqE/8VSx2aTaczaFtFfAWW36LPEJ8rDEm5IXD9Tr/Urap6XECpMkUsakT/dxPyU7heC
+        TWGT4hr1KPc7ypGyYQ28iw8nWpDDaA2CZp71dy6ce/4ayRP0FN68nnXvqd9vbckjBZFKfZCUf5g/F
+        4fdqZR/3RuWPLFvKjDrlrWRrOX7Wk68zcmC0ydnA0Z5JYPgWhDhmQ9GDxnElOQqrG2yeiXu5kVnZA
+        juE7ParQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r2c0V-00FsCZ-82; Mon, 13 Nov 2023 18:49:59 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E38B5300427; Mon, 13 Nov 2023 19:49:58 +0100 (CET)
+Date:   Mon, 13 Nov 2023 19:49:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH RFC 04/10] perf: Introduce deferred user callchains
+Message-ID: <20231113184958.GA7901@noisy.programming.kicks-ass.net>
+References: <cover.1699487758.git.jpoimboe@kernel.org>
+ <d5def69b0c88bcbe2a85d0e1fd6cfca62b472ed4.1699487758.git.jpoimboe@kernel.org>
+ <CAM9d7chZcqR8WCEYtjpP4KzUOeNdJ=kSvae0UrjsO8OgsepjDw@mail.gmail.com>
+ <20231111184908.ym4l6cwzwnkl7e6m@treble>
+ <CAM9d7chgoiwc3ZfQ8SzO7gV0oQOKMK3bJAdxa63Pzgcqo4i7tQ@mail.gmail.com>
+ <20231113172106.GA12501@noisy.programming.kicks-ass.net>
+ <CAM9d7chg8c4yftXgAyZZyLuYJQaWYDTa9YY5x-S+Mb-8SM8K-A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7chg8c4yftXgAyZZyLuYJQaWYDTa9YY5x-S+Mb-8SM8K-A@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,20 +68,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ekaterina Esina <eesina@astralinux.ru> writes:
+On Mon, Nov 13, 2023 at 09:48:32AM -0800, Namhyung Kim wrote:
 
-> Remove extra check after condition, add check after generating key
-> for encryption. The check is needed to return non zero rc before
-> rewriting it with generating key for decryption.
->
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: d70e9fa55884 ("cifs: try opening channels after mounting")
-> Signed-off-by: Ekaterina Esina <eesina@astralinux.ru>
-> Co-developed-by: Anastasia Belova <abelova@astralinux.ru>
-> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
-> ---
->  fs/smb/client/smb2transport.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Yeah, I thought something like this first, but then I thought
+> "can we just use PID for this?"
 
-Reviewed-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
+TID, and assuming things are otherwise time ordered, yes.
