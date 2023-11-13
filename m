@@ -2,172 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C9D7EA702
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3289C7EA725
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbjKMXbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 18:31:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        id S231154AbjKMXpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 18:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMXbJ (ORCPT
+        with ESMTP id S229696AbjKMXpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 18:31:09 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B2F8F;
-        Mon, 13 Nov 2023 15:31:04 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2800f7c8125so4640053a91.1;
-        Mon, 13 Nov 2023 15:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699918263; x=1700523063; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kDZ1cIdWgAZuXI5ozto7uEtbIC72lCm4PFb4eXmL6CE=;
-        b=fa1oxU7jZs5RgBytDCxGvCGAamOXa2hhU8qkOGYLLa7Ticp3RCsfwNS8YW/o5EG20d
-         iDX5iITAEaCbo1khFWWR67k+at0P8VMNHDDnsw5FMiLXVy+F/TSYPJihwS/V7wkNZpjk
-         tsAgMvtSnMYUpeoM/LxI0p89BhebTyEUb8wwbrUwHduPeEfsIybWv1SJq0LjI0SKJRLb
-         6UmmFAHlI+Cf7Tvm23591nxs3Gqm1BNohgtx0XUWn5ED6ROGN8bcLBvoI2cVm6GBmX8v
-         hSbc83loeAKO8W+J/nNZey1m6YwaQ77DOdo6Oho2PiLF1ettcmav9yi9GmLBtNpGKxgV
-         wTsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699918263; x=1700523063;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kDZ1cIdWgAZuXI5ozto7uEtbIC72lCm4PFb4eXmL6CE=;
-        b=C4+9+FOmbRLHM58MqQJkOCCwnULj4hEkrnOE8aJ9JovjjX6esh/k6NDMnmRKP7Q7Ga
-         xh5X/aVKfSz7gBHLBp2WJlazKj272xAvkNbzVeDYrEWI/14dI2r3QT9EH05vwiS2AwYC
-         OIcjRPH2Nonq+EHUpHhCuKcGXwUdwLBppsPDgBLLl3NDDfz0/TCuRiTpvqSSs0h/6qyT
-         KDJTDAwoJfCf0fgAoX8okabXBzxRV4Fyy66M+Nn/4x9H/PdPIqlQtMCidHlGwpN9FVBM
-         WSYNXFg+C6SxgwLCu8zstZKxsJk/n42mNEri9iMzPUsgKWLZw5He3a5Slaf5YZ8GBB55
-         GDhA==
-X-Gm-Message-State: AOJu0YyYzWnFUee8gNi3wodPPr0OqYb74J41Gt42XECLqnOG2vwIkpHa
-        pGi9cUMAdSnTSl43mhzubjQ=
-X-Google-Smtp-Source: AGHT+IHxx+SJCVs7SPPaBNARSsTIQL2a78Bq6VjpoYvEXoFTIZ8zIJb8O8RxQL5Rcvn7Bfimz39oGg==
-X-Received: by 2002:a17:90b:180f:b0:280:4af4:1a41 with SMTP id lw15-20020a17090b180f00b002804af41a41mr1507089pjb.15.1699918263286;
-        Mon, 13 Nov 2023 15:31:03 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id k9-20020a170902694900b001cc0e3a29a8sm4529918plt.89.2023.11.13.15.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 15:31:02 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 8131A101BF818; Tue, 14 Nov 2023 06:31:00 +0700 (WIB)
-Date:   Tue, 14 Nov 2023 06:31:00 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Aditya Garg <gargaditya08@live.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Orlando Chamberlain <orlandoch.dev@gmail.com>,
-        Kerem Karabay <kekrby@gmail.com>,
-        Aun-Ali Zaidi <admin@kodeit.net>,
-        Asahi Linux Mailing List <asahi@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>
-Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
- starting from kernel 6.5
-Message-ID: <ZVKxtD2Mt_eVyttJ@archie.me>
-References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6D6G11eLM7jDJgCQ"
-Content-Disposition: inline
-In-Reply-To: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 13 Nov 2023 18:45:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA1DC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 15:44:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699919086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=7tJADaKroqOjkrAmUfZQotFKNEMB2n4vY0DbW8JJQxo=;
+        b=AQArzqyEEB1e61dntUX5gyH8Q/bTL8538b9Acsam4Ri2s16CEqG4N+Iy3ksfVcIic0FHEA
+        NgRildG+prFcxXfdOToQB1u2BgYTv3i2soBpZv6KX2fQnIpFXgHVoRRWeALKTq1hpNz2cZ
+        e7DAjxkOEoSQ47PI7KR1Vnzm7uYVoIs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-649-6N-CpV6PPMyT08pW-sOidQ-1; Mon,
+ 13 Nov 2023 18:44:42 -0500
+X-MC-Unique: 6N-CpV6PPMyT08pW-sOidQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0D90B1C05146;
+        Mon, 13 Nov 2023 23:44:42 +0000 (UTC)
+Received: from tpad.localdomain (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B87261121307;
+        Mon, 13 Nov 2023 23:44:41 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+        id 28959409B55B4; Mon, 13 Nov 2023 20:35:57 -0300 (-03)
+Message-ID: <20231113233420.446465795@redhat.com>
+User-Agent: quilt/0.67
+Date:   Mon, 13 Nov 2023 20:34:20 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: [patch 0/2] mm: too_many_isolated can stall due to out of sync VM counters
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A customer reported seeing processes hung at too_many_isolated,
+while analysis indicated that the problem occurred due to out
+of sync per-CPU stats (see below).
 
---6D6G11eLM7jDJgCQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix is to use node_page_state_snapshot to avoid the out of stale values.
 
-On Mon, Nov 13, 2023 at 08:57:35PM +0000, Aditya Garg wrote:
-> Starting from kernel 6.5, a regression in the kernel is causing Bluetooth=
- to not work on T2 Macs with BCM4377 chip.
->=20
-> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: htt=
-ps://pastebin.com/u9U3kbFJ
->=20
-> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: htt=
-ps://pastebin.com/aVHNFMRs
->=20
-> Also, the bug hasn=E2=80=99t been fixed even in 6.6.1, as reported by use=
-rs.
+2136 static unsigned long
+    2137 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
+    2138                      struct scan_control *sc, enum lru_list lru)
+    2139 {
+    :
+    2145         bool file = is_file_lru(lru);
+    :
+    2147         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+    :
+    2150         while (unlikely(too_many_isolated(pgdat, file, sc))) {
+    2151                 if (stalled)
+    2152                         return 0;
+    2153
+    2154                 /* wait a bit for the reclaimer. */
+    2155                 msleep(100);   <--- some processes were sleeping here, with pending SIGKILL.
+    2156                 stalled = true;
+    2157
+    2158                 /* We are about to die and free our memory. Return now. */
+    2159                 if (fatal_signal_pending(current))
+    2160                         return SWAP_CLUSTER_MAX;
+    2161         }
 
-Can you bisect this regression please?
+msleep() must be called only when there are too many isolated pages:
 
->=20
-> Some relevant bits imo:
->=20
->     =E2=80=A2 Sep 19 21:24:36 RudyUbuMbp kernel: hci_bcm4377 0000:73:00.1=
-: can't disable ASPM; OS doesn't have ASPM control
->=20
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: Call Trace:
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: <TASK>
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: dump_stack_lvl+0x48/0x70
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: dump_stack+0x10/0x20
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: __ubsan_handle_shift_out=
-_of_bounds+0x156/0x310
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? ttwu_do_activate+0x80/=
-0x290
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? raw_spin_rq_unlock+0x1=
-0/0x40
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? try_to_wake_up+0x292/0=
-x6c0
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? sched_slice+0x76/0x140
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? reweight_entity+0x15c/=
-0x170
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: __reg_op.cold+0x14/0x38
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: bitmap_release_region+0x=
-e/0x20
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: bcm4377_handle_ack+0x8c/=
-0x130 [hci_bcm4377]
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: bcm4377_poll_completion_=
-ring+0x196/0x330 [hci_bcm4377]
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: ? rcu_gp_kthread_wake+0x=
-57/0x90
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: bcm4377_irq+0x77/0x140 [=
-hci_bcm4377]
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: __handle_irq_event_percp=
-u+0x4c/0x1b0
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: handle_irq_event+0x39/0x=
-80
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: handle_edge_irq+0x8c/0x2=
-50
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: __common_interrupt+0x4f/=
-0x110
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: common_interrupt+0x45/0x=
-b0
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: asm_common_interrupt+0x2=
-7/0x40
->     =E2=80=A2 Nov 14 01:29:28 RudyUbuMbp kernel: RIP: 0033:0x7f17b5fd8bca
+    2019 static int too_many_isolated(struct pglist_data *pgdat, int file,
+    2020                 struct scan_control *sc)
+    2021 {
+    :
+    2030         if (file) {
+    2031                 inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
+    2032                 isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
+    2033         } else {
+    :
+    2046         return isolated > inactive;
 
-Anyway, thanks for the regression report. I'm adding it to regzbot:
+The return value was true since:
 
-#regzbot ^introduced: v6.4..v6.5
+    crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
+    $8 = {
+      counter = 1
+    }
+    crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
+    $9 = {
+      counter = 2
 
---=20
-An old man doll... just what I always wanted! - Clara
+while per_cpu stats had:
 
---6D6G11eLM7jDJgCQ
-Content-Type: application/pgp-signature; name="signature.asc"
+    crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
+    $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
+    crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
+    $86 = 0xffff00917fcc32e0
+    crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
+    $87 = -1 '\377'
 
------BEGIN PGP SIGNATURE-----
+    crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
+    $89 = 0xffff00917fe032e0
+    crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
+    $91 = -1 '\377'
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVKxsQAKCRD2uYlJVVFO
-o7pdAQCnfRXRPTO65yNiy5w0iigPO8iwskixInYi/GKY5Njt/wD/Zkgd2bApc+JF
-H8fRsVcs7KNkBGy8IHSdCWeFO/IWLw4=
-=vFNS
------END PGP SIGNATURE-----
+It seems that processes were trapped in direct reclaim/compaction loop
+because these nodes had few free pages lower than watermark min.
 
---6D6G11eLM7jDJgCQ--
+  crash> kmem -z | grep -A 3 Normal
+  :
+  NODE: 4  ZONE: 1  ADDR: ffff00817fffec40  NAME: "Normal"
+    SIZE: 8454144  PRESENT: 98304  MIN/LOW/HIGH: 68/166/264
+    VM_STAT:
+          NR_FREE_PAGES: 68
+  --
+  NODE: 5  ZONE: 1  ADDR: ffff00897fffec40  NAME: "Normal"
+    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
+    VM_STAT:
+          NR_FREE_PAGES: 45
+  --
+  NODE: 6  ZONE: 1  ADDR: ffff00917fffec40  NAME: "Normal"
+    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
+    VM_STAT:
+          NR_FREE_PAGES: 53
+  --
+  NODE: 7  ZONE: 1  ADDR: ffff00997fbbec40  NAME: "Normal"
+    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
+    VM_STAT:
+          NR_FREE_PAGES: 52
+
+
+---
+
+ include/linux/vmstat.h |    4 ++++
+ mm/compaction.c        |    6 +++---
+ mm/vmscan.c            |    8 ++++----
+ mm/vmstat.c            |   28 ++++++++++++++++++++++++++++
+ 4 files changed, 39 insertions(+), 7 deletions(-)
+
+
+
