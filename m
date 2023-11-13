@@ -2,84 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83B17EA519
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 995EF7EA522
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjKMUzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 15:55:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
+        id S231815AbjKMUzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 15:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjKMUzH (ORCPT
+        with ESMTP id S231806AbjKMUzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 15:55:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD5519E
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:55:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF40C433C7;
-        Mon, 13 Nov 2023 20:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699908904;
-        bh=HX9WoOacLDigRvGbp357tabXuA7DcFEvIQHKWbMNF6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LQaTqPxspSv8+i8SRdoAcGMGMJWmklQSt2qjaNXA1AMMlyY4c9y0uPRZK6v+driu+
-         PZT+8PlAO2Y0ZIVoKK8JgZWgb0r8FLC9xdYQbyV55NWfJegLb+P+AzXpqSAfuGEYVk
-         jObnlArfM+YzkpXwglUhxc39+XcVMAtVnr3jumiMlgx6fV0Mwxkg3LITDyNZ3DlLif
-         r3gn31aLtJF6maVADxUQ9qAFTgxLc6nkrFcZIFAmg5OyjUklwyIl7Q+ARPC84LaNHV
-         OSBqemaVBcAVWDerDEV+U8L7AyhIYpsVj6XLOGuIlymBEcxs0BenFcnsFiYriMqW/d
-         Q9OncnEY39k2Q==
-Date:   Mon, 13 Nov 2023 15:54:58 -0500
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     intel-gfx@lists.freedesktop.org, linux-i2c@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Mon, 13 Nov 2023 15:55:22 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC17AD5F
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:55:16 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ADKt4JJ014039;
+        Mon, 13 Nov 2023 14:55:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1699908904;
+        bh=j+n4JjUuu7SDvwZ82+lpls2l3JBtzYdBv37CtP3ObUA=;
+        h=From:To:CC:Subject:Date;
+        b=mNXWqSzREkkFWxja8MlUMK+Ynm2NNRzV5NnKslMYLJV3Gp7Pf8RcUFO06lt/gQW9i
+         ADjtTMHPK8kafPTUsdza26TmUYTDfCDErspKKnacYh+T2BIKeVcoZm9r9b6qRhcdwT
+         uzgPsQj4MXu5NGME4jrW3IpSosCzBtIofSnNZPdw=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ADKt4Pd117171
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 13 Nov 2023 14:55:04 -0600
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 13
+ Nov 2023 14:55:03 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 13 Nov 2023 14:55:04 -0600
+Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ADKt20b030247;
+        Mon, 13 Nov 2023 14:55:02 -0600
+From:   Andrew Davis <afd@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        Jocelyn Falempe <jfalempe@redhat.com>,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>
-Subject: Re: [PATCH 00/20] remove I2C_CLASS_DDC support
-Message-ID: <ZVKNIn1eSlZ9yzco@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        intel-gfx@lists.freedesktop.org, linux-i2c@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jocelyn Falempe <jfalempe@redhat.com>, linux-sunxi@lists.linux.dev,
-        linux-mediatek@lists.infradead.org, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>
-References: <20231113112344.719-1-hkallweit1@gmail.com>
- <ZVJhwSS16+/Zzt0f@shikoro>
- <887657ba-86ca-49bc-b6c3-8543610c3230@gmail.com>
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH v3] drm: omapdrm: Improve check for contiguous buffers
+Date:   Mon, 13 Nov 2023 14:55:01 -0600
+Message-ID: <20231113205501.616927-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6QEpjAXU69jL13kX"
-Content-Disposition: inline
-In-Reply-To: <887657ba-86ca-49bc-b6c3-8543610c3230@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,42 +67,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While a scatter-gather table having only 1 entry does imply it is
+contiguous, it is a logic error to assume the inverse. Tables can have
+more than 1 entry and still be contiguous. Use a proper check here.
 
---6QEpjAXU69jL13kX
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Andrew Davis <afd@ti.com>
+---
 
+Changes from v2:
+ - Double check that these multi-segment SGTs are handled correctly elsewhere in the driver
+ - Rebase on v6.7-rc1
 
-> We're not in a hurry. It's just my experience with patch series' affecting
-> multiple subsystems that typically the decision was to apply the full
-> series via one tree. Also to avoid inquires from maintainers like:
-> Shall I take it or are you going to take it?
-> Of course there may be different opinions. Please advise.
+Changes from v1:
+ - Sent correct version of patch :)
 
-Ok, then this turns out to be a negotation thing between the drm/fbdev
-maintainers and me. I *can* take all the patches, of course. But since
-the number of patches touching the non-i2c subsystems is high, I'd like
-to hear their preference, too.
+ drivers/gpu/drm/omapdrm/omap_gem.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
+index c48fa531ca321..3421e8389222a 100644
+--- a/drivers/gpu/drm/omapdrm/omap_gem.c
++++ b/drivers/gpu/drm/omapdrm/omap_gem.c
+@@ -48,7 +48,7 @@ struct omap_gem_object {
+ 	 *   OMAP_BO_MEM_DMA_API flag set)
+ 	 *
+ 	 * - buffers imported from dmabuf (with the OMAP_BO_MEM_DMABUF flag set)
+-	 *   if they are physically contiguous (when sgt->orig_nents == 1)
++	 *   if they are physically contiguous
+ 	 *
+ 	 * - buffers mapped through the TILER when pin_cnt is not zero, in which
+ 	 *   case the DMA address points to the TILER aperture
+@@ -148,12 +148,18 @@ u64 omap_gem_mmap_offset(struct drm_gem_object *obj)
+ 	return drm_vma_node_offset_addr(&obj->vma_node);
+ }
+ 
++static bool omap_gem_sgt_is_contiguous(struct sg_table *sgt, size_t size)
++{
++	return !(drm_prime_get_contiguous_size(sgt) < size);
++}
++
+ static bool omap_gem_is_contiguous(struct omap_gem_object *omap_obj)
+ {
+ 	if (omap_obj->flags & OMAP_BO_MEM_DMA_API)
+ 		return true;
+ 
+-	if ((omap_obj->flags & OMAP_BO_MEM_DMABUF) && omap_obj->sgt->nents == 1)
++	if ((omap_obj->flags & OMAP_BO_MEM_DMABUF) &&
++	    omap_gem_sgt_is_contiguous(omap_obj->sgt, omap_obj->base.size))
+ 		return true;
+ 
+ 	return false;
+@@ -1385,7 +1391,7 @@ struct drm_gem_object *omap_gem_new_dmabuf(struct drm_device *dev, size_t size,
+ 	union omap_gem_size gsize;
+ 
+ 	/* Without a DMM only physically contiguous buffers can be supported. */
+-	if (sgt->orig_nents != 1 && !priv->has_dmm)
++	if (!omap_gem_sgt_is_contiguous(sgt, size) && !priv->has_dmm)
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	gsize.bytes = PAGE_ALIGN(size);
+@@ -1399,7 +1405,7 @@ struct drm_gem_object *omap_gem_new_dmabuf(struct drm_device *dev, size_t size,
+ 
+ 	omap_obj->sgt = sgt;
+ 
+-	if (sgt->orig_nents == 1) {
++	if (omap_gem_sgt_is_contiguous(sgt, size)) {
+ 		omap_obj->dma_addr = sg_dma_address(sgt->sgl);
+ 	} else {
+ 		/* Create pages list from sgt */
+-- 
+2.39.2
 
---6QEpjAXU69jL13kX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVSjR4ACgkQFA3kzBSg
-KbYBGw//VUbVW9+Ixe9HjIJ3HSfBWxKVxRlhYfBmhO2cE0q82ZWNtXn9KLCRvISh
-gZrYpOYKuRPodc9sB1e/Rq02rg4ZUdVslMIs6CARXyHkijz+WjIqexT7uMjM4hVr
-8cQfVKgr72AbhCzzD8q1g5KIYbnwkeS4NDPc48YYKs7CgpRsCfBaisBvbCCEZFez
-oMVUyEqNtFOeBht//TldZh+lhRVBw8fIEUT2/y4pYtuA1gFAsD5kFKu1JkYRn9uL
-WWb9mRIz2ybsmzlxda1ED+z7YegeV6yaNQahG++hboHcVEhYlNeWbCx0few90tpb
-8AuP1ArLT8SdvOcYHLRBzcE8C94fpichL7IbfZGeHr74DJSehuD5huLHC6WvcMsR
-9A6eW3D82gAa+SCgUFpndu82NbVtBrqOl06BdQpARQZ0sqvQ6SMGx2Vvd4LgKGth
-tKnNU5kH9Q1eP04Pn1dJQqHgJYjsA2eaOG5GGIcuZHWigWZIUnYrOpTVKvChlwJc
-UV3URepN9RiQ7aOMB65NcBLJ/FSEe02wSE7uLpu7N6G60RaKPFMYPE3hRKjyCXky
-/9iJ4EB02vBA2xbP8lV5ZXdxrPv752oaC9kqNnsb2JrmOULiTgXnDanBmSHvtQ9n
-o3AwiwXfOeWtBA2twxpEzqOcc28pvOFLTAWBcjgPVsUDVJP8mgE=
-=HpzL
------END PGP SIGNATURE-----
-
---6QEpjAXU69jL13kX--
