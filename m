@@ -2,185 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DB57EA149
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37497EA14F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjKMQbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:31:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        id S229873AbjKMQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMQbP (ORCPT
+        with ESMTP id S229454AbjKMQdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:31:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AABDB;
-        Mon, 13 Nov 2023 08:31:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699893072; x=1731429072;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=ds30mPHsUg8u2AQYd5kdNQVe8k+y/rWFZDfOlgDzTtk=;
-  b=kJm2RD5l/OQeQHAAOD81PDC9ls293cdlKuKbv3ivXI+7bDKlYCqpa70L
-   ucvApfqjzQDgIfea98aeTdlqPz41Efyrbc2RSKTUBJc6e2HkW6cwF7nDf
-   37S+5bUtRhqkvCk8ezO3H4MYfhWNrhamvmaMG6waNUGLIxs2mrpOie2vg
-   sDmxeDC19Z8GEhAvHZ+WKEy80Xk2kTzANPMTo2C8gghE0McupCZJa31Vr
-   SJ8cx7z8CGwRwNH3BTRnsltCIUD+aNS2MBIgwvw8M2ayK4vkkiuiQKBVq
-   7aJNfmd3JYGyPouPGOGKE/ZcVRCTaVDUJHlUCccJfRUqFRxKNCYUYFaRX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="456954139"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="456954139"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 08:30:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="834762743"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="834762743"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Nov 2023 08:30:37 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 13 Nov 2023 08:30:36 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 13 Nov 2023 08:30:36 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 13 Nov 2023 08:30:36 -0800
+        Mon, 13 Nov 2023 11:33:44 -0500
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2112.outbound.protection.outlook.com [40.107.15.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B73FF2;
+        Mon, 13 Nov 2023 08:33:40 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IVPHCWFjDa1cWajXcMYVUqyRGXWYibnb7sA+/MUMETCdcR5pZeEMCJEJXcjVCw9000cGNf/N+dNgsRMP6lTAYlF3uvxq8N5woBI+QRZy8VU8U5Yy49yT3c7VcNjrcWEqBLgf8fO54OzKA4IucFGbi9WK4KdDGui6Bk7PDTLWhLzf5xNFr6ER9mjd2/K2EVEbOIPnPvt+EuLW2Yn1wv4dM6ZfyqNd1fSjgIum6sQLMK1emkn5QI1qvFD51xuS1eZ2QIUWNaRWb9iu6USJF2y6QYRAOJnpovwsIZUqzSAV50esX4c9FIOD/Oy6qw804wqsM8DzRUQ5pUw+JjxeXNvpnw==
+ b=fUK5kzNWwfUBziIRKMnfN51qPM9npTTrVOMJ0K60nrM0ABzdDehGwbE7M7nbUsnx4YqH+e44+5TS9YKmbj0hqqfJrLsjE51iyhQdOVHrZ68VOCBY0hsrMUyCO03inLs5G/lr1ff1LFP3FROmL4fi7KiUoBeDTIjyjsyKqU2sZY7Wmfpo8n0PosCEu091GjBaRnfpBAy9gL+95yk9AkiiWqotx59L1hDb3uhbsuUVsCLWF5o5lYTIKPbsTLrEnC4Jn/WB/b4yk8OZXDIPkB7s8hrnOmFiP5hN38NxW/pRQDItYdSO3Nhgz4cFwrUdMBkqCPP6siGfrwc7GzY7HX0Krg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3mOzUE8EbBIVogol0QMJX2ZXqD4zFOgvFeKntl37zCg=;
- b=ZjYQQyri5fny+6qLgy9nyxLxUYZOWZF73aV3l5S83cVNG+UE52WU06er2leGopIyTykIYz7QOO1Eqs6nC6fiwGAlmnW9hZ2xThFYMVjMZVxw7vO+1TF3T/88a/OSwIvmLNsHSMzy4Gqzdm3TThrte1wgp4tFDJtE3pX23C3JDyKqKW7rxEb+SK2aCFIkZhI5AcuRsezJs0oHUaqUzhPv4bX2e5iWY38w/1MpVGBGPrEjYAe2GJsOs7o393QvAybniauTtBmgAGWevskMfY91X6ZUg9no68sAIoyDmxzsztPYZGj1zmi9QG8UvzLLPkjHkAK7txslt4FLlrUUQvNmHQ==
+ bh=g5tJxsjwEb7RAh4nXUwvDZSaYt2MHGT63VLFp+ugfG0=;
+ b=ldAyfEzY18uPqFH4XDSMAAx5+mC4FtBIDzVw1p35MOyzaz3DwLwbYT5ww4UqOOx9e6bRlYS6qHa2VgMMS4qYtoqWO//ZOaotdSAUMIy50MFemrtK+Qxe47sSXOAk0nzqN7LfKUPduqCcHEnx1lxgnMr4eel6VKl2AVFXZcirEsQEKQSOV/YM0ws+406726OGAPjJZl86XvneI+kwMF8zUZp+LRiYcTxUAkjCK9pCygjLf/h7LykOR7CQWR/mWd4hA8KajtQfb9+cfoHF4HFfJ3vGoUOucoESb2hLljHKPnzTGQJG9W2WANFPHVesvU3FhwJtkH0ULU93X+TnlDp+3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g5tJxsjwEb7RAh4nXUwvDZSaYt2MHGT63VLFp+ugfG0=;
+ b=iEfSXjq5tRwt/r5S7rCCf19EU8Ko+/vGiB9/24Juolufwjr4CZ9NzaBgkw7DlszB8jEqkdmFXZ2BeSvbjIroVTKoOPZKPHhM2vJZeoYIDes1jYRS7MBGU3l8LVRbf0Iw776FqAWxxwSkA9yucbEfHw20MNuT3V20SLtcnwGgyYyNcZjY8UECECeqxiPmKmYttTvH23mJdAQTKuwAeV9xKqCQ6WXDiTPdMi9u8oFc9eP6DkO1yudgTmQ0S8it6sFXoBRVJ/awVdqXpVwKgwO6lub04Bw8idRaBlxLVSapRIn8DSk1bPmvv89wDIOIqkRfQiRQByTz2IrtjN1tWu5AbQ==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by DS0PR11MB7651.namprd11.prod.outlook.com (2603:10b6:8:149::8) with
+ header.d=none;dmarc=none action=none header.from=virtuozzo.com;
+Received: from PAXPR08MB6956.eurprd08.prod.outlook.com (2603:10a6:102:1db::9)
+ by AS8PR08MB8465.eurprd08.prod.outlook.com (2603:10a6:20b:569::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Mon, 13 Nov
- 2023 16:30:32 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::5d1:aa22:7c98:f3c6]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::5d1:aa22:7c98:f3c6%7]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 16:30:32 +0000
-From:   Johnathan Mantey <johnathanx.mantey@intel.com>
-To:     <netdev@vger.kernel.org>
-CC:     <sam@mendozajonas.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v3] Revert ncsi: Propagate carrier gain/loss events to the NCSI controller
-Date:   Mon, 13 Nov 2023 08:30:29 -0800
-Message-ID: <20231113163029.106912-1-johnathanx.mantey@intel.com>
-X-Mailer: git-send-email 2.41.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
+ 2023 16:33:36 +0000
+Received: from PAXPR08MB6956.eurprd08.prod.outlook.com
+ ([fe80::46ee:1c5c:2cc6:b1fa]) by PAXPR08MB6956.eurprd08.prod.outlook.com
+ ([fe80::46ee:1c5c:2cc6:b1fa%4]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 16:33:36 +0000
+Message-ID: <971a67f9-fa21-42d5-b722-611bdfdc760e@virtuozzo.com>
+Date:   Mon, 13 Nov 2023 17:33:35 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: KVM: x86/vPMU/AMD: Can we detect PMU is off for a VM?
+Content-Language: en-US
+To:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Ivanov <alexander.ivanov@virtuozzo.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20231109180646.2963718-1-khorenko@virtuozzo.com>
+ <be70080d-fe76-4bd1-87b9-131eca8c7af1@virtuozzo.com>
+ <CALMp9eSg=DZrFcq1ERGMeoEngFLRFtmnQN6t-noFT8T596NAYA@mail.gmail.com>
+ <09116ed9-3409-4fbf-9c4f-7a94d8f620aa@virtuozzo.com>
+ <4a0296d4-e4c6-9b90-d805-04284ad1af9f@oracle.com>
+ <12aa9054-73cd-44d3-ba76-f3b59a2bdda3@virtuozzo.com>
+ <12d19ae8-9140-e569-4911-0d8ff8666260@oracle.com>
+ <600ec8cd-bd94-4f82-996f-28225442d5b2@virtuozzo.com>
+ <5ac76cf6-04e6-875f-3075-facffb01053b@oracle.com>
+From:   "Denis V. Lunev" <den@virtuozzo.com>
+In-Reply-To: <5ac76cf6-04e6-875f-3075-facffb01053b@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0122.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::7) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
+X-ClientProxiedBy: VI1PR08CA0224.eurprd08.prod.outlook.com
+ (2603:10a6:802:15::33) To PAXPR08MB6956.eurprd08.prod.outlook.com
+ (2603:10a6:102:1db::9)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DS0PR11MB7651:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7db4ee2-a5a2-4d97-d581-08dbe465dadd
+X-MS-TrafficTypeDiagnostic: PAXPR08MB6956:EE_|AS8PR08MB8465:EE_
+X-MS-Office365-Filtering-Correlation-Id: d12142fd-293e-4b66-8e1a-08dbe4664917
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VwjSHzeDO4AXrt7reEqhSiyhk5ifzfp343FnNfXfyctk2fTYycKa9DgaPvbsHCPY0f2X3nuShNYErGjDkYaJfSqnVe3JAHYDVYkjGG7L89PgV+bCVxQDz/gt9JTPzdOu4BoLBaQG3WinH8A40ZrpIe9h0nR+9l2Fk2yo6WP8GYlzuWElf/7Ce35Z8QsLP8oDpFwWmoBsmy8hC4t1RI4cwiAfL3S2ffkgzKpV3OngB0ckJmcNgzxTaeZ2NT8mV92eCfay98CnjyBNhzGV23r9sgbvk+GkRJqEuJ/YnsM/lMmqTBLInIowIxfjBOFuVgM6cKa3yobr2rg+FQSTRp3CQw6TDl5CmDg8PzrZkAgqD9MMV3Hgp5fmBwW6itKT2uXtDsvuTLWY4TgcS99zyulh2D3UQjTmhON4DCiQ5O+qVD9TOKlh7iAhqXH6Xi4xL3Hf0nXfLBIqg8MHAzBeBLkahjdkvai98plhm7A+YIthK/0x/0anoPTbpEwcWcHJPxKB54zK9ja+xRP43zBjvUhuOwWtVC7pBuLvs/AHA+F6DfCp39rsZ4wlNB8oSn6o0qnA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(376002)(346002)(39860400002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(26005)(2616005)(1076003)(83380400001)(82960400001)(6506007)(478600001)(6486002)(6666004)(6512007)(2906002)(41300700001)(38100700002)(5660300002)(86362001)(6916009)(36756003)(66556008)(66946007)(4326008)(66476007)(8676002)(8936002)(316002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 4g/04crTVc3wIfcZAV3Lb12U+InhryGqEjmIvXVp7NHnVUNcoyTFoLEXEx0uLHM0douhg0xuCSpmSXlVlngWxYgnhQ5UF/8Siw7yHhjltvypIEuiTnB7II5x3YvLff58rRz8R2MObeRqHyv7PQNhPndUMin4/25a3+lT9X7FSdweBZhVImMuWidWwEc97R8UjBfR6dplNZgMx4iMcJDBK2G3MHgLeq/Q2u2EaKqGoBVW9QGv44J6tRwdqaGtON5QKZaFeWpw6YNyaKjG9OO+OAaqLnlTeB/9esRzv3k58fqoiQ5ItjyfxbByyZhX21B+Ro2dGa2xRDd2BlU3mgxVL8ylVuo0PPz7fqJU6pkylsmPGUpkfPQZOBFj+f8+zvgIwdJzqZdklG6YtNbr7NX3n2H3TMLiXNfq7d350yzeoYYnQ9IwXEDNehKBPWAujcMkYu+4+1Pnb3GZ5fO8LhDmjIlU3rEuh/JymtybU3LheOJSPvh4rOU0NU0dvTcxrvbMxdbkMST+fJgTxC7vvd5y3IxocwUflgcf6vf8rsdHUOxzNMow1Q7FD96dyE3n6aOr7rGDEM8Zh4WJ1mT10zJLjO2f5ba8LwnLIz2oKL/mxFtnDJI8i7tKzRQXismoxrh6s2pWBNUUVAYlhAyQA6hllgzFdj8h+mRkdLs59tRgvfBwwAeNMy+/83sspBqjpfGc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR08MB6956.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(346002)(376002)(396003)(136003)(366004)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(26005)(38100700002)(83380400001)(31696002)(86362001)(7416002)(5660300002)(2616005)(6512007)(6506007)(53546011)(31686004)(478600001)(6486002)(966005)(36756003)(66946007)(316002)(110136005)(66476007)(6636002)(66556008)(54906003)(8676002)(4326008)(8936002)(2906002)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iIJOBs03CKA3nyHuiQj5CxSkCmMqW2DyvDkRlr40ybullljY8IXqZtmAXfMF?=
- =?us-ascii?Q?5RslJMSiRcTbu83j9FpgwXVEK7E4iLhqyVxJXfxLrsY6YAtTorjbSQYmZYT5?=
- =?us-ascii?Q?3sHILh/qQhdw0mQKx2pp6Km71oYeS+1P6TRX0l5sWWNl/PkKtanckgcb2Sh6?=
- =?us-ascii?Q?VGEf5gxnVkdglZ2q5gPUBDoLzbUEBK0fG0lwUTEOOVhxHM5WiNJRio0sB3Ix?=
- =?us-ascii?Q?XhXFfjoKNUNnN5vNr+MLbOkNhi/CPptamCXAJCUzfhMRBw2A8mMEzabxE9l8?=
- =?us-ascii?Q?4s2/saHnsWV/X45AAKnw4j6XVUAhLVSO8qPBwJutDW4eX5h+bNKZ2I21/JyA?=
- =?us-ascii?Q?DqyqjZF4wZ7wn2y54Q/HKqL+y46TzGsoxHHAOnENXJXFBorJ+byu3l9jREJ1?=
- =?us-ascii?Q?2oW4Ha3ak11hM/u/OlFplaPH+71KeUFcL/Akl3kfBsILoh/j2io//ccuve/L?=
- =?us-ascii?Q?K4IF9BpG24T23XG41cA6TFNWhvQFQapoxMn1hPDSkR2gRaC0b7ir0KTYvZPr?=
- =?us-ascii?Q?VCETJo0bqQnLddQCatjRnh2khs82PMvJpJEAU3BuMBMm0zHEqVZzTbG7ysx3?=
- =?us-ascii?Q?YGjO7JRpOc0dz0/qRCvtAOKP0A9+cLwAeBJ6vBeecYpSaPPYACzUkpPVPQ62?=
- =?us-ascii?Q?TfieLE5U40m4upxfZz9EW0mojOYFh3/s0F5G7EL4n3ypqtWgqG5JF6/m5WNO?=
- =?us-ascii?Q?bMRt77VEcxt1rzzdk2BpAdyMiVQQOqdIm7CsSi1PyMfiQZzwqz2LHYOVdZ5A?=
- =?us-ascii?Q?KKRA++YwKZGhCmwq0PXlND6rixB3Yh0LasXDsKz3WLIZNfsQhsdgVsFkjPhp?=
- =?us-ascii?Q?I5BngMcURJV/x/eQODm1YNhyPK/HxSJ7z3ocUpEXM97sEahF1ZsnPY5hLHep?=
- =?us-ascii?Q?Zk6wNesL67EDHP18uZv4yEEwtkB8yQmhp8Tp1WNBO4reGJWljCFXoI35E4Ic?=
- =?us-ascii?Q?zswMhpMOSlJ+Sd5HvJ1hZJ72aPyGKLxhRVczeb55pSqG3cD6MnVXLv2M53YZ?=
- =?us-ascii?Q?xyhSDnFTFRaAfcE2u2gTv8+mqklVGotl3RIr31wA11uP0FLik2wzR8CR3Uqs?=
- =?us-ascii?Q?ywn9UlAGb+z1/ShchtpN21fhj4F9dCg6XCbpRD5OSun/wf9boJVP0kwtRn6F?=
- =?us-ascii?Q?JaC11VHI2ZHPpBTpR/QZr2kUG9noE/k3di09lcpdWStRBRzgmnRgDCia7ASz?=
- =?us-ascii?Q?UGsimOH2jpC2HDKdFdyiPSrbv6Yuqj+D8WE+h6IAPHzP8uodgfCxeYUsvjY0?=
- =?us-ascii?Q?B+/QdZQShTvIfUl6v26hfJO4pzZnHWGFf8V3N8+V/DYxcOe1QPW5wivSXzXm?=
- =?us-ascii?Q?iSoKJ5eL+F26bb+9nbQ3v9YoS2EG6pNeXEdDDRTd78ybtzTIRwtD1Ok5Q04Q?=
- =?us-ascii?Q?SJgiFLwCit90O4I1ADRyB5t8slQmQS3KYS/xTJxV+JZHaqu4wP9aOWiuFAUZ?=
- =?us-ascii?Q?EHsLgIVTqRwDrDlWb4yTy9+6dSOV85wZFM3VNsAK6bt/fo9MTVmCV476baYJ?=
- =?us-ascii?Q?uIEnTa1Nx319NJ6GlmIL/yTTMQLDUFPMAmMUClXzSalhl1JUxCZdfOYvysKT?=
- =?us-ascii?Q?mjKXt2IPpN5OneM5vQ3Am6hqwQ6vatllaqfwadsCZhkktrsQZV5H1K6w7cNp?=
- =?us-ascii?Q?Uw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7db4ee2-a5a2-4d97-d581-08dbe465dadd
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RnJuSTdmcXRGL3J0N0hjVFA1bUNCMnB2dUw2QzVzaDVrVFY2cVBvTWdUdDFV?=
+ =?utf-8?B?ZmlCL3liYTBOK1BHNWUwamtEcWI3QVNVUXNMREtiQXA0RzVhOWsvRWtJZWxl?=
+ =?utf-8?B?aDFtek9CUzJkcjRGLzhwb1ZjemI5SkJBUWcyMXpRUmRBUmpOTWhZa2dVZ3BF?=
+ =?utf-8?B?NmxEc0hSZlorSDROVE5PZi9QcDhYK1k1REV0R2ZwUjFYbmppQnJheGN6M1g2?=
+ =?utf-8?B?NUZGcXV0cGpXL1dGMGVtNTJHRUZZK20yWUZyenBDcml3bk54OWpmWGl5WVZy?=
+ =?utf-8?B?VEZrWHB5Qld1OVpGOVRqOUtMMkVBdmcxOXFqMS84Q2dHZWpRQk50VWJmNWNZ?=
+ =?utf-8?B?L2ZFZGVzR01xZnBSN3RWOHVINmRIZnpQVUJiQ09yWFJEWjh1d293cjhyRGE5?=
+ =?utf-8?B?SFdxN2o2cFNIcDV3ZG9GUlh4OHVYbFBtNzhZSDJ4TUswL3RrZ0NvbDRCVUUr?=
+ =?utf-8?B?UkpWS0JITGJWYnhzMmJqaXJDS3h0M2JCd3o1blRDK2ZDTVl4UlpQNTdhL2Z0?=
+ =?utf-8?B?MDl2aGowOFRXY3YzT3VoZHhXNHQzbUxzUG1WZSt1djFvMmlocmovcEdlNGI5?=
+ =?utf-8?B?ejFsbWJjc241S1VsSThlQ3ZpYjZIQU5WYWUzN1F5U1o3RktSNm1Lc1QwM0RR?=
+ =?utf-8?B?bWp1UkFPaERXNWN4c1dKTVhyMFZmeHR3YzZmRUhpT0JsUW1PV1BtVlBYcjFI?=
+ =?utf-8?B?bEI3UEsrbGNkZEJsSUM0UkwyVHJNQng5QjNFT081VUlJQ3dTbHJDVStXZDNo?=
+ =?utf-8?B?dVE0akRZamthcVpNRkNnL3dxcWdIUEpqNEtha2RySGJTV0dYT0FoWjFINk42?=
+ =?utf-8?B?bDNFWmFIWlYwd2I1K01qOVpWNERjMytET0llRk9Oa1AwL0YzQXpxU3VwdW1C?=
+ =?utf-8?B?dkRzaXg2VmZmeXlzb2g0UjZqZzBpQXIwL1lFWVJKbkp4ZnlkeE9CTUtKYlRv?=
+ =?utf-8?B?RCszSGtYMFg4OXdYUjNBUzBTWEdGQXp3dzg1THJpL0tjQU9oVmdxZnI0S0lU?=
+ =?utf-8?B?UG84Y2xtbVA5MjJKVkFZUWN0c3JQcHRlNkg1cVVHV2cvK0ZwRHlGbGwvUWVw?=
+ =?utf-8?B?Z2ppeGsxbjZidjJ6TDljQmdTUkJOMGp5cG5DMkYwTXpmd1Rod0dxQXlpcDIv?=
+ =?utf-8?B?dWttVFhqa0x2alBvbUorV3h0S2RTZ0dSZVBNSGJQTk9kSVJtZ1VVMHJOSHlK?=
+ =?utf-8?B?QmFnOFNibkRQSDBOdlQzKzZjcU4zQU50SDhMYmtvZ3ByaG5tYmRXaTY4bllW?=
+ =?utf-8?B?VS92QkdKbkh6T1YzRE16WnNoRDcvcEFzekNBS3ZyTEc0WUQ3T1p1cUJFQU0x?=
+ =?utf-8?B?REpIT2d6OGE0V0VRaDM2aGNUYXVVbGZpNTJpbEVIVWJSMDdRaklVLzUrczNu?=
+ =?utf-8?B?VXNtVTFSbzZqZE45Zy9lT1JDbVlod2lnb25icS9uaHN1VTRYcy83RzRVRDR4?=
+ =?utf-8?B?UFg5S0hXMlA3R0tXazkwV2RYeEwyeTkzaE10cFR5TGkwak5md3dPM2pyV1Qz?=
+ =?utf-8?B?eCtBSXNYeEh3YU9zcnRRWTRZQitLemthMVErN0piY2ptcENSV0pISjRna0s0?=
+ =?utf-8?B?amhOYWV2bUk5eU9CUFF6cUEwYjlzL0RxdktBbUw1K1EyWHZPUXoyYzRBUEVX?=
+ =?utf-8?B?QlRyWm5Sc2ZFTlV0ZGlSMGJINFhVL0ZyNnFmRThwYk1XODQ5NHFneXpFcm9R?=
+ =?utf-8?B?b3NqY3lQRXprdGwyN2hOWHFaTDEzN2hQQWdMaENNdUJ1QkhlZWQvbFhTZ2k0?=
+ =?utf-8?B?b25HVC91N2JqVDYvTUVXWWNuRW9xQ0VvanNXVFFZQ1NxUmczdUxQMDJ2ajRP?=
+ =?utf-8?B?MHIwUksxbjJyMnkwMFZpdWlCUlR1cXArdFJ5NUZhdGQwVWZoK3FwbzBmU0Q2?=
+ =?utf-8?B?emFpVVdkR2tma3MyYXpsM1ZFTlFkc2VxVS9GUjlTWVk5MFQ4cDVkalhDeVMx?=
+ =?utf-8?B?NkRFVGdYVmMyZjJXeW1jR2kwK0ZLQmt3M1pHdGJCL05OM1Fkb3l2ZG1UMnZP?=
+ =?utf-8?B?c2JFVTRTSDA3cE5zdms3UmZ6TE5DZUp1L0p3dVh1dm9ZYkx3Z2pzWnVlRk51?=
+ =?utf-8?B?NnVjc0FXa0NZVGRSTEczOFFhU3dSd3NDWVJWV3JmRityK1hmdTQ4MnVSckxi?=
+ =?utf-8?Q?sUEJhUkOWusggxsfMAUDC/KzH?=
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d12142fd-293e-4b66-8e1a-08dbe4664917
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR08MB6956.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 16:30:32.2736
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 16:33:36.8340
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S1csylYIzT0mitIIpHZSPpnk3VD8ZwGx+e+UmDXDQ9KPrvQBJ0i3vY1wQt5saCbx7YVSY8XsBF5dOCF/OvpxbdtWGLNAFfqL1p+lTuWvYU4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7651
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: MaqdpkaoHYrB9cLddndoErn8gSU5geM/s+zEX93izoUI3S7MGzdvtKM/ProShWd/wpFvDM0+Zt23dWbjVto1/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB8465
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3780bb29311eccb7a1c9641032a112eed237f7e3.
+On 11/13/23 17:17, Dongli Zhang wrote:
+>
+> On 11/13/23 06:42, Denis V. Lunev wrote:
+>> On 11/13/23 15:14, Dongli Zhang wrote:
+>>> Hi Denis,
+>>>
+>>> On 11/13/23 01:31, Denis V. Lunev wrote:
+>>>> On 11/10/23 01:01, Dongli Zhang wrote:
+>>>>> On 11/9/23 3:46 PM, Denis V. Lunev wrote:
+>>>>>> On 11/9/23 23:52, Jim Mattson wrote:
+>>>>>>> On Thu, Nov 9, 2023 at 10:18 AM Konstantin Khorenko
+>>>>>>> <khorenko@virtuozzo.com> wrote:
+>>>>>>>> Hi All,
+>>>>>>>>
+>>>>>>>> as a followup for my patch: i have noticed that
+>>>>>>>> currently Intel kernel code provides an ability to detect if PMU is totally
+>>>>>>>> disabled for a VM
+>>>>>>>> (pmu->version == 0 in this case), but for AMD code pmu->version is never 0,
+>>>>>>>> no matter if PMU is enabled or disabled for a VM (i mean <pmu state='off'/>
+>>>>>>>> in the VM config which
+>>>>>>>> results in "-cpu pmu=off" qemu option).
+>>>>>>>>
+>>>>>>>> So the question is - is it possible to enhance the code for AMD to also
+>>>>>>>> honor
+>>>>>>>> PMU VM setting or it is
+>>>>>>>> impossible by design?
+>>>>>>> The AMD architectural specification prior to AMD PMU v2 does not allow
+>>>>>>> one to describe a CPU (via CPUID or MSRs) that has fewer than 4
+>>>>>>> general purpose PMU counters. While AMD PMU v2 does allow one to
+>>>>>>> describe such a CPU, legacy software that knows nothing of AMD PMU v2
+>>>>>>> can expect four counters regardless.
+>>>>>>>
+>>>>>>> Having said that, KVM does provide a per-VM capability for disabling
+>>>>>>> the virtual PMU: KVM_CAP_PMU_CAPABILITY(KVM_PMU_CAP_DISABLE). See
+>>>>>>> section 8.35 in Documentation/virt/kvm/api.rst.
+>>>>>> But this means in particular that QEMU should immediately
+>>>>>> use this KVM_PMU_CAP_DISABLE if this capability is supported and PMU=off. I am
+>>>>>> not seeing this code thus I believe that we have missed this. I think that
+>>>>>> this
+>>>>>> change worth adding. We will measure the impact :-) Den
+>>>>>>
+>>>>> I used to have a patch to use KVM_PMU_CAP_DISABLE in QEMU, but that did not
+>>>>> draw
+>>>>> many developers' attention.
+>>>>>
+>>>>> https://urldefense.com/v3/__https://lore.kernel.org/qemu-devel/20230621013821.6874-2-dongli.zhang@oracle.com/__;!!ACWV5N9M2RV99hQ!McSH2M-kuHmzAwTuXKxrjLkrdJoPqML6cY_Ndc-8k9LRQ7D1V9bSBRQPwHqtx9XCVLK3uzdsMaxyfwve$
+>>>>> It is time to first re-send that again.
+>>>>>
+>>>>> Dongli Zhang
+>>>> We have checked that setting KVM_PMU_CAP_DISABLE really helps. Konstantin has
+>>>> done this and this is good. On the other hand, looking into these patches I
+>>>> disagree with them. We should not introduce new option for QEMU. If PMU is
+>>>> disabled, i.e. we assume that pmu=off passed in the command line, we should set
+>>>> KVM_PMU_CAP_DISABLE for that virtual machine. Den
+>>> Can I assume you meant pmu=off, that is, cpu->enable_pmu in QEMU?
+>>>
+>>> In my opinion, cpu->enable_pmu indicates the option to control the cpu features.
+>>> It may be used by any accelerators, and it is orthogonal to the KVM cap.
+>>>
+>>>
+>>> The KVM_PMU_CAP_DISABLE is only specific to the KVM accelerator.
+>>>
+>>>
+>>> That's why I had introduced a new option, to allow to configure the VM in my
+>>> dimensions.
+>>>
+>>> It means one dimension to AMD, but two for Intel: to disable PMU via cpuid, or
+>>> KVM cap.
+>>>
+>>> Anyway, this is KVM mailing list, and I may initiate the discussion in QEMU list.
+>>>
+>>> Thank you very much!
+>>>
+>>> Dongli Zhang
+>> with the option pmu='off' it is expected that PMU should be
+>> off for the guest. At the moment (without this KVM capability)
+>> we can disable PMU for Intel only and thus have performance
+>> degradation on AMD.
+>>
+>> This option disables PMU and thus normally when we are
+>> running KVM guest and wanting PMU to be off it would
+>> be required to
+>> * disable CPUID leaf for Intel
+>> * set KVM_PMU_CAP_DISABLE for both processors This would be quite natural and
+>> transparent for the libvirt. Alexander will prepare the patch today or tomorrow
+>> for the discussion. Den
+> That is what I had implemented in the v1 of patch.
+>
+> https://lore.kernel.org/all/20221119122901.2469-3-dongli.zhang@oracle.com/
+>
+> However, I changed that after people suggested introduce a new property.
+>
+> Dongli Zhang
+That would save a bit of our work :)
 
-The cited commit introduced unwanted behavior.
+For me this patch looks absolutely awesome and is doing exactly
+what I want to do in our downstream. This would get us required
+15+% benefit for each VMexit.
 
-The intent for the commit was to be able to detect carrier loss/gain
-for just the NIC connected to the BMC. The unwanted effect is a
-carrier loss for auxiliary paths also causes the BMC to lose
-carrier. The BMC never regains carrier despite the secondary NIC
-regaining a link.
-
-This change, when merged, needs to be backported to stable kernels.
-5.4-stable, 5.10-stable, 5.15-stable, 6.1-stable, 6.5-stable
-
-Fixes: 3780bb29311e ("ncsi: Propagate carrier gain/loss events to the NCSI controller")
-CC: stable@vger.kernel.org
-Signed-off-by: Johnathan Mantey <johnathanx.mantey@intel.com>
----
- net/ncsi/ncsi-aen.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/net/ncsi/ncsi-aen.c b/net/ncsi/ncsi-aen.c
-index f8854bff286c..62fb1031763d 100644
---- a/net/ncsi/ncsi-aen.c
-+++ b/net/ncsi/ncsi-aen.c
-@@ -89,11 +89,6 @@ static int ncsi_aen_handler_lsc(struct ncsi_dev_priv *ndp,
- 	if ((had_link == has_link) || chained)
- 		return 0;
- 
--	if (had_link)
--		netif_carrier_off(ndp->ndev.dev);
--	else
--		netif_carrier_on(ndp->ndev.dev);
--
- 	if (!ndp->multi_package && !nc->package->multi_channel) {
- 		if (had_link) {
- 			ndp->flags |= NCSI_DEV_RESHUFFLE;
--- 
-2.41.0
-
+Den
