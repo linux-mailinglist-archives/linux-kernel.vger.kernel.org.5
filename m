@@ -2,773 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03E97EA28D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4494F7EA28F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjKMSIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:08:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36868 "EHLO
+        id S231458AbjKMSJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:09:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMSIa (ORCPT
+        with ESMTP id S229454AbjKMSJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:08:30 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE69AC2;
-        Mon, 13 Nov 2023 10:08:24 -0800 (PST)
+        Mon, 13 Nov 2023 13:09:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F47DB;
+        Mon, 13 Nov 2023 10:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699898975; x=1731434975;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=oCPqqTuyXU7hHqvttl9FSkvlJFyayzeXXdrZNPAkKjY=;
+  b=JwgoP7vxzM8sBRBJzfG1pycphX150lXUS+Te8z9fRmFJOb5/rUt4NYKS
+   ZcRrLkz/FSrwBkTQp3iNDTovNVzFfhr/UpLolaITnYSHdqmZccyoiyj5Y
+   epmA0O9rFreblUHdgQZebRTzcz470ch0YTaDoVnC3zNgUNAtCbNKeG2X2
+   jp5nuAjKUBxWufo5QQ/+S3XEVm50Rrthr1EFMtWKWHHV8PnKVZYrQSJKk
+   rYxpZ0WHYzdiOhksywVmjVef2X7v/cCxIySYh4LiUDrc2ONAuZTEidEPE
+   1FcRX91zUgyClqwq0bsl8Eosngk3A17CaSXyMyGE5MzzlNcrhO9BvV1TG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="375515648"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="375515648"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 10:09:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="12527788"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Nov 2023 10:09:20 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 13 Nov 2023 10:09:18 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 13 Nov 2023 10:09:16 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 13 Nov 2023 10:09:16 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 13 Nov 2023 10:09:15 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N/nuBIdAAPJK3NpKdGn7IWZFJSP+bBZRwEyhz8O0Gbg9gHXkclZnVif/dzXJt2mX+30rzzTsHN/ALfu5v8y0cWlO+L7r9MjRtK/E+eRg6+VSYw8ZZoL5KV1fU1powv8PXTJnnQCmmnqY9QLC2hxPIXRV5gnFETnVTfqJCAG1H8DYgCacRzpIxfmV4XmWu/XyxwHCYdGvwML2lCLFDOV4X4ePNoeTZ6HG/Ys4hWIWNK/rBJb6yPYLCzqKW5fFh3YpcJ25wM3OlnN4E0i1wu6T/BNj2h7BMT9BIIdlQoTI2TQIYMZa9UXeZOpfK4kFm24SDt2Eo70v/xk/5d0YMbv6Mg==
+ b=l6P8fUUzllBgH8s+4v17OE0DCOrZG1ok6ONylpOXP5he0d3G5CeR/Zjvt1JlxVcF1mMveVSA4/SCk3oCT3XjBycLUasIfNaMelN5PrGcaQW1bKsLI3b8uEYrgRZk95pd7/HGotPdEwpDbP3yP2HJiisY+3G3M6lUzURW1ESaH8J35MHtshsePr/6AgCypESQVPc62B0KwfpNirchPH2Xow0IwC7XQMp40OquLJkJ89vWQSUb1nybOrNVy9uLZdMy/f2lYNdOCvFST7sb2rLPwmDm4gi4Nyh4cQf8d39hmtmO4fvQyRCBV6Epom30xPk8eGrQQzVKSuDKyWE/VjqDFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Lfmj9gvLYOf0crZ2u31Fpr7rE0HPByQ+KLnqiHkFEr8=;
- b=DcTcdeZmrFLEhjIbmpDBcGRxjeKItu1QPAnmo2Ps6ERFLuuORZejshYeB8g9xGWTazfM3LWgvs9OGCW2xJ8IqTB0IhBdX90B0byasoCkwlqFvjsU9AgMHkw9EvM+teK9CPNDi49T9v+ywkWAQe90esE75LvcZVc9PRltkUHHguCJ/8nAM6u31YWp9ZJtz1KU57wfb5Zne+PsfSlmDe8QGAC0N37Yl2BEOGsTz1HSg2DpFil7Ew+FqRSemGYvI3eDVLz5BQC50bL/+yQDioKTYVUD/DUxeywih3uz5pizl2ORAEFqC7XnEStSN6ou650/X82WaZ4tzjiPb6togG0FJg==
+ bh=oCPqqTuyXU7hHqvttl9FSkvlJFyayzeXXdrZNPAkKjY=;
+ b=Gqt/LI85qV7V7U48Sw1BJwObXZW9rpXvH0Xbz+Yj0I1IJEKkVeUdBONbk2opbmh3oycyYfJxkyi+6X9t7BJYw1wqEV233Yj5p4K3WqNNvk5HpzS0aoMUyMY7RUhT9L0aHHiOxOnUnKGaYzJN10iuK31pdH+qM1PuvwAo/3vDG1/NWF4t5m741876YSIA/y7YBho+bVepBXoMI1dZgUKLzk/wTWWFWRMz13x0brTseXPPPFEk4pHRmkRJFWCeZUuduAKKzslFJzd1OK7Kg1lGApwDxHuFfDI3PCew0yD0qIlmGwYOtUiQHXg94fJ7cC1LyARfipfoMZ91GKir+uVOYQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Lfmj9gvLYOf0crZ2u31Fpr7rE0HPByQ+KLnqiHkFEr8=;
- b=RDh6ziyNVKADnrOPrfGyTR9sA3B3CrpU/39OdbR8FiNG5Uny3u9aFE5ce8RuiHF1tALkVjzEC5ivvqEpEB/4vH4cShE7HgyFRe7MXvNQ0EgpJbEyX4/WdnHkbazMxdD/h7ngao31RnaXBN/NOyF2TiX8L9nIpAr0MDbBHEt/svs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by SN7PR12MB7934.namprd12.prod.outlook.com (2603:10b6:806:346::16) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5483.namprd11.prod.outlook.com (2603:10b6:408:104::10)
+ by PH7PR11MB7593.namprd11.prod.outlook.com (2603:10b6:510:27f::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.28; Mon, 13 Nov
- 2023 18:08:21 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b%4]) with mapi id 15.20.6977.026; Mon, 13 Nov 2023
- 18:08:21 +0000
-Message-ID: <678ea7e8-e4e5-4848-b77c-a94a1d326f5b@amd.com>
-Date:   Mon, 13 Nov 2023 12:08:19 -0600
-User-Agent: Mozilla Thunderbird
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v11 2/8] x86/resctrl: Prepare to split rdt_domain
- structure
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.26; Mon, 13 Nov
+ 2023 18:09:06 +0000
+Received: from BN9PR11MB5483.namprd11.prod.outlook.com
+ ([fe80::6da1:a4b7:4771:14e1]) by BN9PR11MB5483.namprd11.prod.outlook.com
+ ([fe80::6da1:a4b7:4771:14e1%4]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 18:09:05 +0000
+From:   "Chiu, Chasel" <chasel.chiu@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Simon Glass <sjg@chromium.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Rob Herring" <robh@kernel.org>,
+        "Tan, Lean Sheng" <sheng.tan@9elements.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        "Brune, Maximilian" <maximilian.brune@9elements.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        "Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
+        ron minnich <rminnich@gmail.com>,
+        "Guo, Gua" <gua.guo@intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>
+Subject: RE: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+Thread-Topic: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+Thread-Index: AQHZ8LGvpttG6mvEz0WlU57NBrVnTbB0GT1wgAEi2gCAA4/1oA==
+Date:   Mon, 13 Nov 2023 18:09:05 +0000
+Message-ID: <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
+References: <20230926194242.2732127-1-sjg@chromium.org>
+ <20230926194242.2732127-2-sjg@chromium.org>
+ <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
+In-Reply-To: <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-References: <20231031211708.37390-1-tony.luck@intel.com>
- <20231109230915.73600-1-tony.luck@intel.com>
- <20231109230915.73600-3-tony.luck@intel.com>
-From:   "Moger, Babu" <babu.moger@amd.com>
-In-Reply-To: <20231109230915.73600-3-tony.luck@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0128.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c2::10) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5483:EE_|PH7PR11MB7593:EE_
+x-ms-office365-filtering-correlation-id: 781c6217-171e-4b37-58f6-08dbe4739fe8
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H5IqpNAKgoASdbvP6g5zZ9kAxFkkZF/f89LfFzkMo+uL+Cl1YSmuEsG+oq0LL9x44L6iI8qtCS2ksBzsxDc9PY2ym2kKms25IoFkZr6teBudAEIS9uMp6h470XgXjLOJxvGw7rP2bEp2+arFpfaWtBEe2q1AJ48606OpfOhIA1/anOINp9FEiytw2hNM6kh+M86g8A+L52OIYINgmghSadv95/LCFxvldikb9bPLt7ar5mQpOnX/+tjepbLnB3P1Ylce01H5G31OFit9pzTlBXCLtEWvWHdS0sKY+5/sY3J4FE4Cu9Pif8YAMymNgmu86sYGlsZIDXiKYRz5xdFM/qDrVva7eKSQ806rkfRac6V1+H0LTwXbUuDweUqfFEQydu7cl5AWQGot7MV37aJZwFWCSKoEdmNjL1awVGFHx+2cEHXBwvW18llWrrY8h6v0xfF5fDbn2DfXBiLtRfYlyzWBNlX9I7XA2kHYaHM4fCUb1QeIbl8SLRVDKAB06HT1lrUDkBgFMRoDnC3MkiXvu6HKVApN+g9ThtLxVkQyxGdmySb5KcTHkFvSkri/kLmItIx4r1xDU6DEhgh9FA1mFoejwwwU9kzo8ABjcgnCz+M=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5483.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(396003)(376002)(366004)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(316002)(55016003)(54906003)(9686003)(6916009)(66476007)(66446008)(76116006)(66946007)(66556008)(83380400001)(38100700002)(64756008)(82960400001)(8676002)(8936002)(4326008)(122000001)(478600001)(966005)(6506007)(53546011)(7696005)(52536014)(5660300002)(86362001)(71200400001)(7416002)(38070700009)(2906002)(26005)(33656002)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dlVtNUNEdi9NWkpCODVQdWROK2ZuUzNwTWtZYUhnUjR3RFd2MzNscVRxdW5u?=
+ =?utf-8?B?NHVOaG13dkdFTEF1MVZ3cmcrNXE1TkZXa3FSUk0xRnRUMVo3VktuRFhuaVU1?=
+ =?utf-8?B?R0NxK1poNTZKRkVOOFQwTVQxVFpFZUtPL3UwYWY2b3VGc0k2ZFRiT0hucGNn?=
+ =?utf-8?B?UkhrY2FzcldoUkpHZGRaczh5WWl6Zk1SaGNKaEpkdjF3VWdzVTFxQ0hMUEpX?=
+ =?utf-8?B?SWlFbERKVFJRN0NrR1VTMnFZNHd3Z2JGZ3d3Z2dqZmpOM05yYzNnNFArK0VY?=
+ =?utf-8?B?YmJlRzRMbGFZcVJ2ZTVFZmFvcXF0dWh4K0tYUytjbkdtNTlYTzhrY1FtZ1o4?=
+ =?utf-8?B?and3c3V0aGRJRm8yR2dad1MrYlJQUFo1bTRwR0toOXdTL3EzdENIbDB2Y0FQ?=
+ =?utf-8?B?T1NkMnluWTNJNnMxekVlMWpHRy8xM1BuZ0tIOFpwQzJLRHF1WHk5Y00vVVNj?=
+ =?utf-8?B?SzB5UTNpR0RWV0w1Wm1iQTVPNWsrS0JYV2UzMUlXdy9oK2MrSzFrNEgzY284?=
+ =?utf-8?B?Zi9QaitvRHV5QVlVYjdmVFM1TjNnY1JZYXg1d3gwcmpZM1N0OFdQYkZrcTds?=
+ =?utf-8?B?MEpLSDk3ZmFYQXAzaTU3aTFtQ2xTa1ZHWEJXSm1MdXpGcTNJQk9MSXNBRU4v?=
+ =?utf-8?B?cXVoRnFkQldNZmRka1dnZXdidE4xMXdWTndiYTVwZ1BoZFVmNFVKK2x4Z1Mx?=
+ =?utf-8?B?b3Vhb2tDK08rRnk2SjNOKzh4a0Y0WEhVUGJpcWkrNEdHR1FQRWhzcTlsdXBH?=
+ =?utf-8?B?aDRRUnVVM1lHSXpPOFRFbEVzMDI0dFNZKzk0V0R5OVFhczlWT0tEREIzbHA4?=
+ =?utf-8?B?RVE0ZzRxcEJZNnVxK0Uza0VCVnpwejMxOVl6bUNLNHhRc2dMWGdqcVlZQzZm?=
+ =?utf-8?B?V2hGd2dYOFh0aWZreEFoNEFTS0JyZU5mbzF0dXlmelllOFA1d0ZscC81d1E3?=
+ =?utf-8?B?L05FNjFvZnhrOVBtTzVqbjBPVXpvOFlNWmVJMC9rbDZFOVZ5UDhZT2d4b2Jv?=
+ =?utf-8?B?MFBYR2c4RnN4bk52aFNYME1Yc3RRSFhwdi9Ec2lkOHVCbytpS0VFaG1IUFJW?=
+ =?utf-8?B?NFp1enI3bytXU2oyWmtRMzNVMjF5aEJlL3ZGd2dyUzgxdEp3OHhKcFAyYWhE?=
+ =?utf-8?B?NWRveXQzS3FnL1RWMmJDR2Nsa2xtNExDMWc0ZXRaUmhuQlJUWTNkTXNZZ3d6?=
+ =?utf-8?B?RGdpVitOcko1SHdScy9VWXBhZEhWc28xMDUxMFdWaG5VWnR4Z0FUSVhVZTlX?=
+ =?utf-8?B?N0I1Q2FSVjVBWGY0WDZkSjJRUTdaOFlRNFdZU2l2aEp1K05wVGdwa0tHRGpY?=
+ =?utf-8?B?ZGJkeEZldFJOcmlhZHZqSXZ5bm9rS1J2N0ppbjIvcGw3VWdraXdNQVIwWHpa?=
+ =?utf-8?B?enY1dlEvWHZ3cVhKeHBBL01oREdPU0RWQkc2TG9rSHdkaEQvSzlMUG1GeUpj?=
+ =?utf-8?B?U25DaEpNUlZsZGNrNUtuaFJEK2lZMHlUdDlQNFA0RjZSVlRodFZBUkt4ZVlT?=
+ =?utf-8?B?cFU0dEVIQTROcmdwTCtDNFhJc1FnaEY1cmdaYUxUdDJ5dS9uUDAvMXFubTln?=
+ =?utf-8?B?bEZtOFpQM3g0cmIydTI0Z2Z6YVpvS2hiekpwNFk5ZGpUb2E0RlZuVXVPaDFq?=
+ =?utf-8?B?RXg0QklVWHNleUdHbnRZSEY3c0F1Y3Z6K0hjWGNnRkF5YzBLWTRBeXB4VlB5?=
+ =?utf-8?B?ZkRlczRkWUgzUmRUbHBBMEpUTHpJcVViUGFSc2dLek9vZVEzN29FRUI1S2VG?=
+ =?utf-8?B?d1Q2NUdUVC9peVhGMUorSmtTaXVSZzcwV2FPdDB3TlQxdkF5WjhMaXcwOWRQ?=
+ =?utf-8?B?aUN4Q2E2TlV4NnhhYUtIdGxQRFJIS2JoM0JjUW9RVjNGWlpZeS9pM2Z1QlBS?=
+ =?utf-8?B?RmtuUFhGV3ZwNTB5ekt0Ukc0V2VxL1lHZlhYUTk0YXQ3OWxhZG5Cd01RRytW?=
+ =?utf-8?B?MGZDR2s3QUNtVTRqVVBFQTAzN3Y0YldUK2lldFd4UGwvRUtVeDh5ZnF0eE12?=
+ =?utf-8?B?L3JhUjZxdDBkd3JOT1I4Y1pobzZPRlcyZ0NHOXZCTExwNkJKbWZHK1pRWlJK?=
+ =?utf-8?B?WUNvdGVuMVdhY1EzbmZvR0pmV3ZzZi9BdWppczNYdmZIRUtoTVJ4MnQ1MnBR?=
+ =?utf-8?Q?POnrwbbdVfrX0AHr6QDYfXVZw?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SN7PR12MB7934:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48d1bcf0-a13a-46eb-768d-08dbe4738576
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bm2bHJ+Q37eyKZUQK8YUUk19bRscsDxFvE4DqfZlzjDDW6sjo9Y/a44Qg9LkQx42SOHeWIzuGISKOn6SBBxUBsgGYjO4qvG6o/2S9ZZLpladBwkKZws8FXwUVyn5sXVaaZUFtH55qKowNYRj4s5YfTLpTUSZUL05RTMYYqMJusrDj85TKEqENggwKB9xpu+dKow8Y8+cjwolBFsmnU1LiARv+zKqowTZiKuUtPAe9ugPnRBcNKaNgyWcbb+TEv+tBo7cs3LEZcsytkkwXRuLtvD95MMLaPEvWuGGtpWAHFNe9yEAR24ivZvY4KCBHFs4NQR0BzYHSlpSvex/C02SxhPAPiu7teV3bnYdz9noGwI4lG1hGU+TW+0+UFdqm685mvN2qvj8jxFmxP8YGDtov6rUbhsCfuxxhb1umRSCLtyh4n8CZe+asgWcKT2RRGn6sxJqDcL4Vz99d/l8vPxhmN+e2la5Zoma13/+++rcVAoKlBmW4OW67cbEyUGjn9w5yAKaeN63MqFM0gSOl1x/zhwW+uiO685I71IRjFzQ3aYuJD3zzBuxc2C5P0ZOFYLoFqOOoOPBOiR711fNwq7A1MZHlS4DDlfiYBRrTZL/5sB/+HloDe8MxnoT3HKPhclAsJWPVSoxnE3ZEwM6C9XkTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(39860400002)(366004)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(38100700002)(2616005)(8676002)(8936002)(4326008)(53546011)(6512007)(6506007)(83380400001)(26005)(31686004)(6486002)(478600001)(110136005)(316002)(66476007)(66556008)(66946007)(54906003)(36756003)(41300700001)(2906002)(7416002)(5660300002)(86362001)(31696002)(3450700001)(30864003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXZBWUxNLzJnUklqYnBPSzFkZ282R3dXVHdhajJxeEFHczl6aTNiTHFSdDNR?=
- =?utf-8?B?TFhWaU9CR21qamNlcFhTWEZTNEFiT2gxZ2JHQnRSK1gwckorcFkxYURUZ09T?=
- =?utf-8?B?VlV2UFRDY3dZdU10SE4wdUQ1TWtBdmc1VVJ0d0F5UHRTOGd5NlFwZFBiSEJq?=
- =?utf-8?B?QWVlWVo5Sytoa1RYdHdFNnpsQmZGYUx5d0l5d21Lb2EramNrY3BrdHl3Rnh6?=
- =?utf-8?B?bTZrV0plcHcrRlZmVjE0c1BoM05YZWtVRzhFYWlWRlRnVk5SQTk1bTFJRVpQ?=
- =?utf-8?B?NFhlZlQ3bk9VVWVUbkM5M0puSUFPancyS3A3SlpYcGZwbW1yUTUxeDhQY2VJ?=
- =?utf-8?B?VnRreElucjBoNDlwdUdJYWdXUmpJbDMvSnR6TWRjMG1oVFhZZDlCMDZpV1Vj?=
- =?utf-8?B?a1VyWkNPbDc4OHJxK3ZrRmd2bzAya3g4Z1ZJTlZYbVdEOEhxclFNMkdlZUF3?=
- =?utf-8?B?S0h6S1RSaGJYWnVaOEZxSW4xeGVWRk9tR3NaeTYvVk9BZVBvM2VudlVTeFdR?=
- =?utf-8?B?dytpTmY0RHlwbEFId0RyakVDdlJ6eWlRQzFadlJ5UkZrYTc5YVVTam4xcVE2?=
- =?utf-8?B?RU1pdFRGSWlnWWR5Yis5UXd6R1Z5MGRUMWRMN1RjWWpzZTBnanpINHVvU0dO?=
- =?utf-8?B?aXFXYnN3ZjVhcmdrTUlpN01sSXVIOGoySVBRcTJIb24xcmQwQW05dGxUZ2N0?=
- =?utf-8?B?MzdDSjVtOVdMUFhhWEtCRmNySVhaUjhPclYyMU1kaDh3dU1wNWJaTHVRYmJJ?=
- =?utf-8?B?N1F3V2JuRkVyd0JNRHJ5ZlUzVTVkRGNrNm5wb3FKZGwxdEJGK1BqZHdZOC84?=
- =?utf-8?B?M3lCNGZOY1l3NjMwcHZGR3JQV1BzdUNMUVNmWXZST1k3S0tzUTZtV0NhcVdp?=
- =?utf-8?B?dXFXZW5zUHlvaGwrVDdPejRjRGRJNHlrUUc5ZW0zcFBKSFVFMlVjeEVnRUx0?=
- =?utf-8?B?Vnh3Zjh2MzR1ZXp6dDZCM0ZBeEUwZXdnaG9sNTJ2ckx4SmZ1WDNkUEdKY00y?=
- =?utf-8?B?VzU5L1FkTVNzQ3Nhbm9iYjNodzhoS01vQnArQk4vVUZrbDlLbmlEMWtDRWJH?=
- =?utf-8?B?VnFXZHRqdWxNK0srenVkTnlwb1E0Ynk4OVlvbHFSTFl4YlZmanJMczVjQjBp?=
- =?utf-8?B?ZkNWcStGSDcwSHNxMnkwaHBMcXNrSStNNEh5TG5RK1E0T09tRWtXUWo4bnBK?=
- =?utf-8?B?Z3lOenZBdHlJTGRJRmdwRktCU1prVFJwUVY1aU55UGxPbUlnN0htNUYyL1Av?=
- =?utf-8?B?WStEMHlPQ3FhWjNQK1hDSWFjeWRMV1QzQzZkNFVmYldVVDVBOUZDNm1XR3Ez?=
- =?utf-8?B?TDM1VmFmclgwdTllQ3dDRm9aTzdwbERHVFpMbGo3SkVpa3VCR0N1ZmZVcHl0?=
- =?utf-8?B?LzdLM3hyck1yS1ZKVlViZ0diVWZuVFEzSmJ4dmhpK1hTT2dKdmpCSjB1QVNz?=
- =?utf-8?B?UlZudTlOaXh1dmNQYnd0MHo5eXpxbXVVemloTmVscFQvNlpPQlpjSXNnS3Nx?=
- =?utf-8?B?dC9sRnFpbTM5MFFYK1hwQjRkL1l3R3djY3IzcDdieERERG43Qjlja3FtV2Iw?=
- =?utf-8?B?WVI2OUdFbWtHcSt0Z01DUmpTWkUrSkRqMWtoV3lqV0IwZmo5dnJneTZRaXBH?=
- =?utf-8?B?TkhDZGhQUzFEaC9TTkVwZk9DZnMrYm1kOWZYMjZpNThrbFlYSXV5UEVaSHA0?=
- =?utf-8?B?KzFmTUdpS0ZwT2xTU3RxZFpuOHJhRzZhZWlGVmhGNVAxb2dqNkgwV1NXVTI2?=
- =?utf-8?B?VXV2eUM1Mk5mT0liMm13akhXRWI0enA0dmpwR1J2dkh3dS8yR2FOQW1vbm9Z?=
- =?utf-8?B?elNSUHB3QlE3QjJ6NnR5OHIvaXp3eTdZbU9lbUNpTEhoUWJWUkUzQm5rbmxY?=
- =?utf-8?B?VjZ4ZERucWpOOWVlODhkU1M3SExGdVZMU1gvdFhHdEYyUHpZYXBjOVBISnRZ?=
- =?utf-8?B?cWw1M3VKY0dQamFIUTdIZXdmaHN5eU5EMVNDV0lwQVFYUVVOeG9qOFhReGpX?=
- =?utf-8?B?NG9xYTVxVm9lWkZZNHhtUit0Tmt5eGsyeUY4eHorcXNTZzQwRll3MGVqdngv?=
- =?utf-8?B?dEF5THlSd1QvMzJDMGgxRms0VnN3aHVTMk9pRUZvLzAzdGI5Q3dXZE4vdzhz?=
- =?utf-8?Q?A5Jg=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48d1bcf0-a13a-46eb-768d-08dbe4738576
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 18:08:21.6202
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5483.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 781c6217-171e-4b37-58f6-08dbe4739fe8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Nov 2023 18:09:05.7306
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KfITDu3Eyuf5SQ8VcFkyllc767e5OIYsey4StZ9ck4naNl1Rb3SkbIO4/rCcrWyQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7934
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ekS46u9ymapPlqEp6Z03rfiUln+CftsXdHf3hMs3i2rhzMFjvJ6WDv8hBSUhipfKiBrPuvij3LfhfvUaTN6Gpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7593
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-Sorry for the late review. The patches look good for the most part. But we
-can simplify a little more. Please see my comments below.
-
-
-On 11/9/23 17:09, Tony Luck wrote:
-> The rdt_domain structure is used for both control and monitor features.
-> It is about to be split into separate structures for these two usages
-> because the scope for control and monitoring features for a resource
-> will be different for future resources.
-> 
-> To allow for common code that scans a list of domains looking for a
-> specific domain id, move all the common fields ("list", "id", "cpu_mask")
-> into their own structure within the rdt_domain structure.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> ---
->  include/linux/resctrl.h                   | 16 ++++--
->  arch/x86/kernel/cpu/resctrl/core.c        | 26 +++++-----
->  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 22 ++++-----
->  arch/x86/kernel/cpu/resctrl/monitor.c     | 10 ++--
->  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 14 +++---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 60 +++++++++++------------
->  6 files changed, 78 insertions(+), 70 deletions(-)
-> 
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 7d4eb7df611d..c4067150a6b7 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -53,10 +53,20 @@ struct resctrl_staged_config {
->  };
->  
->  /**
-> - * struct rdt_domain - group of CPUs sharing a resctrl resource
-> + * struct rdt_domain_hdr - common header for different domain types
->   * @list:		all instances of this resource
->   * @id:			unique id for this instance
->   * @cpu_mask:		which CPUs share this resource
-> + */
-> +struct rdt_domain_hdr {
-> +	struct list_head		list;
-> +	int				id;
-> +	struct cpumask			cpu_mask;
-> +};
-
-I like the idea of separating the domains, one for control and another for
-monitor. I have some comments on how it can be done to simplify the code.
-Adding the hdr adds a little complexity to the code.
-
-How about converting the current rdt_domain to explicitly to rdt_mon_domain?
-
-Something like this.
-
-struct rdt_mon_domain {
-        struct list_head                list;
-        int                             id;
-        struct cpumask                  cpu_mask;
-        unsigned long                   *rmid_busy_llc;
-        struct mbm_state                *mbm_total;
-        struct mbm_state                *mbm_local;
-        struct delayed_work             mbm_over;
-        struct delayed_work             cqm_limbo;
-        int                             mbm_work_cpu;
-        int                             cqm_work_cpu;
-};
-
-
-Then introduce rdt_ctrl_domain to which separates into two doamins.
-
-struct rdt_ctrl_domain {
-        struct list_head                list;
-        int                             id;
-        struct cpumask                  cpu_mask;
-        struct pseudo_lock_region       *plr;
-        struct resctrl_staged_config    staged_config[CDP_NUM_TYPES];
-        u32                             *mbps_val;
-};
-
-I feel this will be easy to understand and makes the code simpler. Changes
-will be minimal.
-
-Thanks
-Babu
-
-
-> +
-> +/**
-> + * struct rdt_domain - group of CPUs sharing a resctrl resource
-> + * @hdr:		common header for different domain types
->   * @rmid_busy_llc:	bitmap of which limbo RMIDs are above threshold
->   * @mbm_total:		saved state for MBM total bandwidth
->   * @mbm_local:		saved state for MBM local bandwidth
-> @@ -71,9 +81,7 @@ struct resctrl_staged_config {
->   *			by closid
->   */
->  struct rdt_domain {
-> -	struct list_head		list;
-> -	int				id;
-> -	struct cpumask			cpu_mask;
-> +	struct rdt_domain_hdr		hdr;
->  	unsigned long			*rmid_busy_llc;
->  	struct mbm_state		*mbm_total;
->  	struct mbm_state		*mbm_local;
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index 9f8d87abd751..c0659e84c9e3 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -356,9 +356,9 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
->  {
->  	struct rdt_domain *d;
->  
-> -	list_for_each_entry(d, &r->domains, list) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
->  		/* Find the domain that contains this CPU */
-> -		if (cpumask_test_cpu(cpu, &d->cpu_mask))
-> +		if (cpumask_test_cpu(cpu, &d->hdr.cpu_mask))
->  			return d;
->  	}
->  
-> @@ -402,12 +402,12 @@ struct rdt_domain *rdt_find_domain(struct rdt_resource *r, int id,
->  	struct list_head *l;
->  
->  	list_for_each(l, &r->domains) {
-> -		d = list_entry(l, struct rdt_domain, list);
-> +		d = list_entry(l, struct rdt_domain, hdr.list);
->  		/* When id is found, return its domain. */
-> -		if (id == d->id)
-> +		if (id == d->hdr.id)
->  			return d;
->  		/* Stop searching when finding id's position in sorted list. */
-> -		if (id < d->id)
-> +		if (id < d->hdr.id)
->  			break;
->  	}
->  
-> @@ -530,7 +530,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
->  
->  	d = rdt_find_domain(r, id, &add_pos);
->  	if (d) {
-> -		cpumask_set_cpu(cpu, &d->cpu_mask);
-> +		cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
->  		if (r->cache.arch_has_per_cpu_cfg)
->  			rdt_domain_reconfigure_cdp(r);
->  		return;
-> @@ -541,8 +541,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
->  		return;
->  
->  	d = &hw_dom->d_resctrl;
-> -	d->id = id;
-> -	cpumask_set_cpu(cpu, &d->cpu_mask);
-> +	d->hdr.id = id;
-> +	cpumask_set_cpu(cpu, &d->hdr.cpu_mask);
->  
->  	rdt_domain_reconfigure_cdp(r);
->  
-> @@ -556,11 +556,11 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
->  		return;
->  	}
->  
-> -	list_add_tail(&d->list, add_pos);
-> +	list_add_tail(&d->hdr.list, add_pos);
->  
->  	err = resctrl_online_domain(r, d);
->  	if (err) {
-> -		list_del(&d->list);
-> +		list_del(&d->hdr.list);
->  		domain_free(hw_dom);
->  	}
->  }
-> @@ -581,10 +581,10 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
->  	}
->  	hw_dom = resctrl_to_arch_dom(d);
->  
-> -	cpumask_clear_cpu(cpu, &d->cpu_mask);
-> -	if (cpumask_empty(&d->cpu_mask)) {
-> +	cpumask_clear_cpu(cpu, &d->hdr.cpu_mask);
-> +	if (cpumask_empty(&d->hdr.cpu_mask)) {
->  		resctrl_offline_domain(r, d);
-> -		list_del(&d->list);
-> +		list_del(&d->hdr.list);
->  
->  		/*
->  		 * rdt_domain "d" is going to be freed below, so clear
-> diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> index 3f8891d57fac..23f8258d36a8 100644
-> --- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> +++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
-> @@ -67,7 +67,7 @@ int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
->  
->  	cfg = &d->staged_config[s->conf_type];
->  	if (cfg->have_new_ctrl) {
-> -		rdt_last_cmd_printf("Duplicate domain %d\n", d->id);
-> +		rdt_last_cmd_printf("Duplicate domain %d\n", d->hdr.id);
->  		return -EINVAL;
->  	}
->  
-> @@ -146,7 +146,7 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
->  
->  	cfg = &d->staged_config[s->conf_type];
->  	if (cfg->have_new_ctrl) {
-> -		rdt_last_cmd_printf("Duplicate domain %d\n", d->id);
-> +		rdt_last_cmd_printf("Duplicate domain %d\n", d->hdr.id);
->  		return -EINVAL;
->  	}
->  
-> @@ -226,8 +226,8 @@ static int parse_line(char *line, struct resctrl_schema *s,
->  		return -EINVAL;
->  	}
->  	dom = strim(dom);
-> -	list_for_each_entry(d, &r->domains, list) {
-> -		if (d->id == dom_id) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
-> +		if (d->hdr.id == dom_id) {
->  			data.buf = dom;
->  			data.rdtgrp = rdtgrp;
->  			if (r->parse_ctrlval(&data, s, d))
-> @@ -274,7 +274,7 @@ static bool apply_config(struct rdt_hw_domain *hw_dom,
->  	struct rdt_domain *dom = &hw_dom->d_resctrl;
->  
->  	if (cfg->new_ctrl != hw_dom->ctrl_val[idx]) {
-> -		cpumask_set_cpu(cpumask_any(&dom->cpu_mask), cpu_mask);
-> +		cpumask_set_cpu(cpumask_any(&dom->hdr.cpu_mask), cpu_mask);
->  		hw_dom->ctrl_val[idx] = cfg->new_ctrl;
->  
->  		return true;
-> @@ -291,7 +291,7 @@ int resctrl_arch_update_one(struct rdt_resource *r, struct rdt_domain *d,
->  	u32 idx = get_config_index(closid, t);
->  	struct msr_param msr_param;
->  
-> -	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
-> +	if (!cpumask_test_cpu(smp_processor_id(), &d->hdr.cpu_mask))
->  		return -EINVAL;
->  
->  	hw_dom->ctrl_val[idx] = cfg_val;
-> @@ -318,7 +318,7 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
->  		return -ENOMEM;
->  
->  	msr_param.res = NULL;
-> -	list_for_each_entry(d, &r->domains, list) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
->  		hw_dom = resctrl_to_arch_dom(d);
->  		for (t = 0; t < CDP_NUM_TYPES; t++) {
->  			cfg = &hw_dom->d_resctrl.staged_config[t];
-> @@ -466,7 +466,7 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
->  	u32 ctrl_val;
->  
->  	seq_printf(s, "%*s:", max_name_width, schema->name);
-> -	list_for_each_entry(dom, &r->domains, list) {
-> +	list_for_each_entry(dom, &r->domains, hdr.list) {
->  		if (sep)
->  			seq_puts(s, ";");
->  
-> @@ -476,7 +476,7 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
->  			ctrl_val = resctrl_arch_get_config(r, dom, closid,
->  							   schema->conf_type);
->  
-> -		seq_printf(s, r->format_str, dom->id, max_data_width,
-> +		seq_printf(s, r->format_str, dom->hdr.id, max_data_width,
->  			   ctrl_val);
->  		sep = true;
->  	}
-> @@ -505,7 +505,7 @@ int rdtgroup_schemata_show(struct kernfs_open_file *of,
->  			} else {
->  				seq_printf(s, "%s:%d=%x\n",
->  					   rdtgrp->plr->s->res->name,
-> -					   rdtgrp->plr->d->id,
-> +					   rdtgrp->plr->d->hdr.id,
->  					   rdtgrp->plr->cbm);
->  			}
->  		} else {
-> @@ -536,7 +536,7 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
->  	rr->val = 0;
->  	rr->first = first;
->  
-> -	smp_call_function_any(&d->cpu_mask, mon_event_count, rr, 1);
-> +	smp_call_function_any(&d->hdr.cpu_mask, mon_event_count, rr, 1);
->  }
->  
->  int rdtgroup_mondata_show(struct seq_file *m, void *arg)
-> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-> index f136ac046851..dd0ea1bc0092 100644
-> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
-> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-> @@ -238,7 +238,7 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
->  	u64 msr_val, chunks;
->  	int ret;
->  
-> -	if (!cpumask_test_cpu(smp_processor_id(), &d->cpu_mask))
-> +	if (!cpumask_test_cpu(smp_processor_id(), &d->hdr.cpu_mask))
->  		return -EINVAL;
->  
->  	ret = __rmid_read(rmid, eventid, &msr_val);
-> @@ -340,8 +340,8 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
->  
->  	entry->busy = 0;
->  	cpu = get_cpu();
-> -	list_for_each_entry(d, &r->domains, list) {
-> -		if (cpumask_test_cpu(cpu, &d->cpu_mask)) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
-> +		if (cpumask_test_cpu(cpu, &d->hdr.cpu_mask)) {
->  			err = resctrl_arch_rmid_read(r, d, entry->rmid,
->  						     QOS_L3_OCCUP_EVENT_ID,
->  						     &val);
-> @@ -661,7 +661,7 @@ void cqm_setup_limbo_handler(struct rdt_domain *dom, unsigned long delay_ms)
->  	unsigned long delay = msecs_to_jiffies(delay_ms);
->  	int cpu;
->  
-> -	cpu = cpumask_any(&dom->cpu_mask);
-> +	cpu = cpumask_any(&dom->hdr.cpu_mask);
->  	dom->cqm_work_cpu = cpu;
->  
->  	schedule_delayed_work_on(cpu, &dom->cqm_limbo, delay);
-> @@ -708,7 +708,7 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
->  
->  	if (!static_branch_likely(&rdt_mon_enable_key))
->  		return;
-> -	cpu = cpumask_any(&dom->cpu_mask);
-> +	cpu = cpumask_any(&dom->hdr.cpu_mask);
->  	dom->mbm_work_cpu = cpu;
->  	schedule_delayed_work_on(cpu, &dom->mbm_over, delay);
->  }
-> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> index 2a682da9f43a..fcbd99e2eb66 100644
-> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> @@ -221,7 +221,7 @@ static int pseudo_lock_cstates_constrain(struct pseudo_lock_region *plr)
->  	int cpu;
->  	int ret;
->  
-> -	for_each_cpu(cpu, &plr->d->cpu_mask) {
-> +	for_each_cpu(cpu, &plr->d->hdr.cpu_mask) {
->  		pm_req = kzalloc(sizeof(*pm_req), GFP_KERNEL);
->  		if (!pm_req) {
->  			rdt_last_cmd_puts("Failure to allocate memory for PM QoS\n");
-> @@ -301,7 +301,7 @@ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
->  		return -ENODEV;
->  
->  	/* Pick the first cpu we find that is associated with the cache. */
-> -	plr->cpu = cpumask_first(&plr->d->cpu_mask);
-> +	plr->cpu = cpumask_first(&plr->d->hdr.cpu_mask);
->  
->  	if (!cpu_online(plr->cpu)) {
->  		rdt_last_cmd_printf("CPU %u associated with cache not online\n",
-> @@ -856,10 +856,10 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
->  	 * associated with them.
->  	 */
->  	for_each_alloc_capable_rdt_resource(r) {
-> -		list_for_each_entry(d_i, &r->domains, list) {
-> +		list_for_each_entry(d_i, &r->domains, hdr.list) {
->  			if (d_i->plr)
->  				cpumask_or(cpu_with_psl, cpu_with_psl,
-> -					   &d_i->cpu_mask);
-> +					   &d_i->hdr.cpu_mask);
->  		}
->  	}
->  
-> @@ -867,7 +867,7 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
->  	 * Next test if new pseudo-locked region would intersect with
->  	 * existing region.
->  	 */
-> -	if (cpumask_intersects(&d->cpu_mask, cpu_with_psl))
-> +	if (cpumask_intersects(&d->hdr.cpu_mask, cpu_with_psl))
->  		ret = true;
->  
->  	free_cpumask_var(cpu_with_psl);
-> @@ -1199,7 +1199,7 @@ static int pseudo_lock_measure_cycles(struct rdtgroup *rdtgrp, int sel)
->  	}
->  
->  	plr->thread_done = 0;
-> -	cpu = cpumask_first(&plr->d->cpu_mask);
-> +	cpu = cpumask_first(&plr->d->hdr.cpu_mask);
->  	if (!cpu_online(cpu)) {
->  		ret = -ENODEV;
->  		goto out;
-> @@ -1529,7 +1529,7 @@ static int pseudo_lock_dev_mmap(struct file *filp, struct vm_area_struct *vma)
->  	 * may be scheduled elsewhere and invalidate entries in the
->  	 * pseudo-locked region.
->  	 */
-> -	if (!cpumask_subset(current->cpus_ptr, &plr->d->cpu_mask)) {
-> +	if (!cpumask_subset(current->cpus_ptr, &plr->d->hdr.cpu_mask)) {
->  		mutex_unlock(&rdtgroup_mutex);
->  		return -EINVAL;
->  	}
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index c44be64d65ec..04d32602ac33 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -91,7 +91,7 @@ void rdt_staged_configs_clear(void)
->  	lockdep_assert_held(&rdtgroup_mutex);
->  
->  	for_each_alloc_capable_rdt_resource(r) {
-> -		list_for_each_entry(dom, &r->domains, list)
-> +		list_for_each_entry(dom, &r->domains, hdr.list)
->  			memset(dom->staged_config, 0, sizeof(dom->staged_config));
->  	}
->  }
-> @@ -295,7 +295,7 @@ static int rdtgroup_cpus_show(struct kernfs_open_file *of,
->  				rdt_last_cmd_puts("Cache domain offline\n");
->  				ret = -ENODEV;
->  			} else {
-> -				mask = &rdtgrp->plr->d->cpu_mask;
-> +				mask = &rdtgrp->plr->d->hdr.cpu_mask;
->  				seq_printf(s, is_cpu_list(of) ?
->  					   "%*pbl\n" : "%*pb\n",
->  					   cpumask_pr_args(mask));
-> @@ -984,12 +984,12 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
->  
->  	mutex_lock(&rdtgroup_mutex);
->  	hw_shareable = r->cache.shareable_bits;
-> -	list_for_each_entry(dom, &r->domains, list) {
-> +	list_for_each_entry(dom, &r->domains, hdr.list) {
->  		if (sep)
->  			seq_putc(seq, ';');
->  		sw_shareable = 0;
->  		exclusive = 0;
-> -		seq_printf(seq, "%d=", dom->id);
-> +		seq_printf(seq, "%d=", dom->hdr.id);
->  		for (i = 0; i < closids_supported(); i++) {
->  			if (!closid_allocated(i))
->  				continue;
-> @@ -1302,7 +1302,7 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
->  		if (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)
->  			continue;
->  		has_cache = true;
-> -		list_for_each_entry(d, &r->domains, list) {
-> +		list_for_each_entry(d, &r->domains, hdr.list) {
->  			ctrl = resctrl_arch_get_config(r, d, closid,
->  						       s->conf_type);
->  			if (rdtgroup_cbm_overlaps(s, d, ctrl, closid, false)) {
-> @@ -1417,7 +1417,7 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
->  		return size;
->  
->  	num_b = bitmap_weight(&cbm, r->cache.cbm_len);
-> -	ci = get_cpu_cacheinfo(cpumask_any(&d->cpu_mask));
-> +	ci = get_cpu_cacheinfo(cpumask_any(&d->hdr.cpu_mask));
->  	for (i = 0; i < ci->num_leaves; i++) {
->  		if (ci->info_list[i].level == r->scope) {
->  			size = ci->info_list[i].size / r->cache.cbm_len * num_b;
-> @@ -1465,7 +1465,7 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
->  			size = rdtgroup_cbm_to_size(rdtgrp->plr->s->res,
->  						    rdtgrp->plr->d,
->  						    rdtgrp->plr->cbm);
-> -			seq_printf(s, "%d=%u\n", rdtgrp->plr->d->id, size);
-> +			seq_printf(s, "%d=%u\n", rdtgrp->plr->d->hdr.id, size);
->  		}
->  		goto out;
->  	}
-> @@ -1477,7 +1477,7 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
->  		type = schema->conf_type;
->  		sep = false;
->  		seq_printf(s, "%*s:", max_name_width, schema->name);
-> -		list_for_each_entry(d, &r->domains, list) {
-> +		list_for_each_entry(d, &r->domains, hdr.list) {
->  			if (sep)
->  				seq_putc(s, ';');
->  			if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP) {
-> @@ -1495,7 +1495,7 @@ static int rdtgroup_size_show(struct kernfs_open_file *of,
->  				else
->  					size = rdtgroup_cbm_to_size(r, d, ctrl);
->  			}
-> -			seq_printf(s, "%d=%u", d->id, size);
-> +			seq_printf(s, "%d=%u", d->hdr.id, size);
->  			sep = true;
->  		}
->  		seq_putc(s, '\n');
-> @@ -1555,7 +1555,7 @@ static void mon_event_config_read(void *info)
->  
->  static void mondata_config_read(struct rdt_domain *d, struct mon_config_info *mon_info)
->  {
-> -	smp_call_function_any(&d->cpu_mask, mon_event_config_read, mon_info, 1);
-> +	smp_call_function_any(&d->hdr.cpu_mask, mon_event_config_read, mon_info, 1);
->  }
->  
->  static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid)
-> @@ -1566,7 +1566,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
->  
->  	mutex_lock(&rdtgroup_mutex);
->  
-> -	list_for_each_entry(dom, &r->domains, list) {
-> +	list_for_each_entry(dom, &r->domains, hdr.list) {
->  		if (sep)
->  			seq_puts(s, ";");
->  
-> @@ -1574,7 +1574,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
->  		mon_info.evtid = evtid;
->  		mondata_config_read(dom, &mon_info);
->  
-> -		seq_printf(s, "%d=0x%02x", dom->id, mon_info.mon_config);
-> +		seq_printf(s, "%d=0x%02x", dom->hdr.id, mon_info.mon_config);
->  		sep = true;
->  	}
->  	seq_puts(s, "\n");
-> @@ -1646,7 +1646,7 @@ static int mbm_config_write_domain(struct rdt_resource *r,
->  	 * are scoped at the domain level. Writing any of these MSRs
->  	 * on one CPU is observed by all the CPUs in the domain.
->  	 */
-> -	smp_call_function_any(&d->cpu_mask, mon_event_config_write,
-> +	smp_call_function_any(&d->hdr.cpu_mask, mon_event_config_write,
->  			      &mon_info, 1);
->  
->  	/*
-> @@ -1689,8 +1689,8 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
->  		return -EINVAL;
->  	}
->  
-> -	list_for_each_entry(d, &r->domains, list) {
-> -		if (d->id == dom_id) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
-> +		if (d->hdr.id == dom_id) {
->  			ret = mbm_config_write_domain(r, d, evtid, val);
->  			if (ret)
->  				return -EINVAL;
-> @@ -2232,14 +2232,14 @@ static int set_cache_qos_cfg(int level, bool enable)
->  		return -ENOMEM;
->  
->  	r_l = &rdt_resources_all[level].r_resctrl;
-> -	list_for_each_entry(d, &r_l->domains, list) {
-> +	list_for_each_entry(d, &r_l->domains, hdr.list) {
->  		if (r_l->cache.arch_has_per_cpu_cfg)
->  			/* Pick all the CPUs in the domain instance */
-> -			for_each_cpu(cpu, &d->cpu_mask)
-> +			for_each_cpu(cpu, &d->hdr.cpu_mask)
->  				cpumask_set_cpu(cpu, cpu_mask);
->  		else
->  			/* Pick one CPU from each domain instance to update MSR */
-> -			cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
-> +			cpumask_set_cpu(cpumask_any(&d->hdr.cpu_mask), cpu_mask);
->  	}
->  
->  	/* Update QOS_CFG MSR on all the CPUs in cpu_mask */
-> @@ -2268,7 +2268,7 @@ void rdt_domain_reconfigure_cdp(struct rdt_resource *r)
->  static int mba_sc_domain_allocate(struct rdt_resource *r, struct rdt_domain *d)
->  {
->  	u32 num_closid = resctrl_arch_get_num_closid(r);
-> -	int cpu = cpumask_any(&d->cpu_mask);
-> +	int cpu = cpumask_any(&d->hdr.cpu_mask);
->  	int i;
->  
->  	d->mbps_val = kcalloc_node(num_closid, sizeof(*d->mbps_val),
-> @@ -2317,7 +2317,7 @@ static int set_mba_sc(bool mba_sc)
->  
->  	r->membw.mba_sc = mba_sc;
->  
-> -	list_for_each_entry(d, &r->domains, list) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
->  		for (i = 0; i < num_closid; i++)
->  			d->mbps_val[i] = MBA_MAX_MBPS;
->  	}
-> @@ -2653,7 +2653,7 @@ static int rdt_get_tree(struct fs_context *fc)
->  
->  	if (is_mbm_enabled()) {
->  		r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
-> -		list_for_each_entry(dom, &r->domains, list)
-> +		list_for_each_entry(dom, &r->domains, hdr.list)
->  			mbm_setup_overflow_handler(dom, MBM_OVERFLOW_INTERVAL);
->  	}
->  
-> @@ -2780,9 +2780,9 @@ static int reset_all_ctrls(struct rdt_resource *r)
->  	 * CBMs in all domains to the maximum mask value. Pick one CPU
->  	 * from each domain to update the MSRs below.
->  	 */
-> -	list_for_each_entry(d, &r->domains, list) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
->  		hw_dom = resctrl_to_arch_dom(d);
-> -		cpumask_set_cpu(cpumask_any(&d->cpu_mask), cpu_mask);
-> +		cpumask_set_cpu(cpumask_any(&d->hdr.cpu_mask), cpu_mask);
->  
->  		for (i = 0; i < hw_res->num_closid; i++)
->  			hw_dom->ctrl_val[i] = r->default_ctrl;
-> @@ -2986,7 +2986,7 @@ static int mkdir_mondata_subdir(struct kernfs_node *parent_kn,
->  	char name[32];
->  	int ret;
->  
-> -	sprintf(name, "mon_%s_%02d", r->name, d->id);
-> +	sprintf(name, "mon_%s_%02d", r->name, d->hdr.id);
->  	/* create the directory */
->  	kn = kernfs_create_dir(parent_kn, name, parent_kn->mode, prgrp);
->  	if (IS_ERR(kn))
-> @@ -3002,7 +3002,7 @@ static int mkdir_mondata_subdir(struct kernfs_node *parent_kn,
->  	}
->  
->  	priv.u.rid = r->rid;
-> -	priv.u.domid = d->id;
-> +	priv.u.domid = d->hdr.id;
->  	list_for_each_entry(mevt, &r->evt_list, list) {
->  		priv.u.evtid = mevt->evtid;
->  		ret = mon_addfile(kn, mevt->name, priv.priv);
-> @@ -3050,7 +3050,7 @@ static int mkdir_mondata_subdir_alldom(struct kernfs_node *parent_kn,
->  	struct rdt_domain *dom;
->  	int ret;
->  
-> -	list_for_each_entry(dom, &r->domains, list) {
-> +	list_for_each_entry(dom, &r->domains, hdr.list) {
->  		ret = mkdir_mondata_subdir(parent_kn, dom, r, prgrp);
->  		if (ret)
->  			return ret;
-> @@ -3209,7 +3209,7 @@ static int __init_one_rdt_domain(struct rdt_domain *d, struct resctrl_schema *s,
->  	 */
->  	tmp_cbm = cfg->new_ctrl;
->  	if (bitmap_weight(&tmp_cbm, r->cache.cbm_len) < r->cache.min_cbm_bits) {
-> -		rdt_last_cmd_printf("No space on %s:%d\n", s->name, d->id);
-> +		rdt_last_cmd_printf("No space on %s:%d\n", s->name, d->hdr.id);
->  		return -ENOSPC;
->  	}
->  	cfg->have_new_ctrl = true;
-> @@ -3232,7 +3232,7 @@ static int rdtgroup_init_cat(struct resctrl_schema *s, u32 closid)
->  	struct rdt_domain *d;
->  	int ret;
->  
-> -	list_for_each_entry(d, &s->res->domains, list) {
-> +	list_for_each_entry(d, &s->res->domains, hdr.list) {
->  		ret = __init_one_rdt_domain(d, s, closid);
->  		if (ret < 0)
->  			return ret;
-> @@ -3247,7 +3247,7 @@ static void rdtgroup_init_mba(struct rdt_resource *r, u32 closid)
->  	struct resctrl_staged_config *cfg;
->  	struct rdt_domain *d;
->  
-> -	list_for_each_entry(d, &r->domains, list) {
-> +	list_for_each_entry(d, &r->domains, hdr.list) {
->  		if (is_mba_sc(r)) {
->  			d->mbps_val[closid] = MBA_MAX_MBPS;
->  			continue;
-> @@ -3864,7 +3864,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
->  	 * per domain monitor data directories.
->  	 */
->  	if (static_branch_unlikely(&rdt_mon_enable_key))
-> -		rmdir_mondata_subdir_allrdtgrp(r, d->id);
-> +		rmdir_mondata_subdir_allrdtgrp(r, d->hdr.id);
->  
->  	if (is_mbm_enabled())
->  		cancel_delayed_work(&d->mbm_over);
-
--- 
-Thanks
-Babu Moger
+DQpIaSBBcmQsDQoNClBsZWFzZSBzZWUgbXkgcmVwbHkgYmVsb3cgaW5saW5lLg0KDQpUaGFua3Ms
+DQpDaGFzZWwNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFyZCBC
+aWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFNhdHVyZGF5LCBOb3ZlbWJlciAx
+MSwgMjAyMyAzOjA0IEFNDQo+IFRvOiBDaGl1LCBDaGFzZWwgPGNoYXNlbC5jaGl1QGludGVsLmNv
+bT4NCj4gQ2M6IFNpbW9uIEdsYXNzIDxzamdAY2hyb21pdW0ub3JnPjsgZGV2aWNldHJlZUB2Z2Vy
+Lmtlcm5lbC5vcmc7IE1hcmsgUnV0bGFuZA0KPiA8bWFyay5ydXRsYW5kQGFybS5jb20+OyBSb2Ig
+SGVycmluZyA8cm9iaEBrZXJuZWwub3JnPjsgVGFuLCBMZWFuIFNoZW5nDQo+IDxzaGVuZy50YW5A
+OWVsZW1lbnRzLmNvbT47IGxrbWwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBEaGF2
+YWwNCj4gU2hhcm1hIDxkaGF2YWxAcml2b3NpbmMuY29tPjsgQnJ1bmUsIE1heGltaWxpYW4NCj4g
+PG1heGltaWxpYW4uYnJ1bmVAOWVsZW1lbnRzLmNvbT47IFl1bmh1aSBDdWkgPGN1aXl1bmh1aUBi
+eXRlZGFuY2UuY29tPjsNCj4gRG9uZywgR3VvIDxndW8uZG9uZ0BpbnRlbC5jb20+OyBUb20gUmlu
+aSA8dHJpbmlAa29uc3Vsa28uY29tPjsgcm9uIG1pbm5pY2gNCj4gPHJtaW5uaWNoQGdtYWlsLmNv
+bT47IEd1bywgR3VhIDxndWEuZ3VvQGludGVsLmNvbT47IGxpbnV4LQ0KPiBhY3BpQHZnZXIua2Vy
+bmVsLm9yZzsgVS1Cb290IE1haWxpbmcgTGlzdCA8dS1ib290QGxpc3RzLmRlbnguZGU+DQo+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0ggdjcgMi8yXSBzY2hlbWFzOiBBZGQgc29tZSBjb21tb24gcmVzZXJ2
+ZWQtbWVtb3J5DQo+IHVzYWdlcw0KPiANCj4gT24gU2F0LCAxMSBOb3YgMjAyMyBhdCAwNDoyMCwg
+Q2hpdSwgQ2hhc2VsIDxjaGFzZWwuY2hpdUBpbnRlbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4g
+PiBKdXN0IHNoYXJpbmcgc29tZSB1c2FnZSBleGFtcGxlcyBmcm9tIFVFRkkvRURLMiBzY2VuYXJp
+by4NCj4gPiBUbyBzdXBwb3J0IEFDUEkgUzQvSGliZXJuYXRpb24sIG1lbW9yeSBtYXAgbXVzdCBi
+ZSBjb25zaXN0ZW50IGJlZm9yZQ0KPiA+IGVudGVyaW5nIGFuZCBhZnRlciByZXN1bWluZyBmcm9t
+IFM0LCBpbiB0aGlzIGNhc2UgcGF5bG9hZCBtYXkgbmVlZCB0bw0KPiA+IGtub3cgcHJldmlvdXMg
+bWVtb3J5IG1hcCBmcm9tIGJvb3Rsb2FkZXIgKGN1cnJlbnRseSBnZW5lcmljIHBheWxvYWQNCj4g
+PiBjYW5ub3QgYWNjZXNzIHBsYXRmb3JtL2Jvb3Rsb2FkZXIgc3BlY2lmaWMgbm9uLXZvbGF0aWxl
+IGRhdGEsIHRodXMNCj4gPiBjb3VsZCBub3Qgc2F2ZS9yZXN0b3JlIG1lbW9yeSBtYXAgaW5mb3Jt
+YXRpb24pDQo+IA0KPiBTbyBob3cgd291bGQgRURLMiByZWNvbnN0cnVjdCB0aGUgZW50aXJlIEVG
+SSBtZW1vcnkgbWFwIGZyb20ganVzdCB0aGVzZQ0KPiB1bmFubm90YXRlZCAvcmVzZXJ2ZWQtbWVt
+b3J5IG5vZGVzPyBUaGUgRUZJIG1lbW9yeSBtYXAgY29udGFpbnMgbXVjaA0KPiBtb3JlIGluZm9y
+bWF0aW9uIHRoYW4gdGhhdCwgYW5kIGFsbCBvZiBpdCBoYXMgdG8gbWF0Y2ggdGhlIHByZS1oaWJl
+cm5hdGUgc2l0dWF0aW9uLA0KPiByaWdodD8gQ2FuIHlvdSBnaXZlbiBhbiBleGFtcGxlPw0KDQoN
+CkhlcmUgd2UgbGlzdGVkIG9ubHkgdHlwaWNhbGx5IG1lbW9yeSB0eXBlcyB0aGF0IG1heSBjaGFu
+Z2UgY3Jvc3MgZGlmZmVyZW50IHBsYXRmb3Jtcy4NClJlc2VydmVkIG1lbW9yeSB0eXBlIGFscmVh
+ZHkgY2FuIGJlIGhhbmRsZWQgYnkgcmVzZXJ2ZWQtbWVtb3J5IG5vZGUsIGFuZCByZXN0IG9mIHRo
+ZSB0eXBlcyB1c3VhbGx5IG5vIG5lZWQgdG8gY2hhbmdlIGNyb3NzIHBsYXRmb3JtcyB0aHVzIGN1
+cnJlbnRseSB3ZSBjb3VsZCByZWx5IG9uIGRlZmF1bHQgaW4gZ2VuZXJpYyBwYXlsb2FkLg0KSW4g
+dGhlIGZ1dHVyZSBpZiB3ZSBzZWUgYSBuZWVkIHRvIGFkZCBuZXcgbWVtb3J5IHR5cGVzIHdlIHdp
+bGwgZGlzY3VzcyBhbmQgYWRkIGl0IHRvIEZEVCBzY2hlbWEuDQoNCg0KDQo+IA0KPiA+IEFub3Ro
+ZXIgdXNhZ2UgaXMgdG8gc3VwcG9ydCBiaW5hcnkgbW9kZWwgd2hpY2ggZ2VuZXJpYyBwYXlsb2Fk
+IGlzIGEgcHJlYnVpbHQNCj4gYmluYXJ5IGNvbXBhdGlibGUgZm9yIGFsbCBwbGF0Zm9ybXMvY29u
+ZmlndXJhdGlvbnMsIGhvd2V2ZXIgdGhlIHBheWxvYWQgZGVmYXVsdA0KPiBtZW1vcnkgbWFwIG1p
+Z2h0IG5vdCBhbHdheXMgd29yayBmb3IgYWxsIHRoZSBjb25maWd1cmF0aW9ucyBhbmQgd2Ugd2Fu
+dCB0bw0KPiBhbGxvdyBib290bG9hZGVyIHRvIG92ZXJyaWRlIHBheWxvYWQgZGVmYXVsdCBtZW1v
+cnkgbWFwIHdpdGhvdXQgcmVjb21waWxpbmcuDQo+ID4NCj4gDQo+IEFncmVlZC4gQnV0IGNhbiB5
+b3UgZXhwbGFpbiBob3cgYSBFREsyIHBheWxvYWQgbWlnaHQgbWFrZSBtZWFuaW5nZnVsIHVzZSBv
+Zg0KPiAncnVudGltZS1jb2RlJyByZWdpb25zIHByb3ZpZGVkIHZpYSBEVCAgYnkgdGhlIG5vbi1F
+REsyIHBsYXRmb3JtIGluaXQ/IENhbiB5b3UNCj4gZ2l2ZSBhbiBleGFtcGxlPw0KDQoNClJ1bnRp
+bWUtY29kZS9kYXRhIGlzIHVzZWQgYnkgVUVGSSBwYXlsb2FkIGZvciBib290aW5nIFVFRkkgT1Mg
+d2hpY2ggcmVxdWlyZWQgVUVGSSBydW50aW1lIHNlcnZpY2VzLg0KUGxhdGZvcm0gSW5pdCB3aWxs
+IHNlbGVjdCBzb21lIHJlZ2lvbnMgZnJvbSB0aGUgdXNhYmxlIG1lbW9yeSBhbmQgYXNzaWduIGl0
+IHRvIHJ1bnRpbWUtY29kZS9kYXRhIGZvciBVUEwgdG8gY29uc3VtZS4gT3IgYXNzaWduIHNhbWUg
+cnVudGltZS1jb2RlL2RhdGEgZnJvbSBwcmV2aW91cyBib290Lg0KSWYgVUVGSSBPUyBpcyBub3Qg
+c3VwcG9ydGVkLCBQbGF0Zm9ybUluaXQgbWF5IG5vdCBuZWVkIHRvIHByb3ZpZGUgcnVudGltZS1j
+b2RlL2RhdGEgcmVnaW9ucyB0byBwYXlsb2FkLiAoYWx3YXlzIHByb3ZpZGluZyBydW50aW1lLWNv
+ZGUvZGF0YSBzaG91bGQgYmUgc3VwcG9ydGVkIHRvbykNCg0KDQo+IA0KPiA+IFVuZGVyIGJlbG93
+IGFzc3VtcHRpb246DQo+ID4gICAgICAgICBGRFQgT1MgaW1wYWN0IGhhcyBiZWVuIGV2YWx1YXRl
+ZCBhbmQgdGFrZW4gY2FyZSBieSByZWxldmFudA0KPiBleHBlcnRzL3N0YWtlaG9sZGVycy4NCj4g
+PiBSZXZpZXdlZC1ieTogQ2hhc2VsIENoaXUgPGNoYXNlbC5jaGl1QGludGVsLmNvbT4NCj4gPg0K
+PiANCj4gSSBhbSBzb3JyeSBidXQgSSBkb24ndCBrbm93IHdoYXQgJ0ZEVCBPUyBpbXBhY3QnIG1l
+YW5zLiBXZSBhcmUgdGFsa2luZyBhYm91dCBhDQo+IGZpcm13YXJlLXRvLWZpcm13YXJlIGFic3Ry
+YWN0aW9uIHRoYXQgaGFzIHRoZSBwb3RlbnRpYWwgdG8gbGVhayBpbnRvIHRoZSBPUw0KPiB2aXNp
+YmxlIGludGVyZmFjZS4NCj4gDQo+IEkgYW0gYSBtYWludGFpbmVyIGluIHRoZSBUaWFub2NvcmUg
+cHJvamVjdCBteXNlbGYsIHNvIGl0IHdvdWxkIGhlbHAgaWYgeW91IGNvdWxkDQo+IGV4cGxhaW4g
+d2hvIHRoZXNlIHJlbGV2YW50IGV4cGVydHMgYW5kIHN0YWtlaG9sZGVycyBhcmUuIFdhcyB0aGlz
+IGRpc2N1c3NlZCBvbg0KPiB0aGUgZWRrMi1kZXZlbCBtYWlsaW5nIGxpc3Q/IElmIHNvLCBhcG9s
+b2dpZXMgZm9yIG1pc3NpbmcgaXQgYnV0IEkgbWF5IG5vdCBoYXZlIGJlZW4NCj4gY2MnZWQgcGVy
+aGFwcz8NCg0KDQoNCg0KSSdtIG5vdCBmYW1pbGlhciB3aXRoIEZEVCBPUywgYWxzbyBJIGRvIG5v
+dCBrbm93IGlmIHdobyBmcm9tIGVkazItZGV2ZWwgd2VyZSBzdXBwb3J0aW5nIEZEVCBPUywgSSB0
+aGluayBTaW1vbiBtaWdodCBiZSBhYmxlIHRvIGNvbm5lY3QgRkRUIE9TIGV4cGVydHMvc3Rha2Vo
+b2xkZXJzLg0KV2UgYXJlIG1vc3RseSBmb2N1c2luZyBvbiBwYXlsb2FkIGZpcm13YXJlIHBoYXNl
+IGltcGxlbWVudGF0aW9uIGluIGVkazIgKGFuZCBvdGhlciBwYXlsb2FkcyB0b28pLCBob3dldmVy
+LCBzaW5jZSB3ZSBoYXZlIGFsaWduZWQgdGhlIHBheWxvYWQgRkRUIGFuZCBPUyBGRFQgbW9udGhz
+IGFnbywgSSdtIGFzc3VtaW5nIEZEVCBPUyBpbXBhY3QgbXVzdCBiZSB0aGVyZSBhbmQgd2UgbmVl
+ZCAob3IgYWxyZWFkeSBkb25lPykgRkRUIE9TIGV4cGVydHMgdG8gc3VwcG9ydCBpdC4gKGFnYWlu
+LCBtYXliZSBTaW1vbiBjb3VsZCBzaGFyZSBtb3JlIGluZm9ybWF0aW9uIGFib3V0IEZEVCBPUykg
+DQoNCkluIGVkazIgc3VjaCBGRFQgc2NoZW1hIGlzIFVlZmlQYXlsb2FkUGtnIGludGVybmFsIHVz
+YWdlIG9ubHkgYW5kIHBheWxvYWQgZW50cnkgd2lsbCBjb252ZXJ0IEZEVCBpbnRvIEhPQiB0aHVz
+IHdlIGV4cGVjdGVkIHRoZSBtb3N0IG9mIHRoZSBlZGsyIGdlbmVyaWMgY29kZSBhcmUgbm8tdG91
+Y2gvbm8gaW1wYWN0LCB0aGF0J3Mgd2h5IHdlIG9ubHkgaGFkIHNtYWxsIGdyb3VwIChVZWZpUGF5
+bG9hZFBrZykgZGlzY3Vzc2lvbi4NCkFyZCwgaWYgeW91IGFyZSBhd2FyZSBvZiBhbnkgZWRrMiBj
+b2RlIHRoYXQncyBmb3Igc3VwcG9ydGluZyBGRFQgT1MsIHBsZWFzZSBsZXQgdXMga25vdyBhbmQg
+d2UgY2FuIGRpc2N1c3MgaWYgdGhvc2UgY29kZSB3ZXJlIGltcGFjdGVkIG9yIG5vdC4NCg0KDQoN
+Cg0KPiANCj4gDQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gPiBG
+cm9tOiBTaW1vbiBHbGFzcyA8c2pnQGNocm9taXVtLm9yZz4NCj4gPiA+IFNlbnQ6IFR1ZXNkYXks
+IFNlcHRlbWJlciAyNiwgMjAyMyAxMjo0MyBQTQ0KPiA+ID4gVG86IGRldmljZXRyZWVAdmdlci5r
+ZXJuZWwub3JnDQo+ID4gPiBDYzogTWFyayBSdXRsYW5kIDxtYXJrLnJ1dGxhbmRAYXJtLmNvbT47
+IFJvYiBIZXJyaW5nDQo+ID4gPiA8cm9iaEBrZXJuZWwub3JnPjsgVGFuLCBMZWFuIFNoZW5nIDxz
+aGVuZy50YW5AOWVsZW1lbnRzLmNvbT47IGxrbWwNCj4gPiA+IDxsaW51eC0ga2VybmVsQHZnZXIu
+a2VybmVsLm9yZz47IERoYXZhbCBTaGFybWENCj4gPiA+IDxkaGF2YWxAcml2b3NpbmMuY29tPjsg
+QnJ1bmUsIE1heGltaWxpYW4NCj4gPiA+IDxtYXhpbWlsaWFuLmJydW5lQDllbGVtZW50cy5jb20+
+OyBZdW5odWkgQ3VpDQo+ID4gPiA8Y3VpeXVuaHVpQGJ5dGVkYW5jZS5jb20+OyBEb25nLCBHdW8g
+PGd1by5kb25nQGludGVsLmNvbT47IFRvbSBSaW5pDQo+ID4gPiA8dHJpbmlAa29uc3Vsa28uY29t
+Pjsgcm9uIG1pbm5pY2ggPHJtaW5uaWNoQGdtYWlsLmNvbT47IEd1bywgR3VhDQo+ID4gPiA8Z3Vh
+Lmd1b0BpbnRlbC5jb20+OyBDaGl1LCBDaGFzZWwgPGNoYXNlbC5jaGl1QGludGVsLmNvbT47IGxp
+bnV4LQ0KPiA+ID4gYWNwaUB2Z2VyLmtlcm5lbC5vcmc7IFUtQm9vdCBNYWlsaW5nIExpc3QgPHUt
+Ym9vdEBsaXN0cy5kZW54LmRlPjsNCj4gPiA+IEFyZCBCaWVzaGV1dmVsIDxhcmRiQGtlcm5lbC5v
+cmc+OyBTaW1vbiBHbGFzcyA8c2pnQGNocm9taXVtLm9yZz4NCj4gPiA+IFN1YmplY3Q6IFtQQVRD
+SCB2NyAyLzJdIHNjaGVtYXM6IEFkZCBzb21lIGNvbW1vbiByZXNlcnZlZC1tZW1vcnkNCj4gPiA+
+IHVzYWdlcw0KPiA+ID4NCj4gPiA+IEl0IGlzIGNvbW1vbiB0byBzcGxpdCBmaXJtd2FyZSBpbnRv
+ICdQbGF0Zm9ybSBJbml0Jywgd2hpY2ggZG9lcyB0aGUNCj4gPiA+IGluaXRpYWwgaGFyZHdhcmUg
+c2V0dXAgYW5kIGEgIlBheWxvYWQiIHdoaWNoIHNlbGVjdHMgdGhlIE9TIHRvIGJlIGJvb3RlZC4N
+Cj4gPiA+IFRodXMgYW4gaGFuZG92ZXIgaW50ZXJmYWNlIGlzIHJlcXVpcmVkIGJldHdlZW4gdGhl
+c2UgdHdvIHBpZWNlcy4NCj4gPiA+DQo+ID4gPiBXaGVyZSBVRUZJIGJvb3QtdGltZSBzZXJ2aWNl
+cyBhcmUgbm90IGF2YWlsYWJsZSwgYnV0IFVFRkkgZmlybXdhcmUNCj4gPiA+IGlzIHByZXNlbnQg
+b24gZWl0aGVyIHNpZGUgb2YgdGhpcyBpbnRlcmZhY2UsIGluZm9ybWF0aW9uIGFib3V0DQo+ID4g
+PiBtZW1vcnkgdXNhZ2UgYW5kIGF0dHJpYnV0ZXMgbXVzdCBiZSBwcmVzZW50ZWQgdG8gdGhlICJQ
+YXlsb2FkIiBpbiBzb21lDQo+IGZvcm0uDQo+ID4gPg0KPiA+ID4gVGhpcyBhaW1zIHRvIHByb3Zp
+ZGUgYW4gc21hbGwgc2NoZW1hIGFkZGl0aW9uIGZvciB0aGUgbWVtb3J5IG1hcHBpbmcNCj4gPiA+
+IG5lZWRlZCB0byBrZWVwIHRoZXNlIHR3byBwaWVjZXMgd29ya2luZyB0b2dldGhlciB3ZWxsLg0K
+PiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFNpbW9uIEdsYXNzIDxzamdAY2hyb21pdW0ub3Jn
+Pg0KPiA+ID4gLS0tDQo+ID4gPg0KPiA+ID4gQ2hhbmdlcyBpbiB2NzoNCj4gPiA+IC0gUmVuYW1l
+IGFjcGktcmVjbGFpbSB0byBhY3BpDQo+ID4gPiAtIERyb3AgaW5kaXZpZHVhbCBtZW50aW9uIG9m
+IHdoZW4gbWVtb3J5IGNhbiBiZSByZWNsYWltZWQNCj4gPiA+IC0gUmV3cml0ZSB0aGUgaXRlbSBk
+ZXNjcmlwdGlvbnMNCj4gPiA+IC0gQWRkIGJhY2sgdGhlIFVFRkkgdGV4dCAod2l0aCB0cmVwaWRh
+dGlvbikNCj4gPiA+DQo+ID4gPiBDaGFuZ2VzIGluIHY2Og0KPiA+ID4gLSBEcm9wIG1lbnRpb24g
+b2YgVUVGSQ0KPiA+ID4gLSBVc2UgY29tcGF0aWJsZSBzdHJpbmdzIGluc3RlYWQgb2Ygbm9kZSBu
+YW1lcw0KPiA+ID4NCj4gPiA+IENoYW5nZXMgaW4gdjU6DQo+ID4gPiAtIERyb3AgdGhlIG1lbW9y
+eS1tYXAgbm9kZSAoc2hvdWxkIGhhdmUgZG9uZSB0aGF0IGluIHY0KQ0KPiA+ID4gLSBUaWR5IHVw
+IHNjaGVtYSBhIGJpdA0KPiA+ID4NCj4gPiA+IENoYW5nZXMgaW4gdjQ6DQo+ID4gPiAtIE1ha2Ug
+dXNlIG9mIHRoZSByZXNlcnZlZC1tZW1vcnkgbm9kZSBpbnN0ZWFkIG9mIGNyZWF0aW5nIGEgbmV3
+IG9uZQ0KPiA+ID4NCj4gPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4gPiAtIFJld29yZCBjb21taXQg
+bWVzc2FnZSBhZ2Fpbg0KPiA+ID4gLSBjYyBhIGxvdCBtb3JlIHBlb3BsZSwgZnJvbSB0aGUgRkZJ
+IHBhdGNoDQo+ID4gPiAtIFNwbGl0IG91dCB0aGUgYXR0cmlidXRlcyBpbnRvIHRoZSAvbWVtb3J5
+IG5vZGVzDQo+ID4gPg0KPiA+ID4gQ2hhbmdlcyBpbiB2MjoNCj4gPiA+IC0gUmV3b3JkIGNvbW1p
+dCBtZXNzYWdlDQo+ID4gPg0KPiA+ID4gIC4uLi9yZXNlcnZlZC1tZW1vcnkvY29tbW9uLXJlc2Vy
+dmVkLnlhbWwgICAgICB8IDcxICsrKysrKysrKysrKysrKysrKysNCj4gPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgNzEgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkdHNjaGVt
+YS9zY2hlbWFzL3Jlc2VydmVkLW1lbW9yeS9jb21tb24tDQo+ID4gPiByZXNlcnZlZC55YW1sDQo+
+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2R0c2NoZW1hL3NjaGVtYXMvcmVzZXJ2ZWQtbWVtb3J5
+L2NvbW1vbi1yZXNlcnZlZC55YW1sDQo+ID4gPiBiL2R0c2NoZW1hL3NjaGVtYXMvcmVzZXJ2ZWQt
+bWVtb3J5L2NvbW1vbi1yZXNlcnZlZC55YW1sDQo+ID4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0K
+PiA+ID4gaW5kZXggMDAwMDAwMC4uZjdmYmRmZA0KPiA+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ID4g
+KysrIGIvZHRzY2hlbWEvc2NoZW1hcy9yZXNlcnZlZC1tZW1vcnkvY29tbW9uLXJlc2VydmVkLnlh
+bWwNCj4gPiA+IEBAIC0wLDAgKzEsNzEgQEANCj4gPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlm
+aWVyOiBHUEwtMi4wLW9ubHkgT1IgQlNELTItQ2xhdXNlICVZQU1MIDEuMg0KPiA+ID4gKy0tLQ0K
+PiA+ID4gKyRpZDoNCj4gPiA+ICtodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9yZXNlcnZl
+ZC1tZW1vcnkvY29tbW9uLXJlc2VydmVkLnlhbWwjDQo+ID4gPiArJHNjaGVtYTogaHR0cDovL2Rl
+dmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gPiArDQo+ID4gPiArdGl0
+bGU6IENvbW1vbiBtZW1vcnkgcmVzZXJ2YXRpb25zDQo+ID4gPiArDQo+ID4gPiArZGVzY3JpcHRp
+b246IHwNCj4gPiA+ICsgIFNwZWNpZmllcyB0aGF0IHRoZSByZXNlcnZlZCBtZW1vcnkgcmVnaW9u
+IGNhbiBiZSB1c2VkIGZvciB0aGUNCj4gPiA+ICtwdXJwb3NlDQo+ID4gPiArICBpbmRpY2F0ZWQg
+YnkgaXRzIGNvbXBhdGlibGUgc3RyaW5nLg0KPiA+ID4gKw0KPiA+ID4gKyAgQ2xpZW50cyBtYXkg
+cmV1c2UgdGhpcyByZXNlcnZlZCBtZW1vcnkgaWYgdGhleSB1bmRlcnN0YW5kIHdoYXQgaXQNCj4g
+PiA+ICsgaXMgZm9yLCAgc3ViamVjdCB0byB0aGUgbm90ZXMgYmVsb3cuDQo+ID4gPiArDQo+ID4g
+PiArbWFpbnRhaW5lcnM6DQo+ID4gPiArICAtIFNpbW9uIEdsYXNzIDxzamdAY2hyb21pdW0ub3Jn
+Pg0KPiA+ID4gKw0KPiA+ID4gK2FsbE9mOg0KPiA+ID4gKyAgLSAkcmVmOiByZXNlcnZlZC1tZW1v
+cnkueWFtbA0KPiA+ID4gKw0KPiA+ID4gK3Byb3BlcnRpZXM6DQo+ID4gPiArICBjb21wYXRpYmxl
+Og0KPiA+ID4gKyAgICBkZXNjcmlwdGlvbjogfA0KPiA+ID4gKyAgICAgIFRoaXMgZGVzY3JpYmVz
+IHNvbWUgY29tbW9uIG1lbW9yeSByZXNlcnZhdGlvbnMsIHdpdGggdGhlIGNvbXBhdGlibGUNCj4g
+PiA+ICsgICAgICBzdHJpbmcgaW5kaWNhdGluZyB3aGF0IGl0IGlzIHVzZWQgZm9yOg0KPiA+ID4g
+Kw0KPiA+ID4gKyAgICAgICAgIGFjcGk6IEFkdmFuY2VkIENvbmZpZ3VyYXRpb24gYW5kIFBvd2Vy
+IEludGVyZmFjZSAoQUNQSSkgdGFibGVzDQo+ID4gPiArICAgICAgICAgYWNwaS1udnM6IEFDUEkg
+Tm9uLVZvbGF0aWxlLVNsZWVwaW5nIE1lbW9yeSAoTlZTKS4gVGhpcyBpcyByZXNlcnZlZCBieQ0K
+PiA+ID4gKyAgICAgICAgICAgdGhlIGZpcm13YXJlIGZvciBpdHMgdXNlIGFuZCBpcyByZXF1aXJl
+ZCB0byBiZSBzYXZlZCBhbmQgcmVzdG9yZWQNCj4gPiA+ICsgICAgICAgICAgIGFjcm9zcyBhbiBO
+VlMgc2xlZXANCj4gPiA+ICsgICAgICAgICBib290LWNvZGU6IENvbnRhaW5zIGNvZGUgdXNlZCBm
+b3IgYm9vdGluZyB3aGljaCBpcyBub3QgbmVlZGVkIGJ5IHRoZQ0KPiBPUw0KPiA+ID4gKyAgICAg
+ICAgIGJvb3QtY29kZTogQ29udGFpbnMgZGF0YSB1c2VkIGZvciBib290aW5nIHdoaWNoIGlzIG5v
+dCBuZWVkZWQgYnkgdGhlDQo+IE9TDQo+ID4gPiArICAgICAgICAgcnVudGltZS1jb2RlOiBDb250
+YWlucyBjb2RlIHVzZWQgZm9yIGludGVyYWN0aW5nIHdpdGggdGhlIHN5c3RlbSB3aGVuDQo+ID4g
+PiArICAgICAgICAgICBydW5uaW5nIHRoZSBPUw0KPiA+ID4gKyAgICAgICAgIHJ1bnRpbWUtZGF0
+YTogQ29udGFpbnMgZGF0YSB1c2VkIGZvciBpbnRlcmFjdGluZyB3aXRoIHRoZSBzeXN0ZW0gd2hl
+bg0KPiA+ID4gKyAgICAgICAgICAgcnVubmluZyB0aGUgT1MNCj4gPiA+ICsNCj4gPiA+ICsgICAg
+ZW51bToNCj4gPiA+ICsgICAgICAtIGFjcGkNCj4gPiA+ICsgICAgICAtIGFjcGktbnZzDQo+ID4g
+PiArICAgICAgLSBib290LWNvZGUNCj4gPiA+ICsgICAgICAtIGJvb3QtZGF0YQ0KPiA+ID4gKyAg
+ICAgIC0gcnVudGltZS1jb2RlDQo+ID4gPiArICAgICAgLSBydW50aW1lLWRhdGENCj4gPiA+ICsN
+Cj4gPiA+ICsgIHJlZzoNCj4gPiA+ICsgICAgZGVzY3JpcHRpb246IHJlZ2lvbiBvZiBtZW1vcnkg
+dGhhdCBpcyByZXNlcnZlZCBmb3IgdGhlIHB1cnBvc2UgaW5kaWNhdGVkDQo+ID4gPiArICAgICAg
+YnkgdGhlIGNvbXBhdGlibGUgc3RyaW5nLg0KPiA+ID4gKw0KPiA+ID4gK3JlcXVpcmVkOg0KPiA+
+ID4gKyAgLSByZWcNCj4gPiA+ICsNCj4gPiA+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNl
+DQo+ID4gPiArDQo+ID4gPiArZXhhbXBsZXM6DQo+ID4gPiArICAtIHwNCj4gPiA+ICsgICAgcmVz
+ZXJ2ZWQtbWVtb3J5IHsNCj4gPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+
+ID4gKyAgICAgICAgI3NpemUtY2VsbHMgPSA8MT47DQo+ID4gPiArDQo+ID4gPiArICAgICAgICBy
+ZXNlcnZlZEAxMjM0MDAwMCB7DQo+ID4gPiArICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJib290
+LWNvZGUiOw0KPiA+ID4gKyAgICAgICAgICAgIHJlZyA9IDwweDEyMzQwMDAwIDB4MDA4MDAwMDA+
+Ow0KPiA+ID4gKyAgICAgICAgfTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgICAgIHJlc2VydmVkQDQz
+MjEwMDAwIHsNCj4gPiA+ICsgICAgICAgICAgICBjb21wYXRpYmxlID0gImJvb3QtZGF0YSI7DQo+
+ID4gPiArICAgICAgICAgICAgcmVnID0gPDB4NDMyMTAwMDAgMHgwMDgwMDAwMD47DQo+ID4gPiAr
+ICAgICAgICB9Ow0KPiA+ID4gKyAgICB9Ow0KPiA+ID4gLS0NCj4gPiA+IDIuNDIuMC41MTUuZzM4
+MGZjN2NjZDEtZ29vZw0KPiA+DQo=
