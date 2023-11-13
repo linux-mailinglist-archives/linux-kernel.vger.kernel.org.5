@@ -2,228 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB017E9602
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDCD7E9605
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbjKMEOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
+        id S233142AbjKMEQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:16:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjKMEOD (ORCPT
+        with ESMTP id S233096AbjKMEQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:14:03 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154E010F0;
-        Sun, 12 Nov 2023 20:14:00 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c83d37a492so15904871fa.3;
-        Sun, 12 Nov 2023 20:13:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699848838; x=1700453638; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i0sxmqcbI9Lg4Pt8dSxwUwV8w8KVlrB+RKcE/Jgbh9s=;
-        b=UnG5cYr17+yr/1gvYqSRsfdr7iPm4B5rN1BD9W68ZBej2elYGwLZN4FYPc/GZZckpP
-         RX2vrDcpW+KazG6ZEHxHGJCutXjo/EKqJSZY7oac6rmW5bdLhbawMMUoCuZWOyLz/HJS
-         ildp4wKm/x+Ok/C00GfJmtY+iQT3Mcf7fB4H8K94n623KDl6OoAzyCM2VjM1qxikuFzT
-         iVWfscQbwqiQyenFtDQGeTJmBaPjLJf8zxpmeVXvDyNCfluMTnIzKJBZdbXKViAM8icI
-         V4Kw6rJ8cjeFvsLM9cDM8Gy87RY5eH2hVkEmsgslY0rwA/VA4NUTtsZocZldBVvGo4AF
-         FNkg==
+        Sun, 12 Nov 2023 23:16:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BC4172B
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:15:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699848915;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ov+x7HzdGwyU+jHlaZfU1L5IZSQbEUUK1LixBfo2D/Y=;
+        b=LhOCt3GOBjBfWhGnG/57+XocwCjQoczFu4DTsnWaJxc7GIPQhHL0U1Pi6DcWZH2QqnIDX8
+        Kj2GG1x14hKlVLri2Bo7VUwX+y3hzff1PPNAK/RVhlAYVnw+DcH9BBgXIBiNGC5pWKmbL9
+        1Nhgjro7Spw6YmTMfstegL2Si6TQvzI=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-472-d-X_4aawPUC23Je0ogL64A-1; Sun, 12 Nov 2023 23:15:12 -0500
+X-MC-Unique: d-X_4aawPUC23Je0ogL64A-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-7ba672cc8b3so1282644241.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:15:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699848838; x=1700453638;
+        d=1e100.net; s=20230601; t=1699848912; x=1700453712;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i0sxmqcbI9Lg4Pt8dSxwUwV8w8KVlrB+RKcE/Jgbh9s=;
-        b=P5xvnM8WLKLcuQL3KwWXDtZlqsS28GwQh0bXh3p6KScffN/uCpQUR8G9ELZ9hSxDM+
-         d5NWGkB2Sd6LUd8f0FB8DUuVx+jaFS1LtNWIAdir6gWftiCdedRZQRgCrlgOXf1dhIiL
-         Ylf8fcwAD570CexyBjs6YQkiOepGgJcjrIVLK1ptJiMGfRYHSnkzibeCHf1HndnRpAkH
-         2I3s8AWBDaXWIzzPVUmxIwlwQkj5c+bJlZ+mcKvkwNX/Ix9PsYC6JFqxBHQUgcJOj5CQ
-         1QeiZT5YJyR6ccscTjHdyiWcIQYEiX5Dsg2ePriE0yoipQwtJ954SYDfIDfDMiFQJIEa
-         nZ/w==
-X-Gm-Message-State: AOJu0YzUF/0mlv/x7fyYzTjjXe7ODxvXEtM/TFFjTgVTNeuQYutS1Fow
-        bYookjUMh7kLwJNCQI5DNscjFMPENyInkgXoe08=
-X-Google-Smtp-Source: AGHT+IGjmGCuIejxq5eSaQ84Q1yZXn1L1aDZ+nLpSSol3z/Ejb+fZqZOcjxP9abhpx/F6wdKi4hod3e4mpBttVxNsIE=
-X-Received: by 2002:a2e:9183:0:b0:2c6:f768:fbd4 with SMTP id
- f3-20020a2e9183000000b002c6f768fbd4mr3231709ljg.53.1699848837915; Sun, 12 Nov
- 2023 20:13:57 -0800 (PST)
+        bh=ov+x7HzdGwyU+jHlaZfU1L5IZSQbEUUK1LixBfo2D/Y=;
+        b=pAVrjTcHI4kGiisWTDd/kHhHo2rEU1m+1lwQNsBupt8x3mifuJ4L7tVrzIHgaGkcId
+         ncPiVgBA7mpghe/H2/VHDt/1wwnrqP6EHbgEcWpckH9gEc7go2iHTMWm6kvcuO4p5yHQ
+         uipq4xv6PtdZuG7GkzHT6cES3mmF+yk8OBXPBJLht3e7OWZE566naaHsUwjwTMpRboNu
+         GxiBKmK22HztaGC5dH9oYtcAoVIjbsitbeyZxsS0HameHLYTiZ8hslHx6aU/lbAujQnp
+         f5xB4g41Mf8CUVJN/8442EbX2bE3aNdD5vwRQmlpFp+g0E8H3HHyj4ZpRYZbruauLsc+
+         amEA==
+X-Gm-Message-State: AOJu0YxKuCrhnQq2zPQXyqjoIhCWUfvxKIHaNJ0ldvPffcxaf0673/2J
+        Fmm+xnbRpr8pH4+vXJFh9DWqEwyz2A1FybpODK1GmSkW/s7aiLaVSXMKpkZUDEUN52PhATp4ov5
+        2gkE5wLsZvNMFrFsfGRTqFVFJu4LY7YNZ344aRE6vMYz6nzkDSKc=
+X-Received: by 2002:a05:6102:2908:b0:460:621c:d14b with SMTP id cz8-20020a056102290800b00460621cd14bmr5940096vsb.20.1699848912137;
+        Sun, 12 Nov 2023 20:15:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHiNq1wy78YEV+FfLhVnSBPQqjbfUbc9rfWK0Z0GO4RCbMCmdaJaVtU9ExbYgGT6AwSDtX9ZsDt+FIJg1qTW9M=
+X-Received: by 2002:a05:6102:2908:b0:460:621c:d14b with SMTP id
+ cz8-20020a056102290800b00460621cd14bmr5940079vsb.20.1699848911851; Sun, 12
+ Nov 2023 20:15:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20231110014605.2068231-1-yinghsu@chromium.org> <CAAa9mD3T-ey_3LQ8vsC60f1er4xMrELyJwJsY6QpG=b_xYRKgQ@mail.gmail.com>
-In-Reply-To: <CAAa9mD3T-ey_3LQ8vsC60f1er4xMrELyJwJsY6QpG=b_xYRKgQ@mail.gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Sun, 12 Nov 2023 23:13:44 -0500
-Message-ID: <CABBYNZJBx=oUy643gHc2ntCK2wRurDok17KcezM_o81JvcLbXQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] Bluetooth: Fix deadlock in vhci_send_frame
-To:     Ying Hsu <yinghsu@chromium.org>
-Cc:     linux-bluetooth@vger.kernel.org, arkadiusz.bokowy@gmail.com,
-        linux-kernel@vger.kernel.org,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        johan.hedberg@gmail.com, marcel@holtmann.org
+References: <20231110170615.2168372-1-cmirabil@redhat.com> <20231112-bekriegen-branche-fbc86a9aaa5e@brauner>
+In-Reply-To: <20231112-bekriegen-branche-fbc86a9aaa5e@brauner>
+From:   Charles Mirabile <cmirabil@redhat.com>
+Date:   Sun, 12 Nov 2023 23:15:00 -0500
+Message-ID: <CABe3_aHqQPjePNPsCu2GEt_uX4dZ0WVrFBQH5p+LCFE9JQxq7w@mail.gmail.com>
+Subject: Re: [PATCH v1 0/1] fs: Consider capabilities relative to namespace
+ for linkat permission check
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, Seth Forshee <sforshee@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ying,
-
-On Sun, Nov 12, 2023 at 10:52=E2=80=AFPM Ying Hsu <yinghsu@chromium.org> wr=
-ote:
+On Sun, Nov 12, 2023 at 3:14=E2=80=AFPM Christian Brauner <brauner@kernel.o=
+rg> wrote:
 >
-> Hi Luiz and Arkadiusz,
+> On Fri, Nov 10, 2023 at 12:06:14PM -0500, Charles Mirabile wrote:
+> > This is a one line change that makes `linkat` aware of namespaces when
+> > checking for capabilities.
+> >
+> > As far as I can tell, the call to `capable` in this code dates back to
+> > before the `ns_capable` function existed, so I don't think the author
+> > specifically intended to prefer regular `capable` over `ns_capable`,
+> > and no one has noticed or cared to change it yet... until now!
+> >
+> > It is already hard enough to use `linkat` to link temporarily files
+> > into the filesystem without the `/proc` workaround, and when moving
+> > a program that was working fine on bare metal into a container,
+> > I got hung up on this additional snag due to the lack of namespace
+> > awareness in `linkat`.
 >
-> I appreciate the effort you put into ensuring the quality of the
-> kernel, if it looks like the review might need more time, could we
-> consider reverting commit 92d4abd66f70 ("Bluetooth: vhci: Fix race
-> when opening vhci device") in the interim? This would help maintain
-> stability until the new patch is approved.
-
-Sorry for not responding before, I'm on vacation, I will try to
-prioritize this one as soon as I'm back.
-
-> Best regards,
-> Ying
+> I agree that it would be nice to relax this a bit to make this play
+> nicer with containers.
 >
+> The current checks want to restrict scenarios where an application is
+> able to create a hardlink for an arbitrary file descriptor it has
+> received via e.g., SCM_RIGHTS or that it has inherited.
+Makes sense.
 >
-> On Fri, Nov 10, 2023 at 9:46=E2=80=AFAM Ying Hsu <yinghsu@chromium.org> w=
-rote:
-> >
-> > syzbot found a potential circular dependency leading to a deadlock:
-> >     -> #3 (&hdev->req_lock){+.+.}-{3:3}:
-> >     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-> >     __mutex_lock kernel/locking/mutex.c:732 [inline]
-> >     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-> >     hci_dev_do_close+0x3f/0x9f net/bluetooth/hci_core.c:551
-> >     hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-> >     rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-> >     rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-> >     vfs_write+0x277/0xcf5 fs/read_write.c:594
-> >     ksys_write+0x19b/0x2bd fs/read_write.c:650
-> >     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-> >     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-> >     entry_SYSCALL_64_after_hwframe+0x61/0xcb
-> >
-> >     -> #2 (rfkill_global_mutex){+.+.}-{3:3}:
-> >     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-> >     __mutex_lock kernel/locking/mutex.c:732 [inline]
-> >     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-> >     rfkill_register+0x30/0x7e3 net/rfkill/core.c:1045
-> >     hci_register_dev+0x48f/0x96d net/bluetooth/hci_core.c:2622
-> >     __vhci_create_device drivers/bluetooth/hci_vhci.c:341 [inline]
-> >     vhci_create_device+0x3ad/0x68f drivers/bluetooth/hci_vhci.c:374
-> >     vhci_get_user drivers/bluetooth/hci_vhci.c:431 [inline]
-> >     vhci_write+0x37b/0x429 drivers/bluetooth/hci_vhci.c:511
-> >     call_write_iter include/linux/fs.h:2109 [inline]
-> >     new_sync_write fs/read_write.c:509 [inline]
-> >     vfs_write+0xaa8/0xcf5 fs/read_write.c:596
-> >     ksys_write+0x19b/0x2bd fs/read_write.c:650
-> >     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-> >     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-> >     entry_SYSCALL_64_after_hwframe+0x61/0xcb
-> >
-> >     -> #1 (&data->open_mutex){+.+.}-{3:3}:
-> >     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-> >     __mutex_lock kernel/locking/mutex.c:732 [inline]
-> >     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-> >     vhci_send_frame+0x68/0x9c drivers/bluetooth/hci_vhci.c:75
-> >     hci_send_frame+0x1cc/0x2ff net/bluetooth/hci_core.c:2989
-> >     hci_sched_acl_pkt net/bluetooth/hci_core.c:3498 [inline]
-> >     hci_sched_acl net/bluetooth/hci_core.c:3583 [inline]
-> >     hci_tx_work+0xb94/0x1a60 net/bluetooth/hci_core.c:3654
-> >     process_one_work+0x901/0xfb8 kernel/workqueue.c:2310
-> >     worker_thread+0xa67/0x1003 kernel/workqueue.c:2457
-> >     kthread+0x36a/0x430 kernel/kthread.c:319
-> >     ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
-> >
-> >     -> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
-> >     check_prev_add kernel/locking/lockdep.c:3053 [inline]
-> >     check_prevs_add kernel/locking/lockdep.c:3172 [inline]
-> >     validate_chain kernel/locking/lockdep.c:3787 [inline]
-> >     __lock_acquire+0x2d32/0x77fa kernel/locking/lockdep.c:5011
-> >     lock_acquire+0x273/0x4d5 kernel/locking/lockdep.c:5622
-> >     __flush_work+0xee/0x19f kernel/workqueue.c:3090
-> >     hci_dev_close_sync+0x32f/0x1113 net/bluetooth/hci_sync.c:4352
-> >     hci_dev_do_close+0x47/0x9f net/bluetooth/hci_core.c:553
-> >     hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-> >     rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-> >     rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-> >     vfs_write+0x277/0xcf5 fs/read_write.c:594
-> >     ksys_write+0x19b/0x2bd fs/read_write.c:650
-> >     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-> >     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-> >     entry_SYSCALL_64_after_hwframe+0x61/0xcb
-> >
-> > This change removes the need for acquiring the open_mutex in
-> > vhci_send_frame, thus eliminating the potential deadlock while
-> > maintaining the required packet ordering.
-> >
-> > Fixes: 92d4abd66f70 ("Bluetooth: vhci: Fix race when opening vhci devic=
-e")
-> > Signed-off-by: Ying Hsu <yinghsu@chromium.org>
-> > ---
-> > Tested this commit using a C reproducer on qemu-x86_64.
-> >
-> >  drivers/bluetooth/hci_vhci.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.=
-c
-> > index f3892e9ce800..572d68d52965 100644
-> > --- a/drivers/bluetooth/hci_vhci.c
-> > +++ b/drivers/bluetooth/hci_vhci.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/module.h>
-> >  #include <asm/unaligned.h>
-> >
-> > +#include <linux/atomic.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/init.h>
-> >  #include <linux/slab.h>
-> > @@ -44,6 +45,7 @@ struct vhci_data {
-> >         bool wakeup;
-> >         __u16 msft_opcode;
-> >         bool aosp_capable;
-> > +       atomic_t initialized;
-> >  };
-> >
-> >  static int vhci_open_dev(struct hci_dev *hdev)
-> > @@ -75,11 +77,10 @@ static int vhci_send_frame(struct hci_dev *hdev, st=
-ruct sk_buff *skb)
-> >
-> >         memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
-> >
-> > -       mutex_lock(&data->open_mutex);
-> >         skb_queue_tail(&data->readq, skb);
-> > -       mutex_unlock(&data->open_mutex);
-> >
-> > -       wake_up_interruptible(&data->read_wait);
-> > +       if (atomic_read(&data->initialized))
-> > +               wake_up_interruptible(&data->read_wait);
-> >         return 0;
-> >  }
-> >
-> > @@ -464,7 +465,8 @@ static int __vhci_create_device(struct vhci_data *d=
-ata, __u8 opcode)
-> >         skb_put_u8(skb, 0xff);
-> >         skb_put_u8(skb, opcode);
-> >         put_unaligned_le16(hdev->id, skb_put(skb, 2));
-> > -       skb_queue_tail(&data->readq, skb);
-> > +       skb_queue_head(&data->readq, skb);
-> > +       atomic_inc(&data->initialized);
-> >
-> >         wake_up_interruptible(&data->read_wait);
-> >         return 0;
-> > --
-> > 2.43.0.rc0.421.g78406f8d94-goog
-> >
+> So we want to somehow get a good enough approximation to the question
+> whether the caller would have been able to open the source file.
+>
+> When we check for CAP_DAC_READ_SEARCH in the caller's namespace we
+> presuppose that the file is accessible in the current namespace and that
+> CAP_DAC_READ_SEARCH would have been enough to open it. Both aren't
+> necessarily true. Neither need the file be accessible, e.g., due to a
+> chroot or pivot_root nor need CAP_DAC_READ_SEARCH be enough. For
+> example, the file could be accessible in the caller's namespace but due
+> to uid/gid mapping the {g,u}id of the file doesn't have a mapping in the
+> caller's namespace. So that doesn't really cut it imho.
+Good point.
+>
+> However, if we check for CAP_DAC_READ_SEARCH in the namespace the file
+> was opened in that could work. We know that the file must've been
+> accessible in the namespace the file was opened in and we
+> know that the {g,u}id of the file must have been mapped in the namespace
+> the file was opened in. So if we check that the caller does have
+> CAP_DAC_READ_SEARCH in the opener's namespace we can approximate that
+> the caller could've opened the file.
+Would that be the namespace pointed to by `->f_cred->user_ns`  on the
+struct file corresponding to the fd?
 
+If so is there a better way to surface that struct file for checking than t=
+his?
+error=3D-ENOENT;
+if(flags & AT_EMPTY_PATH && !old->name[0]) {
+    struct file *file =3D fget(oldfd);
+    bool capable =3D ns_capable(file->f_cred->user_ns, CAP_DAC_READ_SEARCH)=
+;
+    fput(file);
+    if(!capable)
+        goto out_putnames;
+}
+>
+> So that should allow us to enabled this for containers.
+>
+Best - Charlie
 
-
---=20
-Luiz Augusto von Dentz
