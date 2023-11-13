@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AA17EA462
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A53B67EA48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbjKMUK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 15:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S229940AbjKMUNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 15:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjKMUK0 (ORCPT
+        with ESMTP id S229924AbjKMUNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 15:10:26 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBA2D73
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:10:23 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cdc669c5eso53531cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:10:23 -0800 (PST)
+        Mon, 13 Nov 2023 15:13:33 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0032210DA
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:13:29 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6705379b835so29805946d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:13:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699906222; x=1700511022; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6A1mokEzY/ElrGYFkRMtl6uz5gA/gkkYl9e8YMn+3JM=;
-        b=C7vnxZ1ma+9buSpdRJkSdEURliyBKEsZJOVXaJxLfDiOJfZEt2BHqkyPvRR8cL/4mT
-         3H53uoC7en11DNvb1uFAh/EFAv5Z6bm5TQjJbCo3HOJubsGgDkSC8cPd6m6I549IYBeh
-         TgT5zBB3oyVPDdzfBzgu6QZNiCKTZdwBdCbtGVTYiCgYliPdzw0XXb4O1adLbsVx0Gl0
-         eHCULSiEfBip8JU8Z1w8048JoSscc1wYN07Tu3URa54tolqUmoTMBAOxeCMEmmU7ZccW
-         xLO12hjTSSZpIIJDTWKHGpH2fW/VyqnZ4O16JELsSYfDoCDrMuY8cQFeitSgwIVvBAGZ
-         JYrg==
+        d=gmail.com; s=20230601; t=1699906409; x=1700511209; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m9BzWP9zAYgAo/2P/mFdqyA5ofprRh4egbTK7XzLY14=;
+        b=EpB1rzFE6+NBhjholRR/vr/5h/yoMCMk3e/sCfPwX0ZsfyR3UDVX1QqRdDv192w/Hk
+         YZzPscF5h5xqna91FigFjT25vwuCW015q6WD/fUREcXzgK7WAALfdUJhvKR7VHKcdP37
+         yQo+Blv+Cv2UoOWN45roPKtfsUooDdUhpr0rycnjx+lr69j7IiQpnQQusCqnpkDDyWKC
+         bRPkLP5Q9xKw0oLVIzaLSwkFUQT7lppKR5+g+qQrxnd7LAiWCCVfjMY7wosaCPloAfh8
+         SStaxopbueijJyJ4IbYZHgCJVlhXN2Oy76oAx8RipqPmpkakzZ6+/XphZAsqaqklCJ6Q
+         S2lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699906222; x=1700511022;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699906409; x=1700511209;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6A1mokEzY/ElrGYFkRMtl6uz5gA/gkkYl9e8YMn+3JM=;
-        b=uXSB0l6fDWOeS3S07yvF09lpqufsHlK4bSG8hh0+dyec5XxkNXa1kedK/dgBI+gYtx
-         uZNU3tJHmNI8xezT9Zg3lj5jSVfLCCNZQbYp7HaKL6vjxFaqrSvAauB6hSVm04wG64HC
-         vjmdnjs/ceGw3TPu0npiR68hsapL5xjsLZennKn1/GjznYu4o8TM61+qGlfOvms0rUci
-         w6aDrkEdTfSykDD2RzGK10sLcFbRGBPZi47qWbObB/wteFkGSdFAF7I0KWZM9gHev2ic
-         KbI1DrazZWLTQi6NPlK3LVthfeTalqmqDD65oJm5tBVoHWg87Efjz+hHou0IcUiIzWS3
-         UdyA==
-X-Gm-Message-State: AOJu0YwyDB8JbSuOY8kTbDWjs3VH6V9hqmz1utGg2ffFXAGUqTH9O4Xq
-        fQH0lyirZ6/w83ADcT8XyLGo/8QvSNXd4JY9DscVxg==
-X-Google-Smtp-Source: AGHT+IEEBDLKlQpbT5O2Rio4DF+E/b35xHjZ33DYvELnzkfwGVtkrZbS0gNSVBOpY4wrF9A3BK8+o9uf7kZ6IpSCDyY=
-X-Received: by 2002:a05:622a:1cc4:b0:41c:bfd9:b990 with SMTP id
- bc4-20020a05622a1cc400b0041cbfd9b990mr48404qtb.17.1699906222182; Mon, 13 Nov
- 2023 12:10:22 -0800 (PST)
+        bh=m9BzWP9zAYgAo/2P/mFdqyA5ofprRh4egbTK7XzLY14=;
+        b=aHdnEqlg8HlhXV9pCdvG1kWsO8xY9adOCToamcQMve+d1g8FB8q4sH0SpeQGo+2QKx
+         HajwRHGpsiUO8FIqqjhVqP7fKKShOWvsEl/T0/CxRfGOY4108p6pZxHr5RALw4p+RCYO
+         aILrqZ7jJzegba11Sg/df5dxRAmUweZzpAFteSMYGM6QRZ0OS2Lv6If/TsSBIehT6f1H
+         0WaI8qW8lzUNRtFgUzSEV4Cra5ADRQUgbjqtLnnfZsWJcO0hkl9YmppvsQDuC0cvP3xi
+         zXsN5o7IWpIGcTaW2EVSdD7xC4GHmjs/KpBYNKLOeGSPWD5M5EN60QSrJuOg1pik+i1W
+         ecRw==
+X-Gm-Message-State: AOJu0YwDEJheEN26qcMZM4Nh+8pDSB5586ltI0eK+WH3kIrd/IXS9W1E
+        3dMPna9d4cFUAGUGTnIjuYoFd8Jvh9w=
+X-Google-Smtp-Source: AGHT+IGhNOU3ZFHI2oSnNjvo0tbFQeaj9sfaqUWQpkEG+xRERrgEWdhQVBWkF3yA5lON4cwa/Ts6eQ==
+X-Received: by 2002:a0c:ed34:0:b0:66f:bc3f:bd7 with SMTP id u20-20020a0ced34000000b0066fbc3f0bd7mr292469qvq.27.1699906409118;
+        Mon, 13 Nov 2023 12:13:29 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x15-20020a0ce78f000000b00668eb252523sm2297295qvn.63.2023.11.13.12.13.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 12:13:28 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 13 Nov 2023 12:13:26 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 6.7-rc1
+Message-ID: <a00ad0e9-8ce2-4704-bbdc-6b0237e27aa3@roeck-us.net>
+References: <CAHk-=whuO0zmuxp_yorYFWdcrALpqjRPhWkmEy+7wcCnnDcPNA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231113133044.55257-1-herve.codina@bootlin.com>
-In-Reply-To: <20231113133044.55257-1-herve.codina@bootlin.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 13 Nov 2023 12:09:43 -0800
-Message-ID: <CAGETcx8-iXbWkRyVT3s4XkmQii2CSysSLedDLWn0oNLQLPM3ow@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] driver core: Keep the supplier fwnode consistent
- with the device
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whuO0zmuxp_yorYFWdcrALpqjRPhWkmEy+7wcCnnDcPNA@mail.gmail.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 5:30=E2=80=AFAM Herve Codina <herve.codina@bootlin.=
-com> wrote:
->
-> The commit 3a2dbc510c43 ("driver core: fw_devlink: Don't purge child
-> fwnode's consumer links") introduces the possibility to use the
-> supplier's parent device instead of the supplier itself.
-> In that case the supplier fwnode used is not updated and is no more
-> consistent with the supplier device used.
+On Sun, Nov 12, 2023 at 04:47:03PM -0800, Linus Torvalds wrote:
+> So here we are, two weeks after the merge window opened, and 6.7-rc1
+> is out, and the merge window is closed.
+> 
+> In number of commits, this is the biggest merge window we've ever had,
+> with 15.4k non-merge commits. That is quite a bit bigger than the
+> previous biggest releases (4.9, 5.8 and 5.13) that all weighted in at
+> about 14.2k non-merge commits.
+> 
 
-Looks like you missed this comment from my previous reply.
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 530 pass: 530 fail: 0
 
-Nack. It's easier to debug when you know what supplier you were
-pointing to in DT that triggered the creation of the device link.
+I don't recall ever getting zero failures (or warning backtraces)
+from m tests in any -rc1.
 
-It can get confusing real quick otherwise.
-
--Saravana
-
->
-> Update the fwnode used to be consistent with the supplier device used.
->
-> Fixes: 3a2dbc510c43 ("driver core: fw_devlink: Don't purge child fwnode's=
- consumer links")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
-> Changes v1 -> v2:
->   Remove sup_handle check and related pr_debug() call as sup_handle canno=
-t be
->   invalid if sup_dev is valid.
->
->  drivers/base/core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 4d8b315c48a1..2f6a21b908ec 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -2076,6 +2076,13 @@ static int fw_devlink_create_devlink(struct device=
- *con,
->                 sup_dev =3D get_dev_from_fwnode(sup_handle);
->
->         if (sup_dev) {
-> +               /*
-> +                * The supplier device may have changed and so, the suppl=
-ier
-> +                * fwnode maybe inconsistent.
-> +                * Update the supplier fwnode
-> +                */
-> +               sup_handle =3D sup_dev->fwnode;
-> +
->                 /*
->                  * If it's one of those drivers that don't actually bind =
-to
->                  * their device using driver core, then don't wait on thi=
-s
-> --
-> 2.41.0
->
+Guenter
