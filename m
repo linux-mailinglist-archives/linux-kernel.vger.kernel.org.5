@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8223F7E93C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D07E7E93CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbjKMA5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 19:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49232 "EHLO
+        id S232671AbjKMA56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 19:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjKMA5B (ORCPT
+        with ESMTP id S230044AbjKMA55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 19:57:01 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E263819A3;
-        Sun, 12 Nov 2023 16:56:58 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7781bc3783fso268388285a.1;
-        Sun, 12 Nov 2023 16:56:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699837018; x=1700441818; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h9QZ1n8POJh9+TvhL/Oy+pYpky3GU7bSBr0YDOk94J8=;
-        b=esw4ADa4wWYbo2pVBLLbHdZ6kUtFfbZ85I+tIotfY9eYBNSvS8CZnEKizAJAhXS769
-         VDTUT1Ze1OPrplczDEi41iWO5IuAnjLHgcgDtKVVd25DqG+NqcMDs3Kxbo72DoQ/isPC
-         GLf8FIaKV5a66jb5eqWM+BzXCBnbNKrojRh7qcqnR7lqmKbh/G43LYtJBplApPY7L2De
-         rKmzlueRrrJ3/Zx+imbeIY8AtCCjZEim7DSRGy49iuh9rRdmPsiUe2Pu0L+Akm6a7JES
-         qMf8l9xzHHaLuE+N+gaRHbqIHcwIinYQDD0eLJO818As/Z2CStrMk3kPys4RvHog1Cwu
-         7rwA==
+        Sun, 12 Nov 2023 19:57:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443B71BE6
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699837028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JSnhv2PPOYa4ZnCU0cai1bmRuczHu96zHiRWZODUn4U=;
+        b=JIEKbx0iSQdpX0FzLBFeca4pVo9PpRzKrNE5sISMEF1tFi1eCuP+8sR/YBVpTFFnHRdvt6
+        ya7HB9jqGdgH/BPKJTcYFSgyUFhDH5Y2G3hWygrkQyftU+3MLhhIxc+z70qQYeHmnL+QYu
+        WDdJ26M6r3kSDk0YUbQUk0/YbjG/aDI=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507-oU7ZbWC-PGCwutkYRM-WEQ-1; Sun, 12 Nov 2023 19:57:07 -0500
+X-MC-Unique: oU7ZbWC-PGCwutkYRM-WEQ-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5bdbd1e852dso4630209a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:57:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699837018; x=1700441818;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=h9QZ1n8POJh9+TvhL/Oy+pYpky3GU7bSBr0YDOk94J8=;
-        b=blrasRQ/y7YJBt2b6cF4aoIqyZOyQcvYyoyhUnA/DSl5nM4yy6Ahie0WyvuTKBkD4L
-         GlaGFwttqfJkfiQX2HI0RUJd1u6oGXhMekQMbG+8v7uOgNkrko5qv4odFu6I0p3Anxpi
-         cZ0Ou2bzm9kHjjaE7weJmdECbYoDOJ8abghq5DyBk11dPPBkqQpxfqO/gc0/gy7ogksU
-         ACBReYOoSVt3zFhmeilM3LrXE/XjW1jaJI364eRFg4eZ9J8e+qQl5odwb1LSSv+qy50d
-         2ZTgBrguipNeojFftSDkn5RKDSr7FEF1WCNfjKnHzP131J0CvClf9UC+FOBR+yP2hfCk
-         n0Dg==
-X-Gm-Message-State: AOJu0YyQMLUV0Y84BZjlK1vIv7rhGtVi6l4voue+dlHLWsQCwcblQ3k9
-        JIVf3txy/+4+eEY84m11go8=
-X-Google-Smtp-Source: AGHT+IH7rZFdulENijlkHxzeB6f1z9NgqYbwBtQgkfE8f/ZAnH0JFduNGoTsfSW5f6F5jCWI49besQ==
-X-Received: by 2002:a05:620a:2981:b0:77b:c493:b5f9 with SMTP id r1-20020a05620a298100b0077bc493b5f9mr7003496qkp.57.1699837017939;
-        Sun, 12 Nov 2023 16:56:57 -0800 (PST)
-Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
-        by smtp.gmail.com with ESMTPSA id qq3-20020a05620a38c300b0076d08d5f93asm1500421qkn.60.2023.11.12.16.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 16:56:57 -0800 (PST)
-Date:   Sun, 12 Nov 2023 19:56:56 -0500
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        ralf@linux-mips.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        linux-hams@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
-Message-ID: <65517458ef995_a08352943@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20231110173632.2511-1-bragathemanick0908@gmail.com>
-References: <20231110173632.2511-1-bragathemanick0908@gmail.com>
-Subject: Re: [PATCH] net: memory leak in nr_rx_frame
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        d=1e100.net; s=20230601; t=1699837026; x=1700441826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JSnhv2PPOYa4ZnCU0cai1bmRuczHu96zHiRWZODUn4U=;
+        b=vHwPFBLjkMq6TzkGnu+DBa4CQVSSRkZ1hKYEoWG5O7TsqRwMZR0OQnEDIgvxELcnTm
+         jL79R2Bw4UVNXBEsQJ/KnBDDeuBkUzsGReKIfCYkb0KDA+qmJ5Yyd5Coec3Kx3WCsQ2q
+         sNLJyQ3Ra1OJ3I3U2hL6v0LZE8rO2f1haAssostALMloQ0wBH+6V1quvrlwxro7IgQEN
+         FoHOtkXlPjC5JIZtrVOPg/rq/1a1YBAVrPWln+O3/9NL0WlGaN0fmQ/c1DzDL2c3UsSD
+         rgyiWoOnrfllA7hbi0KMfFztT9KlVXD1+7C8am+n+D/JWazXLlj9NG8/3RGiFYSG/6nA
+         WzxA==
+X-Gm-Message-State: AOJu0YwAHxWUZf3G2MzFq+TXNZaDLNl/R0ac/zOdUoDboAdr8DqxxDim
+        E0bjL1dV9IzFrpavoDw3f8IDmyH3YPQrejis4AKM4B6SreUk4oxFe8NIQKaufR8381oKD4FLrlZ
+        BdZT9nTaFPsFYajnkHMmzK2l7
+X-Received: by 2002:a17:903:41c1:b0:1cc:5ed4:7b4c with SMTP id u1-20020a17090341c100b001cc5ed47b4cmr8056801ple.35.1699837026073;
+        Sun, 12 Nov 2023 16:57:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEYB8Gjvjb9rpzJlKa/gGoy1/kAMp5o6DcRuutNzYMQOmMyg/HSI8WRyf/v5bwebYCVyW6+ig==
+X-Received: by 2002:a17:903:41c1:b0:1cc:5ed4:7b4c with SMTP id u1-20020a17090341c100b001cc5ed47b4cmr8056788ple.35.1699837025799;
+        Sun, 12 Nov 2023 16:57:05 -0800 (PST)
+Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001b03f208323sm3058989plb.64.2023.11.12.16.56.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 16:57:05 -0800 (PST)
+Message-ID: <2c597d46-9e15-4059-9386-a811fa7b65dd@redhat.com>
+Date:   Mon, 13 Nov 2023 10:56:56 +1000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 09/22] drivers: base: add arch_cpu_is_hotpluggable()
+Content-Language: en-US
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLQ-00CTxK-Ln@rmk-PC.armlinux.org.uk>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <E1r0JLQ-00CTxK-Ln@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bragatheswaran Manickavel wrote:
-> The condition (make = nr_make_new(sk)) == NULL suggests
-> that nr_make_new allocates memory and returns a pointer.
-> If this allocation fails (returns NULL), it indicates a
-> potential memory leak.
+On 11/7/23 20:30, Russell King (Oracle) wrote:
+> The differences between architecture specific implementations of
+> arch_register_cpu() are down to whether the CPU is hotpluggable or not.
+> Rather than overriding the weak version of arch_register_cpu(), provide
+> a function that can be used to provide this detail instead.
 > 
-> Added sock_put() for make which can potentially solve
-> this issue
-> 
-> Reported-by: syzbot+0145ea560de205bc09f0@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
-> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
->  net/netrom/af_netrom.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   drivers/base/cpu.c  | 11 ++++++++++-
+>   include/linux/cpu.h |  1 +
+>   2 files changed, 11 insertions(+), 1 deletion(-)
 > 
-> diff --git a/net/netrom/af_netrom.c b/net/netrom/af_netrom.c
-> index 0eed00184adf..7d7cda4ae300 100644
-> --- a/net/netrom/af_netrom.c
-> +++ b/net/netrom/af_netrom.c
-> @@ -970,6 +970,8 @@ int nr_rx_frame(struct sk_buff *skb, struct net_device *dev)
->  		nr_transmit_refusal(skb, 0);
->  		if (sk)
->  			sock_put(sk);
-> +		if (make)
-> +			sock_put(make);
->  		return 0;
->  	}
 
-If the branch is entered because (make = nr_make_new(sk)) == NULL then
-make is.. NULL. If the branch is entered for one if the earlier two
-conditions failing, then make is undefined.
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
-The syzbot report is that make is allocated here and eventually
-nothing points to this still allocated memory. It does not report
-where the last reference was lost. Not inside this branch.
