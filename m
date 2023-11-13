@@ -2,292 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB0F7E97BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0647E97CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbjKMIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:32:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        id S233088AbjKMIdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjKMIb7 (ORCPT
+        with ESMTP id S233083AbjKMIdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:31:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C7510F5;
-        Mon, 13 Nov 2023 00:31:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699864313; x=1731400313;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=hZzR1pT7d3GB/JdxyWr/kwp/ZwUZ5OQN+RNJJgrimIU=;
-  b=BibegijCD11Wo4UY55fO6V+YFs75oS4SkkKOHwasQoh3Ta6/oTjm6OFG
-   XQWPRJpyWQsSix7pxFnNyh1s8LvjVjMxKxcnHpQR5iQXGK7288Q6QF9+4
-   5FCduB9y3kxmsyyJYz+6xnyBUiSzdwla7iuthNz5RQRHmcOPMK5NS9GiQ
-   6x4/NPRjJ5ykfXMGwhldPtMdqcEdzqkmMVc+QBomLmvZElf26kfB2LCAV
-   sx8gGoO8aUrinJnL+99P6dtfawtP8u0usUrp3hj+SD0zkbRsGu6bnVaiP
-   OWRjbqV70JGa4s5ML2Klq+A+CSfEgOl4ECux5lL99+dk/M7mFjHUvmt59
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="394295942"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="394295942"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:31:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="764273849"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="764273849"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Nov 2023 00:31:49 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 13 Nov 2023 00:31:48 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 13 Nov 2023 00:31:48 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 13 Nov 2023 00:31:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IvG4U1FCd3wfsbaqMYjxxlSHivHtu+DXFsrdnttcI5kCPy5KwJWiVEEHFcmXhh/idlKMQrG8OOgISY8t6vrHp3Q8i5wa6YO0WY8GKpkIm5bB+4vWjzCYKXhxNyK/2goahnMw5TEXv1uaQqf8s8vH42fPCejATKpOX23oZcyvyE9TAToGmBniC5ScTVMmsP5482koQONYsj3JwAxFIdAarEhAGHR6p4aUZqYXYHxT75fXa7aSERx3HGMHRcfNf8L800/Mn1ASKOeFsXmJ3PdOMuawC6ujr9u4AKO5c3S13lK5kHcJ19qLMZ2V8daB41nvgvdRI7XJnkmcUaP2vSBFoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oRnVoMsj22my0+ZwhRQo1DLM2E2MjT47XKA4UjkPFDA=;
- b=oENVTAcfYTg1qktnywELrcS40whls6cUTyFeXAJbI+nCqflaaO6XbVl96Dj+j88Jq3eMEOy/tJJ58S+soY1VHM92TWduamyAWyjPNEQ/e6hzHvxaNP8k1D0TmD+m7jnUplHN2ye6OwPvjbRhp4dr1coXK9ja+Sau2dc1i/pXZ4aCNcNPFTLlh1BvkkNarF6G+dmxrI35RDrL0Ze5+WaN3klvdRP5JoRsEo82fpK4Qui8EO4jft79/qiM/AczVM3R7GV7oC6mV5+FXHy6eAKVFTFUerd33EapwvrtlFLdB4nGtGljCBrGJUIE4H4zi3U4yz8BHb7d5QaJlYVerLmKEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by PH7PR11MB6907.namprd11.prod.outlook.com (2603:10b6:510:203::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.28; Mon, 13 Nov
- 2023 08:31:46 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::b8:30e8:1502:b2a7]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::b8:30e8:1502:b2a7%4]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 08:31:46 +0000
-Date:   Mon, 13 Nov 2023 16:31:38 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     Alexey Gladkov <legion@kernel.org>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <oliver.sang@intel.com>
-Subject: [legion:patchset/meminfo/v2.1] [proc]  8dade3a353:
- WARNING:suspicious_RCU_usage
-Message-ID: <202311131653.14708bb6-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SI2PR02CA0014.apcprd02.prod.outlook.com
- (2603:1096:4:194::19) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
+        Mon, 13 Nov 2023 03:33:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A19D1707
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699864352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=SfXLxhKvYL2Q3k0S5J8D2va2LGcyePL2i7NJhihVP1M=;
+        b=VOpKspO4bQGW0v6MQ2mBn1ourNyiLJrmF3K6O84rUk1O/oS3mZAx03Wty1PAy9k+7mK4ur
+        uyNhukf2Gl5D7hIa2Cx/e+k/nkk3izvTuPBQnfSq/VMbSn7y77CzHc1ragFCh1yzJXmJJV
+        xzUJGR2yzE3r0BFl+2CCYm/7pYoq+fg=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-522-aBUQw4clPv-wAKth8RuidA-1; Mon, 13 Nov 2023 03:32:29 -0500
+X-MC-Unique: aBUQw4clPv-wAKth8RuidA-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507be692ce4so4028564e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:32:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699864348; x=1700469148;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SfXLxhKvYL2Q3k0S5J8D2va2LGcyePL2i7NJhihVP1M=;
+        b=D1laXDUFJv2joFjfQwGM8a0pvOaUqoFVqg8EoNORVoMfGcjTMM8l5arW5sH21swMpM
+         Aaliqm1KDfhqlTWGocAO9pqlXYUMy3Shif1q3fOhDO4PPMf7ENXg985gdfJjpbH0Z8wj
+         6iLwrGgVbBEov4lr84TyMgT8vBGwlL87tNxtCcWPzOAIhmdilNk9Er8mrJCGBtUZuC/y
+         KIxK807xRpSeddet2GZ3qXGSe52Vg2LgnsNFGjMHW9rzSqU7zQtBnHJWlpy+9kl/0DnL
+         ZiXxGnb3ytyk0SsjIHwfamX8Aw0Gw1GZDRyfI4PkuRnv+vsRwVFT1/ZmnXjLhTY47iEg
+         w9Cw==
+X-Gm-Message-State: AOJu0YxGrYhS/513xkikuhAlKo4qTyJhqNFxyeiRFm+LXCAukJS/5vRf
+        z+SyEOIHEdcZrPj4QcP7vneG4FCRavCD7kfpRoVX0WwYS8LfPhQHQ8t0HgnpoUR31kt5OVcynkF
+        pSYiDuiBzAxBsgx1M+sk/xxgU
+X-Received: by 2002:a05:6512:41c:b0:509:2b81:fc40 with SMTP id u28-20020a056512041c00b005092b81fc40mr3544033lfk.9.1699864348210;
+        Mon, 13 Nov 2023 00:32:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGP5KddZV715bE9zRi1LCYED+VcbUC1bP2pUyQiRhR+wpWKGwNGKr9o3YO+q+0UmggLLKgZnQ==
+X-Received: by 2002:a05:6512:41c:b0:509:2b81:fc40 with SMTP id u28-20020a056512041c00b005092b81fc40mr3544014lfk.9.1699864347757;
+        Mon, 13 Nov 2023 00:32:27 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f09:f500:a38f:d086:59d4:9df? (p200300d82f09f500a38fd08659d409df.dip0.t-ipconnect.de. [2003:d8:2f09:f500:a38f:d086:59d4:9df])
+        by smtp.gmail.com with ESMTPSA id x15-20020adfffcf000000b0031984b370f2sm4878031wrs.47.2023.11.13.00.32.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 00:32:27 -0800 (PST)
+Message-ID: <d5fed34e-359d-4a06-85bd-27694bcf6e4d@redhat.com>
+Date:   Mon, 13 Nov 2023 09:32:26 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB6907:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7b566bb2-6030-4757-0640-08dbe422f8e0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RsQgq5PiG1vAOzQiaEP+gR2pU+sveZbFihEgMZI+hBQFswrTSr1poSIhidpWpxqevQRQAZwjSELC/I0i8hYCGr2e39JCtznaefEkPDYRo06W2jAe4jjcCvGciOTkYeHOmJ9JIKjQzwybDq1X3986aT0ytssy2Th0pkjNJ3EwiTeh6GGGo2OUtQq/aMFn5Dt9FI+Yg/ijXAGIHxyJvU6MI9uujuRnwMMOHxJ+eukUjnkwWe/MW1zbS2MzylxazmoEGgMUGUilD2PQP1Z3UaPcu9ri2nTlAvWj1NR4nbOLhTMZ+6gKM4NHVkvDjLunaDTrIQr4u9U2GC8qI97AHa6rN9TXvWdy/xIAxo2Xksj0nyOYgBGk814DWtYwFX9mmqZkniSYyiDB11cqiigHZ2lmXZS9vCoqYzS7pIlHXgWHrC3ig4KRCQTsWgUpOxsGz9bhU8hO6rR3aBHQruM3uzUBHTOqwfuSLApXQJqafVDfeRBIQLBRq+SanAoDQw+cmlKV4DcbJ7ZPyTxKLdex4aNwQTMlZ308cp15gowZatGdDkH3Zm6UwszKxQN45+Q0EVyG3sb08f4/zLJ0+VVl5asVt3Wk27wUpAnrAAcLtO8UGlygUuWafxH4LKsUnNA9z/8u1brmOf50nKVhH9DhTkqqhvjqsLDtme+sOh00PM5n0xL7GhhtkTasBgJnRvOeB2wZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(230173577357003)(230273577357003)(64100799003)(186009)(1800799009)(451199024)(38100700002)(2616005)(107886003)(1076003)(8676002)(8936002)(4326008)(6512007)(6506007)(83380400001)(26005)(82960400001)(6666004)(6486002)(966005)(478600001)(316002)(66946007)(6916009)(66556008)(66476007)(36756003)(41300700001)(2906002)(5660300002)(86362001)(505234007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ekZeHa/ow196J86/K0lAfFJlgUdCve24yYXtJHmW1a/iVJMkw5wQKQ9cl5G3?=
- =?us-ascii?Q?6gnSpSiyKG3YkQf1CkdGnRl1eZ7eBmpV8wtD8zVK1+e+lr+Vk0bjhTJQOBMM?=
- =?us-ascii?Q?G4YcVVi/ToAJO4puwLHI8FN0aUVFEA11ttlUnSd815KuuLCprgfrOBX8cYEs?=
- =?us-ascii?Q?MSN+cBOdGCliLfjhdSCEFWBywhV8Wwe3eQN1pyDa55a2z331iG2eny7tsBtX?=
- =?us-ascii?Q?msSSNER5UDDQAgNOZKFmMmpiq7Cv/NYNokjZP6X/ATBZSVIbsYnCKalE17hj?=
- =?us-ascii?Q?LoOQf/X9Uu18qv1Rb2q+5YVTwYu++NhWSvoqndk02dV45V5McfICtSDNsZtB?=
- =?us-ascii?Q?JQVygXHBQWVg9CCua77qc5u94CJcK7eU/Z+uviE2LMaL1e3TCREWt23rNqUb?=
- =?us-ascii?Q?ZF2SpWf99D2/cw+0+OGtxrD1ajgeuHhR2RswIqQoS27otmXPG15BzCZvjcRT?=
- =?us-ascii?Q?HCQsb1OLq/e90p9hDkhN0Ebmdwe8kkmS7G3aj94dXFyc4scc8tqJRYIaK1kk?=
- =?us-ascii?Q?I+CCQtzKEooJ+IQUdaFkhqYVV5jZcrHYeY/cSPTpb81y+p4WRS9t3nuGTH3x?=
- =?us-ascii?Q?hiZsYXXs3j8CgTRz8KpwhxrbdX/JIHKpZj4Dterhv70j4Il7sqwKHz32QJGu?=
- =?us-ascii?Q?NEzoqxRnnWxmpNUVdmFx5SfKLFmIKkTVIA+4Ur05di9er4a+elEmizWz367n?=
- =?us-ascii?Q?uxZqXCZNzXwgE5mbYQbDMFB4ab+RqtPaFnqzMRejVJEDGa1Qpq63BgKzTk60?=
- =?us-ascii?Q?4zQ1Q+MLUoEodxfBUU8/SAQDUvEGZg7gCq/SKmJzlSQ5KhdFuAFrFfKJNp/6?=
- =?us-ascii?Q?VBWtoPH/xNOoxe32iqJQZyo8zaBWHefPBtB4CW/tECYmXCJ5xSRRM7AvNItp?=
- =?us-ascii?Q?aMxGYjr+NINozW5G/nZb1opdorMYs08ntHV5yEWsCsaDZpwDIzKYsiPI8swT?=
- =?us-ascii?Q?DMbUQj4WW1MicBEvDEelxMTaczDwIzZiW0TPAZC6SkwHAX3VakSaYPpe1wKZ?=
- =?us-ascii?Q?KmrhmEX7ErBymQOHeqQN5+AGZvblxfmouqwMcODozlltnF5QNhVVvgDg/bZZ?=
- =?us-ascii?Q?/TuYDZwcXQW637uu0d5do8XXSTn6lvPqYmtpBBtFDY7mzeeBDlrjoOBbbkxY?=
- =?us-ascii?Q?G5nVPStKH0TFf1G25iOmpDSslDHEsDQd4TZACgBkbxOgzuPFwZQtIRCmR2Un?=
- =?us-ascii?Q?plzMy+8ud8yOwl4q8569/3W9R88sDsFDqeRjixoa/Y3OYRUp1nF1JH2RbGt+?=
- =?us-ascii?Q?4hxuUECrBd3EGsayQ0+H3ik9+TTEdJV8TzYTBuzrx++JUtsGqXWdlaC/LCDq?=
- =?us-ascii?Q?Ty81zAV4SE8QHx+K6nX71NDzf582eDqs/LleVsCp7o6YsTuvgljunY355Csb?=
- =?us-ascii?Q?cnY9yej0303J5NVbJQzm/iOZ5ksf1fslaE5oKzr35pwmRet3e5nMnOgTc2La?=
- =?us-ascii?Q?o+g75BalTS3cc9c7OIAFSh6So0wnXMxEXHSiOwMWf1KFeOpH/7ABONUoEEwe?=
- =?us-ascii?Q?EYlnPE3TJ+SsDJ1dvayCDDFXSlKxWwEsNCVuiZeZGeiP1GOrP+jxU6KvvvXl?=
- =?us-ascii?Q?fGKw9xMGuiPPeR9OIDKfSsd30M8uBAcuL7ZmZAksXVqS4dRkvsH8zSt+0Js/?=
- =?us-ascii?Q?gQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b566bb2-6030-4757-0640-08dbe422f8e0
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 08:31:46.1365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: syiPG5mTggH1bPevReiHKEO7Z5gdL/8aQ1boA2KO0XQeTqK+ezq1j8J78L6MzbKNWHehVmXue/D1GLp7RMni1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6907
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] mm: ksm: use more folio api in
+ ksm_might_need_to_copy()
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231107135216.415926-1-wangkefeng.wang@huawei.com>
+ <20231107135216.415926-2-wangkefeng.wang@huawei.com>
+ <ZUpIlkO0E7+i2hCg@casper.infradead.org>
+ <81e0289c-225c-4468-959c-937d3678cb2d@huawei.com>
+ <ZUuUVDbiWETJ2OU1@casper.infradead.org>
+ <67eedbab-bf15-4bc3-88ce-36fc074393bd@huawei.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <67eedbab-bf15-4bc3-88ce-36fc074393bd@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09.11.23 08:09, Kefeng Wang wrote:
+> 
+> 
+> On 2023/11/8 21:59, Matthew Wilcox wrote:
+>> On Wed, Nov 08, 2023 at 09:40:09AM +0800, Kefeng Wang wrote:
+>>>
+>>>
+>>> On 2023/11/7 22:24, Matthew Wilcox wrote:
+>>>> On Tue, Nov 07, 2023 at 09:52:11PM +0800, Kefeng Wang wrote:
+>>>>>     struct page *ksm_might_need_to_copy(struct page *page,
+>>>>> -			struct vm_area_struct *vma, unsigned long address)
+>>>>> +			struct vm_area_struct *vma, unsigned long addr)
+>>>>>     {
+>>>>>     	struct folio *folio = page_folio(page);
+>>>>>     	struct anon_vma *anon_vma = folio_anon_vma(folio);
+>>>>> -	struct page *new_page;
+>>>>> +	struct folio *new_folio;
+>>>>> -	if (PageKsm(page)) {
+>>>>> -		if (page_stable_node(page) &&
+>>>>> +	if (folio_test_ksm(folio)) {
+>>>>> +		if (folio_stable_node(folio) &&
+>>>>>     		    !(ksm_run & KSM_RUN_UNMERGE))
+>>>>>     			return page;	/* no need to copy it */
+>>>>>     	} else if (!anon_vma) {
+>>>>>     		return page;		/* no need to copy it */
+>>>>> -	} else if (page->index == linear_page_index(vma, address) &&
+>>>>> +	} else if (page->index == linear_page_index(vma, addr) &&
+>>>>
+>>>> Hmm.  page->index is going away.  What should we do here instead?
+>>>
+>>> Do you mean to replace page->index to folio->index, or kill index from
+>>> struct page?
+>>
+>> I'm asking you what we should do.
+>>
+>> Tail pages already don't have a valid ->index (or ->mapping).
+>> So presumably we can't see a tail page here today.  But will we in future?
+> 
+> I think we could replace page->index to page_to_pgoff(page).
 
+What the second part of that code does is check whether a page might 
+have been a KSM page before swapout.
 
-Hello,
+Once a KSM page is swapped out, we lose the KSM marker. To recover, we 
+have to check whether the new page logically "fits" into the VMA.
 
-kernel test robot noticed "WARNING:suspicious_RCU_usage" on:
+Large folios are never KSM folios, and we only swap in small folios (and 
+in the future, once we would swap in large folios, they couldn't have 
+been KSM folios before).
 
-commit: 8dade3a353290abfbfd3c38279c29c3c4ecd7356 ("proc: Implement /proc/self/meminfo")
-https://git.kernel.org/cgit/linux/kernel/git/legion/linux.git patchset/meminfo/v2.1
-
-in testcase: trinity
-version: trinity-i386-abe9de86-1_20230429
-with following parameters:
-
-	runtime: 600s
-
-test-description: Trinity is a linux system call fuzz tester.
-test-url: http://codemonkey.org.uk/projects/trinity/
-
-
-compiler: gcc-12
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202311131653.14708bb6-oliver.sang@intel.com
-
-
-the issue doesn't always happen, as below, we observed it 21 times out of 50
-runs, but keeps clean on parent.
-
-        v6.6-rc7 8dade3a353290abfbfd3c38279c
----------------- ---------------------------
-       fail:runs  %reproduction    fail:runs
-           |             |             |
-           :50          42%          21:50    dmesg.WARNING:suspicious_RCU_usage
-           :50          42%          21:50    dmesg.include/linux/cgroup.h:#suspicious_rcu_dereference_check()usage
-
-
-
-[  366.327498][ T3447] WARNING: suspicious RCU usage
-[  366.328145][ T3447] 6.6.0-rc7-00001-g8dade3a35329 #1 Not tainted
-[  366.329177][ T3447] -----------------------------
-[  366.329833][ T3447] include/linux/cgroup.h:436 suspicious rcu_dereference_check() usage!
-[  366.330891][ T3447]
-[  366.330891][ T3447] other info that might help us debug this:
-[  366.330891][ T3447]
-[  366.332203][ T3447]
-[  366.332203][ T3447] rcu_scheduler_active = 2, debug_locks = 1
-[  366.333484][ T3447] 2 locks held by trinity-c5/3447:
-[ 366.334175][ T3447] #0: ffff88814ee10858 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos (fs/file.c:1066) 
-[ 366.335356][ T3447] #1: ffff88814f3836c0 (&p->lock){+.+.}-{3:3}, at: seq_read_iter (fs/seq_file.c:188) 
-[  366.336736][ T3447]
-[  366.336736][ T3447] stack backtrace:
-[  366.337562][ T3447] CPU: 1 PID: 3447 Comm: trinity-c5 Not tainted 6.6.0-rc7-00001-g8dade3a35329 #1 10f1bfacea84478d84947570355f5fbda1b33451
-[  366.339032][ T3447] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[  366.340233][ T3447] Call Trace:
-[  366.340701][ T3447]  <TASK>
-[ 366.341175][ T3447] dump_stack_lvl (lib/dump_stack.c:107) 
-[ 366.341814][ T3447] lockdep_rcu_suspicious (include/linux/context_tracking.h:153 kernel/locking/lockdep.c:6712) 
-[ 366.342512][ T3447] mem_fill_meminfo (include/linux/cgroup.h:436 mm/memcontrol.c:4133) 
-[ 366.343143][ T3447] proc_meminfo_show (fs/proc/meminfo.c:202) 
-[ 366.343745][ T3447] ? meminfo_proc_show (fs/proc/meminfo.c:197) 
-[ 366.344423][ T3447] ? get_pid_task (include/linux/rcupdate.h:308 include/linux/rcupdate.h:782 kernel/pid.c:458) 
-[ 366.345071][ T3447] proc_single_show (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:400 include/linux/refcount.h:272 include/linux/refcount.h:315 include/linux/refcount.h:333 include/linux/sched/task.h:125 fs/proc/base.c:779) 
-[ 366.345750][ T3447] seq_read_iter (fs/seq_file.c:230) 
-[ 366.346411][ T3447] seq_read (fs/seq_file.c:163) 
-[ 366.346973][ T3447] ? seq_read_iter (fs/seq_file.c:152) 
-[ 366.347621][ T3447] ? seq_read_iter (fs/seq_file.c:152) 
-[ 366.348247][ T3447] do_loop_readv_writev+0x130/0x440 
-[ 366.349039][ T3447] do_iter_read (fs/read_write.c:748 fs/read_write.c:797) 
-[ 366.349683][ T3447] vfs_readv (fs/read_write.c:916) 
-[ 366.350285][ T3447] ? vfs_iter_read (fs/read_write.c:907) 
-[ 366.350879][ T3447] ? __fdget_pos (fs/file.c:1066) 
-[ 366.351470][ T3447] ? mutex_lock_io_nested (kernel/locking/mutex.c:746) 
-[ 366.352216][ T3447] ? preempt_count_sub (kernel/sched/core.c:5863 kernel/sched/core.c:5859 kernel/sched/core.c:5881) 
-[ 366.352916][ T3447] do_readv (fs/read_write.c:952) 
-[ 366.356628][ T3447] ? vfs_readv (fs/read_write.c:942) 
-[ 366.357285][ T3447] __do_fast_syscall_32 (arch/x86/entry/common.c:112 arch/x86/entry/common.c:178) 
-[ 366.357972][ T3447] do_fast_syscall_32 (arch/x86/entry/common.c:203) 
-[ 366.358626][ T3447] entry_SYSENTER_compat_after_hwframe (arch/x86/entry/entry_64_compat.S:122) 
-[  366.359427][ T3447] RIP: 0023:0xf7f2a579
-[ 366.360000][ T3447] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 cc 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-All code
-========
-   0:	b8 01 10 06 03       	mov    $0x3061001,%eax
-   5:	74 b4                	je     0xffffffffffffffbb
-   7:	01 10                	add    %edx,(%rax)
-   9:	07                   	(bad)
-   a:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   e:	10 08                	adc    %cl,(%rax)
-  10:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-	...
-  20:	00 51 52             	add    %dl,0x52(%rcx)
-  23:	55                   	push   %rbp
-  24:*	89 e5                	mov    %esp,%ebp		<-- trapping instruction
-  26:	0f 34                	sysenter
-  28:	cd 80                	int    $0x80
-  2a:	5d                   	pop    %rbp
-  2b:	5a                   	pop    %rdx
-  2c:	59                   	pop    %rcx
-  2d:	c3                   	ret
-  2e:	cc                   	int3
-  2f:	90                   	nop
-  30:	90                   	nop
-  31:	90                   	nop
-  32:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  39:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-Code starting with the faulting instruction
-===========================================
-   0:	5d                   	pop    %rbp
-   1:	5a                   	pop    %rdx
-   2:	59                   	pop    %rcx
-   3:	c3                   	ret
-   4:	cc                   	int3
-   5:	90                   	nop
-   6:	90                   	nop
-   7:	90                   	nop
-   8:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-   f:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-[  366.362302][ T3447] RSP: 002b:00000000ffa75f8c EFLAGS: 00000296 ORIG_RAX: 0000000000000091
-[  366.363394][ T3447] RAX: ffffffffffffffda RBX: 00000000000000f7 RCX: 00000000580da6e0
-[  366.364419][ T3447] RDX: 000000000000005c RSI: 00000000710d3b51 RDI: 00000000ffffffff
-[  366.365453][ T3447] RBP: 00000000ffff0100 R08: 0000000000000000 R09: 0000000000000000
-[  366.366492][ T3447] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-[  366.367518][ T3447] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[  366.368584][ T3447]  </TASK>
-[  382.029705][ T3448] trinity-c6 (3448): attempted to duplicate a private mapping with mremap.  This is not supported.
-[  393.577743][ T3063] [main] 10786 iterations. [F:8083 S:2663 HI:1623]
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20231113/202311131653.14708bb6-oliver.sang@intel.com
-
-
+So you could return early in the function if we have a large folio and 
+make all operations based on the (small) folio.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
 
