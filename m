@@ -2,73 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B428D7E9E1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1557E9E29
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjKMOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 09:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
+        id S230392AbjKMOIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 09:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjKMOGu (ORCPT
+        with ESMTP id S229549AbjKMOIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 09:06:50 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A72BD60
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:06:47 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b56b618217so2636090b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699884406; x=1700489206; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oyrc6FshW+z5U6vJqacgbhem3IFjlCautuYHlaSBfRo=;
-        b=Kp1NHbLMShO28/6rld1FHRBGeFLK3VII9fHxBbUlmeGgms7ogzJZKdaL8Z68X+kvoq
-         DoCHxOsQuAqfvg5+XfB1m0HqlO0oKAd6z/bTjjZlGybQX+vcRi8z5Qxt68HhfSk12feu
-         Aiw2Ch5Q0gMSNm9M+sHkd5puGGROrGAnLhu+jwppJ7evvcs+KzCCSajXhQoe2GlFPtV7
-         OXAaN86p+IEvWsInflTdW2l/q5oFfG0JV/KzvNioBzcqPmpsC15FwmI26gLh+coUgAQU
-         4ctAl685rknz+4XG2IKWzSwq1GT6j5HXY8Kx0O+A5rneCpBEH46wKnF3FBZ/Y+ICUOjc
-         JFzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699884406; x=1700489206;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oyrc6FshW+z5U6vJqacgbhem3IFjlCautuYHlaSBfRo=;
-        b=VHQ2B9vfDTNZs8ZvRxebFzDSkfC1wBGFGlWWpJlPApXU2vhZ/3enUrc7E6ef69Jusu
-         6xRerTYgQM5FdiPygzIBGtqTXkSgd/u9mh5SRtIUfTZs/AUAzAUmlDKauM5JMB+yjtKG
-         Wj76bTTXjA0Fvk2E0z9Ormea0995CJZ+KvSvUUOTxyyA1YAapfNrTyUkmAVkRJOul74/
-         8V/4H9gljL30G0JgWHuvQ8wDuTas2LnqBHyRe9vgrDafs9fAutAYXKWOd6gAnVVbDilf
-         dGwdJZulxulF7eyT92wDmzYuS/oDqcTac3QTvYkCtu/UCxNC/AAAabULsahCBiqVPBzU
-         rrIQ==
-X-Gm-Message-State: AOJu0Yx+VSdQKlogX4uFDFHKuOGnH7XbAOzbb6mwkMc0tS4qlmhMIcES
-        4x+EKOLlkqBuXq6uKYXZYEdyetLtniE6p67tMYVXbg==
-X-Google-Smtp-Source: AGHT+IE4LQpkmC3gS33ZjHm+rJ8dP97RNKPJ49IFJV4V19OzOvJ1ryzjchxsRhW4RHqYW/kj+O1GDoUY74Q5mJrcJgQ=
-X-Received: by 2002:a05:6808:320b:b0:3b5:9965:2bc2 with SMTP id
- cb11-20020a056808320b00b003b599652bc2mr9568936oib.23.1699884406725; Mon, 13
- Nov 2023 06:06:46 -0800 (PST)
+        Mon, 13 Nov 2023 09:08:12 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 704B1D59;
+        Mon, 13 Nov 2023 06:08:09 -0800 (PST)
+Received: from umang.jain (unknown [103.86.18.179])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 615B429A;
+        Mon, 13 Nov 2023 15:07:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699884462;
+        bh=0lpguXFbz+BKP5/xOg3wKVbLHMvejhbyqPq3tWfOpfo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vw8320/h6jsPmLMJaAydytdZvVXuYaR/TGM5BFP5aAcaHF2GVxAPsBNFBwSk65OoD
+         H2c6K3n7ZzcJ9HgTa30mR4JrkQB9cCHtl+HGCLtVMSdLosVIBXglhXXHlXM6ZkQz7c
+         E8um6fIzYKEZNvgfksMTt8Wxl6LNxiVkBZalm7/g=
+From:   Umang Jain <umang.jain@ideasonboard.com>
+To:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH] fixup! staging: vc04_services: bcm2835-isp: Add a more complex ISP processing component
+Date:   Mon, 13 Nov 2023 09:07:55 -0500
+Message-ID: <20231113140755.425365-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231109210309.638594-11-umang.jain@ideasonboard.com>
+References: <20231109210309.638594-11-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
-References: <20231106-topic-sm8650-upstream-tlmm-v3-0-0e179c368933@linaro.org>
-In-Reply-To: <20231106-topic-sm8650-upstream-tlmm-v3-0-0e179c368933@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 13 Nov 2023 15:06:35 +0100
-Message-ID: <CACRpkdYB7AQZ7HeNmE5d716sWz5_MHiVtAet6P5XOC1etDKNcw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] pinctrl: qcom: Introduce Pinctrl/GPIO for SM8650
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,36 +53,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 9:32=E2=80=AFAM Neil Armstrong <neil.armstrong@linar=
-o.org> wrote:
+Setup DMA Mask
+---
+I realised while (re)creating the test branches (sent in reply to the cover
+letter), I missed to squash this hunk in
+"staging: vc04_services: bcm2835-isp: Add a more complex ISP processing component"
+before sending out the series.
 
-> The SM8650 Top Level Mode Multiplexer supports 211 GPIOs,
-> and the usual UFS Reset, SDC Clk/Cmd/Data special pins.
->
-> An handful of pins can have their IRQ generated by the PDC
-> module, and for this support for the new wakeup_present &
-> wakeup_enable_bit is required to allow the "wakeup" event
-> to be passed to PDC and generate an interrupt or a wakeup
-> system event.
->
-> As SM8550, it also supports the i2c_pull_bit bit to enable the
-> on-SoC load resistor for I2C busses.
->
-> Dependencies: None
->
-> For convenience, a regularly refreshed linux-next based git tree containi=
-ng
-> all the SM8650 related work is available at:
-> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstr=
-eam/integ
->
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Sending it as a fixup! for now. 
+---
+ .../staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c    | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Patches applied, unless Bjorn has some last minutes regrets,
-they are in.
+diff --git a/drivers/staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c b/drivers/staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c
+index 316d35d5f19d..4a23f9feb6e4 100644
+--- a/drivers/staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c
++++ b/drivers/staging/vc04_services/bcm2835-isp/bcm2835-v4l2-isp.c
+@@ -1774,6 +1774,12 @@ static int bcm2835_isp_probe(struct vchiq_device *device)
+ 	unsigned int i;
+ 	int ret;
+ 
++	ret = dma_set_mask_and_coherent(&device->dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_err(&device->dev, "dma_set_mask_and_coherent failed: %d\n", ret);
++		return ret;
++	}
++
+ 	bcm2835_isp_instances = devm_kzalloc(&device->dev,
+ 					     sizeof(bcm2835_isp_instances) *
+ 						      BCM2835_ISP_NUM_INSTANCES,
+-- 
+2.41.0
 
-Had to rebase the last patch manually because of Krzysztof's
-LPASS driver, check the result pls.
-
-Yours,
-Linus Walleij
