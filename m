@@ -2,221 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A7C7E95BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5387E95CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbjKMDwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:52:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        id S232940AbjKMD6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:58:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjKMDwu (ORCPT
+        with ESMTP id S230126AbjKMD57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:52:50 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A62D1729
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:52:46 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a55302e0so5533584e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699847564; x=1700452364; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R2Ba75TdlPt7Z2RrqQMLKTEn0hWJE90MtU1weLPwhwY=;
-        b=Nsu3BO6+7QNYyiDXE8nM4MxgAwGWxztbng51+yxRiMAy7DoBu+qLDTvhyWyvC1p0WL
-         ZULhempdLMU+vJqYrke9wawfN5ZVbpr4nfqTukNxNar7sjcG8BYVmCUqxsdBc1BnLu22
-         K/gBMSZgRO15dcaM26qOiwVYJ91pjburBQtoI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699847564; x=1700452364;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R2Ba75TdlPt7Z2RrqQMLKTEn0hWJE90MtU1weLPwhwY=;
-        b=XsZvGw4Hp8BoOWYJYi9W2of7nUQUBbpHa8GT3jyk3ZOzRcjMgJRiWF/UplraqEqjSB
-         p/wyQM5u2DYIBQ1Hed70VWkW3xSDYadSi8HWcR/D/b4IEtQysMSKvCXkIX3fW95jPob2
-         ZK3+L8106wVEwchOtfsS01LgiojEL+g+ZqVJPmQLz5vAl6VyY3067ZgQGLNqgSsYOHgx
-         BXPmLDyXtR+TwMfb9kpij9iKFlYNAAs+2UZmwzDMw3V525WqiBu5fL2Ah1gBQ9Cvzo/i
-         d8bTF9di2K3xWTzp5zZFXeAx7dyvOgh+22anwSdmEyAkiUmeppSBSq/e1+md0VlyXOIN
-         JRYQ==
-X-Gm-Message-State: AOJu0YyhtRBwsX9G5oUosWW4PIp4fBgMtSi+iIWijG7xXYDSo92tJlpy
-        Hz2TYuidXKqxrmO9B9r9CQkuKCMZpA3wIv9wigo=
-X-Google-Smtp-Source: AGHT+IHyQRkQd19JHcbLLF+/4PiPh7AB9SsO9vAoxQxcl8ILTFndj1R2BCNqJz6VUENUFCWeI9nTNQ==
-X-Received: by 2002:a05:6512:941:b0:500:a378:db71 with SMTP id u1-20020a056512094100b00500a378db71mr3261850lft.57.1699847563886;
-        Sun, 12 Nov 2023 19:52:43 -0800 (PST)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id o13-20020a198c0d000000b005098da9ada8sm827393lfd.110.2023.11.12.19.52.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 19:52:42 -0800 (PST)
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2c83d37a492so15775031fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:52:42 -0800 (PST)
-X-Received: by 2002:a2e:71a:0:b0:2c5:38d:f80b with SMTP id 26-20020a2e071a000000b002c5038df80bmr3466960ljh.6.1699847561710;
- Sun, 12 Nov 2023 19:52:41 -0800 (PST)
+        Sun, 12 Nov 2023 22:57:59 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2077.outbound.protection.outlook.com [40.107.92.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C93111
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:57:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UpgRRMDKRxAkBSBP13zAWJ9skyeVWmJ8oS/SYnsUf/t2z0b1CAr2kyDkpLGyh9/v1iY543wrBYPA8ZWu1I6DYMjhFSjCxZUAvcdUMk6ODIiJDD7pJjQ4LwR4yT5rud0SVAo83ZRvCGp5UO25iZLcubQMM+wGLXgmOOz2WN3atB+S/8EgpP7i5CO3HOIyXOsilllFwy6WCCc1/07SHc9zI7jUkwRc1lDEx3hk7hZrTX4PiNR/utmikPphUQ7Xc6pVkv6cK2Or6SO9+KL4ED85L9RikP4nFM/ipBlxbewy0LBqrShrmcaVMDhhP5P8y9T4ZIK0fMQJmTL5eAEJGZdL3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NZ+zoCNOzyDKFz+n0SMCCAqU7Eqn7/nIL1k4yPQRJ5U=;
+ b=DuXCUZQooDnZXYi4MLzQQYXHW0dScewhGlR8lvKUj41fiMNV7hbm2bKMtS0fPAC4Ywa66xLvatOJTX2meHKqH5Jkia1rNZbzSvkH5FK4nqjdTtPaYebNm0rb9a/vEP7Gef4tHuVzEsYViiWKQ0ES+AoLbA511FZNKjnhx/R+3fqmqb4UUgW0HyqmZA08pGk/rb8lYaKcUTqOITZN5wzu7GStNw/XJMUnNpZT4HpSXYNEoJeYPvdXzGeCJ5CI6wLzhHaBElGpA0g2RukcXJO6zEu1NwzmMppcVhqsP8WDITUe3tVQ+IsgjjtvE8k08AXwOERL9Iyup9mPxkvFIANP2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NZ+zoCNOzyDKFz+n0SMCCAqU7Eqn7/nIL1k4yPQRJ5U=;
+ b=Dg6nhwGXtX/Py9tBQp62OJrate+YwQoLAG4Y9b38NCYyxmzXfRaB1xEFgDnu+P1YqMuqkfIAEYxlk4OnDdTuYOdJZvUmS7FPIwJQce8sElZHc4au/IMCcFUJRPCNJloPQIxK7cpjHS4TYqQnuk1kol3/XpF6li/Q2oODslbNnLb/PW0NL/Uil730QajLIYPDcmkma7mAmyJDkLWjSulKp+1tydKUoJXVOWKtcYNKiqmzcGVoqG9R1f7SDDrimLTxVIWuaK59JrCGrMabIWB37ClyaDU319tULdMbyWTXtBLVsPEUsKU4JQ12RSlxOdqDWUbtJJoRF4bc5R5C9TM1OA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by LV3PR12MB9214.namprd12.prod.outlook.com (2603:10b6:408:1a4::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
+ 2023 03:57:53 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::6b9f:df87:1ee2:88ca%6]) with mapi id 15.20.6977.019; Mon, 13 Nov 2023
+ 03:57:53 +0000
+Message-ID: <c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com>
+Date:   Sun, 12 Nov 2023 22:57:47 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20230929114421.3761121-1-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0042.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::17) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
 MIME-Version: 1.0
-References: <20231110014605.2068231-1-yinghsu@chromium.org>
-In-Reply-To: <20231110014605.2068231-1-yinghsu@chromium.org>
-From:   Ying Hsu <yinghsu@chromium.org>
-Date:   Mon, 13 Nov 2023 11:52:05 +0800
-X-Gmail-Original-Message-ID: <CAAa9mD3T-ey_3LQ8vsC60f1er4xMrELyJwJsY6QpG=b_xYRKgQ@mail.gmail.com>
-Message-ID: <CAAa9mD3T-ey_3LQ8vsC60f1er4xMrELyJwJsY6QpG=b_xYRKgQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] Bluetooth: Fix deadlock in vhci_send_frame
-To:     linux-bluetooth@vger.kernel.org,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        arkadiusz.bokowy@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        johan.hedberg@gmail.com, marcel@holtmann.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4130:EE_|LV3PR12MB9214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5aac6ea6-2399-45ac-91df-08dbe3fcb609
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ebzABq5L406Rc+VKI6uO6XSQI5EBMhAwUj8zFoVBadEJskJexxFNQ9SjlgVAzDisKcjR7srz81FbxsqKLfgmdiuyiT3vMQbZJuagE7h4Foggen0PIwjlQLfGNmF0w7PKj8A6GegzFgjKBRNYC3rly2Z82dX1eR0BKv4S4n9XQNFrRMhPSixMKt0u50BzRDcd4vXFd//OsGBBVRyOmo/fAmeDOHDBBtkPAqCcAZHlCWGzYGOyCnLZCIOEWV8iY+3s6ZG0qRjiTcvCByN2Q9zbzR7v/8l3Lts97y7hpGzBJbOqFl4M8tal6u2AjnDAmLjnjRG5WBvZH14aq1Ipc98XgKIEoTzQUyf37WgUsppQeiBWblL5qrPU4CAnHnlo+OD9jmel3omMe+8VwFEUqwdr9XZS8GqGSNL6/aY+4ltlsc/6dBT328W2NK1KIX1Wj3pGJ66KRc3ZsUbLSkPWXyu/Xrwi1suAezC3ZxnXvI4Y04knbKx7+Rv3k4TBVY+jKGWQmaZAT3EAmyhyWxJ0JgeyowT7Y/adwiWy+L4JjyDSo3s/xY3gDUMs/tPqMhdP8bQJspIsMZtlbq8ZLXKOAuup103W4tiZ9hjMnAX+tE2JHOjCh9UW6EDvJImjkJFrUU7ITNUlSsxXKNskR670wM5DlZbc7jSMdtmlEmUTnPD0n2e6YLbln/trOwocJ8pKq956zrnfimf/SSjwA5u4qzeQLg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(41300700001)(31686004)(2906002)(6506007)(6666004)(7416002)(83380400001)(5660300002)(8676002)(36756003)(8936002)(4326008)(921008)(110136005)(66556008)(66476007)(316002)(66946007)(966005)(6486002)(86362001)(31696002)(53546011)(478600001)(6512007)(26005)(2616005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3lLbWtIeHViTGJLSHNvcFdubytkUXY0S0duOXhNQ3RoZGFpQU1tZTFiWHNu?=
+ =?utf-8?B?ZHJzYldORFRDNWl4NjFNRjRtYUxFcmV1NkpMaEo3VVoyd0dwbnpIblcweFkz?=
+ =?utf-8?B?YnRhWkRpTWVlRFNlc085RUQydUdGSWVIUi95QWoyeXNvdU0xdUh3MnNtdjNS?=
+ =?utf-8?B?K2VPVXdRL0psUzNhem54SnBXK2NZRkMrM1VxbVVzZFJxNm9jRDM5VkxFM3Fn?=
+ =?utf-8?B?YlYzdGRYTVFuaUlhaTkrZWxyRDJaWUV3MENVMHNkTmdPbzBDdXphcVZMOUE1?=
+ =?utf-8?B?cUxQMlFzSy9TNjVDN3Zjd3pTeFBBTVQwbzcwZGNFVVhkamdmbERLcXEydjlx?=
+ =?utf-8?B?MXI3S3RhRWE4cWFFRjJjdUFLSTlLaGRQMlpWb0dLQ2ttNWZMVUtHUG9TazJ0?=
+ =?utf-8?B?eFdxbHdEOHVyeWVSWlZINUFodU9HQWZhL1NNNzBXNzd6dUpMd0FpdmNlcjBP?=
+ =?utf-8?B?WU1oNS94SVEyZVRHM2FWUkhOeFdtaVQ0S2dHKzVHaDRtWFVoTWg4L3ZmcE56?=
+ =?utf-8?B?NXFOaHg1cmd0M0tXa24ySHcxa2tjaFJ4SG5lRGxxbEthN2hDcElXc0VJdnFR?=
+ =?utf-8?B?SW9LK1FRS1ZVdm5WNExVQmc5VklrVml1TS84QmdBWGwyam9JYW1DakhrMVlJ?=
+ =?utf-8?B?ZzZsaFJIWHBGYnNPYmtXWlA1c0pJYU5OOUhXd05KdU0wcDZ2bWZnZy9iVjAz?=
+ =?utf-8?B?bUtJNnpQSHhWNHRYZCtLeVoxTlB3dVZBU1dEZEEvOWdjbStDWDV5dHdPUEE1?=
+ =?utf-8?B?RFdGRUJpNTlLRjIxeTF3VXBlWTB2bGhEZXZPMnZLUDN4TDA2L2hVODlMWHVr?=
+ =?utf-8?B?bWxWMnZLZ0RXZmF5dXFKdHlWZnRJVVlpajI2Ky8rNWtUMUVoSEoyNWNjTjBo?=
+ =?utf-8?B?UWUyNFRwL2pqNWdlWklBRzk5aHhaN1Z5WGU2UG8reFdrbElsMmhWZ0t6MUh2?=
+ =?utf-8?B?RkdqazlUaktwQ3Z1VDJwQzRiVy8zOEpXaCszOXdFMHVEazRNdVJ5SjV1ZWw4?=
+ =?utf-8?B?RFVIc3lLK1RNZHh0L2hYNVdwNU84Ymp4VlNFWjdmK2o2MFl3SU1FWDdtZ21V?=
+ =?utf-8?B?ejZ0WlEvTGZMSDZCRHhyTjZyN2VjM21TU29tVU40ZWN2cmkrM0V2Q1BrYnMz?=
+ =?utf-8?B?M2dvYnZMaVA2QnVCTStlQmtDMUJVbldZdkhqTkxmOWE4NXdEYTh3YUtZQ3Qr?=
+ =?utf-8?B?MTB0VUxkQXhIS3lWWmZFbnQxbXNYdVVWbmFxMm5iRzk2b0M1U01LU0NXRjFr?=
+ =?utf-8?B?R2NwR0lWUXFpUTRaVktvVzJGdzhZWVRpVVBMUVpaUFJUbkNrdFlhVUhlNTIx?=
+ =?utf-8?B?YjdMSDdIRCtncVBtMHo2WC9UbitJUmxuY3RuS3VoZjQrZmdXa2dIUG5Qbkd4?=
+ =?utf-8?B?YVFHdENVMXh2S3NIVkRXL3RqeEphc3J3cHdOWXFUUFRraENwd1RqbmZOeTdl?=
+ =?utf-8?B?Z2lJdjJIbkRwaG5MWEp2aGpFMFNGN2RpckpNOUdmYy82emIxNFhseXJQamtP?=
+ =?utf-8?B?OTFqdG1yYXRFWWpRSUE3ZDdyRkhLTC95dlF0amQxT1FmWHlUd0x5M2ZrZEln?=
+ =?utf-8?B?QzF1TXAzc2MvNDdJQ0pJNGFVOGRhaWpKcitjaWpJTlBJeEtZZ1pmRWd3NGQ0?=
+ =?utf-8?B?cXNFSlY3K29rWGdYL25LMDhDKzRydEhsNm5MNkJQRDJZZG1BZExsQnQzRmRk?=
+ =?utf-8?B?cUdDdHljOVAwYlpqRG9WRllvU3JpaE9FUERPVXJYUFovd0Q0VENkRFduVmhs?=
+ =?utf-8?B?bFRnclljMDUrZU1aN2hjZ0dJTFV0K0dzaENSR0xLQjFiSWRyb1JNbzA1OXMz?=
+ =?utf-8?B?bC9WTFpvTUJ4TjVVenZDeUhOU3pKQ1ZDbGNNeFhVYXlBQ0c3ZlNYK0dYZU5I?=
+ =?utf-8?B?MTY0NXJJanMyY241NU9lL1RUVm5DK1JrWk4weUpyclBFYzZBbXZWTnJ6bmsx?=
+ =?utf-8?B?djR0UVMzMjh5Z1ZxSm1sR1V5RC9LN0poV3drRTh5VFEzWWp4bitGRXR2QnZK?=
+ =?utf-8?B?d0hiVEkvSEdpNGFvdUkwMGRHZjU0TngvRHRtUlFPV1ozeXJTdzU4QVJyUVVW?=
+ =?utf-8?B?ZWV5ajBXM25EUUtVeEo1MzFYSmdiQkswaHowMVIrVzZwUHEwZWE3UE5iR3BY?=
+ =?utf-8?Q?KSRNCv2DPHDFkPax/YeaXNNq1?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5aac6ea6-2399-45ac-91df-08dbe3fcb609
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 03:57:52.9852
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zU66wUSKqvkIqwD167eJokH6FjuxxT6XP+HVl4CLUisL3eGWmr9JLgEsaMq2gZRBe1pOU4aAjuA46bMRXyLNwQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9214
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz and Arkadiusz,
+On 9/29/23 4:44 AM, Ryan Roberts wrote:
+> Hi All,
+> 
+> This is v6 of a series to implement variable order, large folios for anonymous
+> memory. (previously called "ANON_LARGE_FOLIO", "LARGE_ANON_FOLIO",
+> "FLEXIBLE_THP", but now exposed as an extension to THP; "small-order THP"). The
+> objective of this is to improve performance by allocating larger chunks of
+> memory during anonymous page faults:
+...
+> 
+> The major change in this revision is the addition of sysfs controls to allow
+> this "small-order THP" to be enabled/disabled/configured independently of
+> PMD-order THP. The approach I've taken differs a bit from previous discussions;
+> instead of creating a whole new interface ("large_folio"), I'm extending THP. I
+> personally think this makes things clearer and more extensible. See [6] for
+> detailed rationale.
+> 
 
-I appreciate the effort you put into ensuring the quality of the
-kernel, if it looks like the review might need more time, could we
-consider reverting commit 92d4abd66f70 ("Bluetooth: vhci: Fix race
-when opening vhci device") in the interim? This would help maintain
-stability until the new patch is approved.
+Hi Ryan and all,
 
-Best regards,
-Ying
+I've done some initial performance testing of this patchset on an arm64
+SBSA server. When these patches are combined with the arm64 arch contpte
+patches in Ryan's git tree (he has conveniently combined everything
+here: [1]), we are seeing a remarkable, consistent speedup of 10.5x on
+some memory-intensive workloads. Many test runs, conducted independently
+by different engineers and on different machines, have convinced me and
+my colleagues that this is an accurate result.
 
+In order to achieve that result, we used the git tree in [1] with
+following settings:
 
-On Fri, Nov 10, 2023 at 9:46=E2=80=AFAM Ying Hsu <yinghsu@chromium.org> wro=
-te:
->
-> syzbot found a potential circular dependency leading to a deadlock:
->     -> #3 (&hdev->req_lock){+.+.}-{3:3}:
->     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
->     __mutex_lock kernel/locking/mutex.c:732 [inline]
->     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
->     hci_dev_do_close+0x3f/0x9f net/bluetooth/hci_core.c:551
->     hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
->     rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
->     rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
->     vfs_write+0x277/0xcf5 fs/read_write.c:594
->     ksys_write+0x19b/0x2bd fs/read_write.c:650
->     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
->     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
->     entry_SYSCALL_64_after_hwframe+0x61/0xcb
->
->     -> #2 (rfkill_global_mutex){+.+.}-{3:3}:
->     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
->     __mutex_lock kernel/locking/mutex.c:732 [inline]
->     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
->     rfkill_register+0x30/0x7e3 net/rfkill/core.c:1045
->     hci_register_dev+0x48f/0x96d net/bluetooth/hci_core.c:2622
->     __vhci_create_device drivers/bluetooth/hci_vhci.c:341 [inline]
->     vhci_create_device+0x3ad/0x68f drivers/bluetooth/hci_vhci.c:374
->     vhci_get_user drivers/bluetooth/hci_vhci.c:431 [inline]
->     vhci_write+0x37b/0x429 drivers/bluetooth/hci_vhci.c:511
->     call_write_iter include/linux/fs.h:2109 [inline]
->     new_sync_write fs/read_write.c:509 [inline]
->     vfs_write+0xaa8/0xcf5 fs/read_write.c:596
->     ksys_write+0x19b/0x2bd fs/read_write.c:650
->     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
->     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
->     entry_SYSCALL_64_after_hwframe+0x61/0xcb
->
->     -> #1 (&data->open_mutex){+.+.}-{3:3}:
->     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
->     __mutex_lock kernel/locking/mutex.c:732 [inline]
->     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
->     vhci_send_frame+0x68/0x9c drivers/bluetooth/hci_vhci.c:75
->     hci_send_frame+0x1cc/0x2ff net/bluetooth/hci_core.c:2989
->     hci_sched_acl_pkt net/bluetooth/hci_core.c:3498 [inline]
->     hci_sched_acl net/bluetooth/hci_core.c:3583 [inline]
->     hci_tx_work+0xb94/0x1a60 net/bluetooth/hci_core.c:3654
->     process_one_work+0x901/0xfb8 kernel/workqueue.c:2310
->     worker_thread+0xa67/0x1003 kernel/workqueue.c:2457
->     kthread+0x36a/0x430 kernel/kthread.c:319
->     ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
->
->     -> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
->     check_prev_add kernel/locking/lockdep.c:3053 [inline]
->     check_prevs_add kernel/locking/lockdep.c:3172 [inline]
->     validate_chain kernel/locking/lockdep.c:3787 [inline]
->     __lock_acquire+0x2d32/0x77fa kernel/locking/lockdep.c:5011
->     lock_acquire+0x273/0x4d5 kernel/locking/lockdep.c:5622
->     __flush_work+0xee/0x19f kernel/workqueue.c:3090
->     hci_dev_close_sync+0x32f/0x1113 net/bluetooth/hci_sync.c:4352
->     hci_dev_do_close+0x47/0x9f net/bluetooth/hci_core.c:553
->     hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
->     rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
->     rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
->     vfs_write+0x277/0xcf5 fs/read_write.c:594
->     ksys_write+0x19b/0x2bd fs/read_write.c:650
->     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
->     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
->     entry_SYSCALL_64_after_hwframe+0x61/0xcb
->
-> This change removes the need for acquiring the open_mutex in
-> vhci_send_frame, thus eliminating the potential deadlock while
-> maintaining the required packet ordering.
->
-> Fixes: 92d4abd66f70 ("Bluetooth: vhci: Fix race when opening vhci device"=
-)
-> Signed-off-by: Ying Hsu <yinghsu@chromium.org>
-> ---
-> Tested this commit using a C reproducer on qemu-x86_64.
->
->  drivers/bluetooth/hci_vhci.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-> index f3892e9ce800..572d68d52965 100644
-> --- a/drivers/bluetooth/hci_vhci.c
-> +++ b/drivers/bluetooth/hci_vhci.c
-> @@ -11,6 +11,7 @@
->  #include <linux/module.h>
->  #include <asm/unaligned.h>
->
-> +#include <linux/atomic.h>
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/slab.h>
-> @@ -44,6 +45,7 @@ struct vhci_data {
->         bool wakeup;
->         __u16 msft_opcode;
->         bool aosp_capable;
-> +       atomic_t initialized;
->  };
->
->  static int vhci_open_dev(struct hci_dev *hdev)
-> @@ -75,11 +77,10 @@ static int vhci_send_frame(struct hci_dev *hdev, stru=
-ct sk_buff *skb)
->
->         memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
->
-> -       mutex_lock(&data->open_mutex);
->         skb_queue_tail(&data->readq, skb);
-> -       mutex_unlock(&data->open_mutex);
->
-> -       wake_up_interruptible(&data->read_wait);
-> +       if (atomic_read(&data->initialized))
-> +               wake_up_interruptible(&data->read_wait);
->         return 0;
->  }
->
-> @@ -464,7 +465,8 @@ static int __vhci_create_device(struct vhci_data *dat=
-a, __u8 opcode)
->         skb_put_u8(skb, 0xff);
->         skb_put_u8(skb, opcode);
->         put_unaligned_le16(hdev->id, skb_put(skb, 2));
-> -       skb_queue_tail(&data->readq, skb);
-> +       skb_queue_head(&data->readq, skb);
-> +       atomic_inc(&data->initialized);
->
->         wake_up_interruptible(&data->read_wait);
->         return 0;
-> --
-> 2.43.0.rc0.421.g78406f8d94-goog
->
+     echo always >/sys/kernel/mm/transparent_hugepage/enabled
+     echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
+
+This was on a aarch64 machine configure to use a 64KB base page size.
+That configuration means that the PMD size is 512MB, which is of course
+too large for practical use as a pure PMD-THP. However, with with these
+small-size (less than PMD-sized) THPs, we get the improvements in TLB
+coverage, while still getting pages that are small enough to be
+effectively usable.
+
+These results are admittedly limited to aarch64 CPUs so far (because the
+contpte TLB coalescing behavior plays a big role), but it's nice to see
+real performance numbers from real computers.
+
+Up until now, there has been some healthy discussion and debate about
+various aspects of this patchset. This data point shows that at least
+for some types of memory-intensive workloads (and I apologize for being
+vague, at this point, about exactly *which* workloads), the performance
+gains are really worth it: ~10x !
+
+[1] https://gitlab.arm.com/linux-arm/linux-rr.git
+         (branch: features/granule_perf/anonfolio-v6-contpte-v2)
+
+thanks,
+
+-- 
+John Hubbard
+NVIDIA
