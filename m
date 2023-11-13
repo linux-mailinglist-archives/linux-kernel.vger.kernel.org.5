@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958B77E9F0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:45:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB287E9F07
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbjKMOpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 09:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S231309AbjKMOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 09:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjKMOop (ORCPT
+        with ESMTP id S230265AbjKMOoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 09:44:45 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E046810FB
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:44:40 -0800 (PST)
+        Mon, 13 Nov 2023 09:44:44 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BFD171A
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:44:39 -0800 (PST)
 Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi6UT019412;
-        Mon, 13 Nov 2023 08:44:06 -0600
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi7wN014479;
+        Mon, 13 Nov 2023 08:44:07 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1699886646;
-        bh=2j2rZ0wAfPXMdUDaibcPxRQk4yh1F+v0/Ydsjhdm1W8=;
+        s=ti-com-17Q1; t=1699886647;
+        bh=053670vNwP13YdPy+JoG38ND3fYYc+OjTbm03kf6lD0=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=GRSJs4Vk+qhInhB/SOKF0wzoRUA7c3BJPmK3NOHtxGAEaeXpqbeuDA6j8BbMTY9qs
-         PovTvoTbArwX06cI3Y4o2gSnnyHCSP36sf5C5llGzwFn9/Lzai4qw1Ld19uwzCisy+
-         dYxkoZdj1L3MFh1Sh/PXGtQM+yHLXXozcfgoBETU=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ADEi63I020188
+        b=zNYEbkoNQd+sDfjFR12op9/wajo8uAidiw3Uxm75F1IahoT1ETBFf42yv/CFGO42Q
+         UaVu/EmbLspgLRGM6QilwcY4CyWP1VHDfJFJCL4wH0bS8DhhdNIYGcqFRVTzNTpdT6
+         +NMPGbgZI2/2PJ980QNjWcTCctTvxkhzLv/ldlN8=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ADEi7pV020192
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Nov 2023 08:44:06 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 13 Nov 2023 08:44:07 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 13
  Nov 2023 08:44:06 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Mon, 13 Nov 2023 08:44:06 -0600
 Received: from fllv0040.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi0u1065232;
-        Mon, 13 Nov 2023 08:44:05 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi0u2065232;
+        Mon, 13 Nov 2023 08:44:06 -0600
 From:   Andrew Davis <afd@ti.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Baruch Siach <baruch@tkos.co.il>,
@@ -51,9 +51,9 @@ To:     Russell King <linux@armlinux.org.uk>,
         Linus Walleij <linus.walleij@linaro.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v3 7/9] ARM: mach-sunplus: Rework support and directory structure
-Date:   Mon, 13 Nov 2023 08:43:57 -0600
-Message-ID: <20231113144359.174140-8-afd@ti.com>
+Subject: [PATCH v3 8/9] ARM: mach-hpe: Rework support and directory structure
+Date:   Mon, 13 Nov 2023 08:43:58 -0600
+Message-ID: <20231113144359.174140-9-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231113144359.174140-1-afd@ti.com>
 References: <20231113144359.174140-1-afd@ti.com>
@@ -77,173 +77,154 @@ does not allow mach-* directories at all. While we may not get to that
 given all the non-standard architectures we support, we should still try
 to get as close as we can and reduce the number of mach directories.
 
-The mach-sunplus/ directory and files, provides just one "feature":
+The mach-hpe/ directory and files, provides just one "feature":
 having the kernel print the machine name if the DTB does not also contain
 a "model" string (which they always do). To reduce the number of mach-*
 directories let's do without that feature and remove this directory.
 
-NOTE: The default l2c_aux_mask is now ~0 but these devices never have
-this type of cache controller so this is safe.
-
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- MAINTAINERS                    |  1 -
- arch/arm/Kconfig               |  2 --
- arch/arm/Kconfig.platforms     | 29 +++++++++++++++++++++++++++++
- arch/arm/Makefile              |  1 -
- arch/arm/mach-sunplus/Kconfig  | 27 ---------------------------
- arch/arm/mach-sunplus/Makefile |  8 --------
- arch/arm/mach-sunplus/sp7021.c | 16 ----------------
- 7 files changed, 29 insertions(+), 55 deletions(-)
- delete mode 100644 arch/arm/mach-sunplus/Kconfig
- delete mode 100644 arch/arm/mach-sunplus/Makefile
- delete mode 100644 arch/arm/mach-sunplus/sp7021.c
+ MAINTAINERS                |  1 -
+ arch/arm/Kconfig           |  2 --
+ arch/arm/Kconfig.platforms | 25 +++++++++++++++++++++++++
+ arch/arm/Makefile          |  1 -
+ arch/arm/mach-hpe/Kconfig  | 23 -----------------------
+ arch/arm/mach-hpe/Makefile |  1 -
+ arch/arm/mach-hpe/gxp.c    | 15 ---------------
+ 7 files changed, 25 insertions(+), 43 deletions(-)
+ delete mode 100644 arch/arm/mach-hpe/Kconfig
+ delete mode 100644 arch/arm/mach-hpe/Makefile
+ delete mode 100644 arch/arm/mach-hpe/gxp.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index b1ee757a4306d..73f1100014218 100644
+index 73f1100014218..eba68bf3417fa 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -2837,7 +2837,6 @@ F:	Documentation/devicetree/bindings/interrupt-controller/sunplus,sp7021-intc.ya
- F:	Documentation/devicetree/bindings/reset/sunplus,reset.yaml
- F:	arch/arm/boot/dts/sunplus/
- F:	arch/arm/configs/sp7021_*defconfig
--F:	arch/arm/mach-sunplus/
- F:	drivers/clk/clk-sp7021.c
- F:	drivers/irqchip/irq-sp7021-intc.c
- F:	drivers/reset/reset-sunplus.c
+@@ -2216,7 +2216,6 @@ F:	Documentation/devicetree/bindings/spi/hpe,gxp-spifi.yaml
+ F:	Documentation/devicetree/bindings/timer/hpe,gxp-timer.yaml
+ F:	Documentation/hwmon/gxp-fan-ctrl.rst
+ F:	arch/arm/boot/dts/hpe/
+-F:	arch/arm/mach-hpe/
+ F:	drivers/clocksource/timer-gxp.c
+ F:	drivers/hwmon/gxp-fan-ctrl.c
+ F:	drivers/i2c/busses/i2c-gxp.c
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fbdf366d260a6..395530fe22402 100644
+index 395530fe22402..ed069b336c308 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
-@@ -447,8 +447,6 @@ source "arch/arm/mach-sti/Kconfig"
+@@ -383,8 +383,6 @@ source "arch/arm/mach-highbank/Kconfig"
  
- source "arch/arm/mach-stm32/Kconfig"
+ source "arch/arm/mach-hisi/Kconfig"
  
--source "arch/arm/mach-sunplus/Kconfig"
+-source "arch/arm/mach-hpe/Kconfig"
 -
- source "arch/arm/mach-sunxi/Kconfig"
+ source "arch/arm/mach-imx/Kconfig"
  
- source "arch/arm/mach-tegra/Kconfig"
+ source "arch/arm/mach-ixp4xx/Kconfig"
 diff --git a/arch/arm/Kconfig.platforms b/arch/arm/Kconfig.platforms
-index 38457d5a18fff..acaced2f0ab04 100644
+index acaced2f0ab04..b4ad800a17b7e 100644
 --- a/arch/arm/Kconfig.platforms
 +++ b/arch/arm/Kconfig.platforms
-@@ -123,6 +123,35 @@ config ARCH_RDA
+@@ -87,6 +87,31 @@ config MACH_ASM9260
  	help
- 	  This enables support for the RDA Micro 8810PL SoC family.
+ 	  Support for Alphascale ASM9260 based platform.
  
-+menuconfig ARCH_SUNPLUS
-+	bool "Sunplus SoCs"
++menuconfig ARCH_HPE
++	bool "HPE SoC support"
 +	depends on ARCH_MULTI_V7
 +	help
-+	  Support for Sunplus SoC family: SP7021 and succeeding SoC-based systems,
-+	  such as the Banana Pi BPI-F2S development board (and derivatives).
-+	  (<http://www.sinovoip.com.cn/ecp_view.asp?id=586>)
-+	  (<https://tibbo.com/store/plus1.html>)
++	  This enables support for HPE ARM based BMC chips.
 +
-+if ARCH_SUNPLUS
++if ARCH_HPE
 +
-+config SOC_SP7021
-+	bool "Sunplus SP7021 SoC support"
-+	default ARCH_SUNPLUS
-+	select HAVE_ARM_ARCH_TIMER
-+	select ARM_GIC
-+	select ARM_PSCI
-+	select PINCTRL
-+	select PINCTRL_SPPCTL
-+	select SERIAL_SUNPLUS if TTY
-+	select SERIAL_SUNPLUS_CONSOLE if TTY
++config ARCH_HPE_GXP
++	bool "HPE GXP SoC"
++	depends on ARCH_MULTI_V7
++	select ARM_VIC
++	select GENERIC_IRQ_CHIP
++	select CLKSRC_MMIO
 +	help
-+	  Support for Sunplus SP7021 SoC. It is based on ARM 4-core
-+	  Cortex-A7 with various peripherals (e.g.: I2C, SPI, SDIO,
-+	  Ethernet, etc.), FPGA interface,  chip-to-chip bus.
-+	  It is designed for industrial control.
++	  HPE GXP is the name of the HPE Soc. This SoC is used to implement many
++	  BMC features at HPE. It supports ARMv7 architecture based on the Cortex
++	  A9 core. It is capable of using an AXI bus to which a memory controller
++	  is attached. It has multiple SPI interfaces to connect boot flash and
++	  BIOS flash. It uses a 10/100/1000 MAC for network connectivity. It
++	  has multiple i2c engines to drive connectivity with a host
++	  infrastructure.
 +
 +endif
 +
- config ARCH_UNIPHIER
- 	bool "Socionext UniPhier SoCs"
- 	depends on ARCH_MULTI_V7
+ menuconfig ARCH_MOXART
+ 	bool "MOXA ART SoC"
+ 	depends on ARCH_MULTI_V4
 diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index eb72b092d7b4a..699be64a74be6 100644
+index 699be64a74be6..47c53c068e3d8 100644
 --- a/arch/arm/Makefile
 +++ b/arch/arm/Makefile
-@@ -216,7 +216,6 @@ machine-$(CONFIG_ARCH_RENESAS)	 	+= shmobile
- machine-$(CONFIG_ARCH_INTEL_SOCFPGA)	+= socfpga
- machine-$(CONFIG_ARCH_STI)		+= sti
- machine-$(CONFIG_ARCH_STM32)		+= stm32
--machine-$(CONFIG_ARCH_SUNPLUS)		+= sunplus
- machine-$(CONFIG_ARCH_SUNXI)		+= sunxi
- machine-$(CONFIG_ARCH_TEGRA)		+= tegra
- machine-$(CONFIG_ARCH_U8500)		+= ux500
-diff --git a/arch/arm/mach-sunplus/Kconfig b/arch/arm/mach-sunplus/Kconfig
+@@ -184,7 +184,6 @@ machine-$(CONFIG_ARCH_FOOTBRIDGE)	+= footbridge
+ machine-$(CONFIG_ARCH_GEMINI)		+= gemini
+ machine-$(CONFIG_ARCH_HIGHBANK)		+= highbank
+ machine-$(CONFIG_ARCH_HISI)		+= hisi
+-machine-$(CONFIG_ARCH_HPE)		+= hpe
+ machine-$(CONFIG_ARCH_IXP4XX)		+= ixp4xx
+ machine-$(CONFIG_ARCH_KEYSTONE)		+= keystone
+ machine-$(CONFIG_ARCH_LPC18XX)		+= lpc18xx
+diff --git a/arch/arm/mach-hpe/Kconfig b/arch/arm/mach-hpe/Kconfig
 deleted file mode 100644
-index d0c2416e6f241..0000000000000
---- a/arch/arm/mach-sunplus/Kconfig
+index 3372bbf38d383..0000000000000
+--- a/arch/arm/mach-hpe/Kconfig
 +++ /dev/null
-@@ -1,27 +0,0 @@
--# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
--
--menuconfig ARCH_SUNPLUS
--	bool "Sunplus SoCs"
+@@ -1,23 +0,0 @@
+-menuconfig ARCH_HPE
+-	bool "HPE SoC support"
 -	depends on ARCH_MULTI_V7
 -	help
--	  Support for Sunplus SoC family: SP7021 and succeeding SoC-based systems,
--	  such as the Banana Pi BPI-F2S development board (and derivatives).
--	  (<http://www.sinovoip.com.cn/ecp_view.asp?id=586>)
--	  (<https://tibbo.com/store/plus1.html>)
+-	  This enables support for HPE ARM based BMC chips.
+-if ARCH_HPE
 -
--config SOC_SP7021
--	bool "Sunplus SP7021 SoC support"
--	depends on ARCH_SUNPLUS
--	default ARCH_SUNPLUS
--	select HAVE_ARM_ARCH_TIMER
--	select ARM_GIC
--	select ARM_PSCI
--	select PINCTRL
--	select PINCTRL_SPPCTL
--	select SERIAL_SUNPLUS if TTY
--	select SERIAL_SUNPLUS_CONSOLE if TTY
+-config ARCH_HPE_GXP
+-	bool "HPE GXP SoC"
+-	depends on ARCH_MULTI_V7
+-	select ARM_VIC
+-	select GENERIC_IRQ_CHIP
+-	select CLKSRC_MMIO
 -	help
--	  Support for Sunplus SP7021 SoC. It is based on ARM 4-core
--	  Cortex-A7 with various peripherals (e.g.: I2C, SPI, SDIO,
--	  Ethernet, etc.), FPGA interface,  chip-to-chip bus.
--	  It is designed for industrial control.
-diff --git a/arch/arm/mach-sunplus/Makefile b/arch/arm/mach-sunplus/Makefile
-deleted file mode 100644
-index d211de6af2db9..0000000000000
---- a/arch/arm/mach-sunplus/Makefile
-+++ /dev/null
-@@ -1,8 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--#
--# Makefile for the linux kernel.
--#
+-	  HPE GXP is the name of the HPE Soc. This SoC is used to implement many
+-	  BMC features at HPE. It supports ARMv7 architecture based on the Cortex
+-	  A9 core. It is capable of using an AXI bus to which a memory controller
+-	  is attached. It has multiple SPI interfaces to connect boot flash and
+-	  BIOS flash. It uses a 10/100/1000 MAC for network connectivity. It
+-	  has multiple i2c engines to drive connectivity with a host
+-	  infrastructure.
 -
--# Object file lists.
--
--obj-$(CONFIG_SOC_SP7021)	+= sp7021.o
-diff --git a/arch/arm/mach-sunplus/sp7021.c b/arch/arm/mach-sunplus/sp7021.c
+-endif
+diff --git a/arch/arm/mach-hpe/Makefile b/arch/arm/mach-hpe/Makefile
 deleted file mode 100644
-index 774d0a5bd4eb0..0000000000000
---- a/arch/arm/mach-sunplus/sp7021.c
+index 8b0a91234df4e..0000000000000
+--- a/arch/arm/mach-hpe/Makefile
 +++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
--/*
-- * Copyright (C) Sunplus Technology Co., Ltd.
-- *       All rights reserved.
-- */
--#include <linux/kernel.h>
+@@ -1 +0,0 @@
+-obj-$(CONFIG_ARCH_HPE_GXP) += gxp.o
+diff --git a/arch/arm/mach-hpe/gxp.c b/arch/arm/mach-hpe/gxp.c
+deleted file mode 100644
+index 581c8da517b86..0000000000000
+--- a/arch/arm/mach-hpe/gxp.c
++++ /dev/null
+@@ -1,15 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (C) 2022 Hewlett-Packard Enterprise Development Company, L.P. */
+-
 -#include <asm/mach/arch.h>
 -
--static const char *sp7021_compat[] __initconst = {
--	"sunplus,sp7021",
--	NULL
+-static const char * const gxp_board_dt_compat[] = {
+-	"hpe,gxp",
+-	NULL,
 -};
 -
--DT_MACHINE_START(SP7021_DT, "SP7021")
--	.dt_compat	= sp7021_compat,
+-DT_MACHINE_START(GXP_DT, "HPE GXP")
+-	.dt_compat	= gxp_board_dt_compat,
+-	.l2c_aux_val = 0,
+-	.l2c_aux_mask = ~0,
 -MACHINE_END
 -- 
 2.39.2
