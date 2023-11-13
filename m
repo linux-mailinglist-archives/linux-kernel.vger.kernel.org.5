@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D516C7E9586
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B407E9591
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjKMD3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        id S233026AbjKMDgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:36:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbjKMD3J (ORCPT
+        with ESMTP id S232997AbjKMDgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:29:09 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC72F171B
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:29:05 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7ba6a0bada9so1467262241.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:29:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699846145; x=1700450945; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N2dGyXj5qPWx8L/oD7d/kJ2B1kSBzAWVgjHl9+VbT5g=;
-        b=CSrHsh9BqDX/+zONieAXevR7NLb18gQCuO78q5RU/ltdr9vQOM6ranCrMqhyi32jaL
-         s2UzxX2G44i/g9AwnqRS7KMooFi8rKcU407idcCYkgZgfyIaHJXjIViF1Vf6QgXBhLXp
-         TAFJPZ3A5m0olNiegRJtM4hoU/mm7At7ggx1gOSdH2+fi+NDLdLpauJljnDMQBkOHVbg
-         l3Q0iMNuJn+Ciz9hUm+CN0g31WPchNENDrmiOz29CF7d1aAI4Os1ZmfxJMukV+0rx6GG
-         33ED0ficMpON3UfmQaf2mWdIaNurZPD2uU4wSUJVQ03HqG3Nvg3A5DDiVjVZp5HvN++k
-         aJJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699846145; x=1700450945;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N2dGyXj5qPWx8L/oD7d/kJ2B1kSBzAWVgjHl9+VbT5g=;
-        b=C+N7c4ftJQvOhJITM8SqKejZ1huV3W9uXUmR2qHxYUjcx6b7pOktStT6nwPLfkzFmL
-         FL/8q1DAHkAbmuygL42yDMjGAVGbTwyyQqF3DdnyI/tJGF3dQ/lHQtUmEVA9VOIGtTv5
-         KnEFxDchjaq7NbXgiMzZ1XCy9ss+y89ehnJ+C4Yq+b+6T7evYaYqVyid3Jiwn33Iaslp
-         2D5YfgROWNek+udQh840Nd2qlg4+gnMZ+vXk/gVDqPKUUabeJV+ezZXnCp9NIpLRkj6B
-         bn79AGZgTW9pMzBr81TeYDQ5oe/dP2c+YoiePwVoAZxTS2G9jH+S6poiB682qdNggS0i
-         TthA==
-X-Gm-Message-State: AOJu0YyzvsVClSLvuTu6xHM8nJUrWoCsFTkhjCHPInRdqqTxrQPOeSpF
-        jNEyX9WpMaagmqYpUiZYO87n/t4bYcI1U3AA1tKg+w==
-X-Google-Smtp-Source: AGHT+IHF2Jct5wlvc5iEDA5CXatiC4I+LjFNu9wrknK+tB6gu0XrkZJBw+kq39swHZW/DhuGkGJI2Nhu4+A/S+uBIBE=
-X-Received: by 2002:a05:6102:23cd:b0:45d:989b:da4a with SMTP id
- x13-20020a05610223cd00b0045d989bda4amr4899045vsr.22.1699846144896; Sun, 12
- Nov 2023 19:29:04 -0800 (PST)
+        Sun, 12 Nov 2023 22:36:46 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11D4172B
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:36:39 -0800 (PST)
+X-UUID: d2f97b69a6fe4cc58d719ffe4d8ba132-20231113
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:3696d87d-a252-4f52-a8fd-2f3009e7089d,IP:15,
+        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:10
+X-CID-INFO: VERSION:1.1.32,REQID:3696d87d-a252-4f52-a8fd-2f3009e7089d,IP:15,UR
+        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:10
+X-CID-META: VersionHash:5f78ec9,CLOUDID:7fb15095-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231113113630XH0FCV1I,BulkQuantity:0,Recheck:0,SF:24|17|19|44|66|38|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
+        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+        TF_CID_SPAM_ULN
+X-UUID: d2f97b69a6fe4cc58d719ffe4d8ba132-20231113
+X-User: heminhong@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by mailgw
+        (envelope-from <heminhong@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1227971306; Mon, 13 Nov 2023 11:36:29 +0800
+From:   heminhong <heminhong@kylinos.cn>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+        airlied@gmail.com, daniel@ffwll.ch, ville.syrjala@linux.intel.com,
+        animesh.manna@intel.com, uma.shankar@intel.com,
+        ankit.k.nautiyal@intel.com
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, heminhong <heminhong@kylinos.cn>
+Subject: [PATCH] drm/i915: eliminate warnings
+Date:   Mon, 13 Nov 2023 11:36:13 +0800
+Message-Id: <20231113033613.30339-1-heminhong@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-3-almasrymina@google.com> <20231110151907.023c61cd@kernel.org>
-In-Reply-To: <20231110151907.023c61cd@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sun, 12 Nov 2023 19:28:52 -0800
-Message-ID: <CAHS8izPKRh7ukRytXaweKcY_76sE7F_3s1sYVgsUXYGrypK93Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 02/12] net: page_pool: create hooks for custom page providers
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 3:19=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Sun,  5 Nov 2023 18:44:01 -0800 Mina Almasry wrote:
-> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
-s.h
-> > index 6fc5134095ed..d4bea053bb7e 100644
-> > --- a/include/net/page_pool/types.h
-> > +++ b/include/net/page_pool/types.h
-> > @@ -60,6 +60,8 @@ struct page_pool_params {
-> >       int             nid;
-> >       struct device   *dev;
-> >       struct napi_struct *napi;
-> > +     u8              memory_provider;
-> > +     void            *mp_priv;
-> >       enum dma_data_direction dma_dir;
-> >       unsigned int    max_len;
-> >       unsigned int    offset;
->
-> you should rebase on top of net-next
->
-> More importantly I was expecting those fields to be gone from params.
-> The fact that the page pool is configured to a specific provider
-> should be fully transparent to the driver, driver should just tell
-> the core what queue its creating the pool from and if there's a dmabuf
-> bound for that queue - out pops a pp backed by the dmabuf.
->
+Current, the dewake_scanline variable is defined as unsigned int,
+an unsigned int variable that is always greater than or equal to 0.
+when _intel_dsb_commit function is called by intel_dsb_commit function,
+the dewake_scanline variable may have an int value.
+So the dewake_scanline variable is necessary to defined as an int.
 
-My issue with this is that if the driver doesn't support dmabuf then
-the driver will accidentally use the pp backed by the dmabuf, allocate
-a page from it, then call page_address() on it or something, and
-crash.
+Signed-off-by: heminhong <heminhong@kylinos.cn>
+---
+ drivers/gpu/drm/i915/display/intel_dsb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Currently I avoid that by having the driver be responsible for picking
-up the dmabuf from the netdev_rx_queue and giving it to the page pool.
-What would be the appropriate way to check for driver support in the
-netlink API? Perhaps adding something to ndo_features_check?
+diff --git a/drivers/gpu/drm/i915/display/intel_dsb.c b/drivers/gpu/drm/i915/display/intel_dsb.c
+index 78b6fe24dcd8..7fd6280c54a7 100644
+--- a/drivers/gpu/drm/i915/display/intel_dsb.c
++++ b/drivers/gpu/drm/i915/display/intel_dsb.c
+@@ -340,7 +340,7 @@ static int intel_dsb_dewake_scanline(const struct intel_crtc_state *crtc_state)
+ }
+ 
+ static void _intel_dsb_commit(struct intel_dsb *dsb, u32 ctrl,
+-			      unsigned int dewake_scanline)
++			      int dewake_scanline)
+ {
+ 	struct intel_crtc *crtc = dsb->crtc;
+ 	struct drm_i915_private *dev_priv = to_i915(crtc->base.dev);
+-- 
+2.25.1
 
---=20
-Thanks,
-Mina
