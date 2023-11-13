@@ -2,284 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96D37E9A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5CF7E9A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 12:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbjKMK5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
+        id S230077AbjKMLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 06:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMK47 (ORCPT
+        with ESMTP id S229870AbjKMLAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:56:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD1110D8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:56:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E850C433C7;
-        Mon, 13 Nov 2023 10:56:51 +0000 (UTC)
-Message-ID: <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
-Date:   Mon, 13 Nov 2023 11:56:49 +0100
+        Mon, 13 Nov 2023 06:00:34 -0500
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502C410D8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 03:00:31 -0800 (PST)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28016806be2so5263184a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 03:00:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699873231; x=1700478031;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nurGn4++F4CxaCRHpLPUpX0XmLm4g0gqNDAXT8uNP4k=;
+        b=vUE3bDsmys+cHIqGBEeji+BhXkAOBnWS9Sj2LR4ozklK7arTmw7/12q1YV7q9EVmfi
+         vs6HmV960JWbd8KFmUjcGfKPDnbGGRF3MlAFsnkceohQrcc29nUjbCshDVUTvmX7Elwz
+         ViiWuIlJsgsd5jctJlPIP1fCVdODRFfmgDIMYZtWNGfVS9EMIhNstk5+wXrVKgD/BbD+
+         JBu43OLUjcakCDKgca/W87m0duCTuoteXCsQTU/lQP7fDw4/H8yB40bl4+B6Jououow0
+         7xNeGHO8Sar0NEogDGIQF83XwJcN8rzd3AiqiWx8/3WzDRfNQksugDFHP3KJfkq6MCeh
+         AaqA==
+X-Gm-Message-State: AOJu0YxO8C0jzcBzritsQ+c0ZRy3Rwd8g0tAPEod5v9bAtwm/trB79sE
+        r3jJWH/Ptbm7SeF4NpoclZiG1pp/1Sex4LNiYpMFBKWXl06ybTg=
+X-Google-Smtp-Source: AGHT+IGbzcFfYX7bbCHDle8+OruXULi0uV5DEkYXrCf+B13BPLAoak4Kk6vx+RpXRBbLq6y2e5tFFmJEMYiW+qwpVcS/6QrEeHJH
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Content-Language: en-US, nl
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
- <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
- <20231113104238.GA13981@pendragon.ideasonboard.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231113104238.GA13981@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:90b:2291:b0:280:47ba:7685 with SMTP id
+ kx17-20020a17090b229100b0028047ba7685mr2879315pjb.0.1699873230916; Mon, 13
+ Nov 2023 03:00:30 -0800 (PST)
+Date:   Mon, 13 Nov 2023 03:00:30 -0800
+In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000179181060a069430@google.com>
+Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2023 11:42, Laurent Pinchart wrote:
-> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
->> Hi Shengjiu,
->>
->> On 10/11/2023 06:48, Shengjiu Wang wrote:
->>> Fixed point controls are used by the user to configure
->>> a fixed point value in 64bits, which Q31.32 format.
->>>
->>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->>
->> This patch adds a new control type. This is something that also needs to be
->> tested by v4l2-compliance, and for that we need to add support for this to
->> one of the media test-drivers. The best place for that is the vivid driver,
->> since that has already a bunch of test controls for other control types.
->>
->> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
->>
->> Can you add a patch adding a fixed point test control to vivid?
-> 
-> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
-> relate more to units than control types. We have lots of fixed-point
-> values in controls already, using the 32-bit and 64-bit integer control
-> types. They use various locations for the decimal point, depending on
-> the control. If we want to make this more explicit to users, we should
-> work on adding unit support to the V4L2 controls.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-"Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
+***
 
-A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
-only shows a single driver specific control (dw100.rst).
+Subject: [PATCH] Test oob in squashfs readahead
+Author: eadavis@qq.com
 
-I'm not aware of other controls in mainline that use fixed point.
+please test squashfs readahead oob
 
-Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
-min/max/step you can easily map that to just about any QN.M format where
-N <= 31 and M <= 32.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
 
-In the case of dw100 it is a bit different in that it is quite specialized
-and it had to fit in 16 bits.
-
-Regards,
-
-	Hans
-
-> 
->>> ---
->>>  .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 13 +++++++------
->>>  .../userspace-api/media/v4l/vidioc-queryctrl.rst    |  9 ++++++++-
->>>  .../userspace-api/media/videodev2.h.rst.exceptions  |  1 +
->>>  drivers/media/v4l2-core/v4l2-ctrls-api.c            |  5 ++++-
->>>  drivers/media/v4l2-core/v4l2-ctrls-core.c           |  2 ++
->>>  include/uapi/linux/videodev2.h                      |  1 +
->>>  6 files changed, 23 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
->>> index e8475f9fd2cf..e7e5d78dc11e 100644
->>> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
->>> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
->>> @@ -162,13 +162,13 @@ still cause this situation.
->>>      * - __s32
->>>        - ``value``
->>>        - New value or current value. Valid if this control is not of type
->>> -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
->>> -	not set.
->>> +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
->>> +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
->>>      * - __s64
->>>        - ``value64``
->>>        - New value or current value. Valid if this control is of type
->>> -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
->>> -	not set.
->>> +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
->>> +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
->>>      * - char *
->>>        - ``string``
->>>        - A pointer to a string. Valid if this control is of type
->>> @@ -193,8 +193,9 @@ still cause this situation.
->>>      * - __s64 *
->>>        - ``p_s64``
->>>        - A pointer to a matrix control of signed 64-bit values. Valid if
->>> -        this control is of type ``V4L2_CTRL_TYPE_INTEGER64`` and
->>> -        ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is set.
->>> +        this control is of type ``V4L2_CTRL_TYPE_INTEGER64``,
->>> +        ``V4L2_CTRL_TYPE_FIXED_POINT`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD``
->>> +        is set.
->>>      * - struct :c:type:`v4l2_area` *
->>>        - ``p_area``
->>>        - A pointer to a struct :c:type:`v4l2_area`. Valid if this control is
->>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->>> index 4d38acafe8e1..f3995ec57044 100644
->>> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->>> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
->>> @@ -235,7 +235,8 @@ See also the examples in :ref:`control`.
->>>        - ``default_value``
->>>        - The default value of a ``V4L2_CTRL_TYPE_INTEGER``, ``_INTEGER64``,
->>>  	``_BOOLEAN``, ``_BITMASK``, ``_MENU``, ``_INTEGER_MENU``, ``_U8``
->>> -	or ``_U16`` control. Not valid for other types of controls.
->>> +	``_FIXED_POINT`` or ``_U16`` control. Not valid for other types of
->>> +	controls.
->>>  
->>>  	.. note::
->>>  
->>> @@ -549,6 +550,12 @@ See also the examples in :ref:`control`.
->>>        - n/a
->>>        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
->>>          parameters for stateless video decoders.
->>> +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
->>> +      - any
->>> +      - any
->>> +      - any
->>> +      - A 64-bit integer valued control, containing parameter which is
->>> +        Q31.32 format.
->>>  
->>>  .. raw:: latex
->>>  
->>> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>> index e61152bb80d1..2faa5a2015eb 100644
->>> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
->>> @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
->>>  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
->>>  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
->>>  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
->>> +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
->>>  
->>>  # V4L2 capability defines
->>>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
->>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
->>> index 002ea6588edf..e6a0fb8d6791 100644
->>> --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
->>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
->>> @@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
->>>  		return copy_to_user(c->string, ptr.p_char, len + 1) ?
->>>  		       -EFAULT : 0;
->>>  	case V4L2_CTRL_TYPE_INTEGER64:
->>> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->>>  		c->value64 = *ptr.p_s64;
->>>  		break;
->>>  	default:
->>> @@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
->>>  
->>>  	switch (ctrl->type) {
->>>  	case V4L2_CTRL_TYPE_INTEGER64:
->>> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->>>  		*ctrl->p_new.p_s64 = c->value64;
->>>  		break;
->>>  	case V4L2_CTRL_TYPE_STRING:
->>> @@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
->>>  		 */
->>>  		if (ctrl->is_ptr)
->>>  			continue;
->>> -		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
->>> +		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
->>> +		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
->>>  			p_new.p_s64 = &cs->controls[i].value64;
->>>  		else
->>>  			p_new.p_s32 = &cs->controls[i].value;
->>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->>> index a662fb60f73f..9d50df0d9874 100644
->>> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
->>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
->>> @@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
->>>  	case V4L2_CTRL_TYPE_INTEGER:
->>>  		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
->>>  	case V4L2_CTRL_TYPE_INTEGER64:
->>> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->>>  		/*
->>>  		 * We can't use the ROUND_TO_RANGE define here due to
->>>  		 * the u64 divide that needs special care.
->>> @@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->>>  	/* Prefill elem_size for all types handled by std_type_ops */
->>>  	switch ((u32)type) {
->>>  	case V4L2_CTRL_TYPE_INTEGER64:
->>> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->>>  		elem_size = sizeof(s64);
->>>  		break;
->>>  	case V4L2_CTRL_TYPE_STRING:
->>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>> index cf8c44595a1d..9482ac66a675 100644
->>> --- a/include/uapi/linux/videodev2.h
->>> +++ b/include/uapi/linux/videodev2.h
->>> @@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
->>>  	V4L2_CTRL_TYPE_STRING        = 7,
->>>  	V4L2_CTRL_TYPE_BITMASK       = 8,
->>>  	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
->>> +	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
->>>  
->>>  	/* Compound types are >= 0x0100 */
->>>  	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
-> 
+diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
+index 8ba8c4c50770..c91a37be5589 100644
+--- a/fs/squashfs/file.c
++++ b/fs/squashfs/file.c
+@@ -553,6 +553,9 @@ static void squashfs_readahead(struct readahead_control *ractl)
+ 	if (!pages)
+ 		return;
+ 
++	printk("p: %p, bs: %d, bl: %d, mp: %d, start: %d, fe: %d, %s\n", 
++			pages, msblk->block_size, msblk->block_log,
++			max_pages, start, file_end, __func__);
+ 	for (;;) {
+ 		pgoff_t index;
+ 		int res, bsize;
+@@ -566,6 +569,8 @@ static void squashfs_readahead(struct readahead_control *ractl)
+ 
+ 		max_pages = (expected + PAGE_SIZE - 1) >> PAGE_SHIFT;
+ 
++		printk("p: %p, mp: %d, e: %d, idx: %d, s: %d, %s\n", pages, max_pages,
++				expected, pages[0]->index, start, __func__);
+ 		nr_pages = __readahead_batch(ractl, pages, max_pages);
+ 		if (!nr_pages)
+ 			break;
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index 22e812808e5c..aad49a62b5ce 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -275,6 +275,8 @@ static int squashfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	if (msblk->block_log > SQUASHFS_FILE_MAX_LOG)
+ 		goto failed_mount;
+ 
++	printk("bs: %d, bl: %d, %s\n", msblk->block_size, msblk->block_log, __func__);
++
+ 	/* Check that block_size and block_log match */
+ 	if (msblk->block_size != (1 << msblk->block_log))
+ 		goto insanity;
 
