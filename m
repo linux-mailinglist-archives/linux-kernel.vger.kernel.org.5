@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6027E9FFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCF57EA008
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjKMPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:31:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        id S229644AbjKMPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMPbC (ORCPT
+        with ESMTP id S229454AbjKMPdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:31:02 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECBED63;
-        Mon, 13 Nov 2023 07:30:59 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77ba957043cso310752385a.2;
-        Mon, 13 Nov 2023 07:30:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699889458; x=1700494258; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=42zhaoIyMCBHeyrbAA4zIRqsQzSZSBrSFxVPTutgP68=;
-        b=dEUpzZDirY4pl2VLYg/L3H2omi++inqk1XvPSS25BgBNgNM5Hhhrb8z8zEdFv8uxo9
-         3Qgzo5MMQW3Fz7KHoI2nbMCzBUtF12fh3DE+/DPemdGBQjkZa+lb7htMjZdtLoYPamrm
-         /B5KrucF52e5DXF7mzXtmO2zTx2Bh1iM5HPe0QHpXCEpGkZHBOoQrbe7dqMvKr5AUYqk
-         oadWrTlEBtl0obaM3LLTQFIrwLwTBuolEqPqTEd/t9JOFpK6dIdVL1StiOETHP54Iubi
-         BgGMGYQMg3/sH6WJxLZxfMQ6/jRB7svKAQr4JOAOl2Ha1VpFxbUD1wpKikczFUbtUoN6
-         fSKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699889458; x=1700494258;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=42zhaoIyMCBHeyrbAA4zIRqsQzSZSBrSFxVPTutgP68=;
-        b=ng5rOzQ7h7hQ29fxwelg0EHdI2TVeh8mSTRymmiYbRiT305UAtMITvf3TOz/gM1HZv
-         zVC6dyddqchDsk9a6LjXcdqJ7TeA+KT+Wa0UzhWDEKhshySAMbX+xcfMiSQftVAPq6sr
-         D6o7F17sgcdlloKTFG4/E5A57gnJKHt9aC7DxXEof06sIAQu3sKh1EfcIeS/n6u1bcI9
-         etnOQv9Y+fsrC9/QnrYkrlRTIdMdMSnNsVtmlPiVB/4hw0IYr/7uAtBfytLOwpDIaGaC
-         Qicr6S2FEp9k5hP79rWf5e078KfMT0u1wbryJjZ9URM/kRXXQbC90rdjiT/xLTjIgCj/
-         i5yg==
-X-Gm-Message-State: AOJu0YwTuAAzWaujz1TpQmCqtOB4T0m8hlSqwUgADwHXJiLaseCvuqMT
-        OBY2K1MLtjaVP2npbeWryLg=
-X-Google-Smtp-Source: AGHT+IElU8MvpadKl2wRkEqmz45iilbvkGXlfOxNER4Oz1lClrz8qKoz4tOA3mvn7UFt2PjegOfdTQ==
-X-Received: by 2002:a05:620a:f03:b0:77b:9360:8839 with SMTP id v3-20020a05620a0f0300b0077b93608839mr8383762qkl.68.1699889458387;
-        Mon, 13 Nov 2023 07:30:58 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o1-20020a05620a2a0100b007778503ebf4sm1944477qkp.16.2023.11.13.07.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 07:30:57 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 13 Nov 2023 07:30:55 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Nik Bune <n2h9z4@gmail.com>
-Cc:     wim@linux-watchdog.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        skhan@linuxfoundation.org, afaerber@suse.de,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: watchdog: realtek,rtd1295-watchdog: convert
- txt to yaml
-Message-ID: <f4deb233-0dc5-442c-9519-b68e62d9e27f@roeck-us.net>
-References: <20231112162049.12633-1-n2h9z4@gmail.com>
+        Mon, 13 Nov 2023 10:33:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A306DD63;
+        Mon, 13 Nov 2023 07:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699889618; x=1731425618;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=traB1khJAcOjJDjDW0iULSetW36qB0wE8R68eicfZN8=;
+  b=S2Pzoa88/5HcnA1uGLzcvHrs0Q9CcsoYdggKtQ3b8S3VU7KhZeuXbZ4K
+   DrNxFOSmxnwDbmIdAcVn8eB5HKjMbCHMphYexkpsl7j65woT+Ov3njpAb
+   ru1al5eAkFtUgDRmDYdXoNcHF2KNJG8ZxI2d2s1dbIHi3JeFaasQHjhqv
+   tGH9eYAZumNFjpz625HbgLlPJr5SZYIDinQd0o86ObEZWVxFexrhm1YvI
+   vI3Y84XIsYTr4GYgoa3OqX6DTH87SZC6tB/U5hu2NWA5ypd8XAEFdqX1T
+   TIzvfoZGRJlGRONpggrX6+CmMn4Ipy7qOpYteb4zhPW5G8zFUafP9lX76
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="369791859"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="369791859"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:33:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="830265088"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="830265088"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:33:24 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r2YwD-0000000Daff-0esz;
+        Mon, 13 Nov 2023 17:33:21 +0200
+Date:   Mon, 13 Nov 2023 17:33:20 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Mark Brown <broonie@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-spi@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH v1 1/1] treewide, spi: Get rid of SPI_MASTER_HALF_DUPLEX
+Message-ID: <ZVJBwFYO7nHHAcli@smile.fi.intel.com>
+References: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
+ <2023111307-payer-retiring-0d72@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231112162049.12633-1-n2h9z4@gmail.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <2023111307-payer-retiring-0d72@gregkh>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 05:20:49PM +0100, Nik Bune wrote:
-> Convert txt file to yaml. Add maintainers from git blame.
-> 
-> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+On Mon, Nov 13, 2023 at 09:29:39AM -0500, Greg Kroah-Hartman wrote:
+> On Mon, Nov 13, 2023 at 01:12:49PM +0200, Andy Shevchenko wrote:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+...
+
+> >  drivers/input/rmi4/rmi_spi.c             | 2 +-
+> >  drivers/mmc/host/mmc_spi.c               | 2 +-
+> >  drivers/net/ethernet/micrel/ks8851_spi.c | 4 ++--
+> >  drivers/usb/gadget/udc/max3420_udc.c     | 2 +-
+> >  include/linux/spi/spi.h                  | 2 --
+> >  5 files changed, 5 insertions(+), 7 deletions(-)
+> 
+> This should go through the spi tree, right?  If so:
+
+Correct.
+
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> For the USB portion.
+
+Thank you!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
