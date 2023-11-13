@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CF27EA513
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C50C7EA515
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjKMUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 15:51:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S230204AbjKMUx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 15:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbjKMUvq (ORCPT
+        with ESMTP id S229720AbjKMUx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 15:51:46 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E5D57;
-        Mon, 13 Nov 2023 12:51:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1699908699;
-        bh=jkM/entJp8ZNxZcqkCfrr3msi5mZ2vfKJlFf2iJ0tq0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KxOr/GT/C1L5ks6XlRz5mAF1hb9pSRpJAVch1QIOiVEfiRb9tAKfbeCh1uSNiWp8w
-         PYctNiBBWDjCbofb6t2GcxuTzHzbmnkgoIsAQKr4n6XAbVakOQa8YHzWWocx30aY9/
-         w0MPR1L53+qMKy08cd+5yFtEmz4XCRDDFLw3zoNm0h68ucUGB/alO98wUDvrespLP0
-         ht57zRtYJNYAghyORRQl1jjgvFdp4sADPFBkeeIXrARnk6pDRClqyzarqe0HP7wLf+
-         9PZHG44vS6DPVOBFzjO/OjefpBYvHv4rKd6yIBXJWsJ++UC0QBK6MEoViTgQJMLFaj
-         LZtjDKUENOREw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SThRv3Mmgz4wbk;
-        Tue, 14 Nov 2023 07:51:39 +1100 (AEDT)
-Date:   Tue, 14 Nov 2023 07:51:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the renesas tree
-Message-ID: <20231114075136.3e164b4a@canb.auug.org.au>
+        Mon, 13 Nov 2023 15:53:28 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C82189
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:53:24 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2dvt-0001Fx-Tf; Mon, 13 Nov 2023 21:53:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2dvt-008q3z-0W; Mon, 13 Nov 2023 21:53:21 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2dvs-0013tX-NP; Mon, 13 Nov 2023 21:53:20 +0100
+Date:   Mon, 13 Nov 2023 21:53:20 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] pwm: bcm2835: Fix NPD in suspend/resume
+Message-ID: <20231113205320.bkh5kkon3w2yf4pq@pengutronix.de>
+References: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2TXcM+nHCSB5sUc.1bir5wZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xogulhhqz7et46rr"
+Content-Disposition: inline
+In-Reply-To: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2TXcM+nHCSB5sUc.1bir5wZ
-Content-Type: text/plain; charset=US-ASCII
+
+--xogulhhqz7et46rr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hello,
 
-Commits
+On Mon, Nov 13, 2023 at 08:46:32AM -0800, Florian Fainelli wrote:
+> When 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume") was
+> sent out on October 11th,, there was still a call to
+> platform_set_drvdata() which would ensure that the driver private data
+> structure could be used in bcm2835_pwm_{suspend,resume}.
+>=20
+> A cleanup now merged as commit commit 2ce7b7f6704c ("pwm: bcm2835:
+> Simplify using devm functions") removed that call which would now cause
+> a NPD in bcm2835_pwm_{suspend,resume} as a consequence.
+>=20
+> Fixes: 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume")
+> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-  e443f05dfa8f ("arm64: dts: renesas: rzg2lc-smarc-som: Enable 4-bit tx sup=
-port")
-  ce2e1b36450e ("arm64: dts: renesas: rzg2l-smarc-som: Enable 4-bit tx supp=
-ort")
+oops, indeed.
 
-are missing a Signed-off-by from their committer.
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
 
 --=20
-Cheers,
-Stephen Rothwell
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---Sig_/2TXcM+nHCSB5sUc.1bir5wZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--xogulhhqz7et46rr
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVSjFgACgkQAVBC80lX
-0Gxw5Qf/UKBurLPu34z6cpCDtYH2Mf44aeSpPk853ZxI63Dzl5PNF0RuXll0vK7J
-O4UmqWrPsRxWevEEuvPTKPKlo441haFAfF+83a4ogw9ZnhYRFfiLDvOc9tTHeybj
-+/jmc1irrXDKflBQwK8rlOlYsJUc4GacDIOkiwsanLhAHlhbeFIOvbE+cHa4PZGj
-X7APN8gTYRa2z7+P6xssm1KWjfp4WwQVxenokrxKPFvtwDRJVsV72j6EuxLRqpGU
-OGmRqp62pdwqZUWLsgM3HXvqK2Zl2NQajS50uOSGaJ94nY3GYoIIxR2mj1rgP5wt
-4jtQXcNVIe0xITIkTCtZpdGPp50zlg==
-=HeWQ
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVSjL8ACgkQj4D7WH0S
+/k5/gAf+Plpoji+oarx+qw4vy3iu1xj906Fy+FPqxDCKVfVnzlDtU5U6QOK6Pbct
+td64ms01pzmeO7d0/MYO37oaeURTDxeV6Vu897qwYGxrCI2xtXRLdxftxsmJFKYD
+TN1Qlhpboo2sgaD6TrIGDQBQS24Tk0tcuOrYkUsk2z38OS+ocT/oGAJsYOKKSprw
+Ja/zCxB2dkCO47HN8OS9PZuKVj9SYkzawpDxdGDf9A3eFbvBcIjwUJ9l5btuxHDL
+Qy4kOEaulF03NHnU/MExH/51Gfas7hT2uRCZ74SgMvhENzTsJ0PExm5VwCLkx2an
+4ykIVjMG+n44aS7I9UwI2wdjIlGZwg==
+=naiA
 -----END PGP SIGNATURE-----
 
---Sig_/2TXcM+nHCSB5sUc.1bir5wZ--
+--xogulhhqz7et46rr--
