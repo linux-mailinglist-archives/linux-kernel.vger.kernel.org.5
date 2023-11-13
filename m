@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40217E9C84
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF52F7E9C83
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbjKMM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
+        id S229873AbjKMM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMM6K (ORCPT
+        with ESMTP id S229511AbjKMM6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:58:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FC3171A
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:57:21 -0800 (PST)
+        Mon, 13 Nov 2023 07:58:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9560E10EA
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:57:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699880240;
+        s=mimecast20190719; t=1699880244;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XEEW3XcoHB1VZUo6+U7UmEZpZHFHm8rW7krXF/G2wlo=;
-        b=MYKWsRyNpfyzORUqB3RRo3ufFJ5ETTTdfkDWDMfbGh5zDiah9mQk9pgy9bR79e2+1vUx8E
-        oL4BzbdzZMU7JBj9Tapc/ArTn5ijAaTmqELD4Y8qqUmhajMS8fvfwp7ULY3fjn91BJxyKH
-        +OrYLlfZ9u5PPJrWs7BhOPiXRA5ZGT4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=99HQPaexgy0VlHo7G+FMrZBwsYGZqGO7/PNoylZTCAo=;
+        b=GgnCfXgkwjUJWoureE5sOUdMqq6HrAWc612/PtOja0hdSx5vDsWhIZ9Fz6P3Xa/80cE/37
+        iX01TGT1qxo3vI3pt2Q9tYxl1VwfL8qz2PXPbIbmhrs+1PgkRZoKtUha45+4+bfVDJ3prz
+        HofECLGYcsuLdsUNivZvDbTE0LZ7TPo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-1W9hCOwiNDa96zI88_vJlw-1; Mon, 13 Nov 2023 07:57:19 -0500
-X-MC-Unique: 1W9hCOwiNDa96zI88_vJlw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32fbe5c7b9dso2969300f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:57:19 -0800 (PST)
+ us-mta-610--m8ZRHTYM3u4-FPJodtX8A-1; Mon, 13 Nov 2023 07:57:23 -0500
+X-MC-Unique: -m8ZRHTYM3u4-FPJodtX8A-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9e28d82339aso286316066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:57:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699880238; x=1700485038;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XEEW3XcoHB1VZUo6+U7UmEZpZHFHm8rW7krXF/G2wlo=;
-        b=Un3vvbylsJZRKAOJVoKpUF8BS3Fu1IMCH2kl8ksZmn8tckcBYdzJ+hyUZpkDSJn1yb
-         7nJZ81ACufu9K2+Wyce9Xx4pOvhPE3bvYC6nV1TBSs+ewvknmyPeHLwOonp1GdSkOb1o
-         /PxeIVmppZIfKRac5TY3OeOkuKM+lnFWZ7kLzidvyQsA8TTjxv4M3ZIX9iMB8MLAusAM
-         XJKSnkRSeIRm9dpS4wSqJPfbzsNCyGDr41rjkU64iGFn9PHw3FSc9CyTmkEn03s7c4cC
-         xEhVsY0BYFTbFtGi8neJaTsiabE7U9kkgcfFcwaRrZTv+kDttaZYbeDY8hmo4N/38Zr/
-         W9pw==
-X-Gm-Message-State: AOJu0Yx9eWGW+Npk+pRamaM9WSYFketWlFDg5lFYpuZe+m66G1IFfh7L
-        wwBNLrv8FbU11snXtOV8AlHWyCXYJUQUSFW6L2RojC4diLH8pA5vs3kTBMGrH73Y+5pa6FwCo5b
-        8qx+uGTFsY+exLP3Wg6pCFrvgCR+dUo4/
-X-Received: by 2002:a5d:6486:0:b0:32f:89ce:f66b with SMTP id o6-20020a5d6486000000b0032f89cef66bmr6690289wri.10.1699880237845;
-        Mon, 13 Nov 2023 04:57:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGvU+wcl912JE3I6ry5f8WGalZEQtNXVee4MgWE9m4W+nSgpYWlK++Na50Jp1k5l+5FVCg/Vw==
-X-Received: by 2002:a5d:6486:0:b0:32f:89ce:f66b with SMTP id o6-20020a5d6486000000b0032f89cef66bmr6690272wri.10.1699880237501;
-        Mon, 13 Nov 2023 04:57:17 -0800 (PST)
-Received: from localhost ([90.167.95.115])
-        by smtp.gmail.com with ESMTPSA id o9-20020a5d58c9000000b0032d9caeab0fsm5403122wrf.77.2023.11.13.04.57.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 04:57:17 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Andrew Worsley <amworsley@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Sima Vetter <daniel.vetter@ffwll.ch>,
-        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
-        Hector Martin <marcan@marcan.st>,
-        Sergio Lopez <slp@redhat.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer
- node is found
-In-Reply-To: <CA+Y=x3khfKx_oQYABMSCAPOEuDWyZ+MyTHK=JufH8fC-m6z7Xw@mail.gmail.com>
-References: <20231113085305.1823455-1-javierm@redhat.com>
- <9f3d3c8d-fbf1-485b-9c2a-4d442733954d@suse.de>
- <CA+Y=x3khfKx_oQYABMSCAPOEuDWyZ+MyTHK=JufH8fC-m6z7Xw@mail.gmail.com>
-Date:   Mon, 13 Nov 2023 13:57:16 +0100
-Message-ID: <8734x9steb.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1699880242; x=1700485042;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=99HQPaexgy0VlHo7G+FMrZBwsYGZqGO7/PNoylZTCAo=;
+        b=tDSDTxrkDOjPtkgGvb+wYXrJ32MlJkzgsMO1t2p9D9z+p85+hiXB0NcSYWlmC5jEQV
+         G8esmCux/wNim9+mCU4GgBJ1Jg4P+XePMrXWp5rI1/5Hn97wyTChiCeVe/jwMKRuJv/t
+         bDj/RAMIf5sYLcewzhUrNKjVdqQ/TjCrzyECXs+Bbidu47mT/oUpplh6StKDpOhhJj91
+         s7Y+WWIgUwjiA7d3KzYwhnmJ9SQ75Ct79AiQtgIvuSd6Leu/o91BLXBY84AeIH5psup3
+         UQU8H5o5m7upQg7o4LUjOhXWf+3BVEzUJJ+XrBri1F8z8il2t29r+I3PbInQ5PVCW/4j
+         +JYA==
+X-Gm-Message-State: AOJu0YxM39+nlP0Jiu8M3i9MgI9x6eohh8eQAfeB27shIPn3q7FxGtFz
+        8JMpvgmmztYIgLRu5PwLtqjPdWG1+0K59EznC0ctbsZynzYcumdxfRuFK0CyToSYC32aMRvEIB+
+        CWgs6p0qPGJNRVAuJ/ucl+6Hy
+X-Received: by 2002:a17:906:340c:b0:9d8:27e2:4c12 with SMTP id c12-20020a170906340c00b009d827e24c12mr4300059ejb.63.1699880242359;
+        Mon, 13 Nov 2023 04:57:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHhqSC5pNXAAfTn2Ku8ibOoV0faQFodi6FP8YDestjtCGX+ELhgazhdKJkF80CqKfD4FjEM0g==
+X-Received: by 2002:a17:906:340c:b0:9d8:27e2:4c12 with SMTP id c12-20020a170906340c00b009d827e24c12mr4300043ejb.63.1699880241912;
+        Mon, 13 Nov 2023 04:57:21 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id s10-20020a1709066c8a00b009dbe08bc793sm4108212ejr.18.2023.11.13.04.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 04:57:21 -0800 (PST)
+Message-ID: <45ba5373-6454-4687-b21c-46748a3a6e5d@redhat.com>
+Date:   Mon, 13 Nov 2023 13:57:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        sarah.walker@imgtec.com, donald.robson@imgtec.com,
+        boris.brezillon@collabora.com, faith@gfxstrand.net,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231101233113.8059-10-dakr@redhat.com>
+ <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com> <ZUTyGTxcH7WlHKsv@pollux>
+ <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
+ <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
+ <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com> <ZUjZFFtLM435tTxJ@pollux>
+ <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com> <ZUj0DdYZUgjhcvf5@pollux>
+ <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com> <ZUkXkJ+zT7OFGosC@pollux>
+ <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
+ <6c536c94-7072-403c-9c63-d932252fd66b@amd.com>
+ <4532d9d5-4c5a-4639-8136-d3ba9995d7b6@redhat.com>
+ <1d4ca394-ee0c-4617-adbe-1d47e295c8fb@amd.com>
+ <987ac707-8f9b-4e33-86c3-decdc1c48a3a@redhat.com>
+ <71a50cac-3253-480f-adff-da475738ae6b@amd.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <71a50cac-3253-480f-adff-da475738ae6b@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Worsley <amworsley@gmail.com> writes:
+On 11/13/23 08:22, Christian König wrote:
+> Am 10.11.23 um 17:57 schrieb Danilo Krummrich:
+>> On 11/10/23 09:50, Christian König wrote:
+>>> [SNIP]
+>>>>>
+>>>>>>
+>>>>>> Another issue Christian brought up is that something intended to be embeddable (a base class) shouldn't really have its own refcount. I think that's a valid point. If you at some point need to derive from multiple such structs each having its own refcount, things will start to get weird. One way to resolve that would be to have the driver's subclass provide get() and put() ops, and export a destructor for the base-class, rather than to have the base-class provide the refcount and a destructor  ops.
+>>>>
+>>>> GPUVM simply follows the same pattern we have with drm_gem_objects. And I think it makes
+>>>> sense. Why would we want to embed two struct drm_gpuvm in a single driver structure?
+>>>
+>>> Because you need one drm_gpuvm structure for each application using the driver? Or am I missing something?
+>>
+>> Right, *one*, but not more than one. Wasn't that the concern? Maybe I misunderstood something. :)
+> 
+> Well, there is the use case of native context with XEN/KVM. In that situation QEMU opens tons of driver file descriptors on behalves of the virtual environment clients.
+> 
+> In this use case you have many drm_gpuvm instances for a single application. So you can't assume that you only have one VM per PID/TGID or something like that.
 
-Hello Andrew,
+Well, that's fine. I think Xe can have multiple VMs per PID as well. In this case you'd keep creating driver VM structures with a single GPUVM as base class. But not multiple GPUVMs serving as base class for a single driver structure, which I thought was the concern here. For the latter I can't see a use case.
 
-> On Mon, 13 Nov 2023 at 20:18, Thomas Zimmermann <tzimmermann@suse.de> wrote:
->> Am 13.11.23 um 09:51 schrieb Javier Martinez Canillas:
->> > Some DT platforms use EFI to boot and in this case the EFI Boot Services
->> > may register a EFI_GRAPHICS_OUTPUT_PROTOCOL handle, that will later be
->> > queried by the Linux EFI stub to fill the global struct screen_info data.
->> >
-
-[...]
-
->
-> I applied the patch and just the simpledrm driver is probed (the efifb is not):
->
-> grep -i -E 'drm|efifb' --color -C3 dmesg-6.5.0-asahi-00780-gf5aadc85a34d.txt
-> [    2.621433] systemd-journald[276]: varlink-21: Changing state
-> idle-server \xe2\x86\x92 pending-disconnect
-> [    2.621437] systemd-journald[276]: varlink-21: Changing state
-> pending-disconnect \xe2\x86\x92 processing-disconnect
-> [    2.621439] systemd-journald[276]: varlink-21: Changing state
-> processing-disconnect \xe2\x86\x92 disconnected
-> [    2.878828] [drm] Initialized simpledrm 1.0.0 20200625 for
-> bd58dc000.framebuffer on minor 0
-> [    2.909764] Console: switching to colour frame buffer device 160x50
-
-Great, thanks for testing. The patch works then as expected. Can I get
-your Tested-by then ?
-
->
-> I am wondering if the drm_aperture_remove_framebuffers() shouldn't be
-> called in the probe function anyway
-> as it ends up overriding the efifb one as wanted and handles the case
-> the simpledrm (CONFIG_DRM_SIMPLEDRM)
-> is not present.
-> Perhaps there is an accepted principle that such kernels *should* fail
-> to set up a FB?
->
-
-We were talking with Thomas that the sysfb design seems to be reaching its
-limits and need some rework but currently you either need some driver that
-matches the "simple-framebuffer" device that is registered by OF or won't
-get an early framebuffer in the system.
-
-That could be either simpledrm or simplefb. But if a DT has a device node
-for "simple-framebuffer", how can the OF core know if there is a driver to
-match that device? And same for any other device defined in the DTB.
-
-It's similar on platforms that use sysfb to register the device (e.g: x86)
-since either "simple-framebuffer" is registered (if CONFIG_SYSFB_SIMPLEFB
-is enabled) or "efi-framebuffer" (if CONFIG_SYSFB_SIMPLEFB is disabled).
-
-That means CONFIG_SYSFB_SIMPLEFB=y and CONFIG_DRM_SIMPLEDRM disabled won't
-work either, even if CONFIG_FB_EFI=y which is the case you are mentioning.
-
-What I think that doesn't make sense is to remove conflicting framebuffers
-from drivers that can only handle firmware provided framebuffers. As said
-in the other thread, drm_aperture_remove_framebuffers() is only meant for
-native DRM drivers.
-
-> Andrew
->
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+> 
+> AMD already made that mistake with KFD and I strongly suggest not to repeat it :)
+> 
+> Regards,
+> Christian.
+> 
 
