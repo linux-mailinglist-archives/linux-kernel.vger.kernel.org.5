@@ -2,93 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53B67EA48E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AED67EA4A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjKMUNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 15:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
+        id S230023AbjKMURm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 15:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjKMUNd (ORCPT
+        with ESMTP id S229511AbjKMURl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 15:13:33 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0032210DA
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:13:29 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-6705379b835so29805946d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:13:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699906409; x=1700511209; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m9BzWP9zAYgAo/2P/mFdqyA5ofprRh4egbTK7XzLY14=;
-        b=EpB1rzFE6+NBhjholRR/vr/5h/yoMCMk3e/sCfPwX0ZsfyR3UDVX1QqRdDv192w/Hk
-         YZzPscF5h5xqna91FigFjT25vwuCW015q6WD/fUREcXzgK7WAALfdUJhvKR7VHKcdP37
-         yQo+Blv+Cv2UoOWN45roPKtfsUooDdUhpr0rycnjx+lr69j7IiQpnQQusCqnpkDDyWKC
-         bRPkLP5Q9xKw0oLVIzaLSwkFUQT7lppKR5+g+qQrxnd7LAiWCCVfjMY7wosaCPloAfh8
-         SStaxopbueijJyJ4IbYZHgCJVlhXN2Oy76oAx8RipqPmpkakzZ6+/XphZAsqaqklCJ6Q
-         S2lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699906409; x=1700511209;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m9BzWP9zAYgAo/2P/mFdqyA5ofprRh4egbTK7XzLY14=;
-        b=aHdnEqlg8HlhXV9pCdvG1kWsO8xY9adOCToamcQMve+d1g8FB8q4sH0SpeQGo+2QKx
-         HajwRHGpsiUO8FIqqjhVqP7fKKShOWvsEl/T0/CxRfGOY4108p6pZxHr5RALw4p+RCYO
-         aILrqZ7jJzegba11Sg/df5dxRAmUweZzpAFteSMYGM6QRZ0OS2Lv6If/TsSBIehT6f1H
-         0WaI8qW8lzUNRtFgUzSEV4Cra5ADRQUgbjqtLnnfZsWJcO0hkl9YmppvsQDuC0cvP3xi
-         zXsN5o7IWpIGcTaW2EVSdD7xC4GHmjs/KpBYNKLOeGSPWD5M5EN60QSrJuOg1pik+i1W
-         ecRw==
-X-Gm-Message-State: AOJu0YwDEJheEN26qcMZM4Nh+8pDSB5586ltI0eK+WH3kIrd/IXS9W1E
-        3dMPna9d4cFUAGUGTnIjuYoFd8Jvh9w=
-X-Google-Smtp-Source: AGHT+IGhNOU3ZFHI2oSnNjvo0tbFQeaj9sfaqUWQpkEG+xRERrgEWdhQVBWkF3yA5lON4cwa/Ts6eQ==
-X-Received: by 2002:a0c:ed34:0:b0:66f:bc3f:bd7 with SMTP id u20-20020a0ced34000000b0066fbc3f0bd7mr292469qvq.27.1699906409118;
-        Mon, 13 Nov 2023 12:13:29 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x15-20020a0ce78f000000b00668eb252523sm2297295qvn.63.2023.11.13.12.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 12:13:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 13 Nov 2023 12:13:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 6.7-rc1
-Message-ID: <a00ad0e9-8ce2-4704-bbdc-6b0237e27aa3@roeck-us.net>
-References: <CAHk-=whuO0zmuxp_yorYFWdcrALpqjRPhWkmEy+7wcCnnDcPNA@mail.gmail.com>
+        Mon, 13 Nov 2023 15:17:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CEFD72;
+        Mon, 13 Nov 2023 12:17:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32326C433C8;
+        Mon, 13 Nov 2023 20:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699906657;
+        bh=SwYHSTS3rTDa7Clubx8Dvf8G10g50QTr2Ibg/KW4oWc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WEVjZcuRKwNGSQo9Z6hggcHjls2BO5bwob2sN4A61qPt1Uh6cI04CVwi9R2lNafsk
+         xPKVEfsNctoAo553B7Xq6hoXvJFPysMDNE78i1wBmptzl6gqTGF5BgB0N28fEzY1aK
+         st537PkxXo0+tfaXS9L3+rfGrv5TIvO1ysTsQjMGfxC+Zt/mxpI/56hN+xtKlrezi8
+         e4PO3k//uYLFRfXmK8+nPg2pCeTZeLHCYVSS/oA04kREcTwxfn/FHl1IxxIEQh3ZXk
+         x74FxaEUvqhxZAVD1rKJkcBXFuibj9IRyz3Tf9ouXuS/KIM2exjrISpl9x0hTn9VlI
+         E8nyjOsK4wQDg==
+Date:   Mon, 13 Nov 2023 20:17:34 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v7 1/4] dt-bindings: pwm: Add OpenCores PWM module
+Message-ID: <20231113-sprung-tantrum-94659009b9d4@squawk>
+References: <20231110062039.103339-1-william.qiu@starfivetech.com>
+ <20231110062039.103339-2-william.qiu@starfivetech.com>
+ <afce202d-6234-4c5f-9018-facd9a56b5eb@linaro.org>
+ <f4551a7a-61e6-4d97-94c2-da2e4e9e8cb3@starfivetech.com>
+ <824cee7b-e4d3-461a-8bfb-4ad095c240fd@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+lpp7srQCeLErYm2"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whuO0zmuxp_yorYFWdcrALpqjRPhWkmEy+7wcCnnDcPNA@mail.gmail.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+In-Reply-To: <824cee7b-e4d3-461a-8bfb-4ad095c240fd@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 04:47:03PM -0800, Linus Torvalds wrote:
-> So here we are, two weeks after the merge window opened, and 6.7-rc1
-> is out, and the merge window is closed.
-> 
-> In number of commits, this is the biggest merge window we've ever had,
-> with 15.4k non-merge commits. That is quite a bit bigger than the
-> previous biggest releases (4.9, 5.8 and 5.13) that all weighted in at
-> about 14.2k non-merge commits.
-> 
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 530 pass: 530 fail: 0
+--+lpp7srQCeLErYm2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't recall ever getting zero failures (or warning backtraces)
-from m tests in any -rc1.
+On Mon, Nov 13, 2023 at 09:07:15PM +0100, Krzysztof Kozlowski wrote:
+> On 13/11/2023 10:42, William Qiu wrote:
+> > Will update.
+> >>> +
+> >>> +allOf:
+> >>> +  - $ref: pwm.yaml#
+> >>> +
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    oneOf:
+> >>> +      - items:
+> >>> +          - enum:
+> >>> +              - starfive,jh7100-pwm
+> >>> +              - starfive,jh7110-pwm
+> >>> +          - const: opencores,pwm
+> >>
+> >> That's a very, very generic compatible. Are you sure, 100% sure, that
+> >> all designs from OpenCores from now till next 100 years will be 100%
+> >> compatible?
+> >>
+> > My description is not accurate enough, this is OpenCores PTC IP, and PWM
+> > is one of those modes, so it might be better to replace compatible with
+> > "opencores, ptc-pwm"
+> >=20
+> > What do you think?
+>=20
+> Sorry, maybe this answers maybe doesn't. What is "PTC"?
 
-Guenter
+"pwm timer counter". AFAIU, the IP can be configured to provide all 3.
+I think that William pointed out on an earlier revision that they have
+only implemented the pwm on their hardware.
+I don't think putting in "ptc" is a sufficient differentiator though, as
+clearly there could be several different versions of "ptc-pwm" that have
+the same concern about "all designs from OpenCores for now till the next
+100 years" being compatible.
+
+Cheers.
+Conor.
+
+--+lpp7srQCeLErYm2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVKEWgAKCRB4tDGHoIJi
+0lg6AQDoetFH+2Q0R2VopRs52W7OWITEOpAFd04nMYVyHdsONgD+LawAuiiSLaEB
+0ECkKGOudEZJ6nR1cZ/Vt+FGfB1MyAs=
+=sVnT
+-----END PGP SIGNATURE-----
+
+--+lpp7srQCeLErYm2--
