@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B27A7EA567
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 22:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743FB7EA579
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 22:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjKMVWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 16:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
+        id S229880AbjKMV1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 16:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKMVWC (ORCPT
+        with ESMTP id S229511AbjKMV1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 16:22:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D8BB8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:21:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699910519; x=1731446519;
-  h=date:from:to:cc:subject:message-id;
-  bh=n6UvnC/OL6brsgxTiWESQ+3Nv32aJ3eNFZUzz7qvcrc=;
-  b=H/3Yrxy9vUxwJK769cAWljWc0lZBYp/3tP3QvObAjdho4iyHSEhXw9TG
-   wVilBjphmG9boMLnKOnF5IuRKlwyFTqmOJVUnxbR7Dtd/XvkNkwF3UUqH
-   Jq+5z72ypwS9P4lwrR+FY4ujiJ2KKF3W6XCdlZSzVkyZVcXfRw1sWUoOb
-   WzmvavBkwGZGtFYlHn8yloptEainAw6Z23xax68wNuWISocCF89aj85kk
-   5nmRY8w7bhy6U8gHv/hI2iEAaX0lsCFaXdI85DMauHg10CEE8+lSQ4z9p
-   fUT7+S95I1sBWrWdoSned2dxwHH6sYpgpkRjY9aYQS5fphyntYaS6Lpb3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="370710130"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="370710130"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 13:21:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="714336363"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="714336363"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 13 Nov 2023 13:21:57 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2eNX-000CVn-0N;
-        Mon, 13 Nov 2023 21:21:55 +0000
-Date:   Tue, 14 Nov 2023 05:21:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cpu] BUILD SUCCESS
- 04c3024560d3a14acd18d0a51a1d0a89d29b7eb5
-Message-ID: <202311140535.r8sx3aju-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Mon, 13 Nov 2023 16:27:07 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89182D4C
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:27:03 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso7618951a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:27:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699910822; x=1700515622; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mttVMjujBnJtfA9qmPOIHfeRm+JAOLtRVgarlviBSVY=;
+        b=SWNKusEikZ1DnrYVHQ0hQIr0P5xQ6d7ccHuOGHJIjnhbSRJxEpYKgjbrhrwOYU93Tz
+         UXeeIK82VcqmypH86NZdLRny5x+n3RkaXs9A0Q8zejFkSAWi3wON91+UFgN0drxH7dZS
+         L1I8W1/dkxAmQBmo2KMtchZsfVIPIaVscjoQs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699910822; x=1700515622;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mttVMjujBnJtfA9qmPOIHfeRm+JAOLtRVgarlviBSVY=;
+        b=bMSkC1+7QhQn6kTyY8N+sXk4PDqJbELfIRb2W4a1Q4A5uZLiktc6RI0iPSLWwYHyBW
+         aA/i/zOgHte80jvKLY5Hzo6dvNcSRXx8RaUWDD4s4uPDv8MPUj3WXLvKjOOA7mS5+Vn0
+         Uml7pQ9L+E1WMeemGTGufn3UX0wLrPzP8/qY8MYCacB2ehEvn179dvgiRgJFVy55T+OQ
+         TZce0bGumO2TA9gsHS15y7ntGUr+UWavCgeLzbouzIid1ekEfIZ39k3PMLIrdzkzJXu2
+         H8GFHBaooUWAGGVzOJ0wYupQiT+ERbyjw7h++50fxY2JI9EpEYuDeTcFqQvDujQPq8nA
+         MOmg==
+X-Gm-Message-State: AOJu0YwBgxuMRrcpYtaB5G2ysh6LMGQ/EFcwZwBWgHl8emNj6RT2P1cr
+        85T87PChY+di9aFYRoCSrM6fOnshuMjyvynvHY9uxQ==
+X-Google-Smtp-Source: AGHT+IGoL4C64VRkqMMt2Ko2g8gaFMw8YCcpuwoNcjFqFlvPZKJTDjJL2Bgl7LbSUmzZ0cB+I9TezFzC6HBD0IZ7Sjs=
+X-Received: by 2002:a17:906:dfca:b0:9e4:67d9:438 with SMTP id
+ jt10-20020a170906dfca00b009e467d90438mr5397879ejc.56.1699910821965; Mon, 13
+ Nov 2023 13:27:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20231110010139.3901150-1-sarthakkukreti@chromium.org> <ZU7RVKJIzm8ExGGH@dread.disaster.area>
+In-Reply-To: <ZU7RVKJIzm8ExGGH@dread.disaster.area>
+From:   Sarthak Kukreti <sarthakkukreti@chromium.org>
+Date:   Mon, 13 Nov 2023 13:26:51 -0800
+Message-ID: <CAG9=OMPFEV9He+ggq2mcLULnUZ2jm8fGU=4ca8kBoWtvqYcGVg@mail.gmail.com>
+Subject: Re: [PATCH v9 0/3] [PATCH v9 0/3] Introduce provisioning primitives
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     dm-devel@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Mike Snitzer <snitzer@kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Brian Foster <bfoster@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,70 +71,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
-branch HEAD: 04c3024560d3a14acd18d0a51a1d0a89d29b7eb5  x86/barrier: Do not serialize MSR accesses on AMD
+On Fri, Nov 10, 2023 at 4:56=E2=80=AFPM Dave Chinner <david@fromorbit.com> =
+wrote:
+>
+> On Thu, Nov 09, 2023 at 05:01:35PM -0800, Sarthak Kukreti wrote:
+> > Hi,
+> >
+> > This patch series is version 9 of the patch series to introduce
+> > block-level provisioning mechanism (original [1]), which is useful for
+> > provisioning space across thinly provisioned storage architectures (loo=
+p
+> > devices backed by sparse files, dm-thin devices, virtio-blk). This
+> > series has minimal changes over v8[2], with a couple of patches dropped
+> > (suggested by Dave).
+> >
+> > This patch series is rebased from the linux-dm/dm-6.5-provision-support
+> > [3] on to (a12deb44f973 Merge tag 'input-for-v6.7-rc0' ...). The final
+> > patch in the series is a blktest (suggested by Dave in 4) which was use=
+d
+> > to test out the provisioning flow for loop devices on sparse files on a=
+n
+> > ext4 filesystem.
+>
+> What happened to the XFS patch I sent to support provisioning for
+> fallocate() operations through XFS?
+>
+Apologies, I missed out on mentioning that the XFS patches work well
+with loop devices.
 
-elapsed time: 723m
+I might have misunderstood: were those patches only for sanity testing
+or would you prefer that I send those out as a part of this series? I
+can whip up a quick v10 if so!
 
-configs tested: 51
-configs skipped: 142
+Cheers
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sarthak
 
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231113   gcc  
-i386         buildonly-randconfig-002-20231113   gcc  
-i386         buildonly-randconfig-003-20231113   gcc  
-i386         buildonly-randconfig-004-20231113   gcc  
-i386         buildonly-randconfig-005-20231113   gcc  
-i386         buildonly-randconfig-006-20231113   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231113   gcc  
-i386                  randconfig-002-20231113   gcc  
-i386                  randconfig-003-20231113   gcc  
-i386                  randconfig-004-20231113   gcc  
-i386                  randconfig-005-20231113   gcc  
-i386                  randconfig-006-20231113   gcc  
-i386                  randconfig-011-20231113   gcc  
-i386                  randconfig-012-20231113   gcc  
-i386                  randconfig-013-20231113   gcc  
-i386                  randconfig-014-20231113   gcc  
-i386                  randconfig-015-20231113   gcc  
-i386                  randconfig-016-20231113   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231113   gcc  
-x86_64       buildonly-randconfig-002-20231113   gcc  
-x86_64       buildonly-randconfig-003-20231113   gcc  
-x86_64       buildonly-randconfig-004-20231113   gcc  
-x86_64       buildonly-randconfig-005-20231113   gcc  
-x86_64       buildonly-randconfig-006-20231113   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231113   gcc  
-x86_64                randconfig-002-20231113   gcc  
-x86_64                randconfig-003-20231113   gcc  
-x86_64                randconfig-004-20231113   gcc  
-x86_64                randconfig-005-20231113   gcc  
-x86_64                randconfig-006-20231113   gcc  
-x86_64                randconfig-011-20231113   gcc  
-x86_64                randconfig-012-20231113   gcc  
-x86_64                randconfig-013-20231113   gcc  
-x86_64                randconfig-014-20231113   gcc  
-x86_64                randconfig-015-20231113   gcc  
-x86_64                randconfig-016-20231113   gcc  
-x86_64                randconfig-071-20231113   gcc  
-x86_64                randconfig-072-20231113   gcc  
-x86_64                randconfig-073-20231113   gcc  
-x86_64                randconfig-074-20231113   gcc  
-x86_64                randconfig-075-20231113   gcc  
-x86_64                randconfig-076-20231113   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
