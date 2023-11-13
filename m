@@ -2,339 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9E17E98E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F47E7E98E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbjKMJ1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:27:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S233289AbjKMJ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:27:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbjKMJ1C (ORCPT
+        with ESMTP id S229817AbjKMJ1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:27:02 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4054B10DB
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:26:57 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 347DAFEC;
-        Mon, 13 Nov 2023 01:27:42 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27F4E3F6C4;
-        Mon, 13 Nov 2023 01:26:54 -0800 (PST)
-Message-ID: <5f905631-e94a-4fd7-9668-d910438fa7b9@arm.com>
-Date:   Mon, 13 Nov 2023 10:26:52 +0100
+        Mon, 13 Nov 2023 04:27:40 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947410D2;
+        Mon, 13 Nov 2023 01:27:36 -0800 (PST)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id CE80E218F1;
+        Mon, 13 Nov 2023 09:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699867654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y9C5aBXGL7JdrMgA5N5vj1s4+UPpgym//WXG2+qsYcU=;
+        b=o8ws4oieGvAAyXIc3eS90VaASj1ZXIiyNtHHvAe7/e+N1AUGWMAD3yrFatr+afvEQzbK/T
+        U/4QHeFfA5l0BjBQvMYLGDDKZus71aHxlEpqVX/FKrbiFPgBnUfTBYhkXg3DUCVG/COt3G
+        42BaqRFQBOMXyxJsQytVrYyAnozfw8U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699867654;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y9C5aBXGL7JdrMgA5N5vj1s4+UPpgym//WXG2+qsYcU=;
+        b=wO5USRouxuZwxokKWZsDs920jC+s9HyiOfsXIkjBOeoRkXxc5h5w1q30D8r9HKuSGNX0dR
+        qQfV7omLg8wWlfDw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 539762C221;
+        Mon, 13 Nov 2023 09:27:34 +0000 (UTC)
+Date:   Mon, 13 Nov 2023 10:27:33 +0100
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Lucas De Marchi <lucas.demarchi@intel.com>
+Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kmod v5 5/5] libkmod, depmod, modprobe: Make directory
+ for kernel modules configurable
+Message-ID: <20231113092733.GA6241@kitsune.suse.cz>
+References: <cover.1689589902.git.msuchanek@suse.de>
+ <cover.1689681454.git.msuchanek@suse.de>
+ <b878a01f09e250bb24dbaede71cc776217a8f862.1689681454.git.msuchanek@suse.de>
+ <e3yow7ih6af2hxzkmjay2oan3jypmo4hda64vxvpfco66ajcew@i3zewn4nbklf>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/6] sched: uclamp sum aggregation
-Content-Language: en-US
-To:     Hongyan Xia <hongyan.xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <59505904-fdc4-42ec-808e-e4af011b22e8@arm.com>
- <05e658b9-3b0f-4606-8d67-05d1c32e7fdd@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <05e658b9-3b0f-4606-8d67-05d1c32e7fdd@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3yow7ih6af2hxzkmjay2oan3jypmo4hda64vxvpfco66ajcew@i3zewn4nbklf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2023 12:19, Hongyan Xia wrote:
-> On 30/10/2023 18:46, Dietmar Eggemann wrote:
->> On 04/10/2023 11:04, Hongyan Xia wrote:
->>> Current implementation of uclamp leaves many things to be desired.
->>> There are several problems:
->>>
->>> 1. Max aggregation is fragile. A single task with a high UCLAMP_MAX (or
->>>     with the default value, which is 1024) can ruin the previous
->>>     settings the moment it is enqueued, as shown in the uclamp frequency
->>>     spike problem in Section 5.2 of
->>>     Documentation/scheduler/sched-util-clamp.rst. Constantly running at
->>>     1024 utilization implies that the CPU is driven at its max capacity.
->>>     However, with UCLAMP_MAX, this assumption is no longer true. To
->>>     mitigate this, one idea is to filter out uclamp values for
->>>     short-running tasks. However, the effectiveness of this idea remains
->>>     to be seen.
->>
->> The difference is that we don't have to lift the uclamp_max cap of
->> runnable p1's uclamp_max (< 1024) when a short running p2 with
->> uclamp_max = 1024 becomes runnable? Since now, when this happens, we
->> would just add p2's util_avg_uclamp to cfs_rq's util_avg_uclamp which is
->> tiny compared to its uclamp_max = 1024.
+On Tue, Oct 17, 2023 at 12:50:15PM -0500, Lucas De Marchi wrote:
+> On Tue, Jul 18, 2023 at 02:01:56PM +0200, Michal Suchanek wrote:
+> > Now that modprobe.d is searched under ${prefix}/lib, allow a complete
+> > transition to files only under ${prefix} by adding a ${module_directory}
+> > configuration. This specifies the directory where to search for kernel
+> > modules and should match the location where the kernel/distro installs
+> > them.
+> > 
+> > With this distributions that do not want to ship files in /lib can also
+> > move kernel modules to /usr while others can keep them in /lib.
+> > 
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> > v4: Make the whole path configurable
+> > v5: More verbose commit message
+> > ---
+> > Makefile.am                          |   3 +-
+> > configure.ac                         |   7 ++
+> > libkmod/libkmod.c                    |   4 +-
+> > man/Makefile.am                      |   1 +
+> > man/depmod.d.xml                     |   6 +-
+> > man/depmod.xml                       |   4 +-
+> > man/modinfo.xml                      |   2 +-
+> > man/modprobe.xml                     |   2 +-
+> > man/modules.dep.xml                  |   6 +-
+> > testsuite/module-playground/Makefile |   2 +-
+> > testsuite/setup-rootfs.sh            | 109 +++++++++++++++------------
+> > testsuite/test-depmod.c              |  16 ++--
+> > testsuite/test-testsuite.c           |   8 +-
+> > tools/depmod.c                       |   6 +-
+> > tools/kmod.pc.in                     |   1 +
+> > tools/modinfo.c                      |   4 +-
+> > tools/modprobe.c                     |   4 +-
+> > tools/static-nodes.c                 |   6 +-
+> > 18 files changed, 107 insertions(+), 84 deletions(-)
+> > 
+> > diff --git a/Makefile.am b/Makefile.am
+> > index 6d0b2decfef3..019aa749fdf1 100644
+> > --- a/Makefile.am
+> > +++ b/Makefile.am
+> > @@ -20,6 +20,7 @@ AM_CPPFLAGS = \
+> > 	-I$(top_srcdir) \
+> > 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+> > 	-DDISTCONFDIR=\""$(distconfdir)"\" \
+> > +	-DMODULE_DIRECTORY=\""$(module_directory)"\" \
+> > 	${zlib_CFLAGS}
+> > 
+> > AM_CFLAGS = $(OUR_CFLAGS)
+> > @@ -220,7 +221,7 @@ EXTRA_DIST += testsuite/setup-rootfs.sh
+> > MODULE_PLAYGROUND = testsuite/module-playground
+> > ROOTFS = testsuite/rootfs
+> > ROOTFS_PRISTINE = $(top_srcdir)/testsuite/rootfs-pristine
+> > -CREATE_ROOTFS = $(AM_V_GEN) $(top_srcdir)/testsuite/setup-rootfs.sh $(ROOTFS_PRISTINE) $(ROOTFS) $(MODULE_PLAYGROUND) $(top_builddir)/config.h $(sysconfdir)
+> > +CREATE_ROOTFS = $(AM_V_GEN) MODULE_DIRECTORY=$(module_directory) $(top_srcdir)/testsuite/setup-rootfs.sh $(ROOTFS_PRISTINE) $(ROOTFS) $(MODULE_PLAYGROUND) $(top_builddir)/config.h $(sysconfdir)
+> > 
+> > build-module-playground:
+> > 	$(AM_V_GEN)if test "$(top_srcdir)" != "$(top_builddir)"; then \
+> > diff --git a/configure.ac b/configure.ac
+> > index b4584d6cdc67..4051dc9249e2 100644
+> > --- a/configure.ac
+> > +++ b/configure.ac
+> > @@ -91,6 +91,12 @@ AC_ARG_WITH([rootlibdir],
+> >         [], [with_rootlibdir=$libdir])
+> > AC_SUBST([rootlibdir], [$with_rootlibdir])
+> > 
+> > +# Ideally this would be $prefix/lib/modules but default to /lib/modules for compatibility with earlier versions
+> > +AC_ARG_WITH([module_directory],
+> > +        AS_HELP_STRING([--with-module-directory=DIR], [directory in which to look for kernel modules - typically '/lib/modules' or '${prefix}/lib/modules']),
+> > +        [], [with_module_directory=/lib/modules])
+> > +AC_SUBST([module_directory], [$with_module_directory])
 > 
-> Yes. That's a correct interpretation. I can add this version to the
-> cover letter to make things clearer.
-
-OK.
-
->>> 2. No way to differentiate between UCLAMP_MAX throttled CPU or a CPU
->>>     running at its peak, as both show utilization of 1024. However, in
->>>     certain cases it's important to tell the difference, as we still
->>> want
->>>     to take the opportunity to enqueue tasks in the former case.
->>
->> Is this related to the `best_fits/max_fits` logic in
->> find_energy_efficient_cpu() (feec()) and select_idle_capacity() (sic())
->> (commit e5ed0550c04c "sched/fair: unlink misfit task from cpu
->> overutilized")?
->> With your approach, having cfs_rq's `util_avg_uclamp` next to its
->> `util_avg` would allow to see those difference by comparing the two
->> signals?
+> we will probably have "fun" results if we accept a relative path here.
 > 
-> Somewhat related. The usefulness is mostly around cpu_util(). Max
-> aggregation will see cpu_util() of 1024 (spare capacity of 0) even when
-> this is caused by UCLAMP_MAX, not by actually running the CPU at max
-> capacity, whereas this series will have a util < 1024 if capped by
-> UCLAMP_MAX.
-
-I see. For me the main diff is:
-
-cpu_util() (not considering util_est here) returns a completely
-different signal with sum aggregation:
-
-   $\sum_{runnable tasks p0}^{pN} clamp(p->se.avg.util_avg,          (1)
-                                        p->uclamp[UCLAMP_MIN],
-                                        p->uclamp[UCLAMP_MAX])
-
-instead of max aggregation:
-
-  rq->cfs.avg.util_avg
-
-which then has to be clamped later in different places using cpu_util():
-
-   clamp(rq->cfs.avg.util_avg, rq->uclamp[UCLAMP_MIN],               (2)
-         rq->uclamp[UCLAMP_MIN])
-
-with the clamp values dictated by the runnable tasks with the highest
-uclamp values.
-
-> This means the patch to consider 0 spare capacities (because under max
-> aggregation 0 capacity doesn't mean the CPU is at max) is unnecessary:
+> > +
+> > AC_ARG_WITH([zstd],
+> > 	AS_HELP_STRING([--with-zstd], [handle Zstandard-compressed modules @<:@default=disabled@:>@]),
+> > 	[], [with_zstd=no])
+> > @@ -326,6 +332,7 @@ AC_MSG_RESULT([
+> > 	$PACKAGE $VERSION
+> > 	=======
+> > 
+> > +	module_directory:	${module_directory}
+> > 	prefix:			${prefix}
+> > 	sysconfdir:		${sysconfdir}
+> > 	distconfdir:		${distconfdir}
+> > diff --git a/libkmod/libkmod.c b/libkmod/libkmod.c
+> > index 09e6041461b0..63719e886de8 100644
+> > --- a/libkmod/libkmod.c
+> > +++ b/libkmod/libkmod.c
+> > @@ -209,7 +209,7 @@ static int log_priority(const char *priority)
+> > 	return 0;
+> > }
+> > 
+> > -static const char *dirname_default_prefix = "/lib/modules";
+> > +static const char *dirname_default_prefix = MODULE_DIRECTORY;
+> > 
+> > static char *get_kernel_release(const char *dirname)
+> > {
+> > @@ -231,7 +231,7 @@ static char *get_kernel_release(const char *dirname)
+> > /**
+> >  * kmod_new:
+> >  * @dirname: what to consider as linux module's directory, if NULL
+> > - *           defaults to /lib/modules/`uname -r`. If it's relative,
+> > + *           defaults to ${module_prefix}/lib/modules/`uname -r`. If it's relative,
 > 
-> 6b00a40147653c8ea748e8f4396510f252763364
-> sched/uclamp: Set max_spare_cap_cpu even if max_spare_cap is 0
-
-Yes, this patch makes sure we consider PDs with max_spare_cap = 0 for EM
-calculations (eenv_pd_busy_time(), compute_energy).
-
-I just asked about commit e5ed0550c04c since you removed the (best,max,
-prev)_fits and the (best, prev)_thermal_cap logic from feec(). And if I
-remember correctly this brought us an implementation of capacity
-inversion handling.
-
-[...]
-
->>> cancel the effect of uclamp in feec(). A CPU running at capacity 500 for
->>> 1ms or for 1000ms gives completely different performance levels, so
->>> trying to fit only the frequency does not give us any performance
->>> guarantees. If we then talk about not only running at some frequency but
->>> also for some amount of time, then what we really mean is a capacity
->>> hint, not a frequency hint.
->>
->> Isn't CPU frequency and capacity going in the same direction?
->>
->>   IPC * CPU frequency = Instruction per Second == Performance (Capacity).
->>
->> And in the scheduler, utilization is the portion of the Capacity
->> currently used.
->>
->> What sum aggregation does differently is that you can sum-up
->> individually clamped utilization contributions and compare them against
->> capacity rather then being forced to use the maximum value of a clamp
->> value of one (runnable) task to guide frequency. This avoids those
->> discontinuity-moments when a task with a high uclamp value switches
->> between runnable and sleeping state.
+> module_prefix?  did you mean to use $MODULE_DIRECTORY/`uname -r`?
 > 
-> I guess what I was describing was a new metric:
+> >  *           it's treated as relative to the current working directory.
+> >  *           Otherwise, give an absolute dirname.
+> >  * @config_paths: ordered array of paths (directories or files) where
+> > diff --git a/man/Makefile.am b/man/Makefile.am
+> > index 2fea8e46bf2f..f550091a216a 100644
+> > --- a/man/Makefile.am
+> > +++ b/man/Makefile.am
+> > @@ -22,6 +22,7 @@ CLEANFILES = $(dist_man_MANS)
+> > 	else \
+> > 		sed -e '/@DISTCONFDIR@/d' $< ; \
+> > 	fi | \
+> > +	sed -e 's|@MODULE_DIRECTORY@|$(module_directory)|g' | \
+> > 	$(XSLT) \
+> > 		-o $@ \
+> > 		--nonet \
+> > diff --git a/man/depmod.d.xml b/man/depmod.d.xml
+> > index f282a39cc840..b07e6a2bd4fe 100644
+> > --- a/man/depmod.d.xml
+> > +++ b/man/depmod.d.xml
+> > @@ -70,7 +70,7 @@
+> >         </term>
+> >         <listitem>
+> >           <para>
+> > -            This allows you to specify the order in which /lib/modules
+> > +            This allows you to specify the order in which @MODULE_DIRECTORY@
+> >             (or other configured module location) subdirectories will
+> >             be processed by <command>depmod</command>. Directories are
+> >             listed in order, with the highest priority given to the
+> > @@ -101,7 +101,7 @@
+> >             <command>depmod</command> command. It is possible to
+> >             specify one kernel or all kernels using the * wildcard.
+> >             <replaceable>modulesubdirectory</replaceable> is the
+> > -            name of the subdirectory under /lib/modules (or other
+> > +            name of the subdirectory under @MODULE_DIRECTORY@ (or other
+> >             module location) where the target module is installed.
+> >           </para>
+> >           <para>
+> > @@ -110,7 +110,7 @@
+> >             specifying the following command: "override kmod * extra".
+> >             This will ensure that any matching module name installed
+> >             under the <command>extra</command> subdirectory within
+> > -            /lib/modules (or other module location) will take priority
+> > +            @MODULE_DIRECTORY@ (or other module location) will take priority
+> >             over any likenamed module already provided by the kernel.
+> >           </para>
+> >         </listitem>
+> > diff --git a/man/depmod.xml b/man/depmod.xml
+> > index 3b0097184fd7..fce2a4a67a89 100644
+> > --- a/man/depmod.xml
+> > +++ b/man/depmod.xml
+> > @@ -80,7 +80,7 @@
+> >     </para>
+> >     <para> <command>depmod</command> creates a list of module dependencies by
+> >       reading each module under
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable> and
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable> and
+> >       determining what symbols it exports and what symbols it needs.  By
+> >       default, this list is written to <filename>modules.dep</filename>, and a
+> >       binary hashed version named <filename>modules.dep.bin</filename>, in the
+> > @@ -141,7 +141,7 @@
+> >         <listitem>
+> >           <para>
+> >             If your modules are not currently in the (normal) directory
+> > -            <filename>/lib/modules/</filename><replaceable>version</replaceable>,
+> > +            <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>,
+> >             but in a staging area, you can specify a
+> >             <replaceable>basedir</replaceable> which is prepended to the
+> >             directory name.  This <replaceable>basedir</replaceable> is
+> > diff --git a/man/modinfo.xml b/man/modinfo.xml
+> > index 9fe0324a2527..b6c4d6045829 100644
+> > --- a/man/modinfo.xml
+> > +++ b/man/modinfo.xml
+> > @@ -54,7 +54,7 @@
+> >       <command>modinfo</command> extracts information from the Linux Kernel
+> >       modules given on the command line.  If the module name is not a filename,
+> >       then the
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable>
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>
+> >       directory is searched, as is also done by
+> >       <citerefentry><refentrytitle>modprobe</refentrytitle><manvolnum>8</manvolnum></citerefentry>
+> >       when loading kernel modules.
+> > diff --git a/man/modprobe.xml b/man/modprobe.xml
+> > index 91f9e27997cd..4d1fd59c000b 100644
+> > --- a/man/modprobe.xml
+> > +++ b/man/modprobe.xml
+> > @@ -78,7 +78,7 @@
+> >       is no difference between _ and - in module names (automatic
+> >       underscore conversion is performed).
+> >       <command>modprobe</command> looks in the module directory
+> > -      <filename>/lib/modules/`uname -r`</filename> for all
+> > +      <filename>@MODULE_DIRECTORY@/`uname -r`</filename> for all
+> >       the modules and other files, except for the optional
+> >       configuration files in the
+> >       <filename>/etc/modprobe.d</filename> directory
+> > diff --git a/man/modules.dep.xml b/man/modules.dep.xml
+> > index ed633694ec9e..8ef6d8b3536e 100644
+> > --- a/man/modules.dep.xml
+> > +++ b/man/modules.dep.xml
+> > @@ -34,8 +34,8 @@
+> >   </refnamediv>
+> > 
+> >   <refsynopsisdiv>
+> > -    <para><filename>/lib/modules/modules.dep</filename></para>
+> > -    <para><filename>/lib/modules/modules.dep.bin</filename></para>
+> > +    <para><filename>@MODULE_DIRECTORY@/modules.dep</filename></para>
+> > +    <para><filename>@MODULE_DIRECTORY@/modules.dep.bin</filename></para>
+> >   </refsynopsisdiv>
+> > 
+> >   <refsect1><title>DESCRIPTION</title>
+> > @@ -43,7 +43,7 @@
+> >       <filename>modules.dep.bin</filename> is a binary file generated by
+> >       <command>depmod</command> listing the dependencies for
+> >       every module in the directories under
+> > -      <filename>/lib/modules/</filename><replaceable>version</replaceable>.
+> > +      <filename>@MODULE_DIRECTORY@/</filename><replaceable>version</replaceable>.
+> >       It is used by kmod tools such as <command>modprobe</command> and
+> >       libkmod.
+> >     </para>
+> > diff --git a/testsuite/module-playground/Makefile b/testsuite/module-playground/Makefile
+> > index e6045b0dd932..a7ab09bea2bf 100644
+> > --- a/testsuite/module-playground/Makefile
+> > +++ b/testsuite/module-playground/Makefile
+> > @@ -47,7 +47,7 @@ endif
+> > 
+> > else
+> > # normal makefile
+> > -KDIR ?= /lib/modules/`uname -r`/build
+> > +KDIR ?= $(module_prefix)/lib/modules/`uname -r`/build
+> > KVER ?= `uname -r`
+> > ifeq ($(FAKE_BUILD),)
+> >     FAKE_BUILD=0
+> > diff --git a/testsuite/setup-rootfs.sh b/testsuite/setup-rootfs.sh
+> > index 4440ddcd6b4d..a780f9381b3c 100755
+> > --- a/testsuite/setup-rootfs.sh
+> > +++ b/testsuite/setup-rootfs.sh
+> > @@ -16,6 +16,19 @@ create_rootfs() {
+> > 	cp -r "$ROOTFS_PRISTINE" "$ROOTFS"
+> > 	find "$ROOTFS" -type d -exec chmod +w {} \;
+> > 	find "$ROOTFS" -type f -name .gitignore -exec rm -f {} \;
+> > +	if [ "$MODULE_DIRECTORY" != "/lib/modules" ] ; then
+> > +		sed -i -e "s|/lib/modules|$MODULE_DIRECTORY|g" $(find "$ROOTFS" -name \*.txt -o -name \*.conf -o -name \*.dep)
+> > +		sed -i -e "s|$MODULE_DIRECTORY/external|/lib/modules/external|g" $(find "$ROOTFS" -name \*.txt -o -name \*.conf -o -name \*.dep)
+> > +		for i in "$ROOTFS"/*/lib/modules/* "$ROOTFS"/*/*/lib/modules/* ; do
+> > +			version="$(basename $i)"
+> > +			[ $version != 'external' ] || continue
+> > +			mod="$(dirname $i)"
+> > +			lib="$(dirname $mod)"
+> > +			up="$(dirname $lib)$MODULE_DIRECTORY"
+> > +			mkdir -p "$up"
+> > +			mv "$i" "$up"
+> > +		done
+> > +	fi
+> > 
+> > 	if [ "$SYSCONFDIR" != "/etc" ]; then
+> > 		find "$ROOTFS" -type d -name etc -printf "%h\n" | while read -r e; do
+> > @@ -32,57 +45,57 @@ feature_enabled() {
+> > 
+> > declare -A map
+> > map=(
+> > -    ["test-depmod/search-order-simple/lib/modules/4.4.4/kernel/crypto/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-simple/lib/modules/4.4.4/updates/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-same-prefix/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-same-prefix/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-a.ko"]="mod-loop-a.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-b.ko"]="mod-loop-b.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-c.ko"]="mod-loop-c.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-d.ko"]="mod-loop-d.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-e.ko"]="mod-loop-e.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-f.ko"]="mod-loop-f.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-g.ko"]="mod-loop-g.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-h.ko"]="mod-loop-h.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-i.ko"]="mod-loop-i.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-j.ko"]="mod-loop-j.ko"
+> > -    ["test-depmod/detect-loop/lib/modules/4.4.4/kernel/mod-loop-k.ko"]="mod-loop-k.ko"
+> > -    ["test-depmod/search-order-external-first/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-external-first/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-simple$MODULE_DIRECTORY/4.4.4/kernel/crypto/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-simple$MODULE_DIRECTORY/4.4.4/updates/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-same-prefix$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-same-prefix$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-a.ko"]="mod-loop-a.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-b.ko"]="mod-loop-b.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-c.ko"]="mod-loop-c.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-d.ko"]="mod-loop-d.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-e.ko"]="mod-loop-e.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-f.ko"]="mod-loop-f.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-g.ko"]="mod-loop-g.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-h.ko"]="mod-loop-h.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-i.ko"]="mod-loop-i.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-j.ko"]="mod-loop-j.ko"
+> > +    ["test-depmod/detect-loop$MODULE_DIRECTORY/4.4.4/kernel/mod-loop-k.ko"]="mod-loop-k.ko"
+> > +    ["test-depmod/search-order-external-first$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-first$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> >     ["test-depmod/search-order-external-first/lib/modules/external/"]="mod-simple.ko"
 > 
->     Work = Capacity * Time
+> why didn't you change it here?
 > 
-> Max aggregation aims to fit capacity, but if a task can be run at a high
-> capacity but for only a very short period of time, then this scheduling
-> is not particularly useful. Like in the above example, moving a task
-> with UCLAMP_MIN of 101 to the mid CPU isn't helpful when there are
-> already 10 tasks on the mid CPU, because Time is reduced.
-
-Not sure I understand this.
-
-Isn't the main difference between sum (1) and max (2) aggregation the
-fact that in (1) a p->uclamp[UCLAMP_MAX] has only an effect when it's
-really capping p->se.avg.util_avg?
-
-This avoids what can happen under (2) namely that a tiny task with a
-default uclamp_max = 1024 (not capped) can ruin the capping scenario for
-the time its runnable.
-
-I assume we understand (2) as a frequency hint (i.e. the currently
-highest request of a runnable task towards the CPU capacity) and (1)
-more as a capacity hint since of the summation of clamped
-p->se.avg.util_avg over all runnable tasks on the CPU.
-
-But with 'IPC * CPU frequency == Capacity' what's the actual difference
-in this hinting strategies anyway?
-
-[...]
-
->>> This idea solves Problem 1 by capping the utilization of an
->>> always-running task throttled by UCLAMP_MAX. Although the task (denoted
->>> by Task A) has no idle time, the util_avg_uclamp signal gives its
->>> UCLAMP_MAX value instead of 1024, so even if another task (Task B) with
->>> a UCLAMP_MAX value at 1024 joins the rq, the util_avg_uclamp is A's
->>> UCLAMP_MAX plus B's utilization, instead of 1024 plus B's utilization,
->>> which means we no longer have the frequency spike problem caused by B.
->>> This should mean that we might completely avoid the need for uclamp
->>> filtering.
->>
->> That would be very nice since I remember that this filtering approach
->> hat to figure out the actual runtime of the task and the implemention
->> couldn't be just in the sched class code but had to be done in core code
->> as well.
+> > -    ["test-depmod/search-order-external-last/lib/modules/4.4.4/foo/"]="mod-simple.ko"
+> > -    ["test-depmod/search-order-external-last/lib/modules/4.4.4/foobar/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-last$MODULE_DIRECTORY/4.4.4/foo/"]="mod-simple.ko"
+> > +    ["test-depmod/search-order-external-last$MODULE_DIRECTORY/4.4.4/foobar/"]="mod-simple.ko"
+> >     ["test-depmod/search-order-external-last/lib/modules/external/"]="mod-simple.ko"
 > 
-> Yes. So far I don't see any need for filtering and runtime accounting in
-> uclamp sum aggregation.
+> and here...
 
-OK.
+The path is embedded in binary files:
 
-[...]
+t grep '/lib/modules' | grep Binary
+Binary file testsuite/rootfs-pristine/test-modinfo/external/lib/modules/4.4.4/modules.dep.bin matches
+Binary file testsuite/rootfs-pristine/test-modprobe/external/lib/modules/4.4.4/modules.dep.bin matches
+Binary file testsuite/rootfs-pristine/test-modprobe/module-from-abspath/lib/modules/4.4.4/modules.dep.bin matches
+Binary file testsuite/rootfs-pristine/test-modprobe/module-from-relpath/lib/modules/4.4.4/modules.dep.bin matches
 
->> We should recall that this is all done because the current uclamp-max
->> max aggression isn't working for Androids use-cases.
->>
->> So to overcome this issue in mainline is key here.
-> 
-> Thanks for pointing me to the latest Pixel code.
-> 
-> The basic ideas of that and this series look very similar. Both sum up
-> CFS utilization instead of directly tracking the root CFS utilization.
-> This series so far has only implemented uclamp on tasks, but the same
-> code can also be implemented on group sched_entities. Once I implement
-> that, then it essentially does the same thing as GROUP_THROTTLE. I think
-> if the current Pixel code works, then it's likely this series works too.
-> 
-> The big difference is that this series relies on
-> CONFIG_FAIR_GROUP_SCHED. There seems to be complaints about it and I may
-> need to know why it's not desirable for Android.
+The reason is that path to 'external' modules that are not
+in $MODULE_DIRECTORY/$(KERNELRELEASE) is recorded as absolute path.
 
-Looks like that Pixel8 also has uclamp filtering to exclude a
-sufficiently short running task from influencing rq's uclamp_max
-(uclamp_max filtering).
+The way these tests are designed the binary files cannot be changed.
 
-GROUP_THROTTLING/VENDOR_GROUP_UTIL was introduced since they couldn't
-constrain on taskgroup level with the cpu.shares feature. And mainline
-uclamp max (on taskgroup level) didn't give them this functionality either.
+To get the same file the non-'external' modules have to be moved to
+match the new location of $MODULE_DIRECTORY which results in the same
+path relative to $MODULE_DIRECTORY while the 'external' ones are not
+moved getting the same absolute path regardless of $MODULE_DIRECTORY.
 
-So it looks like with sum aggregation uclamp could provide both.
+Thanks
 
-[...]
-
->>> Note that this series is still considered RFC status. TODO items are:
->>>
->>> 1. Implement sum aggregation for RT tasks.
->>> 2. Improve handling of cpu_util(boost).
->>
->> What about the integration with util_est here?
->>
->> In cpu_util(), &rq->cfs->avg.util_avg is replaced by
->> rq->root_cfs_util_uclamp
->>
->> and in
->>
->> task_util_est() (should be actually named task_util() to be in sync with
->> cpu_util(), i.e. returning max(util, util_est)), task_util(p) returns
->> p->se.avg.util_avg_uclamp.
->>
->> Are there use cases for the original avg.util_avg still in place?
-> 
-> We still need the original avg.util_avg for tasks because
-> util_avg_uclamp is clamped from it, but other than that, at the moment
-> there's no reason to use the normal util_avg.
-
-OK. But it looks like that util_est escapes uclamp:
-
-cpu_util()
-
-  return min(max(util_uclamp, util_est), arch_scale_cpu_capacity(cpu))
-                              ^^^^^^^^
-
-[...]
-
->>> Scenario 1: Scheduling 4 always-running tasks with UCLAMP_MAX at 200.
-
-[...]
-
->> Does `upstream` already contain the v6.7 fixes `Fix uclamp code corner
->> cases` ?
->>
->> https://lkml.kernel.org/r/20230916232955.2099394-1-qyousef@layalina.io
-> 
-> Unfortunately, no. These experiments were done before that patch. I
-> quickly did a test and that patch did fix this issue. Now the four
-> little tasks are scheduled on the small PD.
-> 
-> But I remember that you have another test indicating that the patch may
-> expose some new issues?
-
-I remember 2 tests:
-
-   6 periodic tasks runtime/period=12/16ms uclamp_min/max=[0, M] on
-   big.LITTLE (2 big, 4 little (arch_scale_cpu_capacity() = 675))
-
-   test (1) M = 665
-   test (2) M = 100
-
-2 kernel:
-
-   (A) tip sched/core w/ `Fix uclamp code corner cases`
-   (B) uclamp sum aggregation
-
-(A) managed to force all task to run on little CPUs for (1) but not for
-(2). For (B) it was the other way around.
-
-These tests show also the _sum_ aggregation aspect of uclamp_max. It's
-important now to consider the actual uclamp-max value in case you want
-to achieve packing on little.
-
-I still have the ipython notebook for these tests.
-
->>> Scenario 2: Scheduling 4 tasks with UCLAMP_MIN and UCLAMP_MAX at a value
-
-[...]
-
->> thread0-[0-3] uclamp_max = 309. So p->se.avg.util_avg_uclamp is
->> constrained by this value for all 4 tasks, letting 2 tasks fit on each
->> of the big CPUs. You have to zoom in into Out[82] to actually see this.
->>
->> And I guess for max aggregation cpu_overutilized() can't hold the clamp
->> continuously because of all the other short running uclamp_max = 1024
->> (default) tasks on the rq's.
-> 
-> Actually I'm not 100% sure about the reason why max aggregation under
-> this experiment never stabilizes. I can investigate further.
-
-OK.
-
->>> Scenario 3: Task A is a task with a small utilization pinned to CPU4.
-
-[...]
-
->> Makes sense. But there shouldn't be a root_cfs_util_uclamp in main?
->> Which signal does the yellow line represent in Out[23]?
-> 
-> Ah, that can be confusing. For current upstream root_cfs_util_uclamp
-> comes from uclamp_rq_util_with(rq, cfs_rq->avg.util_avg).
-
-Topic is already pretty complicated so better use the correct naming.
-
-[...]
+Michal
