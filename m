@@ -2,220 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76417E9D64
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:41:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F687E9D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjKMNlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:41:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
+        id S231371AbjKMNlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjKMNlA (ORCPT
+        with ESMTP id S231293AbjKMNld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:41:00 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFED10E5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:40:56 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc252cbde2so45090675ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699882856; x=1700487656; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=grMhSA8EkJmQQzxh1GozgoQ7euxsD4+OSt/yXIyQHbI=;
-        b=py4g605lrblfDVOvgOlNY3ClyHPLDqbFW2UT1YTd4Ag7vaqwkThndPFqQ4VZNCcJz+
-         +8DH0t3HbJO8xFA0BC33MSD15ZBg73al+ozQfrYg2bG1I5hqS4yUvmz/nrA8FPpBxx9a
-         qiEm5RpiUDDMQ3TQkqDQJpB9CginyxgofCIK/svAuuLJn5mIqbeNAXIpjs3GSL7/I6KC
-         awsflbba6KnytqDFNQCk7qUCg314NwEXtMU53r3pNiMn/WR2zbl7UdMCBgSQzCUw+J7H
-         LKiS6s2AANzHVirwQ5sGegSQvEvc4RobaSgmr7X5KPv7b5PiLYi1IvAJ5+a6yEH+iYan
-         Te7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699882856; x=1700487656;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=grMhSA8EkJmQQzxh1GozgoQ7euxsD4+OSt/yXIyQHbI=;
-        b=acgDFw0zMU8Mw2svxlc2lKuTq4KEzZFqAOrZaHA6tS22aOBE/Ce36S3CJWUpKy+lo/
-         iNRJOb92ypOb5dHjwGnMKIW83uNrjG1839tMv1wTj0Hp2vMWbadXxcH61MxGJtUYxTTg
-         lwV6Su5Ok8JTvSFYi+v1fHR3EBJgaBACk9ypjlwPaJksGdqqj25mP1Irn31AYk7dRkOl
-         aliTHztAn9GV5LTOuCm7psrld5Gg2nY9NeGIwGbYeNYJDRNdLp3ZGm/NBHDs3sPIyo8A
-         V1FxDccb+gl9VECDNcm4EQnRhIojLEUMGAOI8BAB6zTEDcf5dMQ0fDeL0HZcid8R4fz+
-         PJkQ==
-X-Gm-Message-State: AOJu0YyhG2siuBE6ImxaDafTwTAjt49L7wct35XBy/NuJOV+6YSs93z5
-        hY76CcxBEJHy4IcJa7q6jq/krcHuLks=
-X-Google-Smtp-Source: AGHT+IGKkZbz8G134/I6ioIQ6rHAyKn4MTSEwp5YQNMnVY5eA3LBDtFO1zpdTitE4tEcg9M1FDie4oR41hs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:428a:b0:1cc:449a:7f4d with SMTP id
- ju10-20020a170903428a00b001cc449a7f4dmr1794531plb.12.1699882855839; Mon, 13
- Nov 2023 05:40:55 -0800 (PST)
-Date:   Mon, 13 Nov 2023 05:40:54 -0800
-In-Reply-To: <feb599ea-89e6-1dd9-ba71-3c3d1e027e06@gmail.com>
-Mime-Version: 1.0
-References: <20231110021306.1269082-1-seanjc@google.com> <20231110021306.1269082-27-seanjc@google.com>
- <feb599ea-89e6-1dd9-ba71-3c3d1e027e06@gmail.com>
-Message-ID: <ZVInZkwjbanQ2rkx@google.com>
-Subject: Re: [PATCH v8 26/26] KVM: selftests: Extend PMU counters test to
- validate RDPMC after WRMSR
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 13 Nov 2023 08:41:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC38799
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:41:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD88C433C8;
+        Mon, 13 Nov 2023 13:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699882890;
+        bh=imLL6/JRDLObZt2bzkUsGUWoL8XyvG0qghRtgDvjR5A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m8gmxtlsMGBbAMpANUoXzVGxYTH4QhlWK1vKrzcg+G3BhfltwSQHUOITxgkdJwMww
+         AmT0TgCTjCgzz7R76KE9Py8aNI0dQPTMDjlrIoimulE+dvXww02LbgwQfH248lSWC9
+         xu5Z8NOUOehgf87pE1yaNhrxiQkqS1lzPd9aml0X5XMHRQIpQ4SqM5T9aRLl1bIZw/
+         HuoTeB5/MMar5/ew9JXFa3mPqRBJtQXcfgAC1yIyJZDEjLjIHKSSs2wLXverAtDbxY
+         rfgQ41vpatoY3vwKsD+qV2L1JECmg0fxM5AlmBNAOefFX5wREQOwbG41tMfPZks+vu
+         7J2kbTCa8pp9Q==
+Date:   Mon, 13 Nov 2023 13:41:27 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ana-Maria Cusco <anamaria.cuscoo@gmail.com>
+Cc:     Ana-Maria Cusco <ana-maria.cusco@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: iio: hmc425a: add entry for ADRF5740
+ Attenuator
+Message-ID: <20231113-left-patchwork-09a1f88b0fa2@squawk>
+References: <20231113102535.51074-1-anamaria.cuscoo@gmail.com>
+ <20231113102535.51074-3-anamaria.cuscoo@gmail.com>
+ <20231113-discourse-sushi-e8fea2450a44@squawk>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8+VS1xS0nEywSzDR"
+Content-Disposition: inline
+In-Reply-To: <20231113-discourse-sushi-e8fea2450a44@squawk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023, Jinrong Liang wrote:
-> =E5=9C=A8 2023/11/10 10:13, Sean Christopherson =E5=86=99=E9=81=93:
-> > Extend the read/write PMU counters subtest to verify that RDPMC also re=
-ads
-> > back the written value.  Opportunsitically verify that attempting to us=
-e
-> > the "fast" mode of RDPMC fails, as the "fast" flag is only supported by
-> > non-architectural PMUs, which KVM doesn't virtualize.
+
+--8+VS1xS0nEywSzDR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Nov 13, 2023 at 01:40:40PM +0000, Conor Dooley wrote:
+> On Mon, Nov 13, 2023 at 12:25:35PM +0200, Ana-Maria Cusco wrote:
+> > From: Ana-Maria Cusco <ana-maria.cusco@analog.com>
 > >=20
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> > +		/* Redo the read tests with RDPMC, and with forced emulation. */
-> > +		vector =3D rdpmc_safe(rdpmc_idx, &val);
-> > +		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vecto=
-r);
-> > +		if (expect_success)
-> > +			GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-> > +
-> > +		vector =3D rdpmc_safe_fep(rdpmc_idx, &val);
-> > +		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vecto=
-r);
-> > +		if (expect_success)
-> > +			GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-
-> This test case failed on my Intel machine.
+> > The ADRF5740 is a silicon, 4-bit digital attenuator with 22 dB
+> > attenuation control range in 2 dB steps.
+> >=20
+> > Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
 >=20
-> Error message=EF=BC=9A
-> Testing arch events, PMU version 0, perf_caps =3D 0
-> Testing GP counters, PMU version 0, perf_caps =3D 0
-> =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
->   lib/x86_64/processor.c:1100: Unhandled exception in guest
->   pid=3D464480 tid=3D464480 errno=3D4 - Interrupted system call
->      1	0x00000000004120e1: assert_on_unhandled_exception =E4=BA=8E proces=
-sor.c:1146
->      2	0x00000000004062d9: _vcpu_run =E4=BA=8E kvm_util.c:1634
->      3	0x00000000004062fa: vcpu_run =E4=BA=8E kvm_util.c:1645
->      4	0x0000000000403697: run_vcpu =E4=BA=8E pmu_counters_test.c:56
->      5	0x00000000004026fc: test_gp_counters =E4=BA=8E pmu_counters_test.c=
-:434
->      6	(=E5=B7=B2=E5=86=85=E8=BF=9E=E5=85=A5)test_intel_counters =E4=BA=
-=8E pmu_counters_test.c:580
->      7	(=E5=B7=B2=E5=86=85=E8=BF=9E=E5=85=A5)main =E4=BA=8E pmu_counters_=
-test.c:604
->      8	0x00007f7a2f03ad84: ?? ??:0
->      9	0x00000000004028bd: _start =E4=BA=8E ??:?
->   Unhandled exception '0x6' at guest RIP '0x402bab'
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Argh, I didn't add a check to see if forced emulation is actually enabled (=
-forced
-emulation uses a magic "prefix" to trigger a #UD, which KVM intercepts; if =
-forced
-emulation isn't enabled, KVM ignores the magic prefix and reflects the #UD =
-back
-into the guest).
+One thing though, the bindings patch should come before the driver patch
+in your series.
 
-This fixes the test for me:
+Thanks,
+conor.
 
----
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 42 ++++++++++++-------
- 1 file changed, 26 insertions(+), 16 deletions(-)
+--8+VS1xS0nEywSzDR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools=
-/testing/selftests/kvm/x86_64/pmu_counters_test.c
-index 248ebe8c0577..ae5f6042f1e8 100644
---- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-@@ -325,6 +325,26 @@ __GUEST_ASSERT(expect_gp ? vector =3D=3D GP_VECTOR : !=
-vector,			\
- 		       "Expected " #insn "(0x%x) to yield 0x%lx, got 0x%lx",	\
- 		       msr, expected_val, val);
-=20
-+static void guest_test_rdpmc(uint32_t rdpmc_idx, bool expect_success,
-+			     uint64_t expected_val)
-+{
-+	uint8_t vector;
-+	uint64_t val;
-+
-+	vector =3D rdpmc_safe(rdpmc_idx, &val);
-+	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
-+	if (expect_success)
-+		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-+
-+	if (!is_forced_emulation_enabled)
-+		return;
-+
-+	vector =3D rdpmc_safe_fep(rdpmc_idx, &val);
-+	GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
-+	if (expect_success)
-+		GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-+}
-+
- static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_co=
-unters,
- 				 uint8_t nr_counters, uint32_t or_mask)
- {
-@@ -367,20 +387,15 @@ static void guest_rd_wr_counters(uint32_t base_msr, u=
-int8_t nr_possible_counters
- 		if (!expect_gp)
- 			GUEST_ASSERT_PMC_VALUE(RDMSR, msr, val, expected_val);
-=20
-+		/*
-+		 * Redo the read tests with RDPMC, which has different indexing
-+		 * semantics and additional capabilities.
-+		 */
- 		rdpmc_idx =3D i;
- 		if (base_msr =3D=3D MSR_CORE_PERF_FIXED_CTR0)
- 			rdpmc_idx |=3D INTEL_RDPMC_FIXED;
-=20
--		/* Redo the read tests with RDPMC, and with forced emulation. */
--		vector =3D rdpmc_safe(rdpmc_idx, &val);
--		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
--		if (expect_success)
--			GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
--
--		vector =3D rdpmc_safe_fep(rdpmc_idx, &val);
--		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, !expect_success, vector);
--		if (expect_success)
--			GUEST_ASSERT_PMC_VALUE(RDPMC, rdpmc_idx, val, expected_val);
-+		guest_test_rdpmc(rdpmc_idx, expect_success, expected_val);
-=20
- 		/*
- 		 * KVM doesn't support non-architectural PMUs, i.e. it should
-@@ -389,12 +404,7 @@ static void guest_rd_wr_counters(uint32_t base_msr, ui=
-nt8_t nr_possible_counters
- 		 */
- 		GUEST_ASSERT(!expect_success || !pmu_has_fast_mode);
- 		rdpmc_idx |=3D INTEL_RDPMC_FAST;
--
--		vector =3D rdpmc_safe(rdpmc_idx, &val);
--		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, true, vector);
--
--		vector =3D rdpmc_safe_fep(rdpmc_idx, &val);
--		GUEST_ASSERT_PMC_MSR_ACCESS(RDPMC, rdpmc_idx, true, vector);
-+		guest_test_rdpmc(rdpmc_idx, false, -1ull);
-=20
- 		vector =3D wrmsr_safe(msr, 0);
- 		GUEST_ASSERT_PMC_MSR_ACCESS(WRMSR, msr, expect_gp, vector);
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: 743a1a6d106931691be32e081e929d9b3de5777f
---=20
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVInhAAKCRB4tDGHoIJi
+0vF8AQDT2fFMriDRdvgwr5oeud6DLkelqFt/Wd4NvVbI/S/hHQEAiaffvbhzd8SU
+kQsIvfzMAG/8jXl/nKH6AF9mVx2vvgE=
+=bgqF
+-----END PGP SIGNATURE-----
 
+--8+VS1xS0nEywSzDR--
