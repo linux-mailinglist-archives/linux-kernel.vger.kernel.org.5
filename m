@@ -2,54 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C55F27E9798
+	by mail.lfdr.de (Postfix) with ESMTP id 6F25D7E9796
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjKMIZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:25:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbjKMIZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232425AbjKMIZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 13 Nov 2023 03:25:05 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D9A10F0;
-        Mon, 13 Nov 2023 00:25:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=li5b6HvrSAtd0lQREMWpvnGSM883ci1Av/YtBmCW+5U=; b=dxfNd7LGxAT0Mlid+sCMoH0Q/+
-        qqcACWUxRaG8oZvfgWq5TkitzmsxtXvAfR47uagyYe8LiJVDn3CRMeryduiYF+GVCXdhrAZl3/dS4
-        BLgFrtbHXoJuRVLIMQ7Tdsh4WRd8YWk7GDI5crO1YFIKErDO5xbJJ4TlLhGwPBGvMa+cDx0wa8xZi
-        +ejiYnZONuE6lYX4l9OzT+/bWOtBvD/vreSjw0VgAruOcsEuOAWug3EdwGxM97QKvZDO07ULT1AIC
-        Z2iixbTctZTqJM2XK+9ps/AXFsXYCSmLmvvFpLO6Tc0rNJ8nfWPLGqBHOLV9VT5So8kiyccDGrWCC
-        GFDbfllw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r2SFA-001M52-2r;
-        Mon, 13 Nov 2023 08:24:33 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5FAE4300427; Mon, 13 Nov 2023 09:24:28 +0100 (CET)
-Date:   Mon, 13 Nov 2023 09:24:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Mateusz Guzik <mjguzik@gmail.com>
-Subject: Re: [PATCH v3 1/4] locking: Add rwsem_assert_held() and
- rwsem_assert_held_write()
-Message-ID: <20231113082427.GB16138@noisy.programming.kicks-ass.net>
-References: <20231110204119.3692023-1-willy@infradead.org>
- <20231110204119.3692023-2-willy@infradead.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbjKMIZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Nov 2023 03:25:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C314710F0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:24:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699863899; x=1731399899;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=kGU4JUG2Lr96HBJbf/kazk1tGm2ODqpAeWA0HE3tUjU=;
+  b=ljVEd/kC4DL5WUKZBAXOgaBsu+C9lFdtqE4+EqXpNgQUeyL39Njy1XbE
+   Xxhj8A+h75rN/Bxce4d9MDC9RnIh+0nT2ejCgHyGe9tZwbJNpgXbPRDCg
+   9F4RROofJcDjcwl1EK5HGG8Xbcuxvl8hkCDWzyKhtKwwZHJvdTINUhSVR
+   Q2P/IvNK1dJ15ad6m2dceK2dnw7xWNL4ylIymtTW01WMq24I5wlKcnti9
+   JL4knmlsWKLFk18oEvOGciPat+m+rWTu9maGsKexrX78BghFoYkjsOunX
+   fWgFsqLLXypoTMIG8hP1WhI84pxf4c9QVu4wNHwbikE2Z5qo0U90UVwI8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="375421979"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="375421979"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:24:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="740700336"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="740700336"
+Received: from rdegreef-mobl2.ger.corp.intel.com (HELO [10.251.217.208]) ([10.251.217.208])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:24:55 -0800
+Message-ID: <f229d1ed-b71e-434a-acca-06ee81826260@linux.intel.com>
+Date:   Mon, 13 Nov 2023 09:24:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110204119.3692023-2-willy@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver: gpu: Fixing warning directly dereferencing a rcu
+ pointer
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
+        airlied@gmail.com, daniel@ffwll.ch
+Cc:     nouveau@lists.freedesktop.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20231113081040.2947143-1-singhabhinav9051571833@gmail.com>
+Content-Language: en-US
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20231113081040.2947143-1-singhabhinav9051571833@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,22 +67,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 08:41:16PM +0000, Matthew Wilcox (Oracle) wrote:
+Hey,
 
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(atomic_long_read(&sem->count) == RWSEM_UNLOCKED_VALUE);
-> +}
-> +
-> +static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	WARN_ON(!(atomic_long_read(&sem->count) & RWSEM_WRITER_LOCKED));
-> +}
+Den 2023-11-13 kl. 09:10, skrev Abhinav Singh:
+> This patch fixes a sparse warning with this message
+> "warning:dereference of noderef expression". In this context it means we
+> are dereferencing a __rcu tagged pointer directly.
+>
+> We should not be directly dereferencing a rcu pointer, rather we should
+> be using rcu helper function rcu_dereferece() inside rcu read critical
+> section to get a normal pointer which can be dereferenced.
+>
+> I tested with qemu with this command
+> qemu-system-x86_64 \
+> 	-m 2G \
+> 	-smp 2 \
+> 	-kernel bzImage \
+> 	-append "console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0" \
+> 	-drive file=bullseye.img,format=raw \
+> 	-net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \
+> 	-net nic,model=e1000 \
+> 	-enable-kvm \
+> 	-nographic \
+> 	-pidfile vm.pid \
+> 	2>&1 | tee vm.log
+> with lockdep enabled.
+>
+> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+> ---
+>   drivers/gpu/drm/nouveau/nv04_fence.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nv04_fence.c b/drivers/gpu/drm/nouveau/nv04_fence.c
+> index 5b71a5a5cd85..e62bad1ac720 100644
+> --- a/drivers/gpu/drm/nouveau/nv04_fence.c
+> +++ b/drivers/gpu/drm/nouveau/nv04_fence.c
+> @@ -39,7 +39,9 @@ struct nv04_fence_priv {
+>   static int
+>   nv04_fence_emit(struct nouveau_fence *fence)
+>   {
+> -	struct nvif_push *push = fence->channel->chan.push;
+> +	rcu_read_lock();
+> +	struct nvif_push *push = rcu_dereference(fence->channel)->chan.push;
+> +	rcu_read_unlock();
+>   	int ret = PUSH_WAIT(push, 2);
+>   	if (ret == 0) {
+>   		PUSH_NVSQ(push, NV_SW, 0x0150, fence->base.seqno);
 
-> +static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
-> +{
-> +	BUG_ON(!rwsem_is_locked(sem));
-> +}
+I'm not an expert in nouveau fence channel lifetime, but I'm pretty sure 
+this should probably be a rcu_dereference_protected, since a fence 
+likely can't lose its channel before its command to signal is submitted.
 
-What's with the WARN_ON() vs BUG_ON() thing?
+But in case it's not, I would at least advise to check for 
+fence->channel lifetime before submitting a patch like this. At least 
+the original code warned about it not being 100% correct.
+
+Cheers,
+
+~Maarten
 
