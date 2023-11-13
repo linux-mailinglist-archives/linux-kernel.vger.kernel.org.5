@@ -2,147 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4262F7EA069
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD697EA079
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjKMPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:45:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39426 "EHLO
+        id S230106AbjKMPsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbjKMPpW (ORCPT
+        with ESMTP id S229454AbjKMPsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:45:22 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 781501724
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:45:18 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88267FEC;
-        Mon, 13 Nov 2023 07:46:03 -0800 (PST)
-Received: from [10.57.83.127] (unknown [10.57.83.127])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C69D43F7B4;
-        Mon, 13 Nov 2023 07:45:16 -0800 (PST)
-Message-ID: <03b4e787-53bb-4a9c-afa5-dbb51599a8ce@arm.com>
-Date:   Mon, 13 Nov 2023 15:45:16 +0000
+        Mon, 13 Nov 2023 10:48:41 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95972D63;
+        Mon, 13 Nov 2023 07:48:37 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so58591541fa.1;
+        Mon, 13 Nov 2023 07:48:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699890515; x=1700495315; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PXnf0eXrDDD8zHz/bTp9TBZLf7/Ul4A7eXzOYgBnS0o=;
+        b=FkUqRK3oFLT9imv+K+Fpe9D6klNt3x433OOxTytajgzzoRZkKreKHzyMmRJUPBOHCq
+         lG6eLjoUtAk5OCqKY1hwOHbUuwNXsrQivXQjsF6Wm5SKlTlHOpa7/vEMeDt1eTiXh3ff
+         +DZDo7bki2RxnVgMiC7gs3iibz+ygPBwjlDZDXIs4+b6SSGxMXm6s0VMZyTgRgMDPxEU
+         8CVcvETHu/jc3P2nwcYJ+U3nANl2HkSVJlPJfpQosJfRwtFw4aZgJeqBs0Q2EmucvhSp
+         6WjXqn+gDt8lirz/GsvX6FgDfe/0R2JqBhOToV8QELGR35j/Cak80nlW0ZLj/E1cg7xm
+         9Eyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699890515; x=1700495315;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PXnf0eXrDDD8zHz/bTp9TBZLf7/Ul4A7eXzOYgBnS0o=;
+        b=rcfKaghUyNrrQ8dVGDdC9YpKmF0mFXhKlu3IvldV4X4VnK6gorfIK2Z99PF3eLa7ZB
+         ShhuWoZmVgI9A04p6rPgS25jXqIPQU/DuebJvgMNDVQHKufx6sinRAxXQA+42j4iZLWW
+         nfT0xDVxZ5XzUlwC7JLD4Bkib3NaKeuFdvCPR49rHrT1eIu4gysSyRrfTY36WcWKIomM
+         k+KFM9ueJ3oB7/CyBV38MvSnafdpPbFFSIWZHSi6lqUmeWfwli9MtFXQ7kbtCtuCkNwT
+         BLWUpCbK3xuMhytMqteegVqTLX1D8V9MNEEGfKN3sdRmvsndd6FZpcwlEywaLVdZgdO2
+         8qXw==
+X-Gm-Message-State: AOJu0YyTY4HTGLI9/ysLSg3fNyLp4hQ3zVTmArHaCw1PCsomQIzwwNYm
+        Q2gjrawGRjZ8mzhIX4r5Yxg=
+X-Google-Smtp-Source: AGHT+IGjshQ2RR3uLR3NR5XH4kZGq0bKwKJa9nFrnJR2Ve3ZB8NkzMtucWJSHIFp3cqZB2IgNChubw==
+X-Received: by 2002:a2e:5151:0:b0:2c5:2eaa:5397 with SMTP id b17-20020a2e5151000000b002c52eaa5397mr4840794lje.11.1699890514398;
+        Mon, 13 Nov 2023 07:48:34 -0800 (PST)
+Received: from PCBABN.skidata.net ([91.230.2.244])
+        by smtp.gmail.com with ESMTPSA id d14-20020a05600c34ce00b00406443c8b4fsm14255122wmq.19.2023.11.13.07.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 07:48:33 -0800 (PST)
+From:   Benjamin Bara <bbara93@gmail.com>
+To:     macroalpha82@gmail.com
+Cc:     bbara93@gmail.com, benjamin.bara@skidata.com,
+        dmitry.osipenko@collabora.com, heiko@sntech.de,
+        jonathanh@nvidia.com, lee@kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        max.schwarz@online.de, nm@ti.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, richard.leitner@linux.dev,
+        stable@vger.kernel.org, treding@nvidia.com,
+        wsa+renesas@sang-engineering.com, wsa@kernel.org
+Subject: Re: [PATCH v7 2/5] i2c: core: run atomic i2c xfer when !preemptible
+Date:   Mon, 13 Nov 2023 16:48:26 +0100
+Message-Id: <20231113154826.2856145-1-bbara93@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <655238b2.050a0220.209e.4ad5@mx.google.com>
+References: <655238b2.050a0220.209e.4ad5@mx.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-To:     kernel test robot <lkp@intel.com>, loongarch@lists.linux.dev,
-        chenhuacai@kernel.org, kernel@xen0n.name
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>
-References: <202311120926.cjYHyoYw-lkp@intel.com>
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <202311120926.cjYHyoYw-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-12 1:38 am, kernel test robot wrote:
-> Hi Robin,
-> 
-> First bad commit (maybe != root cause):
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3ca112b71f35dd5d99fc4571a56b5fc6f0c15814
-> commit: f9bd34e3753ea8f1433a3ba70f03a165a1416f98 perf/arm_cspmu: Clean up ACPI dependency
-> date:   5 months ago
-> config: loongarch-randconfig-r133-20231107 (https://download.01.org/0day-ci/archive/20231112/202311120926.cjYHyoYw-lkp@intel.com/config)
-> compiler: loongarch64-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20231112/202311120926.cjYHyoYw-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311120926.cjYHyoYw-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
+Hi!
 
-Unpicking the macros, I guess this must stem from:
+Thanks for testing and the feedback!
 
-for_each_sibling_event()
-  -> lockdep_assert_event_ctx()
-     ->this_cpu_read(hardirqs_enabled)
+On Mon, 13 Nov 2023 at 15:54, Chris Morgan <macroalpha82@gmail.com> wrote:
+> I can confirm I no longer get any of the errors with this patch. Tested
+> on both an Anbernic RG353P (RK3566 with an RK817 PMIC) and an Odroid
+> Go Advance (RK3326 with an RK817 PMIC). The device appears to shut
+> down consistently again and I no longer see these messages in my dmesg
+> log when I shut down.
 
-which appears to be the only obvious place to involve a __percpu pointer 
-in this area.
+Just to make sure: Are you compiling with CONFIG_PREEMPTION (and
+therefore CONFIG_PREEMPT_COUNT)?
 
- From there it would seem to be a preexisting Loongarch bug - AFAICS 
-__percpu_read() (and presumably at least __percpu_write() as well) 
-should not be expecting a raw void * argument, but still the __percpu 
-pointer, since the final dereference is done right down in the asm using 
-the per-cpu offset stashed in r21?
+If yes, could you please also test the following patch? Because I am not
+sure yet how polling can be false in a "polling required" situation,
+meaning .master_xfer() is called instead of .master_xfer_atomic() (while
+your test shows that irq_disabled() is true, which is basically done
+with !preemptible()). The patch should test the other way round: if the
+situation is found, force an atomic transfer instead.
 
-Thanks,
-Robin.
+Thank you!
 
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->>> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
->     drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
-> 
-> vim +627 drivers/perf/arm_cspmu/arm_cspmu.c
-> 
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  609
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  610  /*
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  611   * Make sure the group of events can be scheduled at once
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  612   * on the PMU.
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  613   */
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  614  static bool arm_cspmu_validate_group(struct perf_event *event)
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  615  {
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  616  	struct perf_event *sibling, *leader = event->group_leader;
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  617  	struct arm_cspmu_hw_events fake_hw_events;
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  618
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  619  	if (event->group_leader == event)
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  620  		return true;
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  621
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  622  	memset(&fake_hw_events, 0, sizeof(fake_hw_events));
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  623
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  624  	if (!arm_cspmu_validate_event(event->pmu, &fake_hw_events, leader))
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  625  		return false;
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  626
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11 @627  	for_each_sibling_event(sibling, leader) {
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  628  		if (!arm_cspmu_validate_event(event->pmu, &fake_hw_events,
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  629  						  sibling))
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  630  			return false;
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  631  	}
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  632
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  633  	return arm_cspmu_validate_event(event->pmu, &fake_hw_events, event);
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  634  }
-> e37dfd65731dc4f Besar Wicaksono 2022-11-11  635
-> 
-> :::::: The code at line 627 was first introduced by commit
-> :::::: e37dfd65731dc4f001fa7dfa7f705e6840017d5a perf: arm_cspmu: Add support for ARM CoreSight PMU driver
-> 
-> :::::: TO: Besar Wicaksono <bwicaksono@nvidia.com>
-> :::::: CC: Will Deacon <will@kernel.org>
-> 
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index a044ca0c35a1..6e3e8433018f 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -1131,6 +1131,10 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
+ static int rk3x_i2c_xfer(struct i2c_adapter *adap,
+                         struct i2c_msg *msgs, int num)
+ {
++       if (irqs_disabled()) {
++               WARN_ONCE(1, "Landed in non-atomic handler with disabled IRQs");
++               return rk3x_i2c_xfer_common(adap, msgs, num, true);
++       }
+        return rk3x_i2c_xfer_common(adap, msgs, num, false);
+ }
+
