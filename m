@@ -2,183 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D54F7E9CC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BDA7E9CCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbjKMNLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
+        id S230072AbjKMNNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMNLs (ORCPT
+        with ESMTP id S229873AbjKMNNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:11:48 -0500
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251B7D6C;
-        Mon, 13 Nov 2023 05:11:45 -0800 (PST)
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADCCLAf023674;
-        Mon, 13 Nov 2023 05:11:26 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :content-transfer-encoding:content-type:mime-version; s=
-        PPS06212021; bh=olQ92dcB6vP/6vAQYokPPi+X91EBt6OBucsVRmpfMcQ=; b=
-        Q1azMx8J8RofgP3eGJRpJ8mjXqTBWhSKOlKAezEEFA6EJzPWwTLVf9EFtn5Y41Fl
-        fMyMw45X3JGo/OZkBCjJK2R4Fe3/1e/jLBxrUswxAJgYhbJNeUhhUdx1YkZCmP/K
-        9NGl8FmXxeTKQxkD6W6kZlG1m2Yfa/IK32LPgDDfPbK3BLxhk2ko72wkuWy+UfHw
-        6slujhkICptEyM3HG7hysh2fbRid6ZQv0IVT/uAxMcEPioHHxRf2KhY8E6zEgC0r
-        VgxTsWrW7O4U2OZMJzZ8JtFd32MEcXyQiieDmvPS0GHxdYWpXTXMT8jmfeFS5jyg
-        IyfCYjy5Qr84kudZpD593A==
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ua5s4se6j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 05:11:25 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=STo7Sghu9QpOsAu3FjU3psWdHZtHtgtPpTduLpbM95uAXmYtrWpjoB61wU/XdqUTZqGmVhbei4lvABG2F9zWRj3sCWYkm2z/Sg8KaLx3/3tyitwdkvvx6su17vRbVcPcNHs5Z1vTvixkUtZz3eHHZVHuAIoDm0X8vNsLJIxEbKeBOBG7v3YlGX19LKd4BmehHUGxr7vpG50PnRPnARSdBLEfR8tzU55im/H7M19gzymrhgXVjw1jgd3mF49quWbd58sfV4jy1+vEavSDOimG7X1nI5yLqcJ9i2KX6+I//Apv/biNPnjhTelzOUCl32xPh0SQEE4OmMgEQO7Gg7ZSaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=olQ92dcB6vP/6vAQYokPPi+X91EBt6OBucsVRmpfMcQ=;
- b=BWwu2QldYcnB3ZhsQvH4n9V75kqNcvjICSxgyHiqzO9uMYxEQe3Qi9GmsxGzA3p+xFVslh/oOYxH+yzyh5yCdjAHEvUeuVbqdKkPYlgfJZcDVxwreCOxLaG40ylA6yXf7Ug6n971YoKxcdBdTDJEOWfMM2zYHvMp3rpbCVPz4n2xlPmMzLfRu/O6TezPQoHwdLYONWAS+Ba2ke6clThXFo2WhPyr9jiNyLGocqbX1KzYUw+XY5TBlMG1E0T5ucFCVlheyTuq+nnaRDJ51u7Pdr76L2qSd+q4sZ65mpAb0Qf8X9T6pKIn1eXXEsYZP2I1pXGFb4h8+1vVzZOupPLvYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from MW5PR11MB5764.namprd11.prod.outlook.com (2603:10b6:303:197::8)
- by PH7PR11MB6772.namprd11.prod.outlook.com (2603:10b6:510:1b6::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
- 2023 13:11:21 +0000
-Received: from MW5PR11MB5764.namprd11.prod.outlook.com
- ([fe80::7d7c:4379:e96:3537]) by MW5PR11MB5764.namprd11.prod.outlook.com
- ([fe80::7d7c:4379:e96:3537%7]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 13:11:21 +0000
-From:   Xiaolei Wang <xiaolei.wang@windriver.com>
-To:     Frank.Li@nxp.com, vkoul@kernel.org
-Cc:     imx@lists.linux.dev, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] dmaengine: fsl-edma: Add judgment on enabling round robin arbitration
-Date:   Mon, 13 Nov 2023 21:11:05 +0800
-Message-Id: <20231113131105.1361293-2-xiaolei.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231113131105.1361293-1-xiaolei.wang@windriver.com>
-References: <20231113131105.1361293-1-xiaolei.wang@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0007.apcprd02.prod.outlook.com
- (2603:1096:3:17::19) To MW5PR11MB5764.namprd11.prod.outlook.com
- (2603:10b6:303:197::8)
+        Mon, 13 Nov 2023 08:13:40 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381B61722;
+        Mon, 13 Nov 2023 05:13:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1699881202; x=1700486002; i=linosanfilippo@gmx.de;
+        bh=DCtP9iy0F1QAvQ6KYyz6RFd1UoZb6KMflQSExr1EF+8=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=B734WDW4KJT7T/vhFYZlIb0CK1PGgOVfdNjSAxxV4vIS8iGxW23o3gy/h5nHupEs
+         naNIp2hnWjg0JNFFZwPqbF7Xc4bYNz/OoFD+jYxo4aNA/M4DzEXaTiamlyjU2b0P6
+         DwCD6wgUa79u5LcJHpMIPL7/N2IvKfe/BSNLNuQLxdwsIhf54zxixngV8s6wLIoZv
+         RGaT8xar/dSXoUFb+h6PU6x6XzzEoIZ3Z2l4/tb6gRRGAcCCmy18rfMcKaOdnghkV
+         J/Gh3Vm5DsiUkEG1bqR28Z0+mx/nNvO9ItgxVTBKqBB95dpOWUbG//HWmtO5Dowgq
+         6vk5brqqKuKgVstCbg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkHQX-1rn6yJ2YTh-00kfRi; Mon, 13
+ Nov 2023 14:13:22 +0100
+Message-ID: <a30af891-15a3-47fe-93d1-a0238a3aa411@gmx.de>
+Date:   Mon, 13 Nov 2023 14:13:22 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR11MB5764:EE_|PH7PR11MB6772:EE_
-X-MS-Office365-Filtering-Correlation-Id: fad7cfcd-87a3-444c-da33-08dbe44a07f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mldjm0/+nTiqOBTJZp6qClQYRBIq18k3cZw3LyENq5KvNcaKRejY8M3cYLHtP9HQ2xmMOS49HG7m3VxDEY6QBec8W5KusFPXPSvEGAYlvYf5GPKzuQ9vOzNJWC8wdX0B9ZyyomSLni8DNO3fq4qAac89LCtjRu1C/boQPWnD7E2GMnMxQ7Ect+ThvVQsAAw76X7LlgOoVL3CW82xjwVNbftAvJ0QE097263wUpEHO0HcjyzlbJZSeas9FuKJnvyfgdv4ePwMLSkQaMHrMMb2GUlTE9Jmr8nzXLpFUXcUpPYeU+5mbOnM3AbAc1fmtG9DcHmeaMow2xfLZNkmE1MLAKohcjRhgLAG4Eurus4H82lK/uiubrPkox0Dd0rWLy0iTHQQFi7bzYtjahECEGiEItBk3vkl1Mpl9otf913WgdJ/bDwEbVMGUYOejmGehib0ep19JzhawO4PyUsl5BqKrt/JL5neAzVZIzvxRYsAOYYeqNtHrlupOGoZTHKXOBUFW34En2tcZZQqBn75dOrl7emREzv1bEmpE3NCS113MEOHzcoGYxIIcbeY02ZBkkYjykMQpjXome5dDAIMDHDvy8bQ1JIq6NEtKw6j0OWxlS7twOvV54w7G1WhumVO+SHB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(39850400004)(136003)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(5660300002)(86362001)(6486002)(478600001)(2906002)(6666004)(8676002)(8936002)(4326008)(44832011)(66946007)(316002)(66476007)(66556008)(26005)(1076003)(36756003)(83380400001)(41300700001)(6512007)(6506007)(38100700002)(52116002)(2616005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J9p0zMXdxqaZo/rKzQ2BOEdJ0fS7APm/TgKr09tRwZZydbbWpdEpu6MD14zF?=
- =?us-ascii?Q?dwBtbt+nBbJavLcsfn5ssVjX7j/WcR8d4e5TFPz2VKhjB3SGvFB6REVKDvtR?=
- =?us-ascii?Q?N1u5mTbJS6/qe77nBriS3d7V2wpretFmVvCanU20ysBk1W/ejd88+m7UPsy0?=
- =?us-ascii?Q?AIYhvrjysW/P1oWREJee5m9cf4WGPlIFYOnpJZkXQlYz/6HjYaeRlWJ4hb4Y?=
- =?us-ascii?Q?4NhHXoaiKVJYGmB+i6IQEkYrIQPt1F37bmylWopcCKfJyRFCnV09YbYl+o3t?=
- =?us-ascii?Q?7IMGwrb1HdHSJZ9hr0yyDPMOhkKewcIFrKkqO07FDY4ujdY5iup5NBKZ/pvm?=
- =?us-ascii?Q?7xq28DHV1f9p32LJfrdzUUnjIZmAB09NJRe9L+HtqGz8SssTHHdP8LnHoXkv?=
- =?us-ascii?Q?5RrUUipT5tsQVaRjsz+Ho0hixXexHoBMjmAwKIvWfaqb/sQ8rnKZ6ExZNGhk?=
- =?us-ascii?Q?v/ddGdWJ09tqUyW2t85+lBci7MihQGdE4WBLFhQh062alFDKwZacxT0jrNba?=
- =?us-ascii?Q?jAAb2QD+RXXOJEUl7WLUaxyMGSnP+4MG1IMsAWczSQr5ISJfzNMztK/vIljZ?=
- =?us-ascii?Q?FDy1a4ndFrAlOr5UNO7oWchbzSnDt88o1idVCaPcEr6mrT67bL2NCtr19Zn3?=
- =?us-ascii?Q?1+35d1wxkwF4JVCOwgfFt2bLgpu+ut1S8dplw4g0y9I43e7kk26CaJoTN5xy?=
- =?us-ascii?Q?vljZhl//BRqvC8F7esBs3q7YCRAoXlEaJDDvL9Sxe/a+88KHUpf9QlSg1YCl?=
- =?us-ascii?Q?NOvwhdef4vnLFb5mebs+tN8hZfn3j6PZ+hClzLyMzLKL++QLrUYTHcC/LhYT?=
- =?us-ascii?Q?YTE7WbjkF1L7TcDoPrMDGwa5HZxOB5XOdDQC4svittSqhiQCs4gfh9Wi29AU?=
- =?us-ascii?Q?65+rvRSMCB78UVhiNYnc4HNo5/Xdn7FmgdD47dVz3vS2WamiZYvB/o3/lGg4?=
- =?us-ascii?Q?25awlaNyamkEVEc6kFSKdR7Uxxg9Fo1pm77IDt7jLKWEoIoLlVBFIjGVxckt?=
- =?us-ascii?Q?ql5kNG5v7xQjynnwNUnYBzdSeKjw4lO+x5Na3MO/hlLlqIcZIU+oBW/wd3aR?=
- =?us-ascii?Q?PluDq0r6xa3fQcYtQYCXbvA+9jkfkxP0RHvd8V8JvrF0f5H2aAg1wZ5Mn7it?=
- =?us-ascii?Q?jhuwMz7f6nbo0nYTsHBQtVaCecRn+PK5nt0qIB5IdceD+xlGd75qY+53utBl?=
- =?us-ascii?Q?sCfjRn+EMqz0UqY+tTX/e1hhMHEHDRS1EKu/wZzUUd4K5KLqETHO6906u2rG?=
- =?us-ascii?Q?pIQWETkn4jXEM8LU8Fd2jOlwh9Ga+MFcpynK0khV9MMlQ7akauc19mZnHA69?=
- =?us-ascii?Q?7XCbFZxqksM5vgp20ReXG1A06HBmtSRuEMQyBQhB+6EMLbmE5kecgY6YWrV6?=
- =?us-ascii?Q?Gwa1boi4DC0nfxmO6dP3UlnhMCy1f3LiT0hbU9Qt1X/cizltgVAGu0ZoTPLh?=
- =?us-ascii?Q?A75wHDCHVPlv7nNHUMo6eMC4IJYW9pYjznPFBWyGObJbuhkYOx9Vr32JFHXb?=
- =?us-ascii?Q?JFA0ymUKzJ0fPK1p27b8biryPhn13X7k2VyVUKOrpBRXkwBWsxFqkX0nK+qU?=
- =?us-ascii?Q?lWXvfzj/OvodNa+c8bhvZawJH13xYGPjVL9wqyEmD8N2b5OvRz7rtXOSHHxM?=
- =?us-ascii?Q?kA=3D=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fad7cfcd-87a3-444c-da33-08dbe44a07f3
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5764.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 13:11:21.6948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DCgPlPAvEKis+F1DFGKFtiG4fWrb2/7b9/siiGBXz0zCSJe/hVhL7ZZ1+nldR11aix0yFQaUrLxwrqhazlLGHy+BIPkQ9stkW4ZZ3VISGAM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6772
-X-Proofpoint-GUID: wkhA0Nc4Iy08eMopc8DTCoMZMKLdi8Ts
-X-Proofpoint-ORIG-GUID: wkhA0Nc4Iy08eMopc8DTCoMZMKLdi8Ts
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-13_03,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=607 clxscore=1011
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311060001 definitions=main-2311130108
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] tty: serial: Add RS422 flag to struct serial_rs485
+Content-Language: en-US
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231113094136.52003-1-crescentcy.hsieh@moxa.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <20231113094136.52003-1-crescentcy.hsieh@moxa.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sKuwfRjTci886YBBokwGLTSlesJrf80clfsk0EOPjOQZaF1xcRz
+ gpnn0Fn23eKveonqQz5eCeldouQ3jsYBcSNb9ipmzWd+lqzoqsmLoTSvFlcmqOj0mmq31Po
+ sE6df3gnAcLSZp4c2MV/WfqsmH7rdyDgrd1W2lvN7/8McUO0PG6/PkcrIvVA19Wm0Dwfn/p
+ ZiJrIRLKfx5kV8xi1vLXw==
+UI-OutboundReport: notjunk:1;M01:P0:VQjBBjG9LJg=;DvMewkQvKVwUmH5ldLpe33o+mvw
+ 9KmaL3UB4KKPU5dCpIjdMYURLFpmzUsnav6syIeeRAPz/66nzQFys+JI/M/HrBxa0a+8PIOHU
+ 4Q49W2x3joncnMqxBYwWr21F+7m6wUrs6PBtxfRAo4J1JUwC4L3Hy0AUuY+Kov/nXwX7yVUrp
+ oTK6q4lYf7v384Y6xP4ChWKP6+8bhFUC6Ug+pDQ+AJ3/xAYus0Xs52YNtSMjJQURsFBx2Ipnh
+ tKbGTn55t+2A7PBsIr2p35Jc5kXW1idNdOxhp6FMtF/VDke1mtxjLwhvjlDUfC2CCq1UIsTTx
+ zhPSzKvot5Ddxe91bciqQvmytPnSB4kX/AUyrISyIPYPhnODkqUf6TXG+AVdIvwxs2xPIsqAP
+ Wbs9PeirrPrcgxwQTrHXGcLYrJnC4+hMLDZMFMVE6EChV1NLBf8I6AwbD5NuyRVvvQDmNUvIW
+ c4ZoFI9BCmUgW3blXUYnJ4QRpsmuHCgs8xMoF1OyFDbbBL45GWKJ/LsAZxwcLE46r31ngkrdb
+ p80kHNv4wZEAKzh1X0nmR5xCJfaveWU16lkMyu6jvmjGCCUgeO3TDvkfnxmm2f+Ee4T5G9Pa6
+ m0Rf+TSeSJ7TDkcv6g7fSFF333k3eNBC86QxckKVMv/C736m6lNd5oXASlwVjZ7ZEkNBCoaVb
+ MOljY49iMsm2CHQNz2r9c4MFNnhV23K3Z1IvJ8ke6E6glXU9NHQOBvOdPxAQJKGITo8gdd8Io
+ CMOn+votlLy2nhcyx8oON4/AgIu6k66YjNcJr1TEGe7b7+nAnNwhQb1zIHf2AoK9D2N5tRMK2
+ drsUrh4LzEklQpYyB71WCKSPjh4nZ+t9GnQ9cAFa/O1VzKP7ncppr7SRcGiFaVnTOCsj9VZfg
+ j3qvAYjaYrQ8SazpUxT9WoaYsfR+QyaQTqjo0QzMfIIyKnhTRJT1dKsSqMECn+pzeFl7yvNnL
+ wOIz4Q==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add judgment on enabling round robin arbitration to avoid
-exceptions if this function is not supported.
+Hi,
 
-Call trace:
- fsl_edma_resume_early+0x1d4/0x208
- dpm_run_callback+0xd4/0x304
- device_resume_early+0xb0/0x208
- dpm_resume_early+0x224/0x528
- suspend_devices_and_enter+0x3e4/0xd00
- pm_suspend+0x3c4/0x910
- state_store+0x90/0x124
- kobj_attr_store+0x48/0x64
- sysfs_kf_write+0x84/0xb4
- kernfs_fop_write_iter+0x19c/0x264
- vfs_write+0x664/0x858
- ksys_write+0xc8/0x180
- __arm64_sys_write+0x44/0x58
- invoke_syscall+0x5c/0x178
- el0_svc_common.constprop.0+0x11c/0x14c
- do_el0_svc+0x30/0x40
- el0_svc+0x58/0xa8
- el0t_64_sync_handler+0xc0/0xc4
- el0t_64_sync+0x190/0x194
+On 13.11.23 10:41, Crescent CY Hsieh wrote:
+> Add "SER_RS485_MODE_RS422" flag to struct serial_rs485, so that serial
+> port can switch interface into RS422 if supported by using ioctl command
+> "TIOCSRS485".
+>
+> By treating RS422 as a mode of RS485, which means while enabling RS422
+> there are two flags need to be set (SER_RS485_ENABLED and
+> SER_RS485_MODE_RS422), it would make things much easier. For example
+> some places that checks for "SER_RS485_ENABLED" won't need to be rewritt=
+en.
+>
+> There are only two things need to be noticed:
+>
+> - While enabling RS422, other RS485 flags should not be set.
+> - RS422 doesn't need to deal with termination, so while disabling RS485
+>   or enabling RS422, uart_set_rs485_termination() shall return.
 
-Fixes: 82d149b86d31 ("dmaengine: fsl-edma: add PM suspend/resume support")
-Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
----
- drivers/dma/fsl-edma-main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Commit messages should use the imperative form.
 
-diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
-index 52577fffc62b..aea7a703dda7 100644
---- a/drivers/dma/fsl-edma-main.c
-+++ b/drivers/dma/fsl-edma-main.c
-@@ -665,7 +665,8 @@ static int fsl_edma_resume_early(struct device *dev)
- 			fsl_edma_chan_mux(fsl_chan, fsl_chan->slave_id, true);
- 	}
- 
--	edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
-+	if (!(fsl_edma->drvdata->flags & FSL_EDMA_DRV_SPLIT_REG))
-+		edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
- 
- 	return 0;
- }
--- 
-2.25.1
+>
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+>
+> ---
+> Changes from v3 to v4:
+> - Include 'linux/const.h' header in '/include/uapi/linux/serial.h'
+> - Replace BIT() with _BITUL() which defined in
+>   '/include/uapi/linux/const.h'
+>
+> Changes from v2 to v3:
+> - Remove "SER_RS422_ENABLED" flag from legacy flags.
+> - Revise "SER_RS422_ENABLED" into "SER_RS485_MODE_RS422".
+> - Remove the code which checks the conflicts between SER_RS485_ENABLED
+>   and SER_RS422_ENABLED.
+> - Add return check in uart_set_rs485_termination().
+>
+> Changes from v1 to v2:
+> - Revise the logic that checks whether RS422/RS485 are enabled
+>   simultaneously.
+>
+> v3: https://lore.kernel.org/all/20231108060719.11775-1-crescentcy.hsieh@=
+moxa.com/
+> v2: https://lore.kernel.org/all/20231101064404.45711-1-crescentcy.hsieh@=
+moxa.com/
+> v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@m=
+oxa.com/
+>
+> ---
+>  drivers/tty/serial/serial_core.c | 11 ++++++++++-
+>  include/uapi/linux/serial.h      | 19 +++++++++++--------
+>  2 files changed, 21 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/seria=
+l_core.c
+> index 831d03361..777f091a4 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -1376,6 +1376,13 @@ static void uart_sanitize_serial_rs485(struct uar=
+t_port *port, struct serial_rs4
+>  		return;
+>  	}
+>
+> +	/* Clear other RS485 flags and return if enabling RS422 */
+> +	if (rs485->flags & SER_RS485_MODE_RS422) {
+> +		memset(rs485, 0, sizeof(*rs485));
+> +		rs485->flags |=3D (SER_RS485_ENABLED | SER_RS485_MODE_RS422)> +		retu=
+rn;
+> +	}
+> +
+>  	/* Pick sane settings if the user hasn't */
+>  	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND=
+)) &&
+>  	    !(rs485->flags & SER_RS485_RTS_ON_SEND) =3D=3D
+> @@ -1400,7 +1407,9 @@ static void uart_sanitize_serial_rs485(struct uart=
+_port *port, struct serial_rs4
+>  static void uart_set_rs485_termination(struct uart_port *port,
+>  				       const struct serial_rs485 *rs485)
+>  {
+> -	if (!(rs485->flags & SER_RS485_ENABLED))
+> +	/* Return while disabling RS485 or enabling RS422 */
+> +	if (!(rs485->flags & SER_RS485_ENABLED) ||
+> +	    (rs485->flags & SER_RS485_ENABLED && rs485->flags & SER_RS485_MODE=
+_RS422))
 
+Is this check needed at all? If no termination GPIO is specified, gpiod_se=
+t_value_cansleep()
+does nothing. If a termination GPIO is specified it will be deasserted in =
+case of RS422
+(since for the RS422 case the SER_RS485_TERMINATE_BUS flag is deleted in
+uart_sanitize_serial_rs485()). This seems like a good behaviour to me, so =
+IMO the above check
+is not needed.
+
+>
+>  	gpiod_set_value_cansleep(port->rs485_term_gpio,
+> diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
+> index 53bc1af67..9086367db 100644
+> --- a/include/uapi/linux/serial.h
+> +++ b/include/uapi/linux/serial.h
+> @@ -11,6 +11,7 @@
+>  #ifndef _UAPI_LINUX_SERIAL_H
+>  #define _UAPI_LINUX_SERIAL_H
+>
+> +#include <linux/const.h>
+>  #include <linux/types.h>
+>
+>  #include <linux/tty_flags.h>
+> @@ -137,17 +138,19 @@ struct serial_icounter_struct {
+>   * * %SER_RS485_ADDRB		- Enable RS485 addressing mode.
+>   * * %SER_RS485_ADDR_RECV - Receive address filter (enables @addr_recv)=
+. Requires %SER_RS485_ADDRB.
+>   * * %SER_RS485_ADDR_DEST - Destination address (enables @addr_dest). R=
+equires %SER_RS485_ADDRB.
+> + * * %SER_RS485_MODE_RS422	- Enable RS422. Requires %SER_RS485_ENABLED.
+
+All of the above flags are only effective if RS485_ENABLED is set, so no n=
+eed
+to mention this explicitly for the MODE_RS422 flag.
+
+>   */
+>  struct serial_rs485 {
+>  	__u32	flags;
+> -#define SER_RS485_ENABLED		(1 << 0)
+> -#define SER_RS485_RTS_ON_SEND		(1 << 1)
+> -#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
+> -#define SER_RS485_RX_DURING_TX		(1 << 4)
+> -#define SER_RS485_TERMINATE_BUS		(1 << 5)
+> -#define SER_RS485_ADDRB			(1 << 6)
+> -#define SER_RS485_ADDR_RECV		(1 << 7)
+> -#define SER_RS485_ADDR_DEST		(1 << 8)
+> +#define SER_RS485_ENABLED		_BITUL(0)
+> +#define SER_RS485_RTS_ON_SEND		_BITUL(1)
+> +#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
+> +#define SER_RS485_RX_DURING_TX		_BITUL(3)
+> +#define SER_RS485_TERMINATE_BUS		_BITUL(4)
+> +#define SER_RS485_ADDRB			_BITUL(5)
+> +#define SER_RS485_ADDR_RECV		_BITUL(6)
+> +#define SER_RS485_ADDR_DEST		_BITUL(7)
+> +#define SER_RS485_MODE_RS422		_BITUL(8)
+>
+>  	__u32	delay_rts_before_send;
+>  	__u32	delay_rts_after_send;
+
+
+Regards,
+Lino
