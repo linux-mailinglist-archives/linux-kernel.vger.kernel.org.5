@@ -2,183 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3807E954A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:03:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C627E954F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbjKMDBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:01:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54674 "EHLO
+        id S232924AbjKMDEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKMDBc (ORCPT
+        with ESMTP id S229665AbjKMDEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:01:32 -0500
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCA2DD;
-        Sun, 12 Nov 2023 19:01:27 -0800 (PST)
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AD31La3002831;
-        Mon, 13 Nov 2023 03:01:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:content-transfer-encoding
-        :content-type:mime-version; s=PPS06212021; bh=jhmT4F1FFbGRDUsQKc
-        sXj87GaIKhGYLoPREAPz93kEI=; b=D8fxvcyTOCi3Sut0mJt5Hwy7jSTxUpLHEJ
-        rDUtzsEHiNxEHPF9bnDQTf1raXvW1C58BAn1f+dmZejeBMNgeDJOthA/op3q7xxb
-        UW/l5J0MgJjn1MaDNRHUMyeYrgjEvRh4qAsQDmMWQrPxgzrVgI5uH+NCFU0urI9X
-        OIuiY/5ufWWH9qOBiEEvHCKClVWHPreKswcGpRjFHInnUNTRicazsOuGpVaKoCDV
-        n+a3Ld9WbcdBUtwwYQ2ac8zNHmlGAWlhtyU05MC+/xCjdWnQGbGbo//j8RYGDuig
-        HLBawGkMrV51WeMNTzOL7Av0wzzKsDDhJ55Yv4XodsQsHGpgj3qA==
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3u9xtx9a6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 03:01:21 +0000 (GMT)
+        Sun, 12 Nov 2023 22:04:00 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2118.outbound.protection.outlook.com [40.107.255.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4311704
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:03:57 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EL5krOImf3NN4xBO08tkpyCD1c0cMbl9JtQmMSizfX+I37S4iHL23DB2eu4xA6E9kwguLyFSUxwtKQhEdFLhqe42G3MHO5QaJBAe42f/ocdobLgTR8SPcIKwE4CA81pODoDOd6/qVB5NdimNtfsIHgY8Stmnn1KGq9+ik3omyxeDIV+VVbFDuQmxMCNU2CiUrfeqv5WYpbv6WPMul2z1aqgIO5ELdFFkKmMAG8sPaEbjY2UUyGEtn7vmOI1TdHd4TAg3BJg79jZ9cEFH2Ffr4BU6DiB5gbZRuMSTw4PC5rKfXy+fBgOiBMmPHF6ca/gu7jt2chzhjslpeFFtrmDJSg==
+ b=FJKTO19eKM1jdYmJUfuZNmYViipZJpRfAEoBvzmAXg5suxNQwXc1HabbB0bATtGUQD0DCqdy1YB9DwqsBrz1m5o605aF9nfY5CZKYfsYd6TxfvbVzbJE3B1B1wGkJetfTkE9zPO6pF+J7h3a7dw6wch609/2GwWKdBXkp+GdnXI0vEfo8vLJ52jpn8UUMWOa/j3mxIuN0mmOuPYA0MLhsCAR14iml4kaXvm0U6EBom8lttGoVGDxMRSAaRme4hYrx/F35jo/qHCZb+l94m5ZkKxo9ZNRsLuw+oPknbNrttuq8NVUAhrvF4lnWv5VZgXoF5ai5F/ZezpLDXY+8SV8/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jhmT4F1FFbGRDUsQKcsXj87GaIKhGYLoPREAPz93kEI=;
- b=I4XYhjOGO1iAkjuqVl1s5Sauz4S5Xd5X3TT3YZyEzPwuWAWC0pOENlAqqVwXNsaSksdQ7OBMj/8xNyN7f7sy0ty6o6Ylnh1W6SLnylL9FsmHLxSzc/io65J2jwwZVLBwL8dWqA/epDFeMg7nX94EAjZdkHssSmKV4/RirsqGrc2f0Zb9yRH2nV3e6jhmUKXoEORuMLW8gR+2bOKSLeG9ifJe65Mx1VLDUgN5WnKUZn/SQt97AuOZMZOytvD9Ptw3ZWh5R/56ajCnxBdAXqJP0M7BELSoeW29SK+e+KwZHkGtwEczL77CRICDqztWasHgJsHVkRicA5Kc/0MPHwcUBg==
+ bh=xBeZTAyGspQwRPIMNiuVt1kp+s/UGwHOXaMl87chj/U=;
+ b=EPb7vny8B+442hIYtRhEuQEJ7nd9CLog8+J40ZDPJHbpwRizU8saXM4i3bQElOINYlVqze+mWHnZgXsmTQ+4Bgf9rhKg0lOu2VGBDPMx1/lfkx/CWinHOUj3FKHXaOngKej0A1PthKkTqV//Zg59NQnZ7v87XJ83uwWOq3CdLDJMqVfoKTlLP7SSPt3h15fnitUfTv53JU8t76W1aGhrPQL6mxFevccR9UgxC2yWjeXNJpiK8gRT6vADS1P0Rgz68JGSOiYJAs/7wdZ4/9mJkSr2y3M6mmxbIAKSyRIwsilqPaFC+p1wUA1j+GI7H89qZ6LuwlQHT4FzFlpwh/CqOA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com (2603:10b6:510:3e::24)
- by SA0PR11MB4735.namprd11.prod.outlook.com (2603:10b6:806:92::24) with
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xBeZTAyGspQwRPIMNiuVt1kp+s/UGwHOXaMl87chj/U=;
+ b=FRqthJx1cDzk4aHlWPU3N8uobObSscUg2nKAzMirMWzt05XGYBLGLluxMnHzkpkHZGvgWB2HmN5xrEB5qW2ARcEASPIjayFsGdcapUvH403ACrVsJZ+h3tihCaQ5riLi4gl/d4rkQ53gZSMipV854N9cN5eL9K6PN+BUozJbpGWCTNiGM63AYy3FqAnmKt/nhxsDDGonH7kWiJLZSdGuJnKwmTVXUZiidKCSnj257ix9yDXD/mJeq+ssu8O2kUscnlw3EAcBLBqZHlqIh1ADSnkCV8StCR99yKAbF5O4S60jUBtGLbNGNOXk6AfeC2xIMrBaRceNqlz2JvYHHJyIAg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by KL1PR0601MB5655.apcprd06.prod.outlook.com (2603:1096:820:bf::6) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
- 2023 03:01:18 +0000
-Received: from PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::41c:9808:690:f88f]) by PH0PR11MB5191.namprd11.prod.outlook.com
- ([fe80::41c:9808:690:f88f%5]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 03:01:17 +0000
-From:   Meng Li <Meng.Li@windriver.com>
-To:     gregkh@linuxfoundation.org, mathias.nyman@linux.intel.com,
-        stern@rowland.harvard.edu, Basavaraj.Natikar@amd.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     meng.li@windriver.com
-Subject: [PATCH] usb: hcd-pci: replace usb_hcd_irq() with generic_handle_irq_safe() to avoid calltrace
-Date:   Mon, 13 Nov 2023 11:00:41 +0800
-Message-Id: <20231113030041.3655742-1-Meng.Li@windriver.com>
-X-Mailer: git-send-email 2.34.1
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.33; Mon, 13 Nov
+ 2023 03:03:53 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::bdde:31ee:f13c:79fb%4]) with mapi id 15.20.6954.027; Mon, 13 Nov 2023
+ 03:03:53 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        opensource.kernel@vivo.com, Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm: ALLOC_HIGHATOMIC flag allocation issue
+Date:   Mon, 13 Nov 2023 11:03:43 +0800
+Message-ID: <20231113030343.1984-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0022.apcprd02.prod.outlook.com
- (2603:1096:3:17::34) To PH0PR11MB5191.namprd11.prod.outlook.com
- (2603:10b6:510:3e::24)
+X-ClientProxiedBy: SG2PR06CA0192.apcprd06.prod.outlook.com (2603:1096:4:1::24)
+ To JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5191:EE_|SA0PR11MB4735:EE_
-X-MS-Office365-Filtering-Correlation-Id: fcda6e4c-0b5c-4bea-aa2e-08dbe3f4cdec
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|KL1PR0601MB5655:EE_
+X-MS-Office365-Filtering-Correlation-Id: af778645-3021-4298-d925-08dbe3f529f6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nl2s9+vNSsmyy4XBMGHEndS3ANLD5ifFGNgpxmYPN6vpYHvb6KJZ68Kq83kbAStrPTnOU/Fph13twPBD3NtN0hWnTxim5YFENApZxaYemfoDo780I23q4PZhQCO2oQmikaJQo9KzOZ9jH/7YpzoxxAWI7N0aRhudGaiEzKJpam/5TBI5rDcjveMvjLJ/o1WlKqLMLVhi18UtGCdnjaeTKga708Eb8rsZRzd8Pvomb+YNmYbQvRIv+W82CFCbsZpRcnQ5+sOidOB+5GzyZofY45j60AWH1P2XkuerersgcnWFb+vlYu9ksXl0gNCvvwVt3uzvFUoFJm+O02ySMOfpl+ApPkUfnI/n5kzy3gG84IsukCD1Rp+1TOZ51cZ/ULo8L7gSl9Cjg7FYHVLfH5oBQW0wd/q8xTYooZLdPMz93zatr60Gfg7sVR77qZ8xfmlRUNKr0+0tHjfjpKVCNFVehWTW3pAYnQLKe6Wynlyuc8Nz8ZMz0CrkVP3G6Txo+ZiczCwqHERdhQUkZD/dXEGrf0FGloc/U2+yq6Y+rpIEyoou1vCg6GZR5UftgdQTLRGc9YHGGEaP6oOh2mzW5Dz9BPWkAl/cspGkGyvEw8t9NZPbeMITauEFKorDlEZ/e7fZtnS1iXMsSs7gzwrqKTa1qA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5191.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39850400004)(136003)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(107886003)(2906002)(38350700005)(1076003)(2616005)(5660300002)(86362001)(41300700001)(26005)(66556008)(66946007)(66476007)(6512007)(316002)(83380400001)(38100700002)(6666004)(478600001)(6486002)(36756003)(52116002)(6506007)(8676002)(4326008)(8936002)(41533002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: nKtAS3vqkEUQPrHNAsNYLIO4oagX/Mn/inW8C2QSY9WasK7tctmMBNv8L3CYPwVr6ZZrobY7rHWrxWJiVibUEknLO8Zq5WLm/x4yO9bOZLHOJQXmE1dQeSnS7RnPviLNOmED8Vsv5TW8lvhm94dlJBidH1bibCHYtMZ93EMTWjCAEM898N0WPFZzbDQaSvbMxeeEt2VG5F5SYTof4kGlrTQypBpBowOr0rU6s4KK3sMr4H6VOMop0+uF5sDdyFUb/v1Iwbh9nc+n9QENIczE7sjR5GjexxejIV6Oft1PhU4Jl3YdSPt3uq1++Phso81b7CpVIask1ijiovBz3swD9kv0APID7zer+ZUzJBHyXhc2Dsa4CgUhxitvQLde0KS6fxPPrMtWPuuc/tc+ONp6P9ZBdjs6sa0hUHct7TvKT9r4YVX9IeQtJReot2fwEv+nO/uXEvdYy1hoWVhA/i2oPqPEgPnPVGyahXxG1gH1iqjSzHUr425NWTt11ZhF+D9hYAxuW1FiM05EW/QwdGk5azy9wqufgvL2dGl9/VAE0L4rIYv7s5OgU8NAP9bK+TGIcy52XfqawmXW5kmfBAc+cGtRXHcyMv+1VVzJD8Ha9joHYzhkGYfuxxA6thvXfaYO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(366004)(396003)(39860400002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(6486002)(316002)(478600001)(52116002)(6506007)(38350700005)(5660300002)(86362001)(41300700001)(66946007)(54906003)(66556008)(66476007)(2906002)(4326008)(8676002)(8936002)(38100700002)(36756003)(2616005)(107886003)(26005)(1076003)(83380400001)(6666004)(6512007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n3bBLh42kdDpw85YwLgxvFHra37JhiBdM+d+z3LSY0Yf0BzH3piAZVHdhj2Z?=
- =?us-ascii?Q?VUk18KOvYSUbuHNMkyAym4rUxBAfeCJUx8K+1zpQJzAj6YvnumHTOOsZx/+3?=
- =?us-ascii?Q?4BaGwHbWpK8oyANn6wNswyOdUTMTf2Y77HSlx4SSvq90iwvI2SRxit3URBmA?=
- =?us-ascii?Q?hGgoye+9KFM1inUZN7qvNanwRsdX7RqurAUPERzPzCn+CITksH2tf+VzqawY?=
- =?us-ascii?Q?UHXyAVwPdKRCQE/1xYCqM3EAn/aXug8F2WzR+Ujs909NeQxxddMr4xNFkinf?=
- =?us-ascii?Q?Q+3WP8brvzGMkrKtumx4+eHFXkDZ3rrNblNSbpWGvLoZ86Fa1/TW7DEkMIdY?=
- =?us-ascii?Q?HhQ6sM0M2+tzvb3BXDRZwFSx1AWS60pKeVsIbknOxaYSENc4toI6DCaaq+61?=
- =?us-ascii?Q?9/D8tEqnnf15JyDshzq7jbB3LxXNLHS0CM1I90Hb+cir56GsGFUY1U2t6aS9?=
- =?us-ascii?Q?SKgr13+guhpKP5qbb8i7zSlSdRUMJULscbc4FpzrOv+KbVelUHPRB2mBm6vt?=
- =?us-ascii?Q?Ueexl4LWnvylP0Gf8XAY0+9PifxoEnXpRJPdjZYMRPvHr7/r1jX1lgk0ftGF?=
- =?us-ascii?Q?UM2nc1CKyeik/rLM+Mmgu788ieJmL/BM2hugm/48CcqqJDcfFS48l3PxPJKM?=
- =?us-ascii?Q?rCuOlD88Q9fA4tLV6663v7iSiCUbRspWTZZXx3L4XqdHFWkrBQm09oynr99m?=
- =?us-ascii?Q?wPeNFgIxmbDibXLpq+70lxDLA6WpBHDgPyM77nFAOHhxJ7+Fdh0ra0xVYw1/?=
- =?us-ascii?Q?qqknFeg+R5PXyuPn95lt9IDZWPgAMnzQPMAYwFpurpSRxuju9nzVtMPyaHav?=
- =?us-ascii?Q?GRrcEqW5qyGQPHkgHxTIJNu9TDtT7QwjK3EuXBC3iV24KOfUU3eljAEUUuQk?=
- =?us-ascii?Q?yUnagfQjFFVqvZxT+MvD4Ij9/Pgq8Dx78HNIFbxXVHJilosE6Sq3dSe9Pw4T?=
- =?us-ascii?Q?LoqdEG0MdTzpVXiKW0EMn4YKrilND2q2VrHeXMsPz8jte2PcUAmk8iF1rHi8?=
- =?us-ascii?Q?ZiWowW2Er5wDXAZ2LfwZLrh05O/p1xxKFJlYsQWUga93b0fN2ixtVKKEsE6U?=
- =?us-ascii?Q?4HHABRd6L1ax9dR2/Ra3kRT0VoChHHj0TFaHMHybWCX/elg6dpHGncNwfFoZ?=
- =?us-ascii?Q?3Iol0BnHZlunPZ4fkNFL1jTMSHk033juDLOdI/DLBbvZYrnwtoFhRIcpT3La?=
- =?us-ascii?Q?8svnQUL2CLmMiCeNzn7q8Ue34xve7Sank2jnfcKg50GezsPMwsZ8K/aen3UG?=
- =?us-ascii?Q?vcMDo9v97TOQb9EXUZoJbPd5SfNnmbc9/4Rbdd1IvIgTZj2441vPnPzxPXwv?=
- =?us-ascii?Q?5HXRB97LtLrK1wCs2qwTkYPhyqiFFQTEJoO38mFRLCCbaT5UPn+3Z2yCdbQ2?=
- =?us-ascii?Q?GBP7djAL6gAZY2gJwTYHJLNjWjnrOJuTjw4tfqVhPOWeYLbYuBGqc8Tf0c3c?=
- =?us-ascii?Q?08OyJa9zqJxGZBxV772OrSITVQzuiKTrsAlo9xDjOaCTqgvdqjrBpj327YiF?=
- =?us-ascii?Q?M82r4mzBculbq5OKUDGFoAqyUxmmii41YU1dU3icnH5z1X8goZ2ubxCBqY9p?=
- =?us-ascii?Q?Z5auAEpZEAeuokbDCJ5Jo131jAD1eZjlvuQOdIup?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcda6e4c-0b5c-4bea-aa2e-08dbe3f4cdec
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5191.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gVo/IjeLxiSetDR1YeYJILhY5mVa/hMh5Y/h1iuxlapGbsVbXb496z2ISSMZ?=
+ =?us-ascii?Q?KdYssVOgUZOZ1ilqdGWIUvd1unPnsHi24G40XdVkjOcnz/FswMZZVQp/UvM2?=
+ =?us-ascii?Q?ubV/AQFg1HeWbOrx3KK/7/KideKna1jb0xsa3C4OX4aJlYdcaudZF+WP3eFR?=
+ =?us-ascii?Q?RuHgU3YcYpiLsl6bEOuR4yw+A4ewT4yYOMI7JUT2XbzXdmWdj1Y3Ib5qY9Jc?=
+ =?us-ascii?Q?HMyPiFQk862/Vde3/BiPE2FvmQ1Ci4LVOmLqMVt6WbxmdePMS/UXe0rjUnfV?=
+ =?us-ascii?Q?EMPbZ2ZMbyMZm6Qcm054pgiMEkks+MRYEiWdInclalQMxHWVdvgGdljfPI+a?=
+ =?us-ascii?Q?aoMSdc1xCdJORP8m5h+BGn4PjmR42lotjplDErfj8FeEze1mfwjaBtYZlYLI?=
+ =?us-ascii?Q?0m50UxbhDxX1JiX5ZmTImFPtfvDoUz5UdcnvVzvzejLs9oeM6iu9UYGP6JU9?=
+ =?us-ascii?Q?ubsd9MrG+1H5KObV+V+TlN06bfxaZIJPh7JUvU+Bp7cUDik5AnGtBNUb1SoQ?=
+ =?us-ascii?Q?hQYF3MgPMf6AHEqmL0Ihw8xs0b9RfQTJWw7+f2Nwzofk4D0XrBQRqrDZWaVV?=
+ =?us-ascii?Q?Dk6u0Qe6ancfo4s2G8eUnJD7Y9IyiOsSwd52rI2gEtqIXNC1+1YMnOKv3URR?=
+ =?us-ascii?Q?nENtlBQnYshtKmkHX+rDK8N5/68CtowTR9yk3l2pU+K/jLXMoCfTQBCEV8PY?=
+ =?us-ascii?Q?9lJFu+XK9ZgE7lim0cckqVGKZnRDoT4v1avJF2xZ3EhGF4zc8v9pQ3ubWK93?=
+ =?us-ascii?Q?5BY4rR6fSmRQ6Ws1rTyIIs9y9V5yNquJX+pk3LSiW8A1rZpFzr2sGe/GWRuJ?=
+ =?us-ascii?Q?/EF9oEAiFPYv2ugUdm7eIF/zX04YlALsclnRHQCGPPhAf1fz9JWQiCWi4xTK?=
+ =?us-ascii?Q?SowCXGmrVOt3r/I/tX3VsWu0v+tr8fZ0VoGwkxUrJKcDQSMPS7cb5Ar4YS63?=
+ =?us-ascii?Q?lE/32nYcv8llaRApKtxAKl0/w96vjOXbz90BiaqK2l1Ipf8H6iS+L6JVMsXF?=
+ =?us-ascii?Q?WkLYbI4zLMYGDqSB0d1VePGkSwhRsHHZ0Z5gfTpb6o9HBGzBHpHO4j4Xl4PQ?=
+ =?us-ascii?Q?uySiCKYNecLRLvDydb5/YIQRv57eZsoxNOUo98WCNtxGsKUeIFiLBNz7Tee7?=
+ =?us-ascii?Q?XMPY6MQ5B6+uP3zdY2RNbOOlp7gIop6i4RubJIschswk5w4Ye32xyMXB+df7?=
+ =?us-ascii?Q?UIdBSoIgc4OyzDk9IuEey1O7ueOBFll2ddbVzPsekvxy3/DQfx7heOAfpCzc?=
+ =?us-ascii?Q?Spa3tGrlgVKkGx5w3l0WDMwT8BK/Lk9P1xbpmFyN8PLfVwP4coSVtjAKI5qh?=
+ =?us-ascii?Q?DrztJZnVkVS1RPsREw44HhXFi+jL188hfYS91eACKafEuJbA9WFURWK1A+ba?=
+ =?us-ascii?Q?J6Zl1ibcLGf0QM8lnP8Uj9mlz+1hZ7Iizet88NtawLtZusaSq+/sBH0FNp/K?=
+ =?us-ascii?Q?zp8gqMWKKHi1piAPakxjs+91oEtQB6OMxJT1412v7JeXSMAkPH+Cn5X+4VM6?=
+ =?us-ascii?Q?/aGqpvlhTwFmDTjtOUgZN7ZDz5KiPYFc4oxEDZF+yzdfHdeJijT88n75crNS?=
+ =?us-ascii?Q?j+vgPqTpxYykkc1EDrEXV9V60ULWHcwW+11hrvP/?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af778645-3021-4298-d925-08dbe3f529f6
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 03:01:17.4342
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 03:03:52.3346
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sSFHKTsBlJ7Q3a4/JWQnKjHfN6vz9PR5t3pX8AyI2XYwOyDrsFztYLmJLahoD89zS6i656Kde/MmFun8oXIs2Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4735
-X-Proofpoint-ORIG-GUID: WRZ_MXy9ls0fmJH0oK5Z8bq2XVzT-GPQ
-X-Proofpoint-GUID: WRZ_MXy9ls0fmJH0oK5Z8bq2XVzT-GPQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-12_24,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=369 bulkscore=0 mlxscore=0
- clxscore=1011 adultscore=0 priorityscore=1501 impostorscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311060001
- definitions=main-2311130025
+X-MS-Exchange-CrossTenant-UserPrincipalName: iZ79QLDWkrE/keP8cJFaJ5zrTx8H2HdTcY6bho7pJ5WLBHaN3AyK5J82hdv3VYWq2QToSkzhovbddEVp7/vVGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB5655
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running below to command to remove a PCIe-USB device,
-there is below caltrace reported in RT kernel.
-Call trace:
- ......
- __might_resched+0x160/0x1c0
- rt_spin_lock+0x38/0xb0
- xhci_irq+0x44/0x16d0
- usb_hcd_irq+0x38/0x5c
- usb_hcd_pci_remove+0x84/0x14c
- xhci_pci_remove+0x78/0xc0
- pci_device_remove+0x44/0xcc
- device_remove+0x54/0x8c
- device_release_driver_internal+0x1ec/0x260
- device_release_driver+0x20/0x30
- pci_stop_bus_device+0x8c/0xcc
- pci_stop_and_remove_bus_device_locked+0x28/0x44
- ......
- el0t_64_sync_handler+0xf4/0x120
- el0t_64_sync+0x18c/0x190
-This issue is introduced by commit c548795abe0d("USB: add
-check to detect host controller hardware removal"). Because
-in RT-kernel, spinlock that may cause sleep is invoked under irq
-disabled status. Therefore, replace usb_hcd_irq() function with
-generic_handle_irq_safe() to avoid calltrace
+In case that alloc_flags contains ALLOC_HIGHATOMIC and alloc order
+is order1/2/3/10 in rmqueue(), if pages are alloced successfully
+from pcplist, a free pageblock will be also moved from the alloced
+migratetype freelist to MIGRATE_HIGHATOMIC freelist, rather than
+alloc from MIGRATE_HIGHATOMIC freelist firstly, so this will result
+in an increasing number of pages on the MIGRATE_HIGHATOMIC freelist,
+pages in other migratetype freelist are reduced and more likely to
+allocation failure.
 
-Fixes: c548795abe0d ("USB: add check to detect host controller hardware removal")
-Cc: stable@vger.kernel.org
-Signed-off-by: Meng Li <Meng.Li@windriver.com>
+Currently the sequence of ALLOC_HIGHATOMIC allocation is:
+pcplist --> rmqueue_bulk() --> rmqueue_buddy() MIGRATE_HIGHATOMIC
+--> rmqueue_buddy() allocation migratetype.
+
+Due to the fact that requesting pages from the pcplist is faster than
+buddy, the sequence of modifying the ALLOC_HIGHATOMIC allocation is:
+pcplist --> rmqueue_buddy() MIGRATE_HIGHATOMIC --> rmqueue_buddy()
+allocation migratetype.
+
+This patch can solve the failure problem of allocating other types of
+pages due to excessive MIGRATE_HIGHATOMIC freelist reservations.
+
+In comparative testing, cat /proc/pagetypeinfo and the HighAtomic
+freelist size is:
+Test without this patch:
+Node 0, zone Normal, type HighAtomic 2369 771 138 15 0 0 0 0 0 0 0
+Test with this patch:
+Node 0, zone Normal, type HighAtomic 206 82 4 2 1 0 0 0 0 0 0 
+
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
 ---
- drivers/usb/core/hcd-pci.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ mm/page_alloc.c | 33 ++++++++++++++++++++++++++++++---
+ 1 file changed, 30 insertions(+), 3 deletions(-)
+ mode change 100644 => 100755 mm/page_alloc.c
 
-diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-index ee3156f49533..3b5f7dccbe6a 100644
---- a/drivers/usb/core/hcd-pci.c
-+++ b/drivers/usb/core/hcd-pci.c
-@@ -325,9 +325,7 @@ void usb_hcd_pci_remove(struct pci_dev *dev)
- 	 * to test whether the controller hardware has been removed (e.g.,
- 	 * cardbus physical eject).
- 	 */
--	local_irq_disable();
--	usb_hcd_irq(0, hcd);
--	local_irq_enable();
-+	generic_handle_irq_safe(dev->irq);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7a8dac0c1c74..49890d00cc3c
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2850,11 +2850,20 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 			int batch = nr_pcp_alloc(pcp, zone, order);
+ 			int alloced;
  
- 	/* Note: dev_set_drvdata must be called while holding the rwsem */
- 	if (dev->class == CL_EHCI) {
++			/*
++			 * If pcplist is empty and alloc_flags is with ALLOC_HIGHATOMIC,
++			 * it should alloc from buddy highatomic migrate freelist firstly
++			 * to ensure quick and successful allocation.
++			 */
++			if (alloc_flags & ALLOC_HIGHATOMIC)
++				goto out;
++
+ 			alloced = rmqueue_bulk(zone, order,
+ 					batch, list,
+ 					migratetype, alloc_flags);
+ 
+ 			pcp->count += alloced << order;
++out:
+ 			if (unlikely(list_empty(list)))
+ 				return NULL;
+ 		}
+@@ -2918,7 +2927,7 @@ static inline
+ struct page *rmqueue(struct zone *preferred_zone,
+ 			struct zone *zone, unsigned int order,
+ 			gfp_t gfp_flags, unsigned int alloc_flags,
+-			int migratetype)
++			int migratetype, bool *highatomc_allocation)
+ {
+ 	struct page *page;
+ 
+@@ -2938,6 +2947,23 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 	page = rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
+ 							migratetype);
+ 
++	/*
++	 * The high-order atomic allocation pageblock reserved conditions:
++	 *
++	 * If the high-order atomic allocation page is alloced from pcplist,
++	 * the highatomic pageblock does not need to be reserved, which can
++	 * void to migrate an increasing number of pages into buddy
++	 * MIGRATE_HIGHATOMIC freelist and lead to an increasing risk of
++	 * allocation failure on other buddy migrate freelists.
++	 *
++	 * If the high-order atomic allocation page is alloced from buddy
++	 * highatomic migrate freelist, regardless of whether the allocation
++	 * is successful or not, the highatomic pageblock can try to be
++	 * reserved.
++	 */
++	if (unlikely(alloc_flags & ALLOC_HIGHATOMIC))
++		*highatomc_allocation = true;
++
+ out:
+ 	/* Separate test+clear to avoid unnecessary atomics */
+ 	if ((alloc_flags & ALLOC_KSWAPD) &&
+@@ -3208,6 +3234,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 	struct pglist_data *last_pgdat = NULL;
+ 	bool last_pgdat_dirty_ok = false;
+ 	bool no_fallback;
++	bool highatomc_allocation = false;
+ 
+ retry:
+ 	/*
+@@ -3339,7 +3366,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 
+ try_this_zone:
+ 		page = rmqueue(ac->preferred_zoneref->zone, zone, order,
+-				gfp_mask, alloc_flags, ac->migratetype);
++				gfp_mask, alloc_flags, ac->migratetype, &highatomc_allocation);
+ 		if (page) {
+ 			prep_new_page(page, order, gfp_mask, alloc_flags);
+ 
+@@ -3347,7 +3374,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 			 * If this is a high-order atomic allocation then check
+ 			 * if the pageblock should be reserved for the future
+ 			 */
+-			if (unlikely(alloc_flags & ALLOC_HIGHATOMIC))
++			if (unlikely(highatomc_allocation))
+ 				reserve_highatomic_pageblock(page, zone);
+ 
+ 			return page;
 -- 
-2.34.1
+2.39.0
 
