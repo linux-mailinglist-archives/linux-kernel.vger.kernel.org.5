@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59377E9CDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F04037E9CE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbjKMNQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
+        id S230415AbjKMNQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjKMNQR (ORCPT
+        with ESMTP id S230349AbjKMNQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:16:17 -0500
+        Mon, 13 Nov 2023 08:16:20 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C9DD6C;
-        Mon, 13 Nov 2023 05:16:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5FF1724;
+        Mon, 13 Nov 2023 05:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699881374; x=1731417374;
+  t=1699881377; x=1731417377;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=0W1lXUBGP+iBxAlWICinNyER0ndu/deNSI5T1s1ZuWI=;
-  b=UbnIhs5elNDtBzhF84Cix8lCguYE7k+jHZkAjJ3bGViK6+q6FM1tEFYp
-   Ifo2zUTTUDfXLECXZVfF1R3LGs/bs4iIqUKUuNq01wf1WCV99qJ5MXrBb
-   StF3TlsDv9Z5zSlhn9WF0JR6iqoiTO4IMDC6lxJCyKkLTNNFc6B2e+fHG
-   4lXFhv56HFHqR7bkqN04Qgw9jo2mwAMRsoK5NHaGpM5Vw4N8tjlamy6bV
-   XzXTgYvKLE17wb4aexiyHwJFeINk5aDvljQ1XFNsswVGJNq3THOM0Pc4z
-   89vUdRkUnB+zlkD6YBepCC+9y8vNVvNL8zV/UdtOznn6459PZOtconI/f
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="454726902"
+  bh=cVMB2JEbcvllLrApb7yUV501OiVQ89spuRHP1dIfQB0=;
+  b=MHj9hizDydxhMqNLgi0oM0+3rCZP+2ddYOI83bNt52QA3M9PK+1IcC38
+   2QOdpTIb+l7lPIPrJGNdtWz+QlzKrMy8yF6O7LBXd2kioUu3SvRwR6PlU
+   1muyvej7YuVkmsSOaxH+SiekOPMP8sOaHV8T3jAAlP8sjcjcATLOqnc3b
+   TM7AFSoGm/rMKIUeaFojxQqPhlglTqq2tA43RXCDO182VqOWq5mB9/JoX
+   qJcjY3WxcNrvbpcHFeAl4nSX9lVmsaTD/3yqyeqpDOOoYdm2zGlPar2R8
+   6Xng2+wDNxKO9Zx+T8jUkRP4QJcj2W97hTsVpu5bC2t1KBX4uuU7OEBXh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="454726910"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="454726902"
+   d="scan'208";a="454726910"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 05:16:14 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 05:16:17 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="5649391"
+   d="scan'208";a="5649403"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmviesa002.fm.intel.com with ESMTP; 13 Nov 2023 05:16:12 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 13 Nov 2023 05:16:14 -0800
 From:   Raag Jadav <raag.jadav@intel.com>
 To:     linus.walleij@linaro.org, brgl@bgdev.pl,
         mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
         Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v1 1/3] gpio: tangier: use EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS() helper
-Date:   Mon, 13 Nov 2023 18:45:58 +0530
-Message-Id: <20231113131600.10828-2-raag.jadav@intel.com>
+Subject: [PATCH v1 2/3] gpio: elkhartlake: reuse pm_ops from Intel Tangier driver
+Date:   Mon, 13 Nov 2023 18:45:59 +0530
+Message-Id: <20231113131600.10828-3-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231113131600.10828-1-raag.jadav@intel.com>
 References: <20231113131600.10828-1-raag.jadav@intel.com>
@@ -60,55 +60,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS() helper to export pm_ops to
-GPIO_TANGIER namespace, so that they can be reused.
+Reuse tng_gpio_pm_ops from Intel Tangier driver instead of calling
+them through a local copy.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/gpio/gpio-tangier.c | 3 +++
- drivers/gpio/gpio-tangier.h | 3 +++
- 2 files changed, 6 insertions(+)
+ drivers/gpio/gpio-elkhartlake.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
 
-diff --git a/drivers/gpio/gpio-tangier.c b/drivers/gpio/gpio-tangier.c
-index 7ce3eddaed25..52d0868476e1 100644
---- a/drivers/gpio/gpio-tangier.c
-+++ b/drivers/gpio/gpio-tangier.c
-@@ -19,6 +19,7 @@
- #include <linux/math.h>
- #include <linux/module.h>
- #include <linux/pinctrl/pinconf-generic.h>
-+#include <linux/pm.h>
- #include <linux/spinlock.h>
- #include <linux/string_helpers.h>
- #include <linux/types.h>
-@@ -531,6 +532,8 @@ int tng_gpio_resume(struct device *dev)
+diff --git a/drivers/gpio/gpio-elkhartlake.c b/drivers/gpio/gpio-elkhartlake.c
+index a9c8b16215be..887c0fe99d39 100644
+--- a/drivers/gpio/gpio-elkhartlake.c
++++ b/drivers/gpio/gpio-elkhartlake.c
+@@ -55,18 +55,6 @@ static int ehl_gpio_probe(struct platform_device *pdev)
+ 	return 0;
  }
- EXPORT_SYMBOL_NS_GPL(tng_gpio_resume, GPIO_TANGIER);
  
-+EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS(tng_gpio_pm_ops, tng_gpio_suspend, tng_gpio_resume, GPIO_TANGIER);
-+
- MODULE_AUTHOR("Andy Shevchenko <andriy.shevchenko@linux.intel.com>");
- MODULE_AUTHOR("Pandith N <pandith.n@intel.com>");
- MODULE_AUTHOR("Raag Jadav <raag.jadav@intel.com>");
-diff --git a/drivers/gpio/gpio-tangier.h b/drivers/gpio/gpio-tangier.h
-index 16c4f22908fb..333e5f79b908 100644
---- a/drivers/gpio/gpio-tangier.h
-+++ b/drivers/gpio/gpio-tangier.h
-@@ -13,6 +13,7 @@
- #define _GPIO_TANGIER_H_
- 
- #include <linux/gpio/driver.h>
-+#include <linux/pm.h>
- #include <linux/spinlock_types.h>
- #include <linux/types.h>
- 
-@@ -114,4 +115,6 @@ int devm_tng_gpio_probe(struct device *dev, struct tng_gpio *gpio);
- int tng_gpio_suspend(struct device *dev);
- int tng_gpio_resume(struct device *dev);
- 
-+extern const struct dev_pm_ops tng_gpio_pm_ops;
-+
- #endif /* _GPIO_TANGIER_H_ */
+-static int ehl_gpio_suspend(struct device *dev)
+-{
+-	return tng_gpio_suspend(dev);
+-}
+-
+-static int ehl_gpio_resume(struct device *dev)
+-{
+-	return tng_gpio_resume(dev);
+-}
+-
+-static DEFINE_SIMPLE_DEV_PM_OPS(ehl_gpio_pm_ops, ehl_gpio_suspend, ehl_gpio_resume);
+-
+ static const struct platform_device_id ehl_gpio_ids[] = {
+ 	{ "gpio-elkhartlake" },
+ 	{ }
+@@ -76,7 +64,7 @@ MODULE_DEVICE_TABLE(platform, ehl_gpio_ids);
+ static struct platform_driver ehl_gpio_driver = {
+ 	.driver	= {
+ 		.name	= "gpio-elkhartlake",
+-		.pm	= pm_sleep_ptr(&ehl_gpio_pm_ops),
++		.pm	= pm_sleep_ptr(&tng_gpio_pm_ops),
+ 	},
+ 	.probe		= ehl_gpio_probe,
+ 	.id_table	= ehl_gpio_ids,
 -- 
 2.17.1
 
