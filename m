@@ -2,47 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1F47E9E19
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B428D7E9E1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbjKMOGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 09:06:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
+        id S230056AbjKMOGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 09:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjKMOFv (ORCPT
+        with ESMTP id S229549AbjKMOGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 09:05:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F22A172B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:05:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22D82C433C8;
-        Mon, 13 Nov 2023 14:05:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699884348;
-        bh=GhWzSotOWXrDEUhwukgKiBLKTrshxt25sfB01raAiBw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Slm7VjkOeslkgpRKjJrpdF2Wk8+skpOROmMWN1oxmvtGkLEWl8DU2jluWvVzOJGYj
-         vFS/7/F/LV6eblKONBQcBjo8XBvKPXOckvUIbgs5u8Sbkc7Ue4UW4QG6ouzHgoN7n3
-         qoQWcUiRXFpm1+prxV0Rz5MBmPEfMoACw196M7WN068LvR5J2S6qgSfQmHnvJ1dVXZ
-         e2XE5VpdMoMlmHVDsSF3oqDUbAvNsXDLidouNmwgdp0y7ZPAhnsHeAZlU2i/wTXzaJ
-         mFFQS4YL82aE2NWlhzYPHmVMQfVBvKo7wJ54y3325G36Du4LfN5b1m1KV4nsn7wox/
-         BYmESNCcCvpzg==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-In-Reply-To: <20231102203039.3069305-1-ben.wolsieffer@hefring.com>
-References: <20231102203039.3069305-1-ben.wolsieffer@hefring.com>
-Subject: Re: [PATCH 1/2] regmap: ram: support noinc semantics
-Message-Id: <169988434652.3280981.12852638097343584206.b4-ty@kernel.org>
-Date:   Mon, 13 Nov 2023 14:05:46 +0000
+        Mon, 13 Nov 2023 09:06:50 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A72BD60
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:06:47 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b56b618217so2636090b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:06:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699884406; x=1700489206; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oyrc6FshW+z5U6vJqacgbhem3IFjlCautuYHlaSBfRo=;
+        b=Kp1NHbLMShO28/6rld1FHRBGeFLK3VII9fHxBbUlmeGgms7ogzJZKdaL8Z68X+kvoq
+         DoCHxOsQuAqfvg5+XfB1m0HqlO0oKAd6z/bTjjZlGybQX+vcRi8z5Qxt68HhfSk12feu
+         Aiw2Ch5Q0gMSNm9M+sHkd5puGGROrGAnLhu+jwppJ7evvcs+KzCCSajXhQoe2GlFPtV7
+         OXAaN86p+IEvWsInflTdW2l/q5oFfG0JV/KzvNioBzcqPmpsC15FwmI26gLh+coUgAQU
+         4ctAl685rknz+4XG2IKWzSwq1GT6j5HXY8Kx0O+A5rneCpBEH46wKnF3FBZ/Y+ICUOjc
+         JFzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699884406; x=1700489206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oyrc6FshW+z5U6vJqacgbhem3IFjlCautuYHlaSBfRo=;
+        b=VHQ2B9vfDTNZs8ZvRxebFzDSkfC1wBGFGlWWpJlPApXU2vhZ/3enUrc7E6ef69Jusu
+         6xRerTYgQM5FdiPygzIBGtqTXkSgd/u9mh5SRtIUfTZs/AUAzAUmlDKauM5JMB+yjtKG
+         Wj76bTTXjA0Fvk2E0z9Ormea0995CJZ+KvSvUUOTxyyA1YAapfNrTyUkmAVkRJOul74/
+         8V/4H9gljL30G0JgWHuvQ8wDuTas2LnqBHyRe9vgrDafs9fAutAYXKWOd6gAnVVbDilf
+         dGwdJZulxulF7eyT92wDmzYuS/oDqcTac3QTvYkCtu/UCxNC/AAAabULsahCBiqVPBzU
+         rrIQ==
+X-Gm-Message-State: AOJu0Yx+VSdQKlogX4uFDFHKuOGnH7XbAOzbb6mwkMc0tS4qlmhMIcES
+        4x+EKOLlkqBuXq6uKYXZYEdyetLtniE6p67tMYVXbg==
+X-Google-Smtp-Source: AGHT+IE4LQpkmC3gS33ZjHm+rJ8dP97RNKPJ49IFJV4V19OzOvJ1ryzjchxsRhW4RHqYW/kj+O1GDoUY74Q5mJrcJgQ=
+X-Received: by 2002:a05:6808:320b:b0:3b5:9965:2bc2 with SMTP id
+ cb11-20020a056808320b00b003b599652bc2mr9568936oib.23.1699884406725; Mon, 13
+ Nov 2023 06:06:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231106-topic-sm8650-upstream-tlmm-v3-0-0e179c368933@linaro.org>
+In-Reply-To: <20231106-topic-sm8650-upstream-tlmm-v3-0-0e179c368933@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 13 Nov 2023 15:06:35 +0100
+Message-ID: <CACRpkdYB7AQZ7HeNmE5d716sWz5_MHiVtAet6P5XOC1etDKNcw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] pinctrl: qcom: Introduce Pinctrl/GPIO for SM8650
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,45 +76,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Nov 2023 16:30:38 -0400, Ben Wolsieffer wrote:
-> Support noinc semantics in RAM backed regmaps, for testing purposes. Add
-> a new callback that selects registers which should have noinc behavior.
-> Bulk writes to a noinc register will cause the last value in the buffer
-> to be assigned to the register, while bulk reads will copy the same
-> value repeatedly into the buffer.
-> 
-> This patch only adds support to regmap-raw-ram, since regmap-ram does
-> not support bulk operations.
-> 
-> [...]
+On Mon, Nov 6, 2023 at 9:32=E2=80=AFAM Neil Armstrong <neil.armstrong@linar=
+o.org> wrote:
 
-Applied to
+> The SM8650 Top Level Mode Multiplexer supports 211 GPIOs,
+> and the usual UFS Reset, SDC Clk/Cmd/Data special pins.
+>
+> An handful of pins can have their IRQ generated by the PDC
+> module, and for this support for the new wakeup_present &
+> wakeup_enable_bit is required to allow the "wakeup" event
+> to be passed to PDC and generate an interrupt or a wakeup
+> system event.
+>
+> As SM8550, it also supports the i2c_pull_bit bit to enable the
+> on-SoC load resistor for I2C busses.
+>
+> Dependencies: None
+>
+> For convenience, a regularly refreshed linux-next based git tree containi=
+ng
+> all the SM8650 related work is available at:
+> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstr=
+eam/integ
+>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+Patches applied, unless Bjorn has some last minutes regrets,
+they are in.
 
-Thanks!
+Had to rebase the last patch manually because of Krzysztof's
+LPASS driver, check the result pls.
 
-[1/2] regmap: ram: support noinc semantics
-      commit: 02e3564a344064aca49f147e8a4eecbe5d3459fc
-[2/2] regmap: kunit: add noinc write test
-      commit: d958d97848a6604d024221920d300d07869715a2
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Yours,
+Linus Walleij
