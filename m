@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEE97E93E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 02:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4029F7E93E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 02:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjKMBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 20:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        id S232791AbjKMBHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 20:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbjKMBHo (ORCPT
+        with ESMTP id S232779AbjKMBHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 20:07:44 -0500
+        Sun, 12 Nov 2023 20:07:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0031E1FFB
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 17:07:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41267C433CB;
-        Mon, 13 Nov 2023 01:07:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED897259D
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 17:07:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6946C433CC;
+        Mon, 13 Nov 2023 01:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699837661;
-        bh=FU5cMxpykFA89J/z1Xx5vbxIOEU9bDayGjmJTED/4UY=;
+        s=k20201202; t=1699837664;
+        bh=UhAD3REvQmN6OP/l2BKhCL7Kmd6UirEftGJf0TofIdk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uQezJXBfixXFEnDr2uPowPMWRFtaZ5r1q34O5kMOfhXgqt6xRQJok/YdVKhr753Sc
-         U3brf0s5laXn8qH+WlE5rwINpOTqG7YY5Gf+KvG7ZuE5RAyC4QMGnW7qPhkbtsI73i
-         LOgFM2tUGynRSL8KRffQbgT3N+4ali7B0V4blEFMYQcYw6R2gfBJbjiQcU+4vHywGL
-         rSuLw91jQFndlfabvrHICBhGjhAOdvNpgyWQC1JDvxgIBBNYQI/6GODycyIxNxpJWx
-         hRWvuIIn2U2/HUSuhFuaw5nsb+TkehY43Oq1390yw7oCoKg0AiXMDqcPh15OhD3Sg/
-         6E0laeQm1YkTw==
+        b=Y6uMoOfYrKHbDT9xNVOIrXAwjAY43Ti2zC6vtPyKcRWafuAZjfKl6WmszSJQYykgw
+         2e0Yzh5UwKRsaPVpDNNdaMWZyYD2zNAb2kQycdaM6oNPdpuu/GHIoM3ZDJVWneYJ6p
+         jZjB1fFrmEFRN2OTgxnpZ9jb39mUe2a69KzqXquh4iXUBEIUDAjvZMsJVgPabVhmjH
+         PqpjoutGlz4Xi9No7OQtLnlD5h0F0SKVX3XyF/S3pPXA7jdIEF7xXRm+sI89cinVJG
+         fTXhBwwvfs4kZwxhkfl5XUpCSW63h91O82PyDqEVqzYID1bCs6/wLY/Rk1YOW+OLcf
+         rSD4k41qZCW0A==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -39,9 +39,9 @@ To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Chen Wang <unicorn_wang@outlook.com>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH 3/4] riscv: dts: sophgo: add reset dt node for cv1800b
-Date:   Mon, 13 Nov 2023 08:55:02 +0800
-Message-Id: <20231113005503.2423-4-jszhang@kernel.org>
+Subject: [PATCH 4/4] riscv: dts: sophgo: add reset phandle to all uart nodes
+Date:   Mon, 13 Nov 2023 08:55:03 +0800
+Message-Id: <20231113005503.2423-5-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20231113005503.2423-1-jszhang@kernel.org>
 References: <20231113005503.2423-1-jszhang@kernel.org>
@@ -57,7 +57,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the reset device tree node to cv1800b SoC.
+Although, the resets are deasserted by default. Add them for
+completeness.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
@@ -65,22 +66,57 @@ Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-index df40e87ee063..4032419486be 100644
+index 4032419486be..e04df04a91c0 100644
 --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
 +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-@@ -54,6 +54,12 @@ soc {
- 		dma-noncoherent;
- 		ranges;
+@@ -4,6 +4,7 @@
+  */
  
-+		rst: reset-controller@3003000 {
-+			compatible = "sophgo,cv1800b-reset";
-+			reg = <0x03003000 0x1000>;
-+			#reset-cells = <1>;
-+		};
-+
- 		uart0: serial@4140000 {
- 			compatible = "snps,dw-apb-uart";
+ #include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/reset/sophgo,cv1800b-reset.h>
+ 
+ / {
+ 	compatible = "sophgo,cv1800b";
+@@ -65,6 +66,7 @@ uart0: serial@4140000 {
  			reg = <0x04140000 0x100>;
+ 			interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&osc>;
++			resets = <&rst RST_UART0>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			status = "disabled";
+@@ -75,6 +77,7 @@ uart1: serial@4150000 {
+ 			reg = <0x04150000 0x100>;
+ 			interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&osc>;
++			resets = <&rst RST_UART1>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			status = "disabled";
+@@ -85,6 +88,7 @@ uart2: serial@4160000 {
+ 			reg = <0x04160000 0x100>;
+ 			interrupts = <46 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&osc>;
++			resets = <&rst RST_UART2>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			status = "disabled";
+@@ -95,6 +99,7 @@ uart3: serial@4170000 {
+ 			reg = <0x04170000 0x100>;
+ 			interrupts = <47 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&osc>;
++			resets = <&rst RST_UART3>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			status = "disabled";
+@@ -105,6 +110,7 @@ uart4: serial@41c0000 {
+ 			reg = <0x041c0000 0x100>;
+ 			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&osc>;
++			resets = <&rst RST_UART4>;
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			status = "disabled";
 -- 
 2.42.0
 
