@@ -2,78 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEDE7E9870
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9425B7E9871
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbjKMI5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S233354AbjKMI54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbjKMI5j (ORCPT
+        with ESMTP id S233356AbjKMI5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:57:39 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434EC46AB;
-        Mon, 13 Nov 2023 00:56:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=s5Y4+GBI1idt885dHqSlmCpxDTCC53GskoMylOtfMEQ=; b=s1qV1NPdjQcYNlQAH0HnCureja
-        lYM0KeWoOVTXJ+nvcY2qysAv8biWNl91gK+sRrrAZOAF2kpgUNC1Rf74g61vu4921ppiLkBKMhxuF
-        vrbxEEQZ6Y2WiKanzePtJUZhu5YRPTe/3tShMKJE0MaFOCI8tl1pBhatLMJ0Opz9VKhtqJvhQNFgY
-        Rbu4qwcgsu9qGSWU18ENEur4D0vN0y/p2/RqEGqzx7AGj9uH9cYx37B76a+mjUqS1V+E/YKRcrWl1
-        1Yw/qPK5OgBxXP4uhXJRADiWqdVeMdSXRl4xTamkdzHGqHhYXNOY5gmCHtVTzZBjeQl0vQ1L62eQH
-        wEOSGG8g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49224)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r2SkQ-0006OC-2B;
-        Mon, 13 Nov 2023 08:56:46 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r2SkM-0004PF-EM; Mon, 13 Nov 2023 08:56:42 +0000
-Date:   Mon, 13 Nov 2023 08:56:42 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH RFC 05/22] ACPI: Move ACPI_HOTPLUG_CPU to be disabled on
- arm64 and riscv
-Message-ID: <ZVHkykFMp+CMUqyf@shell.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JL6-00CTws-3z@rmk-PC.armlinux.org.uk>
- <8e288692-7460-4aa4-86f3-500327256bc3@redhat.com>
+        Mon, 13 Nov 2023 03:57:40 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FE846B8;
+        Mon, 13 Nov 2023 00:56:59 -0800 (PST)
+Date:   Mon, 13 Nov 2023 08:56:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699865817;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kvP2CLC5WYXiLN+zcrrNY85pJG8RZXtL20sLADnsYN8=;
+        b=1dFiShgsj+SuEbW7/SZfzyG/BUdSnZYKTtmjP1ZP+buvtlE0vLOIhFWbuuIrNosRSB8rEk
+        ZtmNL0A/szP+Q8zxs/ysK2SaH2C23O/BuKSfz8NFRwXziBs7wCcf7/B5qnPGdrfRFJX5OI
+        wGlLZwrUymGzKwPYOkQ5bZaVJLAxeley1oQxAEkojSk6+l771DQWOXLeFTopJldTwK+wAU
+        O6Jt1rOW4pV2YeyXkOAlRQOmgSyZp3fsZGAJNrZMkplArZfyOEc2nXhcys5X/3IMqCTeQ/
+        ul28XpHAI6ymo0/STScZGy6epn5F6eASospkDwkE9MDLHJtgmkzYfe0qFQ7EmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699865817;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kvP2CLC5WYXiLN+zcrrNY85pJG8RZXtL20sLADnsYN8=;
+        b=Je1r0jaDz9PFbv+qhaeRmzZHIYyftdvK41p9QB9KTzS535yrvJwjcmhT9xfh2nSdVQoftH
+        nhychoAE0/jzQmBw==
+From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/barrier: Do not serialize MSR accesses on AMD
+Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230622095212.20940-1-bp@alien8.de>
+References: <20230622095212.20940-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e288692-7460-4aa4-86f3-500327256bc3@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Message-ID: <169986581656.3135.2819708380071395214.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,125 +64,214 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 10:29:39AM +1000, Gavin Shan wrote:
-> On 11/7/23 20:29, Russell King (Oracle) wrote:
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > Neither arm64 nor riscv support physical hotadd of CPUs that were not
-> > present at boot. For arm64 much of the platform description is in static
-> > tables which do not have update methods. arm64 does support HOTPLUG_CPU,
-> > which is backed by a firmware interface to turn CPUs on and off.
-> > 
-> > acpi_processor_hotadd_init() and acpi_processor_remove() are for adding
-> > and removing CPUs that were not present at boot. arm64 systems that do this
-> > are not supported as there is currently insufficient information in the
-> > platform description. (e.g. did the GICR get removed too?)
-> > 
-> > arm64 currently relies on the MADT enabled flag check in map_gicc_mpidr()
-> > to prevent CPUs that were not described as present at boot from being
-> > added to the system. Similarly, riscv relies on the same check in
-> > map_rintc_hartid(). Both architectures also rely on the weak 'always fails'
-> > definitions of acpi_map_cpu() and arch_register_cpu().
-> > 
-> > Subsequent changes will redefine ACPI_HOTPLUG_CPU as making possible
-> > CPUs present. Neither arm64 nor riscv support this.
-> > 
-> > Disable ACPI_HOTPLUG_CPU for arm64 and riscv by removing 'default y' and
-> > selecting it on the other three ACPI architectures. This allows the weak
-> > definitions of some symbols to be removed.
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> > Changes since RFC:
-> >   * Expanded conditions to avoid ACPI_HOTPLUG_CPU being enabled when
-> >     HOTPLUG_CPU isn't.
-> > Changes since RFC v3:
-> >   * Dropped ia64 changes
-> > ---
-> >   arch/loongarch/Kconfig        |  1 +
-> >   arch/x86/Kconfig              |  1 +
-> >   drivers/acpi/Kconfig          |  1 -
-> >   drivers/acpi/acpi_processor.c | 18 ------------------
-> >   4 files changed, 2 insertions(+), 19 deletions(-)
-> > 
-> 
-> With the following nits addressed:
-> 
-> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> 
-> > diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> > index d889a0b97bc1..64620e90c12c 100644
-> > --- a/arch/loongarch/Kconfig
-> > +++ b/arch/loongarch/Kconfig
-> > @@ -5,6 +5,7 @@ config LOONGARCH
-> >   	select ACPI
-> >   	select ACPI_GENERIC_GSI if ACPI
-> >   	select ACPI_MCFG if ACPI
-> > +	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
-> >   	select ACPI_PPTT if ACPI
-> >   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
-> >   	select ARCH_BINFMT_ELF_STATE
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index 3762f41bb092..dbdcfc708369 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -59,6 +59,7 @@ config X86
-> >   	#
-> >   	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
-> >   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
-> > +	select ACPI_HOTPLUG_CPU			if ACPI_PROCESSOR && HOTPLUG_CPU
-> >   	select ARCH_32BIT_OFF_T			if X86_32
-> >   	select ARCH_CLOCKSOURCE_INIT
-> >   	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> > diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> > index f819e760ff19..a3acfc750fce 100644
-> > --- a/drivers/acpi/Kconfig
-> > +++ b/drivers/acpi/Kconfig
-> > @@ -310,7 +310,6 @@ config ACPI_HOTPLUG_CPU
-> >   	bool
-> >   	depends on ACPI_PROCESSOR && HOTPLUG_CPU
-> >   	select ACPI_CONTAINER
-> > -	default y
-> >   config ACPI_PROCESSOR_AGGREGATOR
-> >   	tristate "Processor Aggregator"
-> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> > index 0f5218e361df..4fe2ef54088c 100644
-> > --- a/drivers/acpi/acpi_processor.c
-> > +++ b/drivers/acpi/acpi_processor.c
-> > @@ -184,24 +184,6 @@ static void __init acpi_pcc_cpufreq_init(void) {}
-> >   /* Initialization */
-> >   #ifdef CONFIG_ACPI_HOTPLUG_CPU
-> > -int __weak acpi_map_cpu(acpi_handle handle,
-> > -		phys_cpuid_t physid, u32 acpi_id, int *pcpu)
-> > -{
-> > -	return -ENODEV;
-> > -}
-> > -
-> > -int __weak acpi_unmap_cpu(int cpu)
-> > -{
-> > -	return -ENODEV;
-> > -}
-> > -
-> > -int __weak arch_register_cpu(int cpu)
-> > -{
-> > -	return -ENODEV;
-> > -}
-> > -
-> > -void __weak arch_unregister_cpu(int cpu) {}
-> > -
-> 
-> Since we're here, EXPORT_SYMBOL() can be dropped for these functions on
-> x86 and loongarch because they're not called from a module?
+The following commit has been merged into the x86/cpu branch of tip:
 
-I'm confused, and don't understand your comment. You've r-b the
-previous two patches that remove the EXPORT_SYMBOL()s for
-arch_register_cpu() and arch_unregister_cpu() from x86 and loongarch.
-So it seems your comment is already addressed, and thus makes no
-sense.
+Commit-ID:     ff7b6bee2b25e278d5cd24cc30abb76faaab7fbf
+Gitweb:        https://git.kernel.org/tip/ff7b6bee2b25e278d5cd24cc30abb76faaab7fbf
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Fri, 27 Oct 2023 14:24:16 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 13 Nov 2023 09:41:42 +01:00
 
-Please clarify.
+x86/barrier: Do not serialize MSR accesses on AMD
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+AMD does not have the requirement for a synchronization barrier when
+acccessing a certain group of MSRs. Do not incur that unnecessary
+penalty there.
+
+There will be a CPUID bit which explicitly states that a WRMSR is not
+needed. Once that bit is added to the APM, this will be extended with
+it.
+
+While at it, move to processor.h to avoid include hell. Untangling that
+file properly is a matter for another day.
+
+Some notes on the performance aspect of why this is relevant, courtesy
+of Kishon VijayAbraham <Kishon.VijayAbraham@amd.com>:
+
+On a AMD Zen4 system with 96 cores, a modified ipi-bench[1] on a VM
+shows x2AVIC IPI rate is 3% to 4% lower than AVIC IPI rate. The
+ipi-bench is modified so that the IPIs are sent between two vCPUs in the
+same CCX. This also requires to pin the vCPU to a physical core to
+prevent any latencies. This simulates the use case of pinning vCPUs to
+the thread of a single CCX to avoid interrupt IPI latency.
+
+In order to avoid run-to-run variance (for both x2AVIC and AVIC), the
+below configurations are done:
+
+  1) Disable Power States in BIOS (to prevent the system from going to
+     lower power state)
+
+  2) Run the system at fixed frequency 2500MHz (to prevent the system
+     from increasing the frequency when the load is more)
+
+With the above configuration:
+
+*) Performance measured using ipi-bench for AVIC:
+  Average Latency:  1124.98ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 42.6759M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+*) Performance measured using ipi-bench for x2AVIC:
+  Average Latency:  1172.42ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 40.9432M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+>From above, x2AVIC latency is ~4% more than AVIC. However, the expectation is
+x2AVIC performance to be better or equivalent to AVIC. Upon analyzing
+the perf captures, it is observed significant time is spent in
+weak_wrmsr_fence() invoked by x2apic_send_IPI().
+
+With the fix to skip weak_wrmsr_fence()
+
+*) Performance measured using ipi-bench for x2AVIC:
+  Average Latency:  1117.44ns [Time to send IPI from one vCPU to another vCPU]
+
+  Cumulative throughput: 42.9608M/s [Total number of IPIs sent in a second from
+  				     48 vCPUs simultaneously]
+
+Comparing the performance of x2AVIC with and without the fix, it can be seen
+the performance improves by ~4%.
+
+Performance captured using an unmodified ipi-bench using the 'mesh-ipi' option
+with and without weak_wrmsr_fence() on a Zen4 system also showed significant
+performance improvement without weak_wrmsr_fence(). The 'mesh-ipi' option ignores
+CCX or CCD and just picks random vCPU.
+
+  Average throughput (10 iterations) with weak_wrmsr_fence(),
+        Cumulative throughput: 4933374 IPI/s
+
+  Average throughput (10 iterations) without weak_wrmsr_fence(),
+        Cumulative throughput: 6355156 IPI/s
+
+[1] https://github.com/bytedance/kvm-utils/tree/master/microbenchmark/ipi-bench
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230622095212.20940-1-bp@alien8.de
+---
+ arch/x86/include/asm/barrier.h     | 18 ------------------
+ arch/x86/include/asm/cpufeatures.h |  2 +-
+ arch/x86/include/asm/processor.h   | 18 ++++++++++++++++++
+ arch/x86/kernel/cpu/amd.c          |  3 +++
+ arch/x86/kernel/cpu/common.c       |  7 +++++++
+ arch/x86/kernel/cpu/hygon.c        |  3 +++
+ 6 files changed, 32 insertions(+), 19 deletions(-)
+
+diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+index 35389b2..0216f63 100644
+--- a/arch/x86/include/asm/barrier.h
++++ b/arch/x86/include/asm/barrier.h
+@@ -81,22 +81,4 @@ do {									\
+ 
+ #include <asm-generic/barrier.h>
+ 
+-/*
+- * Make previous memory operations globally visible before
+- * a WRMSR.
+- *
+- * MFENCE makes writes visible, but only affects load/store
+- * instructions.  WRMSR is unfortunately not a load/store
+- * instruction and is unaffected by MFENCE.  The LFENCE ensures
+- * that the WRMSR is not reordered.
+- *
+- * Most WRMSRs are full serializing instructions themselves and
+- * do not require this barrier.  This is only required for the
+- * IA32_TSC_DEADLINE and X2APIC MSRs.
+- */
+-static inline void weak_wrmsr_fence(void)
+-{
+-	asm volatile("mfence; lfence" : : : "memory");
+-}
+-
+ #endif /* _ASM_X86_BARRIER_H */
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 4af140c..3e973ff 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -308,10 +308,10 @@
+ #define X86_FEATURE_SMBA		(11*32+21) /* "" Slow Memory Bandwidth Allocation */
+ #define X86_FEATURE_BMEC		(11*32+22) /* "" Bandwidth Monitoring Event Configuration */
+ #define X86_FEATURE_USER_SHSTK		(11*32+23) /* Shadow stack support for user mode applications */
+-
+ #define X86_FEATURE_SRSO		(11*32+24) /* "" AMD BTB untrain RETs */
+ #define X86_FEATURE_SRSO_ALIAS		(11*32+25) /* "" AMD BTB untrain RETs through aliasing */
+ #define X86_FEATURE_IBPB_ON_VMEXIT	(11*32+26) /* "" Issue an IBPB only on VMEXIT */
++#define X86_FEATURE_APIC_MSRS_FENCE	(11*32+27) /* "" IA32_TSC_DEADLINE and X2APIC MSRs need fencing */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
+ #define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index ae81a71..26620d7 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -749,4 +749,22 @@ enum mds_mitigations {
+ 
+ extern bool gds_ucode_mitigated(void);
+ 
++/*
++ * Make previous memory operations globally visible before
++ * a WRMSR.
++ *
++ * MFENCE makes writes visible, but only affects load/store
++ * instructions.  WRMSR is unfortunately not a load/store
++ * instruction and is unaffected by MFENCE.  The LFENCE ensures
++ * that the WRMSR is not reordered.
++ *
++ * Most WRMSRs are full serializing instructions themselves and
++ * do not require this barrier.  This is only required for the
++ * IA32_TSC_DEADLINE and X2APIC MSRs.
++ */
++static inline void weak_wrmsr_fence(void)
++{
++	alternative("mfence; lfence", "", ALT_NOT(X86_FEATURE_APIC_MSRS_FENCE));
++}
++
+ #endif /* _ASM_X86_PROCESSOR_H */
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index a7eab05..841e212 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1162,6 +1162,9 @@ static void init_amd(struct cpuinfo_x86 *c)
+ 	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
+ 	     cpu_has_amd_erratum(c, amd_erratum_1485))
+ 		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
++
++	/* AMD CPUs don't need fencing after x2APIC/TSC_DEADLINE MSR writes. */
++	clear_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
+ }
+ 
+ #ifdef CONFIG_X86_32
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index b14fc8c..98f7ea6 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1856,6 +1856,13 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 	c->topo.apicid = apic->phys_pkg_id(c->topo.initial_apicid, 0);
+ #endif
+ 
++
++	/*
++	 * Set default APIC and TSC_DEADLINE MSR fencing flag. AMD and
++	 * Hygon will clear it in ->c_init() below.
++	 */
++	set_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
++
+ 	/*
+ 	 * Vendor-specific initialization.  In this section we
+ 	 * canonicalize the feature flags, meaning if there are
+diff --git a/arch/x86/kernel/cpu/hygon.c b/arch/x86/kernel/cpu/hygon.c
+index 6f247d6..f0cd955 100644
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -354,6 +354,9 @@ static void init_hygon(struct cpuinfo_x86 *c)
+ 		set_cpu_bug(c, X86_BUG_SYSRET_SS_ATTRS);
+ 
+ 	check_null_seg_clears_base(c);
++
++	/* Hygon CPUs don't need fencing after x2APIC/TSC_DEADLINE MSR writes. */
++	clear_cpu_cap(c, X86_FEATURE_APIC_MSRS_FENCE);
+ }
+ 
+ static void cpu_detect_tlb_hygon(struct cpuinfo_x86 *c)
