@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ED17E9BD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E0C7E9BE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjKMMHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39106 "EHLO
+        id S229569AbjKMMKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjKMMHt (ORCPT
+        with ESMTP id S229662AbjKMMKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:07:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2682D73;
-        Mon, 13 Nov 2023 04:07:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86EDFC433C7;
-        Mon, 13 Nov 2023 12:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699877266;
-        bh=4wlY34yA/NZoVOF4oQbm/htpzM60UGkfAML7KHwXaGU=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=gO/lyOKd01bzEtI6LD3gxYSWc6gN8ceTyt2G2v9lWamYWLFm/8xlAtK6FZCm8kxVk
-         7i+CY5CRGp2lnuLTvsan4I1ezH1x3CFqs2PJGelbiADnfpqmqEyb7PkdOEFiOtQR4K
-         iC07cLNRDQOibB/tN2rNSkQ5mAwSMdgvzH/8oeOXA68umYmziLnbYMK4byAKzHD8/v
-         0k6UvB7ltHjkl71ATPPl2bldlDlsE6PryiM4P0yzKmFVhJtnmrFMivZWVpFejNYlQ6
-         Qy4HORXFDTpxSXBTSzOejmD5n5K/UVWqLNu2k0H4HJyEBQhU+9Fgi0BI5BCbo9zc47
-         qDhpN3l1djhfw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH wireless-next] wlcore: debugfs: add an error code check
- in beacon_filtering_write
-References: <065d6090-38fc-0cc0-db47-f9ba5b1c5d7d@nfschina.com>
-Date:   Mon, 13 Nov 2023 14:07:43 +0200
-In-Reply-To: <065d6090-38fc-0cc0-db47-f9ba5b1c5d7d@nfschina.com> (Su Hui's
-        message of "Mon, 13 Nov 2023 14:53:28 +0800")
-Message-ID: <878r71vots.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 13 Nov 2023 07:10:42 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC509D75
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:10:37 -0800 (PST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4STSnq4tmgzPpGl;
+        Mon, 13 Nov 2023 20:06:23 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 13 Nov 2023 20:10:34 +0800
+Message-ID: <70973a55-63a0-4a85-abe5-d8681fdb3886@huawei.com>
+Date:   Mon, 13 Nov 2023 20:10:34 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: support large folio numa balancing
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        <akpm@linux-foundation.org>
+CC:     <ying.huang@intel.com>, <willy@infradead.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+ <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Su Hui <suhui@nfschina.com> writes:
 
-> On 2023/11/13 14:16, Kalle Valo wrote:
->
->> Su Hui <suhui@nfschina.com> writes:
+
+On 2023/11/13 18:53, David Hildenbrand wrote:
+> On 13.11.23 11:45, Baolin Wang wrote:
+>> Currently, the file pages already support large folio, and supporting for
+>> anonymous pages is also under discussion[1]. Moreover, the numa balancing
+>> code are converted to use a folio by previous thread[2], and the 
+>> migrate_pages
+>> function also already supports the large folio migration.
 >>
->>> wl1271_acx_beacon_filter_opt() return error code if failed, add a check
->>> for this is better and safer.
->>>
->>> Signed-off-by: Su Hui <suhui@nfschina.com>
->> How did you test this?
->
-> Only compile test.
+>> So now I did not see any reason to continue restricting NUMA balancing 
+>> for
+>> large folio.
+> 
+> I recall John wanted to look into that. CCing him.
+> 
+> I'll note that the "head page mapcount" heuristic to detect sharers will
+> now strike on the PTE path and make us believe that a large folios is
+> exclusive, although it isn't.
+> 
+> As spelled out in the commit you are referencing:
+> 
+> commit 6695cf68b15c215d33b8add64c33e01e3cbe236c
+> Author: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Date:   Thu Sep 21 15:44:14 2023 +0800
+> 
+>      mm: memory: use a folio in do_numa_page()
+>      Numa balancing only try to migrate non-compound page in 
+> do_numa_page(),
+>      use a folio in it to save several compound_head calls, note we use
+>      folio_estimated_sharers(), it is enough to check the folio sharers 
+> since
+>      only normal page is handled, if large folio numa balancing is 
+> supported, a
+>      precise folio sharers check would be used, no functional change 
+> intended.
+> 
+> 
+> I'll send WIP patches for one approach that can improve the situation 
+> soonish.
 
-If you have only compile tested please document that clearly in the
-commit message.
-
-> Clang static checker complains about this code that=C2=A0 value stored to
-> 'ret' is never read.
-
-This would be good to also have in the commit message.
-
-> And most of the caller check=C2=A0 the error code of
-> wl1271_acx_beacon_filter_opt().
-
-This might still break something so I would prefer to test this in a
-real device before taking it.
-
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+When convert numa balance to use folio, I make similar change, it works
+with large anon folio(test with v5), but David's precise folio sharers
+should be merged firstly, also if a large folio shared by many process,
+we maybe split it, don't sure about it, this need some evaluation.
