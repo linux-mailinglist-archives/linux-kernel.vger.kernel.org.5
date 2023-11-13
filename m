@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 951CD7E9569
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3D47E957A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbjKMDVx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Nov 2023 22:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        id S233000AbjKMDYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbjKMDVw (ORCPT
+        with ESMTP id S232876AbjKMDX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:21:52 -0500
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA3D171A;
-        Sun, 12 Nov 2023 19:21:49 -0800 (PST)
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1ef9f1640a5so2521519fac.3;
-        Sun, 12 Nov 2023 19:21:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699845705; x=1700450505;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0IXaHoWTH5TfdwPuBhxO14PPRkamm2oo7dJQsnN3xB4=;
-        b=aGRNtMmrGgKtQ1gjHfWhbNPX0/mZ5DI5aR1vDVO3IDUJRafLuY6lVSGB1sLZIaPWdP
-         JkpHXDe7YNcx96zY0okqgIwZDUdJg65OYfDI6kXpYh65Bv4HdSoAPpx07xM1LUjBEH7E
-         s/tY8iOg0Ncf6WTsR9s16DSe6BrBNzGL/Z/S8+5n0pupuVbyU3VDew6dYkRBWoj3aOWU
-         JwI945E13syjpUMoR8r5B9pU5QAr1TR87NyVgQg5uo47v1MBHXXmq1ZxiYqA40yS978e
-         o6LlMykRr4pUesxnYC9VhXStCS4BxtauM48WQBW8b89yQ6fiqDIWFdCD/1PXsbrshdgP
-         6rIA==
-X-Gm-Message-State: AOJu0YxUgzFnlPbDskkZ9OUvRgl4ncNCxiduZcBdWYYjkGKfr8Ha1o3P
-        PXqWJjemgLcgks3O6Dnhn0p6BakOhF5HG2LXtuM=
-X-Google-Smtp-Source: AGHT+IEm0cqoDvrOkrZPoECzg54LBCYQyrtnHyH0Jyw/MEHgPLdqfdb+bCZuIioHUR/Jm8i15kxOz+UbC2lDC3gcglc=
-X-Received: by 2002:a05:6870:c4b:b0:1db:70ee:efed with SMTP id
- lf11-20020a0568700c4b00b001db70eeefedmr7409499oab.18.1699845705545; Sun, 12
- Nov 2023 19:21:45 -0800 (PST)
+        Sun, 12 Nov 2023 22:23:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BD51719
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:23:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E3829C433C9;
+        Mon, 13 Nov 2023 03:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699845834;
+        bh=T9GuBU6fhN6Mk0nmOnKVa20ANcbNsgJfnHQNCOAqe64=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uTvo8eermytZMYIvwjm6dcjtw/9fbTHBezlj/7S+pOV+/heiJmhacHUeLMR+lzTtk
+         6tS4vp+9Ygzrbeqe2hthvlmVD/7Jg9I8qjkl83PStFhGflOnqiz/KmMup/s9oEE23T
+         vXtwuCJMnya+Cv7xIYzgDfedhxpS8ztPW32vpWLSRivRZonvRkwNnHL0E/U3JR3che
+         +gIbCtNaEeaxrh9NW6BgDtypiFT2cjGXAu28HcsBmdVtY13/b2Bbf0p6BEQ09BSujc
+         zFd82wb4/qCtVoC/H6RnI1RGqiXpFbmj4FX0BVganRhD7lJuFw+ugbeWDqQJv74RBD
+         IsqY13Me/7BFg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C14DEE21ECD;
+        Mon, 13 Nov 2023 03:23:54 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAJvTdKn-xtmin9OjnzHg8wy4PM8Lc3Per=3y3UWORhjdroYP3w@mail.gmail.com>
- <CAHk-=wjvJ44a9Z=tkR2o-heQ4XLp0sgynDOhe6JH2fgg=MMMXA@mail.gmail.com>
- <CAJvTdK=OSTgYkut=-r95nAYOvVfUt3Cah92qudifeQW4ZJHT7Q@mail.gmail.com> <CAAYoRsXvKwhrw3gRQJ-STO48_7yxEiqwt5tgzDbkzA--N_XX6A@mail.gmail.com>
-In-Reply-To: <CAAYoRsXvKwhrw3gRQJ-STO48_7yxEiqwt5tgzDbkzA--N_XX6A@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Sun, 12 Nov 2023 22:21:34 -0500
-Message-ID: <CAJvTdKnqCOALF6k_PqFz75AGwFpoB41vv8fo1PxaEW71zdqcRA@mail.gmail.com>
-Subject: Re: [GIT PULL] turbostat for Linux-6.7 (with signed tag)
-To:     Doug Smythies <dsmythies@telus.net>
-Cc:     Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/9] media: cros-ec-cec: Add support for multiple ports
+From:   patchwork-bot+chrome-platform@kernel.org
+Message-Id: <169984583478.27851.15642181644607180001.git-patchwork-notify@kernel.org>
+Date:   Mon, 13 Nov 2023 03:23:54 +0000
+References: <20230825024735.1443836-1-rekanorman@chromium.org>
+In-Reply-To: <20230825024735.1443836-1-rekanorman@chromium.org>
+To:     Reka Norman <rekanorman@chromium.org>
+Cc:     hverkuil-cisco@xs4all.nl, dnojiri@chromium.org,
+        narmstrong@baylibre.com, sadolfsson@google.com,
+        bleung@chromium.org, groeck@chromium.org, mchehab@kernel.org,
+        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,47 +55,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
-Thanks for the ping.
-Yes, I look in patchwork for those assigned to me (looks like rafael
-didn't assign those) and also for the word "turbostat".
-My oversight that I didn't notice there were some in there -- will
-catch in next batch.
+Hello:
 
-thanks,
--Len
+This series was applied to chrome-platform/linux.git (for-kernelci)
+by Hans Verkuil <hverkuil-cisco@xs4all.nl>:
 
-On Sun, Nov 12, 2023 at 10:51 AM Doug Smythies <dsmythies@telus.net> wrote:
->
-> On Fri, Nov 10, 2023 at 7:39 PM Len Brown <lenb@kernel.org> wrote:
-> ...
-> >
-> > (Same code as previous pull request, with addition of a signed tag.
-> >  Hopefully it verifies okay at your end.)
-> >
-> > Turbostat features are now table-driven (Rui Zhang)
-> > Add support for some new platforms (Sumeet Pawnikar, Rui Zhang)
-> > Gracefully run in configs when CPUs are limited (Rui Zhang, Srinivas Pandruvada)
-> > misc minor fixes.
->
-> Hi Len,
-> What about the patches that have been submitted since your last turbostat update
-> release of 2023.03.17? I submitted one on 2023.04.03. I haven't sent "RESEND"s,
-> because I know you only do update releases every 1/2 year or so, and in the past
-> you have always dealt with the interim patches then.
->
-> Reference:
-> https://patchwork.kernel.org/project/linux-pm/list/?series=&submitter=&state=&q=&archive=&delegate=107
->
-> ... Doug
->
-> >
-> > thanks!
-> > Len Brown, Intel Open Source Technology Center
-> >
-> ... [deleted]...
+On Fri, 25 Aug 2023 12:43:53 +1000 you wrote:
+> The Google Dibbi chromebox will have two HDMI ports with CEC enabled via
+> its EC. Currently, the cros-ec-cec driver and the host command interface
+> to the EC assume there is only one port. E.g. the commands have no
+> parameter to indicated which port to operate on.
+> 
+> This series adds support for multiple ports. The driver is modified to
+> manage an array of ports, each with their own CEC adapter and notifier.
+> The host command interface is modified to support multiple ports. All
+> changes to interface are backwards compatible.
+> 
+> [...]
 
+Here is the summary with links:
+  - [v2,1/9] media: cros-ec-cec: Use cros_ec_cmd to send host commands
+    https://git.kernel.org/chrome-platform/c/afca12e35e71
+  - [v2,2/9] media: cros-ec-cec: Manage an array of ports
+    https://git.kernel.org/chrome-platform/c/4d0e179a4287
+  - [v2,3/9] media: cros-ec-cec: Support multiple ports in set/get host commands
+    https://git.kernel.org/chrome-platform/c/e90bd1fe7cda
+  - [v2,4/9] media: cros-ec-cec: Support multiple ports in write command
+    https://git.kernel.org/chrome-platform/c/adbfc747ddfb
+  - [v2,5/9] media: cros-ec-cec: Support multiple ports in MKBP cec_events
+    https://git.kernel.org/chrome-platform/c/1cabf52639d1
+  - [v2,6/9] media: cros-ec-cec: Support receiving messages from multiple ports
+    https://git.kernel.org/chrome-platform/c/425d20518c54
+  - [v2,7/9] media: cros-ec-cec: Allow specifying multiple HDMI connectors
+    https://git.kernel.org/chrome-platform/c/e7885b9c6564
+  - [v2,8/9] media: cros-ec-cec: Get number of CEC ports from EC
+    https://git.kernel.org/chrome-platform/c/5d227f02ceb9
+  - [v2,9/9] media: cros-ec-cec: Add Dibbi to the match table
+    https://git.kernel.org/chrome-platform/c/8d3e6030e30f
 
-
+You are awesome, thank you!
 -- 
-Len Brown, Intel
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
