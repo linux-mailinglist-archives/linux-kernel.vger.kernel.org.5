@@ -2,161 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E7A7E9C6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F018E7E9C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjKMMvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:51:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S230012AbjKMMxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:53:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjKMMvE (ORCPT
+        with ESMTP id S229507AbjKMMxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:51:04 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74141722;
-        Mon, 13 Nov 2023 04:51:00 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-280200949c3so3279813a91.0;
-        Mon, 13 Nov 2023 04:51:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699879860; x=1700484660; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1u2wgBJR1eY/vvX4BSIn+hcZj98gJmcG5xtzxqEays=;
-        b=cKHDRoqGMroCQXmP4xuO2obx5UlwwMwm4fnl0qnOey3hV05znUB55g79uTWWox+DGW
-         FyUle/BEogkoy8gW389K9EuKxlzoCcBzpCWXkrmXR6EEUFTowvSo9OD2YkbWhQTro41K
-         ZFYThpWvxAE6xm3Dk3Q9DbCoZUaXBW6NiBDhoGUk4UDNkIpgoH/OhhrLM2mbbyHieDis
-         IcEntkYE3Jn0PmxWC+FKmpdwERwvIBTiKwQeyRp9713OqLaFzGpDUu3524MFsV9/ekE+
-         1ZCH1O/EIVKFx4VAUepkpdO1WI701Gv3Q8CD0TS2oWl7XCYPnStA4qkVPq8jqhRWWTAQ
-         lq+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699879860; x=1700484660;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s1u2wgBJR1eY/vvX4BSIn+hcZj98gJmcG5xtzxqEays=;
-        b=CsuQL2QQavP6cRebYXDvNrigrf5z123wpWNSEA6hYvakjsWsCR7i97jYbUKXrhDT1+
-         rtGe0SVqWAweBQECPO7anbuSWlg3Btsil9E2/xNWvv4hD9B7gQct4al6cWruCfxOn+Bp
-         2I6WyNb/ZCSoLeTeGUZf9nULzIFs0ikOZG+cw8lz6aBg4ISTAvnw9U0hCBd+SKQyZDxA
-         Yl/bD8Ngbobr/b8v6L+IRSe2mk52xv/qV054HpmTfvVK62LdK88AxwU22R9s7pnSlq3r
-         mXcsIfu3p1zieLsMQMpOKH7iEposgl2dx7uar6/AWQAiLNtTiKsienElILYV4JW5vaJg
-         T5Uw==
-X-Gm-Message-State: AOJu0YxvP/wfyXzByA6m9wtwsaGlJBssSVMqQqPNctq0A1hErh0r05rp
-        3+bRxt1WGffjDaL9jjW7xaA62gkX3q9nKiBNDrs=
-X-Google-Smtp-Source: AGHT+IFjsWsacLBDEf3mCA9vW/UukdUhufQXIETHl5zYVqAZBxyiINS3gtbD/tXHvfCFOuUcnyECG4ttZv3zavYrymY=
-X-Received: by 2002:a17:90b:4b4b:b0:280:16bb:8169 with SMTP id
- mi11-20020a17090b4b4b00b0028016bb8169mr3707546pjb.40.1699879860080; Mon, 13
- Nov 2023 04:51:00 -0800 (PST)
+        Mon, 13 Nov 2023 07:53:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A662D7E;
+        Mon, 13 Nov 2023 04:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699880018; x=1731416018;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gBQ3rqlQpRh7qgsxRECw0OU/rnWQCddI4JFcR8EXNRU=;
+  b=LzcBtBfrPF6W6GsalUYBYl1Adzbr/EkMlY+xqO6Pi4eaTanVrDVwSTh6
+   oGNcogRCekk5l1H0gvU51iZshV9dSncT28JYcY0e1xjNRXJXxE6qN1IFM
+   k45hJT9iSo5Ke2tqp3XHLVirKGzhdQj3JzKCmjS5nPj0ICKt0fwLy6Fcb
+   B/oSog18GfnD1gbiacVJBrSqAm+mp8AJbF/QPRDX46CSK3tFGGBoS1NJC
+   +jscobfOiS4zcYFnQoqUwg1gZeOabTVLuAb2e3SeEhK+UbgCxCM5YgWlF
+   8y1TTG23O2/vuL5Zcyoc1t+f/Z12j3Gf//FBT3sW/tedJLnChWgtwuQDy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="3513668"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="3513668"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 04:53:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="757793492"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="757793492"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 13 Nov 2023 04:53:35 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 3FA3664A; Mon, 13 Nov 2023 14:53:34 +0200 (EET)
+Date:   Mon, 13 Nov 2023 14:53:34 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Raag Jadav <raag.jadav@intel.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 2/3] pinctrl: intel: Add a generic Intel pin control
+ platform driver
+Message-ID: <20231113125334.GQ17433@black.fi.intel.com>
+References: <20231030141034.3241674-1-andriy.shevchenko@linux.intel.com>
+ <20231030141034.3241674-3-andriy.shevchenko@linux.intel.com>
+ <20231103055738.GO17433@black.fi.intel.com>
+ <ZVISwHwoLpy3nGDT@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20231025104457.628109-1-robimarko@gmail.com> <20231025104457.628109-2-robimarko@gmail.com>
- <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
- <20c8cfde-3f55-45c5-bc23-21979ac9680d@linaro.org> <CAOX2RU5-XFZhGzjigNtu-qFnPWDd2XkpGpY=HXWigRa5SXw4TA@mail.gmail.com>
- <ef377506-4132-4805-a76e-18f241afe319@linaro.org> <CAOX2RU4K67evm10giQvF1rcfqTfR+e--KQT3ZePoHQoqASv_fg@mail.gmail.com>
- <bdf6be0b-c137-48ce-8a3f-ab74bced6f87@linaro.org> <CAOX2RU4z1Dcs7ct0BAaS7wicYVmQEiSe74=w_grFDKQv22uoFg@mail.gmail.com>
- <4243a841-5509-4d04-8ec7-191f2ba5677a@linaro.org>
-In-Reply-To: <4243a841-5509-4d04-8ec7-191f2ba5677a@linaro.org>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Mon, 13 Nov 2023 13:50:48 +0100
-Message-ID: <CAOX2RU73n4JUTxGGgN7YOEqjj-1_=n=UZ99xsZ8Easp6O-D_yA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZVISwHwoLpy3nGDT@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Nov 2023 at 12:58, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 11.11.2023 12:28, Robert Marko wrote:
-> > On Tue, 7 Nov 2023 at 22:51, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >>
-> >>
-> >> On 10/31/23 10:01, Robert Marko wrote:
-> >>> On Mon, 30 Oct 2023 at 22:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>
-> >>>> On 30.10.2023 21:37, Robert Marko wrote:
-> >>>>> On Mon, 30 Oct 2023 at 20:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>>>
-> >>>>>> On 29.10.2023 12:04, Robert Marko wrote:
-> >>>>>>> On Wed, 25 Oct 2023 at 12:45, Robert Marko <robimarko@gmail.com> wrote:
-> >>>>>>>>
-> >>>>>>>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
-> >>>>>>>> and drop the curent code that is de-asserting the USB GDSC-s as part of
-> >>>>>>>> the GCC probe.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>>>>>>
-> >>>>>>> Unfortunately, after testing on multiple devices I hit the same GDSC
-> >>>>>>> issue I had a long time ago
-> >>>>>>> that was the reason I did not send this upstream.
-> >>>>>>> It seems that USB3 port GDSC (USB0 GDSC in code) works just fine,
-> >>>>>>> however the USB2 one
-> >>>>>>> (USB1 GDSC in code) it is stuck off and USB2 port will fail due to this:
-> >>>>>>>      1.607531] ------------[ cut here ]------------
-> >>>>>>> [    1.607559] usb1_gdsc status stuck at 'off'
-> >>>>>>> [    1.607592] WARNING: CPU: 0 PID: 35 at gdsc_toggle_logic+0x16c/0x174
-> >>>>>>> [    1.615120] Modules linked in:
-> >>>>>> Can you dump GDSCR (the entire 32-bit register) at boot and when toggling?
-> >>>>>
-> >>>>> Sure, here it is:
-> >>>>> [    0.023760] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val: 0x8222004 init
-> >>>>> [    0.023782] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val: 0x8222004 init
-> >>>>> [    0.988626] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
-> >>>>> 0x8282000 before toggle
-> >>>>> [    1.202506] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
-> >>>>> 0x8282000 after toggle
-> >>>>> [    1.207208] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val:
-> >>>>> 0xa0282000 before toggle
-> >>>> Any chance
-> >>>>
-> >>>> .en_few_wait_val = 0x2
-> >>>>
-> >>>> (turning BIT(19) into BIT(17))
-> >>>>
-> >>>> will make a difference?
-> >>>
-> >>> Sadly, it makes no difference and GDSC status bit newer comes up which is
-> >>> rather weird as USB0 one seems to work just fine.
-> >> What if you add clk_ignore_unused?
-> >
-> > To the USB1 master clock or?
-> That's a command line parameter, effectively setting it on all clks.
+On Mon, Nov 13, 2023 at 02:12:48PM +0200, Andy Shevchenko wrote:
+> On Fri, Nov 03, 2023 at 07:57:38AM +0200, Mika Westerberg wrote:
+> > On Mon, Oct 30, 2023 at 04:10:33PM +0200, Andy Shevchenko wrote:
+> 
+> ...
+> 
+> > > +config PINCTRL_INTEL_PLATFORM
+> > > +	tristate "Intel pinctrl and GPIO platform driver"
+> > > +	depends on ACPI
+> > > +	select PINCTRL_INTEL
+> > > +	help
+> > > +	  This pinctrl driver provides an interface that allows configuring
+> > > +	  of Intel PCH pins and using them as GPIOs.
+> > 
+> > Add here some description that explains why this needs to be enabled,
+> > for example for Lunar Lake. Now it is all too generic for distro folks
+> > to understand if this is needed or not.
+> 
+> OK!
+> 
+> ...
+> 
+> > > + * Copyright (C) 2021-2023, Intel Corporation
+> > 
+> > That's 2023
+> 
+> As-is it is still valid and reflects the history.
+> 
+> ...
+> 
+> > > +	ngpps = device_get_child_node_count(dev);
+> > > +	if (ngpps == 0)
+> > 
+> > if (!nggps)
+> 
+> 0 is a plain number here (as count) and explicit comparison makes sense.
+> But I'm okay with another form.
+> 
+> 
+> > > +		return -ENODEV;
+> 
+> ...
+> 
+> > > +	ncommunities = 1,
+> > 
+> > Why this is 1? Can't we have more communities?
+> 
+> As for now (version 1.0 of the specification) it's assumed that it's one
+> community per device node in the ACPI, so I would leave this as is (we have
+> also drivers with single community per device node, hence this is kinda
+> pattern. Should I add a comment?
+> 
 
-Oh that, I understand now.
+Yes, I think it warrants a comment.
 
->
-> >
-> > There is definitively something broken regarding the GDSC as
-> > GDSC_STATE bits (30-27)
-> > change from 0 to something on the USB0 GDSC but on GDSC1 they are 0 even after
-> > SW_OVERRIDE BIT(2) is set to 1, and the POWER BIT(31) newer changes to 1.
-> >
-> > However, if you manually set BIT(2) to 1 then the USB1 master clock
-> > can come up so
-> > GDSC seems to work.
-> > USB1 (The USB2.0 HS) port is still broken after this if USB mass storage is used
-> > but that was present before the GDSC changes as well and I still need
-> > to figure out
-> > which quirk is missing for this.
-> Please try clk_ignore_unused and see if toggling the GDSC is still broken.
-
-Sadly, passing clk_ignore_unused in the bootargs doesn't help, GDSC is
-still stuck off.
-
-Regards,
-Robert
-
->
-> Konrad
+> ...
+> 
+> > > +	struct device *dev = &pdev->dev;
+> > > +	struct intel_pinctrl_soc_data *data;
+> > 
+> > 
+> > Change the ordering of the above:
+> > 
+> > 	struct intel_pinctrl_soc_data *data;
+> > 	struct device *dev = &pdev->dev;
+> 
+> Sure.
+> 
+> ...
+> 
+> > > +static const struct acpi_device_id intel_platform_pinctrl_acpi_match[] = {
+> > > +	{ }
+> > 
+> > And add the _CID here in this patch as I commented in the last patch.
+> 
+> OK! I'll squash the next patch into this one.
+> 
+> > > +};
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
