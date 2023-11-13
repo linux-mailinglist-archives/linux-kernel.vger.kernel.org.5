@@ -2,143 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3047E9935
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFD97E9943
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbjKMJl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        id S233373AbjKMJnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjKMJl1 (ORCPT
+        with ESMTP id S232633AbjKMJnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:41:27 -0500
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E23C10D3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:41:23 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4STPZR44dDz9smv;
-        Mon, 13 Nov 2023 10:41:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1699868479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OYXhDMcF3MrS0pAW4PnkAp2GNeGRqdljI6C43cXCOO8=;
-        b=geDLWzUs9mlNg5whJr7WrXXoObB+4try8Bs7MlSUc0ZzU4IuSY2RXSnSFFDTSlzLo9xmOf
-        /mQmadFakztKEMKjvrPrzNOR2jyz6fo9WQaGpe0gigwBJsksnFV/fa9XCTqdwH47eDnI5G
-        DsYL9CBDIFGF8EzJJiirze3e4cD/aoZ8B4LHJOr7ZjXIaNwcvWImW1ZjTsE3fDGcOWOObP
-        2WEOcMFLkVDvr3t/FfpBc7eu+LQhj58Aa/S/OMAYXmeQy2Xn7PETkY4Af6dlCq8lVj8NF/
-        5pbchrUj033umpx4lFpdthOeVa4hhLW+xJ6gqRHMkTnRK33uzKVkbXRkl3lKww==
-Message-ID: <438f2960-c49e-6485-5916-20d6e69ef7d4@mailbox.org>
-Date:   Mon, 13 Nov 2023 10:41:15 +0100
-MIME-Version: 1.0
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-Content-Language: de-CH-frami, en-CA
-To:     Simon Ser <contact@emersion.fr>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, wayland-devel@lists.freedesktop.org,
-        hwentlan@amd.com, christian.koenig@amd.com, joshua@froggi.es
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
- <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
- <20231016151856.74af9305@eldfell>
- <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
- <20231016175222.7a89e6ab@eldfell> <ZS1ST6XAUHilBg3d@intel.com>
- <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr>
- <ZS55mXTSxpXKYbsd@intel.com>
- <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr>
- <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
-Content-Type: text/plain; charset=UTF-8
+        Mon, 13 Nov 2023 04:43:41 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2040.outbound.protection.outlook.com [40.107.215.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC4D10DB;
+        Mon, 13 Nov 2023 01:43:35 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FMoUgpnPBOThnD6o2I7D/ueFnCyWaCuTtrf6sPNvKZOW5mTlrH52MYoumOAosri66Ck955hzkZ2msLTyybOKvC2trxEQVsZylTRvU8nK++jVBBwzcBVkO8jkez8XybPYJCN4/EK+GX0bUioC04L7WON+EKQnzH/DHytIzuGpIwIQsJzdHMboFVjThIISekPsY2JbfQzVIr2/QY/jS90UnTWrnc/dVZmpY1jzU5vHFhZrtEyc1xjN51CxcIJeENAvobDa8o+f57VRgpR+HDT+un62I39RzeJikkWiJtyhotzEac+pKz5uCFhp/mRLdblu55VY/E2NBYQOg3BekxEf5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MSxc8lCKcWkHtvomBdoZNaDSENQQJ+pdFq8JahBwqeQ=;
+ b=klVyjdhfrrquF5UKG81tziM99WVgezQ1S3p7fl8oSt24Vh9jbULc5b2dZXi2IbmN7fFO07pi1A8GzKycjxq1lSNPsLE9e/C9+MjuUKV3S5FjGaIsuXlbupB6QokdfDAgl3Ep+i+AurHvp3P0LnqeaUa82UYGKZ3/zXdr1rCl/Ly+PqaLP5nTJZrpG3JlU02wrEEsLXlOaSsdWMQPQu6TECclM5OAgl/fP4JYL1A4JFY1ll1mjsUcnllKMl9twGBizNFlanYBQMqGjxVnu7t5yfjvCemRUi35HoH58ka93+XKWxgSL/C3cYhVvKdIZVjxSBqR7ou3xwPNeD/ATsUu5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MSxc8lCKcWkHtvomBdoZNaDSENQQJ+pdFq8JahBwqeQ=;
+ b=imPYlojCsjrVeNmZ3RvBWt1zmEGNGbahjvppoFfAyEoAMJ/0tsMKEonDeCNOgNWBo3Bt4kLOauD7CLddcKdZlR3G08VT/fwgD2ijB3RiVyPMHOnH7Amo+/0SyaaHI2/gG3RA9yQ+cuSipmgZv1dSqHDgPEWs0tA0bdebIkcvLY0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by SEZPR01MB5585.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:130::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
+ 2023 09:43:25 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::e90e:640c:2742:6339]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::e90e:640c:2742:6339%3]) with mapi id 15.20.6977.028; Mon, 13 Nov 2023
+ 09:43:25 +0000
+From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: [PATCH v4] tty: serial: Add RS422 flag to struct serial_rs485
+Date:   Mon, 13 Nov 2023 17:41:36 +0800
+Message-Id: <20231113094136.52003-1-crescentcy.hsieh@moxa.com>
+X-Mailer: git-send-email 2.34.1
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 7c3c5aa1a8db02fdd65
-X-MBO-RS-META: kg37gowaq3a6rqdmom3kkd9oowrdqz4m
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0094.jpnprd01.prod.outlook.com
+ (2603:1096:405:3::34) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|SEZPR01MB5585:EE_
+X-MS-Office365-Filtering-Correlation-Id: f43470a3-6ab7-4271-c549-08dbe42cfb82
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hJNVv9F/XR8aawq2M2ainHCtjVTSEt3lBKVBa58P3GW0Sjwr3AuOWqjIFhJ4HxWO312ESJ5CSiYPQR2sZoVZn886q12pvbEcluBzBfBAlGABo+DgHo0qZphk7mLM8GIDiFCCH28VAwTqPngJu/tiY1MI6m/ZNxQPCciUrvAuxulavoDiRrDSYsiSqYuCjgwxAr7fE9kLofVvxTOP4SmM7Qt2/n93zp/JOnPE/nVjv8n/lBqz8ffDfkN1SePH/+up57+DvZoqPc96NOqXC9uC9k1n+7667rvXZo5AJMrSgvmiVutgTVk0TGwdVGqmuue3c9x7dPLD2wqDqYTaeKy9KPlfJ9pFIoFaVY/6uDKG1Lo08NC1guiWB/RcSraq0udQndVOPLjqB9sKBOgx/VAK5rIj2CFNkvBGCQKAAfEiz/o2AYb21ubDm9efNst/9LLioJxLsrbpULUUME07PeotDG4rI5NQ8ZYcslm9OSTgaMpeAwrvl/tXzOlWSaKaTFxbLIHnQdNezMWI/ac5BFtIm3zz6mKKtgo40ZG6f7diyDt7CElsNsc0kdoQAQ2oB9ZWLdOi7KnehT4uA3Mql1UhO7YU7LxP1lvhNff/lrG2Q54=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(346002)(376002)(136003)(366004)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(1076003)(107886003)(5660300002)(2616005)(6506007)(52116002)(6512007)(26005)(6666004)(2906002)(66899024)(83380400001)(66556008)(66476007)(478600001)(316002)(66946007)(36756003)(110136005)(41300700001)(4326008)(8676002)(8936002)(38350700005)(6486002)(966005)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ncuU+BA1edMrjJveufDz1A6qM+baBatEMQWHDi44RldAaA7rxhnbNQ/AZKF6?=
+ =?us-ascii?Q?eu06CuXhU8qlSb8pPNDkyE38rE1CdocApcRfazqekfM9XcrsEkt23mtBtpIA?=
+ =?us-ascii?Q?bS/U7CKLuf/vAPw4rOtILiUb4liOlE2x/l+03STjx0+TioE3SAvgi5DOI+JN?=
+ =?us-ascii?Q?9x4Djrxodt+iYAwvennJ5zO4bfAErl1+QRxuIqqdfPfQ2DiQy3xgDs/gkUDu?=
+ =?us-ascii?Q?1YWlulnFAHT1nA9Yzo9zFQpsMaqTcS0j5L/yZqd7XdEv+pmY9eghBe/u5LKk?=
+ =?us-ascii?Q?J9TCDvyFMK8enBZ2hA/io5fFsFzDmE0pIhL1Tzm6yejXj/AJKW6i22yfaPEk?=
+ =?us-ascii?Q?60e+Ubrm/e+jKFV6J13AGpEOBTNgXMmH5vDzS9brLLbVnj5h01G9qlRdwPNG?=
+ =?us-ascii?Q?O9uUa0R36k3N6bqZ9NB5QIb+fzlZKLdbkFb1UrkWbbSq7UlcQLa9fS2qkBx5?=
+ =?us-ascii?Q?QRGSbZDp4QWCZ1VFGpR9pDJlKKLGsNQwoRLryISqQ8DPEY+y7BovsSFwxl+d?=
+ =?us-ascii?Q?FYJ6NZLuLQ/nEc0zMXqi5/K2acu9Y36E5rqsWEov9vIuGO1nAsCT6gLnxFw0?=
+ =?us-ascii?Q?5Qrtp7B8az95OWt1I7ie26FK8IBs6YY4wu2FU7kEjBYirx8ZYK3ct/CgLy5v?=
+ =?us-ascii?Q?we1XBfbDzoT/MS9p0f7UVmL/oEUQwvMmHy7Bip3n6qw2UkXO8kIpg19MWKaA?=
+ =?us-ascii?Q?Uu4g1k4f/CmMmSknFTiUu16kTHnTXNxIC3w4WUBWOL/fgVlgc36JkATV9/++?=
+ =?us-ascii?Q?giB7w3hvfumsYsqCU/1nPW2rf85hXG35s0zCQskJRoYXOJDNdxwfGhGJ7zQW?=
+ =?us-ascii?Q?liZ8+0wP6CrGs1NtnEJxGt6ZLrsFA5V8x6UMbRxbCMhYLhJs6RU6/9BDCoRy?=
+ =?us-ascii?Q?3I77inWWydz+GhMC+Ja2vWSb2xQuhYnsIpdkhA/El1gjhiGUoamPbLTPdWxo?=
+ =?us-ascii?Q?VptFIDItchmlMTAcXlMKQgiXmWuJBcdlPew6uQTEUDoIt3QIpkteOuHMwRY+?=
+ =?us-ascii?Q?8rB+GbSbwLlMTVzj6xq+NUDRStQajxbwI3jdzS7O+ZgIz0eeWYdMywp4u850?=
+ =?us-ascii?Q?Vypvt2+MwNin9eJO3qT4Ez8g5nMPjGyG4lcZovduyt67ue0P3RYZMA2YELBq?=
+ =?us-ascii?Q?15IqRBQoB/3o08nSrD0UAY1/7/QmASkUcpGFcJPxjCTSQ1r3TX7x3kkSXkxm?=
+ =?us-ascii?Q?k8Fv6cuH52/movKyIL1K8LYaHs0uu6qIUAkFPEYQ9PdWYeZniBrPq6xZL5wd?=
+ =?us-ascii?Q?9Y2rmsJS1g0WX5PryrZeE+Od4uXg1Kq40cD9EMLIwp1867OJ7Iw00C1s+8SX?=
+ =?us-ascii?Q?m0zelX+3WqGVb1g3GyGI50lNJSwMj55WOvE6bX7ioZjhSeFfH/vIaMcYFOUw?=
+ =?us-ascii?Q?1WQCs4SCgDE+Y8Ryv/CZb7EfMAJHWuPBYloD60rdExAD0+ixXn2K8o1fJSCB?=
+ =?us-ascii?Q?FBxC1kOQb1F89D44MpzvL2mYHsUHQjALm1C6OUy73BpdikxkSMMh0T/nHEe8?=
+ =?us-ascii?Q?MTOQGbfy1HNFeue906YBq7dZwTpFm4uX0Fk+vyr0+WXz+u5MxJ6hqWMhXYrJ?=
+ =?us-ascii?Q?s5x9dLHNK0K0t02VP9KN3TpcIEQnmYJZ9M7V83ZxvdUdMGhN9MxzI5bMUjnu?=
+ =?us-ascii?Q?Yg=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f43470a3-6ab7-4271-c549-08dbe42cfb82
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 09:43:25.4795
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lHfgDvI1nE0mVEdQqWLgXirrAVIVIT3CgJlTDtsDvHgnANxRtEQYK6zXi+xIAfcn0FLRmkJAFFcnNlCPCRqG8WzbPfwO3kyVOYP/p48wmGU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR01MB5585
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 10:18, Simon Ser wrote:
-> On Monday, October 23rd, 2023 at 10:25, Simon Ser <contact@emersion.fr> wrote:
-> 
->>>>>>>>>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
->>>>>>>>>>> +effectively change only the FB_ID property on any planes. No-operation changes
->>>>>>>>>>> +are ignored as always. [...]
->>>>>>>>>>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
->>>>>>>>>
->>>>>>>>> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
->>>>>>>>> and it worked as expected, so this shouldn't be a concern.
->>>>>>>>> Right, so it must have some effect. It cannot be simply ignored like in
->>>>>>>>> the proposed doc wording. Do we special-case re-setting the same FB_ID
->>>>>>>>> as "not a no-op" or "not ignored" or some other way?
->>>>>>>>> There's an effect in the refresh rate, the image won't change but it
->>>>>>>>> will report that a flip had happened asynchronously so the reported
->>>>>>>>> framerate will be increased. Maybe an additional wording could be like:
->>>>>>>
->>>>>>> Flipping to the same FB_ID will result in a immediate flip as if it was
->>>>>>> changing to a different one, with no effect on the image but effecting
->>>>>>> the reported frame rate.
->>>>>>
->>>>>> Re-setting FB_ID to its current value is a special case regardless of
->>>>>> PAGE_FLIP_ASYNC, is it not?
->>>>>
->>>>> No. The rule has so far been that all side effects are observed
->>>>> even if you flip to the same fb. And that is one of my annoyances
->>>>> with this proposal. The rules will now be different for async flips
->>>>> vs. everything else.
->>>>
->>>> Well with the patches the async page-flip case is exactly the same as
->>>> the non-async page-flip case. In both cases, if a FB_ID is included in
->>>> an atomic commit then the side effects are triggered even if the property
->>>> value didn't change. The rules are the same for everything.
->>>
->>> I see it only checking if FB_ID changes or not. If it doesn't
->>> change then the implication is that the side effects will in
->>> fact be skipped as not all planes may even support async flips.
->>
->> Hm right. So the problem is that setting any prop = same value as
->> previous one will result in a new page-flip for asynchronous page-flips,
->> but will not result in any side-effect for asynchronous page-flips.
->>
->> Does it actually matter though? For async page-flips, I don't think this
->> would result in any actual difference in behavior?
-> 
-> To sum this up, here is a matrix of behavior as seen by user-space:
-> 
-> - Sync atomic page-flip
->   - Set FB_ID to different value: programs hw for page-flip, sends uevent
->   - Set FB_ID to same value: same (important for VRR)
->   - Set another plane prop to same value: same
+Add "SER_RS485_MODE_RS422" flag to struct serial_rs485, so that serial
+port can switch interface into RS422 if supported by using ioctl command
+"TIOCSRS485".
 
-A page flip is programmed even if FB_ID isn't touched?
+By treating RS422 as a mode of RS485, which means while enabling RS422
+there are two flags need to be set (SER_RS485_ENABLED and
+SER_RS485_MODE_RS422), it would make things much easier. For example
+some places that checks for "SER_RS485_ENABLED" won't need to be rewritten.
 
+There are only two things need to be noticed:
 
->   - Set another plane prop to different value: maybe rejected if modeset required
-> - Async atomic page-flip
->   - Set FB_ID to different value: updates hw with new FB address, sends
->     immediate uevent
->   - Set FB_ID to same value: same (no-op for the hw)
+- While enabling RS422, other RS485 flags should not be set.
+- RS422 doesn't need to deal with termination, so while disabling RS485
+  or enabling RS422, uart_set_rs485_termination() shall return.
 
-No-op implies it doesn't trigger scanning out a frame with VRR, if scanout is currently in vertical blank. Is that the case? If so, async flips can't reliably trigger scanning out a frame with VRR.
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
+---
+Changes from v3 to v4:
+- Include 'linux/const.h' header in '/include/uapi/linux/serial.h'
+- Replace BIT() with _BITUL() which defined in
+  '/include/uapi/linux/const.h'
 
+Changes from v2 to v3:
+- Remove "SER_RS422_ENABLED" flag from legacy flags.
+- Revise "SER_RS422_ENABLED" into "SER_RS485_MODE_RS422".
+- Remove the code which checks the conflicts between SER_RS485_ENABLED
+  and SER_RS422_ENABLED.
+- Add return check in uart_set_rs485_termination().
+
+Changes from v1 to v2:
+- Revise the logic that checks whether RS422/RS485 are enabled
+  simultaneously.
+
+v3: https://lore.kernel.org/all/20231108060719.11775-1-crescentcy.hsieh@moxa.com/
+v2: https://lore.kernel.org/all/20231101064404.45711-1-crescentcy.hsieh@moxa.com/
+v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@moxa.com/
+
+---
+ drivers/tty/serial/serial_core.c | 11 ++++++++++-
+ include/uapi/linux/serial.h      | 19 +++++++++++--------
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 831d03361..777f091a4 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1376,6 +1376,13 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
+ 		return;
+ 	}
+ 
++	/* Clear other RS485 flags and return if enabling RS422 */
++	if (rs485->flags & SER_RS485_MODE_RS422) {
++		memset(rs485, 0, sizeof(*rs485));
++		rs485->flags |= (SER_RS485_ENABLED | SER_RS485_MODE_RS422);
++		return;
++	}
++
+ 	/* Pick sane settings if the user hasn't */
+ 	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND)) &&
+ 	    !(rs485->flags & SER_RS485_RTS_ON_SEND) ==
+@@ -1400,7 +1407,9 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
+ static void uart_set_rs485_termination(struct uart_port *port,
+ 				       const struct serial_rs485 *rs485)
+ {
+-	if (!(rs485->flags & SER_RS485_ENABLED))
++	/* Return while disabling RS485 or enabling RS422 */
++	if (!(rs485->flags & SER_RS485_ENABLED) ||
++	    (rs485->flags & SER_RS485_ENABLED && rs485->flags & SER_RS485_MODE_RS422))
+ 		return;
+ 
+ 	gpiod_set_value_cansleep(port->rs485_term_gpio,
+diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
+index 53bc1af67..9086367db 100644
+--- a/include/uapi/linux/serial.h
++++ b/include/uapi/linux/serial.h
+@@ -11,6 +11,7 @@
+ #ifndef _UAPI_LINUX_SERIAL_H
+ #define _UAPI_LINUX_SERIAL_H
+ 
++#include <linux/const.h>
+ #include <linux/types.h>
+ 
+ #include <linux/tty_flags.h>
+@@ -137,17 +138,19 @@ struct serial_icounter_struct {
+  * * %SER_RS485_ADDRB		- Enable RS485 addressing mode.
+  * * %SER_RS485_ADDR_RECV - Receive address filter (enables @addr_recv). Requires %SER_RS485_ADDRB.
+  * * %SER_RS485_ADDR_DEST - Destination address (enables @addr_dest). Requires %SER_RS485_ADDRB.
++ * * %SER_RS485_MODE_RS422	- Enable RS422. Requires %SER_RS485_ENABLED.
+  */
+ struct serial_rs485 {
+ 	__u32	flags;
+-#define SER_RS485_ENABLED		(1 << 0)
+-#define SER_RS485_RTS_ON_SEND		(1 << 1)
+-#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
+-#define SER_RS485_RX_DURING_TX		(1 << 4)
+-#define SER_RS485_TERMINATE_BUS		(1 << 5)
+-#define SER_RS485_ADDRB			(1 << 6)
+-#define SER_RS485_ADDR_RECV		(1 << 7)
+-#define SER_RS485_ADDR_DEST		(1 << 8)
++#define SER_RS485_ENABLED		_BITUL(0)
++#define SER_RS485_RTS_ON_SEND		_BITUL(1)
++#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
++#define SER_RS485_RX_DURING_TX		_BITUL(3)
++#define SER_RS485_TERMINATE_BUS		_BITUL(4)
++#define SER_RS485_ADDRB			_BITUL(5)
++#define SER_RS485_ADDR_RECV		_BITUL(6)
++#define SER_RS485_ADDR_DEST		_BITUL(7)
++#define SER_RS485_MODE_RS422		_BITUL(8)
+ 
+ 	__u32	delay_rts_before_send;
+ 	__u32	delay_rts_after_send;
 -- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+2.34.1
 
