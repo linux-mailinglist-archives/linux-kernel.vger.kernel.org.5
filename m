@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E27E9F79
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE4E7E9F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjKMPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S229626AbjKMPGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjKMPEc (ORCPT
+        with ESMTP id S231279AbjKMPGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:04:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2066132
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZBQ5a0hJZ/GfX0iieQrBicPR1Pwnet9ZpiDu5Dc5S8o=; b=T4JygIqSJTI4zR7pgmmCZFqPiE
-        Cuix9/8FMuTEaTJ2GiTMl9zVm70vXXkZ30telLR0jR+fttKqiv5V2IP2m0FzipRM96jnQKHlprEFp
-        Y+h+Vm4ZC7GbL8wCbkUDU3KWWJDC6ZH0dEuD8xWwQP2Tuxvkte3ZMeOX656eFiCraCyqwyGMCcXqf
-        EH02CShkSiYi4LeGns/w5lXlFX6sJ3xDuO11lHlpIFNdBNMcR3vs1Sv77gtYx707ggQFx0YNwHod0
-        KHMYYStbY//caLhJTuoCHEiDIF4aN4bzXJt+eFXej+JH266hPBrLtvilWpxrxkRyBk0zhfrj3yOzS
-        bnH1rYaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r2YTu-00EsZO-5e; Mon, 13 Nov 2023 15:04:06 +0000
-Date:   Mon, 13 Nov 2023 15:04:06 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Message-ID: <ZVI65lck7WqsHZwF@casper.infradead.org>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com>
- <ZVGxkMeY50JSesaj@casper.infradead.org>
- <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
+        Mon, 13 Nov 2023 10:06:10 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94571D51
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:06:03 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 410E0240105
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:06:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1699887961; bh=AysCfJIOEBxPiL99wZ1Aw/KlWYK0Ft/fT6gutzSaLP4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=mDalR2aBzXSIHGPSwLs+VtxO0eZvFt1x08rnI3WKeA+r9+QdZhLWAQCsVkn5+Z3Rl
+         ROyc/yW4GmXZ2cZDWCnZ8sVsDLvtzc053gzofR1L99bEl9v+un+5mwpklhIwgPaLq4
+         nhdRa99J0+WSYhSfonqLpM5Ejyp0qJhGpltqTNqD40FKDdno0nvMqzrug4fRqWxw9t
+         JZElx+Emi1cJzfk8CykC6QCXHp1HUwW2xDMcU3PCLrcvQL/I6hJwVQaDVYZggNCOKo
+         G9jWqRBQrUACNxMF5Kbqbv6lgY5FfioQ90TFlRJsWTVfaTCj9TAVOC94/n5fZ3H5x7
+         kd2g7C0vimbWw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4STXn26xbnz9rxM;
+        Mon, 13 Nov 2023 16:05:58 +0100 (CET)
+From:   Charalampos Mitrodimas <charmitro@posteo.net>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy@lists.linux.dev,
+        Charalampos Mitrodimas <charmitro@posteo.net>
+Subject: [PATCH 0/8] staging: sm750fb: Multiple camel cases renames
+Date:   Mon, 13 Nov 2023 15:05:05 +0000
+Message-Id: <20231113150512.1210869-1-charmitro@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 10:19:48AM +0000, Ryan Roberts wrote:
-> On 13/11/2023 05:18, Matthew Wilcox wrote:
-> > My hope is to abolish the 64kB page size configuration.  ie instead of
-> > using the mixture of page sizes that you currently are -- 64k and
-> > 1M (right?  Order-0, and order-4)
-> 
-> Not quite; the contpte-size for a 64K page size is 2M/order-5. (and yes, it is
-> 64K/order-4 for a 4K page size, and 2M/order-7 for a 16K page size. I agree that
-> intuitively you would expect the order to remain constant, but it doesn't).
-> 
-> The "recommend" setting above will actually enable order-3 as well even though
-> there is no HW benefit to this. So the full set of available memory sizes here is:
-> 
-> 64K/order-0, 512K/order-3, 2M/order-5, 512M/order-13
-> 
-> > , that 4k, 64k and 2MB (order-0,
-> > order-4 and order-9) will provide better performance.
-> > 
-> > Have you run any experiements with a 4kB page size?
-> 
-> Agree that would be interesting with 64K small-sized THP enabled. And I'd love
-> to get to a world were we universally deal in variable sized chunks of memory,
-> aligned on 4K boundaries.
-> 
-> In my experience though, there are still some performance benefits to 64K base
-> page vs 4K+contpte; the page tables are more cache efficient for the former case
-> - 64K of memory is described by 8 bytes in the former vs 8x16=128 bytes in the
-> latter. In practice the HW will still only read 8 bytes in the latter but that's
-> taking up a full cache line vs the former where a single cache line stores 8x
-> 64K entries.
+Reported by "checkpatch.pl":
+	$ ./scripts/checkpatch.pl --file --terse drivers/staging/sm750fb/ddk750_dvi.c
+	drivers/staging/sm750fb/ddk750_dvi.c:19: CHECK: Avoid CamelCase: <sii164GetDeviceID>
+	drivers/staging/sm750fb/ddk750_dvi.c:21: CHECK: Avoid CamelCase: <sii164ResetChip>
+	drivers/staging/sm750fb/ddk750_dvi.c:22: CHECK: Avoid CamelCase: <sii164GetChipString>
+	drivers/staging/sm750fb/ddk750_dvi.c:23: CHECK: Avoid CamelCase: <sii164SetPower>
+	drivers/staging/sm750fb/ddk750_dvi.c:24: CHECK: Avoid CamelCase: <sii164EnableHotPlugDetection>
+	drivers/staging/sm750fb/ddk750_dvi.c:25: CHECK: Avoid CamelCase: <sii164IsConnected>
+	drivers/staging/sm750fb/ddk750_dvi.c:26: CHECK: Avoid CamelCase: <sii164CheckInterrupt>
+	drivers/staging/sm750fb/ddk750_dvi.c:27: CHECK: Avoid CamelCase: <sii164ClearInterrupt>
+	total: 0 errors, 0 warnings, 8 checks, 62 lines checked
 
-This is going to depend on your workload though -- if you're using more
-2MB than 64kB, you get to elide a layer of page table with 4k base,
-rather than taking up 4 cache lines with a 64k base.
+Charalampos Mitrodimas (8):
+  staging: sm750fb: Rename sii164GetDeviceID to sii164_get_device_id
+  staging: sm750fb: Rename sii164ResetChip to sii164_reset_chip
+  staging: sm750fb: Rename sii164GetChipString to sii164_get_chip_string
+  staging: sm750fb: Rename sii164SetPower to sii164_set_power
+  staging: sm750fb: Rename sii164EnableHotPlugDetection to
+    sii164_enable_hot_plug_detection
+  staging: sm750fb: Rename sii164IsConnected to sii164_is_connected
+  staging: sm750fb: Rename sii164CheckInterrupt to
+    sii164_check_interrupt
+  staging: sm750fb: Rename sii164ClearInterrupt to
+    sii164_clear_interrupt
+
+ drivers/staging/sm750fb/ddk750_dvi.c    | 16 +++++------
+ drivers/staging/sm750fb/ddk750_sii164.c | 38 ++++++++++++-------------
+ drivers/staging/sm750fb/ddk750_sii164.h | 16 +++++------
+ 3 files changed, 35 insertions(+), 35 deletions(-)
+
+-- 
+2.39.2
+
