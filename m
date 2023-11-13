@@ -2,152 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07117E992E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3047E9935
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbjKMJjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        id S233328AbjKMJl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbjKMJjF (ORCPT
+        with ESMTP id S232633AbjKMJl1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:39:05 -0500
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D8210E5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:39:01 -0800 (PST)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1f03db0a410so2509561fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699868340; x=1700473140; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FkUqHilNLJf2jcy/dzmNPu/MlxdQwClQb83sCKhp4LA=;
-        b=XUcmWv698QMihZvs6W7YFiYNIka2t/6WJap8yUfl41BGqq4tP08Uqs3wUlz/p2xVrk
-         r1g7+1LTgQ6Tbzxx8hGqv8rEcbUZSSUiaeuiOa4vGxpaR6brs3yxxynTfdr8pUdySFjs
-         tYFUOjBU0AySCwPCENxvHqgdbWS1F0Q1JIH1+ORTpB3wmxdDGFMEqXADf7gEBu8qGUnp
-         azjToCh/0bQbLASi0RS9UjEAEBJ6B6d/3JXf9ypTG4E+HOU9Vi3rFSxLbWww0wtOPiXv
-         7MPnHCvwCcmotVA7H7SL8sUXbNAEFyjQbVmEb92sCacQ/FUI74DxTYkVVmS5yiEY55S3
-         XbTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699868340; x=1700473140;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FkUqHilNLJf2jcy/dzmNPu/MlxdQwClQb83sCKhp4LA=;
-        b=Muu5qxROVERZFvEc3cBG+XCTkUivxe2ygbpAU8fYeVMna5FbvCieupzHhjFEFOGT6g
-         KoKJqim+Yi6FigrcHCziRHuayern8aMybGncvgm9Bui4tf07uxFZZQr+ZrzGt5uR58xn
-         8xQeLecJsBVHIXXZx4EVM6UViHejNqe0spcCPBzCyfU+jIYvkpGNv5o7fzT8Qku1Ikea
-         2Y7JqYL4AHwvjr7AJBMtGnS3v75JsC8AqWiMkEzn/u7E82TAVvS5uyDvcHPfwTmkiNIL
-         KvQqXDFsnYakIl4fAgcrXlk+JYPaMmrSpDrcvWoTVrgUB3ZfXboT/f7MTZn4X4x5fo2V
-         IEbw==
-X-Gm-Message-State: AOJu0YyKgE4kaKnbmW2TZ+IYHSc8J7WCZ1KLgCaeX6JaASzS4ravajCf
-        17/5NjK5j7dmIF1SPhugTwE=
-X-Google-Smtp-Source: AGHT+IG+55gFc9k3ODG7zuJ7MS0xkDXbZatxNHnIOwFhu9j+YucILfgWXZdijEaKt2hFzVqMdYsB+Q==
-X-Received: by 2002:a05:6870:414b:b0:1ea:159e:75ff with SMTP id r11-20020a056870414b00b001ea159e75ffmr8726298oad.2.1699868340507;
-        Mon, 13 Nov 2023 01:39:00 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id fa35-20020a056a002d2300b0065a1b05193asm3490700pfb.185.2023.11.13.01.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 01:38:59 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id D2A571029976A; Mon, 13 Nov 2023 16:38:56 +0700 (WIB)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Staging Drivers <linux-staging@lists.linux.dev>
-Cc:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Soumya Negi <soumya.negi97@gmail.com>,
-        Alexon Oliveira <alexondunkan@gmail.com>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Menna Mahmoud <eng.mennamahmoud.mm@gmail.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Matt Jan <zoo868e@gmail.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Dorine Tipo <dorine.a.tipo@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Charles Han <hanchunchao@inspur.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH] drivers: staging: vme_user: Describe VME_BUS and VME_TSI148
-Date:   Mon, 13 Nov 2023 16:38:38 +0700
-Message-ID: <20231113093839.7687-1-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.42.1
+        Mon, 13 Nov 2023 04:41:27 -0500
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E23C10D3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:41:23 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4STPZR44dDz9smv;
+        Mon, 13 Nov 2023 10:41:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1699868479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OYXhDMcF3MrS0pAW4PnkAp2GNeGRqdljI6C43cXCOO8=;
+        b=geDLWzUs9mlNg5whJr7WrXXoObB+4try8Bs7MlSUc0ZzU4IuSY2RXSnSFFDTSlzLo9xmOf
+        /mQmadFakztKEMKjvrPrzNOR2jyz6fo9WQaGpe0gigwBJsksnFV/fa9XCTqdwH47eDnI5G
+        DsYL9CBDIFGF8EzJJiirze3e4cD/aoZ8B4LHJOr7ZjXIaNwcvWImW1ZjTsE3fDGcOWOObP
+        2WEOcMFLkVDvr3t/FfpBc7eu+LQhj58Aa/S/OMAYXmeQy2Xn7PETkY4Af6dlCq8lVj8NF/
+        5pbchrUj033umpx4lFpdthOeVa4hhLW+xJ6gqRHMkTnRK33uzKVkbXRkl3lKww==
+Message-ID: <438f2960-c49e-6485-5916-20d6e69ef7d4@mailbox.org>
+Date:   Mon, 13 Nov 2023 10:41:15 +0100
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2322; i=bagasdotme@gmail.com; h=from:subject; bh=NQNt33u+INJVAr8Nxt440nGsCQJyT6tpJZVWZ83RJ+4=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKmBb0X+K2XaLrdi41W54G+98VarboARY5ad/96wb++Pm 83UL+LtKGVhEONikBVTZJmUyNd0epeRyIX2tY4wc1iZQIYwcHEKwERMRBj+x0/u3PxtY0+946+g rp2m3dZT2ffGaF63UXU4ZR5/x+/xRYbf7EcSXD/qP92Ws9aeUYn77LSCyQetrB7NKim8VL/WSmA DDwA=
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Content-Language: de-CH-frami, en-CA
+To:     Simon Ser <contact@emersion.fr>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, wayland-devel@lists.freedesktop.org,
+        hwentlan@amd.com, christian.koenig@amd.com, joshua@froggi.es
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+ <b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com>
+ <20231016151856.74af9305@eldfell>
+ <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
+ <20231016175222.7a89e6ab@eldfell> <ZS1ST6XAUHilBg3d@intel.com>
+ <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr>
+ <ZS55mXTSxpXKYbsd@intel.com>
+ <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr>
+ <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-MBO-RS-ID: 7c3c5aa1a8db02fdd65
+X-MBO-RS-META: kg37gowaq3a6rqdmom3kkd9oowrdqz4m
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Help description for both options only tells users to enable them
-without description of what VME bridge and TSI148 device are.
+On 11/13/23 10:18, Simon Ser wrote:
+> On Monday, October 23rd, 2023 at 10:25, Simon Ser <contact@emersion.fr> wrote:
+> 
+>>>>>>>>>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+>>>>>>>>>>> +effectively change only the FB_ID property on any planes. No-operation changes
+>>>>>>>>>>> +are ignored as always. [...]
+>>>>>>>>>>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
+>>>>>>>>>
+>>>>>>>>> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
+>>>>>>>>> and it worked as expected, so this shouldn't be a concern.
+>>>>>>>>> Right, so it must have some effect. It cannot be simply ignored like in
+>>>>>>>>> the proposed doc wording. Do we special-case re-setting the same FB_ID
+>>>>>>>>> as "not a no-op" or "not ignored" or some other way?
+>>>>>>>>> There's an effect in the refresh rate, the image won't change but it
+>>>>>>>>> will report that a flip had happened asynchronously so the reported
+>>>>>>>>> framerate will be increased. Maybe an additional wording could be like:
+>>>>>>>
+>>>>>>> Flipping to the same FB_ID will result in a immediate flip as if it was
+>>>>>>> changing to a different one, with no effect on the image but effecting
+>>>>>>> the reported frame rate.
+>>>>>>
+>>>>>> Re-setting FB_ID to its current value is a special case regardless of
+>>>>>> PAGE_FLIP_ASYNC, is it not?
+>>>>>
+>>>>> No. The rule has so far been that all side effects are observed
+>>>>> even if you flip to the same fb. And that is one of my annoyances
+>>>>> with this proposal. The rules will now be different for async flips
+>>>>> vs. everything else.
+>>>>
+>>>> Well with the patches the async page-flip case is exactly the same as
+>>>> the non-async page-flip case. In both cases, if a FB_ID is included in
+>>>> an atomic commit then the side effects are triggered even if the property
+>>>> value didn't change. The rules are the same for everything.
+>>>
+>>> I see it only checking if FB_ID changes or not. If it doesn't
+>>> change then the implication is that the side effects will in
+>>> fact be skipped as not all planes may even support async flips.
+>>
+>> Hm right. So the problem is that setting any prop = same value as
+>> previous one will result in a new page-flip for asynchronous page-flips,
+>> but will not result in any side-effect for asynchronous page-flips.
+>>
+>> Does it actually matter though? For async page-flips, I don't think this
+>> would result in any actual difference in behavior?
+> 
+> To sum this up, here is a matrix of behavior as seen by user-space:
+> 
+> - Sync atomic page-flip
+>   - Set FB_ID to different value: programs hw for page-flip, sends uevent
+>   - Set FB_ID to same value: same (important for VRR)
+>   - Set another plane prop to same value: same
 
-Briefly describe them.
+A page flip is programmed even if FB_ID isn't touched?
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- This is a wording alternative to Dorine's patch [1]. The wording is
- inspired by [2] and [3].
 
- [1]: https://lore.kernel.org/outreachy/20231029180346.8570-1-dorine.a.tipo@gmail.com/
- [2]: https://ohwr.org/project/vme-sbc-a25-pcie-vme-bridge/wikis/home
- [3]: https://www.slac.stanford.edu/grp/lcls/controls/global/hw/users_guides/cpu/pci-bridge/Tsi148.pdf
+>   - Set another plane prop to different value: maybe rejected if modeset required
+> - Async atomic page-flip
+>   - Set FB_ID to different value: updates hw with new FB address, sends
+>     immediate uevent
+>   - Set FB_ID to same value: same (no-op for the hw)
 
- drivers/staging/vme_user/Kconfig | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+No-op implies it doesn't trigger scanning out a frame with VRR, if scanout is currently in vertical blank. Is that the case? If so, async flips can't reliably trigger scanning out a frame with VRR.
 
-diff --git a/drivers/staging/vme_user/Kconfig b/drivers/staging/vme_user/Kconfig
-index d65cc5510649e9..8e5df6ce36e8f9 100644
---- a/drivers/staging/vme_user/Kconfig
-+++ b/drivers/staging/vme_user/Kconfig
-@@ -3,18 +3,32 @@ menuconfig VME_BUS
- 	bool "VME bridge support"
- 	depends on PCI
- 	help
--	  If you say Y here you get support for the VME bridge Framework.
-+	  Enable support for VME (VersaModular Eurocard bus) bridge modules.
-+	  The bridge allows connecting VME devices to systems with existing
-+	  interfaces (like USB or PCI) by means of translating VME protocol
-+	  operations.
-+
-+	  Note that this only enables the bridge framework. You'll also
-+	  likely want to enable driver for specific bridge device you have
-+	  to actually use it. If unsure, say N.
- 
- if VME_BUS
- 
- comment "VME Bridge Drivers"
- 
- config VME_TSI148
--	tristate "Tempe"
-+	tristate "Tundra TSI148 VME bridge support"
- 	depends on HAS_DMA
- 	help
--	 If you say Y here you get support for the Tundra TSI148 VME bridge
--	 chip.
-+	 If you say Y here you get support for the Tundra TSI148 VME-to-PCI/X
-+	 bridge chip (and pin-compatible clones).
-+
-+	 TSI148 is a high-performant, 2eSST and VME64-compliant VME-to-PCI/X
-+	 interconnect bridge with support for PCI and PCI-X bus interface.
-+	 It is primarily used in industrial and embedded systems.
-+
-+	 To compile this driver as a module, say M - the module will be
-+	 called vme_tsi148. If unsure, say N.
- 
- config VME_FAKE
- 	tristate "Fake"
 
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-An old man doll... just what I always wanted! - Clara
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
 
