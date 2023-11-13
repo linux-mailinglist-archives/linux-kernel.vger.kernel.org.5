@@ -2,235 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F947E9A0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49EA7E9A11
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjKMKSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S229507AbjKMKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 05:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMKS2 (ORCPT
+        with ESMTP id S229454AbjKMKT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:18:28 -0500
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F06135
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1699870701; x=1700129901;
-        bh=+/YfIW/pT4s5zdDMPUXLMu85WM0sSTZW2lyua24kskM=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=YP7BqHIktQ5yGf5dMgiouWVxsJ+oFkZlEHBmOpCGieOqEy2mzHI0Wsg1TDV1hr5EU
-         qRpFNsWQ3kVufohHzAwtZ2I3SV/dAsfBm0dXhMLgFbkp7YLxsB6fiGgmTWeuAFEvi9
-         wZBlt436yZpm7+gJS674fLMTiJJy/UjYAZTzkhMkelog012YNW4KQvV9Xt/6/aRNSG
-         Jrl0Ugls5v52PFBb5JmU13tBXA0x0sHXV4cT88zie7mcz/+ujiR4s0sWRmMwALTUlv
-         BpMphDEE2zGIBsts+bpbb+5j4roe+zBBUSH0PZIw4lPHzM1d3j8jCilA8EJCutp+3e
-         6FGEtBBdTJHtg==
-Date:   Mon, 13 Nov 2023 10:18:10 +0000
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     =?utf-8?Q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-        pierre-eric.pelloux-prayer@amd.com,
-        =?utf-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        kernel-dev@igalia.com,
-        =?utf-8?Q?=27Marek_Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        =?utf-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        dri-devel@lists.freedesktop.org,
-        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, wayland-devel@lists.freedesktop.org,
-        hwentlan@amd.com, christian.koenig@amd.com, joshua@froggi.es
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-Message-ID: <A9EI0AgwZxcdx6LCSZgcQdCbGgJYq0RK1__mATZ_tsLiZEXbYQ_akrfCv7CPOkyV7EPex0UoVgDpyYoBWHy_B_sMs-aanDXd8rZlzJpqtrA=@emersion.fr>
-In-Reply-To: <20231113121508.16a75352@eldfell>
-References: <20230815185710.159779-1-andrealmeid@igalia.com> <ZS1ST6XAUHilBg3d@intel.com> <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr> <ZS55mXTSxpXKYbsd@intel.com> <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr> <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr> <20231113113804.6e2adfa8@eldfell> <ha7UwaZ0eilF_Hl6wWqJXJQ0oy9_rD1FKUNDwIlNxC-vT3InSP4bpTRwVnZG9QvzZBsX4W-p_vz5FfByoAXuGewyhVtwVd4KyRSMJ4G8cQ4=@emersion.fr> <20231113121508.16a75352@eldfell>
-Feedback-ID: 1358184:user:proton
+        Mon, 13 Nov 2023 05:19:56 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C08B5D4C
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:19:52 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4C9414BF;
+        Mon, 13 Nov 2023 02:20:37 -0800 (PST)
+Received: from [10.57.73.13] (unknown [10.57.73.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CE5403F6C4;
+        Mon, 13 Nov 2023 02:19:49 -0800 (PST)
+Message-ID: <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
+Date:   Mon, 13 Nov 2023 10:19:48 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
+Content-Language: en-GB
+To:     Matthew Wilcox <willy@infradead.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com>
+ <ZVGxkMeY50JSesaj@casper.infradead.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZVGxkMeY50JSesaj@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/11/2023 05:18, Matthew Wilcox wrote:
+> On Sun, Nov 12, 2023 at 10:57:47PM -0500, John Hubbard wrote:
+>> I've done some initial performance testing of this patchset on an arm64
+>> SBSA server. When these patches are combined with the arm64 arch contpte
+>> patches in Ryan's git tree (he has conveniently combined everything
+>> here: [1]), we are seeing a remarkable, consistent speedup of 10.5x on
+>> some memory-intensive workloads. Many test runs, conducted independently
+>> by different engineers and on different machines, have convinced me and
+>> my colleagues that this is an accurate result.
+>>
+>> In order to achieve that result, we used the git tree in [1] with
+>> following settings:
+>>
+>>     echo always >/sys/kernel/mm/transparent_hugepage/enabled
+>>     echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
+>>
+>> This was on a aarch64 machine configure to use a 64KB base page size.
+>> That configuration means that the PMD size is 512MB, which is of course
+>> too large for practical use as a pure PMD-THP. However, with with these
+>> small-size (less than PMD-sized) THPs, we get the improvements in TLB
+>> coverage, while still getting pages that are small enough to be
+>> effectively usable.
+> 
+> That is quite remarkable!
 
+Yes, agreed - thanks for sharing these results! A very nice Monday morning boost!
 
+> 
+> My hope is to abolish the 64kB page size configuration.  ie instead of
+> using the mixture of page sizes that you currently are -- 64k and
+> 1M (right?  Order-0, and order-4)
 
+Not quite; the contpte-size for a 64K page size is 2M/order-5. (and yes, it is
+64K/order-4 for a 4K page size, and 2M/order-7 for a 16K page size. I agree that
+intuitively you would expect the order to remain constant, but it doesn't).
 
+The "recommend" setting above will actually enable order-3 as well even though
+there is no HW benefit to this. So the full set of available memory sizes here is:
 
-On Monday, November 13th, 2023 at 11:15, Pekka Paalanen <ppaalanen@gmail.co=
-m> wrote:
+64K/order-0, 512K/order-3, 2M/order-5, 512M/order-13
 
+> , that 4k, 64k and 2MB (order-0,
+> order-4 and order-9) will provide better performance.
+> 
+> Have you run any experiements with a 4kB page size?
 
->=20
->=20
-> On Mon, 13 Nov 2023 09:44:15 +0000
-> Simon Ser contact@emersion.fr wrote:
->=20
-> > On Monday, November 13th, 2023 at 10:38, Pekka Paalanen ppaalanen@gmail=
-.com wrote:
-> >=20
-> > > On Mon, 13 Nov 2023 09:18:39 +0000
-> > > Simon Ser contact@emersion.fr wrote:
-> > >=20
-> > > > On Monday, October 23rd, 2023 at 10:25, Simon Ser contact@emersion.=
-fr wrote:
-> > > >=20
-> > > > > > > > > > > > > > +An atomic commit with the flag DRM_MODE_PAGE_F=
-LIP_ASYNC is allowed to
-> > > > > > > > > > > > > > +effectively change only the FB_ID property on =
-any planes. No-operation changes
-> > > > > > > > > > > > > > +are ignored as always. [...]
-> > > > > > > > > > > > > > During the hackfest in Brno, it was mentioned t=
-hat a commit which re-sets the same FB_ID could actually have an effect wit=
-h VRR: It could trigger scanout of the next frame before vertical blank has=
- reached its maximum duration. Some kind of mechanism is required for this =
-in order to allow user space to perform low frame rate compensation.
-> > > > > > > > > > > >=20
-> > > > > > > > > > > > Xaver tested this hypothesis in a flipping the same=
- fb in a VRR monitor
-> > > > > > > > > > > > and it worked as expected, so this shouldn't be a c=
-oncern.
-> > > > > > > > > > > > Right, so it must have some effect. It cannot be si=
-mply ignored like in
-> > > > > > > > > > > > the proposed doc wording. Do we special-case re-set=
-ting the same FB_ID
-> > > > > > > > > > > > as "not a no-op" or "not ignored" or some other way=
-?
-> > > > > > > > > > > > There's an effect in the refresh rate, the image wo=
-n't change but it
-> > > > > > > > > > > > will report that a flip had happened asynchronously=
- so the reported
-> > > > > > > > > > > > framerate will be increased. Maybe an additional wo=
-rding could be like:
-> > > > > > > > > >=20
-> > > > > > > > > > Flipping to the same FB_ID will result in a immediate f=
-lip as if it was
-> > > > > > > > > > changing to a different one, with no effect on the imag=
-e but effecting
-> > > > > > > > > > the reported frame rate.
-> > > > > > > > >=20
-> > > > > > > > > Re-setting FB_ID to its current value is a special case r=
-egardless of
-> > > > > > > > > PAGE_FLIP_ASYNC, is it not?
-> > > > > > > >=20
-> > > > > > > > No. The rule has so far been that all side effects are obse=
-rved
-> > > > > > > > even if you flip to the same fb. And that is one of my anno=
-yances
-> > > > > > > > with this proposal. The rules will now be different for asy=
-nc flips
-> > > > > > > > vs. everything else.
-> > > > > > >=20
-> > > > > > > Well with the patches the async page-flip case is exactly the=
- same as
-> > > > > > > the non-async page-flip case. In both cases, if a FB_ID is in=
-cluded in
-> > > > > > > an atomic commit then the side effects are triggered even if =
-the property
-> > > > > > > value didn't change. The rules are the same for everything.
-> > > > > >=20
-> > > > > > I see it only checking if FB_ID changes or not. If it doesn't
-> > > > > > change then the implication is that the side effects will in
-> > > > > > fact be skipped as not all planes may even support async flips.
-> > > > >=20
-> > > > > Hm right. So the problem is that setting any prop =3D same value =
-as
-> > > > > previous one will result in a new page-flip for asynchronous page=
--flips,
-> > > > > but will not result in any side-effect for asynchronous page-flip=
-s.
-> > > > >=20
-> > > > > Does it actually matter though? For async page-flips, I don't thi=
-nk this
-> > > > > would result in any actual difference in behavior?
-> > >=20
-> > > Hi Simon,
-> > >=20
-> > > a fly-by question...
-> > >=20
-> > > > To sum this up, here is a matrix of behavior as seen by user-space:
-> > > >=20
-> > > > - Sync atomic page-flip
-> > > > - Set FB_ID to different value: programs hw for page-flip, sends ue=
-vent
-> > > > - Set FB_ID to same value: same (important for VRR)
-> > > > - Set another plane prop to same value: same
-> > > > - Set another plane prop to different value: maybe rejected if mode=
-set required
-> > > > - Async atomic page-flip
-> > > > - Set FB_ID to different value: updates hw with new FB address, sen=
-ds
-> > > > immediate uevent
-> > > > - Set FB_ID to same value: same (no-op for the hw)
-> > >=20
-> > > It should not be a no-op for the hw, because the hw might be in the
-> > > middle of a VRR front-porch waiting period, and the commit needs to e=
-nd
-> > > the waiting immediately rather than time out?
-> >=20
-> > I'm not sure
->=20
-> Would people not want to use async commits to trigger new VRR scanout
-> cycles without content updates?
->=20
-> I seem to recall previous comments that switching between sync and
-> async commit modes may take a moment (intel's one last sync flip), so
-> using sync once in a while then using async otherwise is probably not a
-> good idea.
+Agree that would be interesting with 64K small-sized THP enabled. And I'd love
+to get to a world were we universally deal in variable sized chunks of memory,
+aligned on 4K boundaries.
 
-Sorry, my line got cut off. I meant: "I'm not sure what you mean".
+In my experience though, there are still some performance benefits to 64K base
+page vs 4K+contpte; the page tables are more cache efficient for the former case
+- 64K of memory is described by 8 bytes in the former vs 8x16=128 bytes in the
+latter. In practice the HW will still only read 8 bytes in the latter but that's
+taking up a full cache line vs the former where a single cache line stores 8x
+64K entries.
 
-> > > > - Set another plane prop to same value: ignored, sends immediate ue=
-vent
-> > > > (special codepath)
-> > >=20
-> > > If the sync case says "same", then shouldn't this say "same" as well =
-to
-> > > be consistent?
-> >=20
-> > Okay, I think I chose my words badly. By "same" I meant "same as
-> > previous item in the list".
-> >=20
-> > Here I tried to be more explicit and explain why it's the same behavior=
-.
-> > We have a special path in the kernel code that ignores the change, but
-> > the effective result is that it doesn't differ from the sync case.
-> >=20
-> > Here's a fixed matrix where I don't use confusing words:
-> >=20
-> > - Sync atomic page-flip
-> > - Set FB_ID to different value: programs hw for page-flip, sends uevent
-> > - Set FB_ID to same value: programs hw for page-flip, sends uevent (imp=
-ortant
-> > for VRR)
-> > - Set another plane prop to same value: programs hw for page-flip, send=
-s
-> > uevent
->=20
-> Programming hw for page-flip probably triggers a new VRR scanout cycle,
-> even if the FB address didn't change.
->=20
-> > - Set another plane prop to different value: maybe rejected if modeset =
-required
-> > - Async atomic page-flip
-> > - Set FB_ID to different value: updates hw with new FB address, sends
-> > immediate uevent
-> > - Set FB_ID to same value: updates hw with new FB address (no-op for th=
-e hw),
-> > sends immediate uevent
-> > - Set another plane prop to same value: ignored, sends immediate uevent
-> > (special codepath)
->=20
-> Just like Michel points out: if this case has a special case ignoring
-> the set, then this case will not trigger a new VRR scanout cycle like
-> the corresponding sync case does.
+Thanks,
+Ryan
 
-Ignore the prop change, but still include the CRTC in the commit, so
-everything is fine.
