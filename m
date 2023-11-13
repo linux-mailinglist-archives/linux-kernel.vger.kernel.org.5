@@ -2,73 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 577E57E9A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30AF7E9A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjKMKiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
+        id S229727AbjKMKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 05:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKMKiT (ORCPT
+        with ESMTP id S229459AbjKMKmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:38:19 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDE110CB;
-        Mon, 13 Nov 2023 02:38:16 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso3519148b3a.1;
-        Mon, 13 Nov 2023 02:38:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699871896; x=1700476696; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fiJlbDV02NWbkvJ5jpVJciv8KDhCisvI4tOyDfm1YJo=;
-        b=Q8v7UoUYQkcqwDfXAslEfCmrzsEKWCXVahT6LfzBOGJiye9vmsPGKOdU11TbjBr13A
-         nsn/wJP/gfASjvBTKNFAwOYpAejRHNUVtOnIjf3VYbs0W2VCabri2oRVNXcUwuqPcYxa
-         I7bJUQNHRjEqAUe4xbP0EHPy8Ip2hz/zJz9mMy//5GuEpMzJUuZ890/0tEzjwKApmRZu
-         WeilAPY9pHZr4O6aFMbmfi9IzaHBFHRON/IFCljHDcHGnZBYirSfAMEntqfkkpk3VmUn
-         g3cGirpYcYKYa5E2GkveWgRP/QVaPHQGFyq+KChwDVWGtbc4z50RDbyxdZk7XqXQefD2
-         iHug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699871896; x=1700476696;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fiJlbDV02NWbkvJ5jpVJciv8KDhCisvI4tOyDfm1YJo=;
-        b=xDCCxFJMY3J1t9nhLUf+4c1UHQdYPT4AnWuuysH/vMuR5EvWCUwjkg/FZif0lwG/5S
-         0hZLBff0gmMY5EbgftHc8FLl/lm4SVkKgtIno92/HYgXyqdUef8yZ7UlYlPwY4ZSrPxd
-         wX8uwXH8GqRLE4In/HLhpmzYCzk58bSrJMi+1lZTgvNLMJHiqkFWx3Et5mqjVG1p2uhd
-         cerJ1klqIC/PTh5sRXGna0iQVaHjwddtpWHWY4+GACPTkakcmZMP99sv1vTdKOpL/hwE
-         clPN84iAblRpBLGxmV4jk9ZbzaAG/NRzJldKLwglkKy2UVxyc3x1Dn7euO9CtXLAePVL
-         WOdw==
-X-Gm-Message-State: AOJu0Ywhqu2Q9gr4TVARF7jdmTcW9eSwjD+6mcvPF7uKPz4M+ruDdqZV
-        Pljp3IrRLBtuoTVlVthrgBk=
-X-Google-Smtp-Source: AGHT+IEgJaKwvITNN2ZPUMkM5l5mBI49kYoY6NVeT/wLcHZJtmSH5ONKRabmekhHrtIRzZPlnDRDtw==
-X-Received: by 2002:a05:6a21:193:b0:14c:c9f6:d657 with SMTP id le19-20020a056a21019300b0014cc9f6d657mr5114256pzb.22.1699871896057;
-        Mon, 13 Nov 2023 02:38:16 -0800 (PST)
-Received: from localhost.localdomain (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id bb4-20020a170902bc8400b001c755810f89sm3752593plb.181.2023.11.13.02.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 02:38:15 -0800 (PST)
-From:   Mia Lin <mimi05633@gmail.com>
-To:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        KWLIU@nuvoton.com, JJLIU0@nuvoton.com, KFLIN@nuvoton.com,
-        mylin1@nuvoton.com
-Cc:     openbmc@lists.ozlabs.org, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mia Lin <mimi05633@gmail.com>
-Subject: [PATCH v7 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and NCT3018Y-R
-Date:   Mon, 13 Nov 2023 18:38:07 +0800
-Message-Id: <20231113103807.1036978-2-mimi05633@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231113103807.1036978-1-mimi05633@gmail.com>
-References: <20231113103807.1036978-1-mimi05633@gmail.com>
+        Mon, 13 Nov 2023 05:42:37 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A64C10CB;
+        Mon, 13 Nov 2023 02:42:33 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E34D510A;
+        Mon, 13 Nov 2023 11:42:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699872127;
+        bh=6ihvpfxog/JlU6xFHC7s7/xfpVvhabzUKotPpV7QC2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLwdtlyjr9XaJgEq3GIS+tAqup/UOKkw9CD7xt6h7DwcFk2Jy6GcqzMIv8i5b2nty
+         YDM0eBQ9g6LgQ3Uiy6swYxkGgEHz9eKBgmI5tn7c0CpqziSP7wwwZNlU1vRvfyJlZM
+         e9cfogzJJnOl+xLA4frg+PnYkyippD2ByhKc6H38=
+Date:   Mon, 13 Nov 2023 12:42:38 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+Message-ID: <20231113104238.GA13981@pendragon.ideasonboard.com>
+References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
+ <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
+ <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,127 +53,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NCT3015Y-R and NCT3018Y-R use the same datasheet
-    but have different topologies as follows.
-- Topology (Only 1st i2c can set TWO bit and HF bit)
-  In NCT3015Y-R,
-    rtc 1st i2c is connected to a host CPU
-    rtc 2nd i2c is connected to a BMC
-  In NCT3018Y-R,
-    rtc 1st i2c is connected to a BMC
-    rtc 2nd i2c is connected to a host CPU
-In order to be compatible with NCT3015Y-R and NCT3018Y-R,
-- In probe,
-  If part number is NCT3018Y-R, only set HF bit to 24-Hour format.
-  Else, do nothing
-- In set_time,
-  If part number is NCT3018Y-R && TWO bit is 0,
-     change TWO bit to 1, and restore TWO bit after updating time.
+On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
+> Hi Shengjiu,
+> 
+> On 10/11/2023 06:48, Shengjiu Wang wrote:
+> > Fixed point controls are used by the user to configure
+> > a fixed point value in 64bits, which Q31.32 format.
+> > 
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> 
+> This patch adds a new control type. This is something that also needs to be
+> tested by v4l2-compliance, and for that we need to add support for this to
+> one of the media test-drivers. The best place for that is the vivid driver,
+> since that has already a bunch of test controls for other control types.
+> 
+> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
+> 
+> Can you add a patch adding a fixed point test control to vivid?
 
-Signed-off-by: Mia Lin <mimi05633@gmail.com>
----
-Changes since version 7:
-  Fix the part number parameter checking issue.
+I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
+relate more to units than control types. We have lots of fixed-point
+values in controls already, using the 32-bit and 64-bit integer control
+types. They use various locations for the decimal point, depending on
+the control. If we want to make this more explicit to users, we should
+work on adding unit support to the V4L2 controls.
 
- drivers/rtc/rtc-nct3018y.c | 52 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 6 deletions(-)
+> > ---
+> >  .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 13 +++++++------
+> >  .../userspace-api/media/v4l/vidioc-queryctrl.rst    |  9 ++++++++-
+> >  .../userspace-api/media/videodev2.h.rst.exceptions  |  1 +
+> >  drivers/media/v4l2-core/v4l2-ctrls-api.c            |  5 ++++-
+> >  drivers/media/v4l2-core/v4l2-ctrls-core.c           |  2 ++
+> >  include/uapi/linux/videodev2.h                      |  1 +
+> >  6 files changed, 23 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> > index e8475f9fd2cf..e7e5d78dc11e 100644
+> > --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> > +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> > @@ -162,13 +162,13 @@ still cause this situation.
+> >      * - __s32
+> >        - ``value``
+> >        - New value or current value. Valid if this control is not of type
+> > -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
+> > -	not set.
+> > +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
+> > +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
+> >      * - __s64
+> >        - ``value64``
+> >        - New value or current value. Valid if this control is of type
+> > -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
+> > -	not set.
+> > +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
+> > +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
+> >      * - char *
+> >        - ``string``
+> >        - A pointer to a string. Valid if this control is of type
+> > @@ -193,8 +193,9 @@ still cause this situation.
+> >      * - __s64 *
+> >        - ``p_s64``
+> >        - A pointer to a matrix control of signed 64-bit values. Valid if
+> > -        this control is of type ``V4L2_CTRL_TYPE_INTEGER64`` and
+> > -        ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is set.
+> > +        this control is of type ``V4L2_CTRL_TYPE_INTEGER64``,
+> > +        ``V4L2_CTRL_TYPE_FIXED_POINT`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD``
+> > +        is set.
+> >      * - struct :c:type:`v4l2_area` *
+> >        - ``p_area``
+> >        - A pointer to a struct :c:type:`v4l2_area`. Valid if this control is
+> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> > index 4d38acafe8e1..f3995ec57044 100644
+> > --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> > +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
+> > @@ -235,7 +235,8 @@ See also the examples in :ref:`control`.
+> >        - ``default_value``
+> >        - The default value of a ``V4L2_CTRL_TYPE_INTEGER``, ``_INTEGER64``,
+> >  	``_BOOLEAN``, ``_BITMASK``, ``_MENU``, ``_INTEGER_MENU``, ``_U8``
+> > -	or ``_U16`` control. Not valid for other types of controls.
+> > +	``_FIXED_POINT`` or ``_U16`` control. Not valid for other types of
+> > +	controls.
+> >  
+> >  	.. note::
+> >  
+> > @@ -549,6 +550,12 @@ See also the examples in :ref:`control`.
+> >        - n/a
+> >        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
+> >          parameters for stateless video decoders.
+> > +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
+> > +      - any
+> > +      - any
+> > +      - any
+> > +      - A 64-bit integer valued control, containing parameter which is
+> > +        Q31.32 format.
+> >  
+> >  .. raw:: latex
+> >  
+> > diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> > index e61152bb80d1..2faa5a2015eb 100644
+> > --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> > +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> > @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
+> >  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
+> >  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
+> >  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
+> > +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
+> >  
+> >  # V4L2 capability defines
+> >  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+> > index 002ea6588edf..e6a0fb8d6791 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+> > @@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
+> >  		return copy_to_user(c->string, ptr.p_char, len + 1) ?
+> >  		       -EFAULT : 0;
+> >  	case V4L2_CTRL_TYPE_INTEGER64:
+> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
+> >  		c->value64 = *ptr.p_s64;
+> >  		break;
+> >  	default:
+> > @@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
+> >  
+> >  	switch (ctrl->type) {
+> >  	case V4L2_CTRL_TYPE_INTEGER64:
+> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
+> >  		*ctrl->p_new.p_s64 = c->value64;
+> >  		break;
+> >  	case V4L2_CTRL_TYPE_STRING:
+> > @@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
+> >  		 */
+> >  		if (ctrl->is_ptr)
+> >  			continue;
+> > -		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
+> > +		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
+> > +		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
+> >  			p_new.p_s64 = &cs->controls[i].value64;
+> >  		else
+> >  			p_new.p_s32 = &cs->controls[i].value;
+> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> > index a662fb60f73f..9d50df0d9874 100644
+> > --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> > @@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
+> >  	case V4L2_CTRL_TYPE_INTEGER:
+> >  		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
+> >  	case V4L2_CTRL_TYPE_INTEGER64:
+> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
+> >  		/*
+> >  		 * We can't use the ROUND_TO_RANGE define here due to
+> >  		 * the u64 divide that needs special care.
+> > @@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+> >  	/* Prefill elem_size for all types handled by std_type_ops */
+> >  	switch ((u32)type) {
+> >  	case V4L2_CTRL_TYPE_INTEGER64:
+> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
+> >  		elem_size = sizeof(s64);
+> >  		break;
+> >  	case V4L2_CTRL_TYPE_STRING:
+> > diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> > index cf8c44595a1d..9482ac66a675 100644
+> > --- a/include/uapi/linux/videodev2.h
+> > +++ b/include/uapi/linux/videodev2.h
+> > @@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
+> >  	V4L2_CTRL_TYPE_STRING        = 7,
+> >  	V4L2_CTRL_TYPE_BITMASK       = 8,
+> >  	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
+> > +	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
+> >  
+> >  	/* Compound types are >= 0x0100 */
+> >  	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
 
-diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
-index ed4e606be8e5..f488a189a465 100644
---- a/drivers/rtc/rtc-nct3018y.c
-+++ b/drivers/rtc/rtc-nct3018y.c
-@@ -23,6 +23,7 @@
- #define NCT3018Y_REG_CTRL	0x0A /* timer control */
- #define NCT3018Y_REG_ST		0x0B /* status */
- #define NCT3018Y_REG_CLKO	0x0C /* clock out */
-+#define NCT3018Y_REG_PART	0x21 /* part info */
- 
- #define NCT3018Y_BIT_AF		BIT(7)
- #define NCT3018Y_BIT_ST		BIT(7)
-@@ -37,10 +38,12 @@
- #define NCT3018Y_REG_BAT_MASK		0x07
- #define NCT3018Y_REG_CLKO_F_MASK	0x03 /* frequenc mask */
- #define NCT3018Y_REG_CLKO_CKE		0x80 /* clock out enabled */
-+#define NCT3018Y_REG_PART_NCT3018Y	0x02
- 
- struct nct3018y {
- 	struct rtc_device *rtc;
- 	struct i2c_client *client;
-+	int part_num;
- #ifdef CONFIG_COMMON_CLK
- 	struct clk_hw clkout_hw;
- #endif
-@@ -177,8 +180,27 @@ static int nct3018y_rtc_read_time(struct device *dev, struct rtc_time *tm)
- static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
- {
- 	struct i2c_client *client = to_i2c_client(dev);
-+	struct nct3018y *nct3018y = dev_get_drvdata(dev);
- 	unsigned char buf[4] = {0};
--	int err;
-+	int err, flags;
-+	int restore_flags = 0;
-+
-+	flags = i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
-+	if (flags < 0) {
-+		dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_CTRL.\n");
-+		return flags;
-+	}
-+
-+	/* Check and set TWO bit */
-+	if (nct3018y->part_num == NCT3018Y_REG_PART_NCT3018Y && !(flags & NCT3018Y_BIT_TWO)) {
-+		restore_flags = 1;
-+		flags |= NCT3018Y_BIT_TWO;
-+		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-+		if (err < 0) {
-+			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
-+			return err;
-+		}
-+	}
- 
- 	buf[0] = bin2bcd(tm->tm_sec);
- 	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
-@@ -212,6 +234,18 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
- 		return -EIO;
- 	}
- 
-+	/* Restore TWO bit */
-+	if (restore_flags) {
-+		if (nct3018y->part_num == NCT3018Y_REG_PART_NCT3018Y)
-+			flags &= ~NCT3018Y_BIT_TWO;
-+
-+		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-+		if (err < 0) {
-+			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
-+			return err;
-+		}
-+	}
-+
- 	return err;
- }
- 
-@@ -479,11 +513,17 @@ static int nct3018y_probe(struct i2c_client *client)
- 		dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__);
- 	}
- 
--	flags = NCT3018Y_BIT_TWO;
--	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
--	if (err < 0) {
--		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
--		return err;
-+	nct3018y->part_num = i2c_smbus_read_byte_data(client, NCT3018Y_REG_PART);
-+	if (nct3018y->part_num < 0) {
-+		dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_PART.\n");
-+		return nct3018y->part_num;
-+	} else if (nct3018y->part_num == NCT3018Y_REG_PART_NCT3018Y) {
-+		flags = NCT3018Y_BIT_HF;
-+		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-+		if (err < 0) {
-+			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
-+			return err;
-+		}
- 	}
- 
- 	flags = 0;
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
