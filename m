@@ -2,174 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40BB7E9CDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 115507E9CB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjKMNPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:15:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        id S229972AbjKMNFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbjKMNPf (ORCPT
+        with ESMTP id S229507AbjKMNFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:15:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA6C172D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:15:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC16CC433C8;
-        Mon, 13 Nov 2023 13:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699881332;
-        bh=IUou9g1eC7eRyhYqxTZ2wecJaQRhh+vOQhsR2yztLhY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Za5Hz+lfHckCYadClxj9S0HmEayg0pbrmOvWPNveXQM/WkSLZXIDPV+PF8DOId7ba
-         53CZUqxcsNJl3kGjiSzF5hUxbt0ONRMxi7QL6efvnR09VEVUA5159sq2m6I/FRL1j3
-         j+sFscRcacyHwWiDba9D0GeFD+H3GgjmSoKPq0IFoBOGG24+piLxfuQVC5EypMSJcp
-         2sA8cry5c8+XiHGZy/J3S3TML4us/VSr+lWvXxfiTA/Yf0O+mAX/plKxTr62YFSPMw
-         hnL59cvZmWjmMtJMufOcp04JY8MuzNNquCr7RmvuUz38PSFwTmhuwMugmGv65z4dKI
-         sD5XqKbud0cTQ==
-Date:   Mon, 13 Nov 2023 21:03:11 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH 1/2] riscv: dts: cv1800b: add pinctrl node for cv1800b
-Message-ID: <ZVIejw2O6on8QMYy@xhacker>
-References: <20231113005702.2467-1-jszhang@kernel.org>
- <20231113005702.2467-2-jszhang@kernel.org>
- <58a99001-8260-4970-9fc7-25fe81e557a5@sifive.com>
+        Mon, 13 Nov 2023 08:05:00 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6B1171C
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:04:54 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231113130452euoutp0176aca27e698fa69144f1676137b0fe37~XMHu4DTAG1785417854euoutp01m
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:04:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231113130452euoutp0176aca27e698fa69144f1676137b0fe37~XMHu4DTAG1785417854euoutp01m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699880692;
+        bh=Bt1BH9P48bUtBwbmeLlr/gWc1xJ7xQ8lkQWYHmuD3ek=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=eGpjAwacDzZvgoD6wq4KTsX5UVwvBx4jRWEr40i7/Vt5Hea+2irAGZpES1j9suToI
+         9e4Z/4dauF0IEGLu9/T35uZUIAyaIt9V21CFGP1JzJycN/ICSHvkZXp9VDD2ue534b
+         AtYrOfSuwlXbHmfxuB9kfkoUDIlazGQtx5s1tKPc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231113130451eucas1p1dd5e97f8cf484467a956d38e77de5768~XMHugmbOM3228432284eucas1p1B;
+        Mon, 13 Nov 2023 13:04:51 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 12.30.09814.3FE12556; Mon, 13
+        Nov 2023 13:04:51 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6~XMHuDOCFO1683316833eucas1p23;
+        Mon, 13 Nov 2023 13:04:51 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231113130451eusmtrp2e1b2e14e6dece6bb3c1a120dff35c4ca~XMHuCfQyq0159901599eusmtrp2I;
+        Mon, 13 Nov 2023 13:04:51 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-d1-65521ef35b52
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id EB.5D.09146.3FE12556; Mon, 13
+        Nov 2023 13:04:51 +0000 (GMT)
+Received: from AMDC4515.eu.corp.samsungelectronics.net (unknown
+        [106.120.51.28]) by eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231113130450eusmtip2dff6ba245ed1d63e23761ad8a3d190fe~XMHtVhX0V2195521955eusmtip2B;
+        Mon, 13 Nov 2023 13:04:50 +0000 (GMT)
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mateusz Majewski <m.majewski2@samsung.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Various Exynos targets never return to no cooling
+Date:   Mon, 13 Nov 2023 14:04:34 +0100
+Message-ID: <20231113130435.500353-1-m.majewski2@samsung.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <58a99001-8260-4970-9fc7-25fe81e557a5@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djPc7qf5YJSDZbOMrT4vuU6k8W8z7IW
+        e19vZbe4vGsOm8Xn3iOMFjPO72OyWNjUwm4x8dhkZou1R+6yW8z9MpXZ4snDPjYHbo8189Yw
+        euycdZfdY/Gel0wem1Z1snncubaHzaNvyypGj8+b5ALYo7hsUlJzMstSi/TtErgy7qy5zlhw
+        wqzi5bJPrA2Mz9S7GDk5JARMJL5PO8jaxcjFISSwglHi4dIGZgjnC6PEvgV/oJzPjBKzr91j
+        h2n5N/EiVGI5o8SD2RvZIZxWJoljx08xgVSxCRhIPHizDCjBwSEiEC+x/qsVSA2zwGMmiRcd
+        15lBaoQFrCROLrrCBmKzCKhKHHn1HSzOK2ArseP0VSaIbfISexZ9Z4KIC0qcnPmEBcRmBoo3
+        b50NdoWEwBkOicWPZ7BCNLhILG1eyAhhC0u8Or4F6mwZif8750MNzZeYsfk9C8hxEgIVEncP
+        ekGY1hIfzzCDmMwCmhLrd+lDRB0l9m1JhTD5JG68FYTYzycxadt0Zogwr0RHmxDEZFWJ43sm
+        MUPY0hJPWm5DbfSQOHvrONhVQgKxEg9aJ7BMYFSYheSrWUi+moVwwgJG5lWM4qmlxbnpqcVG
+        eanlesWJucWleel6yfm5mxiB6en0v+NfdjAuf/VR7xAjEwfjIUYJDmYlEd48zYBUId6UxMqq
+        1KL8+KLSnNTiQ4zSHCxK4ryqKfKpQgLpiSWp2ampBalFMFkmDk6pBqa1Nqnns3MYur3Xqe7X
+        ZD30JbtKI7Fkx5ls1csx1/PdmdeeVay0uLaB9a9oSVWs+rutO8RuLfpWd8wi+Pqd1Zdz1poG
+        Ljvz53WH1D3vvlf1XkGx30repkhudH4SLPLUOfbdj+i5sh1Xk31MN/+X2HUnbs2dZyvdC+2u
+        lb5JP7/6kNn7813sInEnvy993juf749lblib976Vsx8f6eNqUTy2oDf8yZyJrZtXsQtO2nXK
+        l2tP1YqwqxPyG+svZK+8nRrIab1k+olwa696+/2rc25+eVF3o4/138PqebPC0ox0jbcdrghf
+        JWWiuMS0QrG1L+vDO7Fq7qMKmo2CnmsOFZb9iYi7NpHz15T1Yf/ZtskqsRRnJBpqMRcVJwIA
+        vxV3M74DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjkeLIzCtJLcpLzFFi42I5/e/4Pd3PckGpBo8/8Vt833KdyWLeZ1mL
+        va+3sltc3jWHzeJz7xFGixnn9zFZLGxqYbeYeGwys8XaI3fZLeZ+mcps8eRhH5sDt8eaeWsY
+        PXbOusvusXjPSyaPTas62TzuXNvD5tG3ZRWjx+dNcgHsUXo2RfmlJakKGfnFJbZK0YYWRnqG
+        lhZ6RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZd9ZcZyw4YVbxctkn1gbGZ+pdjJwcEgIm
+        Ev8mXmTuYuTiEBJYyiix7+lxdoiEtMThL1OgbGGJP9e62CCKmpkkvn3ayQiSYBMwkHjwZhlY
+        kYhAosSDnufsIEXMAi+ZJNpXHmQCSQgLWEmcXHSFDcRmEVCVOPLqOzOIzStgK7Hj9FUmiA3y
+        EnsWfWeCiAtKnJz5hAXEZgaKN2+dzTyBkW8WktQsJKkFjEyrGEVSS4tz03OLDfWKE3OLS/PS
+        9ZLzczcxAiNk27Gfm3cwznv1Ue8QIxMH4yFGCQ5mJRHePM2AVCHelMTKqtSi/Pii0pzU4kOM
+        pkD3TWSWEk3OB8ZoXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2ampBahFMHxMHp1QD
+        U/kClgTF/S/474tuSIjjP393YeydX5fbCoOTJsxc2fq0+cgzjsDKtpMbfy7fpr6r4ZRE/G3D
+        da9/s0tF/K5b26xyPmxG7ENjUSGnOFMxV+trUbOEF6t3SgRl959ylPFyW6sn6xvRUdSwzCdm
+        wmvmTzKvFh/Qe/ZY/Yz0rCwun5hmQ4celQzBKp4ipejctFyrbmFeNqlPwZ1vhSRP7vI+Pa3g
+        RaxpjOrm6tKbTvHSD/9K+/F8OyByZmnTf8XSfQVey5e+331siYL0i0Jlz1mG2W3RG4QeTHgZ
+        bzpbsaDzp8vsleX79wsdM6xSFN3M1zHRMX2Na7YWS3yq9E714hN7mvfsSDjXIX+Qhd//mpsS
+        S3FGoqEWc1FxIgCQLAYKGQMAAA==
+X-CMS-MailID: 20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6
+References: <CGME20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 08:51:20PM -0500, Samuel Holland wrote:
-> On 2023-11-12 6:57 PM, Jisheng Zhang wrote:
-> > Add the reset device tree node to cv1800b SoC reusing the
->           ^^^^^
->           I assume you mean pinctrl here?
+Hi,
 
-oops copy and paste the commit msg ;) thanks
-> 
-> > pinctrl-single driver.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  arch/riscv/boot/dts/sophgo/cv-pinctrl.h | 19 +++++++++++++++++++
-> >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 10 ++++++++++
-> >  2 files changed, 29 insertions(+)
-> >  create mode 100644 arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> > 
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv-pinctrl.h b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> > new file mode 100644
-> > index 000000000000..ed78b6fb3142
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> 
-> A couple of questions: Should this go in include/dt-bindings? And is it worth
+While working on some fixes on the Exynos thermal driver, I have found that some
+of the Exynos-based boards will never return to no cooling. That is, after
+heating the board a bit and letting it cool, we see in the sysfs output similar
+to this:
 
-When I cooked this series two weeks ago, I did put it in dt-binding, but
-then I found commit fe49f2d776f799 ("arm64: dts: ti: Use local header for
-pinctrl register values"), "These definitions were previously put in the
-bindings header to avoid code duplication and to provide some context
-meaning (name), but they do not fit the purpose of bindings." which is
-suggested and acked by Krzysztof, so I just want to follow the style
-here.
+root@target:~# cat /sys/class/thermal/thermal_zone*/temp
+30000
+29000
+32000
+31000
+30000
+root@target:~# cat /sys/class/thermal/cooling_device*/cur_state
+1
+0
+0
+0
 
+This is on the Odroid XU4 board, where the lowest trip point is 50 deg. C.
+Similar behavior happens on some other boards, for example TM2E. The issue
+happens when the stepwise governor is being used and I have not tested the
+behavior of the other governors.
 
-> including macros for the actual function mappings, like in the vendor source[1]?
+I have attempted to fix this myself, but the issue seems somewhat complex and
+over my level of understanding. I did some debugging, and here is what I think
+is happening:
 
-Do you want something as the following?
+1. Since there is no temperature polling enabled on the mentioned boards, the
+   governor will only be called when a trip point is being passed.
+2. The board heats up and a couple trip points get passed through. Each time,
+   the governor is called for each trip point.
+3. For the lowest thermal instance, it will find out that the temperature is
+   higher than the lowest trip point (i.e. throttle is true), and that the trend
+   is THERMAL_TREND_RAISING. Therefore, it will attempt to increase the target
+   state each time and the state will be set to the higher limit.
+4. Let's now say that the temperature starts falling, which means that the trip
+   points get passed from the other side. Again, the governor will be called for
+   each trip point.
+5. For the lowest thermal instance, the trend will be THERMAL_TREND_DROPPING. The
+   temperature will be higher than the lowest trip point all but one time (i.e.
+   throttle will be true). This will mean that in these cases, nothing will
+   happen and the state will remain at the higher limit.
+6. Finally, when the lowest trip point is passed and the governor is called for
+   its thermal instance, the trend will still be THERMAL_TREND_DROPPING and the
+   temperature will be lower than the trip point (i.e. throttle will be false).
+   Therefore, the governor will reduce the state, but it is unlikely that this
+   will result in deactivation of the thermal instance, since the state has been
+   at the higher limit up until this point.
+7. Now the governor will never be called anymore, and the state will never
+   change from this point.
 
-#define UART0_TX	0
-#define CAM_MCLK1	1
-...
+I have found two workarounds, but neither seem satisfactory:
 
-#define REG_UART0_TX	0x24
-...
+1. The issue doesn't appear when at least two lowest trip points have their
+   lower state limit equal to the higher state limit. For instance, for TM2E,
+   the following change is enough for the issue to not appear:
 
-pinctrl-single,pins = <REG_UART0_TX UART0_TX>;
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
+index 81b72393dd0d..145c4c80893a 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
+@@ -55,14 +55,14 @@ cooling-maps {
+             map0 {
+                 /* Set maximum frequency as 1800MHz  */
+                 trip = <&atlas0_alert_0>;
+-                cooling-device = <&cpu4 1 2>, <&cpu5 1 2>,
+-                         <&cpu6 1 2>, <&cpu7 1 2>;
++                cooling-device = <&cpu4 1 1>, <&cpu5 1 1>,
++                         <&cpu6 1 1>, <&cpu7 1 1>;
+             };
+             map1 {
+                 /* Set maximum frequency as 1700MHz  */
+                 trip = <&atlas0_alert_1>;
+-                cooling-device = <&cpu4 2 3>, <&cpu5 2 3>,
+-                         <&cpu6 2 3>, <&cpu7 2 3>;
++                cooling-device = <&cpu4 2 2>, <&cpu5 2 2>,
++                         <&cpu6 2 2>, <&cpu7 2 2>;
+             };
+             map2 {
+                 /* Set maximum frequency as 1600MHz  */
+@@ -229,14 +229,14 @@ cooling-maps {
+             map0 {
+                 /* Set maximum frequency as 1200MHz  */
+                 trip = <&apollo_alert_2>;
+-                cooling-device = <&cpu0 1 2>, <&cpu1 1 2>,
+-                         <&cpu2 1 2>, <&cpu3 1 2>;
++                cooling-device = <&cpu0 1 1>, <&cpu1 1 1>,
++                         <&cpu2 1 1>, <&cpu3 1 1>;
+             };
+             map1 {
+                 /* Set maximum frequency as 1100MHz  */
+                 trip = <&apollo_alert_3>;
+-                cooling-device = <&cpu0 2 3>, <&cpu1 2 3>,
+-                         <&cpu2 2 3>, <&cpu3 2 3>;
++                cooling-device = <&cpu0 2 2>, <&cpu1 2 2>,
++                         <&cpu2 2 2>, <&cpu3 2 2>;
+             };
+             map2 {
+                 /* Set maximum frequency as 1000MHz  */
 
-Other pinctl-single users just uses the register value directly, I have
-no preference. But I'd like to get suggestions from DT and pinctl-single
-maintainers. Hi Rob, Krzysztof, Conor, Tony, what's your opinion?
+   Two trip points need to change and not only one, since the calculation in the
+   governor is based on the maximum of all states and not only the state of a
+   single instance. It's not clear if that would be enough in all cases, but
+   this feels hacky anyway. Though since we only give the governor information
+   when the trip point is passed, it does make some limited sense to make it
+   simply set the state to a specific value instead of making decisions.
+2. The issue also disappears when polling is enabled, since this means that the
+   governor is called periodically. However, it would be great to not have to do
+   so and keep using only interrupts, since we already have them in our SoC.
 
-> 
-> [1]:
-> https://github.com/milkv-duo/duo-buildroot-sdk/blob/develop/linux_5.10/drivers/pinctrl/cvitek/cv180x_pinlist_swconfig.h
-> 
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * This header provides constants for pinctrl bindings for Sophgo CV* SoC.
-> > + *
-> > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > + */
-> > +#ifndef _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > +#define _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > +
-> > +#define MUX_M0		0
-> > +#define MUX_M1		1
-> > +#define MUX_M2		2
-> > +#define MUX_M3		3
-> > +#define MUX_M4		4
-> > +#define MUX_M5		5
-> > +#define MUX_M6		6
-> > +#define MUX_M7		7
-> > +
-> > +#endif
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > index e04df04a91c0..7a44d8e8672b 100644
-> > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > @@ -6,6 +6,8 @@
-> >  #include <dt-bindings/interrupt-controller/irq.h>
-> >  #include <dt-bindings/reset/sophgo,cv1800b-reset.h>
-> >  
-> > +#include "cv-pinctrl.h"
-> > +
-> >  / {
-> >  	compatible = "sophgo,cv1800b";
-> >  	#address-cells = <1>;
-> > @@ -55,6 +57,14 @@ soc {
-> >  		dma-noncoherent;
-> >  		ranges;
-> >  
-> > +		pinctrl0: pinctrl@3001000 {
-> > +			compatible = "pinctrl-single";
-> > +			reg = <0x3001000 0x130>;
-> > +			#pinctrl-cells = <1>;
-> > +			pinctrl-single,register-width = <32>;
-> > +			pinctrl-single,function-mask = <0x00000007>;
-> > +		};
-> 
-> From the vendor driver[2], it looks like this peripheral block only handles
-> pinmuxing, so indeed this looks like a good use of pinctrl-single.
+It seems that in the past, there has been an attempt to handle this case
+differently: https://lore.kernel.org/all/1352348786-24255-1-git-send-email-amit.kachhap@linaro.org/
+However it seems that the attempt has never been completed, and the remains
+have been removed: https://lore.kernel.org/all/20220629151012.3115773-2-daniel.lezcano@linaro.org/
 
-This is deffinitely pinctrl-single style pinmux controller ;)
+There also might be a race condition possible here, as it might be the case
+that after the interrupt, when the thermal framework calls get_temp, the value
+will already change to a value that would not trigger the trip point. This
+could be problematic when the temperature is raising, as then the governor will
+essentially ignore that trip point (trend will be RAISING, but throttle will be
+false, so nothing will happen). It is less problematic when the temperature is
+falling, as the temperature will be much lower than the trip point due to
+hysteresis. However, for the Exynos 5433 SoC, hysteresis is unfortunately set
+to 1 deg. C and the temperature values are also rounded to 1 deg. C. This means
+that the race condition might also be possible in this direction on this SoC. I
+have once managed to get the state stuck at 2 instead of the usual 1 on TM2E. I
+have not investigated that further, but it seems that this race condition is a
+good explanation of this behavior.
 
-> 
-> [2]:
-> https://github.com/milkv-duo/duo-buildroot-sdk/blob/develop/linux_5.10/drivers/pinctrl/cvitek/pinctrl-cv180x.h
-> 
-> > +
-> >  		rst: reset-controller@3003000 {
-> >  			compatible = "sophgo,cv1800b-reset";
-> >  			reg = <0x03003000 0x1000>;
-> 
+I feel very incompetent to attempt to resolve these issues, as I have only read
+the thermal framework code for a bit. What do you think should be done here?
+
+Thank you! :)
+Mateusz
