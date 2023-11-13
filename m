@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2D0F7EA24A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F0C7EA253
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjKMRpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 12:45:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
+        id S231560AbjKMRst convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 12:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKMRpW (ORCPT
+        with ESMTP id S229579AbjKMRsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 12:45:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A7A10EC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:45:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56039C433C8;
-        Mon, 13 Nov 2023 17:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699897519;
-        bh=CgcFT+veTcKjCyHdvfNFlsBA0HiNgZz8r9E8ALux3BM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iDSIQ9C8h4TMewndaNKrIC4pIPQktF9e83HNgStjSpPfKs0uBTXF6XNdXUvf5ZfGX
-         1yJYxSWRvwZxvSQIbyMv1HrbAG2SYBCU2AUcf08BgviU1l+ix8sHMzMu7SLVAJiN8C
-         /CRX9bzk/RHQXO7GNP/gKb+bYjqZ+WXxi4Ov1EY2BtKxfRtwV9MQGT3NwyGDTUDnV+
-         IEy0IiUVv178RZHLpZzx/dlQ8zo5fZJM3wPAOMG1O2+Xdy04rK+1crXhUnbiB57kHu
-         p9nG8KnqkqmeQP2fP04l/ZG+xir07sUTjwgJbkpLnGf/ahOLRA0AIeBuCvlxIc6RN5
-         s8reCReUpVWTg==
-Date:   Mon, 13 Nov 2023 12:45:16 -0500
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Peter Korsgaard <peter@korsgaard.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: ocores: Move system PM hooks to the NOIRQ phase
-Message-ID: <ZVJgrJuCSImHpxY0@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231113023249.1185682-1-samuel.holland@sifive.com>
+        Mon, 13 Nov 2023 12:48:47 -0500
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DA410D0;
+        Mon, 13 Nov 2023 09:48:44 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2802c41b716so3960394a91.1;
+        Mon, 13 Nov 2023 09:48:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699897724; x=1700502524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RHxxWuzhuHifOjaxS/FCFB05xrYXFz5bzw/7tvFHZXE=;
+        b=RzpsL2urr1hf/OsWBKcUczkuH5CCtlTP6dygF1Bm6Fe95HPVMUU3hZyvTleB8F5d73
+         Ghzf8YP+EQO6o8h1Tkyp/HiQ6C9lJWrl3mvR/O3dGYXJnBALNRK9HWbnripONYt0iGgj
+         RU2puY54w6ldo3dYdxIbJxbMAWyQlZ5SYq/tFLsJ/e3/5jxG8/ooZkFcDKiGqspTsPjI
+         RSImhRZ7b9IgR3Noo19owTfiezWh+pF/EFThX37i8uj6/NgIgkLKXBeI79bmQzw7SVm2
+         JFQVZHFcRklbJvFoG0dYozBduDS8uNqPEfgMis6CHcXzWHGpAZtskLjtCiaWOyY92rCF
+         kM1g==
+X-Gm-Message-State: AOJu0YwGiHbfcEFJai5N2pWxfte/5A1+N5EyLYJ+vg/PgJhy27r6+Oqx
+        2JJQDN15zl2R3U4GElFYGndubBrm5x4C6jHY5PA=
+X-Google-Smtp-Source: AGHT+IGjl5BRE9fKEal5UsGKyrSxp53dOxq4767hZdhJxEwk9uyJih1rc8TDLSZqIVLABxPHbuS3GzfRIKZENv+QcJU=
+X-Received: by 2002:a17:90b:3ec5:b0:283:2a1b:b18a with SMTP id
+ rm5-20020a17090b3ec500b002832a1bb18amr4485434pjb.26.1699897724214; Mon, 13
+ Nov 2023 09:48:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bDPSe1q/v1JFXA1f"
-Content-Disposition: inline
-In-Reply-To: <20231113023249.1185682-1-samuel.holland@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <cover.1699487758.git.jpoimboe@kernel.org> <d5def69b0c88bcbe2a85d0e1fd6cfca62b472ed4.1699487758.git.jpoimboe@kernel.org>
+ <CAM9d7chZcqR8WCEYtjpP4KzUOeNdJ=kSvae0UrjsO8OgsepjDw@mail.gmail.com>
+ <20231111184908.ym4l6cwzwnkl7e6m@treble> <CAM9d7chgoiwc3ZfQ8SzO7gV0oQOKMK3bJAdxa63Pzgcqo4i7tQ@mail.gmail.com>
+ <20231113172106.GA12501@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231113172106.GA12501@noisy.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 13 Nov 2023 09:48:32 -0800
+Message-ID: <CAM9d7chg8c4yftXgAyZZyLuYJQaWYDTa9YY5x-S+Mb-8SM8K-A@mail.gmail.com>
+Subject: Re: [PATCH RFC 04/10] perf: Introduce deferred user callchains
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,41 +71,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 13, 2023 at 9:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Nov 13, 2023 at 08:56:39AM -0800, Namhyung Kim wrote:
+>
+> > Ok, then BPF gets no user call stacks even with sframes.
+>
+> Well, you could obviously run another BPF program at return to user and
+> stitch there.
 
---bDPSe1q/v1JFXA1f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, maybe some more work needed for bpf_get_stackid()
+but it seems possible.
 
-On Sun, Nov 12, 2023 at 06:32:45PM -0800, Samuel Holland wrote:
-> When an I2C device contains a wake IRQ subordinate to a regmap-irq chip,
-> the regmap-irq code must be able to perform I2C transactions during
-> suspend_device_irqs() and resume_device_irqs(). Therefore, the bus must
-> be suspended/resumed during the NOIRQ phase.
->=20
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>
+> > Ok, but ...
+>
+> > If the task is preempted, the call stack would be from another
+> > task (if it also has the pending call stacks) and we need to
+> > check which user call stack matches which kernel call stack.
+> > So there's no guarantee we can just use adjacent samples.
+>
+> So upon requesting a user backtrace for the task it could request a
+> token (from eg a global atomic u64 in the most crude case) and place
+> this in the task_struct. The backtrace will emit this as forward
+> reference for the user trace.
+>
+> Once the task_work generates the user stacktrace, it will again dump
+> this token along with the user unwind, after which it will reset the
+> token for this this task (to 0).
 
-Applied to for-current, thanks!
+Yeah, I thought something like this first, but then I thought
+"can we just use PID for this?"
 
-
---bDPSe1q/v1JFXA1f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVSYKgACgkQFA3kzBSg
-KbYBdRAAow/OUtEPBVFW487SQNrOBs84oOBnrMBPN5YxBoP/ub7dkYu4PCAmJaaz
-19jdPmT7JrUdi5f9e0wT9xsopxrJqJj7zrtV+x89Rd2N/7/sOM5kULyOTl6XdEQJ
-FSAaImkNkaFYBcslpJ1LoPjQSHahnrzb6MKI+Au82TnN3dwfVwoVuMEpbFfjXtaZ
-h8CbOa7VbD1woF9CZBlKbLMRoU0dWr0tRFoyQJJyrdagvTYoTEB2Y62l96X6BeBj
-hgCvEaBOuvQoA/dDr4TySYY8Kz1DSLPy5nGF0rnuJZAd91eOHf6pRifU5BUd2sF4
-ri8QBzyISLbCzy1C3iO3+Aph8k+3YRe2LRRbotAwI0qN1ehZeJuq56EB0NhOjyQH
-Yj5C1/J0mnETm0u6RfPv7ZNGv7L9ynQ4ztqR0NaHoWJGWr6hvbGoT1IvAy4vJlFm
-9hpafAI/g1M4KnolhVhsm+mB9rHWcP1AQEZRBZxIC0LnIBSdr1kf9Lj8fSRVB75F
-WV3SpptHPwblEvSx8JvcunivPPA6lB5HSXKxyrkuIrAWQxbp8qVtL94ZewYyWSrR
-NWVGg4bOyKL2sF4P9AkR8u2Jzvoe43/7k/Mr4000zO01ccQ2hd+EqMV/MyQpPHIz
-sAJCx2DtCHz69dzGwHZZo/fnlnBgVT4Bg/43YUjb3mv+LONyiKU=
-=T9a0
------END PGP SIGNATURE-----
-
---bDPSe1q/v1JFXA1f--
+Thanks,
+Namhyung
