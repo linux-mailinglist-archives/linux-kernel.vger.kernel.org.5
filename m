@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B16CE7E9F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EDA7E9F91
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbjKMPG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
+        id S231640AbjKMPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbjKMPGO (ORCPT
+        with ESMTP id S231467AbjKMPGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Nov 2023 10:06:14 -0500
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE44171C
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:06:10 -0800 (PST)
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8183A1706
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:06:11 -0800 (PST)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 40B9024002B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:06:09 +0100 (CET)
+        by mout02.posteo.de (Postfix) with ESMTPS id 34B75240106
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:06:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1699887969; bh=+0firMEs8jGDnwurQSwdedi7SuSTkZP4QKZILe7SstQ=;
+        t=1699887970; bh=ImO2p/LseShj5lOmJnVvCx6tNn9JRqxDUMthFKX+oJ0=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
          Content-Transfer-Encoding:From;
-        b=cZTlFL/0STVCQhNkdzXzcVbpju767yxMPdu7HsF4yEc4ysIMfmUitmsJFX/tdF9Vh
-         4+h5nfS6C5se+tccwzgDiWeTlLJ8yX5TDQOADpFdFaW40RzODxSKc6MwJl287PF66e
-         nOcVcQg9o44pkgkGIt5qcxLfYTDn1/6vi8c6R8+EkUkSUpg6iN8+HYrEUm3JmU+/6K
-         RPyU4RZ62rgqg3OpGwYA3q/yk4kQqAS6v1sGH4eQchsuEZmXLrBE+YXBs4wk7XZM6h
-         flBgGZcTU2SJ5ElmOZHkIJuHOsgAiPfpP2+KOFTKFISl9p/TcioQ7WS+PEr68qqdMI
-         0arY8pS97rkVQ==
+        b=DKuevgchkENfdAXzMxqCjLOr/YnTvdIswvP0H23mLG0BJnMSsAtNYHqHigkoTys/X
+         Pu1ePffC3b0rc6mOgqwuGEij1qG1+6qjV2v3kBz1b/QL0YC8sgZo8M9PJio1Qzmol0
+         ixCMewdhxb8b4d3lRVJ/ffQE1lA6lFaSqDHsTREnLRhV8XBph60V1bTrnzsOaG2beU
+         edOXVWuAeazYpT2Hz1jqWSlYRpg5M8RZuy+WCWPgxT2SVOD8r9Iu+pZ1o3JwHxiEaE
+         Jri/uOEimE6bGr7WlW0A3vgZPQCBGtHTXWDnmgLJoyoTC75uy4IcbQ4LYfgqsO6tIz
+         luPbqsFtcpdww==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4STXnC3t5Fz9rxS;
-        Mon, 13 Nov 2023 16:06:07 +0100 (CET)
+        by submission (posteo.de) with ESMTPSA id 4STXnD6G9Mz9rxQ;
+        Mon, 13 Nov 2023 16:06:08 +0100 (CET)
 From:   Charalampos Mitrodimas <charmitro@posteo.net>
 Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         outreachy@lists.linux.dev,
         Charalampos Mitrodimas <charmitro@posteo.net>
-Subject: [PATCH 6/8] staging: sm750fb: Rename sii164IsConnected to sii164_is_connected
-Date:   Mon, 13 Nov 2023 15:05:11 +0000
-Message-Id: <20231113150512.1210869-7-charmitro@posteo.net>
+Subject: [PATCH 7/8] staging: sm750fb: Rename sii164CheckInterrupt to sii164_check_interrupt
+Date:   Mon, 13 Nov 2023 15:05:12 +0000
+Message-Id: <20231113150512.1210869-8-charmitro@posteo.net>
 In-Reply-To: <20231113150512.1210869-1-charmitro@posteo.net>
 References: <20231113150512.1210869-1-charmitro@posteo.net>
 MIME-Version: 1.0
@@ -64,52 +64,52 @@ Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
  3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
-index 1ce44c50617a..ac1aab77da28 100644
+index ac1aab77da28..1def02be4cce 100644
 --- a/drivers/staging/sm750fb/ddk750_dvi.c
 +++ b/drivers/staging/sm750fb/ddk750_dvi.c
-@@ -22,7 +22,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
- 		.get_chip_string = sii164_get_chip_string,
+@@ -23,7 +23,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
  		.set_power = sii164_set_power,
  		.enable_hot_plug_detection = sii164_enable_hot_plug_detection,
--		.is_connected = sii164IsConnected,
-+		.is_connected = sii164_is_connected,
- 		.check_interrupt = sii164CheckInterrupt,
+ 		.is_connected = sii164_is_connected,
+-		.check_interrupt = sii164CheckInterrupt,
++		.check_interrupt = sii164_check_interrupt,
  		.clear_interrupt = sii164ClearInterrupt,
  #endif
+ 	},
 diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm750fb/ddk750_sii164.c
-index 430acc4c2a80..24f40db0dfcf 100644
+index 24f40db0dfcf..b156a727bebf 100644
 --- a/drivers/staging/sm750fb/ddk750_sii164.c
 +++ b/drivers/staging/sm750fb/ddk750_sii164.c
-@@ -350,14 +350,14 @@ void sii164_enable_hot_plug_detection(unsigned char enableHotPlug)
+@@ -370,14 +370,14 @@ unsigned char sii164_is_connected(void)
  }
  
  /*
-- *  sii164IsConnected
-+ *  sii164_is_connected
-  *      Check if the DVI Monitor is connected.
+- *  sii164CheckInterrupt
++ *  sii164_check_interrupt
+  *      Checks if interrupt has occurred.
   *
   *  Output:
-  *      0   - Not Connected
-  *      1   - Connected
+  *      0   - No interrupt
+  *      1   - Interrupt occurs
   */
--unsigned char sii164IsConnected(void)
-+unsigned char sii164_is_connected(void)
+-unsigned char sii164CheckInterrupt(void)
++unsigned char sii164_check_interrupt(void)
  {
- 	unsigned char hotPlugValue;
+ 	unsigned char detectReg;
  
 diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm750fb/ddk750_sii164.h
-index ea3859a5a430..f8689bb3e1d5 100644
+index f8689bb3e1d5..33351f6d7f11 100644
 --- a/drivers/staging/sm750fb/ddk750_sii164.h
 +++ b/drivers/staging/sm750fb/ddk750_sii164.h
-@@ -35,7 +35,7 @@ void sii164_reset_chip(void);
- char *sii164_get_chip_string(void);
+@@ -36,7 +36,7 @@ char *sii164_get_chip_string(void);
  void sii164_set_power(unsigned char powerUp);
  void sii164_enable_hot_plug_detection(unsigned char enableHotPlug);
--unsigned char sii164IsConnected(void);
-+unsigned char sii164_is_connected(void);
- unsigned char sii164CheckInterrupt(void);
+ unsigned char sii164_is_connected(void);
+-unsigned char sii164CheckInterrupt(void);
++unsigned char sii164_check_interrupt(void);
  void sii164ClearInterrupt(void);
  #endif
+ /*
 -- 
 2.39.2
 
