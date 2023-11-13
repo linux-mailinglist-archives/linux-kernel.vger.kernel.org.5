@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D8E7EA171
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7742B7EA18F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjKMQok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S230268AbjKMQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMQoj (ORCPT
+        with ESMTP id S229454AbjKMQ5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:44:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA1FD53;
-        Mon, 13 Nov 2023 08:44:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699893876; x=1731429876;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=38xyA1hoInxlMYX/sULzWuQ/eDkx63Ca3OYIXvdtBvE=;
-  b=lUx5luUVATokApnjabxG760tjOmcKv8G09n4SNNFoFkbEZxxWvQku8RQ
-   YsZ0s8Jij1u86oGrUGe8RoGBk47KkEuYUhMQ9O8m5hfhXPNxsg5oNBS+X
-   ugEz0zWEU1UVSyN6EsGZ5QnjWvksTTuLsh2z5t72V3UEjHC39YvK8eKz0
-   1Lj+W7BdkJDffhK0BYozx2jCb96icEIqDHMrgtBfPOUkYMGEfWlDUci5i
-   19Dgo4u0y3G3EK5czRfMs6hVntld5Bf03S/qbqAm2mia/17gu4SmQUZyD
-   zXe3oyuzIWLAcT38Y1oSo9cLMJeWFEo1oXdH/G/ltif/F7obS1KkaakwM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="393329742"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="393329742"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 08:44:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="887966790"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="887966790"
-Received: from alexdsou-mobl3.gar.corp.intel.com ([10.249.44.83])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 08:44:31 -0800
-Date:   Mon, 13 Nov 2023 18:44:28 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Jorge Lopez <jorge.lopez2@hp.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, error27@gmail.com,
-        vegard.nossum@oracle.com, darren.kenny@oracle.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 4/4] platform/x86: hp-bioscfg: Fix error handling in
- hp_add_other_attributes()
-In-Reply-To: <bd9e80db-a80f-44d1-bcb9-a14ec0abc64f@suswa.mountain>
-Message-ID: <24d6b879-6874-22f7-c8e6-90f3f0968d9f@linux.intel.com>
-References: <20231110142921.3398072-1-harshit.m.mogalapalli@oracle.com> <20231110142921.3398072-4-harshit.m.mogalapalli@oracle.com> <211e6c1e-9bfa-ac29-b6ba-e198c4f36688@linux.intel.com> <fb97e3ea-1bee-4d7d-a8d4-dd76107f75ef@oracle.com>
- <1b58df2d-b444-ddb7-7533-9911d35f8f7@linux.intel.com> <c3b821fb-5df1-4c58-99bc-f3e99a6d1d94@oracle.com> <a0b5d36a-aad8-eaf5-7241-85d1c874ff8@linux.intel.com> <bd9e80db-a80f-44d1-bcb9-a14ec0abc64f@suswa.mountain>
+        Mon, 13 Nov 2023 11:57:33 -0500
+X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Nov 2023 08:57:31 PST
+Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B600D53;
+        Mon, 13 Nov 2023 08:57:31 -0800 (PST)
+Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id C1557C0000E8;
+        Mon, 13 Nov 2023 08:47:30 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com C1557C0000E8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1699894050;
+        bh=6/JLDQZPDBH2aFK3yzNfKgCy/0JwglECNuOR5JcF6tQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tKfbEOR6o4g2ykzQO/Bj2MIgOKxlaBb7cMcJKlocj+up4z2qfRjaDtVbFfETCrBgF
+         R8R59/u2oIR8iJzSPQ0GFA2HtpTN/voYh3+1MC+YW6xpZaF/mnyafk6njFNQwom6CD
+         NpDSDbzsPoiUfMO6mCAXT2lFSFBTeraHMTpFLK/k=
+Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 666BE18041CAC4;
+        Mon, 13 Nov 2023 08:47:29 -0800 (PST)
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pwm@vger.kernel.org (open list:PWM SUBSYSTEM),
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE)
+Subject: [PATCH] pwm: bcm2835: Fix NPD in suspend/resume
+Date:   Mon, 13 Nov 2023 08:46:32 -0800
+Message-Id: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1784220200-1699893875=:1867"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+When 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume") was
+sent out on October 11th,, there was still a call to
+platform_set_drvdata() which would ensure that the driver private data
+structure could be used in bcm2835_pwm_{suspend,resume}.
 
---8323329-1784220200-1699893875=:1867
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
+A cleanup now merged as commit commit 2ce7b7f6704c ("pwm: bcm2835:
+Simplify using devm functions") removed that call which would now cause
+a NPD in bcm2835_pwm_{suspend,resume} as a consequence.
 
-On Mon, 13 Nov 2023, Dan Carpenter wrote:
+Fixes: 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume")
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ drivers/pwm/pwm-bcm2835.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> On Mon, Nov 13, 2023 at 04:15:50PM +0200, Ilpo Järvinen wrote:
-> > This relates to the 2nd problem (missing kobject_put()) and will be 
-> > covered by the other patch. Don't try to solve this in the first patch
-> > at all!
-> > 
-> > There are two indepedent problems:
-> > - Before kobject_init_and_add(), kfree() is missing
-> > - After kobject_init_and_add(), kobject_put() is missing
-> 
-> It's the same problem, though. The attr_name_kobj is leaked on all the
-> error paths. 
-
-I'll have politely disagree beyond that the symptoms are indeed about the 
-same, the problem is clearly different like you immediately admit even 
-yourself by stating this: ;-)
-
-> It's just that it needs to be freed different ways depending on where 
-> you are.
-
-...And that's because "it" actually changed in between so the problem 
-became a different one.
-
-> To me splitting it up makes it harder to review
-
-This has already been proven incorrect in the context of this patch so 
-your argument is rather weak... While reviewing it I clearly noted that 
-the different way of handling things was not properly covered, and that 
-was because what needs to be "freed" was changed by 
-kobject_init_and_add(). If one would have done them separately, each 
-commit message would have been more to the point and it would have been 
-simpler to review which is exactly the opposite to your claim. But I guess 
-we'll end up disagreing on this too :-).
-
-> and I would not allow it in Staging. You can't fix half the problem.
-
-I don't have that strong opinion on this so Harshit please follow what 
-Dan is suggesting, just fix the changelog to clearly cover both cases.
-
-
+diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
+index 9777babd5b95..ab30667f4f95 100644
+--- a/drivers/pwm/pwm-bcm2835.c
++++ b/drivers/pwm/pwm-bcm2835.c
+@@ -155,6 +155,8 @@ static int bcm2835_pwm_probe(struct platform_device *pdev)
+ 	pc->chip.ops = &bcm2835_pwm_ops;
+ 	pc->chip.npwm = 2;
+ 
++	platform_set_drvdata(pdev, pc);
++
+ 	ret = devm_pwmchip_add(&pdev->dev, &pc->chip);
+ 	if (ret < 0)
+ 		return dev_err_probe(&pdev->dev, ret,
 -- 
- i.
+2.34.1
 
---8323329-1784220200-1699893875=:1867--
