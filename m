@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461D17EA726
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2A97EA701
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjKMXpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 18:45:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S231241AbjKMXgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 18:36:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjKMXpO (ORCPT
+        with ESMTP id S229511AbjKMXgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 18:45:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D042910C
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 15:44:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699919086;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=kzmqPw87QEnBeQlSVWGP3J/i9psO+2r7MY9OYmaqENY=;
-        b=SFEhJbx2P30DtkyJtAeGImnme/Tc6+QiEWWLyv1JxBGOUaMIJaY/fbsU+xwPjOdq3yAEjc
-        +duoKUPoZTFGEFiJjFyqnE4xPiOL0hzP1bm2mIyoqCgT6D3Q7RrpuWBFrAsBg1YwVLuu7E
-        qHvVtrwDUnpvhpNInUqKk85thQVvVwA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-649-cZCqJAktN82N8Llx0r_7qg-1; Mon,
- 13 Nov 2023 18:44:43 -0500
-X-MC-Unique: cZCqJAktN82N8Llx0r_7qg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3CA341C2B660;
-        Mon, 13 Nov 2023 23:44:42 +0000 (UTC)
-Received: from tpad.localdomain (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CCD5F40C6EB9;
-        Mon, 13 Nov 2023 23:44:41 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-        id 300E6409C16E0; Mon, 13 Nov 2023 20:35:57 -0300 (-03)
-Message-ID: <20231113233502.587879658@redhat.com>
-User-Agent: quilt/0.67
-Date:   Mon, 13 Nov 2023 20:34:22 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch 2/2] mm: vmstat: use node_page_state_snapshot in too_many_isolated
-References: <20231113233420.446465795@redhat.com>
+        Mon, 13 Nov 2023 18:36:04 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980CCD55
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 15:35:59 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c6b30aca06so66480671fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 15:35:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699918558; x=1700523358; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oLUowILeMSx22TGmoI2SiGwx7HFPC6VGLKfDV1sGTQA=;
+        b=GqkwCyiUHzfEoY3njYk1b/NBrfYwYEGpIPa6AfFVRU2gVPEdtdt7hm2fgz9uNOP9uP
+         15eNuQcXasG2aUbOzlKtlWhPp8pWYWpljpXr8lBWf7e4op+QC/LCJ/n4fYhXp62MKtxh
+         u1GgKBzzNJQyip3tNRK11fIS1JWN4sRlBVHO34oyLkK2ttptLyn6XHy7Dv6x6TxYR7W8
+         G7sVmJLeCF0jEv8Zvyp8Z81s9jyaM1B7T/d4PQKbjBedKbGc6h5fcAkGBDtzKzTiTpxD
+         CrUA/WXYYQq0O7JoWjkLuPQWRm5E0QZuZCoJUDOzeDvakUZepq29RBUlu99wZtFxrCgY
+         tsfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699918558; x=1700523358;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oLUowILeMSx22TGmoI2SiGwx7HFPC6VGLKfDV1sGTQA=;
+        b=GY7FyA0y4IQOzW+MedPvfjQ6EIeL0hYxw/6S4L8gT08bzoe4LzZDDyxyTNfKbkbx2B
+         hPj6x9ThQJaRgwuB8LhGZFYH3coOtiTL5FI7DkY+YAm7J7HhlITuAv954COKeqiMgsVz
+         2/gv5rU81F5HBFH/pi7FThIuzVPimDAbw6pL8WBrh50a1BouTQmGVb8c3fPNeo/+e4sW
+         0XuhWDdC+a4Gf0J9ROewxtkwFtlvRvJOcAYjl+/+nC1v+JJogyrKDbNUHb5Z5FNuJmrm
+         zJ4Wcvca2/65s14ifeTJVzpo/4vP0V9AO36nVpxjIH0TsN73TQucmwpB1/vo30lNBvlm
+         WjDQ==
+X-Gm-Message-State: AOJu0YzLrXGD3nD/R1EMyecIsuOjZ3vRYzaJ6LRlsOlC2v5twmDlbmLK
+        wpN/Eu1OZ1Op5Mk6vh9RBitq5Q==
+X-Google-Smtp-Source: AGHT+IH4vwjdzlPMdHRoC9SQ1paCa/XR78O9smbQ5zOFeoPMPeq5w5XfQico49NTk3IB8761xZAT0w==
+X-Received: by 2002:a05:651c:2c4:b0:2c5:f8e:35cf with SMTP id f4-20020a05651c02c400b002c50f8e35cfmr463031ljo.20.1699918557815;
+        Mon, 13 Nov 2023 15:35:57 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id 17-20020a2e0611000000b002b70a8478ddsm1202859ljg.44.2023.11.13.15.35.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 15:35:57 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH net-next v8 0/9] Create a binding for the Marvell MV88E6xxx
+ DSA switches
+Date:   Tue, 14 Nov 2023 00:35:55 +0100
+Message-Id: <20231114-marvell-88e6152-wan-led-v8-0-50688741691b@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANuyUmUC/43Qy2rDMBAF0F8JWldFb4266n+ULvQYJwJXLrJxU
+ 4L/vYq7cTEOXV4ucwbujYxYM47k5XQjFec85qG0AE8nEi++nJHm1DIRTEjOGNAPX2fsewqAhmt
+ Bv3yhPaaWo5LBdkl0ibTrz4pdvq7yGyk40YLXiby35pLHaajf68uZr/2vzuWhPnPKKLNcBO8ca
+ Btf+1x8HZ6Hel7RWWwhdQyJBtkuegbBACi3g+QWMseQbJCEmJRyqQtc7yC1hY6Hm9UdQmTRWAk
+ y4A7SG0g82EjfN0IQTgvGtbc7yGyhBxuZBjknfWBOOanUDrL/hGyDBJhmWONs4n+gZVl+AOg+y
+ VJ/AgAA
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,141 +96,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A customer reported seeing processes hung at too_many_isolated,
-while analysis indicated that the problem occurred due to out
-of sync per-CPU stats (see below).
+The Marvell switches are lacking DT bindings.
 
-Fix is to use node_page_state_snapshot to avoid the out of stale values.
+I need proper schema checking to add LED support to the
+Marvell switch. Just how it is, it can't go on like this.
 
-2136 static unsigned long
-    2137 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
-    2138                      struct scan_control *sc, enum lru_list lru)
-    2139 {
-    :
-    2145         bool file = is_file_lru(lru);
-    :
-    2147         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-    :
-    2150         while (unlikely(too_many_isolated(pgdat, file, sc))) {
-    2151                 if (stalled)
-    2152                         return 0;
-    2153 
-    2154                 /* wait a bit for the reclaimer. */
-    2155                 msleep(100);   <--- some processes were sleeping here, with pending SIGKILL.
-    2156                 stalled = true;
-    2157 
-    2158                 /* We are about to die and free our memory. Return now. */
-    2159                 if (fatal_signal_pending(current))
-    2160                         return SWAP_CLUSTER_MAX;
-    2161         }
+Some Device Tree fixes are included in the series, these
+remove the major and most annoying warnings fallout noise:
+some warnings remain, and these are of more serious nature,
+such as missing phy-mode. They can be applied individually,
+or to the networking tree with the rest of the patches.
 
-msleep() must be called only when there are too many isolated pages: 
+Thanks to Andrew Lunn, Vladimir Oltean and Russell King
+for excellent review and feedback!
 
-    2019 static int too_many_isolated(struct pglist_data *pgdat, int file,
-    2020                 struct scan_control *sc)
-    2021 {
-    :
-    2030         if (file) {
-    2031                 inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
-    2032                 isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
-    2033         } else {
-    :
-    2046         return isolated > inactive;
+This latest version employs special compatibles in the
+odd ABI device trees.
 
-The return value was true since:
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v8:
+- Restore ALL original switch node names in the Turris Mox, not just
+  the top one. Put a comment above each not to change the node name.
+- Add a special compatible for the Turris Mox switches, so that we
+  can apply special rules for these ABI nodes.
+- Add quirks to the bindings to deal with the special node names
+  so we don't get unsolicited warnings about them from the checks.
+  This is done so that people will not come and "fix the DTS files"
+  so they break. We only have serious warnings after this.
+- Add the quirks and updates to the nodes into separate patches
+  for review.
+- Link to v7: https://lore.kernel.org/r/20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org
 
-    crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
-    $8 = {
-      counter = 1
-    }
-    crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
-    $9 = {
-      counter = 2
+Changes in v7:
+- Fix the elaborate spacing to satisfy yamllint in the
+  ports/ethernet-ports requirement.
+- Link to v6: https://lore.kernel.org/r/20231024-marvell-88e6152-wan-led-v6-0-993ab0949344@linaro.org
 
-while per_cpu stats had:
+Changes in v6:
+- Fix ports/ethernet-ports requirement with proper indenting
+  (hopefully).
+- Link to v5: https://lore.kernel.org/r/20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org
 
-    crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
-    $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
-    crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
-    $86 = 0xffff00917fcc32e0
-    crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-    $87 = -1 '\377'
-    
-    crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
-    $89 = 0xffff00917fe032e0
-    crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-    $91 = -1 '\377' 
+Changes in v5:
+- Consistently rename switch@n to ethernet-switch@n in all cleanup patches
+- Consistently rename ports to ethernet-ports in all cleanup patches
+- Consistently rename all port@n to ethernet-port@n in all cleanup patches
+- Consistently rename all phy@n to ethernet-phy@n in all cleanup patches
+- Restore the nodename on the Turris MOX which has a U-Boot binary using the
+  nodename as ABI, put in a blurb warning about this so no-one else tries
+  to change it in the future.
+- Drop dsa.yaml direct references where we reference dsa.yaml#/$defs/ethernet-ports
+- Replace the conjured MV88E6xxx example by a better one based on imx6qdl
+  plus strictly named nodes and added reset-gpios for a more complete example,
+  and another example using the interrupt controller based on
+  armada-381-netgear-gs110emx.dts
+- Bump lineage to 2008 as Vladimir says the code was developed starting 2008.
+- Link to v4: https://lore.kernel.org/r/20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org
 
-It seems that processes were trapped in direct reclaim/compaction loop
-because these nodes had few free pages lower than watermark min.
+Changes in v4:
+- Rebase the series on top of Rob's series
+  "dt-bindings: net: Child node schema cleanups" (or the hex numbered
+  ports will not work)
+- Fix up a whitespacing error corrupting v3...
+- Add a new patch making the generic DSA binding require ports or
+  ethernet-ports in the switch node.
+- Drop any corrections of port@a in the patches.
+- Drop oneOf in the compatible enum for mv88e6xxx
+- Use ethernet-switch, ethernet-ports and ethernet-phy in the examples
+- Transclude the dsa.yaml#/$defs/ethernet-ports define for ports
+- Move the DTS and binding fixes first, before the actual bindings,
+  so they apply without (too many) warnings as fallout.
+- Drop stray colon in text.
+- Drop example port in the mveusb binding.
+- Link to v3: https://lore.kernel.org/r/20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org
 
-  crash> kmem -z | grep -A 3 Normal
-  :
-  NODE: 4  ZONE: 1  ADDR: ffff00817fffec40  NAME: "Normal"
-    SIZE: 8454144  PRESENT: 98304  MIN/LOW/HIGH: 68/166/264
-    VM_STAT:
-          NR_FREE_PAGES: 68
-  --
-  NODE: 5  ZONE: 1  ADDR: ffff00897fffec40  NAME: "Normal"
-    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
-    VM_STAT:
-          NR_FREE_PAGES: 45
-  --
-  NODE: 6  ZONE: 1  ADDR: ffff00917fffec40  NAME: "Normal"
-    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
-    VM_STAT:
-          NR_FREE_PAGES: 53
-  --
-  NODE: 7  ZONE: 1  ADDR: ffff00997fbbec40  NAME: "Normal"
-    SIZE: 118784  MIN/LOW/HIGH: 82/200/318
-    VM_STAT:
-          NR_FREE_PAGES: 52
+Changes in v3:
+- Fix up a related mvusb example in a different binding that
+  the scripts were complaining about.
+- Fix up the wording on internal vs external MDIO buses in the
+  mv88e6xxx binding document.
+- Remove pointless label and put the right rev-mii into the
+  MV88E6060 schema.
+- Link to v2: https://lore.kernel.org/r/20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org
 
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+Changes in v2:
+- Break out a separate Marvell MV88E6060 binding file. I stand corrected.
+- Drop the idea to rely on nodename mdio-external for the external
+  MDIO bus, keep the compatible, drop patch for the driver.
+- Fix more Marvell DT mistakes.
+- Fix NXP DT mistakes in a separate patch.
+- Fix Marvell ARM64 mistakes in a separate patch.
+- Link to v1: https://lore.kernel.org/r/20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org
 
 ---
- mm/compaction.c |    6 +++---
- mm/vmscan.c     |    8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Linus Walleij (9):
+      dt-bindings: net: dsa: Require ports or ethernet-ports
+      dt-bindings: net: mvusb: Fix up DSA example
+      ARM: dts: marvell: Fix some common switch mistakes
+      ARM: dts: nxp: Fix some common switch mistakes
+      ARM64: dts: marvell: Fix some common switch mistakes
+      dt-bindings: net: ethernet-switch: Accept special variants
+      dt-bindings: marvell: Rewrite MV88E6xxx in schema
+      ARM64: dts: Add special compatibles for the Turris Mox
+      dt-bindings: marvell: Add Marvell MV88E6060 DSA schema
 
-Index: linux/mm/compaction.c
-===================================================================
---- linux.orig/mm/compaction.c
-+++ linux/mm/compaction.c
-@@ -791,11 +791,11 @@ static bool too_many_isolated(struct com
- 
- 	unsigned long active, inactive, isolated;
- 
--	inactive = node_page_state(pgdat, NR_INACTIVE_FILE) +
-+	inactive = node_page_state_snapshot(pgdat, NR_INACTIVE_FILE) +
- 			node_page_state(pgdat, NR_INACTIVE_ANON);
--	active = node_page_state(pgdat, NR_ACTIVE_FILE) +
-+	active = node_page_state_snapshot(pgdat, NR_ACTIVE_FILE) +
- 			node_page_state(pgdat, NR_ACTIVE_ANON);
--	isolated = node_page_state(pgdat, NR_ISOLATED_FILE) +
-+	isolated = node_page_state_snapshot(pgdat, NR_ISOLATED_FILE) +
- 			node_page_state(pgdat, NR_ISOLATED_ANON);
- 
- 	/*
-Index: linux/mm/vmscan.c
-===================================================================
---- linux.orig/mm/vmscan.c
-+++ linux/mm/vmscan.c
-@@ -1756,11 +1756,11 @@ static int too_many_isolated(struct pgli
- 		return 0;
- 
- 	if (file) {
--		inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
--		isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
-+		inactive = node_page_state_snapshot(pgdat, NR_INACTIVE_FILE);
-+		isolated = node_page_state_snapshot(pgdat, NR_ISOLATED_FILE);
- 	} else {
--		inactive = node_page_state(pgdat, NR_INACTIVE_ANON);
--		isolated = node_page_state(pgdat, NR_ISOLATED_ANON);
-+		inactive = node_page_state_snapshot(pgdat, NR_INACTIVE_ANON);
-+		isolated = node_page_state_snapshot(pgdat, NR_ISOLATED_ANON);
- 	}
- 
- 	/*
+ Documentation/devicetree/bindings/net/dsa/dsa.yaml |   6 +
+ .../bindings/net/dsa/marvell,mv88e6060.yaml        |  88 ++++++
+ .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 337 +++++++++++++++++++++
+ .../devicetree/bindings/net/dsa/marvell.txt        | 109 -------
+ .../devicetree/bindings/net/ethernet-switch.yaml   |  23 +-
+ .../devicetree/bindings/net/marvell,mvusb.yaml     |   7 +-
+ MAINTAINERS                                        |   3 +-
+ arch/arm/boot/dts/marvell/armada-370-rd.dts        |  24 +-
+ .../dts/marvell/armada-381-netgear-gs110emx.dts    |  44 ++-
+ .../dts/marvell/armada-385-clearfog-gtr-l8.dts     |  38 +--
+ .../dts/marvell/armada-385-clearfog-gtr-s4.dts     |  22 +-
+ arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  |  18 +-
+ .../boot/dts/marvell/armada-385-turris-omnia.dts   |  20 +-
+ arch/arm/boot/dts/marvell/armada-388-clearfog.dts  |  20 +-
+ .../boot/dts/marvell/armada-xp-linksys-mamba.dts   |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts        |  14 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts    |  70 ++---
+ arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts        |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts    |  20 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts   |  18 +-
+ .../dts/marvell/armada-3720-espressobin-ultra.dts  |  14 +-
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  20 +-
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  20 +-
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    |  97 +++---
+ .../boot/dts/marvell/armada-7040-mochabin.dts      |  24 +-
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  22 +-
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  42 ++-
+ 27 files changed, 745 insertions(+), 411 deletions(-)
+---
+base-commit: 1c9be5fea84e409542a186893d219bf7cff22f5a
+change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
 
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
