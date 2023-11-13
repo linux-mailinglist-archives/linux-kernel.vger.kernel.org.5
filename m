@@ -2,96 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 889687E9DF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E4A7E9DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjKMN7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
+        id S230398AbjKMOAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 09:00:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjKMN7Q (ORCPT
+        with ESMTP id S229463AbjKMOAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:59:16 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59835D5F
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:59:12 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7c011e113so51971247b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:59:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699883951; x=1700488751; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jkvb5jXjgdppD5M3BE/7qL+8HuZSIdn/P5Opxdga4vg=;
-        b=TCKOvUQ4CSkCSxPbE6alrem+biq8PaJkJSBINQyZ4QQ9WWz/ffRg+EnpMvR3ykCJDa
-         FKr6ZHxgbnXnPMnAAVNQXaLQHmDxZfZoqrSNYkVTspltrJc5W6tDashZ09oPhzx4yMYI
-         M0vbd+DMOT/giyez0MocDXpuW8gh9St8FjBkwtT3gQgp/aZgeFeK9gSnKOyUGQvux3lu
-         rAhmp3nW2MA6eCeDXJI55tFJwCySlKKwIWEc8sVmPldNAWpIHl5IXEGoBunYDQd56O7O
-         S+7LEHs2Dzl1HErh3B83ZpGT9gTXO9SIDjfeA1e6+UBPe5mX2EdPPWwAmuyfPM7XQktF
-         /lwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699883951; x=1700488751;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jkvb5jXjgdppD5M3BE/7qL+8HuZSIdn/P5Opxdga4vg=;
-        b=K+jNbXOtksKy+B9oG5sRm0NZ7R1kXjSystwYJlEEbyuTJFUZWpg6QSGyQU64c+TOYy
-         O3WVx5CS2hSzOBUvucOrR/X6qwumtrlTXMt3t8ni57J+thMN3B3RbKcOi7BKMwcUpYI/
-         cA4i/op4Tc72SRAOK8QiDtE9aQU8+Q65wB6v2RxiICWXR8/PY8Rr/5n/KNP4pr5UjHSa
-         z1PZ+dMaNU6og4VT8H97CZvyzxR3v1W8v8dVmSD8Mc3AQmb62kA+xX3/4CCCbFCedxJ9
-         G1Nh3NM5BWguuVx4Xk2DVdEoKZT7tavKqDOBu0YjydGiEBmh9thoL1orQYtFJ/G1xtjA
-         8Fjw==
-X-Gm-Message-State: AOJu0YxP505f9h9ey/83Gs8Lju5PlPyNMpZj2jLr77gMgHzFaL9mzwSK
-        N2QkmxC2pFAWEwAaxeVbK7kP/lLPO/ScV+iWnLm28Q==
-X-Google-Smtp-Source: AGHT+IFOcCkw5XM4JWZUE7/qoRjiVbjPcLcLFuTmK8ZrnLgJQhE8oa+pIkQakxeis9S8rmZPpg6AROJznV8FA2Cgah4=
-X-Received: by 2002:a0d:e342:0:b0:5ad:289b:999 with SMTP id
- m63-20020a0de342000000b005ad289b0999mr6727763ywe.28.1699883951561; Mon, 13
- Nov 2023 05:59:11 -0800 (PST)
+        Mon, 13 Nov 2023 09:00:37 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29301D4C;
+        Mon, 13 Nov 2023 06:00:34 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 951165C0197;
+        Mon, 13 Nov 2023 09:00:33 -0500 (EST)
+Received: from imap52 ([10.202.2.102])
+  by compute3.internal (MEProxy); Mon, 13 Nov 2023 09:00:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1699884033; x=1699970433; bh=VHi4AcLP1FDKeL87EkRURIskb7aetmZpaGy
+        D5PsyTw4=; b=UKHbwcnuM/BZH8xYYa01WFOkHvkc0Ykh+riEPbcRNA4Ue6MEqgg
+        Yngz1rptFsb2T1SGQTDOrhFlGMREQzDv1jsVqwl+fkinpQhPK85oU6SM6w+gRFfK
+        4bkEuGB8MBTWMkiGf3QQ1uoAR2fDICfXaQYJJhKtAwb7ZGoJPBKloiC7GK66Uq80
+        oaAWWkyERR6iDEZfGMevzJ3akjdRb7SLA21K47fKjkAjlGMaea34fm1HllX6RtKO
+        WBrCaFK5d2+ZuSkBs3qj9r3MnD+RLsap2hJriXNDyLaayHsIX0QJABVphYUFatFI
+        bvoWpA89qNtFTai+RVKZkf5rboWy86Z5wqg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1699884033; x=1699970433; bh=VHi4AcLP1FDKeL87EkRURIskb7aetmZpaGy
+        D5PsyTw4=; b=h8PcPdtouGcX3pGAqzjnnhYdawg1vKxyv6p7zvDS2vR6ZGJYYJS
+        R8ltnI3/eZFkmO6Y1fCJSu00gKLEsVnWwM++O5DkxmNS5CqQ+R85e3wOhUF09lyS
+        L7Xn3yJg9bGlntMfayO80f+hWkTKtDfALgJOkh3tWc1M0AhvGE1Bvb8RuSefZd0x
+        EshqCGYtPFCUwIng185hZYDNTSMftwDr+W7dFEyH7vbIPnhNn0fWUeCvJGOXgUNL
+        ffxN+B0trJz75vaqhCglsfDWv+uL/cRyRj+LGUlKUqxhRZKz+fcm4wxlxCLCC/UB
+        RALIp6KbvW9OWlr75Ykx+aqobVXo4KJFbxA==
+X-ME-Sender: <xms:_ytSZX4V_aVb4SgcDRcz6_nIDlDLvj203gd2cO4HsyEdwgveWNkpwg>
+    <xme:_ytSZc52L2ruNEkwyuss0fZUTcLQEgYc7bRcLMnMBvPlu6Dm1yLh82ESndTU0xI6A
+    pn4Mgxi5UkT5ciKOUY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeftddgheeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfo
+    rghrkhcurfgvrghrshhonhdfuceomhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsg
+    gsrdgtrgeqnecuggftrfgrthhtvghrnhephfefgedufeetgfetlefgkefgvdejleelvefg
+    hfejfffhtdeitdejfeekvdeugfeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepmhhpvggrrhhsohhnqdhlvghnohhvohesshhquhgvsggsrdgt
+    rg
+X-ME-Proxy: <xmx:ACxSZecBO_wERmCSDE5ojDm3bJ3MKcmn6Thw91YWL9pT4HLnNjzOLw>
+    <xmx:ACxSZYLFrMAC_fSRKepvrcLPfxsjJCvaTilPdg9ywR-sMW5XrChNYA>
+    <xmx:ACxSZbKoHk8tD2kOz6crp3vsj0HxmEfEXgqfuo3Fo0IgPVRDmBFVAA>
+    <xmx:ASxSZT2pEed5RqwJt1orGOA0hml5A9qyqy_TvRV2Btzr8hQL53ibsQ>
+Feedback-ID: ibe194615:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C1861C6008B; Mon, 13 Nov 2023 09:00:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
 MIME-Version: 1.0
-References: <20231027093615.140656-1-krzysztof.kozlowski@linaro.org> <20231027093615.140656-3-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231027093615.140656-3-krzysztof.kozlowski@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 13 Nov 2023 14:59:00 +0100
-Message-ID: <CACRpkdbSCkq7a-3=FfC6=bxh2JB8UZK9K1Eumf0PBnpuArkHSg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: qcom: sm8650-lpass-lpi: add SM8650 LPASS
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <b3167aca-032d-4ec4-b438-38416a5d8a10@app.fastmail.com>
+In-Reply-To: <abecd774-30a4-f11b-e1f-dcae9f1cf7df@linux.intel.com>
+References: <mpearson-lenovo@squebb.ca>
+ <20231108162039.13737-1-mpearson-lenovo@squebb.ca>
+ <8b29ab8-fef4-8a60-e6c5-447f31f144a7@linux.intel.com>
+ <14312000-6369-4669-bcc9-4fa2abb5a98f@app.fastmail.com>
+ <abecd774-30a4-f11b-e1f-dcae9f1cf7df@linux.intel.com>
+Date:   Mon, 13 Nov 2023 09:00:09 -0500
+From:   "Mark Pearson" <mpearson-lenovo@squebb.ca>
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Hans de Goede" <hdegoede@redhat.com>,
+        ibm-acpi-devel@lists.sourceforge.net,
+        "Limonciello, Mario" <mario.limonciello@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: Add support for improved performance mode
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 11:37=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Hi Ilpo
 
-> Add driver for the pin controller in Low Power Audio SubSystem (LPASS)
-> of Qualcomm SM8650 SoC.
+On Fri, Nov 10, 2023, at 7:37 AM, Ilpo J=C3=A4rvinen wrote:
+> On Thu, 9 Nov 2023, Mark Pearson wrote:
+>> On Thu, Nov 9, 2023, at 5:10 AM, Ilpo J=C3=A4rvinen wrote:
+>> > On Wed, 8 Nov 2023, Mark Pearson wrote:
+<snip>
+>>=20
+>> >
+>> > Looking into the driver a bit more, there are a few other defines w=
+hich=20
+>> > could also move BIT() from the code into defines. Please tell if yo=
+u're=20
+>> > going to look at those because if not, I might try to make the patc=
+hes.
+>>=20
+>> Happy to look at doing that as I'm playing around with this driver an=
+yway.
 >
-> Notable differences against SM8550 LPASS pin controller:
-> 1. Additional address space for slew rate thus driver uses
->    LPI_FLAG_SLEW_RATE_SAME_REG and sets slew rate via different
->    register.
+> Okay, thanks.
 >
-> 2. Two new pin mux functions: qca_swr_clk and qca_swr_data
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Just a quick note - I pushed v2 for this patch, and I'll tackle the othe=
+r BIT changes separately (rather than adding it as part of a series). Lo=
+oking through the code I wanted to spend more time on that piece - I'm n=
+ot ignoring it :)
 
-Patch applied.
-
-Yours,
-Linus Walleij
+Mark
