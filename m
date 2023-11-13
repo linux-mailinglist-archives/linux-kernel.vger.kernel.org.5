@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D05C7E9D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C307E9D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbjKMN3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:29:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S231185AbjKMNai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjKMN3H (ORCPT
+        with ESMTP id S229470AbjKMNag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:29:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2C4D6F
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:29:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FDAC433C7;
-        Mon, 13 Nov 2023 13:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699882144;
-        bh=+2mkh4yIyUeEGCrAJG33DcCfBGAjXe3Cgtcf89a4hF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Iio+o1ZlrCPEstCtxQLdSWIMmnogrnZwngRPYu01bBu9EjwpelZFO1453Mt3gw1mA
-         /nV8HrQuvpJaUUuOBT1DtzwVtse+JJvk47VAd0OOHrbD6JPPbbPSXvJqzr27x/Knfz
-         V1Wtg75PZKKRDSa/2tuyO8QAX8eov97/d9k+kMq8B1w7jWplHPX1ccNfQcqYbG3s2a
-         COPSGqNdMu/c73cu258LvdttiWiapZknT5p3yjBTtekCi7soPtwWZ8r+4/BNqhAg6Q
-         WF5vMq3Nw3IHH8UQiU0uEYsMrus5eE42JwUJLgnvzTs73PU0CL3TbtshGoto1FW17v
-         UT077SY6SAVTg==
-Date:   Mon, 13 Nov 2023 13:29:01 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Samuel Holland <samuel.holland@sifive.com>,
-        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH 1/2] riscv: dts: cv1800b: add pinctrl node for cv1800b
-Message-ID: <20231113-mama-underarm-a8bbf0c2a1f1@squawk>
-References: <20231113005702.2467-1-jszhang@kernel.org>
- <20231113005702.2467-2-jszhang@kernel.org>
- <58a99001-8260-4970-9fc7-25fe81e557a5@sifive.com>
- <ZVIejw2O6on8QMYy@xhacker>
+        Mon, 13 Nov 2023 08:30:36 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610C4171A
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:30:32 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1r2X14-00042D-9d; Mon, 13 Nov 2023 14:30:14 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1r2X12-008kZa-Ex; Mon, 13 Nov 2023 14:30:12 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 115B124B7DC;
+        Mon, 13 Nov 2023 13:30:12 +0000 (UTC)
+Date:   Mon, 13 Nov 2023 14:30:11 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Martin =?utf-8?Q?Hundeb=C3=B8ll?= <martin@geanix.com>
+Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Simon Horman <simon.horman@corigine.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Julien Panis <jpanis@baylibre.com>, Judith Mendez <jm@ti.com>
+Subject: Re: [PATCH v6 00/14] can: m_can: Optimizations for m_can/tcan part 2
+Message-ID: <20231113-mastiff-confetti-955bda37a458-mkl@pengutronix.de>
+References: <20230929141304.3934380-1-msp@baylibre.com>
+ <0c14d3d4372a29a9733c83af4c4254d5dfaf17c2.camel@geanix.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7Zoqzoerm7+6YMc4"
+        protocol="application/pgp-signature"; boundary="ltv4sn6fykivt4dn"
 Content-Disposition: inline
-In-Reply-To: <ZVIejw2O6on8QMYy@xhacker>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <0c14d3d4372a29a9733c83af4c4254d5dfaf17c2.camel@geanix.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,154 +69,59 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7Zoqzoerm7+6YMc4
-Content-Type: text/plain; charset=us-ascii
+--ltv4sn6fykivt4dn
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 13, 2023 at 09:03:11PM +0800, Jisheng Zhang wrote:
-> On Sun, Nov 12, 2023 at 08:51:20PM -0500, Samuel Holland wrote:
-> > On 2023-11-12 6:57 PM, Jisheng Zhang wrote:
-> > > Add the reset device tree node to cv1800b SoC reusing the
-> >           ^^^^^
-> >           I assume you mean pinctrl here?
->=20
-> oops copy and paste the commit msg ;) thanks
+On 13.11.2023 14:25:37, Martin Hundeb=C3=B8ll wrote:
+> On Fri, 2023-09-29 at 16:12 +0200, Markus Schneider-Pargmann wrote:
+> > Hi Marc, Simon, Martin and everyone,
 > >=20
-> > > pinctrl-single driver.
-> > >=20
-> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > > ---
-> > >  arch/riscv/boot/dts/sophgo/cv-pinctrl.h | 19 +++++++++++++++++++
-> > >  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 10 ++++++++++
-> > >  2 files changed, 29 insertions(+)
-> > >  create mode 100644 arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> > >=20
-> > > diff --git a/arch/riscv/boot/dts/sophgo/cv-pinctrl.h b/arch/riscv/boo=
-t/dts/sophgo/cv-pinctrl.h
-> > > new file mode 100644
-> > > index 000000000000..ed78b6fb3142
-> > > --- /dev/null
-> > > +++ b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
+> > v6 is a rebase on v6.6. As there was a conflicting change merged for
+> > v6.6 which introduced irq polling, I had to modify the patches that
+> > touch the hrtimer.
 > >=20
-> > A couple of questions: Should this go in include/dt-bindings? And is it=
- worth
+> > @Simon: I removed a couple of your reviewed-by tags because of the
+> > changes.
+> >=20
+> > @Martin: as the functionality changed, I did not apply your Tested-by
+> > tag as I may have introduced new bugs with the changes.
+> >=20
+> > The series implements many small and bigger throughput improvements
+> > and
+> > adds rx/tx coalescing at the end.
+> >=20
+> > Based on v6.6-rc2. Also available at
+> > https://gitlab.baylibre.com/msp8/linux/-/tree/topic/mcan-optimization/v=
+6.6?ref_type=3Dheads
 >=20
-> When I cooked this series two weeks ago, I did put it in dt-binding, but
-> then I found commit fe49f2d776f799 ("arm64: dts: ti: Use local header for
-> pinctrl register values"), "These definitions were previously put in the
-> bindings header to avoid code duplication and to provide some context
-> meaning (name), but they do not fit the purpose of bindings." which is
-> suggested and acked by Krzysztof, so I just want to follow the style
-> here.
->=20
->=20
-> > including macros for the actual function mappings, like in the vendor s=
-ource[1]?
->=20
-> Do you want something as the following?
->=20
-> #define UART0_TX	0
-> #define CAM_MCLK1	1
-> ...
->=20
-> #define REG_UART0_TX	0x24
-> ...
->=20
-> pinctrl-single,pins =3D <REG_UART0_TX UART0_TX>;
->=20
-> Other pinctl-single users just uses the register value directly, I have
-> no preference. But I'd like to get suggestions from DT and pinctl-single
-> maintainers. Hi Rob, Krzysztof, Conor, Tony, what's your opinion?
+> For the whole series:
+> Tested-by: Martin Hundeb=C3=B8ll <martin@geanix.com>
 
-Basically, if the definitions map directly to registers and are just
-used to make writing your devicetree easier then they do not belong
-in a binding. This differs from clock or reset indices, where we
-essentially make up a set of indices that may or may not correlate to
-offsets in the hardware as using the register values without any sort of
-abstraction is not defining an ABI.
+On which hardware? On an mmio mapped m_can or the tcan4x5x?
 
-Cheers,
-Conor.
->=20
-> >=20
-> > [1]:
-> > https://github.com/milkv-duo/duo-buildroot-sdk/blob/develop/linux_5.10/=
-drivers/pinctrl/cvitek/cv180x_pinlist_swconfig.h
-> >=20
-> > > @@ -0,0 +1,19 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +/*
-> > > + * This header provides constants for pinctrl bindings for Sophgo CV=
-* SoC.
-> > > + *
-> > > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > > + */
-> > > +#ifndef _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > > +#define _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > > +
-> > > +#define MUX_M0		0
-> > > +#define MUX_M1		1
-> > > +#define MUX_M2		2
-> > > +#define MUX_M3		3
-> > > +#define MUX_M4		4
-> > > +#define MUX_M5		5
-> > > +#define MUX_M6		6
-> > > +#define MUX_M7		7
-> > > +
-> > > +#endif
-> > > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boo=
-t/dts/sophgo/cv1800b.dtsi
-> > > index e04df04a91c0..7a44d8e8672b 100644
-> > > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > > @@ -6,6 +6,8 @@
-> > >  #include <dt-bindings/interrupt-controller/irq.h>
-> > >  #include <dt-bindings/reset/sophgo,cv1800b-reset.h>
-> > > =20
-> > > +#include "cv-pinctrl.h"
-> > > +
-> > >  / {
-> > >  	compatible =3D "sophgo,cv1800b";
-> > >  	#address-cells =3D <1>;
-> > > @@ -55,6 +57,14 @@ soc {
-> > >  		dma-noncoherent;
-> > >  		ranges;
-> > > =20
-> > > +		pinctrl0: pinctrl@3001000 {
-> > > +			compatible =3D "pinctrl-single";
-> > > +			reg =3D <0x3001000 0x130>;
-> > > +			#pinctrl-cells =3D <1>;
-> > > +			pinctrl-single,register-width =3D <32>;
-> > > +			pinctrl-single,function-mask =3D <0x00000007>;
-> > > +		};
-> >=20
-> > From the vendor driver[2], it looks like this peripheral block only han=
-dles
-> > pinmuxing, so indeed this looks like a good use of pinctrl-single.
->=20
-> This is deffinitely pinctrl-single style pinmux controller ;)
->=20
-> >=20
-> > [2]:
-> > https://github.com/milkv-duo/duo-buildroot-sdk/blob/develop/linux_5.10/=
-drivers/pinctrl/cvitek/pinctrl-cv180x.h
-> >=20
-> > > +
-> > >  		rst: reset-controller@3003000 {
-> > >  			compatible =3D "sophgo,cv1800b-reset";
-> > >  			reg =3D <0x03003000 0x1000>;
-> >=20
+Marc
 
---7Zoqzoerm7+6YMc4
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--ltv4sn6fykivt4dn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVIkmgAKCRB4tDGHoIJi
-0uRlAP9Px887Odlbyj2PwKsTBLE9E6OJ5moG9T721MhExHWzvgEA4FhpvDOu9zKu
-fByJynWCnhTHWUzi0litF1aow7IBLwY=
-=G+To
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmVSJOAACgkQvlAcSiqK
+BOgMLwf/fMwdMSII3RkS4eHnUFAhQ9qmXwNx+2h7M8cmFhx7wY+5N8whN6GJw8lu
+aNDZ0cHXjKErd53GkXfLWwVojBAxuzfj4SYgW9oJGCpbJ4kudXK3XqZWQfqNQxY9
+jdaLg0bPbXUY45VYZKHzTvUdyzFF5DW6ErY4Vc+AGqWp6g7h5ssjxcqAVPQsU9eF
+Q+L/44D6auw9BmljR90mXVKPxx+TuTt1xCnDpqWPEtqvIcVUXrP6LBxhqFa6WxPH
+x+Ue1xHfIMQa48LRqVmIypEeQVTfyToQHUpg2xmAl8F7YJiP4gW76VLD7FYXzo5k
+Iwcgh3D3r/Hu6i+spguZGlV9Koeg0A==
+=O2Cr
 -----END PGP SIGNATURE-----
 
---7Zoqzoerm7+6YMc4--
+--ltv4sn6fykivt4dn--
